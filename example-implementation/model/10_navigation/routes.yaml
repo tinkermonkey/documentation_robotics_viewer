@@ -1,0 +1,522 @@
+home-route:
+  name: home-route
+  description: Landing page route displaying dashboard with tree chart
+  path: /
+  criticality: high
+  id: navigation.route.home-route
+  uxRef: ux.view.home-page
+  relationships.navigates_to: ux.view.home-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.home-route
+    name: home-route
+    type: experience
+    addressing:
+      url: /
+app-route:
+  name: app-route
+  description: Main application route container for authenticated views
+  path: /app
+  criticality: high
+  id: navigation.route.app-route
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.app-route
+    name: app-route
+    type: experience
+    addressing:
+      url: /app
+layers-route:
+  name: layers-route
+  description: Route to layers management page for knowledge graph structure
+  path: /app/layers
+  criticality: high
+  id: navigation.route.layers-route
+  uxRef: ux.view.layers-page
+  relationships.navigates_to: ux.view.layers-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.layers-route
+    name: layers-route
+    type: experience
+    addressing:
+      url: /app/layers
+domains-route:
+  name: domains-route
+  description: Route to domains management page with layer filtering
+  path: /app/domains
+  criticality: high
+  id: navigation.route.domains-route
+  uxRef: ux.view.domains-page
+  relationships.navigates_to: ux.view.domains-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.domains-route
+    name: domains-route
+    type: experience
+    addressing:
+      url: /app/domains
+terms-route:
+  name: terms-route
+  description: Route to terms management page with domain filtering
+  path: /app/terms
+  criticality: high
+  id: navigation.route.terms-route
+  uxRef: ux.view.terms-page
+  relationships.navigates_to: ux.view.terms-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.terms-route
+    name: terms-route
+    type: experience
+    addressing:
+      url: /app/terms
+predicates-route:
+  name: predicates-route
+  description: Route to predicates management page for semantic relationships
+  path: /app/predicates
+  criticality: medium
+  id: navigation.route.predicates-route
+  uxRef: ux.view.predicates-page
+  relationships.navigates_to: ux.view.predicates-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.predicates-route
+    name: predicates-route
+    type: experience
+    addressing:
+      url: /app/predicates
+datasets-route:
+  name: datasets-route
+  description: Route to datasets management page for version control
+  path: /app/datasets
+  criticality: medium
+  id: navigation.route.datasets-route
+  uxRef: ux.view.datasets-page
+  relationships.navigates_to: ux.view.datasets-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.datasets-route
+    name: datasets-route
+    type: experience
+    addressing:
+      url: /app/datasets
+config-route:
+  name: config-route
+  description: Route to configuration hub page with system settings access
+  path: /app/config
+  criticality: medium
+  id: navigation.route.config-route
+  uxRef: ux.view.config-hub-page
+  relationships.navigates_to: ux.view.config-hub-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.config-route
+    name: config-route
+    type: experience
+    addressing:
+      url: /app/config
+pipelines-route:
+  name: pipelines-route
+  description: Route to pipeline flavors management page
+  path: /app/config/pipelines
+  criticality: high
+  id: navigation.route.pipelines-route
+  uxRef: ux.view.pipelines-config-page
+  relationships.navigates_to: ux.view.pipelines-config-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.pipelines-route
+    name: pipelines-route
+    type: experience
+    addressing:
+      url: /app/config/pipelines
+pipelines-create-route:
+  name: pipelines-create-route
+  description: Route to create new pipeline flavor with type specification
+  path: /app/config/pipelines/:type/create
+  criticality: medium
+  id: navigation.route.pipelines-create-route
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.pipelines-create-route
+    name: pipelines-create-route
+    type: experience
+    addressing:
+      url: /app/config/pipelines/:type/create
+pipelines-test-route:
+  name: pipelines-test-route
+  description: Route to test pipeline flavor execution with sample inputs
+  path: /app/config/pipelines/:type/test/:id
+  criticality: medium
+  id: navigation.route.pipelines-test-route
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.pipelines-test-route
+    name: pipelines-test-route
+    type: experience
+    addressing:
+      url: /app/config/pipelines/:type/test/:id
+models-route:
+  name: models-route
+  description: Route to LLM models configuration page
+  path: /app/config/models
+  criticality: medium
+  id: navigation.route.models-route
+  uxRef: ux.view.models-config-page
+  relationships.navigates_to: ux.view.models-config-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.models-route
+    name: models-route
+    type: experience
+    addressing:
+      url: /app/config/models
+data-sources-route:
+  name: data-sources-route
+  description: Route to reference data sources configuration page
+  path: /app/config/data-sources
+  criticality: medium
+  id: navigation.route.data-sources-route
+  uxRef: ux.view.data-sources-config-page
+  relationships.navigates_to: ux.view.data-sources-config-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.data-sources-route
+    name: data-sources-route
+    type: experience
+    addressing:
+      url: /app/config/data-sources
+network-route:
+  name: network-route
+  description: Route to network configuration page
+  path: /app/config/network
+  criticality: low
+  id: navigation.route.network-route
+  uxRef: ux.view.network-config-page
+  relationships.navigates_to: ux.view.network-config-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.network-route
+    name: network-route
+    type: experience
+    addressing:
+      url: /app/config/network
+system-route:
+  name: system-route
+  description: Route to system configuration page
+  path: /app/config/system
+  criticality: low
+  id: navigation.route.system-route
+  uxRef: ux.view.system-config-page
+  relationships.navigates_to: ux.view.system-config-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.system-route
+    name: system-route
+    type: experience
+    addressing:
+      url: /app/config/system
+reference-search-route:
+  name: reference-search-route
+  description: Route to unified reference search page
+  path: /app/reference
+  criticality: medium
+  id: navigation.route.reference-search-route
+  uxRef: ux.view.reference-search-page
+  relationships.navigates_to: ux.view.reference-search-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.reference-search-route
+    name: reference-search-route
+    type: experience
+    addressing:
+      url: /app/reference
+structure-node-details-route:
+  name: structure-node-details-route
+  description: Route to structure node details page with dynamic node ID
+  path: /app/structure_nodes/:nodeId
+  criticality: high
+  id: navigation.route.structure-node-details-route
+  uxRef: ux.view.structure-node-details-page
+  relationships.navigates_to: ux.view.structure-node-details-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.structure-node-details-route
+    name: structure-node-details-route
+    type: experience
+    addressing:
+      url: /app/structure_nodes/:nodeId
+processing-config-route:
+  name: processing-config-route
+  description: Route to NLP processing configuration page
+  path: /app/config/processing
+  criticality: medium
+  id: navigation.route.processing-config-route
+  uxRef: ux.view.processing-config-page
+  relationships.navigates_to: ux.view.processing-config-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.processing-config-route
+    name: processing-config-route
+    type: experience
+    addressing:
+      url: /app/config/processing
+advanced-config-route:
+  name: advanced-config-route
+  description: Route to advanced configuration page with raw JSON editor
+  path: /app/config/advanced
+  criticality: low
+  id: navigation.route.advanced-config-route
+  uxRef: ux.view.advanced-config-page
+  relationships.navigates_to: ux.view.advanced-config-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.advanced-config-route
+    name: advanced-config-route
+    type: experience
+    addressing:
+      url: /app/config/advanced
+pipeline-type-route:
+  name: pipeline-type-route
+  description: Route to pipeline flavors list filtered by type
+  path: /app/config/pipelines/$pipelineType
+  criticality: high
+  id: navigation.route.pipeline-type-route
+  uxRef: ux.view.pipeline-type-page
+  relationships.navigates_to: ux.view.pipeline-type-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.pipeline-type-route
+    name: pipeline-type-route
+    type: experience
+    addressing:
+      url: /app/config/pipelines/$pipelineType
+pipeline-create-route:
+  name: pipeline-create-route
+  description: Route to create new pipeline flavor
+  path: /app/config/pipelines/$pipelineType/create
+  criticality: high
+  id: navigation.route.pipeline-create-route
+  uxRef: ux.view.pipeline-create-page
+  relationships.navigates_to: ux.view.pipeline-create-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.pipeline-create-route
+    name: pipeline-create-route
+    type: experience
+    addressing:
+      url: /app/config/pipelines/$pipelineType/create
+pipeline-edit-route:
+  name: pipeline-edit-route
+  description: Route to edit existing pipeline flavor
+  path: /app/config/pipelines/$pipelineType/edit/$flavorId
+  criticality: high
+  id: navigation.route.pipeline-edit-route
+  uxRef: ux.view.pipeline-edit-page
+  relationships.navigates_to: ux.view.pipeline-edit-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.pipeline-edit-route
+    name: pipeline-edit-route
+    type: experience
+    addressing:
+      url: /app/config/pipelines/$pipelineType/edit/$flavorId
+pipeline-test-route:
+  name: pipeline-test-route
+  description: Route to test pipeline flavor execution
+  path: /app/config/pipelines/$pipelineType/test/$flavorId
+  criticality: high
+  id: navigation.route.pipeline-test-route
+  uxRef: ux.view.pipeline-test-page
+  relationships.navigates_to: ux.view.pipeline-test-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.pipeline-test-route
+    name: pipeline-test-route
+    type: experience
+    addressing:
+      url: /app/config/pipelines/$pipelineType/test/$flavorId
+reference-predicates-route:
+  name: reference-predicates-route
+  description: Route to predicate mapping interface
+  path: /app/reference/predicates
+  criticality: medium
+  id: navigation.route.reference-predicates-route
+  uxRef: ux.view.reference-predicates-page
+  relationships.navigates_to: ux.view.reference-predicates-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.reference-predicates-route
+    name: reference-predicates-route
+    type: experience
+    addressing:
+      url: /app/reference/predicates
+reference-rag-test-route:
+  name: reference-rag-test-route
+  description: Route to RAG testing in reference context
+  path: /app/reference/rag-test
+  criticality: medium
+  id: navigation.route.reference-rag-test-route
+  uxRef: ux.view.reference-rag-test-page
+  relationships.navigates_to: ux.view.reference-rag-test-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.reference-rag-test-route
+    name: reference-rag-test-route
+    type: experience
+    addressing:
+      url: /app/reference/rag-test
+rag-experiments-route:
+  name: rag-experiments-route
+  description: Route to RAG experiment management page
+  path: /app/rag/experiments
+  criticality: high
+  id: navigation.route.rag-experiments-route
+  uxRef: ux.view.rag-experiments-page
+  relationships.navigates_to: ux.view.rag-experiments-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.rag-experiments-route
+    name: rag-experiments-route
+    type: experience
+    addressing:
+      url: /app/rag/experiments
+rag-pipeline-comparison-route:
+  name: rag-pipeline-comparison-route
+  description: Route to pipeline comparison page
+  path: /app/rag/pipeline-comparison
+  criticality: medium
+  id: navigation.route.rag-pipeline-comparison-route
+  uxRef: ux.view.rag-pipeline-comparison-page
+  relationships.navigates_to: ux.view.rag-pipeline-comparison-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.rag-pipeline-comparison-route
+    name: rag-pipeline-comparison-route
+    type: experience
+    addressing:
+      url: /app/rag/pipeline-comparison
+rag-test-runner-route:
+  name: rag-test-runner-route
+  description: Route to dedicated test runner interface
+  path: /app/rag/test-runner
+  criticality: medium
+  id: navigation.route.rag-test-runner-route
+  uxRef: ux.view.rag-test-runner-page
+  relationships.navigates_to: ux.view.rag-test-runner-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.rag-test-runner-route
+    name: rag-test-runner-route
+    type: experience
+    addressing:
+      url: /app/rag/test-runner
+task-manager-route:
+  name: task-manager-route
+  description: Route to background task management page
+  path: /app/monitoring/task-manager
+  criticality: high
+  id: navigation.route.task-manager-route
+  uxRef: ux.view.task-manager-page
+  relationships.navigates_to: ux.view.task-manager-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.task-manager-route
+    name: task-manager-route
+    type: experience
+    addressing:
+      url: /app/monitoring/task-manager
+performance-monitoring-route:
+  name: performance-monitoring-route
+  description: Route to performance metrics visualization page
+  path: /app/monitoring/performance
+  criticality: medium
+  id: navigation.route.performance-monitoring-route
+  uxRef: ux.view.performance-monitoring-page
+  relationships.navigates_to: ux.view.performance-monitoring-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.performance-monitoring-route
+    name: performance-monitoring-route
+    type: experience
+    addressing:
+      url: /app/monitoring/performance
+system-health-route:
+  name: system-health-route
+  description: Route to system health monitoring dashboard
+  path: /app/monitoring/system-health
+  criticality: medium
+  id: navigation.route.system-health-route
+  uxRef: ux.view.system-health-page
+  relationships.navigates_to: ux.view.system-health-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.system-health-route
+    name: system-health-route
+    type: experience
+    addressing:
+      url: /app/monitoring/system-health
+analytics-route:
+  name: analytics-route
+  description: Route to analytics dashboard
+  path: /app/monitoring/analytics
+  criticality: medium
+  id: navigation.route.analytics-route
+  uxRef: ux.view.analytics-page
+  relationships.navigates_to: ux.view.analytics-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.analytics-route
+    name: analytics-route
+    type: experience
+    addressing:
+      url: /app/monitoring/analytics
+llm-traceability-route:
+  name: llm-traceability-route
+  description: Route to LLM execution traceability page
+  path: /app/monitoring/llm-traceability
+  criticality: high
+  id: navigation.route.llm-traceability-route
+  uxRef: ux.view.llm-traceability-page
+  relationships.navigates_to: ux.view.llm-traceability-page
+  version: 1.0.0
+  application: context-studio
+  routes:
+  - identifier: navigation.route.llm-traceability-route
+    name: llm-traceability-route
+    type: experience
+    addressing:
+      url: /app/monitoring/llm-traceability

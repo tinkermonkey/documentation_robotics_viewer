@@ -1,0 +1,168 @@
+import { test, expect } from '@playwright/test';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as yaml from 'js-yaml';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+/**
+ * Integration tests for loading the example-implementation YAML model
+ * This verifies that the YAML parser can load real-world instance data
+ */
+
+test.describe('Example Implementation YAML Model', () => {
+  const exampleImplPath = path.join(__dirname, '..', 'example-implementation', 'model');
+
+  test('should have manifest.yaml file', () => {
+    const manifestPath = path.join(exampleImplPath, 'manifest.yaml');
+    expect(fs.existsSync(manifestPath)).toBeTruthy();
+
+    const content = fs.readFileSync(manifestPath, 'utf-8');
+    const manifest = yaml.load(content) as any;
+
+    // Verify manifest structure
+    expect(manifest.version).toBe('0.1.0');
+    expect(manifest.schema).toBe('documentation-robotics-v1');
+    expect(manifest.project).toBeDefined();
+    expect(manifest.project.name).toBe('context-studio');
+    expect(manifest.layers).toBeDefined();
+  });
+
+  test('should have expected layer directories', () => {
+    const manifestPath = path.join(exampleImplPath, 'manifest.yaml');
+    const content = fs.readFileSync(manifestPath, 'utf-8');
+    const manifest = yaml.load(content) as any;
+
+    // Verify each layer directory exists
+    const layerDirs = [
+      '01_motivation',
+      '02_business',
+      '03_security',
+      '04_application',
+      '05_technology',
+      '06_api',
+      '07_data_model',
+      '08_datastore',
+      '09_ux',
+      '10_navigation',
+    ];
+
+    for (const dir of layerDirs) {
+      const dirPath = path.join(exampleImplPath, dir);
+      expect(fs.existsSync(dirPath)).toBeTruthy();
+    }
+  });
+
+  test('should contain 182 total elements according to manifest', () => {
+    const manifestPath = path.join(exampleImplPath, 'manifest.yaml');
+    const content = fs.readFileSync(manifestPath, 'utf-8');
+    const manifest = yaml.load(content) as any;
+
+    expect(manifest.statistics.total_elements).toBe(182);
+  });
+
+  test('should have 11 enabled layers', () => {
+    const manifestPath = path.join(exampleImplPath, 'manifest.yaml');
+    const content = fs.readFileSync(manifestPath, 'utf-8');
+    const manifest = yaml.load(content) as any;
+
+    const enabledLayers = Object.values(manifest.layers).filter(
+      (layer: any) => layer.enabled
+    );
+    expect(enabledLayers.length).toBe(11);
+  });
+
+  test('should parse business layer process elements', () => {
+    const processPath = path.join(exampleImplPath, '02_business', 'processs.yaml');
+    expect(fs.existsSync(processPath)).toBeTruthy();
+
+    const content = fs.readFileSync(processPath, 'utf-8');
+    const processes = yaml.load(content) as any;
+
+    // Verify structure
+    expect(processes['Knowledge Curation Process']).toBeDefined();
+    expect(processes['Knowledge Curation Process'].name).toBe('Knowledge Curation Process');
+    expect(processes['Knowledge Curation Process'].id).toBe('knowledge-curation-process');
+    expect(processes['Knowledge Curation Process'].relationships).toBeDefined();
+    expect(processes['Knowledge Curation Process'].relationships.realizes).toBeDefined();
+  });
+
+  test('should parse API operation with OpenAPI spec', () => {
+    const operationsPath = path.join(exampleImplPath, '06_api', 'operations.yaml');
+    expect(fs.existsSync(operationsPath)).toBeTruthy();
+
+    const content = fs.readFileSync(operationsPath, 'utf-8');
+    const operations = yaml.load(content) as any;
+
+    // Verify first operation
+    const firstOp = operations['create-structure-node'];
+    expect(firstOp).toBeDefined();
+    expect(firstOp.method).toBe('POST');
+    expect(firstOp.path).toBe('/api/structure_nodes');
+    expect(firstOp.openapi).toBeDefined();
+    expect(firstOp.openapi.paths).toBeDefined();
+  });
+
+  test('should parse data model schema', () => {
+    const schemasPath = path.join(exampleImplPath, '07_data_model', 'schemas.yaml');
+    expect(fs.existsSync(schemasPath)).toBeTruthy();
+
+    const content = fs.readFileSync(schemasPath, 'utf-8');
+    const schemas = yaml.load(content) as any;
+
+    // Verify schema structure
+    const structureNode = schemas['structure-node'];
+    expect(structureNode).toBeDefined();
+    expect(structureNode.$schema).toBe('http://json-schema.org/draft-07/schema#');
+    expect(structureNode.schemas).toBeDefined();
+  });
+
+  test('should have projection-rules.yaml', () => {
+    const projectionRulesPath = path.join(
+      exampleImplPath,
+      '..',
+      'projection-rules.yaml'
+    );
+    expect(fs.existsSync(projectionRulesPath)).toBeTruthy();
+
+    const content = fs.readFileSync(projectionRulesPath, 'utf-8');
+    const rules = yaml.load(content) as any;
+
+    expect(rules.version).toBe('0.1.0');
+    expect(rules.projections).toBeDefined();
+    expect(Array.isArray(rules.projections)).toBeTruthy();
+    expect(rules.projections.length).toBeGreaterThan(0);
+  });
+});
+
+test.describe('YAML Model Loading via UI', () => {
+  test.skip('should load example-implementation via local file upload', async ({ page }) => {
+    // This test will be implemented once the UI is updated to support
+    // local directory upload or we package example-implementation as a ZIP
+
+    await page.goto('http://localhost:3001');
+
+    // Future: Upload example-implementation as ZIP
+    // Verify 182 elements loaded
+    // Verify 11 layers displayed
+    // Verify relationships resolved
+
+    expect(true).toBe(true); // Placeholder
+  });
+
+  test.skip('should display YAML model metadata', async ({ page }) => {
+    // This test will be implemented once UI updates are complete
+
+    await page.goto('http://localhost:3001');
+
+    // Future: Load YAML model
+    // Verify model type badge shows "YAML v0.1.0"
+    // Verify project name displayed
+    // Verify statistics displayed
+
+    expect(true).toBe(true); // Placeholder
+  });
+});

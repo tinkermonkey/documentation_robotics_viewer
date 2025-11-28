@@ -1,0 +1,51 @@
+sqlite-local:
+  name: sqlite-local
+  description: Primary user workspace database with structure nodes, predicates, links,
+    and change tracking
+  criticality: high
+  id: sqlite-local
+  version: 1.0.0
+  database:
+    name: local.db
+    type: SQLite
+    schemas:
+      - name: main
+        tables: []
+sqlite-operations:
+  name: sqlite-operations
+  description: Operational database for pipeline configurations, execution logs, and
+    system tracking
+  criticality: high
+  id: sqlite-operations
+  version: 1.0.0
+  database:
+    name: operations.db
+    type: SQLite
+    schemas:
+      - name: main
+        tables: []
+sqlite-reference:
+  name: sqlite-reference
+  description: Multi-source reference knowledge graph from ConceptNet, DBpedia, and
+    Wikidata
+  criticality: medium
+  id: sqlite-reference
+  version: 1.0.0
+  database:
+    name: reference.db
+    type: SQLite
+    schemas:
+      - name: main
+        tables: []
+sqlite-reference-api-cache:
+  name: sqlite-reference-api-cache
+  description: API response cache for external reference sources to improve performance
+  criticality: low
+  id: sqlite-reference-api-cache
+  version: 1.0.0
+  database:
+    name: reference_api_cache.db
+    type: SQLite
+    schemas:
+      - name: main
+        tables: []

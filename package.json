@@ -5,25 +5,54 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
+    "dev": "vite --config vite.config.debug.ts",
+    "dev:embedded": "vite --config vite.config.embedded.ts --port 3001",
+    "build": "npm run build:debug && npm run build:embedded",
+    "build:debug": "vite build --config vite.config.debug.ts",
+    "build:embedded": "vite build --config vite.config.embedded.ts && npm run package:embedded",
+    "package:embedded": "node scripts/package-embedded.cjs",
+    "preview": "vite preview --config vite.config.debug.ts",
+    "preview:embedded": "vite preview --config vite.config.embedded.ts",
     "server": "node server/index.cjs",
-    "start": "npm run server & npm run dev"
+    "start": "bash scripts/start-servers.sh",
+    "start:debug": "npm run server & npm run dev",
+    "verify": "bash scripts/verify-setup.sh",
+    "test": "playwright test",
+    "test:debug": "playwright test --debug",
+    "test:unit": "playwright test --config=playwright.unit.config.ts",
+    "test:e2e": "playwright test --config=playwright.e2e.config.ts",
+    "test:e2e:ui": "playwright test --config=playwright.e2e.config.ts --ui",
+    "test:e2e:headed": "playwright test --config=playwright.e2e.config.ts --headed",
+    "test:embedded": "playwright test --config=playwright.embedded.config.ts",
+    "test:embedded:ui": "playwright test --config=playwright.embedded.config.ts --ui"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/uuid": "^10.0.0",
+    "@xyflow/react": "^12.9.3",
     "cors": "^2.8.5",
     "dagre": "^0.8.5",
     "express": "^5.1.0",
+    "js-yaml": "^4.1.1",
+    "jszip": "^3.10.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "tldraw": "^4.2.0"
+    "uuid": "^13.0.0",
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@types/dagre": "^0.7.53",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
-    "vite": "^7.2.4"
+    "playwright": "^1.57.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.4",
+    "vitest": "^4.0.14"
   }
 }

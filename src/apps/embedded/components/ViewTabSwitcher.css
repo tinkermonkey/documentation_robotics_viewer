@@ -1,0 +1,93 @@
+/**
+ * ViewTabSwitcher Styles
+ * Clean tab switcher with smooth transitions
+ */
+
+.view-tab-switcher {
+  display: flex;
+  gap: 0;
+  background: var(--background-secondary, #f3f4f6);
+  border-radius: 6px;
+  padding: 4px;
+  margin-bottom: 12px;
+}
+
+.view-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.view-tab:hover:not(:disabled) {
+  background: var(--background-hover, #e5e7eb);
+  color: var(--text-primary, #111827);
+}
+
+.view-tab.active {
+  background: var(--background-active, #ffffff);
+  color: var(--text-primary, #111827);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.view-tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.view-tab-icon {
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.view-tab-label {
+  font-family: var(--font-family, system-ui, sans-serif);
+}
+
+/* Focus styles for accessibility */
+.view-tab:focus-visible {
+  outline: 2px solid var(--accent-primary, #3b82f6);
+  outline-offset: 2px;
+}
+
+/* Active state animation */
+.view-tab.active {
+  animation: tabActivate 0.2s ease;
+}
+
+@keyframes tabActivate {
+  0% {
+    transform: scale(0.98);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .view-tab {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .view-tab-icon {
+    font-size: 14px;
+  }
+}

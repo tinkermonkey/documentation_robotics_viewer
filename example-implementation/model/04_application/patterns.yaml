@@ -1,0 +1,225 @@
+# Application Patterns Documentation
+
+state-management-pattern:
+  name: state-management-pattern
+  description: Multi-layered state management approach combining server state, global UI state, and local component state
+  id: application.pattern.state-management
+  version: 1.0.0
+  layers:
+    - name: server-state
+      description: TanStack Query for server state caching and synchronization
+      implementation: TanStack Query (React Query)
+      usage: API data caching, background refetching, optimistic updates
+      examples:
+        - useStructureNodes hook caches structure node lists
+        - usePredicates hook with staleTime and refetchInterval
+        - Mutation hooks with automatic cache invalidation
+    - name: global-ui-state
+      description: Zustand stores for cross-component UI state
+      implementation: Zustand
+      usage: NLP analysis state, UI preferences, temporary selections
+      examples:
+        - nlpAnalysisStore for word sense selection state
+        - Modal open/close state
+        - Filter preferences
+    - name: local-component-state
+      description: React hooks for component-specific state
+      implementation: React useState, useReducer
+      usage: Form inputs, local UI toggles, temporary data
+      examples:
+        - Form field values before submission
+        - Accordion expand/collapse states
+        - Local search filters
+
+form-validation-pattern:
+  name: form-validation-pattern
+  description: TanStack Form with field-level validation and type safety
+  id: application.pattern.form-validation
+  version: 1.0.0
+  validation_layers:
+    - name: client-side-validation
+      description: Immediate feedback during user input
+      rules:
+        - required: Fields marked as required must have non-empty values
+        - minLength: Minimum character length (e.g., title minimum 3 characters)
+        - maxLength: Maximum character length (e.g., definition maximum 500 characters)
+        - pattern: Regular expression validation (e.g., identifier format /^[a-z0-9-]+$/)
+        - custom: Domain-specific validation (e.g., unique constraint checks)
+    - name: server-side-validation
+      description: Backend validation before persistence
+      rules:
+        - uniqueness: Database-level unique constraints
+        - referential-integrity: Foreign key validation
+        - business-rules: Complex validation logic (e.g., hierarchy rules)
+  form_components:
+    - name: LayerForm
+      fields:
+        - {name: title, required: true, minLength: 3, maxLength: 100}
+        - {name: definition, required: false, maxLength: 500}
+      validations:
+        - Layers cannot have parent structure nodes
+        - Title must be unique within dataset
+    - name: DomainForm
+      fields:
+        - {name: title, required: true, minLength: 3, maxLength: 100}
+        - {name: definition, required: false, maxLength: 500}
+        - {name: layer_id, required: true}
+      validations:
+        - Domains must have a layer parent
+        - Title must be unique within layer
+    - name: TermForm
+      fields:
+        - {name: title, required: true, minLength: 3, maxLength: 100}
+        - {name: definition, required: false, maxLength: 500}
+        - {name: domain_id, required: true}
+      validations:
+        - Terms must have a domain parent
+        - Title must be unique within domain
+    - name: PredicateForm
+      fields:
+        - {name: identifier, required: true, pattern: '^[a-z0-9-]+$'}
+        - {name: label, required: true}
+        - {name: conceptnet_relation, required: false}
+      validations:
+        - Identifier must be URL-safe lowercase
+        - Identifier must be unique across all predicates
+
+base-table-pattern:
+  name: base-table-pattern
+  description: Generic table component pattern for entity management
+  id: application.pattern.base-table
+  version: 1.0.0
+  features:
+    - Server-side pagination with configurable page size
+    - Column sorting (single column, ascending/descending)
+    - Row selection with checkbox (single and bulk selection)
+    - Search/filter with debounced input
+    - CRUD action buttons (Create, Edit, Delete)
+    - Bulk actions dropdown
+    - Loading states and error handling
+    - Empty state messaging
+  implementations:
+    - LayersTable extends BaseNodeTable for layers
+    - DomainsTable extends BaseNodeTable for domains
+    - TermsTable extends BaseNodeTable for terms
+    - PredicatesTable extends BaseNodeTable for predicates
+  props:
+    - columns: Column definitions with accessors and renderers
+    - data: Array of entities to display
+    - onRowClick: Navigation to entity details
+    - onCreateClick: Open create modal
+    - onEditClick: Open edit modal with entity data
+    - onDeleteClick: Delete confirmation and API call
+    - isLoading: Loading state boolean
+    - error: Error object for display
+
+modal-workflow-pattern:
+  name: modal-workflow-pattern
+  description: Consistent modal-based workflow for CRUD operations
+  id: application.pattern.modal-workflow
+  version: 1.0.0
+  workflow:
+    - step: Trigger
+      description: User clicks Create or Edit button
+      action: Set modal open state to true
+    - step: Render
+      description: Modal displays with appropriate form
+      components: [Modal, Form, FormFields, SubmitButton, CancelButton]
+    - step: Validation
+      description: Client-side validation on field blur and submit
+      implementation: TanStack Form validators
+    - step: Submission
+      description: Form submission triggers mutation
+      api_call: POST for create, PUT for update
+    - step: Success
+      description: Close modal, show toast, refresh table
+      implementation: onSuccess callback invalidates query cache
+    - step: Error
+      description: Display error message, keep modal open
+      implementation: onError callback shows toast with error details
+  error_handling:
+    - Network errors: Retry with exponential backoff
+    - Validation errors: Display field-specific error messages
+    - Conflict errors: Show conflict resolution UI
+    - Unknown errors: Generic error toast with details
+
+query-parameter-sync-pattern:
+  name: query-parameter-sync-pattern
+  description: URL query parameters synchronized with table filters
+  id: application.pattern.query-parameter-sync
+  version: 1.0.0
+  implementation:
+    - framework: TanStack Router
+    - hooks: [useSearch, useNavigate]
+    - pattern: Declarative query parameter validation
+  examples:
+    - name: domains-page-filtering
+      url: /app/domains?layer_id=abc123&query=semantic
+      state:
+        layer_id: abc123
+        query: semantic
+      behavior: Filter domains by layer and search text
+      sync: Bidirectional (URL ↔ State)
+    - name: terms-page-filtering
+      url: /app/terms?layer_id=abc&domain_id=xyz&query=concept
+      state:
+        layer_id: abc
+        domain_id: xyz
+        query: concept
+      behavior: Hierarchical filtering with search
+      sync: Bidirectional (URL ↔ State)
+  benefits:
+    - Shareable URLs for filtered views
+    - Browser back/forward navigation works correctly
+    - Bookmark-friendly filtered states
+    - Deep linking to specific filtered views
+
+tree-visualization-pattern:
+  name: tree-visualization-pattern
+  description: Hierarchical tree visualization for knowledge graph navigation
+  id: application.pattern.tree-visualization
+  version: 1.0.0
+  components:
+    - name: TreeChartPanel
+      description: D3-based collapsible tree chart
+      features: [zoom, pan, collapse nodes, click navigation]
+    - name: TreeMenuPanel
+      description: Hierarchical accordion menu
+      features: [expandable sections, active highlighting, breadcrumb trail]
+    - name: CollapsibleLayersList
+      description: Sidebar list of layers with expand/collapse
+    - name: CollapsibleDomainsList
+      description: Sidebar list of domains grouped by layer
+  interaction_patterns:
+    - Click node → Navigate to node details page
+    - Hover node → Show tooltip with node info
+    - Click collapse icon → Toggle node children visibility
+    - Zoom controls → Zoom in/out on tree chart
+    - Pan → Drag to pan view of large trees
+
+api-hook-pattern:
+  name: api-hook-pattern
+  description: Type-safe API hooks with TanStack Query integration
+  id: application.pattern.api-hook
+  version: 1.0.0
+  structure:
+    - hooks: Custom hooks wrapping TanStack Query
+    - services: API service layer with typed methods
+    - types: Generated TypeScript types from OpenAPI specs
+  query_hooks:
+    - pattern: useEntityName (e.g., useStructureNodes)
+      purpose: Fetch and cache entity lists or details
+      features: [automatic caching, background refetching, stale-while-revalidate]
+      example: "useStructureNodes({ node_type: 'layer' })"
+  mutation_hooks:
+    - pattern: useEntityMutation (e.g., useCreateStructureNode)
+      purpose: Create, update, or delete entities
+      features: [optimistic updates, automatic cache invalidation, error rollback]
+      example: "useCreateStructureNode({ onSuccess: invalidateCache })"
+  query_keys:
+    - purpose: Consistent cache key structure
+      pattern: [entity, operation, ...params]
+      examples:
+        - ['structure-nodes', 'list', { node_type: 'layer' }]
+        - ['structure-node', 'detail', nodeId]
+        - ['predicates', 'list']

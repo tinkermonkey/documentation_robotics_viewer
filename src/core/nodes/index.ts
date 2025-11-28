@@ -1,0 +1,38 @@
+/**
+ * Custom Node Components for React Flow
+ * Exports all custom node types and the nodeTypes object for React Flow
+ */
+
+import { DataModelNode } from './DataModelNode';
+import { JSONSchemaNode } from './JSONSchemaNode';
+import { APIEndpointNode } from './APIEndpointNode';
+import { BusinessProcessNode } from './BusinessProcessNode';
+import { RoleNode } from './RoleNode';
+import { PermissionNode } from './PermissionNode';
+import { LayerContainerNode } from './LayerContainerNode';
+import SchemaElementNode from './SchemaElementNode';
+
+// Export all node components
+export {
+  DataModelNode,
+  JSONSchemaNode,
+  APIEndpointNode,
+  BusinessProcessNode,
+  RoleNode,
+  PermissionNode,
+  LayerContainerNode,
+  SchemaElementNode
+};
+
+// Node types object for React Flow
+// Maps node type strings to their component implementations
+export const nodeTypes = {
+  dataModel: DataModelNode,
+  jsonSchema: JSONSchemaNode,
+  apiEndpoint: APIEndpointNode,
+  businessProcess: BusinessProcessNode,
+  role: RoleNode,
+  permission: PermissionNode,
+  layerContainer: LayerContainerNode,
+  'schema-element': SchemaElementNode,  // For spec view
+};

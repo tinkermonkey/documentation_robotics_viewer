@@ -1,0 +1,376 @@
+/**
+ * Node Transformer Service
+ * Coordinates transformation from MetaModel to React Flow nodes and edges
+ */
+
+import { MetaModel, Relationship, ModelElement } from '../types';
+import { VerticalLayerLayout } from '../layout/verticalLayerLayout';
+import { LayoutResult } from '../types/shapes';
+import { AppNode, AppEdge } from '../types/reactflow';
+import { elementStore } from '../stores/elementStore';
+import { JSONSchemaElement } from '../types/jsonSchema';
+
+/**
+ * Result of transforming a model
+ */
+export interface NodeTransformResult {
+  nodes: AppNode[];
+  edges: AppEdge[];
+  layout: LayoutResult;
+}
+
+/**
+ * Transforms a MetaModel into React Flow nodes and edges with proper layout
+ */
+export class NodeTransformer {
+  constructor(private layoutEngine: VerticalLayerLayout) {}
+
+  /**
+   * Transform a complete model into React Flow nodes and edges
+   * @param model - The meta-model to transform
+   * @returns Transform result with nodes, edges, and layout
+   */
+  async transformModel(model: MetaModel): Promise<NodeTransformResult> {
+    // STEP 0: Pre-calculate dimensions for dynamic shapes
+    this.precalculateDimensions(model);
+
+    // STEP 1: Calculate layout for all layers
+    const layout = this.layoutEngine.layout(model.layers);
+
+    // STEP 2: Create nodes array
+    const nodes: AppNode[] = [];
+    const nodeMap = new Map<string, string>(); // elementId → nodeId
+
+    // Create layer containers first (lower z-index)
+    for (const [layerType, layerData] of Object.entries(layout.layers)) {
+      const layer = model.layers[layerType];
+      if (!layer) continue;
+
+      // Constants from LayerContainerNode component
+      const titleBarWidth = 40; // Width of the vertical title bar on the left
+      const containerPadding = 30; // Equal margin on all sides
+
+      // Position container to include title bar on the left
+      // The title bar extends to the left of the content area
+      const containerX = layerData.bounds.minX - containerPadding - titleBarWidth;
+      const containerY = layerData.yOffset + layerData.bounds.minY - containerPadding;
+
+      // Size container to include title bar + content + padding
+      const containerWidth = titleBarWidth + layerData.bounds.width + (2 * containerPadding);
+      const containerHeight = layerData.bounds.height + (2 * containerPadding);
+
+      const containerNode = {
+        id: `container-${layerType}`,
+        type: 'layerContainer' as const,
+        position: { x: containerX, y: containerY },
+        data: {
+          label: layerData.name,
+          elementId: `container-${layerType}`,
+          layerId: layerType,
+          fill: layerData.color,
+          stroke: layerData.color,
+          layerType: layerType,
+          color: layerData.color,
+        },
+        width: containerWidth,
+        height: containerHeight,
+        style: { zIndex: -1 },
+        selectable: false,
+        draggable: false,
+      };
+
+      nodes.push(containerNode as AppNode);
+    }
+
+    // Create element nodes
+    for (const [layerType, layerData] of Object.entries(layout.layers)) {
+      const layer = model.layers[layerType];
+      if (!layer) continue;
+
+      for (const element of layer.elements) {
+        const position = layerData.positions[element.id];
+        if (!position) continue;
+
+        // Convert from center position (dagre) to top-left position (React Flow)
+        const halfWidth = element.visual.size.width / 2;
+        const halfHeight = element.visual.size.height / 2;
+        const topLeftX = position.x - halfWidth;
+        const topLeftY = position.y - halfHeight + layerData.yOffset;
+
+        // Store element in elementStore
+        elementStore.set(element.id, element);
+
+        // Create node ID
+        const nodeId = `node-${element.id}`;
+        nodeMap.set(element.id, nodeId);
+
+        // Determine node type
+        const nodeType = this.getNodeTypeForElement(element);
+
+        // Create node with type-specific data
+        const node = {
+          id: nodeId,
+          type: nodeType,
+          position: { x: topLeftX, y: topLeftY },
+          data: this.extractNodeData(element, nodeType),
+          width: element.visual.size.width,
+          height: element.visual.size.height,
+          style: { zIndex: 1 }, // Above layer containers (which have zIndex: -1)
+        };
+
+        nodes.push(node as AppNode);
+      }
+    }
+
+    // STEP 3: Create edges array
+    const edges: AppEdge[] = [];
+
+    // Create edges from layer relationships
+    for (const layer of Object.values(model.layers)) {
+      for (const relationship of layer.relationships) {
+        const edge = this.createEdge(relationship, nodeMap);
+        if (edge) edges.push(edge);
+      }
+    }
+
+    // Create edges from cross-layer references
+    for (const reference of model.references) {
+      if (reference.source.elementId && reference.target.elementId) {
+        const sourceNodeId = nodeMap.get(reference.source.elementId);
+        const targetNodeId = nodeMap.get(reference.target.elementId);
+
+        if (sourceNodeId && targetNodeId) {
+          edges.push({
+            id: `edge-ref-${reference.source.elementId}-${reference.target.elementId}`,
+            source: sourceNodeId,
+            target: targetNodeId,
+            type: 'smoothstep',
+            data: {
+              pathOptions: {
+                offset: 10, // 10px margin around nodes for routing
+                borderRadius: 8, // Rounded corners for smoother paths
+              },
+            },
+          } as AppEdge);
+        }
+      }
+    }
+
+    console.log(`[NodeTransformer] Created ${nodes.length} nodes and ${edges.length} edges`);
+
+    return { nodes, edges, layout };
+  }
+
+  /**
+   * Create an edge from a relationship
+   */
+  private createEdge(
+    relationship: Relationship,
+    nodeMap: Map<string, string>
+  ): AppEdge | null {
+    const sourceNodeId = nodeMap.get(relationship.sourceId);
+    const targetNodeId = nodeMap.get(relationship.targetId);
+
+    if (!sourceNodeId || !targetNodeId) return null;
+
+    // Check for field-level connection
+    const sourceHandle = relationship.properties?.sourceField
+      ? `field-${relationship.properties.sourceField}-right`
+      : undefined;
+    const targetHandle = relationship.properties?.targetField
+      ? `field-${relationship.properties.targetField}-left`
+      : undefined;
+
+    return {
+      id: `edge-${relationship.id}`,
+      source: sourceNodeId,
+      target: targetNodeId,
+      sourceHandle,
+      targetHandle,
+      type: 'smoothstep', // Use React Flow's built-in smoothstep for better routing
+      animated: false,
+      data: {
+        pathOptions: {
+          offset: 10, // 10px margin around nodes for routing
+          borderRadius: 8, // Rounded corners for smoother paths
+        },
+      },
+    } as AppEdge;
+  }
+
+  /**
+   * Get node type for an element
+   */
+  private getNodeTypeForElement(element: ModelElement): string {
+    const typeMap: Record<string, string> = {
+      'data-model-component': 'dataModel',
+      'DataModelComponent': 'dataModel',
+      'Entity': 'dataModel',
+      'Interface': 'dataModel',
+      'Enum': 'dataModel',
+      'api-endpoint': 'apiEndpoint',
+      'APIEndpoint': 'apiEndpoint',
+      'Endpoint': 'apiEndpoint',
+      'role': 'role',
+      'Role': 'role',
+      'permission': 'permission',
+      'Permission': 'permission',
+      'Policy': 'permission',
+      'business-process': 'businessProcess',
+      'BusinessProcess': 'businessProcess',
+      'json-schema-element': 'jsonSchema',
+      'layer-container': 'layerContainer',
+    };
+
+    return typeMap[element.type] || 'businessProcess';
+  }
+
+  /**
+   * Extract node data based on element type
+   */
+  private extractNodeData(element: ModelElement, nodeType: string): any {
+    const baseData = {
+      label: element.name,
+      elementId: element.id,
+      layerId: element.layerId,
+      fill: element.visual.style.backgroundColor || '#ffffff',
+      stroke: element.visual.style.borderColor || '#000000',
+      modelElement: element,
+    };
+
+    // Add type-specific data
+    if (nodeType === 'dataModel') {
+      return {
+        ...baseData,
+        fields: element.properties.fields || [],
+        componentType: element.properties.componentType || 'entity',
+      };
+    } else if (nodeType === 'jsonSchema') {
+      // JSON Schema elements store properties in schemaInfo.properties
+      // We need to transform them to the format expected by BaseFieldListNode
+      const schemaProperties = (element as any).schemaInfo?.properties || [];
+      const properties = schemaProperties.map((prop: any) => ({
+        id: prop.name,
+        name: prop.name,
+        type: prop.type || 'any',
+        required: prop.required || false,
+      }));
+
+      return {
+        ...baseData,
+        schemaElementId: element.id,
+        expanded: false,
+        properties,
+      };
+    } else if (nodeType === 'apiEndpoint') {
+      return {
+        ...baseData,
+        path: element.properties.path || '/api/endpoint',
+        method: element.properties.method || 'GET',
+        operationId: element.properties.operationId,
+      };
+    } else if (nodeType === 'role') {
+      return {
+        ...baseData,
+        level: element.properties.level,
+        inheritsFrom: element.properties.inheritsFrom,
+      };
+    } else if (nodeType === 'permission') {
+      return {
+        ...baseData,
+        scope: element.properties.scope || 'resource',
+        resource: element.properties.resource,
+        action: element.properties.action,
+      };
+    }
+
+    return baseData;
+  }
+
+  /**
+   * Pre-calculate dimensions for all node types
+   * CRITICAL: These dimensions MUST match the actual rendered component sizes
+   * This ensures dagre layout and React Flow positioning are correct
+   */
+  private precalculateDimensions(model: MetaModel): void {
+    for (const layer of Object.values(model.layers)) {
+      for (const element of layer.elements) {
+        // Get node type to determine dimensions
+        const nodeType = this.getNodeTypeForElement(element);
+
+        switch (nodeType) {
+          case 'jsonSchema':
+            // JSONSchemaNode: width 280, height dynamic
+            const schemaHeaderHeight = 36;
+            const propertyHeight = 24;
+            // JSON Schema elements store properties in schemaInfo.properties
+            const properties = (element as any).schemaInfo?.properties || [];
+            const schemaHeight = properties.length > 0
+              ? schemaHeaderHeight + properties.length * propertyHeight
+              : schemaHeaderHeight + 60; // "No properties" message
+
+            element.visual.size = {
+              width: 280,
+              height: schemaHeight,
+            };
+            break;
+
+          case 'dataModel':
+            // DataModelNode: width 280, height dynamic
+            const modelHeaderHeight = 36;
+            const fieldHeight = 24;
+            const fields = element.properties.fields || [];
+            const modelHeight = fields.length > 0
+              ? modelHeaderHeight + fields.length * fieldHeight
+              : modelHeaderHeight + 60; // "No properties" message
+
+            element.visual.size = {
+              width: 280,
+              height: modelHeight,
+            };
+            break;
+
+          case 'role':
+            // RoleNode: fixed dimensions from RoleNode.tsx
+            element.visual.size = {
+              width: 160,
+              height: 90,
+            };
+            break;
+
+          case 'permission':
+            // PermissionNode: fixed dimensions from PermissionNode.tsx
+            element.visual.size = {
+              width: 180,
+              height: 90,
+            };
+            break;
+
+          case 'apiEndpoint':
+            // APIEndpointNode: fixed dimensions from APIEndpointNode.tsx
+            element.visual.size = {
+              width: 250,
+              height: 80,
+            };
+            break;
+
+          case 'businessProcess':
+            // BusinessProcessNode: fixed dimensions from BusinessProcessNode.tsx
+            element.visual.size = {
+              width: 180,
+              height: 100,
+            };
+            break;
+
+          default:
+            // Default fallback dimensions
+            element.visual.size = element.visual.size || {
+              width: 200,
+              height: 100,
+            };
+            break;
+        }
+      }
+    }
+  }
+}

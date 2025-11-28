@@ -1,0 +1,75 @@
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.connection-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.connection-label {
+  line-height: 1;
+}
+
+.connection-detail {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+/* Connected state */
+.connection-status.connected {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.connection-status.connected .connection-icon {
+  animation: none;
+}
+
+/* Connecting state */
+.connection-status.connecting {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.connection-status.connecting .connection-icon {
+  animation: spin 1s linear infinite;
+}
+
+/* Reconnecting state */
+.connection-status.reconnecting {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.connection-status.reconnecting .connection-icon {
+  animation: spin 1.5s linear infinite;
+}
+
+/* Disconnected state */
+.connection-status.disconnected {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+/* Error state */
+.connection-status.error {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

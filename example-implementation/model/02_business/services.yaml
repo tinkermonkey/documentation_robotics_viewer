@@ -1,0 +1,75 @@
+Knowledge Graph Service:
+  name: Knowledge Graph Service
+  description: Business service for knowledge graph operations including CRUD operations
+    on layers, domains, terms, and relationships
+  id: knowledge-graph-service
+  realizes:
+    - knowledge-graph-management
+  motivation:
+    supports-goals:
+      - enable-knowledge-graph-curation
+  application:
+    realized-by:
+      - structure-node-management
+      - node-link-management
+      - predicate-management
+      - graph-analytics
+      - change-event-tracking
+      - dataset-management
+      - sync-management
+Semantic Search Service:
+  name: Semantic Search Service
+  description: Business service for semantic search operations using vector embeddings
+    and similarity algorithms
+  id: semantic-search-service
+  realizes:
+    - semantic-search
+  motivation:
+    supports-goals:
+      - enable-knowledge-graph-curation
+  application:
+    realized-by:
+      - embedding-generation
+      - predicate-similarity
+RAG Service:
+  name: RAG Service
+  description: Business service for RAG workflows including context retrieval and
+    LLM integration
+  id: rag-service
+  realizes:
+    - rag-pipeline-execution
+  motivation:
+    supports-goals:
+      - support-rag-workflows
+  application:
+    realized-by:
+      - rag-pipeline
+RAG Service:
+  name: Reference Service
+  description: Business service for external reference integration with ConceptNet,
+    DBpedia, Wikidata, and Schema.org
+  id: reference-service
+  realizes:
+    - reference-integration
+  motivation:
+    supports-goals:
+      - enable-knowledge-graph-curation
+  application:
+    realized-by:
+      - reference-integration
+      - reference-link-management
+NLP Service:
+  name: NLP Service
+  description: Business service for text processing including entity recognition,
+    embedding generation, and linguistic analysis
+  id: nlp-service
+  realizes:
+    - nlp-processing
+  motivation:
+    supports-goals:
+      - enable-knowledge-graph-curation
+      - support-rag-workflows
+  application:
+    realized-by:
+      - nlp-analysis
+      - word-sense-management

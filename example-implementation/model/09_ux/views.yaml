@@ -1,0 +1,1320 @@
+home-page:
+  name: home-page
+  description: Landing/dashboard page with tree chart visualization of knowledge graph structure
+  criticality: high
+  route: /app
+  id: ux.view.home-page
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+    actions:
+    - name: list-structure-nodes
+      operationId: api.operation.list-structure-nodes
+    - name: get-term-hierarchy
+      operationId: api.operation.get-term-hierarchy
+  views:
+  - name: home-page
+    type: custom
+  navigation:
+    route: home-route
+  ui_components:
+  - TreeChartPanel
+  - CsNavbar
+  - CsSidebar
+layers-page:
+  name: layers-page
+  description: Layers management page with hierarchical tree view and CRUD operations for knowledge graph layers
+  criticality: high
+  route: /app/layers
+  id: ux.view.layers-page
+  relationships.uses: application.service.structure-node-management
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+    actions:
+    - name: list-layers
+      operationId: api.operation.list-structure-nodes
+    - name: create-layer
+      operationId: api.operation.create-structure-node
+    - name: update-layer
+      operationId: api.operation.update-structure-node
+    - name: delete-layer
+      operationId: api.operation.delete-structure-node
+  views:
+  - name: layers-page
+    type: custom
+  navigation:
+    route: layers-route
+  ui_components:
+  - LayersTable
+  - LayerForm
+  - CsNavbar
+  forms:
+  - name: LayerForm
+    purpose: Create and edit knowledge graph layers
+    trigger: Create button or Edit icon in layers table
+    fields:
+    - name: title
+      label: Layer Title
+      type: text
+      required: true
+      minLength: 3
+      maxLength: 100
+      placeholder: Enter layer title (e.g., Business Concepts)
+      validation: Must be unique within dataset
+      help_text: Descriptive name for this layer in the knowledge graph hierarchy
+    - name: definition
+      label: Definition
+      type: textarea
+      required: false
+      maxLength: 500
+      rows: 4
+      placeholder: Enter layer definition (optional)
+      help_text: Detailed description of what this layer represents
+    data_sources:
+    - operation: api.operation.get-structure-node
+      purpose: Load existing layer data for edit mode
+      trigger: Form opens in edit mode
+      populates:
+      - title
+      - definition
+    data_sinks:
+    - operation: api.operation.create-structure-node
+      purpose: Create new layer
+      trigger: Submit button (create mode)
+      payload_fields:
+      - title
+      - definition
+      - 'node_type: layer'
+    - operation: api.operation.update-structure-node
+      purpose: Update existing layer
+      trigger: Submit button (edit mode)
+      payload_fields:
+      - id
+      - title
+      - definition
+    business_rules:
+    - Layers cannot have parent structure nodes
+    - Title must be unique within the current dataset
+    - Title is indexed for search functionality
+domains-page:
+  name: domains-page
+  description: Domains management page with filterable table and layer-based navigation
+  criticality: high
+  route: /app/domains
+  id: ux.view.domains-page
+  relationships.uses: application.service.structure-node-management
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+    actions:
+    - name: list-domains
+      operationId: api.operation.list-structure-nodes
+    - name: create-domain
+      operationId: api.operation.create-structure-node
+    - name: update-domain
+      operationId: api.operation.update-structure-node
+    - name: delete-domain
+      operationId: api.operation.delete-structure-node
+  views:
+  - name: domains-page
+    type: custom
+  navigation:
+    route: domains-route
+  ui_components:
+  - DomainsTable
+  - DomainForm
+  - CollapsibleLayersList
+  - CsSidebar
+  query_parameters:
+  - name: layer_id
+    type: string
+    description: Filter domains by parent layer
+  - name: query
+    type: string
+    description: Search domains by title or definition
+  forms:
+  - name: DomainForm
+    purpose: Create and edit domains within layers
+    trigger: Create button or Edit icon in domains table
+    fields:
+    - name: title
+      label: Domain Title
+      type: text
+      required: true
+      minLength: 3
+      maxLength: 100
+      placeholder: Enter domain title (e.g., Customer Management)
+      validation: Must be unique within parent layer
+      help_text: Descriptive name for this domain
+    - name: definition
+      label: Definition
+      type: textarea
+      required: false
+      maxLength: 500
+      rows: 4
+      placeholder: Enter domain definition (optional)
+      help_text: Detailed description of this domain scope
+    - name: layer_id
+      label: Parent Layer
+      type: select
+      required: true
+      placeholder: Select parent layer
+      help_text: The layer this domain belongs to
+      data_source: api.operation.list-structure-nodes?node_type=layer
+    data_sources:
+    - operation: api.operation.list-structure-nodes
+      purpose: Load available layers for dropdown
+      trigger: Form opens
+      populates:
+      - layer_id options
+      query_params:
+        node_type: layer
+    - operation: api.operation.get-structure-node
+      purpose: Load existing domain data for edit mode
+      trigger: Form opens in edit mode
+      populates:
+      - title
+      - definition
+      - layer_id
+    data_sinks:
+    - operation: api.operation.create-structure-node
+      purpose: Create new domain
+      trigger: Submit button (create mode)
+      payload_fields:
+      - title
+      - definition
+      - 'parent_structure_node_id: layer_id'
+      - 'node_type: domain'
+    - operation: api.operation.update-structure-node
+      purpose: Update existing domain
+      trigger: Submit button (edit mode)
+      payload_fields:
+      - id
+      - title
+      - definition
+      - 'parent_structure_node_id: layer_id'
+    business_rules:
+    - Domains must have a layer as parent
+    - Title must be unique within parent layer
+    - Changing parent layer is allowed but may affect child terms
+terms-page:
+  name: terms-page
+  description: Terms management page with domain filtering and semantic predicate editing
+  criticality: high
+  route: /app/terms
+  id: ux.view.terms-page
+  relationships.uses: application.service.structure-node-management
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+    actions:
+    - name: list-terms
+      operationId: api.operation.list-structure-nodes
+    - name: create-term
+      operationId: api.operation.create-structure-node
+    - name: update-term
+      operationId: api.operation.update-structure-node
+    - name: delete-term
+      operationId: api.operation.delete-structure-node
+    - name: search-terms
+      operationId: api.operation.search-structure-nodes
+  views:
+  - name: terms-page
+    type: custom
+  navigation:
+    route: terms-route
+  ui_components:
+  - TermsTable
+  - TermForm
+  - CollapsibleDomainsList
+  - QueryFilters
+  - CsSidebar
+  query_parameters:
+  - name: layer_id
+    type: string
+    description: Filter terms by layer
+  - name: domain_id
+    type: string
+    description: Filter terms by parent domain
+  - name: query
+    type: string
+    description: Search terms by title or definition
+  forms:
+  - name: TermForm
+    purpose: Create and edit terms within domains
+    trigger: Create button or Edit icon in terms table
+    fields:
+    - name: title
+      label: Term Title
+      type: text
+      required: true
+      minLength: 3
+      maxLength: 100
+      placeholder: Enter term title (e.g., Customer)
+      validation: Must be unique within parent domain
+      help_text: The concept or entity name
+    - name: definition
+      label: Definition
+      type: textarea
+      required: false
+      maxLength: 500
+      rows: 4
+      placeholder: Enter term definition (optional)
+      help_text: Precise definition of this term
+    - name: layer_id
+      label: Layer
+      type: select
+      required: true
+      placeholder: Select layer
+      help_text: The layer to organize this term
+      data_source: api.operation.list-structure-nodes?node_type=layer
+      triggers: domain_id options refresh
+    - name: domain_id
+      label: Parent Domain
+      type: select
+      required: true
+      placeholder: Select parent domain
+      help_text: The domain this term belongs to
+      data_source: api.operation.list-structure-nodes?node_type=domain&parent_id=layer_id
+      depends_on: layer_id
+    data_sources:
+    - operation: api.operation.list-structure-nodes
+      purpose: Load available layers for dropdown
+      trigger: Form opens
+      populates:
+      - layer_id options
+      query_params:
+        node_type: layer
+    - operation: api.operation.list-structure-nodes
+      purpose: Load available domains for selected layer
+      trigger: layer_id selection changes
+      populates:
+      - domain_id options
+      query_params:
+        node_type: domain
+        parent_id: selected layer_id
+    - operation: api.operation.get-structure-node
+      purpose: Load existing term data for edit mode
+      trigger: Form opens in edit mode
+      populates:
+      - title
+      - definition
+      - domain_id
+      - layer_id
+    data_sinks:
+    - operation: api.operation.create-structure-node
+      purpose: Create new term
+      trigger: Submit button (create mode)
+      payload_fields:
+      - title
+      - definition
+      - 'parent_structure_node_id: domain_id'
+      - 'node_type: term'
+    - operation: api.operation.update-structure-node
+      purpose: Update existing term
+      trigger: Submit button (edit mode)
+      payload_fields:
+      - id
+      - title
+      - definition
+      - 'parent_structure_node_id: domain_id'
+    business_rules:
+    - Terms must have a domain as parent
+    - Title must be unique within parent domain
+    - Layer selection filters available domains
+    - Terms can have semantic relationships via predicates
+predicates-page:
+  name: predicates-page
+  description: Predicates management page for semantic relationship definitions and ConceptNet mappings
+  criticality: medium
+  route: /app/predicates
+  id: ux.view.predicates-page
+  relationships.uses: application.service.predicate-management
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+    actions:
+    - name: list-predicates
+      operationId: api.operation.list-predicates
+    - name: create-predicate
+      operationId: api.operation.create-predicate
+    - name: find-similar-predicates
+      operationId: api.operation.find-similar-predicates
+  views:
+  - name: predicates-page
+    type: custom
+  navigation:
+    route: predicates-route
+  ui_components:
+  - PredicatesTable
+  - PredicateForm
+  - PredicateMappingManager
+  query_parameters:
+  - name: query
+    type: string
+    description: Search predicates by identifier or label
+  forms:
+  - name: PredicateForm
+    purpose: Create and edit semantic predicates for term relationships
+    trigger: Create button or Edit icon in predicates table
+    fields:
+    - name: identifier
+      label: Identifier
+      type: text
+      required: true
+      pattern: ^[a-z0-9-]+$
+      placeholder: e.g., is-a, part-of, related-to
+      validation: Must be lowercase, alphanumeric with hyphens only
+      help_text: URL-safe identifier for this predicate
+    - name: label
+      label: Label
+      type: text
+      required: true
+      maxLength: 100
+      placeholder: e.g., Is A, Part Of, Related To
+      help_text: Human-readable label for display
+    - name: description
+      label: Description
+      type: textarea
+      required: false
+      maxLength: 500
+      rows: 3
+      placeholder: Describe when to use this predicate
+      help_text: Explanation of predicate semantics
+    - name: conceptnet_relation
+      label: ConceptNet Relation
+      type: select
+      required: false
+      placeholder: Map to ConceptNet relation (optional)
+      help_text: External ontology mapping for semantic enrichment
+      data_source: api.operation.get-conceptnet-relations
+    data_sources:
+    - operation: api.operation.get-conceptnet-relations
+      purpose: Load available ConceptNet relations for mapping
+      trigger: Form opens
+      populates:
+      - conceptnet_relation options
+    - operation: api.operation.get-predicate
+      purpose: Load existing predicate data for edit mode
+      trigger: Form opens in edit mode
+      populates:
+      - identifier
+      - label
+      - description
+      - conceptnet_relation
+    data_sinks:
+    - operation: api.operation.create-predicate
+      purpose: Create new predicate
+      trigger: Submit button (create mode)
+      payload_fields:
+      - identifier
+      - label
+      - description
+      - conceptnet_relation
+    - operation: api.operation.update-predicate
+      purpose: Update existing predicate
+      trigger: Submit button (edit mode)
+      payload_fields:
+      - id
+      - identifier
+      - label
+      - description
+      - conceptnet_relation
+    business_rules:
+    - Identifier must be globally unique across all predicates
+    - Identifier cannot be changed after creation
+    - ConceptNet mapping enables similarity search
+    - Predicates used in links cannot be deleted
+datasets-page:
+  name: datasets-page
+  description: Dataset management page with current dataset card and version history
+  criticality: medium
+  route: /app/datasets
+  id: ux.view.datasets-page
+  relationships.uses: application.service.dataset-management
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+    actions:
+    - name: list-datasets
+      operationId: api.operation.list-datasets
+    - name: switch-dataset
+      operationId: api.operation.switch-dataset
+  views:
+  - name: datasets-page
+    type: custom
+  navigation:
+    route: datasets-route
+  ui_components:
+  - CurrentDatasetCard
+  - DatasetsTable
+  - DatasetForm
+  forms:
+  - name: DatasetForm
+    purpose: Create new datasets or add existing ones
+    trigger: Create New Dataset or Add Existing Dataset button
+    fields:
+    - name: name
+      label: Dataset Name
+      type: text
+      required: true
+      minLength: 3
+      maxLength: 100
+      placeholder: e.g., production, development, experiment-2024
+      validation: Must be unique and filesystem-safe
+      help_text: Unique identifier for this dataset
+    - name: description
+      label: Description
+      type: textarea
+      required: false
+      maxLength: 500
+      rows: 3
+      placeholder: Describe the purpose of this dataset
+      help_text: Optional description for dataset purpose
+    - name: path
+      label: Dataset Path
+      type: text
+      required: false
+      placeholder: /path/to/existing/dataset
+      help_text: For adding existing datasets only
+      condition: mode === "add_existing"
+    data_sources:
+    - operation: api.operation.list-datasets
+      purpose: Validate dataset name uniqueness
+      trigger: Form opens
+      populates:
+      - existing dataset names for validation
+    data_sinks:
+    - operation: api.operation.create-dataset
+      purpose: Create new empty dataset
+      trigger: Submit button (create mode)
+      payload_fields:
+      - name
+      - description
+    - operation: api.operation.add-existing-dataset
+      purpose: Add existing dataset to inventory
+      trigger: Submit button (add existing mode)
+      payload_fields:
+      - name
+      - description
+      - path
+    business_rules:
+    - Dataset names must be filesystem-safe
+    - Cannot create dataset with same name as existing
+    - Adding existing dataset validates path exists
+    - New datasets are created in configured datasets directory
+config-hub-page:
+  name: config-hub-page
+  description: Configuration hub page with sidebar navigation to system settings
+  criticality: medium
+  route: /app/config
+  id: ux.view.config-hub-page
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+    actions:
+    - name: get-configuration
+      operationId: api.operation.get-configuration
+  views:
+  - name: config-hub-page
+    type: custom
+  navigation:
+    route: config-hub-route
+pipelines-config-page:
+  name: pipelines-config-page
+  description: Pipeline flavors management page for LLM configurations with create, edit, and test workflows
+  criticality: high
+  route: /app/config/pipelines
+  id: ux.view.pipelines-config-page
+  relationships.uses: application.service.pipeline-flavor-management
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+    actions:
+    - name: list-pipeline-flavors
+      operationId: api.operation.list-pipeline-flavors
+    - name: create-pipeline-flavor
+      operationId: api.operation.create-pipeline-flavor
+  views:
+  - name: pipelines-config-page
+    type: custom
+  navigation:
+    route: pipelines-config-route
+  ui_components:
+  - PipelineFlavorsList
+  - PipelineFlavorEditor
+  - ConfigSidebar
+models-config-page:
+  name: models-config-page
+  description: LLM models configuration page for provider and model settings
+  criticality: medium
+  route: /app/config/models
+  id: ux.view.models-config-page
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+    actions:
+    - name: get-configuration
+      operationId: api.operation.get-configuration
+    - name: update-configuration
+      operationId: api.operation.update-configuration
+  views:
+  - name: models-config-page
+    type: custom
+  navigation:
+    route: models-config-route
+data-sources-config-page:
+  name: data-sources-config-page
+  description: Reference data sources configuration page for ConceptNet, DBpedia, and Wikidata
+  criticality: medium
+  route: /app/config/data-sources
+  id: ux.view.data-sources-config-page
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+    actions:
+    - name: get-reference-sources-status
+      operationId: api.operation.get-reference-sources-status
+    - name: update-configuration
+      operationId: api.operation.update-configuration
+  views:
+  - name: data-sources-config-page
+    type: custom
+  navigation:
+    route: data-sources-config-route
+network-config-page:
+  name: network-config-page
+  description: Network configuration page for API endpoints and connectivity settings
+  criticality: low
+  route: /app/config/network
+  id: ux.view.network-config-page
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: network-config-page
+    type: custom
+  navigation:
+    route: network-config-route
+system-config-page:
+  name: system-config-page
+  description: System configuration page for application settings and preferences
+  criticality: low
+  route: /app/config/system
+  id: ux.view.system-config-page
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: system-config-page
+    type: custom
+  navigation:
+    route: system-config-route
+reference-search-page:
+  name: reference-search-page
+  description: Unified reference search page for browsing ConceptNet, DBpedia, and Wikidata
+  criticality: medium
+  route: /app/reference
+  id: ux.view.reference-search-page
+  relationships.uses: application.service.reference-integration
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+    actions:
+    - name: search-reference-nodes
+      operationId: api.operation.reference-search
+  views:
+  - name: reference-search-page
+    type: custom
+  navigation:
+    route: reference-search-route
+  ui_components:
+  - UnifiedSearchBar
+  - SearchResults
+  - SourceSelector
+  - ReferenceViewer
+structure-node-details-page:
+  name: structure-node-details-page
+  description: Structure node details page with word senses, reference links, and semantic analysis
+  criticality: high
+  route: /app/structure_nodes/:nodeId
+  id: ux.view.structure-node-details-page
+  relationships.uses: application.service.structure-node-management
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+    actions:
+    - name: get-structure-node
+      operationId: api.operation.get-structure-node
+    - name: update-structure-node
+      operationId: api.operation.update-structure-node
+    - name: create-node-link
+      operationId: api.operation.create-node-link
+    - name: list-node-links
+      operationId: api.operation.list-node-links
+  views:
+  - name: structure-node-details-page
+    type: custom
+  navigation:
+    route: structure-node-details-route
+  ui_components:
+  - StructureNodeDetails
+  - TreeMenuPanel
+  - ReferenceNodePanel
+  - NlpAnalysisPanel
+  - EditableText
+  query_parameters:
+  - name: tab
+    type: string
+    description: Active tab (details, links, references, analysis)
+  forms:
+  - name: NodeLinkForm
+    purpose: Create semantic relationships between terms
+    trigger: Add Relationship button on node details page
+    fields:
+    - name: source_node_id
+      label: Source Term
+      type: display
+      required: true
+      help_text: Current node (auto-populated)
+      read_only: true
+    - name: predicate_id
+      label: Relationship Type
+      type: select
+      required: true
+      placeholder: Select predicate (e.g., is-a, part-of)
+      help_text: The semantic relationship predicate
+      data_source: api.operation.list-predicates
+    - name: target_node_id
+      label: Target Term
+      type: autocomplete
+      required: true
+      placeholder: Search for target term
+      help_text: The term this relationship points to
+      data_source: api.operation.search-structure-nodes?node_type=term
+    data_sources:
+    - operation: api.operation.list-predicates
+      purpose: Load available predicates for relationship
+      trigger: Form opens
+      populates:
+      - predicate_id options
+    - operation: api.operation.search-structure-nodes
+      purpose: Search terms for target selection
+      trigger: User types in target field
+      populates:
+      - target_node_id autocomplete
+      query_params:
+        node_type: term
+        query: user input
+    - operation: api.operation.get-structure-node
+      purpose: Get current node details
+      trigger: Form opens
+      populates:
+      - source_node_id
+    data_sinks:
+    - operation: api.operation.create-node-link
+      purpose: Create semantic relationship
+      trigger: Submit button
+      payload_fields:
+      - source_node_id
+      - predicate_id
+      - target_node_id
+    business_rules:
+    - Cannot create self-referential links
+    - Duplicate links (same source, predicate, target) are prevented
+    - Only terms can have semantic relationships
+    - Link direction matters for predicate semantics
+node-tables-group:
+  name: node-tables-group
+  description: Data table components for displaying and managing structure nodes, links, and predicates with sorting and filtering
+  criticality: high
+  component-type: group
+  id: ux.view.node-tables-group
+  relationships.uses: application.component.node-tables
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: node-tables-group
+    type: custom
+  navigation:
+    route: node-tables-route
+tree-visualization-group:
+  name: tree-visualization-group
+  description: Tree chart and hierarchical menu components for visualizing knowledge graph structure
+  criticality: high
+  component-type: group
+  id: ux.view.tree-visualization-group
+  relationships.uses: application.component.tree-chart
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: tree-visualization-group
+    type: custom
+  navigation:
+    route: tree-visualization-route
+reference-nodes-group:
+  name: reference-nodes-group
+  description: Reference data browsing components for ConceptNet, DBpedia, and Wikidata integration
+  criticality: medium
+  component-type: group
+  id: ux.view.reference-nodes-group
+  relationships.uses: application.component.reference-viewer
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: reference-nodes-group
+    type: custom
+  navigation:
+    route: reference-nodes-route
+datasets-group:
+  name: datasets-group
+  description: Dataset management components for current dataset card and history visualization
+  criticality: medium
+  component-type: group
+  id: ux.view.datasets-group
+  relationships.uses: application.component.dataset-manager
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: datasets-group
+    type: custom
+  navigation:
+    route: datasets-group-route
+nlp-concept-group:
+  name: nlp-concept-group
+  description: NLP analysis and word sense disambiguation components for semantic understanding
+  criticality: medium
+  component-type: group
+  id: ux.view.nlp-concept-group
+  relationships.uses: application.component.nlp-analysis-panel
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: nlp-concept-group
+    type: custom
+  navigation:
+    route: nlp-concept-route
+node-selectors-group:
+  name: node-selectors-group
+  description: Selector and picker components for choosing layers, domains, terms, and predicates
+  criticality: high
+  component-type: group
+  id: ux.view.node-selectors-group
+  relationships.uses: application.component.node-selectors
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: node-selectors-group
+    type: custom
+  navigation:
+    route: node-selectors-route
+pipeline-management-group:
+  name: pipeline-management-group
+  description: Pipeline flavor configuration and testing components for LLM workflows
+  criticality: high
+  component-type: group
+  id: ux.view.pipeline-management-group
+  relationships.uses: application.component.pipeline-flavor-editor
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: pipeline-management-group
+    type: custom
+  navigation:
+    route: pipeline-management-route
+processing-config-page:
+  name: processing-config-page
+  description: NLP processing configuration page for spaCy models, ConceptNet relations, and pipeline defaults
+  criticality: medium
+  route: /app/config/processing
+  id: ux.view.processing-config-page
+  relationships.uses: application.service.nlp-analysis
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: processing-config-page
+    type: custom
+  navigation:
+    route: processing-config-route
+advanced-config-page:
+  name: advanced-config-page
+  description: Advanced configuration page with raw JSON editor and import/export functionality
+  criticality: low
+  route: /app/config/advanced
+  id: ux.view.advanced-config-page
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: advanced-config-page
+    type: custom
+  navigation:
+    route: advanced-config-route
+pipeline-type-page:
+  name: pipeline-type-page
+  description: Pipeline flavors list view filtered by pipeline type with create and manage actions
+  criticality: high
+  route: /app/config/pipelines/$pipelineType
+  id: ux.view.pipeline-type-page
+  relationships.uses: application.service.pipeline-flavor-management
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: pipeline-type-page
+    type: custom
+  navigation:
+    route: pipeline-type-route
+pipeline-create-page:
+  name: pipeline-create-page
+  description: Create new pipeline flavor with prompt editor, model selection, and parameter configuration
+  criticality: high
+  route: /app/config/pipelines/$pipelineType/create
+  id: ux.view.pipeline-create-page
+  relationships.uses: application.service.pipeline-flavor-management
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: pipeline-create-page
+    type: custom
+  navigation:
+    route: pipeline-create-route
+pipeline-edit-page:
+  name: pipeline-edit-page
+  description: Edit existing pipeline flavor with version control and prompt management
+  criticality: high
+  route: /app/config/pipelines/$pipelineType/edit/$flavorId
+  id: ux.view.pipeline-edit-page
+  relationships.uses: application.service.pipeline-flavor-management
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: pipeline-edit-page
+    type: custom
+  navigation:
+    route: pipeline-edit-route
+pipeline-test-page:
+  name: pipeline-test-page
+  description: Test pipeline flavor execution with sample inputs and detailed trace visualization
+  criticality: high
+  route: /app/config/pipelines/$pipelineType/test/$flavorId
+  id: ux.view.pipeline-test-page
+  relationships.uses: application.service.pipeline-flavor-management
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+    actions:
+    - name: execute-pipeline-test
+      operationId: api.operation.test-pipeline-flavor
+  views:
+  - name: pipeline-test-page
+    type: custom
+  navigation:
+    route: pipeline-test-route
+reference-predicates-page:
+  name: reference-predicates-page
+  description: Predicate mapping interface with similarity search and external ontology integration
+  criticality: medium
+  route: /app/reference/predicates
+  id: ux.view.reference-predicates-page
+  relationships.uses: application.service.predicate-management
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+    actions:
+    - name: search-similar-predicates
+      operationId: api.operation.find-similar-predicates
+  views:
+  - name: reference-predicates-page
+    type: custom
+  navigation:
+    route: reference-predicates-route
+reference-rag-test-page:
+  name: reference-rag-test-page
+  description: RAG testing interface in reference context with entity extraction and concept resolution
+  criticality: medium
+  route: /app/reference/rag-test
+  id: ux.view.reference-rag-test-page
+  relationships.uses: application.service.rag-pipeline
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+    actions:
+    - name: execute-rag-test
+      operationId: api.operation.rag-extract
+  views:
+  - name: reference-rag-test-page
+    type: custom
+  navigation:
+    route: reference-rag-test-route
+rag-experiments-page:
+  name: rag-experiments-page
+  description: RAG experiment management with test paragraph creation, annotation, and pipeline testing
+  criticality: high
+  route: /app/rag/experiments
+  id: ux.view.rag-experiments-page
+  relationships.uses: application.service.rag-pipeline
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+    actions:
+    - name: create-test-paragraph
+      operationId: api.operation.create-test-paragraph
+    - name: run-pipeline-test
+      operationId: api.operation.run-pipeline-test
+  views:
+  - name: rag-experiments-page
+    type: custom
+  navigation:
+    route: rag-experiments-route
+  ui_components:
+  - TestParagraphEditor
+  - TestParagraphList
+  - PipelineTestRunner
+  - TestResultsViewer
+  - AnnotationSelector
+rag-pipeline-comparison-page:
+  name: rag-pipeline-comparison-page
+  description: Side-by-side pipeline comparison with performance metrics and result visualization
+  criticality: medium
+  route: /app/rag/pipeline-comparison
+  id: ux.view.rag-pipeline-comparison-page
+  relationships.uses: application.service.rag-pipeline
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: rag-pipeline-comparison-page
+    type: custom
+  navigation:
+    route: rag-pipeline-comparison-route
+rag-test-runner-page:
+  name: rag-test-runner-page
+  description: Dedicated test runner interface for executing and monitoring RAG pipeline tests
+  criticality: medium
+  route: /app/rag/test-runner
+  id: ux.view.rag-test-runner-page
+  relationships.uses: application.service.rag-pipeline
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: rag-test-runner-page
+    type: custom
+  navigation:
+    route: rag-test-runner-route
+task-manager-page:
+  name: task-manager-page
+  description: Background task monitoring and management with status tracking, cancellation, and dead letter queue
+  criticality: high
+  route: /app/monitoring/task-manager
+  id: ux.view.task-manager-page
+  relationships.uses: application.service.background-task-management
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+    actions:
+    - name: cancel-task
+      operationId: api.operation.cancel-background-task
+  views:
+  - name: task-manager-page
+    type: custom
+  navigation:
+    route: task-manager-route
+  ui_components:
+  - TaskStatusViewer
+  - TaskList
+  - DeadLetterQueue
+performance-monitoring-page:
+  name: performance-monitoring-page
+  description: Performance metrics visualization with API response times, database query metrics, and system resource monitoring
+  criticality: medium
+  route: /app/monitoring/performance
+  id: ux.view.performance-monitoring-page
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: performance-monitoring-page
+    type: custom
+  navigation:
+    route: performance-monitoring-route
+system-health-page:
+  name: system-health-page
+  description: System health monitoring dashboard with service status, resource usage, and health checks
+  criticality: medium
+  route: /app/monitoring/system-health
+  id: ux.view.system-health-page
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: system-health-page
+    type: custom
+  navigation:
+    route: system-health-route
+analytics-page:
+  name: analytics-page
+  description: Analytics dashboard with usage metrics, user activity, and system insights
+  criticality: medium
+  route: /app/monitoring/analytics
+  id: ux.view.analytics-page
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: analytics-page
+    type: custom
+  navigation:
+    route: analytics-route
+llm-traceability-page:
+  name: llm-traceability-page
+  description: LLM execution traceability with pipeline execution history, token usage, and audit logs
+  criticality: high
+  route: /app/monitoring/llm-traceability
+  id: ux.view.llm-traceability-page
+  relationships.uses: application.service.pipeline-flavor-management
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: llm-traceability-page
+    type: custom
+  navigation:
+    route: llm-traceability-route
+  ui_components:
+  - AnalyticsDashboard
+  - ExecutionHistory
+  - SelectionTracker
+forms-group:
+  name: forms-group
+  description: Form components for CRUD operations on structure nodes, predicates, and configuration with TanStack Form integration
+  criticality: high
+  component-type: group
+  id: ux.view.forms-group
+  relationships.uses: application.component.node-forms
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: forms-group
+    type: custom
+  components:
+  - LayerForm
+  - DomainForm
+  - TermForm
+  - PredicateForm
+  - PipelineFlavorForm
+  - DatasetForm
+  - ConfigurationForm
+  - TestParagraphForm
+layout-group:
+  name: layout-group
+  description: Core layout components including navbar, sidebar, and main content container with responsive design
+  criticality: high
+  component-type: group
+  id: ux.view.layout-group
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: layout-group
+    type: custom
+  components:
+  - CsNavbar
+  - CsSidebar
+  - CsMain
+  - ConfigSidebar
+  - ConfigBreadcrumbs
+monitoring-group:
+  name: monitoring-group
+  description: Monitoring and observability visualization components for system health, performance, and analytics
+  criticality: medium
+  component-type: group
+  id: ux.view.monitoring-group
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: monitoring-group
+    type: custom
+  components:
+  - AnalyticsChart
+  - PerformanceMetricsPanel
+  - SystemHealthCard
+  - TaskStatusViewer
+  - AnalyticsDashboard
+misc-utilities-group:
+  name: misc-utilities-group
+  description: Utility components for common UI patterns including editable text, query filters, and search highlighting
+  criticality: medium
+  component-type: group
+  id: ux.view.misc-utilities-group
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: misc-utilities-group
+    type: custom
+  components:
+  - EditableText
+  - QueryFilters
+  - SearchHighlight
+  - CreateChildButton
+  - CreateChildModal
+  - CollapsibleDomainsList
+  - CollapsibleLayersList
+node-renderers-group:
+  name: node-renderers-group
+  description: Specialized renderer components for displaying different node types with type-specific formatting
+  criticality: medium
+  component-type: group
+  id: ux.view.node-renderers-group
+  version: 1.0.0
+  experience: context-studio-desktop
+  channel: visual
+  states:
+  - name: default
+    initial: true
+  views:
+  - name: node-renderers-group
+    type: custom
+  components:
+  - LayerRenderer
+  - DomainRenderer
+  - TermRenderer
+  - RelationshipTermsRenderer
