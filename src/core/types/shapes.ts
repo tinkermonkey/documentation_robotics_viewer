@@ -53,33 +53,12 @@ export interface MetaModelShapeProps {
 }
 
 /**
- * Data model field interface
- */
-export interface DataModelField {
-  id: string;
-  name: string;
-  type: string;
-  required: boolean;
-  description?: string;
-}
-
-/**
- * Data model component types
- */
-export type DataModelComponentType = 'entity' | 'interface' | 'enum';
-
-/**
  * Data model component shape props
  */
 export interface DataModelComponentProps extends MetaModelShapeProps {
   fields: DataModelField[];
   componentType: DataModelComponentType;
 }
-
-/**
- * API endpoint HTTP methods
- */
-export type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD' | 'OPTIONS';
 
 /**
  * API endpoint shape props
