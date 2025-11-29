@@ -240,7 +240,9 @@ export class MotivationGraphBuilder {
         continue;
       }
 
-      const relType = this.mapRelationshipType(relationship.type);
+      // Use originalType from properties if available (YAML relationships)
+      const typeToMap = relationship.properties?.originalType || relationship.type;
+      const relType = this.mapRelationshipType(typeToMap);
       const direction = this.determineDirection(relType);
 
       const edge: MotivationGraphEdge = {

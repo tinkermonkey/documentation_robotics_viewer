@@ -28,20 +28,23 @@ Visual Regression Tests (manual/automated)
 
 ## 1. Unit Tests (Fast, Isolated)
 
-### ✅ Server-Side (Already Implemented)
+### ⚠️ Server-Side (Partially Implemented)
 
-**Files**:
-- `tests/unit/server-model-loading.spec.ts`
-- `tests/unit/type-inference-coverage.spec.ts`
+**Implemented Files**:
+- `tests/unit/motivationGraphBuilder.spec.ts` - Tests for motivation layer graph building logic
 
-**Coverage**:
-- ✅ Type inference from YAML properties
-- ✅ Element creation and structure
-- ✅ Relationship parsing
-- ✅ Layer-by-layer validation
-- ✅ 100% type coverage (182/182 elements)
+**Planned But Not Yet Implemented**:
+- `tests/unit/server-model-loading.spec.ts` - Would test model loading from server
+- `tests/unit/type-inference-coverage.spec.ts` - Would test type inference from YAML properties
 
-**Why These Work**: They test the actual data transformation logic in isolation.
+**Coverage Needed**:
+- ❌ Type inference from YAML properties
+- ❌ Element creation and structure validation
+- ❌ Relationship parsing
+- ❌ Layer-by-layer validation
+- ❌ Type coverage verification
+
+**Why These Are Important**: They would test the actual data transformation logic in isolation before data reaches the client.
 
 ---
 
@@ -713,10 +716,10 @@ npm test
 ## 7. Success Metrics
 
 **Current State**:
-- ✅ Server unit tests: 7/7 passing, 100% type coverage
+- ⚠️ Server unit tests: 1 test file (motivationGraphBuilder.spec.ts)
 - ❌ Client unit tests: 0 tests
-- ❌ Integration tests: 0 tests
-- ⚠️  E2E tests: 24 passing but don't validate rendering
+- ⚠️ Integration tests: 1 test file (server-to-client.spec.ts)
+- ⚠️ E2E tests: Multiple test files but validation needs improvement
 
 **Target State**:
 - ✅ Server unit tests: 7+ passing
