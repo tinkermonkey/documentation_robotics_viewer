@@ -22,6 +22,12 @@ cleanup() {
 # Set up trap to cleanup on Ctrl+C
 trap cleanup SIGINT SIGTERM
 
+# Kill any existing processes on ports 3001 and 8765
+echo "Checking for existing processes..."
+fuser -k 3001/tcp >/dev/null 2>&1
+fuser -k 8765/tcp >/dev/null 2>&1
+sleep 1
+
 # Start Python reference server
 echo "Starting Python reference server on port 8765..."
 cd reference_server

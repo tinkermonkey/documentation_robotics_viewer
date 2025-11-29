@@ -49,3 +49,15 @@
 .react-flow__node.selected .react-flow__handle {
   opacity: 1;
 }
+
+/* Edge hover effect */
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke: #2563eb !important;
+  stroke-width: 3 !important;
+  cursor: pointer;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: #2563eb !important;
+  stroke-width: 3 !important;
+}

@@ -90,82 +90,170 @@ function lineIntersectsLine(
 }
 
 /**
- * Calculate a 3-segment elbow path avoiding obstacles
+ * Calculate a path avoiding obstacles
  */
 export function calculateElbowPath(
   start: Point,
   end: Point,
   obstacles: Rectangle[],
-  sourcePosition: 'top' | 'bottom' | 'left' | 'right',
-  targetPosition: 'top' | 'bottom' | 'left' | 'right'
+  sourcePosition: string,
+  targetPosition: string
 ): Point[] {
-  // Determine if we need horizontal-first or vertical-first routing
-  const horizontalFirst =
-    sourcePosition === 'left' ||
-    sourcePosition === 'right' ||
-    targetPosition === 'left' ||
-    targetPosition === 'right';
+  // 1. Try simple 3-segment paths (Z-shape) with varying midpoints
+  const simplePath = findSimplePath(start, end, obstacles, sourcePosition, targetPosition);
+  if (simplePath) return simplePath;
 
-  // Try direct elbow path first
-  const midPoint = horizontalFirst
-    ? { x: (start.x + end.x) / 2, y: start.y }
-    : { x: start.x, y: (start.y + end.y) / 2 };
+  // 2. Try 5-segment paths (Channel routing)
+  const channelPath = findChannelPath(start, end, obstacles, sourcePosition, targetPosition);
+  if (channelPath) return channelPath;
 
-  const segments = horizontalFirst
-    ? [
-        start,
-        { x: midPoint.x, y: start.y },
-        { x: midPoint.x, y: end.y },
-        end,
-      ]
-    : [
-        start,
-        { x: start.x, y: midPoint.y },
-        { x: end.x, y: midPoint.y },
-        end,
-      ];
+  // 3. Fallback to a direct elbow path (even if it collides)
+  return getSimpleElbow(start, end, sourcePosition, targetPosition, 0.5);
+}
 
-  // Check if path intersects any obstacles
-  let hasCollision = false;
-  for (let i = 0; i < segments.length - 1; i++) {
+/**
+ * Try to find a collision-free 3-segment path
+ */
+function findSimplePath(
+  start: Point,
+  end: Point,
+  obstacles: Rectangle[],
+  sourcePos: string,
+  targetPos: string
+): Point[] | null {
+  const isHorizontal = sourcePos === 'left' || sourcePos === 'right';
+  
+  // Try different split percentages (0.1 to 0.9)
+  // We prioritize 0.5 (center), then fan out
+  const ratios = [0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.9];
+
+  for (const ratio of ratios) {
+    const path = getSimpleElbow(start, end, sourcePos, targetPos, ratio);
+    if (!hasCollision(path, obstacles)) {
+      return path;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Try to find a collision-free 5-segment path (Channel routing)
+ * Useful when the direct vertical/horizontal path is blocked
+ */
+function findChannelPath(
+  start: Point,
+  end: Point,
+  obstacles: Rectangle[],
+  sourcePos: string,
+  targetPos: string
+): Point[] | null {
+  const isHorizontal = sourcePos === 'left' || sourcePos === 'right';
+  const margin = 20; // Distance to exit the node before turning
+
+  // Define search range for the channel
+  // We search for a clear channel perpendicular to the flow
+  const minVal = isHorizontal ? Math.min(start.y, end.y) - 200 : Math.min(start.x, end.x) - 200;
+  const maxVal = isHorizontal ? Math.max(start.y, end.y) + 200 : Math.max(start.x, end.x) + 200;
+  const step = 20;
+
+  // Sort search values by proximity to the center
+  const center = (minVal + maxVal) / 2;
+  const searchValues: number[] = [];
+  for (let v = minVal; v <= maxVal; v += step) {
+    searchValues.push(v);
+  }
+  searchValues.sort((a, b) => Math.abs(a - center) - Math.abs(b - center));
+
+  for (const val of searchValues) {
+    let path: Point[] = [];
+
+    if (isHorizontal) {
+      // Horizontal flow (Left/Right), so we look for a horizontal channel at Y = val
+      // Path: Start -> (start.x + dir*margin, start.y) -> (start.x + dir*margin, val) -> (end.x - dir*margin, val) -> (end.x - dir*margin, end.y) -> End
+      // Simplified 5-point:
+      // Start -> (MidX1, StartY) -> (MidX1, ChannelY) -> (MidX2, ChannelY) -> (MidX2, EndY) -> End
+      
+      const exitDir = sourcePos === 'right' ? 1 : -1;
+      const enterDir = targetPos === 'right' ? -1 : 1; // Target enters from opposite usually
+      
+      const p1 = start;
+      const p2 = { x: start.x + exitDir * margin, y: start.y };
+      const p3 = { x: start.x + exitDir * margin, y: val };
+      const p4 = { x: end.x + enterDir * margin, y: val };
+      const p5 = { x: end.x + enterDir * margin, y: end.y };
+      const p6 = end;
+      
+      path = [p1, p2, p3, p4, p5, p6];
+    } else {
+      // Vertical flow (Top/Bottom), look for vertical channel at X = val
+      const exitDir = sourcePos === 'bottom' ? 1 : -1;
+      const enterDir = targetPos === 'bottom' ? -1 : 1;
+
+      const p1 = start;
+      const p2 = { x: start.x, y: start.y + exitDir * margin };
+      const p3 = { x: val, y: start.y + exitDir * margin };
+      const p4 = { x: val, y: end.y + enterDir * margin };
+      const p5 = { x: end.x, y: end.y + enterDir * margin };
+      const p6 = end;
+
+      path = [p1, p2, p3, p4, p5, p6];
+    }
+
+    if (!hasCollision(path, obstacles)) {
+      return path;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Generate a simple 3-segment elbow path
+ */
+function getSimpleElbow(
+  start: Point,
+  end: Point,
+  sourcePos: string,
+  targetPos: string,
+  ratio: number
+): Point[] {
+  const isHorizontal = sourcePos === 'left' || sourcePos === 'right';
+
+  if (isHorizontal) {
+    const midX = start.x + (end.x - start.x) * ratio;
+    return [
+      start,
+      { x: midX, y: start.y },
+      { x: midX, y: end.y },
+      end
+    ];
+  } else {
+    const midY = start.y + (end.y - start.y) * ratio;
+    return [
+      start,
+      { x: start.x, y: midY },
+      { x: end.x, y: midY },
+      end
+    ];
+  }
+}
+
+/**
+ * Check if a path has any collisions
+ */
+function hasCollision(path: Point[], obstacles: Rectangle[]): boolean {
+  for (let i = 0; i < path.length - 1; i++) {
+    const p1 = path[i];
+    const p2 = path[i+1];
+    
     for (const obstacle of obstacles) {
-      if (lineIntersectsRect(segments[i], segments[i + 1], obstacle)) {
-        hasCollision = true;
-        break;
+      if (lineIntersectsRect(p1, p2, obstacle)) {
+        return true;
       }
     }
-    if (hasCollision) break;
   }
-
-  // If no collision, return the simple path
-  if (!hasCollision) {
-    return segments;
-  }
-
-  // If collision detected, try alternative routing
-  // For now, we'll try offsetting the midpoint
-  const offset = 50;
-  const alternativeMidPoint = horizontalFirst
-    ? { x: midPoint.x, y: start.y + (end.y > start.y ? offset : -offset) }
-    : { x: start.x + (end.x > start.x ? offset : -offset), y: midPoint.y };
-
-  const alternativeSegments = horizontalFirst
-    ? [
-        start,
-        { x: alternativeMidPoint.x, y: start.y },
-        { x: alternativeMidPoint.x, y: alternativeMidPoint.y },
-        { x: alternativeMidPoint.x, y: end.y },
-        end,
-      ]
-    : [
-        start,
-        { x: start.x, y: alternativeMidPoint.y },
-        { x: alternativeMidPoint.x, y: alternativeMidPoint.y },
-        { x: end.x, y: alternativeMidPoint.y },
-        end,
-      ];
-
-  return alternativeSegments;
+  return false;
 }
 
 /**
@@ -174,10 +262,22 @@ export function calculateElbowPath(
 export function pointsToSVGPath(points: Point[]): string {
   if (points.length < 2) return '';
 
+  // Use rounded corners
+  const radius = 8;
   let path = `M ${points[0].x},${points[0].y}`;
-  for (let i = 1; i < points.length; i++) {
-    path += ` L ${points[i].x},${points[i].y}`;
+
+  for (let i = 1; i < points.length - 1; i++) {
+    const pPrev = points[i - 1];
+    const pCurr = points[i];
+    const pNext = points[i + 1];
+
+    // Calculate vectors
+    // We can just draw lines for now, or implement rounding manually
+    // For simplicity, let's stick to straight lines first to ensure correctness
+    path += ` L ${pCurr.x},${pCurr.y}`;
   }
+  
+  path += ` L ${points[points.length - 1].x},${points[points.length - 1].y}`;
 
   return path;
 }

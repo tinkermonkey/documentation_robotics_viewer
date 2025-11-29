@@ -5,10 +5,10 @@
 
 import { MetaModel, Relationship, ModelElement } from '../types';
 import { VerticalLayerLayout } from '../layout/verticalLayerLayout';
+import { MarkerType } from '@xyflow/react';
+import { elementStore } from '../stores/elementStore';
 import { LayoutResult } from '../types/shapes';
 import { AppNode, AppEdge } from '../types/reactflow';
-import { elementStore } from '../stores/elementStore';
-import { JSONSchemaElement } from '../types/jsonSchema';
 
 /**
  * Result of transforming a model
@@ -124,14 +124,17 @@ export class NodeTransformer {
 
     // STEP 3: Create edges array
     const edges: AppEdge[] = [];
+    let relationshipCount = 0;
 
     // Create edges from layer relationships
     for (const layer of Object.values(model.layers)) {
+      relationshipCount += layer.relationships.length;
       for (const relationship of layer.relationships) {
         const edge = this.createEdge(relationship, nodeMap);
         if (edge) edges.push(edge);
       }
     }
+    console.log(`[NodeTransformer] Processed ${relationshipCount} relationships`);
 
     // Create edges from cross-layer references
     for (const reference of model.references) {
@@ -144,7 +147,17 @@ export class NodeTransformer {
             id: `edge-ref-${reference.source.elementId}-${reference.target.elementId}`,
             source: sourceNodeId,
             target: targetNodeId,
-            type: 'smoothstep',
+            type: 'elbow',
+            label: reference.type,
+            labelStyle: { fill: '#555', fontWeight: 500, fontSize: 12 },
+            labelBgStyle: { fill: '#fff', fillOpacity: 0.8, rx: 4, ry: 4 },
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+              width: 20,
+              height: 20,
+              color: '#9ca3af',
+            },
+            style: { strokeDasharray: '5,5' }, // Dashed line for cross-layer references
             data: {
               pathOptions: {
                 offset: 10, // 10px margin around nodes for routing
@@ -171,7 +184,10 @@ export class NodeTransformer {
     const sourceNodeId = nodeMap.get(relationship.sourceId);
     const targetNodeId = nodeMap.get(relationship.targetId);
 
-    if (!sourceNodeId || !targetNodeId) return null;
+    if (!sourceNodeId || !targetNodeId) {
+      // console.warn(`[NodeTransformer] Missing node for edge ${relationship.id}: source=${relationship.sourceId} (${!!sourceNodeId}), target=${relationship.targetId} (${!!targetNodeId})`);
+      return null;
+    }
 
     // Check for field-level connection
     const sourceHandle = relationship.properties?.sourceField
@@ -187,8 +203,17 @@ export class NodeTransformer {
       target: targetNodeId,
       sourceHandle,
       targetHandle,
-      type: 'smoothstep', // Use React Flow's built-in smoothstep for better routing
+      type: 'elbow', // Use custom elbow edge for better routing and spacing
       animated: false,
+      label: relationship.type, // Add predicate label
+      labelStyle: { fill: '#555', fontWeight: 500, fontSize: 12 },
+      labelBgStyle: { fill: '#fff', fillOpacity: 0.8, rx: 4, ry: 4 },
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+        width: 20,
+        height: 20,
+        color: '#6b7280',
+      },
       data: {
         pathOptions: {
           offset: 10, // 10px margin around nodes for routing

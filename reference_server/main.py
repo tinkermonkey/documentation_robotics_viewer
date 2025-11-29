@@ -310,16 +310,37 @@ async def get_model():
 
             # Extract relationships from element properties
             layer_relationships = []
+            
+            # Define implicit relationship keys to look for in properties
+            implicit_rel_keys = [
+                'deployedTo', 'realizes', 'uses', 'implements', 'accesses', 
+                'serves', 'triggers', 'flowsTo', 'composedOf', 'aggregates', 
+                'specializes', 'associatedWith'
+            ]
 
             for element in elements:
+                # 1. Check explicit 'relationships' object
                 element_relationships = element.get('properties', {}).get('relationships', {})
+                
+                # 2. Check implicit relationship keys in properties
+                props = element.get('properties', {})
+                for key in implicit_rel_keys:
+                    if key in props:
+                        # Add to element_relationships for processing
+                        if key not in element_relationships:
+                            element_relationships[key] = props[key]
 
                 for rel_type, target_ids in element_relationships.items():
                     # Handle both list and single string targets
                     if isinstance(target_ids, str):
                         target_ids = [target_ids]
+                    elif not isinstance(target_ids, list):
+                        continue # Skip if not string or list
 
                     for target_id in target_ids:
+                        if not isinstance(target_id, str):
+                            continue # Skip if target is not a string (e.g. object in stakeholders)
+
                         # Extract the actual element ID from dot-notation
                         # Format: layer.type.element-id -> element-id
                         # Or might already be simple: element-id -> element-id
