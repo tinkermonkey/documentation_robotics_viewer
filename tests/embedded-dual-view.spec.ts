@@ -28,7 +28,7 @@ import { test, expect } from '@playwright/test';
 // Increase timeout for complex operations
 test.setTimeout(60000);
 
-test.describe.skip('Embedded App - Dual View Functionality', () => {
+test.describe('Embedded App - Dual View Functionality', () => {
   test.beforeEach(async ({ page }) => {
     // Collect console errors
     page.on('console', msg => {
@@ -38,7 +38,7 @@ test.describe.skip('Embedded App - Dual View Functionality', () => {
     });
 
     // Navigate to the embedded app
-    await page.goto('http://localhost:8765/');
+    await page.goto('/');
 
     // Wait for React to load
     await page.waitForSelector('.embedded-app', { timeout: 10000 });

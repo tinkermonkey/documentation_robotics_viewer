@@ -24,10 +24,10 @@ import { test, expect } from '@playwright/test';
 // Increase timeout for complex operations
 test.setTimeout(30000);
 
-test.describe.skip('Embedded App - Reference Server Integration', () => {
+test.describe('Embedded App - Reference Server Integration', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the embedded app
-    await page.goto('http://localhost:8765/');
+    await page.goto('/');
 
     // Wait for React to load
     await page.waitForSelector('.embedded-app', { timeout: 10000 });
