@@ -375,14 +375,14 @@ See `documentation/YAML_MODELS.md` for complete specification and examples.
 
 ## Resources
 
-- tldraw v4 documentation: https://tldraw.dev/
+- React Flow documentation: https://reactflow.dev/
 - Project architecture docs: `documentation/`
 - Implementation logs: `documentation/IMPLEMENTATION_LOG.md`
 
 ## When in Doubt
 
-1. Look at existing shape implementations (BusinessProcessShape, APIEndpointShape, etc.)
-2. Check `MetaModelShapeUtil.tsx` for base class requirements
+1. Look at existing node implementations (BusinessProcessNode, APIEndpointNode, etc.)
+2. Check `BaseNode` pattern for requirements
 3. Run tests to verify changes
 4. Ask the user for clarification on requirements
 
@@ -508,7 +508,7 @@ npx playwright test --ui
 ---
 
 **Last Updated**: 2025-11-30
-**tldraw Version**: 4.2.0
+**React Flow Version**: 12.0.0
 **Project Version**: 1.0.0
 **YAML Support**: v0.1.0
 **Motivation Layer**: Phase 6 Complete
