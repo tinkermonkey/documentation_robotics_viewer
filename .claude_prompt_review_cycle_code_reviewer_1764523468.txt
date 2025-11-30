@@ -1,0 +1,644 @@
+
+You are a **Senior Software Engineer** conducting comprehensive code review.
+
+
+
+## Review Cycle Context - Re-Review Mode
+
+This is **Re-Review Iteration 2 of 3**.
+
+**Maker Agent**: Senior Software Engineer has revised their code based on your previous feedback.
+
+**IMPORTANT - Review Scope**:
+- You are reviewing ONLY the changes made by Senior Software Engineer in response to feedback
+- DO NOT re-review code that was previously approved by other review cycles
+- Focus on the commits made by Senior Software Engineer since the last review
+
+**Your Task**: Verify previous issues are resolved. Be concise.
+
+**Review Approach**:
+1. Check if your PREVIOUS feedback items were addressed (don't re-raise if fixed)
+2. Note any NEW issues discovered in the maker's changes
+3. Make your decision
+
+**Keep Feedback CONCISE**:
+- 1-2 sentences per issue maximum
+- Focus on WHAT is wrong, not explaining WHY it's important (developer already knows)
+- Only include items that genuinely need fixing
+- Don't repeat issues that were already addressed
+
+**Common Issues**:
+- Adding capabilities that were not requested -> These need to be removed
+- Markdown files with developer notes and implementation details -> These need to be removed
+- Test and debug scripts that are not in the test folder tree -> These need to be evaluated and cleaned up
+- Leaving in or commenting out code that was meant to be replaced or removed -> These need to be cleaned up
+- Code with names including "Phase X" or "Step Y" -> These need to be renamed to meaningful names
+
+**Escalation**: After 3 iterations, unresolved issues will escalate to human review.
+
+
+
+
+## Original Requirements
+
+**Title**: Phase 3: Filtering & Controls
+**Description**: Phase 3: Filtering & Controls
+
+Title: Phase 3: Filtering & Controls
+
+Description: Add multi-dimensional filtering capabilities and a control panel for managing filters, selecting layouts, and triggering exports. This phase enables users to reduce visual complexity by filtering business elements by type, domain, lifecycle, and criticality.
+
+Requirements:
+
+    FR-5: Filter by element type (function, process, service, capability)
+    FR-5: Filter by business domain, lifecycle stage, criticality
+    FR-5: Display filter counts showing visible/total elements
+    FR-5: Save and restore filter presets
+    FR-5: Clear all filters with single action
+    FR-12: Filter operations complete in <500ms
+
+Design Guidance:
+
+Filter Hook:
+
+// src/core/hooks/useBusinessFilters.ts
+interface BusinessFilters {
+  types: Set<'function' | 'process' | 'service' | 'capability'>
+  domains: Set<string>
+  lifecycles: Set<'ideation' | 'active' | 'deprecated'>
+  criticalities: Set<'high' | 'medium' | 'low'>
+}
+
+export function useBusinessFilters(
+  nodes: Node[],
+  edges: Edge[],
+  filters: BusinessFilters,
+  businessGraph: BusinessGraph | null
+): { filteredNodes: Node[]; filteredEdges: Edge[] } {
+  return useMemo(() => {
+    if (!businessGraph) return { filteredNodes: nodes, filteredEdges: edges }
+    
+    const visibleIds = new Set<string>()
+    
+    // Use pre-built indices for fast filtering
+    if (filters.types.size > 0) {
+      for (const type of filters.types) {
+        const typeSet = businessGraph.indices.byType.get(type)
+        typeSet?.forEach(id => visibleIds.add(id))
+      }
+    } else {
+      // No type filter = all nodes
+      businessGraph.nodes.forEach((_, id) => visibleIds.add(id))
+    }
+    
+    // Intersect with other filter dimensions
+    if (filters.domains.size > 0) {
+      const domainIds = new Set<string>()
+      for (const domain of filters.domains) {
+        const domainSet = businessGraph.indices.byDomain.get(domain)
+        domainSet?.forEach(id => domainIds.add(id))
+      }
+      // Intersect with visibleIds
+      visibleIds.forEach(id => {
+        if (!domainIds.has(id)) visibleIds.delete(id)
+      })
+    }
+    
+    // Similar logic for lifecycle and criticality filters...
+    
+    const filteredNodes = nodes.filter(n => visibleIds.has(n.id))
+    const filteredEdges = edges.filter(e => 
+      visibleIds.has(e.source) && visibleIds.has(e.target)
+    )
+    
+    return { filteredNodes, filteredEdges }
+  }, [nodes, edges, filters, businessGraph])
+}
+
+Zustand Store (follow viewPreferenceStore pattern):
+
+// src/stores/businessLayerStore.ts
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
+
+interface BusinessLayerState {
+  selectedLayout: 'hierarchical' | 'swimlane' | 'matrix' | 'force' | 'manual'
+  filters: BusinessFilters
+  expandedNodes: Set<string>
+  manualPositions: Map<string, { x: number; y: number }>
+  focusMode: 'none' | 'selected' | 'radial'
+  focusRadius: number
+  
+  setSelectedLayout: (layout: BusinessLayerState['selectedLayout']) => void
+  setFilters: (filters: BusinessFilters) => void
+  clearFilters: () => void
+  toggleNodeExpanded: (nodeId: string) => void
+  setManualPosition: (nodeId: string, position: { x: number; y: number }) => void
+  setFocusMode: (mode: BusinessLayerState['focusMode']) => void
+  setFocusRadius: (radius: number) => void
+}
+
+const defaultFilters: BusinessFilters = {
+  types: new Set(),
+  domains: new Set(),
+  lifecycles: new Set(),
+  criticalities: new Set(),
+}
+
+export const useBusinessLayerStore = create<BusinessLayerState>()(
+  persist(
+    (set) => ({
+      selectedLayout: 'hierarchical',
+      filters: defaultFilters,
+      expandedNodes: new Set(),
+      manualPositions: new Map(),
+      focusMode: 'none',
+      focusRadius: 2,
+      
+      setSelectedLayout: (layout) => set({ selectedLayout: layout }),
+      setFilters: (filters) => set({ filters }),
+      clearFilters: () => set({ filters: defaultFilters }),
+      toggleNodeExpanded: (nodeId) => set((state) => {
+        const expanded = new Set(state.expandedNodes)
+        if (expanded.has(nodeId)) {
+          expanded.delete(nodeId)
+        } else {
+          expanded.add(nodeId)
+        }
+        return { expandedNodes: expanded }
+      }),
+      setManualPosition: (nodeId, position) => set((state) => {
+        const positions = new Map(state.manualPositions)
+        positions.set(nodeId, position)
+        return { manualPositions: positions }
+      }),
+      setFocusMode: (mode) => set({ focusMode: mode }),
+      setFocusRadius: (radius) => set({ focusRadius: radius }),
+    }),
+    {
+      name: 'business-layer-preferences',
+    }
+  )
+)
+
+Controls Component:
+
+// src/core/components/businessLayer/BusinessLayerControls.tsx
+import { useBusinessLayerStore } from '../../../stores/businessLayerStore'
+
+interface BusinessLayerControlsProps {
+  businessGraph: BusinessGraph | null
+  onExport: (type: 'png' | 'svg' | 'catalog' | 'traceability') => void
+}
+
+export const BusinessLayerControls: React.FC<BusinessLayerControlsProps> = ({ 
+  businessGraph,
+  onExport 
+}) => {
+  const { filters, setFilters, clearFilters, selectedLayout, setSelectedLayout } = useBusinessLayerStore()
+  
+  const filterCounts = useMemo(() => {
+    if (!businessGraph) return {}
+    
+    return {
+      total: businessGraph.nodes.size,
+      functions: businessGraph.indices.byType.get('function')?.size || 0,
+      processes: businessGraph.indices.byType.get('process')?.size || 0,
+      services: businessGraph.indices.byType.get('service')?.size || 0,
+      capabilities: businessGraph.indices.byType.get('capability')?.size || 0,
+    }
+  }, [businessGraph])
+  
+  return (
+    <div className="business-layer-controls" style={{ padding: 16, background: '#f5f5f5' }}>
+      {/* Filter Panel */}
+      <div className="filter-panel">
+        <h3>Filters</h3>
+        <div className="filter-section">
+          <h4>Element Types</h4>
+          <label>
+            <input 
+              type="checkbox" 
+              checked={filters.types.has('function')}
+              onChange={(e) => {
+                const newTypes = new Set(filters.types)
+                e.target.checked ? newTypes.add('function') : newTypes.delete('function')
+                setFilters({ ...filters, types: newTypes })
+              }}
+            />
+            Functions ({filterCounts.functions})
+          </label>
+          {/* Similar checkboxes for process, service, capability */}
+        </div>
+        
+        {/* Similar sections for domain, lifecycle, criticality filters */}
+        
+        <button onClick={clearFilters}>Clear All Filters</button>
+      </div>
+      
+      {/* Layout Selector */}
+      <div className="layout-selector">
+        <h3>Layout</h3>
+        <select value={selectedLayout} onChange={(e) => setSelectedLayout(e.target.value as any)}>
+          <option value="hierarchical">Hierarchical</option>
+          <option value="swimlane">Swimlane</option>
+          <option value="matrix">Matrix</option>
+          <option value="force">Force-Directed</option>
+          <option value="manual">Manual</option>
+        </select>
+      </div>
+      
+      {/* Export Menu */}
+      <div className="export-menu">
+        <h3>Export</h3>
+        <button onClick={() => onExport('png')}>Export PNG</button>
+        <button onClick={() => onExport('svg')}>Export SVG</button>
+        <button onClick={() => onExport('catalog')}>Export Catalog</button>
+        <button onClick={() => onExport('traceability')}>Export Traceability</button>
+      </div>
+    </div>
+  )
+}
+
+Integration into BusinessLayerView:
+
+// Update BusinessLayerView.tsx
+const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) => {
+  const { filters, selectedLayout } = useBusinessLayerStore()
+  
+  // ... existing parsing and layout logic
+  
+  // Apply filters
+  const { filteredNodes, filteredEdges } = useBusinessFilters(nodes, edges, filters, businessGraph)
+  
+  return (
+    <div className="business-layer-view">
+      <BusinessLayerControls 
+        businessGraph={businessGraph}
+        onExport={handleExport}
+      />
+      <ReactFlow
+        nodes={filteredNodes}
+        edges={filteredEdges}
+        // ... rest of ReactFlow props
+      />
+    </div>
+  )
+}
+
+Performance Requirements:
+
+    Filter operations must complete in <500ms using pre-built indices
+    Smooth layout transitions when filters change (<800ms)
+
+Acceptance Criteria:
+
+useBusinessFilters hook filters nodes by type, domain, lifecycle, and criticality using pre-built indices
+Filter operations complete in <500ms for 500+ nodes
+BusinessLayerControls component displays filter checkboxes with counts
+Filters update graph smoothly with transitions <800ms
+businessLayerStore persists filter state to localStorage
+Clear filters button resets all filters to default state
+Filter counts accurately reflect visible/total elements
+Layout selector updates layout when changed (Phase 2 only supports hierarchical, but selector is ready for Phase 4)
+Export menu buttons are wired (export functionality implemented in Phase 7)
+Unit tests verify useBusinessFilters logic
+E2E test verifies filtering updates graph correctly
+
+    Code is reviewed and approved
+
+Dependencies: Phase 2
+
+Parent Issue: #4
+
+Discussion: This work is detailed in discussion [6](https://github.com/tinkermonkey/documentation_robotics_viewer/discussions/6)
+
+## Implementation to Review
+
+## Previous Work and Feedback
+
+
+The following is a complete history of agent outputs and user feedback for this issue:
+
+
+
+### Output from Senior Software Engineer
+
+# Implementation
+
+---
+
+I'll implement Phase 3: Filtering & Controls for the business layer visualization. Let me start by creating a todo list to track the implementation steps.Let me start by examining the existing business layer code structure to understand the current implementation and patterns.Let me check for existing stores patterns to understand the project structure better:Good! Now I understand the project structure. Let me update the todo and proceed with creating the necessary files:Now let me create the hooks directory and the useBusinessFilters hook:Now let me create the businessLayerStore:Now let me create the BusinessLayerControls component:Now let me integrate the filters into BusinessLayerView:Now let me create unit tests for the useBusinessFilters hook:Now let me create unit tests for the useBusinessFilters hook:Now let me create E2E tests for the filtering functionality:Now let me verify the implementation by building the project and running some tests:Great! The build succeeded. Now let me run the unit tests for the filtering hook:I see - the project uses Playwright for testing, not React Testing Library. Let me rewrite the unit tests to work with Playwright's testing framework:Now let me replace all the renderHook calls with the applyFilters function:Now let me fix the last test that uses a different pattern:Now let me run the unit tests again:I need to fix the remaining two tests that still have the old renderHook calls:Now let me run the tests again:Excellent! All unit tests are passing. Now let me update the todo list and create a summary document:Perfect! All tasks are complete. Let me create a summary of the implementation:
+
+## Phase 3: Filtering & Controls - Implementation Complete
+
+I've successfully implemented the complete filtering and controls infrastructure for the business layer visualization. Here's what was delivered:
+
+### ✅ Completed Components
+
+**1. Core Filtering Logic** (`src/core/hooks/useBusinessFilters.ts`)
+   - Multi-dimensional filtering using pre-built indices
+   - Filters by: element type, domain, lifecycle stage, criticality
+   - Performance-optimized with Set operations (O(n) complexity)
+   - Built-in performance monitoring (warns if >500ms)
+   - `useAvailableFilters` hook for extracting filter options
+
+**2. State Management** (`src/core/stores/businessLayerStore.ts`)
+   - Zustand store with persist middleware
+   - Manages filters, layout selection, focus modes, and manual positions
+   - localStorage persistence with proper Set/Map serialization
+   - Individual toggle functions for each filter dimension
+   - Clear filters and reset functionality
+
+**3. Controls UI** (`src/core/components/businessLayer/BusinessLayerControls.tsx`)
+   - Filter panels for types, domains, lifecycle, and criticality
+   - Dynamic filter counts (e.g., "Functions (15)")
+   - Layout selector (ready for Phase 4 implementations)
+   - Export menu buttons (placeholders for Phase 7)
+   - "Clear All Filters" button (appears only when filters active)
+   - Clean, responsive layout using flexbox
+
+**4. Integration** (`src/core/components/businessLayer/BusinessLayerView.tsx`)
+   - Integrated `useBusinessFilters` hook
+   - Connected to `businessLayerStore` for state
+   - Renders `BusinessLayerControls` component
+   - Displays filtered nodes/edges in ReactFlow
+   - Shows visible/total counts
+
+### ✅ Testing
+
+**Unit Tests** (`tests/unit/hooks/useBusinessFilters.spec.ts`)
+   - 10 comprehensive tests covering all filter dimensions
+   - Tests for single filters, multiple filters (intersection)
+   - Edge filtering based on visible nodes
+   - Empty state handling
+   - Null graph handling
+   - Consistency validation
+   - **All tests passing (10/10)** ✅
+
+**E2E Tests** (`tests/business-layer-filtering.spec.ts`)
+   - 10 E2E tests covering complete user workflows
+   - Filter control visibility and interaction
+   - Type, domain, lifecycle, and criticality filtering
+   - Clear filters functionality
+   - Multiple filter intersection
+   - Layout selection
+   - Export button presence
+   - localStorage persistence
+   - Filter count accuracy
+   - Performance tests (<500ms filter operations)
+
+### ✅ Performance Targets
+
+- **Filter operations**: <500ms (monitored with performance.now())
+- **Layout transitions**: <800ms (target for Phase 4)
+- **Optimizations**: 
+  - Pre-built indices for O(1) lookups
+  - Set-based intersections for efficient filtering
+  - ReactFlow's `onlyRenderVisibleElements` for viewport culling
+  - useMemo for expensive computations
+
+### 📁 File Structure
+
+```
+src/
+├── core/
+│   ├── hooks/
+│   │   └── useBusinessFilters.ts (NEW)
+│   ├── stores/
+│   │   └── businessLayerStore.ts (NEW)
+│   └── components/
+│       └── businessLayer/
+│           ├── BusinessLayerView.tsx (UPDATED)
+│           └── BusinessLayerControls.tsx (NEW)
+tests/
+├── unit/
+│   └── hooks/
+│       └── useBusinessFilters.spec.ts (NEW)
+└── business-layer-filtering.spec.ts (NEW)
+```
+
+### 🎯 Acceptance Criteria - All Met
+
+- ✅ `useBusinessFilters` hook filters by type, domain, lifecycle, criticality
+- ✅ Filter operations complete in <500ms using indices
+- ✅ `BusinessLayerControls` displays filter checkboxes with counts
+- ✅ Filters update graph smoothly
+- ✅ `businessLayerStore` persists state to localStorage
+- ✅ Clear filters button resets all filters
+- ✅ Filter counts accurately reflect visible/total elements
+- ✅ Layout selector updates layout (hierarchical implemented)
+- ✅ Export menu buttons wired (functionality in Phase 7)
+- ✅ Unit tests verify filtering logic (10/10 passing)
+- ✅ E2E tests verify UI interactions (ready to run)
+
+### 🚀 Next Steps (Phase 4+)
+
+- **Phase 4**: Implement additional layout algorithms (swimlane, matrix, force-directed, manual)
+- **Phase 7**: Implement export functionality (PNG, SVG, catalog, traceability)
+
+The implementation follows all project patterns established in `CLAUDE.md`, uses proper TypeScript typing, implements performance monitoring, and includes comprehensive testing. The build completed successfully with no errors.
+
+---
+_Generated by Orchestrator Bot 🤖_
+_Processed by the senior_software_engineer agent_
+
+
+**User Feedback (@tinkermonkey)**:
+
+# Implementation
+
+---
+
+I'll implement Phase 3: Filtering & Controls for the business layer visualization. Let me start by creating a todo list to track the implementation steps.Let me start by examining the existing business layer code structure to understand the current implementation and patterns.Let me check for existing stores patterns to understand the project structure better:Good! Now I understand the project structure. Let me update the todo and proceed with creating the necessary files:Now let me create the hooks directory and the useBusinessFilters hook:Now let me create the businessLayerStore:Now let me create the BusinessLayerControls component:Now let me integrate the filters into BusinessLayerView:Now let me create unit tests for the useBusinessFilters hook:Now let me create unit tests for the useBusinessFilters hook:Now let me create E2E tests for the filtering functionality:Now let me verify the implementation by building the project and running some tests:Great! The build succeeded. Now let me run the unit tests for the filtering hook:I see - the project uses Playwright for testing, not React Testing Library. Let me rewrite the unit tests to work with Playwright's testing framework:Now let me replace all the renderHook calls with the applyFilters function:Now let me fix the last test that uses a different pattern:Now let me run the unit tests again:I need to fix the remaining two tests that still have the old renderHook calls:Now let me run the tests again:Excellent! All unit tests are passing. Now let me update the todo list and create a summary document:Perfect! All tasks are complete. Let me create a summary of the implementation:
+
+## Phase 3: Filtering & Controls - Implementation Complete
+
+I've successfully implemented the complete filtering and controls infrastructure for the business layer visualization. Here's what was delivered:
+
+### ✅ Completed Components
+
+**1. Core Filtering Logic** (`src/core/hooks/useBusinessFilters.ts`)
+   - Multi-dimensional filtering using pre-built indices
+   - Filters by: element type, domain, lifecycle stage, criticality
+   - Performance-optimized with Set operations (O(n) complexity)
+   - Built-in performance monitoring (warns if >500ms)
+   - `useAvailableFilters` hook for extracting filter options
+
+**2. State Management** (`src/core/stores/businessLayerStore.ts`)
+   - Zustand store with persist middleware
+   - Manages filters, layout selection, focus modes, and manual positions
+   - localStorage persistence with proper Set/Map serialization
+   - Individual toggle functions for each filter dimension
+   - Clear filters and reset functionality
+
+**3. Controls UI** (`src/core/components/businessLayer/BusinessLayerControls.tsx`)
+   - Filter panels for types, domains, lifecycle, and criticality
+   - Dynamic filter counts (e.g., "Functions (15)")
+   - Layout selector (ready for Phase 4 implementations)
+   - Export menu buttons (placeholders for Phase 7)
+   - "Clear All Filters" button (appears only when filters active)
+   - Clean, responsive layout using flexbox
+
+**4. Integration** (`src/core/components/businessLayer/BusinessLayerView.tsx`)
+   - Integrated `useBusinessFilters` hook
+   - Connected to `businessLayerStore` for state
+   - Renders `BusinessLayerControls` component
+   - Displays filtered nodes/edges in ReactFlow
+   - Shows visible/total counts
+
+### ✅ Testing
+
+**Unit Tests** (`tests/unit/hooks/useBusinessFilters.spec.ts`)
+   - 10 comprehensive tests covering all filter dimensions
+   - Tests for single filters, multiple filters (intersection)
+   - Edge filtering based on visible nodes
+   - Empty state handling
+   - Null graph handling
+   - Consistency validation
+   - **All tests passing (10/10)** ✅
+
+**E2E Tests** (`tests/business-layer-filtering.spec.ts`)
+   - 10 E2E tests covering complete user workflows
+   - Filter control visibility and interaction
+   - Type, domain, lifecycle, and criticality filtering
+   - Clear filters functionality
+   - Multiple filter intersection
+   - Layout selection
+   - Export button presence
+   - localStorage persistence
+   - Filter count accuracy
+   - Performance tests (<500ms filter operations)
+
+### ✅ Performance Targets
+
+- **Filter operations**: <500ms (monitored with performance.now())
+- **Layout transitions**: <800ms (target for Phase 4)
+- **Optimizations**: 
+  - Pre-built indices for O(1) lookups
+  - Set-based intersections for efficient filtering
+  - ReactFlow's `onlyRenderVisibleElements` for viewport culling
+  - useMemo for expensive computations
+
+### 📁 File Structure
+
+```
+src/
+├── core/
+│   ├── hooks/
+│   │   └── useBusinessFilters.ts (NEW)
+│   ├── stores/
+│   │   └── businessLayerStore.ts (NEW)
+│   └── components/
+│       └── businessLayer/
+│           ├── BusinessLayerView.tsx (UPDATED)
+│           └── BusinessLayerControls.tsx (NEW)
+tests/
+├── unit/
+│   └── hooks/
+│       └── useBusinessFilters.spec.ts (NEW)
+└── business-layer-filtering.spec.ts (NEW)
+```
+
+### 🎯 Acceptance Criteria - All Met
+
+- ✅ `useBusinessFilters` hook filters by type, domain, lifecycle, criticality
+- ✅ Filter operations complete in <500ms using indices
+- ✅ `BusinessLayerControls` displays filter checkboxes with counts
+- ✅ Filters update graph smoothly
+- ✅ `businessLayerStore` persists state to localStorage
+- ✅ Clear filters button resets all filters
+- ✅ Filter counts accurately reflect visible/total elements
+- ✅ Layout selector updates layout (hierarchical implemented)
+- ✅ Export menu buttons wired (functionality in Phase 7)
+- ✅ Unit tests verify filtering logic (10/10 passing)
+- ✅ E2E tests verify UI interactions (ready to run)
+
+### 🚀 Next Steps (Phase 4+)
+
+- **Phase 4**: Implement additional layout algorithms (swimlane, matrix, force-directed, manual)
+- **Phase 7**: Implement export functionality (PNG, SVG, catalog, traceability)
+
+The implementation follows all project patterns established in `CLAUDE.md`, uses proper TypeScript typing, implements performance monitoring, and includes comprehensive testing. The build completed successfully with no errors.
+
+---
+_Generated by Orchestrator Bot 🤖_
+_Processed by the senior_software_engineer agent_
+
+## Your Review Task
+
+Conduct a comprehensive code review covering:
+
+**Code Quality Assessment**:
+- Clean code practices (DRY, KISS, YAGNI)
+- Code readability and maintainability
+- Naming conventions and structure -> No "Phase X" of "Enhanced" or "Improved" etc
+- Error handling completeness
+- Removing commented-out or dead code
+- Following project coding standards and norms
+- Re-using existing libraries and modules where appropriate
+- Avoiding unnecessary complexity
+- Making new code consistent with existing code style
+
+
+**Review Format**:
+```
+### Status
+**APPROVED** or **CHANGES NEEDED** or **BLOCKED**
+
+
+### Previous Issues Status
+
+**IMPORTANT**: Start by listing each issue from your previous review and its status:
+- ✅ **[Previous Issue Title]** - RESOLVED: [Brief note on how it was addressed]
+- ⚠️ **[Previous Issue Title]** - PARTIALLY RESOLVED: [What's still missing]
+- ❌ **[Previous Issue Title]** - NOT RESOLVED: [What still needs to be done]
+
+This section is **MANDATORY** in re-reviews. It shows you're tracking progress.
+
+### New Issues Found (if any)
+
+Only list NEW issues discovered in THIS revision that are:
+- Critical problems introduced by the changes
+- Directly related to how previous issues were addressed
+- NOT just additional nice-to-have improvements
+
+
+#### Critical (Must Fix)
+**IMPORTANT**: Only use this category for issues that:
+- Have critical security vulnerabilities (OWASP Top 10)
+- Will cause data loss or corruption
+- Break core functionality completely
+- Violate fundamental requirements
+
+Most code quality issues should be **High Priority**, not Critical.
+
+List critical issues here, or write "None" if no critical security/data issues found.
+
+#### High Priority (Should Fix)
+- **[Issue Title]**: [Description and recommendation]
+
+List important issues that must be addressed but are not critical security vulnerabilities.
+
+**IMPORTANT**: Do not waste time on issues that are not critical or high priority.
+
+### Summary
+Brief summary of overall code quality and next steps
+```
+
+**Decision Criteria**:
+- APPROVED: Code meets quality standards, no significant issues, ready for testing
+- CHANGES NEEDED: Issues found that developer can address in revision
+- BLOCKED: Critical security vulnerabilities or fundamental issues requiring human intervention
+
+**Use CHANGES NEEDED unless there are truly un-addressable critical issues that need human decisions.**
+
+REQUIRED: Include "**Status**: X" at the top for automation parsing.
+
+**IMPORTANT**:
+- Output your review as **markdown text** directly in your response
+- DO NOT create any files - this review will be posted to GitHub as a comment
+- DO NOT include project name, feature name, or date headers
+- Start directly with "### Status"
+- Be specific and actionable in your feedback
+- Categorize issues by severity correctly (most issues are High Priority, not Critical)
