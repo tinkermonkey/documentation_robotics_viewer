@@ -684,7 +684,7 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
         </div>
 
         {/* Main Graph View */}
-        <div className="graph-viewer" style={{ width: '100%', height: '100%', position: 'relative' }}>
+        <div className="graph-viewer">
           {isLayouting && (
             <div className="layout-overlay" role="status" aria-live="polite">
               <div className="layout-progress">

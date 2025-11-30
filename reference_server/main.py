@@ -572,6 +572,21 @@ if DIST_DIR.exists():
             status_code=404,
             content={"error": "Embedded app not built. Run: npm run build:embedded"}
         )
+
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        """Serve the embedded app for any other path (SPA routing)"""
+        # Exclude API paths just in case
+        if full_path.startswith("api/") or full_path.startswith("assets/"):
+             return JSONResponse(status_code=404, content={"error": "Not found"})
+        
+        index_file = DIST_DIR / "public" / "index-embedded.html"
+        if index_file.exists():
+            return FileResponse(index_file)
+        return JSONResponse(
+            status_code=404,
+            content={"error": "Embedded app not built. Run: npm run build:embedded"}
+        )
 else:
     logger.warning("Embedded app dist directory not found. Run 'npm run build:embedded' first.")
 

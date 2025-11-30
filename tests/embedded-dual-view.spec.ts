@@ -62,17 +62,17 @@ test.describe('Embedded App - Dual View Functionality', () => {
       await expect(page.locator('.view-tab:has-text("JSON")')).toBeVisible();
     });
 
-    test('should default to JSON view in spec mode', async ({ page }) => {
+    test('should default to Graph view in spec mode', async ({ page }) => {
       // Switch to Spec mode
       await page.click('.mode-selector button:has-text("Spec")');
       await page.waitForTimeout(2000);
 
-      // JSON tab should be active by default
-      const jsonTab = page.locator('.view-tab:has-text("JSON")');
-      await expect(jsonTab).toHaveClass(/active/);
+      // Graph tab should be active by default
+      const graphTab = page.locator('.view-tab:has-text("Graph")');
+      await expect(graphTab).toHaveClass(/active/);
 
-      // SpecViewer should be visible
-      await expect(page.locator('.spec-viewer')).toBeVisible();
+      // GraphViewer should be visible
+      await expect(page.locator('.react-flow')).toBeVisible();
     });
 
     test('should switch to graph view when Graph tab clicked', async ({ page }) => {
@@ -175,7 +175,7 @@ test.describe('Embedded App - Dual View Functionality', () => {
       }
     });
 
-    test('should default to list view in changeset mode', async ({ page }) => {
+    test('should default to Graph view in changeset mode', async ({ page }) => {
       // Switch to Changesets mode
       await page.click('.mode-selector button:has-text("Changesets")');
       await page.waitForTimeout(2000);
@@ -186,12 +186,12 @@ test.describe('Embedded App - Dual View Functionality', () => {
         await firstChangeset.click();
         await page.waitForTimeout(1000);
 
-        // List tab should be active by default
-        const listTab = page.locator('.view-tab:has-text("List")');
-        await expect(listTab).toHaveClass(/active/);
+        // Graph tab should be active by default
+        const graphTab = page.locator('.view-tab:has-text("Graph")');
+        await expect(graphTab).toHaveClass(/active/);
 
-        // ChangesetViewer should be visible
-        await expect(page.locator('.changeset-viewer')).toBeVisible();
+        // ChangesetGraphView should be visible
+        await expect(page.locator('.changeset-graph-container')).toBeVisible();
       }
     });
 
@@ -367,24 +367,24 @@ test.describe('Embedded App - Dual View Functionality', () => {
 
   test.describe('Persistence', () => {
     test('should persist view preferences across page reloads', async ({ page }) => {
-      // Set Spec to Graph view
+      // Set Spec to JSON view (non-default)
       await page.click('.mode-selector button:has-text("Spec")');
       await page.waitForTimeout(1000);
-      await page.click('.view-tab:has-text("Graph")');
+      await page.click('.view-tab:has-text("JSON")');
       await page.waitForTimeout(1000);
 
       // Reload page
       await page.reload();
-      await page.waitForSelector('.embedded-app', { timeout: 10000 });
-      await page.waitForSelector('.connection-status.connected', { timeout: 10000 });
+      await page.waitForSelector('.embedded-app', { timeout: 20000 });
+      await page.waitForSelector('.connection-status.connected', { timeout: 20000 });
 
       // Switch to Spec mode
       await page.click('.mode-selector button:has-text("Spec")');
       await page.waitForTimeout(1000);
 
-      // Graph tab should still be active
-      const graphTab = page.locator('.view-tab:has-text("Graph")');
-      await expect(graphTab).toHaveClass(/active/);
+      // JSON tab should still be active
+      const jsonTab = page.locator('.view-tab:has-text("JSON")');
+      await expect(jsonTab).toHaveClass(/active/);
     });
   });
 });

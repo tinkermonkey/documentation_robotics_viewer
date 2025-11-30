@@ -33,7 +33,7 @@ export default defineConfig({
   reporter: 'list',
   timeout: 30000,  // 30 seconds per test
   use: {
-    baseURL: 'http://localhost:8765',
+    baseURL: 'http://localhost:3001',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },

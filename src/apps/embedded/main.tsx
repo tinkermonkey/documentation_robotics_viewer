@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import EmbeddedApp from './EmbeddedApp';
+import { RouterProvider } from '@tanstack/react-router';
+import { router } from './router';
 import '../../index.css';
 
 const rootElement = document.getElementById('root');
@@ -11,6 +12,6 @@ if (!rootElement) {
 
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
-    <EmbeddedApp />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );

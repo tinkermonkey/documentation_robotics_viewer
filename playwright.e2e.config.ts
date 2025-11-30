@@ -12,7 +12,7 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests',
-  testMatch: ['embedded-app.spec.ts', 'embedded-dual-view.spec.ts'],
+  testMatch: ['embedded-app.spec.ts', 'embedded-dual-view.spec.ts', 'motivation-view.spec.ts'],
   fullyParallel: false, // Run E2E tests sequentially for reliability
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 1, // Retry once in dev, twice in CI

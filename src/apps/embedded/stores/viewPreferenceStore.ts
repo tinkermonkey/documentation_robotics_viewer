@@ -123,9 +123,9 @@ const defaultMotivationPreferences: MotivationViewPreferences = {
 };
 
 const initialState = {
-  specView: 'json' as SpecViewType,
+  specView: 'graph' as SpecViewType,
   modelView: 'graph' as ModelViewType,
-  changesetView: 'list' as ChangesetViewType,
+  changesetView: 'graph' as ChangesetViewType,
   motivationPreferences: defaultMotivationPreferences,
 };
 

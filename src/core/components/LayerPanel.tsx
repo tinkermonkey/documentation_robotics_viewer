@@ -33,6 +33,7 @@ const getLayerColor = (layerType: string): string => {
  * Layer Panel Component
  */
 export const LayerPanel: React.FC = () => {
+  const [isCollapsed, setIsCollapsed] = React.useState(true);
   const {
     layers,
     toggleLayer,
@@ -59,82 +60,89 @@ export const LayerPanel: React.FC = () => {
   ];
 
   return (
-    <div className="layer-panel">
-      <div className="layer-panel-header">
-        <h3>Layers</h3>
-        <div className="layer-panel-actions">
-          <button
-            onClick={showAll}
-            className="layer-action-btn"
-            title="Show all layers"
-          >
-            Show All
-          </button>
-          <button
-            onClick={hideAll}
-            className="layer-action-btn"
-            title="Hide all layers"
-          >
-            Hide All
-          </button>
-          <button
-            onClick={resetLayers}
-            className="layer-action-btn"
-            title="Reset to defaults"
-          >
-            Reset
-          </button>
+    <div className={`layer-panel ${isCollapsed ? 'collapsed' : ''}`}>
+      <div className="layer-panel-header" onClick={() => setIsCollapsed(!isCollapsed)}>
+        <div className="header-title-row">
+          <h3>Layers</h3>
+          <span className="collapse-icon">{isCollapsed ? '▶' : '▼'}</span>
         </div>
+        {!isCollapsed && (
+          <div className="layer-panel-actions">
+            <button
+              onClick={(e) => { e.stopPropagation(); showAll(); }}
+              className="layer-action-btn"
+              title="Show all layers"
+            >
+              Show All
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); hideAll(); }}
+              className="layer-action-btn"
+              title="Hide all layers"
+            >
+              Hide All
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); resetLayers(); }}
+              className="layer-action-btn"
+              title="Reset to defaults"
+            >
+              Reset
+            </button>
+          </div>
+        )}
       </div>
 
-      <div className="layer-list">
-        {layerOrder.map((layerId) => {
-          const layerState = layers[layerId];
-          if (!layerState) return null;
+      {!isCollapsed && (
+        <div className="layer-list">
+          {layerOrder.map((layerId) => {
+            const layerState = layers[layerId];
+            if (!layerState) return null;
 
-          return (
-            <div
-              key={layerId}
-              className={`layer-item ${layerState.visible ? 'visible' : 'hidden'}`}
-            >
-              <div className="layer-item-header">
-                <div
-                  className="layer-color-indicator"
-                  style={{ backgroundColor: getLayerColor(layerId) }}
-                />
-                <label className="layer-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={layerState.visible}
-                    onChange={() => toggleLayer(layerId)}
+            return (
+              <div
+                key={layerId}
+                className={`layer-item ${layerState.visible ? 'visible' : 'hidden'}`}
+              >
+                <div className="layer-item-header">
+                  <div
+                    className="layer-color-indicator"
+                    style={{ backgroundColor: getLayerColor(layerId) }}
                   />
-                  <span className="layer-name">{layerId}</span>
-                </label>
-              </div>
-
-              <div className="layer-controls">
-                <div className="layer-opacity-control">
-                  <label className="opacity-label">
-                    Opacity: {Math.round(layerState.opacity * 100)}%
+                  <label className="layer-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={layerState.visible}
+                      onChange={() => toggleLayer(layerId)}
+                    />
+                    <span className="layer-name">{layerId}</span>
                   </label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.1"
-                    value={layerState.opacity}
-                    onChange={(e) =>
-                      setLayerOpacity(layerId, parseFloat(e.target.value))
-                    }
-                    className="opacity-slider"
-                    disabled={!layerState.visible}
-                  />
+                </div>
+
+                <div className="layer-controls">
+                  <div className="layer-opacity-control">
+                    <label className="opacity-label">
+                      Opacity: {Math.round(layerState.opacity * 100)}%
+                    </label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.1"
+                      value={layerState.opacity}
+                      onChange={(e) =>
+                        setLayerOpacity(layerId, parseFloat(e.target.value))
+                      }
+                      className="opacity-slider"
+                      disabled={!layerState.visible}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

@@ -103,6 +103,10 @@ test.describe('Embedded App - Reference Server Integration', () => {
     );
     expect(criticalErrors).toHaveLength(0);
 
+    // Switch to JSON view to check SpecViewer
+    await page.click('.view-tab:has-text("JSON")');
+    await page.waitForTimeout(1000);
+
     // Check for SpecViewer (not GraphViewer)
     await expect(page.locator('.spec-viewer')).toBeVisible();
 
