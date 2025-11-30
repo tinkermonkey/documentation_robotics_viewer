@@ -48,7 +48,7 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
     dagre.layout(dagreGraph);
 
     // Convert back to React Flow format
-    const result = this.convertToReactFlow(dagreGraph, graph, options);
+    const result = this.convertToReactFlow(dagreGraph, graph);
 
     // Add calculation time to metadata
     const calculationTime = performance.now() - startTime;
@@ -105,8 +105,7 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
    */
   private convertToReactFlow(
     dagreGraph: dagre.graphlib.Graph,
-    businessGraph: BusinessGraph,
-    options: LayoutOptions
+    businessGraph: BusinessGraph
   ): LayoutResult {
     const nodes: Node[] = [];
     const edges: Edge[] = [];

@@ -5,6 +5,16 @@
  */
 
 import { test, expect } from '@playwright/test';
+import {
+  BUSINESS_PROCESS_NODE_WIDTH,
+  BUSINESS_PROCESS_NODE_HEIGHT,
+  BUSINESS_FUNCTION_NODE_WIDTH,
+  BUSINESS_FUNCTION_NODE_HEIGHT,
+  BUSINESS_SERVICE_NODE_WIDTH,
+  BUSINESS_SERVICE_NODE_HEIGHT,
+  BUSINESS_CAPABILITY_NODE_WIDTH,
+  BUSINESS_CAPABILITY_NODE_HEIGHT,
+} from '../../../src/core/nodes/index';
 
 // Test page that renders nodes
 const testPageHTML = `
@@ -200,33 +210,21 @@ test.describe('Business Layer Node Components', () => {
 
   test.describe('Node Dimension Constants', () => {
     test('BusinessProcessNode dimensions match constant (200x80)', () => {
-      const BUSINESS_PROCESS_NODE_WIDTH = 200;
-      const BUSINESS_PROCESS_NODE_HEIGHT = 80;
-
       expect(BUSINESS_PROCESS_NODE_WIDTH).toBe(200);
       expect(BUSINESS_PROCESS_NODE_HEIGHT).toBe(80);
     });
 
     test('BusinessFunctionNode dimensions match constant (180x100)', () => {
-      const BUSINESS_FUNCTION_NODE_WIDTH = 180;
-      const BUSINESS_FUNCTION_NODE_HEIGHT = 100;
-
       expect(BUSINESS_FUNCTION_NODE_WIDTH).toBe(180);
       expect(BUSINESS_FUNCTION_NODE_HEIGHT).toBe(100);
     });
 
     test('BusinessServiceNode dimensions match constant (180x90)', () => {
-      const BUSINESS_SERVICE_NODE_WIDTH = 180;
-      const BUSINESS_SERVICE_NODE_HEIGHT = 90;
-
       expect(BUSINESS_SERVICE_NODE_WIDTH).toBe(180);
       expect(BUSINESS_SERVICE_NODE_HEIGHT).toBe(90);
     });
 
     test('BusinessCapabilityNode dimensions match constant (160x70)', () => {
-      const BUSINESS_CAPABILITY_NODE_WIDTH = 160;
-      const BUSINESS_CAPABILITY_NODE_HEIGHT = 70;
-
       expect(BUSINESS_CAPABILITY_NODE_WIDTH).toBe(160);
       expect(BUSINESS_CAPABILITY_NODE_HEIGHT).toBe(70);
     });
