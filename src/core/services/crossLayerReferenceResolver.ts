@@ -5,7 +5,7 @@
  * (motivation, application, data model, security, API, UX).
  */
 
-import { MetaModel, ModelElement, Relationship } from '../types/model';
+import { MetaModel, ModelElement } from '../types/model';
 import { BusinessGraph, CrossLayerLink } from '../types/businessLayer';
 
 /**
@@ -17,12 +17,13 @@ export class CrossLayerReferenceResolver {
   /**
    * Resolve all cross-layer links for business graph
    *
-   * @param businessGraph - The business graph to enrich with cross-layer links
+   * NOTE: This method mutates the input businessGraph by setting crossLayerLinks property.
+   *
+   * @param businessGraph - The business graph to enrich with cross-layer links (will be mutated)
    * @param model - The complete documentation model
    * @returns Updated business graph with cross-layer links
    */
   resolveAllLinks(businessGraph: BusinessGraph, model: MetaModel): BusinessGraph {
-    console.log('[CrossLayerReferenceResolver] Resolving cross-layer links');
     this.warnings = [];
 
     const links: CrossLayerLink[] = [];
@@ -36,17 +37,6 @@ export class CrossLayerReferenceResolver {
     links.push(...this.resolveUXLinks(businessGraph, model));
 
     businessGraph.crossLayerLinks = links;
-
-    console.log(
-      `[CrossLayerReferenceResolver] Resolved ${links.length} cross-layer links`
-    );
-
-    if (this.warnings.length > 0) {
-      console.warn(
-        `[CrossLayerReferenceResolver] ${this.warnings.length} warnings:`
-      );
-      this.warnings.forEach((w) => console.warn(`  - ${w}`));
-    }
 
     return businessGraph;
   }
@@ -67,7 +57,6 @@ export class CrossLayerReferenceResolver {
     // Find motivation layer
     const motivationLayer = this.findLayer(model, 'Motivation');
     if (!motivationLayer) {
-      console.log('[CrossLayerReferenceResolver] No motivation layer found');
       return links;
     }
 
@@ -116,9 +105,6 @@ export class CrossLayerReferenceResolver {
       }
     }
 
-    console.log(
-      `[CrossLayerReferenceResolver] Found ${links.length} links to motivation layer`
-    );
     return links;
   }
 
@@ -133,7 +119,6 @@ export class CrossLayerReferenceResolver {
 
     const applicationLayer = this.findLayer(model, 'Application');
     if (!applicationLayer) {
-      console.log('[CrossLayerReferenceResolver] No application layer found');
       return links;
     }
 
@@ -172,9 +157,6 @@ export class CrossLayerReferenceResolver {
       }
     }
 
-    console.log(
-      `[CrossLayerReferenceResolver] Found ${links.length} links to application layer`
-    );
     return links;
   }
 
@@ -189,7 +171,6 @@ export class CrossLayerReferenceResolver {
 
     const dataModelLayer = this.findLayer(model, 'DataModel');
     if (!dataModelLayer) {
-      console.log('[CrossLayerReferenceResolver] No data model layer found');
       return links;
     }
 
@@ -233,9 +214,6 @@ export class CrossLayerReferenceResolver {
       }
     }
 
-    console.log(
-      `[CrossLayerReferenceResolver] Found ${links.length} links to data model layer`
-    );
     return links;
   }
 
@@ -250,7 +228,6 @@ export class CrossLayerReferenceResolver {
 
     const securityLayer = this.findLayer(model, 'Security');
     if (!securityLayer) {
-      console.log('[CrossLayerReferenceResolver] No security layer found');
       return links;
     }
 
@@ -297,9 +274,6 @@ export class CrossLayerReferenceResolver {
       }
     }
 
-    console.log(
-      `[CrossLayerReferenceResolver] Found ${links.length} links to security layer`
-    );
     return links;
   }
 
@@ -314,7 +288,6 @@ export class CrossLayerReferenceResolver {
 
     const apiLayer = this.findLayer(model, 'Api');
     if (!apiLayer) {
-      console.log('[CrossLayerReferenceResolver] No API layer found');
       return links;
     }
 
@@ -360,9 +333,6 @@ export class CrossLayerReferenceResolver {
       }
     }
 
-    console.log(
-      `[CrossLayerReferenceResolver] Found ${links.length} links to API layer`
-    );
     return links;
   }
 
@@ -374,7 +344,6 @@ export class CrossLayerReferenceResolver {
 
     const uxLayer = this.findLayer(model, 'Ux');
     if (!uxLayer) {
-      console.log('[CrossLayerReferenceResolver] No UX layer found');
       return links;
     }
 
@@ -415,9 +384,6 @@ export class CrossLayerReferenceResolver {
       }
     }
 
-    console.log(
-      `[CrossLayerReferenceResolver] Found ${links.length} links to UX layer`
-    );
     return links;
   }
 

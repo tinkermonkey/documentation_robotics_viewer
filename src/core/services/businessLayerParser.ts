@@ -31,7 +31,6 @@ export class BusinessLayerParser {
    * @returns Business layer data with elements and relationships
    */
   parseBusinessLayer(model: MetaModel): BusinessLayerData {
-    console.log('[BusinessLayerParser] Parsing business layer from model');
     this.clearState();
 
     // Find business layer in model
@@ -40,10 +39,6 @@ export class BusinessLayerParser {
     if (!businessLayer) {
       throw new Error('No business layer found in model');
     }
-
-    console.log(
-      `[BusinessLayerParser] Found business layer with ${businessLayer.elements.length} elements`
-    );
 
     // Extract business elements
     const elements = this.extractBusinessElements(businessLayer.elements);
@@ -57,15 +52,6 @@ export class BusinessLayerParser {
 
     // Calculate metadata
     const metadata = this.calculateMetadata(elements, relationships);
-
-    console.log(
-      `[BusinessLayerParser] Extracted ${elements.length} elements, ${relationships.length} relationships`
-    );
-
-    if (this.warnings.length > 0) {
-      console.warn(`[BusinessLayerParser] ${this.warnings.length} warnings:`);
-      this.warnings.forEach((w) => console.warn(`  - ${w}`));
-    }
 
     return {
       elements,
@@ -212,15 +198,14 @@ export class BusinessLayerParser {
   }
 
   /**
-   * Find business layer in model
+   * Find business layer in model (case-insensitive)
    */
-  private findBusinessLayer(model: MetaModel): ModelElement[] & { relationships?: Relationship[] } | null {
-    // Try different possible keys for business layer
-    const possibleKeys = ['Business', 'business', 'BUSINESS'];
+  private findBusinessLayer(model: MetaModel): { elements: ModelElement[]; relationships?: Relationship[] } | null {
+    const normalizedName = 'business';
 
-    for (const key of possibleKeys) {
-      if (model.layers[key]) {
-        return model.layers[key];
+    for (const [key, layer] of Object.entries(model.layers)) {
+      if (key.toLowerCase() === normalizedName) {
+        return layer as { elements: ModelElement[]; relationships?: Relationship[] };
       }
     }
 

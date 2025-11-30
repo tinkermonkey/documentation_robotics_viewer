@@ -12,6 +12,7 @@ import { DataLoader } from '../src/core/services/dataLoader';
 import { GitHubService } from '../src/core/services/githubService';
 import { LocalFileLoader } from '../src/core/services/localFileLoader';
 import { SpecParser } from '../src/core/services/specParser';
+import JSZip from 'jszip';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -258,7 +259,6 @@ async function loadExampleImplementation() {
 
   // Create a mock File object from the directory
   // We need to zip the directory and create a File-like object
-  const JSZip = require('jszip');
   const zip = new JSZip();
 
   // Recursively add files to zip

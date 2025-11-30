@@ -36,13 +36,10 @@ export class BusinessGraphBuilder {
     elements: BusinessElement[],
     relationships: BusinessRelationship[]
   ): BusinessGraph {
-    console.log(
-      `[BusinessGraphBuilder] Building graph from ${elements.length} elements, ${relationships.length} relationships`
-    );
     this.warnings = [];
 
     // Convert elements to nodes
-    const nodes = this.buildNodes(elements, relationships);
+    const nodes = this.buildNodes(elements);
 
     // Convert relationships to edges
     const edges = this.buildEdges(relationships, nodes);
@@ -65,15 +62,6 @@ export class BusinessGraphBuilder {
       indices,
     };
 
-    console.log(
-      `[BusinessGraphBuilder] Built graph: ${nodes.size} nodes, ${edges.size} edges, depth ${hierarchy.maxDepth}`
-    );
-
-    if (this.warnings.length > 0) {
-      console.warn(`[BusinessGraphBuilder] ${this.warnings.length} warnings:`);
-      this.warnings.forEach((w) => console.warn(`  - ${w}`));
-    }
-
     return graph;
   }
 
@@ -88,8 +76,6 @@ export class BusinessGraphBuilder {
     nodes: Map<string, BusinessNode>,
     edges: Map<string, BusinessEdge>
   ): HierarchyInfo {
-    console.log('[BusinessGraphBuilder] Resolving hierarchy');
-
     const parentChildMap = new Map<string, string[]>();
     const childParentMap = new Map<string, string>();
     const nodesByLevel = new Map<number, Set<string>>();
@@ -171,10 +157,6 @@ export class BusinessGraphBuilder {
 
     const maxDepth = Math.max(0, currentLevel - 1);
 
-    console.log(
-      `[BusinessGraphBuilder] Hierarchy resolved: ${rootNodes.length} roots, ${leafNodes.length} leaves, max depth ${maxDepth}`
-    );
-
     return {
       maxDepth,
       rootNodes,
@@ -198,8 +180,6 @@ export class BusinessGraphBuilder {
     edges: Map<string, BusinessEdge>,
     hierarchy: HierarchyInfo
   ): GraphMetrics {
-    console.log('[BusinessGraphBuilder] Calculating metrics');
-
     const nodeCount = nodes.size;
     const edgeCount = edges.size;
 
@@ -228,10 +208,6 @@ export class BusinessGraphBuilder {
       }
     }
 
-    console.log(
-      `[BusinessGraphBuilder] Metrics: ${nodeCount} nodes, ${edgeCount} edges, ${circularDependencies.length} circular deps, ${orphanedNodes.length} orphaned`
-    );
-
     return {
       nodeCount,
       edgeCount,
@@ -254,8 +230,7 @@ export class BusinessGraphBuilder {
    * Build nodes map from elements
    */
   private buildNodes(
-    elements: BusinessElement[],
-    relationships: BusinessRelationship[]
+    elements: BusinessElement[]
   ): Map<string, BusinessNode> {
     const nodes = new Map<string, BusinessNode>();
 
@@ -478,10 +453,6 @@ export class BusinessGraphBuilder {
       }
     }
 
-    console.log(
-      `[BusinessGraphBuilder] Built indices: ${byType.size} types, ${byDomain.size} domains`
-    );
-
     return {
       byType,
       byDomain,
@@ -542,12 +513,6 @@ export class BusinessGraphBuilder {
       if (!visited.has(nodeId)) {
         dfs(nodeId, []);
       }
-    }
-
-    if (cycles.length > 0) {
-      console.warn(
-        `[BusinessGraphBuilder] Detected ${cycles.length} circular dependencies`
-      );
     }
 
     return cycles;
