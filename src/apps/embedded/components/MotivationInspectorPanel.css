@@ -354,3 +354,52 @@
 .inspector-content::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
 }
+
+/* Cross-Layer Navigation */
+.crosslayer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.crosslayer-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.crosslayer-item:last-child {
+  border-bottom: none;
+}
+
+.crosslayer-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  min-width: 100px;
+}
+
+.crosslayer-link {
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #2563eb;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s, color 0.2s;
+  text-align: left;
+}
+
+.crosslayer-link:hover {
+  background: #eff6ff;
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.crosslayer-link:active {
+  background: #dbeafe;
+}

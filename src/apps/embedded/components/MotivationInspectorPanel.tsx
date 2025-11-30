@@ -311,12 +311,89 @@ export const MotivationInspectorPanel: React.FC<MotivationInspectorPanelProps> =
           </div>
         </section>
 
-        {/* Cross-Layer Navigation (placeholder for future implementation) */}
-        {/* This would show links to related elements in other layers */}
+        {/* Cross-Layer Navigation */}
+        {renderCrossLayerLinks(selectedNode, graph)}
       </div>
     </div>
   );
 };
+
+/**
+ * Render cross-layer navigation links
+ */
+function renderCrossLayerLinks(node: MotivationGraphNode, graph: MotivationGraph): JSX.Element | null {
+  const element = node.element;
+  const crossLayerLinks: Array<{ label: string; targetId: string; targetName: string }> = [];
+
+  // Extract cross-layer references from properties
+  if (element.properties) {
+    const props = element.properties;
+
+    // Common cross-layer property patterns
+    const patterns = [
+      { key: 'realizesRequirement', label: 'Realizes Requirement' },
+      { key: 'fulfillsGoal', label: 'Fulfills Goal' },
+      { key: 'supports', label: 'Supports' },
+      { key: 'relatedTo', label: 'Related To' },
+      { key: 'influences', label: 'Influences' },
+      { key: 'implements', label: 'Implements' },
+      { key: 'uses', label: 'Uses' },
+      { key: 'stakeholder', label: 'Stakeholder' },
+      { key: 'persona', label: 'Persona' },
+    ];
+
+    for (const pattern of patterns) {
+      const value = props[pattern.key];
+      if (value) {
+        if (Array.isArray(value)) {
+          value.forEach(targetId => {
+            const targetNode = graph.nodes.get(targetId);
+            crossLayerLinks.push({
+              label: pattern.label,
+              targetId,
+              targetName: targetNode?.element.name || targetId,
+            });
+          });
+        } else if (typeof value === 'string') {
+          const targetNode = graph.nodes.get(value);
+          crossLayerLinks.push({
+            label: pattern.label,
+            targetId: value,
+            targetName: targetNode?.element.name || value,
+          });
+        }
+      }
+    }
+  }
+
+  if (crossLayerLinks.length === 0) {
+    return null;
+  }
+
+  return (
+    <section className="inspector-section">
+      <h4 className="section-title">Cross-Layer Links ({crossLayerLinks.length})</h4>
+      <ul className="crosslayer-list">
+        {crossLayerLinks.map((link, index) => (
+          <li key={index} className="crosslayer-item">
+            <span className="crosslayer-label">{link.label}:</span>
+            <button
+              className="crosslayer-link"
+              onClick={() => {
+                // TODO: Implement cross-layer navigation
+                console.log(`Navigate to ${link.targetId} in other layer`);
+              }}
+              aria-label={`Navigate to ${link.targetName}`}
+              title={`Navigate to ${link.targetName}`}
+            >
+              {link.targetName}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
 
 /**
  * Format element type for display

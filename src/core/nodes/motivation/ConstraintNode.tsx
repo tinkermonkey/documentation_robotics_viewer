@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
 import { ConstraintNodeData } from '../../types/reactflow';
+import { RelationshipBadge } from './RelationshipBadge';
 
 /**
  * Node dimensions for layout calculation
@@ -16,7 +17,7 @@ export const ConstraintNode = memo(({ data }: NodeProps<ConstraintNodeData>) => 
   // Apply changeset styling if present
   let borderColor = data.stroke || '#dc2626';
   let backgroundColor = data.fill || '#fee2e2';
-  let opacity = 1;
+  let opacity = data.opacity !== undefined ? data.opacity : 1;
 
   if (data.changesetOperation) {
     switch (data.changesetOperation) {
@@ -36,6 +37,8 @@ export const ConstraintNode = memo(({ data }: NodeProps<ConstraintNodeData>) => 
     }
   }
 
+  const isDimmed = opacity < 1;
+
   // Negotiability icon
   const negotiabilityLabel = data.negotiability === 'fixed' ? 'FIXED' : 'NEGOTIABLE';
   const negotiabilityColor = data.negotiability === 'fixed' ? '#ef4444' : '#10b981';
@@ -43,7 +46,7 @@ export const ConstraintNode = memo(({ data }: NodeProps<ConstraintNodeData>) => 
   return (
     <div
       role="article"
-      aria-label={`Constraint: ${data.label}${data.negotiability ? `, ${data.negotiability}` : ''}${changesetOperation ? `, ${changesetOperation} operation` : ''}`}
+      aria-label={`Constraint: ${data.label}${data.negotiability ? `, ${data.negotiability}` : ''}${data.changesetOperation ? `, ${data.changesetOperation} operation` : ''}`}
       style={{
         width: CONSTRAINT_NODE_WIDTH,
         height: CONSTRAINT_NODE_HEIGHT,
@@ -150,6 +153,11 @@ export const ConstraintNode = memo(({ data }: NodeProps<ConstraintNodeData>) => 
       >
         Constraint
       </div>
+
+      {/* Relationship badge (when dimmed) */}
+      {data.relationshipBadge && (
+        <RelationshipBadge badge={data.relationshipBadge} isDimmed={isDimmed} />
+      )}
     </div>
   );
 });

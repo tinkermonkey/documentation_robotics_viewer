@@ -1,5 +1,6 @@
 import React from 'react';
 import { Node, Handle, Position, NodeProps } from '@xyflow/react';
+import { RelationshipBadge } from './RelationshipBadge';
 import { PrincipleNodeData } from '../../types/reactflow';
 
 /**
@@ -16,7 +17,7 @@ export const PrincipleNode = React.memo(({ data, selected }: NodeProps<Node<Prin
 
   // Changeset styling
   let borderColor = stroke;
-  let opacity = 1;
+  let opacity = data.opacity !== undefined ? data.opacity : 1;
   if (changesetOperation === 'add') {
     borderColor = '#10b981'; // green
   } else if (changesetOperation === 'update') {
@@ -25,6 +26,8 @@ export const PrincipleNode = React.memo(({ data, selected }: NodeProps<Node<Prin
     borderColor = '#ef4444'; // red
     opacity = 0.5;
   }
+
+  const isDimmed = opacity < 1;
 
   // Scope badge styling
   const scopeColors: Record<string, string> = {
@@ -133,6 +136,11 @@ export const PrincipleNode = React.memo(({ data, selected }: NodeProps<Node<Prin
         aria-label="Right connection point"
         style={{ background: borderColor }}
       />
+
+      {/* Relationship badge (when dimmed) */}
+      {data.relationshipBadge && (
+        <RelationshipBadge badge={data.relationshipBadge} isDimmed={isDimmed} />
+      )}
     </div>
   );
 });

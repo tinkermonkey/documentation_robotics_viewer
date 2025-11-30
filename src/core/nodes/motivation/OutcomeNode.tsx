@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
+import { RelationshipBadge } from './RelationshipBadge';
 import { OutcomeNodeData } from '../../types/reactflow';
 
 /**
@@ -16,7 +17,7 @@ export const OutcomeNode = memo(({ data }: NodeProps<OutcomeNodeData>) => {
   // Apply changeset styling if present
   let borderColor = data.stroke || '#0891b2';
   let backgroundColor = data.fill || '#cffafe';
-  let opacity = 1;
+  let opacity = data.opacity !== undefined ? data.opacity : 1;
 
   if (data.changesetOperation) {
     switch (data.changesetOperation) {
@@ -35,6 +36,8 @@ export const OutcomeNode = memo(({ data }: NodeProps<OutcomeNodeData>) => {
         break;
     }
   }
+
+  const isDimmed = opacity < 1;
 
   // Achievement status badge color
   const getStatusColor = () => {
@@ -161,6 +164,11 @@ export const OutcomeNode = memo(({ data }: NodeProps<OutcomeNodeData>) => {
       >
         Outcome
       </div>
+
+      {/* Relationship badge (when dimmed) */}
+      {data.relationshipBadge && (
+        <RelationshipBadge badge={data.relationshipBadge} isDimmed={isDimmed} />
+      )}
     </div>
   );
 });

@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
 import { DriverNodeData } from '../../types/reactflow';
+import { RelationshipBadge } from './RelationshipBadge';
 
 /**
  * Node dimensions for layout calculation
@@ -16,7 +17,7 @@ export const DriverNode = memo(({ data }: NodeProps<DriverNodeData>) => {
   // Apply changeset styling if present
   let borderColor = data.stroke || '#ea580c';
   let backgroundColor = data.fill || '#ffedd5';
-  let opacity = 1;
+  let opacity = data.opacity !== undefined ? data.opacity : 1;
 
   if (data.changesetOperation) {
     switch (data.changesetOperation) {
@@ -35,6 +36,8 @@ export const DriverNode = memo(({ data }: NodeProps<DriverNodeData>) => {
         break;
     }
   }
+
+  const isDimmed = opacity < 1;
 
   // Category badge color
   const getCategoryColor = () => {
@@ -157,6 +160,11 @@ export const DriverNode = memo(({ data }: NodeProps<DriverNodeData>) => {
       >
         Driver
       </div>
+
+      {/* Relationship badge (when dimmed) */}
+      {data.relationshipBadge && (
+        <RelationshipBadge badge={data.relationshipBadge} isDimmed={isDimmed} />
+      )}
     </div>
   );
 });

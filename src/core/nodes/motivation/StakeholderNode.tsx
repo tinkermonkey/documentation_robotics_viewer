@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
 import { StakeholderNodeData } from '../../types/reactflow';
+import { RelationshipBadge } from './RelationshipBadge';
 
 /**
  * Node dimensions for layout calculation
@@ -16,7 +17,7 @@ export const StakeholderNode = memo(({ data }: NodeProps<StakeholderNodeData>) =
   // Apply changeset styling if present
   let borderColor = data.stroke || '#7c3aed';
   let backgroundColor = data.fill || '#f3e8ff';
-  let opacity = 1;
+  let opacity = data.opacity !== undefined ? data.opacity : 1;
 
   if (data.changesetOperation) {
     switch (data.changesetOperation) {
@@ -35,6 +36,8 @@ export const StakeholderNode = memo(({ data }: NodeProps<StakeholderNodeData>) =
         break;
     }
   }
+
+  const isDimmed = opacity < 1;
 
   return (
     <div
@@ -137,6 +140,11 @@ export const StakeholderNode = memo(({ data }: NodeProps<StakeholderNodeData>) =
       >
         Stakeholder
       </div>
+
+      {/* Relationship badge (when dimmed) */}
+      {data.relationshipBadge && (
+        <RelationshipBadge badge={data.relationshipBadge} isDimmed={isDimmed} />
+      )}
     </div>
   );
 });

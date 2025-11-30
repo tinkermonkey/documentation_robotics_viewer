@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
 import { RequirementNodeData } from '../../types/reactflow';
+import { RelationshipBadge } from './RelationshipBadge';
 
 /**
  * Node dimensions for layout calculation
@@ -16,7 +17,7 @@ export const RequirementNode = memo(({ data }: NodeProps<RequirementNodeData>) =
   // Apply changeset styling if present
   let borderColor = data.stroke || '#2563eb';
   let backgroundColor = data.fill || '#dbeafe';
-  let opacity = 1;
+  let opacity = data.opacity !== undefined ? data.opacity : 1;
 
   if (data.changesetOperation) {
     switch (data.changesetOperation) {
@@ -36,6 +37,8 @@ export const RequirementNode = memo(({ data }: NodeProps<RequirementNodeData>) =
     }
   }
 
+  const isDimmed = opacity < 1;
+
   // Status indicator color
   const getStatusColor = () => {
     if (!data.status) return '#9ca3af';
@@ -51,7 +54,7 @@ export const RequirementNode = memo(({ data }: NodeProps<RequirementNodeData>) =
   return (
     <div
       role="article"
-      aria-label={`Requirement: ${data.label}${data.status ? `, status: ${data.status}` : ''}${changesetOperation ? `, ${changesetOperation} operation` : ''}`}
+      aria-label={`Requirement: ${data.label}${data.status ? `, status: ${data.status}` : ''}${data.changesetOperation ? `, ${data.changesetOperation} operation` : ''}`}
       style={{
         width: REQUIREMENT_NODE_WIDTH,
         height: REQUIREMENT_NODE_HEIGHT,
@@ -145,6 +148,11 @@ export const RequirementNode = memo(({ data }: NodeProps<RequirementNodeData>) =
       >
         Requirement
       </div>
+
+      {/* Relationship badge (when dimmed) */}
+      {data.relationshipBadge && (
+        <RelationshipBadge badge={data.relationshipBadge} isDimmed={isDimmed} />
+      )}
     </div>
   );
 });

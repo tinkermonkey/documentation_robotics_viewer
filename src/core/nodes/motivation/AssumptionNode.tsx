@@ -1,5 +1,6 @@
 import React from 'react';
 import { Node, Handle, Position, NodeProps } from '@xyflow/react';
+import { RelationshipBadge } from './RelationshipBadge';
 import { AssumptionNodeData } from '../../types/reactflow';
 
 /**
@@ -17,7 +18,7 @@ export const AssumptionNode = React.memo(({ data, selected }: NodeProps<Node<Ass
 
   // Changeset styling
   let borderColor = stroke;
-  let opacity = 1;
+  let opacity = data.opacity !== undefined ? data.opacity : 1;
   if (changesetOperation === 'add') {
     borderColor = '#10b981'; // green
   } else if (changesetOperation === 'update') {
@@ -26,6 +27,8 @@ export const AssumptionNode = React.memo(({ data, selected }: NodeProps<Node<Ass
     borderColor = '#ef4444'; // red
     opacity = 0.5;
   }
+
+  const isDimmed = opacity < 1;
 
   // Validation status styling
   const statusColors: Record<string, string> = {
@@ -149,6 +152,11 @@ export const AssumptionNode = React.memo(({ data, selected }: NodeProps<Node<Ass
         aria-label="Right connection point"
         style={{ background: borderColor }}
       />
+
+      {/* Relationship badge (when dimmed) */}
+      {data.relationshipBadge && (
+        <RelationshipBadge badge={data.relationshipBadge} isDimmed={isDimmed} />
+      )}
     </div>
   );
 });

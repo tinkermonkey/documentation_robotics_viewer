@@ -1,5 +1,6 @@
 import React from 'react';
 import { Node, Handle, Position, NodeProps } from '@xyflow/react';
+import { RelationshipBadge } from './RelationshipBadge';
 import { ValueStreamNodeData } from '../../types/reactflow';
 
 /**
@@ -17,7 +18,7 @@ export const ValueStreamNode = React.memo(({ data, selected }: NodeProps<Node<Va
 
   // Changeset styling
   let borderColor = stroke;
-  let opacity = 1;
+  let opacity = data.opacity !== undefined ? data.opacity : 1;
   if (changesetOperation === 'add') {
     borderColor = '#10b981'; // green
   } else if (changesetOperation === 'update') {
@@ -26,6 +27,8 @@ export const ValueStreamNode = React.memo(({ data, selected }: NodeProps<Node<Va
     borderColor = '#ef4444'; // red
     opacity = 0.5;
   }
+
+  const isDimmed = opacity < 1;
 
   return (
     <div
@@ -139,6 +142,11 @@ export const ValueStreamNode = React.memo(({ data, selected }: NodeProps<Node<Va
         aria-label="Right connection point"
         style={{ background: borderColor }}
       />
+
+      {/* Relationship badge (when dimmed) */}
+      {data.relationshipBadge && (
+        <RelationshipBadge badge={data.relationshipBadge} isDimmed={isDimmed} />
+      )}
     </div>
   );
 });
