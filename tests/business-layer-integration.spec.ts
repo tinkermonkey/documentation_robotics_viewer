@@ -12,7 +12,7 @@ import { DataLoader } from '../src/core/services/dataLoader';
 import { GitHubService } from '../src/core/services/githubService';
 import { LocalFileLoader } from '../src/core/services/localFileLoader';
 import { SpecParser } from '../src/core/services/specParser';
-import JSZip from 'jszip';
+import { MetaModel } from '../src/core/types/model';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -28,7 +28,7 @@ test.describe('Business Layer Parser Integration Tests', () => {
 
   test('should parse business layer from example-implementation model', async () => {
     // Load the example-implementation model
-    const model = await loadExampleImplementation();
+    const model = await loadExampleImplementation(dataLoader);
 
     // Parse business layer
     const parser = new BusinessLayerParser();
@@ -77,7 +77,7 @@ test.describe('Business Layer Parser Integration Tests', () => {
   });
 
   test('should build business graph from example-implementation model', async () => {
-    const model = await loadExampleImplementation();
+    const model = await loadExampleImplementation(dataLoader);
     const parser = new BusinessLayerParser();
     const businessLayerData = parser.parseBusinessLayer(model);
 
@@ -111,7 +111,7 @@ test.describe('Business Layer Parser Integration Tests', () => {
   });
 
   test('should resolve cross-layer references', async () => {
-    const model = await loadExampleImplementation();
+    const model = await loadExampleImplementation(dataLoader);
     const parser = new BusinessLayerParser();
     const businessLayerData = parser.parseBusinessLayer(model);
 
@@ -148,7 +148,7 @@ test.describe('Business Layer Parser Integration Tests', () => {
   });
 
   test('should handle malformed data gracefully', async () => {
-    const model = await loadExampleImplementation();
+    const model = await loadExampleImplementation(dataLoader);
     const parser = new BusinessLayerParser();
 
     // Parse should not throw even with real-world data inconsistencies
@@ -168,7 +168,7 @@ test.describe('Business Layer Parser Integration Tests', () => {
   });
 
   test('should validate business relationships', async () => {
-    const model = await loadExampleImplementation();
+    const model = await loadExampleImplementation(dataLoader);
     const parser = new BusinessLayerParser();
     const businessLayerData = parser.parseBusinessLayer(model);
 
@@ -197,7 +197,7 @@ test.describe('Business Layer Parser Integration Tests', () => {
   });
 
   test('should detect circular dependencies if present', async () => {
-    const model = await loadExampleImplementation();
+    const model = await loadExampleImplementation(dataLoader);
     const parser = new BusinessLayerParser();
     const businessLayerData = parser.parseBusinessLayer(model);
 
@@ -222,7 +222,7 @@ test.describe('Business Layer Parser Integration Tests', () => {
   });
 
   test('should calculate element counts by type', async () => {
-    const model = await loadExampleImplementation();
+    const model = await loadExampleImplementation(dataLoader);
     const parser = new BusinessLayerParser();
     const businessLayerData = parser.parseBusinessLayer(model);
 
@@ -245,10 +245,10 @@ test.describe('Business Layer Parser Integration Tests', () => {
 });
 
 /**
- * Load example-implementation model from filesystem
+ * Load example-implementation model from filesystem using Node.js APIs
  */
-async function loadExampleImplementation() {
-  const examplePath = path.join(process.cwd(), 'example-implementation');
+async function loadExampleImplementation(dataLoader: DataLoader): Promise<MetaModel> {
+  const examplePath = path.join(process.cwd(), 'example-implementation', 'model');
 
   // Check if example-implementation exists
   if (!fs.existsSync(examplePath)) {
@@ -257,42 +257,47 @@ async function loadExampleImplementation() {
     );
   }
 
-  // Create a mock File object from the directory
-  // We need to zip the directory and create a File-like object
-  const zip = new JSZip();
+  // Read all YAML files from the directory structure
+  const schemas: Record<string, string> = {};
 
-  // Recursively add files to zip
-  function addFilesToZip(dirPath: string, zipPath: string = '') {
+  // Read manifest.yaml
+  const manifestPath = path.join(examplePath, 'manifest.yaml');
+  if (fs.existsSync(manifestPath)) {
+    schemas['manifest.yaml'] = fs.readFileSync(manifestPath, 'utf-8');
+  }
+
+  // Read projection-rules.yaml
+  const projectionRulesPath = path.join(process.cwd(), 'example-implementation', 'projection-rules.yaml');
+  if (fs.existsSync(projectionRulesPath)) {
+    schemas['projection-rules.yaml'] = fs.readFileSync(projectionRulesPath, 'utf-8');
+  }
+
+  // Recursively read all YAML files from layer directories
+  function readYAMLFiles(dirPath: string, relativePath: string = '') {
+    if (!fs.existsSync(dirPath)) {
+      return;
+    }
+
     const entries = fs.readdirSync(dirPath, { withFileTypes: true });
 
     for (const entry of entries) {
       const fullPath = path.join(dirPath, entry.name);
-      const zipFilePath = zipPath ? `${zipPath}/${entry.name}` : entry.name;
+      const relativeFilePath = relativePath ? `${relativePath}/${entry.name}` : entry.name;
 
       if (entry.isDirectory()) {
-        addFilesToZip(fullPath, zipFilePath);
+        readYAMLFiles(fullPath, relativeFilePath);
       } else if (entry.isFile() && (entry.name.endsWith('.yaml') || entry.name.endsWith('.yml'))) {
         const content = fs.readFileSync(fullPath, 'utf-8');
-        zip.file(zipFilePath, content);
+        schemas[relativeFilePath] = content;
       }
     }
   }
 
-  addFilesToZip(examplePath);
+  // Read all layer directories
+  readYAMLFiles(examplePath);
 
-  // Generate zip buffer
-  const zipBuffer = await zip.generateAsync({ type: 'nodebuffer' });
+  console.log(`Loaded ${Object.keys(schemas).length} YAML files from example-implementation`);
 
-  // Create File-like object
-  const zipFile = new File([zipBuffer], 'example-implementation.zip', {
-    type: 'application/zip',
-  });
-
-  // Load via DataLoader
-  const githubService = new GitHubService();
-  const localFileLoader = new LocalFileLoader();
-  const specParser = new SpecParser();
-  const loader = new DataLoader(githubService, localFileLoader, specParser);
-
-  return await loader.loadFromLocal(zipFile);
+  // Use DataLoader.parseYAMLInstances() public method to convert to MetaModel
+  return dataLoader.parseYAMLInstances(schemas, 'example-implementation');
 }
