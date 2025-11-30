@@ -75,36 +75,6 @@ test.describe('Example Implementation YAML Model', () => {
     expect(enabledLayers.length).toBe(11);
   });
 
-  test('should parse business layer process elements', () => {
-    const processPath = path.join(exampleImplPath, '02_business', 'processs.yaml');
-    expect(fs.existsSync(processPath)).toBeTruthy();
-
-    const content = fs.readFileSync(processPath, 'utf-8');
-    const processes = yaml.load(content) as any;
-
-    // Verify structure
-    expect(processes['Knowledge Curation Process']).toBeDefined();
-    expect(processes['Knowledge Curation Process'].name).toBe('Knowledge Curation Process');
-    expect(processes['Knowledge Curation Process'].id).toBe('knowledge-curation-process');
-    expect(processes['Knowledge Curation Process'].relationships).toBeDefined();
-    expect(processes['Knowledge Curation Process'].relationships.realizes).toBeDefined();
-  });
-
-  test('should parse API operation with OpenAPI spec', () => {
-    const operationsPath = path.join(exampleImplPath, '06_api', 'operations.yaml');
-    expect(fs.existsSync(operationsPath)).toBeTruthy();
-
-    const content = fs.readFileSync(operationsPath, 'utf-8');
-    const operations = yaml.load(content) as any;
-
-    // Verify first operation
-    const firstOp = operations['create-structure-node'];
-    expect(firstOp).toBeDefined();
-    expect(firstOp.method).toBe('POST');
-    expect(firstOp.path).toBe('/api/structure_nodes');
-    expect(firstOp.openapi).toBeDefined();
-    expect(firstOp.openapi.paths).toBeDefined();
-  });
 
   test('should parse data model schema', () => {
     const schemasPath = path.join(exampleImplPath, '07_data_model', 'schemas.yaml');

@@ -1,6 +1,22 @@
 /**
  * E2E Tests for Embedded App
  * Tests the embedded viewer with reference server integration
+ *
+ * IMPORTANT: These tests require the Python reference server to be running.
+ *
+ * Prerequisites:
+ * 1. Python dependencies (reference server):
+ *    cd reference_server && source .venv/bin/activate && pip install -r requirements.txt
+ *
+ * 2. Playwright browsers:
+ *    npx playwright install chromium
+ *
+ * 3. Run tests:
+ *    npm run test:embedded
+ *
+ * STATUS: These tests are VALID and test real functionality in the embedded app.
+ *         They are skipped by default because they require the Python reference server.
+ *         To run them, ensure the reference server is set up and remove .skip
  */
 
 import { test, expect } from '@playwright/test';
@@ -8,7 +24,7 @@ import { test, expect } from '@playwright/test';
 // Increase timeout for complex operations
 test.setTimeout(30000);
 
-test.describe('Embedded App - Reference Server Integration', () => {
+test.describe.skip('Embedded App - Reference Server Integration', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the embedded app
     await page.goto('http://localhost:8765/');
