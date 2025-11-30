@@ -173,58 +173,80 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
     {
       name: 'dr-viewer-preferences',
       version: 2, // Increment version for breaking change
-      // Custom serialization for Sets and Maps
+      // Custom serialization for Sets and Maps with error handling
       storage: {
         getItem: (name) => {
-          const str = localStorage.getItem(name);
-          if (!str) return null;
-          const { state } = JSON.parse(str);
+          try {
+            const str = localStorage.getItem(name);
+            if (!str) return null;
 
-          // Deserialize Sets and Maps
-          if (state.motivationPreferences) {
-            if (state.motivationPreferences.visibleElementTypes) {
-              state.motivationPreferences.visibleElementTypes = new Set(
-                state.motivationPreferences.visibleElementTypes
-              );
+            const { state } = JSON.parse(str);
+
+            // Deserialize Sets and Maps
+            if (state.motivationPreferences) {
+              if (state.motivationPreferences.visibleElementTypes) {
+                state.motivationPreferences.visibleElementTypes = new Set(
+                  state.motivationPreferences.visibleElementTypes
+                );
+              }
+              if (state.motivationPreferences.visibleRelationshipTypes) {
+                state.motivationPreferences.visibleRelationshipTypes = new Set(
+                  state.motivationPreferences.visibleRelationshipTypes
+                );
+              }
+              if (state.motivationPreferences.manualPositions) {
+                state.motivationPreferences.manualPositions = new Map(
+                  Object.entries(state.motivationPreferences.manualPositions)
+                );
+              }
             }
-            if (state.motivationPreferences.visibleRelationshipTypes) {
-              state.motivationPreferences.visibleRelationshipTypes = new Set(
-                state.motivationPreferences.visibleRelationshipTypes
-              );
-            }
-            if (state.motivationPreferences.manualPositions) {
-              state.motivationPreferences.manualPositions = new Map(
-                Object.entries(state.motivationPreferences.manualPositions)
-              );
-            }
+
+            return { state };
+          } catch (error) {
+            console.error('[ViewPreferenceStore] Error reading from localStorage:', error);
+            // Return null to trigger default state
+            return null;
           }
-
-          return { state };
         },
         setItem: (name, newValue: any) => {
-          const str = JSON.stringify({
-            state: {
-              ...newValue.state,
-              motivationPreferences: {
-                ...newValue.state.motivationPreferences,
-                // Serialize Sets as arrays
-                visibleElementTypes: newValue.state.motivationPreferences?.visibleElementTypes
-                  ? Array.from(newValue.state.motivationPreferences.visibleElementTypes)
-                  : [],
-                visibleRelationshipTypes: newValue.state.motivationPreferences
-                  ?.visibleRelationshipTypes
-                  ? Array.from(newValue.state.motivationPreferences.visibleRelationshipTypes)
-                  : [],
-                // Serialize Map as object
-                manualPositions: newValue.state.motivationPreferences?.manualPositions
-                  ? Object.fromEntries(newValue.state.motivationPreferences.manualPositions)
-                  : undefined,
+          try {
+            const str = JSON.stringify({
+              state: {
+                ...newValue.state,
+                motivationPreferences: {
+                  ...newValue.state.motivationPreferences,
+                  // Serialize Sets as arrays
+                  visibleElementTypes: newValue.state.motivationPreferences?.visibleElementTypes
+                    ? Array.from(newValue.state.motivationPreferences.visibleElementTypes)
+                    : [],
+                  visibleRelationshipTypes: newValue.state.motivationPreferences
+                    ?.visibleRelationshipTypes
+                    ? Array.from(newValue.state.motivationPreferences.visibleRelationshipTypes)
+                    : [],
+                  // Serialize Map as object
+                  manualPositions: newValue.state.motivationPreferences?.manualPositions
+                    ? Object.fromEntries(newValue.state.motivationPreferences.manualPositions)
+                    : undefined,
+                },
               },
-            },
-          });
-          localStorage.setItem(name, str);
+            });
+            localStorage.setItem(name, str);
+          } catch (error) {
+            if (error instanceof Error && error.name === 'QuotaExceededError') {
+              console.error('[ViewPreferenceStore] localStorage quota exceeded. Unable to save preferences.');
+              // Could emit an event here for user notification
+            } else {
+              console.error('[ViewPreferenceStore] Error writing to localStorage:', error);
+            }
+          }
         },
-        removeItem: (name) => localStorage.removeItem(name),
+        removeItem: (name) => {
+          try {
+            localStorage.removeItem(name);
+          } catch (error) {
+            console.error('[ViewPreferenceStore] Error removing from localStorage:', error);
+          }
+        },
       },
     }
   )

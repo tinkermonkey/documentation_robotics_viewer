@@ -9,6 +9,7 @@
  */
 
 import './MotivationControlPanel.css';
+import { LayoutAlgorithmType } from '../types/layoutAlgorithm';
 
 export type LayoutAlgorithm = 'force' | 'hierarchical' | 'radial' | 'manual';
 
@@ -85,14 +86,16 @@ export const MotivationControlPanel: React.FC<MotivationControlPanelProps> = ({
           value={selectedLayout}
           onChange={(e) => onLayoutChange(e.target.value as LayoutAlgorithm)}
           disabled={isLayouting}
+          aria-label="Select layout algorithm"
+          aria-describedby="layout-description"
         >
           {LAYOUT_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value} title={option.description}>
+            <option key={option.value} value={option.value}>
               {option.label}
             </option>
           ))}
         </select>
-        <div className="control-description">
+        <div id="layout-description" className="control-description" role="status" aria-live="polite">
           {LAYOUT_OPTIONS.find((opt) => opt.value === selectedLayout)?.description}
         </div>
       </div>
@@ -101,8 +104,8 @@ export const MotivationControlPanel: React.FC<MotivationControlPanelProps> = ({
         <button
           className="control-button"
           onClick={onFitToView}
-          title="Fit graph to viewport"
           disabled={isLayouting}
+          aria-label="Fit graph to viewport"
         >
           <svg
             width="16"
@@ -110,6 +113,7 @@ export const MotivationControlPanel: React.FC<MotivationControlPanelProps> = ({
             viewBox="0 0 16 16"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
           >
             <rect
               x="2"
@@ -140,10 +144,12 @@ export const MotivationControlPanel: React.FC<MotivationControlPanelProps> = ({
               checked={focusModeEnabled}
               onChange={(e) => onFocusModeToggle(e.target.checked)}
               disabled={isLayouting}
+              aria-label="Focus mode: dim non-focused elements for clarity"
+              aria-describedby="focus-mode-description"
             />
             <span>Focus Mode</span>
           </label>
-          <div className="control-description">Dim non-focused elements for clarity</div>
+          <div id="focus-mode-description" className="control-description">Dim non-focused elements for clarity</div>
         </div>
       )}
 

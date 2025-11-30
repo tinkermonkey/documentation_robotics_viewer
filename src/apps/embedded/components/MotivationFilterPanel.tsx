@@ -10,8 +10,8 @@
  */
 
 import { useState } from 'react';
-import { MotivationElementType, MotivationRelationshipType } from '../types/motivationGraph';
 import './MotivationFilterPanel.css';
+import { MotivationElementType, MotivationRelationshipType } from '../types/motivationGraph';
 
 export interface FilterCounts {
   elements: Record<MotivationElementType, { visible: number; total: number }>;
@@ -184,21 +184,32 @@ export const MotivationFilterPanel: React.FC<MotivationFilterPanelProps> = ({
         <div
           className="filter-section-header"
           onClick={() => setElementTypesExpanded(!elementTypesExpanded)}
+          role="button"
+          tabIndex={0}
+          aria-expanded={elementTypesExpanded}
+          aria-controls="element-types-content"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              setElementTypesExpanded(!elementTypesExpanded);
+            }
+          }}
         >
-          <span className="expand-icon">{elementTypesExpanded ? '▼' : '▶'}</span>
+          <span className="expand-icon" aria-hidden="true">{elementTypesExpanded ? '▼' : '▶'}</span>
           <h4>Element Types</h4>
-          <span className="filter-count">
+          <span className="filter-count" aria-label={`${totalElementCounts.visible} of ${totalElementCounts.total} element types visible`}>
             {totalElementCounts.visible} / {totalElementCounts.total}
           </span>
         </div>
 
         {elementTypesExpanded && (
-          <div className="filter-section-content">
+          <div className="filter-section-content" id="element-types-content" role="region" aria-label="Element type filters">
             <div className="filter-actions">
               <button
                 className="filter-action-button"
                 onClick={handleSelectAllElements}
                 disabled={allElementTypesSelected}
+                aria-label="Select all element types"
               >
                 Select All
               </button>
@@ -206,12 +217,13 @@ export const MotivationFilterPanel: React.FC<MotivationFilterPanelProps> = ({
                 className="filter-action-button"
                 onClick={handleDeselectAllElements}
                 disabled={selectedElementTypes.size === 0}
+                aria-label="Deselect all element types"
               >
                 Deselect All
               </button>
             </div>
 
-            <div className="filter-checkboxes">
+            <div className="filter-checkboxes" role="group" aria-label="Element type checkboxes">
               {Object.values(MotivationElementType).map((elementType) => {
                 const counts = filterCounts.elements[elementType];
                 const isSelected = selectedElementTypes.has(elementType);
@@ -227,11 +239,12 @@ export const MotivationFilterPanel: React.FC<MotivationFilterPanelProps> = ({
                       checked={isSelected}
                       onChange={(e) => onElementTypeChange(elementType, e.target.checked)}
                       disabled={!hasElements}
+                      aria-label={`${ELEMENT_TYPE_LABELS[elementType]}: ${counts ? `${counts.visible} of ${counts.total} visible` : 'none available'}`}
                     />
                     <span className="filter-label-text">
                       {ELEMENT_TYPE_LABELS[elementType]}
                     </span>
-                    <span className="filter-count-badge">
+                    <span className="filter-count-badge" aria-hidden="true">
                       {counts ? `${counts.visible}/${counts.total}` : '0/0'}
                     </span>
                   </label>
@@ -247,21 +260,32 @@ export const MotivationFilterPanel: React.FC<MotivationFilterPanelProps> = ({
         <div
           className="filter-section-header"
           onClick={() => setRelationshipTypesExpanded(!relationshipTypesExpanded)}
+          role="button"
+          tabIndex={0}
+          aria-expanded={relationshipTypesExpanded}
+          aria-controls="relationship-types-content"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              setRelationshipTypesExpanded(!relationshipTypesExpanded);
+            }
+          }}
         >
-          <span className="expand-icon">{relationshipTypesExpanded ? '▼' : '▶'}</span>
+          <span className="expand-icon" aria-hidden="true">{relationshipTypesExpanded ? '▼' : '▶'}</span>
           <h4>Relationship Types</h4>
-          <span className="filter-count">
+          <span className="filter-count" aria-label={`${totalRelationshipCounts.visible} of ${totalRelationshipCounts.total} relationship types visible`}>
             {totalRelationshipCounts.visible} / {totalRelationshipCounts.total}
           </span>
         </div>
 
         {relationshipTypesExpanded && (
-          <div className="filter-section-content">
+          <div className="filter-section-content" id="relationship-types-content" role="region" aria-label="Relationship type filters">
             <div className="filter-actions">
               <button
                 className="filter-action-button"
                 onClick={handleSelectAllRelationships}
                 disabled={allRelationshipTypesSelected}
+                aria-label="Select all relationship types"
               >
                 Select All
               </button>
@@ -269,12 +293,13 @@ export const MotivationFilterPanel: React.FC<MotivationFilterPanelProps> = ({
                 className="filter-action-button"
                 onClick={handleDeselectAllRelationships}
                 disabled={selectedRelationshipTypes.size === 0}
+                aria-label="Deselect all relationship types"
               >
                 Deselect All
               </button>
             </div>
 
-            <div className="filter-checkboxes">
+            <div className="filter-checkboxes" role="group" aria-label="Relationship type checkboxes">
               {Object.values(MotivationRelationshipType).map((relationshipType) => {
                 const counts = filterCounts.relationships[relationshipType];
                 const isSelected = selectedRelationshipTypes.has(relationshipType);
@@ -292,11 +317,12 @@ export const MotivationFilterPanel: React.FC<MotivationFilterPanelProps> = ({
                         onRelationshipTypeChange(relationshipType, e.target.checked)
                       }
                       disabled={!hasRelationships}
+                      aria-label={`${RELATIONSHIP_TYPE_LABELS[relationshipType]}: ${counts ? `${counts.visible} of ${counts.total} visible` : 'none available'}`}
                     />
                     <span className="filter-label-text">
                       {RELATIONSHIP_TYPE_LABELS[relationshipType]}
                     </span>
-                    <span className="filter-count-badge">
+                    <span className="filter-count-badge" aria-hidden="true">
                       {counts ? `${counts.visible}/${counts.total}` : '0/0'}
                     </span>
                   </label>

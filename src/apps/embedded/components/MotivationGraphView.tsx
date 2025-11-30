@@ -5,6 +5,9 @@
  */
 
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import '@xyflow/react/dist/style.css';
+import '../../../core/components/GraphViewer.css';
+import './MotivationGraphView.css';
 import {
   ReactFlow,
   Background,
@@ -16,9 +19,6 @@ import {
   Edge,
   useReactFlow,
 } from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
-import '../../../core/components/GraphViewer.css';
-import './MotivationGraphView.css';
 
 import { MetaModel } from '../../../core/types';
 import { nodeTypes } from '../../../core/nodes';
@@ -172,7 +172,7 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
 
         // Apply animated transitions if layout changed
         if (nodes.length > 0 && transformResult.nodes.length > 0) {
-          animateLayoutTransition(nodes, transformResult.nodes, setNodes);
+          await animateLayoutTransition(nodes, transformResult.nodes, setNodes, setIsLayouting);
         } else {
           setNodes(transformResult.nodes);
         }
@@ -187,6 +187,7 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
         setIsLayouting(false);
       } catch (err) {
         console.error('[MotivationGraphView] Transform error:', err);
+        console.warn('[MotivationGraphView] Layout transition failed, restoring normal state');
         setIsLayouting(false);
       }
     };
@@ -202,7 +203,7 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
   ]);
 
   /**
-   * Calculate filter counts for display
+   * Calculate filter counts for display (memoized for performance)
    */
   const filterCounts = useMemo((): FilterCounts => {
     if (!fullGraphRef.current) {
@@ -394,7 +395,15 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
         </div>
 
         {/* Main Graph View */}
-        <div className="graph-viewer" style={{ width: '100%', height: '100%' }}>
+        <div className="graph-viewer" style={{ width: '100%', height: '100%', position: 'relative' }}>
+          {isLayouting && (
+            <div className="layout-overlay" role="status" aria-live="polite">
+              <div className="layout-progress">
+                <div className="spinner-small"></div>
+                <span>Computing layout...</span>
+              </div>
+            </div>
+          )}
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -450,59 +459,77 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
 /**
  * Animate layout transitions using position interpolation
  * Target: 800ms smooth transition
+ * Enhanced with error handling and loading state management
  */
-function animateLayoutTransition(
+async function animateLayoutTransition(
   oldNodes: Node[],
   newNodes: Node[],
-  setNodes: (nodes: Node[]) => void
-): void {
-  const duration = 800; // ms
-  const startTime = Date.now();
+  setNodes: (nodes: Node[]) => void,
+  setIsLayouting: (loading: boolean) => void
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    try {
+      const duration = 800; // ms
+      const startTime = Date.now();
 
-  // Create map of old positions
-  const oldPositions = new Map<string, { x: number; y: number }>();
-  oldNodes.forEach((node) => {
-    oldPositions.set(node.id, { x: node.position.x, y: node.position.y });
-  });
+      // Create map of old positions
+      const oldPositions = new Map<string, { x: number; y: number }>();
+      oldNodes.forEach((node) => {
+        oldPositions.set(node.id, { x: node.position.x, y: node.position.y });
+      });
 
-  // Ease-in-out function
-  const easeInOutCubic = (t: number): number => {
-    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-  };
-
-  // Animation loop
-  const animate = () => {
-    const elapsed = Date.now() - startTime;
-    const progress = Math.min(elapsed / duration, 1);
-    const easedProgress = easeInOutCubic(progress);
-
-    const interpolatedNodes = newNodes.map((newNode) => {
-      const oldPos = oldPositions.get(newNode.id);
-      if (!oldPos) {
-        // New node, just use new position
-        return newNode;
-      }
-
-      // Interpolate position
-      const x = oldPos.x + (newNode.position.x - oldPos.x) * easedProgress;
-      const y = oldPos.y + (newNode.position.y - oldPos.y) * easedProgress;
-
-      return {
-        ...newNode,
-        position: { x, y },
+      // Ease-in-out function
+      const easeInOutCubic = (t: number): number => {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
       };
-    });
 
-    setNodes(interpolatedNodes);
+      // Animation loop
+      const animate = () => {
+        try {
+          const elapsed = Date.now() - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const easedProgress = easeInOutCubic(progress);
 
-    // Continue animation if not complete
-    if (progress < 1) {
+          const interpolatedNodes = newNodes.map((newNode) => {
+            const oldPos = oldPositions.get(newNode.id);
+            if (!oldPos) {
+              // New node, just use new position
+              return newNode;
+            }
+
+            // Interpolate position
+            const x = oldPos.x + (newNode.position.x - oldPos.x) * easedProgress;
+            const y = oldPos.y + (newNode.position.y - oldPos.y) * easedProgress;
+
+            return {
+              ...newNode,
+              position: { x, y },
+            };
+          });
+
+          setNodes(interpolatedNodes);
+
+          // Continue animation if not complete
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            resolve();
+          }
+        } catch (err) {
+          console.error('[MotivationGraphView] Animation frame error:', err);
+          setIsLayouting(false);
+          reject(err);
+        }
+      };
+
+      // Start animation
       requestAnimationFrame(animate);
+    } catch (err) {
+      console.error('[MotivationGraphView] Animation setup error:', err);
+      setIsLayouting(false);
+      reject(err);
     }
-  };
-
-  // Start animation
-  requestAnimationFrame(animate);
+  });
 }
 
 export default MotivationGraphView;

@@ -13,6 +13,7 @@ import {
   MotivationElementType,
   MotivationRelationshipType,
 } from '../types/motivationGraph';
+import { LayoutAlgorithmType } from '../types/layoutAlgorithm';
 import {
   StakeholderNodeData,
   GoalNodeData,
@@ -49,7 +50,7 @@ import {
  * Transformer configuration options
  */
 export interface TransformerOptions {
-  layoutAlgorithm?: 'force' | 'hierarchical' | 'radial' | 'manual';
+  layoutAlgorithm?: LayoutAlgorithmType | 'force' | 'hierarchical' | 'radial' | 'manual';
   layoutOptions?: LayoutOptions;
   selectedElementTypes?: Set<MotivationElementType>;
   selectedRelationshipTypes?: Set<MotivationRelationshipType>;
@@ -189,15 +190,15 @@ export class MotivationGraphTransformer {
       case 'radial': {
         // For radial layout, we need a center node
         const centerNodeId = this.options.centerNodeId || this.findDefaultCenterNode(graph);
-        if (!centerNodeId) {
-          console.warn('[MotivationGraphTransformer] No center node for radial layout, using force-directed');
+        if (!centerNodeId || !graph.nodes.has(centerNodeId)) {
+          console.warn('[MotivationGraphTransformer] No valid center node for radial layout, using force-directed');
           return forceDirectedLayout(graph, this.options.layoutOptions);
         }
         return radialLayout(graph, centerNodeId, this.options.layoutOptions);
       }
 
       case 'manual': {
-        if (!this.options.existingPositions) {
+        if (!this.options.existingPositions || this.options.existingPositions.size === 0) {
           console.warn('[MotivationGraphTransformer] No existing positions for manual layout, using force-directed');
           return forceDirectedLayout(graph, this.options.layoutOptions);
         }

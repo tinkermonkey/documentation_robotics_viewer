@@ -292,6 +292,21 @@ export function hierarchicalLayout(
     }
   }
 
+  // Handle disconnected nodes (nodes not positioned by dagre)
+  const centerX = width / 2;
+  const centerY = height / 2;
+  const disconnectedRadius = Math.min(width, height) / 2 - padding;
+  handleDisconnectedNodes(graph, positions, centerX, centerY, disconnectedRadius);
+
+  // Recalculate bounds including disconnected nodes
+  for (const [nodeId, pos] of positions) {
+    const dimensions = getNodeDimensions(graph.nodes.get(nodeId)!.element.type);
+    minX = Math.min(minX, pos.x - dimensions.width / 2);
+    minY = Math.min(minY, pos.y - dimensions.height / 2);
+    maxX = Math.max(maxX, pos.x + dimensions.width / 2);
+    maxY = Math.max(maxY, pos.y + dimensions.height / 2);
+  }
+
   const bounds = {
     width: maxX - minX + 2 * padding,
     height: maxY - minY + 2 * padding,
@@ -329,6 +344,40 @@ function getNodeDimensions(elementType: string): { width: number; height: number
   };
 
   return dimensionMap[elementType] || { width: 180, height: 110 };
+}
+
+/**
+ * Handle disconnected nodes by positioning them in a separate ring
+ * Shared utility to avoid code duplication
+ */
+function handleDisconnectedNodes(
+  graph: MotivationGraph,
+  positions: Map<string, Position>,
+  centerX: number,
+  centerY: number,
+  baseRadius: number
+): void {
+  const disconnectedNodes: string[] = [];
+  for (const [nodeId] of graph.nodes) {
+    if (!positions.has(nodeId)) {
+      disconnectedNodes.push(nodeId);
+    }
+  }
+
+  if (disconnectedNodes.length > 0) {
+    console.log('[Layout] Handling', disconnectedNodes.length, 'disconnected nodes');
+
+    // Position disconnected nodes in a separate ring
+    const angleStep = (2 * Math.PI) / disconnectedNodes.length;
+
+    disconnectedNodes.forEach((nodeId, index) => {
+      const angle = index * angleStep;
+      positions.set(nodeId, {
+        x: centerX + baseRadius * Math.cos(angle),
+        y: centerY + baseRadius * Math.sin(angle),
+      });
+    });
+  }
 }
 
 /**
@@ -420,28 +469,8 @@ export function radialLayout(
   }
 
   // Handle disconnected nodes (not reachable from center)
-  const disconnectedNodes: string[] = [];
-  for (const [nodeId] of graph.nodes) {
-    if (!positions.has(nodeId)) {
-      disconnectedNodes.push(nodeId);
-    }
-  }
-
-  if (disconnectedNodes.length > 0) {
-    console.log('[RadialLayout]', disconnectedNodes.length, 'disconnected nodes found');
-
-    // Position disconnected nodes in a separate ring or corner
-    const disconnectedRadius = (maxLevel + 1) * radiusIncrement;
-    const angleStep = (2 * Math.PI) / disconnectedNodes.length;
-
-    disconnectedNodes.forEach((nodeId, index) => {
-      const angle = index * angleStep;
-      positions.set(nodeId, {
-        x: centerX + disconnectedRadius * Math.cos(angle),
-        y: centerY + disconnectedRadius * Math.sin(angle),
-      });
-    });
-  }
+  const disconnectedRadius = (maxLevel + 1) * radiusIncrement;
+  handleDisconnectedNodes(graph, positions, centerX, centerY, disconnectedRadius);
 
   // Calculate bounds
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
