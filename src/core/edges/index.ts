@@ -9,10 +9,11 @@ import {
   ConstrainsEdge,
   RealizesEdge,
   RefinesEdge,
+  ConflictsEdge,
 } from './motivation';
 
 // Export edge components
-export { ElbowEdge, InfluenceEdge, ConstrainsEdge, RealizesEdge, RefinesEdge };
+export { ElbowEdge, InfluenceEdge, ConstrainsEdge, RealizesEdge, RefinesEdge, ConflictsEdge };
 
 // Edge types object for React Flow
 // Maps edge type strings to their component implementations
@@ -24,6 +25,7 @@ export const edgeTypes = {
   constrains: ConstrainsEdge,
   realizes: RealizesEdge,
   refines: RefinesEdge,
+  conflicts: ConflictsEdge,
 };
 
 // Export pathfinding utilities

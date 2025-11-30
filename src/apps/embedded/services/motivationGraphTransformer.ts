@@ -241,8 +241,16 @@ export class MotivationGraphTransformer {
         return 'driver';
       case MotivationElementType.Outcome:
         return 'outcome';
+      case MotivationElementType.Principle:
+        return 'principle';
+      case MotivationElementType.Assumption:
+        return 'assumption';
+      case MotivationElementType.ValueStream:
+        return 'valueStream';
+      case MotivationElementType.Assessment:
+        return 'assessment';
       default:
-        // For types without custom components, use goal as fallback
+        // Fallback to goal for any unknown types
         return 'goal';
     }
   }
@@ -306,6 +314,30 @@ export class MotivationGraphTransformer {
           ...baseData,
           achievementStatus: element.properties?.achievementStatus || element.properties?.status,
         } as OutcomeNodeData;
+
+      case MotivationElementType.Principle:
+        return {
+          ...baseData,
+          scope: element.properties?.scope,
+        };
+
+      case MotivationElementType.Assumption:
+        return {
+          ...baseData,
+          validationStatus: element.properties?.validationStatus || element.properties?.status,
+        };
+
+      case MotivationElementType.ValueStream:
+        return {
+          ...baseData,
+          stageCount: element.properties?.stageCount || element.properties?.stages?.length || 0,
+        };
+
+      case MotivationElementType.Assessment:
+        return {
+          ...baseData,
+          rating: element.properties?.rating || element.properties?.score || 0,
+        };
 
       default:
         return baseData;
@@ -404,6 +436,8 @@ export class MotivationGraphTransformer {
         return 'realizes';
       case MotivationRelationshipType.Refines:
         return 'refines';
+      case MotivationRelationshipType.Conflicts:
+        return 'conflicts';
       default:
         return 'influence'; // Default to influence edge
     }

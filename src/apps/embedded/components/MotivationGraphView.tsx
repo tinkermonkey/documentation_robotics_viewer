@@ -23,6 +23,7 @@ import { nodeTypes } from '../../../core/nodes';
 import { edgeTypes } from '../../../core/edges';
 import { MotivationGraphBuilder } from '../services/motivationGraphBuilder';
 import { MotivationGraphTransformer } from '../services/motivationGraphTransformer';
+import { ErrorBoundary } from './ErrorBoundary';
 
 export interface MotivationGraphViewProps {
   model: MetaModel;
@@ -145,41 +146,43 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
 
   // Render ReactFlow with motivation nodes and edges
   return (
-    <div className="graph-viewer" style={{ width: '100%', height: '100%' }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onNodeClick={onNodeClick}
-        fitView
-        fitViewOptions={{
-          padding: 0.2,
-          includeHiddenNodes: false,
-        }}
-        minZoom={0.1}
-        maxZoom={2}
-        defaultEdgeOptions={{
-          animated: false,
-        }}
-        proOptions={{ hideAttribution: true }}
-      >
-        <Background color="#e5e7eb" gap={16} />
-        <Controls />
-        <MiniMap
-          nodeColor={(node) => {
-            // Color minimap nodes based on their stroke color
-            return node.data.stroke || '#6b7280';
+    <ErrorBoundary>
+      <div className="graph-viewer" style={{ width: '100%', height: '100%' }}>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onNodeClick={onNodeClick}
+          fitView
+          fitViewOptions={{
+            padding: 0.2,
+            includeHiddenNodes: false,
           }}
-          maskColor="rgba(0, 0, 0, 0.1)"
-          style={{
-            backgroundColor: '#f9fafb',
+          minZoom={0.1}
+          maxZoom={2}
+          defaultEdgeOptions={{
+            animated: false,
           }}
-        />
-      </ReactFlow>
-    </div>
+          proOptions={{ hideAttribution: true }}
+        >
+          <Background color="#e5e7eb" gap={16} />
+          <Controls />
+          <MiniMap
+            nodeColor={(node) => {
+              // Color minimap nodes based on their stroke color
+              return node.data.stroke || '#6b7280';
+            }}
+            maskColor="rgba(0, 0, 0, 0.1)"
+            style={{
+              backgroundColor: '#f9fafb',
+            }}
+          />
+        </ReactFlow>
+      </div>
+    </ErrorBoundary>
   );
 };
 

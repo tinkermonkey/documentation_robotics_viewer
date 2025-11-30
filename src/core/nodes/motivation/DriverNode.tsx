@@ -56,6 +56,8 @@ export const DriverNode = memo(({ data }: NodeProps<DriverNodeData>) => {
 
   return (
     <div
+      role="article"
+      aria-label={`Driver: ${data.label}${data.category ? `, category: ${data.category}` : ''}`}
       style={{
         width: DRIVER_NODE_WIDTH,
         height: DRIVER_NODE_HEIGHT,
@@ -78,30 +80,36 @@ export const DriverNode = memo(({ data }: NodeProps<DriverNodeData>) => {
         type="target"
         position={Position.Top}
         id="top"
+        aria-label="Top connection point"
         style={{ left: '50%', background: borderColor, width: 8, height: 8 }}
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="bottom"
+        aria-label="Bottom connection point"
         style={{ left: '50%', background: borderColor, width: 8, height: 8 }}
       />
       <Handle
         type="target"
         position={Position.Left}
         id="left"
+        aria-label="Left connection point"
         style={{ top: '50%', background: borderColor, width: 8, height: 8 }}
       />
       <Handle
         type="source"
         position={Position.Right}
         id="right"
+        aria-label="Right connection point"
         style={{ top: '50%', background: borderColor, width: 8, height: 8 }}
       />
 
       {/* Category badge (top right) */}
       {data.category && (
         <div
+          role="status"
+          aria-label={`Category: ${data.category}`}
           style={{
             position: 'absolute',
             top: 6,

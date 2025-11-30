@@ -135,6 +135,38 @@ export interface OutcomeNodeData extends BaseNodeData {
 }
 
 /**
+ * Principle node data (Motivation layer)
+ */
+export interface PrincipleNodeData extends BaseNodeData {
+  scope?: 'enterprise' | 'domain' | 'application';
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
+ * Assumption node data (Motivation layer)
+ */
+export interface AssumptionNodeData extends BaseNodeData {
+  validationStatus?: 'validated' | 'unvalidated' | 'invalidated';
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
+ * ValueStream node data (Motivation layer)
+ */
+export interface ValueStreamNodeData extends BaseNodeData {
+  stageCount?: number;
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
+ * Assessment node data (Motivation layer)
+ */
+export interface AssessmentNodeData extends BaseNodeData {
+  rating?: number; // 0-5
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
  * Union type for all custom node types
  */
 export type AppNode =
@@ -150,7 +182,11 @@ export type AppNode =
   | Node<RequirementNodeData, 'requirement'>
   | Node<ConstraintNodeData, 'constraint'>
   | Node<DriverNodeData, 'driver'>
-  | Node<OutcomeNodeData, 'outcome'>;
+  | Node<OutcomeNodeData, 'outcome'>
+  | Node<PrincipleNodeData, 'principle'>
+  | Node<AssumptionNodeData, 'assumption'>
+  | Node<ValueStreamNodeData, 'valueStream'>
+  | Node<AssessmentNodeData, 'assessment'>;
 
 /**
  * Edge data for custom edges

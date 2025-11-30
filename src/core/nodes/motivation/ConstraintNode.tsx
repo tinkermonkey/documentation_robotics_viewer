@@ -37,10 +37,13 @@ export const ConstraintNode = memo(({ data }: NodeProps<ConstraintNodeData>) => 
   }
 
   // Negotiability icon
-  const negotiabilityIcon = data.negotiability === 'fixed' ? '🔒' : '🔓';
+  const negotiabilityLabel = data.negotiability === 'fixed' ? 'FIXED' : 'NEGOTIABLE';
+  const negotiabilityColor = data.negotiability === 'fixed' ? '#ef4444' : '#10b981';
 
   return (
     <div
+      role="article"
+      aria-label={`Constraint: ${data.label}${data.negotiability ? `, ${data.negotiability}` : ''}${changesetOperation ? `, ${changesetOperation} operation` : ''}`}
       style={{
         width: CONSTRAINT_NODE_WIDTH,
         height: CONSTRAINT_NODE_HEIGHT,
@@ -63,44 +66,63 @@ export const ConstraintNode = memo(({ data }: NodeProps<ConstraintNodeData>) => 
         type="target"
         position={Position.Top}
         id="top"
+        aria-label="Top connection point"
         style={{ left: '50%', background: borderColor, width: 8, height: 8 }}
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="bottom"
+        aria-label="Bottom connection point"
         style={{ left: '50%', background: borderColor, width: 8, height: 8 }}
       />
       <Handle
         type="target"
         position={Position.Left}
         id="left"
+        aria-label="Left connection point"
         style={{ top: '50%', background: borderColor, width: 8, height: 8 }}
       />
       <Handle
         type="source"
         position={Position.Right}
         id="right"
+        aria-label="Right connection point"
         style={{ top: '50%', background: borderColor, width: 8, height: 8 }}
       />
 
-      {/* Negotiability indicator (top right) */}
+      {/* Negotiability badge (top right) */}
       {data.negotiability && (
         <div
+          role="status"
+          aria-label={`Constraint is ${data.negotiability}`}
           style={{
             position: 'absolute',
-            top: 6,
-            right: 6,
-            fontSize: 16,
+            top: 8,
+            right: 8,
+            backgroundColor: negotiabilityColor,
+            color: 'white',
+            fontSize: 10,
+            fontWeight: 600,
+            padding: '2px 6px',
+            borderRadius: 4,
           }}
-          title={data.negotiability === 'fixed' ? 'Fixed constraint' : 'Negotiable constraint'}
         >
-          {negotiabilityIcon}
+          {negotiabilityLabel}
         </div>
       )}
 
-      {/* Constraint icon */}
-      <div style={{ fontSize: 28, marginBottom: 8 }}>⚠️</div>
+      {/* Constraint type label */}
+      <div
+        style={{
+          fontSize: 10,
+          color: '#6b7280',
+          fontWeight: 600,
+          marginBottom: 8,
+        }}
+      >
+        CONSTRAINT
+      </div>
 
       {/* Constraint name */}
       <div

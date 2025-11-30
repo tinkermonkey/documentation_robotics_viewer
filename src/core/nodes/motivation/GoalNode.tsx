@@ -54,6 +54,8 @@ export const GoalNode = memo(({ data }: NodeProps<GoalNodeData>) => {
 
   return (
     <div
+      role="article"
+      aria-label={`Goal: ${data.label}${data.priority ? `, priority: ${data.priority}` : ''}`}
       style={{
         width: GOAL_NODE_WIDTH,
         height: GOAL_NODE_HEIGHT,
@@ -76,30 +78,36 @@ export const GoalNode = memo(({ data }: NodeProps<GoalNodeData>) => {
         type="target"
         position={Position.Top}
         id="top"
+        aria-label="Top connection point"
         style={{ left: '50%', background: borderColor, width: 8, height: 8 }}
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="bottom"
+        aria-label="Bottom connection point"
         style={{ left: '50%', background: borderColor, width: 8, height: 8 }}
       />
       <Handle
         type="target"
         position={Position.Left}
         id="left"
+        aria-label="Left connection point"
         style={{ top: '50%', background: borderColor, width: 8, height: 8 }}
       />
       <Handle
         type="source"
         position={Position.Right}
         id="right"
+        aria-label="Right connection point"
         style={{ top: '50%', background: borderColor, width: 8, height: 8 }}
       />
 
       {/* Priority badge (top right) */}
       {data.priority && (
         <div
+          role="status"
+          aria-label={`Priority: ${data.priority}`}
           style={{
             position: 'absolute',
             top: 6,

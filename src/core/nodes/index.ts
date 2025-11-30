@@ -18,6 +18,10 @@ import {
   ConstraintNode,
   DriverNode,
   OutcomeNode,
+  PrincipleNode,
+  AssumptionNode,
+  ValueStreamNode,
+  AssessmentNode,
 } from './motivation';
 
 // Export all node components
@@ -36,6 +40,10 @@ export {
   ConstraintNode,
   DriverNode,
   OutcomeNode,
+  PrincipleNode,
+  AssumptionNode,
+  ValueStreamNode,
+  AssessmentNode,
 };
 
 // Node types object for React Flow
@@ -55,4 +63,8 @@ export const nodeTypes = {
   constraint: ConstraintNode,
   driver: DriverNode,
   outcome: OutcomeNode,
+  principle: PrincipleNode,
+  assumption: AssumptionNode,
+  valueStream: ValueStreamNode,
+  assessment: AssessmentNode,
 };

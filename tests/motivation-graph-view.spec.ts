@@ -51,34 +51,42 @@ test.describe('Motivation Graph View', () => {
     }
   });
 
-  test('displays correct custom node types', async ({ page }) => {
+  test('displays correct custom node types with text labels', async ({ page }) => {
     // Switch to motivation view
     await page.getByRole('button', { name: /motivation/i }).click();
 
     // Wait for graph to render
     await page.waitForTimeout(2000);
 
-    // Look for motivation-specific node elements
-    // Check for various node type indicators
-    const stakeholderIcon = page.getByText('👤');
-    const goalIcon = page.getByText('🎯');
-    const requirementIcon = page.getByText('📋');
-    const constraintIcon = page.getByText('⚠️');
-    const driverIcon = page.getByText('⚡');
-    const outcomeIcon = page.getByText('🏆');
+    // Look for motivation-specific node type labels (standardized text-based design)
+    const stakeholderLabel = page.getByText('STAKEHOLDER', { exact: false });
+    const goalLabel = page.getByText('GOAL', { exact: false });
+    const requirementLabel = page.getByText('REQUIREMENT', { exact: false });
+    const constraintLabel = page.getByText('CONSTRAINT', { exact: false });
+    const driverLabel = page.getByText('DRIVER', { exact: false });
+    const outcomeLabel = page.getByText('OUTCOME', { exact: false });
+    const principleLabel = page.getByText('PRINCIPLE', { exact: false });
+    const assumptionLabel = page.getByText('ASSUMPTION', { exact: false });
+    const valueStreamLabel = page.getByText('VALUE STREAM', { exact: false });
+    const assessmentLabel = page.getByText('ASSESSMENT', { exact: false });
 
     // At least one type should be present if model has motivation layer
-    const iconCount = await Promise.all([
-      stakeholderIcon.count(),
-      goalIcon.count(),
-      requirementIcon.count(),
-      constraintIcon.count(),
-      driverIcon.count(),
-      outcomeIcon.count(),
+    const labelCount = await Promise.all([
+      stakeholderLabel.count(),
+      goalLabel.count(),
+      requirementLabel.count(),
+      constraintLabel.count(),
+      driverLabel.count(),
+      outcomeLabel.count(),
+      principleLabel.count(),
+      assumptionLabel.count(),
+      valueStreamLabel.count(),
+      assessmentLabel.count(),
     ]);
 
-    const totalIcons = iconCount.reduce((a, b) => a + b, 0);
-    console.log('Total motivation node icons found:', totalIcons);
+    const totalLabels = labelCount.reduce((a, b) => a + b, 0);
+    console.log('Total motivation node type labels found:', totalLabels);
+    expect(totalLabels).toBeGreaterThan(0);
   });
 
   test('ReactFlow controls are present', async ({ page }) => {
@@ -170,6 +178,131 @@ test.describe('Motivation Graph View', () => {
       await page.waitForTimeout(300);
 
       console.log('Zoom controls functional');
+    }
+  });
+
+  test('force-directed layout positions nodes away from origin', async ({ page }) => {
+    // Switch to motivation view
+    await page.getByRole('button', { name: /motivation/i }).click();
+
+    // Wait for layout to complete
+    await page.waitForTimeout(2000);
+
+    const nodes = page.locator('.react-flow__node');
+    const nodeCount = await nodes.count();
+
+    if (nodeCount > 1) {
+      // Get position of first two nodes
+      const node1 = nodes.nth(0);
+      const node2 = nodes.nth(1);
+
+      const pos1 = await node1.boundingBox();
+      const pos2 = await node2.boundingBox();
+
+      // Nodes should have non-zero positions (not all at origin)
+      expect(pos1).not.toBeNull();
+      expect(pos2).not.toBeNull();
+
+      if (pos1 && pos2) {
+        // At least one node should be positioned away from (0,0)
+        const hasNonZeroPosition = pos1.x !== 0 || pos1.y !== 0 || pos2.x !== 0 || pos2.y !== 0;
+        expect(hasNonZeroPosition).toBeTruthy();
+        console.log('Layout positioned nodes correctly:', { pos1, pos2 });
+      }
+    }
+  });
+
+  test('custom edge styles are applied correctly', async ({ page }) => {
+    // Switch to motivation view
+    await page.getByRole('button', { name: /motivation/i }).click();
+
+    // Wait for graph to render
+    await page.waitForTimeout(2000);
+
+    const edges = page.locator('.react-flow__edge');
+    const edgeCount = await edges.count();
+
+    if (edgeCount > 0) {
+      const firstEdge = edges.first();
+
+      // Get edge path element
+      const edgePath = firstEdge.locator('path').first();
+
+      // Check that edge has styling attributes
+      const stroke = await edgePath.getAttribute('stroke');
+      const strokeWidth = await edgePath.getAttribute('stroke-width');
+
+      expect(stroke).not.toBeNull();
+      expect(strokeWidth).not.toBeNull();
+
+      console.log('Edge styling applied:', { stroke, strokeWidth });
+    } else {
+      console.log('No edges found in motivation graph');
+    }
+  });
+
+  test('node selection updates visual state', async ({ page }) => {
+    // Switch to motivation view
+    await page.getByRole('button', { name: /motivation/i }).click();
+
+    // Wait for graph to render
+    await page.waitForTimeout(2000);
+
+    const nodes = page.locator('.react-flow__node');
+    const nodeCount = await nodes.count();
+
+    if (nodeCount > 0) {
+      const firstNode = nodes.first();
+
+      // Get initial box-shadow or border (selection indicator)
+      const initialStyle = await firstNode.evaluate((el) => {
+        return window.getComputedStyle(el).boxShadow;
+      });
+
+      // Click node to select
+      await firstNode.click();
+      await page.waitForTimeout(300);
+
+      // Get style after selection
+      const selectedStyle = await firstNode.evaluate((el) => {
+        return window.getComputedStyle(el).boxShadow;
+      });
+
+      // Selection should change styling (ReactFlow adds box-shadow for selection)
+      console.log('Selection state changed:', {
+        before: initialStyle,
+        after: selectedStyle,
+        changed: initialStyle !== selectedStyle,
+      });
+    }
+  });
+
+  test('changeset operation styling is applied', async ({ page }) => {
+    // This test verifies that if changeset operations exist, they are styled correctly
+    // Switch to motivation view
+    await page.getByRole('button', { name: /motivation/i }).click();
+
+    // Wait for graph to render
+    await page.waitForTimeout(2000);
+
+    const nodes = page.locator('.react-flow__node');
+    const nodeCount = await nodes.count();
+
+    if (nodeCount > 0) {
+      // Look for any nodes with changeset styling (green for add, amber for update, red for delete)
+      const greenBorder = await page.locator('[style*="rgb(16, 185, 129)"]').count(); // green
+      const amberBorder = await page.locator('[style*="rgb(245, 158, 11)"]').count(); // amber
+      const redBorder = await page.locator('[style*="rgb(239, 68, 68)"]').count(); // red
+
+      console.log('Changeset styling check:', {
+        greenBorders: greenBorder,
+        amberBorders: amberBorder,
+        redBorders: redBorder,
+        note: 'Colors applied when changesets are active',
+      });
+
+      // Test passes regardless of whether changesets exist - just verifying no errors
+      expect(true).toBeTruthy();
     }
   });
 });

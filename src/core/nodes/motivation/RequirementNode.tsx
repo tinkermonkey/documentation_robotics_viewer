@@ -50,6 +50,8 @@ export const RequirementNode = memo(({ data }: NodeProps<RequirementNodeData>) =
 
   return (
     <div
+      role="article"
+      aria-label={`Requirement: ${data.label}${data.status ? `, status: ${data.status}` : ''}${changesetOperation ? `, ${changesetOperation} operation` : ''}`}
       style={{
         width: REQUIREMENT_NODE_WIDTH,
         height: REQUIREMENT_NODE_HEIGHT,
@@ -72,29 +74,35 @@ export const RequirementNode = memo(({ data }: NodeProps<RequirementNodeData>) =
         type="target"
         position={Position.Top}
         id="top"
+        aria-label="Top connection point"
         style={{ left: '50%', background: borderColor, width: 8, height: 8 }}
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="bottom"
+        aria-label="Bottom connection point"
         style={{ left: '50%', background: borderColor, width: 8, height: 8 }}
       />
       <Handle
         type="target"
         position={Position.Left}
         id="left"
+        aria-label="Left connection point"
         style={{ top: '50%', background: borderColor, width: 8, height: 8 }}
       />
       <Handle
         type="source"
         position={Position.Right}
         id="right"
+        aria-label="Right connection point"
         style={{ top: '50%', background: borderColor, width: 8, height: 8 }}
       />
 
       {/* Status indicator (top left) */}
       <div
+        role="status"
+        aria-label={`Status: ${data.status || 'No status'}`}
         style={{
           position: 'absolute',
           top: 8,
@@ -108,8 +116,8 @@ export const RequirementNode = memo(({ data }: NodeProps<RequirementNodeData>) =
         title={data.status || 'No status'}
       />
 
-      {/* Requirement icon */}
-      <div style={{ fontSize: 28, marginBottom: 8 }}>📋</div>
+      {/* Requirement type label */}
+      <div style={{ fontSize: 10, color: '#6b7280', fontWeight: 600, marginBottom: 8 }}>REQUIREMENT</div>
 
       {/* Requirement name */}
       <div

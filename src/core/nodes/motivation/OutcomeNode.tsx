@@ -56,6 +56,8 @@ export const OutcomeNode = memo(({ data }: NodeProps<OutcomeNodeData>) => {
 
   return (
     <div
+      role="article"
+      aria-label={`Outcome: ${data.label}${data.achievementStatus ? `, status: ${data.achievementStatus.replace('-', ' ')}` : ''}`}
       style={{
         width: OUTCOME_NODE_WIDTH,
         height: OUTCOME_NODE_HEIGHT,
@@ -78,30 +80,36 @@ export const OutcomeNode = memo(({ data }: NodeProps<OutcomeNodeData>) => {
         type="target"
         position={Position.Top}
         id="top"
+        aria-label="Top connection point"
         style={{ left: '50%', background: borderColor, width: 8, height: 8 }}
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="bottom"
+        aria-label="Bottom connection point"
         style={{ left: '50%', background: borderColor, width: 8, height: 8 }}
       />
       <Handle
         type="target"
         position={Position.Left}
         id="left"
+        aria-label="Left connection point"
         style={{ top: '50%', background: borderColor, width: 8, height: 8 }}
       />
       <Handle
         type="source"
         position={Position.Right}
         id="right"
+        aria-label="Right connection point"
         style={{ top: '50%', background: borderColor, width: 8, height: 8 }}
       />
 
       {/* Achievement status badge (top right) */}
       {data.achievementStatus && (
         <div
+          role="status"
+          aria-label={`Achievement status: ${data.achievementStatus.replace('-', ' ')}`}
           style={{
             position: 'absolute',
             top: 6,

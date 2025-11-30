@@ -59,6 +59,16 @@ export function forceDirectedLayout(
 
   console.log('[ForceDirectedLayout] Starting layout with', graph.nodes.size, 'nodes and', graph.edges.size, 'edges');
 
+  // Performance warning for large graphs
+  // NOTE: For Phase 3+, this should be migrated to Web Worker for graphs >50 nodes
+  if (graph.nodes.size > 50) {
+    console.warn(
+      `[ForceDirectedLayout] Large graph detected (${graph.nodes.size} nodes). ` +
+      'Layout calculation runs on main thread and may impact performance. ' +
+      'Consider using Web Worker implementation for graphs >50 nodes (planned for Phase 3+).'
+    );
+  }
+
   // Initialize node positions randomly
   const positions = new Map<string, Position>();
   const velocities = new Map<string, { vx: number; vy: number }>();

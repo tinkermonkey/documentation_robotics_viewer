@@ -38,6 +38,8 @@ export const StakeholderNode = memo(({ data }: NodeProps<StakeholderNodeData>) =
 
   return (
     <div
+      role="article"
+      aria-label={`Stakeholder: ${data.label}${data.stakeholderType ? `, type: ${data.stakeholderType}` : ''}`}
       style={{
         width: STAKEHOLDER_NODE_WIDTH,
         height: STAKEHOLDER_NODE_HEIGHT,
@@ -60,24 +62,28 @@ export const StakeholderNode = memo(({ data }: NodeProps<StakeholderNodeData>) =
         type="target"
         position={Position.Top}
         id="top"
+        aria-label="Top connection point"
         style={{ left: '50%', background: borderColor, width: 8, height: 8 }}
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="bottom"
+        aria-label="Bottom connection point"
         style={{ left: '50%', background: borderColor, width: 8, height: 8 }}
       />
       <Handle
         type="target"
         position={Position.Left}
         id="left"
+        aria-label="Left connection point"
         style={{ top: '50%', background: borderColor, width: 8, height: 8 }}
       />
       <Handle
         type="source"
         position={Position.Right}
         id="right"
+        aria-label="Right connection point"
         style={{ top: '50%', background: borderColor, width: 8, height: 8 }}
       />
 
@@ -100,6 +106,8 @@ export const StakeholderNode = memo(({ data }: NodeProps<StakeholderNodeData>) =
       {/* Stakeholder type badge */}
       {data.stakeholderType && (
         <div
+          role="status"
+          aria-label={`Stakeholder type: ${data.stakeholderType}`}
           style={{
             fontSize: 10,
             textTransform: 'uppercase',
