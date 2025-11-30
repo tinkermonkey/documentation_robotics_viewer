@@ -2,6 +2,7 @@ import { memo } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
 import { GoalNodeData } from '../../types/reactflow';
 import { RelationshipBadge } from './RelationshipBadge';
+import { coverageAnalyzer } from '../../../apps/embedded/services/coverageAnalyzer';
 
 /**
  * Node dimensions for layout calculation
@@ -11,9 +12,10 @@ export const GOAL_NODE_HEIGHT = 110;
 
 /**
  * Goal Node Component for Motivation Layer
- * Displays goal elements with priority badge
+ * Displays goal elements with priority badge, coverage indicators, and semantic zoom support
  */
 export const GoalNode = memo(({ data }: NodeProps<GoalNodeData>) => {
+  const detailLevel = data.detailLevel || 'detailed';
   // Apply changeset styling if present
   let borderColor = data.stroke || '#059669';
   let backgroundColor = data.fill || '#d1fae5';
@@ -55,6 +57,21 @@ export const GoalNode = memo(({ data }: NodeProps<GoalNodeData>) => {
   };
 
   const priorityColors = getPriorityColor();
+
+  // Coverage indicator
+  const coverageIndicator = data.coverageIndicator;
+  const coverageColors = coverageIndicator
+    ? coverageAnalyzer.getCoverageColor(coverageIndicator.status)
+    : null;
+  const coverageIcon = coverageIndicator
+    ? coverageAnalyzer.getCoverageIcon(coverageIndicator.status)
+    : null;
+
+  // Determine what to show based on detail level
+  const showIcon = detailLevel !== 'minimal';
+  const showTypeBadge = detailLevel === 'detailed';
+  const showPriority = detailLevel === 'detailed' && data.priority;
+  const showCoverage = detailLevel !== 'minimal' && coverageIndicator;
 
   return (
     <div
@@ -107,8 +124,8 @@ export const GoalNode = memo(({ data }: NodeProps<GoalNodeData>) => {
         style={{ top: '50%', background: borderColor, width: 8, height: 8 }}
       />
 
-      {/* Priority badge (top right) */}
-      {data.priority && (
+      {/* Priority badge (top right) - detailed level only */}
+      {showPriority && (
         <div
           role="status"
           aria-label={`Priority: ${data.priority}`}
@@ -130,8 +147,34 @@ export const GoalNode = memo(({ data }: NodeProps<GoalNodeData>) => {
         </div>
       )}
 
-      {/* Goal icon */}
-      <div style={{ fontSize: 28, marginBottom: 8 }}>🎯</div>
+      {/* Coverage indicator (top left) - standard and detailed levels */}
+      {showCoverage && coverageColors && coverageIcon && (
+        <div
+          role="status"
+          aria-label={`Coverage: ${coverageIndicator.status}, ${coverageIndicator.requirementCount} requirements`}
+          title={`${coverageIndicator.requirementCount} requirement(s), ${coverageIndicator.constraintCount} constraint(s)`}
+          style={{
+            position: 'absolute',
+            top: 6,
+            left: 6,
+            width: 20,
+            height: 20,
+            fontSize: 12,
+            color: coverageColors.color,
+            backgroundColor: coverageColors.bg,
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontWeight: 'bold',
+          }}
+        >
+          {coverageIcon}
+        </div>
+      )}
+
+      {/* Goal icon - standard and detailed levels */}
+      {showIcon && <div style={{ fontSize: 28, marginBottom: 8 }}>🎯</div>}
 
       {/* Goal name */}
       <div
@@ -145,20 +188,22 @@ export const GoalNode = memo(({ data }: NodeProps<GoalNodeData>) => {
         {data.label}
       </div>
 
-      {/* Element type label */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 6,
-          fontSize: 9,
-          textTransform: 'uppercase',
-          color: '#6b7280',
-          fontWeight: 600,
-          letterSpacing: '0.5px',
-        }}
-      >
-        Goal
-      </div>
+      {/* Element type label - detailed level only */}
+      {showTypeBadge && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 6,
+            fontSize: 9,
+            textTransform: 'uppercase',
+            color: '#6b7280',
+            fontWeight: 600,
+            letterSpacing: '0.5px',
+          }}
+        >
+          Goal
+        </div>
+      )}
 
       {/* Relationship badge (shown when dimmed) */}
       {data.relationshipBadge && (

@@ -5,6 +5,26 @@ import {
   DataModelComponentType,
   HTTPMethod
 } from './shapes';
+import { NodeDetailLevel } from '../../core/layout/semanticZoomController';
+import { CoverageStatus } from '../../apps/embedded/services/coverageAnalyzer';
+
+/**
+ * Relationship badge data (shown when node is dimmed)
+ */
+export interface RelationshipBadge {
+  count: number;
+  incoming: number;
+  outgoing: number;
+}
+
+/**
+ * Coverage indicator data for goals
+ */
+export interface CoverageIndicator {
+  status: CoverageStatus;
+  requirementCount: number;
+  constraintCount: number;
+}
 
 /**
  * Base node data shared by all custom nodes
@@ -16,6 +36,12 @@ export interface BaseNodeData {
   fill: string;
   stroke: string;
   modelElement?: ModelElement;
+
+  // Semantic zoom and focus
+  opacity?: number;
+  strokeWidth?: number;
+  detailLevel?: NodeDetailLevel;
+  relationshipBadge?: RelationshipBadge;
 }
 
 /**
@@ -98,6 +124,7 @@ export interface GoalNodeData extends BaseNodeData {
   priority?: 'high' | 'medium' | 'low';
   status?: string;
   changesetOperation?: 'add' | 'update' | 'delete';
+  coverageIndicator?: CoverageIndicator;
 }
 
 /**

@@ -20,7 +20,9 @@ export enum MotivationElementType {
   Requirement = 'requirement',
   Constraint = 'constraint',
   Meaning = 'meaning',
-  Value = 'value'
+  Value = 'value',
+  Assumption = 'assumption',
+  ValueStream = 'valueStream'
 }
 
 /**

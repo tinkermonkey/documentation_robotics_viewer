@@ -37,6 +37,15 @@ export interface MotivationControlPanelProps {
 
   /** Whether layout is currently computing */
   isLayouting?: boolean;
+
+  /** Whether changeset visualization is enabled (Phase 5) */
+  changesetVisualizationEnabled?: boolean;
+
+  /** Callback when changeset visualization toggles (Phase 5) */
+  onChangesetVisualizationToggle?: (enabled: boolean) => void;
+
+  /** Whether changesets are available */
+  hasChangesets?: boolean;
 }
 
 /**
@@ -81,6 +90,9 @@ export const MotivationControlPanel: React.FC<MotivationControlPanelProps> = ({
   onClearHighlighting,
   isHighlightingActive = false,
   isLayouting = false,
+  changesetVisualizationEnabled = false,
+  onChangesetVisualizationToggle,
+  hasChangesets = false,
 }) => {
   return (
     <div className="motivation-control-panel">
@@ -187,6 +199,26 @@ export const MotivationControlPanel: React.FC<MotivationControlPanelProps> = ({
             </svg>
             <span>Clear Highlighting</span>
           </button>
+        </div>
+      )}
+
+      {/* Changeset Visualization Toggle (Phase 5) */}
+      {onChangesetVisualizationToggle && hasChangesets && (
+        <div className="control-panel-section">
+          <label className="control-checkbox-label">
+            <input
+              type="checkbox"
+              checked={changesetVisualizationEnabled}
+              onChange={(e) => onChangesetVisualizationToggle(e.target.checked)}
+              disabled={isLayouting}
+              aria-label="Show changeset modifications: highlight added, updated, and deleted elements"
+              aria-describedby="changeset-viz-description"
+            />
+            <span>Show Changesets</span>
+          </label>
+          <div id="changeset-viz-description" className="control-description">
+            Highlight added, updated, and deleted elements
+          </div>
         </div>
       )}
 

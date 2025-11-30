@@ -45,6 +45,9 @@ import {
   OUTCOME_NODE_WIDTH,
   OUTCOME_NODE_HEIGHT,
 } from '../../../core/nodes/motivation';
+import { semanticZoomController, NodeDetailLevel } from '../../../core/layout/semanticZoomController';
+import { applyEdgeBundling, calculateOptimalThreshold } from '../../../core/layout/edgeBundling';
+import { GoalCoverage } from './coverageAnalyzer';
 
 /**
  * Path highlighting configuration
@@ -68,6 +71,9 @@ export interface TransformerOptions {
   existingPositions?: Map<string, { x: number; y: number }>; // For manual layout
   pathHighlighting?: PathHighlighting; // Path tracing highlights
   focusContextEnabled?: boolean; // Dim non-focused elements
+  zoomLevel?: number; // Current zoom level for semantic zoom (default: 1.0)
+  enableEdgeBundling?: boolean; // Apply edge bundling for performance (default: true)
+  goalCoverages?: Map<string, GoalCoverage>; // Goal coverage data for indicators
 }
 
 /**
@@ -104,6 +110,9 @@ const NODE_DIMENSIONS: Record<string, { width: number; height: number }> = {
  */
 export class MotivationGraphTransformer {
   private options: TransformerOptions;
+  private layoutCache: Map<string, LayoutResult> = new Map();
+  private cacheHits: number = 0;
+  private cacheMisses: number = 0;
 
   constructor(options: TransformerOptions = {}) {
     this.options = options;
@@ -115,22 +124,44 @@ export class MotivationGraphTransformer {
   transform(graph: MotivationGraph): TransformResult {
     console.log('[MotivationGraphTransformer] Transforming graph with', graph.nodes.size, 'nodes');
 
-    // Apply filters if specified
-    const filteredGraph = this.applyFilters(graph);
+    // Apply semantic zoom filtering if zoom level specified
+    const zoomLevel = this.options.zoomLevel !== undefined ? this.options.zoomLevel : 1.0;
+    const semanticFilteredGraph = this.applySemanticZoomFiltering(graph, zoomLevel);
 
-    // Apply layout algorithm
-    const layoutResult = this.applyLayout(filteredGraph);
+    // Apply user filters if specified
+    const filteredGraph = this.applyFilters(semanticFilteredGraph);
+
+    // Apply layout algorithm (with caching)
+    const layoutResult = this.applyLayoutWithCache(filteredGraph);
+
+    // Get detail level from zoom
+    const detailLevel = semanticZoomController.getNodeDetailLevel(zoomLevel);
 
     // Convert to ReactFlow nodes
-    const nodes = this.createReactFlowNodes(filteredGraph, layoutResult);
+    const nodes = this.createReactFlowNodes(filteredGraph, layoutResult, detailLevel);
 
     // Convert to ReactFlow edges
-    const edges = this.createReactFlowEdges(filteredGraph);
+    let edges = this.createReactFlowEdges(filteredGraph, zoomLevel);
+
+    // Apply edge bundling if enabled and threshold exceeded
+    const enableEdgeBundling = this.options.enableEdgeBundling !== false; // Default true
+    if (enableEdgeBundling) {
+      const threshold = calculateOptimalThreshold(filteredGraph.nodes.size, edges.length);
+      const bundlingResult = applyEdgeBundling(edges, { threshold });
+      edges = bundlingResult.bundledEdges;
+
+      if (bundlingResult.wasBundled) {
+        console.log(
+          `[MotivationGraphTransformer] Edge bundling reduced ${bundlingResult.reductionCount} edges`
+        );
+      }
+    }
 
     console.log('[MotivationGraphTransformer] Transformation complete:', {
       nodes: nodes.length,
       edges: edges.length,
       bounds: layoutResult.bounds,
+      cacheHitRate: this.getCacheHitRate(),
     });
 
     return {
@@ -140,6 +171,40 @@ export class MotivationGraphTransformer {
         width: layoutResult.bounds.width,
         height: layoutResult.bounds.height,
       },
+    };
+  }
+
+  /**
+   * Apply semantic zoom filtering based on zoom level
+   */
+  private applySemanticZoomFiltering(graph: MotivationGraph, zoomLevel: number): MotivationGraph {
+    const visibleTypes = semanticZoomController.getVisibleElementTypes(zoomLevel);
+
+    // Filter nodes by visible types
+    const filteredNodes = new Map<string, MotivationGraphNode>();
+    for (const [nodeId, node] of graph.nodes) {
+      const elementType = node.element.type as MotivationElementType;
+      if (visibleTypes.has(elementType)) {
+        filteredNodes.set(nodeId, node);
+      }
+    }
+
+    // Filter edges - only include if both source and target are visible
+    const filteredEdges = new Map<string, MotivationGraphEdge>();
+    for (const [edgeId, edge] of graph.edges) {
+      if (filteredNodes.has(edge.sourceId) && filteredNodes.has(edge.targetId)) {
+        filteredEdges.set(edgeId, edge);
+      }
+    }
+
+    console.log(
+      `[SemanticZoom] Filtered ${graph.nodes.size} nodes to ${filteredNodes.size} at zoom ${zoomLevel.toFixed(2)}`
+    );
+
+    return {
+      ...graph,
+      nodes: filteredNodes,
+      edges: filteredEdges,
     };
   }
 
@@ -182,6 +247,64 @@ export class MotivationGraphTransformer {
       nodes: filteredNodes,
       edges: filteredEdges,
     };
+  }
+
+  /**
+   * Apply layout algorithm with caching
+   */
+  private applyLayoutWithCache(graph: MotivationGraph): LayoutResult {
+    // Generate cache key based on graph structure and layout algorithm
+    const cacheKey = this.generateLayoutCacheKey(graph);
+
+    // Check cache
+    const cachedLayout = this.layoutCache.get(cacheKey);
+    if (cachedLayout) {
+      this.cacheHits++;
+      console.log(`[LayoutCache] Cache hit for layout (hit rate: ${this.getCacheHitRate()}%)`);
+      return cachedLayout;
+    }
+
+    // Cache miss - compute layout
+    this.cacheMisses++;
+    const layoutResult = this.applyLayout(graph);
+
+    // Store in cache (limit cache size to 10 entries)
+    if (this.layoutCache.size >= 10) {
+      // Remove oldest entry
+      const firstKey = this.layoutCache.keys().next().value;
+      this.layoutCache.delete(firstKey);
+    }
+    this.layoutCache.set(cacheKey, layoutResult);
+
+    return layoutResult;
+  }
+
+  /**
+   * Generate cache key for layout
+   */
+  private generateLayoutCacheKey(graph: MotivationGraph): string {
+    const algorithm = this.options.layoutAlgorithm || 'force';
+    const nodeIds = Array.from(graph.nodes.keys()).sort().join(',');
+    const edgeIds = Array.from(graph.edges.keys()).sort().join(',');
+    return `${algorithm}:${nodeIds}:${edgeIds}`;
+  }
+
+  /**
+   * Get cache hit rate percentage
+   */
+  private getCacheHitRate(): string {
+    const total = this.cacheHits + this.cacheMisses;
+    if (total === 0) return '0.0';
+    return ((this.cacheHits / total) * 100).toFixed(1);
+  }
+
+  /**
+   * Clear layout cache
+   */
+  clearLayoutCache(): void {
+    this.layoutCache.clear();
+    this.cacheHits = 0;
+    this.cacheMisses = 0;
   }
 
   /**
@@ -260,7 +383,8 @@ export class MotivationGraphTransformer {
    */
   private createReactFlowNodes(
     graph: MotivationGraph,
-    layoutResult: LayoutResult
+    layoutResult: LayoutResult,
+    detailLevel: NodeDetailLevel
   ): Node[] {
     const nodes: Node[] = [];
 
@@ -277,6 +401,9 @@ export class MotivationGraphTransformer {
       const elementType = graphNode.element.type as MotivationElementType;
       const nodeType = this.getReactFlowNodeType(elementType);
       const nodeData = this.createNodeData(graphNode);
+
+      // Set detail level on node data
+      nodeData.detailLevel = detailLevel;
 
       // Apply path highlighting and focus context
       const isHighlighted = pathHighlighting?.highlightedNodeIds?.has(nodeId) || false;
@@ -320,6 +447,18 @@ export class MotivationGraphTransformer {
       } else {
         // No highlighting - normal appearance
         nodeData.opacity = 1.0;
+      }
+
+      // Add coverage indicator for goals
+      if (elementType === MotivationElementType.Goal && this.options.goalCoverages) {
+        const coverage = this.options.goalCoverages.get(nodeId);
+        if (coverage) {
+          (nodeData as GoalNodeData).coverageIndicator = {
+            status: coverage.status,
+            requirementCount: coverage.requirementCount,
+            constraintCount: coverage.constraintCount,
+          };
+        }
       }
 
       // Convert from center position to top-left position (ReactFlow convention)
@@ -509,17 +648,22 @@ export class MotivationGraphTransformer {
   /**
    * Create ReactFlow edges from graph edges
    */
-  private createReactFlowEdges(graph: MotivationGraph): Edge[] {
+  private createReactFlowEdges(graph: MotivationGraph, zoomLevel: number): Edge[] {
     const edges: Edge[] = [];
 
     const pathHighlighting = this.options.pathHighlighting;
+    const showEdgeLabels = semanticZoomController.shouldShowEdgeLabels(zoomLevel);
 
     for (const [edgeId, graphEdge] of graph.edges) {
       const edgeType = this.getReactFlowEdgeType(graphEdge.type);
 
+      // Only show labels at detail zoom level
+      const labelValue = graphEdge.relationship.properties?.label;
+      const edgeLabel = showEdgeLabels && typeof labelValue === 'string' ? labelValue : undefined;
+
       const edgeData: MotivationEdgeData = {
         relationshipType: this.mapRelationshipType(graphEdge.type),
-        label: graphEdge.relationship.properties?.label,
+        label: edgeLabel,
         weight: graphEdge.weight,
         changesetOperation: graphEdge.changesetOperation,
       };
