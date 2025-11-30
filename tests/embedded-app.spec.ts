@@ -49,8 +49,8 @@ test.describe('Embedded App - Reference Server Integration', () => {
     await page.waitForSelector('.connection-status.connected', { timeout: 5000 });
 
     // Verify connection status
-    const connectionStatus = page.locator('.connection-status');
-    await expect(connectionStatus).toHaveClass(/connected/);
+    const connectionStatus = page.locator('.connection-status.connected');
+    await expect(connectionStatus).toBeVisible();
   });
 
   test('should load and display model view', async ({ page }) => {
