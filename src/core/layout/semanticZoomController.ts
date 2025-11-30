@@ -95,6 +95,8 @@ export class SemanticZoomController {
     visibleTypes.add(MotivationElementType.Assessment);
     visibleTypes.add(MotivationElementType.Meaning);
     visibleTypes.add(MotivationElementType.Value);
+    visibleTypes.add(MotivationElementType.Assumption);
+    visibleTypes.add(MotivationElementType.ValueStream);
 
     return visibleTypes;
   }
