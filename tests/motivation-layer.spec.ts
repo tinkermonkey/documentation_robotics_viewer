@@ -16,10 +16,12 @@
 
 import { test, expect, Page } from '@playwright/test';
 
-test.describe.skip('Motivation Layer Visualization - Complete Test Suite', () => {
+const TEST_URL = process.env.BASE_URL || 'http://localhost:3001';
+
+test.describe('Motivation Layer Visualization - Complete Test Suite', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the embedded viewer
-    await page.goto('http://localhost:3001');
+    await page.goto(TEST_URL);
     await page.waitForLoadState('networkidle');
   });
 

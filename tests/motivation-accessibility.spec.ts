@@ -17,10 +17,12 @@
 import { test, expect } from '@playwright/test';
 import { injectAxe, checkA11y } from 'axe-playwright';
 
-test.describe.skip('Motivation Layer - Accessibility Tests', () => {
+const TEST_URL = process.env.BASE_URL || 'http://localhost:3001';
+
+test.describe('Motivation Layer - Accessibility Tests', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the embedded viewer
-    await page.goto('http://localhost:3001');
+    await page.goto(TEST_URL);
     await page.waitForLoadState('networkidle');
 
     // Load demo data

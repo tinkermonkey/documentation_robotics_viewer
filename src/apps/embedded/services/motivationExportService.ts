@@ -83,10 +83,14 @@ export async function exportAsPNG(
   try {
     console.log('[MotivationExportService] Exporting as PNG:', filename);
 
+    if (!reactFlowContainer) {
+      throw new Error('Unable to export: The graph container is not available. Please reload the page and try again.');
+    }
+
     // Find the ReactFlow wrapper element
     const reactFlowWrapper = reactFlowContainer.querySelector('.react-flow') as HTMLElement;
     if (!reactFlowWrapper) {
-      throw new Error('ReactFlow container not found');
+      throw new Error('Unable to locate the graph canvas for export. Please make sure the motivation graph is visible and try again.');
     }
 
     // Generate PNG using html-to-image
@@ -114,7 +118,8 @@ export async function exportAsPNG(
     console.log('[MotivationExportService] PNG export successful');
   } catch (error) {
     console.error('[MotivationExportService] PNG export failed:', error);
-    throw new Error('Failed to export as PNG: ' + (error instanceof Error ? error.message : String(error)));
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    throw new Error(`Unable to export image: ${errorMessage}`);
   }
 }
 
@@ -128,10 +133,14 @@ export async function exportAsSVG(
   try {
     console.log('[MotivationExportService] Exporting as SVG:', filename);
 
+    if (!reactFlowContainer) {
+      throw new Error('Unable to export: The graph container is not available. Please reload the page and try again.');
+    }
+
     // Find the ReactFlow wrapper element
     const reactFlowWrapper = reactFlowContainer.querySelector('.react-flow') as HTMLElement;
     if (!reactFlowWrapper) {
-      throw new Error('ReactFlow container not found');
+      throw new Error('Unable to locate the graph canvas for export. Please make sure the motivation graph is visible and try again.');
     }
 
     // Generate SVG using html-to-image
@@ -157,7 +166,8 @@ export async function exportAsSVG(
     console.log('[MotivationExportService] SVG export successful');
   } catch (error) {
     console.error('[MotivationExportService] SVG export failed:', error);
-    throw new Error('Failed to export as SVG: ' + (error instanceof Error ? error.message : String(error)));
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    throw new Error(`Unable to export SVG: ${errorMessage}`);
   }
 }
 
@@ -211,7 +221,8 @@ export function exportGraphDataAsJSON(
     console.log('[MotivationExportService] Graph data export successful');
   } catch (error) {
     console.error('[MotivationExportService] Graph data export failed:', error);
-    throw new Error('Failed to export graph data: ' + (error instanceof Error ? error.message : String(error)));
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    throw new Error(`Unable to export graph data: ${errorMessage}`);
   }
 }
 
@@ -360,6 +371,7 @@ export function exportTraceabilityReport(
     console.log('[MotivationExportService] Traceability report exported successfully');
   } catch (error) {
     console.error('[MotivationExportService] Traceability report export failed:', error);
-    throw new Error('Failed to export traceability report: ' + (error instanceof Error ? error.message : String(error)));
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    throw new Error(`Unable to generate traceability report: ${errorMessage}`);
   }
 }

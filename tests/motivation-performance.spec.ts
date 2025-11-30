@@ -21,10 +21,20 @@
 
 import { test, expect } from '@playwright/test';
 
-test.describe.skip('Motivation Layer - Performance Tests', () => {
+const TEST_URL = process.env.BASE_URL || 'http://localhost:3001';
+
+test.describe('Motivation Layer - Performance Tests', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:3001');
+    await page.goto(TEST_URL);
     await page.waitForLoadState('networkidle');
+  });
+
+  test.afterEach(async ({ page }) => {
+    // Clean up state between tests
+    await page.evaluate(() => {
+      localStorage.clear();
+      sessionStorage.clear();
+    });
   });
 
   /**
