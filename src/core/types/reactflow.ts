@@ -80,7 +80,43 @@ export interface APIEndpointNodeData extends BaseNodeData {
  * Business Process node data
  */
 export interface BusinessProcessNodeData extends BaseNodeData {
-  // Additional business process specific properties if needed
+  owner?: string;
+  criticality?: 'high' | 'medium' | 'low';
+  lifecycle?: 'ideation' | 'active' | 'deprecated';
+  domain?: string;
+  subprocessCount?: number;
+  stepCount?: number;
+  hierarchyLevel?: number;
+}
+
+/**
+ * Business Function node data
+ */
+export interface BusinessFunctionNodeData extends BaseNodeData {
+  owner?: string;
+  criticality?: 'high' | 'medium' | 'low';
+  lifecycle?: 'ideation' | 'active' | 'deprecated';
+  domain?: string;
+}
+
+/**
+ * Business Service node data
+ */
+export interface BusinessServiceNodeData extends BaseNodeData {
+  owner?: string;
+  criticality?: 'high' | 'medium' | 'low';
+  lifecycle?: 'ideation' | 'active' | 'deprecated';
+  domain?: string;
+}
+
+/**
+ * Business Capability node data
+ */
+export interface BusinessCapabilityNodeData extends BaseNodeData {
+  owner?: string;
+  criticality?: 'high' | 'medium' | 'low';
+  lifecycle?: 'ideation' | 'active' | 'deprecated';
+  domain?: string;
 }
 
 /**
@@ -201,6 +237,9 @@ export type AppNode =
   | Node<JSONSchemaNodeData, 'jsonSchema'>
   | Node<APIEndpointNodeData, 'apiEndpoint'>
   | Node<BusinessProcessNodeData, 'businessProcess'>
+  | Node<BusinessFunctionNodeData, 'businessFunction'>
+  | Node<BusinessServiceNodeData, 'businessService'>
+  | Node<BusinessCapabilityNodeData, 'businessCapability'>
   | Node<RoleNodeData, 'role'>
   | Node<PermissionNodeData, 'permission'>
   | Node<LayerContainerNodeData, 'layerContainer'>

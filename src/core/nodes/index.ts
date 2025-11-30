@@ -7,6 +7,7 @@ import { DataModelNode } from './DataModelNode';
 import { JSONSchemaNode } from './JSONSchemaNode';
 import { APIEndpointNode } from './APIEndpointNode';
 import { BusinessProcessNode } from './BusinessProcessNode';
+import { BusinessFunctionNode, BusinessServiceNode, BusinessCapabilityNode } from './business';
 import { RoleNode } from './RoleNode';
 import { PermissionNode } from './PermissionNode';
 import { LayerContainerNode } from './LayerContainerNode';
@@ -30,6 +31,9 @@ export {
   JSONSchemaNode,
   APIEndpointNode,
   BusinessProcessNode,
+  BusinessFunctionNode,
+  BusinessServiceNode,
+  BusinessCapabilityNode,
   RoleNode,
   PermissionNode,
   LayerContainerNode,
@@ -53,6 +57,9 @@ export const nodeTypes = {
   jsonSchema: JSONSchemaNode,
   apiEndpoint: APIEndpointNode,
   businessProcess: BusinessProcessNode,
+  businessFunction: BusinessFunctionNode,
+  businessService: BusinessServiceNode,
+  businessCapability: BusinessCapabilityNode,
   role: RoleNode,
   permission: PermissionNode,
   layerContainer: LayerContainerNode,

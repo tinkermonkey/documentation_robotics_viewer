@@ -1,22 +1,22 @@
 import { memo } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
-import { BusinessProcessNodeData } from '../types/reactflow';
+import { BusinessFunctionNodeData } from '../../types/reactflow';
 
 /**
- * Business Process Node Component for React Flow
- * Displays business processes with metadata (owner, criticality, lifecycle, subprocess count)
+ * Business Function Node Component for React Flow
+ * Displays business functions with metadata (owner, criticality, lifecycle)
  */
-export const BusinessProcessNode = memo(({ data }: NodeProps<BusinessProcessNodeData>) => {
+export const BusinessFunctionNode = memo(({ data }: NodeProps<BusinessFunctionNodeData>) => {
   return (
     <div
       style={{
-        width: 200, // Must match precalculateDimensions in BusinessNodeTransformer
-        height: 80,
+        width: 180, // Must match precalculateDimensions in BusinessNodeTransformer
+        height: 100,
         display: 'flex',
         flexDirection: 'column',
         fontFamily: 'system-ui, sans-serif',
-        border: `2px solid ${data.stroke || '#e65100'}`,
-        backgroundColor: data.fill || '#fff3e0',
+        border: `2px solid ${data.stroke || '#1565c0'}`,
+        backgroundColor: data.fill || '#e3f2fd',
         borderRadius: 8,
         padding: 12,
       }}
@@ -49,7 +49,7 @@ export const BusinessProcessNode = memo(({ data }: NodeProps<BusinessProcessNode
 
       {/* Header with icon and title */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-        <div style={{ fontSize: 16 }}>⚙️</div>
+        <div style={{ fontSize: 16 }}>📊</div>
         <div
           style={{
             fontSize: 14,
@@ -64,6 +64,20 @@ export const BusinessProcessNode = memo(({ data }: NodeProps<BusinessProcessNode
         >
           {data.label}
         </div>
+      </div>
+
+      {/* Type badge */}
+      <div
+        style={{
+          fontSize: 10,
+          textTransform: 'uppercase',
+          color: '#1565c0',
+          fontWeight: 'bold',
+          letterSpacing: '0.5px',
+          marginBottom: 8,
+        }}
+      >
+        Function
       </div>
 
       {/* Metadata badges */}
@@ -107,18 +121,18 @@ export const BusinessProcessNode = memo(({ data }: NodeProps<BusinessProcessNode
             {data.criticality}
           </div>
         )}
-        {data.subprocessCount !== undefined && data.subprocessCount > 0 && (
+        {data.domain && (
           <div
             style={{
               fontSize: 10,
               padding: '2px 6px',
-              background: '#e3f2fd',
+              background: '#f3e5f5',
               borderRadius: 4,
-              color: '#1565c0',
+              color: '#6a1b9a',
             }}
-            title="Subprocess count"
+            title="Domain"
           >
-            {data.subprocessCount} steps
+            {data.domain}
           </div>
         )}
       </div>
@@ -126,4 +140,4 @@ export const BusinessProcessNode = memo(({ data }: NodeProps<BusinessProcessNode
   );
 });
 
-BusinessProcessNode.displayName = 'BusinessProcessNode';
+BusinessFunctionNode.displayName = 'BusinessFunctionNode';
