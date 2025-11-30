@@ -1,10 +1,10 @@
 /**
  * MotivationGraphView Component
  * Displays motivation layer elements as an interactive graph using ReactFlow
- * Renders ontology diagram with force-directed layout
+ * Renders ontology diagram with multiple layout algorithms, filtering, and interactive controls
  */
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   ReactFlow,
   Background,
@@ -14,16 +14,35 @@ import {
   useEdgesState,
   Node,
   Edge,
+  useReactFlow,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import '../../../core/components/GraphViewer.css';
+import './MotivationGraphView.css';
 
 import { MetaModel } from '../../../core/types';
 import { nodeTypes } from '../../../core/nodes';
 import { edgeTypes } from '../../../core/edges';
 import { MotivationGraphBuilder } from '../services/motivationGraphBuilder';
-import { MotivationGraphTransformer } from '../services/motivationGraphTransformer';
+import {
+  MotivationGraphTransformer,
+  TransformerOptions,
+} from '../services/motivationGraphTransformer';
 import { ErrorBoundary } from './ErrorBoundary';
+import {
+  MotivationFilterPanel,
+  FilterCounts,
+} from './MotivationFilterPanel';
+import {
+  MotivationControlPanel,
+  LayoutAlgorithm,
+} from './MotivationControlPanel';
+import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
+import {
+  MotivationElementType,
+  MotivationRelationshipType,
+  MotivationGraph,
+} from '../types/motivationGraph';
 
 export interface MotivationGraphViewProps {
   model: MetaModel;
@@ -38,19 +57,45 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
+  const [isLayouting, setIsLayouting] = useState(false);
+
+  // Store reference to the full graph (before filtering)
+  const fullGraphRef = useRef<MotivationGraph | null>(null);
+
+  // Get ReactFlow instance for fitView
+  const reactFlowInstance = useReactFlow();
+
+  // Get preferences from store
+  const {
+    motivationPreferences,
+    setMotivationLayout,
+    setVisibleElementTypes,
+    setVisibleRelationshipTypes,
+    setFocusContextEnabled,
+    setManualPositions,
+  } = useViewPreferenceStore();
+
+  // Local state for filters (synced with store)
+  const [selectedElementTypes, setSelectedElementTypes] = useState<Set<MotivationElementType>>(
+    motivationPreferences.visibleElementTypes
+  );
+  const [selectedRelationshipTypes, setSelectedRelationshipTypes] = useState<
+    Set<MotivationRelationshipType>
+  >(motivationPreferences.visibleRelationshipTypes);
+
+  // Local state for layout
+  const [selectedLayout, setSelectedLayout] = useState<LayoutAlgorithm>(
+    motivationPreferences.selectedLayout
+  );
 
   // Create services
   const motivationGraphBuilder = useMemo(() => new MotivationGraphBuilder(), []);
-  const motivationGraphTransformer = useMemo(
-    () => new MotivationGraphTransformer({ layoutAlgorithm: 'force' }),
-    []
-  );
 
   /**
-   * Transform model to motivation graph and apply layout
+   * Build the full motivation graph from model
    */
   useEffect(() => {
-    const buildAndTransformGraph = async () => {
+    const buildGraph = async () => {
       try {
         setLoading(true);
         setError('');
@@ -73,19 +118,8 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
           return;
         }
 
-        // Transform to ReactFlow format with layout
-        console.log('[MotivationGraphView] Applying force-directed layout');
-        const transformResult = motivationGraphTransformer.transform(motivationGraph);
-
-        console.log('[MotivationGraphView] Transformation complete:', {
-          nodes: transformResult.nodes.length,
-          edges: transformResult.edges.length,
-          bounds: transformResult.bounds,
-        });
-
-        // Set nodes and edges
-        setNodes(transformResult.nodes);
-        setEdges(transformResult.edges);
+        // Store the full graph
+        fullGraphRef.current = motivationGraph;
 
         setLoading(false);
       } catch (err) {
@@ -97,17 +131,213 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
     };
 
     if (model) {
-      buildAndTransformGraph();
+      buildGraph();
     }
-  }, [model, motivationGraphBuilder, motivationGraphTransformer, setNodes, setEdges]);
+  }, [model, motivationGraphBuilder]);
+
+  /**
+   * Transform graph to ReactFlow format whenever filters or layout changes
+   */
+  useEffect(() => {
+    if (!fullGraphRef.current) return;
+
+    const transformGraph = async () => {
+      try {
+        setIsLayouting(true);
+
+        console.log('[MotivationGraphView] Transforming graph with layout:', selectedLayout);
+
+        // Prepare transformer options
+        const transformerOptions: TransformerOptions = {
+          layoutAlgorithm: selectedLayout,
+          selectedElementTypes,
+          selectedRelationshipTypes,
+          centerNodeId: motivationPreferences.centerNodeId,
+          existingPositions:
+            selectedLayout === 'manual' ? motivationPreferences.manualPositions : undefined,
+        };
+
+        const transformer = new MotivationGraphTransformer(transformerOptions);
+
+        // Transform with animation delay for smooth transitions
+        await new Promise((resolve) => setTimeout(resolve, 50));
+
+        const transformResult = transformer.transform(fullGraphRef.current);
+
+        console.log('[MotivationGraphView] Transformation complete:', {
+          nodes: transformResult.nodes.length,
+          edges: transformResult.edges.length,
+          bounds: transformResult.bounds,
+        });
+
+        // Apply animated transitions if layout changed
+        if (nodes.length > 0 && transformResult.nodes.length > 0) {
+          animateLayoutTransition(nodes, transformResult.nodes, setNodes);
+        } else {
+          setNodes(transformResult.nodes);
+        }
+
+        setEdges(transformResult.edges);
+
+        // Fit view after layout
+        setTimeout(() => {
+          reactFlowInstance?.fitView({ padding: 0.2, duration: 400 });
+        }, 100);
+
+        setIsLayouting(false);
+      } catch (err) {
+        console.error('[MotivationGraphView] Transform error:', err);
+        setIsLayouting(false);
+      }
+    };
+
+    transformGraph();
+  }, [
+    fullGraphRef.current,
+    selectedLayout,
+    selectedElementTypes,
+    selectedRelationshipTypes,
+    motivationPreferences.centerNodeId,
+    motivationPreferences.manualPositions,
+  ]);
+
+  /**
+   * Calculate filter counts for display
+   */
+  const filterCounts = useMemo((): FilterCounts => {
+    if (!fullGraphRef.current) {
+      return {
+        elements: {} as any,
+        relationships: {} as any,
+      };
+    }
+
+    const graph = fullGraphRef.current;
+
+    // Count elements by type
+    const elementCounts: Record<MotivationElementType, { visible: number; total: number }> = {} as any;
+    for (const elementType of Object.values(MotivationElementType)) {
+      const total = Array.from(graph.nodes.values()).filter(
+        (n) => n.element.type === elementType
+      ).length;
+      const visible = selectedElementTypes.has(elementType) ? total : 0;
+      elementCounts[elementType] = { visible, total };
+    }
+
+    // Count relationships by type
+    const relationshipCounts: Record<
+      MotivationRelationshipType,
+      { visible: number; total: number }
+    > = {} as any;
+    for (const relationshipType of Object.values(MotivationRelationshipType)) {
+      const total = Array.from(graph.edges.values()).filter((e) => e.type === relationshipType).length;
+      const visible = selectedRelationshipTypes.has(relationshipType) ? total : 0;
+      relationshipCounts[relationshipType] = { visible, total };
+    }
+
+    return {
+      elements: elementCounts,
+      relationships: relationshipCounts,
+    };
+  }, [fullGraphRef.current, selectedElementTypes, selectedRelationshipTypes]);
+
+  /**
+   * Handle element type filter change
+   */
+  const handleElementTypeChange = useCallback(
+    (elementType: MotivationElementType, selected: boolean) => {
+      const newTypes = new Set(selectedElementTypes);
+      if (selected) {
+        newTypes.add(elementType);
+      } else {
+        newTypes.delete(elementType);
+      }
+      setSelectedElementTypes(newTypes);
+      setVisibleElementTypes(newTypes);
+    },
+    [selectedElementTypes, setVisibleElementTypes]
+  );
+
+  /**
+   * Handle relationship type filter change
+   */
+  const handleRelationshipTypeChange = useCallback(
+    (relationshipType: MotivationRelationshipType, selected: boolean) => {
+      const newTypes = new Set(selectedRelationshipTypes);
+      if (selected) {
+        newTypes.add(relationshipType);
+      } else {
+        newTypes.delete(relationshipType);
+      }
+      setSelectedRelationshipTypes(newTypes);
+      setVisibleRelationshipTypes(newTypes);
+    },
+    [selectedRelationshipTypes, setVisibleRelationshipTypes]
+  );
+
+  /**
+   * Handle clear all filters
+   */
+  const handleClearAllFilters = useCallback(() => {
+    const allElementTypes = new Set(Object.values(MotivationElementType));
+    const allRelationshipTypes = new Set(Object.values(MotivationRelationshipType));
+    setSelectedElementTypes(allElementTypes);
+    setSelectedRelationshipTypes(allRelationshipTypes);
+    setVisibleElementTypes(allElementTypes);
+    setVisibleRelationshipTypes(allRelationshipTypes);
+  }, [setVisibleElementTypes, setVisibleRelationshipTypes]);
+
+  /**
+   * Handle layout change
+   */
+  const handleLayoutChange = useCallback(
+    (layout: LayoutAlgorithm) => {
+      setSelectedLayout(layout);
+      setMotivationLayout(layout);
+    },
+    [setMotivationLayout]
+  );
+
+  /**
+   * Handle fit to view
+   */
+  const handleFitToView = useCallback(() => {
+    reactFlowInstance?.fitView({ padding: 0.2, duration: 400 });
+  }, [reactFlowInstance]);
+
+  /**
+   * Handle focus mode toggle (Phase 4)
+   */
+  const handleFocusModeToggle = useCallback(
+    (enabled: boolean) => {
+      setFocusContextEnabled(enabled);
+    },
+    [setFocusContextEnabled]
+  );
 
   /**
    * Handle node selection
    */
-  const onNodeClick = (event: React.MouseEvent, node: Node) => {
+  const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
     console.log('[MotivationGraphView] Node selected:', node.id, node.data);
     // TODO: Phase 4 - Show inspector panel with element details
-  };
+  }, []);
+
+  /**
+   * Save manual positions when nodes are dragged
+   */
+  const onNodeDragStop = useCallback(
+    (_event: any, _node: any) => {
+      if (selectedLayout === 'manual') {
+        const positions = new Map<string, { x: number; y: number }>();
+        nodes.forEach((n) => {
+          positions.set(n.id, { x: n.position.x, y: n.position.y });
+        });
+        setManualPositions(positions);
+      }
+    },
+    [selectedLayout, nodes, setManualPositions]
+  );
 
   // Loading state
   if (loading) {
@@ -134,11 +364,14 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
   }
 
   // Empty state
-  if (nodes.length === 0) {
+  if (nodes.length === 0 && !isLayouting) {
     return (
       <div className="message-overlay">
         <div className="message-box">
-          <p>No motivation elements to display</p>
+          <p>No motivation elements match the current filters</p>
+          <button onClick={handleClearAllFilters} className="clear-filters-button">
+            Clear All Filters
+          </button>
         </div>
       </div>
     );
@@ -147,43 +380,129 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
   // Render ReactFlow with motivation nodes and edges
   return (
     <ErrorBoundary>
-      <div className="graph-viewer" style={{ width: '100%', height: '100%' }}>
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onNodeClick={onNodeClick}
-          fitView
-          fitViewOptions={{
-            padding: 0.2,
-            includeHiddenNodes: false,
-          }}
-          minZoom={0.1}
-          maxZoom={2}
-          defaultEdgeOptions={{
-            animated: false,
-          }}
-          proOptions={{ hideAttribution: true }}
-        >
-          <Background color="#e5e7eb" gap={16} />
-          <Controls />
-          <MiniMap
-            nodeColor={(node) => {
-              // Color minimap nodes based on their stroke color
-              return node.data.stroke || '#6b7280';
-            }}
-            maskColor="rgba(0, 0, 0, 0.1)"
-            style={{
-              backgroundColor: '#f9fafb',
-            }}
+      <div className="motivation-graph-container">
+        {/* Filter Panel */}
+        <div className="motivation-sidebar left">
+          <MotivationFilterPanel
+            selectedElementTypes={selectedElementTypes}
+            selectedRelationshipTypes={selectedRelationshipTypes}
+            filterCounts={filterCounts}
+            onElementTypeChange={handleElementTypeChange}
+            onRelationshipTypeChange={handleRelationshipTypeChange}
+            onClearAllFilters={handleClearAllFilters}
           />
-        </ReactFlow>
+        </div>
+
+        {/* Main Graph View */}
+        <div className="graph-viewer" style={{ width: '100%', height: '100%' }}>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onNodeClick={onNodeClick}
+            onNodeDragStop={onNodeDragStop}
+            fitView
+            fitViewOptions={{
+              padding: 0.2,
+              includeHiddenNodes: false,
+            }}
+            minZoom={0.1}
+            maxZoom={2}
+            defaultEdgeOptions={{
+              animated: false,
+            }}
+            proOptions={{ hideAttribution: true }}
+          >
+            <Background color="#e5e7eb" gap={16} />
+            <Controls />
+            <MiniMap
+              nodeColor={(node) => {
+                // Color minimap nodes based on their stroke color
+                return node.data.stroke || '#6b7280';
+              }}
+              maskColor="rgba(0, 0, 0, 0.1)"
+              style={{
+                backgroundColor: '#f9fafb',
+              }}
+            />
+          </ReactFlow>
+        </div>
+
+        {/* Control Panel */}
+        <div className="motivation-sidebar right">
+          <MotivationControlPanel
+            selectedLayout={selectedLayout}
+            onLayoutChange={handleLayoutChange}
+            onFitToView={handleFitToView}
+            focusModeEnabled={motivationPreferences.focusContextEnabled}
+            onFocusModeToggle={handleFocusModeToggle}
+            isLayouting={isLayouting}
+          />
+        </div>
       </div>
     </ErrorBoundary>
   );
 };
+
+/**
+ * Animate layout transitions using position interpolation
+ * Target: 800ms smooth transition
+ */
+function animateLayoutTransition(
+  oldNodes: Node[],
+  newNodes: Node[],
+  setNodes: (nodes: Node[]) => void
+): void {
+  const duration = 800; // ms
+  const startTime = Date.now();
+
+  // Create map of old positions
+  const oldPositions = new Map<string, { x: number; y: number }>();
+  oldNodes.forEach((node) => {
+    oldPositions.set(node.id, { x: node.position.x, y: node.position.y });
+  });
+
+  // Ease-in-out function
+  const easeInOutCubic = (t: number): number => {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  };
+
+  // Animation loop
+  const animate = () => {
+    const elapsed = Date.now() - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const easedProgress = easeInOutCubic(progress);
+
+    const interpolatedNodes = newNodes.map((newNode) => {
+      const oldPos = oldPositions.get(newNode.id);
+      if (!oldPos) {
+        // New node, just use new position
+        return newNode;
+      }
+
+      // Interpolate position
+      const x = oldPos.x + (newNode.position.x - oldPos.x) * easedProgress;
+      const y = oldPos.y + (newNode.position.y - oldPos.y) * easedProgress;
+
+      return {
+        ...newNode,
+        position: { x, y },
+      };
+    });
+
+    setNodes(interpolatedNodes);
+
+    // Continue animation if not complete
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    }
+  };
+
+  // Start animation
+  requestAnimationFrame(animate);
+}
 
 export default MotivationGraphView;

@@ -1,0 +1,164 @@
+/**
+ * MotivationControlPanel Styles
+ */
+
+.motivation-control-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  min-width: 280px;
+}
+
+.control-panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.control-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.layout-selector {
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #1f2937;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.layout-selector:hover:not(:disabled) {
+  border-color: #9ca3af;
+  background-color: #f9fafb;
+}
+
+.layout-selector:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.layout-selector:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.control-description {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.control-button:hover:not(:disabled) {
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.control-button:active:not(:disabled) {
+  background-color: #d1d5db;
+}
+
+.control-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.control-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.control-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.control-checkbox-label:hover {
+  background-color: #f9fafb;
+}
+
+.control-checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  margin: 0;
+}
+
+.control-checkbox-label input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+}
+
+.control-checkbox-label span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.layout-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background-color: #f9fafb;
+  border-radius: 4px;
+}
+
+.spinner-small {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e5e7eb;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.layout-progress span {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .motivation-control-panel {
+    min-width: auto;
+    width: 100%;
+  }
+}

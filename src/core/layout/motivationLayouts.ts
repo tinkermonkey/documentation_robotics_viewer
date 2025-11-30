@@ -203,25 +203,138 @@ export function forceDirectedLayout(
 }
 
 /**
- * Hierarchical Layout (for future phases)
- * Organizes goals in a tree structure based on refinement relationships
+ * Hierarchical Layout
+ * Organizes elements in a tree structure based on refinement relationships
+ * Uses dagre for automatic hierarchical positioning
  */
 export function hierarchicalLayout(
   graph: MotivationGraph,
   options: LayoutOptions = {}
 ): LayoutResult {
   const opts = { ...DEFAULT_OPTIONS, ...options };
-  const positions = new Map<string, Position>();
+  const { width = 1200, height = 800, padding = 50 } = opts;
 
-  // TODO: Implement hierarchical layout using dagre or custom algorithm
-  // For now, fall back to force-directed
-  console.warn('[HierarchicalLayout] Not implemented yet, using force-directed layout');
-  return forceDirectedLayout(graph, options);
+  console.log('[HierarchicalLayout] Starting hierarchical layout with', graph.nodes.size, 'nodes');
+
+  // Import dagre dynamically
+  const dagre = require('dagre');
+  const g = new dagre.graphlib.Graph();
+
+  // Configure graph
+  g.setGraph({
+    rankdir: 'TB', // Top to bottom
+    align: 'UL', // Upper left alignment
+    nodesep: 80, // Horizontal spacing between nodes
+    ranksep: 120, // Vertical spacing between ranks
+    marginx: padding,
+    marginy: padding,
+  });
+
+  // Default to 'default' for edge labels
+  g.setDefaultEdgeLabel(() => ({}));
+
+  // Add nodes to dagre graph
+  for (const [nodeId, graphNode] of graph.nodes) {
+    const elementType = graphNode.element.type;
+    const dimensions = getNodeDimensions(elementType);
+
+    g.setNode(nodeId, {
+      width: dimensions.width,
+      height: dimensions.height,
+      label: graphNode.element.name,
+    });
+  }
+
+  // Add edges to dagre graph
+  // Prioritize refinement relationships for hierarchy
+  const refinementEdges: Array<{ source: string; target: string }> = [];
+  const otherEdges: Array<{ source: string; target: string }> = [];
+
+  for (const edge of graph.edges.values()) {
+    if (edge.type === 'refines') {
+      refinementEdges.push({ source: edge.sourceId, target: edge.targetId });
+    } else {
+      otherEdges.push({ source: edge.sourceId, target: edge.targetId });
+    }
+  }
+
+  // Add refinement edges first (these define the hierarchy)
+  for (const edge of refinementEdges) {
+    g.setEdge(edge.source, edge.target);
+  }
+
+  // Optionally add other edges (commented out to keep hierarchy clean)
+  // for (const edge of otherEdges) {
+  //   g.setEdge(edge.source, edge.target);
+  // }
+
+  // Run dagre layout
+  dagre.layout(g);
+
+  // Extract positions from dagre
+  const positions = new Map<string, Position>();
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+
+  for (const [nodeId] of graph.nodes) {
+    const node = g.node(nodeId);
+    if (node) {
+      // Dagre returns center positions
+      positions.set(nodeId, {
+        x: node.x,
+        y: node.y,
+      });
+
+      const dimensions = getNodeDimensions(graph.nodes.get(nodeId)!.element.type);
+      minX = Math.min(minX, node.x - dimensions.width / 2);
+      minY = Math.min(minY, node.y - dimensions.height / 2);
+      maxX = Math.max(maxX, node.x + dimensions.width / 2);
+      maxY = Math.max(maxY, node.y + dimensions.height / 2);
+    }
+  }
+
+  const bounds = {
+    width: maxX - minX + 2 * padding,
+    height: maxY - minY + 2 * padding,
+    minX,
+    minY,
+    maxX,
+    maxY,
+  };
+
+  console.log('[HierarchicalLayout] Layout complete. Bounds:', bounds);
+
+  return {
+    nodePositions: positions,
+    bounds,
+  };
 }
 
 /**
- * Radial Layout (for future phases)
- * Positions nodes in concentric circles around a central stakeholder
+ * Get node dimensions based on element type
+ */
+function getNodeDimensions(elementType: string): { width: number; height: number } {
+  // Import from motivation node constants
+  // For now, use default dimensions - will be refined based on actual node sizes
+  const dimensionMap: Record<string, { width: number; height: number }> = {
+    stakeholder: { width: 180, height: 110 },
+    goal: { width: 180, height: 110 },
+    requirement: { width: 180, height: 110 },
+    constraint: { width: 180, height: 110 },
+    driver: { width: 180, height: 110 },
+    outcome: { width: 180, height: 110 },
+    principle: { width: 180, height: 110 },
+    assumption: { width: 180, height: 110 },
+    valueStream: { width: 180, height: 110 },
+    assessment: { width: 180, height: 110 },
+  };
+
+  return dimensionMap[elementType] || { width: 180, height: 110 };
+}
+
+/**
+ * Radial Layout
+ * Positions nodes in concentric circles around a central node (typically a stakeholder)
+ * Uses BFS to determine distance levels from center
  */
 export function radialLayout(
   graph: MotivationGraph,
@@ -229,12 +342,132 @@ export function radialLayout(
   options: LayoutOptions = {}
 ): LayoutResult {
   const opts = { ...DEFAULT_OPTIONS, ...options };
+  const { width = 1200, height = 800, padding = 50 } = opts;
+
+  console.log('[RadialLayout] Starting radial layout centered on', centerNodeId);
+
   const positions = new Map<string, Position>();
 
-  // TODO: Implement radial layout
-  // For now, fall back to force-directed
-  console.warn('[RadialLayout] Not implemented yet, using force-directed layout');
-  return forceDirectedLayout(graph, options);
+  // Verify center node exists
+  if (!graph.nodes.has(centerNodeId)) {
+    console.warn('[RadialLayout] Center node not found, falling back to force-directed');
+    return forceDirectedLayout(graph, options);
+  }
+
+  // BFS to calculate distance from center node
+  const distances = new Map<string, number>();
+  const visited = new Set<string>();
+  const queue: Array<{ nodeId: string; distance: number }> = [
+    { nodeId: centerNodeId, distance: 0 },
+  ];
+
+  distances.set(centerNodeId, 0);
+  visited.add(centerNodeId);
+
+  while (queue.length > 0) {
+    const { nodeId, distance } = queue.shift()!;
+
+    // Get all neighbors (both incoming and outgoing)
+    const neighbors = new Set<string>();
+    const node = graph.nodes.get(nodeId);
+
+    if (node) {
+      node.adjacency.incoming.forEach((n) => neighbors.add(n));
+      node.adjacency.outgoing.forEach((n) => neighbors.add(n));
+    }
+
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        distances.set(neighbor, distance + 1);
+        queue.push({ nodeId: neighbor, distance: distance + 1 });
+      }
+    }
+  }
+
+  // Group nodes by distance (level)
+  const levels = new Map<number, string[]>();
+  for (const [nodeId, distance] of distances) {
+    if (!levels.has(distance)) {
+      levels.set(distance, []);
+    }
+    levels.get(distance)!.push(nodeId);
+  }
+
+  // Calculate positions
+  const centerX = width / 2;
+  const centerY = height / 2;
+  const maxLevel = Math.max(...Array.from(levels.keys()));
+  const radiusIncrement = Math.min(width, height) / (2 * (maxLevel + 1)) - padding;
+
+  // Position center node
+  positions.set(centerNodeId, { x: centerX, y: centerY });
+
+  // Position nodes at each level
+  for (const [level, nodeIds] of levels) {
+    if (level === 0) continue; // Skip center node
+
+    const radius = level * radiusIncrement;
+    const angleStep = (2 * Math.PI) / nodeIds.length;
+
+    nodeIds.forEach((nodeId, index) => {
+      const angle = index * angleStep;
+      positions.set(nodeId, {
+        x: centerX + radius * Math.cos(angle),
+        y: centerY + radius * Math.sin(angle),
+      });
+    });
+  }
+
+  // Handle disconnected nodes (not reachable from center)
+  const disconnectedNodes: string[] = [];
+  for (const [nodeId] of graph.nodes) {
+    if (!positions.has(nodeId)) {
+      disconnectedNodes.push(nodeId);
+    }
+  }
+
+  if (disconnectedNodes.length > 0) {
+    console.log('[RadialLayout]', disconnectedNodes.length, 'disconnected nodes found');
+
+    // Position disconnected nodes in a separate ring or corner
+    const disconnectedRadius = (maxLevel + 1) * radiusIncrement;
+    const angleStep = (2 * Math.PI) / disconnectedNodes.length;
+
+    disconnectedNodes.forEach((nodeId, index) => {
+      const angle = index * angleStep;
+      positions.set(nodeId, {
+        x: centerX + disconnectedRadius * Math.cos(angle),
+        y: centerY + disconnectedRadius * Math.sin(angle),
+      });
+    });
+  }
+
+  // Calculate bounds
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (const [nodeId, pos] of positions) {
+    const dimensions = getNodeDimensions(graph.nodes.get(nodeId)!.element.type);
+    minX = Math.min(minX, pos.x - dimensions.width / 2);
+    minY = Math.min(minY, pos.y - dimensions.height / 2);
+    maxX = Math.max(maxX, pos.x + dimensions.width / 2);
+    maxY = Math.max(maxY, pos.y + dimensions.height / 2);
+  }
+
+  const bounds = {
+    width: maxX - minX + 2 * padding,
+    height: maxY - minY + 2 * padding,
+    minX,
+    minY,
+    maxX,
+    maxY,
+  };
+
+  console.log('[RadialLayout] Layout complete. Levels:', levels.size, 'Bounds:', bounds);
+
+  return {
+    nodePositions: positions,
+    bounds,
+  };
 }
 
 /**

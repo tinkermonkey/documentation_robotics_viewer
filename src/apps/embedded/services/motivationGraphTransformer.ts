@@ -22,7 +22,14 @@ import {
   OutcomeNodeData,
   MotivationEdgeData,
 } from '../../../core/types/reactflow';
-import { forceDirectedLayout, LayoutOptions, LayoutResult } from '../../../core/layout/motivationLayouts';
+import {
+  forceDirectedLayout,
+  hierarchicalLayout,
+  radialLayout,
+  manualLayout,
+  LayoutOptions,
+  LayoutResult,
+} from '../../../core/layout/motivationLayouts';
 import {
   STAKEHOLDER_NODE_WIDTH,
   STAKEHOLDER_NODE_HEIGHT,
@@ -46,6 +53,8 @@ export interface TransformerOptions {
   layoutOptions?: LayoutOptions;
   selectedElementTypes?: Set<MotivationElementType>;
   selectedRelationshipTypes?: Set<MotivationRelationshipType>;
+  centerNodeId?: string; // For radial layout
+  existingPositions?: Map<string, { x: number; y: number }>; // For manual layout
 }
 
 /**
@@ -173,15 +182,64 @@ export class MotivationGraphTransformer {
     switch (algorithm) {
       case 'force':
         return forceDirectedLayout(graph, this.options.layoutOptions);
+
       case 'hierarchical':
-      case 'radial':
-      case 'manual':
-        // These will be implemented in future phases
-        console.warn(`[MotivationGraphTransformer] Layout '${algorithm}' not implemented, using force-directed`);
-        return forceDirectedLayout(graph, this.options.layoutOptions);
+        return hierarchicalLayout(graph, this.options.layoutOptions);
+
+      case 'radial': {
+        // For radial layout, we need a center node
+        const centerNodeId = this.options.centerNodeId || this.findDefaultCenterNode(graph);
+        if (!centerNodeId) {
+          console.warn('[MotivationGraphTransformer] No center node for radial layout, using force-directed');
+          return forceDirectedLayout(graph, this.options.layoutOptions);
+        }
+        return radialLayout(graph, centerNodeId, this.options.layoutOptions);
+      }
+
+      case 'manual': {
+        if (!this.options.existingPositions) {
+          console.warn('[MotivationGraphTransformer] No existing positions for manual layout, using force-directed');
+          return forceDirectedLayout(graph, this.options.layoutOptions);
+        }
+        return manualLayout(graph, this.options.existingPositions, this.options.layoutOptions);
+      }
+
       default:
         return forceDirectedLayout(graph, this.options.layoutOptions);
     }
+  }
+
+  /**
+   * Find a default center node for radial layout
+   * Prioritizes stakeholders with highest degree centrality
+   */
+  private findDefaultCenterNode(graph: MotivationGraph): string | undefined {
+    let maxCentrality = -1;
+    let centerNodeId: string | undefined;
+
+    for (const [nodeId, graphNode] of graph.nodes) {
+      // Prefer stakeholders
+      const isStakeholder = graphNode.element.type === MotivationElementType.Stakeholder;
+      const centrality = graphNode.metrics.degreeCentrality;
+
+      if (isStakeholder && centrality > maxCentrality) {
+        maxCentrality = centrality;
+        centerNodeId = nodeId;
+      }
+    }
+
+    // If no stakeholders, use any node with highest centrality
+    if (!centerNodeId) {
+      for (const [nodeId, graphNode] of graph.nodes) {
+        const centrality = graphNode.metrics.degreeCentrality;
+        if (centrality > maxCentrality) {
+          maxCentrality = centrality;
+          centerNodeId = nodeId;
+        }
+      }
+    }
+
+    return centerNodeId;
   }
 
   /**
