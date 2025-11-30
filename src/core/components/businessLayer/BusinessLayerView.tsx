@@ -24,6 +24,9 @@ import { HierarchicalBusinessLayout } from '../../layout/business/HierarchicalBu
 import { DEFAULT_LAYOUT_OPTIONS } from '../../layout/business/types';
 import { nodeTypes } from '../../nodes';
 import { edgeTypes } from '../../edges';
+import { useBusinessFilters } from '../../hooks/useBusinessFilters';
+import { useBusinessLayerStore } from '../../stores/businessLayerStore';
+import { BusinessLayerControls } from './BusinessLayerControls';
 
 interface BusinessLayerViewProps {
   /** The documentation model */
@@ -39,6 +42,17 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Get filter state from store
+  const { filters } = useBusinessLayerStore();
+
+  // Apply filters to nodes and edges
+  const { filteredNodes, filteredEdges, visibleCount, totalCount } = useBusinessFilters(
+    nodes,
+    edges,
+    filters,
+    businessGraph
+  );
 
   // Parse and build graph on mount/model change
   useEffect(() => {
@@ -99,6 +113,13 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
     // Nodes are initialized and fitView is handled by ReactFlow
   }, []);
 
+  // Export handlers (placeholder for Phase 7)
+  const handleExport = useCallback((type: 'png' | 'svg' | 'catalog' | 'traceability') => {
+    console.log('[BusinessLayerView] Export requested:', type);
+    // TODO: Implement export functionality in Phase 7
+    alert(`Export as ${type.toUpperCase()} - Coming in Phase 7!`);
+  }, []);
+
   if (error) {
     return (
       <div
@@ -156,29 +177,39 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
   }
 
   return (
-    <div className="business-layer-view" style={{ width: '100%', height: '100vh' }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onNodesInitialized={onNodesInitialized}
-        onlyRenderVisibleElements={true} // Critical for performance with >200 nodes
-        fitView
-        fitViewOptions={{
-          padding: 0.2,
-          includeHiddenNodes: false,
-          duration: 200,
-        }}
-        minZoom={0.1}
-        maxZoom={2}
-        defaultEdgeOptions={{
-          type: 'elbow',
-          animated: false,
-        }}
-      >
+    <div className="business-layer-view" style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {/* Controls Panel */}
+      <BusinessLayerControls
+        businessGraph={businessGraph}
+        onExport={handleExport}
+        visibleCount={visibleCount}
+        totalCount={totalCount}
+      />
+
+      {/* Graph Visualization */}
+      <div style={{ flex: 1, position: 'relative' }}>
+        <ReactFlow
+          nodes={filteredNodes}
+          edges={filteredEdges}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onNodesInitialized={onNodesInitialized}
+          onlyRenderVisibleElements={true} // Critical for performance with >200 nodes
+          fitView
+          fitViewOptions={{
+            padding: 0.2,
+            includeHiddenNodes: false,
+            duration: 200,
+          }}
+          minZoom={0.1}
+          maxZoom={2}
+          defaultEdgeOptions={{
+            type: 'elbow',
+            animated: false,
+          }}
+        >
         <Background color="#aaa" gap={16} />
         <Controls />
         <MiniMap
@@ -218,7 +249,8 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
             )}
           </div>
         </Panel>
-      </ReactFlow>
+        </ReactFlow>
+      </div>
     </div>
   );
 };
