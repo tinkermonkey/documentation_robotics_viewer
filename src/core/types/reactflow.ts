@@ -83,6 +83,58 @@ export interface LayerContainerNodeData extends BaseNodeData {
 }
 
 /**
+ * Stakeholder node data (Motivation layer)
+ */
+export interface StakeholderNodeData extends BaseNodeData {
+  stakeholderType?: string; // e.g., "internal", "external", "customer"
+  interests?: string[];
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
+ * Goal node data (Motivation layer)
+ */
+export interface GoalNodeData extends BaseNodeData {
+  priority?: 'high' | 'medium' | 'low';
+  status?: string;
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
+ * Requirement node data (Motivation layer)
+ */
+export interface RequirementNodeData extends BaseNodeData {
+  requirementType?: string;
+  priority?: 'high' | 'medium' | 'low';
+  status?: string;
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
+ * Constraint node data (Motivation layer)
+ */
+export interface ConstraintNodeData extends BaseNodeData {
+  negotiability?: 'fixed' | 'negotiable';
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
+ * Driver node data (Motivation layer)
+ */
+export interface DriverNodeData extends BaseNodeData {
+  category?: 'business' | 'technical' | 'regulatory' | 'market';
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
+ * Outcome node data (Motivation layer)
+ */
+export interface OutcomeNodeData extends BaseNodeData {
+  achievementStatus?: 'planned' | 'in-progress' | 'achieved' | 'at-risk';
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
  * Union type for all custom node types
  */
 export type AppNode =
@@ -92,7 +144,13 @@ export type AppNode =
   | Node<BusinessProcessNodeData, 'businessProcess'>
   | Node<RoleNodeData, 'role'>
   | Node<PermissionNodeData, 'permission'>
-  | Node<LayerContainerNodeData, 'layerContainer'>;
+  | Node<LayerContainerNodeData, 'layerContainer'>
+  | Node<StakeholderNodeData, 'stakeholder'>
+  | Node<GoalNodeData, 'goal'>
+  | Node<RequirementNodeData, 'requirement'>
+  | Node<ConstraintNodeData, 'constraint'>
+  | Node<DriverNodeData, 'driver'>
+  | Node<OutcomeNodeData, 'outcome'>;
 
 /**
  * Edge data for custom edges
@@ -102,10 +160,24 @@ export interface ElbowEdgeData {
 }
 
 /**
+ * Motivation edge data
+ */
+export interface MotivationEdgeData {
+  relationshipType: 'influence' | 'constrains' | 'realizes' | 'refines' | 'conflicts' | 'custom';
+  label?: string;
+  weight?: number;
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
  * Union type for all custom edge types
  */
 export type AppEdge =
   | Edge<ElbowEdgeData, 'elbow'>
+  | Edge<MotivationEdgeData, 'influence'>
+  | Edge<MotivationEdgeData, 'constrains'>
+  | Edge<MotivationEdgeData, 'realizes'>
+  | Edge<MotivationEdgeData, 'refines'>
   | Edge<undefined, 'default'>
   | Edge<undefined, 'smoothstep'>;
 

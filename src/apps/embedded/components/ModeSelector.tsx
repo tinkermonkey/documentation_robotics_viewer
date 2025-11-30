@@ -1,12 +1,12 @@
 /**
  * ModeSelector Component
- * Allows switching between Spec, Model, and Changeset views
+ * Allows switching between Spec, Model, Motivation, and Changeset views
  */
 
 import React from 'react';
 import './ModeSelector.css';
 
-type ViewMode = 'spec' | 'model' | 'changesets';
+type ViewMode = 'spec' | 'model' | 'changesets' | 'motivation';
 
 interface ModeSelectorProps {
   currentMode: ViewMode;
@@ -30,6 +30,14 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({ currentMode, onModeChange }
         title="View current model"
       >
         🏗️ Model
+      </button>
+
+      <button
+        className={`mode-button ${currentMode === 'motivation' ? 'active' : ''}`}
+        onClick={() => onModeChange('motivation')}
+        title="View motivation layer ontology"
+      >
+        🎯 Motivation
       </button>
 
       <button

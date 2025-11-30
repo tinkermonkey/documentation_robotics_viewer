@@ -16,6 +16,7 @@ import AnnotationPanel from './components/AnnotationPanel';
 import SpecViewer from './components/SpecViewer';
 import SpecGraphView from './components/SpecGraphView';
 import ModelJSONViewer from './components/ModelJSONViewer';
+import MotivationGraphView from './components/MotivationGraphView';
 import ViewTabSwitcher from './components/ViewTabSwitcher';
 import { useModelStore } from '../../core/stores/modelStore';
 import { useConnectionStore } from './stores/connectionStore';
@@ -26,7 +27,7 @@ import { websocketClient } from './services/websocketClient';
 import { embeddedDataLoader, SpecDataResponse } from './services/embeddedDataLoader';
 import './EmbeddedApp.css';
 
-type ViewMode = 'spec' | 'model' | 'changesets';
+type ViewMode = 'spec' | 'model' | 'changesets' | 'motivation';
 
 function EmbeddedApp() {
   const { model, loading, error, setModel, setLoading, setError } = useModelStore();
@@ -178,6 +179,9 @@ function EmbeddedApp() {
       } else if (viewMode === 'model') {
         await loadModelData();
         await loadAnnotations();
+      } else if (viewMode === 'motivation') {
+        await loadModelData(); // Motivation view uses model data
+        await loadAnnotations();
       } else if (viewMode === 'changesets') {
         await loadChangesets();
       }
@@ -325,6 +329,10 @@ function EmbeddedApp() {
         await loadAnnotations();
       } else if (mode === 'model') {
         console.log('[EmbeddedApp] Loading model data for mode change');
+        await loadModelData();
+        await loadAnnotations();
+      } else if (mode === 'motivation') {
+        console.log('[EmbeddedApp] Loading model data for motivation view');
         await loadModelData();
         await loadAnnotations();
       } else if (mode === 'changesets') {
@@ -480,6 +488,15 @@ function EmbeddedApp() {
                     <ModelJSONViewer model={model} />
                   )}
                 </div>
+              </div>
+              <AnnotationPanel />
+            </>
+          )}
+
+          {!loading && !error && viewMode === 'motivation' && model && (
+            <>
+              <div className="motivation-view-container">
+                <MotivationGraphView model={model} />
               </div>
               <AnnotationPanel />
             </>
