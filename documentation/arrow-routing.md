@@ -1,161 +1,161 @@
-# Arrow Routing & Smooth Paths
+# Edge Routing & Smooth Paths
 
 ## Overview
 
-The viewer now uses **smooth curved arrows** for field-level connections, making relationships clearer and more visually appealing. tldraw v4 provides three arrow routing types with built-in smooth path calculation.
+The viewer uses **React Flow's edge system** with custom routing logic to create clear, collision-free connections between nodes.
 
-## Arrow Types
+## Edge Types
 
-### 1. **Arc Arrows** (Smooth Curves)
-Uses cubic Bezier curves for smooth, elegant connections.
-- **Best for:** Field-level connections, data model relationships
-- **Appearance:** Gentle curves that avoid sharp angles
-- **Configurable:** Bend amount can be adjusted from 0 (straight) to 1 (maximum curve)
+### 1. **Elbow Edge** (Smart Routing)
+The primary edge type used in the viewer is the `ElbowEdge`. It provides orthogonal routing (horizontal and vertical lines) with obstacle avoidance.
 
-### 2. **Elbow Arrows** (Orthogonal Routing)
-Creates right-angle connections with smart routing.
-- **Best for:** Technical diagrams, circuit-like layouts
-- **Appearance:** Horizontal and vertical segments only
-- **Configurable:** Midpoint position can be adjusted
+- **Best for:** Architectural diagrams, clear separation of lines
+- **Features:**
+  - Avoids crossing through nodes
+  - Rounds corners for visual appeal
+  - Supports labels
+  - Handles multiple connections gracefully
 
-### 3. **Straight Arrows** (Direct)
-Simple point-to-point connections.
-- **Best for:** Simple relationships, when clarity is paramount
-- **Appearance:** Direct line from source to target
+### 2. **React Flow Defaults**
+We also leverage React Flow's built-in edge types where appropriate:
+- **Bezier**: For smooth, curved connections (e.g., Motivation layer)
+- **Straight**: For direct, simple links
 
 ## Automatic Routing
 
-The AttachmentPointManager automatically selects the best arrow type:
+The `NodeTransformer` automatically selects the best edge type and configuration:
 
 ```typescript
-// Field-level connections → Arc arrows with gentle curve
-if (sourcePointId.startsWith('field-') && targetPointId.startsWith('field-')) {
-  kind: 'arc'
-  bend: 0.3
+// Cross-layer references → Elbow edge with dashed line
+if (isCrossLayer) {
+  type: 'elbow',
+  style: { strokeDasharray: '5,5' }
 }
 
-// Shape-level connections → Straight arrows
+// Standard relationships → Elbow edge
 else {
-  kind: 'straight'
-  bend: 0
+  type: 'elbow'
 }
+```
+
+## Obstacle Avoidance
+
+The `ElbowEdge` component implements a pathfinding algorithm to route around nodes:
+
+```typescript
+// src/core/edges/ElbowEdge.tsx
+
+// 1. Identify obstacles (all nodes except source/target)
+const obstacles = nodes.map(node => ({
+  x: node.position.x,
+  y: node.position.y,
+  width: node.width,
+  height: node.height
+}));
+
+// 2. Calculate path
+const pathPoints = calculateElbowPath(
+  sourcePoint,
+  targetPoint,
+  obstacles,
+  sourcePosition,
+  targetPosition
+);
 ```
 
 ## Visual Result
 
-### **Before (Straight Arrows):**
+### **Before (Straight Edges):**
 ```
 ┌─────────────┐
-│ Schema A    │
-│  id         ├────────────┐
-│  teamId     │            │  (overlapping, unclear)
+│ Node A      │
+│             ├────────────┐
+│             │            │  (crossing Node C)
 └─────────────┘            │
                            │
 ┌─────────────┐            │
-│ Schema B    │            │
-│  id         │◄───────────┘
-│  name       │
+│ Node C      │            │
+│ (Obstacle)  │            │
+└─────────────┘            │
+                           │
+┌─────────────┐            │
+│ Node B      │            │
+│             │◄───────────┘
+│             │
 └─────────────┘
 ```
 
-### **After (Curved Arrows):**
+### **After (Elbow Edges):**
 ```
 ┌─────────────┐
-│ Schema A    │
-│  id         │
-│  teamId     ├─╮
-└─────────────┘  ╲
-                  ╲  (smooth curve)
-                   ╲
-┌─────────────┐    ╲
-│ Schema B    │     ╲
-│  id         │◄────╯
-│  name       │
+│ Node A      │
+│             ├──┐
+│             │  │
+└─────────────┘  │
+                 │
+┌─────────────┐  │
+│ Node C      │  │ (routes around)
+│ (Obstacle)  │  │
+└─────────────┘  │
+                 │
+┌─────────────┐  │
+│ Node B      │  │
+│             │◄─┘
+│             │
 └─────────────┘
 ```
 
 ## Configuration Options
 
-### **Per-Arrow Customization**
+### **Per-Edge Customization**
 
-You can customize individual arrows by passing options to `createArrow()`:
+Edges can be customized via the `data` prop:
 
 ```typescript
-attachmentPointManager.createArrow(
-  editor,
-  sourceShape,
-  targetShape,
-  'field-userId-right',
-  'field-id-left',
-  {
-    kind: 'arc',           // 'straight' | 'arc' | 'elbow'
-    bend: 0.5,             // 0 = straight, 1 = maximum curve
-    color: 'blue',         // Arrow color
-    dash: 'dashed',        // 'solid' | 'dashed' | 'dotted' | 'draw'
-    size: 'l'              // 's' | 'm' | 'l' | 'xl'
+{
+  id: 'edge-1',
+  type: 'elbow',
+  data: {
+    pathOptions: {
+      offset: 10,        // Margin around nodes
+      borderRadius: 8    // Corner radius
+    }
   }
-);
-```
-
-### **Global Defaults**
-
-Edit `src/layout/attachmentPoints.ts:212-213` to change defaults:
-
-```typescript
-// More dramatic curves
-const arrowBend = isFieldConnection ? 0.5 : 0;  // was 0.3
-
-// Use elbow arrows instead
-const arrowKind = options?.kind || (isFieldConnection ? 'elbow' : 'straight');
+}
 ```
 
 ## Technical Details
 
-### **How Curved Arrows Work**
+### **Pathfinding Algorithm**
 
-tldraw uses cubic Bezier curves for arc arrows:
-1. Start and end points are calculated from attachment points
-2. The `bend` value determines control point offset
-3. tldraw automatically calculates the smooth path
-4. Arrows avoid overlapping when possible
+The `calculateElbowPath` function (in `src/core/edges/pathfinding.ts`) uses a simplified A* or greedy approach optimized for orthogonal routing:
+1. Determine start and end directions based on handles
+2. Generate candidate points around obstacles
+3. Find a path of horizontal/vertical segments
+4. Minimize segment count and length
 
 ### **Properties Used**
 
 ```typescript
-interface TLArrowShapeProps {
-  kind: 'straight' | 'arc' | 'elbow';  // Routing algorithm
-  bend: number;                         // Curve amount (-1 to 1)
-  elbowMidPoint: number;               // For elbow arrows
-  start: { x: number; y: number };     // Start coordinates
-  end: { x: number; y: number };       // End coordinates
-
-  // Styling
-  color: string;
-  dash: 'solid' | 'dashed' | 'dotted' | 'draw';
-  size: 's' | 'm' | 'l' | 'xl';
-  arrowheadStart: string;
-  arrowheadEnd: string;
+interface ElbowEdgeProps extends EdgeProps {
+  data?: {
+    pathOptions?: {
+      offset?: number;
+      borderRadius?: number;
+    };
+  };
 }
 ```
 
 ## Benefits
 
-✅ **Visual Clarity:** Curved arrows reduce visual clutter
-✅ **Field Precision:** Clear connection from specific field to specific field
-✅ **Professional Look:** Smooth curves are more aesthetically pleasing
-✅ **Scalability:** Works well even with many connections
-✅ **Flexibility:** Three routing types for different use cases
-
-## Future Enhancements
-
-- [ ] Automatic collision avoidance for dense diagrams
-- [ ] Dynamic bend calculation based on distance
-- [ ] Arrow labels showing relationship type
-- [ ] Smart routing around obstacles
-- [ ] Animated path tracing for presentations
+✅ **Visual Clarity:** Edges don't obscure node content
+✅ **Professional Look:** Orthogonal lines are standard in architecture diagrams
+✅ **Readability:** Easier to trace connections in complex graphs
+✅ **Flexibility:** Adapts to moving nodes automatically
 
 ## References
 
-- tldraw Arrow Documentation: https://tldraw.dev/
-- Implementation: `/src/layout/attachmentPoints.ts:187-245`
-- Field-level connections: `/documentation/field-level-connections.md`
+- React Flow Edge Documentation: https://reactflow.dev/docs/concepts/edges/
+- Implementation: `/src/core/edges/ElbowEdge.tsx`
+- Pathfinding logic: `/src/core/edges/pathfinding.ts`

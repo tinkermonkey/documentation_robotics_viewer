@@ -159,39 +159,44 @@ export const layerConfig: LayerConfig[] = [
 
 ```typescript
 class LayerVisibilityManager {
-  private editor: Editor;
-  private layerStates: Map<string, LayerState>;
+  private store: StoreApi<ViewerState>;
   
-  // Update shape visibility based on layer state
+  // Update node visibility based on layer state
   updateVisibility(): void {
-    const shapes = this.editor.getCurrentPageShapes();
+    const { nodes, setNodes, layerStates } = this.store.getState();
     
-    for (const shape of shapes) {
-      const layerId = shape.props.layerId;
-      const layerState = this.layerStates.get(layerId);
+    const updatedNodes = nodes.map(node => {
+      const layerId = node.data.layerId;
+      const layerState = layerStates.get(layerId);
       
-      if (!layerState) continue;
+      if (!layerState) return node;
       
       // Calculate effective visibility
-      const isVisible = layerState.visible && !this.isFiltered(shape);
+      const isVisible = layerState.visible;
       const opacity = layerState.visible ? layerState.opacity : 0;
       
-      // Update shape
-      this.editor.updateShape({
-        id: shape.id,
-        type: shape.type,
-        isGhost: !isVisible,
-        opacity: opacity,
-        isLocked: layerState.locked,
-      });
-    }
+      // Update node
+      return {
+        ...node,
+        hidden: !isVisible,
+        style: {
+          ...node.style,
+          opacity: opacity,
+          pointerEvents: layerState.locked ? 'none' : 'all'
+        }
+      };
+    });
+
+    setNodes(updatedNodes);
   }
   
   // Layer isolation mode
   isolateLayer(layerId: string): void {
     // Hide all other layers
-    for (const [id, state] of this.layerStates) {
-      this.setLayerVisibility(id, id === layerId);
+    const { layerStates, setLayerVisibility } = this.store.getState();
+    
+    for (const [id] of layerStates) {
+      setLayerVisibility(id, id === layerId);
     }
     
     // Zoom to layer content
@@ -200,13 +205,15 @@ class LayerVisibilityManager {
   
   // Focus mode with dimming
   focusLayer(layerId: string): void {
-    for (const [id, state] of this.layerStates) {
+    const { layerStates, setLayerOpacity } = this.store.getState();
+    
+    for (const [id] of layerStates) {
       if (id === layerId) {
         // Full visibility for focused layer
-        this.setLayerOpacity(id, 1.0);
+        setLayerOpacity(id, 1.0);
       } else {
         // Dim other layers
-        this.setLayerOpacity(id, 0.3);
+        setLayerOpacity(id, 0.3);
       }
     }
   }
@@ -354,12 +361,12 @@ class LayerGroupManager {
 
 ```typescript
 class LayerInteractionManager {
-  private editor: Editor;
-  private layerStates: Map<string, LayerState>;
+  private store: StoreApi<ViewerState>;
   
-  // Handle click on shape
-  handleShapeClick(shape: MetaModelShape): void {
-    const layerState = this.layerStates.get(shape.props.layerId);
+  // Handle click on node
+  handleNodeClick(event: React.MouseEvent, node: Node): void {
+    const { layerStates } = this.store.getState();
+    const layerState = layerStates.get(node.data.layerId);
     
     // Check if layer is locked
     if (layerState?.locked) {
@@ -369,12 +376,11 @@ class LayerInteractionManager {
     
     // Check if layer is visible
     if (!layerState?.visible) {
-      this.promptToShowLayer(shape.props.layerId);
+      this.promptToShowLayer(node.data.layerId);
       return;
     }
     
-    // Normal selection
-    this.editor.select(shape.id);
+    // Normal selection handled by React Flow
   }
   
   // Cross-layer navigation
@@ -389,8 +395,8 @@ class LayerInteractionManager {
         this.layerManager.setLayerVisibility(toLayer, true);
         
         // Focus on target element
-        this.editor.zoomToSelection([toElement.id]);
-        this.editor.select(toElement.id);
+        const { reactFlowInstance } = this.store.getState();
+        reactFlowInstance.fitView({ nodes: [{ id: toElement.id }] });
       });
     }
   }

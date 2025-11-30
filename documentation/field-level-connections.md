@@ -2,58 +2,71 @@
 
 ## Overview
 
-The viewer now supports **field-level connections** where relationship arrows connect from a specific field in the source shape to a specific field in the target shape, rather than just connecting shape-to-shape.
+The viewer supports **field-level connections** where relationship arrows connect from a specific field in the source node to a specific field in the target node, rather than just connecting node-to-node.
 
 ## How It Works
 
-### 1. Attachment Points
+### 1. React Flow Handles
 
-Each shape can define attachment points for individual fields/properties:
+Each node can define custom **Handles** for individual fields/properties. React Flow uses these handles as anchors for edges.
 
 ```typescript
-// DataModelComponent example
-{
-  id: `field-${field.id}-left`,
-  position: 'left',
-  offset: yOffset,  // Y offset from shape center
-  connections: []
-}
+// DataModelNode example
+<div className="field-row">
+  {/* Left Handle for incoming connections */}
+  <Handle 
+    type="target" 
+    position={Position.Left} 
+    id={`field-${field.id}-left`} 
+    style={{ top: '50%' }}
+  />
+  
+  <span>{field.name}</span>
+  
+  {/* Right Handle for outgoing connections */}
+  <Handle 
+    type="source" 
+    position={Position.Right} 
+    id={`field-${field.id}-right`}
+    style={{ top: '50%' }}
+  />
+</div>
 ```
 
 ### 2. Relationship Configuration
 
-To create a field-level connection, specify `sourceField` and `targetField` in the relationship properties:
+To create a field-level connection, specify `sourceHandle` and `targetHandle` in the edge properties:
 
 ```typescript
 {
   id: 'rel-1',
-  type: 'reference',
-  sourceId: 'schema-1',
-  targetId: 'schema-2',
-  properties: {
-    sourceField: 'userId',      // Field name in source
-    targetField: 'id',          // Field name in target
+  source: 'schema-1',
+  target: 'schema-2',
+  sourceHandle: 'field-userId-right', // Connect from specific handle
+  targetHandle: 'field-id-left',      // Connect to specific handle
+  type: 'elbow',
+  data: {
     crossLayer: true
   }
 }
 ```
 
-### 3. Supported Shapes
+### 3. Supported Nodes
 
-The following shapes support field-level attachment points:
+The following nodes support field-level handles:
 
-- **DataModelComponent** - Fields in data model entities
-- **JSONSchemaShape** - Properties in JSON schemas (including nested properties up to 2 levels deep)
+- **DataModelNode** - Fields in data model entities
+- **JSONSchemaNode** - Properties in JSON schemas (including nested properties)
 
 ## Implementation Details
 
-### JSONSchemaShape Field Attachment Points
+### JSONSchemaNode Handle Generation
 
 - **Naming Convention:** `field-${propertyName}-left` or `field-${propertyName}-right`
-- **Nested Properties:** Automatically creates attachment points for nested properties (max 2 levels)
-- **Offset Calculation:** Uses `globalIndex` to match the visual rendering position exactly
+- **Nested Properties:** Automatically creates handles for nested properties
+- **Positioning:** Handles are rendered relative to the field row div, ensuring they move correctly if the node content expands or collapses.
 
-Example:
+Example Handle IDs:
 ```
 field-id-left
 field-name-right
@@ -61,21 +74,20 @@ field-metadata-left
 field-data-right
 ```
 
-### AttachmentPointManager
+### NodeTransformer Logic
 
-The `AttachmentPointManager` now:
-1. Looks up the attachment point definition from `shape.props.attachmentPoints`
-2. Uses the `offset` value to calculate the precise Y position
-3. Falls back to center positions for backward compatibility
+The `NodeTransformer` service is responsible for mapping the logical relationship to the correct handle IDs:
 
 ```typescript
-// With offset (field-level):
-if (attachmentPoint.offset !== undefined) {
-  return { x: x, y: y + h / 2 + offset };  // Precise field position
+// src/core/services/nodeTransformer.ts
+
+if (relationship.properties.sourceField) {
+  edge.sourceHandle = `field-${relationship.properties.sourceField}-right`;
 }
 
-// Without offset (shape-level):
-return { x: x, y: y + h / 2 };  // Center of shape
+if (relationship.properties.targetField) {
+  edge.targetHandle = `field-${relationship.properties.targetField}-left`;
+}
 ```
 
 ## Usage Example
@@ -136,23 +148,20 @@ const model = {
 ├─────────────────┤                  ├─────────────────┤
 │ id: string      │                  │ id: string      │◄─┐
 │ name: string    │                  │ name: string    │  │
-│ teamId: string  ├──────────────────┼─────────────────┘  │
+│ teamId: string  ├○─────────────────┼○ id: string     │  │
 └─────────────────┘                  └─────────────────┘
-     Arrow connects from the specific field
+     Arrow connects from the specific field handle
 ```
 
 ## Backward Compatibility
 
-Shapes without `sourceField`/`targetField` specified will use default attachment points:
-- Shape-to-shape connections (top/bottom/left/right)
-- Automatically selected based on relative positions
+Edges without `sourceHandle`/`targetHandle` specified will use the default node handles (usually Top/Bottom/Left/Right on the main node body).
 
 ## Implementation Files
 
-- `/src/layout/attachmentPoints.ts:133-175` - Offset calculation
-- `/src/shapes/schema/JSONSchemaShape.tsx:134-220` - Attachment point creation
-- `/src/shapes/datamodel/DataModelComponent.tsx:45-79` - Reference implementation
-- `/src/services/shapeTransformer.ts:369-373` - Relationship handling
+- `/src/core/nodes/DataModelNode.tsx` - Handle implementation
+- `/src/core/nodes/JSONSchemaNode.tsx` - Handle implementation
+- `/src/core/services/nodeTransformer.ts` - Edge handle mapping
 
 ## Future Enhancements
 
