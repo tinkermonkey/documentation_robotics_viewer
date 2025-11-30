@@ -282,14 +282,22 @@ export class MotivationGraphTransformer {
       const isHighlighted = pathHighlighting?.highlightedNodeIds?.has(nodeId) || false;
       const isSelected = pathHighlighting?.selectedNodeIds?.includes(nodeId) || false;
 
+      // Calculate relationship count for badge display on dimmed nodes
+      const totalRelationships = graphNode.metrics.degreeCentrality;
+
       if (pathHighlighting && pathHighlighting.mode !== 'none') {
         // Apply highlighting/dimming
         if (isHighlighted) {
           // Highlighted nodes: keep normal appearance
           nodeData.opacity = 1.0;
         } else {
-          // Dim non-highlighted nodes
+          // Dim non-highlighted nodes and show relationship count badge
           nodeData.opacity = 0.3;
+          nodeData.relationshipBadge = {
+            count: totalRelationships,
+            incoming: graphNode.metrics.inDegree,
+            outgoing: graphNode.metrics.outDegree
+          };
         }
 
         // Selected nodes get emphasized border
@@ -301,7 +309,13 @@ export class MotivationGraphTransformer {
         if (isHighlighted) {
           nodeData.opacity = 1.0;
         } else {
+          // Dim non-highlighted nodes and show relationship count badge
           nodeData.opacity = 0.3;
+          nodeData.relationshipBadge = {
+            count: totalRelationships,
+            incoming: graphNode.metrics.inDegree,
+            outgoing: graphNode.metrics.outDegree
+          };
         }
       } else {
         // No highlighting - normal appearance

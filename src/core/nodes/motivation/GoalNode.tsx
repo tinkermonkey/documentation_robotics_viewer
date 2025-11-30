@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
 import { GoalNodeData } from '../../types/reactflow';
+import { RelationshipBadge } from './RelationshipBadge';
 
 /**
  * Node dimensions for layout calculation
@@ -16,7 +17,7 @@ export const GoalNode = memo(({ data }: NodeProps<GoalNodeData>) => {
   // Apply changeset styling if present
   let borderColor = data.stroke || '#059669';
   let backgroundColor = data.fill || '#d1fae5';
-  let opacity = 1;
+  let opacity = data.opacity !== undefined ? data.opacity : 1;
 
   if (data.changesetOperation) {
     switch (data.changesetOperation) {
@@ -35,6 +36,9 @@ export const GoalNode = memo(({ data }: NodeProps<GoalNodeData>) => {
         break;
     }
   }
+
+  // Check if node is dimmed (for focus mode)
+  const isDimmed = opacity < 1;
 
   // Priority badge color
   const getPriorityColor = () => {
@@ -155,6 +159,11 @@ export const GoalNode = memo(({ data }: NodeProps<GoalNodeData>) => {
       >
         Goal
       </div>
+
+      {/* Relationship badge (shown when dimmed) */}
+      {data.relationshipBadge && (
+        <RelationshipBadge badge={data.relationshipBadge} isDimmed={isDimmed} />
+      )}
     </div>
   );
 });

@@ -65,6 +65,8 @@ const DEFAULT_OPTIONS: MotivationGraphBuilderOptions = {
 export class MotivationGraphBuilder {
   private warnings: string[] = [];
   private options: MotivationGraphBuilderOptions;
+  private pathCache: Map<string, InfluencePath[]> = new Map();
+  private performanceWarnings: Array<{operation: string; duration: number; timestamp: number}> = [];
 
   constructor(options: Partial<MotivationGraphBuilderOptions> = {}) {
     this.options = { ...DEFAULT_OPTIONS, ...options };
@@ -837,6 +839,46 @@ export class MotivationGraphBuilder {
   }
 
   /**
+   * Get performance warnings from path tracing operations
+   */
+  getPerformanceWarnings(): Array<{operation: string; duration: number; timestamp: number}> {
+    return this.performanceWarnings;
+  }
+
+  /**
+   * Clear path cache
+   */
+  clearPathCache(): void {
+    this.pathCache.clear();
+  }
+
+  /**
+   * Measure performance of a function and log warnings if it exceeds threshold
+   */
+  private measurePerformance<T>(
+    operationName: string,
+    threshold: number,
+    fn: () => T
+  ): T {
+    const startTime = performance.now();
+    const result = fn();
+    const endTime = performance.now();
+    const duration = endTime - startTime;
+
+    if (duration > threshold) {
+      const warning = {
+        operation: operationName,
+        duration,
+        timestamp: Date.now()
+      };
+      this.performanceWarnings.push(warning);
+      console.warn(`[MotivationGraphBuilder] Performance warning: ${operationName} took ${duration.toFixed(2)}ms (threshold: ${threshold}ms)`);
+    }
+
+    return result;
+  }
+
+  /**
    * Get all direct relationships (edges) connected to a node
    * @returns Array of edge IDs
    */
@@ -987,13 +1029,41 @@ export class MotivationGraphBuilder {
    * @param targetId - Ending node ID
    * @param graph - Motivation graph
    * @param maxPaths - Maximum number of paths to find (default: 10)
-   * @returns Array of influence paths, with shortest path first
+   * @returns Array of influence paths, with shortest path first and marked
    */
   findPathsBetween(
     sourceId: string,
     targetId: string,
     graph: MotivationGraph,
     maxPaths: number = 10
+  ): InfluencePath[] {
+    // Check cache first
+    const cacheKey = `${sourceId}:${targetId}:${maxPaths}`;
+    if (this.pathCache.has(cacheKey)) {
+      return this.pathCache.get(cacheKey)!;
+    }
+
+    // Measure performance (200ms threshold for 10-hop chains)
+    const paths = this.measurePerformance(
+      `findPathsBetween(${sourceId}, ${targetId})`,
+      200,
+      () => this.computePathsBFS(sourceId, targetId, graph, maxPaths)
+    );
+
+    // Cache the result
+    this.pathCache.set(cacheKey, paths);
+
+    return paths;
+  }
+
+  /**
+   * Internal BFS implementation for finding paths
+   */
+  private computePathsBFS(
+    sourceId: string,
+    targetId: string,
+    graph: MotivationGraph,
+    maxPaths: number
   ): InfluencePath[] {
     const paths: InfluencePath[] = [];
 
@@ -1033,7 +1103,8 @@ export class MotivationGraphBuilder {
           path: item.path,
           edges: item.edges,
           length: pathLength,
-          pathType: pathLength === 1 ? 'direct' : 'indirect'
+          pathType: pathLength === 1 ? 'direct' : 'indirect',
+          isShortestPath: false // Will be set after sorting
         });
 
         continue;
@@ -1067,6 +1138,18 @@ export class MotivationGraphBuilder {
 
     // Sort paths by length (shortest first)
     paths.sort((a, b) => a.length - b.length);
+
+    // Mark shortest path(s) for special highlighting
+    if (paths.length > 0) {
+      const minLength = paths[0].length;
+      for (const path of paths) {
+        if (path.length === minLength) {
+          path.isShortestPath = true;
+        } else {
+          break; // Paths are sorted by length
+        }
+      }
+    }
 
     return paths;
   }

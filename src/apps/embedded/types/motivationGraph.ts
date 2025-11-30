@@ -153,6 +153,9 @@ export interface InfluencePath {
 
   /** Path type */
   pathType: 'direct' | 'indirect' | 'cyclic';
+
+  /** Whether this is the shortest path (for highlighting differently) */
+  isShortestPath?: boolean;
 }
 
 /**

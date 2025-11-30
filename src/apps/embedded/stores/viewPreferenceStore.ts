@@ -245,34 +245,62 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
 
             const { state } = JSON.parse(str);
 
-            // Deserialize Sets and Maps
+            // Deserialize Sets and Maps with validation
             if (state.motivationPreferences) {
-              if (state.motivationPreferences.visibleElementTypes) {
+              if (Array.isArray(state.motivationPreferences.visibleElementTypes)) {
                 state.motivationPreferences.visibleElementTypes = new Set(
                   state.motivationPreferences.visibleElementTypes
                 );
+              } else {
+                // Fallback to default if data is corrupted
+                state.motivationPreferences.visibleElementTypes = new Set(
+                  Object.values(MotivationElementType)
+                );
               }
-              if (state.motivationPreferences.visibleRelationshipTypes) {
+
+              if (Array.isArray(state.motivationPreferences.visibleRelationshipTypes)) {
                 state.motivationPreferences.visibleRelationshipTypes = new Set(
                   state.motivationPreferences.visibleRelationshipTypes
                 );
+              } else {
+                // Fallback to default
+                state.motivationPreferences.visibleRelationshipTypes = new Set(
+                  Object.values(MotivationRelationshipType)
+                );
               }
-              if (state.motivationPreferences.manualPositions) {
+
+              if (state.motivationPreferences.manualPositions &&
+                  typeof state.motivationPreferences.manualPositions === 'object') {
                 state.motivationPreferences.manualPositions = new Map(
                   Object.entries(state.motivationPreferences.manualPositions)
                 );
               }
-              if (state.motivationPreferences.pathTracing) {
-                if (state.motivationPreferences.pathTracing.highlightedNodeIds) {
+
+              if (state.motivationPreferences.pathTracing &&
+                  typeof state.motivationPreferences.pathTracing === 'object') {
+                if (Array.isArray(state.motivationPreferences.pathTracing.highlightedNodeIds)) {
                   state.motivationPreferences.pathTracing.highlightedNodeIds = new Set(
                     state.motivationPreferences.pathTracing.highlightedNodeIds
                   );
+                } else {
+                  state.motivationPreferences.pathTracing.highlightedNodeIds = new Set();
                 }
-                if (state.motivationPreferences.pathTracing.highlightedEdgeIds) {
+
+                if (Array.isArray(state.motivationPreferences.pathTracing.highlightedEdgeIds)) {
                   state.motivationPreferences.pathTracing.highlightedEdgeIds = new Set(
                     state.motivationPreferences.pathTracing.highlightedEdgeIds
                   );
+                } else {
+                  state.motivationPreferences.pathTracing.highlightedEdgeIds = new Set();
                 }
+
+                // Validate selectedNodeIds is an array
+                if (!Array.isArray(state.motivationPreferences.pathTracing.selectedNodeIds)) {
+                  state.motivationPreferences.pathTracing.selectedNodeIds = [];
+                }
+              } else {
+                // Fallback to default path tracing state
+                state.motivationPreferences.pathTracing = defaultPathTracingState;
               }
             }
 
