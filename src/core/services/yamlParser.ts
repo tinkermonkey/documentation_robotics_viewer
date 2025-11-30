@@ -206,13 +206,29 @@ export class YAMLParser {
     const name = (element.name as string) || key;
     const id = (element.id as string) || this.generateDotNotationId(key);
 
-    // Copy additional properties
+    // Known non-relationship fields
+    const knownFields = ['name', 'id', 'description', 'method', 'path', 'openapi', '$schema', 'schemas', 'relationships', 'type', 'category', 'priority', 'stakeholders'];
+
+    // Detect relationship properties (arrays of strings) and collect them
+    const relationships: YAMLRelationships = {};
     const additionalProps: Record<string, unknown> = {};
+
     for (const [propKey, value] of Object.entries(element)) {
-      if (!['name', 'id', 'description', 'method', 'path', 'openapi', '$schema', 'schemas', 'relationships'].includes(propKey)) {
+      if (knownFields.includes(propKey)) {
+        continue; // Skip known fields
+      }
+
+      // Check if this looks like a relationship (array of strings)
+      if (Array.isArray(value) && value.length > 0 && value.every(v => typeof v === 'string')) {
+        relationships[propKey] = value as string[];
+      } else {
         additionalProps[propKey] = value;
       }
     }
+
+    // Merge with explicit relationships if present
+    const explicitRels = element.relationships as YAMLRelationships | undefined;
+    const mergedRelationships = explicitRels ? { ...relationships, ...explicitRels } : relationships;
 
     return {
       name,
@@ -223,7 +239,7 @@ export class YAMLParser {
       openapi: element.openapi,
       $schema: element.$schema as string | undefined,
       schemas: element.schemas as Record<string, unknown> | undefined,
-      relationships: element.relationships as YAMLRelationships | undefined,
+      relationships: Object.keys(mergedRelationships).length > 0 ? mergedRelationships : undefined,
       ...additionalProps,
     };
   }

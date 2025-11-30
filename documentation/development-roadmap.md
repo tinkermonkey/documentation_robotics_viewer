@@ -17,20 +17,20 @@ The Documentation Robotics Viewer is being developed in three progressive phases
 
 #### Week 1-2: Core Infrastructure ✅
 - [x] Project setup with TypeScript + React
-- [x] tldraw integration
+- [x] React Flow integration
 - [x] Basic file loading system
 - [x] Data model definition
 - [ ] Parser framework
 
 #### Week 3-4: Visualization
-- [ ] Shape library (50% complete)
-  - [ ] ArchiMate shapes
-  - [ ] Security shapes
-  - [ ] API shapes
-  - [ ] UX shapes
+- [ ] Node library (50% complete)
+  - [ ] ArchiMate nodes
+  - [ ] Security nodes
+  - [ ] API nodes
+  - [ ] UX nodes
 - [ ] Layer management system
 - [ ] Basic navigation (pan, zoom)
-- [ ] Shape rendering pipeline
+- [ ] Node rendering pipeline
 
 #### Week 5-6: Layout & Polish
 - [ ] Dagre integration
@@ -49,7 +49,7 @@ interface Phase1Features {
   };
   
   visualization: {
-    shapes: string[];
+    nodes: string[];
     layers: LayerType[];
     navigation: ['pan', 'zoom', 'select'];
   };
@@ -65,7 +65,7 @@ interface Phase1Features {
 ### Success Metrics
 - Load and display 1000+ elements without lag
 - Parse all meta-model file types
-- Render all shape types correctly
+- Render all node types correctly
 - Apply auto-layout successfully
 
 ---
@@ -148,7 +148,7 @@ interface Phase2Components {
 ### Deliverables
 
 #### Months 1-2: Editing Capabilities
-- [ ] Create shapes
+- [ ] Create nodes
 - [ ] Edit properties
 - [ ] Create relationships
 - [ ] Delete elements
@@ -165,7 +165,7 @@ interface Phase2Components {
 - [ ] Version control integration
 - [ ] Collaborative editing
 - [ ] Plugin system
-- [ ] Custom shape creation
+- [ ] Custom node creation
 - [ ] Macro recording
 
 ### Architecture Extensions
@@ -242,7 +242,7 @@ interface Phase3Systems {
 | Risk | Impact | Mitigation |
 |------|--------|------------|
 | Performance with large models | High | Virtualization, lazy loading |
-| tldraw limitations | Medium | Custom shape system |
+| React Flow limitations | Medium | Custom node system |
 | Layout algorithm complexity | Medium | Multiple algorithm options |
 | Browser compatibility | Low | Progressive enhancement |
 
@@ -340,7 +340,7 @@ interface Phase3Systems {
 ## Next Steps
 
 ### Immediate (Week 1)
-1. Complete shape library implementation
+1. Complete node library implementation
 2. Integrate dagre layout
 3. Test with real meta-model files
 
@@ -366,7 +366,7 @@ interface Phase3Systems {
   "runtime": "React 18",
   "language": "TypeScript 5",
   "bundler": "Vite",
-  "canvas": "tldraw 2.0",
+  "canvas": "React Flow 12",
   "state": "Zustand",
   "styling": "Tailwind CSS",
   "testing": "Vitest + React Testing Library",
@@ -377,7 +377,7 @@ interface Phase3Systems {
 ### Key Dependencies
 ```json
 {
-  "@tldraw/tldraw": "^2.0.0",
+  "@xyflow/react": "^12.0.0",
   "dagre": "^0.8.5",
   "yaml": "^2.3.0",
   "ajv": "^8.12.0",

@@ -6,30 +6,9 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import { MetaModel, ModelElement, Relationship, Layer } from '../../../core/types';
+import type { ChangesetDetails, ChangesetChange } from './embeddedDataLoader';
 
-export interface ChangesetChange {
-  timestamp: string;
-  operation: 'add' | 'update' | 'delete';
-  element_id: string;
-  layer: string;
-  element_type: string;
-  data?: any;
-  before?: any;
-  after?: any;
-}
-
-export interface ChangesetDetails {
-  metadata: {
-    id: string;
-    name: string;
-    description?: string;
-    type: string;
-    status: string;
-    created_at: string;
-    updated_at?: string;
-  };
-  changes: ChangesetChange[];
-}
+export type { ChangesetDetails, ChangesetChange };
 
 /**
  * Operation-specific color schemes
@@ -63,7 +42,7 @@ export class ChangesetGraphBuilder {
     const relationships: Relationship[] = [];
 
     // Extract changes array (handle nested structure from API)
-    const changesArray = (changeset as any).changes?.changes || changeset.changes || [];
+    const changesArray = changeset.changes.changes || [];
     console.log('[ChangesetGraphBuilder] Found', changesArray.length, 'changes');
 
     // Group changes by layer

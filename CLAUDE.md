@@ -4,261 +4,141 @@ This document provides guidance for Claude Code (and other AI assistants) workin
 
 ## Project Overview
 
-The Documentation Robotics Viewer is a React-based visualization tool built on tldraw v4.2.0. It displays multi-layer architecture documentation models with custom shapes representing different architectural elements (Business Processes, API Endpoints, Data Models, Roles, Permissions, etc.).
+The Documentation Robotics Viewer is a React-based visualization tool built on React Flow (@xyflow/react). It displays multi-layer architecture documentation models with custom nodes representing different architectural elements (Business Processes, API Endpoints, Data Models, Roles, Permissions, etc.).
 
 **Key Technologies:**
 - React 18 + TypeScript
-- tldraw v4.2.0 (canvas library)
+- React Flow (@xyflow/react) (graph visualization library)
 - Vite (build tool)
 - Playwright (E2E testing)
 
-## Critical: Custom Shape Pattern for tldraw v4
+## Critical: Custom Node Pattern for React Flow
 
-All custom shapes MUST follow this exact pattern. Deviations will cause validation errors and rendering failures.
+All custom nodes MUST follow this exact pattern. Deviations will cause rendering failures or layout issues.
 
-### Required Steps for Creating a New Custom Shape
+### Required Steps for Creating a New Custom Node
 
-#### 1. Create the Shape File
+#### 1. Create the Node File
 
-Location: `src/shapes/<category>/<ShapeName>Shape.tsx`
-
-Example categories: `business/`, `api/`, `security/`, `datamodel/`, `schema/`
+Location: `src/core/nodes/<category>/<NodeName>Node.tsx` or `src/core/nodes/<NodeName>Node.tsx`
 
 #### 2. Required Imports
 
 ```typescript
-import { TLBaseShape, HTMLContainer, T, RecordProps } from 'tldraw';
-import { MetaModelShapeUtil } from '../base/MetaModelShapeUtil';
-import { AttachmentPoint, <YourPropsInterface> } from '../../types';
+import { memo } from 'react';
+import { Handle, Position, NodeProps } from '@xyflow/react';
+import { YourNodeData } from '../types/reactflow'; // Define this interface
 ```
 
-**Critical**: Always import `T` and `RecordProps` from tldraw - these are required for prop validators.
-
-#### 3. Define Shape Interface
+#### 3. Define Node Component
 
 ```typescript
-export interface YourShape extends TLBaseShape<'your-shape-type', YourShapeProps> {}
-```
-
-#### 4. Create Shape Utility Class
-
-```typescript
-export class YourShapeUtil extends MetaModelShapeUtil<YourShape> {
-  static override type = 'your-shape-type' as const;
-
-  /**
-   * Prop validators for tldraw v4
-   * THIS IS CRITICAL - Without this, shapes will fail validation
-   */
-  static override props: RecordProps<YourShape> = {
-    // Required base props
-    w: T.number,
-    h: T.number,
-    label: T.string,
-    fill: T.string,
-    stroke: T.string,
-
-    // Optional base props
-    elementId: T.optional(T.string),
-    elementType: T.optional(T.string),
-    layerId: T.optional(T.string),
-
-    // Your custom props
-    yourCustomProp: T.string,
-    yourOptionalProp: T.optional(T.number),
-
-    // Array example
-    yourArray: T.optional(T.arrayOf(T.string)),
-
-    // Object example
-    yourObject: T.optional(T.model('yourObjectName', T.object({
-      field1: T.string,
-      field2: T.boolean
-    }))),
-
-    // Always include these at the end
-    modelElement: T.optional(T.any),
-    attachmentPoints: T.optional(T.any)
-  };
-
-  /**
-   * Get default attachment points
-   */
-  override getDefaultAttachmentPoints(): AttachmentPoint[] {
-    return [
-      { id: 'top', position: 'top', offset: 0, connections: [] },
-      { id: 'bottom', position: 'bottom', offset: 0, connections: [] },
-      { id: 'left', position: 'left', offset: 0, connections: [] },
-      { id: 'right', position: 'right', offset: 0, connections: [] }
-    ];
-  }
-
-  /**
-   * Get default props
-   */
-  override getDefaultProps(): YourShapeProps {
-    const baseProps = super.getDefaultProps();
-    return {
-      ...baseProps,
-      w: 160,
-      h: 80,
-      fill: '#ffffff',
-      stroke: '#000000',
-      // Your custom defaults
-      yourCustomProp: 'default value'
-    };
-  }
-
-  /**
-   * Render the shape using HTMLContainer
-   * CRITICAL: Must use HTMLContainer, NOT SVG elements
-   */
-  override renderHTMLContent(shape: YourShape): JSX.Element {
-    const { w, h, label, yourCustomProp } = shape.props;
-
-    return (
-      <HTMLContainer
-        style={{
-          width: w,
-          height: h,
-          display: 'flex',
-          flexDirection: 'column',
-          fontFamily: 'system-ui, sans-serif',
-          border: `1.5px solid ${shape.props.stroke}`,
-          backgroundColor: shape.props.fill,
-          borderRadius: 4,
-          overflow: 'hidden',
-          pointerEvents: 'all',
-          padding: 8
-        }}
-      >
-        {/* Your HTML/CSS content here */}
-        <div>{label}</div>
-      </HTMLContainer>
-    );
-  }
-
-  /**
-   * Indicator component (for selection)
-   */
-  override indicator(shape: YourShape) {
-    return (
-      <rect
-        x={0}
-        y={0}
-        width={shape.props.w}
-        height={shape.props.h}
-        fill="none"
-        stroke="var(--color-selected)"
-        strokeWidth={2}
-        rx={4}
+export const YourNode = memo(({ data }: NodeProps<YourNodeData>) => {
+  return (
+    <div
+      style={{
+        width: 180, // Must match precalculated dimensions in NodeTransformer
+        height: 100,
+        display: 'flex',
+        flexDirection: 'column',
+        border: `1.5px solid ${data.stroke || '#000'}`,
+        backgroundColor: data.fill || '#fff',
+        borderRadius: 4,
+        padding: 12,
+      }}
+    >
+      {/* Handles for connections */}
+      <Handle
+        type="target"
+        position={Position.Top}
+        id="top"
+        style={{ left: '50%', background: '#555' }}
       />
-    );
-  }
-}
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        id="bottom"
+        style={{ left: '50%', background: '#555' }}
+      />
+      
+      {/* Node Content */}
+      <div className="node-content">
+        <div className="node-label">{data.label}</div>
+        {/* Custom content based on data props */}
+        {data.yourCustomProp && <div>{data.yourCustomProp}</div>}
+      </div>
+    </div>
+  );
+});
+
+YourNode.displayName = 'YourNode';
 ```
 
-### Common Prop Validator Types
+#### 4. Register the Node
 
-```typescript
-T.string                           // Required string
-T.number                           // Required number
-T.boolean                          // Required boolean
-T.optional(T.string)               // Optional string
-T.arrayOf(T.string)                // Array of strings
-T.arrayOf(T.number)                // Array of numbers
-T.model('name', T.object({         // Nested object
-  field: T.string
-}))
-T.any                              // Any type (use sparingly)
-```
-
-#### 5. Register the Shape
-
-**a) Update `src/shapes/index.ts`:**
+**a) Update `src/core/nodes/index.ts`:**
 
 ```typescript
 // Add import
-import { YourShapeUtil } from './category/YourShape';
+import { YourNode } from './YourNode';
 
-// Add to customShapes array
-export const customShapes = [
-  // ... existing shapes
-  YourShapeUtil
-];
+// Export component
+export { YourNode };
 
-// Add to shapeTypeMap
-export const shapeTypeMap: Record<string, ...> = {
-  // ... existing mappings
-  'YourElementType': YourShapeUtil
+// Add to nodeTypes object
+export const nodeTypes = {
+  // ... existing nodes
+  yourNodeType: YourNode,
 };
-
-// Add to exports
-export * from './category/YourShape';
 ```
 
-**b) Update `src/services/shapeTransformer.ts`:**
+**b) Update `src/core/services/nodeTransformer.ts`:**
 
-In `getShapeTypeForElement()` method:
+In `getNodeTypeForElement()` method:
 
 ```typescript
 case 'YourElementType':
 case 'your-element-type':
-  return 'your-shape-type';
+  return 'yourNodeType';
 ```
 
-In shape creation (around line 129+):
+In `extractNodeData()` method:
 
 ```typescript
-} else if (shapeType === 'your-shape-type') {
-  props.fill = element.visual.style.backgroundColor || '#ffffff';
-  props.stroke = element.visual.style.borderColor || '#000000';
-  props.label = element.name;
-  props.elementId = element.id;
-  props.yourCustomProp = element.properties.yourCustomProp;
+} else if (nodeType === 'yourNodeType') {
+  return {
+    ...baseData,
+    yourCustomProp: element.properties.yourCustomProp,
+  };
 }
+```
+
+In `precalculateDimensions()` method:
+
+```typescript
+case 'yourNodeType':
+  element.visual.size = {
+    width: 180, // Must match CSS width
+    height: 100, // Must match CSS height
+  };
+  break;
 ```
 
 ### Critical Rules
 
-1. **ALWAYS use HTMLContainer** - Never use SVG `<text>` elements directly. This causes namespace issues.
+1. **ALWAYS use `memo`** - Wrap node components in `React.memo` to prevent unnecessary re-renders.
 
-2. **ALWAYS define prop validators** - Use `static override props: RecordProps<YourShape>`. Without this, tldraw will throw validation errors.
+2. **ALWAYS include Handles** - React Flow needs `<Handle />` components to create connections.
 
-3. **ALWAYS implement renderHTMLContent()** - This is the abstract method from MetaModelShapeUtil.
+3. **ALWAYS match dimensions** - The CSS width/height in the component MUST match the dimensions set in `NodeTransformer.precalculateDimensions()`. If they don't match, the layout will be incorrect.
 
-4. **NEVER mix SVG and HTML** - Use HTMLContainer for everything or SVG for everything, never both.
+4. **ALWAYS use `NodeProps<T>`** - Type your props correctly using the generic `NodeProps` interface.
 
-5. **ALWAYS include base props** - Every shape needs: `w`, `h`, `label`, `fill`, `stroke`, `elementId`, `modelElement`, `attachmentPoints`.
+5. **ALWAYS set `displayName`** - Helpful for debugging.
 
-6. **ALWAYS use T.optional()** for optional props - This prevents validation errors when props are undefined.
+### Testing New Nodes
 
-7. **ALWAYS test your shape** - Create a Playwright test to verify rendering.
-
-### Testing New Shapes
-
-Create a test file in `tests/your-shape.spec.ts`:
-
-```typescript
-import { test, expect } from '@playwright/test';
-
-test('your shape renders correctly', async ({ page }) => {
-  await page.goto('http://localhost:3001');
-
-  // Load demo data or create test shapes
-  await page.click('text=Load Demo Data');
-
-  // Wait for shapes to render
-  await page.waitForSelector('.tldraw__canvas');
-
-  // Verify shape is visible with label
-  const shapeLabel = await page.locator('text=Your Shape Label');
-  await expect(shapeLabel).toBeVisible();
-
-  // Take screenshot for visual verification
-  await page.screenshot({ path: 'test-results/your-shape.png' });
-});
-```
+Create a test file in `tests/unit/nodes/yourNode.spec.ts` or similar.
 
 ## Architecture Overview
 
@@ -278,60 +158,49 @@ The viewer organizes elements into architectural layers:
 
 ### Key Files
 
-- `src/shapes/` - All custom shape definitions
-- `src/shapes/base/MetaModelShapeUtil.tsx` - Base class for all shapes
-- `src/services/shapeTransformer.ts` - Converts model elements to shapes
+- `src/core/nodes/` - All custom node definitions
+- `src/core/edges/` - Custom edge definitions (e.g., ElbowEdge)
+- `src/core/services/nodeTransformer.ts` - Converts model elements to React Flow nodes
+- `src/core/components/GraphViewer.tsx` - Main React Flow component
 - `src/stores/elementStore.ts` - Global element storage
-- `src/types/` - TypeScript type definitions
 
-### Shape Rendering Flow
+### Rendering Flow
 
 1. User loads a model (demo data, GitHub, or local)
 2. `GraphViewer` receives the model
-3. `ShapeTransformer` converts model elements to tldraw shapes
-4. For each element:
-   - `getShapeTypeForElement()` determines the shape type
-   - Props are prepared based on element properties
-   - `editor.createShape()` creates the shape
-5. tldraw validates props using the shape's `props` definition
-6. Shape's `renderHTMLContent()` method renders the visual
+3. `NodeTransformer` converts model elements to React Flow nodes and edges
+   - Pre-calculates dimensions for layout
+   - Runs `VerticalLayerLayout` to determine positions
+   - Creates React Flow node objects with data
+4. `GraphViewer` updates `nodes` and `edges` state
+5. React Flow renders the graph using custom node components
 
 ## Common Issues and Solutions
 
-### Issue: "ValidationError: Expected json serializable value, got object"
+### Issue: "Layout overlaps or gaps"
 
-**Cause**: Missing or incorrect prop validators.
+**Cause**: Mismatch between `NodeTransformer.precalculateDimensions()` and actual component CSS dimensions.
 
-**Solution**: Add `static override props: RecordProps<YourShape>` with proper validators for all props.
+**Solution**: Ensure the width/height in `precalculateDimensions` exactly matches the rendered size of the node component.
 
-### Issue: "Text elements not rendering" or "Floating text"
+### Issue: "Edges not connecting"
 
-**Cause**: Using SVG `<text>` elements instead of HTMLContainer.
+**Cause**: Missing Handles or incorrect Handle IDs.
 
-**Solution**: Use `<HTMLContainer>` with HTML/CSS for all text and content.
+**Solution**: Verify `<Handle />` components exist and IDs match what `NodeTransformer` expects (usually 'top', 'bottom', 'left', 'right').
 
-### Issue: "Shape not appearing in canvas"
+### Issue: "Node not appearing"
 
-**Cause**: Shape type not registered or not mapped in shapeTransformer.
+**Cause**: Node type not registered in `nodeTypes`.
 
-**Solution**:
-1. Check `customShapes` array in `src/shapes/index.ts`
-2. Check `shapeTypeMap` in `src/shapes/index.ts`
-3. Check `getShapeTypeForElement()` in `src/services/shapeTransformer.ts`
-
-### Issue: "Cannot read property 'x' of undefined"
-
-**Cause**: Missing required prop or accessing undefined property.
-
-**Solution**: Use `T.optional()` for optional props and check for undefined before accessing nested properties.
+**Solution**: Check `src/core/nodes/index.ts` and ensure the type string matches what `NodeTransformer` returns.
 
 ## Development Workflow
 
-1. **Before making changes**: Read existing shape files to understand the pattern
+1. **Before making changes**: Read existing node files to understand the pattern
 2. **Create new features**: Follow the patterns established in existing code
 3. **Test thoroughly**: Run `npm test` before committing
-4. **Check for errors**: Monitor browser console for validation errors
-5. **Visual verification**: Always check screenshots in test results
+4. **Check for errors**: Monitor browser console for React Flow warnings
 
 ## Code Style
 
@@ -506,20 +375,140 @@ See `documentation/YAML_MODELS.md` for complete specification and examples.
 
 ## Resources
 
-- tldraw v4 documentation: https://tldraw.dev/
+- React Flow documentation: https://reactflow.dev/
 - Project architecture docs: `documentation/`
 - Implementation logs: `documentation/IMPLEMENTATION_LOG.md`
 
 ## When in Doubt
 
-1. Look at existing shape implementations (BusinessProcessShape, APIEndpointShape, etc.)
-2. Check `MetaModelShapeUtil.tsx` for base class requirements
+1. Look at existing node implementations (BusinessProcessNode, APIEndpointNode, etc.)
+2. Check `BaseNode` pattern for requirements
 3. Run tests to verify changes
 4. Ask the user for clarification on requirements
 
+## Motivation Layer Visualization (Phase 6 - Export & Testing)
+
+### Export Features
+
+The motivation layer supports comprehensive export capabilities:
+
+**1. PNG/SVG Image Exports**
+```typescript
+import { exportAsPNG, exportAsSVG } from '../services/motivationExportService';
+
+// Export current viewport as PNG
+await exportAsPNG(reactFlowContainer, 'motivation-graph.png');
+
+// Export as SVG vector image
+await exportAsSVG(reactFlowContainer, 'motivation-graph.svg');
+```
+
+**2. Graph Data Export**
+```typescript
+import { exportGraphDataAsJSON } from '../services/motivationExportService';
+
+// Export filtered graph structure
+exportGraphDataAsJSON(nodes, edges, motivationGraph, 'graph-data.json');
+```
+
+**3. Traceability Report Export**
+```typescript
+import { exportTraceabilityReport } from '../services/motivationExportService';
+
+// Generate requirement→goal traceability report
+exportTraceabilityReport(motivationGraph, 'traceability-report.json');
+```
+
+The traceability report includes:
+- Requirement-to-goal mappings
+- Trace paths (direct and indirect)
+- Orphaned requirements (no goal coverage)
+- Orphaned goals (no requirement coverage)
+- Coverage statistics (percentages)
+
+### Layout Persistence
+
+Manual node positions are automatically persisted to localStorage:
+
+**Implementation Pattern:**
+```typescript
+// Save positions on drag end (in MotivationGraphView)
+const onNodeDragStop = useCallback(
+  (_event: any, _node: any) => {
+    if (selectedLayout === 'manual') {
+      const positions = new Map<string, { x: number; y: number }>();
+      nodes.forEach((n) => {
+        positions.set(n.id, { x: n.position.x, y: n.position.y });
+      });
+      setManualPositions(positions); // Saves to localStorage via viewPreferenceStore
+    }
+  },
+  [selectedLayout, nodes, setManualPositions]
+);
+```
+
+**Storage Key:** `dr-viewer-preferences` (managed by Zustand persist middleware)
+
+**Restoration:** Positions are restored when:
+- User reloads the page
+- User selects "Manual" layout
+- Existing nodes use saved positions, new nodes use auto-layout
+
+### Testing Strategy
+
+**E2E Tests** (`tests/motivation-layer.spec.ts`):
+- 15 comprehensive tests covering all user stories
+- Export functionality tests
+- Layout persistence verification
+- Cross-browser compatibility
+
+**Accessibility Tests** (`tests/motivation-accessibility.spec.ts`):
+- Axe-core integration for WCAG 2.1 AA compliance
+- Keyboard navigation tests
+- ARIA label verification
+- Screen reader compatibility
+- Focus indicator visibility
+- Color contrast checks
+
+**Performance Tests** (`tests/motivation-performance.spec.ts`):
+- Initial render time (< 3s target)
+- Filter operation latency (< 500ms target)
+- Layout switch time (< 800ms target)
+- Pan/zoom responsiveness (60fps target)
+- Memory usage profiling
+- Edge rendering performance
+
+**Run Tests:**
+```bash
+# Start dev server
+npm run dev:embedded
+
+# Run all Playwright tests
+npx playwright test
+
+# Run specific test suite
+npx playwright test motivation-layer
+npx playwright test motivation-accessibility
+npx playwright test motivation-performance
+
+# Run with UI
+npx playwright test --ui
+```
+
+### Performance Targets
+
+| Metric | Target | Implementation |
+|--------|--------|----------------|
+| Initial render (500 elements) | < 3s | ReactFlow viewport culling |
+| Filter operations | < 500ms | Pre-indexed data structures |
+| Layout switch | < 800ms | Smooth transitions, requestAnimationFrame |
+| Pan/zoom | 60fps | ReactFlow optimization |
+| Memory (1000 elements) | < 50MB | Efficient data structures |
+
 ---
 
-**Last Updated**: 2025-11-26
-**tldraw Version**: 4.2.0
+**Last Updated**: 2025-11-30
+**React Flow Version**: 12.0.0
 **Project Version**: 1.0.0
 **YAML Support**: v0.1.0
+**Motivation Layer**: Phase 6 Complete

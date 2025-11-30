@@ -11,8 +11,8 @@ import { defineConfig, devices } from '@playwright/test';
  *   cd reference_server && python main.py
  */
 export default defineConfig({
-  testDir: './tests/e2e',
-  testMatch: '**/*.spec.ts',
+  testDir: './tests',
+  testMatch: ['embedded-app.spec.ts', 'embedded-dual-view.spec.ts', 'motivation-view.spec.ts'],
   fullyParallel: false, // Run E2E tests sequentially for reliability
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 1, // Retry once in dev, twice in CI
@@ -49,7 +49,7 @@ export default defineConfig({
 
   // Start dev server automatically
   webServer: {
-    command: 'npm run dev:embedded',
+    command: 'npm start',
     url: 'http://localhost:3001',
     reuseExistingServer: true, // Always reuse to avoid conflicts
     timeout: 120000, // 2 minutes to start

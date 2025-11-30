@@ -1,0 +1,193 @@
+/**
+ * MotivationFilterPanel Styles
+ */
+
+.motivation-filter-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  max-width: 320px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.filter-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.filter-panel-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.clear-filters-button {
+  padding: 6px 12px;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.clear-filters-button:hover:not(:disabled) {
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.clear-filters-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background-color: #f9fafb;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease;
+}
+
+.filter-section-header:hover {
+  background-color: #f3f4f6;
+}
+
+.expand-icon {
+  font-size: 10px;
+  color: #6b7280;
+  transition: transform 0.2s ease;
+}
+
+.filter-section-header h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  flex: 1;
+}
+
+.filter-count {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  background-color: #e5e7eb;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.filter-section-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 8px;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.filter-action-button {
+  padding: 4px 8px;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-action-button:hover:not(:disabled) {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.filter-action-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.filter-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.filter-checkbox-label:hover:not(.disabled) {
+  background-color: #f9fafb;
+}
+
+.filter-checkbox-label.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.filter-checkbox-label input[type="checkbox"] {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.filter-checkbox-label.disabled input[type="checkbox"] {
+  cursor: not-allowed;
+}
+
+.filter-label-text {
+  flex: 1;
+  font-size: 13px;
+  color: #374151;
+}
+
+.filter-count-badge {
+  font-size: 11px;
+  font-weight: 500;
+  color: #6b7280;
+  background-color: #f3f4f6;
+  padding: 2px 6px;
+  border-radius: 8px;
+  min-width: 40px;
+  text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .motivation-filter-panel {
+    max-width: 100%;
+  }
+}

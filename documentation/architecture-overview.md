@@ -10,10 +10,10 @@ The Documentation Robotics Viewer is a progressive web application that visualiz
 ├─────────────────────────────────────────────────────────────────┤
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
 │  │ Layer Panel  │  │ Canvas View  │  │Property Panel│         │
-│  │              │  │   (tldraw)   │  │              │         │
+│  │              │  │ (React Flow) │  │              │         │
 │  │ □ Motivation │  │              │  │ Selected:    │         │
-│  │ ☑ Business   │  │   [Shapes]   │  │ Component X  │         │
-│  │ ☑ Security   │  │              │  │              │         │
+│  │ ☑ Business   │  │   [Nodes]    │  │ Component X  │         │
+│  │ ☑ Security   │  │   [Edges]    │  │              │         │
 │  │ □ API        │  │              │  │ Properties:  │         │
 │  │ ...          │  │              │  │ ...          │         │
 │  └──────────────┘  └──────────────┘  └──────────────┘         │
@@ -21,7 +21,7 @@ The Documentation Robotics Viewer is a progressive web application that visualiz
 │                      Core Viewer Engine                          │
 ├─────────────────────────────────────────────────────────────────┤
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
-│  │Shape Factory │  │Layout Engine │  │  Reference   │         │
+│  │Node Factory  │  │Layout Engine │  │  Reference   │         │
 │  │              │  │              │  │   Manager    │         │
 │  └──────────────┘  └──────────────┘  └──────────────┘         │
 ├─────────────────────────────────────────────────────────────────┤
@@ -55,7 +55,7 @@ The Documentation Robotics Viewer is a progressive web application that visualiz
 - Optimized layout calculations
 
 ### 4. Extensibility
-- Plugin architecture for custom shapes
+- Plugin architecture for custom nodes
 - Configurable layout algorithms
 - Themeable UI components
 
@@ -65,7 +65,7 @@ The Documentation Robotics Viewer is a progressive web application that visualiz
 ```typescript
 interface ViewerCore {
   // Canvas management
-  canvas: TldrawEditor;
+  canvas: ReactFlowInstance;
   
   // Data management
   modelStore: ModelStore;
@@ -86,7 +86,7 @@ interface ViewerCore {
 
 ### Data Flow
 ```
-Files → Loaders → Parsers → Validators → ModelStore → ShapeFactory → Canvas
+Files → Loaders → Parsers → Validators → ModelStore → NodeTransformer → Canvas
                                               ↓
                                       ReferenceManager
                                               ↓
@@ -97,7 +97,7 @@ Files → Loaders → Parsers → Validators → ModelStore → ShapeFactory →
 
 ### Phase 1 - Read-Only Viewer
 - Load and parse meta-model files
-- Render shapes on canvas
+- Render nodes on canvas
 - Navigate and zoom
 - Show/hide layers
 - Apply auto-layout
@@ -110,7 +110,7 @@ Files → Loaders → Parsers → Validators → ModelStore → ShapeFactory →
 - Breadcrumb navigation
 
 ### Phase 3 - Editor (Future)
-- Create and edit shapes
+- Create and edit nodes
 - Modify properties
 - Validate changes
 - Save modifications
@@ -118,16 +118,16 @@ Files → Loaders → Parsers → Validators → ModelStore → ShapeFactory →
 
 ## Technology Decisions
 
-### Why tldraw?
-- **Flexibility**: Combines structured and freeform
-- **Performance**: Canvas-based rendering
-- **Extensibility**: Custom shape system
-- **Developer Experience**: TypeScript-first
-- **Future-proof**: Multiplayer ready
+### Why React Flow?
+- **Specialized**: Built specifically for node-based graphs
+- **Performance**: Handles thousands of nodes efficiently
+- **Customization**: Fully custom nodes and edges
+- **Developer Experience**: React-native API
+- **Features**: Built-in minimap, controls, background
 
 ### Why React?
 - **Ecosystem**: Rich component libraries
-- **tldraw Integration**: Native React
+- **Integration**: Native React Flow support
 - **State Management**: Proven patterns
 - **Community**: Large support base
 

@@ -1,6 +1,22 @@
 /**
  * E2E Tests for Embedded App
  * Tests the embedded viewer with reference server integration
+ *
+ * IMPORTANT: These tests require the Python reference server to be running.
+ *
+ * Prerequisites:
+ * 1. Python dependencies (reference server):
+ *    cd reference_server && source .venv/bin/activate && pip install -r requirements.txt
+ *
+ * 2. Playwright browsers:
+ *    npx playwright install chromium
+ *
+ * 3. Run tests:
+ *    npm run test:embedded
+ *
+ * STATUS: These tests are VALID and test real functionality in the embedded app.
+ *         They are skipped by default because they require the Python reference server.
+ *         To run them, ensure the reference server is set up and remove .skip
  */
 
 import { test, expect } from '@playwright/test';
@@ -11,7 +27,7 @@ test.setTimeout(30000);
 test.describe('Embedded App - Reference Server Integration', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the embedded app
-    await page.goto('http://localhost:8765/');
+    await page.goto('/');
 
     // Wait for React to load
     await page.waitForSelector('.embedded-app', { timeout: 10000 });
@@ -33,8 +49,8 @@ test.describe('Embedded App - Reference Server Integration', () => {
     await page.waitForSelector('.connection-status.connected', { timeout: 5000 });
 
     // Verify connection status
-    const connectionStatus = page.locator('.connection-status');
-    await expect(connectionStatus).toHaveClass(/connected/);
+    const connectionStatus = page.locator('.connection-status.connected');
+    await expect(connectionStatus).toBeVisible();
   });
 
   test('should load and display model view', async ({ page }) => {
@@ -86,6 +102,10 @@ test.describe('Embedded App - Reference Server Integration', () => {
       e.includes('Error rendering model')
     );
     expect(criticalErrors).toHaveLength(0);
+
+    // Switch to JSON view to check SpecViewer
+    await page.click('.view-tab:has-text("JSON")');
+    await page.waitForTimeout(1000);
 
     // Check for SpecViewer (not GraphViewer)
     await expect(page.locator('.spec-viewer')).toBeVisible();

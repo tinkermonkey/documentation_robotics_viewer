@@ -11,6 +11,18 @@ import { RoleNode } from './RoleNode';
 import { PermissionNode } from './PermissionNode';
 import { LayerContainerNode } from './LayerContainerNode';
 import SchemaElementNode from './SchemaElementNode';
+import {
+  StakeholderNode,
+  GoalNode,
+  RequirementNode,
+  ConstraintNode,
+  DriverNode,
+  OutcomeNode,
+  PrincipleNode,
+  AssumptionNode,
+  ValueStreamNode,
+  AssessmentNode,
+} from './motivation';
 
 // Export all node components
 export {
@@ -21,7 +33,17 @@ export {
   RoleNode,
   PermissionNode,
   LayerContainerNode,
-  SchemaElementNode
+  SchemaElementNode,
+  StakeholderNode,
+  GoalNode,
+  RequirementNode,
+  ConstraintNode,
+  DriverNode,
+  OutcomeNode,
+  PrincipleNode,
+  AssumptionNode,
+  ValueStreamNode,
+  AssessmentNode,
 };
 
 // Node types object for React Flow
@@ -35,4 +57,14 @@ export const nodeTypes = {
   permission: PermissionNode,
   layerContainer: LayerContainerNode,
   'schema-element': SchemaElementNode,  // For spec view
+  stakeholder: StakeholderNode,
+  goal: GoalNode,
+  requirement: RequirementNode,
+  constraint: ConstraintNode,
+  driver: DriverNode,
+  outcome: OutcomeNode,
+  principle: PrincipleNode,
+  assumption: AssumptionNode,
+  valueStream: ValueStreamNode,
+  assessment: AssessmentNode,
 };

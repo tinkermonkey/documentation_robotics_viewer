@@ -280,66 +280,57 @@ class ModelParser {
 }
 ```
 
-### From Internal Model to tldraw Shapes
+### From Internal Model to React Flow Nodes
 
 ```typescript
-class ShapeTransformer {
-  toTldrawShape(element: ModelElement): TLShape {
-    const shapeType = this.getShapeType(element);
+class NodeTransformer {
+  toReactFlowNode(element: ModelElement): Node {
+    const nodeType = this.getNodeType(element);
     
     return {
       id: element.id,
-      type: shapeType,
-      x: element.visual.position.x,
-      y: element.visual.position.y,
-      rotation: 0,
-      isLocked: false,
-      
-      props: {
-        w: element.visual.size.width,
-        h: element.visual.size.height,
-        
-        // Custom props
-        elementType: element.type,
-        layerId: element.layerId,
+      type: nodeType,
+      position: {
+        x: element.visual.position.x,
+        y: element.visual.position.y
+      },
+      data: {
         label: element.name,
+        layerId: element.layerId,
+        modelElement: element,
         
         // Style
         fill: element.visual.style.backgroundColor,
         stroke: element.visual.style.borderColor,
         
-        // Meta-model specific
-        modelElement: element,
+        // Custom props
+        elementType: element.type,
       },
+      // React Flow specific
+      draggable: true,
+      selectable: true,
     };
   }
   
-  toTldrawEdge(relationship: Relationship): TLShape {
+  toReactFlowEdge(relationship: Relationship): Edge {
     return {
       id: relationship.id,
-      type: 'arrow',
+      type: 'elbow', // or 'default', 'smoothstep'
+      source: relationship.sourceId,
+      target: relationship.targetId,
       
-      props: {
-        start: {
-          type: 'binding',
-          boundShapeId: relationship.sourceId,
-        },
-        end: {
-          type: 'binding',
-          boundShapeId: relationship.targetId,
-        },
-        
-        // Style based on relationship type
-        arrowheadEnd: this.getArrowhead(relationship.type),
-        dash: this.getDashStyle(relationship.type),
-        
-        // Label
-        text: relationship.visual?.label,
-        
+      data: {
         // Custom props
         relationshipType: relationship.type,
         modelRelationship: relationship,
       },
+      
+      style: {
+        stroke: this.getEdgeColor(relationship.type),
+        strokeDasharray: this.getDashStyle(relationship.type),
+      },
+      
+      label: relationship.visual?.label,
     };
   }
 }

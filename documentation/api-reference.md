@@ -112,7 +112,7 @@ interface ViewerAPI {
   off(event: ViewerEvent, handler: EventHandler): void;
   
   // Advanced
-  getEditor(): Editor;
+  getReactFlow(): ReactFlowInstance;
   getStore(): ModelStore;
 }
 ```

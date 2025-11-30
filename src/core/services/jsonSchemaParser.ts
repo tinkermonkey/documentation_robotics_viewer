@@ -25,6 +25,21 @@ export class JSONSchemaParser {
     // Extract elements from definitions
     const elements = this.extractDefinitions(schemaData.definitions || {}, schemaId, layerName);
 
+    // Check if the top-level schema itself is a definition (has properties or type)
+    // and no definitions were found (or even if they were, maybe it's a mixed file)
+    // Usually if 'definitions' exists, the top level is just a container.
+    // But if 'definitions' is missing or empty, the top level might be the definition.
+    if (elements.length === 0 && (schemaData.properties || schemaData.type === 'object')) {
+      try {
+        // Use the layer name or title as the key
+        const key = schemaData.title || layerName;
+        const element = this.parseDefinition(key, schemaData, schemaId, layerName);
+        elements.push(element);
+      } catch (error) {
+        console.warn(`Failed to parse top-level definition:`, error);
+      }
+    }
+
     // Build relationships from references
     const relationships = this.buildRelationships(elements);
 

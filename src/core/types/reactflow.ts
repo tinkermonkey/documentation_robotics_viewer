@@ -5,6 +5,26 @@ import {
   DataModelComponentType,
   HTTPMethod
 } from './shapes';
+import { NodeDetailLevel } from '../../core/layout/semanticZoomController';
+import { CoverageStatus } from '../../apps/embedded/services/coverageAnalyzer';
+
+/**
+ * Relationship badge data (shown when node is dimmed)
+ */
+export interface RelationshipBadge {
+  count: number;
+  incoming: number;
+  outgoing: number;
+}
+
+/**
+ * Coverage indicator data for goals
+ */
+export interface CoverageIndicator {
+  status: CoverageStatus;
+  requirementCount: number;
+  constraintCount: number;
+}
 
 /**
  * Base node data shared by all custom nodes
@@ -16,6 +36,12 @@ export interface BaseNodeData {
   fill: string;
   stroke: string;
   modelElement?: ModelElement;
+
+  // Semantic zoom and focus
+  opacity?: number;
+  strokeWidth?: number;
+  detailLevel?: NodeDetailLevel;
+  relationshipBadge?: RelationshipBadge;
 }
 
 /**
@@ -83,6 +109,91 @@ export interface LayerContainerNodeData extends BaseNodeData {
 }
 
 /**
+ * Stakeholder node data (Motivation layer)
+ */
+export interface StakeholderNodeData extends BaseNodeData {
+  stakeholderType?: string; // e.g., "internal", "external", "customer"
+  interests?: string[];
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
+ * Goal node data (Motivation layer)
+ */
+export interface GoalNodeData extends BaseNodeData {
+  priority?: 'high' | 'medium' | 'low';
+  status?: string;
+  changesetOperation?: 'add' | 'update' | 'delete';
+  coverageIndicator?: CoverageIndicator;
+}
+
+/**
+ * Requirement node data (Motivation layer)
+ */
+export interface RequirementNodeData extends BaseNodeData {
+  requirementType?: string;
+  priority?: 'high' | 'medium' | 'low';
+  status?: string;
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
+ * Constraint node data (Motivation layer)
+ */
+export interface ConstraintNodeData extends BaseNodeData {
+  negotiability?: 'fixed' | 'negotiable';
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
+ * Driver node data (Motivation layer)
+ */
+export interface DriverNodeData extends BaseNodeData {
+  category?: 'business' | 'technical' | 'regulatory' | 'market';
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
+ * Outcome node data (Motivation layer)
+ */
+export interface OutcomeNodeData extends BaseNodeData {
+  achievementStatus?: 'planned' | 'in-progress' | 'achieved' | 'at-risk';
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
+ * Principle node data (Motivation layer)
+ */
+export interface PrincipleNodeData extends BaseNodeData {
+  scope?: 'enterprise' | 'domain' | 'application';
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
+ * Assumption node data (Motivation layer)
+ */
+export interface AssumptionNodeData extends BaseNodeData {
+  validationStatus?: 'validated' | 'unvalidated' | 'invalidated';
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
+ * ValueStream node data (Motivation layer)
+ */
+export interface ValueStreamNodeData extends BaseNodeData {
+  stageCount?: number;
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
+ * Assessment node data (Motivation layer)
+ */
+export interface AssessmentNodeData extends BaseNodeData {
+  rating?: number; // 0-5
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
  * Union type for all custom node types
  */
 export type AppNode =
@@ -92,7 +203,17 @@ export type AppNode =
   | Node<BusinessProcessNodeData, 'businessProcess'>
   | Node<RoleNodeData, 'role'>
   | Node<PermissionNodeData, 'permission'>
-  | Node<LayerContainerNodeData, 'layerContainer'>;
+  | Node<LayerContainerNodeData, 'layerContainer'>
+  | Node<StakeholderNodeData, 'stakeholder'>
+  | Node<GoalNodeData, 'goal'>
+  | Node<RequirementNodeData, 'requirement'>
+  | Node<ConstraintNodeData, 'constraint'>
+  | Node<DriverNodeData, 'driver'>
+  | Node<OutcomeNodeData, 'outcome'>
+  | Node<PrincipleNodeData, 'principle'>
+  | Node<AssumptionNodeData, 'assumption'>
+  | Node<ValueStreamNodeData, 'valueStream'>
+  | Node<AssessmentNodeData, 'assessment'>;
 
 /**
  * Edge data for custom edges
@@ -102,10 +223,24 @@ export interface ElbowEdgeData {
 }
 
 /**
+ * Motivation edge data
+ */
+export interface MotivationEdgeData {
+  relationshipType: 'influence' | 'constrains' | 'realizes' | 'refines' | 'conflicts' | 'custom';
+  label?: string;
+  weight?: number;
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
  * Union type for all custom edge types
  */
 export type AppEdge =
   | Edge<ElbowEdgeData, 'elbow'>
+  | Edge<MotivationEdgeData, 'influence'>
+  | Edge<MotivationEdgeData, 'constrains'>
+  | Edge<MotivationEdgeData, 'realizes'>
+  | Edge<MotivationEdgeData, 'refines'>
   | Edge<undefined, 'default'>
   | Edge<undefined, 'smoothstep'>;
 

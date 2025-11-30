@@ -40,6 +40,14 @@ RUN --mount=type=cache,target=/root/.npm \
     npm ci --ignore-scripts && \
     npm cache clean --force
 
+# Set Playwright to use a shared cache location accessible to orchestrator user
+ENV PLAYWRIGHT_BROWSERS_PATH=/opt/ms-playwright
+
+# Install Playwright browsers and system dependencies
+# Note: Playwright requires specific system libraries for browser automation
+RUN npx playwright install --with-deps chromium && \
+    chown -R orchestrator:orchestrator /opt/ms-playwright
+
 # ============================================================================
 # Stage 4: Ownership and Permissions
 # ============================================================================
@@ -62,6 +70,9 @@ RUN claude --version && \
 
 # Verify project-specific tools (Node.js)
 RUN node --version && npm --version
+
+# Verify Playwright installation
+RUN npx playwright --version
 
 # ============================================================================
 # Default command
