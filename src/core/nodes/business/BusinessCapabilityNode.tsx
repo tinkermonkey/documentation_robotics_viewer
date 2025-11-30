@@ -3,15 +3,23 @@ import { Handle, Position, NodeProps } from '@xyflow/react';
 import { BusinessCapabilityNodeData } from '../../types/reactflow';
 
 /**
+ * Node dimensions for layout calculation
+ */
+export const BUSINESS_CAPABILITY_NODE_WIDTH = 160;
+export const BUSINESS_CAPABILITY_NODE_HEIGHT = 70;
+
+/**
  * Business Capability Node Component for React Flow
  * Displays business capabilities with metadata (owner, criticality, lifecycle)
  */
 export const BusinessCapabilityNode = memo(({ data }: NodeProps<BusinessCapabilityNodeData>) => {
   return (
     <div
+      role="article"
+      aria-label={`Business Capability: ${data.label}${data.criticality ? `, criticality: ${data.criticality}` : ''}`}
       style={{
-        width: 160, // Must match precalculateDimensions in BusinessNodeTransformer
-        height: 70,
+        width: BUSINESS_CAPABILITY_NODE_WIDTH,
+        height: BUSINESS_CAPABILITY_NODE_HEIGHT,
         display: 'flex',
         flexDirection: 'column',
         fontFamily: 'system-ui, sans-serif',
@@ -26,24 +34,28 @@ export const BusinessCapabilityNode = memo(({ data }: NodeProps<BusinessCapabili
         type="target"
         position={Position.Top}
         id="top"
+        aria-label="Top connection point"
         style={{ background: '#555' }}
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="bottom"
+        aria-label="Bottom connection point"
         style={{ background: '#555' }}
       />
       <Handle
         type="target"
         position={Position.Left}
         id="left"
+        aria-label="Left connection point"
         style={{ background: '#555' }}
       />
       <Handle
         type="source"
         position={Position.Right}
         id="right"
+        aria-label="Right connection point"
         style={{ background: '#555' }}
       />
 

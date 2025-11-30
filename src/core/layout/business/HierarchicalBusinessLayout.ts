@@ -9,11 +9,24 @@ import dagre from 'dagre';
 import { Node, Edge, MarkerType } from '@xyflow/react';
 import { BusinessGraph, BusinessNode, BusinessEdge } from '../../types/businessLayer';
 import { BusinessLayoutEngine, LayoutOptions, LayoutResult } from './types';
+import {
+  BusinessProcessNodeData,
+  BusinessFunctionNodeData,
+  BusinessServiceNodeData,
+  BusinessCapabilityNodeData,
+} from '../../types/reactflow';
+import { BusinessNodeTransformer } from '../../services/businessNodeTransformer';
 
 /**
  * Hierarchical layout engine using dagre
  */
 export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
+  private transformer: BusinessNodeTransformer;
+
+  constructor() {
+    this.transformer = new BusinessNodeTransformer();
+  }
+
   getName(): string {
     return 'Hierarchical Layout';
   }
@@ -42,8 +55,6 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
     if (result.metadata) {
       result.metadata.calculationTime = calculationTime;
     }
-
-    console.log(`[HierarchicalBusinessLayout] Layout calculated in ${calculationTime.toFixed(2)}ms`);
 
     return result;
   }
@@ -79,7 +90,7 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
     }
 
     // Add edges to dagre graph
-    for (const [edgeId, edge] of graph.edges.entries()) {
+    for (const edge of graph.edges.values()) {
       g.setEdge(edge.source, edge.target, {
         label: edge.label || edge.type,
         weight: this.getEdgeWeight(edge),
@@ -110,7 +121,6 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
       const dagreNode = dagreGraph.node(nodeId);
 
       if (!dagreNode) {
-        console.warn(`[HierarchicalBusinessLayout] Node ${nodeId} not found in dagre graph`);
         continue;
       }
 
@@ -226,65 +236,16 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
   }
 
   /**
-   * Extract node data for React Flow
+   * Extract node data for React Flow using BusinessNodeTransformer
    */
-  private extractNodeData(node: BusinessNode): any {
-    return {
-      label: node.name,
-      elementId: node.id,
-      layerId: 'business',
-      fill: this.getFillColor(node),
-      stroke: this.getStrokeColor(node),
-      owner: node.metadata.owner,
-      criticality: node.metadata.criticality,
-      lifecycle: node.metadata.lifecycle,
-      domain: node.metadata.domain,
-      subprocessCount: node.metadata.subprocessCount || node.childIds.length,
-      stepCount: node.metadata.stepCount,
-      hierarchyLevel: node.hierarchyLevel,
-    };
-  }
-
-  /**
-   * Get fill color based on node type and lifecycle
-   */
-  private getFillColor(node: BusinessNode): string {
-    // Base colors by type
-    const baseColors: Record<string, string> = {
-      process: '#FFF3E0', // Light orange
-      function: '#E3F2FD', // Light blue
-      service: '#F3E5F5', // Light purple
-      capability: '#E8F5E9', // Light green
-    };
-
-    let color = baseColors[node.type] || '#F5F5F5';
-
-    // Dim color for deprecated lifecycle
-    if (node.metadata.lifecycle === 'deprecated') {
-      color = '#EEEEEE';
-    }
-
-    return color;
-  }
-
-  /**
-   * Get stroke color based on node type and criticality
-   */
-  private getStrokeColor(node: BusinessNode): string {
-    // High criticality gets red stroke
-    if (node.metadata.criticality === 'high') {
-      return '#D32F2F';
-    }
-
-    // Base colors by type
-    const baseColors: Record<string, string> = {
-      process: '#E65100', // Dark orange
-      function: '#1565C0', // Dark blue
-      service: '#6A1B9A', // Dark purple
-      capability: '#2E7D32', // Dark green
-    };
-
-    return baseColors[node.type] || '#424242';
+  private extractNodeData(
+    node: BusinessNode
+  ):
+    | BusinessProcessNodeData
+    | BusinessFunctionNodeData
+    | BusinessServiceNodeData
+    | BusinessCapabilityNodeData {
+    return this.transformer.extractNodeData(node);
   }
 
   /**

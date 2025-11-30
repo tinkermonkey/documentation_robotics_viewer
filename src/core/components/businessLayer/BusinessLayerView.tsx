@@ -46,16 +46,9 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
       setLoading(true);
       setError(null);
 
-      console.log('[BusinessLayerView] Parsing business layer...');
-      const startTime = performance.now();
-
       // Step 1: Parse business layer from model
       const parser = new BusinessLayerParser();
       const businessLayerData = parser.parseBusinessLayer(model);
-
-      console.log(
-        `[BusinessLayerView] Parsed ${businessLayerData.elements.length} elements, ${businessLayerData.relationships.length} relationships`
-      );
 
       // Step 2: Build graph with hierarchy and metrics
       const graphBuilder = new BusinessGraphBuilder();
@@ -64,18 +57,11 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
         businessLayerData.relationships
       );
 
-      console.log(
-        `[BusinessLayerView] Built graph with ${graph.nodes.size} nodes, ${graph.edges.size} edges, max depth ${graph.hierarchy.maxDepth}`
-      );
-
       // Step 3: Pre-calculate dimensions
       const transformer = new BusinessNodeTransformer();
       transformer.precalculateDimensions(graph.nodes);
 
       setBusinessGraph(graph);
-
-      const elapsedTime = performance.now() - startTime;
-      console.log(`[BusinessLayerView] Graph building completed in ${elapsedTime.toFixed(2)}ms`);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       console.error('[BusinessLayerView] Error parsing business layer:', err);
@@ -90,9 +76,6 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
     if (!businessGraph) return;
 
     try {
-      console.log('[BusinessLayerView] Calculating layout...');
-      const startTime = performance.now();
-
       // Step 4: Calculate hierarchical layout
       const layoutEngine = new HierarchicalBusinessLayout();
       const layoutResult = layoutEngine.calculate(businessGraph, {
@@ -104,12 +87,6 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
 
       setNodes(layoutResult.nodes);
       setEdges(layoutResult.edges);
-
-      const elapsedTime = performance.now() - startTime;
-      console.log(`[BusinessLayerView] Layout calculated in ${elapsedTime.toFixed(2)}ms`);
-      console.log(
-        `[BusinessLayerView] Created ${layoutResult.nodes.length} nodes and ${layoutResult.edges.length} edges`
-      );
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       console.error('[BusinessLayerView] Error calculating layout:', err);
@@ -119,7 +96,7 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
 
   // Fit view when nodes change
   const onNodesInitialized = useCallback(() => {
-    console.log('[BusinessLayerView] Nodes initialized, fitting view');
+    // Nodes are initialized and fitView is handled by ReactFlow
   }, []);
 
   if (error) {

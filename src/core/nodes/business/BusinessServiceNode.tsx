@@ -3,15 +3,23 @@ import { Handle, Position, NodeProps } from '@xyflow/react';
 import { BusinessServiceNodeData } from '../../types/reactflow';
 
 /**
+ * Node dimensions for layout calculation
+ */
+export const BUSINESS_SERVICE_NODE_WIDTH = 180;
+export const BUSINESS_SERVICE_NODE_HEIGHT = 90;
+
+/**
  * Business Service Node Component for React Flow
  * Displays business services with metadata (owner, criticality, lifecycle)
  */
 export const BusinessServiceNode = memo(({ data }: NodeProps<BusinessServiceNodeData>) => {
   return (
     <div
+      role="article"
+      aria-label={`Business Service: ${data.label}${data.owner ? `, owner: ${data.owner}` : ''}${data.criticality ? `, criticality: ${data.criticality}` : ''}`}
       style={{
-        width: 180, // Must match precalculateDimensions in BusinessNodeTransformer
-        height: 90,
+        width: BUSINESS_SERVICE_NODE_WIDTH,
+        height: BUSINESS_SERVICE_NODE_HEIGHT,
         display: 'flex',
         flexDirection: 'column',
         fontFamily: 'system-ui, sans-serif',
@@ -26,24 +34,28 @@ export const BusinessServiceNode = memo(({ data }: NodeProps<BusinessServiceNode
         type="target"
         position={Position.Top}
         id="top"
+        aria-label="Top connection point"
         style={{ background: '#555' }}
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="bottom"
+        aria-label="Bottom connection point"
         style={{ background: '#555' }}
       />
       <Handle
         type="target"
         position={Position.Left}
         id="left"
+        aria-label="Left connection point"
         style={{ background: '#555' }}
       />
       <Handle
         type="source"
         position={Position.Right}
         id="right"
+        aria-label="Right connection point"
         style={{ background: '#555' }}
       />
 

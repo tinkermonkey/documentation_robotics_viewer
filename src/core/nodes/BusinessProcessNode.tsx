@@ -3,15 +3,23 @@ import { Handle, Position, NodeProps } from '@xyflow/react';
 import { BusinessProcessNodeData } from '../types/reactflow';
 
 /**
+ * Node dimensions for layout calculation
+ */
+export const BUSINESS_PROCESS_NODE_WIDTH = 200;
+export const BUSINESS_PROCESS_NODE_HEIGHT = 80;
+
+/**
  * Business Process Node Component for React Flow
  * Displays business processes with metadata (owner, criticality, lifecycle, subprocess count)
  */
 export const BusinessProcessNode = memo(({ data }: NodeProps<BusinessProcessNodeData>) => {
   return (
     <div
+      role="article"
+      aria-label={`Business Process: ${data.label}${data.owner ? `, owner: ${data.owner}` : ''}${data.criticality ? `, criticality: ${data.criticality}` : ''}`}
       style={{
-        width: 200, // Must match precalculateDimensions in BusinessNodeTransformer
-        height: 80,
+        width: BUSINESS_PROCESS_NODE_WIDTH,
+        height: BUSINESS_PROCESS_NODE_HEIGHT,
         display: 'flex',
         flexDirection: 'column',
         fontFamily: 'system-ui, sans-serif',
@@ -26,24 +34,28 @@ export const BusinessProcessNode = memo(({ data }: NodeProps<BusinessProcessNode
         type="target"
         position={Position.Top}
         id="top"
+        aria-label="Top connection point"
         style={{ background: '#555' }}
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="bottom"
+        aria-label="Bottom connection point"
         style={{ background: '#555' }}
       />
       <Handle
         type="target"
         position={Position.Left}
         id="left"
+        aria-label="Left connection point"
         style={{ background: '#555' }}
       />
       <Handle
         type="source"
         position={Position.Right}
         id="right"
+        aria-label="Right connection point"
         style={{ background: '#555' }}
       />
 

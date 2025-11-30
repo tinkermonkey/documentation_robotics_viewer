@@ -12,6 +12,16 @@ import {
   BusinessServiceNodeData,
   BusinessCapabilityNodeData,
 } from '../types/reactflow';
+import {
+  BUSINESS_PROCESS_NODE_WIDTH,
+  BUSINESS_PROCESS_NODE_HEIGHT,
+  BUSINESS_FUNCTION_NODE_WIDTH,
+  BUSINESS_FUNCTION_NODE_HEIGHT,
+  BUSINESS_SERVICE_NODE_WIDTH,
+  BUSINESS_SERVICE_NODE_HEIGHT,
+  BUSINESS_CAPABILITY_NODE_WIDTH,
+  BUSINESS_CAPABILITY_NODE_HEIGHT,
+} from '../nodes';
 
 /**
  * BusinessNodeTransformer - Transforms business nodes to React Flow format
@@ -29,20 +39,23 @@ export class BusinessNodeTransformer {
 
   /**
    * Get node dimensions based on type
-   * MUST match the width/height in the corresponding node component
+   * Uses constants from node components to ensure synchronization
    */
   getNodeDimensions(node: BusinessNode): { width: number; height: number } {
     switch (node.type) {
       case 'process':
-        return { width: 200, height: 80 };
+        return { width: BUSINESS_PROCESS_NODE_WIDTH, height: BUSINESS_PROCESS_NODE_HEIGHT };
       case 'function':
-        return { width: 180, height: 100 };
+        return { width: BUSINESS_FUNCTION_NODE_WIDTH, height: BUSINESS_FUNCTION_NODE_HEIGHT };
       case 'service':
-        return { width: 180, height: 90 };
+        return { width: BUSINESS_SERVICE_NODE_WIDTH, height: BUSINESS_SERVICE_NODE_HEIGHT };
       case 'capability':
-        return { width: 160, height: 70 };
+        return {
+          width: BUSINESS_CAPABILITY_NODE_WIDTH,
+          height: BUSINESS_CAPABILITY_NODE_HEIGHT,
+        };
       default:
-        return { width: 200, height: 100 };
+        return { width: BUSINESS_PROCESS_NODE_WIDTH, height: BUSINESS_PROCESS_NODE_HEIGHT };
     }
   }
 

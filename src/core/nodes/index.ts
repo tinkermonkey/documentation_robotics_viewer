@@ -6,8 +6,22 @@
 import { DataModelNode } from './DataModelNode';
 import { JSONSchemaNode } from './JSONSchemaNode';
 import { APIEndpointNode } from './APIEndpointNode';
-import { BusinessProcessNode } from './BusinessProcessNode';
-import { BusinessFunctionNode, BusinessServiceNode, BusinessCapabilityNode } from './business';
+import {
+  BusinessProcessNode,
+  BUSINESS_PROCESS_NODE_WIDTH,
+  BUSINESS_PROCESS_NODE_HEIGHT,
+} from './BusinessProcessNode';
+import {
+  BusinessFunctionNode,
+  BusinessServiceNode,
+  BusinessCapabilityNode,
+  BUSINESS_FUNCTION_NODE_WIDTH,
+  BUSINESS_FUNCTION_NODE_HEIGHT,
+  BUSINESS_SERVICE_NODE_WIDTH,
+  BUSINESS_SERVICE_NODE_HEIGHT,
+  BUSINESS_CAPABILITY_NODE_WIDTH,
+  BUSINESS_CAPABILITY_NODE_HEIGHT,
+} from './business';
 import { RoleNode } from './RoleNode';
 import { PermissionNode } from './PermissionNode';
 import { LayerContainerNode } from './LayerContainerNode';
@@ -31,9 +45,17 @@ export {
   JSONSchemaNode,
   APIEndpointNode,
   BusinessProcessNode,
+  BUSINESS_PROCESS_NODE_WIDTH,
+  BUSINESS_PROCESS_NODE_HEIGHT,
   BusinessFunctionNode,
+  BUSINESS_FUNCTION_NODE_WIDTH,
+  BUSINESS_FUNCTION_NODE_HEIGHT,
   BusinessServiceNode,
+  BUSINESS_SERVICE_NODE_WIDTH,
+  BUSINESS_SERVICE_NODE_HEIGHT,
   BusinessCapabilityNode,
+  BUSINESS_CAPABILITY_NODE_WIDTH,
+  BUSINESS_CAPABILITY_NODE_HEIGHT,
   RoleNode,
   PermissionNode,
   LayerContainerNode,
