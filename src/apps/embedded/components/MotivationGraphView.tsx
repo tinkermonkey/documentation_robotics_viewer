@@ -44,6 +44,12 @@ import {
   MotivationRelationshipType,
   MotivationGraph,
 } from '../types/motivationGraph';
+import {
+  exportAsPNG,
+  exportAsSVG,
+  exportGraphDataAsJSON,
+  exportTraceabilityReport,
+} from '../services/motivationExportService';
 
 export interface MotivationGraphViewProps {
   model: MetaModel;
@@ -546,6 +552,67 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
   }, [setInspectorPanelVisible, setSelectedNodeId]);
 
   /**
+   * Export handlers (Phase 6)
+   */
+  const handleExportPNG = useCallback(async () => {
+    try {
+      console.log('[MotivationGraphView] Exporting as PNG');
+      const reactFlowContainer = document.querySelector('.graph-viewer') as HTMLElement;
+      if (!reactFlowContainer) {
+        throw new Error('Graph container not found');
+      }
+      await exportAsPNG(reactFlowContainer, 'motivation-graph.png');
+      console.log('[MotivationGraphView] PNG export successful');
+    } catch (error) {
+      console.error('[MotivationGraphView] PNG export failed:', error);
+      alert('Failed to export PNG: ' + (error instanceof Error ? error.message : String(error)));
+    }
+  }, []);
+
+  const handleExportSVG = useCallback(async () => {
+    try {
+      console.log('[MotivationGraphView] Exporting as SVG');
+      const reactFlowContainer = document.querySelector('.graph-viewer') as HTMLElement;
+      if (!reactFlowContainer) {
+        throw new Error('Graph container not found');
+      }
+      await exportAsSVG(reactFlowContainer, 'motivation-graph.svg');
+      console.log('[MotivationGraphView] SVG export successful');
+    } catch (error) {
+      console.error('[MotivationGraphView] SVG export failed:', error);
+      alert('Failed to export SVG: ' + (error instanceof Error ? error.message : String(error)));
+    }
+  }, []);
+
+  const handleExportGraphData = useCallback(() => {
+    try {
+      console.log('[MotivationGraphView] Exporting graph data');
+      if (!fullGraphRef.current) {
+        throw new Error('No graph data available');
+      }
+      exportGraphDataAsJSON(nodes, edges, fullGraphRef.current, 'motivation-graph-data.json');
+      console.log('[MotivationGraphView] Graph data export successful');
+    } catch (error) {
+      console.error('[MotivationGraphView] Graph data export failed:', error);
+      alert('Failed to export graph data: ' + (error instanceof Error ? error.message : String(error)));
+    }
+  }, [nodes, edges]);
+
+  const handleExportTraceabilityReport = useCallback(() => {
+    try {
+      console.log('[MotivationGraphView] Exporting traceability report');
+      if (!fullGraphRef.current) {
+        throw new Error('No graph data available');
+      }
+      exportTraceabilityReport(fullGraphRef.current, 'traceability-report.json');
+      console.log('[MotivationGraphView] Traceability report export successful');
+    } catch (error) {
+      console.error('[MotivationGraphView] Traceability report export failed:', error);
+      alert('Failed to export traceability report: ' + (error instanceof Error ? error.message : String(error)));
+    }
+  }, []);
+
+  /**
    * Save manual positions when nodes are dragged
    */
   const onNodeDragStop = useCallback(
@@ -556,6 +623,7 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
           positions.set(n.id, { x: n.position.x, y: n.position.y });
         });
         setManualPositions(positions);
+        console.log('[MotivationGraphView] Saved manual positions for', positions.size, 'nodes');
       }
     },
     [selectedLayout, nodes, setManualPositions]
@@ -672,6 +740,10 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
             onClearHighlighting={handleClearPathHighlighting}
             isHighlightingActive={motivationPreferences.pathTracing.mode !== 'none'}
             isLayouting={isLayouting}
+            onExportPNG={handleExportPNG}
+            onExportSVG={handleExportSVG}
+            onExportGraphData={handleExportGraphData}
+            onExportTraceabilityReport={handleExportTraceabilityReport}
           />
         </div>
 

@@ -46,6 +46,12 @@ export interface MotivationControlPanelProps {
 
   /** Whether changesets are available */
   hasChangesets?: boolean;
+
+  /** Export callbacks (Phase 6) */
+  onExportPNG?: () => void;
+  onExportSVG?: () => void;
+  onExportGraphData?: () => void;
+  onExportTraceabilityReport?: () => void;
 }
 
 /**
@@ -93,6 +99,10 @@ export const MotivationControlPanel: React.FC<MotivationControlPanelProps> = ({
   changesetVisualizationEnabled = false,
   onChangesetVisualizationToggle,
   hasChangesets = false,
+  onExportPNG,
+  onExportSVG,
+  onExportGraphData,
+  onExportTraceabilityReport,
 }) => {
   return (
     <div className="motivation-control-panel">
@@ -218,6 +228,76 @@ export const MotivationControlPanel: React.FC<MotivationControlPanelProps> = ({
           </label>
           <div id="changeset-viz-description" className="control-description">
             Highlight added, updated, and deleted elements
+          </div>
+        </div>
+      )}
+
+      {/* Export Controls (Phase 6) */}
+      {(onExportPNG || onExportSVG || onExportGraphData || onExportTraceabilityReport) && (
+        <div className="control-panel-section export-section">
+          <label className="control-label">Export</label>
+          <div className="export-buttons">
+            {onExportPNG && (
+              <button
+                className="control-button export-button"
+                onClick={onExportPNG}
+                disabled={isLayouting}
+                aria-label="Export current view as PNG image"
+                title="Export as PNG"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M8 2v8M8 10l-3-3M8 10l3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M3 12h10v2H3z" fill="currentColor"/>
+                </svg>
+                <span>PNG</span>
+              </button>
+            )}
+            {onExportSVG && (
+              <button
+                className="control-button export-button"
+                onClick={onExportSVG}
+                disabled={isLayouting}
+                aria-label="Export current view as SVG vector image"
+                title="Export as SVG"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M8 2v8M8 10l-3-3M8 10l3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <rect x="2" y="11" width="12" height="3" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+                </svg>
+                <span>SVG</span>
+              </button>
+            )}
+            {onExportGraphData && (
+              <button
+                className="control-button export-button"
+                onClick={onExportGraphData}
+                disabled={isLayouting}
+                aria-label="Export filtered graph data as JSON"
+                title="Export Graph Data"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M3 3h10M3 6h10M3 9h7M3 12h7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  <circle cx="12" cy="10.5" r="2.5" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                </svg>
+                <span>Data</span>
+              </button>
+            )}
+            {onExportTraceabilityReport && (
+              <button
+                className="control-button export-button"
+                onClick={onExportTraceabilityReport}
+                disabled={isLayouting}
+                aria-label="Export traceability report showing requirement to goal mapping"
+                title="Export Traceability Report"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <rect x="2" y="2" width="5" height="5" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                  <rect x="9" y="9" width="5" height="5" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                  <path d="M7 4.5h5M7 4.5l2 2M9 11.5H4M9 11.5l-2-2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+                <span>Report</span>
+              </button>
+            )}
           </div>
         </div>
       )}

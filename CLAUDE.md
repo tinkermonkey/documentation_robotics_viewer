@@ -517,9 +517,129 @@ See `documentation/YAML_MODELS.md` for complete specification and examples.
 3. Run tests to verify changes
 4. Ask the user for clarification on requirements
 
+## Motivation Layer Visualization (Phase 6 - Export & Testing)
+
+### Export Features
+
+The motivation layer supports comprehensive export capabilities:
+
+**1. PNG/SVG Image Exports**
+```typescript
+import { exportAsPNG, exportAsSVG } from '../services/motivationExportService';
+
+// Export current viewport as PNG
+await exportAsPNG(reactFlowContainer, 'motivation-graph.png');
+
+// Export as SVG vector image
+await exportAsSVG(reactFlowContainer, 'motivation-graph.svg');
+```
+
+**2. Graph Data Export**
+```typescript
+import { exportGraphDataAsJSON } from '../services/motivationExportService';
+
+// Export filtered graph structure
+exportGraphDataAsJSON(nodes, edges, motivationGraph, 'graph-data.json');
+```
+
+**3. Traceability Report Export**
+```typescript
+import { exportTraceabilityReport } from '../services/motivationExportService';
+
+// Generate requirement→goal traceability report
+exportTraceabilityReport(motivationGraph, 'traceability-report.json');
+```
+
+The traceability report includes:
+- Requirement-to-goal mappings
+- Trace paths (direct and indirect)
+- Orphaned requirements (no goal coverage)
+- Orphaned goals (no requirement coverage)
+- Coverage statistics (percentages)
+
+### Layout Persistence
+
+Manual node positions are automatically persisted to localStorage:
+
+**Implementation Pattern:**
+```typescript
+// Save positions on drag end (in MotivationGraphView)
+const onNodeDragStop = useCallback(
+  (_event: any, _node: any) => {
+    if (selectedLayout === 'manual') {
+      const positions = new Map<string, { x: number; y: number }>();
+      nodes.forEach((n) => {
+        positions.set(n.id, { x: n.position.x, y: n.position.y });
+      });
+      setManualPositions(positions); // Saves to localStorage via viewPreferenceStore
+    }
+  },
+  [selectedLayout, nodes, setManualPositions]
+);
+```
+
+**Storage Key:** `dr-viewer-preferences` (managed by Zustand persist middleware)
+
+**Restoration:** Positions are restored when:
+- User reloads the page
+- User selects "Manual" layout
+- Existing nodes use saved positions, new nodes use auto-layout
+
+### Testing Strategy
+
+**E2E Tests** (`tests/motivation-layer.spec.ts`):
+- 15 comprehensive tests covering all user stories
+- Export functionality tests
+- Layout persistence verification
+- Cross-browser compatibility
+
+**Accessibility Tests** (`tests/motivation-accessibility.spec.ts`):
+- Axe-core integration for WCAG 2.1 AA compliance
+- Keyboard navigation tests
+- ARIA label verification
+- Screen reader compatibility
+- Focus indicator visibility
+- Color contrast checks
+
+**Performance Tests** (`tests/motivation-performance.spec.ts`):
+- Initial render time (< 3s target)
+- Filter operation latency (< 500ms target)
+- Layout switch time (< 800ms target)
+- Pan/zoom responsiveness (60fps target)
+- Memory usage profiling
+- Edge rendering performance
+
+**Run Tests:**
+```bash
+# Start dev server
+npm run dev:embedded
+
+# Run all Playwright tests
+npx playwright test
+
+# Run specific test suite
+npx playwright test motivation-layer
+npx playwright test motivation-accessibility
+npx playwright test motivation-performance
+
+# Run with UI
+npx playwright test --ui
+```
+
+### Performance Targets
+
+| Metric | Target | Implementation |
+|--------|--------|----------------|
+| Initial render (500 elements) | < 3s | ReactFlow viewport culling |
+| Filter operations | < 500ms | Pre-indexed data structures |
+| Layout switch | < 800ms | Smooth transitions, requestAnimationFrame |
+| Pan/zoom | 60fps | ReactFlow optimization |
+| Memory (1000 elements) | < 50MB | Efficient data structures |
+
 ---
 
-**Last Updated**: 2025-11-26
+**Last Updated**: 2025-11-30
 **tldraw Version**: 4.2.0
 **Project Version**: 1.0.0
 **YAML Support**: v0.1.0
+**Motivation Layer**: Phase 6 Complete
