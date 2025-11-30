@@ -7,7 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import { BusinessFilters } from '../../../src/core/hooks/useBusinessFilters';
-import { BusinessGraph, BusinessNode } from '../../../src/core/types/businessLayer';
+import { BusinessGraph, BusinessNode, BusinessEdge } from '../../../src/core/types/businessLayer';
 import { Node, Edge } from '@xyflow/react';
 
 /**

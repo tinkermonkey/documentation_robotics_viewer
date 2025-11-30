@@ -17,6 +17,7 @@ import {
 } from '@xyflow/react';
 import { MetaModel } from '../../types/model';
 import { BusinessGraph } from '../../types/businessLayer';
+import { AppNode } from '../../types/reactflow';
 import { BusinessLayerParser } from '../../services/businessLayerParser';
 import { BusinessGraphBuilder } from '../../services/businessGraphBuilder';
 import { BusinessNodeTransformer } from '../../services/businessNodeTransformer';
@@ -25,7 +26,7 @@ import { DEFAULT_LAYOUT_OPTIONS } from '../../layout/business/types';
 import { nodeTypes } from '../../nodes';
 import { edgeTypes } from '../../edges';
 import { useBusinessFilters } from '../../hooks/useBusinessFilters';
-import { useBusinessLayerStore } from '../../stores/businessLayerStore';
+import { useBusinessLayerStore } from '../../../stores/businessLayerStore';
 import { BusinessLayerControls } from './BusinessLayerControls';
 
 interface BusinessLayerViewProps {
@@ -38,7 +39,7 @@ interface BusinessLayerViewProps {
  */
 export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) => {
   const [businessGraph, setBusinessGraph] = useState<BusinessGraph | null>(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -113,11 +114,11 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
     // Nodes are initialized and fitView is handled by ReactFlow
   }, []);
 
-  // Export handlers (placeholder for Phase 7)
+  // Export handlers (placeholder - to be implemented)
   const handleExport = useCallback((type: 'png' | 'svg' | 'catalog' | 'traceability') => {
     console.log('[BusinessLayerView] Export requested:', type);
-    // TODO: Implement export functionality in Phase 7
-    alert(`Export as ${type.toUpperCase()} - Coming in Phase 7!`);
+    // TODO: Implement export functionality
+    alert(`Export as ${type.toUpperCase()} - Export functionality not yet implemented`);
   }, []);
 
   if (error) {

@@ -7,8 +7,8 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { BusinessFilters } from '../hooks/useBusinessFilters';
-import { BusinessNodeType } from '../types/businessLayer';
+import { BusinessFilters } from '../core/hooks/useBusinessFilters';
+import { BusinessNodeType } from '../core/types/businessLayer';
 
 /**
  * Layout algorithm types
@@ -94,22 +94,14 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
       ...initialState,
 
       setSelectedLayout: (layout) => {
-        console.log('[BusinessLayerStore] Setting layout to:', layout);
         set({ selectedLayout: layout });
       },
 
       setFilters: (filters) => {
-        console.log('[BusinessLayerStore] Setting filters:', {
-          types: filters.types.size,
-          domains: filters.domains.size,
-          lifecycles: filters.lifecycles.size,
-          criticalities: filters.criticalities.size,
-        });
         set({ filters });
       },
 
       clearFilters: () => {
-        console.log('[BusinessLayerStore] Clearing all filters');
         set({ filters: defaultFilters });
       },
 
@@ -121,7 +113,6 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
           } else {
             newTypes.add(type);
           }
-          console.log('[BusinessLayerStore] Toggling type filter:', type, 'active:', newTypes.has(type));
           return {
             filters: { ...state.filters, types: newTypes },
           };
@@ -136,7 +127,6 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
           } else {
             newDomains.add(domain);
           }
-          console.log('[BusinessLayerStore] Toggling domain filter:', domain, 'active:', newDomains.has(domain));
           return {
             filters: { ...state.filters, domains: newDomains },
           };
@@ -151,7 +141,6 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
           } else {
             newLifecycles.add(lifecycle);
           }
-          console.log('[BusinessLayerStore] Toggling lifecycle filter:', lifecycle, 'active:', newLifecycles.has(lifecycle));
           return {
             filters: { ...state.filters, lifecycles: newLifecycles },
           };
@@ -166,7 +155,6 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
           } else {
             newCriticalities.add(criticality);
           }
-          console.log('[BusinessLayerStore] Toggling criticality filter:', criticality, 'active:', newCriticalities.has(criticality));
           return {
             filters: { ...state.filters, criticalities: newCriticalities },
           };
@@ -181,7 +169,6 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
           } else {
             expanded.add(nodeId);
           }
-          console.log('[BusinessLayerStore] Toggling node expanded:', nodeId, 'expanded:', expanded.has(nodeId));
           return { expandedNodes: expanded };
         });
       },
@@ -195,27 +182,22 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
       },
 
       setManualPositions: (positions) => {
-        console.log('[BusinessLayerStore] Setting manual positions:', positions.size, 'nodes');
         set({ manualPositions: positions });
       },
 
       setFocusMode: (mode) => {
-        console.log('[BusinessLayerStore] Setting focus mode to:', mode);
         set({ focusMode: mode });
       },
 
       setFocusRadius: (radius) => {
-        console.log('[BusinessLayerStore] Setting focus radius to:', radius);
         set({ focusRadius: radius });
       },
 
       setSelectedNodeId: (nodeId) => {
-        console.log('[BusinessLayerStore] Setting selected node ID:', nodeId);
         set({ selectedNodeId: nodeId });
       },
 
       reset: () => {
-        console.log('[BusinessLayerStore] Resetting to defaults');
         set(initialState);
       },
     }),
