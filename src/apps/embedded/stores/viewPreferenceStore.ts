@@ -15,6 +15,23 @@ export type ChangesetViewType = 'graph' | 'list';
 export type MotivationLayoutType = 'force' | 'hierarchical' | 'radial' | 'manual';
 
 /**
+ * Path tracing state
+ */
+export interface PathTracingState {
+  /** Active path trace mode */
+  mode: 'none' | 'direct' | 'upstream' | 'downstream' | 'between';
+
+  /** Selected node IDs for path tracing */
+  selectedNodeIds: string[];
+
+  /** Highlighted node IDs from tracing */
+  highlightedNodeIds: Set<string>;
+
+  /** Highlighted edge IDs from tracing */
+  highlightedEdgeIds: Set<string>;
+}
+
+/**
  * Motivation layer visualization preferences
  */
 export interface MotivationViewPreferences {
@@ -38,6 +55,15 @@ export interface MotivationViewPreferences {
 
   /** Manual layout positions (persisted node positions) */
   manualPositions?: Map<string, { x: number; y: number }>;
+
+  /** Path tracing state */
+  pathTracing: PathTracingState;
+
+  /** Selected node ID for inspector panel */
+  selectedNodeId?: string;
+
+  /** Inspector panel visible */
+  inspectorPanelVisible: boolean;
 }
 
 interface ViewPreferenceState {
@@ -62,10 +88,23 @@ interface ViewPreferenceState {
   setFocusContextEnabled: (enabled: boolean) => void;
   setCenterNodeId: (nodeId: string | undefined) => void;
   setManualPositions: (positions: Map<string, { x: number; y: number }>) => void;
+  setPathTracing: (pathTracing: PathTracingState) => void;
+  setSelectedNodeId: (nodeId: string | undefined) => void;
+  setInspectorPanelVisible: (visible: boolean) => void;
   resetMotivationPreferences: () => void;
 
   reset: () => void;
 }
+
+/**
+ * Default path tracing state
+ */
+const defaultPathTracingState: PathTracingState = {
+  mode: 'none',
+  selectedNodeIds: [],
+  highlightedNodeIds: new Set(),
+  highlightedEdgeIds: new Set(),
+};
 
 /**
  * Default motivation preferences - all filters enabled (show everything)
@@ -78,6 +117,9 @@ const defaultMotivationPreferences: MotivationViewPreferences = {
   focusContextEnabled: false,
   centerNodeId: undefined,
   manualPositions: undefined,
+  pathTracing: defaultPathTracingState,
+  selectedNodeId: undefined,
+  inspectorPanelVisible: false,
 };
 
 const initialState = {
@@ -160,6 +202,27 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
         }));
       },
 
+      setPathTracing: (pathTracing: PathTracingState) => {
+        console.log('[ViewPreferenceStore] Setting path tracing:', pathTracing.mode);
+        set((state) => ({
+          motivationPreferences: { ...state.motivationPreferences, pathTracing },
+        }));
+      },
+
+      setSelectedNodeId: (nodeId: string | undefined) => {
+        console.log('[ViewPreferenceStore] Setting selected node ID:', nodeId);
+        set((state) => ({
+          motivationPreferences: { ...state.motivationPreferences, selectedNodeId: nodeId },
+        }));
+      },
+
+      setInspectorPanelVisible: (visible: boolean) => {
+        console.log('[ViewPreferenceStore] Setting inspector panel visible:', visible);
+        set((state) => ({
+          motivationPreferences: { ...state.motivationPreferences, inspectorPanelVisible: visible },
+        }));
+      },
+
       resetMotivationPreferences: () => {
         console.log('[ViewPreferenceStore] Resetting motivation preferences to defaults');
         set({ motivationPreferences: defaultMotivationPreferences });
@@ -199,6 +262,18 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
                   Object.entries(state.motivationPreferences.manualPositions)
                 );
               }
+              if (state.motivationPreferences.pathTracing) {
+                if (state.motivationPreferences.pathTracing.highlightedNodeIds) {
+                  state.motivationPreferences.pathTracing.highlightedNodeIds = new Set(
+                    state.motivationPreferences.pathTracing.highlightedNodeIds
+                  );
+                }
+                if (state.motivationPreferences.pathTracing.highlightedEdgeIds) {
+                  state.motivationPreferences.pathTracing.highlightedEdgeIds = new Set(
+                    state.motivationPreferences.pathTracing.highlightedEdgeIds
+                  );
+                }
+              }
             }
 
             return { state };
@@ -227,6 +302,18 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
                   manualPositions: newValue.state.motivationPreferences?.manualPositions
                     ? Object.fromEntries(newValue.state.motivationPreferences.manualPositions)
                     : undefined,
+                  // Serialize path tracing Sets
+                  pathTracing: newValue.state.motivationPreferences?.pathTracing
+                    ? {
+                        ...newValue.state.motivationPreferences.pathTracing,
+                        highlightedNodeIds: Array.from(
+                          newValue.state.motivationPreferences.pathTracing.highlightedNodeIds || []
+                        ),
+                        highlightedEdgeIds: Array.from(
+                          newValue.state.motivationPreferences.pathTracing.highlightedEdgeIds || []
+                        ),
+                      }
+                    : defaultPathTracingState,
                 },
               },
             });

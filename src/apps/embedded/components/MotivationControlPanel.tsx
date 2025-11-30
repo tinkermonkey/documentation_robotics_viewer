@@ -29,6 +29,12 @@ export interface MotivationControlPanelProps {
   /** Callback when focus mode toggles (for Phase 4) */
   onFocusModeToggle?: (enabled: boolean) => void;
 
+  /** Callback when "Clear Highlighting" is clicked (for Phase 4) */
+  onClearHighlighting?: () => void;
+
+  /** Whether path highlighting is active */
+  isHighlightingActive?: boolean;
+
   /** Whether layout is currently computing */
   isLayouting?: boolean;
 }
@@ -72,6 +78,8 @@ export const MotivationControlPanel: React.FC<MotivationControlPanelProps> = ({
   onFitToView,
   focusModeEnabled = false,
   onFocusModeToggle,
+  onClearHighlighting,
+  isHighlightingActive = false,
   isLayouting = false,
 }) => {
   return (
@@ -150,6 +158,35 @@ export const MotivationControlPanel: React.FC<MotivationControlPanelProps> = ({
             <span>Focus Mode</span>
           </label>
           <div id="focus-mode-description" className="control-description">Dim non-focused elements for clarity</div>
+        </div>
+      )}
+
+      {/* Clear Highlighting Button (Phase 4) */}
+      {onClearHighlighting && isHighlightingActive && (
+        <div className="control-panel-section">
+          <button
+            className="control-button clear-button"
+            onClick={onClearHighlighting}
+            disabled={isLayouting}
+            aria-label="Clear path highlighting"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M4 4L12 12M12 4L4 12"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            </svg>
+            <span>Clear Highlighting</span>
+          </button>
         </div>
       )}
 

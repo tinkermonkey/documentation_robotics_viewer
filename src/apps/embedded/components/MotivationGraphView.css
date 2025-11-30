@@ -36,6 +36,16 @@
   min-width: 300px;
 }
 
+.motivation-sidebar.right.inspector {
+  position: absolute;
+  right: 370px;
+  top: 16px;
+  bottom: 16px;
+  width: 360px;
+  max-width: 360px;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
 /* Responsive layout */
 @media (max-width: 1200px) {
   .motivation-sidebar.left,

@@ -47,6 +47,16 @@ import {
 } from '../../../core/nodes/motivation';
 
 /**
+ * Path highlighting configuration
+ */
+export interface PathHighlighting {
+  mode: 'none' | 'direct' | 'upstream' | 'downstream' | 'between';
+  highlightedNodeIds: Set<string>;
+  highlightedEdgeIds: Set<string>;
+  selectedNodeIds: string[];
+}
+
+/**
  * Transformer configuration options
  */
 export interface TransformerOptions {
@@ -56,6 +66,8 @@ export interface TransformerOptions {
   selectedRelationshipTypes?: Set<MotivationRelationshipType>;
   centerNodeId?: string; // For radial layout
   existingPositions?: Map<string, { x: number; y: number }>; // For manual layout
+  pathHighlighting?: PathHighlighting; // Path tracing highlights
+  focusContextEnabled?: boolean; // Dim non-focused elements
 }
 
 /**
@@ -252,6 +264,9 @@ export class MotivationGraphTransformer {
   ): Node[] {
     const nodes: Node[] = [];
 
+    const pathHighlighting = this.options.pathHighlighting;
+    const focusContextEnabled = this.options.focusContextEnabled;
+
     for (const [nodeId, graphNode] of graph.nodes) {
       const position = layoutResult.nodePositions.get(nodeId);
       if (!position) {
@@ -262,6 +277,36 @@ export class MotivationGraphTransformer {
       const elementType = graphNode.element.type as MotivationElementType;
       const nodeType = this.getReactFlowNodeType(elementType);
       const nodeData = this.createNodeData(graphNode);
+
+      // Apply path highlighting and focus context
+      const isHighlighted = pathHighlighting?.highlightedNodeIds?.has(nodeId) || false;
+      const isSelected = pathHighlighting?.selectedNodeIds?.includes(nodeId) || false;
+
+      if (pathHighlighting && pathHighlighting.mode !== 'none') {
+        // Apply highlighting/dimming
+        if (isHighlighted) {
+          // Highlighted nodes: keep normal appearance
+          nodeData.opacity = 1.0;
+        } else {
+          // Dim non-highlighted nodes
+          nodeData.opacity = 0.3;
+        }
+
+        // Selected nodes get emphasized border
+        if (isSelected) {
+          nodeData.strokeWidth = 3;
+        }
+      } else if (focusContextEnabled && pathHighlighting?.highlightedNodeIds?.size) {
+        // Focus mode without path tracing
+        if (isHighlighted) {
+          nodeData.opacity = 1.0;
+        } else {
+          nodeData.opacity = 0.3;
+        }
+      } else {
+        // No highlighting - normal appearance
+        nodeData.opacity = 1.0;
+      }
 
       // Convert from center position to top-left position (ReactFlow convention)
       const dimensions = NODE_DIMENSIONS[elementType] || { width: 180, height: 110 };
@@ -453,6 +498,8 @@ export class MotivationGraphTransformer {
   private createReactFlowEdges(graph: MotivationGraph): Edge[] {
     const edges: Edge[] = [];
 
+    const pathHighlighting = this.options.pathHighlighting;
+
     for (const [edgeId, graphEdge] of graph.edges) {
       const edgeType = this.getReactFlowEdgeType(graphEdge.type);
 
@@ -463,6 +510,27 @@ export class MotivationGraphTransformer {
         changesetOperation: graphEdge.changesetOperation,
       };
 
+      // Apply path highlighting
+      const isHighlighted = pathHighlighting?.highlightedEdgeIds?.has(edgeId) || false;
+      let style: Record<string, any> = {};
+
+      if (pathHighlighting && pathHighlighting.mode !== 'none') {
+        if (isHighlighted) {
+          // Highlighted edges: increase stroke width and make opaque
+          style = {
+            strokeWidth: 3,
+            opacity: 1.0,
+            stroke: '#3b82f6', // Blue for highlighted paths
+          };
+        } else {
+          // Dim non-highlighted edges
+          style = {
+            strokeWidth: 1,
+            opacity: 0.2,
+          };
+        }
+      }
+
       edges.push({
         id: edgeId,
         source: graphEdge.sourceId,
@@ -470,6 +538,7 @@ export class MotivationGraphTransformer {
         type: edgeType,
         data: edgeData,
         animated: false,
+        style,
         markerEnd: {
           type: 'arrowclosed',
           width: 20,

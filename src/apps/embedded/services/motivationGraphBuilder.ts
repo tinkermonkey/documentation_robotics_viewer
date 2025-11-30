@@ -835,4 +835,239 @@ export class MotivationGraphBuilder {
   getWarnings(): string[] {
     return this.warnings;
   }
+
+  /**
+   * Get all direct relationships (edges) connected to a node
+   * @returns Array of edge IDs
+   */
+  getDirectRelationships(nodeId: string, graph: MotivationGraph): MotivationGraphEdge[] {
+    const relationships: MotivationGraphEdge[] = [];
+
+    for (const edge of graph.edges.values()) {
+      if (edge.sourceId === nodeId || edge.targetId === nodeId) {
+        relationships.push(edge);
+      }
+    }
+
+    return relationships;
+  }
+
+  /**
+   * Trace upstream influences backward to root drivers
+   * Traverses incoming edges to find all elements that influence the starting node
+   * @param nodeId - Starting node ID
+   * @param graph - Motivation graph
+   * @param maxDepth - Maximum depth to traverse (default: 10)
+   * @returns Set of influenced node IDs and edges in the chain
+   */
+  traceUpstreamInfluences(
+    nodeId: string,
+    graph: MotivationGraph,
+    maxDepth: number = 10
+  ): { nodeIds: Set<string>; edgeIds: Set<string>; paths: InfluencePath[] } {
+    const nodeIds = new Set<string>();
+    const edgeIds = new Set<string>();
+    const paths: InfluencePath[] = [];
+
+    const visited = new Set<string>();
+
+    const traverse = (currentId: string, depth: number, path: string[], edges: string[]): void => {
+      if (depth >= maxDepth || visited.has(currentId)) {
+        return;
+      }
+
+      visited.add(currentId);
+      nodeIds.add(currentId);
+
+      // Get incoming neighbors
+      const incomingNeighbors = graph.adjacencyLists.incoming.get(currentId) || new Set();
+
+      for (const neighborId of incomingNeighbors) {
+        // Find the edge
+        for (const edge of graph.edges.values()) {
+          if (edge.sourceId === neighborId && edge.targetId === currentId) {
+            edgeIds.add(edge.id);
+
+            // Record path
+            const newPath = [neighborId, ...path];
+            const newEdges = [edge.id, ...edges];
+
+            if (newPath.length > 1) {
+              paths.push({
+                id: `upstream-${paths.length}`,
+                sourceId: neighborId,
+                targetId: nodeId,
+                path: newPath,
+                edges: newEdges,
+                length: newPath.length - 1,
+                pathType: newPath.length === 2 ? 'direct' : 'indirect'
+              });
+            }
+
+            // Continue traversing
+            traverse(neighborId, depth + 1, newPath, newEdges);
+          }
+        }
+      }
+    };
+
+    traverse(nodeId, 0, [nodeId], []);
+
+    return { nodeIds, edgeIds, paths };
+  }
+
+  /**
+   * Trace downstream impacts forward to leaf outcomes
+   * Traverses outgoing edges to find all elements influenced by the starting node
+   * @param nodeId - Starting node ID
+   * @param graph - Motivation graph
+   * @param maxDepth - Maximum depth to traverse (default: 10)
+   * @returns Set of influenced node IDs and edges in the chain
+   */
+  traceDownstreamImpacts(
+    nodeId: string,
+    graph: MotivationGraph,
+    maxDepth: number = 10
+  ): { nodeIds: Set<string>; edgeIds: Set<string>; paths: InfluencePath[] } {
+    const nodeIds = new Set<string>();
+    const edgeIds = new Set<string>();
+    const paths: InfluencePath[] = [];
+
+    const visited = new Set<string>();
+
+    const traverse = (currentId: string, depth: number, path: string[], edges: string[]): void => {
+      if (depth >= maxDepth || visited.has(currentId)) {
+        return;
+      }
+
+      visited.add(currentId);
+      nodeIds.add(currentId);
+
+      // Get outgoing neighbors
+      const outgoingNeighbors = graph.adjacencyLists.outgoing.get(currentId) || new Set();
+
+      for (const neighborId of outgoingNeighbors) {
+        // Find the edge
+        for (const edge of graph.edges.values()) {
+          if (edge.sourceId === currentId && edge.targetId === neighborId) {
+            edgeIds.add(edge.id);
+
+            // Record path
+            const newPath = [...path, neighborId];
+            const newEdges = [...edges, edge.id];
+
+            if (newPath.length > 1) {
+              paths.push({
+                id: `downstream-${paths.length}`,
+                sourceId: nodeId,
+                targetId: neighborId,
+                path: newPath,
+                edges: newEdges,
+                length: newPath.length - 1,
+                pathType: newPath.length === 2 ? 'direct' : 'indirect'
+              });
+            }
+
+            // Continue traversing
+            traverse(neighborId, depth + 1, newPath, newEdges);
+          }
+        }
+      }
+    };
+
+    traverse(nodeId, 0, [nodeId], []);
+
+    return { nodeIds, edgeIds, paths };
+  }
+
+  /**
+   * Find all paths between two nodes using breadth-first search
+   * Highlights shortest path differently
+   * @param sourceId - Starting node ID
+   * @param targetId - Ending node ID
+   * @param graph - Motivation graph
+   * @param maxPaths - Maximum number of paths to find (default: 10)
+   * @returns Array of influence paths, with shortest path first
+   */
+  findPathsBetween(
+    sourceId: string,
+    targetId: string,
+    graph: MotivationGraph,
+    maxPaths: number = 10
+  ): InfluencePath[] {
+    const paths: InfluencePath[] = [];
+
+    // BFS to find all paths
+    interface QueueItem {
+      currentId: string;
+      path: string[];
+      edges: string[];
+      visited: Set<string>;
+    }
+
+    const queue: QueueItem[] = [{
+      currentId: sourceId,
+      path: [sourceId],
+      edges: [],
+      visited: new Set([sourceId])
+    }];
+
+    let shortestLength = Infinity;
+
+    while (queue.length > 0 && paths.length < maxPaths) {
+      const item = queue.shift()!;
+
+      // Found target
+      if (item.currentId === targetId) {
+        const pathLength = item.path.length - 1;
+
+        // Track shortest path length
+        if (pathLength < shortestLength) {
+          shortestLength = pathLength;
+        }
+
+        paths.push({
+          id: `path-${paths.length}`,
+          sourceId,
+          targetId,
+          path: item.path,
+          edges: item.edges,
+          length: pathLength,
+          pathType: pathLength === 1 ? 'direct' : 'indirect'
+        });
+
+        continue;
+      }
+
+      // Explore neighbors
+      const outgoingNeighbors = graph.adjacencyLists.outgoing.get(item.currentId) || new Set();
+
+      for (const neighborId of outgoingNeighbors) {
+        if (item.visited.has(neighborId)) {
+          continue; // Avoid cycles
+        }
+
+        // Find edge
+        for (const edge of graph.edges.values()) {
+          if (edge.sourceId === item.currentId && edge.targetId === neighborId) {
+            const newVisited = new Set(item.visited);
+            newVisited.add(neighborId);
+
+            queue.push({
+              currentId: neighborId,
+              path: [...item.path, neighborId],
+              edges: [...item.edges, edge.id],
+              visited: newVisited
+            });
+            break;
+          }
+        }
+      }
+    }
+
+    // Sort paths by length (shortest first)
+    paths.sort((a, b) => a.length - b.length);
+
+    return paths;
+  }
 }
