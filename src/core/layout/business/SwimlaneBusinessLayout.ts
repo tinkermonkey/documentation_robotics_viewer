@@ -7,7 +7,7 @@
 
 import dagre from 'dagre';
 import { Node, Edge, MarkerType } from '@xyflow/react';
-import { BusinessGraph, BusinessNode, BusinessEdge } from '../../types/businessLayer';
+import { BusinessGraph, BusinessNode } from '../../types/businessLayer';
 import { BusinessLayoutEngine, LayoutOptions, LayoutResult } from './types';
 import {
   BusinessProcessNodeData,
@@ -26,6 +26,13 @@ export type SwimlaneGroupBy = 'role' | 'domain' | 'lifecycle' | 'capability';
  * Swimlane orientation
  */
 export type SwimlaneOrientation = 'horizontal' | 'vertical';
+
+/**
+ * Constants for lane dimensions
+ */
+const LANE_HEIGHT = 300;
+const LANE_WIDTH = 400;
+const DEFAULT_LANE_SPACING = 200;
 
 /**
  * Extended layout options for swimlane layout
@@ -145,7 +152,7 @@ export class SwimlaneBusinessLayout implements BusinessLayoutEngine {
     orientation: SwimlaneOrientation
   ): Map<string, { x: number; y: number }> {
     const positions = new Map<string, { x: number; y: number }>();
-    const laneSpacing = options.spacing?.lane || 200;
+    const laneSpacing = options.spacing?.lane || DEFAULT_LANE_SPACING;
 
     let offset = 50; // Initial margin
 
@@ -153,11 +160,11 @@ export class SwimlaneBusinessLayout implements BusinessLayoutEngine {
       if (orientation === 'horizontal') {
         // Horizontal lanes: stack vertically
         positions.set(laneKey, { x: 50, y: offset });
-        offset += 300 + laneSpacing; // Lane height + spacing
+        offset += LANE_HEIGHT + laneSpacing;
       } else {
         // Vertical lanes: stack horizontally
         positions.set(laneKey, { x: offset, y: 50 });
-        offset += 400 + laneSpacing; // Lane width + spacing
+        offset += LANE_WIDTH + laneSpacing;
       }
     }
 
@@ -343,43 +350,17 @@ export class SwimlaneBusinessLayout implements BusinessLayoutEngine {
   }
 
   /**
-   * Get node type for React Flow
+   * Get node type for React Flow (delegates to BusinessNodeTransformer)
    */
   private getNodeType(node: BusinessNode): string {
-    switch (node.type) {
-      case 'process':
-        return 'businessProcess';
-      case 'function':
-        return 'businessFunction';
-      case 'service':
-        return 'businessService';
-      case 'capability':
-        return 'businessCapability';
-      default:
-        return 'businessProcess';
-    }
+    return this.transformer.getNodeType(node);
   }
 
   /**
-   * Get node dimensions based on type
+   * Get node dimensions (delegates to BusinessNodeTransformer)
    */
   private getNodeDimensions(node: BusinessNode): { width: number; height: number } {
-    if (node.dimensions) {
-      return node.dimensions;
-    }
-
-    switch (node.type) {
-      case 'process':
-        return { width: 200, height: 80 };
-      case 'function':
-        return { width: 180, height: 100 };
-      case 'service':
-        return { width: 180, height: 90 };
-      case 'capability':
-        return { width: 160, height: 70 };
-      default:
-        return { width: 200, height: 100 };
-    }
+    return this.transformer.getNodeDimensions(node);
   }
 
   /**

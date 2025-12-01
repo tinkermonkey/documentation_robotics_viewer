@@ -7,7 +7,7 @@
 
 import { forceSimulation, forceLink, forceManyBody, forceCollide, forceCenter } from 'd3-force';
 import { Node, Edge, MarkerType } from '@xyflow/react';
-import { BusinessGraph, BusinessNode, BusinessEdge } from '../../types/businessLayer';
+import { BusinessGraph, BusinessNode } from '../../types/businessLayer';
 import { BusinessLayoutEngine, LayoutOptions, LayoutResult } from './types';
 import {
   BusinessProcessNodeData,
@@ -16,6 +16,13 @@ import {
   BusinessCapabilityNodeData,
 } from '../../types/reactflow';
 import { BusinessNodeTransformer } from '../../services/businessNodeTransformer';
+
+/**
+ * Constants for matrix cell dimensions
+ */
+const CELL_WIDTH = 500;
+const CELL_HEIGHT = 500;
+const CELL_PADDING = 50;
 
 /**
  * D3 Force Node (for internal force simulation)
@@ -60,7 +67,7 @@ export class MatrixBusinessLayout implements BusinessLayoutEngine {
   /**
    * Calculate matrix layout
    */
-  calculate(graph: BusinessGraph, options: LayoutOptions): LayoutResult {
+  calculate(graph: BusinessGraph, _options: LayoutOptions): LayoutResult {
     const startTime = performance.now();
 
     // Extract unique domains
@@ -134,10 +141,6 @@ export class MatrixBusinessLayout implements BusinessLayoutEngine {
     domainCells: Map<string, { row: number; col: number }>,
     gridSize: number
   ): Node[] {
-    const cellWidth = 500;
-    const cellHeight = 500;
-    const cellPadding = 50;
-
     const nodes: Node[] = [];
 
     // Group nodes by domain
@@ -155,15 +158,15 @@ export class MatrixBusinessLayout implements BusinessLayoutEngine {
       const cell = domainCells.get(domain);
       if (!cell) continue;
 
-      const baseX = cell.col * cellWidth;
-      const baseY = cell.row * cellHeight;
+      const baseX = cell.col * CELL_WIDTH;
+      const baseY = cell.row * CELL_HEIGHT;
 
       // For small groups, use simple grid layout
       if (domainNodes.length <= 4) {
         domainNodes.forEach((node, index) => {
           const dimensions = this.getNodeDimensions(node);
-          const x = baseX + cellPadding + (index % 2) * (cellWidth / 2 - cellPadding * 2);
-          const y = baseY + cellPadding + Math.floor(index / 2) * (cellHeight / 2 - cellPadding * 2);
+          const x = baseX + CELL_PADDING + (index % 2) * (CELL_WIDTH / 2 - CELL_PADDING * 2);
+          const y = baseY + CELL_PADDING + Math.floor(index / 2) * (CELL_HEIGHT / 2 - CELL_PADDING * 2);
 
           nodes.push({
             id: `node-${node.id}`,
@@ -179,10 +182,10 @@ export class MatrixBusinessLayout implements BusinessLayoutEngine {
         const cellNodes = this.layoutCellWithForce(
           domainNodes,
           graph,
-          baseX + cellWidth / 2,
-          baseY + cellHeight / 2,
-          cellWidth - cellPadding * 2,
-          cellHeight - cellPadding * 2
+          baseX + CELL_WIDTH / 2,
+          baseY + CELL_HEIGHT / 2,
+          CELL_WIDTH - CELL_PADDING * 2,
+          CELL_HEIGHT - CELL_PADDING * 2
         );
         nodes.push(...cellNodes);
       }
@@ -350,11 +353,8 @@ export class MatrixBusinessLayout implements BusinessLayoutEngine {
       return { width: 0, height: 0, minX: 0, maxX: 0, minY: 0, maxY: 0 };
     }
 
-    const cellWidth = 500;
-    const cellHeight = 500;
-
-    const width = gridSize * cellWidth;
-    const height = gridSize * cellHeight;
+    const width = gridSize * CELL_WIDTH;
+    const height = gridSize * CELL_HEIGHT;
 
     return {
       width,
@@ -367,43 +367,17 @@ export class MatrixBusinessLayout implements BusinessLayoutEngine {
   }
 
   /**
-   * Get node type for React Flow
+   * Get node type for React Flow (delegates to BusinessNodeTransformer)
    */
   private getNodeType(node: BusinessNode): string {
-    switch (node.type) {
-      case 'process':
-        return 'businessProcess';
-      case 'function':
-        return 'businessFunction';
-      case 'service':
-        return 'businessService';
-      case 'capability':
-        return 'businessCapability';
-      default:
-        return 'businessProcess';
-    }
+    return this.transformer.getNodeType(node);
   }
 
   /**
-   * Get node dimensions based on type
+   * Get node dimensions (delegates to BusinessNodeTransformer)
    */
   private getNodeDimensions(node: BusinessNode): { width: number; height: number } {
-    if (node.dimensions) {
-      return node.dimensions;
-    }
-
-    switch (node.type) {
-      case 'process':
-        return { width: 200, height: 80 };
-      case 'function':
-        return { width: 180, height: 100 };
-      case 'service':
-        return { width: 180, height: 90 };
-      case 'capability':
-        return { width: 160, height: 70 };
-      default:
-        return { width: 200, height: 100 };
-    }
+    return this.transformer.getNodeDimensions(node);
   }
 
   /**

@@ -7,7 +7,7 @@
 
 import { forceSimulation, forceLink, forceManyBody, forceCollide, forceCenter } from 'd3-force';
 import { Node, Edge, MarkerType } from '@xyflow/react';
-import { BusinessGraph, BusinessNode, BusinessEdge } from '../../types/businessLayer';
+import { BusinessGraph, BusinessNode } from '../../types/businessLayer';
 import { BusinessLayoutEngine, LayoutOptions, LayoutResult } from './types';
 import {
   BusinessProcessNodeData,
@@ -35,6 +35,7 @@ interface ForceNode {
 interface ForceLink {
   source: string | ForceNode;
   target: string | ForceNode;
+  edgeType?: string;
 }
 
 /**
@@ -58,7 +59,7 @@ export class ForceDirectedBusinessLayout implements BusinessLayoutEngine {
   /**
    * Calculate force-directed layout using d3-force
    */
-  calculate(graph: BusinessGraph, options: LayoutOptions): LayoutResult {
+  calculate(graph: BusinessGraph, _options: LayoutOptions): LayoutResult {
     const startTime = performance.now();
 
     // Convert to d3-force compatible format
@@ -70,6 +71,7 @@ export class ForceDirectedBusinessLayout implements BusinessLayoutEngine {
     const forceLinks: ForceLink[] = Array.from(graph.edges.values()).map((edge) => ({
       source: edge.source,
       target: edge.target,
+      edgeType: edge.type,
     }));
 
     // Create force simulation
@@ -275,43 +277,17 @@ export class ForceDirectedBusinessLayout implements BusinessLayoutEngine {
   }
 
   /**
-   * Get node type for React Flow
+   * Get node type for React Flow (delegates to BusinessNodeTransformer)
    */
   private getNodeType(node: BusinessNode): string {
-    switch (node.type) {
-      case 'process':
-        return 'businessProcess';
-      case 'function':
-        return 'businessFunction';
-      case 'service':
-        return 'businessService';
-      case 'capability':
-        return 'businessCapability';
-      default:
-        return 'businessProcess';
-    }
+    return this.transformer.getNodeType(node);
   }
 
   /**
-   * Get node dimensions based on type
+   * Get node dimensions (delegates to BusinessNodeTransformer)
    */
   private getNodeDimensions(node: BusinessNode): { width: number; height: number } {
-    if (node.dimensions) {
-      return node.dimensions;
-    }
-
-    switch (node.type) {
-      case 'process':
-        return { width: 200, height: 80 };
-      case 'function':
-        return { width: 180, height: 100 };
-      case 'service':
-        return { width: 180, height: 90 };
-      case 'capability':
-        return { width: 160, height: 70 };
-      default:
-        return { width: 200, height: 100 };
-    }
+    return this.transformer.getNodeDimensions(node);
   }
 
   /**
