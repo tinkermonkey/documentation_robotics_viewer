@@ -168,8 +168,8 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
   );
 
   const handleNodeDoubleClick = useCallback(
-    (event: React.MouseEvent, node: Node) => {
-      // Double-click to expand/collapse (Phase 6)
+    (_event: React.MouseEvent, node: Node) => {
+      // Double-click to expand/collapse (future implementation)
       // For now, just select
       setSelectedNodes(new Set([node.id]));
       setSelectedNodeId(node.id);

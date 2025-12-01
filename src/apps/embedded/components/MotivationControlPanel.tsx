@@ -4,7 +4,7 @@
  * Provides layout and view controls for motivation layer visualization:
  * - Layout algorithm switcher (Force-Directed | Hierarchical | Stakeholder Radial | Manual)
  * - "Fit to View" button
- * - Focus mode toggle (for Phase 4)
+ * - Focus mode toggle
  * - Export and visualization controls
  */
 
@@ -23,13 +23,13 @@ export interface MotivationControlPanelProps {
   /** Callback when "Fit to View" is clicked */
   onFitToView: () => void;
 
-  /** Focus mode enabled (for Phase 4) */
+  /** Focus mode enabled */
   focusModeEnabled?: boolean;
 
-  /** Callback when focus mode toggles (for Phase 4) */
+  /** Callback when focus mode toggles */
   onFocusModeToggle?: (enabled: boolean) => void;
 
-  /** Callback when "Clear Highlighting" is clicked (for Phase 4) */
+  /** Callback when "Clear Highlighting" is clicked */
   onClearHighlighting?: () => void;
 
   /** Whether path highlighting is active */
@@ -38,16 +38,16 @@ export interface MotivationControlPanelProps {
   /** Whether layout is currently computing */
   isLayouting?: boolean;
 
-  /** Whether changeset visualization is enabled (Phase 5) */
+  /** Whether changeset visualization is enabled */
   changesetVisualizationEnabled?: boolean;
 
-  /** Callback when changeset visualization toggles (Phase 5) */
+  /** Callback when changeset visualization toggles */
   onChangesetVisualizationToggle?: (enabled: boolean) => void;
 
   /** Whether changesets are available */
   hasChangesets?: boolean;
 
-  /** Export callbacks (Phase 6) */
+  /** Export callbacks */
   onExportPNG?: () => void;
   onExportSVG?: () => void;
   onExportGraphData?: () => void;
@@ -165,7 +165,7 @@ export const MotivationControlPanel: React.FC<MotivationControlPanelProps> = ({
         </button>
       </div>
 
-      {/* Focus Mode Toggle (Phase 4) */}
+      {/* Focus Mode Toggle */}
       {onFocusModeToggle && (
         <div className="control-panel-section">
           <label className="control-checkbox-label">
@@ -183,7 +183,7 @@ export const MotivationControlPanel: React.FC<MotivationControlPanelProps> = ({
         </div>
       )}
 
-      {/* Clear Highlighting Button (Phase 4) */}
+      {/* Clear Highlighting Button */}
       {onClearHighlighting && isHighlightingActive && (
         <div className="control-panel-section">
           <button
@@ -212,7 +212,7 @@ export const MotivationControlPanel: React.FC<MotivationControlPanelProps> = ({
         </div>
       )}
 
-      {/* Changeset Visualization Toggle (Phase 5) */}
+      {/* Changeset Visualization Toggle */}
       {onChangesetVisualizationToggle && hasChangesets && (
         <div className="control-panel-section">
           <label className="control-checkbox-label">
@@ -232,7 +232,7 @@ export const MotivationControlPanel: React.FC<MotivationControlPanelProps> = ({
         </div>
       )}
 
-      {/* Export Controls (Phase 6) */}
+      {/* Export Controls */}
       {(onExportPNG || onExportSVG || onExportGraphData || onExportTraceabilityReport) && (
         <div className="control-panel-section export-section">
           <label className="control-label">Export</label>
