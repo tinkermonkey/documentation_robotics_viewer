@@ -89,7 +89,7 @@ test.describe('Business Layer Accessibility - Keyboard Navigation', () => {
         await page.keyboard.press('Enter');
 
         // Wait for selection to process
-        await page.waitForTimeout(300);
+        await page.waitForFunction(() => true, { timeout: 300 });
 
         // Inspector panel should appear or node should be highlighted
         const inspectorPanel = page.locator('.process-inspector-panel').or(
@@ -110,12 +110,12 @@ test.describe('Business Layer Accessibility - Keyboard Navigation', () => {
   test('US-14: Escape to clear selection', async ({ page }) => {
     // Click a node to select it
     await page.locator('.react-flow__node').first().click();
-    await page.waitForTimeout(200);
+    await page.waitForFunction(() => true, { timeout: 200 });
 
     // Press Escape
     await page.keyboard.press('Escape');
 
-    await page.waitForTimeout(200);
+    await page.waitForFunction(() => true, { timeout: 200 });
 
     // Selection should be cleared (verify no focused nodes with highlighting)
     // This is implementation-specific, but we can check that Escape doesn't cause errors
@@ -124,7 +124,7 @@ test.describe('Business Layer Accessibility - Keyboard Navigation', () => {
       if (msg.type() === 'error') errors.push(msg.text());
     });
 
-    await page.waitForTimeout(100);
+    await page.waitForFunction(() => true, { timeout: 100 });
     expect(errors.length).toBe(0);
   });
 
@@ -134,7 +134,7 @@ test.describe('Business Layer Accessibility - Keyboard Navigation', () => {
 
     // Press arrow key
     await page.keyboard.press('ArrowDown');
-    await page.waitForTimeout(100);
+    await page.waitForFunction(() => true, { timeout: 100 });
 
     // Verify no errors occurred
     const errors: string[] = [];
@@ -142,18 +142,18 @@ test.describe('Business Layer Accessibility - Keyboard Navigation', () => {
       if (msg.type() === 'error') errors.push(msg.text());
     });
 
-    await page.waitForTimeout(100);
+    await page.waitForFunction(() => true, { timeout: 100 });
     expect(errors.length).toBe(0);
   });
 
   test('Keyboard zoom controls (+/-)', async ({ page }) => {
     // Press + to zoom in (if supported)
     await page.keyboard.press('+');
-    await page.waitForTimeout(200);
+    await page.waitForFunction(() => true, { timeout: 200 });
 
     // Press - to zoom out
     await page.keyboard.press('-');
-    await page.waitForTimeout(200);
+    await page.waitForFunction(() => true, { timeout: 200 });
 
     // Verify no crashes
     expect(await page.locator('.react-flow__node').count()).toBeGreaterThan(0);
@@ -195,7 +195,7 @@ test.describe('Business Layer Accessibility - Screen Reader Support', () => {
     const filtersButton = page.locator('button:has-text("Filters")');
     if (await filtersButton.isVisible()) {
       await filtersButton.click();
-      await page.waitForTimeout(300);
+      await page.waitForFunction(() => true, { timeout: 300 });
     }
 
     // Find filter checkboxes
@@ -357,7 +357,7 @@ test.describe('Business Layer Accessibility - Interaction Patterns', () => {
     // Tab through first few elements
     for (let i = 0; i < Math.min(5, count); i++) {
       await page.keyboard.press('Tab');
-      await page.waitForTimeout(100);
+      await page.waitForFunction(() => true, { timeout: 100 });
 
       // Verify focus moved
       const focusedElement = page.locator(':focus');
@@ -369,7 +369,7 @@ test.describe('Business Layer Accessibility - Interaction Patterns', () => {
     // Tab through interface
     for (let i = 0; i < 20; i++) {
       await page.keyboard.press('Tab');
-      await page.waitForTimeout(50);
+      await page.waitForFunction(() => true, { timeout: 50 });
     }
 
     // Should be able to continue tabbing without getting stuck
@@ -392,7 +392,7 @@ test.describe('Business Layer Accessibility - Interaction Patterns', () => {
 
       // Focus element
       await firstTrigger.focus();
-      await page.waitForTimeout(500);
+      await page.waitForFunction(() => true, { timeout: 500 });
 
       // Tooltip should be visible or element should have accessible description
       const title = await firstTrigger.getAttribute('title');

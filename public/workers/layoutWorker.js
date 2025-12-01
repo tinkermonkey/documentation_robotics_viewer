@@ -5,8 +5,8 @@
  * Used for graphs with >100 nodes.
  */
 
-// Import dagre from CDN
-importScripts('https://unpkg.com/dagre@0.8.5/dist/dagre.min.js');
+// Import dagre from local bundle for offline support and security
+importScripts('/assets/dagre-0.8.5.min.js');
 
 self.onmessage = function(e) {
   const { graph, options } = e.data;

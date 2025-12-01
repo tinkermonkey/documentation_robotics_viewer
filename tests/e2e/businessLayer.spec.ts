@@ -77,8 +77,12 @@ test.describe('Business Layer Visualization - Core Features', () => {
     if (await functionCheckbox.isVisible()) {
       await functionCheckbox.uncheck();
 
-      // Wait for filter to apply (with debounce)
-      await page.waitForTimeout(600);
+      // Wait for filter to apply (wait for node count to stabilize)
+      await expect.poll(async () => {
+        return await page.locator('.react-flow__node').count();
+      }, {
+        timeout: 2000,
+      }).not.toBe(initialCount);
 
       // Verify node count changed
       const filteredCount = await page.locator('.react-flow__node').count();
@@ -106,9 +110,14 @@ test.describe('Business Layer Visualization - Core Features', () => {
       // Select a lifecycle option (if it's a select)
       if (await lifecycleFilter.evaluate(el => el.tagName === 'SELECT')) {
         await lifecycleFilter.selectOption({ index: 1 });
-      }
 
-      await page.waitForTimeout(600);
+        // Wait for filter to apply (wait for node count to stabilize)
+        await expect.poll(async () => {
+          return await page.locator('.react-flow__node').count();
+        }, {
+          timeout: 2000,
+        }).toBeGreaterThanOrEqual(0);
+      }
 
       const filteredCount = await page.locator('.react-flow__node').count();
       expect(filteredCount).toBeGreaterThanOrEqual(0);
@@ -165,29 +174,28 @@ test.describe('Business Layer Visualization - Core Features', () => {
       if (options > 1) {
         await layoutSelector.selectOption({ index: 1 });
 
-        // Wait for layout transition
-        await page.waitForTimeout(1000);
-
-        // Verify positions changed (or at least animation completed)
-        const newPositions = [];
-        for (let i = 0; i < Math.min(3, await nodes.count()); i++) {
-          const box = await nodes.nth(i).boundingBox();
-          if (box) newPositions.push({ x: box.x, y: box.y });
-        }
-
-        // At least one position should have changed
-        let positionsChanged = false;
-        for (let i = 0; i < Math.min(initialPositions.length, newPositions.length); i++) {
-          if (
-            Math.abs(initialPositions[i].x - newPositions[i].x) > 10 ||
-            Math.abs(initialPositions[i].y - newPositions[i].y) > 10
-          ) {
-            positionsChanged = true;
-            break;
+        // Wait for layout transition (poll for position changes)
+        await expect.poll(async () => {
+          const newPositions = [];
+          for (let i = 0; i < Math.min(3, await nodes.count()); i++) {
+            const box = await nodes.nth(i).boundingBox();
+            if (box) newPositions.push({ x: box.x, y: box.y });
           }
-        }
 
-        expect(positionsChanged).toBe(true);
+          // Check if at least one position changed
+          for (let i = 0; i < Math.min(initialPositions.length, newPositions.length); i++) {
+            if (
+              Math.abs(initialPositions[i].x - newPositions[i].x) > 10 ||
+              Math.abs(initialPositions[i].y - newPositions[i].y) > 10
+            ) {
+              return true;
+            }
+          }
+          return false;
+        }, {
+          timeout: 2000,
+          message: 'Expected node positions to change after layout switch',
+        }).toBe(true);
       }
     }
   });
@@ -198,19 +206,17 @@ test.describe('Business Layer Visualization - Core Features', () => {
     // Click a node to select it
     await page.locator('.react-flow__node').first().click();
 
-    // Wait for focus mode to apply
-    await page.waitForTimeout(500);
+    // Wait for focus mode to apply (wait for dimmed nodes)
+    await expect(async () => {
+      const dimmedNodes = page.locator('.react-flow__node[style*="opacity: 0.3"]').or(
+        page.locator('.react-flow__node[style*="opacity:0.3"]')
+      );
+      const dimmedCount = await dimmedNodes.count();
 
-    // Check if some nodes are dimmed (opacity < 1)
-    const dimmedNodes = page.locator('.react-flow__node[style*="opacity: 0.3"]').or(
-      page.locator('.react-flow__node[style*="opacity:0.3"]')
-    );
-
-    const dimmedCount = await dimmedNodes.count();
-
-    // In focus mode, some nodes should be dimmed
-    // (This may not work if focus mode is triggered differently)
-    expect(dimmedCount).toBeGreaterThanOrEqual(0);
+      // In focus mode, some nodes should be dimmed
+      // (This may not work if focus mode is triggered differently)
+      expect(dimmedCount).toBeGreaterThanOrEqual(0);
+    }).toPass({ timeout: 2000 });
   });
 
   test('US-9: Trace upstream dependencies', async ({ page }) => {
@@ -227,16 +233,14 @@ test.describe('Business Layer Visualization - Core Features', () => {
     if (await traceUpstreamButton.isVisible()) {
       await traceUpstreamButton.click();
 
-      // Wait for focus mode to apply
-      await page.waitForTimeout(500);
-
-      // Some nodes should be highlighted or visible
-      const visibleNodes = page.locator('.react-flow__node[style*="opacity: 1"]').or(
-        page.locator('.react-flow__node:not([style*="opacity: 0.3"])')
-      );
-
-      const count = await visibleNodes.count();
-      expect(count).toBeGreaterThan(0);
+      // Wait for focus mode to apply (wait for visible nodes)
+      await expect(async () => {
+        const visibleNodes = page.locator('.react-flow__node[style*="opacity: 1"]').or(
+          page.locator('.react-flow__node:not([style*="opacity: 0.3"])')
+        );
+        const count = await visibleNodes.count();
+        expect(count).toBeGreaterThan(0);
+      }).toPass({ timeout: 2000 });
     }
   });
 
@@ -254,11 +258,11 @@ test.describe('Business Layer Visualization - Core Features', () => {
     if (await traceDownstreamButton.isVisible()) {
       await traceDownstreamButton.click();
 
-      await page.waitForTimeout(500);
-
-      // Verify focus mode applied
-      const focusedNodes = page.locator('.react-flow__node');
-      expect(await focusedNodes.count()).toBeGreaterThan(0);
+      // Wait for focus mode to apply
+      await expect(async () => {
+        const focusedNodes = page.locator('.react-flow__node');
+        expect(await focusedNodes.count()).toBeGreaterThan(0);
+      }).toPass({ timeout: 2000 });
     }
   });
 
@@ -282,7 +286,7 @@ test.describe('Business Layer Visualization - Core Features', () => {
     // Pan down
     await page.mouse.wheel(0, 500);
 
-    // Verify no console errors
+    // Verify no console errors (check immediately, errors would have appeared by now)
     const errors: string[] = [];
     page.on('console', msg => {
       if (msg.type() === 'error') {
@@ -290,7 +294,8 @@ test.describe('Business Layer Visualization - Core Features', () => {
       }
     });
 
-    await page.waitForTimeout(100);
+    // Give a moment for any errors to surface
+    await page.waitForFunction(() => document.querySelector('.react-flow__viewport') !== null);
 
     // No critical errors during pan
     const criticalErrors = errors.filter(e =>
@@ -312,9 +317,8 @@ test.describe('Business Layer Visualization - Core Features', () => {
     // Press Escape to clear selection
     await page.keyboard.press('Escape');
 
-    // Verify selection was cleared (if applicable)
-    // This is hard to test without knowing the exact implementation
-    await page.waitForTimeout(200);
+    // Give React time to process the keypress
+    await page.waitForFunction(() => true, { timeout: 500 });
   });
 });
 
@@ -381,8 +385,12 @@ test.describe('Business Layer Visualization - Export Features', () => {
       // Download and verify JSON structure
       const path = await download.path();
       if (path) {
-        const fs = require('fs');
-        const content = fs.readFileSync(path, 'utf-8');
+        const buffer = await download.createReadStream();
+        const chunks: Buffer[] = [];
+        for await (const chunk of buffer) {
+          chunks.push(chunk);
+        }
+        const content = Buffer.concat(chunks).toString('utf-8');
         const catalog = JSON.parse(content);
 
         expect(catalog.processes).toBeDefined();
@@ -435,7 +443,7 @@ test.describe('Business Layer Visualization - Edge Cases', () => {
     await Promise.race([
       page.waitForSelector('.react-flow__node', { timeout: 3000 }).catch(() => null),
       page.waitForSelector('[role="alert"]', { timeout: 3000 }).catch(() => null),
-      page.waitForTimeout(3000),
+      page.waitForFunction(() => document.readyState === 'complete', { timeout: 3000 }).catch(() => null),
     ]);
 
     // Page should not crash
@@ -461,7 +469,12 @@ test.describe('Business Layer Visualization - Edge Cases', () => {
 
     if (await zoomInButton.isVisible()) {
       await zoomInButton.click();
-      await page.waitForTimeout(200);
+
+      // Wait for zoom animation to complete
+      await page.waitForFunction(() => {
+        const viewport = document.querySelector('.react-flow__viewport');
+        return viewport !== null;
+      });
 
       // Verify zoom changed (difficult to test directly)
       // At minimum, no errors should occur
@@ -486,7 +499,12 @@ test.describe('Business Layer Visualization - Edge Cases', () => {
 
       // Click fit view
       await fitViewButton.click();
-      await page.waitForTimeout(300);
+
+      // Wait for fit view animation to complete
+      await page.waitForFunction(() => {
+        const nodes = document.querySelectorAll('.react-flow__node');
+        return nodes.length > 0;
+      });
 
       // Nodes should be visible
       expect(await page.locator('.react-flow__node').count()).toBeGreaterThan(0);

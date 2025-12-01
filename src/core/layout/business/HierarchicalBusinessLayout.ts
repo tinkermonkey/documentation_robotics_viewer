@@ -111,10 +111,10 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
         resolve(result);
       };
 
-      worker.onerror = (error) => {
+      worker.onerror = (error: ErrorEvent) => {
         clearTimeout(timeout);
         worker.terminate();
-        reject(error);
+        reject(new Error(error.message || 'Web Worker error'));
       };
 
       // Send data to worker
@@ -198,7 +198,6 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
     businessGraph: BusinessGraph
   ): LayoutResult {
     const nodes: Node[] = [];
-    const edges: Edge[] = [];
 
     let minX = Infinity;
     let maxX = -Infinity;
@@ -237,7 +236,33 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
       nodes.push(node);
     }
 
-    // Convert edges
+    // Convert edges using shared method
+    const edges = this.convertEdges(businessGraph);
+
+    return {
+      nodes,
+      edges,
+      metadata: {
+        calculationTime: 0, // Will be set by caller
+        bounds: {
+          width: maxX - minX,
+          height: maxY - minY,
+          minX,
+          maxX,
+          minY,
+          maxY,
+        },
+      },
+    };
+  }
+
+  /**
+   * Convert business graph edges to React Flow edges
+   * Shared method to avoid duplication between convertToReactFlow and createReactFlowResult
+   */
+  private convertEdges(businessGraph: BusinessGraph): Edge[] {
+    const edges: Edge[] = [];
+
     for (const [edgeId, businessEdge] of businessGraph.edges.entries()) {
       const edge: Edge = {
         id: `edge-${edgeId}`,
@@ -265,21 +290,7 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
       edges.push(edge);
     }
 
-    return {
-      nodes,
-      edges,
-      metadata: {
-        calculationTime: 0, // Will be set by caller
-        bounds: {
-          width: maxX - minX,
-          height: maxY - minY,
-          minX,
-          maxX,
-          minY,
-          maxY,
-        },
-      },
-    };
+    return edges;
   }
 
   /**
@@ -359,7 +370,6 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
     bounds: { width: number; height: number; minX: number; maxX: number; minY: number; maxY: number }
   ): LayoutResult {
     const nodes: Node[] = [];
-    const edges: Edge[] = [];
 
     // Convert nodes with positions from worker
     for (const [nodeId, businessNode] of businessGraph.nodes.entries()) {
@@ -384,33 +394,8 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
       nodes.push(node);
     }
 
-    // Convert edges
-    for (const [edgeId, businessEdge] of businessGraph.edges.entries()) {
-      const edge: Edge = {
-        id: `edge-${edgeId}`,
-        source: `node-${businessEdge.source}`,
-        target: `node-${businessEdge.target}`,
-        type: 'elbow',
-        label: businessEdge.label || businessEdge.type,
-        labelStyle: { fill: '#555', fontWeight: 500, fontSize: 12 },
-        labelBgStyle: { fill: '#fff', fillOpacity: 0.8, rx: 4, ry: 4 },
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-          width: 20,
-          height: 20,
-          color: '#6b7280',
-        },
-        data: {
-          edgeType: businessEdge.type,
-          pathOptions: {
-            offset: 10,
-            borderRadius: 8,
-          },
-        },
-      };
-
-      edges.push(edge);
-    }
+    // Convert edges using shared method
+    const edges = this.convertEdges(businessGraph);
 
     return {
       nodes,
