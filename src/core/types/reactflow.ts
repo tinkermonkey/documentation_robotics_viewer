@@ -77,6 +77,15 @@ export interface APIEndpointNodeData extends BaseNodeData {
 }
 
 /**
+ * Subprocess information for expanded nodes
+ */
+export interface Subprocess {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+/**
  * Business Process node data
  */
 export interface BusinessProcessNodeData extends BaseNodeData {
@@ -87,6 +96,7 @@ export interface BusinessProcessNodeData extends BaseNodeData {
   subprocessCount?: number;
   stepCount?: number;
   hierarchyLevel?: number;
+  subprocesses?: Subprocess[];
 }
 
 /**
@@ -272,10 +282,20 @@ export interface MotivationEdgeData {
 }
 
 /**
+ * Cross-layer edge data
+ */
+export interface CrossLayerEdgeData {
+  targetLayer: 'motivation' | 'application' | 'data_model' | 'security' | 'api' | 'ux';
+  relationshipType: string;
+  label?: string;
+}
+
+/**
  * Union type for all custom edge types
  */
 export type AppEdge =
   | Edge<ElbowEdgeData, 'elbow'>
+  | Edge<CrossLayerEdgeData, 'crossLayer'>
   | Edge<MotivationEdgeData, 'influence'>
   | Edge<MotivationEdgeData, 'constrains'>
   | Edge<MotivationEdgeData, 'realizes'>

@@ -22,6 +22,7 @@ import { BusinessGraph, BusinessNode } from '../../types/businessLayer';
 import { BusinessLayerParser } from '../../services/businessLayerParser';
 import { BusinessGraphBuilder } from '../../services/businessGraphBuilder';
 import { BusinessNodeTransformer } from '../../services/businessNodeTransformer';
+import { CrossLayerReferenceResolver } from '../../services/crossLayerReferenceResolver';
 import { HierarchicalBusinessLayout } from '../../layout/business/HierarchicalBusinessLayout';
 import { DEFAULT_LAYOUT_OPTIONS } from '../../layout/business/types';
 import { nodeTypes } from '../../nodes';
@@ -93,12 +94,16 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
 
       // Step 2: Build graph with hierarchy and metrics
       const graphBuilder = new BusinessGraphBuilder();
-      const graph = graphBuilder.buildGraph(
+      let graph = graphBuilder.buildGraph(
         businessLayerData.elements,
         businessLayerData.relationships
       );
 
-      // Step 3: Pre-calculate dimensions
+      // Step 3: Resolve cross-layer references
+      const crossLayerResolver = new CrossLayerReferenceResolver();
+      graph = crossLayerResolver.resolveAllLinks(graph, model);
+
+      // Step 4: Pre-calculate dimensions
       const transformer = new BusinessNodeTransformer();
       transformer.precalculateDimensions(graph.nodes);
 
@@ -117,7 +122,7 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
     if (!businessGraph) return;
 
     try {
-      // Step 4: Calculate hierarchical layout
+      // Step 5: Calculate hierarchical layout
       const layoutEngine = new HierarchicalBusinessLayout();
       const layoutResult = layoutEngine.calculate(businessGraph, {
         ...DEFAULT_LAYOUT_OPTIONS,
@@ -127,7 +132,24 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
       });
 
       setNodes(layoutResult.nodes);
-      setEdges(layoutResult.edges);
+
+      // Step 6: Add cross-layer edges to the layout edges
+      const crossLayerEdges: Edge[] = businessGraph.crossLayerLinks.map((link) => ({
+        id: `cross-${link.source}-${link.target}`,
+        source: link.source,
+        target: link.target,
+        type: 'crossLayer',
+        data: {
+          targetLayer: link.targetLayer,
+          relationshipType: link.type,
+          label: link.type,
+        },
+        style: {
+          strokeDasharray: '5,5',
+        },
+      }));
+
+      setEdges([...layoutResult.edges, ...crossLayerEdges]);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       console.error('[BusinessLayerView] Error calculating layout:', err);
@@ -190,6 +212,30 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
     // Isolate shows only selected node and immediate neighbors
     setFocusMode('radial');
   }, [setFocusMode]);
+
+  // Cross-layer navigation handler
+  const handleNavigateToCrossLayer = useCallback(
+    (layer: string, elementId: string) => {
+      // Navigate to target layer and highlight element
+      // This could be implemented as URL navigation or event emission
+      // For now, log the navigation request
+      console.log(`[BusinessLayerView] Navigate to ${layer} layer, element: ${elementId}`);
+
+      // Option 1: Navigate via URL (if routing is available)
+      // window.location.href = `/embedded?view=${layer}&highlight=${elementId}`;
+
+      // Option 2: Emit event for parent component to handle
+      window.dispatchEvent(
+        new CustomEvent('navigate-to-layer', {
+          detail: { layer, elementId },
+        })
+      );
+
+      // Option 3: Show alert for now (placeholder)
+      alert(`Navigate to ${layer} layer and highlight element ${elementId}`);
+    },
+    []
+  );
 
   // Apply focus styling to nodes
   const styledNodes = useMemo(() => {
@@ -382,6 +428,7 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
           onTraceUpstream={handleTraceUpstream}
           onTraceDownstream={handleTraceDownstream}
           onIsolate={handleIsolate}
+          onNavigateToCrossLayer={handleNavigateToCrossLayer}
         />
       </div>
     </div>

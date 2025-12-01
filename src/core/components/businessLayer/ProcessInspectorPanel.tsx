@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import type { BusinessNode, BusinessGraph } from '../../types/businessLayer';
+import type { BusinessNode, BusinessGraph, CrossLayerLink } from '../../types/businessLayer';
 import './ProcessInspectorPanel.css';
 
 export interface ProcessInspectorPanelProps {
@@ -8,6 +8,7 @@ export interface ProcessInspectorPanelProps {
   onTraceUpstream: () => void;
   onTraceDownstream: () => void;
   onIsolate: () => void;
+  onNavigateToCrossLayer?: (layer: string, elementId: string) => void;
 }
 
 export const ProcessInspectorPanel: React.FC<ProcessInspectorPanelProps> = ({
@@ -16,6 +17,7 @@ export const ProcessInspectorPanel: React.FC<ProcessInspectorPanelProps> = ({
   onTraceUpstream,
   onTraceDownstream,
   onIsolate,
+  onNavigateToCrossLayer,
 }) => {
   const upstreamCount = useMemo(() => {
     if (!selectedNode || !businessGraph) return 0;
@@ -30,6 +32,51 @@ export const ProcessInspectorPanel: React.FC<ProcessInspectorPanelProps> = ({
       (e) => e.source === selectedNode.id
     ).length;
   }, [selectedNode, businessGraph]);
+
+  // Get cross-layer links for selected node
+  const crossLayerLinks = useMemo<CrossLayerLink[]>(() => {
+    if (!selectedNode || !businessGraph) return [];
+    return businessGraph.crossLayerLinks.filter(
+      (link) => link.source === selectedNode.id
+    );
+  }, [selectedNode, businessGraph]);
+
+  // Group cross-layer links by target layer
+  const linksByLayer = useMemo(() => {
+    const grouped = new Map<string, CrossLayerLink[]>();
+    for (const link of crossLayerLinks) {
+      const existing = grouped.get(link.targetLayer) || [];
+      existing.push(link);
+      grouped.set(link.targetLayer, existing);
+    }
+    return grouped;
+  }, [crossLayerLinks]);
+
+  // Get layer display name
+  const getLayerDisplayName = (layerId: string): string => {
+    const nameMap: Record<string, string> = {
+      motivation: 'Motivation',
+      application: 'Application',
+      data_model: 'Data Model',
+      security: 'Security',
+      api: 'API',
+      ux: 'UX',
+    };
+    return nameMap[layerId] || layerId;
+  };
+
+  // Get layer color
+  const getLayerColor = (layerId: string): string => {
+    const colorMap: Record<string, string> = {
+      motivation: '#9b59b6',
+      application: '#3498db',
+      data_model: '#2ecc71',
+      security: '#e74c3c',
+      api: '#f39c12',
+      ux: '#1abc9c',
+    };
+    return colorMap[layerId] || '#95a5a6';
+  };
 
   if (!selectedNode) {
     return (
@@ -110,6 +157,58 @@ export const ProcessInspectorPanel: React.FC<ProcessInspectorPanelProps> = ({
           <div className="subprocess-info">
             <span className="count-badge">{selectedNode.metadata.subprocessCount}</span>
             <span className="count-label">steps</span>
+          </div>
+        </div>
+      )}
+
+      {/* Cross-layer references section */}
+      {crossLayerLinks.length > 0 && (
+        <div className="cross-layer-section">
+          <h4>Cross-Layer References</h4>
+          <div className="cross-layer-links">
+            {Array.from(linksByLayer.entries()).map(([layerId, links]) => (
+              <div key={layerId} className="layer-group">
+                <div
+                  className="layer-header"
+                  style={{
+                    borderLeft: `3px solid ${getLayerColor(layerId)}`,
+                    paddingLeft: '8px',
+                    marginBottom: '8px',
+                  }}
+                >
+                  <strong>{getLayerDisplayName(layerId)}</strong>
+                  <span className="count-badge" style={{ marginLeft: '8px' }}>
+                    {links.length}
+                  </span>
+                </div>
+                <div className="layer-links">
+                  {links.map((link) => (
+                    <div key={link.target} className="cross-layer-link-item">
+                      <span className="link-type">{link.type}</span>
+                      {onNavigateToCrossLayer && (
+                        <button
+                          onClick={() => onNavigateToCrossLayer(link.targetLayer, link.target)}
+                          className="navigate-button"
+                          aria-label={`Navigate to ${link.target} in ${getLayerDisplayName(link.targetLayer)}`}
+                          style={{
+                            background: getLayerColor(layerId),
+                            color: '#fff',
+                            border: 'none',
+                            padding: '4px 8px',
+                            borderRadius: '4px',
+                            fontSize: '11px',
+                            cursor: 'pointer',
+                            marginLeft: '8px',
+                          }}
+                        >
+                          View in {getLayerDisplayName(layerId)}
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}

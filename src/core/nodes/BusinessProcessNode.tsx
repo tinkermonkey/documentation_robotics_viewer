@@ -1,25 +1,41 @@
 import { memo } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
 import { BusinessProcessNodeData } from '../types/reactflow';
+import { useBusinessLayerStore } from '../../stores/businessLayerStore';
 
 /**
  * Node dimensions for layout calculation
  */
 export const BUSINESS_PROCESS_NODE_WIDTH = 200;
 export const BUSINESS_PROCESS_NODE_HEIGHT = 80;
+export const BUSINESS_PROCESS_NODE_EXPANDED_MIN_HEIGHT = 200;
 
 /**
  * Business Process Node Component for React Flow
  * Displays business processes with metadata (owner, criticality, lifecycle, subprocess count)
+ * Supports expand/collapse for processes with subprocesses
  */
-export const BusinessProcessNode = memo(({ data }: NodeProps<BusinessProcessNodeData>) => {
+export const BusinessProcessNode = memo(({ data, id }: NodeProps<BusinessProcessNodeData>) => {
+  const { expandedNodes, toggleNodeExpanded } = useBusinessLayerStore();
+  const isExpanded = expandedNodes.has(id);
+  const hasSubprocesses = data.subprocessCount && data.subprocessCount > 0;
+
+  // Calculate dynamic height when expanded
+  const dynamicHeight = isExpanded && hasSubprocesses
+    ? Math.max(
+        BUSINESS_PROCESS_NODE_EXPANDED_MIN_HEIGHT,
+        BUSINESS_PROCESS_NODE_HEIGHT + (data.subprocesses?.length || 0) * 24 + 40
+      )
+    : BUSINESS_PROCESS_NODE_HEIGHT;
+
   return (
     <div
       role="article"
       aria-label={`Business Process: ${data.label}${data.owner ? `, owner: ${data.owner}` : ''}${data.criticality ? `, criticality: ${data.criticality}` : ''}`}
+      aria-expanded={isExpanded}
       style={{
         width: BUSINESS_PROCESS_NODE_WIDTH,
-        height: BUSINESS_PROCESS_NODE_HEIGHT,
+        minHeight: dynamicHeight,
         display: 'flex',
         flexDirection: 'column',
         fontFamily: 'system-ui, sans-serif',
@@ -27,6 +43,7 @@ export const BusinessProcessNode = memo(({ data }: NodeProps<BusinessProcessNode
         backgroundColor: data.fill || '#fff3e0',
         borderRadius: 8,
         padding: 12,
+        transition: 'min-height 200ms ease',
       }}
     >
       {/* Handles */}
@@ -59,7 +76,7 @@ export const BusinessProcessNode = memo(({ data }: NodeProps<BusinessProcessNode
         style={{ background: '#555' }}
       />
 
-      {/* Header with icon and title */}
+      {/* Header with icon, title, and expand/collapse button */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
         <div style={{ fontSize: 16 }}>⚙️</div>
         <div
@@ -76,6 +93,34 @@ export const BusinessProcessNode = memo(({ data }: NodeProps<BusinessProcessNode
         >
           {data.label}
         </div>
+        {hasSubprocesses && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleNodeExpanded(id);
+            }}
+            aria-label={isExpanded ? 'Collapse subprocesses' : 'Expand subprocesses'}
+            aria-expanded={isExpanded}
+            style={{
+              background: 'transparent',
+              border: '1px solid #9ca3af',
+              borderRadius: 4,
+              width: 20,
+              height: 20,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              fontSize: 12,
+              color: '#6b7280',
+              padding: 0,
+              lineHeight: 1,
+            }}
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            {isExpanded ? '−' : '+'}
+          </button>
+        )}
       </div>
 
       {/* Metadata badges */}
@@ -119,7 +164,8 @@ export const BusinessProcessNode = memo(({ data }: NodeProps<BusinessProcessNode
             {data.criticality}
           </div>
         )}
-        {data.subprocessCount !== undefined && data.subprocessCount > 0 && (
+        {/* Show subprocess count badge when collapsed */}
+        {!isExpanded && hasSubprocesses && (
           <div
             style={{
               fontSize: 10,
@@ -134,6 +180,50 @@ export const BusinessProcessNode = memo(({ data }: NodeProps<BusinessProcessNode
           </div>
         )}
       </div>
+
+      {/* Subprocess list when expanded */}
+      {isExpanded && hasSubprocesses && data.subprocesses && (
+        <div
+          style={{
+            marginTop: 12,
+            paddingTop: 12,
+            borderTop: '1px solid #d1d5db',
+            fontSize: 11,
+            color: '#374151',
+            maxHeight: '300px',
+            overflowY: 'auto',
+          }}
+        >
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 600,
+              color: '#6b7280',
+              marginBottom: 6,
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+            }}
+          >
+            Subprocesses ({data.subprocesses.length})
+          </div>
+          {data.subprocesses.map((sp) => (
+            <div
+              key={sp.id}
+              style={{
+                padding: '4px 8px',
+                marginBottom: 2,
+                background: '#f9fafb',
+                borderRadius: 4,
+                borderLeft: '2px solid #e65100',
+                fontSize: 11,
+              }}
+              title={sp.description || sp.name}
+            >
+              {sp.name}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 });
