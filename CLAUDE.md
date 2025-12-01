@@ -990,44 +990,42 @@ function filterNodes(
 
 ### Testing
 
-**E2E Tests** (`tests/e2e/businessLayer.spec.ts`):
-- 15+ tests covering all user stories
-- Layout switching, filtering, focus modes
-- Export functionality verification
-- Cross-layer integration tests
+**Note:** The Business Layer is currently tested via unit and integration tests. E2E browser tests are not yet implemented because the Business Layer is not integrated into the embedded app routes.
 
-**Accessibility Tests** (`tests/e2e/businessAccessibility.spec.ts`):
-- Axe-core WCAG 2.1 AA compliance
-- Keyboard navigation (Tab, Enter, Escape, Arrows)
-- ARIA label verification
-- Screen reader compatibility
-- Focus indicator visibility
-- Color contrast checks
+**Unit Tests** (using Vitest):
+- `tests/unit/businessLayerParser.spec.ts` - Parser validation and edge cases
+- `tests/unit/businessGraphBuilder.spec.ts` - Graph building logic
+- `tests/unit/crossLayerReferenceResolver.spec.ts` - Cross-layer link resolution
+- `tests/unit/nodes/businessNodes.spec.ts` - Node component rendering
+- `tests/unit/hooks/useBusinessFilters.spec.ts` - Filter logic
+- `tests/unit/hooks/useBusinessFocus.spec.ts` - Focus mode logic
+- `tests/unit/layout/*.spec.ts` - Layout algorithm tests
 
-**Performance Tests** (`tests/e2e/businessPerformance.spec.ts`):
-- Initial render time (<3s for 500 elements)
-- Filter operation latency (<500ms)
-- Layout switch time (<800ms)
-- Pan/zoom FPS measurement (60fps target)
-- Memory usage profiling
-- Viewport culling verification
+**Integration Tests** (using Playwright test runner):
+- `tests/business-layer-integration.spec.ts` - End-to-end parsing with example-implementation model
+- `tests/business-layer-performance.spec.ts` - Parser and graph builder performance benchmarks
 
 **Run Tests:**
 ```bash
-# Start dev server
-npm run dev:embedded
+# Run unit tests
+npm test
 
-# Run all tests
-npx playwright test
+# Run integration tests
+npx playwright test business-layer
 
-# Run specific test suites
-npx playwright test businessLayer
-npx playwright test businessAccessibility
-npx playwright test businessPerformance
-
-# Run with UI
-npx playwright test --ui
+# Run specific test file
+npx playwright test business-layer-integration
+npx playwright test business-layer-performance
 ```
+
+**Future E2E Tests (Not Yet Implemented):**
+Once the Business Layer is integrated into the embedded app with a `/business` route, E2E browser tests should be added for:
+- Initial render performance with large graphs
+- Filter and layout switching interactions
+- Export functionality (PNG, SVG, JSON)
+- Accessibility compliance (WCAG 2.1 AA)
+- Keyboard navigation
+- Focus modes and node selection
 
 ### Performance Monitoring
 
