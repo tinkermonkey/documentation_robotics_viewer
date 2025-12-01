@@ -5,7 +5,7 @@
  * Integrates BusinessLayerParser, BusinessGraphBuilder, and HierarchicalBusinessLayout.
  */
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import {
   ReactFlow,
   Background,
@@ -18,7 +18,7 @@ import {
   Edge,
 } from '@xyflow/react';
 import { MetaModel } from '../../types/model';
-import { BusinessGraph } from '../../types/businessLayer';
+import { BusinessGraph, BusinessNode } from '../../types/businessLayer';
 import { BusinessLayerParser } from '../../services/businessLayerParser';
 import { BusinessGraphBuilder } from '../../services/businessGraphBuilder';
 import { BusinessNodeTransformer } from '../../services/businessNodeTransformer';
@@ -27,8 +27,11 @@ import { DEFAULT_LAYOUT_OPTIONS } from '../../layout/business/types';
 import { nodeTypes } from '../../nodes';
 import { edgeTypes } from '../../edges';
 import { useBusinessFilters } from '../../hooks/useBusinessFilters';
+import { useBusinessFocus } from '../../hooks/useBusinessFocus';
 import { useBusinessLayerStore } from '../../../stores/businessLayerStore';
 import { BusinessLayerControls } from './BusinessLayerControls';
+import { ProcessInspectorPanel } from './ProcessInspectorPanel';
+import './BusinessLayerView.css';
 
 interface BusinessLayerViewProps {
   /** The documentation model */
@@ -44,9 +47,16 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedNodes, setSelectedNodes] = useState<Set<string>>(new Set());
 
-  // Get filter state from store
-  const { filters } = useBusinessLayerStore();
+  // Get state from store
+  const {
+    filters,
+    focusMode,
+    focusRadius,
+    setFocusMode,
+    setSelectedNodeId,
+  } = useBusinessLayerStore();
 
   // Apply filters to nodes and edges
   const { filteredNodes, filteredEdges, visibleCount, totalCount } = useBusinessFilters(
@@ -55,6 +65,21 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
     filters,
     businessGraph
   );
+
+  // Apply focus mode
+  const { focusedNodes, focusedEdges, dimmedNodes } = useBusinessFocus(
+    selectedNodes,
+    focusMode,
+    focusRadius,
+    businessGraph
+  );
+
+  // Get selected node for inspector
+  const selectedNode = useMemo<BusinessNode | null>(() => {
+    if (selectedNodes.size !== 1 || !businessGraph) return null;
+    const nodeId = Array.from(selectedNodes)[0];
+    return businessGraph.nodes.get(nodeId) || null;
+  }, [selectedNodes, businessGraph]);
 
   // Parse and build graph on mount/model change
   useEffect(() => {
@@ -121,6 +146,101 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
     // TODO: Implement export functionality
     alert(`Export as ${type.toUpperCase()} - Export functionality not yet implemented`);
   }, []);
+
+  // Node interaction handlers
+  const handleNodeClick = useCallback(
+    (event: React.MouseEvent, node: Node) => {
+      if (event.shiftKey) {
+        // Multi-select for path tracing
+        setSelectedNodes((prev) => {
+          const updated = new Set(prev);
+          updated.add(node.id);
+          return updated;
+        });
+      } else {
+        // Single select
+        setSelectedNodes(new Set([node.id]));
+        setSelectedNodeId(node.id);
+        setFocusMode('selected');
+      }
+    },
+    [setFocusMode, setSelectedNodeId]
+  );
+
+  const handleNodeDoubleClick = useCallback(
+    (event: React.MouseEvent, node: Node) => {
+      // Double-click to expand/collapse (Phase 6)
+      // For now, just select
+      setSelectedNodes(new Set([node.id]));
+      setSelectedNodeId(node.id);
+    },
+    [setSelectedNodeId]
+  );
+
+  // Focus mode action handlers
+  const handleTraceUpstream = useCallback(() => {
+    setFocusMode('upstream');
+  }, [setFocusMode]);
+
+  const handleTraceDownstream = useCallback(() => {
+    setFocusMode('downstream');
+  }, [setFocusMode]);
+
+  const handleIsolate = useCallback(() => {
+    // Isolate shows only selected node and immediate neighbors
+    setFocusMode('radial');
+  }, [setFocusMode]);
+
+  // Apply focus styling to nodes
+  const styledNodes = useMemo(() => {
+    return filteredNodes.map((node) => {
+      const isFocused = focusMode !== 'none' && focusedNodes.has(node.id);
+      const isDimmed = focusMode !== 'none' && dimmedNodes.has(node.id);
+
+      return {
+        ...node,
+        style: {
+          ...node.style,
+          opacity: isDimmed ? 0.3 : 1,
+          transition: 'opacity 0.3s ease',
+        },
+        className: isFocused ? 'focused-node' : undefined,
+      };
+    });
+  }, [filteredNodes, focusedNodes, dimmedNodes, focusMode]);
+
+  // Apply focus styling to edges
+  const styledEdges = useMemo(() => {
+    return filteredEdges.map((edge) => {
+      const isFocused = focusMode !== 'none' && focusedEdges.has(edge.id);
+      const isDimmed = focusMode !== 'none' && !focusedEdges.has(edge.id);
+
+      return {
+        ...edge,
+        style: {
+          ...edge.style,
+          opacity: isDimmed ? 0.2 : 1,
+          strokeWidth: isFocused ? 3 : 2,
+          transition: 'opacity 0.3s ease, stroke-width 0.3s ease',
+        },
+      };
+    });
+  }, [filteredEdges, focusedEdges, focusMode]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedNodes(new Set());
+        setSelectedNodeId(undefined);
+        setFocusMode('none');
+      }
+      // Tab, Enter, Arrow keys handled by ReactFlow
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [setFocusMode, setSelectedNodeId]);
 
   if (error) {
     return (
@@ -191,13 +311,15 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
       {/* Graph Visualization */}
       <div style={{ flex: 1, position: 'relative' }}>
         <ReactFlow
-          nodes={filteredNodes}
-          edges={filteredEdges}
+          nodes={styledNodes}
+          edges={styledEdges}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onNodesInitialized={onNodesInitialized}
+          onNodeClick={handleNodeClick}
+          onNodeDoubleClick={handleNodeDoubleClick}
           onlyRenderVisibleElements={true} // Critical for performance with >200 nodes
           fitView
           fitViewOptions={{
@@ -252,6 +374,15 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
           </div>
         </Panel>
         </ReactFlow>
+
+        {/* Process Inspector Panel */}
+        <ProcessInspectorPanel
+          selectedNode={selectedNode}
+          businessGraph={businessGraph}
+          onTraceUpstream={handleTraceUpstream}
+          onTraceDownstream={handleTraceDownstream}
+          onIsolate={handleIsolate}
+        />
       </div>
     </div>
   );

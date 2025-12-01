@@ -18,7 +18,7 @@ export type BusinessLayoutType = 'hierarchical' | 'swimlane' | 'matrix' | 'force
 /**
  * Focus mode types
  */
-export type FocusMode = 'none' | 'selected' | 'radial';
+export type FocusMode = 'none' | 'selected' | 'radial' | 'upstream' | 'downstream';
 
 /**
  * Default filters (empty = show all)
