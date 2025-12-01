@@ -5,7 +5,7 @@
  * Integrates BusinessLayerParser, BusinessGraphBuilder, and HierarchicalBusinessLayout.
  */
 
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import {
   ReactFlow,
   Background,
@@ -32,6 +32,14 @@ import { useBusinessFocus } from '../../hooks/useBusinessFocus';
 import { useBusinessLayerStore } from '../../../stores/businessLayerStore';
 import { BusinessLayerControls } from './BusinessLayerControls';
 import { ProcessInspectorPanel } from './ProcessInspectorPanel';
+import {
+  exportAsPNG,
+  exportAsSVG,
+  exportGraphDataAsJSON,
+  exportProcessCatalog,
+  exportTraceabilityReport,
+  exportImpactAnalysisReport,
+} from '../../services/businessExportService';
 import './BusinessLayerView.css';
 
 interface BusinessLayerViewProps {
@@ -49,6 +57,7 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedNodes, setSelectedNodes] = useState<Set<string>>(new Set());
+  const reactFlowWrapperRef = useRef<HTMLDivElement>(null);
 
   // Get state from store
   const {
@@ -162,11 +171,61 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
     // Nodes are initialized and fitView is handled by ReactFlow
   }, []);
 
-  // Export handlers (placeholder - to be implemented)
-  const handleExport = useCallback((type: 'png' | 'svg' | 'catalog' | 'traceability') => {
-    // Export functionality to be implemented in future phase
-    setError(`Export as ${type.toUpperCase()} - Feature not yet implemented`);
-  }, []);
+  // Export handlers
+  const handleExport = useCallback(
+    async (type: 'png' | 'svg' | 'graphData' | 'catalog' | 'traceability' | 'impact') => {
+      if (!businessGraph) {
+        setError('Cannot export: business graph not loaded');
+        return;
+      }
+
+      try {
+        const timestamp = new Date().toISOString().replace(/:/g, '-').split('.')[0];
+
+        switch (type) {
+          case 'png':
+            if (reactFlowWrapperRef.current) {
+              await exportAsPNG(reactFlowWrapperRef.current, `business-layer-${timestamp}.png`);
+            }
+            break;
+          case 'svg':
+            if (reactFlowWrapperRef.current) {
+              await exportAsSVG(reactFlowWrapperRef.current, `business-layer-${timestamp}.svg`);
+            }
+            break;
+          case 'graphData':
+            exportGraphDataAsJSON(nodes, edges, businessGraph, `business-graph-${timestamp}.json`);
+            break;
+          case 'catalog':
+            exportProcessCatalog(businessGraph, `business-catalog-${timestamp}.json`);
+            break;
+          case 'traceability':
+            exportTraceabilityReport(
+              businessGraph,
+              businessGraph.crossLayerLinks,
+              `traceability-${timestamp}.json`
+            );
+            break;
+          case 'impact':
+            if (selectedNodes.size === 0) {
+              setError('Please select at least one process to analyze impact');
+              return;
+            }
+            exportImpactAnalysisReport(
+              selectedNodes,
+              businessGraph,
+              `impact-analysis-${timestamp}.json`
+            );
+            break;
+        }
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        console.error('[BusinessLayerView] Export failed:', err);
+        setError(`Export failed: ${message}`);
+      }
+    },
+    [nodes, edges, businessGraph, selectedNodes]
+  );
 
   // Node interaction handlers
   const handleNodeClick = useCallback(
@@ -361,7 +420,7 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
       />
 
       {/* Graph Visualization */}
-      <div style={{ flex: 1, position: 'relative' }}>
+      <div ref={reactFlowWrapperRef} style={{ flex: 1, position: 'relative' }}>
         <ReactFlow
           nodes={styledNodes}
           edges={styledEdges}

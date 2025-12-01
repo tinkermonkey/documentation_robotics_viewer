@@ -14,7 +14,7 @@ interface BusinessLayerControlsProps {
   businessGraph: BusinessGraph | null;
 
   /** Export callback */
-  onExport: (type: 'png' | 'svg' | 'catalog' | 'traceability') => void;
+  onExport: (type: 'png' | 'svg' | 'graphData' | 'catalog' | 'traceability' | 'impact') => void;
 
   /** Visible node count after filtering */
   visibleCount: number;
@@ -372,6 +372,20 @@ export const BusinessLayerControls: React.FC<BusinessLayerControlsProps> = ({
             Export as SVG
           </button>
           <button
+            onClick={() => onExport('graphData')}
+            style={{
+              padding: '6px 12px',
+              background: '#fff',
+              border: '1px solid #ddd',
+              borderRadius: 4,
+              fontSize: 13,
+              cursor: 'pointer',
+              textAlign: 'left',
+            }}
+          >
+            Export Graph Data
+          </button>
+          <button
             onClick={() => onExport('catalog')}
             style={{
               padding: '6px 12px',
@@ -383,7 +397,7 @@ export const BusinessLayerControls: React.FC<BusinessLayerControlsProps> = ({
               textAlign: 'left',
             }}
           >
-            Export Catalog
+            Export Process Catalog
           </button>
           <button
             onClick={() => onExport('traceability')}
@@ -397,7 +411,21 @@ export const BusinessLayerControls: React.FC<BusinessLayerControlsProps> = ({
               textAlign: 'left',
             }}
           >
-            Export Traceability
+            Export Traceability Report
+          </button>
+          <button
+            onClick={() => onExport('impact')}
+            style={{
+              padding: '6px 12px',
+              background: '#fff',
+              border: '1px solid #ddd',
+              borderRadius: 4,
+              fontSize: 13,
+              cursor: 'pointer',
+              textAlign: 'left',
+            }}
+          >
+            Export Impact Analysis
           </button>
         </div>
       </div>

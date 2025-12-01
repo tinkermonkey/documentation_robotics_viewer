@@ -505,10 +505,329 @@ npx playwright test --ui
 | Pan/zoom | 60fps | ReactFlow optimization |
 | Memory (1000 elements) | < 50MB | Efficient data structures |
 
+## Business Layer Visualization (Phase 7 - Export & Reporting)
+
+### Export Features
+
+The business layer supports comprehensive export capabilities for processes, functions, services, and capabilities:
+
+**1. PNG/SVG Image Exports**
+```typescript
+import { exportAsPNG, exportAsSVG } from '../../services/businessExportService';
+
+// Export current viewport as PNG
+await exportAsPNG(reactFlowContainer, 'business-layer.png');
+
+// Export as SVG vector image
+await exportAsSVG(reactFlowContainer, 'business-layer.svg');
+```
+
+**2. Graph Data Export**
+```typescript
+import { exportGraphDataAsJSON } from '../../services/businessExportService';
+
+// Export filtered graph structure with metadata
+exportGraphDataAsJSON(nodes, edges, businessGraph, 'business-graph-data.json');
+```
+
+The graph data export includes:
+- ReactFlow node positions and data
+- Edge connections and types
+- Layer counts (functions, processes, services, capabilities)
+- Graph metrics (connectivity, hierarchy depth, circular dependencies)
+
+**3. Process Catalog Export**
+```typescript
+import { exportProcessCatalog } from '../../services/businessExportService';
+
+// Generate comprehensive process catalog
+exportProcessCatalog(businessGraph, 'business-catalog.json');
+```
+
+The process catalog includes:
+- All processes with complete metadata (owner, criticality, lifecycle, domain)
+- Subprocess counts
+- Upstream and downstream relationships for each process
+- Process descriptions
+
+**4. Traceability Report Export**
+```typescript
+import { exportTraceabilityReport } from '../../services/businessExportService';
+
+// Generate cross-layer traceability report
+exportTraceabilityReport(
+  businessGraph,
+  businessGraph.crossLayerLinks,
+  'traceability-report.json'
+);
+```
+
+The traceability report includes:
+- Process-to-goal mappings (business → motivation layer)
+- Process-to-component mappings (business → application layer)
+- Process-to-data entity mappings (business → data model layer)
+- Orphaned processes (not realized by any component)
+- Coverage statistics (percentages for each layer)
+
+**5. Impact Analysis Export**
+```typescript
+import { exportImpactAnalysisReport } from '../../services/businessExportService';
+
+// Generate impact analysis for selected processes
+exportImpactAnalysisReport(
+  selectedNodes,
+  businessGraph,
+  'impact-analysis.json'
+);
+```
+
+The impact analysis report includes:
+- Changed processes (user selection)
+- Impacted processes (downstream dependencies)
+- Impact paths with human-readable process names
+- Impact metrics (direct, indirect, total impact)
+- Maximum path length
+
+### Export Integration in BusinessLayerView
+
+```typescript
+// In BusinessLayerView.tsx
+const reactFlowWrapperRef = useRef<HTMLDivElement>(null);
+
+const handleExport = useCallback(
+  async (type: 'png' | 'svg' | 'graphData' | 'catalog' | 'traceability' | 'impact') => {
+    if (!businessGraph) return;
+
+    const timestamp = new Date().toISOString().replace(/:/g, '-').split('.')[0];
+
+    switch (type) {
+      case 'png':
+        if (reactFlowWrapperRef.current) {
+          await exportAsPNG(reactFlowWrapperRef.current, `business-layer-${timestamp}.png`);
+        }
+        break;
+      case 'svg':
+        if (reactFlowWrapperRef.current) {
+          await exportAsSVG(reactFlowWrapperRef.current, `business-layer-${timestamp}.svg`);
+        }
+        break;
+      case 'graphData':
+        exportGraphDataAsJSON(nodes, edges, businessGraph, `business-graph-${timestamp}.json`);
+        break;
+      case 'catalog':
+        exportProcessCatalog(businessGraph, `business-catalog-${timestamp}.json`);
+        break;
+      case 'traceability':
+        exportTraceabilityReport(
+          businessGraph,
+          businessGraph.crossLayerLinks,
+          `traceability-${timestamp}.json`
+        );
+        break;
+      case 'impact':
+        if (selectedNodes.size === 0) {
+          setError('Please select at least one process to analyze impact');
+          return;
+        }
+        exportImpactAnalysisReport(
+          selectedNodes,
+          businessGraph,
+          `impact-analysis-${timestamp}.json`
+        );
+        break;
+    }
+  },
+  [nodes, edges, businessGraph, selectedNodes]
+);
+
+// Add ref to graph container
+<div ref={reactFlowWrapperRef} style={{ flex: 1, position: 'relative' }}>
+  <ReactFlow ... />
+</div>
+```
+
+### Export Controls UI
+
+The `BusinessLayerControls` component provides export buttons:
+
+```typescript
+<div className="export-menu">
+  <h3>Export</h3>
+  <button onClick={() => onExport('png')}>Export as PNG</button>
+  <button onClick={() => onExport('svg')}>Export as SVG</button>
+  <button onClick={() => onExport('graphData')}>Export Graph Data</button>
+  <button onClick={() => onExport('catalog')}>Export Process Catalog</button>
+  <button onClick={() => onExport('traceability')}>Export Traceability Report</button>
+  <button onClick={() => onExport('impact')}>Export Impact Analysis</button>
+</div>
+```
+
+### Export Data Structures
+
+**Process Catalog Entry:**
+```typescript
+interface ProcessCatalogEntry {
+  id: string;
+  name: string;
+  type: string;
+  description?: string;
+  owner?: string;
+  criticality?: 'high' | 'medium' | 'low';
+  lifecycle?: 'ideation' | 'active' | 'deprecated';
+  domain?: string;
+  subprocessCount?: number;
+  relationships: {
+    upstream: Array<{ type: string; process: string }>;
+    downstream: Array<{ type: string; process: string }>;
+  };
+}
+```
+
+**Traceability Report:**
+```typescript
+interface BusinessTraceabilityReport {
+  generated: string;
+  summary: {
+    totalProcesses: number;
+    processesWithMotivationLinks: number;
+    processesWithApplicationRealization: number;
+    processesWithDataDependencies: number;
+    orphanedProcesses: number;
+    coverage: {
+      motivation: string; // "33.3%"
+      application: string; // "66.7%"
+      data: string; // "50.0%"
+    };
+  };
+  traceability: Array<{
+    process: { id: string; name: string; type: string };
+    realizesGoals: Array<{ id: string; type: string }>;
+    realizedByComponents: Array<{ id: string; type: string }>;
+    usesDataEntities: Array<{ id: string; type: string }>;
+  }>;
+  orphanedProcesses: Array<{ id: string; name: string }>;
+}
+```
+
+**Impact Analysis Report:**
+```typescript
+interface ImpactAnalysisReport {
+  generated: string;
+  changedProcesses: Array<{ id: string; name?: string }>;
+  impact: {
+    directImpact: number;
+    indirectImpact: number;
+    totalImpact: number;
+    maxPathLength: number;
+  };
+  impactedProcesses: Array<{ id: string; name?: string; type?: string }>;
+  impactPaths: Array<{
+    path: string[]; // Human-readable process names
+    length: number;
+  }>;
+}
+```
+
+### Testing Strategy
+
+**Unit Tests** (`tests/unit/businessExportService.spec.ts`):
+- All export functions generate correct data structures
+- Process catalog includes complete metadata
+- Traceability report calculates coverage correctly
+- Impact analysis uses analyzeImpact service
+- Empty graphs handled gracefully
+- Orphaned process identification
+
+**E2E Tests** (`tests/e2e/business-layer-export.spec.ts`):
+- PNG/SVG export downloads work
+- JSON exports have valid structure
+- Traceability report includes cross-layer links
+- Impact analysis requires node selection
+- All exports complete in <3s
+- Filenames include timestamps
+- Exports exclude ReactFlow controls from images
+
+**Run Tests:**
+```bash
+# Start dev server
+npm run dev:embedded
+
+# Run all tests
+npx playwright test
+
+# Run business export tests
+npx playwright test business-layer-export
+
+# Run unit tests
+npm test businessExportService
+```
+
+### Performance Requirements
+
+| Export Type | Target | Implementation |
+|------------|--------|----------------|
+| PNG/SVG | <3s | html-to-image library, high-quality rendering |
+| Graph Data | <1s | Direct JSON serialization |
+| Process Catalog | <2s | Efficient Map iteration |
+| Traceability Report | <3s | Pre-indexed cross-layer links |
+| Impact Analysis | <2s | Optimized graph traversal |
+
+### Best Practices
+
+1. **Always generate timestamped filenames** to prevent overwrites
+2. **Validate businessGraph exists** before exporting
+3. **Show user feedback** during export (loading states)
+4. **Handle errors gracefully** with clear error messages
+5. **Exclude UI controls** from image exports (ReactFlow controls, minimap)
+6. **Use human-readable names** in reports (not just IDs)
+7. **Include metadata** in all exports (timestamp, version, counts)
+8. **Ensure JSON is pretty-printed** (2-space indent) for readability
+
+### Common Use Cases
+
+**Scenario 1: Document Process Architecture**
+```typescript
+// Export process catalog for documentation
+exportProcessCatalog(businessGraph, 'process-catalog.json');
+```
+
+**Scenario 2: Analyze Change Impact**
+```typescript
+// Select process to change
+setSelectedNodes(new Set(['process-order-fulfillment']));
+
+// Export impact analysis
+exportImpactAnalysisReport(
+  selectedNodes,
+  businessGraph,
+  'order-fulfillment-impact.json'
+);
+```
+
+**Scenario 3: Audit Traceability**
+```typescript
+// Export traceability report for compliance
+exportTraceabilityReport(
+  businessGraph,
+  businessGraph.crossLayerLinks,
+  'compliance-traceability-report.json'
+);
+
+// Review orphaned processes in report.orphanedProcesses
+// Review coverage in report.summary.coverage
+```
+
+**Scenario 4: Share Visualization**
+```typescript
+// Export high-res image for presentation
+await exportAsPNG(reactFlowContainer, 'business-architecture.png');
+```
+
 ---
 
-**Last Updated**: 2025-11-30
+**Last Updated**: 2025-12-01
 **React Flow Version**: 12.0.0
 **Project Version**: 1.0.0
 **YAML Support**: v0.1.0
 **Motivation Layer**: Phase 6 Complete
+**Business Layer**: Phase 7 Complete
