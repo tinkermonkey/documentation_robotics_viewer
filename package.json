@@ -31,10 +31,12 @@
   "license": "ISC",
   "dependencies": {
     "@tanstack/react-router": "^1.139.12",
+    "@types/d3-force": "^3.0.10",
     "@types/js-yaml": "^4.0.9",
     "@types/uuid": "^10.0.0",
     "@xyflow/react": "^12.9.3",
     "cors": "^2.8.5",
+    "d3-force": "^3.0.0",
     "dagre": "^0.8.5",
     "express": "^5.1.0",
     "html-to-image": "^1.11.13",
