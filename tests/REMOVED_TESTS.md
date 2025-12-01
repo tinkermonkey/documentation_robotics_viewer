@@ -1,5 +1,54 @@
 # Removed Tests
 
+## business-focus-navigation.spec.ts
+
+**Removed on**: 2025-12-01
+
+**Reason**: Tests non-existent functionality in the embedded application.
+
+### Issues with the removed tests:
+
+All 23 tests in this file failed with the same root cause: waiting for `.business-layer-view` selector timed out after 10000ms.
+
+1. **Non-existent Route**: Tests attempted to access `/embedded?view=business`, but:
+   - The embedded app router (`src/apps/embedded/router.tsx`) has no business layer route
+   - The router only supports: `/model/{view}`, `/spec/{view}`, `/motivation`, `/changesets/{view}`
+   - The `view` parameter in ModelRoute only accepts `graph` or `json`
+   - There is no `business` view option
+
+2. **Component Not Integrated**: While `BusinessLayerView` component exists in `src/core/components/businessLayer/`:
+   - It's never imported or used in the embedded app
+   - No route is configured to render it
+   - The component is completely isolated from the embedded app's routing
+
+3. **Same Architecture Issue**: Like the previously removed `business-layer-filtering.spec.ts`, this test assumes:
+   - Specialized layer-specific views exist in the embedded app
+   - Direct URL access to business layer functionality
+   - UI elements specific to business layer focus and navigation (ProcessInspectorPanel, focus mode controls)
+
+### Tests Removed:
+
+All 23 tests covering:
+- Node selection (4 tests)
+- Focus mode: Selected (2 tests)
+- Process inspector panel (3 tests)
+- Quick actions (4 tests)
+- Keyboard navigation (3 tests)
+- Focus mode transitions (2 tests)
+- Visual styling (3 tests)
+- Performance (2 tests)
+
+### Recommendation:
+
+If business layer focus & navigation functionality needs to be tested:
+
+1. Integrate `BusinessLayerView` into the embedded app with a proper route (e.g., `/business` or `/model/business`)
+2. Update the router to handle the business view
+3. Rewrite tests to use the correct URL structure
+4. Verify all UI elements (ProcessInspectorPanel, quick action buttons) are properly rendered
+
+---
+
 ## business-layer-filtering.spec.ts
 
 **Removed on**: 2025-12-01
