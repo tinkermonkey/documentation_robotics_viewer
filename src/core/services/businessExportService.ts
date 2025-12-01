@@ -87,6 +87,32 @@ export interface ImpactAnalysisReport {
 }
 
 /**
+ * Helper function to get ReactFlow wrapper element
+ */
+async function getReactFlowWrapper(reactFlowContainer: HTMLElement): Promise<HTMLElement> {
+  if (!reactFlowContainer) {
+    throw new Error('Unable to export: The graph container is not available. Please reload the page and try again.');
+  }
+
+  const reactFlowWrapper = reactFlowContainer.querySelector('.react-flow') as HTMLElement;
+  if (!reactFlowWrapper) {
+    throw new Error('Unable to locate the graph canvas for export. Please make sure the business graph is visible and try again.');
+  }
+
+  return reactFlowWrapper;
+}
+
+/**
+ * Helper function to trigger download
+ */
+function triggerDownload(dataUrl: string, filename: string): void {
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = dataUrl;
+  link.click();
+}
+
+/**
  * Export current viewport as PNG image
  * Reuses logic from motivationExportService
  */
@@ -97,15 +123,7 @@ export async function exportAsPNG(
   try {
     console.log('[BusinessExportService] Exporting as PNG:', filename);
 
-    if (!reactFlowContainer) {
-      throw new Error('Unable to export: The graph container is not available. Please reload the page and try again.');
-    }
-
-    // Find the ReactFlow wrapper element
-    const reactFlowWrapper = reactFlowContainer.querySelector('.react-flow') as HTMLElement;
-    if (!reactFlowWrapper) {
-      throw new Error('Unable to locate the graph canvas for export. Please make sure the business graph is visible and try again.');
-    }
+    const reactFlowWrapper = await getReactFlowWrapper(reactFlowContainer);
 
     // Generate PNG using html-to-image
     const dataUrl = await toPng(reactFlowWrapper, {
@@ -123,11 +141,7 @@ export async function exportAsPNG(
       }
     });
 
-    // Trigger download
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = dataUrl;
-    link.click();
+    triggerDownload(dataUrl, filename);
 
     console.log('[BusinessExportService] PNG export successful');
   } catch (error) {
@@ -148,15 +162,7 @@ export async function exportAsSVG(
   try {
     console.log('[BusinessExportService] Exporting as SVG:', filename);
 
-    if (!reactFlowContainer) {
-      throw new Error('Unable to export: The graph container is not available. Please reload the page and try again.');
-    }
-
-    // Find the ReactFlow wrapper element
-    const reactFlowWrapper = reactFlowContainer.querySelector('.react-flow') as HTMLElement;
-    if (!reactFlowWrapper) {
-      throw new Error('Unable to locate the graph canvas for export. Please make sure the business graph is visible and try again.');
-    }
+    const reactFlowWrapper = await getReactFlowWrapper(reactFlowContainer);
 
     // Generate SVG using html-to-image
     const dataUrl = await toSvg(reactFlowWrapper, {
@@ -172,11 +178,7 @@ export async function exportAsSVG(
       }
     });
 
-    // Trigger download
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = dataUrl;
-    link.click();
+    triggerDownload(dataUrl, filename);
 
     console.log('[BusinessExportService] SVG export successful');
   } catch (error) {
@@ -406,6 +408,11 @@ export function exportImpactAnalysisReport(
   try {
     console.log('[BusinessExportService] Generating impact analysis report');
 
+    // Validate that at least one node is selected
+    if (selectedNodes.size === 0) {
+      throw new Error('No processes selected for impact analysis. Please select at least one process.');
+    }
+
     // Run impact analysis
     const impactResult = analyzeImpact(selectedNodes, businessGraph);
 
@@ -458,5 +465,6 @@ function downloadJSON(data: unknown, filename: string): void {
   link.download = filename;
   link.href = url;
   link.click();
-  URL.revokeObjectURL(url);
+  // Delay URL revocation to ensure browser has time to initiate download
+  setTimeout(() => URL.revokeObjectURL(url), 100);
 }

@@ -219,8 +219,8 @@ test.describe('Business Layer Export', () => {
     const firstNode = page.locator('.react-flow__node').first();
     await firstNode.click();
 
-    // Wait for selection to register
-    await page.waitForTimeout(500);
+    // Wait for node to be selected (visual feedback)
+    await expect(firstNode).toHaveClass(/selected/, { timeout: 2000 });
 
     const downloadPromise = page.waitForEvent('download');
 
@@ -286,12 +286,8 @@ test.describe('Business Layer Export', () => {
     // Click impact analysis export button
     await page.click('button:has-text("Export Impact Analysis")');
 
-    // Wait a bit for error to appear (if implemented as error message)
-    await page.waitForTimeout(500);
-
-    // Note: The actual error display depends on implementation
-    // This test verifies the button is clickable even without selection
-    // The service should handle the empty selection gracefully
+    // Verify error message appears
+    await expect(page.locator('text=/Please select at least one process/i')).toBeVisible({ timeout: 3000 });
   });
 
   test('should complete all exports in under 3 seconds', async ({ page }) => {
@@ -317,11 +313,14 @@ test.describe('Business Layer Export', () => {
 
   test('should export with filtered view state', async ({ page }) => {
     // Apply a filter (e.g., select only processes)
-    const processCheckbox = page.locator('input[type="checkbox"]').filter({ hasText: /Processes/ });
+    const processCheckbox = page.locator('label:has-text("Processes") input[type="checkbox"]');
     await processCheckbox.click();
 
-    // Wait for filter to apply
-    await page.waitForTimeout(500);
+    // Wait for filter to apply by checking node count changes
+    await page.waitForFunction(() => {
+      const nodes = document.querySelectorAll('.react-flow__node');
+      return nodes.length > 0; // At least some nodes visible after filter
+    }, { timeout: 3000 });
 
     // Export graph data
     const downloadPromise = page.waitForEvent('download');
@@ -363,8 +362,11 @@ test.describe('Business Layer Export', () => {
     await page.click('button:has-text("Export Graph Data")');
     const download1 = await download1Promise;
 
-    // Small delay
-    await page.waitForTimeout(1000);
+    // Wait for first export to complete using button state
+    await page.waitForFunction(() => {
+      const button = document.querySelector('button:has-text("Export Graph Data")');
+      return button && !button.disabled;
+    }, { timeout: 5000 });
 
     const download2Promise = page.waitForEvent('download');
     await page.click('button:has-text("Export Graph Data")');

@@ -16,6 +16,9 @@ interface BusinessLayerControlsProps {
   /** Export callback */
   onExport: (type: 'png' | 'svg' | 'graphData' | 'catalog' | 'traceability' | 'impact') => void;
 
+  /** Whether an export operation is in progress */
+  isExporting: boolean;
+
   /** Visible node count after filtering */
   visibleCount: number;
 
@@ -50,6 +53,7 @@ const LAYOUT_LABELS: Record<BusinessLayoutType, string> = {
 export const BusinessLayerControls: React.FC<BusinessLayerControlsProps> = ({
   businessGraph,
   onExport,
+  isExporting,
   visibleCount,
   totalCount,
 }) => {
@@ -345,87 +349,99 @@ export const BusinessLayerControls: React.FC<BusinessLayerControlsProps> = ({
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           <button
             onClick={() => onExport('png')}
+            disabled={isExporting}
             style={{
               padding: '6px 12px',
-              background: '#fff',
+              background: isExporting ? '#f5f5f5' : '#fff',
               border: '1px solid #ddd',
               borderRadius: 4,
               fontSize: 13,
-              cursor: 'pointer',
+              cursor: isExporting ? 'not-allowed' : 'pointer',
               textAlign: 'left',
+              opacity: isExporting ? 0.6 : 1,
             }}
           >
-            Export as PNG
+            {isExporting ? 'Exporting...' : 'Export as PNG'}
           </button>
           <button
             onClick={() => onExport('svg')}
+            disabled={isExporting}
             style={{
               padding: '6px 12px',
-              background: '#fff',
+              background: isExporting ? '#f5f5f5' : '#fff',
               border: '1px solid #ddd',
               borderRadius: 4,
               fontSize: 13,
-              cursor: 'pointer',
+              cursor: isExporting ? 'not-allowed' : 'pointer',
               textAlign: 'left',
+              opacity: isExporting ? 0.6 : 1,
             }}
           >
-            Export as SVG
+            {isExporting ? 'Exporting...' : 'Export as SVG'}
           </button>
           <button
             onClick={() => onExport('graphData')}
+            disabled={isExporting}
             style={{
               padding: '6px 12px',
-              background: '#fff',
+              background: isExporting ? '#f5f5f5' : '#fff',
               border: '1px solid #ddd',
               borderRadius: 4,
               fontSize: 13,
-              cursor: 'pointer',
+              cursor: isExporting ? 'not-allowed' : 'pointer',
               textAlign: 'left',
+              opacity: isExporting ? 0.6 : 1,
             }}
           >
-            Export Graph Data
+            {isExporting ? 'Exporting...' : 'Export Graph Data'}
           </button>
           <button
             onClick={() => onExport('catalog')}
+            disabled={isExporting}
             style={{
               padding: '6px 12px',
-              background: '#fff',
+              background: isExporting ? '#f5f5f5' : '#fff',
               border: '1px solid #ddd',
               borderRadius: 4,
               fontSize: 13,
-              cursor: 'pointer',
+              cursor: isExporting ? 'not-allowed' : 'pointer',
               textAlign: 'left',
+              opacity: isExporting ? 0.6 : 1,
             }}
           >
-            Export Process Catalog
+            {isExporting ? 'Exporting...' : 'Export Process Catalog'}
           </button>
           <button
             onClick={() => onExport('traceability')}
+            disabled={isExporting}
             style={{
               padding: '6px 12px',
-              background: '#fff',
+              background: isExporting ? '#f5f5f5' : '#fff',
               border: '1px solid #ddd',
               borderRadius: 4,
               fontSize: 13,
-              cursor: 'pointer',
+              cursor: isExporting ? 'not-allowed' : 'pointer',
               textAlign: 'left',
+              opacity: isExporting ? 0.6 : 1,
             }}
           >
-            Export Traceability Report
+            {isExporting ? 'Exporting...' : 'Export Traceability Report'}
           </button>
           <button
             onClick={() => onExport('impact')}
+            disabled={isExporting}
             style={{
               padding: '6px 12px',
-              background: '#fff',
+              background: isExporting ? '#f5f5f5' : '#fff',
               border: '1px solid #ddd',
               borderRadius: 4,
               fontSize: 13,
-              cursor: 'pointer',
+              cursor: isExporting ? 'not-allowed' : 'pointer',
               textAlign: 'left',
+              opacity: isExporting ? 0.6 : 1,
             }}
           >
-            Export Impact Analysis
+            {isExporting ? 'Exporting...' : 'Export Impact Analysis'}
           </button>
         </div>
       </div>

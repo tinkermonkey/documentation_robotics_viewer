@@ -56,6 +56,7 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
   const [selectedNodes, setSelectedNodes] = useState<Set<string>>(new Set());
   const reactFlowWrapperRef = useRef<HTMLDivElement>(null);
 
@@ -179,7 +180,13 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
         return;
       }
 
+      if (isExporting) {
+        return; // Prevent concurrent exports
+      }
+
       try {
+        setIsExporting(true);
+        setError(null); // Clear any previous errors
         const timestamp = new Date().toISOString().replace(/:/g, '-').split('.')[0];
 
         switch (type) {
@@ -222,9 +229,11 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
         const message = err instanceof Error ? err.message : String(err);
         console.error('[BusinessLayerView] Export failed:', err);
         setError(`Export failed: ${message}`);
+      } finally {
+        setIsExporting(false);
       }
     },
-    [nodes, edges, businessGraph, selectedNodes]
+    [nodes, edges, businessGraph, selectedNodes, isExporting]
   );
 
   // Node interaction handlers
@@ -415,6 +424,7 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
       <BusinessLayerControls
         businessGraph={businessGraph}
         onExport={handleExport}
+        isExporting={isExporting}
         visibleCount={visibleCount}
         totalCount={totalCount}
       />
