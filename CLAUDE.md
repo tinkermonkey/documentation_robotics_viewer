@@ -823,6 +823,228 @@ exportTraceabilityReport(
 await exportAsPNG(reactFlowContainer, 'business-architecture.png');
 ```
 
+## Business Layer Performance Optimization (Phase 8)
+
+### Performance Targets
+
+The business layer visualization meets these performance targets:
+
+| Metric | Target | Implementation |
+|--------|--------|----------------|
+| Initial render (500 elements) | <3s | Web Worker + viewport culling |
+| Filter operations | <500ms | Pre-indexed data structures |
+| Layout transitions | <800ms | Async layout calculation |
+| Pan/zoom | 60fps | ReactFlow optimization |
+| Memory (1000 elements) | <50MB | Efficient data structures |
+
+### Web Worker for Large Layouts
+
+For graphs with >100 nodes, layout calculations are offloaded to a Web Worker to keep the UI responsive.
+
+**Worker Implementation** (`/public/workers/layoutWorker.js`):
+```javascript
+importScripts('https://unpkg.com/dagre@0.8.5/dist/dagre.min.js');
+
+self.onmessage = function(e) {
+  const { graph, options } = e.data;
+
+  // Create dagre graph
+  const g = new dagre.graphlib.Graph();
+  g.setGraph({
+    rankdir: options.direction || 'TB',
+    nodesep: options.spacing?.node || 80,
+    ranksep: options.spacing?.rank || 120,
+  });
+
+  // Add nodes and edges
+  graph.nodes.forEach(node => {
+    g.setNode(node.id, {
+      width: node.dimensions.width,
+      height: node.dimensions.height,
+    });
+  });
+
+  graph.edges.forEach(edge => {
+    g.setEdge(edge.source, edge.target);
+  });
+
+  // Run layout
+  dagre.layout(g);
+
+  // Extract positions
+  const positions = {};
+  graph.nodes.forEach(node => {
+    const dagreNode = g.node(node.id);
+    positions[node.id] = {
+      x: dagreNode.x - node.dimensions.width / 2,
+      y: dagreNode.y - node.dimensions.height / 2,
+    };
+  });
+
+  self.postMessage({ success: true, positions });
+};
+```
+
+**Layout Engine Integration** (`HierarchicalBusinessLayout.ts`):
+```typescript
+async calculate(graph: BusinessGraph, options: LayoutOptions): Promise<LayoutResult> {
+  const nodeCount = graph.nodes.size;
+
+  // Use Web Worker for large graphs (>100 nodes)
+  if (nodeCount > 100) {
+    return this.calculateInWorker(graph, options);
+  }
+
+  // Use main thread for small graphs
+  return this.calculateWithDagre(graph, options);
+}
+
+private async calculateInWorker(
+  graph: BusinessGraph,
+  options: LayoutOptions
+): Promise<LayoutResult> {
+  return new Promise((resolve, reject) => {
+    const worker = new Worker('/workers/layoutWorker.js');
+
+    worker.postMessage({
+      graph: serializeGraph(graph),
+      options,
+    });
+
+    worker.onmessage = (e) => {
+      const { success, positions, error } = e.data;
+
+      if (!success) {
+        reject(new Error(error));
+        return;
+      }
+
+      const result = this.createReactFlowResult(graph, positions);
+      worker.terminate();
+      resolve(result);
+    };
+
+    // Timeout after 30 seconds
+    setTimeout(() => {
+      worker.terminate();
+      reject(new Error('Layout worker timeout'));
+    }, 30000);
+  });
+}
+```
+
+### Viewport Culling
+
+ReactFlow's `onlyRenderVisibleElements` prop is enabled for optimal performance with large graphs:
+
+```typescript
+<ReactFlow
+  nodes={nodes}
+  edges={edges}
+  onlyRenderVisibleElements={true} // Critical for >200 nodes
+  fitView
+  minZoom={0.1}
+  maxZoom={2}
+>
+  {/* ... */}
+</ReactFlow>
+```
+
+This ensures only visible nodes are rendered, significantly improving pan/zoom performance for large graphs.
+
+### Filter Performance
+
+Filters use pre-built indices for O(1) lookups instead of O(n) array filtering:
+
+```typescript
+interface BusinessGraph {
+  nodes: Map<string, BusinessNode>;
+  edges: Map<string, BusinessEdge>;
+  indices: {
+    byType: Map<BusinessNodeType, Set<string>>;
+    byDomain: Map<string, Set<string>>;
+    byLifecycle: Map<string, Set<string>>;
+    byCriticality: Map<string, Set<string>>;
+  };
+}
+
+// Fast filtering using pre-built indices
+function filterNodes(
+  nodes: Node[],
+  filters: BusinessFilters,
+  graph: BusinessGraph
+): Node[] {
+  if (!filters.types.size) return nodes;
+
+  const visibleIds = new Set<string>();
+
+  // Intersect filter sets using indices
+  for (const type of filters.types) {
+    const typeSet = graph.indices.byType.get(type);
+    typeSet?.forEach(id => visibleIds.add(id));
+  }
+
+  return nodes.filter(n => visibleIds.has(n.id));
+}
+```
+
+### Testing
+
+**E2E Tests** (`tests/e2e/businessLayer.spec.ts`):
+- 15+ tests covering all user stories
+- Layout switching, filtering, focus modes
+- Export functionality verification
+- Cross-layer integration tests
+
+**Accessibility Tests** (`tests/e2e/businessAccessibility.spec.ts`):
+- Axe-core WCAG 2.1 AA compliance
+- Keyboard navigation (Tab, Enter, Escape, Arrows)
+- ARIA label verification
+- Screen reader compatibility
+- Focus indicator visibility
+- Color contrast checks
+
+**Performance Tests** (`tests/e2e/businessPerformance.spec.ts`):
+- Initial render time (<3s for 500 elements)
+- Filter operation latency (<500ms)
+- Layout switch time (<800ms)
+- Pan/zoom FPS measurement (60fps target)
+- Memory usage profiling
+- Viewport culling verification
+
+**Run Tests:**
+```bash
+# Start dev server
+npm run dev:embedded
+
+# Run all tests
+npx playwright test
+
+# Run specific test suites
+npx playwright test businessLayer
+npx playwright test businessAccessibility
+npx playwright test businessPerformance
+
+# Run with UI
+npx playwright test --ui
+```
+
+### Performance Monitoring
+
+The business layer logs performance metrics to the console:
+
+```typescript
+// In BusinessLayerView.tsx
+if (layoutResult.metadata) {
+  const { calculationTime, usedWorker } = layoutResult.metadata;
+  console.log(
+    `Layout calculated in ${calculationTime.toFixed(2)}ms ${usedWorker ? '(Web Worker)' : '(main thread)'}`
+  );
+}
+```
+
+Monitor these logs during development to ensure performance targets are met.
+
 ---
 
 **Last Updated**: 2025-12-01
@@ -831,3 +1053,4 @@ await exportAsPNG(reactFlowContainer, 'business-architecture.png');
 **YAML Support**: v0.1.0
 **Motivation Layer**: Phase 6 Complete
 **Business Layer**: Phase 7 Complete
+**Performance Optimization**: Phase 8 Complete

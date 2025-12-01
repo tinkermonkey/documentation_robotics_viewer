@@ -37,10 +37,99 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
 
   /**
    * Calculate hierarchical layout using dagre
+   * Uses Web Worker for large graphs (>100 nodes)
    */
-  calculate(graph: BusinessGraph, options: LayoutOptions): LayoutResult {
+  async calculate(graph: BusinessGraph, options: LayoutOptions): Promise<LayoutResult> {
     const startTime = performance.now();
+    const nodeCount = graph.nodes.size;
 
+    // Use Web Worker for large layouts to keep UI responsive
+    if (nodeCount > 100) {
+      return this.calculateInWorker(graph, options, startTime);
+    }
+
+    // Use regular dagre for smaller graphs
+    return this.calculateWithDagre(graph, options, startTime);
+  }
+
+  /**
+   * Calculate layout using Web Worker (for >100 nodes)
+   */
+  private async calculateInWorker(
+    graph: BusinessGraph,
+    options: LayoutOptions,
+    startTime: number
+  ): Promise<LayoutResult> {
+    return new Promise((resolve, reject) => {
+      const worker = new Worker('/workers/layoutWorker.js');
+
+      // Prepare data for worker (serialize BusinessGraph)
+      const workerData = {
+        nodes: Array.from(graph.nodes.values()).map(node => ({
+          id: node.id,
+          name: node.name,
+          type: node.type,
+          dimensions: this.getNodeDimensions(node),
+        })),
+        edges: Array.from(graph.edges.values()).map(edge => ({
+          id: edge.id,
+          source: edge.source,
+          target: edge.target,
+          type: edge.type,
+          label: edge.label,
+        })),
+      };
+
+      // Set timeout to prevent hanging
+      const timeout = setTimeout(() => {
+        worker.terminate();
+        reject(new Error('Layout worker timeout'));
+      }, 30000); // 30 second timeout
+
+      worker.onmessage = (e) => {
+        clearTimeout(timeout);
+
+        const { success, positions, bounds, error } = e.data;
+
+        if (!success) {
+          worker.terminate();
+          reject(new Error(error || 'Unknown worker error'));
+          return;
+        }
+
+        // Convert positions to React Flow nodes
+        const result = this.createReactFlowResult(graph, positions, bounds);
+
+        // Add calculation time
+        const calculationTime = performance.now() - startTime;
+        if (result.metadata) {
+          result.metadata.calculationTime = calculationTime;
+          result.metadata.usedWorker = true;
+        }
+
+        worker.terminate();
+        resolve(result);
+      };
+
+      worker.onerror = (error) => {
+        clearTimeout(timeout);
+        worker.terminate();
+        reject(error);
+      };
+
+      // Send data to worker
+      worker.postMessage({ graph: workerData, options });
+    });
+  }
+
+  /**
+   * Calculate layout with dagre on main thread (for <=100 nodes)
+   */
+  private calculateWithDagre(
+    graph: BusinessGraph,
+    options: LayoutOptions,
+    startTime: number
+  ): LayoutResult {
     // Create dagre graph
     const dagreGraph = this.convertToDAG(graph, options);
 
@@ -54,6 +143,7 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
     const calculationTime = performance.now() - startTime;
     if (result.metadata) {
       result.metadata.calculationTime = calculationTime;
+      result.metadata.usedWorker = false;
     }
 
     return result;
@@ -258,5 +348,77 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
 
     // Other relationship types get default weight
     return 1;
+  }
+
+  /**
+   * Create React Flow result from worker positions
+   */
+  private createReactFlowResult(
+    businessGraph: BusinessGraph,
+    positions: Record<string, { x: number; y: number }>,
+    bounds: { width: number; height: number; minX: number; maxX: number; minY: number; maxY: number }
+  ): LayoutResult {
+    const nodes: Node[] = [];
+    const edges: Edge[] = [];
+
+    // Convert nodes with positions from worker
+    for (const [nodeId, businessNode] of businessGraph.nodes.entries()) {
+      const position = positions[nodeId];
+
+      if (!position) {
+        console.warn(`No position found for node ${nodeId}`);
+        continue;
+      }
+
+      const dimensions = this.getNodeDimensions(businessNode);
+
+      const node: Node = {
+        id: `node-${nodeId}`,
+        type: this.getNodeType(businessNode),
+        position,
+        data: this.extractNodeData(businessNode),
+        width: dimensions.width,
+        height: dimensions.height,
+      };
+
+      nodes.push(node);
+    }
+
+    // Convert edges
+    for (const [edgeId, businessEdge] of businessGraph.edges.entries()) {
+      const edge: Edge = {
+        id: `edge-${edgeId}`,
+        source: `node-${businessEdge.source}`,
+        target: `node-${businessEdge.target}`,
+        type: 'elbow',
+        label: businessEdge.label || businessEdge.type,
+        labelStyle: { fill: '#555', fontWeight: 500, fontSize: 12 },
+        labelBgStyle: { fill: '#fff', fillOpacity: 0.8, rx: 4, ry: 4 },
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          width: 20,
+          height: 20,
+          color: '#6b7280',
+        },
+        data: {
+          edgeType: businessEdge.type,
+          pathOptions: {
+            offset: 10,
+            borderRadius: 8,
+          },
+        },
+      };
+
+      edges.push(edge);
+    }
+
+    return {
+      nodes,
+      edges,
+      metadata: {
+        calculationTime: 0, // Will be set by caller
+        bounds,
+      },
+    };
   }
 }

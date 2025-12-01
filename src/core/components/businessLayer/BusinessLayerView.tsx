@@ -127,44 +127,73 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
     }
   }, [model]);
 
-  // Apply layout when graph changes
+  // Apply layout when graph changes (with async support for Web Worker)
   useEffect(() => {
     if (!businessGraph) return;
 
-    try {
-      // Step 5: Calculate hierarchical layout
-      const layoutEngine = new HierarchicalBusinessLayout();
-      const layoutResult = layoutEngine.calculate(businessGraph, {
-        ...DEFAULT_LAYOUT_OPTIONS,
-        algorithm: 'hierarchical',
-        direction: 'TB',
-        animate: true,
-      });
+    let isCancelled = false;
 
-      setNodes(layoutResult.nodes);
+    const calculateLayout = async () => {
+      try {
+        setLoading(true);
 
-      // Step 6: Add cross-layer edges to the layout edges
-      const crossLayerEdges: Edge[] = businessGraph.crossLayerLinks.map((link) => ({
-        id: `cross-${link.source}-${link.target}`,
-        source: link.source,
-        target: link.target,
-        type: 'crossLayer',
-        data: {
-          targetLayer: link.targetLayer,
-          relationshipType: link.type,
-          label: link.type,
-        },
-        style: {
-          strokeDasharray: '5,5',
-        },
-      }));
+        // Step 5: Calculate hierarchical layout (may use Web Worker for large graphs)
+        const layoutEngine = new HierarchicalBusinessLayout();
+        const layoutResult = await layoutEngine.calculate(businessGraph, {
+          ...DEFAULT_LAYOUT_OPTIONS,
+          algorithm: 'hierarchical',
+          direction: 'TB',
+          animate: true,
+        });
 
-      setEdges([...layoutResult.edges, ...crossLayerEdges]);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      console.error('[BusinessLayerView] Error calculating layout:', err);
-      setError(message);
-    }
+        if (isCancelled) return;
+
+        // Log performance metrics
+        if (layoutResult.metadata) {
+          const { calculationTime, usedWorker } = layoutResult.metadata;
+          console.log(
+            `[BusinessLayerView] Layout calculated in ${calculationTime.toFixed(2)}ms ${usedWorker ? '(Web Worker)' : '(main thread)'}`
+          );
+        }
+
+        setNodes(layoutResult.nodes);
+
+        // Step 6: Add cross-layer edges to the layout edges
+        const crossLayerEdges: Edge[] = businessGraph.crossLayerLinks.map((link) => ({
+          id: `cross-${link.source}-${link.target}`,
+          source: link.source,
+          target: link.target,
+          type: 'crossLayer',
+          data: {
+            targetLayer: link.targetLayer,
+            relationshipType: link.type,
+            label: link.type,
+          },
+          style: {
+            strokeDasharray: '5,5',
+          },
+        }));
+
+        setEdges([...layoutResult.edges, ...crossLayerEdges]);
+      } catch (err) {
+        if (isCancelled) return;
+
+        const message = err instanceof Error ? err.message : String(err);
+        console.error('[BusinessLayerView] Error calculating layout:', err);
+        setError(message);
+      } finally {
+        if (!isCancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    calculateLayout();
+
+    // Cleanup function to cancel pending operations
+    return () => {
+      isCancelled = true;
+    };
   }, [businessGraph, setNodes, setEdges]);
 
   // Fit view when nodes change

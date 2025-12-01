@@ -49,6 +49,9 @@ export interface LayoutResult {
     /** Time taken to calculate layout (ms) */
     calculationTime: number;
 
+    /** Whether Web Worker was used for calculation */
+    usedWorker?: boolean;
+
     /** Total bounds of the layout */
     bounds: {
       width: number;
@@ -72,9 +75,9 @@ export interface BusinessLayoutEngine {
    *
    * @param graph - The business graph to layout
    * @param options - Layout configuration options
-   * @returns Layout result with positioned nodes and edges
+   * @returns Layout result with positioned nodes and edges (may be async for large graphs)
    */
-  calculate(graph: BusinessGraph, options: LayoutOptions): LayoutResult;
+  calculate(graph: BusinessGraph, options: LayoutOptions): LayoutResult | Promise<LayoutResult>;
 
   /**
    * Get the name of this layout engine
