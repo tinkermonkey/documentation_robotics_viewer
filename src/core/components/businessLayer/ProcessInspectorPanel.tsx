@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import type { BusinessNode, BusinessGraph, CrossLayerLink } from '../../types/businessLayer';
+import { getLayerColor, getLayerDisplayName } from '../../utils/layerColors';
 import './ProcessInspectorPanel.css';
 
 export interface ProcessInspectorPanelProps {
@@ -52,31 +53,6 @@ export const ProcessInspectorPanel: React.FC<ProcessInspectorPanelProps> = ({
     return grouped;
   }, [crossLayerLinks]);
 
-  // Get layer display name
-  const getLayerDisplayName = (layerId: string): string => {
-    const nameMap: Record<string, string> = {
-      motivation: 'Motivation',
-      application: 'Application',
-      data_model: 'Data Model',
-      security: 'Security',
-      api: 'API',
-      ux: 'UX',
-    };
-    return nameMap[layerId] || layerId;
-  };
-
-  // Get layer color
-  const getLayerColor = (layerId: string): string => {
-    const colorMap: Record<string, string> = {
-      motivation: '#9b59b6',
-      application: '#3498db',
-      data_model: '#2ecc71',
-      security: '#e74c3c',
-      api: '#f39c12',
-      ux: '#1abc9c',
-    };
-    return colorMap[layerId] || '#95a5a6';
-  };
 
   if (!selectedNode) {
     return (

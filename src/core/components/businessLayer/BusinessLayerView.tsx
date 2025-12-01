@@ -164,9 +164,8 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
 
   // Export handlers (placeholder - to be implemented)
   const handleExport = useCallback((type: 'png' | 'svg' | 'catalog' | 'traceability') => {
-    console.log('[BusinessLayerView] Export requested:', type);
-    // TODO: Implement export functionality
-    alert(`Export as ${type.toUpperCase()} - Export functionality not yet implemented`);
+    // Export functionality to be implemented in future phase
+    setError(`Export as ${type.toUpperCase()} - Feature not yet implemented`);
   }, []);
 
   // Node interaction handlers
@@ -213,26 +212,33 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
     setFocusMode('radial');
   }, [setFocusMode]);
 
-  // Cross-layer navigation handler
+  /**
+   * Cross-layer navigation handler
+   *
+   * Dispatches a custom event that parent components can listen to for navigation.
+   * Parent component is responsible for adding/removing event listeners.
+   *
+   * Example listener setup:
+   * ```typescript
+   * useEffect(() => {
+   *   const handler = (e: CustomEvent) => {
+   *     const { layer, elementId } = e.detail;
+   *     // Navigate to layer and highlight element
+   *   };
+   *   window.addEventListener('navigate-to-layer', handler);
+   *   return () => window.removeEventListener('navigate-to-layer', handler);
+   * }, []);
+   * ```
+   */
   const handleNavigateToCrossLayer = useCallback(
     (layer: string, elementId: string) => {
-      // Navigate to target layer and highlight element
-      // This could be implemented as URL navigation or event emission
-      // For now, log the navigation request
-      console.log(`[BusinessLayerView] Navigate to ${layer} layer, element: ${elementId}`);
-
-      // Option 1: Navigate via URL (if routing is available)
-      // window.location.href = `/embedded?view=${layer}&highlight=${elementId}`;
-
-      // Option 2: Emit event for parent component to handle
+      // Emit event for parent component to handle navigation
+      // This decouples the business layer view from routing implementation
       window.dispatchEvent(
         new CustomEvent('navigate-to-layer', {
           detail: { layer, elementId },
         })
       );
-
-      // Option 3: Show alert for now (placeholder)
-      alert(`Navigate to ${layer} layer and highlight element ${elementId}`);
     },
     []
   );

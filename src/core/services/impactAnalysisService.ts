@@ -42,6 +42,17 @@ export interface ImpactAnalysisResult {
     /** Maximum path length */
     maxPathLength: number;
   };
+
+  /**
+   * Convert result to JSON-serializable format
+   * Converts Sets to arrays for proper serialization
+   */
+  toJSON(): {
+    impactedProcesses: string[];
+    impactedEdges: string[];
+    impactPaths: ImpactPath[];
+    summary: ImpactAnalysisResult['summary'];
+  };
 }
 
 /**
@@ -83,7 +94,7 @@ export function analyzeImpact(
     ? Math.max(...impactPaths.map((p) => p.length))
     : 0;
 
-  return {
+  const result: ImpactAnalysisResult = {
     impactedProcesses,
     impactedEdges,
     impactPaths,
@@ -93,7 +104,17 @@ export function analyzeImpact(
       totalImpact,
       maxPathLength,
     },
+    toJSON() {
+      return {
+        impactedProcesses: Array.from(this.impactedProcesses),
+        impactedEdges: Array.from(this.impactedEdges),
+        impactPaths: this.impactPaths,
+        summary: this.summary,
+      };
+    },
   };
+
+  return result;
 }
 
 /**

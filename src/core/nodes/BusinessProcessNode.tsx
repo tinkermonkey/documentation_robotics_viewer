@@ -11,6 +11,13 @@ export const BUSINESS_PROCESS_NODE_HEIGHT = 80;
 export const BUSINESS_PROCESS_NODE_EXPANDED_MIN_HEIGHT = 200;
 
 /**
+ * Subprocess rendering constants
+ */
+const SUBPROCESS_ITEM_HEIGHT = 24;
+const SUBPROCESS_SECTION_PADDING = 40;
+const NODE_TRANSITION_DURATION_MS = 200;
+
+/**
  * Business Process Node Component for React Flow
  * Displays business processes with metadata (owner, criticality, lifecycle, subprocess count)
  * Supports expand/collapse for processes with subprocesses
@@ -24,7 +31,9 @@ export const BusinessProcessNode = memo(({ data, id }: NodeProps<BusinessProcess
   const dynamicHeight = isExpanded && hasSubprocesses
     ? Math.max(
         BUSINESS_PROCESS_NODE_EXPANDED_MIN_HEIGHT,
-        BUSINESS_PROCESS_NODE_HEIGHT + (data.subprocesses?.length || 0) * 24 + 40
+        BUSINESS_PROCESS_NODE_HEIGHT +
+          (data.subprocesses?.length || 0) * SUBPROCESS_ITEM_HEIGHT +
+          SUBPROCESS_SECTION_PADDING
       )
     : BUSINESS_PROCESS_NODE_HEIGHT;
 
@@ -33,6 +42,7 @@ export const BusinessProcessNode = memo(({ data, id }: NodeProps<BusinessProcess
       role="article"
       aria-label={`Business Process: ${data.label}${data.owner ? `, owner: ${data.owner}` : ''}${data.criticality ? `, criticality: ${data.criticality}` : ''}`}
       aria-expanded={isExpanded}
+      className="business-process-node"
       style={{
         width: BUSINESS_PROCESS_NODE_WIDTH,
         minHeight: dynamicHeight,
@@ -43,7 +53,7 @@ export const BusinessProcessNode = memo(({ data, id }: NodeProps<BusinessProcess
         backgroundColor: data.fill || '#fff3e0',
         borderRadius: 8,
         padding: 12,
-        transition: 'min-height 200ms ease',
+        transition: `min-height ${NODE_TRANSITION_DURATION_MS}ms ease`,
       }}
     >
       {/* Handles */}

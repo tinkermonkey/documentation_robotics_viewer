@@ -7,42 +7,17 @@
 
 import { memo } from 'react';
 import { EdgeProps, BaseEdge, getSmoothStepPath, EdgeLabelRenderer } from '@xyflow/react';
-
-/**
- * Cross-layer edge data
- */
-export interface CrossLayerEdgeData {
-  targetLayer: 'motivation' | 'application' | 'data_model' | 'security' | 'api' | 'ux';
-  relationshipType: string;
-  label?: string;
-}
-
-/**
- * Get color for target layer
- */
-function getLayerColor(targetLayer: string): string {
-  switch (targetLayer) {
-    case 'motivation':
-      return '#9b59b6'; // Purple for motivation
-    case 'application':
-      return '#3498db'; // Blue for application
-    case 'data_model':
-      return '#2ecc71'; // Green for data model
-    case 'security':
-      return '#e74c3c'; // Red for security
-    case 'api':
-      return '#f39c12'; // Orange for API
-    case 'ux':
-      return '#1abc9c'; // Teal for UX
-    default:
-      return '#95a5a6'; // Gray for unknown
-  }
-}
+import { CrossLayerEdgeData } from '../types/reactflow';
+import { getLayerColor } from '../utils/layerColors';
 
 /**
  * CrossLayerEdge Component
  *
- * Renders smooth step paths with dashed lines to indicate cross-layer relationships
+ * Renders smooth step paths with dashed lines to indicate cross-layer relationships.
+ * Uses distinct colors per target layer for visual clarity.
+ *
+ * @param props - React Flow edge props with CrossLayerEdgeData
+ * @returns JSX element representing the cross-layer edge
  */
 export const CrossLayerEdge = memo(({
   id,
