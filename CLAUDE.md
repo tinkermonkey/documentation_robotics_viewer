@@ -386,7 +386,7 @@ See `documentation/YAML_MODELS.md` for complete specification and examples.
 3. Run tests to verify changes
 4. Ask the user for clarification on requirements
 
-## Motivation Layer Visualization (Phase 6 - Export & Testing)
+## Motivation Layer Export & Testing
 
 ### Export Features
 
@@ -505,7 +505,7 @@ npx playwright test --ui
 | Pan/zoom | 60fps | ReactFlow optimization |
 | Memory (1000 elements) | < 50MB | Efficient data structures |
 
-## Business Layer Visualization (Phase 7 - Export & Reporting)
+## Business Layer Export & Reporting
 
 ### Export Features
 

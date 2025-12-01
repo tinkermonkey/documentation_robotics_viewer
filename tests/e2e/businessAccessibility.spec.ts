@@ -88,8 +88,8 @@ test.describe('Business Layer Accessibility - Keyboard Navigation', () => {
         // Press Enter to select
         await page.keyboard.press('Enter');
 
-        // Wait for selection to process
-        await page.waitForFunction(() => true, { timeout: 300 });
+        // Wait for selection to process (verify DOM is stable)
+        await page.waitForFunction(() => document.readyState === 'complete');
 
         // Inspector panel should appear or node should be highlighted
         const inspectorPanel = page.locator('.process-inspector-panel').or(
@@ -108,52 +108,59 @@ test.describe('Business Layer Accessibility - Keyboard Navigation', () => {
   });
 
   test('US-14: Escape to clear selection', async ({ page }) => {
-    // Click a node to select it
-    await page.locator('.react-flow__node').first().click();
-    await page.waitForFunction(() => true, { timeout: 200 });
-
-    // Press Escape
-    await page.keyboard.press('Escape');
-
-    await page.waitForFunction(() => true, { timeout: 200 });
-
-    // Selection should be cleared (verify no focused nodes with highlighting)
-    // This is implementation-specific, but we can check that Escape doesn't cause errors
+    // Set up error tracking before actions
     const errors: string[] = [];
     page.on('console', msg => {
       if (msg.type() === 'error') errors.push(msg.text());
     });
 
-    await page.waitForFunction(() => true, { timeout: 100 });
+    // Click a node to select it
+    await page.locator('.react-flow__node').first().click();
+    await page.waitForFunction(() => document.activeElement !== null);
+
+    // Press Escape
+    await page.keyboard.press('Escape');
+
+    // Verify Escape processed without errors
+    await page.waitForFunction(() => document.readyState === 'complete');
+
+    // Selection should be cleared (verify no focused nodes with highlighting)
+    // This is implementation-specific, but we can check that Escape doesn't cause errors
     expect(errors.length).toBe(0);
   });
 
   test('US-14: Arrow keys for panning viewport', async ({ page }) => {
+    // Set up error tracking before actions
+    const errors: string[] = [];
+    page.on('console', msg => {
+      if (msg.type() === 'error') errors.push(msg.text());
+    });
+
     // Get initial viewport position (if possible)
     const viewport = page.locator('.react-flow__viewport');
 
     // Press arrow key
     await page.keyboard.press('ArrowDown');
-    await page.waitForFunction(() => true, { timeout: 100 });
+
+    // Wait for viewport to be present
+    await viewport.waitFor({ state: 'visible' });
 
     // Verify no errors occurred
-    const errors: string[] = [];
-    page.on('console', msg => {
-      if (msg.type() === 'error') errors.push(msg.text());
-    });
-
-    await page.waitForFunction(() => true, { timeout: 100 });
     expect(errors.length).toBe(0);
   });
 
   test('Keyboard zoom controls (+/-)', async ({ page }) => {
     // Press + to zoom in (if supported)
     await page.keyboard.press('+');
-    await page.waitForFunction(() => true, { timeout: 200 });
+
+    // Wait for viewport to be present and stable
+    await page.waitForSelector('.react-flow__viewport');
 
     // Press - to zoom out
     await page.keyboard.press('-');
-    await page.waitForFunction(() => true, { timeout: 200 });
+
+    // Wait for viewport to remain stable
+    await page.waitForSelector('.react-flow__viewport');
 
     // Verify no crashes
     expect(await page.locator('.react-flow__node').count()).toBeGreaterThan(0);
@@ -195,7 +202,8 @@ test.describe('Business Layer Accessibility - Screen Reader Support', () => {
     const filtersButton = page.locator('button:has-text("Filters")');
     if (await filtersButton.isVisible()) {
       await filtersButton.click();
-      await page.waitForFunction(() => true, { timeout: 300 });
+      // Wait for filters panel to appear (wait for checkboxes)
+      await page.waitForSelector('input[type="checkbox"]', { timeout: 1000 }).catch(() => {});
     }
 
     // Find filter checkboxes
@@ -357,7 +365,9 @@ test.describe('Business Layer Accessibility - Interaction Patterns', () => {
     // Tab through first few elements
     for (let i = 0; i < Math.min(5, count); i++) {
       await page.keyboard.press('Tab');
-      await page.waitForFunction(() => true, { timeout: 100 });
+
+      // Wait for focus to be set
+      await page.waitForFunction(() => document.activeElement !== null);
 
       // Verify focus moved
       const focusedElement = page.locator(':focus');
@@ -369,16 +379,18 @@ test.describe('Business Layer Accessibility - Interaction Patterns', () => {
     // Tab through interface
     for (let i = 0; i < 20; i++) {
       await page.keyboard.press('Tab');
-      await page.waitForFunction(() => true, { timeout: 50 });
+      // No need to wait - keyboard events are synchronous
     }
 
     // Should be able to continue tabbing without getting stuck
     await page.keyboard.press('Tab');
+    await page.waitForFunction(() => document.activeElement !== null);
     const focusedElement = page.locator(':focus');
     expect(await focusedElement.count()).toBeLessThanOrEqual(1);
 
     // Should be able to Shift+Tab back
     await page.keyboard.press('Shift+Tab');
+    await page.waitForFunction(() => document.activeElement !== null);
     expect(await page.locator(':focus').count()).toBeLessThanOrEqual(1);
   });
 
@@ -392,7 +404,9 @@ test.describe('Business Layer Accessibility - Interaction Patterns', () => {
 
       // Focus element
       await firstTrigger.focus();
-      await page.waitForFunction(() => true, { timeout: 500 });
+
+      // Wait for element to be focused
+      await expect(firstTrigger).toBeFocused();
 
       // Tooltip should be visible or element should have accessible description
       const title = await firstTrigger.getAttribute('title');

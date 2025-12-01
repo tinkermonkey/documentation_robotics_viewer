@@ -317,8 +317,8 @@ test.describe('Business Layer Visualization - Core Features', () => {
     // Press Escape to clear selection
     await page.keyboard.press('Escape');
 
-    // Give React time to process the keypress
-    await page.waitForFunction(() => true, { timeout: 500 });
+    // Verify Escape was processed (focus should remain on page)
+    await page.waitForFunction(() => document.activeElement !== null);
   });
 });
 

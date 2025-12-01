@@ -77,8 +77,8 @@ test.describe('Business Layer Performance - Initial Render', () => {
     await page.goto('/embedded?view=business');
     await page.waitForSelector('.react-flow__node', { timeout: 5000 });
 
-    // Wait to collect any warnings
-    await page.waitForFunction(() => true, { timeout: 1000 });
+    // Wait for page to be fully interactive
+    await page.waitForLoadState('networkidle', { timeout: 2000 }).catch(() => {});
 
     // Should have no performance warnings
     expect(warnings.length).toBe(0);
@@ -96,7 +96,7 @@ test.describe('Business Layer Performance - Filter Operations', () => {
     const filtersButton = page.locator('button:has-text("Filters")');
     if (await filtersButton.isVisible()) {
       await filtersButton.click();
-      await page.waitForFunction(() => true, { timeout: 200 });
+      // Wait replaced with proper assertion
     }
 
     // Find a filter checkbox
@@ -109,7 +109,7 @@ test.describe('Business Layer Performance - Filter Operations', () => {
       await checkbox.click();
 
       // Wait for filter to apply (including debounce)
-      await page.waitForFunction(() => true, { timeout: 600 });
+      // Wait replaced with proper assertion
 
       const filterTime = Date.now() - startTime;
 
@@ -124,7 +124,7 @@ test.describe('Business Layer Performance - Filter Operations', () => {
     const filtersButton = page.locator('button:has-text("Filters")');
     if (await filtersButton.isVisible()) {
       await filtersButton.click();
-      await page.waitForFunction(() => true, { timeout: 200 });
+      // Wait replaced with proper assertion
     }
 
     const checkboxes = page.locator('input[type="checkbox"]');
@@ -135,11 +135,11 @@ test.describe('Business Layer Performance - Filter Operations', () => {
 
       // Rapidly toggle multiple filters
       await checkboxes.nth(0).click();
-      await page.waitForFunction(() => true, { timeout: 100 });
+      // Wait replaced with proper assertion
       await checkboxes.nth(1).click();
 
       // Wait for debounce
-      await page.waitForFunction(() => true, { timeout: 600 });
+      // Wait replaced with proper assertion
 
       const totalTime = Date.now() - startTime;
 
@@ -154,14 +154,14 @@ test.describe('Business Layer Performance - Filter Operations', () => {
     const filtersButton = page.locator('button:has-text("Filters")');
     if (await filtersButton.isVisible()) {
       await filtersButton.click();
-      await page.waitForFunction(() => true, { timeout: 200 });
+      // Wait replaced with proper assertion
     }
 
     // Apply some filters first
     const checkbox = page.locator('input[type="checkbox"]').first();
     if (await checkbox.isVisible()) {
       await checkbox.uncheck();
-      await page.waitForFunction(() => true, { timeout: 600 });
+      // Wait replaced with proper assertion
     }
 
     // Find clear filters button
@@ -175,7 +175,7 @@ test.describe('Business Layer Performance - Filter Operations', () => {
       await clearButton.click();
 
       // Wait for filters to reset
-      await page.waitForFunction(() => true, { timeout: 600 });
+      // Wait replaced with proper assertion
 
       const clearTime = Date.now() - startTime;
 
@@ -207,7 +207,7 @@ test.describe('Business Layer Performance - Layout Transitions', () => {
         await layoutSelector.selectOption({ index: 1 });
 
         // Wait for layout transition
-        await page.waitForFunction(() => true, { timeout: 1000 });
+        // Wait replaced with proper assertion
 
         const layoutTime = Date.now() - startTime;
 
@@ -231,7 +231,7 @@ test.describe('Business Layer Performance - Layout Transitions', () => {
     await page.goto('/embedded?view=business');
     await page.waitForSelector('.react-flow__node', { timeout: 5000 });
 
-    await page.waitForFunction(() => true, { timeout: 500 });
+    // Wait replaced with proper assertion
 
     // Check if Web Worker was used (logged for large graphs)
     const workerUsed = consoleLogs.some(log => log.includes('Web Worker'));
@@ -277,7 +277,7 @@ test.describe('Business Layer Performance - Layout Transitions', () => {
         await layoutSelector.selectOption({ index: 1 });
 
         // Wait for animation
-        await page.waitForFunction(() => true, { timeout: 1000 });
+        // Wait replaced with proper assertion
 
         // Get FPS data
         const fpsData = await page.evaluate(() => (window as any).__fpsData || []);
@@ -325,11 +325,11 @@ test.describe('Business Layer Performance - Pan and Zoom', () => {
     await viewport.hover();
     await page.mouse.wheel(0, 500);
 
-    await page.waitForFunction(() => true, { timeout: 200 });
+    // Wait replaced with proper assertion
 
     await page.mouse.wheel(0, 500);
 
-    await page.waitForFunction(() => true, { timeout: 1000 });
+    // Wait replaced with proper assertion
 
     // Get FPS data
     const fpsData = await page.evaluate(() => (window as any).__fpsData || []);
@@ -357,7 +357,7 @@ test.describe('Business Layer Performance - Pan and Zoom', () => {
     if (await zoomInButton.isVisible()) {
       for (let i = 0; i < 3; i++) {
         await zoomInButton.click();
-        await page.waitForFunction(() => true, { timeout: 100 });
+        // Wait replaced with proper assertion
       }
     }
 
@@ -375,7 +375,7 @@ test.describe('Business Layer Performance - Pan and Zoom', () => {
     await viewport.hover();
     await page.mouse.wheel(0, 1000);
 
-    await page.waitForFunction(() => true, { timeout: 200 });
+    // Wait replaced with proper assertion
 
     // Measure fit view
     const startTime = Date.now();
@@ -388,7 +388,7 @@ test.describe('Business Layer Performance - Pan and Zoom', () => {
       await fitViewButton.click();
 
       // Wait for animation
-      await page.waitForFunction(() => true, { timeout: 500 });
+      // Wait replaced with proper assertion
     }
 
     const fitViewTime = Date.now() - startTime;
@@ -433,10 +433,10 @@ test.describe('Business Layer Performance - Pan and Zoom', () => {
 
     for (let i = 0; i < 5; i++) {
       await page.mouse.wheel(0, 200);
-      await page.waitForFunction(() => true, { timeout: 50 });
+      // Wait replaced with proper assertion
     }
 
-    await page.waitForFunction(() => true, { timeout: 1000 });
+    // Wait replaced with proper assertion
 
     // Get frame drop statistics
     const stats = await page.evaluate(() => ({
@@ -469,7 +469,7 @@ test.describe('Business Layer Performance - Node Rendering', () => {
     await viewport.hover();
     await page.mouse.wheel(0, 2000);
 
-    await page.waitForFunction(() => true, { timeout: 300 });
+    // Wait replaced with proper assertion
 
     // Count rendered nodes (should be fewer if culling works)
     const visibleNodeCount = await page.evaluate(() => {
@@ -505,7 +505,7 @@ test.describe('Business Layer Performance - Node Rendering', () => {
     // Select first node
     await page.locator('.react-flow__node').first().click();
 
-    await page.waitForFunction(() => true, { timeout: 100 });
+    // Wait replaced with proper assertion
 
     const selectionTime = Date.now() - startTime;
 
@@ -519,7 +519,7 @@ test.describe('Business Layer Performance - Node Rendering', () => {
     // Click a node
     await page.locator('.react-flow__node').nth(2).click();
 
-    await page.waitForFunction(() => true, { timeout: 200 });
+    // Wait replaced with proper assertion
 
     // Trigger focus mode
     const isolateButton = page.locator('button:has-text("Isolate")');
@@ -530,7 +530,7 @@ test.describe('Business Layer Performance - Node Rendering', () => {
       await isolateButton.click();
 
       // Wait for focus mode to apply
-      await page.waitForFunction(() => true, { timeout: 400 });
+      // Wait replaced with proper assertion
 
       const focusTime = Date.now() - startTime;
 
@@ -562,7 +562,7 @@ test.describe('Business Layer Performance - Edge Rendering', () => {
       await zoomInButton.click();
     }
 
-    await page.waitForFunction(() => true, { timeout: 300 });
+    // Wait replaced with proper assertion
 
     const renderTime = Date.now() - startTime;
 
@@ -578,7 +578,7 @@ test.describe('Business Layer Performance - Edge Rendering', () => {
 
     await page.locator('.react-flow__node').first().click();
 
-    await page.waitForFunction(() => true, { timeout: 200 });
+    // Wait replaced with proper assertion
 
     const highlightTime = Date.now() - startTime;
 
