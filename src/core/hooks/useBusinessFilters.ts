@@ -157,16 +157,16 @@ export function useAvailableFilters(businessGraph: BusinessGraph | null) {
       return {
         types: [] as BusinessNodeType[],
         domains: [] as string[],
-        lifecycles: [] as string[],
-        criticalities: [] as string[],
+        lifecycles: [] as ('ideation' | 'active' | 'deprecated')[],
+        criticalities: [] as ('high' | 'medium' | 'low')[],
       };
     }
 
     return {
       types: Array.from(businessGraph.indices.byType.keys()),
       domains: Array.from(businessGraph.indices.byDomain.keys()),
-      lifecycles: Array.from(businessGraph.indices.byLifecycle.keys()),
-      criticalities: Array.from(businessGraph.indices.byCriticality.keys()),
+      lifecycles: Array.from(businessGraph.indices.byLifecycle.keys()) as ('ideation' | 'active' | 'deprecated')[],
+      criticalities: Array.from(businessGraph.indices.byCriticality.keys()) as ('high' | 'medium' | 'low')[],
     };
   }, [businessGraph]);
 }

@@ -229,8 +229,8 @@ export const BusinessLayerControls: React.FC<BusinessLayerControlsProps> = ({
               >
                 <input
                   type="checkbox"
-                  checked={filters.lifecycles.has(lifecycle as any)}
-                  onChange={() => toggleLifecycleFilter(lifecycle as any)}
+                  checked={filters.lifecycles.has(lifecycle)}
+                  onChange={() => toggleLifecycleFilter(lifecycle)}
                   style={{ cursor: 'pointer' }}
                 />
                 <span style={{ textTransform: 'capitalize' }}>
@@ -262,8 +262,8 @@ export const BusinessLayerControls: React.FC<BusinessLayerControlsProps> = ({
               >
                 <input
                   type="checkbox"
-                  checked={filters.criticalities.has(criticality as any)}
-                  onChange={() => toggleCriticalityFilter(criticality as any)}
+                  checked={filters.criticalities.has(criticality)}
+                  onChange={() => toggleCriticalityFilter(criticality)}
                   style={{ cursor: 'pointer' }}
                 />
                 <span style={{ textTransform: 'capitalize' }}>

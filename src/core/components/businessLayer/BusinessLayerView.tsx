@@ -14,10 +14,11 @@ import {
   useNodesState,
   useEdgesState,
   Panel,
+  Node,
+  Edge,
 } from '@xyflow/react';
 import { MetaModel } from '../../types/model';
 import { BusinessGraph } from '../../types/businessLayer';
-import { AppNode } from '../../types/reactflow';
 import { BusinessLayerParser } from '../../services/businessLayerParser';
 import { BusinessGraphBuilder } from '../../services/businessGraphBuilder';
 import { BusinessNodeTransformer } from '../../services/businessNodeTransformer';
@@ -39,8 +40,8 @@ interface BusinessLayerViewProps {
  */
 export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) => {
   const [businessGraph, setBusinessGraph] = useState<BusinessGraph | null>(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -215,7 +216,7 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
         <Controls />
         <MiniMap
           nodeColor={(node) => {
-            return node.data.fill || '#e0e0e0';
+            return (node.data?.fill as string) || '#e0e0e0';
           }}
           maskColor="rgba(0, 0, 0, 0.1)"
           style={{

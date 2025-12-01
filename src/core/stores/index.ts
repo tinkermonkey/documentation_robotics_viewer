@@ -4,4 +4,7 @@
 
 export * from './modelStore';
 export * from './layerStore';
-// Note: businessLayerStore has been moved to src/stores/businessLayerStore.ts
+
+// Re-export businessLayerStore from src/stores for convenience
+// (actual store is in src/stores/ to align with embedded app pattern)
+export * from '../../stores/businessLayerStore';

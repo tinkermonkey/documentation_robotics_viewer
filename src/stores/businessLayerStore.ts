@@ -102,7 +102,14 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
       },
 
       clearFilters: () => {
-        set({ filters: defaultFilters });
+        set({
+          filters: {
+            types: new Set<BusinessNodeType>(),
+            domains: new Set<string>(),
+            lifecycles: new Set<'ideation' | 'active' | 'deprecated'>(),
+            criticalities: new Set<'high' | 'medium' | 'low'>(),
+          },
+        });
       },
 
       toggleTypeFilter: (type) => {

@@ -202,14 +202,14 @@ test.describe('Business Layer Filtering (E2E)', () => {
     await expect(page.locator('button:has-text("Export Traceability")')).toBeVisible();
   });
 
-  test('should show placeholder alert for export (Phase 7)', async ({ page }) => {
+  test('should show placeholder alert for export', async ({ page }) => {
     // Load demo model
     await page.click('button:has-text("Load Demo")');
     await page.waitForTimeout(1000);
 
     // Listen for alert dialog
     page.on('dialog', async (dialog) => {
-      expect(dialog.message()).toContain('Coming in Phase 7');
+      expect(dialog.message()).toContain('Export functionality not yet implemented');
       await dialog.accept();
     });
 
