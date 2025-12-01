@@ -364,8 +364,9 @@ test.describe('Business Layer Export', () => {
 
     // Wait for first export to complete using button state
     await page.waitForFunction(() => {
-      const button = document.querySelector('button:has-text("Export Graph Data")');
-      return button && !button.disabled;
+      const buttons = [...document.querySelectorAll('button')];
+      const button = buttons.find(b => b.textContent?.includes('Export Graph Data'));
+      return button && !(button as HTMLButtonElement).disabled;
     }, { timeout: 5000 });
 
     const download2Promise = page.waitForEvent('download');
