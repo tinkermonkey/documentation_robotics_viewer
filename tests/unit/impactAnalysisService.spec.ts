@@ -2,7 +2,7 @@
  * Unit tests for impact analysis service
  */
 
-import { describe, it, expect } from 'vitest';
+import { test, expect } from '@playwright/test';
 import {
   analyzeImpact,
   analyzeUpstream,
@@ -92,8 +92,8 @@ function createMockGraph(): BusinessGraph {
   };
 }
 
-describe('analyzeImpact', () => {
-  it('should identify direct impact for a single changed node', () => {
+test.describe('analyzeImpact', () => {
+  test('should identify direct impact for a single changed node', () => {
     const graph = createMockGraph();
     const changedNodes = new Set(['node-1']);
 
@@ -104,7 +104,7 @@ describe('analyzeImpact', () => {
     expect(result.summary.totalImpact).toBe(5);
   });
 
-  it('should identify all downstream nodes when root node changes', () => {
+  test('should identify all downstream nodes when root node changes', () => {
     const graph = createMockGraph();
     const changedNodes = new Set(['node-1']);
 
@@ -117,7 +117,7 @@ describe('analyzeImpact', () => {
     expect(result.impactedProcesses.has('node-5')).toBe(true);
   });
 
-  it('should identify all impacted edges', () => {
+  test('should identify all impacted edges', () => {
     const graph = createMockGraph();
     const changedNodes = new Set(['node-1']);
 
@@ -129,7 +129,7 @@ describe('analyzeImpact', () => {
     expect(result.impactedEdges.has('edge-4-5')).toBe(true);
   });
 
-  it('should identify impact paths', () => {
+  test('should identify impact paths', () => {
     const graph = createMockGraph();
     const changedNodes = new Set(['node-1']);
 
@@ -139,7 +139,7 @@ describe('analyzeImpact', () => {
     expect(result.summary.maxPathLength).toBe(5); // node-1 → node-2 → node-3 → node-4 → node-5
   });
 
-  it('should handle mid-chain changes correctly', () => {
+  test('should handle mid-chain changes correctly', () => {
     const graph = createMockGraph();
     const changedNodes = new Set(['node-3']);
 
@@ -154,7 +154,7 @@ describe('analyzeImpact', () => {
     expect(result.impactedProcesses.has('node-2')).toBe(false);
   });
 
-  it('should handle leaf node changes correctly', () => {
+  test('should handle leaf node changes correctly', () => {
     const graph = createMockGraph();
     const changedNodes = new Set(['node-5']);
 
@@ -165,7 +165,7 @@ describe('analyzeImpact', () => {
     expect(result.summary.totalImpact).toBe(1);
   });
 
-  it('should handle multiple changed nodes', () => {
+  test('should handle multiple changed nodes', () => {
     const graph = createMockGraph();
     const changedNodes = new Set(['node-1', 'node-3']);
 
@@ -179,7 +179,7 @@ describe('analyzeImpact', () => {
     expect(result.impactedProcesses.has('node-5')).toBe(true);
   });
 
-  it('should handle empty changed nodes', () => {
+  test('should handle empty changed nodes', () => {
     const graph = createMockGraph();
     const changedNodes = new Set<string>();
 
@@ -190,7 +190,7 @@ describe('analyzeImpact', () => {
     expect(result.summary.totalImpact).toBe(0);
   });
 
-  it('should handle circular dependencies gracefully', () => {
+  test('should handle circular dependencies gracefully', () => {
     const graph = createMockGraph();
 
     // Add circular edge: 5 → 1
@@ -210,8 +210,8 @@ describe('analyzeImpact', () => {
   });
 });
 
-describe('analyzeUpstream', () => {
-  it('should identify all upstream nodes', () => {
+test.describe('analyzeUpstream', () => {
+  test('should identify all upstream nodes', () => {
     const graph = createMockGraph();
 
     const upstream = analyzeUpstream('node-5', graph);
@@ -223,7 +223,7 @@ describe('analyzeUpstream', () => {
     expect(upstream.size).toBe(4);
   });
 
-  it('should handle root nodes (no upstream)', () => {
+  test('should handle root nodes (no upstream)', () => {
     const graph = createMockGraph();
 
     const upstream = analyzeUpstream('node-1', graph);
@@ -231,7 +231,7 @@ describe('analyzeUpstream', () => {
     expect(upstream.size).toBe(0);
   });
 
-  it('should handle mid-chain nodes', () => {
+  test('should handle mid-chain nodes', () => {
     const graph = createMockGraph();
 
     const upstream = analyzeUpstream('node-3', graph);
@@ -242,8 +242,8 @@ describe('analyzeUpstream', () => {
   });
 });
 
-describe('findPathsBetween', () => {
-  it('should find direct path between adjacent nodes', () => {
+test.describe('findPathsBetween', () => {
+  test('should find direct path between adjacent nodes', () => {
     const graph = createMockGraph();
 
     const paths = findPathsBetween('node-1', 'node-2', graph);
@@ -252,7 +252,7 @@ describe('findPathsBetween', () => {
     expect(paths[0]).toEqual(['node-1', 'node-2']);
   });
 
-  it('should find path across multiple hops', () => {
+  test('should find path across multiple hops', () => {
     const graph = createMockGraph();
 
     const paths = findPathsBetween('node-1', 'node-5', graph);
@@ -261,7 +261,7 @@ describe('findPathsBetween', () => {
     expect(paths[0]).toEqual(['node-1', 'node-2', 'node-3', 'node-4', 'node-5']);
   });
 
-  it('should return empty array when no path exists', () => {
+  test('should return empty array when no path exists', () => {
     const graph = createMockGraph();
 
     // No path from 5 → 1 in original graph
@@ -270,7 +270,7 @@ describe('findPathsBetween', () => {
     expect(paths.length).toBe(0);
   });
 
-  it('should find multiple paths if they exist', () => {
+  test('should find multiple paths if they exist', () => {
     const graph = createMockGraph();
 
     // Add alternate path: 1 → 3 (skip node-2)
@@ -287,7 +287,7 @@ describe('findPathsBetween', () => {
     expect(paths.length).toBe(2);
   });
 
-  it('should respect maxDepth limit', () => {
+  test('should respect maxDepth limit', () => {
     const graph = createMockGraph();
 
     const paths = findPathsBetween('node-1', 'node-5', graph, 3);
@@ -297,8 +297,8 @@ describe('findPathsBetween', () => {
   });
 });
 
-describe('isolateNode', () => {
-  it('should include node itself and immediate neighbors', () => {
+test.describe('isolateNode', () => {
+  test('should include node itself and immediate neighbors', () => {
     const graph = createMockGraph();
 
     const visible = isolateNode('node-3', graph);
@@ -309,7 +309,7 @@ describe('isolateNode', () => {
     expect(visible.size).toBe(3);
   });
 
-  it('should handle root nodes (only downstream neighbors)', () => {
+  test('should handle root nodes (only downstream neighbors)', () => {
     const graph = createMockGraph();
 
     const visible = isolateNode('node-1', graph);
@@ -319,7 +319,7 @@ describe('isolateNode', () => {
     expect(visible.size).toBe(2);
   });
 
-  it('should handle leaf nodes (only upstream neighbors)', () => {
+  test('should handle leaf nodes (only upstream neighbors)', () => {
     const graph = createMockGraph();
 
     const visible = isolateNode('node-5', graph);
@@ -329,7 +329,7 @@ describe('isolateNode', () => {
     expect(visible.size).toBe(2);
   });
 
-  it('should include second-degree neighbors when requested', () => {
+  test('should include second-degree neighbors when requested', () => {
     const graph = createMockGraph();
 
     const visible = isolateNode('node-3', graph, true);
@@ -342,7 +342,7 @@ describe('isolateNode', () => {
     expect(visible.size).toBe(5);
   });
 
-  it('should handle orphaned nodes (no neighbors)', () => {
+  test('should handle orphaned nodes (no neighbors)', () => {
     const graph = createMockGraph();
 
     // Add orphaned node

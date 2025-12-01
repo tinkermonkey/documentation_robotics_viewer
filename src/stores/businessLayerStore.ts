@@ -214,6 +214,11 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
       // Custom serialization for Sets and Maps
       storage: {
         getItem: (name) => {
+          // Check if localStorage is available (not in SSR/Node.js)
+          if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+            return null;
+          }
+
           try {
             const str = localStorage.getItem(name);
             if (!str) return null;
@@ -269,6 +274,11 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
         },
 
         setItem: (name, newValue: any) => {
+          // Check if localStorage is available (not in SSR/Node.js)
+          if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+            return;
+          }
+
           try {
             const str = JSON.stringify({
               state: {
@@ -298,6 +308,11 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
         },
 
         removeItem: (name) => {
+          // Check if localStorage is available (not in SSR/Node.js)
+          if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+            return;
+          }
+
           try {
             localStorage.removeItem(name);
           } catch (error) {

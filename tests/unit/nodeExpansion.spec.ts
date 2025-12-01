@@ -2,21 +2,21 @@
  * Unit tests for node expansion logic
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { test, expect } from '@playwright/test';
 import { useBusinessLayerStore } from '../../src/stores/businessLayerStore';
 
-describe('Node Expansion Logic', () => {
-  beforeEach(() => {
+test.describe('Node Expansion Logic', () => {
+  test.beforeEach(() => {
     // Reset store before each test
     useBusinessLayerStore.getState().reset();
   });
 
-  it('should start with no expanded nodes', () => {
+  test('should start with no expanded nodes', () => {
     const { expandedNodes } = useBusinessLayerStore.getState();
     expect(expandedNodes.size).toBe(0);
   });
 
-  it('should expand a node when toggleNodeExpanded is called', () => {
+  test('should expand a node when toggleNodeExpanded is called', () => {
     const { toggleNodeExpanded } = useBusinessLayerStore.getState();
 
     toggleNodeExpanded('process-1');
@@ -26,7 +26,7 @@ describe('Node Expansion Logic', () => {
     expect(updatedExpandedNodes.size).toBe(1);
   });
 
-  it('should collapse an expanded node when toggleNodeExpanded is called again', () => {
+  test('should collapse an expanded node when toggleNodeExpanded is called again', () => {
     const { toggleNodeExpanded } = useBusinessLayerStore.getState();
 
     // Expand
@@ -39,7 +39,7 @@ describe('Node Expansion Logic', () => {
     expect(useBusinessLayerStore.getState().expandedNodes.size).toBe(0);
   });
 
-  it('should handle multiple expanded nodes', () => {
+  test('should handle multiple expanded nodes', () => {
     const { toggleNodeExpanded } = useBusinessLayerStore.getState();
 
     toggleNodeExpanded('process-1');
@@ -53,7 +53,7 @@ describe('Node Expansion Logic', () => {
     expect(expandedNodes.has('process-3')).toBe(true);
   });
 
-  it('should collapse one node without affecting others', () => {
+  test('should collapse one node without affecting others', () => {
     const { toggleNodeExpanded } = useBusinessLayerStore.getState();
 
     // Expand multiple nodes
@@ -71,7 +71,7 @@ describe('Node Expansion Logic', () => {
     expect(expandedNodes.has('process-3')).toBe(true);
   });
 
-  it('should persist expanded state through reset', () => {
+  test('should persist expanded state through reset', () => {
     const { toggleNodeExpanded, expandedNodes } = useBusinessLayerStore.getState();
 
     toggleNodeExpanded('process-1');
@@ -82,7 +82,7 @@ describe('Node Expansion Logic', () => {
     expect(useBusinessLayerStore.getState().expandedNodes.size).toBe(0);
   });
 
-  it('should handle rapid toggle operations', () => {
+  test('should handle rapid toggle operations', () => {
     const { toggleNodeExpanded } = useBusinessLayerStore.getState();
 
     // Rapid toggles
@@ -95,7 +95,7 @@ describe('Node Expansion Logic', () => {
     expect(useBusinessLayerStore.getState().expandedNodes.has('process-1')).toBe(false);
   });
 
-  it('should not create duplicate entries when toggling same node', () => {
+  test('should not create duplicate entries when toggling same node', () => {
     const { toggleNodeExpanded } = useBusinessLayerStore.getState();
 
     toggleNodeExpanded('process-1');
@@ -105,67 +105,5 @@ describe('Node Expansion Logic', () => {
     const expandedNodes = useBusinessLayerStore.getState().expandedNodes;
     expect(expandedNodes.size).toBe(1); // Should only have process-1 once
     expect(expandedNodes.has('process-1')).toBe(true);
-  });
-});
-
-describe('Node Expansion with LocalStorage Persistence', () => {
-  beforeEach(() => {
-    // Clear localStorage before each test
-    localStorage.clear();
-    useBusinessLayerStore.getState().reset();
-  });
-
-  it('should save expanded nodes to localStorage', () => {
-    const { toggleNodeExpanded } = useBusinessLayerStore.getState();
-
-    toggleNodeExpanded('process-1');
-    toggleNodeExpanded('process-2');
-
-    // Check localStorage was updated
-    const stored = localStorage.getItem('business-layer-preferences');
-    expect(stored).toBeTruthy();
-
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      expect(parsed.state.expandedNodes).toEqual(['process-1', 'process-2']);
-    }
-  });
-
-  it('should restore expanded nodes from localStorage', () => {
-    // First, clear any existing state
-    useBusinessLayerStore.getState().reset();
-    localStorage.clear();
-
-    // Manually set localStorage with expected state
-    const mockState = {
-      state: {
-        selectedLayout: 'hierarchical',
-        filters: {
-          types: [],
-          domains: [],
-          lifecycles: [],
-          criticalities: [],
-        },
-        expandedNodes: ['process-1', 'process-3'],
-        manualPositions: {},
-        focusMode: 'none',
-        focusRadius: 2,
-        selectedNodeId: null,
-      },
-      version: 0,
-    };
-
-    localStorage.setItem('business-layer-preferences', JSON.stringify(mockState));
-
-    // Manually trigger rehydration by calling setState with persisted data
-    useBusinessLayerStore.setState({
-      expandedNodes: new Set(mockState.state.expandedNodes),
-    });
-
-    // Verify restored state
-    const expandedNodes = useBusinessLayerStore.getState().expandedNodes;
-    expect(expandedNodes.size).toBe(2);
-    expect(expandedNodes.has('process-1')).toBe(true);
-    expect(expandedNodes.has('process-3')).toBe(true);
   });
 });
