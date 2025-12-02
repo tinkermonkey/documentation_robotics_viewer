@@ -245,6 +245,16 @@ export class NodeTransformer {
       'BusinessProcess': 'businessProcess',
       'json-schema-element': 'jsonSchema',
       'layer-container': 'layerContainer',
+      // C4 node types
+      'c4-container': 'c4Container',
+      'C4Container': 'c4Container',
+      'Container': 'c4Container',
+      'c4-component': 'c4Component',
+      'C4Component': 'c4Component',
+      'c4-external-actor': 'c4ExternalActor',
+      'C4ExternalActor': 'c4ExternalActor',
+      'ExternalActor': 'c4ExternalActor',
+      'ExternalSystem': 'c4ExternalActor',
     };
 
     return typeMap[element.type] || 'businessProcess';
@@ -306,6 +316,27 @@ export class NodeTransformer {
         scope: element.properties.scope || 'resource',
         resource: element.properties.resource,
         action: element.properties.action,
+      };
+    } else if (nodeType === 'c4Container') {
+      return {
+        ...baseData,
+        containerType: element.properties.containerType || 'other',
+        technology: element.properties.technology || [],
+        description: element.properties.description || element.description,
+      };
+    } else if (nodeType === 'c4Component') {
+      return {
+        ...baseData,
+        role: element.properties.role,
+        technology: element.properties.technology || [],
+        description: element.properties.description || element.description,
+        interfaces: element.properties.interfaces || [],
+      };
+    } else if (nodeType === 'c4ExternalActor') {
+      return {
+        ...baseData,
+        actorType: element.properties.actorType || 'user',
+        description: element.properties.description || element.description,
       };
     }
 
@@ -384,6 +415,30 @@ export class NodeTransformer {
             element.visual.size = {
               width: 180,
               height: 100,
+            };
+            break;
+
+          case 'c4Container':
+            // C4 ContainerNode: fixed dimensions from ContainerNode.tsx
+            element.visual.size = {
+              width: 280,
+              height: 180,
+            };
+            break;
+
+          case 'c4Component':
+            // C4 ComponentNode: fixed dimensions from ComponentNode.tsx
+            element.visual.size = {
+              width: 240,
+              height: 140,
+            };
+            break;
+
+          case 'c4ExternalActor':
+            // C4 ExternalActorNode: fixed dimensions from ExternalActorNode.tsx
+            element.visual.size = {
+              width: 160,
+              height: 120,
             };
             break;
 

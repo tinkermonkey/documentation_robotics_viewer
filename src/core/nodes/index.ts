@@ -23,6 +23,11 @@ import {
   ValueStreamNode,
   AssessmentNode,
 } from './motivation';
+import {
+  ContainerNode,
+  ComponentNode,
+  ExternalActorNode,
+} from './c4';
 
 // Export all node components
 export {
@@ -44,6 +49,10 @@ export {
   AssumptionNode,
   ValueStreamNode,
   AssessmentNode,
+  // C4 nodes
+  ContainerNode,
+  ComponentNode,
+  ExternalActorNode,
 };
 
 // Node types object for React Flow
@@ -67,4 +76,8 @@ export const nodeTypes = {
   assumption: AssumptionNode,
   valueStream: ValueStreamNode,
   assessment: AssessmentNode,
+  // C4 node types
+  c4Container: ContainerNode,
+  c4Component: ComponentNode,
+  c4ExternalActor: ExternalActorNode,
 };
