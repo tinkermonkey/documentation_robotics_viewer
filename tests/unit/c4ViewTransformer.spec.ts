@@ -1043,6 +1043,254 @@ test.describe('C4ViewTransformer', () => {
     });
   });
 
+  test.describe('Scenario Presets', () => {
+    test('should apply dataFlow preset to filter data-related containers', () => {
+      const apiContainer = createC4Node('api1', 'API Gateway', C4Type.Container, {
+        containerType: ContainerType.Api,
+      });
+      const dbContainer = createC4Node('db1', 'Database', C4Type.Container, {
+        containerType: ContainerType.Database,
+      });
+      const queueContainer = createC4Node('q1', 'Message Queue', C4Type.Container, {
+        containerType: ContainerType.MessageQueue,
+      });
+      const webApp = createC4Node('web1', 'Web App', C4Type.Container, {
+        containerType: ContainerType.WebApp,
+      });
+
+      const edge = createC4Edge('e1', 'api1', 'db1', { protocol: ProtocolType.JDBC });
+      const graph = createTestC4Graph([apiContainer, dbContainer, queueContainer, webApp], [edge]);
+
+      transformer.setOptions({
+        viewLevel: 'context',
+        scenarioPreset: 'dataFlow',
+      });
+      const result = transformer.transform(graph);
+
+      // Should include data-related containers
+      const nodeIds = result.nodes.map((n) => n.id);
+      expect(nodeIds).toContain('db1');
+      expect(nodeIds).toContain('q1');
+      // API is connected to database, so should be included
+      expect(nodeIds).toContain('api1');
+    });
+
+    test('should apply apiSurface preset to filter external interfaces', () => {
+      const apiContainer = createC4Node('api1', 'API Gateway', C4Type.Container, {
+        containerType: ContainerType.Api,
+      });
+      const external = createC4Node('ext1', 'External User', C4Type.External);
+      const dbContainer = createC4Node('db1', 'Database', C4Type.Container, {
+        containerType: ContainerType.Database,
+      });
+
+      const edge = createC4Edge('e1', 'ext1', 'api1');
+      const graph = createTestC4Graph([apiContainer, external, dbContainer], [edge]);
+
+      transformer.setOptions({
+        viewLevel: 'context',
+        scenarioPreset: 'apiSurface',
+      });
+      const result = transformer.transform(graph);
+
+      // Should include API containers and external actors
+      const nodeIds = result.nodes.map((n) => n.id);
+      expect(nodeIds).toContain('api1');
+      expect(nodeIds).toContain('ext1');
+    });
+
+    test('should return all nodes when no preset is active', () => {
+      const containers = [
+        createC4Node('c1', 'Container 1', C4Type.Container),
+        createC4Node('c2', 'Container 2', C4Type.Container),
+        createC4Node('c3', 'Container 3', C4Type.Container),
+      ];
+
+      const graph = createTestC4Graph(containers);
+
+      transformer.setOptions({
+        viewLevel: 'context',
+        scenarioPreset: null,
+      });
+      const result = transformer.transform(graph);
+
+      expect(result.nodes.length).toBe(3);
+    });
+  });
+
+  test.describe('Changeset Filtering', () => {
+    test('should show only changeset elements when filter is active', () => {
+      const normalContainer = createC4Node('c1', 'Normal', C4Type.Container);
+      const newContainer = createC4Node('c2', 'New', C4Type.Container, {
+        changesetStatus: 'new',
+      });
+      const modifiedContainer = createC4Node('c3', 'Modified', C4Type.Container, {
+        changesetStatus: 'modified',
+      });
+
+      const graph = createTestC4Graph([normalContainer, newContainer, modifiedContainer]);
+
+      transformer.setOptions({
+        viewLevel: 'context',
+        showOnlyChangeset: true,
+      });
+      const result = transformer.transform(graph);
+
+      const nodeIds = result.nodes.map((n) => n.id);
+      expect(nodeIds).toContain('c2');
+      expect(nodeIds).toContain('c3');
+      expect(nodeIds).not.toContain('c1');
+    });
+
+    test('should show all elements when changeset filter is off', () => {
+      const normalContainer = createC4Node('c1', 'Normal', C4Type.Container);
+      const newContainer = createC4Node('c2', 'New', C4Type.Container, {
+        changesetStatus: 'new',
+      });
+
+      const graph = createTestC4Graph([normalContainer, newContainer]);
+
+      transformer.setOptions({
+        viewLevel: 'context',
+        showOnlyChangeset: false,
+      });
+      const result = transformer.transform(graph);
+
+      expect(result.nodes.length).toBe(2);
+    });
+
+    test('should include edges connecting changed nodes', () => {
+      const newContainer = createC4Node('c1', 'New', C4Type.Container, {
+        changesetStatus: 'new',
+      });
+      const modifiedContainer = createC4Node('c2', 'Modified', C4Type.Container, {
+        changesetStatus: 'modified',
+      });
+      const edge = createC4Edge('e1', 'c1', 'c2');
+
+      const graph = createTestC4Graph([newContainer, modifiedContainer], [edge]);
+
+      transformer.setOptions({
+        viewLevel: 'context',
+        showOnlyChangeset: true,
+      });
+      const result = transformer.transform(graph);
+
+      expect(result.edges.length).toBe(1);
+    });
+  });
+
+  test.describe('Relationship Bundling', () => {
+    test('should bundle 3+ edges between same node pair', () => {
+      const c1 = createC4Node('c1', 'Container 1', C4Type.Container);
+      const c2 = createC4Node('c2', 'Container 2', C4Type.Container);
+      const e1 = createC4Edge('e1', 'c1', 'c2', { protocol: ProtocolType.REST });
+      const e2 = createC4Edge('e2', 'c1', 'c2', { protocol: ProtocolType.gRPC });
+      const e3 = createC4Edge('e3', 'c1', 'c2', { protocol: ProtocolType.GraphQL });
+
+      const graph = createTestC4Graph([c1, c2], [e1, e2, e3]);
+
+      const result = transformer.transform(graph);
+
+      // Should bundle into single edge
+      expect(result.edges.length).toBe(1);
+      expect(result.edges[0].data.isBundled).toBe(true);
+      expect(result.edges[0].data.bundleCount).toBe(3);
+    });
+
+    test('should not bundle fewer than 3 edges', () => {
+      const c1 = createC4Node('c1', 'Container 1', C4Type.Container);
+      const c2 = createC4Node('c2', 'Container 2', C4Type.Container);
+      const e1 = createC4Edge('e1', 'c1', 'c2', { protocol: ProtocolType.REST });
+      const e2 = createC4Edge('e2', 'c1', 'c2', { protocol: ProtocolType.gRPC });
+
+      const graph = createTestC4Graph([c1, c2], [e1, e2]);
+
+      const result = transformer.transform(graph);
+
+      // Should keep individual edges
+      expect(result.edges.length).toBe(2);
+      expect(result.edges[0].data.isBundled).toBeUndefined();
+    });
+
+    test('should include protocols in bundle label', () => {
+      const c1 = createC4Node('c1', 'Container 1', C4Type.Container);
+      const c2 = createC4Node('c2', 'Container 2', C4Type.Container);
+      const e1 = createC4Edge('e1', 'c1', 'c2', { protocol: ProtocolType.REST });
+      const e2 = createC4Edge('e2', 'c1', 'c2', { protocol: ProtocolType.gRPC });
+      const e3 = createC4Edge('e3', 'c1', 'c2', { protocol: ProtocolType.REST });
+
+      const graph = createTestC4Graph([c1, c2], [e1, e2, e3]);
+
+      transformer.setOptions({
+        semanticZoom: { enabled: true, currentScale: 1.0 },
+      });
+      const result = transformer.transform(graph);
+
+      // Bundle label should include connection count
+      expect(result.edges[0].label).toContain('3 connections');
+    });
+
+    test('should animate bundle if any edge is async', () => {
+      const c1 = createC4Node('c1', 'Container 1', C4Type.Container);
+      const c2 = createC4Node('c2', 'Container 2', C4Type.Container);
+      const e1 = createC4Edge('e1', 'c1', 'c2', { direction: CommunicationDirection.Sync });
+      const e2 = createC4Edge('e2', 'c1', 'c2', { direction: CommunicationDirection.Async });
+      const e3 = createC4Edge('e3', 'c1', 'c2', { direction: CommunicationDirection.Sync });
+
+      const graph = createTestC4Graph([c1, c2], [e1, e2, e3]);
+
+      const result = transformer.transform(graph);
+
+      expect(result.edges[0].animated).toBe(true);
+    });
+
+    test('should use dashed stroke for bundled edges', () => {
+      const c1 = createC4Node('c1', 'Container 1', C4Type.Container);
+      const c2 = createC4Node('c2', 'Container 2', C4Type.Container);
+      const e1 = createC4Edge('e1', 'c1', 'c2');
+      const e2 = createC4Edge('e2', 'c1', 'c2');
+      const e3 = createC4Edge('e3', 'c1', 'c2');
+
+      const graph = createTestC4Graph([c1, c2], [e1, e2, e3]);
+
+      const result = transformer.transform(graph);
+
+      expect(result.edges[0].style?.strokeDasharray).toBeDefined();
+    });
+  });
+
+  test.describe('Focus+Context with Neighbors', () => {
+    test('should highlight immediate neighbors with medium opacity', () => {
+      const c1 = createC4Node('c1', 'Container 1', C4Type.Container);
+      const c2 = createC4Node('c2', 'Container 2', C4Type.Container);
+      const c3 = createC4Node('c3', 'Container 3', C4Type.Container);
+      const e1 = createC4Edge('e1', 'c1', 'c2');
+
+      const graph = createTestC4Graph([c1, c2, c3], [e1]);
+
+      transformer.setOptions({
+        viewLevel: 'context',
+        focusContext: {
+          enabled: true,
+          focusedNodeId: 'c1',
+          dimmedOpacity: 0.3,
+        },
+      });
+      const result = transformer.transform(graph);
+
+      const c1Node = result.nodes.find((n) => n.id === 'c1');
+      const c2Node = result.nodes.find((n) => n.id === 'c2');
+      const c3Node = result.nodes.find((n) => n.id === 'c3');
+
+      expect(c1Node?.data.opacity).toBe(1.0); // Focused
+      // c2 is neighbor, so should have medium or full opacity
+      expect(c2Node?.data.opacity).toBeGreaterThanOrEqual(0.3);
+      // c3 is distant, so should be dimmed
+      expect(c3Node?.data.opacity).toBe(0.3);
+    });
+  });
+
   test.describe('Performance', () => {
     test('should filter 100 nodes in under 500ms', () => {
       const nodes = Array.from({ length: 100 }, (_, i) =>

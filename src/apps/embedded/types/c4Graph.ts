@@ -474,6 +474,12 @@ export interface C4TransformerOptions {
   /** Canvas dimensions */
   canvasWidth?: number;
   canvasHeight?: number;
+
+  /** Scenario preset to apply */
+  scenarioPreset?: C4ScenarioPreset;
+
+  /** Changeset filter - show only changed elements */
+  showOnlyChangeset?: boolean;
 }
 
 /**
@@ -584,3 +590,91 @@ export const DEFAULT_C4_LAYOUT_OPTIONS: C4LayoutOptions = {
   linkDistance: 250,
   chargeStrength: -600,
 };
+
+/**
+ * Scenario preset type for quick view configurations
+ */
+export type C4ScenarioPreset = 'dataFlow' | 'deployment' | 'technologyStack' | 'apiSurface' | 'dependency' | null;
+
+/**
+ * Scenario preset configuration
+ */
+export interface C4ScenarioPresetConfig {
+  /** Preset identifier */
+  id: C4ScenarioPreset;
+
+  /** Display name */
+  label: string;
+
+  /** Description of what this preset shows */
+  description: string;
+
+  /** Icon name or JSX element */
+  icon: string;
+
+  /** Container types to show (empty = show all) */
+  containerTypes?: ContainerType[];
+
+  /** Technology stacks to highlight (empty = no filtering) */
+  technologyStacks?: string[];
+
+  /** Protocol types to highlight for edges */
+  highlightProtocols?: ProtocolType[];
+
+  /** Show deployment overlay */
+  showDeployment?: boolean;
+
+  /** Path highlighting mode */
+  pathMode?: C4PathHighlightingMode;
+
+  /** Filter to external interfaces only */
+  externalInterfacesOnly?: boolean;
+
+  /** Show only data-related edges (databases, queues) */
+  dataFlowOnly?: boolean;
+}
+
+/**
+ * Predefined scenario preset configurations
+ */
+export const C4_SCENARIO_PRESETS: C4ScenarioPresetConfig[] = [
+  {
+    id: 'dataFlow',
+    label: 'Data Flow',
+    description: 'Highlight data storage and messaging containers',
+    icon: 'database',
+    containerTypes: [ContainerType.Database, ContainerType.MessageQueue, ContainerType.Cache, ContainerType.FileStorage],
+    highlightProtocols: [ProtocolType.JDBC, ProtocolType.ODBC, ProtocolType.Redis, ProtocolType.Kafka, ProtocolType.AMQP],
+    dataFlowOnly: true,
+  },
+  {
+    id: 'deployment',
+    label: 'Deployment',
+    description: 'Show infrastructure and deployment relationships',
+    icon: 'server',
+    showDeployment: true,
+  },
+  {
+    id: 'technologyStack',
+    label: 'Technology Stack',
+    description: 'Group and highlight by technology',
+    icon: 'layers',
+    // Technology filtering is applied dynamically based on user selection
+  },
+  {
+    id: 'apiSurface',
+    label: 'API Surface',
+    description: 'Show only external API interfaces',
+    icon: 'globe',
+    containerTypes: [ContainerType.Api, ContainerType.WebApp],
+    highlightProtocols: [ProtocolType.REST, ProtocolType.GraphQL, ProtocolType.gRPC],
+    externalInterfacesOnly: true,
+  },
+  {
+    id: 'dependency',
+    label: 'Dependencies',
+    description: 'Show upstream and downstream dependencies',
+    icon: 'git-branch',
+    pathMode: 'upstream',
+  },
+];

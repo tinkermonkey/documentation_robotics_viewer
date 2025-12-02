@@ -89,9 +89,14 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
     setC4ManualPositions,
     setC4FocusContextEnabled,
     setC4PathTracing,
+    setC4ScenarioPreset,
     setC4SelectedNodeId,
     setC4InspectorPanelVisible,
   } = useViewPreferenceStore();
+
+  // Local state for changeset filter
+  const [showOnlyChangeset, setShowOnlyChangeset] = useState(false);
+  const [hasChangesetElements, setHasChangesetElements] = useState(false);
 
   // Use store state directly to avoid sync issues
   const selectedContainerTypes = c4Preferences.visibleContainerTypes;
@@ -142,6 +147,24 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
             setC4VisibleTechnologyStacks(new Set(c4Graph.metadata.technologies));
           }
         }
+
+        // Check for changeset elements
+        let hasChangeset = false;
+        for (const node of c4Graph.nodes.values()) {
+          if (node.changesetStatus) {
+            hasChangeset = true;
+            break;
+          }
+        }
+        if (!hasChangeset) {
+          for (const edge of c4Graph.edges.values()) {
+            if (edge.changesetStatus) {
+              hasChangeset = true;
+              break;
+            }
+          }
+        }
+        setHasChangesetElements(hasChangeset);
 
         setLoading(false);
       } catch (err) {
@@ -201,6 +224,8 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
           },
           existingPositions:
             selectedLayout === 'manual' ? c4Preferences.manualPositions : undefined,
+          scenarioPreset: c4Preferences.scenarioPreset,
+          showOnlyChangeset: showOnlyChangeset,
         };
 
         const transformer = new C4ViewTransformer(transformerOptions);
@@ -259,6 +284,8 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
     c4Preferences.focusContextEnabled,
     c4Preferences.manualPositions,
     c4Preferences.pathTracing,
+    c4Preferences.scenarioPreset,
+    showOnlyChangeset,
     zoomLevel,
   ]);
 
@@ -766,6 +793,11 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
             onExportSVG={handleExportSVG}
             onExportGraphData={handleExportGraphData}
             hasSelectedContainer={!!c4Preferences.selectedContainerId}
+            scenarioPreset={c4Preferences.scenarioPreset}
+            onScenarioPresetChange={setC4ScenarioPreset}
+            showOnlyChangeset={showOnlyChangeset}
+            onChangesetFilterToggle={setShowOnlyChangeset}
+            hasChangesetElements={hasChangesetElements}
           />
         </div>
 

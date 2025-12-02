@@ -4,14 +4,16 @@
  * Provides layout and view controls for C4 visualization:
  * - View level switcher (Context | Container | Component)
  * - Layout algorithm switcher (Hierarchical | Force | Orthogonal | Manual)
+ * - Scenario preset selector (Data Flow | Deployment | Technology Stack | API Surface | Dependencies)
  * - "Fit to View" button
  * - Focus mode toggle
+ * - Changeset filter toggle
  * - Export controls (PNG, SVG, JSON)
  */
 
 import React from 'react';
 import './C4ControlPanel.css';
-import { C4ViewLevel } from '../types/c4Graph';
+import { C4ViewLevel, C4ScenarioPreset, C4_SCENARIO_PRESETS } from '../types/c4Graph';
 
 export type C4LayoutAlgorithm = 'hierarchical' | 'orthogonal' | 'force' | 'manual';
 
@@ -53,6 +55,21 @@ export interface C4ControlPanelProps {
 
   /** Whether a container is selected (enables component view) */
   hasSelectedContainer?: boolean;
+
+  /** Currently active scenario preset */
+  scenarioPreset?: C4ScenarioPreset;
+
+  /** Callback when scenario preset changes */
+  onScenarioPresetChange?: (preset: C4ScenarioPreset) => void;
+
+  /** Whether changeset filter is active */
+  showOnlyChangeset?: boolean;
+
+  /** Callback when changeset filter toggles */
+  onChangesetFilterToggle?: (enabled: boolean) => void;
+
+  /** Whether there are changeset elements to show */
+  hasChangesetElements?: boolean;
 }
 
 /**
@@ -130,6 +147,61 @@ const VIEW_LEVEL_OPTIONS: Array<{
 ];
 
 /**
+ * Scenario preset icons
+ */
+const getPresetIcon = (iconName: string): JSX.Element => {
+  switch (iconName) {
+    case 'database':
+      return (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <ellipse cx="8" cy="4" rx="5" ry="2" stroke="currentColor" strokeWidth="1.5" fill="none" />
+          <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4" stroke="currentColor" strokeWidth="1.5" fill="none" />
+          <path d="M3 8c0 1.1 2.2 2 5 2s5-.9 5-2" stroke="currentColor" strokeWidth="1.5" fill="none" />
+        </svg>
+      );
+    case 'server':
+      return (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <rect x="2" y="2" width="12" height="4" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none" />
+          <rect x="2" y="8" width="12" height="4" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none" />
+          <circle cx="10" cy="4" r="1" fill="currentColor" />
+          <circle cx="10" cy="10" r="1" fill="currentColor" />
+        </svg>
+      );
+    case 'layers':
+      return (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 2L2 5l6 3 6-3-6-3z" stroke="currentColor" strokeWidth="1.5" fill="none" />
+          <path d="M2 8l6 3 6-3" stroke="currentColor" strokeWidth="1.5" fill="none" />
+          <path d="M2 11l6 3 6-3" stroke="currentColor" strokeWidth="1.5" fill="none" />
+        </svg>
+      );
+    case 'globe':
+      return (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" fill="none" />
+          <path d="M2 8h12M8 2c-2 2-2 10 0 12M8 2c2 2 2 10 0 12" stroke="currentColor" strokeWidth="1" fill="none" />
+        </svg>
+      );
+    case 'git-branch':
+      return (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="4" cy="4" r="2" stroke="currentColor" strokeWidth="1.5" fill="none" />
+          <circle cx="12" cy="4" r="2" stroke="currentColor" strokeWidth="1.5" fill="none" />
+          <circle cx="4" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" fill="none" />
+          <path d="M4 6v4M4 8h6c1 0 2-1 2-2" stroke="currentColor" strokeWidth="1.5" fill="none" />
+        </svg>
+      );
+    default:
+      return (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" fill="none" />
+        </svg>
+      );
+  }
+};
+
+/**
  * C4ControlPanel Component
  */
 export const C4ControlPanel: React.FC<C4ControlPanelProps> = ({
@@ -147,6 +219,11 @@ export const C4ControlPanel: React.FC<C4ControlPanelProps> = ({
   onExportSVG,
   onExportGraphData,
   hasSelectedContainer = false,
+  scenarioPreset,
+  onScenarioPresetChange,
+  showOnlyChangeset = false,
+  onChangesetFilterToggle,
+  hasChangesetElements = false,
 }) => {
   return (
     <div className="c4-control-panel">
@@ -202,6 +279,55 @@ export const C4ControlPanel: React.FC<C4ControlPanelProps> = ({
           {LAYOUT_OPTIONS.find((opt) => opt.value === selectedLayout)?.description}
         </div>
       </div>
+
+      {/* Scenario Preset Selector */}
+      {onScenarioPresetChange && (
+        <div className="control-panel-section">
+          <label className="control-label">Scenario Preset</label>
+          <div className="scenario-preset-buttons" role="radiogroup" aria-label="Select scenario preset">
+            {C4_SCENARIO_PRESETS.map((preset) => (
+              <button
+                key={preset.id}
+                className={`scenario-preset-button ${scenarioPreset === preset.id ? 'active' : ''}`}
+                onClick={() => onScenarioPresetChange(scenarioPreset === preset.id ? null : preset.id)}
+                disabled={isLayouting}
+                role="radio"
+                aria-checked={scenarioPreset === preset.id}
+                aria-label={preset.description}
+                title={preset.description}
+              >
+                <span className="preset-icon">{getPresetIcon(preset.icon)}</span>
+                <span className="preset-label">{preset.label}</span>
+              </button>
+            ))}
+          </div>
+          {scenarioPreset && (
+            <div className="control-description" role="status" aria-live="polite">
+              {C4_SCENARIO_PRESETS.find((p) => p.id === scenarioPreset)?.description}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Changeset Filter Toggle */}
+      {onChangesetFilterToggle && hasChangesetElements && (
+        <div className="control-panel-section">
+          <label className="control-checkbox-label">
+            <input
+              type="checkbox"
+              checked={showOnlyChangeset}
+              onChange={(e) => onChangesetFilterToggle(e.target.checked)}
+              disabled={isLayouting}
+              aria-label="Show only elements from active changeset"
+              aria-describedby="c4-changeset-filter-description"
+            />
+            <span>Show Changeset Only</span>
+          </label>
+          <div id="c4-changeset-filter-description" className="control-description">
+            Filter to show only new, modified, or deleted elements
+          </div>
+        </div>
+      )}
 
       {/* Fit to View Button */}
       <div className="control-panel-section">

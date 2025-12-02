@@ -40,6 +40,10 @@ import {
   C4TransformResult,
   C4BreadcrumbSegment,
   C4NodeDetailLevel,
+  ContainerType,
+  ProtocolType,
+  C4ScenarioPreset,
+  C4_SCENARIO_PRESETS,
   DEFAULT_C4_TRANSFORMER_OPTIONS,
   DEFAULT_C4_LAYOUT_OPTIONS,
 } from '../types/c4Graph';
@@ -114,10 +118,12 @@ export class C4ViewTransformer {
    * Transformation pipeline:
    * 1. Apply view level filtering (context/container/component)
    * 2. Apply user filters (container type, technology)
-   * 3. Compute layout
-   * 4. Create ReactFlow nodes with styling
-   * 5. Create ReactFlow edges with styling
-   * 6. Apply focus+context and path highlighting
+   * 3. Apply scenario preset filtering (if active)
+   * 4. Apply changeset filter (if active)
+   * 5. Compute layout
+   * 6. Create ReactFlow nodes with styling
+   * 7. Create ReactFlow edges with styling
+   * 8. Apply focus+context and path highlighting
    */
   transform(graph: C4Graph): C4TransformResult {
     if (DEBUG_LOGGING) {
@@ -133,26 +139,46 @@ export class C4ViewTransformer {
     }
 
     // Step 2: Apply user filters
-    const filteredGraph = this.applyUserFilters(viewFilteredGraph, graph);
+    let filteredGraph = this.applyUserFilters(viewFilteredGraph, graph);
     if (DEBUG_LOGGING) {
       console.log(
         `[C4ViewTransformer] User filters: ${filteredGraph.nodes.size} nodes after filtering`
       );
     }
 
-    // Step 3: Compute layout with caching
+    // Step 3: Apply scenario preset if active
+    if (this.options.scenarioPreset) {
+      filteredGraph = this.applyScenarioPreset(filteredGraph, graph);
+      if (DEBUG_LOGGING) {
+        console.log(
+          `[C4ViewTransformer] Scenario preset ${this.options.scenarioPreset}: ${filteredGraph.nodes.size} nodes after filtering`
+        );
+      }
+    }
+
+    // Step 4: Apply changeset filter if active
+    if (this.options.showOnlyChangeset) {
+      filteredGraph = this.applyChangesetFilter(filteredGraph);
+      if (DEBUG_LOGGING) {
+        console.log(
+          `[C4ViewTransformer] Changeset filter: ${filteredGraph.nodes.size} nodes after filtering`
+        );
+      }
+    }
+
+    // Step 5: Compute layout with caching
     const layoutResult = this.computeLayoutWithCache(filteredGraph);
 
-    // Step 4: Get semantic zoom detail level
+    // Step 6: Get semantic zoom detail level
     const detailLevel = this.getDetailLevel();
 
-    // Step 5: Create ReactFlow nodes (includes warnings for missing positions)
+    // Step 7: Create ReactFlow nodes (includes warnings for missing positions)
     const { nodes, warnings } = this.createReactFlowNodes(filteredGraph, layoutResult, detailLevel, graph);
 
-    // Step 6: Create ReactFlow edges
+    // Step 8: Create ReactFlow edges
     const edges = this.createReactFlowEdges(filteredGraph, graph);
 
-    // Step 7: Build breadcrumb
+    // Step 9: Build breadcrumb
     const breadcrumb = this.buildBreadcrumb(graph);
 
     if (DEBUG_LOGGING) {
@@ -362,6 +388,192 @@ export class C4ViewTransformer {
       }
     }
     return false;
+  }
+
+  /**
+   * Apply scenario preset filtering
+   * Each preset applies specific rules to highlight or filter elements
+   */
+  private applyScenarioPreset(filtered: FilteredC4Graph, fullGraph: C4Graph): FilteredC4Graph {
+    const preset = this.options.scenarioPreset;
+    if (!preset) return filtered;
+
+    const presetConfig = C4_SCENARIO_PRESETS.find(p => p.id === preset);
+    if (!presetConfig) return filtered;
+
+    const resultNodes = new Map<string, C4Node>();
+    const resultEdges = new Map<string, C4Edge>();
+
+    // Apply container type filtering if specified
+    const containerTypeFilter = presetConfig.containerTypes
+      ? new Set(presetConfig.containerTypes)
+      : null;
+
+    // Apply protocol filtering if specified
+    const protocolFilter = presetConfig.highlightProtocols
+      ? new Set(presetConfig.highlightProtocols)
+      : null;
+
+    // Filter nodes based on preset rules
+    for (const [nodeId, node] of filtered.nodes) {
+      let includeNode = true;
+
+      // Container type filtering
+      if (containerTypeFilter && node.containerType) {
+        // For data flow preset, only include data-related containers
+        if (presetConfig.dataFlowOnly) {
+          includeNode = containerTypeFilter.has(node.containerType as ContainerType);
+        }
+      }
+
+      // External interfaces only filtering
+      if (presetConfig.externalInterfacesOnly && node.c4Type === C4Type.Container) {
+        // Check if this container has external-facing edges
+        const hasExternalConnection = this.hasExternalConnection(nodeId, fullGraph);
+        if (!hasExternalConnection) {
+          includeNode = false;
+        }
+      }
+
+      // External actors are always included
+      if (node.c4Type === C4Type.External) {
+        includeNode = true;
+      }
+
+      // For data flow preset, include containers that connect to data stores
+      if (presetConfig.dataFlowOnly && !containerTypeFilter?.has(node.containerType as ContainerType)) {
+        // Check if this container connects to a data container
+        const connectsToDataStore = this.connectsToContainerTypes(
+          nodeId,
+          containerTypeFilter || new Set(),
+          fullGraph
+        );
+        if (connectsToDataStore) {
+          includeNode = true;
+        }
+      }
+
+      if (includeNode) {
+        resultNodes.set(nodeId, node);
+      }
+    }
+
+    // Filter edges based on preset rules
+    for (const [edgeId, edge] of filtered.edges) {
+      // Both endpoints must be in result nodes
+      if (!resultNodes.has(edge.sourceId) || !resultNodes.has(edge.targetId)) {
+        continue;
+      }
+
+      let includeEdge = true;
+
+      // Protocol filtering for data flow preset
+      if (protocolFilter && presetConfig.dataFlowOnly) {
+        // Only include edges with data-related protocols
+        if (!protocolFilter.has(edge.protocol)) {
+          // Still include if connected to a data container
+          const sourceNode = resultNodes.get(edge.sourceId);
+          const targetNode = resultNodes.get(edge.targetId);
+          const sourceIsDataStore = sourceNode && containerTypeFilter?.has(sourceNode.containerType as ContainerType);
+          const targetIsDataStore = targetNode && containerTypeFilter?.has(targetNode.containerType as ContainerType);
+          if (!sourceIsDataStore && !targetIsDataStore) {
+            includeEdge = false;
+          }
+        }
+      }
+
+      if (includeEdge) {
+        resultEdges.set(edgeId, edge);
+      }
+    }
+
+    return {
+      nodes: resultNodes,
+      edges: resultEdges,
+    };
+  }
+
+  /**
+   * Check if a node has external-facing connections (to external actors)
+   */
+  private hasExternalConnection(nodeId: string, graph: C4Graph): boolean {
+    for (const edge of graph.edges.values()) {
+      const isSource = edge.sourceId === nodeId;
+      const isTarget = edge.targetId === nodeId;
+
+      if (isSource) {
+        const targetNode = graph.nodes.get(edge.targetId);
+        if (targetNode?.c4Type === C4Type.External) {
+          return true;
+        }
+      }
+
+      if (isTarget) {
+        const sourceNode = graph.nodes.get(edge.sourceId);
+        if (sourceNode?.c4Type === C4Type.External) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Check if a node connects to any containers of the specified types
+   */
+  private connectsToContainerTypes(
+    nodeId: string,
+    containerTypes: Set<ContainerType>,
+    graph: C4Graph
+  ): boolean {
+    for (const edge of graph.edges.values()) {
+      const isSource = edge.sourceId === nodeId;
+      const isTarget = edge.targetId === nodeId;
+
+      if (isSource) {
+        const targetNode = graph.nodes.get(edge.targetId);
+        if (targetNode && containerTypes.has(targetNode.containerType as ContainerType)) {
+          return true;
+        }
+      }
+
+      if (isTarget) {
+        const sourceNode = graph.nodes.get(edge.sourceId);
+        if (sourceNode && containerTypes.has(sourceNode.containerType as ContainerType)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Apply changeset filter - show only elements with changeset status
+   */
+  private applyChangesetFilter(filtered: FilteredC4Graph): FilteredC4Graph {
+    const resultNodes = new Map<string, C4Node>();
+    const resultEdges = new Map<string, C4Edge>();
+
+    // Include nodes with changeset status
+    for (const [nodeId, node] of filtered.nodes) {
+      if (node.changesetStatus) {
+        resultNodes.set(nodeId, node);
+      }
+    }
+
+    // Include edges with changeset status or connecting changed nodes
+    for (const [edgeId, edge] of filtered.edges) {
+      if (edge.changesetStatus) {
+        resultEdges.set(edgeId, edge);
+      } else if (resultNodes.has(edge.sourceId) && resultNodes.has(edge.targetId)) {
+        resultEdges.set(edgeId, edge);
+      }
+    }
+
+    return {
+      nodes: resultNodes,
+      edges: resultEdges,
+    };
   }
 
   /**
@@ -1071,6 +1283,7 @@ export class C4ViewTransformer {
 
   /**
    * Create ReactFlow edges from filtered C4 graph
+   * Implements relationship bundling (FR3.5): Groups 3+ connections into single edge with count
    */
   private createReactFlowEdges(filtered: FilteredC4Graph, _fullGraph: C4Graph): Edge[] {
     const edges: Edge[] = [];
@@ -1078,87 +1291,226 @@ export class C4ViewTransformer {
 
     const showLabels = !semanticZoom.enabled || semanticZoom.currentScale >= 0.6;
 
+    // Group edges by source-target pair for bundling
+    const edgeGroups = new Map<string, { edges: C4Edge[]; ids: string[] }>();
     for (const [edgeId, edge] of filtered.edges) {
-      // Determine edge styling
-      let strokeWidth = 1.5;
-      let strokeColor = '#6b7280';
-      let opacity = 1.0;
-      let animated = edge.direction === CommunicationDirection.Async;
+      const pairKey = `${edge.sourceId}__${edge.targetId}`;
+      if (!edgeGroups.has(pairKey)) {
+        edgeGroups.set(pairKey, { edges: [], ids: [] });
+      }
+      const group = edgeGroups.get(pairKey)!;
+      group.edges.push(edge);
+      group.ids.push(edgeId);
+    }
 
-      // Apply path highlighting
-      if (pathHighlighting && pathHighlighting.mode !== 'none') {
-        const highlightedEdges = pathHighlighting.highlightedEdgeIds;
-        if (highlightedEdges && highlightedEdges.size > 0) {
-          if (highlightedEdges.has(edgeId)) {
-            strokeWidth = 3;
-            strokeColor = '#3b82f6'; // Blue for highlighted
-            opacity = 1.0;
-          } else {
-            opacity = 0.2;
-          }
+    // Process each group, bundling if 3+ edges
+    for (const [pairKey, group] of edgeGroups) {
+      if (group.edges.length >= 3) {
+        // Bundle into single edge with count indicator
+        const bundledEdge = this.createBundledEdge(group.edges, group.ids, showLabels);
+        edges.push(bundledEdge);
+      } else {
+        // Create individual edges
+        for (let i = 0; i < group.edges.length; i++) {
+          const edge = group.edges[i];
+          const edgeId = group.ids[i];
+          edges.push(this.createSingleEdge(edgeId, edge, showLabels, pathHighlighting));
         }
       }
-
-      // Apply changeset styling
-      if (edge.changesetStatus === 'new') {
-        strokeColor = '#10b981';
-      } else if (edge.changesetStatus === 'modified') {
-        strokeColor = '#f59e0b';
-      } else if (edge.changesetStatus === 'deleted') {
-        strokeColor = '#ef4444';
-        opacity = 0.6;
-      }
-
-      // Build label with protocol
-      let label: string | undefined;
-      if (showLabels) {
-        const parts: string[] = [];
-        if (edge.protocol && edge.protocol !== 'Custom') {
-          parts.push(edge.protocol);
-        }
-        if (edge.method) {
-          parts.push(edge.method);
-        }
-        if (parts.length > 0) {
-          label = parts.join(' ');
-        } else if (edge.description) {
-          label = edge.description;
-        }
-      }
-
-      edges.push({
-        id: edgeId,
-        source: edge.sourceId,
-        target: edge.targetId,
-        type: 'smoothstep', // Or 'elbow' for orthogonal routing
-        label,
-        labelStyle: { fill: '#555', fontWeight: 500, fontSize: 11 },
-        labelBgStyle: { fill: '#fff', fillOpacity: 0.8, rx: 4, ry: 4 },
-        animated,
-        style: {
-          strokeWidth,
-          stroke: strokeColor,
-          opacity,
-        },
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-          width: 20,
-          height: 20,
-          color: strokeColor,
-        },
-        data: {
-          protocol: edge.protocol,
-          direction: edge.direction,
-          description: edge.description,
-          method: edge.method,
-          path: edge.path,
-          isDeploymentRelation: edge.isDeploymentRelation,
-          changesetStatus: edge.changesetStatus,
-        },
-      } as Edge);
     }
 
     return edges;
+  }
+
+  /**
+   * Create a bundled edge representing 3+ connections between two nodes
+   */
+  private createBundledEdge(
+    bundledEdges: C4Edge[],
+    edgeIds: string[],
+    showLabels: boolean
+  ): Edge {
+    const { pathHighlighting } = this.options;
+
+    // Use the first edge as the representative
+    const primaryEdge = bundledEdges[0];
+    const bundleId = `bundle__${primaryEdge.sourceId}__${primaryEdge.targetId}`;
+
+    // Determine styling based on all edges
+    let strokeWidth = 2.5; // Thicker for bundles
+    let strokeColor = '#6b7280';
+    let opacity = 1.0;
+    let animated = bundledEdges.some(e => e.direction === CommunicationDirection.Async);
+
+    // Apply path highlighting if any edge in bundle is highlighted
+    if (pathHighlighting && pathHighlighting.mode !== 'none') {
+      const highlightedEdges = pathHighlighting.highlightedEdgeIds;
+      if (highlightedEdges && highlightedEdges.size > 0) {
+        const hasHighlighted = edgeIds.some(id => highlightedEdges.has(id));
+        if (hasHighlighted) {
+          strokeWidth = 4;
+          strokeColor = '#3b82f6';
+          opacity = 1.0;
+        } else {
+          opacity = 0.2;
+        }
+      }
+    }
+
+    // Check for changeset elements
+    const hasNew = bundledEdges.some(e => e.changesetStatus === 'new');
+    const hasModified = bundledEdges.some(e => e.changesetStatus === 'modified');
+    const hasDeleted = bundledEdges.some(e => e.changesetStatus === 'deleted');
+    if (hasNew) {
+      strokeColor = '#10b981';
+    } else if (hasModified) {
+      strokeColor = '#f59e0b';
+    }
+    if (hasDeleted && !hasNew && !hasModified) {
+      strokeColor = '#ef4444';
+      opacity = 0.6;
+    }
+
+    // Collect unique protocols
+    const protocols = new Set<string>();
+    bundledEdges.forEach(e => {
+      if (e.protocol && e.protocol !== 'Custom') {
+        protocols.add(e.protocol);
+      }
+    });
+
+    // Build label with count and protocols
+    let label: string | undefined;
+    if (showLabels) {
+      const protocolStr = protocols.size > 0
+        ? Array.from(protocols).slice(0, 2).join(', ') + (protocols.size > 2 ? '...' : '')
+        : '';
+      label = `${bundledEdges.length} connections${protocolStr ? ` (${protocolStr})` : ''}`;
+    }
+
+    return {
+      id: bundleId,
+      source: primaryEdge.sourceId,
+      target: primaryEdge.targetId,
+      type: 'smoothstep',
+      label,
+      labelStyle: {
+        fill: '#374151',
+        fontWeight: 600,
+        fontSize: 11,
+        background: '#dbeafe',
+        padding: '2px 6px',
+        borderRadius: '4px',
+      },
+      labelBgStyle: { fill: '#dbeafe', fillOpacity: 0.95, rx: 4, ry: 4 },
+      animated,
+      style: {
+        strokeWidth,
+        stroke: strokeColor,
+        opacity,
+        strokeDasharray: '8 4', // Dashed to indicate bundling
+      },
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+        width: 22,
+        height: 22,
+        color: strokeColor,
+      },
+      data: {
+        isBundled: true,
+        bundleCount: bundledEdges.length,
+        protocols: Array.from(protocols),
+        bundledEdgeIds: edgeIds,
+      },
+    } as Edge;
+  }
+
+  /**
+   * Create a single edge (used when bundling is not needed)
+   */
+  private createSingleEdge(
+    edgeId: string,
+    edge: C4Edge,
+    showLabels: boolean,
+    pathHighlighting?: { mode: string; highlightedEdgeIds?: Set<string> }
+  ): Edge {
+    // Determine edge styling
+    let strokeWidth = 1.5;
+    let strokeColor = '#6b7280';
+    let opacity = 1.0;
+    let animated = edge.direction === CommunicationDirection.Async;
+
+    // Apply path highlighting
+    if (pathHighlighting && pathHighlighting.mode !== 'none') {
+      const highlightedEdges = pathHighlighting.highlightedEdgeIds;
+      if (highlightedEdges && highlightedEdges.size > 0) {
+        if (highlightedEdges.has(edgeId)) {
+          strokeWidth = 3;
+          strokeColor = '#3b82f6'; // Blue for highlighted
+          opacity = 1.0;
+        } else {
+          opacity = 0.2;
+        }
+      }
+    }
+
+    // Apply changeset styling
+    if (edge.changesetStatus === 'new') {
+      strokeColor = '#10b981';
+    } else if (edge.changesetStatus === 'modified') {
+      strokeColor = '#f59e0b';
+    } else if (edge.changesetStatus === 'deleted') {
+      strokeColor = '#ef4444';
+      opacity = 0.6;
+    }
+
+    // Build label with protocol
+    let label: string | undefined;
+    if (showLabels) {
+      const parts: string[] = [];
+      if (edge.protocol && edge.protocol !== 'Custom') {
+        parts.push(edge.protocol);
+      }
+      if (edge.method) {
+        parts.push(edge.method);
+      }
+      if (parts.length > 0) {
+        label = parts.join(' ');
+      } else if (edge.description) {
+        label = edge.description;
+      }
+    }
+
+    return {
+      id: edgeId,
+      source: edge.sourceId,
+      target: edge.targetId,
+      type: 'smoothstep',
+      label,
+      labelStyle: { fill: '#555', fontWeight: 500, fontSize: 11 },
+      labelBgStyle: { fill: '#fff', fillOpacity: 0.8, rx: 4, ry: 4 },
+      animated,
+      style: {
+        strokeWidth,
+        stroke: strokeColor,
+        opacity,
+      },
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+        width: 20,
+        height: 20,
+        color: strokeColor,
+      },
+      data: {
+        protocol: edge.protocol,
+        direction: edge.direction,
+        description: edge.description,
+        method: edge.method,
+        path: edge.path,
+        isDeploymentRelation: edge.isDeploymentRelation,
+        changesetStatus: edge.changesetStatus,
+      },
+    } as Edge;
   }
 
   /**

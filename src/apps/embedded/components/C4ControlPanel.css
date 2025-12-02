@@ -238,6 +238,68 @@
   }
 }
 
+/* Scenario Preset Buttons */
+.scenario-preset-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  background-color: #f1f5f9;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.scenario-preset-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 calc(50% - 4px);
+  min-width: 80px;
+  gap: 4px;
+  padding: 8px 4px;
+  border: none;
+  border-radius: 6px;
+  background-color: transparent;
+  color: #64748b;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.scenario-preset-button:hover:not(:disabled) {
+  background-color: #e2e8f0;
+  color: #334155;
+}
+
+.scenario-preset-button.active {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.2);
+}
+
+.scenario-preset-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.scenario-preset-button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.preset-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+}
+
+.preset-label {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .c4-control-panel {
