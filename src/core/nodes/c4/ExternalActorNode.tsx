@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
 import { C4ExternalActorNodeData } from '../../types/reactflow';
+import { RelationshipBadge } from '../motivation/RelationshipBadge';
 
 /**
  * Node dimensions for layout calculation
@@ -138,6 +139,7 @@ export const ExternalActorNode = memo(({ data }: NodeProps<C4ExternalActorNodeDa
             backgroundColor: '#e5e7eb',
             padding: '2px 5px',
             borderRadius: 3,
+            boxSizing: 'border-box',
           }}
         >
           {actorType}
@@ -182,26 +184,8 @@ export const ExternalActorNode = memo(({ data }: NodeProps<C4ExternalActorNodeDa
       )}
 
       {/* Relationship badge (shown when dimmed) */}
-      {data.relationshipBadge && isDimmed && (
-        <div
-          style={{
-            position: 'absolute',
-            top: -6,
-            right: -6,
-            backgroundColor: '#6b7280',
-            color: 'white',
-            borderRadius: '50%',
-            width: 18,
-            height: 18,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 9,
-            fontWeight: 'bold',
-          }}
-        >
-          {data.relationshipBadge.count}
-        </div>
+      {data.relationshipBadge && (
+        <RelationshipBadge badge={data.relationshipBadge} isDimmed={isDimmed} />
       )}
     </div>
   );

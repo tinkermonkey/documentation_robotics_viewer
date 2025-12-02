@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { Handle, Position, NodeProps } from '@xyflow/react';
 import { C4ContainerNodeData } from '../../types/reactflow';
+import { RelationshipBadge } from '../motivation/RelationshipBadge';
 
 /**
  * Node dimensions for layout calculation
@@ -165,6 +166,7 @@ export const ContainerNode = memo(({ data }: NodeProps<C4ContainerNodeData>) => 
             padding: '3px 8px',
             borderRadius: 4,
             marginBottom: 8,
+            boxSizing: 'border-box',
           }}
         >
           {containerType}
@@ -181,7 +183,7 @@ export const ContainerNode = memo(({ data }: NodeProps<C4ContainerNodeData>) => 
             marginBottom: 8,
           }}
         >
-          {data.technology!.slice(0, 4).map((tech, index) => (
+          {(data.technology ?? []).slice(0, 4).map((tech, index) => (
             <span
               key={index}
               style={{
@@ -191,20 +193,22 @@ export const ContainerNode = memo(({ data }: NodeProps<C4ContainerNodeData>) => 
                 padding: '2px 6px',
                 borderRadius: 3,
                 border: '1px solid #e5e7eb',
+                boxSizing: 'border-box',
               }}
             >
               {tech}
             </span>
           ))}
-          {data.technology!.length > 4 && (
+          {(data.technology?.length ?? 0) > 4 && (
             <span
               style={{
                 fontSize: 10,
                 color: '#6b7280',
                 padding: '2px 6px',
+                boxSizing: 'border-box',
               }}
             >
-              +{data.technology!.length - 4} more
+              +{(data.technology?.length ?? 0) - 4} more
             </span>
           )}
         </div>
@@ -230,26 +234,8 @@ export const ContainerNode = memo(({ data }: NodeProps<C4ContainerNodeData>) => 
       )}
 
       {/* Relationship badge (shown when dimmed) */}
-      {data.relationshipBadge && isDimmed && (
-        <div
-          style={{
-            position: 'absolute',
-            top: -8,
-            right: -8,
-            backgroundColor: '#3b82f6',
-            color: 'white',
-            borderRadius: '50%',
-            width: 20,
-            height: 20,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 10,
-            fontWeight: 'bold',
-          }}
-        >
-          {data.relationshipBadge.count}
-        </div>
+      {data.relationshipBadge && (
+        <RelationshipBadge badge={data.relationshipBadge} isDimmed={isDimmed} />
       )}
     </div>
   );

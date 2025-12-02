@@ -9,6 +9,19 @@ import { MarkerType } from '@xyflow/react';
 import { elementStore } from '../stores/elementStore';
 import { LayoutResult } from '../types/shapes';
 import { AppNode, AppEdge } from '../types/reactflow';
+// Import C4 node dimension constants to prevent drift
+import {
+  CONTAINER_NODE_WIDTH,
+  CONTAINER_NODE_HEIGHT,
+} from '../nodes/c4/ContainerNode';
+import {
+  COMPONENT_NODE_WIDTH,
+  COMPONENT_NODE_HEIGHT,
+} from '../nodes/c4/ComponentNode';
+import {
+  EXTERNAL_ACTOR_NODE_WIDTH,
+  EXTERNAL_ACTOR_NODE_HEIGHT,
+} from '../nodes/c4/ExternalActorNode';
 
 /**
  * Result of transforming a model
@@ -419,26 +432,26 @@ export class NodeTransformer {
             break;
 
           case 'c4Container':
-            // C4 ContainerNode: fixed dimensions from ContainerNode.tsx
+            // C4 ContainerNode: uses imported constants from ContainerNode.tsx
             element.visual.size = {
-              width: 280,
-              height: 180,
+              width: CONTAINER_NODE_WIDTH,
+              height: CONTAINER_NODE_HEIGHT,
             };
             break;
 
           case 'c4Component':
-            // C4 ComponentNode: fixed dimensions from ComponentNode.tsx
+            // C4 ComponentNode: uses imported constants from ComponentNode.tsx
             element.visual.size = {
-              width: 240,
-              height: 140,
+              width: COMPONENT_NODE_WIDTH,
+              height: COMPONENT_NODE_HEIGHT,
             };
             break;
 
           case 'c4ExternalActor':
-            // C4 ExternalActorNode: fixed dimensions from ExternalActorNode.tsx
+            // C4 ExternalActorNode: uses imported constants from ExternalActorNode.tsx
             element.visual.size = {
-              width: 160,
-              height: 120,
+              width: EXTERNAL_ACTOR_NODE_WIDTH,
+              height: EXTERNAL_ACTOR_NODE_HEIGHT,
             };
             break;
 
