@@ -29,11 +29,15 @@ import {
   CommunicationDirection,
   C4GraphBuilderOptions,
   ContainerDetectionResult,
-  ComponentExtractionResult,
   TechnologyStackResult,
   C4ValidationResult,
   ValidationError,
 } from '../types/c4Graph';
+
+/**
+ * Enable debug logging (set to true for verbose console output)
+ */
+const DEBUG_LOGGING = false;
 
 /**
  * Default builder options
@@ -142,9 +146,12 @@ export class C4GraphBuilder {
 
   /**
    * Build C4 graph from MetaModel
+   *
+   * @param metaModel - The DR model to transform into C4 graph
+   * @returns Complete C4 graph with nodes, edges, hierarchy, and indexes
    */
   build(metaModel: MetaModel): C4Graph {
-    console.log('[C4GraphBuilder] Building C4 graph from MetaModel');
+    if (DEBUG_LOGGING) console.log('[C4GraphBuilder] Building C4 graph from MetaModel');
     this.warnings = [];
     this.validationErrors = [];
     this.startTime = performance.now();
@@ -162,11 +169,11 @@ export class C4GraphBuilder {
     const hasDatastoreElements = datastoreLayer && datastoreLayer.elements.length > 0;
 
     if (!hasApplicationElements && !hasDatastoreElements) {
-      console.warn('[C4GraphBuilder] No application or datastore layer found');
+      if (DEBUG_LOGGING) console.warn('[C4GraphBuilder] No application or datastore layer found');
       return this.createEmptyGraph();
     }
 
-    if (hasApplicationElements) {
+    if (hasApplicationElements && DEBUG_LOGGING) {
       console.log(`[C4GraphBuilder] Processing ${applicationLayer!.elements.length} application elements`);
     }
 
@@ -174,24 +181,24 @@ export class C4GraphBuilder {
     const containers = hasApplicationElements
       ? this.detectContainers(applicationLayer!.elements, apiLayer?.elements || [])
       : new Map<string, C4Node>();
-    console.log(`[C4GraphBuilder] Detected ${containers.size} containers`);
+    if (DEBUG_LOGGING) console.log(`[C4GraphBuilder] Detected ${containers.size} containers`);
 
     // Step 2: Extract components from application components and containers
     const components = hasApplicationElements
       ? this.extractComponents(applicationLayer!.elements, containers)
       : new Map<string, C4Node>();
-    console.log(`[C4GraphBuilder] Extracted ${components.size} components`);
+    if (DEBUG_LOGGING) console.log(`[C4GraphBuilder] Extracted ${components.size} components`);
 
     // Step 3: Identify external actors
     const externalActors = this.identifyExternalActors(
       businessLayer?.elements || [],
       securityLayer?.elements || []
     );
-    console.log(`[C4GraphBuilder] Identified ${externalActors.size} external actors`);
+    if (DEBUG_LOGGING) console.log(`[C4GraphBuilder] Identified ${externalActors.size} external actors`);
 
     // Step 4: Add datastore containers
     const datastoreContainers = this.extractDatastoreContainers(datastoreLayer?.elements || []);
-    console.log(`[C4GraphBuilder] Added ${datastoreContainers.size} datastore containers`);
+    if (DEBUG_LOGGING) console.log(`[C4GraphBuilder] Added ${datastoreContainers.size} datastore containers`);
 
     // Combine all nodes
     const allNodes = new Map<string, C4Node>([
@@ -207,13 +214,15 @@ export class C4GraphBuilder {
       allNodes,
       apiLayer?.elements || []
     );
-    console.log(`[C4GraphBuilder] Created ${edges.size} edges`);
+    if (DEBUG_LOGGING) console.log(`[C4GraphBuilder] Created ${edges.size} edges`);
 
     // Step 6: Build hierarchy
-    const hierarchy = this.buildHierarchy(allNodes, edges, applicationLayer?.relationships || []);
-    console.log(
-      `[C4GraphBuilder] Built hierarchy: ${hierarchy.systemBoundary.length} containers, ${hierarchy.externalActors.length} external`
-    );
+    const hierarchy = this.buildHierarchy(allNodes);
+    if (DEBUG_LOGGING) {
+      console.log(
+        `[C4GraphBuilder] Built hierarchy: ${hierarchy.systemBoundary.length} containers, ${hierarchy.externalActors.length} external`
+      );
+    }
 
     // Step 7: Map deployment
     const deploymentMap = this.mapDeployment(
@@ -221,19 +230,19 @@ export class C4GraphBuilder {
       technologyLayer?.elements || [],
       applicationLayer?.relationships || []
     );
-    console.log(`[C4GraphBuilder] Mapped ${deploymentMap.size} deployment relationships`);
+    if (DEBUG_LOGGING) console.log(`[C4GraphBuilder] Mapped ${deploymentMap.size} deployment relationships`);
 
     // Step 8: Build indexes
-    const indexes = this.buildIndexes(allNodes, edges, hierarchy);
+    const indexes = this.buildIndexes(allNodes, edges);
 
     // Step 9: Build metadata
-    const metadata = this.buildMetadata(allNodes, edges, hierarchy);
+    const metadata = this.buildMetadata(allNodes);
 
     // Step 10: Validate if requested
     if (this.options.validateStructure) {
-      const validation = this.validateGraph(allNodes, edges, hierarchy);
+      const validation = this.validateGraph(allNodes, edges);
       if (!validation.isValid) {
-        console.warn(`[C4GraphBuilder] Validation found ${validation.errors.length} errors`);
+        if (DEBUG_LOGGING) console.warn(`[C4GraphBuilder] Validation found ${validation.errors.length} errors`);
         this.validationErrors.push(...validation.errors);
         metadata.validationErrors = validation.errors.map((e) => e.message);
       }
@@ -245,7 +254,7 @@ export class C4GraphBuilder {
       elementCount: allNodes.size,
     };
 
-    console.log(`[C4GraphBuilder] Complete in ${parseTime.toFixed(2)}ms`);
+    if (DEBUG_LOGGING) console.log(`[C4GraphBuilder] Complete in ${parseTime.toFixed(2)}ms`);
 
     return {
       nodes: allNodes,
@@ -328,7 +337,7 @@ export class C4GraphBuilder {
 
       if (serviceId) {
         // Look up full ID if this is a short name
-        const fullServiceId = this.resolveServiceId(serviceId, apiElements);
+        const fullServiceId = this.resolveServiceId(serviceId);
 
         if (!map.has(fullServiceId)) {
           map.set(fullServiceId, []);
@@ -343,7 +352,7 @@ export class C4GraphBuilder {
   /**
    * Resolve service ID from short name or full ID
    */
-  private resolveServiceId(serviceId: string, apiElements: ModelElement[]): string {
+  private resolveServiceId(serviceId: string): string {
     // If already a full ID, return as-is
     if (serviceId.includes('.')) {
       return serviceId;
@@ -467,11 +476,14 @@ export class C4GraphBuilder {
     // Check relationships for containment
     const parentRels = component.relationships?.incoming || [];
     for (const relId of parentRels) {
-      // Find relationship in all elements
+      // Find relationship in all elements by checking their outgoing relationships
       for (const element of allElements) {
-        const rel = element.sourceElement?.relationships?.find?.((r: any) => r.id === relId);
-        if (rel && CONTAINMENT_RELATIONSHIP_TYPES.has(rel.type) && containers.has(rel.sourceId)) {
-          return rel.sourceId;
+        const outgoingRels = element.relationships?.outgoing || [];
+        if (outgoingRels.includes(relId)) {
+          // This element has an outgoing relationship to our component
+          if (CONTAINMENT_RELATIONSHIP_TYPES.has('composition') && containers.has(element.id)) {
+            return element.id;
+          }
         }
       }
     }
@@ -580,8 +592,11 @@ export class C4GraphBuilder {
       }
     }
 
-    // Infer from element name/description if needed
-    if (this.options.inferTechnology && technologies.length === 0) {
+    // Track if we had explicit technologies
+    const hadExplicitTechnologies = technologies.length > 0;
+
+    // Infer from element name/description if needed or as supplement
+    if (this.options.inferTechnology) {
       const elementText = `${element.name} ${element.description || ''}`.toLowerCase();
       const commonTech = [
         'react',
@@ -605,8 +620,14 @@ export class C4GraphBuilder {
       for (const tech of commonTech) {
         if (elementText.includes(tech)) {
           technologies.push(tech.charAt(0).toUpperCase() + tech.slice(1));
-          source = technologies.length > 0 ? 'mixed' : 'inferred';
         }
+      }
+
+      // Determine source after inference
+      if (hadExplicitTechnologies && technologies.length > (hadExplicitTechnologies ? 1 : 0)) {
+        source = 'mixed';
+      } else if (!hadExplicitTechnologies && technologies.length > 0) {
+        source = 'inferred';
       }
     }
 
@@ -798,12 +819,10 @@ export class C4GraphBuilder {
   }
 
   /**
-   * Build hierarchy from nodes and relationships
+   * Build hierarchy from nodes
    */
   private buildHierarchy(
-    nodes: Map<string, C4Node>,
-    edges: Map<string, C4Edge>,
-    relationships: Relationship[]
+    nodes: Map<string, C4Node>
   ): C4Hierarchy {
     const systemBoundary: string[] = [];
     const containers = new Map<string, string[]>();
@@ -871,8 +890,7 @@ export class C4GraphBuilder {
    */
   private buildIndexes(
     nodes: Map<string, C4Node>,
-    edges: Map<string, C4Edge>,
-    hierarchy: C4Hierarchy
+    edges: Map<string, C4Edge>
   ): C4GraphIndexes {
     const byType = new Map<C4Type, Set<string>>();
     const byTechnology = new Map<string, Set<string>>();
@@ -939,9 +957,7 @@ export class C4GraphBuilder {
    * Build graph metadata
    */
   private buildMetadata(
-    nodes: Map<string, C4Node>,
-    edges: Map<string, C4Edge>,
-    hierarchy: C4Hierarchy
+    nodes: Map<string, C4Node>
   ): C4GraphMetadata {
     const elementCounts: Record<C4Type, number> = {
       [C4Type.System]: 0,
@@ -951,7 +967,11 @@ export class C4GraphBuilder {
       [C4Type.Deployment]: 0,
     };
 
-    const containerTypeCounts: Record<ContainerType, number> = {} as any;
+    // Initialize containerTypeCounts with all container types set to 0
+    const containerTypeCounts: Record<ContainerType, number> = Object.fromEntries(
+      Object.values(ContainerType).map((type) => [type, 0])
+    ) as Record<ContainerType, number>;
+
     const technologies = new Set<string>();
 
     let maxComponentDepth = 0;
@@ -997,13 +1017,12 @@ export class C4GraphBuilder {
    */
   private validateGraph(
     nodes: Map<string, C4Node>,
-    edges: Map<string, C4Edge>,
-    hierarchy: C4Hierarchy
+    edges: Map<string, C4Edge>
   ): C4ValidationResult {
     const errors: ValidationError[] = [];
 
     // Check for cycles in hierarchy
-    const hasCycles = this.detectHierarchyCycles(hierarchy, nodes);
+    const hasCycles = this.detectHierarchyCycles(nodes);
     if (hasCycles) {
       errors.push({
         type: 'cycle',
@@ -1069,7 +1088,7 @@ export class C4GraphBuilder {
   /**
    * Detect cycles in hierarchy using DFS
    */
-  private detectHierarchyCycles(hierarchy: C4Hierarchy, nodes: Map<string, C4Node>): boolean {
+  private detectHierarchyCycles(nodes: Map<string, C4Node>): boolean {
     const visited = new Set<string>();
     const recursionStack = new Set<string>();
 
@@ -1135,7 +1154,9 @@ export class C4GraphBuilder {
           [C4Type.External]: 0,
           [C4Type.Deployment]: 0,
         },
-        containerTypeCounts: {} as any,
+        containerTypeCounts: Object.fromEntries(
+          Object.values(ContainerType).map((type) => [type, 0])
+        ) as Record<ContainerType, number>,
         technologies: [],
         maxComponentDepth: 0,
         warnings: ['No application layer found in model'],

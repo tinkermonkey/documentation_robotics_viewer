@@ -8,7 +8,7 @@
  * 1. System Context - Shows the system and its external dependencies
  * 2. Container - Shows the high-level technical building blocks
  * 3. Component - Shows the components within a container
- * 4. Code - Shows code-level structure (optional, not implemented in Phase 1)
+ * 4. Code - Shows code-level structure (optional, not currently implemented)
  */
 
 import { ModelElement, Relationship } from '../../../core/types';
