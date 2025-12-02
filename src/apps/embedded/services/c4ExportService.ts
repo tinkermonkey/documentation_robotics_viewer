@@ -10,6 +10,12 @@ import { Node, Edge } from '@xyflow/react';
 import { toPng, toSvg } from 'html-to-image';
 import { C4Graph, C4Type, ContainerType, ProtocolType } from '../types/c4Graph';
 
+// Debug logging helper - only logs in development mode
+const DEBUG = import.meta.env.DEV;
+const debugLog = (...args: unknown[]) => {
+  if (DEBUG) console.log(...args);
+};
+
 /**
  * Dependency report structure for container→container mapping
  */
@@ -105,7 +111,7 @@ export async function exportC4AsPNG(
   filename: string = 'c4-diagram.png'
 ): Promise<void> {
   try {
-    console.log('[C4ExportService] Exporting as PNG:', filename);
+    debugLog('[C4ExportService] Exporting as PNG:', filename);
 
     if (!reactFlowContainer) {
       throw new Error('Unable to export: The graph container is not available. Please reload the page and try again.');
@@ -139,7 +145,7 @@ export async function exportC4AsPNG(
     link.href = dataUrl;
     link.click();
 
-    console.log('[C4ExportService] PNG export successful');
+    debugLog('[C4ExportService] PNG export successful');
   } catch (error) {
     console.error('[C4ExportService] PNG export failed:', error);
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -155,7 +161,7 @@ export async function exportC4AsSVG(
   filename: string = 'c4-diagram.svg'
 ): Promise<void> {
   try {
-    console.log('[C4ExportService] Exporting as SVG:', filename);
+    debugLog('[C4ExportService] Exporting as SVG:', filename);
 
     if (!reactFlowContainer) {
       throw new Error('Unable to export: The graph container is not available. Please reload the page and try again.');
@@ -187,7 +193,7 @@ export async function exportC4AsSVG(
     link.href = dataUrl;
     link.click();
 
-    console.log('[C4ExportService] SVG export successful');
+    debugLog('[C4ExportService] SVG export successful');
   } catch (error) {
     console.error('[C4ExportService] SVG export failed:', error);
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -205,7 +211,7 @@ export function exportC4GraphAsJSON(
   filename: string = 'c4-graph-data.json'
 ): void {
   try {
-    console.log('[C4ExportService] Exporting graph data as JSON:', filename);
+    debugLog('[C4ExportService] Exporting graph data as JSON:', filename);
 
     const exportData = {
       version: '1.0.0',
@@ -264,7 +270,7 @@ export function exportC4GraphAsJSON(
 
     URL.revokeObjectURL(url);
 
-    console.log('[C4ExportService] Graph data export successful');
+    debugLog('[C4ExportService] Graph data export successful');
   } catch (error) {
     console.error('[C4ExportService] Graph data export failed:', error);
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
@@ -281,14 +287,14 @@ export function exportC4DependencyReport(
   filename: string = 'c4-dependency-report.json'
 ): void {
   try {
-    console.log('[C4ExportService] Generating dependency report');
+    debugLog('[C4ExportService] Generating dependency report');
 
     // Get all containers
     const containers = Array.from(c4Graph.nodes.values()).filter(
       (n) => n.c4Type === C4Type.Container
     );
 
-    console.log(`[C4ExportService] Found ${containers.length} containers`);
+    debugLog(`[C4ExportService] Found ${containers.length} containers`);
 
     // Build container dependencies
     const containerDependencies: ContainerDependency[] = [];
@@ -400,7 +406,7 @@ export function exportC4DependencyReport(
       dependencyStatistics,
     };
 
-    console.log('[C4ExportService] Dependency report generated:', {
+    debugLog('[C4ExportService] Dependency report generated:', {
       containers: containerDependencies.length,
       orphaned: orphanedContainers.length,
       totalDependencies: dependencyStatistics.totalDependencies,
@@ -419,7 +425,7 @@ export function exportC4DependencyReport(
 
     URL.revokeObjectURL(url);
 
-    console.log('[C4ExportService] Dependency report exported successfully');
+    debugLog('[C4ExportService] Dependency report exported successfully');
   } catch (error) {
     console.error('[C4ExportService] Dependency report export failed:', error);
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';

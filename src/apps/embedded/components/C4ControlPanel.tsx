@@ -9,6 +9,7 @@
  * - Export controls (PNG, SVG, JSON)
  */
 
+import React from 'react';
 import './C4ControlPanel.css';
 import { C4ViewLevel } from '../types/c4Graph';
 

@@ -47,6 +47,12 @@ import {
   exportC4GraphAsJSON,
 } from '../services/c4ExportService';
 
+// Debug logging helper - only logs in development mode
+const DEBUG = import.meta.env.DEV;
+const debugLog = (...args: unknown[]) => {
+  if (DEBUG) console.log(...args);
+};
+
 export interface C4GraphViewProps {
   model: MetaModel;
 }
@@ -63,6 +69,7 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
   const [isLayouting, setIsLayouting] = useState(false);
   const [breadcrumb, setBreadcrumb] = useState<C4BreadcrumbSegment[]>([]);
   const [zoomLevel, setZoomLevel] = useState(1.0);
+  const [graphReady, setGraphReady] = useState(false);
 
   // Store reference to the full C4 graph
   const fullGraphRef = useRef<C4Graph | null>(null);
@@ -86,18 +93,10 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
     setC4InspectorPanelVisible,
   } = useViewPreferenceStore();
 
-  // Local state for filters (synced with store)
-  const [selectedContainerTypes, setSelectedContainerTypes] = useState<Set<ContainerType>>(
-    c4Preferences.visibleContainerTypes
-  );
-  const [selectedTechnologyStacks, setSelectedTechnologyStacks] = useState<Set<string>>(
-    c4Preferences.visibleTechnologyStacks
-  );
-
-  // Local state for layout
-  const [selectedLayout, setSelectedLayout] = useState<C4LayoutAlgorithm>(
-    c4Preferences.selectedLayout
-  );
+  // Use store state directly to avoid sync issues
+  const selectedContainerTypes = c4Preferences.visibleContainerTypes;
+  const selectedTechnologyStacks = c4Preferences.visibleTechnologyStacks;
+  const selectedLayout = c4Preferences.selectedLayout;
 
   // Create services
   const c4GraphBuilder = useMemo(() => new C4GraphBuilder(), []);
@@ -111,12 +110,12 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
         setLoading(true);
         setError('');
 
-        console.log('[C4GraphView] Building C4 graph from model');
+        debugLog('[C4GraphView] Building C4 graph from model');
 
         // Build intermediate C4 graph
         const c4Graph = c4GraphBuilder.build(model);
 
-        console.log('[C4GraphView] C4 graph built:', {
+        debugLog('[C4GraphView] C4 graph built:', {
           nodes: c4Graph.nodes.size,
           edges: c4Graph.edges.size,
           containers: c4Graph.metadata.elementCounts.container,
@@ -134,12 +133,12 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
 
         // Store the full graph
         fullGraphRef.current = c4Graph;
+        setGraphReady(true);
 
         // Update available technology stacks for filtering
         if (c4Graph.metadata.technologies.length > 0) {
           // Initialize technology stacks filter if empty
           if (selectedTechnologyStacks.size === 0) {
-            setSelectedTechnologyStacks(new Set(c4Graph.metadata.technologies));
             setC4VisibleTechnologyStacks(new Set(c4Graph.metadata.technologies));
           }
         }
@@ -162,13 +161,13 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
    * Transform graph to ReactFlow format whenever filters, layout, or view level changes
    */
   useEffect(() => {
-    if (!fullGraphRef.current) return;
+    if (!graphReady || !fullGraphRef.current) return;
 
     const transformGraph = async () => {
       try {
         setIsLayouting(true);
 
-        console.log('[C4GraphView] Transforming graph with:', {
+        debugLog('[C4GraphView] Transforming graph with:', {
           viewLevel: c4Preferences.viewLevel,
           layout: selectedLayout,
           selectedContainerId: c4Preferences.selectedContainerId,
@@ -211,7 +210,7 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
 
         const transformResult = transformer.transform(fullGraphRef.current);
 
-        console.log('[C4GraphView] Transformation complete:', {
+        debugLog('[C4GraphView] Transformation complete:', {
           nodes: transformResult.nodes.length,
           edges: transformResult.edges.length,
           bounds: transformResult.bounds,
@@ -219,7 +218,13 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
 
         // Apply animated transitions if layout changed
         if (nodes.length > 0 && transformResult.nodes.length > 0) {
-          await animateLayoutTransition(nodes, transformResult.nodes, setNodes, setIsLayouting);
+          try {
+            await animateLayoutTransition(nodes, transformResult.nodes, setNodes, setIsLayouting);
+          } catch (animationErr) {
+            // If animation fails, apply nodes directly without animation
+            console.warn('[C4GraphView] Animation failed, applying nodes directly:', animationErr);
+            setNodes(transformResult.nodes);
+          }
         } else {
           setNodes(transformResult.nodes);
         }
@@ -235,14 +240,15 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
         setIsLayouting(false);
       } catch (err) {
         console.error('[C4GraphView] Transform error:', err);
-        console.warn('[C4GraphView] Layout transition failed, restoring normal state');
+        // Attempt to recover by showing a user-friendly error message
+        setError('Failed to transform graph. Please try a different layout or reload the page.');
         setIsLayouting(false);
       }
     };
 
     transformGraph();
   }, [
-    fullGraphRef.current,
+    graphReady,
     c4Preferences.viewLevel,
     c4Preferences.selectedContainerId,
     c4Preferences.selectedComponentId,
@@ -260,7 +266,7 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
    * Calculate filter counts for display (memoized for performance)
    */
   const filterCounts = useMemo((): C4FilterCounts => {
-    if (!fullGraphRef.current) {
+    if (!graphReady || !fullGraphRef.current) {
       return {
         containerTypes: {},
         technologies: {},
@@ -290,15 +296,15 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
       containerTypes: containerTypeCounts,
       technologies: technologyCounts,
     };
-  }, [fullGraphRef.current, selectedContainerTypes, selectedTechnologyStacks]);
+  }, [graphReady, selectedContainerTypes, selectedTechnologyStacks]);
 
   /**
    * Get available technologies from graph
    */
   const availableTechnologies = useMemo((): string[] => {
-    if (!fullGraphRef.current) return [];
+    if (!graphReady || !fullGraphRef.current) return [];
     return fullGraphRef.current.metadata.technologies;
-  }, [fullGraphRef.current]);
+  }, [graphReady]);
 
   /**
    * Handle container type filter change
@@ -311,7 +317,6 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
       } else {
         newTypes.delete(containerType);
       }
-      setSelectedContainerTypes(newTypes);
       setC4VisibleContainerTypes(newTypes);
     },
     [selectedContainerTypes, setC4VisibleContainerTypes]
@@ -328,7 +333,6 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
       } else {
         newStacks.delete(technology);
       }
-      setSelectedTechnologyStacks(newStacks);
       setC4VisibleTechnologyStacks(newStacks);
     },
     [selectedTechnologyStacks, setC4VisibleTechnologyStacks]
@@ -340,8 +344,6 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
   const handleClearAllFilters = useCallback(() => {
     const allContainerTypes = new Set(Object.values(ContainerType));
     const allTechnologies = new Set(availableTechnologies);
-    setSelectedContainerTypes(allContainerTypes);
-    setSelectedTechnologyStacks(allTechnologies);
     setC4VisibleContainerTypes(allContainerTypes);
     setC4VisibleTechnologyStacks(allTechnologies);
   }, [availableTechnologies, setC4VisibleContainerTypes, setC4VisibleTechnologyStacks]);
@@ -351,7 +353,6 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
    */
   const handleLayoutChange = useCallback(
     (layout: C4LayoutAlgorithm) => {
-      setSelectedLayout(layout);
       setC4Layout(layout);
     },
     [setC4Layout]
@@ -362,7 +363,7 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
    */
   const handleViewLevelChange = useCallback(
     (level: C4ViewLevel, containerId?: string, componentId?: string) => {
-      console.log('[C4GraphView] View level change:', level, containerId, componentId);
+      debugLog('[C4GraphView] View level change:', level, containerId, componentId);
       setC4ViewLevel(level);
       setC4SelectedContainer(containerId);
       setC4SelectedComponent(componentId);
@@ -392,7 +393,7 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
    */
   const onNodeClick: NodeMouseHandler = useCallback(
     (_event, node) => {
-      console.log('[C4GraphView] Node clicked:', node.id, node.data.c4Type);
+      debugLog('[C4GraphView] Node clicked:', node.id, node.data.c4Type);
 
       if (!fullGraphRef.current) return;
 
@@ -402,14 +403,14 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
       // Drill-down logic
       if (currentViewLevel === 'context' && c4Type === C4Type.Container) {
         // Drill down to container view
-        console.log('[C4GraphView] Drilling down to container view:', node.id);
+        debugLog('[C4GraphView] Drilling down to container view:', node.id);
         handleViewLevelChange('container', node.id);
         return;
       }
 
       if (currentViewLevel === 'container' && c4Type === C4Type.Component) {
         // Drill down to component view
-        console.log('[C4GraphView] Drilling down to component view:', node.id);
+        debugLog('[C4GraphView] Drilling down to component view:', node.id);
         handleViewLevelChange('component', c4Preferences.selectedContainerId, node.id);
         return;
       }
@@ -462,7 +463,7 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
     (nodeId: string) => {
       if (!fullGraphRef.current) return;
 
-      console.log('[C4GraphView] Tracing upstream from:', nodeId);
+      debugLog('[C4GraphView] Tracing upstream from:', nodeId);
 
       const transformer = new C4ViewTransformer({
         viewLevel: c4Preferences.viewLevel,
@@ -495,7 +496,7 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
     (nodeId: string) => {
       if (!fullGraphRef.current) return;
 
-      console.log('[C4GraphView] Tracing downstream from:', nodeId);
+      debugLog('[C4GraphView] Tracing downstream from:', nodeId);
 
       const transformer = new C4ViewTransformer({
         viewLevel: c4Preferences.viewLevel,
@@ -525,7 +526,7 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
    * Handle clear path highlighting
    */
   const handleClearPathHighlighting = useCallback(() => {
-    console.log('[C4GraphView] Clearing path highlighting');
+    debugLog('[C4GraphView] Clearing path highlighting');
     setC4PathTracing({
       mode: 'none',
       sourceId: undefined,
@@ -539,7 +540,7 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
    * Handle close inspector panel
    */
   const handleCloseInspector = useCallback(() => {
-    console.log('[C4GraphView] Closing inspector panel');
+    debugLog('[C4GraphView] Closing inspector panel');
     setC4InspectorPanelVisible(false);
     setC4SelectedNodeId(undefined);
   }, [setC4InspectorPanelVisible, setC4SelectedNodeId]);
@@ -549,13 +550,13 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
    */
   const handleExportPNG = useCallback(async () => {
     try {
-      console.log('[C4GraphView] Exporting as PNG');
+      debugLog('[C4GraphView] Exporting as PNG');
       const reactFlowContainer = document.querySelector('.c4-graph-viewer') as HTMLElement;
       if (!reactFlowContainer) {
         throw new Error('Graph container not found');
       }
       await exportC4AsPNG(reactFlowContainer, `c4-${c4Preferences.viewLevel}-diagram.png`);
-      console.log('[C4GraphView] PNG export successful');
+      debugLog('[C4GraphView] PNG export successful');
     } catch (error) {
       console.error('[C4GraphView] PNG export failed:', error);
       alert('Failed to export PNG: ' + (error instanceof Error ? error.message : String(error)));
@@ -564,13 +565,13 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
 
   const handleExportSVG = useCallback(async () => {
     try {
-      console.log('[C4GraphView] Exporting as SVG');
+      debugLog('[C4GraphView] Exporting as SVG');
       const reactFlowContainer = document.querySelector('.c4-graph-viewer') as HTMLElement;
       if (!reactFlowContainer) {
         throw new Error('Graph container not found');
       }
       await exportC4AsSVG(reactFlowContainer, `c4-${c4Preferences.viewLevel}-diagram.svg`);
-      console.log('[C4GraphView] SVG export successful');
+      debugLog('[C4GraphView] SVG export successful');
     } catch (error) {
       console.error('[C4GraphView] SVG export failed:', error);
       alert('Failed to export SVG: ' + (error instanceof Error ? error.message : String(error)));
@@ -579,12 +580,12 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
 
   const handleExportGraphData = useCallback(() => {
     try {
-      console.log('[C4GraphView] Exporting graph data');
+      debugLog('[C4GraphView] Exporting graph data');
       if (!fullGraphRef.current) {
         throw new Error('No graph data available');
       }
       exportC4GraphAsJSON(nodes, edges, fullGraphRef.current, `c4-${c4Preferences.viewLevel}-data.json`);
-      console.log('[C4GraphView] Graph data export successful');
+      debugLog('[C4GraphView] Graph data export successful');
     } catch (error) {
       console.error('[C4GraphView] Graph data export failed:', error);
       alert('Failed to export graph data: ' + (error instanceof Error ? error.message : String(error)));
@@ -602,7 +603,7 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
           positions.set(n.id, { x: n.position.x, y: n.position.y });
         });
         setC4ManualPositions(positions);
-        console.log('[C4GraphView] Saved manual positions for', positions.size, 'nodes');
+        debugLog('[C4GraphView] Saved manual positions for', positions.size, 'nodes');
       }
     },
     [selectedLayout, nodes, setC4ManualPositions]

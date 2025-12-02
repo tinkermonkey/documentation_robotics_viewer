@@ -130,11 +130,11 @@ export const C4BreadcrumbNav: React.FC<C4BreadcrumbNavProps> = ({
   const handleKeyDown = (
     event: React.KeyboardEvent,
     segment: C4BreadcrumbSegment,
-    index: number
+    _index: number
   ) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      handleSegmentClick(segment, index);
+      handleSegmentClick(segment, _index);
     }
   };
 

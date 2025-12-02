@@ -223,7 +223,7 @@ export const C4FilterPanel: React.FC<C4FilterPanelProps> = ({
   };
 
   return (
-    <div className="c4-filter-panel">
+    <div className="c4-filter-panel" aria-label="C4 element filters">
       <div className="filter-panel-header">
         <h3>Filters</h3>
         <button

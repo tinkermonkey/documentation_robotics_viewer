@@ -108,7 +108,7 @@ test.describe('C4 Architecture View', () => {
       await expect(breadcrumb).toBeVisible();
 
       // Should show Context level
-      await expect(breadcrumb.locator('.breadcrumb-item').first()).toContainText(/Context|System/i);
+      await expect(breadcrumb.locator('.c4-breadcrumb-item').first()).toContainText(/Context|System/i);
     });
 
     test('should display filter panel', async ({ page }) => {
@@ -154,7 +154,7 @@ test.describe('C4 Architecture View', () => {
 
         // Breadcrumb should update to show container level
         const breadcrumb = page.locator('.c4-breadcrumb-nav');
-        const breadcrumbItems = await breadcrumb.locator('.breadcrumb-item').count();
+        const breadcrumbItems = await breadcrumb.locator('.c4-breadcrumb-item').count();
 
         // Should have more than 1 breadcrumb item after drill-down
         expect(breadcrumbItems).toBeGreaterThan(1);
@@ -174,12 +174,12 @@ test.describe('C4 Architecture View', () => {
         await page.waitForTimeout(1000);
 
         // Click on first breadcrumb item to go back to Context
-        const firstBreadcrumbItem = page.locator('.c4-breadcrumb-nav .breadcrumb-item').first();
+        const firstBreadcrumbItem = page.locator('.c4-breadcrumb-nav .c4-breadcrumb-item').first();
         await firstBreadcrumbItem.click();
         await page.waitForTimeout(1000);
 
         // Should be back at Context level
-        const breadcrumbItems = await page.locator('.c4-breadcrumb-nav .breadcrumb-item').count();
+        const breadcrumbItems = await page.locator('.c4-breadcrumb-nav .c4-breadcrumb-item').count();
         expect(breadcrumbItems).toBe(1);
       }
     });
@@ -191,8 +191,8 @@ test.describe('C4 Architecture View', () => {
       await page.click('.mode-selector button:has-text("Architecture")');
       await page.waitForTimeout(3000);
 
-      // Find a container type checkbox
-      const containerTypeCheckbox = page.locator('.c4-filter-panel .container-type-checkbox').first();
+      // Find a container type checkbox (filter-checkbox-label is the actual class)
+      const containerTypeCheckbox = page.locator('.c4-filter-panel .filter-checkbox-label input[type="checkbox"]').first();
 
       if (await containerTypeCheckbox.isVisible()) {
         const initialNodeCount = await page.locator('.react-flow__node').count();
@@ -217,8 +217,8 @@ test.describe('C4 Architecture View', () => {
       await page.click('.mode-selector button:has-text("Architecture")');
       await page.waitForTimeout(3000);
 
-      // Find a technology checkbox
-      const techCheckbox = page.locator('.c4-filter-panel .technology-checkbox').first();
+      // Find a technology checkbox (technology-list contains technology filter checkboxes)
+      const techCheckbox = page.locator('.c4-filter-panel .technology-list input[type="checkbox"]').first();
 
       if (await techCheckbox.isVisible()) {
         // Toggle the checkbox
@@ -252,12 +252,12 @@ test.describe('C4 Architecture View', () => {
       await page.click('.mode-selector button:has-text("Architecture")');
       await page.waitForTimeout(2000);
 
-      // Check for layout selector
-      const layoutSelector = page.locator('.c4-control-panel .layout-selector');
+      // Check for layout selector (it's a <select> element)
+      const layoutSelector = page.locator('.c4-control-panel select.layout-selector');
       await expect(layoutSelector).toBeVisible();
 
       // Should have layout options
-      const layoutOptions = layoutSelector.locator('button, .layout-option');
+      const layoutOptions = layoutSelector.locator('option');
       const optionCount = await layoutOptions.count();
       expect(optionCount).toBeGreaterThan(0);
     });
@@ -267,17 +267,16 @@ test.describe('C4 Architecture View', () => {
       await page.click('.mode-selector button:has-text("Architecture")');
       await page.waitForTimeout(3000);
 
-      // Find layout options
-      const layoutOptions = page.locator('.c4-control-panel .layout-option');
-      const optionCount = await layoutOptions.count();
+      // Find layout selector (it's a <select> element)
+      const layoutSelector = page.locator('.c4-control-panel select.layout-selector');
 
-      if (optionCount > 1) {
+      if (await layoutSelector.isVisible()) {
         // Get initial node positions
         const firstNode = page.locator('.react-flow__node').first();
         const initialBounds = await firstNode.boundingBox();
 
-        // Click on a different layout option
-        await layoutOptions.nth(1).click();
+        // Select a different layout option (e.g., 'force')
+        await layoutSelector.selectOption('force');
         await page.waitForTimeout(1000);
 
         // Layout should have changed (positions might differ)
@@ -292,11 +291,11 @@ test.describe('C4 Architecture View', () => {
       await page.click('.mode-selector button:has-text("Architecture")');
       await page.waitForTimeout(3000);
 
-      // Find manual layout option
-      const manualOption = page.locator('.c4-control-panel .layout-option', { hasText: 'Manual' });
+      // Find layout selector and select manual mode
+      const layoutSelector = page.locator('.c4-control-panel select.layout-selector');
 
-      if (await manualOption.isVisible()) {
-        await manualOption.click();
+      if (await layoutSelector.isVisible()) {
+        await layoutSelector.selectOption('manual');
         await page.waitForTimeout(500);
 
         // In manual mode, nodes should be draggable
@@ -610,7 +609,7 @@ test.describe('C4 Architecture View', () => {
 
         // Wait for breadcrumb to update
         await page.waitForFunction(() => {
-          const breadcrumbs = document.querySelectorAll('.c4-breadcrumb-nav .breadcrumb-item');
+          const breadcrumbs = document.querySelectorAll('.c4-breadcrumb-nav .c4-breadcrumb-item');
           return breadcrumbs.length > 1;
         }, { timeout: 1000 }).catch(() => null);
 

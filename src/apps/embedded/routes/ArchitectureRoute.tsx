@@ -13,6 +13,12 @@ import { useAnnotationStore } from '../stores/annotationStore';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
 import { websocketClient } from '../services/websocketClient';
 
+// Debug logging helper - only logs in development mode
+const DEBUG = import.meta.env.DEV;
+const debugLog = (...args: unknown[]) => {
+  if (DEBUG) console.log(...args);
+};
+
 export default function ArchitectureRoute() {
   const { model, loading, error, setModel, setLoading, setError } = useModelStore();
   const annotationStore = useAnnotationStore();
@@ -21,7 +27,7 @@ export default function ArchitectureRoute() {
     try {
       setLoading(true);
       setError('');
-      console.log('[ArchitectureRoute] Loading model data...');
+      debugLog('[ArchitectureRoute] Loading model data...');
 
       const modelData = await embeddedDataLoader.loadModel();
       setModel(modelData);
@@ -29,7 +35,7 @@ export default function ArchitectureRoute() {
       const annotations = await embeddedDataLoader.loadAnnotations();
       annotationStore.setAnnotations(annotations);
 
-      console.log('[ArchitectureRoute] Model loaded successfully');
+      debugLog('[ArchitectureRoute] Model loaded successfully');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load model';
       setError(errorMessage);
