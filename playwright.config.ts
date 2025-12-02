@@ -1,8 +1,18 @@
 import { defineConfig, devices } from '@playwright/test';
 
+/**
+ * Default Playwright config for tests that don't require the reference server.
+ *
+ * For tests requiring WebSocket connection to the reference server (port 8765),
+ * use playwright.e2e.config.ts or playwright.embedded.config.ts instead:
+ *   npm run test:e2e
+ *   npm run test:embedded
+ */
 export default defineConfig({
   testDir: './tests',
-  testMatch: '**/*.spec.ts', // Only run E2E tests (.spec.ts), not unit tests (.test.ts)
+  // Only run tests that don't require the reference server
+  // Tests requiring WebSocket should use test:e2e or test:embedded
+  testMatch: ['c4-nodes.spec.ts', 'example-implementation.spec.ts'],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
