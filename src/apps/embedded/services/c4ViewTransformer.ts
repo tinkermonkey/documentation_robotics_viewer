@@ -14,10 +14,22 @@
  *
  * Architecture Decision: Follows MotivationGraphTransformer pattern with
  * layout caching, semantic zoom integration, and path highlighting support.
+ *
+ * Note on Layout Algorithms:
+ * - 'orthogonal': Currently a placeholder that uses hierarchical layout.
+ *   True orthogonal edge routing would require a more sophisticated edge
+ *   router that is not yet implemented. The edge type remains 'smoothstep'
+ *   for now. See FR4.1 for future orthogonal routing implementation.
  */
 
 import { Node, Edge, MarkerType } from '@xyflow/react';
 import dagre from 'dagre';
+
+/**
+ * Debug logging flag - set to true for verbose console output during development
+ * Matches the pattern established in c4Parser.ts
+ */
+const DEBUG_LOGGING = false;
 import {
   C4Graph,
   C4Node,
@@ -108,19 +120,25 @@ export class C4ViewTransformer {
    * 6. Apply focus+context and path highlighting
    */
   transform(graph: C4Graph): C4TransformResult {
-    console.log('[C4ViewTransformer] Transforming graph with', graph.nodes.size, 'nodes');
+    if (DEBUG_LOGGING) {
+      console.log('[C4ViewTransformer] Transforming graph with', graph.nodes.size, 'nodes');
+    }
 
     // Step 1: Apply view level filtering
     const viewFilteredGraph = this.applyViewLevelFilter(graph);
-    console.log(
-      `[C4ViewTransformer] View level ${this.options.viewLevel}: ${viewFilteredGraph.nodes.size} nodes after filtering`
-    );
+    if (DEBUG_LOGGING) {
+      console.log(
+        `[C4ViewTransformer] View level ${this.options.viewLevel}: ${viewFilteredGraph.nodes.size} nodes after filtering`
+      );
+    }
 
     // Step 2: Apply user filters
     const filteredGraph = this.applyUserFilters(viewFilteredGraph, graph);
-    console.log(
-      `[C4ViewTransformer] User filters: ${filteredGraph.nodes.size} nodes after filtering`
-    );
+    if (DEBUG_LOGGING) {
+      console.log(
+        `[C4ViewTransformer] User filters: ${filteredGraph.nodes.size} nodes after filtering`
+      );
+    }
 
     // Step 3: Compute layout with caching
     const layoutResult = this.computeLayoutWithCache(filteredGraph);
@@ -128,8 +146,8 @@ export class C4ViewTransformer {
     // Step 4: Get semantic zoom detail level
     const detailLevel = this.getDetailLevel();
 
-    // Step 5: Create ReactFlow nodes
-    const nodes = this.createReactFlowNodes(filteredGraph, layoutResult, detailLevel, graph);
+    // Step 5: Create ReactFlow nodes (includes warnings for missing positions)
+    const { nodes, warnings } = this.createReactFlowNodes(filteredGraph, layoutResult, detailLevel, graph);
 
     // Step 6: Create ReactFlow edges
     const edges = this.createReactFlowEdges(filteredGraph, graph);
@@ -137,12 +155,15 @@ export class C4ViewTransformer {
     // Step 7: Build breadcrumb
     const breadcrumb = this.buildBreadcrumb(graph);
 
-    console.log('[C4ViewTransformer] Transform complete:', {
-      nodes: nodes.length,
-      edges: edges.length,
-      bounds: layoutResult.bounds,
-      cacheHitRate: this.getCacheHitRate(),
-    });
+    if (DEBUG_LOGGING) {
+      console.log('[C4ViewTransformer] Transform complete:', {
+        nodes: nodes.length,
+        edges: edges.length,
+        bounds: layoutResult.bounds,
+        cacheHitRate: this.getCacheHitRate(),
+        warnings: warnings.length,
+      });
+    }
 
     return {
       nodes,
@@ -151,6 +172,7 @@ export class C4ViewTransformer {
       breadcrumb,
       visibleNodeCount: nodes.length,
       visibleEdgeCount: edges.length,
+      warnings: warnings.length > 0 ? warnings : undefined,
     };
   }
 
@@ -261,6 +283,13 @@ export class C4ViewTransformer {
 
   /**
    * Apply user filters (container type, technology stack)
+   *
+   * Note: The _graph parameter (full C4Graph) is reserved for future optimization.
+   * Currently, we iterate over the already-filtered nodes for user filtering.
+   * The full graph's indexes (e.g., byContainerType, byTechnology) could enable
+   * O(1) set intersection for filtering, but the current implementation is
+   * sufficient for typical graph sizes. The parameter is kept for API consistency
+   * and future optimization opportunities.
    */
   private applyUserFilters(filtered: FilteredC4Graph, _graph: C4Graph): FilteredC4Graph {
     const { filterOptions } = this.options;
@@ -337,14 +366,26 @@ export class C4ViewTransformer {
 
   /**
    * Compute layout with caching
+   *
+   * Note: Manual layout is excluded from caching because the existingPositions
+   * can change between calls (user drags nodes), and the cache key would need
+   * to include a hash of all positions to detect changes correctly.
    */
   private computeLayoutWithCache(filtered: FilteredC4Graph): LayoutResult {
+    // Skip caching for manual layout - positions can change between calls
+    // and would require hashing all positions for proper cache invalidation
+    if (this.options.layoutAlgorithm === 'manual') {
+      return this.computeLayout(filtered);
+    }
+
     const cacheKey = this.generateLayoutCacheKey(filtered);
 
     const cachedLayout = this.layoutCache.get(cacheKey);
     if (cachedLayout) {
       this.cacheHits++;
-      console.log(`[C4ViewTransformer] Layout cache hit (rate: ${this.getCacheHitRate()}%)`);
+      if (DEBUG_LOGGING) {
+        console.log(`[C4ViewTransformer] Layout cache hit (rate: ${this.getCacheHitRate()}%)`);
+      }
       return cachedLayout;
     }
 
@@ -378,7 +419,9 @@ export class C4ViewTransformer {
   private computeLayout(filtered: FilteredC4Graph): LayoutResult {
     const { layoutAlgorithm, existingPositions } = this.options;
 
-    console.log(`[C4ViewTransformer] Computing ${layoutAlgorithm} layout`);
+    if (DEBUG_LOGGING) {
+      console.log(`[C4ViewTransformer] Computing ${layoutAlgorithm} layout`);
+    }
 
     switch (layoutAlgorithm) {
       case 'hierarchical':
@@ -388,7 +431,9 @@ export class C4ViewTransformer {
         return this.computeForceDirectedLayout(filtered);
 
       case 'orthogonal':
-        // For now, use hierarchical with orthogonal edge routing handled at edge level
+        // Orthogonal layout is a placeholder - uses hierarchical layout.
+        // True orthogonal edge routing is not yet implemented.
+        // See file header documentation for details.
         return this.computeHierarchicalLayout(filtered);
 
       case 'manual':
@@ -396,7 +441,9 @@ export class C4ViewTransformer {
           return this.computeManualLayout(filtered, existingPositions);
         }
         // Fall back to hierarchical if no positions
-        console.log('[C4ViewTransformer] No existing positions for manual layout, using hierarchical');
+        if (DEBUG_LOGGING) {
+          console.log('[C4ViewTransformer] No existing positions for manual layout, using hierarchical');
+        }
         return this.computeHierarchicalLayout(filtered);
 
       default:
@@ -410,6 +457,21 @@ export class C4ViewTransformer {
   private computeHierarchicalLayout(filtered: FilteredC4Graph): LayoutResult {
     const opts = DEFAULT_C4_LAYOUT_OPTIONS;
     const { width = 1200, height = 800, padding = 50 } = opts;
+
+    // Early return for empty graphs with valid default bounds
+    if (filtered.nodes.size === 0) {
+      return {
+        nodePositions: new Map(),
+        bounds: {
+          width: 0,
+          height: 0,
+          minX: 0,
+          minY: 0,
+          maxX: 0,
+          maxY: 0,
+        },
+      };
+    }
 
     // Use dagre for hierarchical layout
     const g = new dagre.graphlib.Graph();
@@ -497,20 +559,57 @@ export class C4ViewTransformer {
   }
 
   /**
+   * Simple deterministic hash function for consistent initial positions
+   * Uses a basic string hash to generate a value between 0 and 1
+   */
+  private hashStringToNumber(str: string): number {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    // Normalize to 0-1 range
+    return Math.abs(hash % 10000) / 10000;
+  }
+
+  /**
    * Compute force-directed layout
+   *
+   * Uses deterministic initial positions based on node IDs to ensure
+   * consistent layouts when the same graph is transformed multiple times.
    */
   private computeForceDirectedLayout(filtered: FilteredC4Graph): LayoutResult {
     const opts = DEFAULT_C4_LAYOUT_OPTIONS;
     const { width = 1200, height = 800, padding = 50 } = opts;
 
-    // Initialize positions and velocities
+    // Early return for empty graphs with valid default bounds
+    if (filtered.nodes.size === 0) {
+      return {
+        nodePositions: new Map(),
+        bounds: {
+          width: 0,
+          height: 0,
+          minX: 0,
+          minY: 0,
+          maxX: 0,
+          maxY: 0,
+        },
+      };
+    }
+
+    // Initialize positions and velocities with deterministic positions
+    // based on node IDs for consistent layouts
     const positions = new Map<string, Position>();
     const velocities = new Map<string, { vx: number; vy: number }>();
 
     for (const [nodeId] of filtered.nodes) {
+      // Use deterministic hash-based positions instead of random
+      const hashX = this.hashStringToNumber(nodeId + '_x');
+      const hashY = this.hashStringToNumber(nodeId + '_y');
       positions.set(nodeId, {
-        x: padding + Math.random() * (width - 2 * padding),
-        y: padding + Math.random() * (height - 2 * padding),
+        x: padding + hashX * (width - 2 * padding),
+        y: padding + hashY * (height - 2 * padding),
       });
       velocities.set(nodeId, { vx: 0, vy: 0 });
     }
@@ -636,6 +735,21 @@ export class C4ViewTransformer {
     const opts = DEFAULT_C4_LAYOUT_OPTIONS;
     const { width = 1200, height = 800, padding = 50 } = opts;
 
+    // Early return for empty graphs with valid default bounds
+    if (filtered.nodes.size === 0) {
+      return {
+        nodePositions: new Map(),
+        bounds: {
+          width: 0,
+          height: 0,
+          minX: 0,
+          minY: 0,
+          maxX: 0,
+          maxY: 0,
+        },
+      };
+    }
+
     const positions = new Map<string, Position>();
 
     // Use existing positions for known nodes
@@ -700,7 +814,9 @@ export class C4ViewTransformer {
     }
 
     if (disconnected.length > 0) {
-      console.log(`[C4ViewTransformer] Positioning ${disconnected.length} disconnected nodes`);
+      if (DEBUG_LOGGING) {
+        console.log(`[C4ViewTransformer] Positioning ${disconnected.length} disconnected nodes`);
+      }
 
       const centerX = width / 2;
       const centerY = height / 2;
@@ -756,20 +872,32 @@ export class C4ViewTransformer {
 
   /**
    * Create ReactFlow nodes from filtered C4 graph
+   *
+   * Note: The _fullGraph parameter is reserved for future use when we need
+   * to access the full graph context (e.g., for showing relationship counts
+   * to nodes outside the current view). Currently unused but kept for API
+   * consistency with MotivationGraphTransformer.
+   *
+   * @returns Object with nodes array and warnings array
    */
   private createReactFlowNodes(
     filtered: FilteredC4Graph,
     layoutResult: LayoutResult,
     detailLevel: C4NodeDetailLevel,
     _fullGraph: C4Graph
-  ): Node[] {
+  ): { nodes: Node[]; warnings: string[] } {
     const nodes: Node[] = [];
+    const warnings: string[] = [];
     const { focusContext, pathHighlighting } = this.options;
 
     for (const [nodeId, node] of filtered.nodes) {
       const position = layoutResult.nodePositions.get(nodeId);
       if (!position) {
-        console.warn(`[C4ViewTransformer] No position for node ${nodeId}`);
+        const warning = `No position for node ${nodeId} (${node.name})`;
+        warnings.push(warning);
+        if (DEBUG_LOGGING) {
+          console.warn(`[C4ViewTransformer] ${warning}`);
+        }
         continue;
       }
 
@@ -822,7 +950,7 @@ export class C4ViewTransformer {
       } as Node);
     }
 
-    return nodes;
+    return { nodes, warnings };
   }
 
   /**

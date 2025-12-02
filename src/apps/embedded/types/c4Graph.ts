@@ -12,6 +12,7 @@
  */
 
 import { ModelElement, Relationship } from '../../../core/types';
+import { Node, Edge } from '@xyflow/react';
 
 /**
  * C4 abstraction types
@@ -494,11 +495,11 @@ export const DEFAULT_C4_TRANSFORMER_OPTIONS: C4TransformerOptions = {
  * C4 transform result containing ReactFlow nodes and edges
  */
 export interface C4TransformResult {
-  /** ReactFlow nodes */
-  nodes: any[]; // Node[] from @xyflow/react
+  /** ReactFlow nodes (properly typed from @xyflow/react) */
+  nodes: Node[];
 
-  /** ReactFlow edges */
-  edges: any[]; // Edge[] from @xyflow/react
+  /** ReactFlow edges (properly typed from @xyflow/react) */
+  edges: Edge[];
 
   /** Computed layout bounds */
   bounds: {
@@ -518,6 +519,9 @@ export interface C4TransformResult {
 
   /** Visible edge count (after filtering) */
   visibleEdgeCount: number;
+
+  /** Warnings encountered during transformation (e.g., missing positions) */
+  warnings?: string[];
 }
 
 /**
