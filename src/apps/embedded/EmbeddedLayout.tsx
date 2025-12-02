@@ -18,6 +18,7 @@ export default function EmbeddedLayout() {
     if (path.startsWith('/model')) return 'model';
     if (path.startsWith('/changesets')) return 'changesets';
     if (path.startsWith('/motivation')) return 'motivation';
+    if (path.startsWith('/architecture')) return 'architecture';
     return 'model'; // Default
   };
 

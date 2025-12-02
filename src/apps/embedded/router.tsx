@@ -3,6 +3,7 @@ import EmbeddedLayout from './EmbeddedLayout';
 import ModelRoute from './routes/ModelRoute';
 import SpecRoute from './routes/SpecRoute';
 import MotivationRoute from './routes/MotivationRoute';
+import ArchitectureRoute from './routes/ArchitectureRoute';
 import ChangesetRoute from './routes/ChangesetRoute';
 
 const rootRoute = createRootRoute({
@@ -45,6 +46,12 @@ const motivationRoute = createRoute({
   component: MotivationRoute,
 });
 
+const architectureRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/architecture',
+  component: ArchitectureRoute,
+});
+
 const changesetsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/changesets',
@@ -64,6 +71,7 @@ const routeTree = rootRoute.addChildren([
   specRoute,
   specViewRoute,
   motivationRoute,
+  architectureRoute,
   changesetsRoute,
   changesetsViewRoute,
 ]);
