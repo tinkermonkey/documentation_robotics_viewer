@@ -3,14 +3,14 @@
  * Tests the parsing logic for transforming JSON Schema definitions into visual elements
  */
 
-import { describe, it, expect } from 'vitest';
+import { test, expect } from '@playwright/test';
 import { JSONSchemaParser } from '../src/services/jsonSchemaParser';
 
-describe('JSONSchemaParser', () => {
+test.describe('JSONSchemaParser', () => {
   const parser = new JSONSchemaParser();
 
-  describe('parseSchemaLayer', () => {
-    it('should parse a simple JSON Schema layer', () => {
+  test.describe('parseSchemaLayer', () => {
+    test('should parse a simple JSON Schema layer', () => {
       const schemaData = {
         $schema: 'http://json-schema.org/draft-07/schema#',
         $id: 'https://example.com/schemas/business-layer.json',
@@ -49,7 +49,7 @@ describe('JSONSchemaParser', () => {
       expect(layer.schemaMetadata.title).toBe('Business Layer Schema');
     });
 
-    it('should extract element from definition', () => {
+    test('should extract element from definition', () => {
       const schemaData = {
         definitions: {
           BusinessRole: {
@@ -73,7 +73,7 @@ describe('JSONSchemaParser', () => {
       expect(element.schemaInfo.required).toEqual(['id', 'name']);
     });
 
-    it('should extract properties with constraints', () => {
+    test('should extract properties with constraints', () => {
       const schemaData = {
         definitions: {
           TestElement: {
@@ -132,7 +132,7 @@ describe('JSONSchemaParser', () => {
       expect(statusProp?.enum).toEqual(['active', 'inactive', 'pending']);
     });
 
-    it('should detect internal $ref references', () => {
+    test('should detect internal $ref references', () => {
       const schemaData = {
         definitions: {
           BusinessActor: {
@@ -176,7 +176,7 @@ describe('JSONSchemaParser', () => {
       expect(layer.relationships[0].type).toBe('reference');
     });
 
-    it('should detect array references (many cardinality)', () => {
+    test('should detect array references (many cardinality)', () => {
       const schemaData = {
         definitions: {
           Team: {
@@ -206,7 +206,7 @@ describe('JSONSchemaParser', () => {
       expect(team!.schemaInfo.references[0].cardinality).toBe('many');
     });
 
-    it('should handle nested properties', () => {
+    test('should handle nested properties', () => {
       const schemaData = {
         definitions: {
           TestElement: {
@@ -238,7 +238,7 @@ describe('JSONSchemaParser', () => {
       expect(zipCodeProp?.pattern).toBe('^\\d{5}$');
     });
 
-    it('should handle schemas without definitions', () => {
+    test('should handle schemas without definitions', () => {
       const schemaData = {
         $schema: 'http://json-schema.org/draft-07/schema#',
         type: 'object',
@@ -254,8 +254,8 @@ describe('JSONSchemaParser', () => {
     });
   });
 
-  describe('resolveCrossLayerReferences', () => {
-    it('should identify external references', () => {
+  test.describe('resolveCrossLayerReferences', () => {
+    test('should identify external references', () => {
       const businessSchema = {
         definitions: {
           BusinessProcess: {
@@ -277,7 +277,7 @@ describe('JSONSchemaParser', () => {
       expect(refs).toContain('ApplicationService');
     });
 
-    it('should not include internal references', () => {
+    test('should not include internal references', () => {
       const schema = {
         definitions: {
           A: {

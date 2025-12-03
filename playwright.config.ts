@@ -3,6 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests',
   testMatch: '**/*.spec.ts', // Only run E2E tests (.spec.ts), not unit tests (.test.ts)
+  testIgnore: '**/embedded-*.spec.ts', // Embedded tests require Python backend, run with: npm run test:embedded
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
