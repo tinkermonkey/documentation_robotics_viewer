@@ -294,7 +294,7 @@ Data models can embed JSON Schema definitions:
 user-schema:
   name: user-schema
   id: data_model.schema.user
-  $schema: http://json-schema.org/draft-07/schema#
+  : http://json-schema.org/draft-07/schema#
   schemas:
     User:
       type: object
@@ -504,6 +504,127 @@ npx playwright test --ui
 | Layout switch | < 800ms | Smooth transitions, requestAnimationFrame |
 | Pan/zoom | 60fps | ReactFlow optimization |
 | Memory (1000 elements) | < 50MB | Efficient data structures |
+
+## C4 Architecture Visualization (Phase 5 - Advanced Features)
+
+The C4 visualization system provides hierarchical architecture diagrams following the C4 model (Context, Containers, Components, Code).
+
+### Key Features
+
+**1. Scenario Presets**
+Quick view configurations for common architectural perspectives:
+
+```typescript
+import { C4_SCENARIO_PRESETS, C4ScenarioPreset } from '../types/c4Graph';
+
+// Available presets: 'dataFlow' | 'deployment' | 'technologyStack' | 'apiSurface' | 'dependency'
+setC4ScenarioPreset('dataFlow'); // Activates data flow view
+setC4ScenarioPreset(null);        // Deactivates preset
+```
+
+**2. Focus+Context Visualization**
+```typescript
+// Enable focus mode - selected node at full detail, neighbors medium, distant dimmed
+transformer.setOptions({
+  focusContext: {
+    enabled: true,
+    focusedNodeId: 'container-id',
+    dimmedOpacity: 0.3,
+  },
+});
+```
+
+**3. Path Tracing**
+```typescript
+// Trace upstream dependencies
+const upstream = transformer.traceUpstream('node-id', graph);
+
+// Trace downstream consumers
+const downstream = transformer.traceDownstream('node-id', graph);
+
+// Find path between two nodes
+const path = transformer.traceBetween('source-id', 'target-id', graph);
+
+// Get edges for highlighting
+const edges = transformer.getHighlightedEdges(highlightedNodes, graph);
+```
+
+**4. Relationship Bundling**
+3+ connections between same nodes are automatically bundled:
+- Dashed line with count indicator
+- Protocol summary in label
+- Animated if any edge is async
+
+**5. Changeset Visualization**
+```typescript
+// Filter to show only changed elements
+transformer.setOptions({
+  showOnlyChangeset: true,
+});
+
+// Styling: new=green, modified=yellow, deleted=red
+```
+
+### C4 Node Components
+
+| Component | Dimensions | Location |
+|-----------|------------|----------|
+| ContainerNode | 280×180 | `src/core/nodes/c4/ContainerNode.tsx` |
+| ComponentNode | 240×140 | `src/core/nodes/c4/ComponentNode.tsx` |
+| ExternalActorNode | 160×120 | `src/core/nodes/c4/ExternalActorNode.tsx` |
+
+### C4 Custom Node Pattern
+
+```typescript
+// src/core/nodes/c4/YourNode.tsx
+export const YourNode = memo(({ data }: NodeProps<C4NodeData>) => {
+  return (
+    <div
+      style={{
+        width: YOUR_NODE_WIDTH, // Must match c4ViewTransformer
+        height: YOUR_NODE_HEIGHT,
+        opacity: data.opacity ?? 1.0,
+      }}
+      role="button"
+      aria-label={`${data.c4Type} ${data.label}`}
+    >
+      <Handle type="target" position={Position.Top} id="top" />
+      <Handle type="source" position={Position.Bottom} id="bottom" />
+      {/* Content based on data.detailLevel */}
+    </div>
+  );
+});
+```
+
+### Testing C4 Features
+
+```bash
+# Run C4 unit tests
+npx playwright test tests/unit/c4ViewTransformer.spec.ts
+
+# Run C4 E2E tests
+npx playwright test tests/c4-architecture-view.spec.ts
+
+# Run C4 accessibility tests
+npx playwright test tests/c4-accessibility.spec.ts
+
+# Run C4 performance tests
+npx playwright test tests/c4-performance.spec.ts
+```
+
+### C4 Performance Targets
+
+| Metric | Target | Implementation |
+|--------|--------|----------------|
+| Initial render (5 containers) | < 3s | ReactFlow viewport culling |
+| Filter operations | < 500ms | Pre-indexed data structures |
+| Layout switch | < 800ms | Smooth transitions, caching |
+| Drill-down navigation | < 300ms | Cached hierarchies |
+| Memory (200 elements) | < 50MB | Efficient C4Graph structure |
+
+### For More Details
+
+See `documentation/C4_VISUALIZATION.md` for complete specification and examples.
 
 ## Business Layer Export & Reporting
 
@@ -1045,10 +1166,11 @@ Monitor these logs during development to ensure performance targets are met.
 
 ---
 
-**Last Updated**: 2025-12-01
+**Last Updated**: 2025-12-03
 **React Flow Version**: 12.0.0
 **Project Version**: 1.0.0
 **YAML Support**: v0.1.0
-**Motivation Layer**: Complete
+**Motivation Layer**: Phase 6 Complete
 **Business Layer**: Complete
+**C4 Visualization**: Phase 5 Complete
 **Performance Optimization**: Complete

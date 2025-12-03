@@ -8,11 +8,16 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { MotivationElementType, MotivationRelationshipType } from '../types/motivationGraph';
+import { C4ViewLevel, C4LayoutAlgorithm, ContainerType, C4ScenarioPreset } from '../types/c4Graph';
 
 export type SpecViewType = 'graph' | 'json';
 export type ModelViewType = 'graph' | 'json';
 export type ChangesetViewType = 'graph' | 'list';
 export type MotivationLayoutType = 'force' | 'hierarchical' | 'radial' | 'manual';
+export type C4LayoutType = C4LayoutAlgorithm;
+
+// Re-export C4ScenarioPreset from c4Graph.ts for consumers who import from this file
+export type { C4ScenarioPreset };
 
 /**
  * Path tracing state
@@ -29,6 +34,70 @@ export interface PathTracingState {
 
   /** Highlighted edge IDs from tracing */
   highlightedEdgeIds: Set<string>;
+}
+
+/**
+ * C4 path tracing state
+ */
+export interface C4PathTracingState {
+  /** Active path trace mode */
+  mode: 'none' | 'upstream' | 'downstream' | 'between';
+
+  /** Source node ID for path tracing */
+  sourceId?: string;
+
+  /** Target node ID for 'between' mode */
+  targetId?: string;
+
+  /** Highlighted node IDs from tracing */
+  highlightedNodeIds: Set<string>;
+
+  /** Highlighted edge IDs from tracing */
+  highlightedEdgeIds: Set<string>;
+}
+
+/**
+ * C4 visualization preferences
+ */
+export interface C4ViewPreferences {
+  /** Current C4 view level */
+  viewLevel: C4ViewLevel;
+
+  /** Selected container ID for drill-down */
+  selectedContainerId?: string;
+
+  /** Selected component ID for component view */
+  selectedComponentId?: string;
+
+  /** Selected layout algorithm */
+  selectedLayout: C4LayoutType;
+
+  /** Visible container types (filters) */
+  visibleContainerTypes: Set<ContainerType>;
+
+  /** Visible technology stacks (filters) */
+  visibleTechnologyStacks: Set<string>;
+
+  /** Show deployment overlay */
+  showDeploymentOverlay: boolean;
+
+  /** Manual layout positions (keyed by viewLevel + nodeId) */
+  manualPositions: Map<string, { x: number; y: number }>;
+
+  /** Focus context enabled (dims non-focused elements) */
+  focusContextEnabled: boolean;
+
+  /** Path tracing state */
+  pathTracing: C4PathTracingState;
+
+  /** Scenario preset (quick view configuration) */
+  scenarioPreset: C4ScenarioPreset;
+
+  /** Selected node ID for inspector panel */
+  selectedNodeId?: string;
+
+  /** Inspector panel visible */
+  inspectorPanelVisible: boolean;
 }
 
 /**
@@ -75,6 +144,9 @@ interface ViewPreferenceState {
   // Motivation view preferences
   motivationPreferences: MotivationViewPreferences;
 
+  // C4 view preferences
+  c4Preferences: C4ViewPreferences;
+
   // Actions
   setSpecView: (view: SpecViewType) => void;
   setModelView: (view: ModelViewType) => void;
@@ -93,6 +165,22 @@ interface ViewPreferenceState {
   setInspectorPanelVisible: (visible: boolean) => void;
   resetMotivationPreferences: () => void;
 
+  // C4 preferences actions
+  setC4ViewLevel: (level: C4ViewLevel) => void;
+  setC4SelectedContainer: (id: string | undefined) => void;
+  setC4SelectedComponent: (id: string | undefined) => void;
+  setC4Layout: (layout: C4LayoutType) => void;
+  setC4VisibleContainerTypes: (types: Set<ContainerType>) => void;
+  setC4VisibleTechnologyStacks: (stacks: Set<string>) => void;
+  setC4ShowDeploymentOverlay: (show: boolean) => void;
+  setC4ManualPositions: (positions: Map<string, { x: number; y: number }>) => void;
+  setC4FocusContextEnabled: (enabled: boolean) => void;
+  setC4PathTracing: (pathTracing: C4PathTracingState) => void;
+  setC4ScenarioPreset: (preset: C4ScenarioPreset) => void;
+  setC4SelectedNodeId: (nodeId: string | undefined) => void;
+  setC4InspectorPanelVisible: (visible: boolean) => void;
+  resetC4Preferences: () => void;
+
   reset: () => void;
 }
 
@@ -102,6 +190,17 @@ interface ViewPreferenceState {
 const defaultPathTracingState: PathTracingState = {
   mode: 'none',
   selectedNodeIds: [],
+  highlightedNodeIds: new Set(),
+  highlightedEdgeIds: new Set(),
+};
+
+/**
+ * Default C4 path tracing state
+ */
+const defaultC4PathTracingState: C4PathTracingState = {
+  mode: 'none',
+  sourceId: undefined,
+  targetId: undefined,
   highlightedNodeIds: new Set(),
   highlightedEdgeIds: new Set(),
 };
@@ -122,11 +221,31 @@ const defaultMotivationPreferences: MotivationViewPreferences = {
   inspectorPanelVisible: false,
 };
 
+/**
+ * Default C4 preferences
+ */
+const defaultC4Preferences: C4ViewPreferences = {
+  viewLevel: 'context',
+  selectedContainerId: undefined,
+  selectedComponentId: undefined,
+  selectedLayout: 'hierarchical',
+  visibleContainerTypes: new Set(Object.values(ContainerType)),
+  visibleTechnologyStacks: new Set(),
+  showDeploymentOverlay: false,
+  manualPositions: new Map(),
+  focusContextEnabled: false,
+  pathTracing: defaultC4PathTracingState,
+  scenarioPreset: null,
+  selectedNodeId: undefined,
+  inspectorPanelVisible: false,
+};
+
 const initialState = {
   specView: 'graph' as SpecViewType,
   modelView: 'graph' as ModelViewType,
   changesetView: 'graph' as ChangesetViewType,
   motivationPreferences: defaultMotivationPreferences,
+  c4Preferences: defaultC4Preferences,
 };
 
 export const useViewPreferenceStore = create<ViewPreferenceState>()(
@@ -228,6 +347,103 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
         set({ motivationPreferences: defaultMotivationPreferences });
       },
 
+      // C4 preferences actions
+      setC4ViewLevel: (level: C4ViewLevel) => {
+        console.log('[ViewPreferenceStore] Setting C4 view level to:', level);
+        set((state) => ({
+          c4Preferences: { ...state.c4Preferences, viewLevel: level },
+        }));
+      },
+
+      setC4SelectedContainer: (id: string | undefined) => {
+        console.log('[ViewPreferenceStore] Setting C4 selected container to:', id);
+        set((state) => ({
+          c4Preferences: { ...state.c4Preferences, selectedContainerId: id },
+        }));
+      },
+
+      setC4SelectedComponent: (id: string | undefined) => {
+        console.log('[ViewPreferenceStore] Setting C4 selected component to:', id);
+        set((state) => ({
+          c4Preferences: { ...state.c4Preferences, selectedComponentId: id },
+        }));
+      },
+
+      setC4Layout: (layout: C4LayoutType) => {
+        console.log('[ViewPreferenceStore] Setting C4 layout to:', layout);
+        set((state) => ({
+          c4Preferences: { ...state.c4Preferences, selectedLayout: layout },
+        }));
+      },
+
+      setC4VisibleContainerTypes: (types: Set<ContainerType>) => {
+        console.log('[ViewPreferenceStore] Setting C4 visible container types:', types.size, 'types');
+        set((state) => ({
+          c4Preferences: { ...state.c4Preferences, visibleContainerTypes: types },
+        }));
+      },
+
+      setC4VisibleTechnologyStacks: (stacks: Set<string>) => {
+        console.log('[ViewPreferenceStore] Setting C4 visible technology stacks:', stacks.size, 'stacks');
+        set((state) => ({
+          c4Preferences: { ...state.c4Preferences, visibleTechnologyStacks: stacks },
+        }));
+      },
+
+      setC4ShowDeploymentOverlay: (show: boolean) => {
+        console.log('[ViewPreferenceStore] Setting C4 show deployment overlay:', show);
+        set((state) => ({
+          c4Preferences: { ...state.c4Preferences, showDeploymentOverlay: show },
+        }));
+      },
+
+      setC4ManualPositions: (positions: Map<string, { x: number; y: number }>) => {
+        console.log('[ViewPreferenceStore] Setting C4 manual positions:', positions.size, 'nodes');
+        set((state) => ({
+          c4Preferences: { ...state.c4Preferences, manualPositions: positions },
+        }));
+      },
+
+      setC4FocusContextEnabled: (enabled: boolean) => {
+        console.log('[ViewPreferenceStore] Setting C4 focus context enabled:', enabled);
+        set((state) => ({
+          c4Preferences: { ...state.c4Preferences, focusContextEnabled: enabled },
+        }));
+      },
+
+      setC4PathTracing: (pathTracing: C4PathTracingState) => {
+        console.log('[ViewPreferenceStore] Setting C4 path tracing:', pathTracing.mode);
+        set((state) => ({
+          c4Preferences: { ...state.c4Preferences, pathTracing },
+        }));
+      },
+
+      setC4ScenarioPreset: (preset: C4ScenarioPreset) => {
+        console.log('[ViewPreferenceStore] Setting C4 scenario preset:', preset);
+        set((state) => ({
+          c4Preferences: { ...state.c4Preferences, scenarioPreset: preset },
+        }));
+      },
+
+      setC4SelectedNodeId: (nodeId: string | undefined) => {
+        console.log('[ViewPreferenceStore] Setting C4 selected node ID:', nodeId);
+        set((state) => ({
+          c4Preferences: { ...state.c4Preferences, selectedNodeId: nodeId },
+        }));
+      },
+
+      setC4InspectorPanelVisible: (visible: boolean) => {
+        console.log('[ViewPreferenceStore] Setting C4 inspector panel visible:', visible);
+        set((state) => ({
+          c4Preferences: { ...state.c4Preferences, inspectorPanelVisible: visible },
+        }));
+      },
+
+      resetC4Preferences: () => {
+        console.log('[ViewPreferenceStore] Resetting C4 preferences to defaults');
+        set({ c4Preferences: defaultC4Preferences });
+      },
+
       reset: () => {
         console.log('[ViewPreferenceStore] Resetting all preferences to defaults');
         set(initialState);
@@ -304,6 +520,60 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
               }
             }
 
+            // Deserialize C4 preferences
+            if (state.c4Preferences) {
+              if (Array.isArray(state.c4Preferences.visibleContainerTypes)) {
+                state.c4Preferences.visibleContainerTypes = new Set(
+                  state.c4Preferences.visibleContainerTypes
+                );
+              } else {
+                state.c4Preferences.visibleContainerTypes = new Set(
+                  Object.values(ContainerType)
+                );
+              }
+
+              if (Array.isArray(state.c4Preferences.visibleTechnologyStacks)) {
+                state.c4Preferences.visibleTechnologyStacks = new Set(
+                  state.c4Preferences.visibleTechnologyStacks
+                );
+              } else {
+                state.c4Preferences.visibleTechnologyStacks = new Set();
+              }
+
+              if (state.c4Preferences.manualPositions &&
+                  typeof state.c4Preferences.manualPositions === 'object') {
+                state.c4Preferences.manualPositions = new Map(
+                  Object.entries(state.c4Preferences.manualPositions)
+                );
+              } else {
+                state.c4Preferences.manualPositions = new Map();
+              }
+
+              if (state.c4Preferences.pathTracing &&
+                  typeof state.c4Preferences.pathTracing === 'object') {
+                if (Array.isArray(state.c4Preferences.pathTracing.highlightedNodeIds)) {
+                  state.c4Preferences.pathTracing.highlightedNodeIds = new Set(
+                    state.c4Preferences.pathTracing.highlightedNodeIds
+                  );
+                } else {
+                  state.c4Preferences.pathTracing.highlightedNodeIds = new Set();
+                }
+
+                if (Array.isArray(state.c4Preferences.pathTracing.highlightedEdgeIds)) {
+                  state.c4Preferences.pathTracing.highlightedEdgeIds = new Set(
+                    state.c4Preferences.pathTracing.highlightedEdgeIds
+                  );
+                } else {
+                  state.c4Preferences.pathTracing.highlightedEdgeIds = new Set();
+                }
+              } else {
+                state.c4Preferences.pathTracing = defaultC4PathTracingState;
+              }
+            } else {
+              // No C4 preferences in storage, use defaults
+              state.c4Preferences = defaultC4Preferences;
+            }
+
             return { state };
           } catch (error) {
             console.error('[ViewPreferenceStore] Error reading from localStorage:', error);
@@ -342,6 +612,32 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
                         ),
                       }
                     : defaultPathTracingState,
+                },
+                c4Preferences: {
+                  ...newValue.state.c4Preferences,
+                  // Serialize Sets as arrays
+                  visibleContainerTypes: newValue.state.c4Preferences?.visibleContainerTypes
+                    ? Array.from(newValue.state.c4Preferences.visibleContainerTypes)
+                    : [],
+                  visibleTechnologyStacks: newValue.state.c4Preferences?.visibleTechnologyStacks
+                    ? Array.from(newValue.state.c4Preferences.visibleTechnologyStacks)
+                    : [],
+                  // Serialize Map as object
+                  manualPositions: newValue.state.c4Preferences?.manualPositions
+                    ? Object.fromEntries(newValue.state.c4Preferences.manualPositions)
+                    : {},
+                  // Serialize path tracing Sets
+                  pathTracing: newValue.state.c4Preferences?.pathTracing
+                    ? {
+                        ...newValue.state.c4Preferences.pathTracing,
+                        highlightedNodeIds: Array.from(
+                          newValue.state.c4Preferences.pathTracing.highlightedNodeIds || []
+                        ),
+                        highlightedEdgeIds: Array.from(
+                          newValue.state.c4Preferences.pathTracing.highlightedEdgeIds || []
+                        ),
+                      }
+                    : defaultC4PathTracingState,
                 },
               },
             });

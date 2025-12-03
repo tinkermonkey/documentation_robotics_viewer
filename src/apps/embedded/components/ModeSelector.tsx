@@ -1,12 +1,12 @@
 /**
  * ModeSelector Component
- * Allows switching between Spec, Model, Motivation, and Changeset views
+ * Allows switching between Spec, Model, Motivation, Architecture, and Changeset views
  */
 
 import React from 'react';
 import './ModeSelector.css';
 
-type ViewMode = 'spec' | 'model' | 'changesets' | 'motivation';
+type ViewMode = 'spec' | 'model' | 'changesets' | 'motivation' | 'architecture';
 
 interface ModeSelectorProps {
   currentMode: ViewMode;
@@ -21,7 +21,7 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({ currentMode, onModeChange }
         onClick={() => onModeChange('spec')}
         title="View specification structure"
       >
-        📋 Spec
+        Spec
       </button>
 
       <button
@@ -29,7 +29,7 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({ currentMode, onModeChange }
         onClick={() => onModeChange('model')}
         title="View current model"
       >
-        🏗️ Model
+        Model
       </button>
 
       <button
@@ -37,7 +37,15 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({ currentMode, onModeChange }
         onClick={() => onModeChange('motivation')}
         title="View motivation layer ontology"
       >
-        🎯 Motivation
+        Motivation
+      </button>
+
+      <button
+        className={`mode-button ${currentMode === 'architecture' ? 'active' : ''}`}
+        onClick={() => onModeChange('architecture')}
+        title="View C4 architecture diagrams"
+      >
+        Architecture
       </button>
 
       <button
@@ -45,7 +53,7 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({ currentMode, onModeChange }
         onClick={() => onModeChange('changesets')}
         title="View changesets"
       >
-        📝 Changesets
+        Changesets
       </button>
     </div>
   );

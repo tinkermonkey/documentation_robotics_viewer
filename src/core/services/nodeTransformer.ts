@@ -9,6 +9,19 @@ import { MarkerType } from '@xyflow/react';
 import { elementStore } from '../stores/elementStore';
 import { LayoutResult } from '../types/shapes';
 import { AppNode, AppEdge } from '../types/reactflow';
+// Import C4 node dimension constants to prevent drift
+import {
+  CONTAINER_NODE_WIDTH,
+  CONTAINER_NODE_HEIGHT,
+} from '../nodes/c4/ContainerNode';
+import {
+  COMPONENT_NODE_WIDTH,
+  COMPONENT_NODE_HEIGHT,
+} from '../nodes/c4/ComponentNode';
+import {
+  EXTERNAL_ACTOR_NODE_WIDTH,
+  EXTERNAL_ACTOR_NODE_HEIGHT,
+} from '../nodes/c4/ExternalActorNode';
 
 /**
  * Result of transforming a model
@@ -245,6 +258,16 @@ export class NodeTransformer {
       'BusinessProcess': 'businessProcess',
       'json-schema-element': 'jsonSchema',
       'layer-container': 'layerContainer',
+      // C4 node types
+      'c4-container': 'c4Container',
+      'C4Container': 'c4Container',
+      'Container': 'c4Container',
+      'c4-component': 'c4Component',
+      'C4Component': 'c4Component',
+      'c4-external-actor': 'c4ExternalActor',
+      'C4ExternalActor': 'c4ExternalActor',
+      'ExternalActor': 'c4ExternalActor',
+      'ExternalSystem': 'c4ExternalActor',
     };
 
     return typeMap[element.type] || 'businessProcess';
@@ -306,6 +329,27 @@ export class NodeTransformer {
         scope: element.properties.scope || 'resource',
         resource: element.properties.resource,
         action: element.properties.action,
+      };
+    } else if (nodeType === 'c4Container') {
+      return {
+        ...baseData,
+        containerType: element.properties.containerType || 'other',
+        technology: element.properties.technology || [],
+        description: element.properties.description || element.description,
+      };
+    } else if (nodeType === 'c4Component') {
+      return {
+        ...baseData,
+        role: element.properties.role,
+        technology: element.properties.technology || [],
+        description: element.properties.description || element.description,
+        interfaces: element.properties.interfaces || [],
+      };
+    } else if (nodeType === 'c4ExternalActor') {
+      return {
+        ...baseData,
+        actorType: element.properties.actorType || 'user',
+        description: element.properties.description || element.description,
       };
     }
 
@@ -384,6 +428,30 @@ export class NodeTransformer {
             element.visual.size = {
               width: 180,
               height: 100,
+            };
+            break;
+
+          case 'c4Container':
+            // C4 ContainerNode: uses imported constants from ContainerNode.tsx
+            element.visual.size = {
+              width: CONTAINER_NODE_WIDTH,
+              height: CONTAINER_NODE_HEIGHT,
+            };
+            break;
+
+          case 'c4Component':
+            // C4 ComponentNode: uses imported constants from ComponentNode.tsx
+            element.visual.size = {
+              width: COMPONENT_NODE_WIDTH,
+              height: COMPONENT_NODE_HEIGHT,
+            };
+            break;
+
+          case 'c4ExternalActor':
+            // C4 ExternalActorNode: uses imported constants from ExternalActorNode.tsx
+            element.visual.size = {
+              width: EXTERNAL_ACTOR_NODE_WIDTH,
+              height: EXTERNAL_ACTOR_NODE_HEIGHT,
             };
             break;
 

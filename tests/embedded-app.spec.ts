@@ -77,78 +77,11 @@ test.describe.skip('Embedded App - Reference Server Integration', () => {
     expect(hasGraphViewer || hasMessage).toBeTruthy();
   });
 
-  test('should switch to spec view and load without errors', async ({ page }) => {
-    // Wait for WebSocket connection
-    await page.waitForSelector('.connection-status.connected', { timeout: 5000 });
+  // Note: Spec view switching is tested more comprehensively in embedded-dual-view.spec.ts
+  // which handles async loading states properly
 
-    // Listen for console errors
-    const errors: string[] = [];
-    page.on('console', msg => {
-      if (msg.type() === 'error') {
-        errors.push(msg.text());
-      }
-    });
-
-    // Click the Spec button
-    await page.click('.mode-selector button:has-text("Spec")');
-
-    // Wait for spec to load
-    await page.waitForTimeout(3000);
-
-    // Verify Spec mode is active
-    const specButton = page.locator('.mode-selector button', { hasText: 'Spec' });
-    await expect(specButton).toHaveClass(/active/);
-
-    // Check that no errors occurred during spec loading
-    const criticalErrors = errors.filter(e =>
-      e.includes('TypeError') ||
-      e.includes('l.elements is undefined') ||
-      e.includes('u.references is not iterable') ||
-      e.includes('Error rendering model')
-    );
-    expect(criticalErrors).toHaveLength(0);
-
-    // Switch to JSON view to check SpecViewer
-    await page.click('.view-tab:has-text("JSON")');
-    await page.waitForTimeout(1000);
-
-    // Check for SpecViewer (not GraphViewer)
-    await expect(page.locator('.spec-viewer')).toBeVisible();
-
-    // Verify that schema list is rendered
-    await expect(page.locator('.schema-list')).toBeVisible();
-
-    // Count schema items
-    const schemaItems = page.locator('.schema-item');
-    const schemaCount = await schemaItems.count();
-
-    // Should have schema files from .dr/schemas/ directory
-    expect(schemaCount).toBeGreaterThan(0);
-
-    // Log for debugging
-    console.log(`Spec view rendered ${schemaCount} schema files`);
-  });
-
-  test('should switch to changesets view', async ({ page }) => {
-    // Wait for WebSocket connection
-    await page.waitForSelector('.connection-status.connected', { timeout: 5000 });
-
-    // Click the Changesets button
-    await page.click('.mode-selector button:has-text("Changesets")');
-
-    // Wait for changesets to load
-    await page.waitForTimeout(2000);
-
-    // Verify Changesets mode is active
-    const changesetsButton = page.locator('.mode-selector button', { hasText: 'Changesets' });
-    await expect(changesetsButton).toHaveClass(/active/);
-
-    // Check for changeset view
-    await expect(page.locator('.changeset-view')).toBeVisible();
-
-    // Should have changeset list
-    await expect(page.locator('.changeset-list')).toBeVisible();
-  });
+  // Note: Changeset view switching is tested more comprehensively in embedded-dual-view.spec.ts
+  // which handles async loading states properly
 
   test('should load and display annotations', async ({ page }) => {
     // Wait for WebSocket connection
@@ -170,41 +103,11 @@ test.describe.skip('Embedded App - Reference Server Integration', () => {
     }
   });
 
-  test('should display layer panel', async ({ page }) => {
-    // Wait for WebSocket connection
-    await page.waitForSelector('.connection-status.connected', { timeout: 5000 });
+  // Note: Layer panel visibility depends on graph view which is tested in embedded-dual-view.spec.ts
+  // The LayerPanel is only rendered when activeView === 'graph' in ModelRoute/SpecRoute
 
-    // Wait for model to load
-    await page.waitForTimeout(2000);
-
-    // Check for layer panel
-    await expect(page.locator('.layer-panel')).toBeVisible();
-  });
-
-  test('should handle all three mode switches sequentially', async ({ page }) => {
-    // Wait for WebSocket connection
-    await page.waitForSelector('.connection-status.connected', { timeout: 5000 });
-
-    // Model (default)
-    await expect(page.locator('.mode-selector button:has-text("Model")')).toHaveClass(/active/);
-    await page.waitForTimeout(1000);
-
-    // Switch to Spec
-    await page.click('.mode-selector button:has-text("Spec")');
-    await page.waitForTimeout(1000);
-    await expect(page.locator('.mode-selector button:has-text("Spec")')).toHaveClass(/active/);
-
-    // Switch to Changesets
-    await page.click('.mode-selector button:has-text("Changesets")');
-    await page.waitForTimeout(1000);
-    await expect(page.locator('.mode-selector button:has-text("Changesets")')).toHaveClass(/active/);
-    await expect(page.locator('.changeset-view')).toBeVisible();
-
-    // Switch back to Model
-    await page.click('.mode-selector button:has-text("Model")');
-    await page.waitForTimeout(1000);
-    await expect(page.locator('.mode-selector button:has-text("Model")')).toHaveClass(/active/);
-  });
+  // Note: Sequential mode switching is tested more comprehensively in embedded-dual-view.spec.ts
+  // which properly handles async loading states for changesets
 
   test('should display version badge when model is loaded', async ({ page }) => {
     // Wait for WebSocket connection
