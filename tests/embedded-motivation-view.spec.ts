@@ -1,19 +1,22 @@
 /**
- * E2E Tests for Motivation View
+ * E2E Tests for Motivation View in Embedded App
+ * Tests the motivation graph visualization with reference server integration
  *
- * Tests the MotivationGraphView component functionality including:
- * - Navigation to Motivation view
- * - Handling of empty/error states when no motivation elements exist
- * - Basic view switching
- *
- * Note: The test model may or may not have motivation elements, so these
- * tests verify the view handles both cases gracefully.
+ * IMPORTANT: These tests require the Python reference server to be running.
  *
  * Prerequisites:
- * 1. Reference server running with example model
- * 2. Playwright browsers installed: npx playwright install chromium
+ * 1. Python dependencies (reference server):
+ *    cd reference_server && source .venv/bin/activate && pip install -r requirements.txt
  *
- * Run tests: npm run test:embedded
+ * 2. Playwright browsers:
+ *    npx playwright install chromium
+ *
+ * 3. Run tests ONLY with the embedded config:
+ *    npm run test:embedded
+ *
+ * STATUS: These tests are VALID and test real functionality in the embedded app.
+ *         They are excluded from default tests via playwright.config.ts.
+ *         They run when executed with: npm run test:embedded
  */
 
 import { test, expect } from '@playwright/test';
@@ -60,7 +63,8 @@ test.describe('Motivation View', () => {
     const criticalErrors = errors.filter(e =>
       e.includes('zustand provider') ||
       e.includes('TypeError') ||
-      e.includes('Cannot read properties')
+      e.includes('Cannot read properties') ||
+      e.includes('Seems like you have not used zustand provider as an ancestor')
     );
     expect(criticalErrors).toHaveLength(0);
   });

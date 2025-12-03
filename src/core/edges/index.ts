@@ -4,6 +4,7 @@
  */
 
 import { ElbowEdge } from './ElbowEdge';
+import { CrossLayerEdge } from './CrossLayerEdge';
 import {
   InfluenceEdge,
   ConstrainsEdge,
@@ -13,7 +14,15 @@ import {
 } from './motivation';
 
 // Export edge components
-export { ElbowEdge, InfluenceEdge, ConstrainsEdge, RealizesEdge, RefinesEdge, ConflictsEdge };
+export {
+  ElbowEdge,
+  CrossLayerEdge,
+  InfluenceEdge,
+  ConstrainsEdge,
+  RealizesEdge,
+  RefinesEdge,
+  ConflictsEdge,
+};
 
 // Edge types object for React Flow
 // Maps edge type strings to their component implementations
@@ -21,6 +30,7 @@ export { ElbowEdge, InfluenceEdge, ConstrainsEdge, RealizesEdge, RefinesEdge, Co
 // They are automatically available when you set type: 'smoothstep' etc. in edge data
 export const edgeTypes = {
   elbow: ElbowEdge,
+  crossLayer: CrossLayerEdge,
   influence: InfluenceEdge,
   constrains: ConstrainsEdge,
   realizes: RealizesEdge,

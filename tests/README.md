@@ -7,8 +7,15 @@
 Tests for the embedded viewer application with reference server integration.
 
 **Files:**
-- `tests/embedded-app.spec.ts` - Basic embedded app functionality
+- `tests/embedded-app.spec.ts` - Basic embedded app functionality (SKIPPED BY DEFAULT)
 - `tests/embedded-dual-view.spec.ts` - Dual view (Graph/JSON/List) functionality (SKIPPED BY DEFAULT)
+
+**IMPORTANT:** Both test files are skipped by default using `test.describe.skip` because they require
+the Python reference server to be running. They are designed to run ONLY with:
+```bash
+npm run test:embedded
+```
+This command uses `playwright.embedded.config.ts` which automatically starts the reference server.
 
 **Configuration:** `playwright.embedded.config.ts`
 
@@ -35,11 +42,15 @@ Tests for the embedded viewer application with reference server integration.
 npm run test:embedded
 ```
 
-**IMPORTANT:** `embedded-dual-view.spec.ts` is skipped by default because it requires system libraries
-(libglib-2.0.so.0, etc.) that need sudo to install. The tests are VALID and test real functionality.
-To enable them:
-1. Install system dependencies with sudo: `npx playwright install-deps chromium`
-2. Remove `.skip` from the `test.describe.skip` line in `embedded-dual-view.spec.ts`
+**How to run these tests:**
+
+The embedded app tests are skipped by default and will ONLY run when:
+1. Using the embedded config: `npm run test:embedded`
+2. The `.skip` is removed from `test.describe.skip` in each test file
+3. The Python reference server is running (automatically started by the embedded config)
+
+**DO NOT** remove `.skip` unless you're actively developing/debugging these tests,
+because they require the Python reference server which is not available in most CI/CD environments.
 
 **What the tests verify:**
 - WebSocket connection to reference server

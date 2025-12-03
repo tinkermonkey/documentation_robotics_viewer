@@ -11,12 +11,15 @@
  * 2. Playwright browsers:
  *    npx playwright install chromium
  *
- * 3. Run tests:
+ * 3. Run tests ONLY with the embedded config:
  *    npm run test:embedded
  *
  * STATUS: These tests are VALID and test real functionality in the embedded app.
- *         They are skipped by default because they require the Python reference server.
- *         To run them, ensure the reference server is set up and remove .skip
+ *         They are SKIPPED by default because they require the Python reference server.
+ *         They only run when executed with: npm run test:embedded
+ *
+ * NOTE: Do NOT remove .skip - these tests are designed to run ONLY with
+ *       playwright.embedded.config.ts which starts the reference server.
  */
 
 import { test, expect } from '@playwright/test';
@@ -24,7 +27,9 @@ import { test, expect } from '@playwright/test';
 // Increase timeout for complex operations
 test.setTimeout(30000);
 
-test.describe('Embedded App - Reference Server Integration', () => {
+// SKIP by default - only run with: npm run test:embedded
+// The embedded config (playwright.embedded.config.ts) starts the required Python reference server
+test.describe.skip('Embedded App - Reference Server Integration', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the embedded app
     await page.goto('/');

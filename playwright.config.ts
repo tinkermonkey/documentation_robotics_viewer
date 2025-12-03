@@ -11,8 +11,14 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests',
   // Only run tests that don't require the reference server
-  // Tests requiring WebSocket should use test:e2e or test:embedded
-  testMatch: ['c4-nodes.spec.ts', 'example-implementation.spec.ts'],
+  testMatch: '**/*.spec.ts',
+  testIgnore: [
+    '**/embedded-*.spec.ts',
+    '**/motivation-view.spec.ts',
+    '**/c4-architecture-view.spec.ts',
+    '**/c4-accessibility.spec.ts',
+    '**/c4-performance.spec.ts',
+  ],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
