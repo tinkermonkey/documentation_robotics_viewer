@@ -8,13 +8,16 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { MotivationElementType, MotivationRelationshipType } from '../types/motivationGraph';
-import { C4ViewLevel, C4LayoutAlgorithm, ContainerType } from '../types/c4Graph';
+import { C4ViewLevel, C4LayoutAlgorithm, ContainerType, C4ScenarioPreset } from '../types/c4Graph';
 
 export type SpecViewType = 'graph' | 'json';
 export type ModelViewType = 'graph' | 'json';
 export type ChangesetViewType = 'graph' | 'list';
 export type MotivationLayoutType = 'force' | 'hierarchical' | 'radial' | 'manual';
 export type C4LayoutType = C4LayoutAlgorithm;
+
+// Re-export C4ScenarioPreset from c4Graph.ts for consumers who import from this file
+export type { C4ScenarioPreset };
 
 /**
  * Path tracing state
@@ -52,11 +55,6 @@ export interface C4PathTracingState {
   /** Highlighted edge IDs from tracing */
   highlightedEdgeIds: Set<string>;
 }
-
-/**
- * Scenario preset for quick view configurations
- */
-export type C4ScenarioPreset = 'dataFlow' | 'deployment' | 'technologyStack' | 'apiSurface' | 'dependency' | null;
 
 /**
  * C4 visualization preferences

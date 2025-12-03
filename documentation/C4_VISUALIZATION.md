@@ -96,7 +96,7 @@ src/
 
 ## Features
 
-### 1. Scenario Presets (Phase 5)
+### 1. Scenario Presets
 
 Quick view configurations for common architectural perspectives:
 
@@ -358,11 +358,11 @@ Verify:
 
 ## Version History
 
-- **Phase 5**: Scenario presets, path tracing, changeset visualization, comprehensive testing
-- **Phase 4**: Focus+context, inspector panel, advanced filtering
-- **Phase 3**: C4GraphView, breadcrumb navigation, export
-- **Phase 2**: Custom nodes, layout algorithms
-- **Phase 1**: C4Parser, type definitions
+- **v1.4.0**: Scenario presets, path tracing, changeset visualization, comprehensive testing
+- **v1.3.0**: Focus+context, inspector panel, advanced filtering
+- **v1.2.0**: C4GraphView, breadcrumb navigation, export
+- **v1.1.0**: Custom nodes, layout algorithms
+- **v1.0.0**: C4Parser, type definitions
 
 ---
 

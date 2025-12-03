@@ -161,7 +161,7 @@ test.describe('C4 Architecture View', () => {
     });
   });
 
-  test.describe('Phase 5: Scenario Presets', () => {
+  test.describe('Scenario Presets', () => {
     test('should display scenario preset selector', async ({ page }) => {
       // Navigate to Architecture view
       await page.click('.mode-selector button:has-text("Architecture")');
@@ -171,14 +171,15 @@ test.describe('C4 Architecture View', () => {
       const presetButtons = page.locator('.scenario-preset-button');
       const count = await presetButtons.count().catch(() => 0);
 
-      // If C4 view has loaded, should have preset buttons
+      // Check if C4 view has loaded
       const c4Container = page.locator('.c4-graph-container');
       const hasC4 = await c4Container.isVisible().catch(() => false);
 
-      if (hasC4) {
-        // Expect at least one preset button
-        expect(count).toBeGreaterThan(0);
-      }
+      // Skip test if C4 view is not available (model lacks C4-compatible elements)
+      test.skip(!hasC4, 'C4 view not available - model may lack Application services');
+
+      // Expect at least one preset button when C4 view is available
+      expect(count).toBeGreaterThan(0);
     });
 
     test('should toggle scenario preset on click', async ({ page }) => {
@@ -189,31 +190,33 @@ test.describe('C4 Architecture View', () => {
       const c4Container = page.locator('.c4-graph-container');
       const hasC4 = await c4Container.isVisible().catch(() => false);
 
-      if (hasC4) {
-        // Find a preset button (e.g., "Data Flow")
-        const dataFlowButton = page.locator('.scenario-preset-button', { hasText: 'Data Flow' });
-        const buttonExists = await dataFlowButton.isVisible().catch(() => false);
+      // Skip test if C4 view is not available
+      test.skip(!hasC4, 'C4 view not available - model may lack Application services');
 
-        if (buttonExists) {
-          // Click to activate
-          await dataFlowButton.click();
-          await page.waitForTimeout(500);
+      // Find a preset button (e.g., "Data Flow")
+      const dataFlowButton = page.locator('.scenario-preset-button', { hasText: 'Data Flow' });
+      const buttonExists = await dataFlowButton.isVisible().catch(() => false);
 
-          // Button should become active
-          await expect(dataFlowButton).toHaveClass(/active/);
+      // Skip if preset buttons are not rendered
+      test.skip(!buttonExists, 'Preset buttons not rendered');
 
-          // Click again to deactivate
-          await dataFlowButton.click();
-          await page.waitForTimeout(500);
+      // Click to activate
+      await dataFlowButton.click();
+      await page.waitForTimeout(500);
 
-          // Button should not be active
-          await expect(dataFlowButton).not.toHaveClass(/active/);
-        }
-      }
+      // Button should become active
+      await expect(dataFlowButton).toHaveClass(/active/);
+
+      // Click again to deactivate
+      await dataFlowButton.click();
+      await page.waitForTimeout(500);
+
+      // Button should not be active
+      await expect(dataFlowButton).not.toHaveClass(/active/);
     });
   });
 
-  test.describe('Phase 5: View Level Switching', () => {
+  test.describe('View Level Switching', () => {
     test('should display view level selector', async ({ page }) => {
       // Navigate to Architecture view
       await page.click('.mode-selector button:has-text("Architecture")');
@@ -226,10 +229,11 @@ test.describe('C4 Architecture View', () => {
       const c4Container = page.locator('.c4-graph-container');
       const hasC4 = await c4Container.isVisible().catch(() => false);
 
-      if (hasC4) {
-        // Expect Context, Container, Component buttons
-        expect(count).toBeGreaterThanOrEqual(3);
-      }
+      // Skip test if C4 view is not available
+      test.skip(!hasC4, 'C4 view not available - model may lack Application services');
+
+      // Expect Context, Container, Component buttons
+      expect(count).toBeGreaterThanOrEqual(3);
     });
 
     test('should switch view levels without error', async ({ page }) => {
@@ -248,22 +252,26 @@ test.describe('C4 Architecture View', () => {
       const c4Container = page.locator('.c4-graph-container');
       const hasC4 = await c4Container.isVisible().catch(() => false);
 
-      if (hasC4) {
-        // Click Container view button
-        const containerButton = page.locator('.view-level-button', { hasText: 'Container' });
-        if (await containerButton.isVisible().catch(() => false)) {
-          await containerButton.click();
-          await page.waitForTimeout(500);
+      // Skip test if C4 view is not available
+      test.skip(!hasC4, 'C4 view not available - model may lack Application services');
 
-          // Should not have critical errors
-          const criticalErrors = errors.filter(e => e.includes('TypeError'));
-          expect(criticalErrors).toHaveLength(0);
-        }
-      }
+      // Click Container view button
+      const containerButton = page.locator('.view-level-button', { hasText: 'Container' });
+      const containerButtonVisible = await containerButton.isVisible().catch(() => false);
+
+      // Skip if container button is not visible
+      test.skip(!containerButtonVisible, 'Container view button not visible');
+
+      await containerButton.click();
+      await page.waitForTimeout(500);
+
+      // Should not have critical errors
+      const criticalErrors = errors.filter(e => e.includes('TypeError'));
+      expect(criticalErrors).toHaveLength(0);
     });
   });
 
-  test.describe('Phase 5: Layout Algorithms', () => {
+  test.describe('Layout Algorithms', () => {
     test('should display layout selector', async ({ page }) => {
       // Navigate to Architecture view
       await page.click('.mode-selector button:has-text("Architecture")');
@@ -274,9 +282,10 @@ test.describe('C4 Architecture View', () => {
       const c4Container = page.locator('.c4-graph-container');
       const hasC4 = await c4Container.isVisible().catch(() => false);
 
-      if (hasC4) {
-        await expect(layoutSelector).toBeVisible();
-      }
+      // Skip test if C4 view is not available
+      test.skip(!hasC4, 'C4 view not available - model may lack Application services');
+
+      await expect(layoutSelector).toBeVisible();
     });
 
     test('should switch layouts in under 800ms', async ({ page }) => {
@@ -287,23 +296,27 @@ test.describe('C4 Architecture View', () => {
       const c4Container = page.locator('.c4-graph-container');
       const hasC4 = await c4Container.isVisible().catch(() => false);
 
-      if (hasC4) {
-        const layoutSelector = page.locator('.layout-selector');
-        if (await layoutSelector.isVisible().catch(() => false)) {
-          // Measure layout switch time
-          const startTime = Date.now();
-          await layoutSelector.selectOption('force');
-          await page.waitForTimeout(800);
-          const endTime = Date.now();
+      // Skip test if C4 view is not available
+      test.skip(!hasC4, 'C4 view not available - model may lack Application services');
 
-          // Layout switch should complete in under 800ms (plus some tolerance)
-          expect(endTime - startTime).toBeLessThan(1200);
-        }
-      }
+      const layoutSelector = page.locator('.layout-selector');
+      const selectorVisible = await layoutSelector.isVisible().catch(() => false);
+
+      // Skip if layout selector is not visible
+      test.skip(!selectorVisible, 'Layout selector not visible');
+
+      // Measure layout switch time
+      const startTime = Date.now();
+      await layoutSelector.selectOption('force');
+      await page.waitForTimeout(800);
+      const endTime = Date.now();
+
+      // Layout switch should complete in under 800ms (plus some tolerance)
+      expect(endTime - startTime).toBeLessThan(1200);
     });
   });
 
-  test.describe('Phase 5: Export Functionality', () => {
+  test.describe('Export Functionality', () => {
     test('should display export buttons', async ({ page }) => {
       // Navigate to Architecture view
       await page.click('.mode-selector button:has-text("Architecture")');
@@ -314,14 +327,15 @@ test.describe('C4 Architecture View', () => {
       const c4Container = page.locator('.c4-graph-container');
       const hasC4 = await c4Container.isVisible().catch(() => false);
 
-      if (hasC4) {
-        const count = await exportButtons.count().catch(() => 0);
-        expect(count).toBeGreaterThan(0);
-      }
+      // Skip test if C4 view is not available
+      test.skip(!hasC4, 'C4 view not available - model may lack Application services');
+
+      const count = await exportButtons.count().catch(() => 0);
+      expect(count).toBeGreaterThan(0);
     });
   });
 
-  test.describe('Phase 5: Focus Mode', () => {
+  test.describe('Focus Mode', () => {
     test('should toggle focus mode', async ({ page }) => {
       // Navigate to Architecture view
       await page.click('.mode-selector button:has-text("Architecture")');
@@ -330,29 +344,33 @@ test.describe('C4 Architecture View', () => {
       const c4Container = page.locator('.c4-graph-container');
       const hasC4 = await c4Container.isVisible().catch(() => false);
 
-      if (hasC4) {
-        // Find focus mode checkbox
-        const focusModeCheckbox = page.locator('input[type="checkbox"][aria-label*="Focus"]');
-        if (await focusModeCheckbox.isVisible().catch(() => false)) {
-          // Toggle on
-          await focusModeCheckbox.check();
-          await page.waitForTimeout(300);
+      // Skip test if C4 view is not available
+      test.skip(!hasC4, 'C4 view not available - model may lack Application services');
 
-          // Verify checked
-          await expect(focusModeCheckbox).toBeChecked();
+      // Find focus mode checkbox
+      const focusModeCheckbox = page.locator('input[type="checkbox"][aria-label*="Focus"]');
+      const checkboxVisible = await focusModeCheckbox.isVisible().catch(() => false);
 
-          // Toggle off
-          await focusModeCheckbox.uncheck();
-          await page.waitForTimeout(300);
+      // Skip if focus mode checkbox is not visible
+      test.skip(!checkboxVisible, 'Focus mode checkbox not visible');
 
-          // Verify unchecked
-          await expect(focusModeCheckbox).not.toBeChecked();
-        }
-      }
+      // Toggle on
+      await focusModeCheckbox.check();
+      await page.waitForTimeout(300);
+
+      // Verify checked
+      await expect(focusModeCheckbox).toBeChecked();
+
+      // Toggle off
+      await focusModeCheckbox.uncheck();
+      await page.waitForTimeout(300);
+
+      // Verify unchecked
+      await expect(focusModeCheckbox).not.toBeChecked();
     });
   });
 
-  test.describe('Phase 5: Fit to View', () => {
+  test.describe('Fit to View', () => {
     test('should have fit to view button', async ({ page }) => {
       // Navigate to Architecture view
       await page.click('.mode-selector button:has-text("Architecture")');
@@ -361,15 +379,16 @@ test.describe('C4 Architecture View', () => {
       const c4Container = page.locator('.c4-graph-container');
       const hasC4 = await c4Container.isVisible().catch(() => false);
 
-      if (hasC4) {
-        // Find fit to view button
-        const fitButton = page.locator('.control-button', { hasText: 'Fit to View' });
-        await expect(fitButton).toBeVisible();
-      }
+      // Skip test if C4 view is not available
+      test.skip(!hasC4, 'C4 view not available - model may lack Application services');
+
+      // Find fit to view button
+      const fitButton = page.locator('.control-button', { hasText: 'Fit to View' });
+      await expect(fitButton).toBeVisible();
     });
   });
 
-  test.describe('Phase 5: Drill-down Latency', () => {
+  test.describe('Drill-down Latency', () => {
     test('should complete drill-down in under 300ms', async ({ page }) => {
       // Navigate to Architecture view
       await page.click('.mode-selector button:has-text("Architecture")');
@@ -378,24 +397,28 @@ test.describe('C4 Architecture View', () => {
       const c4Container = page.locator('.c4-graph-container');
       const hasC4 = await c4Container.isVisible().catch(() => false);
 
-      if (hasC4) {
-        // Find a ReactFlow node
-        const node = page.locator('.react-flow__node').first();
-        if (await node.isVisible().catch(() => false)) {
-          // Double-click for drill-down
-          const startTime = Date.now();
-          await node.dblclick();
-          await page.waitForTimeout(300);
-          const endTime = Date.now();
+      // Skip test if C4 view is not available
+      test.skip(!hasC4, 'C4 view not available - model may lack Application services');
 
-          // Should complete drill-down gesture in under 300ms + tolerance
-          expect(endTime - startTime).toBeLessThan(600);
-        }
-      }
+      // Find a ReactFlow node
+      const node = page.locator('.react-flow__node').first();
+      const nodeVisible = await node.isVisible().catch(() => false);
+
+      // Skip if no nodes are visible
+      test.skip(!nodeVisible, 'No ReactFlow nodes visible');
+
+      // Double-click for drill-down
+      const startTime = Date.now();
+      await node.dblclick();
+      await page.waitForTimeout(300);
+      const endTime = Date.now();
+
+      // Should complete drill-down gesture in under 300ms + tolerance
+      expect(endTime - startTime).toBeLessThan(600);
     });
   });
 
-  test.describe('Phase 5: Path Tracing', () => {
+  test.describe('Path Tracing', () => {
     test('should support path tracing from inspector panel', async ({ page }) => {
       // Navigate to Architecture view
       await page.click('.mode-selector button:has-text("Architecture")');
@@ -404,31 +427,38 @@ test.describe('C4 Architecture View', () => {
       const c4Container = page.locator('.c4-graph-container');
       const hasC4 = await c4Container.isVisible().catch(() => false);
 
-      if (hasC4) {
-        // Click a node to select it
-        const node = page.locator('.react-flow__node').first();
-        if (await node.isVisible().catch(() => false)) {
-          await node.click();
-          await page.waitForTimeout(500);
+      // Skip test if C4 view is not available
+      test.skip(!hasC4, 'C4 view not available - model may lack Application services');
 
-          // Check for inspector panel with trace buttons
-          const traceUpstreamButton = page.locator('button', { hasText: /upstream/i });
-          const traceDownstreamButton = page.locator('button', { hasText: /downstream/i });
+      // Click a node to select it
+      const node = page.locator('.react-flow__node').first();
+      const nodeVisible = await node.isVisible().catch(() => false);
 
-          const hasUpstream = await traceUpstreamButton.isVisible().catch(() => false);
-          const hasDownstream = await traceDownstreamButton.isVisible().catch(() => false);
+      // Skip if no nodes are visible
+      test.skip(!nodeVisible, 'No ReactFlow nodes visible');
 
-          // If inspector panel is visible, should have trace buttons
-          const inspectorPanel = page.locator('.c4-inspector-panel');
-          if (await inspectorPanel.isVisible().catch(() => false)) {
-            expect(hasUpstream || hasDownstream).toBeTruthy();
-          }
-        }
-      }
+      await node.click();
+      await page.waitForTimeout(500);
+
+      // Check for inspector panel with trace buttons
+      const inspectorPanel = page.locator('.c4-inspector-panel');
+      const inspectorVisible = await inspectorPanel.isVisible().catch(() => false);
+
+      // Skip if inspector panel is not visible
+      test.skip(!inspectorVisible, 'Inspector panel not visible after node click');
+
+      const traceUpstreamButton = page.locator('button', { hasText: /upstream/i });
+      const traceDownstreamButton = page.locator('button', { hasText: /downstream/i });
+
+      const hasUpstream = await traceUpstreamButton.isVisible().catch(() => false);
+      const hasDownstream = await traceDownstreamButton.isVisible().catch(() => false);
+
+      // Should have trace buttons in inspector panel
+      expect(hasUpstream || hasDownstream).toBeTruthy();
     });
   });
 
-  test.describe('Phase 5: Performance', () => {
+  test.describe('Performance', () => {
     test('should render initial view in under 3 seconds', async ({ page }) => {
       const startTime = Date.now();
 

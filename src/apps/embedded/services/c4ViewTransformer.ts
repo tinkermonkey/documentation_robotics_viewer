@@ -61,6 +61,26 @@ export const C4_EXTERNAL_ACTOR_NODE_HEIGHT = 120;
 export const C4_SYSTEM_BOUNDARY_PADDING = 40;
 
 /**
+ * Layout cache configuration
+ */
+const LAYOUT_CACHE_MAX_SIZE = 10;
+
+/**
+ * Semantic zoom thresholds for detail level transitions
+ * - Below MINIMAL_THRESHOLD: Show minimal detail (name only)
+ * - Between MINIMAL and MEDIUM: Show medium detail (name + type)
+ * - Above MEDIUM_THRESHOLD: Show full detail (all information)
+ */
+const SEMANTIC_ZOOM_MINIMAL_THRESHOLD = 0.5;
+const SEMANTIC_ZOOM_MEDIUM_THRESHOLD = 0.8;
+
+/**
+ * Edge bundling configuration
+ * Edges between the same pair of nodes are bundled when count >= threshold
+ */
+const EDGE_BUNDLE_THRESHOLD = 3;
+
+/**
  * Position interface for layout
  */
 interface Position {
@@ -604,8 +624,8 @@ export class C4ViewTransformer {
     this.cacheMisses++;
     const layoutResult = this.computeLayout(filtered);
 
-    // Store in cache (limit to 10 entries)
-    if (this.layoutCache.size >= 10) {
+    // Store in cache (limit to max entries)
+    if (this.layoutCache.size >= LAYOUT_CACHE_MAX_SIZE) {
       const firstKey = this.layoutCache.keys().next().value;
       if (firstKey) {
         this.layoutCache.delete(firstKey);
@@ -1073,9 +1093,9 @@ export class C4ViewTransformer {
 
     const scale = semanticZoom.currentScale;
 
-    if (scale < 0.5) {
+    if (scale < SEMANTIC_ZOOM_MINIMAL_THRESHOLD) {
       return 'minimal';
-    } else if (scale < 0.8) {
+    } else if (scale < SEMANTIC_ZOOM_MEDIUM_THRESHOLD) {
       return 'medium';
     } else {
       return 'full';
@@ -1282,8 +1302,13 @@ export class C4ViewTransformer {
   }
 
   /**
-   * Create ReactFlow edges from filtered C4 graph
-   * Implements relationship bundling (FR3.5): Groups 3+ connections into single edge with count
+   * Create ReactFlow edges from filtered C4 graph.
+   * Implements relationship bundling (FR3.5): Groups 3+ connections into single edge with count.
+   *
+   * Note: The _fullGraph parameter is reserved for future use when we need to access
+   * the full graph context (e.g., for showing relationships to nodes outside the current
+   * filtered view, or for computing global edge statistics). Currently unused but kept
+   * for API consistency with createReactFlowNodes.
    */
   private createReactFlowEdges(filtered: FilteredC4Graph, _fullGraph: C4Graph): Edge[] {
     const edges: Edge[] = [];
@@ -1303,9 +1328,9 @@ export class C4ViewTransformer {
       group.ids.push(edgeId);
     }
 
-    // Process each group, bundling if 3+ edges
+    // Process each group, bundling if edges meet threshold
     for (const [pairKey, group] of edgeGroups) {
-      if (group.edges.length >= 3) {
+      if (group.edges.length >= EDGE_BUNDLE_THRESHOLD) {
         // Bundle into single edge with count indicator
         const bundledEdge = this.createBundledEdge(group.edges, group.ids, showLabels);
         edges.push(bundledEdge);
@@ -1323,7 +1348,19 @@ export class C4ViewTransformer {
   }
 
   /**
-   * Create a bundled edge representing 3+ connections between two nodes
+   * Create a bundled edge representing multiple connections between two nodes.
+   * Called when EDGE_BUNDLE_THRESHOLD or more edges connect the same source-target pair.
+   *
+   * Bundled edges have:
+   * - A dashed stroke style to visually distinguish from single edges
+   * - A count indicator in the label (e.g., "3 connections (REST, gRPC)")
+   * - Animation if any bundled edge is async
+   * - Combined changeset status styling (new takes priority over modified)
+   *
+   * @param bundledEdges - Array of C4Edge objects to bundle
+   * @param edgeIds - Corresponding edge IDs for path highlighting lookup
+   * @param showLabels - Whether to show edge labels (based on zoom level)
+   * @returns A single ReactFlow Edge representing the bundled connections
    */
   private createBundledEdge(
     bundledEdges: C4Edge[],
@@ -1568,8 +1605,19 @@ export class C4ViewTransformer {
   }
 
   /**
-   * Trace upstream dependencies from a node
-   * Returns set of node IDs in the upstream path
+   * Trace upstream dependencies from a node using breadth-first search.
+   * Finds all nodes that directly or indirectly provide input to the specified node.
+   *
+   * @param nodeId - The starting node ID to trace upstream from
+   * @param graph - The complete C4Graph containing all nodes and edges
+   * @returns Set of node IDs that are upstream of the specified node (includes the starting node)
+   *
+   * @example
+   * ```typescript
+   * // Find all data sources feeding into a service
+   * const upstream = transformer.traceUpstream('api-gateway-id', graph);
+   * console.log(`${upstream.size} upstream dependencies found`);
+   * ```
    */
   traceUpstream(nodeId: string, graph: C4Graph): Set<string> {
     const visited = new Set<string>();
@@ -1592,8 +1640,19 @@ export class C4ViewTransformer {
   }
 
   /**
-   * Trace downstream dependencies from a node
-   * Returns set of node IDs in the downstream path
+   * Trace downstream dependencies from a node using breadth-first search.
+   * Finds all nodes that directly or indirectly consume output from the specified node.
+   *
+   * @param nodeId - The starting node ID to trace downstream from
+   * @param graph - The complete C4Graph containing all nodes and edges
+   * @returns Set of node IDs that are downstream of the specified node (includes the starting node)
+   *
+   * @example
+   * ```typescript
+   * // Find all consumers of a database container
+   * const downstream = transformer.traceDownstream('database-id', graph);
+   * console.log(`${downstream.size} downstream consumers found`);
+   * ```
    */
   traceDownstream(nodeId: string, graph: C4Graph): Set<string> {
     const visited = new Set<string>();
@@ -1616,8 +1675,24 @@ export class C4ViewTransformer {
   }
 
   /**
-   * Trace path between two nodes (BFS shortest path)
-   * Returns set of node IDs on the path
+   * Trace the shortest path between two nodes using breadth-first search.
+   * Treats the graph as undirected for path finding (can traverse edges in either direction).
+   *
+   * @param sourceId - The starting node ID
+   * @param targetId - The destination node ID
+   * @param graph - The complete C4Graph containing all nodes and edges
+   * @returns Set of node IDs on the shortest path (includes both source and target), or empty set if no path exists
+   *
+   * @example
+   * ```typescript
+   * // Find path between frontend and database
+   * const path = transformer.traceBetween('web-app-id', 'database-id', graph);
+   * if (path.size > 0) {
+   *   console.log(`Found path with ${path.size} nodes`);
+   * } else {
+   *   console.log('No path found between nodes');
+   * }
+   * ```
    */
   traceBetween(sourceId: string, targetId: string, graph: C4Graph): Set<string> {
     if (sourceId === targetId) {
@@ -1666,8 +1741,20 @@ export class C4ViewTransformer {
   }
 
   /**
-   * Get edges for highlighted nodes
-   * Returns edge IDs for edges connecting highlighted nodes
+   * Get all edges that connect nodes within the highlighted set.
+   * Used to visually emphasize the connections along a traced path.
+   *
+   * @param highlightedNodes - Set of node IDs that should be highlighted
+   * @param graph - The complete C4Graph containing all nodes and edges
+   * @returns Set of edge IDs where both source and target are in the highlighted set
+   *
+   * @example
+   * ```typescript
+   * // Highlight edges along an upstream path
+   * const upstream = transformer.traceUpstream('api-gateway-id', graph);
+   * const edges = transformer.getHighlightedEdges(upstream, graph);
+   * // Use edges to set pathHighlighting.highlightedEdgeIds in transformer options
+   * ```
    */
   getHighlightedEdges(highlightedNodes: Set<string>, graph: C4Graph): Set<string> {
     const highlightedEdges = new Set<string>();
