@@ -12,20 +12,41 @@ import { Node, Edge } from '@xyflow/react';
 import { greadability as greadabilityFn } from '../../../vendor/greadability.esm.js';
 
 /**
- * Type definitions for greadability.js
+ * Node structure for greadability.js input.
+ * Part of the public API for custom graph conversion scenarios.
+ *
+ * @remarks
+ * Coordinates should be center positions (not top-left).
+ * The `toGreadabilityGraph` function handles this conversion for React Flow nodes.
  */
 export interface GreadabilityNode {
+  /** X coordinate (center position) */
   x: number;
+  /** Y coordinate (center position) */
   y: number;
+  /** Array index, used internally by greadability.js */
   index?: number;
+  /** Node identifier for lookup */
   id?: string;
+  /** Node width for occlusion detection */
   width?: number;
+  /** Node height for occlusion detection */
   height?: number;
 }
 
+/**
+ * Link/edge structure for greadability.js input.
+ * Part of the public API for custom graph conversion scenarios.
+ *
+ * @remarks
+ * Source and target can be node IDs (strings), indices (numbers), or node objects.
+ */
 export interface GreadabilityLink {
+  /** Source node (ID, index, or node object) */
   source: string | number | GreadabilityNode;
+  /** Target node (ID, index, or node object) */
   target: string | number | GreadabilityNode;
+  /** Edge identifier */
   id?: string;
 }
 
@@ -438,8 +459,24 @@ export function getMetricWeights(diagramType: DiagramType): MetricWeights {
  * Normalize edge length uniformity to a 0-1 score.
  * Higher score means more uniform edge lengths.
  *
- * @param edgeLengthStats - Edge length statistics
- * @returns Uniformity score 0-1
+ * Uses the coefficient of variation (CV = stdDev / mean) to measure uniformity.
+ * A CV of 0 (all edges same length) yields a score of 1.
+ * A CV >= 1 (high variation) yields a score of 0.
+ *
+ * @param edgeLengthStats - Edge length statistics containing mean and stdDev
+ * @returns Uniformity score 0-1, where 1 means perfectly uniform edge lengths
+ *
+ * @example
+ * ```typescript
+ * // Uniform edges
+ * normalizeEdgeLengthUniformity({ mean: 100, stdDev: 0 }); // Returns 1.0
+ *
+ * // Moderate variation
+ * normalizeEdgeLengthUniformity({ mean: 200, stdDev: 100 }); // Returns 0.5
+ *
+ * // High variation
+ * normalizeEdgeLengthUniformity({ mean: 100, stdDev: 200 }); // Returns 0.0
+ * ```
  */
 function normalizeEdgeLengthUniformity(
   edgeLengthStats: ExtendedMetrics['edgeLength']
@@ -456,9 +493,24 @@ function normalizeEdgeLengthUniformity(
  * Normalize node occlusion to a 0-1 score.
  * Higher score means fewer overlaps.
  *
- * @param occlusions - Number of overlapping node pairs
- * @param nodeCount - Total number of nodes
- * @returns Occlusion score 0-1
+ * Calculates the ratio of actual overlaps to maximum possible overlaps
+ * (which is n*(n-1)/2 for n nodes) and inverts it.
+ *
+ * @param occlusions - Number of overlapping node pairs detected
+ * @param nodeCount - Total number of nodes in the graph
+ * @returns Occlusion score 0-1, where 1 means no overlaps and 0 means all nodes overlap
+ *
+ * @example
+ * ```typescript
+ * // No overlaps
+ * normalizeOcclusionScore(0, 10); // Returns 1.0
+ *
+ * // Half of possible pairs overlap
+ * normalizeOcclusionScore(3, 4); // Returns 0.5 (max overlaps = 6)
+ *
+ * // All pairs overlap
+ * normalizeOcclusionScore(10, 5); // Returns 0.0 (max overlaps = 10)
+ * ```
  */
 function normalizeOcclusionScore(
   occlusions: number,
@@ -616,7 +668,8 @@ export function compareLayoutQuality(
   improved: boolean;
 } {
   const overallImprovement =
-    ((current.overallScore - baseline.overallScore) / baseline.overallScore) *
+    ((current.overallScore - baseline.overallScore) /
+      (baseline.overallScore || 1)) *
     100;
 
   const metricChanges: Record<keyof ReadabilityMetrics, number> = {

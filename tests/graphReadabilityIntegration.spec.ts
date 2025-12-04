@@ -151,8 +151,6 @@ async function loadExampleImplementation(dataLoader: DataLoader): Promise<MetaMo
 
   readYAMLFiles(examplePath);
 
-  console.log(`Loaded ${Object.keys(schemas).length} YAML files from example-implementation`);
-
   return dataLoader.parseYAMLInstances(schemas, 'example-implementation');
 }
 
@@ -184,35 +182,15 @@ test.describe('Graph Readability Integration Tests', () => {
     // Convert to React Flow format
     nodes = createMockReactFlowNodes(graph.nodes);
     edges = createMockReactFlowEdges(graph.edges);
-
-    console.log(
-      `Prepared ${nodes.length} nodes and ${edges.length} edges for readability testing`
-    );
   });
 
   test.describe('calculateLayoutQuality()', () => {
     test('should calculate metrics for real business layer data', () => {
-      const startTime = Date.now();
-
       const report = calculateLayoutQuality(
         nodes,
         edges,
         'hierarchical' as LayoutType,
         'business' as DiagramType
-      );
-
-      const elapsed = Date.now() - startTime;
-
-      console.log(`Layout quality calculation took ${elapsed}ms`);
-      console.log(`Overall score: ${report.overallScore.toFixed(4)}`);
-      console.log(`Metrics:`);
-      console.log(`  - Crossing number: ${report.metrics.crossingNumber.toFixed(4)}`);
-      console.log(`  - Crossing angle: ${report.metrics.crossingAngle.toFixed(4)}`);
-      console.log(
-        `  - Angular resolution (min): ${report.metrics.angularResolutionMin.toFixed(4)}`
-      );
-      console.log(
-        `  - Angular resolution (dev): ${report.metrics.angularResolutionDev.toFixed(4)}`
       );
 
       // Verify report structure
@@ -240,7 +218,7 @@ test.describe('Graph Readability Integration Tests', () => {
     test('should complete calculation in reasonable time', () => {
       const startTime = Date.now();
 
-      const report = calculateLayoutQuality(
+      calculateLayoutQuality(
         nodes,
         edges,
         'hierarchical' as LayoutType,
@@ -251,7 +229,6 @@ test.describe('Graph Readability Integration Tests', () => {
 
       // Should complete within 3 seconds for reasonable-sized graphs
       expect(elapsed).toBeLessThan(3000);
-      console.log(`Performance: ${elapsed}ms for ${nodes.length} nodes, ${edges.length} edges`);
     });
 
     test('should work with all diagram types', () => {
@@ -267,8 +244,6 @@ test.describe('Graph Readability Integration Tests', () => {
 
         expect(report.diagramType).toBe(diagramType);
         expect(report.overallScore).toBeGreaterThanOrEqual(0);
-
-        console.log(`${diagramType} diagram score: ${report.overallScore.toFixed(4)}`);
       }
     });
 
@@ -317,10 +292,6 @@ test.describe('Graph Readability Integration Tests', () => {
         expect(firstLink.source).toBeDefined();
         expect(firstLink.target).toBeDefined();
       }
-
-      console.log(
-        `Converted graph: ${graph.nodes.length} nodes, ${graph.links.length} links`
-      );
     });
 
     test('should convert coordinates to center positions', () => {
@@ -345,12 +316,6 @@ test.describe('Graph Readability Integration Tests', () => {
     test('should calculate edge length statistics', () => {
       const stats = calculateEdgeLengthStats(nodes, edges);
 
-      console.log('Edge length statistics:');
-      console.log(`  Min: ${stats.min.toFixed(2)}`);
-      console.log(`  Max: ${stats.max.toFixed(2)}`);
-      console.log(`  Mean: ${stats.mean.toFixed(2)}`);
-      console.log(`  StdDev: ${stats.stdDev.toFixed(2)}`);
-
       if (edges.length > 0) {
         expect(stats.min).toBeGreaterThanOrEqual(0);
         expect(stats.max).toBeGreaterThanOrEqual(stats.min);
@@ -363,8 +328,6 @@ test.describe('Graph Readability Integration Tests', () => {
     test('should calculate node occlusion', () => {
       const occlusion = calculateNodeOcclusion(nodes);
 
-      console.log(`Node-node occlusion: ${occlusion} overlapping pairs`);
-
       // For our grid layout, there should be no overlaps
       expect(occlusion).toBeGreaterThanOrEqual(0);
     });
@@ -372,15 +335,11 @@ test.describe('Graph Readability Integration Tests', () => {
     test('should calculate aspect ratio', () => {
       const ratio = calculateAspectRatio(nodes);
 
-      console.log(`Aspect ratio: ${ratio.toFixed(4)}`);
-
       expect(ratio).toBeGreaterThan(0);
     });
 
     test('should calculate density', () => {
       const density = calculateDensity(nodes.length, edges.length);
-
-      console.log(`Graph density: ${density.toFixed(4)}`);
 
       expect(density).toBeGreaterThanOrEqual(0);
       expect(density).toBeLessThanOrEqual(1);
@@ -404,7 +363,6 @@ test.describe('Graph Readability Integration Tests', () => {
           weights.nodeOcclusion;
 
         expect(sum).toBeCloseTo(1.0, 10);
-        console.log(`${diagramType} weights sum: ${sum.toFixed(6)}`);
       }
     });
   });
@@ -432,14 +390,6 @@ test.describe('Graph Readability Integration Tests', () => {
       );
 
       const comparison = compareLayoutQuality(report2, report1);
-
-      console.log(`Layout comparison:`);
-      console.log(`  Overall improvement: ${comparison.overallImprovement.toFixed(2)}%`);
-      console.log(`  Improved: ${comparison.improved}`);
-      console.log(`  Metric changes:`);
-      for (const [metric, change] of Object.entries(comparison.metricChanges)) {
-        console.log(`    ${metric}: ${change.toFixed(2)}%`);
-      }
 
       expect(typeof comparison.overallImprovement).toBe('number');
       expect(typeof comparison.improved).toBe('boolean');
@@ -541,10 +491,6 @@ test.describe.skip('Metrics History Service Integration Tests (requires browser)
     expect(regression.hasRegression).toBe(true);
     expect(regression.severity).not.toBe('none');
     expect(regression.overallPercentageChange).toBeLessThan(0);
-
-    console.log(`Regression detected:`);
-    console.log(`  Severity: ${regression.severity}`);
-    console.log(`  Change: ${regression.overallPercentageChange.toFixed(2)}%`);
   });
 
   test('should classify regression severity correctly', () => {
@@ -561,10 +507,6 @@ test.describe.skip('Metrics History Service Integration Tests (requires browser)
     for (const { score, expectedSeverity } of testCases) {
       const report: LayoutQualityReport = { ...testReport, overallScore: score };
       const regression = historyService.detectRegression(report);
-
-      console.log(
-        `Score ${score} (${(((score - 0.85) / 0.85) * 100).toFixed(1)}%): ${regression.severity}`
-      );
 
       // Note: Exact thresholds may vary based on rounding
       if (expectedSeverity === 'severe') {
@@ -611,8 +553,6 @@ test.describe.skip('Metrics History Service Integration Tests (requires browser)
     expect(stats.snapshotsByDiagramType['business']).toBe(1);
     expect(stats.snapshotsByDiagramType['motivation']).toBe(1);
     expect(stats.snapshotsByDiagramType['c4']).toBe(1);
-
-    console.log('Storage stats:', JSON.stringify(stats, null, 2));
   });
 
   test('should export and import data', () => {

@@ -179,7 +179,7 @@ export class MetricsHistoryService {
    * Generate a unique snapshot ID
    */
   private generateId(): string {
-    return `snapshot-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `snapshot-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
   }
 
   /**
@@ -228,8 +228,8 @@ export class MetricsHistoryService {
         this.pruneOldSnapshots(storage, Math.floor(this.config.maxSnapshots / 2));
         try {
           localStorage.setItem(this.storageKey, JSON.stringify(storage));
-        } catch {
-          console.error('Unable to save metrics even after pruning');
+        } catch (retryError) {
+          console.error('Unable to save metrics even after pruning:', retryError);
         }
       }
     }
@@ -497,8 +497,10 @@ export class MetricsHistoryService {
       'angularResolutionDev',
     ];
 
+    // At this point, baseline is guaranteed to be defined (either provided or retrieved from storage)
+    const baselineReport = baseline;
     const metricRegressions = metricKeys.map((metric) => {
-      const baselineValue = baseline!.metrics[metric];
+      const baselineValue = baselineReport.metrics[metric];
       const currentValue = current.metrics[metric];
       const change = currentValue - baselineValue;
       const percentageChange =
