@@ -41,10 +41,13 @@
     "dagre": "^0.8.5",
     "express": "^5.1.0",
     "html-to-image": "^1.11.13",
+    "imghash": "^1.1.2",
     "js-yaml": "^4.1.1",
     "jszip": "^3.10.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "sharp": "^0.34.5",
+    "ssim.js": "^3.5.0",
     "uuid": "^13.0.0",
     "zustand": "^5.0.8"
   },
