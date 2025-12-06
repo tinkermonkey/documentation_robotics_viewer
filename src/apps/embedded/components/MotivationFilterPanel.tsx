@@ -52,6 +52,8 @@ const ELEMENT_TYPE_LABELS: Record<MotivationElementType, string> = {
   [MotivationElementType.Assessment]: 'Assessments',
   [MotivationElementType.Meaning]: 'Meanings',
   [MotivationElementType.Value]: 'Values',
+  assumption: 'Assumption',
+  valueStream: 'Value Stream',
 };
 
 /**

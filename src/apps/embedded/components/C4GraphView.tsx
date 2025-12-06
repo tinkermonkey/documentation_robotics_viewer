@@ -5,7 +5,7 @@
  * Follows MotivationGraphView architecture patterns
  */
 
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import '@xyflow/react/dist/style.css';
 import '../../../core/components/GraphViewer.css';
 import './C4GraphView.css';
@@ -32,7 +32,7 @@ import { C4BreadcrumbNav } from './C4BreadcrumbNav';
 import { C4FilterPanel, C4FilterCounts } from './C4FilterPanel';
 import { C4ControlPanel, C4LayoutAlgorithm } from './C4ControlPanel';
 import { C4InspectorPanel } from './C4InspectorPanel';
-import { useViewPreferenceStore, C4PathTracingState } from '../stores/viewPreferenceStore';
+import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import {
   C4Graph,
   C4ViewLevel,
@@ -62,8 +62,8 @@ export interface C4GraphViewProps {
  * Renders C4 architecture diagrams with drill-down navigation
  */
 const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [isLayouting, setIsLayouting] = useState(false);
@@ -233,7 +233,7 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
         // Transform with animation delay for smooth transitions
         await new Promise((resolve) => setTimeout(resolve, 50));
 
-        const transformResult = transformer.transform(fullGraphRef.current);
+        const transformResult = transformer.transform(fullGraphRef.current!);
 
         debugLog('[C4GraphView] Transformation complete:', {
           nodes: transformResult.nodes.length,
@@ -295,7 +295,19 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
   const filterCounts = useMemo((): C4FilterCounts => {
     if (!graphReady || !fullGraphRef.current) {
       return {
-        containerTypes: {},
+        containerTypes: {
+          webApp: { visible: 0, total: 0 },
+          mobileApp: { visible: 0, total: 0 },
+          desktopApp: { visible: 0, total: 0 },
+          api: { visible: 0, total: 0 },
+          database: { visible: 0, total: 0 },
+          messageQueue: { visible: 0, total: 0 },
+          cache: { visible: 0, total: 0 },
+          fileStorage: { visible: 0, total: 0 },
+          service: { visible: 0, total: 0 },
+          function: { visible: 0, total: 0 },
+          custom: { visible: 0, total: 0 },
+        },
         technologies: {},
       };
     }
@@ -763,7 +775,7 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
               <Controls />
               <MiniMap
                 nodeColor={(node) => {
-                  return node.data.stroke || '#6b7280';
+                  return (node.data.stroke as string) || '#6b7280';
                 }}
                 maskColor="rgba(0, 0, 0, 0.1)"
                 style={{

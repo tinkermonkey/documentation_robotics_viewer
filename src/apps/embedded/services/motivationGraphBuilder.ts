@@ -21,7 +21,6 @@ import {
   MotivationElementType,
   MotivationRelationshipType,
   RelationshipDirection,
-  NodeMetrics,
   ConflictDetection,
   MotivationGraphBuilderOptions,
   InfluencePath

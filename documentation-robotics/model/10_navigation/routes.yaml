@@ -1,0 +1,39 @@
+route-model:
+  id: navigation.route.model
+  name: Model Route
+  description: /model/*
+  targets:
+  - ux.view.c4-view
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  routes:
+  - path: /model
+    identifier: model-root
+    name: Model Root
+    type: experience
+route-spec:
+  id: navigation.route.spec
+  name: Spec Route
+  description: /spec/*
+  targets:
+  - ux.view.spec-view
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  routes:
+  - path: /spec
+    identifier: spec-root
+    name: Spec Root
+    type: experience
+route-motivation:
+  id: navigation.route.motivation
+  name: Motivation Route
+  description: /motivation
+  targets:
+  - ux.view.motivation-view
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  routes:
+  - path: /motivation
+    identifier: motivation-root
+    name: Motivation Root
+    type: experience

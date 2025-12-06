@@ -1,0 +1,337 @@
+{
+  "id": "business-order-process-v1",
+  "type": "business-process",
+  "name": "Order Fulfillment Process",
+  "description": "BPMN-style business process diagram showing a typical order fulfillment workflow. Based on patterns from the BPMN 2.0 specification examples.",
+  "source": {
+    "url": "https://www.omg.org/spec/BPMN/2.0/PDF/",
+    "citation": "Object Management Group. (2011). Business Process Model and Notation (BPMN) Version 2.0. OMG.",
+    "accessedDate": "2024-12-04",
+    "author": "Object Management Group (OMG)"
+  },
+  "license": "Fair Use (educational, based on OMG BPMN specification patterns)",
+  "imagePath": "reference-diagrams/business/order-process.png",
+  "extractedGraph": {
+    "nodes": [
+      {
+        "id": "start-order",
+        "label": "Order Received",
+        "type": "StartEvent",
+        "x": 50,
+        "y": 200,
+        "width": 40,
+        "height": 40,
+        "metadata": {
+          "eventType": "message"
+        }
+      },
+      {
+        "id": "task-validate",
+        "label": "Validate Order",
+        "type": "Task",
+        "x": 150,
+        "y": 185,
+        "width": 120,
+        "height": 70,
+        "metadata": {
+          "taskType": "service"
+        }
+      },
+      {
+        "id": "gateway-valid",
+        "label": "Valid?",
+        "type": "ExclusiveGateway",
+        "x": 330,
+        "y": 200,
+        "width": 40,
+        "height": 40,
+        "metadata": {
+          "gatewayType": "exclusive"
+        }
+      },
+      {
+        "id": "task-reject",
+        "label": "Reject Order",
+        "type": "Task",
+        "x": 430,
+        "y": 80,
+        "width": 120,
+        "height": 70,
+        "metadata": {
+          "taskType": "user"
+        }
+      },
+      {
+        "id": "task-check-inventory",
+        "label": "Check Inventory",
+        "type": "Task",
+        "x": 430,
+        "y": 185,
+        "width": 120,
+        "height": 70,
+        "metadata": {
+          "taskType": "service"
+        }
+      },
+      {
+        "id": "gateway-stock",
+        "label": "In Stock?",
+        "type": "ExclusiveGateway",
+        "x": 610,
+        "y": 200,
+        "width": 40,
+        "height": 40,
+        "metadata": {
+          "gatewayType": "exclusive"
+        }
+      },
+      {
+        "id": "task-backorder",
+        "label": "Create Backorder",
+        "type": "Task",
+        "x": 710,
+        "y": 80,
+        "width": 120,
+        "height": 70,
+        "metadata": {
+          "taskType": "user"
+        }
+      },
+      {
+        "id": "gateway-parallel",
+        "label": "",
+        "type": "ParallelGateway",
+        "x": 710,
+        "y": 200,
+        "width": 40,
+        "height": 40,
+        "metadata": {
+          "gatewayType": "parallel"
+        }
+      },
+      {
+        "id": "task-prepare",
+        "label": "Prepare Shipment",
+        "type": "Task",
+        "x": 810,
+        "y": 130,
+        "width": 120,
+        "height": 70,
+        "metadata": {
+          "taskType": "manual"
+        }
+      },
+      {
+        "id": "task-invoice",
+        "label": "Generate Invoice",
+        "type": "Task",
+        "x": 810,
+        "y": 240,
+        "width": 120,
+        "height": 70,
+        "metadata": {
+          "taskType": "service"
+        }
+      },
+      {
+        "id": "gateway-join",
+        "label": "",
+        "type": "ParallelGateway",
+        "x": 990,
+        "y": 200,
+        "width": 40,
+        "height": 40,
+        "metadata": {
+          "gatewayType": "parallel"
+        }
+      },
+      {
+        "id": "task-ship",
+        "label": "Ship Order",
+        "type": "Task",
+        "x": 1090,
+        "y": 185,
+        "width": 120,
+        "height": 70,
+        "metadata": {
+          "taskType": "manual"
+        }
+      },
+      {
+        "id": "end-complete",
+        "label": "Order Complete",
+        "type": "EndEvent",
+        "x": 1270,
+        "y": 200,
+        "width": 40,
+        "height": 40,
+        "metadata": {
+          "eventType": "none"
+        }
+      },
+      {
+        "id": "end-rejected",
+        "label": "Order Rejected",
+        "type": "EndEvent",
+        "x": 600,
+        "y": 95,
+        "width": 40,
+        "height": 40,
+        "metadata": {
+          "eventType": "terminate"
+        }
+      },
+      {
+        "id": "end-backorder",
+        "label": "Backorder Created",
+        "type": "EndEvent",
+        "x": 880,
+        "y": 95,
+        "width": 40,
+        "height": 40,
+        "metadata": {
+          "eventType": "message"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "start-order",
+        "target": "task-validate",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "task-validate",
+        "target": "gateway-valid",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "gateway-valid",
+        "target": "task-reject",
+        "label": "No",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "gateway-valid",
+        "target": "task-check-inventory",
+        "label": "Yes",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "task-reject",
+        "target": "end-rejected",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "task-check-inventory",
+        "target": "gateway-stock",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "gateway-stock",
+        "target": "task-backorder",
+        "label": "No",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "gateway-stock",
+        "target": "gateway-parallel",
+        "label": "Yes",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "task-backorder",
+        "target": "end-backorder",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "gateway-parallel",
+        "target": "task-prepare",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "gateway-parallel",
+        "target": "task-invoice",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "task-prepare",
+        "target": "gateway-join",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "task-invoice",
+        "target": "gateway-join",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "gateway-join",
+        "target": "task-ship",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "task-ship",
+        "target": "end-complete",
+        "type": "sequenceFlow"
+      }
+    ],
+    "boundingBox": {
+      "width": 1350,
+      "height": 400
+    }
+  },
+  "qualityMetrics": {
+    "overallScore": 0.88,
+    "metrics": {
+      "crossingNumber": 1.0,
+      "crossingAngle": 1.0,
+      "angularResolutionMin": 0.78,
+      "angularResolutionDev": 0.82
+    },
+    "extendedMetrics": {
+      "crossingNumber": 1.0,
+      "crossingAngle": 1.0,
+      "angularResolutionMin": 0.78,
+      "angularResolutionDev": 0.82,
+      "edgeLength": {
+        "min": 50,
+        "max": 120,
+        "mean": 80,
+        "stdDev": 20
+      },
+      "nodeNodeOcclusion": 0,
+      "aspectRatio": 3.38,
+      "density": 0.14
+    },
+    "timestamp": "2024-12-04T00:00:00.000Z",
+    "layoutType": "swimlane",
+    "diagramType": "business",
+    "nodeCount": 15,
+    "edgeCount": 15,
+    "computationTimeMs": 0
+  },
+  "annotations": {
+    "keyLayoutPatterns": [
+      "left-to-right flow (BPMN convention)",
+      "exception paths above main flow",
+      "parallel activities stacked vertically",
+      "gateways aligned on main flow axis"
+    ],
+    "exemplaryFeatures": [
+      "no edge crossings",
+      "consistent horizontal spacing between activities",
+      "clear exception/alternate paths",
+      "parallel gateway fork/join clearly visible",
+      "end events positioned at flow termination points"
+    ],
+    "applicableScenarios": [
+      "BPMN-style process diagrams with 10-20 elements",
+      "processes with exception handling",
+      "workflows with parallel activities",
+      "order/request processing workflows"
+    ],
+    "notes": "This layout follows BPMN conventions with left-to-right flow. The horizontal aspect ratio is typical for process diagrams. Exception paths branch upward to maintain visual distinction from the happy path."
+  },
+  "version": 1,
+  "lastUpdated": "2024-12-04T00:00:00.000Z"
+}

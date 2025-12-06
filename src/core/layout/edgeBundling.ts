@@ -218,7 +218,7 @@ export function getBundledEdgeIds(edge: Edge): string[] {
  * @param edgeCount - Number of edges in graph
  * @returns Recommended threshold
  */
-export function calculateOptimalThreshold(nodeCount: number, edgeCount: number): number {
+export function calculateOptimalThreshold(nodeCount: number, _edgeCount: number): number {
   // For small graphs (< 50 nodes), don't bundle
   if (nodeCount < 50) {
     return Infinity;

@@ -5,6 +5,8 @@ import {
   DataModelComponentType,
   HTTPMethod
 } from './shapes';
+
+export type { HTTPMethod };
 import { NodeDetailLevel } from '../../core/layout/semanticZoomController';
 import { CoverageStatus } from '../../apps/embedded/services/coverageAnalyzer';
 
@@ -42,6 +44,9 @@ export interface BaseNodeData {
   strokeWidth?: number;
   detailLevel?: NodeDetailLevel;
   relationshipBadge?: RelationshipBadge;
+
+  // Index signature for React Flow compatibility
+  [key: string]: unknown;
 }
 
 /**
@@ -305,6 +310,7 @@ export type AppNode =
  */
 export interface ElbowEdgeData {
   // Can add custom data for edges if needed
+  [key: string]: unknown;
 }
 
 /**
@@ -315,6 +321,7 @@ export interface MotivationEdgeData {
   label?: string;
   weight?: number;
   changesetOperation?: 'add' | 'update' | 'delete';
+  [key: string]: unknown;
 }
 
 /**
@@ -324,6 +331,7 @@ export interface CrossLayerEdgeData {
   targetLayer: 'motivation' | 'application' | 'data_model' | 'security' | 'api' | 'ux';
   relationshipType: string;
   label?: string;
+  [key: string]: unknown;
 }
 
 /**
@@ -336,8 +344,8 @@ export type AppEdge =
   | Edge<MotivationEdgeData, 'constrains'>
   | Edge<MotivationEdgeData, 'realizes'>
   | Edge<MotivationEdgeData, 'refines'>
-  | Edge<undefined, 'default'>
-  | Edge<undefined, 'smoothstep'>;
+  | Edge<Record<string, unknown>, 'default'>
+  | Edge<Record<string, unknown>, 'smoothstep'>;
 
 /**
  * Result from node transformation

@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { NodeProps } from '@xyflow/react';
+import { NodeProps , Node} from '@xyflow/react';
 import { DataModelNodeData } from '../types/reactflow';
 import { BaseFieldListNode } from './BaseFieldListNode';
 
@@ -8,7 +8,7 @@ import { BaseFieldListNode } from './BaseFieldListNode';
  * Displays entities, interfaces, and enums with field-level connection handles
  * Uses BaseFieldListNode for shared rendering logic
  */
-export const DataModelNode = memo(({ data }: NodeProps<DataModelNodeData>) => {
+export const DataModelNode = memo(({ data }: NodeProps<Node<DataModelNodeData>>) => {
   return (
     <BaseFieldListNode
       label={data.label}

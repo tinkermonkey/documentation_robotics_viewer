@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { NodeProps } from '@xyflow/react';
+import { NodeProps , Node} from '@xyflow/react';
 import { JSONSchemaNodeData } from '../types/reactflow';
 import { BaseFieldListNode } from './BaseFieldListNode';
 
@@ -8,7 +8,7 @@ import { BaseFieldListNode } from './BaseFieldListNode';
  * Displays schema definitions with properties and field-level handles
  * Uses BaseFieldListNode for shared rendering logic
  */
-export const JSONSchemaNode = memo(({ data }: NodeProps<JSONSchemaNodeData>) => {
+export const JSONSchemaNode = memo(({ data }: NodeProps<Node<JSONSchemaNodeData>>) => {
   return (
     <BaseFieldListNode
       label={data.label}

@@ -20,6 +20,8 @@ export interface Layer {
   id: string;
   type: LayerType | string;
   name: string;
+  description?: string;
+  order?: number;
   elements: ModelElement[];
   relationships: Relationship[];
   data?: LayerData;
@@ -77,6 +79,7 @@ export interface ElementStyle {
   backgroundColor?: string;
   borderColor?: string;
   borderStyle?: string;
+  textColor?: string;
   icon?: string;
   shape?: ShapeType;
 }

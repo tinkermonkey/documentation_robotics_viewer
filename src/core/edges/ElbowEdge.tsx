@@ -22,7 +22,7 @@ export const ElbowEdge = memo(({
   markerEnd,
   label,
   labelStyle,
-  labelBgStyle,
+
 }: EdgeProps) => {
   const nodes = useNodes();
   const edges = useEdges();

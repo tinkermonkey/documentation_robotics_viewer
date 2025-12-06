@@ -1,0 +1,14 @@
+graph-builder:
+  id: application.service.graph-builder
+  name: Graph Builder
+  description: Transforms model data into graph nodes and edges
+layout-engine:
+  id: application.service.layout-engine
+  name: Layout Engine
+  description: Calculates node positions
+  uses:
+    - technology.library.dagre
+node-transformer:
+  id: application.service.node-transformer
+  name: Node Transformer
+  description: Converts model elements to React Flow nodes

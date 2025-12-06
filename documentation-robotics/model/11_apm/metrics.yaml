@@ -1,0 +1,23 @@
+render-time:
+  id: apm.metric.render-time
+  name: Graph Render Time
+  description: Time taken to layout and render the graph
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  tracing:
+    enabled: true
+    serviceName: viewer
+    sampler:
+      type: always_on
+    propagators:
+    - w3c-trace-context
+    exporters:
+    - type: console
+      endpoint: stdout
+  logging:
+    enabled: true
+    serviceName: viewer
+    logLevel: INFO
+    exporters:
+    - type: console
+      endpoint: stdout

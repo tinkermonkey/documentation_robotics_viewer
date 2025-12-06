@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Handle, Position, NodeProps } from '@xyflow/react';
+import { Handle, Position, NodeProps, Node } from '@xyflow/react';
 import { RelationshipBadge } from './RelationshipBadge';
 import { OutcomeNodeData } from '../../types/reactflow';
 
@@ -13,7 +13,7 @@ export const OUTCOME_NODE_HEIGHT = 110;
  * Outcome Node Component for Motivation Layer
  * Displays outcome elements with achievement status indicator
  */
-export const OutcomeNode = memo(({ data }: NodeProps<OutcomeNodeData>) => {
+export const OutcomeNode = memo(({ data }: NodeProps<Node<OutcomeNodeData>>) => {
   // Apply changeset styling if present
   let borderColor = data.stroke || '#0891b2';
   let backgroundColor = data.fill || '#cffafe';

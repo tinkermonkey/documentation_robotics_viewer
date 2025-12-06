@@ -1,12 +1,12 @@
 version: 0.1.0
 schema: documentation-robotics-v1
-cli_version: 0.4.1
-spec_version: 0.2.0
-created: '2025-11-28T13:15:04.254033Z'
-updated: '2025-11-28T13:15:04.254033Z'
+cli_version: 0.6.4
+spec_version: 0.3.0
+created: '2025-12-05T22:17:22.732040Z'
+updated: '2025-12-06T00:51:08.059386Z'
 project:
-  name: documentation-robotics-viewer
-  description: Architecture model for documentation-robotics-viewer
+  name: documentation_robotics_viewer
+  description: Architecture model for documentation_robotics_viewer
   version: 1.0.0
 documentation: .dr/README.md
 layers:
@@ -44,7 +44,8 @@ layers:
     path: documentation-robotics/model/05_technology/
     schema: .dr/schemas/05-technology-layer.schema.json
     enabled: true
-    elements: {}
+    elements:
+      systemsoftware: 7
   api:
     order: 6
     name: API
@@ -58,7 +59,8 @@ layers:
     path: documentation-robotics/model/07_data_model/
     schema: .dr/schemas/07-data-model-layer.schema.json
     enabled: true
-    elements: {}
+    elements:
+      entity: 4
   datastore:
     order: 8
     name: Data Store
@@ -87,15 +89,26 @@ layers:
     schema: .dr/schemas/11-apm-observability-layer.schema.json
     enabled: true
     elements: {}
+  testing:
+    order: 12
+    name: Testing
+    path: documentation-robotics/model/12_testing/
+    schema: .dr/schemas/12-testing-layer.schema.json
+    enabled: true
+    elements:
+      test-case-sketch: 11
+      context-variation: 2
+      coverage-target: 2
+      coverage-requirement: 1
 cross_references:
   total: 0
   by_type: {}
 statistics:
-  total_elements: 0
+  total_elements: 27
   total_relationships: 0
   completeness: 0.0
-  last_validation: null
-  validation_status: not_validated
+  last_validation: '2025-12-06T00:51:08.059378Z'
+  validation_status: passed
 conventions:
   id_format: '{layer}.{type}.{kebab-case-name}'
   file_naming:

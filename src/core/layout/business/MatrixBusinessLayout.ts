@@ -139,7 +139,7 @@ export class MatrixBusinessLayout implements BusinessLayoutEngine {
   private layoutNodesInCells(
     graph: BusinessGraph,
     domainCells: Map<string, { row: number; col: number }>,
-    gridSize: number
+    _gridSize: number
   ): Node[] {
     const nodes: Node[] = [];
 

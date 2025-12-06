@@ -41,8 +41,7 @@ import {
   C4BreadcrumbSegment,
   C4NodeDetailLevel,
   ContainerType,
-  ProtocolType,
-  C4ScenarioPreset,
+
   C4_SCENARIO_PRESETS,
   DEFAULT_C4_TRANSFORMER_OPTIONS,
   DEFAULT_C4_LAYOUT_OPTIONS,
@@ -1329,7 +1328,7 @@ export class C4ViewTransformer {
     }
 
     // Process each group, bundling if edges meet threshold
-    for (const [pairKey, group] of edgeGroups) {
+    for (const [, group] of edgeGroups) {
       if (group.edges.length >= EDGE_BUNDLE_THRESHOLD) {
         // Bundle into single edge with count indicator
         const bundledEdge = this.createBundledEdge(group.edges, group.ids, showLabels);

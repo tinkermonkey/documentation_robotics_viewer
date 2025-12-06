@@ -9,7 +9,7 @@
  */
 
 import './MotivationControlPanel.css';
-import { LayoutAlgorithmType } from '../types/layoutAlgorithm';
+import {  } from '../types/layoutAlgorithm';
 
 export type LayoutAlgorithm = 'force' | 'hierarchical' | 'radial' | 'manual';
 

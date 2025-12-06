@@ -1,0 +1,38 @@
+c4-view:
+  id: ux.view.c4-view
+  name: C4 View
+  description: Hierarchical view (Context, Container, Component)
+  realizes:
+  - application.component.graph-view
+  version: 1.0.0
+  experience: web
+  channel: visual
+  states:
+  - name: default
+  views:
+  - name: default
+    type: custom
+motivation-view:
+  id: ux.view.motivation-view
+  name: Motivation View
+  description: Goal and requirement visualization
+  version: 1.0.0
+  experience: web
+  channel: visual
+  states:
+  - name: default
+  views:
+  - name: default
+    type: custom
+spec-view:
+  id: ux.view.spec-view
+  name: Spec View
+  description: Specification and data model visualization
+  version: 1.0.0
+  experience: web
+  channel: visual
+  states:
+  - name: default
+  views:
+  - name: default
+    type: custom

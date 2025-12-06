@@ -196,10 +196,7 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
     };
   }, [businessGraph, setNodes, setEdges]);
 
-  // Fit view when nodes change
-  const onNodesInitialized = useCallback(() => {
-    // Nodes are initialized and fitView is handled by ReactFlow
-  }, []);
+
 
   // Export handlers
   const handleExport = useCallback(
@@ -467,7 +464,6 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
           edgeTypes={edgeTypes}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
-          onNodesInitialized={onNodesInitialized}
           onNodeClick={handleNodeClick}
           onNodeDoubleClick={handleNodeDoubleClick}
           onlyRenderVisibleElements={true} // Critical for performance with >200 nodes

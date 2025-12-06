@@ -22,7 +22,7 @@ export interface C4BreadcrumbNavProps {
 /**
  * Icons for each view level
  */
-const VIEW_LEVEL_ICONS: Record<C4ViewLevel, JSX.Element> = {
+const VIEW_LEVEL_ICONS: Record<C4ViewLevel, React.ReactElement> = {
   context: (
     <svg
       width="16"
@@ -111,7 +111,7 @@ export const C4BreadcrumbNav: React.FC<C4BreadcrumbNavProps> = ({
   /**
    * Handle clicking on a breadcrumb segment
    */
-  const handleSegmentClick = (segment: C4BreadcrumbSegment, index: number) => {
+  const handleSegmentClick = (segment: C4BreadcrumbSegment, _index: number) => {
     // Extract containerId and componentId based on segment position
     if (segment.level === 'context') {
       onNavigate('context');

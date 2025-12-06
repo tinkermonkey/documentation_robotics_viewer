@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Handle, Position, NodeProps } from '@xyflow/react';
+import { Handle, Position, NodeProps, Node } from '@xyflow/react';
 import { GoalNodeData } from '../../types/reactflow';
 import { RelationshipBadge } from './RelationshipBadge';
 import { coverageAnalyzer } from '../../../apps/embedded/services/coverageAnalyzer';
@@ -14,7 +14,7 @@ export const GOAL_NODE_HEIGHT = 110;
  * Goal Node Component for Motivation Layer
  * Displays goal elements with priority badge, coverage indicators, and semantic zoom support
  */
-export const GoalNode = memo(({ data }: NodeProps<GoalNodeData>) => {
+export const GoalNode = memo(({ data }: NodeProps<Node<GoalNodeData>>) => {
   const detailLevel = data.detailLevel || 'detailed';
   // Apply changeset styling if present
   let borderColor = data.stroke || '#059669';

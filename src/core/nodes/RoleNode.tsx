@@ -1,12 +1,12 @@
 import { memo } from 'react';
-import { Handle, Position, NodeProps } from '@xyflow/react';
+import { Handle, Position, NodeProps , Node} from '@xyflow/react';
 import { RoleNodeData } from '../types/reactflow';
 
 /**
  * Role Node Component for React Flow
  * Displays security roles with hierarchy information
  */
-export const RoleNode = memo(({ data }: NodeProps<RoleNodeData>) => {
+export const RoleNode = memo(({ data }: NodeProps<Node<RoleNodeData>>) => {
   return (
     <div
       style={{

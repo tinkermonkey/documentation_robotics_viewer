@@ -1,0 +1,24 @@
+MetaModel:
+  name: MetaModel
+  description: Root object containing all layers and elements
+  id: data_model.entity.meta-model
+  $schema: http://json-schema.org/draft-07/schema#
+  type: object
+Layer:
+  name: Layer
+  description: Container for elements of a specific architectural layer
+  id: data_model.entity.layer
+  $schema: http://json-schema.org/draft-07/schema#
+  type: object
+ModelElement:
+  name: ModelElement
+  description: Base entity for all architectural elements
+  id: data_model.entity.model-element
+  $schema: http://json-schema.org/draft-07/schema#
+  type: object
+Relationship:
+  name: Relationship
+  description: Connection between two model elements
+  id: data_model.entity.relationship
+  $schema: http://json-schema.org/draft-07/schema#
+  type: object

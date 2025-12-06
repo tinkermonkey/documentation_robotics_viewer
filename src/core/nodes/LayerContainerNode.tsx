@@ -1,12 +1,12 @@
 import { memo } from 'react';
-import { NodeProps } from '@xyflow/react';
+import { NodeProps , Node} from '@xyflow/react';
 import { LayerContainerNodeData } from '../types/reactflow';
 
 /**
  * Layer Container Node Component for React Flow
  * Displays swimlane backgrounds for architectural layers
  */
-export const LayerContainerNode = memo(({ data }: NodeProps<LayerContainerNodeData>) => {
+export const LayerContainerNode = memo(({ data }: NodeProps<Node<LayerContainerNodeData>>) => {
   return (
     <div
       style={{

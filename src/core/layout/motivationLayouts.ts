@@ -3,7 +3,7 @@
  * Implements various layout strategies for motivation graph visualization
  */
 
-import { MotivationGraph, MotivationGraphNode } from '../../apps/embedded/types/motivationGraph';
+import { MotivationGraph } from '../../apps/embedded/types/motivationGraph';
 
 export interface Position {
   x: number;

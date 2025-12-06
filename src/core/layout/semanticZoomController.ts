@@ -154,7 +154,7 @@ export class SemanticZoomController {
   /**
    * Determine whether to show node icons based on zoom
    */
-  shouldShowNodeIcons(zoomLevel: number): boolean {
+  shouldShowNodeIcons(_zoomLevel: number): boolean {
     // Icons are helpful at all zoom levels for quick identification
     return true;
   }
@@ -237,7 +237,7 @@ export class SemanticZoomController {
    */
   getZoomLevelDescription(zoomLevel: number): string {
     const category = this.getZoomCategory(zoomLevel);
-    const detailLevel = this.getNodeDetailLevel(zoomLevel);
+
 
     switch (category) {
       case 'overview':

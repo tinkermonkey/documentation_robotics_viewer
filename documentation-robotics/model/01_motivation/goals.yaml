@@ -1,0 +1,12 @@
+visualize-architecture:
+  id: motivation.goal.visualize-architecture
+  name: Visualize Architecture
+  description: Provide interactive visualization of DR models across all layers
+interactive-graphs:
+  id: motivation.requirement.interactive-graphs
+  name: Interactive Graphs
+  description: Users must be able to pan, zoom, and click nodes for details
+embedded-mode:
+  id: motivation.requirement.embedded-mode
+  name: Embedded Mode
+  description: Viewer must support embedding in other applications via iframe or component

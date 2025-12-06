@@ -1,0 +1,272 @@
+{
+  "id": "business-approval-workflow-v1",
+  "type": "business-process",
+  "name": "Multi-Level Approval Workflow",
+  "description": "Business process diagram showing a multi-level approval workflow with escalation. Demonstrates common patterns for approval chains in enterprise processes.",
+  "source": {
+    "url": "https://camunda.com/bpmn/",
+    "citation": "Camunda. (2024). BPMN 2.0 Tutorial - Process Modeling. Camunda.",
+    "accessedDate": "2024-12-04",
+    "author": "Camunda"
+  },
+  "license": "CC-BY-4.0",
+  "imagePath": "reference-diagrams/business/approval-workflow.png",
+  "extractedGraph": {
+    "nodes": [
+      {
+        "id": "start-request",
+        "label": "Request Submitted",
+        "type": "StartEvent",
+        "x": 50,
+        "y": 150,
+        "width": 40,
+        "height": 40,
+        "metadata": {
+          "eventType": "message"
+        }
+      },
+      {
+        "id": "task-review",
+        "label": "Initial Review",
+        "type": "Task",
+        "x": 150,
+        "y": 135,
+        "width": 120,
+        "height": 70,
+        "metadata": {
+          "taskType": "user",
+          "role": "Reviewer"
+        }
+      },
+      {
+        "id": "gateway-amount",
+        "label": "Amount > $10K?",
+        "type": "ExclusiveGateway",
+        "x": 330,
+        "y": 150,
+        "width": 40,
+        "height": 40,
+        "metadata": {
+          "gatewayType": "exclusive"
+        }
+      },
+      {
+        "id": "task-manager-approve",
+        "label": "Manager Approval",
+        "type": "Task",
+        "x": 430,
+        "y": 50,
+        "width": 120,
+        "height": 70,
+        "metadata": {
+          "taskType": "user",
+          "role": "Manager"
+        }
+      },
+      {
+        "id": "task-director-approve",
+        "label": "Director Approval",
+        "type": "Task",
+        "x": 430,
+        "y": 200,
+        "width": 120,
+        "height": 70,
+        "metadata": {
+          "taskType": "user",
+          "role": "Director"
+        }
+      },
+      {
+        "id": "gateway-merge",
+        "label": "",
+        "type": "ExclusiveGateway",
+        "x": 610,
+        "y": 150,
+        "width": 40,
+        "height": 40,
+        "metadata": {
+          "gatewayType": "exclusive"
+        }
+      },
+      {
+        "id": "gateway-approved",
+        "label": "Approved?",
+        "type": "ExclusiveGateway",
+        "x": 710,
+        "y": 150,
+        "width": 40,
+        "height": 40,
+        "metadata": {
+          "gatewayType": "exclusive"
+        }
+      },
+      {
+        "id": "task-process",
+        "label": "Process Request",
+        "type": "Task",
+        "x": 810,
+        "y": 135,
+        "width": 120,
+        "height": 70,
+        "metadata": {
+          "taskType": "service"
+        }
+      },
+      {
+        "id": "task-notify-rejection",
+        "label": "Notify Rejection",
+        "type": "Task",
+        "x": 810,
+        "y": 250,
+        "width": 120,
+        "height": 70,
+        "metadata": {
+          "taskType": "service"
+        }
+      },
+      {
+        "id": "end-complete",
+        "label": "Request Completed",
+        "type": "EndEvent",
+        "x": 990,
+        "y": 150,
+        "width": 40,
+        "height": 40,
+        "metadata": {
+          "eventType": "none"
+        }
+      },
+      {
+        "id": "end-rejected",
+        "label": "Request Rejected",
+        "type": "EndEvent",
+        "x": 990,
+        "y": 265,
+        "width": 40,
+        "height": 40,
+        "metadata": {
+          "eventType": "terminate"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "start-request",
+        "target": "task-review",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "task-review",
+        "target": "gateway-amount",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "gateway-amount",
+        "target": "task-manager-approve",
+        "label": "No",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "gateway-amount",
+        "target": "task-director-approve",
+        "label": "Yes",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "task-manager-approve",
+        "target": "gateway-merge",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "task-director-approve",
+        "target": "gateway-merge",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "gateway-merge",
+        "target": "gateway-approved",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "gateway-approved",
+        "target": "task-process",
+        "label": "Yes",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "gateway-approved",
+        "target": "task-notify-rejection",
+        "label": "No",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "task-process",
+        "target": "end-complete",
+        "type": "sequenceFlow"
+      },
+      {
+        "source": "task-notify-rejection",
+        "target": "end-rejected",
+        "type": "sequenceFlow"
+      }
+    ],
+    "boundingBox": {
+      "width": 1050,
+      "height": 350
+    }
+  },
+  "qualityMetrics": {
+    "overallScore": 0.90,
+    "metrics": {
+      "crossingNumber": 1.0,
+      "crossingAngle": 1.0,
+      "angularResolutionMin": 0.82,
+      "angularResolutionDev": 0.86
+    },
+    "extendedMetrics": {
+      "crossingNumber": 1.0,
+      "crossingAngle": 1.0,
+      "angularResolutionMin": 0.82,
+      "angularResolutionDev": 0.86,
+      "edgeLength": {
+        "min": 50,
+        "max": 140,
+        "mean": 85,
+        "stdDev": 25
+      },
+      "nodeNodeOcclusion": 0,
+      "aspectRatio": 3.0,
+      "density": 0.20
+    },
+    "timestamp": "2024-12-04T00:00:00.000Z",
+    "layoutType": "swimlane",
+    "diagramType": "business",
+    "nodeCount": 11,
+    "edgeCount": 11,
+    "computationTimeMs": 0
+  },
+  "annotations": {
+    "keyLayoutPatterns": [
+      "left-to-right main flow",
+      "decision branches create vertical paths",
+      "merge points align paths back to main flow",
+      "rejection path below main flow"
+    ],
+    "exemplaryFeatures": [
+      "no edge crossings",
+      "symmetric decision branches",
+      "clear happy path vs rejection path",
+      "consistent task sizing",
+      "gateway decision points clearly labeled"
+    ],
+    "applicableScenarios": [
+      "approval workflow diagrams",
+      "decision-heavy processes",
+      "processes with alternative paths based on conditions",
+      "BPMN diagrams with 8-15 elements"
+    ],
+    "notes": "This pattern demonstrates clean branching and merging for conditional flows. The layout maintains the main flow horizontally while allowing vertical branching for decisions."
+  },
+  "version": 1,
+  "lastUpdated": "2024-12-04T00:00:00.000Z"
+}
