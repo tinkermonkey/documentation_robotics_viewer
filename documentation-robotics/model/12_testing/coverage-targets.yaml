@@ -1,0 +1,35 @@
+Core Logic:
+  name: Core Logic
+  description: Business logic, parsers, and data transformers
+  id: testing.coverage-target.core-logic
+  targets: '["application.service.graph-builder", "application.service.layout-engine",
+    "application.service.node-transformer"]'
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  coverageTargets:
+  - id: testing.coverage-target.ui-experience
+    name: UI Experience
+    targetType: composite
+  coverageRequirements:
+  - id: testing.coverage-requirement.all-tests-pass
+    name: All Tests Pass
+    coverageCriteria: happy-path
+    targetRef: testing.coverage-target.ui-experience
+  targetRef: application.service.graph-builder
+UI Experience:
+  name: UI Experience
+  description: User interface components, interactions, and accessibility
+  id: testing.coverage-target.ui-experience
+  targets: '["ux.view.c4-view", "ux.view.motivation-view", "ux.view.spec-view"]'
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  coverageTargets:
+  - id: testing.coverage-target.ui-experience
+    name: UI Experience
+    targetType: composite
+  coverageRequirements:
+  - id: testing.coverage-requirement.all-tests-pass
+    name: All Tests Pass
+    coverageCriteria: happy-path
+    targetRef: testing.coverage-target.ui-experience
+  targetRef: ux.view.c4-view

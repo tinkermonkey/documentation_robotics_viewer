@@ -1,0 +1,20 @@
+local-fs:
+  id: datastore.store.local-fs
+  name: Local Filesystem
+  description: Storage for model files (YAML/JSON)
+  type: filesystem
+  database:
+    name: local
+    type: SQLite
+    schemas:
+    - name: MetaModel
+      schemaRef: data_model.entity.meta-model
+      tables: []
+    tables: []
+  schemas:
+  - name: MetaModel
+    schemaRef: data_model.entity.meta-model
+    tables: []
+  tables: []
+  filesystem:
+    path: .

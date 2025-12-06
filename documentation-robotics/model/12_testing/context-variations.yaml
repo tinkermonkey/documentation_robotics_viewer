@@ -1,0 +1,30 @@
+Standalone Mode:
+  name: Standalone Mode
+  description: Standard standalone viewer application
+  id: testing.context-variation.standalone-mode
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  coverageTargets:
+  - id: testing.coverage-target.ui-experience
+    name: UI Experience
+    targetType: composite
+  coverageRequirements:
+  - id: testing.coverage-requirement.all-tests-pass
+    name: All Tests Pass
+    coverageCriteria: happy-path
+    targetRef: testing.coverage-target.ui-experience
+Embedded Mode:
+  name: Embedded Mode
+  description: Viewer embedded in another application via iframe or web component
+  id: testing.context-variation.embedded-mode
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  coverageTargets:
+  - id: testing.coverage-target.ui-experience
+    name: UI Experience
+    targetType: composite
+  coverageRequirements:
+  - id: testing.coverage-requirement.all-tests-pass
+    name: All Tests Pass
+    coverageCriteria: happy-path
+    targetRef: testing.coverage-target.ui-experience

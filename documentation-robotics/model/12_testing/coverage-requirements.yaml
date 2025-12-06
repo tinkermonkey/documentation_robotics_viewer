@@ -1,0 +1,19 @@
+All Tests Pass:
+  name: All Tests Pass
+  description: All tests must pass in CI
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  id: testing.coverage-requirement.all-tests-pass
+  coverageTargets:
+  - id: testing.coverage-target.ui-experience
+    name: UI Experience
+    targetType: composite
+  coverageRequirements:
+  - id: testing.coverage-requirement.all-tests-pass
+    name: All Tests Pass
+    coverageCriteria: happy-path
+    targetRef: testing.coverage-target.ui-experience
+  requirementRefs:
+  - motivation.goal.visualize-architecture
+  - motivation.requirement.interactive-graphs
+  - motivation.requirement.embedded-mode

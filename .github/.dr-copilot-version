@@ -1,0 +1,17 @@
+components:
+  agents:
+    dr-architect.md:
+      hash: 2798ac3e
+      modified: false
+  knowledge:
+    tier1-essentials.md:
+      hash: 98d3b3a3
+      modified: false
+    tier2-developer-guide.md:
+      hash: ab0726d9
+      modified: false
+    tier3-complete-reference.md:
+      hash: 84f2a798
+      modified: false
+installed_at: '2025-12-05T17:16:18.782151'
+version: 0.6.4

@@ -1,0 +1,175 @@
+Unit Tests:
+  name: Unit Tests
+  id: testing.test-case-sketch.unit-tests
+  description: Unit tests for core logic, parsers, and transformers
+  targets: '["testing.coverage-target.core-logic"]'
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  coverageTargets:
+  - id: testing.coverage-target.core-logic
+    name: Core Logic
+    targetType: composite
+  coverageRequirements:
+  - id: testing.coverage-requirement.all-tests-pass
+    name: All Tests Pass
+    coverageCriteria: happy-path
+    targetRef: testing.coverage-target.core-logic
+E2E Tests:
+  name: E2E Tests
+  description: End-to-end tests for full application workflows
+  id: testing.test-case-sketch.e2e-tests
+  contexts: '["testing.context-variation.standalone-mode"]'
+  targets: '["testing.coverage-target.ui-experience"]'
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  coverageTargets:
+  - id: testing.coverage-target.ui-experience
+    name: UI Experience
+    targetType: composite
+  coverageRequirements:
+  - id: testing.coverage-requirement.all-tests-pass
+    name: All Tests Pass
+    coverageCriteria: happy-path
+    targetRef: testing.coverage-target.ui-experience
+Embedded Tests:
+  name: Embedded Tests
+  description: Tests for the viewer running in embedded mode
+  id: testing.test-case-sketch.embedded-tests
+  targets: '["testing.coverage-target.ui-experience"]'
+  contexts: '["testing.context-variation.embedded-mode"]'
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  coverageTargets:
+  - id: testing.coverage-target.ui-experience
+    name: UI Experience
+    targetType: composite
+  coverageRequirements:
+  - id: testing.coverage-requirement.all-tests-pass
+    name: All Tests Pass
+    coverageCriteria: happy-path
+    targetRef: testing.coverage-target.ui-experience
+Refinement Tests:
+  name: Refinement Tests
+  description: Tests for the refinement and feedback loops
+  id: testing.test-case-sketch.refinement-tests
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  coverageTargets:
+  - id: testing.coverage-target.ui-experience
+    name: UI Experience
+    targetType: composite
+  coverageRequirements:
+  - id: testing.coverage-requirement.all-tests-pass
+    name: All Tests Pass
+    coverageCriteria: happy-path
+    targetRef: testing.coverage-target.ui-experience
+Metrics Tests:
+  name: Metrics Tests
+  description: Performance metrics and regression checks
+  id: testing.test-case-sketch.metrics-tests
+  targets: '["testing.coverage-target.ui-experience"]'
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  coverageTargets:
+  - id: testing.coverage-target.ui-experience
+    name: UI Experience
+    targetType: composite
+  coverageRequirements:
+  - id: testing.coverage-requirement.all-tests-pass
+    name: All Tests Pass
+    coverageCriteria: happy-path
+    targetRef: testing.coverage-target.ui-experience
+Accessibility Tests:
+  name: Accessibility Tests
+  description: Automated accessibility checks using axe-core
+  id: testing.test-case-sketch.accessibility-tests
+  targets: '["testing.coverage-target.ui-experience"]'
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  coverageTargets:
+  - id: testing.coverage-target.ui-experience
+    name: UI Experience
+    targetType: composite
+  coverageRequirements:
+  - id: testing.coverage-requirement.all-tests-pass
+    name: All Tests Pass
+    coverageCriteria: happy-path
+    targetRef: testing.coverage-target.ui-experience
+Integration Tests:
+  name: Integration Tests
+  description: Integration tests
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  id: testing.test-case-sketch.integration-tests
+  coverageTargets:
+  - id: testing.coverage-target.core-logic
+    name: Core Logic
+    targetType: composite
+  - id: testing.coverage-target.ui-experience
+    name: UI Experience
+    targetType: composite
+  coverageRequirements:
+  - id: testing.coverage-requirement.all-tests-pass
+    name: All Tests Pass
+    coverageCriteria: happy-path
+    targetRef: testing.coverage-target.core-logic
+Performance Tests:
+  name: Performance Tests
+  description: Performance tests
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  id: testing.test-case-sketch.performance-tests
+  coverageTargets:
+  - id: testing.coverage-target.ui-experience
+    name: UI Experience
+    targetType: composite
+  coverageRequirements:
+  - id: testing.coverage-requirement.all-tests-pass
+    name: All Tests Pass
+    coverageCriteria: happy-path
+    targetRef: testing.coverage-target.ui-experience
+Component Tests:
+  name: Component Tests
+  description: Component tests
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  id: testing.test-case-sketch.component-tests
+  coverageTargets:
+  - id: testing.coverage-target.ui-experience
+    name: UI Experience
+    targetType: composite
+  coverageRequirements:
+  - id: testing.coverage-requirement.all-tests-pass
+    name: All Tests Pass
+    coverageCriteria: happy-path
+    targetRef: testing.coverage-target.ui-experience
+Scripted Tests:
+  name: Scripted Tests
+  description: Scripted tests
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  id: testing.test-case-sketch.scripted-tests
+  coverageTargets:
+  - id: testing.coverage-target.core-logic
+    name: Core Logic
+    targetType: composite
+  coverageRequirements:
+  - id: testing.coverage-requirement.all-tests-pass
+    name: All Tests Pass
+    coverageCriteria: happy-path
+    targetRef: testing.coverage-target.core-logic
+Example Implementation Tests:
+  name: Example Implementation Tests
+  description: Example implementation tests
+  version: 1.0.0
+  application: documentation_robotics_viewer
+  id: testing.test-case-sketch.example-implementation-tests
+  coverageTargets:
+  - id: testing.coverage-target.core-logic
+    name: Core Logic
+    targetType: composite
+  coverageRequirements:
+  - id: testing.coverage-requirement.all-tests-pass
+    name: All Tests Pass
+    coverageCriteria: happy-path
+    targetRef: testing.coverage-target.core-logic

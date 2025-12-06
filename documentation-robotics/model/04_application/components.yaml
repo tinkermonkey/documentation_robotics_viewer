@@ -1,0 +1,18 @@
+viewer-app:
+  id: application.component.viewer-app
+  name: Viewer App
+  description: Main application container
+  realizes:
+    - business.capability.visualization
+graph-view:
+  id: application.component.graph-view
+  name: Graph View
+  description: Core graph rendering component
+  uses:
+    - technology.library.react-flow
+inspector-panel:
+  id: application.component.inspector-panel
+  name: Inspector Panel
+  description: Side panel for element details
+  uses:
+    - technology.framework.react

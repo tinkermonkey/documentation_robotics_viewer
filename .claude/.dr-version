@@ -1,61 +1,7 @@
 components:
-  agents:
-    dr-documenter.md:
-      hash: 2237c392
-      modified: false
-    dr-extractor.md:
-      hash: ad8015d8
-      modified: false
-    dr-helper.md:
-      hash: 63464c6b
-      modified: false
-    dr-ideator.md:
-      hash: b20ddd7f
-      modified: false
-    dr-link-validator.md:
-      hash: 3056bdb8
-      modified: false
-    dr-schema-migrator.md:
-      hash: 39d5b288
-      modified: false
-    dr-security-reviewer.md:
-      hash: c696f4a3
-      modified: false
-    dr-validator.md:
-      hash: a477c457
-      modified: false
-  commands:
-    dr-changeset.md:
-      hash: a36fcd36
-      modified: false
-    dr-ingest.md:
-      hash: 4bd7961d
-      modified: false
-    dr-init.md:
-      hash: 11c56b2b
-      modified: false
-    dr-links.md:
-      hash: c8f4bb82
-      modified: false
-    dr-model.md:
-      hash: 6dffdbad
-      modified: false
-    dr-project.md:
-      hash: a149e6e1
-      modified: false
-    dr-validate.md:
-      hash: 8d1039a7
-      modified: false
-  reference_sheets:
-    dr-tier1-essentials.md:
-      hash: ff2932a6
-      modified: false
-    dr-tier2-developer-guide.md:
-      hash: 39e11ef1
-      modified: false
-    dr-tier3-complete-reference.md:
-      hash: d861d315
-      modified: false
+  agents: {}
+  commands: {}
+  reference_sheets: {}
   skills: {}
   templates:
     README.md:
@@ -70,5 +16,5 @@ components:
     workflow-examples.md:
       hash: 96935e47
       modified: false
-installed_at: '2025-11-28T08:17:36.373481'
-version: 0.4.1
+installed_at: '2025-12-05T13:54:42.537030'
+version: 0.6.4
