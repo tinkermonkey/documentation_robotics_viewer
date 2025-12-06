@@ -1,13 +1,13 @@
 version: 0.1.0
 schema: documentation-robotics-v1
-cli_version: 0.6.4
+cli_version: 0.6.5
 spec_version: 0.3.0
 created: '2025-12-05T22:17:22.732040Z'
 updated: '2025-12-06T00:51:08.059386Z'
 project:
   name: documentation_robotics_viewer
   description: Architecture model for documentation_robotics_viewer
-  version: 1.0.0
+  version: 0.1.0
 documentation: .dr/README.md
 layers:
   motivation:
@@ -115,4 +115,8 @@ conventions:
     api: '{service-name}-api.yaml'
     schema: '{entity-name}.schema.json'
     ux: '{screen-name}.ux.yaml'
-upgrade_history: []
+upgrade_history:
+- from_version: 0.1.0
+  to_version: 0.6.5
+  upgraded_at: '2025-12-06T09:30:28.069648Z'
+upgraded_at: '2025-12-06T09:30:28.089615Z'

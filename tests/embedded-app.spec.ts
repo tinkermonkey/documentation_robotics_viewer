@@ -29,7 +29,7 @@ test.setTimeout(30000);
 
 // SKIP by default - only run with: npm run test:embedded
 // The embedded config (playwright.embedded.config.ts) starts the required Python reference server
-test.describe.skip('Embedded App - Reference Server Integration', () => {
+test.describe('Embedded App - Reference Server Integration', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the embedded app
     await page.goto('/');

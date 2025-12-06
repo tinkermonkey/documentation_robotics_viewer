@@ -64,7 +64,7 @@ manager = ConnectionManager()
 # Data paths
 MOCK_DATA_DIR = Path(__file__).parent / "mock_data"  # Fallback for changesets/annotations
 DR_SCHEMAS_DIR = Path(__file__).parent.parent / ".dr" / "schemas"
-DR_MODEL_DIR = Path(__file__).parent.parent / "example-implementation" / "model"
+DR_MODEL_DIR = Path(__file__).parent.parent / "documentation-robotics" / "model"
 DR_MODEL_MANIFEST = DR_MODEL_DIR / "manifest.yaml"
 
 # ============================================================================
@@ -74,7 +74,7 @@ DR_MODEL_MANIFEST = DR_MODEL_DIR / "manifest.yaml"
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    return {"status": "ok", "version": "1.0.0"}
+    return {"status": "ok", "version": "0.1.0"}
 
 @app.get("/api/spec")
 async def get_spec():
@@ -520,7 +520,7 @@ async def websocket_endpoint(websocket: WebSocket):
     # Send initial connection message
     await websocket.send_json({
         "type": "connected",
-        "version": "1.0.0",
+        "version": "0.1.0",
         "timestamp": "2025-11-27T00:00:00Z"
     })
 

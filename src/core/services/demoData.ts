@@ -10,7 +10,7 @@ import { MetaModel, LayerType } from '../types';
  */
 export function createDemoModel(): MetaModel {
   return {
-    version: 'demo-1.0.0',
+    version: 'demo-0.1.0',
     name: 'Sample Documentation Model',
     description: 'Demonstration model showing the multi-layer architecture',
     layers: {

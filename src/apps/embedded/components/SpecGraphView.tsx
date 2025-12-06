@@ -76,7 +76,7 @@ const SpecGraphView: React.FC<SpecGraphViewProps> = ({ specData }) => {
         // Use DataLoader.parseSchemaDefinitions() to convert schemas to MetaModel
         const metamodel = dataLoader.parseSchemaDefinitions(
           cleanedSchemas,
-          specData.version || '1.0.0'
+          specData.version || '0.1.0'
         );
 
         console.log('[SpecGraphView] Conversion complete:', {

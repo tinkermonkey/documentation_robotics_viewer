@@ -116,7 +116,7 @@ test.describe('Embedded App - Dual View URL Routing', () => {
 
     test('should have connection status indicator', async ({ page }) => {
       // Connection status should exist (may show connecting, connected, or disconnected)
-      await expect(page.locator('.connection-status')).toBeVisible();
+      await expect(page.locator('div.connection-status')).toBeVisible();
     });
   });
 

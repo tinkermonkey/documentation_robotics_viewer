@@ -63,7 +63,7 @@ def setup_mock_data():
 
     # Create a sample model.json
     # Try to use existing example-implementation data if available
-    example_impl_dir = PROJECT_ROOT / "example-implementation"
+    example_impl_dir = PROJECT_ROOT / "documentation-robotics"
 
     if example_impl_dir.exists():
         print(f"  Found example-implementation directory, will reference it for model data")
@@ -72,7 +72,7 @@ def setup_mock_data():
             "version": "0.1.0",
             "metadata": {
                 "type": "yaml-instance",
-                "description": "Mock model for testing - see example-implementation/"
+                "description": "Mock model for testing - see documentation-robotics/"
             },
             "layers": {
                 "business": {

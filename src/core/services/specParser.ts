@@ -27,7 +27,7 @@ export class SpecParser {
       relationships,
       data: {
         format: (spec.format as string) || 'json',
-        version: (spec.version as string) || '1.0.0',
+        version: (spec.version as string) || '0.1.0',
         metadata: (spec.metadata as Record<string, unknown>) || {}
       }
     };

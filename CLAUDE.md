@@ -235,7 +235,7 @@ schema: documentation-robotics-v1
 project:
   name: my-project
   description: Project description
-  version: 1.0.0
+  version: 0.1.0
 layers:
   business:
     order: 2
@@ -367,7 +367,7 @@ Same as local, but ZIP downloaded via backend proxy
 - Validates projection rules parsing
 
 **Example Model**:
-The `example-implementation/` directory contains a real 182-element model across 11 layers for testing.
+The `documentation-robotics/` directory contains a real model across 12 layers for testing (and for understanding this codebase).
 
 ### For More Details
 
@@ -1166,9 +1166,9 @@ Monitor these logs during development to ensure performance targets are met.
 
 ---
 
-**Last Updated**: 2025-12-03
+**Last Updated**: 2025-12-06
 **React Flow Version**: 12.0.0
-**Project Version**: 1.0.0
+**Project Version**: 0.1.0
 **YAML Support**: v0.1.0
 **Motivation Layer**: Phase 6 Complete
 **Business Layer**: Complete

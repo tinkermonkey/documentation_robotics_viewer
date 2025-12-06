@@ -4,7 +4,7 @@ c4-view:
   description: Hierarchical view (Context, Container, Component)
   realizes:
   - application.component.graph-view
-  version: 1.0.0
+  version: 0.1.0
   experience: web
   channel: visual
   states:
@@ -16,7 +16,7 @@ motivation-view:
   id: ux.view.motivation-view
   name: Motivation View
   description: Goal and requirement visualization
-  version: 1.0.0
+  version: 0.1.0
   experience: web
   channel: visual
   states:
@@ -28,7 +28,7 @@ spec-view:
   id: ux.view.spec-view
   name: Spec View
   description: Specification and data model visualization
-  version: 1.0.0
+  version: 0.1.0
   experience: web
   channel: visual
   states:

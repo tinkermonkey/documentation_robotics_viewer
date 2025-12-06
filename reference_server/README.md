@@ -86,7 +86,7 @@ The server will start on `http://localhost:8765`
 
 **Server → Client messages:**
 ```json
-{"type": "connected", "version": "1.0.0"}
+{"type": "connected", "version": "0.1.0"}
 {"type": "subscribed", "topics": [...]}
 {"type": "pong"}
 {"type": "model.updated", "timestamp": "..."}

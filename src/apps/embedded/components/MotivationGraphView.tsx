@@ -50,6 +50,7 @@ import {
   exportGraphDataAsJSON,
   exportTraceabilityReport,
 } from '../services/motivationExportService';
+import { SpaceMouseHandler } from '../../../core/components/SpaceMouseHandler';
 
 export interface MotivationGraphViewProps {
   model: MetaModel;
@@ -716,6 +717,7 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
           >
             <Background color="#e5e7eb" gap={16} />
             <Controls />
+            <SpaceMouseHandler />
             <MiniMap
               nodeColor={(node) => {
                 // Color minimap nodes based on their stroke color

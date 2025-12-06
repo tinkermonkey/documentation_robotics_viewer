@@ -1,6 +1,6 @@
 {
   "name": "documentation_robotics_viewer",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Basic graph presentation of the documentation robotics meta-model",
   "main": "index.js",
   "type": "module",
@@ -33,7 +33,8 @@
     "metrics:report": "playwright test tests/metrics/metrics-report.spec.ts --config=playwright.refinement.config.ts",
     "metrics:regression-check": "playwright test tests/metrics/regression-check.spec.ts --config=playwright.refinement.config.ts",
     "metrics:update-baselines": "UPDATE_BASELINES=true playwright test tests/metrics/regression-check.spec.ts --config=playwright.refinement.config.ts -g 'should update baselines'",
-    "metrics:all": "playwright test tests/metrics/*.spec.ts --config=playwright.refinement.config.ts"
+    "metrics:all": "playwright test tests/metrics/*.spec.ts --config=playwright.refinement.config.ts",
+    "report:refinement": "playwright show-report playwright-report/refinement --host 0.0.0.0"
   },
   "keywords": [],
   "author": "",

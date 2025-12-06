@@ -46,6 +46,7 @@ import {
   exportC4AsSVG,
   exportC4GraphAsJSON,
 } from '../services/c4ExportService';
+import { SpaceMouseHandler } from '../../../core/components/SpaceMouseHandler';
 
 // Debug logging helper - only logs in development mode
 const DEBUG = import.meta.env.DEV;
@@ -773,6 +774,7 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
             >
               <Background color="#e5e7eb" gap={16} />
               <Controls />
+              <SpaceMouseHandler />
               <MiniMap
                 nodeColor={(node) => {
                   return (node.data.stroke as string) || '#6b7280';

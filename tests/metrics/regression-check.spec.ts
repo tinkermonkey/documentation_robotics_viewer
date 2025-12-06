@@ -230,7 +230,7 @@ test.describe('Regression Check', () => {
 
     // Build new baselines if needed
     const newBaselines: BaselineData = {
-      version: '1.0.0',
+      version: '0.1.0',
       createdAt: new Date().toISOString(),
       baselines: {},
     };
@@ -373,7 +373,6 @@ test.describe('Regression Check', () => {
   });
 
   test('should update baselines when requested', () => {
-    test.skip(!hasLocalStorage, 'localStorage not available in Node.js context');
     // Only run if UPDATE_BASELINES env var is set
     if (process.env.UPDATE_BASELINES !== 'true') {
       test.skip();
@@ -386,7 +385,7 @@ test.describe('Regression Check', () => {
     const layoutTypes: LayoutType[] = ['hierarchical', 'force-directed'];
 
     const newBaselines: BaselineData = {
-      version: '1.0.0',
+      version: '0.1.0',
       createdAt: new Date().toISOString(),
       baselines: {},
     };

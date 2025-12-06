@@ -214,7 +214,7 @@ export function exportC4GraphAsJSON(
     debugLog('[C4ExportService] Exporting graph data as JSON:', filename);
 
     const exportData = {
-      version: '1.0.0',
+      version: '0.1.0',
       exportTimestamp: new Date().toISOString(),
       format: 'C4',
       metadata: {
@@ -396,7 +396,7 @@ export function exportC4DependencyReport(
 
     // Build final report
     const report: C4DependencyReport = {
-      modelVersion: '1.0.0',
+      modelVersion: '0.1.0',
       exportTimestamp: new Date().toISOString(),
       viewLevel,
       containers: containerDependencies,

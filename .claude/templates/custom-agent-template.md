@@ -219,7 +219,7 @@ target_score: 90                       # Target compliance score (0-100)
 1. **Load Model**
 
    ```bash
-   dr list all --format json
+   dr list --output json
    ```
 
 2. **Identify Sensitive Elements**
@@ -595,7 +595,7 @@ if violation.type == "missing_monitoring" and violation.severity <= "medium":
 # Medium risk fixes (ask first)
 if violation.type == "weak_authentication" and confirm_fix():
     # Upgrade authentication
-    dr update {element_id} --property securedBy=security.policy.oauth2
+    dr update {element_id} --set securedBy=security.policy.oauth2
 ```
 
 ## Error Handling
@@ -659,7 +659,7 @@ Recommendation: Option 1 (OAuth2 for payment services)
 
 ```
 Audit preparation workflow:
-1. /dr-validate --fix (clean up model)
+1. /dr-validate --strict --validate-links (clean up model)
 2. Launch acme-compliance-validator (check compliance)
 3. Apply remediation fixes
 4. Launch dr-documenter --template=audit (generate docs)

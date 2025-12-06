@@ -24,6 +24,7 @@ import { nodeTypes } from '../nodes';
 import { edgeTypes } from '../edges';
 import { elementStore } from '../stores/elementStore';
 import { AppNode, AppEdge } from '../types/reactflow';
+import { SpaceMouseHandler } from './SpaceMouseHandler';
 
 interface GraphViewerProps {
   model: MetaModel;
@@ -161,6 +162,7 @@ const GraphViewer: React.FC<GraphViewerProps> = ({ model }) => {
       >
         <Background color="#E6E6E6" gap={16} />
         <Controls />
+        <SpaceMouseHandler />
         <MiniMap
           nodeColor={(node) => {
             // Color nodes based on their fill color

@@ -99,11 +99,11 @@ function createMockReactFlowEdges(
  * Load example-implementation model using DataLoader
  */
 async function loadExampleImplementation(dataLoader: DataLoader): Promise<MetaModel> {
-  const examplePath = path.join(process.cwd(), 'example-implementation', 'model');
+  const examplePath = path.join(process.cwd(), 'documentation-robotics', 'model');
 
   if (!fs.existsSync(examplePath)) {
     throw new Error(
-      'example-implementation directory not found. Please ensure it exists in the project root.'
+      'documentation-robotics directory not found. Please ensure it exists in the project root.'
     );
   }
 

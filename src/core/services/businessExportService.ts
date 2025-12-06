@@ -201,7 +201,7 @@ export function exportGraphDataAsJSON(
     console.log('[BusinessExportService] Exporting graph data as JSON:', filename);
 
     const graphData = {
-      version: '1.0.0',
+      version: '0.1.0',
       generated: new Date().toISOString(),
       metadata: {
         nodeCount: nodes.length,

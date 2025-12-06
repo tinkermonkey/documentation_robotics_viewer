@@ -18,7 +18,7 @@ const __dirname = dirname(__filename);
  * Load the example-implementation YAML model for testing
  */
 export async function loadExampleImplementation(): Promise<MetaModel> {
-  const exampleImplPath = path.join(__dirname, '..', '..', 'example-implementation', 'model');
+  const exampleImplPath = path.join(__dirname, '..', '..', 'documentation-robotics', 'model');
   const manifestPath = path.join(exampleImplPath, 'manifest.yaml');
 
   // Read manifest

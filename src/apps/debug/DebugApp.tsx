@@ -72,7 +72,7 @@ function DebugApp() {
       );
 
       // Use parseYAMLInstances directly with the file data
-      const model = await dataLoader.parseYAMLInstances(files, '1.0.0');
+      const model = await dataLoader.parseYAMLInstances(files, '0.1.0');
       setModel(model);
 
       console.log('Example implementation loaded successfully:', model);

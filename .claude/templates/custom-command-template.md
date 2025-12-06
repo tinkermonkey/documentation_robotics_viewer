@@ -368,7 +368,7 @@ Validation: ✓ Passed (strict mode)
 Documentation: docs/services/$SERVICE_NAME.md
 
 Next steps:
-1. Review generated model: dr list application service --filter $SERVICE_NAME
+1. Review generated model: dr list application service
 2. Customize API operations if needed
 3. Add business goal references: /dr-model Link $SERVICE_NAME to goals
 4. Generate diagrams: dr export --format plantuml
@@ -388,7 +388,7 @@ Next steps:
 ```
 1. /dr-add-microservice my-service --criticality=high
 2. /dr-model Add goal references for my-service
-3. /dr-validate --fix
+3. /dr-validate --strict --validate-links
 4. dr export --format archimate
 ```
 

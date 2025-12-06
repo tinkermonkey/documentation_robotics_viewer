@@ -5,7 +5,7 @@ A React-based graph visualization tool for the documentation robotics meta-model
 ## Features
 
 - **Multi-Layer Architecture Visualization**: View architectural models across 10 layers (Motivation, Business, Security, Application, Technology, API, DataModel, UX, Navigation, APM)
-- **Interactive Graph**: Powered by React Flow, allowing pan, zoom, and interaction with 182+ elements
+- **Interactive Graph**: Powered by React Flow, allowing pan, zoom
 - **Automatic Layout**: Uses dagre.js to automatically arrange nodes in a hierarchical layout
 - **YAML & JSON Support**: Load models from YAML instance files or JSON schemas
 - **Reference Server**: Python FastAPI server for serving example models
@@ -29,7 +29,7 @@ A React-based graph visualization tool for the documentation robotics meta-model
 │   ├── main.py                    # Server implementation
 │   ├── requirements.txt           # Python dependencies
 │   └── .venv/                     # Python virtual environment
-├── example-implementation/        # Sample 182-element model
+├── example-implementation/        # Sample (self-reflective) model
 │   ├── manifest.yaml              # Model orchestration file
 │   └── model/                     # YAML layer files
 ├── tests/                         # Playwright test suites
@@ -119,7 +119,7 @@ The production build will be output to the `dist/` directory.
 The Python FastAPI reference server provides:
 
 - `GET /health` - Health check endpoint
-- `GET /model` - Returns the full documentation model (182 elements across 10 layers)
+- `GET /model` - Returns the full example model
 - `GET /changesets` - Returns model changesets
 - `WebSocket /ws` - Real-time updates (with graceful REST fallback)
 
@@ -179,10 +179,8 @@ See existing layer files in `example-implementation/model/` for examples.
 
 ## Project Status
 
-**Version**: 1.0.0
+**Version**: 0.1.0
 **Test Coverage**: 91% (20/22 tests passing)
-**Elements**: 182 across 10 layers
-**Edges**: 31 relationships
 
 ## Quick Reference
 
