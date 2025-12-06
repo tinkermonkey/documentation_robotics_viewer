@@ -4,7 +4,7 @@
  * Renders ontology diagram with multiple layout algorithms, filtering, and interactive controls
  */
 
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import '@xyflow/react/dist/style.css';
 import '../../../core/components/GraphViewer.css';
 import './MotivationGraphView.css';
@@ -60,8 +60,8 @@ export interface MotivationGraphViewProps {
  * Renders motivation layer as interactive ontology diagram
  */
 const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [isLayouting, setIsLayouting] = useState(false);
@@ -179,7 +179,7 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
         // Transform with animation delay for smooth transitions
         await new Promise((resolve) => setTimeout(resolve, 50));
 
-        const transformResult = transformer.transform(fullGraphRef.current);
+        const transformResult = transformer.transform(fullGraphRef.current!);
 
         console.log('[MotivationGraphView] Transformation complete:', {
           nodes: transformResult.nodes.length,

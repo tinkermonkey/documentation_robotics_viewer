@@ -154,7 +154,7 @@ export class SemanticZoomController {
   /**
    * Determine whether to show node icons based on zoom
    */
-  shouldShowNodeIcons(zoomLevel: number): boolean {
+  shouldShowNodeIcons(_zoomLevel: number): boolean {
     // Icons are helpful at all zoom levels for quick identification
     return true;
   }

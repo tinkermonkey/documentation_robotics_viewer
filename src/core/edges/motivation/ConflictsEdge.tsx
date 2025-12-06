@@ -85,9 +85,11 @@ export const ConflictsEdge = memo(({
 
   // Calculate elbow path
   const pathPoints = calculateElbowPath(
-    { x: adjustedSourceX, y: adjustedSourceY, position: sourcePosition || 'right' },
-    { x: adjustedTargetX, y: adjustedTargetY, position: targetPosition || 'left' },
-    obstacles
+    { x: adjustedSourceX, y: adjustedSourceY },
+    { x: adjustedTargetX, y: adjustedTargetY },
+    obstacles,
+    (sourcePosition || 'right').toString(),
+    (targetPosition || 'left').toString()
   );
 
   // Convert to SVG path

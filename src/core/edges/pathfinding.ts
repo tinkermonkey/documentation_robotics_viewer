@@ -121,8 +121,6 @@ function findSimplePath(
   sourcePos: string,
   targetPos: string
 ): Point[] | null {
-  const isHorizontal = sourcePos === 'left' || sourcePos === 'right';
-  
   // Try different split percentages (0.1 to 0.9)
   // We prioritize 0.5 (center), then fan out
   const ratios = [0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.9];
@@ -263,13 +261,10 @@ export function pointsToSVGPath(points: Point[]): string {
   if (points.length < 2) return '';
 
   // Use rounded corners
-  const radius = 8;
   let path = `M ${points[0].x},${points[0].y}`;
 
   for (let i = 1; i < points.length - 1; i++) {
-    const pPrev = points[i - 1];
     const pCurr = points[i];
-    const pNext = points[i + 1];
 
     // Calculate vectors
     // We can just draw lines for now, or implement rounding manually
