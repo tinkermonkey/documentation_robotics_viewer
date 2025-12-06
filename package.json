@@ -1,6 +1,7 @@
 {
   "name": "documentation_robotics_viewer",
   "version": "0.1.0",
+  "private": true,
   "description": "Basic graph presentation of the documentation robotics meta-model",
   "main": "index.js",
   "type": "module",

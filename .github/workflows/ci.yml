@@ -39,7 +39,7 @@ jobs:
       run: |
         VERSION=${GITHUB_REF#refs/tags/v}
         echo "VERSION=$VERSION" >> $GITHUB_ENV
-        npm version --no-git-tag-version $VERSION
+        npm version --no-git-tag-version --allow-same-version $VERSION
         echo "Set package version to $VERSION"
 
     - name: Build
