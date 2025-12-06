@@ -9,7 +9,7 @@
  */
 
 import './C4InspectorPanel.css';
-import { C4Graph, C4Node, C4Type, ContainerType } from '../types/c4Graph';
+import { C4Graph,  C4Type, ContainerType } from '../types/c4Graph';
 
 export interface C4InspectorPanelProps {
   /** Selected node ID */

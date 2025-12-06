@@ -23,7 +23,6 @@ import {
 } from '../metrics/graphReadabilityService';
 import {
   compareImages,
-  compareWithSSIM,
   SimilarityResult,
   SSIMResult,
   ComparisonOptions,

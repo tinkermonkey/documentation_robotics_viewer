@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { NodeProps } from '@xyflow/react';
+import { NodeProps , Node} from '@xyflow/react';
 
 interface SchemaElementNodeData {
   label: string;
@@ -12,9 +12,10 @@ interface SchemaElementNodeData {
   description?: string;
   fill?: string;
   stroke?: string;
+  [key: string]: unknown;
 }
 
-const SchemaElementNode: React.FC<NodeProps<SchemaElementNodeData>> = ({
+const SchemaElementNode: React.FC<NodeProps<Node<SchemaElementNodeData>>> = ({
   data,
   selected,
 }) => {

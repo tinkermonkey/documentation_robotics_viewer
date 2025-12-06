@@ -111,60 +111,60 @@ export const MotivationInspectorPanel: React.FC<MotivationInspectorPanelProps> =
             </span>
           </div>
 
-          {element.properties?.description && (
+          {!!!!element.properties?.description && (
             <div className="metadata-row">
               <span className="metadata-label">Description:</span>
-              <span className="metadata-value">{element.properties.description}</span>
+              <span className="metadata-value">{String(element.properties.description)}</span>
             </div>
           )}
 
           {/* Type-specific properties */}
-          {element.type === MotivationElementType.Goal && element.properties?.priority && (
+          {element.type === MotivationElementType.Goal && !!!!element.properties?.priority && (
             <div className="metadata-row">
               <span className="metadata-label">Priority:</span>
-              <span className="metadata-value priority-badge" data-priority={element.properties.priority}>
-                {element.properties.priority}
+              <span className="metadata-value priority-badge" data-priority={String(element.properties.priority)}>
+                {String(element.properties.priority)}
               </span>
             </div>
           )}
 
-          {element.type === MotivationElementType.Requirement && element.properties?.priority && (
+          {element.type === MotivationElementType.Requirement && !!!!element.properties?.priority && (
             <div className="metadata-row">
               <span className="metadata-label">Priority:</span>
-              <span className="metadata-value priority-badge" data-priority={element.properties.priority}>
-                {element.properties.priority}
+              <span className="metadata-value priority-badge" data-priority={String(element.properties.priority)}>
+                {String(element.properties.priority)}
               </span>
             </div>
           )}
 
-          {element.type === MotivationElementType.Requirement && element.properties?.status && (
+          {element.type === MotivationElementType.Requirement && !!!!element.properties?.status && (
             <div className="metadata-row">
               <span className="metadata-label">Status:</span>
-              <span className="metadata-value status-badge" data-status={element.properties.status}>
-                {element.properties.status}
+              <span className="metadata-value status-badge" data-status={String(element.properties.status)}>
+                {String(element.properties.status)}
               </span>
             </div>
           )}
 
-          {element.type === MotivationElementType.Constraint && element.properties?.negotiability && (
+          {element.type === MotivationElementType.Constraint && !!!!element.properties?.negotiability && (
             <div className="metadata-row">
               <span className="metadata-label">Negotiability:</span>
-              <span className="metadata-value">{element.properties.negotiability}</span>
+              <span className="metadata-value">{String(element.properties.negotiability)}</span>
             </div>
           )}
 
-          {element.type === MotivationElementType.Driver && element.properties?.category && (
+          {element.type === MotivationElementType.Driver && !!!!element.properties?.category && (
             <div className="metadata-row">
               <span className="metadata-label">Category:</span>
-              <span className="metadata-value">{element.properties.category}</span>
+              <span className="metadata-value">{String(element.properties.category)}</span>
             </div>
           )}
 
-          {element.type === MotivationElementType.Outcome && element.properties?.achievementStatus && (
+          {element.type === MotivationElementType.Outcome && !!element.properties?.achievementStatus && (
             <div className="metadata-row">
               <span className="metadata-label">Achievement Status:</span>
-              <span className="metadata-value status-badge" data-status={element.properties.achievementStatus}>
-                {element.properties.achievementStatus}
+              <span className="metadata-value status-badge" data-status={String(element.properties.achievementStatus)}>
+                {String(element.properties.achievementStatus)}
               </span>
             </div>
           )}
@@ -321,7 +321,7 @@ export const MotivationInspectorPanel: React.FC<MotivationInspectorPanelProps> =
 /**
  * Render cross-layer navigation links
  */
-function renderCrossLayerLinks(node: MotivationGraphNode, graph: MotivationGraph): JSX.Element | null {
+function renderCrossLayerLinks(node: MotivationGraphNode, graph: MotivationGraph): React.ReactElement | null {
   const element = node.element;
   const crossLayerLinks: Array<{ label: string; targetId: string; targetName: string }> = [];
 

@@ -100,7 +100,7 @@ export function calculateElbowPath(
   targetPosition: string
 ): Point[] {
   // 1. Try simple 3-segment paths (Z-shape) with varying midpoints
-  const simplePath = findSimplePath(start, end, obstacles, sourcePosition, targetPosition);
+  const simplePath = findSimplePath(start, end, obstacles, sourcePosition);
   if (simplePath) return simplePath;
 
   // 2. Try 5-segment paths (Channel routing)
@@ -108,7 +108,7 @@ export function calculateElbowPath(
   if (channelPath) return channelPath;
 
   // 3. Fallback to a direct elbow path (even if it collides)
-  return getSimpleElbow(start, end, sourcePosition, targetPosition, 0.5);
+  return getSimpleElbow(start, end, sourcePosition, 0.5);
 }
 
 /**
@@ -118,15 +118,14 @@ function findSimplePath(
   start: Point,
   end: Point,
   obstacles: Rectangle[],
-  sourcePos: string,
-  targetPos: string
+  sourcePos: string
 ): Point[] | null {
   // Try different split percentages (0.1 to 0.9)
   // We prioritize 0.5 (center), then fan out
   const ratios = [0.5, 0.3, 0.7, 0.2, 0.8, 0.1, 0.9];
 
   for (const ratio of ratios) {
-    const path = getSimpleElbow(start, end, sourcePos, targetPos, ratio);
+    const path = getSimpleElbow(start, end, sourcePos, ratio);
     if (!hasCollision(path, obstacles)) {
       return path;
     }
@@ -213,7 +212,6 @@ function getSimpleElbow(
   start: Point,
   end: Point,
   sourcePos: string,
-  targetPos: string,
   ratio: number
 ): Point[] {
   const isHorizontal = sourcePos === 'left' || sourcePos === 'right';

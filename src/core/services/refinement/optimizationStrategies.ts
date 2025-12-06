@@ -16,7 +16,6 @@ import {
   isDiscreteRange,
   isBooleanRange,
   getNumericRangeValues,
-  calculateParameterSpaceSize,
 } from './layoutParameters';
 
 /**

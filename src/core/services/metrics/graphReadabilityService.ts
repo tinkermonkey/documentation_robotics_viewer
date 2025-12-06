@@ -9,6 +9,7 @@
 import { Node, Edge } from '@xyflow/react';
 
 // Import greadability.js ES module wrapper
+// @ts-ignore
 import { greadability as greadabilityFn } from '../../../vendor/greadability.esm.js';
 
 /**

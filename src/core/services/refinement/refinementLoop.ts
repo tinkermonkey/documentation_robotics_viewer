@@ -25,13 +25,10 @@ import {
 import {
   OptimizationStrategy,
   OptimizationConfig,
-  EvaluationResult,
   StrategyType,
   createStrategy,
-  DEFAULT_OPTIMIZATION_CONFIG,
 } from './optimizationStrategies';
 import {
-  CombinedQualityScore,
   calculateReadabilityOnlyScore,
 } from '../comparison/qualityScoreService';
 import { LayoutType } from '../metrics/graphReadabilityService';
@@ -507,7 +504,7 @@ export class RefinementLoop {
     completionReason: RefinementResult['completionReason'],
     bestParameters: LayoutParameters,
     startScore: number,
-    startTime: number,
+    _startTime: number,
     totalDuration: number,
     errors: string[]
   ): RefinementResult {

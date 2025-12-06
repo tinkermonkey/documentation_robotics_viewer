@@ -719,7 +719,7 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
             <MiniMap
               nodeColor={(node) => {
                 // Color minimap nodes based on their stroke color
-                return node.data.stroke || '#6b7280';
+                return (node.data.stroke as string) || '#6b7280';
               }}
               maskColor="rgba(0, 0, 0, 0.1)"
               style={{

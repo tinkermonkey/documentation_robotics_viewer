@@ -155,6 +155,7 @@ export class ChangesetGraphBuilder {
         _changesetTimestamp: change.timestamp
       },
       visual: {
+        position: { x: 0, y: 0 },
         size: { width: 200, height: 100 },
         style: {
           borderColor: colors.border,
@@ -170,7 +171,7 @@ export class ChangesetGraphBuilder {
   /**
    * Extract relationships from elements using heuristic-based detection
    */
-  private extractRelationships(elements: ModelElement[], layerName: string): Relationship[] {
+  private extractRelationships(elements: ModelElement[], _layerName: string): Relationship[] {
     const relationships: Relationship[] = [];
 
     for (const element of elements) {
@@ -198,12 +199,10 @@ export class ChangesetGraphBuilder {
         relationships.push({
           id: uuidv4(),
           type: 'reference',
-          source: {
-            elementId: element.id,
-            field: propertyPath
-          },
-          target: {
-            elementId: refId
+          sourceId: element.id,
+          targetId: refId,
+          properties: {
+            sourceField: propertyPath
           }
         });
       }

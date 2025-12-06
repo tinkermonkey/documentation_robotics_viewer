@@ -19,7 +19,7 @@ const indexRoute = createRoute({
 const modelRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/model',
-  component: () => <Navigate to="/model/graph" />,
+  component: () => <Navigate to="/model/$view" params={{ view: 'graph' }} />,
 });
 
 const modelViewRoute = createRoute({
@@ -31,7 +31,7 @@ const modelViewRoute = createRoute({
 const specRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/spec',
-  component: () => <Navigate to="/spec/graph" />,
+  component: () => <Navigate to="/spec/$view" params={{ view: 'graph' }} />,
 });
 
 const specViewRoute = createRoute({
@@ -55,7 +55,7 @@ const architectureRoute = createRoute({
 const changesetsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/changesets',
-  component: () => <Navigate to="/changesets/graph" />,
+  component: () => <Navigate to="/changesets/$view" params={{ view: 'graph' }} />,
 });
 
 const changesetsViewRoute = createRoute({

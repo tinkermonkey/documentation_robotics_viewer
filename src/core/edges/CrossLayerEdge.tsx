@@ -6,7 +6,7 @@
  */
 
 import { memo } from 'react';
-import { EdgeProps, BaseEdge, getSmoothStepPath, EdgeLabelRenderer } from '@xyflow/react';
+import { EdgeProps, BaseEdge, getSmoothStepPath, EdgeLabelRenderer, Edge } from '@xyflow/react';
 import { CrossLayerEdgeData } from '../types/reactflow';
 import { getLayerColor } from '../utils/layerColors';
 
@@ -30,7 +30,7 @@ export const CrossLayerEdge = memo(({
   style = {},
   markerEnd,
   data,
-}: EdgeProps<CrossLayerEdgeData>) => {
+}: EdgeProps<Edge<CrossLayerEdgeData>>) => {
   // Calculate smooth step path
   const [edgePath, labelX, labelY] = getSmoothStepPath({
     sourceX,

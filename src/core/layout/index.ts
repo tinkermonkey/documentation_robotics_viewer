@@ -4,4 +4,4 @@
  */
 
 export { VerticalLayerLayout } from './verticalLayerLayout';
-export { AttachmentPointManager } from './attachmentPoints';
+

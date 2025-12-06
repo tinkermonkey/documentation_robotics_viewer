@@ -5,6 +5,8 @@ import {
   DataModelComponentType,
   HTTPMethod
 } from './shapes';
+
+export type { HTTPMethod };
 import { NodeDetailLevel } from '../../core/layout/semanticZoomController';
 import { CoverageStatus } from '../../apps/embedded/services/coverageAnalyzer';
 
@@ -342,8 +344,8 @@ export type AppEdge =
   | Edge<MotivationEdgeData, 'constrains'>
   | Edge<MotivationEdgeData, 'realizes'>
   | Edge<MotivationEdgeData, 'refines'>
-  | Edge<undefined, 'default'>
-  | Edge<undefined, 'smoothstep'>;
+  | Edge<Record<string, unknown>, 'default'>
+  | Edge<Record<string, unknown>, 'smoothstep'>;
 
 /**
  * Result from node transformation

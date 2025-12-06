@@ -12,16 +12,7 @@ const ChangesetViewer: React.FC = () => {
   const { selectedChangeset, loading, error } = useChangesetStore();
 
   // Group changes by operation
-  const changesByOperation = useMemo(() => {
-    if (!selectedChangeset) return { add: [], update: [], delete: [] };
 
-    const changes = selectedChangeset.changes.changes;
-    return {
-      add: changes.filter(c => c.operation === 'add'),
-      update: changes.filter(c => c.operation === 'update'),
-      delete: changes.filter(c => c.operation === 'delete')
-    };
-  }, [selectedChangeset]);
 
   // Group changes by layer
   const changesByLayer = useMemo(() => {

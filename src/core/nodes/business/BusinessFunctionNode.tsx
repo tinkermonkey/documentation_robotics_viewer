@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Handle, Position, NodeProps } from '@xyflow/react';
+import { Handle, Position, NodeProps , Node} from '@xyflow/react';
 import { BusinessFunctionNodeData } from '../../types/reactflow';
 
 /**
@@ -12,7 +12,7 @@ export const BUSINESS_FUNCTION_NODE_HEIGHT = 100;
  * Business Function Node Component for React Flow
  * Displays business functions with metadata (owner, criticality, lifecycle)
  */
-export const BusinessFunctionNode = memo(({ data }: NodeProps<BusinessFunctionNodeData>) => {
+export const BusinessFunctionNode = memo(({ data }: NodeProps<Node<BusinessFunctionNodeData>>) => {
   return (
     <div
       role="article"

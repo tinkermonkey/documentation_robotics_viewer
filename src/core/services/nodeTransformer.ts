@@ -388,7 +388,7 @@ export class NodeTransformer {
             // DataModelNode: width 280, height dynamic
             const modelHeaderHeight = 36;
             const fieldHeight = 24;
-            const fields = element.properties.fields || [];
+            const fields = (element.properties.fields as any[]) || [];
             const modelHeight = fields.length > 0
               ? modelHeaderHeight + fields.length * fieldHeight
               : modelHeaderHeight + 60; // "No properties" message

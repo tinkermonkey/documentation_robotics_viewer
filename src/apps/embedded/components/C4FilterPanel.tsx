@@ -61,7 +61,7 @@ const CONTAINER_TYPE_LABELS: Record<ContainerType, string> = {
 /**
  * Container type icons
  */
-const CONTAINER_TYPE_ICONS: Record<ContainerType, JSX.Element> = {
+const CONTAINER_TYPE_ICONS: Record<ContainerType, React.ReactElement> = {
   [ContainerType.WebApp]: (
     <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
       <path d="M0 3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3zm2-1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H2z" />

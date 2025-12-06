@@ -237,7 +237,7 @@ export class SemanticZoomController {
    */
   getZoomLevelDescription(zoomLevel: number): string {
     const category = this.getZoomCategory(zoomLevel);
-    const detailLevel = this.getNodeDetailLevel(zoomLevel);
+
 
     switch (category) {
       case 'overview':

@@ -232,7 +232,7 @@ export class JSONSchemaParser {
   private parseRef(
     refValue: string,
     propName: string,
-    fromDefinition: string,
+    _fromDefinition: string,
     cardinality: '1' | 'many' = '1'
   ): SchemaReference | null {
     // Internal reference: #/definitions/BusinessActor
@@ -534,7 +534,7 @@ export class JSONSchemaParser {
     for (const [key, value] of Object.entries(definition)) {
       if (key === 'properties' && value && typeof value === 'object') {
         // Check property-level references
-        for (const [propKey, propValue] of Object.entries(value)) {
+        for (const [_propKey, propValue] of Object.entries(value)) {
           if (propValue && typeof propValue === 'object') {
             const nestedRefs = this.extractReferencesFromDefinition(
               propValue,

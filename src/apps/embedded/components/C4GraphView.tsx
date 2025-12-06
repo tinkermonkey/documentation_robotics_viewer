@@ -32,7 +32,7 @@ import { C4BreadcrumbNav } from './C4BreadcrumbNav';
 import { C4FilterPanel, C4FilterCounts } from './C4FilterPanel';
 import { C4ControlPanel, C4LayoutAlgorithm } from './C4ControlPanel';
 import { C4InspectorPanel } from './C4InspectorPanel';
-import { useViewPreferenceStore, C4PathTracingState } from '../stores/viewPreferenceStore';
+import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import {
   C4Graph,
   C4ViewLevel,
@@ -301,10 +301,12 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
           desktopApp: { visible: 0, total: 0 },
           api: { visible: 0, total: 0 },
           database: { visible: 0, total: 0 },
-          fileSystem: { visible: 0, total: 0 },
-          queue: { visible: 0, total: 0 },
-          externalSystem: { visible: 0, total: 0 },
-          other: { visible: 0, total: 0 },
+          messageQueue: { visible: 0, total: 0 },
+          cache: { visible: 0, total: 0 },
+          fileStorage: { visible: 0, total: 0 },
+          service: { visible: 0, total: 0 },
+          function: { visible: 0, total: 0 },
+          custom: { visible: 0, total: 0 },
         },
         technologies: {},
       };
@@ -773,7 +775,7 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
               <Controls />
               <MiniMap
                 nodeColor={(node) => {
-                  return node.data.stroke || '#6b7280';
+                  return (node.data.stroke as string) || '#6b7280';
                 }}
                 maskColor="rgba(0, 0, 0, 0.1)"
                 style={{

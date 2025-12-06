@@ -272,7 +272,7 @@ export class MotivationGraphTransformer {
     if (this.layoutCache.size >= 10) {
       // Remove oldest entry
       const firstKey = this.layoutCache.keys().next().value;
-      this.layoutCache.delete(firstKey);
+      if (firstKey) this.layoutCache.delete(firstKey);
     }
     this.layoutCache.set(cacheKey, layoutResult);
 
@@ -587,7 +587,7 @@ export class MotivationGraphTransformer {
       case MotivationElementType.ValueStream:
         return {
           ...baseData,
-          stageCount: element.properties?.stageCount || element.properties?.stages?.length || 0,
+          stageCount: element.properties?.stageCount || (element.properties?.stages as any[])?.length || 0,
         };
 
       case MotivationElementType.Assessment:

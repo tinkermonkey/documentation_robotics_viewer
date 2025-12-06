@@ -8,7 +8,6 @@
 import {
   HumanFeedback,
   FeedbackAspect,
-  FeedbackDirection,
   FeedbackIntensity,
   LayoutParameters,
   ForceDirectedParameters,

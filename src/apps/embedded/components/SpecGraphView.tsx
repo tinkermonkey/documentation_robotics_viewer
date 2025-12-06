@@ -83,7 +83,7 @@ const SpecGraphView: React.FC<SpecGraphViewProps> = ({ specData }) => {
           layerCount: Object.keys(metamodel.layers).length,
           layerNames: Object.keys(metamodel.layers),
           elementCount: metamodel.metadata?.elementCount || 0,
-          relationshipCount: metamodel.relationships?.length || 0
+          relationshipCount: Object.values(metamodel.layers).reduce((acc, layer) => acc + (layer.relationships?.length || 0), 0)
         });
 
         setModel(metamodel);

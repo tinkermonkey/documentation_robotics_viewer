@@ -8,7 +8,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import {
   RefinementFeedbackPanelProps,
-  HumanFeedback,
   FeedbackAspect,
   FeedbackDirection,
   FeedbackIntensity,

@@ -1,12 +1,12 @@
 import { memo } from 'react';
-import { Handle, Position, NodeProps } from '@xyflow/react';
+import { Handle, Position, NodeProps , Node} from '@xyflow/react';
 import { PermissionNodeData } from '../types/reactflow';
 
 /**
  * Permission Node Component for React Flow
  * Displays security permissions with scope indicators
  */
-export const PermissionNode = memo(({ data }: NodeProps<PermissionNodeData>) => {
+export const PermissionNode = memo(({ data }: NodeProps<Node<PermissionNodeData>>) => {
   const getScopeColor = (scope: string): string => {
     const colorMap: Record<string, string> = {
       'global': '#7c3aed',    // Purple

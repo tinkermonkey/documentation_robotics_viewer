@@ -108,7 +108,7 @@ const LAYOUT_OPTIONS: Array<{
 const VIEW_LEVEL_OPTIONS: Array<{
   value: C4ViewLevel;
   label: string;
-  icon: JSX.Element;
+  icon: React.ReactElement;
   description: string;
 }> = [
   {
@@ -149,7 +149,7 @@ const VIEW_LEVEL_OPTIONS: Array<{
 /**
  * Scenario preset icons
  */
-const getPresetIcon = (iconName: string): JSX.Element => {
+const getPresetIcon = (iconName: string): React.ReactElement => {
   switch (iconName) {
     case 'database':
       return (

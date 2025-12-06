@@ -1,5 +1,5 @@
 import JSZip from 'jszip';
-import { Release, ReleaseAsset } from '../types';
+import { Release } from '../types';
 
 /**
  * Service for interacting with GitHub releases via backend server

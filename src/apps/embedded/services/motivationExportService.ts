@@ -6,7 +6,7 @@
  * - Traceability report generation
  */
 
-import { Node, Edge, getNodesBounds, getViewportForBounds } from '@xyflow/react';
+import { Node, Edge,   } from '@xyflow/react';
 import { toPng, toSvg } from 'html-to-image';
 import { MotivationGraph, MotivationElementType } from '../types/motivationGraph';
 

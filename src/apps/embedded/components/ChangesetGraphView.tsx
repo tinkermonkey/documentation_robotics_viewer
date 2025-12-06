@@ -38,7 +38,7 @@ const ChangesetGraphView: React.FC<ChangesetGraphViewProps> = ({ changeset }) =>
 
         console.log('[ChangesetGraphView] Converting changeset to MetaModel...');
 
-        if (!changeset.changes || changeset.changes.length === 0) {
+        if (!changeset.changes || !changeset.changes.changes || changeset.changes.changes.length === 0) {
           throw new Error('No changes in changeset');
         }
 

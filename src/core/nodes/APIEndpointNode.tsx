@@ -1,12 +1,12 @@
 import { memo } from 'react';
-import { Handle, Position, NodeProps } from '@xyflow/react';
+import { Handle, Position, NodeProps , Node} from '@xyflow/react';
 import { APIEndpointNodeData, HTTPMethod } from '../types/reactflow';
 
 /**
  * API Endpoint Node Component for React Flow
  * Displays REST API endpoints with HTTP method badges
  */
-export const APIEndpointNode = memo(({ data }: NodeProps<APIEndpointNodeData>) => {
+export const APIEndpointNode = memo(({ data }: NodeProps<Node<APIEndpointNodeData>>) => {
   const getMethodColor = (method: HTTPMethod): string => {
     const colorMap: Record<HTTPMethod, string> = {
       'GET': '#4CAF50',      // Green
