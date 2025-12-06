@@ -1,0 +1,57 @@
+websocket-connect:
+  id: api.operation.websocket-connect
+  name: WebSocket Connection
+  type: operation
+  properties:
+    method: GET
+    path: /ws
+    protocol: websocket
+    description: Main WebSocket endpoint for live updates
+    messages:
+      server-to-client:
+        - connected
+        - subscribed
+        - pong
+        - model.updated
+        - changeset.created
+        - annotation.added
+      client-to-server:
+        - subscribe
+        - ping
+
+websocket-event-connected:
+  id: api.event.connected
+  name: Connected Event
+  type: operation
+  properties:
+    direction: server-to-client
+    channel: /ws
+    description: Sent immediately after connection established
+    payload:
+      type: connected
+      version: string
+      timestamp: string
+
+websocket-event-subscribe:
+  id: api.event.subscribe
+  name: Subscribe Command
+  type: operation
+  properties:
+    direction: client-to-server
+    channel: /ws
+    description: Client request to subscribe to topics
+    payload:
+      type: subscribe
+      topics: array<string>
+
+websocket-event-model-updated:
+  id: api.event.model-updated
+  name: Model Updated Event
+  type: operation
+  properties:
+    direction: server-to-client
+    channel: /ws
+    description: Broadcast when the underlying model changes
+    payload:
+      type: model.updated
+      timestamp: string

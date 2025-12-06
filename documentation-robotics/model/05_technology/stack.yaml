@@ -41,3 +41,15 @@ dagre:
   description: Directed graph layout
   properties:
     package: "dagre"
+fastapi:
+  id: technology.framework.fastapi
+  name: FastAPI
+  description: Modern, fast (high-performance), web framework for building APIs with Python
+  properties:
+    language: python
+uvicorn:
+  id: technology.library.uvicorn
+  name: Uvicorn
+  description: ASGI web server implementation for Python
+  properties:
+    language: python

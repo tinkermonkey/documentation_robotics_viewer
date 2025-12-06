@@ -12,3 +12,13 @@ node-transformer:
   id: application.service.node-transformer
   name: Node Transformer
   description: Converts model elements to React Flow nodes
+
+reference-server:
+  id: application.service.reference-server
+  name: Reference Server
+  description: Python FastAPI server for serving model data and live updates
+  uses:
+    - technology.framework.fastapi
+    - technology.library.uvicorn
+  realizes:
+    - api.interface.reference-api
