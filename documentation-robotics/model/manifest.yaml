@@ -1,9 +1,9 @@
 version: 0.1.0
 schema: documentation-robotics-v1
-cli_version: 0.6.5
-spec_version: 0.3.0
+cli_version: 0.7.1
+spec_version: 0.4.0
 created: '2025-12-05T22:17:22.732040Z'
-updated: '2025-12-06T00:51:08.059386Z'
+updated: '2025-12-10T12:52:11.680191Z'
 project:
   name: documentation_robotics_viewer
   description: Architecture model for documentation_robotics_viewer
@@ -37,7 +37,9 @@ layers:
     path: documentation-robotics/model/04_application/
     schema: .dr/schemas/04-application-layer.schema.json
     enabled: true
-    elements: {}
+    elements:
+      service: 28
+      component: 18
   technology:
     order: 5
     name: Technology
@@ -46,13 +48,15 @@ layers:
     enabled: true
     elements:
       systemsoftware: 7
+      system-software: 5
   api:
     order: 6
     name: API
     path: documentation-robotics/model/06_api/
     schema: .dr/schemas/06-api-layer.schema.json
     enabled: true
-    elements: {}
+    elements:
+      operation: 5
   data_model:
     order: 7
     name: Data Model
@@ -61,6 +65,7 @@ layers:
     enabled: true
     elements:
       entity: 4
+      object-schema: 12
   datastore:
     order: 8
     name: Data Store
@@ -81,7 +86,8 @@ layers:
     path: documentation-robotics/model/10_navigation/
     schema: .dr/schemas/10-navigation-layer.schema.json
     enabled: true
-    elements: {}
+    elements:
+      route: 2
   apm:
     order: 11
     name: APM/Observability
@@ -104,11 +110,11 @@ cross_references:
   total: 0
   by_type: {}
 statistics:
-  total_elements: 27
+  total_elements: 97
   total_relationships: 0
   completeness: 0.0
-  last_validation: '2025-12-06T00:51:08.059378Z'
-  validation_status: passed
+  last_validation: '2025-12-10T12:52:11.680181Z'
+  validation_status: failed
 conventions:
   id_format: '{layer}.{type}.{kebab-case-name}'
   file_naming:
@@ -119,4 +125,10 @@ upgrade_history:
 - from_version: 0.1.0
   to_version: 0.6.5
   upgraded_at: '2025-12-06T09:30:28.069648Z'
-upgraded_at: '2025-12-06T09:30:28.089615Z'
+- from_version: 0.1.0
+  to_version: 0.7.1
+  upgraded_at: '2025-12-09T19:44:02.719125Z'
+- from_version: 0.1.0
+  to_version: 0.7.1
+  upgraded_at: '2025-12-10T11:21:27.016401Z'
+upgraded_at: '2025-12-10T11:21:27.023377Z'

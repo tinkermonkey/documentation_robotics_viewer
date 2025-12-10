@@ -3,53 +3,57 @@ react:
   name: React
   description: UI Library
   properties:
-    version: "19.2.0"
+    version: 19.2.0
+  usedBy: application.component.inspector-panel
 react-flow:
   id: technology.library.react-flow
   name: React Flow
   description: Graph Visualization Library
   properties:
-    package: "@xyflow/react"
-    version: "12.9.3"
+    package: '@xyflow/react'
+    version: 12.9.3
 vite:
   id: technology.tool.vite
   name: Vite
   description: Build Tool
   properties:
-    version: "7.2.4"
+    version: 7.2.4
 typescript:
   id: technology.language.typescript
   name: TypeScript
   description: Programming Language
   properties:
-    version: "5.9.3"
+    version: 5.9.3
 playwright:
   id: technology.tool.playwright
   name: Playwright
   description: E2E Testing
   properties:
-    version: "1.57.0"
+    version: 1.57.0
 d3-force:
   id: technology.library.d3-force
   name: D3 Force
   description: Force-directed graph layout
   properties:
-    package: "d3-force"
+    package: d3-force
 dagre:
   id: technology.library.dagre
   name: Dagre
   description: Directed graph layout
   properties:
-    package: "dagre"
+    package: dagre
 fastapi:
   id: technology.framework.fastapi
   name: FastAPI
-  description: Modern, fast (high-performance), web framework for building APIs with Python
+  description: Modern, fast (high-performance), web framework for building APIs with
+    Python
   properties:
     language: python
+  usedBy: application.service.reference-server
 uvicorn:
   id: technology.library.uvicorn
   name: Uvicorn
   description: ASGI web server implementation for Python
   properties:
     language: python
+  usedBy: application.service.reference-server

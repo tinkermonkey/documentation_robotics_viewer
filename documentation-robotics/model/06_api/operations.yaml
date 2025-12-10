@@ -1,0 +1,195 @@
+get-github-releases:
+  id: api.operation.get-github-releases
+  name: Get GitHub Releases
+  type: operation
+  openapi: 3.0.3
+  properties:
+    method: GET
+    path: /api/github/releases
+    description: Fetches all spec releases from GitHub repository
+    openapi: 3.0.3
+    info:
+      title: GitHub Releases API
+      version: 1.0.0
+    paths:
+      /api/github/releases:
+        get:
+          summary: Fetches all spec releases from GitHub repository
+          operationId: getGitHubReleases
+          responses:
+            '200':
+              description: List of releases
+              content:
+                application/json:
+                  schema:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        tag_name:
+                          type: string
+                        name:
+                          type: string
+                        assets:
+                          type: array
+            '500':
+              description: Failed to fetch releases
+  serves: application.service.git-hub-service
+  security: security.policy.local-access
+  applicationServiceRef: application.service.git-hub-service
+  description: Fetches all spec releases from GitHub repository
+get-latest-github-release:
+  id: api.operation.get-latest-github-release
+  name: Get Latest GitHub Release
+  type: operation
+  openapi: 3.0.3
+  properties:
+    method: GET
+    path: /api/github/releases/latest
+    description: Fetches the latest spec release from GitHub repository
+    openapi: 3.0.3
+    info:
+      title: GitHub Latest Release API
+      version: 1.0.0
+    paths:
+      /api/github/releases/latest:
+        get:
+          summary: Fetches the latest spec release
+          operationId: getLatestGitHubRelease
+          responses:
+            '200':
+              description: Latest release object
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      tag_name:
+                        type: string
+                      name:
+                        type: string
+                      assets:
+                        type: array
+            '404':
+              description: No spec releases found
+            '500':
+              description: Failed to fetch release
+  serves: application.service.git-hub-service
+  security: security.policy.local-access
+  applicationServiceRef: application.service.git-hub-service
+  description: Fetches the latest spec release from GitHub
+get-github-release-by-tag:
+  id: api.operation.get-github-release-by-tag
+  name: Get GitHub Release by Tag
+  type: operation
+  openapi: 3.0.3
+  properties:
+    method: GET
+    path: /api/github/releases/{tag}
+    description: Fetches a specific release by tag name from GitHub
+    openapi: 3.0.3
+    info:
+      title: GitHub Release by Tag API
+      version: 1.0.0
+    paths:
+      /api/github/releases/{tag}:
+        get:
+          summary: Fetches a specific release by tag
+          operationId: getGitHubReleaseByTag
+          parameters:
+          - name: tag
+            in: path
+            required: true
+            schema:
+              type: string
+          responses:
+            '200':
+              description: Release object with details and assets
+              content:
+                application/json:
+                  schema:
+                    type: object
+            '404':
+              description: Release not found
+            '500':
+              description: Failed to fetch release
+  serves: application.service.git-hub-service
+  security: security.policy.local-access
+  applicationServiceRef: application.service.git-hub-service
+  description: Fetches a specific release by tag name from GitHub
+download-github-schema-zip:
+  id: api.operation.download-github-schema-zip
+  name: Download GitHub Schema ZIP
+  type: operation
+  openapi: 3.0.3
+  properties:
+    method: GET
+    path: /api/github/download/{tag}
+    description: Proxies download of schema ZIP from GitHub release asset to avoid
+      CORS
+    openapi: 3.0.3
+    info:
+      title: GitHub Schema Download API
+      version: 1.0.0
+    paths:
+      /api/github/download/{tag}:
+        get:
+          summary: Downloads schema ZIP from GitHub release
+          operationId: downloadGitHubSchemaZip
+          parameters:
+          - name: tag
+            in: path
+            required: true
+            schema:
+              type: string
+          responses:
+            '200':
+              description: ZIP file binary stream
+              content:
+                application/zip:
+                  schema:
+                    type: string
+                    format: binary
+            '404':
+              description: Release or asset not found
+            '500':
+              description: Failed to download
+  serves: application.service.git-hub-service
+  security: security.policy.local-access
+  applicationServiceRef: application.service.git-hub-service
+  description: Proxies download of schema ZIP from GitHub to avoid CORS
+get-example-implementation:
+  id: api.operation.get-example-implementation
+  name: Get Example Implementation
+  type: operation
+  openapi: 3.0.3
+  properties:
+    method: GET
+    path: /api/example-implementation
+    description: Serves the example-implementation model YAML files as JSON
+    openapi: 3.0.3
+    info:
+      title: Example Implementation API
+      version: 1.0.0
+    paths:
+      /api/example-implementation:
+        get:
+          summary: Serves example implementation model
+          operationId: getExampleImplementation
+          responses:
+            '200':
+              description: Dictionary of file paths to YAML content
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    additionalProperties:
+                      type: string
+            '404':
+              description: Example implementation not found
+            '500':
+              description: Failed to serve example implementation
+  serves: application.service.git-hub-service
+  security: security.policy.local-access
+  applicationServiceRef: application.service.git-hub-service
+  description: Serves the example-implementation model YAML files as JSON

@@ -2,6 +2,7 @@ websocket-connect:
   id: api.operation.websocket-connect
   name: WebSocket Connection
   type: operation
+  openapi: 3.0.3
   properties:
     method: GET
     path: /ws
@@ -9,20 +10,25 @@ websocket-connect:
     description: Main WebSocket endpoint for live updates
     messages:
       server-to-client:
-        - connected
-        - subscribed
-        - pong
-        - model.updated
-        - changeset.created
-        - annotation.added
+      - connected
+      - subscribed
+      - pong
+      - model.updated
+      - changeset.created
+      - annotation.added
       client-to-server:
-        - subscribe
-        - ping
-
+      - subscribe
+      - ping
+  serves: application.service.reference-server
+  security: security.policy.local-access
+  applicationServiceRef: application.service.reference-server
+  description: Main WebSocket endpoint for live model updates
+  partOf: api.interface.reference-api
 websocket-event-connected:
   id: api.event.connected
   name: Connected Event
   type: operation
+  openapi: 3.0.3
   properties:
     direction: server-to-client
     channel: /ws
@@ -31,11 +37,15 @@ websocket-event-connected:
       type: connected
       version: string
       timestamp: string
-
+  serves: application.service.reference-server
+  security: security.policy.local-access
+  applicationServiceRef: application.service.reference-server
+  description: Sent immediately after WebSocket connection established
 websocket-event-subscribe:
   id: api.event.subscribe
   name: Subscribe Command
   type: operation
+  openapi: 3.0.3
   properties:
     direction: client-to-server
     channel: /ws
@@ -43,11 +53,15 @@ websocket-event-subscribe:
     payload:
       type: subscribe
       topics: array<string>
-
+  serves: application.service.reference-server
+  security: security.policy.local-access
+  applicationServiceRef: application.service.reference-server
+  description: Client request to subscribe to update topics
 websocket-event-model-updated:
   id: api.event.model-updated
   name: Model Updated Event
   type: operation
+  openapi: 3.0.3
   properties:
     direction: server-to-client
     channel: /ws
@@ -55,3 +69,7 @@ websocket-event-model-updated:
     payload:
       type: model.updated
       timestamp: string
+  serves: application.service.reference-server
+  security: security.policy.local-access
+  applicationServiceRef: application.service.reference-server
+  description: Broadcast when the underlying model changes

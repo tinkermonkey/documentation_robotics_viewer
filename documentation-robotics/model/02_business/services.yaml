@@ -1,0 +1,52 @@
+architecture-visualization:
+  id: business.service.architecture-visualization
+  name: Architecture Visualization
+  description: Visualize architecture models as interactive graphs across multiple
+    layers
+  supports_capabilities:
+  - business.capability.visualization
+  realizedBy: application.service.business-node-transformer
+  supports-goals: motivation.goal.visualize-architecture
+  fulfills-requirements: motivation.requirement.interactive-graphs
+model-data-management:
+  id: business.service.model-data-management
+  name: Model Data Management
+  description: Load, parse, and manage architecture model data from various sources
+  supports_capabilities:
+  - business.capability.documentation
+  realizedBy: application.service.spec-parser-service
+  supports-goals: motivation.goal.visualize-architecture
+documentation-export:
+  id: business.service.documentation-export
+  name: Documentation Export
+  description: Export architecture visualizations and reports in multiple formats
+  supports_capabilities:
+  - business.capability.export
+  realizedBy: application.service.c4-export-service
+  supports-goals: motivation.goal.visualize-architecture
+  fulfills-requirements: motivation.requirement.embedded-mode
+external-model-integration:
+  id: business.service.external-model-integration
+  name: External Model Integration
+  description: Integrate with external sources like GitHub to fetch and serve models
+  supports_capabilities:
+  - business.capability.documentation
+  realizedBy: application.service.git-hub-service
+  supports-goals: motivation.goal.visualize-architecture
+architecture-analysis:
+  id: business.service.architecture-analysis
+  name: Architecture Analysis
+  description: Analyze architecture for impact, traceability, and dependencies
+  supports_capabilities:
+  - business.capability.documentation
+  realizedBy: application.service.impact-analysis-service
+  supports-goals: motivation.goal.visualize-architecture
+quality-assurance:
+  id: business.service.quality-assurance
+  name: Quality Assurance
+  description: Ensure visualization quality through testing, metrics, and comparison
+  supports_capabilities:
+  - business.capability.visualization
+  realizedBy: application.service.feedback-to-parameter-service
+  supports-goals: motivation.goal.visualize-architecture
+  fulfills-requirements: motivation.requirement.interactive-graphs

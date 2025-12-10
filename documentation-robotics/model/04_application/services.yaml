@@ -2,23 +2,247 @@ graph-builder:
   id: application.service.graph-builder
   name: Graph Builder
   description: Transforms model data into graph nodes and edges
+  realizes: business.service.architecture-visualization
+  supports-goals: motivation.goal.visualize-architecture
 layout-engine:
   id: application.service.layout-engine
   name: Layout Engine
   description: Calculates node positions
-  uses:
-    - technology.library.dagre
+  uses: technology.systemsoftware.dagre
+  realizes: business.service.architecture-visualization
+  supports-goals: motivation.goal.visualize-architecture
 node-transformer:
   id: application.service.node-transformer
   name: Node Transformer
   description: Converts model elements to React Flow nodes
-
+  realizes: business.service.architecture-visualization
+  supports-goals: motivation.goal.visualize-architecture
 reference-server:
   id: application.service.reference-server
   name: Reference Server
   description: Python FastAPI server for serving model data and live updates
   uses:
-    - technology.framework.fastapi
-    - technology.library.uvicorn
+  - technology.framework.fastapi
+  - technology.library.uvicorn
   realizes:
-    - api.interface.reference-api
+  - api.interface.reference-api
+  servedBy: api.event.model-updated
+  supports-goals: motivation.goal.visualize-architecture
+Business Export Service:
+  name: Business Export Service
+  description: Exports business layer graphs as PNG, SVG, and JSON with traceability
+    reports and impact analysis
+  capabilities: image-export,json-export,traceability-reports,impact-analysis
+  export-formats: png,svg,json
+  source-file: src/core/services/businessExportService.ts
+  id: application.service.business-export-service
+  uses: technology.system-software.html-to-image
+  realizes: business.service.documentation-export
+  supports-goals: motivation.goal.visualize-architecture
+Motivation Export Service:
+  name: Motivation Export Service
+  description: Exports motivation layer graphs (goals, drivers, stakeholders) as PNG,
+    SVG, JSON with traceability reports
+  export-formats: png,svg,json
+  source-file: src/apps/embedded/services/motivationExportService.ts
+  id: application.service.motivation-export-service
+  uses: technology.system-software.html-to-image
+  realizes: business.service.documentation-export
+  supports-goals: motivation.goal.visualize-architecture
+C4 Export Service:
+  name: C4 Export Service
+  description: Exports C4 architecture diagrams as PNG, SVG with scenario presets
+    and focus context
+  export-formats: png,svg
+  source-file: src/apps/embedded/services/c4ExportService.ts
+  id: application.service.c4-export-service
+  uses: technology.system-software.html-to-image
+  realizes: business.service.documentation-export
+  supports-goals: motivation.goal.visualize-architecture
+Business Graph Builder:
+  name: Business Graph Builder
+  description: Constructs business layer graph from parsed elements with cross-layer
+    links and indices
+  source-file: src/core/services/businessGraphBuilder.ts
+  id: application.service.business-graph-builder
+  realizes: business.service.architecture-visualization
+  supports-goals: motivation.goal.visualize-architecture
+Business Layer Parser:
+  name: Business Layer Parser
+  description: Parses business layer YAML files into business elements (processes,
+    functions, services, capabilities)
+  source-file: src/core/services/businessLayerParser.ts
+  id: application.service.business-layer-parser
+  realizes: business.service.model-data-management
+  supports-goals: motivation.goal.visualize-architecture
+YAML Parser:
+  name: YAML Parser
+  description: Parses YAML instance models with manifest orchestration and dot-notation
+    ID resolution
+  source-file: src/core/services/yamlParser.ts
+  supported-version: 0.1.0
+  id: application.service.yaml-parser
+  uses: technology.system-software.js-yaml
+  realizes: business.service.model-data-management
+  supports-goals: motivation.goal.visualize-architecture
+JSON Schema Parser:
+  name: JSON Schema Parser
+  description: Parses JSON Schema definitions into model elements with auto-generated
+    UUIDs
+  source-file: src/core/services/jsonSchemaParser.ts
+  id: application.service.json-schema-parser
+  realizes: business.service.model-data-management
+  supports-goals: motivation.goal.visualize-architecture
+C4 Parser:
+  name: C4 Parser
+  description: Parses C4 architecture model elements (containers, components, external
+    actors)
+  source-file: src/core/services/c4/c4Parser.ts
+  id: application.service.c4-parser
+  realizes: business.service.model-data-management
+  supports-goals: motivation.goal.visualize-architecture
+Cross-Layer Reference Resolver:
+  name: Cross-Layer Reference Resolver
+  description: Resolves references between layers and validates traceability links
+  source-file: src/core/services/crossLayerReferenceResolver.ts
+  id: application.service.cross-layer-reference-resolver
+  realizes: business.service.model-data-management
+  supports-goals: motivation.goal.visualize-architecture
+Data Loader:
+  name: Data Loader
+  description: Orchestrates model loading from JSON Schema, YAML instances, or demo
+    data
+  source-file: src/core/services/dataLoader.ts
+  id: application.service.data-loader
+  uses: technology.system-software.jszip
+  realizes: business.service.model-data-management
+  supports-goals: motivation.goal.visualize-architecture
+GitHub Service:
+  name: GitHub Service
+  description: Fetches models and releases from GitHub repositories via backend proxy
+  source-file: src/core/services/githubService.ts
+  id: application.service.git-hub-service
+  realizes: business.service.external-model-integration
+  servedBy: api.operation.get-example-implementation
+  supports-goals: motivation.goal.visualize-architecture
+Impact Analysis Service:
+  name: Impact Analysis Service
+  description: Analyzes downstream impact of changes across process dependencies
+  source-file: src/core/services/impactAnalysisService.ts
+  id: application.service.impact-analysis-service
+  realizes: business.service.architecture-analysis
+  supports-goals: motivation.goal.visualize-architecture
+Motivation Graph Builder:
+  name: Motivation Graph Builder
+  description: Constructs motivation layer graph from goals, drivers, stakeholders,
+    and requirements
+  source-file: src/core/services/motivationGraphBuilder.ts
+  id: application.service.motivation-graph-builder
+  realizes: business.service.architecture-visualization
+  supports-goals: motivation.goal.visualize-architecture
+Motivation Graph Transformer:
+  name: Motivation Graph Transformer
+  description: Transforms motivation graph into ReactFlow nodes and edges with filtering
+  source-file: src/core/services/motivationGraphTransformer.ts
+  id: application.service.motivation-graph-transformer
+  realizes: business.service.architecture-visualization
+  supports-goals: motivation.goal.visualize-architecture
+C4 View Transformer:
+  name: C4 View Transformer
+  description: Transforms C4 model into hierarchical ReactFlow visualization with
+    focus context
+  source-file: src/core/services/c4/c4ViewTransformer.ts
+  id: application.service.c4-view-transformer
+  realizes: business.service.architecture-visualization
+  supports-goals: motivation.goal.visualize-architecture
+Reference Diagram Service:
+  name: Reference Diagram Service
+  description: Generates reference diagrams for testing and visual regression analysis
+  source-file: src/core/services/reference/referenceDiagramService.ts
+  id: application.service.reference-diagram-service
+  realizes: business.service.quality-assurance
+  supports-goals: motivation.goal.visualize-architecture
+Graph Readability Service:
+  name: Graph Readability Service
+  description: Calculates graph readability metrics (overlap, spacing, aspect ratio)
+  source-file: src/core/services/metrics/graphReadabilityService.ts
+  id: application.service.graph-readability-service
+  realizes: business.service.quality-assurance
+  supports-goals: motivation.goal.visualize-architecture
+Image Similarity Service:
+  name: Image Similarity Service
+  description: Compares screenshots using SSIM and perceptual hash algorithms
+  source-file: src/core/services/comparison/imageSimilarityService.ts
+  id: application.service.image-similarity-service
+  realizes: business.service.quality-assurance
+  supports-goals: motivation.goal.visualize-architecture
+Screenshot Service:
+  name: Screenshot Service
+  description: Captures screenshots of graph visualizations for comparison
+  source-file: src/core/services/comparison/screenshotService.ts
+  id: application.service.screenshot-service
+  realizes: business.service.quality-assurance
+  supports-goals: motivation.goal.visualize-architecture
+Quality Score Service:
+  name: Quality Score Service
+  description: Calculates composite quality scores for graph layouts
+  source-file: src/core/services/comparison/qualityScoreService.ts
+  id: application.service.quality-score-service
+  realizes: business.service.quality-assurance
+  supports-goals: motivation.goal.visualize-architecture
+Heatmap Service:
+  name: Heatmap Service
+  description: Generates visual heatmaps highlighting differences between screenshots
+  source-file: src/core/services/comparison/heatmapService.ts
+  id: application.service.heatmap-service
+  realizes: business.service.quality-assurance
+  supports-goals: motivation.goal.visualize-architecture
+Metrics History Service:
+  name: Metrics History Service
+  description: Tracks and stores historical metrics for regression analysis
+  source-file: src/core/services/metrics/metricsHistoryService.ts
+  id: application.service.metrics-history-service
+  realizes: business.service.quality-assurance
+  supports-goals: motivation.goal.visualize-architecture
+Feedback to Parameter Service:
+  name: Feedback to Parameter Service
+  description: Converts user feedback into layout parameter adjustments for refinement
+  source-file: src/apps/embedded/services/refinement/feedbackToParameterService.ts
+  id: application.service.feedback-to-parameter-service
+  realizes: business.service.quality-assurance
+  supports-goals: motivation.goal.visualize-architecture
+Local File Loader:
+  name: Local File Loader
+  description: Loads models from local file uploads (ZIP archives)
+  source-file: src/core/services/localFileLoader.ts
+  id: application.service.local-file-loader
+  realizes: business.service.model-data-management
+  supports-goals: motivation.goal.visualize-architecture
+Business Node Transformer:
+  name: Business Node Transformer
+  description: Transforms business layer elements into custom React Flow nodes
+  source-file: src/core/services/businessNodeTransformer.ts
+  id: application.service.business-node-transformer
+  realizes: business.service.architecture-visualization
+  supports-goals: motivation.goal.visualize-architecture
+Cross Layer Reference Extractor:
+  name: Cross Layer Reference Extractor
+  description: Extracts cross-layer references from parsed model elements
+  source-file: src/core/services/crossLayerReferenceExtractor.ts
+  id: application.service.cross-layer-reference-extractor
+  realizes: business.service.model-data-management
+  supports-goals: motivation.goal.visualize-architecture
+Demo Data Service:
+  name: Demo Data Service
+  description: Provides sample architecture data for testing and demos
+  source-file: src/core/services/demoData.ts
+  id: application.service.demo-data-service
+  realizes: business.service.model-data-management
+  supports-goals: motivation.goal.visualize-architecture
+Spec Parser Service:
+  name: Spec Parser Service
+  description: Parses specification documents and extracts metadata
+  source-file: src/core/services/specParser.ts
+  id: application.service.spec-parser-service
+  realizes: business.service.model-data-management
+  supports-goals: motivation.goal.visualize-architecture

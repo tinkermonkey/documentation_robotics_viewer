@@ -2,12 +2,14 @@ reference-api:
   id: api.interface.reference-api
   name: Reference Server API
   type: interface
+  openapi: 3.0.3
   description: REST and WebSocket API for the Reference Server
   composedOf:
-    - api.operation.health-check
-    - api.operation.get-spec
-    - api.operation.get-model
-    - api.operation.list-changesets
-    - api.operation.get-changeset
-    - api.operation.get-annotations
-    - api.operation.websocket-connect
+  - api.operation.health-check
+  - api.operation.get-spec
+  - api.operation.get-model
+  - api.operation.list-changesets
+  - api.operation.get-changeset
+  - api.operation.get-annotations
+  - api.operation.websocket-connect
+  realizedBy: application.service.reference-server

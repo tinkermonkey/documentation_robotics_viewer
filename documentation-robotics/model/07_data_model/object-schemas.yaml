@@ -1,0 +1,100 @@
+BusinessGraph:
+  $schema: "http://json-schema.org/draft-07/schema#"
+  name: BusinessGraph
+  description: Business layer graph structure with nodes, edges, indices, and cross-layer links
+  source-file: src/core/types/businessLayer.ts
+  key-properties: nodes,edges,indices,crossLayerLinks,hierarchy,metrics
+  id: data_model.object-schema.business-graph
+  type: object
+
+BusinessNode:
+  $schema: "http://json-schema.org/draft-07/schema#"
+  name: BusinessNode
+  description: Business layer node representing process, function, service, or capability
+  source-file: src/core/types/businessLayer.ts
+  node-types: function,process,service,capability
+  id: data_model.object-schema.business-node
+  type: object
+
+BusinessEdge:
+  $schema: "http://json-schema.org/draft-07/schema#"
+  name: BusinessEdge
+  description: Business layer edge representing relationships (realizes, supports, flows_to, etc.)
+  source-file: src/core/types/businessLayer.ts
+  edge-types: realizes,supports,flows_to,depends_on,serves,composes,aggregates
+  id: data_model.object-schema.business-edge
+  type: object
+
+CrossLayerLink:
+  $schema: "http://json-schema.org/draft-07/schema#"
+  name: CrossLayerLink
+  description: Link between elements in different architectural layers for traceability
+  source-file: src/core/types/businessLayer.ts
+  id: data_model.object-schema.cross-layer-link
+  type: object
+
+MotivationGraph:
+  $schema: "http://json-schema.org/draft-07/schema#"
+  name: MotivationGraph
+  description: Motivation layer graph with goals, drivers, stakeholders, and requirements
+  source-file: src/core/types/motivationGraph.ts
+  id: data_model.object-schema.motivation-graph
+  type: object
+
+C4Graph:
+  $schema: "http://json-schema.org/draft-07/schema#"
+  name: C4Graph
+  description: C4 architecture graph with containers, components, and hierarchical relationships
+  source-file: src/core/types/c4Graph.ts
+  id: data_model.object-schema.c4graph
+  type: object
+
+GraphMetrics:
+  $schema: "http://json-schema.org/draft-07/schema#"
+  name: GraphMetrics
+  description: Graph analytics metrics including connectivity, hierarchy depth, and circular dependencies
+  source-file: src/core/types/businessLayer.ts
+  id: data_model.object-schema.graph-metrics
+  type: object
+
+HierarchyInfo:
+  $schema: "http://json-schema.org/draft-07/schema#"
+  name: HierarchyInfo
+  description: Hierarchical structure information for business processes and capabilities
+  source-file: src/core/types/businessLayer.ts
+  id: data_model.object-schema.hierarchy-info
+  type: object
+
+ReactFlowNode:
+  $schema: "http://json-schema.org/draft-07/schema#"
+  name: ReactFlowNode
+  description: ReactFlow node structure with position, data, and styling
+  source-file: src/core/types/reactflow.ts
+  library: '@xyflow/react'
+  id: data_model.object-schema.react-flow-node
+  type: object
+
+ReactFlowEdge:
+  $schema: "http://json-schema.org/draft-07/schema#"
+  name: ReactFlowEdge
+  description: ReactFlow edge structure with source, target, and styling
+  source-file: src/core/types/reactflow.ts
+  library: '@xyflow/react'
+  id: data_model.object-schema.react-flow-edge
+  type: object
+
+FilterState:
+  $schema: "http://json-schema.org/draft-07/schema#"
+  name: FilterState
+  description: Filter state for graph visualization (layers, types, properties)
+  source-file: src/apps/embedded/stores/viewPreferenceStore.ts
+  id: data_model.object-schema.filter-state
+  type: object
+
+LayoutOptions:
+  $schema: "http://json-schema.org/draft-07/schema#"
+  name: LayoutOptions
+  description: Layout algorithm configuration (algorithm, spacing, direction)
+  source-file: src/core/layout/business/types.ts
+  id: data_model.object-schema.layout-options
+  type: object

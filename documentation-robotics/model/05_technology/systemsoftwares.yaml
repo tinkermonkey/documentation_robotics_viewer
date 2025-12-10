@@ -3,12 +3,14 @@ React:
   description: UI Library
   version: 19.2.0
   id: technology.systemsoftware.react
+  usedBy: application.component.viewer-app
 React Flow:
   name: React Flow
   description: Graph Visualization Library
   package: '@xyflow/react'
   version: 12.9.3
   id: technology.systemsoftware.react-flow
+  usedBy: application.component.graph-view
 Vite:
   name: Vite
   description: Build Tool
@@ -34,3 +36,4 @@ Dagre:
   description: Directed graph layout
   package: dagre
   id: technology.systemsoftware.dagre
+  usedBy: application.service.layout-engine
