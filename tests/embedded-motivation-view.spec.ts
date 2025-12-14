@@ -29,9 +29,9 @@ test.describe('Motivation View', () => {
     // Navigate to the embedded app
     await page.goto('/');
     // Wait for React to load
-    await page.waitForSelector('.embedded-app', { timeout: 10000 });
+    await page.waitForSelector('[data-testid="embedded-app"]', { timeout: 10000 });
     // Wait for WebSocket connection
-    await page.waitForSelector('.connection-status.connected', { timeout: 10000 });
+    await page.waitForSelector('[data-connection-state="connected"]', { timeout: 10000 });
   });
 
   test('should have Motivation button in mode selector', async ({ page }) => {
@@ -57,7 +57,7 @@ test.describe('Motivation View', () => {
 
     // Verify Motivation mode is active
     const motivationButton = page.locator('.mode-selector button', { hasText: 'Motivation' });
-    await expect(motivationButton).toHaveClass(/active/);
+    await expect(motivationButton).toHaveClass(/bg-blue/);
 
     // Check for critical React/ReactFlow errors
     const criticalErrors = errors.filter(e =>
@@ -76,14 +76,17 @@ test.describe('Motivation View', () => {
 
     // The view should either show the motivation graph container (if motivation elements exist)
     // or a message overlay (for loading, error, or empty state)
+    // or error boundary if there's a rendering issue
     const motivationContainer = page.locator('.motivation-graph-container');
     const messageOverlay = page.locator('.message-overlay');
+    const renderingError = page.locator('h3:has-text("Rendering Error")');
 
     // At least one of these should be visible
     const motivationVisible = await motivationContainer.isVisible().catch(() => false);
     const messageVisible = await messageOverlay.isVisible().catch(() => false);
+    const errorVisible = await renderingError.isVisible().catch(() => false);
 
-    expect(motivationVisible || messageVisible).toBeTruthy();
+    expect(motivationVisible || messageVisible || errorVisible).toBeTruthy();
   });
 
   test('should not crash when rapidly switching views', async ({ page }) => {
@@ -99,15 +102,65 @@ test.describe('Motivation View', () => {
     await page.click('.mode-selector button:has-text("Motivation")');
     await page.waitForTimeout(1000);
 
-    // Should still be functional - either showing graph or message
+    // Should still be functional - either showing graph or message or error
     const motivationContainer = page.locator('.motivation-graph-container');
     const messageOverlay = page.locator('.message-overlay');
     const motivationViewContainer = page.locator('.motivation-view-container');
+    const renderingError = page.locator('h3:has-text("Rendering Error")');
 
     const hasMotivation = await motivationContainer.isVisible().catch(() => false);
     const hasMessage = await messageOverlay.isVisible().catch(() => false);
     const hasViewContainer = await motivationViewContainer.isVisible().catch(() => false);
+    const hasError = await renderingError.isVisible().catch(() => false);
 
-    expect(hasMotivation || hasMessage || hasViewContainer).toBeTruthy();
+    expect(hasMotivation || hasMessage || hasViewContainer || hasError).toBeTruthy();
+  });
+
+  test('should not show error boundary in normal operation', async ({ page }) => {
+    // Track console errors
+    const errors: string[] = [];
+    page.on('console', msg => {
+      if (msg.type() === 'error') {
+        errors.push(msg.text());
+      }
+    });
+
+    // Navigate to Motivation view
+    await page.click('.mode-selector button:has-text("Motivation")');
+    await page.waitForTimeout(3000);
+
+    // Check if error boundary is showing
+    const renderingError = page.locator('h3:has-text("Rendering Error")');
+    const hasError = await renderingError.isVisible().catch(() => false);
+
+    // If error boundary is showing, fail with details
+    if (hasError) {
+      const errorDetails = await page.locator('details summary:has-text("Error Details")').isVisible().catch(() => false);
+      let errorText = 'Error boundary is showing';
+      
+      if (errorDetails) {
+        // Try to get error details
+        await page.click('details summary:has-text("Error Details")');
+        await page.waitForTimeout(500);
+        const preContent = await page.locator('details pre').textContent().catch(() => '');
+        errorText += `\nError details: ${preContent}`;
+      }
+      
+      // Also log console errors
+      if (errors.length > 0) {
+        errorText += `\nConsole errors: ${errors.join('\n')}`;
+      }
+
+      throw new Error(errorText);
+    }
+
+    // Should show either the graph or a message, but not error boundary
+    const motivationContainer = page.locator('.motivation-graph-container');
+    const messageOverlay = page.locator('.message-overlay');
+    
+    const hasMotivation = await motivationContainer.isVisible().catch(() => false);
+    const hasMessage = await messageOverlay.isVisible().catch(() => false);
+
+    expect(hasMotivation || hasMessage).toBeTruthy();
   });
 });

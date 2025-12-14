@@ -1,5 +1,6 @@
 /**
  * MotivationControlPanel Styles
+ * Minimal custom styles for Flowbite-based component
  */
 
 .motivation-control-panel {
@@ -20,89 +21,17 @@
   gap: 8px;
 }
 
-.control-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 4px;
+/* Export section styling */
+.export-section {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 16px;
 }
 
-.layout-selector {
-  padding: 8px 12px;
-  font-size: 14px;
-  color: #1f2937;
-  background-color: #ffffff;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.layout-selector:hover:not(:disabled) {
-  border-color: #9ca3af;
-  background-color: #f9fafb;
-}
-
-.layout-selector:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.layout-selector:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.control-description {
-  font-size: 12px;
-  color: #6b7280;
-  line-height: 1.4;
-}
-
-.control-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 16px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #374151;
-  background-color: #f3f4f6;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.control-button:hover:not(:disabled) {
-  background-color: #e5e7eb;
-  border-color: #9ca3af;
-}
-
-.control-button:active:not(:disabled) {
-  background-color: #d1d5db;
-}
-
-.control-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.control-button svg {
-  width: 16px;
-  height: 16px;
-}
-
-.control-checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.15s ease;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .motivation-control-panel {
+    min-width: 100%;
+  }
 }
 
 .control-checkbox-label:hover {

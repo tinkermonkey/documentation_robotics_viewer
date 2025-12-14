@@ -9,9 +9,10 @@
  * - Collapsible sections for organization
  */
 
-import { useState } from 'react';
 import './MotivationFilterPanel.css';
 import { MotivationElementType, MotivationRelationshipType } from '../types/motivationGraph';
+import { Accordion, AccordionPanel, AccordionTitle, AccordionContent, Checkbox, Label, Button } from 'flowbite-react';
+import { X } from 'lucide-react';
 
 export interface FilterCounts {
   elements: Record<MotivationElementType, { visible: number; total: number }>;
@@ -84,8 +85,8 @@ export const MotivationFilterPanel: React.FC<MotivationFilterPanelProps> = ({
   onRelationshipTypeChange,
   onClearAllFilters,
 }) => {
-  const [elementTypesExpanded, setElementTypesExpanded] = useState(true);
-  const [relationshipTypesExpanded, setRelationshipTypesExpanded] = useState(true);
+  // const [elementTypesExpanded, setElementTypesExpanded] = useState(true);
+  // const [relationshipTypesExpanded, setRelationshipTypesExpanded] = useState(true);
 
   /**
    * Check if all element types are selected
@@ -171,169 +172,143 @@ export const MotivationFilterPanel: React.FC<MotivationFilterPanelProps> = ({
     <div className="motivation-filter-panel">
       <div className="filter-panel-header">
         <h3>Filters</h3>
-        <button
-          className="clear-filters-button"
+        <Button
+          color="gray"
+          size="xs"
           onClick={onClearAllFilters}
           disabled={allElementTypesSelected && allRelationshipTypesSelected}
           title="Clear all filters and show all elements"
         >
+          <X className="mr-1 h-3 w-3" />
           Clear All
-        </button>
+        </Button>
       </div>
 
-      {/* Element Types Section */}
-      <div className="filter-section">
-        <div
-          className="filter-section-header"
-          onClick={() => setElementTypesExpanded(!elementTypesExpanded)}
-          role="button"
-          tabIndex={0}
-          aria-expanded={elementTypesExpanded}
-          aria-controls="element-types-content"
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              setElementTypesExpanded(!elementTypesExpanded);
-            }
-          }}
-        >
-          <span className="expand-icon" aria-hidden="true">{elementTypesExpanded ? '▼' : '▶'}</span>
-          <h4>Element Types</h4>
-          <span className="filter-count" aria-label={`${totalElementCounts.visible} of ${totalElementCounts.total} element types visible`}>
-            {totalElementCounts.visible} / {totalElementCounts.total}
-          </span>
-        </div>
-
-        {elementTypesExpanded && (
-          <div className="filter-section-content" id="element-types-content" role="region" aria-label="Element type filters">
-            <div className="filter-actions">
-              <button
-                className="filter-action-button"
+      <Accordion collapseAll={false}>
+        {/* Element Types Section */}
+        <AccordionPanel>
+          <AccordionTitle>
+            <div className="flex items-center justify-between w-full pr-4">
+              <span>Element Types</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                {totalElementCounts.visible} / {totalElementCounts.total}
+              </span>
+            </div>
+          </AccordionTitle>
+          <AccordionContent>
+            <div className="flex gap-2 mb-3">
+              <Button
+                size="xs"
+                color="light"
                 onClick={handleSelectAllElements}
                 disabled={allElementTypesSelected}
-                aria-label="Select all element types"
               >
                 Select All
-              </button>
-              <button
-                className="filter-action-button"
+              </Button>
+              <Button
+                size="xs"
+                color="light"
                 onClick={handleDeselectAllElements}
                 disabled={selectedElementTypes.size === 0}
-                aria-label="Deselect all element types"
               >
                 Deselect All
-              </button>
+              </Button>
             </div>
 
-            <div className="filter-checkboxes" role="group" aria-label="Element type checkboxes">
+            <div className="space-y-2">
               {Object.values(MotivationElementType).map((elementType) => {
                 const counts = filterCounts.elements[elementType];
                 const isSelected = selectedElementTypes.has(elementType);
                 const hasElements = counts && counts.total > 0;
 
                 return (
-                  <label
-                    key={elementType}
-                    className={`filter-checkbox-label ${!hasElements ? 'disabled' : ''}`}
-                  >
-                    <input
-                      type="checkbox"
+                  <div key={elementType} className="flex items-center justify-between">
+                    <Checkbox
+                      id={`element-${elementType}`}
                       checked={isSelected}
                       onChange={(e) => onElementTypeChange(elementType, e.target.checked)}
                       disabled={!hasElements}
-                      aria-label={`${ELEMENT_TYPE_LABELS[elementType]}: ${counts ? `${counts.visible} of ${counts.total} visible` : 'none available'}`}
                     />
-                    <span className="filter-label-text">
-                      {ELEMENT_TYPE_LABELS[elementType]}
-                    </span>
-                    <span className="filter-count-badge" aria-hidden="true">
-                      {counts ? `${counts.visible}/${counts.total}` : '0/0'}
-                    </span>
-                  </label>
+                    <Label
+                      htmlFor={`element-${elementType}`}
+                      className="flex items-center gap-2 flex-1 ml-2"
+                      disabled={!hasElements}
+                    >
+                      <span className="flex-1">{ELEMENT_TYPE_LABELS[elementType]}</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {counts ? `${counts.visible}/${counts.total}` : '0/0'}
+                      </span>
+                    </Label>
+                  </div>
                 );
               })}
+              </div>
+            </AccordionContent>
+          </AccordionPanel>
+
+        {/* Relationship Types Section */}
+        <AccordionPanel>
+          <AccordionTitle>
+            <div className="flex items-center justify-between w-full pr-4">
+              <span>Relationship Types</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                {totalRelationshipCounts.visible} / {totalRelationshipCounts.total}
+              </span>
             </div>
-          </div>
-        )}
-      </div>
-
-      {/* Relationship Types Section */}
-      <div className="filter-section">
-        <div
-          className="filter-section-header"
-          onClick={() => setRelationshipTypesExpanded(!relationshipTypesExpanded)}
-          role="button"
-          tabIndex={0}
-          aria-expanded={relationshipTypesExpanded}
-          aria-controls="relationship-types-content"
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              setRelationshipTypesExpanded(!relationshipTypesExpanded);
-            }
-          }}
-        >
-          <span className="expand-icon" aria-hidden="true">{relationshipTypesExpanded ? '▼' : '▶'}</span>
-          <h4>Relationship Types</h4>
-          <span className="filter-count" aria-label={`${totalRelationshipCounts.visible} of ${totalRelationshipCounts.total} relationship types visible`}>
-            {totalRelationshipCounts.visible} / {totalRelationshipCounts.total}
-          </span>
-        </div>
-
-        {relationshipTypesExpanded && (
-          <div className="filter-section-content" id="relationship-types-content" role="region" aria-label="Relationship type filters">
-            <div className="filter-actions">
-              <button
-                className="filter-action-button"
+          </AccordionTitle>
+          <AccordionContent>
+            <div className="flex gap-2 mb-3">
+              <Button
+                size="xs"
+                color="light"
                 onClick={handleSelectAllRelationships}
                 disabled={allRelationshipTypesSelected}
-                aria-label="Select all relationship types"
               >
                 Select All
-              </button>
-              <button
-                className="filter-action-button"
+              </Button>
+              <Button
+                size="xs"
+                color="light"
                 onClick={handleDeselectAllRelationships}
                 disabled={selectedRelationshipTypes.size === 0}
-                aria-label="Deselect all relationship types"
               >
                 Deselect All
-              </button>
+              </Button>
             </div>
 
-            <div className="filter-checkboxes" role="group" aria-label="Relationship type checkboxes">
+            <div className="space-y-2">
               {Object.values(MotivationRelationshipType).map((relationshipType) => {
                 const counts = filterCounts.relationships[relationshipType];
                 const isSelected = selectedRelationshipTypes.has(relationshipType);
                 const hasRelationships = counts && counts.total > 0;
 
                 return (
-                  <label
-                    key={relationshipType}
-                    className={`filter-checkbox-label ${!hasRelationships ? 'disabled' : ''}`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={isSelected}
-                      onChange={(e) =>
-                        onRelationshipTypeChange(relationshipType, e.target.checked)
-                      }
+                  <div key={relationshipType} className="flex items-center justify-between">
+                      <Checkbox
+                        id={`relationship-${relationshipType}`}
+                        checked={isSelected}
+                        onChange={(e) =>
+                          onRelationshipTypeChange(relationshipType, e.target.checked)
+                        }
+                        disabled={!hasRelationships}
+                      />
+                    <Label
+                      htmlFor={`relationship-${relationshipType}`}
+                      className="flex items-center gap-2 flex-1 ml-2"
                       disabled={!hasRelationships}
-                      aria-label={`${RELATIONSHIP_TYPE_LABELS[relationshipType]}: ${counts ? `${counts.visible} of ${counts.total} visible` : 'none available'}`}
-                    />
-                    <span className="filter-label-text">
-                      {RELATIONSHIP_TYPE_LABELS[relationshipType]}
-                    </span>
-                    <span className="filter-count-badge" aria-hidden="true">
-                      {counts ? `${counts.visible}/${counts.total}` : '0/0'}
-                    </span>
-                  </label>
+                    >
+                      <span className="flex-1">{RELATIONSHIP_TYPE_LABELS[relationshipType]}</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {counts ? `${counts.visible}/${counts.total}` : '0/0'}
+                      </span>
+                    </Label>
+                  </div>
                 );
               })}
             </div>
-          </div>
-        )}
-      </div>
+          </AccordionContent>
+        </AccordionPanel>
+      </Accordion>
     </div>
   );
 };

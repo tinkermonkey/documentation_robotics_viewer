@@ -40,10 +40,10 @@ test.describe('Embedded App - Dual View URL Routing', () => {
     await page.goto('/');
 
     // Wait for React to load
-    await page.waitForSelector('.embedded-app', { timeout: 10000 });
+    await page.waitForSelector('[data-testid="embedded-app"]', { timeout: 10000 });
 
     // Wait for WebSocket connection
-    await page.waitForSelector('.connection-status.connected', { timeout: 10000 });
+    await page.waitForSelector('[data-connection-state="connected"]', { timeout: 10000 });
   });
 
   test.describe('URL-based Navigation', () => {
@@ -121,20 +121,21 @@ test.describe('Embedded App - Dual View URL Routing', () => {
   });
 
   test.describe('Spec Dual View', () => {
-    test('should show tab switcher in spec mode', async ({ page }) => {
-      // Switch to Spec mode
-      await page.click('.mode-selector button:has-text("Spec")');
+    test('should show tab switcher in changeset mode', async ({ page }) => {
+      // Switch to Changesets mode
+      await page.click('.mode-selector button:has-text("Changesets")');
 
       // Wait for navigation to complete and tab switcher to appear
-      await page.waitForSelector('.view-tab-switcher', { timeout: 10000 });
+      await page.waitForSelector('.view-tab-switcher, [role="tablist"]', { timeout: 10000 });
 
-      // Check for tab switcher
-      const tabSwitcher = page.locator('.view-tab-switcher');
-      await expect(tabSwitcher).toBeVisible();
+      // Check for tab switcher or tabs
+      const hasTabSwitcher = await page.locator('.view-tab-switcher').isVisible();
+      const hasTabs = await page.locator('[role="tablist"]').isVisible();
+      expect(hasTabSwitcher || hasTabs).toBeTruthy();
 
-      // Check for Graph and JSON tabs
-      await expect(page.locator('.view-tab:has-text("Graph")')).toBeVisible();
-      await expect(page.locator('.view-tab:has-text("JSON")')).toBeVisible();
+      // Check for Graph and List tabs
+      await expect(page.locator('[role="tab"]:has-text("Graph")')).toBeVisible();
+      await expect(page.locator('[role="tab"]:has-text("List")')).toBeVisible();
     });
 
     test('should default to Graph view in spec mode', async ({ page }) => {
@@ -145,8 +146,8 @@ test.describe('Embedded App - Dual View URL Routing', () => {
       await page.waitForSelector('.view-tab-switcher', { timeout: 10000 });
 
       // Graph tab should be active by default (router redirects /spec to /spec/graph)
-      const graphTab = page.locator('.view-tab:has-text("Graph")');
-      await expect(graphTab).toHaveClass(/active/);
+      const graphTab = page.locator('[role="tab"]:has-text("Graph")');
+      await expect(graphTab).toHaveAttribute('aria-selected', 'true');
 
       // GraphViewer should be visible
       await expect(page.locator('.react-flow')).toBeVisible({ timeout: 10000 });
@@ -155,19 +156,19 @@ test.describe('Embedded App - Dual View URL Routing', () => {
     test('should switch to graph view when Graph tab clicked', async ({ page }) => {
       // Switch to Spec mode (defaults to graph)
       await page.click('.mode-selector button:has-text("Spec")');
-      await page.waitForSelector('.view-tab-switcher', { timeout: 10000 });
+      await page.waitForSelector('.view-tab-switcher, [role="tablist"]', { timeout: 10000 });
 
       // First switch to JSON view
-      await page.click('.view-tab:has-text("JSON")');
+      await page.click('[role="tab"]:has-text("JSON")');
       await page.waitForSelector('.spec-viewer', { timeout: 5000 });
 
       // Now switch back to Graph view
-      await page.click('.view-tab:has-text("Graph")');
+      await page.click('[role="tab"]:has-text("Graph")');
       await page.waitForSelector('.react-flow', { timeout: 10000 });
 
       // Graph tab should be active
-      const graphTab = page.locator('.view-tab:has-text("Graph")');
-      await expect(graphTab).toHaveClass(/active/);
+      const graphTab = page.locator('[role="tab"]:has-text("Graph")');
+      await expect(graphTab).toHaveAttribute('aria-selected', 'true');
 
       // Check for React Flow (graph viewer)
       const reactFlow = page.locator('.react-flow');
@@ -199,7 +200,7 @@ test.describe('Embedded App - Dual View URL Routing', () => {
       await page.waitForSelector('.view-tab-switcher', { timeout: 10000 });
 
       // Verify graph is active
-      await expect(page.locator('.view-tab:has-text("Graph")')).toHaveClass(/active/);
+      await expect(page.locator('[role="tab"]:has-text("Graph")')).toHaveAttribute('aria-selected', 'true');
 
       // Switch to Model mode
       await page.click('.mode-selector button:has-text("Model")');
@@ -210,8 +211,8 @@ test.describe('Embedded App - Dual View URL Routing', () => {
       await page.waitForSelector('.view-tab-switcher', { timeout: 10000 });
 
       // Graph tab should still be active (preference persisted)
-      const graphTab = page.locator('.view-tab:has-text("Graph")');
-      await expect(graphTab).toHaveClass(/active/);
+      const graphTab = page.locator('[role="tab"]:has-text("Graph")');
+      await expect(graphTab).toHaveAttribute('aria-selected', 'true');
     });
 
     test('should switch back to JSON view', async ({ page }) => {
@@ -220,15 +221,15 @@ test.describe('Embedded App - Dual View URL Routing', () => {
       await page.waitForSelector('.view-tab-switcher', { timeout: 10000 });
 
       // Verify we're in graph view
-      await expect(page.locator('.view-tab:has-text("Graph")')).toHaveClass(/active/);
+      await expect(page.locator('[role="tab"]:has-text("Graph")')).toHaveAttribute('aria-selected', 'true');
 
       // Switch to JSON
-      await page.click('.view-tab:has-text("JSON")');
+      await page.click('[role="tab"]:has-text("JSON")');
       await page.waitForSelector('.spec-viewer', { timeout: 10000 });
 
       // JSON tab should be active
-      const jsonTab = page.locator('.view-tab:has-text("JSON")');
-      await expect(jsonTab).toHaveClass(/active/);
+      const jsonTab = page.locator('[role="tab"]:has-text("JSON")');
+      await expect(jsonTab).toHaveAttribute('aria-selected', 'true');
 
       // SpecViewer should be visible
       await expect(page.locator('.spec-viewer')).toBeVisible();
@@ -251,8 +252,8 @@ test.describe('Embedded App - Dual View URL Routing', () => {
       await expect(tabSwitcher).toBeVisible({ timeout: 10000 });
 
       // Check for Graph and List tabs
-      await expect(page.locator('.view-tab:has-text("Graph")')).toBeVisible();
-      await expect(page.locator('.view-tab:has-text("List")')).toBeVisible();
+      await expect(page.locator('[role="tab"]:has-text("Graph")')).toBeVisible();
+      await expect(page.locator('[role="tab"]:has-text("List")')).toBeVisible();
     });
 
     test('should default to Graph view in changeset mode', async ({ page }) => {
@@ -261,8 +262,8 @@ test.describe('Embedded App - Dual View URL Routing', () => {
       await page.waitForSelector('.changeset-list', { timeout: 10000 });
 
       // Graph tab should be active by default (router redirects /changesets to /changesets/graph)
-      const graphTab = page.locator('.view-tab:has-text("Graph")');
-      await expect(graphTab).toHaveClass(/active/);
+      const graphTab = page.locator('[role="tab"]:has-text("Graph")');
+      await expect(graphTab).toHaveAttribute('aria-selected', 'true');
     });
   });
 
@@ -308,7 +309,7 @@ test.describe('Embedded App - Dual View URL Routing', () => {
       await page.waitForSelector('.view-tab-switcher', { timeout: 10000 });
 
       // Switch to JSON view
-      await page.click('.view-tab:has-text("JSON")');
+      await page.click('[role="tab"]:has-text("JSON")');
       await page.waitForSelector('.spec-viewer', { timeout: 10000 });
 
       // Reload page
@@ -321,8 +322,8 @@ test.describe('Embedded App - Dual View URL Routing', () => {
       await page.waitForSelector('.view-tab-switcher', { timeout: 10000 });
 
       // JSON tab should still be active (preference persisted)
-      const jsonTab = page.locator('.view-tab:has-text("JSON")');
-      await expect(jsonTab).toHaveClass(/active/);
+      const jsonTab = page.locator('[role="tab"]:has-text("JSON")');
+      await expect(jsonTab).toHaveAttribute('aria-selected', 'true');
     });
   });
 });

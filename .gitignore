@@ -3,6 +3,7 @@ playwright-report/
 test-results/
 **/.venv/
 .dr/
+.flowbite-react/
 
 # Build artifacts (keep dist/ but ignore the bundled package)
 dist/embedded/dr-viewer-bundle/

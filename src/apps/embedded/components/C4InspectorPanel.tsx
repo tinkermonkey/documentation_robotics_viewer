@@ -10,6 +10,8 @@
 
 import './C4InspectorPanel.css';
 import { C4Graph,  C4Type, ContainerType } from '../types/c4Graph';
+import { Card, Badge, Button } from 'flowbite-react';
+import { ArrowUp, ArrowDown, X, ZoomIn } from 'lucide-react';
 
 export interface C4InspectorPanelProps {
   /** Selected node ID */
@@ -112,128 +114,127 @@ export const C4InspectorPanel: React.FC<C4InspectorPanelProps> = ({
       {/* Header */}
       <div className="inspector-header">
         <h3>Inspector</h3>
-        <button className="close-button" onClick={onClose} aria-label="Close inspector panel">
-          ×
-        </button>
+        <Button color="gray" size="xs" onClick={onClose} pill>
+          <X className="h-4 w-4" />
+        </Button>
       </div>
 
       {/* Content */}
       <div className="inspector-content">
         {/* Element Metadata */}
-        <section className="inspector-section">
-          <h4 className="section-title">Element Details</h4>
+        <Card>
+          <h4 className="text-lg font-semibold mb-3">Element Details</h4>
 
-          <div className="metadata-row">
-            <span className="metadata-label">Name:</span>
-            <span className="metadata-value element-name">{selectedNode.name}</span>
-          </div>
-
-          <div className="metadata-row">
-            <span className="metadata-label">Type:</span>
-            <span
-              className="metadata-value type-badge"
-              style={{ backgroundColor: `${typeConfig.color}20`, color: typeConfig.color }}
-            >
-              {typeConfig.label}
-            </span>
-          </div>
-
-          {selectedNode.containerType && (
-            <div className="metadata-row">
-              <span className="metadata-label">Container Type:</span>
-              <span className="metadata-value">{CONTAINER_TYPE_LABELS[selectedNode.containerType]}</span>
+          <div className="space-y-2">
+            <div className="flex justify-between">
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Name:</span>
+              <span className="text-sm font-semibold">{selectedNode.name}</span>
             </div>
-          )}
 
-          {selectedNode.description && (
-            <div className="metadata-row description-row">
-              <span className="metadata-label">Description:</span>
-              <span className="metadata-value">{selectedNode.description}</span>
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Type:</span>
+              <Badge color={typeConfig.color === '#1e40af' ? 'indigo' : typeConfig.color === '#166534' ? 'success' : 'gray'}>
+                {typeConfig.label}
+              </Badge>
             </div>
-          )}
 
-          {/* Technology Stack */}
-          {selectedNode.technology.length > 0 && (
-            <div className="metadata-row">
-              <span className="metadata-label">Technology:</span>
-              <div className="technology-chips">
-                {selectedNode.technology.map((tech) => (
-                  <span key={tech} className="technology-chip">
-                    {tech}
-                  </span>
-                ))}
+            {selectedNode.containerType && (
+              <div className="flex justify-between">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Container Type:</span>
+                <span className="text-sm">{CONTAINER_TYPE_LABELS[selectedNode.containerType]}</span>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Boundary */}
-          {selectedNode.boundary && (
-            <div className="metadata-row">
-              <span className="metadata-label">Boundary:</span>
-              <span className={`metadata-value boundary-badge ${selectedNode.boundary}`}>
-                {selectedNode.boundary === 'internal' ? 'Internal' : 'External'}
+            {selectedNode.description && (
+              <div>
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Description:</span>
+                <p className="text-sm mt-1">{selectedNode.description}</p>
+              </div>
+            )}
+
+            {selectedNode.technology.length > 0 && (
+              <div>
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Technology:</span>
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {selectedNode.technology.map((tech) => (
+                    <Badge key={tech} color="info" size="sm">
+                      {tech}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {selectedNode.boundary && (
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Boundary:</span>
+                <Badge color={selectedNode.boundary === 'internal' ? 'success' : 'warning'}>
+                  {selectedNode.boundary === 'internal' ? 'Internal' : 'External'}
+                </Badge>
+              </div>
+            )}
+
+            {parentContainer && (
+              <div className="flex justify-between">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Parent Container:</span>
+                <span className="text-sm">{parentContainer.name}</span>
+              </div>
+            )}
+
+            {isContainer && componentCount > 0 && (
+              <div className="flex justify-between">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Components:</span>
+                <span className="text-sm">{componentCount} components</span>
+              </div>
+            )}
+
+            <div className="flex justify-between">
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Connections:</span>
+              <span className="text-sm">
+                {incomingEdges.length + outgoingEdges.length} total ({incomingEdges.length} in,{' '}
+                {outgoingEdges.length} out)
               </span>
             </div>
-          )}
 
-          {/* Parent Container (for components) */}
-          {parentContainer && (
-            <div className="metadata-row">
-              <span className="metadata-label">Parent Container:</span>
-              <span className="metadata-value">{parentContainer.name}</span>
-            </div>
-          )}
-
-          {/* Component Count (for containers) */}
-          {isContainer && componentCount > 0 && (
-            <div className="metadata-row">
-              <span className="metadata-label">Components:</span>
-              <span className="metadata-value">{componentCount} components</span>
-            </div>
-          )}
-
-          {/* Connection Stats */}
-          <div className="metadata-row">
-            <span className="metadata-label">Connections:</span>
-            <span className="metadata-value">
-              {incomingEdges.length + outgoingEdges.length} total ({incomingEdges.length} in,{' '}
-              {outgoingEdges.length} out)
-            </span>
+            {selectedNode.changesetStatus && (
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Changeset:</span>
+                <Badge color={
+                  selectedNode.changesetStatus === 'new' ? 'success' :
+                  selectedNode.changesetStatus === 'modified' ? 'warning' :
+                  selectedNode.changesetStatus === 'deleted' ? 'failure' : 'gray'
+                }>
+                  {selectedNode.changesetStatus}
+                </Badge>
+              </div>
+            )}
           </div>
-
-          {/* Changeset Status */}
-          {selectedNode.changesetStatus && (
-            <div className="metadata-row">
-              <span className="metadata-label">Changeset:</span>
-              <span className={`metadata-value changeset-badge ${selectedNode.changesetStatus}`}>
-                {selectedNode.changesetStatus}
-              </span>
-            </div>
-          )}
-        </section>
+        </Card>
 
         {/* Relationships */}
-        <section className="inspector-section">
-          <h4 className="section-title">
+        <Card>
+          <h4 className="text-lg font-semibold mb-3">
             Relationships ({incomingEdges.length + outgoingEdges.length})
           </h4>
 
           {/* Incoming Relationships */}
           {incomingEdges.length > 0 && (
-            <div className="relationship-group">
-              <h5 className="relationship-group-title">Incoming ({incomingEdges.length})</h5>
-              <ul className="relationship-list">
+            <div className="mb-4">
+              <h5 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                Incoming ({incomingEdges.length})
+              </h5>
+              <ul className="space-y-2">
                 {incomingEdges.map((edge) => {
                   const sourceNode = graph.nodes.get(edge.sourceId);
                   return (
-                    <li key={edge.id} className="relationship-item">
-                      <span className="relationship-protocol" data-protocol={edge.protocol}>
-                        {edge.protocol}
-                      </span>
-                      <span className="relationship-arrow">←</span>
-                      <span className="relationship-element">{sourceNode?.name || edge.sourceId}</span>
+                    <li key={edge.id} className="text-sm border-l-2 border-blue-400 pl-2">
+                      <Badge color="info" size="sm" className="mb-1">{edge.protocol}</Badge>
+                      <div className="flex items-center gap-1">
+                        <ArrowUp className="h-3 w-3 text-gray-500" />
+                        <span className="font-medium">{sourceNode?.name || edge.sourceId}</span>
+                      </div>
                       {edge.description && (
-                        <span className="relationship-description">{edge.description}</span>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{edge.description}</p>
                       )}
                     </li>
                   );
@@ -244,20 +245,22 @@ export const C4InspectorPanel: React.FC<C4InspectorPanelProps> = ({
 
           {/* Outgoing Relationships */}
           {outgoingEdges.length > 0 && (
-            <div className="relationship-group">
-              <h5 className="relationship-group-title">Outgoing ({outgoingEdges.length})</h5>
-              <ul className="relationship-list">
+            <div>
+              <h5 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                Outgoing ({outgoingEdges.length})
+              </h5>
+              <ul className="space-y-2">
                 {outgoingEdges.map((edge) => {
                   const targetNode = graph.nodes.get(edge.targetId);
                   return (
-                    <li key={edge.id} className="relationship-item">
-                      <span className="relationship-protocol" data-protocol={edge.protocol}>
-                        {edge.protocol}
-                      </span>
-                      <span className="relationship-arrow">→</span>
-                      <span className="relationship-element">{targetNode?.name || edge.targetId}</span>
+                    <li key={edge.id} className="text-sm border-l-2 border-green-400 pl-2">
+                      <Badge color="success" size="sm" className="mb-1">{edge.protocol}</Badge>
+                      <div className="flex items-center gap-1">
+                        <ArrowDown className="h-3 w-3 text-gray-500" />
+                        <span className="font-medium">{targetNode?.name || edge.targetId}</span>
+                      </div>
                       {edge.description && (
-                        <span className="relationship-description">{edge.description}</span>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{edge.description}</p>
                       )}
                     </li>
                   );
@@ -267,110 +270,66 @@ export const C4InspectorPanel: React.FC<C4InspectorPanelProps> = ({
           )}
 
           {incomingEdges.length === 0 && outgoingEdges.length === 0 && (
-            <p className="relationship-empty">No relationships</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">No relationships</p>
           )}
-        </section>
+        </Card>
 
         {/* Quick Actions */}
-        <section className="inspector-section">
-          <h4 className="section-title">Quick Actions</h4>
+        <Card>
+          <h4 className="text-lg font-semibold mb-3">Quick Actions</h4>
 
-          <div className="action-buttons">
-            <button
-              className="action-button"
+          <div className="flex flex-col gap-2">
+            <Button
+              color="gray"
+              size="sm"
               onClick={() => onTraceUpstream(selectedNodeId)}
-              aria-label="Trace upstream dependencies"
               title="Show all containers that this element depends on"
             >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M8 12L8 4M8 4L4 8M8 4L12 8"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <ArrowUp className="mr-2 h-4 w-4" />
               Trace Upstream
-            </button>
+            </Button>
 
-            <button
-              className="action-button"
+            <Button
+              color="gray"
+              size="sm"
               onClick={() => onTraceDownstream(selectedNodeId)}
-              aria-label="Trace downstream dependents"
               title="Show all containers that depend on this element"
             >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M8 4L8 12M8 12L4 8M8 12L12 8"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <ArrowDown className="mr-2 h-4 w-4" />
               Trace Downstream
-            </button>
+            </Button>
 
             {isContainer && onDrillDown && componentCount > 0 && (
-              <button
-                className="action-button drill-down-button"
+              <Button
+                color="blue"
+                size="sm"
                 onClick={() => onDrillDown(selectedNodeId)}
-                aria-label="Drill down to view components"
                 title={`View ${componentCount} components in this container`}
               >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <rect
-                    x="2"
-                    y="2"
-                    width="12"
-                    height="12"
-                    rx="2"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    fill="none"
-                  />
-                  <path d="M8 5v6M5 8h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
+                <ZoomIn className="mr-2 h-4 w-4" />
                 Drill Down ({componentCount})
-              </button>
+              </Button>
             )}
           </div>
-        </section>
+        </Card>
 
         {/* Source Element Reference */}
         {selectedNode.sourceElement && (
-          <section className="inspector-section">
-            <h4 className="section-title">Source Element</h4>
-            <div className="source-element-info">
-              <div className="metadata-row">
-                <span className="metadata-label">ID:</span>
-                <code className="metadata-value id-value">{selectedNode.sourceElement.id}</code>
+          <Card>
+            <h4 className="text-lg font-semibold mb-3">Source Element</h4>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">ID:</span>
+                <code className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+                  {selectedNode.sourceElement.id}
+                </code>
               </div>
-              <div className="metadata-row">
-                <span className="metadata-label">Element Type:</span>
-                <span className="metadata-value">{selectedNode.sourceElement.type}</span>
+              <div className="flex justify-between">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Element Type:</span>
+                <span className="text-sm">{selectedNode.sourceElement.type}</span>
               </div>
             </div>
-          </section>
+          </Card>
         )}
       </div>
     </div>

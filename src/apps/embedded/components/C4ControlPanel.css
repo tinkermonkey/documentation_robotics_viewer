@@ -1,6 +1,6 @@
 /**
  * C4ControlPanel Component Styles
- * Provides layout and view controls styling for C4 visualization
+ * Minimal custom styles for Flowbite-based component
  */
 
 .c4-control-panel {
@@ -21,222 +21,91 @@
   gap: 8px;
 }
 
-.control-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+/* Export section styling */
+.export-section {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 16px;
 }
 
-/* View Level Buttons */
-.view-level-buttons {
+/* Scenario Preset Buttons - Custom layout for multi-select grid */
+.scenario-preset-buttons {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
   background-color: #f1f5f9;
   padding: 4px;
   border-radius: 8px;
 }
 
-.view-level-button {
+.scenario-preset-button {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex: 1;
+  flex: 1 1 calc(50% - 4px);
+  min-width: 80px;
   gap: 4px;
   padding: 8px 4px;
   border: none;
   border-radius: 6px;
   background-color: transparent;
-  color: #64748b;
-  font-size: 11px;
+  color: #475569;
+  font-size: 10px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
-.view-level-button:hover:not(:disabled) {
+.scenario-preset-button:hover:not(:disabled) {
   background-color: #e2e8f0;
   color: #334155;
 }
 
-.view-level-button.active {
-  background-color: #ffffff;
-  color: #1e293b;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+.scenario-preset-button.active {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.2);
 }
 
-.view-level-button:disabled {
+.scenario-preset-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.view-level-button:focus {
+.scenario-preset-button:focus {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
 }
 
-.view-level-icon {
+.preset-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
-.view-level-label {
+.preset-label {
   font-weight: 500;
+  white-space: nowrap;
 }
 
-/* Layout Selector */
-.layout-selector {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  background-color: #ffffff;
-  font-size: 14px;
-  color: #334155;
-  cursor: pointer;
-  transition: border-color 0.15s ease;
-}
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .c4-control-panel {
+    max-width: 100%;
+    border-left: none;
+    border-top: 1px solid #e2e8f0;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 12px;
+  }
 
-.layout-selector:hover:not(:disabled) {
-  border-color: #cbd5e1;
-}
-
-.layout-selector:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.layout-selector:disabled {
-  background-color: #f8fafc;
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.control-description {
-  font-size: 12px;
-  color: #64748b;
-  line-height: 1.4;
-}
-
-/* Control Buttons */
-.control-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  padding: 10px 16px;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  background-color: #ffffff;
-  color: #334155;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.control-button:hover:not(:disabled) {
-  background-color: #f8fafc;
-  border-color: #cbd5e1;
-}
-
-.control-button:focus {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
-}
-
-.control-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.control-button.clear-button {
-  background-color: #fef2f2;
-  border-color: #fecaca;
-  color: #dc2626;
-}
-
-.control-button.clear-button:hover:not(:disabled) {
-  background-color: #fee2e2;
-  border-color: #fca5a5;
-}
-
-/* Checkbox Label */
-.control-checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 0;
-  cursor: pointer;
-}
-
-.control-checkbox-label input[type='checkbox'] {
-  width: 16px;
-  height: 16px;
-  margin: 0;
-  accent-color: #3b82f6;
-  cursor: pointer;
-}
-
-.control-checkbox-label span {
-  font-size: 14px;
-  color: #334155;
-}
-
-/* Export Section */
-.export-section {
-  border-top: 1px solid #e2e8f0;
-  padding-top: 16px;
-}
-
-.export-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-.export-button {
-  flex: 1;
-  padding: 8px;
-  font-size: 12px;
-}
-
-.export-button span {
-  font-weight: 500;
-}
-
-/* Layout Progress */
-.layout-progress {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px;
-  background-color: #f0f9ff;
-  border-radius: 6px;
-  color: #0369a1;
-  font-size: 13px;
-}
-
-.spinner-small {
-  width: 16px;
-  height: 16px;
-  border: 2px solid #0ea5e9;
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+  .control-panel-section {
+    flex: 1;
+    min-width: 150px;
   }
 }
+
 
 /* Scenario Preset Buttons */
 .scenario-preset-buttons {
@@ -260,7 +129,7 @@
   border: none;
   border-radius: 6px;
   background-color: transparent;
-  color: #64748b;
+  color: #475569;
   font-size: 10px;
   cursor: pointer;
   transition: all 0.15s ease;

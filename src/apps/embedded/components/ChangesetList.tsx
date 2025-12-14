@@ -5,7 +5,7 @@
 
 import React, { useMemo } from 'react';
 import { useChangesetStore } from '../stores/changesetStore';
-import './ChangesetList.css';
+import { Card, Badge } from 'flowbite-react';
 
 interface ChangesetListProps {
   onChangesetSelect: (changesetId: string) => void;
@@ -36,12 +36,12 @@ const ChangesetList: React.FC<ChangesetListProps> = ({ onChangesetSelect }) => {
   };
 
   const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'active': return <span className="status-badge active">Active</span>;
-      case 'applied': return <span className="status-badge applied">Applied</span>;
-      case 'abandoned': return <span className="status-badge abandoned">Abandoned</span>;
-      default: return null;
-    }
+    const colorMap = {
+      active: 'success',
+      applied: 'info',
+      abandoned: 'gray'
+    } as const;
+    return <Badge color={colorMap[status as keyof typeof colorMap] || 'gray'}>{status}</Badge>;
   };
 
   const formatDate = (dateString: string) => {
@@ -54,62 +54,81 @@ const ChangesetList: React.FC<ChangesetListProps> = ({ onChangesetSelect }) => {
   };
 
   const renderChangesetItem = (changeset: typeof changesets[0]) => (
-    <div
+    <Card
       key={changeset.id}
-      className={`changeset-item ${selectedChangesetId === changeset.id ? 'selected' : ''}`}
+      className={`cursor-pointer transition-all ${selectedChangesetId === changeset.id ? 'ring-2 ring-blue-500' : ''}`}
       onClick={() => onChangesetSelect(changeset.id)}
     >
-      <div className="changeset-header">
-        <span className="changeset-icon">{getTypeIcon(changeset.type)}</span>
-        <span className="changeset-name">{changeset.name}</span>
+      <div className="flex items-start justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-xl">{getTypeIcon(changeset.type)}</span>
+          <h5 className="text-base font-semibold text-gray-900 dark:text-white">
+            {changeset.name}
+          </h5>
+        </div>
         {getStatusBadge(changeset.status)}
       </div>
-      <div className="changeset-meta">
-        <span className="changeset-id">{changeset.id}</span>
-        <span className="changeset-date">{formatDate(changeset.created_at)}</span>
+      <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+        <code className="bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">{changeset.id}</code>
+        <span>•</span>
+        <span>{formatDate(changeset.created_at)}</span>
       </div>
-      <div className="changeset-stats">
-        <span className="stat">{changeset.elements_count} changes</span>
+      <div className="text-sm text-gray-600 dark:text-gray-400">
+        {changeset.elements_count} changes
       </div>
-    </div>
+    </Card>
   );
 
   if (changesets.length === 0) {
     return (
-      <div className="changeset-list empty">
-        <div className="empty-state">
-          <span className="empty-icon">📝</span>
-          <p>No changesets found</p>
-        </div>
+      <div className="h-full overflow-y-auto flex flex-col p-4">
+        <Card>
+          <div className="text-center py-8">
+            <span className="text-4xl">📝</span>
+            <p className="mt-2 text-gray-500 dark:text-gray-400">No changesets found</p>
+          </div>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="changeset-list">
-      <div className="changeset-list-header">
-        <h3>Changesets</h3>
-        <span className="changeset-count">{changesets.length} total</span>
+    <div className="h-full overflow-y-auto flex flex-col p-4 space-y-4">
+      <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
+        <h3 className="text-lg font-semibold">Changesets</h3>
+        <Badge color="gray">{changesets.length} total</Badge>
       </div>
 
       {activeChangesets.length > 0 && (
         <div className="changeset-section">
-          <h4 className="section-title">Active ({activeChangesets.length})</h4>
-          {activeChangesets.map(renderChangesetItem)}
+          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            Active ({activeChangesets.length})
+          </h4>
+          <div className="space-y-2">
+            {activeChangesets.map(renderChangesetItem)}
+          </div>
         </div>
       )}
 
       {appliedChangesets.length > 0 && (
         <div className="changeset-section">
-          <h4 className="section-title">Applied ({appliedChangesets.length})</h4>
-          {appliedChangesets.map(renderChangesetItem)}
+          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            Applied ({appliedChangesets.length})
+          </h4>
+          <div className="space-y-2">
+            {appliedChangesets.map(renderChangesetItem)}
+          </div>
         </div>
       )}
 
       {abandonedChangesets.length > 0 && (
         <div className="changeset-section">
-          <h4 className="section-title">Abandoned ({abandonedChangesets.length})</h4>
-          {abandonedChangesets.map(renderChangesetItem)}
+          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            Abandoned ({abandonedChangesets.length})
+          </h4>
+          <div className="space-y-2">
+            {abandonedChangesets.map(renderChangesetItem)}
+          </div>
         </div>
       )}
     </div>

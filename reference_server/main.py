@@ -430,6 +430,32 @@ async def get_model():
             content={"error": f"Failed to load model: {str(e)}"}
         )
 
+@app.get("/api/link-registry")
+async def get_link_registry():
+    """Get cross-layer link registry from .dr/schemas/link-registry.json"""
+
+    link_registry_file = DR_SCHEMAS_DIR / "link-registry.json"
+
+    if not link_registry_file.exists():
+        return JSONResponse(
+            status_code=404,
+            content={"error": "Link registry not found. Is dr CLI initialized?"}
+        )
+
+    try:
+        with open(link_registry_file, 'r') as f:
+            link_registry = json.load(f)
+
+        logger.info(f"Serving link registry with {link_registry.get('metadata', {}).get('totalLinkTypes', 0)} link types")
+        return link_registry
+
+    except Exception as e:
+        logger.error(f"Error loading link registry: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": f"Failed to load link registry: {str(e)}"}
+        )
+
 @app.get("/api/changesets")
 async def get_changesets():
     """List all changesets"""

@@ -29,6 +29,7 @@ components:
     dr-tier3-complete-reference.md:
       hash: 7e736c47
       modified: false
+  skills: {}
   templates:
     README.md:
       hash: c6558d2e
@@ -42,5 +43,5 @@ components:
     workflow-examples.md:
       hash: 9e217a1d
       modified: false
-installed_at: '2025-12-09T14:44:02.764919'
-version: 0.7.1
+installed_at: '2025-12-10T12:06:16.358984'
+version: 0.7.3

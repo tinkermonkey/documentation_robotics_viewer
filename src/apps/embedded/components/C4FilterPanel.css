@@ -1,13 +1,13 @@
 /**
  * C4FilterPanel Component Styles
- * Provides filtering controls styling for C4 visualization
+ * Minimal custom styles for Flowbite-based component
  */
 
 .c4-filter-panel {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 280px;
+  max-width: 256px;
   background-color: #ffffff;
   border-right: 1px solid #e2e8f0;
   overflow-y: auto;
@@ -26,28 +26,14 @@
   margin: 0;
   font-size: 14px;
   font-weight: 600;
-  color: #1e293b;
+  color: #64748b;
 }
 
-.clear-filters-button {
-  padding: 4px 8px;
-  border: 1px solid #cbd5e1;
-  border-radius: 4px;
-  background-color: #ffffff;
-  color: #475569;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.clear-filters-button:hover:not(:disabled) {
-  background-color: #f1f5f9;
-  border-color: #94a3b8;
-}
-
-.clear-filters-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+/* Custom icon styling */
+.filter-icon {
+  display: inline-flex;
+  align-items: center;
+  color: #64748b;
 }
 
 /* Filter Section */
@@ -225,6 +211,18 @@
 
 .technology-list::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* Checkbox Focus Indicators */
+.c4-filter-panel input[type=\"checkbox\"]:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Override Flowbite disabled label color for better contrast */
+.c4-filter-panel label[disabled] {
+  color: #64748b !important;
 }
 
 /* Responsive adjustments */

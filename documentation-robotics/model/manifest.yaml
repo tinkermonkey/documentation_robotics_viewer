@@ -1,9 +1,9 @@
 version: 0.1.0
 schema: documentation-robotics-v1
-cli_version: 0.7.1
-spec_version: 0.4.0
+cli_version: 0.7.3
+spec_version: 0.5.0
 created: '2025-12-05T22:17:22.732040Z'
-updated: '2025-12-10T12:52:11.680191Z'
+updated: '2025-12-13T21:37:10.373993Z'
 project:
   name: documentation_robotics_viewer
   description: Architecture model for documentation_robotics_viewer
@@ -131,4 +131,7 @@ upgrade_history:
 - from_version: 0.1.0
   to_version: 0.7.1
   upgraded_at: '2025-12-10T11:21:27.016401Z'
-upgraded_at: '2025-12-10T11:21:27.023377Z'
+- from_version: 0.1.0
+  to_version: 0.7.3
+  upgraded_at: '2025-12-10T17:06:16.340268Z'
+upgraded_at: '2025-12-10T17:06:16.375385Z'

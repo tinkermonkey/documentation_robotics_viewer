@@ -5,7 +5,7 @@
  * Reusable across changeset and motivation views.
  */
 
-import './OperationLegend.css';
+import { Badge } from 'flowbite-react';
 
 export interface OperationLegendProps {
   /** Show compact version (for smaller spaces) */
@@ -22,22 +22,19 @@ const OPERATIONS = [
   {
     type: 'add',
     label: 'Added',
-    borderColor: '#10b981',
-    backgroundColor: '#d1fae5',
+    color: 'success' as const,
     description: 'New elements added in changeset',
   },
   {
     type: 'update',
     label: 'Updated',
-    borderColor: '#f59e0b',
-    backgroundColor: '#fef3c7',
+    color: 'warning' as const,
     description: 'Modified elements in changeset',
   },
   {
     type: 'delete',
     label: 'Deleted',
-    borderColor: '#ef4444',
-    backgroundColor: '#fee2e2',
+    color: 'failure' as const,
     description: 'Elements marked for deletion',
   },
 ] as const;
@@ -50,29 +47,23 @@ export const OperationLegend: React.FC<OperationLegendProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`operation-legend ${compact ? 'operation-legend--compact' : ''} ${className}`}>
-      <div className="operation-legend__header">
-        <span className="operation-legend__title">Changeset Operations</span>
+    <div className={`${compact ? 'p-2' : 'p-3'} ${className}`}>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+          Changeset Operations
+        </span>
       </div>
-      <div className="operation-legend__items">
+      <div className="flex flex-wrap gap-2">
         {OPERATIONS.map((op) => (
-          <div
+          <Badge
             key={op.type}
-            className="operation-legend__item"
+            color={op.color}
+            size="sm"
             title={op.description}
             aria-label={`${op.label}: ${op.description}`}
           >
-            <div
-              className="operation-legend__sample"
-              style={{
-                border: `2px solid ${op.borderColor}`,
-                backgroundColor: op.backgroundColor,
-                opacity: op.type === 'delete' ? 0.6 : 1,
-              }}
-              aria-hidden="true"
-            />
-            <span className="operation-legend__label">{op.label}</span>
-          </div>
+            {op.label}
+          </Badge>
         ))}
       </div>
     </div>

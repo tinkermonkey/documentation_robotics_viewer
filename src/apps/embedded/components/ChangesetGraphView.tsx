@@ -8,7 +8,7 @@ import { useState, useEffect, useMemo } from 'react';
 import GraphViewer from '../../../core/components/GraphViewer';
 import { ChangesetGraphBuilder, ChangesetDetails } from '../services/changesetGraphBuilder';
 import { MetaModel } from '../../../core/types';
-import './ChangesetGraphView.css';
+
 
 export interface ChangesetGraphViewProps {
   changeset: ChangesetDetails | null;
@@ -66,7 +66,7 @@ const ChangesetGraphView: React.FC<ChangesetGraphViewProps> = ({ changeset }) =>
   // Loading state
   if (loading) {
     return (
-      <div className="changeset-graph-container">
+      <div className="relative w-full h-full">
         <div className="message-overlay">
           <div className="message-box">
             <div className="spinner"></div>
@@ -80,7 +80,7 @@ const ChangesetGraphView: React.FC<ChangesetGraphViewProps> = ({ changeset }) =>
   // Error state
   if (error) {
     return (
-      <div className="changeset-graph-container">
+      <div className="relative w-full h-full">
         <div className="message-overlay">
           <div className="message-box error">
             <h3>Error</h3>
@@ -94,7 +94,7 @@ const ChangesetGraphView: React.FC<ChangesetGraphViewProps> = ({ changeset }) =>
   // Empty state
   if (!changeset) {
     return (
-      <div className="changeset-graph-container">
+      <div className="relative w-full h-full">
         <div className="message-overlay">
           <div className="message-box">
             <p>Select a changeset to view its graph</p>
@@ -107,7 +107,7 @@ const ChangesetGraphView: React.FC<ChangesetGraphViewProps> = ({ changeset }) =>
   // No changes state
   if (!model) {
     return (
-      <div className="changeset-graph-container">
+      <div className="relative w-full h-full">
         <div className="message-overlay">
           <div className="message-box">
             <p>No changes to display</p>
@@ -119,20 +119,20 @@ const ChangesetGraphView: React.FC<ChangesetGraphViewProps> = ({ changeset }) =>
 
   // Render GraphViewer with operation legend
   return (
-    <div className="changeset-graph-container">
-      <div className="operation-legend">
-        <div className="legend-title">Operations:</div>
-        <div className="legend-item add">
-          <span className="legend-color"></span>
-          <span className="legend-label">Added</span>
+    <div className="relative w-full h-full">
+      <div className="absolute top-4 right-4 bg-white/95 dark:bg-gray-800/95 border border-gray-200 dark:border-gray-700 rounded-lg p-3 shadow-lg z-10 flex items-center gap-4 text-sm">
+        <div className="font-semibold text-gray-700 dark:text-gray-300 mr-1">Operations:</div>
+        <div className="flex items-center gap-2">
+          <span className="w-4 h-4 rounded border-2 bg-green-100 border-green-500"></span>
+          <span className="text-gray-600 dark:text-gray-400 font-medium">Added</span>
         </div>
-        <div className="legend-item update">
-          <span className="legend-color"></span>
-          <span className="legend-label">Updated</span>
+        <div className="flex items-center gap-2">
+          <span className="w-4 h-4 rounded border-2 bg-amber-100 border-amber-500"></span>
+          <span className="text-gray-600 dark:text-gray-400 font-medium">Updated</span>
         </div>
-        <div className="legend-item delete">
-          <span className="legend-color"></span>
-          <span className="legend-label">Deleted</span>
+        <div className="flex items-center gap-2">
+          <span className="w-4 h-4 rounded border-2 bg-red-100 border-red-500"></span>
+          <span className="text-gray-600 dark:text-gray-400 font-medium">Deleted</span>
         </div>
       </div>
       <GraphViewer model={model} />

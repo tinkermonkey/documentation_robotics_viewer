@@ -3,7 +3,8 @@ import { useNavigate, useParams } from '@tanstack/react-router';
 import ChangesetList from '../components/ChangesetList';
 import ChangesetViewer from '../components/ChangesetViewer';
 import ChangesetGraphView from '../components/ChangesetGraphView';
-import ViewTabSwitcher from '../components/ViewTabSwitcher';
+import AnnotationPanel from '../components/AnnotationPanel';
+import SharedLayout from '../components/SharedLayout';
 import { useChangesetStore } from '../stores/changesetStore';
 import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
@@ -88,11 +89,14 @@ export default function ChangesetRoute() {
   };
 
   if (changesetStore.loading && !changesetStore.changesets.length) {
-     return (
-      <div className="message-overlay">
-        <div className="message-box">
-          <div className="spinner"></div>
-          <p>Loading changesets...</p>
+    return (
+      <div className="flex items-center justify-center h-full bg-gray-50">
+        <div className="bg-white rounded-lg border p-6 text-center">
+          <svg className="animate-spin h-8 w-8 mx-auto mb-4 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <p className="text-gray-700">Loading changesets...</p>
         </div>
       </div>
     );
@@ -100,33 +104,29 @@ export default function ChangesetRoute() {
 
   if (changesetStore.error) {
     return (
-      <div className="message-overlay">
-        <div className="message-box error">
-          <h3>Error</h3>
-          <p>{changesetStore.error}</p>
+      <div className="flex items-center justify-center h-full bg-gray-50">
+        <div className="bg-white rounded-lg border border-red-200 p-6 max-w-md">
+          <h3 className="text-lg font-medium text-red-800 mb-2">Error</h3>
+          <p className="text-red-600">{changesetStore.error}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="changeset-view">
-      <ChangesetList onChangesetSelect={handleChangesetSelect} />
-      <div className="changeset-viewer-container">
-        <ViewTabSwitcher
-          options={[
-            { value: 'graph', label: 'Graph', icon: '📊' },
-            { value: 'list', label: 'List', icon: '📋' }
-          ]}
-          activeView={activeView}
-          onChange={(v) => navigate({ to: `/changesets/${v}` })}
-        />
+    <SharedLayout
+      showLeftSidebar={true}
+      showRightSidebar={true}
+      leftSidebarContent={<ChangesetList onChangesetSelect={handleChangesetSelect} />}
+      rightSidebarContent={<AnnotationPanel />}
+    >
+      <div className="flex flex-col h-full overflow-hidden">
         {activeView === 'graph' ? (
           <ChangesetGraphView changeset={changesetStore.selectedChangeset} />
         ) : (
           <ChangesetViewer />
         )}
       </div>
-    </div>
+    </SharedLayout>
   );
 }

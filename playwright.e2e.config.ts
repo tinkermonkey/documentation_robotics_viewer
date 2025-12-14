@@ -16,7 +16,7 @@ export default defineConfig({
     'embedded-app.spec.ts',
     'embedded-dual-view.spec.ts',
     'embedded-firefox-layout.spec.ts',
-    'motivation-view.spec.ts',
+    'embedded-motivation-view.spec.ts',
     'c4-architecture-view.spec.ts',
     'c4-accessibility.spec.ts',
     'c4-performance.spec.ts',
@@ -27,7 +27,7 @@ export default defineConfig({
   workers: 1, // Single worker for E2E tests
   reporter: [
     ['list'],
-    ['html', { outputFolder: 'playwright-report/e2e' }],
+    ['html', { outputFolder: 'playwright-report/e2e', open: 'never' }],
     ['json', { outputFile: 'test-results/e2e-results.json' }]
   ],
 

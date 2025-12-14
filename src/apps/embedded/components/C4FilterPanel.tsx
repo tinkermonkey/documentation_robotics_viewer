@@ -9,9 +9,10 @@
  * - Collapsible sections for organization
  */
 
-import { useState } from 'react';
 import './C4FilterPanel.css';
 import { ContainerType } from '../types/c4Graph';
+import { Accordion, AccordionPanel, AccordionTitle, AccordionContent, Checkbox, Label, Button } from 'flowbite-react';
+import { X } from 'lucide-react';
 
 export interface C4FilterCounts {
   containerTypes: Record<ContainerType, { visible: number; total: number }>;
@@ -139,8 +140,8 @@ export const C4FilterPanel: React.FC<C4FilterPanelProps> = ({
   onTechnologyChange,
   onClearAllFilters,
 }) => {
-  const [containerTypesExpanded, setContainerTypesExpanded] = useState(true);
-  const [technologiesExpanded, setTechnologiesExpanded] = useState(true);
+  // const [containerTypesExpanded, setContainerTypesExpanded] = useState(true);
+  // const [technologiesExpanded, setTechnologiesExpanded] = useState(true);
 
   /**
    * Check if all container types are selected
@@ -170,13 +171,13 @@ export const C4FilterPanel: React.FC<C4FilterPanelProps> = ({
   /**
    * Calculate total visible/total for technologies
    */
-  const totalTechnologyCounts = Object.values(filterCounts.technologies || {}).reduce(
-    (acc, counts) => ({
-      visible: acc.visible + (counts?.visible || 0),
-      total: acc.total + (counts?.total || 0),
-    }),
-    { visible: 0, total: 0 }
-  );
+  // const totalTechnologyCounts = Object.values(filterCounts.technologies || {}).reduce(
+  //   (acc, counts) => ({
+  //     visible: acc.visible + (counts?.visible || 0),
+  //     total: acc.total + (counts?.total || 0),
+  //   }),
+  //   { visible: 0, total: 0 }
+  // );
 
   /**
    * Handle "Select All" container types
@@ -226,186 +227,144 @@ export const C4FilterPanel: React.FC<C4FilterPanelProps> = ({
     <div className="c4-filter-panel" aria-label="C4 element filters">
       <div className="filter-panel-header">
         <h3>Filters</h3>
-        <button
-          className="clear-filters-button"
+        <Button
+          color="gray"
+          size="xs"
           onClick={onClearAllFilters}
           disabled={allContainerTypesSelected && allTechnologiesSelected}
           title="Clear all filters and show all elements"
         >
+          <X className="mr-1 h-3 w-3" />
           Clear All
-        </button>
+        </Button>
       </div>
 
-      {/* Container Types Section */}
-      <div className="filter-section">
-        <div
-          className="filter-section-header"
-          onClick={() => setContainerTypesExpanded(!containerTypesExpanded)}
-          role="button"
-          tabIndex={0}
-          aria-expanded={containerTypesExpanded}
-          aria-controls="container-types-content"
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              setContainerTypesExpanded(!containerTypesExpanded);
-            }
-          }}
-        >
-          <span className="expand-icon" aria-hidden="true">
-            {containerTypesExpanded ? '▼' : '▶'}
-          </span>
-          <h4>Container Types</h4>
-          <span
-            className="filter-count"
-            aria-label={`${totalContainerCounts.visible} of ${totalContainerCounts.total} container types visible`}
-          >
-            {totalContainerCounts.visible} / {totalContainerCounts.total}
-          </span>
-        </div>
-
-        {containerTypesExpanded && (
-          <div
-            className="filter-section-content"
-            id="container-types-content"
-            role="region"
-            aria-label="Container type filters"
-          >
-            <div className="filter-actions">
-              <button
-                className="filter-action-button"
+      <Accordion collapseAll={false}>
+        {/* Container Types Section */}
+        <AccordionPanel>
+          <AccordionTitle>
+            <div className="flex items-center justify-between w-full pr-4">
+              <span>Container Types</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                {totalContainerCounts.visible} / {totalContainerCounts.total}
+              </span>
+            </div>
+          </AccordionTitle>
+          <AccordionContent>
+            <div className="flex gap-2 mb-3">
+              <Button
+                size="xs"
+                color="light"
                 onClick={handleSelectAllContainerTypes}
                 disabled={allContainerTypesSelected}
-                aria-label="Select all container types"
               >
                 Select All
-              </button>
-              <button
-                className="filter-action-button"
+              </Button>
+              <Button
+                size="xs"
+                color="light"
                 onClick={handleDeselectAllContainerTypes}
                 disabled={selectedContainerTypes.size === 0}
-                aria-label="Deselect all container types"
               >
                 Deselect All
-              </button>
+              </Button>
             </div>
 
-            <div className="filter-checkboxes" role="group" aria-label="Container type checkboxes">
+            <div className="space-y-2">
               {Object.values(ContainerType).map((containerType) => {
                 const counts = filterCounts.containerTypes?.[containerType];
                 const isSelected = selectedContainerTypes.has(containerType);
                 const hasElements = counts && counts.total > 0;
 
                 return (
-                  <label
-                    key={containerType}
-                    className={`filter-checkbox-label ${!hasElements ? 'disabled' : ''}`}
-                  >
-                    <input
-                      type="checkbox"
+                  <div key={containerType} className="flex items-center justify-between">
+                    <Checkbox
+                      id={`container-${containerType}`}
                       checked={isSelected}
                       onChange={(e) => onContainerTypeChange(containerType, e.target.checked)}
                       disabled={!hasElements}
-                      aria-label={`${CONTAINER_TYPE_LABELS[containerType]}: ${counts ? `${counts.visible} of ${counts.total} visible` : 'none available'}`}
                     />
-                    <span className="filter-icon">{CONTAINER_TYPE_ICONS[containerType]}</span>
-                    <span className="filter-label-text">{CONTAINER_TYPE_LABELS[containerType]}</span>
-                    <span className="filter-count-badge" aria-hidden="true">
-                      {counts ? `${counts.visible}/${counts.total}` : '0/0'}
-                    </span>
-                  </label>
+                    <Label
+                      htmlFor={`container-${containerType}`}
+                      className="flex items-center gap-2 flex-1 ml-2"
+                      disabled={!hasElements}
+                    >
+                      <span className="filter-icon" aria-hidden="true">{CONTAINER_TYPE_ICONS[containerType]}</span>
+                      <span className="flex-1">{CONTAINER_TYPE_LABELS[containerType]}</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {counts ? `${counts.visible}/${counts.total}` : '0/0'}
+                      </span>
+                    </Label>
+                  </div>
                 );
               })}
             </div>
-          </div>
-        )}
-      </div>
+          </AccordionContent>
+        </AccordionPanel>
+      </Accordion>
 
-      {/* Technologies Section */}
+      {/* Technologies Section - Separate Accordion */}
       {availableTechnologies.length > 0 && (
-        <div className="filter-section">
-          <div
-            className="filter-section-header"
-            onClick={() => setTechnologiesExpanded(!technologiesExpanded)}
-            role="button"
-            tabIndex={0}
-            aria-expanded={technologiesExpanded}
-            aria-controls="technologies-content"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                setTechnologiesExpanded(!technologiesExpanded);
-              }
-            }}
-          >
-            <span className="expand-icon" aria-hidden="true">
-              {technologiesExpanded ? '▼' : '▶'}
-            </span>
-            <h4>Technology Stack</h4>
-            <span
-              className="filter-count"
-              aria-label={`${totalTechnologyCounts.visible} of ${totalTechnologyCounts.total} technologies visible`}
-            >
-              {selectedTechnologyStacks.size} / {availableTechnologies.length}
-            </span>
-          </div>
-
-          {technologiesExpanded && (
-            <div
-              className="filter-section-content"
-              id="technologies-content"
-              role="region"
-              aria-label="Technology stack filters"
-            >
-              <div className="filter-actions">
-                <button
-                  className="filter-action-button"
+        <Accordion collapseAll={false}>
+          <AccordionPanel>
+            <AccordionTitle>
+              <div className="flex items-center justify-between w-full pr-4">
+                <span>Technology Stack</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {selectedTechnologyStacks.size} / {availableTechnologies.length}
+                </span>
+              </div>
+            </AccordionTitle>
+            <AccordionContent>
+              <div className="flex gap-2 mb-3">
+                <Button
+                  size="xs"
+                  color="light"
                   onClick={handleSelectAllTechnologies}
                   disabled={allTechnologiesSelected}
-                  aria-label="Select all technologies"
                 >
                   Select All
-                </button>
-                <button
-                  className="filter-action-button"
+                </Button>
+                <Button
+                  size="xs"
+                  color="light"
                   onClick={handleDeselectAllTechnologies}
                   disabled={selectedTechnologyStacks.size === 0}
-                  aria-label="Deselect all technologies"
                 >
                   Deselect All
-                </button>
+                </Button>
               </div>
 
-              <div
-                className="filter-checkboxes technology-list"
-                role="group"
-                aria-label="Technology checkboxes"
-              >
+              <div className="space-y-2">
                 {availableTechnologies.map((technology) => {
                   const counts = filterCounts.technologies?.[technology];
                   const isSelected = selectedTechnologyStacks.has(technology);
 
                   return (
-                    <label key={technology} className="filter-checkbox-label">
-                      <input
-                        type="checkbox"
+                    <div key={technology} className="flex items-center justify-between">
+                      <Checkbox
+                        id={`tech-${technology}`}
                         checked={isSelected}
                         onChange={(e) => onTechnologyChange(technology, e.target.checked)}
-                        aria-label={`${technology}: ${counts ? `${counts.visible} of ${counts.total} visible` : 'available'}`}
                       />
-                      <span className="filter-label-text technology-name">{technology}</span>
-                      {counts && (
-                        <span className="filter-count-badge" aria-hidden="true">
-                          {counts.visible}/{counts.total}
-                        </span>
-                      )}
-                    </label>
+                      <Label
+                        htmlFor={`tech-${technology}`}
+                        className="flex items-center gap-2 flex-1 ml-2"
+                      >
+                        <span className="flex-1">{technology}</span>
+                        {counts && (
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                            {counts.visible}/{counts.total}
+                          </span>
+                        )}
+                      </Label>
+                    </div>
                   );
                 })}
               </div>
-            </div>
-          )}
-        </div>
+            </AccordionContent>
+          </AccordionPanel>
+        </Accordion>
       )}
     </div>
   );
