@@ -112,28 +112,24 @@ export const PrincipleNode = React.memo(({ data, selected }: NodeProps<Node<Prin
         type="target"
         position={Position.Top}
         id="top"
-        aria-label="Top connection point"
         style={{ background: borderColor }}
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="bottom"
-        aria-label="Bottom connection point"
         style={{ background: borderColor }}
       />
       <Handle
         type="target"
         position={Position.Left}
         id="left"
-        aria-label="Left connection point"
         style={{ background: borderColor }}
       />
       <Handle
         type="source"
         position={Position.Right}
         id="right"
-        aria-label="Right connection point"
         style={{ background: borderColor }}
       />
 

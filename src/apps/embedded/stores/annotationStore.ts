@@ -5,11 +5,13 @@
 
 import { create } from 'zustand';
 import { Annotation } from '../types/annotations';
+import { embeddedDataLoader } from '../services/embeddedDataLoader';
 
 interface AnnotationStore {
   // State
   annotations: Annotation[];
   selectedElementId: string | null;
+  highlightedElementId: string | null;
   loading: boolean;
   error: string | null;
 
@@ -19,9 +21,15 @@ interface AnnotationStore {
   updateAnnotation: (id: string, updates: Partial<Annotation>) => void;
   removeAnnotation: (id: string) => void;
   setSelectedElementId: (elementId: string | null) => void;
+  setHighlightedElementId: (elementId: string | null) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   reset: () => void;
+
+  // Async actions
+  createAnnotation: (elementId: string, content: string, author: string) => Promise<void>;
+  resolveAnnotation: (id: string) => Promise<void>;
+  deleteAnnotation: (id: string) => Promise<void>;
 
   // Computed
   getAnnotationsForElement: (elementId: string) => Annotation[];
@@ -33,6 +41,7 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
   // Initial state
   annotations: [],
   selectedElementId: null,
+  highlightedElementId: null,
   loading: false,
   error: null,
 
@@ -55,6 +64,8 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
 
   setSelectedElementId: (elementId) => set({ selectedElementId: elementId }),
 
+  setHighlightedElementId: (elementId) => set({ highlightedElementId: elementId }),
+
   setLoading: (loading) => set({ loading }),
 
   setError: (error) => set({ error }),
@@ -62,9 +73,89 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
   reset: () => set({
     annotations: [],
     selectedElementId: null,
+    highlightedElementId: null,
     loading: false,
     error: null
   }),
+
+  // Async actions with optimistic updates
+  createAnnotation: async (elementId, content, author) => {
+    try {
+      set({ error: null });
+
+      // Optimistic update: create temporary annotation
+      const tempId = `temp-${Date.now()}`;
+      const tempAnnotation: Annotation = {
+        id: tempId,
+        elementId,
+        author,
+        content,
+        createdAt: new Date().toISOString(),
+        resolved: false,
+      };
+
+      get().addAnnotation(tempAnnotation);
+
+      // Call API
+      const createdAnnotation = await embeddedDataLoader.createAnnotation({
+        elementId,
+        content,
+        author,
+      });
+
+      // Replace temp annotation with real one
+      set((state) => ({
+        annotations: state.annotations.map(ann =>
+          ann.id === tempId ? createdAnnotation : ann
+        )
+      }));
+
+      console.log('[AnnotationStore] Created annotation:', createdAnnotation.id);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to create annotation';
+      set({ error: errorMessage });
+      console.error('[AnnotationStore] Failed to create annotation:', err);
+      throw err;
+    }
+  },
+
+  resolveAnnotation: async (id) => {
+    try {
+      set({ error: null });
+
+      // Optimistic update
+      get().updateAnnotation(id, { resolved: true });
+
+      // Call API
+      await embeddedDataLoader.resolveAnnotation(id);
+
+      console.log('[AnnotationStore] Resolved annotation:', id);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to resolve annotation';
+      set({ error: errorMessage });
+      console.error('[AnnotationStore] Failed to resolve annotation:', err);
+      throw err;
+    }
+  },
+
+  deleteAnnotation: async (id) => {
+    try {
+      set({ error: null });
+
+      // Optimistic update
+      get().removeAnnotation(id);
+
+      // Call API
+      await embeddedDataLoader.deleteAnnotation(id);
+
+      console.log('[AnnotationStore] Deleted annotation:', id);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to delete annotation';
+      set({ error: errorMessage });
+      console.error('[AnnotationStore] Failed to delete annotation:', err);
+      throw err;
+    }
+  },
 
   // Computed getters
   getAnnotationsForElement: (elementId) => {

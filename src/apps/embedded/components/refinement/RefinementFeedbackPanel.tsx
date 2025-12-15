@@ -13,7 +13,6 @@ import {
   FeedbackIntensity,
   QualityTier,
 } from '../../types/refinement';
-import './RefinementFeedbackPanel.css';
 
 /**
  * Get quality tier from combined score

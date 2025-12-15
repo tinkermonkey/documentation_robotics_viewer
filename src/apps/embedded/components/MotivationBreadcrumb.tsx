@@ -7,7 +7,8 @@
 
 import React from 'react';
 import { MotivationGraphNode } from '../types/motivationGraph';
-import './MotivationBreadcrumb.css';
+import { Breadcrumb, Badge, Button } from 'flowbite-react';
+import { X } from 'lucide-react';
 
 export interface BreadcrumbItem {
   /** Node ID */
@@ -42,38 +43,38 @@ export const MotivationBreadcrumb: React.FC<MotivationBreadcrumbProps> = ({
 
   return (
     <div className="motivation-breadcrumb" role="navigation" aria-label="Focus path navigation">
-      <div className="motivation-breadcrumb-items">
-        {path.map((item, index) => (
-          <React.Fragment key={item.id}>
-            <button
-              className={`motivation-breadcrumb-item ${
-                index === path.length - 1 ? 'motivation-breadcrumb-item-current' : ''
-              }`}
-              onClick={() => onNavigate(item.id)}
-              aria-label={`Navigate to ${item.name}`}
-              aria-current={index === path.length - 1 ? 'location' : undefined}
-            >
-              <span className="motivation-breadcrumb-type-badge">{item.type}</span>
-              <span className="motivation-breadcrumb-name">{item.name}</span>
-            </button>
+      <Breadcrumb>
+        {path.map((item, index) => {
+          const isLast = index === path.length - 1;
 
-            {index < path.length - 1 && (
-              <span className="motivation-breadcrumb-separator" aria-hidden="true">
-                →
-              </span>
-            )}
-          </React.Fragment>
-        ))}
-      </div>
+          return (
+            <li key={item.id} className="flex items-center">
+              <button
+                onClick={() => onNavigate(item.id)}
+                className="inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white"
+              >
+                <Badge color="purple" size="sm">{item.type}</Badge>
+                <span className={isLast ? 'font-semibold' : ''}>{item.name}</span>
+              </button>
+              {!isLast && (
+                <svg className="w-3 h-3 mx-1 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4"/>
+                </svg>
+              )}
+            </li>
+          );
+        })}
+      </Breadcrumb>
 
-      <button
-        className="motivation-breadcrumb-clear"
+      <Button
+        color="gray"
+        size="xs"
         onClick={onClearFocus}
-        aria-label="Clear focus and show full graph"
+        pill
         title="Clear focus"
       >
-        ✖
-      </button>
+        <X className="h-3 w-3" />
+      </Button>
     </div>
   );
 };

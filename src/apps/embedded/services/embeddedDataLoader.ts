@@ -4,9 +4,48 @@
  */
 
 import { MetaModel } from '../../../core/types';
-import { Annotation } from '../types/annotations';
+import { Annotation, AnnotationCreate, AnnotationUpdate } from '../types/annotations';
 
 const API_BASE = '/api';
+
+export interface LinkType {
+  id: string;
+  name: string;
+  category: string;
+  sourceLayers: string[];
+  targetLayer: string;
+  targetElementTypes: string[];
+  fieldPaths: string[];
+  cardinality: string;
+  format: string;
+  description: string;
+  examples: string[];
+  validationRules: {
+    targetExists: boolean;
+    targetType: string;
+  };
+}
+
+export interface LinkCategory {
+  name: string;
+  description: string;
+  color: string;
+}
+
+export interface LinkRegistry {
+  version: string;
+  linkTypes: LinkType[];
+  categories: Record<string, LinkCategory>;
+  metadata: {
+    generatedDate: string;
+    generatedFrom: string;
+    generator: string;
+    totalLinkTypes: number;
+    totalCategories: number;
+    version: string;
+    schemaVersion: string;
+  };
+}
 
 export interface SpecDataResponse {
   version: string;
@@ -14,6 +53,7 @@ export interface SpecDataResponse {
   description?: string;
   source?: string;
   schemas: Record<string, any>;
+  linkRegistry?: LinkRegistry;
 }
 
 export interface ChangesetSummary {
@@ -89,10 +129,43 @@ export class EmbeddedDataLoader {
     }
 
     const data = await response.json();
+
+    // Also load link registry
+    let linkRegistry: LinkRegistry | undefined;
+    try {
+      linkRegistry = await this.loadLinkRegistry();
+    } catch (err) {
+      console.warn('[EmbeddedDataLoader] Failed to load link registry:', err);
+    }
+
     console.log('[EmbeddedDataLoader] Loaded spec from server:', {
       version: data.version,
       type: data.type,
-      schemaCount: data.schemas ? Object.keys(data.schemas).length : 0
+      schemaCount: data.schemas ? Object.keys(data.schemas).length : 0,
+      hasLinkRegistry: !!linkRegistry,
+      linkTypesCount: linkRegistry?.linkTypes?.length || 0
+    });
+
+    return {
+      ...data,
+      linkRegistry
+    };
+  }
+
+  /**
+   * Load link registry
+   */
+  async loadLinkRegistry(): Promise<LinkRegistry> {
+    const response = await fetch(`${API_BASE}/link-registry`);
+
+    if (!response.ok) {
+      throw new Error(`Failed to load link registry: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log('[EmbeddedDataLoader] Loaded link registry:', {
+      linkTypesCount: data.linkTypes?.length || 0,
+      categoriesCount: Object.keys(data.categories || {}).length
     });
     return data;
   }
@@ -181,6 +254,70 @@ export class EmbeddedDataLoader {
 
     const data = await response.json();
     return data.annotations || [];
+  }
+
+  /**
+   * Create a new annotation
+   */
+  async createAnnotation(input: AnnotationCreate & { author: string }): Promise<Annotation> {
+    const response = await fetch(`${API_BASE}/annotations`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(input),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to create annotation: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log('Created annotation:', data.id);
+    return data;
+  }
+
+  /**
+   * Update an existing annotation
+   */
+  async updateAnnotation(id: string, updates: Omit<AnnotationUpdate, 'id'>): Promise<Annotation> {
+    const response = await fetch(`${API_BASE}/annotations/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updates),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to update annotation: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log('Updated annotation:', id);
+    return data;
+  }
+
+  /**
+   * Resolve an annotation
+   */
+  async resolveAnnotation(id: string): Promise<Annotation> {
+    return this.updateAnnotation(id, { resolved: true });
+  }
+
+  /**
+   * Delete an annotation
+   */
+  async deleteAnnotation(id: string): Promise<void> {
+    const response = await fetch(`${API_BASE}/annotations/${id}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete annotation: ${response.statusText}`);
+    }
+
+    console.log('Deleted annotation:', id);
   }
 }
 

@@ -6,7 +6,6 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import './MotivationContextMenu.css';
 
 export interface ContextMenuProps {
   /** Screen coordinates for menu positioning */
@@ -112,45 +111,45 @@ export const MotivationContextMenu: React.FC<ContextMenuProps> = ({
   return (
     <div
       ref={menuRef}
-      className="motivation-context-menu"
+      className="fixed bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg min-w-[200px] z-[10000] overflow-hidden"
       style={getMenuStyle()}
       role="menu"
       aria-label="Node actions menu"
     >
-      <div className="motivation-context-menu-header">
-        <span className="motivation-context-menu-title">{nodeName}</span>
+      <div className="px-3 py-2 bg-gray-100 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600">
+        <span className="text-sm font-semibold text-gray-900 dark:text-white block whitespace-nowrap overflow-hidden text-ellipsis max-w-[180px]">{nodeName}</span>
       </div>
 
-      <div className="motivation-context-menu-items">
+      <div className="py-1">
         <button
-          className="motivation-context-menu-item"
+          className="w-full flex items-center gap-2.5 px-3 py-2 bg-transparent border-0 cursor-pointer text-sm text-gray-900 dark:text-white text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 dark:active:bg-gray-600"
           onClick={handleTraceUpstream}
           role="menuitem"
           aria-label={`Trace upstream influences from ${nodeName}`}
         >
-          <span className="motivation-context-menu-icon">⬆️</span>
+          <span className="text-sm w-4 h-4 inline-flex items-center justify-center">⬆️</span>
           <span>Trace Upstream</span>
         </button>
 
         <button
-          className="motivation-context-menu-item"
+          className="w-full flex items-center gap-2.5 px-3 py-2 bg-transparent border-0 cursor-pointer text-sm text-gray-900 dark:text-white text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 dark:active:bg-gray-600"
           onClick={handleTraceDownstream}
           role="menuitem"
           aria-label={`Trace downstream impacts from ${nodeName}`}
         >
-          <span className="motivation-context-menu-icon">⬇️</span>
+          <span className="text-sm w-4 h-4 inline-flex items-center justify-center">⬇️</span>
           <span>Trace Downstream</span>
         </button>
 
-        <div className="motivation-context-menu-divider" role="separator" />
+        <div className="h-px bg-gray-300 dark:bg-gray-600 my-1" role="separator" />
 
         <button
-          className="motivation-context-menu-item"
+          className="w-full flex items-center gap-2.5 px-3 py-2 bg-transparent border-0 cursor-pointer text-sm text-gray-900 dark:text-white text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 dark:active:bg-gray-600"
           onClick={handleClearHighlighting}
           role="menuitem"
           aria-label="Clear all path highlighting"
         >
-          <span className="motivation-context-menu-icon">✖️</span>
+          <span className="text-sm w-4 h-4 inline-flex items-center justify-center">✖️</span>
           <span>Clear Highlighting</span>
         </button>
       </div>

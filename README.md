@@ -33,13 +33,16 @@ A React-based graph visualization tool for the documentation robotics meta-model
 │   ├── manifest.yaml              # Model orchestration file
 │   └── model/                     # YAML layer files
 ├── tests/                         # Playwright test suites
-│   ├── e2e/                       # End-to-end tests
-│   ├── embedded/                  # Embedded mode tests
+│   ├── e2e/                       # E2E test helpers
 │   ├── integration/               # Integration tests
-│   └── unit/                      # Unit tests
+│   ├── unit/                      # Unit tests
+│   ├── refinement/                # Layout refinement tests
+│   └── metrics/                   # Quality metrics tests
 ├── documentation/                 # Project documentation
 ├── vite.config.ts                 # Vite configurations
-├── playwright.config.ts           # Test configurations
+├── playwright.config.ts           # Default test config
+├── playwright.e2e.config.ts       # E2E test config (with servers)
+├── playwright.refinement.config.ts # Refinement/metrics config
 └── package.json                   # Dependencies and scripts
 ```
 
@@ -96,7 +99,7 @@ Open [http://localhost:3001](http://localhost:3001) to view the application.
 npm test
 
 # Embedded tests only (requires reference server running)
-npm run test:embedded
+npm run test:e2e
 
 # E2E tests with UI
 npm run test:e2e:ui
@@ -107,9 +110,7 @@ Expected results: **20/22 tests passing (91% pass rate)**
 ### Building for Production
 
 ```bash
-npm run build        # Builds both debug and embedded modes
-npm run build:debug  # Debug mode only
-npm run build:embedded  # Embedded mode only
+npm run build  # Builds embedded mode
 ```
 
 The production build will be output to the `dist/` directory.

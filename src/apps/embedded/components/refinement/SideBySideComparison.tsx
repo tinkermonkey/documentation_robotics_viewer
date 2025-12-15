@@ -15,7 +15,6 @@ import {
   SideBySideComparisonProps,
   ComparisonViewMode,
 } from '../../types/refinement';
-import './SideBySideComparison.css';
 
 interface ViewState {
   zoom: number;

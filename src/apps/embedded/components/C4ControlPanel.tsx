@@ -12,7 +12,8 @@
  */
 
 import React from 'react';
-import './C4ControlPanel.css';
+import { Button, Select, Label, ToggleSwitch, Spinner, ButtonGroup } from 'flowbite-react';
+import { Grid, Download, X } from 'lucide-react';
 import { C4ViewLevel, C4ScenarioPreset, C4_SCENARIO_PRESETS } from '../types/c4Graph';
 
 export type C4LayoutAlgorithm = 'hierarchical' | 'orthogonal' | 'force' | 'manual';
@@ -229,61 +230,58 @@ export const C4ControlPanel: React.FC<C4ControlPanelProps> = ({
     <div className="c4-control-panel">
       {/* View Level Switcher */}
       <div className="control-panel-section">
-        <label className="control-label">View Level</label>
-        <div className="view-level-buttons" role="radiogroup" aria-label="Select view level">
+        <Label>View Level</Label>
+        <ButtonGroup className="w-full">
           {VIEW_LEVEL_OPTIONS.map((option) => {
             const isDisabled =
               isLayouting ||
               (option.value === 'component' && !hasSelectedContainer);
 
             return (
-              <button
+              <Button
                 key={option.value}
-                className={`view-level-button ${currentViewLevel === option.value ? 'active' : ''}`}
+                color={currentViewLevel === option.value ? 'blue' : 'gray'}
                 onClick={() => onViewLevelChange(option.value)}
                 disabled={isDisabled}
-                role="radio"
-                aria-checked={currentViewLevel === option.value}
-                aria-label={option.description}
+                size="sm"
+                className="flex-1 view-level-button"
                 title={option.description}
               >
-                <span className="view-level-icon">{option.icon}</span>
-                <span className="view-level-label">{option.label}</span>
-              </button>
+                <span className="mr-2">{option.icon}</span>
+                <span>{option.label}</span>
+              </Button>
             );
           })}
-        </div>
+        </ButtonGroup>
       </div>
 
       {/* Layout Algorithm Selector */}
       <div className="control-panel-section">
-        <label htmlFor="c4-layout-selector" className="control-label">
-          Layout Algorithm
-        </label>
-        <select
-          id="c4-layout-selector"
-          className="layout-selector"
-          value={selectedLayout}
-          onChange={(e) => onLayoutChange(e.target.value as C4LayoutAlgorithm)}
-          disabled={isLayouting}
-          aria-label="Select layout algorithm"
-          aria-describedby="c4-layout-description"
-        >
-          {LAYOUT_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-        <div id="c4-layout-description" className="control-description" role="status" aria-live="polite">
-          {LAYOUT_OPTIONS.find((opt) => opt.value === selectedLayout)?.description}
+        <div className="space-y-2">
+          <Label htmlFor="c4-layout-selector">Layout Algorithm</Label>
+          <Select
+            id="c4-layout-selector"
+            value={selectedLayout}
+            onChange={(e) => onLayoutChange(e.target.value as C4LayoutAlgorithm)}
+            disabled={isLayouting}
+            className="layout-selector"
+          >
+            {LAYOUT_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </Select>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {LAYOUT_OPTIONS.find((opt) => opt.value === selectedLayout)?.description}
+          </p>
         </div>
       </div>
 
       {/* Scenario Preset Selector */}
       {onScenarioPresetChange && (
         <div className="control-panel-section">
-          <label className="control-label">Scenario Preset</label>
+          <Label>Scenario Preset</Label>
           <div className="scenario-preset-buttons" role="radiogroup" aria-label="Select scenario preset">
             {C4_SCENARIO_PRESETS.map((preset) => (
               <button
@@ -302,9 +300,9 @@ export const C4ControlPanel: React.FC<C4ControlPanelProps> = ({
             ))}
           </div>
           {scenarioPreset && (
-            <div className="control-description" role="status" aria-live="polite">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
               {C4_SCENARIO_PRESETS.find((p) => p.id === scenarioPreset)?.description}
-            </div>
+            </p>
           )}
         </div>
       )}
@@ -312,195 +310,106 @@ export const C4ControlPanel: React.FC<C4ControlPanelProps> = ({
       {/* Changeset Filter Toggle */}
       {onChangesetFilterToggle && hasChangesetElements && (
         <div className="control-panel-section">
-          <label className="control-checkbox-label">
-            <input
-              type="checkbox"
-              checked={showOnlyChangeset}
-              onChange={(e) => onChangesetFilterToggle(e.target.checked)}
-              disabled={isLayouting}
-              aria-label="Show only elements from active changeset"
-              aria-describedby="c4-changeset-filter-description"
-            />
-            <span>Show Changeset Only</span>
-          </label>
-          <div id="c4-changeset-filter-description" className="control-description">
+          <ToggleSwitch
+            checked={showOnlyChangeset}
+            label="Show Changeset Only"
+            onChange={onChangesetFilterToggle}
+            disabled={isLayouting}
+          />
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             Filter to show only new, modified, or deleted elements
-          </div>
+          </p>
         </div>
       )}
 
       {/* Fit to View Button */}
       <div className="control-panel-section">
-        <button
-          className="control-button"
+        <Button
+          color="gray"
           onClick={onFitToView}
           disabled={isLayouting}
-          aria-label="Fit graph to viewport"
+          size="sm"
+          className="w-full control-button"
         >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <rect
-              x="2"
-              y="2"
-              width="12"
-              height="12"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              fill="none"
-            />
-            <path
-              d="M5 5L7 7M11 5L9 7M5 11L7 9M11 11L9 9"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
-          <span>Fit to View</span>
-        </button>
+          <Grid className="mr-2 h-4 w-4" />
+          Fit to View
+        </Button>
       </div>
 
       {/* Focus Mode Toggle */}
       {onFocusModeToggle && (
         <div className="control-panel-section">
-          <label className="control-checkbox-label">
-            <input
-              type="checkbox"
-              checked={focusModeEnabled}
-              onChange={(e) => onFocusModeToggle(e.target.checked)}
-              disabled={isLayouting}
-              aria-label="Focus mode: dim non-focused elements for clarity"
-              aria-describedby="c4-focus-mode-description"
-            />
-            <span>Focus Mode</span>
-          </label>
-          <div id="c4-focus-mode-description" className="control-description">
+          <ToggleSwitch
+            checked={focusModeEnabled}
+            label="Focus Mode"
+            onChange={onFocusModeToggle}
+            disabled={isLayouting}
+          />
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             Dim non-focused elements for clarity
-          </div>
+          </p>
         </div>
       )}
 
       {/* Clear Highlighting Button */}
       {onClearHighlighting && isHighlightingActive && (
         <div className="control-panel-section">
-          <button
-            className="control-button clear-button"
+          <Button
+            color="gray"
             onClick={onClearHighlighting}
             disabled={isLayouting}
-            aria-label="Clear path highlighting"
+            size="sm"
+            className="w-full"
           >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path
-                d="M4 4L12 12M12 4L4 12"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            </svg>
-            <span>Clear Highlighting</span>
-          </button>
+            <X className="mr-2 h-4 w-4" />
+            Clear Highlighting
+          </Button>
         </div>
       )}
 
       {/* Export Controls */}
       {(onExportPNG || onExportSVG || onExportGraphData) && (
         <div className="control-panel-section export-section">
-          <label className="control-label">Export</label>
-          <div className="export-buttons">
+          <Label>Export</Label>
+          <div className="flex flex-col gap-2">
             {onExportPNG && (
-              <button
-                className="control-button export-button"
+              <Button
+                color="gray"
                 onClick={onExportPNG}
                 disabled={isLayouting}
-                aria-label="Export current view as PNG image"
+                size="sm"
                 title="Export as PNG"
+                className="export-button"
               >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M8 2v8M8 10l-3-3M8 10l3-3"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path d="M3 12h10v2H3z" fill="currentColor" />
-                </svg>
-                <span>PNG</span>
-              </button>
+                <Download className="mr-2 h-4 w-4" />
+                PNG
+              </Button>
             )}
             {onExportSVG && (
-              <button
-                className="control-button export-button"
+              <Button
+                color="gray"
                 onClick={onExportSVG}
                 disabled={isLayouting}
-                aria-label="Export current view as SVG vector image"
+                size="sm"
                 title="Export as SVG"
+                className="export-button"
               >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M8 2v8M8 10l-3-3M8 10l3-3"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <rect x="2" y="11" width="12" height="3" fill="none" stroke="currentColor" strokeWidth="1.5" />
-                </svg>
-                <span>SVG</span>
-              </button>
+                <Download className="mr-2 h-4 w-4" />
+                SVG
+              </Button>
             )}
             {onExportGraphData && (
-              <button
-                className="control-button export-button"
+              <Button
+                color="gray"
                 onClick={onExportGraphData}
                 disabled={isLayouting}
-                aria-label="Export C4 graph data as JSON"
+                size="sm"
                 title="Export Graph Data"
+                className="export-button"
               >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M3 3h10M3 6h10M3 9h7M3 12h7"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  />
-                  <circle cx="12" cy="10.5" r="2.5" stroke="currentColor" strokeWidth="1.5" fill="none" />
-                </svg>
-                <span>Data</span>
-              </button>
+                <Download className="mr-2 h-4 w-4" />
+                Data
+              </Button>
             )}
           </div>
         </div>
@@ -509,9 +418,9 @@ export const C4ControlPanel: React.FC<C4ControlPanelProps> = ({
       {/* Loading Indicator */}
       {isLayouting && (
         <div className="control-panel-section">
-          <div className="layout-progress">
-            <div className="spinner-small"></div>
-            <span>Computing layout...</span>
+          <div className="flex items-center gap-2">
+            <Spinner size="sm" />
+            <span className="text-sm text-gray-600 dark:text-gray-400">Computing layout...</span>
           </div>
         </div>
       )}

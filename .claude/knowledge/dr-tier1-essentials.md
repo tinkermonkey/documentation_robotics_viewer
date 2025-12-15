@@ -32,7 +32,7 @@ dr search {pattern}                   # Search across layers
 
 # Modify elements
 dr add {layer} {type} --name "..." --property key=value
-dr update {element-id} --set key=value
+dr update-element {element-id} --set key=value
 
 # Changesets (isolated changes)
 dr changeset create "feature-name"    # Start new changeset
@@ -50,8 +50,7 @@ dr links find {element-id}            # Find element's links
 dr validate --validate-links          # Validate all links
 
 # Migration
-dr migrate                            # Check migration needs
-dr migrate --apply                    # Upgrade to latest spec
+dr migrate                            # Check and apply migrations to latest spec
 
 # Cross-layer operations
 dr project {element-id} --to {target-layer}
@@ -189,9 +188,8 @@ dr validate --validate-links
 # Strict mode (warnings → errors)
 dr validate --validate-links --strict-links
 
-# Check what needs migration (v0.1.x → v0.2.0)
+# Check and apply migrations (v0.1.x → v0.2.0)
 dr migrate
-dr migrate --apply
 ```
 
 **Common validation errors:**

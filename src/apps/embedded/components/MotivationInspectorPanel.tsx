@@ -8,8 +8,9 @@
  * - Cross-layer navigation links to related elements
  */
 
-import './MotivationInspectorPanel.css';
 import { MotivationGraph, MotivationGraphNode, MotivationElementType } from '../types/motivationGraph';
+import { Card, Badge, Button } from 'flowbite-react';
+import { ArrowUp, ArrowDown, X, Share2, Eye } from 'lucide-react';
 
 export interface MotivationInspectorPanelProps {
   /** Selected node ID */
@@ -84,131 +85,147 @@ export const MotivationInspectorPanel: React.FC<MotivationInspectorPanelProps> =
       {/* Header */}
       <div className="inspector-header">
         <h3>Inspector</h3>
-        <button
-          className="close-button"
-          onClick={onClose}
-          aria-label="Close inspector panel"
-        >
-          ×
-        </button>
+        <Button color="gray" size="xs" onClick={onClose} pill>
+          <X className="h-4 w-4" />
+        </Button>
       </div>
 
       {/* Content */}
       <div className="inspector-content">
         {/* Element Metadata */}
-        <section className="inspector-section">
-          <h4 className="section-title">Element Details</h4>
+        <Card>
+          <h4 className="text-lg font-semibold mb-3">Element Details</h4>
 
-          <div className="metadata-row">
-            <span className="metadata-label">Name:</span>
-            <span className="metadata-value">{element.name}</span>
+          <div className="space-y-2">
+            <div className="flex justify-between">
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Name:</span>
+              <span className="text-sm font-semibold">{element.name}</span>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Type:</span>
+              <Badge color="indigo">
+                {formatElementType(element.type)}
+              </Badge>
+            </div>
+
+            {!!!!element.properties?.description && (
+              <div>
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Description:</span>
+                <p className="text-sm mt-1">{String(element.properties.description)}</p>
+              </div>
+            )}
+
+            {/* Type-specific properties */}
+            {element.type === MotivationElementType.Goal && !!!!element.properties?.priority && (
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Priority:</span>
+                <Badge color={
+                  String(element.properties.priority).toLowerCase() === 'high' ? 'failure' :
+                  String(element.properties.priority).toLowerCase() === 'medium' ? 'warning' :
+                  'gray'
+                }>
+                  {String(element.properties.priority)}
+                </Badge>
+              </div>
+            )}
+
+            {element.type === MotivationElementType.Requirement && !!!!element.properties?.priority && (
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Priority:</span>
+                <Badge color={
+                  String(element.properties.priority).toLowerCase() === 'high' ? 'failure' :
+                  String(element.properties.priority).toLowerCase() === 'medium' ? 'warning' :
+                  'gray'
+                }>
+                  {String(element.properties.priority)}
+                </Badge>
+              </div>
+            )}
+
+            {element.type === MotivationElementType.Requirement && !!!!element.properties?.status && (
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Status:</span>
+                <Badge color={
+                  String(element.properties.status).toLowerCase() === 'complete' ? 'success' :
+                  String(element.properties.status).toLowerCase() === 'in progress' ? 'warning' :
+                  'gray'
+                }>
+                  {String(element.properties.status)}
+                </Badge>
+              </div>
+            )}
+
+            {element.type === MotivationElementType.Constraint && !!!!element.properties?.negotiability && (
+              <div className="flex justify-between">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Negotiability:</span>
+                <span className="text-sm">{String(element.properties.negotiability)}</span>
+              </div>
+            )}
+
+            {element.type === MotivationElementType.Driver && !!!!element.properties?.category && (
+              <div className="flex justify-between">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Category:</span>
+                <span className="text-sm">{String(element.properties.category)}</span>
+              </div>
+            )}
+
+            {element.type === MotivationElementType.Outcome && !!element.properties?.achievementStatus && (
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Achievement Status:</span>
+                <Badge color={
+                  String(element.properties.achievementStatus).toLowerCase() === 'achieved' ? 'success' :
+                  String(element.properties.achievementStatus).toLowerCase() === 'in progress' ? 'warning' :
+                  'gray'
+                }>
+                  {String(element.properties.achievementStatus)}
+                </Badge>
+              </div>
+            )}
+
+            {/* Graph Metrics */}
+            <div className="flex justify-between">
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Connections:</span>
+              <span className="text-sm">
+                {selectedNode.metrics.degreeCentrality} total ({selectedNode.metrics.inDegree} in, {selectedNode.metrics.outDegree} out)
+              </span>
+            </div>
+
+            {selectedNode.metrics.influenceDepth > 0 && (
+              <div className="flex justify-between">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Influence Depth:</span>
+                <span className="text-sm">{selectedNode.metrics.influenceDepth} levels</span>
+              </div>
+            )}
           </div>
-
-          <div className="metadata-row">
-            <span className="metadata-label">Type:</span>
-            <span className="metadata-value type-badge" data-type={element.type}>
-              {formatElementType(element.type)}
-            </span>
-          </div>
-
-          {!!!!element.properties?.description && (
-            <div className="metadata-row">
-              <span className="metadata-label">Description:</span>
-              <span className="metadata-value">{String(element.properties.description)}</span>
-            </div>
-          )}
-
-          {/* Type-specific properties */}
-          {element.type === MotivationElementType.Goal && !!!!element.properties?.priority && (
-            <div className="metadata-row">
-              <span className="metadata-label">Priority:</span>
-              <span className="metadata-value priority-badge" data-priority={String(element.properties.priority)}>
-                {String(element.properties.priority)}
-              </span>
-            </div>
-          )}
-
-          {element.type === MotivationElementType.Requirement && !!!!element.properties?.priority && (
-            <div className="metadata-row">
-              <span className="metadata-label">Priority:</span>
-              <span className="metadata-value priority-badge" data-priority={String(element.properties.priority)}>
-                {String(element.properties.priority)}
-              </span>
-            </div>
-          )}
-
-          {element.type === MotivationElementType.Requirement && !!!!element.properties?.status && (
-            <div className="metadata-row">
-              <span className="metadata-label">Status:</span>
-              <span className="metadata-value status-badge" data-status={String(element.properties.status)}>
-                {String(element.properties.status)}
-              </span>
-            </div>
-          )}
-
-          {element.type === MotivationElementType.Constraint && !!!!element.properties?.negotiability && (
-            <div className="metadata-row">
-              <span className="metadata-label">Negotiability:</span>
-              <span className="metadata-value">{String(element.properties.negotiability)}</span>
-            </div>
-          )}
-
-          {element.type === MotivationElementType.Driver && !!!!element.properties?.category && (
-            <div className="metadata-row">
-              <span className="metadata-label">Category:</span>
-              <span className="metadata-value">{String(element.properties.category)}</span>
-            </div>
-          )}
-
-          {element.type === MotivationElementType.Outcome && !!element.properties?.achievementStatus && (
-            <div className="metadata-row">
-              <span className="metadata-label">Achievement Status:</span>
-              <span className="metadata-value status-badge" data-status={String(element.properties.achievementStatus)}>
-                {String(element.properties.achievementStatus)}
-              </span>
-            </div>
-          )}
-
-          {/* Graph Metrics */}
-          <div className="metadata-row">
-            <span className="metadata-label">Connections:</span>
-            <span className="metadata-value">
-              {selectedNode.metrics.degreeCentrality} total ({selectedNode.metrics.inDegree} in, {selectedNode.metrics.outDegree} out)
-            </span>
-          </div>
-
-          {selectedNode.metrics.influenceDepth > 0 && (
-            <div className="metadata-row">
-              <span className="metadata-label">Influence Depth:</span>
-              <span className="metadata-value">{selectedNode.metrics.influenceDepth} levels</span>
-            </div>
-          )}
-        </section>
+        </Card>
 
         {/* Relationships */}
-        <section className="inspector-section">
-          <h4 className="section-title">
+        <Card>
+          <h4 className="text-lg font-semibold mb-3">
             Relationships ({incomingRelationships.length + outgoingRelationships.length})
           </h4>
 
           {/* Incoming Relationships */}
           {incomingRelationships.length > 0 && (
-            <div className="relationship-group">
-              <h5 className="relationship-group-title">
+            <div className="mb-4">
+              <h5 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                 Incoming ({incomingRelationships.length})
               </h5>
-              <ul className="relationship-list">
+              <ul className="space-y-2">
                 {incomingRelationships.map((edge) => {
                   const sourceNode = graph.nodes.get(edge.sourceId);
                   return (
-                    <li key={edge.id} className="relationship-item">
-                      <span className="relationship-type" data-type={edge.type}>
+                    <li key={edge.id} className="text-sm border-l-2 border-blue-400 pl-2">
+                      <Badge color="info" size="sm" className="mb-1">
                         {edge.type}
-                      </span>
-                      <span className="relationship-arrow">←</span>
-                      <span className="relationship-element">
-                        {sourceNode?.element.name || edge.sourceId}
-                      </span>
+                      </Badge>
+                      <div className="flex items-center gap-1">
+                        <ArrowUp className="h-3 w-3 text-gray-500" />
+                        <span className="font-medium">
+                          {sourceNode?.element.name || edge.sourceId}
+                        </span>
+                      </div>
                     </li>
                   );
                 })}
@@ -218,22 +235,24 @@ export const MotivationInspectorPanel: React.FC<MotivationInspectorPanelProps> =
 
           {/* Outgoing Relationships */}
           {outgoingRelationships.length > 0 && (
-            <div className="relationship-group">
-              <h5 className="relationship-group-title">
+            <div>
+              <h5 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                 Outgoing ({outgoingRelationships.length})
               </h5>
-              <ul className="relationship-list">
+              <ul className="space-y-2">
                 {outgoingRelationships.map((edge) => {
                   const targetNode = graph.nodes.get(edge.targetId);
                   return (
-                    <li key={edge.id} className="relationship-item">
-                      <span className="relationship-type" data-type={edge.type}>
+                    <li key={edge.id} className="text-sm border-l-2 border-green-400 pl-2">
+                      <Badge color="success" size="sm" className="mb-1">
                         {edge.type}
-                      </span>
-                      <span className="relationship-arrow">→</span>
-                      <span className="relationship-element">
-                        {targetNode?.element.name || edge.targetId}
-                      </span>
+                      </Badge>
+                      <div className="flex items-center gap-1">
+                        <ArrowDown className="h-3 w-3 text-gray-500" />
+                        <span className="font-medium">
+                          {targetNode?.element.name || edge.targetId}
+                        </span>
+                      </div>
                     </li>
                   );
                 })}
@@ -242,74 +261,60 @@ export const MotivationInspectorPanel: React.FC<MotivationInspectorPanelProps> =
           )}
 
           {incomingRelationships.length === 0 && outgoingRelationships.length === 0 && (
-            <p className="relationship-empty">No relationships</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">No relationships</p>
           )}
-        </section>
+        </Card>
 
         {/* Quick Actions */}
-        <section className="inspector-section">
-          <h4 className="section-title">Quick Actions</h4>
+        <Card>
+          <h4 className="text-lg font-semibold mb-3">Quick Actions</h4>
 
-          <div className="action-buttons">
-            <button
-              className="action-button"
+          <div className="flex flex-col gap-2">
+            <Button
+              color="gray"
+              size="sm"
               onClick={() => onTraceUpstream(selectedNodeId)}
-              aria-label="Trace upstream influences"
               title="Show all elements that influence this element"
             >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8 12L8 4M8 4L4 8M8 4L12 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+              <ArrowUp className="mr-2 h-4 w-4" />
               Trace Upstream
-            </button>
+            </Button>
 
-            <button
-              className="action-button"
+            <Button
+              color="gray"
+              size="sm"
               onClick={() => onTraceDownstream(selectedNodeId)}
-              aria-label="Trace downstream impacts"
               title="Show all elements influenced by this element"
             >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8 4L8 12M8 12L4 8M8 12L12 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+              <ArrowDown className="mr-2 h-4 w-4" />
               Trace Downstream
-            </button>
+            </Button>
 
             {isStakeholder && onShowNetwork && (
-              <button
-                className="action-button"
+              <Button
+                color="blue"
+                size="sm"
                 onClick={() => onShowNetwork(selectedNodeId)}
-                aria-label="Show stakeholder network"
                 title="Switch to radial layout centered on this stakeholder"
               >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="8" cy="8" r="2" fill="currentColor"/>
-                  <circle cx="8" cy="8" r="5" stroke="currentColor" strokeWidth="1" fill="none"/>
-                  <circle cx="8" cy="3" r="1" fill="currentColor"/>
-                  <circle cx="13" cy="8" r="1" fill="currentColor"/>
-                  <circle cx="8" cy="13" r="1" fill="currentColor"/>
-                  <circle cx="3" cy="8" r="1" fill="currentColor"/>
-                </svg>
+                <Share2 className="mr-2 h-4 w-4" />
                 Show Network
-              </button>
+              </Button>
             )}
 
             {onFocusOnElement && (
-              <button
-                className="action-button"
+              <Button
+                color="gray"
+                size="sm"
                 onClick={() => onFocusOnElement(selectedNodeId)}
-                aria-label="Focus on this element"
                 title="Dim other elements to focus on this one"
               >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="8" cy="8" r="3" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-                  <path d="M8 2V4M8 12V14M14 8H12M4 8H2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                </svg>
+                <Eye className="mr-2 h-4 w-4" />
                 Focus on Element
-              </button>
+              </Button>
             )}
           </div>
-        </section>
+        </Card>
 
         {/* Cross-Layer Navigation */}
         {renderCrossLayerLinks(selectedNode, graph)}

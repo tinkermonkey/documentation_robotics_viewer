@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider } from '@tanstack/react-router';
+import { ThemeProvider } from 'flowbite-react';
 import { router } from './router';
+import { customTheme } from '../../theme/customTheme';
 import '../../index.css';
 
 const rootElement = document.getElementById('root');
@@ -12,6 +14,8 @@ if (!rootElement) {
 
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <ThemeProvider theme={customTheme as any}>
+      <RouterProvider router={router} />
+    </ThemeProvider>
   </React.StrictMode>
 );

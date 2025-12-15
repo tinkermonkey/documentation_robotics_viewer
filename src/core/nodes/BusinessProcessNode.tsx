@@ -61,28 +61,24 @@ export const BusinessProcessNode = memo(({ data, id }: NodeProps<Node<BusinessPr
         type="target"
         position={Position.Top}
         id="top"
-        aria-label="Top connection point"
         style={{ background: '#555' }}
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="bottom"
-        aria-label="Bottom connection point"
         style={{ background: '#555' }}
       />
       <Handle
         type="target"
         position={Position.Left}
         id="left"
-        aria-label="Left connection point"
         style={{ background: '#555' }}
       />
       <Handle
         type="source"
         position={Position.Right}
         id="right"
-        aria-label="Right connection point"
         style={{ background: '#555' }}
       />
 

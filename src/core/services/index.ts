@@ -7,7 +7,6 @@ export * from './localFileLoader';
 export * from './specParser';
 export * from './dataLoader';
 
-export * from './demoData';
 export * from './businessLayerParser';
 export * from './businessGraphBuilder';
 export * from './crossLayerReferenceResolver';

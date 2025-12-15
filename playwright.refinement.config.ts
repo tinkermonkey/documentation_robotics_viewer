@@ -47,7 +47,7 @@ export default defineConfig({
   // Web server config - only needed for interactive tests
   // The non-interactive tests run without a browser
   webServer: {
-    command: 'npm run dev:embedded',
+    command: 'npm run dev',
     url: 'http://localhost:3001',
     reuseExistingServer: true,
     timeout: 120000,

@@ -98,28 +98,24 @@ export const ContainerNode = memo(({ data }: NodeProps<Node<C4ContainerNodeData>
         type="target"
         position={Position.Top}
         id="top"
-        aria-label="Top connection point"
         style={{ left: '50%', background: borderColor, width: 10, height: 10 }}
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="bottom"
-        aria-label="Bottom connection point"
         style={{ left: '50%', background: borderColor, width: 10, height: 10 }}
       />
       <Handle
         type="target"
         position={Position.Left}
         id="left"
-        aria-label="Left connection point"
         style={{ top: '50%', background: borderColor, width: 10, height: 10 }}
       />
       <Handle
         type="source"
         position={Position.Right}
         id="right"
-        aria-label="Right connection point"
         style={{ top: '50%', background: borderColor, width: 10, height: 10 }}
       />
 

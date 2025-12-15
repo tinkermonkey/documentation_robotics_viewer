@@ -1,32 +1,43 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /**
- * Default Playwright config for tests that don't require the reference server.
- *
- * For tests requiring WebSocket connection to the reference server (port 8765),
- * use playwright.e2e.config.ts or playwright.embedded.config.ts instead:
- *   npm run test:e2e
- *   npm run test:embedded
+ * Default Playwright Test Configuration
+ * 
+ * Runs basic tests that don't require the reference server:
+ * - Integration tests
+ * - Unit tests
+ * - Component tests
+ * 
+ * For E2E tests with reference server, use: npm run test:e2e
+ * For refinement/metrics tests, use: npm run refine:all or npm run metrics:all
  */
 export default defineConfig({
   testDir: './tests',
-  // Only run tests that don't require the reference server
+  // Run all tests except E2E and refinement/metrics
   testMatch: '**/*.spec.ts',
   testIgnore: [
+    // E2E tests (use playwright.e2e.config.ts)
     '**/embedded-*.spec.ts',
-    '**/motivation-view.spec.ts',
     '**/c4-architecture-view.spec.ts',
     '**/c4-accessibility.spec.ts',
     '**/c4-performance.spec.ts',
+    // Refinement/metrics tests (use playwright.refinement.config.ts)
+    '**/refinement/**/*.spec.ts',
+    '**/metrics/**/*.spec.ts',
   ],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  reporter: [
+    ['list'],
+    ['html', { outputFolder: 'playwright-report/default' }],
+  ],
+  timeout: 30000,
   use: {
     baseURL: 'http://localhost:3001',
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
   },
 
   projects: [
@@ -37,8 +48,9 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'npm run dev:embedded',
+    command: 'npm run dev',
     url: 'http://localhost:3001',
     reuseExistingServer: !process.env.CI,
+    timeout: 60000,
   },
 });

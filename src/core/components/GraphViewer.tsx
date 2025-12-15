@@ -11,7 +11,8 @@ import {
   MiniMap,
   useNodesState,
   useEdgesState,
-
+  Node,
+  NodeMouseHandler,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import './GraphViewer.css';
@@ -28,17 +29,28 @@ import { SpaceMouseHandler } from './SpaceMouseHandler';
 
 interface GraphViewerProps {
   model: MetaModel;
+  onNodeClick?: (node: Node | null) => void;
 }
 
 /**
  * GraphViewer Component
  * Renders a MetaModel using React Flow with custom nodes and vertical layer layout
  */
-const GraphViewer: React.FC<GraphViewerProps> = ({ model }) => {
+const GraphViewer: React.FC<GraphViewerProps> = ({ model, onNodeClick }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<AppEdge>([]);
   const { layers: layerStates } = useLayerStore();
   const [isRendering, setIsRendering] = useState(false);
+
+  // Handle node click
+  const handleNodeClick: NodeMouseHandler = useCallback(
+    (_event, node) => {
+      if (onNodeClick) {
+        onNodeClick(node);
+      }
+    },
+    [onNodeClick]
+  );
 
   // Main effect: render the model when model changes
   useEffect(() => {
@@ -150,6 +162,7 @@ const GraphViewer: React.FC<GraphViewerProps> = ({ model }) => {
         edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        onNodeClick={handleNodeClick}
         nodesDraggable={false}       // Read-only: no dragging
         nodesConnectable={false}     // Read-only: no new connections
         nodesFocusable={true}        // Allow keyboard navigation
