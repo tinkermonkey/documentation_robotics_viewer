@@ -12,11 +12,11 @@
  *    npx playwright install chromium
  *
  * 3. Run tests ONLY with the embedded config:
- *    npm run test:embedded
+ *    npm run test:e2e
  *
  * STATUS: These tests are VALID and test real functionality in the embedded app.
  *         They are excluded from default tests via playwright.config.ts.
- *         They run when executed with: npm run test:embedded
+ *         They run when executed with: npm run test:e2e
  */
 
 import { test, expect } from '@playwright/test';

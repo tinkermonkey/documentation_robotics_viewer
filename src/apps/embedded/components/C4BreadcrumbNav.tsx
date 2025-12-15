@@ -5,7 +5,6 @@
  */
 
 import React from 'react';
-import './C4BreadcrumbNav.css';
 import { C4ViewLevel, C4BreadcrumbSegment } from '../types/c4Graph';
 import { Breadcrumb, BreadcrumbItem, Badge } from 'flowbite-react';
 import { Home } from 'lucide-react';

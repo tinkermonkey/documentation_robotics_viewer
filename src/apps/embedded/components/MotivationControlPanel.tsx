@@ -8,7 +8,6 @@
  * - Export and visualization controls
  */
 
-import './MotivationControlPanel.css';
 import { Button, Select, Label, ToggleSwitch, Spinner } from 'flowbite-react';
 import { Grid, Download, X, FileText } from 'lucide-react';
 import {  } from '../types/layoutAlgorithm';

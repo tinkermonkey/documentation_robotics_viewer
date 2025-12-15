@@ -81,10 +81,16 @@ async def get_spec():
     """Get current specification (JSON Schema files) from .dr/schemas/"""
 
     if not DR_SCHEMAS_DIR.exists():
-        return JSONResponse(
-            status_code=404,
-            content={"error": "Schema directory not found. Is dr CLI initialized?"}
-        )
+        # Return empty spec instead of 404 for development mode
+        logger.warning("Schema directory not found. Returning empty spec.")
+        return {
+            "version": "0.2.0",
+            "type": "schema-collection",
+            "description": "Empty schema collection (dr CLI not initialized)",
+            "source": "fallback",
+            "schemas": {},
+            "schema_count": 0
+        }
 
     try:
         # Collect all schema files
@@ -437,10 +443,16 @@ async def get_link_registry():
     link_registry_file = DR_SCHEMAS_DIR / "link-registry.json"
 
     if not link_registry_file.exists():
-        return JSONResponse(
-            status_code=404,
-            content={"error": "Link registry not found. Is dr CLI initialized?"}
-        )
+        # Return empty link registry instead of 404 for development mode
+        logger.warning("Link registry not found. Returning empty registry.")
+        return {
+            "version": "1.0.0",
+            "linkTypes": [],
+            "metadata": {
+                "totalLinkTypes": 0,
+                "lastUpdated": None
+            }
+        }
 
     try:
         with open(link_registry_file, 'r') as f:

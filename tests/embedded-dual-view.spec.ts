@@ -5,7 +5,7 @@
  * Note: Tests for ViewTabSwitcher visibility and tab switching require the
  * reference server to be running because the UI only shows tabs after data loads.
  * Those tests are covered in embedded-app.spec.ts when run with:
- *   npm run test:embedded (uses playwright.embedded.config.ts)
+ *   npm run test:e2e (uses playwright.e2e.config.ts)
  *
  * Prerequisites:
  * 1. Python dependencies (reference server):

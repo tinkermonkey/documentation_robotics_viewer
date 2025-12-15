@@ -1,5 +1,12 @@
 import { useEffect } from 'react';
 import { Outlet, useMatches, useNavigate } from '@tanstack/react-router';
+import {
+  HiDocumentText,
+  HiCube,
+  HiLightBulb,
+  HiViewGrid,
+  HiCollection,
+} from 'react-icons/hi';
 import ConnectionStatus from './components/ConnectionStatus';
 import SubTabNavigation, { SubTab } from './components/SubTabNavigation';
 import { useConnectionStore } from './stores/connectionStore';
@@ -37,11 +44,11 @@ export default function EmbeddedLayout() {
   // Determine active tab index from current route
   const currentPath = matches[matches.length - 1]?.pathname || '';
   const tabs = [
-    { path: '/spec', label: 'Spec', defaultView: specView },
-    { path: '/model', label: 'Model', defaultView: modelView },
-    { path: '/motivation', label: 'Motivation', defaultView: null },
-    { path: '/architecture', label: 'Architecture', defaultView: null },
-    { path: '/changesets', label: 'Changesets', defaultView: changesetView },
+    { path: '/spec', label: 'Spec', icon: HiDocumentText, defaultView: specView },
+    { path: '/model', label: 'Model', icon: HiCube, defaultView: modelView },
+    { path: '/motivation', label: 'Motivation', icon: HiLightBulb, defaultView: null },
+    { path: '/architecture', label: 'Architecture', icon: HiViewGrid, defaultView: null },
+    { path: '/changesets', label: 'Changesets', icon: HiCollection, defaultView: changesetView },
   ];
 
   const activeTabIndex = tabs.findIndex(tab => currentPath.startsWith(tab.path));
@@ -117,32 +124,37 @@ export default function EmbeddedLayout() {
   };
 
   return (
-    <div data-testid="embedded-app" className="min-h-screen bg-gray-50">
-      <header data-testid="embedded-header" className="bg-white border-b">
+    <div data-testid="embedded-app" className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <header data-testid="embedded-header" className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
         {/* Title Row */}
-        <div className="px-6 py-4">
-          <h1 className="text-xl">Documentation Robotics Viewer</h1>
+        <div className="px-6 py-4 flex items-center justify-between">
+          <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+            Documentation Robotics Viewer
+          </h1>
+          <ConnectionStatus />
         </div>
 
         {/* Main Tabs Row */}
-        <div className="px-6 border-b border-gray-200">
-          <div className="flex justify-between items-center">
-            <div className="flex">
-              {tabs.map((tab, index) => (
+        <div className="px-6 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex -mb-px">
+            {tabs.map((tab, index) => {
+              const Icon = tab.icon;
+              return (
                 <button
                   key={tab.path}
                   onClick={() => handleTabChange(index)}
-                  className={`px-4 py-3 text-sm relative ${
+                  className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                     activeTabIndex === index
-                      ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50"
-                      : "text-gray-500 hover:text-gray-600 hover:bg-gray-50"
+                      ? 'text-blue-600 dark:text-blue-500 border-blue-600 dark:border-blue-500'
+                      : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
                   }`}
+                  data-testid={`main-tab-${tab.label.toLowerCase()}`}
                 >
+                  <Icon className="w-4 h-4" />
                   {tab.label}
                 </button>
-              ))}
-            </div>
-            <ConnectionStatus />
+              );
+            })}
           </div>
         </div>
 

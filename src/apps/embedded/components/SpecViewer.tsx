@@ -9,7 +9,6 @@ import { Card, Badge, Button } from 'flowbite-react';
 import SidebarList, { SidebarListItem } from './common/SidebarList';
 import ExpandableSection from './common/ExpandableSection';
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid';
-import './SpecViewer.css';
 
 interface SpecViewerProps {
   specData: SpecDataResponse;
@@ -48,9 +47,9 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData }) => {
   if (!specData) {
     console.warn('[SpecViewer] No specData provided');
     return (
-      <div className="spec-viewer empty">
+      <div className="w-full h-full flex items-center justify-center flex-col text-gray-500 dark:text-gray-400">
         <p>No spec data loaded</p>
-        <p className="debug-info">Debug: specData is null/undefined</p>
+        <p className="text-gray-400 dark:text-gray-500">Debug: specData is null/undefined</p>
       </div>
     );
   }
@@ -58,9 +57,9 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData }) => {
   if (!specData.schemas) {
     console.warn('[SpecViewer] specData exists but has no schemas property:', specData);
     return (
-      <div className="spec-viewer empty">
+      <div className="w-full h-full flex items-center justify-center flex-col text-gray-500 dark:text-gray-400">
         <p>No schemas found in spec data</p>
-        <p className="debug-info">Debug: specData keys: {Object.keys(specData).join(', ')}</p>
+        <p className="text-gray-400 dark:text-gray-500">Debug: specData keys: {Object.keys(specData).join(', ')}</p>
       </div>
     );
   }
@@ -92,7 +91,7 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData }) => {
   const renderSchemaDetails = () => {
     if (!selectedSchema) {
       return (
-        <div className="schema-details empty">
+        <div className="flex-1 h-full flex items-center justify-center flex-col text-gray-400 dark:text-gray-500">
           <p className="text-gray-500 dark:text-gray-400">Select a schema file to view details</p>
         </div>
       );
@@ -108,7 +107,7 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData }) => {
     ];
 
     return (
-      <div className="schema-details">
+      <div className="flex-1 h-full overflow-y-auto p-6">
         <Card>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             {schema.title || selectedSchema}
@@ -117,7 +116,7 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData }) => {
           <MetadataGrid items={schemaMetadata} columns={2} />
         </Card>
 
-        <div className="definitions-section mt-6">
+        <div className="mt-6">
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
             Element Type Definitions
           </h3>
@@ -219,7 +218,7 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData }) => {
     const linkRegistry = specData.linkRegistry;
     if (!linkRegistry) {
       return (
-        <div className="schema-details empty">
+        <div className="flex-1 h-full flex items-center justify-center flex-col text-gray-400 dark:text-gray-500">
           <p className="text-gray-500 dark:text-gray-400">No link registry data available</p>
         </div>
       );
@@ -234,7 +233,7 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData }) => {
       ];
 
       return (
-        <div className="schema-details empty">
+        <div className="flex-1 h-full flex items-center justify-center flex-col text-gray-400 dark:text-gray-500 p-6">
           <p className="text-gray-500 dark:text-gray-400 mb-6">
             Select a category to view link types
           </p>
@@ -252,7 +251,7 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData }) => {
     ];
 
     return (
-      <div className="schema-details">
+      <div className="flex-1 h-full overflow-y-auto p-6">
         <Card>
           <div className="flex items-center gap-2 mb-2">
             <span
@@ -267,7 +266,7 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData }) => {
           <MetadataGrid items={categoryMetadata} columns={2} />
         </Card>
 
-        <div className="definitions-section mt-6">
+        <div className="mt-6">
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
             Link Types ({linkTypes.length})
           </h3>
@@ -302,8 +301,8 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData }) => {
   };
 
   return (
-    <div className="spec-viewer">
-      <div className="view-mode-switcher flex gap-2 p-4 border-b border-gray-200 dark:border-gray-700">
+    <div className="w-full h-full flex flex-col bg-white dark:bg-gray-900 overflow-hidden">
+      <div className="flex gap-2 p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
         <Button
           color={viewMode === 'schemas' ? 'blue' : 'gray'}
           onClick={() => setViewMode('schemas')}
@@ -317,7 +316,7 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData }) => {
           🔗 Cross-Layer Links
         </Button>
       </div>
-      <div className="spec-viewer-content">
+      <div className="flex flex-1 overflow-hidden">
         {viewMode === 'schemas' ? (
           <>
             {renderSchemaList()}

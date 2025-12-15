@@ -52,7 +52,7 @@ echo ""
 
 # Start embedded viewer
 echo "Starting embedded viewer on port 3001..."
-npm run dev:embedded &
+npm run dev &
 VIEWER_PID=$!
 
 echo ""

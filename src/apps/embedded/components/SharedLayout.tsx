@@ -30,19 +30,25 @@ const SharedLayout: React.FC<SharedLayoutProps> = ({
     <div className="flex h-full overflow-hidden" data-testid="shared-layout">
       {/* Left Sidebar */}
       {showLeftSidebar && leftSidebarContent && (
-        <aside className="w-64 border-r border-gray-200 dark:border-gray-700 overflow-y-auto bg-white dark:bg-gray-900">
+        <aside
+          className="w-64 border-r border-gray-200 dark:border-gray-700 overflow-y-auto bg-white dark:bg-gray-900 transition-all duration-300 ease-in-out"
+          data-testid="left-sidebar"
+        >
           {leftSidebarContent}
         </aside>
       )}
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+      <main className="flex-1 overflow-y-auto bg-white dark:bg-gray-900">
         {children}
       </main>
 
       {/* Right Sidebar */}
       {showRightSidebar && rightSidebarContent && (
-        <aside className="w-80 border-l border-gray-200 dark:border-gray-700 overflow-y-auto bg-white dark:bg-gray-900">
+        <aside
+          className="w-80 border-l border-gray-200 dark:border-gray-700 overflow-y-auto bg-gray-50 dark:bg-gray-900 transition-all duration-300 ease-in-out"
+          data-testid="right-sidebar"
+        >
           {rightSidebarContent}
         </aside>
       )}

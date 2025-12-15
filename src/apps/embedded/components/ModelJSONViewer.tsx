@@ -13,7 +13,6 @@ import ExpandableSection from './common/ExpandableSection';
 import AttributesTable, { AttributeRow } from './common/AttributesTable';
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid';
 import { useAnnotationStore } from '../stores/annotationStore';
-import './SpecViewer.css'; // Reuse SpecViewer styles for custom elements
 
 interface ModelJSONViewerProps {
   model: MetaModel;
@@ -107,7 +106,7 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
 
   if (!model) {
     return (
-      <div className="spec-viewer empty">
+      <div className="w-full h-full flex items-center justify-center flex-col text-gray-500 dark:text-gray-400">
         <p>No model data loaded</p>
       </div>
     );
@@ -258,7 +257,7 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
       ];
 
       return (
-        <div className="schema-details empty">
+        <div className="flex-1 h-full flex items-center justify-center flex-col text-gray-400 dark:text-gray-500 p-6">
           <p className="text-gray-500 dark:text-gray-400 mb-6">Select a layer to view elements</p>
           <MetadataGrid title="Model Metadata" items={metadataItems} columns={2} />
         </div>
@@ -287,7 +286,7 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
     ];
 
     return (
-      <div className="schema-details">
+      <div className="flex-1 h-full overflow-y-auto p-6">
         <Card>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             {layer.name || selectedLayer}
@@ -299,7 +298,7 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
         </Card>
 
         {elements.length === 0 ? (
-          <div className="empty-state mt-6">
+          <div className="mt-6">
             <Card>
               <p className="text-gray-500 dark:text-gray-400">No elements in this layer</p>
               <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
@@ -308,7 +307,7 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
             </Card>
           </div>
         ) : (
-          <div className="definitions-section mt-6">
+          <div className="mt-6">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
               Elements ({elements.length})
             </h3>
@@ -434,8 +433,8 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
   };
 
   return (
-    <div className="spec-viewer">
-      <div className="spec-viewer-content">
+    <div className="w-full h-full flex flex-col bg-white dark:bg-gray-900 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden">
         {renderLayerList()}
         {renderLayerDetails()}
       </div>

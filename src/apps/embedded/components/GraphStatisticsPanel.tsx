@@ -27,20 +27,20 @@ const GraphStatisticsPanel: React.FC<GraphStatisticsPanelProps> = ({ model }) =>
   }, [model]);
 
   return (
-    <div className="p-4 border-t border-gray-200">
-      <h3 className="text-sm font-medium mb-3">Graph Statistics</h3>
+    <div className="p-4 border-t border-gray-200 dark:border-gray-700" data-testid="graph-statistics-panel">
+      <h3 className="text-sm font-semibold mb-3 text-gray-900 dark:text-white">Graph Statistics</h3>
       <div className="space-y-2 text-sm">
         <div className="flex justify-between">
-          <span className="text-gray-500">Total Nodes</span>
-          <span className="text-gray-900 font-medium">{stats.totalNodes}</span>
+          <span className="text-gray-500 dark:text-gray-400">Total Nodes</span>
+          <span className="text-gray-900 dark:text-white font-medium">{stats.totalNodes}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-gray-500">Total Edges</span>
-          <span className="text-gray-900 font-medium">{stats.totalEdges}</span>
+          <span className="text-gray-500 dark:text-gray-400">Total Edges</span>
+          <span className="text-gray-900 dark:text-white font-medium">{stats.totalEdges}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-gray-500">Layers</span>
-          <span className="text-gray-900 font-medium">{stats.layerCount}</span>
+          <span className="text-gray-500 dark:text-gray-400">Layers</span>
+          <span className="text-gray-900 dark:text-white font-medium">{stats.layerCount}</span>
         </div>
       </div>
     </div>

@@ -7,7 +7,6 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import '@xyflow/react/dist/style.css';
 import '../../../core/components/GraphViewer.css';
-import './MotivationGraphView.css';
 import {
   ReactFlow,
   Background,
@@ -660,7 +659,7 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
       <div className="message-overlay">
         <div className="message-box">
           <p>No motivation elements match the current filters</p>
-          <button onClick={handleClearAllFilters} className="clear-filters-button">
+          <button onClick={handleClearAllFilters} className="mt-4 px-5 py-2.5 bg-blue-600 dark:bg-blue-700 text-white border-0 rounded-md text-sm font-medium cursor-pointer transition-colors hover:bg-blue-700 dark:hover:bg-blue-800">
             Clear All Filters
           </button>
         </div>
@@ -671,9 +670,9 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
   // Render ReactFlow with motivation nodes and edges
   return (
     <ErrorBoundary>
-      <div className="motivation-graph-container">
+      <div className="flex flex-col lg:flex-row w-full h-full relative bg-gray-50 dark:bg-gray-950">
         {/* Filter Panel */}
-        <div className="motivation-sidebar left">
+        <div className="flex flex-col gap-4 p-4 bg-white dark:bg-gray-800 border-b lg:border-b-0 lg:border-r-2 border-gray-200 dark:border-gray-700 overflow-y-auto z-10 max-h-48 lg:max-h-none lg:max-w-[350px] lg:min-w-[280px] xl:min-w-[300px]">
           <MotivationFilterPanel
             selectedElementTypes={selectedElementTypes}
             selectedRelationshipTypes={selectedRelationshipTypes}
@@ -685,11 +684,11 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
         </div>
 
         {/* Main Graph View */}
-        <div className="graph-viewer">
+        <div className="flex-1 min-w-0 h-full relative">
           {isLayouting && (
-            <div className="layout-overlay" role="status" aria-live="polite">
-              <div className="layout-progress">
-                <div className="spinner-small"></div>
+            <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-900/80 z-[1000] pointer-events-none animate-in fade-in duration-200" role="status" aria-live="polite">
+              <div className="flex items-center gap-3 px-6 py-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md text-sm font-medium text-gray-700 dark:text-gray-300 animate-in zoom-in-95 duration-300">
+                <div className="w-5 h-5 border-[3px] border-gray-200 dark:border-gray-600 border-t-blue-600 rounded-full animate-spin"></div>
                 <span>Computing layout...</span>
               </div>
             </div>
@@ -732,7 +731,7 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
         </div>
 
         {/* Control Panel */}
-        <div className="motivation-sidebar right">
+        <div className="flex flex-col gap-4 p-4 bg-white dark:bg-gray-800 border-t lg:border-t-0 lg:border-l-2 border-gray-200 dark:border-gray-700 overflow-y-auto z-10 max-h-48 lg:max-h-none lg:max-w-[350px] lg:min-w-[280px] xl:min-w-[300px]">
           <MotivationControlPanel
             selectedLayout={selectedLayout}
             onLayoutChange={handleLayoutChange}
@@ -753,7 +752,7 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({ model }) => {
         {motivationPreferences.inspectorPanelVisible &&
           motivationPreferences.selectedNodeId &&
           fullGraphRef.current && (
-            <div className="motivation-sidebar right inspector">
+            <div className="flex flex-col gap-4 p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-y-auto fixed lg:absolute bottom-0 lg:right-[370px] xl:right-[380px] left-0 lg:left-auto lg:top-4 lg:bottom-4 h-1/2 lg:h-auto w-full lg:w-[320px] xl:w-[360px] lg:max-w-[360px] shadow-lg z-20 rounded-t-xl lg:rounded-none transition-transform duration-300 ease-out animate-in slide-in-from-bottom lg:slide-in-from-right">
               <MotivationInspectorPanel
                 selectedNodeId={motivationPreferences.selectedNodeId}
                 graph={fullGraphRef.current}

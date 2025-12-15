@@ -7,7 +7,6 @@
 
 import React, { useMemo, useCallback } from 'react';
 import { MetricsDashboardProps, RefinementIteration } from '../../types/refinement';
-import './MetricsDashboard.css';
 
 // Chart dimensions
 const CHART_WIDTH = 400;

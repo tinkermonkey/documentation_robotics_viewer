@@ -51,10 +51,10 @@ export const SchemaInfoPanel: React.FC<SchemaInfoPanelProps> = ({ className = ''
   };
 
   return (
-    <div className={`p-4 border-t border-gray-200 ${className}`}>
+    <div className={`p-4 border-t border-gray-200 dark:border-gray-700 ${className}`} data-testid="schema-info-panel">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-medium text-gray-900 dark:text-white">Schema Info</h3>
+        <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Schema Info</h3>
         <span
           className={`text-xs px-2 py-1 rounded ${
             isValid

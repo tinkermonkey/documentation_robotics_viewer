@@ -1,26 +1,39 @@
 # Test Suite Documentation
 
-## Test Categories
+## Test Configurations
 
-### 1. Embedded App Tests (`embedded-*.spec.ts`)
+### 1. Default Tests (`playwright.config.ts`)
 
-Tests for the embedded viewer application with reference server integration.
+Basic tests for integration, unit, and component testing without the reference server.
 
-**Files:**
-- `tests/embedded-app.spec.ts` - Basic embedded app functionality (SKIPPED BY DEFAULT)
-- `tests/embedded-dual-view.spec.ts` - Dual view (Graph/JSON/List) functionality (SKIPPED BY DEFAULT)
+**Runs:**
+- Integration tests in `tests/integration/`
+- Unit tests in `tests/unit/`
+- Component tests
+- Business layer tests
+- Graph readability tests
 
-**IMPORTANT:** Both test files are skipped by default using `test.describe.skip` because they require
-the Python reference server to be running. They are designed to run ONLY with:
+**Usage:**
 ```bash
-npm run test:embedded
+npm test              # Run all default tests
+npm run test:debug    # Run with debugger
 ```
-This command uses `playwright.embedded.config.ts` which automatically starts the reference server.
 
-**Configuration:** `playwright.embedded.config.ts`
+### 2. E2E Tests (`playwright.e2e.config.ts`)
+
+Complete end-to-end tests with both servers automatically started.
+
+**Runs:**
+- `embedded-*.spec.ts` - Embedded app with WebSocket
+- `c4-*.spec.ts` - C4 architecture views and accessibility
+- All integration tests requiring the reference server
+
+**Auto-starts:**
+- Python reference server (port 8765)
+- Frontend dev server (port 3001)
 
 **Prerequisites:**
-1. **Python Dependencies** (for reference server):
+1. **Python Dependencies**:
    ```bash
    cd reference_server
    source .venv/bin/activate
@@ -32,25 +45,50 @@ This command uses `playwright.embedded.config.ts` which automatically starts the
    npx playwright install chromium
    ```
 
-3. **System Dependencies** (REQUIRES SUDO - tests are skipped if unavailable):
+3. **System Dependencies** (REQUIRES SUDO):
    ```bash
    npx playwright install-deps chromium
    ```
 
-**Running:**
+**Usage:**
 ```bash
-npm run test:embedded
+npm run test:e2e           # Run all E2E tests
+npm run test:e2e:ui        # Run with UI mode
+npm run test:e2e:headed    # Run in headed mode
 ```
 
-**How to run these tests:**
+### 3. Refinement Tests (`playwright.refinement.config.ts`)
 
-The embedded app tests are skipped by default and will ONLY run when:
-1. Using the embedded config: `npm run test:embedded`
-2. The `.skip` is removed from `test.describe.skip` in each test file
-3. The Python reference server is running (automatically started by the embedded config)
+Layout quality refinement and metrics tests.
 
-**DO NOT** remove `.skip` unless you're actively developing/debugging these tests,
-because they require the Python reference server which is not available in most CI/CD environments.
+**Runs:**
+- `tests/refinement/*.spec.ts` - Layout refinement algorithms
+- `tests/metrics/*.spec.ts` - Quality metrics and regression checks
+
+**Usage:**
+```bash
+npm run refine:motivation      # Refine motivation view
+npm run refine:business        # Refine business view
+npm run refine:c4              # Refine C4 view
+npm run refine:interactive     # Interactive refinement (headed)
+npm run refine:all             # Run all refinement tests
+npm run metrics:report         # Generate metrics report
+npm run metrics:regression-check    # Check for regressions
+npm run metrics:all            # Run all metrics tests
+```
+
+## Test Categories
+
+### Embedded App Tests (`embedded-*.spec.ts`)
+
+Tests for the embedded viewer application with reference server integration.
+
+**Files:**
+- `tests/embedded-app.spec.ts` - Basic embedded app functionality
+- `tests/embedded-dual-view.spec.ts` - Dual view (Graph/JSON/List) functionality
+- `tests/embedded-motivation-view.spec.ts` - Motivation view specific tests
+
+**Configuration:** `playwright.e2e.config.ts` (automatically starts both servers)
 
 **What the tests verify:**
 - WebSocket connection to reference server
@@ -62,30 +100,20 @@ because they require the Python reference server which is not available in most 
 - Version badge display
 - Console error checking
 
-**Known Issues:**
-- Tests require system libraries (`libglib-2.0.so.0`, etc.) which may not be available in all environments
-- If you see "error while loading shared libraries", run `npx playwright install-deps chromium` with sudo
-
-### 2. E2E Tests (`playwright.e2e.config.ts`)
-
-End-to-end tests for the main debug application.
-
-**Configuration:** `playwright.e2e.config.ts`
-
-### 3. Unit Tests (`playwright.unit.config.ts`)
-
-Fast, isolated tests for specific components and services.
+Tests for C4 architecture views, accessibility, and performance.
 
 **Files:**
-- `tests/unit/motivationGraphBuilder.spec.ts`
+- `tests/c4-architecture-view.spec.ts` - C4 architecture view rendering
+- `tests/c4-accessibility.spec.ts` - WCAG accessibility compliance
+- `tests/c4-performance.spec.ts` - Performance benchmarks
 
-**Configuration:** `playwright.unit.config.ts`
+**Configuration:** `playwright.e2e.config.ts` (automatically starts both servers)
 
 ## Test Execution Flow
 
-### Embedded Tests Setup
+### E2E Tests Setup
 
-The `playwright.embedded.config.ts` automatically:
+The `playwright.e2e.config.ts` automatically:
 
 1. **Starts Python Reference Server** (port 8765)
    - Serves the embedded app static files
@@ -103,7 +131,7 @@ The `playwright.embedded.config.ts` automatically:
 
 3. **Runs Tests**
    - Opens Chromium browser
-   - Navigates to `http://localhost:8765/`
+   - Navigates to `http://localhost:3001/`
    - Executes test scenarios
 
 ## Troubleshooting
@@ -189,7 +217,7 @@ For CI environments, add this to your workflow:
     pip install -r requirements.txt
 
 - name: Run embedded tests
-  run: npm run test:embedded
+  run: npm run test:e2e
 ```
 
 ## Test Development Guidelines

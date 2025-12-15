@@ -6,6 +6,7 @@
 import React, { useMemo } from 'react';
 import { useChangesetStore } from '../stores/changesetStore';
 import { Card, Badge } from 'flowbite-react';
+import { EmptyState } from './shared';
 
 interface ChangesetListProps {
   onChangesetSelect: (changesetId: string) => void;
@@ -82,20 +83,15 @@ const ChangesetList: React.FC<ChangesetListProps> = ({ onChangesetSelect }) => {
   if (changesets.length === 0) {
     return (
       <div className="h-full overflow-y-auto flex flex-col p-4">
-        <Card>
-          <div className="text-center py-8">
-            <span className="text-4xl">📝</span>
-            <p className="mt-2 text-gray-500 dark:text-gray-400">No changesets found</p>
-          </div>
-        </Card>
+        <EmptyState variant="changesets" />
       </div>
     );
   }
 
   return (
-    <div className="h-full overflow-y-auto flex flex-col p-4 space-y-4">
+    <div className="h-full overflow-y-auto flex flex-col p-4 space-y-4" data-testid="changeset-list">
       <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-semibold">Changesets</h3>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Changesets</h3>
         <Badge color="gray">{changesets.length} total</Badge>
       </div>
 

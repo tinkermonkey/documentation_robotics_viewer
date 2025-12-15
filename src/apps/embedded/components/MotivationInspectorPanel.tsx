@@ -8,7 +8,6 @@
  * - Cross-layer navigation links to related elements
  */
 
-import './MotivationInspectorPanel.css';
 import { MotivationGraph, MotivationGraphNode, MotivationElementType } from '../types/motivationGraph';
 import { Card, Badge, Button } from 'flowbite-react';
 import { ArrowUp, ArrowDown, X, Share2, Eye } from 'lucide-react';

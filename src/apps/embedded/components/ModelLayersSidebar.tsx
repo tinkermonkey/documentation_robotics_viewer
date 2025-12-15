@@ -53,8 +53,10 @@ const ModelLayersSidebar: React.FC = () => {
   }
 
   return (
-    <div className="p-4">
-      <h3 className="text-sm font-medium mb-4 text-gray-900">Model Layers</h3>
+    <div className="p-4" data-testid="model-layers-sidebar">
+      <h3 className="text-sm font-semibold mb-3 text-gray-900 dark:text-white">
+        Model Layers
+      </h3>
       <div className="space-y-1">
         {layerInfo.map((layer) => {
           const layerColor = getLayerColor(layer.type);
@@ -64,19 +66,25 @@ const ModelLayersSidebar: React.FC = () => {
             <button
               key={layer.id}
               onClick={() => setSelectedLayer(isSelected ? null : layer.id)}
-              className={`w-full text-left px-3 py-2 rounded hover:bg-gray-100 transition-colors ${
-                isSelected ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
+              className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                isSelected
+                  ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
               }`}
+              data-testid={`layer-item-${layer.id}`}
             >
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0 flex-1">
                   <div
                     className="w-2 h-2 rounded-full flex-shrink-0"
                     style={{ backgroundColor: layerColor }}
+                    aria-hidden="true"
                   />
-                  <span className="text-sm">{layer.name}</span>
+                  <span className="text-sm font-medium truncate">{layer.name}</span>
                 </div>
-                <span className="text-xs text-gray-500">{layer.count}</span>
+                <span className="text-xs font-medium text-gray-500 dark:text-gray-400 ml-2 flex-shrink-0">
+                  {layer.count}
+                </span>
               </div>
             </button>
           );

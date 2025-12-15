@@ -9,7 +9,6 @@
  * - Collapsible sections for organization
  */
 
-import './MotivationFilterPanel.css';
 import { MotivationElementType, MotivationRelationshipType } from '../types/motivationGraph';
 import { Accordion, AccordionPanel, AccordionTitle, AccordionContent, Checkbox, Label, Button } from 'flowbite-react';
 import { X } from 'lucide-react';

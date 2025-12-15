@@ -1,9 +1,11 @@
 /**
  * ConnectionStatus Component
- * Displays the current WebSocket connection status
+ * Displays the current WebSocket connection status using Flowbite Badge
  */
 
 import React from 'react';
+import { Badge, Spinner } from 'flowbite-react';
+import { HiStatusOnline, HiStatusOffline } from 'react-icons/hi';
 import { useConnectionStore, ConnectionState } from '../stores/connectionStore';
 
 const ConnectionStatus: React.FC = () => {
@@ -13,39 +15,45 @@ const ConnectionStatus: React.FC = () => {
     switch (state) {
       case 'connected':
         return {
-          className: 'bg-green-100 text-green-800',
+          color: 'success' as const,
+          icon: <HiStatusOnline className="w-4 h-4" />,
           label: 'Connected',
-          showSpinner: false
+          showSpinner: false,
         };
       case 'connecting':
         return {
-          className: 'bg-blue-100 text-blue-800',
+          color: 'info' as const,
+          icon: null,
           label: 'Connecting...',
-          showSpinner: true
+          showSpinner: true,
         };
       case 'reconnecting':
         return {
-          className: 'bg-yellow-100 text-yellow-800',
+          color: 'warning' as const,
+          icon: null,
           label: `Reconnecting (${reconnectAttempt})...`,
-          showSpinner: true
+          showSpinner: true,
         };
       case 'disconnected':
         return {
-          className: 'bg-gray-100 text-gray-800',
+          color: 'gray' as const,
+          icon: <HiStatusOffline className="w-4 h-4" />,
           label: 'Disconnected',
-          showSpinner: false
+          showSpinner: false,
         };
       case 'error':
         return {
-          className: 'bg-red-100 text-red-800',
+          color: 'failure' as const,
+          icon: <HiStatusOffline className="w-4 h-4" />,
           label: 'Connection Error',
-          showSpinner: false
+          showSpinner: false,
         };
       default:
         return {
-          className: 'bg-gray-100 text-gray-800',
+          color: 'gray' as const,
+          icon: null,
           label: 'Unknown',
-          showSpinner: false
+          showSpinner: false,
         };
     }
   };
@@ -53,23 +61,25 @@ const ConnectionStatus: React.FC = () => {
   const statusInfo = getStatusInfo(state);
 
   return (
-    <span
-      className={`inline-flex items-center px-2 py-0.5 rounded text-xs ${statusInfo.className} connection-status`}
+    <Badge
+      color={statusInfo.color}
+      icon={() => (
+        <>
+          {statusInfo.showSpinner ? (
+            <Spinner size="sm" className="mr-1" />
+          ) : (
+            statusInfo.icon && <span className="mr-1">{statusInfo.icon}</span>
+          )}
+        </>
+      )}
+      data-testid="connection-status"
       data-connection-state={state}
     >
-      {statusInfo.showSpinner && (
-        <svg className="animate-spin -ml-1 mr-2 h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-      )}
       {statusInfo.label}
       {state === 'reconnecting' && reconnectDelay > 0 && (
-        <span className="ml-1 opacity-75">
-          ({Math.round(reconnectDelay / 1000)}s)
-        </span>
+        <span className="ml-1 opacity-75">({Math.round(reconnectDelay / 1000)}s)</span>
       )}
-    </span>
+    </Badge>
   );
 };
 

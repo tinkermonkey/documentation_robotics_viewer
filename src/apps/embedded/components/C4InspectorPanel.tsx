@@ -8,7 +8,6 @@
  * - Container-specific details (API endpoints, deployment info)
  */
 
-import './C4InspectorPanel.css';
 import { C4Graph,  C4Type, ContainerType } from '../types/c4Graph';
 import { Card, Badge, Button } from 'flowbite-react';
 import { ArrowUp, ArrowDown, X, ZoomIn } from 'lucide-react';

@@ -7,7 +7,6 @@
 
 import React from 'react';
 import { MotivationGraphNode } from '../types/motivationGraph';
-import './MotivationBreadcrumb.css';
 import { Breadcrumb, Badge, Button } from 'flowbite-react';
 import { X } from 'lucide-react';
 

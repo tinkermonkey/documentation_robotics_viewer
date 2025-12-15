@@ -14,7 +14,6 @@
 import React from 'react';
 import { Button, Select, Label, ToggleSwitch, Spinner, ButtonGroup } from 'flowbite-react';
 import { Grid, Download, X } from 'lucide-react';
-import './C4ControlPanel.css';
 import { C4ViewLevel, C4ScenarioPreset, C4_SCENARIO_PRESETS } from '../types/c4Graph';
 
 export type C4LayoutAlgorithm = 'hierarchical' | 'orthogonal' | 'force' | 'manual';

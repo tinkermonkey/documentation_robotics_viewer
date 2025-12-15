@@ -9,7 +9,6 @@
  * - Collapsible sections for organization
  */
 
-import './C4FilterPanel.css';
 import { ContainerType } from '../types/c4Graph';
 import { Accordion, AccordionPanel, AccordionTitle, AccordionContent, Checkbox, Label, Button } from 'flowbite-react';
 import { X } from 'lucide-react';

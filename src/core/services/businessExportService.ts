@@ -413,8 +413,13 @@ export function exportImpactAnalysisReport(
       throw new Error('No processes selected for impact analysis. Please select at least one process.');
     }
 
+    // Convert node IDs to Node objects (minimal interface with id)
+    const selectedNodeObjects = Array.from(selectedNodes)
+      .map(id => businessGraph.nodes.get(id))
+      .filter((node): node is NonNullable<typeof node> => node !== undefined) as unknown as Node[];
+
     // Run impact analysis
-    const impactResult = analyzeImpact(selectedNodes, businessGraph);
+    const impactResult = analyzeImpact(selectedNodeObjects, businessGraph);
 
     // Build report with human-readable process names
     const report: ImpactAnalysisReport = {

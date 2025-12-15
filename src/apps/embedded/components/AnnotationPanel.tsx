@@ -5,12 +5,13 @@
  */
 
 import React, { useMemo, useState } from 'react';
-import { Card, Badge, Spinner, Button, Modal, Textarea, Label } from 'flowbite-react';
+import { Badge, Avatar, Button, Modal, Textarea, Label } from 'flowbite-react';
 import { Plus } from 'lucide-react';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { useModelStore } from '../../../core/stores/modelStore';
 import { Annotation } from '../types/annotations';
 import { parseMentions, resolveElementName } from '../utils/mentionParser';
+import { EmptyState, LoadingState, ErrorState } from './shared';
 
 const AnnotationPanel: React.FC = () => {
   const { annotations, selectedElementId, loading, error, createAnnotation, setHighlightedElementId } = useAnnotationStore();
@@ -108,13 +109,24 @@ const AnnotationPanel: React.FC = () => {
   };
 
   /**
+   * Get initials from author name for avatar
+   */
+  const getInitials = (name: string): string => {
+    const parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  };
+
+  /**
    * Render annotation content with @mentions as clickable badges
    */
   const renderContentWithMentions = (content: string) => {
     const tokens = parseMentions(content);
 
     return (
-      <span>
+      <span className="text-sm text-gray-700 dark:text-gray-300">
         {tokens.map((token, index) => {
           if (token.type === 'mention' && token.elementId) {
             const elementName = resolveElementName(token.elementId, model);
@@ -123,7 +135,7 @@ const AnnotationPanel: React.FC = () => {
                 key={index}
                 color="info"
                 size="sm"
-                className="inline-flex items-center mx-1 cursor-pointer hover:bg-blue-600 transition-colors"
+                className="inline-flex items-center mx-0.5 cursor-pointer hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
                 title={`Click to highlight: ${token.elementId}`}
                 onClick={() => handleMentionClick(token.elementId!)}
               >
@@ -138,95 +150,93 @@ const AnnotationPanel: React.FC = () => {
   };
 
   const renderAnnotation = (annotation: Annotation) => (
-    <Card key={annotation.id} className="mb-3">
-      <div className="flex items-center justify-between mb-2">
-        <span className="font-semibold text-sm text-gray-900 dark:text-white">
-          {annotation.author}
-        </span>
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500 dark:text-gray-400">
-            {formatTimestamp(annotation.createdAt)}
-          </span>
-          {annotation.resolved && (
-            <Badge color="success" size="sm">✓ Resolved</Badge>
+    <div key={annotation.id} className="mb-3" data-testid={`annotation-${annotation.id}`}>
+      <div className="flex gap-3">
+        {/* Avatar */}
+        <Avatar placeholderInitials={getInitials(annotation.author)} rounded size="sm" />
+
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          {/* Author and timestamp */}
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-sm font-medium text-gray-900 dark:text-white">
+              {annotation.author}
+            </span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              {formatTimestamp(annotation.createdAt)}
+            </span>
+            {annotation.resolved && (
+              <Badge color="success" size="xs">
+                ✓ Resolved
+              </Badge>
+            )}
+          </div>
+
+          {/* Comment text with @mentions */}
+          <div className="mb-2">{renderContentWithMentions(annotation.content)}</div>
+
+          {/* Replies */}
+          {annotation.replies && annotation.replies.length > 0 && (
+            <div className="mt-3 pl-4 border-l-2 border-gray-200 dark:border-gray-700 space-y-3">
+              {annotation.replies.map((reply) => (
+                <div key={reply.id} className="flex gap-2">
+                  <Avatar placeholderInitials={getInitials(reply.author)} rounded size="xs" />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        {reply.author}
+                      </span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {formatTimestamp(reply.createdAt)}
+                      </span>
+                    </div>
+                    <div>{renderContentWithMentions(reply.content)}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </div>
-      <div className="text-sm text-gray-700 dark:text-gray-300 mb-2">
-        {renderContentWithMentions(annotation.content)}
-      </div>
-      {annotation.replies && annotation.replies.length > 0 && (
-        <div className="mt-3 pl-4 border-l-2 border-gray-200 dark:border-gray-700 space-y-2">
-          {annotation.replies.map(reply => (
-            <div key={reply.id} className="text-sm">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="font-medium text-gray-700 dark:text-gray-300">{reply.author}</span>
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {formatTimestamp(reply.createdAt)}
-                </span>
-              </div>
-              <div className="text-gray-600 dark:text-gray-400">{renderContentWithMentions(reply.content)}</div>
-            </div>
-          ))}
-        </div>
-      )}
-    </Card>
+    </div>
   );
 
   if (loading) {
-    return (
-      <div className="h-full overflow-y-auto flex flex-col items-center justify-center py-12 gap-4">
-        <Spinner size="lg" />
-        <p className="text-gray-600 dark:text-gray-400">Loading annotations...</p>
-      </div>
-    );
+    return <LoadingState variant="panel" message="Loading annotations..." />;
   }
 
   if (error) {
-    return (
-      <div className="h-full overflow-y-auto p-4">
-        <Card>
-          <h3 className="text-lg font-semibold text-red-600 dark:text-red-400">Error</h3>
-          <p className="text-gray-600 dark:text-gray-400">{error}</p>
-        </Card>
-      </div>
-    );
+    return <ErrorState variant="panel" message={error} />;
   }
 
   if (annotations.length === 0) {
     return (
-      <div className="h-full overflow-y-auto p-4">
-        <Card>
-          <div className="text-center py-8">
-            <span className="text-4xl">💬</span>
-            <p className="mt-2 font-medium text-gray-700 dark:text-gray-300">No annotations yet</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Annotations will appear here as they are added
-            </p>
-          </div>
-        </Card>
+      <div className="p-4">
+        <EmptyState
+          variant="annotations"
+          action={{ label: 'Add Comment', onClick: handleOpenModal }}
+        />
       </div>
     );
   }
 
   return (
-    <div className="p-4 border-b border-gray-200 max-h-96 overflow-y-auto">
+    <div className="p-4" data-testid="annotation-panel">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-medium text-gray-900 dark:text-white">
-          {selectedElementId ? 'Element Annotations' : 'Comments'}
+        <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+          {selectedElementId ? 'Element Annotations' : 'Comments'} ({displayedAnnotations.length})
         </h3>
-        <Badge color="gray" size="sm">
-          {displayedAnnotations.length}
-        </Badge>
       </div>
 
       {/* Add Comment Button */}
       <Button
         color="light"
-        className="w-full mb-4 border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
+        size="sm"
+        className="w-full mb-4"
         onClick={handleOpenModal}
+        data-testid="add-comment-btn"
       >
-        <Plus className="mr-2 h-5 w-5" />
+        <Plus className="mr-2 h-4 w-4" />
         Add Comment
       </Button>
 

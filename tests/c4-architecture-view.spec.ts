@@ -14,7 +14,7 @@
  * 1. Reference server running with example model
  * 2. Playwright browsers installed: npx playwright install chromium
  *
- * Run tests: npm run test:embedded
+ * Run tests: npm run test:e2e
  */
 
 import { test, expect } from '@playwright/test';

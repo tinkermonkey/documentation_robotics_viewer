@@ -13,6 +13,7 @@ import { LocalFileLoader } from '../../../core/services/localFileLoader';
 import { SpecParser } from '../../../core/services/specParser';
 import { MetaModel, Relationship } from '../../../core/types';
 import { SpecDataResponse, LinkType } from '../services/embeddedDataLoader';
+import { LoadingState, ErrorState, EmptyState } from './shared';
 
 export interface SpecGraphViewProps {
   specData: SpecDataResponse;
@@ -177,38 +178,18 @@ const SpecGraphView: React.FC<SpecGraphViewProps> = ({ specData }) => {
 
   // Loading state
   if (loading) {
-    return (
-      <div className="message-overlay">
-        <div className="message-box">
-          <div className="spinner"></div>
-          <p>Converting schema to graph...</p>
-        </div>
-      </div>
-    );
+    return <LoadingState variant="panel" message="Converting schema to graph..." />;
   }
 
   // Error state
   if (error) {
-    return (
-      <div className="message-overlay">
-        <div className="message-box error">
-          <h3>Error</h3>
-          <p>{error}</p>
-        </div>
-      </div>
-    );
+    return <ErrorState variant="panel" message={error} />;
   }
 
   // Empty state
   if (!model) {
     console.warn('[SpecGraphView] Rendering empty state - no model');
-    return (
-      <div className="message-overlay">
-        <div className="message-box">
-          <p>No schema data to display</p>
-        </div>
-      </div>
-    );
+    return <EmptyState variant="model" title="No Schema Data" description="No schema data available to display" />;
   }
 
   // Render GraphViewer with converted model

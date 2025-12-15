@@ -8,7 +8,6 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import '@xyflow/react/dist/style.css';
 import '../../../core/components/GraphViewer.css';
-import './C4GraphView.css';
 import {
   ReactFlow,
   Background,
@@ -679,10 +678,10 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
   // Loading state
   if (loading) {
     return (
-      <div className="message-overlay">
-        <div className="message-box">
-          <div className="spinner"></div>
-          <p>Loading C4 architecture diagram...</p>
+      <div className="flex items-center justify-center w-full h-full bg-gray-50 dark:bg-gray-950">
+        <div className="flex flex-col items-center gap-4 py-8 px-12 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm text-center max-w-md">
+          <div className="w-8 h-8 border-[3px] border-gray-200 dark:border-gray-600 border-t-blue-600 rounded-full animate-spin"></div>
+          <p className="m-0 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">Loading C4 architecture diagram...</p>
         </div>
       </div>
     );
@@ -691,10 +690,11 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
   // Error state
   if (error) {
     return (
-      <div className="message-overlay">
-        <div className="message-box error">
-          <h3>Error</h3>
-          <p>{error}</p>
+      <div className="flex items-center justify-center w-full h-full bg-gray-50 dark:bg-gray-950">
+        <div className="flex flex-col items-center gap-4 py-8 px-12 border rounded-xl shadow-sm text-center max-w-md border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950">
+          <h3 className="m-0 text-base font-semibold text-red-600 dark:text-red-400">Error</h3>
+          <p className="m-0 text-sm text-red-900 dark:text-red-300">
+{error}</p>
         </div>
       </div>
     );
@@ -703,10 +703,10 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
   // Empty state
   if (nodes.length === 0 && !isLayouting) {
     return (
-      <div className="message-overlay">
-        <div className="message-box">
-          <p>No C4 elements match the current filters</p>
-          <button onClick={handleClearAllFilters} className="clear-filters-button">
+      <div className="flex items-center justify-center w-full h-full bg-gray-50 dark:bg-gray-950">
+        <div className="flex flex-col items-center gap-4 py-8 px-12 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm text-center max-w-md">
+          <p className="m-0 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">No C4 elements match the current filters</p>
+          <button onClick={handleClearAllFilters} className="mt-2 px-5 py-2.5 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium cursor-pointer transition-all hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500">
             Clear All Filters
           </button>
         </div>
@@ -717,9 +717,9 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
   // Render ReactFlow with C4 nodes and edges
   return (
     <ErrorBoundary>
-      <div className="c4-graph-container">
+      <div className="flex flex-col lg:flex-row w-full h-full bg-gray-50 dark:bg-gray-950 relative">
         {/* Filter Panel */}
-        <div className="c4-sidebar left">
+        <div className="flex-shrink-0 bg-white dark:bg-gray-800 z-10 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-700 overflow-y-auto max-h-48 lg:max-h-none w-full lg:w-[240px] xl:w-[280px]">
           <C4FilterPanel
             selectedContainerTypes={selectedContainerTypes}
             selectedTechnologyStacks={selectedTechnologyStacks}
@@ -732,7 +732,7 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
         </div>
 
         {/* Main Graph View */}
-        <div className="c4-main-content">
+        <div className="flex-1 flex flex-col min-w-0 relative">
           {/* Breadcrumb Navigation */}
           <C4BreadcrumbNav
             breadcrumb={breadcrumb}
@@ -741,11 +741,11 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
           />
 
           {/* Graph Viewer */}
-          <div className="c4-graph-viewer">
+          <div className="flex-1 relative bg-white dark:bg-gray-900">
             {isLayouting && (
-              <div className="layout-overlay" role="status" aria-live="polite">
-                <div className="layout-progress">
-                  <div className="spinner-small"></div>
+              <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 flex items-center justify-center z-50 pointer-events-none animate-in fade-in duration-200" role="status" aria-live="polite">
+                <div className="flex items-center gap-3 px-6 py-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg text-gray-700 dark:text-gray-300 text-sm font-medium animate-in zoom-in-95 duration-300">
+                  <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
                   <span>Computing layout...</span>
                 </div>
               </div>
@@ -791,7 +791,7 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
         </div>
 
         {/* Control Panel */}
-        <div className="c4-sidebar right">
+        <div className="flex-shrink-0 bg-white dark:bg-gray-800 z-10 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-700 overflow-y-auto max-h-48 lg:max-h-none w-full lg:w-[240px] xl:w-[280px]">
           <C4ControlPanel
             selectedLayout={selectedLayout}
             currentViewLevel={c4Preferences.viewLevel}
@@ -819,7 +819,7 @@ const C4GraphView: React.FC<C4GraphViewProps> = ({ model }) => {
         {c4Preferences.inspectorPanelVisible &&
           c4Preferences.selectedNodeId &&
           fullGraphRef.current && (
-            <div className="c4-sidebar right inspector">
+            <div className="flex-shrink-0 bg-white dark:bg-gray-800 fixed lg:absolute bottom-0 lg:right-0 left-0 lg:left-auto lg:top-0 h-1/2 lg:h-full w-full lg:w-[280px] xl:w-[320px] shadow-lg z-20 rounded-t-xl lg:rounded-none overflow-y-auto transition-transform duration-300 ease-out animate-in slide-in-from-bottom lg:slide-in-from-right">
               <C4InspectorPanel
                 selectedNodeId={c4Preferences.selectedNodeId}
                 graph={fullGraphRef.current}
