@@ -6,7 +6,8 @@
 
 import React, { useMemo } from 'react';
 import { Info } from 'lucide-react';
-import { LAYER_COLORS, LAYER_DISPLAY_NAMES } from '../../../core/utils/layerColors';
+import { LayerType } from '../../../core/types';
+import { getLayerColor, getLayerDisplayName } from '../../../core/utils/layerColors';
 import type { MetaModel } from '../../../core/types/model';
 
 export interface LayerTypesLegendProps {
@@ -26,15 +27,14 @@ const LayerTypesLegend: React.FC<LayerTypesLegendProps> = ({ model }) => {
 
     // Count elements in each layer
     Object.entries(model.layers || {}).forEach(([layerKey, layer]: [string, any]) => {
-      const normalizedKey = layerKey.toLowerCase();
-      layerCounts[normalizedKey] = layer.elements?.length || 0;
+      layerCounts[layerKey] = layer.elements?.length || 0;
     });
 
-    // Create layer type info array
-    const types: LayerTypeInfo[] = Object.keys(LAYER_COLORS).map((layerKey) => ({
-      name: LAYER_DISPLAY_NAMES[layerKey] || layerKey,
-      color: LAYER_COLORS[layerKey],
-      count: layerCounts[layerKey] || 0,
+    // Create layer type info array from all LayerType enum values
+    const types: LayerTypeInfo[] = Object.values(LayerType).map((layerType) => ({
+      name: getLayerDisplayName(layerType),
+      color: getLayerColor(layerType, 'primary'),
+      count: layerCounts[layerType] || 0,
     }));
 
     // Filter out layers with 0 elements and sort by count descending

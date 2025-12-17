@@ -6,6 +6,7 @@
 import dagre from 'dagre';
 import { Layer, LayerType } from '../types';
 import { LayoutResult } from '../types/shapes';
+import { getLayerColor } from '../utils/layerColors';
 
 /**
  * Layout engine for vertically stacking layers
@@ -67,7 +68,7 @@ export class VerticalLayerLayout {
         yOffset: currentY,
         positions: layerLayout.positions,
         bounds: layerLayout.bounds,
-        color: this.getLayerColor(layerType),
+        color: getLayerColor(layerType, 'primary'),
         name: layerType
       };
 
@@ -178,29 +179,6 @@ export class VerticalLayerLayout {
     };
   }
 
-  /**
-   * Get visual color for a layer type
-   * @param layerType - The layer type
-   * @returns Hex color code
-   */
-  private getLayerColor(layerType: string): string {
-    const colors: Record<string, string> = {
-      [LayerType.Motivation]: '#2e7d32',           // Dark green
-      [LayerType.Business]: '#e65100',             // Dark orange
-      [LayerType.Security]: '#c2185b',             // Dark pink
-      [LayerType.Application]: '#1565c0',          // Dark blue
-      [LayerType.Technology]: '#6a1b9a',           // Purple
-      [LayerType.Api]: '#00695c',                  // Teal
-      [LayerType.DataModel]: '#424242',            // Dark gray
-      [LayerType.Datastore]: '#5d4037',            // Brown
-      [LayerType.Ux]: '#283593',                   // Indigo
-      [LayerType.Navigation]: '#f57f17',           // Amber
-      [LayerType.ApmObservability]: '#4e342e',     // Dark brown
-      [LayerType.FederatedArchitecture]: '#00897b' // Teal-green
-    };
-
-    return colors[layerType] || '#999999';
-  }
 
   /**
    * Get the configured layer order

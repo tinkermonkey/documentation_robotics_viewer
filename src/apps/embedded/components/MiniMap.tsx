@@ -6,6 +6,8 @@
 
 import { memo } from 'react';
 import { MiniMap as ReactFlowMiniMap } from '@xyflow/react';
+import { LayerType } from '../../../core/types';
+import { getLayerColor } from '../../../core/utils/layerColors';
 
 export interface MiniMapProps {
   /** Node color function - maps node type to color */
@@ -25,73 +27,40 @@ export interface MiniMapProps {
 }
 
 /**
+ * Maps node types to their layer for color determination
+ */
+const getNodeLayer = (nodeType: string): LayerType | null => {
+  const motivationTypes = ['stakeholder', 'driver', 'assessment', 'goal', 'outcome', 'principle', 'requirement', 'constraint', 'assumption', 'valueStream'];
+  const businessTypes = ['actor', 'role', 'collaboration', 'interface', 'process', 'function', 'interaction', 'event', 'service', 'object', 'contract', 'representation', 'product', 'businessCapability', 'businessFunction', 'businessService'];
+  const applicationTypes = ['applicationComponent', 'applicationInterface', 'applicationFunction', 'applicationInteraction', 'applicationProcess', 'applicationEvent', 'applicationService', 'dataObject'];
+  const technologyTypes = ['node', 'device', 'systemSoftware', 'technologyCollaboration', 'technologyInterface', 'path', 'communicationNetwork', 'technologyFunction', 'technologyProcess', 'technologyInteraction', 'technologyEvent', 'technologyService', 'artifact'];
+  const c4Types = ['person', 'softwareSystem', 'container', 'component', 'externalActor'];
+
+  if (motivationTypes.includes(nodeType)) return LayerType.Motivation;
+  if (businessTypes.includes(nodeType)) return LayerType.Business;
+  if (applicationTypes.includes(nodeType)) return LayerType.Application;
+  if (technologyTypes.includes(nodeType)) return LayerType.Technology;
+  if (c4Types.includes(nodeType)) return LayerType.Application;  // C4 is application architecture
+
+  return null;
+};
+
+/**
  * Default node color function
- * Maps layer types to their respective colors
+ * Maps node types to their layer colors from centralized system
  */
 const defaultNodeColor = (node: any): string => {
   const nodeType = node.type || 'default';
 
-  // Layer-based color mapping
-  const colorMap: Record<string, string> = {
-    // Motivation layer
-    stakeholder: '#9333ea',
-    driver: '#a855f7',
-    assessment: '#c084fc',
-    goal: '#d8b4fe',
-    outcome: '#e9d5ff',
-    principle: '#f3e8ff',
+  // Get the layer for this node type
+  const layer = getNodeLayer(nodeType);
 
-    // Business layer
-    actor: '#3b82f6',
-    role: '#60a5fa',
-    collaboration: '#93c5fd',
-    interface: '#bfdbfe',
-    process: '#dbeafe',
-    function: '#eff6ff',
-    interaction: '#3b82f6',
-    event: '#60a5fa',
-    service: '#93c5fd',
-    object: '#bfdbfe',
-    contract: '#dbeafe',
-    representation: '#eff6ff',
-    product: '#3b82f6',
+  if (layer) {
+    return getLayerColor(layer, 'primary');
+  }
 
-    // Application layer
-    applicationComponent: '#10b981',
-    applicationInterface: '#34d399',
-    applicationFunction: '#6ee7b7',
-    applicationInteraction: '#a7f3d0',
-    applicationProcess: '#d1fae5',
-    applicationEvent: '#ecfdf5',
-    applicationService: '#10b981',
-    dataObject: '#34d399',
-
-    // Technology layer
-    node: '#f59e0b',
-    device: '#fbbf24',
-    systemSoftware: '#fcd34d',
-    technologyCollaboration: '#fde68a',
-    technologyInterface: '#fef3c7',
-    path: '#fffbeb',
-    communicationNetwork: '#f59e0b',
-    technologyFunction: '#fbbf24',
-    technologyProcess: '#fcd34d',
-    technologyInteraction: '#fde68a',
-    technologyEvent: '#fef3c7',
-    technologyService: '#fffbeb',
-    artifact: '#f59e0b',
-
-    // Architecture layer (C4)
-    person: '#6366f1',
-    softwareSystem: '#8b5cf6',
-    container: '#a78bfa',
-    component: '#c4b5fd',
-
-    // Default fallback
-    default: '#94a3b8',
-  };
-
-  return colorMap[nodeType] || colorMap.default;
+  // Fallback for unknown node types
+  return '#94a3b8';
 };
 
 export const MiniMap = memo(

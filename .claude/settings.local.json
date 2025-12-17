@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "SlashCommand(/dr-model Add application service 'businessExportService' that exports business layer graphs as PNG, SVG, JSON with traceability reports and impact analysis)",
+      "Bash(dr search:*)",
+      "Bash(dr add:*)",
+      "Bash(dr validate:*)",
+      "Bash(dr update:*)",
+      "Bash(dr list:*)",
+      "Bash(python3:*)",
+      "Bash(find:*)",
+      "SlashCommand(/dr-validate --strict --validate-links --strict-links)",
+      "Bash(python:*)",
+      "Bash(bash:*)",
+      "Bash(npx dr validate:*)",
+      "Bash(source /home/austinsand/workspace/orchestrator/documentation_robotics_viewer/.venv/bin/activate:*)",
+      "Bash(tee:*)",
+      "SlashCommand(/dr-validate --strict --validate-links)",
+      "Bash(npm run typecheck:*)",
+      "Bash(cat:*)",
+      "Bash(npm run build:embedded:*)",
+      "Bash(npx playwright test:*)",
+      "Bash(wc:*)",
+      "Bash(npm run:*)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(npx tsc:*)",
+      "Bash(git checkout:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "context7"
+  ]
+}

@@ -6,28 +6,8 @@
 import React from 'react';
 import { useLayerStore } from '../stores/layerStore';
 import { LayerType } from '../types';
+import { getLayerColor } from '../utils/layerColors';
 import './LayerPanel.css';
-
-/**
- * Get display color for each layer
- */
-const getLayerColor = (layerType: string): string => {
-  const colors: Record<string, string> = {
-    [LayerType.Motivation]: '#2e7d32',
-    [LayerType.Business]: '#e65100',
-    [LayerType.Security]: '#c2185b',
-    [LayerType.Application]: '#1565c0',
-    [LayerType.Technology]: '#6a1b9a',
-    [LayerType.Api]: '#00695c',
-    [LayerType.DataModel]: '#424242',
-    [LayerType.Datastore]: '#5d4037',
-    [LayerType.Ux]: '#283593',
-    [LayerType.Navigation]: '#f57f17',
-    [LayerType.ApmObservability]: '#4e342e',
-    [LayerType.FederatedArchitecture]: '#00897b'
-  };
-  return colors[layerType] || '#999999';
-};
 
 /**
  * Layer Panel Component
@@ -107,7 +87,7 @@ export const LayerPanel: React.FC = () => {
                 <div className="layer-item-header">
                   <div
                     className="layer-color-indicator"
-                    style={{ backgroundColor: getLayerColor(layerId) }}
+                    style={{ backgroundColor: getLayerColor(layerId, 'primary') }}
                   />
                   <label className="layer-checkbox">
                     <input

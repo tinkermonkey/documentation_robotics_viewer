@@ -18,6 +18,7 @@ import {
 } from '../types/yaml';
 import { ModelElement, Layer, Relationship, ReferenceType } from '../types/model';
 import { LayerType } from '../types/layers';
+import { getLayerColor } from '../utils/layerColors';
 
 /**
  * Maps YAML layer IDs to internal LayerType
@@ -185,7 +186,7 @@ export class YAMLParser {
         },
       },
       visual: {
-        color: this.getLayerColor(layerType),
+        color: getLayerColor(layerType, 'primary'),
         icon: '',
         opacity: 1,
       },
@@ -318,8 +319,8 @@ export class YAMLParser {
         position: { x: 0, y: 0 }, // Will be set by layout algorithm
         size: { width: 200, height: 100 },
         style: {
-          backgroundColor: this.getElementColor(layerType),
-          borderColor: this.getElementBorderColor(layerType),
+          backgroundColor: getLayerColor(layerType, 'light'),
+          borderColor: getLayerColor(layerType, 'dark'),
         },
       },
     };
@@ -546,40 +547,4 @@ export class YAMLParser {
     return this.dotNotationLookup;
   }
 
-  /**
-   * Get layer color based on type
-   */
-  private getLayerColor(layerType: string): string {
-    const colors: Record<string, string> = {
-      Motivation: '#f59e0b',
-      Business: '#3b82f6',
-      Security: '#ef4444',
-      Application: '#10b981',
-      Technology: '#6366f1',
-      Api: '#8b5cf6',
-      DataModel: '#ec4899',
-      DataStore: '#f97316',
-      Ux: '#14b8a6',
-      Navigation: '#06b6d4',
-      APM: '#84cc16',
-    };
-
-    return colors[layerType] || '#6b7280';
-  }
-
-  /**
-   * Get element background color based on layer type
-   */
-  private getElementColor(layerType: string): string {
-    const baseColor = this.getLayerColor(layerType);
-    // Lighten for background
-    return baseColor + '20'; // Add alpha for transparency
-  }
-
-  /**
-   * Get element border color based on layer type
-   */
-  private getElementBorderColor(layerType: string): string {
-    return this.getLayerColor(layerType);
-  }
 }
