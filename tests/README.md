@@ -100,12 +100,11 @@ Tests for the embedded viewer application with reference server integration.
 - Version badge display
 - Console error checking
 
-Tests for C4 architecture views, accessibility, and performance.
+Tests for C4 architecture views and accessibility.
 
 **Files:**
-- `tests/c4-architecture-view.spec.ts` - C4 architecture view rendering
+- `tests/c4-architecture-view.spec.ts` - C4 architecture view rendering and performance
 - `tests/c4-accessibility.spec.ts` - WCAG accessibility compliance
-- `tests/c4-performance.spec.ts` - Performance benchmarks
 
 **Configuration:** `playwright.e2e.config.ts` (automatically starts both servers)
 

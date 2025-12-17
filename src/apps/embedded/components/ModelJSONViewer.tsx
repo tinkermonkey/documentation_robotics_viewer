@@ -7,8 +7,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { MetaModel } from '../../../core/types';
 import { LinkType } from '../services/embeddedDataLoader';
-import { Card, Badge } from 'flowbite-react';
-import SidebarList, { SidebarListItem } from './common/SidebarList';
+import { Badge } from 'flowbite-react';
 import ExpandableSection from './common/ExpandableSection';
 import AttributesTable, { AttributeRow } from './common/AttributesTable';
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid';
@@ -24,25 +23,18 @@ interface ModelJSONViewerProps {
     schemas: Record<string, any>;
   };
   onPathHighlight?: (path: string | null) => void;
+  selectedLayer: string | null;
 }
 
 const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
   model,
   linkRegistry,
   specData,
-  onPathHighlight
+  onPathHighlight,
+  selectedLayer
 }) => {
-  const [selectedLayer, setSelectedLayer] = useState<string | null>(null);
   const [expandedTypes, setExpandedTypes] = useState<Set<string>>(new Set());
   const { highlightedElementId } = useAnnotationStore();
-
-  console.log('[ModelJSONViewer] Rendering with model:', {
-    hasModel: !!model,
-    layerCount: model ? Object.keys(model.layers).length : 0,
-    elementCount: model?.metadata?.elementCount || 0,
-    hasLinkRegistry: !!linkRegistry,
-    linkTypesCount: linkRegistry?.linkTypes?.length || 0
-  });
 
   // Watch for highlighted elements and compute their JSON path
   useEffect(() => {
@@ -63,7 +55,6 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
     }
 
     if (foundPath) {
-      console.log('[ModelJSONViewer] Highlighting element path:', foundPath);
       onPathHighlight(foundPath);
     }
   }, [highlightedElementId, model, onPathHighlight]);
@@ -221,29 +212,6 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
     );
   };
 
-  const renderLayerList = () => {
-    const layerItems: SidebarListItem[] = layerNames.map(name => {
-      const layer = layers[name];
-      const displayName = layer.name || normalizeLayerName(name);
-      const elementCount = layer.elements?.length || 0;
-
-      return {
-        id: name,
-        name: displayName,
-        count: elementCount
-      };
-    });
-
-    return (
-      <SidebarList
-        title="Model Layers"
-        items={layerItems}
-        selectedId={selectedLayer}
-        onSelect={setSelectedLayer}
-        emptyMessage="No layers defined"
-      />
-    );
-  };
 
   const renderLayerDetails = () => {
     if (!selectedLayer) {
@@ -251,15 +219,17 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
         { label: 'Version', value: model.version },
         { label: 'Total Elements', value: model.metadata?.elementCount || 0 },
         { label: 'Total Layers', value: layerNames.length },
-        ...(model.metadata?.loadedAt 
-          ? [{ label: 'Loaded', value: new Date(model.metadata.loadedAt).toLocaleString() }] 
+        ...(model.metadata?.loadedAt
+          ? [{ label: 'Loaded', value: new Date(model.metadata.loadedAt).toLocaleString() }]
           : [])
       ];
 
       return (
-        <div className="flex-1 h-full flex items-center justify-center flex-col text-gray-400 dark:text-gray-500 p-6">
-          <p className="text-gray-500 dark:text-gray-400 mb-6">Select a layer to view elements</p>
-          <MetadataGrid title="Model Metadata" items={metadataItems} columns={2} />
+        <div className="h-full overflow-y-auto p-6">
+          <div className="flex items-center justify-center flex-col text-gray-400 dark:text-gray-500 mb-6">
+            <p className="text-gray-500 dark:text-gray-400 mb-6">Select a layer from the sidebar to view elements</p>
+            <MetadataGrid title="Model Metadata" items={metadataItems} columns={2} />
+          </div>
         </div>
       );
     }
@@ -286,8 +256,8 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
     ];
 
     return (
-      <div className="flex-1 h-full overflow-y-auto p-6">
-        <Card>
+      <div className="h-full overflow-y-auto p-6">
+        <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-900">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             {layer.name || selectedLayer}
           </h2>
@@ -295,23 +265,23 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
             <p className="text-gray-600 dark:text-gray-400 mb-4">{layer.description}</p>
           )}
           <MetadataGrid items={layerMetadata} columns={3} />
-        </Card>
+        </div>
 
         {elements.length === 0 ? (
           <div className="mt-6">
-            <Card>
+            <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-900">
               <p className="text-gray-500 dark:text-gray-400">No elements in this layer</p>
               <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
                 Elements will appear here when you add them to your model
               </p>
-            </Card>
+            </div>
           </div>
         ) : (
           <div className="mt-6">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
               Elements ({elements.length})
             </h3>
-            
+
             {sortedTypes.map((elementType) => {
               const typeElements = elementsByType[elementType];
               const typeKey = `${selectedLayer}-${elementType}`;
@@ -319,81 +289,66 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
               const typeSchema = getSchemaForType(selectedLayer, elementType);
 
               return (
-                <div key={typeKey} className="mb-4">
-                  <Card>
-                    <div 
-                      className="cursor-pointer flex items-center gap-2"
-                      onClick={() => toggleType(typeKey)}
-                    >
-                      <span className="text-lg">{isTypeExpanded ? '▼' : '▶'}</span>
-                      <span className="font-semibold text-gray-900 dark:text-white">{elementType}</span>
-                      <Badge color="gray" className="ml-auto">{typeElements.length}</Badge>
-                    </div>
+                <section key={typeKey} className="border-b border-gray-200 dark:border-gray-700 pb-4 mb-4">
+                  <div
+                    className="cursor-pointer flex items-center gap-2"
+                    onClick={() => toggleType(typeKey)}
+                  >
+                    <span className="text-lg">{isTypeExpanded ? '▼' : '▶'}</span>
+                    <h4 className="font-semibold text-gray-900 dark:text-white">{elementType}</h4>
+                    <Badge color="gray" className="ml-auto">{typeElements.length}</Badge>
+                  </div>
 
-                    {isTypeExpanded && (
-                      <div className="mt-4 space-y-4">
-                        {/* Schema Definition */}
-                        {typeSchema && (
-                          <Card className="bg-gray-50 dark:bg-gray-800">
-                            <h5 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                              Type Definition:
-                            </h5>
-                            {typeSchema.description && (
-                              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                                {typeSchema.description}
-                              </p>
-                            )}
-                            {typeSchema.properties && (
-                              <div className="text-sm">
-                                <strong className="text-gray-900 dark:text-white">Properties:</strong>
-                                <ul className="mt-2 space-y-1 ml-4">
-                                  {Object.entries(typeSchema.properties).map(([propName, propDef]: [string, any]) => (
-                                    <li key={propName} className="text-gray-700 dark:text-gray-300">
-                                      <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">{propName}</code>
-                                      {propDef.type && <span className="text-gray-500"> ({propDef.type})</span>}
-                                      {propDef.description && <span> - {propDef.description}</span>}
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-                          </Card>
-                        )}
+                  {isTypeExpanded && (
+                    <div className="mt-4 space-y-4">
+                      {/* Schema Definition */}
+                      {typeSchema && (
+                        <div className="ml-4 pl-4 border-l-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 rounded p-3">
+                          <h5 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                            Type Definition:
+                          </h5>
+                          {typeSchema.description && (
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                              {typeSchema.description}
+                            </p>
+                          )}
+                          {typeSchema.properties && (
+                            <div className="text-sm">
+                              <strong className="text-gray-900 dark:text-white">Properties:</strong>
+                              <ul className="mt-2 space-y-1 ml-4">
+                                {Object.entries(typeSchema.properties).map(([propName, propDef]: [string, any]) => (
+                                  <li key={propName} className="text-gray-700 dark:text-gray-300">
+                                    <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">{propName}</code>
+                                    {propDef.type && <span className="text-gray-500"> ({propDef.type})</span>}
+                                    {propDef.description && <span> - {propDef.description}</span>}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      )}
 
-                        {/* Elements of this type */}
-                        {typeElements.map((element: any) => {
-                          // Build attributes array
-                          const attributes: AttributeRow[] = [];
-                          
-                          // Core attributes
-                          if (element.id) attributes.push({ name: 'ID', value: element.id });
-                          if (element.name) attributes.push({ name: 'Name', value: element.name });
-                          if (element.type) attributes.push({ name: 'Type', value: element.type });
-                          if (element.description || element.properties?.description) {
-                            attributes.push({ 
-                              name: 'Description', 
-                              value: element.description || element.properties?.description 
-                            });
-                          }
-                          
-                          // Properties (excluding core fields)
-                          if (element.properties) {
-                            Object.entries(element.properties)
-                              .filter(([key]) => !['id', 'name', 'type', 'description'].includes(key))
-                              .forEach(([key, value]) => {
-                                attributes.push({
-                                  name: key,
-                                  value: value as any,
-                                  isObject: typeof value === 'object' && value !== null
-                                });
-                              });
-                          }
-                          
-                          // Other top-level attributes
-                          Object.entries(element)
-                            .filter(([key]) => 
-                              !['id', 'name', 'type', 'description', 'properties', 'visual', 'layerId'].includes(key)
-                            )
+                      {/* Elements of this type */}
+                      {typeElements.map((element: any) => {
+                        // Build attributes array
+                        const attributes: AttributeRow[] = [];
+
+                        // Core attributes
+                        if (element.id) attributes.push({ name: 'ID', value: element.id });
+                        if (element.name) attributes.push({ name: 'Name', value: element.name });
+                        if (element.type) attributes.push({ name: 'Type', value: element.type });
+                        if (element.description || element.properties?.description) {
+                          attributes.push({
+                            name: 'Description',
+                            value: element.description || element.properties?.description
+                          });
+                        }
+
+                        // Properties (excluding core fields)
+                        if (element.properties) {
+                          Object.entries(element.properties)
+                            .filter(([key]) => !['id', 'name', 'type', 'description'].includes(key))
                             .forEach(([key, value]) => {
                               attributes.push({
                                 name: key,
@@ -401,29 +356,42 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
                                 isObject: typeof value === 'object' && value !== null
                               });
                             });
+                        }
 
-                          return (
-                            <ExpandableSection
-                              key={element.id}
-                              title={element.name || element.id}
-                            >
-                              <div className="space-y-4">
-                                <AttributesTable attributes={attributes} title="Attributes" />
-                                
-                                {/* Show related cross-layer links */}
-                                {linkRegistry && selectedLayer && linksByLayer.has(selectedLayer) && (
-                                  <div className="mt-4">
-                                    {renderElementLinks(selectedLayer)}
-                                  </div>
-                                )}
-                              </div>
-                            </ExpandableSection>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </Card>
-                </div>
+                        // Other top-level attributes
+                        Object.entries(element)
+                          .filter(([key]) =>
+                            !['id', 'name', 'type', 'description', 'properties', 'visual', 'layerId'].includes(key)
+                          )
+                          .forEach(([key, value]) => {
+                            attributes.push({
+                              name: key,
+                              value: value as any,
+                              isObject: typeof value === 'object' && value !== null
+                            });
+                          });
+
+                        return (
+                          <ExpandableSection
+                            key={element.id}
+                            title={element.name || element.id}
+                          >
+                            <div className="space-y-4">
+                              <AttributesTable attributes={attributes} title="Attributes" />
+
+                              {/* Show related cross-layer links */}
+                              {linkRegistry && selectedLayer && linksByLayer.has(selectedLayer) && (
+                                <div className="mt-4">
+                                  {renderElementLinks(selectedLayer)}
+                                </div>
+                              )}
+                            </div>
+                          </ExpandableSection>
+                        );
+                      })}
+                    </div>
+                  )}
+                </section>
               );
             })}
           </div>
@@ -433,11 +401,8 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
   };
 
   return (
-    <div className="w-full h-full flex flex-col bg-white dark:bg-gray-900 overflow-hidden">
-      <div className="flex flex-1 overflow-hidden">
-        {renderLayerList()}
-        {renderLayerDetails()}
-      </div>
+    <div className="h-full overflow-hidden">
+      {renderLayerDetails()}
     </div>
   );
 };

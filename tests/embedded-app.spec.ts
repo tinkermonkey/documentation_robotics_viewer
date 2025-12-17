@@ -81,6 +81,16 @@ test.describe('Embedded App - Reference Server Integration', () => {
     // Check that Graph sub-tab is active
     const graphTab = header.getByRole('button', { name: 'Graph' });
     await expect(graphTab).toBeVisible();
+
+    // Verify React Flow graph is rendered
+    await page.waitForSelector('.react-flow', { timeout: 10000 });
+    const reactFlow = page.locator('.react-flow');
+    await expect(reactFlow).toBeVisible();
+
+    // Verify nodes are present
+    const nodes = page.locator('.react-flow__node');
+    const nodeCount = await nodes.count();
+    expect(nodeCount).toBeGreaterThan(0);
   });
 
   // Note: Spec view switching is tested more comprehensively in embedded-dual-view.spec.ts
@@ -123,5 +133,80 @@ test.describe('Embedded App - Reference Server Integration', () => {
     if (await versionBadge.isVisible()) {
       await expect(versionBadge).toContainText('v');
     }
+  });
+
+  test('should have only one left sidebar in JSON views', async ({ page }) => {
+    // Wait for WebSocket connection
+    await page.waitForSelector('[data-connection-state="connected"]', { timeout: 5000 });
+
+    // Navigate to Model JSON view
+    const header = page.locator('[data-testid="embedded-header"]');
+    await header.getByRole('button', { name: 'Model' }).click();
+    await page.waitForTimeout(500);
+    await header.getByRole('button', { name: 'JSON' }).click();
+
+    // Wait for JSON view to render
+    await page.waitForSelector('[data-testid="shared-layout"]', { timeout: 5000 });
+
+    // Check for left sidebar
+    const leftSidebar = page.locator('[data-testid="left-sidebar"]');
+    await expect(leftSidebar).toBeVisible();
+    await expect(leftSidebar).toHaveCount(1);
+
+    // Ensure no duplicate internal sidebars
+    const allSidebars = page.locator('aside');
+    const sidebarCount = await allSidebars.count();
+
+    // Should have exactly 2 sidebars: left (w-64) and right (w-80)
+    expect(sidebarCount).toBeLessThanOrEqual(2);
+  });
+
+  test('should attach right sidebar to screen edge', async ({ page }) => {
+    await page.setViewportSize({ width: 1920, height: 1080 });
+
+    // Wait for WebSocket connection
+    await page.waitForSelector('[data-connection-state="connected"]', { timeout: 5000 });
+
+    // Navigate to Model graph view
+    const header = page.locator('[data-testid="embedded-header"]');
+    await header.getByRole('button', { name: 'Model' }).click();
+    await page.waitForTimeout(500);
+    await header.getByRole('button', { name: 'Graph' }).click();
+
+    // Wait for right sidebar
+    await page.waitForSelector('[data-testid="right-sidebar"]', { timeout: 5000 });
+
+    const rightSidebar = page.locator('[data-testid="right-sidebar"]');
+    await expect(rightSidebar).toBeVisible();
+
+    const box = await rightSidebar.boundingBox();
+    const viewport = page.viewportSize()!;
+
+    // Right edge should be at viewport edge (within 2px tolerance for scrollbar)
+    const rightEdge = box!.x + box!.width;
+    const distanceFromEdge = Math.abs(rightEdge - viewport.width);
+
+    expect(distanceFromEdge).toBeLessThan(2);
+  });
+
+  test('should render graph with proper height', async ({ page }) => {
+    // Wait for WebSocket connection
+    await page.waitForSelector('[data-connection-state="connected"]', { timeout: 5000 });
+
+    // Navigate to Model graph view
+    const header = page.locator('[data-testid="embedded-header"]');
+    await header.getByRole('button', { name: 'Model' }).click();
+    await page.waitForTimeout(500);
+    await header.getByRole('button', { name: 'Graph' }).click();
+
+    // Wait for React Flow
+    await page.waitForSelector('.react-flow', { timeout: 10000 });
+
+    const graphContainer = page.locator('.react-flow');
+    const bbox = await graphContainer.boundingBox();
+
+    // Graph should have substantial height (not collapsed)
+    expect(bbox).toBeTruthy();
+    expect(bbox!.height).toBeGreaterThan(100);
   });
 });

@@ -162,7 +162,7 @@ export default function EmbeddedLayout() {
         <SubTabNavigation tabs={subTabs} activePath={currentPath} />
       </header>
 
-      <div className="flex h-[calc(100vh-180px)]">
+      <div className="h-[calc(100vh-180px)]">
         <Outlet />
       </div>
     </div>
