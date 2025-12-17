@@ -1,7 +1,7 @@
 /**
  * MotivationRightSidebar Component
  * Unified right sidebar for Motivation view combining filters, controls, inspector, and annotations
- * in collapsible sections matching SharedLayout pattern
+ * in collapsible sections using the SharedLayout pattern
  */
 
 import React from 'react';
@@ -75,10 +75,10 @@ export const MotivationRightSidebar: React.FC<MotivationRightSidebarProps> = ({
   inspectorPanelVisible = false,
 }) => {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full" data-testid="motivation-right-sidebar">
       <Accordion collapseAll={false}>
         {/* Filters Section */}
-        <AccordionPanel>
+        <AccordionPanel data-testid="motivation-filters-section">
           <AccordionTitle>
             <span className="text-sm font-semibold">Filters</span>
           </AccordionTitle>
@@ -95,7 +95,7 @@ export const MotivationRightSidebar: React.FC<MotivationRightSidebarProps> = ({
         </AccordionPanel>
 
         {/* Controls Section */}
-        <AccordionPanel>
+        <AccordionPanel data-testid="motivation-controls-section">
           <AccordionTitle>
             <span className="text-sm font-semibold">Controls</span>
           </AccordionTitle>
@@ -118,7 +118,7 @@ export const MotivationRightSidebar: React.FC<MotivationRightSidebarProps> = ({
         </AccordionPanel>
 
         {/* Annotations Section */}
-        <AccordionPanel>
+        <AccordionPanel data-testid="motivation-annotations-section">
           <AccordionTitle>
             <span className="text-sm font-semibold">Annotations</span>
           </AccordionTitle>
@@ -129,17 +129,17 @@ export const MotivationRightSidebar: React.FC<MotivationRightSidebarProps> = ({
       </Accordion>
 
       {/* Inspector Section (separate from accordion when visible) */}
-      {inspectorPanelVisible && selectedNodeId && graph && (
-        <div className="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+      {inspectorPanelVisible && selectedNodeId && graph && onTraceUpstream && onTraceDownstream && onCloseInspector && (
+        <div className="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4" data-testid="motivation-inspector-section">
           <h3 className="text-sm font-semibold mb-2">Inspector</h3>
           <MotivationInspectorPanel
             selectedNodeId={selectedNodeId}
             graph={graph}
-            onTraceUpstream={onTraceUpstream!}
-            onTraceDownstream={onTraceDownstream!}
+            onTraceUpstream={onTraceUpstream}
+            onTraceDownstream={onTraceDownstream}
             onShowNetwork={onShowNetwork}
             onFocusOnElement={onFocusOnElement}
-            onClose={onCloseInspector!}
+            onClose={onCloseInspector}
           />
         </div>
       )}

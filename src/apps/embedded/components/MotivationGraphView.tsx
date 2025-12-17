@@ -4,7 +4,7 @@
  * Renders ontology diagram with multiple layout algorithms, filtering, and interactive controls
  */
 
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef, useImperativeHandle, forwardRef } from 'react';
 import '@xyflow/react/dist/style.css';
 import '../../../core/components/GraphViewer.css';
 import {
@@ -42,27 +42,27 @@ import { SpaceMouseHandler } from '../../../core/components/SpaceMouseHandler';
 export interface MotivationGraphViewProps {
   model: MetaModel;
   selectedElementTypes: Set<MotivationElementType>;
-  onElementTypesChange: (types: Set<MotivationElementType>) => void;
   selectedRelationshipTypes: Set<MotivationRelationshipType>;
-  onRelationshipTypesChange: (types: Set<MotivationRelationshipType>) => void;
   layout: LayoutAlgorithm;
-  onLayoutChange: (layout: LayoutAlgorithm) => void;
-  focusModeEnabled: boolean;
-  onFocusModeChange: (enabled: boolean) => void;
 }
 
-// Note: Props are required by parent but not used internally since we removed embedded panels
+export interface MotivationGraphViewRef {
+  fitView: () => void;
+}
 
 /**
  * MotivationGraphView Component
  * Renders motivation layer as interactive ontology diagram
  */
-const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({
-  model,
-  selectedElementTypes,
-  selectedRelationshipTypes,
-  layout,
-}) => {
+const MotivationGraphView = forwardRef<MotivationGraphViewRef, MotivationGraphViewProps>((
+  {
+    model,
+    selectedElementTypes,
+    selectedRelationshipTypes,
+    layout,
+  },
+  ref
+) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
   const [loading, setLoading] = useState(true);
@@ -74,6 +74,13 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({
 
   // Get ReactFlow instance for fitView
   const reactFlowInstance = useReactFlow();
+
+  // Expose fitView method to parent via ref
+  useImperativeHandle(ref, () => ({
+    fitView: () => {
+      reactFlowInstance?.fitView({ padding: 0.2, duration: 400 });
+    },
+  }));
 
   // Get preferences from store
   const {
@@ -400,7 +407,9 @@ const MotivationGraphView: React.FC<MotivationGraphViewProps> = ({
       </div>
     </ErrorBoundary>
   );
-};
+});
+
+MotivationGraphView.displayName = 'MotivationGraphView';
 
 /**
  * Animate layout transitions using position interpolation

@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
-import MotivationGraphView from '../components/MotivationGraphView';
+import MotivationGraphView, { MotivationGraphViewRef } from '../components/MotivationGraphView';
 import { MotivationRightSidebar } from '../components/MotivationRightSidebar';
 import SharedLayout from '../components/SharedLayout';
 import { useModelStore } from '../../../core/stores/modelStore';
@@ -23,6 +23,7 @@ function MotivationRouteContent() {
     motivationPreferences,
     setVisibleElementTypes,
     setVisibleRelationshipTypes,
+    setFocusContextEnabled,
   } = useViewPreferenceStore();
 
   // Panel state (extracted from MotivationGraphView)
@@ -35,12 +36,15 @@ function MotivationRouteContent() {
   const [selectedLayout, setSelectedLayout] = useState<LayoutAlgorithm>(
     motivationPreferences.selectedLayout
   );
-  const [focusModeEnabled, setFocusModeEnabled] = useState(
-    motivationPreferences.focusContextEnabled
-  );
 
   // Store reference to the full graph for inspector and export
   const fullGraphRef = useRef<MotivationGraph | null>(null);
+
+  // Track graph version to trigger useMemo recalculation
+  const [graphVersion, setGraphVersion] = useState(0);
+
+  // Ref to MotivationGraphView for calling fitView
+  const graphViewRef = useRef<MotivationGraphViewRef>(null);
 
   // Create graph builder service
   const motivationGraphBuilder = useMemo(() => new MotivationGraphBuilder(), []);
@@ -50,6 +54,7 @@ function MotivationRouteContent() {
     if (model) {
       const graph = motivationGraphBuilder.build(model);
       fullGraphRef.current = graph;
+      setGraphVersion((v) => v + 1); // Trigger useMemo recalculation
     }
   }, [model, motivationGraphBuilder]);
 
@@ -89,7 +94,7 @@ function MotivationRouteContent() {
       elements: elementCounts,
       relationships: relationshipCounts,
     };
-  }, [fullGraphRef.current, selectedElementTypes, selectedRelationshipTypes]);
+  }, [graphVersion, selectedElementTypes, selectedRelationshipTypes]);
 
   // Callback handlers
   const handleElementTypeChange = useCallback(
@@ -130,7 +135,7 @@ function MotivationRouteContent() {
   }, [setVisibleElementTypes, setVisibleRelationshipTypes]);
 
   const handleFitToView = useCallback(() => {
-    // This will be handled by MotivationGraphView's internal fitView
+    graphViewRef.current?.fitView();
   }, []);
 
   const handleClearHighlighting = useCallback(() => {
@@ -209,9 +214,9 @@ function MotivationRouteContent() {
         highlightedNodeIds,
         highlightedEdgeIds,
       });
-      setFocusModeEnabled(true);
+      setFocusContextEnabled(true);
     },
-    [motivationGraphBuilder]
+    [motivationGraphBuilder, setFocusContextEnabled]
   );
 
   const handleCloseInspector = useCallback(() => {
@@ -300,8 +305,8 @@ function MotivationRouteContent() {
           selectedLayout={selectedLayout}
           onLayoutChange={setSelectedLayout}
           onFitToView={handleFitToView}
-          focusModeEnabled={focusModeEnabled}
-          onFocusModeToggle={setFocusModeEnabled}
+          focusModeEnabled={motivationPreferences.focusContextEnabled}
+          onFocusModeToggle={setFocusContextEnabled}
           onClearHighlighting={handleClearHighlighting}
           isHighlightingActive={motivationPreferences.pathTracing.mode !== 'none'}
           isLayouting={false}
@@ -321,15 +326,11 @@ function MotivationRouteContent() {
       }
     >
       <MotivationGraphView
+        ref={graphViewRef}
         model={model}
         selectedElementTypes={selectedElementTypes}
-        onElementTypesChange={setSelectedElementTypes}
         selectedRelationshipTypes={selectedRelationshipTypes}
-        onRelationshipTypesChange={setSelectedRelationshipTypes}
         layout={selectedLayout}
-        onLayoutChange={setSelectedLayout}
-        focusModeEnabled={focusModeEnabled}
-        onFocusModeChange={setFocusModeEnabled}
       />
     </SharedLayout>
   );
