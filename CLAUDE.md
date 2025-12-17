@@ -8,6 +8,15 @@ React-based visualization tool for multi-layer architecture documentation models
 
 **Architecture Layers:** Motivation, Business, Security, Application, Technology, API, DataModel, UX, Navigation, APM
 
+## Development Principles
+
+1. **Read first, always** - NEVER modify code you haven't read
+2. **Edit, don't create** - ALWAYS prefer editing existing files over creating new ones
+3. **Follow established patterns** - Look at similar implementations before starting
+4. **Use TypeScript strictly** - All files must be strongly typed
+5. **Test thoroughly** - Run `npm test` and `npx playwright test` before completing tasks
+6. **Avoid over-engineering** - Only make requested changes, don't add unrequested features/comments/refactoring
+
 ## Critical React Flow Node Pattern
 
 **MUST follow this exact pattern** - deviations cause rendering failures.
@@ -71,6 +80,57 @@ case 'yourNodeType':
 4. **ALWAYS use `NodeProps<T>`** - Type props correctly
 5. **ALWAYS set `displayName`** - Helpful for debugging
 
+## Component Organization
+
+```
+src/
+├── core/               # Reusable, framework-agnostic components
+│   ├── nodes/         # Custom React Flow nodes
+│   ├── components/    # GraphViewer, shared UI components
+│   └── services/      # nodeTransformer, layout algorithms
+├── apps/embedded/     # Route-specific embedded app
+│   ├── routes/        # TanStack Router route components
+│   └── components/    # SharedLayout, sidebars, panels
+└── services/          # Data loading, export, WebSocket, stores
+```
+
+**Rule:** Core components should have NO route/store dependencies. App components can use both.
+
+## Store & Real-Time Patterns
+
+### Zustand Stores
+
+- **`modelStore`** - Single source of truth for loaded model data (`src/services/modelStore.ts`)
+- **`annotationStore`** - Optimistic UI updates, WebSocket sync (`src/services/annotationStore.ts`)
+- **`filterStore`** - Active filters across all views (`src/services/filterStore.ts`)
+
+### WebSocket Patterns
+
+```typescript
+// In route components only
+import { websocketClient } from '@/services/websocketClient';
+
+useEffect(() => {
+  websocketClient.on('annotation:created', (data) => {
+    annotationStore.getState().addAnnotation(data);
+  });
+
+  return () => websocketClient.off('annotation:created');
+}, []);
+```
+
+### Annotation Optimistic Updates
+
+```typescript
+// 1. Update UI immediately
+annotationStore.getState().addAnnotation(tempAnnotation);
+
+// 2. Send to server
+await createAnnotation(data);
+
+// 3. WebSocket confirms and syncs across clients
+```
+
 ## Embedded App Architecture
 
 ### Layout Pattern
@@ -107,37 +167,9 @@ case 'yourNodeType':
 
 ## YAML Instance Model Support
 
-Supports both JSON Schema and YAML instance models.
+Supports both **JSON Schema** (UUIDs, single JSON per layer) and **YAML instances** (dot-notation IDs like `business.function.name`, `manifest.yaml` + layer directories). Parser auto-resolves dot-notation to UUIDs internally.
 
-### Key Differences
-
-| Aspect | JSON Schema | YAML Instance |
-|--------|-------------|---------------|
-| Purpose | Define structure | Actual data |
-| Format | Single JSON per layer | manifest.yaml + YAML files |
-| IDs | Auto UUIDs | Dot-notation (e.g., `business.function.name`) |
-| Relationships | Arrays | Nested under `relationships` key |
-
-### Dot-Notation IDs
-
-Format: `{layer}.{type}.{kebab-case-name}`
-
-Examples:
-- `business.function.knowledge-graph-management`
-- `api.operation.create-structure-node`
-- `data_model.schema.structure-node`
-
-Parser auto-resolves to UUIDs internally.
-
-### Loading YAML Models
-
-1. ZIP contains `manifest.yaml` + layer directories
-2. System detects manifest presence
-3. Extracts YAML files preserving paths
-4. Groups by layer using manifest config
-5. Resolves dot-notation references
-
-**See `documentation/YAML_MODELS.md` for full spec.**
+**Full spec:** `documentation/YAML_MODELS.md`
 
 ## Key Architecture Files
 
@@ -162,13 +194,14 @@ Parser auto-resolves to UUIDs internally.
 **Cause:** Type not registered in `nodeTypes`
 **Fix:** Check `src/core/nodes/index.ts`
 
-## Development Workflow
+## DR Slash Commands
 
-1. **Read existing code first** - Follow established patterns
-2. **Use TypeScript** - All files strongly typed
-3. **Test thoroughly** - `npm test` + `npx playwright test`
-4. **Check console** - Monitor React Flow warnings
-5. **Follow patterns** - Look at existing nodes/routes for examples
+Available Documentation Robotics commands:
+- `/dr-model <request>` - Add/update/query architecture model elements
+- `/dr-validate` - Validate DR model schema and references
+- `/dr-changeset <request>` - Manage isolated architecture changes
+- `/dr-init [name]` - Initialize new DR architecture model
+- `/dr-ingest <path>` - Generate DR model from existing codebase
 
 ## Performance Targets
 
@@ -197,12 +230,7 @@ await expect(page.locator('[data-testid="your-component"]')).toBeVisible();
 
 ## Export Services
 
-Layers support export to:
-- **PNG/SVG** - Image exports via `html-to-image`
-- **JSON** - Graph data, catalogs, traceability reports
-- **Impact Analysis** - Dependency impact for selected nodes
-
-See `src/services/*ExportService.ts` for implementation patterns.
+Layer export services: PNG/SVG (via `html-to-image`), JSON (graph/catalog/traceability), Impact Analysis. See `src/services/*ExportService.ts`.
 
 ## Resources
 
@@ -213,4 +241,4 @@ See `src/services/*ExportService.ts` for implementation patterns.
 
 ---
 
-**Version:** 0.1.0 | **React Flow:** 12.0.0 | **Updated:** 2025-12-14
+**Version:** 0.1.0 | **React Flow:** 12.0.0 | **Updated:** 2025-12-17
