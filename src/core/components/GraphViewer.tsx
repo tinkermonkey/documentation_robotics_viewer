@@ -13,6 +13,8 @@ import {
   useEdgesState,
   Node,
   NodeMouseHandler,
+  useReactFlow,
+  ReactFlowProvider,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import './GraphViewer.css';
@@ -30,17 +32,19 @@ import { SpaceMouseHandler } from './SpaceMouseHandler';
 interface GraphViewerProps {
   model: MetaModel;
   onNodeClick?: (node: Node | null) => void;
+  selectedLayerId?: string | null;
 }
 
 /**
- * GraphViewer Component
- * Renders a MetaModel using React Flow with custom nodes and vertical layer layout
+ * GraphViewerInner Component
+ * Inner component that has access to React Flow instance via useReactFlow hook
  */
-const GraphViewer: React.FC<GraphViewerProps> = ({ model, onNodeClick }) => {
+const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, selectedLayerId }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<AppEdge>([]);
   const { layers: layerStates } = useLayerStore();
   const [isRendering, setIsRendering] = useState(false);
+  const reactFlowInstance = useReactFlow();
 
   // Handle node click
   const handleNodeClick: NodeMouseHandler = useCallback(
@@ -67,6 +71,21 @@ const GraphViewer: React.FC<GraphViewerProps> = ({ model, onNodeClick }) => {
     console.log('GraphViewer: Updating layer visibility');
     updateLayerVisibility();
   }, [layerStates]);
+
+  // Zoom to selected layer effect
+  useEffect(() => {
+    if (!selectedLayerId || !nodes.length || !reactFlowInstance) return;
+
+    const layerNodes = nodes.filter(n => n.data.layerId === selectedLayerId);
+    if (layerNodes.length === 0) return;
+
+    console.log('GraphViewer: Zooming to layer', selectedLayerId, 'with', layerNodes.length, 'nodes');
+    reactFlowInstance.fitView({
+      nodes: layerNodes,
+      padding: 0.2,
+      duration: 400
+    });
+  }, [selectedLayerId, nodes, reactFlowInstance]);
 
   /**
    * Render the complete model
@@ -193,6 +212,18 @@ const GraphViewer: React.FC<GraphViewerProps> = ({ model, onNodeClick }) => {
         </div>
       )}
     </div>
+  );
+};
+
+/**
+ * GraphViewer Component
+ * Wrapper that provides ReactFlowProvider context
+ */
+const GraphViewer: React.FC<GraphViewerProps> = (props) => {
+  return (
+    <ReactFlowProvider>
+      <GraphViewerInner {...props} />
+    </ReactFlowProvider>
   );
 };
 

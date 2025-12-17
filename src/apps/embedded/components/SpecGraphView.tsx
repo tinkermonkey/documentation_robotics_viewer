@@ -20,7 +20,7 @@ export interface SpecGraphViewProps {
   selectedSchemaId?: string | null;
 }
 
-const SpecGraphView: React.FC<SpecGraphViewProps> = ({ specData, selectedSchemaId: _selectedSchemaId }) => {
+const SpecGraphView: React.FC<SpecGraphViewProps> = ({ specData, selectedSchemaId }) => {
   const [model, setModel] = useState<MetaModel | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
@@ -196,9 +196,10 @@ const SpecGraphView: React.FC<SpecGraphViewProps> = ({ specData, selectedSchemaI
   // Render GraphViewer with converted model
   console.log('[SpecGraphView] Rendering GraphViewer with model:', {
     layerCount: Object.keys(model.layers).length,
-    elementCount: model.metadata?.elementCount || 0
+    elementCount: model.metadata?.elementCount || 0,
+    selectedSchemaId
   });
-  return <GraphViewer model={model} />;
+  return <GraphViewer model={model} selectedLayerId={selectedSchemaId} />;
 };
 
 export default SpecGraphView;

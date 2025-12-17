@@ -170,7 +170,11 @@ export default function ModelRoute() {
     >
       <div className="flex flex-col h-full overflow-hidden">
         {activeView === 'graph' ? (
-          <GraphViewer model={model} onNodeClick={handleNodeClick} />
+          <GraphViewer
+            model={model}
+            onNodeClick={handleNodeClick}
+            selectedLayerId={selectedLayerId}
+          />
         ) : (
           <ModelJSONViewer
             model={model}
