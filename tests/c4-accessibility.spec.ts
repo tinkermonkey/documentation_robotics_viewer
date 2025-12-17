@@ -23,24 +23,24 @@ test.describe('C4 Architecture View Accessibility', () => {
     await page.goto('/');
 
     // Wait for React to load
-    await page.waitForSelector('.embedded-app', { timeout: 10000 });
+    await page.waitForSelector('[data-testid="embedded-app"]', { timeout: 10000 });
 
     // Wait for WebSocket connection
     await page.waitForSelector('.connection-status.connected', { timeout: 10000 });
 
-    // Navigate to Architecture view
-    await page.click('.mode-selector button:has-text("Architecture")');
+    // Navigate to Architecture view using the correct test ID
+    await page.click('[data-testid="main-tab-architecture"]');
     await page.waitForTimeout(3000);
   });
 
   test.describe('Automated Accessibility Scanning', () => {
     test('should pass axe accessibility scan for main container', async ({ page }) => {
-      // Check if C4 container exists (may not be present if model fails to load)
-      const c4Container = page.locator('.c4-graph-container');
-      if (await c4Container.isVisible()) {
+      // Check if ReactFlow container exists (may not be present if model fails to load)
+      const reactFlowContainer = page.locator('.react-flow');
+      if (await reactFlowContainer.isVisible()) {
         // Run axe-core accessibility scan
         const accessibilityScanResults = await new AxeBuilder({ page })
-          .include('.c4-graph-container')
+          .include('.react-flow')
           .withTags(['wcag2a', 'wcag2aa'])
           .disableRules(['color-contrast']) // ReactFlow handles its own colors
           .analyze();
@@ -156,12 +156,12 @@ test.describe('C4 Architecture View Accessibility', () => {
         await page.waitForTimeout(300);
 
         // Button should have been activated (no error)
-        // The view should still be showing either the graph container or message overlay
-        const c4Container = page.locator('.c4-graph-container');
-        const messageOverlay = page.locator('.message-overlay');
-        const hasC4 = await c4Container.isVisible().catch(() => false);
-        const hasMessage = await messageOverlay.isVisible().catch(() => false);
-        expect(hasC4 || hasMessage).toBeTruthy();
+        // The view should still be showing either the ReactFlow container or loading/error state
+        const reactFlowContainer = page.locator('.react-flow');
+        const loadingSpinner = page.locator('.animate-spin');
+        const hasReactFlow = await reactFlowContainer.isVisible().catch(() => false);
+        const hasLoading = await loadingSpinner.isVisible().catch(() => false);
+        expect(hasReactFlow || hasLoading).toBeTruthy();
       }
     });
 
@@ -200,11 +200,11 @@ test.describe('C4 Architecture View Accessibility', () => {
 
           // Inspector might close or node might deselect
           // Just verify no errors occurred - view should still be showing
-          const c4Container = page.locator('.c4-graph-container');
-          const messageOverlay = page.locator('.message-overlay');
-          const hasC4 = await c4Container.isVisible().catch(() => false);
-          const hasMessage = await messageOverlay.isVisible().catch(() => false);
-          expect(hasC4 || hasMessage).toBeTruthy();
+          const reactFlowContainer = page.locator('.react-flow');
+          const loadingSpinner = page.locator('.animate-spin');
+          const hasReactFlow = await reactFlowContainer.isVisible().catch(() => false);
+          const hasLoading = await loadingSpinner.isVisible().catch(() => false);
+          expect(hasReactFlow || hasLoading).toBeTruthy();
         }
       }
     });
@@ -409,11 +409,11 @@ test.describe('C4 Architecture View Accessibility', () => {
 
       // Reload the page
       await page.reload();
-      await page.waitForSelector('.embedded-app', { timeout: 10000 });
+      await page.waitForSelector('[data-testid="embedded-app"]', { timeout: 10000 });
       await page.waitForSelector('.connection-status.connected', { timeout: 10000 });
 
       // Navigate to Architecture view
-      await page.click('.mode-selector button:has-text("Architecture")');
+      await page.click('[data-testid="main-tab-architecture"]');
       await page.waitForTimeout(2000);
 
       // Check that animations are reduced

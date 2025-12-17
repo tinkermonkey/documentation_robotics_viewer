@@ -17,9 +17,10 @@ import { LoadingState, ErrorState, EmptyState } from './shared';
 
 export interface SpecGraphViewProps {
   specData: SpecDataResponse;
+  selectedSchemaId?: string | null;
 }
 
-const SpecGraphView: React.FC<SpecGraphViewProps> = ({ specData }) => {
+const SpecGraphView: React.FC<SpecGraphViewProps> = ({ specData, selectedSchemaId: _selectedSchemaId }) => {
   const [model, setModel] = useState<MetaModel | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');

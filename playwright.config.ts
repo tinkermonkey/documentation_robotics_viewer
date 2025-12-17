@@ -20,7 +20,6 @@ export default defineConfig({
     '**/embedded-*.spec.ts',
     '**/c4-architecture-view.spec.ts',
     '**/c4-accessibility.spec.ts',
-    '**/c4-performance.spec.ts',
     // Refinement/metrics tests (use playwright.refinement.config.ts)
     '**/refinement/**/*.spec.ts',
     '**/metrics/**/*.spec.ts',

@@ -4,7 +4,7 @@
  * Matches design prototype pattern
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useModelStore } from '../../../core/stores/modelStore';
 import { LayerType } from '../../../core/types';
 
@@ -29,9 +29,16 @@ const getLayerColor = (layerType: string): string => {
   return colors[layerType] || '#999999';
 };
 
-const ModelLayersSidebar: React.FC = () => {
+interface ModelLayersSidebarProps {
+  selectedLayerId?: string | null;
+  onSelectLayer?: (layerId: string | null) => void;
+}
+
+const ModelLayersSidebar: React.FC<ModelLayersSidebarProps> = ({
+  selectedLayerId = null,
+  onSelectLayer = () => {}
+}) => {
   const { model } = useModelStore();
-  const [selectedLayer, setSelectedLayer] = useState<string | null>(null);
 
   // Extract layer information from model
   const layerInfo = useMemo(() => {
@@ -60,12 +67,12 @@ const ModelLayersSidebar: React.FC = () => {
       <div className="space-y-1">
         {layerInfo.map((layer) => {
           const layerColor = getLayerColor(layer.type);
-          const isSelected = selectedLayer === layer.id;
+          const isSelected = selectedLayerId === layer.id;
 
           return (
             <button
               key={layer.id}
-              onClick={() => setSelectedLayer(isSelected ? null : layer.id)}
+              onClick={() => onSelectLayer(isSelected ? null : layer.id)}
               className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
                 isSelected
                   ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'

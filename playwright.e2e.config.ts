@@ -36,9 +36,9 @@ export default defineConfig({
     'embedded-app.spec.ts',
     'embedded-dual-view.spec.ts',
     'embedded-motivation-view.spec.ts',
+    'embedded-graph-rendering.spec.ts',
     'c4-architecture-view.spec.ts',
     'c4-accessibility.spec.ts',
-    'c4-performance.spec.ts',
   ],
   fullyParallel: false, // Run E2E tests sequentially for reliability
   forbidOnly: !!process.env.CI,

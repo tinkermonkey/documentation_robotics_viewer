@@ -4,7 +4,7 @@ import SpecViewer from '../components/SpecViewer';
 import SpecGraphView from '../components/SpecGraphView';
 import AnnotationPanel from '../components/AnnotationPanel';
 import SchemaInfoPanel from '../components/SchemaInfoPanel';
-import ModelLayersSidebar from '../components/ModelLayersSidebar';
+import SpecSchemasSidebar from '../components/spec/SpecSchemasSidebar';
 import SharedLayout from '../components/SharedLayout';
 import { LoadingState, ErrorState } from '../components/shared';
 import { useAnnotationStore } from '../stores/annotationStore';
@@ -18,10 +18,9 @@ export default function SpecRoute() {
   const [specData, setSpecData] = useState<SpecDataResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null);
   const annotationStore = useAnnotationStore();
   const { specView, setSpecView } = useViewPreferenceStore();
-  // const [selectedNode, setSelectedNode] = useState<Node | null>(null);
-  // const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
 
   // If view is undefined, redirect to preferred view
   useEffect(() => {
@@ -41,32 +40,16 @@ export default function SpecRoute() {
 
   const activeView = view === 'json' ? 'json' : 'graph';
 
-  // Handle node click in graph view
-  // const handleNodeClick = (node: Node | null) => {
-  //   setSelectedNode(node);
-  // };
-
-  // Handle path highlight in JSON view (auto-clear after 3 seconds)
-  // const handlePathHighlight = (path: string | null) => {
-  //   setHighlightedPath(path);
-  //   if (path) {
-  //     setTimeout(() => setHighlightedPath(null), 3000);
-  //   }
-  // };
-
   const loadData = async () => {
     try {
       setLoading(true);
       setError('');
-      console.log('[SpecRoute] Loading spec data...');
 
       const spec = await embeddedDataLoader.loadSpec();
       setSpecData(spec);
-      
+
       const annotations = await embeddedDataLoader.loadAnnotations();
       annotationStore.setAnnotations(annotations);
-
-      console.log('[SpecRoute] Spec loaded successfully');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load spec';
       setError(errorMessage);
@@ -114,27 +97,25 @@ export default function SpecRoute() {
     <SharedLayout
       showLeftSidebar={true}
       showRightSidebar={true}
-      leftSidebarContent={<ModelLayersSidebar />}
+      leftSidebarContent={
+        <SpecSchemasSidebar
+          specData={specData}
+          selectedSchemaId={selectedSchemaId}
+          onSelectSchema={setSelectedSchemaId}
+        />
+      }
       rightSidebarContent={
-        activeView === 'json' ? (
-          <>
-            <AnnotationPanel />
-            {/* <HighlightedPathPanel highlightedPath={highlightedPath} /> */}
-            <SchemaInfoPanel />
-          </>
-        ) : (
-          <>
-            <AnnotationPanel />
-            <SchemaInfoPanel />
-          </>
-        )
+        <>
+          <AnnotationPanel />
+          <SchemaInfoPanel />
+        </>
       }
     >
       <div className="flex flex-col h-full overflow-hidden">
         {activeView === 'graph' ? (
-          <SpecGraphView specData={specData} />
+          <SpecGraphView specData={specData} selectedSchemaId={selectedSchemaId} />
         ) : (
-          <SpecViewer specData={specData} />
+          <SpecViewer specData={specData} selectedSchemaId={selectedSchemaId} />
         )}
       </div>
     </SharedLayout>

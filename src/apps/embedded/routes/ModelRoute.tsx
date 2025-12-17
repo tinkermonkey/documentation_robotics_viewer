@@ -24,6 +24,7 @@ export default function ModelRoute() {
   const [specData, setSpecData] = useState<SpecDataResponse | null>(null);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
+  const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
 
   const activeView = view === 'json' ? 'json' : 'graph';
 
@@ -144,7 +145,12 @@ export default function ModelRoute() {
     <SharedLayout
       showLeftSidebar={true}
       showRightSidebar={true}
-      leftSidebarContent={<ModelLayersSidebar />}
+      leftSidebarContent={
+        <ModelLayersSidebar
+          selectedLayerId={selectedLayerId}
+          onSelectLayer={setSelectedLayerId}
+        />
+      }
       rightSidebarContent={
         activeView === 'graph' ? (
           <>
@@ -171,6 +177,7 @@ export default function ModelRoute() {
             linkRegistry={linkRegistry || undefined}
             specData={specData || undefined}
             onPathHighlight={handlePathHighlight}
+            selectedLayer={selectedLayerId}
           />
         )}
       </div>

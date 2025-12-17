@@ -286,9 +286,11 @@ npx playwright test tests/c4-accessibility.spec.ts
 
 ### Performance Tests
 
+Performance benchmarks are included in the main C4 architecture view tests:
+
 ```bash
-# Run C4 performance tests
-npx playwright test tests/c4-performance.spec.ts
+# Run C4 architecture tests (includes performance checks)
+npx playwright test tests/c4-architecture-view.spec.ts
 ```
 
 ## Extending the C4 System
