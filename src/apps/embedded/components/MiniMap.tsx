@@ -7,7 +7,7 @@
 import { memo } from 'react';
 import { MiniMap as ReactFlowMiniMap } from '@xyflow/react';
 import { LayerType } from '../../../core/types';
-import { getLayerColor } from '../../../core/utils/layerColors';
+import { getLayerColor, FALLBACK_COLOR } from '../../../core/utils/layerColors';
 
 export interface MiniMapProps {
   /** Node color function - maps node type to color */
@@ -60,7 +60,7 @@ const defaultNodeColor = (node: any): string => {
   }
 
   // Fallback for unknown node types
-  return '#94a3b8';
+  return FALLBACK_COLOR;
 };
 
 export const MiniMap = memo(

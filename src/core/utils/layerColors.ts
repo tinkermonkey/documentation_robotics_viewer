@@ -8,6 +8,12 @@
 import { LayerType } from '../types/layers';
 
 /**
+ * Fallback color used when layer type is not recognized
+ * Gray-400 from Tailwind CSS palette
+ */
+export const FALLBACK_COLOR = '#9ca3af';
+
+/**
  * Layer color configuration with variants for different UI contexts
  */
 export interface LayerColorConfig {
@@ -181,7 +187,7 @@ export function getLayerColor(
   const layerType = typeof layer === 'string' ? normalizeLayerKey(layer) : layer;
 
   if (!layerType || !LAYER_COLORS[layerType]) {
-    return '#9ca3af'; // Fallback gray
+    return FALLBACK_COLOR;
   }
 
   return LAYER_COLORS[layerType][variant];
