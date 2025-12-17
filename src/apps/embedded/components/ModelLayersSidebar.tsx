@@ -46,12 +46,12 @@ const ModelLayersSidebar: React.FC<ModelLayersSidebarProps> = ({
       <div className="space-y-1">
         {layerInfo.map((layer) => {
           const layerColor = getLayerColor(layer.type, 'primary');
-          const isSelected = selectedLayerId === layer.id;
+          const isSelected = selectedLayerId === layer.type;
 
           return (
             <button
               key={layer.id}
-              onClick={() => onSelectLayer(isSelected ? null : layer.id)}
+              onClick={() => onSelectLayer(isSelected ? null : layer.type)}
               className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
                 isSelected
                   ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'

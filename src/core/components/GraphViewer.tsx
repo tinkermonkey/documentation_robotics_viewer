@@ -79,7 +79,6 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
     const layerNodes = nodes.filter(n => n.data.layerId === selectedLayerId);
     if (layerNodes.length === 0) return;
 
-    console.log('GraphViewer: Zooming to layer', selectedLayerId, 'with', layerNodes.length, 'nodes');
     reactFlowInstance.fitView({
       nodes: layerNodes,
       padding: 0.2,

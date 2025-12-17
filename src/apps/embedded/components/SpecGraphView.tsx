@@ -193,13 +193,24 @@ const SpecGraphView: React.FC<SpecGraphViewProps> = ({ specData, selectedSchemaI
     return <EmptyState variant="model" title="No Schema Data" description="No schema data available to display" />;
   }
 
+  // Normalize selectedSchemaId to match layer naming (e.g., "01-motivation-layer.schema.json" -> "Motivation")
+  const normalizedSchemaId = selectedSchemaId
+    ? selectedSchemaId
+        .replace(/^\d+-/, '')              // Remove number prefix
+        .replace(/-layer.*$/, '')          // Remove "-layer" suffix and extension
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join('')
+    : null;
+
   // Render GraphViewer with converted model
   console.log('[SpecGraphView] Rendering GraphViewer with model:', {
     layerCount: Object.keys(model.layers).length,
     elementCount: model.metadata?.elementCount || 0,
-    selectedSchemaId
+    selectedSchemaId,
+    normalizedSchemaId
   });
-  return <GraphViewer model={model} selectedLayerId={selectedSchemaId} />;
+  return <GraphViewer model={model} selectedLayerId={normalizedSchemaId} />;
 };
 
 export default SpecGraphView;
