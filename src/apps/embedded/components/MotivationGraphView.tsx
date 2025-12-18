@@ -68,6 +68,7 @@ const MotivationGraphView = forwardRef<MotivationGraphViewRef, MotivationGraphVi
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [isLayouting, setIsLayouting] = useState(false);
+  const [graphReady, setGraphReady] = useState(false);
 
   // Store reference to the full graph (before filtering)
   const fullGraphRef = useRef<MotivationGraph | null>(null);
@@ -123,6 +124,7 @@ const MotivationGraphView = forwardRef<MotivationGraphViewRef, MotivationGraphVi
 
         // Store the full graph
         fullGraphRef.current = motivationGraph;
+        setGraphReady(true);
 
         setLoading(false);
       } catch (err) {
@@ -204,7 +206,7 @@ const MotivationGraphView = forwardRef<MotivationGraphViewRef, MotivationGraphVi
 
     transformGraph();
   }, [
-    fullGraphRef.current,
+    graphReady,
     layout,
     selectedElementTypes,
     selectedRelationshipTypes,
@@ -212,6 +214,10 @@ const MotivationGraphView = forwardRef<MotivationGraphViewRef, MotivationGraphVi
     motivationPreferences.manualPositions,
     motivationPreferences.pathTracing,
     motivationPreferences.focusContextEnabled,
+    reactFlowInstance,
+    nodes,
+    setNodes,
+    setEdges,
   ]);
 
   /**
