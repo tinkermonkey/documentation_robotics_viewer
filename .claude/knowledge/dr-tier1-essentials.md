@@ -50,7 +50,8 @@ dr links find {element-id}            # Find element's links
 dr validate --validate-links          # Validate all links
 
 # Migration
-dr migrate                            # Check and apply migrations to latest spec
+dr migrate                            # Check migration needs
+dr migrate                    # Upgrade to latest spec
 
 # Cross-layer operations
 dr project {element-id} --to {target-layer}
@@ -188,7 +189,8 @@ dr validate --validate-links
 # Strict mode (warnings → errors)
 dr validate --validate-links --strict-links
 
-# Check and apply migrations (v0.1.x → v0.2.0)
+# Check what needs migration (v0.1.x → v0.2.0)
+dr migrate
 dr migrate
 ```
 

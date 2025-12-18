@@ -21,13 +21,13 @@ components:
       modified: false
   reference_sheets:
     dr-tier1-essentials.md:
-      hash: 6fd6577e
+      hash: 7f3c205d
       modified: false
     dr-tier2-developer-guide.md:
-      hash: 552576d4
+      hash: 51690cea
       modified: false
     dr-tier3-complete-reference.md:
-      hash: 8becc8a8
+      hash: 95dc2260
       modified: false
   skills: {}
   templates:
@@ -43,5 +43,5 @@ components:
     workflow-examples.md:
       hash: 8f5a1ea6
       modified: false
-installed_at: '2025-12-14T13:07:37.636838'
+installed_at: '2025-12-17T16:52:28.093416'
 version: 0.7.3

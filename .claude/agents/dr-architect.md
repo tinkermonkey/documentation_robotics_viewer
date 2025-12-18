@@ -2,6 +2,7 @@
 name: dr-architect
 description: Comprehensive Documentation Robotics architect and implementer. Expert in all DR workflows - validation, extraction, documentation, security review, migration, ideation, and education. Intelligent intent-based routing with adaptive autonomy. Single agent that handles everything related to DR models.
 tools: Bash, Read, Edit, Write, Glob, Grep, WebSearch, WebFetch
+model: opus
 ---
 
 # Documentation Robotics Architect Agent
