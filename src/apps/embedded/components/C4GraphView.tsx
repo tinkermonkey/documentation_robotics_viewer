@@ -12,7 +12,6 @@ import {
   ReactFlow,
   Background,
   Controls,
-  MiniMap,
   useNodesState,
   useEdgesState,
   Node,
@@ -38,6 +37,7 @@ import {
 } from '../types/c4Graph';
 import { SpaceMouseHandler } from '../../../core/components/SpaceMouseHandler';
 import { C4LayoutAlgorithm } from './C4ControlPanel';
+import { OverviewPanel } from './OverviewPanel';
 
 // Debug logging helper - only logs in development mode
 const DEBUG = import.meta.env.DEV;
@@ -344,16 +344,11 @@ const C4GraphView = React.forwardRef<C4GraphViewRef, C4GraphViewProps>(
               <Background color="#e5e7eb" gap={16} />
               <Controls />
               <SpaceMouseHandler />
-              <MiniMap
+              <OverviewPanel
                 nodeColor={(node) => {
+                  // Use C4-specific stroke color
                   return (node.data.stroke as string) || '#6b7280';
                 }}
-                maskColor="rgba(0, 0, 0, 0.1)"
-                style={{
-                  backgroundColor: '#f9fafb',
-                }}
-                pannable
-                zoomable
               />
             </ReactFlow>
           </div>

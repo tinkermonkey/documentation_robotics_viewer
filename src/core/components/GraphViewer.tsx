@@ -8,7 +8,6 @@ import {
   ReactFlow,
   Background,
   Controls,
-  MiniMap,
   useNodesState,
   useEdgesState,
   Node,
@@ -28,6 +27,8 @@ import { edgeTypes } from '../edges';
 import { elementStore } from '../stores/elementStore';
 import { AppNode, AppEdge } from '../types/reactflow';
 import { SpaceMouseHandler } from './SpaceMouseHandler';
+import { OverviewPanel } from '../../apps/embedded/components/OverviewPanel';
+import { getLayerColor } from '../utils/layerColors';
 
 interface GraphViewerProps {
   model: MetaModel;
@@ -194,14 +195,16 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
         <Background color="#E6E6E6" gap={16} />
         <Controls />
         <SpaceMouseHandler />
-        <MiniMap
+        <OverviewPanel
           nodeColor={(node) => {
-            // Color nodes based on their fill color
+            // Color nodes based on their layer
+            const layer = (node.data as any).layer;
+            if (layer) {
+              return getLayerColor(layer, 'primary');
+            }
+            // Fallback to fill color
             return (node.data as any).fill || '#ffffff';
           }}
-          nodeStrokeWidth={3}
-          zoomable
-          pannable
         />
       </ReactFlow>
 

@@ -10,7 +10,6 @@ import {
   ReactFlow,
   Background,
   Controls,
-  MiniMap,
   useNodesState,
   useEdgesState,
   Panel,
@@ -40,6 +39,8 @@ import {
   exportTraceabilityReport,
   exportImpactAnalysisReport,
 } from '../../services/businessExportService';
+import { OverviewPanel } from '../../../apps/embedded/components/OverviewPanel';
+import { getLayerColor } from '../../utils/layerColors';
 import './BusinessLayerView.css';
 
 interface BusinessLayerViewProps {
@@ -482,13 +483,10 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
         >
         <Background color="#aaa" gap={16} />
         <Controls />
-        <MiniMap
-          nodeColor={(node) => {
-            return (node.data?.fill as string) || '#e0e0e0';
-          }}
-          maskColor="rgba(0, 0, 0, 0.1)"
-          style={{
-            backgroundColor: '#f5f5f5',
+        <OverviewPanel
+          nodeColor={(_node) => {
+            // Color nodes based on Business layer
+            return getLayerColor('Business', 'primary');
           }}
         />
         <Panel position="top-left">

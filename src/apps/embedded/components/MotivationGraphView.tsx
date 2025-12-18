@@ -11,7 +11,6 @@ import {
   ReactFlow,
   Background,
   Controls,
-  MiniMap,
   useNodesState,
   useEdgesState,
   Node,
@@ -38,6 +37,8 @@ import {
   MotivationGraph,
 } from '../types/motivationGraph';
 import { SpaceMouseHandler } from '../../../core/components/SpaceMouseHandler';
+import { OverviewPanel } from './OverviewPanel';
+import { getLayerColor } from '../../../core/utils/layerColors';
 
 export interface MotivationGraphViewProps {
   model: MetaModel;
@@ -399,14 +400,10 @@ const MotivationGraphView = forwardRef<MotivationGraphViewRef, MotivationGraphVi
           <Background color="#e5e7eb" gap={16} />
           <Controls />
           <SpaceMouseHandler />
-          <MiniMap
-            nodeColor={(node) => {
-              // Color minimap nodes based on their stroke color
-              return (node.data.stroke as string) || '#6b7280';
-            }}
-            maskColor="rgba(0, 0, 0, 0.1)"
-            style={{
-              backgroundColor: '#f9fafb',
+          <OverviewPanel
+            nodeColor={(_node) => {
+              // Color minimap nodes based on layer (Motivation)
+              return getLayerColor('Motivation', 'primary');
             }}
           />
         </ReactFlow>
