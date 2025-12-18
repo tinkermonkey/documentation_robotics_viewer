@@ -1,0 +1,417 @@
+
+You are the Senior Software Engineer revising your work based on feedback.
+
+I implement clean, well thought out code with proper error handling and maintainable architecture.
+
+## Review Cycle - Revision 1 of 5
+
+The Code Reviewer has reviewed your work and identified issues to address.
+
+**Your Task**: REVISE your previous output to address the feedback. Don't start from scratch.
+
+After 5 iterations, unresolved work escalates for human review.
+
+## Original Context
+**Title**: Phase 4: Consolidate Architecture (C4) view to SharedLayout pattern with unified right sidebar
+**Description**: Refactor C4 Architecture view from 4-column embedded layout to 3-column SharedLayout pattern by extracting internal filter/control/inspector panels into a unified right sidebar. Matches the consolidation pattern applied to Motivation view in Phase 3.
+
+## Requirements
+- Eliminate duplicate right sidebar (4-column → 3-column layout)
+- Move filter panel, control panel, and inspector panel from `C4GraphView` to SharedLayout's right sidebar
+- Combine extracted panels with AnnotationPanel using collapsible sections
+- Maintain all existing filter/control/inspector functionality
+- Apply consistent styling matching SharedLayout pattern
+
+## Design Guidance
+**Architecture**: Same pattern as Phase 3 - extract state to route, remove embedded layout, integrate with SharedLayout
+
+**Step 1: State Extraction** (`src/apps/embedded/routes/architecture.tsx`)
+
+```typescript
+// Move these states from C4GraphView to ArchitectureRoute
+const [selectedLevels, setSelectedLevels] = useState<Set<string>>(new Set(['context', 'container', 'component']));
+const [selectedRelationshipTypes, setSelectedRelationshipTypes] = useState<Set<string>>(new Set());
+const [selectedLayout, setSelectedLayout] = useState<'vertical' | 'horizontal'>('vertical');
+const [showLegend, setShowLegend] = useState(true);
+const [selectedElement, setSelectedElement] = useState<Node | Edge | null>(null);
+
+// Pass as props to C4GraphView
+<C4GraphView
+  model={model}
+  selectedLevels={selectedLevels}
+  onLevelsChange={setSelectedLevels}
+  selectedRelationshipTypes={selectedRelationshipTypes}
+  onRelationshipTypesChange={setSelectedRelationshipTypes}
+  layout={selectedLayout}
+  showLegend={showLegend}
+  onElementSelect={setSelectedElement}
+/>
+```
+
+**Step 2: Remove Embedded Layout** (`src/apps/embedded/components/C4GraphView.tsx`)
+
+Remove lines 720-837 (outer 3-column flex container):
+```typescript
+// REMOVE THIS:
+<div className="flex h-full">
+  <div className="lg:w-[240px] lg:max-w-[350px]">{/* filter panel */}</div>
+  <div className="flex-1">{/* ReactFlow */}</div>
+  <div className="lg:w-[240px] lg:max-w-[350px]">{/* control/inspector panels */}</div>
+</div>
+
+// KEEP ONLY:
+<ReactFlow
+  nodes={nodes}
+  edges={edges}
+  // ... existing ReactFlow props
+/>
+```
+
+**Step 3: Create Unified Right Sidebar** (`src/apps/embedded/components/C4RightSidebar.tsx`)
+
+```typescript
+import { Accordion, AccordionPanel, AccordionTitle, AccordionContent } from 'flowbite-react';
+import { C4FilterPanel } from './C4FilterPanel';
+import { C4ControlPanel } from './C4ControlPanel';
+import { C4InspectorPanel } from './C4InspectorPanel';
+import { AnnotationPanel } from './AnnotationPanel';
+
+interface C4RightSidebarProps {
+  selectedLevels: Set<string>;
+  onLevelsChange: (levels: Set<string>) => void;
+  selectedRelationshipTypes: Set<string>;
+  onRelationshipTypesChange: (types: Set<string>) => void;
+  selectedLayout: 'vertical' | 'horizontal';
+  onLayoutChange: (layout: 'vertical' | 'horizontal') => void;
+  showLegend: boolean;
+  onShowLegendChange: (show: boolean) => void;
+  selectedElement: Node | Edge | null;
+  onFitView: () => void;
+}
+
+export function C4RightSidebar(props: C4RightSidebarProps) {
+  return (
+    <div className="flex flex-col gap-4 p-4">
+      <Accordion collapseAll>
+        <AccordionPanel>
+          <AccordionTitle>Filters</AccordionTitle>
+          <AccordionContent>
+            <C4FilterPanel
+              selectedLevels={props.selectedLevels}
+              onLevelsChange={props.onLevelsChange}
+              selectedRelationshipTypes={props.selectedRelationshipTypes}
+              onRelationshipTypesChange={props.onRelationshipTypesChange}
+            />
+          </AccordionContent>
+        </AccordionPanel>
+        
+        <AccordionPanel>
+          <AccordionTitle>Controls</AccordionTitle>
+          <AccordionContent>
+            <C4ControlPanel
+              layout={props.selectedLayout}
+              onLayoutChange={props.onLayoutChange}
+              showLegend={props.showLegend}
+              onShowLegendChange={props.onShowLegendChange}
+              onFitView={props.onFitView}
+            />
+          </AccordionContent>
+        </AccordionPanel>
+        
+        {props.selectedElement && (
+          <AccordionPanel>
+            <AccordionTitle>Inspector</AccordionTitle>
+            <AccordionContent>
+              <C4InspectorPanel element={props.selectedElement} />
+            </AccordionContent>
+          </AccordionPanel>
+        )}
+        
+        <AccordionPanel>
+          <AccordionTitle>Annotations</AccordionTitle>
+          <AccordionContent>
+            <AnnotationPanel context="architecture" />
+          </AccordionContent>
+        </AccordionPanel>
+      </Accordion>
+    </div>
+  );
+}
+```
+
+**Step 4: Integrate with SharedLayout** (`src/apps/embedded/routes/architecture.tsx`)
+
+```typescript
+<SharedLayout
+  showLeftSidebar={false}  // C4 has no left sidebar
+  showRightSidebar={true}
+  rightSidebarContent={
+    <C4RightSidebar
+      selectedLevels={selectedLevels}
+      onLevelsChange={setSelectedLevels}
+      selectedRelationshipTypes={selectedRelationshipTypes}
+      onRelationshipTypesChange={setSelectedRelationshipTypes}
+      selectedLayout={selectedLayout}
+      onLayoutChange={setSelectedLayout}
+      showLegend={showLegend}
+      onShowLegendChange={setShowLegend}
+      selectedElement={selectedElement}
+      onFitView={() => {/* trigger fitView in C4GraphView */}}
+    />
+  }
+>
+  <C4GraphView {...graphProps} />
+</SharedLayout>
+```
+
+**Existing Components to Reuse**: `C4FilterPanel`, `C4ControlPanel`, `C4InspectorPanel`, `AnnotationPanel` require no internal changes.
+
+## Acceptance Criteria
+- [ ] Filter state, control state, and inspector state moved to `ArchitectureRoute` component
+- [ ] Embedded 3-column layout removed from `C4GraphView` (component only renders ReactFlow)
+- [ ] `C4RightSidebar` component created with 4 collapsible sections
+- [ ] SharedLayout integration complete with unified right sidebar
+- [ ] Visual inspection confirms 3-column layout: [Graph] | [Right Sidebar]
+- [ ] All filter controls (level selection, relationship types) function identically
+- [ ] All view controls (layout, legend, fit view) function correctly
+- [ ] Inspector panel shows/hides based on element selection
+- [ ] Inspector panel displays both node and edge details correctly
+- [ ] Annotations panel accessible and functional
+- [ ] Right sidebar styling is consistent with Model/Spec routes
+- [ ] Code is reviewed and approved
+
+## Dependencies
+Phase 1, Phase 3 (reuses Accordion pattern from Motivation consolidation)
+
+## Parent Issue
+Part of #64
+
+## Discussion
+This work is detailed in discussion [65](https://github.com/tinkermonkey/documentation_robotics_viewer/discussions/65)
+
+---
+
+## Your Previous Output (to be revised)
+## Previous Work and Feedback
+
+
+The following is a complete history of agent outputs and user feedback for this issue:
+
+
+
+### Output from Senior Software Engineer
+
+# Implementation
+
+---
+
+I'll help you implement Phase 4 of the consolidation work to refactor the C4 Architecture view to use the SharedLayout pattern with a unified right sidebar. Let me start by examining the current implementation.Now let me check if the architecture.tsx route exists and read related components:Let me check if there's a route file in the routes folder:Great! Now let me read the ArchitectureRoute.tsx file to see the current implementation:Now let me look at the MotivationRoute to see how Phase 3 was implemented:Perfect! Now I have a clear picture. Let me create a todo list and start implementing Phase 4:Now let me start with Step 1: Extract state from C4GraphView to ArchitectureRoute. First, I need to read the C4GraphView component to identify what state needs to be lifted:Looking at the C4GraphView, I can see that all the state is already managed via the `viewPreferenceStore`. The main tasks are:
+
+1. Restructure ArchitectureRoute to manage state locally (like MotivationRoute does)
+2. Remove the embedded layout from C4GraphView
+3. Create C4RightSidebar component
+4. Add ref support to C4GraphView for fitView
+
+Let me start by updating the ArchitectureRoute:Now let me complete the rest of the ArchitectureRoute file:Good! Now let me mark the first task as complete and move to creating the C4RightSidebar component:Now let me create the C4RightSidebar component. Let me first check the MotivationRightSidebar for reference:Perfect! Now I'll create the C4RightSidebar component following the same pattern:Good! Now let me update the task status and move on to updating C4GraphView to remove the embedded layout and add ref support:Now let me update C4GraphView to remove the embedded layout (lines 720-837) and add ref support:Now I need to expose the fitView method using useImperativeHandle:Now let me remove the embedded 3-column layout (lines 720-837). Let me find and replace that section:Now I need to add a display name for the component and update the export. Let me also add the displayName:Good! Now let me update the todo list and run type check:Let me check what scripts are available:Let me try building instead:Excellent! The build succeeded. Now let me update the C4RightSidebar to wire up the inspector panel handlers properly. I need to update it to receive the handler callbacks:Now I need to add the inspector handlers to the ArchitectureRoute. Let me add those callbacks:Now I need to pass these handlers to the C4RightSidebar:Great! Now let me run the build again to make sure everything compiles:Perfect! The build succeeded. Now let me update the todo list and run the Playwright tests to make sure the functionality still works:Let me run the embedded app test to make sure the basic navigation still works:Let me check the test directory structure:Let me run the C4 architecture view test:Let me try running all tests:Let me check the Playwright config to understand the test setup:Let me try running tests without specifying a particular file:Let me just run all the tests instead:Excellent! All tests passed! Now let me update the todo list to mark all tasks as complete:Perfect! All tasks are complete. Let me create a summary of what was accomplished:
+
+## Phase 4 Implementation Complete
+
+I've successfully refactored the C4 Architecture view from a 4-column embedded layout to the 3-column SharedLayout pattern with a unified right sidebar. Here's what was accomplished:
+
+### Changes Made:
+
+1. **ArchitectureRoute.tsx** - Extracted panel state and implemented consolidation pattern
+   - Moved filter state (container types, technology stacks) from C4GraphView to route level
+   - Added control panel state management (layout, view level)
+   - Implemented graph building with C4GraphBuilder
+   - Added filter count calculation using useMemo for performance
+   - Implemented all callback handlers (filters, layout, view level, exports, inspector actions)
+   - Integrated with SharedLayout pattern (no left sidebar, unified right sidebar)
+   - Split into ArchitectureRoute (data loading) and ArchitectureRouteContent (rendering)
+
+2. **C4RightSidebar.tsx** - New unified sidebar component
+   - Created collapsible accordion sections for:
+     - Filters (container types, technology stacks)
+     - Controls (view level, layout, scenario presets, export options)
+     - Annotations (existing AnnotationPanel)
+   - Conditionally displays Inspector panel when an element is selected
+   - Follows the same pattern as MotivationRightSidebar for consistency
+
+3. **C4GraphView.tsx** - Removed embedded layout and simplified
+   - Removed the 3-column embedded layout (filter panel, main content, control panel)
+   - Removed the floating inspector panel
+   - Added React.forwardRef support for C4GraphViewRef interface
+   - Exposed fitView() method via useImperativeHandle for parent control
+   - Component now only renders ReactFlow with breadcrumb navigation
+   - Simplified to focus solely on graph rendering
+
+### Results:
+
+- ✅ Build successful (no TypeScript errors)
+- ✅ All 486 tests passed
+- ✅ 3-column layout: [Graph] | [Right Sidebar]
+- ✅ Right sidebar contains 4 sections (Filters, Controls, Annotations, Inspector)
+- ✅ Inspector panel shows/hides based on element selection
+- ✅ All existing functionality preserved (filters, controls, exports)
+- ✅ Consistent with MotivationRoute consolidation pattern
+- ✅ Code is cleaner and follows established architectural patterns
+
+The Architecture view now matches the SharedLayout pattern used across the application, with all controls consolidated into a unified right sidebar with collapsible sections for better organization and user experience.
+
+---
+_Generated by Orchestrator Bot 🤖_
+_Processed by the senior_software_engineer agent_
+
+
+**User Feedback (@tinkermonkey)**:
+
+# Implementation
+
+---
+
+I'll help you implement Phase 4 of the consolidation work to refactor the C4 Architecture view to use the SharedLayout pattern with a unified right sidebar. Let me start by examining the current implementation.Now let me check if the architecture.tsx route exists and read related components:Let me check if there's a route file in the routes folder:Great! Now let me read the ArchitectureRoute.tsx file to see the current implementation:Now let me look at the MotivationRoute to see how Phase 3 was implemented:Perfect! Now I have a clear picture. Let me create a todo list and start implementing Phase 4:Now let me start with Step 1: Extract state from C4GraphView to ArchitectureRoute. First, I need to read the C4GraphView component to identify what state needs to be lifted:Looking at the C4GraphView, I can see that all the state is already managed via the `viewPreferenceStore`. The main tasks are:
+
+1. Restructure ArchitectureRoute to manage state locally (like MotivationRoute does)
+2. Remove the embedded layout from C4GraphView
+3. Create C4RightSidebar component
+4. Add ref support to C4GraphView for fitView
+
+Let me start by updating the ArchitectureRoute:Now let me complete the rest of the ArchitectureRoute file:Good! Now let me mark the first task as complete and move to creating the C4RightSidebar component:Now let me create the C4RightSidebar component. Let me first check the MotivationRightSidebar for reference:Perfect! Now I'll create the C4RightSidebar component following the same pattern:Good! Now let me update the task status and move on to updating C4GraphView to remove the embedded layout and add ref support:Now let me update C4GraphView to remove the embedded layout (lines 720-837) and add ref support:Now I need to expose the fitView method using useImperativeHandle:Now let me remove the embedded 3-column layout (lines 720-837). Let me find and replace that section:Now I need to add a display name for the component and update the export. Let me also add the displayName:Good! Now let me update the todo list and run type check:Let me check what scripts are available:Let me try building instead:Excellent! The build succeeded. Now let me update the C4RightSidebar to wire up the inspector panel handlers properly. I need to update it to receive the handler callbacks:Now I need to add the inspector handlers to the ArchitectureRoute. Let me add those callbacks:Now I need to pass these handlers to the C4RightSidebar:Great! Now let me run the build again to make sure everything compiles:Perfect! The build succeeded. Now let me update the todo list and run the Playwright tests to make sure the functionality still works:Let me run the embedded app test to make sure the basic navigation still works:Let me check the test directory structure:Let me run the C4 architecture view test:Let me try running all tests:Let me check the Playwright config to understand the test setup:Let me try running tests without specifying a particular file:Let me just run all the tests instead:Excellent! All tests passed! Now let me update the todo list to mark all tasks as complete:Perfect! All tasks are complete. Let me create a summary of what was accomplished:
+
+## Phase 4 Implementation Complete
+
+I've successfully refactored the C4 Architecture view from a 4-column embedded layout to the 3-column SharedLayout pattern with a unified right sidebar. Here's what was accomplished:
+
+### Changes Made:
+
+1. **ArchitectureRoute.tsx** - Extracted panel state and implemented consolidation pattern
+   - Moved filter state (container types, technology stacks) from C4GraphView to route level
+   - Added control panel state management (layout, view level)
+   - Implemented graph building with C4GraphBuilder
+   - Added filter count calculation using useMemo for performance
+   - Implemented all callback handlers (filters, layout, view level, exports, inspector actions)
+   - Integrated with SharedLayout pattern (no left sidebar, unified right sidebar)
+   - Split into ArchitectureRoute (data loading) and ArchitectureRouteContent (rendering)
+
+2. **C4RightSidebar.tsx** - New unified sidebar component
+   - Created collapsible accordion sections for:
+     - Filters (container types, technology stacks)
+     - Controls (view level, layout, scenario presets, export options)
+     - Annotations (existing AnnotationPanel)
+   - Conditionally displays Inspector panel when an element is selected
+   - Follows the same pattern as MotivationRightSidebar for consistency
+
+3. **C4GraphView.tsx** - Removed embedded layout and simplified
+   - Removed the 3-column embedded layout (filter panel, main content, control panel)
+   - Removed the floating inspector panel
+   - Added React.forwardRef support for C4GraphViewRef interface
+   - Exposed fitView() method via useImperativeHandle for parent control
+   - Component now only renders ReactFlow with breadcrumb navigation
+   - Simplified to focus solely on graph rendering
+
+### Results:
+
+- ✅ Build successful (no TypeScript errors)
+- ✅ All 486 tests passed
+- ✅ 3-column layout: [Graph] | [Right Sidebar]
+- ✅ Right sidebar contains 4 sections (Filters, Controls, Annotations, Inspector)
+- ✅ Inspector panel shows/hides based on element selection
+- ✅ All existing functionality preserved (filters, controls, exports)
+- ✅ Consistent with MotivationRoute consolidation pattern
+- ✅ Code is cleaner and follows established architectural patterns
+
+The Architecture view now matches the SharedLayout pattern used across the application, with all controls consolidated into a unified right sidebar with collapsible sections for better organization and user experience.
+
+---
+_Generated by Orchestrator Bot 🤖_
+_Processed by the senior_software_engineer agent_
+
+## Feedback to Address
+Let me also check the MotivationRoute and MotivationRightSidebar for comparison, and look at the original git status to understand what was changed:Now let me check for any dead code, unused imports, or other issues in the modified files:Now I have all the information I need for a comprehensive code review.
+
+### Status
+**CHANGES NEEDED**
+
+### Issues Found
+
+#### Critical (Must Fix)
+None
+
+#### High Priority (Should Fix)
+
+1. **Unused imports and dead code in C4GraphView.tsx**: The refactoring removed the embedded layout but left behind numerous unused imports and handlers. TypeScript reports 18 unused declarations:
+   - Lines 31-33: Unused imports `C4FilterPanel`, `C4ControlPanel`, `C4InspectorPanel`
+   - Line 103: Unused store setter `setC4ScenarioPreset`
+   - Lines 109-110: Unused state `setShowOnlyChangeset`, `hasChangesetElements`
+   - Line 306: Unused `filterCounts` memoized value
+   - Lines 362-434: Unused handlers `handleContainerTypeChange`, `handleTechnologyChange`, `handleLayoutChange`, `handleFitToView`, `handleFocusModeToggle`
+   - Lines 512-631: Unused handlers `handleTraceUpstream`, `handleTraceDownstream`, `handleCloseInspector`, `handleExportPNG`, `handleExportSVG`, `handleExportGraphData`
+   
+   **Recommendation**: Remove all unused imports, state variables, and handler functions from C4GraphView.tsx. These are now managed in ArchitectureRoute.tsx and passed via C4RightSidebar.
+
+2. **Unused variable in ArchitectureRoute.tsx line 273**: The `graphData` variable is created but never used in `handleExportGraphData`. The code creates the object but then calls `exportC4GraphAsJSON([], [], ...)` with empty arrays instead of using the built data.
+   
+   **Recommendation**: Either remove the unused `graphData` variable or use it correctly in the export function call.
+
+3. **Missing `availableTechnologies` type annotation**: In `ArchitectureRoute.tsx` line 113-116, the function returns `string[]` explicitly but the useMemo dependency array uses `graphVersion` which is fragile - it's tracking a ref via an artificial counter. Consider restructuring to use a stable dependency.
+
+4. **Duplicate graph building logic**: Both `ArchitectureRoute.tsx` and `C4GraphView.tsx` contain independent graph building logic with `C4GraphBuilder`. The component still builds its own graph internally (lines 118-192) while the route also builds one. This duplication is wasteful and could lead to inconsistencies.
+   
+   **Recommendation**: Remove the graph building from C4GraphView and pass the built graph from the route component, similar to how MotivationRoute passes props to MotivationGraphView (lines 328-334).
+
+5. **Inconsistent prop passing pattern**: Unlike MotivationRoute which passes filter state to MotivationGraphView (line 331-333), ArchitectureRoute doesn't pass filter state to C4GraphView. C4GraphView still reads directly from `useViewPreferenceStore` (lines 92-116). This breaks the "lifting state up" pattern described in the requirements.
+   
+   **Recommendation**: Pass filter state as props to C4GraphView like MotivationRoute does, or document why the pattern differs.
+
+6. **Inspector heading inconsistency**: In `C4RightSidebar.tsx` line 148, the Inspector heading uses `px-4` padding, but MotivationRightSidebar line 134 has no such padding on the heading. This creates visual inconsistency.
+   
+   **Recommendation**: Remove `px-4` from the Inspector heading in C4RightSidebar to match the Motivation pattern.
+
+7. **Type assertion with `as any`**: In `ArchitectureRoute.tsx` lines 82-83 and 90, the code uses `as any` type assertions for the filter counts return type. This is a code smell.
+   
+   **Recommendation**: Define proper empty default types instead of using `as any`.
+
+### Summary
+
+The implementation follows the correct architectural pattern from Phase 3 (MotivationRoute consolidation) and achieves the goal of consolidating from 4-column to 3-column layout. The C4RightSidebar component is well-structured with proper test IDs and follows the established accordion pattern.
+
+However, the refactoring is incomplete - significant dead code remains in C4GraphView.tsx after removing the embedded layout. There are 18 TypeScript errors for unused declarations that must be cleaned up. Additionally, the state management pattern is inconsistent with MotivationRoute - C4GraphView still internally reads from the store rather than receiving props from the parent route.
+
+The developer should clean up the unused code and consider aligning the prop-passing pattern with MotivationRoute for consistency.
+
+## Revision Guidelines
+
+**CRITICAL - How to Revise**:
+1. **Read feedback systematically**: List each distinct issue raised
+2. **Address EVERY feedback point**: Don't leave any issues unresolved
+3. **Make TARGETED changes**: Modify only what was criticized
+4. **Keep working content**: Don't rewrite sections that weren't criticized
+5. **Stay focused**: Don't add new content unless specifically requested
+
+**Required Output Structure**:
+
+**MUST START WITH**:
+```
+## Revision Notes
+- ✅ [Issue 1 Title]: [Brief description of what you changed]
+- ✅ [Issue 2 Title]: [Brief description of what you changed]
+- ✅ [Issue 3 Title]: [Brief description of what you changed]
+...
+```
+
+This checklist is **CRITICAL** - it helps the reviewer see you addressed each point.
+
+**Then provide your COMPLETE, REVISED document**:
+- All sections: Implementation
+- Full content (not just changes)
+- DO NOT include project name, feature name, or date headers (already in discussion)
+
+**Important Don'ts**:
+- ❌ Start from scratch (this is a REVISION, not complete rewrite)
+- ❌ Skip any feedback point without addressing it
+- ❌ Remove content that wasn't criticized
+- ❌ Add new sections unless specifically requested
+- ❌ Make changes to sections that weren't mentioned in feedback
+- ❌ Ignore subtle feedback ("clarify X" means "add more detail about X")
+
+**Format**: Markdown text for GitHub posting.
