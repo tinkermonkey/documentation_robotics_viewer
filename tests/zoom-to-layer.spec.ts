@@ -6,14 +6,14 @@
  * - Smooth animation behavior
  * - Viewport focusing
  *
- * Part of Phase 6: Integration testing for UX cleanup (Issue #64)
+ * Integration testing for UX cleanup (Issue #64)
  */
 
 import { test, expect } from '@playwright/test';
 
 test.setTimeout(30000);
 
-test.describe('Zoom-to-Layer Interactions - Phase 6 Integration Testing', () => {
+test.describe('Zoom-to-Layer Interactions', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('[data-testid="embedded-app"]', { timeout: 10000 });
@@ -25,10 +25,10 @@ test.describe('Zoom-to-Layer Interactions - Phase 6 Integration Testing', () => 
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(500);
 
     // Find Business layer in left sidebar
     const leftSidebar = page.locator('[data-testid="left-sidebar"]');
@@ -39,7 +39,7 @@ test.describe('Zoom-to-Layer Interactions - Phase 6 Integration Testing', () => 
       await businessLayerItem.click();
 
       // Wait for zoom animation (400ms duration + buffer)
-      await page.waitForTimeout(800);
+      await page.waitForTimeout(500); // Wait for zoom animation completion
 
       // Verify Business nodes are more prominently displayed
       // (we can't easily check exact viewport position, but we can verify nodes exist)
@@ -61,10 +61,10 @@ test.describe('Zoom-to-Layer Interactions - Phase 6 Integration Testing', () => 
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(500);
 
     const leftSidebar = page.locator('[data-testid="left-sidebar"]');
 
@@ -72,14 +72,14 @@ test.describe('Zoom-to-Layer Interactions - Phase 6 Integration Testing', () => 
     const businessLayerItem = leftSidebar.locator('[data-testid="layer-item-Business"]');
     if (await businessLayerItem.count() > 0) {
       await businessLayerItem.click();
-      await page.waitForTimeout(600);
+      await page.waitForTimeout(500);
     }
 
     // Click Application layer
     const applicationLayerItem = leftSidebar.locator('[data-testid="layer-item-Application"]');
     if (await applicationLayerItem.count() > 0) {
       await applicationLayerItem.click();
-      await page.waitForTimeout(600);
+      await page.waitForTimeout(500);
 
       // Verify Application nodes are visible
       const applicationNodes = page.locator('.react-flow__node').filter({
@@ -95,7 +95,7 @@ test.describe('Zoom-to-Layer Interactions - Phase 6 Integration Testing', () => 
     const securityLayerItem = leftSidebar.locator('[data-testid="layer-item-Security"]');
     if (await securityLayerItem.count() > 0) {
       await securityLayerItem.click();
-      await page.waitForTimeout(600);
+      await page.waitForTimeout(500);
 
       // Verify Security nodes are visible
       const securityNodes = page.locator('.react-flow__node').filter({
@@ -113,10 +113,10 @@ test.describe('Zoom-to-Layer Interactions - Phase 6 Integration Testing', () => 
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(500);
 
     const reactFlow = page.locator('.react-flow');
 
@@ -136,7 +136,7 @@ test.describe('Zoom-to-Layer Interactions - Phase 6 Integration Testing', () => 
 
     if (await businessLayerItem.count() > 0) {
       await businessLayerItem.click();
-      await page.waitForTimeout(600);
+      await page.waitForTimeout(500);
 
       // Verify Business nodes are visible after zoom
       const businessNodes = page.locator('.react-flow__node').filter({
@@ -154,9 +154,9 @@ test.describe('Zoom-to-Layer Interactions - Phase 6 Integration Testing', () => 
 
     // Navigate to Spec graph
     await header.getByRole('button', { name: 'Spec' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(500);
 
     // Find a schema item in the left sidebar
     const leftSidebar = page.locator('[data-testid="left-sidebar"]');
@@ -166,7 +166,7 @@ test.describe('Zoom-to-Layer Interactions - Phase 6 Integration Testing', () => 
     if (schemaCount > 0) {
       // Click the first schema
       await schemaItems.first().click();
-      await page.waitForTimeout(600);
+      await page.waitForTimeout(500);
 
       // Verify the graph is still visible and has nodes
       const reactFlow = page.locator('.react-flow');
@@ -181,43 +181,44 @@ test.describe('Zoom-to-Layer Interactions - Phase 6 Integration Testing', () => 
   test('rapid layer switching does not cause animation jank', async ({ page }) => {
     const header = page.locator('[data-testid="embedded-header"]');
 
+    // Set up console error listener BEFORE interactions
+    const logs: string[] = [];
+    page.on('console', msg => {
+      if (msg.type() === 'error') {
+        logs.push(msg.text());
+      }
+    });
+
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(500);
 
     const leftSidebar = page.locator('[data-testid="left-sidebar"]');
 
     // Get all available layer items
     const layerItems = leftSidebar.locator('[data-testid^="layer-item-"]');
-    const layerCount = await layerItems.count();
+    await expect(layerItems).toHaveCount(await layerItems.count());
 
+    const layerCount = await layerItems.count();
     if (layerCount >= 3) {
-      // Rapidly click through 3 layers
+      // Rapidly click through 3 layers without waiting for animation to complete
       await layerItems.nth(0).click();
-      await page.waitForTimeout(200); // Don't wait for full animation
+      await page.waitForTimeout(150);
 
       await layerItems.nth(1).click();
-      await page.waitForTimeout(200);
+      await page.waitForTimeout(150);
 
       await layerItems.nth(2).click();
-      await page.waitForTimeout(600); // Wait for final animation
+      await page.waitForTimeout(500); // Wait for final animation
 
       // Graph should still be functional
       const reactFlow = page.locator('.react-flow');
       await expect(reactFlow).toBeVisible();
 
-      // No console errors should occur
-      const logs: string[] = [];
-      page.on('console', msg => {
-        if (msg.type() === 'error') {
-          logs.push(msg.text());
-        }
-      });
-
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(300);
 
       // Filter out known benign errors
       const criticalErrors = logs.filter(log =>
@@ -234,10 +235,10 @@ test.describe('Zoom-to-Layer Interactions - Phase 6 Integration Testing', () => 
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(500);
 
     // Click a layer that likely has multiple nodes
     const leftSidebar = page.locator('[data-testid="left-sidebar"]');
@@ -245,7 +246,7 @@ test.describe('Zoom-to-Layer Interactions - Phase 6 Integration Testing', () => 
 
     if (await businessLayerItem.count() > 0) {
       await businessLayerItem.click();
-      await page.waitForTimeout(800);
+      await page.waitForTimeout(500); // Wait for zoom animation completion
 
       // Count visible Business nodes
       const businessNodes = page.locator('.react-flow__node').filter({
@@ -271,10 +272,10 @@ test.describe('Zoom-to-Layer Interactions - Phase 6 Integration Testing', () => 
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(500);
 
     const leftSidebar = page.locator('[data-testid="left-sidebar"]');
     const businessLayerItem = leftSidebar.locator('[data-testid="layer-item-Business"]');

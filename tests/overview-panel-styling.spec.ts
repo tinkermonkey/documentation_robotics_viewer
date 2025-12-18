@@ -6,14 +6,14 @@
  * - Dark mode color variants
  * - Proper positioning in graph views
  *
- * Part of Phase 6: Integration testing for UX cleanup (Issue #64)
+ * Integration testing for UX cleanup (Issue #64)
  */
 
 import { test, expect } from '@playwright/test';
 
 test.setTimeout(30000);
 
-test.describe('Overview Panel Styling - Phase 6 Integration Testing', () => {
+test.describe('Overview Panel Styling', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('[data-testid="embedded-app"]', { timeout: 10000 });
@@ -25,10 +25,10 @@ test.describe('Overview Panel Styling - Phase 6 Integration Testing', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     // Check for MiniMap
     const miniMap = page.locator('.react-flow__minimap');
@@ -46,10 +46,10 @@ test.describe('Overview Panel Styling - Phase 6 Integration Testing', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     // Check for "Overview" text near MiniMap
     const overviewPanel = page.locator('[data-testid="overview-panel"]');
@@ -73,10 +73,10 @@ test.describe('Overview Panel Styling - Phase 6 Integration Testing', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     const overviewPanel = page.locator('[data-testid="overview-panel"]');
 
@@ -114,10 +114,10 @@ test.describe('Overview Panel Styling - Phase 6 Integration Testing', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     const overviewPanel = page.locator('[data-testid="overview-panel"]');
 
@@ -149,10 +149,10 @@ test.describe('Overview Panel Styling - Phase 6 Integration Testing', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     const overviewPanel = page.locator('[data-testid="overview-panel"]');
 
@@ -202,10 +202,10 @@ test.describe('Overview Panel Styling - Phase 6 Integration Testing', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     // MiniMap should be in bottom-right
     const miniMap = page.locator('.react-flow__minimap');
@@ -228,10 +228,10 @@ test.describe('Overview Panel Styling - Phase 6 Integration Testing', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     const overviewPanel = page.locator('[data-testid="overview-panel"]');
 
@@ -251,10 +251,10 @@ test.describe('Overview Panel Styling - Phase 6 Integration Testing', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     const overviewPanel = page.locator('[data-testid="overview-panel"]');
 
@@ -291,7 +291,7 @@ test.describe('Overview Panel Styling - Phase 6 Integration Testing', () => {
 
     // Test Model view
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
     await page.waitForTimeout(500);
@@ -301,7 +301,7 @@ test.describe('Overview Panel Styling - Phase 6 Integration Testing', () => {
 
     // Test Spec view
     await header.getByRole('button', { name: 'Spec' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await page.waitForSelector('.react-flow', { timeout: 10000 });
     await page.waitForTimeout(500);
 
@@ -310,7 +310,7 @@ test.describe('Overview Panel Styling - Phase 6 Integration Testing', () => {
 
     // Test Motivation view
     await header.getByRole('button', { name: 'Motivation' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await page.waitForSelector('.react-flow', { timeout: 10000 });
     await page.waitForTimeout(500);
 
@@ -319,7 +319,7 @@ test.describe('Overview Panel Styling - Phase 6 Integration Testing', () => {
 
     // Test Architecture view
     await header.getByRole('button', { name: 'Architecture' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await page.waitForSelector('.react-flow', { timeout: 10000 });
     await page.waitForTimeout(500);
 
@@ -332,10 +332,10 @@ test.describe('Overview Panel Styling - Phase 6 Integration Testing', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     const overviewPanel = page.locator('[data-testid="overview-panel"]');
 

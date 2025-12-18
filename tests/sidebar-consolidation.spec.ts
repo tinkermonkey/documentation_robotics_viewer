@@ -1,19 +1,19 @@
 /**
  * E2E Tests for Sidebar Consolidation
- * Validates the 3-column layout and collapsible sidebar sections:
+ * Validates the 2-column layout and collapsible sidebar sections:
  * - Motivation view (2-column: Graph + Right Sidebar)
  * - Architecture view (2-column: Graph + Right Sidebar)
  * - Collapsible section functionality
  * - Right sidebar content organization
  *
- * Part of Phase 6: Integration testing for UX cleanup (Issue #64)
+ * Integration testing for UX cleanup (Issue #64)
  */
 
 import { test, expect } from '@playwright/test';
 
 test.setTimeout(30000);
 
-test.describe('Sidebar Consolidation - Phase 6 Integration Testing', () => {
+test.describe('Sidebar Consolidation', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('[data-testid="embedded-app"]', { timeout: 10000 });
@@ -25,7 +25,7 @@ test.describe('Sidebar Consolidation - Phase 6 Integration Testing', () => {
 
     // Navigate to Motivation view
     await header.getByRole('button', { name: 'Motivation' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await page.waitForSelector('.react-flow', { timeout: 10000 });
     await page.waitForTimeout(500);
 
@@ -57,7 +57,7 @@ test.describe('Sidebar Consolidation - Phase 6 Integration Testing', () => {
 
     // Navigate to Motivation view
     await header.getByRole('button', { name: 'Motivation' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await page.waitForSelector('.react-flow', { timeout: 10000 });
     await page.waitForTimeout(500);
 
@@ -91,7 +91,7 @@ test.describe('Sidebar Consolidation - Phase 6 Integration Testing', () => {
 
     // Navigate to Motivation view
     await header.getByRole('button', { name: 'Motivation' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await page.waitForSelector('.react-flow', { timeout: 10000 });
     await page.waitForTimeout(500);
 
@@ -122,9 +122,9 @@ test.describe('Sidebar Consolidation - Phase 6 Integration Testing', () => {
 
     // Navigate to Motivation view
     await header.getByRole('button', { name: 'Motivation' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     // Click a node to select it
     const nodes = page.locator('.react-flow__node');
@@ -156,7 +156,7 @@ test.describe('Sidebar Consolidation - Phase 6 Integration Testing', () => {
 
     // Navigate to Architecture view
     await header.getByRole('button', { name: 'Architecture' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await page.waitForSelector('.react-flow', { timeout: 10000 });
     await page.waitForTimeout(500);
 
@@ -182,7 +182,7 @@ test.describe('Sidebar Consolidation - Phase 6 Integration Testing', () => {
 
     // Navigate to Architecture view
     await header.getByRole('button', { name: 'Architecture' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await page.waitForSelector('.react-flow', { timeout: 10000 });
     await page.waitForTimeout(500);
 
@@ -218,9 +218,9 @@ test.describe('Sidebar Consolidation - Phase 6 Integration Testing', () => {
 
     // Navigate to Architecture view
     await header.getByRole('button', { name: 'Architecture' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     // Click a node
     const nodes = page.locator('.react-flow__node');
@@ -245,7 +245,7 @@ test.describe('Sidebar Consolidation - Phase 6 Integration Testing', () => {
 
     // Navigate to Motivation view
     await header.getByRole('button', { name: 'Motivation' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await page.waitForSelector('.react-flow', { timeout: 10000 });
     await page.waitForTimeout(500);
 
@@ -279,7 +279,7 @@ test.describe('Sidebar Consolidation - Phase 6 Integration Testing', () => {
 
     // Navigate to Motivation view
     await header.getByRole('button', { name: 'Motivation' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await page.waitForSelector('.react-flow', { timeout: 10000 });
     await page.waitForTimeout(500);
 
@@ -303,7 +303,7 @@ test.describe('Sidebar Consolidation - Phase 6 Integration Testing', () => {
 
     // Navigate to Motivation view
     await header.getByRole('button', { name: 'Motivation' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await page.waitForSelector('.react-flow', { timeout: 10000 });
     await page.waitForTimeout(500);
 
@@ -325,7 +325,7 @@ test.describe('Sidebar Consolidation - Phase 6 Integration Testing', () => {
 
     // Navigate to Motivation view
     await header.getByRole('button', { name: 'Motivation' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await page.waitForSelector('.react-flow', { timeout: 10000 });
     await page.waitForTimeout(500);
 

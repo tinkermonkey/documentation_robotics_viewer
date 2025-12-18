@@ -7,14 +7,14 @@
  * - Legends
  * - MiniMap
  *
- * Part of Phase 6: Integration testing for UX cleanup (Issue #64)
+ * Integration testing for UX cleanup (Issue #64)
  */
 
 import { test, expect } from '@playwright/test';
 
 test.setTimeout(30000);
 
-test.describe('Layer Color Consistency - Phase 6 Integration Testing', () => {
+test.describe('Layer Color Consistency', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('[data-testid="embedded-app"]', { timeout: 10000 });
@@ -26,45 +26,39 @@ test.describe('Layer Color Consistency - Phase 6 Integration Testing', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500); // Reduced wait time - animation buffer
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     // Find a Motivation layer node in Model graph
     const modelMotivationNode = page.locator('.react-flow__node').filter({
       has: page.locator('[data-layer="Motivation"]')
     }).first();
 
-    let modelMotivationColor = null;
-    if (await modelMotivationNode.count() > 0) {
-      modelMotivationColor = await modelMotivationNode.evaluate(el =>
-        window.getComputedStyle(el.querySelector('[data-layer="Motivation"]') || el).backgroundColor
-      );
-    }
+    await expect(modelMotivationNode).toHaveCount(1);
+    const modelMotivationColor = await modelMotivationNode.evaluate(el =>
+      window.getComputedStyle(el.querySelector('[data-layer="Motivation"]') || el).backgroundColor
+    );
 
     // Navigate to Spec graph
     await header.getByRole('button', { name: 'Spec' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     // Find a Motivation layer node in Spec graph
     const specMotivationNode = page.locator('.react-flow__node').filter({
       has: page.locator('[data-layer="Motivation"]')
     }).first();
 
-    let specMotivationColor = null;
-    if (await specMotivationNode.count() > 0) {
-      specMotivationColor = await specMotivationNode.evaluate(el =>
-        window.getComputedStyle(el.querySelector('[data-layer="Motivation"]') || el).backgroundColor
-      );
-    }
+    await expect(specMotivationNode).toHaveCount(1);
+    const specMotivationColor = await specMotivationNode.evaluate(el =>
+      window.getComputedStyle(el.querySelector('[data-layer="Motivation"]') || el).backgroundColor
+    );
 
     // Both views should have Motivation nodes with the same color
-    if (modelMotivationColor && specMotivationColor) {
-      expect(modelMotivationColor).toBe(specMotivationColor);
-    }
+    expect(modelMotivationColor).toBe(specMotivationColor);
   });
 
   test('layer badge colors match graph node colors in Model view', async ({ page }) => {
@@ -72,39 +66,33 @@ test.describe('Layer Color Consistency - Phase 6 Integration Testing', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     // Get color from a Business layer badge in sidebar
     const businessBadge = page.locator('[data-testid="left-sidebar"]').locator('text=Business').first();
-    let badgeColor = null;
+    await expect(businessBadge).toBeVisible();
 
-    if (await businessBadge.count() > 0) {
-      badgeColor = await businessBadge.evaluate(el => {
-        const badge = el.closest('.badge, [class*="badge"]') || el;
-        return window.getComputedStyle(badge).backgroundColor;
-      });
-    }
+    const badgeColor = await businessBadge.evaluate(el => {
+      const badge = el.closest('.badge, [class*="badge"]') || el;
+      return window.getComputedStyle(badge).backgroundColor;
+    });
 
     // Get color from a Business layer node in graph
     const businessNode = page.locator('.react-flow__node').filter({
       has: page.locator('[data-layer="Business"]')
     }).first();
 
-    let nodeColor = null;
-    if (await businessNode.count() > 0) {
-      nodeColor = await businessNode.evaluate(el => {
-        const layerEl = el.querySelector('[data-layer="Business"]') || el;
-        return window.getComputedStyle(layerEl).backgroundColor;
-      });
-    }
+    await expect(businessNode).toHaveCount(1);
+    const nodeColor = await businessNode.evaluate(el => {
+      const layerEl = el.querySelector('[data-layer="Business"]') || el;
+      return window.getComputedStyle(layerEl).backgroundColor;
+    });
 
-    // Colors should match if both elements exist
-    if (badgeColor && nodeColor) {
-      expect(badgeColor).toBe(nodeColor);
-    }
+    // Colors should match
+    expect(badgeColor).toBe(nodeColor);
   });
 
   test('all 12 layer types have defined colors', async ({ page }) => {
@@ -112,10 +100,10 @@ test.describe('Layer Color Consistency - Phase 6 Integration Testing', () => {
 
     // Navigate to Model graph to ensure layers are rendered
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     // Check if we can find nodes from various layer types
     const layerTypes = [
@@ -161,10 +149,10 @@ test.describe('Layer Color Consistency - Phase 6 Integration Testing', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     // Check that MiniMap is visible
     const miniMap = page.locator('.react-flow__minimap');
@@ -195,10 +183,10 @@ test.describe('Layer Color Consistency - Phase 6 Integration Testing', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     // Get initial Business node color
     const businessNode = page.locator('.react-flow__node').filter({
@@ -215,10 +203,10 @@ test.describe('Layer Color Consistency - Phase 6 Integration Testing', () => {
 
     // Switch to JSON view and back
     await header.getByRole('button', { name: 'JSON' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(300);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     // Get Business node color again
     const businessNodeAfter = page.locator('.react-flow__node').filter({
@@ -244,10 +232,10 @@ test.describe('Layer Color Consistency - Phase 6 Integration Testing', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     // Get colors of two different layer types in light mode
     const motivationNode = page.locator('[data-layer="Motivation"]').first();
