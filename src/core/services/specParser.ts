@@ -1,4 +1,5 @@
 import { Layer, ModelElement, Relationship, LayerType } from '../types';
+import { getLayerColor } from '../utils/layerColors';
 
 /**
  * Service for parsing JSON spec files into internal model format
@@ -118,22 +119,26 @@ export class SpecParser {
     borderColor?: string;
     icon?: string;
   } {
-    const styleMap: Record<string, { backgroundColor: string; borderColor: string; icon?: string }> = {
-      'Motivation': { backgroundColor: '#E8F5E9', borderColor: '#2e7d32', icon: '🎯' },
-      'Business': { backgroundColor: '#FFF3E0', borderColor: '#e65100', icon: '💼' },
-      'Security': { backgroundColor: '#FCE4EC', borderColor: '#c2185b', icon: '🔐' },
-      'Application': { backgroundColor: '#E3F2FD', borderColor: '#1565c0', icon: '📱' },
-      'Technology': { backgroundColor: '#F3E5F5', borderColor: '#6a1b9a', icon: '⚙️' },
-      'API': { backgroundColor: '#E0F2F1', borderColor: '#00695c', icon: '🔌' },
-      'DataModel': { backgroundColor: '#EEEEEE', borderColor: '#424242', icon: '📊' },
-      'DataStore': { backgroundColor: '#EFEBE9', borderColor: '#5d4037', icon: '💾' },
-      'UX': { backgroundColor: '#E8EAF6', borderColor: '#283593', icon: '🎨' },
-      'Navigation': { backgroundColor: '#FFFDE7', borderColor: '#f57f17', icon: '🧭' },
-      'APM': { backgroundColor: '#EFEBE9', borderColor: '#4e342e', icon: '📈' },
-      'default': { backgroundColor: '#FAFAFA', borderColor: '#999999' }
+    // Icon mapping remains separate as it's not color-related
+    const iconMap: Record<string, string> = {
+      'Motivation': '🎯',
+      'Business': '💼',
+      'Security': '🔐',
+      'Application': '📱',
+      'Technology': '⚙️',
+      'API': '🔌',
+      'DataModel': '📊',
+      'DataStore': '💾',
+      'UX': '🎨',
+      'Navigation': '🧭',
+      'APM': '📈'
     };
 
-    return styleMap[layerType] || styleMap.default;
+    return {
+      backgroundColor: getLayerColor(layerType, 'light'),
+      borderColor: getLayerColor(layerType, 'dark'),
+      icon: iconMap[layerType]
+    };
   }
 
   /**

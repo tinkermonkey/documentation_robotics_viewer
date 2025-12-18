@@ -8,11 +8,12 @@ import {
   ReactFlow,
   Background,
   Controls,
-  MiniMap,
   useNodesState,
   useEdgesState,
   Node,
   NodeMouseHandler,
+  useReactFlow,
+  ReactFlowProvider,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import './GraphViewer.css';
@@ -26,21 +27,25 @@ import { edgeTypes } from '../edges';
 import { elementStore } from '../stores/elementStore';
 import { AppNode, AppEdge } from '../types/reactflow';
 import { SpaceMouseHandler } from './SpaceMouseHandler';
+import { OverviewPanel, NodeWithLayerData } from './OverviewPanel';
+import { getLayerColor } from '../utils/layerColors';
 
 interface GraphViewerProps {
   model: MetaModel;
   onNodeClick?: (node: Node | null) => void;
+  selectedLayerId?: string | null;
 }
 
 /**
- * GraphViewer Component
- * Renders a MetaModel using React Flow with custom nodes and vertical layer layout
+ * GraphViewerInner Component
+ * Inner component that has access to React Flow instance via useReactFlow hook
  */
-const GraphViewer: React.FC<GraphViewerProps> = ({ model, onNodeClick }) => {
+const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, selectedLayerId }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<AppEdge>([]);
   const { layers: layerStates } = useLayerStore();
   const [isRendering, setIsRendering] = useState(false);
+  const reactFlowInstance = useReactFlow();
 
   // Handle node click
   const handleNodeClick: NodeMouseHandler = useCallback(
@@ -67,6 +72,20 @@ const GraphViewer: React.FC<GraphViewerProps> = ({ model, onNodeClick }) => {
     console.log('GraphViewer: Updating layer visibility');
     updateLayerVisibility();
   }, [layerStates]);
+
+  // Zoom to selected layer effect
+  useEffect(() => {
+    if (!selectedLayerId || !nodes.length || !reactFlowInstance) return;
+
+    const layerNodes = nodes.filter(n => n.data.layerId === selectedLayerId);
+    if (layerNodes.length === 0) return;
+
+    reactFlowInstance.fitView({
+      nodes: layerNodes,
+      padding: 0.2,
+      duration: 400
+    });
+  }, [selectedLayerId, nodes, reactFlowInstance]);
 
   /**
    * Render the complete model
@@ -176,14 +195,16 @@ const GraphViewer: React.FC<GraphViewerProps> = ({ model, onNodeClick }) => {
         <Background color="#E6E6E6" gap={16} />
         <Controls />
         <SpaceMouseHandler />
-        <MiniMap
-          nodeColor={(node) => {
-            // Color nodes based on their fill color
-            return (node.data as any).fill || '#ffffff';
+        <OverviewPanel
+          nodeColor={(node: NodeWithLayerData) => {
+            // Color nodes based on their layer
+            const layer = node.data.layer;
+            if (layer) {
+              return getLayerColor(layer, 'primary');
+            }
+            // Fallback to fill color
+            return node.data.fill || '#ffffff';
           }}
-          nodeStrokeWidth={3}
-          zoomable
-          pannable
         />
       </ReactFlow>
 
@@ -193,6 +214,18 @@ const GraphViewer: React.FC<GraphViewerProps> = ({ model, onNodeClick }) => {
         </div>
       )}
     </div>
+  );
+};
+
+/**
+ * GraphViewer Component
+ * Wrapper that provides ReactFlowProvider context
+ */
+const GraphViewer: React.FC<GraphViewerProps> = (props) => {
+  return (
+    <ReactFlowProvider>
+      <GraphViewerInner {...props} />
+    </ReactFlowProvider>
   );
 };
 

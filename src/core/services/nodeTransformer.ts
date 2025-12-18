@@ -9,6 +9,7 @@ import { MarkerType } from '@xyflow/react';
 import { elementStore } from '../stores/elementStore';
 import { LayoutResult } from '../types/shapes';
 import { AppNode, AppEdge } from '../types/reactflow';
+import { FALLBACK_COLOR } from '../utils/layerColors';
 // Import C4 node dimension constants to prevent drift
 import {
   CONTAINER_NODE_WIDTH,
@@ -168,7 +169,7 @@ export class NodeTransformer {
               type: MarkerType.ArrowClosed,
               width: 20,
               height: 20,
-              color: '#9ca3af',
+              color: FALLBACK_COLOR,
             },
             style: { strokeDasharray: '5,5' }, // Dashed line for cross-layer references
             data: {
@@ -225,7 +226,7 @@ export class NodeTransformer {
         type: MarkerType.ArrowClosed,
         width: 20,
         height: 20,
-        color: '#6b7280',
+        color: FALLBACK_COLOR,
       },
       data: {
         pathOptions: {
