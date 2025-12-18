@@ -6,7 +6,12 @@
  * - Dark mode color variants
  * - Proper positioning in graph views
  *
- * Integration testing for UX cleanup (Issue #64)
+ * IMPORTANT: This test requires the Python reference server to be running.
+ *
+ * Run with: npm run test:e2e
+ *
+ * This test is configured in playwright.e2e.config.ts which automatically
+ * starts both the dev server and reference server.
  */
 
 import { test, expect } from '@playwright/test';
@@ -302,6 +307,7 @@ test.describe('Overview Panel Styling', () => {
     // Test Spec view
     await header.getByRole('button', { name: 'Spec' }).click();
     await page.waitForTimeout(500);
+    await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
     await page.waitForTimeout(500);
 

@@ -39,6 +39,9 @@ export default defineConfig({
     'embedded-graph-rendering.spec.ts',
     'c4-architecture-view.spec.ts',
     'c4-accessibility.spec.ts',
+    'overview-panel-styling.spec.ts',
+    'sidebar-consolidation.spec.ts',
+    'zoom-to-layer.spec.ts',
   ],
   fullyParallel: false, // Run E2E tests sequentially for reliability
   forbidOnly: !!process.env.CI,
