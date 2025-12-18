@@ -37,7 +37,7 @@ import {
 } from '../types/c4Graph';
 import { SpaceMouseHandler } from '../../../core/components/SpaceMouseHandler';
 import { C4LayoutAlgorithm } from './C4ControlPanel';
-import { OverviewPanel } from './OverviewPanel';
+import { OverviewPanel, NodeWithLayerData } from '../../../core/components/OverviewPanel';
 
 // Debug logging helper - only logs in development mode
 const DEBUG = import.meta.env.DEV;
@@ -345,7 +345,7 @@ const C4GraphView = React.forwardRef<C4GraphViewRef, C4GraphViewProps>(
               <Controls />
               <SpaceMouseHandler />
               <OverviewPanel
-                nodeColor={(node) => {
+                nodeColor={(node: NodeWithLayerData) => {
                   // Use C4-specific stroke color
                   return (node.data.stroke as string) || '#6b7280';
                 }}

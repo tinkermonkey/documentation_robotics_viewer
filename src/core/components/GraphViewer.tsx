@@ -27,7 +27,7 @@ import { edgeTypes } from '../edges';
 import { elementStore } from '../stores/elementStore';
 import { AppNode, AppEdge } from '../types/reactflow';
 import { SpaceMouseHandler } from './SpaceMouseHandler';
-import { OverviewPanel } from '../../apps/embedded/components/OverviewPanel';
+import { OverviewPanel, NodeWithLayerData } from './OverviewPanel';
 import { getLayerColor } from '../utils/layerColors';
 
 interface GraphViewerProps {
@@ -196,14 +196,14 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
         <Controls />
         <SpaceMouseHandler />
         <OverviewPanel
-          nodeColor={(node) => {
+          nodeColor={(node: NodeWithLayerData) => {
             // Color nodes based on their layer
-            const layer = (node.data as any).layer;
+            const layer = node.data.layer;
             if (layer) {
               return getLayerColor(layer, 'primary');
             }
             // Fallback to fill color
-            return (node.data as any).fill || '#ffffff';
+            return node.data.fill || '#ffffff';
           }}
         />
       </ReactFlow>

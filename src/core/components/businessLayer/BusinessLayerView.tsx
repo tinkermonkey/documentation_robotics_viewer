@@ -39,7 +39,7 @@ import {
   exportTraceabilityReport,
   exportImpactAnalysisReport,
 } from '../../services/businessExportService';
-import { OverviewPanel } from '../../../apps/embedded/components/OverviewPanel';
+import { OverviewPanel } from '../OverviewPanel';
 import { getLayerColor } from '../../utils/layerColors';
 import './BusinessLayerView.css';
 
@@ -484,8 +484,8 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
         <Background color="#aaa" gap={16} />
         <Controls />
         <OverviewPanel
-          nodeColor={(_node) => {
-            // Color nodes based on Business layer
+          nodeColor={() => {
+            // All nodes use Business layer color
             return getLayerColor('Business', 'primary');
           }}
         />

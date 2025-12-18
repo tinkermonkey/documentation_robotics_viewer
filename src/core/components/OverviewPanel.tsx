@@ -4,13 +4,22 @@
  * Matches design.png reference with border, shadow, rounded corners, and dark mode support
  */
 
-import { Panel } from '@xyflow/react';
-import { Node } from '@xyflow/react';
-import { MiniMap } from './MiniMap';
+import { Panel, MiniMap as ReactFlowMiniMap, Node } from '@xyflow/react';
+
+/**
+ * Type-safe node data interface for layer-based coloring
+ */
+export interface NodeWithLayerData extends Node {
+  data: {
+    layer?: string;
+    fill?: string;
+    [key: string]: any;
+  };
+}
 
 interface OverviewPanelProps {
   /** Optional color mapping function for nodes */
-  nodeColor?: (node: Node) => string;
+  nodeColor?: (node: NodeWithLayerData) => string;
 }
 
 /**
@@ -33,9 +42,18 @@ export function OverviewPanel({ nodeColor }: OverviewPanelProps) {
           Overview
         </div>
         <div className="p-2">
-          <MiniMap
+          <ReactFlowMiniMap
             nodeColor={nodeColor}
-            height={120}
+            nodeStrokeColor="#fff"
+            nodeBorderRadius={4}
+            maskColor="rgb(240, 240, 240, 0.6)"
+            maskStrokeWidth={2}
+            style={{
+              backgroundColor: 'transparent',
+              height: '120px',
+            }}
+            pannable
+            zoomable
           />
         </div>
       </div>

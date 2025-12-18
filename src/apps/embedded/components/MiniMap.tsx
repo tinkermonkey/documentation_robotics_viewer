@@ -74,24 +74,21 @@ export const MiniMap = memo(
     className = '',
   }: MiniMapProps) => {
     return (
-      <div
-        className={`relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 ${className}`}
-        style={{ height: `${height}px` }}
+      <ReactFlowMiniMap
+        nodeColor={nodeColor}
+        nodeStrokeColor={nodeStrokeColor}
+        nodeBorderRadius={nodeBorderRadius}
+        maskColor={maskColor}
+        maskStrokeWidth={maskStrokeWidth}
+        className={className}
+        style={{
+          backgroundColor: 'transparent',
+          height: `${height}px`,
+        }}
+        pannable
+        zoomable
         data-testid="minimap-container"
-      >
-        <ReactFlowMiniMap
-          nodeColor={nodeColor}
-          nodeStrokeColor={nodeStrokeColor}
-          nodeBorderRadius={nodeBorderRadius}
-          maskColor={maskColor}
-          maskStrokeWidth={maskStrokeWidth}
-          style={{
-            backgroundColor: 'transparent',
-          }}
-          pannable
-          zoomable
-        />
-      </div>
+      />
     );
   }
 );

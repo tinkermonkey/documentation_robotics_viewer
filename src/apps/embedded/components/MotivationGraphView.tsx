@@ -37,7 +37,7 @@ import {
   MotivationGraph,
 } from '../types/motivationGraph';
 import { SpaceMouseHandler } from '../../../core/components/SpaceMouseHandler';
-import { OverviewPanel } from './OverviewPanel';
+import { OverviewPanel } from '../../../core/components/OverviewPanel';
 import { getLayerColor } from '../../../core/utils/layerColors';
 
 export interface MotivationGraphViewProps {
@@ -401,8 +401,8 @@ const MotivationGraphView = forwardRef<MotivationGraphViewRef, MotivationGraphVi
           <Controls />
           <SpaceMouseHandler />
           <OverviewPanel
-            nodeColor={(_node) => {
-              // Color minimap nodes based on layer (Motivation)
+            nodeColor={() => {
+              // All nodes use Motivation layer color
               return getLayerColor('Motivation', 'primary');
             }}
           />
