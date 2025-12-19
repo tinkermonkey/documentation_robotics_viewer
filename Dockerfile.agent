@@ -34,11 +34,15 @@ WORKDIR /workspace/documentation_robotics_viewer
 # Copy ONLY the dependency manifests needed for installation
 # DO NOT copy source code - it comes from the runtime mount
 COPY package.json package-lock.json ./
+COPY reference_server/requirements.txt ./reference_server/
 
 # Pre-install npm dependencies
 RUN --mount=type=cache,target=/root/.npm \
     npm ci --ignore-scripts && \
     npm cache clean --force
+
+# Pre-install Python dependencies for reference server
+RUN pip3 install --no-cache-dir -r reference_server/requirements.txt
 
 # Set Playwright to use a shared cache location accessible to orchestrator user
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/ms-playwright
@@ -70,6 +74,11 @@ RUN claude --version && \
 
 # Verify project-specific tools (Node.js)
 RUN node --version && npm --version
+
+# Verify Python dependencies for reference server
+RUN python3 --version && \
+    python3 -c "import fastapi; print(f'FastAPI {fastapi.__version__}')" && \
+    python3 -c "import uvicorn; print(f'Uvicorn {uvicorn.__version__}')"
 
 # Verify Playwright installation
 RUN npx playwright --version
