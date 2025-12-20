@@ -32,7 +32,8 @@
       "Bash(dr --help:*)",
       "Bash(git add:*)",
       "Skill(dr-validate)",
-      "Bash(source:*)"
+      "Bash(source:*)",
+      "Bash(curl:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

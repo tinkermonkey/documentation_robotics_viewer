@@ -65,11 +65,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   /**
    * Get Authorization header for fetch requests
-   * Returns: { 'Authorization': 'Bearer <token>' }
+   * Returns: { 'Authorization': 'Bearer <token>' } or empty object
    */
-  getAuthHeaders: () => {
+  getAuthHeaders: (): Record<string, string> => {
     const { token } = get();
-    if (!token) return {};
+    if (!token) {
+      return {} as Record<string, string>;
+    }
 
     return {
       'Authorization': `Bearer ${token}`
@@ -78,11 +80,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   /**
    * Get query parameters for URL-based authentication
-   * Returns: { 'token': '<token>' }
+   * Returns: { 'token': '<token>' } or empty object
    */
-  getAuthQueryParams: () => {
+  getAuthQueryParams: (): Record<string, string> => {
     const { token } = get();
-    if (!token) return {};
+    if (!token) {
+      return {} as Record<string, string>;
+    }
 
     return {
       'token': token
