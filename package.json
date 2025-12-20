@@ -13,6 +13,8 @@
     "server": "node server/index.cjs",
     "start": "bash scripts/start-servers.sh",
     "verify": "bash scripts/verify-setup.sh",
+    "catalog:dev": "ladle serve --port 6006",
+    "catalog:build": "ladle build --outDir dist/catalog",
     "test": "playwright test",
     "test:debug": "playwright test --debug",
     "test:e2e": "playwright test --config=playwright.e2e.config.ts",
@@ -59,6 +61,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
+    "@ladle/react": "^5.1.1",
     "@playwright/test": "^1.57.0",
     "@tailwindcss/postcss": "^4.1.17",
     "@types/dagre": "^0.7.53",

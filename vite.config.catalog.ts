@@ -1,0 +1,26 @@
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+
+export default defineConfig({
+  plugins: [react()],
+  publicDir: false,
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      '@core': path.resolve(__dirname, './src/core'),
+      '@components': path.resolve(__dirname, './src/core/components'),
+      '@services': path.resolve(__dirname, './src/core/services'),
+      '@stores': path.resolve(__dirname, './src/core/stores'),
+      '@types': path.resolve(__dirname, './src/core/types'),
+      '@nodes': path.resolve(__dirname, './src/core/nodes'),
+      '@edges': path.resolve(__dirname, './src/core/edges'),
+      '@layout': path.resolve(__dirname, './src/core/layout'),
+      '@catalog': path.resolve(__dirname, './src/catalog')
+    },
+    dedupe: ['react', 'react-dom', 'react/jsx-runtime']
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', '@xyflow/react']
+  }
+});
