@@ -110,9 +110,16 @@ export class NodeTransformer {
         const position = layerData.positions[element.id];
         if (!position) continue;
 
-        // Ensure visual.size exists with defaults to prevent NaN
+        // Ensure visual properties exist with defaults to prevent NaN
         if (!element.visual) {
-          element.visual = { size: { width: 180, height: 100 }, style: {} };
+          element.visual = { 
+            position: { x: 0, y: 0 }, 
+            size: { width: 180, height: 100 }, 
+            style: {} 
+          };
+        }
+        if (!element.visual.position) {
+          element.visual.position = { x: 0, y: 0 };
         }
         if (!element.visual.size) {
           element.visual.size = { width: 180, height: 100 };
