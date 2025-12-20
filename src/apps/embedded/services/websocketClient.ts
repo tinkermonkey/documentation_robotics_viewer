@@ -1,7 +1,7 @@
 /**
  * WebSocket Client Service
  * Manages WebSocket connection to the Python CLI server
- * Features: auto-reconnect, exponential backoff, event handling
+ * Features: auto-reconnect, exponential backoff, event handling, token authentication
  */
 
 type EventHandler = (data: any) => void;
@@ -14,6 +14,7 @@ interface WebSocketMessage {
 export class WebSocketClient {
   private ws: WebSocket | null = null;
   private url: string;
+  private token: string | null = null;
   private reconnectAttempts: number = 0;
   private maxReconnectAttempts: number = 10;
   private reconnectDelay: number = 1000; // Start at 1 second
@@ -28,8 +29,30 @@ export class WebSocketClient {
   private connectionTimeout: NodeJS.Timeout | null = null;
   private maxConnectionAttempts: number = 3; // Try connecting 3 times before falling back
 
-  constructor(url: string) {
+  constructor(url: string, token: string | null = null) {
     this.url = url;
+    this.token = token;
+  }
+
+  /**
+   * Set authentication token
+   */
+  setToken(token: string | null): void {
+    this.token = token;
+    console.log('[WebSocket] Token updated:', token ? 'present' : 'cleared');
+  }
+
+  /**
+   * Get WebSocket URL with authentication token
+   */
+  private getAuthenticatedUrl(): string {
+    if (!this.token) {
+      return this.url;
+    }
+
+    // Add token as query parameter
+    const separator = this.url.includes('?') ? '&' : '?';
+    return `${this.url}${separator}token=${this.token}`;
   }
 
   /**
@@ -56,7 +79,8 @@ export class WebSocketClient {
     }
 
     try {
-      this.ws = new WebSocket(this.url);
+      const authenticatedUrl = this.getAuthenticatedUrl();
+      this.ws = new WebSocket(authenticatedUrl);
 
       this.ws.onopen = this.handleOpen.bind(this);
       this.ws.onmessage = this.handleMessage.bind(this);
@@ -360,6 +384,7 @@ export class WebSocketClient {
 }
 
 // Create singleton instance
+// Token will be set after initialization via setToken()
 const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 const wsUrl = `${protocol}//${window.location.host}/ws`;
-export const websocketClient = new WebSocketClient(wsUrl);
+export const websocketClient = new WebSocketClient(wsUrl, null);

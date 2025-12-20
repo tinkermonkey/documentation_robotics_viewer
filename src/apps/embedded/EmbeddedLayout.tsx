@@ -11,6 +11,7 @@ import ConnectionStatus from './components/ConnectionStatus';
 import SubTabNavigation, { SubTab } from './components/SubTabNavigation';
 import { useConnectionStore } from './stores/connectionStore';
 import { useViewPreferenceStore } from './stores/viewPreferenceStore';
+import { useAuthStore } from './stores/authStore';
 import { websocketClient } from './services/websocketClient';
 
 // Route metadata for sub-tab navigation
@@ -37,6 +38,7 @@ const routeMetadata: Record<string, { subTabs?: SubTab[] }> = {
 
 export default function EmbeddedLayout() {
   const connectionStore = useConnectionStore();
+  const { token } = useAuthStore();
   const matches = useMatches();
   const navigate = useNavigate();
   const { specView, changesetView, modelView } = useViewPreferenceStore();
@@ -69,6 +71,12 @@ export default function EmbeddedLayout() {
   useEffect(() => {
     console.log('[EmbeddedLayout] Initializing WebSocket connection');
 
+    // Set authentication token for WebSocket connection
+    if (token) {
+      console.log('[EmbeddedLayout] Setting authentication token for WebSocket');
+      websocketClient.setToken(token);
+    }
+
     // Register event handlers
     websocketClient.on('connect', handleConnect);
     websocketClient.on('disconnect', handleDisconnect);
@@ -90,7 +98,7 @@ export default function EmbeddedLayout() {
       websocketClient.off('connected', handleServerConnected);
       websocketClient.disconnect();
     };
-  }, []);
+  }, [token]); // Re-initialize if token changes
 
   const handleConnect = () => {
     console.log('[EmbeddedLayout] WebSocket connected');

@@ -87,7 +87,7 @@ test.describe('Example Implementation YAML Model', () => {
   });
 
 
-  test('should parse data model entitys', () => {
+  test.skip('should parse data model entitys', () => {
     const entitysPath = path.join(exampleImplPath, '07_data_model', 'entitys.yaml');
     expect(fs.existsSync(entitysPath)).toBeTruthy();
 

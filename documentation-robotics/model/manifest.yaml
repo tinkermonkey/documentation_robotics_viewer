@@ -100,7 +100,9 @@ layers:
     schema: .dr/schemas/09-ux-layer.schema.json
     enabled: true
     elements:
-      view: 3
+      view: 8
+      component: 30
+      interaction: 32
   navigation:
     order: 10
     name: Navigation
@@ -108,7 +110,9 @@ layers:
     schema: .dr/schemas/10-navigation-layer.schema.json
     enabled: true
     elements:
-      route: 3
+      route: 10
+      menu: 8
+      breadcrumb: 2
   apm:
     order: 11
     name: APM/Observability
@@ -133,7 +137,7 @@ cross_references:
   by_type: {}
   tracking_enabled: true
 statistics:
-  total_elements: 178
+  total_elements: 265
   elements_by_layer:
     motivation: 14
     business: 9
@@ -143,15 +147,15 @@ statistics:
     api: 16
     data_model: 16
     datastore: 1
-    ux: 3
-    navigation: 3
+    ux: 70
+    navigation: 20
     apm: 5
     testing: 16
   total_relationships: 0
   completeness: 0.0
-  last_validation: '2025-12-19T19:20:00.000000Z'
-  validation_status: pending
-  last_sync: '2025-12-19T19:20:00.000000Z'
+  last_validation: '2025-12-20T13:56:00.000000Z'
+  validation_status: passed
+  last_sync: '2025-12-20T13:56:00.000000Z'
 conventions:
   id_format: '{layer}.{type}.{kebab-case-name}'
   file_naming:
@@ -171,4 +175,4 @@ upgrade_history:
 - from_version: 0.1.0
   to_version: 0.7.3
   upgraded_at: '2025-12-10T17:06:16.340268Z'
-upgraded_at: '2025-12-20T10:18:28.434168Z'
+upgraded_at: '2025-12-20T10:39:59.852369Z'

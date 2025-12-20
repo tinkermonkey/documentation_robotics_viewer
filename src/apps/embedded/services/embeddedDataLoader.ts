@@ -1,12 +1,32 @@
 /**
  * Embedded Data Loader
  * REST API client for loading data from the Python CLI server
+ * Supports token-based authentication for DR CLI visualization server
  */
 
 import { MetaModel } from '../../../core/types';
 import { Annotation, AnnotationCreate, AnnotationUpdate } from '../types/annotations';
 
 const API_BASE = '/api';
+
+/**
+ * Get authentication headers for API requests
+ */
+function getAuthHeaders(): Record<string, string> {
+  if (typeof window === 'undefined') return {};
+
+  // Extract token from URL query parameter
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
+
+  if (!token) {
+    return {};
+  }
+
+  return {
+    'Authorization': `Bearer ${token}`
+  };
+}
 
 export interface LinkType {
   id: string;
@@ -109,7 +129,9 @@ export class EmbeddedDataLoader {
    * Check server health
    */
   async healthCheck(): Promise<{ status: string; version: string }> {
-    const response = await fetch('/health');
+    const response = await fetch('/health', {
+      headers: getAuthHeaders()
+    });
 
     if (!response.ok) {
       throw new Error(`Health check failed: ${response.statusText}`);
@@ -122,7 +144,9 @@ export class EmbeddedDataLoader {
    * Load the specification (JSON Schema format)
    */
   async loadSpec(): Promise<SpecDataResponse> {
-    const response = await fetch(`${API_BASE}/spec`);
+    const response = await fetch(`${API_BASE}/spec`, {
+      headers: getAuthHeaders()
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to load spec: ${response.statusText}`);
@@ -156,7 +180,9 @@ export class EmbeddedDataLoader {
    * Load link registry
    */
   async loadLinkRegistry(): Promise<LinkRegistry> {
-    const response = await fetch(`${API_BASE}/link-registry`);
+    const response = await fetch(`${API_BASE}/link-registry`, {
+      headers: getAuthHeaders()
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to load link registry: ${response.statusText}`);
@@ -174,7 +200,9 @@ export class EmbeddedDataLoader {
    * Load the current model (YAML instance format)
    */
   async loadModel(): Promise<MetaModel> {
-    const response = await fetch(`${API_BASE}/model`);
+    const response = await fetch(`${API_BASE}/model`, {
+      headers: getAuthHeaders()
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to load model: ${response.statusText}`);
@@ -189,7 +217,9 @@ export class EmbeddedDataLoader {
    * Load changeset registry (list of all changesets)
    */
   async loadChangesetRegistry(): Promise<ChangesetRegistry> {
-    const response = await fetch(`${API_BASE}/changesets`);
+    const response = await fetch(`${API_BASE}/changesets`, {
+      headers: getAuthHeaders()
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to load changesets: ${response.statusText}`);
@@ -204,7 +234,9 @@ export class EmbeddedDataLoader {
    * Load specific changeset details
    */
   async loadChangeset(changesetId: string): Promise<ChangesetDetails> {
-    const response = await fetch(`${API_BASE}/changesets/${changesetId}`);
+    const response = await fetch(`${API_BASE}/changesets/${changesetId}`, {
+      headers: getAuthHeaders()
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to load changeset ${changesetId}: ${response.statusText}`);
@@ -231,7 +263,9 @@ export class EmbeddedDataLoader {
    * Load all annotations
    */
   async loadAnnotations(): Promise<Annotation[]> {
-    const response = await fetch(`${API_BASE}/annotations`);
+    const response = await fetch(`${API_BASE}/annotations`, {
+      headers: getAuthHeaders()
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to load annotations: ${response.statusText}`);
@@ -246,7 +280,9 @@ export class EmbeddedDataLoader {
    * Load annotations for a specific element
    */
   async loadAnnotationsForElement(elementId: string): Promise<Annotation[]> {
-    const response = await fetch(`${API_BASE}/annotations?elementId=${encodeURIComponent(elementId)}`);
+    const response = await fetch(`${API_BASE}/annotations?elementId=${encodeURIComponent(elementId)}`, {
+      headers: getAuthHeaders()
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to load annotations for element: ${response.statusText}`);
@@ -264,6 +300,7 @@ export class EmbeddedDataLoader {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...getAuthHeaders()
       },
       body: JSON.stringify(input),
     });
@@ -285,6 +322,7 @@ export class EmbeddedDataLoader {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        ...getAuthHeaders()
       },
       body: JSON.stringify(updates),
     });
@@ -311,6 +349,7 @@ export class EmbeddedDataLoader {
   async deleteAnnotation(id: string): Promise<void> {
     const response = await fetch(`${API_BASE}/annotations/${id}`, {
       method: 'DELETE',
+      headers: getAuthHeaders()
     });
 
     if (!response.ok) {

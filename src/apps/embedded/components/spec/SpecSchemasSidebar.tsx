@@ -5,6 +5,7 @@
  */
 
 import { SpecDataResponse } from '../../services/embeddedDataLoader';
+import { getLayerColor } from '../../../../core/utils/layerColors';
 
 interface SpecSchemasSidebarProps {
   specData: SpecDataResponse;
@@ -38,6 +39,16 @@ const SpecSchemasSidebar: React.FC<SpecSchemasSidebarProps> = ({
           const isSelected = selectedSchemaId === schemaId;
           const definitionCount = schema.definitions ? Object.keys(schema.definitions).length : 0;
 
+          // Extract layer name from schema ID (e.g., "01-motivation-layer.schema.json" -> "Motivation")
+          const layerName = schemaId
+            .replace(/^\d+-/, '')              // Remove number prefix
+            .replace(/-layer.*$/, '')          // Remove "-layer" suffix and extension
+            .split('-')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join('');
+
+          const layerColor = getLayerColor(layerName, 'primary');
+
           return (
             <button
               key={schemaId}
@@ -52,7 +63,8 @@ const SpecSchemasSidebar: React.FC<SpecSchemasSidebarProps> = ({
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 min-w-0 flex-1">
                   <div
-                    className="w-2 h-2 rounded-full flex-shrink-0 bg-purple-500"
+                    className="w-2 h-2 rounded-full flex-shrink-0"
+                    style={{ backgroundColor: layerColor }}
                     aria-hidden="true"
                   />
                   <span className="text-sm font-medium truncate">

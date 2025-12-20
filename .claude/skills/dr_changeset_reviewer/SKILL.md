@@ -46,12 +46,12 @@ This skill should activate when:
    - Naming consistency (follows existing patterns?)
    - Reference validity (all referenced elements exist?)
    - Layer-appropriate properties (right properties for the layer?)
-   - Link registry updates (cross-layer references registered?)
+   - Relationship validation (cross-layer references valid in layer schemas?)
 
 5. **Suggest improvements:**
    - Better naming conventions
    - Missing properties that should be added
-   - Potential links that should be registered
+   - Potential relationships that should be validated
    - Elements that might need to be added to support the change
 
 6. **Recommend action:**
@@ -106,9 +106,9 @@ None
 
 - `data/cache-store` - Referenced by api/cache-endpoint but not created
 
-**Link Registry:**
+**Cross-Layer Relationships:**
 
-- ⚠️ New cross-layer links need to be registered:
+- ⚠️ New cross-layer relationships need validation:
   - application/cache-service → technology/redis
   - api/cache-endpoint → application/cache-service
 
@@ -116,7 +116,7 @@ None
 
 1. Add version to technology/redis
 2. Create data/cache-store element
-3. Register cross-layer links
+3. Validate cross-layer relationships
 4. Consider adding motivation/improve-performance to justify caching
 
 Would you like me to:

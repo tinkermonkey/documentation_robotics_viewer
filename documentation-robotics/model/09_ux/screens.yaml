@@ -1,0 +1,149 @@
+# UX Layer - Screen Definitions
+# Documentation Robotics v0.6.0
+# Extracted from React codebase - main route screens
+
+# Spec Screens
+spec-graph-screen:
+  id: ux.view.spec-graph-screen
+  name: Spec Graph Screen
+  type: custom
+  description: Interactive graph visualization of DR specification schemas with relationship mapping and dependency tracing
+  version: 0.1.0
+  routable: true
+  layout: shared-layout
+  channel: visual
+  subViews:
+    - ux.sub-view.spec-schemas-sidebar
+    - ux.sub-view.annotation-panel
+    - ux.sub-view.schema-info-panel
+  components:
+    - ux.component.spec-graph-view
+  realizes:
+    - application.service.spec-visualization
+
+spec-json-screen:
+  id: ux.view.spec-json-screen
+  name: Spec JSON Screen
+  type: detail
+  description: Structured JSON view of DR specification with syntax highlighting and schema navigation
+  version: 0.1.0
+  routable: true
+  layout: shared-layout
+  channel: visual
+  subViews:
+    - ux.sub-view.spec-schemas-sidebar
+    - ux.sub-view.annotation-panel
+    - ux.sub-view.schema-info-panel
+  components:
+    - ux.component.spec-viewer
+  realizes:
+    - application.service.spec-visualization
+
+# Model Screens
+model-graph-screen:
+  id: ux.view.model-graph-screen
+  name: Model Graph Screen
+  type: dashboard
+  description: Interactive multi-layer architecture model graph with filtering, node selection, and cross-layer navigation
+  version: 0.1.0
+  routable: true
+  layout: shared-layout
+  channel: visual
+  subViews:
+    - ux.sub-view.model-layers-sidebar
+    - ux.sub-view.annotation-panel
+    - ux.sub-view.layer-types-legend
+    - ux.sub-view.node-details-panel
+    - ux.sub-view.graph-statistics-panel
+  components:
+    - ux.component.graph-viewer
+  realizes:
+    - application.service.model-visualization
+
+model-json-screen:
+  id: ux.view.model-json-screen
+  name: Model JSON Screen
+  type: detail
+  description: Structured JSON view of architecture model with path navigation and link registry integration
+  version: 0.1.0
+  routable: true
+  layout: shared-layout
+  channel: visual
+  subViews:
+    - ux.sub-view.model-layers-sidebar
+    - ux.sub-view.annotation-panel
+    - ux.sub-view.highlighted-path-panel
+    - ux.sub-view.schema-info-panel
+  components:
+    - ux.component.model-json-viewer
+  realizes:
+    - application.service.model-visualization
+
+# Motivation Screen
+motivation-screen:
+  id: ux.view.motivation-screen
+  name: Motivation Layer Screen
+  type: dashboard
+  description: Interactive motivation layer graph showing goals, requirements, principles, and their relationships with upstream/downstream tracing
+  version: 0.1.0
+  routable: true
+  layout: shared-layout
+  channel: visual
+  subViews:
+    - ux.sub-view.motivation-right-sidebar
+  components:
+    - ux.component.motivation-graph-view
+  realizes:
+    - application.service.motivation-visualization
+
+# Architecture (C4) Screen
+architecture-screen:
+  id: ux.view.architecture-screen
+  name: Architecture (C4) Screen
+  type: custom
+  description: C4 model visualization with hierarchical navigation (System, Container, Component) and technology filtering
+  version: 0.1.0
+  routable: true
+  layout: shared-layout
+  channel: visual
+  subViews:
+    - ux.sub-view.c4-right-sidebar
+  components:
+    - ux.component.c4-graph-view
+  realizes:
+    - application.service.c4-visualization
+
+# Changeset Screens
+changesets-graph-screen:
+  id: ux.view.changesets-graph-screen
+  name: Changesets Graph Screen
+  type: custom
+  description: Graph visualization of selected changeset showing added, modified, and removed elements
+  version: 0.1.0
+  routable: true
+  layout: shared-layout
+  channel: visual
+  subViews:
+    - ux.sub-view.changeset-list
+    - ux.sub-view.annotation-panel
+  components:
+    - ux.component.changeset-graph-view
+  realizes:
+    - application.service.changeset-management
+
+changesets-list-screen:
+  id: ux.view.changesets-list-screen
+  name: Changesets List Screen
+  type: list
+  description: Detailed list view of changeset contents with operation indicators and element metadata
+  version: 0.1.0
+  routable: true
+  layout: shared-layout
+  channel: visual
+  subViews:
+    - ux.sub-view.changeset-list
+    - ux.sub-view.annotation-panel
+  components:
+    - ux.component.changeset-viewer
+  realizes:
+    - application.service.changeset-management

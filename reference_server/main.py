@@ -2,25 +2,131 @@
 Reference Python Server for Documentation Robotics Viewer
 This is a reference implementation for development and testing only.
 Not intended for production use.
+
+Supports optional token-based authentication for testing DR CLI integration.
 """
 
 import asyncio
 import json
+import secrets
 import yaml
 from pathlib import Path
-from typing import Dict, Set
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from typing import Dict, Set, Optional
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request, Response, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 import logging
+import argparse
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Authentication configuration (set via CLI args)
+class AuthConfig:
+    def __init__(self):
+        self.enabled = False
+        self.token: Optional[str] = None
+
+auth_config = AuthConfig()
+
 # Create FastAPI app
 app = FastAPI(title="Documentation Robotics Viewer - Reference Server")
+
+# ============================================================================
+# Authentication Middleware (Optional)
+# ============================================================================
+
+class AuthMiddleware(BaseHTTPMiddleware):
+    """
+    Optional authentication middleware for testing DR CLI integration.
+    Validates token on API and WebSocket endpoints only.
+    Static assets are served without authentication.
+    """
+
+    async def dispatch(self, request: Request, call_next):
+        # Skip auth if disabled
+        if not auth_config.enabled:
+            return await call_next(request)
+
+        # Allow health checks without authentication
+        if request.url.path == "/health":
+            return await call_next(request)
+
+        # Allow CORS preflight requests
+        if request.method == "OPTIONS":
+            return await call_next(request)
+
+        # Allow static assets without authentication
+        # Static files are public (HTML, JS, CSS, images, fonts)
+        if request.url.path == "/" or self._is_static_asset(request.url.path):
+            return await call_next(request)
+
+        # Require authentication for API and WebSocket endpoints
+        if not self._validate_token(request):
+            has_token = "token" in request.query_params or "Authorization" in request.headers
+
+            if has_token:
+                return JSONResponse(
+                    {"error": "Invalid authentication token"},
+                    status_code=status.HTTP_403_FORBIDDEN
+                )
+            else:
+                return JSONResponse(
+                    {"error": "Authentication required. Please provide a valid token."},
+                    status_code=status.HTTP_401_UNAUTHORIZED
+                )
+
+        return await call_next(request)
+
+    def _validate_token(self, request: Request) -> bool:
+        """Validate authentication token from request."""
+        if not auth_config.token:
+            return False
+
+        # Check query parameter
+        query_token = request.query_params.get("token")
+        if query_token and secrets.compare_digest(query_token, auth_config.token):
+            return True
+
+        # Check Authorization header
+        auth_header = request.headers.get("Authorization", "")
+        if auth_header.startswith("Bearer "):
+            bearer_token = auth_header[7:]
+            if secrets.compare_digest(bearer_token, auth_config.token):
+                return True
+
+        return False
+
+    def _is_static_asset(self, path: str) -> bool:
+        """Check if path is a static asset."""
+        # API and WebSocket endpoints are NOT static assets
+        if path.startswith('/api/') or path.startswith('/ws'):
+            return False
+
+        static_extensions = {
+            '.html', '.js', '.css', '.json', '.map',
+            '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico',
+            '.woff', '.woff2', '.ttf', '.eot',
+            '.txt', '.xml'
+        }
+
+        # Check file extension
+        path_lower = path.lower()
+        for ext in static_extensions:
+            if path_lower.endswith(ext):
+                return True
+
+        # Allow paths without extensions that are likely static routes
+        if '.' not in path.split('/')[-1]:
+            return True
+
+        return False
+
+# Add auth middleware (conditionally active based on AUTH_ENABLED)
+app.add_middleware(AuthMiddleware)
 
 # CORS middleware for development
 app.add_middleware(
@@ -671,6 +777,17 @@ async def startup_event():
     logger.info("Server starting on http://localhost:8765")
     logger.info("WebSocket endpoint: ws://localhost:8765/ws")
     logger.info("")
+
+    # Show authentication status
+    if auth_config.enabled:
+        logger.info("Authentication: ENABLED (token-based)")
+        logger.info("  All API/WebSocket endpoints require authentication")
+        logger.info("  Static assets are public (no auth required)")
+    else:
+        logger.info("Authentication: DISABLED (development mode)")
+        logger.info("  All endpoints are public")
+
+    logger.info("")
     logger.info("Data Sources:")
 
     # Check dr CLI schema directory
@@ -710,4 +827,45 @@ async def startup_event():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8765, log_level="info")
+
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description="Documentation Robotics Reference Server")
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=8765,
+        help="Server port (default: 8765)"
+    )
+    parser.add_argument(
+        "--host",
+        type=str,
+        default="0.0.0.0",
+        help="Server host (default: 0.0.0.0)"
+    )
+    parser.add_argument(
+        "--auth",
+        action="store_true",
+        help="Enable token-based authentication (for testing DR CLI integration)"
+    )
+
+    args = parser.parse_args()
+
+    # Enable authentication if requested
+    if args.auth:
+        auth_config.enabled = True
+        auth_config.token = secrets.token_urlsafe(32)
+
+        # Display magic link
+        magic_link = f"http://localhost:{args.port}/?token={auth_config.token}"
+
+        print("\n" + "=" * 80)
+        print("🔒 AUTHENTICATION ENABLED")
+        print("=" * 80)
+        print(f"\nMagic Link (copy and paste into browser):")
+        print(f"\n  {magic_link}\n")
+        print("This link includes a secure authentication token.")
+        print("All API requests will require authentication.")
+        print("=" * 80 + "\n")
+
+    # Start server
+    uvicorn.run(app, host=args.host, port=args.port, log_level="info")
