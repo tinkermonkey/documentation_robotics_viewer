@@ -1,4 +1,5 @@
 import { createRouter, createRoute, createRootRoute, Navigate } from '@tanstack/react-router';
+import { createHashHistory } from '@tanstack/history';
 import EmbeddedLayout from './EmbeddedLayout';
 import ModelRoute from './routes/ModelRoute';
 import SpecRoute from './routes/SpecRoute';
@@ -25,6 +26,12 @@ const modelRoute = createRoute({
 const modelViewRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/model/$view',
+  validateSearch: (search: any): { layer?: string } => {
+    // Only extract layer from search, ignore other params like token which belong in page URL
+    return {
+      layer: typeof search.layer === 'string' ? search.layer : undefined,
+    };
+  },
   component: ModelRoute,
 });
 
@@ -76,7 +83,7 @@ const routeTree = rootRoute.addChildren([
   changesetsViewRoute,
 ]);
 
-export const router = createRouter({ routeTree });
+export const router = createRouter({ routeTree, history: createHashHistory() });
 
 declare module '@tanstack/react-router' {
   interface Register {

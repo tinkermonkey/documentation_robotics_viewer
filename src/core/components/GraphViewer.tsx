@@ -97,16 +97,22 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
       // Clear element store
       elementStore.clear();
 
+      // Debug: Check model structure
+      console.log('[GraphViewer] Model structure:');
+      for (const [layerId, layer] of Object.entries(model.layers)) {
+        console.log(`  ${layerId}: ${layer.elements?.length || 0} elements, ${layer.relationships?.length || 0} relationships`);
+      }
+
       // Create layout engine and transformer
       const layoutEngine = new VerticalLayerLayout();
       const transformer = new NodeTransformer(layoutEngine);
 
       // Transform the model into nodes and edges
-      console.log('Transforming model to React Flow nodes and edges...');
+      console.log('[GraphViewer] Transforming model to React Flow nodes and edges...');
       const result = await transformer.transformModel(model);
 
-      console.log(`Created ${result.nodes.length} nodes and ${result.edges.length} edges`);
-      console.log('Layout:', result.layout);
+      console.log(`[GraphViewer] Created ${result.nodes.length} nodes and ${result.edges.length} edges`);
+      console.log('[GraphViewer] Layout:', result.layout);
 
       // Set nodes and edges
       setNodes(result.nodes);

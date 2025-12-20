@@ -154,7 +154,19 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
   };
 
   const renderElementLinks = (layerName: string) => {
-    const links = linksByLayer.get(layerName);
+    // Try to find the layer in linksByLayer with case-insensitive matching
+    let links = linksByLayer.get(layerName);
+    
+    if (!links) {
+      // Try to find with different case variations
+      for (const [key, value] of linksByLayer) {
+        if (key.toLowerCase() === layerName.toLowerCase()) {
+          links = value;
+          break;
+        }
+      }
+    }
+    
     if (!links || (links.outgoing.length === 0 && links.incoming.length === 0)) {
       return (
         <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -261,7 +273,26 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
     }
 
     const layer = layers[selectedLayer];
-    const elements = layer.elements || [];
+    
+    // If layer not found, try with lowercase key (API uses lowercase IDs)
+    const layerKey = layer ? selectedLayer : Object.keys(layers).find(
+      key => key.toLowerCase() === selectedLayer.toLowerCase()
+    );
+    
+    const actualLayer = layers[layerKey || selectedLayer];
+    
+    // Guard against undefined layer
+    if (!actualLayer) {
+      return (
+        <div className="h-full overflow-y-auto p-6">
+          <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-900">
+            <p className="text-gray-500 dark:text-gray-400">Layer not found: {selectedLayer}</p>
+          </div>
+        </div>
+      );
+    }
+    
+    const elements = actualLayer.elements || [];
 
     // Group elements by type
     const elementsByType = elements.reduce((acc: Record<string, any[]>, element: any) => {
@@ -276,19 +307,19 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
     const sortedTypes = Object.keys(elementsByType).sort();
 
     const layerMetadata: MetadataItem[] = [
-      { label: 'Layer ID', value: layer.id || selectedLayer },
+      { label: 'Layer ID', value: actualLayer.id || (layerKey || selectedLayer) },
       { label: 'Elements', value: elements.length },
-      { label: 'Order', value: layer.order }
+      { label: 'Order', value: actualLayer.order }
     ];
 
     return (
       <div className="h-full overflow-y-auto p-6">
         <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-900">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            {layer.name || selectedLayer}
+            {actualLayer.name || (layerKey || selectedLayer)}
           </h2>
-          {layer.description && (
-            <p className="text-gray-600 dark:text-gray-400 mb-4">{layer.description}</p>
+          {actualLayer.description && (
+            <p className="text-gray-600 dark:text-gray-400 mb-4">{actualLayer.description}</p>
           )}
           <MetadataGrid items={layerMetadata} columns={3} />
         </div>

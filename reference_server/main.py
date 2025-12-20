@@ -400,6 +400,8 @@ async def get_model():
             else:
                 layer_path = DR_MODEL_DIR.parent / raw_path
 
+            logger.info(f"Loading layer {layer_id}: raw_path={raw_path}, resolved_path={layer_path}, exists={layer_path.exists()}")
+
             elements = []
 
             # Load all YAML files from the layer directory

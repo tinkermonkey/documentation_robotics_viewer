@@ -396,6 +396,15 @@ export class NodeTransformer {
       }
 
       for (const element of layer.elements) {
+        // Ensure visual object exists (guard against missing visual data from server)
+        if (!element.visual) {
+          element.visual = {
+            position: { x: 0, y: 0 },
+            size: { width: 200, height: 100 },
+            style: { backgroundColor: '#e3f2fd', borderColor: '#1976d2' }
+          };
+        }
+
         // Get node type to determine dimensions
         const nodeType = this.getNodeTypeForElement(element);
 

@@ -37,42 +37,56 @@ function setPersistentToken(token: string) {
   }
 
   if (typeof document !== 'undefined') {
-    const secure = window.location.protocol === 'https:' ? '; Secure' : '';
-    document.cookie = `${AUTH_COOKIE_NAME}=${encodeURIComponent(token)}; Path=/; Max-Age=2592000; SameSite=Lax${secure}`;
+    // Set cookie attributes based on protocol to avoid browser rejection warnings
+    // - On HTTPS: use SameSite=None; Secure
+    // - On HTTP (localhost dev): use SameSite=Lax (no Secure)
+    const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+    const attrs = isHttps
+      ? 'Path=/; Max-Age=2592000; SameSite=None; Secure'
+      : 'Path=/; Max-Age=2592000; SameSite=Lax';
+    document.cookie = `${AUTH_COOKIE_NAME}=${encodeURIComponent(token)}; ${attrs}`;
   }
+}
+
+function clearPersistentToken() {
+  try {
+    sessionStorage.removeItem(AUTH_STORAGE_KEY);
+  } catch (_err) {}
+  try {
+    localStorage.removeItem(AUTH_STORAGE_KEY);
+  } catch (_err) {}
+  if (typeof document !== 'undefined') {
+    // Expire cookie
+    document.cookie = `${AUTH_COOKIE_NAME}=; Path=/; Max-Age=0`;
+  }
+}
+
+async function ensureOk(response: Response, context: string): Promise<void> {
+  if (response.ok) return;
+  if (response.status === 401 || response.status === 403) {
+    console.warn(`[Auth] ${context} failed with ${response.status}; ${context}`);
+    // NOTE: Don't clear token on auth failures - the server should handle auth properly
+    // See: https://github.com/example/dr-cli/issues/XXX
+    throw new Error(`Authentication failed (${response.status}). ${context}`);
+  }
+  throw new Error(`Failed to ${context}: ${response.statusText}`);
 }
 
 /**
  * Get authentication headers for API requests
- * Checks URL first, then sessionStorage
+ * Token should already be in localStorage from authStore
  */
 function getAuthHeaders(): Record<string, string> {
   if (typeof window === 'undefined') return {};
 
-  // First, check URL query parameter
-  const params = new URLSearchParams(window.location.search);
-  let token = params.get('token');
-
-  // If not in URL, check storage (session -> local -> cookie)
-  if (!token) {
-    token = sessionStorage.getItem(AUTH_STORAGE_KEY) || localStorage.getItem(AUTH_STORAGE_KEY) || getCookieToken();
-  }
-
-  // If we found a token in URL, store it for future use in storage and cookie so refreshes persist
-  if (params.get('token')) {
-    const tokenFromUrl = params.get('token')!;
-    setPersistentToken(tokenFromUrl);
-  } else if (token) {
-    // Refresh cookie/local/session if we only had a cookie
-    setPersistentToken(token);
-  }
+  // Get token from localStorage (populated by authStore on app init)
+  const token = localStorage.getItem(AUTH_STORAGE_KEY) || getCookieToken();
 
   if (!token) {
-    console.log('[Auth] No token found in URL or sessionStorage, request will be unauthenticated');
+    console.log('[Auth] No token found in localStorage, request will be unauthenticated');
     return {};
   }
 
-  console.log('[Auth] Token found, adding Authorization header');
   return {
     'Authorization': `Bearer ${token}`
   };
@@ -211,12 +225,11 @@ export class EmbeddedDataLoader {
    */
   async healthCheck(): Promise<{ status: string; version: string }> {
     const response = await fetch('/health', {
-      headers: getAuthHeaders()
+      headers: getAuthHeaders(),
+      credentials: 'include'
     });
 
-    if (!response.ok) {
-      throw new Error(`Health check failed: ${response.statusText}`);
-    }
+    await ensureOk(response, 'health check');
 
     return await response.json();
   }
@@ -226,12 +239,11 @@ export class EmbeddedDataLoader {
    */
   async loadSpec(): Promise<SpecDataResponse> {
     const response = await fetch(`${API_BASE}/spec`, {
-      headers: getAuthHeaders()
+      headers: getAuthHeaders(),
+      credentials: 'include'
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to load spec: ${response.statusText}`);
-    }
+    await ensureOk(response, 'load spec');
 
     const data = await response.json();
 
@@ -268,12 +280,11 @@ export class EmbeddedDataLoader {
    */
   async loadLinkRegistry(): Promise<LinkRegistry> {
     const response = await fetch(`${API_BASE}/link-registry`, {
-      headers: getAuthHeaders()
+      headers: getAuthHeaders(),
+      credentials: 'include'
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to load link registry: ${response.statusText}`);
-    }
+    await ensureOk(response, 'load link registry');
 
     const data = await response.json();
     console.log('[EmbeddedDataLoader] Loaded link registry:', {
@@ -291,17 +302,72 @@ export class EmbeddedDataLoader {
     console.log('[DataLoader] Loading model with headers:', Object.keys(headers).join(', ') || 'none');
 
     const response = await fetch(`${API_BASE}/model`, {
-      headers
+      headers,
+      credentials: 'include'
     });
 
-    if (!response.ok) {
+    try {
+      await ensureOk(response, 'load model');
+    } catch (err) {
       console.error('[DataLoader] Model load failed:', response.status, response.statusText);
-      throw new Error(`Failed to load model: ${response.statusText}`);
+      throw err;
     }
 
     const data = await response.json();
-    console.log('Loaded model from server:', data.version);
-    return data;
+    console.log('[DataLoader] Loaded model from server:', {
+      version: data.version,
+      totalLayers: data.metadata?.statistics?.total_layers,
+      totalElements: data.metadata?.statistics?.total_elements,
+      layerCount: Object.keys(data.layers).length
+    });
+
+    // Normalize model data: ensure all elements have required visual properties
+    const normalized = this.normalizeModel(data);
+    console.log('[DataLoader] Normalized model:', {
+      version: normalized.version,
+      layers: Object.entries(normalized.layers).map(([id, layer]) => ({
+        id,
+        elementCount: layer.elements?.length || 0,
+        relationshipCount: layer.relationships?.length || 0
+      }))
+    });
+    return normalized;
+  }
+
+  /**
+   * Normalize model data to ensure all required properties are present
+   */
+  private normalizeModel(data: any): MetaModel {
+    const normalized: MetaModel = {
+      ...data,
+      layers: {}
+    };
+
+    for (const [layerId, layer] of Object.entries(data.layers || {})) {
+      const layerObj = layer as any;
+      const normalizedLayer = {
+        ...layerObj,
+        elements: (layerObj.elements || []).map((element: any) => ({
+          ...element,
+          // Ensure visual properties exist with defaults
+          visual: element.visual || {
+            position: { x: 0, y: 0 },
+            size: { width: 200, height: 100 },
+            style: { backgroundColor: '#e3f2fd', borderColor: '#1976d2' }
+          },
+          properties: element.properties || {}
+        })),
+        relationships: layerObj.relationships || []
+      };
+      normalized.layers[layerId] = normalizedLayer;
+    }
+
+    // Ensure references array exists
+    if (!normalized.references) {
+      normalized.references = data.references || [];
+    }
+
+    return normalized;
   }
 
   /**
@@ -309,12 +375,11 @@ export class EmbeddedDataLoader {
    */
   async loadChangesetRegistry(): Promise<ChangesetRegistry> {
     const response = await fetch(`${API_BASE}/changesets`, {
-      headers: getAuthHeaders()
+      headers: getAuthHeaders(),
+      credentials: 'include'
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to load changesets: ${response.statusText}`);
-    }
+    await ensureOk(response, 'load changesets');
 
     const data = await response.json();
     console.log('Loaded changeset registry:', Object.keys(data.changesets || {}).length, 'changesets');
@@ -326,12 +391,11 @@ export class EmbeddedDataLoader {
    */
   async loadChangeset(changesetId: string): Promise<ChangesetDetails> {
     const response = await fetch(`${API_BASE}/changesets/${changesetId}`, {
-      headers: getAuthHeaders()
+      headers: getAuthHeaders(),
+      credentials: 'include'
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to load changeset ${changesetId}: ${response.statusText}`);
-    }
+    await ensureOk(response, `load changeset ${changesetId}`);
 
     const data = await response.json();
     console.log(`Loaded changeset ${changesetId}:`, data.changes.changes.length, 'changes');
@@ -355,12 +419,11 @@ export class EmbeddedDataLoader {
    */
   async loadAnnotations(): Promise<Annotation[]> {
     const response = await fetch(`${API_BASE}/annotations`, {
-      headers: getAuthHeaders()
+      headers: getAuthHeaders(),
+      credentials: 'include'
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to load annotations: ${response.statusText}`);
-    }
+    await ensureOk(response, 'load annotations');
 
     const data = await response.json();
     console.log('Loaded annotations:', data.annotations?.length || 0);
@@ -372,12 +435,11 @@ export class EmbeddedDataLoader {
    */
   async loadAnnotationsForElement(elementId: string): Promise<Annotation[]> {
     const response = await fetch(`${API_BASE}/annotations?elementId=${encodeURIComponent(elementId)}`, {
-      headers: getAuthHeaders()
+      headers: getAuthHeaders(),
+      credentials: 'include'
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to load annotations for element: ${response.statusText}`);
-    }
+    await ensureOk(response, 'load annotations for element');
 
     const data = await response.json();
     return data.annotations || [];
@@ -394,11 +456,10 @@ export class EmbeddedDataLoader {
         ...getAuthHeaders()
       },
       body: JSON.stringify(input),
+      credentials: 'include'
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to create annotation: ${response.statusText}`);
-    }
+    await ensureOk(response, 'create annotation');
 
     const data = await response.json();
     console.log('Created annotation:', data.id);
@@ -416,11 +477,10 @@ export class EmbeddedDataLoader {
         ...getAuthHeaders()
       },
       body: JSON.stringify(updates),
+      credentials: 'include'
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to update annotation: ${response.statusText}`);
-    }
+    await ensureOk(response, 'update annotation');
 
     const data = await response.json();
     console.log('Updated annotation:', id);
@@ -440,12 +500,11 @@ export class EmbeddedDataLoader {
   async deleteAnnotation(id: string): Promise<void> {
     const response = await fetch(`${API_BASE}/annotations/${id}`, {
       method: 'DELETE',
-      headers: getAuthHeaders()
+      headers: getAuthHeaders(),
+      credentials: 'include'
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to delete annotation: ${response.statusText}`);
-    }
+    await ensureOk(response, 'delete annotation');
 
     console.log('Deleted annotation:', id);
   }

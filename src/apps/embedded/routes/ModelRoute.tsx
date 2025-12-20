@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from '@tanstack/react-router';
+import { useParams, useSearch, useNavigate } from '@tanstack/react-router';
 import type { Node } from '@xyflow/react';
 import GraphViewer from '../../../core/components/GraphViewer';
 import ModelJSONViewer from '../components/ModelJSONViewer';
@@ -15,18 +15,75 @@ import { useModelStore } from '../../../core/stores/modelStore';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { embeddedDataLoader, LinkRegistry, SpecDataResponse } from '../services/embeddedDataLoader';
 import { websocketClient } from '../services/websocketClient';
+import type { MetaModel } from '../../../core/types';
+
+/**
+ * Sanitize model data to ensure all elements have required visual properties.
+ * This prevents NaN viewBox errors when rendering graphs.
+ */
+function sanitizeModel(model: MetaModel): MetaModel {
+  const sanitized = { ...model };
+  
+  for (const layer of Object.values(sanitized.layers)) {
+    if (!layer.elements || !Array.isArray(layer.elements)) continue;
+    
+    for (const element of layer.elements) {
+      // Ensure visual object exists with valid defaults
+      if (!element.visual) {
+        element.visual = {
+          position: { x: 0, y: 0 },
+          size: { width: 200, height: 100 },
+          style: { backgroundColor: '#e3f2fd', borderColor: '#1976d2' }
+        };
+      }
+      
+      // Ensure position has valid numbers
+      if (!element.visual.position) {
+        element.visual.position = { x: 0, y: 0 };
+      }
+      element.visual.position.x = Number.isFinite(element.visual.position.x) ? element.visual.position.x : 0;
+      element.visual.position.y = Number.isFinite(element.visual.position.y) ? element.visual.position.y : 0;
+      
+      // Ensure size has valid numbers
+      if (!element.visual.size) {
+        element.visual.size = { width: 200, height: 100 };
+      }
+      element.visual.size.width = Number.isFinite(element.visual.size.width) && element.visual.size.width > 0 ? element.visual.size.width : 200;
+      element.visual.size.height = Number.isFinite(element.visual.size.height) && element.visual.size.height > 0 ? element.visual.size.height : 100;
+      
+      // Ensure style object exists
+      if (!element.visual.style) {
+        element.visual.style = { backgroundColor: '#e3f2fd', borderColor: '#1976d2' };
+      }
+    }
+  }
+  
+  return sanitized;
+}
 
 export default function ModelRoute() {
   const { view } = useParams({ strict: false });
+  const navigate = useNavigate();
+  const search = useSearch({ strict: false }) as { layer?: string };
   const { model, loading, error, setModel, setLoading, setError } = useModelStore();
   const annotationStore = useAnnotationStore();
   const [linkRegistry, setLinkRegistry] = useState<LinkRegistry | null>(null);
   const [specData, setSpecData] = useState<SpecDataResponse | null>(null);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
-  const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
+  const [selectedLayerId, setSelectedLayerId] = useState<string | null>(search?.layer || null);
 
   const activeView = view === 'json' ? 'json' : 'graph';
+
+  // Handle layer selection and update URL
+  const handleLayerSelect = (layerId: string | null) => {
+    setSelectedLayerId(layerId);
+    
+    // Update URL with only the layer parameter (token stays in page URL)
+    navigate({
+      search: layerId ? { layer: layerId } : {}
+    });
+  };
 
   // Handle node click in graph view
   const handleNodeClick = (node: Node | null) => {
@@ -48,7 +105,25 @@ export default function ModelRoute() {
       console.log('[ModelRoute] Loading model data...');
 
       const modelData = await embeddedDataLoader.loadModel();
-      setModel(modelData);
+      
+      // Debug: log the structure of the model
+      console.log('[ModelRoute] Received model from loader:', {
+        version: modelData.version,
+        metadata: modelData.metadata,
+        layerCount: Object.keys(modelData.layers).length,
+        layers: Object.entries(modelData.layers).map(([id, layer]) => ({
+          id,
+          type: layer.type,
+          elementCount: layer.elements?.length || 0,
+          relationshipCount: layer.relationships?.length || 0,
+          firstElementVisual: layer.elements?.[0]?.visual
+        })),
+        referenceCount: modelData.references?.length || 0
+      });
+      
+      // Sanitize model data to ensure all elements have valid visual properties
+      const sanitizedModel = sanitizeModel(modelData);
+      setModel(sanitizedModel);
 
       const annotations = await embeddedDataLoader.loadAnnotations();
       annotationStore.setAnnotations(annotations);
@@ -148,7 +223,7 @@ export default function ModelRoute() {
       leftSidebarContent={
         <ModelLayersSidebar
           selectedLayerId={selectedLayerId}
-          onSelectLayer={setSelectedLayerId}
+          onSelectLayer={handleLayerSelect}
         />
       }
       rightSidebarContent={

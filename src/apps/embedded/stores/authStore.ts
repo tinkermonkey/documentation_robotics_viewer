@@ -27,46 +27,56 @@ interface AuthState {
 const STORAGE_KEY = 'dr_auth_token';
 
 /**
- * Extract token from URL query parameters or sessionStorage
- * Priority: URL > sessionStorage
+ * Extract token from localStorage or cookie
+ * Token is placed in localStorage by AuthRoute when extracting from magic link URL
  */
-function extractTokenFromURL(): string | null {
+function extractTokenFromStorage(): string | null {
   if (typeof window === 'undefined') return null;
 
-  // First, check URL for token
-  const params = new URLSearchParams(window.location.search);
-  const urlToken = params.get('token');
-
-  if (urlToken) {
-    console.log('[Auth] Token extracted from URL, storing in sessionStorage');
-    // Store in sessionStorage for persistence across navigations
-    sessionStorage.setItem(STORAGE_KEY, urlToken);
-    return urlToken;
-  }
-
-  // If not in URL, check sessionStorage
-  const storedToken = sessionStorage.getItem(STORAGE_KEY);
+  // Check localStorage (populated by AuthRoute or previous sessions)
+  const storedToken = localStorage.getItem(STORAGE_KEY);
   if (storedToken) {
-    console.log('[Auth] Token loaded from sessionStorage');
+    console.log('[Auth] Token loaded from localStorage');
     return storedToken;
   }
 
-  console.log('[Auth] No token found in URL or sessionStorage - running in development mode');
+  // Fallback to cookie if present
+  const cookieToken = getCookieToken();
+  if (cookieToken) {
+    console.log('[Auth] Token loaded from cookie');
+    return cookieToken;
+  }
+
+  console.log('[Auth] No token found - running in development mode');
   return null;
 }
 
+/**
+ * Get cookie token if present
+ */
+function getCookieToken(): string | null {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.split(';').map(part => part.trim()).find(part => part.startsWith(`${STORAGE_KEY}=`));
+  if (!match) return null;
+  try {
+    return decodeURIComponent(match.split('=')[1] || '');
+  } catch (_err) {
+    return match.split('=')[1] || null;
+  }
+}
+
 export const useAuthStore = create<AuthState>((set, get) => ({
-  // Initialize with token from URL
-  token: extractTokenFromURL(),
-  isAuthenticated: !!extractTokenFromURL(),
+  // Initialize with token from localStorage/cookie (AuthRoute populates localStorage)
+  token: extractTokenFromStorage(),
+  isAuthenticated: !!extractTokenFromStorage(),
 
   setToken: (token: string | null) => {
-    // Store/clear in sessionStorage
+    // Store/clear in localStorage
     if (typeof window !== 'undefined') {
       if (token) {
-        sessionStorage.setItem(STORAGE_KEY, token);
+        localStorage.setItem(STORAGE_KEY, token);
       } else {
-        sessionStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(STORAGE_KEY);
       }
     }
     set({
@@ -77,15 +87,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   clearToken: () => {
-    // Clear from sessionStorage
+    // Clear from localStorage
     if (typeof window !== 'undefined') {
-      sessionStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(STORAGE_KEY);
     }
     set({
       token: null,
       isAuthenticated: false
     });
-    console.log('[Auth] Token cleared from store and sessionStorage');
+    console.log('[Auth] Token cleared from store and localStorage');
   },
 
   /**
