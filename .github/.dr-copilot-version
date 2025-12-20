@@ -1,17 +1,11 @@
 components:
   agents:
+    dr-advisor.md:
+      hash: f88d9f24
+      modified: false
     dr-architect.md:
-      hash: f5f21396
+      hash: 08762872
       modified: false
-  knowledge:
-    tier1-essentials.md:
-      hash: 41d11d6a
-      modified: false
-    tier2-developer-guide.md:
-      hash: e3d3d818
-      modified: false
-    tier3-complete-reference.md:
-      hash: 7e736c47
-      modified: false
-installed_at: '2025-12-14T13:04:17.891299'
+  skills: {}
+installed_at: '2025-12-20T08:58:03.786276'
 version: 0.7.3

@@ -55,8 +55,8 @@ export class VerticalLayerLayout {
     for (const layerType of this.layerOrder) {
       const layer = layers[layerType];
 
-      // Skip if layer doesn't exist or has no elements
-      if (!layer || layer.elements.length === 0) {
+      // Skip if layer doesn't exist, has no elements array, or is empty
+      if (!layer || !layer.elements || !Array.isArray(layer.elements) || layer.elements.length === 0) {
         continue;
       }
 

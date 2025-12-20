@@ -43,6 +43,10 @@ def setup_mock_data():
                             "description": "Manages user accounts and profiles"
                         },
                         "visual": {
+                            "size": {
+                                "width": 180,
+                                "height": 100
+                            },
                             "style": {
                                 "backgroundColor": "#e3f2fd",
                                 "borderColor": "#1976d2"
@@ -88,6 +92,10 @@ def setup_mock_data():
                                 "description": "Manage knowledge graph operations"
                             },
                             "visual": {
+                                "size": {
+                                    "width": 180,
+                                    "height": 100
+                                },
                                 "style": {
                                     "backgroundColor": "#e3f2fd",
                                     "borderColor": "#1976d2"

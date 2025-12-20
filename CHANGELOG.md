@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2025-12-20
+
+### Fixed
+- **Critical**: Fixed graph viewer crashes when layer.elements is undefined
+  - Added defensive checks in `nodeTransformer.ts` for missing or invalid elements arrays
+  - Added defensive checks in `verticalLayerLayout.ts` to skip layers without elements
+  - Added validation for `visual.size` property to prevent NaN values in viewBox
+  - Proper default dimensions (180x100) applied when visual properties are missing
+  - Prevents "Unexpected value NaN NaN NaN NaN parsing viewBox attribute" error
+  - Prevents "can't access property Symbol.iterator, a.elements is undefined" error
+- **Setup**: Fixed missing mock data for DR CLI reference server
+  - Updated `setup_mock_data.py` to include required `visual.size` property in all elements
+  - Added annotations.json creation to support annotation features
+  - Mock data now properly initialized with spec.json, model.json, annotations.json, and changesets
+  - Fixes "Failed to load annotations: Not Found" error
+
+### Changed
+- Mock data structure now includes complete visual properties for all elements
+- Enhanced error handling and validation throughout graph rendering pipeline
+
 ## [0.2.1] - 2025-12-20
 
 ### Fixed

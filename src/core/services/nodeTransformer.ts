@@ -101,9 +101,28 @@ export class NodeTransformer {
       const layer = model.layers[layerType];
       if (!layer) continue;
 
+      // Skip layers without elements
+      if (!layer.elements || !Array.isArray(layer.elements)) {
+        continue;
+      }
+
       for (const element of layer.elements) {
         const position = layerData.positions[element.id];
         if (!position) continue;
+
+        // Ensure visual.size exists with defaults to prevent NaN
+        if (!element.visual) {
+          element.visual = { size: { width: 180, height: 100 }, style: {} };
+        }
+        if (!element.visual.size) {
+          element.visual.size = { width: 180, height: 100 };
+        }
+        if (typeof element.visual.size.width !== 'number' || isNaN(element.visual.size.width)) {
+          element.visual.size.width = 180;
+        }
+        if (typeof element.visual.size.height !== 'number' || isNaN(element.visual.size.height)) {
+          element.visual.size.height = 100;
+        }
 
         // Convert from center position (dagre) to top-left position (React Flow)
         const halfWidth = element.visual.size.width / 2;
@@ -364,6 +383,11 @@ export class NodeTransformer {
    */
   private precalculateDimensions(model: MetaModel): void {
     for (const layer of Object.values(model.layers)) {
+      // Skip layers without elements
+      if (!layer.elements || !Array.isArray(layer.elements)) {
+        continue;
+      }
+
       for (const element of layer.elements) {
         // Get node type to determine dimensions
         const nodeType = this.getNodeTypeForElement(element);
