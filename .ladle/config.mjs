@@ -5,5 +5,5 @@ export default {
     "src/**/*.stories.mdx"
   ],
   viteConfig: "./vite.config.catalog.ts",
-  defaultStory: "shared--loading-state"
+  outDir: "dist/catalog"
 };
