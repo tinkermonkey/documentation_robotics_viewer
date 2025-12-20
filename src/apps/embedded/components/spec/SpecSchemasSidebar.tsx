@@ -63,7 +63,7 @@ const SpecSchemasSidebar: React.FC<SpecSchemasSidebarProps> = ({
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 min-w-0 flex-1">
                   <div
-                    className="w-2 h-2 rounded-full flex-shrink-0"
+                    className="w-2 h-2 rounded-full shrink-0"
                     style={{ backgroundColor: layerColor }}
                     aria-hidden="true"
                   />
@@ -71,7 +71,7 @@ const SpecSchemasSidebar: React.FC<SpecSchemasSidebarProps> = ({
                     {schema.title || schemaId}
                   </span>
                 </div>
-                <span className="text-xs font-medium text-gray-500 dark:text-gray-400 ml-2 flex-shrink-0">
+                <span className="text-xs font-medium text-gray-500 dark:text-gray-400 ml-2 shrink-0">
                   {definitionCount}
                 </span>
               </div>

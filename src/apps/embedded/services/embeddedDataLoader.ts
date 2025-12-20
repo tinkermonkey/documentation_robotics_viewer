@@ -10,6 +10,37 @@ import { Annotation, AnnotationCreate, AnnotationUpdate } from '../types/annotat
 const API_BASE = '/api';
 
 const AUTH_STORAGE_KEY = 'dr_auth_token';
+const AUTH_COOKIE_NAME = 'dr_auth_token';
+
+function getCookieToken(): string | null {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.split(';').map(part => part.trim()).find(part => part.startsWith(`${AUTH_COOKIE_NAME}=`));
+  if (!match) return null;
+  try {
+    return decodeURIComponent(match.split('=')[1] || '');
+  } catch (_err) {
+    return match.split('=')[1] || null;
+  }
+}
+
+function setPersistentToken(token: string) {
+  try {
+    sessionStorage.setItem(AUTH_STORAGE_KEY, token);
+  } catch (_err) {
+    // ignore storage access errors
+  }
+
+  try {
+    localStorage.setItem(AUTH_STORAGE_KEY, token);
+  } catch (_err) {
+    // ignore storage access errors
+  }
+
+  if (typeof document !== 'undefined') {
+    const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+    document.cookie = `${AUTH_COOKIE_NAME}=${encodeURIComponent(token)}; Path=/; Max-Age=2592000; SameSite=Lax${secure}`;
+  }
+}
 
 /**
  * Get authentication headers for API requests
@@ -22,14 +53,18 @@ function getAuthHeaders(): Record<string, string> {
   const params = new URLSearchParams(window.location.search);
   let token = params.get('token');
 
-  // If not in URL, check sessionStorage
+  // If not in URL, check storage (session -> local -> cookie)
   if (!token) {
-    token = sessionStorage.getItem(AUTH_STORAGE_KEY);
+    token = sessionStorage.getItem(AUTH_STORAGE_KEY) || localStorage.getItem(AUTH_STORAGE_KEY) || getCookieToken();
   }
 
-  // If we found a token in URL, store it for future use
+  // If we found a token in URL, store it for future use in storage and cookie so refreshes persist
   if (params.get('token')) {
-    sessionStorage.setItem(AUTH_STORAGE_KEY, params.get('token')!);
+    const tokenFromUrl = params.get('token')!;
+    setPersistentToken(tokenFromUrl);
+  } else if (token) {
+    // Refresh cookie/local/session if we only had a cookie
+    setPersistentToken(token);
   }
 
   if (!token) {
@@ -82,12 +117,43 @@ export interface LinkRegistry {
   };
 }
 
+export interface RelationshipType {
+  id: string;
+  predicate?: string;
+  inversePredicate?: string;
+  category?: string;
+  description?: string;
+}
+
+export interface RelationshipCatalog {
+  version?: string;
+  relationshipTypes?: RelationshipType[];
+}
+
+export interface SchemaManifestFileEntry {
+  sha256: string;
+  size: number;
+}
+
+export interface SchemaManifest {
+  spec_version?: string;
+  source?: string;
+  created_at?: string;
+  created_by?: string;
+  files?: Record<string, SchemaManifestFileEntry>;
+}
+
 export interface SpecDataResponse {
   version: string;
   type: string;
   description?: string;
   source?: string;
   schemas: Record<string, any>;
+  schema_count?: number;
+  schemaCount?: number;
+  manifest?: SchemaManifest;
+  relationshipCatalog?: RelationshipCatalog;
+  relationship_catalog?: RelationshipCatalog;
   linkRegistry?: LinkRegistry;
 }
 
@@ -169,6 +235,9 @@ export class EmbeddedDataLoader {
 
     const data = await response.json();
 
+    const schemaCount = data.schemaCount ?? data.schema_count ?? (data.schemas ? Object.keys(data.schemas).length : 0);
+    const relationshipCatalog: RelationshipCatalog | undefined = data.relationshipCatalog || data.relationship_catalog;
+
     // Also load link registry
     let linkRegistry: LinkRegistry | undefined;
     try {
@@ -180,13 +249,16 @@ export class EmbeddedDataLoader {
     console.log('[EmbeddedDataLoader] Loaded spec from server:', {
       version: data.version,
       type: data.type,
-      schemaCount: data.schemas ? Object.keys(data.schemas).length : 0,
+      schemaCount,
       hasLinkRegistry: !!linkRegistry,
-      linkTypesCount: linkRegistry?.linkTypes?.length || 0
+      linkTypesCount: linkRegistry?.linkTypes?.length || 0,
+      hasRelationshipCatalog: !!relationshipCatalog
     });
 
     return {
       ...data,
+      schemaCount,
+      relationshipCatalog,
       linkRegistry
     };
   }

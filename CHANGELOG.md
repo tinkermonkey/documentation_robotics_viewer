@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.3] - 2025-12-20
+
+### Added
+- **Schema Integration**: Updated embedded app and reference server to work with latest .dr/schemas spec v0.6.0
+  - Server now reads `.manifest.json` and exposes `spec_version` in `/api/spec` response
+  - Added relationship catalog support in spec endpoint and client typings
+  - Enhanced startup logging with manifest version and relationship catalog detection
+  - Added comprehensive TypeScript interfaces for schema manifest and relationship catalog
+
+### Changed
+- **Authentication**: Improved token persistence across page refreshes
+  - Token now stored in sessionStorage, localStorage, and cookies for maximum reliability
+  - Cookie persistence with 30-day expiration and SameSite=Lax security
+  - Fallback chain: URL → sessionStorage → localStorage → cookie
+  - Handles third-party storage restrictions gracefully
+- Updated `embeddedDataLoader.ts` with normalized schema count and relationship catalog handling
+- Enhanced `/api/spec` endpoint logging to show spec version and relationship catalog presence
+
+### Fixed
+- Fixed token loss on page refresh by implementing multi-layer storage strategy
+- Fixed missing relationship catalog in spec responses
+- Fixed schema count inconsistency between snake_case and camelCase properties
+
 ## [0.2.2] - 2025-12-20
 
 ### Fixed
