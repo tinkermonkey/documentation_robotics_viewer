@@ -199,12 +199,22 @@ async def get_spec():
         }
 
     try:
+        manifest_path = DR_SCHEMAS_DIR / ".manifest.json"
+        manifest = {}
+        spec_version = "0.2.0"
+
+        if manifest_path.exists():
+            with open(manifest_path, 'r') as f:
+                manifest = json.load(f)
+            spec_version = manifest.get("spec_version", spec_version)
+        else:
+            logger.warning(f"Schema manifest not found at {manifest_path}")
+
         # Collect all schema files
         schemas = {}
         schema_files = sorted(DR_SCHEMAS_DIR.glob("*.schema.json"))
 
         for schema_file in schema_files:
-            # Use the full filename as the key
             schema_name = schema_file.name
 
             with open(schema_file, 'r') as f:
@@ -212,16 +222,34 @@ async def get_spec():
 
             schemas[schema_name] = schema
 
+        # Relationship catalog (non-schema JSON) is served alongside schemas
+        relationship_catalog = None
+        relationship_catalog_path = DR_SCHEMAS_DIR / "relationship-catalog.json"
+        if relationship_catalog_path.exists():
+            with open(relationship_catalog_path, 'r') as f:
+                relationship_catalog = json.load(f)
+        else:
+            logger.warning("Relationship catalog not found in .dr/schemas")
+
         spec_data = {
-            "version": "0.2.0",
+            "version": spec_version,
             "type": "schema-collection",
             "description": "JSON Schema definitions from dr CLI",
-            "source": "dr-cli",
+            "source": manifest.get("source", "dr-cli"),
             "schemas": schemas,
-            "schema_count": len(schemas)
+            "schema_count": len(schemas),
+            "manifest": manifest
         }
 
-        logger.info(f"Serving {len(schemas)} schema files from dr CLI")
+        if relationship_catalog is not None:
+            spec_data["relationship_catalog"] = relationship_catalog
+
+        logger.info(
+            "Serving %s schema files (spec %s) from dr CLI%s",
+            len(schemas),
+            spec_version,
+            " with relationship catalog" if relationship_catalog else ""
+        )
         return spec_data
 
     except Exception as e:
@@ -792,9 +820,25 @@ async def startup_event():
 
     # Check dr CLI schema directory
     if DR_SCHEMAS_DIR.exists():
+        manifest_path = DR_SCHEMAS_DIR / ".manifest.json"
         schema_count = len(list(DR_SCHEMAS_DIR.glob("*-layer.schema.json")))
         logger.info(f"✓ dr CLI schemas found: {schema_count} layers")
         logger.info(f"  Location: {DR_SCHEMAS_DIR}")
+
+        if manifest_path.exists():
+            with open(manifest_path, 'r') as f:
+                manifest = json.load(f)
+            spec_version = manifest.get('spec_version', 'unknown')
+            logger.info(f"  Spec version: {spec_version}")
+            logger.info(f"  Files listed: {len(manifest.get('files', {}))}")
+
+            relationship_catalog_path = DR_SCHEMAS_DIR / "relationship-catalog.json"
+            if relationship_catalog_path.exists():
+                logger.info("  Relationship catalog detected")
+            else:
+                logger.warning("  Relationship catalog missing (expected for spec 0.6.0+)")
+        else:
+            logger.warning("  Schema manifest not found (expected .dr/schemas/.manifest.json)")
     else:
         logger.warning("✗ dr CLI schemas not found")
         logger.warning(f"  Expected at: {DR_SCHEMAS_DIR}")
