@@ -9,20 +9,35 @@ import { Annotation, AnnotationCreate, AnnotationUpdate } from '../types/annotat
 
 const API_BASE = '/api';
 
+const AUTH_STORAGE_KEY = 'dr_auth_token';
+
 /**
  * Get authentication headers for API requests
+ * Checks URL first, then sessionStorage
  */
 function getAuthHeaders(): Record<string, string> {
   if (typeof window === 'undefined') return {};
 
-  // Extract token from URL query parameter
+  // First, check URL query parameter
   const params = new URLSearchParams(window.location.search);
-  const token = params.get('token');
+  let token = params.get('token');
+
+  // If not in URL, check sessionStorage
+  if (!token) {
+    token = sessionStorage.getItem(AUTH_STORAGE_KEY);
+  }
+
+  // If we found a token in URL, store it for future use
+  if (params.get('token')) {
+    sessionStorage.setItem(AUTH_STORAGE_KEY, params.get('token')!);
+  }
 
   if (!token) {
+    console.log('[Auth] No token found in URL or sessionStorage, request will be unauthenticated');
     return {};
   }
 
+  console.log('[Auth] Token found, adding Authorization header');
   return {
     'Authorization': `Bearer ${token}`
   };
@@ -200,11 +215,15 @@ export class EmbeddedDataLoader {
    * Load the current model (YAML instance format)
    */
   async loadModel(): Promise<MetaModel> {
+    const headers = getAuthHeaders();
+    console.log('[DataLoader] Loading model with headers:', Object.keys(headers).join(', ') || 'none');
+
     const response = await fetch(`${API_BASE}/model`, {
-      headers: getAuthHeaders()
+      headers
     });
 
     if (!response.ok) {
+      console.error('[DataLoader] Model load failed:', response.status, response.statusText);
       throw new Error(`Failed to load model: ${response.statusText}`);
     }
 

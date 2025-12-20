@@ -24,22 +24,35 @@ interface AuthState {
   getAuthQueryParams: () => Record<string, string>;
 }
 
+const STORAGE_KEY = 'dr_auth_token';
+
 /**
- * Extract token from URL query parameters
+ * Extract token from URL query parameters or sessionStorage
+ * Priority: URL > sessionStorage
  */
 function extractTokenFromURL(): string | null {
   if (typeof window === 'undefined') return null;
 
+  // First, check URL for token
   const params = new URLSearchParams(window.location.search);
-  const token = params.get('token');
+  const urlToken = params.get('token');
 
-  if (token) {
-    console.log('[Auth] Token extracted from URL');
-  } else {
-    console.log('[Auth] No token found in URL - running in development mode');
+  if (urlToken) {
+    console.log('[Auth] Token extracted from URL, storing in sessionStorage');
+    // Store in sessionStorage for persistence across navigations
+    sessionStorage.setItem(STORAGE_KEY, urlToken);
+    return urlToken;
   }
 
-  return token;
+  // If not in URL, check sessionStorage
+  const storedToken = sessionStorage.getItem(STORAGE_KEY);
+  if (storedToken) {
+    console.log('[Auth] Token loaded from sessionStorage');
+    return storedToken;
+  }
+
+  console.log('[Auth] No token found in URL or sessionStorage - running in development mode');
+  return null;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -48,6 +61,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isAuthenticated: !!extractTokenFromURL(),
 
   setToken: (token: string | null) => {
+    // Store/clear in sessionStorage
+    if (typeof window !== 'undefined') {
+      if (token) {
+        sessionStorage.setItem(STORAGE_KEY, token);
+      } else {
+        sessionStorage.removeItem(STORAGE_KEY);
+      }
+    }
     set({
       token,
       isAuthenticated: !!token
@@ -56,11 +77,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   clearToken: () => {
+    // Clear from sessionStorage
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem(STORAGE_KEY);
+    }
     set({
       token: null,
       isAuthenticated: false
     });
-    console.log('[Auth] Token cleared');
+    console.log('[Auth] Token cleared from store and sessionStorage');
   },
 
   /**
