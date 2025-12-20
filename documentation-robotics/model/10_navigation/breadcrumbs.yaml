@@ -30,7 +30,7 @@ c4-breadcrumb-nav:
       dynamic: true
       depends_on: Selected component
   behavior:
-    - Separator: ">" between levels
+    - Separator: ">"
     - Click level to navigate up hierarchy
     - Current level highlighted/not clickable
     - Dynamic labels based on selection
