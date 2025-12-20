@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2025-12-20
+
+### Fixed
+- **Critical**: Fixed authentication token persistence using sessionStorage
+  - Previous implementation lost token on page refresh or navigation
+  - Token now stored in sessionStorage when first extracted from URL
+  - All API calls now check sessionStorage if token not in current URL
+  - Fixes 401 Unauthorized and 403 Forbidden errors after page refresh
+  - Token persists throughout browser session until tab is closed
+- Added comprehensive debug logging for token extraction and storage
+- Created `auth-debug.html` diagnostic page for troubleshooting authentication issues
+
+### Changed
+- Updated `authStore.ts` to use sessionStorage for token persistence
+- Updated `embeddedDataLoader.ts` to check sessionStorage before failing authentication
+- Enhanced logging in authentication flow for better debugging
+
 ## [0.2.0] - 2025-12-20
 
 ### Added
