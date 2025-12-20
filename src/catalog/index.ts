@@ -20,7 +20,8 @@ export {
   createMockWebSocketClient,
   useWebSocketEventSimulator,
   WebSocketEventTypes,
-  type MockWebSocketClient
+  type MockWebSocketClient,
+  type MockWebSocketClientOptions
 } from './providers/MockWebSocketProvider';
 
 // Decorators
@@ -60,7 +61,24 @@ export {
   createC4ContainerNodeData,
   createC4ComponentNodeData,
   createC4ExternalActorNodeData,
-  createNodeFixturesWithStates
+  createNodeFixturesWithStates,
+  type BaseNodeOptions,
+  type GoalNodeOptions,
+  type StakeholderNodeOptions,
+  type RequirementNodeOptions,
+  type ConstraintNodeOptions,
+  type DriverNodeOptions,
+  type OutcomeNodeOptions,
+  type PrincipleNodeOptions,
+  type AssumptionNodeOptions,
+  type ValueStreamNodeOptions,
+  type AssessmentNodeOptions,
+  type BusinessServiceNodeOptions,
+  type BusinessFunctionNodeOptions,
+  type BusinessCapabilityNodeOptions,
+  type C4ContainerNodeOptions,
+  type C4ComponentNodeOptions,
+  type C4ExternalActorNodeOptions
 } from './fixtures/nodeDataFixtures';
 
 // Fixtures - Model Data

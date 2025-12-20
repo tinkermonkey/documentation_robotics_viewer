@@ -26,7 +26,7 @@ export function createAnnotationFixture(options: AnnotationOptions = {}): Annota
   const now = new Date().toISOString();
 
   return {
-    id: options.id || `annotation-${Math.random().toString(36).substr(2, 9)}`,
+    id: options.id || `annotation-${Math.random().toString(36).slice(2, 11)}`,
     elementId: options.elementId || `goal-1`,
     author: options.author || 'John Doe',
     content: options.content || 'This is a sample annotation for testing purposes.',

@@ -28,10 +28,31 @@ export interface MockWebSocketClient {
 }
 
 /**
+ * Options for creating a mock WebSocket client
+ */
+export interface MockWebSocketClientOptions {
+  /**
+   * Enable debug logging to console (default: true)
+   */
+  debug?: boolean;
+}
+
+/**
  * Create a mock WebSocket client with in-memory event handling
  */
-export function createMockWebSocketClient(): MockWebSocketClient {
+export function createMockWebSocketClient(options?: MockWebSocketClientOptions): MockWebSocketClient {
+  const { debug = true } = options || {};
   const handlers = new Map<string, Set<(...args: any[]) => void>>();
+
+  const log = (message: string, data?: any) => {
+    if (debug) {
+      if (data) {
+        console.log(message, data);
+      } else {
+        console.log(message);
+      }
+    }
+  };
 
   return {
     on: (event: string, handler: (...args: any[]) => void) => {
@@ -39,28 +60,28 @@ export function createMockWebSocketClient(): MockWebSocketClient {
         handlers.set(event, new Set());
       }
       handlers.get(event)!.add(handler);
-      console.log(`[Mock WS] Registered handler for '${event}'`);
+      log(`[Mock WS] Registered handler for '${event}'`);
     },
 
     off: (event: string, handler?: (...args: any[]) => void) => {
       if (!handler) {
         handlers.delete(event);
-        console.log(`[Mock WS] Removed all handlers for '${event}'`);
+        log(`[Mock WS] Removed all handlers for '${event}'`);
       } else {
         handlers.get(event)?.delete(handler);
-        console.log(`[Mock WS] Removed handler for '${event}'`);
+        log(`[Mock WS] Removed handler for '${event}'`);
       }
     },
 
     emit: (event: string, data: any) => {
-      console.log(`[Mock WS] Emitting '${event}' with data:`, data);
+      log(`[Mock WS] Emitting '${event}' with data:`, data);
       const eventHandlers = handlers.get(event);
       if (eventHandlers) {
         eventHandlers.forEach(handler => {
           try {
             handler(data);
           } catch (error) {
-            console.error(`[Mock WS] Error in handler for '${event}':`, error);
+            log(`[Mock WS] Error in handler for '${event}':`, error);
           }
         });
       }

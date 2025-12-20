@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { ReactNode } from 'react';
-import { useMemo } from 'react';
+import { useMemo, createContext, useContext } from 'react';
 import type { MetaModel, Layer, ModelElement } from '../../core/types';
 import type { Annotation } from '../../apps/embedded/types/annotations';
 
@@ -216,8 +216,6 @@ interface MockStoreProviderProps {
 /**
  * Context for providing mock stores to stories
  */
-import { createContext, useContext } from 'react';
-
 interface MockStoreContextValue {
   modelStore: ReturnType<typeof createMockModelStore>;
   annotationStore: ReturnType<typeof createMockAnnotationStore>;
