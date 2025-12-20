@@ -36,7 +36,7 @@ get-github-releases:
               description: Failed to fetch releases
   serves: application.service.git-hub-service
   security: security.policy.local-access
-  applicationServiceRef: application.service.git-hub-service
+  x-application-service: application.service.git-hub-service
   description: Fetches all spec releases from GitHub repository
 get-latest-github-release:
   id: api.operation.get-latest-github-release
@@ -76,7 +76,7 @@ get-latest-github-release:
               description: Failed to fetch release
   serves: application.service.git-hub-service
   security: security.policy.local-access
-  applicationServiceRef: application.service.git-hub-service
+  x-application-service: application.service.git-hub-service
   description: Fetches the latest spec release from GitHub
 get-github-release-by-tag:
   id: api.operation.get-github-release-by-tag
@@ -115,7 +115,7 @@ get-github-release-by-tag:
               description: Failed to fetch release
   serves: application.service.git-hub-service
   security: security.policy.local-access
-  applicationServiceRef: application.service.git-hub-service
+  x-application-service: application.service.git-hub-service
   description: Fetches a specific release by tag name from GitHub
 download-github-schema-zip:
   id: api.operation.download-github-schema-zip
@@ -156,7 +156,7 @@ download-github-schema-zip:
               description: Failed to download
   serves: application.service.git-hub-service
   security: security.policy.local-access
-  applicationServiceRef: application.service.git-hub-service
+  x-application-service: application.service.git-hub-service
   description: Proxies download of schema ZIP from GitHub to avoid CORS
 get-example-implementation:
   id: api.operation.get-example-implementation
@@ -191,5 +191,5 @@ get-example-implementation:
               description: Failed to serve example implementation
   serves: application.service.git-hub-service
   security: security.policy.local-access
-  applicationServiceRef: application.service.git-hub-service
+  x-application-service: application.service.git-hub-service
   description: Serves the example-implementation model YAML files as JSON

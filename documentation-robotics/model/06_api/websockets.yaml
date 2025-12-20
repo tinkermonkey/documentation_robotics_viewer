@@ -21,9 +21,9 @@ websocket-connect:
       - ping
   serves: application.service.reference-server
   security: security.policy.local-access
-  applicationServiceRef: application.service.reference-server
+  x-application-service: application.service.reference-server
   description: Main WebSocket endpoint for live model updates
-  partOf: api.interface.reference-api
+  part-of: api.interface.reference-api
 websocket-event-connected:
   id: api.event.connected
   name: Connected Event
@@ -39,7 +39,7 @@ websocket-event-connected:
       timestamp: string
   serves: application.service.reference-server
   security: security.policy.local-access
-  applicationServiceRef: application.service.reference-server
+  x-application-service: application.service.reference-server
   description: Sent immediately after WebSocket connection established
 websocket-event-subscribe:
   id: api.event.subscribe
@@ -55,7 +55,7 @@ websocket-event-subscribe:
       topics: array<string>
   serves: application.service.reference-server
   security: security.policy.local-access
-  applicationServiceRef: application.service.reference-server
+  x-application-service: application.service.reference-server
   description: Client request to subscribe to update topics
 websocket-event-model-updated:
   id: api.event.model-updated
@@ -71,5 +71,5 @@ websocket-event-model-updated:
       timestamp: string
   serves: application.service.reference-server
   security: security.policy.local-access
-  applicationServiceRef: application.service.reference-server
+  x-application-service: application.service.reference-server
   description: Broadcast when the underlying model changes

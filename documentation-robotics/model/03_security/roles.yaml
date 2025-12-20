@@ -1,0 +1,30 @@
+user:
+  id: security.role.user
+  name: user
+  display-name: User
+  description: >-
+    Default role for local users with full read/write access to model files.
+    This is the primary role for the desktop/browser application where
+    authentication is not required.
+  level: 1
+  inherits-from: none
+  permissions:
+    - security.permission.read-model-files
+    - security.permission.write-model-files
+    - security.permission.access-api-endpoints
+    - security.permission.websocket-connection
+
+viewer:
+  id: security.role.viewer
+  name: viewer
+  display-name: Viewer
+  description: >-
+    Read-only role for users who need to view architecture models without
+    modification capability. Intended for future use cases like shared
+    read-only links or embedded documentation viewers.
+  level: 0
+  inherits-from: none
+  permissions:
+    - security.permission.read-model-files
+    - security.permission.access-api-endpoints
+    - security.permission.websocket-connection

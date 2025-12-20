@@ -21,9 +21,9 @@ health-check:
                   type: string
   serves: application.service.reference-server
   security: security.policy.local-access
-  applicationServiceRef: application.service.reference-server
+  x-application-service: application.service.reference-server
   description: Returns server status and version information
-  partOf: api.interface.reference-api
+  part-of: api.interface.reference-api
 get-spec:
   id: api.operation.get-spec
   name: Get Specification
@@ -40,9 +40,9 @@ get-spec:
         description: Schema directory not found
   serves: application.service.reference-server
   security: security.policy.local-access
-  applicationServiceRef: application.service.reference-server
+  x-application-service: application.service.reference-server
   description: Returns the current JSON Schema specification
-  partOf: api.interface.reference-api
+  part-of: api.interface.reference-api
 get-model:
   id: api.operation.get-model
   name: Get Model
@@ -59,9 +59,9 @@ get-model:
         description: Model manifest not found
   serves: application.service.reference-server
   security: security.policy.local-access
-  applicationServiceRef: application.service.reference-server
+  x-application-service: application.service.reference-server
   description: Returns the current model in viewer-compatible format
-  partOf: api.interface.reference-api
+  part-of: api.interface.reference-api
 list-changesets:
   id: api.operation.list-changesets
   name: List Changesets
@@ -76,9 +76,9 @@ list-changesets:
         description: List of changesets
   serves: application.service.reference-server
   security: security.policy.local-access
-  applicationServiceRef: application.service.reference-server
+  x-application-service: application.service.reference-server
   description: Returns a list of all available changesets
-  partOf: api.interface.reference-api
+  part-of: api.interface.reference-api
 get-changeset:
   id: api.operation.get-changeset
   name: Get Changeset
@@ -101,9 +101,9 @@ get-changeset:
         description: Changeset not found
   serves: application.service.reference-server
   security: security.policy.local-access
-  applicationServiceRef: application.service.reference-server
+  x-application-service: application.service.reference-server
   description: Returns details for a specific changeset
-  partOf: api.interface.reference-api
+  part-of: api.interface.reference-api
 get-annotations:
   id: api.operation.get-annotations
   name: Get Annotations
@@ -124,6 +124,6 @@ get-annotations:
         description: List of annotations
   serves: application.service.reference-server
   security: security.policy.local-access
-  applicationServiceRef: application.service.reference-server
+  x-application-service: application.service.reference-server
   description: Returns annotations, optionally filtered by element ID
-  partOf: api.interface.reference-api
+  part-of: api.interface.reference-api

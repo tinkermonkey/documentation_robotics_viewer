@@ -7,14 +7,14 @@ local-fs:
     name: local
     type: SQLite
     schemas:
-    - name: MetaModel
-      schemaRef: data_model.entity.meta-model
-      tables: []
+      - name: meta-model
+        schema-ref: data_model.entity.meta-model
+        tables: []
     tables: []
   schemas:
-  - name: MetaModel
-    schemaRef: data_model.entity.meta-model
-    tables: []
+    - name: meta-model
+      schema-ref: data_model.entity.meta-model
+      tables: []
   tables: []
   filesystem:
     path: .

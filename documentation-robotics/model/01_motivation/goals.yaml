@@ -1,39 +1,45 @@
 visualize-architecture:
   id: motivation.goal.visualize-architecture
   name: Visualize Architecture
-  description: Provide interactive visualization of DR models across all layers
-  stakeholder: Architecture Team
-  owner: Architecture Team
-  kpi:
-  - name: Initial Render Time
-    target: < 2 seconds for 500-element graph
-    metric: apm.metric.render-time
-  - name: User Satisfaction
-    target: '> 4.5/5 rating'
-    metric: apm.metric.user-satisfaction
+  priority: high
+  documentation: Provide interactive visualization of DR models across all layers
+  stakeholders:
+    - motivation.stakeholder.architecture-team
+    - motivation.stakeholder.development-team
+    - motivation.stakeholder.end-users
+  governed-by-principles:
+    - motivation.principle.user-centric-design
+    - motivation.principle.performance-first
+  properties:
+    goal:
+      measurable: "true"
+      kpi: "Initial render time < 3s for 500 elements"
 interactive-graphs:
   id: motivation.requirement.interactive-graphs
   name: Interactive Graphs
-  description: Users must be able to pan, zoom, and click nodes for details
-  stakeholder: Architecture Team
-  owner: Architecture Team
-  kpi:
-  - name: Pan/Zoom Responsiveness
-    target: 60 FPS during interaction
-    metric: apm.metric.interaction-fps
-  - name: Filter Response Time
-    target: < 500ms filter application
-    metric: apm.metric.filter-latency
+  requirement-type: functional
+  priority: high
+  documentation: Users must be able to pan, zoom, and click nodes for details
+  supports-goals:
+    - motivation.goal.visualize-architecture
+  governed-by-principles:
+    - motivation.principle.user-centric-design
+    - motivation.principle.performance-first
+  properties:
+    requirement:
+      source: "stakeholder-interview"
+      status: "implemented"
 embedded-mode:
   id: motivation.requirement.embedded-mode
   name: Embedded Mode
-  description: Viewer must support embedding in other applications via iframe or component
-  stakeholder: Architecture Team
-  owner: Architecture Team
-  kpi:
-  - name: Embedding Success Rate
-    target: '> 99% successful loads'
-    metric: apm.metric.embedding-success-rate
-  - name: Initialization Time
-    target: < 2 seconds to interactive
-    metric: apm.metric.initialization-time
+  requirement-type: functional
+  priority: high
+  documentation: Viewer must support embedding in other applications via iframe or component
+  supports-goals:
+    - motivation.goal.visualize-architecture
+  governed-by-principles:
+    - motivation.principle.progressive-enhancement
+  properties:
+    requirement:
+      source: "stakeholder-interview"
+      status: "implemented"

@@ -1,0 +1,33 @@
+local-access:
+  id: security.policy.local-access
+  name: Local File Access Policy
+  description: >-
+    Security policy for local desktop/browser usage. Viewer runs locally
+    and accesses files directly without authentication. All local users
+    have full read/write access to model files.
+  priority: 1
+  target: all
+  enabled: true
+  applies-to-roles:
+    - security.role.user
+    - security.role.viewer
+  protects-resources:
+    - security.secure-resource.file-system
+    - security.secure-resource.api-endpoints
+    - security.secure-resource.websocket
+  rules:
+    - security.policy-rule.allow-local-access
+  authentication:
+    type: none
+    provider: session
+    session-timeout: 3600
+  data-classification:
+    classifications:
+      - level: internal
+        label: Internal Data
+        description: Internal data classification
+        encryption: none
+        retention:
+          period: indefinite
+        access-control: role-based
+        audit-level: minimal

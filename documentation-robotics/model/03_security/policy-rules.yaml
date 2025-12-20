@@ -1,0 +1,10 @@
+allow-local-access:
+  id: security.policy-rule.allow-local-access
+  name: Allow Local Access
+  condition: "context.environment == 'local'"
+  effect: allow
+  message: Local access is permitted for all operations
+  description: >-
+    Allows all operations when running in local development mode.
+    This is the default rule for desktop/browser usage where no
+    authentication is configured.

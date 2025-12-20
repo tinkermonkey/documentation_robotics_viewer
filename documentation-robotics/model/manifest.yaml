@@ -3,7 +3,7 @@ schema: documentation-robotics-v1
 cli_version: 0.7.3
 spec_version: 0.6.0
 created: '2025-12-05T22:17:22.732040Z'
-updated: '2025-12-18T10:49:40.863493Z'
+updated: '2025-12-19T22:52:02.898617Z'
 project:
   name: documentation_robotics_viewer
   description: Architecture model for documentation_robotics_viewer
@@ -16,21 +16,36 @@ layers:
     path: documentation-robotics/model/01_motivation/
     schema: .dr/schemas/01-motivation-layer.schema.json
     enabled: true
-    elements: {}
+    elements:
+      goal: 1
+      requirement: 2
+      stakeholder: 3
+      principle: 4
+      constraint: 4
   business:
     order: 2
     name: Business
     path: documentation-robotics/model/02_business/
     schema: .dr/schemas/02-business-layer.schema.json
     enabled: true
-    elements: {}
+    elements:
+      capability: 3
+      service: 6
   security:
     order: 3
     name: Security
     path: documentation-robotics/model/03_security/
     schema: .dr/schemas/03-security-layer.schema.json
     enabled: true
-    elements: {}
+    elements:
+      security-policy: 1
+      role: 2
+      permission: 4
+      secure-resource: 3
+      resource-operation: 7
+      threat: 4
+      countermeasure: 6
+      policy-rule: 1
   application:
     order: 4
     name: Application
@@ -38,8 +53,8 @@ layers:
     schema: .dr/schemas/04-application-layer.schema.json
     enabled: true
     elements:
-      service: 28
-      component: 18
+      service: 32
+      component: 21
   technology:
     order: 5
     name: Technology
@@ -47,8 +62,10 @@ layers:
     schema: .dr/schemas/05-technology-layer.schema.json
     enabled: true
     elements:
-      systemsoftware: 7
-      system-software: 5
+      framework: 3
+      library: 8
+      tool: 2
+      language: 1
   api:
     order: 6
     name: API
@@ -56,7 +73,9 @@ layers:
     schema: .dr/schemas/06-api-layer.schema.json
     enabled: true
     elements:
-      operation: 5
+      operation: 11
+      interface: 1
+      event: 4
   data_model:
     order: 7
     name: Data Model
@@ -72,14 +91,16 @@ layers:
     path: documentation-robotics/model/08_datastore/
     schema: .dr/schemas/08-datastore-layer.schema.json
     enabled: true
-    elements: {}
+    elements:
+      store: 1
   ux:
     order: 9
     name: UX
     path: documentation-robotics/model/09_ux/
     schema: .dr/schemas/09-ux-layer.schema.json
     enabled: true
-    elements: {}
+    elements:
+      view: 3
   navigation:
     order: 10
     name: Navigation
@@ -87,14 +108,15 @@ layers:
     schema: .dr/schemas/10-navigation-layer.schema.json
     enabled: true
     elements:
-      route: 2
+      route: 3
   apm:
     order: 11
     name: APM/Observability
     path: documentation-robotics/model/11_apm/
     schema: .dr/schemas/11-apm-observability-layer.schema.json
     enabled: true
-    elements: {}
+    elements:
+      metric: 5
   testing:
     order: 12
     name: Testing
@@ -109,12 +131,27 @@ layers:
 cross_references:
   total: 0
   by_type: {}
+  tracking_enabled: true
 statistics:
-  total_elements: 97
+  total_elements: 178
+  elements_by_layer:
+    motivation: 14
+    business: 9
+    security: 28
+    application: 53
+    technology: 14
+    api: 16
+    data_model: 16
+    datastore: 1
+    ux: 3
+    navigation: 3
+    apm: 5
+    testing: 16
   total_relationships: 0
   completeness: 0.0
-  last_validation: '2025-12-18T10:49:40.863483Z'
-  validation_status: failed
+  last_validation: '2025-12-19T19:20:00.000000Z'
+  validation_status: pending
+  last_sync: '2025-12-19T19:20:00.000000Z'
 conventions:
   id_format: '{layer}.{type}.{kebab-case-name}'
   file_naming:
@@ -134,4 +171,4 @@ upgrade_history:
 - from_version: 0.1.0
   to_version: 0.7.3
   upgraded_at: '2025-12-10T17:06:16.340268Z'
-upgraded_at: '2025-12-17T21:46:32.543493Z'
+upgraded_at: '2025-12-20T10:18:28.434168Z'

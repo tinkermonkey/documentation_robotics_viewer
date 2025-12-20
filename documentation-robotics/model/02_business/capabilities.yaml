@@ -2,7 +2,7 @@ visualization:
   id: business.capability.visualization
   name: Visualization
   description: Rendering of architectural models as interactive graphs
-  realizedBy: application.component.viewer-app
+  realized-by: application.component.viewer-app
 documentation:
   id: business.capability.documentation
   name: Documentation

@@ -1,0 +1,94 @@
+user-centric-design:
+  id: motivation.principle.user-centric-design
+  name: User-Centric Design
+  category: application
+  documentation: >-
+    All design decisions prioritize the user experience. The interface should
+    be intuitive, discoverable, and require minimal learning curve. User
+    feedback directly influences feature development and UI improvements.
+  properties:
+    principle:
+      rationale: >-
+        Architecture visualization tools are only valuable if users can
+        effectively navigate and understand the presented information.
+        Complex underlying models must be presented in accessible ways.
+      implications: >-
+        Requires user research, iterative design, and continuous feedback.
+        May require simplification of complex architectural concepts.
+  supports-goals:
+    - motivation.goal.visualize-architecture
+  governs-requirements:
+    - motivation.requirement.interactive-graphs
+
+performance-first:
+  id: motivation.principle.performance-first
+  name: Performance First
+  category: technology
+  documentation: >-
+    Performance is a feature, not an afterthought. All components must meet
+    defined performance targets: initial render under 3 seconds for 500 elements,
+    filter operations under 500ms, and 60fps pan/zoom interactions.
+  properties:
+    principle:
+      rationale: >-
+        Architecture models can contain hundreds or thousands of elements.
+        Poor performance directly impacts user productivity and adoption.
+        Users will not use tools that feel sluggish.
+      implications: >-
+        Requires performance budgets, regular benchmarking, and optimization.
+        May require trade-offs between features and performance. Web Workers
+        for heavy computation, viewport culling for large graphs.
+  supports-goals:
+    - motivation.goal.visualize-architecture
+  governs-requirements:
+    - motivation.requirement.interactive-graphs
+  measured-by:
+    - apm.metric.render-time
+    - apm.metric.interaction-fps
+    - apm.metric.filter-latency
+
+accessibility-by-default:
+  id: motivation.principle.accessibility-by-default
+  name: Accessibility by Default
+  category: application
+  documentation: >-
+    Accessibility is built into every component from the start, not retrofitted.
+    The application must meet WCAG 2.1 AA compliance. All interactive elements
+    must be keyboard accessible with proper focus management and ARIA labels.
+  properties:
+    principle:
+      rationale: >-
+        Architecture visualization must be usable by all team members regardless
+        of ability. Legal requirements (ADA, Section 508) may apply. Accessible
+        design often improves usability for all users.
+      implications: >-
+        Requires accessibility testing in CI/CD pipeline. May affect visual
+        design choices (color contrast, font sizes). Keyboard navigation
+        must be comprehensive.
+  supports-goals:
+    - motivation.goal.visualize-architecture
+  governed-by-constraints:
+    - motivation.constraint.accessibility-requirements
+
+progressive-enhancement:
+  id: motivation.principle.progressive-enhancement
+  name: Progressive Enhancement
+  category: application
+  documentation: >-
+    Core functionality works in basic environments with enhanced features
+    for capable browsers. The application degrades gracefully when advanced
+    features are unavailable. Embedded mode works with minimal JavaScript.
+  properties:
+    principle:
+      rationale: >-
+        The viewer must work reliably in various contexts: standalone, embedded
+        in documentation sites, or integrated into other tools. Cannot assume
+        all features of the latest browsers.
+      implications: >-
+        Requires feature detection over browser detection. Core visualization
+        must work without advanced features. Enhanced features (animations,
+        advanced layouts) are optional improvements.
+  supports-goals:
+    - motivation.goal.visualize-architecture
+  governs-requirements:
+    - motivation.requirement.embedded-mode

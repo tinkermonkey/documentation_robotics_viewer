@@ -1,6 +1,7 @@
 route-model:
   id: navigation.route.model
   name: Model Route
+  type: experience
   description: /model/*
   targets:
   - ux.view.c4-view
@@ -14,6 +15,7 @@ route-model:
 route-spec:
   id: navigation.route.spec
   name: Spec Route
+  type: experience
   description: /spec/*
   targets:
   - ux.view.spec-view
@@ -27,6 +29,7 @@ route-spec:
 route-motivation:
   id: navigation.route.motivation
   name: Motivation Route
+  type: experience
   description: /motivation
   targets:
   - ux.view.motivation-view

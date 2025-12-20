@@ -1,0 +1,50 @@
+read-model-files:
+  id: security.permission.read-model-files
+  name: Read Model Files
+  description: >-
+    Permission to read DR architecture model files from the local file system
+    or via API endpoints. Includes manifest, layer files, and schema files.
+  scope: resource
+  resource: security.secure-resource.file-system
+  action: read
+  granted-to:
+    - security.role.user
+    - security.role.viewer
+
+write-model-files:
+  id: security.permission.write-model-files
+  name: Write Model Files
+  description: >-
+    Permission to modify DR architecture model files. Includes creating,
+    updating, and deleting elements within the model structure.
+  scope: resource
+  resource: security.secure-resource.file-system
+  action: write
+  granted-to:
+    - security.role.user
+
+access-api-endpoints:
+  id: security.permission.access-api-endpoints
+  name: Access API Endpoints
+  description: >-
+    Permission to access the reference API server endpoints for model
+    retrieval, spec access, and changeset management.
+  scope: resource
+  resource: security.secure-resource.api-endpoints
+  action: invoke
+  granted-to:
+    - security.role.user
+    - security.role.viewer
+
+websocket-connection:
+  id: security.permission.websocket-connection
+  name: WebSocket Connection
+  description: >-
+    Permission to establish WebSocket connections for real-time updates
+    and collaboration features.
+  scope: resource
+  resource: security.secure-resource.websocket
+  action: connect
+  granted-to:
+    - security.role.user
+    - security.role.viewer

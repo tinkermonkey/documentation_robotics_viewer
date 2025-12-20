@@ -1,6 +1,7 @@
 c4-view:
   id: ux.view.c4-view
   name: C4 View
+  type: custom
   description: Hierarchical view (Context, Container, Component)
   realizes:
   - application.component.graph-view
@@ -15,6 +16,7 @@ c4-view:
 motivation-view:
   id: ux.view.motivation-view
   name: Motivation View
+  type: dashboard
   description: Goal and requirement visualization
   version: 0.1.0
   experience: web
@@ -27,6 +29,7 @@ motivation-view:
 spec-view:
   id: ux.view.spec-view
   name: Spec View
+  type: detail
   description: Specification and data model visualization
   version: 0.1.0
   experience: web

@@ -1,0 +1,41 @@
+read-file:
+  id: security.resource-operation.read-file
+  name: Read File
+  operation: read
+  description: Read file contents from the local file system
+
+write-file:
+  id: security.resource-operation.write-file
+  name: Write File
+  operation: write
+  description: Write or modify file contents on the local file system
+
+get-model:
+  id: security.resource-operation.get-model
+  name: Get Model
+  operation: GET
+  description: Retrieve DR model data via API
+
+get-spec:
+  id: security.resource-operation.get-spec
+  name: Get Spec
+  operation: GET
+  description: Retrieve DR specification schemas via API
+
+list-changesets:
+  id: security.resource-operation.list-changesets
+  name: List Changesets
+  operation: GET
+  description: List available changesets via API
+
+ws-connect:
+  id: security.resource-operation.ws-connect
+  name: WebSocket Connect
+  operation: connect
+  description: Establish WebSocket connection
+
+ws-subscribe:
+  id: security.resource-operation.ws-subscribe
+  name: WebSocket Subscribe
+  operation: subscribe
+  description: Subscribe to WebSocket event channels
