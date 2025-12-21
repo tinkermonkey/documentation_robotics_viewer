@@ -46,7 +46,7 @@ export default defineConfig({
   // Start the reference server (without auth for basic token storage testing)
   webServer: [
     {
-      command: 'cd reference_server && python main.py',
+      command: 'bash -c "cd reference_server && source .venv/bin/activate && python main.py"',
       url: 'http://localhost:8765/health',
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,

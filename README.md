@@ -107,6 +107,36 @@ npm run test:e2e:ui
 
 Expected results: **20/22 tests passing (91% pass rate)**
 
+### Component Catalog
+
+The project includes a Ladle-based component catalog for developing and testing components in isolation:
+
+```bash
+# Start the component catalog (port 6006)
+npm run catalog:dev
+```
+
+Open [http://localhost:6006](http://localhost:6006) to browse component stories.
+
+**Key Features:**
+- **Refinement Layout Tests**: Visual stories for all 12 architecture layers (Motivation, Business, Security, Application, Technology, API, DataModel, Datastore, UX, Navigation, APM, CrossLayer)
+- **Isolated Testing**: Each story runs independently without global state pollution
+- **Fast Iteration**: 40% faster startup than embedded app (2-3s vs 3-5s)
+- **Automated Discovery**: Playwright tests discover stories via `/meta.json` API
+
+**Story Organization:**
+```
+src/apps/embedded/components/refinement/
+├── MotivationLayoutTest.stories.tsx
+├── BusinessLayoutTest.stories.tsx
+├── C4LayoutTest.stories.tsx
+└── ... (13 total layer test stories)
+```
+
+Each story includes small/medium/large graph variants and sparse/dense edge configurations.
+
+**For more details**, see [REFINEMENT_WORKFLOWS.md](documentation/refinement/REFINEMENT_WORKFLOWS.md).
+
 ### Building for Production
 
 ```bash

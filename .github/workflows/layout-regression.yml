@@ -1,8 +1,10 @@
-name: Layout Quality Regression Check
+name: Layout Refinement Tests
 
 on:
+  push:
+    branches: [main, develop]
   pull_request:
-    branches: [main, master]
+    branches: [main, develop]
     paths:
       - 'src/core/layout/**'
       - 'src/core/services/metrics/**'
@@ -27,8 +29,95 @@ on:
         type: boolean
 
 jobs:
+  # Ladle-based refinement tests with parallel execution
+  ladle-refinement-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        shard: [1, 2, 3, 4]  # Parallel execution across 4 shards
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Ladle-based refinement tests (shard ${{ matrix.shard }}/4)
+        run: npm run test:refinement:ladle -- --shard=${{ matrix.shard }}/4
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: refinement-results-ladle-shard-${{ matrix.shard }}
+          path: test-results/refinement/
+          retention-days: 30
+
+      - name: Upload metrics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: metrics-ladle-shard-${{ matrix.shard }}
+          path: test-results/metrics/
+          retention-days: 30
+
+  # Legacy embedded app tests (during transition)
+  legacy-refinement-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run legacy refinement tests
+        run: npm run test:refinement:legacy
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: refinement-results-legacy
+          path: test-results/refinement/
+          retention-days: 30
+
   regression-check:
     runs-on: ubuntu-latest
+    needs: [ladle-refinement-tests, legacy-refinement-tests]
+    if: always()
     permissions:
       contents: read
       pull-requests: write
@@ -46,10 +135,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-
-      - name: Download baseline artifacts
+      - name: Cache Playwright browsers
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}\n          restore-keys: |\n            ${{ runner.os }}-playwright-\n\n      - name: Install Playwright browsers\n        run: npx playwright install --with-deps chromium\n\n      - name: Download baseline artifacts
         uses: dawidd6/action-download-artifact@v3
         with:
           workflow: layout-regression.yml
@@ -70,10 +160,6 @@ jobs:
           fi
           npm run metrics:regression-check 2>&1 | tee regression-output.txt
           echo "exit_code=${PIPESTATUS[0]}" >> $GITHUB_OUTPUT
-        continue-on-error: true
-
-      - name: Run refinement tests
-        run: npm run refine:all
         continue-on-error: true
 
       - name: Generate summary

@@ -2,6 +2,28 @@
 
 This document describes the architecture and operation of the visualization optimization system, which provides automated layout quality assessment, reference diagram comparison, and human-in-the-loop refinement capabilities.
 
+## Quick Reference: Ladle-Based Testing
+
+**Current Status**: ✅ The refinement testing system now uses **Ladle** (component story viewer) for optimal isolation and performance.
+
+| Aspect | Details |
+|--------|---------|
+| **Environment** | `http://localhost:6006` (Ladle catalog) |
+| **Test Files** | `tests/refinement/*.ladle.spec.ts` |
+| **Stories** | `src/apps/embedded/components/refinement/*.stories.tsx` |
+| **Config** | `playwright.refinement.config.ts` |
+| **Startup Time** | ~2-3 seconds (40% faster than embedded app) |
+| **Key Command** | `npm run refine:all` |
+
+**Why Ladle?**
+- Better component isolation (no global store pollution)
+- Faster test execution (2-3s vs 3-5s)
+- Automated discovery via `/meta.json` API
+- Cleaner screenshots (preview mode eliminates UI chrome)
+- Scalable test organization
+
+**For Migration from Embedded App Tests**: See [REFINEMENT_WORKFLOWS.md](./REFINEMENT_WORKFLOWS.md#migration-guide-from-embedded-app-to-ladle)
+
 ## Overview
 
 The visualization optimization loop is a feedback-driven system that improves diagram layouts through:
@@ -586,21 +608,57 @@ Tracks refinement iteration progress.
 
 ## Testing
 
+### Test Execution Environment
+
+The refinement testing system has been migrated to use **Ladle** (component story viewer) for better isolation and performance. This provides:
+- **40% faster startup** (2-3s vs 3-5s for full embedded app)
+- **Better isolation** (stories run independently without global store pollution)
+- **Automated discovery** (stories discovered via `/meta.json` API)
+- **Cleaner captures** (preview mode eliminates UI chrome)
+
+**Current Environment**: `http://localhost:6006` (Ladle catalog)
+
+**Legacy Environment** (deprecated): `http://localhost:3001` (Vite embedded app)
+
 ### Test Suites
 
-| Suite | Location | Purpose |
-|-------|----------|---------|
-| Motivation Refinement | `tests/refinement/motivation-refinement.spec.ts` | Motivation layout quality |
-| Business Refinement | `tests/refinement/business-refinement.spec.ts` | Business process layouts |
-| C4 Refinement | `tests/refinement/c4-refinement.spec.ts` | C4 architecture layouts |
-| Interactive | `tests/refinement/interactive-refinement.spec.ts` | Manual inspection |
-| Metrics Report | `tests/metrics/metrics-report.spec.ts` | Report generation |
-| Regression | `tests/metrics/regression-check.spec.ts` | Baseline comparison |
+#### Ladle-Based Tests (Current - Recommended)
+
+| Suite | Location | Purpose | Status |
+|-------|----------|---------|--------|
+| Motivation Refinement | `tests/refinement/motivation-refinement.ladle.spec.ts` | Motivation layout quality | ✅ Current |
+| Business Refinement | `tests/refinement/business-refinement.ladle.spec.ts` | Business process layouts | ✅ Current |
+| C4 Refinement | `tests/refinement/c4-refinement.ladle.spec.ts` | C4 architecture layouts | ✅ Current |
+| Application Refinement | `tests/refinement/application-refinement.ladle.spec.ts` | Application layer layouts | ✅ Current |
+| Security Refinement | `tests/refinement/security-refinement.ladle.spec.ts` | Security layer layouts | ✅ Current |
+| Technology Refinement | `tests/refinement/technology-refinement.ladle.spec.ts` | Technology layer layouts | ✅ Current |
+| API Refinement | `tests/refinement/api-refinement.ladle.spec.ts` | API layer layouts | ✅ Current |
+| Data Model Refinement | `tests/refinement/datamodel-refinement.ladle.spec.ts` | Data model layer layouts | ✅ Current |
+| Datastore Refinement | `tests/refinement/datastore-refinement.ladle.spec.ts` | Datastore layer layouts | ✅ Current |
+| UX Refinement | `tests/refinement/ux-refinement.ladle.spec.ts` | UX layer layouts | ✅ Current |
+| Navigation Refinement | `tests/refinement/navigation-refinement.ladle.spec.ts` | Navigation layer layouts | ✅ Current |
+| APM Refinement | `tests/refinement/apm-refinement.ladle.spec.ts` | APM/Observability layer layouts | ✅ Current |
+| Cross-Layer Refinement | `tests/refinement/crosslayer-refinement.ladle.spec.ts` | Cross-layer relationships | ✅ Current |
+| Metrics Report | `tests/metrics/metrics-report.spec.ts` | Report generation | ✅ Current |
+| Regression | `tests/metrics/regression-check.spec.ts` | Baseline comparison | ✅ Current |
+
+#### Legacy Embedded App Tests (Deprecated)
+
+| Suite | Location | Purpose | Status |
+|-------|----------|---------|--------|
+| Motivation Refinement | `tests/refinement/motivation-refinement.spec.ts` | Motivation layout quality | ⚠️ Deprecated |
+| Business Refinement | `tests/refinement/business-refinement.spec.ts` | Business process layouts | ⚠️ Deprecated |
+| C4 Refinement | `tests/refinement/c4-refinement.spec.ts` | C4 architecture layouts | ⚠️ Deprecated |
+| Interactive | `tests/refinement/interactive-refinement.spec.ts` | Manual inspection | ⚠️ Deprecated |
+
+**Deprecation Notice**: The legacy embedded app test files (`*.spec.ts` without `.ladle` suffix) are no longer maintained. Please migrate to Ladle-based tests. See [REFINEMENT_WORKFLOWS.md](./REFINEMENT_WORKFLOWS.md#migration-guide-from-embedded-app-to-ladle) for migration instructions.
 
 ### Running Tests
 
+#### Current Approach (Ladle-Based)
+
 ```bash
-# All refinement tests
+# All Ladle-based refinement tests
 npm run refine:all
 
 # Specific diagram type
@@ -608,15 +666,77 @@ npm run refine:motivation
 npm run refine:business
 npm run refine:c4
 
-# Interactive mode (headed browser)
+# Interactive mode (headed browser with Ladle)
 npm run refine:interactive
 
-# Metrics generation
+# Metrics generation (uses Ladle)
 npm run metrics:report
 npm run metrics:regression-check
+
+# Run only Ladle tests (exclude deprecated embedded app tests)
+npx playwright test tests/refinement/*.ladle.spec.ts --config=playwright.refinement.config.ts
 ```
 
-See [REFINEMENT_WORKFLOWS.md](./REFINEMENT_WORKFLOWS.md) for detailed workflow documentation.
+#### Configuration
+
+The `playwright.refinement.config.ts` is configured for Ladle:
+
+```typescript
+use: {
+  baseURL: 'http://localhost:6006',  // Ladle port
+},
+webServer: {
+  command: 'npm run catalog:dev',    // Start Ladle
+  url: 'http://localhost:6006/meta.json',
+},
+```
+
+### Story-Based Test Organization
+
+Refinement tests are organized as Ladle stories for better isolation:
+
+```
+src/apps/embedded/components/refinement/
+├── MotivationLayoutTest.stories.tsx     # Motivation layer tests
+├── BusinessLayoutTest.stories.tsx       # Business layer tests
+├── TechnologyLayoutTest.stories.tsx     # Technology layer tests
+├── ApplicationLayoutTest.stories.tsx    # Application layer tests
+├── SecurityLayoutTest.stories.tsx       # Security layer tests
+├── APILayoutTest.stories.tsx            # API layer tests
+├── DataModelLayoutTest.stories.tsx      # Data model layer tests
+├── UXLayoutTest.stories.tsx             # UX layer tests
+├── NavigationLayoutTest.stories.tsx     # Navigation layer tests
+├── APMLayoutTest.stories.tsx            # APM/Observability layer tests
+├── C4LayoutTest.stories.tsx             # C4 architecture tests
+├── CrossLayerLayoutTest.stories.tsx     # Cross-layer tests
+├── MetricsDashboard.stories.tsx         # Metrics visualization
+└── SideBySideComparison.stories.tsx     # Reference comparison
+```
+
+Each story file includes:
+- **Small graph variant** - Tests with <10 nodes
+- **Medium graph variant** - Tests with 10-50 nodes
+- **Large graph variant** - Tests with >50 nodes
+- **Algorithm variants** - Different layout algorithm options
+
+Tests automatically discover stories via the Ladle `/meta.json` API.
+
+### Test Helpers
+
+Utility functions in `tests/refinement/helpers/`:
+
+```typescript
+// Story discovery and URL generation
+getStoryUrl(storyId, mode)      // Generate story URL with optional preview mode
+discoverRefinementStories(page) // Auto-discover all refinement stories
+
+// DOM extraction for metrics calculation
+extractNodePositions(page)      // Get node positions from rendered diagram
+extractEdges(page)              // Get edge connections from DOM
+positionsToNodes(positions)     // Convert positions to node objects for metrics
+```
+
+See [REFINEMENT_WORKFLOWS.md](./REFINEMENT_WORKFLOWS.md) for detailed workflow documentation and migration guidance.
 
 ---
 

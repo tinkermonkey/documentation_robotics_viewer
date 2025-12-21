@@ -1,5 +1,16 @@
 /**
- * Interactive Refinement Tests
+ * Interactive Refinement Tests (DEPRECATED)
+ *
+ * ⚠️ DEPRECATION NOTICE: This test file uses the embedded app approach (port 3001).
+ *
+ * This file is no longer maintained. Please use the Ladle-based approach instead:
+ * - New test file: tests/refinement/interactive-refinement.ladle.spec.ts (when available)
+ * - Environment: http://localhost:6006 (Ladle catalog)
+ * - Command: npm run refine:interactive (now runs Ladle-based tests)
+ * - Benefits: 40% faster startup, better isolation, automated discovery
+ *
+ * For migration guidance, see:
+ * documentation/refinement/REFINEMENT_WORKFLOWS.md#migration-guide-from-embedded-app-to-ladle
  *
  * Browser-headed tests for interactive layout refinement workflows.
  * Run with: npm run refine:interactive (opens visible browser)

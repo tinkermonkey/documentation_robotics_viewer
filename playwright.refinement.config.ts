@@ -4,19 +4,25 @@ import { defineConfig, devices } from '@playwright/test';
  * Refinement and Metrics Test Configuration
  *
  * Configuration for layout quality refinement tests and metrics reporting.
- * These tests don't require a web server for most operations - they test
- * the metrics calculation services directly.
+ * Tests execute against the Ladle component story viewer for better isolation
+ * and faster iteration cycles.
+ *
+ * Configuration details:
+ * - baseURL: http://localhost:6006 (Ladle catalog)
+ * - webServer: npm run catalog:dev (catalog development server)
+ * - testMatch: *.ladle.spec.ts (Ladle-based refinement tests)
  */
 export default defineConfig({
   testDir: './tests',
   testMatch: [
+    'refinement/**/*.ladle.spec.ts',
     'refinement/**/*.spec.ts',
     'metrics/**/*.spec.ts',
   ],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 2 : undefined,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
   reporter: [
     ['list'],
     ['html', { outputFolder: 'playwright-report/refinement' }],
@@ -30,26 +36,25 @@ export default defineConfig({
   },
 
   use: {
-    // Default baseURL for any browser tests
-    baseURL: 'http://localhost:3001',
-    trace: 'retain-on-failure',
+    // Changed from localhost:3001 (Vite embedded app) to localhost:6006 (Ladle catalog)
+    baseURL: 'http://localhost:6006',
+    trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'off',
   },
 
   projects: [
     {
-      name: 'refinement-tests',
+      name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
   ],
 
-  // Web server config - only needed for interactive tests
-  // The non-interactive tests run without a browser
+  // Web server config - starts Ladle on port 6006
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3001',
-    reuseExistingServer: true,
+    command: 'npm run catalog:dev',
+    url: 'http://localhost:6006/meta.json',
+    reuseExistingServer: !process.env.CI,
     timeout: 120000,
   },
 });

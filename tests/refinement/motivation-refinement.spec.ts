@@ -1,5 +1,15 @@
 /**
- * Motivation Layer Refinement Tests
+ * Motivation Layer Refinement Tests (DEPRECATED)
+ *
+ * ⚠️ DEPRECATION NOTICE: This test file uses the embedded app approach (port 3001).
+ *
+ * This file is no longer maintained. Please use the Ladle-based approach instead:
+ * - New test file: tests/refinement/motivation-refinement.ladle.spec.ts
+ * - Environment: http://localhost:6006 (Ladle catalog)
+ * - Benefits: 40% faster startup, better isolation, automated discovery
+ *
+ * For migration guidance, see:
+ * documentation/refinement/REFINEMENT_WORKFLOWS.md#migration-guide-from-embedded-app-to-ladle
  *
  * Automated refinement workflow tests for motivation diagrams.
  * Validates layout quality metrics and refinement iteration behavior.
