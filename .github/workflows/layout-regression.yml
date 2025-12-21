@@ -47,17 +47,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Cache Playwright browsers
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
-
-      - name: Build catalog
-        run: npm run catalog:build
-
-      - name: Start Ladle dev server
-        run: npm run catalog:dev &
-
-      - name: Wait for Ladle readiness
-        run: npx wait-on http://localhost:6006/meta.json --timeout 120000
 
       - name: Run Ladle-based refinement tests (shard ${{ matrix.shard }}/4)
         run: npm run test:refinement:ladle -- --shard=${{ matrix.shard }}/4
@@ -93,20 +92,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Cache Playwright browsers
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Build embedded app
-        run: npm run build:embedded
-
-      - name: Start embedded app dev server
-        run: npm run dev &
-
-      - name: Wait for server readiness
-        run: npx wait-on http://localhost:3001 --timeout 120000
-
       - name: Run legacy refinement tests
-        run: npm run test:refinement:legacy -- --base-url=http://localhost:3001
+        run: npm run test:refinement:legacy
 
       - name: Upload test results
         if: always()
@@ -137,10 +135,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-
-      - name: Download baseline artifacts
+      - name: Cache Playwright browsers
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}\n          restore-keys: |\n            ${{ runner.os }}-playwright-\n\n      - name: Install Playwright browsers\n        run: npx playwright install --with-deps chromium\n\n      - name: Download baseline artifacts
         uses: dawidd6/action-download-artifact@v3
         with:
           workflow: layout-regression.yml
