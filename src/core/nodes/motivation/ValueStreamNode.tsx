@@ -1,7 +1,10 @@
 import React from 'react';
-import { Node, Handle, Position, NodeProps } from '@xyflow/react';
+import { Handle, Position } from '@xyflow/react';
 import { RelationshipBadge } from './RelationshipBadge';
 import { ValueStreamNodeData } from '../../types/reactflow';
+
+export const VALUE_STREAM_NODE_WIDTH = 200;
+export const VALUE_STREAM_NODE_HEIGHT = 100;
 
 /**
  * ValueStreamNode - Represents value streams in the motivation layer
@@ -13,7 +16,7 @@ import { ValueStreamNodeData } from '../../types/reactflow';
  * - Changeset operation styling support
  * - Accessibility: Full ARIA labeling for screen readers
  */
-export const ValueStreamNode = React.memo(({ data, selected }: NodeProps<Node<ValueStreamNodeData>>) => {
+export const ValueStreamNode = React.memo(({ data, selected, id: _id }: { data: ValueStreamNodeData; selected?: boolean; id?: string }) => {
   const { label, fill = '#dbeafe', stroke = '#3b82f6', stageCount = 0, changesetOperation } = data;
 
   // Changeset styling

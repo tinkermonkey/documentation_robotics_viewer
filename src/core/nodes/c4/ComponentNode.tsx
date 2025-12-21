@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Handle, Position, NodeProps , Node} from '@xyflow/react';
+import { Handle, Position } from '@xyflow/react';
 import { C4ComponentNodeData } from '../../types/reactflow';
 import { RelationshipBadge } from '../motivation/RelationshipBadge';
 
@@ -36,7 +36,7 @@ const roleConfig: Record<string, { icon: string; color: string }> = {
  * - Semantic zoom support
  * - Changeset status visualization
  */
-export const ComponentNode = memo(({ data }: NodeProps<Node<C4ComponentNodeData>>) => {
+export const ComponentNode = memo(({ data, id: _id }: { data: C4ComponentNodeData; id?: string }) => {
   const detailLevel = data.detailLevel || 'detailed';
   const role = data.role || '';
   const roleConfigEntry = roleConfig[role] || { icon: '📦', color: '#6b7280' };

@@ -1,0 +1,104 @@
+import type { StoryDefault, Story } from '@ladle/react';
+import { Position, MarkerType } from '@xyflow/react';
+import { RealizesEdge } from './RealizesEdge';
+import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
+
+export default {
+  title: 'Edges / Motivation / RealizesEdge',
+  decorators: [withReactFlowDecorator({ width: 400, height: 200, showBackground: true })],
+} satisfies StoryDefault;
+
+export const Default: Story = () => (
+  <RealizesEdge
+    id="realizes-1"
+    source="goal-1"
+    target="requirement-1"
+    sourceX={50}
+    sourceY={50}
+    targetX={350}
+    targetY={150}
+    sourcePosition={Position.Right}
+    targetPosition={Position.Left}
+    markerEnd={MarkerType.ArrowClosed}
+  />
+);
+
+export const Animated: Story = () => (
+  <RealizesEdge
+    id="realizes-2"
+    source="goal-2"
+    target="requirement-2"
+    sourceX={50}
+    sourceY={50}
+    targetX={350}
+    targetY={150}
+    sourcePosition={Position.Right}
+    targetPosition={Position.Left}
+    animated={true}
+    markerEnd={MarkerType.ArrowClosed}
+  />
+);
+
+export const WithLabel: Story = () => (
+  <RealizesEdge
+    id="realizes-3"
+    source="goal-3"
+    target="requirement-3"
+    sourceX={50}
+    sourceY={50}
+    targetX={350}
+    targetY={150}
+    sourcePosition={Position.Right}
+    targetPosition={Position.Left}
+    label="realizes"
+    markerEnd={MarkerType.ArrowClosed}
+  />
+);
+
+export const ChangesetAdd: Story = () => (
+  <RealizesEdge
+    id="realizes-4"
+    source="goal-4"
+    target="requirement-4"
+    sourceX={50}
+    sourceY={50}
+    targetX={350}
+    targetY={150}
+    sourcePosition={Position.Right}
+    targetPosition={Position.Left}
+    data={{ changesetOperation: 'add' }}
+    markerEnd={MarkerType.ArrowClosed}
+  />
+);
+
+export const ChangesetUpdate: Story = () => (
+  <RealizesEdge
+    id="realizes-5"
+    source="goal-5"
+    target="requirement-5"
+    sourceX={50}
+    sourceY={50}
+    targetX={350}
+    targetY={150}
+    sourcePosition={Position.Right}
+    targetPosition={Position.Left}
+    data={{ changesetOperation: 'update' }}
+    markerEnd={MarkerType.ArrowClosed}
+  />
+);
+
+export const ChangesetDelete: Story = () => (
+  <RealizesEdge
+    id="realizes-6"
+    source="goal-6"
+    target="requirement-6"
+    sourceX={50}
+    sourceY={50}
+    targetX={350}
+    targetY={150}
+    sourcePosition={Position.Right}
+    targetPosition={Position.Left}
+    data={{ changesetOperation: 'delete' }}
+    markerEnd={MarkerType.ArrowClosed}
+  />
+);

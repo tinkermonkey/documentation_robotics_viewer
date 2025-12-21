@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Handle, Position, NodeProps , Node} from '@xyflow/react';
+import { Handle, Position } from '@xyflow/react';
 import { BusinessProcessNodeData } from '../types/reactflow';
 import { useBusinessLayerStore } from '../../stores/businessLayerStore';
 
@@ -22,9 +22,9 @@ const NODE_TRANSITION_DURATION_MS = 200;
  * Displays business processes with metadata (owner, criticality, lifecycle, subprocess count)
  * Supports expand/collapse for processes with subprocesses
  */
-export const BusinessProcessNode = memo(({ data, id }: NodeProps<Node<BusinessProcessNodeData>>) => {
+export const BusinessProcessNode = memo(({ data, id }: { data: BusinessProcessNodeData; id?: string }) => {
   const { expandedNodes, toggleNodeExpanded } = useBusinessLayerStore();
-  const isExpanded = expandedNodes.has(id);
+  const isExpanded = id ? expandedNodes.has(id) : false;
   const hasSubprocesses = data.subprocessCount && data.subprocessCount > 0;
 
   // Calculate dynamic height when expanded
@@ -103,7 +103,7 @@ export const BusinessProcessNode = memo(({ data, id }: NodeProps<Node<BusinessPr
           <button
             onClick={(e) => {
               e.stopPropagation();
-              toggleNodeExpanded(id);
+              if (id) toggleNodeExpanded(id);
             }}
             aria-label={isExpanded ? 'Collapse subprocesses' : 'Expand subprocesses'}
             aria-expanded={isExpanded}

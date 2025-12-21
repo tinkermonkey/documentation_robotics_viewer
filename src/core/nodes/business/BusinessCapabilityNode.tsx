@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Handle, Position, NodeProps , Node} from '@xyflow/react';
+import { Handle, Position } from '@xyflow/react';
 import { BusinessCapabilityNodeData } from '../../types/reactflow';
 
 /**
@@ -12,7 +12,7 @@ export const BUSINESS_CAPABILITY_NODE_HEIGHT = 70;
  * Business Capability Node Component for React Flow
  * Displays business capabilities with metadata (owner, criticality, lifecycle)
  */
-export const BusinessCapabilityNode = memo(({ data }: NodeProps<Node<BusinessCapabilityNodeData>>) => {
+export const BusinessCapabilityNode = memo(({ data, id: _id }: { data: BusinessCapabilityNodeData; id?: string }) => {
   return (
     <div
       role="article"

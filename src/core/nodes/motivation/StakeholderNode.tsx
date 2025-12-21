@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Handle, Position, NodeProps, Node } from '@xyflow/react';
+import { Handle, Position } from '@xyflow/react';
 import { StakeholderNodeData } from '../../types/reactflow';
 import { RelationshipBadge } from './RelationshipBadge';
 
@@ -13,7 +13,7 @@ export const STAKEHOLDER_NODE_HEIGHT = 120;
  * Stakeholder Node Component for Motivation Layer
  * Displays stakeholder elements with hexagon-inspired visual and type indicator
  */
-export const StakeholderNode = memo(({ data }: NodeProps<Node<StakeholderNodeData>>) => {
+export const StakeholderNode = memo(({ data, id: _id }: { data: StakeholderNodeData; id?: string }) => {
   // Apply changeset styling if present
   let borderColor = data.stroke || '#7c3aed';
   let backgroundColor = data.fill || '#f3e8ff';

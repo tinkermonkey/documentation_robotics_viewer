@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Handle, Position, NodeProps , Node} from '@xyflow/react';
+import { Handle, Position } from '@xyflow/react';
 import { C4ContainerNodeData } from '../../types/reactflow';
 import { RelationshipBadge } from '../motivation/RelationshipBadge';
 
@@ -32,7 +32,7 @@ const containerTypeConfig: Record<string, { icon: string; color: string }> = {
  * - Semantic zoom support (minimal, standard, detailed)
  * - Changeset status visualization
  */
-export const ContainerNode = memo(({ data }: NodeProps<Node<C4ContainerNodeData>>) => {
+export const ContainerNode = memo(({ data, id: _id }: { data: C4ContainerNodeData; id?: string }) => {
   const detailLevel = data.detailLevel || 'detailed';
   const containerType = data.containerType || 'other';
   const typeConfig = containerTypeConfig[containerType] || containerTypeConfig.other;

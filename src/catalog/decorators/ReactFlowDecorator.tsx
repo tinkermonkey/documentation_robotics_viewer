@@ -1,6 +1,6 @@
 import { ReactFlowProvider, ReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import type { ReactNode } from 'react';
+import type { ReactElement } from 'react';
 
 /**
  * Options for ReactFlowDecorator
@@ -48,7 +48,7 @@ export const withReactFlowDecorator = (options: ReactFlowDecoratorOptions = {}) 
     nodesDraggable = false
   } = options;
 
-  return (Story: React.ComponentType<any>): ReactNode => (
+  return (Story: React.ComponentType<any>): ReactElement => (
     <ReactFlowProvider>
       <div
         style={{

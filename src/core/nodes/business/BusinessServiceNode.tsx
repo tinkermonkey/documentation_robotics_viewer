@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Handle, Position, NodeProps , Node} from '@xyflow/react';
+import { Handle, Position } from '@xyflow/react';
 import { BusinessServiceNodeData } from '../../types/reactflow';
 
 /**
@@ -12,7 +12,7 @@ export const BUSINESS_SERVICE_NODE_HEIGHT = 90;
  * Business Service Node Component for React Flow
  * Displays business services with metadata (owner, criticality, lifecycle)
  */
-export const BusinessServiceNode = memo(({ data }: NodeProps<Node<BusinessServiceNodeData>>) => {
+export const BusinessServiceNode = memo(({ data, id: _id }: { data: BusinessServiceNodeData; id?: string }) => {
   return (
     <div
       role="article"

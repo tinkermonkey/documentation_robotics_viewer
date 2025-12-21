@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Handle, Position, NodeProps, Node } from '@xyflow/react';
+import { Handle, Position } from '@xyflow/react';
 import { ConstraintNodeData } from '../../types/reactflow';
 import { RelationshipBadge } from './RelationshipBadge';
 
@@ -13,7 +13,7 @@ export const CONSTRAINT_NODE_HEIGHT = 110;
  * Constraint Node Component for Motivation Layer
  * Displays constraint elements with negotiability indicator
  */
-export const ConstraintNode = memo(({ data }: NodeProps<Node<ConstraintNodeData>>) => {
+export const ConstraintNode = memo(({ data, id: _id }: { data: ConstraintNodeData; id?: string }) => {
   // Apply changeset styling if present
   let borderColor = data.stroke || '#dc2626';
   let backgroundColor = data.fill || '#fee2e2';
