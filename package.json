@@ -23,6 +23,11 @@
     "test:auth": "playwright test --config=playwright.auth.config.ts",
     "test:auth:ui": "playwright test --config=playwright.auth.config.ts --ui",
     "test:auth:debug": "playwright test --config=playwright.auth.config.ts --debug",
+    "test:refinement:ladle": "playwright test tests/refinement/*.ladle.spec.ts --config=playwright.refinement.config.ts",
+    "test:refinement:ladle:motivation": "playwright test tests/refinement/motivation-refinement.ladle.spec.ts --config=playwright.refinement.config.ts",
+    "test:refinement:ladle:business": "playwright test tests/refinement/business-refinement.ladle.spec.ts --config=playwright.refinement.config.ts",
+    "test:refinement:legacy": "playwright test tests/refinement/*.spec.ts --config=playwright.refinement.config.ts",
+    "test:refinement:all": "npm run test:refinement:ladle && npm run test:refinement:legacy",
     "refine:motivation": "playwright test tests/refinement/motivation-refinement.spec.ts --config=playwright.refinement.config.ts",
     "refine:business": "playwright test tests/refinement/business-refinement.spec.ts --config=playwright.refinement.config.ts",
     "refine:c4": "playwright test tests/refinement/c4-refinement.spec.ts --config=playwright.refinement.config.ts",
@@ -81,6 +86,7 @@
     "tailwindcss": "^4.1.17",
     "tslib": "^2.8.1",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4"
+    "vite": "^7.2.4",
+    "wait-on": "^7.2.0"
   }
 }
