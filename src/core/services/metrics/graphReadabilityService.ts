@@ -69,8 +69,22 @@ const greadability: GreadabilityFunction = greadabilityFn as GreadabilityFunctio
 
 /**
  * Supported diagram types for metrics calculation
+ * Includes all 12 architecture layers plus C4 and cross-layer diagrams
  */
-export type DiagramType = 'motivation' | 'business' | 'c4';
+export type DiagramType =
+  | 'motivation'
+  | 'business'
+  | 'security'
+  | 'application'
+  | 'technology'
+  | 'api'
+  | 'datamodel'
+  | 'datastore'
+  | 'ux'
+  | 'navigation'
+  | 'apm'
+  | 'crosslayer'
+  | 'c4';
 
 /**
  * Supported layout algorithm types
@@ -243,6 +257,96 @@ const DEFAULT_WEIGHTS: Record<DiagramType, MetricWeights> = {
     angularResolutionDev: 0.10,
     edgeLengthUniformity: 0.25,
     nodeOcclusion: 0.15,
+  },
+  // Security layer prioritizes crossing minimization and separation
+  security: {
+    crossingNumber: 0.35,
+    crossingAngle: 0.12,
+    angularResolutionMin: 0.18,
+    angularResolutionDev: 0.12,
+    edgeLengthUniformity: 0.15,
+    nodeOcclusion: 0.08,
+  },
+  // Application layer emphasizes component relationships and clarity
+  application: {
+    crossingNumber: 0.28,
+    crossingAngle: 0.12,
+    angularResolutionMin: 0.18,
+    angularResolutionDev: 0.12,
+    edgeLengthUniformity: 0.20,
+    nodeOcclusion: 0.10,
+  },
+  // Technology layer prioritizes technology stack clarity and relationships
+  technology: {
+    crossingNumber: 0.27,
+    crossingAngle: 0.11,
+    angularResolutionMin: 0.17,
+    angularResolutionDev: 0.11,
+    edgeLengthUniformity: 0.22,
+    nodeOcclusion: 0.12,
+  },
+  // API layer emphasizes endpoint relationships and data flow
+  api: {
+    crossingNumber: 0.32,
+    crossingAngle: 0.13,
+    angularResolutionMin: 0.17,
+    angularResolutionDev: 0.13,
+    edgeLengthUniformity: 0.15,
+    nodeOcclusion: 0.10,
+  },
+  // Data Model layer focuses on entity relationships and clarity
+  datamodel: {
+    crossingNumber: 0.25,
+    crossingAngle: 0.15,
+    angularResolutionMin: 0.15,
+    angularResolutionDev: 0.15,
+    edgeLengthUniformity: 0.20,
+    nodeOcclusion: 0.10,
+  },
+  // Datastore layer emphasizes storage relationships and organization
+  datastore: {
+    crossingNumber: 0.28,
+    crossingAngle: 0.12,
+    angularResolutionMin: 0.16,
+    angularResolutionDev: 0.12,
+    edgeLengthUniformity: 0.22,
+    nodeOcclusion: 0.10,
+  },
+  // UX layer prioritizes user flow clarity and interaction visibility
+  ux: {
+    crossingNumber: 0.20,
+    crossingAngle: 0.10,
+    angularResolutionMin: 0.15,
+    angularResolutionDev: 0.10,
+    edgeLengthUniformity: 0.30,
+    nodeOcclusion: 0.15,
+  },
+  // Navigation layer emphasizes page/screen hierarchy and flow
+  navigation: {
+    crossingNumber: 0.22,
+    crossingAngle: 0.10,
+    angularResolutionMin: 0.15,
+    angularResolutionDev: 0.10,
+    edgeLengthUniformity: 0.28,
+    nodeOcclusion: 0.15,
+  },
+  // APM/Observability layer prioritizes metric clarity and relationships
+  apm: {
+    crossingNumber: 0.30,
+    crossingAngle: 0.12,
+    angularResolutionMin: 0.15,
+    angularResolutionDev: 0.12,
+    edgeLengthUniformity: 0.18,
+    nodeOcclusion: 0.13,
+  },
+  // Cross-layer diagrams prioritize clarity across multiple abstraction levels
+  crosslayer: {
+    crossingNumber: 0.32,
+    crossingAngle: 0.14,
+    angularResolutionMin: 0.16,
+    angularResolutionDev: 0.14,
+    edgeLengthUniformity: 0.12,
+    nodeOcclusion: 0.12,
   },
   // C4 diagrams prioritize clear container relationships and minimal crossings
   c4: {

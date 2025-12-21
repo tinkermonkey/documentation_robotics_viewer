@@ -11,13 +11,17 @@ import {
   calculateLayoutQuality,
   DiagramType,
 } from '../../src/core/services/metrics/graphReadabilityService';
-import { Node, Edge } from '@xyflow/react';
 import * as fs from 'fs';
 import * as path from 'path';
 import {
   discoverRefinementStories,
   getStoryUrl,
 } from './helpers/storyDiscovery';
+import {
+  extractNodePositions,
+  extractEdges,
+  positionsToNodes,
+} from './helpers/domExtraction';
 
 const DIAGRAM_TYPE: DiagramType = 'datastore';
 const SCREENSHOT_DIR = 'test-results/refinement/datastore';
@@ -28,51 +32,6 @@ test.beforeAll(async () => {
     fs.mkdirSync(dir, { recursive: true });
   }
 });
-
-async function extractNodePositions(page): Promise<Array<{ x: number; y: number; width: number; height: number }>> {
-  const nodeElements = await page.locator('.react-flow__node').all();
-  const positions: Array<{ x: number; y: number; width: number; height: number }> = [];
-
-  for (const nodeElement of nodeElements) {
-    const box = await nodeElement.boundingBox();
-    if (box) {
-      positions.push({
-        x: box.x,
-        y: box.y,
-        width: box.width,
-        height: box.height,
-      });
-    }
-  }
-
-  return positions;
-}
-
-async function extractEdges(page): Promise<Edge[]> {
-  const edgeElements = await page.locator('.react-flow__edge').all();
-  const edges: Edge[] = [];
-
-  for (let i = 0; i < edgeElements.length; i++) {
-    edges.push({
-      id: `edge-${i}`,
-      source: `node-${i}`,
-      target: `node-${(i + 1) % edgeElements.length}`,
-      type: 'default',
-    });
-  }
-
-  return edges;
-}
-
-function positionsToNodes(positions: Array<{ x: number; y: number; width: number; height: number }>): Node[] {
-  return positions.map((pos, idx) => ({
-    id: `node-${idx}`,
-    position: { x: pos.x, y: pos.y },
-    data: { label: `Node ${idx}` },
-    width: pos.width,
-    height: pos.height,
-  }));
-}
 
 test.describe('Datastore Layout Refinement (Ladle)', () => {
   test('should render small datastore graph from story', async ({ page }) => {

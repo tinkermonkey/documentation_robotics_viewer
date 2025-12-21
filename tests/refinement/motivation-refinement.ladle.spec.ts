@@ -12,17 +12,18 @@ import { test, expect } from '@playwright/test';
 import {
   calculateLayoutQuality,
   DiagramType,
-  LayoutType,
 } from '../../src/core/services/metrics/graphReadabilityService';
-import { Node, Edge } from '@xyflow/react';
 import * as fs from 'fs';
 import * as path from 'path';
 import {
   discoverRefinementStories,
   getStoryUrl,
-  discoverStoriesByDiagramType,
-  getStoryQualityThreshold,
 } from './helpers/storyDiscovery';
+import {
+  extractNodePositions,
+  extractEdges,
+  positionsToNodes,
+} from './helpers/domExtraction';
 
 // Test configuration
 const DIAGRAM_TYPE: DiagramType = 'motivation';
@@ -36,62 +37,6 @@ test.beforeAll(async () => {
     fs.mkdirSync(dir, { recursive: true });
   }
 });
-
-/**
- * Extract node positions from rendered React Flow nodes in the DOM
- * Returns array of node position data for layout quality calculation
- */
-async function extractNodePositions(page): Promise<Array<{ x: number; y: number; width: number; height: number }>> {
-  const nodeElements = await page.locator('.react-flow__node').all();
-  const positions: Array<{ x: number; y: number; width: number; height: number }> = [];
-
-  for (const nodeElement of nodeElements) {
-    const box = await nodeElement.boundingBox();
-    if (box) {
-      positions.push({
-        x: box.x,
-        y: box.y,
-        width: box.width,
-        height: box.height,
-      });
-    }
-  }
-
-  return positions;
-}
-
-/**
- * Extract edges from rendered React Flow edges in the DOM
- * Returns array of edge objects for layout quality calculation
- */
-async function extractEdges(page): Promise<Edge[]> {
-  const edgeElements = await page.locator('.react-flow__edge').all();
-  const edges: Edge[] = [];
-
-  for (let i = 0; i < edgeElements.length; i++) {
-    edges.push({
-      id: `edge-${i}`,
-      source: `node-${i}`,
-      target: `node-${(i + 1) % edgeElements.length}`,
-      type: 'default',
-    });
-  }
-
-  return edges;
-}
-
-/**
- * Convert node positions to React Flow node format for quality calculation
- */
-function positionsToNodes(positions: Array<{ x: number; y: number; width: number; height: number }>): Node[] {
-  return positions.map((pos, idx) => ({
-    id: `node-${idx}`,
-    position: { x: pos.x, y: pos.y },
-    data: { label: `Node ${idx}` },
-    width: pos.width,
-    height: pos.height,
-  }));
-}
 
 test.describe('Motivation Layout Refinement (Ladle)', () => {
   test('should render small motivation graph from story', async ({ page }) => {
