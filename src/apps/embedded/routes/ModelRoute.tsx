@@ -78,10 +78,11 @@ export default function ModelRoute() {
   // Handle layer selection and update URL
   const handleLayerSelect = (layerId: string | null) => {
     setSelectedLayerId(layerId);
-    
+
     // Update URL with only the layer parameter (token stays in page URL)
     navigate({
-      search: layerId ? { layer: layerId } : {}
+      to: '.',
+      search: { layer: layerId || undefined }
     });
   };
 

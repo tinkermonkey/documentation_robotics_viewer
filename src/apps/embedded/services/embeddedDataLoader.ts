@@ -23,44 +23,6 @@ function getCookieToken(): string | null {
   }
 }
 
-function setPersistentToken(token: string) {
-  try {
-    sessionStorage.setItem(AUTH_STORAGE_KEY, token);
-  } catch (_err) {
-    // ignore storage access errors
-  }
-
-  try {
-    localStorage.setItem(AUTH_STORAGE_KEY, token);
-  } catch (_err) {
-    // ignore storage access errors
-  }
-
-  if (typeof document !== 'undefined') {
-    // Set cookie attributes based on protocol to avoid browser rejection warnings
-    // - On HTTPS: use SameSite=None; Secure
-    // - On HTTP (localhost dev): use SameSite=Lax (no Secure)
-    const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
-    const attrs = isHttps
-      ? 'Path=/; Max-Age=2592000; SameSite=None; Secure'
-      : 'Path=/; Max-Age=2592000; SameSite=Lax';
-    document.cookie = `${AUTH_COOKIE_NAME}=${encodeURIComponent(token)}; ${attrs}`;
-  }
-}
-
-function clearPersistentToken() {
-  try {
-    sessionStorage.removeItem(AUTH_STORAGE_KEY);
-  } catch (_err) {}
-  try {
-    localStorage.removeItem(AUTH_STORAGE_KEY);
-  } catch (_err) {}
-  if (typeof document !== 'undefined') {
-    // Expire cookie
-    document.cookie = `${AUTH_COOKIE_NAME}=; Path=/; Max-Age=0`;
-  }
-}
-
 async function ensureOk(response: Response, context: string): Promise<void> {
   if (response.ok) return;
   if (response.status === 401 || response.status === 403) {

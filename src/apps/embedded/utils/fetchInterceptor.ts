@@ -36,7 +36,7 @@ export function installFetchInterceptor() {
     }
     
     // Call original fetch with modified config
-    return originalFetch.call(this, resource, requestConfig);
+    return originalFetch(resource, requestConfig);
   } as typeof window.fetch;
   
   console.log('[FetchInterceptor] Installed - will add Authorization header to all requests');
