@@ -45,11 +45,13 @@ export async function discoverRefinementStories(page: Page): Promise<string[]> {
  */
 export function getStoryUrl(
   storyKey: string,
-  mode: 'preview' | 'full' = 'preview'
+  mode: 'preview' | 'full' = 'full'
 ): string {
   const searchParams = new URLSearchParams();
   searchParams.set('story', storyKey);
-  searchParams.set('mode', mode);
+  if (mode !== 'full') {
+    searchParams.set('mode', mode);
+  }
   return `/?${searchParams.toString()}`;
 }
 

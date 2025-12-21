@@ -31,14 +31,21 @@ export function StoryLoadedWrapper({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const checkIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isLoadedRef = useRef(false);
+  const startTimeRef = useRef<number>(0);
 
   useEffect(() => {
+    const MAX_WAIT_TIME = 30000; // 30 seconds
+    const CHECK_INTERVAL = 100; // Check every 100ms
+    startTimeRef.current = Date.now();
+
     // Check if React Flow nodes are present
     const checkLoaded = () => {
       if (!wrapperRef.current || isLoadedRef.current) return;
 
       const nodes = wrapperRef.current.querySelectorAll('.react-flow__node');
       if (nodes && nodes.length > 0) {
+        const loadTime = Date.now() - startTimeRef.current;
+        console.log(`StoryLoadedWrapper: Loaded in ${loadTime}ms with ${nodes.length} nodes`);
         isLoadedRef.current = true;
         setIsLoaded(true);
         if (checkIntervalRef.current !== null) {
@@ -46,6 +53,16 @@ export function StoryLoadedWrapper({
           checkIntervalRef.current = null;
         }
         onLayoutComplete?.();
+      } else if (Date.now() - startTimeRef.current > MAX_WAIT_TIME) {
+        // Timeout - log detailed error for debugging
+        console.error('StoryLoadedWrapper: Timeout waiting for React Flow nodes');
+        console.error('Wrapper element:', wrapperRef.current?.tagName);
+        console.error('Children count:', wrapperRef.current?.children.length);
+        console.error('Inner HTML (first 500 chars):', wrapperRef.current?.innerHTML.substring(0, 500));
+        if (checkIntervalRef.current !== null) {
+          clearInterval(checkIntervalRef.current);
+          checkIntervalRef.current = null;
+        }
       }
     };
 
@@ -55,7 +72,7 @@ export function StoryLoadedWrapper({
       checkLoaded();
       // If not loaded yet, poll until React Flow nodes appear
       if (!isLoadedRef.current) {
-        checkIntervalRef.current = setInterval(checkLoaded, 50);
+        checkIntervalRef.current = setInterval(checkLoaded, CHECK_INTERVAL);
       }
     }, 100);
 
