@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Handle, Position, NodeProps , Node} from '@xyflow/react';
+import { Handle, Position } from '@xyflow/react';
 import { C4ExternalActorNodeData } from '../../types/reactflow';
 import { RelationshipBadge } from '../motivation/RelationshipBadge';
 
@@ -29,7 +29,7 @@ const actorTypeConfig: Record<string, { icon: string; color: string }> = {
  * - Semantic zoom support
  * - Changeset status visualization
  */
-export const ExternalActorNode = memo(({ data }: NodeProps<Node<C4ExternalActorNodeData>>) => {
+export const ExternalActorNode = memo(({ data, id: _id }: { data: C4ExternalActorNodeData; id?: string }) => {
   const detailLevel = data.detailLevel || 'detailed';
   const actorType = data.actorType || 'user';
   const typeConfig = actorTypeConfig[actorType] || actorTypeConfig.user;

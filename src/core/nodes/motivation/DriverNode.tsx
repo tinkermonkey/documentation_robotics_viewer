@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Handle, Position, NodeProps, Node } from '@xyflow/react';
+import { Handle, Position } from '@xyflow/react';
 import { DriverNodeData } from '../../types/reactflow';
 import { RelationshipBadge } from './RelationshipBadge';
 
@@ -13,7 +13,7 @@ export const DRIVER_NODE_HEIGHT = 110;
  * Driver Node Component for Motivation Layer
  * Displays driver elements with category badge
  */
-export const DriverNode = memo(({ data }: NodeProps<Node<DriverNodeData>>) => {
+export const DriverNode = memo(({ data, id: _id }: { data: DriverNodeData; id?: string }) => {
   // Apply changeset styling if present
   let borderColor = data.stroke || '#ea580c';
   let backgroundColor = data.fill || '#ffedd5';

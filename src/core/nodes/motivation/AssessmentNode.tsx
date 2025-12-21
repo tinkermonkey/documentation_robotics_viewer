@@ -1,7 +1,10 @@
 import React from 'react';
-import { Node, Handle, Position, NodeProps } from '@xyflow/react';
+import { Handle, Position } from '@xyflow/react';
 import { RelationshipBadge } from './RelationshipBadge';
 import { AssessmentNodeData } from '../../types/reactflow';
+
+export const ASSESSMENT_NODE_WIDTH = 180;
+export const ASSESSMENT_NODE_HEIGHT = 100;
 
 /**
  * AssessmentNode - Represents assessments in the motivation layer
@@ -12,7 +15,7 @@ import { AssessmentNodeData } from '../../types/reactflow';
  * - Changeset operation styling support
  * - Accessibility: Full ARIA labeling for screen readers
  */
-export const AssessmentNode = React.memo(({ data, selected }: NodeProps<Node<AssessmentNodeData>>) => {
+export const AssessmentNode = React.memo(({ data, selected, id: _id }: { data: AssessmentNodeData; selected?: boolean; id?: string }) => {
   const { label, fill = '#f3e8ff', stroke = '#a855f7', rating = 0, changesetOperation } = data;
 
   // Changeset styling

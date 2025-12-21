@@ -1,7 +1,10 @@
 import React from 'react';
-import { Node, Handle, Position, NodeProps } from '@xyflow/react';
+import { Handle, Position } from '@xyflow/react';
 import { RelationshipBadge } from './RelationshipBadge';
 import { PrincipleNodeData } from '../../types/reactflow';
+
+export const PRINCIPLE_NODE_WIDTH = 180;
+export const PRINCIPLE_NODE_HEIGHT = 100;
 
 /**
  * PrincipleNode - Represents guiding principles in the motivation layer
@@ -12,7 +15,7 @@ import { PrincipleNodeData } from '../../types/reactflow';
  * - Changeset operation styling support
  * - Accessibility: Full ARIA labeling for screen readers
  */
-export const PrincipleNode = React.memo(({ data, selected }: NodeProps<Node<PrincipleNodeData>>) => {
+export const PrincipleNode = React.memo(({ data, selected, id: _id }: { data: PrincipleNodeData; selected?: boolean; id?: string }) => {
   const { label, fill = '#fef3c7', stroke = '#f59e0b', scope = 'enterprise', changesetOperation } = data;
 
   // Changeset styling

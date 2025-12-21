@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Handle, Position, NodeProps, Node } from '@xyflow/react';
+import { Handle, Position } from '@xyflow/react';
 import { RequirementNodeData } from '../../types/reactflow';
 import { RelationshipBadge } from './RelationshipBadge';
 
@@ -13,7 +13,7 @@ export const REQUIREMENT_NODE_HEIGHT = 110;
  * Requirement Node Component for Motivation Layer
  * Displays requirement elements with status indicator
  */
-export const RequirementNode = memo(({ data }: NodeProps<Node<RequirementNodeData>>) => {
+export const RequirementNode = memo(({ data, id: _id }: { data: RequirementNodeData; id?: string }) => {
   // Apply changeset styling if present
   let borderColor = data.stroke || '#2563eb';
   let backgroundColor = data.fill || '#dbeafe';

@@ -1,7 +1,10 @@
 import React from 'react';
-import { Node, Handle, Position, NodeProps } from '@xyflow/react';
+import { Handle, Position } from '@xyflow/react';
 import { RelationshipBadge } from './RelationshipBadge';
 import { AssumptionNodeData } from '../../types/reactflow';
+
+export const ASSUMPTION_NODE_WIDTH = 180;
+export const ASSUMPTION_NODE_HEIGHT = 100;
 
 /**
  * AssumptionNode - Represents assumptions in the motivation layer
@@ -13,7 +16,7 @@ import { AssumptionNodeData } from '../../types/reactflow';
  * - Changeset operation styling support
  * - Accessibility: Full ARIA labeling for screen readers
  */
-export const AssumptionNode = React.memo(({ data, selected }: NodeProps<Node<AssumptionNodeData>>) => {
+export const AssumptionNode = React.memo(({ data, selected, id: _id }: { data: AssumptionNodeData; selected?: boolean; id?: string }) => {
   const { label, fill = '#e0e7ff', stroke = '#6366f1', validationStatus = 'unvalidated', changesetOperation } = data;
 
   // Changeset styling
