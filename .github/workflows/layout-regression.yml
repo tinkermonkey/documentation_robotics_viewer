@@ -106,7 +106,7 @@ jobs:
         run: npx wait-on http://localhost:3001 --timeout 120000
 
       - name: Run legacy refinement tests
-        run: npm run test:refinement:legacy
+        run: npm run test:refinement:legacy -- --base-url=http://localhost:3001
 
       - name: Upload test results
         if: always()

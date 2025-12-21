@@ -26,7 +26,7 @@
     "test:refinement:ladle": "playwright test tests/refinement/*.ladle.spec.ts --config=playwright.refinement.config.ts",
     "test:refinement:ladle:motivation": "playwright test tests/refinement/motivation-refinement.ladle.spec.ts --config=playwright.refinement.config.ts",
     "test:refinement:ladle:business": "playwright test tests/refinement/business-refinement.ladle.spec.ts --config=playwright.refinement.config.ts",
-    "test:refinement:legacy": "playwright test tests/refinement/*.spec.ts --config=playwright.refinement.config.ts",
+    "test:refinement:legacy": "playwright test tests/refinement/motivation-refinement.spec.ts tests/refinement/business-refinement.spec.ts tests/refinement/c4-refinement.spec.ts tests/refinement/interactive-refinement.spec.ts --config=playwright.refinement.config.ts",
     "test:refinement:all": "npm run test:refinement:ladle && npm run test:refinement:legacy",
     "refine:motivation": "playwright test tests/refinement/motivation-refinement.spec.ts --config=playwright.refinement.config.ts",
     "refine:business": "playwright test tests/refinement/business-refinement.spec.ts --config=playwright.refinement.config.ts",
