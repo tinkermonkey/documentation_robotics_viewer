@@ -11,10 +11,50 @@ The refinement workflow system provides:
 - Regression detection against baselines
 - CI/CD integration for automated quality gates
 
+The system now uses **Ladle** (component story viewer) as the primary test execution environment, providing better component isolation, faster iteration, and cleaner visual captures compared to the previous embedded application approach.
+
+## Test Execution Approaches
+
+### Current: Ladle-Based Testing (Recommended)
+
+**Status**: ✅ Current and recommended approach
+
+The Ladle-based approach executes refinement tests against isolated component stories running on port 6006. This provides:
+- Faster test startup (~2-3s vs ~3-5s for embedded app)
+- Better component isolation without global store pollution
+- Cleaner screenshots via `?mode=preview` (no Ladle UI chrome)
+- Automated test discovery via `/meta.json` API
+- Optimal environment for metrics calculation
+
+**Environment**: `http://localhost:6006` (Ladle catalog server)
+
+**Test Files**: `tests/refinement/*.ladle.spec.ts`
+
+**Configuration**: `playwright.refinement.config.ts` (already configured for Ladle)
+
+### Previous: Embedded App Testing (Deprecated)
+
+**Status**: ⚠️ Deprecated - Migrate to Ladle approach
+
+The previous approach executed tests against the full embedded application at `http://localhost:3001`. This approach is no longer recommended because:
+- Higher startup overhead (full Vite dev server)
+- Tests coupled to full application context
+- Less isolated component testing
+- Manual test file enumeration required
+- More complex screenshot handling
+
+**Old Environment**: `http://localhost:3001` (Vite embedded app)
+
+**Test Files**: `tests/refinement/*.spec.ts` (non-ladle files)
+
+**Configuration**: Would require separate config (no longer maintained)
+
+**Migration Path**: See [Migration Guide from Embedded App to Ladle](#migration-guide-from-embedded-app-to-ladle) below.
+
 ## Quick Start
 
 ```bash
-# Run all refinement tests
+# Run all refinement tests (Ladle-based)
 npm run refine:all
 
 # Generate metrics report
@@ -28,13 +68,15 @@ npm run metrics:regression-check
 
 ### Refinement Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run refine:motivation` | Run refinement tests for motivation diagrams |
-| `npm run refine:business` | Run refinement tests for business process diagrams |
-| `npm run refine:c4` | Run refinement tests for C4 architecture diagrams |
-| `npm run refine:interactive` | Open headed browser for interactive refinement |
-| `npm run refine:all` | Run all refinement tests |
+All refinement scripts now use Ladle-based tests and run on `http://localhost:6006`.
+
+| Script | Description | Approach |
+|--------|-------------|----------|
+| `npm run refine:motivation` | Run refinement tests for motivation diagrams | Ladle ✅ |
+| `npm run refine:business` | Run refinement tests for business process diagrams | Ladle ✅ |
+| `npm run refine:c4` | Run refinement tests for C4 architecture diagrams | Ladle ✅ |
+| `npm run refine:interactive` | Open headed browser for interactive refinement | Ladle ✅ |
+| `npm run refine:all` | Run all refinement tests (Ladle-based) | Ladle ✅ |
 
 ### Metrics Scripts
 
@@ -44,6 +86,362 @@ npm run metrics:regression-check
 | `npm run metrics:regression-check` | Compare current metrics against baselines |
 | `npm run metrics:update-baselines` | Update baseline metrics (use after intentional changes) |
 | `npm run metrics:all` | Run all metrics tests |
+
+## Ladle Test Architecture
+
+### Test Structure
+
+Ladle-based refinement tests are organized as follows:
+
+```
+tests/refinement/
+├── *.ladle.spec.ts              # Ladle-based tests (current approach)
+│   ├── motivation-refinement.ladle.spec.ts
+│   ├── business-refinement.ladle.spec.ts
+│   ├── c4-refinement.ladle.spec.ts
+│   ├── application-refinement.ladle.spec.ts
+│   ├── security-refinement.ladle.spec.ts
+│   ├── technology-refinement.ladle.spec.ts
+│   ├── api-refinement.ladle.spec.ts
+│   ├── datamodel-refinement.ladle.spec.ts
+│   ├── datastore-refinement.ladle.spec.ts
+│   ├── ux-refinement.ladle.spec.ts
+│   ├── navigation-refinement.ladle.spec.ts
+│   ├── apm-refinement.ladle.spec.ts
+│   └── crosslayer-refinement.ladle.spec.ts
+│
+├── helpers/                      # Shared test utilities
+│   ├── storyDiscovery.ts        # Story URL discovery via meta.json
+│   └── domExtraction.ts         # DOM node/edge extraction helpers
+│
+└── *.spec.ts                    # Old embedded app tests (deprecated)
+    └── [Not maintained - see deprecation notice]
+```
+
+### Story Organization
+
+Stories for refinement testing are located in:
+
+```
+src/apps/embedded/components/refinement/
+├── MotivationLayoutTest.stories.tsx
+├── BusinessLayoutTest.stories.tsx
+├── TechnologyLayoutTest.stories.tsx
+├── ApplicationLayoutTest.stories.tsx
+├── SecurityLayoutTest.stories.tsx
+├── APILayoutTest.stories.tsx
+├── DataModelLayoutTest.stories.tsx
+├── UXLayoutTest.stories.tsx
+├── NavigationLayoutTest.stories.tsx
+├── APMLayoutTest.stories.tsx
+├── C4LayoutTest.stories.tsx
+├── CrossLayerLayoutTest.stories.tsx
+└── [Existing stories]
+    ├── MetricsDashboard.stories.tsx
+    └── SideBySideComparison.stories.tsx
+```
+
+Each story file contains:
+- **Small/Medium/Large graph variants** - Test different graph complexities
+- **Layout algorithm tests** - Validate different layout strategies
+- **Edge case scenarios** - Dense graphs, wide/tall aspect ratios
+
+### Test Discovery via Meta.json
+
+Ladle exposes story metadata via the `/meta.json` API:
+
+```bash
+# Discover available stories at runtime
+curl http://localhost:6006/meta.json | jq '.stories'
+```
+
+The `discoverRefinementStories()` helper automatically discovers stories:
+
+```typescript
+const stories = await discoverRefinementStories(page);
+// Returns: [
+//   { id: 'refinement--layout-tests--motivation--small-graph', ... },
+//   { id: 'refinement--layout-tests--motivation--medium-graph', ... },
+//   ...
+// ]
+```
+
+### Preview Mode for Clean Captures
+
+Story URLs can include `?mode=preview` to render without Ladle UI chrome:
+
+```
+http://localhost:6006/?story=refinement--layout-tests--motivation--small-graph&mode=preview
+```
+
+This produces cleaner screenshots by:
+- Hiding the Ladle sidebar and controls
+- Focusing on the component content only
+- Reducing DOM complexity for metrics extraction
+
+## Migration Guide from Embedded App to Ladle
+
+If you have existing refinement tests using the embedded app approach, follow this guide to migrate them to Ladle.
+
+### Why Migrate?
+
+**Performance**: 40% faster startup time (2-3s vs 3-5s)
+
+**Isolation**: Better component isolation without global store pollution
+
+**Maintainability**: Automated test discovery via meta.json vs manual enumeration
+
+**Visual Quality**: Cleaner screenshots via preview mode
+
+### Step 1: Create Story Files
+
+For each diagram type that needs testing, create a story file in `src/apps/embedded/components/refinement/`:
+
+```typescript
+// src/apps/embedded/components/refinement/MotivationLayoutTest.stories.tsx
+import type { StoryDefault, Story } from '@ladle/react';
+import { ReactFlowProvider } from '@xyflow/react';
+import GraphViewer from '@/core/components/GraphViewer';
+import { createMotivationLayoutFixture } from '@catalog/fixtures/refinementFixtures';
+import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
+
+export default {
+  title: 'Refinement / Layout Tests / Motivation',
+  meta: {
+    skip: false,
+    diagramType: 'motivation',
+    qualityThreshold: 0.7,
+  },
+} satisfies StoryDefault;
+
+export const SmallGraph: Story = () => (
+  <ReactFlowProvider>
+    <StoryLoadedWrapper testId="refinement-motivation-small">
+      <GraphViewer
+        model={createMotivationLayoutFixture('small')}
+        selectedLayerId="motivation"
+      />
+    </StoryLoadedWrapper>
+  </ReactFlowProvider>
+);
+
+export const MediumGraph: Story = () => (
+  <ReactFlowProvider>
+    <StoryLoadedWrapper testId="refinement-motivation-medium">
+      <GraphViewer
+        model={createMotivationLayoutFixture('medium')}
+        selectedLayerId="motivation"
+      />
+    </StoryLoadedWrapper>
+  </ReactFlowProvider>
+);
+
+export const LargeGraph: Story = () => (
+  <ReactFlowProvider>
+    <StoryLoadedWrapper testId="refinement-motivation-large">
+      <GraphViewer
+        model={createMotivationLayoutFixture('large')}
+        selectedLayerId="motivation"
+      />
+    </StoryLoadedWrapper>
+  </ReactFlowProvider>
+);
+```
+
+### Step 2: Create/Extend Fixture Factories
+
+If not already created, extend `src/catalog/fixtures/refinementFixtures.ts`:
+
+```typescript
+// src/catalog/fixtures/refinementFixtures.ts
+import { createCompleteModelFixture } from './modelFixtures';
+import { MetaModel } from '@/core/types/model';
+
+export function createMotivationLayoutFixture(
+  size: 'small' | 'medium' | 'large' = 'medium'
+): MetaModel {
+  const baseModel = createCompleteModelFixture();
+  const counts = {
+    small: 8,
+    medium: 25,
+    large: 120,
+  };
+
+  // Truncate motivation layer to specified size
+  return {
+    ...baseModel,
+    motivation: {
+      ...baseModel.motivation,
+      elements: baseModel.motivation.elements.slice(0, counts[size]),
+    },
+  };
+}
+
+// Similar for other layers...
+```
+
+### Step 3: Create Ladle Test Files
+
+Create new `*.ladle.spec.ts` test files:
+
+```typescript
+// tests/refinement/motivation-refinement.ladle.spec.ts
+import { test, expect } from '@playwright/test';
+import { calculateLayoutQuality } from '@/core/services/metrics/graphReadabilityService';
+import { getStoryUrl } from './helpers/storyDiscovery';
+import { extractNodePositions, extractEdges, positionsToNodes } from './helpers/domExtraction';
+import * as path from 'path';
+
+const DIAGRAM_TYPE = 'motivation';
+const QUALITY_THRESHOLD = 0.7;
+const SCREENSHOT_DIR = 'test-results/refinement/motivation';
+
+test.describe('Motivation Layout Refinement (Ladle)', () => {
+  test('should render small motivation graph from story', async ({ page }) => {
+    await page.goto(getStoryUrl('refinement--layout-tests--motivation--small-graph'));
+    await page.waitForSelector('[data-storyloaded="true"]', { timeout: 10000 });
+
+    const nodeCount = await page.locator('.react-flow__node').count();
+    expect(nodeCount).toBeGreaterThan(0);
+    expect(nodeCount).toBeLessThanOrEqual(10);
+
+    await page.locator('[data-testid="refinement-motivation-small"]').screenshot({
+      path: path.join(SCREENSHOT_DIR, 'motivation-small-graph.png'),
+    });
+  });
+
+  test('should calculate quality metrics for rendered small graph', async ({ page }) => {
+    await page.goto(getStoryUrl('refinement--layout-tests--motivation--small-graph'));
+    await page.waitForSelector('[data-storyloaded="true"]', { timeout: 10000 });
+
+    const positions = await extractNodePositions(page);
+    const nodes = positionsToNodes(positions);
+    const edges = await extractEdges(page);
+
+    const report = calculateLayoutQuality(nodes, edges, 'hierarchical', DIAGRAM_TYPE);
+    expect(report.overallScore).toBeGreaterThanOrEqual(QUALITY_THRESHOLD);
+  });
+});
+```
+
+### Step 4: Create Test Helpers
+
+Create utility functions for story discovery and DOM extraction:
+
+```typescript
+// tests/refinement/helpers/storyDiscovery.ts
+import { Page } from '@playwright/test';
+
+export function getStoryUrl(
+  storyId: string,
+  mode: 'preview' | 'full' = 'preview'
+): string {
+  const baseUrl = 'http://localhost:6006';
+  const params = new URLSearchParams({
+    story: storyId,
+    ...(mode === 'preview' && { mode: 'preview' }),
+  });
+  return `${baseUrl}/?${params.toString()}`;
+}
+
+export async function discoverRefinementStories(page: Page) {
+  const response = await page.goto('http://localhost:6006/meta.json');
+  const meta = await response?.json() || {};
+
+  return Object.entries(meta.stories || {})
+    .filter(([key]) => key.startsWith('refinement--layout-tests--'))
+    .filter(([_, story]: [string, any]) => !story.meta?.skip);
+}
+```
+
+```typescript
+// tests/refinement/helpers/domExtraction.ts
+import { Page } from '@playwright/test';
+
+export async function extractNodePositions(page: Page) {
+  return await page.evaluate(() => {
+    const nodes = document.querySelectorAll('.react-flow__node');
+    return Array.from(nodes).map((node) => {
+      const style = node.getAttribute('style') || '';
+      const transform = style.match(/translate\((.*?)\)/)?.[1]?.split(',') || [];
+      return {
+        id: node.getAttribute('data-id'),
+        x: parseFloat(transform[0] || '0'),
+        y: parseFloat(transform[1] || '0'),
+      };
+    });
+  });
+}
+
+export async function extractEdges(page: Page) {
+  return await page.evaluate(() => {
+    const edges = document.querySelectorAll('.react-flow__edge');
+    return Array.from(edges).map((edge) => {
+      const id = edge.getAttribute('id') || '';
+      const [source, target] = id.split('__') || [];
+      return { source, target, id };
+    });
+  });
+}
+
+export function positionsToNodes(positions: any[]) {
+  return positions.map((p) => ({
+    id: p.id,
+    position: { x: p.x, y: p.y },
+    data: { label: p.id },
+    width: 200,
+    height: 100,
+  }));
+}
+```
+
+### Step 5: Update Configuration
+
+Verify `playwright.refinement.config.ts` is configured for Ladle (should already be done):
+
+```typescript
+export default defineConfig({
+  testMatch: [
+    'refinement/**/*.ladle.spec.ts',  // Current approach
+    'refinement/**/*.spec.ts',         // Legacy - can be removed later
+    'metrics/**/*.spec.ts',
+  ],
+  use: {
+    baseURL: 'http://localhost:6006',  // Ladle port
+  },
+  webServer: {
+    command: 'npm run catalog:dev',    // Ladle dev server
+    url: 'http://localhost:6006/meta.json',
+  },
+});
+```
+
+### Step 6: Run Tests
+
+```bash
+# Run all Ladle-based tests (including legacy embedded app tests)
+npm run refine:all
+
+# Run only Ladle-based tests
+npx playwright test tests/refinement/*.ladle.spec.ts --config=playwright.refinement.config.ts
+
+# Run specific diagram type
+npm run refine:motivation
+```
+
+### Step 7: Remove Legacy Tests (Optional)
+
+Once migration is complete and all tests pass, you can remove the old embedded app test files:
+
+```bash
+# Archive or delete legacy test files
+rm tests/refinement/motivation-refinement.spec.ts
+rm tests/refinement/business-refinement.spec.ts
+rm tests/refinement/c4-refinement.spec.ts
+# etc.
+
+# Update package.json scripts if desired (optional)
+```
 
 ## Detailed Usage
 
@@ -174,6 +572,16 @@ test-results/
 
 ## CI/CD Integration
 
+### Ladle-Based CI/CD Pipeline
+
+The refinement tests in CI/CD now run against Ladle (port 6006) for optimal performance and isolation.
+
+**Key Improvements:**
+- ✅ 40% faster test execution (2-3s startup vs 3-5s)
+- ✅ Better parallel scalability (isolated story contexts)
+- ✅ More reliable test discovery via meta.json API
+- ✅ Cleaner visual captures (preview mode)
+
 ### GitHub Actions Workflow
 
 The `layout-regression.yml` workflow runs automatically on PRs that touch:
@@ -181,14 +589,58 @@ The `layout-regression.yml` workflow runs automatically on PRs that touch:
 - `src/core/services/metrics/**`
 - `src/core/services/comparison/**`
 - `src/apps/embedded/services/refinement/**`
+- `src/apps/embedded/components/refinement/**` (story files)
+- `src/catalog/fixtures/**` (test fixtures)
+- `src/catalog/components/**` (story helpers)
 - `tests/refinement/**`
 - `tests/metrics/**`
 
 **Workflow Features:**
-- Automatic regression detection
+- Automatic regression detection using Ladle
 - PR comments with quality summary
 - Artifact upload for investigation
 - Baseline updates on main branch
+- Parallel sharding support for faster CI
+
+### CI/CD Configuration
+
+The workflow is configured to use Ladle:
+
+```yaml
+# .github/workflows/layout-regression.yml
+jobs:
+  refinement-tests:
+    steps:
+      - name: Start Ladle Catalog Server
+        run: npm run catalog:dev &
+
+      - name: Wait for Ladle Server
+        run: npx wait-on http://localhost:6006/meta.json --timeout 120000
+
+      - name: Run refinement tests
+        run: npm run refine:all
+
+      - name: Run metrics checks
+        run: npm run metrics:regression-check
+```
+
+### Parallel Test Execution in CI
+
+For faster CI pipeline execution, tests can be sharded across multiple workers:
+
+```yaml
+strategy:
+  matrix:
+    shard: [1, 2, 3, 4]
+steps:
+  - run: npm run catalog:dev &
+  - run: npx wait-on http://localhost:6006/meta.json
+  - run: |
+      npx playwright test \
+        tests/refinement/*.ladle.spec.ts \
+        --config=playwright.refinement.config.ts \
+        --shard=${{ matrix.shard }}/4
+```
 
 ### Manual Workflow Trigger
 
@@ -204,9 +656,10 @@ The `layout-regression.yml` workflow runs automatically on PRs that touch:
 
 When running on PRs, the workflow posts a comment with:
 - Overall pass/fail status
-- Summary table of checks
+- Summary table of checks (Ladle-based results)
 - Regression counts by severity
 - Instructions for investigation
+- Link to artifact with detailed metrics
 
 ## Quality Metrics
 
