@@ -7,10 +7,10 @@ import { defineConfig, devices } from '@playwright/test';
  * Tests execute against the Ladle component story viewer for better isolation
  * and faster iteration cycles.
  *
- * Phase 1: Ladle-based refinement tests
+ * Configuration details:
  * - baseURL: http://localhost:6006 (Ladle catalog)
- * - webServer: npm run catalog:dev
- * - testMatch: *.ladle.spec.ts (new Ladle-based tests)
+ * - webServer: npm run catalog:dev (catalog development server)
+ * - testMatch: *.ladle.spec.ts (Ladle-based refinement tests)
  */
 export default defineConfig({
   testDir: './tests',

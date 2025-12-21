@@ -30,14 +30,16 @@ export function StoryLoadedWrapper({
   const [isLoaded, setIsLoaded] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const checkIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const isLoadedRef = useRef(false);
 
   useEffect(() => {
     // Check if React Flow nodes are present
     const checkLoaded = () => {
-      if (!wrapperRef.current) return;
+      if (!wrapperRef.current || isLoadedRef.current) return;
 
       const nodes = wrapperRef.current.querySelectorAll('.react-flow__node');
       if (nodes && nodes.length > 0) {
+        isLoadedRef.current = true;
         setIsLoaded(true);
         if (checkIntervalRef.current !== null) {
           clearInterval(checkIntervalRef.current);
@@ -52,7 +54,7 @@ export function StoryLoadedWrapper({
     const initialDelay = setTimeout(() => {
       checkLoaded();
       // If not loaded yet, poll until React Flow nodes appear
-      if (!isLoaded) {
+      if (!isLoadedRef.current) {
         checkIntervalRef.current = setInterval(checkLoaded, 50);
       }
     }, 100);
@@ -64,7 +66,7 @@ export function StoryLoadedWrapper({
         checkIntervalRef.current = null;
       }
     };
-  }, [isLoaded, onLayoutComplete]);
+  }, [onLayoutComplete]);
 
   return (
     <div
@@ -76,3 +78,5 @@ export function StoryLoadedWrapper({
     </div>
   );
 }
+
+StoryLoadedWrapper.displayName = 'StoryLoadedWrapper';
