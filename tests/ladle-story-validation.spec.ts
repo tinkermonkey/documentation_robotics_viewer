@@ -1,0 +1,212 @@
+/**
+ * Ladle Story Validation Test Suite
+ *
+ * Comprehensive test suite that validates ALL Ladle stories in the catalog.
+ * Each story is tested individually to ensure it loads without errors.
+ *
+ * Features:
+ * - Automatically discovers all stories from Ladle's meta.json
+ * - Creates one test per story
+ * - Validates story renders without console errors
+ * - Checks for React error boundaries
+ * - Verifies no uncaught exceptions
+ *
+ * Run with: npx playwright test tests/ladle-story-validation.spec.ts --config=playwright.refinement.config.ts
+ */
+
+import { test, expect, Page } from '@playwright/test';
+import type { ConsoleMessage } from '@playwright/test';
+
+interface StoryMetadata {
+  name: string;
+  levels: string[];
+  filePath: string;
+  namedExport: string;
+  meta: Record<string, unknown>;
+}
+
+interface MetaJson {
+  about: {
+    homepage: string;
+    github: string;
+    version: number;
+  };
+  stories: Record<string, StoryMetadata>;
+}
+
+/**
+ * Formats a story key into a readable test name
+ */
+function formatTestName(storyKey: string, metadata: StoryMetadata): string {
+  const path = [...metadata.levels, metadata.name].join(' / ');
+  return `${path}`;
+}
+
+/**
+ * Validates a single story by loading it and checking for errors
+ */
+async function validateStory(
+  page: Page,
+  storyKey: string,
+  metadata: StoryMetadata
+): Promise<void> {
+  const testName = formatTestName(storyKey, metadata);
+  const consoleErrors: string[] = [];
+  const pageErrors: string[] = [];
+
+  // Track console errors
+  const consoleHandler = (msg: ConsoleMessage) => {
+    if (msg.type() === 'error') {
+      const text = msg.text();
+      // Filter out known acceptable warnings
+      if (
+        !text.includes('React does not recognize') &&
+        !text.includes('Warning: ') &&
+        !text.includes('DevTools') &&
+        !text.includes('Download the React DevTools')
+      ) {
+        consoleErrors.push(text);
+      }
+    }
+  };
+
+  // Track page errors
+  const errorHandler = (error: Error) => {
+    pageErrors.push(error.message);
+  };
+
+  page.on('console', consoleHandler);
+  page.on('pageerror', errorHandler);
+
+  try {
+    // Navigate to the story
+    const url = `/?story=${storyKey}&mode=preview`;
+    const response = await page.goto(url, {
+      waitUntil: 'networkidle',
+      timeout: 30000,
+    });
+
+    // Verify navigation succeeded
+    expect(response?.status(), `Story "${testName}" failed to load`).toBe(200);
+
+    // Wait for React to render
+    await page.waitForTimeout(1000);
+
+    // Check for React error boundaries
+    const errorBoundary = await page.locator('[data-error-boundary]').count();
+    expect(
+      errorBoundary,
+      `Story "${testName}" triggered an error boundary`
+    ).toBe(0);
+
+    // Verify no console errors
+    if (consoleErrors.length > 0) {
+      console.error(`❌ Console errors in "${testName}":`);
+      consoleErrors.forEach((err) => console.error(`   - ${err}`));
+    }
+
+    expect(
+      consoleErrors.length,
+      `Story "${testName}" produced ${consoleErrors.length} console error(s): ${consoleErrors.join('; ')}`
+    ).toBe(0);
+
+    // Verify no uncaught exceptions
+    expect(
+      pageErrors.length,
+      `Story "${testName}" threw ${pageErrors.length} uncaught exception(s): ${pageErrors.join('; ')}`
+    ).toBe(0);
+
+    // Story-specific validations based on type
+    if (
+      metadata.levels.includes('Nodes') ||
+      metadata.levels.includes('Edges')
+    ) {
+      // For node/edge stories, verify SVG elements render
+      const svgElements = await page.locator('svg').count();
+      expect(
+        svgElements,
+        `Node/Edge story "${testName}" should render SVG elements`
+      ).toBeGreaterThan(0);
+    }
+
+    if (
+      metadata.levels.includes('Panels') ||
+      metadata.levels.includes('Components')
+    ) {
+      // For component stories, verify they render something
+      const hasContent = await page.locator('body *').count();
+      expect(
+        hasContent,
+        `Component story "${testName}" should render content`
+      ).toBeGreaterThan(0);
+    }
+  } finally {
+    // Clean up listeners
+    page.off('console', consoleHandler);
+    page.off('pageerror', errorHandler);
+  }
+}
+
+/**
+ * Main test suite - generates one test per story
+ */
+test.describe('Ladle Story Validation', () => {
+  let allStories: Record<string, StoryMetadata> = {};
+  let storyKeys: string[] = [];
+
+  test.beforeAll(async ({ request }) => {
+    // Fetch all stories from Ladle's meta.json
+    const response = await request.get('http://localhost:6006/meta.json');
+    expect(response.ok()).toBeTruthy();
+
+    const meta: MetaJson = await response.json();
+    allStories = meta.stories;
+    storyKeys = Object.keys(allStories);
+
+    console.log(`\n📚 Discovered ${storyKeys.length} stories to validate\n`);
+  });
+
+  // Generate individual tests for each story
+  test('validate all stories', async ({ page }) => {
+    // This will run through all stories sequentially
+    const results: { story: string; status: 'pass' | 'fail'; error?: string }[] = [];
+
+    for (const storyKey of storyKeys) {
+      const metadata = allStories[storyKey];
+      const testName = formatTestName(storyKey, metadata);
+
+      try {
+        await validateStory(page, storyKey, metadata);
+        results.push({ story: testName, status: 'pass' });
+        console.log(`  ✅ ${testName}`);
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : String(error);
+        results.push({ story: testName, status: 'fail', error: errorMsg });
+        console.error(`  ❌ ${testName}: ${errorMsg}`);
+      }
+    }
+
+    // Generate summary report
+    const passed = results.filter((r) => r.status === 'pass').length;
+    const failed = results.filter((r) => r.status === 'fail').length;
+
+    console.log(`\n${'='.repeat(60)}`);
+    console.log(`📊 Story Validation Summary`);
+    console.log(`${'='.repeat(60)}`);
+    console.log(`Total Stories: ${results.length}`);
+    console.log(`✅ Passed: ${passed}`);
+    console.log(`❌ Failed: ${failed}`);
+    console.log(`${'='.repeat(60)}\n`);
+
+    if (failed > 0) {
+      console.log('Failed Stories:');
+      results
+        .filter((r) => r.status === 'fail')
+        .forEach((r) => console.log(`  - ${r.story}: ${r.error}`));
+      console.log('');
+    }
+
+    // Fail the test if any stories failed
+    expect(failed, `${failed} stories failed validation`).toBe(0);
+  });
+});

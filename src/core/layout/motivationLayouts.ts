@@ -4,6 +4,7 @@
  */
 
 import { MotivationGraph } from '../../apps/embedded/types/motivationGraph';
+import * as dagre from 'dagre';
 
 export interface Position {
   x: number;
@@ -216,8 +217,7 @@ export function hierarchicalLayout(
 
   console.log('[HierarchicalLayout] Starting hierarchical layout with', graph.nodes.size, 'nodes');
 
-  // Import dagre dynamically
-  const dagre = require('dagre');
+  // Use dagre import
   const g = new dagre.graphlib.Graph();
 
   // Configure graph
@@ -284,11 +284,14 @@ export function hierarchicalLayout(
         y: node.y,
       });
 
-      const dimensions = getNodeDimensions(graph.nodes.get(nodeId)!.element.type);
-      minX = Math.min(minX, node.x - dimensions.width / 2);
-      minY = Math.min(minY, node.y - dimensions.height / 2);
-      maxX = Math.max(maxX, node.x + dimensions.width / 2);
-      maxY = Math.max(maxY, node.y + dimensions.height / 2);
+      const graphNode = graph.nodes.get(nodeId);
+      if (graphNode) {
+        const dimensions = getNodeDimensions(graphNode.element.type);
+        minX = Math.min(minX, node.x - dimensions.width / 2);
+        minY = Math.min(minY, node.y - dimensions.height / 2);
+        maxX = Math.max(maxX, node.x + dimensions.width / 2);
+        maxY = Math.max(maxY, node.y + dimensions.height / 2);
+      }
     }
   }
 
@@ -300,7 +303,12 @@ export function hierarchicalLayout(
 
   // Recalculate bounds including disconnected nodes
   for (const [nodeId, pos] of positions) {
-    const dimensions = getNodeDimensions(graph.nodes.get(nodeId)!.element.type);
+    const node = graph.nodes.get(nodeId);
+    if (!node) {
+      console.warn('[HierarchicalLayout] Skipping missing node in bounds calculation:', nodeId);
+      continue;
+    }
+    const dimensions = getNodeDimensions(node.element.type);
     minX = Math.min(minX, pos.x - dimensions.width / 2);
     minY = Math.min(minY, pos.y - dimensions.height / 2);
     maxX = Math.max(maxX, pos.x + dimensions.width / 2);
@@ -475,7 +483,12 @@ export function radialLayout(
   // Calculate bounds
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
   for (const [nodeId, pos] of positions) {
-    const dimensions = getNodeDimensions(graph.nodes.get(nodeId)!.element.type);
+    const node = graph.nodes.get(nodeId);
+    if (!node) {
+      console.warn('[RadialLayout] Skipping missing node in bounds calculation:', nodeId);
+      continue;
+    }
+    const dimensions = getNodeDimensions(node.element.type);
     minX = Math.min(minX, pos.x - dimensions.width / 2);
     minY = Math.min(minY, pos.y - dimensions.height / 2);
     maxX = Math.max(maxX, pos.x + dimensions.width / 2);

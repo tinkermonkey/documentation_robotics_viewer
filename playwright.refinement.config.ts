@@ -18,6 +18,8 @@ export default defineConfig({
     'refinement/**/*.ladle.spec.ts',
     'refinement/**/*.spec.ts',
     'metrics/**/*.spec.ts',
+    'stories/**/*.spec.ts',
+    'ladle-story-validation.spec.ts',
   ],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -25,7 +27,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [
     ['list'],
-    ['html', { outputFolder: 'playwright-report/refinement' }],
+    ['html', { outputFolder: 'playwright-report/refinement', open: 'never' }],
     ['json', { outputFile: 'test-results/refinement-results.json' }],
   ],
 

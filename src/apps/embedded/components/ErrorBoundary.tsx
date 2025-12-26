@@ -48,6 +48,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 
       return (
         <div
+          data-error-boundary="true"
           style={{
             display: 'flex',
             flexDirection: 'column',

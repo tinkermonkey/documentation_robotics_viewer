@@ -38,7 +38,12 @@
     "metrics:update-baselines": "UPDATE_BASELINES=true playwright test tests/metrics/regression-check.spec.ts --config=playwright.refinement.config.ts -g 'should update baselines'",
     "metrics:all": "playwright test tests/metrics/*.spec.ts --config=playwright.refinement.config.ts",
     "report:refinement": "playwright show-report playwright-report/refinement --host 0.0.0.0",
-    "openapi:generate": ".venv/bin/python scripts/generate-openapi.py"
+    "openapi:generate": ".venv/bin/python scripts/generate-openapi.py",
+    "test:stories:generate": "node scripts/generate-story-tests.cjs",
+    "test:stories": "bash scripts/test-stories.sh",
+    "test:stories:manual": "playwright test tests/stories/all-stories.spec.ts --config=playwright.refinement.config.ts",
+    "test:stories:ui": "bash scripts/test-stories.sh --ui",
+    "test:ladle-validation": "playwright test tests/ladle-story-validation.spec.ts --config=playwright.refinement.config.ts"
   },
   "keywords": [],
   "author": "",

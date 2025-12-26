@@ -1,0 +1,76 @@
+import type { StoryDefault, Story } from '@ladle/react';
+import { MotivationRightSidebar } from './MotivationRightSidebar';
+import { MotivationElementType, MotivationRelationshipType } from '../types/motivationGraph';
+import { FilterCounts } from './MotivationFilterPanel';
+import { useState } from 'react';
+
+export default {
+  title: 'Motivation / MotivationRightSidebar',
+} satisfies StoryDefault;
+
+const mockFilterCounts: FilterCounts = {
+  elements: {
+    [MotivationElementType.Goal]: { visible: 5, total: 5 },
+    [MotivationElementType.Requirement]: { visible: 8, total: 8 },
+    [MotivationElementType.Driver]: { visible: 3, total: 3 },
+    [MotivationElementType.Stakeholder]: { visible: 2, total: 2 },
+    [MotivationElementType.Assessment]: { visible: 1, total: 1 },
+    [MotivationElementType.Principle]: { visible: 2, total: 2 },
+    [MotivationElementType.Constraint]: { visible: 4, total: 4 },
+    [MotivationElementType.Outcome]: { visible: 3, total: 3 },
+    [MotivationElementType.Meaning]: { visible: 1, total: 1 },
+    [MotivationElementType.Value]: { visible: 2, total: 2 },
+    assumption: { visible: 0, total: 0 },
+    valueStream: { visible: 0, total: 0 },
+  },
+  relationships: {
+    [MotivationRelationshipType.Influences]: { visible: 10, total: 10 },
+    [MotivationRelationshipType.Constrains]: { visible: 5, total: 5 },
+    [MotivationRelationshipType.Realizes]: { visible: 8, total: 8 },
+    [MotivationRelationshipType.Refines]: { visible: 6, total: 6 },
+    [MotivationRelationshipType.Conflicts]: { visible: 2, total: 2 },
+  },
+};
+
+export const Default: Story = () => {
+  const [selectedTypes, setSelectedTypes] = useState<Set<MotivationElementType>>(new Set());
+  const [selectedRelTypes, setSelectedRelTypes] = useState<Set<MotivationRelationshipType>>(new Set());
+
+  return (
+    <div className="w-80 h-screen bg-gray-50">
+      <MotivationRightSidebar
+        selectedElementTypes={selectedTypes}
+        onElementTypesChange={(type, selected) => {
+          const newSet = new Set(selectedTypes);
+          if (selected) newSet.add(type);
+          else newSet.delete(type);
+          setSelectedTypes(newSet);
+        }}
+        selectedRelationshipTypes={selectedRelTypes}
+        onRelationshipTypesChange={(type, selected) => {
+          const newSet = new Set(selectedRelTypes);
+          if (selected) newSet.add(type);
+          else newSet.delete(type);
+          setSelectedRelTypes(newSet);
+        }}
+        filterCounts={mockFilterCounts}
+        onClearAllFilters={() => {
+          setSelectedTypes(new Set());
+          setSelectedRelTypes(new Set());
+        }}
+        selectedLayout="force"
+        onLayoutChange={(layout) => console.log('Layout:', layout)}
+        onFitToView={() => console.log('Fit to view')}
+        focusModeEnabled={false}
+        onFocusModeToggle={(enabled) => console.log('Focus:', enabled)}
+        onClearHighlighting={() => console.log('Clear highlight')}
+        isHighlightingActive={false}
+        isLayouting={false}
+        onExportPNG={() => console.log('Export PNG')}
+        onExportSVG={() => console.log('Export SVG')}
+        onExportGraphData={() => console.log('Export JSON')}
+        onExportTraceabilityReport={() => console.log('Export report')}
+      />
+    </div>
+  );
+};

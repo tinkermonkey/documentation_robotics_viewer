@@ -37,6 +37,11 @@ import {
   ComponentNode,
   ExternalActorNode,
 } from './c4';
+import {
+  JSONSchemaNode,
+  JSON_SCHEMA_NODE_WIDTH,
+  JSON_SCHEMA_NODE_MIN_HEIGHT,
+} from './JSONSchemaNode';
 
 // Export all node components
 export {
@@ -67,6 +72,10 @@ export {
   ContainerNode,
   ComponentNode,
   ExternalActorNode,
+  // Schema nodes
+  JSONSchemaNode,
+  JSON_SCHEMA_NODE_WIDTH,
+  JSON_SCHEMA_NODE_MIN_HEIGHT,
 };
 
 // Node types object for React Flow
@@ -87,6 +96,8 @@ export const nodeTypes = {
   assumption: AssumptionNode,
   valueStream: ValueStreamNode,
   assessment: AssessmentNode,
+  // Schema node types
+  jsonSchema: JSONSchemaNode,
   // C4 node types
   c4Container: ContainerNode,
   c4Component: ComponentNode,

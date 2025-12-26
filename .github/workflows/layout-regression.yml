@@ -20,12 +20,12 @@ on:
       update_baselines:
         description: 'Update baselines after run'
         required: false
-        default: 'false'
+        default: false
         type: boolean
       strict_mode:
         description: 'Fail on moderate regressions'
         required: false
-        default: 'false'
+        default: false
         type: boolean
 
 jobs:
@@ -139,7 +139,14 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}\n          restore-keys: |\n            ${{ runner.os }}-playwright-\n\n      - name: Install Playwright browsers\n        run: npx playwright install --with-deps chromium\n\n      - name: Download baseline artifacts
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Download baseline artifacts
         uses: dawidd6/action-download-artifact@v3
         with:
           workflow: layout-regression.yml

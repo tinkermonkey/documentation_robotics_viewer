@@ -59,25 +59,66 @@ npm run test:e2e:headed    # Run in headed mode
 
 ### 3. Refinement Tests (`playwright.refinement.config.ts`)
 
-Layout quality refinement and metrics tests.
+Layout quality refinement, metrics tests, and Ladle story validation.
 
 **Runs:**
 - `tests/refinement/*.spec.ts` - Layout refinement algorithms
 - `tests/metrics/*.spec.ts` - Quality metrics and regression checks
+- `tests/stories/*.spec.ts` - Ladle story validation (481 tests)
+- `tests/ladle-story-validation.spec.ts` - Batch story validation
 
 **Usage:**
 ```bash
+# Layout refinement
 npm run refine:motivation      # Refine motivation view
 npm run refine:business        # Refine business view
 npm run refine:c4              # Refine C4 view
 npm run refine:interactive     # Interactive refinement (headed)
 npm run refine:all             # Run all refinement tests
+
+# Metrics
 npm run metrics:report         # Generate metrics report
 npm run metrics:regression-check    # Check for regressions
 npm run metrics:all            # Run all metrics tests
+
+# Ladle story validation
+npm run test:stories:generate  # Generate story tests (run when stories change)
+npm run test:stories          # Run all 481 story validation tests
+npm run test:stories:ui       # Run story tests with Playwright UI
+npm run test:ladle-validation # Batch validation with summary report
 ```
 
+**Note:** Story validation requires Ladle to be running (`npm run catalog:dev`)
+
 ## Test Categories
+
+### Ladle Story Validation Tests
+
+Comprehensive validation of all 481 Ladle component stories.
+
+**Files:**
+- `tests/stories/all-stories.spec.ts` - Individual test per story (auto-generated)
+- `tests/ladle-story-validation.spec.ts` - Batch validation with summary
+- `scripts/generate-story-tests.cjs` - Test generator script
+
+**What the tests verify:**
+- Story loads without HTTP errors
+- No JavaScript console errors
+- No uncaught exceptions
+- React components render without error boundaries
+- Basic rendering succeeds
+
+**Prerequisites:**
+- Ladle must be running: `npm run catalog:dev`
+
+**Workflow:**
+1. Add or modify stories
+2. Regenerate tests: `npm run test:stories:generate`
+3. Run validation: `npm run test:stories`
+
+**Documentation:** See [tests/stories/README.md](./stories/README.md) for complete guide
+
+---
 
 ### Embedded App Tests (`embedded-*.spec.ts`)
 

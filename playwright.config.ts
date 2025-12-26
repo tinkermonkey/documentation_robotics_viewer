@@ -33,7 +33,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [
     ['list'],
-    ['html', { outputFolder: 'playwright-report/default' }],
+    ['html', { outputFolder: 'playwright-report/default', open: 'never' }],
   ],
   timeout: 30000,
   use: {
