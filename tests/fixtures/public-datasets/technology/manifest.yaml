@@ -1,0 +1,9 @@
+name: technology-test-dataset
+version: 1.0.0
+description: Synthetic test dataset for technology layer
+layer_type: technology
+created: 2025-12-27
+license: Public Domain
+source: Synthetic dataset for testing
+layers:
+  - technology

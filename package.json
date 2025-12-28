@@ -50,6 +50,7 @@
   "license": "ISC",
   "dependencies": {
     "@axe-core/playwright": "^4.11.0",
+    "@hpcc-js/wasm": "^2.30.0",
     "@tanstack/react-router": "^1.139.12",
     "@types/d3-force": "^3.0.10",
     "@types/js-yaml": "^4.0.9",
@@ -58,6 +59,7 @@
     "cors": "^2.8.5",
     "d3-force": "^3.0.0",
     "dagre": "^0.8.5",
+    "elkjs": "^0.11.0",
     "express": "^5.1.0",
     "flowbite-react": "^0.12.13",
     "html-to-image": "^1.11.13",

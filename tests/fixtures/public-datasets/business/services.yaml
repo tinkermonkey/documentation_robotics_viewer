@@ -1,0 +1,202 @@
+services:
+  # Customer Lane Activities
+  service.place-order:
+    name: Place Order
+    description: Customer submits order through website or mobile app
+    type: activity
+    lane: Customer
+    actor: Customer
+    inputs:
+      - Product selection
+      - Shipping address
+      - Payment information
+    outputs:
+      - Order confirmation
+
+  service.receive-confirmation:
+    name: Receive Order Confirmation
+    description: Customer receives email confirmation of order
+    type: activity
+    lane: Customer
+    actor: Customer
+    inputs:
+      - Order details
+    outputs:
+      - Confirmation acknowledgment
+
+  service.track-shipment:
+    name: Track Shipment
+    description: Customer monitors order status and delivery progress
+    type: activity
+    lane: Customer
+    actor: Customer
+    inputs:
+      - Tracking number
+    outputs:
+      - Shipment status updates
+
+  service.receive-delivery:
+    name: Receive Delivery
+    description: Customer receives package and confirms delivery
+    type: activity
+    lane: Customer
+    actor: Customer
+    inputs:
+      - Package
+    outputs:
+      - Delivery confirmation
+
+  # Sales Lane Activities
+  service.validate-order:
+    name: Validate Order
+    description: Sales team validates order details and payment
+    type: activity
+    lane: Sales
+    actor: Sales Representative
+    inputs:
+      - Order data
+      - Payment authorization
+    outputs:
+      - Validated order
+      - Validation result
+
+  service.check-inventory:
+    name: Check Inventory Availability
+    description: Verify products are in stock
+    type: activity
+    lane: Sales
+    actor: Inventory System
+    inputs:
+      - Product SKUs
+      - Quantities
+    outputs:
+      - Availability status
+
+  service.handle-backorder:
+    name: Handle Backorder
+    description: Process backorder if items unavailable
+    type: activity
+    lane: Sales
+    actor: Sales Representative
+    inputs:
+      - Out of stock items
+    outputs:
+      - Backorder notification
+      - Expected restock date
+
+  service.send-to-warehouse:
+    name: Send to Warehouse
+    description: Forward validated order to warehouse for fulfillment
+    type: activity
+    lane: Sales
+    actor: Order Management System
+    inputs:
+      - Validated order
+    outputs:
+      - Fulfillment request
+
+  service.notify-customer:
+    name: Notify Customer
+    description: Send order status notification to customer
+    type: activity
+    lane: Sales
+    actor: Notification System
+    inputs:
+      - Order status
+      - Customer contact info
+    outputs:
+      - Email/SMS notification
+
+  # Warehouse Lane Activities
+  service.pick-items:
+    name: Pick Items
+    description: Warehouse staff picks items from inventory
+    type: activity
+    lane: Warehouse
+    actor: Warehouse Staff
+    inputs:
+      - Pick list
+      - Warehouse locations
+    outputs:
+      - Picked items
+
+  service.pack-order:
+    name: Pack Order
+    description: Pack items securely for shipping
+    type: activity
+    lane: Warehouse
+    actor: Warehouse Staff
+    inputs:
+      - Picked items
+      - Packing materials
+    outputs:
+      - Packed package
+
+  service.generate-label:
+    name: Generate Shipping Label
+    description: Create shipping label with carrier information
+    type: activity
+    lane: Warehouse
+    actor: Shipping System
+    inputs:
+      - Order details
+      - Shipping address
+      - Carrier selection
+    outputs:
+      - Shipping label
+      - Tracking number
+
+  service.dispatch-shipment:
+    name: Dispatch Shipment
+    description: Hand off package to shipping carrier
+    type: activity
+    lane: Warehouse
+    actor: Warehouse Staff
+    inputs:
+      - Packed package
+      - Shipping label
+    outputs:
+      - Shipment in transit
+
+  # Gateway/Decision Points
+  gateway.inventory-available:
+    name: Inventory Available?
+    description: Decision point based on inventory check result
+    type: gateway
+    gateway_type: exclusive
+    lane: Sales
+    conditions:
+      - In stock
+      - Out of stock
+
+  gateway.payment-valid:
+    name: Payment Valid?
+    description: Decision point based on payment validation
+    type: gateway
+    gateway_type: exclusive
+    lane: Sales
+    conditions:
+      - Payment approved
+      - Payment declined
+
+  # Events
+  event.order-received:
+    name: Order Received
+    description: Trigger event when customer places order
+    type: event
+    event_type: start
+    lane: Customer
+
+  event.order-complete:
+    name: Order Complete
+    description: End event when order is delivered
+    type: event
+    event_type: end
+    lane: Customer
+
+  event.payment-failed:
+    name: Payment Failed
+    description: End event for failed payment
+    type: event
+    event_type: end
+    lane: Sales

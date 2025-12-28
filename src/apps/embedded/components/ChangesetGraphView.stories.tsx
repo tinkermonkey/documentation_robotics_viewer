@@ -1,6 +1,5 @@
 import type { StoryDefault, Story } from '@ladle/react';
 import ChangesetGraphView from './ChangesetGraphView';
-import { ReactFlowProvider } from '@xyflow/react';
 import type { ChangesetDetails } from '../services/embeddedDataLoader';
 
 export default {
@@ -57,11 +56,9 @@ const mockChangeset: ChangesetDetails = {
 
 export const ActiveChangeset: Story = () => {
   return (
-    <ReactFlowProvider>
-      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-        <ChangesetGraphView changeset={mockChangeset} />
-      </div>
-    </ReactFlowProvider>
+    <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+      <ChangesetGraphView changeset={mockChangeset} />
+    </div>
   );
 };
 
@@ -75,11 +72,9 @@ export const AddOperationsOnly: Story = () => {
   };
 
   return (
-    <ReactFlowProvider>
-      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-        <ChangesetGraphView changeset={addOnlyChangeset} />
-      </div>
-    </ReactFlowProvider>
+    <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+      <ChangesetGraphView changeset={addOnlyChangeset} />
+    </div>
   );
 };
 
@@ -93,11 +88,9 @@ export const UpdateOperationsOnly: Story = () => {
   };
 
   return (
-    <ReactFlowProvider>
-      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-        <ChangesetGraphView changeset={updateOnlyChangeset} />
-      </div>
-    </ReactFlowProvider>
+    <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+      <ChangesetGraphView changeset={updateOnlyChangeset} />
+    </div>
   );
 };
 
@@ -111,11 +104,9 @@ export const DeleteOperationsOnly: Story = () => {
   };
 
   return (
-    <ReactFlowProvider>
-      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-        <ChangesetGraphView changeset={deleteOnlyChangeset} />
-      </div>
-    </ReactFlowProvider>
+    <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+      <ChangesetGraphView changeset={deleteOnlyChangeset} />
+    </div>
   );
 };
 
@@ -136,10 +127,8 @@ export const ManyChanges: Story = () => {
   };
 
   return (
-    <ReactFlowProvider>
-      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-        <ChangesetGraphView changeset={manyChangesChangeset} />
-      </div>
-    </ReactFlowProvider>
+    <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+      <ChangesetGraphView changeset={manyChangesChangeset} />
+    </div>
   );
 };

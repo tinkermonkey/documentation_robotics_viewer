@@ -51,7 +51,9 @@ export const RefinementFeedbackPanel: React.FC<RefinementFeedbackPanelProps> = (
   status,
   onFeedback,
   onApprove,
+  onReject,
   onContinue,
+  onRefine,
   onStop,
   onRevert,
   isProcessing = false,
@@ -265,24 +267,46 @@ export const RefinementFeedbackPanel: React.FC<RefinementFeedbackPanelProps> = (
         </div>
       )}
 
-      {/* Action buttons */}
+      {/* Action buttons - Accept/Reject/Refine workflow */}
       <div className="action-buttons" role="group" aria-label="Refinement actions">
         <button
-          className="action-btn approve"
+          className="action-btn approve bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white px-4 py-2 rounded disabled:opacity-50"
           onClick={onApprove}
           disabled={isDisabled}
-          aria-label="Approve current result and finish refinement"
+          aria-label="Accept current result and save parameters"
+          title="Accept: Save current parameters and end session"
         >
-          <span aria-hidden="true">✓</span> Approve
+          <span aria-hidden="true">✓</span> Accept
         </button>
 
         <button
-          className="action-btn continue"
+          className="action-btn reject bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 text-white px-4 py-2 rounded disabled:opacity-50"
+          onClick={onReject}
+          disabled={isDisabled}
+          aria-label="Reject current result and revert to previous parameters"
+          title="Reject: Revert to previous parameters"
+        >
+          <span aria-hidden="true">✗</span> Reject
+        </button>
+
+        <button
+          className="action-btn refine bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
+          onClick={onRefine}
+          disabled={isDisabled}
+          aria-label="Continue refining with manual adjustments"
+          title="Refine: Continue with manual adjustments or automated optimization"
+        >
+          <span aria-hidden="true">⚙</span> Refine
+        </button>
+
+        <button
+          className="action-btn continue bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-600 text-white px-4 py-2 rounded disabled:opacity-50"
           onClick={onContinue}
           disabled={isDisabled}
           aria-label="Continue with automatic optimization"
+          title="Continue automated optimization"
         >
-          <span aria-hidden="true">▶</span> Continue Auto
+          <span aria-hidden="true">▶</span> Auto
         </button>
 
         <div className="revert-dropdown">

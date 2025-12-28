@@ -1,0 +1,142 @@
+endpoints:
+  # User Management API
+  endpoint.users-list:
+    path: /api/v1/users
+    method: GET
+    interface: users
+    description: List all users (admin only)
+    authentication: required
+    authorization: admin
+
+  endpoint.users-create:
+    path: /api/v1/users
+    method: POST
+    interface: users
+    description: Create new user account
+    authentication: optional
+    request_body: UserCreateRequest
+    response: UserResponse
+
+  endpoint.users-get:
+    path: /api/v1/users/{id}
+    method: GET
+    interface: users
+    description: Get user by ID
+    authentication: required
+    response: UserResponse
+
+  endpoint.users-update:
+    path: /api/v1/users/{id}
+    method: PUT
+    interface: users
+    description: Update user profile
+    authentication: required
+    authorization: owner_or_admin
+
+  # Product API
+  endpoint.products-list:
+    path: /api/v1/products
+    method: GET
+    interface: products
+    description: List products with filtering and pagination
+    authentication: optional
+    query_params:
+      - category
+      - search
+      - page
+      - limit
+    response: ProductListResponse
+
+  endpoint.products-get:
+    path: /api/v1/products/{id}
+    method: GET
+    interface: products
+    description: Get product details
+    authentication: optional
+    response: ProductResponse
+
+  endpoint.products-create:
+    path: /api/v1/products
+    method: POST
+    interface: products
+    description: Create new product (admin only)
+    authentication: required
+    authorization: admin
+    request_body: ProductCreateRequest
+
+  endpoint.products-update:
+    path: /api/v1/products/{id}
+    method: PUT
+    interface: products
+    description: Update product (admin only)
+    authentication: required
+    authorization: admin
+
+  # Order API
+  endpoint.orders-list:
+    path: /api/v1/orders
+    method: GET
+    interface: orders
+    description: List user's orders
+    authentication: required
+    response: OrderListResponse
+
+  endpoint.orders-create:
+    path: /api/v1/orders
+    method: POST
+    interface: orders
+    description: Create new order from cart
+    authentication: required
+    request_body: OrderCreateRequest
+    response: OrderResponse
+    triggers:
+      - payment processing
+      - inventory update
+      - notification
+
+  endpoint.orders-get:
+    path: /api/v1/orders/{id}
+    method: GET
+    interface: orders
+    description: Get order details
+    authentication: required
+    authorization: owner_or_admin
+
+  endpoint.orders-cancel:
+    path: /api/v1/orders/{id}/cancel
+    method: POST
+    interface: orders
+    description: Cancel an order
+    authentication: required
+    authorization: owner
+
+  # Cart API
+  endpoint.cart-get:
+    path: /api/v1/cart
+    method: GET
+    interface: cart
+    description: Get current user's cart
+    authentication: required
+    response: CartResponse
+
+  endpoint.cart-add-item:
+    path: /api/v1/cart/items
+    method: POST
+    interface: cart
+    description: Add item to cart
+    authentication: required
+    request_body: CartItemRequest
+
+  endpoint.cart-update-item:
+    path: /api/v1/cart/items/{id}
+    method: PUT
+    interface: cart
+    description: Update cart item quantity
+    authentication: required
+
+  endpoint.cart-remove-item:
+    path: /api/v1/cart/items/{id}
+    method: DELETE
+    interface: cart
+    description: Remove item from cart
+    authentication: required

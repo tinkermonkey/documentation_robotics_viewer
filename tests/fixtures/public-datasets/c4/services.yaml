@@ -1,0 +1,152 @@
+services:
+  # Inter-container relationships
+  relationship.web-to-gateway:
+    name: Makes API calls to
+    source: container.web-application
+    target: container.api-gateway
+    type: uses
+    protocol: HTTPS
+    description: Web app makes authenticated API requests
+
+  relationship.mobile-to-gateway:
+    name: Makes API calls to
+    source: container.mobile-app
+    target: container.api-gateway
+    type: uses
+    protocol: HTTPS
+    description: Mobile app makes authenticated API requests
+
+  relationship.gateway-to-user-service:
+    name: Routes requests to
+    source: container.api-gateway
+    target: container.user-service
+    type: uses
+    protocol: HTTP
+    description: Routes user-related API calls
+
+  relationship.gateway-to-order-service:
+    name: Routes requests to
+    source: container.api-gateway
+    target: container.order-service
+    type: uses
+    protocol: HTTP
+    description: Routes order-related API calls
+
+  relationship.gateway-to-analytics:
+    name: Routes requests to
+    source: container.api-gateway
+    target: container.analytics-service
+    type: uses
+    protocol: HTTP
+    description: Routes analytics queries
+
+  relationship.user-service-to-db:
+    name: Reads from and writes to
+    source: container.user-service
+    target: container.user-database
+    type: uses
+    protocol: SQL
+    description: Persists user data
+
+  relationship.order-service-to-db:
+    name: Reads from and writes to
+    source: container.order-service
+    target: container.order-database
+    type: uses
+    protocol: SQL
+    description: Persists order data
+
+  relationship.user-service-to-cache:
+    name: Reads from and writes to
+    source: container.user-service
+    target: container.cache
+    type: uses
+    protocol: Redis Protocol
+    description: Caches user sessions
+
+  relationship.api-gateway-to-cache:
+    name: Reads from and writes to
+    source: container.api-gateway
+    target: container.cache
+    type: uses
+    protocol: Redis Protocol
+    description: Caches API responses and rate limits
+
+  relationship.order-service-to-queue:
+    name: Publishes events to
+    source: container.order-service
+    target: container.message-queue
+    type: uses
+    protocol: AMQP
+    description: Publishes order events
+
+  relationship.notification-from-queue:
+    name: Subscribes to events from
+    source: container.notification-service
+    target: container.message-queue
+    type: uses
+    protocol: AMQP
+    description: Receives notification requests
+
+  relationship.analytics-from-queue:
+    name: Subscribes to events from
+    source: container.analytics-service
+    target: container.message-queue
+    type: uses
+    protocol: AMQP
+    description: Receives analytics events
+
+  # External system relationships
+  relationship.user-service-to-auth:
+    name: Authenticates users with
+    source: container.user-service
+    target: system.auth-provider
+    type: uses
+    protocol: OAuth 2.0
+    description: Delegates authentication to Auth0
+
+  relationship.order-service-to-payment:
+    name: Processes payments via
+    source: container.order-service
+    target: system.payment-gateway
+    type: uses
+    protocol: HTTPS/REST
+    description: Processes payment transactions
+
+  relationship.notification-to-email:
+    name: Sends emails via
+    source: container.notification-service
+    target: system.email-service
+    type: uses
+    protocol: HTTPS/REST
+    description: Delivers transactional emails
+
+  relationship.all-to-monitoring:
+    name: Sends metrics and logs to
+    source: system.saas-platform
+    target: system.monitoring
+    type: uses
+    protocol: Agent/API
+    description: Application monitoring and logging
+
+  # Component-level relationships (within Order Service)
+  relationship.controller-to-logic:
+    name: Invokes
+    source: component.order-controller
+    target: component.order-business-logic
+    type: uses
+    description: Calls business logic methods
+
+  relationship.logic-to-repository:
+    name: Uses
+    source: component.order-business-logic
+    target: component.order-repository
+    type: uses
+    description: Persists and retrieves data
+
+  relationship.logic-to-publisher:
+    name: Uses
+    source: component.order-business-logic
+    target: component.order-event-publisher
+    type: uses
+    description: Publishes domain events

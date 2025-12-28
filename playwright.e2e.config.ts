@@ -42,11 +42,16 @@ export default defineConfig({
     'overview-panel-styling.spec.ts',
     'sidebar-consolidation.spec.ts',
     'zoom-to-layer.spec.ts',
+    'refinement-workflow.spec.ts',
   ],
   fullyParallel: false, // Run E2E tests sequentially for reliability
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 1, // Retry once in dev, twice in CI
   workers: 1, // Single worker for E2E tests
+
+  // Global setup to handle authentication
+  globalSetup: './tests/global-setup.ts',
+
   reporter: [
     ['list'],
     ['html', { outputFolder: 'playwright-report/e2e', open: 'never' }],
@@ -64,6 +69,7 @@ export default defineConfig({
     trace: 'retain-on-failure', // Keep traces for failed tests
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    headless: true, // Always run in headless mode to avoid opening browser windows
   },
 
   projects: [

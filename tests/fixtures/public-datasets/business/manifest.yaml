@@ -1,0 +1,9 @@
+name: ecommerce-order-fulfillment
+version: 1.0.0
+description: E-commerce order fulfillment business process with multi-lane BPMN-style flow
+layer_type: business
+created: 2025-12-27
+license: Public Domain
+source: Based on standard BPMN 2.0 e-commerce patterns
+layers:
+  - 02_business

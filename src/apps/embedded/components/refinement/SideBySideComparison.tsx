@@ -30,9 +30,14 @@ export const SideBySideComparison: React.FC<SideBySideComparisonProps> = ({
   referenceImageUrl,
   generatedScreenshotUrl,
   heatmapUrl,
+  layouts,
   viewOptions,
   onViewOptionsChange,
+  onLayoutSelect,
 }) => {
+  // Determine if we're in multi-layout mode (3+ layouts)
+  const isMultiLayoutMode = layouts && layouts.length >= 3;
+  const layoutCount = layouts?.length || 0;
   // Local view state for smoother interactions
   const [viewState, setViewState] = useState<ViewState>({
     zoom: viewOptions.zoom,
@@ -170,8 +175,104 @@ export const SideBySideComparison: React.FC<SideBySideComparisonProps> = ({
     [viewState.panX, viewState.panY, viewState.zoom]
   );
 
+  // Calculate grid columns based on layout count
+  const getGridColumns = useCallback((count: number): string => {
+    if (count === 3) return 'grid-cols-3';
+    if (count === 4) return 'grid-cols-2';
+    if (count === 5 || count === 6) return 'grid-cols-3';
+    return 'grid-cols-2'; // Fallback
+  }, []);
+
+  // Render grid layout for multi-layout comparison
+  const renderGridLayout = () => {
+    if (!layouts || layouts.length < 3) return null;
+
+    const gridCols = getGridColumns(layouts.length);
+
+    return (
+      <div
+        className={`grid ${gridCols} gap-4 p-4 h-full overflow-auto`}
+        data-testid="multi-layout-grid"
+      >
+        {layouts.map((layout) => (
+          <div
+            key={layout.id}
+            className="relative border-2 border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-white dark:bg-gray-800 hover:border-blue-500 dark:hover:border-blue-400 transition-colors cursor-pointer"
+            onClick={() => onLayoutSelect && onLayoutSelect(layout.id)}
+            data-testid={`layout-snapshot-${layout.id}`}
+          >
+            {/* Layout label and quality score */}
+            <div className="absolute top-2 left-2 right-2 z-10 flex items-center justify-between">
+              <div className="bg-white dark:bg-gray-900 bg-opacity-90 dark:bg-opacity-90 px-3 py-1 rounded-md shadow-sm">
+                <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                  {layout.label}
+                </span>
+              </div>
+              <div className="bg-white dark:bg-gray-900 bg-opacity-90 dark:bg-opacity-90 px-3 py-1 rounded-md shadow-sm">
+                <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                  Score: {layout.qualityScore.combinedScore.toFixed(2)}
+                </span>
+              </div>
+            </div>
+
+            {/* Best badge */}
+            {layout.isBest && (
+              <div className="absolute top-2 left-1/2 transform -translate-x-1/2 z-10">
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-yellow-400 text-yellow-900">
+                  <svg
+                    className="w-3 h-3 mr-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    aria-hidden="true"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  Best
+                </span>
+              </div>
+            )}
+
+            {/* Layout screenshot */}
+            <div className="w-full h-full flex items-center justify-center p-2">
+              <div className="image-container" style={imageTransform}>
+                <img
+                  src={layout.screenshotUrl}
+                  alt={`${layout.label} layout`}
+                  draggable={false}
+                  className="max-w-full max-h-full object-contain"
+                />
+              </div>
+            </div>
+
+            {/* Quality metrics summary */}
+            <div className="absolute bottom-2 left-2 right-2 z-10 bg-white dark:bg-gray-900 bg-opacity-90 dark:bg-opacity-90 px-3 py-2 rounded-md shadow-sm">
+              <div className="flex gap-3 text-xs">
+                <div>
+                  <span className="text-gray-600 dark:text-gray-400">Readability:</span>{' '}
+                  <span className="font-semibold text-gray-900 dark:text-white">
+                    {layout.qualityScore.readabilityScore.toFixed(2)}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-600 dark:text-gray-400">Similarity:</span>{' '}
+                  <span className="font-semibold text-gray-900 dark:text-white">
+                    {layout.qualityScore.similarityScore.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   // Render different view modes
   const renderViewContent = () => {
+    // Multi-layout grid mode takes precedence
+    if (isMultiLayoutMode) {
+      return renderGridLayout();
+    }
     switch (viewOptions.mode) {
       case 'side-by-side':
         return (
@@ -186,20 +287,23 @@ export const SideBySideComparison: React.FC<SideBySideComparisonProps> = ({
                 />
               </div>
             </div>
-            <div className="image-panel generated">
-              <div className="panel-label">Generated</div>
-              <div className="image-container" style={imageTransform}>
-                <img
-                  src={generatedScreenshotUrl}
-                  alt="Generated diagram"
-                  draggable={false}
-                />
+            {generatedScreenshotUrl && (
+              <div className="image-panel generated">
+                <div className="panel-label">Generated</div>
+                <div className="image-container" style={imageTransform}>
+                  <img
+                    src={generatedScreenshotUrl}
+                    alt="Generated diagram"
+                    draggable={false}
+                  />
+                </div>
               </div>
-            </div>
+            )}
           </div>
         );
 
       case 'overlay':
+        if (!generatedScreenshotUrl) return null;
         return (
           <div className="overlay-view">
             <div className="overlay-container" style={imageTransform}>
@@ -271,6 +375,7 @@ export const SideBySideComparison: React.FC<SideBySideComparisonProps> = ({
         );
 
       case 'difference':
+        if (!generatedScreenshotUrl) return null;
         return (
           <div className="difference-view">
             <div className="image-panel generated-panel">
@@ -319,8 +424,33 @@ export const SideBySideComparison: React.FC<SideBySideComparisonProps> = ({
       onMouseLeave={handleMouseUp}
       style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
     >
-      {/* View mode selector */}
-      <div className="view-controls" role="tablist" aria-label="Comparison view modes">
+      {/* Multi-layout mode info banner */}
+      {isMultiLayoutMode && (
+        <div className="bg-blue-50 dark:bg-blue-900 border-b border-blue-200 dark:border-blue-700 px-4 py-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <svg
+                className="w-5 h-5 text-blue-600 dark:text-blue-300"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                Comparing {layoutCount} layouts - Click any layout for detailed comparison
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* View mode selector - hidden in multi-layout mode */}
+      {!isMultiLayoutMode && (
+        <div className="view-controls" role="tablist" aria-label="Comparison view modes">
         <button
           role="tab"
           aria-selected={viewOptions.mode === 'side-by-side'}
@@ -353,7 +483,8 @@ export const SideBySideComparison: React.FC<SideBySideComparisonProps> = ({
         >
           Difference
         </button>
-      </div>
+        </div>
+      )}
 
       {/* Zoom controls */}
       <div className="zoom-controls" role="group" aria-label="Zoom controls">

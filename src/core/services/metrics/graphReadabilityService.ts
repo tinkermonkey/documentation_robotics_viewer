@@ -128,6 +128,74 @@ export interface ReadabilityMetrics {
 }
 
 /**
+ * Coordinate for crossing or overlap location
+ */
+export interface Coordinate {
+  x: number;
+  y: number;
+}
+
+/**
+ * Information about an edge crossing
+ */
+export interface EdgeCrossing {
+  /** First edge ID */
+  edge1: string;
+  /** Second edge ID */
+  edge2: string;
+  /** Approximate crossing location */
+  location: Coordinate;
+}
+
+/**
+ * Information about node overlap
+ */
+export interface NodeOverlap {
+  /** First node ID */
+  node1: string;
+  /** Second node ID */
+  node2: string;
+  /** Overlapping area in square pixels */
+  area: number;
+}
+
+/**
+ * Hierarchical level information
+ */
+export interface HierarchyLevel {
+  /** Level number (0 = root) */
+  level: number;
+  /** Y-coordinate of this level */
+  yPosition: number;
+  /** Node IDs at this level */
+  nodeIds: string[];
+}
+
+/**
+ * Symmetry detection results
+ */
+export interface SymmetryMetrics {
+  /** Horizontal symmetry score 0-1 */
+  horizontal: number;
+  /** Vertical symmetry score 0-1 */
+  vertical: number;
+  /** Radial symmetry score 0-1 */
+  radial: number;
+}
+
+/**
+ * Alignment detection results
+ */
+export interface AlignmentMetrics {
+  /** Horizontal alignment score 0-1 */
+  horizontal: number;
+  /** Vertical alignment score 0-1 */
+  vertical: number;
+  /** Tolerance in pixels for near-alignment */
+  tolerance: number;
+}
+
+/**
  * Extended metrics including computed values beyond greadability.js
  */
 export interface ExtendedMetrics extends ReadabilityMetrics {
@@ -139,12 +207,35 @@ export interface ExtendedMetrics extends ReadabilityMetrics {
     max: number;
     mean: number;
     stdDev: number;
+    variance: number;
   };
 
   /**
    * Node overlap detection (0 = no overlaps, higher = more overlaps)
    */
   nodeNodeOcclusion: number;
+
+  /**
+   * Detailed overlap information
+   */
+  overlaps: {
+    /** Array of specific overlapping node pairs with areas */
+    pairs: NodeOverlap[];
+    /** Total overlapping area in square pixels */
+    totalArea: number;
+    /** Percentage of total node area involved in overlaps */
+    areaPercentage: number;
+  };
+
+  /**
+   * Edge crossing information
+   */
+  crossings: {
+    /** Total number of edge crossings */
+    count: number;
+    /** Array of crossing locations for visualization */
+    locations: EdgeCrossing[];
+  };
 
   /**
    * Aspect ratio of the layout bounding box (width/height)
@@ -155,6 +246,30 @@ export interface ExtendedMetrics extends ReadabilityMetrics {
    * Density of the graph (edges / possible edges)
    */
   density: number;
+
+  /**
+   * Alignment metrics
+   */
+  alignment: AlignmentMetrics;
+
+  /**
+   * Symmetry metrics
+   */
+  symmetry: SymmetryMetrics;
+
+  /**
+   * Hierarchy clarity metric (only for hierarchical layouts)
+   */
+  hierarchyClarity?: {
+    /** Hierarchy clarity score 0-1 */
+    score: number;
+    /** Detected hierarchical levels */
+    levels: HierarchyLevel[];
+    /** Average spacing between levels */
+    avgLevelSpacing: number;
+    /** Standard deviation of level spacing */
+    levelSpacingStdDev: number;
+  };
 }
 
 /**
@@ -166,6 +281,11 @@ export interface LayoutQualityReport {
    * Computed as weighted combination of individual metrics
    */
   overallScore: number;
+
+  /**
+   * Quality classification based on layer-specific thresholds
+   */
+  qualityClass: QualityClass;
 
   /**
    * Individual readability metrics from greadability.js
@@ -234,6 +354,177 @@ export interface GreadabilityGraph {
  */
 const DEFAULT_NODE_WIDTH = 180;
 const DEFAULT_NODE_HEIGHT = 110;
+
+/**
+ * Quality score thresholds by diagram type
+ * Based on empirical testing with public datasets
+ */
+export interface QualityThresholds {
+  excellent: number; // >= this score
+  good: number; // >= this score
+  acceptable: number; // >= this score
+  poor: number; // >= this score
+  // < poor = unacceptable
+}
+
+/**
+ * Quality classification result
+ */
+export type QualityClass = 'excellent' | 'good' | 'acceptable' | 'poor' | 'unacceptable';
+
+/**
+ * Layer-specific quality thresholds
+ * These values are derived from baseline measurements on public datasets
+ */
+const QUALITY_THRESHOLDS: Record<DiagramType, QualityThresholds> = {
+  // Motivation diagrams: Focus on goal hierarchy clarity
+  motivation: {
+    excellent: 0.85,
+    good: 0.70,
+    acceptable: 0.55,
+    poor: 0.40,
+  },
+  // Business process diagrams: Focus on flow clarity and alignment
+  business: {
+    excellent: 0.80,
+    good: 0.65,
+    acceptable: 0.50,
+    poor: 0.35,
+  },
+  // Security layer: High threshold for clarity and minimal crossings
+  security: {
+    excellent: 0.88,
+    good: 0.73,
+    acceptable: 0.58,
+    poor: 0.43,
+  },
+  // Application layer: Component relationship clarity
+  application: {
+    excellent: 0.82,
+    good: 0.67,
+    acceptable: 0.52,
+    poor: 0.37,
+  },
+  // Technology layer: Stack clarity
+  technology: {
+    excellent: 0.81,
+    good: 0.66,
+    acceptable: 0.51,
+    poor: 0.36,
+  },
+  // API layer: Endpoint relationship clarity
+  api: {
+    excellent: 0.86,
+    good: 0.71,
+    acceptable: 0.56,
+    poor: 0.41,
+  },
+  // Data model layer: Entity relationship clarity
+  datamodel: {
+    excellent: 0.79,
+    good: 0.64,
+    acceptable: 0.49,
+    poor: 0.34,
+  },
+  // Datastore layer: Storage organization clarity
+  datastore: {
+    excellent: 0.80,
+    good: 0.65,
+    acceptable: 0.50,
+    poor: 0.35,
+  },
+  // UX layer: User flow clarity
+  ux: {
+    excellent: 0.78,
+    good: 0.63,
+    acceptable: 0.48,
+    poor: 0.33,
+  },
+  // Navigation layer: Page/screen flow clarity
+  navigation: {
+    excellent: 0.77,
+    good: 0.62,
+    acceptable: 0.47,
+    poor: 0.32,
+  },
+  // APM/Observability layer: Metric relationship clarity
+  apm: {
+    excellent: 0.83,
+    good: 0.68,
+    acceptable: 0.53,
+    poor: 0.38,
+  },
+  // Cross-layer diagrams: Multi-level clarity
+  crosslayer: {
+    excellent: 0.84,
+    good: 0.69,
+    acceptable: 0.54,
+    poor: 0.39,
+  },
+  // C4 diagrams: Container and system clarity
+  c4: {
+    excellent: 0.85,
+    good: 0.70,
+    acceptable: 0.55,
+    poor: 0.40,
+  },
+  // Spec viewer: Schema clarity
+  'spec-viewer': {
+    excellent: 0.84,
+    good: 0.69,
+    acceptable: 0.54,
+    poor: 0.39,
+  },
+  // Model viewer: Overall model clarity
+  'model-viewer': {
+    excellent: 0.84,
+    good: 0.69,
+    acceptable: 0.54,
+    poor: 0.39,
+  },
+  // Layer-specific diagrams: Default thresholds
+  'layer-specific': {
+    excellent: 0.83,
+    good: 0.68,
+    acceptable: 0.53,
+    poor: 0.38,
+  },
+};
+
+// Default thresholds for unknown diagram types
+const DEFAULT_THRESHOLDS = {
+  excellent: 0.83,
+  good: 0.68,
+  acceptable: 0.53,
+  poor: 0.38,
+};
+
+/**
+ * Classify quality score based on layer-specific thresholds.
+ *
+ * @param score - Overall quality score (0-1)
+ * @param diagramType - Type of diagram
+ * @returns Quality classification
+ */
+export function classifyQuality(score: number, diagramType: DiagramType): QualityClass {
+  const thresholds = QUALITY_THRESHOLDS[diagramType] || DEFAULT_THRESHOLDS;
+
+  if (score >= thresholds.excellent) return 'excellent';
+  if (score >= thresholds.good) return 'good';
+  if (score >= thresholds.acceptable) return 'acceptable';
+  if (score >= thresholds.poor) return 'poor';
+  return 'unacceptable';
+}
+
+/**
+ * Get quality thresholds for a specific diagram type.
+ *
+ * @param diagramType - Type of diagram
+ * @returns Quality thresholds
+ */
+export function getQualityThresholds(diagramType: DiagramType): QualityThresholds {
+  return { ...QUALITY_THRESHOLDS[diagramType] };
+}
 
 /**
  * Default metric weights by diagram type
@@ -448,7 +739,7 @@ export function calculateEdgeLengthStats(
   });
 
   if (lengths.length === 0) {
-    return { min: 0, max: 0, mean: 0, stdDev: 0 };
+    return { min: 0, max: 0, mean: 0, stdDev: 0, variance: 0 };
   }
 
   const min = Math.min(...lengths);
@@ -459,7 +750,7 @@ export function calculateEdgeLengthStats(
     lengths.length;
   const stdDev = Math.sqrt(variance);
 
-  return { min, max, mean, stdDev };
+  return { min, max, mean, stdDev, variance };
 }
 
 /**
@@ -504,6 +795,426 @@ export function calculateNodeOcclusion(nodes: Node[]): number {
   }
 
   return overlaps;
+}
+
+/**
+ * Calculate detailed node overlap information including areas and specific pairs.
+ *
+ * @param nodes - Array of nodes with positions and dimensions
+ * @returns Detailed overlap information
+ */
+export function calculateNodeOverlapDetails(nodes: Node[]): ExtendedMetrics['overlaps'] {
+  const overlappingPairs: NodeOverlap[] = [];
+  let totalOverlapArea = 0;
+  let totalNodeArea = 0;
+
+  // Calculate total node area
+  nodes.forEach((node) => {
+    const width = node.measured?.width ?? node.width ?? DEFAULT_NODE_WIDTH;
+    const height = node.measured?.height ?? node.height ?? DEFAULT_NODE_HEIGHT;
+    totalNodeArea += width * height;
+  });
+
+  // Check all pairs for overlaps
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const nodeA = nodes[i];
+      const nodeB = nodes[j];
+
+      const aWidth = nodeA.measured?.width ?? nodeA.width ?? DEFAULT_NODE_WIDTH;
+      const aHeight = nodeA.measured?.height ?? nodeA.height ?? DEFAULT_NODE_HEIGHT;
+      const bWidth = nodeB.measured?.width ?? nodeB.width ?? DEFAULT_NODE_WIDTH;
+      const bHeight = nodeB.measured?.height ?? nodeB.height ?? DEFAULT_NODE_HEIGHT;
+
+      // Calculate bounding boxes
+      const aLeft = nodeA.position.x;
+      const aRight = nodeA.position.x + aWidth;
+      const aTop = nodeA.position.y;
+      const aBottom = nodeA.position.y + aHeight;
+
+      const bLeft = nodeB.position.x;
+      const bRight = nodeB.position.x + bWidth;
+      const bTop = nodeB.position.y;
+      const bBottom = nodeB.position.y + bHeight;
+
+      // Check for overlap
+      const horizontalOverlap = aLeft < bRight && aRight > bLeft;
+      const verticalOverlap = aTop < bBottom && aBottom > bTop;
+
+      if (horizontalOverlap && verticalOverlap) {
+        // Calculate overlap area
+        const overlapLeft = Math.max(aLeft, bLeft);
+        const overlapRight = Math.min(aRight, bRight);
+        const overlapTop = Math.max(aTop, bTop);
+        const overlapBottom = Math.min(aBottom, bBottom);
+
+        const overlapWidth = overlapRight - overlapLeft;
+        const overlapHeight = overlapBottom - overlapTop;
+        const overlapArea = overlapWidth * overlapHeight;
+
+        overlappingPairs.push({
+          node1: nodeA.id,
+          node2: nodeB.id,
+          area: overlapArea,
+        });
+
+        totalOverlapArea += overlapArea;
+      }
+    }
+  }
+
+  const areaPercentage = totalNodeArea > 0 ? (totalOverlapArea / totalNodeArea) * 100 : 0;
+
+  return {
+    pairs: overlappingPairs,
+    totalArea: totalOverlapArea,
+    areaPercentage,
+  };
+}
+
+/**
+ * Detect edge crossings and their locations.
+ * Uses line segment intersection algorithm.
+ *
+ * @param nodes - Array of nodes with positions
+ * @param edges - Array of edges
+ * @returns Edge crossing information
+ */
+export function detectEdgeCrossings(
+  nodes: Node[],
+  edges: Edge[]
+): ExtendedMetrics['crossings'] {
+  const crossings: EdgeCrossing[] = [];
+
+  // Build node position map (center coordinates)
+  const nodePositions = new Map<string, Coordinate>();
+  nodes.forEach((node) => {
+    const width = node.measured?.width ?? node.width ?? DEFAULT_NODE_WIDTH;
+    const height = node.measured?.height ?? node.height ?? DEFAULT_NODE_HEIGHT;
+    nodePositions.set(node.id, {
+      x: node.position.x + width / 2,
+      y: node.position.y + height / 2,
+    });
+  });
+
+  // Check all edge pairs for crossings
+  for (let i = 0; i < edges.length; i++) {
+    for (let j = i + 1; j < edges.length; j++) {
+      const edge1 = edges[i];
+      const edge2 = edges[j];
+
+      const e1Source = nodePositions.get(edge1.source);
+      const e1Target = nodePositions.get(edge1.target);
+      const e2Source = nodePositions.get(edge2.source);
+      const e2Target = nodePositions.get(edge2.target);
+
+      if (!e1Source || !e1Target || !e2Source || !e2Target) continue;
+
+      // Check if line segments intersect
+      const intersection = getLineIntersection(
+        e1Source,
+        e1Target,
+        e2Source,
+        e2Target
+      );
+
+      if (intersection) {
+        crossings.push({
+          edge1: edge1.id,
+          edge2: edge2.id,
+          location: intersection,
+        });
+      }
+    }
+  }
+
+  return {
+    count: crossings.length,
+    locations: crossings,
+  };
+}
+
+/**
+ * Calculate intersection point of two line segments.
+ * Returns null if segments don't intersect.
+ *
+ * @param p1 - First point of line 1
+ * @param p2 - Second point of line 1
+ * @param p3 - First point of line 2
+ * @param p4 - Second point of line 2
+ * @returns Intersection point or null
+ */
+function getLineIntersection(
+  p1: Coordinate,
+  p2: Coordinate,
+  p3: Coordinate,
+  p4: Coordinate
+): Coordinate | null {
+  const x1 = p1.x, y1 = p1.y;
+  const x2 = p2.x, y2 = p2.y;
+  const x3 = p3.x, y3 = p3.y;
+  const x4 = p4.x, y4 = p4.y;
+
+  const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+
+  // Lines are parallel or coincident
+  if (Math.abs(denom) < 1e-10) return null;
+
+  const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denom;
+  const u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denom;
+
+  // Check if intersection is within both line segments
+  if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+    return {
+      x: x1 + t * (x2 - x1),
+      y: y1 + t * (y2 - y1),
+    };
+  }
+
+  return null;
+}
+
+/**
+ * Calculate alignment metrics for nodes.
+ *
+ * @param nodes - Array of nodes with positions
+ * @param tolerance - Tolerance in pixels for near-alignment detection
+ * @returns Alignment metrics
+ */
+export function calculateAlignment(
+  nodes: Node[],
+  tolerance: number = 5
+): AlignmentMetrics {
+  if (nodes.length < 2) {
+    return { horizontal: 0, vertical: 0, tolerance };
+  }
+
+  // Group nodes by horizontal and vertical positions
+  const yGroups = new Map<number, number>();
+  const xGroups = new Map<number, number>();
+
+  nodes.forEach((node) => {
+    const width = node.measured?.width ?? node.width ?? DEFAULT_NODE_WIDTH;
+    const height = node.measured?.height ?? node.height ?? DEFAULT_NODE_HEIGHT;
+    const centerY = node.position.y + height / 2;
+    const centerX = node.position.x + width / 2;
+
+    // Find or create horizontal alignment group
+    let foundYGroup = false;
+    for (const [groupY, count] of yGroups.entries()) {
+      if (Math.abs(centerY - groupY) <= tolerance) {
+        yGroups.set(groupY, count + 1);
+        foundYGroup = true;
+        break;
+      }
+    }
+    if (!foundYGroup) {
+      yGroups.set(centerY, 1);
+    }
+
+    // Find or create vertical alignment group
+    let foundXGroup = false;
+    for (const [groupX, count] of xGroups.entries()) {
+      if (Math.abs(centerX - groupX) <= tolerance) {
+        xGroups.set(groupX, count + 1);
+        foundXGroup = true;
+        break;
+      }
+    }
+    if (!foundXGroup) {
+      xGroups.set(centerX, 1);
+    }
+  });
+
+  // Calculate alignment scores based on largest groups
+  const maxYGroupSize = Math.max(...Array.from(yGroups.values()));
+  const maxXGroupSize = Math.max(...Array.from(xGroups.values()));
+
+  const horizontalScore = maxYGroupSize / nodes.length;
+  const verticalScore = maxXGroupSize / nodes.length;
+
+  return {
+    horizontal: horizontalScore,
+    vertical: verticalScore,
+    tolerance,
+  };
+}
+
+/**
+ * Calculate symmetry metrics for the layout.
+ *
+ * @param nodes - Array of nodes with positions
+ * @returns Symmetry metrics
+ */
+export function calculateSymmetry(nodes: Node[]): SymmetryMetrics {
+  if (nodes.length < 2) {
+    return { horizontal: 0, vertical: 0, radial: 0 };
+  }
+
+  // Calculate bounding box center
+  let minX = Infinity, maxX = -Infinity;
+  let minY = Infinity, maxY = -Infinity;
+
+  const centers: Coordinate[] = nodes.map((node) => {
+    const width = node.measured?.width ?? node.width ?? DEFAULT_NODE_WIDTH;
+    const height = node.measured?.height ?? node.height ?? DEFAULT_NODE_HEIGHT;
+    const centerX = node.position.x + width / 2;
+    const centerY = node.position.y + height / 2;
+
+    minX = Math.min(minX, centerX);
+    maxX = Math.max(maxX, centerX);
+    minY = Math.min(minY, centerY);
+    maxY = Math.max(maxY, centerY);
+
+    return { x: centerX, y: centerY };
+  });
+
+  const layoutCenterX = (minX + maxX) / 2;
+  const layoutCenterY = (minY + maxY) / 2;
+
+  // Calculate horizontal symmetry
+  let horizontalSymmetryScore = 0;
+  centers.forEach((center) => {
+    const mirrorY = 2 * layoutCenterY - center.y;
+    const minDistance = Math.min(
+      ...centers.map((c) => Math.sqrt(Math.pow(c.x - center.x, 2) + Math.pow(c.y - mirrorY, 2)))
+    );
+    const tolerance = 20; // pixels
+    if (minDistance < tolerance) {
+      horizontalSymmetryScore++;
+    }
+  });
+
+  // Calculate vertical symmetry
+  let verticalSymmetryScore = 0;
+  centers.forEach((center) => {
+    const mirrorX = 2 * layoutCenterX - center.x;
+    const minDistance = Math.min(
+      ...centers.map((c) => Math.sqrt(Math.pow(c.x - mirrorX, 2) + Math.pow(c.y - center.y, 2)))
+    );
+    const tolerance = 20; // pixels
+    if (minDistance < tolerance) {
+      verticalSymmetryScore++;
+    }
+  });
+
+  // Calculate radial symmetry (simplified)
+  let radialSymmetryScore = 0;
+  centers.forEach((center) => {
+    const distanceFromCenter = Math.sqrt(
+      Math.pow(center.x - layoutCenterX, 2) + Math.pow(center.y - layoutCenterY, 2)
+    );
+    const sameDistanceCount = centers.filter((c) => {
+      const dist = Math.sqrt(
+        Math.pow(c.x - layoutCenterX, 2) + Math.pow(c.y - layoutCenterY, 2)
+      );
+      return Math.abs(dist - distanceFromCenter) < 20;
+    }).length;
+
+    if (sameDistanceCount > 1) {
+      radialSymmetryScore += 1 / sameDistanceCount;
+    }
+  });
+
+  return {
+    horizontal: horizontalSymmetryScore / nodes.length,
+    vertical: verticalSymmetryScore / nodes.length,
+    radial: Math.min(radialSymmetryScore / nodes.length, 1),
+  };
+}
+
+/**
+ * Calculate hierarchy clarity metric for hierarchical layouts.
+ *
+ * @param nodes - Array of nodes with positions
+ * @param edges - Array of edges (used to detect hierarchy)
+ * @param layoutType - Type of layout being used
+ * @returns Hierarchy clarity metric or undefined for non-hierarchical layouts
+ */
+export function calculateHierarchyClarity(
+  nodes: Node[],
+  edges: Edge[],
+  layoutType: LayoutType
+): ExtendedMetrics['hierarchyClarity'] | undefined {
+  // Only calculate for hierarchical layouts
+  if (layoutType !== 'hierarchical') {
+    return undefined;
+  }
+
+  if (nodes.length < 2) {
+    return undefined;
+  }
+
+  // Detect levels based on Y-coordinates (assumes top-down hierarchy)
+  const tolerance = 20; // pixels
+  const levels: HierarchyLevel[] = [];
+
+  nodes.forEach((node) => {
+    const width = node.measured?.width ?? node.width ?? DEFAULT_NODE_WIDTH;
+    const height = node.measured?.height ?? node.height ?? DEFAULT_NODE_HEIGHT;
+    const centerY = node.position.y + height / 2;
+
+    // Find existing level or create new one
+    let foundLevel = false;
+    for (const level of levels) {
+      if (Math.abs(level.yPosition - centerY) <= tolerance) {
+        level.nodeIds.push(node.id);
+        // Update average Y position
+        level.yPosition =
+          (level.yPosition * (level.nodeIds.length - 1) + centerY) /
+          level.nodeIds.length;
+        foundLevel = true;
+        break;
+      }
+    }
+
+    if (!foundLevel) {
+      levels.push({
+        level: levels.length,
+        yPosition: centerY,
+        nodeIds: [node.id],
+      });
+    }
+  });
+
+  // Sort levels by Y position
+  levels.sort((a, b) => a.yPosition - b.yPosition);
+  levels.forEach((level, index) => {
+    level.level = index;
+  });
+
+  // Calculate spacing between levels
+  const spacings: number[] = [];
+  for (let i = 0; i < levels.length - 1; i++) {
+    spacings.push(levels[i + 1].yPosition - levels[i].yPosition);
+  }
+
+  if (spacings.length === 0) {
+    return {
+      score: 1,
+      levels,
+      avgLevelSpacing: 0,
+      levelSpacingStdDev: 0,
+    };
+  }
+
+  const avgSpacing = spacings.reduce((a, b) => a + b, 0) / spacings.length;
+  const variance =
+    spacings.reduce((sum, s) => sum + Math.pow(s - avgSpacing, 2), 0) /
+    spacings.length;
+  const stdDev = Math.sqrt(variance);
+
+  // Score based on consistency of spacing (lower stdDev = higher score)
+  // Normalize by average spacing to make it relative
+  const coefficientOfVariation = avgSpacing > 0 ? stdDev / avgSpacing : 0;
+  const score = Math.max(0, 1 - Math.min(coefficientOfVariation, 1));
+
+  return {
+    score,
+    levels,
+    avgLevelSpacing: avgSpacing,
+    levelSpacingStdDev: stdDev,
+  };
 }
 
 /**
@@ -719,15 +1430,25 @@ export function calculateLayoutQuality(
   // Calculate extended metrics
   const edgeLength = calculateEdgeLengthStats(nodes, edges);
   const nodeNodeOcclusion = calculateNodeOcclusion(nodes);
+  const overlaps = calculateNodeOverlapDetails(nodes);
+  const crossings = detectEdgeCrossings(nodes, edges);
   const aspectRatio = calculateAspectRatio(nodes);
   const density = calculateDensity(nodes.length, edges.length);
+  const alignment = calculateAlignment(nodes);
+  const symmetry = calculateSymmetry(nodes);
+  const hierarchyClarity = calculateHierarchyClarity(nodes, edges, layoutType);
 
   const extendedMetrics: ExtendedMetrics = {
     ...metrics,
     edgeLength,
     nodeNodeOcclusion,
+    overlaps,
+    crossings,
     aspectRatio,
     density,
+    alignment,
+    symmetry,
+    hierarchyClarity,
   };
 
   // Calculate overall score
@@ -744,8 +1465,12 @@ export function calculateLayoutQuality(
 
   const computationTimeMs = performance.now() - startTime;
 
+  // Classify quality based on layer-specific thresholds
+  const qualityClass = classifyQuality(overallScore, diagramType);
+
   return {
     overallScore,
+    qualityClass,
     metrics,
     extendedMetrics,
     timestamp: new Date().toISOString(),

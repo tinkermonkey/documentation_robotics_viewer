@@ -1,0 +1,141 @@
+entities:
+  entity.user:
+    name: User
+    description: Customer or admin user account
+    attributes:
+      - id (UUID, PK)
+      - email (string, unique)
+      - password_hash (string)
+      - first_name (string)
+      - last_name (string)
+      - created_at (timestamp)
+    relationships:
+      - has_many: orders
+      - has_many: addresses
+      - has_one: cart
+
+  entity.product:
+    name: Product
+    description: Sellable product item
+    attributes:
+      - id (UUID, PK)
+      - sku (string, unique)
+      - name (string)
+      - description (text)
+      - price (decimal)
+      - stock_quantity (integer)
+      - category_id (UUID, FK)
+    relationships:
+      - belongs_to: category
+      - has_many: order_items
+      - has_many: product_images
+
+  entity.category:
+    name: Category
+    description: Product categorization
+    attributes:
+      - id (UUID, PK)
+      - name (string)
+      - parent_id (UUID, FK, nullable)
+      - display_order (integer)
+    relationships:
+      - has_many: products
+      - belongs_to: parent_category (self-reference)
+      - has_many: child_categories (self-reference)
+
+  entity.order:
+    name: Order
+    description: Customer purchase order
+    attributes:
+      - id (UUID, PK)
+      - user_id (UUID, FK)
+      - order_number (string, unique)
+      - status (enum)
+      - total_amount (decimal)
+      - created_at (timestamp)
+      - shipping_address_id (UUID, FK)
+    relationships:
+      - belongs_to: user
+      - has_many: order_items
+      - has_one: payment
+      - belongs_to: shipping_address
+
+  entity.order_item:
+    name: OrderItem
+    description: Line item within an order
+    attributes:
+      - id (UUID, PK)
+      - order_id (UUID, FK)
+      - product_id (UUID, FK)
+      - quantity (integer)
+      - unit_price (decimal)
+      - subtotal (decimal)
+    relationships:
+      - belongs_to: order
+      - belongs_to: product
+
+  entity.payment:
+    name: Payment
+    description: Payment transaction for order
+    attributes:
+      - id (UUID, PK)
+      - order_id (UUID, FK)
+      - payment_method (enum)
+      - amount (decimal)
+      - status (enum)
+      - transaction_id (string)
+      - processed_at (timestamp)
+    relationships:
+      - belongs_to: order
+
+  entity.address:
+    name: Address
+    description: Shipping or billing address
+    attributes:
+      - id (UUID, PK)
+      - user_id (UUID, FK)
+      - address_line1 (string)
+      - address_line2 (string, nullable)
+      - city (string)
+      - state (string)
+      - postal_code (string)
+      - country (string)
+    relationships:
+      - belongs_to: user
+      - has_many: orders (as shipping_address)
+
+  entity.cart:
+    name: Cart
+    description: Shopping cart (active order)
+    attributes:
+      - id (UUID, PK)
+      - user_id (UUID, FK)
+      - created_at (timestamp)
+      - updated_at (timestamp)
+    relationships:
+      - belongs_to: user
+      - has_many: cart_items
+
+  entity.cart_item:
+    name: CartItem
+    description: Product in shopping cart
+    attributes:
+      - id (UUID, PK)
+      - cart_id (UUID, FK)
+      - product_id (UUID, FK)
+      - quantity (integer)
+    relationships:
+      - belongs_to: cart
+      - belongs_to: product
+
+  entity.product_image:
+    name: ProductImage
+    description: Product photo or image
+    attributes:
+      - id (UUID, PK)
+      - product_id (UUID, FK)
+      - url (string)
+      - alt_text (string)
+      - display_order (integer)
+    relationships:
+      - belongs_to: product

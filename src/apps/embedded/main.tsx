@@ -5,6 +5,7 @@ import { ThemeProvider } from 'flowbite-react';
 import { installFetchInterceptor } from './utils/fetchInterceptor';
 import { router } from './router';
 import { customTheme } from '../../theme/customTheme';
+import { initializeDefaultEngines } from '@/core/layout/engines';
 import '../../index.css';
 
 // Handle token from magic link BEFORE router initializes
@@ -31,10 +32,26 @@ if (!rootElement) {
   throw new Error('Root element not found');
 }
 
-ReactDOM.createRoot(rootElement).render(
-  <React.StrictMode>
-    <ThemeProvider theme={customTheme as any}>
-      <RouterProvider router={router} />
-    </ThemeProvider>
-  </React.StrictMode>
-);
+// Initialize layout engines before rendering React app
+async function initializeAndRender() {
+  console.log('[main] Initializing layout engines...');
+
+  try {
+    await initializeDefaultEngines();
+    console.log('[main] Layout engines initialized successfully');
+  } catch (error) {
+    console.error('[main] Failed to initialize layout engines:', error);
+  }
+
+  // Render React app after engines are initialized
+  ReactDOM.createRoot(rootElement!).render(
+    <React.StrictMode>
+      <ThemeProvider theme={customTheme as any}>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </React.StrictMode>
+  );
+}
+
+// Start initialization and rendering
+initializeAndRender();

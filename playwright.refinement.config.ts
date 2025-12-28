@@ -43,6 +43,7 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'off',
+    headless: true, // Always run in headless mode to avoid opening browser windows
   },
 
   projects: [

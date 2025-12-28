@@ -40,6 +40,7 @@ export default defineConfig({
     baseURL: 'http://localhost:3001',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    headless: true, // Always run in headless mode to avoid opening browser windows
   },
 
   projects: [

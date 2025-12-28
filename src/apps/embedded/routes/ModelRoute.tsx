@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useSearch, useNavigate } from '@tanstack/react-router';
 import type { Node } from '@xyflow/react';
 import GraphViewer from '../../../core/components/GraphViewer';
+import GraphRefinementContainer from '../components/GraphRefinementContainer';
 import ModelJSONViewer from '../components/ModelJSONViewer';
 import AnnotationPanel from '../components/AnnotationPanel';
 import SchemaInfoPanel from '../components/SchemaInfoPanel';
@@ -16,6 +17,7 @@ import { useAnnotationStore } from '../stores/annotationStore';
 import { embeddedDataLoader, LinkRegistry, SpecDataResponse } from '../services/embeddedDataLoader';
 import { websocketClient } from '../services/websocketClient';
 import type { MetaModel } from '../../../core/types';
+import { LayoutEngineType } from '@/core/layout/engines';
 
 /**
  * Sanitize model data to ensure all elements have required visual properties.
@@ -73,7 +75,7 @@ export default function ModelRoute() {
   const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
   const [selectedLayerId, setSelectedLayerId] = useState<string | null>(search?.layer || null);
 
-  const activeView = view === 'json' ? 'json' : 'graph';
+  const activeView = view === 'json' ? 'json' : view === 'refine' ? 'refine' : 'graph';
 
   // Handle layer selection and update URL
   const handleLayerSelect = (layerId: string | null) => {
@@ -217,6 +219,31 @@ export default function ModelRoute() {
     );
   }
 
+  // Refinement view has its own layout structure
+  if (activeView === 'refine') {
+    return (
+      <GraphRefinementContainer
+        diagramType="model-viewer"
+        renderGraph={(layoutEngine: LayoutEngineType, layoutParameters: Record<string, any>) => (
+          <GraphViewer
+            model={model}
+            onNodeClick={handleNodeClick}
+            selectedLayerId={selectedLayerId}
+            layoutEngine={layoutEngine}
+            layoutParameters={layoutParameters}
+          />
+        )}
+        leftSidebarContent={
+          <ModelLayersSidebar
+            selectedLayerId={selectedLayerId}
+            onSelectLayer={handleLayerSelect}
+          />
+        }
+      />
+    );
+  }
+
+  // Standard graph/json views use SharedLayout
   return (
     <SharedLayout
       showLeftSidebar={true}

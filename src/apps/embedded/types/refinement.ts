@@ -218,10 +218,14 @@ export interface RefinementFeedbackPanelProps {
   status: RefinementSessionStatus;
   /** Callback when feedback is submitted */
   onFeedback: (feedback: HumanFeedback) => void;
-  /** Callback to approve current result */
+  /** Callback to accept current result and save parameters */
   onApprove: () => void;
+  /** Callback to reject current result and revert to previous parameters */
+  onReject: () => void;
   /** Callback to continue with auto-optimization */
   onContinue: () => void;
+  /** Callback to continue refining with manual adjustments */
+  onRefine: () => void;
   /** Callback to stop/abort refinement */
   onStop: () => void;
   /** Callback to revert to a previous iteration */
@@ -231,19 +235,41 @@ export interface RefinementFeedbackPanelProps {
 }
 
 /**
+ * Layout snapshot for multi-layout comparison
+ */
+export interface LayoutSnapshot {
+  /** Unique identifier for the layout */
+  id: string;
+  /** Display label */
+  label: string;
+  /** Screenshot URL */
+  screenshotUrl: string;
+  /** Quality score for this layout */
+  qualityScore: CombinedQualityScore;
+  /** Layout parameters used */
+  parameters?: LayoutParameters;
+  /** Whether this is the best layout */
+  isBest?: boolean;
+}
+
+/**
  * Props for the SideBySideComparison component
  */
 export interface SideBySideComparisonProps {
   /** Reference image URL */
   referenceImageUrl: string;
-  /** Generated screenshot URL */
-  generatedScreenshotUrl: string;
+  /** Generated screenshot URL (for backward compatibility with 2-layout mode) */
+  generatedScreenshotUrl?: string;
   /** Heatmap image URL (optional) */
   heatmapUrl?: string;
+  /** Multiple layouts for grid comparison (3-6 layouts) */
+  layouts?: LayoutSnapshot[];
   /** View options */
   viewOptions: ComparisonViewOptions;
   /** Callback when view options change */
   onViewOptionsChange: (options: ComparisonViewOptions) => void;
+  /** Callback when a layout is selected for detailed view */
+  onLayoutSelect?: (layoutId: string) => void;
 }
 
 /**

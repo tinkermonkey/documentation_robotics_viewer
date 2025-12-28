@@ -1,0 +1,9 @@
+name: cloud-native-saas-platform
+version: 1.0.0
+description: Cloud-native SaaS platform architecture with microservices and external integrations
+layer_type: c4
+created: 2025-12-27
+license: Public Domain
+source: Inspired by C4 model examples (https://c4model.com)
+layers:
+  - 04_application

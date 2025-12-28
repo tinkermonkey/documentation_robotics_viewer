@@ -1,0 +1,136 @@
+goals:
+  # Vision Level
+  vision.digital-transformation:
+    name: Digital Transformation Vision
+    description: Transform the organization into a data-driven, customer-centric, agile enterprise
+    type: vision
+    timeframe: 5 years
+
+  # Strategic Level
+  strategic.business-growth:
+    name: Accelerate Business Growth
+    description: Increase revenue through digital channels and new business models
+    type: strategic
+    parent: vision.digital-transformation
+    timeframe: 3 years
+    kpis:
+      - Digital revenue growth 40%
+      - New digital products launched
+
+  strategic.operational-excellence:
+    name: Achieve Operational Excellence
+    description: Optimize processes through automation and data analytics
+    type: strategic
+    parent: vision.digital-transformation
+    timeframe: 3 years
+    kpis:
+      - Process automation 70%
+      - Operational cost reduction 25%
+
+  strategic.technology-modernization:
+    name: Modernize Technology Platform
+    description: Build scalable, cloud-native architecture supporting innovation
+    type: strategic
+    parent: vision.digital-transformation
+    timeframe: 3 years
+    kpis:
+      - Cloud migration 90%
+      - System uptime 99.9%
+
+  strategic.cultural-transformation:
+    name: Foster Innovation Culture
+    description: Build agile, data-driven, customer-focused organizational culture
+    type: strategic
+    parent: vision.digital-transformation
+    timeframe: 3 years
+    kpis:
+      - Employee digital skills 80%
+      - Innovation initiatives per quarter
+
+  # Tactical Level - Business Growth
+  tactical.ecommerce-expansion:
+    name: Expand E-Commerce Capabilities
+    description: Launch new digital sales channels and improve online customer experience
+    type: tactical
+    parent: strategic.business-growth
+    timeframe: 18 months
+
+  tactical.data-monetization:
+    name: Monetize Data Assets
+    description: Create new revenue streams from data products and analytics services
+    type: tactical
+    parent: strategic.business-growth
+    timeframe: 24 months
+
+  tactical.customer-personalization:
+    name: Implement Customer Personalization
+    description: Use AI/ML to deliver personalized customer experiences across channels
+    type: tactical
+    parent: strategic.business-growth
+    timeframe: 12 months
+
+  # Tactical Level - Operational Excellence
+  tactical.process-automation:
+    name: Automate Core Processes
+    description: Implement RPA and workflow automation for repetitive tasks
+    type: tactical
+    parent: strategic.operational-excellence
+    timeframe: 18 months
+
+  tactical.data-analytics-platform:
+    name: Build Data Analytics Platform
+    description: Centralize data and provide self-service analytics to all business units
+    type: tactical
+    parent: strategic.operational-excellence
+    timeframe: 24 months
+
+  tactical.supply-chain-optimization:
+    name: Optimize Supply Chain
+    description: Use IoT and predictive analytics to optimize inventory and logistics
+    type: tactical
+    parent: strategic.operational-excellence
+    timeframe: 18 months
+
+  # Tactical Level - Technology Modernization
+  tactical.cloud-migration:
+    name: Migrate to Cloud Infrastructure
+    description: Move applications and data to cloud-native architecture
+    type: tactical
+    parent: strategic.technology-modernization
+    timeframe: 24 months
+
+  tactical.api-platform:
+    name: Build API Integration Platform
+    description: Create unified API layer for internal and external integrations
+    type: tactical
+    parent: strategic.technology-modernization
+    timeframe: 18 months
+
+  tactical.security-modernization:
+    name: Modernize Security Architecture
+    description: Implement zero-trust security and automated threat detection
+    type: tactical
+    parent: strategic.technology-modernization
+    timeframe: 24 months
+
+  # Tactical Level - Cultural Transformation
+  tactical.agile-transformation:
+    name: Adopt Agile Ways of Working
+    description: Transform teams to agile methodology with continuous delivery
+    type: tactical
+    parent: strategic.cultural-transformation
+    timeframe: 18 months
+
+  tactical.digital-skills-training:
+    name: Digital Skills Development Program
+    description: Train workforce in data analytics, cloud, and digital technologies
+    type: tactical
+    parent: strategic.cultural-transformation
+    timeframe: 12 months
+
+  tactical.innovation-labs:
+    name: Establish Innovation Labs
+    description: Create dedicated spaces and programs for experimentation and prototyping
+    type: tactical
+    parent: strategic.cultural-transformation
+    timeframe: 12 months

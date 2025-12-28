@@ -154,10 +154,41 @@ export type ProgressCallback = (
 ) => void;
 
 /**
- * Refinement loop state for cancellation
+ * Refinement session state for multi-turn sessions
+ */
+export interface RefinementSessionState {
+  /** Unique session identifier */
+  sessionId: string;
+  /** Session name */
+  name?: string;
+  /** Diagram type being optimized */
+  diagramType: DiagramType;
+  /** Layout type for scoring */
+  layoutType: LayoutType;
+  /** Current configuration */
+  config: RefinementConfig;
+  /** Current iteration history */
+  history: RefinementIteration[];
+  /** Best result so far */
+  bestResult: RefinementIteration | null;
+  /** Whether session is paused */
+  paused: boolean;
+  /** Session creation timestamp */
+  createdAt: string;
+  /** Last updated timestamp */
+  updatedAt: string;
+  /** Parent session ID if this is a branch */
+  parentSessionId?: string;
+  /** Iteration number where branch was created */
+  branchPoint?: number;
+}
+
+/**
+ * Refinement loop state for cancellation and pause
  */
 interface RefinementState {
   cancelled: boolean;
+  paused: boolean;
 }
 
 /**
@@ -172,13 +203,15 @@ export class RefinementLoop {
   private state: RefinementState;
   private history: RefinementIteration[];
   private bestResult: RefinementIteration | null;
+  private sessionId: string;
 
   constructor(config: Partial<RefinementConfig> = {}) {
     this.config = { ...DEFAULT_REFINEMENT_CONFIG, ...config };
     this.strategy = createStrategy(this.config.strategyType);
-    this.state = { cancelled: false };
+    this.state = { cancelled: false, paused: false };
     this.history = [];
     this.bestResult = null;
+    this.sessionId = this.generateSessionId();
   }
 
   /**
@@ -194,6 +227,13 @@ export class RefinementLoop {
   }
 
   /**
+   * Generate a unique session ID
+   */
+  private generateSessionId(): string {
+    return `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  /**
    * Cancel an ongoing refinement
    */
   cancel(): void {
@@ -201,13 +241,102 @@ export class RefinementLoop {
   }
 
   /**
+   * Pause an ongoing refinement
+   */
+  pause(): void {
+    this.state.paused = true;
+  }
+
+  /**
+   * Resume a paused refinement
+   */
+  resume(): void {
+    this.state.paused = false;
+  }
+
+  /**
+   * Check if refinement is paused
+   */
+  isPaused(): boolean {
+    return this.state.paused;
+  }
+
+  /**
    * Reset the refinement loop state
    */
   reset(): void {
-    this.state = { cancelled: false };
+    this.state = { cancelled: false, paused: false };
     this.history = [];
     this.bestResult = null;
     this.strategy.reset();
+    this.sessionId = this.generateSessionId();
+  }
+
+  /**
+   * Export current session state
+   */
+  exportSessionState(): RefinementSessionState {
+    return {
+      sessionId: this.sessionId,
+      diagramType: this.config.diagramType,
+      layoutType: this.config.layoutType,
+      config: { ...this.config },
+      history: [...this.history],
+      bestResult: this.bestResult ? { ...this.bestResult } : null,
+      paused: this.state.paused,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+  }
+
+  /**
+   * Import and restore session state
+   */
+  importSessionState(sessionState: RefinementSessionState): void {
+    this.sessionId = sessionState.sessionId;
+    this.config = { ...sessionState.config };
+    this.history = [...sessionState.history];
+    this.bestResult = sessionState.bestResult ? { ...sessionState.bestResult } : null;
+    this.state.paused = sessionState.paused;
+
+    // Recreate strategy with imported config
+    this.strategy = createStrategy(this.config.strategyType);
+    this.strategy.initialize({
+      maxIterations: this.config.maxIterations,
+      targetScore: this.config.targetScore,
+      plateauThreshold: this.config.plateauThreshold,
+      minImprovementPercent: this.config.minImprovementPercent,
+      diagramType: this.config.diagramType,
+      ...this.config.strategyConfig,
+    });
+  }
+
+  /**
+   * Create a branch from current session state
+   */
+  createBranch(branchName?: string): RefinementLoop {
+    const branch = new RefinementLoop(this.config);
+    const currentState = this.exportSessionState();
+
+    // Import current state into branch
+    branch.importSessionState({
+      ...currentState,
+      sessionId: branch.sessionId,
+      name: branchName,
+      parentSessionId: this.sessionId,
+      branchPoint: this.history.length,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
+
+    return branch;
+  }
+
+  /**
+   * Get current session ID
+   */
+  getSessionId(): string {
+    return this.sessionId;
   }
 
   /**
@@ -316,6 +445,15 @@ export class RefinementLoop {
       // Check for cancellation
       if (this.state.cancelled) {
         completionReason = 'cancelled';
+        break;
+      }
+
+      // Check for pause
+      if (this.state.paused) {
+        completionReason = 'cancelled'; // Treat pause as cancellation for now
+        if (this.config.verbose) {
+          console.log(`[RefinementLoop] Paused at iteration ${iteration}`);
+        }
         break;
       }
 

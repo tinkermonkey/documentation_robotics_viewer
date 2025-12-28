@@ -29,23 +29,36 @@ import { AppNode, AppEdge } from '../types/reactflow';
 import { SpaceMouseHandler } from './SpaceMouseHandler';
 import { OverviewPanel, NodeWithLayerData } from './OverviewPanel';
 import { getLayerColor } from '../utils/layerColors';
+import { getEngine, LayoutEngineType } from '../layout/engines';
+import { getLayerLayoutConfig } from '../services/layerLayoutConfig';
 
 interface GraphViewerProps {
   model: MetaModel;
   onNodeClick?: (node: Node | null) => void;
   selectedLayerId?: string | null;
+  layoutEngine?: LayoutEngineType; // Add layout engine selector
+  layoutParameters?: Record<string, any>; // Add custom parameters
+  onNodesEdgesChange?: (nodes: Node[], edges: any[]) => void; // Callback when nodes/edges change
 }
 
 /**
  * GraphViewerInner Component
  * Inner component that has access to React Flow instance via useReactFlow hook
  */
-const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, selectedLayerId }) => {
+const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, selectedLayerId, layoutEngine, layoutParameters, onNodesEdgesChange }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<AppEdge>([]);
   const { layers: layerStates } = useLayerStore();
   const [isRendering, setIsRendering] = useState(false);
   const reactFlowInstance = useReactFlow();
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [showMiniMap, setShowMiniMap] = useState(false);
+
+  // Handle React Flow initialization
+  const handleInit = useCallback(() => {
+    console.log('[GraphViewer] React Flow initialized');
+    setIsInitialized(true);
+  }, []);
 
   // Handle node click
   const handleNodeClick: NodeMouseHandler = useCallback(
@@ -57,13 +70,13 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
     [onNodeClick]
   );
 
-  // Main effect: render the model when model changes
+  // Main effect: render the model when model or layout engine changes
   useEffect(() => {
     if (!model || isRendering) return;
 
-    console.log('GraphViewer: Rendering model', model.version);
+    console.log('GraphViewer: Rendering model', model.version, 'with layout:', layoutEngine || 'default');
     renderModel(model);
-  }, [model]);
+  }, [model, layoutEngine, layoutParameters]);
 
   // Secondary effect: update node visibility when layer states change
   useEffect(() => {
@@ -72,6 +85,33 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
     console.log('GraphViewer: Updating layer visibility');
     updateLayerVisibility();
   }, [layerStates]);
+
+  // Fit view after React Flow is initialized and nodes are loaded
+  useEffect(() => {
+    if (!isInitialized || !reactFlowInstance || nodes.length === 0) return;
+
+    console.log('[GraphViewer] Fitting view after initialization');
+    // Use setTimeout to ensure React Flow has completed its internal calculations
+    setTimeout(() => {
+      reactFlowInstance.fitView({ padding: 0.1, duration: 200 });
+    }, 50);
+
+    // Enable MiniMap after fitView has completed and viewport is stable
+    // Only show MiniMap for graphs with 30+ nodes to avoid rendering issues
+    // The MiniMap is most useful for large graphs anyway
+    if (nodes.length >= 30) {
+      const delay = 2000; // Use conservative delay for large graphs
+      setTimeout(() => {
+        // Verify viewport is valid before showing MiniMap
+        const viewport = reactFlowInstance.getViewport();
+        if (viewport && !isNaN(viewport.x) && !isNaN(viewport.y) && !isNaN(viewport.zoom)) {
+          setShowMiniMap(true);
+        } else {
+          console.warn('[GraphViewer] Viewport not ready, skipping MiniMap');
+        }
+      }, delay);
+    }
+  }, [isInitialized, reactFlowInstance, nodes.length]);
 
   // Zoom to selected layer effect
   useEffect(() => {
@@ -92,6 +132,8 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
    */
   const renderModel = async (model: MetaModel) => {
     setIsRendering(true);
+    setIsInitialized(false); // Reset initialization flag for new model
+    setShowMiniMap(false); // Reset MiniMap flag for new model
 
     try {
       // Clear element store
@@ -104,12 +146,29 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
       }
 
       // Create layout engine and transformer
-      const layoutEngine = new VerticalLayerLayout();
-      const transformer = new NodeTransformer(layoutEngine);
+      let layoutEngineInstance;
+
+      if (layoutEngine) {
+        // Use specified layout engine from props
+        console.log(`[GraphViewer] Using layout engine: ${layoutEngine}`);
+        layoutEngineInstance = getEngine(layoutEngine);
+
+        // Fallback if engine not found
+        if (!layoutEngineInstance) {
+          console.warn(`[GraphViewer] Layout engine "${layoutEngine}" not found, using default`);
+          layoutEngineInstance = new VerticalLayerLayout();
+        }
+      } else {
+        // Fallback to vertical layer layout for backward compatibility
+        console.log('[GraphViewer] Using default VerticalLayerLayout');
+        layoutEngineInstance = new VerticalLayerLayout();
+      }
+
+      const transformer = new NodeTransformer(layoutEngineInstance);
 
       // Transform the model into nodes and edges
       console.log('[GraphViewer] Transforming model to React Flow nodes and edges...');
-      const result = await transformer.transformModel(model);
+      const result = await transformer.transformModel(model, layoutParameters);
 
       console.log(`[GraphViewer] Created ${result.nodes.length} nodes and ${result.edges.length} edges`);
       console.log('[GraphViewer] Layout:', result.layout);
@@ -117,6 +176,11 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
       // Set nodes and edges
       setNodes(result.nodes);
       setEdges(result.edges);
+
+      // Notify parent of nodes/edges change
+      if (onNodesEdgesChange) {
+        onNodesEdgesChange(result.nodes, result.edges);
+      }
 
       // Apply initial layer visibility
       setTimeout(() => {
@@ -188,30 +252,33 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodeClick={handleNodeClick}
+        onInit={handleInit}
         nodesDraggable={false}       // Read-only: no dragging
         nodesConnectable={false}     // Read-only: no new connections
         nodesFocusable={true}        // Allow keyboard navigation
         edgesFocusable={true}
         elementsSelectable={true}    // Allow selection
-        fitView
-        fitViewOptions={{ padding: 0.1 }}
+        defaultViewport={{ x: 0, y: 0, zoom: 1 }}  // Explicit initial viewport
         minZoom={0.1}
         maxZoom={2}
       >
         <Background color="#E6E6E6" gap={16} />
         <Controls />
         <SpaceMouseHandler />
-        <OverviewPanel
-          nodeColor={(node: NodeWithLayerData) => {
-            // Color nodes based on their layer
-            const layer = node.data.layer;
-            if (layer) {
-              return getLayerColor(layer, 'primary');
-            }
-            // Fallback to fill color
-            return node.data.fill || '#ffffff';
-          }}
-        />
+        {/* Only render OverviewPanel after viewport is stable to prevent NaN in MiniMap SVG */}
+        {showMiniMap && (
+          <OverviewPanel
+            nodeColor={(node: NodeWithLayerData) => {
+              // Color nodes based on their layer
+              const layer = node.data.layer;
+              if (layer) {
+                return getLayerColor(layer, 'primary');
+              }
+              // Fallback to fill color
+              return node.data.fill || '#ffffff';
+            }}
+          />
+        )}
       </ReactFlow>
 
       {isRendering && (

@@ -5,6 +5,7 @@
 
 import { MetaModel, Relationship, ModelElement } from '../types';
 import { VerticalLayerLayout } from '../layout/verticalLayerLayout';
+import { LayoutEngine } from '../layout/engines';
 import { MarkerType } from '@xyflow/react';
 import { elementStore } from '../stores/elementStore';
 import { LayoutResult } from '../types/shapes';
@@ -23,6 +24,20 @@ import {
   EXTERNAL_ACTOR_NODE_WIDTH,
   EXTERNAL_ACTOR_NODE_HEIGHT,
 } from '../nodes/c4/ExternalActorNode';
+// Import Business node dimension constants
+import {
+  BUSINESS_SERVICE_NODE_WIDTH,
+  BUSINESS_SERVICE_NODE_HEIGHT,
+} from '../nodes/business/BusinessServiceNode';
+import {
+  BUSINESS_FUNCTION_NODE_WIDTH,
+  BUSINESS_FUNCTION_NODE_HEIGHT,
+} from '../nodes/business/BusinessFunctionNode';
+import {
+  BUSINESS_CAPABILITY_NODE_WIDTH,
+  BUSINESS_CAPABILITY_NODE_HEIGHT,
+} from '../nodes/business/BusinessCapabilityNode';
+import { GraphElementValidator } from './validation/graphElementValidator';
 
 /**
  * Result of transforming a model
@@ -37,19 +52,43 @@ export interface NodeTransformResult {
  * Transforms a MetaModel into React Flow nodes and edges with proper layout
  */
 export class NodeTransformer {
-  constructor(private layoutEngine: VerticalLayerLayout) {}
+  private validator: GraphElementValidator;
+
+  constructor(private layoutEngine: VerticalLayerLayout | LayoutEngine) {
+    this.validator = new GraphElementValidator();
+  }
 
   /**
    * Transform a complete model into React Flow nodes and edges
    * @param model - The meta-model to transform
+   * @param layoutParameters - Optional parameters for the layout engine
    * @returns Transform result with nodes, edges, and layout
    */
-  async transformModel(model: MetaModel): Promise<NodeTransformResult> {
+  async transformModel(model: MetaModel, layoutParameters?: Record<string, any>): Promise<NodeTransformResult> {
     // STEP 0: Pre-calculate dimensions for dynamic shapes
     this.precalculateDimensions(model);
 
     // STEP 1: Calculate layout for all layers
-    const layout = this.layoutEngine.layout(model.layers);
+    let layout: any;
+
+    // Check if layoutEngine is defined and which interface it uses
+    if (!this.layoutEngine) {
+      throw new Error('Layout engine is not defined');
+    }
+
+    // Check if using new LayoutEngine interface or old VerticalLayerLayout
+    if ('calculateLayout' in this.layoutEngine && typeof this.layoutEngine.calculateLayout === 'function') {
+      // New layout engine interface - layout each layer separately
+      console.log('[NodeTransformer] Using new layout engine interface with per-layer layout');
+      const parameters = layoutParameters || this.layoutEngine.getParameters();
+      layout = await this.layoutLayersSeparately(model, parameters);
+    } else if ('layout' in this.layoutEngine && typeof this.layoutEngine.layout === 'function') {
+      // Old VerticalLayerLayout interface
+      console.log('[NodeTransformer] Using old VerticalLayerLayout interface');
+      layout = this.layoutEngine.layout(model.layers);
+    } else {
+      throw new Error('Layout engine does not have a valid layout method');
+    }
 
     // STEP 2: Create nodes array
     const nodes: AppNode[] = [];
@@ -64,14 +103,25 @@ export class NodeTransformer {
       const titleBarWidth = 40; // Width of the vertical title bar on the left
       const containerPadding = 30; // Equal margin on all sides
 
+      // Validate bounds before using them
+      const boundsWidth = (typeof layerData.bounds.width === 'number' && !isNaN(layerData.bounds.width)) ? layerData.bounds.width : 0;
+      const boundsHeight = (typeof layerData.bounds.height === 'number' && !isNaN(layerData.bounds.height)) ? layerData.bounds.height : 0;
+      const boundsMinX = (typeof layerData.bounds.minX === 'number' && !isNaN(layerData.bounds.minX)) ? layerData.bounds.minX : 0;
+      const boundsMinY = (typeof layerData.bounds.minY === 'number' && !isNaN(layerData.bounds.minY)) ? layerData.bounds.minY : 0;
+      const yOffset = (typeof layerData.yOffset === 'number' && !isNaN(layerData.yOffset)) ? layerData.yOffset : 0;
+
+      if (boundsWidth !== layerData.bounds.width || boundsHeight !== layerData.bounds.height) {
+        console.warn(`[NodeTransformer] Invalid bounds for layer ${layerType}:`, layerData.bounds);
+      }
+
       // Position container to include title bar on the left
       // The title bar extends to the left of the content area
-      const containerX = layerData.bounds.minX - containerPadding - titleBarWidth;
-      const containerY = layerData.yOffset + layerData.bounds.minY - containerPadding;
+      const containerX = boundsMinX - containerPadding - titleBarWidth;
+      const containerY = yOffset + boundsMinY - containerPadding;
 
       // Size container to include title bar + content + padding
-      const containerWidth = titleBarWidth + layerData.bounds.width + (2 * containerPadding);
-      const containerHeight = layerData.bounds.height + (2 * containerPadding);
+      const containerWidth = titleBarWidth + boundsWidth + (2 * containerPadding);
+      const containerHeight = boundsHeight + (2 * containerPadding);
 
       const containerNode = {
         id: `container-${layerType}`,
@@ -103,12 +153,16 @@ export class NodeTransformer {
 
       // Skip layers without elements
       if (!layer.elements || !Array.isArray(layer.elements)) {
+        console.warn(`[NodeTransformer] Layer ${layerType} has no elements or invalid elements array - skipping`);
         continue;
       }
 
       for (const element of layer.elements) {
         const position = layerData.positions[element.id];
-        if (!position) continue;
+        if (!position) {
+          console.warn(`[NodeTransformer] No layout position for element ${element.id} (${element.name}) - skipping render`);
+          continue;
+        }
 
         // Ensure visual properties exist with defaults to prevent NaN
         if (!element.visual) {
@@ -131,11 +185,20 @@ export class NodeTransformer {
           element.visual.size.height = 100;
         }
 
+        // Validate position values before calculation
+        const posX = (typeof position.x === 'number' && !isNaN(position.x)) ? position.x : 0;
+        const posY = (typeof position.y === 'number' && !isNaN(position.y)) ? position.y : 0;
+        const layerY = (typeof layerData.yOffset === 'number' && !isNaN(layerData.yOffset)) ? layerData.yOffset : 0;
+
+        if (posX !== position.x || posY !== position.y) {
+          console.warn(`[NodeTransformer] Invalid position for element ${element.id}: x=${position.x}, y=${position.y}`);
+        }
+
         // Convert from center position (dagre) to top-left position (React Flow)
         const halfWidth = element.visual.size.width / 2;
         const halfHeight = element.visual.size.height / 2;
-        const topLeftX = position.x - halfWidth;
-        const topLeftY = position.y - halfHeight + layerData.yOffset;
+        const topLeftX = posX - halfWidth;
+        const topLeftY = posY - halfHeight + layerY;
 
         // Store element in elementStore
         elementStore.set(element.id, element);
@@ -211,6 +274,38 @@ export class NodeTransformer {
 
     console.log(`[NodeTransformer] Created ${nodes.length} nodes and ${edges.length} edges`);
 
+    // STEP 4: Validate that all elements are rendered
+    const validationReport = this.validator.validate(model, nodes, edges);
+    if (!validationReport.isValid) {
+      console.warn('[NodeTransformer] Validation detected missing elements:');
+      console.warn(this.validator.getDiagnosticMessage(validationReport));
+
+      // Log details about missing elements for debugging
+      if (validationReport.missingNodes.length > 0) {
+        console.warn(`[NodeTransformer] Missing ${validationReport.missingNodes.length} nodes - reasons:`);
+        const reasonCounts = new Map<string, number>();
+        validationReport.missingNodes.forEach((node) => {
+          reasonCounts.set(node.reason, (reasonCounts.get(node.reason) || 0) + 1);
+        });
+        reasonCounts.forEach((count, reason) => {
+          console.warn(`  - ${reason}: ${count} nodes`);
+        });
+      }
+
+      if (validationReport.missingEdges.length > 0) {
+        console.warn(`[NodeTransformer] Missing ${validationReport.missingEdges.length} edges - reasons:`);
+        const reasonCounts = new Map<string, number>();
+        validationReport.missingEdges.forEach((edge) => {
+          reasonCounts.set(edge.reason, (reasonCounts.get(edge.reason) || 0) + 1);
+        });
+        reasonCounts.forEach((count, reason) => {
+          console.warn(`  - ${reason}: ${count} edges`);
+        });
+      }
+    } else {
+      console.log('[NodeTransformer] ✓ All elements validated successfully');
+    }
+
     return { nodes, edges, layout };
   }
 
@@ -225,7 +320,7 @@ export class NodeTransformer {
     const targetNodeId = nodeMap.get(relationship.targetId);
 
     if (!sourceNodeId || !targetNodeId) {
-      // console.warn(`[NodeTransformer] Missing node for edge ${relationship.id}: source=${relationship.sourceId} (${!!sourceNodeId}), target=${relationship.targetId} (${!!targetNodeId})`);
+      console.warn(`[NodeTransformer] Cannot create edge ${relationship.id} (${relationship.type}): ${!sourceNodeId ? 'source' : 'target'} node missing (sourceId=${relationship.sourceId}, targetId=${relationship.targetId})`);
       return null;
     }
 
@@ -283,6 +378,16 @@ export class NodeTransformer {
       'Policy': 'permission',
       'business-process': 'businessProcess',
       'BusinessProcess': 'businessProcess',
+      'Process': 'businessProcess',
+      'business-service': 'businessService',
+      'BusinessService': 'businessService',
+      'Service': 'businessService',
+      'business-function': 'businessFunction',
+      'BusinessFunction': 'businessFunction',
+      'Function': 'businessFunction',
+      'business-capability': 'businessCapability',
+      'BusinessCapability': 'businessCapability',
+      'Capability': 'businessCapability',
       'json-schema-element': 'jsonSchema',
       'layer-container': 'layerContainer',
       // C4 node types
@@ -378,6 +483,14 @@ export class NodeTransformer {
         actorType: element.properties.actorType || 'user',
         description: element.properties.description || element.description,
       };
+    } else if (nodeType === 'businessService' || nodeType === 'businessFunction' || nodeType === 'businessCapability') {
+      return {
+        ...baseData,
+        owner: element.properties.owner,
+        criticality: element.properties.criticality,
+        lifecycle: element.properties.lifecycle,
+        domain: element.properties.domain,
+      };
     }
 
     return baseData;
@@ -472,6 +585,30 @@ export class NodeTransformer {
             };
             break;
 
+          case 'businessService':
+            // BusinessServiceNode: uses imported constants from BusinessServiceNode.tsx
+            element.visual.size = {
+              width: BUSINESS_SERVICE_NODE_WIDTH,
+              height: BUSINESS_SERVICE_NODE_HEIGHT,
+            };
+            break;
+
+          case 'businessFunction':
+            // BusinessFunctionNode: uses imported constants from BusinessFunctionNode.tsx
+            element.visual.size = {
+              width: BUSINESS_FUNCTION_NODE_WIDTH,
+              height: BUSINESS_FUNCTION_NODE_HEIGHT,
+            };
+            break;
+
+          case 'businessCapability':
+            // BusinessCapabilityNode: uses imported constants from BusinessCapabilityNode.tsx
+            element.visual.size = {
+              width: BUSINESS_CAPABILITY_NODE_WIDTH,
+              height: BUSINESS_CAPABILITY_NODE_HEIGHT,
+            };
+            break;
+
           case 'c4Container':
             // C4 ContainerNode: uses imported constants from ContainerNode.tsx
             element.visual.size = {
@@ -506,5 +643,254 @@ export class NodeTransformer {
         }
       }
     }
+  }
+
+  /**
+   * Convert MetaModel to LayoutGraphInput for new layout engines
+   */
+  private modelToGraphInput(model: MetaModel): any {
+    const nodes: any[] = [];
+    const edges: any[] = [];
+
+    // Collect all nodes from all layers
+    for (const [layerId, layer] of Object.entries(model.layers)) {
+      for (const element of layer.elements) {
+        nodes.push({
+          id: element.id,
+          width: element.visual?.size?.width || 200,
+          height: element.visual?.size?.height || 100,
+          data: {
+            layer: layerId,
+            type: element.type,
+            ...element.properties,
+          },
+        });
+      }
+
+      // Add relationships as edges
+      for (const rel of layer.relationships) {
+        edges.push({
+          id: `${rel.sourceId}-${rel.targetId}`,
+          source: rel.sourceId,
+          target: rel.targetId,
+          data: {
+            type: rel.type,
+            ...rel.properties,
+          },
+        });
+      }
+    }
+
+    return { nodes, edges };
+  }
+
+  /**
+   * Layout each layer separately using the selected engine, then stack vertically
+   */
+  private async layoutLayersSeparately(model: MetaModel, parameters: Record<string, any>): Promise<any> {
+    const layerOrder = [
+      'Motivation',
+      'Business',
+      'Security',
+      'Application',
+      'Technology',
+      'Api',
+      'DataModel',
+      'Datastore',
+      'Ux',
+      'Navigation',
+      'ApmObservability',
+      'FederatedArchitecture'
+    ];
+
+    const layerSpacing = 200; // Spacing between layers
+    let currentY = 0;
+    const layers: any = {};
+
+    console.log('[NodeTransformer] Starting per-layer layout for', Object.keys(model.layers).length, 'layers');
+
+    // Process each layer in order
+    for (const layerType of layerOrder) {
+      const layer = model.layers[layerType];
+
+      // Skip if layer doesn't exist or has no elements
+      if (!layer || !layer.elements || !Array.isArray(layer.elements) || layer.elements.length === 0) {
+        continue;
+      }
+
+      console.log(`[NodeTransformer] Laying out layer ${layerType} with ${layer.elements.length} elements`);
+
+      // Create graph input for this layer only
+      const layerGraph = this.layerToGraphInput(layer, layerType);
+
+      // Calculate layout for this layer
+      const layerResult = await (this.layoutEngine as any).calculateLayout(layerGraph, parameters);
+
+      console.log(`[NodeTransformer] Layer ${layerType} layout: ${layerResult.nodes.length} nodes, bounds:`, layerResult.bounds);
+
+      // Extract positions from layout result
+      const positions: Record<string, { x: number; y: number }> = {};
+      let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+
+      for (const node of layerResult.nodes) {
+        // Validate position values
+        if (typeof node.position.x !== 'number' || isNaN(node.position.x) || !isFinite(node.position.x)) {
+          console.warn(`[NodeTransformer] Invalid X position for node ${node.id} in layer ${layerType}: ${node.position.x}`);
+          continue;
+        }
+        if (typeof node.position.y !== 'number' || isNaN(node.position.y) || !isFinite(node.position.y)) {
+          console.warn(`[NodeTransformer] Invalid Y position for node ${node.id} in layer ${layerType}: ${node.position.y}`);
+          continue;
+        }
+
+        positions[node.id] = {
+          x: node.position.x,
+          y: node.position.y,
+        };
+
+        // Calculate bounds
+        const element = layer.elements.find(e => e.id === node.id);
+        const width = element?.visual?.size?.width || 180;
+        const height = element?.visual?.size?.height || 100;
+
+        minX = Math.min(minX, node.position.x - width / 2);
+        maxX = Math.max(maxX, node.position.x + width / 2);
+        minY = Math.min(minY, node.position.y - height / 2);
+        maxY = Math.max(maxY, node.position.y + height / 2);
+      }
+
+      console.log(`[NodeTransformer] Layer ${layerType}: ${Object.keys(positions).length} valid positions out of ${layerResult.nodes.length} nodes`);
+
+      // Store layer layout
+      layers[layerType] = {
+        yOffset: currentY,
+        positions,
+        bounds: {
+          minX,
+          maxX,
+          minY,
+          maxY,
+          width: maxX - minX,
+          height: maxY - minY,
+        },
+      };
+
+      // Update Y offset for next layer
+      currentY += (maxY - minY) + layerSpacing;
+    }
+
+    return {
+      layers,
+      totalHeight: currentY - layerSpacing,
+    };
+  }
+
+  /**
+   * Convert a single layer to graph input format
+   */
+  private layerToGraphInput(layer: any, layerType: string): any {
+    const nodes: any[] = [];
+    const edges: any[] = [];
+
+    // Add all elements as nodes
+    for (const element of layer.elements) {
+      nodes.push({
+        id: element.id,
+        width: element.visual?.size?.width || 200,
+        height: element.visual?.size?.height || 100,
+        data: {
+          layer: layerType,
+          type: element.type,
+          ...element.properties,
+        },
+      });
+    }
+
+    // Add relationships as edges
+    for (const rel of layer.relationships) {
+      edges.push({
+        id: `${rel.sourceId}-${rel.targetId}`,
+        source: rel.sourceId,
+        target: rel.targetId,
+        data: {
+          type: rel.type,
+          ...rel.properties,
+        },
+      });
+    }
+
+    return { nodes, edges };
+  }
+
+  /**
+   * Convert LayoutResult back to old layer-based layout format
+   */
+  private layoutResultToLayerLayout(result: any, model: MetaModel): any {
+    const layers: any = {};
+
+    console.log(`[NodeTransformer] Converting layout result with ${result.nodes.length} nodes to layer layout`);
+
+    // Group nodes by layer
+    for (const [layerId, layer] of Object.entries(model.layers)) {
+      const layerNodes = result.nodes.filter((n: any) => n.data?.layer === layerId);
+
+      if (layerNodes.length === 0) continue;
+
+      console.log(`[NodeTransformer] Layer ${layerId}: ${layerNodes.length} nodes`);
+
+      // Calculate bounds for this layer
+      let minX = Infinity,
+        maxX = -Infinity,
+        minY = Infinity,
+        maxY = -Infinity;
+
+      const elements: any[] = [];
+      const positions: Record<string, { x: number; y: number }> = {};
+
+      for (const node of layerNodes) {
+        const width = node.data?.width || 200;
+        const height = node.data?.height || 100;
+
+        minX = Math.min(minX, node.position.x);
+        maxX = Math.max(maxX, node.position.x + width);
+        minY = Math.min(minY, node.position.y);
+        maxY = Math.max(maxY, node.position.y + height);
+
+        elements.push({
+          id: node.id,
+          x: node.position.x,
+          y: node.position.y,
+        });
+
+        // Also create positions map for element ID lookup
+        positions[node.id] = {
+          x: node.position.x,
+          y: node.position.y,
+        };
+      }
+
+      // Log sample positions for debugging
+      const samplePositions = Object.entries(positions).slice(0, 3);
+      console.log(`[NodeTransformer] Sample positions for ${layerId}:`, samplePositions);
+
+      layers[layerId] = {
+        yOffset: 0,
+        bounds: {
+          minX,
+          maxX,
+          minY,
+          maxY,
+          width: maxX - minX,
+          height: maxY - minY,
+        },
+        elements,
+        positions,
+      };
+    }
+
+    return {
+      layers,
+      bounds: result.bounds,
+    };
   }
 }

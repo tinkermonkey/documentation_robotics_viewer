@@ -156,6 +156,10 @@ export interface BusinessLayoutParameters {
   // Collision parameters
   /** Additional padding around nodes for collision (range: 10-40, step: 5) */
   collisionPadding: number;
+
+  // Orthogonal routing (for business process flows)
+  /** Enable orthogonal edge routing for business processes */
+  orthogonalRouting: boolean;
 }
 
 /**
@@ -169,10 +173,11 @@ export const BUSINESS_PARAMETER_RANGES: {
   chargeStrength: NumericParameterRange;
   linkDistance: NumericParameterRange;
   collisionPadding: NumericParameterRange;
+  orthogonalRouting: BooleanParameterRange;
 } = {
   rankdir: {
     values: ['TB', 'LR', 'BT', 'RL'] as const,
-    default: 'TB',
+    default: 'LR', // Default to left-right for business processes
   },
   nodesep: { min: 40, max: 150, step: 10, default: 80 },
   ranksep: { min: 80, max: 200, step: 20, default: 120 },
@@ -180,6 +185,7 @@ export const BUSINESS_PARAMETER_RANGES: {
   chargeStrength: { min: -500, max: -100, step: 50, default: -300 },
   linkDistance: { min: 80, max: 200, step: 15, default: 150 },
   collisionPadding: { min: 10, max: 40, step: 5, default: 20 },
+  orthogonalRouting: { default: true }, // Enable orthogonal routing by default for business processes
 };
 
 /**
@@ -193,6 +199,7 @@ export const DEFAULT_BUSINESS_PARAMETERS: BusinessLayoutParameters = {
   chargeStrength: BUSINESS_PARAMETER_RANGES.chargeStrength.default,
   linkDistance: BUSINESS_PARAMETER_RANGES.linkDistance.default,
   collisionPadding: BUSINESS_PARAMETER_RANGES.collisionPadding.default,
+  orthogonalRouting: BUSINESS_PARAMETER_RANGES.orthogonalRouting.default,
 };
 
 // ============================================================================
@@ -260,13 +267,211 @@ export const DEFAULT_C4_PARAMETERS: C4LayoutParameters = {
 };
 
 // ============================================================================
+// ELK Layout Parameters
+// ============================================================================
+
+/**
+ * ELK algorithm options
+ */
+export type ELKAlgorithm = 'layered' | 'force' | 'stress' | 'box';
+
+/**
+ * ELK layout direction
+ */
+export type ELKDirection = 'RIGHT' | 'DOWN' | 'LEFT' | 'UP';
+
+/**
+ * ELK layering strategy (for layered algorithm)
+ */
+export type ELKLayeringStrategy =
+  | 'NETWORK_SIMPLEX'
+  | 'LONGEST_PATH'
+  | 'INTERACTIVE'
+  | 'STRETCH_WIDTH'
+  | 'MIN_WIDTH';
+
+/**
+ * ELK edge routing strategy
+ */
+export type ELKEdgeRouting = 'ORTHOGONAL' | 'POLYLINE' | 'SPLINES' | 'UNDEFINED';
+
+/**
+ * Parameters for ELK-based layouts
+ * Maps to options in ELKLayoutEngine.ts
+ */
+export interface ELKLayoutParameters {
+  /** Layout algorithm */
+  algorithm: ELKAlgorithm;
+  /** Layout direction */
+  direction: ELKDirection;
+  /** Node spacing (range: 20-150, step: 10) */
+  spacing: number;
+  /** Layering strategy for layered algorithm */
+  layering: ELKLayeringStrategy;
+  /** Node-edge spacing (range: 10-80, step: 5) */
+  edgeNodeSpacing: number;
+  /** Edge-edge spacing (range: 5-50, step: 5) */
+  edgeSpacing: number;
+  /** Aspect ratio target (range: 0.5-3.0, step: 0.1) */
+  aspectRatio: number;
+  /** Enable orthogonal edge routing */
+  orthogonalRouting: boolean;
+  /** Edge routing strategy */
+  edgeRouting: ELKEdgeRouting;
+}
+
+/**
+ * Parameter ranges for ELK layout
+ */
+export const ELK_PARAMETER_RANGES: {
+  algorithm: DiscreteParameterRange<ELKAlgorithm>;
+  direction: DiscreteParameterRange<ELKDirection>;
+  spacing: NumericParameterRange;
+  layering: DiscreteParameterRange<ELKLayeringStrategy>;
+  edgeNodeSpacing: NumericParameterRange;
+  edgeSpacing: NumericParameterRange;
+  aspectRatio: NumericParameterRange;
+  orthogonalRouting: BooleanParameterRange;
+  edgeRouting: DiscreteParameterRange<ELKEdgeRouting>;
+} = {
+  algorithm: {
+    values: ['layered', 'force', 'stress', 'box'] as const,
+    default: 'layered',
+  },
+  direction: {
+    values: ['RIGHT', 'DOWN', 'LEFT', 'UP'] as const,
+    default: 'DOWN',
+  },
+  spacing: { min: 20, max: 150, step: 10, default: 50 },
+  layering: {
+    values: ['NETWORK_SIMPLEX', 'LONGEST_PATH', 'INTERACTIVE', 'STRETCH_WIDTH', 'MIN_WIDTH'] as const,
+    default: 'NETWORK_SIMPLEX',
+  },
+  edgeNodeSpacing: { min: 10, max: 80, step: 5, default: 20 },
+  edgeSpacing: { min: 5, max: 50, step: 5, default: 10 },
+  aspectRatio: { min: 0.5, max: 3.0, step: 0.1, default: 1.6 },
+  orthogonalRouting: { default: false },
+  edgeRouting: {
+    values: ['ORTHOGONAL', 'POLYLINE', 'SPLINES', 'UNDEFINED'] as const,
+    default: 'UNDEFINED',
+  },
+};
+
+/**
+ * Default ELK layout parameters
+ */
+export const DEFAULT_ELK_PARAMETERS: ELKLayoutParameters = {
+  algorithm: ELK_PARAMETER_RANGES.algorithm.default,
+  direction: ELK_PARAMETER_RANGES.direction.default,
+  spacing: ELK_PARAMETER_RANGES.spacing.default,
+  layering: ELK_PARAMETER_RANGES.layering.default,
+  edgeNodeSpacing: ELK_PARAMETER_RANGES.edgeNodeSpacing.default,
+  edgeSpacing: ELK_PARAMETER_RANGES.edgeSpacing.default,
+  aspectRatio: ELK_PARAMETER_RANGES.aspectRatio.default,
+  orthogonalRouting: ELK_PARAMETER_RANGES.orthogonalRouting.default,
+  edgeRouting: ELK_PARAMETER_RANGES.edgeRouting.default,
+};
+
+// ============================================================================
+// Graphviz Layout Parameters
+// ============================================================================
+
+/**
+ * Graphviz algorithm options
+ */
+export type GraphvizAlgorithm = 'dot' | 'neato' | 'fdp' | 'circo' | 'twopi';
+
+/**
+ * Graphviz rank direction
+ */
+export type GraphvizRankDir = 'TB' | 'LR' | 'BT' | 'RL';
+
+/**
+ * Graphviz spline types
+ */
+export type GraphvizSplines = 'none' | 'line' | 'polyline' | 'curved' | 'ortho' | 'spline';
+
+/**
+ * Parameters for Graphviz-based layouts
+ * Maps to options in GraphvizLayoutEngine.ts
+ */
+export interface GraphvizLayoutParameters {
+  /** Layout algorithm */
+  algorithm: GraphvizAlgorithm;
+  /** Rank direction (for dot algorithm) */
+  rankdir: GraphvizRankDir;
+  /** Node separation in inches (range: 0.1-3.0, step: 0.1) */
+  nodesep: number;
+  /** Rank separation in inches (range: 0.2-5.0, step: 0.2) */
+  ranksep: number;
+  /** Spline edge routing type */
+  splines: GraphvizSplines;
+  /** Graph margin in inches (range: 0.0-1.0, step: 0.1) */
+  margin: number;
+}
+
+/**
+ * Parameter ranges for Graphviz layout
+ */
+export const GRAPHVIZ_PARAMETER_RANGES: {
+  algorithm: DiscreteParameterRange<GraphvizAlgorithm>;
+  rankdir: DiscreteParameterRange<GraphvizRankDir>;
+  nodesep: NumericParameterRange;
+  ranksep: NumericParameterRange;
+  splines: DiscreteParameterRange<GraphvizSplines>;
+  margin: NumericParameterRange;
+} = {
+  algorithm: {
+    values: ['dot', 'neato', 'fdp', 'circo', 'twopi'] as const,
+    default: 'dot',
+  },
+  rankdir: {
+    values: ['TB', 'LR', 'BT', 'RL'] as const,
+    default: 'TB',
+  },
+  nodesep: { min: 0.1, max: 3.0, step: 0.1, default: 0.5 },
+  ranksep: { min: 0.2, max: 5.0, step: 0.2, default: 1.0 },
+  splines: {
+    values: ['none', 'line', 'polyline', 'curved', 'ortho', 'spline'] as const,
+    default: 'spline',
+  },
+  margin: { min: 0.0, max: 1.0, step: 0.1, default: 0.2 },
+};
+
+/**
+ * Default Graphviz layout parameters
+ */
+export const DEFAULT_GRAPHVIZ_PARAMETERS: GraphvizLayoutParameters = {
+  algorithm: GRAPHVIZ_PARAMETER_RANGES.algorithm.default,
+  rankdir: GRAPHVIZ_PARAMETER_RANGES.rankdir.default,
+  nodesep: GRAPHVIZ_PARAMETER_RANGES.nodesep.default,
+  ranksep: GRAPHVIZ_PARAMETER_RANGES.ranksep.default,
+  splines: GRAPHVIZ_PARAMETER_RANGES.splines.default,
+  margin: GRAPHVIZ_PARAMETER_RANGES.margin.default,
+};
+
+// ============================================================================
 // Unified Parameter Types
 // ============================================================================
 
 /**
  * Supported diagram types for refinement
+ * Extended to include all 12 layers + spec viewer
  */
-export type DiagramType = 'motivation' | 'business' | 'c4';
+export type DiagramType =
+  | 'motivation'
+  | 'business'
+  | 'security'
+  | 'application'
+  | 'technology'
+  | 'api'
+  | 'datamodel'
+  | 'dataset'
+  | 'ux'
+  | 'navigation'
+  | 'apm'
+  | 'c4'
+  | 'spec-viewer';
 
 /**
  * Union type for all layout parameters
@@ -274,7 +479,9 @@ export type DiagramType = 'motivation' | 'business' | 'c4';
 export type LayoutParameters =
   | MotivationLayoutParameters
   | BusinessLayoutParameters
-  | C4LayoutParameters;
+  | C4LayoutParameters
+  | ELKLayoutParameters
+  | GraphvizLayoutParameters;
 
 /**
  * Get default parameters for a diagram type
@@ -287,6 +494,18 @@ export function getDefaultParameters(diagramType: DiagramType): LayoutParameters
       return { ...DEFAULT_BUSINESS_PARAMETERS };
     case 'c4':
       return { ...DEFAULT_C4_PARAMETERS };
+    // For new layers, use ELK as default layout engine
+    case 'security':
+    case 'application':
+    case 'technology':
+    case 'api':
+    case 'datamodel':
+    case 'dataset':
+    case 'ux':
+    case 'navigation':
+    case 'apm':
+    case 'spec-viewer':
+      return { ...DEFAULT_ELK_PARAMETERS };
   }
 }
 
@@ -303,6 +522,18 @@ export function getParameterRanges(
       return BUSINESS_PARAMETER_RANGES;
     case 'c4':
       return C4_PARAMETER_RANGES;
+    // For new layers, use ELK parameter ranges
+    case 'security':
+    case 'application':
+    case 'technology':
+    case 'api':
+    case 'datamodel':
+    case 'dataset':
+    case 'ux':
+    case 'navigation':
+    case 'apm':
+    case 'spec-viewer':
+      return ELK_PARAMETER_RANGES;
   }
 }
 

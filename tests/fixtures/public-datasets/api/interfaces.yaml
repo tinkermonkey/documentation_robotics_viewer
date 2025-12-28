@@ -1,0 +1,44 @@
+interfaces:
+  interface.users:
+    name: User Management API
+    description: User account and profile management
+    base_path: /api/v1/users
+    version: 1.0
+    endpoints:
+      - endpoint.users-list
+      - endpoint.users-create
+      - endpoint.users-get
+      - endpoint.users-update
+
+  interface.products:
+    name: Product Catalog API
+    description: Product browsing and management
+    base_path: /api/v1/products
+    version: 1.0
+    endpoints:
+      - endpoint.products-list
+      - endpoint.products-get
+      - endpoint.products-create
+      - endpoint.products-update
+
+  interface.orders:
+    name: Order Management API
+    description: Order creation and tracking
+    base_path: /api/v1/orders
+    version: 1.0
+    endpoints:
+      - endpoint.orders-list
+      - endpoint.orders-create
+      - endpoint.orders-get
+      - endpoint.orders-cancel
+
+  interface.cart:
+    name: Shopping Cart API
+    description: Shopping cart operations
+    base_path: /api/v1/cart
+    version: 1.0
+    endpoints:
+      - endpoint.cart-get
+      - endpoint.cart-add-item
+      - endpoint.cart-update-item
+      - endpoint.cart-remove-item

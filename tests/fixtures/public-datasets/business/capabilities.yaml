@@ -1,0 +1,54 @@
+capabilities:
+  # Core business capabilities supporting the process
+  capability.order-management:
+    name: Order Management
+    description: Capability to receive, validate, and process customer orders
+    type: core
+    supports:
+      - service.validate-order
+      - gateway.payment-valid
+      - service.send-to-warehouse
+
+  capability.inventory-management:
+    name: Inventory Management
+    description: Capability to track and manage product inventory
+    type: core
+    supports:
+      - service.check-inventory
+      - gateway.inventory-available
+      - service.handle-backorder
+
+  capability.warehouse-operations:
+    name: Warehouse Operations
+    description: Capability to pick, pack, and ship orders
+    type: core
+    supports:
+      - service.pick-items
+      - service.pack-order
+      - service.generate-label
+      - service.dispatch-shipment
+
+  capability.customer-communication:
+    name: Customer Communication
+    description: Capability to notify customers of order status
+    type: supporting
+    supports:
+      - service.notify-customer
+      - service.receive-confirmation
+
+  capability.payment-processing:
+    name: Payment Processing
+    description: Capability to validate and process payments
+    type: core
+    supports:
+      - gateway.payment-valid
+      - service.validate-order
+
+  capability.shipping-logistics:
+    name: Shipping and Logistics
+    description: Capability to coordinate with shipping carriers
+    type: supporting
+    supports:
+      - service.generate-label
+      - service.dispatch-shipment
+      - service.track-shipment

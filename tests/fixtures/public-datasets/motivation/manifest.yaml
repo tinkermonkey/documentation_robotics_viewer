@@ -1,0 +1,9 @@
+name: enterprise-digital-transformation
+version: 1.0.0
+description: Enterprise digital transformation goal hierarchy with stakeholder influence network
+layer_type: motivation
+created: 2025-12-27
+license: Public Domain
+source: Inspired by McKinsey and Gartner digital transformation frameworks
+layers:
+  - 01_motivation

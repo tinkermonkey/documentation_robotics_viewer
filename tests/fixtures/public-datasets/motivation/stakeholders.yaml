@@ -1,0 +1,112 @@
+stakeholders:
+  stakeholder.ceo:
+    name: Chief Executive Officer
+    role: CEO
+    type: executive
+    concerns:
+      - Business growth
+      - Competitive advantage
+      - Shareholder value
+    influences:
+      - vision.digital-transformation
+      - strategic.business-growth
+      - strategic.cultural-transformation
+    influence_level: very-high
+
+  stakeholder.cfo:
+    name: Chief Financial Officer
+    role: CFO
+    type: executive
+    concerns:
+      - Cost optimization
+      - ROI on digital investments
+      - Financial risk management
+    influences:
+      - vision.digital-transformation
+      - strategic.operational-excellence
+      - tactical.process-automation
+    influence_level: very-high
+
+  stakeholder.cto:
+    name: Chief Technology Officer
+    role: CTO
+    type: executive
+    concerns:
+      - Technology architecture
+      - Security and compliance
+      - Technical talent
+    influences:
+      - strategic.technology-modernization
+      - tactical.cloud-migration
+      - tactical.security-modernization
+      - tactical.api-platform
+    influence_level: very-high
+
+  stakeholder.cio:
+    name: Chief Information Officer
+    role: CIO
+    type: executive
+    concerns:
+      - IT service delivery
+      - Data governance
+      - Digital operations
+    influences:
+      - strategic.operational-excellence
+      - tactical.data-analytics-platform
+      - tactical.process-automation
+    influence_level: high
+
+  stakeholder.cmo:
+    name: Chief Marketing Officer
+    role: CMO
+    type: executive
+    concerns:
+      - Customer experience
+      - Brand digital presence
+      - Marketing effectiveness
+    influences:
+      - strategic.business-growth
+      - tactical.ecommerce-expansion
+      - tactical.customer-personalization
+    influence_level: high
+
+  stakeholder.coo:
+    name: Chief Operating Officer
+    role: COO
+    type: executive
+    concerns:
+      - Operational efficiency
+      - Process optimization
+      - Service quality
+    influences:
+      - strategic.operational-excellence
+      - tactical.supply-chain-optimization
+      - tactical.process-automation
+    influence_level: high
+
+  stakeholder.chro:
+    name: Chief Human Resources Officer
+    role: CHRO
+    type: executive
+    concerns:
+      - Employee engagement
+      - Talent development
+      - Organizational culture
+    influences:
+      - strategic.cultural-transformation
+      - tactical.digital-skills-training
+      - tactical.agile-transformation
+    influence_level: medium
+
+  stakeholder.board:
+    name: Board of Directors
+    role: Board
+    type: governance
+    concerns:
+      - Strategic direction
+      - Risk oversight
+      - Long-term value creation
+    influences:
+      - vision.digital-transformation
+      - strategic.business-growth
+    influence_level: very-high

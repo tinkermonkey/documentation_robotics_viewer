@@ -197,9 +197,12 @@ export class MotivationGraphTransformer {
       }
     }
 
-    console.log(
-      `[SemanticZoom] Filtered ${graph.nodes.size} nodes to ${filteredNodes.size} at zoom ${zoomLevel.toFixed(2)}`
-    );
+    const filteredCount = graph.nodes.size - filteredNodes.size;
+    if (filteredCount > 0) {
+      console.log(
+        `[SemanticZoom] Filtered ${filteredCount} nodes (${graph.nodes.size} → ${filteredNodes.size}) at zoom ${zoomLevel.toFixed(2)}`
+      );
+    }
 
     return {
       ...graph,
@@ -233,6 +236,7 @@ export class MotivationGraphTransformer {
     for (const [edgeId, edge] of graph.edges) {
       // Only include edge if both source and target are in filtered nodes
       if (!filteredNodes.has(edge.sourceId) || !filteredNodes.has(edge.targetId)) {
+        console.warn(`[MotivationGraphTransformer] Edge ${edgeId} excluded: ${!filteredNodes.has(edge.sourceId) ? 'source' : 'target'} node filtered out by user settings`);
         continue;
       }
 
@@ -394,7 +398,8 @@ export class MotivationGraphTransformer {
     for (const [nodeId, graphNode] of graph.nodes) {
       const position = layoutResult.nodePositions.get(nodeId);
       if (!position) {
-        console.warn('[MotivationGraphTransformer] No position found for node', nodeId);
+        const nodeName = graphNode.element.name || 'unknown';
+        console.warn(`[MotivationGraphTransformer] No layout position for node ${nodeId} (${nodeName}) - skipping render`);
         continue;
       }
 

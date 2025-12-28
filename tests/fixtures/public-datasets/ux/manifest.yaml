@@ -1,0 +1,9 @@
+name: ux-test-dataset
+version: 1.0.0
+description: Synthetic test dataset for ux layer
+layer_type: ux
+created: 2025-12-27
+license: Public Domain
+source: Synthetic dataset for testing
+layers:
+  - ux

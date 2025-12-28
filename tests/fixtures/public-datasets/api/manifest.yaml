@@ -1,0 +1,9 @@
+name: ecommerce-rest-api
+version: 1.0.0
+description: RESTful API structure for e-commerce platform
+layer_type: api
+created: 2025-12-27
+license: Public Domain
+source: Synthetic - OpenAPI/REST best practices
+layers:
+  - 06_api

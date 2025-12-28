@@ -1,0 +1,222 @@
+components:
+  # System: SaaS Platform
+  system.saas-platform:
+    name: SaaS Platform
+    description: Cloud-native multi-tenant SaaS application platform
+    type: system
+    scope: internal
+    technology: Microservices Architecture
+
+  # Containers within SaaS Platform
+  container.web-application:
+    name: Web Application
+    description: React-based single-page application
+    type: container
+    container_type: web-app
+    system: system.saas-platform
+    technology: React 18, TypeScript
+    responsibilities:
+      - User interface
+      - Client-side routing
+      - State management
+      - Real-time updates
+
+  container.mobile-app:
+    name: Mobile Application
+    description: Native mobile application for iOS and Android
+    type: container
+    container_type: mobile-app
+    system: system.saas-platform
+    technology: React Native
+    responsibilities:
+      - Mobile user interface
+      - Offline sync
+      - Push notifications
+
+  container.api-gateway:
+    name: API Gateway
+    description: Entry point for all API requests with authentication
+    type: container
+    container_type: api
+    system: system.saas-platform
+    technology: Kong, Node.js
+    responsibilities:
+      - Request routing
+      - Authentication
+      - Rate limiting
+      - API composition
+
+  container.user-service:
+    name: User Service
+    description: User account management and authentication
+    type: container
+    container_type: microservice
+    system: system.saas-platform
+    technology: Node.js, Express
+    responsibilities:
+      - User registration
+      - Authentication
+      - Profile management
+      - Tenant management
+
+  container.order-service:
+    name: Order Service
+    description: Order processing and management
+    type: container
+    container_type: microservice
+    system: system.saas-platform
+    technology: Java, Spring Boot
+    responsibilities:
+      - Order creation
+      - Order status tracking
+      - Inventory coordination
+      - Invoice generation
+
+  container.notification-service:
+    name: Notification Service
+    description: Multi-channel notification delivery
+    type: container
+    container_type: microservice
+    system: system.saas-platform
+    technology: Python, FastAPI
+    responsibilities:
+      - Email notifications
+      - SMS notifications
+      - In-app notifications
+      - Push notifications
+
+  container.analytics-service:
+    name: Analytics Service
+    description: Real-time analytics and reporting
+    type: container
+    container_type: microservice
+    system: system.saas-platform
+    technology: Python, Apache Spark
+    responsibilities:
+      - Event processing
+      - Metrics calculation
+      - Report generation
+      - Data aggregation
+
+  container.user-database:
+    name: User Database
+    description: User and tenant data storage
+    type: container
+    container_type: database
+    system: system.saas-platform
+    technology: PostgreSQL
+    data:
+      - User accounts
+      - Tenant configuration
+      - Authentication tokens
+
+  container.order-database:
+    name: Order Database
+    description: Order and transaction data storage
+    type: container
+    container_type: database
+    system: system.saas-platform
+    technology: PostgreSQL
+    data:
+      - Orders
+      - Invoices
+      - Transaction history
+
+  container.cache:
+    name: Redis Cache
+    description: Distributed caching layer
+    type: container
+    container_type: cache
+    system: system.saas-platform
+    technology: Redis
+    data:
+      - Session data
+      - API response cache
+      - Rate limiting counters
+
+  container.message-queue:
+    name: Message Queue
+    description: Asynchronous message processing
+    type: container
+    container_type: queue
+    system: system.saas-platform
+    technology: RabbitMQ
+    data:
+      - Order events
+      - Notification requests
+      - Analytics events
+
+  # External Systems
+  system.auth-provider:
+    name: Auth0
+    description: Third-party authentication and identity provider
+    type: system
+    scope: external
+    technology: Auth0 SaaS
+
+  system.payment-gateway:
+    name: Stripe
+    description: Payment processing and subscription management
+    type: system
+    scope: external
+    technology: Stripe API
+
+  system.email-service:
+    name: SendGrid
+    description: Transactional email delivery service
+    type: system
+    scope: external
+    technology: SendGrid API
+
+  system.monitoring:
+    name: DataDog
+    description: Application performance monitoring and logging
+    type: system
+    scope: external
+    technology: DataDog APM
+
+  # Component-level detail for Order Service (as example)
+  component.order-controller:
+    name: Order Controller
+    description: REST API endpoints for order operations
+    type: component
+    container: container.order-service
+    technology: Spring MVC
+    responsibilities:
+      - HTTP request handling
+      - Input validation
+      - Response formatting
+
+  component.order-business-logic:
+    name: Order Business Logic
+    description: Core order processing business rules
+    type: component
+    container: container.order-service
+    technology: Java
+    responsibilities:
+      - Order validation
+      - Price calculation
+      - Inventory verification
+      - State transitions
+
+  component.order-repository:
+    name: Order Repository
+    description: Data access layer for orders
+    type: component
+    container: container.order-service
+    technology: Spring Data JPA
+    responsibilities:
+      - CRUD operations
+      - Query execution
+      - Transaction management
+
+  component.order-event-publisher:
+    name: Order Event Publisher
+    description: Publishes order events to message queue
+    type: component
+    container: container.order-service
+    technology: Spring AMQP
+    responsibilities:
+      - Event serialization
+      - Message publishing
+      - Retry handling

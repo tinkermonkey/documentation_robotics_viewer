@@ -14,13 +14,23 @@ import { SpecParser } from '../../../core/services/specParser';
 import { MetaModel, Relationship } from '../../../core/types';
 import { SpecDataResponse, LinkType } from '../services/embeddedDataLoader';
 import { LoadingState, ErrorState, EmptyState } from './shared';
+import { LayoutEngineType } from '@/core/layout/engines';
 
 export interface SpecGraphViewProps {
   specData: SpecDataResponse;
   selectedSchemaId?: string | null;
+  layoutEngine?: LayoutEngineType;
+  layoutParameters?: Record<string, any>;
+  onNodesEdgesChange?: (nodes: any[], edges: any[]) => void;
 }
 
-const SpecGraphView: React.FC<SpecGraphViewProps> = ({ specData, selectedSchemaId }) => {
+const SpecGraphView: React.FC<SpecGraphViewProps> = ({
+  specData,
+  selectedSchemaId,
+  layoutEngine,
+  layoutParameters,
+  onNodesEdgesChange
+}) => {
   const [model, setModel] = useState<MetaModel | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
@@ -208,9 +218,19 @@ const SpecGraphView: React.FC<SpecGraphViewProps> = ({ specData, selectedSchemaI
     layerCount: Object.keys(model.layers).length,
     elementCount: model.metadata?.elementCount || 0,
     selectedSchemaId,
-    normalizedSchemaId
+    normalizedSchemaId,
+    layoutEngine,
+    hasLayoutParameters: !!layoutParameters
   });
-  return <GraphViewer model={model} selectedLayerId={normalizedSchemaId} />;
+  return (
+    <GraphViewer
+      model={model}
+      selectedLayerId={normalizedSchemaId}
+      layoutEngine={layoutEngine}
+      layoutParameters={layoutParameters}
+      onNodesEdgesChange={onNodesEdgesChange}
+    />
+  );
 };
 
 export default SpecGraphView;

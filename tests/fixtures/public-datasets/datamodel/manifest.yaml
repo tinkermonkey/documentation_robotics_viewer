@@ -1,0 +1,9 @@
+name: ecommerce-data-model
+version: 1.0.0
+description: E-commerce domain data model with entities and relationships
+layer_type: datamodel
+created: 2025-12-27
+license: Public Domain
+source: Synthetic - standard e-commerce schema pattern
+layers:
+  - 07_data_model

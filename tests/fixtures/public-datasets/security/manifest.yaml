@@ -1,0 +1,9 @@
+name: security-test-dataset
+version: 1.0.0
+description: Synthetic test dataset for security layer
+layer_type: security
+created: 2025-12-27
+license: Public Domain
+source: Synthetic dataset for testing
+layers:
+  - security

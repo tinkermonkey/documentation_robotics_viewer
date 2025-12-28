@@ -29,7 +29,27 @@ import {
 } from './imageSimilarityService';
 
 /**
- * Combined quality score combining readability and visual similarity
+ * User qualitative feedback for quality scoring
+ */
+export interface UserQualitativeFeedback {
+  /**
+   * User rating (1-5 stars)
+   */
+  rating: number;
+
+  /**
+   * Optional comment/note from user
+   */
+  comment?: string;
+
+  /**
+   * Timestamp when feedback was given
+   */
+  timestamp: string;
+}
+
+/**
+ * Combined quality score combining readability, visual similarity, and user feedback
  */
 export interface CombinedQualityScore {
   /**
@@ -43,7 +63,12 @@ export interface CombinedQualityScore {
   similarityScore: number;
 
   /**
-   * Final combined score (0-1)
+   * User qualitative rating normalized to 0-1 (if provided)
+   */
+  userRating?: number;
+
+  /**
+   * Final combined score (0-1) including user feedback if available
    */
   combinedScore: number;
 
@@ -56,6 +81,11 @@ export interface CombinedQualityScore {
    * Whether the layout meets quality thresholds
    */
   meetsThreshold: boolean;
+
+  /**
+   * User qualitative feedback (if provided)
+   */
+  userFeedback?: UserQualitativeFeedback;
 
   /**
    * Detailed breakdown of scores
@@ -113,9 +143,20 @@ export interface QualityScoreOptions {
   similarityWeight?: number;
 
   /**
+   * Weight for user rating (default: 0.0, auto-adjusts if user feedback provided)
+   * When user feedback is provided, weights are rebalanced
+   */
+  userRatingWeight?: number;
+
+  /**
    * Minimum combined score to pass quality threshold (default: 0.7)
    */
   qualityThreshold?: number;
+
+  /**
+   * User qualitative feedback to integrate
+   */
+  userFeedback?: UserQualitativeFeedback;
 
   /**
    * Options passed to image comparison
@@ -169,9 +210,10 @@ export interface QualityComparisonResult {
 /**
  * Default quality score options
  */
-const DEFAULT_OPTIONS: Required<QualityScoreOptions> = {
+const DEFAULT_OPTIONS: Required<Omit<QualityScoreOptions, 'userFeedback'>> = {
   readabilityWeight: 0.6,
   similarityWeight: 0.4,
+  userRatingWeight: 0.0,
   qualityThreshold: 0.7,
   comparisonOptions: {},
 };
@@ -249,8 +291,26 @@ export async function calculateCombinedScore(
   const startTime = performance.now();
   const opts = { ...DEFAULT_OPTIONS, ...options };
 
-  // Normalize weights to sum to 1
-  const totalWeight = opts.readabilityWeight + opts.similarityWeight;
+  // Calculate user rating if provided
+  let userRating: number | undefined;
+  if (opts.userFeedback) {
+    // Normalize user rating from 1-5 stars to 0-1
+    userRating = (opts.userFeedback.rating - 1) / 4;
+  }
+
+  // Adjust weights if user feedback is provided
+  let totalWeight = opts.readabilityWeight + opts.similarityWeight;
+  const actualUserWeight = userRating !== undefined ? (opts.userRatingWeight || 0.3) : 0;
+
+  // If user feedback provided, rebalance weights
+  if (userRating !== undefined) {
+    const remainingWeight = 1 - actualUserWeight;
+    const originalTotal = opts.readabilityWeight + opts.similarityWeight;
+    opts.readabilityWeight = (opts.readabilityWeight / originalTotal) * remainingWeight;
+    opts.similarityWeight = (opts.similarityWeight / originalTotal) * remainingWeight;
+  }
+
+  totalWeight = opts.readabilityWeight + opts.similarityWeight;
   const normalizedWeights = {
     readability: opts.readabilityWeight / totalWeight,
     similarity: opts.similarityWeight / totalWeight,
@@ -278,19 +338,25 @@ export async function calculateCombinedScore(
     similarityScore = visualSimilarity.combinedScore;
   }
 
-  // Calculate combined score
-  const combinedScore =
+  // Calculate combined score with user feedback if available
+  let combinedScore =
     normalizedWeights.readability * graphMetrics.overallScore +
     normalizedWeights.similarity * similarityScore;
+
+  if (userRating !== undefined) {
+    combinedScore = combinedScore * (1 - actualUserWeight) + userRating * actualUserWeight;
+  }
 
   const computationTimeMs = performance.now() - startTime;
 
   return {
     readabilityScore: graphMetrics.overallScore,
     similarityScore,
+    userRating,
     combinedScore,
     qualityClass: getQualityClass(combinedScore),
     meetsThreshold: combinedScore >= opts.qualityThreshold,
+    userFeedback: opts.userFeedback,
     breakdown: {
       graphMetrics,
       visualSimilarity,

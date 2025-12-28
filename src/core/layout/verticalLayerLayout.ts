@@ -124,9 +124,21 @@ layout(layers: Record<string, Layer>): LayoutResult {
 
     // Add nodes (elements) to the graph
     layer.elements.forEach(element => {
+      // Ensure visual properties exist and are valid numbers
+      const width = element.visual?.size?.width;
+      const height = element.visual?.size?.height;
+
+      // Validate dimensions - use fallback if invalid
+      const validWidth = (typeof width === 'number' && !isNaN(width) && width > 0) ? width : 200;
+      const validHeight = (typeof height === 'number' && !isNaN(height) && height > 0) ? height : 100;
+
+      if (width !== validWidth || height !== validHeight) {
+        console.warn(`[VerticalLayerLayout] Invalid dimensions for element ${element.id} (${element.name}): width=${width}, height=${height}. Using fallback: ${validWidth}x${validHeight}`);
+      }
+
       g.setNode(element.id, {
-        width: element.visual.size.width,
-        height: element.visual.size.height,
+        width: validWidth,
+        height: validHeight,
         label: element.name
       });
     });
@@ -155,36 +167,43 @@ layout(layers: Record<string, Layer>): LayoutResult {
 
       // Safety check: skip if node is undefined
       if (!node) {
-        console.warn(`Layout: Node ${nodeId} is undefined in dagre graph, skipping`);
+        console.warn(`[VerticalLayerLayout] Node ${nodeId} is undefined in dagre graph, skipping`);
         return;
       }
 
+      // Validate positions from dagre - fallback to (0, 0) if invalid
+      const x = (typeof node.x === 'number' && !isNaN(node.x)) ? node.x : 0;
+      const y = (typeof node.y === 'number' && !isNaN(node.y)) ? node.y : 0;
+
+      if (node.x !== x || node.y !== y) {
+        console.warn(`[VerticalLayerLayout] Invalid position from dagre for node ${nodeId}: x=${node.x}, y=${node.y}. Using fallback: (${x}, ${y})`);
+      }
+
       // Dagre gives center positions, store them as-is
-      positions[nodeId] = {
-        x: node.x,
-        y: node.y
-      };
+      positions[nodeId] = { x, y };
 
       // Update bounds to include full node extent
       const halfWidth = node.width / 2;
       const halfHeight = node.height / 2;
-      bounds.minX = Math.min(bounds.minX, node.x - halfWidth);
-      bounds.maxX = Math.max(bounds.maxX, node.x + halfWidth);
-      bounds.minY = Math.min(bounds.minY, node.y - halfHeight);
-      bounds.maxY = Math.max(bounds.maxY, node.y + halfHeight);
+      bounds.minX = Math.min(bounds.minX, x - halfWidth);
+      bounds.maxX = Math.max(bounds.maxX, x + halfWidth);
+      bounds.minY = Math.min(bounds.minY, y - halfHeight);
+      bounds.maxY = Math.max(bounds.maxY, y + halfHeight);
     });
 
     // Calculate final dimensions
-    const width = bounds.maxX - bounds.minX;
-    const height = bounds.maxY - bounds.minY;
+    // Guard against Infinity bounds when no nodes were processed
+    const hasValidBounds = bounds.minX !== Infinity && bounds.maxX !== -Infinity;
+    const width = hasValidBounds ? bounds.maxX - bounds.minX : 0;
+    const height = hasValidBounds ? bounds.maxY - bounds.minY : 0;
 
     return {
       positions,
       bounds: {
-        minX: bounds.minX,
-        minY: bounds.minY,
-        maxX: bounds.maxX,
-        maxY: bounds.maxY,
+        minX: hasValidBounds ? bounds.minX : 0,
+        minY: hasValidBounds ? bounds.minY : 0,
+        maxX: hasValidBounds ? bounds.maxX : 0,
+        maxY: hasValidBounds ? bounds.maxY : 0,
         width: Math.max(width, 0),
         height: Math.max(height, 0)
       }

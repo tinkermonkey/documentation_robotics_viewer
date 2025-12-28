@@ -151,36 +151,42 @@ export class C4ViewTransformer {
 
     // Step 1: Apply view level filtering
     const viewFilteredGraph = this.applyViewLevelFilter(graph);
-    if (DEBUG_LOGGING) {
+    const viewFilteredCount = graph.nodes.size - viewFilteredGraph.nodes.size;
+    if (viewFilteredCount > 0) {
       console.log(
-        `[C4ViewTransformer] View level ${this.options.viewLevel}: ${viewFilteredGraph.nodes.size} nodes after filtering`
+        `[C4ViewTransformer] View level filter (${this.options.viewLevel}): excluded ${viewFilteredCount} nodes (${graph.nodes.size} → ${viewFilteredGraph.nodes.size})`
       );
     }
 
     // Step 2: Apply user filters
     let filteredGraph = this.applyUserFilters(viewFilteredGraph, graph);
-    if (DEBUG_LOGGING) {
+    const userFilteredCount = viewFilteredGraph.nodes.size - filteredGraph.nodes.size;
+    if (userFilteredCount > 0) {
       console.log(
-        `[C4ViewTransformer] User filters: ${filteredGraph.nodes.size} nodes after filtering`
+        `[C4ViewTransformer] User filters: excluded ${userFilteredCount} nodes (${viewFilteredGraph.nodes.size} → ${filteredGraph.nodes.size})`
       );
     }
 
     // Step 3: Apply scenario preset if active
     if (this.options.scenarioPreset) {
+      const beforePreset = filteredGraph.nodes.size;
       filteredGraph = this.applyScenarioPreset(filteredGraph, graph);
-      if (DEBUG_LOGGING) {
+      const presetFilteredCount = beforePreset - filteredGraph.nodes.size;
+      if (presetFilteredCount > 0) {
         console.log(
-          `[C4ViewTransformer] Scenario preset ${this.options.scenarioPreset}: ${filteredGraph.nodes.size} nodes after filtering`
+          `[C4ViewTransformer] Scenario preset (${this.options.scenarioPreset}): excluded ${presetFilteredCount} nodes (${beforePreset} → ${filteredGraph.nodes.size})`
         );
       }
     }
 
     // Step 4: Apply changeset filter if active
     if (this.options.showOnlyChangeset) {
+      const beforeChangeset = filteredGraph.nodes.size;
       filteredGraph = this.applyChangesetFilter(filteredGraph);
-      if (DEBUG_LOGGING) {
+      const changesetFilteredCount = beforeChangeset - filteredGraph.nodes.size;
+      if (changesetFilteredCount > 0) {
         console.log(
-          `[C4ViewTransformer] Changeset filter: ${filteredGraph.nodes.size} nodes after filtering`
+          `[C4ViewTransformer] Changeset filter: excluded ${changesetFilteredCount} nodes (${beforeChangeset} → ${filteredGraph.nodes.size})`
         );
       }
     }
@@ -1124,11 +1130,9 @@ export class C4ViewTransformer {
     for (const [nodeId, node] of filtered.nodes) {
       const position = layoutResult.nodePositions.get(nodeId);
       if (!position) {
-        const warning = `No position for node ${nodeId} (${node.name})`;
+        const warning = `No position for node ${nodeId} (${node.name}) - skipping render`;
         warnings.push(warning);
-        if (DEBUG_LOGGING) {
-          console.warn(`[C4ViewTransformer] ${warning}`);
-        }
+        console.warn(`[C4ViewTransformer] ${warning}`);
         continue;
       }
 

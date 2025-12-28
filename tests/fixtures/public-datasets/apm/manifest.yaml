@@ -1,0 +1,9 @@
+name: apm-test-dataset
+version: 1.0.0
+description: Synthetic test dataset for apm layer
+layer_type: apm
+created: 2025-12-27
+license: Public Domain
+source: Synthetic dataset for testing
+layers:
+  - apm
