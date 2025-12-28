@@ -69,12 +69,11 @@ Layout quality refinement, metrics tests, and Ladle story validation.
 
 **Usage:**
 ```bash
-# Layout refinement
-npm run refine:motivation      # Refine motivation view
-npm run refine:business        # Refine business view
-npm run refine:c4              # Refine C4 view
-npm run refine:interactive     # Interactive refinement (headed)
-npm run refine:all             # Run all refinement tests
+# Layout refinement (Ladle-based)
+npm run test:refinement:ladle            # Run all refinement tests
+npm run test:refinement:ladle:motivation # Refine motivation view only
+npm run test:refinement:ladle:business   # Refine business view only
+npm run test:refinement:all              # Run all refinement tests (alias)
 
 # Metrics
 npm run metrics:report         # Generate metrics report

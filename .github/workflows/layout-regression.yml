@@ -77,46 +77,9 @@ jobs:
           path: test-results/metrics/
           retention-days: 30
 
-  # Legacy embedded app tests (during transition)
-  legacy-refinement-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-
-      - name: Run legacy refinement tests
-        run: npm run test:refinement:legacy
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: refinement-results-legacy
-          path: test-results/refinement/
-          retention-days: 30
-
   regression-check:
     runs-on: ubuntu-latest
-    needs: [ladle-refinement-tests, legacy-refinement-tests]
+    needs: [ladle-refinement-tests]
     if: always()
     permissions:
       contents: read

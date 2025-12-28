@@ -55,7 +55,7 @@ The previous approach executed tests against the full embedded application at `h
 
 ```bash
 # Run all refinement tests (Ladle-based)
-npm run refine:all
+npm run test:refinement:all
 
 # Generate metrics report
 npm run metrics:report
@@ -72,11 +72,10 @@ All refinement scripts now use Ladle-based tests and run on `http://localhost:60
 
 | Script | Description | Approach |
 |--------|-------------|----------|
-| `npm run refine:motivation` | Run refinement tests for motivation diagrams | Ladle ✅ |
-| `npm run refine:business` | Run refinement tests for business process diagrams | Ladle ✅ |
-| `npm run refine:c4` | Run refinement tests for C4 architecture diagrams | Ladle ✅ |
-| `npm run refine:interactive` | Open headed browser for interactive refinement | Ladle ✅ |
-| `npm run refine:all` | Run all refinement tests (Ladle-based) | Ladle ✅ |
+| `npm run test:refinement:ladle` | Run all refinement tests (Ladle-based) | Ladle ✅ |
+| `npm run test:refinement:ladle:motivation` | Run refinement tests for motivation diagrams | Ladle ✅ |
+| `npm run test:refinement:ladle:business` | Run refinement tests for business diagrams | Ladle ✅ |
+| `npm run test:refinement:all` | Alias for test:refinement:ladle | Ladle ✅ |
 
 ### Metrics Scripts
 
@@ -419,29 +418,22 @@ export default defineConfig({
 ### Step 6: Run Tests
 
 ```bash
-# Run all Ladle-based tests (including legacy embedded app tests)
-npm run refine:all
-
-# Run only Ladle-based tests
-npx playwright test tests/refinement/*.ladle.spec.ts --config=playwright.refinement.config.ts
+# Run all Ladle-based tests
+npm run test:refinement:all
 
 # Run specific diagram type
-npm run refine:motivation
+npm run test:refinement:ladle:motivation
+npm run test:refinement:ladle:business
+
+# Run directly with Playwright
+npx playwright test tests/refinement/*.ladle.spec.ts --config=playwright.refinement.config.ts
 ```
 
-### Step 7: Remove Legacy Tests (Optional)
+### Step 7: Migration Complete
 
-Once migration is complete and all tests pass, you can remove the old embedded app test files:
+✅ **Migration to Ladle-based tests is now complete!**
 
-```bash
-# Archive or delete legacy test files
-rm tests/refinement/motivation-refinement.spec.ts
-rm tests/refinement/business-refinement.spec.ts
-rm tests/refinement/c4-refinement.spec.ts
-# etc.
-
-# Update package.json scripts if desired (optional)
-```
+The legacy embedded app test files and npm scripts have been removed. All refinement tests now run via Ladle for improved performance and isolation.
 
 ## Detailed Usage
 
@@ -450,41 +442,28 @@ rm tests/refinement/c4-refinement.spec.ts
 Each diagram type has its own refinement test suite that evaluates layout quality:
 
 ```bash
-# Motivation Layer
-npm run refine:motivation
+# All refinement tests
+npm run test:refinement:all
+
+# Specific diagram types
+npm run test:refinement:ladle:motivation
+npm run test:refinement:ladle:business
 
 # Output:
 # - Layout quality scores for different algorithms
 # - Refinement iteration tracking
 # - Quality threshold checks
-```
-
-```bash
-# Business Layer
-npm run refine:business
-
-# Output:
 # - Process hierarchy analysis
 # - Edge length uniformity metrics
-# - Layout algorithm comparison
-```
-
-```bash
-# C4 Architecture
-npm run refine:c4
-
-# Output:
 # - Container relationship clarity
-# - Crossing analysis
-# - Multi-level C4 metrics
 ```
 
 ### Interactive Refinement
 
-For visual inspection and manual refinement:
+For visual inspection and manual refinement, run tests in headed mode:
 
 ```bash
-npm run refine:interactive
+npx playwright test tests/refinement/*.ladle.spec.ts --config=playwright.refinement.config.ts --headed
 ```
 
 This opens a headed browser where you can:
@@ -618,7 +597,7 @@ jobs:
         run: npx wait-on http://localhost:6006/meta.json --timeout 120000
 
       - name: Run refinement tests
-        run: npm run refine:all
+        run: npm run test:refinement:all
 
       - name: Run metrics checks
         run: npm run metrics:regression-check
@@ -733,7 +712,7 @@ npx playwright test tests/refinement/motivation-refinement.spec.ts --headed --sl
 
 ```bash
 # Enable verbose logging
-DEBUG=pw:api npm run refine:motivation
+DEBUG=pw:api npm run test:refinement:ladle:motivation
 ```
 
 ## Best Practices
@@ -756,9 +735,9 @@ DEBUG=pw:api npm run refine:motivation
    cat test-results/metrics/quality-issues-report.json | jq '.issues'
    ```
 
-4. **Use interactive mode for visual verification**
+4. **Use headed mode for visual verification**
    ```bash
-   npm run refine:interactive
+   npx playwright test tests/refinement/*.ladle.spec.ts --config=playwright.refinement.config.ts --headed
    ```
 
 5. **Set up baseline snapshots in CI**
@@ -822,8 +801,8 @@ You've made changes to the C4 container layout algorithm and want to verify the 
 ### Step 1: Check Current Quality
 
 ```bash
-# Run the C4 refinement tests to see current state
-npm run refine:c4
+# Run all refinement tests to see current state
+npm run test:refinement:all
 ```
 
 **Sample Output:**
@@ -893,7 +872,7 @@ cat test-results/metrics/c4-detailed-report.json | jq '.metrics'
 ### Step 3: Run Interactive Refinement
 
 ```bash
-npm run refine:interactive
+npx playwright test tests/refinement/*.ladle.spec.ts --config=playwright.refinement.config.ts --headed
 ```
 
 This opens a headed browser. The test pauses at key points:
@@ -1031,7 +1010,7 @@ If the new parameters should become the defaults:
 
 2. Run tests to verify:
    ```bash
-   npm run refine:c4
+   npm run test:refinement:all
    npm run metrics:regression-check
    ```
 
