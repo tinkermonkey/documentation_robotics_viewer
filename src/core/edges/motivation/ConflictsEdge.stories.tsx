@@ -5,7 +5,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 export default {
   title: 'Edges / Motivation / ConflictsEdge',
-  decorators: [withReactFlowDecorator({ width: 400, height: 200, showBackground: true })],
+  decorators: [withReactFlowDecorator({ width: 400, height: 200, showBackground: true, renderAsEdge: true })],
 } satisfies StoryDefault;
 
 export const Default: Story = () => (

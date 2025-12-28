@@ -1,6 +1,7 @@
 import { ReactFlowProvider, ReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import type { ReactElement } from 'react';
+import { createElement, isValidElement } from 'react';
 
 /**
  * Options for ReactFlowDecorator
@@ -13,6 +14,8 @@ export interface ReactFlowDecoratorOptions {
   panOnDrag?: boolean;
   zoomOnScroll?: boolean;
   nodesDraggable?: boolean;
+  /** If true, render story content as edges instead of nodes */
+  renderAsEdge?: boolean;
 }
 
 /**
@@ -45,53 +48,129 @@ export const withReactFlowDecorator = (options: ReactFlowDecoratorOptions = {}) 
     fitView = false,
     panOnDrag = false,
     zoomOnScroll = false,
-    nodesDraggable = false
+    nodesDraggable = false,
+    renderAsEdge = false
   } = options;
 
-  return (Story: React.ComponentType<any>): ReactElement => (
-    <ReactFlowProvider>
-      <div
-        style={{
-          width: width + 40,
-          height: height + 40,
-          border: '1px dashed #e5e7eb',
-          borderRadius: 8,
-          padding: 20,
-          background: showBackground ? '#f9fafb' : 'transparent',
-          position: 'relative',
-          overflow: 'hidden'
-        }}
-        data-testid="react-flow-decorator-container"
-      >
-        <ReactFlow
-          nodes={[]}
-          edges={[]}
-          fitView={fitView}
-          panOnDrag={panOnDrag}
-          zoomOnScroll={zoomOnScroll}
-          nodesDraggable={nodesDraggable}
-          minZoom={0.5}
-          maxZoom={4}
-        >
+  return (Story: React.ComponentType<any>): ReactElement => {
+    // For edges, we need to render them within the ReactFlow SVG context
+    if (renderAsEdge) {
+      // Create a single edge instance from the story
+      const storyElement = createElement(Story);
+      const edgeProps = isValidElement(storyElement) ? storyElement.props : {};
+
+      // Create a mock edge configuration that ReactFlow can render
+      const mockEdge = {
+        id: edgeProps.id || 'edge-1',
+        source: edgeProps.source || 'source',
+        target: edgeProps.target || 'target',
+        type: storyElement.type?.displayName || 'default',
+        data: edgeProps.data,
+        animated: edgeProps.animated,
+        label: edgeProps.label,
+        markerEnd: edgeProps.markerEnd,
+        markerStart: edgeProps.markerStart,
+        style: edgeProps.style,
+      };
+
+      // Create dummy nodes at the source/target positions
+      const sourceNode = {
+        id: mockEdge.source,
+        position: { x: edgeProps.sourceX || 50, y: edgeProps.sourceY || 50 },
+        data: {},
+        type: 'default',
+      };
+
+      const targetNode = {
+        id: mockEdge.target,
+        position: { x: edgeProps.targetX || 350, y: edgeProps.targetY || 200 },
+        data: {},
+        type: 'default',
+      };
+
+      return (
+        <ReactFlowProvider>
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '100%',
-              height: '100%',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              pointerEvents: 'none'
+              width: width + 40,
+              height: height + 40,
+              border: '1px dashed #e5e7eb',
+              borderRadius: 8,
+              padding: 20,
+              background: showBackground ? '#f9fafb' : 'transparent',
+              position: 'relative',
+              overflow: 'hidden'
             }}
+            data-testid="react-flow-decorator-container"
           >
-            <div style={{ pointerEvents: 'auto' }}>
-              <Story />
-            </div>
+            <ReactFlow
+              nodes={[sourceNode, targetNode]}
+              edges={[mockEdge]}
+              edgeTypes={{ [mockEdge.type]: storyElement.type as any }}
+              fitView={fitView}
+              panOnDrag={panOnDrag}
+              zoomOnScroll={zoomOnScroll}
+              nodesDraggable={nodesDraggable}
+              minZoom={0.5}
+              maxZoom={4}
+              // Hide the dummy nodes
+              nodesDraggable={false}
+              elementsSelectable={false}
+              nodesFocusable={false}
+            >
+              {/* Edges are rendered by ReactFlow itself */}
+            </ReactFlow>
           </div>
-        </ReactFlow>
-      </div>
-    </ReactFlowProvider>
-  );
+        </ReactFlowProvider>
+      );
+    }
+
+    // For nodes, render them in a div overlay
+    return (
+      <ReactFlowProvider>
+        <div
+          style={{
+            width: width + 40,
+            height: height + 40,
+            border: '1px dashed #e5e7eb',
+            borderRadius: 8,
+            padding: 20,
+            background: showBackground ? '#f9fafb' : 'transparent',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+          data-testid="react-flow-decorator-container"
+        >
+          <ReactFlow
+            nodes={[]}
+            edges={[]}
+            fitView={fitView}
+            panOnDrag={panOnDrag}
+            zoomOnScroll={zoomOnScroll}
+            nodesDraggable={nodesDraggable}
+            minZoom={0.5}
+            maxZoom={4}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%',
+                height: '100%',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                pointerEvents: 'none'
+              }}
+            >
+              <div style={{ pointerEvents: 'auto' }}>
+                <Story />
+              </div>
+            </div>
+          </ReactFlow>
+        </div>
+      </ReactFlowProvider>
+    );
+  };
 };

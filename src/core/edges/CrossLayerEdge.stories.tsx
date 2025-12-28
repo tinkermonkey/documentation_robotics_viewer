@@ -5,7 +5,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 export default {
   title: 'Edges / General / CrossLayerEdge',
-  decorators: [withReactFlowDecorator({ width: 400, height: 250, showBackground: true })],
+  decorators: [withReactFlowDecorator({ width: 400, height: 250, showBackground: true, renderAsEdge: true })],
 } satisfies StoryDefault;
 
 export const Default: Story = () => (

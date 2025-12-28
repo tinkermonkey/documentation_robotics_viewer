@@ -43,7 +43,9 @@
     "test:stories": "bash scripts/test-stories.sh",
     "test:stories:manual": "playwright test tests/stories/all-stories.spec.ts --config=playwright.refinement.config.ts",
     "test:stories:ui": "bash scripts/test-stories.sh --ui",
-    "test:ladle-validation": "playwright test tests/ladle-story-validation.spec.ts --config=playwright.refinement.config.ts"
+    "test:ladle-validation": "playwright test tests/ladle-story-validation-components.spec.ts tests/ladle-story-validation-graphs.spec.ts --config=playwright.refinement.config.ts",
+    "test:ladle-validation:components": "playwright test tests/ladle-story-validation-components.spec.ts --config=playwright.refinement.config.ts",
+    "test:ladle-validation:graphs": "playwright test tests/ladle-story-validation-graphs.spec.ts --config=playwright.refinement.config.ts"
   },
   "keywords": [],
   "author": "",
