@@ -8,6 +8,60 @@ import { YAMLParser } from './yamlParser';
 import { YAMLManifest } from '../types/yaml';
 
 /**
+ * Helper function to load a model from a local path (for testing)
+ * This is primarily for use in Node.js test environments (Playwright, Jest, etc.)
+ */
+export async function loadModel(path: string): Promise<MetaModel> {
+  try {
+    // Use dynamic imports for Node.js modules (works in both CJS and ESM contexts)
+    const { readFileSync, readdirSync } = await import('fs');
+    const { join } = await import('path');
+
+    // Read all files from the directory
+    const files = readdirSync(path);
+    const schemas: Record<string, unknown> = {};
+    const hasManifest = files.some(f => f === 'manifest.yaml' || f === 'manifest.yml');
+
+    for (const file of files) {
+      if (file.endsWith('.json') || file.endsWith('.yaml') || file.endsWith('.yml')) {
+        const filePath = join(path, file);
+        const content = readFileSync(filePath, 'utf-8');
+
+        // For YAML instance models, keep YAML files as strings
+        // For JSON Schema models, parse everything
+        if (hasManifest && (file.endsWith('.yaml') || file.endsWith('.yml'))) {
+          // Keep YAML as string for parseYAMLInstances
+          schemas[file] = content;
+        } else if (file.endsWith('.json')) {
+          schemas[file] = JSON.parse(content);
+        } else if (file.endsWith('.yaml') || file.endsWith('.yml')) {
+          // Parse YAML for JSON Schema models
+          const yaml = await import('js-yaml');
+          schemas[file] = yaml.load(content) as unknown;
+        }
+      }
+    }
+
+    // Create DataLoader instance
+    const localFileLoader = new LocalFileLoader();
+    const githubService = new GitHubService();
+    const specParser = new SpecParser();
+    const dataLoader = new DataLoader(githubService, localFileLoader, specParser);
+
+    // Check if this is a YAML instance model (has manifest.yaml)
+    if (hasManifest) {
+      // This is a YAML instance model - use parseYAMLInstances
+      return dataLoader.parseYAMLInstances(schemas, 'test');
+    } else {
+      // This is a JSON Schema model - use parseSchemaDefinitions
+      return dataLoader.parseSchemaDefinitions(schemas, 'test');
+    }
+  } catch (error) {
+    throw new Error(`Failed to load model from path ${path}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+/**
  * Coordinator service for loading data from various sources
  */
 export class DataLoader {

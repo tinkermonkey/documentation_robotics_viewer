@@ -50,6 +50,19 @@ const getNodeLayer = (nodeType: string): LayerType | null => {
  * Maps node types to their layer colors from centralized system
  */
 const defaultNodeColor = (node: any): string => {
+  // Guard against invalid node data
+  if (!node || typeof node !== 'object') {
+    return FALLBACK_COLOR;
+  }
+
+  // Guard against NaN dimensions which can cause SVG rendering errors
+  if (node.width !== undefined && (isNaN(node.width) || node.width === null)) {
+    return FALLBACK_COLOR;
+  }
+  if (node.height !== undefined && (isNaN(node.height) || node.height === null)) {
+    return FALLBACK_COLOR;
+  }
+
   const nodeType = node.type || 'default';
 
   // Get the layer for this node type

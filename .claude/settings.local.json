@@ -60,7 +60,8 @@
       "Bash(timeout 45 npx playwright test:*)",
       "Bash(timeout 60 npx playwright test:*)",
       "Bash(timeout 120 npx playwright test:*)",
-      "Bash(timeout 180 npx playwright test:*)"
+      "Bash(timeout 180 npx playwright test:*)",
+      "Bash(xargs cat:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

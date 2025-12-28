@@ -1,45 +1,44 @@
-principles:
-  principle.customer-centricity:
-    name: Customer-Centric Design
-    description: All digital initiatives must prioritize customer value and experience
-    type: business
-    priority: high
-    guides:
-      - tactical.ecommerce-expansion
-      - tactical.customer-personalization
+principle.customer-centricity:
+  name: Customer-Centric Design
+  description: All digital initiatives must prioritize customer value and experience
+  type: business
+  priority: high
+  guides:
+    - tactical.ecommerce-expansion
+    - tactical.customer-personalization
 
-  principle.data-driven:
-    name: Data-Driven Decision Making
-    description: Base strategic and tactical decisions on data analytics and evidence
-    type: business
-    priority: high
-    guides:
-      - tactical.data-analytics-platform
-      - tactical.supply-chain-optimization
+principle.data-driven:
+  name: Data-Driven Decision Making
+  description: Base strategic and tactical decisions on data analytics and evidence
+  type: business
+  priority: high
+  guides:
+    - tactical.data-analytics-platform
+    - tactical.supply-chain-optimization
 
-  principle.cloud-first:
-    name: Cloud-First Architecture
-    description: Default to cloud-native solutions for new systems and migrations
-    type: technical
-    priority: high
-    guides:
-      - tactical.cloud-migration
-      - tactical.api-platform
+principle.cloud-first:
+  name: Cloud-First Architecture
+  description: Default to cloud-native solutions for new systems and migrations
+  type: technical
+  priority: high
+  guides:
+    - tactical.cloud-migration
+    - tactical.api-platform
 
-  principle.security-by-design:
-    name: Security by Design
-    description: Build security into every layer of architecture from the start
-    type: technical
-    priority: very-high
-    guides:
-      - tactical.security-modernization
-      - tactical.cloud-migration
+principle.security-by-design:
+  name: Security by Design
+  description: Build security into every layer of architecture from the start
+  type: technical
+  priority: very-high
+  guides:
+    - tactical.security-modernization
+    - tactical.cloud-migration
 
-  principle.continuous-innovation:
-    name: Continuous Innovation
-    description: Foster culture of experimentation, learning, and iterative improvement
-    type: organizational
-    priority: high
-    guides:
-      - tactical.innovation-labs
-      - tactical.agile-transformation
+principle.continuous-innovation:
+  name: Continuous Innovation
+  description: Foster culture of experimentation, learning, and iterative improvement
+  type: organizational
+  priority: high
+  guides:
+    - tactical.innovation-labs
+    - tactical.agile-transformation

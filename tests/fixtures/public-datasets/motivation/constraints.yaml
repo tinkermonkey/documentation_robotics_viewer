@@ -1,65 +1,64 @@
-constraints:
-  constraint.budget:
-    name: Annual Budget Limit
-    description: Digital transformation budget limited to $50M annually
-    type: financial
-    scope: organization
-    applies_to:
-      - strategic.technology-modernization
-      - tactical.cloud-migration
-      - tactical.data-analytics-platform
-    impact: high
+constraint.budget:
+  name: Annual Budget Limit
+  description: Digital transformation budget limited to $50M annually
+  type: financial
+  scope: organization
+  applies_to:
+    - strategic.technology-modernization
+    - tactical.cloud-migration
+    - tactical.data-analytics-platform
+  impact: high
 
-  constraint.timeline:
-    name: Competitive Pressure Timeline
-    description: Must achieve measurable results within 18 months due to competitive landscape
-    type: time
-    scope: organization
-    applies_to:
-      - vision.digital-transformation
-      - strategic.business-growth
-    impact: high
+constraint.timeline:
+  name: Competitive Pressure Timeline
+  description: Must achieve measurable results within 18 months due to competitive landscape
+  type: time
+  scope: organization
+  applies_to:
+    - vision.digital-transformation
+    - strategic.business-growth
+  impact: high
 
-  constraint.regulatory-compliance:
-    name: Data Privacy Regulations
-    description: Must comply with GDPR, CCPA, and industry-specific data regulations
-    type: legal
-    scope: organization
-    applies_to:
-      - tactical.customer-personalization
-      - tactical.data-analytics-platform
-      - tactical.security-modernization
-    impact: very-high
+constraint.regulatory-compliance:
+  name: Data Privacy Regulations
+  description: Must comply with GDPR, CCPA, and industry-specific data regulations
+  type: legal
+  scope: organization
+  applies_to:
+    - tactical.customer-personalization
+    - tactical.data-analytics-platform
+    - tactical.security-modernization
+  impact: very-high
 
-  constraint.legacy-systems:
-    name: Legacy System Dependencies
-    description: Critical business functions depend on 15-year-old mainframe systems
-    type: technical
-    scope: technology
-    applies_to:
-      - strategic.technology-modernization
-      - tactical.cloud-migration
-      - tactical.api-platform
-    impact: high
+constraint.legacy-systems:
+  name: Legacy System Dependencies
+  description: Critical business functions depend on 15-year-old mainframe systems
+  type: technical
+  scope: technology
+  applies_to:
+    - strategic.technology-modernization
+    - tactical.cloud-migration
+    - tactical.api-platform
+  impact: high
 
-  constraint.skills-gap:
-    name: Digital Skills Shortage
-    description: Current workforce lacks cloud, data science, and agile expertise
-    type: organizational
-    scope: people
-    applies_to:
-      - strategic.cultural-transformation
-      - tactical.digital-skills-training
-      - tactical.agile-transformation
-    impact: medium
+constraint.skills-gap:
+  name: Digital Skills Shortage
+  description: Current workforce lacks cloud, data science, and agile expertise
+  type: organizational
+  scope: people
+  applies_to:
+    - strategic.cultural-transformation
+    - tactical.digital-skills-training
+    - tactical.agile-transformation
+  impact: medium
 
-  constraint.change-resistance:
-    name: Organizational Change Resistance
-    description: Middle management resistance to agile transformation and new processes
-    type: organizational
-    scope: culture
-    applies_to:
-      - strategic.cultural-transformation
-      - tactical.agile-transformation
-      - tactical.process-automation
-    impact: medium
+constraint.change-resistance:
+  name: Organizational Change Resistance
+  description: Middle management resistance to agile transformation and new processes
+  type: organizational
+  scope: culture
+  applies_to:
+    - strategic.cultural-transformation
+    - tactical.agile-transformation
+    - tactical.process-automation
+  impact: medium

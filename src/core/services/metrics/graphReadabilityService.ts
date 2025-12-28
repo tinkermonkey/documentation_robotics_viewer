@@ -1360,14 +1360,18 @@ export function calculateOverallScore(
     nodeCount
   );
 
-  return (
-    weights.crossingNumber * metrics.crossingNumber +
-    weights.crossingAngle * metrics.crossingAngle +
-    weights.angularResolutionMin * metrics.angularResolutionMin +
-    weights.angularResolutionDev * metrics.angularResolutionDev +
-    weights.edgeLengthUniformity * edgeLengthScore +
-    weights.nodeOcclusion * occlusionScore
+  // Calculate weighted score with NaN guards
+  const score = (
+    (weights.crossingNumber || 0) * (metrics.crossingNumber || 0) +
+    (weights.crossingAngle || 0) * (metrics.crossingAngle || 0) +
+    (weights.angularResolutionMin || 0) * (metrics.angularResolutionMin || 0) +
+    (weights.angularResolutionDev || 0) * (metrics.angularResolutionDev || 0) +
+    (weights.edgeLengthUniformity || 0) * (isNaN(edgeLengthScore) ? 0 : edgeLengthScore) +
+    (weights.nodeOcclusion || 0) * (isNaN(occlusionScore) ? 0 : occlusionScore)
   );
+
+  // Return 0 instead of NaN if calculation fails
+  return isNaN(score) ? 0 : score;
 }
 
 /**
@@ -1528,4 +1532,24 @@ export function compareLayoutQuality(
     metricChanges,
     improved: overallImprovement > 0,
   };
+}
+
+/**
+ * Simplified calculateMetrics function for backward compatibility with tests
+ * @param nodes - Array of nodes
+ * @param edges - Array of edges
+ * @returns Layout quality report with metrics and overall score
+ */
+export function calculateMetrics(nodes: Node[], edges: Edge[]): LayoutQualityReport {
+  // Use default layout and diagram types for test compatibility
+  // Using 'motivation' as default diagram type since it has appropriate weights defined
+  const report = calculateLayoutQuality(
+    nodes,
+    edges,
+    'hierarchical',
+    'motivation',
+    undefined
+  );
+
+  return report;
 }

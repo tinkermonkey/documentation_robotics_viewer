@@ -207,8 +207,13 @@ export class YAMLParser {
     const name = (element.name as string) || key;
     const id = (element.id as string) || this.generateDotNotationId(key);
 
-    // Known non-relationship fields
-    const knownFields = ['name', 'id', 'description', 'method', 'path', 'openapi', '$schema', 'schemas', 'relationships', 'type', 'category', 'priority', 'stakeholders'];
+    // Known non-relationship fields (metadata that should not be treated as relationships)
+    const knownFields = [
+      'name', 'id', 'description', 'method', 'path', 'openapi', '$schema', 'schemas', 'relationships',
+      'type', 'category', 'priority', 'stakeholders',
+      // Motivation layer metadata
+      'kpis', 'concerns', 'role', 'timeframe', 'scope', 'impact', 'influence_level'
+    ];
 
     // Detect relationship properties (arrays of strings) and collect them
     const relationships: YAMLRelationships = {};

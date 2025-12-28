@@ -68,8 +68,8 @@ test.describe('Quality Regression Detection', () => {
     expect(qualityDelta).toBeGreaterThan(0); // Optimal should be better
 
     // Poor parameters should have worse metrics
-    expect(poorMetrics.metrics.nodeNodeOcclusion).toBeGreaterThanOrEqual(
-      optimalMetrics.metrics.nodeNodeOcclusion
+    expect(poorMetrics.extendedMetrics.nodeNodeOcclusion).toBeGreaterThanOrEqual(
+      optimalMetrics.extendedMetrics.nodeNodeOcclusion
     );
 
     // Quality classification should detect the difference
@@ -85,13 +85,13 @@ test.describe('Quality Regression Detection', () => {
       optimal: {
         score: optimalMetrics.overallScore,
         class: optimalClass,
-        occlusion: optimalMetrics.metrics.nodeNodeOcclusion,
+        occlusion: optimalMetrics.extendedMetrics.nodeNodeOcclusion,
         crossings: optimalMetrics.metrics.crossingNumber,
       },
       poor: {
         score: poorMetrics.overallScore,
         class: poorClass,
-        occlusion: poorMetrics.metrics.nodeNodeOcclusion,
+        occlusion: poorMetrics.extendedMetrics.nodeNodeOcclusion,
         crossings: poorMetrics.metrics.crossingNumber,
       },
       delta: qualityDelta,
@@ -158,8 +158,8 @@ test.describe('Quality Regression Detection', () => {
     expect(qualityDelta).toBeLessThan(0.3);
 
     // Neither should have excessive overlaps
-    expect(elkMetrics.metrics.nodeNodeOcclusion).toBeLessThan(5);
-    expect(dagreMetrics.metrics.nodeNodeOcclusion).toBeLessThan(5);
+    expect(elkMetrics.extendedMetrics.nodeNodeOcclusion).toBeLessThan(5);
+    expect(dagreMetrics.extendedMetrics.nodeNodeOcclusion).toBeLessThan(5);
   });
 
   test('should track quality improvements across refinement iterations', async () => {

@@ -34,15 +34,15 @@ test.describe('Layout Engine Workflow Integration', () => {
     // Step 1: Load public dataset (motivation layer)
     const datasetPath = join(
       process.cwd(),
-      'tests/fixtures/public-datasets/motivation/goal-hierarchy'
+      'tests/fixtures/public-datasets/motivation'
     );
 
     const model = await loadModel(datasetPath);
     expect(model).toBeDefined();
     expect(model.layers).toBeDefined();
 
-    // Verify motivation layer data exists
-    const motivationLayer = model.layers['motivation'];
+    // Verify motivation layer data exists (YAML instance models use directory keys)
+    const motivationLayer = model.layers['01_motivation'];
     expect(motivationLayer).toBeDefined();
     expect(motivationLayer.elements.length).toBeGreaterThan(0);
 
@@ -74,11 +74,18 @@ test.describe('Layout Engine Workflow Integration', () => {
       data: { label: el.name },
     }));
 
-    const sampleEdges = motivationLayer.relationships.slice(0, 8).map((rel) => ({
-      id: rel.id,
-      source: rel.sourceId,
-      target: rel.targetId,
-    }));
+    // Get node IDs for filtering relationships
+    const sampleNodeIds = new Set(sampleNodes.map(n => n.id));
+
+    // Filter relationships to only include those connecting sampled nodes
+    const sampleEdges = motivationLayer.relationships
+      .filter(rel => sampleNodeIds.has(rel.sourceId) && sampleNodeIds.has(rel.targetId))
+      .slice(0, 8)
+      .map((rel) => ({
+        id: rel.id,
+        source: rel.sourceId,
+        target: rel.targetId,
+      }));
 
     const graphInput = { nodes: sampleNodes, edges: sampleEdges };
 
@@ -246,11 +253,11 @@ test.describe('Layout Engine Workflow Integration', () => {
     // Load motivation layer public dataset
     const datasetPath = join(
       process.cwd(),
-      'tests/fixtures/public-datasets/motivation/goal-hierarchy'
+      'tests/fixtures/public-datasets/motivation'
     );
 
     const model = await loadModel(datasetPath);
-    const motivationLayer = model.layers['motivation'];
+    const motivationLayer = model.layers['01_motivation'];
 
     // Apply optimal layout
     const engine = new ELKLayoutEngine();
@@ -282,11 +289,11 @@ test.describe('Layout Engine Workflow Integration', () => {
     // Verify baseline quality thresholds
     expect(metrics.overallScore).toBeGreaterThan(0.6); // Minimum acceptable
     expect(metrics.metrics.crossingNumber).toBeLessThan(10); // Should be low for hierarchical
-    expect(metrics.metrics.nodeNodeOcclusion).toBe(0); // No overlaps expected
+    expect(metrics.extendedMetrics.nodeNodeOcclusion).toBe(0); // No overlaps expected
 
     // Store baseline for regression testing
     const baseline = {
-      dataset: 'motivation/goal-hierarchy',
+      dataset: 'motivation',
       engine: 'elk',
       algorithm: 'layered',
       metrics: metrics,

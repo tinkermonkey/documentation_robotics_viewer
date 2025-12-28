@@ -259,13 +259,24 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
         {showMiniMap && (
           <OverviewPanel
             nodeColor={(node: NodeWithLayerData) => {
+              // Guard against invalid node data that can cause NaN in SVG
+              if (!node || typeof node !== 'object') {
+                return '#6B7280';
+              }
+
+              // Check for NaN dimensions
+              if ((node.width !== undefined && (isNaN(node.width) || node.width === null)) ||
+                  (node.height !== undefined && (isNaN(node.height) || node.height === null))) {
+                return '#6B7280';
+              }
+
               // Color nodes based on their layer
-              const layer = node.data.layer;
+              const layer = node.data?.layer;
               if (layer) {
                 return getLayerColor(layer, 'primary');
               }
               // Fallback to fill color
-              return node.data.fill || '#ffffff';
+              return node.data?.fill || '#ffffff';
             }}
           />
         )}
