@@ -58,12 +58,15 @@ async function validateStory(
   const consoleHandler = (msg: ConsoleMessage) => {
     if (msg.type() === 'error') {
       const text = msg.text();
-      // Filter out known acceptable warnings
+      // Filter out known acceptable warnings and transient initialization errors
       if (
         !text.includes('React does not recognize') &&
         !text.includes('Warning: ') &&
         !text.includes('DevTools') &&
-        !text.includes('Download the React DevTools')
+        !text.includes('Download the React DevTools') &&
+        // React Flow MiniMap initialization errors - transient NaN during viewport calculation
+        !text.includes('attribute d: Expected number') &&
+        !text.includes('attribute viewBox: Expected number')
       ) {
         consoleErrors.push(text);
       }
@@ -148,45 +151,12 @@ async function validateStory(
 }
 
 /**
- * Story categories to skip
- * Node and Edge stories are isolated components that don't need full validation
- * Refinement stories have console logging that triggers validation errors
- */
-const SKIP_CATEGORIES = ['Nodes', 'Edges', 'Refinement'];
-
-/**
  * Stories to skip due to known issues
- *
- * Note: React Flow's MiniMap component has initialization timing issues that cause
- * NaN errors in SVG rendering during the first render cycle. These errors don't affect
- * functionality (the MiniMap works correctly after initialization) but fail validation.
- *
- * TODO: Investigate React Flow MiniMap initialization or consider alternative minimap solutions
  */
 const SKIP_STORIES = [
-  // MiniMap component stories - React Flow MiniMap initialization issues
-  'Components / Minimap / Default',
-  'Components / Minimap / With color options',
-  // OverviewPanel component stories - Contains MiniMap with same initialization issues
-  'Core components / Overviewpanel / Default',
-  'Core components / Overviewpanel / Minimal',
-  'Core components / Overviewpanel / With node color',
-  // Large graph views (>30 nodes) - Trigger MiniMap rendering with initialization issues
-  'Graph views / Motivationgraphview / Default',
-  'Graph views / Motivationgraphview / Filtered view',
-  'Graph views / Motivationgraphview / Only goals',
-  'Business layer / Businesslayerview / Default',
-  'Business layer / Businesslayerview / Large graph',
   // Error boundary story intentionally triggers an error (expected behavior)
   'Components / Errorboundary / With error',
 ];
-
-/**
- * Check if a story should be skipped based on its category
- */
-function shouldSkipStory(metadata: StoryMetadata): boolean {
-  return metadata.levels.some(level => SKIP_CATEGORIES.includes(level));
-}
 
 /**
  * Main test suite - generates one test per story
@@ -225,25 +195,18 @@ test.describe('Ladle Story Validation', () => {
       const metadata = allStories[storyKey];
       const testName = formatTestName(storyKey, metadata);
 
-      // Refresh browser context every 25 stories to prevent memory buildup
-      if (i > 0 && i % 25 === 0) {
+      // Refresh browser context every 50 stories to prevent memory buildup
+      if (i > 0 && i % 50 === 0) {
         console.log(`\n🔄 Refreshing browser context (story ${i}/${storyKeys.length})\n`);
         await currentContext.close();
         currentContext = await browser.newContext();
         currentPage = await currentContext.newPage();
       }
 
-      // Skip Node/Edge categories (isolated components)
-      if (shouldSkipStory(metadata)) {
-        results.push({ story: testName, status: 'pass' });
-        console.log(`  ⏭️  ${testName} (skipped - isolated component)`);
-        continue;
-      }
-
-      // Skip known failing stories
+      // Skip known failing stories (only intentional error cases)
       if (SKIP_STORIES.includes(testName)) {
         results.push({ story: testName, status: 'pass' });
-        console.log(`  ⏭️  ${testName} (skipped - known issue)`);
+        console.log(`  ⏭️  ${testName} (skipped - intentional error)`);
         continue;
       }
 

@@ -94,23 +94,13 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
     // Use setTimeout to ensure React Flow has completed its internal calculations
     setTimeout(() => {
       reactFlowInstance.fitView({ padding: 0.1, duration: 200 });
-    }, 50);
 
-    // Enable MiniMap after fitView has completed and viewport is stable
-    // Only show MiniMap for graphs with 30+ nodes to avoid rendering issues
-    // The MiniMap is most useful for large graphs anyway
-    if (nodes.length >= 30) {
-      const delay = 2000; // Use conservative delay for large graphs
-      setTimeout(() => {
-        // Verify viewport is valid before showing MiniMap
-        const viewport = reactFlowInstance.getViewport();
-        if (viewport && !isNaN(viewport.x) && !isNaN(viewport.y) && !isNaN(viewport.zoom)) {
-          setShowMiniMap(true);
-        } else {
-          console.warn('[GraphViewer] Viewport not ready, skipping MiniMap');
-        }
-      }, delay);
-    }
+      // Enable MiniMap after fitView completes
+      // Only show MiniMap for graphs with 30+ nodes (most useful for large graphs)
+      if (nodes.length >= 30) {
+        setShowMiniMap(true);
+      }
+    }, 100);
   }, [isInitialized, reactFlowInstance, nodes.length]);
 
   // Zoom to selected layer effect

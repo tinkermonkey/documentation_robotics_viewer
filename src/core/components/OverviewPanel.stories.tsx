@@ -1,4 +1,5 @@
 import type { StoryDefault, Story } from '@ladle/react';
+import { useState } from 'react';
 import { OverviewPanel } from './OverviewPanel';
 import { ReactFlow, ReactFlowProvider, useNodesState, useEdgesState } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
@@ -22,11 +23,38 @@ const sampleEdges = [
 const OverviewPanelDemo = ({ nodeColor }: { nodeColor?: (node: any) => string }) => {
   const [nodes] = useNodesState(sampleNodes);
   const [edges] = useEdgesState(sampleEdges);
+  const [isReady, setIsReady] = useState(false);
 
   return (
     <div style={{ width: 400, height: 300, border: '1px solid #e5e7eb', borderRadius: 8 }}>
-      <ReactFlow nodes={nodes} edges={edges} fitView>
-        <OverviewPanel nodeColor={nodeColor} />
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        defaultViewport={{ x: 0, y: 0, zoom: 1 }}
+        minZoom={0.1}
+        maxZoom={4}
+        fitView
+        fitViewOptions={{ padding: 0.2, duration: 0 }}
+        onInit={(instance) => {
+          // Wait longer for layout to stabilize before showing OverviewPanel
+          setTimeout(() => {
+            const viewport = instance.getViewport();
+            // Only show OverviewPanel if viewport is valid (no NaN values)
+            if (!isNaN(viewport.x) && !isNaN(viewport.y) && !isNaN(viewport.zoom)) {
+              setIsReady(true);
+            } else {
+              // If still NaN, try again after another delay
+              setTimeout(() => {
+                const retryViewport = instance.getViewport();
+                if (!isNaN(retryViewport.x) && !isNaN(retryViewport.y) && !isNaN(retryViewport.zoom)) {
+                  setIsReady(true);
+                }
+              }, 200);
+            }
+          }, 200);
+        }}
+      >
+        {isReady && <OverviewPanel nodeColor={nodeColor} />}
       </ReactFlow>
     </div>
   );

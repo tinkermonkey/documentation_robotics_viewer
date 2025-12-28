@@ -1,6 +1,8 @@
 import type { StoryDefault, Story } from '@ladle/react';
 import { SessionHistoryBrowser } from './SessionHistoryBrowser';
-import type { RefinementSession } from '../../types/refinement';
+import type { RefinementSessionState, RefinementIteration } from '../../../../core/services/refinement/refinementLoop';
+import type { DiagramType } from '../../../../core/services/refinement/layoutParameters';
+import type { LayoutType } from '../../../../core/services/metrics/graphReadabilityService';
 import { useState } from 'react';
 
 export default {
@@ -9,56 +11,58 @@ export default {
 
 function createMockSession(
   id: string,
-  diagramType: string,
+  name: string,
+  diagramType: DiagramType,
   startTime: Date,
   iterationCount: number,
   bestScore: number,
-  status: 'active' | 'paused' | 'completed' | 'failed'
-): RefinementSession {
-  const iterations = Array.from({ length: iterationCount }, (_, i) => ({
-    iterationNumber: i + 1,
-    timestamp: new Date(startTime.getTime() + i * 60000).toISOString(),
-    durationMs: 1000 + Math.random() * 2000,
-    screenshotUrl: `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="90"><rect fill="%23${i % 2 === 0 ? 'dbeafe' : 'e5e7eb'}" width="120" height="90"/><text x="60" y="50" text-anchor="middle" font-size="10" fill="%236b7280">Iter ${i + 1}</text></svg>`,
-    improved: i > 0,
-    improvementDelta: i > 0 ? 0.05 : 0,
-    qualityScore: {
-      combinedScore: 0.6 + (i / iterationCount) * (bestScore - 0.6),
-      readabilityScore: 0.65 + (i / iterationCount) * (bestScore - 0.6),
-      similarityScore: 0.55 + (i / iterationCount) * (bestScore - 0.55),
-      readabilityMetrics: {
-        edgeCrossings: 10 - i,
-        nodeOcclusion: 3 - Math.floor(i / 2),
-        aspectRatioScore: 0.7 + (i / iterationCount) * 0.25,
-        edgeLengthVariance: 150 - i * 5,
-        density: 0.5,
+  paused: boolean
+): RefinementSessionState {
+  const iterations: RefinementIteration[] = Array.from({ length: iterationCount }, (_, i) => {
+    const score = 0.6 + (i / Math.max(iterationCount - 1, 1)) * (bestScore - 0.6);
+    return {
+      iteration: i + 1,
+      parameters: {
+        hierarchical: {
+          nodeSpacing: 80 + i * 5,
+          layerSpacing: 120,
+          direction: 'DOWN',
+        },
       },
-      similarityMetrics: {
-        structuralSimilarity: 0.6 + (i / iterationCount) * (bestScore - 0.6),
-        layoutSimilarity: 0.55 + (i / iterationCount) * (bestScore - 0.55),
-        perceptualHash: `hash${i}`,
+      score,
+      breakdown: {
+        readabilityScore: 0.65 + (i / Math.max(iterationCount - 1, 1)) * (bestScore - 0.6),
+        similarityScore: 0.55 + (i / Math.max(iterationCount - 1, 1)) * (bestScore - 0.55),
       },
-    },
-    parameters: {
-      spacing: 80 + i * 5,
-      direction: 'DOWN',
-    },
-  }));
+      isBest: Math.abs(score - bestScore) < 0.001,
+      improvementPercent: i > 0 ? ((score - 0.6) / 0.6) * 100 : 0,
+      durationMs: 1000 + Math.random() * 2000,
+      timestamp: new Date(startTime.getTime() + i * 60000).toISOString(),
+    };
+  });
+
+  const bestIteration = iterations.find((it) => it.isBest) || iterations[iterations.length - 1];
 
   return {
     sessionId: id,
-    diagramType: diagramType as any,
-    engineType: 'elk',
-    algorithm: 'layered',
-    startTime: startTime.toISOString(),
-    endTime: status === 'completed' ? new Date(startTime.getTime() + iterationCount * 60000).toISOString() : undefined,
-    status,
-    iterations,
-    bestScore,
-    bestIteration: iterationCount,
-    totalDurationMs: iterationCount * 60000,
-    targetScore: 0.90,
-    notes: status === 'failed' ? 'Failed to converge' : undefined,
+    name,
+    diagramType,
+    layoutType: 'hierarchical' as LayoutType,
+    config: {
+      maxIterations: 50,
+      targetScore: 0.9,
+      plateauThreshold: 5,
+      minImprovementPercent: 1.0,
+      diagramType,
+      layoutType: 'hierarchical' as LayoutType,
+      strategyType: 'random',
+      verbose: false,
+    },
+    history: iterations,
+    bestResult: bestIteration,
+    paused,
+    createdAt: startTime.toISOString(),
+    updatedAt: new Date(startTime.getTime() + iterationCount * 60000).toISOString(),
   };
 }
 
@@ -68,8 +72,8 @@ export const EmptyState: Story = () => {
       <SessionHistoryBrowser
         sessions={[]}
         onSessionSelect={(id) => console.log('Selected:', id)}
-        onSessionResume={(id) => console.log('Resume:', id)}
-        onSessionCompare={(ids) => console.log('Compare:', ids)}
+        onSessionLoad={(id) => console.log('Load:', id)}
+        onSessionsCompare={(ids) => console.log('Compare:', ids)}
         onSessionDelete={(id) => console.log('Delete:', id)}
       />
     </div>
@@ -77,16 +81,17 @@ export const EmptyState: Story = () => {
 };
 
 export const SingleSession: Story = () => {
-  const [selectedId, setSelectedId] = useState<string>('session-1');
+  const [activeId, setActiveId] = useState<string>('session-1');
 
   const sessions = [
     createMockSession(
       'session-1',
+      'Motivation Layout Optimization',
       'motivation',
       new Date(Date.now() - 3600000),
       8,
       0.89,
-      'completed'
+      false
     ),
   ];
 
@@ -94,10 +99,10 @@ export const SingleSession: Story = () => {
     <div style={{ height: 600, width: 900 }}>
       <SessionHistoryBrowser
         sessions={sessions}
-        selectedSessionId={selectedId}
-        onSessionSelect={(id) => setSelectedId(id)}
-        onSessionResume={(id) => console.log('Resume:', id)}
-        onSessionCompare={(ids) => console.log('Compare:', ids)}
+        activeSessionId={activeId}
+        onSessionSelect={(id) => setActiveId(id)}
+        onSessionLoad={(id) => console.log('Load:', id)}
+        onSessionsCompare={(ids) => console.log('Compare:', ids)}
         onSessionDelete={(id) => console.log('Delete:', id)}
       />
     </div>
@@ -105,48 +110,53 @@ export const SingleSession: Story = () => {
 };
 
 export const MultipleSessions: Story = () => {
-  const [selectedId, setSelectedId] = useState<string>('session-3');
+  const [activeId, setActiveId] = useState<string>('session-3');
 
   const sessions = [
     createMockSession(
       'session-1',
+      'Motivation Refinement',
       'motivation',
       new Date(Date.now() - 86400000 * 3),
       12,
       0.91,
-      'completed'
+      false
     ),
     createMockSession(
       'session-2',
+      'Business Layer Optimization',
       'business',
       new Date(Date.now() - 86400000 * 2),
       6,
       0.75,
-      'paused'
+      true
     ),
     createMockSession(
       'session-3',
+      'C4 Context View',
       'c4',
       new Date(Date.now() - 86400000),
       15,
       0.93,
-      'completed'
+      false
     ),
     createMockSession(
       'session-4',
+      'Application Layer',
       'application',
       new Date(Date.now() - 43200000),
       3,
       0.62,
-      'failed'
+      false
     ),
     createMockSession(
       'session-5',
+      'Current Session',
       'motivation',
       new Date(Date.now() - 3600000),
       8,
       0.87,
-      'active'
+      false
     ),
   ];
 
@@ -154,10 +164,10 @@ export const MultipleSessions: Story = () => {
     <div style={{ height: 700, width: 1000 }}>
       <SessionHistoryBrowser
         sessions={sessions}
-        selectedSessionId={selectedId}
-        onSessionSelect={(id) => setSelectedId(id)}
-        onSessionResume={(id) => console.log('Resume:', id)}
-        onSessionCompare={(ids) => console.log('Compare:', ids)}
+        activeSessionId={activeId}
+        onSessionSelect={(id) => setActiveId(id)}
+        onSessionLoad={(id) => console.log('Load:', id)}
+        onSessionsCompare={(ids) => console.log('Compare:', ids)}
         onSessionDelete={(id) => console.log('Delete:', id)}
       />
     </div>
@@ -165,23 +175,25 @@ export const MultipleSessions: Story = () => {
 };
 
 export const FilterByStatus: Story = () => {
-  const [selectedId, setSelectedId] = useState<string | undefined>();
-  const [statusFilter, setStatusFilter] = useState<string>('completed');
+  const [activeId, setActiveId] = useState<string | undefined>();
+  const [statusFilter, setStatusFilter] = useState<string>('active');
 
   const allSessions = [
-    createMockSession('session-1', 'motivation', new Date(Date.now() - 86400000 * 5), 10, 0.88, 'completed'),
-    createMockSession('session-2', 'business', new Date(Date.now() - 86400000 * 4), 5, 0.72, 'paused'),
-    createMockSession('session-3', 'c4', new Date(Date.now() - 86400000 * 3), 15, 0.94, 'completed'),
-    createMockSession('session-4', 'application', new Date(Date.now() - 86400000 * 2), 3, 0.61, 'failed'),
-    createMockSession('session-5', 'motivation', new Date(Date.now() - 86400000), 12, 0.91, 'completed'),
-    createMockSession('session-6', 'business', new Date(Date.now() - 43200000), 4, 0.68, 'paused'),
-    createMockSession('session-7', 'c4', new Date(Date.now() - 3600000), 7, 0.85, 'active'),
+    createMockSession('session-1', 'Motivation Session 1', 'motivation', new Date(Date.now() - 86400000 * 5), 10, 0.88, false),
+    createMockSession('session-2', 'Business Paused', 'business', new Date(Date.now() - 86400000 * 4), 5, 0.72, true),
+    createMockSession('session-3', 'C4 Complete', 'c4', new Date(Date.now() - 86400000 * 3), 15, 0.94, false),
+    createMockSession('session-4', 'Application Session', 'application', new Date(Date.now() - 86400000 * 2), 3, 0.61, false),
+    createMockSession('session-5', 'Motivation Complete', 'motivation', new Date(Date.now() - 86400000), 12, 0.91, false),
+    createMockSession('session-6', 'Business Paused 2', 'business', new Date(Date.now() - 43200000), 4, 0.68, true),
+    createMockSession('session-7', 'C4 Active', 'c4', new Date(Date.now() - 3600000), 7, 0.85, false),
   ];
 
   const filteredSessions =
     statusFilter === 'all'
       ? allSessions
-      : allSessions.filter((s) => s.status === statusFilter);
+      : statusFilter === 'paused'
+        ? allSessions.filter((s) => s.paused)
+        : allSessions.filter((s) => !s.paused);
 
   return (
     <div style={{ height: 700, width: 1000 }}>
@@ -193,18 +205,16 @@ export const FilterByStatus: Story = () => {
           style={{ padding: 4, borderRadius: 4, border: '1px solid #d1d5db' }}
         >
           <option value="all">All</option>
-          <option value="completed">Completed</option>
           <option value="active">Active</option>
           <option value="paused">Paused</option>
-          <option value="failed">Failed</option>
         </select>
       </div>
       <SessionHistoryBrowser
         sessions={filteredSessions}
-        selectedSessionId={selectedId}
-        onSessionSelect={(id) => setSelectedId(id)}
-        onSessionResume={(id) => console.log('Resume:', id)}
-        onSessionCompare={(ids) => console.log('Compare:', ids)}
+        activeSessionId={activeId}
+        onSessionSelect={(id) => setActiveId(id)}
+        onSessionLoad={(id) => console.log('Load:', id)}
+        onSessionsCompare={(ids) => console.log('Compare:', ids)}
         onSessionDelete={(id) => console.log('Delete:', id)}
       />
     </div>
@@ -212,49 +222,44 @@ export const FilterByStatus: Story = () => {
 };
 
 export const ComparisonMode: Story = () => {
-  const [selectedId, setSelectedId] = useState<string>('session-2');
-  const [comparisonIds, setComparisonIds] = useState<string[]>(['session-1', 'session-3']);
+  const [activeId, setActiveId] = useState<string>('session-2');
 
   const sessions = [
-    createMockSession('session-1', 'motivation', new Date(Date.now() - 86400000 * 3), 10, 0.85, 'completed'),
-    createMockSession('session-2', 'motivation', new Date(Date.now() - 86400000 * 2), 8, 0.78, 'completed'),
-    createMockSession('session-3', 'motivation', new Date(Date.now() - 86400000), 12, 0.92, 'completed'),
+    createMockSession('session-1', 'First Attempt', 'motivation', new Date(Date.now() - 86400000 * 3), 10, 0.85, false),
+    createMockSession('session-2', 'Second Attempt', 'motivation', new Date(Date.now() - 86400000 * 2), 8, 0.78, false),
+    createMockSession('session-3', 'Best Result', 'motivation', new Date(Date.now() - 86400000), 12, 0.92, false),
   ];
 
   return (
     <div style={{ height: 700, width: 1000 }}>
       <SessionHistoryBrowser
         sessions={sessions}
-        selectedSessionId={selectedId}
-        onSessionSelect={(id) => setSelectedId(id)}
-        onSessionResume={(id) => console.log('Resume:', id)}
-        onSessionCompare={(ids) => {
-          console.log('Compare:', ids);
-          setComparisonIds(ids);
-        }}
+        activeSessionId={activeId}
+        onSessionSelect={(id) => setActiveId(id)}
+        onSessionLoad={(id) => console.log('Load:', id)}
+        onSessionsCompare={(ids) => console.log('Compare:', ids)}
         onSessionDelete={(id) => console.log('Delete:', id)}
-        comparisonIds={comparisonIds}
-        allowMultiSelect={true}
       />
     </div>
   );
 };
 
 export const LongHistory: Story = () => {
-  const [selectedId, setSelectedId] = useState<string>('session-20');
+  const [activeId, setActiveId] = useState<string>('session-20');
 
   const sessions = Array.from({ length: 20 }, (_, i) => {
     const daysAgo = 20 - i;
-    const diagramTypes = ['motivation', 'business', 'c4', 'application', 'security'];
-    const statuses: Array<'completed' | 'paused' | 'failed' | 'active'> = ['completed', 'completed', 'completed', 'paused', 'failed'];
+    const diagramTypes: DiagramType[] = ['motivation', 'business', 'c4', 'application', 'security'];
+    const paused = i % 5 === 3; // Every 4th session is paused
 
     return createMockSession(
       `session-${i + 1}`,
+      `Session ${i + 1}`,
       diagramTypes[i % diagramTypes.length],
       new Date(Date.now() - 86400000 * daysAgo),
       5 + Math.floor(Math.random() * 10),
       0.65 + Math.random() * 0.3,
-      statuses[i % statuses.length]
+      paused
     );
   });
 
@@ -262,13 +267,11 @@ export const LongHistory: Story = () => {
     <div style={{ height: 800, width: 1100 }}>
       <SessionHistoryBrowser
         sessions={sessions}
-        selectedSessionId={selectedId}
-        onSessionSelect={(id) => setSelectedId(id)}
-        onSessionResume={(id) => console.log('Resume:', id)}
-        onSessionCompare={(ids) => console.log('Compare:', ids)}
+        activeSessionId={activeId}
+        onSessionSelect={(id) => setActiveId(id)}
+        onSessionLoad={(id) => console.log('Load:', id)}
+        onSessionsCompare={(ids) => console.log('Compare:', ids)}
         onSessionDelete={(id) => console.log('Delete:', id)}
-        showPagination={true}
-        itemsPerPage={5}
       />
     </div>
   );

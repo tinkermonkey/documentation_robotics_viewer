@@ -54,7 +54,13 @@
       "Bash(node debug-changeset-final.cjs:*)",
       "Bash(node debug-all-console.cjs:*)",
       "Bash(node debug-timing.cjs:*)",
-      "Bash(timeout 10 node:*)"
+      "Bash(timeout 10 node:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "Bash(timeout 45 npx playwright test:*)",
+      "Bash(timeout 60 npx playwright test:*)",
+      "Bash(timeout 120 npx playwright test:*)",
+      "Bash(timeout 180 npx playwright test:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

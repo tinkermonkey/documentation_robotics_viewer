@@ -1,26 +1,25 @@
 import type { StoryDefault, Story } from '@ladle/react';
 import { LayoutHistory } from './LayoutHistory';
-import type { LayoutHistoryEntry } from '../../types/refinement';
+import type { RefinementIteration } from '../../types/refinement';
 import { useState } from 'react';
 
 export default {
   title: 'Refinement / LayoutHistory',
 } satisfies StoryDefault;
 
-function createHistoryEntry(
-  id: number,
+function createIteration(
+  iterationNumber: number,
   timestamp: Date,
   score: number,
-  engine: string
-): LayoutHistoryEntry {
+  improved: boolean
+): RefinementIteration {
   return {
-    id: `layout-${id}`,
+    iterationNumber,
     timestamp: timestamp.toISOString(),
-    engineType: engine,
-    parameters: {
-      spacing: 80,
-      direction: 'DOWN',
-    },
+    durationMs: 1500 + Math.random() * 1000,
+    screenshotUrl: `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="120"><rect fill="%23${iterationNumber % 2 === 0 ? 'dbeafe' : 'e5e7eb'}" width="160" height="120"/><text x="80" y="60" text-anchor="middle" font-size="12" fill="%236b7280">Iteration ${iterationNumber}</text><text x="80" y="80" text-anchor="middle" font-size="10" fill="%239ca3af">Score: ${score.toFixed(2)}</text></svg>`,
+    improved,
+    improvementDelta: improved ? 0.05 : -0.02,
     qualityScore: {
       combinedScore: score,
       readabilityScore: score,
@@ -35,135 +34,126 @@ function createHistoryEntry(
       similarityMetrics: {
         structuralSimilarity: score,
         layoutSimilarity: score,
-        perceptualHash: `hash${id}`,
+        perceptualHash: `hash${iterationNumber}`,
       },
     },
-    thumbnailUrl: `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="120"><rect fill="%23${id % 2 === 0 ? 'dbeafe' : 'e5e7eb'}" width="160" height="120"/><text x="80" y="60" text-anchor="middle" font-size="12" fill="%236b7280">${engine}</text><text x="80" y="80" text-anchor="middle" font-size="10" fill="%239ca3af">Score: ${score.toFixed(2)}</text></svg>`,
+    parameters: {
+      hierarchical: {
+        nodeSpacing: 80,
+        layerSpacing: 120,
+        direction: 'DOWN',
+      },
+    },
   };
 }
 
 export const SingleEntry: Story = () => {
-  const [selectedId, setSelectedId] = useState<string>('layout-1');
+  const [currentIterationNumber, setCurrentIterationNumber] = useState<number>(1);
 
-  const history: LayoutHistoryEntry[] = [
-    createHistoryEntry(1, new Date(Date.now() - 5000), 0.75, 'ELK'),
+  const iterations = [
+    createIteration(1, new Date(Date.now() - 5000), 0.75, true),
   ];
 
   return (
     <div style={{ height: 400, width: 400 }}>
       <LayoutHistory
-        history={history}
-        selectedId={selectedId}
-        onSelect={(id) => setSelectedId(id)}
-        onRevert={(id) => console.log('Revert to:', id)}
-        onCompare={(ids) => console.log('Compare:', ids)}
+        iterations={iterations}
+        currentIterationNumber={currentIterationNumber}
+        onPreview={(num) => setCurrentIterationNumber(num)}
+        onRevert={(num) => console.log('Revert to:', num)}
       />
     </div>
   );
 };
 
 export const MultipleEntries: Story = () => {
-  const [selectedId, setSelectedId] = useState<string>('layout-5');
+  const [currentIterationNumber, setCurrentIterationNumber] = useState<number>(5);
 
-  const history: LayoutHistoryEntry[] = [
-    createHistoryEntry(1, new Date(Date.now() - 25000), 0.65, 'Dagre'),
-    createHistoryEntry(2, new Date(Date.now() - 20000), 0.72, 'ELK Layered'),
-    createHistoryEntry(3, new Date(Date.now() - 15000), 0.68, 'Graphviz Dot'),
-    createHistoryEntry(4, new Date(Date.now() - 10000), 0.81, 'ELK Force'),
-    createHistoryEntry(5, new Date(Date.now() - 5000), 0.88, 'ELK Layered'),
+  const iterations = [
+    createIteration(1, new Date(Date.now() - 25000), 0.65, false),
+    createIteration(2, new Date(Date.now() - 20000), 0.72, true),
+    createIteration(3, new Date(Date.now() - 15000), 0.68, false),
+    createIteration(4, new Date(Date.now() - 10000), 0.81, true),
+    createIteration(5, new Date(Date.now() - 5000), 0.88, true),
   ];
 
   return (
     <div style={{ height: 600, width: 500 }}>
       <LayoutHistory
-        history={history}
-        selectedId={selectedId}
-        onSelect={(id) => setSelectedId(id)}
-        onRevert={(id) => console.log('Revert to:', id)}
-        onCompare={(ids) => console.log('Compare:', ids)}
+        iterations={iterations}
+        currentIterationNumber={currentIterationNumber}
+        onPreview={(num) => setCurrentIterationNumber(num)}
+        onRevert={(num) => console.log('Revert to:', num)}
       />
     </div>
   );
 };
 
 export const LongHistory: Story = () => {
-  const [selectedId, setSelectedId] = useState<string>('layout-15');
+  const [currentIterationNumber, setCurrentIterationNumber] = useState<number>(15);
 
-  const engines = ['Dagre', 'ELK Layered', 'ELK Force', 'Graphviz Dot', 'Graphviz Neato'];
-
-  const history: LayoutHistoryEntry[] = Array.from({ length: 15 }, (_, i) => {
+  const iterations = Array.from({ length: 15 }, (_, i) => {
     const timestamp = new Date(Date.now() - (15 - i) * 10000);
     const score = 0.6 + (i / 14) * 0.35;
-    const engine = engines[i % engines.length];
-    return createHistoryEntry(i + 1, timestamp, score, engine);
+    const improved = i > 0 && score > (0.6 + ((i - 1) / 14) * 0.35);
+    return createIteration(i + 1, timestamp, score, improved);
   });
 
   return (
     <div style={{ height: 700, width: 500 }}>
       <LayoutHistory
-        history={history}
-        selectedId={selectedId}
-        onSelect={(id) => setSelectedId(id)}
-        onRevert={(id) => console.log('Revert to:', id)}
-        onCompare={(ids) => console.log('Compare:', ids)}
-        maxEntries={10}
+        iterations={iterations}
+        currentIterationNumber={currentIterationNumber}
+        onPreview={(num) => setCurrentIterationNumber(num)}
+        onRevert={(num) => console.log('Revert to:', num)}
       />
     </div>
   );
 };
 
 export const WithQualityTrend: Story = () => {
-  const [selectedId, setSelectedId] = useState<string>('layout-8');
+  const [currentIterationNumber, setCurrentIterationNumber] = useState<number>(8);
 
-  const history: LayoutHistoryEntry[] = [
-    createHistoryEntry(1, new Date(Date.now() - 40000), 0.60, 'Dagre'),
-    createHistoryEntry(2, new Date(Date.now() - 35000), 0.62, 'Dagre'), // Slight improvement
-    createHistoryEntry(3, new Date(Date.now() - 30000), 0.58, 'ELK Layered'), // Regression
-    createHistoryEntry(4, new Date(Date.now() - 25000), 0.75, 'ELK Layered'), // Big jump
-    createHistoryEntry(5, new Date(Date.now() - 20000), 0.73, 'Graphviz'), // Slight regression
-    createHistoryEntry(6, new Date(Date.now() - 15000), 0.82, 'ELK Force'),
-    createHistoryEntry(7, new Date(Date.now() - 10000), 0.88, 'ELK Force'),
-    createHistoryEntry(8, new Date(Date.now() - 5000), 0.91, 'ELK Force'),
+  const iterations = [
+    createIteration(1, new Date(Date.now() - 40000), 0.60, false),
+    createIteration(2, new Date(Date.now() - 35000), 0.62, true), // Slight improvement
+    createIteration(3, new Date(Date.now() - 30000), 0.58, false), // Regression
+    createIteration(4, new Date(Date.now() - 25000), 0.75, true), // Big jump
+    createIteration(5, new Date(Date.now() - 20000), 0.73, false), // Slight regression
+    createIteration(6, new Date(Date.now() - 15000), 0.82, true),
+    createIteration(7, new Date(Date.now() - 10000), 0.88, true),
+    createIteration(8, new Date(Date.now() - 5000), 0.91, true),
   ];
 
   return (
     <div style={{ height: 700, width: 600 }}>
       <LayoutHistory
-        history={history}
-        selectedId={selectedId}
-        onSelect={(id) => setSelectedId(id)}
-        onRevert={(id) => console.log('Revert to:', id)}
-        onCompare={(ids) => console.log('Compare:', ids)}
-        showTrend={true}
+        iterations={iterations}
+        currentIterationNumber={currentIterationNumber}
+        onPreview={(num) => setCurrentIterationNumber(num)}
+        onRevert={(num) => console.log('Revert to:', num)}
       />
     </div>
   );
 };
 
 export const ComparisonMode: Story = () => {
-  const [selectedId, setSelectedId] = useState<string>('layout-3');
-  const [comparisonIds, setComparisonIds] = useState<string[]>(['layout-1', 'layout-3']);
+  const [currentIterationNumber, setCurrentIterationNumber] = useState<number>(3);
 
-  const history: LayoutHistoryEntry[] = [
-    createHistoryEntry(1, new Date(Date.now() - 20000), 0.68, 'Dagre'),
-    createHistoryEntry(2, new Date(Date.now() - 15000), 0.75, 'ELK Layered'),
-    createHistoryEntry(3, new Date(Date.now() - 10000), 0.82, 'ELK Force'),
-    createHistoryEntry(4, new Date(Date.now() - 5000), 0.79, 'Graphviz'),
+  const iterations = [
+    createIteration(1, new Date(Date.now() - 20000), 0.68, false),
+    createIteration(2, new Date(Date.now() - 15000), 0.75, true),
+    createIteration(3, new Date(Date.now() - 10000), 0.82, true),
+    createIteration(4, new Date(Date.now() - 5000), 0.79, false),
   ];
 
   return (
     <div style={{ height: 600, width: 600 }}>
       <LayoutHistory
-        history={history}
-        selectedId={selectedId}
-        onSelect={(id) => setSelectedId(id)}
-        onRevert={(id) => console.log('Revert to:', id)}
-        onCompare={(ids) => {
-          console.log('Compare:', ids);
-          setComparisonIds(ids);
-        }}
-        comparisonIds={comparisonIds}
-        allowMultiSelect={true}
+        iterations={iterations}
+        currentIterationNumber={currentIterationNumber}
+        onPreview={(num) => setCurrentIterationNumber(num)}
+        onRevert={(num) => console.log('Revert to:', num)}
       />
     </div>
   );
@@ -173,11 +163,10 @@ export const EmptyState: Story = () => {
   return (
     <div style={{ height: 400, width: 400 }}>
       <LayoutHistory
-        history={[]}
-        selectedId={undefined}
-        onSelect={(id) => console.log('Select:', id)}
-        onRevert={(id) => console.log('Revert:', id)}
-        onCompare={(ids) => console.log('Compare:', ids)}
+        iterations={[]}
+        currentIterationNumber={0}
+        onPreview={(num) => console.log('Preview:', num)}
+        onRevert={(num) => console.log('Revert:', num)}
       />
     </div>
   );
