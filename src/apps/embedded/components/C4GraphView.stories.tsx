@@ -3,6 +3,7 @@ import C4GraphView from './C4GraphView';
 import { ReactFlowProvider } from '@xyflow/react';
 import { createCompleteModelFixture } from '@catalog/fixtures/modelFixtures';
 import { ContainerType } from '../types/c4Graph';
+import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 export default {
   title: 'Graph Views / C4GraphView',
@@ -14,14 +15,16 @@ export const Default: Story = () => {
 
   return (
     <ReactFlowProvider>
-      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-        <C4GraphView
-          model={model}
-          selectedContainerTypes={allContainerTypes}
-          selectedTechnologyStacks={new Set()}
-          layout="hierarchical"
-        />
-      </div>
+      <StoryLoadedWrapper testId="c4-graph-default">
+        <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <C4GraphView
+            model={model}
+            selectedContainerTypes={allContainerTypes}
+            selectedTechnologyStacks={new Set()}
+            layout="hierarchical"
+          />
+        </div>
+      </StoryLoadedWrapper>
     </ReactFlowProvider>
   );
 };
@@ -31,14 +34,16 @@ export const ContainerView: Story = () => {
 
   return (
     <ReactFlowProvider>
-      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-        <C4GraphView
-          model={model}
-          selectedContainerTypes={new Set([ContainerType.Api, ContainerType.WebApp, ContainerType.Database])}
-          selectedTechnologyStacks={new Set()}
-          layout="orthogonal"
-        />
-      </div>
+      <StoryLoadedWrapper testId="c4-graph-container">
+        <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <C4GraphView
+            model={model}
+            selectedContainerTypes={new Set([ContainerType.Api, ContainerType.WebApp, ContainerType.Database])}
+            selectedTechnologyStacks={new Set()}
+            layout="orthogonal"
+          />
+        </div>
+      </StoryLoadedWrapper>
     </ReactFlowProvider>
   );
 };
@@ -49,14 +54,16 @@ export const FilteredByTechnology: Story = () => {
 
   return (
     <ReactFlowProvider>
-      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-        <C4GraphView
-          model={model}
-          selectedContainerTypes={allContainerTypes}
-          selectedTechnologyStacks={new Set(['TypeScript', 'React', 'Node.js'])}
-          layout="force"
-        />
-      </div>
+      <StoryLoadedWrapper testId="c4-graph-filtered-tech">
+        <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <C4GraphView
+            model={model}
+            selectedContainerTypes={allContainerTypes}
+            selectedTechnologyStacks={new Set(['TypeScript', 'React', 'Node.js'])}
+            layout="force"
+          />
+        </div>
+      </StoryLoadedWrapper>
     </ReactFlowProvider>
   );
 };
@@ -66,14 +73,16 @@ export const MultiFilter: Story = () => {
 
   return (
     <ReactFlowProvider>
-      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-        <C4GraphView
-          model={model}
-          selectedContainerTypes={new Set([ContainerType.WebApp])}
-          selectedTechnologyStacks={new Set(['React', 'TypeScript'])}
-          layout="manual"
-        />
-      </div>
+      <StoryLoadedWrapper testId="c4-graph-multi-filter">
+        <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <C4GraphView
+            model={model}
+            selectedContainerTypes={new Set([ContainerType.WebApp])}
+            selectedTechnologyStacks={new Set(['React', 'TypeScript'])}
+            layout="manual"
+          />
+        </div>
+      </StoryLoadedWrapper>
     </ReactFlowProvider>
   );
 };
