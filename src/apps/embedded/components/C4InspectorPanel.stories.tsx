@@ -16,7 +16,7 @@ const mockNodes: C4Node[] = [
     description: 'React-based single-page application',
     technology: ['React', 'TypeScript', 'Redux'],
     boundary: 'internal',
-    sourceElement: { id: 'web-app', type: 'ApplicationComponent', name: 'Web Application', layerId: 'application', properties: {}, visual: {} },
+    sourceElement: { id: 'web-app', type: 'ApplicationComponent', name: 'Web Application', layerId: 'application', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } },
   },
   {
     id: 'api-gateway',
@@ -26,7 +26,7 @@ const mockNodes: C4Node[] = [
     description: 'RESTful API gateway',
     technology: ['Node.js', 'Express'],
     boundary: 'internal',
-    sourceElement: { id: 'api-gateway', type: 'ApplicationComponent', name: 'API Gateway', layerId: 'application', properties: {}, visual: {} },
+    sourceElement: { id: 'api-gateway', type: 'ApplicationComponent', name: 'API Gateway', layerId: 'application', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } },
   },
   {
     id: 'database',
@@ -36,7 +36,7 @@ const mockNodes: C4Node[] = [
     description: 'Primary data store',
     technology: ['PostgreSQL'],
     boundary: 'internal',
-    sourceElement: { id: 'database', type: 'ApplicationComponent', name: 'PostgreSQL Database', layerId: 'application', properties: {}, visual: {} },
+    sourceElement: { id: 'database', type: 'ApplicationComponent', name: 'PostgreSQL Database', layerId: 'application', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } },
   },
 ];
 
@@ -65,9 +65,10 @@ const mockGraph: C4Graph = {
   nodes: new Map(mockNodes.map(n => [n.id, n])),
   edges: new Map(mockEdges.map(e => [e.id, e])),
   hierarchy: {
-    systems: new Map(),
+    systemBoundary: [],
     containers: new Map(),
-    components: new Map(),
+    externalActors: [],
+    parentChildMap: new Map(),
   },
   deploymentMap: new Map(),
   indexes: {

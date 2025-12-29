@@ -13,8 +13,8 @@ const mockModelSmall: MetaModel = {
       type: 'motivation',
       name: 'Motivation',
       elements: [
-        { id: '1', type: 'Goal', name: 'Goal 1', layerId: 'motivation-layer', properties: {}, visual: {} },
-        { id: '2', type: 'Goal', name: 'Goal 2', layerId: 'motivation-layer', properties: {}, visual: {} },
+        { id: '1', type: 'Goal', name: 'Goal 1', layerId: 'motivation-layer', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } },
+        { id: '2', type: 'Goal', name: 'Goal 2', layerId: 'motivation-layer', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } },
       ],
       relationships: [
         { id: 'r1', sourceId: '1', targetId: '2', type: 'influences' },
@@ -22,7 +22,7 @@ const mockModelSmall: MetaModel = {
     },
   },
   version: '1.0',
-  references: {},
+  references: [],
 };
 
 const mockModelLarge: MetaModel = {
@@ -37,7 +37,7 @@ const mockModelLarge: MetaModel = {
         name: `Goal ${i + 1}`,
         layerId: 'motivation-layer',
         properties: {},
-        visual: {},
+        visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} },
       })),
       relationships: Array.from({ length: 40 }, (_, i) => ({
         id: `r-${i}`,
@@ -56,7 +56,7 @@ const mockModelLarge: MetaModel = {
         name: `Process ${i + 1}`,
         layerId: 'business-layer',
         properties: {},
-        visual: {},
+        visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} },
       })),
       relationships: Array.from({ length: 35 }, (_, i) => ({
         id: `rb-${i}`,
@@ -75,7 +75,7 @@ const mockModelLarge: MetaModel = {
         name: `Component ${i + 1}`,
         layerId: 'application-layer',
         properties: {},
-        visual: {},
+        visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} },
       })),
       relationships: Array.from({ length: 28 }, (_, i) => ({
         id: `ra-${i}`,
@@ -86,7 +86,7 @@ const mockModelLarge: MetaModel = {
     },
   },
   version: '1.0',
-  references: {},
+  references: [],
 };
 
 export const SmallGraph: Story = () => (
@@ -103,7 +103,7 @@ export const LargeGraph: Story = () => (
 
 export const EmptyGraph: Story = () => (
   <div className="w-80 bg-white">
-    <GraphStatisticsPanel model={{ layers: {}, version: '1.0', references: {} }} />
+    <GraphStatisticsPanel model={{ layers: {}, version: '1.0', references: [] }} />
   </div>
 );
 

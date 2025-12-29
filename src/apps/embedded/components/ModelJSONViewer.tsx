@@ -4,11 +4,10 @@
  * Shows cross-layer links for each element
  */
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { MetaModel } from '../../../core/types';
 import { LinkType } from '../services/embeddedDataLoader';
-import { Badge } from 'flowbite-react';
-import ExpandableSection from './common/ExpandableSection';
+import { Badge, Accordion, AccordionPanel, AccordionTitle, AccordionContent } from 'flowbite-react';
 import AttributesTable, { AttributeRow } from './common/AttributesTable';
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid';
 import { useAnnotationStore } from '../stores/annotationStore';
@@ -33,7 +32,6 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
   onPathHighlight,
   selectedLayer
 }) => {
-  const [expandedTypes, setExpandedTypes] = useState<Set<string>>(new Set());
   const { highlightedElementId } = useAnnotationStore();
 
   // Watch for highlighted elements and compute their JSON path
@@ -110,47 +108,50 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
     return orderA - orderB;
   });
 
-  const toggleType = (typeKey: string) => {
-    const newExpanded = new Set(expandedTypes);
-    if (newExpanded.has(typeKey)) {
-      newExpanded.delete(typeKey);
-    } else {
-      newExpanded.add(typeKey);
-    }
-    setExpandedTypes(newExpanded);
-  };
-
   // Helper to find schema definition for an element type
   const getSchemaForType = (layerId: string, elementType: string) => {
     if (!specData?.schemas) return null;
 
     // Find the layer schema
-    const layerSchemaKey = Object.keys(specData.schemas).find(key => 
+    const layerSchemaKey = Object.keys(specData.schemas).find(key =>
       key.toLowerCase().includes(layerId.toLowerCase()) && key.includes('schema.json')
     );
 
     if (!layerSchemaKey) return null;
 
     const layerSchema = specData.schemas[layerSchemaKey];
-    
+
     // Look for the element type in definitions
     if (layerSchema?.definitions) {
       // Try exact match first
       if (layerSchema.definitions[elementType]) {
         return layerSchema.definitions[elementType];
       }
-      
+
       // Try case-insensitive match
       const typeKey = Object.keys(layerSchema.definitions).find(
         key => key.toLowerCase() === elementType.toLowerCase()
       );
-      
+
       if (typeKey) {
         return layerSchema.definitions[typeKey];
       }
     }
 
     return null;
+  };
+
+  // Helper to get layer description from schema
+  const getLayerDescription = (layerId: string) => {
+    if (!specData?.schemas) return null;
+
+    const layerSchemaKey = Object.keys(specData.schemas).find(key =>
+      key.toLowerCase().includes(layerId.toLowerCase()) && key.includes('schema.json')
+    );
+
+    if (!layerSchemaKey) return null;
+
+    return specData.schemas[layerSchemaKey]?.description;
   };
 
   const renderElementLinks = (layerName: string) => {
@@ -312,14 +313,18 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
       { label: 'Order', value: actualLayer.order }
     ];
 
+    const layerSchemaDescription = getLayerDescription(selectedLayer);
+
     return (
       <div className="h-full overflow-y-auto p-6">
-        <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-gray-900">
+        <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             {actualLayer.name || (layerKey || selectedLayer)}
           </h2>
-          {actualLayer.description && (
-            <p className="text-gray-600 dark:text-gray-400 mb-4">{actualLayer.description}</p>
+          {(actualLayer.description || layerSchemaDescription) && (
+            <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm leading-relaxed">
+              {actualLayer.description || layerSchemaDescription}
+            </p>
           )}
           <MetadataGrid items={layerMetadata} columns={3} />
         </div>
@@ -342,25 +347,25 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
             {sortedTypes.map((elementType) => {
               const typeElements = elementsByType[elementType];
               const typeKey = `${selectedLayer}-${elementType}`;
-              const isTypeExpanded = expandedTypes.has(typeKey);
               const typeSchema = getSchemaForType(selectedLayer, elementType);
 
               return (
-                <section key={typeKey} className="border-b border-gray-200 dark:border-gray-700 pb-4 mb-4">
-                  <div
-                    className="cursor-pointer flex items-center gap-2"
-                    onClick={() => toggleType(typeKey)}
-                  >
-                    <span className="text-lg">{isTypeExpanded ? '▼' : '▶'}</span>
-                    <h4 className="font-semibold text-gray-900 dark:text-white">{elementType}</h4>
-                    <Badge color="gray" className="ml-auto">{typeElements.length}</Badge>
-                  </div>
-
-                  {isTypeExpanded && (
-                    <div className="mt-4 space-y-4">
+                <Accordion key={typeKey} collapseAll className="mb-3">
+                  <AccordionPanel>
+                    <AccordionTitle>
+                      <div className="flex items-center justify-between w-full">
+                        <span className="font-semibold">
+                          {elementType}
+                        </span>
+                        <Badge color="gray">
+                          {typeElements.length}
+                        </Badge>
+                      </div>
+                    </AccordionTitle>
+                    <AccordionContent className="bg-white dark:bg-gray-900">
                       {/* Schema Definition */}
                       {typeSchema && (
-                        <div className="ml-4 pl-4 border-l-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 rounded p-3">
+                        <div className="mb-4 ml-4 pl-4 border-l-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 rounded p-3">
                           <h5 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
                             Type Definition:
                           </h5>
@@ -387,25 +392,37 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
                       )}
 
                       {/* Elements of this type */}
-                      {typeElements.map((element: any) => {
-                        // Build attributes array
-                        const attributes: AttributeRow[] = [];
+                      <div className="space-y-3">
+                        {typeElements.map((element: any) => {
+                          // Build attributes array
+                          const attributes: AttributeRow[] = [];
 
-                        // Core attributes
-                        if (element.id) attributes.push({ name: 'ID', value: element.id });
-                        if (element.name) attributes.push({ name: 'Name', value: element.name });
-                        if (element.type) attributes.push({ name: 'Type', value: element.type });
-                        if (element.description || element.properties?.description) {
-                          attributes.push({
-                            name: 'Description',
-                            value: element.description || element.properties?.description
-                          });
-                        }
+                          // Core attributes
+                          if (element.id) attributes.push({ name: 'ID', value: element.id });
+                          if (element.name) attributes.push({ name: 'Name', value: element.name });
+                          if (element.type) attributes.push({ name: 'Type', value: element.type });
 
-                        // Properties (excluding core fields)
-                        if (element.properties) {
-                          Object.entries(element.properties)
-                            .filter(([key]) => !['id', 'name', 'type', 'description'].includes(key))
+                          // Extract documentation field (ArchiMate standard)
+                          const documentation = element.documentation || element.properties?.documentation;
+
+                          // Properties (excluding core fields and documentation)
+                          if (element.properties) {
+                            Object.entries(element.properties)
+                              .filter(([key]) => !['id', 'name', 'type', 'description', 'documentation'].includes(key))
+                              .forEach(([key, value]) => {
+                                attributes.push({
+                                  name: key,
+                                  value: value as any,
+                                  isObject: typeof value === 'object' && value !== null
+                                });
+                              });
+                          }
+
+                          // Other top-level attributes (relationships, custom fields)
+                          Object.entries(element)
+                            .filter(([key]) =>
+                              !['id', 'name', 'type', 'description', 'documentation', 'properties', 'visual', 'layerId'].includes(key)
+                            )
                             .forEach(([key, value]) => {
                               attributes.push({
                                 name: key,
@@ -413,42 +430,45 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
                                 isObject: typeof value === 'object' && value !== null
                               });
                             });
-                        }
 
-                        // Other top-level attributes
-                        Object.entries(element)
-                          .filter(([key]) =>
-                            !['id', 'name', 'type', 'description', 'properties', 'visual', 'layerId'].includes(key)
-                          )
-                          .forEach(([key, value]) => {
-                            attributes.push({
-                              name: key,
-                              value: value as any,
-                              isObject: typeof value === 'object' && value !== null
-                            });
-                          });
+                          return (
+                            <Accordion key={element.id} collapseAll>
+                              <AccordionPanel>
+                                <AccordionTitle className="text-sm">
+                                  {element.name || element.id}
+                                </AccordionTitle>
+                                <AccordionContent className="bg-white dark:bg-gray-900">
+                                  <div className="space-y-4">
+                                    {/* Documentation section - prominently displayed */}
+                                    {documentation && (
+                                      <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                                        <h6 className="text-xs font-semibold text-blue-900 dark:text-blue-300 mb-1 uppercase tracking-wide">
+                                          Documentation
+                                        </h6>
+                                        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
+                                          {documentation}
+                                        </p>
+                                      </div>
+                                    )}
 
-                        return (
-                          <ExpandableSection
-                            key={element.id}
-                            title={element.name || element.id}
-                          >
-                            <div className="space-y-4">
-                              <AttributesTable attributes={attributes} title="Attributes" />
+                                    <AttributesTable attributes={attributes} title="Attributes" />
 
-                              {/* Show related cross-layer links */}
-                              {linkRegistry && selectedLayer && linksByLayer.has(selectedLayer) && (
-                                <div className="mt-4">
-                                  {renderElementLinks(selectedLayer)}
-                                </div>
-                              )}
-                            </div>
-                          </ExpandableSection>
-                        );
-                      })}
-                    </div>
-                  )}
-                </section>
+                                    {/* Show related cross-layer links */}
+                                    {linkRegistry && selectedLayer && linksByLayer.has(selectedLayer) && (
+                                      <div className="mt-4">
+                                        {renderElementLinks(selectedLayer)}
+                                      </div>
+                                    )}
+                                  </div>
+                                </AccordionContent>
+                              </AccordionPanel>
+                            </Accordion>
+                          );
+                        })}
+                      </div>
+                    </AccordionContent>
+                  </AccordionPanel>
+                </Accordion>
               );
             })}
           </div>

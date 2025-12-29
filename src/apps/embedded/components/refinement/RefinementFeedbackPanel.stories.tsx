@@ -1,6 +1,6 @@
 import type { StoryDefault, Story } from '@ladle/react';
 import { RefinementFeedbackPanel } from './RefinementFeedbackPanel';
-import type { RefinementIteration, RefinementStatus } from '../../types/refinement';
+import type { RefinementIteration } from '../../types/refinement';
 
 export default {
   title: 'Refinement / RefinementFeedbackPanel',
@@ -10,12 +10,20 @@ const mockIteration1: RefinementIteration = {
   iterationNumber: 1,
   timestamp: new Date().toISOString(),
   qualityScore: {
-    nodeOverlap: 0.15,
-    edgeCrossing: 0.12,
-    edgeLength: 0.75,
-    angularResolution: 0.8,
-    symmetry: 0.7,
-    combinedScore: 0.72,
+    readabilityScore: 0.72,
+    similarityScore: 0.70,
+    combinedScore: 0.71,
+    qualityClass: 'acceptable',
+    meetsThreshold: true,
+    breakdown: {
+      graphMetrics: {} as any,
+    },
+    weights: {
+      readability: 0.6,
+      similarity: 0.4,
+    },
+    timestamp: new Date().toISOString(),
+    computationTimeMs: 150,
   },
   screenshotUrl: 'data:image/svg+xml,<svg/>',
   improved: false,
@@ -35,12 +43,20 @@ const mockIteration2: RefinementIteration = {
   iterationNumber: 2,
   timestamp: new Date().toISOString(),
   qualityScore: {
-    nodeOverlap: 0.08,
-    edgeCrossing: 0.08,
-    edgeLength: 0.82,
-    angularResolution: 0.85,
-    symmetry: 0.78,
-    combinedScore: 0.82,
+    readabilityScore: 0.82,
+    similarityScore: 0.78,
+    combinedScore: 0.80,
+    qualityClass: 'good',
+    meetsThreshold: true,
+    breakdown: {
+      graphMetrics: {} as any,
+    },
+    weights: {
+      readability: 0.6,
+      similarity: 0.4,
+    },
+    timestamp: new Date().toISOString(),
+    computationTimeMs: 180,
   },
   screenshotUrl: 'data:image/svg+xml,<svg/>',
   improved: true,
@@ -66,12 +82,20 @@ const mockIteration3: RefinementIteration = {
   iterationNumber: 3,
   timestamp: new Date().toISOString(),
   qualityScore: {
-    nodeOverlap: 0.03,
-    edgeCrossing: 0.05,
-    edgeLength: 0.88,
-    angularResolution: 0.90,
-    symmetry: 0.85,
-    combinedScore: 0.91,
+    readabilityScore: 0.91,
+    similarityScore: 0.88,
+    combinedScore: 0.89,
+    qualityClass: 'excellent',
+    meetsThreshold: true,
+    breakdown: {
+      graphMetrics: {} as any,
+    },
+    weights: {
+      readability: 0.6,
+      similarity: 0.4,
+    },
+    timestamp: new Date().toISOString(),
+    computationTimeMs: 200,
   },
   screenshotUrl: 'data:image/svg+xml,<svg/>',
   improved: true,
@@ -91,13 +115,17 @@ export const InProgress: Story = () => (
   <div className="w-96 bg-white border border-gray-200">
     <RefinementFeedbackPanel
       currentIteration={mockIteration1}
+      referenceImageUrl="data:image/svg+xml,<svg/>"
+      generatedScreenshotUrl="data:image/svg+xml,<svg/>"
       iterations={[mockIteration1]}
-      status="waiting_feedback"
-      onFeedback={(aspect, direction, intensity, comment) =>
-        console.log('Feedback:', { aspect, direction, intensity, comment })
+      status="awaiting_feedback"
+      onFeedback={(feedback) =>
+        console.log('Feedback:', feedback)
       }
       onApprove={() => console.log('Approve')}
+      onReject={() => console.log('Reject')}
       onContinue={() => console.log('Continue')}
+      onRefine={() => console.log('Refine')}
       onStop={() => console.log('Stop')}
       onRevert={() => console.log('Revert')}
       isProcessing={false}
@@ -109,13 +137,17 @@ export const SecondIteration: Story = () => (
   <div className="w-96 bg-white border border-gray-200">
     <RefinementFeedbackPanel
       currentIteration={mockIteration2}
+      referenceImageUrl="data:image/svg+xml,<svg/>"
+      generatedScreenshotUrl="data:image/svg+xml,<svg/>"
       iterations={[mockIteration1, mockIteration2]}
-      status="waiting_feedback"
-      onFeedback={(aspect, direction, intensity, comment) =>
-        console.log('Feedback:', { aspect, direction, intensity, comment })
+      status="awaiting_feedback"
+      onFeedback={(feedback) =>
+        console.log('Feedback:', feedback)
       }
       onApprove={() => console.log('Approve')}
+      onReject={() => console.log('Reject')}
       onContinue={() => console.log('Continue')}
+      onRefine={() => console.log('Refine')}
       onStop={() => console.log('Stop')}
       onRevert={() => console.log('Revert')}
       isProcessing={false}
@@ -127,13 +159,17 @@ export const Processing: Story = () => (
   <div className="w-96 bg-white border border-gray-200">
     <RefinementFeedbackPanel
       currentIteration={mockIteration2}
+      referenceImageUrl="data:image/svg+xml,<svg/>"
+      generatedScreenshotUrl="data:image/svg+xml,<svg/>"
       iterations={[mockIteration1, mockIteration2]}
-      status="refining"
-      onFeedback={(aspect, direction, intensity, comment) =>
-        console.log('Feedback:', { aspect, direction, intensity, comment })
+      status="running"
+      onFeedback={(feedback) =>
+        console.log('Feedback:', feedback)
       }
       onApprove={() => console.log('Approve')}
+      onReject={() => console.log('Reject')}
       onContinue={() => console.log('Continue')}
+      onRefine={() => console.log('Refine')}
       onStop={() => console.log('Stop')}
       onRevert={() => console.log('Revert')}
       isProcessing={true}
@@ -145,13 +181,17 @@ export const Completed: Story = () => (
   <div className="w-96 bg-white border border-gray-200">
     <RefinementFeedbackPanel
       currentIteration={mockIteration3}
+      referenceImageUrl="data:image/svg+xml,<svg/>"
+      generatedScreenshotUrl="data:image/svg+xml,<svg/>"
       iterations={[mockIteration1, mockIteration2, mockIteration3]}
       status="completed"
-      onFeedback={(aspect, direction, intensity, comment) =>
-        console.log('Feedback:', { aspect, direction, intensity, comment })
+      onFeedback={(feedback) =>
+        console.log('Feedback:', feedback)
       }
       onApprove={() => console.log('Approve')}
+      onReject={() => console.log('Reject')}
       onContinue={() => console.log('Continue')}
+      onRefine={() => console.log('Refine')}
       onStop={() => console.log('Stop')}
       onRevert={() => console.log('Revert')}
       isProcessing={false}

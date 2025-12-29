@@ -5,7 +5,6 @@ import SpecGraphView from '../components/SpecGraphView';
 import GraphRefinementContainer from '../components/GraphRefinementContainer';
 import AnnotationPanel from '../components/AnnotationPanel';
 import SchemaInfoPanel from '../components/SchemaInfoPanel';
-import SpecSchemasSidebar from '../components/spec/SpecSchemasSidebar';
 import SharedLayout from '../components/SharedLayout';
 import { LoadingState, ErrorState } from '../components/shared';
 import { useAnnotationStore } from '../stores/annotationStore';
@@ -117,13 +116,6 @@ export default function SpecRoute() {
           />
         )}
         onExtractGraphData={() => graphDataRef.current}
-        leftSidebarContent={
-          <SpecSchemasSidebar
-            specData={specData}
-            selectedSchemaId={selectedSchemaId}
-            onSelectSchema={setSelectedSchemaId}
-          />
-        }
       />
     );
   }
@@ -131,15 +123,8 @@ export default function SpecRoute() {
   // Standard graph/json views use SharedLayout
   return (
     <SharedLayout
-      showLeftSidebar={true}
+      showLeftSidebar={false}
       showRightSidebar={true}
-      leftSidebarContent={
-        <SpecSchemasSidebar
-          specData={specData}
-          selectedSchemaId={selectedSchemaId}
-          onSelectSchema={setSelectedSchemaId}
-        />
-      }
       rightSidebarContent={
         <>
           <AnnotationPanel />

@@ -5,7 +5,7 @@
  */
 
 import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
-import { Button, Card, Select, Badge, Tabs, Spinner } from 'flowbite-react';
+import { Card, Select, Badge, Tabs, Spinner } from 'flowbite-react';
 import GraphViewer from '../../../core/components/GraphViewer';
 import { DataLoader } from '../../../core/services/dataLoader';
 import { GitHubService } from '../../../core/services/githubService';

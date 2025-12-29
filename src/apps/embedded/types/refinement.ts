@@ -253,26 +253,6 @@ export interface LayoutSnapshot {
 }
 
 /**
- * Props for the SideBySideComparison component
- */
-export interface SideBySideComparisonProps {
-  /** Reference image URL */
-  referenceImageUrl: string;
-  /** Generated screenshot URL (for backward compatibility with 2-layout mode) */
-  generatedScreenshotUrl?: string;
-  /** Heatmap image URL (optional) */
-  heatmapUrl?: string;
-  /** Multiple layouts for grid comparison (3-6 layouts) */
-  layouts?: LayoutSnapshot[];
-  /** View options */
-  viewOptions: ComparisonViewOptions;
-  /** Callback when view options change */
-  onViewOptionsChange: (options: ComparisonViewOptions) => void;
-  /** Callback when a layout is selected for detailed view */
-  onLayoutSelect?: (layoutId: string) => void;
-}
-
-/**
  * Props for the MetricsDashboard component
  */
 export interface MetricsDashboardProps {

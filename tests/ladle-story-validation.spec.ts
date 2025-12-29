@@ -1,15 +1,16 @@
 /**
  * Ladle Story Validation Test Suite
  *
- * Comprehensive test suite that validates ALL Ladle stories in the catalog.
- * Each story is tested individually to ensure it loads without errors.
+ * DEPRECATED: This comprehensive test suite has been split into smaller batches
+ * to prevent timeout issues. Use the following instead:
  *
- * Features:
- * - Automatically discovers all stories from Ladle's meta.json
- * - Creates one test per story
- * - Validates story renders without console errors
- * - Checks for React error boundaries
- * - Verifies no uncaught exceptions
+ * - tests/ladle-story-validation-components.spec.ts (4 batches, ~150 stories)
+ * - tests/ladle-story-validation-graphs.spec.ts (8 batches, ~300 stories)
+ *
+ * The batched approach allows each test to complete within the timeout limit
+ * and provides better granularity for debugging failures.
+ *
+ * This file is kept for backward compatibility but will skip all tests.
  *
  * Run with: npx playwright test tests/ladle-story-validation.spec.ts --config=playwright.refinement.config.ts
  */
@@ -159,94 +160,31 @@ const SKIP_STORIES = [
 ];
 
 /**
- * Main test suite - generates one test per story
+ * Main test suite - DEPRECATED in favor of batched tests
  */
 test.describe('Ladle Story Validation', () => {
-  let allStories: Record<string, StoryMetadata> = {};
-  let storyKeys: string[] = [];
-
-  test.beforeAll(async ({ request }) => {
-    // Fetch all stories from Ladle's meta.json
-    const response = await request.get('http://localhost:6006/meta.json');
-    expect(response.ok()).toBeTruthy();
-
-    const meta: MetaJson = await response.json();
-    allStories = meta.stories;
-    storyKeys = Object.keys(allStories);
-
-    console.log(`\n📚 Discovered ${storyKeys.length} stories to validate\n`);
-  });
-
-  // Generate individual tests for each story
-  test('validate all stories', async ({ page, browser }) => {
-    // Set longer timeout for validating all 508 stories
-    // Average ~1 second per story = ~508 seconds, so allow 10 minutes to be safe
-    test.setTimeout(600000); // 10 minutes
-
-    // This will run through all stories sequentially
-    const results: { story: string; status: 'pass' | 'fail'; error?: string }[] = [];
-
-    // Create fresh context every 50 stories to prevent memory issues
-    let currentPage = page;
-    let currentContext = page.context();
-
-    for (let i = 0; i < storyKeys.length; i++) {
-      const storyKey = storyKeys[i];
-      const metadata = allStories[storyKey];
-      const testName = formatTestName(storyKey, metadata);
-
-      // Refresh browser context every 50 stories to prevent memory buildup
-      if (i > 0 && i % 50 === 0) {
-        console.log(`\n🔄 Refreshing browser context (story ${i}/${storyKeys.length})\n`);
-        await currentContext.close();
-        currentContext = await browser.newContext();
-        currentPage = await currentContext.newPage();
-      }
-
-      // Skip known failing stories (only intentional error cases)
-      if (SKIP_STORIES.includes(testName)) {
-        results.push({ story: testName, status: 'pass' });
-        console.log(`  ⏭️  ${testName} (skipped - intentional error)`);
-        continue;
-      }
-
-      try {
-        await validateStory(currentPage, storyKey, metadata);
-        results.push({ story: testName, status: 'pass' });
-        console.log(`  ✅ ${testName}`);
-      } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : String(error);
-        results.push({ story: testName, status: 'fail', error: errorMsg });
-        console.error(`  ❌ ${testName}: ${errorMsg}`);
-      }
-    }
-
-    // Clean up final context if we created a new one
-    if (currentContext !== page.context()) {
-      await currentContext.close();
-    }
-
-    // Generate summary report
-    const passed = results.filter((r) => r.status === 'pass').length;
-    const failed = results.filter((r) => r.status === 'fail').length;
-
-    console.log(`\n${'='.repeat(60)}`);
-    console.log(`📊 Story Validation Summary`);
-    console.log(`${'='.repeat(60)}`);
-    console.log(`Total Stories: ${results.length}`);
-    console.log(`✅ Passed: ${passed}`);
-    console.log(`❌ Failed: ${failed}`);
-    console.log(`${'='.repeat(60)}\n`);
-
-    if (failed > 0) {
-      console.log('Failed Stories:');
-      results
-        .filter((r) => r.status === 'fail')
-        .forEach((r) => console.log(`  - ${r.story}: ${r.error}`));
-      console.log('');
-    }
-
-    // Fail the test if any stories failed
-    expect(failed, `${failed} stories failed validation`).toBe(0);
+  test.skip('validate all stories - DEPRECATED', async () => {
+    console.log(`
+╔════════════════════════════════════════════════════════════════╗
+║                     TEST SUITE DEPRECATED                      ║
+╠════════════════════════════════════════════════════════════════╣
+║                                                                ║
+║  This comprehensive test has been split into smaller batches  ║
+║  to prevent timeout issues. Please use instead:               ║
+║                                                                ║
+║  • tests/ladle-story-validation-components.spec.ts             ║
+║    (4 batches covering ~150 component stories)                ║
+║                                                                ║
+║  • tests/ladle-story-validation-graphs.spec.ts                 ║
+║    (8 batches covering ~300 graph stories)                    ║
+║                                                                ║
+║  Benefits of batched approach:                                ║
+║  ✓ Each batch completes within timeout limits                 ║
+║  ✓ Better granularity for debugging failures                  ║
+║  ✓ Faster feedback on specific story categories               ║
+║  ✓ Can run batches in parallel for faster CI                  ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+    `);
   });
 });

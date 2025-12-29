@@ -115,8 +115,8 @@ test.describe('Embedded App - Reference Server Integration', () => {
     expect(hasReactFlow || hasAnnotationPanel || hasAnnotations).toBeTruthy();
   });
 
-  // Note: Layer panel visibility depends on graph view which is tested in embedded-dual-view.spec.ts
-  // The LayerPanel is only rendered when activeView === 'graph' in ModelRoute/SpecRoute
+  // Note: Layer sidebar visibility depends on graph view which is tested in embedded-dual-view.spec.ts
+  // The ModelLayersSidebar is only rendered when activeView === 'graph' in ModelRoute/SpecRoute
 
   // Note: Sequential mode switching is tested more comprehensively in embedded-dual-view.spec.ts
   // which properly handles async loading states for changesets

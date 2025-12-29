@@ -8,7 +8,7 @@ import { VerticalLayerLayout } from '../layout/verticalLayerLayout';
 import { LayoutEngine } from '../layout/engines';
 import { MarkerType } from '@xyflow/react';
 import { elementStore } from '../stores/elementStore';
-import { LayoutResult } from '../types/shapes';
+import { LayoutResult, LayerLayoutResult } from '../types/shapes';
 import { AppNode, AppEdge } from '../types/reactflow';
 import { FALLBACK_COLOR } from '../utils/layerColors';
 // Import C4 node dimension constants to prevent drift
@@ -95,7 +95,7 @@ export class NodeTransformer {
     const nodeMap = new Map<string, string>(); // elementId → nodeId
 
     // Create layer containers first (lower z-index)
-    for (const [layerType, layerData] of Object.entries(layout.layers)) {
+    for (const [layerType, layerData] of Object.entries(layout.layers) as [string, LayerLayoutResult][]) {
       const layer = model.layers[layerType];
       if (!layer) continue;
 
@@ -147,7 +147,7 @@ export class NodeTransformer {
     }
 
     // Create element nodes
-    for (const [layerType, layerData] of Object.entries(layout.layers)) {
+    for (const [layerType, layerData] of Object.entries(layout.layers) as [string, LayerLayoutResult][]) {
       const layer = model.layers[layerType];
       if (!layer) continue;
 
@@ -647,8 +647,10 @@ export class NodeTransformer {
 
   /**
    * Convert MetaModel to LayoutGraphInput for new layout engines
+   * @unused - Reserved for future layout engine integration
    */
-  private modelToGraphInput(model: MetaModel): any {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private _modelToGraphInput(model: MetaModel): any {
     const nodes: any[] = [];
     const edges: any[] = [];
 
@@ -824,14 +826,16 @@ export class NodeTransformer {
 
   /**
    * Convert LayoutResult back to old layer-based layout format
+   * @unused - Reserved for future layout engine integration
    */
-  private layoutResultToLayerLayout(result: any, model: MetaModel): any {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private _layoutResultToLayerLayout(result: any, model: MetaModel): any {
     const layers: any = {};
 
     console.log(`[NodeTransformer] Converting layout result with ${result.nodes.length} nodes to layer layout`);
 
     // Group nodes by layer
-    for (const [layerId, layer] of Object.entries(model.layers)) {
+    for (const [layerId, _layer] of Object.entries(model.layers)) {
       const layerNodes = result.nodes.filter((n: any) => n.data?.layer === layerId);
 
       if (layerNodes.length === 0) continue;

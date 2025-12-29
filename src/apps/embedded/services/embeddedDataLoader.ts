@@ -59,6 +59,7 @@ export interface LinkType {
   name: string;
   category: string;
   sourceLayers: string[];
+  sourceElementTypes?: string[];
   targetLayer: string;
   targetElementTypes: string[];
   fieldPaths: string[];

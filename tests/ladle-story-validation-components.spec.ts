@@ -44,6 +44,7 @@ function isComponentStory(testName: string): boolean {
     'Edges /',
     'Refinement / Layout tests /',
     'Graph views /',
+    'Business layer /', // These are graph-heavy components, move to graphs suite
   ];
 
   return !graphPatterns.some(pattern => testName.startsWith(pattern));
@@ -154,7 +155,85 @@ const SKIP_STORIES = [
 ];
 
 /**
- * Main test suite - validates component stories
+ * Helper function to run validation for a batch of stories
+ */
+async function validateBatch(
+  page: Page,
+  browser: any,
+  storyKeys: string[],
+  allStories: Record<string, StoryMetadata>,
+  batchName: string
+): Promise<void> {
+  test.setTimeout(300000); // 5 minutes per batch
+
+  const results: { story: string; status: 'pass' | 'fail'; error?: string }[] = [];
+
+  // Create fresh context every 50 stories to prevent memory issues
+  let currentPage = page;
+  let currentContext = page.context();
+
+  for (let i = 0; i < storyKeys.length; i++) {
+    const storyKey = storyKeys[i];
+    const metadata = allStories[storyKey];
+    const testName = formatTestName(storyKey, metadata);
+
+    // Refresh browser context every 50 stories to prevent memory buildup
+    if (i > 0 && i % 50 === 0) {
+      console.log(`\n🔄 Refreshing browser context (story ${i}/${storyKeys.length})\n`);
+      await currentContext.close();
+      currentContext = await browser.newContext();
+      currentPage = await currentContext.newPage();
+    }
+
+    // Skip known failing stories (only intentional error cases)
+    if (SKIP_STORIES.includes(testName)) {
+      results.push({ story: testName, status: 'pass' });
+      console.log(`  ⏭️  ${testName} (skipped - intentional error)`);
+      continue;
+    }
+
+    try {
+      await validateStory(currentPage, storyKey, metadata);
+      results.push({ story: testName, status: 'pass' });
+      console.log(`  ✅ ${testName}`);
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      results.push({ story: testName, status: 'fail', error: errorMsg });
+      console.error(`  ❌ ${testName}: ${errorMsg}`);
+    }
+  }
+
+  // Clean up final context if we created a new one
+  if (currentContext !== page.context()) {
+    await currentContext.close();
+  }
+
+  // Generate summary report
+  const passed = results.filter((r) => r.status === 'pass').length;
+  const failed = results.filter((r) => r.status === 'fail').length;
+
+  console.log(`\n${'='.repeat(60)}`);
+  console.log(`📊 ${batchName} Validation Summary`);
+  console.log(`${'='.repeat(60)}`);
+  console.log(`Total Stories: ${results.length}`);
+  console.log(`✅ Passed: ${passed}`);
+  console.log(`❌ Failed: ${failed}`);
+  console.log(`${'='.repeat(60)}\n`);
+
+  if (failed > 0) {
+    console.log('Failed Stories:');
+    results
+      .filter((r) => r.status === 'fail')
+      .forEach((r) => console.log(`  - ${r.story}: ${r.error}`));
+    console.log('');
+  }
+
+  // Fail the test if any stories failed
+  expect(failed, `${failed} stories failed validation in ${batchName}`).toBe(0);
+}
+
+/**
+ * Main test suite - validates component stories in batches
  */
 test.describe('Ladle Story Validation - Components', () => {
   let allStories: Record<string, StoryMetadata> = {};
@@ -177,73 +256,43 @@ test.describe('Ladle Story Validation - Components', () => {
     console.log(`\n📚 Discovered ${componentStoryKeys.length} component stories to validate\n`);
   });
 
-  test('validate all component stories', async ({ page, browser }) => {
-    // Set timeout for component stories (fewer than full suite)
-    test.setTimeout(600000); // 10 minutes
+  test('Batch 1: Panels stories', async ({ page, browser }) => {
+    const batchKeys = componentStoryKeys.filter((key) => {
+      const levels = allStories[key].levels;
+      return levels[0] === 'Panels';
+    });
+    console.log(`\n🔍 Validating ${batchKeys.length} Panels stories\n`);
+    await validateBatch(page, browser, batchKeys, allStories, 'Panels');
+  });
 
-    const results: { story: string; status: 'pass' | 'fail'; error?: string }[] = [];
+  test('Batch 2: Components stories', async ({ page, browser }) => {
+    const batchKeys = componentStoryKeys.filter((key) => {
+      const levels = allStories[key].levels;
+      return levels[0] === 'Components';
+    });
+    console.log(`\n🔍 Validating ${batchKeys.length} Components stories\n`);
+    await validateBatch(page, browser, batchKeys, allStories, 'Components');
+  });
 
-    // Create fresh context every 50 stories to prevent memory issues
-    let currentPage = page;
-    let currentContext = page.context();
+  test('Batch 3: Shared and Core stories', async ({ page, browser }) => {
+    const batchKeys = componentStoryKeys.filter((key) => {
+      const levels = allStories[key].levels;
+      return levels[0] === 'Shared' || levels[0] === 'Core' || levels[0] === 'Core components';
+    });
+    console.log(`\n🔍 Validating ${batchKeys.length} Shared/Core stories\n`);
+    await validateBatch(page, browser, batchKeys, allStories, 'Shared and Core');
+  });
 
-    for (let i = 0; i < componentStoryKeys.length; i++) {
-      const storyKey = componentStoryKeys[i];
-      const metadata = allStories[storyKey];
-      const testName = formatTestName(storyKey, metadata);
-
-      // Refresh browser context every 50 stories to prevent memory buildup
-      if (i > 0 && i % 50 === 0) {
-        console.log(`\n🔄 Refreshing browser context (story ${i}/${componentStoryKeys.length})\n`);
-        await currentContext.close();
-        currentContext = await browser.newContext();
-        currentPage = await currentContext.newPage();
-      }
-
-      // Skip known failing stories (only intentional error cases)
-      if (SKIP_STORIES.includes(testName)) {
-        results.push({ story: testName, status: 'pass' });
-        console.log(`  ⏭️  ${testName} (skipped - intentional error)`);
-        continue;
-      }
-
-      try {
-        await validateStory(currentPage, storyKey, metadata);
-        results.push({ story: testName, status: 'pass' });
-        console.log(`  ✅ ${testName}`);
-      } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : String(error);
-        results.push({ story: testName, status: 'fail', error: errorMsg });
-        console.error(`  ❌ ${testName}: ${errorMsg}`);
-      }
-    }
-
-    // Clean up final context if we created a new one
-    if (currentContext !== page.context()) {
-      await currentContext.close();
-    }
-
-    // Generate summary report
-    const passed = results.filter((r) => r.status === 'pass').length;
-    const failed = results.filter((r) => r.status === 'fail').length;
-
-    console.log(`\n${'='.repeat(60)}`);
-    console.log(`📊 Component Story Validation Summary`);
-    console.log(`${'='.repeat(60)}`);
-    console.log(`Total Stories: ${results.length}`);
-    console.log(`✅ Passed: ${passed}`);
-    console.log(`❌ Failed: ${failed}`);
-    console.log(`${'='.repeat(60)}\n`);
-
-    if (failed > 0) {
-      console.log('Failed Stories:');
-      results
-        .filter((r) => r.status === 'fail')
-        .forEach((r) => console.log(`  - ${r.story}: ${r.error}`));
-      console.log('');
-    }
-
-    // Fail the test if any stories failed
-    expect(failed, `${failed} stories failed validation`).toBe(0);
+  test('Batch 4: Navigation, Status, and other stories', async ({ page, browser }) => {
+    const batchKeys = componentStoryKeys.filter((key) => {
+      const levels = allStories[key].levels;
+      return levels[0] !== 'Panels' &&
+             levels[0] !== 'Components' &&
+             levels[0] !== 'Shared' &&
+             levels[0] !== 'Core' &&
+             levels[0] !== 'Core components';
+    });
+    console.log(`\n🔍 Validating ${batchKeys.length} Navigation/Status/Other stories\n`);
+    await validateBatch(page, browser, batchKeys, allStories, 'Navigation, Status, and Others');
   });
 });

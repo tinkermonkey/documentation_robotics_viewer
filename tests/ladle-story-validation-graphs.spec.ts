@@ -44,6 +44,7 @@ function isGraphStory(testName: string): boolean {
     'Edges /',
     'Refinement / Layout tests /',
     'Graph views /',
+    'Business layer /', // Graph-heavy components
   ];
 
   return graphPatterns.some(pattern => testName.startsWith(pattern));
@@ -179,7 +180,85 @@ async function validateStory(
 const SKIP_STORIES: string[] = [];
 
 /**
- * Main test suite - validates graph stories
+ * Helper function to run validation for a batch of stories
+ */
+async function validateBatch(
+  page: Page,
+  browser: any,
+  storyKeys: string[],
+  allStories: Record<string, StoryMetadata>,
+  batchName: string
+): Promise<void> {
+  test.setTimeout(300000); // 5 minutes per batch
+
+  const results: { story: string; status: 'pass' | 'fail'; error?: string }[] = [];
+
+  // Create fresh context every 50 stories to prevent memory issues
+  let currentPage = page;
+  let currentContext = page.context();
+
+  for (let i = 0; i < storyKeys.length; i++) {
+    const storyKey = storyKeys[i];
+    const metadata = allStories[storyKey];
+    const testName = formatTestName(storyKey, metadata);
+
+    // Refresh browser context every 50 stories to prevent memory buildup
+    if (i > 0 && i % 50 === 0) {
+      console.log(`\n🔄 Refreshing browser context (story ${i}/${storyKeys.length})\n`);
+      await currentContext.close();
+      currentContext = await browser.newContext();
+      currentPage = await currentContext.newPage();
+    }
+
+    // Skip known failing stories
+    if (SKIP_STORIES.includes(testName)) {
+      results.push({ story: testName, status: 'pass' });
+      console.log(`  ⏭️  ${testName} (skipped)`);
+      continue;
+    }
+
+    try {
+      await validateStory(currentPage, storyKey, metadata);
+      results.push({ story: testName, status: 'pass' });
+      console.log(`  ✅ ${testName}`);
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      results.push({ story: testName, status: 'fail', error: errorMsg });
+      console.error(`  ❌ ${testName}: ${errorMsg}`);
+    }
+  }
+
+  // Clean up final context if we created a new one
+  if (currentContext !== page.context()) {
+    await currentContext.close();
+  }
+
+  // Generate summary report
+  const passed = results.filter((r) => r.status === 'pass').length;
+  const failed = results.filter((r) => r.status === 'fail').length;
+
+  console.log(`\n${'='.repeat(60)}`);
+  console.log(`📊 ${batchName} Validation Summary`);
+  console.log(`${'='.repeat(60)}`);
+  console.log(`Total Stories: ${results.length}`);
+  console.log(`✅ Passed: ${passed}`);
+  console.log(`❌ Failed: ${failed}`);
+  console.log(`${'='.repeat(60)}\n`);
+
+  if (failed > 0) {
+    console.log('Failed Stories:');
+    results
+      .filter((r) => r.status === 'fail')
+      .forEach((r) => console.log(`  - ${r.story}: ${r.error}`));
+    console.log('');
+  }
+
+  // Fail the test if any stories failed
+  expect(failed, `${failed} stories failed validation in ${batchName}`).toBe(0);
+}
+
+/**
+ * Main test suite - validates graph stories in batches
  */
 test.describe('Ladle Story Validation - Graphs', () => {
   let allStories: Record<string, StoryMetadata> = {};
@@ -202,73 +281,109 @@ test.describe('Ladle Story Validation - Graphs', () => {
     console.log(`\n📚 Discovered ${graphStoryKeys.length} graph stories to validate\n`);
   });
 
-  test('validate all graph stories', async ({ page, browser }) => {
-    // Set timeout for graph stories
-    test.setTimeout(600000); // 10 minutes
+  test('Batch 1a: Nodes - Motivation (Assessment, Assumption, Constraint)', async ({ page, browser }) => {
+    const batchKeys = graphStoryKeys.filter((key) => {
+      const levels = allStories[key].levels;
+      return levels[0] === 'Nodes' && levels[1] === 'Motivation' &&
+             (levels[2] === 'Assessmentnode' || levels[2] === 'Assumptionnode' || levels[2] === 'Constraintnode');
+    });
+    console.log(`\n🔍 Validating ${batchKeys.length} Nodes - Motivation (Assessment/Assumption/Constraint) stories\n`);
+    await validateBatch(page, browser, batchKeys, allStories, 'Nodes - Motivation (Part 1)');
+  });
 
-    const results: { story: string; status: 'pass' | 'fail'; error?: string }[] = [];
+  test('Batch 1b: Nodes - Motivation (Driver, Goal, Outcome)', async ({ page, browser }) => {
+    const batchKeys = graphStoryKeys.filter((key) => {
+      const levels = allStories[key].levels;
+      return levels[0] === 'Nodes' && levels[1] === 'Motivation' &&
+             (levels[2] === 'Drivernode' || levels[2] === 'Goalnode' || levels[2] === 'Outcomenode');
+    });
+    console.log(`\n🔍 Validating ${batchKeys.length} Nodes - Motivation (Driver/Goal/Outcome) stories\n`);
+    await validateBatch(page, browser, batchKeys, allStories, 'Nodes - Motivation (Part 2)');
+  });
 
-    // Create fresh context every 50 stories to prevent memory issues
-    let currentPage = page;
-    let currentContext = page.context();
+  test('Batch 1c: Nodes - Motivation (Principle, Requirement, Stakeholder, ValueStream)', async ({ page, browser }) => {
+    const batchKeys = graphStoryKeys.filter((key) => {
+      const levels = allStories[key].levels;
+      return levels[0] === 'Nodes' && levels[1] === 'Motivation' &&
+             (levels[2] === 'Principlenode' || levels[2] === 'Requirementnode' ||
+              levels[2] === 'Stakeholdernode' || levels[2] === 'Valuestreamnode');
+    });
+    console.log(`\n🔍 Validating ${batchKeys.length} Nodes - Motivation (Principle/Requirement/Stakeholder/ValueStream) stories\n`);
+    await validateBatch(page, browser, batchKeys, allStories, 'Nodes - Motivation (Part 3)');
+  });
 
-    for (let i = 0; i < graphStoryKeys.length; i++) {
-      const storyKey = graphStoryKeys[i];
-      const metadata = allStories[storyKey];
-      const testName = formatTestName(storyKey, metadata);
+  test('Batch 2: Nodes - Business layer', async ({ page, browser }) => {
+    const batchKeys = graphStoryKeys.filter((key) => {
+      const levels = allStories[key].levels;
+      return levels[0] === 'Nodes' && levels[1] === 'Business';
+    });
+    console.log(`\n🔍 Validating ${batchKeys.length} Nodes - Business stories\n`);
+    await validateBatch(page, browser, batchKeys, allStories, 'Nodes - Business');
+  });
 
-      // Refresh browser context every 50 stories to prevent memory buildup
-      if (i > 0 && i % 50 === 0) {
-        console.log(`\n🔄 Refreshing browser context (story ${i}/${graphStoryKeys.length})\n`);
-        await currentContext.close();
-        currentContext = await browser.newContext();
-        currentPage = await currentContext.newPage();
-      }
+  test('Batch 3: Nodes - C4 layer', async ({ page, browser }) => {
+    const batchKeys = graphStoryKeys.filter((key) => {
+      const levels = allStories[key].levels;
+      return levels[0] === 'Nodes' && levels[1] === 'C4';
+    });
+    console.log(`\n🔍 Validating ${batchKeys.length} Nodes - C4 stories\n`);
+    await validateBatch(page, browser, batchKeys, allStories, 'Nodes - C4');
+  });
 
-      // Skip known failing stories
-      if (SKIP_STORIES.includes(testName)) {
-        results.push({ story: testName, status: 'pass' });
-        console.log(`  ⏭️  ${testName} (skipped)`);
-        continue;
-      }
+  test('Batch 4: Nodes - Other layers', async ({ page, browser }) => {
+    const batchKeys = graphStoryKeys.filter((key) => {
+      const levels = allStories[key].levels;
+      return levels[0] === 'Nodes' &&
+             levels[1] !== 'Motivation' &&
+             levels[1] !== 'Business' &&
+             levels[1] !== 'C4';
+    });
+    console.log(`\n🔍 Validating ${batchKeys.length} Nodes - Other stories\n`);
+    await validateBatch(page, browser, batchKeys, allStories, 'Nodes - Other');
+  });
 
-      try {
-        await validateStory(currentPage, storyKey, metadata);
-        results.push({ story: testName, status: 'pass' });
-        console.log(`  ✅ ${testName}`);
-      } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : String(error);
-        results.push({ story: testName, status: 'fail', error: errorMsg });
-        console.error(`  ❌ ${testName}: ${errorMsg}`);
-      }
-    }
+  test('Batch 5: Edges', async ({ page, browser }) => {
+    const batchKeys = graphStoryKeys.filter((key) => {
+      const levels = allStories[key].levels;
+      return levels[0] === 'Edges';
+    });
+    console.log(`\n🔍 Validating ${batchKeys.length} Edges stories\n`);
+    await validateBatch(page, browser, batchKeys, allStories, 'Edges');
+  });
 
-    // Clean up final context if we created a new one
-    if (currentContext !== page.context()) {
-      await currentContext.close();
-    }
+  test('Batch 6: Refinement - Layout tests', async ({ page, browser }) => {
+    const batchKeys = graphStoryKeys.filter((key) => {
+      const levels = allStories[key].levels;
+      return levels[0] === 'Refinement' && levels[1] === 'Layout tests';
+    });
+    console.log(`\n🔍 Validating ${batchKeys.length} Refinement - Layout tests stories\n`);
+    await validateBatch(page, browser, batchKeys, allStories, 'Refinement - Layout Tests');
+  });
 
-    // Generate summary report
-    const passed = results.filter((r) => r.status === 'pass').length;
-    const failed = results.filter((r) => r.status === 'fail').length;
+  test('Batch 7: Refinement - Other components', async ({ page, browser }) => {
+    const batchKeys = graphStoryKeys.filter((key) => {
+      const levels = allStories[key].levels;
+      return levels[0] === 'Refinement' && levels[1] !== 'Layout tests';
+    });
+    console.log(`\n🔍 Validating ${batchKeys.length} Refinement - Other stories\n`);
+    await validateBatch(page, browser, batchKeys, allStories, 'Refinement - Other');
+  });
 
-    console.log(`\n${'='.repeat(60)}`);
-    console.log(`📊 Graph Story Validation Summary`);
-    console.log(`${'='.repeat(60)}`);
-    console.log(`Total Stories: ${results.length}`);
-    console.log(`✅ Passed: ${passed}`);
-    console.log(`❌ Failed: ${failed}`);
-    console.log(`${'='.repeat(60)}\n`);
+  test('Batch 8: Graph views', async ({ page, browser }) => {
+    const batchKeys = graphStoryKeys.filter((key) => {
+      const levels = allStories[key].levels;
+      return levels[0] === 'Graph views';
+    });
+    console.log(`\n🔍 Validating ${batchKeys.length} Graph views stories\n`);
+    await validateBatch(page, browser, batchKeys, allStories, 'Graph Views');
+  });
 
-    if (failed > 0) {
-      console.log('Failed Stories:');
-      results
-        .filter((r) => r.status === 'fail')
-        .forEach((r) => console.log(`  - ${r.story}: ${r.error}`));
-      console.log('');
-    }
-
-    // Fail the test if any stories failed
-    expect(failed, `${failed} stories failed validation`).toBe(0);
+  test('Batch 9: Business layer views', async ({ page, browser }) => {
+    const batchKeys = graphStoryKeys.filter((key) => {
+      const levels = allStories[key].levels;
+      return levels[0] === 'Business layer';
+    });
+    console.log(`\n🔍 Validating ${batchKeys.length} Business layer stories\n`);
+    await validateBatch(page, browser, batchKeys, allStories, 'Business Layer');
   });
 });

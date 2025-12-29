@@ -13,9 +13,9 @@ export const Default: Story = () => (
         y={100}
         nodeId="goal-1"
         nodeName="Improve Customer Satisfaction"
-        onFocus={(id) => console.log('Focus:', id)}
-        onTraceInfluences={(id) => console.log('Trace influences:', id)}
-        onTraceInfluencedBy={(id) => console.log('Trace influenced by:', id)}
+        onTraceUpstream={(id: string) => console.log('Trace upstream:', id)}
+        onTraceDownstream={(id: string) => console.log('Trace downstream:', id)}
+        onClearHighlighting={() => console.log('Clear highlighting')}
         onClose={() => console.log('Close menu')}
       />
     </div>
@@ -30,9 +30,9 @@ export const LongNodeName: Story = () => (
         y={100}
         nodeId="goal-1"
         nodeName="Improve Customer Satisfaction Scores Across All Service Channels"
-        onFocus={(id) => console.log('Focus:', id)}
-        onTraceInfluences={(id) => console.log('Trace influences:', id)}
-        onTraceInfluencedBy={(id) => console.log('Trace influenced by:', id)}
+        onTraceUpstream={(id: string) => console.log('Trace upstream:', id)}
+        onTraceDownstream={(id: string) => console.log('Trace downstream:', id)}
+        onClearHighlighting={() => console.log('Clear highlighting')}
         onClose={() => console.log('Close menu')}
       />
     </div>

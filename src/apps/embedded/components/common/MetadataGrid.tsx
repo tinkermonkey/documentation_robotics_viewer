@@ -36,7 +36,7 @@ const MetadataGrid: React.FC<MetadataGridProps> = ({
   }
 
   return (
-    <Card className={className}>
+    <div className={className}>
       {title && (
         <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           {title}
@@ -44,17 +44,17 @@ const MetadataGrid: React.FC<MetadataGridProps> = ({
       )}
       <div className={`grid ${gridCols[columns]} gap-4`}>
         {items.map((item, index) => (
-          <div key={`${item.label}-${index}`} className="flex flex-col">
-            <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
+          <Card key={`${item.label}-${index}`} className="flex flex-col shadow-none">
+            <dt className="text-md font-medium text-gray-500 dark:text-gray-400">
               {item.label}
             </dt>
             <dd className="mt-1 text-sm text-gray-900 dark:text-white font-semibold">
               {item.value !== undefined ? item.value : 'N/A'}
             </dd>
-          </div>
+          </Card>
         ))}
       </div>
-    </Card>
+    </div>
   );
 };
 

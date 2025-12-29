@@ -154,19 +154,8 @@ function routeEdgeOrthogonally(
   source: PositionedNode,
   target: PositionedNode,
   params: Required<OrthogonalRoutingParameters>,
-  nodeMap: Map<string, PositionedNode>
+  _nodeMap: Map<string, PositionedNode>
 ): Array<{ x: number; y: number }> {
-  // Calculate node centers
-  const sourceCenter = {
-    x: source.position.x + source.width / 2,
-    y: source.position.y + source.height / 2,
-  };
-
-  const targetCenter = {
-    x: target.position.x + target.width / 2,
-    y: target.position.y + target.height / 2,
-  };
-
   // Determine exit and entry points based on flow direction
   const { exitPoint, entryPoint } = calculateConnectionPoints(
     source,
@@ -346,21 +335,27 @@ function calculateIntermediatePoints(
  *
  * This is a placeholder for more sophisticated routing that avoids obstacles.
  * Currently, we use simple midpoint-based routing.
+ * @unused - Reserved for future routing optimization
  */
-function optimizeRoutingToAvoidNodes(
-  points: Array<{ x: number; y: number }>,
-  nodes: PositionedNode[],
-  edgeNodeSeparation: number
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// @ts-expect-error - Unused utility function reserved for future routing optimization
+function _optimizeRoutingToAvoidNodes(
+  _points: Array<{ x: number; y: number }>,
+  _nodes: PositionedNode[],
+  _edgeNodeSeparation: number
 ): Array<{ x: number; y: number }> {
   // TODO: Implement obstacle avoidance
   // For now, return points as-is
-  return points;
+  return _points;
 }
 
 /**
  * Check if a point is inside a node's bounding box (with separation buffer)
+ * @unused - Reserved for future collision detection improvements
  */
-function isPointInNode(
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// @ts-expect-error - Unused utility function reserved for future collision detection
+function _isPointInNode(
   point: { x: number; y: number },
   node: PositionedNode,
   separation: number

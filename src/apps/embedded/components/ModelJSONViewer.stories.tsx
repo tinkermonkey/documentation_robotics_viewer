@@ -11,40 +11,112 @@ const mockModel: MetaModel = {
     'motivation-layer': {
       id: 'motivation-layer',
       type: 'motivation',
-      name: 'Motivation',
+      name: 'Motivation Layer',
+      description: 'Captures stakeholder concerns, goals, requirements, and constraints that drive architectural decisions',
       elements: [
         {
-          id: 'goal-1',
+          id: 'motivation.goal.visualize-architecture',
           type: 'Goal',
-          name: 'Improve Customer Satisfaction',
+          name: 'Visualize Architecture',
           layerId: 'motivation-layer',
-          properties: { priority: 'high', status: 'active' },
+          documentation: 'Provide interactive visualization of DR models across all layers with pan, zoom, and navigation capabilities. Enable architecture teams to explore and communicate architectural decisions effectively.',
+          priority: 'high',
+          properties: {
+            goal: {
+              measurable: 'true',
+              'target-date': '2024-Q2',
+              kpi: 'Initial render time < 3s for 500 elements'
+            }
+          },
+          stakeholders: [
+            'motivation.stakeholder.architecture-team',
+            'motivation.stakeholder.development-team'
+          ],
+          'governed-by-principles': [
+            'motivation.principle.user-centric-design',
+            'motivation.principle.performance-first'
+          ],
           visual: {},
         },
         {
-          id: 'goal-2',
-          type: 'Goal',
-          name: 'Reduce Operational Costs',
+          id: 'motivation.stakeholder.architecture-team',
+          type: 'Stakeholder',
+          name: 'Architecture Team',
           layerId: 'motivation-layer',
-          properties: { priority: 'medium', status: 'active' },
+          documentation: 'Primary stakeholder responsible for defining and maintaining the architecture documentation. Uses the viewer to explore, validate, and communicate architectural decisions across the organization.',
+          type: 'internal',
+          concerns: [
+            'Accurate visualization of multi-layer architecture',
+            'Traceability from goals to implementation',
+            'Easy navigation between related elements'
+          ],
+          'associated-goals': [
+            'motivation.goal.visualize-architecture'
+          ],
+          visual: {},
+        },
+        {
+          id: 'motivation.requirement.interactive-graphs',
+          type: 'Requirement',
+          name: 'Interactive Graphs',
+          layerId: 'motivation-layer',
+          documentation: 'Users must be able to pan, zoom, and click nodes for details. Graph should support filtering by layer and element type with smooth transitions.',
+          requirementType: 'functional',
+          priority: 'high',
+          properties: {
+            requirement: {
+              source: 'stakeholder-interview',
+              status: 'implemented',
+              'traceability-id': 'REQ-001'
+            }
+          },
+          'supports-goals': [
+            'motivation.goal.visualize-architecture'
+          ],
+          'governed-by-principles': [
+            'motivation.principle.user-centric-design'
+          ],
+          visual: {},
+        },
+        {
+          id: 'motivation.principle.performance-first',
+          type: 'Principle',
+          name: 'Performance First',
+          layerId: 'motivation-layer',
+          documentation: 'All features must be implemented with performance as a primary concern. Target 60fps for interactions and <3s initial load for typical models.',
+          category: 'technical',
+          properties: {
+            principle: {
+              rationale: 'Poor performance degrades user experience and reduces adoption',
+              implications: 'May require web workers, virtualization, and lazy loading strategies'
+            }
+          },
           visual: {},
         },
       ],
       relationships: [
-        { id: 'r1', sourceId: 'goal-1', targetId: 'goal-2', type: 'influences' },
+        { id: 'r1', sourceId: 'motivation.goal.visualize-architecture', targetId: 'motivation.requirement.interactive-graphs', type: 'realizes' },
       ],
     },
     'business-layer': {
       id: 'business-layer',
       type: 'business',
-      name: 'Business',
+      name: 'Business Layer',
+      description: 'Defines business services, processes, and capabilities',
       elements: [
         {
-          id: 'process-1',
-          type: 'BusinessProcess',
-          name: 'Order Processing',
+          id: 'business.service.graph-rendering',
+          type: 'BusinessService',
+          name: 'Graph Rendering Service',
           layerId: 'business-layer',
-          properties: { automated: true },
+          documentation: 'Provides graph visualization capabilities to end users, enabling exploration of architectural models through interactive diagrams.',
+          properties: {
+            'service-level': 'core',
+            automated: true
+          },
+          'supports-goals': [
+            'motivation.goal.visualize-architecture'
+          ],
           visual: {},
         },
       ],
@@ -55,15 +127,145 @@ const mockModel: MetaModel = {
   references: {},
 };
 
+const mockSpecData = {
+  schemas: {
+    '01-motivation-layer.schema.json': {
+      description: 'Captures stakeholder concerns, goals, requirements, and constraints that drive architectural decisions using ArchiMate motivation elements.',
+      definitions: {
+        Goal: {
+          description: 'High-level statement of intent, direction, or desired end state',
+          properties: {
+            id: { type: 'string', description: 'Unique identifier' },
+            name: { type: 'string', description: 'Goal name' },
+            priority: {
+              type: 'string',
+              enum: ['critical', 'high', 'medium', 'low'],
+              description: 'Goal priority level'
+            },
+            documentation: { type: 'string', description: 'Detailed description of the goal' }
+          }
+        },
+        Stakeholder: {
+          description: 'Individual, team, or organization with interest in the outcome',
+          properties: {
+            id: { type: 'string', description: 'Unique identifier' },
+            name: { type: 'string', description: 'Stakeholder name' },
+            type: {
+              type: 'string',
+              enum: ['internal', 'external', 'customer', 'partner', 'regulator'],
+              description: 'Stakeholder type'
+            },
+            documentation: { type: 'string', description: 'Stakeholder description and role' }
+          }
+        },
+        Requirement: {
+          description: 'Statement of need that must be realized',
+          properties: {
+            id: { type: 'string', description: 'Unique identifier' },
+            name: { type: 'string', description: 'Requirement name' },
+            requirementType: {
+              type: 'string',
+              enum: ['functional', 'non-functional', 'business', 'technical', 'compliance', 'user'],
+              description: 'Type of requirement'
+            },
+            priority: {
+              type: 'string',
+              enum: ['critical', 'high', 'medium', 'low'],
+              description: 'Requirement priority'
+            },
+            documentation: { type: 'string', description: 'Detailed requirement specification' }
+          }
+        },
+        Principle: {
+          description: 'Normative property of all systems in a given context',
+          properties: {
+            id: { type: 'string', description: 'Unique identifier' },
+            name: { type: 'string', description: 'Principle name' },
+            category: {
+              type: 'string',
+              enum: ['business', 'data', 'application', 'technology', 'security', 'integration'],
+              description: 'Principle category'
+            },
+            documentation: { type: 'string', description: 'Principle statement and rationale' }
+          }
+        }
+      }
+    },
+    '02-business-layer.schema.json': {
+      description: 'Defines business services, processes, and capabilities',
+      definitions: {
+        BusinessService: {
+          description: 'Service that fulfills a business need',
+          properties: {
+            id: { type: 'string', description: 'Unique identifier' },
+            name: { type: 'string', description: 'Service name' },
+            documentation: { type: 'string', description: 'Service description and purpose' }
+          }
+        }
+      }
+    }
+  }
+};
+
+const mockLinkRegistry = {
+  linkTypes: [
+    {
+      id: 'motivation-supports-goals',
+      name: 'Supports Goals',
+      category: 'motivation',
+      sourceLayers: ['business-layer', 'application-layer'],
+      targetLayer: 'motivation-layer',
+      targetElementTypes: ['Goal'],
+      fieldPaths: ['supports-goals'],
+      description: 'Elements that support achievement of goals'
+    },
+    {
+      id: 'motivation-governed-by-principles',
+      name: 'Governed by Principles',
+      category: 'governance',
+      sourceLayers: ['business-layer', 'application-layer'],
+      targetLayer: 'motivation-layer',
+      targetElementTypes: ['Principle'],
+      fieldPaths: ['governed-by-principles'],
+      description: 'Elements governed by architectural principles'
+    }
+  ],
+  categories: {
+    motivation: { color: '#3b82f6', name: 'Motivation' },
+    governance: { color: '#8b5cf6', name: 'Governance' }
+  }
+};
+
 export const Default: Story = () => (
   <div className="w-full max-w-4xl p-4 bg-gray-50">
-    <ModelJSONViewer model={mockModel} selectedLayer={null} />
+    <ModelJSONViewer
+      model={mockModel}
+      selectedLayer={null}
+      specData={mockSpecData}
+      linkRegistry={mockLinkRegistry}
+    />
   </div>
 );
 
 export const WithSelectedLayer: Story = () => (
   <div className="w-full max-w-4xl p-4 bg-gray-50">
-    <ModelJSONViewer model={mockModel} selectedLayer="motivation-layer" />
+    <ModelJSONViewer
+      model={mockModel}
+      selectedLayer="motivation-layer"
+      specData={mockSpecData}
+      linkRegistry={mockLinkRegistry}
+    />
+  </div>
+);
+
+export const WithBusinessLayer: Story = () => (
+  <div className="w-full max-w-4xl p-4 bg-gray-50">
+    <ModelJSONViewer
+      model={mockModel}
+      selectedLayer="business-layer"
+      specData={mockSpecData}
+      linkRegistry={mockLinkRegistry}
+    />
   </div>
 );
 
@@ -71,7 +273,9 @@ export const WithPathHighlight: Story = () => (
   <div className="w-full max-w-4xl p-4 bg-gray-50">
     <ModelJSONViewer
       model={mockModel}
-      selectedLayer={null}
+      selectedLayer="motivation-layer"
+      specData={mockSpecData}
+      linkRegistry={mockLinkRegistry}
       onPathHighlight={(path) => console.log('Path highlighted:', path)}
     />
   </div>

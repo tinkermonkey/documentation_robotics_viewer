@@ -61,7 +61,17 @@
       "Bash(timeout 60 npx playwright test:*)",
       "Bash(timeout 120 npx playwright test:*)",
       "Bash(timeout 180 npx playwright test:*)",
-      "Bash(xargs cat:*)"
+      "Bash(xargs cat:*)",
+      "Bash(timeout 600 npm run test:ladle-validation:graphs:*)",
+      "Skill(frontend-design:frontend-design)",
+      "Bash(timeout 30 npm run build:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(timeout 45 npm run catalog:build:*)",
+      "Bash(while pgrep -f \"playwright test\")",
+      "Bash(do sleep 10)",
+      "Bash(done)",
+      "Bash(pgrep:*)",
+      "Bash(cut:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -5,7 +5,6 @@
  */
 
 export { RefinementFeedbackPanel } from './RefinementFeedbackPanel';
-export { SideBySideComparison } from './SideBySideComparison';
 export { MetricsDashboard } from './MetricsDashboard';
 
 // Re-export types
@@ -22,6 +21,5 @@ export type {
   ComparisonViewOptions,
   ComparisonViewMode,
   RefinementFeedbackPanelProps,
-  SideBySideComparisonProps,
   MetricsDashboardProps,
 } from '../../types/refinement';
