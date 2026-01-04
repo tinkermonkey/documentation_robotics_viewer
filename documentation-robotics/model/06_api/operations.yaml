@@ -1,8 +1,107 @@
+health-check:
+  id: api.operation.health-check
+  name: Health Check
+  type: operation
+  documentation: Returns server status and version information
+  properties:
+    method: GET
+    path: /health
+    description: Returns server status and version
+    responses:
+      "200":
+        description: Server is healthy
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                version:
+                  type: string
+get-spec:
+  id: api.operation.get-spec
+  name: Get Specification
+  type: operation
+  documentation: Returns the current JSON Schema specification
+  properties:
+    method: GET
+    path: /api/spec
+    description: Returns the current JSON Schema specification
+    responses:
+      "200":
+        description: Specification data
+      "404":
+        description: Schema directory not found
+get-model:
+  id: api.operation.get-model
+  name: Get Model
+  type: operation
+  documentation: Returns the current model in viewer-compatible format
+  properties:
+    method: GET
+    path: /api/model
+    description: Returns the current model in viewer-compatible format
+    responses:
+      "200":
+        description: Model data
+      "404":
+        description: Model manifest not found
+list-changesets:
+  id: api.operation.list-changesets
+  name: List Changesets
+  type: operation
+  documentation: Returns a list of all available changesets
+  properties:
+    method: GET
+    path: /api/changesets
+    description: Returns a list of all available changesets
+    responses:
+      "200":
+        description: List of changesets
+get-changeset:
+  id: api.operation.get-changeset
+  name: Get Changeset
+  type: operation
+  documentation: Returns details for a specific changeset
+  properties:
+    method: GET
+    path: /api/changesets/{changeset_id}
+    description: Returns details for a specific changeset
+    parameters:
+      - name: changeset_id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      "200":
+        description: Changeset details
+      "404":
+        description: Changeset not found
+get-annotations:
+  id: api.operation.get-annotations
+  name: Get Annotations
+  type: operation
+  documentation: Returns annotations, optionally filtered by element ID
+  properties:
+    method: GET
+    path: /api/annotations
+    description: Returns annotations, optionally filtered by element ID
+    parameters:
+      - name: elementId
+        in: query
+        required: false
+        schema:
+          type: string
+    responses:
+      "200":
+        description: List of annotations
 get-github-releases:
   id: api.operation.get-github-releases
   name: Get GitHub Releases
   type: operation
-  openapi: 3.0.3
+  documentation: Fetches all spec releases from GitHub repository
   properties:
     method: GET
     path: /api/github/releases
@@ -17,7 +116,7 @@ get-github-releases:
           summary: Fetches all spec releases from GitHub repository
           operationId: getGitHubReleases
           responses:
-            '200':
+            "200":
               description: List of releases
               content:
                 application/json:
@@ -32,17 +131,13 @@ get-github-releases:
                           type: string
                         assets:
                           type: array
-            '500':
+            "500":
               description: Failed to fetch releases
-  serves: application.service.git-hub-service
-  security: security.policy.local-access
-  x-application-service: application.service.git-hub-service
-  description: Fetches all spec releases from GitHub repository
 get-latest-github-release:
   id: api.operation.get-latest-github-release
   name: Get Latest GitHub Release
   type: operation
-  openapi: 3.0.3
+  documentation: Fetches the latest spec release from GitHub
   properties:
     method: GET
     path: /api/github/releases/latest
@@ -57,7 +152,7 @@ get-latest-github-release:
           summary: Fetches the latest spec release
           operationId: getLatestGitHubRelease
           responses:
-            '200':
+            "200":
               description: Latest release object
               content:
                 application/json:
@@ -70,19 +165,15 @@ get-latest-github-release:
                         type: string
                       assets:
                         type: array
-            '404':
+            "404":
               description: No spec releases found
-            '500':
+            "500":
               description: Failed to fetch release
-  serves: application.service.git-hub-service
-  security: security.policy.local-access
-  x-application-service: application.service.git-hub-service
-  description: Fetches the latest spec release from GitHub
 get-github-release-by-tag:
   id: api.operation.get-github-release-by-tag
   name: Get GitHub Release by Tag
   type: operation
-  openapi: 3.0.3
+  documentation: Fetches a specific release by tag name from GitHub
   properties:
     method: GET
     path: /api/github/releases/{tag}
@@ -97,36 +188,31 @@ get-github-release-by-tag:
           summary: Fetches a specific release by tag
           operationId: getGitHubReleaseByTag
           parameters:
-          - name: tag
-            in: path
-            required: true
-            schema:
-              type: string
+            - name: tag
+              in: path
+              required: true
+              schema:
+                type: string
           responses:
-            '200':
+            "200":
               description: Release object with details and assets
               content:
                 application/json:
                   schema:
                     type: object
-            '404':
+            "404":
               description: Release not found
-            '500':
+            "500":
               description: Failed to fetch release
-  serves: application.service.git-hub-service
-  security: security.policy.local-access
-  x-application-service: application.service.git-hub-service
-  description: Fetches a specific release by tag name from GitHub
 download-github-schema-zip:
   id: api.operation.download-github-schema-zip
   name: Download GitHub Schema ZIP
   type: operation
-  openapi: 3.0.3
+  documentation: Proxies download of schema ZIP from GitHub to avoid CORS
   properties:
     method: GET
     path: /api/github/download/{tag}
-    description: Proxies download of schema ZIP from GitHub release asset to avoid
-      CORS
+    description: Proxies download of schema ZIP from GitHub release asset to avoid CORS
     openapi: 3.0.3
     info:
       title: GitHub Schema Download API
@@ -137,32 +223,28 @@ download-github-schema-zip:
           summary: Downloads schema ZIP from GitHub release
           operationId: downloadGitHubSchemaZip
           parameters:
-          - name: tag
-            in: path
-            required: true
-            schema:
-              type: string
+            - name: tag
+              in: path
+              required: true
+              schema:
+                type: string
           responses:
-            '200':
+            "200":
               description: ZIP file binary stream
               content:
                 application/zip:
                   schema:
                     type: string
                     format: binary
-            '404':
+            "404":
               description: Release or asset not found
-            '500':
+            "500":
               description: Failed to download
-  serves: application.service.git-hub-service
-  security: security.policy.local-access
-  x-application-service: application.service.git-hub-service
-  description: Proxies download of schema ZIP from GitHub to avoid CORS
 get-example-implementation:
   id: api.operation.get-example-implementation
   name: Get Example Implementation
   type: operation
-  openapi: 3.0.3
+  documentation: Serves the example-implementation model YAML files as JSON
   properties:
     method: GET
     path: /api/example-implementation
@@ -177,7 +259,7 @@ get-example-implementation:
           summary: Serves example implementation model
           operationId: getExampleImplementation
           responses:
-            '200':
+            "200":
               description: Dictionary of file paths to YAML content
               content:
                 application/json:
@@ -185,11 +267,65 @@ get-example-implementation:
                     type: object
                     additionalProperties:
                       type: string
-            '404':
+            "404":
               description: Example implementation not found
-            '500':
+            "500":
               description: Failed to serve example implementation
-  serves: application.service.git-hub-service
-  security: security.policy.local-access
-  x-application-service: application.service.git-hub-service
-  description: Serves the example-implementation model YAML files as JSON
+websocket-connect:
+  id: api.operation.websocket-connect
+  name: WebSocket Connection
+  type: operation
+  documentation: Main WebSocket endpoint for live model updates
+  properties:
+    method: GET
+    path: /ws
+    protocol: websocket
+    description: Main WebSocket endpoint for live updates
+    messages:
+      server-to-client:
+        - connected
+        - subscribed
+        - pong
+        - model.updated
+        - changeset.created
+        - annotation.added
+      client-to-server:
+        - subscribe
+        - ping
+connected:
+  id: api.event.connected
+  name: Connected Event
+  type: operation
+  documentation: Sent immediately after WebSocket connection established
+  properties:
+    direction: server-to-client
+    channel: /ws
+    description: Sent immediately after connection established
+    payload:
+      type: connected
+      version: string
+      timestamp: string
+subscribe:
+  id: api.event.subscribe
+  name: Subscribe Command
+  type: operation
+  documentation: Client request to subscribe to update topics
+  properties:
+    direction: client-to-server
+    channel: /ws
+    description: Client request to subscribe to topics
+    payload:
+      type: subscribe
+      topics: array<string>
+model-updated:
+  id: api.event.model-updated
+  name: Model Updated Event
+  type: operation
+  documentation: Broadcast when the underlying model changes
+  properties:
+    direction: server-to-client
+    channel: /ws
+    description: Broadcast when the underlying model changes
+    payload:
+      type: model.updated
+      timestamp: string

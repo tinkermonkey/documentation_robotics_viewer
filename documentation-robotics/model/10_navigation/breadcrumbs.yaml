@@ -1,93 +1,11 @@
-# Navigation Layer - Breadcrumb Navigation Definitions
-# Documentation Robotics v0.6.0
-# Hierarchical navigation components
-
-# C4 Breadcrumb Navigation
-c4-breadcrumb-nav:
+c4-nav:
   id: navigation.breadcrumb.c4-nav
   name: C4 Breadcrumb Navigation
-  description: Hierarchical breadcrumb for C4 architecture view showing System > Container > Component levels
-  component: C4BreadcrumbNav
-  location: Top of C4 architecture screen
-  structure:
-    - level: system
-      label: System View
-      icon: null
-      navigable: true
-      description: Top-level system architecture view
-    - level: container
-      label: "{containerName}"
-      icon: null
-      navigable: true
-      description: Container-level view (databases, APIs, web apps)
-      dynamic: true
-      depends_on: Selected container
-    - level: component
-      label: "{componentName}"
-      icon: null
-      navigable: false
-      description: Component-level detail view
-      dynamic: true
-      depends_on: Selected component
-  behavior:
-    - Separator: ">"
-    - Click level to navigate up hierarchy
-    - Current level highlighted/not clickable
-    - Dynamic labels based on selection
-  navigates_to:
-    - navigation.route.architecture (view level changes)
-  realizes:
-    - ux.interaction.c4-breadcrumb-navigate
-
-# Motivation Breadcrumb Navigation
-motivation-breadcrumb:
+  type: breadcrumb
+  documentation: Hierarchical breadcrumb for C4 architecture view showing System >
+    Container > Component levels
+motivation-nav:
   id: navigation.breadcrumb.motivation-nav
   name: Motivation Breadcrumb Navigation
-  description: Breadcrumb navigation for motivation layer with element type context
-  component: MotivationBreadcrumb
-  location: Top of Motivation screen
-  structure:
-    - level: root
-      label: Motivation
-      icon: HiLightBulb
-      navigable: true
-      description: Motivation layer root view
-    - level: element-type
-      label: "{elementType}"
-      icon: null
-      navigable: true
-      description: Element type filter view
-      dynamic: true
-      depends_on: Active filter
-    - level: element
-      label: "{elementName}"
-      icon: null
-      navigable: false
-      description: Selected element view
-      dynamic: true
-      depends_on: Selected element
-  behavior:
-    - Shows current filter/selection context
-    - Click to navigate back
-    - Auto-updates on selection change
-  navigates_to:
-    - navigation.route.motivation (filter/selection changes)
-
-# Generic Breadcrumb
-generic-breadcrumb-nav:
-  id: navigation.breadcrumb.generic-nav
-  name: Generic Breadcrumb Navigation
-  description: General-purpose breadcrumb for hierarchical navigation
-  type: hierarchical
-  separator: ">"
-  max_items: 5
-  truncation: middle
-  home_link:
-    enabled: true
-    label: Home
-    path: /model
-    icon: HiHome
-  behavior:
-    - Last item (current page) not clickable
-    - Middle truncation if path exceeds max_items
-    - Hover shows full path in tooltip
+  type: breadcrumb
+  documentation: Breadcrumb navigation for motivation layer with element type context

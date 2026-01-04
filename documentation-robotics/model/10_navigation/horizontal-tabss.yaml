@@ -1,0 +1,20 @@
+main-tabs:
+  id: navigation.menu.main-tabs
+  name: Main Tab Menu
+  type: horizontal-tabs
+  documentation: Primary navigation menu with 5 main sections
+spec-sub-tabs:
+  id: navigation.menu.spec-sub-tabs
+  name: Spec Sub-Tab Menu
+  type: horizontal-tabs
+  documentation: Secondary navigation for Spec section (Graph/JSON)
+model-sub-tabs:
+  id: navigation.menu.model-sub-tabs
+  name: Model Sub-Tab Menu
+  type: horizontal-tabs
+  documentation: Secondary navigation for Model section (Graph/JSON)
+changesets-sub-tabs:
+  id: navigation.menu.changesets-sub-tabs
+  name: Changesets Sub-Tab Menu
+  type: horizontal-tabs
+  documentation: Secondary navigation for Changesets section (Graph/List)

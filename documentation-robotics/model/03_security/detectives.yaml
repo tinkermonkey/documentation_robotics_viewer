@@ -1,0 +1,7 @@
+message-validation:
+  id: security.countermeasure.message-validation
+  name: WebSocket Message Validation
+  type: detective
+  documentation: Validate all incoming WebSocket messages against expected schemas
+    before processing. Rejects malformed or unexpected message types to prevent
+    injection attacks.

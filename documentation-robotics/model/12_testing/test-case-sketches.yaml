@@ -1,175 +1,55 @@
-Unit Tests:
-  name: Unit Tests
+unit-tests:
   id: testing.test-case-sketch.unit-tests
-  description: Unit tests for core logic, parsers, and transformers
-  targets: '["testing.coverage-target.core-logic"]'
-  version: 1.0.0
-  application: documentation_robotics_viewer
-  coverage-targets:
-  - id: testing.coverage-target.core-logic
-    name: Core Logic
-    target-type: composite
-  coverage-requirements:
-  - id: testing.coverage-requirement.all-tests-pass
-    name: All Tests Pass
-    coverage-criteria: happy-path
-    target-ref: testing.coverage-target.core-logic
-E2E Tests:
-  name: E2E Tests
-  description: End-to-end tests for full application workflows
+  name: Unit Tests
+  type: test-case-sketche
+  documentation: Unit tests for core logic, parsers, and transformers
+e2e-tests:
   id: testing.test-case-sketch.e2e-tests
-  contexts: '["testing.context-variation.standalone-mode"]'
-  targets: '["testing.coverage-target.ui-experience"]'
-  version: 1.0.0
-  application: documentation_robotics_viewer
-  coverage-targets:
-  - id: testing.coverage-target.ui-experience
-    name: UI Experience
-    target-type: composite
-  coverage-requirements:
-  - id: testing.coverage-requirement.all-tests-pass
-    name: All Tests Pass
-    coverage-criteria: happy-path
-    target-ref: testing.coverage-target.ui-experience
-Embedded Tests:
-  name: Embedded Tests
-  description: Tests for the viewer running in embedded mode
+  name: E2E Tests
+  type: test-case-sketche
+  documentation: End-to-end tests for full application workflows
+embedded-tests:
   id: testing.test-case-sketch.embedded-tests
-  targets: '["testing.coverage-target.ui-experience"]'
-  contexts: '["testing.context-variation.embedded-mode"]'
-  version: 1.0.0
-  application: documentation_robotics_viewer
-  coverage-targets:
-  - id: testing.coverage-target.ui-experience
-    name: UI Experience
-    target-type: composite
-  coverage-requirements:
-  - id: testing.coverage-requirement.all-tests-pass
-    name: All Tests Pass
-    coverage-criteria: happy-path
-    target-ref: testing.coverage-target.ui-experience
-Refinement Tests:
-  name: Refinement Tests
-  description: Tests for the refinement and feedback loops
+  name: Embedded Tests
+  type: test-case-sketche
+  documentation: Tests for the viewer running in embedded mode
+refinement-tests:
   id: testing.test-case-sketch.refinement-tests
-  version: 1.0.0
-  application: documentation_robotics_viewer
-  coverage-targets:
-  - id: testing.coverage-target.ui-experience
-    name: UI Experience
-    target-type: composite
-  coverage-requirements:
-  - id: testing.coverage-requirement.all-tests-pass
-    name: All Tests Pass
-    coverage-criteria: happy-path
-    target-ref: testing.coverage-target.ui-experience
-Metrics Tests:
-  name: Metrics Tests
-  description: Performance metrics and regression checks
+  name: Refinement Tests
+  type: test-case-sketche
+  documentation: Tests for the refinement and feedback loops
+metrics-tests:
   id: testing.test-case-sketch.metrics-tests
-  targets: '["testing.coverage-target.ui-experience"]'
-  version: 1.0.0
-  application: documentation_robotics_viewer
-  coverage-targets:
-  - id: testing.coverage-target.ui-experience
-    name: UI Experience
-    target-type: composite
-  coverage-requirements:
-  - id: testing.coverage-requirement.all-tests-pass
-    name: All Tests Pass
-    coverage-criteria: happy-path
-    target-ref: testing.coverage-target.ui-experience
-Accessibility Tests:
-  name: Accessibility Tests
-  description: Automated accessibility checks using axe-core
+  name: Metrics Tests
+  type: test-case-sketche
+  documentation: Performance metrics and regression checks
+accessibility-tests:
   id: testing.test-case-sketch.accessibility-tests
-  targets: '["testing.coverage-target.ui-experience"]'
-  version: 1.0.0
-  application: documentation_robotics_viewer
-  coverage-targets:
-  - id: testing.coverage-target.ui-experience
-    name: UI Experience
-    target-type: composite
-  coverage-requirements:
-  - id: testing.coverage-requirement.all-tests-pass
-    name: All Tests Pass
-    coverage-criteria: happy-path
-    target-ref: testing.coverage-target.ui-experience
-Integration Tests:
-  name: Integration Tests
-  description: Integration tests
-  version: 1.0.0
-  application: documentation_robotics_viewer
+  name: Accessibility Tests
+  type: test-case-sketche
+  documentation: Automated accessibility checks using axe-core
+integration-tests:
   id: testing.test-case-sketch.integration-tests
-  coverage-targets:
-  - id: testing.coverage-target.core-logic
-    name: Core Logic
-    target-type: composite
-  - id: testing.coverage-target.ui-experience
-    name: UI Experience
-    target-type: composite
-  coverage-requirements:
-  - id: testing.coverage-requirement.all-tests-pass
-    name: All Tests Pass
-    coverage-criteria: happy-path
-    target-ref: testing.coverage-target.core-logic
-Performance Tests:
-  name: Performance Tests
-  description: Performance tests
-  version: 1.0.0
-  application: documentation_robotics_viewer
+  name: Integration Tests
+  type: test-case-sketche
+  documentation: Integration tests
+performance-tests:
   id: testing.test-case-sketch.performance-tests
-  coverage-targets:
-  - id: testing.coverage-target.ui-experience
-    name: UI Experience
-    target-type: composite
-  coverage-requirements:
-  - id: testing.coverage-requirement.all-tests-pass
-    name: All Tests Pass
-    coverage-criteria: happy-path
-    target-ref: testing.coverage-target.ui-experience
-Component Tests:
-  name: Component Tests
-  description: Component tests
-  version: 1.0.0
-  application: documentation_robotics_viewer
+  name: Performance Tests
+  type: test-case-sketche
+  documentation: Performance tests
+component-tests:
   id: testing.test-case-sketch.component-tests
-  coverage-targets:
-  - id: testing.coverage-target.ui-experience
-    name: UI Experience
-    target-type: composite
-  coverage-requirements:
-  - id: testing.coverage-requirement.all-tests-pass
-    name: All Tests Pass
-    coverage-criteria: happy-path
-    target-ref: testing.coverage-target.ui-experience
-Scripted Tests:
-  name: Scripted Tests
-  description: Scripted tests
-  version: 1.0.0
-  application: documentation_robotics_viewer
+  name: Component Tests
+  type: test-case-sketche
+  documentation: Component tests
+scripted-tests:
   id: testing.test-case-sketch.scripted-tests
-  coverage-targets:
-  - id: testing.coverage-target.core-logic
-    name: Core Logic
-    target-type: composite
-  coverage-requirements:
-  - id: testing.coverage-requirement.all-tests-pass
-    name: All Tests Pass
-    coverage-criteria: happy-path
-    target-ref: testing.coverage-target.core-logic
-Example Implementation Tests:
-  name: Example Implementation Tests
-  description: Example implementation tests
-  version: 1.0.0
-  application: documentation_robotics_viewer
+  name: Scripted Tests
+  type: test-case-sketche
+  documentation: Scripted tests
+example-implementation-tests:
   id: testing.test-case-sketch.example-implementation-tests
-  coverage-targets:
-  - id: testing.coverage-target.core-logic
-    name: Core Logic
-    target-type: composite
-  coverage-requirements:
-  - id: testing.coverage-requirement.all-tests-pass
-    name: All Tests Pass
-    coverage-criteria: happy-path
-    target-ref: testing.coverage-target.core-logic
+  name: Example Implementation Tests
+  type: test-case-sketche
+  documentation: Example implementation tests

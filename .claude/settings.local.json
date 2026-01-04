@@ -71,7 +71,16 @@
       "Bash(do sleep 10)",
       "Bash(done)",
       "Bash(pgrep:*)",
-      "Bash(cut:*)"
+      "Bash(cut:*)",
+      "Bash(dr find motivation.goal.visualize-arc)",
+      "Bash(dr show:*)",
+      "Bash(dr relationship --help:*)",
+      "Bash(dr relationship list:*)",
+      "Bash(dr trace:*)",
+      "Bash(for elem in \"application.service.graph-builder\" \"api.operation.health-check\" \"security.policy.local-access\")",
+      "Bash(do echo \"=== $elem ===\")",
+      "Bash(dr conformance --help:*)",
+      "Bash(dr conformance:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -1,82 +1,28 @@
 unauthorized-file-access:
   id: security.threat.unauthorized-file-access
   name: Unauthorized File Access
-  description: >-
-    Malicious actors may attempt to access files outside the intended model
-    directory by exploiting file path handling vulnerabilities or bypassing
-    access controls.
-  threatens: security.secure-resource.file-system
-  likelihood: low
-  impact: medium
-  countermeasures:
-    - security.countermeasure.file-system-sandboxing
-    - security.countermeasure.path-validation
-  attack-vectors:
-    - Direct file system access bypass
-    - Symbolic link exploitation
-    - Race condition in file access
-  affected-components:
-    - application.service.yaml-parser-service
-    - application.service.data-loader-service
-
+  type: threat
+  documentation: Malicious actors may attempt to access files outside the intended
+    model directory by exploiting file path handling vulnerabilities or
+    bypassing access controls.
 path-traversal:
   id: security.threat.path-traversal
   name: Path Traversal Attack
-  description: >-
-    Attackers may craft malicious file paths containing sequences like '../'
-    to escape the model directory and access sensitive system files or
-    other user data.
-  threatens: security.secure-resource.file-system
-  likelihood: medium
-  impact: high
-  countermeasures:
-    - security.countermeasure.path-validation
-    - security.countermeasure.input-sanitization
-  attack-vectors:
-    - Malicious model file paths in manifest
-    - Crafted relative path references
-    - URL-encoded path sequences
-  mitre-attack-id: T1083
-
+  type: threat
+  documentation: Attackers may craft malicious file paths containing sequences
+    like '../' to escape the model directory and access sensitive system files
+    or other user data.
 xss-attack:
   id: security.threat.xss-attack
   name: Cross-Site Scripting (XSS)
-  description: >-
-    Malicious scripts embedded in model element names, descriptions, or
-    properties could execute in the viewer context if not properly sanitized,
+  type: threat
+  documentation: Malicious scripts embedded in model element names, descriptions,
+    or properties could execute in the viewer context if not properly sanitized,
     potentially stealing session data or manipulating the UI.
-  threatens: security.secure-resource.api-endpoints
-  likelihood: low
-  impact: medium
-  countermeasures:
-    - security.countermeasure.input-sanitization
-    - security.countermeasure.output-encoding
-  attack-vectors:
-    - Malicious element descriptions
-    - Crafted property values
-    - Script injection in annotations
-  affected-components:
-    - application.component.graph-view
-    - application.component.detail-panel
-  mitre-attack-id: T1059.007
-
 websocket-hijacking:
   id: security.threat.websocket-hijacking
   name: WebSocket Hijacking
-  description: >-
-    Unauthorized parties may attempt to intercept or inject messages into
-    WebSocket connections, potentially causing data corruption or enabling
+  type: threat
+  documentation: Unauthorized parties may attempt to intercept or inject messages
+    into WebSocket connections, potentially causing data corruption or enabling
     unauthorized actions in collaborative sessions.
-  threatens: security.secure-resource.websocket
-  likelihood: very-low
-  impact: medium
-  countermeasures:
-    - security.countermeasure.websocket-origin-validation
-    - security.countermeasure.message-validation
-  attack-vectors:
-    - Cross-site WebSocket hijacking
-    - Message injection
-    - Connection spoofing
-  notes: >-
-    Risk is low for local development use. Becomes more relevant if
-    the application is deployed as a shared service.

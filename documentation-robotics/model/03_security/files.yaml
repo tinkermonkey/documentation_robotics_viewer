@@ -1,0 +1,7 @@
+file-system:
+  id: security.secure-resource.file-system
+  name: Local File System
+  type: file
+  documentation: Local file system access for DR model files. Includes the model
+    directory containing manifest.yaml, layer directories, and all element YAML
+    files. Access is scoped to the model directory only.

@@ -1,0 +1,5 @@
+layer-selection:
+  id: navigation.menu.layer-selection
+  name: Layer Selection Menu
+  type: checklist
+  documentation: Layer filtering menu in Model view sidebar

@@ -1,0 +1,5 @@
+changeset-selection:
+  id: navigation.menu.changeset-selection
+  name: Changeset Selection Menu
+  type: list
+  documentation: Changeset selection list in Changesets view sidebar

@@ -1,0 +1,8 @@
+end-users:
+  id: motivation.stakeholder.end-users
+  name: End Users
+  type: customer
+  documentation: Consumers of architecture visualizations including architects,
+    developers, technical leads, and documentation readers who need to
+    understand system structure without deep technical knowledge of the
+    underlying model format.

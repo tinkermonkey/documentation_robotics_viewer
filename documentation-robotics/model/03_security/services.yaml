@@ -1,0 +1,7 @@
+websocket:
+  id: security.secure-resource.websocket
+  name: WebSocket Connection
+  type: service
+  documentation: WebSocket connection for real-time model updates and
+    collaboration. Used for annotation synchronization, model change
+    notifications, and multi-user awareness features.

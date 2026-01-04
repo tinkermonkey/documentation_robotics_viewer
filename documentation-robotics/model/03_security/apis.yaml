@@ -1,0 +1,7 @@
+api-endpoints:
+  id: security.secure-resource.api-endpoints
+  name: API Endpoints
+  type: api
+  documentation: REST API endpoints for the reference server including model
+    retrieval, spec access, health checks, and changeset management. All
+    endpoints are currently unauthenticated for local development use.

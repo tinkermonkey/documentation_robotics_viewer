@@ -1,0 +1,5 @@
+motivation-context:
+  id: navigation.menu.motivation-context
+  name: Motivation Context Menu
+  type: context-menu
+  documentation: Right-click context menu for motivation graph nodes

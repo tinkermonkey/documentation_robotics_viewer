@@ -1,0 +1,17 @@
+spec-json-screen:
+  id: ux.view.spec-json-screen
+  name: Spec JSON Screen
+  type: detail
+  documentation: Structured JSON view of DR specification with syntax highlighting
+    and schema navigation
+model-json-screen:
+  id: ux.view.model-json-screen
+  name: Model JSON Screen
+  type: detail
+  documentation: Structured JSON view of architecture model with path navigation
+    and link registry integration
+spec-view:
+  id: ux.view.spec-view
+  name: Spec View
+  type: detail
+  documentation: Specification and data model visualization

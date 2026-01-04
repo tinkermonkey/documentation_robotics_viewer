@@ -1,0 +1,17 @@
+model-graph-screen:
+  id: ux.view.model-graph-screen
+  name: Model Graph Screen
+  type: dashboard
+  documentation: Interactive multi-layer architecture model graph with filtering,
+    node selection, and cross-layer navigation
+motivation-screen:
+  id: ux.view.motivation-screen
+  name: Motivation Layer Screen
+  type: dashboard
+  documentation: Interactive motivation layer graph showing goals, requirements,
+    principles, and their relationships with upstream/downstream tracing
+motivation-view:
+  id: ux.view.motivation-view
+  name: Motivation View
+  type: dashboard
+  documentation: Goal and requirement visualization

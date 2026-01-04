@@ -1,0 +1,35 @@
+file-system-sandboxing:
+  id: security.countermeasure.file-system-sandboxing
+  name: File System Sandboxing
+  type: preventive
+  documentation: Restrict file system access to the designated model directory
+    only. All file operations are validated to ensure they remain within the
+    allowed directory scope. Uses path resolution and prefix checking.
+path-validation:
+  id: security.countermeasure.path-validation
+  name: Path Validation
+  type: preventive
+  documentation: Validate all file paths to prevent directory traversal attacks.
+    Rejects paths containing '../', absolute paths outside allowed directories,
+    and symbolic links pointing outside the model directory.
+input-sanitization:
+  id: security.countermeasure.input-sanitization
+  name: Input Sanitization
+  type: preventive
+  documentation: Sanitize all user-provided and model-derived content before
+    rendering in the UI. Escapes HTML entities, removes potentially dangerous
+    attributes, and validates data against expected schemas.
+output-encoding:
+  id: security.countermeasure.output-encoding
+  name: Output Encoding
+  type: preventive
+  documentation: Encode all dynamic content appropriately for the output context.
+    HTML encoding for DOM insertion, URL encoding for links, and JavaScript
+    encoding for script contexts.
+websocket-origin-validation:
+  id: security.countermeasure.websocket-origin-validation
+  name: WebSocket Origin Validation
+  type: preventive
+  documentation: Validate the origin header of WebSocket connection requests to
+    ensure connections only come from allowed sources. Rejects cross-origin
+    connection attempts.

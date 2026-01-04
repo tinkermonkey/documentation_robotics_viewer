@@ -1,87 +1,49 @@
 browser-compatibility:
   id: motivation.constraint.browser-compatibility
   name: Browser Compatibility
-  constraint-type: technology
-  documentation: >-
-    Application targets modern evergreen browsers only: Chrome/Edge 90+,
-    Firefox 90+, Safari 14+. No support for Internet Explorer or legacy
-    browsers. This enables use of modern JavaScript features and CSS.
+  type: constraint
+  documentation: "Application targets modern evergreen browsers only: Chrome/Edge
+    90+, Firefox 90+, Safari 14+. No support for Internet Explorer or legacy
+    browsers. This enables use of modern JavaScript features and CSS."
   properties:
     constraint:
-      source: "technical-decision"
+      source: technical-decision
       negotiable: "false"
-      commitment-type: "hard"
-  affects-technology:
-    - technology.framework.react
-    - technology.language.typescript
-  rationale: >-
-    Modern browser features (ES2020+, CSS Grid, Web Workers) are required
-    for performance targets. Supporting legacy browsers would significantly
-    increase development effort and limit capabilities.
-
+      commitment-type: hard
 accessibility-requirements:
   id: motivation.constraint.accessibility-requirements
   name: Accessibility Requirements
-  constraint-type: regulatory
-  documentation: >-
-    Application must comply with WCAG 2.1 Level AA accessibility standards.
-    This includes keyboard navigation, screen reader support, color contrast
-    ratios, and focus management.
+  type: constraint
+  documentation: Application must comply with WCAG 2.1 Level AA accessibility
+    standards. This includes keyboard navigation, screen reader support, color
+    contrast ratios, and focus management.
   properties:
     constraint:
-      source: "compliance"
+      source: compliance
       negotiable: "false"
-      commitment-type: "hard"
-      compliance-requirements: "WCAG 2.1 AA"
-  constrains-principles:
-    - motivation.principle.accessibility-by-default
-  verified-by:
-    - testing.coverage-requirement.accessibility-coverage
-
+      commitment-type: hard
+      compliance-requirements: WCAG 2.1 AA
 performance-targets:
   id: motivation.constraint.performance-targets
   name: Performance Targets
-  constraint-type: technology
-  documentation: >-
-    Strict performance requirements must be met: initial render under 3 seconds
-    for 500-element graphs, filter operations under 500ms, layout transitions
-    under 800ms, and 60fps pan/zoom interactions.
+  type: constraint
+  documentation: "Strict performance requirements must be met: initial render
+    under 3 seconds for 500-element graphs, filter operations under 500ms,
+    layout transitions under 800ms, and 60fps pan/zoom interactions."
   properties:
     constraint:
-      source: "product-requirements"
-      negotiable: "partially"
-      commitment-type: "soft"
-  constrains-principles:
-    - motivation.principle.performance-first
-  measured-by:
-    - apm.metric.render-time
-    - apm.metric.filter-latency
-    - apm.metric.interaction-fps
-  targets:
-    initial-render-500-elements: "<3s"
-    filter-operations: "<500ms"
-    layout-transitions: "<800ms"
-    pan-zoom: "60fps"
-
+      source: product-requirements
+      negotiable: partially
+      commitment-type: soft
 technology-stack:
   id: motivation.constraint.technology-stack
   name: Technology Stack Constraint
-  constraint-type: technology
-  documentation: >-
-    Application must use React 18+ with TypeScript for type safety. React Flow
-    (@xyflow/react) for graph visualization. Vite for build tooling. Tailwind CSS
-    for styling. These choices are fixed for the current version.
+  type: constraint
+  documentation: Application must use React 18+ with TypeScript for type safety.
+    React Flow (@xyflow/react) for graph visualization. Vite for build tooling.
+    Tailwind CSS for styling. These choices are fixed for the current version.
   properties:
     constraint:
-      source: "technical-decision"
+      source: technical-decision
       negotiable: "false"
-      commitment-type: "hard"
-  affects-technology:
-    - technology.framework.react
-    - technology.library.react-flow
-    - technology.tool.vite
-    - technology.language.typescript
-  rationale: >-
-    Technology choices were made based on team expertise, ecosystem maturity,
-    and performance characteristics. React Flow provides the best combination
-    of features and performance for graph visualization.
+      commitment-type: hard

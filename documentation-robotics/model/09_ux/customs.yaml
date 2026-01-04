@@ -1,0 +1,210 @@
+shared-layout:
+  id: ux.component.shared-layout
+  name: SharedLayout
+  type: custom
+  documentation: Three-column responsive layout wrapper with conditional sidebars
+    (left 256px, main flex-1, right 320px)
+embedded-layout:
+  id: ux.component.embedded-layout
+  name: EmbeddedLayout
+  type: custom
+  documentation: Main application shell with header, main tab navigation, sub-tab
+    navigation, and connection status indicator
+graph-viewer:
+  id: ux.component.graph-viewer
+  name: GraphViewer
+  type: custom
+  documentation: Core React Flow-based graph visualization component with pan,
+    zoom, minimap, and layer filtering
+c4-graph-view:
+  id: ux.component.c4-graph-view
+  name: C4GraphView
+  type: custom
+  documentation: C4 architecture graph viewer with hierarchical drill-down (System
+    → Container → Component) and technology filtering
+motivation-graph-view:
+  id: ux.component.motivation-graph-view
+  name: MotivationGraphView
+  type: custom
+  documentation: Motivation layer graph with element type filtering, relationship
+    filtering, and path tracing capabilities
+model-json-viewer:
+  id: ux.component.model-json-viewer
+  name: ModelJSONViewer
+  type: custom
+  documentation: Interactive JSON viewer with syntax highlighting, collapsible
+    sections, path navigation, and schema info integration
+spec-viewer:
+  id: ux.component.spec-viewer
+  name: SpecViewer
+  type: custom
+  documentation: DR specification JSON viewer with schema navigation and relationship mapping
+spec-graph-view:
+  id: ux.component.spec-graph-view
+  name: SpecGraphView
+  type: custom
+  documentation: Graph visualization of DR specification structure showing entity
+    relationships
+changeset-graph-view:
+  id: ux.component.changeset-graph-view
+  name: ChangesetGraphView
+  type: custom
+  documentation: Graph view of changeset showing added/modified/removed elements
+    with operation indicators
+sub-tab-navigation:
+  id: ux.component.sub-tab-navigation
+  name: SubTabNavigation
+  type: custom
+  documentation: Secondary navigation tabs for view switching (Graph/JSON, Graph/List)
+c4-breadcrumb-nav:
+  id: ux.component.c4-breadcrumb-nav
+  name: C4BreadcrumbNav
+  type: custom
+  documentation: Hierarchical breadcrumb navigation for C4 view levels (System >
+    Container > Component)
+motivation-breadcrumb:
+  id: ux.component.motivation-breadcrumb
+  name: MotivationBreadcrumb
+  type: custom
+  documentation: Breadcrumb navigation for motivation layer with element type indicators
+model-layers-sidebar:
+  id: ux.component.model-layers-sidebar
+  name: ModelLayersSidebar
+  type: custom
+  documentation: Layer selector sidebar showing all 12 DR layers with selection state
+spec-schemas-sidebar:
+  id: ux.component.spec-schemas-sidebar
+  name: SpecSchemasSidebar
+  type: custom
+  documentation: Schema browser sidebar for navigating DR specification entity types
+c4-right-sidebar:
+  id: ux.component.c4-right-sidebar
+  name: C4RightSidebar
+  type: custom
+  documentation: Comprehensive control sidebar for C4 view with filters, controls,
+    inspector, and export options
+motivation-right-sidebar:
+  id: ux.component.motivation-right-sidebar
+  name: MotivationRightSidebar
+  type: custom
+  documentation: Comprehensive control sidebar for motivation view with filters,
+    controls, inspector, and export options
+annotation-panel:
+  id: ux.component.annotation-panel
+  name: AnnotationPanel
+  type: custom
+  documentation: Annotation creation and display panel for collaborative documentation
+schema-info-panel:
+  id: ux.component.schema-info-panel
+  name: SchemaInfoPanel
+  type: custom
+  documentation: Panel displaying schema definition information for selected elements
+node-details-panel:
+  id: ux.component.node-details-panel
+  name: NodeDetailsPanel
+  type: custom
+  documentation: Detailed information panel for selected graph node showing
+    properties and metadata
+graph-statistics-panel:
+  id: ux.component.graph-statistics-panel
+  name: GraphStatisticsPanel
+  type: custom
+  documentation: Statistics panel showing element counts, layer distribution, and
+    model metrics
+highlighted-path-panel:
+  id: ux.component.highlighted-path-panel
+  name: HighlightedPathPanel
+  type: custom
+  documentation: Panel showing currently highlighted JSON path (3 second auto-clear)
+layer-types-legend:
+  id: ux.component.layer-types-legend
+  name: LayerTypesLegend
+  type: custom
+  documentation: Visual legend showing element types and their colors for the current model
+c4-control-panel:
+  id: ux.component.c4-control-panel
+  name: C4ControlPanel
+  type: custom
+  documentation: Control panel for C4 view with layout selection, view level
+    navigation, and view controls
+c4-filter-panel:
+  id: ux.component.c4-filter-panel
+  name: C4FilterPanel
+  type: custom
+  documentation: Filter panel for C4 view with container type and technology stack filtering
+c4-inspector-panel:
+  id: ux.component.c4-inspector-panel
+  name: C4InspectorPanel
+  type: custom
+  documentation: Detailed inspector panel for selected C4 element with metadata and actions
+motivation-control-panel:
+  id: ux.component.motivation-control-panel
+  name: MotivationControlPanel
+  type: custom
+  documentation: Control panel for motivation view with layout selection and view controls
+motivation-filter-panel:
+  id: ux.component.motivation-filter-panel
+  name: MotivationFilterPanel
+  type: custom
+  documentation: Filter panel for motivation view with element type and
+    relationship type filtering
+motivation-inspector-panel:
+  id: ux.component.motivation-inspector-panel
+  name: MotivationInspectorPanel
+  type: custom
+  documentation: Detailed inspector panel for selected motivation element with
+    relationship analysis
+motivation-context-menu:
+  id: ux.component.motivation-context-menu
+  name: MotivationContextMenu
+  type: custom
+  documentation: Right-click context menu for motivation graph nodes with
+    navigation and analysis actions
+connection-status:
+  id: ux.component.connection-status
+  name: ConnectionStatus
+  type: custom
+  documentation: WebSocket connection status indicator with reconnection feedback
+graph-toolbar:
+  id: ux.component.graph-toolbar
+  name: GraphToolbar
+  type: custom
+  documentation: Floating toolbar for graph view controls (zoom, fit, reset)
+minimap:
+  id: ux.component.minimap
+  name: MiniMap
+  type: custom
+  documentation: Mini-map overview of graph with viewport indicator
+operation-legend:
+  id: ux.component.operation-legend
+  name: OperationLegend
+  type: custom
+  documentation: Legend showing changeset operation types (added, modified, removed)
+error-boundary:
+  id: ux.component.error-boundary
+  name: ErrorBoundary
+  type: custom
+  documentation: React error boundary for graceful error handling and display
+spec-graph-screen:
+  id: ux.view.spec-graph-screen
+  name: Spec Graph Screen
+  type: custom
+  documentation: Interactive graph visualization of DR specification schemas with
+    relationship mapping and dependency tracing
+architecture-screen:
+  id: ux.view.architecture-screen
+  name: Architecture (C4) Screen
+  type: custom
+  documentation: C4 model visualization with hierarchical navigation (System,
+    Container, Component) and technology filtering
+changesets-graph-screen:
+  id: ux.view.changesets-graph-screen
+  name: Changesets Graph Screen
+  type: custom
+  documentation: Graph visualization of selected changeset showing added,
+    modified, and removed elements
+c4-view:
+  id: ux.view.c4-view
+  name: C4 View
+  type: custom
+  documentation: Hierarchical view (Context, Container, Component)

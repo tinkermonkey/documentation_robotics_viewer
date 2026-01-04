@@ -1,97 +1,104 @@
 react:
   id: technology.framework.react
   name: React
-  description: UI Library
+  type: stack
+  documentation: UI Library
   properties:
     version: 19.2.0
-  used-by: application.component.inspector-panel
 react-flow:
   id: technology.library.react-flow
   name: React Flow
-  description: Graph Visualization Library
+  type: stack
+  documentation: Graph Visualization Library
   properties:
-    package: '@xyflow/react'
+    package: "@xyflow/react"
     version: 12.9.3
 vite:
   id: technology.tool.vite
   name: Vite
-  description: Build Tool
+  type: stack
+  documentation: Build Tool
   properties:
     version: 7.2.4
 typescript:
   id: technology.language.typescript
   name: TypeScript
-  description: Programming Language
+  type: stack
+  documentation: Programming Language
   properties:
     version: 5.9.3
 playwright:
   id: technology.tool.playwright
   name: Playwright
-  description: E2E Testing
+  type: stack
+  documentation: E2E Testing
   properties:
     version: 1.57.0
 d3-force:
   id: technology.library.d3-force
   name: D3 Force
-  description: Force-directed graph layout
+  type: stack
+  documentation: Force-directed graph layout
   properties:
     package: d3-force
 dagre:
   id: technology.library.dagre
   name: Dagre
-  description: Directed graph layout
+  type: stack
+  documentation: Directed graph layout
   properties:
     package: dagre
 fastapi:
   id: technology.framework.fastapi
   name: FastAPI
-  description: Modern, fast (high-performance), web framework for building APIs with
-    Python
+  type: stack
+  documentation: Modern, fast (high-performance), web framework for building APIs with Python
   properties:
     language: python
-  used-by: application.service.reference-server
 uvicorn:
   id: technology.library.uvicorn
   name: Uvicorn
-  description: ASGI web server implementation for Python
+  type: stack
+  documentation: ASGI web server implementation for Python
   properties:
     language: python
-  used-by: application.service.reference-server
 zustand:
   id: technology.library.zustand
   name: Zustand
-  description: State management library for React
+  type: stack
+  documentation: State management library for React
   properties:
     package: zustand
     version: 5.0.8
 html-to-image:
   id: technology.library.html-to-image
   name: HTML-to-Image
-  description: Convert DOM nodes to images for PNG/SVG export
+  type: stack
+  documentation: Convert DOM nodes to images for PNG/SVG export
   properties:
     package: html-to-image
     version: 1.11.13
-  used-by: application.service.c4-export-service
 jszip:
   id: technology.library.jszip
   name: JSZip
-  description: Create and extract ZIP files in JavaScript
+  type: stack
+  documentation: Create and extract ZIP files in JavaScript
   properties:
     package: jszip
     version: 3.10.1
-  used-by: application.service.data-loader
 js-yaml:
   id: technology.library.js-yaml
   name: YAML Parser
-  description: YAML parser and serializer
+  type: stack
+  documentation: YAML parser and serializer
   properties:
     package: js-yaml
     version: 4.1.1
-  used-by: application.service.yaml-parser
 express:
   id: technology.framework.express
   name: Express
-  description: Web application framework for Node.js
+  type: stack
+  documentation: Web application framework for Node.js
   properties:
     package: express
     version: 5.1.0

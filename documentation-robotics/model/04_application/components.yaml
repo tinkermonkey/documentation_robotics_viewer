@@ -1,182 +1,108 @@
 viewer-app:
   id: application.component.viewer-app
   name: Viewer App
-  description: Main application container
-  realizes:
-  - business.capability.visualization
-  uses: technology.framework.react
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
+  type: component
+  documentation: Main application container
 graph-view:
   id: application.component.graph-view
   name: Graph View
-  description: Core graph rendering component
-  uses: technology.library.react-flow
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
-  - technology.library.react-flow
+  type: component
+  documentation: Core graph rendering component
 inspector-panel:
   id: application.component.inspector-panel
   name: Inspector Panel
-  description: Side panel for element details
-  uses:
-  - technology.framework.react
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
-Motivation Graph View:
-  name: Motivation Graph View
-  description: Displays motivation layer graph with filtering, export, and traceability
-    features
-  source-file: src/apps/embedded/components/MotivationGraphView.tsx
+  type: component
+  documentation: Side panel for element details
+motivation-graph-view:
   id: application.component.motivation-graph-view
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
-  - technology.library.react-flow
-Business Layer View:
-  name: Business Layer View
-  description: Displays business layer graph with processes, functions, services,
-    and capabilities
-  source-file: src/apps/embedded/components/BusinessLayerView.tsx
+  name: Motivation Graph View
+  type: component
+  documentation: Displays motivation layer graph with filtering, export, and
+    traceability features
+business-layer-view:
   id: application.component.business-layer-view
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
-  - technology.library.react-flow
-C4 Graph View:
-  name: C4 Graph View
-  description: Displays C4 architecture view with containers, components, and focus
-    modes
-  source-file: src/apps/embedded/components/C4GraphView.tsx
+  name: Business Layer View
+  type: component
+  documentation: Displays business layer graph with processes, functions,
+    services, and capabilities
+c4-graph-view:
   id: application.component.c4-graph-view
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
-  - technology.library.react-flow
-Changeset Graph View:
-  name: Changeset Graph View
-  description: Visualizes changesets showing added, modified, and deleted elements
-  source-file: src/apps/embedded/components/ChangesetGraphView.tsx
+  name: C4 Graph View
+  type: component
+  documentation: Displays C4 architecture view with containers, components, and focus modes
+changeset-graph-view:
   id: application.component.changeset-graph-view
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
-  - technology.library.react-flow
-Motivation Filter Panel:
-  name: Motivation Filter Panel
-  description: Filter controls for motivation layer (element types, traceability mode)
-  source-file: src/apps/embedded/components/MotivationFilterPanel.tsx
+  name: Changeset Graph View
+  type: component
+  documentation: Visualizes changesets showing added, modified, and deleted elements
+motivation-filter-panel:
   id: application.component.motivation-filter-panel
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
-C4 Filter Panel:
-  name: C4 Filter Panel
-  description: Filter controls for C4 view (scenario presets, detail levels, focus
-    context)
-  source-file: src/apps/embedded/components/C4FilterPanel.tsx
+  name: Motivation Filter Panel
+  type: component
+  documentation: Filter controls for motivation layer (element types, traceability mode)
+c4-filter-panel:
   id: application.component.c4-filter-panel
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
-Error Boundary:
-  name: Error Boundary
-  description: React error boundary for graceful error handling and user feedback
-  source-file: src/apps/embedded/components/ErrorBoundary.tsx
+  name: C4 Filter Panel
+  type: component
+  documentation: Filter controls for C4 view (scenario presets, detail levels, focus context)
+error-boundary:
   id: application.component.error-boundary
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
-View Tab Switcher:
-  name: View Tab Switcher
-  description: Tab navigation for switching between model, architecture, motivation,
-    and spec views
-  source-file: src/apps/embedded/components/ViewTabSwitcher.tsx
+  name: Error Boundary
+  type: component
+  documentation: React error boundary for graceful error handling and user feedback
+view-tab-switcher:
   id: application.component.view-tab-switcher
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
-Motivation Breadcrumb:
-  name: Motivation Breadcrumb
-  description: Breadcrumb navigation showing current filter state and traceability
-    mode
-  source-file: src/apps/embedded/components/MotivationBreadcrumb.tsx
+  name: View Tab Switcher
+  type: component
+  documentation: Tab navigation for switching between model, architecture,
+    motivation, and spec views
+motivation-breadcrumb:
   id: application.component.motivation-breadcrumb
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
-Mode Selector:
-  name: Mode Selector
-  description: UI control for selecting visualization modes and layouts
-  source-file: src/apps/embedded/components/ModeSelector.tsx
+  name: Motivation Breadcrumb
+  type: component
+  documentation: Breadcrumb navigation showing current filter state and traceability mode
+mode-selector:
   id: application.component.mode-selector
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
-Layer Panel:
-  name: Layer Panel
-  description: Side panel showing layer hierarchy and element counts
-  source-file: src/core/components/LayerPanel.tsx
+  name: Mode Selector
+  type: component
+  documentation: UI control for selecting visualization modes and layouts
+layer-panel:
   id: application.component.layer-panel
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
-Space Mouse Handler:
-  name: Space Mouse Handler
-  description: Handles pan and zoom interactions for graph navigation
-  source-file: src/core/components/SpaceMouseHandler.tsx
+  name: Layer Panel
+  type: component
+  documentation: Side panel showing layer hierarchy and element counts
+space-mouse-handler:
   id: application.component.space-mouse-handler
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
-Spec Viewer:
-  name: Spec Viewer
-  description: Displays JSON Schema specifications in formatted view
-  source-file: src/apps/embedded/components/SpecViewer.tsx
+  name: Space Mouse Handler
+  type: component
+  documentation: Handles pan and zoom interactions for graph navigation
+spec-viewer:
   id: application.component.spec-viewer
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
-Model JSON Viewer:
-  name: Model JSON Viewer
-  description: Displays raw model JSON in formatted tree view
-  source-file: src/apps/embedded/components/ModelJSONViewer.tsx
+  name: Spec Viewer
+  type: component
+  documentation: Displays JSON Schema specifications in formatted view
+model-json-viewer:
   id: application.component.model-json-viewer
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
-Changeset Viewer:
-  name: Changeset Viewer
-  description: Displays changeset details with element diff view
-  source-file: src/apps/embedded/components/ChangesetViewer.tsx
+  name: Model JSON Viewer
+  type: component
+  documentation: Displays raw model JSON in formatted tree view
+changeset-viewer:
   id: application.component.changeset-viewer
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
-Connection Status:
-  name: Connection Status
-  description: Real-time WebSocket connection status indicator
-  source-file: src/apps/embedded/components/ConnectionStatus.tsx
+  name: Changeset Viewer
+  type: component
+  documentation: Displays changeset details with element diff view
+connection-status:
   id: application.component.connection-status
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
-Changeset List:
-  name: Changeset List
-  description: Lists all available changesets with metadata
-  source-file: src/apps/embedded/components/ChangesetList.tsx
+  name: Connection Status
+  type: component
+  documentation: Real-time WebSocket connection status indicator
+changeset-list:
   id: application.component.changeset-list
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
-Annotation Panel:
-  name: Annotation Panel
-  description: User annotations and comments on model elements
-  source-file: src/apps/embedded/components/AnnotationPanel.tsx
+  name: Changeset List
+  type: component
+  documentation: Lists all available changesets with metadata
+annotation-panel:
   id: application.component.annotation-panel
-  deployed-on:
-  - technology.framework.react
-  - technology.language.typescript
+  name: Annotation Panel
+  type: component
+  documentation: User annotations and comments on model elements

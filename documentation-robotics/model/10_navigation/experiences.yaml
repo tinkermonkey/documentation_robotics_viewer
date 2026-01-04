@@ -1,0 +1,30 @@
+root:
+  id: navigation.route.root
+  name: Root Route
+  type: experience
+  documentation: Root layout route providing EmbeddedLayout wrapper for all child routes
+model-view:
+  id: navigation.route.model-view
+  name: Model View Route
+  type: experience
+  documentation: Parametric route for model graph and JSON views (/model/:view)
+spec-view:
+  id: navigation.route.spec-view
+  name: Spec View Route
+  type: experience
+  documentation: Parametric route for spec graph and JSON views (/spec/:view)
+motivation:
+  id: navigation.route.motivation
+  name: Motivation Route
+  type: experience
+  documentation: Motivation layer visualization route (/motivation)
+architecture:
+  id: navigation.route.architecture
+  name: Architecture (C4) Route
+  type: experience
+  documentation: C4 architecture model visualization route (/architecture)
+changesets-view:
+  id: navigation.route.changesets-view
+  name: Changesets View Route
+  type: experience
+  documentation: Parametric route for changeset graph and list views (/changesets/:view)

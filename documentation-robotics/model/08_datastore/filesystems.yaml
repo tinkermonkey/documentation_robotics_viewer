@@ -1,0 +1,5 @@
+local-fs:
+  id: datastore.store.local-fs
+  name: Local Filesystem
+  type: filesystem
+  documentation: Storage for model files (YAML/JSON)

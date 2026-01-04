@@ -1,338 +1,181 @@
-# UX Layer - Interaction Definitions
-# Documentation Robotics v0.6.0
-# Key user interactions across all screens and components
-
-# Graph Interaction Patterns
 graph-pan-zoom:
   id: ux.interaction.graph-pan-zoom
   name: Graph Pan and Zoom
-  description: User can pan by dragging canvas and zoom using mouse wheel or pinch gestures
-  trigger: drag|scroll|pinch
-  component: ux.component.graph-viewer
-  feedback: Smooth 60fps animation
-  performance_target: 16ms response time
-
+  type: interaction
+  documentation: User can pan by dragging canvas and zoom using mouse wheel or pinch gestures
 graph-node-select:
   id: ux.interaction.graph-node-select
   name: Graph Node Selection
-  description: Click on graph node to select and display details in sidebar panels
-  trigger: click
-  component: ux.component.graph-viewer
-  feedback: Visual highlight and detail panel update
-  state_change: Sets selectedNode in component state
-
+  type: interaction
+  documentation: Click on graph node to select and display details in sidebar panels
 graph-fit-view:
   id: ux.interaction.graph-fit-view
   name: Fit Graph to View
-  description: Automatically adjust zoom and pan to fit all visible nodes in viewport
-  trigger: button-click
-  component: ux.component.graph-viewer
-  feedback: Smooth zoom/pan animation (800ms)
-  action: Calls ReactFlow fitView() API
-
+  type: interaction
+  documentation: Automatically adjust zoom and pan to fit all visible nodes in viewport
 graph-minimap-toggle:
   id: ux.interaction.graph-minimap-toggle
   name: Toggle Minimap
-  description: Show or hide minimap overview of graph
-  trigger: button-click
-  component: ux.component.graph-viewer
-  state_change: Toggles showMinimap boolean
-
-# Layer/Type Filtering
+  type: interaction
+  documentation: Show or hide minimap overview of graph
 layer-filter-toggle:
   id: ux.interaction.layer-filter-toggle
   name: Layer Filter Toggle
-  description: Toggle visibility of specific architecture layer in model graph
-  trigger: checkbox-click
-  component: ux.component.model-layers-sidebar
-  feedback: Graph updates to show/hide layer elements
-  performance_target: Sub-500ms filter operation
-
+  type: interaction
+  documentation: Toggle visibility of specific architecture layer in model graph
 container-type-filter:
   id: ux.interaction.container-type-filter
   name: Container Type Filter
-  description: Toggle visibility of specific C4 container type (web, api, database, etc.)
-  trigger: checkbox-click
-  component: ux.component.c4-filter-panel
-  feedback: Graph updates to show/hide container types
-  state_change: Updates visibleContainerTypes set
-
+  type: interaction
+  documentation: Toggle visibility of specific C4 container type (web, api, database, etc.)
 technology-filter:
   id: ux.interaction.technology-filter
   name: Technology Stack Filter
-  description: Toggle visibility of containers using specific technology
-  trigger: checkbox-click
-  component: ux.component.c4-filter-panel
-  feedback: Graph updates to show/hide technology-specific containers
-
+  type: interaction
+  documentation: Toggle visibility of containers using specific technology
 element-type-filter:
   id: ux.interaction.element-type-filter
   name: Element Type Filter (Motivation)
-  description: Toggle visibility of motivation element types (goal, requirement, principle, etc.)
-  trigger: checkbox-click
-  component: ux.component.motivation-filter-panel
-  feedback: Graph updates to show/hide element types
-
+  type: interaction
+  documentation: Toggle visibility of motivation element types (goal, requirement,
+    principle, etc.)
 relationship-type-filter:
   id: ux.interaction.relationship-type-filter
   name: Relationship Type Filter
-  description: Toggle visibility of specific relationship types in motivation graph
-  trigger: checkbox-click
-  component: ux.component.motivation-filter-panel
-  feedback: Graph edges update to show/hide relationship types
-
+  type: interaction
+  documentation: Toggle visibility of specific relationship types in motivation graph
 filter-clear-all:
   id: ux.interaction.filter-clear-all
   name: Clear All Filters
-  description: Reset all active filters to show all elements
-  trigger: button-click
-  component: ux.component.c4-filter-panel|ux.component.motivation-filter-panel
-  feedback: All elements become visible
-
-# View Switching
+  type: interaction
+  documentation: Reset all active filters to show all elements
 view-switch-graph-json:
   id: ux.interaction.view-switch-graph-json
   name: Switch Between Graph and JSON Views
-  description: Toggle between interactive graph visualization and structured JSON view
-  trigger: tab-click
-  component: ux.component.sub-tab-navigation
-  feedback: View content transitions (unmount/mount)
-  navigation: Updates URL parameter (/model/graph ↔ /model/json)
-  state_persistence: View preference stored in Zustand
-
+  type: interaction
+  documentation: Toggle between interactive graph visualization and structured JSON view
 view-switch-graph-list:
   id: ux.interaction.view-switch-graph-list
   name: Switch Between Graph and List Views (Changesets)
-  description: Toggle between graph visualization and detailed list view of changeset
-  trigger: tab-click
-  component: ux.component.sub-tab-navigation
-  navigation: Updates URL parameter (/changesets/graph ↔ /changesets/list)
-
+  type: interaction
+  documentation: Toggle between graph visualization and detailed list view of changeset
 main-tab-navigation:
   id: ux.interaction.main-tab-navigation
   name: Main Tab Navigation
-  description: Navigate between main application sections (Spec, Model, Motivation, Architecture, Changesets)
-  trigger: tab-click
-  component: ux.component.embedded-layout
-  feedback: Active tab highlight and content change
-  navigation: Navigates to route with persisted view preference
-
-# Layout Algorithm Changes
+  type: interaction
+  documentation: Navigate between main application sections (Spec, Model,
+    Motivation, Architecture, Changesets)
 layout-algorithm-change:
   id: ux.interaction.layout-algorithm-change
   name: Change Layout Algorithm
-  description: Switch between graph layout algorithms (hierarchical, force-directed, radial, circular, tree)
-  trigger: dropdown-select
-  component: ux.component.c4-control-panel|ux.component.motivation-control-panel
-  feedback: Graph re-layouts with animation
-  performance: Async calculation for 100+ nodes using Web Workers
-  state_persistence: Layout preference stored in Zustand
-
-# C4 Navigation
+  type: interaction
+  documentation: Switch between graph layout algorithms (hierarchical,
+    force-directed, radial, circular, tree)
 c4-drill-down:
   id: ux.interaction.c4-drill-down
   name: Drill Down to Container/Component
-  description: Navigate from system level to container level, or container to component level
-  trigger: double-click|button-click
-  component: ux.component.c4-graph-view
-  feedback: View level changes, breadcrumb updates
-  state_change: Updates currentViewLevel, selectedContainerId
-  navigation: Updates URL breadcrumb navigation
-
+  type: interaction
+  documentation: Navigate from system level to container level, or container to
+    component level
 c4-breadcrumb-navigate:
   id: ux.interaction.c4-breadcrumb-navigate
   name: C4 Breadcrumb Navigation
-  description: Navigate up hierarchy using breadcrumb links (Component → Container → System)
-  trigger: breadcrumb-click
-  component: ux.component.c4-breadcrumb-nav
-  feedback: View level changes
-  state_change: Updates currentViewLevel, clears lower-level selections
-
+  type: interaction
+  documentation: Navigate up hierarchy using breadcrumb links (Component → Container → System)
 c4-view-level-change:
   id: ux.interaction.c4-view-level-change
   name: C4 View Level Change
-  description: Jump to specific C4 view level using control panel buttons
-  trigger: button-click
-  component: ux.component.c4-control-panel
-  feedback: Graph redraws at selected level
-
-# Dependency Tracing
+  type: interaction
+  documentation: Jump to specific C4 view level using control panel buttons
 trace-upstream:
   id: ux.interaction.trace-upstream
   name: Trace Upstream Dependencies
-  description: Highlight all upstream dependencies of selected element (influences, requirements)
-  trigger: button-click|context-menu
-  component: ux.component.c4-inspector-panel|ux.component.motivation-inspector-panel
-  feedback: Graph highlights upstream path (nodes and edges)
-  algorithm: Breadth-first search with 10-level depth limit
-  state_change: Sets pathTracing mode to 'upstream'
-
+  type: interaction
+  documentation: Highlight all upstream dependencies of selected element
+    (influences, requirements)
 trace-downstream:
   id: ux.interaction.trace-downstream
   name: Trace Downstream Impacts
-  description: Highlight all downstream impacts of selected element (realizations, implementations)
-  trigger: button-click|context-menu
-  component: ux.component.c4-inspector-panel|ux.component.motivation-inspector-panel
-  feedback: Graph highlights downstream path (nodes and edges)
-  algorithm: Breadth-first search with 10-level depth limit
-  state_change: Sets pathTracing mode to 'downstream'
-
+  type: interaction
+  documentation: Highlight all downstream impacts of selected element
+    (realizations, implementations)
 trace-clear:
   id: ux.interaction.trace-clear
   name: Clear Path Highlighting
-  description: Remove all path highlighting and return to normal view
-  trigger: button-click
-  component: ux.component.c4-control-panel|ux.component.motivation-control-panel
-  feedback: Graph returns to default styling
-  state_change: Resets pathTracing mode to 'none'
-
+  type: interaction
+  documentation: Remove all path highlighting and return to normal view
 focus-on-element:
   id: ux.interaction.focus-on-element
   name: Focus on Element (Direct Relationships)
-  description: Highlight selected element and its direct relationships only
-  trigger: button-click|context-menu
-  component: ux.component.motivation-inspector-panel
-  feedback: Graph highlights selected node and immediate neighbors
-  state_change: Sets pathTracing mode to 'direct', enables focusContext
-
+  type: interaction
+  documentation: Highlight selected element and its direct relationships only
 show-network:
   id: ux.interaction.show-network
   name: Show Network (Radial Layout)
-  description: Display radial network view centered on selected element
-  trigger: button-click|context-menu
-  component: ux.component.motivation-inspector-panel
-  feedback: Graph switches to radial layout with element at center
-  state_change: Changes layout to 'radial', sets centerNodeId
-
-# Focus Mode
+  type: interaction
+  documentation: Display radial network view centered on selected element
 focus-mode-toggle:
   id: ux.interaction.focus-mode-toggle
   name: Toggle Focus Mode
-  description: Enable/disable focus mode to dim non-highlighted elements
-  trigger: checkbox-click
-  component: ux.component.c4-control-panel|ux.component.motivation-control-panel
-  feedback: Graph applies dim styling to non-highlighted elements
-  state_change: Toggles focusContextEnabled boolean
-
-# Export Operations
+  type: interaction
+  documentation: Enable/disable focus mode to dim non-highlighted elements
 export-png:
   id: ux.interaction.export-png
   name: Export Graph as PNG
-  description: Export current graph view as PNG image using html-to-image library
-  trigger: button-click
-  component: ux.component.c4-control-panel|ux.component.motivation-control-panel
-  feedback: Browser downloads PNG file
-  technology: html-to-image
-  filename_pattern: "{view}-{level}-diagram.png"
-
+  type: interaction
+  documentation: Export current graph view as PNG image using html-to-image library
 export-svg:
   id: ux.interaction.export-svg
   name: Export Graph as SVG
-  description: Export current graph view as SVG vector image
-  trigger: button-click
-  component: ux.component.c4-control-panel|ux.component.motivation-control-panel
-  feedback: Browser downloads SVG file
-  technology: html-to-image
-  filename_pattern: "{view}-{level}-diagram.svg"
-
+  type: interaction
+  documentation: Export current graph view as SVG vector image
 export-json:
   id: ux.interaction.export-json
   name: Export Graph Data as JSON
-  description: Export graph structure (nodes and edges) as JSON data
-  trigger: button-click
-  component: ux.component.c4-control-panel|ux.component.motivation-control-panel
-  feedback: Browser downloads JSON file
-  data_format: ReactFlow-compatible node/edge arrays
-
+  type: interaction
+  documentation: Export graph structure (nodes and edges) as JSON data
 export-traceability-report:
   id: ux.interaction.export-traceability-report
   name: Export Traceability Report
-  description: Export comprehensive traceability report showing all element relationships
-  trigger: button-click
-  component: ux.component.motivation-control-panel
-  feedback: Browser downloads JSON traceability report
-  includes: All nodes, edges, and relationship metadata
-
-# JSON Navigation
+  type: interaction
+  documentation: Export comprehensive traceability report showing all element relationships
 json-expand-collapse:
   id: ux.interaction.json-expand-collapse
   name: Expand/Collapse JSON Sections
-  description: Toggle expansion state of JSON object/array sections
-  trigger: click
-  component: ux.component.model-json-viewer|ux.component.spec-viewer
-  feedback: Section expands or collapses with animation
-
+  type: interaction
+  documentation: Toggle expansion state of JSON object/array sections
 json-path-navigate:
   id: ux.interaction.json-path-navigate
   name: Navigate to JSON Path
-  description: Jump to specific path in JSON tree and highlight for 3 seconds
-  trigger: link-click
-  component: ux.component.model-json-viewer
-  feedback: Path scrolls into view and highlights (3s auto-clear)
-  state_change: Sets highlightedPath with timeout
-
-# Changeset Operations
+  type: interaction
+  documentation: Jump to specific path in JSON tree and highlight for 3 seconds
 changeset-select:
   id: ux.interaction.changeset-select
   name: Select Changeset
-  description: Select changeset from list to view its contents
-  trigger: list-item-click
-  component: ux.component.changeset-list
-  feedback: Changeset details load in main area
-  state_change: Sets selectedChangesetId, loads changeset data
-  api_call: embeddedDataLoader.loadChangeset(id)
-
-# Annotation Operations
+  type: interaction
+  documentation: Select changeset from list to view its contents
 annotation-create:
   id: ux.interaction.annotation-create
   name: Create Annotation
-  description: Add new annotation to current view or selected element
-  trigger: button-click
-  component: ux.component.annotation-panel
-  feedback: Annotation form displays
-  optimistic_update: Annotation appears immediately
-  websocket_sync: Broadcasts to other clients via WebSocket
-
-# Schema Navigation
+  type: interaction
+  documentation: Add new annotation to current view or selected element
 schema-select:
   id: ux.interaction.schema-select
   name: Select Schema
-  description: Select schema from sidebar to view its definition
-  trigger: list-item-click
-  component: ux.component.spec-schemas-sidebar
-  feedback: Schema highlights in graph or JSON view
-  state_change: Sets selectedSchemaId
-
-# Inspector Operations
+  type: interaction
+  documentation: Select schema from sidebar to view its definition
 inspector-close:
   id: ux.interaction.inspector-close
   name: Close Inspector Panel
-  description: Close element inspector panel
-  trigger: button-click
-  component: ux.component.c4-inspector-panel|ux.component.motivation-inspector-panel
-  feedback: Inspector panel closes
-  state_change: Sets inspectorPanelVisible to false, clears selectedNodeId
-
-# Context Menu
+  type: interaction
+  documentation: Close element inspector panel
 context-menu-open:
   id: ux.interaction.context-menu-open
   name: Open Context Menu
-  description: Right-click on graph node to open context menu with actions
-  trigger: right-click
-  component: ux.component.motivation-graph-view
-  feedback: Context menu appears at cursor position
-  actions:
-    - Trace upstream
-    - Trace downstream
-    - Show network
-    - Focus on element
-
-# Real-time Sync
+  type: interaction
+  documentation: Right-click on graph node to open context menu with actions
 websocket-reconnect:
   id: ux.interaction.websocket-reconnect
   name: WebSocket Reconnection
-  description: Automatic reconnection when WebSocket connection drops
-  trigger: disconnect-event
-  component: ux.component.connection-status
-  feedback: Connection status indicator shows reconnecting state with attempt count
-  retry_strategy: Exponential backoff (2s, 4s, 8s, 16s, 30s max)
+  type: interaction
+  documentation: Automatic reconnection when WebSocket connection drops

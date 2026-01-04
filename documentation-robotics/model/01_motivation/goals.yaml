@@ -1,45 +1,27 @@
 visualize-architecture:
   id: motivation.goal.visualize-architecture
   name: Visualize Architecture
-  priority: high
+  type: goal
   documentation: Provide interactive visualization of DR models across all layers
-  stakeholders:
-    - motivation.stakeholder.architecture-team
-    - motivation.stakeholder.development-team
-    - motivation.stakeholder.end-users
-  governed-by-principles:
-    - motivation.principle.user-centric-design
-    - motivation.principle.performance-first
   properties:
     goal:
       measurable: "true"
-      kpi: "Initial render time < 3s for 500 elements"
+      kpi: Initial render time < 3s for 500 elements
 interactive-graphs:
   id: motivation.requirement.interactive-graphs
   name: Interactive Graphs
-  requirement-type: functional
-  priority: high
+  type: goal
   documentation: Users must be able to pan, zoom, and click nodes for details
-  supports-goals:
-    - motivation.goal.visualize-architecture
-  governed-by-principles:
-    - motivation.principle.user-centric-design
-    - motivation.principle.performance-first
   properties:
     requirement:
-      source: "stakeholder-interview"
-      status: "implemented"
+      source: stakeholder-interview
+      status: implemented
 embedded-mode:
   id: motivation.requirement.embedded-mode
   name: Embedded Mode
-  requirement-type: functional
-  priority: high
+  type: goal
   documentation: Viewer must support embedding in other applications via iframe or component
-  supports-goals:
-    - motivation.goal.visualize-architecture
-  governed-by-principles:
-    - motivation.principle.progressive-enhancement
   properties:
     requirement:
-      source: "stakeholder-interview"
-      status: "implemented"
+      source: stakeholder-interview
+      status: implemented

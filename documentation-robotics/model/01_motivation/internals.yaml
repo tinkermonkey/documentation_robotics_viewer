@@ -1,0 +1,14 @@
+architecture-team:
+  id: motivation.stakeholder.architecture-team
+  name: Architecture Team
+  type: internal
+  documentation: Primary stakeholder responsible for defining and maintaining the
+    architecture documentation. Uses the viewer to explore, validate, and
+    communicate architectural decisions across the organization.
+development-team:
+  id: motivation.stakeholder.development-team
+  name: Development Team
+  type: internal
+  documentation: Contributors who implement and maintain the visualization tool.
+    Also users who reference architecture models during development to
+    understand system structure and dependencies.

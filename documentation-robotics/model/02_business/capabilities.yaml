@@ -1,13 +1,15 @@
 visualization:
   id: business.capability.visualization
   name: Visualization
-  description: Rendering of architectural models as interactive graphs
-  realized-by: application.component.viewer-app
+  type: capabilitie
+  documentation: Rendering of architectural models as interactive graphs
 documentation:
   id: business.capability.documentation
   name: Documentation
-  description: Displaying detailed documentation for model elements
+  type: capabilitie
+  documentation: Displaying detailed documentation for model elements
 export:
   id: business.capability.export
   name: Export
-  description: Exporting views as images or data
+  type: capabilitie
+  documentation: Exporting views as images or data
