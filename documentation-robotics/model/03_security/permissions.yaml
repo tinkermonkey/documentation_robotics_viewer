@@ -5,6 +5,10 @@ read-model-files:
   documentation: Permission to read DR architecture model files from the local
     file system or via API endpoints. Includes manifest, layer files, and schema
     files.
+  properties:
+    x-enforced-by:
+      - security.countermeasure.file-system-sandboxing
+      - security.countermeasure.path-validation
 write-model-files:
   id: security.permission.write-model-files
   name: Write Model Files
@@ -17,9 +21,16 @@ access-api-endpoints:
   type: permission
   documentation: Permission to access the reference API server endpoints for model
     retrieval, spec access, and changeset management.
+  properties:
+    x-enforced-by:
+      - security.countermeasure.input-sanitization
+      - security.countermeasure.output-encoding
 websocket-connection:
   id: security.permission.websocket-connection
   name: WebSocket Connection
   type: permission
   documentation: Permission to establish WebSocket connections for real-time
     updates and collaboration features.
+  properties:
+    x-enforced-by:
+      - security.countermeasure.websocket-origin-validation

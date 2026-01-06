@@ -19,6 +19,10 @@ health-check:
                   type: string
                 version:
                   type: string
+    x-archimate-ref:
+      - application.service.reference-server
+    x-protected-by:
+      - security.permission.access-api-endpoints
 get-spec:
   id: api.operation.get-spec
   name: Get Specification
@@ -33,6 +37,11 @@ get-spec:
         description: Specification data
       "404":
         description: Schema directory not found
+    x-archimate-ref:
+      - application.service.json-schema-parser
+    x-protected-by:
+      - security.permission.read-model-files
+      - security.countermeasure.path-validation
 get-model:
   id: api.operation.get-model
   name: Get Model
@@ -47,6 +56,12 @@ get-model:
         description: Model data
       "404":
         description: Model manifest not found
+    x-archimate-ref:
+      - application.service.data-loader
+    x-protected-by:
+      - security.permission.read-model-files
+      - security.countermeasure.path-validation
+      - security.countermeasure.input-sanitization
 list-changesets:
   id: api.operation.list-changesets
   name: List Changesets
@@ -59,6 +74,11 @@ list-changesets:
     responses:
       "200":
         description: List of changesets
+    x-archimate-ref:
+      - application.service.yaml-parser
+    x-protected-by:
+      - security.permission.read-model-files
+      - security.countermeasure.path-validation
 get-changeset:
   id: api.operation.get-changeset
   name: Get Changeset
@@ -79,6 +99,12 @@ get-changeset:
         description: Changeset details
       "404":
         description: Changeset not found
+    x-archimate-ref:
+      - application.service.yaml-parser
+    x-protected-by:
+      - security.permission.read-model-files
+      - security.countermeasure.path-validation
+      - security.countermeasure.input-sanitization
 get-annotations:
   id: api.operation.get-annotations
   name: Get Annotations
@@ -97,6 +123,11 @@ get-annotations:
     responses:
       "200":
         description: List of annotations
+    x-archimate-ref:
+      - application.service.demo-data-service
+    x-protected-by:
+      - security.permission.access-api-endpoints
+      - security.countermeasure.output-encoding
 get-github-releases:
   id: api.operation.get-github-releases
   name: Get GitHub Releases
@@ -133,6 +164,11 @@ get-github-releases:
                           type: array
             "500":
               description: Failed to fetch releases
+    x-archimate-ref:
+      - application.service.git-hub-service
+    x-protected-by:
+      - security.permission.access-api-endpoints
+      - security.countermeasure.input-sanitization
 get-latest-github-release:
   id: api.operation.get-latest-github-release
   name: Get Latest GitHub Release
@@ -169,6 +205,11 @@ get-latest-github-release:
               description: No spec releases found
             "500":
               description: Failed to fetch release
+    x-archimate-ref:
+      - application.service.git-hub-service
+    x-protected-by:
+      - security.permission.access-api-endpoints
+      - security.countermeasure.input-sanitization
 get-github-release-by-tag:
   id: api.operation.get-github-release-by-tag
   name: Get GitHub Release by Tag
@@ -204,6 +245,12 @@ get-github-release-by-tag:
               description: Release not found
             "500":
               description: Failed to fetch release
+    x-archimate-ref:
+      - application.service.git-hub-service
+    x-protected-by:
+      - security.permission.access-api-endpoints
+      - security.countermeasure.input-sanitization
+      - security.countermeasure.path-validation
 download-github-schema-zip:
   id: api.operation.download-github-schema-zip
   name: Download GitHub Schema ZIP
@@ -240,6 +287,11 @@ download-github-schema-zip:
               description: Release or asset not found
             "500":
               description: Failed to download
+    x-archimate-ref:
+      - application.service.git-hub-service
+    x-protected-by:
+      - security.permission.access-api-endpoints
+      - security.countermeasure.path-validation
 get-example-implementation:
   id: api.operation.get-example-implementation
   name: Get Example Implementation
@@ -271,6 +323,13 @@ get-example-implementation:
               description: Example implementation not found
             "500":
               description: Failed to serve example implementation
+    x-archimate-ref:
+      - application.service.yaml-parser
+      - application.service.data-loader
+    x-protected-by:
+      - security.permission.read-model-files
+      - security.countermeasure.path-validation
+      - security.countermeasure.file-system-sandboxing
 websocket-connect:
   id: api.operation.websocket-connect
   name: WebSocket Connection
@@ -292,6 +351,11 @@ websocket-connect:
       client-to-server:
         - subscribe
         - ping
+    x-archimate-ref:
+      - application.service.reference-server
+    x-protected-by:
+      - security.permission.websocket-connection
+      - security.countermeasure.websocket-origin-validation
 connected:
   id: api.event.connected
   name: Connected Event

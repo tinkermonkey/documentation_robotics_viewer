@@ -4,6 +4,9 @@ shared-layout:
   type: custom
   documentation: Three-column responsive layout wrapper with conditional sidebars
     (left 256px, main flex-1, right 320px)
+  properties:
+    x-rendered-by:
+      - application.component.viewer-app
 embedded-layout:
   id: ux.component.embedded-layout
   name: EmbeddedLayout
@@ -16,18 +19,27 @@ graph-viewer:
   type: custom
   documentation: Core React Flow-based graph visualization component with pan,
     zoom, minimap, and layer filtering
+  properties:
+    x-rendered-by:
+      - application.component.graph-view
 c4-graph-view:
   id: ux.component.c4-graph-view
   name: C4GraphView
   type: custom
   documentation: C4 architecture graph viewer with hierarchical drill-down (System
     → Container → Component) and technology filtering
+  properties:
+    x-rendered-by:
+      - application.component.c4-graph-view
 motivation-graph-view:
   id: ux.component.motivation-graph-view
   name: MotivationGraphView
   type: custom
   documentation: Motivation layer graph with element type filtering, relationship
     filtering, and path tracing capabilities
+  properties:
+    x-rendered-by:
+      - application.component.motivation-graph-view
 model-json-viewer:
   id: ux.component.model-json-viewer
   name: ModelJSONViewer

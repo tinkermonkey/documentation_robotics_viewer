@@ -3,6 +3,9 @@ visualization:
   name: Visualization
   type: capabilitie
   documentation: Rendering of architectural models as interactive graphs
+  properties:
+    x-supports-goals:
+      - motivation.goal.visualize-architecture
 documentation:
   id: business.capability.documentation
   name: Documentation

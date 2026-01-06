@@ -3,3 +3,7 @@ embedding-success-rate:
   name: Embedding Success Rate
   type: reliability
   documentation: Percentage of successful embedded viewer loads
+  properties:
+    x-measures:
+      - application.component.viewer-app
+      - application.service.data-loader

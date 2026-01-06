@@ -3,16 +3,37 @@ graph-builder:
   name: Graph Builder
   type: service
   documentation: Transforms model data into graph nodes and edges
+  properties:
+    x-realizes:
+      - business.service.architecture-visualization
+    x-uses:
+      - technology.library.react-flow
+    x-accesses:
+      - data_model.entity.model-element
+      - data_model.entity.relationship
 layout-engine:
   id: application.service.layout-engine
   name: Layout Engine
   type: service
   documentation: Calculates node positions
+  properties:
+    x-realizes:
+      - business.service.architecture-visualization
+    x-uses:
+      - technology.library.d3-force
+      - technology.library.dagre
+      - technology.library.elkjs
+    x-monitored-by:
+      - apm.metric.initialization-time
+      - apm.metric.interaction-fps
 node-transformer:
   id: application.service.node-transformer
   name: Node Transformer
   type: service
   documentation: Converts model elements to React Flow nodes
+  properties:
+    x-realizes:
+      - business.service.architecture-visualization
 reference-server:
   id: application.service.reference-server
   name: Reference Server
@@ -24,24 +45,48 @@ business-export-service:
   type: service
   documentation: Exports business layer graphs as PNG, SVG, and JSON with
     traceability reports and impact analysis
+  properties:
+    x-realizes:
+      - business.service.documentation-export
+    x-uses:
+      - technology.library.html-to-image
+      - technology.library.jszip
 motivation-export-service:
   id: application.service.motivation-export-service
   name: Motivation Export Service
   type: service
   documentation: Exports motivation layer graphs (goals, drivers, stakeholders) as
     PNG, SVG, JSON with traceability reports
+  properties:
+    x-realizes:
+      - business.service.documentation-export
+    x-uses:
+      - technology.library.html-to-image
+      - technology.library.jszip
 c4-export-service:
   id: application.service.c4-export-service
   name: C4 Export Service
   type: service
   documentation: Exports C4 architecture diagrams as PNG, SVG with scenario
     presets and focus context
+  properties:
+    x-realizes:
+      - business.service.documentation-export
+    x-uses:
+      - technology.library.html-to-image
+      - technology.library.jszip
 business-graph-builder:
   id: application.service.business-graph-builder
   name: Business Graph Builder
   type: service
   documentation: Constructs business layer graph from parsed elements with
     cross-layer links and indices
+  properties:
+    x-accesses:
+      - data_model.object-schema.business-graph
+      - data_model.object-schema.business-node
+      - data_model.object-schema.business-edge
+      - data_model.object-schema.cross-layer-link
 business-layer-parser:
   id: application.service.business-layer-parser
   name: Business Layer Parser
@@ -54,11 +99,30 @@ yaml-parser:
   type: service
   documentation: Parses YAML instance models with manifest orchestration and
     dot-notation ID resolution
+  properties:
+    x-realizes:
+      - business.service.model-data-management
+    x-uses:
+      - technology.library.js-yaml
+      - technology.language.typescript
+    x-accesses:
+      - data_model.entity.meta-model
+      - data_model.entity.layer
+      - data_model.entity.model-element
 json-schema-parser:
   id: application.service.json-schema-parser
   name: JSON Schema Parser
   type: service
   documentation: Parses JSON Schema definitions into model elements with auto-generated UUIDs
+  properties:
+    x-realizes:
+      - business.service.model-data-management
+    x-uses:
+      - technology.language.typescript
+    x-accesses:
+      - data_model.entity.meta-model
+      - data_model.entity.layer
+      - data_model.entity.model-element
 c4-parser:
   id: application.service.c4-parser
   name: C4 Parser
@@ -75,22 +139,38 @@ data-loader:
   name: Data Loader
   type: service
   documentation: Orchestrates model loading from JSON Schema, YAML instances, or demo data
+  properties:
+    x-monitored-by:
+      - apm.metric.initialization-time
+      - apm.metric.embedding-success-rate
+    x-accesses:
+      - data_model.entity.meta-model
+      - data_model.entity.layer
 git-hub-service:
   id: application.service.git-hub-service
   name: GitHub Service
   type: service
   documentation: Fetches models and releases from GitHub repositories via backend proxy
+  properties:
+    x-realizes:
+      - business.service.external-model-integration
 impact-analysis-service:
   id: application.service.impact-analysis-service
   name: Impact Analysis Service
   type: service
   documentation: Analyzes downstream impact of changes across process dependencies
+  properties:
+    x-realizes:
+      - business.service.architecture-analysis
 motivation-graph-builder:
   id: application.service.motivation-graph-builder
   name: Motivation Graph Builder
   type: service
   documentation: Constructs motivation layer graph from goals, drivers,
     stakeholders, and requirements
+  properties:
+    x-accesses:
+      - data_model.object-schema.motivation-graph
 motivation-graph-transformer:
   id: application.service.motivation-graph-transformer
   name: Motivation Graph Transformer

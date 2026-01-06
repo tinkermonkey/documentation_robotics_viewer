@@ -10,6 +10,9 @@ motivation-screen:
   type: dashboard
   documentation: Interactive motivation layer graph showing goals, requirements,
     principles, and their relationships with upstream/downstream tracing
+  properties:
+    x-rendered-by:
+      - application.component.motivation-graph-view
 motivation-view:
   id: ux.view.motivation-view
   name: Motivation View

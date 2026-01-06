@@ -3,13 +3,27 @@ interaction-fps:
   name: Interaction Frame Rate
   type: performance
   documentation: Frames per second during pan/zoom/drag operations
+  properties:
+    x-measures:
+      - application.component.graph-view
+      - application.service.layout-engine
 filter-latency:
   id: apm.metric.filter-latency
   name: Filter Response Time
   type: performance
   documentation: Time to apply filters and update visualization
+  properties:
+    x-measures:
+      - application.component.motivation-filter-panel
+      - application.component.c4-filter-panel
 initialization-time:
   id: apm.metric.initialization-time
   name: Initialization Time
   type: performance
   documentation: Time from embedded viewer load to interactive state
+  properties:
+    x-measures:
+      - application.component.viewer-app
+      - application.component.graph-view
+      - application.service.layout-engine
+      - application.service.data-loader

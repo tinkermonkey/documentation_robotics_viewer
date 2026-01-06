@@ -8,21 +8,41 @@ model-view:
   name: Model View Route
   type: experience
   documentation: Parametric route for model graph and JSON views (/model/:view)
+  properties:
+    x-renders:
+      - ux.view.model-graph-screen
+    x-loads:
+      - application.component.graph-view
 spec-view:
   id: navigation.route.spec-view
   name: Spec View Route
   type: experience
   documentation: Parametric route for spec graph and JSON views (/spec/:view)
+  properties:
+    x-renders:
+      - ux.view.spec-view
+    x-loads:
+      - application.component.viewer-app
 motivation:
   id: navigation.route.motivation
   name: Motivation Route
   type: experience
   documentation: Motivation layer visualization route (/motivation)
+  properties:
+    x-renders:
+      - ux.view.motivation-screen
+    x-loads:
+      - application.component.motivation-graph-view
 architecture:
   id: navigation.route.architecture
   name: Architecture (C4) Route
   type: experience
   documentation: C4 architecture model visualization route (/architecture)
+  properties:
+    x-renders:
+      - ux.view.model-graph-screen
+    x-loads:
+      - application.component.c4-graph-view
 changesets-view:
   id: navigation.route.changesets-view
   name: Changesets View Route

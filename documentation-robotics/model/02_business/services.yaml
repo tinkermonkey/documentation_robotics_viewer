@@ -3,16 +3,25 @@ architecture-visualization:
   name: Architecture Visualization
   type: service
   documentation: Visualize architecture models as interactive graphs across multiple layers
+  properties:
+    x-supports-goals:
+      - motivation.goal.visualize-architecture
 model-data-management:
   id: business.service.model-data-management
   name: Model Data Management
   type: service
   documentation: Load, parse, and manage architecture model data from various sources
+  properties:
+    x-supports-goals:
+      - motivation.goal.visualize-architecture
 documentation-export:
   id: business.service.documentation-export
   name: Documentation Export
   type: service
   documentation: Export architecture visualizations and reports in multiple formats
+  properties:
+    x-supports-goals:
+      - motivation.requirement.embedded-mode
 external-model-integration:
   id: business.service.external-model-integration
   name: External Model Integration

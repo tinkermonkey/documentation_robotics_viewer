@@ -3,7 +3,7 @@ schema: documentation-robotics-v1
 cli_version: 0.1.0
 spec_version: 0.7.0
 created: 2025-12-05T22:17:22.732040Z
-updated: 2026-01-04T21:27:40.777Z
+updated: 2026-01-06T21:21:37.849Z
 project:
   name: documentation_robotics_viewer
   description: Architecture model for documentation_robotics_viewer
@@ -18,10 +18,10 @@ layers:
     enabled: true
     elements:
       constraint: 4
-      goal: 3
-      principle: 4
-      internal: 2
       customer: 1
+      goal: 3
+      internal: 2
+      principle: 4
   business:
     order: 2
     name: Business
@@ -38,16 +38,16 @@ layers:
     schema: .dr/schemas/03-security-layer.schema.json
     enabled: true
     elements:
-      preventive: 5
+      api: 1
       detective: 1
+      file: 1
       permission: 4
       policy-rule: 1
+      preventive: 5
       resource-operation: 7
       role: 2
-      file: 1
-      api: 1
-      service: 1
       security-policie: 1
+      service: 1
       threat: 4
   application:
     order: 4
@@ -65,7 +65,7 @@ layers:
     schema: .dr/schemas/05-technology-layer.schema.json
     enabled: true
     elements:
-      stack: 14
+      stack: 18
   api:
     order: 6
     name: API
@@ -73,8 +73,8 @@ layers:
     schema: .dr/schemas/06-api-layer.schema.json
     enabled: true
     elements:
-      operation: 15
       interface: 1
+      operation: 15
   data_model:
     order: 7
     name: Data Model
@@ -99,10 +99,10 @@ layers:
     enabled: true
     elements:
       custom: 38
-      list: 3
-      interaction: 35
-      detail: 3
       dashboard: 3
+      detail: 3
+      interaction: 35
+      list: 3
   navigation:
     order: 10
     name: Navigation
@@ -111,14 +111,14 @@ layers:
     enabled: true
     elements:
       breadcrumb: 2
+      checklist: 1
+      context-menu: 1
+      experience: 6
       hierarchical: 1
       horizontal-tabs: 4
-      context-menu: 1
-      checklist: 1
-      tree: 1
       list: 1
-      experience: 6
       redirect: 4
+      tree: 1
   apm:
     order: 11
     name: APM/Observability
@@ -141,7 +141,7 @@ layers:
       coverage-target: 2
       test-case-sketche: 11
 statistics:
-  total_elements: 275
+  total_elements: 279
   elements_by_layer:
     motivation: 14
     business: 9

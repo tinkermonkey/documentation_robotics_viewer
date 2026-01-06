@@ -14,13 +14,13 @@ triggers:
     "motivation",
     "archimate motivation",
   ]
-version: 0.6.0
+version: 0.7.0
 ---
 
 # Motivation Layer Skill
 
 **Layer Number:** 01
-**Specification:** Metadata Model Spec v0.6.0
+**Specification:** Metadata Model Spec v0.7.0
 **Purpose:** Captures stakeholder concerns, goals, requirements, and constraints that drive architectural decisions using ArchiMate motivation elements.
 
 ---
@@ -142,7 +142,7 @@ def configure_oauth(provider: str):
 ### Pattern 2: Non-Functional Requirements in Tests
 
 ```python
-@pytest.mark.performance
+@npm test.mark.performance
 def test_api_response_time():
     """Verify API responds within 200ms (GOAL: sub-second response)"""
     response_time = measure_api_call()

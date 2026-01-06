@@ -102,3 +102,35 @@ express:
   properties:
     package: express
     version: 5.1.0
+flowbite-react:
+  id: technology.library.flowbite-react
+  name: Flowbite React
+  type: stack
+  documentation: React component library based on Tailwind CSS
+  properties:
+    package: flowbite-react
+    version: 0.10.2
+tailwindcss:
+  id: technology.framework.tailwindcss
+  name: Tailwind CSS
+  type: stack
+  documentation: Utility-first CSS framework
+  properties:
+    package: tailwindcss
+    version: 4.1.6
+tanstack-router:
+  id: technology.library.tanstack-router
+  name: TanStack Router
+  type: stack
+  documentation: Type-safe router for React applications
+  properties:
+    package: "@tanstack/react-router"
+    version: 1.113.0
+elkjs:
+  id: technology.library.elkjs
+  name: ELK.js
+  type: stack
+  documentation: Automatic graph layout using Eclipse Layout Kernel
+  properties:
+    package: elkjs
+    version: 0.9.3
