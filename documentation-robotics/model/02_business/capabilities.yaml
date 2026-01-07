@@ -6,13 +6,22 @@ visualization:
   properties:
     x-supports-goals:
       - motivation.goal.visualize-architecture
+    x-realized-by:
+      - business.service.architecture-visualization
+      - business.service.model-data-management
 documentation:
   id: business.capability.documentation
   name: Documentation
   type: capabilitie
   documentation: Displaying detailed documentation for model elements
+  properties:
+    x-realized-by:
+      - business.service.architecture-analysis
 export:
   id: business.capability.export
   name: Export
   type: capabilitie
   documentation: Exporting views as images or data
+  properties:
+    x-realized-by:
+      - business.service.documentation-export

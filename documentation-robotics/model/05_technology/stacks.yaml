@@ -134,3 +134,57 @@ elkjs:
   properties:
     package: elkjs
     version: 0.9.3
+nodejs:
+  id: technology.runtime.nodejs
+  name: Node.js
+  type: stack
+  documentation: JavaScript runtime environment for server-side and build tools
+  properties:
+    version: 22.x
+    x-supports:
+      - technology.tool.vite
+      - technology.framework.express
+python:
+  id: technology.runtime.python
+  name: Python
+  type: stack
+  documentation: Python runtime for DR CLI backend and FastAPI server
+  properties:
+    version: 3.12.x
+    x-supports:
+      - technology.framework.fastapi
+      - technology.library.uvicorn
+bun:
+  id: technology.runtime.bun
+  name: Bun
+  type: stack
+  documentation: Fast JavaScript runtime and package manager (alternative to Node.js)
+  properties:
+    version: 1.x
+graphviz:
+  id: technology.library.graphviz
+  name: Graphviz
+  type: stack
+  documentation: Graph visualization software for DOT language layout algorithms
+  properties:
+    package: graphviz
+    x-supports:
+      - application.service.graphviz-layout-engine
+sharp:
+  id: technology.library.sharp
+  name: Sharp
+  type: stack
+  documentation: High-performance image processing library for Node.js
+  properties:
+    package: sharp
+    version: 0.33.5
+websockets:
+  id: technology.protocol.websockets
+  name: WebSockets
+  type: stack
+  documentation: Full-duplex communication protocol for real-time data exchange
+  properties:
+    protocol: ws
+    x-supports:
+      - application.service.connection-store
+      - api.operation.websocket-connect

@@ -1,0 +1,273 @@
+embedded-app-e2e:
+  id: testing.test-suite.embedded-app-e2e
+  name: Embedded App E2E Test Suite
+  type: test-suite
+  documentation: End-to-end tests for embedded app basic navigation and functionality
+  properties:
+    file: tests/embedded-app.spec.ts
+    x-tests:
+      - application.component.viewer-app
+      - navigation.route.root
+      - navigation.route.model-view
+    x-covers:
+      - testing.test-case-sketch.e2e-tests
+      - testing.test-case-sketch.embedded-tests
+embedded-dual-view-e2e:
+  id: testing.test-suite.embedded-dual-view-e2e
+  name: Embedded Dual View E2E Test Suite
+  type: test-suite
+  documentation: Tests for graph/JSON dual view URL routing and switching
+  properties:
+    file: tests/embedded-dual-view.spec.ts
+    x-tests:
+      - application.component.graph-view
+      - navigation.route.model-view
+    x-covers:
+      - testing.test-case-sketch.e2e-tests
+c4-architecture-view-e2e:
+  id: testing.test-suite.c4-architecture-view-e2e
+  name: C4 Architecture View E2E Test Suite
+  type: test-suite
+  documentation: Tests for C4 architecture visualization features and interactions
+  properties:
+    file: tests/c4-architecture-view.spec.ts
+    x-tests:
+      - application.component.c4-graph-view
+      - navigation.route.architecture
+    x-covers:
+      - testing.test-case-sketch.e2e-tests
+c4-accessibility-e2e:
+  id: testing.test-suite.c4-accessibility-e2e
+  name: C4 Accessibility E2E Test Suite
+  type: test-suite
+  documentation: WCAG 2.1 AA accessibility tests for C4 view
+  properties:
+    file: tests/c4-accessibility.spec.ts
+    x-tests:
+      - application.component.c4-graph-view
+    x-covers:
+      - testing.test-case-sketch.accessibility-tests
+embedded-graph-rendering-e2e:
+  id: testing.test-suite.embedded-graph-rendering-e2e
+  name: Embedded Graph Rendering E2E Test Suite
+  type: test-suite
+  documentation: Tests for graph rendering in embedded mode
+  properties:
+    file: tests/embedded-graph-rendering.spec.ts
+    x-tests:
+      - application.component.graph-view
+    x-covers:
+      - testing.test-case-sketch.embedded-tests
+embedded-motivation-view-e2e:
+  id: testing.test-suite.embedded-motivation-view-e2e
+  name: Embedded Motivation View E2E Test Suite
+  type: test-suite
+  documentation: Tests for motivation layer visualization
+  properties:
+    file: tests/embedded-motivation-view.spec.ts
+    x-tests:
+      - application.component.motivation-graph-view
+      - navigation.route.motivation
+    x-covers:
+      - testing.test-case-sketch.e2e-tests
+business-layer-integration:
+  id: testing.test-suite.business-layer-integration
+  name: Business Layer Integration Test Suite
+  type: test-suite
+  documentation: Integration tests for business layer graph building and transformation
+  properties:
+    file: tests/business-layer-integration.spec.ts
+    x-tests:
+      - application.service.business-graph-builder
+      - application.service.business-node-transformer
+    x-covers:
+      - testing.test-case-sketch.integration-tests
+business-layer-performance:
+  id: testing.test-suite.business-layer-performance
+  name: Business Layer Performance Test Suite
+  type: test-suite
+  documentation: Performance benchmarks for business layer layouts
+  properties:
+    file: tests/business-layer-performance.spec.ts
+    x-tests:
+      - application.service.force-directed-business-layout
+      - application.service.hierarchical-business-layout
+    x-covers:
+      - testing.test-case-sketch.performance-tests
+metrics-report:
+  id: testing.test-suite.metrics-report
+  name: Metrics Report Test Suite
+  type: test-suite
+  documentation: Generates performance metrics reports for monitoring
+  properties:
+    file: tests/metrics/metrics-report.spec.ts
+    x-tests:
+      - application.service.metrics-history-service
+    x-covers:
+      - testing.test-case-sketch.metrics-tests
+metrics-regression-check:
+  id: testing.test-suite.metrics-regression-check
+  name: Metrics Regression Check Test Suite
+  type: test-suite
+  documentation: Validates performance metrics against historical baselines
+  properties:
+    file: tests/metrics/regression-check.spec.ts
+    x-tests:
+      - application.service.metrics-history-service
+      - application.service.quality-score-service
+    x-covers:
+      - testing.test-case-sketch.metrics-tests
+business-graph-builder-unit:
+  id: testing.test-suite.business-graph-builder-unit
+  name: Business Graph Builder Unit Test Suite
+  type: test-suite
+  documentation: Unit tests for business graph construction logic
+  properties:
+    file: tests/unit/businessGraphBuilder.spec.ts
+    x-tests:
+      - application.service.business-graph-builder
+    x-covers:
+      - testing.test-case-sketch.unit-tests
+business-layer-parser-unit:
+  id: testing.test-suite.business-layer-parser-unit
+  name: Business Layer Parser Unit Test Suite
+  type: test-suite
+  documentation: Unit tests for YAML business layer parsing
+  properties:
+    file: tests/unit/businessLayerParser.spec.ts
+    x-tests:
+      - application.service.business-layer-parser
+    x-covers:
+      - testing.test-case-sketch.unit-tests
+c4-parser-unit:
+  id: testing.test-suite.c4-parser-unit
+  name: C4 Parser Unit Test Suite
+  type: test-suite
+  documentation: Unit tests for C4 model parsing
+  properties:
+    file: tests/unit/c4Parser.spec.ts
+    x-tests:
+      - application.service.c4-parser
+    x-covers:
+      - testing.test-case-sketch.unit-tests
+c4-view-transformer-unit:
+  id: testing.test-suite.c4-view-transformer-unit
+  name: C4 View Transformer Unit Test Suite
+  type: test-suite
+  documentation: Unit tests for C4 to ReactFlow transformation
+  properties:
+    file: tests/unit/c4ViewTransformer.spec.ts
+    x-tests:
+      - application.service.c4-view-transformer
+    x-covers:
+      - testing.test-case-sketch.unit-tests
+cross-layer-reference-resolver-unit:
+  id: testing.test-suite.cross-layer-reference-resolver-unit
+  name: Cross-Layer Reference Resolver Unit Test Suite
+  type: test-suite
+  documentation: Unit tests for cross-layer reference resolution and validation
+  properties:
+    file: tests/unit/crossLayerReferenceResolver.spec.ts
+    x-tests:
+      - application.service.cross-layer-reference-resolver
+    x-covers:
+      - testing.test-case-sketch.unit-tests
+graph-readability-unit:
+  id: testing.test-suite.graph-readability-unit
+  name: Graph Readability Unit Test Suite
+  type: test-suite
+  documentation: Unit tests for readability metrics calculation
+  properties:
+    file: tests/unit/graphReadability.spec.ts
+    x-tests:
+      - application.service.graph-readability-service
+    x-covers:
+      - testing.test-case-sketch.unit-tests
+image-similarity-unit:
+  id: testing.test-suite.image-similarity-unit
+  name: Image Similarity Unit Test Suite
+  type: test-suite
+  documentation: Unit tests for SSIM and perceptual hash comparison
+  properties:
+    file: tests/unit/imageSimilarity.spec.ts
+    x-tests:
+      - application.service.image-similarity-service
+    x-covers:
+      - testing.test-case-sketch.unit-tests
+refinement-loop-unit:
+  id: testing.test-suite.refinement-loop-unit
+  name: Refinement Loop Unit Test Suite
+  type: test-suite
+  documentation: Unit tests for automated refinement loop logic
+  properties:
+    file: tests/unit/refinement/refinementLoop.spec.ts
+    x-tests:
+      - application.service.refinement-loop-service
+    x-covers:
+      - testing.test-case-sketch.refinement-tests
+motivation-graph-builder-unit:
+  id: testing.test-suite.motivation-graph-builder-unit
+  name: Motivation Graph Builder Unit Test Suite
+  type: test-suite
+  documentation: Unit tests for motivation graph construction
+  properties:
+    file: tests/unit/motivationGraphBuilder.spec.ts
+    x-tests:
+      - application.service.motivation-graph-builder
+    x-covers:
+      - testing.test-case-sketch.unit-tests
+motivation-graph-transformer-unit:
+  id: testing.test-suite.motivation-graph-transformer-unit
+  name: Motivation Graph Transformer Unit Test Suite
+  type: test-suite
+  documentation: Unit tests for motivation to ReactFlow transformation
+  properties:
+    file: tests/unit/motivationGraphTransformer.spec.ts
+    x-tests:
+      - application.service.motivation-graph-transformer
+    x-covers:
+      - testing.test-case-sketch.unit-tests
+impact-analysis-service-unit:
+  id: testing.test-suite.impact-analysis-service-unit
+  name: Impact Analysis Service Unit Test Suite
+  type: test-suite
+  documentation: Unit tests for downstream impact analysis
+  properties:
+    file: tests/unit/impactAnalysisService.spec.ts
+    x-tests:
+      - application.service.impact-analysis-service
+    x-covers:
+      - testing.test-case-sketch.unit-tests
+ladle-story-validation:
+  id: testing.test-suite.ladle-story-validation
+  name: Ladle Story Validation Test Suite
+  type: test-suite
+  documentation: Validates all Ladle component stories render without errors
+  properties:
+    file: tests/ladle-story-validation.spec.ts
+    x-covers:
+      - testing.test-case-sketch.component-tests
+refinement-workflow-e2e:
+  id: testing.test-suite.refinement-workflow-e2e
+  name: Refinement Workflow E2E Test Suite
+  type: test-suite
+  documentation: End-to-end tests for layout refinement workflow
+  properties:
+    file: tests/refinement-workflow.spec.ts
+    x-tests:
+      - application.service.refinement-loop-service
+      - application.service.layout-parameters-service
+    x-covers:
+      - testing.test-case-sketch.refinement-tests
+quality-regression-integration:
+  id: testing.test-suite.quality-regression-integration
+  name: Quality Regression Integration Test Suite
+  type: test-suite
+  documentation: Integration tests for quality score regression detection
+  properties:
+    file: tests/integration/qualityRegression.spec.ts
+    x-tests:
+      - application.service.quality-score-service
+      - application.service.metrics-history-service
+    x-covers:
+      - testing.test-case-sketch.integration-tests

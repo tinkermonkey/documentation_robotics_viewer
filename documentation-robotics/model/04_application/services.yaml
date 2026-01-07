@@ -8,6 +8,8 @@ graph-builder:
       - business.service.architecture-visualization
     x-uses:
       - technology.library.react-flow
+      - application.service.node-transformer
+      - application.service.layout-engine
     x-accesses:
       - data_model.entity.model-element
       - data_model.entity.relationship
@@ -143,6 +145,10 @@ data-loader:
     x-monitored-by:
       - apm.metric.initialization-time
       - apm.metric.embedding-success-rate
+    x-uses:
+      - application.service.yaml-parser
+      - application.service.json-schema-parser
+      - application.service.model-store
     x-accesses:
       - data_model.entity.meta-model
       - data_model.entity.layer
@@ -455,6 +461,11 @@ refinement-loop-service:
   properties:
     x-realizes:
       - business.service.quality-assurance
+    x-uses:
+      - application.service.layout-parameters-service
+      - application.service.optimization-strategies-service
+      - application.service.quality-score-service
+      - application.service.screenshot-service
 layout-parameters-service:
   id: application.service.layout-parameters-service
   name: Layout Parameters Service
