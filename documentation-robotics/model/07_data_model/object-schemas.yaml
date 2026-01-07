@@ -184,3 +184,33 @@ layout-options:
   name: Layout Options
   type: object-schema
   documentation: Layout algorithm configuration including direction, spacing, alignment, and algorithm-specific parameters
+health-status:
+  id: data_model.object-schema.health-status
+  name: Health Status
+  type: object-schema
+  documentation: API health check response with server status and version information
+spec-collection:
+  id: data_model.object-schema.spec-collection
+  name: Spec Collection
+  type: object-schema
+  documentation: JSON Schema collection with version, schemas map, and relationship catalog
+model-response:
+  id: data_model.object-schema.model-response
+  name: Model Response
+  type: object-schema
+  documentation: Complete architecture model response with metadata, layers, elements, relationships, and cross-layer references
+github-release:
+  id: data_model.object-schema.github-release
+  name: GitHub Release
+  type: object-schema
+  documentation: GitHub release object with tag name, version, assets array, and download URLs
+annotation-list:
+  id: data_model.object-schema.annotation-list
+  name: Annotation List
+  type: object-schema
+  documentation: Array of annotations with optional element ID filtering
+changeset-list:
+  id: data_model.object-schema.changeset-list
+  name: Changeset List
+  type: object-schema
+  documentation: Array of changeset summaries with registry metadata and version

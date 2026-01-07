@@ -13,6 +13,9 @@ user-centric-design:
         underlying models must be presented in accessible ways.
       implications: Requires user research, iterative design, and continuous feedback.
         May require simplification of complex architectural concepts.
+    x-guides:
+      - motivation.goal.visualize-architecture
+      - motivation.requirement.interactive-graphs
 performance-first:
   id: motivation.principle.performance-first
   name: Performance First
@@ -29,6 +32,8 @@ performance-first:
       implications: Requires performance budgets, regular benchmarking, and
         optimization. May require trade-offs between features and performance.
         Web Workers for heavy computation, viewport culling for large graphs.
+    x-guides:
+      - motivation.goal.visualize-architecture
 accessibility-by-default:
   id: motivation.principle.accessibility-by-default
   name: Accessibility by Default
@@ -45,6 +50,9 @@ accessibility-by-default:
       implications: Requires accessibility testing in CI/CD pipeline. May affect
         visual design choices (color contrast, font sizes). Keyboard navigation
         must be comprehensive.
+    x-guides:
+      - motivation.goal.visualize-architecture
+      - motivation.requirement.interactive-graphs
 progressive-enhancement:
   id: motivation.principle.progressive-enhancement
   name: Progressive Enhancement
@@ -61,3 +69,5 @@ progressive-enhancement:
       implications: Requires feature detection over browser detection. Core
         visualization must work without advanced features. Enhanced features
         (animations, advanced layouts) are optional improvements.
+    x-guides:
+      - motivation.requirement.embedded-mode

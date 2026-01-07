@@ -23,6 +23,8 @@ health-check:
       - application.service.reference-server
     x-protected-by:
       - security.permission.access-api-endpoints
+    x-response-schema:
+      - data_model.object-schema.health-status
 get-spec:
   id: api.operation.get-spec
   name: Get Specification
@@ -42,6 +44,8 @@ get-spec:
     x-protected-by:
       - security.permission.read-model-files
       - security.countermeasure.path-validation
+    x-response-schema:
+      - data_model.object-schema.spec-collection
 get-model:
   id: api.operation.get-model
   name: Get Model
@@ -62,6 +66,8 @@ get-model:
       - security.permission.read-model-files
       - security.countermeasure.path-validation
       - security.countermeasure.input-sanitization
+    x-response-schema:
+      - data_model.object-schema.model-response
 list-changesets:
   id: api.operation.list-changesets
   name: List Changesets
@@ -79,6 +85,8 @@ list-changesets:
     x-protected-by:
       - security.permission.read-model-files
       - security.countermeasure.path-validation
+    x-response-schema:
+      - data_model.object-schema.changeset-list
 get-changeset:
   id: api.operation.get-changeset
   name: Get Changeset
@@ -105,6 +113,8 @@ get-changeset:
       - security.permission.read-model-files
       - security.countermeasure.path-validation
       - security.countermeasure.input-sanitization
+    x-response-schema:
+      - data_model.object-schema.changeset-details
 get-annotations:
   id: api.operation.get-annotations
   name: Get Annotations
@@ -128,6 +138,8 @@ get-annotations:
     x-protected-by:
       - security.permission.access-api-endpoints
       - security.countermeasure.output-encoding
+    x-response-schema:
+      - data_model.object-schema.annotation-list
 get-github-releases:
   id: api.operation.get-github-releases
   name: Get GitHub Releases
@@ -169,6 +181,8 @@ get-github-releases:
     x-protected-by:
       - security.permission.access-api-endpoints
       - security.countermeasure.input-sanitization
+    x-response-schema:
+      - data_model.object-schema.github-release
 get-latest-github-release:
   id: api.operation.get-latest-github-release
   name: Get Latest GitHub Release
@@ -210,6 +224,8 @@ get-latest-github-release:
     x-protected-by:
       - security.permission.access-api-endpoints
       - security.countermeasure.input-sanitization
+    x-response-schema:
+      - data_model.object-schema.github-release
 get-github-release-by-tag:
   id: api.operation.get-github-release-by-tag
   name: Get GitHub Release by Tag
@@ -251,6 +267,8 @@ get-github-release-by-tag:
       - security.permission.access-api-endpoints
       - security.countermeasure.input-sanitization
       - security.countermeasure.path-validation
+    x-response-schema:
+      - data_model.object-schema.github-release
 download-github-schema-zip:
   id: api.operation.download-github-schema-zip
   name: Download GitHub Schema ZIP
