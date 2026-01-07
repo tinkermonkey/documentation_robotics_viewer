@@ -247,3 +247,115 @@ spec-parser-service:
   name: Spec Parser Service
   type: service
   documentation: Parses specification documents and extracts metadata
+model-store:
+  id: application.service.model-store
+  name: Model Store
+  type: service
+  documentation: Central Zustand store managing loaded model data with selectors
+    for layers and elements
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.entity.meta-model
+      - data_model.entity.layer
+      - data_model.entity.model-element
+    x-realizes:
+      - business.service.model-data-management
+annotation-store:
+  id: application.service.annotation-store
+  name: Annotation Store
+  type: service
+  documentation: Zustand store managing annotation state with optimistic updates
+    and WebSocket synchronization
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.object-schema.annotation
+changeset-store:
+  id: application.service.changeset-store
+  name: Changeset Store
+  type: service
+  documentation: Zustand store managing changeset selection and loading state
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.object-schema.changeset-summary
+      - data_model.object-schema.changeset-details
+    x-realizes:
+      - business.service.model-data-management
+auth-store:
+  id: application.service.auth-store
+  name: Auth Store
+  type: service
+  documentation: Zustand store managing authentication token from DR CLI magic
+    links with localStorage persistence
+  properties:
+    x-uses:
+      - technology.library.zustand
+connection-store:
+  id: application.service.connection-store
+  name: Connection Store
+  type: service
+  documentation: Zustand store tracking WebSocket connection state and reconnection attempts
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.object-schema.connection-state
+view-preference-store:
+  id: application.service.view-preference-store
+  name: View Preference Store
+  type: service
+  documentation: Zustand store managing user view mode preferences
+    (graph/JSON/list) with localStorage persistence
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.object-schema.view-preferences
+      - data_model.object-schema.filter-state
+layer-store:
+  id: application.service.layer-store
+  name: Layer Store
+  type: service
+  documentation: Zustand store managing layer visibility, opacity, locking, and focus state
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.entity.layer
+element-store:
+  id: application.service.element-store
+  name: Element Store
+  type: service
+  documentation: Temporary in-memory store for model elements (workaround for
+    tldraw JSON serialization)
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.entity.model-element
+layout-preferences-store:
+  id: application.service.layout-preferences-store
+  name: Layout Preferences Store
+  type: service
+  documentation: Zustand store managing layout engine preferences, custom presets,
+    and refinement session state with localStorage
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.object-schema.layout-preset
+      - data_model.object-schema.layout-options
+business-layer-store:
+  id: application.service.business-layer-store
+  name: Business Layer Store
+  type: service
+  documentation: Zustand store managing business layer visualization preferences
+    (filters, layout, focus modes) with localStorage
+  properties:
+    x-uses:
+      - technology.library.zustand

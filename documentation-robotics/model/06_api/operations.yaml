@@ -393,3 +393,97 @@ model-updated:
     payload:
       type: model.updated
       timestamp: string
+get-link-registry:
+  id: api.operation.get-link-registry
+  name: Get Link Registry
+  type: operation
+  documentation: Returns cross-layer link type catalog with validation rules and
+    cardinality constraints
+  properties:
+    method: GET
+    path: /api/link-registry
+    protocol: rest
+    x-archimate-ref:
+      - application.service.cross-layer-reference-resolver
+    x-response-schema:
+      - data_model.object-schema.link-type
+create-annotation:
+  id: api.operation.create-annotation
+  name: Create Annotation
+  type: operation
+  documentation: Creates new user annotation on model element with author,
+    content, and timestamp
+  properties:
+    method: POST
+    path: /api/annotations
+    protocol: rest
+    x-archimate-ref:
+      - application.service.demo-data-service
+    x-request-schema:
+      - data_model.object-schema.annotation
+    x-response-schema:
+      - data_model.object-schema.annotation
+changeset-created:
+  id: api.operation.changeset-created
+  name: Changeset Created Event
+  type: operation
+  documentation: WebSocket event broadcast when new changeset is created on the server
+  properties:
+    direction: server-to-client
+    channel: /ws
+    protocol: websocket
+    x-archimate-ref:
+      - application.service.yaml-parser
+    x-payload-schema:
+      - data_model.object-schema.changeset-summary
+annotation-added:
+  id: api.operation.annotation-added
+  name: Annotation Added Event
+  type: operation
+  documentation: WebSocket event broadcast when annotation is added to an element by any user
+  properties:
+    direction: server-to-client
+    channel: /ws
+    protocol: websocket
+    x-archimate-ref:
+      - application.service.demo-data-service
+    x-payload-schema:
+      - data_model.object-schema.annotation
+subscribed:
+  id: api.operation.subscribed
+  name: Subscribed Event
+  type: operation
+  documentation: WebSocket confirmation event sent after client subscribes to update topics
+  properties:
+    direction: server-to-client
+    channel: /ws
+    protocol: websocket
+pong:
+  id: api.operation.pong
+  name: Pong Event
+  type: operation
+  documentation: WebSocket heartbeat response to client ping for connection
+    keepalive monitoring
+  properties:
+    direction: server-to-client
+    channel: /ws
+    protocol: websocket
+ping:
+  id: api.operation.ping
+  name: Ping Command
+  type: operation
+  documentation: Client WebSocket heartbeat message for connection keepalive
+    monitoring and timeout detection
+  properties:
+    direction: client-to-server
+    channel: /ws
+    protocol: websocket
+rest-mode:
+  id: api.operation.rest-mode
+  name: REST Mode Fallback
+  type: operation
+  documentation: Client event emitted when WebSocket is unavailable, triggering
+    fallback to REST polling
+  properties:
+    direction: client-event
+    protocol: client-side

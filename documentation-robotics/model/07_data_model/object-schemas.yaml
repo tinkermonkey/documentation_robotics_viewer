@@ -1,0 +1,46 @@
+annotation:
+  id: data_model.object-schema.annotation
+  name: Annotation
+  type: object-schema
+  documentation: User annotation on model elements with author, content, creation
+    time, and resolution status
+changeset-summary:
+  id: data_model.object-schema.changeset-summary
+  name: Changeset Summary
+  type: object-schema
+  documentation: Changeset list item with name, status, type, timestamps, and element counts
+changeset-details:
+  id: data_model.object-schema.changeset-details
+  name: Changeset Details
+  type: object-schema
+  documentation: Full changeset data including metadata and array of change operations
+changeset-change:
+  id: data_model.object-schema.changeset-change
+  name: Changeset Change
+  type: object-schema
+  documentation: Individual change record with operation type, element ID, and
+    before/after state
+connection-state:
+  id: data_model.object-schema.connection-state
+  name: Connection State
+  type: object-schema
+  documentation: WebSocket connection state tracking connection status,
+    reconnection attempts, and error history
+view-preferences:
+  id: data_model.object-schema.view-preferences
+  name: View Preferences
+  type: object-schema
+  documentation: User view mode preferences including spec view, model view,
+    changeset view, motivation preferences, and C4 preferences
+layout-preset:
+  id: data_model.object-schema.layout-preset
+  name: Layout Preset
+  type: object-schema
+  documentation: Custom layout parameter preset with diagram type, engine type,
+    and parameter configuration
+link-type:
+  id: data_model.object-schema.link-type
+  name: Link Type
+  type: object-schema
+  documentation: Cross-layer link type definition with source/target layers,
+    cardinality, format, and validation rules
