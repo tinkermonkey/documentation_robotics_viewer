@@ -23,6 +23,7 @@ graph-view:
       - technology.library.flowbite-react
       - technology.framework.tailwindcss
       - technology.library.react-flow
+      - ux.component.space-mouse-handler
     x-monitored-by:
       - apm.metric.interaction-fps
       - apm.metric.initialization-time
@@ -110,11 +111,6 @@ layer-panel:
   name: Layer Panel
   type: component
   documentation: Side panel showing layer hierarchy and element counts
-space-mouse-handler:
-  id: application.component.space-mouse-handler
-  name: Space Mouse Handler
-  type: component
-  documentation: Handles pan and zoom interactions for graph navigation
 spec-viewer:
   id: application.component.spec-viewer
   name: Spec Viewer

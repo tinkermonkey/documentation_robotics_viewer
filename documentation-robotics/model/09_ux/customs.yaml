@@ -464,3 +464,8 @@ coverage-summary-panel:
   name: Coverage Summary Panel
   type: custom
   documentation: Model coverage metrics panel showing element distribution across layers
+space-mouse-handler:
+  id: ux.component.space-mouse-handler
+  name: Space Mouse Handler
+  type: custom
+  documentation: Handles 3D mouse/gamepad input for React Flow pan and zoom navigation with optional debug panel

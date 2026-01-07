@@ -6,6 +6,7 @@ graph-pan-zoom:
   properties:
     x-handled-by:
       - application.component.graph-view
+      - ux.component.space-mouse-handler
 graph-node-select:
   id: ux.interaction.graph-node-select
   name: Graph Node Selection

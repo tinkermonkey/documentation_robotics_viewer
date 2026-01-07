@@ -3,7 +3,7 @@ schema: documentation-robotics-v1
 cli_version: 0.1.0
 spec_version: 0.7.0
 created: 2025-12-05T22:17:22.732040Z
-updated: 2026-01-07T11:06:41.865Z
+updated: 2026-01-07T11:22:22.876Z
 project:
   name: documentation_robotics_viewer
   description: Architecture model for documentation_robotics_viewer
@@ -56,7 +56,7 @@ layers:
     schema: .dr/schemas/04-application-layer.schema.json
     enabled: true
     elements:
-      component: 21
+      component: 20
       service: 32
   technology:
     order: 5
@@ -98,7 +98,7 @@ layers:
     schema: .dr/schemas/09-ux-layer.schema.json
     enabled: true
     elements:
-      custom: 85
+      custom: 86
       dashboard: 3
       detail: 3
       interaction: 35

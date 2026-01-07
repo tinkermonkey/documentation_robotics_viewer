@@ -1,6 +1,6 @@
 # Intra-layer relationships
 # Format: source_id -> predicate -> target_id
-# Last updated: 2026-01-07T11:06:41.859Z
+# Last updated: 2026-01-07T11:22:22.869Z
 
 - source: application.service.graph-builder
   target: application.service.node-transformer
@@ -264,11 +264,6 @@
   category: structural
 - source: application.component.graph-view
   target: application.component.inspector-panel
-  predicate: composes
-  layer: application
-  category: structural
-- source: application.component.graph-view
-  target: application.component.space-mouse-handler
   predicate: composes
   layer: application
   category: structural
@@ -1084,6 +1079,11 @@
   category: structural
 - source: ux.component.session-history-browser
   target: ux.component.screenshot-diff-visualization
+  predicate: uses
+  layer: ux
+  category: structural
+- source: ux.component.graph-viewer
+  target: ux.component.space-mouse-handler
   predicate: uses
   layer: ux
   category: structural
