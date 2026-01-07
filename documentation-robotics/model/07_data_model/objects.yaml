@@ -82,3 +82,18 @@ layout-options:
   name: LayoutOptions
   type: object
   documentation: Layout algorithm configuration (algorithm, spacing, direction)
+business-service-entity:
+  id: data_model.entity.business-service
+  name: Business Service Entity
+  type: object
+  documentation: Business service entity with capabilities, processes, and stakeholders
+business-capability-entity:
+  id: data_model.entity.business-capability
+  name: Business Capability Entity
+  type: object
+  documentation: Business capability entity representing organizational abilities
+business-function-entity:
+  id: data_model.entity.business-function
+  name: Business Function Entity
+  type: object
+  documentation: Business function entity representing operational activities

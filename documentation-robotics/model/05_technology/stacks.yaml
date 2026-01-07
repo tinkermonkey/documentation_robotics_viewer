@@ -188,3 +188,96 @@ websockets:
     x-supports:
       - application.service.connection-store
       - api.operation.websocket-connect
+
+docker:
+  id: technology.tool.docker
+  name: Docker
+  type: stack
+  documentation: Containerization platform for packaging and deploying applications
+  properties:
+    x-supports:
+      - technology.runtime.nodejs
+      - technology.runtime.python
+
+git:
+  id: technology.tool.git
+  name: Git
+  type: stack
+  documentation: Distributed version control system
+  properties:
+    x-supports:
+      - technology.tool.github
+
+github:
+  id: technology.tool.github
+  name: GitHub
+  type: stack
+  documentation: Git repository hosting and collaboration platform
+  properties:
+    x-supports:
+      - application.service.git-hub-service
+
+npm:
+  id: technology.tool.npm
+  name: NPM
+  type: stack
+  documentation: Package manager for JavaScript and Node.js
+  properties:
+    version: 10.x
+    x-supports:
+      - technology.runtime.nodejs
+
+eslint:
+  id: technology.tool.eslint
+  name: ESLint
+  type: stack
+  documentation: Pluggable JavaScript linter for code quality
+  properties:
+    package: eslint
+    version: 9.x
+
+prettier:
+  id: technology.tool.prettier
+  name: Prettier
+  type: stack
+  documentation: Opinionated code formatter for consistent code style
+  properties:
+    package: prettier
+    version: 3.x
+
+ladle:
+  id: technology.tool.ladle
+  name: Ladle
+  type: stack
+  documentation: Fast component development environment and stories viewer
+  properties:
+    package: "@ladle/react"
+    version: 4.x
+
+react-testing-library:
+  id: technology.library.react-testing-library
+  name: React Testing Library
+  type: stack
+  documentation: Testing utilities for React components with user-centric approach
+  properties:
+    package: "@testing-library/react"
+    version: 16.x
+
+axe-core:
+  id: technology.library.axe-core
+  name: Axe Core
+  type: stack
+  documentation: Accessibility testing engine for WCAG compliance
+  properties:
+    package: "axe-core"
+    version: 4.x
+
+ssim:
+  id: technology.library.ssim
+  name: SSIM.js
+  type: stack
+  documentation: Structural Similarity Index for image comparison
+  properties:
+    package: "ssim.js"
+    x-supports:
+      - application.service.image-similarity-service
