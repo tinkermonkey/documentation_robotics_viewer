@@ -1,0 +1,125 @@
+model-store:
+  id: datastore.store.model-store
+  name: Model Store
+  type: store
+  documentation: Zustand store managing loaded model data with MetaModel, layers, and elements state
+  properties:
+    persistence: in-memory
+    technology: zustand
+    state-schema: data_model.object-schema.model-store-state
+    x-accesses:
+      - data_model.entity.meta-model
+      - data_model.entity.layer
+      - data_model.entity.model-element
+
+element-store:
+  id: datastore.store.element-store
+  name: Element Store
+  type: store
+  documentation: Singleton element cache for temporary model element storage (required for tldraw JSON serialization compatibility)
+  properties:
+    persistence: in-memory
+    technology: singleton-map
+    state-schema: data_model.object-schema.element-store-state
+    x-accesses:
+      - data_model.entity.model-element
+
+layer-store:
+  id: datastore.store.layer-store
+  name: Layer Store
+  type: store
+  documentation: Zustand store managing layer metadata and visibility state
+  properties:
+    persistence: in-memory
+    technology: zustand
+    state-schema: data_model.object-schema.layer-store-state
+    x-accesses:
+      - data_model.entity.layer
+
+layout-preferences-store:
+  id: datastore.store.layout-preferences-store
+  name: Layout Preferences Store
+  type: store
+  documentation: Zustand store managing graph layout algorithm preferences and parameters
+  properties:
+    persistence: in-memory
+    technology: zustand
+    state-schema: data_model.object-schema.layout-preferences-state
+    x-accesses:
+      - data_model.object-schema.layout-preset
+
+business-layer-store:
+  id: datastore.store.business-layer-store
+  name: Business Layer Store
+  type: store
+  documentation: Zustand store managing business layer specific state including service and capability data
+  properties:
+    persistence: in-memory
+    technology: zustand
+    state-schema: data_model.object-schema.business-layer-store-state
+    x-accesses:
+      - data_model.entity.business-graph
+      - data_model.entity.business-service
+      - data_model.entity.business-capability
+
+auth-store:
+  id: datastore.store.auth-store
+  name: Auth Store
+  type: store
+  documentation: Zustand store managing authentication state for DR CLI integration and magic link token handling
+  properties:
+    persistence: in-memory
+    technology: zustand
+    state-schema: data_model.object-schema.auth-state
+    x-accesses:
+      - data_model.object-schema.auth-state
+
+connection-store:
+  id: datastore.store.connection-store
+  name: Connection Store
+  type: store
+  documentation: Zustand store managing WebSocket connection state, status, and reconnection logic
+  properties:
+    persistence: in-memory
+    technology: zustand
+    state-schema: data_model.object-schema.connection-state
+    x-accesses:
+      - data_model.object-schema.connection-state
+
+changeset-store:
+  id: datastore.store.changeset-store
+  name: Changeset Store
+  type: store
+  documentation: Zustand store managing changeset list, active changeset, and changeset operations
+  properties:
+    persistence: in-memory-with-filesystem-sync
+    technology: zustand
+    state-schema: data_model.object-schema.changeset-store-state
+    x-accesses:
+      - data_model.object-schema.changeset-summary
+      - data_model.object-schema.changeset-details
+      - datastore.store.local-fs
+
+annotation-store:
+  id: datastore.store.annotation-store
+  name: Annotation Store
+  type: store
+  documentation: Zustand store managing user annotations on model elements with optimistic updates and WebSocket synchronization
+  properties:
+    persistence: in-memory-with-server-sync
+    technology: zustand
+    state-schema: data_model.object-schema.annotation-store-state
+    x-accesses:
+      - data_model.object-schema.annotation
+
+view-preference-store:
+  id: datastore.store.view-preference-store
+  name: View Preference Store
+  type: store
+  documentation: Zustand store managing user view preferences including active view, sidebar visibility, and filter state
+  properties:
+    persistence: in-memory-with-localstorage
+    technology: zustand
+    state-schema: data_model.object-schema.view-preferences-state
+    x-accesses:
+      - data_model.object-schema.view-preferences
