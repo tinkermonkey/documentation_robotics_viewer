@@ -25,3 +25,67 @@ export:
   properties:
     x-realized-by:
       - business.service.documentation-export
+
+model-authoring:
+  id: business.capability.model-authoring
+  name: Model Authoring
+  type: capabilitie
+  documentation: Creating and editing architecture model elements via CLI or UI
+  properties:
+    x-realized-by:
+      - business.service.model-data-management
+
+collaboration:
+  id: business.capability.collaboration
+  name: Collaboration
+  type: capabilitie
+  documentation: Multi-user editing with annotations, comments, and real-time updates
+  properties:
+    x-realized-by:
+      - business.service.external-model-integration
+
+version-control:
+  id: business.capability.version-control
+  name: Version Control
+  type: capabilitie
+  documentation: Model versioning, changesets, branching, and history tracking
+  properties:
+    x-realized-by:
+      - business.service.model-data-management
+
+search-discovery:
+  id: business.capability.search-discovery
+  name: Search & Discovery
+  type: capabilitie
+  documentation: Finding elements, searching model content, and navigating architecture
+  properties:
+    x-realized-by:
+      - business.service.architecture-analysis
+
+reporting:
+  id: business.capability.reporting
+  name: Reporting
+  type: capabilitie
+  documentation: Generating architecture reports, impact analysis, and traceability documentation
+  properties:
+    x-realized-by:
+      - business.service.documentation-export
+      - business.service.architecture-analysis
+
+integration:
+  id: business.capability.integration
+  name: Integration
+  type: capabilitie
+  documentation: API access, webhooks, and third-party tool integrations
+  properties:
+    x-realized-by:
+      - business.service.external-model-integration
+
+administration:
+  id: business.capability.administration
+  name: Administration
+  type: capabilitie
+  documentation: User management, permissions, system configuration, and monitoring
+  properties:
+    x-realized-by:
+      - business.service.quality-assurance

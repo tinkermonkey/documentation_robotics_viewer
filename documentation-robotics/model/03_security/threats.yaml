@@ -41,3 +41,44 @@ websocket-hijacking:
   properties:
     x-mitigated-by:
       - security.countermeasure.websocket-origin-validation
+
+csrf-attack:
+  id: security.threat.csrf-attack
+  name: Cross-Site Request Forgery (CSRF)
+  type: threat
+  documentation: Malicious websites may trick authenticated users into performing
+    unwanted actions by submitting forged requests using the user's credentials.
+  properties:
+    x-mitigated-by:
+      - security.countermeasure.input-sanitization
+
+dos-attack:
+  id: security.threat.dos-attack
+  name: Denial of Service (DoS)
+  type: threat
+  documentation: Attackers may attempt to overwhelm the server with excessive
+    requests, causing service degradation or outage for legitimate users.
+  properties:
+    x-mitigated-by:
+      - security.countermeasure.file-system-sandboxing
+
+data-exfiltration:
+  id: security.threat.data-exfiltration
+  name: Data Exfiltration
+  type: threat
+  documentation: Unauthorized extraction of sensitive model data or configuration
+    information through API exploitation or compromised WebSocket connections.
+  properties:
+    x-mitigated-by:
+      - security.countermeasure.output-encoding
+      - security.countermeasure.path-validation
+
+session-hijacking:
+  id: security.threat.session-hijacking
+  name: Session Hijacking
+  type: threat
+  documentation: Attackers may steal or guess session tokens to impersonate
+    legitimate users and gain unauthorized access to model data and operations.
+  properties:
+    x-mitigated-by:
+      - security.countermeasure.websocket-origin-validation

@@ -505,3 +505,113 @@ rest-mode:
   properties:
     direction: client-event
     protocol: client-side
+
+update-annotation:
+  id: api.operation.update-annotation
+  name: Update Annotation
+  type: operation
+  documentation: Updates existing annotation content, author, or resolution status
+  properties:
+    method: PUT
+    path: /api/annotations/{annotation_id}
+    protocol: rest
+    parameters:
+      - name: annotation_id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      "200":
+        description: Annotation updated successfully
+      "404":
+        description: Annotation not found
+      "400":
+        description: Invalid annotation data
+    x-archimate-ref:
+      - application.service.demo-data-service
+    x-protected-by:
+      - security.permission.access-api-endpoints
+    x-request-schema:
+      - data_model.object-schema.annotation
+    x-response-schema:
+      - data_model.object-schema.annotation
+
+delete-annotation:
+  id: api.operation.delete-annotation
+  name: Delete Annotation
+  type: operation
+  documentation: Deletes annotation by ID with cascade to related data
+  properties:
+    method: DELETE
+    path: /api/annotations/{annotation_id}
+    protocol: rest
+    parameters:
+      - name: annotation_id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      "204":
+        description: Annotation deleted successfully
+      "404":
+        description: Annotation not found
+      "403":
+        description: Insufficient permissions to delete
+    x-archimate-ref:
+      - application.service.demo-data-service
+    x-protected-by:
+      - security.permission.access-api-endpoints
+
+create-changeset:
+  id: api.operation.create-changeset
+  name: Create Changeset
+  type: operation
+  documentation: Creates new changeset for isolated model modifications
+  properties:
+    method: POST
+    path: /api/changesets
+    protocol: rest
+    responses:
+      "201":
+        description: Changeset created successfully
+      "400":
+        description: Invalid changeset data
+    x-archimate-ref:
+      - application.service.yaml-parser
+    x-protected-by:
+      - security.permission.read-model-files
+    x-request-schema:
+      - data_model.object-schema.changeset-summary
+    x-response-schema:
+      - data_model.object-schema.changeset-details
+
+apply-changeset:
+  id: api.operation.apply-changeset
+  name: Apply Changeset
+  type: operation
+  documentation: Applies changeset to main model and broadcasts update via WebSocket
+  properties:
+    method: POST
+    path: /api/changesets/{changeset_id}/apply
+    protocol: rest
+    parameters:
+      - name: changeset_id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      "200":
+        description: Changeset applied successfully
+      "404":
+        description: Changeset not found
+      "409":
+        description: Conflict with current model state
+    x-archimate-ref:
+      - application.service.yaml-parser
+    x-protected-by:
+      - security.permission.read-model-files
+    x-response-schema:
+      - data_model.object-schema.model-response
