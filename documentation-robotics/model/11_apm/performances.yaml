@@ -27,3 +27,123 @@ initialization-time:
       - application.component.graph-view
       - application.service.layout-engine
       - application.service.data-loader
+layout-calculation-time:
+  id: apm.metric.layout-calculation-time
+  name: Layout Calculation Time
+  type: performance
+  documentation: Time taken to calculate node positions using layout algorithms
+  properties:
+    x-measures:
+      - application.service.layout-engine
+      - application.service.dagre-layout-engine
+      - application.service.d3-force-layout-engine
+      - application.service.elk-layout-engine
+node-render-count:
+  id: apm.metric.node-render-count
+  name: Node Render Count
+  type: performance
+  documentation: Number of nodes rendered per frame for performance monitoring
+  properties:
+    x-measures:
+      - application.component.graph-view
+edge-render-count:
+  id: apm.metric.edge-render-count
+  name: Edge Render Count
+  type: performance
+  documentation: Number of edges rendered per frame for performance monitoring
+  properties:
+    x-measures:
+      - application.component.graph-view
+memory-usage:
+  id: apm.metric.memory-usage
+  name: Memory Usage
+  type: performance
+  documentation: Browser memory consumption during graph visualization
+  properties:
+    x-measures:
+      - application.component.graph-view
+      - application.service.model-store
+websocket-latency:
+  id: apm.metric.websocket-latency
+  name: WebSocket Latency
+  type: performance
+  documentation: Round-trip time for WebSocket messages between client and server
+  properties:
+    x-measures:
+      - application.service.connection-store
+annotation-load-time:
+  id: apm.metric.annotation-load-time
+  name: Annotation Load Time
+  type: performance
+  documentation: Time to load and render annotations for selected element
+  properties:
+    x-measures:
+      - application.service.annotation-store
+changeset-load-time:
+  id: apm.metric.changeset-load-time
+  name: Changeset Load Time
+  type: performance
+  documentation: Time to load changeset data from server
+  properties:
+    x-measures:
+      - application.service.changeset-store
+model-parse-time:
+  id: apm.metric.model-parse-time
+  name: Model Parse Time
+  type: performance
+  documentation: Time to parse YAML/JSON model files into memory structures
+  properties:
+    x-measures:
+      - application.service.yaml-parser
+      - application.service.json-schema-parser
+validation-time:
+  id: apm.metric.validation-time
+  name: Validation Time
+  type: performance
+  documentation: Time to validate model structure and cross-layer references
+  properties:
+    x-measures:
+      - application.service.graph-element-validator
+      - application.service.cross-layer-reference-resolver
+export-generation-time:
+  id: apm.metric.export-generation-time
+  name: Export Generation Time
+  type: performance
+  documentation: Time to generate export files (PNG, SVG, JSON)
+  properties:
+    x-measures:
+      - application.service.business-export-service
+      - application.service.motivation-export-service
+      - application.service.c4-export-service
+screenshot-capture-time:
+  id: apm.metric.screenshot-capture-time
+  name: Screenshot Capture Time
+  type: performance
+  documentation: Time to capture screenshot for comparison and regression testing
+  properties:
+    x-measures:
+      - application.service.screenshot-service
+similarity-calculation-time:
+  id: apm.metric.similarity-calculation-time
+  name: Similarity Calculation Time
+  type: performance
+  documentation: Time to calculate SSIM and perceptual hash for screenshot comparison
+  properties:
+    x-measures:
+      - application.service.image-similarity-service
+quality-score-calculation-time:
+  id: apm.metric.quality-score-calculation-time
+  name: Quality Score Calculation Time
+  type: performance
+  documentation: Time to calculate composite quality score for layout
+  properties:
+    x-measures:
+      - application.service.quality-score-service
+metrics-history-size:
+  id: apm.metric.metrics-history-size
+  name: Metrics History Size
+  type: performance
+  documentation: Number of historical metric entries stored for regression analysis
+  properties:
+    x-measures:
+      - application.service.metrics-history-service
