@@ -220,3 +220,247 @@ c4-view:
   name: C4 View
   type: custom
   documentation: Hierarchical view (Context, Container, Component)
+# Shared/Common UI Components
+filter-panel:
+  id: ux.component.filter-panel
+  name: Filter Panel
+  type: custom
+  documentation: Reusable filter panel with sections, checkboxes, and bulk actions
+breadcrumb-nav:
+  id: ux.component.breadcrumb-nav
+  name: Breadcrumb Nav
+  type: custom
+  documentation: Base breadcrumb navigation component for hierarchical navigation
+empty-state:
+  id: ux.component.empty-state
+  name: Empty State
+  type: custom
+  documentation: Empty state placeholder with icon and message when no data to display
+error-state:
+  id: ux.component.error-state
+  name: Error State
+  type: custom
+  documentation: Error state display with retry action for error handling
+loading-state:
+  id: ux.component.loading-state
+  name: Loading State
+  type: custom
+  documentation: Loading state indicator with spinner for async operations
+expandable-section:
+  id: ux.component.expandable-section
+  name: Expandable Section
+  type: custom
+  documentation: Collapsible content section with toggle control
+metadata-grid:
+  id: ux.component.metadata-grid
+  name: Metadata Grid
+  type: custom
+  documentation: Grid display for element metadata key-value pairs
+attributes-table:
+  id: ux.component.attributes-table
+  name: Attributes Table
+  type: custom
+  documentation: Table display for element attributes and properties
+# React Flow Node Components - Business Layer
+node-business-capability:
+  id: ux.component.node-business-capability
+  name: Business Capability Node
+  type: custom
+  documentation: React Flow node component for visualizing business capabilities
+node-business-function:
+  id: ux.component.node-business-function
+  name: Business Function Node
+  type: custom
+  documentation: React Flow node component for visualizing business functions
+node-business-service:
+  id: ux.component.node-business-service
+  name: Business Service Node
+  type: custom
+  documentation: React Flow node component for visualizing business services
+node-business-process:
+  id: ux.component.node-business-process
+  name: Business Process Node
+  type: custom
+  documentation: React Flow node component for visualizing business processes
+# React Flow Node Components - Motivation Layer
+node-goal:
+  id: ux.component.node-goal
+  name: Goal Node
+  type: custom
+  documentation: React Flow node component for visualizing motivation layer goals
+node-requirement:
+  id: ux.component.node-requirement
+  name: Requirement Node
+  type: custom
+  documentation: React Flow node component for visualizing motivation layer requirements
+node-principle:
+  id: ux.component.node-principle
+  name: Principle Node
+  type: custom
+  documentation: React Flow node component for visualizing motivation layer principles
+node-constraint:
+  id: ux.component.node-constraint
+  name: Constraint Node
+  type: custom
+  documentation: React Flow node component for visualizing motivation layer constraints
+node-stakeholder:
+  id: ux.component.node-stakeholder
+  name: Stakeholder Node
+  type: custom
+  documentation: React Flow node component for visualizing motivation layer stakeholders
+node-outcome:
+  id: ux.component.node-outcome
+  name: Outcome Node
+  type: custom
+  documentation: React Flow node component for visualizing motivation layer outcomes
+node-driver:
+  id: ux.component.node-driver
+  name: Driver Node
+  type: custom
+  documentation: React Flow node component for visualizing motivation layer drivers
+node-assumption:
+  id: ux.component.node-assumption
+  name: Assumption Node
+  type: custom
+  documentation: React Flow node component for visualizing motivation layer assumptions
+node-assessment:
+  id: ux.component.node-assessment
+  name: Assessment Node
+  type: custom
+  documentation: React Flow node component for visualizing motivation layer assessments
+node-value-stream:
+  id: ux.component.node-value-stream
+  name: Value Stream Node
+  type: custom
+  documentation: React Flow node component for visualizing motivation layer value streams
+# React Flow Node Components - C4 Architecture
+node-component:
+  id: ux.component.node-component
+  name: Component Node
+  type: custom
+  documentation: React Flow node component for visualizing C4 architecture components
+node-container:
+  id: ux.component.node-container
+  name: Container Node
+  type: custom
+  documentation: React Flow node component for visualizing C4 architecture containers
+node-external-actor:
+  id: ux.component.node-external-actor
+  name: External Actor Node
+  type: custom
+  documentation: React Flow node component for visualizing C4 external actors
+# React Flow Node Components - Other
+node-json-schema:
+  id: ux.component.node-json-schema
+  name: JSON Schema Node
+  type: custom
+  documentation: React Flow node component for visualizing JSON Schema definitions
+node-base-field-list:
+  id: ux.component.node-base-field-list
+  name: Base Field List Node
+  type: custom
+  documentation: React Flow base node component for displaying field lists
+node-layer-container:
+  id: ux.component.node-layer-container
+  name: Layer Container Node
+  type: custom
+  documentation: React Flow layout utility node for layer grouping
+node-relationship-badge:
+  id: ux.component.node-relationship-badge
+  name: Relationship Badge Node
+  type: custom
+  documentation: React Flow decoration node for relationship indicators
+# React Flow Edge Components
+edge-cross-layer:
+  id: ux.component.edge-cross-layer
+  name: Cross-Layer Edge
+  type: custom
+  documentation: React Flow edge component for visualizing cross-layer relationships
+edge-elbow:
+  id: ux.component.edge-elbow
+  name: Elbow Edge
+  type: custom
+  documentation: React Flow edge component with orthogonal routing for clean layouts
+edge-influence:
+  id: ux.component.edge-influence
+  name: Influence Edge
+  type: custom
+  documentation: React Flow edge component for visualizing motivation influence relationships
+edge-realizes:
+  id: ux.component.edge-realizes
+  name: Realizes Edge
+  type: custom
+  documentation: React Flow edge component for visualizing motivation realization relationships
+edge-refines:
+  id: ux.component.edge-refines
+  name: Refines Edge
+  type: custom
+  documentation: React Flow edge component for visualizing motivation refinement relationships
+edge-constrains:
+  id: ux.component.edge-constrains
+  name: Constrains Edge
+  type: custom
+  documentation: React Flow edge component for visualizing motivation constraint relationships
+edge-conflicts:
+  id: ux.component.edge-conflicts
+  name: Conflicts Edge
+  type: custom
+  documentation: React Flow edge component for visualizing motivation conflict relationships
+# Business Layer Components
+business-layer-view:
+  id: ux.component.business-layer-view
+  name: Business Layer View
+  type: custom
+  documentation: Business layer graph visualization component with processes, functions, and services
+business-layer-controls:
+  id: ux.component.business-layer-controls
+  name: Business Layer Controls
+  type: custom
+  documentation: Control panel for business layer view with layout and filter options
+process-inspector-panel:
+  id: ux.component.process-inspector-panel
+  name: Process Inspector Panel
+  type: custom
+  documentation: Detailed inspector panel for business processes with metadata and relationships
+# Refinement/Testing Components
+layout-history:
+  id: ux.component.layout-history
+  name: Layout History
+  type: custom
+  documentation: Historical view of layout iterations with timeline and diff comparison
+session-history-browser:
+  id: ux.component.session-history-browser
+  name: Session History Browser
+  type: custom
+  documentation: Browser for layout refinement sessions with quality metrics
+metrics-dashboard:
+  id: ux.component.metrics-dashboard
+  name: Metrics Dashboard
+  type: custom
+  documentation: Dashboard showing layout quality metrics and performance trends
+refinement-feedback-panel:
+  id: ux.component.refinement-feedback-panel
+  name: Refinement Feedback Panel
+  type: custom
+  documentation: Panel for providing layout quality feedback and improvement suggestions
+parameter-adjustment-panel:
+  id: ux.component.parameter-adjustment-panel
+  name: Parameter Adjustment Panel
+  type: custom
+  documentation: Panel for adjusting layout algorithm parameters in real-time
+screenshot-diff-visualization:
+  id: ux.component.screenshot-diff-visualization
+  name: Screenshot Diff Visualization
+  type: custom
+  documentation: Visual diff comparison of layout screenshots with heatmap overlay
+# Utility Components
+overview-panel:
+  id: ux.component.overview-panel
+  name: Overview Panel
+  type: custom
+  documentation: Graph overview panel with statistics, element counts, and navigation tools
+coverage-summary-panel:
+  id: ux.component.coverage-summary-panel
+  name: Coverage Summary Panel
+  type: custom
+  documentation: Model coverage metrics panel showing element distribution across layers
