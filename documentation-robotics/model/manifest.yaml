@@ -3,7 +3,7 @@ schema: documentation-robotics-v1
 cli_version: 0.1.0
 spec_version: 0.7.0
 created: 2025-12-05T22:17:22.732040Z
-updated: 2026-01-07T11:44:04.652Z
+updated: 2026-01-07T12:04:49.050Z
 project:
   name: documentation_robotics_viewer
   description: Architecture model for documentation_robotics_viewer
@@ -112,12 +112,12 @@ layers:
     enabled: true
     elements:
       breadcrumb: 2
-      checklist: 1
-      context-menu: 1
-      experience: 6
+      checklist: 6
+      context-menu: 5
+      experience: 9
       hierarchical: 1
       horizontal-tabs: 4
-      list: 1
+      list: 2
       redirect: 4
       tree: 1
   apm:
@@ -142,7 +142,7 @@ layers:
       coverage-target: 2
       test-case-sketche: 11
 statistics:
-  total_elements: 352
+  total_elements: 365
   elements_by_layer:
     motivation: 14
     business: 9

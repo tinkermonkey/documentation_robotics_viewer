@@ -48,3 +48,37 @@ changesets-view:
   name: Changesets View Route
   type: experience
   documentation: Parametric route for changeset graph and list views (/changesets/:view)
+model-refine:
+  id: navigation.route.model-refine
+  name: Model Refine Route
+  type: experience
+  documentation: Graph refinement view for model visualization with layout
+    parameter tuning and quality metrics
+  properties:
+    path: /model/refine
+    x-renders:
+      - ux.view.graph-refinement
+    x-loads:
+      - application.component.graph-view
+spec-refine:
+  id: navigation.route.spec-refine
+  name: Spec Refine Route
+  type: experience
+  documentation: Graph refinement view for spec visualization with layout
+    parameter tuning and quality metrics
+  properties:
+    path: /spec/refine
+    x-renders:
+      - ux.view.spec-graph-screen
+    x-loads:
+      - application.component.graph-view
+auth:
+  id: navigation.route.auth
+  name: Auth Route
+  type: experience
+  documentation: Magic link authentication handler route for DR CLI token
+    extraction and storage
+  properties:
+    path: /
+    handles: token-extraction-and-storage
+    redirects-to: requested-destination
