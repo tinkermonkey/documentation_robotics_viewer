@@ -9,7 +9,7 @@ Reference diagrams establish quality baselines for automated layout optimization
 1. **Set Quality Targets**: Define what "good" looks like for each diagram type
 2. **Enable Similarity Comparison**: Compare generated layouts against exemplary examples
 3. **Support Regression Testing**: Detect when layout quality degrades
-4. **Guide Optimization**: Provide target metrics for the refinement loop
+4. **Guide Optimization**: Provide target metrics for layout improvements
 
 ## Directory Structure
 
