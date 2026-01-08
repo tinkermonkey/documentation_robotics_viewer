@@ -1,23 +1,19 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /**
- * Refinement and Metrics Test Configuration
+ * Story Tests Configuration
  *
- * Configuration for layout quality refinement tests and metrics reporting.
- * Tests execute against the Ladle component story viewer for better isolation
- * and faster iteration cycles.
+ * Configuration for Ladle component story validation tests.
+ * Tests execute against the Ladle component story viewer.
  *
  * Configuration details:
  * - baseURL: http://localhost:6006 (Ladle catalog)
  * - webServer: npm run catalog:dev (catalog development server)
- * - testMatch: *.ladle.spec.ts (Ladle-based refinement tests)
+ * - testMatch: stories/**/*.spec.ts (Story validation tests)
  */
 export default defineConfig({
   testDir: './tests',
   testMatch: [
-    'refinement/**/*.ladle.spec.ts',
-    'refinement/**/*.spec.ts',
-    'metrics/**/*.spec.ts',
     'stories/**/*.spec.ts',
   ],
   fullyParallel: true,
@@ -26,18 +22,17 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [
     ['list'],
-    ['html', { outputFolder: 'playwright-report/refinement', open: 'never' }],
-    ['json', { outputFile: 'test-results/refinement-results.json' }],
+    ['html', { outputFolder: 'playwright-report/stories', open: 'never' }],
+    ['json', { outputFile: 'test-results/stories-results.json' }],
   ],
 
-  // Longer timeout for refinement iterations
+  // Timeout for story tests
   timeout: 60000,
   expect: {
     timeout: 10000,
   },
 
   use: {
-    // Changed from localhost:3001 (Vite embedded app) to localhost:6006 (Ladle catalog)
     baseURL: 'http://localhost:6006',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
@@ -52,7 +47,6 @@ export default defineConfig({
     },
   ],
 
-  // Web server config - starts Ladle on port 6006
   webServer: {
     command: 'npm run catalog:dev',
     url: 'http://localhost:6006/meta.json',
