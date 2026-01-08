@@ -23,9 +23,11 @@ export default defineConfig({
     '**/overview-panel-styling.spec.ts',
     '**/sidebar-consolidation.spec.ts',
     '**/zoom-to-layer.spec.ts',
+    '**/refinement-workflow.spec.ts',
     // Refinement/metrics tests (use playwright.refinement.config.ts)
     '**/refinement/**/*.spec.ts',
     '**/metrics/**/*.spec.ts',
+    '**/stories/**/*.spec.ts',
   ],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,

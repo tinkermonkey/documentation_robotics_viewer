@@ -23,12 +23,9 @@ import {
   ReferenceDiagramValidation,
   ExtractedGraph,
 } from '../../types/referenceDiagram';
-import {
-  LayoutQualityReport,
-  calculateLayoutQuality,
-  DiagramType,
-  LayoutType,
-} from '../metrics/graphReadabilityService';
+import { calculateLayoutQuality } from '../metrics/graphReadabilityService';
+import type { LayoutQualityReport } from '@/core/types/layoutQuality';
+import type { DiagramType, LayoutType } from '@/core/types/diagram';
 
 /**
  * Map reference diagram types to metrics diagram types

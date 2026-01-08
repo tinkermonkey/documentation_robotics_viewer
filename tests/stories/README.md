@@ -4,9 +4,7 @@ This directory contains automated tests for validating all Ladle stories in the 
 
 ## Overview
 
-We have two approaches for testing Ladle stories:
-
-### 1. Individual Test Per Story (Recommended)
+Individual Test Per Story (Recommended)
 
 **File:** `tests/stories/all-stories.spec.ts`
 
@@ -53,22 +51,6 @@ The `npm run test:stories` command automatically:
 # Run tests against manually-started server
 npm run catalog:dev  # Terminal 1
 npm run test:stories:manual  # Terminal 2
-```
-
-### 2. Batch Validation (Alternative)
-
-**File:** `tests/ladle-story-validation.spec.ts`
-
-A single test that loops through all stories and validates them sequentially.
-
-**Benefits:**
-- ✅ Generates a summary report
-- ✅ Good for CI/CD quick validation
-- ✅ Easier to see overall pass/fail stats
-
-**Running:**
-```bash
-npm run test:ladle-validation
 ```
 
 ## Prerequisites
@@ -174,7 +156,6 @@ npx playwright show-report playwright-report/refinement
 
 ```
 tests/
-├── ladle-story-validation.spec.ts    # Batch validation (single test)
 └── stories/
     └── all-stories.spec.ts           # Individual tests (auto-generated)
 
@@ -233,7 +214,6 @@ The tests filter out common React warnings. If you need to adjust the filter, ed
   "test:stories:generate": "Generate test file from current stories",
   "test:stories": "Run all story validation tests",
   "test:stories:ui": "Run tests in Playwright UI",
-  "test:ladle-validation": "Run batch validation test",
   "catalog:dev": "Start Ladle server for testing"
 }
 ```

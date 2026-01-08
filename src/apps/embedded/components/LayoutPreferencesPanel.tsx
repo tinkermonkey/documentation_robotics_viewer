@@ -7,7 +7,7 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import { useLayoutPreferencesStore } from '../../../core/stores/layoutPreferencesStore';
-import type { DiagramType } from '../../../core/services/refinement/layoutParameters';
+import type { DiagramType } from '../../../core/types/diagram';
 import type { LayoutEngineType } from '../../../core/layout/engines/LayoutEngine';
 
 export interface LayoutPreferencesPanelProps {
@@ -134,8 +134,8 @@ export const LayoutPreferencesPanel: React.FC<LayoutPreferencesPanelProps> = ({
     URL.revokeObjectURL(url);
   }, [exportedConfig]);
 
-  // Count presets per diagram type
-  const presetCounts = useMemo(() => {
+  // Count presets per diagram type (used for future analytics)
+  useMemo(() => {
     const counts: Partial<Record<DiagramType, number>> = {};
     presets.forEach((preset) => {
       counts[preset.diagramType] = (counts[preset.diagramType] || 0) + 1;

@@ -1,7 +1,5 @@
 import type { StoryDefault, Story } from '@ladle/react';
 import { C4ControlPanel } from './C4ControlPanel';
-import type { C4LayoutAlgorithm } from './C4ControlPanel';
-import type { C4ViewLevel, C4ScenarioPreset } from '../types/c4Graph';
 
 export default {
   title: 'C4 / C4ControlPanel',

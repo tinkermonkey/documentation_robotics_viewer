@@ -9,8 +9,7 @@
  */
 
 import { toPng, toSvg } from 'html-to-image';
-import type { RefinementIteration, LayoutSnapshot } from '../types/refinement';
-import type { CombinedQualityScore } from '../../../core/services/comparison/qualityScoreService';
+import type { RefinementIteration, LayoutSnapshot } from '../types/comparisonReport';
 
 /**
  * Comparison report data structure

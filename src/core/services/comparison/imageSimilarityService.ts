@@ -224,6 +224,7 @@ let imghashModule: { hash: (path: string, bits?: number, format?: string) => Pro
 async function getSharp(): Promise<SharpFunction> {
   if (!sharpModule) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // @ts-ignore - sharp is optional, only available in Node.js context
     const mod = await import('sharp') as any;
     sharpModule = mod.default;
   }
@@ -233,6 +234,7 @@ async function getSharp(): Promise<SharpFunction> {
 async function getSSIM(): Promise<typeof ssimModule> {
   if (!ssimModule) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // @ts-ignore - ssim.js is optional, only available in Node.js context
     const mod = await import('ssim.js') as any;
     // ssim.js exports ssim as a named export, not default
     ssimModule = mod.ssim as typeof ssimModule;
@@ -243,6 +245,7 @@ async function getSSIM(): Promise<typeof ssimModule> {
 async function getImghash(): Promise<typeof imghashModule> {
   if (!imghashModule) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // @ts-ignore - imghash is optional, only available in Node.js context
     const mod = await import('imghash') as any;
     imghashModule = mod.default as typeof imghashModule;
   }

@@ -55,6 +55,7 @@ let sharpModule: SharpFunction | null = null;
 async function getSharp(): Promise<SharpFunction> {
   if (!sharpModule) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // @ts-ignore - sharp is optional, only available in Node.js context
     const mod = await import('sharp') as any;
     sharpModule = mod.default;
   }

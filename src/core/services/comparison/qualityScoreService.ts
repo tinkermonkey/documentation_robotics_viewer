@@ -451,6 +451,7 @@ export async function calculateSimilarityOnlyScore(
   // Create a minimal graph metrics report
   const graphMetrics: LayoutQualityReport = {
     overallScore: 1, // Not measured
+    qualityClass: 'acceptable',
     metrics: {
       crossingNumber: 1,
       crossingAngle: 1,
@@ -462,10 +463,14 @@ export async function calculateSimilarityOnlyScore(
       crossingAngle: 1,
       angularResolutionMin: 1,
       angularResolutionDev: 1,
-      edgeLength: { min: 0, max: 0, mean: 0, stdDev: 0 },
+      edgeLength: { min: 0, max: 0, mean: 0, stdDev: 0, variance: 0 },
       nodeNodeOcclusion: 0,
+      overlaps: { pairs: [], totalArea: 0, areaPercentage: 0 },
+      crossings: { count: 0, locations: [] },
       aspectRatio: 1,
       density: 0,
+      alignment: { horizontal: 0, vertical: 0, tolerance: 0 },
+      symmetry: { horizontal: 0, vertical: 0, radial: 0 },
     },
     timestamp: new Date().toISOString(),
     layoutType: 'manual',

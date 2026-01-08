@@ -7,10 +7,41 @@
  */
 
 import { Node, Edge } from '@xyflow/react';
+import type { DiagramType, LayoutType } from '@/core/types/diagram';
+import type {
+  ReadabilityMetrics,
+  Coordinate,
+  EdgeCrossing,
+  NodeOverlap,
+  HierarchyLevel,
+  SymmetryMetrics,
+  AlignmentMetrics,
+  ExtendedMetrics,
+  LayoutQualityReport,
+  MetricWeights,
+  QualityClass,
+} from '@/core/types/layoutQuality';
 
 // Import greadability.js ES module wrapper
 // @ts-ignore
 import { greadability as greadabilityFn } from '../../../vendor/greadability.esm.js';
+
+// Re-export quality types for backward compatibility
+export type {
+  ReadabilityMetrics,
+  Coordinate,
+  EdgeCrossing,
+  NodeOverlap,
+  HierarchyLevel,
+  SymmetryMetrics,
+  AlignmentMetrics,
+  ExtendedMetrics,
+  LayoutQualityReport,
+  MetricWeights,
+  QualityClass,
+  QualityThresholds,
+} from '@/core/types/layoutQuality';
+import type { QualityThresholds } from '@/core/types/layoutQuality';
 
 /**
  * Node structure for greadability.js input.
@@ -67,279 +98,10 @@ type GreadabilityFunction = (
 // Cast to proper type
 const greadability: GreadabilityFunction = greadabilityFn as GreadabilityFunction;
 
-/**
- * Supported diagram types for metrics calculation
- * Includes all 12 architecture layers plus C4 and cross-layer diagrams
- */
-export type DiagramType =
-  | 'motivation'
-  | 'business'
-  | 'security'
-  | 'application'
-  | 'technology'
-  | 'api'
-  | 'datamodel'
-  | 'datastore'
-  | 'ux'
-  | 'navigation'
-  | 'apm'
-  | 'crosslayer'
-  | 'c4';
+// DiagramType and LayoutType are imported from @/core/types/diagram
+// Re-export for backward compatibility with existing code
+export type { DiagramType, LayoutType } from '@/core/types/diagram';
 
-/**
- * Supported layout algorithm types
- */
-export type LayoutType =
-  | 'force-directed'
-  | 'hierarchical'
-  | 'radial'
-  | 'swimlane'
-  | 'matrix'
-  | 'manual';
-
-/**
- * Core readability metrics from greadability.js
- * All values are normalized 0-1 where higher is better
- */
-export interface ReadabilityMetrics {
-  /**
-   * Edge crossing metric (0-1, higher is better)
-   * Measures the fraction of edges that cross, normalized by max possible crossings
-   */
-  crossingNumber: number;
-
-  /**
-   * Edge crossing angle metric (0-1, higher is better)
-   * Measures how close crossing angles are to the ideal 70 degrees
-   */
-  crossingAngle: number;
-
-  /**
-   * Angular resolution minimum metric (0-1, higher is better)
-   * Measures deviation from ideal minimum angle between adjacent edges at nodes
-   */
-  angularResolutionMin: number;
-
-  /**
-   * Angular resolution deviation metric (0-1, higher is better)
-   * Measures average deviation of angles between incident edges
-   */
-  angularResolutionDev: number;
-}
-
-/**
- * Coordinate for crossing or overlap location
- */
-export interface Coordinate {
-  x: number;
-  y: number;
-}
-
-/**
- * Information about an edge crossing
- */
-export interface EdgeCrossing {
-  /** First edge ID */
-  edge1: string;
-  /** Second edge ID */
-  edge2: string;
-  /** Approximate crossing location */
-  location: Coordinate;
-}
-
-/**
- * Information about node overlap
- */
-export interface NodeOverlap {
-  /** First node ID */
-  node1: string;
-  /** Second node ID */
-  node2: string;
-  /** Overlapping area in square pixels */
-  area: number;
-}
-
-/**
- * Hierarchical level information
- */
-export interface HierarchyLevel {
-  /** Level number (0 = root) */
-  level: number;
-  /** Y-coordinate of this level */
-  yPosition: number;
-  /** Node IDs at this level */
-  nodeIds: string[];
-}
-
-/**
- * Symmetry detection results
- */
-export interface SymmetryMetrics {
-  /** Horizontal symmetry score 0-1 */
-  horizontal: number;
-  /** Vertical symmetry score 0-1 */
-  vertical: number;
-  /** Radial symmetry score 0-1 */
-  radial: number;
-}
-
-/**
- * Alignment detection results
- */
-export interface AlignmentMetrics {
-  /** Horizontal alignment score 0-1 */
-  horizontal: number;
-  /** Vertical alignment score 0-1 */
-  vertical: number;
-  /** Tolerance in pixels for near-alignment */
-  tolerance: number;
-}
-
-/**
- * Extended metrics including computed values beyond greadability.js
- */
-export interface ExtendedMetrics extends ReadabilityMetrics {
-  /**
-   * Edge length statistics
-   */
-  edgeLength: {
-    min: number;
-    max: number;
-    mean: number;
-    stdDev: number;
-    variance: number;
-  };
-
-  /**
-   * Node overlap detection (0 = no overlaps, higher = more overlaps)
-   */
-  nodeNodeOcclusion: number;
-
-  /**
-   * Detailed overlap information
-   */
-  overlaps: {
-    /** Array of specific overlapping node pairs with areas */
-    pairs: NodeOverlap[];
-    /** Total overlapping area in square pixels */
-    totalArea: number;
-    /** Percentage of total node area involved in overlaps */
-    areaPercentage: number;
-  };
-
-  /**
-   * Edge crossing information
-   */
-  crossings: {
-    /** Total number of edge crossings */
-    count: number;
-    /** Array of crossing locations for visualization */
-    locations: EdgeCrossing[];
-  };
-
-  /**
-   * Aspect ratio of the layout bounding box (width/height)
-   */
-  aspectRatio: number;
-
-  /**
-   * Density of the graph (edges / possible edges)
-   */
-  density: number;
-
-  /**
-   * Alignment metrics
-   */
-  alignment: AlignmentMetrics;
-
-  /**
-   * Symmetry metrics
-   */
-  symmetry: SymmetryMetrics;
-
-  /**
-   * Hierarchy clarity metric (only for hierarchical layouts)
-   */
-  hierarchyClarity?: {
-    /** Hierarchy clarity score 0-1 */
-    score: number;
-    /** Detected hierarchical levels */
-    levels: HierarchyLevel[];
-    /** Average spacing between levels */
-    avgLevelSpacing: number;
-    /** Standard deviation of level spacing */
-    levelSpacingStdDev: number;
-  };
-}
-
-/**
- * Complete layout quality report
- */
-export interface LayoutQualityReport {
-  /**
-   * Overall normalized score 0-1 (higher is better)
-   * Computed as weighted combination of individual metrics
-   */
-  overallScore: number;
-
-  /**
-   * Quality classification based on layer-specific thresholds
-   */
-  qualityClass: QualityClass;
-
-  /**
-   * Individual readability metrics from greadability.js
-   */
-  metrics: ReadabilityMetrics;
-
-  /**
-   * Extended metrics computed separately
-   */
-  extendedMetrics: ExtendedMetrics;
-
-  /**
-   * ISO timestamp when report was generated
-   */
-  timestamp: string;
-
-  /**
-   * Layout algorithm used
-   */
-  layoutType: LayoutType;
-
-  /**
-   * Type of diagram visualized
-   */
-  diagramType: DiagramType;
-
-  /**
-   * Number of nodes in the graph
-   */
-  nodeCount: number;
-
-  /**
-   * Number of edges in the graph
-   */
-  edgeCount: number;
-
-  /**
-   * Computation time in milliseconds
-   */
-  computationTimeMs: number;
-}
-
-/**
- * Metric weights for computing overall score
- * Values should sum to 1.0
- */
-export interface MetricWeights {
-  crossingNumber: number;
-  crossingAngle: number;
-  angularResolutionMin: number;
-  angularResolutionDev: number;
-  edgeLengthUniformity: number;
-  nodeOcclusion: number;
-}
 
 /**
  * Input graph structure for greadability.js
@@ -355,22 +117,6 @@ export interface GreadabilityGraph {
 const DEFAULT_NODE_WIDTH = 180;
 const DEFAULT_NODE_HEIGHT = 110;
 
-/**
- * Quality score thresholds by diagram type
- * Based on empirical testing with public datasets
- */
-export interface QualityThresholds {
-  excellent: number; // >= this score
-  good: number; // >= this score
-  acceptable: number; // >= this score
-  poor: number; // >= this score
-  // < poor = unacceptable
-}
-
-/**
- * Quality classification result
- */
-export type QualityClass = 'excellent' | 'good' | 'acceptable' | 'poor' | 'unacceptable';
 
 /**
  * Layer-specific quality thresholds
@@ -427,7 +173,7 @@ const QUALITY_THRESHOLDS: Record<DiagramType, QualityThresholds> = {
     poor: 0.34,
   },
   // Datastore layer: Storage organization clarity
-  datastore: {
+  dataset: {
     excellent: 0.80,
     good: 0.65,
     acceptable: 0.50,
@@ -454,13 +200,6 @@ const QUALITY_THRESHOLDS: Record<DiagramType, QualityThresholds> = {
     acceptable: 0.53,
     poor: 0.38,
   },
-  // Cross-layer diagrams: Multi-level clarity
-  crosslayer: {
-    excellent: 0.84,
-    good: 0.69,
-    acceptable: 0.54,
-    poor: 0.39,
-  },
   // C4 diagrams: Container and system clarity
   c4: {
     excellent: 0.85,
@@ -474,20 +213,6 @@ const QUALITY_THRESHOLDS: Record<DiagramType, QualityThresholds> = {
     good: 0.69,
     acceptable: 0.54,
     poor: 0.39,
-  },
-  // Model viewer: Overall model clarity
-  'model-viewer': {
-    excellent: 0.84,
-    good: 0.69,
-    acceptable: 0.54,
-    poor: 0.39,
-  },
-  // Layer-specific diagrams: Default thresholds
-  'layer-specific': {
-    excellent: 0.83,
-    good: 0.68,
-    acceptable: 0.53,
-    poor: 0.38,
   },
 };
 
@@ -595,7 +320,7 @@ const DEFAULT_WEIGHTS: Record<DiagramType, MetricWeights> = {
     nodeOcclusion: 0.10,
   },
   // Datastore layer emphasizes storage relationships and organization
-  datastore: {
+  dataset: {
     crossingNumber: 0.28,
     crossingAngle: 0.12,
     angularResolutionMin: 0.16,
@@ -630,15 +355,6 @@ const DEFAULT_WEIGHTS: Record<DiagramType, MetricWeights> = {
     edgeLengthUniformity: 0.18,
     nodeOcclusion: 0.13,
   },
-  // Cross-layer diagrams prioritize clarity across multiple abstraction levels
-  crosslayer: {
-    crossingNumber: 0.32,
-    crossingAngle: 0.14,
-    angularResolutionMin: 0.16,
-    angularResolutionDev: 0.14,
-    edgeLengthUniformity: 0.12,
-    nodeOcclusion: 0.12,
-  },
   // C4 diagrams prioritize clear container relationships and minimal crossings
   c4: {
     crossingNumber: 0.30,
@@ -647,6 +363,15 @@ const DEFAULT_WEIGHTS: Record<DiagramType, MetricWeights> = {
     angularResolutionDev: 0.10,
     edgeLengthUniformity: 0.15,
     nodeOcclusion: 0.15,
+  },
+  // Spec viewer: Schema clarity
+  'spec-viewer': {
+    crossingNumber: 0.28,
+    crossingAngle: 0.13,
+    angularResolutionMin: 0.15,
+    angularResolutionDev: 0.13,
+    edgeLengthUniformity: 0.18,
+    nodeOcclusion: 0.13,
   },
 };
 
@@ -1133,7 +858,7 @@ export function calculateSymmetry(nodes: Node[]): SymmetryMetrics {
  */
 export function calculateHierarchyClarity(
   nodes: Node[],
-  edges: Edge[],
+  _edges: Edge[],
   layoutType: LayoutType
 ): ExtendedMetrics['hierarchyClarity'] | undefined {
   // Only calculate for hierarchical layouts
@@ -1150,7 +875,6 @@ export function calculateHierarchyClarity(
   const levels: HierarchyLevel[] = [];
 
   nodes.forEach((node) => {
-    const width = node.measured?.width ?? node.width ?? DEFAULT_NODE_WIDTH;
     const height = node.measured?.height ?? node.height ?? DEFAULT_NODE_HEIGHT;
     const centerY = node.position.y + height / 2;
 

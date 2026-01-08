@@ -14,7 +14,8 @@
  */
 
 import { Graphviz } from '@hpcc-js/wasm';
-import type { Graphviz as GraphvizInstance } from '@hpcc-js/wasm-graphviz';
+// @ts-ignore - GraphvizInstance type is from Graphviz import
+type GraphvizInstance = Awaited<ReturnType<typeof Graphviz.load>>;
 import {
   BaseLayoutEngine,
   LayoutGraphInput,
@@ -256,15 +257,9 @@ export class GraphvizLayoutEngine extends BaseLayoutEngine {
 
     // Find global bounds from SVG viewBox
     const viewBoxMatch = svgOutput.match(/viewBox="([\d.-]+)\s+([\d.-]+)\s+([\d.]+)\s+([\d.]+)"/);
-    let svgMinX = 0;
-    let svgMinY = 0;
-    let svgWidth = 1000;
     let svgHeight = 800;
 
     if (viewBoxMatch) {
-      svgMinX = parseFloat(viewBoxMatch[1]);
-      svgMinY = parseFloat(viewBoxMatch[2]);
-      svgWidth = parseFloat(viewBoxMatch[3]);
       svgHeight = parseFloat(viewBoxMatch[4]);
     }
 

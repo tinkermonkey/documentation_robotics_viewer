@@ -101,12 +101,12 @@ export class WebSocketClient {
       this.ws.onopen = this.handleOpen.bind(this);
       this.ws.onmessage = this.handleMessage.bind(this);
       this.ws.onerror = this.handleError.bind(this);
-      this.ws.onclose = () => {
+      this.ws.onclose = (event: CloseEvent) => {
         // Restore console.error when connection closes
         if (this.mode === 'detecting') {
           console.error = originalConsoleError;
         }
-        this.handleClose.apply(this, arguments as any);
+        this.handleClose(event);
       };
 
       // Set connection timeout for initial detection

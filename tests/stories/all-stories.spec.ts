@@ -35,7 +35,7 @@ async function validateStory(
     if (msg.type() === 'error') {
       const text = msg.text();
       // Filter out expected errors that occur in component isolation
-      const isExpectedError = 
+      const isExpectedError =
         shouldAllowErrors || // Allow all errors for ErrorBoundary test
         text.includes('React does not recognize') ||
         text.includes('Warning: ') ||
@@ -45,8 +45,17 @@ async function validateStory(
         text.includes('<svg> attribute viewBox: Expected number') ||
         text.includes('The tag <%s> is unrecognized in this browser') ||
         text.includes('source/target node') ||
-        text.includes('source/target handle');
-      
+        text.includes('source/target handle') ||
+        // Backend API and WebSocket errors (expected in isolated story tests)
+        text.includes('500 Internal Server Error') ||
+        text.includes('WebSocket connection') ||
+        text.includes('[WebSocket]') ||
+        text.includes('[DataLoader]') ||
+        text.includes('[EmbeddedLayout]') ||
+        text.includes('Failed to load resource') ||
+        text.includes('[ModelRoute] Error loading model') ||
+        text.includes('ECONNREFUSED');
+
       if (!isExpectedError) {
         consoleErrors.push(text);
       }

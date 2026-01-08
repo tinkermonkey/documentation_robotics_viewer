@@ -2,14 +2,13 @@
  * Layout Preferences Store
  *
  * Manages user preferences for layout engines and parameters using Zustand with localStorage persistence.
- * Stores per-layer default engines, custom parameter presets, and user feedback history.
+ * Stores per-layer default engines and custom parameter presets.
  */
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { DiagramType, LayoutParameters } from '../services/refinement/layoutParameters';
+import type { DiagramType } from '@/core/types/diagram';
 import type { LayoutEngineType } from '../layout/engines/LayoutEngine';
-import type { RefinementSessionState } from '../services/refinement/refinementLoop';
 
 /**
  * Custom parameter preset
@@ -40,34 +39,6 @@ export interface LayoutPreset {
   updatedAt?: string;
 }
 
-/**
- * User feedback entry for refinement sessions
- */
-export interface FeedbackEntry {
-  /** Feedback timestamp */
-  timestamp: string;
-
-  /** Diagram type */
-  diagramType: DiagramType;
-
-  /** Layout engine used */
-  engineType: LayoutEngineType;
-
-  /** Parameters used */
-  parameters: Record<string, any>;
-
-  /** Whether user accepted or rejected this configuration */
-  accepted: boolean;
-
-  /** Optional quality score at time of feedback */
-  qualityScore?: number;
-
-  /** Optional user comment */
-  comment?: string;
-
-  /** Session ID for grouping related feedback */
-  sessionId?: string;
-}
 
 /**
  * Configuration profile for export/import
@@ -94,15 +65,6 @@ interface LayoutPreferencesState {
 
   /** Custom parameter presets */
   presets: LayoutPreset[];
-
-  /** User feedback history for ML future enhancement */
-  feedbackHistory: FeedbackEntry[];
-
-  /** Refinement session states for pause/resume */
-  sessions: RefinementSessionState[];
-
-  /** Currently active session ID */
-  activeSessionId?: string;
 
   // Actions - Default engine management
   /**
@@ -151,72 +113,6 @@ interface LayoutPreferencesState {
    */
   renamePreset: (id: string, newName: string) => void;
 
-  // Actions - Feedback history
-  /**
-   * Add feedback entry
-   */
-  addFeedback: (feedback: Omit<FeedbackEntry, 'timestamp'>) => void;
-
-  /**
-   * Get feedback for a specific diagram type
-   */
-  getFeedbackForDiagram: (diagramType: DiagramType) => FeedbackEntry[];
-
-  /**
-   * Get accepted feedback only
-   */
-  getAcceptedFeedback: () => FeedbackEntry[];
-
-  /**
-   * Clear feedback history
-   */
-  clearFeedbackHistory: () => void;
-
-  // Actions - Session management
-  /**
-   * Save refinement session state
-   */
-  saveSession: (session: RefinementSessionState) => void;
-
-  /**
-   * Load refinement session state by ID
-   */
-  loadSession: (sessionId: string) => RefinementSessionState | undefined;
-
-  /**
-   * Get all saved sessions
-   */
-  getAllSessions: () => RefinementSessionState[];
-
-  /**
-   * Get sessions for a specific diagram type
-   */
-  getSessionsForDiagram: (diagramType: DiagramType) => RefinementSessionState[];
-
-  /**
-   * Delete a session by ID
-   */
-  deleteSession: (sessionId: string) => void;
-
-  /**
-   * Set active session
-   */
-  setActiveSession: (sessionId: string) => void;
-
-  /**
-   * Get active session
-   */
-  getActiveSession: () => RefinementSessionState | undefined;
-
-  /**
-   * Clear active session
-   */
-  clearActiveSession: () => void;
-
-  /**
-   * Clear all sessions
-   */
-  clearAllSessions: () => void;
 
   // Actions - Export/Import
   /**
@@ -248,9 +144,6 @@ interface LayoutPreferencesState {
 const defaultState = {
   defaultEngines: {},
   presets: [],
-  feedbackHistory: [],
-  sessions: [],
-  activeSessionId: undefined,
 };
 
 /**
@@ -354,99 +247,6 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
         }));
       },
 
-      // Feedback history
-      addFeedback: (feedback) => {
-        const entry: FeedbackEntry = {
-          ...feedback,
-          timestamp: new Date().toISOString(),
-        };
-
-        console.log(
-          `[LayoutPreferences] Adding feedback: ${entry.diagramType} - ${entry.accepted ? 'accepted' : 'rejected'}`
-        );
-
-        set((state) => ({
-          feedbackHistory: [...state.feedbackHistory, entry],
-        }));
-      },
-
-      getFeedbackForDiagram: (diagramType) => {
-        return get().feedbackHistory.filter((entry) => entry.diagramType === diagramType);
-      },
-
-      getAcceptedFeedback: () => {
-        return get().feedbackHistory.filter((entry) => entry.accepted);
-      },
-
-      clearFeedbackHistory: () => {
-        console.log('[LayoutPreferences] Clearing feedback history');
-        set({ feedbackHistory: [] });
-      },
-
-      // Session management
-      saveSession: (session) => {
-        console.log(`[LayoutPreferences] Saving session: ${session.sessionId}`);
-        set((state) => {
-          // Check if session already exists
-          const existingIndex = state.sessions.findIndex((s) => s.sessionId === session.sessionId);
-
-          if (existingIndex >= 0) {
-            // Update existing session
-            const updatedSessions = [...state.sessions];
-            updatedSessions[existingIndex] = {
-              ...session,
-              updatedAt: new Date().toISOString(),
-            };
-            return { sessions: updatedSessions };
-          } else {
-            // Add new session
-            return {
-              sessions: [...state.sessions, session],
-            };
-          }
-        });
-      },
-
-      loadSession: (sessionId) => {
-        return get().sessions.find((s) => s.sessionId === sessionId);
-      },
-
-      getAllSessions: () => {
-        return get().sessions;
-      },
-
-      getSessionsForDiagram: (diagramType) => {
-        return get().sessions.filter((s) => s.diagramType === diagramType);
-      },
-
-      deleteSession: (sessionId) => {
-        console.log(`[LayoutPreferences] Deleting session: ${sessionId}`);
-        set((state) => ({
-          sessions: state.sessions.filter((s) => s.sessionId !== sessionId),
-          activeSessionId: state.activeSessionId === sessionId ? undefined : state.activeSessionId,
-        }));
-      },
-
-      setActiveSession: (sessionId) => {
-        console.log(`[LayoutPreferences] Setting active session: ${sessionId}`);
-        set({ activeSessionId: sessionId });
-      },
-
-      getActiveSession: () => {
-        const state = get();
-        if (!state.activeSessionId) return undefined;
-        return state.sessions.find((s) => s.sessionId === state.activeSessionId);
-      },
-
-      clearActiveSession: () => {
-        console.log('[LayoutPreferences] Clearing active session');
-        set({ activeSessionId: undefined });
-      },
-
-      clearAllSessions: () => {
-        console.log('[LayoutPreferences] Clearing all sessions');
-        set({ sessions: [], activeSessionId: undefined });
-      },
 
       // Export/Import
       exportConfig: () => {

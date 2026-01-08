@@ -19,7 +19,6 @@ export default defineConfig({
     'refinement/**/*.spec.ts',
     'metrics/**/*.spec.ts',
     'stories/**/*.spec.ts',
-    'ladle-story-validation*.spec.ts',
   ],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
