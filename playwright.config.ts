@@ -22,8 +22,7 @@ export default defineConfig({
     '**/overview-panel-styling.spec.ts',
     '**/sidebar-consolidation.spec.ts',
     '**/zoom-to-layer.spec.ts',
-    '**/refinement-workflow.spec.ts',
-    // Story tests
+    // Story tests (use playwright.refinement.config.ts)
     '**/stories/**/*.spec.ts',
   ],
   fullyParallel: true,
