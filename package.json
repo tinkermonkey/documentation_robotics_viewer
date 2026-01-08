@@ -26,7 +26,6 @@
     "openapi:generate": ".venv/bin/python scripts/generate-openapi.py",
     "test:stories:generate": "node scripts/generate-story-tests.cjs",
     "test:stories": "bash scripts/test-stories.sh",
-    "test:stories:manual": "playwright test tests/stories/all-stories.spec.ts --config=playwright.refinement.config.ts",
     "test:stories:ui": "bash scripts/test-stories.sh --ui"
   },
   "keywords": [],

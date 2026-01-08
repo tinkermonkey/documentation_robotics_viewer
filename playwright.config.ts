@@ -2,18 +2,17 @@ import { defineConfig, devices } from '@playwright/test';
 
 /**
  * Default Playwright Test Configuration
- * 
+ *
  * Runs basic tests that don't require the reference server:
  * - Integration tests
  * - Unit tests
  * - Component tests
- * 
+ *
  * For E2E tests with reference server, use: npm run test:e2e
- * For refinement/metrics tests, use: npm run refine:all or npm run metrics:all
  */
 export default defineConfig({
   testDir: './tests',
-  // Run all tests except E2E and refinement/metrics
+  // Run all tests except E2E and story tests
   testMatch: '**/*.spec.ts',
   testIgnore: [
     // E2E tests (use playwright.e2e.config.ts)
@@ -24,9 +23,7 @@ export default defineConfig({
     '**/sidebar-consolidation.spec.ts',
     '**/zoom-to-layer.spec.ts',
     '**/refinement-workflow.spec.ts',
-    // Refinement/metrics tests (use playwright.refinement.config.ts)
-    '**/refinement/**/*.spec.ts',
-    '**/metrics/**/*.spec.ts',
+    // Story tests
     '**/stories/**/*.spec.ts',
   ],
   fullyParallel: true,
