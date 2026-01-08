@@ -1,9 +1,7 @@
 /**
  * Layout Parameter Types and Defaults
  *
- * Extracted from refinement services to prevent circular dependencies
- * when refinement services are removed. Contains type definitions and
- * default values for all supported layout engines.
+ * Contains type definitions and default values for all supported layout engines.
  */
 
 // Note: DiagramType would be used internally if we had layout parameter types that

@@ -35,14 +35,11 @@ A React-based graph visualization tool for the documentation robotics meta-model
 ├── tests/                         # Playwright test suites
 │   ├── e2e/                       # E2E test helpers
 │   ├── integration/               # Integration tests
-│   ├── unit/                      # Unit tests
-│   ├── refinement/                # Layout refinement tests
-│   └── metrics/                   # Quality metrics tests
+│   └── unit/                      # Unit tests
 ├── documentation/                 # Project documentation
 ├── vite.config.ts                 # Vite configurations
 ├── playwright.config.ts           # Default test config
 ├── playwright.e2e.config.ts       # E2E test config (with servers)
-├── playwright.refinement.config.ts # Refinement/metrics config
 └── package.json                   # Dependencies and scripts
 ```
 
@@ -119,23 +116,9 @@ npm run catalog:dev
 Open [http://localhost:6006](http://localhost:6006) to browse component stories.
 
 **Key Features:**
-- **Refinement Layout Tests**: Visual stories for all 12 architecture layers (Motivation, Business, Security, Application, Technology, API, DataModel, Datastore, UX, Navigation, APM, CrossLayer)
 - **Isolated Testing**: Each story runs independently without global state pollution
 - **Fast Iteration**: 40% faster startup than embedded app (2-3s vs 3-5s)
-- **Automated Discovery**: Playwright tests discover stories via `/meta.json` API
-
-**Story Organization:**
-```
-src/apps/embedded/components/refinement/
-├── MotivationLayoutTest.stories.tsx
-├── BusinessLayoutTest.stories.tsx
-├── C4LayoutTest.stories.tsx
-└── ... (13 total layer test stories)
-```
-
-Each story includes small/medium/large graph variants and sparse/dense edge configurations.
-
-**For more details**, see [REFINEMENT_WORKFLOWS.md](documentation/refinement/REFINEMENT_WORKFLOWS.md).
+- **Automated Discovery**: Stories are discoverable and testable in isolation
 
 ### Building for Production
 

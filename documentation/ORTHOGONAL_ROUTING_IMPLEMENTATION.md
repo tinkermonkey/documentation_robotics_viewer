@@ -139,9 +139,7 @@ The orthogonal routing system integrates with:
 
 1. **Layout Engine Registry**: ELK engine advertises orthogonal capability
 2. **Parameter System**: Full parameter validation and ranges
-3. **Refinement Loop**: Can optimize orthogonal routing parameters
-4. **Business Layouts**: Default configuration for process diagrams
-5. **Quality Metrics**: Bend count contributes to layout quality scoring
+3. **Business Layouts**: Default configuration for process diagrams
 
 ## Usage Examples
 
@@ -224,10 +222,6 @@ The test-driven approach followed spec requirements:
   - Added orthogonal routing parameters
   - Updated capabilities
   - Enhanced graph conversion
-- `src/core/services/refinement/layoutParameters.ts`
-  - Added ELK orthogonal parameters
-  - Updated business layer defaults
-  - Added parameter ranges
 
 ## Conclusion
 

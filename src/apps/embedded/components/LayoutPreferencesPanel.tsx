@@ -240,7 +240,7 @@ export const LayoutPreferencesPanel: React.FC<LayoutPreferencesPanelProps> = ({
               <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                 <p className="text-sm">No custom presets yet.</p>
                 <p className="text-xs mt-2">
-                  Create presets from the refinement interface to save parameter configurations.
+                  Create layout presets to save your preferred layout configurations.
                 </p>
               </div>
             ) : (

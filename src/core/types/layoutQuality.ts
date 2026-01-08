@@ -1,9 +1,7 @@
 /**
  * Layout Quality Report Types
  *
- * Extracted from graphReadabilityService to prevent circular dependencies
- * when metrics services are removed. Contains types for layout quality metrics
- * and reporting.
+ * Contains types for layout quality metrics and reporting.
  */
 
 import type { DiagramType } from './diagram';
@@ -22,7 +20,7 @@ export interface QualityThresholds {
 }
 
 /**
- * Core readability metrics from greadability.js
+ * Core readability metrics
  * All values are normalized 0-1 where higher is better
  */
 export interface ReadabilityMetrics {

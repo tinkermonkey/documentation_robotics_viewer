@@ -2,8 +2,6 @@
  * Diagram Type Definitions
  *
  * Core types for diagram classification and layout type selection.
- * Extracted from refinement services to prevent circular dependencies
- * when refinement services are removed.
  */
 
 /**
