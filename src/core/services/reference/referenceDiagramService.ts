@@ -23,7 +23,7 @@ import {
   ReferenceDiagramValidation,
   ExtractedGraph,
 } from '../../types/referenceDiagram';
-import { calculateLayoutQuality } from '../metrics/graphReadabilityService';
+import { calculateLayoutQuality } from './layoutQualityCalculator';
 import type { LayoutQualityReport } from '@/core/types/layoutQuality';
 import type { DiagramType, LayoutType } from '@/core/types/diagram';
 
