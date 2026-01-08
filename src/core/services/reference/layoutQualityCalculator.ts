@@ -49,20 +49,24 @@ export function calculateLayoutQuality(
 
   const overallScore = Math.min(baseScore, 1);
 
+  // For graphs with no edges, crossing metrics are perfect (no crossings possible)
+  const crossingNumber = edgeCount === 0 ? 1 : 0.7 + normalizedDensity * 0.3;
+  const crossingAngle = edgeCount === 0 ? 1 : 0.75;
+
   const computationTime = performance.now() - startTime;
 
   return {
     overallScore,
     qualityClass: overallScore >= 0.85 ? 'excellent' : overallScore >= 0.7 ? 'good' : overallScore >= 0.5 ? 'acceptable' : overallScore >= 0.3 ? 'poor' : 'unacceptable',
     metrics: {
-      crossingNumber: 0.7 + normalizedDensity * 0.3,
-      crossingAngle: 0.75,
+      crossingNumber,
+      crossingAngle,
       angularResolutionMin: 0.8,
       angularResolutionDev: 0.75,
     },
     extendedMetrics: {
-      crossingNumber: 0.7 + normalizedDensity * 0.3,
-      crossingAngle: 0.75,
+      crossingNumber,
+      crossingAngle,
       angularResolutionMin: 0.8,
       angularResolutionDev: 0.75,
       edgeLength: {
