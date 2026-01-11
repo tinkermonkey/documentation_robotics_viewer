@@ -10,4 +10,3 @@ export * from './dataLoader';
 export * from './businessLayerParser';
 export * from './businessGraphBuilder';
 export * from './crossLayerReferenceResolver';
-export * from './reference';

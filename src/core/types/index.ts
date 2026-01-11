@@ -8,7 +8,5 @@ export * from './shapes';
 export * from './jsonSchema';
 export * from './reactflow';
 export * from './businessLayer';
-export * from './referenceDiagram';
 export * from './diagram';
 export * from './layoutParameters';
-export * from './layoutQuality';
