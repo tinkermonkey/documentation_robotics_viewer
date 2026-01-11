@@ -102,3 +102,182 @@ express:
   properties:
     package: express
     version: 5.1.0
+flowbite-react:
+  id: technology.library.flowbite-react
+  name: Flowbite React
+  type: stack
+  documentation: React component library based on Tailwind CSS
+  properties:
+    package: flowbite-react
+    version: 0.10.2
+tailwindcss:
+  id: technology.framework.tailwindcss
+  name: Tailwind CSS
+  type: stack
+  documentation: Utility-first CSS framework
+  properties:
+    package: tailwindcss
+    version: 4.1.6
+tanstack-router:
+  id: technology.library.tanstack-router
+  name: TanStack Router
+  type: stack
+  documentation: Type-safe router for React applications
+  properties:
+    package: "@tanstack/react-router"
+    version: 1.113.0
+elkjs:
+  id: technology.library.elkjs
+  name: ELK.js
+  type: stack
+  documentation: Automatic graph layout using Eclipse Layout Kernel
+  properties:
+    package: elkjs
+    version: 0.9.3
+nodejs:
+  id: technology.runtime.nodejs
+  name: Node.js
+  type: stack
+  documentation: JavaScript runtime environment for server-side and build tools
+  properties:
+    version: 22.x
+    x-supports:
+      - technology.tool.vite
+      - technology.framework.express
+python:
+  id: technology.runtime.python
+  name: Python
+  type: stack
+  documentation: Python runtime for DR CLI backend and FastAPI server
+  properties:
+    version: 3.12.x
+    x-supports:
+      - technology.framework.fastapi
+      - technology.library.uvicorn
+bun:
+  id: technology.runtime.bun
+  name: Bun
+  type: stack
+  documentation: Fast JavaScript runtime and package manager (alternative to Node.js)
+  properties:
+    version: 1.x
+graphviz:
+  id: technology.library.graphviz
+  name: Graphviz
+  type: stack
+  documentation: Graph visualization software for DOT language layout algorithms
+  properties:
+    package: graphviz
+    x-supports:
+      - application.service.graphviz-layout-engine
+sharp:
+  id: technology.library.sharp
+  name: Sharp
+  type: stack
+  documentation: High-performance image processing library for Node.js
+  properties:
+    package: sharp
+    version: 0.33.5
+websockets:
+  id: technology.protocol.websockets
+  name: WebSockets
+  type: stack
+  documentation: Full-duplex communication protocol for real-time data exchange
+  properties:
+    protocol: ws
+    x-supports:
+      - application.service.connection-store
+      - api.operation.websocket-connect
+
+docker:
+  id: technology.tool.docker
+  name: Docker
+  type: stack
+  documentation: Containerization platform for packaging and deploying applications
+  properties:
+    x-supports:
+      - technology.runtime.nodejs
+      - technology.runtime.python
+
+git:
+  id: technology.tool.git
+  name: Git
+  type: stack
+  documentation: Distributed version control system
+  properties:
+    x-supports:
+      - technology.tool.github
+
+github:
+  id: technology.tool.github
+  name: GitHub
+  type: stack
+  documentation: Git repository hosting and collaboration platform
+  properties:
+    x-supports:
+      - application.service.git-hub-service
+
+npm:
+  id: technology.tool.npm
+  name: NPM
+  type: stack
+  documentation: Package manager for JavaScript and Node.js
+  properties:
+    version: 10.x
+    x-supports:
+      - technology.runtime.nodejs
+
+eslint:
+  id: technology.tool.eslint
+  name: ESLint
+  type: stack
+  documentation: Pluggable JavaScript linter for code quality
+  properties:
+    package: eslint
+    version: 9.x
+
+prettier:
+  id: technology.tool.prettier
+  name: Prettier
+  type: stack
+  documentation: Opinionated code formatter for consistent code style
+  properties:
+    package: prettier
+    version: 3.x
+
+ladle:
+  id: technology.tool.ladle
+  name: Ladle
+  type: stack
+  documentation: Fast component development environment and stories viewer
+  properties:
+    package: "@ladle/react"
+    version: 4.x
+
+react-testing-library:
+  id: technology.library.react-testing-library
+  name: React Testing Library
+  type: stack
+  documentation: Testing utilities for React components with user-centric approach
+  properties:
+    package: "@testing-library/react"
+    version: 16.x
+
+axe-core:
+  id: technology.library.axe-core
+  name: Axe Core
+  type: stack
+  documentation: Accessibility testing engine for WCAG compliance
+  properties:
+    package: "axe-core"
+    version: 4.x
+
+ssim:
+  id: technology.library.ssim
+  name: SSIM.js
+  type: stack
+  documentation: Structural Similarity Index for image comparison
+  properties:
+    package: "ssim.js"
+    x-supports:
+      - application.service.image-similarity-service

@@ -3,3 +3,53 @@ layer-selection:
   name: Layer Selection Menu
   type: checklist
   documentation: Layer filtering menu in Model view sidebar
+c4-filter-panel:
+  id: navigation.menu.c4-filter-panel
+  name: C4 Filter Panel
+  type: checklist
+  documentation: Container type and technology stack filtering for C4 architecture view
+  properties:
+    location: right-sidebar
+    controls: container-types,technology-stacks
+    x-rendered-by:
+      - ux.component.c4-filter-panel
+motivation-filter-panel:
+  id: navigation.menu.motivation-filter-panel
+  name: Motivation Filter Panel
+  type: checklist
+  documentation: Element type and relationship type filtering for motivation layer view
+  properties:
+    location: right-sidebar
+    controls: element-types,relationship-types
+    x-rendered-by:
+      - ux.component.motivation-filter-panel
+c4-control-panel:
+  id: navigation.menu.c4-control-panel
+  name: C4 Control Panel
+  type: checklist
+  documentation: Layout algorithm, view level, and scenario preset controls for C4 view
+  properties:
+    location: right-sidebar
+    controls: layout-algorithm,view-level,scenario-presets
+    x-rendered-by:
+      - ux.component.c4-control-panel
+motivation-control-panel:
+  id: navigation.menu.motivation-control-panel
+  name: Motivation Control Panel
+  type: checklist
+  documentation: Layout algorithm and focus mode controls for motivation view
+  properties:
+    location: right-sidebar
+    controls: layout-algorithm,focus-mode
+    x-rendered-by:
+      - ux.component.motivation-control-panel
+model-layers-sidebar:
+  id: navigation.menu.model-layers-sidebar
+  name: Model Layers Sidebar
+  type: checklist
+  documentation: Layer filtering and selection for model graph view with visibility toggles
+  properties:
+    location: left-sidebar
+    type: layer-filter
+    x-rendered-by:
+      - ux.component.model-layers-sidebar

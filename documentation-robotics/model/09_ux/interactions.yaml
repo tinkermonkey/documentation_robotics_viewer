@@ -3,11 +3,19 @@ graph-pan-zoom:
   name: Graph Pan and Zoom
   type: interaction
   documentation: User can pan by dragging canvas and zoom using mouse wheel or pinch gestures
+  properties:
+    x-handled-by:
+      - application.component.graph-view
+      - ux.component.space-mouse-handler
 graph-node-select:
   id: ux.interaction.graph-node-select
   name: Graph Node Selection
   type: interaction
   documentation: Click on graph node to select and display details in sidebar panels
+  properties:
+    x-handled-by:
+      - application.component.graph-view
+      - application.component.inspector-panel
 graph-fit-view:
   id: ux.interaction.graph-fit-view
   name: Fit Graph to View
@@ -23,11 +31,17 @@ layer-filter-toggle:
   name: Layer Filter Toggle
   type: interaction
   documentation: Toggle visibility of specific architecture layer in model graph
+  properties:
+    x-handled-by:
+      - application.component.motivation-filter-panel
 container-type-filter:
   id: ux.interaction.container-type-filter
   name: Container Type Filter
   type: interaction
   documentation: Toggle visibility of specific C4 container type (web, api, database, etc.)
+  properties:
+    x-handled-by:
+      - application.component.c4-filter-panel
 technology-filter:
   id: ux.interaction.technology-filter
   name: Technology Stack Filter
@@ -39,6 +53,9 @@ element-type-filter:
   type: interaction
   documentation: Toggle visibility of motivation element types (goal, requirement,
     principle, etc.)
+  properties:
+    x-handled-by:
+      - application.component.motivation-filter-panel
 relationship-type-filter:
   id: ux.interaction.relationship-type-filter
   name: Relationship Type Filter
@@ -54,6 +71,9 @@ view-switch-graph-json:
   name: Switch Between Graph and JSON Views
   type: interaction
   documentation: Toggle between interactive graph visualization and structured JSON view
+  properties:
+    x-handled-by:
+      - application.component.viewer-app
 view-switch-graph-list:
   id: ux.interaction.view-switch-graph-list
   name: Switch Between Graph and List Views (Changesets)
@@ -71,6 +91,9 @@ layout-algorithm-change:
   type: interaction
   documentation: Switch between graph layout algorithms (hierarchical,
     force-directed, radial, circular, tree)
+  properties:
+    x-handled-by:
+      - application.service.layout-engine
 c4-drill-down:
   id: ux.interaction.c4-drill-down
   name: Drill Down to Container/Component

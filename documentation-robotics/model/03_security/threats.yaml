@@ -5,6 +5,10 @@ unauthorized-file-access:
   documentation: Malicious actors may attempt to access files outside the intended
     model directory by exploiting file path handling vulnerabilities or
     bypassing access controls.
+  properties:
+    x-mitigated-by:
+      - security.countermeasure.file-system-sandboxing
+      - security.countermeasure.path-validation
 path-traversal:
   id: security.threat.path-traversal
   name: Path Traversal Attack
@@ -12,6 +16,10 @@ path-traversal:
   documentation: Attackers may craft malicious file paths containing sequences
     like '../' to escape the model directory and access sensitive system files
     or other user data.
+  properties:
+    x-mitigated-by:
+      - security.countermeasure.path-validation
+      - security.countermeasure.file-system-sandboxing
 xss-attack:
   id: security.threat.xss-attack
   name: Cross-Site Scripting (XSS)
@@ -19,6 +27,10 @@ xss-attack:
   documentation: Malicious scripts embedded in model element names, descriptions,
     or properties could execute in the viewer context if not properly sanitized,
     potentially stealing session data or manipulating the UI.
+  properties:
+    x-mitigated-by:
+      - security.countermeasure.input-sanitization
+      - security.countermeasure.output-encoding
 websocket-hijacking:
   id: security.threat.websocket-hijacking
   name: WebSocket Hijacking
@@ -26,3 +38,47 @@ websocket-hijacking:
   documentation: Unauthorized parties may attempt to intercept or inject messages
     into WebSocket connections, potentially causing data corruption or enabling
     unauthorized actions in collaborative sessions.
+  properties:
+    x-mitigated-by:
+      - security.countermeasure.websocket-origin-validation
+
+csrf-attack:
+  id: security.threat.csrf-attack
+  name: Cross-Site Request Forgery (CSRF)
+  type: threat
+  documentation: Malicious websites may trick authenticated users into performing
+    unwanted actions by submitting forged requests using the user's credentials.
+  properties:
+    x-mitigated-by:
+      - security.countermeasure.input-sanitization
+
+dos-attack:
+  id: security.threat.dos-attack
+  name: Denial of Service (DoS)
+  type: threat
+  documentation: Attackers may attempt to overwhelm the server with excessive
+    requests, causing service degradation or outage for legitimate users.
+  properties:
+    x-mitigated-by:
+      - security.countermeasure.file-system-sandboxing
+
+data-exfiltration:
+  id: security.threat.data-exfiltration
+  name: Data Exfiltration
+  type: threat
+  documentation: Unauthorized extraction of sensitive model data or configuration
+    information through API exploitation or compromised WebSocket connections.
+  properties:
+    x-mitigated-by:
+      - security.countermeasure.output-encoding
+      - security.countermeasure.path-validation
+
+session-hijacking:
+  id: security.threat.session-hijacking
+  name: Session Hijacking
+  type: threat
+  documentation: Attackers may steal or guess session tokens to impersonate
+    legitimate users and gain unauthorized access to model data and operations.
+  properties:
+    x-mitigated-by:
+      - security.countermeasure.websocket-origin-validation

@@ -3,28 +3,89 @@ architecture-visualization:
   name: Architecture Visualization
   type: service
   documentation: Visualize architecture models as interactive graphs across multiple layers
+  properties:
+    x-supports-goals:
+      - motivation.goal.visualize-architecture
+    x-realized-by:
+      - application.service.graph-builder
+      - application.service.layout-engine
+      - application.service.node-transformer
+      - application.service.dagre-layout-engine
+      - application.service.d3-force-layout-engine
+      - application.service.elk-layout-engine
+      - application.service.graphviz-layout-engine
+      - application.service.layout-engine-registry
+      - application.service.semantic-zoom-controller
+      - application.service.edge-bundling-service
+      - application.service.pathfinding-service
+      - application.service.force-directed-business-layout
+      - application.service.hierarchical-business-layout
+      - application.service.matrix-business-layout
+      - application.service.swimlane-business-layout
 model-data-management:
   id: business.service.model-data-management
   name: Model Data Management
   type: service
   documentation: Load, parse, and manage architecture model data from various sources
+  properties:
+    x-supports-goals:
+      - motivation.goal.visualize-architecture
+    x-realized-by:
+      - application.service.yaml-parser
+      - application.service.json-schema-parser
+      - application.service.c4-parser
+      - application.service.business-layer-parser
+      - application.service.data-loader
+      - application.service.model-store
+      - application.service.changeset-store
+      - application.service.cross-layer-reference-resolver
+      - application.service.cross-layer-reference-extractor
 documentation-export:
   id: business.service.documentation-export
   name: Documentation Export
   type: service
   documentation: Export architecture visualizations and reports in multiple formats
+  properties:
+    x-supports-goals:
+      - motivation.requirement.embedded-mode
+    x-realized-by:
+      - application.service.business-export-service
+      - application.service.motivation-export-service
+      - application.service.c4-export-service
+      - application.service.screenshot-service
 external-model-integration:
   id: business.service.external-model-integration
   name: External Model Integration
   type: service
   documentation: Integrate with external sources like GitHub to fetch and serve models
+  properties:
+    x-realized-by:
+      - application.service.git-hub-service
+      - application.service.local-file-loader
+      - application.service.demo-data-service
 architecture-analysis:
   id: business.service.architecture-analysis
   name: Architecture Analysis
   type: service
   documentation: Analyze architecture for impact, traceability, and dependencies
+  properties:
+    x-realized-by:
+      - application.service.impact-analysis-service
+      - application.service.cross-layer-reference-resolver
 quality-assurance:
   id: business.service.quality-assurance
   name: Quality Assurance
   type: service
   documentation: Ensure visualization quality through testing, metrics, and comparison
+  properties:
+    x-realized-by:
+      - application.service.graph-readability-service
+      - application.service.quality-score-service
+      - application.service.image-similarity-service
+      - application.service.heatmap-service
+      - application.service.metrics-history-service
+      - application.service.reference-diagram-service
+      - application.service.graph-element-validator
+      - application.service.refinement-loop-service
+      - application.service.layout-parameters-service
+      - application.service.optimization-strategies-service

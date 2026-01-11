@@ -3,6 +3,9 @@ main-tabs:
   name: Main Tab Menu
   type: horizontal-tabs
   documentation: Primary navigation menu with 5 main sections
+  properties:
+    x-rendered-by:
+      - application.component.viewer-app
 spec-sub-tabs:
   id: navigation.menu.spec-sub-tabs
   name: Spec Sub-Tab Menu

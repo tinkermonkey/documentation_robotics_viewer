@@ -1,0 +1,65 @@
+architecture-understanding:
+  id: motivation.driver.architecture-understanding
+  name: Architecture Understanding
+  type: driver
+  documentation: Teams struggle to understand complex multi-layer architecture relationships without visual tools
+  properties:
+    driver:
+      category: business
+      priority: high
+      source: internal-stakeholder
+
+tooling-fragmentation:
+  id: motivation.driver.tooling-fragmentation
+  name: Tooling Fragmentation
+  type: driver
+  documentation: Existing architecture tools don't support Documentation Robotics format, forcing manual diagram creation
+  properties:
+    driver:
+      category: technical
+      priority: high
+      source: internal-stakeholder
+
+documentation-drift:
+  id: motivation.driver.documentation-drift
+  name: Documentation Drift
+  type: driver
+  documentation: Architecture documentation becomes outdated quickly when not synchronized with code
+  properties:
+    driver:
+      category: business
+      priority: medium
+      source: customer
+
+performance-requirements:
+  id: motivation.driver.performance-requirements
+  name: Performance Requirements
+  type: driver
+  documentation: Large architecture models (500+ elements) require optimized rendering to maintain usability
+  properties:
+    driver:
+      category: technical
+      priority: high
+      source: internal-stakeholder
+
+accessibility-mandate:
+  id: motivation.driver.accessibility-mandate
+  name: Accessibility Mandate
+  type: driver
+  documentation: Legal and organizational requirements mandate WCAG 2.1 AA compliance for all tools
+  properties:
+    driver:
+      category: compliance
+      priority: critical
+      source: external
+
+embedding-requirement:
+  id: motivation.driver.embedding-requirement
+  name: Embedding Requirement
+  type: driver
+  documentation: Documentation sites need embeddable visualizations without full application deployment
+  properties:
+    driver:
+      category: business
+      priority: high
+      source: customer

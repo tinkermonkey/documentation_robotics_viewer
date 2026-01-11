@@ -3,11 +3,30 @@ viewer-app:
   name: Viewer App
   type: component
   documentation: Main application container
+  properties:
+    x-uses:
+      - technology.framework.react
+      - technology.library.flowbite-react
+      - technology.framework.tailwindcss
+      - technology.library.tanstack-router
+    x-monitored-by:
+      - apm.metric.initialization-time
+      - apm.metric.embedding-success-rate
 graph-view:
   id: application.component.graph-view
   name: Graph View
   type: component
   documentation: Core graph rendering component
+  properties:
+    x-uses:
+      - technology.framework.react
+      - technology.library.flowbite-react
+      - technology.framework.tailwindcss
+      - technology.library.react-flow
+      - ux.component.space-mouse-handler
+    x-monitored-by:
+      - apm.metric.interaction-fps
+      - apm.metric.initialization-time
 inspector-panel:
   id: application.component.inspector-panel
   name: Inspector Panel
@@ -19,17 +38,32 @@ motivation-graph-view:
   type: component
   documentation: Displays motivation layer graph with filtering, export, and
     traceability features
+  properties:
+    x-uses:
+      - technology.framework.react
+      - technology.library.flowbite-react
+      - technology.framework.tailwindcss
 business-layer-view:
   id: application.component.business-layer-view
   name: Business Layer View
   type: component
   documentation: Displays business layer graph with processes, functions,
     services, and capabilities
+  properties:
+    x-uses:
+      - technology.framework.react
+      - technology.library.flowbite-react
+      - technology.framework.tailwindcss
 c4-graph-view:
   id: application.component.c4-graph-view
   name: C4 Graph View
   type: component
   documentation: Displays C4 architecture view with containers, components, and focus modes
+  properties:
+    x-uses:
+      - technology.framework.react
+      - technology.library.flowbite-react
+      - technology.framework.tailwindcss
 changeset-graph-view:
   id: application.component.changeset-graph-view
   name: Changeset Graph View
@@ -40,11 +74,17 @@ motivation-filter-panel:
   name: Motivation Filter Panel
   type: component
   documentation: Filter controls for motivation layer (element types, traceability mode)
+  properties:
+    x-monitored-by:
+      - apm.metric.filter-latency
 c4-filter-panel:
   id: application.component.c4-filter-panel
   name: C4 Filter Panel
   type: component
   documentation: Filter controls for C4 view (scenario presets, detail levels, focus context)
+  properties:
+    x-monitored-by:
+      - apm.metric.filter-latency
 error-boundary:
   id: application.component.error-boundary
   name: Error Boundary
@@ -71,11 +111,6 @@ layer-panel:
   name: Layer Panel
   type: component
   documentation: Side panel showing layer hierarchy and element counts
-space-mouse-handler:
-  id: application.component.space-mouse-handler
-  name: Space Mouse Handler
-  type: component
-  documentation: Handles pan and zoom interactions for graph navigation
 spec-viewer:
   id: application.component.spec-viewer
   name: Spec Viewer

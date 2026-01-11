@@ -19,6 +19,12 @@ health-check:
                   type: string
                 version:
                   type: string
+    x-archimate-ref:
+      - application.service.reference-server
+    x-protected-by:
+      - security.permission.access-api-endpoints
+    x-response-schema:
+      - data_model.object-schema.health-status
 get-spec:
   id: api.operation.get-spec
   name: Get Specification
@@ -33,6 +39,13 @@ get-spec:
         description: Specification data
       "404":
         description: Schema directory not found
+    x-archimate-ref:
+      - application.service.json-schema-parser
+    x-protected-by:
+      - security.permission.read-model-files
+      - security.countermeasure.path-validation
+    x-response-schema:
+      - data_model.object-schema.spec-collection
 get-model:
   id: api.operation.get-model
   name: Get Model
@@ -47,6 +60,14 @@ get-model:
         description: Model data
       "404":
         description: Model manifest not found
+    x-archimate-ref:
+      - application.service.data-loader
+    x-protected-by:
+      - security.permission.read-model-files
+      - security.countermeasure.path-validation
+      - security.countermeasure.input-sanitization
+    x-response-schema:
+      - data_model.object-schema.model-response
 list-changesets:
   id: api.operation.list-changesets
   name: List Changesets
@@ -59,6 +80,13 @@ list-changesets:
     responses:
       "200":
         description: List of changesets
+    x-archimate-ref:
+      - application.service.yaml-parser
+    x-protected-by:
+      - security.permission.read-model-files
+      - security.countermeasure.path-validation
+    x-response-schema:
+      - data_model.object-schema.changeset-list
 get-changeset:
   id: api.operation.get-changeset
   name: Get Changeset
@@ -79,6 +107,14 @@ get-changeset:
         description: Changeset details
       "404":
         description: Changeset not found
+    x-archimate-ref:
+      - application.service.yaml-parser
+    x-protected-by:
+      - security.permission.read-model-files
+      - security.countermeasure.path-validation
+      - security.countermeasure.input-sanitization
+    x-response-schema:
+      - data_model.object-schema.changeset-details
 get-annotations:
   id: api.operation.get-annotations
   name: Get Annotations
@@ -97,6 +133,13 @@ get-annotations:
     responses:
       "200":
         description: List of annotations
+    x-archimate-ref:
+      - application.service.demo-data-service
+    x-protected-by:
+      - security.permission.access-api-endpoints
+      - security.countermeasure.output-encoding
+    x-response-schema:
+      - data_model.object-schema.annotation-list
 get-github-releases:
   id: api.operation.get-github-releases
   name: Get GitHub Releases
@@ -133,6 +176,13 @@ get-github-releases:
                           type: array
             "500":
               description: Failed to fetch releases
+    x-archimate-ref:
+      - application.service.git-hub-service
+    x-protected-by:
+      - security.permission.access-api-endpoints
+      - security.countermeasure.input-sanitization
+    x-response-schema:
+      - data_model.object-schema.github-release
 get-latest-github-release:
   id: api.operation.get-latest-github-release
   name: Get Latest GitHub Release
@@ -169,6 +219,13 @@ get-latest-github-release:
               description: No spec releases found
             "500":
               description: Failed to fetch release
+    x-archimate-ref:
+      - application.service.git-hub-service
+    x-protected-by:
+      - security.permission.access-api-endpoints
+      - security.countermeasure.input-sanitization
+    x-response-schema:
+      - data_model.object-schema.github-release
 get-github-release-by-tag:
   id: api.operation.get-github-release-by-tag
   name: Get GitHub Release by Tag
@@ -204,6 +261,14 @@ get-github-release-by-tag:
               description: Release not found
             "500":
               description: Failed to fetch release
+    x-archimate-ref:
+      - application.service.git-hub-service
+    x-protected-by:
+      - security.permission.access-api-endpoints
+      - security.countermeasure.input-sanitization
+      - security.countermeasure.path-validation
+    x-response-schema:
+      - data_model.object-schema.github-release
 download-github-schema-zip:
   id: api.operation.download-github-schema-zip
   name: Download GitHub Schema ZIP
@@ -240,6 +305,11 @@ download-github-schema-zip:
               description: Release or asset not found
             "500":
               description: Failed to download
+    x-archimate-ref:
+      - application.service.git-hub-service
+    x-protected-by:
+      - security.permission.access-api-endpoints
+      - security.countermeasure.path-validation
 get-example-implementation:
   id: api.operation.get-example-implementation
   name: Get Example Implementation
@@ -271,6 +341,13 @@ get-example-implementation:
               description: Example implementation not found
             "500":
               description: Failed to serve example implementation
+    x-archimate-ref:
+      - application.service.yaml-parser
+      - application.service.data-loader
+    x-protected-by:
+      - security.permission.read-model-files
+      - security.countermeasure.path-validation
+      - security.countermeasure.file-system-sandboxing
 websocket-connect:
   id: api.operation.websocket-connect
   name: WebSocket Connection
@@ -292,6 +369,11 @@ websocket-connect:
       client-to-server:
         - subscribe
         - ping
+    x-archimate-ref:
+      - application.service.reference-server
+    x-protected-by:
+      - security.permission.websocket-connection
+      - security.countermeasure.websocket-origin-validation
 connected:
   id: api.event.connected
   name: Connected Event
@@ -329,3 +411,207 @@ model-updated:
     payload:
       type: model.updated
       timestamp: string
+get-link-registry:
+  id: api.operation.get-link-registry
+  name: Get Link Registry
+  type: operation
+  documentation: Returns cross-layer link type catalog with validation rules and
+    cardinality constraints
+  properties:
+    method: GET
+    path: /api/link-registry
+    protocol: rest
+    x-archimate-ref:
+      - application.service.cross-layer-reference-resolver
+    x-response-schema:
+      - data_model.object-schema.link-type
+create-annotation:
+  id: api.operation.create-annotation
+  name: Create Annotation
+  type: operation
+  documentation: Creates new user annotation on model element with author,
+    content, and timestamp
+  properties:
+    method: POST
+    path: /api/annotations
+    protocol: rest
+    x-archimate-ref:
+      - application.service.demo-data-service
+    x-request-schema:
+      - data_model.object-schema.annotation
+    x-response-schema:
+      - data_model.object-schema.annotation
+changeset-created:
+  id: api.operation.changeset-created
+  name: Changeset Created Event
+  type: operation
+  documentation: WebSocket event broadcast when new changeset is created on the server
+  properties:
+    direction: server-to-client
+    channel: /ws
+    protocol: websocket
+    x-archimate-ref:
+      - application.service.yaml-parser
+    x-payload-schema:
+      - data_model.object-schema.changeset-summary
+annotation-added:
+  id: api.operation.annotation-added
+  name: Annotation Added Event
+  type: operation
+  documentation: WebSocket event broadcast when annotation is added to an element by any user
+  properties:
+    direction: server-to-client
+    channel: /ws
+    protocol: websocket
+    x-archimate-ref:
+      - application.service.demo-data-service
+    x-payload-schema:
+      - data_model.object-schema.annotation
+subscribed:
+  id: api.operation.subscribed
+  name: Subscribed Event
+  type: operation
+  documentation: WebSocket confirmation event sent after client subscribes to update topics
+  properties:
+    direction: server-to-client
+    channel: /ws
+    protocol: websocket
+pong:
+  id: api.operation.pong
+  name: Pong Event
+  type: operation
+  documentation: WebSocket heartbeat response to client ping for connection
+    keepalive monitoring
+  properties:
+    direction: server-to-client
+    channel: /ws
+    protocol: websocket
+ping:
+  id: api.operation.ping
+  name: Ping Command
+  type: operation
+  documentation: Client WebSocket heartbeat message for connection keepalive
+    monitoring and timeout detection
+  properties:
+    direction: client-to-server
+    channel: /ws
+    protocol: websocket
+rest-mode:
+  id: api.operation.rest-mode
+  name: REST Mode Fallback
+  type: operation
+  documentation: Client event emitted when WebSocket is unavailable, triggering
+    fallback to REST polling
+  properties:
+    direction: client-event
+    protocol: client-side
+
+update-annotation:
+  id: api.operation.update-annotation
+  name: Update Annotation
+  type: operation
+  documentation: Updates existing annotation content, author, or resolution status
+  properties:
+    method: PUT
+    path: /api/annotations/{annotation_id}
+    protocol: rest
+    parameters:
+      - name: annotation_id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      "200":
+        description: Annotation updated successfully
+      "404":
+        description: Annotation not found
+      "400":
+        description: Invalid annotation data
+    x-archimate-ref:
+      - application.service.demo-data-service
+    x-protected-by:
+      - security.permission.access-api-endpoints
+    x-request-schema:
+      - data_model.object-schema.annotation
+    x-response-schema:
+      - data_model.object-schema.annotation
+
+delete-annotation:
+  id: api.operation.delete-annotation
+  name: Delete Annotation
+  type: operation
+  documentation: Deletes annotation by ID with cascade to related data
+  properties:
+    method: DELETE
+    path: /api/annotations/{annotation_id}
+    protocol: rest
+    parameters:
+      - name: annotation_id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      "204":
+        description: Annotation deleted successfully
+      "404":
+        description: Annotation not found
+      "403":
+        description: Insufficient permissions to delete
+    x-archimate-ref:
+      - application.service.demo-data-service
+    x-protected-by:
+      - security.permission.access-api-endpoints
+
+create-changeset:
+  id: api.operation.create-changeset
+  name: Create Changeset
+  type: operation
+  documentation: Creates new changeset for isolated model modifications
+  properties:
+    method: POST
+    path: /api/changesets
+    protocol: rest
+    responses:
+      "201":
+        description: Changeset created successfully
+      "400":
+        description: Invalid changeset data
+    x-archimate-ref:
+      - application.service.yaml-parser
+    x-protected-by:
+      - security.permission.read-model-files
+    x-request-schema:
+      - data_model.object-schema.changeset-summary
+    x-response-schema:
+      - data_model.object-schema.changeset-details
+
+apply-changeset:
+  id: api.operation.apply-changeset
+  name: Apply Changeset
+  type: operation
+  documentation: Applies changeset to main model and broadcasts update via WebSocket
+  properties:
+    method: POST
+    path: /api/changesets/{changeset_id}/apply
+    protocol: rest
+    parameters:
+      - name: changeset_id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      "200":
+        description: Changeset applied successfully
+      "404":
+        description: Changeset not found
+      "409":
+        description: Conflict with current model state
+    x-archimate-ref:
+      - application.service.yaml-parser
+    x-protected-by:
+      - security.permission.read-model-files
+    x-response-schema:
+      - data_model.object-schema.model-response

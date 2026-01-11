@@ -3,16 +3,39 @@ graph-builder:
   name: Graph Builder
   type: service
   documentation: Transforms model data into graph nodes and edges
+  properties:
+    x-realizes:
+      - business.service.architecture-visualization
+    x-uses:
+      - technology.library.react-flow
+      - application.service.node-transformer
+      - application.service.layout-engine
+    x-accesses:
+      - data_model.entity.model-element
+      - data_model.entity.relationship
 layout-engine:
   id: application.service.layout-engine
   name: Layout Engine
   type: service
   documentation: Calculates node positions
+  properties:
+    x-realizes:
+      - business.service.architecture-visualization
+    x-uses:
+      - technology.library.d3-force
+      - technology.library.dagre
+      - technology.library.elkjs
+    x-monitored-by:
+      - apm.metric.initialization-time
+      - apm.metric.interaction-fps
 node-transformer:
   id: application.service.node-transformer
   name: Node Transformer
   type: service
   documentation: Converts model elements to React Flow nodes
+  properties:
+    x-realizes:
+      - business.service.architecture-visualization
 reference-server:
   id: application.service.reference-server
   name: Reference Server
@@ -24,24 +47,48 @@ business-export-service:
   type: service
   documentation: Exports business layer graphs as PNG, SVG, and JSON with
     traceability reports and impact analysis
+  properties:
+    x-realizes:
+      - business.service.documentation-export
+    x-uses:
+      - technology.library.html-to-image
+      - technology.library.jszip
 motivation-export-service:
   id: application.service.motivation-export-service
   name: Motivation Export Service
   type: service
   documentation: Exports motivation layer graphs (goals, drivers, stakeholders) as
     PNG, SVG, JSON with traceability reports
+  properties:
+    x-realizes:
+      - business.service.documentation-export
+    x-uses:
+      - technology.library.html-to-image
+      - technology.library.jszip
 c4-export-service:
   id: application.service.c4-export-service
   name: C4 Export Service
   type: service
   documentation: Exports C4 architecture diagrams as PNG, SVG with scenario
     presets and focus context
+  properties:
+    x-realizes:
+      - business.service.documentation-export
+    x-uses:
+      - technology.library.html-to-image
+      - technology.library.jszip
 business-graph-builder:
   id: application.service.business-graph-builder
   name: Business Graph Builder
   type: service
   documentation: Constructs business layer graph from parsed elements with
     cross-layer links and indices
+  properties:
+    x-accesses:
+      - data_model.object-schema.business-graph
+      - data_model.object-schema.business-node
+      - data_model.object-schema.business-edge
+      - data_model.object-schema.cross-layer-link
 business-layer-parser:
   id: application.service.business-layer-parser
   name: Business Layer Parser
@@ -54,11 +101,30 @@ yaml-parser:
   type: service
   documentation: Parses YAML instance models with manifest orchestration and
     dot-notation ID resolution
+  properties:
+    x-realizes:
+      - business.service.model-data-management
+    x-uses:
+      - technology.library.js-yaml
+      - technology.language.typescript
+    x-accesses:
+      - data_model.entity.meta-model
+      - data_model.entity.layer
+      - data_model.entity.model-element
 json-schema-parser:
   id: application.service.json-schema-parser
   name: JSON Schema Parser
   type: service
   documentation: Parses JSON Schema definitions into model elements with auto-generated UUIDs
+  properties:
+    x-realizes:
+      - business.service.model-data-management
+    x-uses:
+      - technology.language.typescript
+    x-accesses:
+      - data_model.entity.meta-model
+      - data_model.entity.layer
+      - data_model.entity.model-element
 c4-parser:
   id: application.service.c4-parser
   name: C4 Parser
@@ -75,22 +141,42 @@ data-loader:
   name: Data Loader
   type: service
   documentation: Orchestrates model loading from JSON Schema, YAML instances, or demo data
+  properties:
+    x-monitored-by:
+      - apm.metric.initialization-time
+      - apm.metric.embedding-success-rate
+    x-uses:
+      - application.service.yaml-parser
+      - application.service.json-schema-parser
+      - application.service.model-store
+    x-accesses:
+      - data_model.entity.meta-model
+      - data_model.entity.layer
 git-hub-service:
   id: application.service.git-hub-service
   name: GitHub Service
   type: service
   documentation: Fetches models and releases from GitHub repositories via backend proxy
+  properties:
+    x-realizes:
+      - business.service.external-model-integration
 impact-analysis-service:
   id: application.service.impact-analysis-service
   name: Impact Analysis Service
   type: service
   documentation: Analyzes downstream impact of changes across process dependencies
+  properties:
+    x-realizes:
+      - business.service.architecture-analysis
 motivation-graph-builder:
   id: application.service.motivation-graph-builder
   name: Motivation Graph Builder
   type: service
   documentation: Constructs motivation layer graph from goals, drivers,
     stakeholders, and requirements
+  properties:
+    x-accesses:
+      - data_model.object-schema.motivation-graph
 motivation-graph-transformer:
   id: application.service.motivation-graph-transformer
   name: Motivation Graph Transformer
@@ -167,3 +253,294 @@ spec-parser-service:
   name: Spec Parser Service
   type: service
   documentation: Parses specification documents and extracts metadata
+model-store:
+  id: application.service.model-store
+  name: Model Store
+  type: service
+  documentation: Central Zustand store managing loaded model data with selectors
+    for layers and elements
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.entity.meta-model
+      - data_model.entity.layer
+      - data_model.entity.model-element
+      - data_model.object-schema.model-store-state
+    x-realizes:
+      - business.service.model-data-management
+    x-persists-to:
+      - datastore.store.model-store
+annotation-store:
+  id: application.service.annotation-store
+  name: Annotation Store
+  type: service
+  documentation: Zustand store managing annotation state with optimistic updates
+    and WebSocket synchronization
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.object-schema.annotation
+      - data_model.object-schema.annotation-store-state
+    x-persists-to:
+      - datastore.store.annotation-store
+changeset-store:
+  id: application.service.changeset-store
+  name: Changeset Store
+  type: service
+  documentation: Zustand store managing changeset selection and loading state
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.object-schema.changeset-summary
+      - data_model.object-schema.changeset-details
+      - data_model.object-schema.changeset-store-state
+    x-realizes:
+      - business.service.model-data-management
+    x-persists-to:
+      - datastore.store.changeset-store
+      - datastore.store.local-fs
+auth-store:
+  id: application.service.auth-store
+  name: Auth Store
+  type: service
+  documentation: Zustand store managing authentication token from DR CLI magic
+    links with localStorage persistence
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.object-schema.auth-state
+    x-persists-to:
+      - datastore.store.auth-store
+connection-store:
+  id: application.service.connection-store
+  name: Connection Store
+  type: service
+  documentation: Zustand store tracking WebSocket connection state and reconnection attempts
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.object-schema.connection-state
+    x-persists-to:
+      - datastore.store.connection-store
+view-preference-store:
+  id: application.service.view-preference-store
+  name: View Preference Store
+  type: service
+  documentation: Zustand store managing user view mode preferences
+    (graph/JSON/list) with localStorage persistence
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.object-schema.view-preferences
+      - data_model.object-schema.filter-state
+      - data_model.object-schema.view-preferences-state
+    x-persists-to:
+      - datastore.store.view-preference-store
+layer-store:
+  id: application.service.layer-store
+  name: Layer Store
+  type: service
+  documentation: Zustand store managing layer visibility, opacity, locking, and focus state
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.entity.layer
+      - data_model.object-schema.layer-store-state
+    x-persists-to:
+      - datastore.store.layer-store
+element-store:
+  id: application.service.element-store
+  name: Element Store
+  type: service
+  documentation: Temporary in-memory store for model elements (workaround for
+    tldraw JSON serialization)
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.entity.model-element
+      - data_model.object-schema.element-store-state
+    x-persists-to:
+      - datastore.store.element-store
+layout-preferences-store:
+  id: application.service.layout-preferences-store
+  name: Layout Preferences Store
+  type: service
+  documentation: Zustand store managing layout engine preferences, custom presets,
+    and refinement session state with localStorage
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.object-schema.layout-preset
+      - data_model.object-schema.layout-options
+      - data_model.object-schema.layout-preferences-state
+    x-persists-to:
+      - datastore.store.layout-preferences-store
+business-layer-store:
+  id: application.service.business-layer-store
+  name: Business Layer Store
+  type: service
+  documentation: Zustand store managing business layer visualization preferences
+    (filters, layout, focus modes) with localStorage
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.object-schema.business-layer-store-state
+    x-persists-to:
+      - datastore.store.business-layer-store
+dagre-layout-engine:
+  id: application.service.dagre-layout-engine
+  name: Dagre Layout Engine
+  type: service
+  documentation: Hierarchical layout engine using Dagre algorithm for directed acyclic graphs
+  properties:
+    x-uses:
+      - technology.library.dagre
+    x-realizes:
+      - business.service.architecture-visualization
+d3-force-layout-engine:
+  id: application.service.d3-force-layout-engine
+  name: D3 Force Layout Engine
+  type: service
+  documentation: Force-directed layout engine using D3 force simulation for organic, physics-based layouts
+  properties:
+    x-uses:
+      - technology.library.d3-force
+    x-realizes:
+      - business.service.architecture-visualization
+elk-layout-engine:
+  id: application.service.elk-layout-engine
+  name: ELK Layout Engine
+  type: service
+  documentation: Eclipse Layout Kernel engine supporting multiple layout algorithms (Layered, Force, Box, etc.)
+  properties:
+    x-uses:
+      - technology.library.elkjs
+    x-realizes:
+      - business.service.architecture-visualization
+graphviz-layout-engine:
+  id: application.service.graphviz-layout-engine
+  name: Graphviz Layout Engine
+  type: service
+  documentation: Graphviz DOT layout engine for hierarchical graph layouts
+  properties:
+    x-uses:
+      - technology.library.graphviz
+    x-realizes:
+      - business.service.architecture-visualization
+layout-engine-registry:
+  id: application.service.layout-engine-registry
+  name: Layout Engine Registry
+  type: service
+  documentation: Registry and factory for layout engines with algorithm selection and configuration
+  properties:
+    x-realizes:
+      - business.service.architecture-visualization
+semantic-zoom-controller:
+  id: application.service.semantic-zoom-controller
+  name: Semantic Zoom Controller
+  type: service
+  documentation: Controls semantic zoom levels and detail adaptation based on viewport scale
+  properties:
+    x-realizes:
+      - business.service.architecture-visualization
+refinement-loop-service:
+  id: application.service.refinement-loop-service
+  name: Refinement Loop Service
+  type: service
+  documentation: Orchestrates iterative layout optimization with quality scoring, early stopping, and iteration history
+  properties:
+    x-realizes:
+      - business.service.quality-assurance
+    x-uses:
+      - application.service.layout-parameters-service
+      - application.service.optimization-strategies-service
+      - application.service.quality-score-service
+      - application.service.screenshot-service
+layout-parameters-service:
+  id: application.service.layout-parameters-service
+  name: Layout Parameters Service
+  type: service
+  documentation: Manages layout parameter definitions, ranges, validation, and random generation for refinement
+  properties:
+    x-realizes:
+      - business.service.quality-assurance
+optimization-strategies-service:
+  id: application.service.optimization-strategies-service
+  name: Optimization Strategies Service
+  type: service
+  documentation: Implements optimization strategies (grid search, random search, hill climbing) for layout refinement
+  properties:
+    x-realizes:
+      - business.service.quality-assurance
+force-directed-business-layout:
+  id: application.service.force-directed-business-layout
+  name: Force Directed Business Layout
+  type: service
+  documentation: Force-directed layout specialized for business layer with service/capability clustering
+  properties:
+    x-uses:
+      - technology.library.d3-force
+    x-realizes:
+      - business.service.architecture-visualization
+hierarchical-business-layout:
+  id: application.service.hierarchical-business-layout
+  name: Hierarchical Business Layout
+  type: service
+  documentation: Hierarchical layout for business processes with swimlane organization
+  properties:
+    x-uses:
+      - technology.library.dagre
+    x-realizes:
+      - business.service.architecture-visualization
+matrix-business-layout:
+  id: application.service.matrix-business-layout
+  name: Matrix Business Layout
+  type: service
+  documentation: Matrix layout for business capability maps with grid-based positioning
+  properties:
+    x-realizes:
+      - business.service.architecture-visualization
+swimlane-business-layout:
+  id: application.service.swimlane-business-layout
+  name: Swimlane Business Layout
+  type: service
+  documentation: Swimlane layout for business processes with role-based lanes
+  properties:
+    x-realizes:
+      - business.service.architecture-visualization
+edge-bundling-service:
+  id: application.service.edge-bundling-service
+  name: Edge Bundling Service
+  type: service
+  documentation: Edge bundling algorithm to reduce visual clutter by grouping related edges
+  properties:
+    x-uses:
+      - technology.library.d3-force
+    x-realizes:
+      - business.service.architecture-visualization
+graph-element-validator:
+  id: application.service.graph-element-validator
+  name: Graph Element Validator
+  type: service
+  documentation: Validates graph structure, node/edge data, and cross-layer references
+  properties:
+    x-realizes:
+      - business.service.quality-assurance
+pathfinding-service:
+  id: application.service.pathfinding-service
+  name: Pathfinding Service
+  type: service
+  documentation: Pathfinding algorithms for edge routing and obstacle avoidance
+  properties:
+    x-realizes:
+      - business.service.architecture-visualization

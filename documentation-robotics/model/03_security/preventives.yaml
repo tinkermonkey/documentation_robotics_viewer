@@ -33,3 +33,32 @@ websocket-origin-validation:
   documentation: Validate the origin header of WebSocket connection requests to
     ensure connections only come from allowed sources. Rejects cross-origin
     connection attempts.
+
+jwt-authentication:
+  id: security.countermeasure.jwt-authentication
+  name: JWT Authentication
+  type: preventive
+  documentation: JSON Web Token based authentication for stateless API access.
+    Tokens contain claims about user identity and permissions, cryptographically
+    signed to prevent tampering.
+
+oauth2-authentication:
+  id: security.countermeasure.oauth2-authentication
+  name: OAuth2 Authentication
+  type: preventive
+  documentation: OAuth 2.0 protocol for delegated authorization allowing third-party
+    applications to access user data without exposing credentials.
+
+magic-link-authentication:
+  id: security.countermeasure.magic-link-authentication
+  name: Magic Link Authentication
+  type: preventive
+  documentation: Passwordless authentication via email magic links containing
+    time-limited tokens for one-time login access.
+
+token-based-authorization:
+  id: security.countermeasure.token-based-authorization
+  name: Token-Based Authorization
+  type: preventive
+  documentation: Bearer token validation for API and WebSocket endpoints.
+    Tokens contain user roles and permissions for fine-grained access control.
