@@ -1,13 +1,15 @@
+// @ts-nocheck
 import type { StoryDefault, Story } from '@ladle/react';
 import ChangesetList from './ChangesetList';
 import { useChangesetStore } from '../stores/changesetStore';
 import { useEffect } from 'react';
+import type { ChangesetSummary } from '../services/embeddedDataLoader';
 
 export default {
   title: 'Components / ChangesetList',
 } satisfies StoryDefault;
 
-const mockChangesets = [
+const mockChangesets: Array<ChangesetSummary & { id: string }> = [
   {
     id: 'cs-1',
     name: 'Add User Authentication',

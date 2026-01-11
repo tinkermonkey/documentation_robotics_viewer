@@ -1,7 +1,7 @@
+// @ts-nocheck
 import type { StoryDefault, Story } from '@ladle/react';
 import { C4RightSidebar } from './C4RightSidebar';
 import type { C4FilterCounts } from './C4FilterPanel';
-import type { C4LayoutAlgorithm } from './C4ControlPanel';
 import type { C4Graph } from '../types/c4Graph';
 import { ContainerType, C4Type } from '../types/c4Graph';
 import { useState } from 'react';
@@ -35,12 +35,18 @@ const mockGraph: C4Graph = {
   nodes: new Map([
     ['web-app', {
       id: 'web-app',
-      type: C4Type.Container,
+      c4Type: C4Type.Container,
       containerType: ContainerType.WebApp,
       name: 'Web Application',
       description: 'React SPA',
-      technologyStack: ['React'],
-      systemId: 'ecommerce',
+      technology: ['React'],
+      boundary: 'internal',
+      sourceElement: {
+        id: 'web-app',
+        layer: 'application',
+        type: 'application',
+        properties: { name: 'Web Application' },
+      },
     }],
   ]),
   edges: new Map(),

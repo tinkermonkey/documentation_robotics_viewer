@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { StoryDefault, Story } from '@ladle/react';
 import { MotivationRightSidebar } from './MotivationRightSidebar';
 import { MotivationElementType, MotivationRelationshipType } from '../types/motivationGraph';

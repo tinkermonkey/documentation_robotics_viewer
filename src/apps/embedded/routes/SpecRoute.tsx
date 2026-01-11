@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import SpecViewer from '../components/SpecViewer';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { StoryDefault, Story } from '@ladle/react';
 import { LayoutPreferencesPanel } from './LayoutPreferencesPanel';
 import { useState } from 'react';

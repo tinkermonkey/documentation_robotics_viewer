@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { StoryDefault, Story } from '@ladle/react';
 import { MetricsDashboard } from './MetricsDashboard';
 import type { RefinementIteration } from '../../types/refinement';

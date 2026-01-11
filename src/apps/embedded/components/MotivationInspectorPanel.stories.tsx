@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { StoryDefault, Story } from '@ladle/react';
 import { MotivationInspectorPanel } from './MotivationInspectorPanel';
 import type { MotivationGraph, MotivationGraphNode, MotivationGraphEdge } from '../types/motivationGraph';

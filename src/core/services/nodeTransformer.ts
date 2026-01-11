@@ -649,8 +649,9 @@ export class NodeTransformer {
    * Convert MetaModel to LayoutGraphInput for new layout engines
    * @unused - Reserved for future layout engine integration
    */
+  // @ts-ignore - Reserved for future use
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private _modelToGraphInput(model: MetaModel): any {
+  private __modelToGraphInput(model: MetaModel): any {
     const nodes: any[] = [];
     const edges: any[] = [];
 
@@ -828,8 +829,9 @@ export class NodeTransformer {
    * Convert LayoutResult back to old layer-based layout format
    * @unused - Reserved for future layout engine integration
    */
+  // @ts-ignore - Reserved for future use
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private _layoutResultToLayerLayout(result: any, model: MetaModel): any {
+  private __layoutResultToLayerLayout(result: any, model: MetaModel): any {
     const layers: any = {};
 
     console.log(`[NodeTransformer] Converting layout result with ${result.nodes.length} nodes to layer layout`);

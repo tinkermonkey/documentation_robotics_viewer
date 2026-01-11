@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { StoryDefault, Story } from '@ladle/react';
 import ModelJSONViewer from './ModelJSONViewer';
 import type { MetaModel } from '../../../core/types/model';

@@ -7,7 +7,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { DiagramType, LayoutParameters } from '../services/refinement/layoutParameters';
+import type { DiagramType } from '../services/refinement/layoutParameters';
 import type { LayoutEngineType } from '../layout/engines/LayoutEngine';
 import type { RefinementSessionState } from '../services/refinement/refinementLoop';
 

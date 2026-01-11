@@ -97,7 +97,7 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
     circular: false,
   };
 
-  private elk: ELK | null = null;
+  private elk: InstanceType<typeof ELK> | null = null;
 
   async initialize(): Promise<void> {
     await super.initialize();

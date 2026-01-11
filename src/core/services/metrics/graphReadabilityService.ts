@@ -84,7 +84,10 @@ export type DiagramType =
   | 'navigation'
   | 'apm'
   | 'crosslayer'
-  | 'c4';
+  | 'c4'
+  | 'spec-viewer'
+  | 'model-viewer'
+  | 'layer-specific';
 
 /**
  * Supported layout algorithm types
@@ -648,6 +651,33 @@ const DEFAULT_WEIGHTS: Record<DiagramType, MetricWeights> = {
     edgeLengthUniformity: 0.15,
     nodeOcclusion: 0.15,
   },
+  // Spec viewer prioritizes schema clarity and relationship visibility
+  'spec-viewer': {
+    crossingNumber: 0.28,
+    crossingAngle: 0.12,
+    angularResolutionMin: 0.16,
+    angularResolutionDev: 0.12,
+    edgeLengthUniformity: 0.20,
+    nodeOcclusion: 0.12,
+  },
+  // Model viewer prioritizes overall model clarity and organization
+  'model-viewer': {
+    crossingNumber: 0.26,
+    crossingAngle: 0.12,
+    angularResolutionMin: 0.16,
+    angularResolutionDev: 0.12,
+    edgeLengthUniformity: 0.22,
+    nodeOcclusion: 0.12,
+  },
+  // Layer-specific diagrams use default balanced weights
+  'layer-specific': {
+    crossingNumber: 0.25,
+    crossingAngle: 0.12,
+    angularResolutionMin: 0.16,
+    angularResolutionDev: 0.12,
+    edgeLengthUniformity: 0.20,
+    nodeOcclusion: 0.15,
+  },
 };
 
 /**
@@ -1133,7 +1163,7 @@ export function calculateSymmetry(nodes: Node[]): SymmetryMetrics {
  */
 export function calculateHierarchyClarity(
   nodes: Node[],
-  edges: Edge[],
+  _edges: Edge[],
   layoutType: LayoutType
 ): ExtendedMetrics['hierarchyClarity'] | undefined {
   // Only calculate for hierarchical layouts
@@ -1150,7 +1180,7 @@ export function calculateHierarchyClarity(
   const levels: HierarchyLevel[] = [];
 
   nodes.forEach((node) => {
-    const width = node.measured?.width ?? node.width ?? DEFAULT_NODE_WIDTH;
+    // const width = node.measured?.width ?? node.width ?? DEFAULT_NODE_WIDTH; // unused
     const height = node.measured?.height ?? node.height ?? DEFAULT_NODE_HEIGHT;
     const centerY = node.position.y + height / 2;
 

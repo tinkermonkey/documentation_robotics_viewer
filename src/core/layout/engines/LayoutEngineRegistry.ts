@@ -5,7 +5,7 @@
  * Supports runtime engine switching and discovery.
  */
 
-import { LayoutEngine, LayoutEngineType } from './LayoutEngine';
+import { LayoutEngine } from './LayoutEngine';
 
 /**
  * Layout Engine Registry

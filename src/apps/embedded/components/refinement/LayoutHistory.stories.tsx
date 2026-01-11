@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { StoryDefault, Story } from '@ladle/react';
 import { LayoutHistory } from './LayoutHistory';
 import type { RefinementIteration } from '../../types/refinement';

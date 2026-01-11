@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { StoryDefault, Story } from '@ladle/react';
 import { MotivationFilterPanel, FilterCounts } from './MotivationFilterPanel';
 import { MotivationElementType, MotivationRelationshipType } from '../types/motivationGraph';

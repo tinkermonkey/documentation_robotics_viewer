@@ -222,7 +222,7 @@ export function getLayerLayoutConfig(layerType: DiagramType): LayerLayoutConfig 
         },
       };
 
-    case 'dataset':
+    case 'datastore':
       return {
         primaryEngine: 'elk',
         alternativeEngines: ['graphviz'],

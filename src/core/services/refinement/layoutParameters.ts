@@ -466,7 +466,7 @@ export type DiagramType =
   | 'technology'
   | 'api'
   | 'datamodel'
-  | 'dataset'
+  | 'datastore'
   | 'ux'
   | 'navigation'
   | 'apm'
@@ -500,7 +500,7 @@ export function getDefaultParameters(diagramType: DiagramType): LayoutParameters
     case 'technology':
     case 'api':
     case 'datamodel':
-    case 'dataset':
+    case 'datastore':
     case 'ux':
     case 'navigation':
     case 'apm':
@@ -528,7 +528,7 @@ export function getParameterRanges(
     case 'technology':
     case 'api':
     case 'datamodel':
-    case 'dataset':
+    case 'datastore':
     case 'ux':
     case 'navigation':
     case 'apm':

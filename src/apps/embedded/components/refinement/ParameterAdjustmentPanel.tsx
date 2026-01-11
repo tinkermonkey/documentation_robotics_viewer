@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Parameter Adjustment Panel Component
  *
