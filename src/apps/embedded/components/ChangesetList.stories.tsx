@@ -7,12 +7,12 @@ export default {
   title: 'Components / ChangesetList',
 } satisfies StoryDefault;
 
-const mockChangesets = [
+const mockChangesets: any[] = [
   {
     id: 'cs-1',
     name: 'Add User Authentication',
     type: 'feature',
-    status: 'active',
+    status: 'active' as const,
     created_at: '2024-12-20T10:00:00Z',
     created_by: 'Alice',
     description: 'Implement OAuth2 authentication',
@@ -23,7 +23,7 @@ const mockChangesets = [
     id: 'cs-2',
     name: 'Fix Data Validation',
     type: 'bugfix',
-    status: 'applied',
+    status: 'applied' as const,
     created_at: '2024-12-19T14:30:00Z',
     created_by: 'Bob',
     description: 'Correct validation logic',
@@ -34,7 +34,7 @@ const mockChangesets = [
     id: 'cs-3',
     name: 'Explore ML Integration',
     type: 'exploration',
-    status: 'active',
+    status: 'active' as const,
     created_at: '2024-12-18T09:15:00Z',
     created_by: 'Charlie',
     description: 'Research ML model integration',
@@ -45,7 +45,7 @@ const mockChangesets = [
     id: 'cs-4',
     name: 'Old Feature Attempt',
     type: 'feature',
-    status: 'abandoned',
+    status: 'abandoned' as const,
     created_at: '2024-12-10T11:00:00Z',
     created_by: 'Alice',
     description: 'Abandoned due to requirements change',

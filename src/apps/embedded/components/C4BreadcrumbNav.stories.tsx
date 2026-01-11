@@ -1,6 +1,6 @@
 import type { StoryDefault, Story } from '@ladle/react';
 import C4BreadcrumbNav from './C4BreadcrumbNav';
-import type { C4ViewLevel, C4BreadcrumbSegment } from '../types/c4Graph';
+import type { C4BreadcrumbSegment } from '../types/c4Graph';
 
 export default {
   title: 'C4 / C4BreadcrumbNav',

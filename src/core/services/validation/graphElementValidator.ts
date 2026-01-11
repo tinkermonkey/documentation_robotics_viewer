@@ -20,7 +20,7 @@
  * ```
  */
 
-import { MetaModel, ModelElement, Relationship } from '../../types';
+import { MetaModel } from '../../types';
 import { AppNode, AppEdge } from '../../types/reactflow';
 
 /**

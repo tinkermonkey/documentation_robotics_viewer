@@ -42,7 +42,6 @@ export default defineConfig({
     'overview-panel-styling.spec.ts',
     'sidebar-consolidation.spec.ts',
     'zoom-to-layer.spec.ts',
-    'refinement-workflow.spec.ts',
   ],
   fullyParallel: false, // Run E2E tests sequentially for reliability
   forbidOnly: !!process.env.CI,

@@ -179,7 +179,7 @@ test.describe('Layout Preferences Store', () => {
       expect(feedbackHistory[1].accepted).toBe(false);
     });
 
-    test('should track refinement session feedback with timestamps', async () => {
+    test('should track layout feedback with timestamps', async () => {
       const feedbackHistory: Array<any> = [];
       const timestamp = new Date().toISOString();
 

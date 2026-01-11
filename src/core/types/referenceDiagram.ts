@@ -17,7 +17,7 @@
  * @see documentation/REFERENCE_DIAGRAMS.md for the complete catalog
  */
 
-import { LayoutQualityReport } from '../services/metrics/graphReadabilityService';
+import type { LayoutQualityReport } from '@/core/types/layoutQuality';
 
 /**
  * Supported diagram types for reference diagrams.

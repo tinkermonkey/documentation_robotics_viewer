@@ -87,15 +87,15 @@ test.describe('Example Implementation YAML Model', () => {
   });
 
 
-  test.skip('should parse data model entitys', () => {
-    const entitysPath = path.join(exampleImplPath, '07_data_model', 'entitys.yaml');
-    expect(fs.existsSync(entitysPath)).toBeTruthy();
+  test('should parse data model entities', () => {
+    const entitiesPath = path.join(exampleImplPath, '07_data_model', 'objects.yaml');
+    expect(fs.existsSync(entitiesPath)).toBeTruthy();
 
-    const content = fs.readFileSync(entitysPath, 'utf-8');
-    const entitys = yaml.load(content) as any;
-    
-    expect(entitys).toBeDefined();
-    expect(Object.keys(entitys).length).toBeGreaterThan(0);
+    const content = fs.readFileSync(entitiesPath, 'utf-8');
+    const entities = yaml.load(content) as any;
+
+    expect(entities).toBeDefined();
+    expect(Object.keys(entities).length).toBeGreaterThan(0);
   });
 
   test('should have projection-rules.yaml', () => {
@@ -116,31 +116,3 @@ test.describe('Example Implementation YAML Model', () => {
   });
 });
 
-test.describe('YAML Model Loading via UI', () => {
-  test.skip('should load example-implementation via local file upload', async ({ page }) => {
-    // This test will be implemented once the UI is updated to support
-    // local directory upload or we package example-implementation as a ZIP
-
-    await page.goto('http://localhost:3001');
-
-    // Future: Upload example-implementation as ZIP
-    // Verify 182 elements loaded
-    // Verify 11 layers displayed
-    // Verify relationships resolved
-
-    expect(true).toBe(true); // Placeholder
-  });
-
-  test.skip('should display YAML model metadata', async ({ page }) => {
-    // This test will be implemented once UI updates are complete
-
-    await page.goto('http://localhost:3001');
-
-    // Future: Load YAML model
-    // Verify model type badge shows "YAML v0.1.0"
-    // Verify project name displayed
-    // Verify statistics displayed
-
-    expect(true).toBe(true); // Placeholder
-  });
-});

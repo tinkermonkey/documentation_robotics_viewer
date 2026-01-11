@@ -10,7 +10,4 @@ export * from './dataLoader';
 export * from './businessLayerParser';
 export * from './businessGraphBuilder';
 export * from './crossLayerReferenceResolver';
-export * from './metrics';
 export * from './reference';
-export * from './comparison';
-export * from './refinement';

@@ -6,6 +6,8 @@ export default {
 } satisfies StoryDefault;
 
 const mockSpecData = {
+  version: '1.0.0',
+  type: 'specification',
   schemas: {
     'BusinessLayer': {
       name: 'BusinessLayer',
@@ -28,7 +30,18 @@ const mockSpecData = {
     },
   },
   linkRegistry: {
+    version: '1.0.0',
     linkTypes: [],
+    categories: {},
+    metadata: {
+      generatedDate: new Date().toISOString(),
+      generatedFrom: 'test',
+      generator: 'test',
+      totalLinkTypes: 0,
+      totalCategories: 0,
+      version: '1.0.0',
+      schemaVersion: '1.0.0',
+    },
   },
 };
 

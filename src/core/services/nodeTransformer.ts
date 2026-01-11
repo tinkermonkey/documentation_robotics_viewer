@@ -650,12 +650,13 @@ export class NodeTransformer {
    * @unused - Reserved for future layout engine integration
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private _modelToGraphInput(model: MetaModel): any {
+  // @ts-expect-error - Method is reserved for future use
+  private _modelToGraphInput(_model: MetaModel): any {
     const nodes: any[] = [];
     const edges: any[] = [];
 
     // Collect all nodes from all layers
-    for (const [layerId, layer] of Object.entries(model.layers)) {
+    for (const [layerId, layer] of Object.entries(_model.layers)) {
       for (const element of layer.elements) {
         nodes.push({
           id: element.id,
@@ -670,7 +671,7 @@ export class NodeTransformer {
       }
 
       // Add relationships as edges
-      for (const rel of layer.relationships) {
+      for (const rel of (layer as any).relationships) {
         edges.push({
           id: `${rel.sourceId}-${rel.targetId}`,
           source: rel.sourceId,
@@ -829,13 +830,14 @@ export class NodeTransformer {
    * @unused - Reserved for future layout engine integration
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private _layoutResultToLayerLayout(result: any, model: MetaModel): any {
+  // @ts-expect-error - Method is reserved for future use
+  private _layoutResultToLayerLayout(result: any, _model: MetaModel): any {
     const layers: any = {};
 
     console.log(`[NodeTransformer] Converting layout result with ${result.nodes.length} nodes to layer layout`);
 
     // Group nodes by layer
-    for (const [layerId, _layer] of Object.entries(model.layers)) {
+    for (const [layerId, _layer] of Object.entries(_model.layers)) {
       const layerNodes = result.nodes.filter((n: any) => n.data?.layer === layerId);
 
       if (layerNodes.length === 0) continue;

@@ -199,7 +199,6 @@ SpecGraphViewWithLayouts
 - [ ] Export comparison screenshots
 - [ ] Animated transitions between layouts
 - [ ] Custom parameter adjustment UI
-- [ ] Refinement loop integration
 
 ## Troubleshooting
 

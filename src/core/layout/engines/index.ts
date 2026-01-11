@@ -13,6 +13,8 @@ export type {
   LayoutResult,
   ParameterValidation,
 } from './LayoutEngine';
+// Re-export interfaces for usage in utility functions
+import type { EngineCapabilities, ParameterValidation } from './LayoutEngine';
 
 export { BaseLayoutEngine } from './LayoutEngine';
 

@@ -19,79 +19,97 @@ const mockModel: MetaModel = {
           type: 'Goal',
           name: 'Visualize Architecture',
           layerId: 'motivation-layer',
-          documentation: 'Provide interactive visualization of DR models across all layers with pan, zoom, and navigation capabilities. Enable architecture teams to explore and communicate architectural decisions effectively.',
-          priority: 'high',
+          description: 'Provide interactive visualization of DR models across all layers with pan, zoom, and navigation capabilities. Enable architecture teams to explore and communicate architectural decisions effectively.',
           properties: {
+            priority: 'high',
             goal: {
               measurable: 'true',
               'target-date': '2024-Q2',
               kpi: 'Initial render time < 3s for 500 elements'
-            }
+            },
+            stakeholders: [
+              'motivation.stakeholder.architecture-team',
+              'motivation.stakeholder.development-team'
+            ],
+            'governed-by-principles': [
+              'motivation.principle.user-centric-design',
+              'motivation.principle.performance-first'
+            ],
           },
-          stakeholders: [
-            'motivation.stakeholder.architecture-team',
-            'motivation.stakeholder.development-team'
-          ],
-          'governed-by-principles': [
-            'motivation.principle.user-centric-design',
-            'motivation.principle.performance-first'
-          ],
-          visual: {},
+          visual: {
+            position: { x: 0, y: 0 },
+            size: { width: 180, height: 100 },
+            style: {}
+          },
         },
         {
           id: 'motivation.stakeholder.architecture-team',
           type: 'Stakeholder',
           name: 'Architecture Team',
           layerId: 'motivation-layer',
-          documentation: 'Primary stakeholder responsible for defining and maintaining the architecture documentation. Uses the viewer to explore, validate, and communicate architectural decisions across the organization.',
-          type: 'internal',
-          concerns: [
-            'Accurate visualization of multi-layer architecture',
-            'Traceability from goals to implementation',
-            'Easy navigation between related elements'
-          ],
-          'associated-goals': [
-            'motivation.goal.visualize-architecture'
-          ],
-          visual: {},
+          description: 'Primary stakeholder responsible for defining and maintaining the architecture documentation. Uses the viewer to explore, validate, and communicate architectural decisions across the organization.',
+          properties: {
+            stakeholderType: 'internal',
+            concerns: [
+              'Accurate visualization of multi-layer architecture',
+              'Traceability from goals to implementation',
+              'Easy navigation between related elements'
+            ],
+            'associated-goals': [
+              'motivation.goal.visualize-architecture'
+            ],
+          },
+          visual: {
+            position: { x: 0, y: 0 },
+            size: { width: 180, height: 100 },
+            style: {}
+          },
         },
         {
           id: 'motivation.requirement.interactive-graphs',
           type: 'Requirement',
           name: 'Interactive Graphs',
           layerId: 'motivation-layer',
-          documentation: 'Users must be able to pan, zoom, and click nodes for details. Graph should support filtering by layer and element type with smooth transitions.',
-          requirementType: 'functional',
-          priority: 'high',
+          description: 'Users must be able to pan, zoom, and click nodes for details. Graph should support filtering by layer and element type with smooth transitions.',
           properties: {
+            requirementType: 'functional',
+            priority: 'high',
             requirement: {
               source: 'stakeholder-interview',
               status: 'implemented',
               'traceability-id': 'REQ-001'
-            }
+            },
+            'supports-goals': [
+              'motivation.goal.visualize-architecture'
+            ],
+            'governed-by-principles': [
+              'motivation.principle.user-centric-design'
+            ],
           },
-          'supports-goals': [
-            'motivation.goal.visualize-architecture'
-          ],
-          'governed-by-principles': [
-            'motivation.principle.user-centric-design'
-          ],
-          visual: {},
+          visual: {
+            position: { x: 0, y: 0 },
+            size: { width: 180, height: 100 },
+            style: {}
+          },
         },
         {
           id: 'motivation.principle.performance-first',
           type: 'Principle',
           name: 'Performance First',
           layerId: 'motivation-layer',
-          documentation: 'All features must be implemented with performance as a primary concern. Target 60fps for interactions and <3s initial load for typical models.',
-          category: 'technical',
+          description: 'All features must be implemented with performance as a primary concern. Target 60fps for interactions and <3s initial load for typical models.',
           properties: {
+            category: 'technical',
             principle: {
               rationale: 'Poor performance degrades user experience and reduces adoption',
               implications: 'May require web workers, virtualization, and lazy loading strategies'
             }
           },
-          visual: {},
+          visual: {
+            position: { x: 0, y: 0 },
+            size: { width: 180, height: 100 },
+            style: {}
+          },
         },
       ],
       relationships: [
@@ -109,22 +127,26 @@ const mockModel: MetaModel = {
           type: 'BusinessService',
           name: 'Graph Rendering Service',
           layerId: 'business-layer',
-          documentation: 'Provides graph visualization capabilities to end users, enabling exploration of architectural models through interactive diagrams.',
+          description: 'Provides graph visualization capabilities to end users, enabling exploration of architectural models through interactive diagrams.',
           properties: {
             'service-level': 'core',
-            automated: true
+            automated: true,
+            'supports-goals': [
+              'motivation.goal.visualize-architecture'
+            ],
           },
-          'supports-goals': [
-            'motivation.goal.visualize-architecture'
-          ],
-          visual: {},
+          visual: {
+            position: { x: 0, y: 0 },
+            size: { width: 180, height: 100 },
+            style: {}
+          },
         },
       ],
       relationships: [],
     },
   },
   version: '1.0',
-  references: {},
+  references: [] as any,
 };
 
 const mockSpecData = {
@@ -142,7 +164,7 @@ const mockSpecData = {
               enum: ['critical', 'high', 'medium', 'low'],
               description: 'Goal priority level'
             },
-            documentation: { type: 'string', description: 'Detailed description of the goal' }
+            description: { type: 'string', description: 'Detailed description of the goal' }
           }
         },
         Stakeholder: {
@@ -155,7 +177,7 @@ const mockSpecData = {
               enum: ['internal', 'external', 'customer', 'partner', 'regulator'],
               description: 'Stakeholder type'
             },
-            documentation: { type: 'string', description: 'Stakeholder description and role' }
+            description: { type: 'string', description: 'Stakeholder description and role' }
           }
         },
         Requirement: {
@@ -173,7 +195,7 @@ const mockSpecData = {
               enum: ['critical', 'high', 'medium', 'low'],
               description: 'Requirement priority'
             },
-            documentation: { type: 'string', description: 'Detailed requirement specification' }
+            description: { type: 'string', description: 'Detailed requirement specification' }
           }
         },
         Principle: {
@@ -186,7 +208,7 @@ const mockSpecData = {
               enum: ['business', 'data', 'application', 'technology', 'security', 'integration'],
               description: 'Principle category'
             },
-            documentation: { type: 'string', description: 'Principle statement and rationale' }
+            description: { type: 'string', description: 'Principle statement and rationale' }
           }
         }
       }
@@ -199,7 +221,7 @@ const mockSpecData = {
           properties: {
             id: { type: 'string', description: 'Unique identifier' },
             name: { type: 'string', description: 'Service name' },
-            documentation: { type: 'string', description: 'Service description and purpose' }
+            description: { type: 'string', description: 'Service description and purpose' }
           }
         }
       }
@@ -217,7 +239,11 @@ const mockLinkRegistry = {
       targetLayer: 'motivation-layer',
       targetElementTypes: ['Goal'],
       fieldPaths: ['supports-goals'],
-      description: 'Elements that support achievement of goals'
+      description: 'Elements that support achievement of goals',
+      cardinality: '1..n',
+      format: 'reference',
+      examples: ['goal-1', 'goal-2'],
+      validationRules: { targetExists: true, targetType: 'Goal' }
     },
     {
       id: 'motivation-governed-by-principles',
@@ -227,12 +253,16 @@ const mockLinkRegistry = {
       targetLayer: 'motivation-layer',
       targetElementTypes: ['Principle'],
       fieldPaths: ['governed-by-principles'],
-      description: 'Elements governed by architectural principles'
+      description: 'Elements governed by architectural principles',
+      cardinality: 'n..n',
+      format: 'reference',
+      examples: ['principle-1', 'principle-2'],
+      validationRules: { targetExists: true, targetType: 'Principle' }
     }
   ],
   categories: {
-    motivation: { color: '#3b82f6', name: 'Motivation' },
-    governance: { color: '#8b5cf6', name: 'Governance' }
+    motivation: { name: 'Motivation', description: 'Motivation links' },
+    governance: { name: 'Governance', description: 'Governance links' }
   }
 };
 

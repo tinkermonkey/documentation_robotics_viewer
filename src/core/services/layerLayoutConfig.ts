@@ -5,9 +5,9 @@
  * Based on layer characteristics and public dataset validation.
  */
 
-import type { DiagramType } from './refinement/layoutParameters';
-import type { ELKLayoutParameters, GraphvizLayoutParameters } from './refinement/layoutParameters';
-import { DEFAULT_ELK_PARAMETERS, DEFAULT_GRAPHVIZ_PARAMETERS } from './refinement/layoutParameters';
+import type { DiagramType } from '@/core/types/diagram';
+import type { ELKLayoutParameters, GraphvizLayoutParameters } from '@/core/types/layoutParameters';
+import { DEFAULT_ELK_PARAMETERS, DEFAULT_GRAPHVIZ_PARAMETERS } from '@/core/types/layoutParameters';
 
 /**
  * Layout engine recommendation for a layer

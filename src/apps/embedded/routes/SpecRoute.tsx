@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import SpecViewer from '../components/SpecViewer';
 import SpecGraphView from '../components/SpecGraphView';
-import GraphRefinementContainer from '../components/GraphRefinementContainer';
 import AnnotationPanel from '../components/AnnotationPanel';
 import SchemaInfoPanel from '../components/SchemaInfoPanel';
 import SharedLayout from '../components/SharedLayout';
@@ -11,8 +10,6 @@ import { useAnnotationStore } from '../stores/annotationStore';
 import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { embeddedDataLoader, SpecDataResponse } from '../services/embeddedDataLoader';
 import { websocketClient } from '../services/websocketClient';
-import { LayoutEngineType } from '@/core/layout/engines';
-import { Node, Edge } from '@xyflow/react';
 
 export default function SpecRoute() {
   const { view } = useParams({ strict: false });
@@ -20,12 +17,9 @@ export default function SpecRoute() {
   const [specData, setSpecData] = useState<SpecDataResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null);
+  const [selectedSchemaId] = useState<string | null>(null);
   const annotationStore = useAnnotationStore();
   const { specView, setSpecView } = useViewPreferenceStore();
-
-  // Ref to store current graph nodes/edges for quality calculation
-  const graphDataRef = useRef<{ nodes: Node[]; edges: Edge[] }>({ nodes: [], edges: [] });
 
   // If view is undefined, redirect to preferred view
   useEffect(() => {
@@ -36,14 +30,14 @@ export default function SpecRoute() {
 
   // If view IS defined, update the store
   useEffect(() => {
-    if (view === 'json' || view === 'graph' || view === 'refine') {
+    if (view === 'json' || view === 'graph') {
       if (view !== specView) {
         setSpecView(view);
       }
     }
   }, [view, specView, setSpecView]);
 
-  const activeView = view === 'json' ? 'json' : view === 'refine' ? 'refine' : 'graph';
+  const activeView = view === 'json' ? 'json' : 'graph';
 
   const loadData = async () => {
     try {
@@ -98,29 +92,7 @@ export default function SpecRoute() {
     );
   }
 
-  // Refinement view has its own layout structure
-  if (activeView === 'refine') {
-    return (
-      <GraphRefinementContainer
-        diagramType="spec-viewer"
-        renderGraph={(layoutEngine: LayoutEngineType, layoutParameters: Record<string, any>) => (
-          <SpecGraphView
-            key={`${layoutEngine}-${JSON.stringify(layoutParameters)}`}
-            specData={specData}
-            selectedSchemaId={selectedSchemaId}
-            layoutEngine={layoutEngine}
-            layoutParameters={layoutParameters}
-            onNodesEdgesChange={(nodes, edges) => {
-              graphDataRef.current = { nodes, edges };
-            }}
-          />
-        )}
-        onExtractGraphData={() => graphDataRef.current}
-      />
-    );
-  }
-
-  // Standard graph/json views use SharedLayout
+  // All views use SharedLayout
   return (
     <SharedLayout
       showLeftSidebar={false}

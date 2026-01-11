@@ -30,7 +30,6 @@ import { SpaceMouseHandler } from './SpaceMouseHandler';
 import { OverviewPanel, NodeWithLayerData } from './OverviewPanel';
 import { getLayerColor } from '../utils/layerColors';
 import { getEngine, LayoutEngineType } from '../layout/engines';
-import { getLayerLayoutConfig } from '../services/layerLayoutConfig';
 
 interface GraphViewerProps {
   model: MetaModel;
