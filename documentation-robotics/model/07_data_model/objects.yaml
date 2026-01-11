@@ -1,3 +1,13 @@
+filter-state:
+  id: data_model.object-schema.filter-state
+  name: FilterState
+  type: object
+  documentation: Filter state for graph visualization (layers, types, properties)
+layout-options:
+  id: data_model.object-schema.layout-options
+  name: LayoutOptions
+  type: object
+  documentation: Layout algorithm configuration (algorithm, spacing, direction)
 meta-model:
   id: data_model.entity.meta-model
   name: MetaModel
@@ -72,27 +82,17 @@ react-flow-edge:
   name: ReactFlowEdge
   type: object
   documentation: ReactFlow edge structure with source, target, and styling
-filter-state:
-  id: data_model.object-schema.filter-state
-  name: FilterState
-  type: object
-  documentation: Filter state for graph visualization (layers, types, properties)
-layout-options:
-  id: data_model.object-schema.layout-options
-  name: LayoutOptions
-  type: object
-  documentation: Layout algorithm configuration (algorithm, spacing, direction)
-business-service-entity:
+business-service:
   id: data_model.entity.business-service
   name: Business Service Entity
   type: object
   documentation: Business service entity with capabilities, processes, and stakeholders
-business-capability-entity:
+business-capability:
   id: data_model.entity.business-capability
   name: Business Capability Entity
   type: object
   documentation: Business capability entity representing organizational abilities
-business-function-entity:
+business-function:
   id: data_model.entity.business-function
   name: Business Function Entity
   type: object

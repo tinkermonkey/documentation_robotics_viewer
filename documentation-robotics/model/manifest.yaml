@@ -3,7 +3,7 @@ schema: documentation-robotics-v1
 cli_version: 0.1.0
 spec_version: 0.7.0
 created: 2025-12-05T22:17:22.732040Z
-updated: 2026-01-07T12:04:49.050Z
+updated: 2026-01-11T15:18:18.667Z
 project:
   name: documentation_robotics_viewer
   description: Architecture model for documentation_robotics_viewer
@@ -17,11 +17,16 @@ layers:
     schema: .dr/schemas/01-motivation-layer.schema.json
     enabled: true
     elements:
+      assessment: 4
+      assumption: 4
       constraint: 4
-      customer: 1
-      goal: 3
+      customer: 5
+      driver: 6
+      goal: 1
       internal: 2
+      outcome: 6
       principle: 4
+      requirement: 5
   business:
     order: 2
     name: Business
@@ -29,7 +34,7 @@ layers:
     schema: .dr/schemas/02-business-layer.schema.json
     enabled: true
     elements:
-      capabilitie: 3
+      capabilitie: 10
       service: 6
   security:
     order: 3
@@ -43,12 +48,12 @@ layers:
       file: 1
       permission: 4
       policy-rule: 1
-      preventive: 5
+      preventive: 9
       resource-operation: 7
       role: 2
       security-policie: 1
       service: 1
-      threat: 4
+      threat: 8
   application:
     order: 4
     name: Application
@@ -57,7 +62,7 @@ layers:
     enabled: true
     elements:
       component: 20
-      service: 42
+      service: 58
   technology:
     order: 5
     name: Technology
@@ -65,7 +70,7 @@ layers:
     schema: .dr/schemas/05-technology-layer.schema.json
     enabled: true
     elements:
-      stack: 18
+      stack: 46
   api:
     order: 6
     name: API
@@ -74,7 +79,7 @@ layers:
     enabled: true
     elements:
       interface: 1
-      operation: 23
+      operation: 27
   data_model:
     order: 7
     name: Data Model
@@ -82,8 +87,8 @@ layers:
     schema: .dr/schemas/07-data-model-layer.schema.json
     enabled: true
     elements:
-      object-schema: 8
-      object: 16
+      object-schema: 40
+      object: 19
   datastore:
     order: 8
     name: Data Store
@@ -91,7 +96,9 @@ layers:
     schema: .dr/schemas/08-datastore-layer.schema.json
     enabled: true
     elements:
+      browser-storage: 4
       filesystem: 1
+      store: 10
   ux:
     order: 9
     name: UX
@@ -99,11 +106,12 @@ layers:
     schema: .dr/schemas/09-ux-layer.schema.json
     enabled: true
     elements:
-      custom: 86
-      dashboard: 3
-      detail: 3
+      custom: 84
+      dashboard: 1
+      detail: 1
       interaction: 35
       list: 3
+      view: 9
   navigation:
     order: 10
     name: Navigation
@@ -116,9 +124,12 @@ layers:
       context-menu: 5
       experience: 9
       hierarchical: 1
-      horizontal-tabs: 4
+      horizontal-tabs: 5
+      legend: 2
       list: 2
+      panel: 9
       redirect: 4
+      sidebar: 3
       tree: 1
   apm:
     order: 11
@@ -128,8 +139,8 @@ layers:
     enabled: true
     elements:
       metric: 1
-      performance: 3
-      reliability: 1
+      performance: 17
+      reliability: 10
   testing:
     order: 12
     name: Testing
@@ -141,8 +152,9 @@ layers:
       coverage-requirement: 1
       coverage-target: 2
       test-case-sketche: 11
+      test-suite: 59
 statistics:
-  total_elements: 365
+  total_elements: 93
   elements_by_layer:
     motivation: 14
     business: 9
@@ -184,3 +196,4 @@ upgrade_history:
   - from_version: 0.1.0
     to_version: 0.7.3
     upgraded_at: 2025-12-10T17:06:16.340268Z
+preferred_chat_client: GitHub Copilot

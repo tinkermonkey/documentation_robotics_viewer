@@ -2,11 +2,13 @@ react-flow-vs-custom:
   id: motivation.assessment.react-flow-vs-custom
   name: React Flow vs Custom Visualization
   type: assessment
-  documentation: Trade-off between using React Flow library versus building custom graph visualization
+  documentation: Trade-off between using React Flow library versus building custom
+    graph visualization
   properties:
     assessment:
       decision: use-react-flow
-      rationale: React Flow provides mature graph rendering with accessibility, while custom solution would require significant development effort
+      rationale: React Flow provides mature graph rendering with accessibility, while
+        custom solution would require significant development effort
       pros:
         - Mature library with active development
         - Built-in accessibility support
@@ -20,7 +22,6 @@ react-flow-vs-custom:
         - D3.js custom visualization
         - Canvas-based custom renderer
         - SVG-based custom solution
-
 yaml-vs-json-schema:
   id: motivation.assessment.yaml-vs-json-schema
   name: YAML Instance vs JSON Schema Only
@@ -29,7 +30,8 @@ yaml-vs-json-schema:
   properties:
     assessment:
       decision: support-both
-      rationale: YAML is more human-friendly for authoring, JSON Schema provides validation, supporting both maximizes adoption
+      rationale: YAML is more human-friendly for authoring, JSON Schema provides
+        validation, supporting both maximizes adoption
       pros:
         - YAML easier to write and read
         - Human-friendly dot-notation IDs
@@ -38,7 +40,6 @@ yaml-vs-json-schema:
         - Parser complexity
         - Two formats to maintain
         - Potential inconsistencies
-
 embedding-strategy:
   id: motivation.assessment.embedding-strategy
   name: Embedding Strategy
@@ -47,7 +48,8 @@ embedding-strategy:
   properties:
     assessment:
       decision: iframe-with-postmessage
-      rationale: Iframe provides security isolation and version independence, PostMessage enables controlled communication
+      rationale: Iframe provides security isolation and version independence,
+        PostMessage enables controlled communication
       pros:
         - Security isolation
         - Version independence
@@ -56,7 +58,6 @@ embedding-strategy:
         - Slightly more complex integration
         - Cross-origin communication overhead
         - Size/performance overhead
-
 state-management:
   id: motivation.assessment.state-management
   name: State Management Approach
@@ -65,7 +66,8 @@ state-management:
   properties:
     assessment:
       decision: use-zustand
-      rationale: Zustand provides simple, performant state management without Redux boilerplate or Context re-render issues
+      rationale: Zustand provides simple, performant state management without Redux
+        boilerplate or Context re-render issues
       pros:
         - Minimal boilerplate
         - Excellent performance

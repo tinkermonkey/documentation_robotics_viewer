@@ -1,5 +1,5 @@
 version: 0.1.0
-installed_at: 2026-01-06T20:11:19.931Z
+installed_at: 2026-01-11T13:40:23.029Z
 components:
   reference_sheets:
     dr-layer-reference.md:
@@ -7,7 +7,7 @@ components:
       modified: false
   commands:
     dr-changeset.md:
-      hash: 2597e67a
+      hash: 0601fb11
       modified: false
     dr-ingest.md:
       hash: 41b339ed
@@ -18,6 +18,9 @@ components:
     dr-model.md:
       hash: 8cade6c2
       modified: false
+    dr-source-tracking.md:
+      hash: 702ef2bf
+      modified: false
     dr-validate.md:
       hash: c8d6b307
       modified: false
@@ -26,7 +29,7 @@ components:
       hash: f88d9f24
       modified: false
     dr-architect.md:
-      hash: 510a145c
+      hash: eea9c22a
       modified: false
   skills:
     dr_01_motivation_layer/SKILL.md:

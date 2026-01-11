@@ -11,7 +11,6 @@ local-storage:
     x-persists-data-from:
       - datastore.store.layout-preferences-store
       - datastore.store.view-preferences-store
-
 session-storage:
   id: datastore.browser-storage.session-storage
   name: Session Storage
@@ -24,7 +23,6 @@ session-storage:
     scope: tab
     x-persists-data-from:
       - datastore.store.connection-store
-
 indexed-db:
   id: datastore.browser-storage.indexed-db
   name: IndexedDB
@@ -39,7 +37,6 @@ indexed-db:
     supports-indexing: true
     x-persists-data-from:
       - datastore.store.model-store
-
 service-worker-cache:
   id: datastore.browser-storage.service-worker-cache
   name: Service Worker Cache

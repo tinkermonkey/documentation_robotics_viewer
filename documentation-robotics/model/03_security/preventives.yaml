@@ -12,6 +12,13 @@ path-validation:
   documentation: Validate all file paths to prevent directory traversal attacks.
     Rejects paths containing '../', absolute paths outside allowed directories,
     and symbolic links pointing outside the model directory.
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: server/index.cjs
+            symbol: validatePath
 input-sanitization:
   id: security.countermeasure.input-sanitization
   name: Input Sanitization
@@ -19,6 +26,13 @@ input-sanitization:
   documentation: Sanitize all user-provided and model-derived content before
     rendering in the UI. Escapes HTML entities, removes potentially dangerous
     attributes, and validates data against expected schemas.
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: server/index.cjs
+            symbol: sanitizeInput
 output-encoding:
   id: security.countermeasure.output-encoding
   name: Output Encoding
@@ -33,7 +47,13 @@ websocket-origin-validation:
   documentation: Validate the origin header of WebSocket connection requests to
     ensure connections only come from allowed sources. Rejects cross-origin
     connection attempts.
-
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: server/index.cjs
+            symbol: validateOrigin
 jwt-authentication:
   id: security.countermeasure.jwt-authentication
   name: JWT Authentication
@@ -41,24 +61,28 @@ jwt-authentication:
   documentation: JSON Web Token based authentication for stateless API access.
     Tokens contain claims about user identity and permissions, cryptographically
     signed to prevent tampering.
-
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/stores/authStore.ts
+            symbol: authenticateJWT
 oauth2-authentication:
   id: security.countermeasure.oauth2-authentication
   name: OAuth2 Authentication
   type: preventive
-  documentation: OAuth 2.0 protocol for delegated authorization allowing third-party
-    applications to access user data without exposing credentials.
-
+  documentation: OAuth 2.0 protocol for delegated authorization allowing
+    third-party applications to access user data without exposing credentials.
 magic-link-authentication:
   id: security.countermeasure.magic-link-authentication
   name: Magic Link Authentication
   type: preventive
   documentation: Passwordless authentication via email magic links containing
     time-limited tokens for one-time login access.
-
 token-based-authorization:
   id: security.countermeasure.token-based-authorization
   name: Token-Based Authorization
   type: preventive
-  documentation: Bearer token validation for API and WebSocket endpoints.
-    Tokens contain user roles and permissions for fine-grained access control.
+  documentation: Bearer token validation for API and WebSocket endpoints. Tokens
+    contain user roles and permissions for fine-grained access control.

@@ -12,6 +12,12 @@ viewer-app:
     x-monitored-by:
       - apm.metric.initialization-time
       - apm.metric.embedding-success-rate
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/main.tsx
+            symbol: App
 graph-view:
   id: application.component.graph-view
   name: Graph View
@@ -27,11 +33,24 @@ graph-view:
     x-monitored-by:
       - apm.metric.interaction-fps
       - apm.metric.initialization-time
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/components/GraphViewer.tsx
+            symbol: GraphViewer
 inspector-panel:
   id: application.component.inspector-panel
   name: Inspector Panel
   type: component
   documentation: Side panel for element details
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/components/OverviewPanel.tsx
+            symbol: OverviewPanel
 motivation-graph-view:
   id: application.component.motivation-graph-view
   name: Motivation Graph View
@@ -43,6 +62,12 @@ motivation-graph-view:
       - technology.framework.react
       - technology.library.flowbite-react
       - technology.framework.tailwindcss
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/MotivationGraphView.tsx
+            symbol: MotivationGraphView
 business-layer-view:
   id: application.component.business-layer-view
   name: Business Layer View
@@ -54,6 +79,12 @@ business-layer-view:
       - technology.framework.react
       - technology.library.flowbite-react
       - technology.framework.tailwindcss
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/components/businessLayer/BusinessLayerView.tsx
+            symbol: BusinessLayerView
 c4-graph-view:
   id: application.component.c4-graph-view
   name: C4 Graph View
@@ -64,11 +95,24 @@ c4-graph-view:
       - technology.framework.react
       - technology.library.flowbite-react
       - technology.framework.tailwindcss
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/C4GraphView.tsx
+            symbol: C4GraphView
 changeset-graph-view:
   id: application.component.changeset-graph-view
   name: Changeset Graph View
   type: component
   documentation: Visualizes changesets showing added, modified, and deleted elements
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/ChangesetGraphView.tsx
+            symbol: ChangesetGraphView
 motivation-filter-panel:
   id: application.component.motivation-filter-panel
   name: Motivation Filter Panel
@@ -77,6 +121,12 @@ motivation-filter-panel:
   properties:
     x-monitored-by:
       - apm.metric.filter-latency
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/MotivationFilterPanel.tsx
+            symbol: MotivationFilterPanel
 c4-filter-panel:
   id: application.component.c4-filter-panel
   name: C4 Filter Panel
@@ -85,59 +135,142 @@ c4-filter-panel:
   properties:
     x-monitored-by:
       - apm.metric.filter-latency
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/C4FilterPanel.tsx
+            symbol: C4FilterPanel
 error-boundary:
   id: application.component.error-boundary
   name: Error Boundary
   type: component
   documentation: React error boundary for graceful error handling and user feedback
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/shared/ErrorState.tsx
+            symbol: ErrorState
 view-tab-switcher:
   id: application.component.view-tab-switcher
   name: View Tab Switcher
   type: component
   documentation: Tab navigation for switching between model, architecture,
     motivation, and spec views
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/shared/BreadcrumbNav.tsx
+            symbol: BreadcrumbNav
 motivation-breadcrumb:
   id: application.component.motivation-breadcrumb
   name: Motivation Breadcrumb
   type: component
   documentation: Breadcrumb navigation showing current filter state and traceability mode
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/MotivationControlPanel.tsx
+            symbol: MotivationControlPanel
 mode-selector:
   id: application.component.mode-selector
   name: Mode Selector
   type: component
   documentation: UI control for selecting visualization modes and layouts
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/C4ControlPanel.tsx
+            symbol: C4ControlPanel
 layer-panel:
   id: application.component.layer-panel
   name: Layer Panel
   type: component
   documentation: Side panel showing layer hierarchy and element counts
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/ModelLayersSidebar.tsx
+            symbol: ModelLayersSidebar
 spec-viewer:
   id: application.component.spec-viewer
   name: Spec Viewer
   type: component
   documentation: Displays JSON Schema specifications in formatted view
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/SpecViewer.tsx
+            symbol: SpecViewer
 model-json-viewer:
   id: application.component.model-json-viewer
   name: Model JSON Viewer
   type: component
   documentation: Displays raw model JSON in formatted tree view
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/ModelJSONViewer.tsx
+            symbol: ModelJSONViewer
 changeset-viewer:
   id: application.component.changeset-viewer
   name: Changeset Viewer
   type: component
   documentation: Displays changeset details with element diff view
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/ChangesetViewer.tsx
+            symbol: ChangesetViewer
 connection-status:
   id: application.component.connection-status
   name: Connection Status
   type: component
   documentation: Real-time WebSocket connection status indicator
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/ConnectionStatus.tsx
+            symbol: ConnectionStatus
 changeset-list:
   id: application.component.changeset-list
   name: Changeset List
   type: component
   documentation: Lists all available changesets with metadata
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/ChangesetList.tsx
+            symbol: ChangesetList
 annotation-panel:
   id: application.component.annotation-panel
   name: Annotation Panel
   type: component
   documentation: User annotations and comments on model elements
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/AnnotationPanel.tsx
+            symbol: AnnotationPanel

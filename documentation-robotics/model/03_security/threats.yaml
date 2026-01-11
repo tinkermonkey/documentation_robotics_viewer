@@ -41,7 +41,6 @@ websocket-hijacking:
   properties:
     x-mitigated-by:
       - security.countermeasure.websocket-origin-validation
-
 csrf-attack:
   id: security.threat.csrf-attack
   name: Cross-Site Request Forgery (CSRF)
@@ -51,7 +50,6 @@ csrf-attack:
   properties:
     x-mitigated-by:
       - security.countermeasure.input-sanitization
-
 dos-attack:
   id: security.threat.dos-attack
   name: Denial of Service (DoS)
@@ -61,7 +59,6 @@ dos-attack:
   properties:
     x-mitigated-by:
       - security.countermeasure.file-system-sandboxing
-
 data-exfiltration:
   id: security.threat.data-exfiltration
   name: Data Exfiltration
@@ -72,7 +69,6 @@ data-exfiltration:
     x-mitigated-by:
       - security.countermeasure.output-encoding
       - security.countermeasure.path-validation
-
 session-hijacking:
   id: security.threat.session-hijacking
   name: Session Hijacking

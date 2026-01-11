@@ -13,6 +13,12 @@ graph-builder:
     x-accesses:
       - data_model.entity.model-element
       - data_model.entity.relationship
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/businessGraphBuilder.ts
+            symbol: buildGraph
 layout-engine:
   id: application.service.layout-engine
   name: Layout Engine
@@ -36,11 +42,24 @@ node-transformer:
   properties:
     x-realizes:
       - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/nodeTransformer.ts
+            symbol: transformElement
 reference-server:
   id: application.service.reference-server
   name: Reference Server
   type: service
   documentation: Python FastAPI server for serving model data and live updates
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: server/index.cjs
+            symbol: referenceServer
 business-export-service:
   id: application.service.business-export-service
   name: Business Export Service
@@ -53,6 +72,12 @@ business-export-service:
     x-uses:
       - technology.library.html-to-image
       - technology.library.jszip
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/businessExportService.ts
+            symbol: exportBusinessLayer
 motivation-export-service:
   id: application.service.motivation-export-service
   name: Motivation Export Service
@@ -65,6 +90,12 @@ motivation-export-service:
     x-uses:
       - technology.library.html-to-image
       - technology.library.jszip
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/motivationExportService.ts
+            symbol: exportMotivationLayer
 c4-export-service:
   id: application.service.c4-export-service
   name: C4 Export Service
@@ -77,6 +108,12 @@ c4-export-service:
     x-uses:
       - technology.library.html-to-image
       - technology.library.jszip
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/c4ExportService.ts
+            symbol: exportC4View
 business-graph-builder:
   id: application.service.business-graph-builder
   name: Business Graph Builder
@@ -89,12 +126,25 @@ business-graph-builder:
       - data_model.object-schema.business-node
       - data_model.object-schema.business-edge
       - data_model.object-schema.cross-layer-link
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/businessGraphBuilder.ts
+            symbol: buildBusinessGraph
 business-layer-parser:
   id: application.service.business-layer-parser
   name: Business Layer Parser
   type: service
   documentation: Parses business layer YAML files into business elements
     (processes, functions, services, capabilities)
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/businessLayerParser.ts
+            symbol: parseBusinessLayer
 yaml-parser:
   id: application.service.yaml-parser
   name: YAML Parser
@@ -111,6 +161,12 @@ yaml-parser:
       - data_model.entity.meta-model
       - data_model.entity.layer
       - data_model.entity.model-element
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/yamlParser.ts
+            symbol: parseYAMLModel
 json-schema-parser:
   id: application.service.json-schema-parser
   name: JSON Schema Parser
@@ -125,17 +181,37 @@ json-schema-parser:
       - data_model.entity.meta-model
       - data_model.entity.layer
       - data_model.entity.model-element
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/jsonSchemaParser.ts
+            symbol: parseJSONSchema
 c4-parser:
   id: application.service.c4-parser
   name: C4 Parser
   type: service
   documentation: Parses C4 architecture model elements (containers, components,
     external actors)
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/c4Parser.ts
+            symbol: parseC4Model
 cross-layer-reference-resolver:
   id: application.service.cross-layer-reference-resolver
   name: Cross-Layer Reference Resolver
   type: service
   documentation: Resolves references between layers and validates traceability links
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/crossLayerReferenceResolver.ts
+            symbol: resolveCrossLayerReferences
 data-loader:
   id: application.service.data-loader
   name: Data Loader
@@ -152,6 +228,12 @@ data-loader:
     x-accesses:
       - data_model.entity.meta-model
       - data_model.entity.layer
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/dataLoader.ts
+            symbol: loadModel
 git-hub-service:
   id: application.service.git-hub-service
   name: GitHub Service
@@ -160,6 +242,12 @@ git-hub-service:
   properties:
     x-realizes:
       - business.service.external-model-integration
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/githubService.ts
+            symbol: GitHubService
 impact-analysis-service:
   id: application.service.impact-analysis-service
   name: Impact Analysis Service
@@ -168,6 +256,12 @@ impact-analysis-service:
   properties:
     x-realizes:
       - business.service.architecture-analysis
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/impactAnalysisService.ts
+            symbol: analyzeImpact
 motivation-graph-builder:
   id: application.service.motivation-graph-builder
   name: Motivation Graph Builder
@@ -177,27 +271,61 @@ motivation-graph-builder:
   properties:
     x-accesses:
       - data_model.object-schema.motivation-graph
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/motivationGraphBuilder.ts
+            symbol: buildMotivationGraph
 motivation-graph-transformer:
   id: application.service.motivation-graph-transformer
   name: Motivation Graph Transformer
   type: service
   documentation: Transforms motivation graph into ReactFlow nodes and edges with filtering
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/motivationGraphTransformer.ts
+            symbol: transformMotivationGraph
 c4-view-transformer:
   id: application.service.c4-view-transformer
   name: C4 View Transformer
   type: service
   documentation: Transforms C4 model into hierarchical ReactFlow visualization
     with focus context
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/c4ViewTransformer.ts
+            symbol: transformC4View
 reference-diagram-service:
   id: application.service.reference-diagram-service
   name: Reference Diagram Service
   type: service
   documentation: Generates reference diagrams for testing and visual regression analysis
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/reference/referenceDiagramService.ts
+            symbol: ReferenceDiagramService
 graph-readability-service:
   id: application.service.graph-readability-service
   name: Graph Readability Service
   type: service
   documentation: Calculates graph readability metrics (overlap, spacing, aspect ratio)
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/metrics/graphReadabilityService.ts
+            symbol: calculateReadability
 image-similarity-service:
   id: application.service.image-similarity-service
   name: Image Similarity Service
@@ -208,6 +336,13 @@ screenshot-service:
   name: Screenshot Service
   type: service
   documentation: Captures screenshots of graph visualizations for comparison
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/comparison/screenshotService.ts
+            symbol: captureScreenshot
 quality-score-service:
   id: application.service.quality-score-service
   name: Quality Score Service
@@ -218,41 +353,97 @@ heatmap-service:
   name: Heatmap Service
   type: service
   documentation: Generates visual heatmaps highlighting differences between screenshots
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/comparison/heatmapService.ts
+            symbol: generateHeatmap
 metrics-history-service:
   id: application.service.metrics-history-service
   name: Metrics History Service
   type: service
   documentation: Tracks and stores historical metrics for regression analysis
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/metrics/metricsHistoryService.ts
+            symbol: MetricsHistoryService
 feedback-to-parameter-service:
   id: application.service.feedback-to-parameter-service
   name: Feedback to Parameter Service
   type: service
   documentation: Converts user feedback into layout parameter adjustments for refinement
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/refinement/feedbackToParameterService.ts
+            symbol: convertFeedbackToParameters
 local-file-loader:
   id: application.service.local-file-loader
   name: Local File Loader
   type: service
   documentation: Loads models from local file uploads (ZIP archives)
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/localFileLoader.ts
+            symbol: loadLocalFile
 business-node-transformer:
   id: application.service.business-node-transformer
   name: Business Node Transformer
   type: service
   documentation: Transforms business layer elements into custom React Flow nodes
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/businessNodeTransformer.ts
+            symbol: transformBusinessNode
 cross-layer-reference-extractor:
   id: application.service.cross-layer-reference-extractor
   name: Cross Layer Reference Extractor
   type: service
   documentation: Extracts cross-layer references from parsed model elements
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/crossLayerReferenceExtractor.ts
+            symbol: extractCrossLayerReferences
 demo-data-service:
   id: application.service.demo-data-service
   name: Demo Data Service
   type: service
   documentation: Provides sample architecture data for testing and demos
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/embeddedDataLoader.ts
+            symbol: loadDemoData
 spec-parser-service:
   id: application.service.spec-parser-service
   name: Spec Parser Service
   type: service
   documentation: Parses specification documents and extracts metadata
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/specParser.ts
+            symbol: parseSpec
 model-store:
   id: application.service.model-store
   name: Model Store
@@ -271,6 +462,12 @@ model-store:
       - business.service.model-data-management
     x-persists-to:
       - datastore.store.model-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/stores/modelStore.ts
+            symbol: modelStore
 annotation-store:
   id: application.service.annotation-store
   name: Annotation Store
@@ -285,6 +482,12 @@ annotation-store:
       - data_model.object-schema.annotation-store-state
     x-persists-to:
       - datastore.store.annotation-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/stores/annotationStore.ts
+            symbol: annotationStore
 changeset-store:
   id: application.service.changeset-store
   name: Changeset Store
@@ -302,6 +505,12 @@ changeset-store:
     x-persists-to:
       - datastore.store.changeset-store
       - datastore.store.local-fs
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/stores/changesetStore.ts
+            symbol: changesetStore
 auth-store:
   id: application.service.auth-store
   name: Auth Store
@@ -315,6 +524,12 @@ auth-store:
       - data_model.object-schema.auth-state
     x-persists-to:
       - datastore.store.auth-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/stores/authStore.ts
+            symbol: authStore
 connection-store:
   id: application.service.connection-store
   name: Connection Store
@@ -342,6 +557,12 @@ view-preference-store:
       - data_model.object-schema.view-preferences-state
     x-persists-to:
       - datastore.store.view-preference-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/stores/viewPreferenceStore.ts
+            symbol: viewPreferenceStore
 layer-store:
   id: application.service.layer-store
   name: Layer Store
@@ -355,6 +576,12 @@ layer-store:
       - data_model.object-schema.layer-store-state
     x-persists-to:
       - datastore.store.layer-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/stores/layerStore.ts
+            symbol: layerStore
 element-store:
   id: application.service.element-store
   name: Element Store
@@ -369,6 +596,12 @@ element-store:
       - data_model.object-schema.element-store-state
     x-persists-to:
       - datastore.store.element-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/stores/elementStore.ts
+            symbol: elementStore
 layout-preferences-store:
   id: application.service.layout-preferences-store
   name: Layout Preferences Store
@@ -384,6 +617,12 @@ layout-preferences-store:
       - data_model.object-schema.layout-preferences-state
     x-persists-to:
       - datastore.store.layout-preferences-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/stores/layoutPreferencesStore.ts
+            symbol: layoutPreferencesStore
 business-layer-store:
   id: application.service.business-layer-store
   name: Business Layer Store
@@ -407,26 +646,46 @@ dagre-layout-engine:
       - technology.library.dagre
     x-realizes:
       - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/layerLayoutConfig.ts
+            symbol: dagreLayout
 d3-force-layout-engine:
   id: application.service.d3-force-layout-engine
   name: D3 Force Layout Engine
   type: service
-  documentation: Force-directed layout engine using D3 force simulation for organic, physics-based layouts
+  documentation: Force-directed layout engine using D3 force simulation for
+    organic, physics-based layouts
   properties:
     x-uses:
       - technology.library.d3-force
     x-realizes:
       - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/layerLayoutConfig.ts
+            symbol: d3ForceLayout
 elk-layout-engine:
   id: application.service.elk-layout-engine
   name: ELK Layout Engine
   type: service
-  documentation: Eclipse Layout Kernel engine supporting multiple layout algorithms (Layered, Force, Box, etc.)
+  documentation: Eclipse Layout Kernel engine supporting multiple layout
+    algorithms (Layered, Force, Box, etc.)
   properties:
     x-uses:
       - technology.library.elkjs
     x-realizes:
       - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/layerLayoutConfig.ts
+            symbol: elkLayout
 graphviz-layout-engine:
   id: application.service.graphviz-layout-engine
   name: Graphviz Layout Engine
@@ -437,14 +696,27 @@ graphviz-layout-engine:
       - technology.library.graphviz
     x-realizes:
       - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/layerLayoutConfig.ts
+            symbol: graphvizLayout
 layout-engine-registry:
   id: application.service.layout-engine-registry
   name: Layout Engine Registry
   type: service
-  documentation: Registry and factory for layout engines with algorithm selection and configuration
+  documentation: Registry and factory for layout engines with algorithm selection
+    and configuration
   properties:
     x-realizes:
       - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/layerLayoutConfig.ts
+            symbol: LayoutEngineRegistry
 semantic-zoom-controller:
   id: application.service.semantic-zoom-controller
   name: Semantic Zoom Controller
@@ -453,11 +725,18 @@ semantic-zoom-controller:
   properties:
     x-realizes:
       - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/layerLayoutConfig.ts
+            symbol: semanticZoomController
 refinement-loop-service:
   id: application.service.refinement-loop-service
   name: Refinement Loop Service
   type: service
-  documentation: Orchestrates iterative layout optimization with quality scoring, early stopping, and iteration history
+  documentation: Orchestrates iterative layout optimization with quality scoring,
+    early stopping, and iteration history
   properties:
     x-realizes:
       - business.service.quality-assurance
@@ -470,28 +749,49 @@ layout-parameters-service:
   id: application.service.layout-parameters-service
   name: Layout Parameters Service
   type: service
-  documentation: Manages layout parameter definitions, ranges, validation, and random generation for refinement
+  documentation: Manages layout parameter definitions, ranges, validation, and
+    random generation for refinement
   properties:
     x-realizes:
       - business.service.quality-assurance
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/refinement/layoutParameters.ts
+            symbol: LayoutParameters
 optimization-strategies-service:
   id: application.service.optimization-strategies-service
   name: Optimization Strategies Service
   type: service
-  documentation: Implements optimization strategies (grid search, random search, hill climbing) for layout refinement
+  documentation: Implements optimization strategies (grid search, random search,
+    hill climbing) for layout refinement
   properties:
     x-realizes:
       - business.service.quality-assurance
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/refinement/optimizationStrategies.ts
+            symbol: OptimizationStrategies
 force-directed-business-layout:
   id: application.service.force-directed-business-layout
   name: Force Directed Business Layout
   type: service
-  documentation: Force-directed layout specialized for business layer with service/capability clustering
+  documentation: Force-directed layout specialized for business layer with
+    service/capability clustering
   properties:
     x-uses:
       - technology.library.d3-force
     x-realizes:
       - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/businessGraphBuilder.ts
+            symbol: forceDirectedLayout
 hierarchical-business-layout:
   id: application.service.hierarchical-business-layout
   name: Hierarchical Business Layout
@@ -502,6 +802,12 @@ hierarchical-business-layout:
       - technology.library.dagre
     x-realizes:
       - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/businessGraphBuilder.ts
+            symbol: hierarchicalLayout
 matrix-business-layout:
   id: application.service.matrix-business-layout
   name: Matrix Business Layout
@@ -510,6 +816,12 @@ matrix-business-layout:
   properties:
     x-realizes:
       - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/businessGraphBuilder.ts
+            symbol: matrixLayout
 swimlane-business-layout:
   id: application.service.swimlane-business-layout
   name: Swimlane Business Layout
@@ -518,6 +830,12 @@ swimlane-business-layout:
   properties:
     x-realizes:
       - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/businessGraphBuilder.ts
+            symbol: swimlaneLayout
 edge-bundling-service:
   id: application.service.edge-bundling-service
   name: Edge Bundling Service
@@ -536,6 +854,12 @@ graph-element-validator:
   properties:
     x-realizes:
       - business.service.quality-assurance
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/validation/graphElementValidator.ts
+            symbol: validateGraphElement
 pathfinding-service:
   id: application.service.pathfinding-service
   name: Pathfinding Service

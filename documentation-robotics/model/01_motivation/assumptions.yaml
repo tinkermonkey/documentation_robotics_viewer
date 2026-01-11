@@ -2,35 +2,35 @@ modern-browsers:
   id: motivation.assumption.modern-browsers
   name: Modern Browser Availability
   type: assumption
-  documentation: Users have access to modern browsers supporting ES2022, Web Workers, and Canvas API
+  documentation: Users have access to modern browsers supporting ES2022, Web
+    Workers, and Canvas API
   properties:
     assumption:
       validity: high
       impact-if-false: high
       mitigation: Progressive enhancement with graceful degradation
-
 react-flow-stability:
   id: motivation.assumption.react-flow-stability
   name: React Flow Library Stability
   type: assumption
-  documentation: React Flow library will maintain API stability and continue active development
+  documentation: React Flow library will maintain API stability and continue
+    active development
   properties:
     assumption:
       validity: medium
       impact-if-false: critical
       mitigation: Abstraction layer for layout engine to enable replacement
-
 yaml-format-adoption:
   id: motivation.assumption.yaml-format-adoption
   name: YAML Format Adoption
   type: assumption
-  documentation: Architecture teams will adopt YAML-based instance format over pure JSON Schema
+  documentation: Architecture teams will adopt YAML-based instance format over
+    pure JSON Schema
   properties:
     assumption:
       validity: medium
       impact-if-false: medium
       mitigation: Support both YAML and JSON Schema formats
-
 network-latency:
   id: motivation.assumption.network-latency
   name: Reasonable Network Latency
