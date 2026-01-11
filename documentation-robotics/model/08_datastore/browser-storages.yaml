@@ -1,0 +1,50 @@
+local-storage:
+  id: datastore.browser-storage.local-storage
+  name: Local Storage
+  type: browser-storage
+  documentation: Browser LocalStorage API for persistent key-value storage across sessions
+  properties:
+    persistence: persistent
+    capacity: 5-10MB
+    technology: web-storage-api
+    scope: origin
+    x-persists-data-from:
+      - datastore.store.layout-preferences-store
+      - datastore.store.view-preferences-store
+session-storage:
+  id: datastore.browser-storage.session-storage
+  name: Session Storage
+  type: browser-storage
+  documentation: Browser SessionStorage API for temporary key-value storage per session
+  properties:
+    persistence: session
+    capacity: 5-10MB
+    technology: web-storage-api
+    scope: tab
+    x-persists-data-from:
+      - datastore.store.connection-store
+indexed-db:
+  id: datastore.browser-storage.indexed-db
+  name: IndexedDB
+  type: browser-storage
+  documentation: Browser IndexedDB API for structured data storage with offline capabilities
+  properties:
+    persistence: persistent
+    capacity: 50MB+
+    technology: indexed-db-api
+    scope: origin
+    supports-transactions: true
+    supports-indexing: true
+    x-persists-data-from:
+      - datastore.store.model-store
+service-worker-cache:
+  id: datastore.browser-storage.service-worker-cache
+  name: Service Worker Cache
+  type: browser-storage
+  documentation: Service Worker Cache API for offline resource caching (PWA support)
+  properties:
+    persistence: persistent
+    capacity: varies
+    technology: cache-api
+    scope: origin
+    supports-offline: true

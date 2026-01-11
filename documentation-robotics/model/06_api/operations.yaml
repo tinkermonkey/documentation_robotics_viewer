@@ -25,6 +25,12 @@ health-check:
       - security.permission.access-api-endpoints
     x-response-schema:
       - data_model.object-schema.health-status
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: server/index.cjs
+            symbol: healthCheckHandler
 get-spec:
   id: api.operation.get-spec
   name: Get Specification
@@ -46,6 +52,12 @@ get-spec:
       - security.countermeasure.path-validation
     x-response-schema:
       - data_model.object-schema.spec-collection
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: server/index.cjs
+            symbol: getSpecHandler
 get-model:
   id: api.operation.get-model
   name: Get Model
@@ -68,6 +80,12 @@ get-model:
       - security.countermeasure.input-sanitization
     x-response-schema:
       - data_model.object-schema.model-response
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: server/index.cjs
+            symbol: getModelHandler
 list-changesets:
   id: api.operation.list-changesets
   name: List Changesets
@@ -87,6 +105,12 @@ list-changesets:
       - security.countermeasure.path-validation
     x-response-schema:
       - data_model.object-schema.changeset-list
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: server/index.cjs
+            symbol: listChangesetsHandler
 get-changeset:
   id: api.operation.get-changeset
   name: Get Changeset
@@ -115,6 +139,12 @@ get-changeset:
       - security.countermeasure.input-sanitization
     x-response-schema:
       - data_model.object-schema.changeset-details
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: server/index.cjs
+            symbol: getChangesetHandler
 get-annotations:
   id: api.operation.get-annotations
   name: Get Annotations
@@ -140,6 +170,12 @@ get-annotations:
       - security.countermeasure.output-encoding
     x-response-schema:
       - data_model.object-schema.annotation-list
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: server/index.cjs
+            symbol: getAnnotationsHandler
 get-github-releases:
   id: api.operation.get-github-releases
   name: Get GitHub Releases
@@ -183,6 +219,12 @@ get-github-releases:
       - security.countermeasure.input-sanitization
     x-response-schema:
       - data_model.object-schema.github-release
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: server/index.cjs
+            symbol: getGitHubReleasesHandler
 get-latest-github-release:
   id: api.operation.get-latest-github-release
   name: Get Latest GitHub Release
@@ -226,6 +268,12 @@ get-latest-github-release:
       - security.countermeasure.input-sanitization
     x-response-schema:
       - data_model.object-schema.github-release
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: server/index.cjs
+            symbol: getLatestReleaseHandler
 get-github-release-by-tag:
   id: api.operation.get-github-release-by-tag
   name: Get GitHub Release by Tag
@@ -374,6 +422,12 @@ websocket-connect:
     x-protected-by:
       - security.permission.websocket-connection
       - security.countermeasure.websocket-origin-validation
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: server/index.cjs
+            symbol: websocketHandler
 connected:
   id: api.event.connected
   name: Connected Event
@@ -441,6 +495,12 @@ create-annotation:
       - data_model.object-schema.annotation
     x-response-schema:
       - data_model.object-schema.annotation
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: server/index.cjs
+            symbol: createAnnotationHandler
 changeset-created:
   id: api.operation.changeset-created
   name: Changeset Created Event
@@ -505,7 +565,6 @@ rest-mode:
   properties:
     direction: client-event
     protocol: client-side
-
 update-annotation:
   id: api.operation.update-annotation
   name: Update Annotation
@@ -524,10 +583,10 @@ update-annotation:
     responses:
       "200":
         description: Annotation updated successfully
-      "404":
-        description: Annotation not found
       "400":
         description: Invalid annotation data
+      "404":
+        description: Annotation not found
     x-archimate-ref:
       - application.service.demo-data-service
     x-protected-by:
@@ -536,7 +595,6 @@ update-annotation:
       - data_model.object-schema.annotation
     x-response-schema:
       - data_model.object-schema.annotation
-
 delete-annotation:
   id: api.operation.delete-annotation
   name: Delete Annotation
@@ -555,15 +613,14 @@ delete-annotation:
     responses:
       "204":
         description: Annotation deleted successfully
-      "404":
-        description: Annotation not found
       "403":
         description: Insufficient permissions to delete
+      "404":
+        description: Annotation not found
     x-archimate-ref:
       - application.service.demo-data-service
     x-protected-by:
       - security.permission.access-api-endpoints
-
 create-changeset:
   id: api.operation.create-changeset
   name: Create Changeset
@@ -586,7 +643,6 @@ create-changeset:
       - data_model.object-schema.changeset-summary
     x-response-schema:
       - data_model.object-schema.changeset-details
-
 apply-changeset:
   id: api.operation.apply-changeset
   name: Apply Changeset

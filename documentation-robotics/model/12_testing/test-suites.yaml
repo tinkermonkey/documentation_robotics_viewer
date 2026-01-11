@@ -485,7 +485,9 @@ all-refinement-ladle-suites:
   id: testing.test-suite.all-refinement-ladle-suites
   name: All Refinement Ladle Suites
   type: test-suite
-  documentation: 12 Ladle refinement test suites covering all layers (API, APM, Application, Business, C4, CrossLayer, DataModel, Datastore, Motivation, Navigation, Security, Technology, UX)
+  documentation: 12 Ladle refinement test suites covering all layers (API, APM,
+    Application, Business, C4, CrossLayer, DataModel, Datastore, Motivation,
+    Navigation, Security, Technology, UX)
   properties:
     files: tests/refinement/*.ladle.spec.ts
     x-covers:

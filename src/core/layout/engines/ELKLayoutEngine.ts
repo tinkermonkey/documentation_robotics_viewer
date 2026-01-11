@@ -12,7 +12,8 @@
  * - box: Simple box layout
  */
 
-import ELK, { ElkNode, ElkExtendedEdge, LayoutOptions } from 'elkjs/lib/elk.bundled.js';
+import ELK from 'elkjs/lib/elk.bundled.js';
+import type { ElkNode, ElkExtendedEdge, LayoutOptions } from 'elkjs/lib/elk.bundled.js';
 import {
   BaseLayoutEngine,
   LayoutGraphInput,

@@ -48,7 +48,8 @@ model-store-state:
   id: data_model.object-schema.model-store-state
   name: Model Store State
   type: object-schema
-  documentation: Zustand state shape for model store including MetaModel, loading flag, error state, and version
+  documentation: Zustand state shape for model store including MetaModel, loading
+    flag, error state, and version
 element-store-state:
   id: data_model.object-schema.element-store-state
   name: Element Store State
@@ -63,7 +64,8 @@ layout-preferences-state:
   id: data_model.object-schema.layout-preferences-state
   name: Layout Preferences State
   type: object-schema
-  documentation: Zustand state shape for layout engine preferences, custom presets, and refinement session state
+  documentation: Zustand state shape for layout engine preferences, custom
+    presets, and refinement session state
 business-layer-store-state:
   id: data_model.object-schema.business-layer-store-state
   name: Business Layer Store State
@@ -78,17 +80,20 @@ annotation-store-state:
   id: data_model.object-schema.annotation-store-state
   name: Annotation Store State
   type: object-schema
-  documentation: Zustand state shape for annotations array, selected/highlighted element IDs, loading and error state
+  documentation: Zustand state shape for annotations array, selected/highlighted
+    element IDs, loading and error state
 changeset-store-state:
   id: data_model.object-schema.changeset-store-state
   name: Changeset Store State
   type: object-schema
-  documentation: Zustand state shape for changeset list, active changeset, loading and error state
+  documentation: Zustand state shape for changeset list, active changeset, loading
+    and error state
 view-preferences-state:
   id: data_model.object-schema.view-preferences-state
   name: View Preferences State
   type: object-schema
-  documentation: Zustand state shape for active view mode, sidebar visibility, and filter state
+  documentation: Zustand state shape for active view mode, sidebar visibility, and
+    filter state
 node-transform-result:
   id: data_model.object-schema.node-transform-result
   name: Node Transform Result
@@ -98,7 +103,8 @@ layout-result:
   id: data_model.object-schema.layout-result
   name: Layout Result
   type: object-schema
-  documentation: Layout calculation output including positioned nodes, edges, and quality metrics
+  documentation: Layout calculation output including positioned nodes, edges, and
+    quality metrics
 layer-layout-result:
   id: data_model.object-schema.layer-layout-result
   name: Layer Layout Result
@@ -118,42 +124,50 @@ business-service-node-data:
   id: data_model.object-schema.business-service-node-data
   name: Business Service Node Data
   type: object-schema
-  documentation: Node data for business service nodes with label, description, and cross-layer links
+  documentation: Node data for business service nodes with label, description, and
+    cross-layer links
 business-function-node-data:
   id: data_model.object-schema.business-function-node-data
   name: Business Function Node Data
   type: object-schema
-  documentation: Node data for business function nodes with label, process links, and capability relationships
+  documentation: Node data for business function nodes with label, process links,
+    and capability relationships
 business-capability-node-data:
   id: data_model.object-schema.business-capability-node-data
   name: Business Capability Node Data
   type: object-schema
-  documentation: Node data for business capability nodes with hierarchy and service relationships
+  documentation: Node data for business capability nodes with hierarchy and
+    service relationships
 goal-node-data:
   id: data_model.object-schema.goal-node-data
   name: Goal Node Data
   type: object-schema
-  documentation: Node data for motivation goal nodes with label, stakeholders, and downstream requirements
+  documentation: Node data for motivation goal nodes with label, stakeholders, and
+    downstream requirements
 requirement-node-data:
   id: data_model.object-schema.requirement-node-data
   name: Requirement Node Data
   type: object-schema
-  documentation: Node data for motivation requirement nodes with label, constraints, and upstream goals
+  documentation: Node data for motivation requirement nodes with label,
+    constraints, and upstream goals
 principle-node-data:
   id: data_model.object-schema.principle-node-data
   name: Principle Node Data
   type: object-schema
-  documentation: Node data for motivation principle nodes with label and governance relationships
+  documentation: Node data for motivation principle nodes with label and
+    governance relationships
 constraint-node-data:
   id: data_model.object-schema.constraint-node-data
   name: Constraint Node Data
   type: object-schema
-  documentation: Node data for motivation constraint nodes with label and restriction relationships
+  documentation: Node data for motivation constraint nodes with label and
+    restriction relationships
 container-node-data:
   id: data_model.object-schema.container-node-data
   name: Container Node Data
   type: object-schema
-  documentation: Node data for C4 container nodes with technology stack and component relationships
+  documentation: Node data for C4 container nodes with technology stack and
+    component relationships
 component-node-data:
   id: data_model.object-schema.component-node-data
   name: Component Node Data
@@ -174,16 +188,6 @@ websocket-message:
   name: WebSocket Message
   type: object-schema
   documentation: WebSocket message envelope with event type, payload, timestamp, and client ID
-filter-state:
-  id: data_model.object-schema.filter-state
-  name: Filter State
-  type: object-schema
-  documentation: Active filters for graph views including layer visibility, element type filters, and search query
-layout-options:
-  id: data_model.object-schema.layout-options
-  name: Layout Options
-  type: object-schema
-  documentation: Layout algorithm configuration including direction, spacing, alignment, and algorithm-specific parameters
 health-status:
   id: data_model.object-schema.health-status
   name: Health Status
@@ -198,7 +202,8 @@ model-response:
   id: data_model.object-schema.model-response
   name: Model Response
   type: object-schema
-  documentation: Complete architecture model response with metadata, layers, elements, relationships, and cross-layer references
+  documentation: Complete architecture model response with metadata, layers,
+    elements, relationships, and cross-layer references
 github-release:
   id: data_model.object-schema.github-release
   name: GitHub Release

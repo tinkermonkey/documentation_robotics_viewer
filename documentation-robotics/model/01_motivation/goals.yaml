@@ -7,21 +7,3 @@ visualize-architecture:
     goal:
       measurable: "true"
       kpi: Initial render time < 3s for 500 elements
-interactive-graphs:
-  id: motivation.requirement.interactive-graphs
-  name: Interactive Graphs
-  type: goal
-  documentation: Users must be able to pan, zoom, and click nodes for details
-  properties:
-    requirement:
-      source: stakeholder-interview
-      status: implemented
-embedded-mode:
-  id: motivation.requirement.embedded-mode
-  name: Embedded Mode
-  type: goal
-  documentation: Viewer must support embedding in other applications via iframe or component
-  properties:
-    requirement:
-      source: stakeholder-interview
-      status: implemented

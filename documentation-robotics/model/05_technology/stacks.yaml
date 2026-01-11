@@ -1,3 +1,133 @@
+github-actions:
+  id: technology.cicd.github-actions
+  name: GitHub Actions
+  type: stack
+  documentation: CI/CD platform for automated testing, building, and deployment workflows
+  properties:
+    x-supports:
+      - technology.tool.playwright
+      - technology.tool.eslint
+      - technology.tool.vite
+playwright-ci:
+  id: technology.cicd.playwright-ci
+  name: Playwright CI Pipeline
+  type: stack
+  documentation: Automated E2E testing pipeline running on every commit and pull request
+  properties:
+    triggers:
+      - push
+      - pull_request
+    browsers:
+      - chromium
+      - firefox
+      - webkit
+    x-supports:
+      - technology.tool.playwright
+typecheck-pipeline:
+  id: technology.cicd.typecheck-pipeline
+  name: TypeScript Type Check Pipeline
+  type: stack
+  documentation: TypeScript compilation and type checking in CI for early error detection
+  properties:
+    command: npm run typecheck
+    x-supports:
+      - technology.language.typescript
+lint-pipeline:
+  id: technology.cicd.lint-pipeline
+  name: ESLint Pipeline
+  type: stack
+  documentation: Code quality and style checking pipeline with ESLint and Prettier
+  properties:
+    tools:
+      - eslint
+      - prettier
+    x-supports:
+      - technology.tool.eslint
+      - technology.tool.prettier
+build-pipeline:
+  id: technology.cicd.build-pipeline
+  name: Build Pipeline
+  type: stack
+  documentation: Production build generation and artifact creation for deployment
+  properties:
+    command: npm run build
+    outputs:
+      - dist/embedded
+      - dist/standalone
+    x-supports:
+      - technology.tool.vite
+accessibility-testing:
+  id: technology.cicd.accessibility-testing
+  name: Accessibility Testing Pipeline
+  type: stack
+  documentation: Automated WCAG 2.1 AA compliance testing with Axe in CI
+  properties:
+    standard: WCAG2.1-AA
+    x-supports:
+      - technology.library.axe-core
+github-pages:
+  id: technology.deployment.github-pages
+  name: GitHub Pages
+  type: stack
+  documentation: Static site hosting for standalone viewer and documentation
+  properties:
+    hosting: github-pages
+    domain: github.io
+    deployment-method: automated
+    x-supports:
+      - application.component.viewer-app
+npm-registry:
+  id: technology.deployment.npm-registry
+  name: NPM Registry
+  type: stack
+  documentation: Package registry for distributing viewer as embeddable npm package
+  properties:
+    registry: npmjs.com
+    package-name: "@documentation-robotics/viewer"
+    x-supports:
+      - application.component.viewer-app
+docker-hub:
+  id: technology.deployment.docker-hub
+  name: Docker Hub
+  type: stack
+  documentation: Container registry for distributing reference server as Docker image
+  properties:
+    registry: hub.docker.com
+    image-name: documentation-robotics/viewer-server
+    x-supports:
+      - application.service.reference-server
+cdn-delivery:
+  id: technology.deployment.cdn-delivery
+  name: CDN Delivery
+  type: stack
+  documentation: Content delivery network for fast global distribution of viewer assets
+  properties:
+    cdn-provider: cloudflare/jsdelivr
+    caching-strategy: immutable-assets
+    x-supports:
+      - application.component.viewer-app
+local-development:
+  id: technology.deployment.local-development
+  name: Local Development
+  type: stack
+  documentation: Local development environment with hot module reload and debugging
+  properties:
+    server: vite-dev-server
+    port: 3001
+    hot-reload: enabled
+    x-supports:
+      - technology.tool.vite
+embedded-iframe:
+  id: technology.deployment.embedded-iframe
+  name: Embedded Iframe
+  type: stack
+  documentation: Deployment as iframe-embeddable component in third-party documentation sites
+  properties:
+    integration-method: iframe
+    communication: postMessage
+    isolation: same-origin
+    x-supports:
+      - application.component.viewer-app
 react:
   id: technology.framework.react
   name: React
@@ -188,7 +318,6 @@ websockets:
     x-supports:
       - application.service.connection-store
       - api.operation.websocket-connect
-
 docker:
   id: technology.tool.docker
   name: Docker
@@ -198,7 +327,6 @@ docker:
     x-supports:
       - technology.runtime.nodejs
       - technology.runtime.python
-
 git:
   id: technology.tool.git
   name: Git
@@ -207,7 +335,6 @@ git:
   properties:
     x-supports:
       - technology.tool.github
-
 github:
   id: technology.tool.github
   name: GitHub
@@ -216,7 +343,6 @@ github:
   properties:
     x-supports:
       - application.service.git-hub-service
-
 npm:
   id: technology.tool.npm
   name: NPM
@@ -226,7 +352,6 @@ npm:
     version: 10.x
     x-supports:
       - technology.runtime.nodejs
-
 eslint:
   id: technology.tool.eslint
   name: ESLint
@@ -235,7 +360,6 @@ eslint:
   properties:
     package: eslint
     version: 9.x
-
 prettier:
   id: technology.tool.prettier
   name: Prettier
@@ -244,7 +368,6 @@ prettier:
   properties:
     package: prettier
     version: 3.x
-
 ladle:
   id: technology.tool.ladle
   name: Ladle
@@ -253,7 +376,6 @@ ladle:
   properties:
     package: "@ladle/react"
     version: 4.x
-
 react-testing-library:
   id: technology.library.react-testing-library
   name: React Testing Library
@@ -262,22 +384,20 @@ react-testing-library:
   properties:
     package: "@testing-library/react"
     version: 16.x
-
 axe-core:
   id: technology.library.axe-core
   name: Axe Core
   type: stack
   documentation: Accessibility testing engine for WCAG compliance
   properties:
-    package: "axe-core"
+    package: axe-core
     version: 4.x
-
 ssim:
   id: technology.library.ssim
   name: SSIM.js
   type: stack
   documentation: Structural Similarity Index for image comparison
   properties:
-    package: "ssim.js"
+    package: ssim.js
     x-supports:
       - application.service.image-similarity-service

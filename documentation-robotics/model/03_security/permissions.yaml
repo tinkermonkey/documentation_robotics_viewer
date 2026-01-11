@@ -9,6 +9,12 @@ read-model-files:
     x-enforced-by:
       - security.countermeasure.file-system-sandboxing
       - security.countermeasure.path-validation
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: server/index.cjs
+            symbol: readModelHandler
 write-model-files:
   id: security.permission.write-model-files
   name: Write Model Files
@@ -25,6 +31,12 @@ access-api-endpoints:
     x-enforced-by:
       - security.countermeasure.input-sanitization
       - security.countermeasure.output-encoding
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: server/index.cjs
+            symbol: apiEndpointHandler
 websocket-connection:
   id: security.permission.websocket-connection
   name: WebSocket Connection
@@ -34,3 +46,9 @@ websocket-connection:
   properties:
     x-enforced-by:
       - security.countermeasure.websocket-origin-validation
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: server/index.cjs
+            symbol: websocketHandler

@@ -1,7 +1,6 @@
 // @ts-nocheck
 import type { StoryDefault, Story } from '@ladle/react';
 import { MotivationControlPanel } from './MotivationControlPanel';
-import type { LayoutAlgorithm } from './MotivationControlPanel';
 
 export default {
   title: 'Motivation / MotivationControlPanel',

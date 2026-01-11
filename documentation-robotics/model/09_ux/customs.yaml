@@ -7,6 +7,12 @@ shared-layout:
   properties:
     x-rendered-by:
       - application.component.viewer-app
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/SharedLayout.tsx
+            symbol: SharedLayout
 embedded-layout:
   id: ux.component.embedded-layout
   name: EmbeddedLayout
@@ -22,6 +28,12 @@ graph-viewer:
   properties:
     x-rendered-by:
       - application.component.graph-view
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/components/GraphViewer.tsx
+            symbol: GraphViewer
 c4-graph-view:
   id: ux.component.c4-graph-view
   name: C4GraphView
@@ -31,6 +43,12 @@ c4-graph-view:
   properties:
     x-rendered-by:
       - application.component.c4-graph-view
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/C4GraphView.tsx
+            symbol: C4GraphView
 motivation-graph-view:
   id: ux.component.motivation-graph-view
   name: MotivationGraphView
@@ -40,17 +58,37 @@ motivation-graph-view:
   properties:
     x-rendered-by:
       - application.component.motivation-graph-view
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/MotivationGraphView.tsx
+            symbol: MotivationGraphView
 model-json-viewer:
   id: ux.component.model-json-viewer
   name: ModelJSONViewer
   type: custom
   documentation: Interactive JSON viewer with syntax highlighting, collapsible
     sections, path navigation, and schema info integration
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/ModelJSONViewer.tsx
+            symbol: ModelJSONViewer
 spec-viewer:
   id: ux.component.spec-viewer
   name: SpecViewer
   type: custom
   documentation: DR specification JSON viewer with schema navigation and relationship mapping
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/SpecViewer.tsx
+            symbol: SpecViewer
 spec-graph-view:
   id: ux.component.spec-graph-view
   name: SpecGraphView
@@ -63,6 +101,13 @@ changeset-graph-view:
   type: custom
   documentation: Graph view of changeset showing added/modified/removed elements
     with operation indicators
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/ChangesetGraphView.tsx
+            symbol: ChangesetGraphView
 sub-tab-navigation:
   id: ux.component.sub-tab-navigation
   name: SubTabNavigation
@@ -74,6 +119,13 @@ c4-breadcrumb-nav:
   type: custom
   documentation: Hierarchical breadcrumb navigation for C4 view levels (System >
     Container > Component)
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/C4BreadcrumbNav.tsx
+            symbol: C4BreadcrumbNav
 motivation-breadcrumb:
   id: ux.component.motivation-breadcrumb
   name: MotivationBreadcrumb
@@ -84,6 +136,13 @@ model-layers-sidebar:
   name: ModelLayersSidebar
   type: custom
   documentation: Layer selector sidebar showing all 12 DR layers with selection state
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/ModelLayersSidebar.tsx
+            symbol: ModelLayersSidebar
 spec-schemas-sidebar:
   id: ux.component.spec-schemas-sidebar
   name: SpecSchemasSidebar
@@ -95,6 +154,13 @@ c4-right-sidebar:
   type: custom
   documentation: Comprehensive control sidebar for C4 view with filters, controls,
     inspector, and export options
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/C4RightSidebar.tsx
+            symbol: C4RightSidebar
 motivation-right-sidebar:
   id: ux.component.motivation-right-sidebar
   name: MotivationRightSidebar
@@ -106,11 +172,25 @@ annotation-panel:
   name: AnnotationPanel
   type: custom
   documentation: Annotation creation and display panel for collaborative documentation
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/AnnotationPanel.tsx
+            symbol: AnnotationPanel
 schema-info-panel:
   id: ux.component.schema-info-panel
   name: SchemaInfoPanel
   type: custom
   documentation: Panel displaying schema definition information for selected elements
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/SchemaInfoPanel.tsx
+            symbol: SchemaInfoPanel
 node-details-panel:
   id: ux.component.node-details-panel
   name: NodeDetailsPanel
@@ -197,30 +277,11 @@ error-boundary:
   name: ErrorBoundary
   type: custom
   documentation: React error boundary for graceful error handling and display
-spec-graph-screen:
-  id: ux.view.spec-graph-screen
-  name: Spec Graph Screen
-  type: custom
-  documentation: Interactive graph visualization of DR specification schemas with
-    relationship mapping and dependency tracing
-architecture-screen:
-  id: ux.view.architecture-screen
-  name: Architecture (C4) Screen
-  type: custom
-  documentation: C4 model visualization with hierarchical navigation (System,
-    Container, Component) and technology filtering
-changesets-graph-screen:
-  id: ux.view.changesets-graph-screen
-  name: Changesets Graph Screen
-  type: custom
-  documentation: Graph visualization of selected changeset showing added,
-    modified, and removed elements
 c4-view:
   id: ux.view.c4-view
   name: C4 View
   type: custom
   documentation: Hierarchical view (Context, Container, Component)
-# Shared/Common UI Components
 filter-panel:
   id: ux.component.filter-panel
   name: Filter Panel
@@ -261,7 +322,6 @@ attributes-table:
   name: Attributes Table
   type: custom
   documentation: Table display for element attributes and properties
-# React Flow Node Components - Business Layer
 node-business-capability:
   id: ux.component.node-business-capability
   name: Business Capability Node
@@ -282,7 +342,6 @@ node-business-process:
   name: Business Process Node
   type: custom
   documentation: React Flow node component for visualizing business processes
-# React Flow Node Components - Motivation Layer
 node-goal:
   id: ux.component.node-goal
   name: Goal Node
@@ -333,7 +392,6 @@ node-value-stream:
   name: Value Stream Node
   type: custom
   documentation: React Flow node component for visualizing motivation layer value streams
-# React Flow Node Components - C4 Architecture
 node-component:
   id: ux.component.node-component
   name: Component Node
@@ -349,7 +407,6 @@ node-external-actor:
   name: External Actor Node
   type: custom
   documentation: React Flow node component for visualizing C4 external actors
-# React Flow Node Components - Other
 node-json-schema:
   id: ux.component.node-json-schema
   name: JSON Schema Node
@@ -370,7 +427,6 @@ node-relationship-badge:
   name: Relationship Badge Node
   type: custom
   documentation: React Flow decoration node for relationship indicators
-# React Flow Edge Components
 edge-cross-layer:
   id: ux.component.edge-cross-layer
   name: Cross-Layer Edge
@@ -390,7 +446,8 @@ edge-realizes:
   id: ux.component.edge-realizes
   name: Realizes Edge
   type: custom
-  documentation: React Flow edge component for visualizing motivation realization relationships
+  documentation: React Flow edge component for visualizing motivation realization
+    relationships
 edge-refines:
   id: ux.component.edge-refines
   name: Refines Edge
@@ -406,12 +463,12 @@ edge-conflicts:
   name: Conflicts Edge
   type: custom
   documentation: React Flow edge component for visualizing motivation conflict relationships
-# Business Layer Components
 business-layer-view:
   id: ux.component.business-layer-view
   name: Business Layer View
   type: custom
-  documentation: Business layer graph visualization component with processes, functions, and services
+  documentation: Business layer graph visualization component with processes,
+    functions, and services
 business-layer-controls:
   id: ux.component.business-layer-controls
   name: Business Layer Controls
@@ -421,8 +478,8 @@ process-inspector-panel:
   id: ux.component.process-inspector-panel
   name: Process Inspector Panel
   type: custom
-  documentation: Detailed inspector panel for business processes with metadata and relationships
-# Refinement/Testing Components
+  documentation: Detailed inspector panel for business processes with metadata and
+    relationships
 layout-history:
   id: ux.component.layout-history
   name: Layout History
@@ -453,7 +510,6 @@ screenshot-diff-visualization:
   name: Screenshot Diff Visualization
   type: custom
   documentation: Visual diff comparison of layout screenshots with heatmap overlay
-# Utility Components
 overview-panel:
   id: ux.component.overview-panel
   name: Overview Panel
@@ -468,4 +524,11 @@ space-mouse-handler:
   id: ux.component.space-mouse-handler
   name: Space Mouse Handler
   type: custom
-  documentation: Handles 3D mouse/gamepad input for React Flow pan and zoom navigation with optional debug panel
+  documentation: Handles 3D mouse/gamepad input for React Flow pan and zoom
+    navigation with optional debug panel
+layout-preferences-panel:
+  id: ux.component.layout-preferences-panel
+  name: LayoutPreferencesPanel
+  type: custom
+  documentation: Panel for configuring graph layout algorithm preferences with
+    real-time preview

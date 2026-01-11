@@ -6,31 +6,27 @@ end-users:
     developers, technical leads, and documentation readers who need to
     understand system structure without deep technical knowledge of the
     underlying model format.
-
 open-source-community:
   id: motivation.stakeholder.open-source-community
   name: Open Source Community
   type: customer
-  documentation: Open source contributors and users who adopt Documentation Robotics
-    format for their projects and contribute to viewer enhancements
-
+  documentation: Open source contributors and users who adopt Documentation
+    Robotics format for their projects and contribute to viewer enhancements
 enterprise-customers:
   id: motivation.stakeholder.enterprise-customers
   name: Enterprise Customers
   type: customer
   documentation: Large organizations requiring enterprise-grade architecture
     documentation tools with security, compliance, and integration capabilities
-
 documentation-authors:
   id: motivation.stakeholder.documentation-authors
   name: Documentation Authors
   type: customer
   documentation: Technical writers and documentation teams who embed architecture
     visualizations in documentation sites and wikis
-
 integration-partners:
   id: motivation.stakeholder.integration-partners
   name: Integration Partners
   type: customer
-  documentation: Third-party tool vendors integrating DR viewer into their platforms
-    (IDEs, wikis, documentation platforms)
+  documentation: Third-party tool vendors integrating DR viewer into their
+    platforms (IDEs, wikis, documentation platforms)

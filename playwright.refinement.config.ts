@@ -1,49 +1,35 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /**
- * Refinement and Metrics Test Configuration
+ * Story Test Configuration
  *
- * Configuration for layout quality refinement tests and metrics reporting.
- * Tests execute against the Ladle component story viewer for better isolation
- * and faster iteration cycles.
+ * Runs story validation tests (Ladle component tests)
+ * - Validates component rendering in isolated Ladle environment
+ * - Tests story definitions and component exports
+ * - Generates story test metrics
  *
- * Configuration details:
- * - baseURL: http://localhost:6006 (Ladle catalog)
- * - webServer: npm run catalog:dev (catalog development server)
- * - testMatch: *.ladle.spec.ts (Ladle-based refinement tests)
+ * Usage:
+ *   npm run test:stories         # Run story validation tests
+ *   npm run test:stories:ui      # Run with Playwright UI
+ *   npm run test:stories:headed  # Run in headed mode
  */
 export default defineConfig({
   testDir: './tests',
-  testMatch: [
-    'refinement/**/*.ladle.spec.ts',
-    'refinement/**/*.spec.ts',
-    'metrics/**/*.spec.ts',
-    'stories/**/*.spec.ts',
-    'ladle-story-validation*.spec.ts',
-  ],
-  fullyParallel: true,
+  testMatch: ['**/stories/**/*.spec.ts'],
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  retries: process.env.CI ? 1 : 0,
+  workers: 1,
   reporter: [
     ['list'],
-    ['html', { outputFolder: 'playwright-report/refinement', open: 'never' }],
-    ['json', { outputFile: 'test-results/refinement-results.json' }],
+    ['html', { outputFolder: 'playwright-report/stories', open: 'never' }],
   ],
-
-  // Longer timeout for refinement iterations
-  timeout: 60000,
-  expect: {
-    timeout: 10000,
-  },
-
+  timeout: 30000,
   use: {
-    // Changed from localhost:3001 (Vite embedded app) to localhost:6006 (Ladle catalog)
-    baseURL: 'http://localhost:6006',
+    baseURL: 'http://localhost:61000', // Ladle default port
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
-    video: 'off',
-    headless: true, // Always run in headless mode to avoid opening browser windows
+    headless: true,
   },
 
   projects: [
@@ -53,11 +39,10 @@ export default defineConfig({
     },
   ],
 
-  // Web server config - starts Ladle on port 6006
   webServer: {
-    command: 'npm run catalog:dev',
-    url: 'http://localhost:6006/meta.json',
+    command: 'npm run ladle:build && npm run ladle:serve',
+    url: 'http://localhost:61000',
     reuseExistingServer: !process.env.CI,
-    timeout: 120000,
+    timeout: 60000,
   },
 });

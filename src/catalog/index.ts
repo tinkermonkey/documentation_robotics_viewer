@@ -93,25 +93,6 @@ export {
   createLargeModelFixture
 } from './fixtures/modelFixtures';
 
-// Fixtures - Refinement Layout
-export {
-  createMotivationLayoutFixture,
-  createBusinessLayoutFixture,
-  createApplicationLayoutFixture,
-  createTechnologyLayoutFixture,
-  createSecurityLayoutFixture,
-  createAPILayoutFixture,
-  createDataModelLayoutFixture,
-  createDatastoreLayoutFixture,
-  createUXLayoutFixture,
-  createNavigationLayoutFixture,
-  createAPMLayoutFixture,
-  createC4LayoutFixture,
-  createCrossLayerLayoutFixture,
-  type GraphSize,
-  type EdgeDensity,
-  type FixtureOptions
-} from './fixtures/refinementFixtures';
 
 // Fixtures - Annotation Data
 export {
