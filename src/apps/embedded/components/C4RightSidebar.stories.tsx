@@ -1,8 +1,7 @@
 import type { StoryDefault, Story } from '@ladle/react';
 import { C4RightSidebar } from './C4RightSidebar';
 import type { C4FilterCounts } from './C4FilterPanel';
-import type { C4LayoutAlgorithm } from './C4ControlPanel';
-import type { C4Graph } from '../types/c4Graph';
+import type { C4Graph, C4Node } from '../types/c4Graph';
 import { ContainerType, C4Type } from '../types/c4Graph';
 import { useState } from 'react';
 
@@ -35,16 +34,36 @@ const mockGraph: C4Graph = {
   nodes: new Map([
     ['web-app', {
       id: 'web-app',
-      type: C4Type.Container,
+      c4Type: C4Type.Container,
       containerType: ContainerType.WebApp,
       name: 'Web Application',
       description: 'React SPA',
-      technologyStack: ['React'],
-      systemId: 'ecommerce',
-    }],
+      technology: ['React'],
+      sourceElement: {} as any,
+      boundary: 'internal',
+    } as C4Node],
   ]),
   edges: new Map(),
-  systems: new Map(),
+  hierarchy: { systemBoundary: ['web-app'], containers: new Map(), externalActors: [], parentChildMap: new Map() },
+  deploymentMap: new Map(),
+  indexes: {
+    byType: new Map(),
+    byTechnology: new Map(),
+    byContainerType: new Map(),
+    containerComponents: new Map(),
+    componentContainer: new Map(),
+    nodesWithOutgoingEdges: new Set(),
+    nodesWithIncomingEdges: new Set(),
+  },
+  metadata: {
+    elementCounts: {} as any,
+    containerTypeCounts: {} as any,
+    technologies: ['React'],
+    maxComponentDepth: 0,
+    warnings: [],
+    validationErrors: [],
+    hasCycles: false,
+  },
 };
 
 export const Default: Story = () => {

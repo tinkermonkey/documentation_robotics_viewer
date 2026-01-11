@@ -1,8 +1,8 @@
 /**
  * Integration Test: Preference Persistence Across Sessions
  *
- * Tests that layout preferences, custom presets, and refinement session
- * history persist correctly across page reloads and sessions.
+ * Tests that layout preferences and custom presets persist correctly
+ * across page reloads and sessions.
  *
  * Task Group 10.3: Strategic test for preference persistence
  */
@@ -120,59 +120,6 @@ test.describe('Preference Persistence', () => {
     // Verify parameters intact
     expect(session2Presets[0].parameters.spacing).toBe(120);
     expect(session2Presets[1].parameters.nodesep).toBe(40);
-  });
-
-  test('should persist refinement session history across reloads', async () => {
-    // Session 1: Save refinement history
-    const session1History = {
-      sessions: [
-        {
-          sessionId: 'session-1',
-          diagramType: 'motivation',
-          engineType: 'elk',
-          startTime: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
-          iterations: 5,
-          bestScore: 0.89,
-          status: 'completed',
-        },
-        {
-          sessionId: 'session-2',
-          diagramType: 'business',
-          engineType: 'graphviz',
-          startTime: new Date(Date.now() - 1800000).toISOString(), // 30 min ago
-          iterations: 3,
-          bestScore: 0.82,
-          status: 'paused',
-        },
-      ],
-      totalSessions: 2,
-      lastUpdated: new Date().toISOString(),
-    };
-
-    mockStorage.setItem('refinementHistory', JSON.stringify(session1History));
-
-    // Session 2: Load history
-    const storedHistory = mockStorage.getItem('refinementHistory');
-    expect(storedHistory).toBeDefined();
-
-    const session2History = JSON.parse(storedHistory!);
-
-    expect(session2History.sessions.length).toBe(2);
-    expect(session2History.totalSessions).toBe(2);
-
-    // Verify session details
-    const completedSession = session2History.sessions.find(
-      (s: any) => s.sessionId === 'session-1'
-    );
-    expect(completedSession).toBeDefined();
-    expect(completedSession.status).toBe('completed');
-    expect(completedSession.bestScore).toBe(0.89);
-
-    const pausedSession = session2History.sessions.find(
-      (s: any) => s.sessionId === 'session-2'
-    );
-    expect(pausedSession).toBeDefined();
-    expect(pausedSession.status).toBe('paused');
   });
 
   test('should handle preference migration when schema changes', async () => {

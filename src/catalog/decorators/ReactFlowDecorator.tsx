@@ -57,14 +57,20 @@ export const withReactFlowDecorator = (options: ReactFlowDecoratorOptions = {}) 
     if (renderAsEdge) {
       // Create a single edge instance from the story
       const storyElement = createElement(Story);
-      const edgeProps = isValidElement(storyElement) ? storyElement.props : {};
+      const edgeProps = (isValidElement(storyElement) ? storyElement.props : {}) as Record<string, any>;
+
+      // Get the component type safely
+      const edgeComponentType = isValidElement(storyElement) ? storyElement.type : null;
+      const edgeTypeName = (edgeComponentType && typeof edgeComponentType === 'object' && 'displayName' in edgeComponentType)
+        ? (edgeComponentType as any).displayName
+        : 'default';
 
       // Create a mock edge configuration that ReactFlow can render
       const mockEdge = {
         id: edgeProps.id || 'edge-1',
         source: edgeProps.source || 'source',
         target: edgeProps.target || 'target',
-        type: storyElement.type?.displayName || 'default',
+        type: edgeTypeName || 'default',
         data: edgeProps.data,
         animated: edgeProps.animated,
         label: edgeProps.label,
@@ -106,14 +112,12 @@ export const withReactFlowDecorator = (options: ReactFlowDecoratorOptions = {}) 
             <ReactFlow
               nodes={[sourceNode, targetNode]}
               edges={[mockEdge]}
-              edgeTypes={{ [mockEdge.type]: storyElement.type as any }}
+              edgeTypes={edgeComponentType ? { [mockEdge.type]: edgeComponentType as any } : {}}
               fitView={fitView}
               panOnDrag={panOnDrag}
               zoomOnScroll={zoomOnScroll}
-              nodesDraggable={nodesDraggable}
               minZoom={0.5}
               maxZoom={4}
-              // Hide the dummy nodes
               nodesDraggable={false}
               elementsSelectable={false}
               nodesFocusable={false}

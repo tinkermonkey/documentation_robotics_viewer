@@ -57,47 +57,31 @@ npm run test:e2e:ui        # Run with UI mode
 npm run test:e2e:headed    # Run in headed mode
 ```
 
-### 3. Refinement Tests (`playwright.refinement.config.ts`)
+### 3. Story Tests (`playwright.refinement.config.ts`)
 
-Layout quality refinement, metrics tests, and Ladle story validation.
+Ladle component story validation tests.
 
 **Runs:**
-- `tests/refinement/*.spec.ts` - Layout refinement algorithms
-- `tests/metrics/*.spec.ts` - Quality metrics and regression checks
-- `tests/stories/*.spec.ts` - Ladle story validation (481 tests)
-- `tests/ladle-story-validation.spec.ts` - Batch story validation
+- `tests/stories/*.spec.ts` - Ladle story validation
 
 **Usage:**
 ```bash
-# Layout refinement (Ladle-based)
-npm run test:refinement:ladle            # Run all refinement tests
-npm run test:refinement:ladle:motivation # Refine motivation view only
-npm run test:refinement:ladle:business   # Refine business view only
-npm run test:refinement:all              # Run all refinement tests (alias)
-
-# Metrics
-npm run metrics:report         # Generate metrics report
-npm run metrics:regression-check    # Check for regressions
-npm run metrics:all            # Run all metrics tests
-
-# Ladle story validation
+# Story validation (requires Ladle to be running: npm run catalog:dev)
 npm run test:stories:generate  # Generate story tests (run when stories change)
-npm run test:stories          # Run all 481 story validation tests
+npm run test:stories          # Run all story validation tests
 npm run test:stories:ui       # Run story tests with Playwright UI
-npm run test:ladle-validation # Batch validation with summary report
 ```
 
 **Note:** Story validation requires Ladle to be running (`npm run catalog:dev`)
 
 ## Test Categories
 
-### Ladle Story Validation Tests
+### Individual Story Tests
 
-Comprehensive validation of all 481 Ladle component stories.
+Comprehensive validation of all 481 Ladle component stories using auto-generated tests.
 
 **Files:**
 - `tests/stories/all-stories.spec.ts` - Individual test per story (auto-generated)
-- `tests/ladle-story-validation.spec.ts` - Batch validation with summary
 - `scripts/generate-story-tests.cjs` - Test generator script
 
 **What the tests verify:**
@@ -303,9 +287,9 @@ Current coverage:
 - ✅ Dual view functionality (Graph/JSON/List)
 - ✅ Console error detection
 - ✅ View preference persistence
+- ✅ Ladle story validation
 
 Needed coverage (see `TESTING_STRATEGY.md`):
 - ❌ Unit tests for NodeTransformer
 - ❌ Unit tests for data loaders
 - ❌ Integration tests for YAML parsing
-- ❌ Visual regression tests
