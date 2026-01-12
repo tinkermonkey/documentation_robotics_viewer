@@ -327,26 +327,17 @@ export function exportC4DependencyReport(
       dependencyStatistics,
     };
 
-    debugLog('[C4ExportService] Dependency report generated:', {
+    console.log('[C4ExportService] Dependency report generated:', {
       containers: containerDependencies.length,
       orphaned: orphanedContainers.length,
       totalDependencies: dependencyStatistics.totalDependencies,
       mostConnected: mostConnected?.name,
     });
 
-    // Export as JSON
-    const jsonString = JSON.stringify(report, null, 2);
-    const blob = new Blob([jsonString], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
+    // Export as JSON using shared utility
+    downloadJSON(report, filename);
 
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = url;
-    link.click();
-
-    URL.revokeObjectURL(url);
-
-    debugLog('[C4ExportService] Dependency report exported successfully');
+    console.log('[C4ExportService] Dependency report exported successfully');
   } catch (error) {
     console.error('[C4ExportService] Dependency report export failed:', error);
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
