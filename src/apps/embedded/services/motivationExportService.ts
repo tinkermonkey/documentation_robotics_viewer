@@ -6,8 +6,8 @@
  * - Traceability report generation
  */
 
-import { Node, Edge,   } from '@xyflow/react';
-import { toPng, toSvg } from 'html-to-image';
+import { Node, Edge } from '@xyflow/react';
+import { exportReactFlowAsPNG, exportReactFlowAsSVG, downloadJSON } from '@/core/services/exportUtils';
 import { MotivationGraph, MotivationElementType } from '../types/motivationGraph';
 
 /**
@@ -80,47 +80,12 @@ export async function exportAsPNG(
   reactFlowContainer: HTMLElement,
   filename: string = 'motivation-graph.png'
 ): Promise<void> {
-  try {
-    console.log('[MotivationExportService] Exporting as PNG:', filename);
-
-    if (!reactFlowContainer) {
-      throw new Error('Unable to export: The graph container is not available. Please reload the page and try again.');
-    }
-
-    // Find the ReactFlow wrapper element
-    const reactFlowWrapper = reactFlowContainer.querySelector('.react-flow') as HTMLElement;
-    if (!reactFlowWrapper) {
-      throw new Error('Unable to locate the graph canvas for export. Please make sure the motivation graph is visible and try again.');
-    }
-
-    // Generate PNG using html-to-image
-    const dataUrl = await toPng(reactFlowWrapper, {
-      backgroundColor: '#ffffff',
-      quality: 1.0,
-      pixelRatio: 2, // Higher resolution
-      filter: (node) => {
-        // Exclude controls and minimap from export
-        if (node instanceof HTMLElement) {
-          return !node.classList.contains('react-flow__controls') &&
-                 !node.classList.contains('react-flow__minimap') &&
-                 !node.classList.contains('react-flow__panel');
-        }
-        return true;
-      }
-    });
-
-    // Trigger download
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = dataUrl;
-    link.click();
-
-    console.log('[MotivationExportService] PNG export successful');
-  } catch (error) {
-    console.error('[MotivationExportService] PNG export failed:', error);
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-    throw new Error(`Unable to export image: ${errorMessage}`);
-  }
+  console.log('[MotivationExportService] Exporting as PNG:', filename);
+  await exportReactFlowAsPNG(reactFlowContainer, filename, {
+    backgroundColor: '#ffffff',
+    quality: 1.0,
+    pixelRatio: 2
+  });
 }
 
 /**
@@ -130,45 +95,10 @@ export async function exportAsSVG(
   reactFlowContainer: HTMLElement,
   filename: string = 'motivation-graph.svg'
 ): Promise<void> {
-  try {
-    console.log('[MotivationExportService] Exporting as SVG:', filename);
-
-    if (!reactFlowContainer) {
-      throw new Error('Unable to export: The graph container is not available. Please reload the page and try again.');
-    }
-
-    // Find the ReactFlow wrapper element
-    const reactFlowWrapper = reactFlowContainer.querySelector('.react-flow') as HTMLElement;
-    if (!reactFlowWrapper) {
-      throw new Error('Unable to locate the graph canvas for export. Please make sure the motivation graph is visible and try again.');
-    }
-
-    // Generate SVG using html-to-image
-    const dataUrl = await toSvg(reactFlowWrapper, {
-      backgroundColor: '#ffffff',
-      filter: (node) => {
-        // Exclude controls and minimap from export
-        if (node instanceof HTMLElement) {
-          return !node.classList.contains('react-flow__controls') &&
-                 !node.classList.contains('react-flow__minimap') &&
-                 !node.classList.contains('react-flow__panel');
-        }
-        return true;
-      }
-    });
-
-    // Trigger download
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = dataUrl;
-    link.click();
-
-    console.log('[MotivationExportService] SVG export successful');
-  } catch (error) {
-    console.error('[MotivationExportService] SVG export failed:', error);
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-    throw new Error(`Unable to export SVG: ${errorMessage}`);
-  }
+  console.log('[MotivationExportService] Exporting as SVG:', filename);
+  await exportReactFlowAsSVG(reactFlowContainer, filename, {
+    backgroundColor: '#ffffff'
+  });
 }
 
 /**
@@ -207,16 +137,7 @@ export function exportGraphDataAsJSON(
       })),
     };
 
-    const jsonString = JSON.stringify(exportData, null, 2);
-    const blob = new Blob([jsonString], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = url;
-    link.click();
-
-    URL.revokeObjectURL(url);
+    downloadJSON(exportData, filename);
 
     console.log('[MotivationExportService] Graph data export successful');
   } catch (error) {
@@ -357,16 +278,7 @@ export function exportTraceabilityReport(
     });
 
     // Export as JSON
-    const jsonString = JSON.stringify(report, null, 2);
-    const blob = new Blob([jsonString], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = url;
-    link.click();
-
-    URL.revokeObjectURL(url);
+    downloadJSON(report, filename);
 
     console.log('[MotivationExportService] Traceability report exported successfully');
   } catch (error) {

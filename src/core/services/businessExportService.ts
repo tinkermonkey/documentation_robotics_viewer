@@ -9,7 +9,7 @@
  */
 
 import { Node, Edge } from '@xyflow/react';
-import { toPng, toSvg } from 'html-to-image';
+import { exportReactFlowAsPNG, exportReactFlowAsSVG, downloadJSON } from './exportUtils';
 import { BusinessGraph, CrossLayerLink } from '../types/businessLayer';
 import { analyzeImpact } from './impactAnalysisService';
 
@@ -86,106 +86,33 @@ export interface ImpactAnalysisReport {
   }>;
 }
 
-/**
- * Helper function to get ReactFlow wrapper element
- */
-async function getReactFlowWrapper(reactFlowContainer: HTMLElement): Promise<HTMLElement> {
-  if (!reactFlowContainer) {
-    throw new Error('Unable to export: The graph container is not available. Please reload the page and try again.');
-  }
-
-  const reactFlowWrapper = reactFlowContainer.querySelector('.react-flow') as HTMLElement;
-  if (!reactFlowWrapper) {
-    throw new Error('Unable to locate the graph canvas for export. Please make sure the business graph is visible and try again.');
-  }
-
-  return reactFlowWrapper;
-}
-
-/**
- * Helper function to trigger download
- */
-function triggerDownload(dataUrl: string, filename: string): void {
-  const link = document.createElement('a');
-  link.download = filename;
-  link.href = dataUrl;
-  link.click();
-}
 
 /**
  * Export current viewport as PNG image
- * Reuses logic from motivationExportService
  */
 export async function exportAsPNG(
   reactFlowContainer: HTMLElement,
   filename: string = 'business-layer.png'
 ): Promise<void> {
-  try {
-    console.log('[BusinessExportService] Exporting as PNG:', filename);
-
-    const reactFlowWrapper = await getReactFlowWrapper(reactFlowContainer);
-
-    // Generate PNG using html-to-image
-    const dataUrl = await toPng(reactFlowWrapper, {
-      backgroundColor: '#ffffff',
-      quality: 1.0,
-      pixelRatio: 2, // Higher resolution
-      filter: (node) => {
-        // Exclude controls and minimap from export
-        if (node instanceof HTMLElement) {
-          return !node.classList.contains('react-flow__controls') &&
-                 !node.classList.contains('react-flow__minimap') &&
-                 !node.classList.contains('react-flow__panel');
-        }
-        return true;
-      }
-    });
-
-    triggerDownload(dataUrl, filename);
-
-    console.log('[BusinessExportService] PNG export successful');
-  } catch (error) {
-    console.error('[BusinessExportService] PNG export failed:', error);
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-    throw new Error(`Unable to export image: ${errorMessage}`);
-  }
+  console.log('[BusinessExportService] Exporting as PNG:', filename);
+  await exportReactFlowAsPNG(reactFlowContainer, filename, {
+    backgroundColor: '#ffffff',
+    quality: 1.0,
+    pixelRatio: 2
+  });
 }
 
 /**
  * Export current viewport as SVG image
- * Reuses logic from motivationExportService
  */
 export async function exportAsSVG(
   reactFlowContainer: HTMLElement,
   filename: string = 'business-layer.svg'
 ): Promise<void> {
-  try {
-    console.log('[BusinessExportService] Exporting as SVG:', filename);
-
-    const reactFlowWrapper = await getReactFlowWrapper(reactFlowContainer);
-
-    // Generate SVG using html-to-image
-    const dataUrl = await toSvg(reactFlowWrapper, {
-      backgroundColor: '#ffffff',
-      filter: (node) => {
-        // Exclude controls and minimap from export
-        if (node instanceof HTMLElement) {
-          return !node.classList.contains('react-flow__controls') &&
-                 !node.classList.contains('react-flow__minimap') &&
-                 !node.classList.contains('react-flow__panel');
-        }
-        return true;
-      }
-    });
-
-    triggerDownload(dataUrl, filename);
-
-    console.log('[BusinessExportService] SVG export successful');
-  } catch (error) {
-    console.error('[BusinessExportService] SVG export failed:', error);
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-    throw new Error(`Unable to export SVG: ${errorMessage}`);
-  }
+  console.log('[BusinessExportService] Exporting as SVG:', filename);
+  await exportReactFlowAsSVG(reactFlowContainer, filename, {
+    backgroundColor: '#ffffff'
+  });
 }
 
 /**
@@ -460,16 +387,3 @@ export function exportImpactAnalysisReport(
   }
 }
 
-/**
- * Helper function to download JSON data as a file
- */
-function downloadJSON(data: unknown, filename: string): void {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.download = filename;
-  link.href = url;
-  link.click();
-  // Delay URL revocation to ensure browser has time to initiate download
-  setTimeout(() => URL.revokeObjectURL(url), 100);
-}
