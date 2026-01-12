@@ -1,90 +1,50 @@
-// @ts-nocheck
-import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import SpecViewer from '../components/SpecViewer';
 import SpecGraphView from '../components/SpecGraphView';
-import GraphRefinementContainer from '../components/GraphRefinementContainer';
 import AnnotationPanel from '../components/AnnotationPanel';
 import SchemaInfoPanel from '../components/SchemaInfoPanel';
 import SharedLayout from '../components/SharedLayout';
-import { LoadingState, ErrorState } from '../components/shared';
+import { LoadingState, ErrorState, ViewToggle } from '../components/shared';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
-import { embeddedDataLoader, SpecDataResponse } from '../services/embeddedDataLoader';
-import { websocketClient } from '../services/websocketClient';
-import { LayoutEngineType } from '@/core/layout/engines';
-import { Node, Edge } from '@xyflow/react';
+import { embeddedDataLoader } from '../services/embeddedDataLoader';
+import { useDataLoader } from '@/core/hooks/useDataLoader';
 
 export default function SpecRoute() {
   const { view } = useParams({ strict: false });
   const navigate = useNavigate();
-  const [specData, setSpecData] = useState<SpecDataResponse | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null);
+  const selectedSchemaId: string | null = null;
   const annotationStore = useAnnotationStore();
   const { specView, setSpecView } = useViewPreferenceStore();
 
-  // Ref to store current graph nodes/edges for quality calculation
-  const graphDataRef = useRef<{ nodes: Node[]; edges: Edge[] }>({ nodes: [], edges: [] });
-
-  // If view is undefined, redirect to preferred view
-  useEffect(() => {
-    if (!view) {
-      navigate({ to: `/spec/${specView}`, replace: true });
-    }
-  }, [view, specView, navigate]);
-
-  // If view IS defined, update the store
-  useEffect(() => {
-    if (view === 'json' || view === 'graph' || view === 'refine') {
-      if (view !== specView) {
-        setSpecView(view);
-      }
-    }
-  }, [view, specView, setSpecView]);
-
-  const activeView = view === 'json' ? 'json' : view === 'refine' ? 'refine' : 'graph';
-
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      setError('');
-
+  // Load spec data
+  const { data: specData, loading, error, reload } = useDataLoader({
+    loadFn: async () => {
       const spec = await embeddedDataLoader.loadSpec();
-      setSpecData(spec);
-
+      return spec;
+    },
+    websocketEvents: ['model.updated'],
+    onSuccess: async () => {
       const annotations = await embeddedDataLoader.loadAnnotations();
       annotationStore.setAnnotations(annotations);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load spec';
-      setError(errorMessage);
-      console.error('[SpecRoute] Error loading spec:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+  });
 
-  useEffect(() => {
-    loadData();
-    
-    const handleAnnotationAdded = async () => {
-      const annotations = await embeddedDataLoader.loadAnnotations();
-      annotationStore.setAnnotations(annotations);
-    };
+  // Handle view parameter routing
+  if (!view) {
+    navigate({ to: `/spec/${specView}`, replace: true });
+  } else if ((view === 'json' || view === 'graph') && view !== specView) {
+    setSpecView(view as 'graph' | 'json');
+  }
 
-    websocketClient.on('annotation.added', handleAnnotationAdded);
-    return () => {
-      websocketClient.off('annotation.added', handleAnnotationAdded);
-    };
-  }, [annotationStore.setAnnotations]);
+  const activeView = view === 'json' ? 'json' : 'graph';
 
   if (loading) {
     return <LoadingState variant="page" message="Loading spec..." />;
   }
 
   if (error) {
-    return <ErrorState variant="page" message={error} onRetry={loadData} />;
+    return <ErrorState variant="page" message={error} onRetry={reload} />;
   }
 
   if (!specData) {
@@ -96,28 +56,6 @@ export default function SpecRoute() {
           <p className="text-gray-500">Waiting for data...</p>
         </div>
       </div>
-    );
-  }
-
-  // Refinement view has its own layout structure
-  if (activeView === 'refine') {
-    return (
-      <GraphRefinementContainer
-        diagramType="spec-viewer"
-        renderGraph={(layoutEngine: LayoutEngineType, layoutParameters: Record<string, any>) => (
-          <SpecGraphView
-            key={`${layoutEngine}-${JSON.stringify(layoutParameters)}`}
-            specData={specData}
-            selectedSchemaId={selectedSchemaId}
-            layoutEngine={layoutEngine}
-            layoutParameters={layoutParameters}
-            onNodesEdgesChange={(nodes, edges) => {
-              graphDataRef.current = { nodes, edges };
-            }}
-          />
-        )}
-        onExtractGraphData={() => graphDataRef.current}
-      />
     );
   }
 
@@ -134,6 +72,16 @@ export default function SpecRoute() {
       }
     >
       <div className="flex flex-col h-full overflow-hidden">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+          <ViewToggle
+            views={[
+              { key: 'graph', label: 'Graph' },
+              { key: 'json', label: 'JSON' },
+            ]}
+            activeView={activeView}
+            onViewChange={(v) => navigate({ to: `/spec/${v}` })}
+          />
+        </div>
         {activeView === 'graph' ? (
           <SpecGraphView specData={specData} selectedSchemaId={selectedSchemaId} />
         ) : (
