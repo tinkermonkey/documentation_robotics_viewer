@@ -9,6 +9,7 @@ import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
 import { useDataLoader } from '@/core/hooks/useDataLoader';
 import { LoadingState, ErrorState } from '../components/shared';
+import { ExportButtonGroup } from '../components/shared/ExportButtonGroup';
 import { MotivationElementType, MotivationRelationshipType, MotivationGraph } from '../types/motivationGraph';
 import { LayoutAlgorithm } from '../components/MotivationControlPanel';
 import { MotivationGraphBuilder } from '../services/motivationGraphBuilder';
@@ -16,6 +17,7 @@ import {
   exportAsPNG,
   exportAsSVG,
   exportTraceabilityReport,
+  exportGraphDataAsJSON,
 } from '../services/motivationExportService';
 
 function MotivationRouteContent() {
@@ -59,19 +61,52 @@ function MotivationRouteContent() {
     }
   }, [model, motivationGraphBuilder]);
 
+  // Create export service wrapper for ExportButtonGroup
+  const motivationExportService = useMemo(
+    () => ({
+      exportAsPNG: (container: HTMLElement, filename: string) =>
+        exportAsPNG(container, filename),
+      exportAsSVG: (container: HTMLElement, filename: string) =>
+        exportAsSVG(container, filename),
+      exportAsJSON: (_data: unknown, filename: string) => {
+        if (!fullGraphRef.current) {
+          throw new Error('No graph data available');
+        }
+        const nodes = Array.from(fullGraphRef.current.nodes.values()).map(
+          (n) => ({
+            id: n.element.id,
+            type: n.element.type,
+            data: n.element,
+          })
+        );
+        const edges = Array.from(fullGraphRef.current.edges.values()).map(
+          (e) => ({
+            id: e.id,
+            source: e.sourceId,
+            target: e.targetId,
+            type: e.type,
+            label: (e.relationship.properties?.description as string) || '',
+          })
+        );
+        exportGraphDataAsJSON(nodes as any, edges as any, fullGraphRef.current, filename);
+      },
+    }),
+    []
+  );
+
   // Calculate filter counts
   const filterCounts = useMemo(() => {
     if (!fullGraphRef.current) {
       return {
-        elements: {} as any,
-        relationships: {} as any,
+        elements: {} as Record<MotivationElementType, { visible: number; total: number }>,
+        relationships: {} as Record<MotivationRelationshipType, { visible: number; total: number }>,
       };
     }
 
     const graph = fullGraphRef.current;
 
     // Count elements by type
-    const elementCounts: Record<MotivationElementType, { visible: number; total: number }> = {} as any;
+    const elementCounts: Record<MotivationElementType, { visible: number; total: number }> = {} as Record<MotivationElementType, { visible: number; total: number }>;
     for (const elementType of Object.values(MotivationElementType)) {
       const total = Array.from(graph.nodes.values()).filter(
         (n) => n.element.type === elementType
@@ -84,7 +119,7 @@ function MotivationRouteContent() {
     const relationshipCounts: Record<
       MotivationRelationshipType,
       { visible: number; total: number }
-    > = {} as any;
+    > = {} as Record<MotivationRelationshipType, { visible: number; total: number }>;
     for (const relationshipType of Object.values(MotivationRelationshipType)) {
       const total = Array.from(graph.edges.values()).filter((e) => e.type === relationshipType).length;
       const visible = selectedRelationshipTypes.has(relationshipType) ? total : 0;
@@ -225,19 +260,19 @@ function MotivationRouteContent() {
     useViewPreferenceStore.getState().setSelectedNodeId(undefined);
   }, []);
 
-  // Export handlers
+  // Export handlers - delegate to export service
   const handleExportPNG = useCallback(async () => {
     try {
       const reactFlowContainer = document.querySelector('.react-flow') as HTMLElement;
       if (!reactFlowContainer) {
         throw new Error('Graph container not found');
       }
-      await exportAsPNG(reactFlowContainer, 'motivation-graph.png');
+      await motivationExportService.exportAsPNG(reactFlowContainer, 'motivation-graph.png');
     } catch (error) {
       console.error('[MotivationRoute] PNG export failed:', error);
       alert('Failed to export PNG: ' + (error instanceof Error ? error.message : String(error)));
     }
-  }, []);
+  }, [motivationExportService]);
 
   const handleExportSVG = useCallback(async () => {
     try {
@@ -245,35 +280,24 @@ function MotivationRouteContent() {
       if (!reactFlowContainer) {
         throw new Error('Graph container not found');
       }
-      await exportAsSVG(reactFlowContainer, 'motivation-graph.svg');
+      await motivationExportService.exportAsSVG(reactFlowContainer, 'motivation-graph.svg');
     } catch (error) {
       console.error('[MotivationRoute] SVG export failed:', error);
       alert('Failed to export SVG: ' + (error instanceof Error ? error.message : String(error)));
     }
-  }, []);
+  }, [motivationExportService]);
 
   const handleExportGraphData = useCallback(() => {
     try {
-      if (!fullGraphRef.current) {
-        throw new Error('No graph data available');
+      if (!motivationExportService.exportAsJSON) {
+        throw new Error('JSON export not available');
       }
-      // Note: nodes and edges would need to be passed from MotivationGraphView
-      // For now, we'll export just the graph structure
-      const graphData = {
-        nodes: Array.from(fullGraphRef.current.nodes.values()),
-        edges: Array.from(fullGraphRef.current.edges.values()),
-      };
-      const dataStr = JSON.stringify(graphData, null, 2);
-      const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-      const link = document.createElement('a');
-      link.setAttribute('href', dataUri);
-      link.setAttribute('download', 'motivation-graph-data.json');
-      link.click();
+      motivationExportService.exportAsJSON(null, 'motivation-graph-data.json');
     } catch (error) {
       console.error('[MotivationRoute] Graph data export failed:', error);
       alert('Failed to export graph data: ' + (error instanceof Error ? error.message : String(error)));
     }
-  }, []);
+  }, [motivationExportService]);
 
   const handleExportTraceabilityReport = useCallback(() => {
     try {
@@ -326,13 +350,30 @@ function MotivationRouteContent() {
         />
       }
     >
-      <MotivationGraphView
-        ref={graphViewRef}
-        model={model}
-        selectedElementTypes={selectedElementTypes}
-        selectedRelationshipTypes={selectedRelationshipTypes}
-        layout={selectedLayout}
-      />
+      <div className="relative w-full h-full">
+        <div className="absolute top-4 right-4 z-10">
+          <ExportButtonGroup
+            service={motivationExportService}
+            containerSelector=".react-flow"
+            filenamePrefix="motivation-graph"
+            data={{}}
+            formats={['png', 'svg', 'json']}
+            onExportError={(format, error) => {
+              console.error(`[MotivationRoute] ${format} export error:`, error);
+              alert(
+                `Failed to export ${format.toUpperCase()}: ${error instanceof Error ? error.message : String(error)}`
+              );
+            }}
+          />
+        </div>
+        <MotivationGraphView
+          ref={graphViewRef}
+          model={model}
+          selectedElementTypes={selectedElementTypes}
+          selectedRelationshipTypes={selectedRelationshipTypes}
+          layout={selectedLayout}
+        />
+      </div>
     </SharedLayout>
   );
 }

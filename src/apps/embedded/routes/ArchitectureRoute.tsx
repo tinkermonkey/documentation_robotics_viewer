@@ -15,6 +15,7 @@ import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
 import { useDataLoader } from '@/core/hooks/useDataLoader';
 import { LoadingState, ErrorState } from '../components/shared';
+import { ExportButtonGroup } from '../components/shared/ExportButtonGroup';
 import { C4Graph, ContainerType, C4ViewLevel } from '../types/c4Graph';
 import { C4LayoutAlgorithm } from '../components/C4ControlPanel';
 import { C4GraphBuilder } from '../services/c4Parser';
@@ -75,6 +76,46 @@ function ArchitectureRouteContent() {
       setGraphVersion((v) => v + 1); // Trigger useMemo recalculation
     }
   }, [model, c4GraphBuilder]);
+
+  // Create export service wrapper for ExportButtonGroup
+  const c4ExportService = useMemo(
+    () => ({
+      exportAsPNG: (container: HTMLElement, filename: string) =>
+        exportC4AsPNG(container, filename),
+      exportAsSVG: (container: HTMLElement, filename: string) =>
+        exportC4AsSVG(container, filename),
+      exportAsJSON: (_data: unknown, filename: string) => {
+        if (!fullGraphRef.current) {
+          throw new Error('No graph data available');
+        }
+        const graphNodes = Array.from(fullGraphRef.current.nodes.values());
+        const graphEdges = Array.from(fullGraphRef.current.edges.values());
+        const reactFlowNodes = graphNodes.map((node) => ({
+          id: node.id,
+          type: node.c4Type,
+          data: {
+            label: node.name,
+            c4Type: node.c4Type,
+            description: node.description,
+            technology: node.technology,
+          },
+        }));
+        const reactFlowEdges = graphEdges.map((edge) => ({
+          id: edge.id,
+          source: edge.sourceId,
+          target: edge.targetId,
+          label: edge.description || '',
+        }));
+        exportC4GraphAsJSON(
+          reactFlowNodes as any,
+          reactFlowEdges as any,
+          fullGraphRef.current,
+          filename
+        );
+      },
+    }),
+    []
+  );
 
   // Calculate filter counts
   const filterCounts = useMemo(() => {
@@ -251,19 +292,19 @@ function ArchitectureRouteContent() {
     useViewPreferenceStore.getState().setC4SelectedNodeId(undefined);
   }, []);
 
-  // Export handlers
+  // Export handlers - delegate to export service
   const handleExportPNG = useCallback(async () => {
     try {
       const reactFlowContainer = document.querySelector('.c4-graph-viewer') as HTMLElement;
       if (!reactFlowContainer) {
         throw new Error('Graph container not found');
       }
-      await exportC4AsPNG(reactFlowContainer, `c4-${c4Preferences.viewLevel}-diagram.png`);
+      await c4ExportService.exportAsPNG(reactFlowContainer, `c4-${c4Preferences.viewLevel}-diagram.png`);
     } catch (error) {
       console.error('[ArchitectureRoute] PNG export failed:', error);
       alert('Failed to export PNG: ' + (error instanceof Error ? error.message : String(error)));
     }
-  }, [c4Preferences.viewLevel]);
+  }, [c4ExportService, c4Preferences.viewLevel]);
 
   const handleExportSVG = useCallback(async () => {
     try {
@@ -271,47 +312,24 @@ function ArchitectureRouteContent() {
       if (!reactFlowContainer) {
         throw new Error('Graph container not found');
       }
-      await exportC4AsSVG(reactFlowContainer, `c4-${c4Preferences.viewLevel}-diagram.svg`);
+      await c4ExportService.exportAsSVG(reactFlowContainer, `c4-${c4Preferences.viewLevel}-diagram.svg`);
     } catch (error) {
       console.error('[ArchitectureRoute] SVG export failed:', error);
       alert('Failed to export SVG: ' + (error instanceof Error ? error.message : String(error)));
     }
-  }, [c4Preferences.viewLevel]);
+  }, [c4ExportService, c4Preferences.viewLevel]);
 
   const handleExportGraphData = useCallback(() => {
     try {
-      if (!fullGraphRef.current) {
-        throw new Error('No graph data available');
+      if (!c4ExportService.exportAsJSON) {
+        throw new Error('JSON export not available');
       }
-      // Export the C4 graph structure
-      const graphNodes = Array.from(fullGraphRef.current.nodes.values());
-      const graphEdges = Array.from(fullGraphRef.current.edges.values());
-
-      // Convert C4 nodes/edges to ReactFlow format for export
-      const reactFlowNodes: any[] = graphNodes.map(node => ({
-        id: node.id,
-        type: node.c4Type,
-        data: {
-          label: node.name,
-          c4Type: node.c4Type,
-          description: node.description,
-          technology: node.technology,
-        },
-      }));
-
-      const reactFlowEdges: any[] = graphEdges.map(edge => ({
-        id: edge.id,
-        source: edge.sourceId,
-        target: edge.targetId,
-        label: edge.description || '',
-      }));
-
-      exportC4GraphAsJSON(reactFlowNodes, reactFlowEdges, fullGraphRef.current, `c4-${c4Preferences.viewLevel}-data.json`);
+      c4ExportService.exportAsJSON(null, `c4-${c4Preferences.viewLevel}-data.json`);
     } catch (error) {
       console.error('[ArchitectureRoute] Graph data export failed:', error);
       alert('Failed to export graph data: ' + (error instanceof Error ? error.message : String(error)));
     }
-  }, [c4Preferences.viewLevel]);
+  }, [c4ExportService, c4Preferences.viewLevel]);
 
   if (!model) {
     return null;
@@ -356,13 +374,30 @@ function ArchitectureRouteContent() {
         />
       }
     >
-      <C4GraphView
-        ref={graphViewRef}
-        model={model}
-        selectedContainerTypes={selectedContainerTypes}
-        selectedTechnologyStacks={selectedTechnologyStacks}
-        layout={selectedLayout}
-      />
+      <div className="relative w-full h-full">
+        <div className="absolute top-4 right-4 z-10">
+          <ExportButtonGroup
+            service={c4ExportService}
+            containerSelector=".c4-graph-viewer"
+            filenamePrefix={`c4-${c4Preferences.viewLevel}`}
+            data={{}}
+            formats={['png', 'svg', 'json']}
+            onExportError={(format, error) => {
+              console.error(`[ArchitectureRoute] ${format} export error:`, error);
+              alert(
+                `Failed to export ${format.toUpperCase()}: ${error instanceof Error ? error.message : String(error)}`
+              );
+            }}
+          />
+        </div>
+        <C4GraphView
+          ref={graphViewRef}
+          model={model}
+          selectedContainerTypes={selectedContainerTypes}
+          selectedTechnologyStacks={selectedTechnologyStacks}
+          layout={selectedLayout}
+        />
+      </div>
     </SharedLayout>
   );
 }
