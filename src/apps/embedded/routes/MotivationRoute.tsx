@@ -1,5 +1,6 @@
-import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
+import { Alert } from 'flowbite-react';
 import MotivationGraphView, { MotivationGraphViewRef } from '../components/MotivationGraphView';
 import { MotivationRightSidebar } from '../components/MotivationRightSidebar';
 import SharedLayout from '../components/SharedLayout';
@@ -7,7 +8,9 @@ import { useModelStore } from '../../../core/stores/modelStore';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
-import { websocketClient } from '../services/websocketClient';
+import { useDataLoader } from '../hooks/useDataLoader';
+import { LoadingState, ErrorState } from '../components/shared';
+import { ExportButtonGroup } from '../components/shared/ExportButtonGroup';
 import { MotivationElementType, MotivationRelationshipType, MotivationGraph } from '../types/motivationGraph';
 import { LayoutAlgorithm } from '../components/MotivationControlPanel';
 import { MotivationGraphBuilder } from '../services/motivationGraphBuilder';
@@ -15,6 +18,7 @@ import {
   exportAsPNG,
   exportAsSVG,
   exportTraceabilityReport,
+  exportGraphDataAsJSON,
 } from '../services/motivationExportService';
 
 function MotivationRouteContent() {
@@ -36,6 +40,7 @@ function MotivationRouteContent() {
   const [selectedLayout, setSelectedLayout] = useState<LayoutAlgorithm>(
     motivationPreferences.selectedLayout
   );
+  const [exportError, setExportError] = useState<string | null>(null);
 
   // Store reference to the full graph for inspector and export
   const fullGraphRef = useRef<MotivationGraph | null>(null);
@@ -58,19 +63,52 @@ function MotivationRouteContent() {
     }
   }, [model, motivationGraphBuilder]);
 
+  // Create export service wrapper for ExportButtonGroup
+  const motivationExportService = useMemo(
+    () => ({
+      exportAsPNG: (container: HTMLElement, filename: string) =>
+        exportAsPNG(container, filename),
+      exportAsSVG: (container: HTMLElement, filename: string) =>
+        exportAsSVG(container, filename),
+      exportAsJSON: (_data: unknown, filename: string) => {
+        if (!fullGraphRef.current) {
+          throw new Error('No graph data available');
+        }
+        const nodes = Array.from(fullGraphRef.current.nodes.values()).map(
+          (n) => ({
+            id: n.element.id,
+            type: n.element.type,
+            data: n.element,
+          })
+        );
+        const edges = Array.from(fullGraphRef.current.edges.values()).map(
+          (e) => ({
+            id: e.id,
+            source: e.sourceId,
+            target: e.targetId,
+            type: e.type,
+            label: (e.relationship.properties?.description as string) || '',
+          })
+        );
+        exportGraphDataAsJSON(nodes as any, edges as any, fullGraphRef.current, filename);
+      },
+    }),
+    []
+  );
+
   // Calculate filter counts
   const filterCounts = useMemo(() => {
     if (!fullGraphRef.current) {
       return {
-        elements: {} as any,
-        relationships: {} as any,
+        elements: {} as Record<MotivationElementType, { visible: number; total: number }>,
+        relationships: {} as Record<MotivationRelationshipType, { visible: number; total: number }>,
       };
     }
 
     const graph = fullGraphRef.current;
 
     // Count elements by type
-    const elementCounts: Record<MotivationElementType, { visible: number; total: number }> = {} as any;
+    const elementCounts: Record<MotivationElementType, { visible: number; total: number }> = {} as Record<MotivationElementType, { visible: number; total: number }>;
     for (const elementType of Object.values(MotivationElementType)) {
       const total = Array.from(graph.nodes.values()).filter(
         (n) => n.element.type === elementType
@@ -83,7 +121,7 @@ function MotivationRouteContent() {
     const relationshipCounts: Record<
       MotivationRelationshipType,
       { visible: number; total: number }
-    > = {} as any;
+    > = {} as Record<MotivationRelationshipType, { visible: number; total: number }>;
     for (const relationshipType of Object.values(MotivationRelationshipType)) {
       const total = Array.from(graph.edges.values()).filter((e) => e.type === relationshipType).length;
       const visible = selectedRelationshipTypes.has(relationshipType) ? total : 0;
@@ -224,19 +262,19 @@ function MotivationRouteContent() {
     useViewPreferenceStore.getState().setSelectedNodeId(undefined);
   }, []);
 
-  // Export handlers
   const handleExportPNG = useCallback(async () => {
     try {
       const reactFlowContainer = document.querySelector('.react-flow') as HTMLElement;
       if (!reactFlowContainer) {
         throw new Error('Graph container not found');
       }
-      await exportAsPNG(reactFlowContainer, 'motivation-graph.png');
+      await motivationExportService.exportAsPNG(reactFlowContainer, 'motivation-graph.png');
     } catch (error) {
       console.error('[MotivationRoute] PNG export failed:', error);
-      alert('Failed to export PNG: ' + (error instanceof Error ? error.message : String(error)));
+      setExportError('Failed to export PNG: ' + (error instanceof Error ? error.message : String(error)));
+      setTimeout(() => setExportError(null), 5000);
     }
-  }, []);
+  }, [motivationExportService]);
 
   const handleExportSVG = useCallback(async () => {
     try {
@@ -244,35 +282,26 @@ function MotivationRouteContent() {
       if (!reactFlowContainer) {
         throw new Error('Graph container not found');
       }
-      await exportAsSVG(reactFlowContainer, 'motivation-graph.svg');
+      await motivationExportService.exportAsSVG(reactFlowContainer, 'motivation-graph.svg');
     } catch (error) {
       console.error('[MotivationRoute] SVG export failed:', error);
-      alert('Failed to export SVG: ' + (error instanceof Error ? error.message : String(error)));
+      setExportError('Failed to export SVG: ' + (error instanceof Error ? error.message : String(error)));
+      setTimeout(() => setExportError(null), 5000);
     }
-  }, []);
+  }, [motivationExportService]);
 
   const handleExportGraphData = useCallback(() => {
     try {
-      if (!fullGraphRef.current) {
-        throw new Error('No graph data available');
+      if (!motivationExportService.exportAsJSON) {
+        throw new Error('JSON export not available');
       }
-      // Note: nodes and edges would need to be passed from MotivationGraphView
-      // For now, we'll export just the graph structure
-      const graphData = {
-        nodes: Array.from(fullGraphRef.current.nodes.values()),
-        edges: Array.from(fullGraphRef.current.edges.values()),
-      };
-      const dataStr = JSON.stringify(graphData, null, 2);
-      const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-      const link = document.createElement('a');
-      link.setAttribute('href', dataUri);
-      link.setAttribute('download', 'motivation-graph-data.json');
-      link.click();
+      motivationExportService.exportAsJSON(null, 'motivation-graph-data.json');
     } catch (error) {
       console.error('[MotivationRoute] Graph data export failed:', error);
-      alert('Failed to export graph data: ' + (error instanceof Error ? error.message : String(error)));
+      setExportError('Failed to export graph data: ' + (error instanceof Error ? error.message : String(error)));
+      setTimeout(() => setExportError(null), 5000);
     }
-  }, []);
+  }, [motivationExportService]);
 
   const handleExportTraceabilityReport = useCallback(() => {
     try {
@@ -282,7 +311,8 @@ function MotivationRouteContent() {
       exportTraceabilityReport(fullGraphRef.current, 'traceability-report.json');
     } catch (error) {
       console.error('[MotivationRoute] Traceability report export failed:', error);
-      alert('Failed to export traceability report: ' + (error instanceof Error ? error.message : String(error)));
+      setExportError('Failed to export traceability report: ' + (error instanceof Error ? error.message : String(error)));
+      setTimeout(() => setExportError(null), 5000);
     }
   }, []);
 
@@ -325,87 +355,66 @@ function MotivationRouteContent() {
         />
       }
     >
-      <MotivationGraphView
-        ref={graphViewRef}
-        model={model}
-        selectedElementTypes={selectedElementTypes}
-        selectedRelationshipTypes={selectedRelationshipTypes}
-        layout={selectedLayout}
-      />
+      <div className="relative w-full h-full">
+        {exportError && (
+          <div className="fixed top-4 right-4 z-50 max-w-md">
+            <Alert color="failure" onDismiss={() => setExportError(null)}>
+              <span className="font-medium">Export failed:</span> {exportError}
+            </Alert>
+          </div>
+        )}
+        <div className="absolute top-4 right-4 z-10">
+          <ExportButtonGroup
+            service={motivationExportService}
+            containerSelector=".react-flow"
+            filenamePrefix="motivation-graph"
+            data={{}}
+            formats={['png', 'svg', 'json']}
+            onExportError={(format, error) => {
+              console.error(`[MotivationRoute] ${format} export error:`, error);
+              setExportError(`Failed to export ${format.toUpperCase()}: ${error.message}`);
+              // Auto-clear after 5 seconds
+              setTimeout(() => setExportError(null), 5000);
+            }}
+          />
+        </div>
+        <MotivationGraphView
+          ref={graphViewRef}
+          model={model}
+          selectedElementTypes={selectedElementTypes}
+          selectedRelationshipTypes={selectedRelationshipTypes}
+          layout={selectedLayout}
+        />
+      </div>
     </SharedLayout>
   );
 }
 
 export default function MotivationRoute() {
-  const { model, loading, error, setModel, setLoading, setError } = useModelStore();
+  const { setModel } = useModelStore();
   const annotationStore = useAnnotationStore();
 
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      setError('');
+  const { data: model, loading, error, reload } = useDataLoader({
+    loadFn: async () => {
       console.log('[MotivationRoute] Loading model data...');
-
       const modelData = await embeddedDataLoader.loadModel();
-      setModel(modelData);
-      
-      const annotations = await embeddedDataLoader.loadAnnotations();
-      annotationStore.setAnnotations(annotations);
-
       console.log('[MotivationRoute] Model loaded successfully');
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load model';
-      setError(errorMessage);
-      console.error('[MotivationRoute] Error loading model:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadData();
-
-    const handleModelUpdated = async () => {
-      await loadData();
-    };
-    
-    const handleAnnotationAdded = async () => {
+      return modelData;
+    },
+    websocketEvents: ['model.updated', 'annotation.added'],
+    onSuccess: async (modelData) => {
+      setModel(modelData);
       const annotations = await embeddedDataLoader.loadAnnotations();
       annotationStore.setAnnotations(annotations);
-    };
-
-    websocketClient.on('model.updated', handleModelUpdated);
-    websocketClient.on('annotation.added', handleAnnotationAdded);
-
-    return () => {
-      websocketClient.off('model.updated', handleModelUpdated);
-      websocketClient.off('annotation.added', handleAnnotationAdded);
-    };
-  }, [setModel, setLoading, setError, annotationStore.setAnnotations]);
+    },
+  });
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-full bg-gray-50">
-        <div className="bg-white rounded-lg border p-6 text-center">
-          <svg className="animate-spin h-8 w-8 mx-auto mb-4 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          <p className="text-gray-700">Loading motivation view...</p>
-        </div>
-      </div>
-    );
+    return <LoadingState variant="page" message="Loading motivation view..." />;
   }
 
   if (error) {
-    return (
-      <div className="flex items-center justify-center h-full bg-gray-50">
-        <div className="bg-white rounded-lg border border-red-200 p-6 max-w-md">
-          <h3 className="text-lg font-medium text-red-800 mb-2">Error</h3>
-          <p className="text-red-600">{error}</p>
-        </div>
-      </div>
-    );
+    return <ErrorState variant="page" message={error} onRetry={reload} />;
   }
 
   if (!model) {

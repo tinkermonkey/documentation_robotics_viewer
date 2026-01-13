@@ -7,7 +7,7 @@
  */
 
 import { Node, Edge } from '@xyflow/react';
-import { toPng, toSvg } from 'html-to-image';
+import { exportReactFlowAsPNG, exportReactFlowAsSVG, downloadJSON } from '@/core/services/exportUtils';
 import { C4Graph, C4Type, ContainerType, ProtocolType } from '../types/c4Graph';
 
 // Debug logging helper - only logs in development mode
@@ -110,47 +110,12 @@ export async function exportC4AsPNG(
   reactFlowContainer: HTMLElement,
   filename: string = 'c4-diagram.png'
 ): Promise<void> {
-  try {
-    debugLog('[C4ExportService] Exporting as PNG:', filename);
-
-    if (!reactFlowContainer) {
-      throw new Error('Unable to export: The graph container is not available. Please reload the page and try again.');
-    }
-
-    // Find the ReactFlow wrapper element
-    const reactFlowWrapper = reactFlowContainer.querySelector('.react-flow') as HTMLElement;
-    if (!reactFlowWrapper) {
-      throw new Error('Unable to locate the graph canvas for export. Please make sure the C4 diagram is visible and try again.');
-    }
-
-    // Generate PNG using html-to-image
-    const dataUrl = await toPng(reactFlowWrapper, {
-      backgroundColor: '#ffffff',
-      quality: 1.0,
-      pixelRatio: 2, // Higher resolution
-      filter: (node) => {
-        // Exclude controls and minimap from export
-        if (node instanceof HTMLElement) {
-          return !node.classList.contains('react-flow__controls') &&
-                 !node.classList.contains('react-flow__minimap') &&
-                 !node.classList.contains('react-flow__panel');
-        }
-        return true;
-      }
-    });
-
-    // Trigger download
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = dataUrl;
-    link.click();
-
-    debugLog('[C4ExportService] PNG export successful');
-  } catch (error) {
-    console.error('[C4ExportService] PNG export failed:', error);
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-    throw new Error(`Unable to export image: ${errorMessage}`);
-  }
+  debugLog('[C4ExportService] Exporting as PNG:', filename);
+  await exportReactFlowAsPNG(reactFlowContainer, filename, {
+    backgroundColor: '#ffffff',
+    quality: 1.0,
+    pixelRatio: 2
+  });
 }
 
 /**
@@ -160,45 +125,10 @@ export async function exportC4AsSVG(
   reactFlowContainer: HTMLElement,
   filename: string = 'c4-diagram.svg'
 ): Promise<void> {
-  try {
-    debugLog('[C4ExportService] Exporting as SVG:', filename);
-
-    if (!reactFlowContainer) {
-      throw new Error('Unable to export: The graph container is not available. Please reload the page and try again.');
-    }
-
-    // Find the ReactFlow wrapper element
-    const reactFlowWrapper = reactFlowContainer.querySelector('.react-flow') as HTMLElement;
-    if (!reactFlowWrapper) {
-      throw new Error('Unable to locate the graph canvas for export. Please make sure the C4 diagram is visible and try again.');
-    }
-
-    // Generate SVG using html-to-image
-    const dataUrl = await toSvg(reactFlowWrapper, {
-      backgroundColor: '#ffffff',
-      filter: (node) => {
-        // Exclude controls and minimap from export
-        if (node instanceof HTMLElement) {
-          return !node.classList.contains('react-flow__controls') &&
-                 !node.classList.contains('react-flow__minimap') &&
-                 !node.classList.contains('react-flow__panel');
-        }
-        return true;
-      }
-    });
-
-    // Trigger download
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = dataUrl;
-    link.click();
-
-    debugLog('[C4ExportService] SVG export successful');
-  } catch (error) {
-    console.error('[C4ExportService] SVG export failed:', error);
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-    throw new Error(`Unable to export SVG: ${errorMessage}`);
-  }
+  debugLog('[C4ExportService] Exporting as SVG:', filename);
+  await exportReactFlowAsSVG(reactFlowContainer, filename, {
+    backgroundColor: '#ffffff'
+  });
 }
 
 /**
@@ -259,16 +189,7 @@ export function exportC4GraphAsJSON(
       },
     };
 
-    const jsonString = JSON.stringify(exportData, null, 2);
-    const blob = new Blob([jsonString], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = url;
-    link.click();
-
-    URL.revokeObjectURL(url);
+    downloadJSON(exportData, filename);
 
     debugLog('[C4ExportService] Graph data export successful');
   } catch (error) {
@@ -406,26 +327,17 @@ export function exportC4DependencyReport(
       dependencyStatistics,
     };
 
-    debugLog('[C4ExportService] Dependency report generated:', {
+    console.log('[C4ExportService] Dependency report generated:', {
       containers: containerDependencies.length,
       orphaned: orphanedContainers.length,
       totalDependencies: dependencyStatistics.totalDependencies,
       mostConnected: mostConnected?.name,
     });
 
-    // Export as JSON
-    const jsonString = JSON.stringify(report, null, 2);
-    const blob = new Blob([jsonString], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
+    // Export as JSON using shared utility
+    downloadJSON(report, filename);
 
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = url;
-    link.click();
-
-    URL.revokeObjectURL(url);
-
-    debugLog('[C4ExportService] Dependency report exported successfully');
+    console.log('[C4ExportService] Dependency report exported successfully');
   } catch (error) {
     console.error('[C4ExportService] Dependency report export failed:', error);
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
