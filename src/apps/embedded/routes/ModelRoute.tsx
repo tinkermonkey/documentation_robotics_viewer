@@ -14,7 +14,7 @@ import SharedLayout from '../components/SharedLayout';
 import { useModelStore } from '../../../core/stores/modelStore';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { embeddedDataLoader, LinkRegistry, SpecDataResponse } from '../services/embeddedDataLoader';
-import { useDataLoader } from '@/core/hooks/useDataLoader';
+import { useDataLoader } from '../hooks/useDataLoader';
 import { LoadingState, ErrorState, ViewToggle } from '../components/shared';
 import type { MetaModel } from '../../../core/types';
 

@@ -78,49 +78,50 @@ const ExportButtonGroupComponent: FC<ExportButtonGroupProps> = ({
             throw new Error(`Container not found with selector: ${containerSelector}`);
           }
 
-          // Generate timestamp-based filename to prevent overwrites
           const timestamp = Date.now();
           const filename = `${filenamePrefix}-${timestamp}.${format}`;
 
-          // Execute appropriate export method
-          if (format === 'json') {
-            if (!service.exportAsJSON) {
-              throw new Error('JSON export is not supported by this service');
-            }
-            if (!data) {
-              throw new Error('No data provided for JSON export');
-            }
-            service.exportAsJSON(data, filename);
-          } else if (format === 'png') {
-            await service.exportAsPNG(container, filename);
-          } else if (format === 'svg') {
-            await service.exportAsSVG(container, filename);
+          switch (format) {
+            case 'json':
+              if (!service.exportAsJSON) {
+                throw new Error('JSON export is not supported by this service');
+              }
+              if (!data) {
+                throw new Error('No data provided for JSON export');
+              }
+              service.exportAsJSON(data, filename);
+              break;
+            case 'png':
+              await service.exportAsPNG(container, filename);
+              break;
+            case 'svg':
+              await service.exportAsSVG(container, filename);
+              break;
           }
 
-          // Call success callback
           onExportComplete?.(format);
-
-          // Show success message in console for debugging
           console.log(`[ExportButtonGroup] ${format.toUpperCase()} export successful: ${filename}`);
         } catch (error) {
           const err = error instanceof Error ? error : new Error('Export failed');
-
-          // Call error callback
           onExportError?.(format, err);
-
-          // Log detailed error for debugging
           console.error(`[ExportButtonGroup] ${format.toUpperCase()} export failed:`, err);
         } finally {
           setExportingFormat(null);
         }
       },
-      [containerSelector, filenamePrefix, service, onExportComplete, onExportError]
+      [containerSelector, filenamePrefix, data, service, onExportComplete, onExportError]
     );
 
     const showPNG = formats.includes('png');
     const showSVG = formats.includes('svg');
     const showJSON = formats.includes('json') && service.exportAsJSON && !!data;
     const isExporting = exportingFormat !== null;
+
+    const exportButtons = [
+      { format: 'png', show: showPNG, label: 'PNG', ariaLabel: 'Export as PNG image' },
+      { format: 'svg', show: showSVG, label: 'SVG', ariaLabel: 'Export as SVG image' },
+      { format: 'json', show: showJSON, label: 'JSON', ariaLabel: 'Export as JSON data' },
+    ] as const;
 
     return (
       <div
@@ -129,49 +130,21 @@ const ExportButtonGroupComponent: FC<ExportButtonGroupProps> = ({
         role="group"
         aria-label="Export controls"
       >
-        {/* PNG Export Button */}
-        {showPNG && (
-          <Button
-            onClick={() => handleExport('png')}
-            disabled={disabled || isExporting}
-            color="gray"
-            size="sm"
-            data-testid="export-png-button"
-            aria-label="Export as PNG image"
-            className="dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
-          >
-            {exportingFormat === 'png' ? 'Exporting...' : 'PNG'}
-          </Button>
-        )}
-
-        {/* SVG Export Button */}
-        {showSVG && (
-          <Button
-            onClick={() => handleExport('svg')}
-            disabled={disabled || isExporting}
-            color="gray"
-            size="sm"
-            data-testid="export-svg-button"
-            aria-label="Export as SVG image"
-            className="dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
-          >
-            {exportingFormat === 'svg' ? 'Exporting...' : 'SVG'}
-          </Button>
-        )}
-
-        {/* JSON Export Button */}
-        {showJSON && (
-          <Button
-            onClick={() => handleExport('json')}
-            disabled={disabled || isExporting}
-            color="gray"
-            size="sm"
-            data-testid="export-json-button"
-            aria-label="Export as JSON data"
-            className="dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
-          >
-            {exportingFormat === 'json' ? 'Exporting...' : 'JSON'}
-          </Button>
+        {exportButtons.map(({ format, show, label, ariaLabel }) =>
+          show && (
+            <Button
+              key={format}
+              onClick={() => handleExport(format)}
+              disabled={disabled || isExporting}
+              color="gray"
+              size="sm"
+              data-testid={`export-${format}-button`}
+              aria-label={ariaLabel}
+              className="dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
+            >
+              {exportingFormat === format ? 'Exporting...' : label}
+            </Button>
+          )
         )}
       </div>
     );

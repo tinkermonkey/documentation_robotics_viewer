@@ -78,34 +78,26 @@ export async function exportReactFlowAsPNG(
   filename: string,
   options?: ExportOptions
 ): Promise<void> {
-  try {
-    const {
-      backgroundColor = '#ffffff',
-      quality = 1.0,
-      pixelRatio = 2,
-      filterControls = true
-    } = options || {};
+  const {
+    backgroundColor = '#ffffff',
+    quality = 1.0,
+    pixelRatio = 2,
+    filterControls = true
+  } = options || {};
 
-    console.log('[exportUtils] Exporting as PNG:', filename);
+  console.log('[exportUtils] Exporting as PNG:', filename);
 
-    const reactFlowWrapper = getReactFlowWrapper(container);
+  const reactFlowWrapper = getReactFlowWrapper(container);
 
-    // Generate PNG using html-to-image
-    const dataUrl = await toPng(reactFlowWrapper, {
-      backgroundColor,
-      quality,
-      pixelRatio,
-      filter: filterControls ? createNodeFilter() : undefined
-    });
+  const dataUrl = await toPng(reactFlowWrapper, {
+    backgroundColor,
+    quality,
+    pixelRatio,
+    filter: filterControls ? createNodeFilter() : undefined
+  });
 
-    triggerDownload(dataUrl, filename);
-
-    console.log('[exportUtils] PNG export successful');
-  } catch (error) {
-    console.error('[exportUtils] PNG export failed:', error);
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-    throw new Error(`Unable to export image: ${errorMessage}`);
-  }
+  triggerDownload(dataUrl, filename);
+  console.log('[exportUtils] PNG export successful');
 }
 
 /**
@@ -120,30 +112,22 @@ export async function exportReactFlowAsSVG(
   filename: string,
   options?: ExportOptions
 ): Promise<void> {
-  try {
-    const {
-      backgroundColor = '#ffffff',
-      filterControls = true
-    } = options || {};
+  const {
+    backgroundColor = '#ffffff',
+    filterControls = true
+  } = options || {};
 
-    console.log('[exportUtils] Exporting as SVG:', filename);
+  console.log('[exportUtils] Exporting as SVG:', filename);
 
-    const reactFlowWrapper = getReactFlowWrapper(container);
+  const reactFlowWrapper = getReactFlowWrapper(container);
 
-    // Generate SVG using html-to-image
-    const dataUrl = await toSvg(reactFlowWrapper, {
-      backgroundColor,
-      filter: filterControls ? createNodeFilter() : undefined
-    });
+  const dataUrl = await toSvg(reactFlowWrapper, {
+    backgroundColor,
+    filter: filterControls ? createNodeFilter() : undefined
+  });
 
-    triggerDownload(dataUrl, filename);
-
-    console.log('[exportUtils] SVG export successful');
-  } catch (error) {
-    console.error('[exportUtils] SVG export failed:', error);
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-    throw new Error(`Unable to export SVG: ${errorMessage}`);
-  }
+  triggerDownload(dataUrl, filename);
+  console.log('[exportUtils] SVG export successful');
 }
 
 /**
@@ -153,25 +137,17 @@ export async function exportReactFlowAsSVG(
  * @throws Error if download fails
  */
 export function downloadJSON(data: unknown, filename: string): void {
-  try {
-    console.log('[exportUtils] Downloading JSON:', filename);
+  console.log('[exportUtils] Downloading JSON:', filename);
 
-    const jsonString = JSON.stringify(data, null, 2);
-    const blob = new Blob([jsonString], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
+  const jsonString = JSON.stringify(data, null, 2);
+  const blob = new Blob([jsonString], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
 
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = url;
-    link.click();
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = url;
+  link.click();
 
-    // Delay URL revocation to ensure browser has time to initiate download
-    setTimeout(() => URL.revokeObjectURL(url), 100);
-
-    console.log('[exportUtils] JSON download successful');
-  } catch (error) {
-    console.error('[exportUtils] JSON download failed:', error);
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-    throw new Error(`Unable to download JSON: ${errorMessage}`);
-  }
+  setTimeout(() => URL.revokeObjectURL(url), 100);
+  console.log('[exportUtils] JSON download successful');
 }

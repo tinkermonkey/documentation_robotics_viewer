@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
+import { Alert } from 'flowbite-react';
 import MotivationGraphView, { MotivationGraphViewRef } from '../components/MotivationGraphView';
 import { MotivationRightSidebar } from '../components/MotivationRightSidebar';
 import SharedLayout from '../components/SharedLayout';
@@ -7,7 +8,7 @@ import { useModelStore } from '../../../core/stores/modelStore';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
-import { useDataLoader } from '@/core/hooks/useDataLoader';
+import { useDataLoader } from '../hooks/useDataLoader';
 import { LoadingState, ErrorState } from '../components/shared';
 import { ExportButtonGroup } from '../components/shared/ExportButtonGroup';
 import { MotivationElementType, MotivationRelationshipType, MotivationGraph } from '../types/motivationGraph';
@@ -39,6 +40,7 @@ function MotivationRouteContent() {
   const [selectedLayout, setSelectedLayout] = useState<LayoutAlgorithm>(
     motivationPreferences.selectedLayout
   );
+  const [exportError, setExportError] = useState<string | null>(null);
 
   // Store reference to the full graph for inspector and export
   const fullGraphRef = useRef<MotivationGraph | null>(null);
@@ -260,7 +262,6 @@ function MotivationRouteContent() {
     useViewPreferenceStore.getState().setSelectedNodeId(undefined);
   }, []);
 
-  // Export handlers - delegate to export service
   const handleExportPNG = useCallback(async () => {
     try {
       const reactFlowContainer = document.querySelector('.react-flow') as HTMLElement;
@@ -270,7 +271,8 @@ function MotivationRouteContent() {
       await motivationExportService.exportAsPNG(reactFlowContainer, 'motivation-graph.png');
     } catch (error) {
       console.error('[MotivationRoute] PNG export failed:', error);
-      alert('Failed to export PNG: ' + (error instanceof Error ? error.message : String(error)));
+      setExportError('Failed to export PNG: ' + (error instanceof Error ? error.message : String(error)));
+      setTimeout(() => setExportError(null), 5000);
     }
   }, [motivationExportService]);
 
@@ -283,7 +285,8 @@ function MotivationRouteContent() {
       await motivationExportService.exportAsSVG(reactFlowContainer, 'motivation-graph.svg');
     } catch (error) {
       console.error('[MotivationRoute] SVG export failed:', error);
-      alert('Failed to export SVG: ' + (error instanceof Error ? error.message : String(error)));
+      setExportError('Failed to export SVG: ' + (error instanceof Error ? error.message : String(error)));
+      setTimeout(() => setExportError(null), 5000);
     }
   }, [motivationExportService]);
 
@@ -295,7 +298,8 @@ function MotivationRouteContent() {
       motivationExportService.exportAsJSON(null, 'motivation-graph-data.json');
     } catch (error) {
       console.error('[MotivationRoute] Graph data export failed:', error);
-      alert('Failed to export graph data: ' + (error instanceof Error ? error.message : String(error)));
+      setExportError('Failed to export graph data: ' + (error instanceof Error ? error.message : String(error)));
+      setTimeout(() => setExportError(null), 5000);
     }
   }, [motivationExportService]);
 
@@ -307,7 +311,8 @@ function MotivationRouteContent() {
       exportTraceabilityReport(fullGraphRef.current, 'traceability-report.json');
     } catch (error) {
       console.error('[MotivationRoute] Traceability report export failed:', error);
-      alert('Failed to export traceability report: ' + (error instanceof Error ? error.message : String(error)));
+      setExportError('Failed to export traceability report: ' + (error instanceof Error ? error.message : String(error)));
+      setTimeout(() => setExportError(null), 5000);
     }
   }, []);
 
@@ -351,6 +356,13 @@ function MotivationRouteContent() {
       }
     >
       <div className="relative w-full h-full">
+        {exportError && (
+          <div className="fixed top-4 right-4 z-50 max-w-md">
+            <Alert color="failure" onDismiss={() => setExportError(null)}>
+              <span className="font-medium">Export failed:</span> {exportError}
+            </Alert>
+          </div>
+        )}
         <div className="absolute top-4 right-4 z-10">
           <ExportButtonGroup
             service={motivationExportService}
@@ -360,9 +372,9 @@ function MotivationRouteContent() {
             formats={['png', 'svg', 'json']}
             onExportError={(format, error) => {
               console.error(`[MotivationRoute] ${format} export error:`, error);
-              alert(
-                `Failed to export ${format.toUpperCase()}: ${error instanceof Error ? error.message : String(error)}`
-              );
+              setExportError(`Failed to export ${format.toUpperCase()}: ${error.message}`);
+              // Auto-clear after 5 seconds
+              setTimeout(() => setExportError(null), 5000);
             }}
           />
         </div>

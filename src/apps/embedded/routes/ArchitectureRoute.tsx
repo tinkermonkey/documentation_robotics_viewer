@@ -6,6 +6,7 @@
 
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
+import { Alert } from 'flowbite-react';
 import C4GraphView, { C4GraphViewRef } from '../components/C4GraphView';
 import { C4RightSidebar } from '../components/C4RightSidebar';
 import SharedLayout from '../components/SharedLayout';
@@ -13,7 +14,7 @@ import { useModelStore } from '../../../core/stores/modelStore';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
-import { useDataLoader } from '@/core/hooks/useDataLoader';
+import { useDataLoader } from '../hooks/useDataLoader';
 import { LoadingState, ErrorState } from '../components/shared';
 import { ExportButtonGroup } from '../components/shared/ExportButtonGroup';
 import { C4Graph, ContainerType, C4ViewLevel } from '../types/c4Graph';
@@ -55,6 +56,7 @@ function ArchitectureRouteContent() {
   const [selectedLayout, setSelectedLayout] = useState<C4LayoutAlgorithm>(
     c4Preferences.selectedLayout
   );
+  const [exportError, setExportError] = useState<string | null>(null);
 
   // Store reference to the full C4 graph
   const fullGraphRef = useRef<C4Graph | null>(null);
@@ -292,7 +294,6 @@ function ArchitectureRouteContent() {
     useViewPreferenceStore.getState().setC4SelectedNodeId(undefined);
   }, []);
 
-  // Export handlers - delegate to export service
   const handleExportPNG = useCallback(async () => {
     try {
       const reactFlowContainer = document.querySelector('.c4-graph-viewer') as HTMLElement;
@@ -302,7 +303,8 @@ function ArchitectureRouteContent() {
       await c4ExportService.exportAsPNG(reactFlowContainer, `c4-${c4Preferences.viewLevel}-diagram.png`);
     } catch (error) {
       console.error('[ArchitectureRoute] PNG export failed:', error);
-      alert('Failed to export PNG: ' + (error instanceof Error ? error.message : String(error)));
+      setExportError('Failed to export PNG: ' + (error instanceof Error ? error.message : String(error)));
+      setTimeout(() => setExportError(null), 5000);
     }
   }, [c4ExportService, c4Preferences.viewLevel]);
 
@@ -315,7 +317,8 @@ function ArchitectureRouteContent() {
       await c4ExportService.exportAsSVG(reactFlowContainer, `c4-${c4Preferences.viewLevel}-diagram.svg`);
     } catch (error) {
       console.error('[ArchitectureRoute] SVG export failed:', error);
-      alert('Failed to export SVG: ' + (error instanceof Error ? error.message : String(error)));
+      setExportError('Failed to export SVG: ' + (error instanceof Error ? error.message : String(error)));
+      setTimeout(() => setExportError(null), 5000);
     }
   }, [c4ExportService, c4Preferences.viewLevel]);
 
@@ -327,7 +330,8 @@ function ArchitectureRouteContent() {
       c4ExportService.exportAsJSON(null, `c4-${c4Preferences.viewLevel}-data.json`);
     } catch (error) {
       console.error('[ArchitectureRoute] Graph data export failed:', error);
-      alert('Failed to export graph data: ' + (error instanceof Error ? error.message : String(error)));
+      setExportError('Failed to export graph data: ' + (error instanceof Error ? error.message : String(error)));
+      setTimeout(() => setExportError(null), 5000);
     }
   }, [c4ExportService, c4Preferences.viewLevel]);
 
@@ -375,6 +379,13 @@ function ArchitectureRouteContent() {
       }
     >
       <div className="relative w-full h-full">
+        {exportError && (
+          <div className="fixed top-4 right-4 z-50 max-w-md">
+            <Alert color="failure" onDismiss={() => setExportError(null)}>
+              <span className="font-medium">Export failed:</span> {exportError}
+            </Alert>
+          </div>
+        )}
         <div className="absolute top-4 right-4 z-10">
           <ExportButtonGroup
             service={c4ExportService}
@@ -384,9 +395,9 @@ function ArchitectureRouteContent() {
             formats={['png', 'svg', 'json']}
             onExportError={(format, error) => {
               console.error(`[ArchitectureRoute] ${format} export error:`, error);
-              alert(
-                `Failed to export ${format.toUpperCase()}: ${error instanceof Error ? error.message : String(error)}`
-              );
+              setExportError(`Failed to export ${format.toUpperCase()}: ${error.message}`);
+              // Auto-clear after 5 seconds
+              setTimeout(() => setExportError(null), 5000);
             }}
           />
         </div>

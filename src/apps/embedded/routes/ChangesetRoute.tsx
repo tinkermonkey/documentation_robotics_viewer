@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import ChangesetList from '../components/ChangesetList';
 import ChangesetViewer from '../components/ChangesetViewer';
@@ -7,7 +8,7 @@ import SharedLayout from '../components/SharedLayout';
 import { useChangesetStore } from '../stores/changesetStore';
 import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
-import { useDataLoader } from '@/core/hooks/useDataLoader';
+import { useDataLoader } from '../hooks/useDataLoader';
 import { LoadingState, ErrorState, ViewToggle } from '../components/shared';
 
 export default function ChangesetRoute() {
@@ -16,14 +17,16 @@ export default function ChangesetRoute() {
   const changesetStore = useChangesetStore();
   const { changesetView, setChangesetView } = useViewPreferenceStore();
 
-  // Handle view parameter routing
-  if (!view) {
-    navigate({ to: `/changesets/${changesetView}`, replace: true });
-  } else if ((view === 'list' || view === 'graph') && view !== changesetView) {
-    setChangesetView(view);
-  }
-
   const activeView = view === 'list' ? 'list' : 'graph';
+
+  // Handle view synchronization in effect to avoid navigation during render
+  useEffect(() => {
+    if (!view) {
+      navigate({ to: `/changesets/${changesetView}`, replace: true });
+    } else if (activeView !== changesetView) {
+      setChangesetView(activeView);
+    }
+  }, [view, activeView, changesetView, navigate, setChangesetView]);
 
   const { data: changesetList, loading, error, reload } = useDataLoader({
     loadFn: async () => {

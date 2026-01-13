@@ -14,8 +14,8 @@
  * ```
  */
 
-import { useState, useCallback, useEffect } from 'react';
-import { websocketClient } from '../../apps/embedded/services/websocketClient';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { websocketClient } from '../services/websocketClient';
 
 /**
  * Options for the useDataLoader hook
@@ -59,7 +59,7 @@ export interface DataLoaderResult<T> {
  *
  * Manages loading, error, and data state, and optionally:
  * - Executes loadFn on mount if immediate is true (default)
- * - Calls success/error callbacks
+ * - Calls success/error callbacks with proper error handling
  * - Subscribes to WebSocket events and reloads on event
  * - Cleans up subscriptions on unmount
  *
@@ -73,8 +73,15 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Create stable ref to avoid effect re-runs and subscription churn
+  const reloadRef = useRef<(() => Promise<void>) | undefined>(undefined);
+
   /**
-   * Reload function that executes the loadFn and updates state
+   * Reload function that executes loadFn and manages state lifecycle:
+   * - Sets loading=true and clears previous errors
+   * - Updates data state with results
+   * - Invokes success/error callbacks with proper error handling
+   * - Guarantees loading state is cleared even if callbacks throw
    */
   const reload = useCallback(async () => {
     try {
@@ -85,39 +92,64 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
       setData(result);
 
       if (onSuccess) {
-        onSuccess(result);
+        try {
+          onSuccess(result);
+        } catch (successError) {
+          console.error('[useDataLoader] onSuccess callback failed:', successError);
+          // Don't fail the load if the success callback fails
+        }
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load data';
+
+      // CRITICAL: Add comprehensive error logging with context
+      console.error('[useDataLoader] Load failed:', {
+        error: err,
+        message: errorMessage,
+        loadFn: loadFn.name || 'anonymous',
+        stack: err instanceof Error ? err.stack : undefined,
+      });
+
       setError(errorMessage);
 
       if (onError) {
-        onError(err instanceof Error ? err : new Error(errorMessage));
+        try {
+          onError(err instanceof Error ? err : new Error(errorMessage));
+        } catch (errorHandlerError) {
+          console.error('[useDataLoader] onError callback failed:', errorHandlerError);
+        }
       }
     } finally {
       setLoading(false);
     }
   }, [loadFn, onSuccess, onError]);
 
+  // Update ref whenever reload changes to avoid subscription churn
+  reloadRef.current = reload;
+
   /**
    * Load data on mount if immediate is true
    */
   useEffect(() => {
-    if (immediate) {
-      reload();
+    if (immediate && reloadRef.current) {
+      reloadRef.current();
     }
-  }, [immediate, reload]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [immediate]); // Remove reload from deps to prevent infinite loops
 
   /**
    * Subscribe to WebSocket events and reload when they fire
+   * Uses ref to avoid re-subscribing whenever reload changes
    */
   useEffect(() => {
-    if (!websocketEvents || websocketEvents.length === 0) {
+    if (!websocketEvents?.length) {
       return;
     }
 
     const handler = () => {
-      reload();
+      if (reloadRef.current) {
+        reloadRef.current();
+      }
     };
 
     websocketEvents.forEach((event) => {
@@ -129,7 +161,7 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
         websocketClient.off(event, handler);
       });
     };
-  }, [websocketEvents, reload]);
+  }, [websocketEvents]); // Remove reload from deps to prevent subscription churn
 
   return { data, loading, error, reload };
 }

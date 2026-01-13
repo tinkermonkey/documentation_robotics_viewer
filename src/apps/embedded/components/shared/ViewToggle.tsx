@@ -32,7 +32,6 @@ export const ViewToggle = memo(
       >
         {views.map((view) => {
           const isActive = view.key === activeView;
-          const Icon = view.icon;
 
           return (
             <Button
@@ -46,7 +45,7 @@ export const ViewToggle = memo(
               aria-pressed={isActive}
               className="dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
             >
-              {Icon && <Icon className="mr-2 h-4 w-4" />}
+              {view.icon && <view.icon className="mr-2 h-4 w-4" />}
               {view.label}
             </Button>
           );

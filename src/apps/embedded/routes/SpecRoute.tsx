@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import SpecViewer from '../components/SpecViewer';
 import SpecGraphView from '../components/SpecGraphView';
@@ -8,7 +9,7 @@ import { LoadingState, ErrorState, ViewToggle } from '../components/shared';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
-import { useDataLoader } from '@/core/hooks/useDataLoader';
+import { useDataLoader } from '../hooks/useDataLoader';
 
 export default function SpecRoute() {
   const { view } = useParams({ strict: false });
@@ -30,14 +31,16 @@ export default function SpecRoute() {
     },
   });
 
-  // Handle view parameter routing
-  if (!view) {
-    navigate({ to: `/spec/${specView}`, replace: true });
-  } else if ((view === 'json' || view === 'graph') && view !== specView) {
-    setSpecView(view as 'graph' | 'json');
-  }
-
   const activeView = view === 'json' ? 'json' : 'graph';
+
+  // Handle view synchronization in effect to avoid navigation during render
+  useEffect(() => {
+    if (!view) {
+      navigate({ to: `/spec/${specView}`, replace: true });
+    } else if (activeView !== specView) {
+      setSpecView(activeView);
+    }
+  }, [view, activeView, specView, navigate, setSpecView]);
 
   if (loading) {
     return <LoadingState variant="page" message="Loading spec..." />;
