@@ -6,6 +6,7 @@ architecture-visualization:
   properties:
     x-supports-goals:
       - motivation.goal.visualize-architecture
+      - motivation.outcome.improved-architecture-understanding
     x-realized-by:
       - application.service.graph-builder
       - application.service.layout-engine
@@ -29,7 +30,7 @@ model-data-management:
   documentation: Load, parse, and manage architecture model data from various sources
   properties:
     x-supports-goals:
-      - motivation.goal.visualize-architecture
+      - motivation.outcome.reduced-architectural-debt
     x-realized-by:
       - application.service.yaml-parser
       - application.service.json-schema-parser
@@ -47,7 +48,8 @@ documentation-export:
   documentation: Export architecture visualizations and reports in multiple formats
   properties:
     x-supports-goals:
-      - motivation.requirement.embedded-mode
+      - motivation.outcome.standardized-architecture-documentation
+      - motivation.outcome.increased-documentation-adoption
     x-realized-by:
       - application.service.business-export-service
       - application.service.motivation-export-service
@@ -63,6 +65,8 @@ external-model-integration:
       - application.service.git-hub-service
       - application.service.local-file-loader
       - application.service.demo-data-service
+    x-supports-goals:
+      - motivation.outcome.standardized-architecture-documentation
 architecture-analysis:
   id: business.service.architecture-analysis
   name: Architecture Analysis
@@ -72,6 +76,9 @@ architecture-analysis:
     x-realized-by:
       - application.service.impact-analysis-service
       - application.service.cross-layer-reference-resolver
+    x-supports-goals:
+      - motivation.outcome.faster-impact-analysis
+      - motivation.outcome.improved-architecture-understanding
 quality-assurance:
   id: business.service.quality-assurance
   name: Quality Assurance
@@ -89,3 +96,5 @@ quality-assurance:
       - application.service.refinement-loop-service
       - application.service.layout-parameters-service
       - application.service.optimization-strategies-service
+    x-supports-goals:
+      - motivation.outcome.reduced-architectural-debt

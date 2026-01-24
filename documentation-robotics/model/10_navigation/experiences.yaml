@@ -82,3 +82,55 @@ auth:
     path: /
     handles: token-extraction-and-storage
     redirects-to: requested-destination
+changeset-route:
+  id: navigation.experience.changeset-route
+  name: Changeset Route
+  type: experience
+  documentation: TanStack Router route component for changeset list and graph
+    views with WebSocket real-time updates
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/routes/ChangesetRoute.tsx
+            symbol: ChangesetRoute
+model-route:
+  id: navigation.experience.model-route
+  name: Model Route
+  type: experience
+  documentation: TanStack Router route component for model visualization with dual
+    graph/JSON views and layer filtering
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/routes/ModelRoute.tsx
+            symbol: ModelRoute
+spec-route:
+  id: navigation.experience.spec-route
+  name: Spec Route
+  type: experience
+  documentation: TanStack Router route component for specification viewer with
+    graph, JSON, and refinement views
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/routes/SpecRoute.tsx
+            symbol: SpecRoute
+auth-route:
+  id: navigation.experience.auth-route
+  name: Auth Route
+  type: experience
+  documentation: TanStack Router route component for magic link token
+    authentication and URL cleanup
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/routes/AuthRoute.tsx
+            symbol: AuthRoute

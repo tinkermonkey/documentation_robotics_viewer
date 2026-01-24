@@ -155,6 +155,7 @@ Isolated workspaces for safe experimentation:
 6. **Clean up**: `dr changeset delete "name"` - Permanently removes file
 
 **Deletion rules:**
+
 - Cannot delete active changeset (must deactivate first)
 - Recommended after changeset is applied and verified
 - Use `--force` flag to skip confirmation prompt
@@ -178,6 +179,7 @@ Isolated workspaces for safe experimentation:
 ✅ **After refactoring** - Update references to reflect code changes
 
 **When NOT needed:**
+
 - Pure architectural concepts with no implementation (e.g., high-level goals)
 - Placeholder elements for future work
 - Abstract patterns or templates
@@ -195,12 +197,12 @@ dr add <layer> <type> <id> --name "Name" \
 
 **Provenance Types:**
 
-| Type | When to Use | Example |
-|------|-------------|----------|
-| `extracted` | Automatically detected by parsing tools | Code analyzer found API endpoint |
-| `manual` | Human reviewed code and linked manually | You read code and added reference |
-| `inferred` | Determined through heuristics/patterns | Naming convention match |
-| `generated` | Created by code generation tool | Model-to-code generator output |
+| Type        | When to Use                             | Example                           |
+| ----------- | --------------------------------------- | --------------------------------- |
+| `extracted` | Automatically detected by parsing tools | Code analyzer found API endpoint  |
+| `manual`    | Human reviewed code and linked manually | You read code and added reference |
+| `inferred`  | Determined through heuristics/patterns  | Naming convention match           |
+| `generated` | Created by code generation tool         | Model-to-code generator output    |
 
 **Examples:**
 
@@ -508,12 +510,12 @@ $ dr validate --validate-links
 
 **IMPORTANT**: All examples below MUST include source tracking (`--source-file`, `--source-symbol`, `--source-provenance "extracted"`)
 
-| Framework   | Code Pattern                | CLI Command                                                                                     |
-| ----------- | --------------------------- | ----------------------------------------------------------------------------------------------- |
-| FastAPI     | `@app.post("/orders")`      | `dr add api operation create-order --name "Create Order" --source-file "src/api/orders.py" --source-symbol "create_order" --source-provenance "extracted" --property path="/orders" --property method="POST"` |
-| Express     | `router.post('/orders')`    | `dr add api operation create-order --name "Create Order" --source-file "src/routes/orders.js" --source-symbol "createOrder" --source-provenance "extracted" --property path="/orders" --property method="POST"` |
+| Framework   | Code Pattern                | CLI Command                                                                                                                                                                                                                       |
+| ----------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| FastAPI     | `@app.post("/orders")`      | `dr add api operation create-order --name "Create Order" --source-file "src/api/orders.py" --source-symbol "create_order" --source-provenance "extracted" --property path="/orders" --property method="POST"`                     |
+| Express     | `router.post('/orders')`    | `dr add api operation create-order --name "Create Order" --source-file "src/routes/orders.js" --source-symbol "createOrder" --source-provenance "extracted" --property path="/orders" --property method="POST"`                   |
 | Spring Boot | `@PostMapping("/orders")`   | `dr add api operation create-order --name "Create Order" --source-file "src/main/java/api/OrderController.java" --source-symbol "createOrder" --source-provenance "extracted" --property path="/orders" --property method="POST"` |
-| Django      | `def create_order(request)` | `dr add api operation create-order --name "Create Order" --source-file "api/views.py" --source-symbol "create_order" --source-provenance "extracted"`                                                    |
+| Django      | `def create_order(request)` | `dr add api operation create-order --name "Create Order" --source-file "api/views.py" --source-symbol "create_order" --source-provenance "extracted"`                                                                             |
 
 **Supported**: Python (FastAPI, Django, Flask), JavaScript (Express, NestJS), Java (Spring Boot), Go, C# (ASP.NET)
 
@@ -521,13 +523,13 @@ $ dr validate --validate-links
 
 **NOTE**: Add `--source-file "path/to/file" --source-symbol "SymbolName" --source-provenance "extracted"` to all commands
 
-| Code Element  | DR Layer    | CLI Example (add source tracking to all)                                  |
-| ------------- | ----------- | ------------------------------------------------------------------------- |
-| HTTP Route    | api         | `dr add api operation x --name "X" --source-file "..." --source-provenance "extracted"` |
-| Service Class | application | `dr add application service x --name "X" --source-file "..." --source-symbol "XClass" --source-provenance "extracted"` |
-| Pydantic/DTO  | data_model  | `dr add data_model object-schema x --name "X" --source-file "..." --source-symbol "XModel" --source-provenance "extracted"` |
-| ORM Model     | data_model  | `dr add data_model entity x --name "X" --source-file "..." --source-symbol "XEntity" --source-provenance "extracted"` |
-| DB Table      | datastore   | `dr add datastore table x --name "X" --source-file "migrations/xxx.sql" --source-provenance "extracted"` |
+| Code Element  | DR Layer    | CLI Example (add source tracking to all)                                                                                         |
+| ------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| HTTP Route    | api         | `dr add api operation x --name "X" --source-file "..." --source-provenance "extracted"`                                          |
+| Service Class | application | `dr add application service x --name "X" --source-file "..." --source-symbol "XClass" --source-provenance "extracted"`           |
+| Pydantic/DTO  | data_model  | `dr add data_model object-schema x --name "X" --source-file "..." --source-symbol "XModel" --source-provenance "extracted"`      |
+| ORM Model     | data_model  | `dr add data_model entity x --name "X" --source-file "..." --source-symbol "XEntity" --source-provenance "extracted"`            |
+| DB Table      | datastore   | `dr add datastore table x --name "X" --source-file "migrations/xxx.sql" --source-provenance "extracted"`                         |
 | UI Component  | ux          | `dr add ux component x --name "X" --source-file "components/X.tsx" --source-symbol "XComponent" --source-provenance "extracted"` |
 
 ### Confidence & Reporting

@@ -17,6 +17,9 @@ documentation:
   properties:
     x-realized-by:
       - business.service.architecture-analysis
+    x-supports-goals:
+      - motivation.outcome.standardized-architecture-documentation
+      - motivation.outcome.increased-documentation-adoption
 export:
   id: business.capability.export
   name: Export
@@ -25,6 +28,8 @@ export:
   properties:
     x-realized-by:
       - business.service.documentation-export
+    x-supports-goals:
+      - motivation.outcome.standardized-architecture-documentation
 model-authoring:
   id: business.capability.model-authoring
   name: Model Authoring
@@ -33,6 +38,8 @@ model-authoring:
   properties:
     x-realized-by:
       - business.service.model-data-management
+    x-supports-goals:
+      - motivation.outcome.reduced-architectural-debt
 collaboration:
   id: business.capability.collaboration
   name: Collaboration
@@ -41,6 +48,8 @@ collaboration:
   properties:
     x-realized-by:
       - business.service.external-model-integration
+    x-supports-goals:
+      - motivation.outcome.enhanced-cross-team-collaboration
 version-control:
   id: business.capability.version-control
   name: Version Control
@@ -49,6 +58,8 @@ version-control:
   properties:
     x-realized-by:
       - business.service.model-data-management
+    x-supports-goals:
+      - motivation.outcome.reduced-architectural-debt
 search-discovery:
   id: business.capability.search-discovery
   name: Search & Discovery
@@ -57,6 +68,9 @@ search-discovery:
   properties:
     x-realized-by:
       - business.service.architecture-analysis
+    x-supports-goals:
+      - motivation.goal.visualize-architecture
+      - motivation.outcome.faster-impact-analysis
 reporting:
   id: business.capability.reporting
   name: Reporting
@@ -67,6 +81,8 @@ reporting:
     x-realized-by:
       - business.service.documentation-export
       - business.service.architecture-analysis
+    x-supports-goals:
+      - motivation.outcome.improved-architecture-understanding
 integration:
   id: business.capability.integration
   name: Integration
@@ -75,6 +91,8 @@ integration:
   properties:
     x-realized-by:
       - business.service.external-model-integration
+    x-supports-goals:
+      - motivation.outcome.standardized-architecture-documentation
 administration:
   id: business.capability.administration
   name: Administration
@@ -83,3 +101,5 @@ administration:
   properties:
     x-realized-by:
       - business.service.quality-assurance
+    x-supports-goals:
+      - motivation.outcome.enhanced-cross-team-collaboration

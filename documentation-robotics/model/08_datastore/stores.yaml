@@ -12,6 +12,12 @@ model-store:
       - data_model.entity.meta-model
       - data_model.entity.layer
       - data_model.entity.model-element
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/stores/modelStore.ts
+            symbol: modelStore
 element-store:
   id: datastore.store.element-store
   name: Element Store
@@ -24,6 +30,12 @@ element-store:
     state-schema: data_model.object-schema.element-store-state
     x-accesses:
       - data_model.entity.model-element
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/stores/elementStore.ts
+            symbol: elementStore
 layer-store:
   id: datastore.store.layer-store
   name: Layer Store
@@ -35,6 +47,12 @@ layer-store:
     state-schema: data_model.object-schema.layer-store-state
     x-accesses:
       - data_model.entity.layer
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/stores/layerStore.ts
+            symbol: layerStore
 layout-preferences-store:
   id: datastore.store.layout-preferences-store
   name: Layout Preferences Store
@@ -46,6 +64,12 @@ layout-preferences-store:
     state-schema: data_model.object-schema.layout-preferences-state
     x-accesses:
       - data_model.object-schema.layout-preset
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/stores/layoutPreferencesStore.ts
+            symbol: layoutPreferencesStore
 business-layer-store:
   id: datastore.store.business-layer-store
   name: Business Layer Store
@@ -60,6 +84,12 @@ business-layer-store:
       - data_model.entity.business-graph
       - data_model.entity.business-service
       - data_model.entity.business-capability
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/stores/businessLayerStore.ts
+            symbol: businessLayerStore
 auth-store:
   id: datastore.store.auth-store
   name: Auth Store
@@ -72,6 +102,12 @@ auth-store:
     state-schema: data_model.object-schema.auth-state
     x-accesses:
       - data_model.object-schema.auth-state
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/stores/authStore.ts
+            symbol: authStore
 connection-store:
   id: datastore.store.connection-store
   name: Connection Store
@@ -84,6 +120,12 @@ connection-store:
     state-schema: data_model.object-schema.connection-state
     x-accesses:
       - data_model.object-schema.connection-state
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/stores/connectionStore.ts
+            symbol: connectionStore
 changeset-store:
   id: datastore.store.changeset-store
   name: Changeset Store
@@ -98,6 +140,12 @@ changeset-store:
       - data_model.object-schema.changeset-summary
       - data_model.object-schema.changeset-details
       - datastore.store.local-fs
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/stores/changesetStore.ts
+            symbol: changesetStore
 annotation-store:
   id: datastore.store.annotation-store
   name: Annotation Store
@@ -110,6 +158,12 @@ annotation-store:
     state-schema: data_model.object-schema.annotation-store-state
     x-accesses:
       - data_model.object-schema.annotation
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/stores/annotationStore.ts
+            symbol: annotationStore
 view-preference-store:
   id: datastore.store.view-preference-store
   name: View Preference Store
@@ -122,3 +176,9 @@ view-preference-store:
     state-schema: data_model.object-schema.view-preferences-state
     x-accesses:
       - data_model.object-schema.view-preferences
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/stores/viewPreferenceStore.ts
+            symbol: viewPreferenceStore

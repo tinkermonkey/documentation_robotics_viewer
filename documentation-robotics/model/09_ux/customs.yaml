@@ -19,6 +19,13 @@ embedded-layout:
   type: custom
   documentation: Main application shell with header, main tab navigation, sub-tab
     navigation, and connection status indicator
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/EmbeddedLayout.tsx
+            symbol: EmbeddedLayout
 graph-viewer:
   id: ux.component.graph-viewer
   name: GraphViewer
@@ -95,6 +102,13 @@ spec-graph-view:
   type: custom
   documentation: Graph visualization of DR specification structure showing entity
     relationships
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/SpecGraphView.tsx
+            symbol: SpecGraphView
 changeset-graph-view:
   id: ux.component.changeset-graph-view
   name: ChangesetGraphView
@@ -113,6 +127,13 @@ sub-tab-navigation:
   name: SubTabNavigation
   type: custom
   documentation: Secondary navigation tabs for view switching (Graph/JSON, Graph/List)
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/SubTabNavigation.tsx
+            symbol: SubTabNavigation
 c4-breadcrumb-nav:
   id: ux.component.c4-breadcrumb-nav
   name: C4BreadcrumbNav
@@ -131,6 +152,13 @@ motivation-breadcrumb:
   name: MotivationBreadcrumb
   type: custom
   documentation: Breadcrumb navigation for motivation layer with element type indicators
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/MotivationBreadcrumb.tsx
+            symbol: MotivationBreadcrumb
 model-layers-sidebar:
   id: ux.component.model-layers-sidebar
   name: ModelLayersSidebar
@@ -148,6 +176,13 @@ spec-schemas-sidebar:
   name: SpecSchemasSidebar
   type: custom
   documentation: Schema browser sidebar for navigating DR specification entity types
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/SpecSchemasSidebar.tsx
+            symbol: SpecSchemasSidebar
 c4-right-sidebar:
   id: ux.component.c4-right-sidebar
   name: C4RightSidebar
@@ -167,6 +202,13 @@ motivation-right-sidebar:
   type: custom
   documentation: Comprehensive control sidebar for motivation view with filters,
     controls, inspector, and export options
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/MotivationRightSidebar.tsx
+            symbol: MotivationRightSidebar
 annotation-panel:
   id: ux.component.annotation-panel
   name: AnnotationPanel
@@ -197,86 +239,198 @@ node-details-panel:
   type: custom
   documentation: Detailed information panel for selected graph node showing
     properties and metadata
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/NodeDetailsPanel.tsx
+            symbol: NodeDetailsPanel
 graph-statistics-panel:
   id: ux.component.graph-statistics-panel
   name: GraphStatisticsPanel
   type: custom
   documentation: Statistics panel showing element counts, layer distribution, and
     model metrics
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/GraphStatisticsPanel.tsx
+            symbol: GraphStatisticsPanel
 highlighted-path-panel:
   id: ux.component.highlighted-path-panel
   name: HighlightedPathPanel
   type: custom
   documentation: Panel showing currently highlighted JSON path (3 second auto-clear)
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/HighlightedPathPanel.tsx
+            symbol: HighlightedPathPanel
 layer-types-legend:
   id: ux.component.layer-types-legend
   name: LayerTypesLegend
   type: custom
   documentation: Visual legend showing element types and their colors for the current model
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/LayerTypesLegend.tsx
+            symbol: LayerTypesLegend
 c4-control-panel:
   id: ux.component.c4-control-panel
   name: C4ControlPanel
   type: custom
   documentation: Control panel for C4 view with layout selection, view level
     navigation, and view controls
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/C4ControlPanel.tsx
+            symbol: C4ControlPanel
 c4-filter-panel:
   id: ux.component.c4-filter-panel
   name: C4FilterPanel
   type: custom
   documentation: Filter panel for C4 view with container type and technology stack filtering
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/C4FilterPanel.tsx
+            symbol: C4FilterPanel
 c4-inspector-panel:
   id: ux.component.c4-inspector-panel
   name: C4InspectorPanel
   type: custom
   documentation: Detailed inspector panel for selected C4 element with metadata and actions
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/C4InspectorPanel.tsx
+            symbol: C4InspectorPanel
 motivation-control-panel:
   id: ux.component.motivation-control-panel
   name: MotivationControlPanel
   type: custom
   documentation: Control panel for motivation view with layout selection and view controls
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/MotivationControlPanel.tsx
+            symbol: MotivationControlPanel
 motivation-filter-panel:
   id: ux.component.motivation-filter-panel
   name: MotivationFilterPanel
   type: custom
   documentation: Filter panel for motivation view with element type and
     relationship type filtering
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/MotivationFilterPanel.tsx
+            symbol: MotivationFilterPanel
 motivation-inspector-panel:
   id: ux.component.motivation-inspector-panel
   name: MotivationInspectorPanel
   type: custom
   documentation: Detailed inspector panel for selected motivation element with
     relationship analysis
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/MotivationInspectorPanel.tsx
+            symbol: MotivationInspectorPanel
 motivation-context-menu:
   id: ux.component.motivation-context-menu
   name: MotivationContextMenu
   type: custom
   documentation: Right-click context menu for motivation graph nodes with
     navigation and analysis actions
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/MotivationContextMenu.tsx
+            symbol: MotivationContextMenu
 connection-status:
   id: ux.component.connection-status
   name: ConnectionStatus
   type: custom
   documentation: WebSocket connection status indicator with reconnection feedback
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/ConnectionStatus.tsx
+            symbol: ConnectionStatus
 graph-toolbar:
   id: ux.component.graph-toolbar
   name: GraphToolbar
   type: custom
   documentation: Floating toolbar for graph view controls (zoom, fit, reset)
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/GraphToolbar.tsx
+            symbol: GraphToolbar
 minimap:
   id: ux.component.minimap
   name: MiniMap
   type: custom
   documentation: Mini-map overview of graph with viewport indicator
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/MiniMap.tsx
+            symbol: MiniMap
 operation-legend:
   id: ux.component.operation-legend
   name: OperationLegend
   type: custom
   documentation: Legend showing changeset operation types (added, modified, removed)
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/OperationLegend.tsx
+            symbol: OperationLegend
 error-boundary:
   id: ux.component.error-boundary
   name: ErrorBoundary
   type: custom
   documentation: React error boundary for graceful error handling and display
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/ErrorBoundary.tsx
+            symbol: ErrorBoundary
 c4-view:
   id: ux.view.c4-view
   name: C4 View

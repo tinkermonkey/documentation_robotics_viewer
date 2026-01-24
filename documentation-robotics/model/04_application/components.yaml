@@ -18,6 +18,10 @@ viewer-app:
         locations:
           - file: src/main.tsx
             symbol: App
+    x-tested-by:
+      - testing.test-suite.embedded-app
+      - testing.test-suite.overview-panel-styling
+      - testing.test-suite.sidebar-consolidation
 graph-view:
   id: application.component.graph-view
   name: Graph View
@@ -31,7 +35,10 @@ graph-view:
       - technology.library.react-flow
       - ux.component.space-mouse-handler
     x-monitored-by:
+      - apm.metric.render-time
       - apm.metric.interaction-fps
+      - apm.metric.node-render-count
+      - apm.metric.edge-render-count
       - apm.metric.initialization-time
     source:
       reference:
@@ -39,6 +46,10 @@ graph-view:
         locations:
           - file: src/core/components/GraphViewer.tsx
             symbol: GraphViewer
+    x-tested-by:
+      - testing.test-suite.embedded-graph-rendering
+      - testing.test-suite.zoom-to-layer
+      - testing.test-suite.graph-readability-integration
 inspector-panel:
   id: application.component.inspector-panel
   name: Inspector Panel
@@ -68,6 +79,11 @@ motivation-graph-view:
         locations:
           - file: src/apps/embedded/components/MotivationGraphView.tsx
             symbol: MotivationGraphView
+    x-monitored-by:
+      - apm.metric.render-time
+      - apm.metric.filter-latency
+    x-tested-by:
+      - testing.test-suite.embedded-motivation-view
 business-layer-view:
   id: application.component.business-layer-view
   name: Business Layer View
@@ -85,6 +101,11 @@ business-layer-view:
         locations:
           - file: src/core/components/businessLayer/BusinessLayerView.tsx
             symbol: BusinessLayerView
+    x-monitored-by:
+      - apm.metric.render-time
+      - apm.metric.filter-latency
+    x-tested-by:
+      - testing.test-suite.business-layer-integration
 c4-graph-view:
   id: application.component.c4-graph-view
   name: C4 Graph View
@@ -101,6 +122,12 @@ c4-graph-view:
         locations:
           - file: src/apps/embedded/components/C4GraphView.tsx
             symbol: C4GraphView
+    x-monitored-by:
+      - apm.metric.render-time
+      - apm.metric.filter-latency
+    x-tested-by:
+      - testing.test-suite.c4-architecture-view
+      - testing.test-suite.c4-accessibility
 changeset-graph-view:
   id: application.component.changeset-graph-view
   name: Changeset Graph View
@@ -153,6 +180,8 @@ error-boundary:
         locations:
           - file: src/apps/embedded/components/shared/ErrorState.tsx
             symbol: ErrorState
+    x-monitored-by:
+      - apm.metric.error-boundary
 view-tab-switcher:
   id: application.component.view-tab-switcher
   name: View Tab Switcher
@@ -166,6 +195,8 @@ view-tab-switcher:
         locations:
           - file: src/apps/embedded/components/shared/BreadcrumbNav.tsx
             symbol: BreadcrumbNav
+    x-tested-by:
+      - testing.test-suite.embedded-dual-view
 motivation-breadcrumb:
   id: application.component.motivation-breadcrumb
   name: Motivation Breadcrumb
@@ -202,6 +233,8 @@ layer-panel:
         locations:
           - file: src/apps/embedded/components/ModelLayersSidebar.tsx
             symbol: ModelLayersSidebar
+    x-tested-by:
+      - testing.test-suite.layer-colors
 spec-viewer:
   id: application.component.spec-viewer
   name: Spec Viewer
@@ -250,6 +283,9 @@ connection-status:
         locations:
           - file: src/apps/embedded/components/ConnectionStatus.tsx
             symbol: ConnectionStatus
+    x-monitored-by:
+      - apm.metric.websocket-reconnections
+      - apm.metric.websocket-errors
 changeset-list:
   id: application.component.changeset-list
   name: Changeset List

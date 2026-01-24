@@ -50,16 +50,19 @@ dr update <element-id> --clear-source-reference
 ### When to Use Source Tracking
 
 **ALWAYS use during:**
+
 - ✅ Code extraction/analysis
 - ✅ Documenting existing systems
 - ✅ Creating elements from code
 - ✅ After code refactoring
 
 **RECOMMENDED for:**
+
 - ✅ Manual element creation (when code exists)
 - ✅ Updating elements after code changes
 
 **NOT needed for:**
+
 - ❌ Pure architectural concepts (no implementation)
 - ❌ Future work placeholders
 - ❌ Abstract patterns
@@ -69,11 +72,13 @@ dr update <element-id> --clear-source-reference
 #### Required Fields
 
 **`--source-file`**: Path to source file (relative to repository root)
+
 - Use **relative paths**: `src/api/orders.ts` not `/Users/me/project/src/api/orders.ts`
 - From **repository root**: Not from current directory
 - **Forward slashes**: Even on Windows (`src/api/orders.ts`)
 
 **`--source-provenance`**: How the reference was created
+
 - `extracted` - Automatically detected by parsing/analysis tools
 - `manual` - Human reviewed code and linked manually
 - `inferred` - Determined through heuristics/patterns
@@ -82,39 +87,46 @@ dr update <element-id> --clear-source-reference
 #### Optional Fields
 
 **`--source-symbol`**: Specific symbol name in the file
+
 - Function name: `createOrder`
 - Class name: `OrderService`
 - Variable name: `orderSchema`
 - Method name: `OrderController.create`
 
 **`--source-repo-remote`**: Git repository URL
+
 - Must be paired with `--source-repo-commit`
 - Example: `https://github.com/myorg/myapp.git`
 
 **`--source-repo-commit`**: Full 40-character commit SHA
+
 - Must be paired with `--source-repo-remote`
 - Example: `5a7b3c9d1e2f4a6b8c0d2e4f6a8b0c2d4e6f8a0b`
 
 ### Provenance Type Selection
 
 **Use `extracted` when:**
+
 - Running automated code analysis
 - Using AST parsers or static analysis
 - Tool automatically detects elements
 - You are the extraction tool
 
 **Use `manual` when:**
+
 - You read the code yourself
 - User tells you which file/symbol
 - Adding reference after the fact
 - Updating/correcting existing reference
 
 **Use `inferred` when:**
+
 - Matching by naming conventions
 - Using heuristics (e.g., "orders.py" → "Order" entity)
 - Not directly parsed but pattern-matched
 
 **Use `generated` when:**
+
 - Code was generated from model
 - Reverse engineering from generated code
 - Model-to-code transformation
@@ -124,6 +136,7 @@ dr update <element-id> --clear-source-reference
 #### Pattern 1: Extract API Endpoint
 
 **Code:**
+
 ```python
 # src/api/orders.py
 @app.post("/api/v1/orders")
@@ -132,6 +145,7 @@ async def create_order(data: OrderCreate):
 ```
 
 **Command:**
+
 ```bash
 dr add api operation create-order \
   --name "Create Order" \
@@ -145,6 +159,7 @@ dr add api operation create-order \
 #### Pattern 2: Extract Service Class
 
 **Code:**
+
 ```typescript
 // src/services/order-service.ts
 export class OrderService {
@@ -155,6 +170,7 @@ export class OrderService {
 ```
 
 **Command:**
+
 ```bash
 dr add application service order-service \
   --name "Order Service" \
@@ -166,6 +182,7 @@ dr add application service order-service \
 #### Pattern 3: Extract Data Model
 
 **Code:**
+
 ```python
 # src/models/order.py
 class Order(BaseModel):
@@ -175,6 +192,7 @@ class Order(BaseModel):
 ```
 
 **Command:**
+
 ```bash
 dr add data_model object-schema order \
   --name "Order" \
@@ -188,6 +206,7 @@ dr add data_model object-schema order \
 **User**: "Add an API endpoint for user login at /auth/login in our auth.py file"
 
 **Command:**
+
 ```bash
 dr add api operation login \
   --name "User Login" \
@@ -201,6 +220,7 @@ dr add api operation login \
 #### Pattern 5: Add Git Context
 
 **When you have git information:**
+
 ```bash
 dr add security policy auth-validation \
   --name "Authentication Validation" \
@@ -214,6 +234,7 @@ dr add security policy auth-validation \
 ### Workflow: Extraction with Source Tracking
 
 **Step 1: Analyze codebase**
+
 ```bash
 # Use grep, find, or read source files
 grep -r "@app.post" src/api/
@@ -221,11 +242,13 @@ find src/services -name "*service.py"
 ```
 
 **Step 2: Create changeset**
+
 ```bash
 dr changeset create "extract-api-$(date +%s)"
 ```
 
 **Step 3: Extract with source tracking**
+
 ```bash
 # For each discovered element:
 dr add api operation <id> \
@@ -237,12 +260,14 @@ dr add api operation <id> \
 ```
 
 **Step 4: Validate**
+
 ```bash
 dr validate --layer api
 dr validate --validate-links
 ```
 
 **Step 5: Review and apply**
+
 ```bash
 dr changeset diff
 dr changeset apply
@@ -274,16 +299,19 @@ dr update api.operation.create-order \
 ### Searching by Source File
 
 **Find all elements from a file:**
+
 ```bash
 dr search --source-file "src/api/orders.py"
 ```
 
 **With layer filter:**
+
 ```bash
 dr search --source-file "src/api/orders.py" --layer api
 ```
 
 **With type filter:**
+
 ```bash
 dr search --source-file "src/services/order.ts" --type service
 ```
@@ -297,6 +325,7 @@ dr show api.operation.create-order
 ```
 
 **Example output:**
+
 ```
 Element: api.operation.create-order
 Layer:   api
@@ -316,27 +345,35 @@ Source Reference:
 ### Error Handling
 
 **Error: Missing --source-file when other options provided**
+
 ```
 Error: --source-file is required when specifying source reference
 ```
+
 **Fix**: Add `--source-file "path/to/file"`
 
 **Error: Missing --source-provenance**
+
 ```
 Error: --source-provenance is required when specifying source reference
 ```
+
 **Fix**: Add `--source-provenance "extracted"` (or manual/inferred/generated)
 
 **Error: Invalid provenance type**
+
 ```
 Error: Invalid provenance type 'auto'. Must be: extracted, manual, inferred, generated
 ```
+
 **Fix**: Use one of the valid provenance types
 
 **Error: Repository options require both URL and commit**
+
 ```
 Error: Both --source-repo-remote and --source-repo-commit are required
 ```
+
 **Fix**: Provide both or neither
 
 ### Best Practices
@@ -401,6 +438,7 @@ dr update <element-id> --clear-source-reference
 ### Integration with Other Workflows
 
 **With changesets:**
+
 ```bash
 dr changeset create "extract-source"
 # Add elements with source tracking
@@ -408,12 +446,14 @@ dr changeset apply
 ```
 
 **With validation:**
+
 ```bash
 # Source references don't affect validation
 dr validate --strict
 ```
 
 **With relationships:**
+
 ```bash
 # Link elements that reference related code
 dr add api operation create-order --source-file "api.py" ...

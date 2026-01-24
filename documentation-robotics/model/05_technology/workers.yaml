@@ -1,0 +1,14 @@
+layout-worker:
+  id: technology.worker.layout-worker
+  name: Layout Worker
+  type: worker
+  documentation: Web Worker for off-thread layout calculations using Dagre
+    algorithm for graphs with >100 nodes to maintain UI responsiveness
+  properties:
+    runtime: Web Worker API
+    algorithm: Dagre
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: public/workers/layoutWorker.js

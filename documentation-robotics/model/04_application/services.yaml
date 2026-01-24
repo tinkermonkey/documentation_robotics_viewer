@@ -19,6 +19,9 @@ graph-builder:
         locations:
           - file: src/core/services/businessGraphBuilder.ts
             symbol: buildGraph
+    x-monitored-by:
+      - apm.metric.render-time
+      - apm.metric.initialization-time
 layout-engine:
   id: application.service.layout-engine
   name: Layout Engine
@@ -32,8 +35,14 @@ layout-engine:
       - technology.library.dagre
       - technology.library.elkjs
     x-monitored-by:
-      - apm.metric.initialization-time
-      - apm.metric.interaction-fps
+      - apm.metric.layout-calculation-time
+      - apm.metric.layout-engine-errors
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/layerLayoutConfig.ts
+            symbol: getLayerLayoutConfig
 node-transformer:
   id: application.service.node-transformer
   name: Node Transformer
@@ -48,6 +57,8 @@ node-transformer:
         locations:
           - file: src/core/services/nodeTransformer.ts
             symbol: transformElement
+    x-monitored-by:
+      - apm.metric.render-time
 reference-server:
   id: application.service.reference-server
   name: Reference Server
@@ -78,6 +89,9 @@ business-export-service:
         locations:
           - file: src/core/services/businessExportService.ts
             symbol: exportBusinessLayer
+    x-monitored-by:
+      - apm.metric.export-generation-time
+      - apm.metric.export-errors
 motivation-export-service:
   id: application.service.motivation-export-service
   name: Motivation Export Service
@@ -96,6 +110,9 @@ motivation-export-service:
         locations:
           - file: src/apps/embedded/services/motivationExportService.ts
             symbol: exportMotivationLayer
+    x-monitored-by:
+      - apm.metric.export-generation-time
+      - apm.metric.export-errors
 c4-export-service:
   id: application.service.c4-export-service
   name: C4 Export Service
@@ -114,6 +131,9 @@ c4-export-service:
         locations:
           - file: src/apps/embedded/services/c4ExportService.ts
             symbol: exportC4View
+    x-monitored-by:
+      - apm.metric.export-generation-time
+      - apm.metric.export-errors
 business-graph-builder:
   id: application.service.business-graph-builder
   name: Business Graph Builder
@@ -132,6 +152,8 @@ business-graph-builder:
         locations:
           - file: src/core/services/businessGraphBuilder.ts
             symbol: buildBusinessGraph
+    x-tested-by:
+      - testing.test-suite.business-graph-builder-unit
 business-layer-parser:
   id: application.service.business-layer-parser
   name: Business Layer Parser
@@ -145,6 +167,9 @@ business-layer-parser:
         locations:
           - file: src/core/services/businessLayerParser.ts
             symbol: parseBusinessLayer
+    x-tested-by:
+      - testing.test-suite.business-layer-parser-unit
+      - testing.test-suite.business-layer-integration
 yaml-parser:
   id: application.service.yaml-parser
   name: YAML Parser
@@ -167,6 +192,10 @@ yaml-parser:
         locations:
           - file: src/core/services/yamlParser.ts
             symbol: parseYAMLModel
+    x-monitored-by:
+      - apm.metric.model-parse-time
+      - apm.metric.parsing-errors
+      - apm.metric.validation-errors
 json-schema-parser:
   id: application.service.json-schema-parser
   name: JSON Schema Parser
@@ -187,6 +216,9 @@ json-schema-parser:
         locations:
           - file: src/core/services/jsonSchemaParser.ts
             symbol: parseJSONSchema
+    x-monitored-by:
+      - apm.metric.model-parse-time
+      - apm.metric.parsing-errors
 c4-parser:
   id: application.service.c4-parser
   name: C4 Parser
@@ -200,6 +232,12 @@ c4-parser:
         locations:
           - file: src/apps/embedded/services/c4Parser.ts
             symbol: parseC4Model
+    x-monitored-by:
+      - apm.metric.model-parse-time
+      - apm.metric.parsing-errors
+    x-tested-by:
+      - testing.test-suite.c4-parser-unit
+      - testing.test-suite.c4-parser-integration
 cross-layer-reference-resolver:
   id: application.service.cross-layer-reference-resolver
   name: Cross-Layer Reference Resolver
@@ -212,6 +250,8 @@ cross-layer-reference-resolver:
         locations:
           - file: src/core/services/crossLayerReferenceResolver.ts
             symbol: resolveCrossLayerReferences
+    x-tested-by:
+      - testing.test-suite.cross-layer-reference-resolver-unit
 data-loader:
   id: application.service.data-loader
   name: Data Loader
@@ -219,8 +259,9 @@ data-loader:
   documentation: Orchestrates model loading from JSON Schema, YAML instances, or demo data
   properties:
     x-monitored-by:
+      - apm.metric.model-parse-time
+      - apm.metric.parsing-errors
       - apm.metric.initialization-time
-      - apm.metric.embedding-success-rate
     x-uses:
       - application.service.yaml-parser
       - application.service.json-schema-parser
@@ -262,6 +303,10 @@ impact-analysis-service:
         locations:
           - file: src/core/services/impactAnalysisService.ts
             symbol: analyzeImpact
+    x-monitored-by:
+      - apm.metric.similarity-calculation-time
+    x-tested-by:
+      - testing.test-suite.impact-analysis-service-unit
 motivation-graph-builder:
   id: application.service.motivation-graph-builder
   name: Motivation Graph Builder
@@ -277,6 +322,8 @@ motivation-graph-builder:
         locations:
           - file: src/apps/embedded/services/motivationGraphBuilder.ts
             symbol: buildMotivationGraph
+    x-tested-by:
+      - testing.test-suite.motivation-graph-builder-unit
 motivation-graph-transformer:
   id: application.service.motivation-graph-transformer
   name: Motivation Graph Transformer
@@ -289,6 +336,8 @@ motivation-graph-transformer:
         locations:
           - file: src/apps/embedded/services/motivationGraphTransformer.ts
             symbol: transformMotivationGraph
+    x-tested-by:
+      - testing.test-suite.motivation-graph-transformer-unit
 c4-view-transformer:
   id: application.service.c4-view-transformer
   name: C4 View Transformer
@@ -302,6 +351,9 @@ c4-view-transformer:
         locations:
           - file: src/apps/embedded/services/c4ViewTransformer.ts
             symbol: transformC4View
+    x-tested-by:
+      - testing.test-suite.c4-view-transformer-unit
+      - testing.test-suite.c4-parser-integration
 reference-diagram-service:
   id: application.service.reference-diagram-service
   name: Reference Diagram Service
@@ -314,6 +366,9 @@ reference-diagram-service:
         locations:
           - file: src/core/services/reference/referenceDiagramService.ts
             symbol: ReferenceDiagramService
+    x-tested-by:
+      - testing.test-suite.reference-diagram-service-unit
+      - testing.test-suite.reference-diagram-integration
 graph-readability-service:
   id: application.service.graph-readability-service
   name: Graph Readability Service
@@ -326,11 +381,21 @@ graph-readability-service:
         locations:
           - file: src/core/services/metrics/graphReadabilityService.ts
             symbol: calculateReadability
+    x-tested-by:
+      - testing.test-suite.graph-readability-unit
+      - testing.test-suite.graph-readability-integration
 image-similarity-service:
   id: application.service.image-similarity-service
   name: Image Similarity Service
   type: service
   documentation: Compares screenshots using SSIM and perceptual hash algorithms
+  properties:
+    x-monitored-by:
+      - apm.metric.similarity-calculation-time
+      - apm.metric.embedding-success-rate
+    x-tested-by:
+      - testing.test-suite.image-similarity-unit
+      - testing.test-suite.visual-similarity-integration
 screenshot-service:
   id: application.service.screenshot-service
   name: Screenshot Service
@@ -343,11 +408,22 @@ screenshot-service:
         locations:
           - file: src/core/services/comparison/screenshotService.ts
             symbol: captureScreenshot
+    x-monitored-by:
+      - apm.metric.screenshot-capture-time
+    x-tested-by:
+      - testing.test-suite.visual-comparison-tools-unit
+      - testing.test-suite.visual-similarity-integration
 quality-score-service:
   id: application.service.quality-score-service
   name: Quality Score Service
   type: service
   documentation: Calculates composite quality scores for graph layouts
+  properties:
+    x-monitored-by:
+      - apm.metric.quality-score-calculation-time
+    x-tested-by:
+      - testing.test-suite.extended-quality-metrics-unit
+      - testing.test-suite.quality-regression-integration
 heatmap-service:
   id: application.service.heatmap-service
   name: Heatmap Service
@@ -372,6 +448,8 @@ metrics-history-service:
         locations:
           - file: src/core/services/metrics/metricsHistoryService.ts
             symbol: MetricsHistoryService
+    x-tested-by:
+      - testing.test-suite.quality-regression-integration
 feedback-to-parameter-service:
   id: application.service.feedback-to-parameter-service
   name: Feedback to Parameter Service
@@ -384,6 +462,8 @@ feedback-to-parameter-service:
         locations:
           - file: src/apps/embedded/services/refinement/feedbackToParameterService.ts
             symbol: convertFeedbackToParameters
+    x-tested-by:
+      - testing.test-suite.feedback-to-parameter-unit
 local-file-loader:
   id: application.service.local-file-loader
   name: Local File Loader
@@ -444,6 +524,9 @@ spec-parser-service:
         locations:
           - file: src/core/services/specParser.ts
             symbol: parseSpec
+    x-monitored-by:
+      - apm.metric.validation-time
+      - apm.metric.validation-errors
 model-store:
   id: application.service.model-store
   name: Model Store
@@ -468,6 +551,10 @@ model-store:
         locations:
           - file: src/core/stores/modelStore.ts
             symbol: modelStore
+    x-monitored-by:
+      - apm.metric.memory-usage
+      - apm.metric.initialization-time
+      - apm.metric.model-parse-time
 annotation-store:
   id: application.service.annotation-store
   name: Annotation Store
@@ -488,6 +575,9 @@ annotation-store:
         locations:
           - file: src/apps/embedded/stores/annotationStore.ts
             symbol: annotationStore
+    x-monitored-by:
+      - apm.metric.annotation-load-time
+      - apm.metric.websocket-latency
 changeset-store:
   id: application.service.changeset-store
   name: Changeset Store
@@ -511,6 +601,8 @@ changeset-store:
         locations:
           - file: src/apps/embedded/stores/changesetStore.ts
             symbol: changesetStore
+    x-monitored-by:
+      - apm.metric.changeset-load-time
 auth-store:
   id: application.service.auth-store
   name: Auth Store
@@ -542,6 +634,16 @@ connection-store:
       - data_model.object-schema.connection-state
     x-persists-to:
       - datastore.store.connection-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/stores/connectionStore.ts
+            symbol: connectionStore
+    x-monitored-by:
+      - apm.metric.websocket-latency
+      - apm.metric.websocket-reconnections
+      - apm.metric.websocket-errors
 view-preference-store:
   id: application.service.view-preference-store
   name: View Preference Store
@@ -623,6 +725,9 @@ layout-preferences-store:
         locations:
           - file: src/core/stores/layoutPreferencesStore.ts
             symbol: layoutPreferencesStore
+    x-tested-by:
+      - testing.test-suite.layout-preferences-unit
+      - testing.test-suite.preference-persistence-integration
 business-layer-store:
   id: application.service.business-layer-store
   name: Business Layer Store
@@ -636,6 +741,12 @@ business-layer-store:
       - data_model.object-schema.business-layer-store-state
     x-persists-to:
       - datastore.store.business-layer-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/stores/businessLayerStore.ts
+            symbol: businessLayerStore
 dagre-layout-engine:
   id: application.service.dagre-layout-engine
   name: Dagre Layout Engine
@@ -652,6 +763,12 @@ dagre-layout-engine:
         locations:
           - file: src/core/services/layerLayoutConfig.ts
             symbol: dagreLayout
+    x-monitored-by:
+      - apm.metric.layout-calculation-time
+      - apm.metric.layout-engine-errors
+    x-tested-by:
+      - testing.test-suite.third-party-engines-unit
+      - testing.test-suite.layout-engine-workflow-integration
 d3-force-layout-engine:
   id: application.service.d3-force-layout-engine
   name: D3 Force Layout Engine
@@ -669,6 +786,9 @@ d3-force-layout-engine:
         locations:
           - file: src/core/services/layerLayoutConfig.ts
             symbol: d3ForceLayout
+    x-monitored-by:
+      - apm.metric.layout-calculation-time
+      - apm.metric.layout-engine-errors
 elk-layout-engine:
   id: application.service.elk-layout-engine
   name: ELK Layout Engine
@@ -686,6 +806,11 @@ elk-layout-engine:
         locations:
           - file: src/core/services/layerLayoutConfig.ts
             symbol: elkLayout
+    x-monitored-by:
+      - apm.metric.layout-calculation-time
+      - apm.metric.layout-engine-errors
+    x-tested-by:
+      - testing.test-suite.third-party-engines-unit
 graphviz-layout-engine:
   id: application.service.graphviz-layout-engine
   name: Graphviz Layout Engine
@@ -702,6 +827,8 @@ graphviz-layout-engine:
         locations:
           - file: src/core/services/layerLayoutConfig.ts
             symbol: graphvizLayout
+    x-tested-by:
+      - testing.test-suite.third-party-engines-unit
 layout-engine-registry:
   id: application.service.layout-engine-registry
   name: Layout Engine Registry
@@ -717,6 +844,9 @@ layout-engine-registry:
         locations:
           - file: src/core/services/layerLayoutConfig.ts
             symbol: LayoutEngineRegistry
+    x-tested-by:
+      - testing.test-suite.layout-engine-interface-unit
+      - testing.test-suite.layout-engine-workflow-integration
 semantic-zoom-controller:
   id: application.service.semantic-zoom-controller
   name: Semantic Zoom Controller
@@ -745,6 +875,8 @@ refinement-loop-service:
       - application.service.optimization-strategies-service
       - application.service.quality-score-service
       - application.service.screenshot-service
+    x-tested-by:
+      - testing.test-suite.refinement-loop-unit
 layout-parameters-service:
   id: application.service.layout-parameters-service
   name: Layout Parameters Service
@@ -792,6 +924,8 @@ force-directed-business-layout:
         locations:
           - file: src/core/services/businessGraphBuilder.ts
             symbol: forceDirectedLayout
+    x-tested-by:
+      - testing.test-suite.force-directed-business-layout-unit
 hierarchical-business-layout:
   id: application.service.hierarchical-business-layout
   name: Hierarchical Business Layout
@@ -808,6 +942,8 @@ hierarchical-business-layout:
         locations:
           - file: src/core/services/businessGraphBuilder.ts
             symbol: hierarchicalLayout
+    x-tested-by:
+      - testing.test-suite.hierarchical-business-layout-unit
 matrix-business-layout:
   id: application.service.matrix-business-layout
   name: Matrix Business Layout
@@ -822,6 +958,8 @@ matrix-business-layout:
         locations:
           - file: src/core/services/businessGraphBuilder.ts
             symbol: matrixLayout
+    x-tested-by:
+      - testing.test-suite.matrix-business-layout-unit
 swimlane-business-layout:
   id: application.service.swimlane-business-layout
   name: Swimlane Business Layout
@@ -836,6 +974,8 @@ swimlane-business-layout:
         locations:
           - file: src/core/services/businessGraphBuilder.ts
             symbol: swimlaneLayout
+    x-tested-by:
+      - testing.test-suite.swimlane-business-layout-unit
 edge-bundling-service:
   id: application.service.edge-bundling-service
   name: Edge Bundling Service
@@ -846,6 +986,14 @@ edge-bundling-service:
       - technology.library.d3-force
     x-realizes:
       - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/layout/edgeBundling.ts
+            symbol: EdgeBundle
+    x-tested-by:
+      - testing.test-suite.orthogonal-routing-unit
 graph-element-validator:
   id: application.service.graph-element-validator
   name: Graph Element Validator
@@ -860,6 +1008,8 @@ graph-element-validator:
         locations:
           - file: src/core/services/validation/graphElementValidator.ts
             symbol: validateGraphElement
+    x-tested-by:
+      - testing.test-suite.graph-element-validator-unit
 pathfinding-service:
   id: application.service.pathfinding-service
   name: Pathfinding Service
@@ -868,3 +1018,62 @@ pathfinding-service:
   properties:
     x-realizes:
       - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/edges/pathfinding.ts
+            symbol: lineIntersectsRect
+websocket-client:
+  id: application.service.websocket-client
+  name: WebSocket Client
+  type: service
+  documentation: Real-time bidirectional communication client for model updates,
+    annotation sync, and changeset notifications
+  properties:
+    protocol: WebSocket
+    events:
+      - model.updated
+      - annotation.added
+      - changeset.created
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/websocketClient.ts
+coverage-analyzer:
+  id: application.service.coverage-analyzer
+  name: Coverage Analyzer
+  type: service
+  documentation: Analyzes test coverage and architecture coverage metrics for
+    quality assessment
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/coverageAnalyzer.ts
+changeset-graph-builder:
+  id: application.service.changeset-graph-builder
+  name: Changeset Graph Builder
+  type: service
+  documentation: Builds graph visualizations for changesets showing added,
+    modified, and deleted elements
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/changesetGraphBuilder.ts
+embedded-data-loader:
+  id: application.service.embedded-data-loader
+  name: Embedded Data Loader
+  type: service
+  documentation: Loads model data, annotations, changesets, and specifications for
+    embedded viewer with token-based authentication
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/embeddedDataLoader.ts

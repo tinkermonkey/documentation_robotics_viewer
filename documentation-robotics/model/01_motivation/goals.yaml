@@ -7,3 +7,29 @@ visualize-architecture:
     goal:
       measurable: "true"
       kpi: Initial render time < 3s for 500 elements
+enable-collaboration:
+  id: motivation.goal.enable-collaboration
+  name: Enable Cross-Team Collaboration
+  type: goal
+  documentation: Provide a shared visualization platform that enables architects,
+    developers, and stakeholders to communicate about architecture using a
+    common visual language
+support-embedding:
+  id: motivation.goal.support-embedding
+  name: Support Embedded Integration
+  type: goal
+  documentation: Enable seamless embedding of architecture visualizations into
+    documentation platforms, wikis, and development tools
+maintain-performance:
+  id: motivation.goal.maintain-performance
+  name: Maintain High Performance
+  type: goal
+  documentation: Deliver fast, responsive visualization even for large
+    architecture models with hundreds of elements through optimized rendering
+    and layout algorithms
+ensure-accessibility:
+  id: motivation.goal.ensure-accessibility
+  name: Ensure Universal Accessibility
+  type: goal
+  documentation: Make architecture visualizations accessible to all users
+    including those using assistive technologies, meeting WCAG 2.1 AA standards

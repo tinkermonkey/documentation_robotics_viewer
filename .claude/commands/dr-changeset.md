@@ -381,6 +381,7 @@ You should:
 **When to DELETE vs REVERT:**
 
 **DELETE changeset when:**
+
 - It's already been applied and you want to clean up
 - It's been reverted and no longer needed
 - It was experimental work that's obsolete
@@ -388,6 +389,7 @@ You should:
 - User explicitly says "delete", "remove", "clean up"
 
 **DON'T delete when:**
+
 - Changeset is currently active (deactivate first)
 - You want to keep history for auditing
 - Changes might be needed again
@@ -459,7 +461,7 @@ You should:
 2. Show what you found:
    "Found 3 old changesets:
    - feature-auth (applied 2 weeks ago)
-   - bugfix-payment (applied 1 week ago)  
+   - bugfix-payment (applied 1 week ago)
    - experimental-cache (reverted 3 days ago)
 
    These can be safely deleted."

@@ -11,6 +11,12 @@ local-storage:
     x-persists-data-from:
       - datastore.store.layout-preferences-store
       - datastore.store.view-preferences-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/stores/layoutPreferencesStore.ts
+            symbol: localStorage
 session-storage:
   id: datastore.browser-storage.session-storage
   name: Session Storage
@@ -23,6 +29,12 @@ session-storage:
     scope: tab
     x-persists-data-from:
       - datastore.store.connection-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/stores/connectionStore.ts
+            symbol: sessionStorage
 indexed-db:
   id: datastore.browser-storage.indexed-db
   name: IndexedDB
@@ -37,6 +49,12 @@ indexed-db:
     supports-indexing: true
     x-persists-data-from:
       - datastore.store.model-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/stores/modelStore.ts
+            symbol: IndexedDB
 service-worker-cache:
   id: datastore.browser-storage.service-worker-cache
   name: Service Worker Cache

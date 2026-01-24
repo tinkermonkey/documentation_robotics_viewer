@@ -12,6 +12,12 @@ embedded-app-e2e:
     x-covers:
       - testing.test-case-sketch.e2e-tests
       - testing.test-case-sketch.embedded-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/embedded-app.spec.ts
+            symbol: test
 embedded-dual-view-e2e:
   id: testing.test-suite.embedded-dual-view-e2e
   name: Embedded Dual View E2E Test Suite
@@ -24,6 +30,12 @@ embedded-dual-view-e2e:
       - navigation.route.model-view
     x-covers:
       - testing.test-case-sketch.e2e-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/embedded-dual-view.spec.ts
+            symbol: test
 c4-architecture-view-e2e:
   id: testing.test-suite.c4-architecture-view-e2e
   name: C4 Architecture View E2E Test Suite
@@ -36,6 +48,12 @@ c4-architecture-view-e2e:
       - navigation.route.architecture
     x-covers:
       - testing.test-case-sketch.e2e-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/c4-architecture-view.spec.ts
+            symbol: test
 c4-accessibility-e2e:
   id: testing.test-suite.c4-accessibility-e2e
   name: C4 Accessibility E2E Test Suite
@@ -47,6 +65,12 @@ c4-accessibility-e2e:
       - application.component.c4-graph-view
     x-covers:
       - testing.test-case-sketch.accessibility-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/c4-accessibility.spec.ts
+            symbol: test
 embedded-graph-rendering-e2e:
   id: testing.test-suite.embedded-graph-rendering-e2e
   name: Embedded Graph Rendering E2E Test Suite
@@ -58,6 +82,12 @@ embedded-graph-rendering-e2e:
       - application.component.graph-view
     x-covers:
       - testing.test-case-sketch.embedded-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/embedded-graph-rendering.spec.ts
+            symbol: test
 embedded-motivation-view-e2e:
   id: testing.test-suite.embedded-motivation-view-e2e
   name: Embedded Motivation View E2E Test Suite
@@ -70,6 +100,12 @@ embedded-motivation-view-e2e:
       - navigation.route.motivation
     x-covers:
       - testing.test-case-sketch.e2e-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/embedded-motivation-view.spec.ts
+            symbol: test
 business-layer-integration:
   id: testing.test-suite.business-layer-integration
   name: Business Layer Integration Test Suite
@@ -82,6 +118,12 @@ business-layer-integration:
       - application.service.business-node-transformer
     x-covers:
       - testing.test-case-sketch.integration-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/business-layer-integration.spec.ts
+            symbol: describe
 business-layer-performance:
   id: testing.test-suite.business-layer-performance
   name: Business Layer Performance Test Suite
@@ -94,6 +136,12 @@ business-layer-performance:
       - application.service.hierarchical-business-layout
     x-covers:
       - testing.test-case-sketch.performance-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/business-layer-performance.spec.ts
+            symbol: describe
 metrics-report:
   id: testing.test-suite.metrics-report
   name: Metrics Report Test Suite
@@ -105,6 +153,12 @@ metrics-report:
       - application.service.metrics-history-service
     x-covers:
       - testing.test-case-sketch.metrics-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/metrics/metrics-report.spec.ts
+            symbol: test
 metrics-regression-check:
   id: testing.test-suite.metrics-regression-check
   name: Metrics Regression Check Test Suite
@@ -117,6 +171,12 @@ metrics-regression-check:
       - application.service.quality-score-service
     x-covers:
       - testing.test-case-sketch.metrics-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/metrics/regression-check.spec.ts
+            symbol: test
 business-graph-builder-unit:
   id: testing.test-suite.business-graph-builder-unit
   name: Business Graph Builder Unit Test Suite
@@ -128,6 +188,12 @@ business-graph-builder-unit:
       - application.service.business-graph-builder
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/businessGraphBuilder.spec.ts
+            symbol: test
 business-layer-parser-unit:
   id: testing.test-suite.business-layer-parser-unit
   name: Business Layer Parser Unit Test Suite
@@ -139,6 +205,12 @@ business-layer-parser-unit:
       - application.service.business-layer-parser
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/businessLayerParser.spec.ts
+            symbol: test
 c4-parser-unit:
   id: testing.test-suite.c4-parser-unit
   name: C4 Parser Unit Test Suite
@@ -150,6 +222,12 @@ c4-parser-unit:
       - application.service.c4-parser
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/c4Parser.spec.ts
+            symbol: test
 c4-view-transformer-unit:
   id: testing.test-suite.c4-view-transformer-unit
   name: C4 View Transformer Unit Test Suite
@@ -161,6 +239,12 @@ c4-view-transformer-unit:
       - application.service.c4-view-transformer
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/c4ViewTransformer.spec.ts
+            symbol: test
 cross-layer-reference-resolver-unit:
   id: testing.test-suite.cross-layer-reference-resolver-unit
   name: Cross-Layer Reference Resolver Unit Test Suite
@@ -172,6 +256,12 @@ cross-layer-reference-resolver-unit:
       - application.service.cross-layer-reference-resolver
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/crossLayerReferenceResolver.spec.ts
+            symbol: test
 graph-readability-unit:
   id: testing.test-suite.graph-readability-unit
   name: Graph Readability Unit Test Suite
@@ -183,6 +273,12 @@ graph-readability-unit:
       - application.service.graph-readability-service
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/graphReadability.spec.ts
+            symbol: test
 image-similarity-unit:
   id: testing.test-suite.image-similarity-unit
   name: Image Similarity Unit Test Suite
@@ -194,6 +290,12 @@ image-similarity-unit:
       - application.service.image-similarity-service
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/imageSimilarity.spec.ts
+            symbol: test
 refinement-loop-unit:
   id: testing.test-suite.refinement-loop-unit
   name: Refinement Loop Unit Test Suite
@@ -205,6 +307,12 @@ refinement-loop-unit:
       - application.service.refinement-loop-service
     x-covers:
       - testing.test-case-sketch.refinement-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/refinement/refinementLoop.spec.ts
+            symbol: test
 motivation-graph-builder-unit:
   id: testing.test-suite.motivation-graph-builder-unit
   name: Motivation Graph Builder Unit Test Suite
@@ -216,6 +324,12 @@ motivation-graph-builder-unit:
       - application.service.motivation-graph-builder
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/motivationGraphBuilder.spec.ts
+            symbol: test
 motivation-graph-transformer-unit:
   id: testing.test-suite.motivation-graph-transformer-unit
   name: Motivation Graph Transformer Unit Test Suite
@@ -227,6 +341,12 @@ motivation-graph-transformer-unit:
       - application.service.motivation-graph-transformer
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/motivationGraphTransformer.spec.ts
+            symbol: test
 impact-analysis-service-unit:
   id: testing.test-suite.impact-analysis-service-unit
   name: Impact Analysis Service Unit Test Suite
@@ -238,6 +358,12 @@ impact-analysis-service-unit:
       - application.service.impact-analysis-service
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/impactAnalysisService.spec.ts
+            symbol: test
 ladle-story-validation:
   id: testing.test-suite.ladle-story-validation
   name: Ladle Story Validation Test Suite
@@ -247,6 +373,12 @@ ladle-story-validation:
     file: tests/ladle-story-validation.spec.ts
     x-covers:
       - testing.test-case-sketch.component-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/ladle-story-validation.spec.ts
+            symbol: test
 refinement-workflow-e2e:
   id: testing.test-suite.refinement-workflow-e2e
   name: Refinement Workflow E2E Test Suite
@@ -259,6 +391,12 @@ refinement-workflow-e2e:
       - application.service.layout-parameters-service
     x-covers:
       - testing.test-case-sketch.refinement-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/refinement-workflow.spec.ts
+            symbol: test
 quality-regression-integration:
   id: testing.test-suite.quality-regression-integration
   name: Quality Regression Integration Test Suite
@@ -271,6 +409,12 @@ quality-regression-integration:
       - application.service.metrics-history-service
     x-covers:
       - testing.test-case-sketch.integration-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/integration/qualityRegression.spec.ts
+            symbol: test
 c4-nodes-unit:
   id: testing.test-suite.c4-nodes-unit
   name: C4 Nodes Unit Test Suite
@@ -280,6 +424,12 @@ c4-nodes-unit:
     file: tests/c4-nodes.spec.ts
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/c4-nodes.spec.ts
+            symbol: test
 graph-readability-integration:
   id: testing.test-suite.graph-readability-integration
   name: Graph Readability Integration Test Suite
@@ -291,6 +441,12 @@ graph-readability-integration:
       - application.service.graph-readability-service
     x-covers:
       - testing.test-case-sketch.integration-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/graphReadabilityIntegration.spec.ts
+            symbol: test
 c4-parser-integration:
   id: testing.test-suite.c4-parser-integration
   name: C4 Parser Integration Test Suite
@@ -302,6 +458,12 @@ c4-parser-integration:
       - application.service.c4-parser
     x-covers:
       - testing.test-case-sketch.integration-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/integration/c4ParserIntegration.spec.ts
+            symbol: test
 reference-diagram-integration:
   id: testing.test-suite.reference-diagram-integration
   name: Reference Diagram Integration Test Suite
@@ -313,6 +475,12 @@ reference-diagram-integration:
       - application.service.reference-diagram-service
     x-covers:
       - testing.test-case-sketch.integration-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/referenceDiagramIntegration.spec.ts
+            symbol: test
 visual-similarity-integration:
   id: testing.test-suite.visual-similarity-integration
   name: Visual Similarity Integration Test Suite
@@ -325,6 +493,12 @@ visual-similarity-integration:
       - application.service.screenshot-service
     x-covers:
       - testing.test-case-sketch.integration-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/visualSimilarityIntegration.spec.ts
+            symbol: test
 feedback-to-parameter-unit:
   id: testing.test-suite.feedback-to-parameter-unit
   name: Feedback to Parameter Unit Test Suite
@@ -336,6 +510,12 @@ feedback-to-parameter-unit:
       - application.service.feedback-to-parameter-service
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/feedbackToParameterService.spec.ts
+            symbol: test
 business-filters-hook-unit:
   id: testing.test-suite.business-filters-hook-unit
   name: Business Filters Hook Unit Test Suite
@@ -345,6 +525,12 @@ business-filters-hook-unit:
     file: tests/unit/hooks/useBusinessFilters.spec.ts
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/hooks/useBusinessFilters.spec.ts
+            symbol: test
 business-focus-hook-unit:
   id: testing.test-suite.business-focus-hook-unit
   name: Business Focus Hook Unit Test Suite
@@ -354,6 +540,12 @@ business-focus-hook-unit:
     file: tests/unit/hooks/useBusinessFocus.spec.ts
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/hooks/useBusinessFocus.spec.ts
+            symbol: test
 force-directed-business-layout-unit:
   id: testing.test-suite.force-directed-business-layout-unit
   name: Force Directed Business Layout Unit Test Suite
@@ -365,6 +557,12 @@ force-directed-business-layout-unit:
       - application.service.force-directed-business-layout
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/layout/forceDirectedBusinessLayout.spec.ts
+            symbol: test
 hierarchical-business-layout-unit:
   id: testing.test-suite.hierarchical-business-layout-unit
   name: Hierarchical Business Layout Unit Test Suite
@@ -376,6 +574,12 @@ hierarchical-business-layout-unit:
       - application.service.hierarchical-business-layout
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/layout/hierarchicalBusinessLayout.spec.ts
+            symbol: test
 matrix-business-layout-unit:
   id: testing.test-suite.matrix-business-layout-unit
   name: Matrix Business Layout Unit Test Suite
@@ -387,6 +591,12 @@ matrix-business-layout-unit:
       - application.service.matrix-business-layout
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/layout/matrixBusinessLayout.spec.ts
+            symbol: test
 swimlane-business-layout-unit:
   id: testing.test-suite.swimlane-business-layout-unit
   name: Swimlane Business Layout Unit Test Suite
@@ -398,6 +608,12 @@ swimlane-business-layout-unit:
       - application.service.swimlane-business-layout
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/layout/swimlaneBusinessLayout.spec.ts
+            symbol: test
 node-expansion-unit:
   id: testing.test-suite.node-expansion-unit
   name: Node Expansion Unit Test Suite
@@ -407,6 +623,12 @@ node-expansion-unit:
     file: tests/unit/nodeExpansion.spec.ts
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/nodeExpansion.spec.ts
+            symbol: test
 business-nodes-unit:
   id: testing.test-suite.business-nodes-unit
   name: Business Nodes Unit Test Suite
@@ -416,6 +638,12 @@ business-nodes-unit:
     file: tests/unit/nodes/businessNodes.spec.ts
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/nodes/businessNodes.spec.ts
+            symbol: test
 reference-diagram-service-unit:
   id: testing.test-suite.reference-diagram-service-unit
   name: Reference Diagram Service Unit Test Suite
@@ -427,6 +655,12 @@ reference-diagram-service-unit:
       - application.service.reference-diagram-service
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/referenceDiagramService.spec.ts
+            symbol: test
 interactive-refinement-unit:
   id: testing.test-suite.interactive-refinement-unit
   name: Interactive Refinement Unit Test Suite
@@ -436,6 +670,12 @@ interactive-refinement-unit:
     file: tests/unit/refinement/interactiveRefinement.spec.ts
     x-covers:
       - testing.test-case-sketch.refinement-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/refinement/interactiveRefinement.spec.ts
+            symbol: test
 layer-colors-e2e:
   id: testing.test-suite.layer-colors-e2e
   name: Layer Colors E2E Test Suite
@@ -445,6 +685,12 @@ layer-colors-e2e:
     file: tests/layerColors.spec.ts
     x-covers:
       - testing.test-case-sketch.e2e-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/layerColors.spec.ts
+            symbol: test
 overview-panel-styling-e2e:
   id: testing.test-suite.overview-panel-styling-e2e
   name: Overview Panel Styling E2E Test Suite
@@ -454,6 +700,12 @@ overview-panel-styling-e2e:
     file: tests/overview-panel-styling.spec.ts
     x-covers:
       - testing.test-case-sketch.e2e-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/overview-panel-styling.spec.ts
+            symbol: test
 sidebar-consolidation-e2e:
   id: testing.test-suite.sidebar-consolidation-e2e
   name: Sidebar Consolidation E2E Test Suite
@@ -463,6 +715,12 @@ sidebar-consolidation-e2e:
     file: tests/sidebar-consolidation.spec.ts
     x-covers:
       - testing.test-case-sketch.e2e-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/sidebar-consolidation.spec.ts
+            symbol: test
 zoom-to-layer-e2e:
   id: testing.test-suite.zoom-to-layer-e2e
   name: Zoom to Layer E2E Test Suite
@@ -472,6 +730,12 @@ zoom-to-layer-e2e:
     file: tests/zoom-to-layer.spec.ts
     x-covers:
       - testing.test-case-sketch.e2e-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/zoom-to-layer.spec.ts
+            symbol: test
 example-implementation-e2e:
   id: testing.test-suite.example-implementation-e2e
   name: Example Implementation E2E Test Suite
@@ -481,6 +745,12 @@ example-implementation-e2e:
     file: tests/example-implementation.spec.ts
     x-covers:
       - testing.test-case-sketch.example-implementation-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/example-implementation.spec.ts
+            symbol: test
 all-refinement-ladle-suites:
   id: testing.test-suite.all-refinement-ladle-suites
   name: All Refinement Ladle Suites
@@ -501,6 +771,12 @@ all-stories-validation:
     file: tests/stories/all-stories.spec.ts
     x-covers:
       - testing.test-case-sketch.component-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/stories/all-stories.spec.ts
+            symbol: test
 ladle-story-validation-components:
   id: testing.test-suite.ladle-story-validation-components
   name: Ladle Story Validation Components Test Suite
@@ -510,6 +786,12 @@ ladle-story-validation-components:
     file: tests/ladle-story-validation-components.spec.ts
     x-covers:
       - testing.test-case-sketch.component-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/ladle-story-validation-components.spec.ts
+            symbol: test
 ladle-story-validation-graphs:
   id: testing.test-suite.ladle-story-validation-graphs
   name: Ladle Story Validation Graphs Test Suite
@@ -519,6 +801,12 @@ ladle-story-validation-graphs:
     file: tests/ladle-story-validation-graphs.spec.ts
     x-covers:
       - testing.test-case-sketch.component-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/ladle-story-validation-graphs.spec.ts
+            symbol: test
 graph-element-validator-unit:
   id: testing.test-suite.graph-element-validator-unit
   name: Graph Element Validator Unit Test Suite
@@ -530,6 +818,12 @@ graph-element-validator-unit:
       - application.service.graph-element-validator
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/validation/graphElementValidator.spec.ts
+            symbol: test
 layout-engine-interface-unit:
   id: testing.test-suite.layout-engine-interface-unit
   name: Layout Engine Interface Unit Test Suite
@@ -541,6 +835,12 @@ layout-engine-interface-unit:
       - application.service.layout-engine-registry
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/layout/layoutEngineInterface.spec.ts
+            symbol: test
 third-party-engines-unit:
   id: testing.test-suite.third-party-engines-unit
   name: Third Party Engines Unit Test Suite
@@ -554,6 +854,12 @@ third-party-engines-unit:
       - application.service.graphviz-layout-engine
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/layout/thirdPartyEngines.spec.ts
+            symbol: test
 orthogonal-routing-unit:
   id: testing.test-suite.orthogonal-routing-unit
   name: Orthogonal Routing Unit Test Suite
@@ -565,6 +871,12 @@ orthogonal-routing-unit:
       - application.service.pathfinding-service
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/layout/orthogonalRouting.spec.ts
+            symbol: test
 layer-specific-layouts-unit:
   id: testing.test-suite.layer-specific-layouts-unit
   name: Layer Specific Layouts Unit Test Suite
@@ -574,6 +886,12 @@ layer-specific-layouts-unit:
     file: tests/unit/layout/layerSpecificLayouts.spec.ts
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/layout/layerSpecificLayouts.spec.ts
+            symbol: test
 extended-quality-metrics-unit:
   id: testing.test-suite.extended-quality-metrics-unit
   name: Extended Quality Metrics Unit Test Suite
@@ -585,6 +903,12 @@ extended-quality-metrics-unit:
       - application.service.quality-score-service
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/metrics/extendedQualityMetrics.spec.ts
+            symbol: test
 visual-comparison-tools-unit:
   id: testing.test-suite.visual-comparison-tools-unit
   name: Visual Comparison Tools Unit Test Suite
@@ -597,6 +921,12 @@ visual-comparison-tools-unit:
       - application.service.heatmap-service
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/comparison/visualComparisonTools.spec.ts
+            symbol: test
 layout-preferences-unit:
   id: testing.test-suite.layout-preferences-unit
   name: Layout Preferences Unit Test Suite
@@ -608,6 +938,12 @@ layout-preferences-unit:
       - application.service.layout-preferences-store
     x-covers:
       - testing.test-case-sketch.unit-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/unit/preferences/layoutPreferences.spec.ts
+            symbol: test
 preference-persistence-integration:
   id: testing.test-suite.preference-persistence-integration
   name: Preference Persistence Integration Test Suite
@@ -620,6 +956,12 @@ preference-persistence-integration:
       - application.service.view-preference-store
     x-covers:
       - testing.test-case-sketch.integration-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/integration/preferencePersistence.spec.ts
+            symbol: test
 layout-engine-workflow-integration:
   id: testing.test-suite.layout-engine-workflow-integration
   name: Layout Engine Workflow Integration Test Suite
@@ -632,3 +974,9 @@ layout-engine-workflow-integration:
       - application.service.layout-engine
     x-covers:
       - testing.test-case-sketch.integration-tests
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: tests/integration/layoutEngineWorkflow.spec.ts
+            symbol: test

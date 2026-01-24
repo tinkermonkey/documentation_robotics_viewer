@@ -4,96 +4,147 @@ annotation:
   type: object-schema
   documentation: User annotation on model elements with author, content, creation
     time, and resolution status
+  properties:
+    x-persisted-in:
+      - datastore.browser-storage.indexeddb
 changeset-summary:
   id: data_model.object-schema.changeset-summary
   name: Changeset Summary
   type: object-schema
   documentation: Changeset list item with name, status, type, timestamps, and element counts
+  properties:
+    x-persisted-in:
+      - datastore.browser-storage.local-storage
 changeset-details:
   id: data_model.object-schema.changeset-details
   name: Changeset Details
   type: object-schema
   documentation: Full changeset data including metadata and array of change operations
+  properties:
+    x-persisted-in:
+      - datastore.browser-storage.local-storage
 changeset-change:
   id: data_model.object-schema.changeset-change
   name: Changeset Change
   type: object-schema
   documentation: Individual change record with operation type, element ID, and
     before/after state
+  properties:
+    x-persisted-in:
+      - datastore.browser-storage.local-storage
 connection-state:
   id: data_model.object-schema.connection-state
   name: Connection State
   type: object-schema
   documentation: WebSocket connection state tracking connection status,
     reconnection attempts, and error history
+  properties:
+    x-persisted-in:
+      - datastore.browser-storage.session-storage
 view-preferences:
   id: data_model.object-schema.view-preferences
   name: View Preferences
   type: object-schema
   documentation: User view mode preferences including spec view, model view,
     changeset view, motivation preferences, and C4 preferences
+  properties:
+    x-persisted-in:
+      - datastore.browser-storage.local-storage
 layout-preset:
   id: data_model.object-schema.layout-preset
   name: Layout Preset
   type: object-schema
   documentation: Custom layout parameter preset with diagram type, engine type,
     and parameter configuration
+  properties:
+    x-persisted-in:
+      - datastore.browser-storage.local-storage
 link-type:
   id: data_model.object-schema.link-type
   name: Link Type
   type: object-schema
   documentation: Cross-layer link type definition with source/target layers,
     cardinality, format, and validation rules
+  properties:
+    x-persisted-in:
+      - datastore.store.local-fs
 model-store-state:
   id: data_model.object-schema.model-store-state
   name: Model Store State
   type: object-schema
   documentation: Zustand state shape for model store including MetaModel, loading
     flag, error state, and version
+  properties:
+    x-persisted-in:
+      - datastore.store.model-store
 element-store-state:
   id: data_model.object-schema.element-store-state
   name: Element Store State
   type: object-schema
   documentation: Singleton Map<string, ModelElement> for temporary element storage
+  properties:
+    x-persisted-in:
+      - datastore.store.element-store
 layer-store-state:
   id: data_model.object-schema.layer-store-state
   name: Layer Store State
   type: object-schema
   documentation: Zustand state shape for layer visibility, opacity, locking, and focus state
+  properties:
+    x-persisted-in:
+      - datastore.store.layer-store
 layout-preferences-state:
   id: data_model.object-schema.layout-preferences-state
   name: Layout Preferences State
   type: object-schema
   documentation: Zustand state shape for layout engine preferences, custom
     presets, and refinement session state
+  properties:
+    x-persisted-in:
+      - datastore.store.layout-preferences-store
 business-layer-store-state:
   id: data_model.object-schema.business-layer-store-state
   name: Business Layer Store State
   type: object-schema
   documentation: Zustand state shape for business layer filters, layout mode, and focus state
+  properties:
+    x-persisted-in:
+      - datastore.store.business-layer-store
 auth-state:
   id: data_model.object-schema.auth-state
   name: Auth State
   type: object-schema
   documentation: Authentication state including token, user info, and login status
+  properties:
+    x-persisted-in:
+      - datastore.store.auth-store
 annotation-store-state:
   id: data_model.object-schema.annotation-store-state
   name: Annotation Store State
   type: object-schema
   documentation: Zustand state shape for annotations array, selected/highlighted
     element IDs, loading and error state
+  properties:
+    x-persisted-in:
+      - datastore.store.annotation-store
 changeset-store-state:
   id: data_model.object-schema.changeset-store-state
   name: Changeset Store State
   type: object-schema
   documentation: Zustand state shape for changeset list, active changeset, loading
     and error state
+  properties:
+    x-persisted-in:
+      - datastore.store.changeset-store
 view-preferences-state:
   id: data_model.object-schema.view-preferences-state
   name: View Preferences State
   type: object-schema
   documentation: Zustand state shape for active view mode, sidebar visibility, and
     filter state
+  properties:
+    x-persisted-in:
+      - datastore.store.view-preference-store
 node-transform-result:
   id: data_model.object-schema.node-transform-result
   name: Node Transform Result

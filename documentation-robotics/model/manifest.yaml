@@ -3,7 +3,7 @@ schema: documentation-robotics-v1
 cli_version: 0.1.0
 spec_version: 0.7.0
 created: 2025-12-05T22:17:22.732040Z
-updated: 2026-01-11T15:18:18.667Z
+updated: 2026-01-24T02:09:36.934Z
 project:
   name: documentation_robotics_viewer
   description: Architecture model for documentation_robotics_viewer
@@ -22,7 +22,7 @@ layers:
       constraint: 4
       customer: 5
       driver: 6
-      goal: 1
+      goal: 5
       internal: 2
       outcome: 6
       principle: 4
@@ -62,7 +62,7 @@ layers:
     enabled: true
     elements:
       component: 20
-      service: 58
+      service: 62
   technology:
     order: 5
     name: Technology
@@ -71,6 +71,7 @@ layers:
     enabled: true
     elements:
       stack: 46
+      worker: 1
   api:
     order: 6
     name: API
@@ -122,7 +123,7 @@ layers:
       breadcrumb: 2
       checklist: 6
       context-menu: 5
-      experience: 9
+      experience: 13
       hierarchical: 1
       horizontal-tabs: 5
       legend: 2
@@ -154,7 +155,7 @@ layers:
       test-case-sketche: 11
       test-suite: 59
 statistics:
-  total_elements: 93
+  total_elements: 617
   elements_by_layer:
     motivation: 14
     business: 9
