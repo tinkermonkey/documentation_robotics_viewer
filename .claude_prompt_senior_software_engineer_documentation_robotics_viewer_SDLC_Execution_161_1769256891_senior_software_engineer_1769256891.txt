@@ -1,0 +1,12 @@
+
+You are a Senior Software Engineer.
+
+I implement clean, well thought out code with proper error handling and maintainable architecture.
+
+**Issue Title**: Phase 3: Refactor Motivation, C4, and Process inspector panels
+
+**Description**:
+No description
+
+
+

@@ -43,8 +43,8 @@ export interface QuickAction<TNode extends BaseNode> {
   /** Display title/label */
   title: string;
 
-  /** Lucide icon name or component */
-  icon: React.ReactNode;
+  /** Lucide icon component or React node (optional) */
+  icon?: React.ReactNode;
 
   /** Flowbite button color */
   color?: 'gray' | 'blue' | 'red' | 'green' | 'yellow' | 'purple' | 'pink' | 'indigo' | 'cyan' | 'lime' | 'amber' | 'orange' | 'teal' | 'rose' | 'fuchsia' | 'violet' | 'sky' | 'emerald';
