@@ -62,22 +62,27 @@ export interface BaseNode {
 /**
  * Minimal edge interface
  *
- * Marker interface for generic graph edge types.
+ * Required properties for generic edge types used by BaseInspectorPanel.
  * All domain-specific edge types (MotivationGraphEdge, C4Edge, BusinessEdge, etc.)
- * will satisfy this interface structurally, even though they have different property names.
- *
- * Implementation Note:
- * This interface is intentionally empty to allow maximum flexibility. Concrete edge types
- * will have their own specific properties. Generic components will use adapter functions
- * to extract source/target node references from domain-specific edges.
+ * must have at least an id property. Source/target node references vary by domain:
  *
  * Compatibility:
- * - MotivationGraphEdge: Has sourceId, targetId
- * - C4Edge: Has sourceId, targetId
- * - BusinessEdge: Has source, target (instead of sourceId, targetId)
+ * - MotivationGraphEdge: Has id, sourceId, targetId
+ * - C4Edge: Has id, sourceId, targetId
+ * - BusinessEdge: Has id, source, target (instead of sourceId, targetId)
+ *
+ * Note: BaseInspectorPanel assumes sourceId/targetId properties for accessing edges.
+ * Domains using source/target properties will need adapter functions.
  */
 export interface BaseEdge {
-  // Intentionally empty: marker interface for structural typing
+  /** Unique edge identifier */
+  id: string;
+
+  /** Source node ID (when using sourceId/targetId naming) */
+  sourceId?: string;
+
+  /** Target node ID (when using sourceId/targetId naming) */
+  targetId?: string;
 }
 
 /**
@@ -92,19 +97,19 @@ export interface BaseEdge {
  * const quickActions: QuickAction<MotivationGraphNode>[] = [
  *   {
  *     id: 'trace-upstream',
- *     label: 'Trace Upstream',
+ *     title: 'Trace Upstream',
  *     icon: ArrowUpIcon,
- *     onClick: () => handleTraceUpstream(),
- *     title: 'Show all influencers of this goal',
+ *     onClick: (node) => handleTraceUpstream(node),
+ *     description: 'Show all influencers of this goal',
  *   },
  *   {
  *     id: 'show-conflicts',
- *     label: 'Show Conflicts',
+ *     title: 'Show Conflicts',
  *     icon: AlertIcon,
- *     onClick: () => handleShowConflicts(),
+ *     onClick: (node) => handleShowConflicts(node),
  *     condition: (node) => node.element.type === MotivationElementType.Goal,
  *     color: 'red',
- *     title: 'Display conflicting goals',
+ *     description: 'Display conflicting goals',
  *   },
  * ];
  */
@@ -113,13 +118,13 @@ export interface QuickAction<TNode extends BaseNode> {
   id: string;
 
   /** Button display label */
-  label: string;
+  title: string;
 
-  /** Icon component to display (expects SVG icon component) */
-  icon: React.ComponentType<{ className?: string }>;
+  /** Icon to display (can be React component or ReactNode) */
+  icon: React.ReactNode;
 
-  /** Action handler function */
-  onClick: () => void;
+  /** Action handler function that receives the selected node */
+  onClick: (node: TNode) => void;
 
   /**
    * Optional conditional visibility based on the selected node
@@ -135,5 +140,8 @@ export interface QuickAction<TNode extends BaseNode> {
   color?: 'gray' | 'blue' | 'green' | 'red';
 
   /** Optional tooltip text shown on hover */
-  title?: string;
+  description?: string;
+
+  /** Optional test ID for E2E testing */
+  testId?: string;
 }
