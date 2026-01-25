@@ -79,10 +79,10 @@ export interface BaseEdge {
   id: string;
 
   /** Source node ID (when using sourceId/targetId naming) */
-  sourceId?: string;
+  sourceId: string;
 
   /** Target node ID (when using sourceId/targetId naming) */
-  targetId?: string;
+  targetId: string;
 }
 
 /**
