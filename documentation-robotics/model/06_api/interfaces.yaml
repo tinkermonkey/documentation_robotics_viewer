@@ -3,3 +3,6 @@ reference-api:
   name: Reference Server API
   type: interface
   documentation: REST and WebSocket API for the Reference Server
+  properties:
+    x-secured-by:
+      - security.policy.local-access

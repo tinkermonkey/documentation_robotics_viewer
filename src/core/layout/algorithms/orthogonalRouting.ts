@@ -154,7 +154,7 @@ function routeEdgeOrthogonally(
   source: PositionedNode,
   target: PositionedNode,
   params: Required<OrthogonalRoutingParameters>,
-  _nodeMap: Map<string, PositionedNode>
+  nodeMap: Map<string, PositionedNode>
 ): Array<{ x: number; y: number }> {
   // Determine exit and entry points based on flow direction
   const { exitPoint, entryPoint } = calculateConnectionPoints(
@@ -181,6 +181,14 @@ function routeEdgeOrthogonally(
 
   // End point (entry to target)
   points.push(entryPoint);
+
+  // Apply obstacle avoidance if enabled
+  const allNodes = Array.from(nodeMap.values());
+  const obstacleNodes = allNodes.filter(n => n.id !== source.id && n.id !== target.id);
+
+  if (obstacleNodes.length > 0) {
+    return optimizeRoutingToAvoidNodes(points, obstacleNodes, params.edgeNodeSeparation);
+  }
 
   return points;
 }
@@ -331,22 +339,148 @@ function calculateIntermediatePoints(
 }
 
 /**
- * Optimize routing to avoid node overlaps (future enhancement)
+ * Optimize routing to avoid node overlaps
  *
- * This is a placeholder for more sophisticated routing that avoids obstacles.
- * Currently, we use simple midpoint-based routing.
- * @unused - Reserved for future routing optimization
+ * Uses segment-based obstacle detection and simple detour routing.
+ * Routes around obstacles by going above/below (horizontal) or left/right (vertical).
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// @ts-expect-error - Unused utility function reserved for future routing optimization
-function _optimizeRoutingToAvoidNodes(
-  _points: Array<{ x: number; y: number }>,
-  _nodes: PositionedNode[],
-  _edgeNodeSeparation: number
+function optimizeRoutingToAvoidNodes(
+  points: Array<{ x: number; y: number }>,
+  nodes: PositionedNode[],
+  edgeNodeSeparation: number
 ): Array<{ x: number; y: number }> {
-  // TODO: Implement obstacle avoidance
-  // For now, return points as-is
-  return _points;
+  if (points.length < 2) return points;
+
+  const optimizedPoints: Array<{ x: number; y: number }> = [points[0]];
+
+  // Check each segment for node intersections
+  for (let i = 0; i < points.length - 1; i++) {
+    const start = points[i];
+    const end = points[i + 1];
+    const segment = { start, end };
+
+    // Find nodes that intersect this segment
+    const intersectingNodes = nodes.filter(node =>
+      segmentIntersectsNode(segment, node, edgeNodeSeparation)
+    );
+
+    if (intersectingNodes.length > 0) {
+      // Route around obstacles
+      const detourPoints = routeAroundObstacles(start, end, intersectingNodes, edgeNodeSeparation);
+      optimizedPoints.push(...detourPoints);
+    } else {
+      // No obstacles, use direct routing
+      if (i < points.length - 1) {
+        optimizedPoints.push(end);
+      }
+    }
+  }
+
+  // Add final point if not already included
+  const lastPoint = points[points.length - 1];
+  const lastOptimized = optimizedPoints[optimizedPoints.length - 1];
+  if (lastOptimized.x !== lastPoint.x || lastOptimized.y !== lastPoint.y) {
+    optimizedPoints.push(lastPoint);
+  }
+
+  return optimizedPoints;
+}
+
+/**
+ * Check if a line segment intersects a node's bounding box
+ */
+function segmentIntersectsNode(
+  segment: { start: { x: number; y: number }, end: { x: number; y: number } },
+  node: PositionedNode,
+  separation: number
+): boolean {
+  const { start, end } = segment;
+  const box = {
+    left: node.position.x - separation,
+    right: node.position.x + node.width + separation,
+    top: node.position.y - separation,
+    bottom: node.position.y + node.height + separation
+  };
+
+  // Check if segment is horizontal or vertical (orthogonal routing)
+  if (start.y === end.y) {
+    // Horizontal segment
+    const minX = Math.min(start.x, end.x);
+    const maxX = Math.max(start.x, end.x);
+    return start.y >= box.top && start.y <= box.bottom &&
+           maxX >= box.left && minX <= box.right;
+  } else if (start.x === end.x) {
+    // Vertical segment
+    const minY = Math.min(start.y, end.y);
+    const maxY = Math.max(start.y, end.y);
+    return start.x >= box.left && start.x <= box.right &&
+           maxY >= box.top && minY <= box.bottom;
+  }
+
+  return false;
+}
+
+/**
+ * Route around obstacles using simple detour strategy
+ */
+function routeAroundObstacles(
+  start: { x: number; y: number },
+  end: { x: number; y: number },
+  obstacles: PositionedNode[],
+  separation: number
+): Array<{ x: number; y: number }> {
+  // Simple strategy: route around the bounding box of all obstacles
+  const bounds = calculateObstacleBounds(obstacles, separation);
+
+  const detourPoints: Array<{ x: number; y: number }> = [];
+
+  // Determine routing direction
+  const isHorizontal = start.y === end.y;
+  const isVertical = start.x === end.x;
+
+  if (isHorizontal) {
+    // Route around vertically (go above or below)
+    const goAbove = start.y > (bounds.top + bounds.bottom) / 2;
+    const detourY = goAbove ? bounds.top - separation : bounds.bottom + separation;
+
+    detourPoints.push({ x: start.x, y: detourY });
+    detourPoints.push({ x: end.x, y: detourY });
+  } else if (isVertical) {
+    // Route around horizontally (go left or right)
+    const goLeft = start.x > (bounds.left + bounds.right) / 2;
+    const detourX = goLeft ? bounds.left - separation : bounds.right + separation;
+
+    detourPoints.push({ x: detourX, y: start.y });
+    detourPoints.push({ x: detourX, y: end.y });
+  }
+
+  return detourPoints;
+}
+
+/**
+ * Calculate bounding box of multiple obstacles
+ */
+function calculateObstacleBounds(
+  obstacles: PositionedNode[],
+  separation: number
+): { left: number; right: number; top: number; bottom: number } {
+  if (obstacles.length === 0) {
+    return { left: 0, right: 0, top: 0, bottom: 0 };
+  }
+
+  let left = Infinity;
+  let right = -Infinity;
+  let top = Infinity;
+  let bottom = -Infinity;
+
+  obstacles.forEach(node => {
+    left = Math.min(left, node.position.x - separation);
+    right = Math.max(right, node.position.x + node.width + separation);
+    top = Math.min(top, node.position.y - separation);
+    bottom = Math.max(bottom, node.position.y + node.height + separation);
+  });
+
+  return { left, right, top, bottom };
 }
 
 /**

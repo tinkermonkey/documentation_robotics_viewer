@@ -6,6 +6,7 @@ visualization:
   properties:
     x-supports-goals:
       - motivation.goal.visualize-architecture
+      - motivation.goal.enable-collaboration
     x-realized-by:
       - business.service.architecture-visualization
       - business.service.model-data-management
@@ -18,8 +19,8 @@ documentation:
     x-realized-by:
       - business.service.architecture-analysis
     x-supports-goals:
-      - motivation.outcome.standardized-architecture-documentation
-      - motivation.outcome.increased-documentation-adoption
+      - motivation.goal.enable-collaboration
+      - motivation.goal.visualize-architecture
 export:
   id: business.capability.export
   name: Export
@@ -29,7 +30,8 @@ export:
     x-realized-by:
       - business.service.documentation-export
     x-supports-goals:
-      - motivation.outcome.standardized-architecture-documentation
+      - motivation.goal.support-embedded-integration
+      - motivation.goal.enable-collaboration
 model-authoring:
   id: business.capability.model-authoring
   name: Model Authoring
@@ -39,7 +41,7 @@ model-authoring:
     x-realized-by:
       - business.service.model-data-management
     x-supports-goals:
-      - motivation.outcome.reduced-architectural-debt
+      - motivation.goal.enable-collaboration
 collaboration:
   id: business.capability.collaboration
   name: Collaboration
@@ -49,7 +51,7 @@ collaboration:
     x-realized-by:
       - business.service.external-model-integration
     x-supports-goals:
-      - motivation.outcome.enhanced-cross-team-collaboration
+      - motivation.goal.enable-collaboration
 version-control:
   id: business.capability.version-control
   name: Version Control
@@ -59,7 +61,7 @@ version-control:
     x-realized-by:
       - business.service.model-data-management
     x-supports-goals:
-      - motivation.outcome.reduced-architectural-debt
+      - motivation.goal.enable-collaboration
 search-discovery:
   id: business.capability.search-discovery
   name: Search & Discovery
@@ -70,7 +72,7 @@ search-discovery:
       - business.service.architecture-analysis
     x-supports-goals:
       - motivation.goal.visualize-architecture
-      - motivation.outcome.faster-impact-analysis
+      - motivation.goal.enable-collaboration
 reporting:
   id: business.capability.reporting
   name: Reporting
@@ -82,7 +84,8 @@ reporting:
       - business.service.documentation-export
       - business.service.architecture-analysis
     x-supports-goals:
-      - motivation.outcome.improved-architecture-understanding
+      - motivation.goal.visualize-architecture
+      - motivation.goal.enable-collaboration
 integration:
   id: business.capability.integration
   name: Integration
@@ -92,7 +95,7 @@ integration:
     x-realized-by:
       - business.service.external-model-integration
     x-supports-goals:
-      - motivation.outcome.standardized-architecture-documentation
+      - motivation.goal.support-embedded-integration
 administration:
   id: business.capability.administration
   name: Administration
@@ -102,4 +105,5 @@ administration:
     x-realized-by:
       - business.service.quality-assurance
     x-supports-goals:
-      - motivation.outcome.enhanced-cross-team-collaboration
+      - motivation.goal.ensure-accessibility
+      - motivation.goal.maintain-performance

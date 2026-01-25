@@ -385,11 +385,19 @@ function renderCrossLayerLinks(node: MotivationGraphNode, graph: MotivationGraph
             <button
               className="crosslayer-link"
               onClick={() => {
-                // TODO: Implement cross-layer navigation
-                console.log(`Navigate to ${link.targetId} in other layer`);
+                // Extract layer from target ID (format: layer.type.id)
+                const layerMatch = link.targetId.match(/^([^.]+)\./);
+                if (layerMatch) {
+                  const targetLayer = layerMatch[1];
+                  // Navigate to the target layer in the model view with the element highlighted
+                  const url = `/model/graph?layer=${encodeURIComponent(targetLayer)}&highlight=${encodeURIComponent(link.targetId)}`;
+                  window.location.href = url;
+                } else {
+                  console.warn(`Could not extract layer from target ID: ${link.targetId}`);
+                }
               }}
               aria-label={`Navigate to ${link.targetName}`}
-              title={`Navigate to ${link.targetName}`}
+              title={`Navigate to ${link.targetName} in ${link.targetId.split('.')[0]} layer`}
             >
               {link.targetName}
             </button>

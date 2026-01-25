@@ -516,12 +516,184 @@ export class MotivationGraphBuilder {
       }
     }
 
-    // TODO: Add more sophisticated conflict detection:
-    // - Goals that constrain each other
-    // - Requirements that cannot be simultaneously satisfied
-    // - Constraint violations
+    // Build adjacency lists for sophisticated conflict detection
+    const adjacencyLists = {
+      outgoing: new Map<string, Set<string>>(),
+      incoming: new Map<string, Set<string>>()
+    };
+
+    for (const edge of edges.values()) {
+      if (!adjacencyLists.outgoing.has(edge.sourceId)) {
+        adjacencyLists.outgoing.set(edge.sourceId, new Set());
+      }
+      adjacencyLists.outgoing.get(edge.sourceId)!.add(edge.targetId);
+
+      if (!adjacencyLists.incoming.has(edge.targetId)) {
+        adjacencyLists.incoming.set(edge.targetId, new Set());
+      }
+      adjacencyLists.incoming.get(edge.targetId)!.add(edge.sourceId);
+    }
+
+    // Additional sophisticated conflict detection:
+    // 1. Goals that constrain each other through requirements
+    this.detectGoalConstraintConflicts(nodes, adjacencyLists, conflicts);
+
+    // 2. Requirements that cannot be simultaneously satisfied
+    this.detectRequirementConflicts(nodes, adjacencyLists, conflicts);
+
+    // 3. Constraint violations (constraints conflicting with goals or requirements)
+    this.detectConstraintViolations(nodes, adjacencyLists, conflicts);
 
     return conflicts;
+  }
+
+  /**
+   * Detect goals that constrain each other through requirements
+   */
+  private detectGoalConstraintConflicts(
+    nodes: Map<string, MotivationGraphNode>,
+    adjacencyLists: { outgoing: Map<string, Set<string>>; incoming: Map<string, Set<string>> },
+    conflicts: ConflictDetection[]
+  ): void {
+    const goals = Array.from(nodes.values()).filter(
+      n => n.element.type === MotivationElementType.Goal
+    );
+
+    // Check if two goals share requirements that have conflicting constraints
+    for (let i = 0; i < goals.length; i++) {
+      for (let j = i + 1; j < goals.length; j++) {
+        const goal1 = goals[i];
+        const goal2 = goals[j];
+
+        // Get requirements for each goal
+        const reqs1 = this.getRelatedNodes(goal1.element.id, adjacencyLists.outgoing, nodes, MotivationElementType.Requirement);
+        const reqs2 = this.getRelatedNodes(goal2.element.id, adjacencyLists.outgoing, nodes, MotivationElementType.Requirement);
+
+        // Find shared requirements
+        const sharedReqs = reqs1.filter(r1 => reqs2.some(r2 => r2.element.id === r1.element.id));
+
+        if (sharedReqs.length > 0) {
+          // Check if these requirements have conflicting constraints
+          const hasConflictingConstraints = sharedReqs.some(req => {
+            const constraints = this.getRelatedNodes(req.element.id, adjacencyLists.outgoing, nodes, MotivationElementType.Constraint);
+            return constraints.length > 1; // Multiple constraints may conflict
+          });
+
+          if (hasConflictingConstraints) {
+            conflicts.push({
+              nodes: [goal1.element.id, goal2.element.id],
+              type: 'goal-constraint-conflict',
+              description: `Goals "${goal1.element.name}" and "${goal2.element.name}" may have conflicting constraints through shared requirements`,
+              severity: 'medium'
+            });
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Detect requirements that cannot be simultaneously satisfied
+   */
+  private detectRequirementConflicts(
+    nodes: Map<string, MotivationGraphNode>,
+    adjacencyLists: { outgoing: Map<string, Set<string>>; incoming: Map<string, Set<string>> },
+    conflicts: ConflictDetection[]
+  ): void {
+    const requirements = Array.from(nodes.values()).filter(
+      n => n.element.type === MotivationElementType.Requirement
+    );
+
+    // Check for mutually exclusive requirements
+    for (let i = 0; i < requirements.length; i++) {
+      for (let j = i + 1; j < requirements.length; j++) {
+        const req1 = requirements[i];
+        const req2 = requirements[j];
+
+        // Heuristic: requirements with conflicting properties in their metadata
+        const prop1 = req1.element.properties || {};
+        const prop2 = req2.element.properties || {};
+
+        // Check for explicit conflicts in priority or criticality
+        if (prop1.priority === 'high' && prop2.priority === 'high') {
+          const constraints1 = this.getRelatedNodes(req1.element.id, adjacencyLists.outgoing, nodes, MotivationElementType.Constraint);
+          const constraints2 = this.getRelatedNodes(req2.element.id, adjacencyLists.outgoing, nodes, MotivationElementType.Constraint);
+
+          // If both have constraints, they may conflict
+          if (constraints1.length > 0 && constraints2.length > 0) {
+            conflicts.push({
+              nodes: [req1.element.id, req2.element.id],
+              type: 'requirement-conflict',
+              description: `High-priority requirements "${req1.element.name}" and "${req2.element.name}" may conflict`,
+              severity: 'high'
+            });
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Detect constraint violations (constraints conflicting with goals or requirements)
+   */
+  private detectConstraintViolations(
+    nodes: Map<string, MotivationGraphNode>,
+    adjacencyLists: { outgoing: Map<string, Set<string>>; incoming: Map<string, Set<string>> },
+    conflicts: ConflictDetection[]
+  ): void {
+    const constraints = Array.from(nodes.values()).filter(
+      n => n.element.type === MotivationElementType.Constraint
+    );
+    const goals = Array.from(nodes.values()).filter(
+      n => n.element.type === MotivationElementType.Goal
+    );
+
+    // Check if constraints conflict with goals
+    for (const constraint of constraints) {
+      const affectedGoals = this.getRelatedNodes(constraint.element.id, adjacencyLists.incoming, nodes, MotivationElementType.Goal);
+
+      if (affectedGoals.length > 1) {
+        // A constraint affecting multiple goals may cause violations
+        conflicts.push({
+          nodes: [constraint.element.id, ...affectedGoals.map(g => g.element.id)],
+          type: 'constraint-violation',
+          description: `Constraint "${constraint.element.name}" affects ${affectedGoals.length} goals and may cause conflicts`,
+          severity: 'medium'
+        });
+      }
+
+      // Check for conflicting constraints on the same goal
+      for (const goal of goals) {
+        const goalConstraints = this.getRelatedNodes(goal.element.id, adjacencyLists.outgoing, nodes, MotivationElementType.Constraint);
+
+        if (goalConstraints.length > 2) {
+          // More than 2 constraints on a goal may conflict
+          conflicts.push({
+            nodes: [goal.element.id, ...goalConstraints.map(c => c.element.id)],
+            type: 'constraint-violation',
+            description: `Goal "${goal.element.name}" has ${goalConstraints.length} constraints that may conflict`,
+            severity: 'high'
+          });
+        }
+      }
+    }
+  }
+
+  /**
+   * Get related nodes of a specific type
+   */
+  private getRelatedNodes(
+    nodeId: string,
+    adjacencyList: Map<string, Set<string>>,
+    nodes: Map<string, MotivationGraphNode>,
+    targetType: MotivationElementType
+  ): MotivationGraphNode[] {
+    const relatedIds = adjacencyList.get(nodeId) || new Set();
+    return Array.from(relatedIds)
+      .map(id => nodes.get(id))
+      .filter((node): node is MotivationGraphNode =>
+        node !== undefined && node.element.type === targetType
+      );
   }
 
   /**

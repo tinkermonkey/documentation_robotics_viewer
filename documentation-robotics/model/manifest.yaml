@@ -3,7 +3,7 @@ schema: documentation-robotics-v1
 cli_version: 0.1.0
 spec_version: 0.7.0
 created: 2025-12-05T22:17:22.732040Z
-updated: 2026-01-24T02:09:36.934Z
+updated: 2026-01-25T12:10:27.828Z
 project:
   name: documentation_robotics_viewer
   description: Architecture model for documentation_robotics_viewer
@@ -197,4 +197,4 @@ upgrade_history:
   - from_version: 0.1.0
     to_version: 0.7.3
     upgraded_at: 2025-12-10T17:06:16.340268Z
-preferred_chat_client: GitHub Copilot
+preferred_chat_client: Claude Code

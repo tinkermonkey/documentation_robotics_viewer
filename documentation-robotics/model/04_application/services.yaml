@@ -20,8 +20,8 @@ graph-builder:
           - file: src/core/services/businessGraphBuilder.ts
             symbol: buildGraph
     x-monitored-by:
-      - apm.metric.render-time
-      - apm.metric.initialization-time
+      - apm.metric.model-parse-time
+      - apm.metric.validation-time
 layout-engine:
   id: application.service.layout-engine
   name: Layout Engine
@@ -37,6 +37,7 @@ layout-engine:
     x-monitored-by:
       - apm.metric.layout-calculation-time
       - apm.metric.layout-engine-errors
+      - apm.metric.performance-tracing
     source:
       reference:
         provenance: manual
@@ -728,6 +729,9 @@ layout-preferences-store:
     x-tested-by:
       - testing.test-suite.layout-preferences-unit
       - testing.test-suite.preference-persistence-integration
+    x-monitored-by:
+      - apm.metric.layout-calculation-time
+      - apm.metric.performance-tracing
 business-layer-store:
   id: application.service.business-layer-store
   name: Business Layer Store
@@ -765,7 +769,7 @@ dagre-layout-engine:
             symbol: dagreLayout
     x-monitored-by:
       - apm.metric.layout-calculation-time
-      - apm.metric.layout-engine-errors
+      - apm.metric.performance-tracing
     x-tested-by:
       - testing.test-suite.third-party-engines-unit
       - testing.test-suite.layout-engine-workflow-integration
@@ -788,7 +792,7 @@ d3-force-layout-engine:
             symbol: d3ForceLayout
     x-monitored-by:
       - apm.metric.layout-calculation-time
-      - apm.metric.layout-engine-errors
+      - apm.metric.performance-tracing
 elk-layout-engine:
   id: application.service.elk-layout-engine
   name: ELK Layout Engine
@@ -808,7 +812,7 @@ elk-layout-engine:
             symbol: elkLayout
     x-monitored-by:
       - apm.metric.layout-calculation-time
-      - apm.metric.layout-engine-errors
+      - apm.metric.performance-tracing
     x-tested-by:
       - testing.test-suite.third-party-engines-unit
 graphviz-layout-engine:
