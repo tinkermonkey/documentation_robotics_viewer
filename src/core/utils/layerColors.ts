@@ -14,6 +14,13 @@ import { LayerType } from '../types/layers';
 export const FALLBACK_COLOR = '#9ca3af';
 
 /**
+ * Type guard to validate LayerType enum values
+ */
+const isValidLayerType = (value: unknown): value is LayerType => {
+  return Object.values(LayerType).includes(value as LayerType);
+};
+
+/**
  * Layer color configuration with variants for different UI contexts
  */
 export interface LayerColorConfig {
@@ -146,8 +153,8 @@ export const LAYER_DISPLAY_NAMES: Record<string, string> = {
  */
 export function normalizeLayerKey(key: string): LayerType | null {
   // If already a valid LayerType, return it
-  if (Object.values(LayerType).includes(key as LayerType)) {
-    return key as LayerType;
+  if (isValidLayerType(key)) {
+    return key;
   }
 
   // Normalize to lowercase and remove special characters

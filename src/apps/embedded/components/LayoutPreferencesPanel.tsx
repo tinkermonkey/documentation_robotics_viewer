@@ -48,6 +48,13 @@ const LAYOUT_ENGINES: Array<{ value: LayoutEngineType; label: string }> = [
 ];
 
 /**
+ * Type guard to validate layout engine type values
+ */
+const isValidLayoutEngine = (value: unknown): value is LayoutEngineType => {
+  return LAYOUT_ENGINES.some((opt) => opt.value === value);
+};
+
+/**
  * LayoutPreferencesPanel Component
  */
 export const LayoutPreferencesPanel: React.FC<LayoutPreferencesPanelProps> = ({
@@ -76,8 +83,8 @@ export const LayoutPreferencesPanel: React.FC<LayoutPreferencesPanelProps> = ({
     (diagramType: DiagramType, engineType: string) => {
       if (engineType === '') {
         clearDefaultEngine(diagramType);
-      } else {
-        setDefaultEngine(diagramType, engineType as LayoutEngineType);
+      } else if (isValidLayoutEngine(engineType)) {
+        setDefaultEngine(diagramType, engineType);
       }
       onChange?.();
     },

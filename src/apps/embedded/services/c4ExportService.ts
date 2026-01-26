@@ -17,6 +17,13 @@ const debugLog = (...args: unknown[]) => {
 };
 
 /**
+ * Type guard to validate ContainerType enum values
+ */
+const isValidContainerType = (value: unknown): value is ContainerType => {
+  return Object.values(ContainerType).includes(value as ContainerType);
+};
+
+/**
  * Dependency report structure for container→container mapping
  */
 export interface C4DependencyReport {
@@ -227,7 +234,9 @@ export function exportC4DependencyReport(
 
     // Initialize container type counts
     Object.values(ContainerType).forEach((type) => {
-      containerTypeDistribution[type as ContainerType] = 0;
+      if (isValidContainerType(type)) {
+        containerTypeDistribution[type] = 0;
+      }
     });
 
     let maxConnections = 0;

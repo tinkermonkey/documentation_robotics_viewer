@@ -32,6 +32,13 @@ const debugLog = (...args: unknown[]) => {
   if (DEBUG) console.log(...args);
 };
 
+/**
+ * Type guard to validate ContainerType enum values
+ */
+const isValidContainerType = (value: unknown): value is ContainerType => {
+  return Object.values(ContainerType).includes(value as ContainerType);
+};
+
 function ArchitectureRouteContent() {
   const { model } = useModelStore();
   const {
@@ -124,7 +131,9 @@ function ArchitectureRouteContent() {
     if (!fullGraphRef.current) {
       const emptyContainerCounts: Record<ContainerType, { visible: number; total: number }> = Object.values(ContainerType).reduce(
         (acc, type) => {
-          acc[type as ContainerType] = { visible: 0, total: 0 };
+          if (isValidContainerType(type)) {
+            acc[type] = { visible: 0, total: 0 };
+          }
           return acc;
         },
         {} as Record<ContainerType, { visible: number; total: number }>
@@ -141,16 +150,19 @@ function ArchitectureRouteContent() {
     // Count by container type
     const containerTypeCounts: Record<ContainerType, { visible: number; total: number }> = Object.values(ContainerType).reduce(
       (acc, type) => {
-        acc[type as ContainerType] = { visible: 0, total: 0 };
+        if (isValidContainerType(type)) {
+          acc[type] = { visible: 0, total: 0 };
+        }
         return acc;
       },
       {} as Record<ContainerType, { visible: number; total: number }>
     );
     for (const containerType of Object.values(ContainerType)) {
-      const typeNodes = graph.indexes.byContainerType.get(containerType as ContainerType);
+      if (!isValidContainerType(containerType)) continue;
+      const typeNodes = graph.indexes.byContainerType.get(containerType);
       const total = typeNodes?.size || 0;
-      const visible = selectedContainerTypes.has(containerType as ContainerType) ? total : 0;
-      containerTypeCounts[containerType as ContainerType] = { visible, total };
+      const visible = selectedContainerTypes.has(containerType) ? total : 0;
+      containerTypeCounts[containerType] = { visible, total };
     }
 
     // Count by technology

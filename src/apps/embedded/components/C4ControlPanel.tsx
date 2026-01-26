@@ -202,6 +202,13 @@ const LAYOUT_OPTIONS: LayoutOption[] = [
 ];
 
 /**
+ * Type guard to validate C4 layout algorithm values
+ */
+const isValidC4Layout = (value: unknown): value is C4LayoutAlgorithm => {
+  return LAYOUT_OPTIONS.some((opt) => opt.value === value);
+};
+
+/**
  * C4ControlPanel Component
  *
  * Uses BaseControlPanel for common sections and slot-based composition
@@ -399,7 +406,11 @@ function C4ControlPanelComponent(props: C4ControlPanelProps) {
     <div className="c4-control-panel">
       <BaseControlPanel
         selectedLayout={selectedLayout}
-        onLayoutChange={(layout) => onLayoutChange(layout as C4LayoutAlgorithm)}
+        onLayoutChange={(layout) => {
+          if (isValidC4Layout(layout)) {
+            onLayoutChange(layout);
+          }
+        }}
         layoutOptions={LAYOUT_OPTIONS}
         onFitToView={onFitToView}
         focusModeEnabled={focusModeEnabled}

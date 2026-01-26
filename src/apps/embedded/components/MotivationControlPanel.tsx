@@ -85,6 +85,13 @@ const LAYOUT_OPTIONS: LayoutOption[] = [
 ];
 
 /**
+ * Type guard to validate layout algorithm values
+ */
+const isValidLayoutAlgorithm = (value: unknown): value is LayoutAlgorithm => {
+  return LAYOUT_OPTIONS.some((opt) => opt.value === value);
+};
+
+/**
  * MotivationControlPanel Component
  *
  * Uses BaseControlPanel for common sections and slot-based composition
@@ -214,7 +221,11 @@ function MotivationControlPanelComponent(props: MotivationControlPanelProps) {
     <div className="motivation-control-panel">
       <BaseControlPanel
         selectedLayout={selectedLayout}
-        onLayoutChange={(layout) => onLayoutChange(layout as LayoutAlgorithm)}
+        onLayoutChange={(layout) => {
+          if (isValidLayoutAlgorithm(layout)) {
+            onLayoutChange(layout);
+          }
+        }}
         layoutOptions={LAYOUT_OPTIONS}
         onFitToView={onFitToView}
         focusModeEnabled={focusModeEnabled}

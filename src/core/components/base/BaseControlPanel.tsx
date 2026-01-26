@@ -163,7 +163,12 @@ function BaseControlPanelComponent<TLayout extends string = string>(
             id={`${testId}-layout-selector`}
             className="layout-selector"
             value={selectedLayout}
-            onChange={(e) => onLayoutChange(e.target.value as TLayout)}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              if (layoutOptions.some((opt) => opt.value === newValue)) {
+                onLayoutChange(newValue as TLayout);
+              }
+            }}
             disabled={isLayouting}
             data-testid={`${testId}-layout-select`}
           >
