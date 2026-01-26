@@ -41,6 +41,9 @@ export interface BaseControlPanelProps<TLayout extends string = string> {
   /** Available layout options for this layout type */
   layoutOptions: LayoutOption<TLayout>[];
 
+  /** Optional callback when layout change is rejected due to validation */
+  onLayoutChangeError?: (invalidValue: string, error: string) => void;
+
   // Navigation section
   /** Callback when "Fit to View" is clicked */
   onFitToView: () => void;
@@ -137,6 +140,7 @@ function BaseControlPanelComponent<TLayout extends string = string>(
     renderBetweenViewAndFocus,
     renderBetweenFocusAndClear,
     renderControls,
+    onLayoutChangeError,
     className = '',
     testId = 'control-panel',
   } = props;
@@ -165,11 +169,21 @@ function BaseControlPanelComponent<TLayout extends string = string>(
             value={selectedLayout}
             onChange={(e) => {
               const newValue = e.target.value;
+              if (!newValue || newValue.trim().length === 0) {
+                const error = 'Layout value cannot be empty';
+                console.error(`[BaseControlPanel] ${error}`);
+                onLayoutChangeError?.(newValue, error);
+                return;
+              }
+
               if (layoutOptions.some((opt) => opt.value === newValue)) {
                 onLayoutChange(newValue as TLayout);
               } else {
-                // Log warning for debugging - helps identify malformed select values
-                console.warn(`[BaseControlPanel] Invalid layout value rejected: ${newValue}`);
+                const error = `Invalid layout value: ${newValue}. Valid options are: ${layoutOptions
+                  .map((opt) => opt.value)
+                  .join(', ')}`;
+                console.error(`[BaseControlPanel] ${error}`);
+                onLayoutChangeError?.(newValue, error);
               }
             }}
             disabled={isLayouting}

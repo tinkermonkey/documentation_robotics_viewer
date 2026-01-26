@@ -86,6 +86,25 @@ const initialState = {
 };
 
 /**
+ * Validation utilities for business layer store
+ */
+const isValidBusinessLayout = (layout: unknown): layout is BusinessLayoutType => {
+  return typeof layout === 'string' && ['hierarchical', 'swimlane', 'matrix', 'force', 'manual'].includes(layout);
+};
+
+const isValidFocusMode = (mode: unknown): mode is FocusMode => {
+  return typeof mode === 'string' && ['none', 'selected', 'radial', 'upstream', 'downstream'].includes(mode);
+};
+
+const isValidNodeId = (nodeId: unknown): nodeId is string => {
+  return typeof nodeId === 'string' && nodeId.length > 0 && nodeId.length <= 1000;
+};
+
+const isValidFocusRadius = (radius: unknown): boolean => {
+  return typeof radius === 'number' && radius >= 1 && radius <= 10 && Number.isInteger(radius);
+};
+
+/**
  * Business layer store with persistence
  */
 export const useBusinessLayerStore = create<BusinessLayerState>()(
@@ -94,10 +113,36 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
       ...initialState,
 
       setSelectedLayout: (layout) => {
+        if (!isValidBusinessLayout(layout)) {
+          console.error(`[BusinessLayerStore] Invalid layout: ${layout}`);
+          return;
+        }
+        console.log('[BusinessLayerStore] Setting layout to:', layout);
         set({ selectedLayout: layout });
       },
 
       setFilters: (filters) => {
+        if (!filters || typeof filters !== 'object') {
+          console.error('[BusinessLayerStore] Invalid filters: must be an object');
+          return;
+        }
+        if (filters.types !== undefined && !(filters.types instanceof Set)) {
+          console.error('[BusinessLayerStore] Filter types must be a Set');
+          return;
+        }
+        if (filters.domains !== undefined && !(filters.domains instanceof Set)) {
+          console.error('[BusinessLayerStore] Filter domains must be a Set');
+          return;
+        }
+        if (filters.lifecycles !== undefined && !(filters.lifecycles instanceof Set)) {
+          console.error('[BusinessLayerStore] Filter lifecycles must be a Set');
+          return;
+        }
+        if (filters.criticalities !== undefined && !(filters.criticalities instanceof Set)) {
+          console.error('[BusinessLayerStore] Filter criticalities must be a Set');
+          return;
+        }
+        console.log('[BusinessLayerStore] Setting filters');
         set({ filters });
       },
 
@@ -169,6 +214,10 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
       },
 
       toggleNodeExpanded: (nodeId) => {
+        if (!isValidNodeId(nodeId)) {
+          console.error('[BusinessLayerStore] Invalid node ID for toggle expanded');
+          return;
+        }
         set((state) => {
           const expanded = new Set(state.expandedNodes);
           if (expanded.has(nodeId)) {
@@ -181,6 +230,19 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
       },
 
       setManualPosition: (nodeId, position) => {
+        if (!isValidNodeId(nodeId)) {
+          console.error('[BusinessLayerStore] Invalid node ID for manual position');
+          return;
+        }
+        if (
+          !position ||
+          typeof position !== 'object' ||
+          typeof position.x !== 'number' ||
+          typeof position.y !== 'number'
+        ) {
+          console.error('[BusinessLayerStore] Invalid position object');
+          return;
+        }
         set((state) => {
           const positions = new Map(state.manualPositions);
           positions.set(nodeId, position);
@@ -189,18 +251,38 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
       },
 
       setManualPositions: (positions) => {
+        if (!(positions instanceof Map)) {
+          console.error('[BusinessLayerStore] Manual positions must be a Map');
+          return;
+        }
+        console.log('[BusinessLayerStore] Setting manual positions:', positions.size, 'nodes');
         set({ manualPositions: positions });
       },
 
       setFocusMode: (mode) => {
+        if (!isValidFocusMode(mode)) {
+          console.error(`[BusinessLayerStore] Invalid focus mode: ${mode}`);
+          return;
+        }
+        console.log('[BusinessLayerStore] Setting focus mode to:', mode);
         set({ focusMode: mode });
       },
 
       setFocusRadius: (radius) => {
+        if (!isValidFocusRadius(radius)) {
+          console.error(`[BusinessLayerStore] Invalid focus radius: ${radius}`);
+          return;
+        }
+        console.log('[BusinessLayerStore] Setting focus radius to:', radius);
         set({ focusRadius: radius });
       },
 
       setSelectedNodeId: (nodeId) => {
+        if (nodeId !== undefined && !isValidNodeId(nodeId)) {
+          console.error('[BusinessLayerStore] Invalid selected node ID');
+          return;
+        }
+        console.log('[BusinessLayerStore] Setting selected node ID:', nodeId);
         set({ selectedNodeId: nodeId });
       },
 
