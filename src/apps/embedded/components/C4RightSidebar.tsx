@@ -4,13 +4,15 @@
  * in collapsible sections using the SharedLayout pattern
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Accordion, AccordionContent, AccordionPanel, AccordionTitle } from 'flowbite-react';
 import { C4FilterPanel, C4FilterCounts } from './C4FilterPanel';
 import { C4ControlPanel, C4LayoutAlgorithm } from './C4ControlPanel';
 import { C4InspectorPanel } from './C4InspectorPanel';
 import AnnotationPanel from './AnnotationPanel';
 import { C4Graph, ContainerType, C4ViewLevel, C4ScenarioPreset } from '../types/c4Graph';
+
+type SectionName = 'filters' | 'controls' | 'annotations';
 
 export interface C4RightSidebarProps {
   // Filter panel props
@@ -48,6 +50,9 @@ export interface C4RightSidebarProps {
   onTraceDownstream?: (nodeId: string) => void;
   onDrillDown?: (nodeId: string) => void;
   onCloseInspector?: () => void;
+
+  // Sidebar behavior
+  defaultOpenSections?: SectionName[];
 }
 
 export const C4RightSidebar: React.FC<C4RightSidebarProps> = ({
@@ -81,13 +86,31 @@ export const C4RightSidebar: React.FC<C4RightSidebarProps> = ({
   onTraceDownstream,
   onDrillDown,
   onCloseInspector,
+  defaultOpenSections = ['filters'],
 }) => {
+  const [openSections, setOpenSections] = useState<Set<SectionName>>(new Set(defaultOpenSections));
+
+  useEffect(() => {
+    setOpenSections(new Set(defaultOpenSections));
+  }, [defaultOpenSections]);
+
+  const toggleSection = (section: SectionName) => {
+    setOpenSections(prev => {
+      const next = new Set(prev);
+      if (next.has(section)) {
+        next.delete(section);
+      } else {
+        next.add(section);
+      }
+      return next;
+    });
+  };
 
   return (
     <div className="flex flex-col h-full" data-testid="c4-right-sidebar">
       <Accordion collapseAll={false}>
         {/* Filters Section */}
-        <AccordionPanel data-testid="c4-filters-section">
+        <AccordionPanel data-testid="c4-filters-section" open={openSections.has('filters')} onOpenChange={() => toggleSection('filters')}>
           <AccordionTitle>
             <span className="text-sm font-semibold">Filters</span>
           </AccordionTitle>
@@ -105,7 +128,7 @@ export const C4RightSidebar: React.FC<C4RightSidebarProps> = ({
         </AccordionPanel>
 
         {/* Controls Section */}
-        <AccordionPanel data-testid="c4-controls-section">
+        <AccordionPanel data-testid="c4-controls-section" open={openSections.has('controls')} onOpenChange={() => toggleSection('controls')}>
           <AccordionTitle>
             <span className="text-sm font-semibold">Controls</span>
           </AccordionTitle>
@@ -132,7 +155,7 @@ export const C4RightSidebar: React.FC<C4RightSidebarProps> = ({
         </AccordionPanel>
 
         {/* Annotations Section */}
-        <AccordionPanel data-testid="c4-annotations-section">
+        <AccordionPanel data-testid="c4-annotations-section" open={openSections.has('annotations')} onOpenChange={() => toggleSection('annotations')}>
           <AccordionTitle>
             <span className="text-sm font-semibold">Annotations</span>
           </AccordionTitle>

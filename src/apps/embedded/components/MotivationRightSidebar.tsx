@@ -4,13 +4,15 @@
  * in collapsible sections using the SharedLayout pattern
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Accordion, AccordionContent, AccordionPanel, AccordionTitle } from 'flowbite-react';
 import { MotivationFilterPanel, FilterCounts } from './MotivationFilterPanel';
 import { MotivationControlPanel, LayoutAlgorithm } from './MotivationControlPanel';
 import { MotivationInspectorPanel } from './MotivationInspectorPanel';
 import AnnotationPanel from './AnnotationPanel';
 import { MotivationElementType, MotivationRelationshipType, MotivationGraph } from '../types/motivationGraph';
+
+type SectionName = 'filters' | 'controls' | 'annotations';
 
 export interface MotivationRightSidebarProps {
   // Filter panel props
@@ -44,6 +46,9 @@ export interface MotivationRightSidebarProps {
   onFocusOnElement?: (nodeId: string) => void;
   onCloseInspector?: () => void;
   inspectorPanelVisible?: boolean;
+
+  // Sidebar behavior
+  defaultOpenSections?: SectionName[];
 }
 
 export const MotivationRightSidebar: React.FC<MotivationRightSidebarProps> = ({
@@ -73,12 +78,31 @@ export const MotivationRightSidebar: React.FC<MotivationRightSidebarProps> = ({
   onFocusOnElement,
   onCloseInspector,
   inspectorPanelVisible = false,
+  defaultOpenSections = ['filters'],
 }) => {
+  const [openSections, setOpenSections] = useState<Set<SectionName>>(new Set(defaultOpenSections));
+
+  useEffect(() => {
+    setOpenSections(new Set(defaultOpenSections));
+  }, [defaultOpenSections]);
+
+  const toggleSection = (section: SectionName) => {
+    setOpenSections(prev => {
+      const next = new Set(prev);
+      if (next.has(section)) {
+        next.delete(section);
+      } else {
+        next.add(section);
+      }
+      return next;
+    });
+  };
+
   return (
     <div className="flex flex-col h-full" data-testid="motivation-right-sidebar">
       <Accordion collapseAll={false}>
         {/* Filters Section */}
-        <AccordionPanel data-testid="motivation-filters-section">
+        <AccordionPanel data-testid="motivation-filters-section" open={openSections.has('filters')} onOpenChange={() => toggleSection('filters')}>
           <AccordionTitle>
             <span className="text-sm font-semibold">Filters</span>
           </AccordionTitle>
@@ -95,7 +119,7 @@ export const MotivationRightSidebar: React.FC<MotivationRightSidebarProps> = ({
         </AccordionPanel>
 
         {/* Controls Section */}
-        <AccordionPanel data-testid="motivation-controls-section">
+        <AccordionPanel data-testid="motivation-controls-section" open={openSections.has('controls')} onOpenChange={() => toggleSection('controls')}>
           <AccordionTitle>
             <span className="text-sm font-semibold">Controls</span>
           </AccordionTitle>
@@ -118,7 +142,7 @@ export const MotivationRightSidebar: React.FC<MotivationRightSidebarProps> = ({
         </AccordionPanel>
 
         {/* Annotations Section */}
-        <AccordionPanel data-testid="motivation-annotations-section">
+        <AccordionPanel data-testid="motivation-annotations-section" open={openSections.has('annotations')} onOpenChange={() => toggleSection('annotations')}>
           <AccordionTitle>
             <span className="text-sm font-semibold">Annotations</span>
           </AccordionTitle>
