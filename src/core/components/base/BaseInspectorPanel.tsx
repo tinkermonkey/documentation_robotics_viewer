@@ -84,7 +84,7 @@ function BaseInspectorPanelComponent<
     } = props;
 
     // Get selected node
-    const selectedNode = selectedNodeId ? graph.nodes.get(selectedNodeId) : null;
+    const selectedNode = selectedNodeId && graph?.nodes ? graph.nodes.get(selectedNodeId) ?? null : null;
 
     // If no node selected, show empty state
     if (!selectedNodeId || !selectedNode) {
@@ -107,10 +107,10 @@ function BaseInspectorPanelComponent<
     }
 
     // Get incoming and outgoing edges
-    const incomingEdges = Array.from(graph.edges.values()).filter(
+    const incomingEdges = (graph?.edges ? Array.from(graph.edges.values()) : []).filter(
       (edge) => edge.targetId === selectedNodeId
     );
-    const outgoingEdges = Array.from(graph.edges.values()).filter(
+    const outgoingEdges = (graph?.edges ? Array.from(graph.edges.values()) : []).filter(
       (edge) => edge.sourceId === selectedNodeId
     );
 
@@ -146,7 +146,7 @@ function BaseInspectorPanelComponent<
                 </h5>
                 <ul className="space-y-2">
                   {incomingEdges.map((edge) => {
-                    const sourceNode = graph.nodes.get(edge.sourceId);
+                    const sourceNode = graph?.nodes?.get(edge.sourceId) ?? null;
                     return (
                       <li key={edge.id} className="text-sm border-l-2 border-blue-400 pl-2">
                         {renderRelationshipBadge ? (
@@ -177,7 +177,7 @@ function BaseInspectorPanelComponent<
                 </h5>
                 <ul className="space-y-2">
                   {outgoingEdges.map((edge) => {
-                    const targetNode = graph.nodes.get(edge.targetId);
+                    const targetNode = graph?.nodes?.get(edge.targetId) ?? null;
                     return (
                       <li key={edge.id} className="text-sm border-l-2 border-green-400 pl-2">
                         {renderRelationshipBadge ? (
