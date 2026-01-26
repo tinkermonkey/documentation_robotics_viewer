@@ -4,11 +4,12 @@
  * Combines filters, controls, inspector, and annotations for motivation layer visualization
  */
 
-import React from 'react';
-import GraphViewSidebar from './GraphViewSidebar';
+import { memo } from 'react';
+import { GraphViewSidebar } from '@/core/components/base';
 import { MotivationFilterPanel, FilterCounts } from './MotivationFilterPanel';
 import { MotivationControlPanel, LayoutAlgorithm } from './MotivationControlPanel';
 import { MotivationInspectorPanel } from './MotivationInspectorPanel';
+import AnnotationPanel from './AnnotationPanel';
 import { MotivationElementType, MotivationRelationshipType, MotivationGraph } from '../types/motivationGraph';
 
 export interface MotivationRightSidebarProps {
@@ -45,7 +46,7 @@ export interface MotivationRightSidebarProps {
   inspectorPanelVisible?: boolean;
 }
 
-export const MotivationRightSidebar: React.FC<MotivationRightSidebarProps> = ({
+export const MotivationRightSidebar = memo<MotivationRightSidebarProps>(({
   selectedElementTypes,
   onElementTypesChange,
   selectedRelationshipTypes,
@@ -115,11 +116,14 @@ export const MotivationRightSidebar: React.FC<MotivationRightSidebarProps> = ({
 
   return (
     <GraphViewSidebar
-      filterContent={filterContent}
-      controlContent={controlContent}
+      filterPanel={filterContent}
+      controlPanel={controlContent}
+      annotationPanel={<AnnotationPanel />}
       inspectorContent={inspectorContent}
-      showInspectorSection={inspectorPanelVisible && !!selectedNodeId && !!graph && !!onTraceUpstream && !!onTraceDownstream && !!onCloseInspector}
+      inspectorVisible={!!inspectorContent}
       testId="motivation-right-sidebar"
     />
   );
-};
+});
+
+MotivationRightSidebar.displayName = 'MotivationRightSidebar';

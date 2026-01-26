@@ -4,11 +4,12 @@
  * Combines filters, controls, inspector, and annotations for C4 visualization
  */
 
-import React from 'react';
-import GraphViewSidebar from './GraphViewSidebar';
+import { memo } from 'react';
+import { GraphViewSidebar } from '@/core/components/base';
 import { C4FilterPanel, C4FilterCounts } from './C4FilterPanel';
 import { C4ControlPanel, C4LayoutAlgorithm } from './C4ControlPanel';
 import { C4InspectorPanel } from './C4InspectorPanel';
+import AnnotationPanel from './AnnotationPanel';
 import { C4Graph, ContainerType, C4ViewLevel, C4ScenarioPreset } from '../types/c4Graph';
 
 export interface C4RightSidebarProps {
@@ -49,7 +50,7 @@ export interface C4RightSidebarProps {
   onCloseInspector?: () => void;
 }
 
-export const C4RightSidebar: React.FC<C4RightSidebarProps> = ({
+export const C4RightSidebar = memo<C4RightSidebarProps>(({
   selectedContainerTypes,
   onContainerTypeChange,
   selectedTechnologyStacks,
@@ -128,11 +129,14 @@ export const C4RightSidebar: React.FC<C4RightSidebarProps> = ({
 
   return (
     <GraphViewSidebar
-      filterContent={filterContent}
-      controlContent={controlContent}
+      filterPanel={filterContent}
+      controlPanel={controlContent}
+      annotationPanel={<AnnotationPanel />}
       inspectorContent={inspectorContent}
-      showInspectorSection={inspectorPanelVisible && !!selectedNodeId && !!graph && !!onTraceUpstream && !!onTraceDownstream && !!onCloseInspector}
+      inspectorVisible={!!inspectorContent}
       testId="c4-right-sidebar"
     />
   );
-};
+});
+
+C4RightSidebar.displayName = 'C4RightSidebar';
