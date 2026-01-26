@@ -379,7 +379,7 @@ export const BaseInspectorPanel = ({
 
   return (
     <div className="bg-white border rounded p-4">
-      <div className="flex items-between justify-between mb-4">
+      <div className="flex items-center justify-between mb-4">
         <h3>{element?.name}</h3>
         {renderActions && renderActions(element!)}
       </div>
