@@ -271,22 +271,38 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
     const edgeDataMap = new Map(originalGraph.edges.map((e) => [e.id, e.data]));
 
     // Convert nodes with positions from ELK
-    const nodes = (elkGraph.children || []).map((elkNode) => ({
-      id: elkNode.id,
-      position: {
-        x: elkNode.x || 0,
-        y: elkNode.y || 0,
-      },
-      data: nodeDataMap.get(elkNode.id),
-    }));
+    const nodes = (elkGraph.children || []).map((elkNode) => {
+      const nodeData = nodeDataMap.get(elkNode.id);
+
+      // Warn if node data is missing, as this can result in missing node labels
+      if (!nodeData) {
+        console.warn(`Missing node data for ELK node: ${elkNode.id}`);
+      }
+
+      return {
+        id: elkNode.id,
+        position: {
+          x: elkNode.x || 0,
+          y: elkNode.y || 0,
+        },
+        data: nodeData || { label: elkNode.id },
+      };
+    });
 
     // Convert edges (preserve original edge data, add routing points if available)
     const edges = (elkGraph.edges || []).map((elkEdge) => {
+      const edgeData = edgeDataMap.get(elkEdge.id);
+
+      // Warn if edge data is missing
+      if (!edgeData) {
+        console.warn(`Missing edge data for ELK edge: ${elkEdge.id}`);
+      }
+
       const edge: LayoutResult['edges'][0] = {
         id: elkEdge.id,
         source: (elkEdge as ElkExtendedEdge).sources?.[0] || '',
         target: (elkEdge as ElkExtendedEdge).targets?.[0] || '',
-        data: edgeDataMap.get(elkEdge.id),
+        data: edgeData,
       };
 
       // Add routing points if available
