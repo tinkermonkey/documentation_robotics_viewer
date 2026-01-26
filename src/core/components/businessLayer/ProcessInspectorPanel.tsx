@@ -208,13 +208,19 @@ function createProcessQuickActions(
 }
 
 /**
+ * Adapted edge type for BaseInspectorPanel compatibility
+ * Converts BusinessEdge (source/target) to BaseEdge (sourceId/targetId)
+ */
+type AdaptedBusinessEdge = BusinessEdge & { sourceId: string; targetId: string };
+
+/**
  * Adapter graph for BaseInspectorPanel compatibility
  * Converts BusinessEdge (source/target) to BaseEdge (sourceId/targetId)
  */
 function adaptBusinessGraph(graph: BusinessGraph): BusinessGraph & {
-  edges: Map<string, BusinessEdge & { sourceId: string; targetId: string }>;
+  edges: Map<string, AdaptedBusinessEdge>;
 } {
-  const adaptedEdges = new Map<string, BusinessEdge & { sourceId: string; targetId: string }>();
+  const adaptedEdges = new Map<string, AdaptedBusinessEdge>();
 
   for (const [id, edge] of graph.edges) {
     adaptedEdges.set(id, {
@@ -279,9 +285,13 @@ function ProcessInspectorPanelComponent({
   });
 
   return (
-    <BaseInspectorPanel<any, any, any>
+    <BaseInspectorPanel<
+      BusinessGraph & { edges: Map<string, AdaptedBusinessEdge> },
+      BusinessNode,
+      AdaptedBusinessEdge
+    >
       selectedNodeId={selectedNodeId}
-      graph={adaptedGraph as any} // Graph type conversion: BusinessGraph satisfies BaseGraph interface
+      graph={adaptedGraph}
       onClose={onClose ?? (() => {})} // Use nullish coalescing to handle optional onClose
       renderElementDetails={renderProcessElementDetails}
       getNodeName={(node) => node.name}

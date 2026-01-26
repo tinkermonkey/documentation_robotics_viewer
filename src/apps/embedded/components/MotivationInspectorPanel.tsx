@@ -8,7 +8,7 @@
 import { memo } from 'react';
 import { BaseInspectorPanel } from '@/core/components/base/BaseInspectorPanel';
 import type { QuickAction } from '@/core/components/base';
-import { MotivationGraph, MotivationGraphNode, MotivationElementType } from '../types/motivationGraph';
+import { MotivationGraph, MotivationGraphNode, MotivationGraphEdge, MotivationElementType } from '../types/motivationGraph';
 import { Badge } from 'flowbite-react';
 import { ArrowUp, ArrowDown, Share2, Eye } from 'lucide-react';
 
@@ -308,9 +308,9 @@ function MotivationInspectorPanelComponent({
   });
 
   return (
-    <BaseInspectorPanel<any, any, any>
+    <BaseInspectorPanel<MotivationGraph, MotivationGraphNode, MotivationGraphEdge>
       selectedNodeId={selectedNodeId}
-      graph={graph as any} // Graph type conversion: MotivationGraph satisfies BaseGraph interface
+      graph={graph}
       onClose={onClose}
       renderElementDetails={renderMotivationElementDetails}
       getNodeName={(node) => node.element.name}

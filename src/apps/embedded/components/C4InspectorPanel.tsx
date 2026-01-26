@@ -235,9 +235,9 @@ function C4InspectorPanelComponent({
   });
 
   return (
-    <BaseInspectorPanel<any, any, any>
+    <BaseInspectorPanel<C4Graph, C4Node, C4Edge>
       selectedNodeId={selectedNodeId}
-      graph={graph as any} // Graph type conversion: C4Graph satisfies BaseGraph interface
+      graph={graph}
       onClose={onClose}
       renderElementDetails={renderC4ElementDetails}
       renderRelationshipBadge={renderC4RelationshipBadge}
