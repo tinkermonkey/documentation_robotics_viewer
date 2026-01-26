@@ -187,36 +187,58 @@ function MotivationRouteContent() {
 
   const handleTraceUpstream = useCallback(
     (nodeId: string) => {
-      if (!fullGraphRef.current) return;
-      const result = motivationGraphBuilder.traceUpstreamInfluences(
-        nodeId,
-        fullGraphRef.current,
-        10
-      );
-      useViewPreferenceStore.getState().setPathTracing({
-        mode: 'upstream',
-        selectedNodeIds: [nodeId],
-        highlightedNodeIds: result.nodeIds,
-        highlightedEdgeIds: result.edgeIds,
-      });
+      try {
+        if (!fullGraphRef.current) {
+          console.error('[MotivationRoute] Trace upstream failed: Graph not ready');
+          setExportError('Unable to trace: Graph is still loading');
+          setTimeout(() => setExportError(null), 5000);
+          return;
+        }
+        const result = motivationGraphBuilder.traceUpstreamInfluences(
+          nodeId,
+          fullGraphRef.current,
+          10
+        );
+        useViewPreferenceStore.getState().setPathTracing({
+          mode: 'upstream',
+          selectedNodeIds: [nodeId],
+          highlightedNodeIds: result.nodeIds,
+          highlightedEdgeIds: result.edgeIds,
+        });
+      } catch (error) {
+        console.error('[MotivationRoute] Trace upstream failed:', error);
+        setExportError('Trace upstream failed: ' + (error instanceof Error ? error.message : String(error)));
+        setTimeout(() => setExportError(null), 5000);
+      }
     },
     [motivationGraphBuilder]
   );
 
   const handleTraceDownstream = useCallback(
     (nodeId: string) => {
-      if (!fullGraphRef.current) return;
-      const result = motivationGraphBuilder.traceDownstreamImpacts(
-        nodeId,
-        fullGraphRef.current,
-        10
-      );
-      useViewPreferenceStore.getState().setPathTracing({
-        mode: 'downstream',
-        selectedNodeIds: [nodeId],
-        highlightedNodeIds: result.nodeIds,
-        highlightedEdgeIds: result.edgeIds,
-      });
+      try {
+        if (!fullGraphRef.current) {
+          console.error('[MotivationRoute] Trace downstream failed: Graph not ready');
+          setExportError('Unable to trace: Graph is still loading');
+          setTimeout(() => setExportError(null), 5000);
+          return;
+        }
+        const result = motivationGraphBuilder.traceDownstreamImpacts(
+          nodeId,
+          fullGraphRef.current,
+          10
+        );
+        useViewPreferenceStore.getState().setPathTracing({
+          mode: 'downstream',
+          selectedNodeIds: [nodeId],
+          highlightedNodeIds: result.nodeIds,
+          highlightedEdgeIds: result.edgeIds,
+        });
+      } catch (error) {
+        console.error('[MotivationRoute] Trace downstream failed:', error);
+        setExportError('Trace downstream failed: ' + (error instanceof Error ? error.message : String(error)));
+        setTimeout(() => setExportError(null), 5000);
+      }
     },
     [motivationGraphBuilder]
   );
@@ -231,28 +253,39 @@ function MotivationRouteContent() {
 
   const handleFocusOnElement = useCallback(
     (nodeId: string) => {
-      if (!fullGraphRef.current) return;
-      const directRelationships = motivationGraphBuilder.getDirectRelationships(
-        nodeId,
-        fullGraphRef.current
-      );
+      try {
+        if (!fullGraphRef.current) {
+          console.error('[MotivationRoute] Focus on element failed: Graph not ready');
+          setExportError('Unable to focus: Graph is still loading');
+          setTimeout(() => setExportError(null), 5000);
+          return;
+        }
+        const directRelationships = motivationGraphBuilder.getDirectRelationships(
+          nodeId,
+          fullGraphRef.current
+        );
 
-      const highlightedEdgeIds = new Set(directRelationships.map((r) => r.id));
-      const highlightedNodeIds = new Set<string>();
+        const highlightedEdgeIds = new Set(directRelationships.map((r) => r.id));
+        const highlightedNodeIds = new Set<string>();
 
-      highlightedNodeIds.add(nodeId);
-      directRelationships.forEach((rel) => {
-        highlightedNodeIds.add(rel.sourceId);
-        highlightedNodeIds.add(rel.targetId);
-      });
+        highlightedNodeIds.add(nodeId);
+        directRelationships.forEach((rel) => {
+          highlightedNodeIds.add(rel.sourceId);
+          highlightedNodeIds.add(rel.targetId);
+        });
 
-      useViewPreferenceStore.getState().setPathTracing({
-        mode: 'direct',
-        selectedNodeIds: [nodeId],
-        highlightedNodeIds,
-        highlightedEdgeIds,
-      });
-      setFocusContextEnabled(true);
+        useViewPreferenceStore.getState().setPathTracing({
+          mode: 'direct',
+          selectedNodeIds: [nodeId],
+          highlightedNodeIds,
+          highlightedEdgeIds,
+        });
+        setFocusContextEnabled(true);
+      } catch (error) {
+        console.error('[MotivationRoute] Focus on element failed:', error);
+        setExportError('Focus on element failed: ' + (error instanceof Error ? error.message : String(error)));
+        setTimeout(() => setExportError(null), 5000);
+      }
     },
     [motivationGraphBuilder, setFocusContextEnabled]
   );
