@@ -11,7 +11,7 @@ import { memo } from 'react';
 import { Card, Badge, Button } from 'flowbite-react';
 import { X, ArrowUp, ArrowDown } from 'lucide-react';
 import type { BaseGraph, BaseNode, BaseEdge, QuickAction } from './types';
-import { wrapRenderProp, wrapRenderProp2, wrapRenderPropVoid } from './RenderPropErrorBoundary';
+import { wrapRenderProp, wrapRenderProp2 } from './RenderPropErrorBoundary';
 
 export interface BaseInspectorPanelProps<
   TGraph extends BaseGraph<TNode, TEdge>,
@@ -263,11 +263,15 @@ function BaseInspectorPanelComponent<
           )}
 
           {/* Cross-Layer Links Card (optional) */}
-          {renderCrossLayerLinks && wrapRenderProp2(renderCrossLayerLinks, selectedNode, graph, 'renderCrossLayerLinks') && (
-            <Card data-testid={`${testId}-cross-layer-links-card`}>
-              {wrapRenderProp2(renderCrossLayerLinks, selectedNode, graph, 'renderCrossLayerLinks')}
-            </Card>
-          )}
+          {(() => {
+            if (!renderCrossLayerLinks) return null;
+            const crossLayerContent = wrapRenderProp2(renderCrossLayerLinks, selectedNode, graph, 'renderCrossLayerLinks');
+            return crossLayerContent ? (
+              <Card data-testid={`${testId}-cross-layer-links-card`}>
+                {crossLayerContent}
+              </Card>
+            ) : null;
+          })()}
         </div>
       </div>
     );

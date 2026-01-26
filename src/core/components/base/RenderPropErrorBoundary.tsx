@@ -23,12 +23,6 @@
 
 import React from 'react';
 
-interface RenderPropError {
-  error: Error;
-  renderPropName: string;
-  argument: unknown;
-}
-
 /**
  * Wraps a render prop function with error handling
  *

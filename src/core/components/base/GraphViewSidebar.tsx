@@ -7,7 +7,6 @@
 
 import { memo } from 'react';
 import { Accordion, AccordionPanel, AccordionTitle, AccordionContent } from 'flowbite-react';
-import { wrapRenderProp } from './RenderPropErrorBoundary';
 
 export interface GraphViewSidebarProps {
   /** Content for the Filters accordion section */
@@ -63,7 +62,7 @@ export const GraphViewSidebar = memo(({
         <span className="text-sm font-semibold">Inspector</span>
       </AccordionTitle>
       <AccordionContent data-testid={`${testId}-inspector-content`}>
-        {wrapRenderProp(() => inspectorContent, undefined, 'inspectorContent')}
+        {inspectorContent}
       </AccordionContent>
     </AccordionPanel>
   ) : null;
@@ -74,7 +73,7 @@ export const GraphViewSidebar = memo(({
         <span className="text-sm font-semibold">Annotations</span>
       </AccordionTitle>
       <AccordionContent data-testid={`${testId}-annotations-content`}>
-        {wrapRenderProp(() => annotationPanel, undefined, 'annotationPanel')}
+        {annotationPanel}
       </AccordionContent>
     </AccordionPanel>
   ) : null;
@@ -93,7 +92,7 @@ export const GraphViewSidebar = memo(({
         <span className="text-sm font-semibold">Filters</span>
       </AccordionTitle>
       <AccordionContent data-testid={`${testId}-filters-content`}>
-        {wrapRenderProp(() => filterPanel, undefined, 'filterPanel')}
+        {filterPanel}
       </AccordionContent>
     </AccordionPanel>
   );
@@ -105,7 +104,7 @@ export const GraphViewSidebar = memo(({
         <span className="text-sm font-semibold">Controls</span>
       </AccordionTitle>
       <AccordionContent data-testid={`${testId}-controls-content`}>
-        {wrapRenderProp(() => controlPanel, undefined, 'controlPanel')}
+        {controlPanel}
       </AccordionContent>
     </AccordionPanel>
   );
