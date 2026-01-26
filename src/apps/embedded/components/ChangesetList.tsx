@@ -36,13 +36,20 @@ const ChangesetList: React.FC<ChangesetListProps> = ({ onChangesetSelect }) => {
     }
   };
 
+  type ChangesetStatus = 'active' | 'applied' | 'abandoned';
+
+  const isValidChangesetStatus = (status: string): status is ChangesetStatus => {
+    return status === 'active' || status === 'applied' || status === 'abandoned';
+  };
+
   const getStatusBadge = (status: string) => {
-    const colorMap = {
+    const colorMap: Record<ChangesetStatus, string> = {
       active: 'success',
       applied: 'info',
       abandoned: 'gray'
-    } as const;
-    return <Badge color={colorMap[status as keyof typeof colorMap] || 'gray'}>{status}</Badge>;
+    };
+    const validStatus = isValidChangesetStatus(status) ? status : 'abandoned';
+    return <Badge color={colorMap[validStatus]}>{status}</Badge>;
   };
 
   const formatDate = (dateString: string) => {

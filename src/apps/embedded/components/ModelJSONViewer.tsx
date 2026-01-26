@@ -16,10 +16,10 @@ interface ModelJSONViewerProps {
   model: MetaModel;
   linkRegistry?: {
     linkTypes: LinkType[];
-    categories: Record<string, any>;
+    categories: Record<string, unknown>;
   };
   specData?: {
-    schemas: Record<string, any>;
+    schemas: Record<string, unknown>;
   };
   onPathHighlight?: (path: string | null) => void;
   selectedLayer: string | null;
@@ -412,7 +412,7 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
                               .forEach(([key, value]) => {
                                 attributes.push({
                                   name: key,
-                                  value: value as any,
+                                  value: value as unknown,
                                   isObject: typeof value === 'object' && value !== null
                                 });
                               });
@@ -426,7 +426,7 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
                             .forEach(([key, value]) => {
                               attributes.push({
                                 name: key,
-                                value: value as any,
+                                value: value as unknown,
                                 isObject: typeof value === 'object' && value !== null
                               });
                             });

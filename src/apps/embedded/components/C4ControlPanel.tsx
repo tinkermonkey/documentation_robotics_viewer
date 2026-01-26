@@ -18,6 +18,13 @@ import { C4ViewLevel, C4ScenarioPreset, C4_SCENARIO_PRESETS } from '../types/c4G
 
 export type C4LayoutAlgorithm = 'hierarchical' | 'orthogonal' | 'force' | 'manual';
 
+/**
+ * Type guard to validate C4LayoutAlgorithm
+ */
+function isValidC4LayoutAlgorithm(value: string): value is C4LayoutAlgorithm {
+  return value === 'hierarchical' || value === 'orthogonal' || value === 'force' || value === 'manual';
+}
+
 export interface C4ControlPanelProps {
   /** Currently selected layout algorithm */
   selectedLayout: C4LayoutAlgorithm;
@@ -262,7 +269,14 @@ export const C4ControlPanel: React.FC<C4ControlPanelProps> = ({
           <Select
             id="c4-layout-selector"
             value={selectedLayout}
-            onChange={(e) => onLayoutChange(e.target.value as C4LayoutAlgorithm)}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (isValidC4LayoutAlgorithm(value)) {
+                onLayoutChange(value);
+              } else {
+                console.warn(`Invalid layout algorithm: ${value}`);
+              }
+            }}
             disabled={isLayouting}
             className="layout-selector"
           >

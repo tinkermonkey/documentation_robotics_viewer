@@ -7,11 +7,26 @@
 import React from 'react';
 import { Info } from 'lucide-react';
 import type { Node } from '@xyflow/react';
-import type { MetaModel } from '../../../core/types/model';
+import type { MetaModel, Relationship } from '../../../core/types/model';
+import type { BaseNodeData } from '../../../core/types/reactflow';
 
 export interface NodeDetailsPanelProps {
   selectedNode: Node | null;
   model: MetaModel;
+}
+
+/**
+ * Type guard to check if node data is BaseNodeData
+ */
+function isBaseNodeData(data: unknown): data is BaseNodeData {
+  if (!data || typeof data !== 'object') return false;
+  const obj = data as Record<string, unknown>;
+  return (
+    typeof obj.label === 'string' &&
+    typeof obj.stroke === 'string' &&
+    typeof obj.elementId === 'string' &&
+    typeof obj.layerId === 'string'
+  );
 }
 
 const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model }) => {
@@ -28,16 +43,18 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
   let incomingEdges = 0;
   let outgoingEdges = 0;
 
-  Object.values(model.layers || {}).forEach((layer: any) => {
-    layer.relationships?.forEach((rel: any) => {
-      if (rel.target === selectedNode.id) incomingEdges++;
-      if (rel.source === selectedNode.id) outgoingEdges++;
+  Object.values(model.layers || {}).forEach((layer) => {
+    layer.relationships?.forEach((rel: Relationship) => {
+      if (rel.targetId === selectedNode.id) incomingEdges++;
+      if (rel.sourceId === selectedNode.id) outgoingEdges++;
     });
   });
 
-  // Get node color from data
-  const nodeColor = (selectedNode.data as any)?.stroke || '#999999';
-  const nodeType = (selectedNode.data as any)?.type || 'Unknown';
+  // Extract node data with type safety
+  const nodeData = isBaseNodeData(selectedNode.data) ? selectedNode.data : null;
+  const nodeColor = nodeData?.stroke || '#999999';
+  const nodeLabel = nodeData?.label || selectedNode.id;
+  const nodeType = selectedNode.type || 'Unknown';
 
   return (
     <div className="p-4 border-b border-gray-200">
@@ -45,7 +62,7 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
       <div className="space-y-3">
         <div>
           <p className="text-xs text-gray-500 mb-1">Name</p>
-          <p className="text-sm text-gray-900">{(selectedNode.data as any)?.label || selectedNode.id}</p>
+          <p className="text-sm text-gray-900">{nodeLabel}</p>
         </div>
 
         <div>

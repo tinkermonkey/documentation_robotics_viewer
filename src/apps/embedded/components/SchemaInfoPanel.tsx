@@ -5,10 +5,40 @@
 
 import React from 'react';
 import { useModelStore } from '../../../core/stores/modelStore';
+import type { ModelMetadata } from '../../../core/types/model';
 
 export interface SchemaInfoPanelProps {
   /** Additional CSS classes */
   className?: string;
+}
+
+/**
+ * Extract string metadata value with fallback chain
+ */
+function getStringMetadata(metadata: ModelMetadata | undefined, ...keys: string[]): string {
+  for (const key of keys) {
+    const value = metadata?.[key];
+    if (typeof value === 'string' && value) {
+      return value;
+    }
+  }
+  return 'Unknown';
+}
+
+/**
+ * Extract number metadata value with fallback
+ */
+function getNumberMetadata(metadata: ModelMetadata | undefined, key: string, defaultValue: number): number {
+  const value = metadata?.[key];
+  return typeof value === 'number' ? value : defaultValue;
+}
+
+/**
+ * Extract array metadata value with fallback
+ */
+function getArrayMetadata(metadata: ModelMetadata | undefined, key: string): unknown[] {
+  const value = metadata?.[key];
+  return Array.isArray(value) ? value : [];
 }
 
 /**
@@ -21,16 +51,19 @@ export const SchemaInfoPanel: React.FC<SchemaInfoPanelProps> = ({ className = ''
     return null;
   }
 
-  // Extract metadata from model
-  const version = (model.metadata?.version as string | undefined) || (model.version as string | undefined) || 'Unknown';
-  const lastModified = (model.metadata?.lastModified as string | undefined) || (model.metadata?.generatedDate as string | undefined) || (model.metadata?.modified as string | undefined) || 'Unknown';
-  const schemaVersion = (model.metadata?.schemaVersion as string | undefined) || 'Unknown';
-  const elementCount = (model.metadata?.elementCount as number | undefined) || 0;
+  // Extract metadata from model with type-safe fallbacks
+  const metadata = model.metadata;
+  const version = getStringMetadata(metadata, 'version') || model.version || 'Unknown';
+  const lastModified = getStringMetadata(metadata, 'lastModified', 'generatedDate', 'modified');
+  const schemaVersion = getStringMetadata(metadata, 'schemaVersion');
+  const elementCount = getNumberMetadata(metadata, 'elementCount', 0);
   const layerCount = model.layers ? Object.keys(model.layers).length : 0;
 
   // Determine validation status
-  const isValid = (model.metadata?.valid as boolean | undefined) ?? true;
-  const validationErrors = (model.metadata?.validationErrors as string[] | undefined) || [];
+  const isValid = metadata?.valid === true;
+  const validationErrors = getArrayMetadata(metadata, 'validationErrors').filter(
+    (error): error is string => typeof error === 'string'
+  );
 
   // Format last modified date
   const formatDate = (dateString: string) => {

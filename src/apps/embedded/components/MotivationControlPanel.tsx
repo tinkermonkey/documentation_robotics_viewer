@@ -14,6 +14,13 @@ import {  } from '../types/layoutAlgorithm';
 
 export type LayoutAlgorithm = 'force' | 'hierarchical' | 'radial' | 'manual';
 
+/**
+ * Type guard to validate LayoutAlgorithm
+ */
+function isValidLayoutAlgorithm(value: string): value is LayoutAlgorithm {
+  return value === 'force' || value === 'hierarchical' || value === 'radial' || value === 'manual';
+}
+
 export interface MotivationControlPanelProps {
   /** Currently selected layout algorithm */
   selectedLayout: LayoutAlgorithm;
@@ -115,7 +122,14 @@ export const MotivationControlPanel: React.FC<MotivationControlPanelProps> = ({
             id="layout-selector"
             className="layout-selector"
             value={selectedLayout}
-            onChange={(e) => onLayoutChange(e.target.value as LayoutAlgorithm)}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (isValidLayoutAlgorithm(value)) {
+                onLayoutChange(value);
+              } else {
+                console.warn(`Invalid layout algorithm: ${value}`);
+              }
+            }}
             disabled={isLayouting}
           >
             {LAYOUT_OPTIONS.map((option) => (

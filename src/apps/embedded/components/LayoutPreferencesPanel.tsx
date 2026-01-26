@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * LayoutPreferencesPanel Component
  *
@@ -48,6 +47,14 @@ const LAYOUT_ENGINES: Array<{ value: LayoutEngineType; label: string }> = [
 ];
 
 /**
+ * Type guard to validate if a string is a valid LayoutEngineType
+ */
+function isValidLayoutEngineType(value: string): value is LayoutEngineType {
+  const validEngines: LayoutEngineType[] = ['dagre', 'd3-force', 'elk', 'graphviz'];
+  return validEngines.includes(value as LayoutEngineType);
+}
+
+/**
  * LayoutPreferencesPanel Component
  */
 export const LayoutPreferencesPanel: React.FC<LayoutPreferencesPanelProps> = ({
@@ -76,8 +83,10 @@ export const LayoutPreferencesPanel: React.FC<LayoutPreferencesPanelProps> = ({
     (diagramType: DiagramType, engineType: string) => {
       if (engineType === '') {
         clearDefaultEngine(diagramType);
+      } else if (isValidLayoutEngineType(engineType)) {
+        setDefaultEngine(diagramType, engineType);
       } else {
-        setDefaultEngine(diagramType, engineType as LayoutEngineType);
+        console.warn(`Invalid layout engine type: ${engineType}`);
       }
       onChange?.();
     },
