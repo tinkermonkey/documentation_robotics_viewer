@@ -80,6 +80,9 @@ export interface BaseControlPanelProps<TLayout extends string = string> {
   children?: React.ReactNode;
 
   // Render prop slots for additional fine-grained customization
+  /** Render content before layout selector */
+  renderBeforeLayout?: ControlPanelRenderSlot;
+
   /** Render content between layout selector and fit to view button */
   renderBetweenLayoutAndView?: ControlPanelRenderSlot;
 
@@ -88,6 +91,9 @@ export interface BaseControlPanelProps<TLayout extends string = string> {
 
   /** Render content between focus mode and clear highlighting */
   renderBetweenFocusAndClear?: ControlPanelRenderSlot;
+
+  /** Render custom controls section (typically export buttons or other final controls) */
+  renderControls?: ControlPanelRenderSlot;
 
   // Styling & Testing
   /** CSS class for domain-specific styling */
@@ -125,9 +131,11 @@ function BaseControlPanelComponent<TLayout extends string = string>(
     changesetVisualizationEnabled = false,
     onChangesetVisualizationToggle,
     children,
+    renderBeforeLayout,
     renderBetweenLayoutAndView,
     renderBetweenViewAndFocus,
     renderBetweenFocusAndClear,
+    renderControls,
     className = '',
     testId = 'control-panel',
   } = props;
@@ -136,6 +144,9 @@ function BaseControlPanelComponent<TLayout extends string = string>(
 
   return (
     <div data-testid={testId} className={`control-panel space-y-4 ${className}`}>
+      {/* Custom render slot before layout selector */}
+      {renderBeforeLayout && renderBeforeLayout()}
+
       {/* Domain-specific controls slot (rendered BEFORE layout selector) */}
       {children && (
         <Card className="dark:bg-gray-800 dark:border-gray-700" data-testid={`${testId}-domain-controls`}>
@@ -270,6 +281,9 @@ function BaseControlPanelComponent<TLayout extends string = string>(
         </Card>
       )}
 
+      {/* Custom render slot for controls (e.g., export buttons from render prop) */}
+      {renderControls && renderControls()}
+
       {/* Loading Indicator */}
       {isLayouting && (
         <Card className="dark:bg-gray-800 dark:border-gray-700" data-testid={`${testId}-loading-card`}>
@@ -287,4 +301,8 @@ export const BaseControlPanel = memo(BaseControlPanelComponent) as <TLayout exte
   props: BaseControlPanelProps<TLayout>
 ) => React.ReactElement;
 
-BaseControlPanel.displayName = 'BaseControlPanel';
+// Set displayName for debugging
+Object.defineProperty(BaseControlPanel, 'displayName', {
+  value: 'BaseControlPanel',
+  configurable: true,
+});
