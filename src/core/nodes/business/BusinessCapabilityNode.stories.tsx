@@ -4,7 +4,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createBusinessCapabilityNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 export default {
-  title: 'Nodes / Business / BusinessCapabilityNode',
+  title: 'Architecture Nodes / Business / BusinessCapabilityNode',
   decorators: [withReactFlowDecorator({ width: BUSINESS_CAPABILITY_NODE_WIDTH, height: BUSINESS_CAPABILITY_NODE_HEIGHT })],
 } satisfies StoryDefault;
 

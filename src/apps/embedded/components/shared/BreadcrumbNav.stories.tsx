@@ -3,7 +3,7 @@ import { BreadcrumbNav, type BreadcrumbSegment } from './BreadcrumbNav';
 import { HiOutlineCubeTransparent, HiOutlineRectangleStack } from 'react-icons/hi2';
 
 export default {
-  title: 'Navigation / BreadcrumbNav',
+  title: 'Building Blocks / Navigation / BreadcrumbNav',
 } satisfies StoryDefault;
 
 export const Default: Story = () => {

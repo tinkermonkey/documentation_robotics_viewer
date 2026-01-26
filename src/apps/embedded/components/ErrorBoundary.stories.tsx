@@ -3,7 +3,7 @@ import { ErrorBoundary } from './ErrorBoundary';
 import { Component } from 'react';
 
 export default {
-  title: 'Components / ErrorBoundary',
+  title: 'Building Blocks / Utilities / ErrorBoundary',
 } satisfies StoryDefault;
 
 // Component that throws an error

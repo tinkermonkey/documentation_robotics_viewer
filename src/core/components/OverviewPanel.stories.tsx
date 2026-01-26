@@ -5,7 +5,7 @@ import { ReactFlow, ReactFlowProvider, useNodesState, useEdgesState } from '@xyf
 import '@xyflow/react/dist/style.css';
 
 export default {
-  title: 'Core Components / OverviewPanel',
+  title: 'Building Blocks / Utilities / OverviewPanel',
 } satisfies StoryDefault;
 
 // Sample nodes for demonstration

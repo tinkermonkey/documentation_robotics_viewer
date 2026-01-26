@@ -4,7 +4,7 @@ import type { BaseGraph, BaseNode, BaseEdge } from './types';
 import { ArrowUp, ArrowDown, Eye } from 'lucide-react';
 
 export default {
-  title: 'Core / BaseInspectorPanel',
+  title: 'Panels & Inspectors / Common / BaseInspectorPanel',
 } satisfies StoryDefault;
 
 /**

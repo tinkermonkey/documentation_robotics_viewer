@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { LoadingState } from './LoadingState';
 
 export default {
-  title: 'Shared / LoadingState',
+  title: 'Primitives / States / LoadingState',
 } satisfies StoryDefault;
 
 export const PageLoading: Story = () => (

@@ -5,7 +5,7 @@ import { MiniMap } from './MiniMap';
 import '@xyflow/react/dist/style.css';
 
 export default {
-  title: 'Components / MiniMap',
+  title: 'Building Blocks / Utilities / MiniMap',
 } satisfies StoryDefault;
 
 // Sample nodes for MiniMap demonstration

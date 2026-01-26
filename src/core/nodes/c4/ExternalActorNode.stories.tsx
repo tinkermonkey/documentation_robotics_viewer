@@ -4,7 +4,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createC4ExternalActorNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 export default {
-  title: 'Nodes / C4 / ExternalActorNode',
+  title: 'Architecture Nodes / C4 / ExternalActorNode',
   decorators: [withReactFlowDecorator({ width: EXTERNAL_ACTOR_NODE_WIDTH, height: EXTERNAL_ACTOR_NODE_HEIGHT })],
 } satisfies StoryDefault;
 

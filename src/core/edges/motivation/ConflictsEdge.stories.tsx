@@ -4,7 +4,7 @@ import { ConflictsEdge } from './ConflictsEdge';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 export default {
-  title: 'Edges / Motivation / ConflictsEdge',
+  title: 'Architecture Edges / Motivation / ConflictsEdge',
   decorators: [withReactFlowDecorator({ width: 400, height: 200, showBackground: true, renderAsEdge: true })],
 } satisfies StoryDefault;
 

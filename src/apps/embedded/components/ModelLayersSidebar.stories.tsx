@@ -5,7 +5,7 @@ import type { MetaModel } from '../../../core/types/model';
 import { useEffect } from 'react';
 
 export default {
-  title: 'Components / ModelLayersSidebar',
+  title: 'Building Blocks / Navigation / ModelLayersSidebar',
 } satisfies StoryDefault;
 
 const mockModel: MetaModel = {

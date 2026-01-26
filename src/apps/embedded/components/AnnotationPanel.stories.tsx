@@ -7,7 +7,7 @@ import { createCompleteModelFixture, createMinimalModelFixture } from '@catalog/
 import { useEffect } from 'react';
 
 export default {
-  title: 'Panels / AnnotationPanel',
+  title: 'Panels & Inspectors / Common / AnnotationPanel',
 } satisfies StoryDefault;
 
 /**

@@ -4,7 +4,7 @@ import { useChangesetStore } from '../stores/changesetStore';
 import { useEffect } from 'react';
 
 export default {
-  title: 'Components / ChangesetViewer',
+  title: 'Building Blocks / Data Display / ChangesetViewer',
 } satisfies StoryDefault;
 
 const mockChangeset = {

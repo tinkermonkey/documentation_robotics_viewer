@@ -4,7 +4,7 @@ import { InfluenceEdge } from './InfluenceEdge';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 export default {
-  title: 'Edges / Motivation / InfluenceEdge',
+  title: 'Architecture Edges / Motivation / InfluenceEdge',
   decorators: [withReactFlowDecorator({ width: 400, height: 200, showBackground: true, renderAsEdge: true })],
 } satisfies StoryDefault;
 

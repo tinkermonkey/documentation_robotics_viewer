@@ -4,7 +4,7 @@ import { ReactFlowProvider } from '@xyflow/react';
 import { createCompleteModelFixture, createMinimalModelFixture } from '@catalog/fixtures/modelFixtures';
 
 export default {
-  title: 'Business Layer / BusinessLayerView',
+  title: 'Views & Layouts / Graph Views / BusinessLayerView',
 } satisfies StoryDefault;
 
 export const Default: Story = () => {

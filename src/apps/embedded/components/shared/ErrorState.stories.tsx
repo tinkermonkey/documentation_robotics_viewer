@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { ErrorState } from './ErrorState';
 
 export default {
-  title: 'Shared / ErrorState',
+  title: 'Primitives / States / ErrorState',
 } satisfies StoryDefault;
 
 export const PageError: Story = () => (

@@ -3,7 +3,7 @@ import SpecViewer from './SpecViewer';
 import type { SpecDataResponse } from '../services/embeddedDataLoader';
 
 export default {
-  title: 'Components / SpecViewer',
+  title: 'Views & Layouts / Other Views / SpecViewer',
 } satisfies StoryDefault;
 
 const mockSpecData: SpecDataResponse = {

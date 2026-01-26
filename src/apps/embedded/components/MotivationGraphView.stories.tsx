@@ -5,7 +5,7 @@ import { createCompleteModelFixture } from '@catalog/fixtures/modelFixtures';
 import { MotivationElementType, MotivationRelationshipType } from '../types/motivationGraph';
 
 export default {
-  title: 'Graph Views / MotivationGraphView',
+  title: 'Views & Layouts / Graph Views / MotivationGraphView',
 } satisfies StoryDefault;
 
 export const Default: Story = () => {

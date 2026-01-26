@@ -4,7 +4,7 @@ import { CrossLayerEdge } from './CrossLayerEdge';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 export default {
-  title: 'Edges / General / CrossLayerEdge',
+  title: 'Architecture Edges / General / CrossLayerEdge',
   decorators: [withReactFlowDecorator({ width: 400, height: 250, showBackground: true, renderAsEdge: true })],
 } satisfies StoryDefault;
 

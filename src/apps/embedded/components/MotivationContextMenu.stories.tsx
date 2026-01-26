@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { MotivationContextMenu } from './MotivationContextMenu';
 
 export default {
-  title: 'Motivation / MotivationContextMenu',
+  title: 'Panels & Inspectors / Motivation / MotivationContextMenu',
 } satisfies StoryDefault;
 
 export const Default: Story = () => (

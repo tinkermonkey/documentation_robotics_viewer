@@ -5,7 +5,7 @@ import { ContainerType } from '../types/c4Graph';
 import { useState } from 'react';
 
 export default {
-  title: 'C4 / C4FilterPanel',
+  title: 'Panels & Inspectors / C4 / C4FilterPanel',
 } satisfies StoryDefault;
 
 const mockFilterCounts: C4FilterCounts = {

@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import HighlightedPathPanel from './HighlightedPathPanel';
 
 export default {
-  title: 'Panels / HighlightedPathPanel',
+  title: 'Panels & Inspectors / Common / HighlightedPathPanel',
 } satisfies StoryDefault;
 
 export const WithPath: Story = () => (

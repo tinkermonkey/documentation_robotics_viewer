@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { C4ControlPanel } from './C4ControlPanel';
 
 export default {
-  title: 'C4 / C4ControlPanel',
+  title: 'Panels & Inspectors / C4 / C4ControlPanel',
 } satisfies StoryDefault;
 
 export const ContextLevel: Story = () => (

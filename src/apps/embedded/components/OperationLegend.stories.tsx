@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { OperationLegend } from './OperationLegend';
 
 export default {
-  title: 'Components / OperationLegend',
+  title: 'Primitives / Indicators / OperationLegend',
 } satisfies StoryDefault;
 
 export const Default: Story = () => (
