@@ -9,9 +9,9 @@ import { memo, useMemo } from 'react';
 import { Button, Card, Label } from 'flowbite-react';
 import { Download, FileText } from 'lucide-react';
 import { BaseControlPanel, LayoutOption } from '@/core/components/base';
-import { BusinessGraph, BusinessNodeType } from '../../types/businessLayer';
+import { BusinessGraph, BusinessNodeType } from '@/core/types/businessLayer';
 import { useBusinessLayerStore, BusinessLayoutType } from '@/apps/embedded/stores/businessLayerStore';
-import { useAvailableFilters } from '../../hooks/useBusinessFilters';
+import { useAvailableFilters } from '@/core/hooks/useBusinessFilters';
 
 export type BusinessLayoutAlgorithm = BusinessLayoutType;
 

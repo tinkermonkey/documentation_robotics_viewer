@@ -16,18 +16,18 @@ import {
   Node,
   Edge,
 } from '@xyflow/react';
-import { MetaModel } from '../../types/model';
-import { BusinessGraph, BusinessNode } from '../../types/businessLayer';
-import { BusinessLayerParser } from '../../services/businessLayerParser';
-import { BusinessGraphBuilder } from '../../services/businessGraphBuilder';
-import { BusinessNodeTransformer } from '../../services/businessNodeTransformer';
-import { CrossLayerReferenceResolver } from '../../services/crossLayerReferenceResolver';
-import { HierarchicalBusinessLayout } from '../../layout/business/HierarchicalBusinessLayout';
-import { DEFAULT_LAYOUT_OPTIONS } from '../../layout/business/types';
-import { nodeTypes } from '../../nodes';
-import { edgeTypes } from '../../edges';
-import { useBusinessFilters } from '../../hooks/useBusinessFilters';
-import { useBusinessFocus } from '../../hooks/useBusinessFocus';
+import { MetaModel } from '@/core/types/model';
+import { BusinessGraph, BusinessNode } from '@/core/types/businessLayer';
+import { BusinessLayerParser } from '@/core/services/businessLayerParser';
+import { BusinessGraphBuilder } from '@/core/services/businessGraphBuilder';
+import { BusinessNodeTransformer } from '@/core/services/businessNodeTransformer';
+import { CrossLayerReferenceResolver } from '@/core/services/crossLayerReferenceResolver';
+import { HierarchicalBusinessLayout } from '@/core/layout/business/HierarchicalBusinessLayout';
+import { DEFAULT_LAYOUT_OPTIONS } from '@/core/layout/business/types';
+import { nodeTypes } from '@/core/nodes';
+import { edgeTypes } from '@/core/edges';
+import { useBusinessFilters } from '@/core/hooks/useBusinessFilters';
+import { useBusinessFocus } from '@/core/hooks/useBusinessFocus';
 import { useBusinessLayerStore } from '@/apps/embedded/stores/businessLayerStore';
 import { BusinessLayerControls } from './BusinessLayerControls';
 import { ProcessInspectorPanel } from './ProcessInspectorPanel';
@@ -38,9 +38,9 @@ import {
   exportProcessCatalog,
   exportTraceabilityReport,
   exportImpactAnalysisReport,
-} from '../../services/businessExportService';
-import { OverviewPanel } from '../OverviewPanel';
-import { getLayerColor } from '../../utils/layerColors';
+} from '@/core/services/businessExportService';
+import { OverviewPanel } from '@/core/components/OverviewPanel';
+import { getLayerColor } from '@/core/utils/layerColors';
 import './BusinessLayerView.css';
 
 interface BusinessLayerViewProps {
@@ -68,6 +68,8 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
     focusRadius,
     setFocusMode,
     setSelectedNodeId,
+    expandedNodes,
+    toggleNodeExpanded,
   } = useBusinessLayerStore();
 
   // Apply filters to nodes and edges
@@ -338,7 +340,7 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
     []
   );
 
-  // Apply focus styling to nodes
+  // Apply focus styling to nodes and pass expand/collapse state
   const styledNodes = useMemo(() => {
     return filteredNodes.map((node) => {
       const isFocused = focusMode !== 'none' && focusedNodes.has(node.id);
@@ -346,6 +348,12 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
 
       return {
         ...node,
+        data: {
+          ...node.data,
+          // Pass expand/collapse state and callback to nodes that support it
+          expandedNodes,
+          onToggleExpanded: toggleNodeExpanded,
+        },
         style: {
           ...node.style,
           opacity: isDimmed ? 0.3 : 1,
@@ -354,7 +362,7 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
         className: isFocused ? 'focused-node' : undefined,
       };
     });
-  }, [filteredNodes, focusedNodes, dimmedNodes, focusMode]);
+  }, [filteredNodes, focusedNodes, dimmedNodes, focusMode, expandedNodes, toggleNodeExpanded]);
 
   // Apply focus styling to edges
   const styledEdges = useMemo(() => {

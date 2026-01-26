@@ -8,8 +8,8 @@
 import { memo } from 'react';
 import { BaseInspectorPanel } from '@/core/components/base/BaseInspectorPanel';
 import type { QuickAction } from '@/core/components/base';
-import type { BusinessNode, BusinessGraph, BusinessEdge } from '../../types/businessLayer';
-import { getLayerColor, getLayerDisplayName } from '../../utils/layerColors';
+import type { BusinessNode, BusinessGraph, BusinessEdge } from '@/core/types/businessLayer';
+import { getLayerColor, getLayerDisplayName } from '@/core/utils/layerColors';
 import { Badge } from 'flowbite-react';
 import { ArrowUp, ArrowDown, Target } from 'lucide-react';
 

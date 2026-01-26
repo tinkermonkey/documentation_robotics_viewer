@@ -1,6 +1,6 @@
 import type { StoryDefault, Story } from '@ladle/react';
 import { BusinessLayerControls } from './BusinessLayerControls';
-import type { BusinessGraph } from '../../types/businessLayer';
+import type { BusinessGraph } from '@/core/types/businessLayer';
 
 export default {
   title: 'Business Layer / BusinessLayerControls',

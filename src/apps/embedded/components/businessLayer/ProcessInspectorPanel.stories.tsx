@@ -1,6 +1,6 @@
 import type { StoryDefault, Story } from '@ladle/react';
 import { ProcessInspectorPanel } from './ProcessInspectorPanel';
-import type { BusinessNode, BusinessGraph } from '../../types/businessLayer';
+import type { BusinessNode, BusinessGraph } from '@/core/types/businessLayer';
 
 export default {
   title: 'Business Layer / ProcessInspectorPanel',

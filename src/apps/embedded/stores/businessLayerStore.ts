@@ -7,8 +7,8 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { BusinessFilters } from '../core/hooks/useBusinessFilters';
-import { BusinessNodeType } from '../core/types/businessLayer';
+import { BusinessFilters } from '@/core/hooks/useBusinessFilters';
+import { BusinessNodeType } from '@/core/types/businessLayer';
 
 /**
  * Layout algorithm types
