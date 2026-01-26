@@ -38,7 +38,6 @@ export interface MotivationInspectorPanelProps {
 /**
  * Render element details for Motivation layer
  */
-// @ts-ignore - Type inference complexity with JSX element type accessing properties
 function renderMotivationElementDetails(node: MotivationGraphNode): React.ReactNode | null {
   const element = node.element;
 
@@ -54,49 +53,25 @@ function renderMotivationElementDetails(node: MotivationGraphNode): React.ReactN
         <Badge color="indigo">{formatElementType(element.type)}</Badge>
       </div>
 
-      {element.properties?.description && (
+      {element.properties?.description ? (
         <div>
           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Description:</span>
           <p className="text-sm mt-1">{String(element.properties.description)}</p>
         </div>
-      )}
+      ) : null}
 
       {/* Type-specific properties */}
-      {element.type === MotivationElementType.Goal && element.properties?.priority && (
+      {(element.type === MotivationElementType.Goal || element.type === MotivationElementType.Requirement) &&
+      element.properties?.priority ? (
         <div className="flex justify-between items-center">
           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Priority:</span>
-          <Badge
-            color={
-              String(element.properties.priority).toLowerCase() === 'high'
-                ? 'failure'
-                : String(element.properties.priority).toLowerCase() === 'medium'
-                  ? 'warning'
-                  : 'gray'
-            }
-          >
+          <Badge color={getPriorityBadgeColor(String(element.properties.priority))}>
             {String(element.properties.priority)}
           </Badge>
         </div>
-      )}
+      ) : null}
 
-      {element.type === MotivationElementType.Requirement && element.properties?.priority && (
-        <div className="flex justify-between items-center">
-          <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Priority:</span>
-          <Badge
-            color={
-              String(element.properties.priority).toLowerCase() === 'high'
-                ? 'failure'
-                : String(element.properties.priority).toLowerCase() === 'medium'
-                  ? 'warning'
-                  : 'gray'
-            }
-          >
-            {String(element.properties.priority)}
-          </Badge>
-        </div>
-      )}
-
-      {element.type === MotivationElementType.Requirement && element.properties?.status && (
+      {element.type === MotivationElementType.Requirement && element.properties?.status ? (
         <div className="flex justify-between items-center">
           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Status:</span>
           <Badge
@@ -111,23 +86,23 @@ function renderMotivationElementDetails(node: MotivationGraphNode): React.ReactN
             {String(element.properties.status)}
           </Badge>
         </div>
-      )}
+      ) : null}
 
-      {element.type === MotivationElementType.Constraint && element.properties?.negotiability && (
+      {element.type === MotivationElementType.Constraint && element.properties?.negotiability ? (
         <div className="flex justify-between">
           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Negotiability:</span>
           <span className="text-sm">{String(element.properties.negotiability)}</span>
         </div>
-      )}
+      ) : null}
 
-      {element.type === MotivationElementType.Driver && element.properties?.category && (
+      {element.type === MotivationElementType.Driver && element.properties?.category ? (
         <div className="flex justify-between">
           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Category:</span>
           <span className="text-sm">{String(element.properties.category)}</span>
         </div>
-      )}
+      ) : null}
 
-      {element.type === MotivationElementType.Outcome && element.properties?.achievementStatus && (
+      {element.type === MotivationElementType.Outcome && element.properties?.achievementStatus ? (
         <div className="flex justify-between items-center">
           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Achievement Status:</span>
           <Badge
@@ -142,7 +117,7 @@ function renderMotivationElementDetails(node: MotivationGraphNode): React.ReactN
             {String(element.properties.achievementStatus)}
           </Badge>
         </div>
-      )}
+      ) : null}
 
       {/* Graph Metrics */}
       <div className="flex justify-between">
@@ -152,12 +127,12 @@ function renderMotivationElementDetails(node: MotivationGraphNode): React.ReactN
         </span>
       </div>
 
-      {node.metrics.influenceDepth > 0 && (
+      {node.metrics.influenceDepth > 0 ? (
         <div className="flex justify-between">
           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Influence Depth:</span>
           <span className="text-sm">{node.metrics.influenceDepth} levels</span>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
@@ -165,7 +140,6 @@ function renderMotivationElementDetails(node: MotivationGraphNode): React.ReactN
 /**
  * Render cross-layer navigation links
  */
-// @ts-ignore - Complex type constraints on node parameter
 function renderMotivationCrossLayerLinks(
   node: MotivationGraphNode,
   graph: MotivationGraph
@@ -228,16 +202,9 @@ function renderMotivationCrossLayerLinks(
           <li key={index} className="text-sm border-l-2 border-purple-400 pl-2">
             <div className="flex justify-between items-start">
               <span className="font-medium text-gray-900 dark:text-white">{link.label}:</span>
-              <button
-                onClick={() => {
-                  // TODO: Implement cross-layer navigation
-                  console.log(`Navigate to ${link.targetId} in other layer`);
-                }}
-                className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
-                title={`Navigate to ${link.targetName}`}
-              >
+              <span className="text-xs text-gray-700 dark:text-gray-300">
                 {link.targetName}
-              </button>
+              </span>
             </div>
           </li>
         ))}
@@ -249,7 +216,6 @@ function renderMotivationCrossLayerLinks(
 /**
  * Create quick actions for Motivation inspector
  */
-// @ts-ignore - QuickAction constraint issue with MotivationGraphNode missing id property
 function createQuickActions(
   selectedNodeId: string | null,
   node: MotivationGraphNode | null,
@@ -300,6 +266,16 @@ function createQuickActions(
 }
 
 /**
+ * Get priority badge color based on priority level
+ */
+function getPriorityBadgeColor(priority: string): 'failure' | 'warning' | 'gray' {
+  const normalized = priority.toLowerCase();
+  if (normalized === 'high') return 'failure';
+  if (normalized === 'medium') return 'warning';
+  return 'gray';
+}
+
+/**
  * Format element type for display
  */
 function formatElementType(type: string): string {
@@ -334,7 +310,7 @@ function MotivationInspectorPanelComponent({
   return (
     <BaseInspectorPanel<any, any, any>
       selectedNodeId={selectedNodeId}
-      graph={graph as any}
+      graph={graph as any} // Graph type conversion: MotivationGraph satisfies BaseGraph interface
       onClose={onClose}
       renderElementDetails={renderMotivationElementDetails}
       getNodeName={(node) => node.element.name}

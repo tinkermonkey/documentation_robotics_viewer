@@ -24,6 +24,15 @@ export interface ProcessInspectorPanelProps {
 }
 
 /**
+ * Get criticality badge color based on criticality level
+ */
+function getCriticalityBadgeColor(criticality: string): 'failure' | 'warning' | 'success' {
+  if (criticality === 'high') return 'failure';
+  if (criticality === 'medium') return 'warning';
+  return 'success';
+}
+
+/**
  * Render element details for Business/Process layer
  */
 function renderProcessElementDetails(node: BusinessNode): React.ReactNode {
@@ -34,7 +43,7 @@ function renderProcessElementDetails(node: BusinessNode): React.ReactNode {
     capability: 'success',
   };
 
-  const typeColor = (typeColorMap[node.type] || 'gray') as any;
+  const typeColor = (typeColorMap[node.type] || 'gray') as any; // Flowbite Badge color type
 
   return (
     <div className="space-y-2">
@@ -65,15 +74,7 @@ function renderProcessElementDetails(node: BusinessNode): React.ReactNode {
       {node.metadata.criticality && (
         <div className="flex justify-between items-center">
           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Criticality:</span>
-          <Badge
-            color={
-              node.metadata.criticality === 'high'
-                ? 'failure'
-                : node.metadata.criticality === 'medium'
-                  ? 'warning'
-                  : 'success'
-            }
-          >
+          <Badge color={getCriticalityBadgeColor(node.metadata.criticality)}>
             {node.metadata.criticality}
           </Badge>
         </div>
@@ -283,8 +284,8 @@ function ProcessInspectorPanelComponent({
   return (
     <BaseInspectorPanel<any, any, any>
       selectedNodeId={selectedNodeId}
-      graph={adaptedGraph as any}
-      onClose={onClose || (() => {})}
+      graph={adaptedGraph as any} // Graph type conversion: BusinessGraph satisfies BaseGraph interface
+      onClose={onClose ?? (() => {})} // Use nullish coalescing to handle optional onClose
       renderElementDetails={renderProcessElementDetails}
       getNodeName={(node) => node.name}
       getEdgeType={(edge) => edge.type}
