@@ -216,7 +216,7 @@ export const MotivationFilterPanel: React.FC<MotivationFilterPanelProps> = ({
 
             <div className="space-y-2">
               {Object.values(MotivationElementType).map((elementType) => {
-                const counts = filterCounts.elements[elementType];
+                const counts = filterCounts.elements?.[elementType];
                 const isSelected = selectedElementTypes.has(elementType);
                 const hasElements = counts && counts.total > 0;
 
@@ -277,7 +277,7 @@ export const MotivationFilterPanel: React.FC<MotivationFilterPanelProps> = ({
 
             <div className="space-y-2">
               {Object.values(MotivationRelationshipType).map((relationshipType) => {
-                const counts = filterCounts.relationships[relationshipType];
+                const counts = filterCounts.relationships?.[relationshipType];
                 const isSelected = selectedRelationshipTypes.has(relationshipType);
                 const hasRelationships = counts && counts.total > 0;
 

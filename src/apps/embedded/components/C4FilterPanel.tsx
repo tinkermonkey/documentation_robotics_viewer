@@ -160,10 +160,16 @@ export const C4FilterPanel: React.FC<C4FilterPanelProps> = ({
    * Calculate total visible/total for container types
    */
   const totalContainerCounts = Object.values(filterCounts.containerTypes || {}).reduce(
-    (acc, counts) => ({
-      visible: acc.visible + (counts?.visible || 0),
-      total: acc.total + (counts?.total || 0),
-    }),
+    (acc, counts) => {
+      // Ensure counts is properly structured before accessing properties
+      if (!counts || typeof counts !== 'object') {
+        return acc;
+      }
+      return {
+        visible: acc.visible + (counts.visible ?? 0),
+        total: acc.total + (counts.total ?? 0),
+      };
+    },
     { visible: 0, total: 0 }
   );
 

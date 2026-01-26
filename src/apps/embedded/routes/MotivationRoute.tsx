@@ -107,6 +107,14 @@ function MotivationRouteContent() {
 
     const graph = fullGraphRef.current;
 
+    // Validate graph structure
+    if (!graph.nodes || !graph.edges) {
+      return {
+        elements: {} as Record<MotivationElementType, { visible: number; total: number }>,
+        relationships: {} as Record<MotivationRelationshipType, { visible: number; total: number }>,
+      };
+    }
+
     // Count elements by type
     const elementCounts: Record<MotivationElementType, { visible: number; total: number }> = {} as Record<MotivationElementType, { visible: number; total: number }>;
     for (const elementType of Object.values(MotivationElementType)) {

@@ -156,6 +156,10 @@ function ArchitectureRouteContent() {
     // Count by technology
     const technologyCounts: Record<string, { visible: number; total: number }> = {};
     for (const [tech, nodeIds] of graph.indexes.byTechnology) {
+      // Validate that nodeIds is a Set with a valid size property
+      if (!nodeIds || typeof nodeIds.size !== 'number') {
+        continue;
+      }
       const total = nodeIds.size;
       const visible = selectedTechnologyStacks.has(tech) ? total : 0;
       technologyCounts[tech] = { visible, total };
