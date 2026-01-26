@@ -135,6 +135,7 @@ export const C4RightSidebar = memo<C4RightSidebarProps>(({
       inspectorContent={inspectorContent}
       inspectorVisible={!!inspectorContent}
       testId="c4-right-sidebar"
+      defaultOpenSections={['filters', 'controls']}
     />
   );
 });

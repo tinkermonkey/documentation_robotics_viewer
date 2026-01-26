@@ -122,6 +122,7 @@ export const MotivationRightSidebar = memo<MotivationRightSidebarProps>(({
       inspectorContent={inspectorContent}
       inspectorVisible={!!inspectorContent}
       testId="motivation-right-sidebar"
+      defaultOpenSections={['filters', 'controls']}
     />
   );
 });

@@ -58,7 +58,6 @@ export const GraphViewSidebar = memo(({
     return new Set(defaultOpenSections);
   });
 
-  // Memoize the toggle handler to avoid creating new function on each render
   const toggleSection = (sectionId: string) => {
     setOpenSections((prev) => {
       const next = new Set(prev);
