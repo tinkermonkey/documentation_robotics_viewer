@@ -110,12 +110,18 @@ export async function exportC4AsPNG(
   reactFlowContainer: HTMLElement,
   filename: string = 'c4-diagram.png'
 ): Promise<void> {
-  debugLog('[C4ExportService] Exporting as PNG:', filename);
-  await exportReactFlowAsPNG(reactFlowContainer, filename, {
-    backgroundColor: '#ffffff',
-    quality: 1.0,
-    pixelRatio: 2
-  });
+  try {
+    debugLog('[C4ExportService] Exporting as PNG:', filename);
+    await exportReactFlowAsPNG(reactFlowContainer, filename, {
+      backgroundColor: '#ffffff',
+      quality: 1.0,
+      pixelRatio: 2
+    });
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error during PNG export';
+    console.error('[C4ExportService] PNG export failed:', errorMessage);
+    throw error;
+  }
 }
 
 /**
@@ -125,10 +131,16 @@ export async function exportC4AsSVG(
   reactFlowContainer: HTMLElement,
   filename: string = 'c4-diagram.svg'
 ): Promise<void> {
-  debugLog('[C4ExportService] Exporting as SVG:', filename);
-  await exportReactFlowAsSVG(reactFlowContainer, filename, {
-    backgroundColor: '#ffffff'
-  });
+  try {
+    debugLog('[C4ExportService] Exporting as SVG:', filename);
+    await exportReactFlowAsSVG(reactFlowContainer, filename, {
+      backgroundColor: '#ffffff'
+    });
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error during SVG export';
+    console.error('[C4ExportService] SVG export failed:', errorMessage);
+    throw error;
+  }
 }
 
 /**

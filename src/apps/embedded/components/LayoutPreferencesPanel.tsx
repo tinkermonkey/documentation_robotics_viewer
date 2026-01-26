@@ -106,42 +106,73 @@ export const LayoutPreferencesPanel: React.FC<LayoutPreferencesPanelProps> = ({
 
   // Handle export
   const handleExport = useCallback(() => {
-    const config = exportConfig();
-    setExportedConfig(config);
-    setShowExportModal(true);
+    try {
+      const config = exportConfig();
+      setExportedConfig(config);
+      setShowExportModal(true);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error during export';
+      console.error('[LayoutPreferencesPanel] Export failed:', errorMessage);
+      alert(`Failed to export configuration: ${errorMessage}`);
+    }
   }, [exportConfig]);
 
   // Handle import
   const handleImport = useCallback(() => {
-    setImportError('');
-    const success = importConfig(importText);
+    try {
+      setImportError('');
+      const success = importConfig(importText);
 
-    if (success) {
-      setImportText('');
-      alert('Configuration imported successfully!');
-      onChange?.();
-    } else {
-      setImportError('Invalid configuration format. Please check your JSON and try again.');
+      if (success) {
+        setImportText('');
+        alert('Configuration imported successfully!');
+        onChange?.();
+      } else {
+        setImportError('Invalid configuration format. Please check your JSON and try again.');
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error during import';
+      console.error('[LayoutPreferencesPanel] Import failed:', errorMessage);
+      setImportError(`Import failed: ${errorMessage}`);
     }
   }, [importText, importConfig, onChange]);
 
   // Copy exported config to clipboard
   const handleCopyToClipboard = useCallback(() => {
-    navigator.clipboard.writeText(exportedConfig);
-    alert('Configuration copied to clipboard!');
+    try {
+      navigator.clipboard.writeText(exportedConfig)
+        .then(() => {
+          alert('Configuration copied to clipboard!');
+        })
+        .catch((error) => {
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error during clipboard operation';
+          console.error('[LayoutPreferencesPanel] Clipboard copy failed:', errorMessage);
+          alert(`Failed to copy to clipboard: ${errorMessage}`);
+        });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error during clipboard operation';
+      console.error('[LayoutPreferencesPanel] Clipboard copy failed:', errorMessage);
+      alert(`Failed to copy to clipboard: ${errorMessage}`);
+    }
   }, [exportedConfig]);
 
   // Download exported config
   const handleDownload = useCallback(() => {
-    const blob = new Blob([exportedConfig], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `layout-preferences-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    try {
+      const blob = new Blob([exportedConfig], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `layout-preferences-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error during download';
+      console.error('[LayoutPreferencesPanel] Download failed:', errorMessage);
+      alert(`Failed to download configuration: ${errorMessage}`);
+    }
   }, [exportedConfig]);
 
   // Count presets per diagram type (used for future analytics)

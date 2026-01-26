@@ -94,12 +94,18 @@ export async function exportAsPNG(
   reactFlowContainer: HTMLElement,
   filename: string = 'business-layer.png'
 ): Promise<void> {
-  console.log('[BusinessExportService] Exporting as PNG:', filename);
-  await exportReactFlowAsPNG(reactFlowContainer, filename, {
-    backgroundColor: '#ffffff',
-    quality: 1.0,
-    pixelRatio: 2
-  });
+  try {
+    console.log('[BusinessExportService] Exporting as PNG:', filename);
+    await exportReactFlowAsPNG(reactFlowContainer, filename, {
+      backgroundColor: '#ffffff',
+      quality: 1.0,
+      pixelRatio: 2
+    });
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error during PNG export';
+    console.error('[BusinessExportService] PNG export failed:', errorMessage);
+    throw error;
+  }
 }
 
 /**
@@ -109,10 +115,16 @@ export async function exportAsSVG(
   reactFlowContainer: HTMLElement,
   filename: string = 'business-layer.svg'
 ): Promise<void> {
-  console.log('[BusinessExportService] Exporting as SVG:', filename);
-  await exportReactFlowAsSVG(reactFlowContainer, filename, {
-    backgroundColor: '#ffffff'
-  });
+  try {
+    console.log('[BusinessExportService] Exporting as SVG:', filename);
+    await exportReactFlowAsSVG(reactFlowContainer, filename, {
+      backgroundColor: '#ffffff'
+    });
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error during SVG export';
+    console.error('[BusinessExportService] SVG export failed:', errorMessage);
+    throw error;
+  }
 }
 
 /**
