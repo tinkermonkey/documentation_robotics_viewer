@@ -14,6 +14,7 @@ import { memo } from 'react';
 import { Card, Button, Select, Label, ToggleSwitch, Spinner } from 'flowbite-react';
 import { Grid, X } from 'lucide-react';
 import { LayoutOption, ExportOption } from './types';
+import { wrapRenderPropVoid } from './RenderPropErrorBoundary';
 
 /**
  * Render prop for custom sections
@@ -145,7 +146,7 @@ function BaseControlPanelComponent<TLayout extends string = string>(
   return (
     <div data-testid={testId} className={`control-panel space-y-4 ${className}`}>
       {/* Custom render slot before layout selector */}
-      {renderBeforeLayout && renderBeforeLayout()}
+      {wrapRenderPropVoid(renderBeforeLayout, 'renderBeforeLayout')}
 
       {/* Domain-specific controls slot (rendered BEFORE layout selector) */}
       {children && (
@@ -184,7 +185,7 @@ function BaseControlPanelComponent<TLayout extends string = string>(
       </Card>
 
       {/* Custom content between layout and view controls */}
-      {renderBetweenLayoutAndView && renderBetweenLayoutAndView()}
+      {wrapRenderPropVoid(renderBetweenLayoutAndView, 'renderBetweenLayoutAndView')}
 
       {/* Fit to View Button */}
       <Card className="dark:bg-gray-800 dark:border-gray-700" data-testid={`${testId}-fit-view-card`}>
@@ -202,7 +203,7 @@ function BaseControlPanelComponent<TLayout extends string = string>(
       </Card>
 
       {/* Custom content between view and focus */}
-      {renderBetweenViewAndFocus && renderBetweenViewAndFocus()}
+      {wrapRenderPropVoid(renderBetweenViewAndFocus, 'renderBetweenViewAndFocus')}
 
       {/* Focus Mode Toggle */}
       {onFocusModeToggle && (
@@ -221,7 +222,7 @@ function BaseControlPanelComponent<TLayout extends string = string>(
       )}
 
       {/* Custom content between focus and clear highlighting */}
-      {renderBetweenFocusAndClear && renderBetweenFocusAndClear()}
+      {wrapRenderPropVoid(renderBetweenFocusAndClear, 'renderBetweenFocusAndClear')}
 
       {/* Clear Highlighting Button */}
       {onClearHighlighting && isHighlightingActive && (
@@ -282,7 +283,7 @@ function BaseControlPanelComponent<TLayout extends string = string>(
       )}
 
       {/* Custom render slot for controls (e.g., export buttons from render prop) */}
-      {renderControls && renderControls()}
+      {wrapRenderPropVoid(renderControls, 'renderControls')}
 
       {/* Loading Indicator */}
       {isLayouting && (

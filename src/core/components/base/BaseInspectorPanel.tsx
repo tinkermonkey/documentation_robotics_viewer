@@ -11,6 +11,7 @@ import { memo } from 'react';
 import { Card, Badge, Button } from 'flowbite-react';
 import { X, ArrowUp, ArrowDown } from 'lucide-react';
 import type { BaseGraph, BaseNode, BaseEdge, QuickAction } from './types';
+import { wrapRenderProp, wrapRenderProp2, wrapRenderPropVoid } from './RenderPropErrorBoundary';
 
 export interface BaseInspectorPanelProps<
   TGraph extends BaseGraph<TNode, TEdge>,
@@ -159,7 +160,7 @@ function BaseInspectorPanelComponent<
           {/* Element Details Card */}
           <Card data-testid={`${testId}-element-details-card`}>
             <h4 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Element Details</h4>
-            {renderElementDetails(selectedNode)}
+            {wrapRenderProp(renderElementDetails, selectedNode, 'renderElementDetails')}
           </Card>
 
           {/* Relationships Card */}
@@ -180,7 +181,7 @@ function BaseInspectorPanelComponent<
                     return (
                       <li key={edge.id} className="text-sm border-l-2 border-blue-400 pl-2">
                         {renderRelationshipBadge ? (
-                          renderRelationshipBadge(edge)
+                          wrapRenderProp(renderRelationshipBadge, edge, 'renderRelationshipBadge')
                         ) : (
                           <Badge color="info" size="sm" className="mb-1">
                             {getEdgeType(edge)}
@@ -211,7 +212,7 @@ function BaseInspectorPanelComponent<
                     return (
                       <li key={edge.id} className="text-sm border-l-2 border-green-400 pl-2">
                         {renderRelationshipBadge ? (
-                          renderRelationshipBadge(edge)
+                          wrapRenderProp(renderRelationshipBadge, edge, 'renderRelationshipBadge')
                         ) : (
                           <Badge color="success" size="sm" className="mb-1">
                             {getEdgeType(edge)}
@@ -262,9 +263,9 @@ function BaseInspectorPanelComponent<
           )}
 
           {/* Cross-Layer Links Card (optional) */}
-          {renderCrossLayerLinks && renderCrossLayerLinks(selectedNode, graph) && (
+          {renderCrossLayerLinks && wrapRenderProp2(renderCrossLayerLinks, selectedNode, graph, 'renderCrossLayerLinks') && (
             <Card data-testid={`${testId}-cross-layer-links-card`}>
-              {renderCrossLayerLinks(selectedNode, graph)}
+              {wrapRenderProp2(renderCrossLayerLinks, selectedNode, graph, 'renderCrossLayerLinks')}
             </Card>
           )}
         </div>
