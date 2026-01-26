@@ -666,28 +666,41 @@ test('should add annotation to store', () => {
 
 ```typescript
 interface GraphViewSidebarProps {
-  sections: Array<{
-    id: string;
-    title: string;
-    component: React.ReactNode;
-    icon?: React.ReactNode;
-  }>;
-  defaultOpenSections?: string[];
-  collapsible?: boolean;
+  /** Content for the Filters accordion section */
+  filterPanel: React.ReactNode;
+  /** Content for the Controls accordion section */
+  controlPanel: React.ReactNode;
+  /** Content for the Inspector accordion section (optional, conditional) */
+  inspectorContent?: React.ReactNode;
+  /** Whether to show the Inspector section */
+  inspectorVisible?: boolean;
+  /** Optional annotation panel content */
+  annotationPanel?: React.ReactNode;
+  /** Custom test ID for the sidebar */
+  testId?: string;
+  /** Sections to open by default (defaults to ['filters', 'controls']) */
+  defaultOpenSections?: ('filters' | 'controls' | 'annotations' | 'inspector')[];
 }
 
+// Usage Example
 <GraphViewSidebar
-  sections={sections}
-  defaultOpenSections={['overview']}
+  filterPanel={<MotivationFilterPanel {...filterProps} />}
+  controlPanel={<MotivationControlPanel {...controlProps} />}
+  inspectorContent={selectedNodeId && <MotivationInspectorPanel {...inspectorProps} />}
+  inspectorVisible={!!selectedNodeId}
+  testId="motivation-right-sidebar"
+  defaultOpenSections={['filters', 'controls']}
 />
 ```
+
+**Section Order**: Inspector (if visible), Filters, Controls, Annotations (if provided)
 
 Benefits:
 - ✅ Consistent UI across all routes
 - ✅ Reusable state management for open/closed sections
 - ✅ Reduced code duplication (was ~500 lines per sidebar)
-- ✅ Type-safe section configuration
-- ✅ Easy to add new sections without code changes
+- ✅ Type-safe named props
+- ✅ Conditional inspector panel rendering
 
 ### Styling Rules
 

@@ -8,7 +8,7 @@
 import { test, expect } from '@playwright/test';
 import {
   isValidDiagramType,
-  isValidEngineType,
+  isValidLayoutAlgorithm,
   isValidMotivationLayout,
   isValidC4Layout,
   isValidBusinessLayout,
@@ -47,22 +47,22 @@ test.describe('Validation Utils', () => {
     });
   });
 
-  test.describe('isValidEngineType', () => {
+  test.describe('isValidLayoutAlgorithm', () => {
     test('should reject invalid engine types', () => {
-      expect(isValidEngineType('invalid-engine')).toBe(false);
-      expect(isValidEngineType('')).toBe(false);
-      expect(isValidEngineType(null)).toBe(false);
+      expect(isValidLayoutAlgorithm('invalid-engine')).toBe(false);
+      expect(isValidLayoutAlgorithm('')).toBe(false);
+      expect(isValidLayoutAlgorithm(null)).toBe(false);
     });
 
     test('should accept valid engine types', () => {
-      expect(isValidEngineType('vertical')).toBe(true);
-      expect(isValidEngineType('hierarchical')).toBe(true);
-      expect(isValidEngineType('force')).toBe(true);
-      expect(isValidEngineType('swimlane')).toBe(true);
-      expect(isValidEngineType('matrix')).toBe(true);
-      expect(isValidEngineType('radial')).toBe(true);
-      expect(isValidEngineType('orthogonal')).toBe(true);
-      expect(isValidEngineType('manual')).toBe(true);
+      expect(isValidLayoutAlgorithm('vertical')).toBe(true);
+      expect(isValidLayoutAlgorithm('hierarchical')).toBe(true);
+      expect(isValidLayoutAlgorithm('force')).toBe(true);
+      expect(isValidLayoutAlgorithm('swimlane')).toBe(true);
+      expect(isValidLayoutAlgorithm('matrix')).toBe(true);
+      expect(isValidLayoutAlgorithm('radial')).toBe(true);
+      expect(isValidLayoutAlgorithm('orthogonal')).toBe(true);
+      expect(isValidLayoutAlgorithm('manual')).toBe(true);
     });
   });
 
@@ -287,13 +287,13 @@ test.describe('Layout Preferences Store Validation', () => {
   test('should have validation utilities available for store actions', () => {
     // Test that all validators are exported and work correctly
     expect(typeof isValidDiagramType).toBe('function');
-    expect(typeof isValidEngineType).toBe('function');
+    expect(typeof isValidLayoutAlgorithm).toBe('function');
     expect(typeof isValidPresetName).toBe('function');
     expect(typeof isValidPresetId).toBe('function');
 
     // Test common patterns
     expect(isValidDiagramType('business')).toBe(true);
-    expect(isValidEngineType('hierarchical')).toBe(true);
+    expect(isValidLayoutAlgorithm('hierarchical')).toBe(true);
     expect(isValidPresetName('My Preset')).toBe(true);
     expect(isValidPresetId('preset-123')).toBe(true);
   });

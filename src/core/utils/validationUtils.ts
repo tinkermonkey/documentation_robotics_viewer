@@ -6,7 +6,6 @@
  */
 
 import type { DiagramType } from '../types/diagram';
-import type { LayoutEngineType } from '../layout/engines/LayoutEngine';
 
 // ============================================================================
 // Diagram and Layout Type Validators
@@ -24,9 +23,10 @@ const VALID_DIAGRAM_TYPES: DiagramType[] = [
 ];
 
 /**
- * Valid layout engine types
+ * Valid layout algorithm names (not engine types)
+ * These are the user-facing layout names used across the application
  */
-const VALID_ENGINE_TYPES: LayoutEngineType[] = [
+const VALID_LAYOUT_ALGORITHMS = [
   'vertical',
   'hierarchical',
   'force',
@@ -35,7 +35,7 @@ const VALID_ENGINE_TYPES: LayoutEngineType[] = [
   'radial',
   'orthogonal',
   'manual',
-];
+] as const;
 
 /**
  * Motivation layout types
@@ -87,10 +87,10 @@ export function isValidDiagramType(value: unknown): value is DiagramType {
 }
 
 /**
- * Check if value is a valid layout engine type
+ * Check if value is a valid layout algorithm name
  */
-export function isValidEngineType(value: unknown): value is LayoutEngineType {
-  return typeof value === 'string' && VALID_ENGINE_TYPES.includes(value as LayoutEngineType);
+export function isValidLayoutAlgorithm(value: unknown): value is typeof VALID_LAYOUT_ALGORITHMS[number] {
+  return typeof value === 'string' && VALID_LAYOUT_ALGORITHMS.includes(value as any);
 }
 
 /**
