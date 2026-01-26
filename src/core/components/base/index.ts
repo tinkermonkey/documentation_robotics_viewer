@@ -8,5 +8,5 @@
 export { BaseInspectorPanel } from './BaseInspectorPanel';
 export type { BaseInspectorPanelProps } from './BaseInspectorPanel';
 export { BaseControlPanel } from './BaseControlPanel';
-export type { BaseControlPanelProps, LayoutOption, ControlPanelRenderSlot } from './BaseControlPanel';
-export type { BaseNode, BaseEdge, BaseGraph, QuickAction } from './types';
+export type { BaseControlPanelProps, ControlPanelRenderSlot } from './BaseControlPanel';
+export type { BaseNode, BaseEdge, BaseGraph, QuickAction, LayoutOption, ExportOption } from './types';

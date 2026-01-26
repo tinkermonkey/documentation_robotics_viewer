@@ -151,8 +151,10 @@ export interface QuickAction<TNode extends BaseNode> {
  *
  * Defines available layout algorithms and their descriptions
  *
+ * @template TLayout - Layout type string for type-safe layout selection
+ *
  * @example
- * const layoutOptions: LayoutOption[] = [
+ * const layoutOptions: LayoutOption<LayoutAlgorithm>[] = [
  *   {
  *     value: 'force',
  *     label: 'Force-Directed',
@@ -165,13 +167,48 @@ export interface QuickAction<TNode extends BaseNode> {
  *   },
  * ];
  */
-export interface LayoutOption {
+export interface LayoutOption<TLayout extends string = string> {
   /** Layout identifier */
-  value: string;
+  value: TLayout;
 
   /** Display label */
   label: string;
 
   /** Description shown below selector */
   description: string;
+}
+
+/**
+ * Export option configuration for control panels
+ *
+ * Defines available export formats with associated icons and callbacks
+ *
+ * @example
+ * const exportOptions: ExportOption[] = [
+ *   {
+ *     type: 'png',
+ *     label: 'Export as PNG',
+ *     icon: ImageIcon,
+ *     onClick: () => exportAsPNG(),
+ *   },
+ *   {
+ *     type: 'json',
+ *     label: 'Export as JSON',
+ *     icon: FileIcon,
+ *     onClick: () => exportAsJSON(),
+ *   },
+ * ];
+ */
+export interface ExportOption {
+  /** Export format identifier */
+  type: string;
+
+  /** Button display label */
+  label: string;
+
+  /** Icon component to display */
+  icon: React.ComponentType<{ className?: string }>;
+
+  /** Callback when export button is clicked */
+  onClick: () => void;
 }
