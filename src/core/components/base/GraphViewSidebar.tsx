@@ -5,7 +5,7 @@
  * Eliminates duplication between different graph view sidebars
  */
 
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { Accordion, AccordionPanel, AccordionTitle, AccordionContent } from 'flowbite-react';
 
 export interface GraphViewSidebarProps {
@@ -21,7 +21,7 @@ export interface GraphViewSidebarProps {
   annotationPanel?: React.ReactNode;
   /** Custom test ID for the sidebar */
   testId?: string;
-  /** Sections to open by default. Note: Flowbite Accordion doesn't support initial open state, so this is documented for future enhancement */
+  /** Sections to open by default (defaults to ['filters', 'controls']) */
   defaultOpenSections?: ('filters' | 'controls' | 'annotations' | 'inspector')[];
 }
 
@@ -41,9 +41,8 @@ export interface GraphViewSidebarProps {
  * />
  * ```
  *
- * Note: The `defaultOpenSections` prop is provided for API compatibility with requirements,
- * but Flowbite's Accordion component doesn't natively support controlling initial open state.
  * Sections appear in order: Inspector (if visible), Filters, Controls, Annotations (if provided).
+ * The `defaultOpenSections` prop controls which sections are open when the component mounts.
  */
 export const GraphViewSidebar = memo(({
   filterPanel,
@@ -52,43 +51,59 @@ export const GraphViewSidebar = memo(({
   inspectorVisible = false,
   annotationPanel,
   testId = 'graph-view-sidebar',
-  defaultOpenSections, // Prop provided for API compatibility with requirements; Flowbite doesn't support controlling initial open state
+  defaultOpenSections = ['filters', 'controls'],
 }: GraphViewSidebarProps) => {
-  // Suppress unused variable warning - prop is documented in interface for future enhancement
-  void defaultOpenSections;
-  const inspectorSection = inspectorVisible && inspectorContent ? (
-    <AccordionPanel data-testid={`${testId}-inspector-section`}>
-      <AccordionTitle data-testid={`${testId}-inspector-title`}>
-        <span className="text-sm font-semibold">Inspector</span>
-      </AccordionTitle>
-      <AccordionContent data-testid={`${testId}-inspector-content`}>
-        {inspectorContent}
-      </AccordionContent>
-    </AccordionPanel>
-  ) : null;
+  // Initialize open state based on defaultOpenSections
+  const [openSections, setOpenSections] = useState<Set<string>>(() => {
+    return new Set(defaultOpenSections);
+  });
 
-  const annotationsSection = annotationPanel ? (
-    <AccordionPanel data-testid={`${testId}-annotations-section`}>
-      <AccordionTitle data-testid={`${testId}-annotations-title`}>
-        <span className="text-sm font-semibold">Annotations</span>
-      </AccordionTitle>
-      <AccordionContent data-testid={`${testId}-annotations-content`}>
-        {annotationPanel}
-      </AccordionContent>
-    </AccordionPanel>
-  ) : null;
-
+  // Memoize the toggle handler to avoid creating new function on each render
+  const toggleSection = (sectionId: string) => {
+    setOpenSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(sectionId)) {
+        next.delete(sectionId);
+      } else {
+        next.add(sectionId);
+      }
+      return next;
+    });
+  };
   const panelElements: React.ReactElement[] = [];
 
   // Inspector Section (conditional, appears first)
-  if (inspectorSection) {
-    panelElements.push(inspectorSection);
+  if (inspectorVisible && inspectorContent) {
+    panelElements.push(
+      <AccordionPanel
+        key="inspector"
+        isOpen={openSections.has('inspector')}
+        data-testid={`${testId}-inspector-section`}
+      >
+        <AccordionTitle
+          onClick={() => toggleSection('inspector')}
+          data-testid={`${testId}-inspector-title`}
+        >
+          <span className="text-sm font-semibold">Inspector</span>
+        </AccordionTitle>
+        <AccordionContent data-testid={`${testId}-inspector-content`}>
+          {inspectorContent}
+        </AccordionContent>
+      </AccordionPanel>
+    );
   }
 
   // Filters Section
   panelElements.push(
-    <AccordionPanel key="filters" data-testid={`${testId}-filters-section`}>
-      <AccordionTitle data-testid={`${testId}-filters-title`}>
+    <AccordionPanel
+      key="filters"
+      isOpen={openSections.has('filters')}
+      data-testid={`${testId}-filters-section`}
+    >
+      <AccordionTitle
+        onClick={() => toggleSection('filters')}
+        data-testid={`${testId}-filters-title`}
+      >
         <span className="text-sm font-semibold">Filters</span>
       </AccordionTitle>
       <AccordionContent data-testid={`${testId}-filters-content`}>
@@ -99,8 +114,15 @@ export const GraphViewSidebar = memo(({
 
   // Controls Section
   panelElements.push(
-    <AccordionPanel key="controls" data-testid={`${testId}-controls-section`}>
-      <AccordionTitle data-testid={`${testId}-controls-title`}>
+    <AccordionPanel
+      key="controls"
+      isOpen={openSections.has('controls')}
+      data-testid={`${testId}-controls-section`}
+    >
+      <AccordionTitle
+        onClick={() => toggleSection('controls')}
+        data-testid={`${testId}-controls-title`}
+      >
         <span className="text-sm font-semibold">Controls</span>
       </AccordionTitle>
       <AccordionContent data-testid={`${testId}-controls-content`}>
@@ -110,8 +132,24 @@ export const GraphViewSidebar = memo(({
   );
 
   // Annotations Section (uses provided content)
-  if (annotationsSection) {
-    panelElements.push(annotationsSection);
+  if (annotationPanel) {
+    panelElements.push(
+      <AccordionPanel
+        key="annotations"
+        isOpen={openSections.has('annotations')}
+        data-testid={`${testId}-annotations-section`}
+      >
+        <AccordionTitle
+          onClick={() => toggleSection('annotations')}
+          data-testid={`${testId}-annotations-title`}
+        >
+          <span className="text-sm font-semibold">Annotations</span>
+        </AccordionTitle>
+        <AccordionContent data-testid={`${testId}-annotations-content`}>
+          {annotationPanel}
+        </AccordionContent>
+      </AccordionPanel>
+    );
   }
 
   // Type assertion needed because Flowbite's Accordion children type doesn't properly
