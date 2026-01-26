@@ -12,6 +12,29 @@ import AttributesTable, { AttributeRow } from './common/AttributesTable';
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid';
 import { useAnnotationStore } from '../stores/annotationStore';
 
+/**
+ * Schema property definition with type information
+ */
+interface SchemaProperty {
+  type?: string;
+  description?: string;
+  properties?: Record<string, unknown>;
+}
+
+/**
+ * Model element with properties
+ */
+interface ModelElement {
+  id: string;
+  name?: string;
+  type: string;
+  documentation?: string;
+  properties?: Record<string, unknown>;
+  visual?: Record<string, unknown>;
+  layerId?: string;
+  [key: string]: unknown;
+}
+
 interface ModelJSONViewerProps {
   model: MetaModel;
   linkRegistry?: {
@@ -42,8 +65,8 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
     let foundPath: string | null = null;
 
     for (const [layerName, layer] of Object.entries(model.layers)) {
-      const elements = layer.elements || [];
-      const elementIndex = elements.findIndex((el: any) => el.id === highlightedElementId);
+      const elements = (layer.elements || []) as ModelElement[];
+      const elementIndex = elements.findIndex((el: ModelElement) => el.id === highlightedElementId);
 
       if (elementIndex !== -1) {
         const element = elements[elementIndex];
@@ -293,10 +316,10 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
       );
     }
     
-    const elements = actualLayer.elements || [];
+    const elements = (actualLayer.elements || []) as ModelElement[];
 
     // Group elements by type
-    const elementsByType = elements.reduce((acc: Record<string, any[]>, element: any) => {
+    const elementsByType = elements.reduce((acc: Record<string, ModelElement[]>, element: ModelElement) => {
       const type = element.type || 'unknown';
       if (!acc[type]) {
         acc[type] = [];
@@ -378,13 +401,16 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
                             <div className="text-sm">
                               <strong className="text-gray-900 dark:text-white">Properties:</strong>
                               <ul className="mt-2 space-y-1 ml-4">
-                                {Object.entries(typeSchema.properties).map(([propName, propDef]: [string, any]) => (
-                                  <li key={propName} className="text-gray-700 dark:text-gray-300">
-                                    <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">{propName}</code>
-                                    {propDef.type && <span className="text-gray-500"> ({propDef.type})</span>}
-                                    {propDef.description && <span> - {propDef.description}</span>}
-                                  </li>
-                                ))}
+                                {Object.entries(typeSchema.properties).map(([propName, propDef]) => {
+                                  const propSchema = propDef as SchemaProperty;
+                                  return (
+                                    <li key={propName} className="text-gray-700 dark:text-gray-300">
+                                      <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">{propName}</code>
+                                      {propSchema.type && <span className="text-gray-500"> ({propSchema.type})</span>}
+                                      {propSchema.description && <span> - {propSchema.description}</span>}
+                                    </li>
+                                  );
+                                })}
                               </ul>
                             </div>
                           )}
@@ -393,7 +419,7 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
 
                       {/* Elements of this type */}
                       <div className="space-y-3">
-                        {typeElements.map((element: any) => {
+                        {typeElements.map((element: ModelElement) => {
                           // Build attributes array
                           const attributes: AttributeRow[] = [];
 

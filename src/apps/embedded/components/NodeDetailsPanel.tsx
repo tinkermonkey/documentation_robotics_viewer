@@ -24,6 +24,7 @@ function isBaseNodeData(data: unknown): data is BaseNodeData {
   return (
     typeof obj.label === 'string' &&
     typeof obj.stroke === 'string' &&
+    typeof obj.fill === 'string' &&
     typeof obj.elementId === 'string' &&
     typeof obj.layerId === 'string'
   );

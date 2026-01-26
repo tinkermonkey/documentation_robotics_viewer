@@ -5,7 +5,7 @@
  * and configuration export/import.
  */
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useLayoutPreferencesStore } from '../../../core/stores/layoutPreferencesStore';
 import type { DiagramType } from '../../../core/types/diagram';
 import type { LayoutEngineType } from '../../../core/layout/engines/LayoutEngine';
@@ -143,15 +143,6 @@ export const LayoutPreferencesPanel: React.FC<LayoutPreferencesPanelProps> = ({
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }, [exportedConfig]);
-
-  // Count presets per diagram type (used for future analytics)
-  useMemo(() => {
-    const counts: Partial<Record<DiagramType, number>> = {};
-    presets.forEach((preset) => {
-      counts[preset.diagramType] = (counts[preset.diagramType] || 0) + 1;
-    });
-    return counts;
-  }, [presets]);
 
   return (
     <div

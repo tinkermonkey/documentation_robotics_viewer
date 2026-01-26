@@ -12,6 +12,15 @@ interface ChangesetListProps {
   onChangesetSelect: (changesetId: string) => void;
 }
 
+type ChangesetStatus = 'active' | 'applied' | 'abandoned';
+
+/**
+ * Type guard to validate ChangesetStatus enum values
+ */
+function isValidChangesetStatus(status: string): status is ChangesetStatus {
+  return status === 'active' || status === 'applied' || status === 'abandoned';
+}
+
 const ChangesetList: React.FC<ChangesetListProps> = ({ onChangesetSelect }) => {
   const { changesets, selectedChangesetId } = useChangesetStore();
 
@@ -34,12 +43,6 @@ const ChangesetList: React.FC<ChangesetListProps> = ({ onChangesetSelect }) => {
       case 'exploration': return '🔍';
       default: return '📝';
     }
-  };
-
-  type ChangesetStatus = 'active' | 'applied' | 'abandoned';
-
-  const isValidChangesetStatus = (status: string): status is ChangesetStatus => {
-    return status === 'active' || status === 'applied' || status === 'abandoned';
   };
 
   const getStatusBadge = (status: string) => {
