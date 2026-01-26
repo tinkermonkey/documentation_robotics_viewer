@@ -43,7 +43,9 @@ test.describe('ForceDirectedBusinessLayout', () => {
       edges.set(`edge-${i}`, {
         id: `edge-${i}`,
         source: `node-${i}`,
+        sourceId: `node-${i}`,
         target: `node-${i + 1}`,
+        targetId: `node-${i + 1}`,
         type: 'flows_to',
       });
     }
@@ -130,7 +132,9 @@ test.describe('ForceDirectedBusinessLayout', () => {
     edges.set('edge-1', {
       id: 'edge-1',
       source: 'node-1',
+      sourceId: 'node-1',
       target: 'node-2',
+      targetId: 'node-2',
       type: 'flows_to',
     });
 
@@ -213,14 +217,18 @@ test.describe('ForceDirectedBusinessLayout', () => {
     edges.set('edge-1', {
       id: 'edge-1',
       source: 'node-1',
+      sourceId: 'node-1',
       target: 'node-2',
+      targetId: 'node-2',
       type: 'composes',
     });
     // Non-hierarchy edge
     edges.set('edge-2', {
       id: 'edge-2',
       source: 'node-1',
+      sourceId: 'node-1',
       target: 'node-3',
+      targetId: 'node-3',
       type: 'flows_to',
     });
 
@@ -289,7 +297,9 @@ test.describe('ForceDirectedBusinessLayout', () => {
       edges.set(`edge-${i}`, {
         id: `edge-${i}`,
         source: `node-${i}`,
+        sourceId: `node-${i}`,
         target: `node-${i + 1}`,
+        targetId: `node-${i + 1}`,
         type: 'flows_to',
       });
     }
