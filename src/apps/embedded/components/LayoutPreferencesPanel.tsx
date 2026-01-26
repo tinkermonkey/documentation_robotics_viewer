@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * LayoutPreferencesPanel Component
  *
@@ -85,6 +84,9 @@ export const LayoutPreferencesPanel: React.FC<LayoutPreferencesPanelProps> = ({
         clearDefaultEngine(diagramType);
       } else if (isValidLayoutEngine(engineType)) {
         setDefaultEngine(diagramType, engineType);
+      } else {
+        // Log warning for debugging - helps identify malformed engine values
+        console.warn(`[LayoutPreferencesPanel] Invalid layout engine rejected for ${diagramType}: ${engineType}`);
       }
       onChange?.();
     },

@@ -71,6 +71,20 @@ export enum CommunicationDirection {
 }
 
 /**
+ * Pre-computed array of valid ContainerType values
+ * Avoids runtime overhead of Object.values() on each iteration
+ */
+export const VALID_CONTAINER_TYPES = Object.values(ContainerType) as ContainerType[];
+
+/**
+ * Type guard to validate ContainerType enum values
+ * Used across multiple files (ArchitectureRoute, c4ExportService) for consistent validation
+ */
+export const isValidContainerType = (value: unknown): value is ContainerType => {
+  return VALID_CONTAINER_TYPES.includes(value as ContainerType);
+};
+
+/**
  * C4 graph node representing a system, container, component, or external actor
  */
 export interface C4Node {

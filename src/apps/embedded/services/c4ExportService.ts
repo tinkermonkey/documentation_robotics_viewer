@@ -8,19 +8,12 @@
 
 import { Node, Edge } from '@xyflow/react';
 import { exportReactFlowAsPNG, exportReactFlowAsSVG, downloadJSON } from '@/core/services/exportUtils';
-import { C4Graph, C4Type, ContainerType, ProtocolType } from '../types/c4Graph';
+import { C4Graph, C4Type, ContainerType, ProtocolType, isValidContainerType } from '../types/c4Graph';
 
 // Debug logging helper - only logs in development mode
 const DEBUG = import.meta.env.DEV;
 const debugLog = (...args: unknown[]) => {
   if (DEBUG) console.log(...args);
-};
-
-/**
- * Type guard to validate ContainerType enum values
- */
-const isValidContainerType = (value: unknown): value is ContainerType => {
-  return Object.values(ContainerType).includes(value as ContainerType);
 };
 
 /**

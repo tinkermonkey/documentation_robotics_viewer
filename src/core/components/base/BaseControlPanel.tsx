@@ -167,6 +167,9 @@ function BaseControlPanelComponent<TLayout extends string = string>(
               const newValue = e.target.value;
               if (layoutOptions.some((opt) => opt.value === newValue)) {
                 onLayoutChange(newValue as TLayout);
+              } else {
+                // Log warning for debugging - helps identify malformed select values
+                console.warn(`[BaseControlPanel] Invalid layout value rejected: ${newValue}`);
               }
             }}
             disabled={isLayouting}

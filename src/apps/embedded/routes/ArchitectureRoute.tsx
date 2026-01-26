@@ -17,7 +17,7 @@ import { embeddedDataLoader } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
 import { LoadingState, ErrorState } from '../components/shared';
 import { ExportButtonGroup } from '../components/shared/ExportButtonGroup';
-import { C4Graph, ContainerType, C4ViewLevel } from '../types/c4Graph';
+import { C4Graph, ContainerType, C4ViewLevel, VALID_CONTAINER_TYPES } from '../types/c4Graph';
 import { C4LayoutAlgorithm } from '../components/C4ControlPanel';
 import { C4GraphBuilder } from '../services/c4Parser';
 import {
@@ -30,13 +30,6 @@ import {
 const DEBUG = import.meta.env.DEV;
 const debugLog = (...args: unknown[]) => {
   if (DEBUG) console.log(...args);
-};
-
-/**
- * Type guard to validate ContainerType enum values
- */
-const isValidContainerType = (value: unknown): value is ContainerType => {
-  return Object.values(ContainerType).includes(value as ContainerType);
 };
 
 function ArchitectureRouteContent() {
@@ -129,11 +122,9 @@ function ArchitectureRouteContent() {
   // Calculate filter counts
   const filterCounts = useMemo(() => {
     if (!fullGraphRef.current) {
-      const emptyContainerCounts: Record<ContainerType, { visible: number; total: number }> = Object.values(ContainerType).reduce(
+      const emptyContainerCounts: Record<ContainerType, { visible: number; total: number }> = VALID_CONTAINER_TYPES.reduce(
         (acc, type) => {
-          if (isValidContainerType(type)) {
-            acc[type] = { visible: 0, total: 0 };
-          }
+          acc[type] = { visible: 0, total: 0 };
           return acc;
         },
         {} as Record<ContainerType, { visible: number; total: number }>
@@ -148,17 +139,14 @@ function ArchitectureRouteContent() {
     const graph = fullGraphRef.current;
 
     // Count by container type
-    const containerTypeCounts: Record<ContainerType, { visible: number; total: number }> = Object.values(ContainerType).reduce(
+    const containerTypeCounts: Record<ContainerType, { visible: number; total: number }> = VALID_CONTAINER_TYPES.reduce(
       (acc, type) => {
-        if (isValidContainerType(type)) {
-          acc[type] = { visible: 0, total: 0 };
-        }
+        acc[type] = { visible: 0, total: 0 };
         return acc;
       },
       {} as Record<ContainerType, { visible: number; total: number }>
     );
-    for (const containerType of Object.values(ContainerType)) {
-      if (!isValidContainerType(containerType)) continue;
+    for (const containerType of VALID_CONTAINER_TYPES) {
       const typeNodes = graph.indexes.byContainerType.get(containerType);
       const total = typeNodes?.size || 0;
       const visible = selectedContainerTypes.has(containerType) ? total : 0;

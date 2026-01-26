@@ -61,7 +61,7 @@ export interface MotivationControlPanelProps {
 /**
  * Layout algorithm options
  */
-const LAYOUT_OPTIONS: LayoutOption[] = [
+const LAYOUT_OPTIONS: LayoutOption<LayoutAlgorithm>[] = [
   {
     value: 'force',
     label: 'Force-Directed',
@@ -84,12 +84,6 @@ const LAYOUT_OPTIONS: LayoutOption[] = [
   },
 ];
 
-/**
- * Type guard to validate layout algorithm values
- */
-const isValidLayoutAlgorithm = (value: unknown): value is LayoutAlgorithm => {
-  return LAYOUT_OPTIONS.some((opt) => opt.value === value);
-};
 
 /**
  * MotivationControlPanel Component
@@ -221,11 +215,7 @@ function MotivationControlPanelComponent(props: MotivationControlPanelProps) {
     <div className="motivation-control-panel">
       <BaseControlPanel
         selectedLayout={selectedLayout}
-        onLayoutChange={(layout) => {
-          if (isValidLayoutAlgorithm(layout)) {
-            onLayoutChange(layout);
-          }
-        }}
+        onLayoutChange={onLayoutChange}
         layoutOptions={LAYOUT_OPTIONS}
         onFitToView={onFitToView}
         focusModeEnabled={focusModeEnabled}
