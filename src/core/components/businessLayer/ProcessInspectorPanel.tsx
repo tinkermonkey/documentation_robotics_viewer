@@ -143,12 +143,9 @@ function renderProcessCrossLayerLinks(
                     <Badge color="gray" size="sm">
                       {link.type}
                     </Badge>
-                    <button
-                      className="text-blue-600 dark:text-blue-400 hover:underline text-xs"
-                      title={`Navigate to ${link.target}`}
-                    >
-                      View
-                    </button>
+                    <span className="text-blue-600 dark:text-blue-400 text-xs truncate">
+                      {link.target}
+                    </span>
                   </div>
                 </li>
               ))}

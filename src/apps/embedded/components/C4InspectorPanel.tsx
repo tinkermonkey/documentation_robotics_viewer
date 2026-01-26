@@ -64,7 +64,6 @@ const CONTAINER_TYPE_LABELS: Record<ContainerType, string> = {
 /**
  * Render element details for C4 layer
  */
-// @ts-ignore - Type constraint complexity with C4Node missing index signature
 function renderC4ElementDetails(node: C4Node): React.ReactNode {
   const typeConfig = C4_TYPE_CONFIG[node.c4Type];
 
@@ -80,21 +79,21 @@ function renderC4ElementDetails(node: C4Node): React.ReactNode {
         <Badge color={typeConfig.badgeColor as any}>{typeConfig.label}</Badge>
       </div>
 
-      {node.containerType && (
+      {node.containerType ? (
         <div className="flex justify-between">
           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Container Type:</span>
           <span className="text-sm">{CONTAINER_TYPE_LABELS[node.containerType]}</span>
         </div>
-      )}
+      ) : null}
 
-      {node.description && (
+      {node.description ? (
         <div>
           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Description:</span>
           <p className="text-sm mt-1">{node.description}</p>
         </div>
-      )}
+      ) : null}
 
-      {node.technology.length > 0 && (
+      {node.technology.length > 0 ? (
         <div>
           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Technology:</span>
           <div className="flex flex-wrap gap-1 mt-1">
@@ -105,18 +104,18 @@ function renderC4ElementDetails(node: C4Node): React.ReactNode {
             ))}
           </div>
         </div>
-      )}
+      ) : null}
 
-      {node.boundary && (
+      {node.boundary ? (
         <div className="flex justify-between items-center">
           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Boundary:</span>
           <Badge color={node.boundary === 'internal' ? 'success' : 'warning'}>
             {node.boundary === 'internal' ? 'Internal' : 'External'}
           </Badge>
         </div>
-      )}
+      ) : null}
 
-      {node.sourceElement && (
+      {node.sourceElement ? (
         <div>
           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Source Element:</span>
           <div className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded mt-1 space-y-1">
@@ -130,9 +129,9 @@ function renderC4ElementDetails(node: C4Node): React.ReactNode {
             </div>
           </div>
         </div>
-      )}
+      ) : null}
 
-      {node.changesetStatus && (
+      {node.changesetStatus ? (
         <div className="flex justify-between items-center">
           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Changeset:</span>
           <Badge
@@ -149,7 +148,7 @@ function renderC4ElementDetails(node: C4Node): React.ReactNode {
             {node.changesetStatus}
           </Badge>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
@@ -173,7 +172,6 @@ function renderC4RelationshipBadge(edge: C4Edge): React.ReactNode {
 /**
  * Create quick actions for C4 inspector
  */
-// @ts-ignore - QuickAction constraint issue with C4Node missing index signature
 function createC4QuickActions(
   selectedNodeId: string | null,
   node: C4Node | null,
