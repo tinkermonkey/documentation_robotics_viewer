@@ -1,10 +1,12 @@
 /**
  * Base Components
  *
- * Generic reusable components for building domain-specific inspector panels
- * and other generic visualization components.
+ * Generic reusable components for building domain-specific inspector panels,
+ * control panels, and other generic visualization components.
  */
 
 export { BaseInspectorPanel } from './BaseInspectorPanel';
 export type { BaseInspectorPanelProps } from './BaseInspectorPanel';
+export { BaseControlPanel } from './BaseControlPanel';
+export type { BaseControlPanelProps, LayoutOption, ControlPanelRenderSlot } from './BaseControlPanel';
 export type { BaseNode, BaseEdge, BaseGraph, QuickAction } from './types';

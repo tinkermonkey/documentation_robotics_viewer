@@ -145,3 +145,33 @@ export interface QuickAction<TNode extends BaseNode> {
   /** Optional test ID for E2E testing */
   testId?: string;
 }
+
+/**
+ * Layout option configuration for control panels
+ *
+ * Defines available layout algorithms and their descriptions
+ *
+ * @example
+ * const layoutOptions: LayoutOption[] = [
+ *   {
+ *     value: 'force',
+ *     label: 'Force-Directed',
+ *     description: 'Network layout using physics simulation',
+ *   },
+ *   {
+ *     value: 'hierarchical',
+ *     label: 'Hierarchical',
+ *     description: 'Top-down tree structure for goal hierarchies',
+ *   },
+ * ];
+ */
+export interface LayoutOption {
+  /** Layout identifier */
+  value: string;
+
+  /** Display label */
+  label: string;
+
+  /** Description shown below selector */
+  description: string;
+}

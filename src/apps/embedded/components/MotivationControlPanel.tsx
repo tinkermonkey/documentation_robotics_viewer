@@ -6,11 +6,14 @@
  * - "Fit to View" button
  * - Focus mode toggle
  * - Export and visualization controls
+ *
+ * Built on BaseControlPanel with slot-based composition for domain-specific sections.
  */
 
-import { Button, Select, Label, ToggleSwitch, Spinner } from 'flowbite-react';
-import { Grid, Download, X, FileText } from 'lucide-react';
-import {  } from '../types/layoutAlgorithm';
+import { memo } from 'react';
+import { Button, Label } from 'flowbite-react';
+import { Download, FileText } from 'lucide-react';
+import { BaseControlPanel, LayoutOption } from '@/core/components/base';
 
 export type LayoutAlgorithm = 'force' | 'hierarchical' | 'radial' | 'manual';
 
@@ -56,13 +59,9 @@ export interface MotivationControlPanelProps {
 }
 
 /**
- * Layout algorithm labels and descriptions
+ * Layout algorithm options
  */
-const LAYOUT_OPTIONS: Array<{
-  value: LayoutAlgorithm;
-  label: string;
-  description: string;
-}> = [
+const LAYOUT_OPTIONS: LayoutOption[] = [
   {
     value: 'force',
     label: 'Force-Directed',
@@ -87,175 +86,152 @@ const LAYOUT_OPTIONS: Array<{
 
 /**
  * MotivationControlPanel Component
+ *
+ * Uses BaseControlPanel for common sections and slot-based composition
+ * to inject changeset visualization and export controls.
  */
-export const MotivationControlPanel: React.FC<MotivationControlPanelProps> = ({
-  selectedLayout,
-  onLayoutChange,
-  onFitToView,
-  focusModeEnabled = false,
-  onFocusModeToggle,
-  onClearHighlighting,
-  isHighlightingActive = false,
-  isLayouting = false,
-  changesetVisualizationEnabled = false,
-  onChangesetVisualizationToggle,
-  hasChangesets = false,
-  onExportPNG,
-  onExportSVG,
-  onExportGraphData,
-  onExportTraceabilityReport,
-}) => {
+function MotivationControlPanelComponent(props: MotivationControlPanelProps) {
+  const {
+    selectedLayout,
+    onLayoutChange,
+    onFitToView,
+    focusModeEnabled = false,
+    onFocusModeToggle,
+    onClearHighlighting,
+    isHighlightingActive = false,
+    isLayouting = false,
+    changesetVisualizationEnabled = false,
+    onChangesetVisualizationToggle,
+    hasChangesets = false,
+    onExportPNG,
+    onExportSVG,
+    onExportGraphData,
+    onExportTraceabilityReport,
+  } = props;
+
+  // Render changeset visualization section
+  const renderChangesetVisualization = () => {
+    if (!onChangesetVisualizationToggle || !hasChangesets) {
+      return null;
+    }
+
+    return (
+      <div
+        className="control-panel-section"
+        key="changeset-viz"
+        data-testid="motivation-changeset-viz-section"
+      >
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={changesetVisualizationEnabled}
+            onChange={(e) => onChangesetVisualizationToggle(e.target.checked)}
+            disabled={isLayouting}
+            data-testid="motivation-changeset-toggle"
+            className="rounded border-gray-300"
+          />
+          <span className="text-sm font-medium text-gray-900 dark:text-white">Show Changesets</span>
+        </label>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          Highlight added, updated, and deleted elements
+        </p>
+      </div>
+    );
+  };
+
+  // Render export controls section
+  const renderExportControls = () => {
+    if (!onExportPNG && !onExportSVG && !onExportGraphData && !onExportTraceabilityReport) {
+      return null;
+    }
+
+    return (
+      <div
+        className="control-panel-section export-section"
+        key="exports"
+        data-testid="motivation-export-section"
+      >
+        <Label>Export</Label>
+        <div className="flex flex-col gap-2">
+          {onExportPNG && (
+            <Button
+              color="gray"
+              onClick={onExportPNG}
+              disabled={isLayouting}
+              size="sm"
+              title="Export as PNG"
+              data-testid="motivation-export-png"
+            >
+              <Download className="mr-2 h-4 w-4" />
+              PNG
+            </Button>
+          )}
+          {onExportSVG && (
+            <Button
+              color="gray"
+              onClick={onExportSVG}
+              disabled={isLayouting}
+              size="sm"
+              title="Export as SVG"
+              data-testid="motivation-export-svg"
+            >
+              <Download className="mr-2 h-4 w-4" />
+              SVG
+            </Button>
+          )}
+          {onExportGraphData && (
+            <Button
+              color="gray"
+              onClick={onExportGraphData}
+              disabled={isLayouting}
+              size="sm"
+              title="Export Graph Data"
+              data-testid="motivation-export-data"
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Data
+            </Button>
+          )}
+          {onExportTraceabilityReport && (
+            <Button
+              color="gray"
+              onClick={onExportTraceabilityReport}
+              disabled={isLayouting}
+              size="sm"
+              title="Export Traceability Report"
+              data-testid="motivation-export-report"
+            >
+              <FileText className="mr-2 h-4 w-4" />
+              Report
+            </Button>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="motivation-control-panel">
-      {/* Layout Algorithm Selector */}
-      <div className="control-section">
-        <div className="space-y-2">
-          <Label htmlFor="layout-selector">Layout Algorithm</Label>
-          <Select
-            id="layout-selector"
-            className="layout-selector"
-            value={selectedLayout}
-            onChange={(e) => onLayoutChange(e.target.value as LayoutAlgorithm)}
-            disabled={isLayouting}
-          >
-            {LAYOUT_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </Select>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            {LAYOUT_OPTIONS.find((opt) => opt.value === selectedLayout)?.description}
-          </p>
-        </div>
-      </div>
-
-      {/* Fit to View Button */}
-      <div className="control-panel-section">
-        <Button
-          color="gray"
-          onClick={onFitToView}
-          disabled={isLayouting}
-          size="sm"
-          className="w-full"
-        >
-          <Grid className="mr-2 h-4 w-4" />
-          Fit to View
-        </Button>
-      </div>
-
-      {/* Focus Mode Toggle */}
-      {onFocusModeToggle && (
-        <div className="control-panel-section">
-          <ToggleSwitch
-            checked={focusModeEnabled}
-            label="Focus Mode"
-            onChange={onFocusModeToggle}
-            disabled={isLayouting}
-          />
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Dim non-focused elements for clarity
-          </p>
-        </div>
-      )}
-
-      {/* Clear Highlighting Button */}
-      {onClearHighlighting && isHighlightingActive && (
-        <div className="control-panel-section">
-          <Button
-            color="gray"
-            onClick={onClearHighlighting}
-            disabled={isLayouting}
-            size="sm"
-            className="w-full"
-          >
-            <X className="mr-2 h-4 w-4" />
-            Clear Highlighting
-          </Button>
-        </div>
-      )}
-
-      {/* Changeset Visualization Toggle */}
-      {onChangesetVisualizationToggle && hasChangesets && (
-        <div className="control-panel-section">
-          <ToggleSwitch
-            checked={changesetVisualizationEnabled}
-            label="Show Changesets"
-            onChange={onChangesetVisualizationToggle}
-            disabled={isLayouting}
-          />
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Highlight added, updated, and deleted elements
-          </p>
-        </div>
-      )}
-
-      {/* Export Controls */}
-      {(onExportPNG || onExportSVG || onExportGraphData || onExportTraceabilityReport) && (
-        <div className="control-panel-section export-section">
-          <Label>Export</Label>
-          <div className="flex flex-col gap-2">
-            {onExportPNG && (
-              <Button
-                color="gray"
-                onClick={onExportPNG}
-                disabled={isLayouting}
-                size="sm"
-                title="Export as PNG"
-              >
-                <Download className="mr-2 h-4 w-4" />
-                PNG
-              </Button>
-            )}
-            {onExportSVG && (
-              <Button
-                color="gray"
-                onClick={onExportSVG}
-                disabled={isLayouting}
-                size="sm"
-                title="Export as SVG"
-              >
-                <Download className="mr-2 h-4 w-4" />
-                SVG
-              </Button>
-            )}
-            {onExportGraphData && (
-              <Button
-                color="gray"
-                onClick={onExportGraphData}
-                disabled={isLayouting}
-                size="sm"
-                title="Export Graph Data"
-              >
-                <Download className="mr-2 h-4 w-4" />
-                Data
-              </Button>
-            )}
-            {onExportTraceabilityReport && (
-              <Button
-                color="gray"
-                onClick={onExportTraceabilityReport}
-                disabled={isLayouting}
-                size="sm"
-                title="Export Traceability Report"
-              >
-                <FileText className="mr-2 h-4 w-4" />
-                Report
-              </Button>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Loading Indicator */}
-      {isLayouting && (
-        <div className="control-panel-section">
-          <div className="flex items-center gap-2">
-            <Spinner size="sm" />
-            <span className="text-sm text-gray-600 dark:text-gray-400">Computing layout...</span>
-          </div>
-        </div>
-      )}
+      <BaseControlPanel
+        selectedLayout={selectedLayout}
+        onLayoutChange={(layout) => onLayoutChange(layout as LayoutAlgorithm)}
+        layoutOptions={LAYOUT_OPTIONS}
+        onFitToView={onFitToView}
+        focusModeEnabled={focusModeEnabled}
+        onFocusModeToggle={onFocusModeToggle}
+        isHighlightingActive={isHighlightingActive}
+        onClearHighlighting={onClearHighlighting}
+        isLayouting={isLayouting}
+        renderBetweenFocusAndClear={renderChangesetVisualization}
+        renderControls={renderExportControls}
+        testId="motivation-control-panel"
+      />
     </div>
   );
-};
+}
+
+export const MotivationControlPanel = memo(
+  MotivationControlPanelComponent
+) as typeof MotivationControlPanelComponent & { displayName: string };
+
+MotivationControlPanel.displayName = 'MotivationControlPanel';
