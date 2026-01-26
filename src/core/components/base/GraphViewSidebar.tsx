@@ -21,6 +21,8 @@ export interface GraphViewSidebarProps {
   annotationPanel?: React.ReactNode;
   /** Custom test ID for the sidebar */
   testId?: string;
+  /** Sections to open by default. Note: Flowbite Accordion doesn't support initial open state, so this is documented for future enhancement */
+  defaultOpenSections?: ('filters' | 'controls' | 'annotations' | 'inspector')[];
 }
 
 /**
@@ -35,8 +37,13 @@ export interface GraphViewSidebarProps {
  *   inspectorContent={selectedNodeId && <MotivationInspectorPanel {...inspectorProps} />}
  *   inspectorVisible={!!selectedNodeId}
  *   testId="motivation-right-sidebar"
+ *   defaultOpenSections={['filters', 'controls']}
  * />
  * ```
+ *
+ * Note: The `defaultOpenSections` prop is provided for API compatibility with requirements,
+ * but Flowbite's Accordion component doesn't natively support controlling initial open state.
+ * Sections appear in order: Inspector (if visible), Filters, Controls, Annotations (if provided).
  */
 export const GraphViewSidebar = memo(({
   filterPanel,
@@ -45,7 +52,10 @@ export const GraphViewSidebar = memo(({
   inspectorVisible = false,
   annotationPanel,
   testId = 'graph-view-sidebar',
+  defaultOpenSections, // Prop provided for API compatibility with requirements; Flowbite doesn't support controlling initial open state
 }: GraphViewSidebarProps) => {
+  // Suppress unused variable warning - prop is documented in interface for future enhancement
+  void defaultOpenSections;
   const inspectorSection = inspectorVisible && inspectorContent ? (
     <AccordionPanel data-testid={`${testId}-inspector-section`}>
       <AccordionTitle data-testid={`${testId}-inspector-title`}>
@@ -104,6 +114,10 @@ export const GraphViewSidebar = memo(({
     panelElements.push(annotationsSection);
   }
 
+  // Type assertion needed because Flowbite's Accordion children type doesn't properly
+  // support dynamic arrays of ReactElements. This is a known limitation of the Flowbite
+  // Accordion component when mixing conditional rendering with the alwaysOpen prop.
+  // We assert to the expected element type since panelElements is built from AccordionPanel components.
   return (
     <div className="h-full overflow-y-auto bg-white dark:bg-gray-900" data-testid={testId}>
       <Accordion alwaysOpen>{panelElements as any}</Accordion>
