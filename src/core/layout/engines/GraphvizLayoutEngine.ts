@@ -269,6 +269,12 @@ export class GraphvizLayoutEngine extends BaseLayoutEngine {
     // Graphviz uses top-left origin, need to flip Y and adjust coordinates
     const nodes = parsedNodes.map((gvNode) => {
       const dimensions = nodeDimensionsMap.get(gvNode.id) || { width: 100, height: 50 };
+      const nodeData = nodeDataMap.get(gvNode.id);
+
+      // Warn if node data is missing, as this can result in missing node labels
+      if (!nodeData) {
+        console.warn(`Missing node data for Graphviz node: ${gvNode.id}`);
+      }
 
       // Graphviz positions are center-based, convert to top-left for React Flow
       // Also flip Y coordinate (SVG has Y increasing downward)
@@ -278,7 +284,7 @@ export class GraphvizLayoutEngine extends BaseLayoutEngine {
       return {
         id: gvNode.id,
         position: { x, y },
-        data: nodeDataMap.get(gvNode.id),
+        data: nodeData || { label: gvNode.id },
       };
     });
 
@@ -291,15 +297,22 @@ export class GraphvizLayoutEngine extends BaseLayoutEngine {
               (e) => e.source === gvEdge.source && e.target === gvEdge.target
             );
 
+            const edgeId = originalEdge?.id || `${gvEdge.source}-${gvEdge.target}`;
+            const edgeData = edgeDataMap.get(edgeId);
+
+            if (!edgeData && originalEdge?.id) {
+              console.warn(`Missing edge data for Graphviz edge: ${edgeId}`);
+            }
+
             return {
-              id: originalEdge?.id || `${gvEdge.source}-${gvEdge.target}`,
+              id: edgeId,
               source: gvEdge.source,
               target: gvEdge.target,
               points: gvEdge.points.map((p) => ({
                 x: p.x,
                 y: svgHeight - p.y, // Flip Y coordinate
               })),
-              data: edgeDataMap.get(originalEdge?.id || ''),
+              data: edgeData,
             };
           })
         : originalGraph.edges.map((edge) => ({

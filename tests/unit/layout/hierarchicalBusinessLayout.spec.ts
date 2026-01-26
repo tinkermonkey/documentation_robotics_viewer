@@ -55,7 +55,9 @@ test.describe('HierarchicalBusinessLayout', () => {
     edges.set('edge-1', {
       id: 'edge-1',
       source: 'node-1',
+      sourceId: 'node-1',
       target: 'node-2',
+      targetId: 'node-2',
       type: 'composes',
     });
 
@@ -156,7 +158,9 @@ test.describe('HierarchicalBusinessLayout', () => {
     edges.set('edge-1', {
       id: 'edge-1',
       source: 'node-1',
+      sourceId: 'node-1',
       target: 'node-2',
+      targetId: 'node-2',
       type: 'composes',
     });
 

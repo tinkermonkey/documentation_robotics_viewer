@@ -5,6 +5,6 @@
 export * from './modelStore';
 export * from './layerStore';
 
-// Re-export businessLayerStore from src/stores for convenience
-// (actual store is in src/stores/ to align with embedded app pattern)
-export * from '../../stores/businessLayerStore';
+// Re-export businessLayerStore from embedded app stores for convenience
+// (businessLayerStore is app-specific, so it lives in src/apps/embedded/stores/)
+export * from '@/apps/embedded/stores/businessLayerStore';

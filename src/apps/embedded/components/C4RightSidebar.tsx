@@ -1,11 +1,11 @@
 /**
  * C4RightSidebar Component
- * Unified right sidebar for C4 Architecture view combining filters, controls, inspector, and annotations
- * in collapsible sections using the SharedLayout pattern
+ * Right sidebar for C4 Architecture view - uses generic GraphViewSidebar
+ * Combines filters, controls, inspector, and annotations for C4 visualization
  */
 
-import React from 'react';
-import { Accordion, AccordionContent, AccordionPanel, AccordionTitle } from 'flowbite-react';
+import { memo } from 'react';
+import { GraphViewSidebar } from '@/core/components/base';
 import { C4FilterPanel, C4FilterCounts } from './C4FilterPanel';
 import { C4ControlPanel, C4LayoutAlgorithm } from './C4ControlPanel';
 import { C4InspectorPanel } from './C4InspectorPanel';
@@ -50,7 +50,7 @@ export interface C4RightSidebarProps {
   onCloseInspector?: () => void;
 }
 
-export const C4RightSidebar: React.FC<C4RightSidebarProps> = ({
+export const C4RightSidebar = memo<C4RightSidebarProps>(({
   selectedContainerTypes,
   onContainerTypeChange,
   selectedTechnologyStacks,
@@ -83,79 +83,61 @@ export const C4RightSidebar: React.FC<C4RightSidebarProps> = ({
   onCloseInspector,
 }) => {
 
-  return (
-    <div className="flex flex-col h-full" data-testid="c4-right-sidebar">
-      <Accordion collapseAll={false}>
-        {/* Filters Section */}
-        <AccordionPanel data-testid="c4-filters-section">
-          <AccordionTitle>
-            <span className="text-sm font-semibold">Filters</span>
-          </AccordionTitle>
-          <AccordionContent>
-            <C4FilterPanel
-              selectedContainerTypes={selectedContainerTypes}
-              selectedTechnologyStacks={selectedTechnologyStacks}
-              filterCounts={filterCounts}
-              availableTechnologies={availableTechnologies}
-              onContainerTypeChange={onContainerTypeChange}
-              onTechnologyChange={onTechnologyChange}
-              onClearAllFilters={onClearAllFilters}
-            />
-          </AccordionContent>
-        </AccordionPanel>
-
-        {/* Controls Section */}
-        <AccordionPanel data-testid="c4-controls-section">
-          <AccordionTitle>
-            <span className="text-sm font-semibold">Controls</span>
-          </AccordionTitle>
-          <AccordionContent>
-            <C4ControlPanel
-              selectedLayout={selectedLayout}
-              currentViewLevel={currentViewLevel}
-              onLayoutChange={onLayoutChange}
-              onViewLevelChange={onViewLevelChange}
-              onFitToView={onFitToView}
-              focusModeEnabled={focusModeEnabled}
-              onFocusModeToggle={onFocusModeToggle}
-              onClearHighlighting={onClearHighlighting}
-              isHighlightingActive={isHighlightingActive}
-              isLayouting={isLayouting}
-              onExportPNG={onExportPNG}
-              onExportSVG={onExportSVG}
-              onExportGraphData={onExportGraphData}
-              hasSelectedContainer={hasSelectedContainer}
-              scenarioPreset={scenarioPreset}
-              onScenarioPresetChange={onScenarioPresetChange}
-            />
-          </AccordionContent>
-        </AccordionPanel>
-
-        {/* Annotations Section */}
-        <AccordionPanel data-testid="c4-annotations-section">
-          <AccordionTitle>
-            <span className="text-sm font-semibold">Annotations</span>
-          </AccordionTitle>
-          <AccordionContent>
-            <AnnotationPanel />
-          </AccordionContent>
-        </AccordionPanel>
-      </Accordion>
-
-      {/* Inspector Section (separate from accordion when visible) */}
-      {inspectorPanelVisible && selectedNodeId && graph && onTraceUpstream && onTraceDownstream && onCloseInspector && (
-        <div className="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4" data-testid="c4-inspector-section">
-          <h3 className="text-sm font-semibold mb-2">Inspector</h3>
-          <C4InspectorPanel
-            selectedNodeId={selectedNodeId}
-            graph={graph}
-            onTraceUpstream={onTraceUpstream}
-            onTraceDownstream={onTraceDownstream}
-            onDrillDown={onDrillDown}
-            onClose={onCloseInspector}
-          />
-        </div>
-      )}
-    </div>
+  const filterContent = (
+    <C4FilterPanel
+      selectedContainerTypes={selectedContainerTypes}
+      selectedTechnologyStacks={selectedTechnologyStacks}
+      filterCounts={filterCounts}
+      availableTechnologies={availableTechnologies}
+      onContainerTypeChange={onContainerTypeChange}
+      onTechnologyChange={onTechnologyChange}
+      onClearAllFilters={onClearAllFilters}
+    />
   );
-};
+
+  const controlContent = (
+    <C4ControlPanel
+      selectedLayout={selectedLayout}
+      currentViewLevel={currentViewLevel}
+      onLayoutChange={onLayoutChange}
+      onViewLevelChange={onViewLevelChange}
+      onFitToView={onFitToView}
+      focusModeEnabled={focusModeEnabled}
+      onFocusModeToggle={onFocusModeToggle}
+      onClearHighlighting={onClearHighlighting}
+      isHighlightingActive={isHighlightingActive}
+      isLayouting={isLayouting}
+      onExportPNG={onExportPNG}
+      onExportSVG={onExportSVG}
+      onExportGraphData={onExportGraphData}
+      hasSelectedContainer={hasSelectedContainer}
+      scenarioPreset={scenarioPreset}
+      onScenarioPresetChange={onScenarioPresetChange}
+    />
+  );
+
+  const inspectorContent = inspectorPanelVisible && selectedNodeId && graph && onTraceUpstream && onTraceDownstream && onCloseInspector ? (
+    <C4InspectorPanel
+      selectedNodeId={selectedNodeId}
+      graph={graph}
+      onTraceUpstream={onTraceUpstream}
+      onTraceDownstream={onTraceDownstream}
+      onDrillDown={onDrillDown}
+      onClose={onCloseInspector}
+    />
+  ) : null;
+
+  return (
+    <GraphViewSidebar
+      filterPanel={filterContent}
+      controlPanel={controlContent}
+      annotationPanel={<AnnotationPanel />}
+      inspectorContent={inspectorContent}
+      inspectorVisible={!!inspectorContent}
+      testId="c4-right-sidebar"
+      defaultOpenSections={['filters', 'controls']}
+    />
+  );
+});
+
+C4RightSidebar.displayName = 'C4RightSidebar';

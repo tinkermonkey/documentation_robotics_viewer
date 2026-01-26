@@ -61,6 +61,13 @@ const DEFAULT_OPTIONS: MotivationGraphBuilderOptions = {
   maxPathLength: 10
 };
 
+/**
+ * Type guard to validate MotivationElementType values
+ */
+const isValidMotivationElement = (value: unknown): value is MotivationElementType => {
+  return Object.values(MotivationElementType).includes(value as MotivationElementType);
+};
+
 export class MotivationGraphBuilder {
   private warnings: string[] = [];
   private options: MotivationGraphBuilderOptions;
@@ -202,6 +209,7 @@ export class MotivationGraphBuilder {
       }
 
       const node: MotivationGraphNode = {
+        id: element.id,
         element,
         metrics: {
           degreeCentrality: 0,
@@ -883,6 +891,7 @@ export class MotivationGraphBuilder {
     };
 
     const node: MotivationGraphNode = {
+      id: element.id,
       element,
       metrics: {
         degreeCentrality: 0,
@@ -948,7 +957,7 @@ export class MotivationGraphBuilder {
    * Check if element type is a motivation element
    */
   private isMotivationElement(type: string): boolean {
-    return Object.values(MotivationElementType).includes(type as MotivationElementType);
+    return isValidMotivationElement(type);
   }
 
   /**

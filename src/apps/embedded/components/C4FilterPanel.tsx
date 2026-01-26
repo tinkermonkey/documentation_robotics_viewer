@@ -139,9 +139,6 @@ export const C4FilterPanel: React.FC<C4FilterPanelProps> = ({
   onTechnologyChange,
   onClearAllFilters,
 }) => {
-  // const [containerTypesExpanded, setContainerTypesExpanded] = useState(true);
-  // const [technologiesExpanded, setTechnologiesExpanded] = useState(true);
-
   /**
    * Check if all container types are selected
    */
@@ -160,23 +157,18 @@ export const C4FilterPanel: React.FC<C4FilterPanelProps> = ({
    * Calculate total visible/total for container types
    */
   const totalContainerCounts = Object.values(filterCounts.containerTypes || {}).reduce(
-    (acc, counts) => ({
-      visible: acc.visible + (counts?.visible || 0),
-      total: acc.total + (counts?.total || 0),
-    }),
+    (acc, counts) => {
+      // Ensure counts is properly structured before accessing properties
+      if (!counts || typeof counts !== 'object') {
+        return acc;
+      }
+      return {
+        visible: acc.visible + (counts.visible ?? 0),
+        total: acc.total + (counts.total ?? 0),
+      };
+    },
     { visible: 0, total: 0 }
   );
-
-  /**
-   * Calculate total visible/total for technologies
-   */
-  // const totalTechnologyCounts = Object.values(filterCounts.technologies || {}).reduce(
-  //   (acc, counts) => ({
-  //     visible: acc.visible + (counts?.visible || 0),
-  //     total: acc.total + (counts?.total || 0),
-  //   }),
-  //   { visible: 0, total: 0 }
-  // );
 
   /**
    * Handle "Select All" container types

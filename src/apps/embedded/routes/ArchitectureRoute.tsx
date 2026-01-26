@@ -17,7 +17,7 @@ import { embeddedDataLoader } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
 import { LoadingState, ErrorState } from '../components/shared';
 import { ExportButtonGroup } from '../components/shared/ExportButtonGroup';
-import { C4Graph, ContainerType, C4ViewLevel } from '../types/c4Graph';
+import { C4Graph, ContainerType, C4ViewLevel, VALID_CONTAINER_TYPES } from '../types/c4Graph';
 import { C4LayoutAlgorithm } from '../components/C4ControlPanel';
 import { C4GraphBuilder } from '../services/c4Parser';
 import {
@@ -122,9 +122,9 @@ function ArchitectureRouteContent() {
   // Calculate filter counts
   const filterCounts = useMemo(() => {
     if (!fullGraphRef.current) {
-      const emptyContainerCounts: Record<ContainerType, { visible: number; total: number }> = Object.values(ContainerType).reduce(
+      const emptyContainerCounts: Record<ContainerType, { visible: number; total: number }> = VALID_CONTAINER_TYPES.reduce(
         (acc, type) => {
-          acc[type as ContainerType] = { visible: 0, total: 0 };
+          acc[type] = { visible: 0, total: 0 };
           return acc;
         },
         {} as Record<ContainerType, { visible: number; total: number }>
@@ -138,24 +138,44 @@ function ArchitectureRouteContent() {
 
     const graph = fullGraphRef.current;
 
+    // Validate graph.indexes exists before accessing its properties
+    if (!graph.indexes) {
+      const emptyContainerCounts: Record<ContainerType, { visible: number; total: number }> = VALID_CONTAINER_TYPES.reduce(
+        (acc, type) => {
+          acc[type] = { visible: 0, total: 0 };
+          return acc;
+        },
+        {} as Record<ContainerType, { visible: number; total: number }>
+      );
+
+      return {
+        containerTypes: emptyContainerCounts,
+        technologies: {},
+      };
+    }
+
     // Count by container type
-    const containerTypeCounts: Record<ContainerType, { visible: number; total: number }> = Object.values(ContainerType).reduce(
+    const containerTypeCounts: Record<ContainerType, { visible: number; total: number }> = VALID_CONTAINER_TYPES.reduce(
       (acc, type) => {
-        acc[type as ContainerType] = { visible: 0, total: 0 };
+        acc[type] = { visible: 0, total: 0 };
         return acc;
       },
       {} as Record<ContainerType, { visible: number; total: number }>
     );
-    for (const containerType of Object.values(ContainerType)) {
-      const typeNodes = graph.indexes.byContainerType.get(containerType as ContainerType);
+    for (const containerType of VALID_CONTAINER_TYPES) {
+      const typeNodes = graph.indexes.byContainerType.get(containerType);
       const total = typeNodes?.size || 0;
-      const visible = selectedContainerTypes.has(containerType as ContainerType) ? total : 0;
-      containerTypeCounts[containerType as ContainerType] = { visible, total };
+      const visible = selectedContainerTypes.has(containerType) ? total : 0;
+      containerTypeCounts[containerType] = { visible, total };
     }
 
     // Count by technology
     const technologyCounts: Record<string, { visible: number; total: number }> = {};
     for (const [tech, nodeIds] of graph.indexes.byTechnology) {
+      // Validate that nodeIds is a Set with a valid size property
+      if (!nodeIds || typeof nodeIds.size !== 'number') {
+        continue;
+      }
       const total = nodeIds.size;
       const visible = selectedTechnologyStacks.has(tech) ? total : 0;
       technologyCounts[tech] = { visible, total };

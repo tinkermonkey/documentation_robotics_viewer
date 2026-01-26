@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Layout Preferences Store
  *
@@ -10,6 +9,32 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { DiagramType } from '../types/diagram';
 import type { LayoutEngineType } from '../layout/engines/LayoutEngine';
+
+/**
+ * Refinement session state for pause/resume functionality
+ */
+export interface RefinementSessionState {
+  /** Unique session identifier */
+  sessionId: string;
+
+  /** Diagram type for this session */
+  diagramType: DiagramType;
+
+  /** Current layout engine */
+  currentEngine: LayoutEngineType;
+
+  /** Current parameters */
+  currentParameters: Record<string, any>;
+
+  /** Session creation timestamp */
+  createdAt: string;
+
+  /** Session last update timestamp */
+  updatedAt?: string;
+
+  /** Session metadata/notes */
+  notes?: string;
+}
 
 /**
  * Custom parameter preset
@@ -261,6 +286,55 @@ const generateId = (): string => {
 };
 
 /**
+ * Validation utilities for layout preferences
+ */
+const validatePresetName = (name: string): { valid: boolean; error?: string } => {
+  if (typeof name !== 'string') {
+    return { valid: false, error: 'Preset name must be a string' };
+  }
+  if (name.trim().length === 0) {
+    return { valid: false, error: 'Preset name cannot be empty' };
+  }
+  if (name.length > 100) {
+    return { valid: false, error: 'Preset name must be 100 characters or less' };
+  }
+  return { valid: true };
+};
+
+const validateDiagramType = (diagramType: unknown): diagramType is DiagramType => {
+  // Valid diagram types from the enum
+  const validTypes = ['motivation', 'business', 'application', 'technology', 'c4', 'data-model'];
+  return typeof diagramType === 'string' && validTypes.includes(diagramType);
+};
+
+const validateLayoutEngineType = (engineType: unknown): engineType is LayoutEngineType => {
+  // Valid engine types from the enum
+  const validEngines = [
+    'vertical',
+    'hierarchical',
+    'swimlane',
+    'matrix',
+    'force',
+    'orthogonal',
+    'radial',
+    'manual',
+    'dag',
+    'tree',
+  ];
+  return typeof engineType === 'string' && validEngines.includes(engineType);
+};
+
+const validatePresetId = (id: string): { valid: boolean; error?: string } => {
+  if (typeof id !== 'string') {
+    return { valid: false, error: 'Preset ID must be a string' };
+  }
+  if (!id.startsWith('preset-')) {
+    return { valid: false, error: 'Invalid preset ID format' };
+  }
+  return { valid: true };
+};
+
+/**
  * Layout preferences store with localStorage persistence
  */
 export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
@@ -270,7 +344,16 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
 
       // Default engine management
       setDefaultEngine: (diagramType, engineType) => {
-        console.log(`[LayoutPreferences] Setting default engine for ${diagramType}: ${engineType}`);
+        if (!validateDiagramType(diagramType)) {
+          console.error(`[LayoutPreferences] Invalid diagram type: ${diagramType}`);
+          return;
+        }
+        if (!validateLayoutEngineType(engineType)) {
+          console.error(
+            `[LayoutPreferences] Invalid layout engine type: ${engineType} for diagram ${diagramType}`
+          );
+          return;
+        }
         set((state) => ({
           defaultEngines: {
             ...state.defaultEngines,
@@ -280,11 +363,18 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
       },
 
       getDefaultEngine: (diagramType) => {
+        if (!validateDiagramType(diagramType)) {
+          console.error(`[LayoutPreferences] Invalid diagram type for getDefaultEngine: ${diagramType}`);
+          return undefined;
+        }
         return get().defaultEngines[diagramType];
       },
 
       clearDefaultEngine: (diagramType) => {
-        console.log(`[LayoutPreferences] Clearing default engine for ${diagramType}`);
+        if (!validateDiagramType(diagramType)) {
+          console.error(`[LayoutPreferences] Invalid diagram type for clearDefaultEngine: ${diagramType}`);
+          return;
+        }
         set((state) => {
           const newEngines = { ...state.defaultEngines };
           delete newEngines[diagramType];
@@ -294,6 +384,31 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
 
       // Preset management
       addPreset: (preset) => {
+        // Validate preset name
+        const nameValidation = validatePresetName(preset.name);
+        if (!nameValidation.valid) {
+          console.error(`[LayoutPreferences] Invalid preset name: ${nameValidation.error}`);
+          return '';
+        }
+
+        // Validate diagram type
+        if (!validateDiagramType(preset.diagramType)) {
+          console.error(`[LayoutPreferences] Invalid diagram type for preset: ${preset.diagramType}`);
+          return '';
+        }
+
+        // Validate engine type
+        if (!validateLayoutEngineType(preset.engineType)) {
+          console.error(`[LayoutPreferences] Invalid engine type for preset: ${preset.engineType}`);
+          return '';
+        }
+
+        // Validate parameters object
+        if (preset.parameters && typeof preset.parameters !== 'object') {
+          console.error('[LayoutPreferences] Preset parameters must be an object');
+          return '';
+        }
+
         const id = generateId();
         const newPreset: LayoutPreset = {
           ...preset,
@@ -301,7 +416,6 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
           createdAt: new Date().toISOString(),
         };
 
-        console.log(`[LayoutPreferences] Adding preset: ${newPreset.name} (${id})`);
         set((state) => ({
           presets: [...state.presets, newPreset],
         }));
@@ -310,7 +424,32 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
       },
 
       updatePreset: (id, updates) => {
-        console.log(`[LayoutPreferences] Updating preset: ${id}`);
+        // Validate preset ID
+        const idValidation = validatePresetId(id);
+        if (!idValidation.valid) {
+          console.error(`[LayoutPreferences] Invalid preset ID: ${idValidation.error}`);
+          return;
+        }
+
+        // Validate updates if provided
+        if (updates.name !== undefined) {
+          const nameValidation = validatePresetName(updates.name);
+          if (!nameValidation.valid) {
+            console.error(`[LayoutPreferences] Invalid preset name in update: ${nameValidation.error}`);
+            return;
+          }
+        }
+
+        if (updates.engineType !== undefined && !validateLayoutEngineType(updates.engineType)) {
+          console.error(`[LayoutPreferences] Invalid engine type in update: ${updates.engineType}`);
+          return;
+        }
+
+        if (updates.parameters !== undefined && typeof updates.parameters !== 'object') {
+          console.error('[LayoutPreferences] Preset parameters must be an object');
+          return;
+        }
+
         set((state) => ({
           presets: state.presets.map((preset) =>
             preset.id === id
@@ -325,22 +464,47 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
       },
 
       removePreset: (id) => {
-        console.log(`[LayoutPreferences] Removing preset: ${id}`);
+        const idValidation = validatePresetId(id);
+        if (!idValidation.valid) {
+          console.error(`[LayoutPreferences] Invalid preset ID for removal: ${idValidation.error}`);
+          return;
+        }
+
         set((state) => ({
           presets: state.presets.filter((preset) => preset.id !== id),
         }));
       },
 
       getPreset: (id) => {
+        const idValidation = validatePresetId(id);
+        if (!idValidation.valid) {
+          console.error(`[LayoutPreferences] Invalid preset ID for retrieval: ${idValidation.error}`);
+          return undefined;
+        }
         return get().presets.find((preset) => preset.id === id);
       },
 
       getPresetsForDiagram: (diagramType) => {
+        if (!validateDiagramType(diagramType)) {
+          console.error(`[LayoutPreferences] Invalid diagram type for getPresetsForDiagram: ${diagramType}`);
+          return [];
+        }
         return get().presets.filter((preset) => preset.diagramType === diagramType);
       },
 
       renamePreset: (id, newName) => {
-        console.log(`[LayoutPreferences] Renaming preset ${id} to: ${newName}`);
+        const idValidation = validatePresetId(id);
+        if (!idValidation.valid) {
+          console.error(`[LayoutPreferences] Invalid preset ID for rename: ${idValidation.error}`);
+          return;
+        }
+
+        const nameValidation = validatePresetName(newName);
+        if (!nameValidation.valid) {
+          console.error(`[LayoutPreferences] Invalid new preset name: ${nameValidation.error}`);
+          return;
+        }
+
         set((state) => ({
           presets: state.presets.map((preset) =>
             preset.id === id
@@ -356,14 +520,38 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
 
       // Feedback history
       addFeedback: (feedback) => {
+        // Validate feedback data
+        if (!validateDiagramType(feedback.diagramType)) {
+          console.error(`[LayoutPreferences] Invalid diagram type in feedback: ${feedback.diagramType}`);
+          return;
+        }
+
+        if (!validateLayoutEngineType(feedback.engineType)) {
+          console.error(`[LayoutPreferences] Invalid engine type in feedback: ${feedback.engineType}`);
+          return;
+        }
+
+        if (typeof feedback.accepted !== 'boolean') {
+          console.error('[LayoutPreferences] Feedback accepted field must be boolean');
+          return;
+        }
+
+        if (feedback.parameters && typeof feedback.parameters !== 'object') {
+          console.error('[LayoutPreferences] Feedback parameters must be an object');
+          return;
+        }
+
+        if (feedback.qualityScore !== undefined) {
+          if (typeof feedback.qualityScore !== 'number' || feedback.qualityScore < 0 || feedback.qualityScore > 100) {
+            console.error('[LayoutPreferences] Quality score must be a number between 0 and 100');
+            return;
+          }
+        }
+
         const entry: FeedbackEntry = {
           ...feedback,
           timestamp: new Date().toISOString(),
         };
-
-        console.log(
-          `[LayoutPreferences] Adding feedback: ${entry.diagramType} - ${entry.accepted ? 'accepted' : 'rejected'}`
-        );
 
         set((state) => ({
           feedbackHistory: [...state.feedbackHistory, entry],
@@ -371,6 +559,10 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
       },
 
       getFeedbackForDiagram: (diagramType) => {
+        if (!validateDiagramType(diagramType)) {
+          console.error(`[LayoutPreferences] Invalid diagram type for getFeedbackForDiagram: ${diagramType}`);
+          return [];
+        }
         return get().feedbackHistory.filter((entry) => entry.diagramType === diagramType);
       },
 
@@ -379,13 +571,11 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
       },
 
       clearFeedbackHistory: () => {
-        console.log('[LayoutPreferences] Clearing feedback history');
         set({ feedbackHistory: [] });
       },
 
       // Session management
       saveSession: (session) => {
-        console.log(`[LayoutPreferences] Saving session: ${session.sessionId}`);
         set((state) => {
           // Check if session already exists
           const existingIndex = state.sessions.findIndex((s) => s.sessionId === session.sessionId);
@@ -420,7 +610,6 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
       },
 
       deleteSession: (sessionId) => {
-        console.log(`[LayoutPreferences] Deleting session: ${sessionId}`);
         set((state) => ({
           sessions: state.sessions.filter((s) => s.sessionId !== sessionId),
           activeSessionId: state.activeSessionId === sessionId ? undefined : state.activeSessionId,
@@ -428,7 +617,6 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
       },
 
       setActiveSession: (sessionId) => {
-        console.log(`[LayoutPreferences] Setting active session: ${sessionId}`);
         set({ activeSessionId: sessionId });
       },
 
@@ -439,12 +627,10 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
       },
 
       clearActiveSession: () => {
-        console.log('[LayoutPreferences] Clearing active session');
         set({ activeSessionId: undefined });
       },
 
       clearAllSessions: () => {
-        console.log('[LayoutPreferences] Clearing all sessions');
         set({ sessions: [], activeSessionId: undefined });
       },
 
@@ -458,7 +644,6 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
           presets: state.presets,
         };
 
-        console.log('[LayoutPreferences] Exporting configuration profile');
         return JSON.stringify(profile, null, 2);
       },
 
@@ -472,7 +657,6 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
             return false;
           }
 
-          console.log('[LayoutPreferences] Importing configuration profile');
           set({
             defaultEngines: config.defaultEngines || {},
             presets: config.presets || [],
@@ -531,7 +715,6 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
 
       // Reset
       reset: () => {
-        console.log('[LayoutPreferences] Resetting to defaults');
         set(defaultState);
       },
     }),

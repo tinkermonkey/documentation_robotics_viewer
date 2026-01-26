@@ -52,11 +52,39 @@ export interface BusinessNode {
 
 /**
  * Business edge in the intermediate graph structure
+ *
+ * Supports both naming conventions for edge endpoints:
+ * - source/target: Used when converting to/from React Flow edges
+ * - sourceId/targetId: Used by BaseEdge interface for generic components
+ *
+ * Both pairs reference the same node IDs. Choose whichever is appropriate
+ * for your use case:
+ * - Use source/target when working with React Flow or business layer logic
+ * - Use sourceId/targetId when using generic base components (BaseInspectorPanel, etc.)
+ * - Both are available and reference the same values
+ *
+ * @example
+ * // Creating an edge
+ * const edge: BusinessEdge = {
+ *   id: 'edge-1',
+ *   source: 'process-1',      // Business layer node ID
+ *   sourceId: 'process-1',    // Same ID (BaseEdge compatibility)
+ *   target: 'process-2',      // Business layer node ID
+ *   targetId: 'process-2',    // Same ID (BaseEdge compatibility)
+ *   type: 'flows_to',
+ * };
  */
 export interface BusinessEdge {
   id: string;
+
+  // Primary naming convention (React Flow compatible)
   source: string;
   target: string;
+
+  // BaseEdge compatibility (required by generic base components)
+  sourceId: string;
+  targetId: string;
+
   type: BusinessEdgeType;
   label?: string;
   properties?: Record<string, unknown>;

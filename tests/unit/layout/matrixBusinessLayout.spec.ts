@@ -133,14 +133,18 @@ test.describe('MatrixBusinessLayout', () => {
     edges.set('edge-1', {
       id: 'edge-1',
       source: 'node-1',
+      sourceId: 'node-1',
       target: 'node-2',
+      targetId: 'node-2',
       type: 'flows_to',
     });
     // Same-domain edge (Sales -> Sales)
     edges.set('edge-2', {
       id: 'edge-2',
       source: 'node-1',
+      sourceId: 'node-1',
       target: 'node-3',
+      targetId: 'node-3',
       type: 'flows_to',
     });
 

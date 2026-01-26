@@ -58,12 +58,18 @@ export function createNodeFilter(): (node: Element) => boolean {
  * Helper: Trigger browser download for a data URL
  * @param dataUrl - The data URL to download
  * @param filename - The filename for the download
+ * @throws Error if download fails
  */
 function triggerDownload(dataUrl: string, filename: string): void {
-  const link = document.createElement('a');
-  link.download = filename;
-  link.href = dataUrl;
-  link.click();
+  try {
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = dataUrl;
+    link.click();
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    throw new Error(`Failed to trigger download for "${filename}": ${errorMessage}`);
+  }
 }
 
 /**
@@ -78,26 +84,32 @@ export async function exportReactFlowAsPNG(
   filename: string,
   options?: ExportOptions
 ): Promise<void> {
-  const {
-    backgroundColor = '#ffffff',
-    quality = 1.0,
-    pixelRatio = 2,
-    filterControls = true
-  } = options || {};
+  try {
+    const {
+      backgroundColor = '#ffffff',
+      quality = 1.0,
+      pixelRatio = 2,
+      filterControls = true
+    } = options || {};
 
-  console.log('[exportUtils] Exporting as PNG:', filename);
+    console.log('[exportUtils] Exporting as PNG:', filename);
 
-  const reactFlowWrapper = getReactFlowWrapper(container);
+    const reactFlowWrapper = getReactFlowWrapper(container);
 
-  const dataUrl = await toPng(reactFlowWrapper, {
-    backgroundColor,
-    quality,
-    pixelRatio,
-    filter: filterControls ? createNodeFilter() : undefined
-  });
+    const dataUrl = await toPng(reactFlowWrapper, {
+      backgroundColor,
+      quality,
+      pixelRatio,
+      filter: filterControls ? createNodeFilter() : undefined
+    });
 
-  triggerDownload(dataUrl, filename);
-  console.log('[exportUtils] PNG export successful');
+    triggerDownload(dataUrl, filename);
+    console.log('[exportUtils] PNG export successful');
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error during PNG export';
+    console.error('[exportUtils] PNG export failed:', errorMessage);
+    throw new Error(`Failed to export graph as PNG: ${errorMessage}`);
+  }
 }
 
 /**
@@ -112,22 +124,28 @@ export async function exportReactFlowAsSVG(
   filename: string,
   options?: ExportOptions
 ): Promise<void> {
-  const {
-    backgroundColor = '#ffffff',
-    filterControls = true
-  } = options || {};
+  try {
+    const {
+      backgroundColor = '#ffffff',
+      filterControls = true
+    } = options || {};
 
-  console.log('[exportUtils] Exporting as SVG:', filename);
+    console.log('[exportUtils] Exporting as SVG:', filename);
 
-  const reactFlowWrapper = getReactFlowWrapper(container);
+    const reactFlowWrapper = getReactFlowWrapper(container);
 
-  const dataUrl = await toSvg(reactFlowWrapper, {
-    backgroundColor,
-    filter: filterControls ? createNodeFilter() : undefined
-  });
+    const dataUrl = await toSvg(reactFlowWrapper, {
+      backgroundColor,
+      filter: filterControls ? createNodeFilter() : undefined
+    });
 
-  triggerDownload(dataUrl, filename);
-  console.log('[exportUtils] SVG export successful');
+    triggerDownload(dataUrl, filename);
+    console.log('[exportUtils] SVG export successful');
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error during SVG export';
+    console.error('[exportUtils] SVG export failed:', errorMessage);
+    throw new Error(`Failed to export graph as SVG: ${errorMessage}`);
+  }
 }
 
 /**
@@ -137,17 +155,33 @@ export async function exportReactFlowAsSVG(
  * @throws Error if download fails
  */
 export function downloadJSON(data: unknown, filename: string): void {
-  console.log('[exportUtils] Downloading JSON:', filename);
+  try {
+    console.log('[exportUtils] Downloading JSON:', filename);
 
-  const jsonString = JSON.stringify(data, null, 2);
-  const blob = new Blob([jsonString], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
+    let jsonString: string;
+    try {
+      jsonString = JSON.stringify(data, null, 2);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unable to serialize data';
+      throw new Error(`Failed to serialize data to JSON: ${errorMessage}`);
+    }
 
-  const link = document.createElement('a');
-  link.download = filename;
-  link.href = url;
-  link.click();
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
 
-  setTimeout(() => URL.revokeObjectURL(url), 100);
-  console.log('[exportUtils] JSON download successful');
+    try {
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = url;
+      link.click();
+    } finally {
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+    }
+
+    console.log('[exportUtils] JSON download successful');
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error during JSON download';
+    console.error('[exportUtils] JSON download failed:', errorMessage);
+    throw new Error(`Failed to download JSON as "${filename}": ${errorMessage}`);
+  }
 }

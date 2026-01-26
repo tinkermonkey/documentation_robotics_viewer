@@ -158,7 +158,10 @@ function groupEdgesBySourceTarget(edges: Edge[]): Map<string, Edge[]> {
       groups.set(key, []);
     }
 
-    groups.get(key)!.push(edge);
+    const group = groups.get(key);
+    if (group) {
+      group.push(edge);
+    }
   }
 
   return groups;

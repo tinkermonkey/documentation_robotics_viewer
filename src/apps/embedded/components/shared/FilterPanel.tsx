@@ -78,8 +78,12 @@ const FilterPanelComponent = <T extends string = string>({
      */
     const totalCounts = sections.reduce(
       (acc, section) => {
+        // Validate section structure before processing
+        if (!section || !Array.isArray(section.items)) {
+          return acc;
+        }
         section.items.forEach((item) => {
-          if (item.count) {
+          if (item && item.count && typeof item.count.visible === 'number' && typeof item.count.total === 'number') {
             acc.visible += item.count.visible;
             acc.total += item.count.total;
           }
@@ -115,9 +119,13 @@ const FilterPanelComponent = <T extends string = string>({
      * Calculate section totals
      */
     const getSectionCounts = (section: FilterSection<T>) => {
+      // Validate section structure before processing
+      if (!section || !Array.isArray(section.items)) {
+        return { visible: 0, total: 0 };
+      }
       return section.items.reduce(
         (acc, item) => {
-          if (item.count) {
+          if (item && item.count && typeof item.count.visible === 'number' && typeof item.count.total === 'number') {
             acc.visible += item.count.visible;
             acc.total += item.count.total;
           }

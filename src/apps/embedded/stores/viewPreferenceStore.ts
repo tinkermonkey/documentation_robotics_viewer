@@ -248,28 +248,83 @@ const initialState = {
   c4Preferences: defaultC4Preferences,
 };
 
+/**
+ * Validation utilities for view preferences
+ */
+const isValidSpecView = (view: unknown): view is SpecViewType => {
+  return typeof view === 'string' && ['graph', 'json'].includes(view);
+};
+
+const isValidModelView = (view: unknown): view is ModelViewType => {
+  return typeof view === 'string' && ['graph', 'json'].includes(view);
+};
+
+const isValidChangesetView = (view: unknown): view is ChangesetViewType => {
+  return typeof view === 'string' && ['graph', 'list'].includes(view);
+};
+
+const isValidMotivationLayout = (layout: unknown): layout is MotivationLayoutType => {
+  return typeof layout === 'string' && ['force', 'hierarchical', 'radial', 'manual'].includes(layout);
+};
+
+const isValidC4Layout = (layout: unknown): layout is C4LayoutAlgorithm => {
+  return typeof layout === 'string' && ['hierarchical', 'force', 'orthogonal', 'manual'].includes(layout);
+};
+
+const isValidC4ViewLevel = (level: unknown): level is C4ViewLevel => {
+  return typeof level === 'string' && ['context', 'container', 'component', 'code'].includes(level);
+};
+
+const isValidPathTracingMode = (mode: unknown): mode is PathTracingState['mode'] => {
+  return typeof mode === 'string' && ['none', 'direct', 'upstream', 'downstream', 'between'].includes(mode);
+};
+
+const isValidC4PathTracingMode = (mode: unknown): mode is C4PathTracingState['mode'] => {
+  return typeof mode === 'string' && ['none', 'upstream', 'downstream', 'between'].includes(mode);
+};
+
+const isValidNodeId = (nodeId: unknown): nodeId is string => {
+  return typeof nodeId === 'string' && nodeId.length > 0 && nodeId.length <= 1000;
+};
+
 export const useViewPreferenceStore = create<ViewPreferenceState>()(
   persist(
     (set) => ({
       ...initialState,
 
       setSpecView: (view: SpecViewType) => {
+        if (!isValidSpecView(view)) {
+          console.error(`[ViewPreferenceStore] Invalid spec view: ${view}`);
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting spec view to:', view);
         set({ specView: view });
       },
 
       setModelView: (view: ModelViewType) => {
+        if (!isValidModelView(view)) {
+          console.error(`[ViewPreferenceStore] Invalid model view: ${view}`);
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting model view to:', view);
         set({ modelView: view });
       },
 
       setChangesetView: (view: ChangesetViewType) => {
+        if (!isValidChangesetView(view)) {
+          console.error(`[ViewPreferenceStore] Invalid changeset view: ${view}`);
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting changeset view to:', view);
         set({ changesetView: view });
       },
 
       // Motivation preferences actions
       setMotivationLayout: (layout: MotivationLayoutType) => {
+        if (!isValidMotivationLayout(layout)) {
+          console.error(`[ViewPreferenceStore] Invalid motivation layout: ${layout}`);
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting motivation layout to:', layout);
         set((state) => ({
           motivationPreferences: { ...state.motivationPreferences, selectedLayout: layout },
@@ -277,6 +332,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setVisibleElementTypes: (types: Set<MotivationElementType>) => {
+        if (!(types instanceof Set)) {
+          console.error('[ViewPreferenceStore] Visible element types must be a Set');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting visible element types:', types.size, 'types');
         set((state) => ({
           motivationPreferences: { ...state.motivationPreferences, visibleElementTypes: types },
@@ -284,6 +343,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setVisibleRelationshipTypes: (types: Set<MotivationRelationshipType>) => {
+        if (!(types instanceof Set)) {
+          console.error('[ViewPreferenceStore] Visible relationship types must be a Set');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting visible relationship types:', types.size, 'types');
         set((state) => ({
           motivationPreferences: {
@@ -294,6 +357,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setSemanticZoomEnabled: (enabled: boolean) => {
+        if (typeof enabled !== 'boolean') {
+          console.error('[ViewPreferenceStore] Semantic zoom enabled must be boolean');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting semantic zoom enabled:', enabled);
         set((state) => ({
           motivationPreferences: { ...state.motivationPreferences, semanticZoomEnabled: enabled },
@@ -301,6 +368,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setFocusContextEnabled: (enabled: boolean) => {
+        if (typeof enabled !== 'boolean') {
+          console.error('[ViewPreferenceStore] Focus context enabled must be boolean');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting focus context enabled:', enabled);
         set((state) => ({
           motivationPreferences: { ...state.motivationPreferences, focusContextEnabled: enabled },
@@ -308,6 +379,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setCenterNodeId: (nodeId: string | undefined) => {
+        if (nodeId !== undefined && !isValidNodeId(nodeId)) {
+          console.error('[ViewPreferenceStore] Invalid center node ID');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting center node ID:', nodeId);
         set((state) => ({
           motivationPreferences: { ...state.motivationPreferences, centerNodeId: nodeId },
@@ -315,6 +390,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setManualPositions: (positions: Map<string, { x: number; y: number }>) => {
+        if (!(positions instanceof Map)) {
+          console.error('[ViewPreferenceStore] Manual positions must be a Map');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting manual positions:', positions.size, 'nodes');
         set((state) => ({
           motivationPreferences: { ...state.motivationPreferences, manualPositions: positions },
@@ -322,6 +401,18 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setPathTracing: (pathTracing: PathTracingState) => {
+        if (!isValidPathTracingMode(pathTracing.mode)) {
+          console.error(`[ViewPreferenceStore] Invalid path tracing mode: ${pathTracing.mode}`);
+          return;
+        }
+        if (!(pathTracing.highlightedNodeIds instanceof Set)) {
+          console.error('[ViewPreferenceStore] Path tracing highlightedNodeIds must be a Set');
+          return;
+        }
+        if (!(pathTracing.highlightedEdgeIds instanceof Set)) {
+          console.error('[ViewPreferenceStore] Path tracing highlightedEdgeIds must be a Set');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting path tracing:', pathTracing.mode);
         set((state) => ({
           motivationPreferences: { ...state.motivationPreferences, pathTracing },
@@ -329,6 +420,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setSelectedNodeId: (nodeId: string | undefined) => {
+        if (nodeId !== undefined && !isValidNodeId(nodeId)) {
+          console.error('[ViewPreferenceStore] Invalid selected node ID');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting selected node ID:', nodeId);
         set((state) => ({
           motivationPreferences: { ...state.motivationPreferences, selectedNodeId: nodeId },
@@ -336,6 +431,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setInspectorPanelVisible: (visible: boolean) => {
+        if (typeof visible !== 'boolean') {
+          console.error('[ViewPreferenceStore] Inspector panel visible must be boolean');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting inspector panel visible:', visible);
         set((state) => ({
           motivationPreferences: { ...state.motivationPreferences, inspectorPanelVisible: visible },
@@ -349,6 +448,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
 
       // C4 preferences actions
       setC4ViewLevel: (level: C4ViewLevel) => {
+        if (!isValidC4ViewLevel(level)) {
+          console.error(`[ViewPreferenceStore] Invalid C4 view level: ${level}`);
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting C4 view level to:', level);
         set((state) => ({
           c4Preferences: { ...state.c4Preferences, viewLevel: level },
@@ -356,6 +459,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setC4SelectedContainer: (id: string | undefined) => {
+        if (id !== undefined && !isValidNodeId(id)) {
+          console.error('[ViewPreferenceStore] Invalid C4 selected container ID');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting C4 selected container to:', id);
         set((state) => ({
           c4Preferences: { ...state.c4Preferences, selectedContainerId: id },
@@ -363,6 +470,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setC4SelectedComponent: (id: string | undefined) => {
+        if (id !== undefined && !isValidNodeId(id)) {
+          console.error('[ViewPreferenceStore] Invalid C4 selected component ID');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting C4 selected component to:', id);
         set((state) => ({
           c4Preferences: { ...state.c4Preferences, selectedComponentId: id },
@@ -370,6 +481,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setC4Layout: (layout: C4LayoutType) => {
+        if (!isValidC4Layout(layout)) {
+          console.error(`[ViewPreferenceStore] Invalid C4 layout: ${layout}`);
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting C4 layout to:', layout);
         set((state) => ({
           c4Preferences: { ...state.c4Preferences, selectedLayout: layout },
@@ -377,6 +492,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setC4VisibleContainerTypes: (types: Set<ContainerType>) => {
+        if (!(types instanceof Set)) {
+          console.error('[ViewPreferenceStore] C4 visible container types must be a Set');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting C4 visible container types:', types.size, 'types');
         set((state) => ({
           c4Preferences: { ...state.c4Preferences, visibleContainerTypes: types },
@@ -384,6 +503,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setC4VisibleTechnologyStacks: (stacks: Set<string>) => {
+        if (!(stacks instanceof Set)) {
+          console.error('[ViewPreferenceStore] C4 visible technology stacks must be a Set');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting C4 visible technology stacks:', stacks.size, 'stacks');
         set((state) => ({
           c4Preferences: { ...state.c4Preferences, visibleTechnologyStacks: stacks },
@@ -391,6 +514,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setC4ShowDeploymentOverlay: (show: boolean) => {
+        if (typeof show !== 'boolean') {
+          console.error('[ViewPreferenceStore] C4 show deployment overlay must be boolean');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting C4 show deployment overlay:', show);
         set((state) => ({
           c4Preferences: { ...state.c4Preferences, showDeploymentOverlay: show },
@@ -398,6 +525,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setC4ManualPositions: (positions: Map<string, { x: number; y: number }>) => {
+        if (!(positions instanceof Map)) {
+          console.error('[ViewPreferenceStore] C4 manual positions must be a Map');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting C4 manual positions:', positions.size, 'nodes');
         set((state) => ({
           c4Preferences: { ...state.c4Preferences, manualPositions: positions },
@@ -405,6 +536,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setC4FocusContextEnabled: (enabled: boolean) => {
+        if (typeof enabled !== 'boolean') {
+          console.error('[ViewPreferenceStore] C4 focus context enabled must be boolean');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting C4 focus context enabled:', enabled);
         set((state) => ({
           c4Preferences: { ...state.c4Preferences, focusContextEnabled: enabled },
@@ -412,6 +547,18 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setC4PathTracing: (pathTracing: C4PathTracingState) => {
+        if (!isValidC4PathTracingMode(pathTracing.mode)) {
+          console.error(`[ViewPreferenceStore] Invalid C4 path tracing mode: ${pathTracing.mode}`);
+          return;
+        }
+        if (!(pathTracing.highlightedNodeIds instanceof Set)) {
+          console.error('[ViewPreferenceStore] C4 path tracing highlightedNodeIds must be a Set');
+          return;
+        }
+        if (!(pathTracing.highlightedEdgeIds instanceof Set)) {
+          console.error('[ViewPreferenceStore] C4 path tracing highlightedEdgeIds must be a Set');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting C4 path tracing:', pathTracing.mode);
         set((state) => ({
           c4Preferences: { ...state.c4Preferences, pathTracing },
@@ -419,6 +566,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setC4ScenarioPreset: (preset: C4ScenarioPreset) => {
+        if (preset !== null && typeof preset !== 'object') {
+          console.error('[ViewPreferenceStore] C4 scenario preset must be an object or null');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting C4 scenario preset:', preset);
         set((state) => ({
           c4Preferences: { ...state.c4Preferences, scenarioPreset: preset },
@@ -426,6 +577,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setC4SelectedNodeId: (nodeId: string | undefined) => {
+        if (nodeId !== undefined && !isValidNodeId(nodeId)) {
+          console.error('[ViewPreferenceStore] Invalid C4 selected node ID');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting C4 selected node ID:', nodeId);
         set((state) => ({
           c4Preferences: { ...state.c4Preferences, selectedNodeId: nodeId },
@@ -433,6 +588,10 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
       },
 
       setC4InspectorPanelVisible: (visible: boolean) => {
+        if (typeof visible !== 'boolean') {
+          console.error('[ViewPreferenceStore] C4 inspector panel visible must be boolean');
+          return;
+        }
         console.log('[ViewPreferenceStore] Setting C4 inspector panel visible:', visible);
         set((state) => ({
           c4Preferences: { ...state.c4Preferences, inspectorPanelVisible: visible },

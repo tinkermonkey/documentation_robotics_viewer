@@ -288,7 +288,9 @@ export class BusinessGraphBuilder {
         const edge: BusinessEdge = {
           id: rel.id,
           source: rel.sourceId,
+          sourceId: rel.sourceId,
           target: rel.targetId,
+          targetId: rel.targetId,
           type: this.inferEdgeType(rel.type),
           label: rel.properties?.label as string | undefined,
           properties: rel.properties,

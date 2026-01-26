@@ -1,6 +1,6 @@
 import type { StoryDefault, Story } from '@ladle/react';
 import { ProcessInspectorPanel } from './ProcessInspectorPanel';
-import type { BusinessNode, BusinessGraph } from '../../types/businessLayer';
+import type { BusinessNode, BusinessGraph } from '@/core/types/businessLayer';
 
 export default {
   title: 'Business Layer / ProcessInspectorPanel',
@@ -31,9 +31,9 @@ const mockBusinessGraph: BusinessGraph = {
     ['service-1', { id: 'service-1', type: 'service', name: 'Order Service', metadata: {}, hierarchyLevel: 0, childIds: [], properties: {} }],
   ]),
   edges: new Map([
-    ['edge-1', { id: 'edge-1', source: 'process-1', target: 'process-2', type: 'flows_to' }],
-    ['edge-2', { id: 'edge-2', source: 'process-2', target: 'process-1', type: 'depends_on' }],
-    ['edge-3', { id: 'edge-3', source: 'process-1', target: 'function-1', type: 'composes' }],
+    ['edge-1', { id: 'edge-1', source: 'process-1', sourceId: 'process-1', target: 'process-2', targetId: 'process-2', type: 'flows_to' }],
+    ['edge-2', { id: 'edge-2', source: 'process-2', sourceId: 'process-2', target: 'process-1', targetId: 'process-1', type: 'depends_on' }],
+    ['edge-3', { id: 'edge-3', source: 'process-1', sourceId: 'process-1', target: 'function-1', targetId: 'function-1', type: 'composes' }],
   ]),
   crossLayerLinks: [
     {
@@ -139,9 +139,9 @@ export const ComplexProcess: Story = () => {
     ]),
     edges: new Map([
       ...mockBusinessGraph.edges,
-      ['edge-complex-1', { id: 'edge-complex-1', source: 'process-complex', target: 'process-1', type: 'flows_to' }],
-      ['edge-complex-2', { id: 'edge-complex-2', source: 'process-complex', target: 'process-2', type: 'flows_to' }],
-      ['edge-complex-3', { id: 'edge-complex-3', source: 'service-1', target: 'process-complex', type: 'depends_on' }],
+      ['edge-complex-1', { id: 'edge-complex-1', source: 'process-complex', sourceId: 'process-complex', target: 'process-1', targetId: 'process-1', type: 'flows_to' }],
+      ['edge-complex-2', { id: 'edge-complex-2', source: 'process-complex', sourceId: 'process-complex', target: 'process-2', targetId: 'process-2', type: 'flows_to' }],
+      ['edge-complex-3', { id: 'edge-complex-3', source: 'service-1', sourceId: 'service-1', target: 'process-complex', targetId: 'process-complex', type: 'depends_on' }],
     ]),
     crossLayerLinks: mockBusinessGraph.crossLayerLinks,
     indices: mockBusinessGraph.indices,

@@ -3,7 +3,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { useBusinessLayerStore } from '../../src/stores/businessLayerStore';
+import { useBusinessLayerStore } from '../../src/apps/embedded/stores/businessLayerStore';
 
 test.describe('Node Expansion Logic', () => {
   test.beforeEach(() => {

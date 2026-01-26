@@ -80,12 +80,18 @@ export async function exportAsPNG(
   reactFlowContainer: HTMLElement,
   filename: string = 'motivation-graph.png'
 ): Promise<void> {
-  console.log('[MotivationExportService] Exporting as PNG:', filename);
-  await exportReactFlowAsPNG(reactFlowContainer, filename, {
-    backgroundColor: '#ffffff',
-    quality: 1.0,
-    pixelRatio: 2
-  });
+  try {
+    console.log('[MotivationExportService] Exporting as PNG:', filename);
+    await exportReactFlowAsPNG(reactFlowContainer, filename, {
+      backgroundColor: '#ffffff',
+      quality: 1.0,
+      pixelRatio: 2
+    });
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error during PNG export';
+    console.error('[MotivationExportService] PNG export failed:', errorMessage);
+    throw error;
+  }
 }
 
 /**
@@ -95,10 +101,16 @@ export async function exportAsSVG(
   reactFlowContainer: HTMLElement,
   filename: string = 'motivation-graph.svg'
 ): Promise<void> {
-  console.log('[MotivationExportService] Exporting as SVG:', filename);
-  await exportReactFlowAsSVG(reactFlowContainer, filename, {
-    backgroundColor: '#ffffff'
-  });
+  try {
+    console.log('[MotivationExportService] Exporting as SVG:', filename);
+    await exportReactFlowAsSVG(reactFlowContainer, filename, {
+      backgroundColor: '#ffffff'
+    });
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error during SVG export';
+    console.error('[MotivationExportService] SVG export failed:', errorMessage);
+    throw error;
+  }
 }
 
 /**

@@ -74,6 +74,10 @@ function MotivationRouteContent() {
         if (!fullGraphRef.current) {
           throw new Error('No graph data available');
         }
+        // Validate that nodes and edges are valid Maps before processing
+        if (!fullGraphRef.current.nodes || !fullGraphRef.current.edges) {
+          throw new Error('Graph data is incomplete - missing nodes or edges');
+        }
         const nodes = Array.from(fullGraphRef.current.nodes.values()).map(
           (n) => ({
             id: n.element.id,
@@ -106,6 +110,14 @@ function MotivationRouteContent() {
     }
 
     const graph = fullGraphRef.current;
+
+    // Validate graph structure
+    if (!graph.nodes || !graph.edges) {
+      return {
+        elements: {} as Record<MotivationElementType, { visible: number; total: number }>,
+        relationships: {} as Record<MotivationRelationshipType, { visible: number; total: number }>,
+      };
+    }
 
     // Count elements by type
     const elementCounts: Record<MotivationElementType, { visible: number; total: number }> = {} as Record<MotivationElementType, { visible: number; total: number }>;

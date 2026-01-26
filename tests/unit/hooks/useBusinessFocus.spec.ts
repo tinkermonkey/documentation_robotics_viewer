@@ -28,6 +28,7 @@ test.describe('useBusinessFocus', () => {
       hierarchyLevel: 0,
       childIds: [],
       metadata: {},
+      properties: {},
     });
     nodes.set('B', {
       id: 'B',
@@ -36,6 +37,7 @@ test.describe('useBusinessFocus', () => {
       hierarchyLevel: 1,
       childIds: [],
       metadata: {},
+      properties: {},
     });
     nodes.set('C', {
       id: 'C',
@@ -44,6 +46,7 @@ test.describe('useBusinessFocus', () => {
       hierarchyLevel: 2,
       childIds: [],
       metadata: {},
+      properties: {},
     });
     nodes.set('D', {
       id: 'D',
@@ -52,6 +55,7 @@ test.describe('useBusinessFocus', () => {
       hierarchyLevel: 1,
       childIds: [],
       metadata: {},
+      properties: {},
     });
     nodes.set('E', {
       id: 'E',
@@ -60,6 +64,7 @@ test.describe('useBusinessFocus', () => {
       hierarchyLevel: 2,
       childIds: [],
       metadata: {},
+      properties: {},
     });
     nodes.set('F', {
       id: 'F',
@@ -68,13 +73,14 @@ test.describe('useBusinessFocus', () => {
       hierarchyLevel: 2,
       childIds: [],
       metadata: {},
+      properties: {},
     });
 
-    edges.set('A-B', { id: 'A-B', source: 'A', target: 'B', type: 'flows_to' });
-    edges.set('B-C', { id: 'B-C', source: 'B', target: 'C', type: 'flows_to' });
-    edges.set('A-D', { id: 'A-D', source: 'A', target: 'D', type: 'flows_to' });
-    edges.set('D-E', { id: 'D-E', source: 'D', target: 'E', type: 'flows_to' });
-    edges.set('D-F', { id: 'D-F', source: 'D', target: 'F', type: 'flows_to' });
+    edges.set('A-B', { id: 'A-B', source: 'A', sourceId: 'A', target: 'B', targetId: 'B', type: 'flows_to' });
+    edges.set('B-C', { id: 'B-C', source: 'B', sourceId: 'B', target: 'C', targetId: 'C', type: 'flows_to' });
+    edges.set('A-D', { id: 'A-D', source: 'A', sourceId: 'A', target: 'D', targetId: 'D', type: 'flows_to' });
+    edges.set('D-E', { id: 'D-E', source: 'D', sourceId: 'D', target: 'E', targetId: 'E', type: 'flows_to' });
+    edges.set('D-F', { id: 'D-F', source: 'D', sourceId: 'D', target: 'F', targetId: 'F', type: 'flows_to' });
 
     return {
       nodes,
@@ -281,7 +287,7 @@ test.describe('useBusinessFocus', () => {
       const graph = createTestGraph();
 
       // Add circular edge: C → A
-      graph.edges.set('C-A', { id: 'C-A', source: 'C', target: 'A', type: 'depends_on' });
+      graph.edges.set('C-A', { id: 'C-A', source: 'C', sourceId: 'C', target: 'A', targetId: 'A', type: 'depends_on' });
 
       const selectedNodes = new Set(['A']);
 
@@ -303,6 +309,7 @@ test.describe('useBusinessFocus', () => {
         hierarchyLevel: 0,
         childIds: [],
         metadata: {},
+        properties: {},
       });
 
       const selectedNodes = new Set(['A']);

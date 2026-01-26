@@ -293,8 +293,17 @@ export class MatrixBusinessLayout implements BusinessLayoutEngine {
       // Check if edge crosses domains
       const sourceBusinessNode = businessNodeMap.get(sourceNode.id);
       const targetBusinessNode = businessNodeMap.get(targetNode.id);
-      const sourceDomain = sourceBusinessNode?.metadata.domain || 'General';
-      const targetDomain = targetBusinessNode?.metadata.domain || 'General';
+
+      // Ensure business nodes exist before accessing metadata
+      if (!sourceBusinessNode || !targetBusinessNode) {
+        console.warn(
+          `Missing business node for edge ${businessEdge.id}: source=${sourceNode.id}, target=${targetNode.id}`
+        );
+        continue;
+      }
+
+      const sourceDomain = sourceBusinessNode.metadata.domain || 'General';
+      const targetDomain = targetBusinessNode.metadata.domain || 'General';
       const isCrossDomain = sourceDomain !== targetDomain;
 
       const edge: Edge = {

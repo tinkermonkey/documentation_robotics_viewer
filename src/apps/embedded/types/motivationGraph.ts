@@ -60,6 +60,9 @@ export enum RelationshipDirection {
  * Motivation graph node with computed metrics
  */
 export interface MotivationGraphNode {
+  /** Unique node identifier (required by BaseNode for type-safe generic components) */
+  id: string;
+
   /** Original model element */
   element: ModelElement;
 

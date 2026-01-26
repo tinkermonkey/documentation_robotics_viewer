@@ -1,6 +1,6 @@
 import type { StoryDefault, Story } from '@ladle/react';
 import { BusinessLayerControls } from './BusinessLayerControls';
-import type { BusinessGraph } from '../../types/businessLayer';
+import type { BusinessGraph } from '@/core/types/businessLayer';
 
 export default {
   title: 'Business Layer / BusinessLayerControls',
@@ -15,8 +15,8 @@ const mockBusinessGraph: BusinessGraph = {
     ['capability-1', { id: 'capability-1', type: 'capability', name: 'Order Management', metadata: {}, hierarchyLevel: 0, childIds: [], properties: {} }],
   ]),
   edges: new Map([
-    ['edge-1', { id: 'edge-1', source: 'service-1', target: 'service-2', type: 'depends_on' }],
-    ['edge-2', { id: 'edge-2', source: 'process-1', target: 'function-1', type: 'composes' }],
+    ['edge-1', { id: 'edge-1', source: 'service-1', sourceId: 'service-1', target: 'service-2', targetId: 'service-2', type: 'depends_on' }],
+    ['edge-2', { id: 'edge-2', source: 'process-1', sourceId: 'process-1', target: 'function-1', targetId: 'function-1', type: 'composes' }],
   ]),
   crossLayerLinks: [],
   indices: {
