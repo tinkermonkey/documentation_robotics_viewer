@@ -141,15 +141,47 @@ await createAnnotation(data);
 - **Right Sidebar** (w-80): Annotations + schema info
 
 ```typescript
+// SharedLayout API
+interface SharedLayoutProps {
+  showLeftSidebar?: boolean;
+  showRightSidebar?: boolean;
+  leftSidebarContent?: React.ReactNode;
+  rightSidebarContent?: React.ReactNode;
+  children: React.ReactNode;
+}
+
+// Usage example with C4RightSidebar
 <SharedLayout
-  showLeftSidebar={activeView === 'graph'}
+  showLeftSidebar={false}
   showRightSidebar={true}
-  leftSidebarContent={<YourLeftSidebar />}
-  rightSidebarContent={<><AnnotationPanel /><SchemaInfoPanel /></>}
+  rightSidebarContent={
+    <C4RightSidebar
+      selectedContainerTypes={selectedContainerTypes}
+      onContainerTypeChange={handleContainerTypeChange}
+      selectedLayout={selectedLayout}
+      onLayoutChange={handleLayoutChange}
+      onFitToView={handleFitToView}
+      onExportPNG={handleExportPNG}
+      onExportSVG={handleExportSVG}
+      // ... other required props
+    />
+  }
 >
-  {activeView === 'graph' ? <GraphView /> : <JSONView />}
+  {/* Main graph content */}
 </SharedLayout>
 ```
+
+### Available Sidebar Components
+
+**Right Sidebar Components:**
+- `C4RightSidebar` - For C4 Architecture views (filters, controls, inspector, annotations)
+- `MotivationRightSidebar` - For Motivation layer views (filters, controls, inspector, annotations)
+- `LayoutPreferencesPanel` - For layout preferences configuration
+
+**Left Sidebar Components:**
+- `ModelLayersSidebar` - For Model view layer selection
+
+Sidebar content is passed as React nodes via `leftSidebarContent` and `rightSidebarContent` props for maximum flexibility.
 
 ### Styling Rules
 
