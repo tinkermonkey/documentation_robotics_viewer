@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * Layout Preferences Store
  *
@@ -10,6 +9,32 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { DiagramType } from '../types/diagram';
 import type { LayoutEngineType } from '../layout/engines/LayoutEngine';
+
+/**
+ * Refinement session state for pause/resume functionality
+ */
+export interface RefinementSessionState {
+  /** Unique session identifier */
+  sessionId: string;
+
+  /** Diagram type for this session */
+  diagramType: DiagramType;
+
+  /** Current layout engine */
+  currentEngine: LayoutEngineType;
+
+  /** Current parameters */
+  currentParameters: Record<string, any>;
+
+  /** Session creation timestamp */
+  createdAt: string;
+
+  /** Session last update timestamp */
+  updatedAt?: string;
+
+  /** Session metadata/notes */
+  notes?: string;
+}
 
 /**
  * Custom parameter preset
@@ -329,7 +354,6 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
           );
           return;
         }
-        console.log(`[LayoutPreferences] Setting default engine for ${diagramType}: ${engineType}`);
         set((state) => ({
           defaultEngines: {
             ...state.defaultEngines,
@@ -351,7 +375,6 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
           console.error(`[LayoutPreferences] Invalid diagram type for clearDefaultEngine: ${diagramType}`);
           return;
         }
-        console.log(`[LayoutPreferences] Clearing default engine for ${diagramType}`);
         set((state) => {
           const newEngines = { ...state.defaultEngines };
           delete newEngines[diagramType];
@@ -393,7 +416,6 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
           createdAt: new Date().toISOString(),
         };
 
-        console.log(`[LayoutPreferences] Adding preset: ${newPreset.name} (${id})`);
         set((state) => ({
           presets: [...state.presets, newPreset],
         }));
@@ -428,7 +450,6 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
           return;
         }
 
-        console.log(`[LayoutPreferences] Updating preset: ${id}`);
         set((state) => ({
           presets: state.presets.map((preset) =>
             preset.id === id
@@ -449,7 +470,6 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
           return;
         }
 
-        console.log(`[LayoutPreferences] Removing preset: ${id}`);
         set((state) => ({
           presets: state.presets.filter((preset) => preset.id !== id),
         }));
@@ -485,7 +505,6 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
           return;
         }
 
-        console.log(`[LayoutPreferences] Renaming preset ${id} to: ${newName}`);
         set((state) => ({
           presets: state.presets.map((preset) =>
             preset.id === id
@@ -534,10 +553,6 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
           timestamp: new Date().toISOString(),
         };
 
-        console.log(
-          `[LayoutPreferences] Adding feedback: ${entry.diagramType} - ${entry.accepted ? 'accepted' : 'rejected'}`
-        );
-
         set((state) => ({
           feedbackHistory: [...state.feedbackHistory, entry],
         }));
@@ -556,13 +571,11 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
       },
 
       clearFeedbackHistory: () => {
-        console.log('[LayoutPreferences] Clearing feedback history');
         set({ feedbackHistory: [] });
       },
 
       // Session management
       saveSession: (session) => {
-        console.log(`[LayoutPreferences] Saving session: ${session.sessionId}`);
         set((state) => {
           // Check if session already exists
           const existingIndex = state.sessions.findIndex((s) => s.sessionId === session.sessionId);
@@ -597,7 +610,6 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
       },
 
       deleteSession: (sessionId) => {
-        console.log(`[LayoutPreferences] Deleting session: ${sessionId}`);
         set((state) => ({
           sessions: state.sessions.filter((s) => s.sessionId !== sessionId),
           activeSessionId: state.activeSessionId === sessionId ? undefined : state.activeSessionId,
@@ -605,7 +617,6 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
       },
 
       setActiveSession: (sessionId) => {
-        console.log(`[LayoutPreferences] Setting active session: ${sessionId}`);
         set({ activeSessionId: sessionId });
       },
 
@@ -616,12 +627,10 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
       },
 
       clearActiveSession: () => {
-        console.log('[LayoutPreferences] Clearing active session');
         set({ activeSessionId: undefined });
       },
 
       clearAllSessions: () => {
-        console.log('[LayoutPreferences] Clearing all sessions');
         set({ sessions: [], activeSessionId: undefined });
       },
 
@@ -635,7 +644,6 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
           presets: state.presets,
         };
 
-        console.log('[LayoutPreferences] Exporting configuration profile');
         return JSON.stringify(profile, null, 2);
       },
 
@@ -649,7 +657,6 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
             return false;
           }
 
-          console.log('[LayoutPreferences] Importing configuration profile');
           set({
             defaultEngines: config.defaultEngines || {},
             presets: config.presets || [],
@@ -708,7 +715,6 @@ export const useLayoutPreferencesStore = create<LayoutPreferencesState>()(
 
       // Reset
       reset: () => {
-        console.log('[LayoutPreferences] Resetting to defaults');
         set(defaultState);
       },
     }),

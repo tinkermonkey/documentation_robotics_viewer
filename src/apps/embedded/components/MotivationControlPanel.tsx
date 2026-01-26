@@ -14,6 +14,7 @@ import { memo } from 'react';
 import { Button, Label } from 'flowbite-react';
 import { Download, FileText } from 'lucide-react';
 import { BaseControlPanel, LayoutOption } from '@/core/components/base';
+import { isValidMotivationLayout } from '@/core/utils/validationUtils';
 
 export type LayoutAlgorithm = 'force' | 'hierarchical' | 'radial' | 'manual';
 
@@ -215,7 +216,11 @@ function MotivationControlPanelComponent(props: MotivationControlPanelProps) {
     <div className="motivation-control-panel">
       <BaseControlPanel
         selectedLayout={selectedLayout}
-        onLayoutChange={onLayoutChange}
+        onLayoutChange={(layout) => {
+          if (isValidMotivationLayout(layout)) {
+            onLayoutChange(layout);
+          }
+        }}
         layoutOptions={LAYOUT_OPTIONS}
         onFitToView={onFitToView}
         focusModeEnabled={focusModeEnabled}

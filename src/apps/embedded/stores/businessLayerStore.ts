@@ -117,7 +117,6 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
           console.error(`[BusinessLayerStore] Invalid layout: ${layout}`);
           return;
         }
-        console.log('[BusinessLayerStore] Setting layout to:', layout);
         set({ selectedLayout: layout });
       },
 
@@ -142,7 +141,6 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
           console.error('[BusinessLayerStore] Filter criticalities must be a Set');
           return;
         }
-        console.log('[BusinessLayerStore] Setting filters');
         set({ filters });
       },
 
@@ -158,6 +156,10 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
       },
 
       toggleTypeFilter: (type) => {
+        if (typeof type !== 'string' || type.length === 0) {
+          console.error('[BusinessLayerStore] Invalid type filter value');
+          return;
+        }
         set((state) => {
           const newTypes = new Set(state.filters.types);
           if (newTypes.has(type)) {
@@ -172,6 +174,10 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
       },
 
       toggleDomainFilter: (domain) => {
+        if (typeof domain !== 'string' || domain.length === 0) {
+          console.error('[BusinessLayerStore] Invalid domain filter value');
+          return;
+        }
         set((state) => {
           const newDomains = new Set(state.filters.domains);
           if (newDomains.has(domain)) {
@@ -186,6 +192,11 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
       },
 
       toggleLifecycleFilter: (lifecycle) => {
+        const validLifecycles = ['ideation', 'active', 'deprecated'];
+        if (typeof lifecycle !== 'string' || !validLifecycles.includes(lifecycle)) {
+          console.error('[BusinessLayerStore] Invalid lifecycle filter value');
+          return;
+        }
         set((state) => {
           const newLifecycles = new Set(state.filters.lifecycles);
           if (newLifecycles.has(lifecycle)) {
@@ -200,6 +211,11 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
       },
 
       toggleCriticalityFilter: (criticality) => {
+        const validCriticalities = ['high', 'medium', 'low'];
+        if (typeof criticality !== 'string' || !validCriticalities.includes(criticality)) {
+          console.error('[BusinessLayerStore] Invalid criticality filter value');
+          return;
+        }
         set((state) => {
           const newCriticalities = new Set(state.filters.criticalities);
           if (newCriticalities.has(criticality)) {
@@ -255,7 +271,6 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
           console.error('[BusinessLayerStore] Manual positions must be a Map');
           return;
         }
-        console.log('[BusinessLayerStore] Setting manual positions:', positions.size, 'nodes');
         set({ manualPositions: positions });
       },
 
@@ -264,7 +279,6 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
           console.error(`[BusinessLayerStore] Invalid focus mode: ${mode}`);
           return;
         }
-        console.log('[BusinessLayerStore] Setting focus mode to:', mode);
         set({ focusMode: mode });
       },
 
@@ -273,7 +287,6 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
           console.error(`[BusinessLayerStore] Invalid focus radius: ${radius}`);
           return;
         }
-        console.log('[BusinessLayerStore] Setting focus radius to:', radius);
         set({ focusRadius: radius });
       },
 
@@ -282,7 +295,6 @@ export const useBusinessLayerStore = create<BusinessLayerState>()(
           console.error('[BusinessLayerStore] Invalid selected node ID');
           return;
         }
-        console.log('[BusinessLayerStore] Setting selected node ID:', nodeId);
         set({ selectedNodeId: nodeId });
       },
 

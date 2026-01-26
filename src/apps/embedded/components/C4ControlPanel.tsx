@@ -18,6 +18,7 @@ import { Button, Label, ToggleSwitch, ButtonGroup } from 'flowbite-react';
 import { Download } from 'lucide-react';
 import { BaseControlPanel, LayoutOption } from '@/core/components/base';
 import { C4ViewLevel, C4ScenarioPreset, C4_SCENARIO_PRESETS } from '../types/c4Graph';
+import { isValidC4Layout } from '@/core/utils/validationUtils';
 
 export type C4LayoutAlgorithm = 'hierarchical' | 'orthogonal' | 'force' | 'manual';
 
@@ -200,13 +201,6 @@ const LAYOUT_OPTIONS: LayoutOption[] = [
     description: 'Preserve user-adjusted node positions',
   },
 ];
-
-/**
- * Type guard to validate C4 layout algorithm values
- */
-const isValidC4Layout = (value: unknown): value is C4LayoutAlgorithm => {
-  return LAYOUT_OPTIONS.some((opt) => opt.value === value);
-};
 
 /**
  * C4ControlPanel Component
