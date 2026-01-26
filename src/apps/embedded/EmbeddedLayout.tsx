@@ -184,6 +184,8 @@ export default function EmbeddedLayout() {
         <ErrorBoundary
           fallback={
             <ErrorState
+              title="Page Error"
+              message="An error occurred while loading this page. Please try again."
               variant="page"
               onRetry={() => window.location.reload()}
             />

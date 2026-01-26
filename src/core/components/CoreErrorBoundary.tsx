@@ -24,6 +24,8 @@ interface CoreErrorBoundaryState {
  * ```
  */
 export class CoreErrorBoundary extends React.Component<CoreErrorBoundaryProps, CoreErrorBoundaryState> {
+  static displayName = 'CoreErrorBoundary';
+
   constructor(props: CoreErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false, error: null };
@@ -83,5 +85,3 @@ export class CoreErrorBoundary extends React.Component<CoreErrorBoundaryProps, C
     return this.props.children;
   }
 }
-
-CoreErrorBoundary.displayName = 'CoreErrorBoundary';
