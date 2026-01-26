@@ -14,6 +14,7 @@ import { ExportButtonGroup } from '../components/shared/ExportButtonGroup';
 import { MotivationElementType, MotivationRelationshipType, MotivationGraph } from '../types/motivationGraph';
 import { LayoutAlgorithm } from '../components/MotivationControlPanel';
 import { MotivationGraphBuilder } from '../services/motivationGraphBuilder';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import {
   exportAsPNG,
   exportAsSVG,
@@ -463,8 +464,10 @@ export default function MotivationRoute() {
   }
 
   return (
-    <ReactFlowProvider>
-      <MotivationRouteContent />
-    </ReactFlowProvider>
+    <ErrorBoundary fallback={<ErrorState variant="page" message="Failed to render motivation view. Please try again." onRetry={reload} />}>
+      <ReactFlowProvider>
+        <MotivationRouteContent />
+      </ReactFlowProvider>
+    </ErrorBoundary>
   );
 }

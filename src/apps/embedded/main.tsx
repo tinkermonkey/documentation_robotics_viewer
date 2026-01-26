@@ -6,6 +6,7 @@ import { installFetchInterceptor } from './utils/fetchInterceptor';
 import { router } from './router';
 import { customTheme } from '../../theme/customTheme';
 import { initializeDefaultEngines } from '@/core/layout/engines';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import '../../index.css';
 
 // Handle token from magic link BEFORE router initializes
@@ -46,9 +47,11 @@ async function initializeAndRender() {
   // Render React app after engines are initialized
   ReactDOM.createRoot(rootElement!).render(
     <React.StrictMode>
-      <ThemeProvider theme={customTheme as any}>
-        <RouterProvider router={router} />
-      </ThemeProvider>
+      <ErrorBoundary>
+        <ThemeProvider theme={customTheme as any}>
+          <RouterProvider router={router} />
+        </ThemeProvider>
+      </ErrorBoundary>
     </React.StrictMode>
   );
 }

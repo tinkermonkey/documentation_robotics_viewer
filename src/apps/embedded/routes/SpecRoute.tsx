@@ -6,6 +6,7 @@ import AnnotationPanel from '../components/AnnotationPanel';
 import SchemaInfoPanel from '../components/SchemaInfoPanel';
 import SharedLayout from '../components/SharedLayout';
 import { LoadingState, ErrorState, ViewToggle } from '../components/shared';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
@@ -62,35 +63,37 @@ export default function SpecRoute() {
     );
   }
 
-  // Standard graph/json views use SharedLayout
+  // Standard graph/json views use SharedLayout wrapped in error boundary
   return (
-    <SharedLayout
-      showLeftSidebar={false}
-      showRightSidebar={true}
-      rightSidebarContent={
-        <>
-          <AnnotationPanel />
-          <SchemaInfoPanel />
-        </>
-      }
-    >
-      <div className="flex flex-col h-full overflow-hidden">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <ViewToggle
-            views={[
-              { key: 'graph', label: 'Graph' },
-              { key: 'json', label: 'JSON' },
-            ]}
-            activeView={activeView}
-            onViewChange={(v) => navigate({ to: `/spec/${v}` })}
-          />
+    <ErrorBoundary fallback={<ErrorState variant="page" message="Failed to render spec view. Please try again." onRetry={reload} />}>
+      <SharedLayout
+        showLeftSidebar={false}
+        showRightSidebar={true}
+        rightSidebarContent={
+          <>
+            <AnnotationPanel />
+            <SchemaInfoPanel />
+          </>
+        }
+      >
+        <div className="flex flex-col h-full overflow-hidden">
+          <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+            <ViewToggle
+              views={[
+                { key: 'graph', label: 'Graph' },
+                { key: 'json', label: 'JSON' },
+              ]}
+              activeView={activeView}
+              onViewChange={(v) => navigate({ to: `/spec/${v}` })}
+            />
+          </div>
+          {activeView === 'graph' ? (
+            <SpecGraphView specData={specData} selectedSchemaId={selectedSchemaId} />
+          ) : (
+            <SpecViewer specData={specData} selectedSchemaId={selectedSchemaId} />
+          )}
         </div>
-        {activeView === 'graph' ? (
-          <SpecGraphView specData={specData} selectedSchemaId={selectedSchemaId} />
-        ) : (
-          <SpecViewer specData={specData} selectedSchemaId={selectedSchemaId} />
-        )}
-      </div>
-    </SharedLayout>
+      </SharedLayout>
+    </ErrorBoundary>
   );
 }

@@ -20,6 +20,7 @@ import { ExportButtonGroup } from '../components/shared/ExportButtonGroup';
 import { C4Graph, ContainerType, C4ViewLevel } from '../types/c4Graph';
 import { C4LayoutAlgorithm } from '../components/C4ControlPanel';
 import { C4GraphBuilder } from '../services/c4Parser';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import {
   exportC4AsPNG,
   exportC4AsSVG,
@@ -453,8 +454,10 @@ export default function ArchitectureRoute() {
   }
 
   return (
-    <ReactFlowProvider>
-      <ArchitectureRouteContent />
-    </ReactFlowProvider>
+    <ErrorBoundary fallback={<ErrorState variant="page" message="Failed to render architecture view. Please try again." onRetry={reload} />}>
+      <ReactFlowProvider>
+        <ArchitectureRouteContent />
+      </ReactFlowProvider>
+    </ErrorBoundary>
   );
 }

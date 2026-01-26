@@ -13,6 +13,8 @@ import { useConnectionStore } from './stores/connectionStore';
 import { useViewPreferenceStore } from './stores/viewPreferenceStore';
 import { useAuthStore } from './stores/authStore';
 import { websocketClient } from './services/websocketClient';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { ErrorState } from './components/shared/ErrorState';
 
 // Route metadata for sub-tab navigation
 const routeMetadata: Record<string, { subTabs?: SubTab[] }> = {
@@ -179,7 +181,9 @@ export default function EmbeddedLayout() {
       </header>
 
       <div className="h-[calc(100vh-180px)]">
-        <Outlet />
+        <ErrorBoundary fallback={<ErrorState variant="page" />}>
+          <Outlet />
+        </ErrorBoundary>
       </div>
     </div>
   );

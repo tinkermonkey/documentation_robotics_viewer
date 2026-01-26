@@ -30,6 +30,7 @@ import { SpaceMouseHandler } from './SpaceMouseHandler';
 import { OverviewPanel, NodeWithLayerData } from './OverviewPanel';
 import { getLayerColor } from '../utils/layerColors';
 import { getEngine, LayoutEngineType } from '../layout/engines';
+import { CoreErrorBoundary } from './CoreErrorBoundary';
 
 interface GraphViewerProps {
   model: MetaModel;
@@ -292,12 +293,14 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
 
 /**
  * GraphViewer Component
- * Wrapper that provides ReactFlowProvider context
+ * Wrapper that provides ReactFlowProvider context and error boundary
  */
 const GraphViewer: React.FC<GraphViewerProps> = (props) => {
   return (
     <ReactFlowProvider>
-      <GraphViewerInner {...props} />
+      <CoreErrorBoundary>
+        <GraphViewerInner {...props} />
+      </CoreErrorBoundary>
     </ReactFlowProvider>
   );
 };

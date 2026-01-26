@@ -16,6 +16,7 @@ import { useAnnotationStore } from '../stores/annotationStore';
 import { embeddedDataLoader, LinkRegistry, SpecDataResponse } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
 import { LoadingState, ErrorState, ViewToggle } from '../components/shared';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import type { MetaModel } from '../../../core/types';
 
 /**
@@ -174,61 +175,63 @@ export default function ModelRoute() {
     );
   }
 
-  // All views use SharedLayout
+  // All views use SharedLayout wrapped in error boundary
   return (
-    <SharedLayout
-      showLeftSidebar={true}
-      showRightSidebar={true}
-      leftSidebarContent={
-        <ModelLayersSidebar
-          selectedLayerId={selectedLayerId}
-          onSelectLayer={handleLayerSelect}
-        />
-      }
-      rightSidebarContent={
-        activeView === 'graph' ? (
-          <>
-            <AnnotationPanel />
-            <LayerTypesLegend model={model} />
-            <NodeDetailsPanel selectedNode={selectedNode} model={model} />
-            <GraphStatisticsPanel model={model} />
-          </>
-        ) : (
-          <>
-            <AnnotationPanel />
-            <HighlightedPathPanel highlightedPath={highlightedPath} />
-            <SchemaInfoPanel />
-          </>
-        )
-      }
-    >
-      <div className="flex flex-col h-full overflow-hidden">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <ViewToggle
-            views={[
-              { key: 'graph', label: 'Graph' },
-              { key: 'json', label: 'JSON' },
-            ]}
-            activeView={activeView}
-            onViewChange={(v) => navigate({ to: `/model/${v}`, search: { layer: selectedLayerId || undefined } })}
-          />
-        </div>
-        {activeView === 'graph' ? (
-          <GraphViewer
-            model={model}
-            onNodeClick={handleNodeClick}
+    <ErrorBoundary fallback={<ErrorState variant="page" message="Failed to render model view. Please try again." onRetry={reload} />}>
+      <SharedLayout
+        showLeftSidebar={true}
+        showRightSidebar={true}
+        leftSidebarContent={
+          <ModelLayersSidebar
             selectedLayerId={selectedLayerId}
+            onSelectLayer={handleLayerSelect}
           />
-        ) : (
-          <ModelJSONViewer
-            model={model}
-            linkRegistry={linkRegistry || undefined}
-            specData={specData || undefined}
-            onPathHighlight={handlePathHighlight}
-            selectedLayer={selectedLayerId}
-          />
-        )}
-      </div>
-    </SharedLayout>
+        }
+        rightSidebarContent={
+          activeView === 'graph' ? (
+            <>
+              <AnnotationPanel />
+              <LayerTypesLegend model={model} />
+              <NodeDetailsPanel selectedNode={selectedNode} model={model} />
+              <GraphStatisticsPanel model={model} />
+            </>
+          ) : (
+            <>
+              <AnnotationPanel />
+              <HighlightedPathPanel highlightedPath={highlightedPath} />
+              <SchemaInfoPanel />
+            </>
+          )
+        }
+      >
+        <div className="flex flex-col h-full overflow-hidden">
+          <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+            <ViewToggle
+              views={[
+                { key: 'graph', label: 'Graph' },
+                { key: 'json', label: 'JSON' },
+              ]}
+              activeView={activeView}
+              onViewChange={(v) => navigate({ to: `/model/${v}`, search: { layer: selectedLayerId || undefined } })}
+            />
+          </div>
+          {activeView === 'graph' ? (
+            <GraphViewer
+              model={model}
+              onNodeClick={handleNodeClick}
+              selectedLayerId={selectedLayerId}
+            />
+          ) : (
+            <ModelJSONViewer
+              model={model}
+              linkRegistry={linkRegistry || undefined}
+              specData={specData || undefined}
+              onPathHighlight={handlePathHighlight}
+              selectedLayer={selectedLayerId}
+            />
+          )}
+        </div>
+      </SharedLayout>
+    </ErrorBoundary>
   );
 }
