@@ -195,6 +195,308 @@ src/
 - **Stores**: Use Zustand for state management (NO React context)
 - **Types**: Colocate with features using them; export from `index.ts`
 
+## TypeScript Generic Syntax for Arrow Function Components
+
+When creating reusable components that accept generic type parameters, use the `<T extends unknown>` pattern:
+
+```typescript
+// Generic sidebar component that accepts typed section configurations
+interface SidebarSectionProps<T extends Record<string, any>> {
+  sections: Array<{
+    id: keyof T;
+    title: string;
+    component: React.ReactNode;
+  }>;
+}
+
+export const GenericSidebar = <T extends Record<string, any>>({
+  sections
+}: SidebarSectionProps<T>) => {
+  return (
+    <div>
+      {sections.map((section) => (
+        <div key={String(section.id)}>{section.title}</div>
+      ))}
+    </div>
+  );
+};
+
+GenericSidebar.displayName = 'GenericSidebar';
+```
+
+**Why use `<T extends unknown>`?**
+- ✅ Allows consumers to pass any type without breaking type safety
+- ✅ Works correctly with arrow function components in JSX
+- ✅ Enables flexible reusable base components
+- ✅ Avoids generic type inference issues in JSX
+
+**Usage Example:**
+```typescript
+interface CustomSections {
+  overview: { title: string };
+  details: { content: string };
+}
+
+<GenericSidebar<CustomSections>
+  sections={[
+    { id: 'overview', title: 'Overview', component: <div /> },
+    { id: 'details', title: 'Details', component: <div /> }
+  ]}
+/>
+```
+
+## Component Migration Guide
+
+When refactoring existing components to follow base component patterns, follow these before/after patterns:
+
+### Example 1: Migrating a Custom Inspector Panel
+
+**Before** (tightly coupled, duplicated code):
+```typescript
+// src/apps/embedded/components/routes/BusinessInspectorPanel.tsx
+export const BusinessInspectorPanel = ({ elementId }: { elementId: string }) => {
+  const element = useStore((state) => state.getElement(elementId));
+  const [isExpanded, setIsExpanded] = useState(true);
+
+  return (
+    <div className="bg-white border rounded-lg p-4">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-bold">{element?.name}</h3>
+        <button onClick={() => setIsExpanded(!isExpanded)}>
+          {isExpanded ? '−' : '+'}
+        </button>
+      </div>
+      {isExpanded && (
+        <div className="space-y-2">
+          <p className="text-sm">{element?.description}</p>
+          {/* Business-specific content */}
+        </div>
+      )}
+    </div>
+  );
+};
+```
+
+**After** (using base component, minimal code):
+```typescript
+// src/apps/embedded/components/BusinessInspectorPanel.tsx
+import { BaseInspectorPanel } from '@/core/components/base/BaseInspectorPanel';
+
+export const BusinessInspectorPanel = ({ elementId }: { elementId: string }) => {
+  return (
+    <BaseInspectorPanel
+      elementId={elementId}
+      renderContent={(element) => (
+        <div className="space-y-2">
+          <p className="text-sm">{element.description}</p>
+          {/* Business-specific content only */}
+        </div>
+      )}
+    />
+  );
+};
+```
+
+**Benefits:**
+- ✅ 50% less code (11 lines → 5 lines)
+- ✅ No duplication of expand/collapse logic
+- ✅ Consistent styling with other inspectors
+- ✅ Automatic accessibility support
+
+### Example 2: Migrating a Custom Control Panel
+
+**Before** (custom state management):
+```typescript
+// Old pattern with custom state
+export const CustomControlPanel = () => {
+  const [selectedLayout, setSelectedLayout] = useState('vertical');
+  const [showLabels, setShowLabels] = useState(true);
+
+  return (
+    <div className="p-4 bg-gray-50 rounded">
+      <select value={selectedLayout} onChange={(e) => setSelectedLayout(e.target.value)}>
+        <option value="vertical">Vertical</option>
+        <option value="horizontal">Horizontal</option>
+      </select>
+      <label>
+        <input type="checkbox" checked={showLabels} onChange={(e) => setShowLabels(e.target.checked)} />
+        Show Labels
+      </label>
+    </div>
+  );
+};
+```
+
+**After** (using base component with render prop):
+```typescript
+import { BaseControlPanel } from '@/core/components/base/BaseControlPanel';
+
+export const CustomControlPanel = () => {
+  return (
+    <BaseControlPanel
+      title="Controls"
+      controls={[
+        {
+          type: 'select',
+          label: 'Layout',
+          options: ['vertical', 'horizontal'],
+          onChange: (value) => { /* handle change */ }
+        },
+        {
+          type: 'checkbox',
+          label: 'Show Labels',
+          onChange: (checked) => { /* handle change */ }
+        }
+      ]}
+    />
+  );
+};
+```
+
+## Render Prop and Slot Patterns
+
+Use render props and slots for flexible, domain-specific customization while maintaining consistent base structure.
+
+### Render Prop Pattern
+
+Render props allow consuming components to customize specific content areas:
+
+```typescript
+interface InspectorPanelProps {
+  elementId: string;
+  // Render prop for custom content
+  renderContent?: (element: ModelElement) => React.ReactNode;
+  // Render prop for custom actions
+  renderActions?: (element: ModelElement) => React.ReactNode;
+}
+
+export const BaseInspectorPanel = ({
+  elementId,
+  renderContent,
+  renderActions
+}: InspectorPanelProps) => {
+  const element = useStore((state) => state.getElement(elementId));
+
+  return (
+    <div className="bg-white border rounded p-4">
+      <div className="flex items-between justify-between mb-4">
+        <h3>{element?.name}</h3>
+        {renderActions && renderActions(element!)}
+      </div>
+
+      {/* Default content */}
+      <p className="text-sm text-gray-600 mb-4">{element?.description}</p>
+
+      {/* Custom content via render prop */}
+      {renderContent && renderContent(element!)}
+    </div>
+  );
+};
+
+// Usage
+<BaseInspectorPanel
+  elementId="bus-1"
+  renderContent={(element) => (
+    <div className="space-y-3">
+      <div className="flex gap-2">
+        {element.properties?.tags?.map((tag) => (
+          <Badge key={tag}>{tag}</Badge>
+        ))}
+      </div>
+    </div>
+  )}
+  renderActions={(element) => (
+    <Button onClick={() => showDetails(element)}>View Details</Button>
+  )}
+/>
+```
+
+### Slot Pattern
+
+Slots allow specifying multiple customizable content areas with named identifiers:
+
+```typescript
+interface SidebarSection {
+  id: string;
+  title: string;
+  component: React.ReactNode;
+  icon?: React.ReactNode;
+}
+
+interface GraphViewSidebarProps {
+  sections: SidebarSection[];
+  defaultOpenSections?: string[];
+  // Slots for custom header/footer content
+  headerSlot?: React.ReactNode;
+  footerSlot?: React.ReactNode;
+}
+
+export const GraphViewSidebar = ({
+  sections,
+  defaultOpenSections = [],
+  headerSlot,
+  footerSlot
+}: GraphViewSidebarProps) => {
+  const [openSections, setOpenSections] = useState(
+    new Set(defaultOpenSections)
+  );
+
+  return (
+    <div className="flex flex-col h-full bg-white border-l">
+      {/* Header slot */}
+      {headerSlot && <div className="px-4 py-2 border-b">{headerSlot}</div>}
+
+      {/* Sections */}
+      <div className="flex-1 overflow-y-auto">
+        {sections.map((section) => (
+          <div key={section.id} className="border-b">
+            <button
+              onClick={() => {
+                const next = new Set(openSections);
+                next.has(section.id)
+                  ? next.delete(section.id)
+                  : next.add(section.id);
+                setOpenSections(next);
+              }}
+              className="w-full px-4 py-2 flex items-center justify-between hover:bg-gray-50"
+            >
+              <span className="flex items-center gap-2">
+                {section.icon && section.icon}
+                {section.title}
+              </span>
+              <span>{openSections.has(section.id) ? '−' : '+'}</span>
+            </button>
+
+            {openSections.has(section.id) && (
+              <div className="px-4 py-3">{section.component}</div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Footer slot */}
+      {footerSlot && <div className="px-4 py-2 border-t">{footerSlot}</div>}
+    </div>
+  );
+};
+
+// Usage with all slots
+<GraphViewSidebar
+  sections={[
+    { id: 'info', title: 'Info', component: <ElementInfo /> },
+    { id: 'refs', title: 'References', component: <References /> }
+  ]}
+  defaultOpenSections={['info']}
+  headerSlot={<input placeholder="Search..." />}
+  footerSlot={<Button>Export</Button>}
+/>
+```
+
+**When to use Render Prop vs Slots:**
+- **Render Prop**: Single customizable content area with access to component state/data
+- **Slot**: Multiple named content areas with clear semantic meaning
+- **Both**: Combine for maximum flexibility (header/footer slots + render prop for main content)
+
 ## Store & Real-Time Patterns
 
 ### Zustand Stores
@@ -205,21 +507,37 @@ src/
   - Selectors: `getLayer()`, `getElement()`, `getElementsByType()`
   - Location: `src/core/stores/modelStore.ts`
 
-- **`filterStore`** - Active layer/element filters
-  - State: `visibleLayers`, `visibleTypes`, `searchText`
-  - Actions: `toggleLayer()`, `setTypeFilter()`, `setSearchText()`
-  - Location: `src/core/stores/filterStore.ts`
+- **`layerStore`** - Active layer visibility state
+  - State: `visibleLayers`, `selectedLayer`
+  - Actions: `toggleLayer()`, `selectLayer()`
+  - Location: `src/core/stores/layerStore.ts`
+
+- **`elementStore`** - Selected element and focus state
+  - State: `selectedElement`, `focusedElement`
+  - Actions: `selectElement()`, `clearSelection()`
+  - Location: `src/core/stores/elementStore.ts`
+
+- **`layoutPreferencesStore`** - User layout preferences (persisted)
+  - State: `defaultLayout`, `sidebarWidths`, `expandedSections`
+  - Location: `src/core/stores/layoutPreferencesStore.ts`
 
 **App-Specific Stores** (embedded app):
-- **`layoutPreferences`** - User layout and UI preferences
-  - State: `defaultLayout`, `sidebarWidths`, `expandedSections`
-  - Persisted: localStorage
-  - Location: `src/apps/embedded/stores/layoutPreferences.ts`
+- **`viewPreferenceStore`** - View-specific user preferences
+  - Location: `src/apps/embedded/stores/viewPreferenceStore.ts`
 
 - **`annotationStore`** - Annotations with optimistic updates
   - State: `annotations`, `loading`, `error`
   - Actions: `addAnnotation()`, `updateAnnotation()`, `deleteAnnotation()`
   - Location: `src/apps/embedded/stores/annotationStore.ts`
+
+- **`changesetStore`** - Architecture changeset management
+  - Location: `src/apps/embedded/stores/changesetStore.ts`
+
+- **`connectionStore`** - WebSocket connection state
+  - Location: `src/apps/embedded/stores/connectionStore.ts`
+
+- **`authStore`** - Authentication state
+  - Location: `src/apps/embedded/stores/authStore.ts`
 
 ### Store Best Practices
 
@@ -395,31 +713,46 @@ Supports both **JSON Schema** (UUIDs, single JSON per layer) and **YAML instance
 
 **Core Services:**
 - `src/core/services/nodeTransformer.ts` - Element → React Flow node conversion
-- `src/core/services/edgeTransformer.ts` - Relationship → React Flow edge conversion
-- `src/core/services/layoutService.ts` - Layout algorithm orchestration
+- `src/core/services/businessNodeTransformer.ts` - Business layer node transformation
+- `src/core/services/businessGraphBuilder.ts` - Business layer graph construction
 - `src/core/layout/` - Layout engines (Vertical, Hierarchical, ForceDirected, Swimlane, etc.)
-- `src/core/hooks/useGraphState.ts` - Centralized graph state management
 - `src/core/components/GraphViewer.tsx` - Main React Flow wrapper component
 
-**App Services:**
-- `src/apps/embedded/services/motivationGraphBuilder.ts` - Motivation layer graph construction
-- `src/apps/embedded/services/businessGraphBuilder.ts` - Business layer graph construction
-- `src/apps/embedded/services/c4ViewTransformer.ts` - C4 architecture transformation
-- `src/apps/embedded/services/yamlParser.ts` - YAML instance model parsing
-- `src/apps/embedded/services/dataLoader.ts` - Model loading orchestration
+**Data Processing Services:**
+- `src/core/services/dataLoader.ts` - Model loading orchestration
+- `src/core/services/yamlParser.ts` - YAML instance model parsing
+- `src/core/services/jsonSchemaParser.ts` - JSON Schema parsing
+- `src/core/services/businessLayerParser.ts` - Business layer spec parsing
+- `src/core/services/crossLayerReferenceExtractor.ts` - Cross-layer relationship extraction
+
+**Export Services:**
+- `src/core/services/businessExportService.ts` - Business layer export (PNG/SVG/JSON)
+- `src/core/services/exportUtils.ts` - Export utility functions
+- `src/core/services/impactAnalysisService.ts` - Impact analysis for changes
+
+**UI Base Components:**
+- `src/core/components/base/BaseInspectorPanel.tsx` - Reusable inspector panel
+- `src/core/components/base/BaseControlPanel.tsx` - Reusable control panel
+- `src/core/components/base/GraphViewSidebar.tsx` - Generic sidebar component
+- `src/core/components/businessLayer/BusinessLayerView.tsx` - Business layer view
+- `src/core/components/businessLayer/BusinessLayerControls.tsx` - Business layer controls
+
+**Embedded App Layout:**
+- `src/apps/embedded/EmbeddedLayout.tsx` - Main embedded app layout
+- `src/apps/embedded/components/SharedLayout.tsx` - 3-column layout container
+- `src/apps/embedded/components/shared/FilterPanel.tsx` - Layer/element filtering
+- `src/apps/embedded/components/shared/ExportButtonGroup.tsx` - Export functionality
 - `src/apps/embedded/routes/` - TanStack Router route components
 
 **Stores (Zustand):**
 - `src/core/stores/modelStore.ts` - Loaded model data
-- `src/core/stores/filterStore.ts` - Active layer/element filters
-- `src/apps/embedded/stores/layoutPreferences.ts` - User layout preferences
+- `src/core/stores/layerStore.ts` - Layer visibility state
+- `src/core/stores/elementStore.ts` - Selected element state
+- `src/core/stores/layoutPreferencesStore.ts` - User layout preferences
 - `src/apps/embedded/stores/annotationStore.ts` - Annotation state
-
-**UI Layout:**
-- `src/apps/embedded/components/shared/SharedLayout.tsx` - 3-column layout container
-- `src/apps/embedded/components/shared/GraphViewSidebar.tsx` - Generic sidebar component
-- `src/apps/embedded/components/shared/FilterPanel.tsx` - Layer/element filtering
-- `src/apps/embedded/components/shared/ExportButtonGroup.tsx` - Export functionality
+- `src/apps/embedded/stores/viewPreferenceStore.ts` - View-specific preferences
+- `src/apps/embedded/stores/changesetStore.ts` - Architecture changesets
+- `src/apps/embedded/stores/connectionStore.ts` - WebSocket connection state
 
 ## Testing Best Practices
 
@@ -466,11 +799,20 @@ npm test -- tests/unit/motivationGraphBuilder.spec.ts
    });
    ```
 
-3. **Mock External Dependencies**:
+3. **Mock External Dependencies** (using Playwright):
    ```typescript
+   // Simple mock object for unit tests
    const mockLayout = {
-     calculate: jest.fn().mockResolvedValue({ x: 100, y: 200 })
+     calculate: async (model) => ({ x: 100, y: 200 })
    };
+
+   // For more complex mocking patterns, use test utilities
+   test('should handle async operations', async () => {
+     const mockService = {
+       fetch: async (url) => ({ data: 'test' })
+     };
+     // Test code here
+   });
    ```
 
 ### E2E Test Guidelines
@@ -514,13 +856,16 @@ Stories validate that components render without errors across 481+ Ladle compone
 
 ### Test Coverage Goals
 
-| Category | Target | Status |
-|----------|--------|--------|
-| Unit tests (services/utils) | >90% | ✅ High coverage |
-| Unit tests (components) | >70% | ✅ Good coverage |
-| Integration tests | >80% | ✅ Good coverage |
-| E2E tests | >60% | ✅ Good coverage |
-| Story validation | 100% | ✅ 481 stories validated |
+| Category | Count | Status |
+|----------|-------|--------|
+| Unit tests (services/utilities) | ~200 | ✅ High coverage |
+| Unit tests (components) | ~60 | ✅ Good coverage |
+| Integration tests | ~50 | ✅ Comprehensive |
+| E2E tests (Playwright) | ~70 | ✅ Good coverage |
+| Story validation (Ladle) | 481+ | ✅ All validated |
+| **Total** | **~860** | ✅ Complete suite |
+
+**Overall test run time**: Approximately 6-10 seconds for unit/integration tests, 30-60 seconds for full E2E suite with servers
 
 ## Common Issues
 
@@ -592,15 +937,17 @@ tests/
 ### Test Pyramid Strategy
 
 ```
-          E2E Tests (6 files, ~400 tests)
-           ↑ Slow (~30-60s) - Comprehensive
+          E2E Tests (~70 tests across multiple files)
+           ↑ Slow (~30-60s) - Comprehensive system validation
           /
-         / Integration Tests (2 files, ~50 tests)
-        ↑ Medium (~5-10s) - Cross-component
+         / Integration Tests (~50 tests, 2+ files)
+        ↑ Medium (~5-10s) - Cross-component workflows
        /
-      / Unit Tests (25+ files, ~900 tests)
-     ↑ Fast (<6s) - Isolated
+      / Unit Tests (~260 tests across 25+ files)
+     ↑ Fast (<6s) - Isolated services and utilities
 ```
+
+**Total Test Suite**: ~380-860 tests (unit/integration + story validation)
 
 **Rule:** Implement at the lowest level possible, then verify with higher levels.
 
@@ -719,7 +1066,10 @@ test.describe('Feature Name', () => {
 
 **When to create stories:**
 ```typescript
-// src/catalog/components/MyComponent/MyComponent.stories.tsx
+// Stories live alongside components, e.g.:
+// src/core/components/base/BaseInspectorPanel.stories.tsx
+// src/apps/embedded/components/shared/FilterPanel.stories.tsx
+
 import { Story } from '@ladle/react';
 import { MyComponent } from './MyComponent';
 
@@ -833,15 +1183,17 @@ test('should layout 500+ elements in under 1000ms', () => {
 
 ## Performance Targets
 
-| Metric | Target | Current | Implementation |
-|--------|--------|---------|----------------|
-| Unit test suite | <10s | ✅ 6.3s | 380 tests, Playwright |
-| Initial graph render (500 elements) | <3s | ✅ 2-3s | Viewport culling + optimized layout |
-| Layout calculation (500 nodes) | <1000ms | ✅ 400-800ms | Algorithm selection by layer size |
-| Filter operations | <500ms | ✅ 100-300ms | Pre-indexed store selectors |
-| Story validation (481 stories) | <60s | ✅ 45-50s | Parallel test execution |
-| Pan/zoom responsiveness | 60fps | ✅ Smooth | React Flow optimizations |
-| Bundle size | <500KB (gzip) | ✅ ~450KB | Code splitting + tree-shaking |
+**Target Performance Metrics** (measured empirically during development):
+
+| Metric | Target | Implementation |
+|--------|--------|-----------------|
+| Unit test suite | <10s | Playwright tests |
+| Initial graph render (500 elements) | <3s | Viewport culling + optimized layout |
+| Layout calculation (500 nodes) | <1000ms | Algorithm selection by layer size |
+| Filter operations | <500ms | Pre-indexed store selectors |
+| Story validation (481 stories) | <60s | Parallel test execution |
+| Pan/zoom responsiveness | 60fps | React Flow optimizations |
+| Bundle size | <500KB (gzip) | Code splitting + tree-shaking |
 
 **Layout Strategy by Layer Size:**
 - <50 nodes: Vertical or Hierarchical layout
@@ -855,61 +1207,6 @@ test('should layout 500+ elements in under 1000ms', () => {
 - ✅ Code splitting: Separate bundle for Ladle catalog and main app
 - ✅ Asset optimization: SVG icons instead of raster, WebP images
 
-## Testing
-
-**Test Suite (380 passing tests)**:
-
-### Unit Tests
-- `tests/unit/` - Service and utility testing
-  - `motivationGraphBuilder.spec.ts` - Motivation layer graph building
-  - `businessGraphBuilder.spec.ts` - Business layer graph construction
-  - `c4ViewTransformer.spec.ts` - C4 architecture view transformation
-  - `layout/` - Layout engines (hierarchical, force-directed, swimlanes, orthogonal routing)
-  - `nodes/` - Node dimension and rendering validation
-  - `preferences/` - User preference persistence
-  - `validation/` - Graph element validation
-  - `hooks/` - Custom hooks (business filters, focus management)
-
-### Integration Tests
-- `tests/integration/` - Cross-component data flow validation
-  - `c4ParserIntegration.spec.ts` - C4 spec parsing and transformation
-  - `preferencePersistence.spec.ts` - User preference persistence across sessions
-
-### E2E Tests (Playwright)
-- `tests/*embedded*.spec.ts` - Full embedded app with WebSocket
-- `tests/c4-*.spec.ts` - C4 architecture views
-- `tests/*-accessibility.spec.ts` - WCAG 2.1 AA compliance
-- `tests/*performance*.spec.ts` - Performance benchmarks
-
-### Story Validation Tests
-- `tests/stories/all-stories.spec.ts` - Auto-generated Ladle story validation (481+ stories)
-
-**Test Execution:**
-```bash
-npm test                          # All tests (380)
-npm run test:e2e                 # E2E only with servers
-npm run test:stories             # Ladle story validation
-npm run test:stories:generate    # Regenerate story tests
-```
-
-**Test Patterns:**
-```typescript
-// Unit test pattern
-test.describe('Component Name', () => {
-  test('should do something', () => {
-    // Setup, Act, Assert
-  });
-});
-
-// E2E test pattern with data-testid selectors
-<div data-testid="your-component">  // Stable selectors
-await expect(page.locator('[data-testid="your-component"]')).toBeVisible();
-
-// Service mock pattern
-const mockService = {
-  method: async (params) => ({ /* response */ })
-};
-```
 
 ## Export Services
 
