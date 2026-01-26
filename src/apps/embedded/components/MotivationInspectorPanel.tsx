@@ -200,11 +200,27 @@ function renderMotivationCrossLayerLinks(
       <ul className="space-y-2">
         {crossLayerLinks.map((link, index) => (
           <li key={index} className="text-sm border-l-2 border-purple-400 pl-2">
-            <div className="flex justify-between items-start">
+            <div className="flex justify-between items-start gap-2">
               <span className="font-medium text-gray-900 dark:text-white">{link.label}:</span>
-              <span className="text-xs text-gray-700 dark:text-gray-300">
+              <button
+                className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline text-xs font-medium"
+                onClick={() => {
+                  // Extract layer from target ID (format: layer.type.id)
+                  const layerMatch = link.targetId.match(/^([^.]+)\./);
+                  if (layerMatch) {
+                    const targetLayer = layerMatch[1];
+                    // Navigate to the target layer in the model view with the element highlighted
+                    const url = `/model/graph?layer=${encodeURIComponent(targetLayer)}&highlight=${encodeURIComponent(link.targetId)}`;
+                    window.location.href = url;
+                  } else {
+                    console.warn(`Could not extract layer from target ID: ${link.targetId}`);
+                  }
+                }}
+                aria-label={`Navigate to ${link.targetName}`}
+                title={`Navigate to ${link.targetName} in ${link.targetId.split('.')[0]} layer`}
+              >
                 {link.targetName}
-              </span>
+              </button>
             </div>
           </li>
         ))}

@@ -171,7 +171,7 @@ export interface ConflictDetection {
   nodes: string[];
 
   /** Conflict type */
-  type: 'goal-conflict' | 'constraint-violation' | 'requirement-incompatibility';
+  type: 'goal-conflict' | 'constraint-violation' | 'requirement-incompatibility' | 'goal-constraint-conflict' | 'requirement-conflict';
 
   /** Conflict description */
   description: string;

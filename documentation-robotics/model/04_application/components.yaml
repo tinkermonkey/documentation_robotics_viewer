@@ -12,6 +12,7 @@ viewer-app:
     x-monitored-by:
       - apm.metric.initialization-time
       - apm.metric.embedding-success-rate
+      - apm.metric.error-boundary
     source:
       reference:
         provenance: manual
@@ -37,9 +38,9 @@ graph-view:
     x-monitored-by:
       - apm.metric.render-time
       - apm.metric.interaction-fps
+      - apm.metric.memory-usage
       - apm.metric.node-render-count
       - apm.metric.edge-render-count
-      - apm.metric.initialization-time
     source:
       reference:
         provenance: manual

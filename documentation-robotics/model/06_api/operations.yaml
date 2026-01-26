@@ -357,7 +357,7 @@ download-github-schema-zip:
       - application.service.git-hub-service
     x-protected-by:
       - security.permission.access-api-endpoints
-      - security.countermeasure.path-validation
+      - security.countermeasure.input-sanitization
 get-example-implementation:
   id: api.operation.get-example-implementation
   name: Get Example Implementation
@@ -393,9 +393,8 @@ get-example-implementation:
       - application.service.yaml-parser
       - application.service.data-loader
     x-protected-by:
-      - security.permission.read-model-files
-      - security.countermeasure.path-validation
-      - security.countermeasure.file-system-sandboxing
+      - security.permission.access-api-endpoints
+      - security.countermeasure.input-sanitization
 websocket-connect:
   id: api.operation.websocket-connect
   name: WebSocket Connection
@@ -420,8 +419,9 @@ websocket-connect:
     x-archimate-ref:
       - application.service.reference-server
     x-protected-by:
-      - security.permission.websocket-connection
+      - security.permission.websocket-permission
       - security.countermeasure.websocket-origin-validation
+      - security.countermeasure.message-validation
     source:
       reference:
         provenance: manual
@@ -441,6 +441,8 @@ connected:
       type: connected
       version: string
       timestamp: string
+    x-protected-by:
+      - security.countermeasure.websocket-origin-validation
 subscribe:
   id: api.event.subscribe
   name: Subscribe Command
@@ -453,6 +455,9 @@ subscribe:
     payload:
       type: subscribe
       topics: array<string>
+    x-protected-by:
+      - security.countermeasure.websocket-origin-validation
+      - security.countermeasure.message-validation
 model-updated:
   id: api.event.model-updated
   name: Model Updated Event
