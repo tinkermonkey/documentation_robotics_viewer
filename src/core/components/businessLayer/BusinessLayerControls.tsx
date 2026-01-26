@@ -45,7 +45,7 @@ const TYPE_LABELS: Record<BusinessNodeType, string> = {
 /**
  * Layout options
  */
-const LAYOUT_OPTIONS: LayoutOption[] = [
+const LAYOUT_OPTIONS: LayoutOption<BusinessLayoutAlgorithm>[] = [
   {
     value: 'hierarchical' as const,
     label: 'Hierarchical',
