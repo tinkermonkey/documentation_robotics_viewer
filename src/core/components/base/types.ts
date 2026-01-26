@@ -81,24 +81,25 @@ export interface BaseNode {
  *
  * Required properties for generic edge types used by BaseInspectorPanel.
  * All domain-specific edge types (MotivationGraphEdge, C4Edge, BusinessEdge, etc.)
- * must have at least an id property. Source/target node references vary by domain:
+ * must satisfy this interface to work with generic base components.
  *
  * Compatibility:
- * - MotivationGraphEdge: Has id, sourceId, targetId
- * - C4Edge: Has id, sourceId, targetId
- * - BusinessEdge: Has id, source, target (instead of sourceId, targetId)
+ * - MotivationGraphEdge: Has id, sourceId, targetId ✓
+ * - C4Edge: Has id, sourceId, targetId ✓
+ * - BusinessEdge: Has id, sourceId, targetId (+ source/target aliases) ✓
  *
- * Note: BaseInspectorPanel assumes sourceId/targetId properties for accessing edges.
- * Domains using source/target properties will need adapter functions.
+ * Note: The sourceId and targetId properties are required by BaseInspectorPanel
+ * for accessing edges and their source/target nodes. Domain-specific types may
+ * include additional properties or aliases (e.g., BusinessEdge also has source/target).
  */
 export interface BaseEdge {
   /** Unique edge identifier */
   id: string;
 
-  /** Source node ID (when using sourceId/targetId naming) */
+  /** Source node ID */
   sourceId: string;
 
-  /** Target node ID (when using sourceId/targetId naming) */
+  /** Target node ID */
   targetId: string;
 }
 
