@@ -83,11 +83,12 @@ function BaseInspectorPanelComponent<
       testId = 'inspector-panel',
     } = props;
 
-    // Get selected node
+    // Get selected node with proper null-safety
     const selectedNode = selectedNodeId && graph?.nodes ? graph.nodes.get(selectedNodeId) ?? null : null;
 
-    // If no node selected, show empty state
-    if (!selectedNodeId || !selectedNode) {
+    // Distinguish between "no selection" and "invalid selection"
+    // Case 1: No selection (user hasn't selected anything)
+    if (!selectedNodeId) {
       return (
         <div data-testid={testId} className={`flex flex-col h-full bg-white dark:bg-gray-900 ${className}`}>
           {/* Header */}
@@ -101,6 +102,35 @@ function BaseInspectorPanelComponent<
           {/* Empty State */}
           <div className="flex-1 flex items-center justify-center p-4">
             <p className="text-sm text-gray-500 dark:text-gray-400">No element selected</p>
+          </div>
+        </div>
+      );
+    }
+
+    // Case 2: Invalid selection (selectedNodeId exists but node doesn't in graph)
+    if (!selectedNode) {
+      // Log the error for debugging race conditions, graph corruption, type coercion errors
+      console.warn(
+        `[BaseInspectorPanel] Invalid node ID: "${selectedNodeId}" not found in graph. ` +
+        'This may indicate: (1) invalid node ID passed from parent, (2) graph data corruption, ' +
+        '(3) race condition where node was deleted between selection and rendering, or (4) type coercion error.'
+      );
+
+      return (
+        <div data-testid={testId} className={`flex flex-col h-full bg-white dark:bg-gray-900 ${className}`}>
+          {/* Header */}
+          <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>
+            <Button color="gray" size="xs" onClick={onClose} pill data-testid={`${testId}-close-button`}>
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+
+          {/* Error State */}
+          <div className="flex-1 flex flex-col items-center justify-center p-4 gap-2">
+            <p className="text-sm font-semibold text-red-600 dark:text-red-400">Element not found</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">ID: {selectedNodeId}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Check browser console for details</p>
           </div>
         </div>
       );
