@@ -3,7 +3,7 @@ import { ViewToggle, ViewToggleProps } from './ViewToggle';
 import { BarChart3, Table, Code } from 'lucide-react';
 
 export default {
-  title: 'Navigation & Controls / ViewToggle',
+  title: 'Primitives / Controls / ViewToggle',
 } satisfies StoryDefault;
 
 /**
@@ -20,6 +20,46 @@ export const Default: Story<ViewToggleProps> = () => {
           { key: 'json', label: 'JSON View' },
         ]}
         activeView="graph"
+        onViewChange={(view) => console.log('View changed to:', view)}
+      />
+    </div>
+  );
+};
+
+/**
+ * Story showing Graph View selected
+ */
+export const GraphView: Story<ViewToggleProps> = () => {
+  return (
+    <div style={{ width: '100%', maxWidth: 600, padding: '20px', backgroundColor: '#f9fafb' }}>
+      <h2 className="text-lg font-bold mb-4">Graph View Selected</h2>
+      <ViewToggle
+        views={[
+          { key: 'graph', label: 'Graph View', icon: BarChart3 },
+          { key: 'list', label: 'List View', icon: Table },
+          { key: 'json', label: 'JSON View', icon: Code },
+        ]}
+        activeView="graph"
+        onViewChange={(view) => console.log('View changed to:', view)}
+      />
+    </div>
+  );
+};
+
+/**
+ * Story showing JSON View selected
+ */
+export const JSONView: Story<ViewToggleProps> = () => {
+  return (
+    <div style={{ width: '100%', maxWidth: 600, padding: '20px', backgroundColor: '#f9fafb' }}>
+      <h2 className="text-lg font-bold mb-4">JSON View Selected</h2>
+      <ViewToggle
+        views={[
+          { key: 'graph', label: 'Graph View', icon: BarChart3 },
+          { key: 'list', label: 'List View', icon: Table },
+          { key: 'json', label: 'JSON View', icon: Code },
+        ]}
+        activeView="json"
         onViewChange={(view) => console.log('View changed to:', view)}
       />
     </div>

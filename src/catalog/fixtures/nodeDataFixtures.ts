@@ -21,9 +21,12 @@ import type {
   C4ContainerNodeData,
   C4ComponentNodeData,
   C4ExternalActorNodeData,
+  BusinessProcessNodeData,
+  LayerContainerNodeData,
   CoverageIndicator,
   RelationshipBadge
 } from '../../core/types';
+import type { BaseFieldListNodeConfig, FieldItem } from '../../core/nodes/BaseFieldListNode';
 
 /**
  * Base options for all node data
@@ -625,6 +628,152 @@ export function createC4ExternalActorNodeData(options: C4ExternalActorNodeOption
 }
 
 /**
+ * Business Process Node Fixture
+ */
+export interface BusinessProcessNodeOptions extends BaseNodeOptions {
+  owner?: string;
+  criticality?: 'high' | 'medium' | 'low';
+  lifecycle?: 'ideation' | 'active' | 'deprecated';
+  domain?: string;
+  subprocessCount?: number;
+  subprocesses?: Array<{ id: string; name: string; description?: string }>;
+}
+
+export function createBusinessProcessNodeData(options: BusinessProcessNodeOptions = {}): BusinessProcessNodeData {
+  const {
+    label = 'Order Processing',
+    elementId = `process-${Math.random().toString(36).slice(2, 11)}`,
+    layerId = 'business-layer',
+    fill = '#fff3e0',
+    stroke = '#e65100',
+    changesetOperation,
+    opacity = 1,
+    strokeWidth = 2,
+    relationshipBadge,
+    owner = 'Operations Team',
+    criticality = 'high',
+    lifecycle = 'active',
+    domain = 'Sales',
+    subprocessCount = 3,
+    subprocesses = [
+      { id: 'step-1', name: 'Validate Order', description: 'Check order details' },
+      { id: 'step-2', name: 'Process Payment', description: 'Handle payment' },
+      { id: 'step-3', name: 'Ship Order', description: 'Arrange shipment' }
+    ]
+  } = options;
+
+  return {
+    label,
+    elementId,
+    layerId,
+    fill,
+    stroke,
+    owner,
+    criticality,
+    lifecycle,
+    domain,
+    subprocessCount,
+    stepCount: subprocessCount,
+    subprocesses,
+    changesetOperation,
+    opacity,
+    strokeWidth,
+    relationshipBadge
+  };
+}
+
+/**
+ * Layer Container Node Fixture
+ */
+export interface LayerContainerNodeOptions extends BaseNodeOptions {
+  layerType?: string;
+  color?: string;
+}
+
+export function createLayerContainerNodeData(options: LayerContainerNodeOptions = {}): LayerContainerNodeData {
+  const {
+    label = 'Business Layer',
+    elementId = `container-${Math.random().toString(36).slice(2, 11)}`,
+    layerId = 'container-layer',
+    fill = '#e8f5e91f',
+    stroke = '#4caf50',
+    changesetOperation,
+    opacity = 1,
+    strokeWidth = 2,
+    relationshipBadge,
+    layerType = 'business',
+    color = '#4caf50'
+  } = options;
+
+  return {
+    label,
+    elementId,
+    layerId,
+    fill,
+    stroke,
+    layerType,
+    color,
+    changesetOperation,
+    opacity,
+    strokeWidth,
+    relationshipBadge
+  };
+}
+
+/**
+ * Base Field List Node Config Fixture
+ */
+export interface BaseFieldListNodeOptions {
+  label?: string;
+  typeLabel?: string;
+  items?: FieldItem[];
+  colors?: {
+    border?: string;
+    background?: string;
+    header?: string;
+    handle?: string;
+  };
+  width?: number;
+  headerHeight?: number;
+  itemHeight?: number;
+}
+
+export function createBaseFieldListNodeConfig(options: BaseFieldListNodeOptions = {}): BaseFieldListNodeConfig {
+  const defaultItems: FieldItem[] = [
+    { id: 'field-1', name: 'id', type: 'UUID', required: true },
+    { id: 'field-2', name: 'name', type: 'string', required: true },
+    { id: 'field-3', name: 'email', type: 'string', required: true },
+    { id: 'field-4', name: 'createdAt', type: 'timestamp', required: false },
+    { id: 'field-5', name: 'updatedAt', type: 'timestamp', required: false }
+  ];
+
+  const {
+    label = 'User',
+    typeLabel = 'CLASS',
+    items = defaultItems,
+    colors = {
+      border: '#3b82f6',
+      background: '#eff6ff',
+      header: '#2563eb',
+      handle: '#1e40af'
+    },
+    width = 280,
+    headerHeight = 36,
+    itemHeight = 24
+  } = options;
+
+  return {
+    label,
+    typeLabel,
+    items,
+    colors,
+    width,
+    headerHeight,
+    itemHeight
+  };
+}
+
+/**
  * Factory for creating multiple node fixtures with specific states
  */
 export function createNodeFixturesWithStates(nodeType: keyof typeof nodeFactories, baseOptions: any = {}) {
@@ -662,5 +811,7 @@ const nodeFactories = {
   businessCapability: createBusinessCapabilityNodeData,
   c4Container: createC4ContainerNodeData,
   c4Component: createC4ComponentNodeData,
-  c4ExternalActor: createC4ExternalActorNodeData
+  c4ExternalActor: createC4ExternalActorNodeData,
+  businessProcess: createBusinessProcessNodeData,
+  layerContainer: createLayerContainerNodeData
 };
