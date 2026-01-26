@@ -555,8 +555,8 @@ toggleLayer('business');
 store.getState().layers.forEach(layer => { ... });
 
 // Good: Separate stores by concern
-const model = useStore((state) => state.model);  // modelStore
-const filters = useFilterStore((state) => state.visibleLayers);  // filterStore
+const model = useModelStore((state) => state.model);  // modelStore
+const layers = useLayerStore((state) => state.visibleLayers);  // layerStore
 ```
 
 ### WebSocket Patterns (Embedded App)
@@ -1210,7 +1210,7 @@ test('should layout 500+ elements in under 1000ms', () => {
 
 ## Export Services
 
-Layer export services: PNG/SVG (via `html-to-image`), JSON (graph/catalog/traceability), Impact Analysis. See `src/services/*ExportService.ts`.
+Layer export services: PNG/SVG (via `html-to-image`), JSON (graph/catalog/traceability), Impact Analysis. See `src/core/services/*ExportService.ts`.
 
 ## Testing Resources
 
