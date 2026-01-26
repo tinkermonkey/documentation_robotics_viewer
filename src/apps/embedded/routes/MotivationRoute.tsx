@@ -74,6 +74,10 @@ function MotivationRouteContent() {
         if (!fullGraphRef.current) {
           throw new Error('No graph data available');
         }
+        // Validate that nodes and edges are valid Maps before processing
+        if (!fullGraphRef.current.nodes || !fullGraphRef.current.edges) {
+          throw new Error('Graph data is incomplete - missing nodes or edges');
+        }
         const nodes = Array.from(fullGraphRef.current.nodes.values()).map(
           (n) => ({
             id: n.element.id,

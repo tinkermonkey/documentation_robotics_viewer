@@ -138,6 +138,22 @@ function ArchitectureRouteContent() {
 
     const graph = fullGraphRef.current;
 
+    // Validate graph.indexes exists before accessing its properties
+    if (!graph.indexes) {
+      const emptyContainerCounts: Record<ContainerType, { visible: number; total: number }> = VALID_CONTAINER_TYPES.reduce(
+        (acc, type) => {
+          acc[type] = { visible: 0, total: 0 };
+          return acc;
+        },
+        {} as Record<ContainerType, { visible: number; total: number }>
+      );
+
+      return {
+        containerTypes: emptyContainerCounts,
+        technologies: {},
+      };
+    }
+
     // Count by container type
     const containerTypeCounts: Record<ContainerType, { visible: number; total: number }> = VALID_CONTAINER_TYPES.reduce(
       (acc, type) => {

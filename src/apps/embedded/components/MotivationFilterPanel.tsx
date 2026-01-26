@@ -84,9 +84,6 @@ export const MotivationFilterPanel: React.FC<MotivationFilterPanelProps> = ({
   onRelationshipTypeChange,
   onClearAllFilters,
 }) => {
-  // const [elementTypesExpanded, setElementTypesExpanded] = useState(true);
-  // const [relationshipTypesExpanded, setRelationshipTypesExpanded] = useState(true);
-
   /**
    * Check if all element types are selected
    */
@@ -105,10 +102,16 @@ export const MotivationFilterPanel: React.FC<MotivationFilterPanelProps> = ({
    * Calculate total visible/total elements
    */
   const totalElementCounts = Object.values(filterCounts.elements).reduce(
-    (acc, counts) => ({
-      visible: acc.visible + counts.visible,
-      total: acc.total + counts.total,
-    }),
+    (acc, counts) => {
+      // Validate counts object structure before accessing properties
+      if (!counts || typeof counts !== 'object' || typeof counts.visible !== 'number' || typeof counts.total !== 'number') {
+        return acc;
+      }
+      return {
+        visible: acc.visible + counts.visible,
+        total: acc.total + counts.total,
+      };
+    },
     { visible: 0, total: 0 }
   );
 
@@ -116,10 +119,16 @@ export const MotivationFilterPanel: React.FC<MotivationFilterPanelProps> = ({
    * Calculate total visible/total relationships
    */
   const totalRelationshipCounts = Object.values(filterCounts.relationships).reduce(
-    (acc, counts) => ({
-      visible: acc.visible + counts.visible,
-      total: acc.total + counts.total,
-    }),
+    (acc, counts) => {
+      // Validate counts object structure before accessing properties
+      if (!counts || typeof counts !== 'object' || typeof counts.visible !== 'number' || typeof counts.total !== 'number') {
+        return acc;
+      }
+      return {
+        visible: acc.visible + counts.visible,
+        total: acc.total + counts.total,
+      };
+    },
     { visible: 0, total: 0 }
   );
 
