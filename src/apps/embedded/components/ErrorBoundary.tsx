@@ -48,63 +48,20 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 
       return (
         <div
-          data-error-boundary="true"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '100%',
-            padding: 24,
-            fontFamily: 'system-ui, -apple-system, sans-serif',
-          }}
+          data-testid="error-boundary"
+          className="flex flex-col items-center justify-center h-full p-6 bg-white dark:bg-gray-900"
         >
-          <div
-            style={{
-              maxWidth: 600,
-              backgroundColor: '#fef2f2',
-              border: '1px solid #fecaca',
-              borderRadius: 8,
-              padding: 24,
-            }}
-          >
-            <h3
-              style={{
-                margin: 0,
-                marginBottom: 12,
-                fontSize: 18,
-                fontWeight: 600,
-                color: '#991b1b',
-              }}
-            >
+          <div className="w-full max-w-2xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
+            <h3 className="m-0 mb-3 text-lg font-semibold text-red-900 dark:text-red-300">
               Rendering Error
             </h3>
-            <p
-              style={{
-                margin: 0,
-                marginBottom: 16,
-                fontSize: 14,
-                color: '#7f1d1d',
-                lineHeight: 1.6,
-              }}
-            >
+            <p className="m-0 mb-4 text-sm text-red-800 dark:text-red-400 leading-relaxed">
               An error occurred while rendering the visualization. This could be due to invalid node/edge data or a component rendering issue.
             </p>
             {this.state.error && (
-              <details style={{ fontSize: 13, color: '#7f1d1d' }}>
-                <summary style={{ cursor: 'pointer', fontWeight: 500, marginBottom: 8 }}>
-                  Error Details
-                </summary>
-                <pre
-                  style={{
-                    backgroundColor: '#fff',
-                    padding: 12,
-                    borderRadius: 4,
-                    overflow: 'auto',
-                    fontSize: 12,
-                    fontFamily: 'monospace',
-                  }}
-                >
+              <details className="text-sm text-red-800 dark:text-red-400 mb-4">
+                <summary className="cursor-pointer font-medium mb-2">Error Details</summary>
+                <pre className="bg-white dark:bg-gray-800 p-3 rounded text-xs overflow-auto font-mono m-0 max-h-48 border border-red-200 dark:border-red-700">
                   {this.state.error.toString()}
                   {'\n'}
                   {this.state.error.stack}
@@ -113,17 +70,8 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
             )}
             <button
               onClick={() => this.setState({ hasError: false, error: null })}
-              style={{
-                marginTop: 16,
-                padding: '8px 16px',
-                backgroundColor: '#dc2626',
-                color: 'white',
-                border: 'none',
-                borderRadius: 4,
-                fontSize: 14,
-                fontWeight: 500,
-                cursor: 'pointer',
-              }}
+              className="px-4 py-2 bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 text-white text-sm font-medium rounded cursor-pointer transition-colors mt-4"
+              data-testid="error-boundary-retry"
             >
               Try Again
             </button>
@@ -135,3 +83,5 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
     return this.props.children;
   }
 }
+
+ErrorBoundary.displayName = 'ErrorBoundary';

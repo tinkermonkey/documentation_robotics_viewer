@@ -50,83 +50,28 @@ export class CoreErrorBoundary extends React.Component<CoreErrorBoundaryProps, C
 
       return (
         <div
-          data-testid="core-error-boundary"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            height: '100%',
-            padding: 24,
-            fontFamily: 'system-ui, -apple-system, sans-serif',
-          }}
+          data-testid="error-boundary"
+          className="flex flex-col items-center justify-center w-full h-full p-6 bg-white dark:bg-gray-900"
         >
-          <div
-            style={{
-              maxWidth: 500,
-              backgroundColor: '#fef2f2',
-              border: '1px solid #fecaca',
-              borderRadius: 8,
-              padding: 20,
-            }}
-          >
-            <h3
-              style={{
-                margin: 0,
-                marginBottom: 12,
-                fontSize: 16,
-                fontWeight: 600,
-                color: '#991b1b',
-              }}
-            >
+          <div className="w-full max-w-sm bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-5">
+            <h3 className="m-0 mb-3 text-base font-semibold text-red-900 dark:text-red-300">
               Graph Rendering Error
             </h3>
-            <p
-              style={{
-                margin: 0,
-                marginBottom: 16,
-                fontSize: 13,
-                color: '#7f1d1d',
-                lineHeight: 1.6,
-              }}
-            >
+            <p className="m-0 mb-4 text-sm text-red-800 dark:text-red-400 leading-relaxed">
               Failed to render the graph. This may be due to invalid node data, layout calculation errors, or a component rendering issue.
             </p>
             {this.state.error && (
-              <details style={{ fontSize: 12, color: '#7f1d1d', marginBottom: 12 }}>
-                <summary style={{ cursor: 'pointer', fontWeight: 500, marginBottom: 8 }}>
-                  Error Details
-                </summary>
-                <pre
-                  style={{
-                    backgroundColor: '#fff',
-                    padding: 10,
-                    borderRadius: 4,
-                    overflow: 'auto',
-                    fontSize: 11,
-                    fontFamily: 'monospace',
-                    margin: 0,
-                    maxHeight: 150,
-                  }}
-                >
+              <details className="text-xs text-red-800 dark:text-red-400 mb-4">
+                <summary className="cursor-pointer font-medium mb-2">Error Details</summary>
+                <pre className="bg-white dark:bg-gray-800 p-2 rounded text-xs overflow-auto font-mono m-0 max-h-36 border border-red-200 dark:border-red-700">
                   {this.state.error.toString()}
                 </pre>
               </details>
             )}
             <button
               onClick={this.handleReset}
-              style={{
-                padding: '6px 12px',
-                backgroundColor: '#dc2626',
-                color: 'white',
-                border: 'none',
-                borderRadius: 4,
-                fontSize: 13,
-                fontWeight: 500,
-                cursor: 'pointer',
-              }}
-              data-testid="core-error-boundary-retry"
+              className="px-3 py-2 bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 text-white text-sm font-medium rounded cursor-pointer transition-colors"
+              data-testid="error-boundary-retry"
             >
               Retry Rendering
             </button>
@@ -138,3 +83,5 @@ export class CoreErrorBoundary extends React.Component<CoreErrorBoundaryProps, C
     return this.props.children;
   }
 }
+
+CoreErrorBoundary.displayName = 'CoreErrorBoundary';

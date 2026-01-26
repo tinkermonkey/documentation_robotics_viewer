@@ -181,7 +181,14 @@ export default function EmbeddedLayout() {
       </header>
 
       <div className="h-[calc(100vh-180px)]">
-        <ErrorBoundary fallback={<ErrorState variant="page" />}>
+        <ErrorBoundary
+          fallback={
+            <ErrorState
+              variant="page"
+              onRetry={() => window.location.reload()}
+            />
+          }
+        >
           <Outlet />
         </ErrorBoundary>
       </div>
