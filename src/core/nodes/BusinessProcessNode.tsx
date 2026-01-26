@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import { BusinessProcessNodeData } from '../types/reactflow';
-import { useBusinessLayerStore } from '../../stores/businessLayerStore';
+import { useBusinessLayerStore } from '@/apps/embedded/stores/businessLayerStore';
 
 /**
  * Node dimensions for layout calculation

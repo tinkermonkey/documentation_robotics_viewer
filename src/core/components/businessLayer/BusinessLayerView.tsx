@@ -28,7 +28,7 @@ import { nodeTypes } from '../../nodes';
 import { edgeTypes } from '../../edges';
 import { useBusinessFilters } from '../../hooks/useBusinessFilters';
 import { useBusinessFocus } from '../../hooks/useBusinessFocus';
-import { useBusinessLayerStore } from '../../../stores/businessLayerStore';
+import { useBusinessLayerStore } from '@/apps/embedded/stores/businessLayerStore';
 import { BusinessLayerControls } from './BusinessLayerControls';
 import { ProcessInspectorPanel } from './ProcessInspectorPanel';
 import {
