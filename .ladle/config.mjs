@@ -10,41 +10,55 @@ export default {
   /**
    * Story ordering configuration for organized navigation sidebar.
    *
-   * Organizes 83 stories into 8 semantic categories:
-   * 1. Views & Layouts
-   * 2. Architecture Nodes
-   * 3. Architecture Edges
-   * 4. Panels & Inspectors
-   * 5. Panels & Controls
-   * 6. Building Blocks
-   * 7. Primitives
-   * 8. Utilities
+   * Enforces the seven-tier hierarchical organization:
+   * 1. Foundations
+   * 2. Primitives
+   * 3. Building Blocks
+   * 4. Architecture Nodes
+   * 5. Architecture Edges
+   * 6. Panels & Inspectors
+   * 7. Views & Layouts
    *
-   * Within each category, stories are sorted alphabetically.
+   * Within each tier, stories are sorted alphabetically by full title.
+   * Uncategorized stories appear at the end in alphabetical order.
    */
-  storyOrder: (storyIds) => {
-    const categoryOrder = [
-      'Views & Layouts',           // Primary visualization views
-      'Architecture Nodes',        // Graph node types
-      'Architecture Edges',        // Graph edge/relationship types
-      'Panels & Inspectors',       // Element inspection panels
-      'Panels & Controls',         // Layout control components
-      'Building Blocks',           // Reusable UI components
-      'Primitives',                // Basic UI elements
-      'Utilities'                  // Miscellaneous utilities
+  storySort: (a, b) => {
+    // Define the seven-tier hierarchy order as specified in requirements
+    const order = [
+      'Foundations',
+      'Primitives',
+      'Building Blocks',
+      'Architecture Nodes',
+      'Architecture Edges',
+      'Panels & Inspectors',
+      'Views & Layouts'
     ];
 
-    return storyIds.sort((a, b) => {
-      const categoryA = categoryOrder.find(cat => a.includes(cat)) || '';
-      const categoryB = categoryOrder.find(cat => b.includes(cat)) || '';
-      const indexA = categoryOrder.indexOf(categoryA);
-      const indexB = categoryOrder.indexOf(categoryB);
+    // Extract top-level category from story title (e.g., "Primitives / States / ...")
+    const getCategory = (title) => {
+      const parts = title.split(' / ');
+      return parts[0];
+    };
 
-      if (indexA !== indexB) {
-        return indexA - indexB;
-      }
+    const aTitle = a[1].meta?.title || '';
+    const bTitle = b[1].meta?.title || '';
 
-      return a.localeCompare(b);
-    });
+    const aCategory = getCategory(aTitle);
+    const bCategory = getCategory(bTitle);
+
+    const aIndex = order.indexOf(aCategory);
+    const bIndex = order.indexOf(bCategory);
+
+    // If categories differ, sort by tier order
+    // Stories in unrecognized categories appear at the end
+    const aSort = aIndex === -1 ? order.length : aIndex;
+    const bSort = bIndex === -1 ? order.length : bIndex;
+
+    if (aSort !== bSort) {
+      return aSort - bSort;
+    }
+
+    // Within same category, sort alphabetically by full title
+    return aTitle.localeCompare(bTitle);
   }
 };
