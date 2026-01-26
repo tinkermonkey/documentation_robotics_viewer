@@ -2,12 +2,18 @@
  * Business Layer Controls Component
  *
  * Provides filtering, layout selection, and export controls for business layer visualization.
+ * Uses BaseControlPanel for shared layout/export functionality with custom filter section.
  */
 
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
+import { Button, Card, Label } from 'flowbite-react';
+import { Download, FileText } from 'lucide-react';
+import { BaseControlPanel, LayoutOption } from '@/core/components/base';
 import { BusinessGraph, BusinessNodeType } from '../../types/businessLayer';
 import { useBusinessLayerStore, BusinessLayoutType } from '../../../stores/businessLayerStore';
 import { useAvailableFilters } from '../../hooks/useBusinessFilters';
+
+export type BusinessLayoutAlgorithm = BusinessLayoutType;
 
 interface BusinessLayerControlsProps {
   /** Business graph with indices */
@@ -37,26 +43,46 @@ const TYPE_LABELS: Record<BusinessNodeType, string> = {
 };
 
 /**
- * Layout labels
+ * Layout options
  */
-const LAYOUT_LABELS: Record<BusinessLayoutType, string> = {
-  hierarchical: 'Hierarchical',
-  swimlane: 'Swimlane',
-  matrix: 'Matrix',
-  force: 'Force-Directed',
-  manual: 'Manual',
-};
+const LAYOUT_OPTIONS: LayoutOption[] = [
+  {
+    value: 'hierarchical' as const,
+    label: 'Hierarchical',
+    description: 'Top-down tree structure for business functions',
+  },
+  {
+    value: 'swimlane' as const,
+    label: 'Swimlane',
+    description: 'Swimlane layout organized by domain',
+  },
+  {
+    value: 'matrix' as const,
+    label: 'Matrix',
+    description: 'Matrix layout showing relationships',
+  },
+  {
+    value: 'force' as const,
+    label: 'Force-Directed',
+    description: 'Network layout using physics simulation',
+  },
+  {
+    value: 'manual' as const,
+    label: 'Manual',
+    description: 'Preserve user-adjusted node positions',
+  },
+];
 
 /**
- * Business Layer Controls
+ * Business Layer Controls Component
  */
-export const BusinessLayerControls: React.FC<BusinessLayerControlsProps> = ({
+function BusinessLayerControlsComponent({
   businessGraph,
   onExport,
   isExporting,
   visibleCount,
   totalCount,
-}) => {
+}: BusinessLayerControlsProps) {
   const {
     filters,
     selectedLayout,
@@ -125,326 +151,255 @@ export const BusinessLayerControls: React.FC<BusinessLayerControlsProps> = ({
     filters.lifecycles.size > 0 ||
     filters.criticalities.size > 0;
 
-  return (
-    <div
-      className="business-layer-controls"
-      style={{
-        padding: 16,
-        background: '#f5f5f5',
-        borderBottom: '1px solid #ddd',
-        fontFamily: 'system-ui, sans-serif',
-        display: 'flex',
-        gap: 24,
-        flexWrap: 'wrap',
-        alignItems: 'flex-start',
-      }}
-    >
-      {/* Stats */}
-      <div style={{ flex: '0 0 auto' }}>
-        <h3 style={{ margin: 0, marginBottom: 8, fontSize: 14, fontWeight: 600 }}>
+  // Render filter section with all filter dimensions
+  const renderFilterSection = () => (
+    <div className="space-y-4" key="filters" data-testid="business-filters-section">
+      {/* Element Count */}
+      <Card className="dark:bg-gray-800 dark:border-gray-700" data-testid="business-element-count">
+        <Label className="text-sm font-semibold text-gray-900 dark:text-white">
           Elements
-        </h3>
-        <div style={{ fontSize: 12, color: '#6b7280' }}>
+        </Label>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
           Showing {visibleCount} of {totalCount}
-        </div>
-      </div>
+        </p>
+      </Card>
 
       {/* Type Filters */}
-      <div style={{ flex: '0 0 auto', minWidth: 200 }}>
-        <h3 style={{ margin: 0, marginBottom: 8, fontSize: 14, fontWeight: 600 }}>
-          Element Types
-        </h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {availableFilters.types.map((type) => (
-            <label
-              key={type}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                fontSize: 13,
-                cursor: 'pointer',
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={filters.types.has(type)}
-                onChange={() => toggleTypeFilter(type)}
-                style={{ cursor: 'pointer' }}
-              />
-              <span>
-                {TYPE_LABELS[type]} ({filterCounts[type]})
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
+      {availableFilters.types.length > 0 && (
+        <Card className="dark:bg-gray-800 dark:border-gray-700" data-testid="business-type-filters">
+          <Label className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+            Element Types
+          </Label>
+          <div className="space-y-2">
+            {availableFilters.types.map((type) => (
+              <label
+                key={type}
+                className="flex items-center gap-2 cursor-pointer"
+                data-testid={`business-type-filter-${type}`}
+              >
+                <input
+                  type="checkbox"
+                  checked={filters.types.has(type)}
+                  onChange={() => toggleTypeFilter(type)}
+                  className="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700"
+                  data-testid={`business-type-checkbox-${type}`}
+                />
+                <span className="text-sm text-gray-700 dark:text-gray-300">
+                  {TYPE_LABELS[type]} ({filterCounts[type]})
+                </span>
+              </label>
+            ))}
+          </div>
+        </Card>
+      )}
 
       {/* Domain Filters */}
       {availableFilters.domains.length > 0 && (
-        <div style={{ flex: '0 0 auto', minWidth: 200 }}>
-          <h3 style={{ margin: 0, marginBottom: 8, fontSize: 14, fontWeight: 600 }}>
+        <Card className="dark:bg-gray-800 dark:border-gray-700" data-testid="business-domain-filters">
+          <Label className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
             Business Domains
-          </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          </Label>
+          <div className="space-y-2">
             {availableFilters.domains.map((domain) => (
               <label
                 key={domain}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  fontSize: 13,
-                  cursor: 'pointer',
-                }}
+                className="flex items-center gap-2 cursor-pointer"
+                data-testid={`business-domain-filter-${domain}`}
               >
                 <input
                   type="checkbox"
                   checked={filters.domains.has(domain)}
                   onChange={() => toggleDomainFilter(domain)}
-                  style={{ cursor: 'pointer' }}
+                  className="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700"
+                  data-testid={`business-domain-checkbox-${domain}`}
                 />
-                <span>
+                <span className="text-sm text-gray-700 dark:text-gray-300">
                   {domain} ({domainCounts[domain] || 0})
                 </span>
               </label>
             ))}
           </div>
-        </div>
+        </Card>
       )}
 
       {/* Lifecycle Filters */}
       {availableFilters.lifecycles.length > 0 && (
-        <div style={{ flex: '0 0 auto', minWidth: 180 }}>
-          <h3 style={{ margin: 0, marginBottom: 8, fontSize: 14, fontWeight: 600 }}>
+        <Card className="dark:bg-gray-800 dark:border-gray-700" data-testid="business-lifecycle-filters">
+          <Label className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
             Lifecycle Stage
-          </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          </Label>
+          <div className="space-y-2">
             {availableFilters.lifecycles.map((lifecycle) => (
               <label
                 key={lifecycle}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  fontSize: 13,
-                  cursor: 'pointer',
-                }}
+                className="flex items-center gap-2 cursor-pointer"
+                data-testid={`business-lifecycle-filter-${lifecycle}`}
               >
                 <input
                   type="checkbox"
                   checked={filters.lifecycles.has(lifecycle)}
                   onChange={() => toggleLifecycleFilter(lifecycle)}
-                  style={{ cursor: 'pointer' }}
+                  className="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700"
+                  data-testid={`business-lifecycle-checkbox-${lifecycle}`}
                 />
-                <span style={{ textTransform: 'capitalize' }}>
+                <span className="text-sm text-gray-700 dark:text-gray-300 capitalize">
                   {lifecycle} ({lifecycleCounts[lifecycle] || 0})
                 </span>
               </label>
             ))}
           </div>
-        </div>
+        </Card>
       )}
 
       {/* Criticality Filters */}
       {availableFilters.criticalities.length > 0 && (
-        <div style={{ flex: '0 0 auto', minWidth: 160 }}>
-          <h3 style={{ margin: 0, marginBottom: 8, fontSize: 14, fontWeight: 600 }}>
+        <Card className="dark:bg-gray-800 dark:border-gray-700" data-testid="business-criticality-filters">
+          <Label className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
             Criticality
-          </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          </Label>
+          <div className="space-y-2">
             {availableFilters.criticalities.map((criticality) => (
               <label
                 key={criticality}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  fontSize: 13,
-                  cursor: 'pointer',
-                }}
+                className="flex items-center gap-2 cursor-pointer"
+                data-testid={`business-criticality-filter-${criticality}`}
               >
                 <input
                   type="checkbox"
                   checked={filters.criticalities.has(criticality)}
                   onChange={() => toggleCriticalityFilter(criticality)}
-                  style={{ cursor: 'pointer' }}
+                  className="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700"
+                  data-testid={`business-criticality-checkbox-${criticality}`}
                 />
-                <span style={{ textTransform: 'capitalize' }}>
+                <span className="text-sm text-gray-700 dark:text-gray-300 capitalize">
                   {criticality} ({criticalityCounts[criticality] || 0})
                 </span>
               </label>
             ))}
           </div>
-        </div>
+        </Card>
       )}
 
       {/* Clear Filters Button */}
       {hasActiveFilters && (
-        <div style={{ flex: '0 0 auto', display: 'flex', alignItems: 'flex-end' }}>
-          <button
-            onClick={clearFilters}
-            style={{
-              padding: '8px 16px',
-              background: '#fff',
-              border: '1px solid #ddd',
-              borderRadius: 4,
-              fontSize: 13,
-              fontWeight: 500,
-              cursor: 'pointer',
-              color: '#c62828',
-            }}
-          >
-            Clear All Filters
-          </button>
-        </div>
-      )}
-
-      {/* Layout Selector */}
-      <div style={{ flex: '0 0 auto', minWidth: 180 }}>
-        <h3 style={{ margin: 0, marginBottom: 8, fontSize: 14, fontWeight: 600 }}>
-          Layout
-        </h3>
-        <select
-          value={selectedLayout}
-          onChange={(e) => setSelectedLayout(e.target.value as BusinessLayoutType)}
-          style={{
-            width: '100%',
-            padding: '6px 10px',
-            fontSize: 13,
-            border: '1px solid #ddd',
-            borderRadius: 4,
-            background: '#fff',
-            cursor: 'pointer',
-          }}
+        <Button
+          color="red"
+          onClick={clearFilters}
+          size="sm"
+          className="w-full"
+          data-testid="business-clear-filters-button"
         >
-          {Object.entries(LAYOUT_LABELS).map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
-        {selectedLayout !== 'hierarchical' && (
-          <div
-            style={{
-              marginTop: 6,
-              padding: 6,
-              background: '#fff3cd',
-              border: '1px solid #ffc107',
-              borderRadius: 4,
-              fontSize: 11,
-              color: '#856404',
-            }}
-          >
-            Note: Only hierarchical layout is currently implemented
-          </div>
-        )}
-      </div>
-
-      {/* Export Menu */}
-      <div style={{ flex: '0 0 auto', minWidth: 180 }}>
-        <h3 style={{ margin: 0, marginBottom: 8, fontSize: 14, fontWeight: 600 }}>
-          Export
-        </h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <button
-            onClick={() => onExport('png')}
-            disabled={isExporting}
-            style={{
-              padding: '6px 12px',
-              background: isExporting ? '#f5f5f5' : '#fff',
-              border: '1px solid #ddd',
-              borderRadius: 4,
-              fontSize: 13,
-              cursor: isExporting ? 'not-allowed' : 'pointer',
-              textAlign: 'left',
-              opacity: isExporting ? 0.6 : 1,
-            }}
-          >
-            {isExporting ? 'Exporting...' : 'Export as PNG'}
-          </button>
-          <button
-            onClick={() => onExport('svg')}
-            disabled={isExporting}
-            style={{
-              padding: '6px 12px',
-              background: isExporting ? '#f5f5f5' : '#fff',
-              border: '1px solid #ddd',
-              borderRadius: 4,
-              fontSize: 13,
-              cursor: isExporting ? 'not-allowed' : 'pointer',
-              textAlign: 'left',
-              opacity: isExporting ? 0.6 : 1,
-            }}
-          >
-            {isExporting ? 'Exporting...' : 'Export as SVG'}
-          </button>
-          <button
-            onClick={() => onExport('graphData')}
-            disabled={isExporting}
-            style={{
-              padding: '6px 12px',
-              background: isExporting ? '#f5f5f5' : '#fff',
-              border: '1px solid #ddd',
-              borderRadius: 4,
-              fontSize: 13,
-              cursor: isExporting ? 'not-allowed' : 'pointer',
-              textAlign: 'left',
-              opacity: isExporting ? 0.6 : 1,
-            }}
-          >
-            {isExporting ? 'Exporting...' : 'Export Graph Data'}
-          </button>
-          <button
-            onClick={() => onExport('catalog')}
-            disabled={isExporting}
-            style={{
-              padding: '6px 12px',
-              background: isExporting ? '#f5f5f5' : '#fff',
-              border: '1px solid #ddd',
-              borderRadius: 4,
-              fontSize: 13,
-              cursor: isExporting ? 'not-allowed' : 'pointer',
-              textAlign: 'left',
-              opacity: isExporting ? 0.6 : 1,
-            }}
-          >
-            {isExporting ? 'Exporting...' : 'Export Process Catalog'}
-          </button>
-          <button
-            onClick={() => onExport('traceability')}
-            disabled={isExporting}
-            style={{
-              padding: '6px 12px',
-              background: isExporting ? '#f5f5f5' : '#fff',
-              border: '1px solid #ddd',
-              borderRadius: 4,
-              fontSize: 13,
-              cursor: isExporting ? 'not-allowed' : 'pointer',
-              textAlign: 'left',
-              opacity: isExporting ? 0.6 : 1,
-            }}
-          >
-            {isExporting ? 'Exporting...' : 'Export Traceability Report'}
-          </button>
-          <button
-            onClick={() => onExport('impact')}
-            disabled={isExporting}
-            style={{
-              padding: '6px 12px',
-              background: isExporting ? '#f5f5f5' : '#fff',
-              border: '1px solid #ddd',
-              borderRadius: 4,
-              fontSize: 13,
-              cursor: isExporting ? 'not-allowed' : 'pointer',
-              textAlign: 'left',
-              opacity: isExporting ? 0.6 : 1,
-            }}
-          >
-            {isExporting ? 'Exporting...' : 'Export Impact Analysis'}
-          </button>
-        </div>
-      </div>
+          Clear All Filters
+        </Button>
+      )}
     </div>
   );
-};
+
+  // Render export controls section
+  const renderExportControls = () => {
+    if (!onExport) {
+      return null;
+    }
+
+    return (
+      <div
+        className="control-panel-section export-section"
+        key="exports"
+        data-testid="business-export-section"
+      >
+        <Label className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+          Export
+        </Label>
+        <div className="grid grid-cols-2 gap-2">
+          <Button
+            color="gray"
+            onClick={() => onExport('png')}
+            disabled={isExporting}
+            size="sm"
+            title="Export as PNG"
+            data-testid="business-export-png"
+          >
+            <Download className="mr-2 h-4 w-4" />
+            PNG
+          </Button>
+          <Button
+            color="gray"
+            onClick={() => onExport('svg')}
+            disabled={isExporting}
+            size="sm"
+            title="Export as SVG"
+            data-testid="business-export-svg"
+          >
+            <Download className="mr-2 h-4 w-4" />
+            SVG
+          </Button>
+          <Button
+            color="gray"
+            onClick={() => onExport('graphData')}
+            disabled={isExporting}
+            size="sm"
+            title="Export Graph Data"
+            data-testid="business-export-data"
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Data
+          </Button>
+          <Button
+            color="gray"
+            onClick={() => onExport('catalog')}
+            disabled={isExporting}
+            size="sm"
+            title="Export Process Catalog"
+            data-testid="business-export-catalog"
+          >
+            <FileText className="mr-2 h-4 w-4" />
+            Catalog
+          </Button>
+          <Button
+            color="gray"
+            onClick={() => onExport('traceability')}
+            disabled={isExporting}
+            size="sm"
+            title="Export Traceability Report"
+            data-testid="business-export-report"
+          >
+            <FileText className="mr-2 h-4 w-4" />
+            Report
+          </Button>
+          <Button
+            color="gray"
+            onClick={() => onExport('impact')}
+            disabled={isExporting}
+            size="sm"
+            title="Export Impact Analysis"
+            data-testid="business-export-impact"
+          >
+            <FileText className="mr-2 h-4 w-4" />
+            Impact
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="business-layer-controls">
+      <BaseControlPanel<BusinessLayoutAlgorithm>
+        selectedLayout={selectedLayout}
+        onLayoutChange={(layout) => setSelectedLayout(layout)}
+        layoutOptions={LAYOUT_OPTIONS}
+        onFitToView={() => {}} // No-op for now - can be wired up later
+        isLayouting={isExporting}
+        renderBeforeLayout={renderFilterSection}
+        renderControls={renderExportControls}
+        testId="business-control-panel"
+      />
+    </div>
+  );
+}
+
+export const BusinessLayerControls = memo(
+  BusinessLayerControlsComponent
+) as typeof BusinessLayerControlsComponent & { displayName: string };
+
+BusinessLayerControls.displayName = 'BusinessLayerControls';
