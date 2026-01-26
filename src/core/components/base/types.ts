@@ -41,22 +41,39 @@ export interface BaseGraph<TNode extends BaseNode, TEdge extends BaseEdge> {
 /**
  * Minimal node interface
  *
- * Marker interface for generic graph node types.
+ * Base interface for all generic graph node types.
  * All domain-specific node types (MotivationGraphNode, C4Node, BusinessNode, etc.)
- * will satisfy this interface structurally, even though they have different property shapes.
+ * must satisfy this interface to work with generic components and graph structures.
  *
- * Implementation Note:
- * This interface is intentionally empty to allow maximum flexibility. Concrete node types
- * will have their own specific properties. Generic components will use adapter functions
- * or context to extract common information (like node ID) from domain-specific nodes.
+ * Required Properties:
+ * - id: Unique node identifier used as the key in Map<string, TNode>
  *
- * Compatibility:
- * - MotivationGraphNode: Has element.id (via ModelElement)
- * - C4Node: Has explicit id property
- * - BusinessNode: Has explicit id property
+ * Domain-Specific Extensions:
+ * All domain-specific node types will extend this interface with their own properties.
+ * TypeScript structural typing ensures compatibility - any type with at least an 'id'
+ * property satisfies this interface.
+ *
+ * Examples of Domain Implementations:
+ * - BaseNodeData (src/core/types/reactflow.ts): Has elementId (used as id key in graph maps)
+ * - React Flow Node: Has id property + position, data, etc.
+ * - Custom Graph Node: Must have id property
+ *
+ * @example
+ * // Domain-specific node extending BaseNode
+ * interface BusinessNode extends BaseNode {
+ *   id: string;  // Satisfies BaseNode requirement
+ *   name: string;
+ *   owner?: string;
+ * }
+ *
+ * // Usage in generic component
+ * function processNode<T extends BaseNode>(node: T): void {
+ *   console.log(node.id);  // Type-safe: id is guaranteed to exist
+ * }
  */
 export interface BaseNode {
-  // Intentionally empty: marker interface for structural typing
+  /** Unique node identifier - must be set as key in graph node maps */
+  id: string;
 }
 
 /**

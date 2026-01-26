@@ -202,6 +202,7 @@ export class MotivationGraphBuilder {
       }
 
       const node: MotivationGraphNode = {
+        id: element.id,
         element,
         metrics: {
           degreeCentrality: 0,
@@ -711,6 +712,7 @@ export class MotivationGraphBuilder {
     };
 
     const node: MotivationGraphNode = {
+      id: element.id,
       element,
       metrics: {
         degreeCentrality: 0,
