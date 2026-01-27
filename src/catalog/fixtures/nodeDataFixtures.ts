@@ -1,7 +1,8 @@
 /**
  * Node Data Fixture Factories
- * Factory functions for creating realistic mock data for all 16 custom node types
- * Includes support for all changeset operations and visual states
+ * Factory functions for creating realistic mock data for custom node types across all layers
+ * Includes 18 node data factories plus BaseFieldListNode configuration factory
+ * Supports all changeset operations (add/update/delete) and visual states
  */
 
 import type {
@@ -27,6 +28,42 @@ import type {
   RelationshipBadge
 } from '../../core/types';
 import type { BaseFieldListNodeConfig, FieldItem } from '../../core/nodes/BaseFieldListNode';
+
+/**
+ * Validation helper functions
+ */
+
+/**
+ * Validates that a dimension value is positive
+ */
+function validatePositiveDimension(value: number | undefined, name: string): void {
+  if (value !== undefined && value <= 0) {
+    throw new Error(`${name} must be a positive number, got ${value}`);
+  }
+}
+
+/**
+ * Validates that a CSS color string is valid
+ */
+function validateCSSColor(color: string | undefined, name: string): boolean {
+  if (color === undefined) return true;
+
+  // Basic validation for hex colors (#xxx or #xxxxxx) and named colors
+  const hexPattern = /^#([0-9A-Fa-f]{3}){1,2}$/;
+  const rgbPattern = /^rgb\(/;
+  const rgbaPattern = /^rgba\(/;
+
+  if (hexPattern.test(color) || rgbPattern.test(color) || rgbaPattern.test(color)) {
+    return true;
+  }
+
+  // For other formats, we'll warn but not fail (CSS has many color formats)
+  if (!color.startsWith('#') && !color.startsWith('rgb')) {
+    console.warn(`${name}: Color format "${color}" may not be valid CSS`);
+  }
+
+  return true;
+}
 
 /**
  * Base options for all node data
@@ -662,6 +699,20 @@ export function createBusinessProcessNodeData(options: BusinessProcessNodeOption
     ]
   } = options;
 
+  // Validate subprocess count matches array length
+  if (options.subprocessCount !== undefined && options.subprocesses !== undefined) {
+    if (options.subprocessCount !== options.subprocesses.length) {
+      throw new Error(
+        `subprocessCount (${options.subprocessCount}) must match subprocesses.length (${options.subprocesses.length})`
+      );
+    }
+  }
+
+  // Validate subprocess count is non-negative
+  if (subprocessCount < 0) {
+    throw new Error(`subprocessCount must be non-negative, got ${subprocessCount}`);
+  }
+
   return {
     label,
     elementId,
@@ -704,6 +755,11 @@ export function createLayerContainerNodeData(options: LayerContainerNodeOptions 
     layerType = 'business',
     color = '#4caf50'
   } = options;
+
+  // Validate CSS color format
+  validateCSSColor(options.color, 'color');
+  validateCSSColor(options.fill, 'fill');
+  validateCSSColor(options.stroke, 'stroke');
 
   return {
     label,
@@ -757,12 +813,34 @@ export function createBaseFieldListNodeConfig(options: BaseFieldListNodeOptions 
     itemHeight = 24
   } = options;
 
+  // Validate dimensions are positive
+  validatePositiveDimension(width, 'width');
+  validatePositiveDimension(headerHeight, 'headerHeight');
+  validatePositiveDimension(itemHeight, 'itemHeight');
+
   const defaultColors = {
     border: '#3b82f6',
     background: '#eff6ff',
     header: '#2563eb',
     handle: '#1e40af'
   };
+
+  // Validate custom colors if provided
+  if (colors) {
+    validateCSSColor(colors.border, 'colors.border');
+    validateCSSColor(colors.background, 'colors.background');
+    validateCSSColor(colors.header, 'colors.header');
+    validateCSSColor(colors.handle, 'colors.handle');
+  }
+
+  // Validate field items have required properties
+  items.forEach((item, index) => {
+    if (!item.id || !item.name || !item.type) {
+      throw new Error(
+        `Invalid field item at index ${index}: missing required properties (id, name, or type)`
+      );
+    }
+  });
 
   return {
     label,

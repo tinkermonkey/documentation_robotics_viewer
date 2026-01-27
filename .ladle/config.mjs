@@ -10,8 +10,9 @@ export default {
   /**
    * Story ordering configuration for organized navigation sidebar.
    *
-   * Enforces the seven-tier hierarchical organization:
-   * 1. Foundations
+   * Orders stories by their top-level tier category, then alphabetically.
+   * Tier order (extracted from first segment of story title):
+   * 1. Foundations (reserved for design tokens, theme variables - future use)
    * 2. Primitives
    * 3. Building Blocks
    * 4. Architecture Nodes
@@ -20,12 +21,13 @@ export default {
    * 7. Views & Layouts
    *
    * Within each tier, stories are sorted alphabetically by full title.
-   * Uncategorized stories appear at the end in alphabetical order.
+   * Stories in unrecognized tiers appear last in alphabetical order.
    */
   storySort: (a, b) => {
-    // Define the seven-tier hierarchy order as specified in requirements
+    // Define the seven-tier hierarchy order
+    // NOTE: If you modify this order, update the JSDoc comment above
     const order = [
-      'Foundations',
+      'Foundations',        // Reserved for future use (design tokens, theme system)
       'Primitives',
       'Building Blocks',
       'Architecture Nodes',
