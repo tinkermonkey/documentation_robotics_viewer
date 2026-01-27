@@ -356,7 +356,6 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
         style: {
           ...node.style,
           opacity: isDimmed ? 0.3 : 1,
-          transition: 'opacity 0.3s ease',
           boxShadow: isFocused ? '0 0 0 3px rgba(74, 144, 226, 0.5)' : undefined,
         },
         className: isFocused ? 'border-[3px] border-blue-400' : undefined,
@@ -376,7 +375,6 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
           ...edge.style,
           opacity: isDimmed ? 0.2 : 1,
           strokeWidth: isFocused ? 3 : 2,
-          transition: 'opacity 0.3s ease, stroke-width 0.3s ease',
         },
       };
     });
@@ -465,26 +463,18 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
           }}
         />
         <Panel position="top-left">
-          <div
-            style={{
-              background: 'white',
-              padding: 12,
-              borderRadius: 8,
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-              fontFamily: 'system-ui, sans-serif',
-            }}
-          >
-            <h3 style={{ margin: 0, marginBottom: 8, fontSize: 16, color: '#1f2937' }}>
+          <div className="bg-white p-3 rounded-lg shadow-md font-sans">
+            <h3 className="m-0 mb-2 text-base text-gray-800">
               Business Layer
             </h3>
             {businessGraph && (
-              <div style={{ fontSize: 12, color: '#6b7280' }}>
+              <div className="text-xs text-gray-500">
                 <div>
                   {businessGraph.nodes.size} elements • {businessGraph.edges.size} relationships
                 </div>
                 <div>Max depth: {businessGraph.hierarchy.maxDepth}</div>
                 {businessGraph.metrics.circularDependencies.length > 0 && (
-                  <div style={{ color: '#c62828', marginTop: 4 }}>
+                  <div className="text-red-700 mt-1">
                     ⚠️ {businessGraph.metrics.circularDependencies.length} circular dependencies
                   </div>
                 )}
