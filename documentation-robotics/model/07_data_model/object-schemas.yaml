@@ -270,3 +270,201 @@ changeset-list:
   name: Changeset List
   type: object-schema
   documentation: Array of changeset summaries with registry metadata and version
+subscribe-message:
+  id: data_model.object-schema.subscribe-message
+  name: Subscribe Message
+  type: object-schema
+  documentation: WebSocket subscribe command message with topics array
+  source:
+    reference:
+      provenance: extracted
+      locations:
+        - file: reference_server/main.py
+          symbol: subscribe
+ping-message:
+  id: data_model.object-schema.ping-message
+  name: Ping Message
+  type: object-schema
+  documentation: WebSocket ping/keepalive message
+  source:
+    reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/services/websocketClient.ts
+          symbol: ping
+pong-message:
+  id: data_model.object-schema.pong-message
+  name: Pong Message
+  type: object-schema
+  documentation: WebSocket pong response message
+  source:
+    reference:
+      provenance: extracted
+      locations:
+        - file: reference_server/main.py
+          symbol: pong
+model-updated-event:
+  id: data_model.object-schema.model-updated-event
+  name: Model Updated Event
+  type: object-schema
+  documentation: WebSocket event broadcast when model is updated
+  source:
+    reference:
+      provenance: extracted
+      locations:
+        - file: reference_server/main.py
+          symbol: model.updated
+changeset-created-event:
+  id: data_model.object-schema.changeset-created-event
+  name: Changeset Created Event
+  type: object-schema
+  documentation: WebSocket event broadcast when changeset is created
+  source:
+    reference:
+      provenance: extracted
+      locations:
+        - file: reference_server/main.py
+          symbol: changeset.created
+annotation-added-event:
+  id: data_model.object-schema.annotation-added-event
+  name: Annotation Added Event
+  type: object-schema
+  documentation: WebSocket event broadcast when annotation is added
+  source:
+    reference:
+      provenance: extracted
+      locations:
+        - file: reference_server/main.py
+          symbol: annotation.added
+subscribed-event:
+  id: data_model.object-schema.subscribed-event
+  name: Subscribed Event
+  type: object-schema
+  documentation: WebSocket event confirming subscription to topics
+  source:
+    reference:
+      provenance: extracted
+      locations:
+        - file: reference_server/main.py
+          symbol: subscribed
+github-release-list:
+  id: data_model.object-schema.github-release-list
+  name: GitHub Release List Response
+  type: object-schema
+  documentation: List of GitHub releases with pagination metadata
+  source:
+    reference:
+      provenance: extracted
+      locations:
+        - file: reference_server/main.py
+          symbol: get_github_releases
+health-check-response:
+  id: data_model.object-schema.health-check-response
+  name: Health Check Response
+  type: object-schema
+  documentation: Health check endpoint response with status and version
+  source:
+    reference:
+      provenance: extracted
+      locations:
+        - file: reference_server/main.py
+          symbol: health_check
+error-response:
+  id: data_model.object-schema.error-response
+  name: Error Response
+  type: object-schema
+  documentation: Standard API error response with error message and optional details
+  source:
+    reference:
+      provenance: manual
+      locations:
+        - file: reference_server/main.py
+          symbol: JSONResponse
+path-tracing-state:
+  id: data_model.object-schema.path-tracing-state
+  name: Path Tracing State
+  type: object-schema
+  documentation: State for graph path tracing with mode, selected nodes, and highlighted elements
+  source:
+    reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/stores/viewPreferenceStore.ts
+          symbol: PathTracingState
+c4-path-tracing-state:
+  id: data_model.object-schema.c4-path-tracing-state
+  name: C4 Path Tracing State
+  type: object-schema
+  documentation: Path tracing state specific to C4 architecture views
+  source:
+    reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/stores/viewPreferenceStore.ts
+          symbol: C4PathTracingState
+c4-view-preferences:
+  id: data_model.object-schema.c4-view-preferences
+  name: C4 View Preferences
+  type: object-schema
+  documentation: User preferences for C4 architecture view including view level, layout, filters, and path tracing
+  source:
+    reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/stores/viewPreferenceStore.ts
+          symbol: C4ViewPreferences
+motivation-view-preferences:
+  id: data_model.object-schema.motivation-view-preferences
+  name: Motivation View Preferences
+  type: object-schema
+  documentation: User preferences for motivation layer visualization including layout, visible types, and relationships
+  source:
+    reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/stores/viewPreferenceStore.ts
+          symbol: MotivationViewPreferences
+business-view-preferences:
+  id: data_model.object-schema.business-view-preferences
+  name: Business View Preferences
+  type: object-schema
+  documentation: User preferences for business layer visualization including layout, visible types, and grouping
+  source:
+    reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/stores/viewPreferenceStore.ts
+          symbol: BusinessViewPreferences
+spec-view-type:
+  id: data_model.object-schema.spec-view-type
+  name: Spec View Type
+  type: object-schema
+  documentation: View type enumeration for specification views (graph or JSON)
+  source:
+    reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/stores/viewPreferenceStore.ts
+          symbol: SpecViewType
+model-view-type:
+  id: data_model.object-schema.model-view-type
+  name: Model View Type
+  type: object-schema
+  documentation: View type enumeration for model views (graph or JSON)
+  source:
+    reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/stores/viewPreferenceStore.ts
+          symbol: ModelViewType
+changeset-view-type:
+  id: data_model.object-schema.changeset-view-type
+  name: Changeset View Type
+  type: object-schema
+  documentation: View type enumeration for changeset views (graph or list)
+  source:
+    reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/stores/viewPreferenceStore.ts
+          symbol: ChangesetViewType

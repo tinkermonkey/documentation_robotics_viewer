@@ -1,0 +1,12 @@
+subscribe-message:
+  id: data-model.object-schema.subscribe-message
+  name: Subscribe Message
+  type: object-schema
+  documentation: WebSocket subscribe command message with topics array
+  properties:
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: reference_server/main.py
+            symbol: subscribe

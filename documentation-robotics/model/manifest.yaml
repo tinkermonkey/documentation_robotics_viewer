@@ -3,7 +3,7 @@ schema: documentation-robotics-v1
 cli_version: 0.1.0
 spec_version: 0.7.0
 created: 2025-12-05T22:17:22.732040Z
-updated: 2026-01-25T12:10:27.828Z
+updated: 2026-01-27T21:53:28.031Z
 project:
   name: documentation_robotics_viewer
   description: Architecture model for documentation_robotics_viewer
@@ -155,7 +155,7 @@ layers:
       test-case-sketche: 11
       test-suite: 59
 statistics:
-  total_elements: 617
+  total_elements: 618
   elements_by_layer:
     motivation: 14
     business: 9

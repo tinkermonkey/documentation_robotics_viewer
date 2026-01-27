@@ -24,7 +24,7 @@ health-check:
     x-protected-by:
       - security.permission.access-api-endpoints
     x-response-schema:
-      - data_model.object-schema.health-status
+      - data-model.object-schema.health-check-response
     source:
       reference:
         provenance: manual
@@ -218,7 +218,7 @@ get-github-releases:
       - security.permission.access-api-endpoints
       - security.countermeasure.input-sanitization
     x-response-schema:
-      - data_model.object-schema.github-release
+      - data-model.object-schema.github-release-list
     source:
       reference:
         provenance: manual
@@ -443,6 +443,8 @@ connected:
       timestamp: string
     x-protected-by:
       - security.countermeasure.websocket-origin-validation
+    x-payload-schema:
+      - data-model.object-schema.websocket-message
 subscribe:
   id: api.event.subscribe
   name: Subscribe Command
@@ -458,6 +460,8 @@ subscribe:
     x-protected-by:
       - security.countermeasure.websocket-origin-validation
       - security.countermeasure.message-validation
+    x-payload-schema:
+      - data-model.object-schema.subscribe-message
 model-updated:
   id: api.event.model-updated
   name: Model Updated Event
@@ -470,6 +474,8 @@ model-updated:
     payload:
       type: model.updated
       timestamp: string
+    x-payload-schema:
+      - data-model.object-schema.model-updated-event
 get-link-registry:
   id: api.operation.get-link-registry
   name: Get Link Registry
@@ -518,7 +524,8 @@ changeset-created:
     x-archimate-ref:
       - application.service.yaml-parser
     x-payload-schema:
-      - data_model.object-schema.changeset-summary
+      - data-model.object-schema.changeset-summary
+      - data-model.object-schema.changeset-created-event
 annotation-added:
   id: api.operation.annotation-added
   name: Annotation Added Event
@@ -531,7 +538,8 @@ annotation-added:
     x-archimate-ref:
       - application.service.demo-data-service
     x-payload-schema:
-      - data_model.object-schema.annotation
+      - data-model.object-schema.annotation
+      - data-model.object-schema.annotation-added-event
 subscribed:
   id: api.operation.subscribed
   name: Subscribed Event
@@ -541,6 +549,8 @@ subscribed:
     direction: server-to-client
     channel: /ws
     protocol: websocket
+    x-payload-schema:
+      - data-model.object-schema.subscribed-event
 pong:
   id: api.operation.pong
   name: Pong Event
@@ -551,6 +561,8 @@ pong:
     direction: server-to-client
     channel: /ws
     protocol: websocket
+    x-payload-schema:
+      - data-model.object-schema.pong-message
 ping:
   id: api.operation.ping
   name: Ping Command
@@ -561,6 +573,8 @@ ping:
     direction: client-to-server
     channel: /ws
     protocol: websocket
+    x-payload-schema:
+      - data-model.object-schema.ping-message
 rest-mode:
   id: api.operation.rest-mode
   name: REST Mode Fallback
