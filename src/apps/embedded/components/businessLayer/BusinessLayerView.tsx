@@ -398,27 +398,10 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
 
   if (error) {
     return (
-      <div
-        style={{
-          width: '100%',
-          height: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontFamily: 'system-ui, sans-serif',
-        }}
-      >
-        <div
-          style={{
-            padding: 24,
-            background: '#ffebee',
-            border: '2px solid #c62828',
-            borderRadius: 8,
-            maxWidth: 600,
-          }}
-        >
-          <h2 style={{ margin: 0, marginBottom: 12, color: '#c62828' }}>Error</h2>
-          <p style={{ margin: 0, color: '#424242' }}>{error}</p>
+      <div className="w-full h-screen flex items-center justify-center font-sans">
+        <div className="p-6 bg-red-50 border-2 border-red-800 rounded-lg max-w-xl">
+          <h2 className="m-0 mb-3 text-red-800 font-bold">Error</h2>
+          <p className="m-0 text-gray-700">{error}</p>
         </div>
       </div>
     );
@@ -426,25 +409,9 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
 
   if (loading) {
     return (
-      <div
-        style={{
-          width: '100%',
-          height: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontFamily: 'system-ui, sans-serif',
-        }}
-      >
-        <div
-          style={{
-            padding: 24,
-            background: '#e3f2fd',
-            border: '2px solid #1565c0',
-            borderRadius: 8,
-          }}
-        >
-          <p style={{ margin: 0, color: '#1565c0', fontWeight: 600 }}>
+      <div className="w-full h-screen flex items-center justify-center font-sans">
+        <div className="p-6 bg-blue-50 border-2 border-blue-700 rounded-lg">
+          <p className="m-0 text-blue-700 font-semibold">
             Loading business layer...
           </p>
         </div>
@@ -464,7 +431,7 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
       />
 
       {/* Graph Visualization */}
-      <div ref={reactFlowWrapperRef} style={{ flex: 1, position: 'relative' }}>
+      <div ref={reactFlowWrapperRef} className="flex-1 relative">
         <ReactFlow
           nodes={styledNodes}
           edges={styledEdges}
