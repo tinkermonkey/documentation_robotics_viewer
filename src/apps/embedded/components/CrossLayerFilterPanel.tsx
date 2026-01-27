@@ -21,19 +21,31 @@ import {
 } from 'flowbite-react';
 import { X } from 'lucide-react';
 import { LayerType } from '@/core/types/layers';
-import { ReferenceType } from '@/core/types/model';
 import { useCrossLayerStore } from '@/core/stores/crossLayerStore';
 import { useModelStore } from '@/core/stores/modelStore';
+import { MetaModel, ReferenceType } from '@/core/types/model';
 
 /**
  * Cross-layer filter counts
  */
 interface CrossLayerFilterCounts {
   /** Counts per target layer */
-  targetLayers: Record<LayerType, { visible: number; total: number }>;
+  targetLayers: Record<string, { visible: number; total: number }>;
   /** Counts per relationship type */
-  relationshipTypes: Record<ReferenceType, { visible: number; total: number }>;
+  relationshipTypes: Record<string, { visible: number; total: number }>;
 }
+
+/**
+ * Target layers to display (subset of all layers per requirements)
+ */
+const TARGET_LAYERS: LayerType[] = [
+  LayerType.Motivation,
+  LayerType.Application,
+  LayerType.Security,
+  LayerType.DataModel,
+  LayerType.Api,
+  LayerType.Ux,
+];
 
 /**
  * Layer labels for display
@@ -54,59 +66,68 @@ const LAYER_LABELS: Record<LayerType, string> = {
 };
 
 /**
- * Reference type labels for display
+ * Common relationship type labels and values
  */
-const REFERENCE_TYPE_LABELS: Record<ReferenceType, string> = {
-  [ReferenceType.ArchiMateProperty]: 'ArchiMate Property',
-  [ReferenceType.BusinessObject]: 'Business Object',
-  [ReferenceType.BusinessService]: 'Business Service',
-  [ReferenceType.BusinessInterface]: 'Business Interface',
-  [ReferenceType.APIOperation]: 'API Operation',
-  [ReferenceType.SchemaReference]: 'Schema Reference',
-  [ReferenceType.UXAction]: 'UX Action',
-  [ReferenceType.NavigationRoute]: 'Navigation Route',
-  [ReferenceType.SecurityPermission]: 'Security Permission',
-  [ReferenceType.SecurityResource]: 'Security Resource',
-  [ReferenceType.Goal]: 'Goal',
-  [ReferenceType.Requirement]: 'Requirement',
-  [ReferenceType.Principle]: 'Principle',
-  [ReferenceType.Constraint]: 'Constraint',
-  [ReferenceType.APMTrace]: 'APM Trace',
-  [ReferenceType.APMPerformanceMetrics]: 'Performance Metrics',
-  [ReferenceType.APMDataQualityMetrics]: 'Data Quality Metrics',
-  [ReferenceType.APMBusinessMetrics]: 'Business Metrics',
-  [ReferenceType.Custom]: 'Custom',
+const COMMON_REFERENCE_TYPES = [
+  'realizes',
+  'supports',
+  'accesses',
+  'uses',
+  'assigned-to',
+  'influences',
+] as const;
+
+type CommonReferenceType = typeof COMMON_REFERENCE_TYPES[number];
+
+const COMMON_REFERENCE_TYPE_LABELS: Record<CommonReferenceType, string> = {
+  'realizes': 'Realizes',
+  'supports': 'Supports',
+  'accesses': 'Accesses',
+  'uses': 'Uses',
+  'assigned-to': 'Assigned To',
+  'influences': 'Influences',
 };
+
+/**
+ * Check if a value is a common reference type
+ */
+function isCommonReferenceType(value: unknown): value is CommonReferenceType {
+  return typeof value === 'string' && COMMON_REFERENCE_TYPES.includes(value as CommonReferenceType);
+}
 
 /**
  * Calculate filter counts from the model
  */
-function calculateFilterCounts(model: any): CrossLayerFilterCounts {
+function calculateFilterCounts(model: MetaModel | null): CrossLayerFilterCounts {
   const counts: CrossLayerFilterCounts = {
-    targetLayers: {} as Record<LayerType, { visible: number; total: number }>,
-    relationshipTypes: {} as Record<ReferenceType, { visible: number; total: number }>,
+    targetLayers: {},
+    relationshipTypes: {},
   };
 
   // Initialize all counts to 0
-  Object.values(LayerType).forEach((layer) => {
+  TARGET_LAYERS.forEach((layer) => {
     counts.targetLayers[layer] = { visible: 0, total: 0 };
   });
 
-  Object.values(ReferenceType).forEach((type) => {
+  COMMON_REFERENCE_TYPES.forEach((type) => {
     counts.relationshipTypes[type] = { visible: 0, total: 0 };
   });
 
   // Count from model references if available
   if (model?.references && Array.isArray(model.references)) {
-    model.references.forEach((ref: any) => {
-      if (ref.target?.layerId && Object.values(LayerType).includes(ref.target.layerId)) {
-        const targetLayer = ref.target.layerId as LayerType;
-        const refType = ref.type as ReferenceType;
+    model.references.forEach((ref) => {
+      const targetLayer = ref.target?.layerId;
+      const refType = ref.type;
 
+      // Count if target layer is in our filter list
+      if (targetLayer && TARGET_LAYERS.includes(targetLayer as LayerType)) {
         if (counts.targetLayers[targetLayer]) {
           counts.targetLayers[targetLayer].total += 1;
         }
+      }
 
+      // Count if reference type is a common type
+      if (isCommonReferenceType(refType)) {
         if (counts.relationshipTypes[refType]) {
           counts.relationshipTypes[refType].total += 1;
         }
@@ -119,10 +140,8 @@ function calculateFilterCounts(model: any): CrossLayerFilterCounts {
 
 const CrossLayerFilterPanelComponent = memo(() => {
   const model = useModelStore((state) => state.model);
-  const visible = useCrossLayerStore((state) => state.visible);
   const targetLayerFilters = useCrossLayerStore((state) => state.targetLayerFilters);
   const relationshipTypeFilters = useCrossLayerStore((state) => state.relationshipTypeFilters);
-  const toggleVisible = useCrossLayerStore((state) => state.toggleVisible);
   const addTargetLayerFilter = useCrossLayerStore((state) => state.addTargetLayerFilter);
   const removeTargetLayerFilter = useCrossLayerStore((state) => state.removeTargetLayerFilter);
   const addRelationshipTypeFilter = useCrossLayerStore((state) => state.addRelationshipTypeFilter);
@@ -142,7 +161,7 @@ const CrossLayerFilterPanelComponent = memo(() => {
    */
   const allTargetLayersSelected = useMemo(
     () =>
-      Object.values(LayerType).every((layer) =>
+      TARGET_LAYERS.every((layer) =>
         targetLayerFilters.has(layer)
       ),
     [targetLayerFilters]
@@ -153,8 +172,8 @@ const CrossLayerFilterPanelComponent = memo(() => {
    */
   const allRelationshipTypesSelected = useMemo(
     () =>
-      Object.values(ReferenceType).every((type) =>
-        relationshipTypeFilters.has(type)
+      COMMON_REFERENCE_TYPES.every((type) =>
+        relationshipTypeFilters.has(type as ReferenceType)
       ),
     [relationshipTypeFilters]
   );
@@ -164,7 +183,7 @@ const CrossLayerFilterPanelComponent = memo(() => {
    */
   const totalTargetLayerCounts = useMemo(
     () =>
-      Object.values(LayerType).reduce(
+      TARGET_LAYERS.reduce(
         (acc, layer) => {
           const counts = filterCounts.targetLayers[layer];
           if (counts) {
@@ -183,11 +202,11 @@ const CrossLayerFilterPanelComponent = memo(() => {
    */
   const totalRelationshipTypeCounts = useMemo(
     () =>
-      Object.values(ReferenceType).reduce(
+      COMMON_REFERENCE_TYPES.reduce(
         (acc, type) => {
           const counts = filterCounts.relationshipTypes[type];
           if (counts) {
-            acc.visible += relationshipTypeFilters.has(type) ? counts.total : 0;
+            acc.visible += relationshipTypeFilters.has(type as ReferenceType) ? counts.total : 0;
             acc.total += counts.total;
           }
           return acc;
@@ -201,7 +220,7 @@ const CrossLayerFilterPanelComponent = memo(() => {
    * Handle "Select All" target layers
    */
   const handleSelectAllTargetLayers = () => {
-    Object.values(LayerType).forEach((layer) => {
+    TARGET_LAYERS.forEach((layer) => {
       if (!targetLayerFilters.has(layer) && filterCounts.targetLayers[layer].total > 0) {
         addTargetLayerFilter(layer);
       }
@@ -212,7 +231,7 @@ const CrossLayerFilterPanelComponent = memo(() => {
    * Handle "Deselect All" target layers
    */
   const handleDeselectAllTargetLayers = () => {
-    Object.values(LayerType).forEach((layer) => {
+    TARGET_LAYERS.forEach((layer) => {
       if (targetLayerFilters.has(layer)) {
         removeTargetLayerFilter(layer);
       }
@@ -223,9 +242,10 @@ const CrossLayerFilterPanelComponent = memo(() => {
    * Handle "Select All" relationship types
    */
   const handleSelectAllRelationshipTypes = () => {
-    Object.values(ReferenceType).forEach((type) => {
-      if (!relationshipTypeFilters.has(type) && filterCounts.relationshipTypes[type].total > 0) {
-        addRelationshipTypeFilter(type);
+    COMMON_REFERENCE_TYPES.forEach((type) => {
+      const refType = type as ReferenceType;
+      if (!relationshipTypeFilters.has(refType) && filterCounts.relationshipTypes[type].total > 0) {
+        addRelationshipTypeFilter(refType);
       }
     });
   };
@@ -234,9 +254,10 @@ const CrossLayerFilterPanelComponent = memo(() => {
    * Handle "Deselect All" relationship types
    */
   const handleDeselectAllRelationshipTypes = () => {
-    Object.values(ReferenceType).forEach((type) => {
-      if (relationshipTypeFilters.has(type)) {
-        removeRelationshipTypeFilter(type);
+    COMMON_REFERENCE_TYPES.forEach((type) => {
+      const refType = type as ReferenceType;
+      if (relationshipTypeFilters.has(refType)) {
+        removeRelationshipTypeFilter(refType);
       }
     });
   };
@@ -256,32 +277,6 @@ const CrossLayerFilterPanelComponent = memo(() => {
 
   return (
     <div className="space-y-4" data-testid="cross-layer-filter-panel">
-      {/* Master toggle */}
-      <div className="flex items-center gap-3 px-2">
-        <Checkbox
-          id="cross-layer-visible-toggle"
-          checked={visible}
-          onChange={() => toggleVisible()}
-          data-testid="cross-layer-visible-toggle"
-        />
-        <Label
-          htmlFor="cross-layer-visible-toggle"
-          className="flex items-center gap-2 flex-1 cursor-pointer"
-        >
-          <span className="text-sm font-semibold text-gray-900 dark:text-white">
-            Show Cross-Layer Links
-          </span>
-          {model.references && (
-            <span className="text-xs font-normal text-gray-500 dark:text-gray-400">
-              ({model.references.length} total)
-            </span>
-          )}
-        </Label>
-      </div>
-
-      {/* Divider */}
-      <div className="border-t border-gray-200 dark:border-gray-700" />
-
       {/* Header with Clear All button */}
       <div className="flex items-center justify-between px-2">
         <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Filters</h3>
@@ -338,7 +333,7 @@ const CrossLayerFilterPanelComponent = memo(() => {
 
             {/* Filter Items */}
             <div className="space-y-2">
-              {Object.values(LayerType).map((layer) => {
+              {TARGET_LAYERS.map((layer) => {
                 const counts = filterCounts.targetLayers[layer];
                 const isSelected = targetLayerFilters.has(layer);
                 const hasReferences = counts && counts.total > 0;
@@ -418,9 +413,10 @@ const CrossLayerFilterPanelComponent = memo(() => {
 
             {/* Filter Items */}
             <div className="space-y-2">
-              {Object.values(ReferenceType).map((type) => {
+              {COMMON_REFERENCE_TYPES.map((type) => {
                 const counts = filterCounts.relationshipTypes[type];
-                const isSelected = relationshipTypeFilters.has(type);
+                const refType = type as ReferenceType;
+                const isSelected = relationshipTypeFilters.has(refType);
                 const hasReferences = counts && counts.total > 0;
 
                 return (
@@ -434,8 +430,8 @@ const CrossLayerFilterPanelComponent = memo(() => {
                       checked={isSelected}
                       onChange={(e) =>
                         e.target.checked
-                          ? addRelationshipTypeFilter(type)
-                          : removeRelationshipTypeFilter(type)
+                          ? addRelationshipTypeFilter(refType)
+                          : removeRelationshipTypeFilter(refType)
                       }
                       disabled={!hasReferences}
                       data-testid={`cross-layer-toggle-relationship-type-${type}`}
@@ -446,7 +442,7 @@ const CrossLayerFilterPanelComponent = memo(() => {
                       disabled={!hasReferences}
                     >
                       <span className="flex-1 text-sm text-gray-700 dark:text-gray-300">
-                        {REFERENCE_TYPE_LABELS[type]}
+                        {COMMON_REFERENCE_TYPE_LABELS[type]}
                       </span>
                       {counts && (
                         <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">
@@ -461,6 +457,13 @@ const CrossLayerFilterPanelComponent = memo(() => {
           </AccordionContent>
         </AccordionPanel>
       </Accordion>
+
+      {/* Total filtered edge count summary */}
+      {(totalTargetLayerCounts.total > 0 || totalRelationshipTypeCounts.total > 0) && (
+        <div className="text-xs text-gray-600 dark:text-gray-400 pt-2 border-t border-gray-200 dark:border-gray-700 px-2">
+          {totalTargetLayerCounts.visible} of {totalTargetLayerCounts.total} edges visible (after filtering)
+        </div>
+      )}
     </div>
   );
 });

@@ -35,6 +35,6 @@ export function useCrossLayerLinks(): AppEdge[] {
 
     // Convert to AppEdge objects using shared utility
     // Node IDs for the hook use simple format: node-{elementId}
-    return referencesToEdges(model, crossLayerRefs, (elementId) => `node-${elementId}`);
+    return referencesToEdges(crossLayerRefs, model, (elementId) => `node-${elementId}`);
   }, [visible, model, targetLayerFilters, relationshipTypeFilters]);
 }
