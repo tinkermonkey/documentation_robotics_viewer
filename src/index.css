@@ -22,3 +22,44 @@ body,
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Business Layer View - focused node styling */
+.react-flow__node.focused-node {
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.5);
+}
+
+.react-flow__node.focused-node > div {
+  border-width: 3px !important;
+  border-color: #4A90E2 !important;
+}
+
+/* Smooth transitions for focus mode changes */
+.react-flow__node {
+  transition: opacity 0.3s ease, box-shadow 0.3s ease;
+}
+
+.react-flow__edge {
+  transition: opacity 0.3s ease, stroke-width 0.3s ease;
+}
+
+/* Navigation animations for cross-layer navigation */
+.layer-view {
+  transition: opacity 300ms ease-in-out;
+}
+
+.layer-view.exiting {
+  opacity: 0;
+}
+
+.layer-view.entering {
+  opacity: 1;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .layer-view,
+  .react-flow__node,
+  .react-flow__edge {
+    transition: none !important;
+  }
+}

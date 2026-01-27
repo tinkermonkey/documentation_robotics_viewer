@@ -41,7 +41,6 @@ import {
 } from '@/core/services/businessExportService';
 import { OverviewPanel } from '@/core/components/OverviewPanel';
 import { getLayerColor } from '@/core/utils/layerColors';
-import './BusinessLayerView.css';
 
 interface BusinessLayerViewProps {
   /** The documentation model */
@@ -454,7 +453,7 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
   }
 
   return (
-    <div className="business-layer-view" style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="w-full h-screen flex flex-col">
       {/* Controls Panel */}
       <BusinessLayerControls
         businessGraph={businessGraph}
