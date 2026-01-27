@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, useEffect } from 'react';
 import { AppEdge } from '@/core/types/reactflow';
 import { useCrossLayerStore } from '@/core/stores/crossLayerStore';
 import { useModelStore } from '@/core/stores/modelStore';
@@ -83,11 +83,14 @@ export function useCrossLayerLinks(): AppEdge[] {
   }, [bundled.length]);
 
   // Expose load more through store for UI access
-  useCrossLayerStore.setState({
-    loadMoreEdges,
-    hasMoreEdges: displayedEdges.length < bundled.length,
-    totalEdgeCount: bundled.length,
-  });
+  // Must be in useEffect to avoid store mutation during render phase
+  useEffect(() => {
+    useCrossLayerStore.setState({
+      loadMoreEdges,
+      hasMoreEdges: displayedEdges.length < bundled.length,
+      totalEdgeCount: bundled.length,
+    });
+  }, [loadMoreEdges, displayedEdges.length, bundled.length]);
 
   return displayedEdges;
 }
