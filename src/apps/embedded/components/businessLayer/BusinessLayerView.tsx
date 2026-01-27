@@ -357,8 +357,9 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
           ...node.style,
           opacity: isDimmed ? 0.3 : 1,
           transition: 'opacity 0.3s ease',
+          boxShadow: isFocused ? '0 0 0 3px rgba(74, 144, 226, 0.5)' : undefined,
         },
-        className: isFocused ? 'focused-node' : undefined,
+        className: isFocused ? 'border-[3px] border-blue-400' : undefined,
       };
     });
   }, [filteredNodes, focusedNodes, dimmedNodes, focusMode, expandedNodes, toggleNodeExpanded]);

@@ -23,29 +23,19 @@ body,
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Business Layer View - focused node styling */
-.react-flow__node.focused-node {
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.5);
-}
-
-.react-flow__node.focused-node > div {
-  border-width: 3px !important;
-  border-color: #4A90E2 !important;
-}
-
 /* Smooth transitions for focus mode changes */
 .react-flow__node {
-  transition: opacity 0.3s ease, box-shadow 0.3s ease;
+  @apply transition-[opacity,box-shadow] duration-300 ease-out;
 }
 
 .react-flow__edge {
-  transition: opacity 0.3s ease, stroke-width 0.3s ease;
+  @apply transition-[opacity,stroke-width] duration-300 ease-out;
 }
 
 /* Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
   .react-flow__node,
   .react-flow__edge {
-    transition: none !important;
+    @apply transition-none;
   }
 }
