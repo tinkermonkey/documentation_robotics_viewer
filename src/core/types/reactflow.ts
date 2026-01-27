@@ -328,8 +328,10 @@ export interface MotivationEdgeData {
  * Cross-layer edge data
  */
 export interface CrossLayerEdgeData {
-  targetLayer: 'motivation' | 'application' | 'data_model' | 'security' | 'api' | 'ux';
+  targetLayer: string;
   relationshipType: string;
+  sourceElementName?: string;
+  targetElementName?: string;
   label?: string;
   [key: string]: unknown;
 }

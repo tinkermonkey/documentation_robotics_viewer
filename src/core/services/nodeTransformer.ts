@@ -246,11 +246,15 @@ export class NodeTransformer {
         const targetNodeId = nodeMap.get(reference.target.elementId);
 
         if (sourceNodeId && targetNodeId) {
+          // Get element names for breadcrumb/tooltip display
+          const sourceElement = reference.source.layerId ? model.layers[reference.source.layerId]?.elements.find((e) => e.id === reference.source.elementId) : undefined;
+          const targetElement = reference.target.layerId ? model.layers[reference.target.layerId]?.elements.find((e) => e.id === reference.target.elementId) : undefined;
+
           edges.push({
             id: `edge-ref-${reference.source.elementId}-${reference.target.elementId}`,
             source: sourceNodeId,
             target: targetNodeId,
-            type: 'elbow',
+            type: 'crossLayer',
             label: reference.type,
             labelStyle: { fill: '#555', fontWeight: 500, fontSize: 12 },
             labelBgStyle: { fill: '#fff', fillOpacity: 0.8, rx: 4, ry: 4 },
@@ -262,10 +266,10 @@ export class NodeTransformer {
             },
             style: { strokeDasharray: '5,5' }, // Dashed line for cross-layer references
             data: {
-              pathOptions: {
-                offset: 10, // 10px margin around nodes for routing
-                borderRadius: 8, // Rounded corners for smoother paths
-              },
+              targetLayer: reference.target.layerId,
+              relationshipType: reference.type,
+              sourceElementName: sourceElement?.name || reference.source.elementId,
+              targetElementName: targetElement?.name || reference.target.elementId,
             },
           } as AppEdge);
         }
