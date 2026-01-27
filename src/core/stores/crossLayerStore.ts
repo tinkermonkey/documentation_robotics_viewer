@@ -31,6 +31,11 @@ interface CrossLayerStoreState {
   // Navigation history (max 5 steps)
   navigationHistory: NavigationStep[];
 
+  // Progressive loading state (FR-16)
+  loadMoreEdges?: () => void;
+  hasMoreEdges?: boolean;
+  totalEdgeCount?: number;
+
   // Actions - Visibility
   toggleVisible: () => void;
   setVisible: (visible: boolean) => void;
@@ -67,6 +72,9 @@ export const useCrossLayerStore = create<CrossLayerStoreState>((set, get) => ({
   targetLayerFilters: new Set(),
   relationshipTypeFilters: new Set(),
   navigationHistory: [],
+  loadMoreEdges: undefined,
+  hasMoreEdges: false,
+  totalEdgeCount: 0,
 
   // Visibility actions
   toggleVisible: () => set((state) => ({ visible: !state.visible })),

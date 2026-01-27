@@ -3,7 +3,7 @@
  * Renders a MetaModel using React Flow with custom nodes and edges
  */
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import {
   ReactFlow,
   Background,
@@ -14,6 +14,7 @@ import {
   NodeMouseHandler,
   useReactFlow,
   ReactFlowProvider,
+  useViewport,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import './GraphViewer.css';
@@ -41,12 +42,61 @@ interface GraphViewerProps {
 }
 
 /**
+ * Viewport Culling Component
+ * Uses viewport hook to filter edges connected only to visible nodes
+ */
+const ViewportCullingLayer: React.FC<{
+  nodes: AppNode[];
+  edges: AppEdge[];
+  onCulledEdgesChange?: (edges: AppEdge[]) => void;
+}> = ({ nodes, edges, onCulledEdgesChange }) => {
+  const viewport = useViewport();
+  const VIEWPORT_MARGIN = 100; // Buffer around viewport for edge culling
+
+  const culledEdges = useMemo(() => {
+    // Calculate visible node IDs based on viewport
+    const visibleNodeIds = new Set<string>();
+
+    nodes.forEach((node) => {
+      const nodeWidth = (node.width || 180) * viewport.zoom;
+      const nodeHeight = (node.height || 100) * viewport.zoom;
+
+      // Calculate screen position
+      const screenX = node.position.x * viewport.zoom + viewport.x;
+      const screenY = node.position.y * viewport.zoom + viewport.y;
+
+      // Check if node is in viewport with margin (FR-3)
+      if (
+        screenX + nodeWidth > -VIEWPORT_MARGIN &&
+        screenX < window.innerWidth + VIEWPORT_MARGIN &&
+        screenY + nodeHeight > -VIEWPORT_MARGIN &&
+        screenY < window.innerHeight + VIEWPORT_MARGIN
+      ) {
+        visibleNodeIds.add(node.id);
+      }
+    });
+
+    // Filter edges to only those connected to visible nodes (FR-3)
+    const filtered = edges.filter(
+      (edge) =>
+        visibleNodeIds.has(edge.source) || visibleNodeIds.has(edge.target)
+    );
+
+    onCulledEdgesChange?.(filtered);
+    return filtered;
+  }, [nodes, edges, viewport]);
+
+  return null;
+};
+
+/**
  * GraphViewerInner Component
  * Inner component that has access to React Flow instance via useReactFlow hook
  */
 const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, selectedLayerId, layoutEngine, layoutParameters, onNodesEdgesChange }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<AppEdge>([]);
+  const [culledEdges, setCulledEdges] = useState<AppEdge[]>([]);
   const { layers: layerStates } = useLayerStore();
   const [isRendering, setIsRendering] = useState(false);
   const reactFlowInstance = useReactFlow();
@@ -249,7 +299,7 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
       <div id="graph-content">
         <ReactFlow
         nodes={nodes}
-        edges={edges}
+        edges={culledEdges.length > 0 ? culledEdges : edges}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
@@ -268,6 +318,13 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
         <Background color="#E6E6E6" gap={16} />
         <Controls />
         <SpaceMouseHandler />
+
+        {/* Viewport culling layer for cross-layer edges (FR-3) */}
+        <ViewportCullingLayer
+          nodes={nodes}
+          edges={edges}
+          onCulledEdgesChange={setCulledEdges}
+        />
         {/* Only render OverviewPanel after viewport is stable to prevent NaN in MiniMap SVG */}
         {showMiniMap && (
           <OverviewPanel

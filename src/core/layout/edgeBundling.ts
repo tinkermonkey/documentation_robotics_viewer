@@ -93,8 +93,6 @@ export function applyEdgeBundling(
     };
   }
 
-  console.log(`[EdgeBundling] Bundling ${edges.length} edges (threshold: ${opts.threshold})`);
-
   // Group edges by source-target pair
   const edgeGroups = groupEdgesBySourceTarget(edges);
 
@@ -103,7 +101,8 @@ export function applyEdgeBundling(
   const singleEdges: Edge[] = [];
 
   for (const [key, groupEdges] of edgeGroups) {
-    if (groupEdges.length > 1) {
+    // Bundle threshold: 3 or more edges (FR-10)
+    if (groupEdges.length >= 3) {
       // Create bundle
       const [sourceId, targetId] = key.split('->');
       const bundle: EdgeBundle = {
@@ -123,8 +122,8 @@ export function applyEdgeBundling(
       };
       bundles.push(bundle);
     } else {
-      // Single edge - keep as is
-      singleEdges.push(groupEdges[0]);
+      // Single or pair edge - keep as is
+      singleEdges.push(...groupEdges);
     }
   }
 
@@ -133,10 +132,6 @@ export function applyEdgeBundling(
 
   const allEdges = [...bundledEdges, ...singleEdges];
   const reductionCount = edges.length - allEdges.length;
-
-  console.log(
-    `[EdgeBundling] Created ${bundles.length} bundles, reduced ${reductionCount} edges`
-  );
 
   return {
     bundledEdges: allEdges,

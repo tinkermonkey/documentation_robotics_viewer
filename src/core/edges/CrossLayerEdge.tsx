@@ -7,7 +7,7 @@
  */
 
 import { memo, useState } from 'react';
-import { EdgeProps, BaseEdge, getSmoothStepPath, EdgeLabelRenderer, Edge } from '@xyflow/react';
+import { EdgeProps, BaseEdge, getBezierPath, EdgeLabelRenderer, Edge } from '@xyflow/react';
 import { useNavigate } from '@tanstack/react-router';
 import { CrossLayerEdgeData } from '../types/reactflow';
 import { getLayerColor, getLayerDisplayName } from '../utils/layerColors';
@@ -41,15 +41,14 @@ export const CrossLayerEdge = memo(({
   const navigate = useNavigate();
   const pushNavigation = useCrossLayerStore((state) => state.pushNavigation);
 
-  // Calculate smooth step path
-  const [edgePath, labelX, labelY] = getSmoothStepPath({
+  // Calculate bezier path for cross-layer edges to differentiate from intra-layer straight edges
+  const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
     sourcePosition,
     targetX,
     targetY,
     targetPosition,
-    borderRadius: 8,
   });
 
   const color = data?.targetLayer ? getLayerColor(data.targetLayer) : '#95a5a6';

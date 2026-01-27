@@ -5,6 +5,7 @@
 
 import { ElbowEdge } from './ElbowEdge';
 import { CrossLayerEdge } from './CrossLayerEdge';
+import { BundledCrossLayerEdge } from './BundledCrossLayerEdge';
 import {
   InfluenceEdge,
   ConstrainsEdge,
@@ -17,6 +18,7 @@ import {
 export {
   ElbowEdge,
   CrossLayerEdge,
+  BundledCrossLayerEdge,
   InfluenceEdge,
   ConstrainsEdge,
   RealizesEdge,
@@ -31,6 +33,7 @@ export {
 export const edgeTypes = {
   elbow: ElbowEdge,
   crossLayer: CrossLayerEdge,
+  bundledCrossLayer: BundledCrossLayerEdge,
   influence: InfluenceEdge,
   constrains: ConstrainsEdge,
   realizes: RealizesEdge,
