@@ -2,8 +2,15 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Phase 4: Edge Bundling, Viewport Culling, and Progressive Loading', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:8765/');
-    await page.waitForSelector('.graph-viewer', { timeout: 10000 });
+    // Navigate to the Motivation view where cross-layer edges are implemented
+    // Tests run with E2E config which starts servers on localhost:3001 (frontend) and localhost:8765 (backend)
+    await page.goto('/motivation');
+
+    // Wait for embedded app to load
+    await page.waitForSelector('[data-testid="embedded-app"]', { timeout: 10000 });
+
+    // Wait for graph to render (may have no cross-layer edges if model is small)
+    await page.waitForSelector('.react-flow', { timeout: 10000 });
   });
 
   test('should bundle 3+ edges between same layer pair (FR-10)', async ({ page }) => {
