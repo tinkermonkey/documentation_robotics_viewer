@@ -2,17 +2,15 @@
  * Cross-Layer Edge Extraction Web Worker (FR-16)
  *
  * Processes model references in a background thread to extract cross-layer edges.
- * Used for models with >100 elements to prevent blocking the main thread.
+ * Used for models with >50 elements to prevent blocking the main thread.
  *
- * INTEGRATION STATUS: Worker error handling is implemented, but the worker is
- * currently orphaned (not instantiated by any consumer). The shared crossLayerProcessor
- * module provides the exact same logic for testing and can be used directly.
+ * INTEGRATION STATUS: ✅ INTEGRATED
+ * - Spawned by: src/core/services/workerPool.ts (processCrossLayerReferencesWithWorker)
+ * - Consumed by: src/apps/embedded/hooks/useCrossLayerLinks.ts
+ * - Fallback: If worker unavailable, main thread processing via crossLayerProcessor.ts
  *
- * NEXT STEPS FOR INTEGRATION:
- * 1. Find where cross-layer edges are currently calculated (likely useCrossLayerLinks hook)
- * 2. For models with >100 references, spawn this worker instead of doing inline processing
- * 3. Wire worker postMessage callbacks to app stores (annotationStore, connectionStore)
- * 4. Display error messages to users when errors occur (currently silently fails)
+ * The worker logic exactly mirrors src/core/services/crossLayerProcessor.ts to ensure
+ * test and worker implementations remain synchronized.
  *
  * Accepts message:
  * {

@@ -1,26 +1,28 @@
 /**
  * Cross-layer reference processing utilities
- * Shared logic between web worker and tests for extracting cross-layer edges
+ * Shared logic between web worker, tests, and main thread processing
  *
- * INTEGRATION STATUS: This module provides the core logic for cross-layer edge extraction.
- * It's used by:
- * - Tests: tests/unit/crossLayerWorker.spec.ts
- * - Web Worker: public/workers/crossLayerWorker.js (mirrors this logic)
- * - Tests: tests/integration/crossLayerErrorHandling.spec.ts
+ * INTEGRATION STATUS: ✅ INTEGRATED
+ * This module provides the core logic for cross-layer edge extraction. It's used by:
  *
- * The module is NOT currently used by the main application because the worker
- * is not instantiated. To integrate:
+ * Usage:
+ * 1. Tests: tests/unit/crossLayerWorker.spec.ts
+ *    - Unit tests verify error handling and validation
  *
- * 1. In useCrossLayerLinks hook or where cross-layer refs are processed:
- *    - Import { processReferences } from '@/core/services/crossLayerProcessor'
- *    - Call processReferences(references) instead of inline processing
- *    - Handle errors via the error property in the result
- *    - Display user-friendly messages when errors occur
+ * 2. Web Worker: public/workers/crossLayerWorker.js
+ *    - Mirrors this logic for background thread processing
+ *    - Spawned by workerPool.ts for models with >50 elements
  *
- * 2. For large datasets (>100 references):
- *    - Create a Worker instance pointing to public/workers/crossLayerWorker.js
- *    - Send references via worker.postMessage({ references })
- *    - Handle errors in the worker's postMessage callback
+ * 3. Main Thread Fallback: src/core/services/workerPool.ts
+ *    - Called when worker unavailable or dataset is small
+ *    - Provides synchronous processing on main thread
+ *
+ * 4. Tests: tests/integration/crossLayerErrorHandling.spec.ts
+ *    - Integration tests verify error recovery scenarios
+ *
+ * Implementation: The processReferences function is exported for fallback processing
+ * when the web worker is unavailable or the dataset is small enough that worker
+ * overhead wouldn't benefit performance.
  */
 
 export interface CrossLayerReference {

@@ -21,7 +21,8 @@ import { applyEdgeBundling } from '@/core/layout/edgeBundling';
  * - Shows bundle badge with count on bundled edges
  * - Supports click-to-expand to view individual edges
  * - Progressive loading: initially renders 200 edges, supports loading more on demand (FR-16)
- * - Web Worker for edge extraction on models >100 elements (FR-16)
+ * - Web Worker for edge extraction on models with >100 elements (FR-16)
+ * - Graceful fallback to main thread if worker unavailable
  * - Error handling: gracefully handles extraction failures and reports them to store
  *
  * @returns {AppEdge[]} Array of cross-layer edges (bundled when appropriate) to render

@@ -53,7 +53,7 @@ const ViewportCullingLayer: React.FC<{
   const viewport = useViewport();
   const VIEWPORT_MARGIN = 100; // Buffer around viewport for edge culling
 
-  const culledEdges = useMemo(() => {
+  useMemo(() => {
     // Calculate visible node IDs based on viewport
     const visibleNodeIds = new Set<string>();
 

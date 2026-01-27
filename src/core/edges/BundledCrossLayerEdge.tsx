@@ -9,7 +9,7 @@
 import { memo, useState } from 'react';
 import { EdgeProps, getBezierPath, EdgeLabelRenderer, Edge } from '@xyflow/react';
 import { CrossLayerEdgeData } from '../types/reactflow';
-import { getLayerColor, getLayerDisplayName } from '../utils/layerColors';
+import { getLayerColor } from '../utils/layerColors';
 
 interface BundledEdgeData extends CrossLayerEdgeData {
   bundledEdgeIds: string[];
