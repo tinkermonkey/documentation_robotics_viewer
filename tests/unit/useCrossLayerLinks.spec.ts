@@ -1,8 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { MetaModel, Reference, ReferenceType, ReferenceEndpoint } from '../../src/core/types/model';
 import { LayerType } from '../../src/core/types/layers';
-import { MarkerType } from '@xyflow/react';
-import { FALLBACK_COLOR } from '../../src/core/utils/layerColors';
+import { extractCrossLayerReferences, referencesToEdges } from '../../src/core/services/crossLayerLinksExtractor';
 
 /**
  * Helper to create test model data
@@ -66,78 +65,22 @@ function createTestModel(references: Reference[] = []): MetaModel {
 }
 
 /**
- * Extract and filter cross-layer links logic (without React hooks)
- * This is the business logic that useCrossLayerLinks() wraps
+ * Test helper to extract and filter cross-layer links using the shared utility functions
+ * This tests the actual business logic used by both the hook and nodeTransformer
  */
-function extractCrossLayerLinks(
+function getCrossLayerEdges(
   model: MetaModel | null,
   visible: boolean,
   targetLayerFilters: Set<LayerType>,
   relationshipTypeFilters: Set<ReferenceType>
 ) {
-  if (!visible || !model?.references) return [];
+  if (!model) return [];
 
-  // Extract cross-layer references from model.references
-  let crossLayerRefs = model.references.filter(
-    (ref) => ref.source.layerId && ref.target.layerId && ref.source.layerId !== ref.target.layerId
-  );
+  // Use the shared utility to extract references
+  const references = extractCrossLayerReferences(model, visible, targetLayerFilters, relationshipTypeFilters);
 
-  // Apply target layer filters
-  if (targetLayerFilters.size > 0) {
-    crossLayerRefs = crossLayerRefs.filter((ref) =>
-      ref.target.layerId && targetLayerFilters.has(ref.target.layerId as any)
-    );
-  }
-
-  // Apply relationship type filters
-  if (relationshipTypeFilters.size > 0) {
-    crossLayerRefs = crossLayerRefs.filter((ref) =>
-      relationshipTypeFilters.has(ref.type)
-    );
-  }
-
-  // Convert to AppEdge objects
-  return crossLayerRefs
-    .map((ref, index) => {
-      // Skip if we don't have element IDs
-      if (!ref.source.elementId || !ref.target.elementId) return null;
-
-      // Get element names for breadcrumb/tooltip display
-      const sourceElement = ref.source.layerId
-        ? model.layers[ref.source.layerId]?.elements.find((e) => e.id === ref.source.elementId)
-        : undefined;
-      const targetElement = ref.target.layerId
-        ? model.layers[ref.target.layerId]?.elements.find((e) => e.id === ref.target.elementId)
-        : undefined;
-
-      // Create node IDs matching the format in nodeTransformer
-      const sourceNodeId = `node-${ref.source.elementId}`;
-      const targetNodeId = `node-${ref.target.elementId}`;
-
-      return {
-        id: `edge-ref-${ref.source.elementId}-${ref.target.elementId}-${index}`,
-        source: sourceNodeId,
-        target: targetNodeId,
-        type: 'crossLayer',
-        label: ref.type,
-        labelStyle: { fill: '#555', fontWeight: 500, fontSize: 12 },
-        labelBgStyle: { fill: '#fff', fillOpacity: 0.8, rx: 4, ry: 4 },
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-          width: 20,
-          height: 20,
-          color: FALLBACK_COLOR,
-        },
-        style: { strokeDasharray: '5,5' }, // Dashed line for cross-layer references
-        data: {
-          targetLayer: ref.target.layerId,
-          relationshipType: ref.type,
-          sourceElementName: sourceElement?.name || ref.source.elementId,
-          targetElementName: targetElement?.name || ref.target.elementId,
-        },
-      };
-    })
-    .filter((edge): edge is any => edge !== null);
+  // Convert to edges using shared utility with simple node ID format
+  return referencesToEdges(references, model, (elementId) => `node-${elementId}`);
 }
 
 test.describe('Cross-Layer Link Extraction Logic', () => {
@@ -157,12 +100,12 @@ test.describe('Cross-Layer Link Extraction Logic', () => {
       },
     ]);
 
-    const result = extractCrossLayerLinks(model, false, new Set(), new Set());
+    const result = getCrossLayerEdges(model, false, new Set(), new Set());
     expect(result).toHaveLength(0);
   });
 
   test('should return empty array when model is null', () => {
-    const result = extractCrossLayerLinks(null, true, new Set(), new Set());
+    const result = getCrossLayerEdges(null, true, new Set(), new Set());
     expect(result).toHaveLength(0);
   });
 
@@ -181,7 +124,7 @@ test.describe('Cross-Layer Link Extraction Logic', () => {
     };
 
     const model = createTestModel([reference]);
-    const result = extractCrossLayerLinks(model, true, new Set(), new Set());
+    const result = getCrossLayerEdges(model, true, new Set(), new Set());
     expect(result).toHaveLength(1);
     expect(result[0].type).toBe('crossLayer');
     expect(result[0].data?.targetLayer).toBe(LayerType.Application);
@@ -203,7 +146,7 @@ test.describe('Cross-Layer Link Extraction Logic', () => {
     };
 
     const model = createTestModel([reference]);
-    const result = extractCrossLayerLinks(model, true, new Set(), new Set());
+    const result = getCrossLayerEdges(model, true, new Set(), new Set());
     expect(result).toHaveLength(0);
   });
 
@@ -224,7 +167,7 @@ test.describe('Cross-Layer Link Extraction Logic', () => {
     ];
 
     const model = createTestModel(references);
-    const result = extractCrossLayerLinks(model, true, new Set([LayerType.Application]), new Set());
+    const result = getCrossLayerEdges(model, true, new Set([LayerType.Application]), new Set());
     expect(result).toHaveLength(1);
     expect(result[0].target).toBe('node-service-1');
   });
@@ -246,7 +189,7 @@ test.describe('Cross-Layer Link Extraction Logic', () => {
     ];
 
     const model = createTestModel(references);
-    const result = extractCrossLayerLinks(model, true, new Set(), new Set([ReferenceType.Goal]));
+    const result = getCrossLayerEdges(model, true, new Set(), new Set([ReferenceType.Goal]));
     expect(result).toHaveLength(1);
     expect(result[0].label).toBe(ReferenceType.Goal);
   });
@@ -274,7 +217,7 @@ test.describe('Cross-Layer Link Extraction Logic', () => {
     ];
 
     const model = createTestModel(references);
-    const result = extractCrossLayerLinks(
+    const result = getCrossLayerEdges(
       model,
       true,
       new Set([LayerType.Application]),
@@ -294,7 +237,7 @@ test.describe('Cross-Layer Link Extraction Logic', () => {
     };
 
     const model = createTestModel([reference]);
-    const result = extractCrossLayerLinks(model, true, new Set(), new Set());
+    const result = getCrossLayerEdges(model, true, new Set(), new Set());
     expect(result[0].data?.sourceElementName).toBe('Test Goal');
     expect(result[0].data?.targetElementName).toBe('Test Service');
   });
@@ -308,7 +251,7 @@ test.describe('Cross-Layer Link Extraction Logic', () => {
     };
 
     const model = createTestModel([reference]);
-    const result = extractCrossLayerLinks(model, true, new Set(), new Set());
+    const result = getCrossLayerEdges(model, true, new Set(), new Set());
     expect(result[0].data?.sourceElementName).toBe('unknown-goal');
     expect(result[0].data?.targetElementName).toBe('unknown-service');
   });
@@ -336,7 +279,7 @@ test.describe('Cross-Layer Link Extraction Logic', () => {
     ];
 
     const model = createTestModel(references);
-    const result = extractCrossLayerLinks(model, true, new Set(), new Set());
+    const result = getCrossLayerEdges(model, true, new Set(), new Set());
     expect(result).toHaveLength(1); // Only the valid reference
   });
 });

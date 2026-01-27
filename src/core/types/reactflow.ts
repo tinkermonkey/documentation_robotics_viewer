@@ -328,6 +328,7 @@ export interface MotivationEdgeData {
  * Cross-layer edge data
  */
 export interface CrossLayerEdgeData {
+  sourceLayer: string;
   targetLayer: string;
   relationshipType: string;
   sourceElementName?: string;

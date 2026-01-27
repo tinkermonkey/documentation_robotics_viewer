@@ -3,6 +3,11 @@ import { LayerType } from '../types/layers';
 import { ReferenceType } from '../types/model';
 
 /**
+ * Maximum number of steps to keep in navigation history
+ */
+const MAX_NAVIGATION_HISTORY = 5;
+
+/**
  * Navigation step in the cross-layer breadcrumb history
  */
 export interface NavigationStep {
@@ -110,8 +115,8 @@ export const useCrossLayerStore = create<CrossLayerStoreState>((set, get) => ({
   // Navigation history actions
   pushNavigation: (step: NavigationStep) =>
     set((state) => {
-      // Keep only the last 5 steps
-      const history = [step, ...state.navigationHistory].slice(0, 5);
+      // Keep only the last MAX_NAVIGATION_HISTORY steps
+      const history = [step, ...state.navigationHistory].slice(0, MAX_NAVIGATION_HISTORY);
       return { navigationHistory: history };
     }),
 

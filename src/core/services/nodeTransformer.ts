@@ -38,6 +38,7 @@ import {
   BUSINESS_CAPABILITY_NODE_HEIGHT,
 } from '../nodes/business/BusinessCapabilityNode';
 import { GraphElementValidator } from './validation/graphElementValidator';
+import { extractCrossLayerReferences, referencesToEdges } from './crossLayerLinksExtractor';
 
 /**
  * Result of transforming a model
@@ -239,42 +240,10 @@ export class NodeTransformer {
     }
     console.log(`[NodeTransformer] Processed ${relationshipCount} relationships`);
 
-    // Create edges from cross-layer references
-    for (const reference of model.references) {
-      if (reference.source.elementId && reference.target.elementId) {
-        const sourceNodeId = nodeMap.get(reference.source.elementId);
-        const targetNodeId = nodeMap.get(reference.target.elementId);
-
-        if (sourceNodeId && targetNodeId) {
-          // Get element names for breadcrumb/tooltip display
-          const sourceElement = reference.source.layerId ? model.layers[reference.source.layerId]?.elements.find((e) => e.id === reference.source.elementId) : undefined;
-          const targetElement = reference.target.layerId ? model.layers[reference.target.layerId]?.elements.find((e) => e.id === reference.target.elementId) : undefined;
-
-          edges.push({
-            id: `edge-ref-${reference.source.elementId}-${reference.target.elementId}`,
-            source: sourceNodeId,
-            target: targetNodeId,
-            type: 'crossLayer',
-            label: reference.type,
-            labelStyle: { fill: '#555', fontWeight: 500, fontSize: 12 },
-            labelBgStyle: { fill: '#fff', fillOpacity: 0.8, rx: 4, ry: 4 },
-            markerEnd: {
-              type: MarkerType.ArrowClosed,
-              width: 20,
-              height: 20,
-              color: FALLBACK_COLOR,
-            },
-            style: { strokeDasharray: '5,5' }, // Dashed line for cross-layer references
-            data: {
-              targetLayer: reference.target.layerId,
-              relationshipType: reference.type,
-              sourceElementName: sourceElement?.name || reference.source.elementId,
-              targetElementName: targetElement?.name || reference.target.elementId,
-            },
-          } as AppEdge);
-        }
-      }
-    }
+    // Create edges from cross-layer references using shared utility
+    const crossLayerReferences = extractCrossLayerReferences(model, true, new Set(), new Set());
+    const crossLayerEdges = referencesToEdges(crossLayerReferences, model, (elementId) => nodeMap.get(elementId));
+    edges.push(...crossLayerEdges);
 
     console.log(`[NodeTransformer] Created ${nodes.length} nodes and ${edges.length} edges`);
 
