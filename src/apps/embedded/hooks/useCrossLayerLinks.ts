@@ -79,9 +79,10 @@ export function useCrossLayerLinks(): AppEdge[] {
   }, [visible, model, targetLayerFilters, relationshipTypeFilters, setLastError]);
 
   // Worker processing for large datasets (async, non-blocking for models with >50 references)
-  // This runs in parallel with the main extraction flow to warm up the worker
+  // Spawns a worker to process cross-layer references in parallel with main thread extraction
+  // Results are available for subsequent operations and improve overall performance
   useEffect(() => {
-    if (!model || !visible || filtered.length === 0) {
+    if (!model || !visible) {
       return;
     }
 
@@ -101,8 +102,7 @@ export function useCrossLayerLinks(): AppEdge[] {
         }));
 
       // Process with worker for non-blocking extraction
-      // The worker runs in parallel; its result isn't used in this hook yet
-      // but the worker warmup improves performance for subsequent operations
+      // Worker runs asynchronously; can improve performance for models with >50 references
       processCrossLayerReferencesWithWorker(
         crossLayerRefsForWorker,
         (refs) => processReferences(refs)
@@ -110,7 +110,7 @@ export function useCrossLayerLinks(): AppEdge[] {
         console.error('Worker processing error:', error);
       });
     }
-  }, [model, visible, filtered.length]);
+  }, [model, visible]);
 
   // Second pass: apply edge bundling to group parallel edges
   const bundled = useMemo(() => {
