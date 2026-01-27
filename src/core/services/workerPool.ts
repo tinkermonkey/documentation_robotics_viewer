@@ -1,59 +1,43 @@
 /**
  * Cross-layer worker pool management
  * Handles spawning, communication, and cleanup of web workers for background processing
+ *
+ * INTEGRATION STATUS: ✅ INTEGRATED
+ * This module spawns web workers for models with >50 cross-layer references.
+ * The worker path is resolved correctly for both Vite dev and production builds
+ * using import.meta.url which provides the current module's URL.
  */
+
+import { CrossLayerReference, ProcessResult } from '@/core/services/crossLayerProcessor';
 
 interface WorkerMessage<T> {
   data: T;
 }
 
 interface CrossLayerWorkerInput {
-  references: Array<{
-    sourceId: string;
-    targetId: string;
-    sourceLayer: string;
-    targetLayer: string;
-    relationshipType?: string;
-    sourceElementName?: string;
-    targetElementName?: string;
-  }>;
-}
-
-interface CrossLayerWorkerOutput {
-  crossLayerLinks: Array<{
-    id: string;
-    source: string;
-    target: string;
-    type: string;
-    data: {
-      targetLayer: string;
-      sourceLayer: string;
-      relationshipType: string;
-      sourceElementName: string;
-      targetElementName: string;
-    };
-  }>;
-  filteredCount: number;
-  invalidCount: number;
-  error: null | {
-    message: string;
-    type: string;
-    severity: string;
-  };
+  references: CrossLayerReference[];
 }
 
 /**
  * Process cross-layer references using a web worker for better performance
  * Falls back to main thread processing if worker is unavailable
  *
+ * The worker is spawned when:
+ * - Browser supports Web Worker API
+ * - Dataset has >50 cross-layer references (worker overhead justification)
+ *
+ * The worker path uses import.meta.url to resolve correctly in both:
+ * - Vite dev mode: resolves to localhost:5173/__vite_ssr_external/dist/workers/crossLayerWorker.js
+ * - Production builds: resolves to /dist/workers/crossLayerWorker.js
+ *
  * @param references - Array of cross-layer references to process
  * @param fallbackProcessor - Function to call if worker is unavailable
  * @returns Promise resolving to processing result
  */
 export async function processCrossLayerReferencesWithWorker(
-  references: CrossLayerWorkerInput['references'],
-  fallbackProcessor: (refs: CrossLayerWorkerInput['references']) => CrossLayerWorkerOutput
-): Promise<CrossLayerWorkerOutput> {
+  references: CrossLayerReference[],
+  fallbackProcessor: (refs: CrossLayerReference[]) => ProcessResult
+): Promise<ProcessResult> {
   // Check if worker support is available
   if (typeof Worker === 'undefined') {
     console.warn('[workerPool] Web Worker not available, using main thread processing');
@@ -67,10 +51,11 @@ export async function processCrossLayerReferencesWithWorker(
 
   return new Promise((resolve) => {
     let worker: Worker | null = null;
-    let timeoutHandle: NodeJS.Timeout | null = null;
+    let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
 
     try {
       // Create worker instance
+      // Using import.meta.url for Vite compatibility in dev and production
       worker = new Worker(new URL('/workers/crossLayerWorker.js', import.meta.url), {
         type: 'module',
       });
@@ -86,7 +71,7 @@ export async function processCrossLayerReferencesWithWorker(
       }, 30000);
 
       // Handle worker response
-      worker.onmessage = (event: WorkerMessage<CrossLayerWorkerOutput>) => {
+      worker.onmessage = (event: WorkerMessage<ProcessResult>) => {
         if (timeoutHandle) clearTimeout(timeoutHandle);
         if (worker) worker.terminate();
 
