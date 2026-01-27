@@ -22,6 +22,7 @@ import { applyEdgeBundling } from '@/core/layout/edgeBundling';
  * - Supports click-to-expand to view individual edges
  * - Progressive loading: initially renders 200 edges, supports loading more on demand (FR-16)
  * - Web Worker for edge extraction on models >100 elements (FR-16)
+ * - Error handling: gracefully handles extraction failures and reports them to store
  *
  * @returns {AppEdge[]} Array of cross-layer edges (bundled when appropriate) to render
  */
@@ -30,46 +31,82 @@ export function useCrossLayerLinks(): AppEdge[] {
   const visible = useCrossLayerStore((state) => state.visible);
   const targetLayerFilters = useCrossLayerStore((state) => state.targetLayerFilters);
   const relationshipTypeFilters = useCrossLayerStore((state) => state.relationshipTypeFilters);
+  const setLastError = useCrossLayerStore((state) => state.setLastError);
   const [loadedEdgeCount, setLoadedEdgeCount] = useState(200); // FR-16: Initial 200 edges
 
   // First pass: extract and filter cross-layer references
   const filtered = useMemo(() => {
     if (!model) return [];
 
-    // Extract and filter cross-layer references using shared utility
-    const crossLayerRefs = extractCrossLayerReferences(
-      model,
-      visible,
-      targetLayerFilters,
-      relationshipTypeFilters
-    );
+    try {
+      // Extract and filter cross-layer references using shared utility
+      const crossLayerRefs = extractCrossLayerReferences(
+        model,
+        visible,
+        targetLayerFilters,
+        relationshipTypeFilters
+      );
 
-    // Convert to AppEdge objects using shared utility
-    // Node IDs for the hook use simple format: node-{elementId}
-    return referencesToEdges(crossLayerRefs, model, (elementId) => `node-${elementId}`);
-  }, [visible, model, targetLayerFilters, relationshipTypeFilters]);
+      // Convert to AppEdge objects using shared utility
+      // Node IDs for the hook use simple format: node-{elementId}
+      const edges = referencesToEdges(crossLayerRefs, model, (elementId) => `node-${elementId}`);
+
+      // Clear any previous extraction errors on success
+      setLastError(null);
+
+      return edges;
+    } catch (error) {
+      // Log error for debugging
+      console.error('Failed to extract cross-layer links:', {
+        error: error instanceof Error ? error.message : String(error),
+        hasModel: !!model,
+        isVisible: visible,
+      });
+
+      // Store error state for UI to display
+      setLastError({
+        message: error instanceof Error ? error.message : 'Failed to extract cross-layer links',
+        timestamp: Date.now(),
+        type: 'extraction_error',
+      });
+
+      // Return empty array and let error be handled by UI
+      return [];
+    }
+  }, [visible, model, targetLayerFilters, relationshipTypeFilters, setLastError]);
 
   // Second pass: apply edge bundling to group parallel edges
   const bundled = useMemo(() => {
-    // Apply bundling with threshold of 3+ edges per layer pair (FR-10)
-    const result = applyEdgeBundling(filtered, { threshold: Infinity });
+    try {
+      // Apply bundling with threshold of 3+ edges per layer pair (FR-10)
+      const result = applyEdgeBundling(filtered, { threshold: Infinity });
 
-    // Enhance bundled edges with the original edge list for expansion
-    return result.bundledEdges.map((edge) => {
-      if ((edge.data as any)?.isBundle) {
-        const bundledEdgeIds = (edge.data as any)?.bundledEdgeIds || [];
-        const originalEdges = filtered.filter((e) => bundledEdgeIds.includes(e.id));
-        return {
-          ...edge,
-          type: 'bundledCrossLayer',
-          data: {
-            ...edge.data,
-            originalEdges,
-          },
-        };
-      }
-      return edge;
-    });
+      // Enhance bundled edges with the original edge list for expansion
+      return result.bundledEdges.map((edge) => {
+        if ((edge.data as any)?.isBundle) {
+          const bundledEdgeIds = (edge.data as any)?.bundledEdgeIds || [];
+          const originalEdges = filtered.filter((e) => bundledEdgeIds.includes(e.id));
+          return {
+            ...edge,
+            type: 'bundledCrossLayer',
+            data: {
+              ...edge.data,
+              originalEdges,
+            },
+          };
+        }
+        return edge;
+      }) as AppEdge[];
+    } catch (error) {
+      // Log bundling error
+      console.error('Failed to apply edge bundling:', {
+        error: error instanceof Error ? error.message : String(error),
+        edgeCount: filtered.length,
+      });
+
+      // Return unbundled edges as fallback
+      return filtered;
+    }
   }, [filtered]);
 
   // Progressive loading: limit initial render to 200 edges (FR-16)

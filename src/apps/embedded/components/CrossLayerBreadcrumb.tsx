@@ -16,6 +16,7 @@ import { useNavigate } from '@tanstack/react-router';
 export const CrossLayerBreadcrumb = memo(() => {
   const navigationHistory = useCrossLayerStore((state) => state.navigationHistory);
   const clearNavigationHistory = useCrossLayerStore((state) => state.clearNavigationHistory);
+  const setLastError = useCrossLayerStore((state) => state.setLastError);
   const navigate = useNavigate();
 
   // Don't render if no navigation history
@@ -34,20 +35,48 @@ export const CrossLayerBreadcrumb = memo(() => {
   /**
    * Handle breadcrumb item click to navigate to that step
    */
-  const handleBreadcrumbClick = (stepIndex: number) => {
+  const handleBreadcrumbClick = async (stepIndex: number) => {
     const targetStep = visibleSteps[stepIndex];
     if (!targetStep) return;
 
-    // Navigate to target layer with element selection
-    navigate({
-      to: '/',
-      search: { selectedLayer: targetStep.layerId, selectedElement: targetStep.elementId },
-    }).catch(() => {
-      // Handle navigation errors silently
-    });
+    try {
+      // Validate target layer
+      if (!targetStep.layerId || !targetStep.elementId) {
+        throw new Error('Invalid navigation target: missing layer or element ID');
+      }
 
-    // In a real implementation, you would also truncate the history at this point
-    // For now, the breadcrumb just shows navigation, the store tracks full history
+      // Normalize layer ID to lowercase for route
+      const normalizedLayerId = targetStep.layerId.toLowerCase();
+
+      // Navigate to target layer with element selection
+      await navigate({
+        to: `/${normalizedLayerId}`,
+        search: (prev: any) => ({
+          ...prev,
+          selectedElement: targetStep.elementId,
+        }),
+      });
+
+      // In a real implementation, you would also truncate the history at this point
+      // For now, the breadcrumb just shows navigation, the store tracks full history
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+      // Log error for debugging
+      console.error('Breadcrumb navigation failed:', {
+        targetLayer: targetStep?.layerId,
+        targetElement: targetStep?.elementId,
+        error: errorMessage,
+      });
+
+      // Store error for UI to display via error state
+      setLastError({
+        message: `Failed to navigate to ${targetStep?.elementName}: ${errorMessage}`,
+        timestamp: Date.now(),
+        type: 'navigation_failed',
+        targetElement: targetStep?.elementName,
+      });
+    }
   };
 
   return (

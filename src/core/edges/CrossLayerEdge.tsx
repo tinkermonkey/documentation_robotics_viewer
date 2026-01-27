@@ -40,6 +40,7 @@ export const CrossLayerEdge = memo(({
   const [isFocused, setIsFocused] = useState(false);
   const navigate = useNavigate();
   const pushNavigation = useCrossLayerStore((state) => state.pushNavigation);
+  const setLastError = useCrossLayerStore((state) => state.setLastError);
 
   // Calculate bezier path for cross-layer edges to differentiate from intra-layer straight edges
   const [edgePath, labelX, labelY] = getBezierPath({
@@ -68,37 +69,65 @@ export const CrossLayerEdge = memo(({
   const strokeWidth = isHovered || isFocused ? 3 : 2;
 
   // Handle edge click for navigation
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!data?.targetLayer || !target) return;
 
-    // Check for prefers-reduced-motion
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    try {
+      // Validate target layer is in valid format
+      if (!data.targetLayer.match(/^[a-zA-Z]+$/)) {
+        throw new Error(`Invalid target layer: ${data.targetLayer}`);
+      }
 
-    // Push to navigation history before navigation
-    pushNavigation({
-      layerId: data.targetLayer,
-      elementId: target,
-      elementName: data.targetElementName || 'Unknown Element',
-      timestamp: Date.now(),
-    });
+      // Check for prefers-reduced-motion
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Navigate to target layer view with selected element
-    navigate({
-      to: `/${data.targetLayer.toLowerCase()}`,
-      search: (prev: any) => ({
-        ...prev,
-        selectedElement: target,
-        skipAnimation: prefersReducedMotion,
-      }),
-    });
+      // Push to navigation history before navigation
+      pushNavigation({
+        layerId: data.targetLayer,
+        elementId: target,
+        elementName: data.targetElementName || 'Unknown Element',
+        timestamp: Date.now(),
+      });
+
+      // Navigate to target layer view with selected element
+      await navigate({
+        to: `/${data.targetLayer.toLowerCase()}`,
+        search: (prev: any) => ({
+          ...prev,
+          selectedElement: target,
+          skipAnimation: prefersReducedMotion,
+        }),
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+      // Log error for debugging
+      console.error('Failed to navigate via cross-layer edge:', {
+        sourceElement: data?.sourceElementName,
+        targetElement: data?.targetElementName,
+        targetLayer: data?.targetLayer,
+        error: errorMessage,
+      });
+
+      // Store error for UI to display via error state
+      setLastError({
+        message: `Failed to navigate to ${data?.targetElementName || 'target'}: ${errorMessage}`,
+        timestamp: Date.now(),
+        type: 'navigation_failed',
+        sourceElement: data?.sourceElementName,
+        targetElement: data?.targetElementName,
+      });
+    }
   };
 
   // Handle keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      handleClick(e as any);
+      handleClick(e as any).catch((error) => {
+        console.error('Keyboard navigation failed:', error);
+      });
     }
   };
 

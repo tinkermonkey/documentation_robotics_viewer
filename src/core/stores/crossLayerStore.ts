@@ -18,6 +18,17 @@ export interface NavigationStep {
 }
 
 /**
+ * Navigation error structure
+ */
+export interface NavigationError {
+  message: string;
+  timestamp: number;
+  type: 'navigation_failed' | 'invalid_target' | 'extraction_error';
+  sourceElement?: string;
+  targetElement?: string;
+}
+
+/**
  * Cross-layer store interface
  */
 interface CrossLayerStoreState {
@@ -30,6 +41,9 @@ interface CrossLayerStoreState {
 
   // Navigation history (max 5 steps)
   navigationHistory: NavigationStep[];
+
+  // Error state for last navigation attempt
+  lastError: NavigationError | null;
 
   // Progressive loading state (FR-16)
   loadMoreEdges?: () => void;
@@ -57,6 +71,10 @@ interface CrossLayerStoreState {
   popNavigation: () => NavigationStep | undefined;
   clearNavigationHistory: () => void;
 
+  // Actions - Error Management
+  setLastError: (error: NavigationError | null) => void;
+  clearLastError: () => void;
+
   // Selectors
   hasTargetLayerFilter: (layer: LayerType) => boolean;
   hasRelationshipTypeFilter: (type: ReferenceType) => boolean;
@@ -72,6 +90,7 @@ export const useCrossLayerStore = create<CrossLayerStoreState>((set, get) => ({
   targetLayerFilters: new Set(),
   relationshipTypeFilters: new Set(),
   navigationHistory: [],
+  lastError: null,
   loadMoreEdges: undefined,
   hasMoreEdges: false,
   totalEdgeCount: 0,
@@ -138,6 +157,11 @@ export const useCrossLayerStore = create<CrossLayerStoreState>((set, get) => ({
   },
 
   clearNavigationHistory: () => set({ navigationHistory: [] }),
+
+  // Error management actions
+  setLastError: (error: NavigationError | null) => set({ lastError: error }),
+
+  clearLastError: () => set({ lastError: null }),
 
   // Selectors
   hasTargetLayerFilter: (layer: LayerType) => {
