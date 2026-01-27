@@ -4,7 +4,7 @@ import { LayoutOption, ExportOption } from './types';
 import { Download, Share2, FileJson, Image } from 'lucide-react';
 
 export default {
-  title: 'Panels & Controls / Common / BaseControlPanel',
+  title: 'Panels & Inspectors / Common / BaseControlPanel',
 } satisfies StoryDefault;
 
 /**

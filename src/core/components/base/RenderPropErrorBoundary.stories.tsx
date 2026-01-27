@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { wrapRenderProp, wrapRenderProp2, wrapRenderPropVoid } from './RenderPropErrorBoundary';
 
 export default {
-  title: 'Utilities / RenderPropErrorBoundary',
+  title: 'Building Blocks / Utilities / RenderPropErrorBoundary',
 } satisfies StoryDefault;
 
 /**

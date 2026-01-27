@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { GraphViewSidebar, GraphViewSidebarProps } from './GraphViewSidebar';
 
 export default {
-  title: 'Panels & Controls / Common / GraphViewSidebar',
+  title: 'Panels & Inspectors / Common / GraphViewSidebar',
 } satisfies StoryDefault;
 
 /**
