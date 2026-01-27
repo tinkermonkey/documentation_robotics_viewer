@@ -7,7 +7,7 @@ import { MetaModel, Reference, ReferenceType } from '@/core/types/model';
 import { LayerType } from '@/core/types/layers';
 import { AppEdge, CrossLayerEdgeData } from '@/core/types/reactflow';
 import { MarkerType } from '@xyflow/react';
-import { FALLBACK_COLOR } from '@/core/utils/layerColors';
+import { FALLBACK_COLOR, normalizeLayerKey } from '@/core/utils/layerColors';
 
 /**
  * Extract cross-layer references from model, applying visibility and filter constraints
@@ -33,7 +33,11 @@ export function extractCrossLayerReferences(
 
   // Apply target layer filters
   if (targetLayerFilters.size > 0) {
-    crossLayerRefs = crossLayerRefs.filter((ref) => ref.target.layerId && targetLayerFilters.has(ref.target.layerId));
+    crossLayerRefs = crossLayerRefs.filter((ref) => {
+      if (!ref.target.layerId) return false;
+      const normalizedLayerId = normalizeLayerKey(ref.target.layerId);
+      return normalizedLayerId && targetLayerFilters.has(normalizedLayerId);
+    });
   }
 
   // Apply relationship type filters

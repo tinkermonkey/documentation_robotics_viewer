@@ -334,6 +334,9 @@ export interface CrossLayerEdgeData {
   sourceElementName?: string;
   targetElementName?: string;
   label?: string;
+  // Optional metadata for enhanced tooltips
+  description?: string;
+  tags?: string[];
   [key: string]: unknown;
 }
 

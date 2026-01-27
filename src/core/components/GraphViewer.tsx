@@ -233,7 +233,21 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
 
   return (
     <div className="graph-viewer">
-      <ReactFlow
+      {/* Accessibility Skip Links */}
+      <a
+        href="#cross-layer-edges"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-50 focus:bg-blue-600 focus:text-white focus:px-3 focus:py-2"
+      >
+        Skip to cross-layer edges
+      </a>
+      <a
+        href="#graph-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-12 focus:left-0 focus:z-50 focus:bg-blue-600 focus:text-white focus:px-3 focus:py-2"
+      >
+        Skip cross-layer edges
+      </a>
+      <div id="graph-content">
+        <ReactFlow
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
@@ -281,11 +295,12 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
         )}
       </ReactFlow>
 
-      {isRendering && (
-        <div className="rendering-overlay">
-          <div className="rendering-message">Rendering graph...</div>
-        </div>
-      )}
+        {isRendering && (
+          <div className="rendering-overlay">
+            <div className="rendering-message">Rendering graph...</div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

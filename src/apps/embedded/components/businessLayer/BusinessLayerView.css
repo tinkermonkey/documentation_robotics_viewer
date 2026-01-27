@@ -23,3 +23,25 @@
 .react-flow__edge {
   transition: opacity 0.3s ease, stroke-width 0.3s ease;
 }
+
+/* Navigation animations for cross-layer navigation */
+.layer-view {
+  transition: opacity 300ms ease-in-out;
+}
+
+.layer-view.exiting {
+  opacity: 0;
+}
+
+.layer-view.entering {
+  opacity: 1;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .layer-view,
+  .react-flow__node,
+  .react-flow__edge {
+    transition: none !important;
+  }
+}

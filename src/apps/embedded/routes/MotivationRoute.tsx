@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
+import { useSearch } from '@tanstack/react-router';
 import { Alert } from 'flowbite-react';
 import MotivationGraphView, { MotivationGraphViewRef } from '../components/MotivationGraphView';
 import { MotivationRightSidebar } from '../components/MotivationRightSidebar';
@@ -23,6 +24,7 @@ import {
 
 function MotivationRouteContent() {
   const { model } = useModelStore();
+  const search = useSearch({ from: '/motivation' });
   const {
     motivationPreferences,
     setVisibleElementTypes,
@@ -62,6 +64,18 @@ function MotivationRouteContent() {
       setGraphVersion((v) => v + 1); // Trigger useMemo recalculation
     }
   }, [model, motivationGraphBuilder]);
+
+  // Handle selectedElement search parameter for cross-layer navigation
+  useEffect(() => {
+    if (search.selectedElement && graphViewRef.current) {
+      // Use a small delay to ensure the graph is fully rendered
+      const timer = setTimeout(() => {
+        graphViewRef.current?.centerAndSelectElement(search.selectedElement!);
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, [search.selectedElement]);
 
   // Create export service wrapper for ExportButtonGroup
   const motivationExportService = useMemo(

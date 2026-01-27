@@ -81,7 +81,7 @@ export const ChangesetAdd: Story = () => (
     targetY={200}
     sourcePosition={Position.Right}
     targetPosition={Position.Left}
-    data={{ changesetOperation: 'add', targetLayer: 'application', relationshipType: 'implements' }}
+    data={{ sourceLayer: 'business', changesetOperation: 'add', targetLayer: 'application', relationshipType: 'implements' }}
     markerEnd={MarkerType.ArrowClosed}
   />
 );
@@ -97,7 +97,7 @@ export const ChangesetDelete: Story = () => (
     targetY={200}
     sourcePosition={Position.Right}
     targetPosition={Position.Left}
-    data={{ changesetOperation: 'delete', targetLayer: 'api', relationshipType: 'realizes' }}
+    data={{ sourceLayer: 'business', changesetOperation: 'delete', targetLayer: 'api', relationshipType: 'realizes' }}
     markerEnd={MarkerType.ArrowClosed}
   />
 );
