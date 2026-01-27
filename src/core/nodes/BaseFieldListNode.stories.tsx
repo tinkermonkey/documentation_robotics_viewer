@@ -1,12 +1,9 @@
-import React from 'react';
 import type { StoryDefault, Story } from '@ladle/react';
 import { BaseFieldListNode, FieldItem } from './BaseFieldListNode';
-import { withReactFlowDecorator } from '@/catalog/decorators/withReactFlowDecorator';
 import { createBaseFieldListNodeConfig } from '@/catalog/fixtures/nodeDataFixtures';
 
 export default {
   title: 'Architecture Nodes / Generic / BaseFieldListNode',
-  decorators: [withReactFlowDecorator()],
 } satisfies StoryDefault;
 
 export const Default: Story = () => {

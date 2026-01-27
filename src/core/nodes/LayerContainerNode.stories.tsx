@@ -1,12 +1,9 @@
-import React from 'react';
 import type { StoryDefault, Story } from '@ladle/react';
 import { LayerContainerNode } from './LayerContainerNode';
-import { withReactFlowDecorator } from '@/catalog/decorators/withReactFlowDecorator';
 import { createLayerContainerNodeData } from '@/catalog/fixtures/nodeDataFixtures';
 
 export default {
   title: 'Architecture Nodes / Containers / LayerContainerNode',
-  decorators: [withReactFlowDecorator()],
 } satisfies StoryDefault;
 
 export const Default: Story = () => {

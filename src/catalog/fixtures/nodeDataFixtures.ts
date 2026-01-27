@@ -751,22 +751,24 @@ export function createBaseFieldListNodeConfig(options: BaseFieldListNodeOptions 
     label = 'User',
     typeLabel = 'CLASS',
     items = defaultItems,
-    colors = {
-      border: '#3b82f6',
-      background: '#eff6ff',
-      header: '#2563eb',
-      handle: '#1e40af'
-    },
+    colors,
     width = 280,
     headerHeight = 36,
     itemHeight = 24
   } = options;
 
+  const defaultColors = {
+    border: '#3b82f6',
+    background: '#eff6ff',
+    header: '#2563eb',
+    handle: '#1e40af'
+  };
+
   return {
     label,
     typeLabel,
     items,
-    colors,
+    colors: colors ? { ...defaultColors, ...colors } : defaultColors,
     width,
     headerHeight,
     itemHeight

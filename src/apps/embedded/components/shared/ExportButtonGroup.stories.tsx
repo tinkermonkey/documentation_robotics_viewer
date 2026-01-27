@@ -132,11 +132,13 @@ export const Error: Story = () => (
       </div>
       <ExportButtonGroup
         service={createMockExportService({
-          exportAsPNG: async () => {
-            throw new Error('Failed to export PNG - rendering error');
+          exportAsPNG: async (_container: HTMLElement, _filename: string): Promise<void> => {
+            const error: Error = { name: 'Error', message: 'Failed to export PNG - rendering error' } as Error;
+            return Promise.reject(error);
           },
-          exportAsSVG: async () => {
-            throw new Error('Failed to export SVG - size too large');
+          exportAsSVG: async (_container: HTMLElement, _filename: string): Promise<void> => {
+            const error: Error = { name: 'Error', message: 'Failed to export SVG - size too large' } as Error;
+            return Promise.reject(error);
           }
         })}
         containerSelector="#mock-graph"
