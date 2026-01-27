@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import MetadataGrid from './MetadataGrid';
 
 export default {
-  title: 'Shared / MetadataGrid',
+  title: 'Building Blocks / Data Display / MetadataGrid',
 } satisfies StoryDefault;
 
 const sampleMetadata = [

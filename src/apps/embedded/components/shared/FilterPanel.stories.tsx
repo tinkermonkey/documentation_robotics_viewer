@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { FilterPanel, type FilterSection } from './FilterPanel';
 
 export default {
-  title: 'Shared / FilterPanel',
+  title: 'Building Blocks / Data Display / FilterPanel',
 } satisfies StoryDefault;
 
 const createLayerSection = (): FilterSection => ({

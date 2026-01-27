@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import SharedLayout from './SharedLayout';
 
 export default {
-  title: 'Layout / SharedLayout',
+  title: 'Views & Layouts / Layout / SharedLayout',
 } satisfies StoryDefault;
 
 export const ThreeColumn: Story = () => (

@@ -3,7 +3,7 @@ import { BusinessLayerControls } from './BusinessLayerControls';
 import type { BusinessGraph } from '@/core/types/businessLayer';
 
 export default {
-  title: 'Business Layer / BusinessLayerControls',
+  title: 'Panels & Inspectors / Business / BusinessLayerControls',
 } satisfies StoryDefault;
 
 const mockBusinessGraph: BusinessGraph = {

@@ -4,7 +4,7 @@ import { ReactFlowProvider } from '@xyflow/react';
 import { createCompleteModelFixture, createMinimalModelFixture } from '@catalog/fixtures/modelFixtures';
 
 export default {
-  title: 'Core / GraphViewer',
+  title: 'Views & Layouts / Graph Views / GraphViewer',
 } satisfies StoryDefault;
 
 export const MinimalGraph: Story = () => {

@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import SubTabNavigation, { type SubTab } from './SubTabNavigation';
 
 export default {
-  title: 'Navigation / SubTabNavigation',
+  title: 'Building Blocks / Navigation / SubTabNavigation',
 } satisfies StoryDefault;
 
 export const Default: Story = () => {

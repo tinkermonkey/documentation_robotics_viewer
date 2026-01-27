@@ -3,7 +3,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { LayoutPreferencesPanel } from './LayoutPreferencesPanel';
 
 export default {
-  title: 'Components / LayoutPreferencesPanel',
+  title: 'Panels & Inspectors / Common / LayoutPreferencesPanel',
 } satisfies StoryDefault;
 
 export const Default: Story = () => {

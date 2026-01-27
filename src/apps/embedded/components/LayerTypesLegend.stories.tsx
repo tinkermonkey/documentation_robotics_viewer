@@ -3,7 +3,7 @@ import LayerTypesLegend from './LayerTypesLegend';
 import type { MetaModel } from '../../../core/types/model';
 
 export default {
-  title: 'Components / LayerTypesLegend',
+  title: 'Primitives / Indicators / LayerTypesLegend',
 } satisfies StoryDefault;
 
 const mockModel: MetaModel = {

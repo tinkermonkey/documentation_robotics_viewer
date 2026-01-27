@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import AttributesTable, { AttributeRow } from './AttributesTable';
 
 export default {
-  title: 'Shared / AttributesTable',
+  title: 'Building Blocks / Data Display / AttributesTable',
 } satisfies StoryDefault;
 
 const sampleAttributes: AttributeRow[] = [

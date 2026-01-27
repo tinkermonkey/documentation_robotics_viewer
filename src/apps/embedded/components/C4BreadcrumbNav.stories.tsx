@@ -3,7 +3,7 @@ import C4BreadcrumbNav from './C4BreadcrumbNav';
 import type { C4BreadcrumbSegment } from '../types/c4Graph';
 
 export default {
-  title: 'C4 / C4BreadcrumbNav',
+  title: 'Panels & Inspectors / C4 / C4BreadcrumbNav',
 } satisfies StoryDefault;
 
 const contextBreadcrumb: C4BreadcrumbSegment[] = [

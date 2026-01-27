@@ -3,7 +3,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import SpecGraphView from './SpecGraphView';
 
 export default {
-  title: 'Components / SpecGraphView',
+  title: 'Views & Layouts / Other Views / SpecGraphView',
 } satisfies StoryDefault;
 
 const mockSpecData = {

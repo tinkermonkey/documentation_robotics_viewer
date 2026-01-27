@@ -3,7 +3,7 @@ import { useState } from 'react';
 import ExpandableSection from './ExpandableSection';
 
 export default {
-  title: 'Shared / ExpandableSection',
+  title: 'Building Blocks / Data Display / ExpandableSection',
 } satisfies StoryDefault;
 
 export const Expanded: Story = () => (

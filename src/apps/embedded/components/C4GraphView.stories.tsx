@@ -6,7 +6,7 @@ import { ContainerType } from '../types/c4Graph';
 import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 export default {
-  title: 'Graph Views / C4GraphView',
+  title: 'Views & Layouts / Graph Views / C4GraphView',
 } satisfies StoryDefault;
 
 export const Default: Story = () => {

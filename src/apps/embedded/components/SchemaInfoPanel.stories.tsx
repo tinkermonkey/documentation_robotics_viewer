@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import type { MetaModel } from '../../../core/types';
 
 export default {
-  title: 'Panels / SchemaInfoPanel',
+  title: 'Panels & Inspectors / Common / SchemaInfoPanel',
 } satisfies StoryDefault;
 
 function SchemaInfoPanelStory({ model }: { model: MetaModel | null }) {

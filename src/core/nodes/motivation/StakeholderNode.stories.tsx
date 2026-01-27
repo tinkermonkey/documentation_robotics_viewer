@@ -4,7 +4,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createStakeholderNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 export default {
-  title: 'Nodes / Motivation / StakeholderNode',
+  title: 'Architecture Nodes / Motivation / StakeholderNode',
   decorators: [withReactFlowDecorator({ width: STAKEHOLDER_NODE_WIDTH, height: STAKEHOLDER_NODE_HEIGHT })],
 } satisfies StoryDefault;
 

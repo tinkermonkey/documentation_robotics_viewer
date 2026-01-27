@@ -3,7 +3,7 @@ import { ProcessInspectorPanel } from './ProcessInspectorPanel';
 import type { BusinessNode, BusinessGraph } from '@/core/types/businessLayer';
 
 export default {
-  title: 'Business Layer / ProcessInspectorPanel',
+  title: 'Panels & Inspectors / Business / ProcessInspectorPanel',
 } satisfies StoryDefault;
 
 const mockProcess: BusinessNode = {

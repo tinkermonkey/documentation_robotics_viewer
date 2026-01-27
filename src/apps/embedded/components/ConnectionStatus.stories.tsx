@@ -4,7 +4,7 @@ import { useConnectionStore } from '../stores/connectionStore';
 import { useEffect } from 'react';
 
 export default {
-  title: 'Status / ConnectionStatus',
+  title: 'Primitives / Indicators / ConnectionStatus',
 } satisfies StoryDefault;
 
 export const Connected: Story = () => {

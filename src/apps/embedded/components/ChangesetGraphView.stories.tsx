@@ -3,7 +3,7 @@ import ChangesetGraphView from './ChangesetGraphView';
 import type { ChangesetDetails } from '../services/embeddedDataLoader';
 
 export default {
-  title: 'Graph Views / ChangesetGraphView',
+  title: 'Views & Layouts / Graph Views / ChangesetGraphView',
 } satisfies StoryDefault;
 
 const mockChangeset: ChangesetDetails = {

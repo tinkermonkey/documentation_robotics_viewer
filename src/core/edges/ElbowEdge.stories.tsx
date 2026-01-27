@@ -4,7 +4,7 @@ import { ElbowEdge } from './ElbowEdge';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 export default {
-  title: 'Edges / General / ElbowEdge',
+  title: 'Architecture Edges / General / ElbowEdge',
   decorators: [withReactFlowDecorator({ width: 400, height: 250, showBackground: true, renderAsEdge: true })],
 } satisfies StoryDefault;
 
