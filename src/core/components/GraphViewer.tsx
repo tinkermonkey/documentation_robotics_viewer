@@ -105,7 +105,6 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
 
   // Handle React Flow initialization
   const handleInit = useCallback(() => {
-    console.log('[GraphViewer] React Flow initialized');
     setIsInitialized(true);
   }, []);
 
@@ -123,7 +122,6 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
   useEffect(() => {
     if (!model || isRendering) return;
 
-    console.log('GraphViewer: Rendering model', model.version, 'with layout:', layoutEngine || 'default');
     renderModel(model);
   }, [model, layoutEngine, layoutParameters]);
 
@@ -131,7 +129,6 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
   useEffect(() => {
     if (nodes.length === 0) return;
 
-    console.log('GraphViewer: Updating layer visibility');
     updateLayerVisibility();
   }, [layerStates]);
 
@@ -139,7 +136,6 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
   useEffect(() => {
     if (!isInitialized || !reactFlowInstance || nodes.length === 0) return;
 
-    console.log('[GraphViewer] Fitting view after initialization');
     // Use setTimeout to ensure React Flow has completed its internal calculations
     setTimeout(() => {
       reactFlowInstance.fitView({ padding: 0.1, duration: 200 });
@@ -178,18 +174,11 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
       // Clear element store
       elementStore.clear();
 
-      // Debug: Check model structure
-      console.log('[GraphViewer] Model structure:');
-      for (const [layerId, layer] of Object.entries(model.layers)) {
-        console.log(`  ${layerId}: ${layer.elements?.length || 0} elements, ${layer.relationships?.length || 0} relationships`);
-      }
-
       // Create layout engine and transformer
       let layoutEngineInstance;
 
       if (layoutEngine) {
         // Use specified layout engine from props
-        console.log(`[GraphViewer] Using layout engine: ${layoutEngine}`);
         layoutEngineInstance = getEngine(layoutEngine);
 
         // Fallback if engine not found
@@ -199,18 +188,13 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
         }
       } else {
         // Fallback to vertical layer layout for backward compatibility
-        console.log('[GraphViewer] Using default VerticalLayerLayout');
         layoutEngineInstance = new VerticalLayerLayout();
       }
 
       const transformer = new NodeTransformer(layoutEngineInstance);
 
       // Transform the model into nodes and edges
-      console.log('[GraphViewer] Transforming model to React Flow nodes and edges...');
       const result = await transformer.transformModel(model, layoutParameters);
-
-      console.log(`[GraphViewer] Created ${result.nodes.length} nodes and ${result.edges.length} edges`);
-      console.log('[GraphViewer] Layout:', result.layout);
 
       // Set nodes and edges
       setNodes(result.nodes);
