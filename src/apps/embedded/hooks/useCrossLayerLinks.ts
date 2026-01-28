@@ -20,7 +20,7 @@ import { LayerType, ReferenceType } from '@/core/types';
  *
  * Features:
  * - Filters cross-layer edges by visibility and layer filters
- * - Applies edge bundling (3+ edges between same layer pair bundled together)
+ * - Applies edge bundling (3+ edges between same source-target node pair bundled together)
  * - Shows bundle badge with count on bundled edges
  * - Supports click-to-expand to view individual edges
  * - Progressive loading: initially renders 200 edges, supports loading more on demand (FR-16)
