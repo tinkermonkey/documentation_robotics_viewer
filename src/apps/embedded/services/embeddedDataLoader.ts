@@ -4,7 +4,7 @@
  * Supports token-based authentication for DR CLI visualization server
  */
 
-import { MetaModel } from '../../../core/types';
+import { MetaModel, LayerType } from '../../../core/types';
 import { Annotation, AnnotationCreate, AnnotationUpdate } from '../types/annotations';
 
 const API_BASE = '/api';
@@ -58,9 +58,9 @@ export interface LinkType {
   id: string;
   name: string;
   category: string;
-  sourceLayers: string[];
+  sourceLayers: LayerType[];
   sourceElementTypes?: string[];
-  targetLayer: string;
+  targetLayer: LayerType;
   targetElementTypes: string[];
   fieldPaths: string[];
   cardinality: string;

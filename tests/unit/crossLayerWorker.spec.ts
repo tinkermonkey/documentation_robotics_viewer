@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { processReferences } from '../../src/core/services/crossLayerProcessor';
+import { ReferenceType } from '../../src/core/types';
 
 /**
  * Unit tests for cross-layer reference processing
@@ -132,19 +133,16 @@ test.describe('Cross-Layer Reference Processing', () => {
     ]);
 
     expect(result.crossLayerLinks).toHaveLength(1);
-    expect(result.crossLayerLinks[0]).toEqual({
-      id: 'cross-layer-bus-1-app-1',
-      source: 'bus-1',
-      target: 'app-1',
-      type: 'crossLayer',
-      data: {
-        sourceLayer: 'business',
-        targetLayer: 'application',
-        relationshipType: 'implements',
-        sourceElementName: 'BusinessService',
-        targetElementName: 'ApplicationService',
-      },
-    });
+    const edge = result.crossLayerLinks[0];
+    expect(edge.id).toBe('cross-layer-bus-1-app-1');
+    expect(edge.source).toBe('bus-1');
+    expect(edge.target).toBe('app-1');
+    expect(edge.type).toBe('crossLayer');
+    expect(edge.data.sourceLayer).toBe('Business');
+    expect(edge.data.targetLayer).toBe('Application');
+    expect(edge.data.relationshipType).toBe(ReferenceType.Custom);
+    expect(edge.data.sourceElementName).toBe('BusinessService');
+    expect(edge.data.targetElementName).toBe('ApplicationService');
     expect(result.error).toBeNull();
   });
 
@@ -267,7 +265,8 @@ test.describe('Cross-Layer Reference Processing', () => {
     const edge = result.crossLayerLinks[0];
     expect(edge.source).toBe('bus-1');
     expect(edge.target).toBe('app-1');
-    expect(edge.data.relationshipType).toBe('implements');
+    // 'implements' is not a standard ReferenceType, so it becomes Custom
+    expect(edge.data.relationshipType).toBe(ReferenceType.Custom);
     expect(edge.data.sourceElementName).toBe('Service1');
     expect(result.error).toBeNull();
   });
@@ -283,7 +282,7 @@ test.describe('Cross-Layer Reference Processing', () => {
     ]);
 
     expect(result.crossLayerLinks).toHaveLength(1);
-    expect(result.crossLayerLinks[0].data.relationshipType).toBe('unknown');
+    expect(result.crossLayerLinks[0].data.relationshipType).toBe(ReferenceType.Custom);
     expect(result.error).toBeNull();
   });
 

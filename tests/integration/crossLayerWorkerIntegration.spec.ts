@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { processCrossLayerReferencesWithWorker } from '@/core/services/workerPool';
 import { processReferences } from '@/core/services/crossLayerProcessor';
 import { CrossLayerReference, ProcessResult } from '@/core/services/crossLayerProcessor';
+import { ReferenceType } from '@/core/types';
 
 /**
  * Integration tests for cross-layer worker communication
@@ -41,7 +42,7 @@ test.describe('Cross-Layer Worker Integration', () => {
         targetId: `app-${i}`,
         sourceLayer: 'business',
         targetLayer: 'application',
-        relationshipType: 'implements',
+        relationshipType: ReferenceType.Custom,
         sourceElementName: `BusinessService${i}`,
         targetElementName: `ApplicationComponent${i}`,
       }));
@@ -71,7 +72,7 @@ test.describe('Cross-Layer Worker Integration', () => {
           targetId: 'app-1',
           sourceLayer: 'business',
           targetLayer: 'application',
-          relationshipType: 'implements',
+          relationshipType: ReferenceType.Custom,
           sourceElementName: 'OrderService',
           targetElementName: 'OrderProcessor',
         },
@@ -80,7 +81,7 @@ test.describe('Cross-Layer Worker Integration', () => {
           targetId: 'data-1',
           sourceLayer: 'application',
           targetLayer: 'datamodel',
-          relationshipType: 'persists',
+          relationshipType: ReferenceType.Custom,
           sourceElementName: 'UserRepository',
           targetElementName: 'UserTable',
         },
@@ -96,16 +97,16 @@ test.describe('Cross-Layer Worker Integration', () => {
 
       // Verify data integrity
       const firstEdge = result.crossLayerLinks[0];
-      expect(firstEdge.data.sourceLayer).toBe('business');
-      expect(firstEdge.data.targetLayer).toBe('application');
-      expect(firstEdge.data.relationshipType).toBe('implements');
+      expect(firstEdge.data.sourceLayer).toBe('Business');
+      expect(firstEdge.data.targetLayer).toBe('Application');
+      expect(firstEdge.data.relationshipType).toBe(ReferenceType.Custom);
       expect(firstEdge.data.sourceElementName).toBe('OrderService');
       expect(firstEdge.data.targetElementName).toBe('OrderProcessor');
 
       const secondEdge = result.crossLayerLinks[1];
-      expect(secondEdge.data.sourceLayer).toBe('application');
-      expect(secondEdge.data.targetLayer).toBe('datamodel');
-      expect(secondEdge.data.relationshipType).toBe('persists');
+      expect(secondEdge.data.sourceLayer).toBe('Application');
+      expect(secondEdge.data.targetLayer).toBe('DataModel');
+      expect(secondEdge.data.relationshipType).toBe(ReferenceType.Custom);
       expect(secondEdge.data.sourceElementName).toBe('UserRepository');
       expect(secondEdge.data.targetElementName).toBe('UserTable');
     });
@@ -387,9 +388,9 @@ test.describe('Cross-Layer Worker Integration', () => {
       const references: CrossLayerReference[] = Array.from({ length: 1000 }, (_, i) => ({
         sourceId: `source-${i % 100}`,
         targetId: `target-${(i + 1) % 100}`,
-        sourceLayer: ['business', 'application', 'technology'][i % 3],
-        targetLayer: ['application', 'datamodel', 'security'][i % 3],
-        relationshipType: 'depends_on',
+        sourceLayer: ['business', 'application', 'technology'][i % 3] as any,
+        targetLayer: ['application', 'datamodel', 'security'][i % 3] as any,
+        relationshipType: ReferenceType.Custom,
       }));
 
       const fallbackProcessor = (refs: CrossLayerReference[]): ProcessResult => {
@@ -566,14 +567,14 @@ test.describe('Cross-Layer Worker Integration', () => {
     });
 
     test('should handle all relationships types correctly', async () => {
-      const relationshipTypes = [
-        'implements',
-        'depends_on',
-        'uses',
-        'consumes',
-        'produces',
-        'realizes',
-        'refines',
+      const relationshipTypes: ReferenceType[] = [
+        ReferenceType.ArchiMateProperty,
+        ReferenceType.BusinessService,
+        ReferenceType.APIOperation,
+        ReferenceType.UXAction,
+        ReferenceType.Goal,
+        ReferenceType.SecurityPermission,
+        ReferenceType.Custom,
       ];
 
       const references: CrossLayerReference[] = relationshipTypes.map((type, i) => ({

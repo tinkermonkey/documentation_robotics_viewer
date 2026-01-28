@@ -25,12 +25,14 @@
  * overhead wouldn't benefit performance.
  */
 
+import { LayerType, ReferenceType } from '../types';
+
 export interface CrossLayerReference {
   sourceId: string;
   targetId: string;
-  sourceLayer: string;
-  targetLayer: string;
-  relationshipType?: string;
+  sourceLayer: LayerType;
+  targetLayer: LayerType;
+  relationshipType?: ReferenceType;
   sourceElementName?: string;
   targetElementName?: string;
 }
@@ -41,9 +43,9 @@ export interface CrossLayerEdge {
   target: string;
   type: string;
   data: {
-    targetLayer: string;
-    sourceLayer: string;
-    relationshipType: string;
+    targetLayer: LayerType;
+    sourceLayer: LayerType;
+    relationshipType: ReferenceType;
     sourceElementName: string;
     targetElementName: string;
   };
@@ -69,6 +71,38 @@ function debug(message: string, ...args: any[]) {
 }
 
 /**
+ * Helper to convert layer name strings to LayerType enum
+ * Supports both lowercase (business) and PascalCase (Business) formats
+ */
+function normalizeLayerType(layerStr: string): LayerType | null {
+  if (!layerStr) return null;
+
+  // Try exact match first
+  if (Object.values(LayerType).includes(layerStr as LayerType)) {
+    return layerStr as LayerType;
+  }
+
+  // Try case-insensitive match by capitalizing first letter
+  const normalized = layerStr.charAt(0).toUpperCase() + layerStr.slice(1).toLowerCase();
+  if (Object.values(LayerType).includes(normalized as LayerType)) {
+    return normalized as LayerType;
+  }
+
+  // Handle special cases for multi-word layer names
+  const layerMap: Record<string, LayerType> = {
+    'data-model': LayerType.DataModel,
+    'datamodel': LayerType.DataModel,
+    'apm': LayerType.ApmObservability,
+    'observability': LayerType.ApmObservability,
+    'federated-architecture': LayerType.FederatedArchitecture,
+    'federatedarchitecture': LayerType.FederatedArchitecture,
+  };
+
+  const lowerStr = layerStr.toLowerCase();
+  return layerMap[lowerStr] ?? null;
+}
+
+/**
  * Safely extracts and validates a reference object
  * Returns null if invalid, { filtered: true } if intentionally filtered (same layer)
  */
@@ -84,13 +118,27 @@ export function validateAndSanitizeReference(
     }
 
     // Check for required layer properties
-    const sourceLayer = String((ref as any).sourceLayer || '').trim();
-    const targetLayer = String((ref as any).targetLayer || '').trim();
+    const sourceLayerStr = String((ref as any).sourceLayer || '').trim();
+    const targetLayerStr = String((ref as any).targetLayer || '').trim();
 
-    if (!sourceLayer || !targetLayer) {
+    if (!sourceLayerStr || !targetLayerStr) {
       debug(
         `Skipping reference at index ${index}: missing or invalid layer information`
       );
+      return null;
+    }
+
+    // Normalize and validate layer types
+    const sourceLayer = normalizeLayerType(sourceLayerStr);
+    const targetLayer = normalizeLayerType(targetLayerStr);
+
+    if (!sourceLayer) {
+      debug(`Skipping reference at index ${index}: invalid source layer type "${sourceLayerStr}"`);
+      return null;
+    }
+
+    if (!targetLayer) {
+      debug(`Skipping reference at index ${index}: invalid target layer type "${targetLayerStr}"`);
       return null;
     }
 
@@ -111,13 +159,32 @@ export function validateAndSanitizeReference(
       return null;
     }
 
+    // Extract and normalize relationship type
+    const relationshipTypeStr = String((ref as any).relationshipType || 'custom').trim();
+    let relationshipType: ReferenceType | undefined = undefined;
+
+    if (relationshipTypeStr && relationshipTypeStr !== 'custom' && relationshipTypeStr !== 'unknown') {
+      // Try to find a matching ReferenceType
+      const normalizedType = Object.values(ReferenceType).find(
+        (type) => type.toLowerCase() === relationshipTypeStr.toLowerCase()
+      );
+      if (normalizedType) {
+        relationshipType = normalizedType;
+      } else {
+        // If no match, use custom type
+        relationshipType = ReferenceType.Custom;
+      }
+    } else if (relationshipTypeStr === 'custom' || !relationshipTypeStr) {
+      relationshipType = ReferenceType.Custom;
+    }
+
     // Return sanitized reference
     return {
       sourceId,
       targetId,
       sourceLayer,
       targetLayer,
-      relationshipType: String((ref as any).relationshipType || 'unknown').trim(),
+      relationshipType,
       sourceElementName: String((ref as any).sourceElementName || '').trim(),
       targetElementName: String((ref as any).targetElementName || '').trim(),
     };
@@ -140,7 +207,7 @@ export function referenceToEdge(ref: CrossLayerReference): CrossLayerEdge | null
       data: {
         targetLayer: ref.targetLayer,
         sourceLayer: ref.sourceLayer,
-        relationshipType: ref.relationshipType || 'unknown',
+        relationshipType: ref.relationshipType || ReferenceType.Custom,
         sourceElementName: ref.sourceElementName || '',
         targetElementName: ref.targetElementName || '',
       },

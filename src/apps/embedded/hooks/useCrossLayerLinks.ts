@@ -6,6 +6,7 @@ import { extractCrossLayerReferences, referencesToEdges } from '@/core/services/
 import { applyEdgeBundling, isBundledEdge } from '@/core/layout/edgeBundling';
 import { processCrossLayerReferencesWithWorker } from '@/core/services/workerPool';
 import { processReferences, type CrossLayerReference } from '@/core/services/crossLayerProcessor';
+import { LayerType, ReferenceType } from '@/core/types';
 
 /**
  * Hook to extract and filter cross-layer links from the model with progressive loading
@@ -89,17 +90,34 @@ export function useCrossLayerLinks(): AppEdge[] {
     // Check if dataset is large enough for worker processing
     if (model.references && model.references.length > 50) {
       // Prepare cross-layer references for worker
-      const crossLayerRefsForWorker: CrossLayerReference[] = model.references
+      const crossLayerRefsForWorker = model.references
         .filter((ref) => ref.source.layerId && ref.target.layerId && ref.source.layerId !== ref.target.layerId)
-        .map((ref) => ({
-          sourceId: ref.source.elementId || '',
-          targetId: ref.target.elementId || '',
-          sourceLayer: ref.source.layerId || '',
-          targetLayer: ref.target.layerId || '',
-          relationshipType: ref.type,
-          sourceElementName: ref.source.elementId,
-          targetElementName: ref.target.elementId,
-        }));
+        .map((ref) => {
+          // Safely convert string layer IDs to LayerType enum
+          const sourceLayerId = ref.source.layerId as unknown;
+          const targetLayerId = ref.target.layerId as unknown;
+
+          // Validate that layer IDs are valid LayerType values
+          if (!Object.values(LayerType).includes(sourceLayerId as LayerType)) {
+            console.warn(`Invalid source layer ID: ${sourceLayerId}`);
+            return null;
+          }
+          if (!Object.values(LayerType).includes(targetLayerId as LayerType)) {
+            console.warn(`Invalid target layer ID: ${targetLayerId}`);
+            return null;
+          }
+
+          return {
+            sourceId: ref.source.elementId || '',
+            targetId: ref.target.elementId || '',
+            sourceLayer: sourceLayerId as LayerType,
+            targetLayer: targetLayerId as LayerType,
+            relationshipType: ref.type as ReferenceType | undefined,
+            sourceElementName: ref.source.elementId,
+            targetElementName: ref.target.elementId,
+          } as CrossLayerReference;
+        })
+        .filter((ref): ref is CrossLayerReference => ref !== null);
 
       // Process with worker for non-blocking extraction
       // Worker runs asynchronously; can improve performance for models with >50 references
