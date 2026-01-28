@@ -107,10 +107,19 @@ export function useCrossLayerLinks(): AppEdge[] {
         crossLayerRefsForWorker,
         (refs) => processReferences(refs)
       ).catch((error) => {
-        console.error('Worker processing error:', error);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.error('Worker processing error:', { error: errorMessage, referenceCount: crossLayerRefsForWorker.length });
+
+        // Propagate worker processing errors to UI
+        // This ensures users are notified if background processing fails
+        setLastError({
+          message: `Failed to process cross-layer references in background: ${errorMessage}`,
+          timestamp: Date.now(),
+          type: 'extraction_error',
+        });
       });
     }
-  }, [model, visible]);
+  }, [model, visible, setLastError]);
 
   // Second pass: apply edge bundling to group parallel edges
   const bundled = useMemo(() => {

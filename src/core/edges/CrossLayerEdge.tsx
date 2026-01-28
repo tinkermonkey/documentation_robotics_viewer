@@ -42,15 +42,43 @@ export const CrossLayerEdge = memo(({
   const pushNavigation = useCrossLayerStore((state) => state.pushNavigation);
   const setLastError = useCrossLayerStore((state) => state.setLastError);
 
+  // Validate required edge data and coordinates
+  if (!data || !target) {
+    console.warn('[CrossLayerEdge] Missing required edge data:', { id, hasData: !!data, hasTarget: !!target });
+    // Return minimal error indicator
+    return (
+      <g data-testid={`cross-layer-edge-error-${id}`}>
+        <circle cx={sourceX} cy={sourceY} r={4} fill="#ef4444" opacity={0.5} />
+      </g>
+    );
+  }
+
+  if (!Number.isFinite(sourceX) || !Number.isFinite(sourceY) || !Number.isFinite(targetX) || !Number.isFinite(targetY)) {
+    console.warn('[CrossLayerEdge] Invalid coordinates:', { id, sourceX, sourceY, targetX, targetY });
+    return null;
+  }
+
   // Calculate bezier path for cross-layer edges to differentiate from intra-layer straight edges
-  const [edgePath, labelX, labelY] = getBezierPath({
-    sourceX,
-    sourceY,
-    sourcePosition,
-    targetX,
-    targetY,
-    targetPosition,
-  });
+  let edgePath: string;
+  let labelX: number;
+  let labelY: number;
+
+  try {
+    const pathResult = getBezierPath({
+      sourceX,
+      sourceY,
+      sourcePosition,
+      targetX,
+      targetY,
+      targetPosition,
+    });
+    edgePath = pathResult[0];
+    labelX = pathResult[1];
+    labelY = pathResult[2];
+  } catch (error) {
+    console.error('[CrossLayerEdge] Failed to calculate path:', { id, error });
+    return null;
+  }
 
   const color = data?.targetLayer ? getLayerColor(data.targetLayer) : '#95a5a6';
   const targetLayerDisplayName = data?.targetLayer ? getLayerDisplayName(data.targetLayer) : 'Unknown';

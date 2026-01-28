@@ -31,6 +31,7 @@ import { SpaceMouseHandler } from './SpaceMouseHandler';
 import { OverviewPanel, NodeWithLayerData } from './OverviewPanel';
 import { getLayerColor } from '../utils/layerColors';
 import { getEngine, LayoutEngineType } from '../layout/engines';
+import { CrossLayerEdgeErrorBoundary } from './CrossLayerEdgeErrorBoundary';
 
 interface GraphViewerProps {
   model: MetaModel;
@@ -281,60 +282,62 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
         Skip cross-layer edges
       </a>
       <div id="graph-content">
-        <ReactFlow
-        nodes={nodes}
-        edges={culledEdges.length > 0 ? culledEdges : edges}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onNodeClick={handleNodeClick}
-        onInit={handleInit}
-        nodesDraggable={false}       // Read-only: no dragging
-        nodesConnectable={false}     // Read-only: no new connections
-        nodesFocusable={true}        // Allow keyboard navigation
-        edgesFocusable={true}
-        elementsSelectable={true}    // Allow selection
-        defaultViewport={{ x: 0, y: 0, zoom: 1 }}  // Explicit initial viewport
-        minZoom={0.1}
-        maxZoom={2}
-      >
-        <Background color="#E6E6E6" gap={16} />
-        <Controls />
-        <SpaceMouseHandler />
-
-        {/* Viewport culling layer for cross-layer edges (FR-3) */}
-        <ViewportCullingLayer
+        <CrossLayerEdgeErrorBoundary>
+          <ReactFlow
           nodes={nodes}
-          edges={edges}
-          onCulledEdgesChange={setCulledEdges}
-        />
-        {/* Only render OverviewPanel after viewport is stable to prevent NaN in MiniMap SVG */}
-        {showMiniMap && (
-          <OverviewPanel
-            nodeColor={(node: NodeWithLayerData) => {
-              // Guard against invalid node data that can cause NaN in SVG
-              if (!node || typeof node !== 'object') {
-                return '#6B7280';
-              }
+          edges={culledEdges.length > 0 ? culledEdges : edges}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onNodeClick={handleNodeClick}
+          onInit={handleInit}
+          nodesDraggable={false}       // Read-only: no dragging
+          nodesConnectable={false}     // Read-only: no new connections
+          nodesFocusable={true}        // Allow keyboard navigation
+          edgesFocusable={true}
+          elementsSelectable={true}    // Allow selection
+          defaultViewport={{ x: 0, y: 0, zoom: 1 }}  // Explicit initial viewport
+          minZoom={0.1}
+          maxZoom={2}
+        >
+          <Background color="#E6E6E6" gap={16} />
+          <Controls />
+          <SpaceMouseHandler />
 
-              // Check for NaN dimensions
-              if ((node.width !== undefined && (isNaN(node.width) || node.width === null)) ||
-                  (node.height !== undefined && (isNaN(node.height) || node.height === null))) {
-                return '#6B7280';
-              }
-
-              // Color nodes based on their layer
-              const layer = node.data?.layer;
-              if (layer) {
-                return getLayerColor(layer, 'primary');
-              }
-              // Fallback to fill color
-              return node.data?.fill || '#ffffff';
-            }}
+          {/* Viewport culling layer for cross-layer edges (FR-3) */}
+          <ViewportCullingLayer
+            nodes={nodes}
+            edges={edges}
+            onCulledEdgesChange={setCulledEdges}
           />
-        )}
-      </ReactFlow>
+          {/* Only render OverviewPanel after viewport is stable to prevent NaN in MiniMap SVG */}
+          {showMiniMap && (
+            <OverviewPanel
+              nodeColor={(node: NodeWithLayerData) => {
+                // Guard against invalid node data that can cause NaN in SVG
+                if (!node || typeof node !== 'object') {
+                  return '#6B7280';
+                }
+
+                // Check for NaN dimensions
+                if ((node.width !== undefined && (isNaN(node.width) || node.width === null)) ||
+                    (node.height !== undefined && (isNaN(node.height) || node.height === null))) {
+                  return '#6B7280';
+                }
+
+                // Color nodes based on their layer
+                const layer = node.data?.layer;
+                if (layer) {
+                  return getLayerColor(layer, 'primary');
+                }
+                // Fallback to fill color
+                return node.data?.fill || '#ffffff';
+              }}
+            />
+          )}
+        </ReactFlow>
+        </CrossLayerEdgeErrorBoundary>
 
         {isRendering && (
           <div className="rendering-overlay">

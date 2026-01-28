@@ -44,15 +44,40 @@ export const BundledCrossLayerEdge = memo(({
 }: EdgeProps<Edge<BundledEdgeData>>) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // Validate required edge data and coordinates
+  if (!data || !Number.isFinite(sourceX) || !Number.isFinite(sourceY) || !Number.isFinite(targetX) || !Number.isFinite(targetY)) {
+    console.warn('[BundledCrossLayerEdge] Invalid edge data or coordinates:', {
+      id,
+      hasData: !!data,
+      sourceX,
+      sourceY,
+      targetX,
+      targetY,
+    });
+    return null;
+  }
+
   // Calculate bezier path
-  const [edgePath, labelX, labelY] = getBezierPath({
-    sourceX,
-    sourceY,
-    sourcePosition,
-    targetX,
-    targetY,
-    targetPosition,
-  });
+  let edgePath: string;
+  let labelX: number;
+  let labelY: number;
+
+  try {
+    const pathResult = getBezierPath({
+      sourceX,
+      sourceY,
+      sourcePosition,
+      targetX,
+      targetY,
+      targetPosition,
+    });
+    edgePath = pathResult[0];
+    labelX = pathResult[1];
+    labelY = pathResult[2];
+  } catch (error) {
+    console.error('[BundledCrossLayerEdge] Failed to calculate path:', { id, error });
+    return null;
+  }
 
   const color = data?.targetLayer ? getLayerColor(data.targetLayer) : '#95a5a6';
   const bundleCount = data?.bundleCount || 1;
