@@ -1,7 +1,7 @@
 /**
  * C4RightSidebar Component
  * Right sidebar for C4 Architecture view - uses generic GraphViewSidebar
- * Combines filters, controls, inspector, and annotations for C4 visualization
+ * Combines cross-layer panel, filters, controls, inspector, and annotations for C4 visualization
  */
 
 import { memo } from 'react';
@@ -10,6 +10,7 @@ import { C4FilterPanel, C4FilterCounts } from './C4FilterPanel';
 import { C4ControlPanel, C4LayoutAlgorithm } from './C4ControlPanel';
 import { C4InspectorPanel } from './C4InspectorPanel';
 import AnnotationPanel from './AnnotationPanel';
+import { CrossLayerPanel } from './CrossLayerPanel';
 import { C4Graph, ContainerType, C4ViewLevel, C4ScenarioPreset } from '../types/c4Graph';
 
 export interface C4RightSidebarProps {
@@ -128,15 +129,23 @@ export const C4RightSidebar = memo<C4RightSidebarProps>(({
   ) : null;
 
   return (
-    <GraphViewSidebar
-      filterPanel={filterContent}
-      controlPanel={controlContent}
-      annotationPanel={<AnnotationPanel />}
-      inspectorContent={inspectorContent}
-      inspectorVisible={!!inspectorContent}
-      testId="c4-right-sidebar"
-      defaultOpenSections={['filters', 'controls']}
-    />
+    <div className="h-full flex flex-col">
+      {/* Cross-layer panel at the top */}
+      <CrossLayerPanel />
+
+      {/* Main sidebar content */}
+      <div className="flex-1 overflow-y-auto">
+        <GraphViewSidebar
+          filterPanel={filterContent}
+          controlPanel={controlContent}
+          annotationPanel={<AnnotationPanel />}
+          inspectorContent={inspectorContent}
+          inspectorVisible={!!inspectorContent}
+          testId="c4-right-sidebar"
+          defaultOpenSections={['filters', 'controls']}
+        />
+      </div>
+    </div>
   );
 });
 

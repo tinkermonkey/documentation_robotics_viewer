@@ -22,3 +22,20 @@ body,
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Smooth transitions for focus mode changes */
+.react-flow__node {
+  @apply transition-[opacity,box-shadow] duration-300 ease-out;
+}
+
+.react-flow__edge {
+  @apply transition-[opacity,stroke-width] duration-300 ease-out;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .react-flow__node,
+  .react-flow__edge {
+    @apply transition-none;
+  }
+}

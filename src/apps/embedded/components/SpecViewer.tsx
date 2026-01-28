@@ -8,6 +8,7 @@ import { SpecDataResponse, LinkType } from '../services/embeddedDataLoader'
 import { Badge } from 'flowbite-react'
 import ExpandableSection from './common/ExpandableSection'
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid'
+import { LayerType } from '../../../core/types'
 
 interface SpecViewerProps {
   specData: SpecDataResponse
@@ -75,7 +76,27 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
 
     if (linkRegistry && linkRegistry.linkTypes) {
       // Extract layer name from schema ID (e.g., 'business.schema.json' -> 'business')
-      const layerName = selectedSchemaId.split('.')[0]
+      const layerNameStr = selectedSchemaId.split('.')[0]
+
+      // Convert to proper LayerType enum value
+      // Map lowercase schema names to LayerType enum values
+      const layerTypeMap: Record<string, LayerType> = {
+        'business': LayerType.Business,
+        'motivation': LayerType.Motivation,
+        'security': LayerType.Security,
+        'application': LayerType.Application,
+        'technology': LayerType.Technology,
+        'api': LayerType.Api,
+        'data-model': LayerType.DataModel,
+        'datastore': LayerType.Datastore,
+        'ux': LayerType.Ux,
+        'navigation': LayerType.Navigation,
+        'apm': LayerType.ApmObservability,
+        'federated-architecture': LayerType.FederatedArchitecture,
+      }
+
+      const layerName = layerTypeMap[layerNameStr]
+      if (!layerName) return // Skip if layer name cannot be mapped
 
       // Find links where this layer is either source or target
       linkRegistry.linkTypes.forEach((linkType: LinkType) => {

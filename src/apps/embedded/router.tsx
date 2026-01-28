@@ -50,12 +50,24 @@ const specViewRoute = createRoute({
 const motivationRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/motivation',
+  validateSearch: (search: any): { selectedElement?: string; skipAnimation?: boolean } => {
+    return {
+      selectedElement: typeof search.selectedElement === 'string' ? search.selectedElement : undefined,
+      skipAnimation: typeof search.skipAnimation === 'boolean' ? search.skipAnimation : false,
+    };
+  },
   component: MotivationRoute,
 });
 
 const architectureRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/architecture',
+  validateSearch: (search: any): { selectedElement?: string; skipAnimation?: boolean } => {
+    return {
+      selectedElement: typeof search.selectedElement === 'string' ? search.selectedElement : undefined,
+      skipAnimation: typeof search.skipAnimation === 'boolean' ? search.skipAnimation : false,
+    };
+  },
   component: ArchitectureRoute,
 });
 

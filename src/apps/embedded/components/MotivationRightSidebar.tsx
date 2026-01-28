@@ -1,7 +1,7 @@
 /**
  * MotivationRightSidebar Component
  * Right sidebar for Motivation view - uses generic GraphViewSidebar
- * Combines filters, controls, inspector, and annotations for motivation layer visualization
+ * Combines cross-layer panel, filters, controls, inspector, and annotations for motivation layer visualization
  */
 
 import { memo } from 'react';
@@ -10,6 +10,7 @@ import { MotivationFilterPanel, FilterCounts } from './MotivationFilterPanel';
 import { MotivationControlPanel, LayoutAlgorithm } from './MotivationControlPanel';
 import { MotivationInspectorPanel } from './MotivationInspectorPanel';
 import AnnotationPanel from './AnnotationPanel';
+import { CrossLayerPanel } from './CrossLayerPanel';
 import { MotivationElementType, MotivationRelationshipType, MotivationGraph } from '../types/motivationGraph';
 
 export interface MotivationRightSidebarProps {
@@ -115,15 +116,23 @@ export const MotivationRightSidebar = memo<MotivationRightSidebarProps>(({
   ) : null;
 
   return (
-    <GraphViewSidebar
-      filterPanel={filterContent}
-      controlPanel={controlContent}
-      annotationPanel={<AnnotationPanel />}
-      inspectorContent={inspectorContent}
-      inspectorVisible={!!inspectorContent}
-      testId="motivation-right-sidebar"
-      defaultOpenSections={['filters', 'controls']}
-    />
+    <div className="h-full flex flex-col">
+      {/* Cross-layer panel at the top */}
+      <CrossLayerPanel />
+
+      {/* Main sidebar content */}
+      <div className="flex-1 overflow-y-auto">
+        <GraphViewSidebar
+          filterPanel={filterContent}
+          controlPanel={controlContent}
+          annotationPanel={<AnnotationPanel />}
+          inspectorContent={inspectorContent}
+          inspectorVisible={!!inspectorContent}
+          testId="motivation-right-sidebar"
+          defaultOpenSections={['filters', 'controls']}
+        />
+      </div>
+    </div>
   );
 });
 
