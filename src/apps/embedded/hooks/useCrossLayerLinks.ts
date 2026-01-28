@@ -142,7 +142,8 @@ export function useCrossLayerLinks(): AppEdge[] {
   // Second pass: apply edge bundling to group parallel edges
   const bundled = useMemo(() => {
     try {
-      // Apply bundling with threshold of 3+ edges per layer pair (FR-10)
+      // Apply edge bundling (bundles 3+ parallel edges between same source-target node pair)
+      // Threshold set to Infinity disables total-edge-count gating (always attempt bundling)
       const result = applyEdgeBundling(filtered, { threshold: Infinity });
 
       // Enhance bundled edges with the original edge list for expansion

@@ -146,7 +146,7 @@ export function applyEdgeBundling(
   const singleEdges: Edge[] = [];
 
   for (const [key, groupEdges] of edgeGroups) {
-    // Bundle threshold: 3 or more edges (FR-10)
+    // Bundle edges with 3+ parallel connections between same source and target nodes (FR-10)
     if (groupEdges.length >= 3) {
       // Create bundle
       const [sourceId, targetId] = key.split('->');

@@ -1,0 +1,324 @@
+
+You are a Senior Software Engineer.
+
+I implement clean, well thought out code with proper error handling and maintainable architecture.
+
+**Issue Title**: [Documentation] Fix misleading bundling threshold comment
+
+**Description**:
+## Problem
+Comment claims "threshold of 3+ edges per layer pair" but the code passes `threshold: Infinity`, which disables threshold-based bundling entirely.
+
+## Location
+`src/apps/embedded/hooks/useCrossLayerLinks.ts:54`
+
+## Current Code
+```typescript
+// Apply bundling with threshold of 3+ edges per layer pair (FR-10)
+const result = applyEdgeBundling(filtered, { threshold: Infinity });
+```
+
+## Why This Is Misleading
+1. Comment says "threshold of 3+ edges per layer pair"
+2. But passes `threshold: Infinity` (disables total-edge-count gating)
+3. The "3+" comes from hardcoded check inside `applyEdgeBundling()`, not the threshold parameter
+4. The threshold parameter controls **total edge count** before bundling activates, not bundle size
+5. With `Infinity`, bundling never activates based on total count
+
+## Reality
+The bundling algorithm:
+- Uses `threshold` parameter to gate whether to bundle at all (disabled with Infinity)
+- Uses internal >= 3 check to determine which edge groups to bundle
+- Groups by **source-target node pair**, not "layer pair"
+
+## Required Fix
+```typescript
+// Apply edge bundling (bundles 3+ parallel edges between same source-target node pair)
+// Threshold set to Infinity disables total-edge-count gating (always attempt bundling)
+const result = applyEdgeBundling(filtered, { threshold: Infinity });
+```
+
+## Additional Documentation Issue
+In `src/core/layout/edgeBundling.ts:104-105`:
+```typescript
+// CURRENT: "Bundle threshold: 3 or more edges (FR-10)"
+// SHOULD BE: "Bundle edges with 3+ parallel connections between same source and target nodes"
+```
+
+## Related
+- PR #205
+- Identified by: PR review comment-analyzer agent
+
+## Priority
+**Documentation** - Confusing for maintainers
+
+
+## Previous Work and Feedback
+
+The following is the complete history of agent outputs and feedback for this issue.
+This includes outputs from ALL previous stages (design, testing, QA, etc.) and any
+user feedback. If this issue was returned from testing or QA, pay special attention
+to their feedback and address all issues they identified.
+
+## Output from Software Architect
+
+**software_architect** (agent):
+# Architecture Design
+
+---
+
+Now I have comprehensive understanding of the codebase. Let me write the architecture analysis.
+
+## System Architecture
+
+### Current State Analysis
+
+The Documentation Robotics Viewer has existing cross-layer reference infrastructure that is underutilized:
+
+1. **Data Model** - `model.references: Reference[]` stores cross-layer relationships with source/target element IDs, layer IDs, and relationship types (`ReferenceType` enum includes 25+ types)
+2. **CrossLayerEdge Component** - Exists at `src/core/edges/CrossLayerEdge.tsx` with layer-specific coloring via `getLayerColor()`, dashed styling, and label rendering
+3. **CrossLayerReferenceResolver** - Business-layer specific service at `src/core/services/crossLayerReferenceResolver.ts` that resolves links to Motivation, Application, DataModel, Security, API, and UX layers
+4. **Gap**: `nodeTransformer.ts` creates cross-layer edges using `type: 'elbow'` with fallback gray color rather than `type: 'crossLayer'` with layer-specific coloring
+
+### Target Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           Cross-Layer Visualization                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌─────────────────┐     ┌──────────────────┐     ┌────────────────────┐   │
+│  │ CrossLayerStore │────▶│ CrossLayerPanel  │────▶│ CrossLayerFilters  │   │
+│  │   (Zustand)     │     │  (Right Sidebar) │     │ - Target Layers    │   │
+│  │                 │     │                  │     │ - Relationship Types│   │
+│  │ - visible: bool │     │ - Toggle Control │     │ - Edge Counts      │   │
+│  │ - filters       │     │ - Filter Panel   │     └────────────────────┘   │
+│  │ - links[]       │     │ - Breadcrumb     │                              │
+│  │ - navHistory    │     └────────┬─────────┘                              │
+│  └────────┬────────┘              │                                        │
+│           │                       │                                        │
+│           ▼                       ▼                                        │
+│  ┌─────────────────┐     ┌──────────────────┐                              │
+│  │ CrossLayerEdge  │◀────│  nodeTransformer │                              │
+│  │  (Enhanced)     │     │   (Updated)      │                              │
+│  │                 │     │                  │                              │
+│  │ - Layer coloring│     │ - type: 'cross-  │                              │
+│  │ - Click handler │     │   Layer'         │                              │
+│  │ - Hover tooltip │     │ - data: {target  │                              │
+│  │ - Focus ring    │     │   Layer, type}   │                              │
+│  └─────────────────┘     └──────────────────┘                              │
+│                                                                              │
+│  ┌─────────────────────────────────────────────────────────────────────────┐│
+│  │                    Cross-Layer Edge Rendering                           ││
+│  │  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌────────────┐        ││
+│  │  │ Motivation │  │ Application│  │ DataModel  │  │  Security  │        ││
+│  │  │  #9333ea   │  │  #10b981   │  │  #8b5cf6   │  │  #ec4899   │        ││
+│  │  │  (Purple)  │  │  (Green)   │  │  (Violet)  │  │  (Pink)    │        ││
+│  │  └────────────┘  └────────────┘  └────────────┘  └────────────┘        ││
+│  └─────────────────────────────────────────────────────────────────────────┘│
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Component Architecture
+
+| Component | Location | Responsibility |
+|-----------|----------|----------------|
+| `crossLayerStore.ts` | `src/services/` | Global state for visibility toggle, filters, navigation history |
+| `CrossLayerPanel.tsx` | `src/apps/embedded/components/` | Right sidebar section with toggle, filters, breadcrumb |
+| `CrossLayerFilterPanel.tsx` | `src/apps/embedded/components/` | Reusable filter section extending generic FilterPanel |
+| `CrossLayerEdge.tsx` | `src/core/edges/` | Enhanced with click navigation, hover tooltip, keyboard focus |
+| `useCrossLayerLinks.ts` | `src/apps/embedded/hooks/` | Hook to extract and filter cross-layer links from model |
+| `nodeTransformer.ts` | `src/core/services/` | Updated to use `type: 'crossLayer'` with proper data |
+
+## Scalability Design
+
+### Performance Optimization Strategy
+
+| Concern | Solution | Target |
+|---------|----------|--------|
+| Initial load | Cross-layer edges disabled by default | 0ms impact on initial render |
+| Large models | Viewport-based culling using React Flow's built-in virtualization | 60fps pan/zoom |
+| Edge count | Progressive loading: first 200 edges, remainder on demand | <1s for toggle on |
+| Edge bundling | Client-side bundling for 3+ edges between same layer pairs | Reduced DOM nodes |
+| Filter updates | Pre-indexed edges by layer and type in store | <100ms filter updates |
+
+### Data Flow
+
+```
+Model Load → CrossLayerReferenceExtractor → Store Indexed Links
+                                                     ↓
+Toggle On → useCrossLayerLinks → Apply Viewport Filter → React Flow Edges
+                                          ↓
+                               Apply Layer/Type Filters
+```
+
+### Memory Considerations
+
+- Cross-layer links stored once in `crossLayerStore`, not duplicated per view
+- Edge objects created lazily when toggle is enabled
+- Viewport culling prevents DOM overflow on large graphs
+
+## Established Patterns
+
+### Pattern Compliance Matrix
+
+| Pattern | Current Implementation | Cross-Layer Approach |
+|---------|----------------------|---------------------|
+| Edge registration | `nodeTypes` / `edgeTypes` in index | `crossLayer` edge type already registered |
+| Layer coloring | `getLayerColor()` utility | Reuse for edge stroke colors |
+| Filter architecture | `FilterPanel` + `FilterSection` generics | New `CrossLayerFilterPanel` using same pattern |
+| Right sidebar | Accordion sections in `*RightSidebar.tsx` | Add `CrossLayerPanel` as new section |
+| Store pattern | `modelStore` (Zustand, no context) | New `crossLayerStore` following same pattern |
+| Hook pattern | `useBusinessFilters`, `useMotivationFilters` | New `useCrossLayerLinks` hook |
+| Edge styling | Dashed for cross-layer in nodeTransformer | Maintain dashed pattern, add layer colors |
+
+### Type Safety
+
+Existing types support the feature:
+- `CrossLayerEdgeData` interface with `targetLayer` and `relationshipType`
+- `Reference` interface for model-level cross-layer data
+- `CrossLayerLink` interface in BusinessGraph (extend to all layers)
+
+## Component Reuse
+
+### Direct Reuse (No Modification)
+
+| Component | Usage |
+|-----------|-------|
+| `FilterPanel` | Base for cross-layer filter UI |
+| `FilterSection` / `FilterItem` | Filter structure types |
+| `getLayerColor()` | Edge coloring by target layer |
+| `CrossLayerEdge` | Edge rendering (enhance, not replace) |
+| `SharedLayout` | Layout container |
+| `Accordion` / `AccordionPanel` | Right sidebar structure |
+
+### Extend Existing
+
+| Component | Extension |
+|-----------|-----------|
+| `nodeTransformer.ts` | Change edge `type` from `'elbow'` to `'crossLayer'`, populate `CrossLayerEdgeData` |
+| `CrossLayerEdge.tsx` | Add click handler, hover tooltip, keyboard navigation |
+| `*RightSidebar.tsx` | Include `CrossLayerPanel` component |
+
+### New Components
+
+| Component | Rationale |
+|-----------|-----------|
+| `crossLayerStore.ts` | No existing filter store; new global state needed |
+| `CrossLayerPanel.tsx` | Composite panel for toggle + filters + breadcrumb |
+| `useCrossLayerLinks.ts` | Hook to bridge store and edge rendering |
+| `CrossLayerBreadcrumb.tsx` | Navigation history trail (simple component) |
+
+## Implementation Plan
+
+### Phase 1: Core Infrastructure
+
+1. **Create `crossLayerStore.ts`**
+   - State: `visible: boolean`, `targetLayerFilters: Set<LayerType>`, `relationshipTypeFilters: Set<string>`, `navigationHistory: NavigationStep[]`
+   - Actions: `toggleVisible()`, `setLayerFilter()`, `setTypeFilter()`, `pushNavigation()`, `popNavigation()`
+
+2. **Update `nodeTransformer.ts`** (lines 249-273)
+   - Change `type: 'elbow'` to `type: 'crossLayer'`
+   - Add `targetLayer` from reference endpoint
+   - Add `relationshipType` from reference type
+   - Remove fallback gray color (let CrossLayerEdge handle)
+
+3. **Create `useCrossLayerLinks.ts`**
+   - Subscribe to `crossLayerStore`
+   - Extract cross-layer references from model
+   - Apply filters from store
+   - Return filtered `AppEdge[]` array
+
+### Phase 2: UI Components
+
+4. **Create `CrossLayerPanel.tsx`**
+   - Toggle switch for visibility
+   - Edge count badge
+   - Embedded filter sections
+
+5. **Create `CrossLayerFilterPanel.tsx`**
+   - Two FilterSections: Target Layers, Relationship Types
+   - Use `FilterPanel` generic component
+   - Calculate counts from store
+
+6. **Create `CrossLayerBreadcrumb.tsx`**
+   - Render last 5 navigation steps
+   - Click to navigate back
+   - Clear on non-cross-layer navigation
+
+7. **Integrate into right sidebars**
+   - Add `CrossLayerPanel` to `MotivationRightSidebar`, `C4RightSidebar`
+   - Position above or below filter panel
+
+### Phase 3: Edge Enhancement
+
+8. **Enhance `CrossLayerEdge.tsx`**
+   - Add `onClick` handler for navigation
+   - Add hover tooltip with source/target details
+   - Add `tabIndex`, focus ring, keyboard Enter handler
+   - Screen reader announcement on focus
+
+9. **Add navigation handling**
+   - Route to target layer view
+   - Select and center target element
+   - Push to navigation history
+   - Support browser back button
+
+### Phase 4: Advanced Features
+
+10. **Edge bundling**
+    - Group edges by source-layer/target-layer pairs
+    - Render bundle badge for 3+ edges
+    - Expand on click to show individual edges
+
+11. **Viewport culling**
+    - Filter edges to only those connected to visible nodes
+    - Update on pan/zoom using React Flow hooks
+
+12. **Performance optimization**
+    - Web Worker for initial cross-layer resolution on large models
+    - Memoize filtered edge arrays
+    - Lazy render edge labels
+
+### File Changes Summary
+
+| File | Change Type | Scope |
+|------|-------------|-------|
+| `src/services/crossLayerStore.ts` | Create | ~80 lines |
+| `src/apps/embedded/hooks/useCrossLayerLinks.ts` | Create | ~60 lines |
+| `src/apps/embedded/components/CrossLayerPanel.tsx` | Create | ~120 lines |
+| `src/apps/embedded/components/CrossLayerFilterPanel.tsx` | Create | ~100 lines |
+| `src/apps/embedded/components/CrossLayerBreadcrumb.tsx` | Create | ~60 lines |
+| `src/core/edges/CrossLayerEdge.tsx` | Modify | +50 lines |
+| `src/core/services/nodeTransformer.ts` | Modify | ~15 lines (lines 249-273) |
+| `src/apps/embedded/components/MotivationRightSidebar.tsx` | Modify | +5 lines |
+| `src/apps/embedded/components/C4RightSidebar.tsx` | Modify | +5 lines |
+| `src/core/edges/index.ts` | Verify | Edge type registration |
+| `tests/cross-layer-visualization.spec.ts` | Create | ~150 lines |
+
+### Dependencies
+
+```
+Phase 1 ──┬──▶ Phase 2 ──┬──▶ Phase 3 ──▶ Phase 4
+          │              │
+          │              └──▶ Phase 4 (bundling can start after UI)
+          │
+          └──▶ Phase 3 (edge enhancement can start after store)
+```
+
+### Risk Mitigation
+
+| Risk | Mitigation |
+|------|------------|
+| Performance regression on large models | Default to hidden; viewport culling; profiling targets |
+| Edge overlap with intra-layer edges | Bezier curves for cross-layer; dashed pattern differentiation |
+| Filter state sync across views | Single Zustand store; no local state |
+| Accessibility regressions | Keyboard navigation tests; screen reader testing |
+
+---
+_Generated by Orchestrator Bot 🤖_
+_Processed by the software_architect agent_
+
+IMPORTANT: Review all feedback carefully and address every issue that is not already addressed.
+
+
