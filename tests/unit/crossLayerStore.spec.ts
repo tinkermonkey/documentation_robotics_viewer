@@ -128,7 +128,7 @@ test.describe('CrossLayerStore', () => {
 
     test('should push navigation step', () => {
       const step: NavigationStep = {
-        layerId: 'motivation',
+        layerId: LayerType.Motivation,
         elementId: 'goal-1',
         elementName: 'Test Goal',
         timestamp: Date.now(),
@@ -142,14 +142,14 @@ test.describe('CrossLayerStore', () => {
 
     test('should maintain order with newest first', () => {
       const step1: NavigationStep = {
-        layerId: 'motivation',
+        layerId: LayerType.Motivation,
         elementId: 'goal-1',
         elementName: 'Goal 1',
         timestamp: Date.now(),
       };
 
       const step2: NavigationStep = {
-        layerId: 'application',
+        layerId: LayerType.Application,
         elementId: 'service-1',
         elementName: 'Service 1',
         timestamp: Date.now() + 1000,
@@ -166,7 +166,7 @@ test.describe('CrossLayerStore', () => {
     test('should limit history to 5 steps', () => {
       for (let i = 0; i < 7; i++) {
         store.pushNavigation({
-          layerId: 'motivation',
+          layerId: LayerType.Motivation,
           elementId: `goal-${i}`,
           elementName: `Goal ${i}`,
           timestamp: Date.now() + i,
@@ -179,7 +179,7 @@ test.describe('CrossLayerStore', () => {
 
     test('should pop navigation step', () => {
       const step: NavigationStep = {
-        layerId: 'motivation',
+        layerId: LayerType.Motivation,
         elementId: 'goal-1',
         elementName: 'Test Goal',
         timestamp: Date.now(),
@@ -199,7 +199,7 @@ test.describe('CrossLayerStore', () => {
 
     test('should clear navigation history', () => {
       store.pushNavigation({
-        layerId: 'motivation',
+        layerId: LayerType.Motivation,
         elementId: 'goal-1',
         elementName: 'Test Goal',
         timestamp: Date.now(),

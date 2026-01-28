@@ -339,6 +339,7 @@ export interface CrossLayerEdgeData {
   // Optional metadata for enhanced tooltips
   description?: string;
   tags?: string[];
+  changesetOperation?: 'add' | 'update' | 'delete';
   [key: string]: unknown;
 }
 
@@ -357,7 +358,7 @@ export function createCrossLayerEdgeData(
     label?: string;
     description?: string;
     tags?: string[];
-    [key: string]: unknown;
+    changesetOperation?: 'add' | 'update' | 'delete';
   }
 ): CrossLayerEdgeData {
   if (sourceLayer === targetLayer) {
