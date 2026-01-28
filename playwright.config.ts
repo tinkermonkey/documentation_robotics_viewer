@@ -22,6 +22,7 @@ export default defineConfig({
     '**/overview-panel-styling.spec.ts',
     '**/sidebar-consolidation.spec.ts',
     '**/zoom-to-layer.spec.ts',
+    '**/edge-bundling-viewport-culling.spec.ts',
     // Story tests (use playwright.refinement.config.ts)
     '**/stories/**/*.spec.ts',
   ],

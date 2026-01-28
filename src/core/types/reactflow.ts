@@ -1,10 +1,11 @@
 import { Node, Edge } from '@xyflow/react';
-import { ModelElement } from './model';
+import { ModelElement, ReferenceType } from './model';
 import {
   DataModelField,
   DataModelComponentType,
   HTTPMethod
 } from './shapes';
+import { LayerType } from './layers';
 
 export type { HTTPMethod };
 import { NodeDetailLevel } from '../../core/layout/semanticZoomController';
@@ -326,12 +327,52 @@ export interface MotivationEdgeData {
 
 /**
  * Cross-layer edge data
+ * Enforces type safety using enums for layer and relationship types
  */
 export interface CrossLayerEdgeData {
-  targetLayer: 'motivation' | 'application' | 'data_model' | 'security' | 'api' | 'ux';
-  relationshipType: string;
+  sourceLayer: LayerType;
+  targetLayer: LayerType;
+  relationshipType: ReferenceType;
+  sourceElementName?: string;
+  targetElementName?: string;
   label?: string;
+  // Optional metadata for enhanced tooltips
+  description?: string;
+  tags?: string[];
+  changesetOperation?: 'add' | 'update' | 'delete';
   [key: string]: unknown;
+}
+
+/**
+ * Factory function to create and validate cross-layer edge data
+ * Enforces the invariant that edges must span different layers
+ * @throws Error if sourceLayer equals targetLayer
+ */
+export function createCrossLayerEdgeData(
+  sourceLayer: LayerType,
+  targetLayer: LayerType,
+  relationshipType: ReferenceType,
+  options?: {
+    sourceElementName?: string;
+    targetElementName?: string;
+    label?: string;
+    description?: string;
+    tags?: string[];
+    changesetOperation?: 'add' | 'update' | 'delete';
+  }
+): CrossLayerEdgeData {
+  if (sourceLayer === targetLayer) {
+    throw new Error(
+      `Cross-layer edge must span different layers. Got source=${sourceLayer}, target=${targetLayer}`
+    );
+  }
+
+  return {
+    sourceLayer,
+    targetLayer,
+    relationshipType,
+    ...options,
+  };
 }
 
 /**

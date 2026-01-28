@@ -49,6 +49,7 @@ export interface MotivationGraphViewProps {
 
 export interface MotivationGraphViewRef {
   fitView: () => void;
+  centerAndSelectElement: (elementId: string) => void;
 }
 
 /**
@@ -77,10 +78,19 @@ const MotivationGraphView = forwardRef<MotivationGraphViewRef, MotivationGraphVi
   // Get ReactFlow instance for fitView
   const reactFlowInstance = useReactFlow();
 
-  // Expose fitView method to parent via ref
+  // Expose fitView and centerAndSelectElement methods to parent via ref
   useImperativeHandle(ref, () => ({
     fitView: () => {
       reactFlowInstance?.fitView({ padding: 0.2, duration: 400 });
+    },
+    centerAndSelectElement: (elementId: string) => {
+      const node = nodes.find(n => n.data.elementId === elementId);
+      if (node && reactFlowInstance) {
+        // Center on the element
+        reactFlowInstance.setCenter(node.position.x + (node.measured?.width || 0) / 2, node.position.y + (node.measured?.height || 0) / 2, { zoom: 1.5, duration: 400 });
+        // Select the element by updating store
+        setSelectedNodeId(elementId);
+      }
     },
   }));
 

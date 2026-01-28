@@ -41,7 +41,6 @@ import {
 } from '@/core/services/businessExportService';
 import { OverviewPanel } from '@/core/components/OverviewPanel';
 import { getLayerColor } from '@/core/utils/layerColors';
-import './BusinessLayerView.css';
 
 interface BusinessLayerViewProps {
   /** The documentation model */
@@ -357,9 +356,9 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
         style: {
           ...node.style,
           opacity: isDimmed ? 0.3 : 1,
-          transition: 'opacity 0.3s ease',
+          boxShadow: isFocused ? '0 0 0 3px rgba(74, 144, 226, 0.5)' : undefined,
         },
-        className: isFocused ? 'focused-node' : undefined,
+        className: isFocused ? 'border-[3px] border-blue-400' : undefined,
       };
     });
   }, [filteredNodes, focusedNodes, dimmedNodes, focusMode, expandedNodes, toggleNodeExpanded]);
@@ -376,7 +375,6 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
           ...edge.style,
           opacity: isDimmed ? 0.2 : 1,
           strokeWidth: isFocused ? 3 : 2,
-          transition: 'opacity 0.3s ease, stroke-width 0.3s ease',
         },
       };
     });
@@ -399,27 +397,10 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
 
   if (error) {
     return (
-      <div
-        style={{
-          width: '100%',
-          height: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontFamily: 'system-ui, sans-serif',
-        }}
-      >
-        <div
-          style={{
-            padding: 24,
-            background: '#ffebee',
-            border: '2px solid #c62828',
-            borderRadius: 8,
-            maxWidth: 600,
-          }}
-        >
-          <h2 style={{ margin: 0, marginBottom: 12, color: '#c62828' }}>Error</h2>
-          <p style={{ margin: 0, color: '#424242' }}>{error}</p>
+      <div className="w-full h-screen flex items-center justify-center font-sans">
+        <div className="p-6 bg-red-50 border-2 border-red-800 rounded-lg max-w-xl">
+          <h2 className="m-0 mb-3 text-red-800 font-bold">Error</h2>
+          <p className="m-0 text-gray-700">{error}</p>
         </div>
       </div>
     );
@@ -427,25 +408,9 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
 
   if (loading) {
     return (
-      <div
-        style={{
-          width: '100%',
-          height: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontFamily: 'system-ui, sans-serif',
-        }}
-      >
-        <div
-          style={{
-            padding: 24,
-            background: '#e3f2fd',
-            border: '2px solid #1565c0',
-            borderRadius: 8,
-          }}
-        >
-          <p style={{ margin: 0, color: '#1565c0', fontWeight: 600 }}>
+      <div className="w-full h-screen flex items-center justify-center font-sans">
+        <div className="p-6 bg-blue-50 border-2 border-blue-700 rounded-lg">
+          <p className="m-0 text-blue-700 font-semibold">
             Loading business layer...
           </p>
         </div>
@@ -454,7 +419,7 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
   }
 
   return (
-    <div className="business-layer-view" style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="w-full h-screen flex flex-col">
       {/* Controls Panel */}
       <BusinessLayerControls
         businessGraph={businessGraph}
@@ -465,7 +430,7 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
       />
 
       {/* Graph Visualization */}
-      <div ref={reactFlowWrapperRef} style={{ flex: 1, position: 'relative' }}>
+      <div ref={reactFlowWrapperRef} className="flex-1 relative">
         <ReactFlow
           nodes={styledNodes}
           edges={styledEdges}
@@ -498,26 +463,18 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
           }}
         />
         <Panel position="top-left">
-          <div
-            style={{
-              background: 'white',
-              padding: 12,
-              borderRadius: 8,
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-              fontFamily: 'system-ui, sans-serif',
-            }}
-          >
-            <h3 style={{ margin: 0, marginBottom: 8, fontSize: 16, color: '#1f2937' }}>
+          <div className="bg-white p-3 rounded-lg shadow-md font-sans">
+            <h3 className="m-0 mb-2 text-base text-gray-800">
               Business Layer
             </h3>
             {businessGraph && (
-              <div style={{ fontSize: 12, color: '#6b7280' }}>
+              <div className="text-xs text-gray-500">
                 <div>
                   {businessGraph.nodes.size} elements • {businessGraph.edges.size} relationships
                 </div>
                 <div>Max depth: {businessGraph.hierarchy.maxDepth}</div>
                 {businessGraph.metrics.circularDependencies.length > 0 && (
-                  <div style={{ color: '#c62828', marginTop: 4 }}>
+                  <div className="text-red-700 mt-1">
                     ⚠️ {businessGraph.metrics.circularDependencies.length} circular dependencies
                   </div>
                 )}

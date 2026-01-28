@@ -5,6 +5,9 @@ test-results/
 .dr/
 .flowbite-react/
 
+# Claude Code review cycle files
+.claude_prompt_review_cycle*.txt
+
 # Build artifacts (keep dist/ but ignore the bundled package)
 dist/embedded/dr-viewer-bundle/
 

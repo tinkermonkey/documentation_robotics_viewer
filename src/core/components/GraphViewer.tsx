@@ -3,7 +3,7 @@
  * Renders a MetaModel using React Flow with custom nodes and edges
  */
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import {
   ReactFlow,
   Background,
@@ -14,6 +14,7 @@ import {
   NodeMouseHandler,
   useReactFlow,
   ReactFlowProvider,
+  useViewport,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import './GraphViewer.css';
@@ -30,6 +31,7 @@ import { SpaceMouseHandler } from './SpaceMouseHandler';
 import { OverviewPanel, NodeWithLayerData } from './OverviewPanel';
 import { getLayerColor } from '../utils/layerColors';
 import { getEngine, LayoutEngineType } from '../layout/engines';
+import { CrossLayerEdgeErrorBoundary } from './CrossLayerEdgeErrorBoundary';
 
 interface GraphViewerProps {
   model: MetaModel;
@@ -41,12 +43,61 @@ interface GraphViewerProps {
 }
 
 /**
+ * Viewport Culling Component
+ * Uses viewport hook to filter edges connected only to visible nodes
+ */
+const ViewportCullingLayer: React.FC<{
+  nodes: AppNode[];
+  edges: AppEdge[];
+  onCulledEdgesChange?: (edges: AppEdge[]) => void;
+}> = ({ nodes, edges, onCulledEdgesChange }) => {
+  const viewport = useViewport();
+  const VIEWPORT_MARGIN = 100; // Buffer around viewport for edge culling
+
+  useMemo(() => {
+    // Calculate visible node IDs based on viewport
+    const visibleNodeIds = new Set<string>();
+
+    nodes.forEach((node) => {
+      const nodeWidth = (node.width || 180) * viewport.zoom;
+      const nodeHeight = (node.height || 100) * viewport.zoom;
+
+      // Calculate screen position
+      const screenX = node.position.x * viewport.zoom + viewport.x;
+      const screenY = node.position.y * viewport.zoom + viewport.y;
+
+      // Check if node is in viewport with margin (FR-3)
+      if (
+        screenX + nodeWidth > -VIEWPORT_MARGIN &&
+        screenX < window.innerWidth + VIEWPORT_MARGIN &&
+        screenY + nodeHeight > -VIEWPORT_MARGIN &&
+        screenY < window.innerHeight + VIEWPORT_MARGIN
+      ) {
+        visibleNodeIds.add(node.id);
+      }
+    });
+
+    // Filter edges to only those connected to visible nodes (FR-3)
+    const filtered = edges.filter(
+      (edge) =>
+        visibleNodeIds.has(edge.source) || visibleNodeIds.has(edge.target)
+    );
+
+    onCulledEdgesChange?.(filtered);
+    return filtered;
+  }, [nodes, edges, viewport]);
+
+  return null;
+};
+
+/**
  * GraphViewerInner Component
  * Inner component that has access to React Flow instance via useReactFlow hook
  */
 const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, selectedLayerId, layoutEngine, layoutParameters, onNodesEdgesChange }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<AppEdge>([]);
+  const [culledEdges, setCulledEdges] = useState<AppEdge[]>([]);
   const { layers: layerStates } = useLayerStore();
   const [isRendering, setIsRendering] = useState(false);
   const reactFlowInstance = useReactFlow();
@@ -55,7 +106,6 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
 
   // Handle React Flow initialization
   const handleInit = useCallback(() => {
-    console.log('[GraphViewer] React Flow initialized');
     setIsInitialized(true);
   }, []);
 
@@ -73,7 +123,6 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
   useEffect(() => {
     if (!model || isRendering) return;
 
-    console.log('GraphViewer: Rendering model', model.version, 'with layout:', layoutEngine || 'default');
     renderModel(model);
   }, [model, layoutEngine, layoutParameters]);
 
@@ -81,7 +130,6 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
   useEffect(() => {
     if (nodes.length === 0) return;
 
-    console.log('GraphViewer: Updating layer visibility');
     updateLayerVisibility();
   }, [layerStates]);
 
@@ -89,7 +137,6 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
   useEffect(() => {
     if (!isInitialized || !reactFlowInstance || nodes.length === 0) return;
 
-    console.log('[GraphViewer] Fitting view after initialization');
     // Use setTimeout to ensure React Flow has completed its internal calculations
     setTimeout(() => {
       reactFlowInstance.fitView({ padding: 0.1, duration: 200 });
@@ -128,18 +175,11 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
       // Clear element store
       elementStore.clear();
 
-      // Debug: Check model structure
-      console.log('[GraphViewer] Model structure:');
-      for (const [layerId, layer] of Object.entries(model.layers)) {
-        console.log(`  ${layerId}: ${layer.elements?.length || 0} elements, ${layer.relationships?.length || 0} relationships`);
-      }
-
       // Create layout engine and transformer
       let layoutEngineInstance;
 
       if (layoutEngine) {
         // Use specified layout engine from props
-        console.log(`[GraphViewer] Using layout engine: ${layoutEngine}`);
         layoutEngineInstance = getEngine(layoutEngine);
 
         // Fallback if engine not found
@@ -149,18 +189,13 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
         }
       } else {
         // Fallback to vertical layer layout for backward compatibility
-        console.log('[GraphViewer] Using default VerticalLayerLayout');
         layoutEngineInstance = new VerticalLayerLayout();
       }
 
       const transformer = new NodeTransformer(layoutEngineInstance);
 
       // Transform the model into nodes and edges
-      console.log('[GraphViewer] Transforming model to React Flow nodes and edges...');
       const result = await transformer.transformModel(model, layoutParameters);
-
-      console.log(`[GraphViewer] Created ${result.nodes.length} nodes and ${result.edges.length} edges`);
-      console.log('[GraphViewer] Layout:', result.layout);
 
       // Set nodes and edges
       setNodes(result.nodes);
@@ -233,59 +268,83 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
 
   return (
     <div className="graph-viewer">
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onNodeClick={handleNodeClick}
-        onInit={handleInit}
-        nodesDraggable={false}       // Read-only: no dragging
-        nodesConnectable={false}     // Read-only: no new connections
-        nodesFocusable={true}        // Allow keyboard navigation
-        edgesFocusable={true}
-        elementsSelectable={true}    // Allow selection
-        defaultViewport={{ x: 0, y: 0, zoom: 1 }}  // Explicit initial viewport
-        minZoom={0.1}
-        maxZoom={2}
+      {/* Accessibility Skip Links */}
+      <a
+        href="#cross-layer-edges"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-50 focus:bg-blue-600 focus:text-white focus:px-3 focus:py-2"
       >
-        <Background color="#E6E6E6" gap={16} />
-        <Controls />
-        <SpaceMouseHandler />
-        {/* Only render OverviewPanel after viewport is stable to prevent NaN in MiniMap SVG */}
-        {showMiniMap && (
-          <OverviewPanel
-            nodeColor={(node: NodeWithLayerData) => {
-              // Guard against invalid node data that can cause NaN in SVG
-              if (!node || typeof node !== 'object') {
-                return '#6B7280';
-              }
+        Skip to cross-layer edges
+      </a>
+      <a
+        href="#graph-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-12 focus:left-0 focus:z-50 focus:bg-blue-600 focus:text-white focus:px-3 focus:py-2"
+      >
+        Skip cross-layer edges
+      </a>
+      <div id="graph-content">
+        <CrossLayerEdgeErrorBoundary>
+          <ReactFlow
+          nodes={nodes}
+          edges={culledEdges.length > 0 ? culledEdges : edges}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onNodeClick={handleNodeClick}
+          onInit={handleInit}
+          nodesDraggable={false}       // Read-only: no dragging
+          nodesConnectable={false}     // Read-only: no new connections
+          nodesFocusable={true}        // Allow keyboard navigation
+          edgesFocusable={true}
+          elementsSelectable={true}    // Allow selection
+          defaultViewport={{ x: 0, y: 0, zoom: 1 }}  // Explicit initial viewport
+          minZoom={0.1}
+          maxZoom={2}
+        >
+          <Background color="#E6E6E6" gap={16} />
+          <Controls />
+          <SpaceMouseHandler />
 
-              // Check for NaN dimensions
-              if ((node.width !== undefined && (isNaN(node.width) || node.width === null)) ||
-                  (node.height !== undefined && (isNaN(node.height) || node.height === null))) {
-                return '#6B7280';
-              }
-
-              // Color nodes based on their layer
-              const layer = node.data?.layer;
-              if (layer) {
-                return getLayerColor(layer, 'primary');
-              }
-              // Fallback to fill color
-              return node.data?.fill || '#ffffff';
-            }}
+          {/* Viewport culling layer for cross-layer edges (FR-3) */}
+          <ViewportCullingLayer
+            nodes={nodes}
+            edges={edges}
+            onCulledEdgesChange={setCulledEdges}
           />
-        )}
-      </ReactFlow>
+          {/* Only render OverviewPanel after viewport is stable to prevent NaN in MiniMap SVG */}
+          {showMiniMap && (
+            <OverviewPanel
+              nodeColor={(node: NodeWithLayerData) => {
+                // Guard against invalid node data that can cause NaN in SVG
+                if (!node || typeof node !== 'object') {
+                  return '#6B7280';
+                }
 
-      {isRendering && (
-        <div className="rendering-overlay">
-          <div className="rendering-message">Rendering graph...</div>
-        </div>
-      )}
+                // Check for NaN dimensions
+                if ((node.width !== undefined && (isNaN(node.width) || node.width === null)) ||
+                    (node.height !== undefined && (isNaN(node.height) || node.height === null))) {
+                  return '#6B7280';
+                }
+
+                // Color nodes based on their layer
+                const layer = node.data?.layer;
+                if (layer) {
+                  return getLayerColor(layer, 'primary');
+                }
+                // Fallback to fill color
+                return node.data?.fill || '#ffffff';
+              }}
+            />
+          )}
+        </ReactFlow>
+        </CrossLayerEdgeErrorBoundary>
+
+        {isRendering && (
+          <div className="rendering-overlay">
+            <div className="rendering-message">Rendering graph...</div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

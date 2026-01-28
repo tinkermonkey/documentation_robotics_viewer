@@ -7,11 +7,27 @@
 import React from 'react';
 import { Info } from 'lucide-react';
 import type { Node } from '@xyflow/react';
-import type { MetaModel } from '../../../core/types/model';
+import type { MetaModel, Layer, Relationship } from '../../../core/types/model';
+import type { BaseNodeData } from '@/core/types/reactflow';
 
 export interface NodeDetailsPanelProps {
   selectedNode: Node | null;
   model: MetaModel;
+}
+
+/**
+ * Type guard to safely access node data as BaseNodeData
+ */
+function isBaseNodeData(data: unknown): data is BaseNodeData {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'label' in data &&
+    'elementId' in data &&
+    'layerId' in data &&
+    'fill' in data &&
+    'stroke' in data
+  );
 }
 
 const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model }) => {
@@ -28,16 +44,17 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
   let incomingEdges = 0;
   let outgoingEdges = 0;
 
-  Object.values(model.layers || {}).forEach((layer: any) => {
-    layer.relationships?.forEach((rel: any) => {
-      if (rel.target === selectedNode.id) incomingEdges++;
-      if (rel.source === selectedNode.id) outgoingEdges++;
+  Object.values(model.layers || {}).forEach((layer: Layer) => {
+    layer.relationships?.forEach((rel: Relationship) => {
+      if (rel.targetId === selectedNode.id) incomingEdges++;
+      if (rel.sourceId === selectedNode.id) outgoingEdges++;
     });
   });
 
-  // Get node color from data
-  const nodeColor = (selectedNode.data as any)?.stroke || '#999999';
-  const nodeType = (selectedNode.data as any)?.type || 'Unknown';
+  // Get node color from data with proper typing
+  const nodeData = isBaseNodeData(selectedNode.data) ? selectedNode.data : null;
+  const nodeColor = nodeData?.stroke || '#999999';
+  const nodeType = selectedNode.type || 'Unknown';
 
   return (
     <div className="p-4 border-b border-gray-200">
@@ -45,7 +62,7 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
       <div className="space-y-3">
         <div>
           <p className="text-xs text-gray-500 mb-1">Name</p>
-          <p className="text-sm text-gray-900">{(selectedNode.data as any)?.label || selectedNode.id}</p>
+          <p className="text-sm text-gray-900">{nodeData?.label || selectedNode.id}</p>
         </div>
 
         <div>
