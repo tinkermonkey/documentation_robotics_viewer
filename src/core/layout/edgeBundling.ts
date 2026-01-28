@@ -98,8 +98,10 @@ function isBundledEdgeData(data: unknown): data is BundledEdgeData {
  * @param edge - Edge to check
  * @returns True if edge is a bundle
  */
-export function isBundledEdge(edge: Edge): edge is Edge<BundledEdgeData> {
-  return isBundledEdgeData(edge.data);
+export function isBundledEdge(
+  edge: Edge
+): edge is Edge<BundledEdgeData> & { data: BundledEdgeData } {
+  return edge.data !== undefined && isBundledEdgeData(edge.data);
 }
 
 /**

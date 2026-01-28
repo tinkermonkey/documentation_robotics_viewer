@@ -3,7 +3,7 @@ import { AppEdge } from '@/core/types/reactflow';
 import { useCrossLayerStore } from '@/core/stores/crossLayerStore';
 import { useModelStore } from '@/core/stores/modelStore';
 import { extractCrossLayerReferences, referencesToEdges } from '@/core/services/crossLayerLinksExtractor';
-import { applyEdgeBundling, isBundledEdge, type BundledEdgeData } from '@/core/layout/edgeBundling';
+import { applyEdgeBundling, isBundledEdge } from '@/core/layout/edgeBundling';
 import { processCrossLayerReferencesWithWorker } from '@/core/services/workerPool';
 import { processReferences, type CrossLayerReference } from '@/core/services/crossLayerProcessor';
 

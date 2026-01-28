@@ -7,7 +7,7 @@
 import React from 'react';
 import { Info } from 'lucide-react';
 import type { Node } from '@xyflow/react';
-import type { MetaModel } from '../../../core/types/model';
+import type { MetaModel, Layer, Relationship } from '../../../core/types/model';
 import type { BaseNodeData } from '@/core/types/reactflow';
 
 export interface NodeDetailsPanelProps {
@@ -24,7 +24,9 @@ function isBaseNodeData(data: unknown): data is BaseNodeData {
     data !== null &&
     'label' in data &&
     'elementId' in data &&
-    'layerId' in data
+    'layerId' in data &&
+    'fill' in data &&
+    'stroke' in data
   );
 }
 
@@ -42,10 +44,10 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
   let incomingEdges = 0;
   let outgoingEdges = 0;
 
-  Object.values(model.layers || {}).forEach((layer: any) => {
-    layer.relationships?.forEach((rel: any) => {
-      if (rel.target === selectedNode.id) incomingEdges++;
-      if (rel.source === selectedNode.id) outgoingEdges++;
+  Object.values(model.layers || {}).forEach((layer: Layer) => {
+    layer.relationships?.forEach((rel: Relationship) => {
+      if (rel.targetId === selectedNode.id) incomingEdges++;
+      if (rel.sourceId === selectedNode.id) outgoingEdges++;
     });
   });
 
