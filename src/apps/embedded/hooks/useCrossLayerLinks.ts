@@ -3,7 +3,7 @@ import { AppEdge } from '@/core/types/reactflow';
 import { useCrossLayerStore } from '@/core/stores/crossLayerStore';
 import { useModelStore } from '@/core/stores/modelStore';
 import { extractCrossLayerReferences, referencesToEdges } from '@/core/services/crossLayerLinksExtractor';
-import { applyEdgeBundling } from '@/core/layout/edgeBundling';
+import { applyEdgeBundling, isBundledEdge, type BundledEdgeData } from '@/core/layout/edgeBundling';
 import { processCrossLayerReferencesWithWorker } from '@/core/services/workerPool';
 import { processReferences, type CrossLayerReference } from '@/core/services/crossLayerProcessor';
 
@@ -129,8 +129,8 @@ export function useCrossLayerLinks(): AppEdge[] {
 
       // Enhance bundled edges with the original edge list for expansion
       return result.bundledEdges.map((edge) => {
-        if ((edge.data as any)?.isBundle) {
-          const bundledEdgeIds = (edge.data as any)?.bundledEdgeIds || [];
+        if (isBundledEdge(edge)) {
+          const bundledEdgeIds = edge.data.bundledEdgeIds ?? [];
           const originalEdges = filtered.filter((e) => bundledEdgeIds.includes(e.id));
           return {
             ...edge,

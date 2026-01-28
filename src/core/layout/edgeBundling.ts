@@ -60,6 +60,49 @@ export interface EdgeBundlingOptions {
 }
 
 /**
+ * Data structure for bundled edges
+ * Extends the basic edge data with bundling-specific properties
+ */
+export interface BundledEdgeData {
+  /** Indicates this edge represents a bundle of multiple edges */
+  isBundle?: boolean;
+
+  /** Number of edges in the bundle */
+  bundleCount?: number;
+
+  /** Original edge IDs that are bundled together */
+  bundledEdgeIds?: string[];
+
+  /** Allow any other properties for compatibility */
+  [key: string]: unknown;
+}
+
+/**
+ * Type guard to check if edge data is a bundled edge
+ *
+ * @param data - Edge data to check
+ * @returns True if data represents a bundled edge
+ */
+function isBundledEdgeData(data: unknown): data is BundledEdgeData {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'isBundle' in data &&
+    (data as BundledEdgeData).isBundle === true
+  );
+}
+
+/**
+ * Type guard to safely check if an edge is a bundle
+ *
+ * @param edge - Edge to check
+ * @returns True if edge is a bundle
+ */
+export function isBundledEdge(edge: Edge): edge is Edge<BundledEdgeData> {
+  return isBundledEdgeData(edge.data);
+}
+
+/**
  * Default bundling options
  */
 const DEFAULT_OPTIONS: Required<EdgeBundlingOptions> = {
@@ -188,23 +231,38 @@ function createBundleEdge(bundle: EdgeBundle): Edge {
 
 /**
  * Check if an edge is a bundle
+ *
+ * @param edge - Edge to check
+ * @returns True if edge is a bundle
  */
 export function isEdgeBundle(edge: Edge): boolean {
-  return Boolean((edge.data as any)?.isBundle);
+  return isBundledEdge(edge);
 }
 
 /**
  * Get edge count from bundle
+ *
+ * @param edge - Edge to check
+ * @returns Bundle count or 1 if not a bundle
  */
 export function getEdgeBundleCount(edge: Edge): number {
-  return (edge.data as any)?.bundleCount || 1;
+  if (isBundledEdge(edge)) {
+    return edge.data.bundleCount ?? 1;
+  }
+  return 1;
 }
 
 /**
  * Get original edge IDs from bundle
+ *
+ * @param edge - Edge to check
+ * @returns Array of bundled edge IDs or single edge ID
  */
 export function getBundledEdgeIds(edge: Edge): string[] {
-  return (edge.data as any)?.bundledEdgeIds || [edge.id];
+  if (isBundledEdge(edge)) {
+    return edge.data.bundledEdgeIds ?? [edge.id];
+  }
+  return [edge.id];
 }
 
 /**
