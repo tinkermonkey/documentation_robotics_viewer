@@ -2,6 +2,8 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { Position, MarkerType } from '@xyflow/react';
 import { CrossLayerEdge } from './CrossLayerEdge';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
+import { LayerType } from '@/core/types/layers';
+import { ReferenceType } from '@/core/types/model';
 
 export default {
   title: 'Architecture Edges / General / CrossLayerEdge',
@@ -81,7 +83,7 @@ export const ChangesetAdd: Story = () => (
     targetY={200}
     sourcePosition={Position.Right}
     targetPosition={Position.Left}
-    data={{ sourceLayer: 'business', changesetOperation: 'add', targetLayer: 'application', relationshipType: 'implements' }}
+    data={{ sourceLayer: LayerType.Business, changesetOperation: 'add', targetLayer: LayerType.Application, relationshipType: ReferenceType.BusinessService }}
     markerEnd={MarkerType.ArrowClosed}
   />
 );
@@ -97,7 +99,7 @@ export const ChangesetDelete: Story = () => (
     targetY={200}
     sourcePosition={Position.Right}
     targetPosition={Position.Left}
-    data={{ sourceLayer: 'business', changesetOperation: 'delete', targetLayer: 'api', relationshipType: 'realizes' }}
+    data={{ sourceLayer: LayerType.Business, changesetOperation: 'delete', targetLayer: LayerType.Api, relationshipType: ReferenceType.APIOperation }}
     markerEnd={MarkerType.ArrowClosed}
   />
 );

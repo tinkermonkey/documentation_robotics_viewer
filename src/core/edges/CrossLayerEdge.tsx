@@ -102,15 +102,11 @@ export const CrossLayerEdge = memo(({
     if (!data?.targetLayer || !target) return;
 
     try {
-      // Validate target layer is in valid format
-      if (!data.targetLayer.match(/^[a-zA-Z]+$/)) {
-        throw new Error(`Invalid target layer: ${data.targetLayer}`);
-      }
-
       // Check for prefers-reduced-motion
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       // Push to navigation history before navigation
+      // targetLayer is guaranteed to be a valid LayerType enum value by createCrossLayerEdgeData
       pushNavigation({
         layerId: data.targetLayer,
         elementId: target,

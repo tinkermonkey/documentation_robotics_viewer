@@ -11,7 +11,7 @@ const MAX_NAVIGATION_HISTORY = 5;
  * Navigation step in the cross-layer breadcrumb history
  */
 export interface NavigationStep {
-  layerId: string;
+  layerId: LayerType;
   elementId: string;
   elementName: string;
   timestamp: number;

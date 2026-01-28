@@ -5,7 +5,7 @@
 
 import { MetaModel, Reference, ReferenceType } from '@/core/types/model';
 import { LayerType } from '@/core/types/layers';
-import { AppEdge, CrossLayerEdgeData } from '@/core/types/reactflow';
+import { AppEdge, createCrossLayerEdgeData } from '@/core/types/reactflow';
 import { MarkerType } from '@xyflow/react';
 import { FALLBACK_COLOR, normalizeLayerKey } from '@/core/utils/layerColors';
 
@@ -62,8 +62,16 @@ export function referenceToEdge(
   model: MetaModel,
   nodeIdResolver: (elementId: string) => string | undefined
 ): AppEdge | null {
-  // Skip if we don't have element IDs
+  // Skip if we don't have element IDs or layer IDs
   if (!reference.source.elementId || !reference.target.elementId) return null;
+  if (!reference.source.layerId || !reference.target.layerId) return null;
+
+  // Normalize layer IDs to LayerType enum
+  const sourceLayer = normalizeLayerKey(reference.source.layerId);
+  const targetLayer = normalizeLayerKey(reference.target.layerId);
+
+  // Skip if layers cannot be normalized to valid LayerType values
+  if (!sourceLayer || !targetLayer) return null;
 
   // Resolve node IDs (handles both direct format and nodeMap lookups)
   const sourceNodeId = nodeIdResolver(reference.source.elementId);
@@ -72,12 +80,30 @@ export function referenceToEdge(
   if (!sourceNodeId || !targetNodeId) return null;
 
   // Get element names for breadcrumb/tooltip display
-  const sourceElement = reference.source.layerId
-    ? model.layers[reference.source.layerId]?.elements.find((e) => e.id === reference.source.elementId)
-    : undefined;
-  const targetElement = reference.target.layerId
-    ? model.layers[reference.target.layerId]?.elements.find((e) => e.id === reference.target.elementId)
-    : undefined;
+  const sourceElement = model.layers[reference.source.layerId]?.elements.find((e) => e.id === reference.source.elementId);
+  const targetElement = model.layers[reference.target.layerId]?.elements.find((e) => e.id === reference.target.elementId);
+
+  // Create edge data using factory function with validation
+  let edgeData;
+  try {
+    edgeData = createCrossLayerEdgeData(
+      sourceLayer,
+      targetLayer,
+      reference.type,
+      {
+        sourceElementName: sourceElement?.name || reference.source.elementId,
+        targetElementName: targetElement?.name || reference.target.elementId,
+      }
+    );
+  } catch (error) {
+    // Skip edges that fail validation (e.g., same source and target layer)
+    console.warn('Failed to create cross-layer edge:', {
+      error: error instanceof Error ? error.message : String(error),
+      sourceLayer,
+      targetLayer,
+    });
+    return null;
+  }
 
   return {
     id: `edge-ref-${reference.source.elementId}-${reference.target.elementId}-${index}`,
@@ -94,13 +120,7 @@ export function referenceToEdge(
       color: FALLBACK_COLOR,
     },
     style: { strokeDasharray: '5,5' }, // Dashed line for cross-layer references
-    data: {
-      sourceLayer: reference.source.layerId || 'unknown',
-      targetLayer: reference.target.layerId || 'unknown',
-      relationshipType: reference.type,
-      sourceElementName: sourceElement?.name || reference.source.elementId,
-      targetElementName: targetElement?.name || reference.target.elementId,
-    } as CrossLayerEdgeData,
+    data: edgeData,
   } as AppEdge;
 }
 

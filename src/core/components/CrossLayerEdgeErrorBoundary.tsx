@@ -41,8 +41,6 @@ export class CrossLayerEdgeErrorBoundary extends React.Component<
   ErrorBoundaryProps,
   ErrorBoundaryState
 > {
-  private storeSetError: ((error: any) => void) | null = null;
-
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = {
