@@ -3,7 +3,7 @@ schema: documentation-robotics-v1
 cli_version: 0.1.0
 spec_version: 0.7.0
 created: 2025-12-05T22:17:22.732040Z
-updated: 2026-01-27T21:53:28.031Z
+updated: 2026-01-30T13:01:07.638Z
 project:
   name: documentation_robotics_viewer
   description: Architecture model for documentation_robotics_viewer
@@ -88,7 +88,7 @@ layers:
     schema: .dr/schemas/07-data-model-layer.schema.json
     enabled: true
     elements:
-      object-schema: 40
+      object-schema: 58
       object: 19
   datastore:
     order: 8
@@ -155,7 +155,7 @@ layers:
       test-case-sketche: 11
       test-suite: 59
 statistics:
-  total_elements: 618
+  total_elements: 635
   elements_by_layer:
     motivation: 14
     business: 9
@@ -197,4 +197,11 @@ upgrade_history:
   - from_version: 0.1.0
     to_version: 0.7.3
     upgraded_at: 2025-12-10T17:06:16.340268Z
-preferred_chat_client: Claude Code
+changeset_history:
+  - name: build-cross-layer-relationships
+    applied_at: 2026-01-30T13:01:07.588Z
+    action: applied
+  - name: build-cross-layer-relationships
+    applied_at: 2026-01-30T13:01:07.592Z
+    action: applied
+preferred_chat_client: GitHub Copilot

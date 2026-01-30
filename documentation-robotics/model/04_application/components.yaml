@@ -51,6 +51,7 @@ graph-view:
       - testing.test-suite.embedded-graph-rendering
       - testing.test-suite.zoom-to-layer
       - testing.test-suite.graph-readability-integration
+    x-ui-component: ux.component.graph-viewer
 inspector-panel:
   id: application.component.inspector-panel
   name: Inspector Panel
@@ -63,6 +64,7 @@ inspector-panel:
         locations:
           - file: src/core/components/OverviewPanel.tsx
             symbol: OverviewPanel
+    x-ui-component: ux.component.inspector-panel
 motivation-graph-view:
   id: application.component.motivation-graph-view
   name: Motivation Graph View
@@ -85,6 +87,7 @@ motivation-graph-view:
       - apm.metric.filter-latency
     x-tested-by:
       - testing.test-suite.embedded-motivation-view
+    x-ui-component: ux.component.motivation-graph-view
 business-layer-view:
   id: application.component.business-layer-view
   name: Business Layer View
@@ -129,6 +132,7 @@ c4-graph-view:
     x-tested-by:
       - testing.test-suite.c4-architecture-view
       - testing.test-suite.c4-accessibility
+    x-ui-component: ux.component.c4-graph-view
 changeset-graph-view:
   id: application.component.changeset-graph-view
   name: Changeset Graph View
@@ -141,6 +145,7 @@ changeset-graph-view:
         locations:
           - file: src/apps/embedded/components/ChangesetGraphView.tsx
             symbol: ChangesetGraphView
+    x-ui-component: ux.component.changeset-graph-view
 motivation-filter-panel:
   id: application.component.motivation-filter-panel
   name: Motivation Filter Panel
@@ -236,6 +241,7 @@ layer-panel:
             symbol: ModelLayersSidebar
     x-tested-by:
       - testing.test-suite.layer-colors
+    x-ui-component: ux.component.layer-panel
 spec-viewer:
   id: application.component.spec-viewer
   name: Spec Viewer

@@ -78,8 +78,7 @@ get-model:
       - security.permission.read-model-files
       - security.countermeasure.path-validation
       - security.countermeasure.input-sanitization
-    x-response-schema:
-      - data_model.object-schema.model-response
+    x-response-schema: data_model.object-schema.meta-model
     source:
       reference:
         provenance: manual
@@ -103,8 +102,7 @@ list-changesets:
     x-protected-by:
       - security.permission.read-model-files
       - security.countermeasure.path-validation
-    x-response-schema:
-      - data_model.object-schema.changeset-list
+    x-response-schema: data_model.array-schema.changesets
     source:
       reference:
         provenance: manual
@@ -137,8 +135,7 @@ get-changeset:
       - security.permission.read-model-files
       - security.countermeasure.path-validation
       - security.countermeasure.input-sanitization
-    x-response-schema:
-      - data_model.object-schema.changeset-details
+    x-response-schema: data_model.object-schema.changeset
     source:
       reference:
         provenance: manual
@@ -168,8 +165,7 @@ get-annotations:
     x-protected-by:
       - security.permission.access-api-endpoints
       - security.countermeasure.output-encoding
-    x-response-schema:
-      - data_model.object-schema.annotation-list
+    x-response-schema: data_model.array-schema.annotations
     source:
       reference:
         provenance: manual
@@ -504,14 +500,14 @@ create-annotation:
       - application.service.demo-data-service
     x-request-schema:
       - data_model.object-schema.annotation
-    x-response-schema:
-      - data_model.object-schema.annotation
+    x-response-schema: data_model.object-schema.annotation
     source:
       reference:
         provenance: manual
         locations:
           - file: server/index.cjs
             symbol: createAnnotationHandler
+    x-request-body: data_model.object-schema.annotation-input
 changeset-created:
   id: api.operation.changeset-created
   name: Changeset Created Event
@@ -612,8 +608,8 @@ update-annotation:
       - security.permission.access-api-endpoints
     x-request-schema:
       - data_model.object-schema.annotation
-    x-response-schema:
-      - data_model.object-schema.annotation
+    x-response-schema: data_model.object-schema.annotation
+    x-request-body: data_model.object-schema.annotation-update
 delete-annotation:
   id: api.operation.delete-annotation
   name: Delete Annotation

@@ -1,12 +1,12 @@
 version: 0.1.0
-installed_at: 2026-01-11T14:09:02.619Z
+installed_at: 2026-01-30T12:46:19.710Z
 components:
   agents:
     dr-advisor.md:
-      hash: 3174f727
+      hash: a3decb67
       modified: false
     dr-architect.md:
-      hash: cbe85531
+      hash: 84e1673f
       modified: false
   skills:
     dr_01_motivation_layer/SKILL.md:

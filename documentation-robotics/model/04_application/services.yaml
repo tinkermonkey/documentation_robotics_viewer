@@ -72,6 +72,19 @@ reference-server:
         locations:
           - file: server/index.cjs
             symbol: referenceServer
+    x-exposes:
+      - api.operation.health-check
+      - api.operation.get-spec
+      - api.operation.get-model
+      - api.operation.list-changesets
+      - api.operation.get-changeset
+      - api.operation.get-annotations
+      - api.operation.create-annotation
+      - api.operation.update-annotation
+      - api.operation.delete-annotation
+      - api.operation.create-changeset
+      - api.operation.apply-changeset
+      - api.operation.websocket-connect
 business-export-service:
   id: application.service.business-export-service
   name: Business Export Service
@@ -276,6 +289,8 @@ data-loader:
         locations:
           - file: src/core/services/dataLoader.ts
             symbol: loadModel
+    x-exposes:
+      - api.operation.get-model
 git-hub-service:
   id: application.service.git-hub-service
   name: GitHub Service
@@ -579,6 +594,11 @@ annotation-store:
     x-monitored-by:
       - apm.metric.annotation-load-time
       - apm.metric.websocket-latency
+    x-exposes:
+      - api.operation.get-annotations
+      - api.operation.create-annotation
+      - api.operation.update-annotation
+      - api.operation.delete-annotation
 changeset-store:
   id: application.service.changeset-store
   name: Changeset Store
@@ -604,6 +624,11 @@ changeset-store:
             symbol: changesetStore
     x-monitored-by:
       - apm.metric.changeset-load-time
+    x-exposes:
+      - api.operation.list-changesets
+      - api.operation.get-changeset
+      - api.operation.create-changeset
+      - api.operation.apply-changeset
 auth-store:
   id: application.service.auth-store
   name: Auth Store
