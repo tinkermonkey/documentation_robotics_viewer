@@ -90,7 +90,7 @@ export const ChatPanel = ({
         return (
           <div key={index} className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded p-2 text-sm my-2">
             <div className="font-semibold text-blue-900 dark:text-blue-100">
-              🔧 {tool.toolName}
+              [Tool] {tool.toolName}
             </div>
             <div className="text-blue-800 dark:text-blue-200 text-xs">
               Status: {tool.status}
@@ -101,7 +101,7 @@ export const ChatPanel = ({
       case 'thinking':
         return (
           <div key={index} className="bg-purple-50 dark:bg-purple-900 border border-purple-200 dark:border-purple-700 rounded p-2 text-sm my-2 italic text-purple-700 dark:text-purple-200">
-            💭 {part.content}
+            [Thinking] {part.content}
           </div>
         );
 
@@ -109,7 +109,7 @@ export const ChatPanel = ({
         const usage = part as UsageContent;
         return (
           <div key={index} className="bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 rounded p-2 text-xs my-2 text-green-800 dark:text-green-200">
-            📊 Tokens: {usage.totalTokens} | Cost: ${usage.totalCostUsd.toFixed(4)}
+            [Usage] Tokens: {usage.totalTokens} | Cost: ${usage.totalCostUsd.toFixed(4)}
           </div>
         );
 
@@ -117,7 +117,7 @@ export const ChatPanel = ({
         const err = part as ErrorContent;
         return (
           <div key={index} className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded p-2 text-sm my-2 text-red-800 dark:text-red-200">
-            ❌ {err.message}
+            [Error] {err.message}
           </div>
         );
 
@@ -193,7 +193,7 @@ export const ChatPanel = ({
         {messages.length === 0 ? (
           <div className="h-full flex items-center justify-center text-gray-400 dark:text-gray-500 text-center">
             <div>
-              <p className="text-4xl mb-2">💬</p>
+              <p className="text-sm mb-2">Chat</p>
               <p>No messages yet. Start a conversation!</p>
               {!chatAvailable && (
                 <p className="text-sm mt-2 text-red-600 dark:text-red-400">
@@ -223,7 +223,7 @@ export const ChatPanel = ({
       <div className="px-4 py-3 border-t dark:border-gray-700">
         {!chatAvailable && (
           <div className="bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded p-2 mb-3 text-sm text-yellow-800 dark:text-yellow-200">
-            ⚠️ {sdkStatus?.errorMessage || 'Chat service is not available'}
+            [Warning] {sdkStatus?.errorMessage || 'Chat service is not available'}
           </div>
         )}
 

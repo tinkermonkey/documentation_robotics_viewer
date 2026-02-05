@@ -222,20 +222,8 @@ export class ChatService {
       return;
     }
 
-    // Find or create text content
-    const existingText = currentMessage.parts.find((p) => p.type === 'text') as TextContent | undefined;
-
-    if (existingText) {
-      // Append to existing text
-      existingText.content += params.content;
-    } else {
-      // Add new text part
-      store.appendPart(currentMessage.id, {
-        type: 'text',
-        content: params.content,
-        timestamp: params.timestamp || new Date().toISOString(),
-      } as TextContent);
-    }
+    // Use store action to properly track state changes
+    store.appendTextContent(currentMessage.id, params.content);
   }
 
   /**

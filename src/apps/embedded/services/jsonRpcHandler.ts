@@ -10,7 +10,6 @@ import {
   JsonRpcErrorResponse,
   JsonRpcMessage,
   JsonRpcError,
-  ChatErrorCode,
 } from '../types/chat';
 
 /**
@@ -39,9 +38,28 @@ export class JsonRpcHandler {
   private requestTimeout: number = 30000; // 30 seconds
   private requestIdCounter: number = 1;
   private messageListenerAttached: boolean = false;
+  private cachedWebSocketClient: any = null;
 
   constructor() {
     this.ensureMessageListenerAttached();
+  }
+
+  /**
+   * Get cached or load WebSocket client
+   */
+  private async getWebSocketClient(): Promise<any> {
+    if (this.cachedWebSocketClient) {
+      return this.cachedWebSocketClient;
+    }
+
+    try {
+      const module = await import('./websocketClient');
+      this.cachedWebSocketClient = module.websocketClient;
+      return this.cachedWebSocketClient;
+    } catch (error) {
+      console.warn('[JsonRpcHandler] Failed to load WebSocket client:', error);
+      throw error;
+    }
   }
 
   /**
@@ -51,8 +69,7 @@ export class JsonRpcHandler {
     if (this.messageListenerAttached) return;
 
     try {
-      const module = await import('./websocketClient');
-      const { websocketClient } = module;
+      const websocketClient = await this.getWebSocketClient();
 
       websocketClient.on('message', (message: any) => {
         try {
@@ -147,8 +164,7 @@ export class JsonRpcHandler {
     reject: (error: Error) => void
   ): Promise<void> {
     try {
-      const module = await import('./websocketClient');
-      const { websocketClient } = module;
+      const websocketClient = await this.getWebSocketClient();
       websocketClient.send(request as any);
     } catch (error) {
       this.pendingRequests.delete(id);
@@ -169,8 +185,7 @@ export class JsonRpcHandler {
     method: string
   ): Promise<void> {
     try {
-      const module = await import('./websocketClient');
-      const { websocketClient } = module;
+      const websocketClient = await this.getWebSocketClient();
       websocketClient.send(notification as any);
     } catch (error) {
       console.error(
