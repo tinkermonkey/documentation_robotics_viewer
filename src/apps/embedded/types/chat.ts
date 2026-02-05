@@ -168,8 +168,12 @@ export enum ChatErrorCode {
 
 /**
  * Chat status request/response types
+ * Note: Wire format uses snake_case (sdk_available, sdk_version) while TypeScript uses camelCase
+ * Service layer handles the conversion between formats
  */
-export interface ChatStatusParams {}
+export interface ChatStatusParams {
+  [key: string]: unknown;
+}
 
 export interface ChatStatusResult {
   sdkAvailable: boolean;
@@ -248,8 +252,12 @@ export interface ChatErrorParams {
 
 /**
  * Chat cancel request parameters
+ * Note: Wire format uses snake_case while TypeScript uses camelCase
+ * Service layer handles the conversion between formats
  */
-export interface ChatCancelParams {}
+export interface ChatCancelParams {
+  [key: string]: unknown;
+}
 
 export interface ChatCancelResult {
   cancelled: boolean;
@@ -262,6 +270,7 @@ export interface ChatCancelResult {
 export const createChatStatusRequest = (id: string | number): JsonRpcRequest<ChatStatusParams> => ({
   jsonrpc: '2.0',
   method: 'chat.status',
+  params: {},
   id,
 });
 

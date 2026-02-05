@@ -4,8 +4,8 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { useChatStore } from '../../src/apps/embedded/stores/chatStore';
-import { ChatMessage, TextContent, ToolInvocationContent, UsageContent } from '../../src/apps/embedded/types/chat';
+import { useChatStore } from '@/apps/embedded/stores/chatStore';
+import { ChatMessage, TextContent, ToolInvocationContent, UsageContent } from '@/apps/embedded/types/chat';
 
 // Helper function to create test messages
 function createTestMessage(

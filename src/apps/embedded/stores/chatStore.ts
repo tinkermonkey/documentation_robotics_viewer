@@ -4,9 +4,18 @@
  */
 
 import { create } from 'zustand';
-import { ChatMessage, TextContent, ChatContent, SDKStatus } from '../types/chat';
+import {
+  ChatMessage,
+  TextContent,
+  ChatContent,
+  SDKStatus,
+  ToolInvocationContent,
+  ThinkingContent,
+  UsageContent,
+  ErrorContent,
+} from '../types/chat';
 
-interface ChatStore {
+export interface ChatStore {
   // State
   messages: ChatMessage[];
   activeConversationId: string | null;
@@ -29,7 +38,7 @@ interface ChatStore {
   // Content part operations
   appendPart: (messageId: string, part: ChatContent) => void;
   appendTextContent: (messageId: string, content: string) => void;
-  updateToolInvocation: (messageId: string, toolName: string, updates: Partial<Exclude<ChatContent, TextContent | ThinkingContent | UsageContent | ErrorContent>>) => void;
+  updateToolInvocation: (messageId: string, toolName: string, updates: Partial<ToolInvocationContent>) => void;
 
   // Query operations
   getLastMessage: () => ChatMessage | undefined;
@@ -90,7 +99,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         // Ensure part has timestamp
         const partWithTimestamp = {
           ...part,
-          timestamp: part.timestamp || new Date().toISOString(),
+          timestamp: part.timestamp && part.timestamp.length > 0 ? part.timestamp : new Date().toISOString(),
         };
         return {
           ...msg,
