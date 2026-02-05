@@ -4,7 +4,8 @@
  * Handles keyboard shortcuts, SDK status, and streaming state
  */
 
-import { useState, useCallback, useRef, memo } from 'react';
+import { useState, useCallback, useRef, memo, useEffect } from 'react';
+import { Send, Square } from 'lucide-react';
 import { SDKStatus } from '../../types/chat';
 
 export interface ChatInputProps {
@@ -26,7 +27,7 @@ export const ChatInput = memo(
     isSending = false,
     sdkStatus,
     disabled = false,
-    placeholder = 'Type a message... (Cmd/Ctrl+Enter to send)',
+    placeholder = 'Type a message...',
     testId = 'chat-input'
   }: ChatInputProps) => {
     const [inputValue, setInputValue] = useState('');
@@ -34,6 +35,14 @@ export const ChatInput = memo(
 
     const chatAvailable = sdkStatus?.sdkAvailable ?? false;
     const isDisabled = disabled || isStreaming || !chatAvailable || isSending;
+
+    // Auto-resize textarea
+    useEffect(() => {
+      if (!inputRef.current) return;
+
+      inputRef.current.style.height = 'auto';
+      inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, 200)}px`;
+    }, [inputValue]);
 
     // Handle message submission
     const handleSendMessage = useCallback(async () => {
@@ -66,11 +75,13 @@ export const ChatInput = memo(
 
     // Handle keyboard shortcuts
     const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      // Cmd/Ctrl+Enter to send
-      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      // Enter to send (without Shift)
+      if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         handleSendMessage();
+        return;
       }
+      // Shift+Enter adds newline (default behavior)
     }, [handleSendMessage]);
 
     return (
@@ -89,19 +100,20 @@ export const ChatInput = memo(
             onKeyDown={handleKeyDown}
             disabled={isDisabled}
             placeholder={chatAvailable ? placeholder : 'Chat unavailable'}
-            className="flex-1 px-3 py-2 border rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
-            rows={3}
+            className="flex-1 px-3 py-2 border rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+            style={{ minHeight: '40px', maxHeight: '200px' }}
             data-testid="message-input"
           />
           <div className="flex gap-2">
             {isStreaming ? (
               <button
                 onClick={handleCancel}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 text-sm font-medium transition-colors"
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 text-sm font-medium transition-colors flex items-center gap-2"
                 disabled={!isStreaming}
                 data-testid="cancel-button"
               >
-                Cancel
+                <Square className="w-4 h-4" />
+                <span>Cancel</span>
               </button>
             ) : (
               <button
@@ -110,10 +122,15 @@ export const ChatInput = memo(
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 text-sm font-medium transition-colors flex items-center gap-2"
                 data-testid="send-button"
               >
+                <Send className="w-4 h-4" />
                 <span>{isSending ? '...' : 'Send'}</span>
               </button>
             )}
           </div>
+        </div>
+
+        <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+          Press Enter to send, Shift+Enter for new line
         </div>
       </div>
     );
