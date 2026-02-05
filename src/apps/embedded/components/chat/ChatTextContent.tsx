@@ -1,6 +1,7 @@
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 import ReactMarkdown, { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { ReactNode } from 'react';
 
 export interface ChatTextContentProps {
   content: string;
@@ -9,10 +10,9 @@ export interface ChatTextContentProps {
 
 export const ChatTextContent = memo(
   ({ content, isStreaming = false }: ChatTextContentProps) => {
-    const customComponents: Components = useCallback(
-      () => ({
+    const customComponents = {
         // Code blocks with syntax highlighting placeholder
-        code: ({ children, className }) => {
+        code: ({ children, className }: { children: ReactNode; className?: string }) => {
           const isInline = !className;
 
           if (isInline) {
@@ -37,7 +37,7 @@ export const ChatTextContent = memo(
         },
 
         // Pre wrapper for code blocks
-        pre: ({ children }) => (
+        pre: ({ children }: { children: ReactNode }) => (
           <pre
             className="bg-gray-100 dark:bg-gray-800 rounded-md p-3 overflow-x-auto"
             data-testid="pre-block"
@@ -47,7 +47,7 @@ export const ChatTextContent = memo(
         ),
 
         // Links open in new tab
-        a: ({ children, href }) => (
+        a: ({ children, href }: { children: ReactNode; href?: string }) => (
           <a
             href={href}
             target="_blank"
@@ -60,7 +60,7 @@ export const ChatTextContent = memo(
         ),
 
         // Tables with Flowbite-compatible styling
-        table: ({ children }) => (
+        table: ({ children }: { children: ReactNode }) => (
           <div
             className="overflow-x-auto my-4"
             data-testid="markdown-table"
@@ -71,36 +71,36 @@ export const ChatTextContent = memo(
           </div>
         ),
 
-        thead: ({ children }) => (
+        thead: ({ children }: { children: ReactNode }) => (
           <thead className="bg-gray-200 dark:bg-gray-700">
             {children}
           </thead>
         ),
 
-        tbody: ({ children }) => (
+        tbody: ({ children }: { children: ReactNode }) => (
           <tbody>{children}</tbody>
         ),
 
-        tr: ({ children }) => (
+        tr: ({ children }: { children: ReactNode }) => (
           <tr className="border border-gray-300 dark:border-gray-600">
             {children}
           </tr>
         ),
 
-        th: ({ children }) => (
+        th: ({ children }: { children: ReactNode }) => (
           <th className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left font-semibold text-gray-900 dark:text-gray-100">
             {children}
           </th>
         ),
 
-        td: ({ children }) => (
+        td: ({ children }: { children: ReactNode }) => (
           <td className="border border-gray-300 dark:border-gray-600 px-4 py-2 text-gray-700 dark:text-gray-300">
             {children}
           </td>
         ),
 
         // Block quotes
-        blockquote: ({ children }) => (
+        blockquote: ({ children }: { children: ReactNode }) => (
           <blockquote
             className="border-l-4 border-gray-400 dark:border-gray-600 pl-4 italic text-gray-600 dark:text-gray-400 my-4"
             data-testid="markdown-blockquote"
@@ -110,39 +110,39 @@ export const ChatTextContent = memo(
         ),
 
         // Headings
-        h1: ({ children }) => (
+        h1: ({ children }: { children: ReactNode }) => (
           <h1 className="text-2xl font-bold mt-6 mb-4 text-gray-900 dark:text-white">
             {children}
           </h1>
         ),
 
-        h2: ({ children }) => (
+        h2: ({ children }: { children: ReactNode }) => (
           <h2 className="text-xl font-bold mt-5 mb-3 text-gray-900 dark:text-white">
             {children}
           </h2>
         ),
 
-        h3: ({ children }) => (
+        h3: ({ children }: { children: ReactNode }) => (
           <h3 className="text-lg font-bold mt-4 mb-2 text-gray-900 dark:text-white">
             {children}
           </h3>
         ),
 
         // Emphasis
-        em: ({ children }) => (
+        em: ({ children }: { children: ReactNode }) => (
           <em className="italic text-gray-900 dark:text-white">
             {children}
           </em>
         ),
 
-        strong: ({ children }) => (
+        strong: ({ children }: { children: ReactNode }) => (
           <strong className="font-bold text-gray-900 dark:text-white">
             {children}
           </strong>
         ),
 
         // Lists
-        ul: ({ children }) => (
+        ul: ({ children }: { children: ReactNode }) => (
           <ul
             className="list-disc list-inside my-4 text-gray-700 dark:text-gray-300"
             data-testid="unordered-list"
@@ -151,7 +151,7 @@ export const ChatTextContent = memo(
           </ul>
         ),
 
-        ol: ({ children }) => (
+        ol: ({ children }: { children: ReactNode }) => (
           <ol
             className="list-decimal list-inside my-4 text-gray-700 dark:text-gray-300"
             data-testid="ordered-list"
@@ -160,19 +160,17 @@ export const ChatTextContent = memo(
           </ol>
         ),
 
-        li: ({ children }) => (
+        li: ({ children }: { children: ReactNode }) => (
           <li className="ml-4">{children}</li>
         ),
 
         // Paragraphs
-        p: ({ children }) => (
+        p: ({ children }: { children: ReactNode }) => (
           <p className="text-gray-700 dark:text-gray-300 mb-3 leading-relaxed">
             {children}
           </p>
         ),
-      }),
-      []
-    );
+    } as Components;
 
     return (
       <div
@@ -181,7 +179,7 @@ export const ChatTextContent = memo(
       >
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
-          components={customComponents()}
+          components={customComponents}
         >
           {content}
         </ReactMarkdown>

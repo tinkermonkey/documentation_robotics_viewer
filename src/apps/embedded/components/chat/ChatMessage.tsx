@@ -50,7 +50,7 @@ export const ChatMessage = memo(({ message }: ChatMessageProps) => {
             key={index}
             toolName={tool.toolName}
             toolInput={tool.toolInput || {}}
-            toolOutput={tool.result}
+            toolOutput={typeof tool.result === 'string' ? tool.result : tool.result ? JSON.stringify(tool.result) : undefined}
             status={mapToolStatus(tool.status)}
             timestamp={tool.timestamp}
             duration={undefined}
