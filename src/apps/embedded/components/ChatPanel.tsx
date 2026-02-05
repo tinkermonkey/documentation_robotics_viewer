@@ -8,6 +8,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { useChatStore } from '../stores/chatStore';
 import { chatService } from '../services/chatService';
 import { ChatMessage, TextContent, ErrorContent, ToolInvocationContent, UsageContent } from '../types/chat';
+import { ChatTextContent, ThinkingBlock, ToolInvocationCard, UsageStatsBadge } from './chat';
 
 interface ChatPanelProps {
   title?: string;
@@ -80,37 +81,46 @@ export const ChatPanel = ({
     switch (part.type) {
       case 'text':
         return (
-          <div key={index} className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap break-words">
-            {(part as TextContent).content}
-          </div>
+          <ChatTextContent
+            key={index}
+            content={(part as TextContent).content}
+            isStreaming={false}
+          />
         );
 
       case 'tool_invocation':
         const tool = part as ToolInvocationContent;
         return (
-          <div key={index} className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded p-2 text-sm my-2">
-            <div className="font-semibold text-blue-900 dark:text-blue-100">
-              [Tool] {tool.toolName}
-            </div>
-            <div className="text-blue-800 dark:text-blue-200 text-xs">
-              Status: {tool.status}
-            </div>
-          </div>
+          <ToolInvocationCard
+            key={index}
+            toolName={tool.toolName}
+            toolInput={tool.toolInput || {}}
+            toolOutput={tool.toolOutput}
+            status={tool.status as any}
+            timestamp={new Date().toLocaleTimeString()}
+            duration={tool.duration}
+          />
         );
 
       case 'thinking':
         return (
-          <div key={index} className="bg-purple-50 dark:bg-purple-900 border border-purple-200 dark:border-purple-700 rounded p-2 text-sm my-2 italic text-purple-700 dark:text-purple-200">
-            [Thinking] {part.content}
-          </div>
+          <ThinkingBlock
+            key={index}
+            content={part.content}
+            isStreaming={false}
+            defaultExpanded={false}
+          />
         );
 
       case 'usage':
         const usage = part as UsageContent;
         return (
-          <div key={index} className="bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 rounded p-2 text-xs my-2 text-green-800 dark:text-green-200">
-            [Usage] Tokens: {usage.totalTokens} | Cost: ${usage.totalCostUsd.toFixed(4)}
-          </div>
+          <UsageStatsBadge
+            key={index}
+            inputTokens={usage.inputTokens || 0}
+            outputTokens={usage.outputTokens || 0}
+            totalTokens={usage.totalTokens}
+          />
         );
 
       case 'error':
