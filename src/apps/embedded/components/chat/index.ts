@@ -9,3 +9,9 @@ export type { ToolInvocationCardProps, ToolStatus } from './ToolInvocationCard';
 
 export { UsageStatsBadge } from './UsageStatsBadge';
 export type { UsageStatsBadgeProps } from './UsageStatsBadge';
+
+export { ChatMessage } from './ChatMessage';
+export type { ChatMessageProps } from './ChatMessage';
+
+export { ChatInput } from './ChatInput';
+export type { ChatInputProps } from './ChatInput';

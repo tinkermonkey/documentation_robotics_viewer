@@ -7,8 +7,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useChatStore } from '../stores/chatStore';
 import { chatService } from '../services/chatService';
-import { ChatMessage, TextContent, ErrorContent, ToolInvocationContent, UsageContent } from '../types/chat';
-import { ChatTextContent, ThinkingBlock, ToolInvocationCard, UsageStatsBadge } from './chat';
+import { ChatMessage, ChatInput } from './chat';
 
 interface ChatPanelProps {
   title?: string;
@@ -21,10 +20,8 @@ export const ChatPanel = ({
   showCostInfo = true,
   testId = 'chat-panel'
 }: ChatPanelProps) => {
-  const [inputValue, setInputValue] = useState('');
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const {
     messages,
@@ -40,13 +37,7 @@ export const ChatPanel = ({
   }, [messages]);
 
   // Handle message submission
-  const handleSendMessage = useCallback(async () => {
-    if (!inputValue.trim() || isStreaming || !sdkStatus?.sdkAvailable) {
-      return;
-    }
-
-    const message = inputValue.trim();
-    setInputValue('');
+  const handleSendMessage = useCallback(async (message: string) => {
     setIsSending(true);
 
     try {
@@ -56,7 +47,7 @@ export const ChatPanel = ({
     } finally {
       setIsSending(false);
     }
-  }, [inputValue, isStreaming, sdkStatus?.sdkAvailable]);
+  }, []);
 
   // Handle cancel button
   const handleCancel = useCallback(async () => {
@@ -66,104 +57,6 @@ export const ChatPanel = ({
       console.error('[ChatPanel] Failed to cancel:', error);
     }
   }, []);
-
-  // Handle keyboard shortcuts
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Cmd/Ctrl+Enter to send
-    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  }, [handleSendMessage]);
-
-  // Render a single content part
-  const renderContentPart = (part: any, index: number) => {
-    switch (part.type) {
-      case 'text':
-        return (
-          <ChatTextContent
-            key={index}
-            content={(part as TextContent).content}
-            isStreaming={false}
-          />
-        );
-
-      case 'tool_invocation':
-        const tool = part as ToolInvocationContent;
-        return (
-          <ToolInvocationCard
-            key={index}
-            toolName={tool.toolName}
-            toolInput={tool.toolInput || {}}
-            toolOutput={tool.toolOutput}
-            status={tool.status as any}
-            timestamp={new Date().toLocaleTimeString()}
-            duration={tool.duration}
-          />
-        );
-
-      case 'thinking':
-        return (
-          <ThinkingBlock
-            key={index}
-            content={part.content}
-            isStreaming={false}
-            defaultExpanded={false}
-          />
-        );
-
-      case 'usage':
-        const usage = part as UsageContent;
-        return (
-          <UsageStatsBadge
-            key={index}
-            inputTokens={usage.inputTokens || 0}
-            outputTokens={usage.outputTokens || 0}
-            totalTokens={usage.totalTokens}
-          />
-        );
-
-      case 'error':
-        const err = part as ErrorContent;
-        return (
-          <div key={index} className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded p-2 text-sm my-2 text-red-800 dark:text-red-200">
-            [Error] {err.message}
-          </div>
-        );
-
-      default:
-        return null;
-    }
-  };
-
-  // Render a single message
-  const renderMessage = (message: ChatMessage) => {
-    const isUser = message.role === 'user';
-
-    return (
-      <div
-        key={message.id}
-        className={`mb-4 flex ${isUser ? 'justify-end' : 'justify-start'}`}
-        data-testid={`message-${message.id}`}
-      >
-        <div
-          className={`max-w-xs lg:max-w-md xl:max-w-lg rounded-lg px-4 py-2 ${
-            isUser
-              ? 'bg-blue-600 dark:bg-blue-700 text-white rounded-br-none'
-              : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-bl-none'
-          }`}
-        >
-          {message.parts.map((part, idx) => renderContentPart(part, idx))}
-          {message.isStreaming && (
-            <div className="mt-2 text-xs opacity-75 flex items-center gap-1">
-              <span className="inline-block w-2 h-2 bg-current rounded-full animate-pulse"></span>
-              Streaming...
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
 
   const chatAvailable = sdkStatus?.sdkAvailable;
   const hasError = !!storeError;
@@ -214,7 +107,9 @@ export const ChatPanel = ({
           </div>
         ) : (
           <>
-            {messages.map(renderMessage)}
+            {messages.map((message) => (
+              <ChatMessage key={message.id} message={message} />
+            ))}
             <div ref={messagesEndRef} />
           </>
         )}
@@ -230,52 +125,13 @@ export const ChatPanel = ({
       )}
 
       {/* Input Area */}
-      <div className="px-4 py-3 border-t dark:border-gray-700">
-        {!chatAvailable && (
-          <div className="bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded p-2 mb-3 text-sm text-yellow-800 dark:text-yellow-200">
-            [Warning] {sdkStatus?.errorMessage || 'Chat service is not available'}
-          </div>
-        )}
-
-        <div className="flex gap-2 items-end">
-          <textarea
-            ref={inputRef}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            disabled={isStreaming || !chatAvailable || isSending}
-            placeholder={
-              chatAvailable
-                ? 'Type a message... (Cmd/Ctrl+Enter to send)'
-                : 'Chat unavailable'
-            }
-            className="flex-1 px-3 py-2 border rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
-            rows={3}
-            data-testid="message-input"
-          />
-          <div className="flex gap-2">
-            {isStreaming ? (
-              <button
-                onClick={handleCancel}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 text-sm font-medium transition-colors"
-                disabled={!isStreaming}
-                data-testid="cancel-button"
-              >
-                Cancel
-              </button>
-            ) : (
-              <button
-                onClick={handleSendMessage}
-                disabled={!inputValue.trim() || !chatAvailable || isSending}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 text-sm font-medium transition-colors flex items-center gap-2"
-                data-testid="send-button"
-              >
-                <span>{isSending ? '...' : 'Send'}</span>
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
+      <ChatInput
+        onSendMessage={handleSendMessage}
+        onCancel={handleCancel}
+        isStreaming={isStreaming}
+        isSending={isSending}
+        sdkStatus={sdkStatus}
+      />
 
       {/* Cost Info Footer (optional) */}
       {showCostInfo && messages.length > 0 && (
