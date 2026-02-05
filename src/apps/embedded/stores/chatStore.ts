@@ -10,9 +10,6 @@ import {
   ChatContent,
   SDKStatus,
   ToolInvocationContent,
-  ThinkingContent,
-  UsageContent,
-  ErrorContent,
 } from '../types/chat';
 
 export interface ChatStore {

@@ -186,6 +186,7 @@ export interface ChatStatusResult {
  */
 export interface ChatSendParams {
   message: string;
+  [key: string]: unknown;
 }
 
 /**
