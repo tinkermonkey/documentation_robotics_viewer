@@ -20,6 +20,10 @@ from starlette.middleware.base import BaseHTTPMiddleware
 import logging
 import argparse
 
+# Import chat handler and message router
+from chat_handler import chat_handler
+from message_router import message_router
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -688,7 +692,7 @@ async def get_annotations(elementId: str = None):
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    """WebSocket connection for live updates"""
+    """WebSocket connection for live updates and JSON-RPC messages"""
     await manager.connect(websocket)
 
     # Send initial connection message
@@ -698,23 +702,59 @@ async def websocket_endpoint(websocket: WebSocket):
         "timestamp": "2025-11-27T00:00:00Z"
     })
 
+    # Register chat handlers with the message router
+    await _register_chat_handlers()
+
     try:
         while True:
-            # Receive messages from client
-            data = await websocket.receive_json()
-            message_type = data.get("type")
+            # Receive messages from client (can be raw string or JSON)
+            try:
+                data = await websocket.receive_text()
+            except Exception:
+                # Fallback to receive_json if receive_text fails
+                data = await websocket.receive_json()
+                if isinstance(data, dict):
+                    data = json.dumps(data)
 
-            if message_type == "subscribe":
-                topics = data.get("topics", [])
-                logger.info(f"Client subscribed to topics: {topics}")
-                await websocket.send_json({
-                    "type": "subscribed",
-                    "topics": topics
-                })
+            # Check if this is a JSON-RPC message
+            try:
+                parsed = json.loads(data) if isinstance(data, str) else data
 
-            elif message_type == "ping":
+                # Check if it's a JSON-RPC request/notification (has jsonrpc: "2.0" and method)
+                if isinstance(parsed, dict) and parsed.get('jsonrpc') == '2.0' and 'method' in parsed:
+                    # Route through JSON-RPC message router
+                    await message_router.route_message(
+                        json.dumps(parsed) if isinstance(parsed, dict) else data,
+                        send_response=websocket.send_text,
+                        send_notification=websocket.send_text
+                    )
+                else:
+                    # Handle non-JSON-RPC messages (annotations, subscriptions, etc.)
+                    if isinstance(parsed, dict):
+                        message_type = parsed.get("type")
+
+                        if message_type == "subscribe":
+                            topics = parsed.get("topics", [])
+                            logger.info(f"Client subscribed to topics: {topics}")
+                            await websocket.send_json({
+                                "type": "subscribed",
+                                "topics": topics
+                            })
+
+                        elif message_type == "ping":
+                            await websocket.send_json({
+                                "type": "pong"
+                            })
+
+            except json.JSONDecodeError:
+                logger.error("Failed to parse message as JSON")
                 await websocket.send_json({
-                    "type": "pong"
+                    "jsonrpc": "2.0",
+                    "error": {
+                        "code": -32700,
+                        "message": "Parse error"
+                    },
+                    "id": None
                 })
 
     except WebSocketDisconnect:
@@ -724,6 +764,32 @@ async def websocket_endpoint(websocket: WebSocket):
     except Exception as e:
         logger.error(f"WebSocket error: {e}")
         manager.disconnect(websocket)
+
+
+async def _register_chat_handlers():
+    """Register chat handlers with the message router"""
+    # Only register once (use a flag to prevent re-registration)
+    if not hasattr(_register_chat_handlers, '_registered'):
+        # Register chat.status handler
+        message_router.register_handler(
+            'chat.status',
+            chat_handler.handle_status
+        )
+
+        # Register chat.send streaming handler
+        message_router.register_streaming_handler(
+            'chat.send',
+            chat_handler.handle_send
+        )
+
+        # Register chat.cancel handler
+        message_router.register_handler(
+            'chat.cancel',
+            chat_handler.handle_cancel
+        )
+
+        _register_chat_handlers._registered = True
+        logger.info("Chat handlers registered with message router")
 
 # ============================================================================
 # Static File Serving
