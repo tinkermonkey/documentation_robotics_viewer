@@ -111,6 +111,7 @@ export const ChatInput = memo(
                 className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 text-sm font-medium transition-colors flex items-center gap-2"
                 disabled={!isStreaming}
                 data-testid="cancel-button"
+                aria-label="Cancel message streaming"
               >
                 <Square className="w-4 h-4" />
                 <span>Cancel</span>
@@ -121,6 +122,7 @@ export const ChatInput = memo(
                 disabled={!inputValue.trim() || !chatAvailable || isSending}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 text-sm font-medium transition-colors flex items-center gap-2"
                 data-testid="send-button"
+                aria-label="Send message"
               >
                 <Send className="w-4 h-4" />
                 <span>{isSending ? '...' : 'Send'}</span>

@@ -51,6 +51,7 @@ export const ThinkingBlock = memo(
           className="w-full bg-purple-50 dark:bg-purple-900/30 hover:bg-purple-100 dark:hover:bg-purple-900/50 px-4 py-3 flex items-center justify-between transition-colors rounded-t-lg"
           data-testid="thinking-block-header"
           aria-expanded={isExpanded}
+          aria-label={`${isExpanded ? 'Collapse' : 'Expand'} thinking block`}
         >
           <div className="flex items-center gap-2">
             <Brain className="w-5 h-5 text-purple-600 dark:text-purple-400" />

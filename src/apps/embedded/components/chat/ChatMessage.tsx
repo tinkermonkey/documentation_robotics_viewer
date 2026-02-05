@@ -75,6 +75,7 @@ export const ChatMessage = memo(({ message }: ChatMessageProps) => {
             inputTokens={usage.inputTokens || 0}
             outputTokens={usage.outputTokens || 0}
             totalTokens={usage.totalTokens}
+            totalCostUsd={usage.totalCostUsd}
           />
         );
 

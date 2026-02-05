@@ -5,6 +5,7 @@ export interface UsageStatsBadgeProps {
   inputTokens: number;
   outputTokens: number;
   totalTokens: number;
+  totalCostUsd?: number;
 }
 
 export const UsageStatsBadge = memo(
@@ -12,6 +13,7 @@ export const UsageStatsBadge = memo(
     inputTokens,
     outputTokens,
     totalTokens,
+    totalCostUsd,
   }: UsageStatsBadgeProps) => {
     // Format large numbers as "N.Nk" for 1000+
     const formatTokens = (tokens: number): string => {
@@ -22,9 +24,14 @@ export const UsageStatsBadge = memo(
     };
 
     const tooltipText = useMemo(
-      () =>
-        `Input: ${inputTokens.toLocaleString()} | Output: ${outputTokens.toLocaleString()} | Total: ${totalTokens.toLocaleString()}`,
-      [inputTokens, outputTokens, totalTokens]
+      () => {
+        let text = `Input: ${inputTokens.toLocaleString()} | Output: ${outputTokens.toLocaleString()} | Total: ${totalTokens.toLocaleString()}`;
+        if (totalCostUsd !== undefined) {
+          text += ` | Cost: $${totalCostUsd.toFixed(6)}`;
+        }
+        return text;
+      },
+      [inputTokens, outputTokens, totalTokens, totalCostUsd]
     );
 
     const displayTokens = formatTokens(totalTokens);
@@ -36,7 +43,10 @@ export const UsageStatsBadge = memo(
         title={tooltipText}
       >
         <Zap className="w-3.5 h-3.5 text-yellow-600 dark:text-yellow-400" />
-        <span>{displayTokens} tokens</span>
+        <span>
+          {displayTokens} tokens
+          {totalCostUsd !== undefined && <span className="ml-1">${totalCostUsd.toFixed(6)}</span>}
+        </span>
       </div>
     );
   }
