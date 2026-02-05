@@ -1,3 +1,6 @@
+export { ChatPanel } from '../ChatPanel';
+export { ChatPanelContainer } from '../ChatPanelContainer';
+
 export { ChatTextContent } from './ChatTextContent';
 export type { ChatTextContentProps } from './ChatTextContent';
 

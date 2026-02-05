@@ -24,7 +24,7 @@ export const ChatPanelContainer = ({
   const [isInitializing, setIsInitializing] = useState(true);
   const [initError, setInitError] = useState<string | null>(null);
 
-  const { setSdkStatus, setError: setStoreError, reset: resetChat } = useChatStore();
+  const { setSdkStatus, setError: setStoreError } = useChatStore();
 
   // Initialize ChatService on mount
   useEffect(() => {
@@ -54,25 +54,25 @@ export const ChatPanelContainer = ({
     initializeChat();
 
     // Setup WebSocket event listeners for chat events
-    const handleConnectionChange = (connected: boolean) => {
-      if (!connected) {
-        setStoreError('Connection lost. Reconnecting...');
-      } else {
-        // Re-check status when reconnected
-        chatService.getStatus().catch(error => {
-          console.error('[ChatPanelContainer] Status check failed after reconnect:', error);
-        });
-      }
+    const handleConnect = () => {
+      // Re-check status when reconnected
+      chatService.getStatus().catch(error => {
+        console.error('[ChatPanelContainer] Status check failed after reconnect:', error);
+      });
+    };
+
+    const handleDisconnect = () => {
+      setStoreError('Connection lost. Reconnecting...');
     };
 
     // Listen for connection changes
-    websocketClient.on('connect', () => handleConnectionChange(true));
-    websocketClient.on('disconnect', () => handleConnectionChange(false));
+    websocketClient.on('connect', handleConnect);
+    websocketClient.on('disconnect', handleDisconnect);
 
-    // Cleanup on unmount
+    // Cleanup on unmount - pass specific handlers to off()
     return () => {
-      websocketClient.off('connect');
-      websocketClient.off('disconnect');
+      websocketClient.off('connect', handleConnect);
+      websocketClient.off('disconnect', handleDisconnect);
     };
   }, [setSdkStatus, setStoreError]);
 

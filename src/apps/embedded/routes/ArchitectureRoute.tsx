@@ -61,7 +61,6 @@ function ArchitectureRouteContent() {
     c4Preferences.selectedLayout
   );
   const [exportError, setExportError] = useState<string | null>(null);
-  const [showChatPanel, setShowChatPanel] = useState(true);
 
   // Store reference to the full C4 graph
   const fullGraphRef = useRef<C4Graph | null>(null);
