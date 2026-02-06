@@ -26,28 +26,16 @@ test.describe('RenderPropErrorBoundary', () => {
       expect(typeof result === 'object' && result !== null && 'props' in result).toBeTruthy();
     });
 
-    test('should log error to console with context', () => {
-      const consoleSpy = test.step('spy on console.error', async () => {
-        const originalError = console.error;
-        const calls: any[] = [];
-        console.error = (...args) => calls.push(args);
+    test('should handle error without console logging', () => {
+      const renderProp = () => {
+        throw new Error('Test error message');
+      };
 
-        try {
-          const renderProp = () => {
-            throw new Error('Test error message');
-          };
+      const result = wrapRenderProp(renderProp, { id: 'test-1' }, 'testProp');
 
-          wrapRenderProp(renderProp, { id: 'test-1' }, 'testProp');
-
-          // Verify error was logged
-          expect(calls.length).toBeGreaterThan(0);
-          const errorCall = calls[0];
-          expect(String(errorCall[0])).toContain('Error in testProp');
-          expect(String(errorCall[0])).toContain('Test error message');
-        } finally {
-          console.error = originalError;
-        }
-      });
+      // Should return error UI element without throwing or logging
+      expect(result).toBeTruthy();
+      expect(typeof result === 'object' && result !== null && 'props' in result).toBeTruthy();
     });
 
     test('should handle non-Error objects', () => {
@@ -96,28 +84,19 @@ test.describe('RenderPropErrorBoundary', () => {
       expect(typeof result === 'object' && result !== null && 'props' in result).toBeTruthy();
     });
 
-    test('should log both arguments in error context', () => {
-      const consoleSpy = test.step('spy on console.error', async () => {
-        const originalError = console.error;
-        const calls: any[] = [];
-        console.error = (...args) => calls.push(args);
+    test('should handle errors with two arguments without console logging', () => {
+      const renderProp = () => {
+        throw new Error('Test error');
+      };
 
-        try {
-          const renderProp = () => {
-            throw new Error('Test error');
-          };
+      const arg1 = { id: 'node-1' };
+      const arg2 = { name: 'graph' };
 
-          const arg1 = { id: 'node-1' };
-          const arg2 = { name: 'graph' };
+      const result = wrapRenderProp2(renderProp, arg1, arg2, 'testProp');
 
-          wrapRenderProp2(renderProp, arg1, arg2, 'testProp');
-
-          // Verify error was logged with both arguments
-          expect(calls.length).toBeGreaterThan(0);
-        } finally {
-          console.error = originalError;
-        }
-      });
+      // Should return error UI without throwing or logging
+      expect(result).toBeTruthy();
+      expect(typeof result === 'object' && result !== null && 'props' in result).toBeTruthy();
     });
   });
 

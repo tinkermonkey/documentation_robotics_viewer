@@ -310,25 +310,30 @@ export class JsonRpcHandler {
       return;
     }
 
-    try {
-      handlers.forEach((handler) => {
-        try {
-          handler(params);
-        } catch (error) {
-          logError(
-            ERROR_IDS.JSONRPC_NOTIFICATION_HANDLER_ERROR,
-            `Error in notification handler for '${method}'`,
-            { error: error instanceof Error ? error.message : String(error), method }
-          );
+    // Execute handlers - catch both sync and async errors
+    handlers.forEach((handler) => {
+      try {
+        const result = handler(params) as unknown;
+
+        // If handler returns a promise, catch async errors
+        if (result && typeof (result as any).then === 'function') {
+          (result as Promise<any>).catch((error: Error) => {
+            logError(
+              ERROR_IDS.JSONRPC_NOTIFICATION_HANDLER_ERROR,
+              `Error in notification handler for '${method}'`,
+              { error: error instanceof Error ? error.message : String(error), method }
+            );
+          });
         }
-      });
-    } catch (error) {
-      logError(
-        ERROR_IDS.JSONRPC_HANDLE_NOTIFICATION_ERROR,
-        `Error handling notification '${method}'`,
-        { error: error instanceof Error ? error.message : String(error), method }
-      );
-    }
+      } catch (error) {
+        // Catch synchronous errors
+        logError(
+          ERROR_IDS.JSONRPC_NOTIFICATION_HANDLER_ERROR,
+          `Error in notification handler for '${method}'`,
+          { error: error instanceof Error ? error.message : String(error), method }
+        );
+      }
+    });
   }
 
   /**
