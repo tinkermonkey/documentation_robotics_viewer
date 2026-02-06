@@ -135,5 +135,3 @@ export class ChatPanelErrorBoundary extends React.Component<
     return this.props.children;
   }
 }
-
-ChatPanelErrorBoundary.displayName = 'ChatPanelErrorBoundary';

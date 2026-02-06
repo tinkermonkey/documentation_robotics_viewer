@@ -10,11 +10,9 @@ import { Alert } from 'flowbite-react';
 import C4GraphView, { C4GraphViewRef } from '../components/C4GraphView';
 import { C4RightSidebar } from '../components/C4RightSidebar';
 import SharedLayout from '../components/SharedLayout';
-import { ChatPanelContainer } from '../components/ChatPanelContainer';
 import { useModelStore } from '../../../core/stores/modelStore';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
-import { useChatStore } from '../stores/chatStore';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
 import { LoadingState, ErrorState } from '../components/shared';
@@ -48,8 +46,6 @@ function ArchitectureRouteContent() {
     setC4ScenarioPreset,
   } = useViewPreferenceStore();
 
-  const { reset: resetChat } = useChatStore();
-
   // Panel state (extracted from C4GraphView)
   const [selectedContainerTypes, setSelectedContainerTypes] = useState<Set<ContainerType>>(
     c4Preferences.visibleContainerTypes
@@ -82,13 +78,6 @@ function ArchitectureRouteContent() {
       setGraphVersion((v) => v + 1); // Trigger useMemo recalculation
     }
   }, [model, c4GraphBuilder]);
-
-  // Reset chat panel when route unmounts
-  useEffect(() => {
-    return () => {
-      resetChat();
-    };
-  }, [resetChat]);
 
   // Create export service wrapper for ExportButtonGroup
   const c4ExportService = useMemo(
@@ -374,8 +363,6 @@ function ArchitectureRouteContent() {
     <SharedLayout
       showLeftSidebar={false}
       showRightSidebar={true}
-      showBottomPanel={showChatPanel}
-      bottomPanelHeight="320px"
       rightSidebarContent={
         <C4RightSidebar
           selectedContainerTypes={selectedContainerTypes}
@@ -409,9 +396,6 @@ function ArchitectureRouteContent() {
           onDrillDown={handleDrillDown}
           onCloseInspector={handleCloseInspector}
         />
-      }
-      bottomPanelContent={
-        showChatPanel ? <ChatPanelContainer testId="architecture-chat-panel" /> : null
       }
     >
       <div className="relative w-full h-full">
