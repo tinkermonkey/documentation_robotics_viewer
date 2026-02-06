@@ -81,38 +81,16 @@ export class WebSocketClient {
     try {
       const authenticatedUrl = this.getAuthenticatedUrl();
 
-      // Suppress browser console errors by catching them immediately
-      const originalConsoleError = console.error;
-      const errorSuppressor = (...args: any[]) => {
-        // Suppress WebSocket connection errors during detection
-        const message = args.join(' ');
-        if (this.mode === 'detecting' && message.includes('WebSocket connection')) {
-          return; // Suppress
-        }
-        originalConsoleError.apply(console, args);
-      };
-
-      if (this.mode === 'detecting') {
-        console.error = errorSuppressor;
-      }
-
       this.ws = new WebSocket(authenticatedUrl);
 
       this.ws.onopen = this.handleOpen.bind(this);
       this.ws.onmessage = this.handleMessage.bind(this);
       this.ws.onerror = this.handleError.bind(this);
-      this.ws.onclose = (event: CloseEvent) => {
-        // Restore console.error when connection closes
-        if (this.mode === 'detecting') {
-          console.error = originalConsoleError;
-        }
-        this.handleClose(event);
-      };
+      this.ws.onclose = this.handleClose.bind(this);
 
       // Set connection timeout for initial detection
       if (this.mode === 'detecting') {
         this.connectionTimeout = setTimeout(() => {
-          console.error = originalConsoleError; // Restore before timeout
           if (this.ws && this.ws.readyState !== WebSocket.OPEN) {
             console.log('[WebSocket] Connection timeout during detection phase');
             this.ws.close();
@@ -120,11 +98,10 @@ export class WebSocketClient {
         }, 3000); // 3 second timeout
       }
     } catch (error) {
-      // Suppress errors during detection phase
+      console.error('[WebSocket] Connection error:', error);
       if (this.mode === 'detecting') {
         this.handleConnectionFailure();
       } else {
-        console.error('[WebSocket] Connection error:', error);
         this.scheduleReconnect();
       }
     }
@@ -291,26 +268,31 @@ export class WebSocketClient {
    * Handle WebSocket error
    */
   private handleError(event: Event): void {
-    // Suppress errors during detection phase
-    if (this.mode === 'detecting') {
-      // Silent error during detection - don't log or emit
-      return;
-    }
-
-    // Suppress errors in test/Ladle environments (multiple checks for robustness)
+    // Always log errors for debugging, but adjust verbosity by mode
     const isTestEnv = typeof window !== 'undefined' && (
       window.location.port === '61000' ||  // Ladle default port
       (window as any).__LADLE_MOCK_WEBSOCKET__ ||  // Explicit mock flag
       (window as any).__PLAYWRIGHT__  // Playwright test environment
     );
-    if (isTestEnv) {
-      // Silent in test mode - don't log or emit
-      return;
+
+    // Log error details for debugging in all modes
+    if (this.mode === 'detecting') {
+      console.debug('[WebSocket] Connection error during detection (attempt %d/%d)',
+        this.reconnectAttempts + 1,
+        this.maxConnectionAttempts
+      );
+    } else if (!isTestEnv) {
+      // Full error logging outside test environments
+      console.error('[WebSocket] Error:', event);
+    } else {
+      // In test environments, log at debug level instead of error
+      console.debug('[WebSocket] Error in test environment:', event);
     }
 
-    // Only log and emit errors when not in detection mode or test mode
-    console.error('[WebSocket] Error:', event);
-    this.emit('error', { error: event });
+    // Emit error event unless in test environment
+    if (!isTestEnv) {
+      this.emit('error', { error: event });
+    }
   }
 
   /**

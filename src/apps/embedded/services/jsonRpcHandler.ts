@@ -89,8 +89,10 @@ export class JsonRpcHandler {
 
   private ensureMessageListenerAttached(): void {
     if (this.messageListenerAttached) return;
-    // Trigger async attachment
-    this.ensureMessageListenerAttachedAsync().catch(() => {});
+    // Trigger async attachment and log any failures
+    this.ensureMessageListenerAttachedAsync().catch((error) => {
+      console.error('[JsonRpcHandler] Failed to attach message listener in background:', error);
+    });
   }
 
   /**

@@ -2,29 +2,33 @@ import type { GlobalProvider } from "@ladle/react";
 import { MemoryRouter } from 'react-router-dom';
 import "@/index.css";
 
-// Mock WebSocket client for story rendering and suppress console errors globally
+// Setup test environment flags for WebSocket client detection
 if (typeof window !== 'undefined') {
   // @ts-ignore - Set mock flag for WebSocket client
   window.__LADLE_MOCK_WEBSOCKET__ = true;
 
-  // Suppress ALL console errors in Ladle to prevent test failures
-  // This is necessary because WebSocket connection attempts generate browser-level errors
+  // Create logger that distinguishes between test suppression and real errors
   const originalError = console.error;
+  const originalWarn = console.warn;
+
   console.error = (...args: any[]) => {
-    // Convert args to string for checking
     const message = String(args[0] || '');
 
-    // Suppress WebSocket, EmbeddedLayout, and connection-related errors
+    // For connection-related messages in test environment, downgrade to warning
+    // This avoids CI failures while still maintaining visibility via console.warn
     if (
       message.includes('[WebSocket]') ||
       message.includes('[EmbeddedLayout]') ||
-      message.includes('WebSocket') ||
-      message.includes('Connection')
+      message.includes('[JsonRpcHandler]') ||
+      message.includes('WebSocket is') ||
+      message.includes('WebSocket connection')
     ) {
-      return; // Suppress these errors in test environment
+      // Log as warning instead of error for test visibility
+      originalWarn('[TEST] Suppressed error (treating as warning):', ...args);
+      return;
     }
 
-    // Allow other errors through
+    // All other errors go through normally
     originalError.apply(console, args);
   };
 }
