@@ -4,7 +4,7 @@
  * Displays message list, input form, and streaming indicators
  */
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, memo } from 'react';
 import { useChatStore } from '../stores/chatStore';
 import { chatService } from '../services/chatService';
 import { ChatMessage, ChatInput } from './chat';
@@ -15,7 +15,7 @@ interface ChatPanelProps {
   testId?: string;
 }
 
-export const ChatPanel = ({
+const ChatPanelComponent = ({
   title = 'DrBot Chat',
   showCostInfo = true,
   testId = 'chat-panel'
@@ -143,4 +143,6 @@ export const ChatPanel = ({
   );
 };
 
-ChatPanel.displayName = 'ChatPanel';
+ChatPanelComponent.displayName = 'ChatPanel';
+
+export const ChatPanel = memo(ChatPanelComponent);

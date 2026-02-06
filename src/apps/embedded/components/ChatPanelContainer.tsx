@@ -4,7 +4,7 @@
  * Manages WebSocket connection, SDK status checking, and event listeners
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import { ChatPanel } from './ChatPanel';
 import { ChatPanelErrorBoundary } from './ChatPanelErrorBoundary';
 import { chatService } from '../services/chatService';
@@ -17,7 +17,7 @@ interface ChatPanelContainerProps {
   testId?: string;
 }
 
-export const ChatPanelContainer = ({
+const ChatPanelContainerComponent = ({
   title = 'DrBot Chat',
   showCostInfo = true,
   testId = 'chat-panel-container'
@@ -116,4 +116,6 @@ export const ChatPanelContainer = ({
   );
 };
 
-ChatPanelContainer.displayName = 'ChatPanelContainer';
+ChatPanelContainerComponent.displayName = 'ChatPanelContainer';
+
+export const ChatPanelContainer = memo(ChatPanelContainerComponent);
