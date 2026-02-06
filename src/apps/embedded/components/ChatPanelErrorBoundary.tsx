@@ -32,6 +32,8 @@ export class ChatPanelErrorBoundary extends React.Component<
   ChatPanelErrorBoundaryProps,
   ChatPanelErrorBoundaryState
 > {
+  static displayName = 'ChatPanelErrorBoundary';
+
   constructor(props: ChatPanelErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false, error: null };

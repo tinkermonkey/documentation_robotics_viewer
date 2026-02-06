@@ -496,10 +496,41 @@ if (isTestEnvironment()) {
     get connectionState() { return 'connected' as const; },
     get transportMode() { return 'rest' as const; }
   };
-} else {
+} else if (typeof window !== 'undefined') {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const wsUrl = `${protocol}//${window.location.host}/ws`;
   websocketClient = new WebSocketClient(wsUrl, null);
+} else {
+  // Node.js/SSR environment: create a mock WebSocket client
+  const mockHandlers = new Map<string, Set<EventHandler>>();
+
+  websocketClient = {
+    setToken: () => {},
+    connect: () => {
+      setTimeout(() => {
+        const handlers = mockHandlers.get('rest-mode');
+        if (handlers) handlers.forEach(h => h({}));
+        const connectHandlers = mockHandlers.get('connect');
+        if (connectHandlers) connectHandlers.forEach(h => h({}));
+      }, 0);
+    },
+    disconnect: () => {},
+    subscribe: () => {},
+    send: () => {},
+    on: (event: string, handler: EventHandler) => {
+      if (!mockHandlers.has(event)) {
+        mockHandlers.set(event, new Set());
+      }
+      mockHandlers.get(event)!.add(handler);
+    },
+    off: (event: string, handler: EventHandler) => {
+      const handlers = mockHandlers.get(event);
+      if (handlers) handlers.delete(handler);
+    },
+    get isConnected() { return true; },
+    get connectionState() { return 'connected' as const; },
+    get transportMode() { return 'rest' as const; }
+  };
 }
 
 export { websocketClient };
