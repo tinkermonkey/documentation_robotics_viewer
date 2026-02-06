@@ -9,6 +9,19 @@ import React from 'react';
  * and errors are caught, logged, and displayed to users rather than silently failing.
  */
 
+// Helper function to safely extract React element properties
+function getElementProps(element: any) {
+  return element?.props || {};
+}
+
+function getElementType(element: any) {
+  return element?.type;
+}
+
+function getElementChildren(element: any) {
+  return element?.props?.children;
+}
+
 test.describe('wrapRenderProp Error Handling', () => {
   test('should catch render prop errors and return error UI', () => {
     // Setup: Create a render prop that throws an error
@@ -21,9 +34,9 @@ test.describe('wrapRenderProp Error Handling', () => {
 
     // Assert: Result should be a React element (error UI)
     expect(result).toBeDefined();
-    expect((result as any)?.type).toBe('div');
-    expect((result as any)?.props['data-testid']).toBe('render-prop-error-testRenderProp');
-    expect((result as any)?.props.role).toBe('alert');
+    expect(getElementType(result)).toBe('div');
+    expect(getElementProps(result)['data-testid']).toBe('render-prop-error-testRenderProp');
+    expect(getElementProps(result).role).toBe('alert');
   });
 
   test('should successfully call and return result from working render prop', () => {
@@ -37,8 +50,8 @@ test.describe('wrapRenderProp Error Handling', () => {
 
     // Assert: Result should be the returned element
     expect(result).toBeDefined();
-    expect((result as any)?.type).toBe('span');
-    expect((result as any)?.props.children).toContain('Value: test data');
+    expect(getElementType(result)).toBe('span');
+    expect(getElementChildren(result)).toContain('Value: test data');
   });
 
   test('should log error details to console when render prop fails', () => {
@@ -83,8 +96,8 @@ test.describe('wrapRenderProp Error Handling', () => {
 
     // Assert: Should return element with "No data"
     expect(result).toBeDefined();
-    expect((result as any)?.type).toBe('div');
-    expect((result as any)?.props.children).toBe('No data');
+    expect(getElementType(result)).toBe('div');
+    expect(getElementChildren(result)).toBe('No data');
   });
 });
 
@@ -100,8 +113,8 @@ test.describe('wrapRenderProp2 Error Handling', () => {
 
     // Assert: Should return error UI
     expect(result).toBeDefined();
-    expect((result as any)?.type).toBe('div');
-    expect((result as any)?.props['data-testid']).toBe('render-prop-error-testRenderProp2');
+    expect(getElementType(result)).toBe('div');
+    expect(getElementProps(result)['data-testid']).toBe('render-prop-error-testRenderProp2');
   });
 
   test('should successfully call two-argument render props', () => {
@@ -115,7 +128,7 @@ test.describe('wrapRenderProp2 Error Handling', () => {
 
     // Assert: Should return the element
     expect(result).toBeDefined();
-    expect((result as any)?.props.children).toBe('Items: 5');
+    expect(getElementChildren(result)).toBe('Items: 5');
   });
 
   test('should log both arguments in error context for two-argument render props', () => {
@@ -161,8 +174,8 @@ test.describe('wrapRenderPropVoid Error Handling', () => {
 
     // Assert: Should return error UI
     expect(result).toBeDefined();
-    expect((result as any)?.type).toBe('div');
-    expect((result as any)?.props['data-testid']).toBe('render-prop-error-testVoidProp');
+    expect(getElementType(result)).toBe('div');
+    expect(getElementProps(result)['data-testid']).toBe('render-prop-error-testVoidProp');
   });
 
   test('should successfully call void render props', () => {
@@ -176,7 +189,7 @@ test.describe('wrapRenderPropVoid Error Handling', () => {
 
     // Assert: Should return the element
     expect(result).toBeDefined();
-    expect((result as any)?.props.children).toBe('Void render success');
+    expect(getElementChildren(result)).toBe('Void render success');
   });
 
   test('should log error stack trace for void render props', () => {
