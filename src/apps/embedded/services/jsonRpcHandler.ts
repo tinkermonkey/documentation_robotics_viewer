@@ -6,6 +6,7 @@
 
 import {
   JsonRpcRequest,
+  JsonRpcNotification,
   JsonRpcResponse,
   JsonRpcErrorResponse,
   JsonRpcMessage,
@@ -144,10 +145,9 @@ export class JsonRpcHandler {
    * @param params - Optional parameters for the method
    */
   sendNotification(method: string, params?: Record<string, unknown>): void {
-    const notification: JsonRpcRequest = {
+    const notification: JsonRpcNotification = {
       jsonrpc: '2.0',
       method,
-      id: this.generateRequestId(),
       ...(params && { params }),
     };
 
@@ -181,7 +181,7 @@ export class JsonRpcHandler {
    * Internal method to send a notification message
    */
   private async _sendNotificationMessage(
-    notification: JsonRpcRequest,
+    notification: JsonRpcNotification,
     method: string
   ): Promise<void> {
     try {
