@@ -23,6 +23,8 @@ playwright-ci:
       - webkit
     x-supports:
       - technology.tool.playwright
+    testsServices:
+      - application.component.viewer-app
 typecheck-pipeline:
   id: technology.cicd.typecheck-pipeline
   name: TypeScript Type Check Pipeline
@@ -135,6 +137,11 @@ react:
   documentation: UI Library
   properties:
     version: 19.2.0
+    supportsServices:
+      - application.component.viewer-app
+      - application.component.graph-view
+      - application.component.c4-graph-view
+      - application.component.motivation-graph-view
 react-flow:
   id: technology.library.react-flow
   name: React Flow
@@ -143,6 +150,9 @@ react-flow:
   properties:
     package: "@xyflow/react"
     version: 12.9.3
+    supportsServices:
+      - application.service.graph-builder
+      - application.service.layout-engine
 vite:
   id: technology.tool.vite
   name: Vite
@@ -150,6 +160,8 @@ vite:
   documentation: Build Tool
   properties:
     version: 7.2.4
+    supportsServices:
+      - application.component.viewer-app
 typescript:
   id: technology.language.typescript
   name: TypeScript

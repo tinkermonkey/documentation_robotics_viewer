@@ -3,8 +3,19 @@ core-logic:
   name: Core Logic
   type: coverage-target
   documentation: Business logic, parsers, and data transformers
+  properties:
+    coversServices:
+      - application.service.graph-builder
+      - application.service.layout-engine
+      - application.service.yaml-parser
+      - application.service.cross-layer-reference-resolver
 ui-experience:
   id: testing.coverage-target.ui-experience
   name: UI Experience
   type: coverage-target
   documentation: User interface components, interactions, and accessibility
+  properties:
+    coversComponents:
+      - application.component.viewer-app
+      - application.component.graph-view
+      - application.component.inspector-panel

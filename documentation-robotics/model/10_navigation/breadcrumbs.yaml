@@ -7,6 +7,8 @@ c4-nav:
   properties:
     x-rendered-by:
       - ux.component.c4-breadcrumb-nav
+    usedByComponents:
+      - ux.component.c4-breadcrumb-nav
 motivation-nav:
   id: navigation.breadcrumb.motivation-nav
   name: Motivation Breadcrumb Navigation
@@ -14,4 +16,6 @@ motivation-nav:
   documentation: Breadcrumb navigation for motivation layer with element type context
   properties:
     x-rendered-by:
+      - ux.component.motivation-breadcrumb
+    usedByComponents:
       - ux.component.motivation-breadcrumb

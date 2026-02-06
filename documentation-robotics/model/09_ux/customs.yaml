@@ -41,6 +41,8 @@ graph-viewer:
         locations:
           - file: src/core/components/GraphViewer.tsx
             symbol: GraphViewer
+    implementsComponent:
+      - application.component.viewer-app
 c4-graph-view:
   id: ux.component.c4-graph-view
   name: C4GraphView
@@ -56,6 +58,8 @@ c4-graph-view:
         locations:
           - file: src/apps/embedded/components/C4GraphView.tsx
             symbol: C4GraphView
+    implementsComponent:
+      - application.component.c4-graph-view
 motivation-graph-view:
   id: ux.component.motivation-graph-view
   name: MotivationGraphView
@@ -71,6 +75,8 @@ motivation-graph-view:
         locations:
           - file: src/apps/embedded/components/MotivationGraphView.tsx
             symbol: MotivationGraphView
+    implementsComponent:
+      - application.component.motivation-graph-view
 model-json-viewer:
   id: ux.component.model-json-viewer
   name: ModelJSONViewer
@@ -84,6 +90,8 @@ model-json-viewer:
         locations:
           - file: src/apps/embedded/components/ModelJSONViewer.tsx
             symbol: ModelJSONViewer
+    implementsComponent:
+      - application.component.model-json-viewer
 spec-viewer:
   id: ux.component.spec-viewer
   name: SpecViewer
@@ -96,6 +104,8 @@ spec-viewer:
         locations:
           - file: src/apps/embedded/components/SpecViewer.tsx
             symbol: SpecViewer
+    implementsComponent:
+      - application.component.spec-viewer
 spec-graph-view:
   id: ux.component.spec-graph-view
   name: SpecGraphView
@@ -122,6 +132,8 @@ changeset-graph-view:
         locations:
           - file: src/apps/embedded/components/ChangesetGraphView.tsx
             symbol: ChangesetGraphView
+    implementsComponent:
+      - application.component.changeset-graph-view
 sub-tab-navigation:
   id: ux.component.sub-tab-navigation
   name: SubTabNavigation
@@ -221,6 +233,8 @@ annotation-panel:
         locations:
           - file: src/apps/embedded/components/AnnotationPanel.tsx
             symbol: AnnotationPanel
+    implementsComponent:
+      - application.component.annotation-panel
 schema-info-panel:
   id: ux.component.schema-info-panel
   name: SchemaInfoPanel

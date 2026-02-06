@@ -3,16 +3,32 @@ unit-tests:
   name: Unit Tests
   type: test-case-sketche
   documentation: Unit tests for core logic, parsers, and transformers
+  properties:
+    testsServices:
+      - application.service.graph-builder
+      - application.service.layout-engine
+      - application.service.yaml-parser
 e2e-tests:
   id: testing.test-case-sketch.e2e-tests
   name: E2E Tests
   type: test-case-sketche
   documentation: End-to-end tests for full application workflows
+  properties:
+    testsComponents:
+      - application.component.viewer-app
+      - application.component.graph-view
+      - application.component.c4-graph-view
+      - application.component.motivation-graph-view
 embedded-tests:
   id: testing.test-case-sketch.embedded-tests
   name: Embedded Tests
   type: test-case-sketche
   documentation: Tests for the viewer running in embedded mode
+  properties:
+    testsComponents:
+      - application.component.viewer-app
+    verifiesRequirement:
+      - motivation.requirement.embedded-mode
 refinement-tests:
   id: testing.test-case-sketch.refinement-tests
   name: Refinement Tests

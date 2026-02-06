@@ -7,6 +7,10 @@ visualize-architecture:
     goal:
       measurable: "true"
       kpi: Initial render time < 3s for 500 elements
+    realizesCapabilities:
+      - business.capability.visualization
+    realizedByServices:
+      - business.service.architecture-visualization
 enable-collaboration:
   id: motivation.goal.enable-collaboration
   name: Enable Cross-Team Collaboration
@@ -14,6 +18,11 @@ enable-collaboration:
   documentation: Provide a shared visualization platform that enables architects,
     developers, and stakeholders to communicate about architecture using a
     common visual language
+  properties:
+    realizesCapabilities:
+      - business.capability.collaboration
+    realizedByServices:
+      - business.service.architecture-analysis
 support-embedding:
   id: motivation.goal.support-embedding
   name: Support Embedded Integration

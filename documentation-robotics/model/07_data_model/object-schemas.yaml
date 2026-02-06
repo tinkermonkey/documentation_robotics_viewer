@@ -41,6 +41,8 @@ connection-state:
   properties:
     x-persisted-in:
       - datastore.browser-storage.session-storage
+    storedIn:
+      - datastore.store.connection-store
 view-preferences:
   id: data_model.object-schema.view-preferences
   name: View Preferences
@@ -77,6 +79,8 @@ model-store-state:
   properties:
     x-persisted-in:
       - datastore.store.model-store
+    storedIn:
+      - datastore.store.model-store
 element-store-state:
   id: data_model.object-schema.element-store-state
   name: Element Store State
@@ -85,6 +89,8 @@ element-store-state:
   properties:
     x-persisted-in:
       - datastore.store.element-store
+    storedIn:
+      - datastore.store.element-store
 layer-store-state:
   id: data_model.object-schema.layer-store-state
   name: Layer Store State
@@ -92,6 +98,8 @@ layer-store-state:
   documentation: Zustand state shape for layer visibility, opacity, locking, and focus state
   properties:
     x-persisted-in:
+      - datastore.store.layer-store
+    storedIn:
       - datastore.store.layer-store
 layout-preferences-state:
   id: data_model.object-schema.layout-preferences-state
@@ -102,6 +110,8 @@ layout-preferences-state:
   properties:
     x-persisted-in:
       - datastore.store.layout-preferences-store
+    storedIn:
+      - datastore.store.layout-preferences-store
 business-layer-store-state:
   id: data_model.object-schema.business-layer-store-state
   name: Business Layer Store State
@@ -110,6 +120,8 @@ business-layer-store-state:
   properties:
     x-persisted-in:
       - datastore.store.business-layer-store
+    storedIn:
+      - datastore.store.business-layer-store
 auth-state:
   id: data_model.object-schema.auth-state
   name: Auth State
@@ -117,6 +129,8 @@ auth-state:
   documentation: Authentication state including token, user info, and login status
   properties:
     x-persisted-in:
+      - datastore.store.auth-store
+    storedIn:
       - datastore.store.auth-store
 annotation-store-state:
   id: data_model.object-schema.annotation-store-state
@@ -127,6 +141,8 @@ annotation-store-state:
   properties:
     x-persisted-in:
       - datastore.store.annotation-store
+    storedIn:
+      - datastore.store.annotation-store
 changeset-store-state:
   id: data_model.object-schema.changeset-store-state
   name: Changeset Store State
@@ -136,6 +152,8 @@ changeset-store-state:
   properties:
     x-persisted-in:
       - datastore.store.changeset-store
+    storedIn:
+      - datastore.store.changeset-store
 view-preferences-state:
   id: data_model.object-schema.view-preferences-state
   name: View Preferences State
@@ -144,6 +162,8 @@ view-preferences-state:
     filter state
   properties:
     x-persisted-in:
+      - datastore.store.view-preference-store
+    storedIn:
       - datastore.store.view-preference-store
 node-transform-result:
   id: data_model.object-schema.node-transform-result

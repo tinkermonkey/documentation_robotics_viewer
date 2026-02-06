@@ -16,6 +16,9 @@ user-centric-design:
     x-guides:
       - motivation.goal.visualize-architecture
       - motivation.requirement.interactive-graphs
+    governsGoals:
+      - motivation.goal.visualize-architecture
+      - motivation.goal.ensure-accessibility
 performance-first:
   id: motivation.principle.performance-first
   name: Performance First
@@ -34,6 +37,8 @@ performance-first:
         Web Workers for heavy computation, viewport culling for large graphs.
     x-guides:
       - motivation.goal.visualize-architecture
+    governsGoals:
+      - motivation.goal.maintain-performance
 accessibility-by-default:
   id: motivation.principle.accessibility-by-default
   name: Accessibility by Default
@@ -53,6 +58,8 @@ accessibility-by-default:
     x-guides:
       - motivation.goal.visualize-architecture
       - motivation.requirement.interactive-graphs
+    governsGoals:
+      - motivation.goal.ensure-accessibility
 progressive-enhancement:
   id: motivation.principle.progressive-enhancement
   name: Progressive Enhancement
@@ -71,3 +78,5 @@ progressive-enhancement:
         (animations, advanced layouts) are optional improvements.
     x-guides:
       - motivation.requirement.embedded-mode
+    governsGoals:
+      - motivation.goal.support-embedding

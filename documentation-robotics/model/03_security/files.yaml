@@ -5,3 +5,7 @@ file-system:
   documentation: Local file system access for DR model files. Includes the model
     directory containing manifest.yaml, layer directories, and all element YAML
     files. Access is scoped to the model directory only.
+  properties:
+    protectsServices:
+      - application.service.local-file-loader
+      - application.service.data-loader

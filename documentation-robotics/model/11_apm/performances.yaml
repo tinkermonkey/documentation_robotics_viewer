@@ -38,6 +38,11 @@ layout-calculation-time:
       - application.service.dagre-layout-engine
       - application.service.d3-force-layout-engine
       - application.service.elk-layout-engine
+    instrumentsServices:
+      - application.service.dagre-layout-engine
+      - application.service.d3-force-layout-engine
+      - application.service.elk-layout-engine
+      - application.service.graphviz-layout-engine
 node-render-count:
   id: apm.metric.node-render-count
   name: Node Render Count
@@ -71,6 +76,8 @@ websocket-latency:
   properties:
     x-measures:
       - application.service.connection-store
+    instrumentsServices:
+      - application.service.reference-server
 annotation-load-time:
   id: apm.metric.annotation-load-time
   name: Annotation Load Time
@@ -78,6 +85,8 @@ annotation-load-time:
   documentation: Time to load and render annotations for selected element
   properties:
     x-measures:
+      - application.service.annotation-store
+    instrumentsServices:
       - application.service.annotation-store
 changeset-load-time:
   id: apm.metric.changeset-load-time
@@ -87,6 +96,8 @@ changeset-load-time:
   properties:
     x-measures:
       - application.service.changeset-store
+    instrumentsServices:
+      - application.service.changeset-store
 model-parse-time:
   id: apm.metric.model-parse-time
   name: Model Parse Time
@@ -94,6 +105,9 @@ model-parse-time:
   documentation: Time to parse YAML/JSON model files into memory structures
   properties:
     x-measures:
+      - application.service.yaml-parser
+      - application.service.json-schema-parser
+    instrumentsServices:
       - application.service.yaml-parser
       - application.service.json-schema-parser
 validation-time:

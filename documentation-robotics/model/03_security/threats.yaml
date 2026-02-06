@@ -20,6 +20,11 @@ path-traversal:
     x-mitigated-by:
       - security.countermeasure.path-validation
       - security.countermeasure.file-system-sandboxing
+    mitigatedBy:
+      - security.countermeasure.path-validation
+      - security.countermeasure.file-system-sandboxing
+    threatsServices:
+      - application.service.local-file-loader
 xss-attack:
   id: security.threat.xss-attack
   name: Cross-Site Scripting (XSS)
@@ -31,6 +36,11 @@ xss-attack:
     x-mitigated-by:
       - security.countermeasure.input-sanitization
       - security.countermeasure.output-encoding
+    mitigatedBy:
+      - security.countermeasure.input-sanitization
+      - security.countermeasure.output-encoding
+    threatsServices:
+      - application.service.reference-server
 websocket-hijacking:
   id: security.threat.websocket-hijacking
   name: WebSocket Hijacking
@@ -41,6 +51,10 @@ websocket-hijacking:
   properties:
     x-mitigated-by:
       - security.countermeasure.websocket-origin-validation
+    mitigatedBy:
+      - security.countermeasure.websocket-origin-validation
+    threatsServices:
+      - application.service.reference-server
 csrf-attack:
   id: security.threat.csrf-attack
   name: Cross-Site Request Forgery (CSRF)

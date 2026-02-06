@@ -3,6 +3,9 @@ root:
   name: Root Route
   type: experience
   documentation: Root layout route providing EmbeddedLayout wrapper for all child routes
+  properties:
+    displaysComponents:
+      - ux.component.shared-layout
 model-view:
   id: navigation.route.model-view
   name: Model View Route
@@ -13,6 +16,9 @@ model-view:
       - ux.view.model-graph-screen
     x-loads:
       - application.component.graph-view
+    displaysComponents:
+      - ux.component.graph-viewer
+      - ux.component.model-layers-sidebar
 spec-view:
   id: navigation.route.spec-view
   name: Spec View Route
