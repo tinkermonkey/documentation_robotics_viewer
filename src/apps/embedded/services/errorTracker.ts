@@ -3,7 +3,7 @@
  * Handles error logging with tracking IDs and Sentry integration
  */
 
-import { ErrorId, ERROR_IDS } from '@/constants/errorIds';
+import { ErrorId } from '@/constants/errorIds';
 
 interface ErrorContext {
   [key: string]: any;

@@ -26,7 +26,7 @@ export function initSentry(): void {
         tracesSampleRate: sentryEnvironment === 'production' ? 0.1 : 1.0,
         debug: sentryEnvironment !== 'production',
         integrations: [
-          new Sentry.Replay({
+          Sentry.replayIntegration({
             maskAllText: true,
             blockAllMedia: true,
           }),
