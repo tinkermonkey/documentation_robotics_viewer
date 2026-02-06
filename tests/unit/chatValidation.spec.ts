@@ -57,8 +57,13 @@ test.describe('Chat Validation Utilities', () => {
     });
 
     test('should reject empty string', () => {
-      const error = expect.objectContaining({ code: 'INVALID_MESSAGE_ID' });
-      expect(() => validateMessageId('')).toThrow();
+      try {
+        validateMessageId('');
+        expect.fail('Should have thrown ChatValidationError');
+      } catch (error) {
+        expect(error).toBeInstanceOf(ChatValidationError);
+        expect((error as ChatValidationError).code).toBe('INVALID_MESSAGE_ID');
+      }
     });
 
     test('should reject non-string', () => {
@@ -548,6 +553,43 @@ test.describe('Chat Store with Validation', () => {
       const store = useChatStore.getState();
       expect(() => store.addMessage(message)).toThrow(ChatValidationError);
     });
+
+    test('should reject message when max message limit exceeded', () => {
+      useChatStore.setState({ messages: [] });
+      const store = useChatStore.getState();
+
+      // Add 1000 messages (the max limit)
+      for (let i = 0; i < 1000; i++) {
+        const message = createTestMessage(`msg-${i}`, 'conv-1');
+        store.addMessage(message);
+      }
+
+      // Try to add one more - should throw
+      const message = createTestMessage('msg-1000', 'conv-1');
+      try {
+        store.addMessage(message);
+        expect.fail('Should have thrown ChatValidationError');
+      } catch (error) {
+        expect(error).toBeInstanceOf(ChatValidationError);
+        expect((error as ChatValidationError).code).toBe('MAX_MESSAGES_EXCEEDED');
+      }
+    });
+
+    test('should warn when message conversationId does not match active conversationId', () => {
+      useChatStore.setState({ messages: [], activeConversationId: 'conv-1' });
+      const store = useChatStore.getState();
+
+      // Mock console.warn to capture the warning
+      const warnSpy = console.warn;
+      let warned = false;
+      console.warn = () => { warned = true; };
+
+      const message = createTestMessage('msg-1', 'conv-2');
+      store.addMessage(message);
+
+      expect(warned).toBe(true);
+      console.warn = warnSpy;
+    });
   });
 
   test.describe('updateMessage with validation', () => {
@@ -652,6 +694,36 @@ test.describe('Chat Store with Validation', () => {
         timestamp: new Date().toISOString(),
       };
       expect(() => store.appendPart('msg-999', part)).toThrow();
+    });
+
+    test('should reject append when max parts limit exceeded', () => {
+      const message = createTestMessage('msg-1', 'conv-1');
+      // Add 500 parts (the max limit) to the message
+      const parts: TextContent[] = [message.parts[0] as TextContent];
+      for (let i = 1; i < 500; i++) {
+        parts.push({
+          type: 'text',
+          content: `part-${i}`,
+          timestamp: new Date().toISOString(),
+        });
+      }
+      message.parts = parts;
+      useChatStore.setState({ messages: [message] });
+      const store = useChatStore.getState();
+
+      // Try to append one more part - should throw
+      const newPart: TextContent = {
+        type: 'text',
+        content: 'extra',
+        timestamp: new Date().toISOString(),
+      };
+      try {
+        store.appendPart('msg-1', newPart);
+        expect.fail('Should have thrown ChatValidationError');
+      } catch (error) {
+        expect(error).toBeInstanceOf(ChatValidationError);
+        expect((error as ChatValidationError).code).toBe('MAX_PARTS_EXCEEDED');
+      }
     });
   });
 

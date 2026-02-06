@@ -105,7 +105,26 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   // Message operations
 
   addMessage: (message) => {
+    const MAX_MESSAGES = 1000;
     validateChatMessage(message);
+    const currentState = get();
+
+    // Check if max messages limit would be exceeded
+    if (currentState.messages.length >= MAX_MESSAGES) {
+      throw new ChatValidationError(
+        'MAX_MESSAGES_EXCEEDED',
+        `Cannot add message: maximum limit of ${MAX_MESSAGES} messages reached`,
+        { currentCount: currentState.messages.length, maxLimit: MAX_MESSAGES }
+      );
+    }
+
+    // Warn if conversationId doesn't match active conversation
+    if (currentState.activeConversationId && message.conversationId !== currentState.activeConversationId) {
+      console.warn(
+        `Message conversationId "${message.conversationId}" does not match active conversationId "${currentState.activeConversationId}"`
+      );
+    }
+
     set((state) => ({
       messages: [...state.messages, message],
     }));
@@ -114,21 +133,23 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   updateMessage: (id, updates) => {
     validateMessageId(id);
     validateMessageUpdates(updates);
-    set((state) => {
-      const messageExists = state.messages.some((msg) => msg.id === id);
-      if (!messageExists) {
-        throw new ChatValidationError(
-          'MESSAGE_NOT_FOUND',
-          `Message with id "${id}" not found`,
-          { id }
-        );
-      }
-      return {
-        messages: state.messages.map((msg) =>
-          msg.id === id ? { ...msg, ...updates } : msg
-        ),
-      };
-    });
+    const currentState = get();
+
+    // Check message exists before calling set()
+    const messageExists = currentState.messages.some((msg) => msg.id === id);
+    if (!messageExists) {
+      throw new ChatValidationError(
+        'MESSAGE_NOT_FOUND',
+        `Message with id "${id}" not found`,
+        { id }
+      );
+    }
+
+    set((state) => ({
+      messages: state.messages.map((msg) =>
+        msg.id === id ? { ...msg, ...updates } : msg
+      ),
+    }));
   },
 
   deleteMessage: (id) => {
@@ -145,34 +166,46 @@ export const useChatStore = create<ChatStore>((set, get) => ({
    * Creates new part with current timestamp if not provided
    */
   appendPart: (messageId, part) => {
+    const MAX_PARTS = 500;
     validateMessageId(messageId);
     validateChatContent(part);
-    set((state) => {
-      const messageExists = state.messages.some((msg) => msg.id === messageId);
-      if (!messageExists) {
-        throw new ChatValidationError(
-          'MESSAGE_NOT_FOUND',
-          `Message with id "${messageId}" not found`,
-          { messageId }
-        );
-      }
-      return {
-        messages: state.messages.map((msg) => {
-          if (msg.id === messageId) {
-            // Ensure part has timestamp
-            const partWithTimestamp = {
-              ...part,
-              timestamp: part.timestamp && part.timestamp.length > 0 ? part.timestamp : new Date().toISOString(),
-            };
-            return {
-              ...msg,
-              parts: [...msg.parts, partWithTimestamp],
-            };
-          }
-          return msg;
-        }),
-      };
-    });
+    const currentState = get();
+
+    // Find message and check existence
+    const message = currentState.messages.find((msg) => msg.id === messageId);
+    if (!message) {
+      throw new ChatValidationError(
+        'MESSAGE_NOT_FOUND',
+        `Message with id "${messageId}" not found`,
+        { messageId }
+      );
+    }
+
+    // Check if max parts limit would be exceeded
+    if (message.parts.length >= MAX_PARTS) {
+      throw new ChatValidationError(
+        'MAX_PARTS_EXCEEDED',
+        `Cannot append part: maximum limit of ${MAX_PARTS} parts per message reached`,
+        { messageId, currentCount: message.parts.length, maxLimit: MAX_PARTS }
+      );
+    }
+
+    set((state) => ({
+      messages: state.messages.map((msg) => {
+        if (msg.id === messageId) {
+          // Ensure part has timestamp
+          const partWithTimestamp = {
+            ...part,
+            timestamp: part.timestamp && part.timestamp.length > 0 ? part.timestamp : new Date().toISOString(),
+          };
+          return {
+            ...msg,
+            parts: [...msg.parts, partWithTimestamp],
+          };
+        }
+        return msg;
+      }),
+    }));
   },
 
   /**
@@ -181,6 +214,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
    * otherwise creates new text part
    */
   appendTextContent: (messageId, content) => {
+    const MAX_PARTS = 500;
     validateMessageId(messageId);
     if (typeof content !== 'string') {
       throw new ChatValidationError(
@@ -189,48 +223,61 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         { content }
       );
     }
-    set((state) => {
-      const messageExists = state.messages.some((msg) => msg.id === messageId);
-      if (!messageExists) {
-        throw new ChatValidationError(
-          'MESSAGE_NOT_FOUND',
-          `Message with id "${messageId}" not found`,
-          { messageId }
-        );
-      }
-      return {
-        messages: state.messages.map((msg) => {
-          if (msg.id === messageId) {
-            const lastPart = msg.parts[msg.parts.length - 1];
 
-            // If last part is text content, append to it
-            if (lastPart && lastPart.type === 'text') {
-              const updatedParts = [...msg.parts];
-              updatedParts[msg.parts.length - 1] = {
-                ...(lastPart as TextContent),
-                content: (lastPart as TextContent).content + content,
-              };
-              return {
-                ...msg,
-                parts: updatedParts,
-              };
-            }
+    const currentState = get();
+    const message = currentState.messages.find((msg) => msg.id === messageId);
 
-            // Otherwise create new text part
-            const newPart: TextContent = {
-              type: 'text',
-              content,
-              timestamp: new Date().toISOString(),
+    if (!message) {
+      throw new ChatValidationError(
+        'MESSAGE_NOT_FOUND',
+        `Message with id "${messageId}" not found`,
+        { messageId }
+      );
+    }
+
+    // Check if we need to create a new part and if max would be exceeded
+    const lastPart = message.parts[message.parts.length - 1];
+    const isLastPartText = lastPart && lastPart.type === 'text';
+    if (!isLastPartText && message.parts.length >= MAX_PARTS) {
+      throw new ChatValidationError(
+        'MAX_PARTS_EXCEEDED',
+        `Cannot append part: maximum limit of ${MAX_PARTS} parts per message reached`,
+        { messageId, currentCount: message.parts.length, maxLimit: MAX_PARTS }
+      );
+    }
+
+    set((state) => ({
+      messages: state.messages.map((msg) => {
+        if (msg.id === messageId) {
+          const lastPart = msg.parts[msg.parts.length - 1];
+
+          // If last part is text content, append to it
+          if (lastPart && lastPart.type === 'text') {
+            const updatedParts = [...msg.parts];
+            updatedParts[msg.parts.length - 1] = {
+              ...(lastPart as TextContent),
+              content: (lastPart as TextContent).content + content,
             };
             return {
               ...msg,
-              parts: [...msg.parts, newPart],
+              parts: updatedParts,
             };
           }
-          return msg;
-        }),
-      };
-    });
+
+          // Otherwise create new text part
+          const newPart: TextContent = {
+            type: 'text',
+            content,
+            timestamp: new Date().toISOString(),
+          };
+          return {
+            ...msg,
+            parts: [...msg.parts, newPart],
+          };
+        }
+        return msg;
+      }),
+    }));
   },
 
   /**
@@ -246,29 +293,40 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       );
     }
     validateToolInvocationUpdates(updates);
-    set((state) => {
-      let toolFound = false;
-      const messages = state.messages.map((msg) => ({
+
+    const currentState = get();
+    let toolFound = false;
+
+    // Check that tool exists before calling set()
+    for (const msg of currentState.messages) {
+      for (const part of msg.parts) {
+        if (part.type === 'tool_invocation' && 'toolUseId' in part && part.toolUseId === toolUseId) {
+          toolFound = true;
+          break;
+        }
+      }
+      if (toolFound) break;
+    }
+
+    if (!toolFound) {
+      throw new ChatValidationError(
+        'TOOL_NOT_FOUND',
+        `Tool invocation with toolUseId "${toolUseId}" not found`,
+        { toolUseId }
+      );
+    }
+
+    set((state) => ({
+      messages: state.messages.map((msg) => ({
         ...msg,
         parts: msg.parts.map((part) => {
           if (part.type === 'tool_invocation' && 'toolUseId' in part && part.toolUseId === toolUseId) {
-            toolFound = true;
             return { ...part, ...updates };
           }
           return part;
         })
-      }));
-
-      if (!toolFound) {
-        throw new ChatValidationError(
-          'TOOL_NOT_FOUND',
-          `Tool invocation with toolUseId "${toolUseId}" not found`,
-          { toolUseId }
-        );
-      }
-
-      return { messages };
-    });
+      })),
+    }));
   },
 
   // Query operations
