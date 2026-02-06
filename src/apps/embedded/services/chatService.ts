@@ -18,10 +18,27 @@ import {
   ChatMessage,
   TextContent,
   ToolInvocationContent,
+  ToolInvocationStatus,
   ThinkingContent,
   UsageContent,
   ChatToolInvokeParams,
 } from '../types/chat';
+
+/**
+ * Convert wire format tool status to discriminated union
+ */
+function convertToolStatus(wireStatus: string, result?: unknown, error?: string): ToolInvocationStatus {
+  switch (wireStatus) {
+    case 'executing':
+      return { state: 'executing' };
+    case 'completed':
+      return { state: 'completed', result };
+    case 'failed':
+      return { state: 'failed', error: error || 'Unknown error' };
+    default:
+      return { state: 'executing' };
+  }
+}
 
 /**
  * Chat Service
@@ -261,6 +278,9 @@ export class ChatService {
       return;
     }
 
+    // Convert wire format to discriminated union
+    const toolStatus = convertToolStatus(params.status, params.result, params.error);
+
     // Match by unique tool_use_id instead of tool_name
     const existingTool = currentMessage.parts.find(
       (p) => p.type === 'tool_invocation' && (p as any).toolUseId === params.tool_use_id
@@ -269,9 +289,7 @@ export class ChatService {
     if (existingTool) {
       // Update existing tool invocation
       store.updateToolInvocation(params.tool_use_id, {
-        status: params.status,
-        ...(params.result !== undefined && { result: params.result }),
-        ...(params.error !== undefined && { error: params.error }),
+        status: toolStatus,
       });
     } else {
       // Add new tool invocation
@@ -280,7 +298,7 @@ export class ChatService {
         toolUseId: params.tool_use_id,
         toolName: params.toolName,
         toolInput: params.toolInput,
-        status: params.status,
+        status: toolStatus,
         timestamp: params.timestamp || new Date().toISOString(),
       } as ToolInvocationContent);
     }

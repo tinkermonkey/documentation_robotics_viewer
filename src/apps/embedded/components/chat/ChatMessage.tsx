@@ -13,19 +13,6 @@ export interface ChatMessageProps {
   message: ChatMessageType;
 }
 
-// Map tool invocation status from content type to card type
-const mapToolStatus = (status: string): 'executing' | 'complete' | 'error' => {
-  switch (status) {
-    case 'executing':
-      return 'executing';
-    case 'completed':
-      return 'complete';
-    case 'failed':
-      return 'error';
-    default:
-      return 'executing';
-  }
-};
 
 export const ChatMessage = memo(({ message }: ChatMessageProps) => {
   const isUser = message.role === 'user';
@@ -50,8 +37,8 @@ export const ChatMessage = memo(({ message }: ChatMessageProps) => {
             key={index}
             toolName={tool.toolName}
             toolInput={tool.toolInput || {}}
-            toolOutput={typeof tool.result === 'string' ? tool.result : tool.result ? JSON.stringify(tool.result) : undefined}
-            status={mapToolStatus(tool.status)}
+            toolOutput={tool.status.state === 'completed' && typeof tool.status.result === 'string' ? tool.status.result : tool.status.state === 'completed' && tool.status.result ? JSON.stringify(tool.status.result) : undefined}
+            status={tool.status}
             timestamp={tool.timestamp}
             duration={undefined}
           />

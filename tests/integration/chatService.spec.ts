@@ -6,7 +6,7 @@
 import { test, expect } from '@playwright/test';
 import { ChatService } from '../../src/apps/embedded/services/chatService';
 import { useChatStore } from '../../src/apps/embedded/stores/chatStore';
-import { ChatMessage, TextContent, ErrorContent } from '../../src/apps/embedded/types/chat';
+import { ChatMessage, TextContent, ErrorContent, ToolInvocationContent } from '../../src/apps/embedded/types/chat';
 
 test.describe('ChatService', () => {
   let chatService: ChatService;
@@ -644,8 +644,8 @@ test.describe('ChatService', () => {
 
       // Verify the tool has the latest status and result
       const tool = toolParts?.[0] as ToolInvocationContent;
-      expect(tool.status).toBe('completed');
-      expect((tool as any).result).toEqual({ matched: 5 });
+      expect(tool.status.state).toBe('completed');
+      expect(tool.status.state === 'completed' && tool.status.result).toEqual({ matched: 5 });
     });
 
     test('Race condition fix: should handle concurrent tool invocations for different tools', () => {
@@ -719,7 +719,7 @@ test.describe('ChatService', () => {
       // Get tool before update
       let updated = store.getCurrentStreamingMessage();
       let toolPart = updated?.parts.find((p) => p.type === 'tool_invocation' && (p as any).toolName === 'search_model') as ToolInvocationContent;
-      expect(toolPart.status).toBe('executing');
+      expect(toolPart.status.state).toBe('executing');
 
       // Second invocation: update with result (but no error)
       (chatService as any).handleToolInvoke({
@@ -736,8 +736,8 @@ test.describe('ChatService', () => {
       // Verify status and result are updated
       updated = store.getCurrentStreamingMessage();
       toolPart = updated?.parts.find((p) => p.type === 'tool_invocation' && (p as any).toolName === 'search_model') as ToolInvocationContent;
-      expect(toolPart.status).toBe('completed');
-      expect((toolPart as any).result).toEqual({ matched: 5 });
+      expect(toolPart.status.state).toBe('completed');
+      expect(toolPart.status.state === 'completed' && toolPart.status.result).toEqual({ matched: 5 });
     });
 
     test('Race condition fix: multiple rapid text chunks should append correctly', () => {
@@ -838,10 +838,10 @@ test.describe('ChatService', () => {
       const updatedAgain = store.getCurrentStreamingMessage();
       const updatedTools = updatedAgain?.parts.filter((p) => p.type === 'tool_invocation') || [];
 
-      expect((updatedTools[0] as any).status).toBe('completed');
-      expect((updatedTools[0] as any).result).toEqual({ data: 'business results' });
-      expect((updatedTools[1] as any).status).toBe('executing');
-      expect((updatedTools[1] as any).result).toBeUndefined();
+      expect((updatedTools[0] as any).status.state).toBe('completed');
+      expect((updatedTools[0] as any).status.state === 'completed' && (updatedTools[0] as any).status.result).toEqual({ data: 'business results' });
+      expect((updatedTools[1] as any).status.state).toBe('executing');
+      expect((updatedTools[1] as any).status.result).toBeUndefined();
     });
   });
 });

@@ -309,7 +309,7 @@ test.describe('Chat Store', () => {
         toolUseId: 'toolu_001',
         toolName: 'search_model',
         toolInput: { query: 'goals' },
-        status: 'executing',
+        status: { state: 'executing' },
         timestamp: new Date().toISOString(),
       };
       message.parts.push(toolPart);
@@ -318,14 +318,13 @@ test.describe('Chat Store', () => {
 
       const store = useChatStore.getState();
       store.updateToolInvocation('toolu_001', {
-        status: 'completed',
-        result: { found: 3 },
+        status: { state: 'completed', result: { found: 3 } },
       });
 
       const updated = useChatStore.getState().messages[0];
       const updatedTool = updated.parts[1] as ToolInvocationContent;
-      expect(updatedTool.status).toBe('completed');
-      expect(updatedTool.result).toEqual({ found: 3 });
+      expect(updatedTool.status.state).toBe('completed');
+      expect(updatedTool.status.state === 'completed' && updatedTool.status.result).toEqual({ found: 3 });
     });
 
     test('should not update tool invocation with wrong tool_use_id', () => {
@@ -335,7 +334,7 @@ test.describe('Chat Store', () => {
         toolUseId: 'toolu_001',
         toolName: 'search_model',
         toolInput: { query: 'goals' },
-        status: 'executing',
+        status: { state: 'executing' },
         timestamp: new Date().toISOString(),
       };
       message.parts.push(toolPart);
@@ -344,12 +343,12 @@ test.describe('Chat Store', () => {
 
       const store = useChatStore.getState();
       store.updateToolInvocation('toolu_wrong', {
-        status: 'completed',
+        status: { state: 'completed' },
       });
 
       const updated = useChatStore.getState().messages[0];
       const updatedTool = updated.parts[1] as ToolInvocationContent;
-      expect(updatedTool.status).toBe('executing'); // Unchanged
+      expect(updatedTool.status.state).toBe('executing'); // Unchanged
     });
   });
 
@@ -485,17 +484,17 @@ test.describe('Chat Store', () => {
       // Add tool invocation
       const toolPart: ToolInvocationContent = {
         type: 'tool_invocation',
+        toolUseId: 'toolu_001',
         toolName: 'search_model',
         toolInput: { query: 'goals' },
-        status: 'executing',
+        status: { state: 'executing' },
         timestamp: new Date().toISOString(),
       };
       store.appendPart('msg-2', toolPart);
 
       // Complete tool invocation
-      store.updateToolInvocation('msg-2', 'search_model', {
-        status: 'completed',
-        result: [{ id: 'goal-1', name: 'Deliver Value' }],
+      store.updateToolInvocation('toolu_001', {
+        status: { state: 'completed', result: [{ id: 'goal-1', name: 'Deliver Value' }] },
       });
 
       // Add usage info

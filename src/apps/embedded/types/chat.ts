@@ -22,6 +22,15 @@ export interface TextContent extends BaseChatContent {
 }
 
 /**
+ * Tool invocation status - discriminated union for type-safe status handling
+ * Ensures result/error fields are only present when appropriate
+ */
+export type ToolInvocationStatus =
+  | { state: 'executing' }
+  | { state: 'completed'; result?: unknown }
+  | { state: 'failed'; error: string };
+
+/**
  * Tool invocation - indicates the AI is calling a tool
  */
 export interface ToolInvocationContent extends BaseChatContent {
@@ -29,9 +38,7 @@ export interface ToolInvocationContent extends BaseChatContent {
   toolUseId: string;    // Unique identifier from Anthropic API for this specific tool use
   toolName: string;
   toolInput: Record<string, unknown>;
-  status: 'executing' | 'completed' | 'failed';
-  result?: unknown;
-  error?: string;
+  status: ToolInvocationStatus;
 }
 
 /**
@@ -212,7 +219,8 @@ export interface ChatResponseChunkParams {
 }
 
 /**
- * Chat tool invocation notification params
+ * Chat tool invocation notification params (wire format from server)
+ * Converted to ToolInvocationStatus internally by chatService
  */
 export interface ChatToolInvokeParams {
   conversationId: string;

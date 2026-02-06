@@ -1,14 +1,13 @@
 import { memo, useState, useMemo } from 'react';
 import { Wrench, Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { Badge } from 'flowbite-react';
-
-export type ToolStatus = 'executing' | 'complete' | 'error';
+import { ToolInvocationStatus } from '../../types/chat';
 
 export interface ToolInvocationCardProps {
   toolName: string;
   toolInput: Record<string, unknown>;
   toolOutput?: string;
-  status: ToolStatus;
+  status: ToolInvocationStatus;
   timestamp: string;
   duration?: number;
 }
@@ -23,12 +22,12 @@ export const ToolInvocationCard = memo(
     duration,
   }: ToolInvocationCardProps) => {
     const [isExpanded, setIsExpanded] = useState(
-      status === 'complete' || status === 'error'
+      status.state === 'completed' || status.state === 'failed'
     );
 
     // Determine status styling
     const statusConfig = useMemo(() => {
-      switch (status) {
+      switch (status.state) {
         case 'executing':
           return {
             icon: Loader2,
@@ -36,14 +35,14 @@ export const ToolInvocationCard = memo(
             label: 'Executing',
             spinIcon: true,
           };
-        case 'complete':
+        case 'completed':
           return {
             icon: CheckCircle,
             color: 'success' as const,
             label: 'Complete',
             spinIcon: false,
           };
-        case 'error':
+        case 'failed':
           return {
             icon: XCircle,
             color: 'failure' as const,
@@ -93,9 +92,9 @@ export const ToolInvocationCard = memo(
               className={`w-5 h-5 ${
                 statusConfig.spinIcon ? 'animate-spin' : ''
               } ${
-                status === 'complete'
+                status.state === 'completed'
                   ? 'text-green-600 dark:text-green-400'
-                  : status === 'error'
+                  : status.state === 'failed'
                     ? 'text-red-600 dark:text-red-400'
                     : 'text-blue-600 dark:text-blue-400'
               }`}
