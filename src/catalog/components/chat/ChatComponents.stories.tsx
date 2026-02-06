@@ -135,7 +135,7 @@ export const ToolInvocationCardExecuting: Story = () => (
   <ToolInvocationCard
     toolName="calculator"
     toolInput={{ expression: "2 + 2" }}
-    status="executing"
+    status={{ state: 'executing' }}
     timestamp="2024-01-15T10:30:00Z"
   />
 );
@@ -145,7 +145,7 @@ export const ToolInvocationCardComplete: Story = () => (
     toolName="calculator"
     toolInput={{ expression: "2 + 2" }}
     toolOutput="4"
-    status="complete"
+    status={{ state: 'completed', result: '4' }}
     timestamp="2024-01-15T10:30:00Z"
     duration={245}
   />
@@ -156,7 +156,7 @@ export const ToolInvocationCardError: Story = () => (
     toolName="calculator"
     toolInput={{ expression: "invalid" }}
     toolOutput="SyntaxError: invalid expression"
-    status="error"
+    status={{ state: 'failed', error: 'SyntaxError: invalid expression' }}
     timestamp="2024-01-15T10:30:00Z"
     duration={150}
   />
@@ -171,7 +171,7 @@ export const ToolInvocationCardLongOutput: Story = () => (
   { "title": "API Reference", "url": "https://example.com/api", "score": 0.95 },
   { "title": "Examples", "url": "https://example.com/examples", "score": 0.87 }
 ]`}
-    status="complete"
+    status={{ state: 'completed', result: 'Found 3 results' }}
     timestamp="2024-01-15T10:30:00Z"
     duration={420}
   />
@@ -187,7 +187,7 @@ export const ToolInvocationCardComplexInput: Story = () => (
       sort: { created_at: "desc" }
     }}
     toolOutput='Retrieved 3 users'
-    status="complete"
+    status={{ state: 'completed', result: 'Retrieved 3 users' }}
     timestamp="2024-01-15T10:30:00Z"
     duration={320}
   />
@@ -197,7 +197,7 @@ export const ToolInvocationCardNoOutput: Story = () => (
   <ToolInvocationCard
     toolName="logger"
     toolInput={{ message: "Event logged", level: "info" }}
-    status="complete"
+    status={{ state: 'completed' }}
     timestamp="2024-01-15T10:30:00Z"
     duration={50}
   />
@@ -349,8 +349,7 @@ export const ChatMessageWithToolInvocation: Story = () => {
         toolUseId: 'tool-use-1',
         toolName: 'search',
         toolInput: { query: 'example' },
-        status: 'completed',
-        result: 'Found 10 results',
+        status: { state: 'completed', result: 'Found 10 results' },
         timestamp: new Date().toISOString()
       }
     ]
