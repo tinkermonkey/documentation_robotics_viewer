@@ -209,9 +209,10 @@ test.describe('ChatService', () => {
 
       // Handle tool invocation
       (chatService as any).handleToolInvoke({
-        conversation_id: convId,
-        tool_name: 'search_model',
-        tool_input: { query: 'goals' },
+        conversationId: convId,
+        tool_use_id: 'toolu_001',
+        toolName: 'search_model',
+        toolInput: { query: 'goals' },
         status: 'executing',
         timestamp: new Date().toISOString(),
       });
@@ -609,22 +610,24 @@ test.describe('ChatService', () => {
       };
       store.addMessage(assistantMessage);
 
-      // Simulate concurrent notifications for the same tool
+      // Simulate concurrent notifications for the same tool invocation (same tool_use_id)
       // (These would arrive in quick succession from the server)
       (chatService as any).handleToolInvoke({
-        conversation_id: convId,
-        tool_name: 'search_model',
-        tool_input: { query: 'goals' },
+        conversationId: convId,
+        tool_use_id: 'toolu_001',
+        toolName: 'search_model',
+        toolInput: { query: 'goals' },
         status: 'executing',
         timestamp: new Date().toISOString(),
       });
 
-      // Second notification for same tool with updated status and result
+      // Second notification for same tool with updated status and result (same tool_use_id)
       // This arrives before the first one is fully processed
       (chatService as any).handleToolInvoke({
-        conversation_id: convId,
-        tool_name: 'search_model',
-        tool_input: { query: 'goals' },
+        conversationId: convId,
+        tool_use_id: 'toolu_001',
+        toolName: 'search_model',
+        toolInput: { query: 'goals' },
         status: 'completed',
         result: { matched: 5 },
         timestamp: new Date().toISOString(),
@@ -657,13 +660,18 @@ test.describe('ChatService', () => {
       store.addMessage(assistantMessage);
 
       // Simulate rapid concurrent notifications for different tools
-      const tools = ['search_model', 'analyze_architecture', 'fetch_details'];
+      const tools = [
+        { tool_use_id: 'toolu_001', toolName: 'search_model' },
+        { tool_use_id: 'toolu_002', toolName: 'analyze_architecture' },
+        { tool_use_id: 'toolu_003', toolName: 'fetch_details' },
+      ];
 
-      tools.forEach((toolName) => {
+      tools.forEach((tool) => {
         (chatService as any).handleToolInvoke({
-          conversation_id: convId,
-          tool_name: toolName,
-          tool_input: { query: 'test' },
+          conversationId: convId,
+          tool_use_id: tool.tool_use_id,
+          toolName: tool.toolName,
+          toolInput: { query: 'test' },
           status: 'executing',
           timestamp: new Date().toISOString(),
         });
@@ -696,9 +704,10 @@ test.describe('ChatService', () => {
 
       // First invocation: set initial status
       (chatService as any).handleToolInvoke({
-        conversation_id: convId,
-        tool_name: 'search_model',
-        tool_input: { query: 'goals' },
+        conversationId: convId,
+        tool_use_id: 'toolu_001',
+        toolName: 'search_model',
+        toolInput: { query: 'goals' },
         status: 'executing',
         timestamp: new Date().toISOString(),
       });
@@ -710,9 +719,10 @@ test.describe('ChatService', () => {
 
       // Second invocation: update with result (but no error)
       (chatService as any).handleToolInvoke({
-        conversation_id: convId,
-        tool_name: 'search_model',
-        tool_input: { query: 'goals' },
+        conversationId: convId,
+        tool_use_id: 'toolu_001',
+        toolName: 'search_model',
+        toolInput: { query: 'goals' },
         status: 'completed',
         result: { matched: 5 },
         // Note: error is undefined, should NOT clear any existing error
@@ -762,6 +772,72 @@ test.describe('ChatService', () => {
       // Verify there's only one text part (not multiple)
       const textParts = updated?.parts.filter((p) => p.type === 'text');
       expect(textParts?.length).toBe(1);
+    });
+
+    test('should handle multiple invocations of same tool with different tool_use_ids independently', () => {
+      const store = useChatStore.getState();
+      const convId = 'conv-1';
+      store.setActiveConversationId(convId);
+
+      const assistantMessage: ChatMessage = {
+        id: 'msg-assistant-1',
+        role: 'assistant',
+        conversationId: convId,
+        timestamp: new Date().toISOString(),
+        parts: [],
+        isStreaming: true,
+      };
+      store.addMessage(assistantMessage);
+
+      // First search_model invocation with unique toolUseId
+      (chatService as any).handleToolInvoke({
+        conversationId: convId,
+        tool_use_id: 'toolu_search_001',
+        toolName: 'search_model',
+        toolInput: { query: 'business' },
+        status: 'executing',
+        timestamp: new Date().toISOString(),
+      });
+
+      // Second search_model invocation with different toolUseId
+      (chatService as any).handleToolInvoke({
+        conversationId: convId,
+        tool_use_id: 'toolu_search_002',
+        toolName: 'search_model',
+        toolInput: { query: 'motivation' },
+        status: 'executing',
+        timestamp: new Date().toISOString(),
+      });
+
+      // Verify both invocations exist as separate entries
+      const updated = store.getCurrentStreamingMessage();
+      const toolInvocations = updated?.parts.filter((p) => p.type === 'tool_invocation') || [];
+
+      expect(toolInvocations).toHaveLength(2);
+      expect((toolInvocations[0] as any).toolUseId).toBe('toolu_search_001');
+      expect((toolInvocations[0] as any).toolInput).toEqual({ query: 'business' });
+      expect((toolInvocations[1] as any).toolUseId).toBe('toolu_search_002');
+      expect((toolInvocations[1] as any).toolInput).toEqual({ query: 'motivation' });
+
+      // Update only the first invocation
+      (chatService as any).handleToolInvoke({
+        conversationId: convId,
+        tool_use_id: 'toolu_search_001',
+        toolName: 'search_model',
+        toolInput: { query: 'business' },
+        status: 'completed',
+        result: { data: 'business results' },
+        timestamp: new Date().toISOString(),
+      });
+
+      // Verify updates are applied only to the correct invocation
+      const updatedAgain = store.getCurrentStreamingMessage();
+      const updatedTools = updatedAgain?.parts.filter((p) => p.type === 'tool_invocation') || [];
+
+      expect((updatedTools[0] as any).status).toBe('completed');
+      expect((updatedTools[0] as any).result).toEqual({ data: 'business results' });
+      expect((updatedTools[1] as any).status).toBe('executing');
+      expect((updatedTools[1] as any).result).toBeUndefined();
     });
   });
 });

@@ -20,6 +20,7 @@ import {
   ToolInvocationContent,
   ThinkingContent,
   UsageContent,
+  ChatToolInvokeParams,
 } from '../types/chat';
 
 /**
@@ -247,12 +248,11 @@ export class ChatService {
   /**
    * Handle tool invocation notification
    *
-   * NOTE: This handler avoids race conditions by:
-   * 1. Always using updateToolInvocation (which is idempotent)
-   * 2. Checking for tool existence immediately before update
-   * 3. Not relying on stale references from earlier state reads
+   * Matches tool invocations by unique tool_use_id (from Anthropic API)
+   * instead of tool_name. This allows multiple invocations of the same tool
+   * to be tracked independently.
    */
-  private handleToolInvoke(params: any): void {
+  private handleToolInvoke(params: ChatToolInvokeParams): void {
     const store = useChatStore.getState();
     const currentMessage = store.getCurrentStreamingMessage();
 
@@ -261,28 +261,25 @@ export class ChatService {
       return;
     }
 
-    // Check if tool already exists in current message
+    // Match by unique tool_use_id instead of tool_name
     const existingTool = currentMessage.parts.find(
-      (p) => p.type === 'tool_invocation' && (p as any).toolName === params.tool_name
+      (p) => p.type === 'tool_invocation' && (p as any).toolUseId === params.tool_use_id
     ) as ToolInvocationContent | undefined;
 
     if (existingTool) {
-      // Update existing tool invocation using store action
-      // This ensures we get fresh state and updates are applied atomically
-      store.updateToolInvocation(currentMessage.id, params.tool_name, {
+      // Update existing tool invocation
+      store.updateToolInvocation(params.tool_use_id, {
         status: params.status,
-        // Only update result/error if provided (don't use stale reference values)
         ...(params.result !== undefined && { result: params.result }),
         ...(params.error !== undefined && { error: params.error }),
       });
     } else {
       // Add new tool invocation
-      // The appendPart action will check the current message state again,
-      // but since we just verified it's missing, this is safe
       store.appendPart(currentMessage.id, {
         type: 'tool_invocation',
-        toolName: params.tool_name,
-        toolInput: params.tool_input,
+        toolUseId: params.tool_use_id,
+        toolName: params.toolName,
+        toolInput: params.toolInput,
         status: params.status,
         timestamp: params.timestamp || new Date().toISOString(),
       } as ToolInvocationContent);

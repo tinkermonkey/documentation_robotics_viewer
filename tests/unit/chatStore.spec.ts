@@ -306,6 +306,7 @@ test.describe('Chat Store', () => {
       const message = createTestMessage('msg-1', 'conv-1');
       const toolPart: ToolInvocationContent = {
         type: 'tool_invocation',
+        toolUseId: 'toolu_001',
         toolName: 'search_model',
         toolInput: { query: 'goals' },
         status: 'executing',
@@ -316,7 +317,7 @@ test.describe('Chat Store', () => {
       useChatStore.setState({ messages: [message] });
 
       const store = useChatStore.getState();
-      store.updateToolInvocation('msg-1', 'search_model', {
+      store.updateToolInvocation('toolu_001', {
         status: 'completed',
         result: { found: 3 },
       });
@@ -327,10 +328,11 @@ test.describe('Chat Store', () => {
       expect(updatedTool.result).toEqual({ found: 3 });
     });
 
-    test('should not update tool invocation with wrong tool name', () => {
+    test('should not update tool invocation with wrong tool_use_id', () => {
       const message = createTestMessage('msg-1', 'conv-1');
       const toolPart: ToolInvocationContent = {
         type: 'tool_invocation',
+        toolUseId: 'toolu_001',
         toolName: 'search_model',
         toolInput: { query: 'goals' },
         status: 'executing',
@@ -341,7 +343,7 @@ test.describe('Chat Store', () => {
       useChatStore.setState({ messages: [message] });
 
       const store = useChatStore.getState();
-      store.updateToolInvocation('msg-1', 'wrong_tool', {
+      store.updateToolInvocation('toolu_wrong', {
         status: 'completed',
       });
 

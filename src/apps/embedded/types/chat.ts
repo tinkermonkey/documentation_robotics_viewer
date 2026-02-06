@@ -26,6 +26,7 @@ export interface TextContent extends BaseChatContent {
  */
 export interface ToolInvocationContent extends BaseChatContent {
   type: 'tool_invocation';
+  toolUseId: string;    // Unique identifier from Anthropic API for this specific tool use
   toolName: string;
   toolInput: Record<string, unknown>;
   status: 'executing' | 'completed' | 'failed';
@@ -215,9 +216,12 @@ export interface ChatResponseChunkParams {
  */
 export interface ChatToolInvokeParams {
   conversationId: string;
+  tool_use_id: string;      // Unique identifier from Anthropic API
   toolName: string;
   toolInput: Record<string, unknown>;
   status: 'executing' | 'completed' | 'failed';
+  result?: unknown;
+  error?: string;
   timestamp: string;
 }
 

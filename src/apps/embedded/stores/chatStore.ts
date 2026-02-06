@@ -35,7 +35,10 @@ export interface ChatStore {
   // Content part operations
   appendPart: (messageId: string, part: ChatContent) => void;
   appendTextContent: (messageId: string, content: string) => void;
-  updateToolInvocation: (messageId: string, toolName: string, updates: Partial<ToolInvocationContent>) => void;
+  /**
+   * Update a tool invocation by toolUseId
+   */
+  updateToolInvocation: (toolUseId: string, updates: Partial<ToolInvocationContent>) => void;
 
   // Query operations
   getLastMessage: () => ChatMessage | undefined;
@@ -146,25 +149,19 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   })),
 
   /**
-   * Update a tool invocation content part by tool name
-   * Finds and updates the tool invocation with matching name
+   * Update a tool invocation content part by toolUseId
+   * Finds and updates the tool invocation with matching unique ID across all messages
    */
-  updateToolInvocation: (messageId, toolName, updates) => set((state) => ({
-    messages: state.messages.map((msg) => {
-      if (msg.id === messageId) {
-        const updatedParts = msg.parts.map((part) => {
-          if (part.type === 'tool_invocation' && 'toolName' in part && part.toolName === toolName) {
-            return { ...part, ...updates };
-          }
-          return part;
-        });
-        return {
-          ...msg,
-          parts: updatedParts,
-        };
-      }
-      return msg;
-    }),
+  updateToolInvocation: (toolUseId, updates) => set((state) => ({
+    messages: state.messages.map((msg) => ({
+      ...msg,
+      parts: msg.parts.map((part) => {
+        if (part.type === 'tool_invocation' && 'toolUseId' in part && part.toolUseId === toolUseId) {
+          return { ...part, ...updates };
+        }
+        return part;
+      })
+    }))
   })),
 
   // Query operations
