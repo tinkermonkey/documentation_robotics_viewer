@@ -4,6 +4,9 @@
  * Features: auto-reconnect, exponential backoff, event handling, token authentication
  */
 
+import { logError } from './errorTracker';
+import { ERROR_IDS } from '@/constants/errorIds';
+
 type EventHandler = (data: any) => void;
 
 interface WebSocketMessage {
@@ -28,6 +31,7 @@ export class WebSocketClient {
   private mode: 'websocket' | 'rest' | 'detecting' = 'detecting';
   private connectionTimeout: NodeJS.Timeout | null = null;
   private maxConnectionAttempts: number = 3; // Try connecting 3 times before falling back
+  private connectionErrors: Error[] = []; // Buffer for capturing errors during detection phase
 
   constructor(url: string, token: string | null = null) {
     this.url = url;
@@ -81,38 +85,16 @@ export class WebSocketClient {
     try {
       const authenticatedUrl = this.getAuthenticatedUrl();
 
-      // Suppress browser console errors by catching them immediately
-      const originalConsoleError = console.error;
-      const errorSuppressor = (...args: any[]) => {
-        // Suppress WebSocket connection errors during detection
-        const message = args.join(' ');
-        if (this.mode === 'detecting' && message.includes('WebSocket connection')) {
-          return; // Suppress
-        }
-        originalConsoleError.apply(console, args);
-      };
-
-      if (this.mode === 'detecting') {
-        console.error = errorSuppressor;
-      }
-
       this.ws = new WebSocket(authenticatedUrl);
 
       this.ws.onopen = this.handleOpen.bind(this);
       this.ws.onmessage = this.handleMessage.bind(this);
       this.ws.onerror = this.handleError.bind(this);
-      this.ws.onclose = (event: CloseEvent) => {
-        // Restore console.error when connection closes
-        if (this.mode === 'detecting') {
-          console.error = originalConsoleError;
-        }
-        this.handleClose(event);
-      };
+      this.ws.onclose = this.handleClose.bind(this);
 
       // Set connection timeout for initial detection
       if (this.mode === 'detecting') {
         this.connectionTimeout = setTimeout(() => {
-          console.error = originalConsoleError; // Restore before timeout
           if (this.ws && this.ws.readyState !== WebSocket.OPEN) {
             console.log('[WebSocket] Connection timeout during detection phase');
             this.ws.close();
@@ -120,14 +102,27 @@ export class WebSocketClient {
         }, 3000); // 3 second timeout
       }
     } catch (error) {
-      // Suppress errors during detection phase
       if (this.mode === 'detecting') {
+        console.debug('[WebSocket] Connection error during detection:', error);
         this.handleConnectionFailure();
+        // Capture error for debugging
+        this.connectionErrors.push(error instanceof Error ? error : new Error(String(error)));
       } else {
-        console.error('[WebSocket] Connection error:', error);
+        logError(
+          ERROR_IDS.WS_CONNECTION_ERROR,
+          'WebSocket connection error',
+          { error: error instanceof Error ? error.message : String(error) }
+        );
         this.scheduleReconnect();
       }
     }
+  }
+
+  /**
+   * Get captured connection errors from detection phase (for debugging)
+   */
+  getConnectionErrors(): Error[] {
+    return [...this.connectionErrors];
   }
 
   /**
@@ -234,8 +229,14 @@ export class WebSocketClient {
     this.reconnectAttempts++;
 
     if (this.reconnectAttempts >= this.maxConnectionAttempts) {
-      // Switch to REST mode
+      // Switch to REST mode and log collected errors from detection phase
       console.log('[WebSocket] Server does not support WebSocket, using REST mode');
+      if (this.connectionErrors.length > 0) {
+        console.warn('[WebSocket] Connection attempts failed with the following errors:');
+        this.connectionErrors.forEach((error, index) => {
+          console.warn(`  [${index + 1}] ${error.message}`);
+        });
+      }
       this.mode = 'rest';
       this.reconnectAttempts = 0;
       this.emit('rest-mode', {});
@@ -283,7 +284,11 @@ export class WebSocketClient {
       // Also emit a generic 'message' event
       this.emit('message', message);
     } catch (error) {
-      console.error('[WebSocket] Failed to parse message:', error);
+      logError(
+        ERROR_IDS.WS_MESSAGE_PARSE_FAILED,
+        'Failed to parse WebSocket message',
+        { error: error instanceof Error ? error.message : String(error), data: event.data }
+      );
     }
   }
 
@@ -291,26 +296,34 @@ export class WebSocketClient {
    * Handle WebSocket error
    */
   private handleError(event: Event): void {
-    // Suppress errors during detection phase
+    // Use existing test environment detection to avoid duplication
+    const isTestEnv = isTestEnvironment();
+
+    // Capture error during detection for later debugging
     if (this.mode === 'detecting') {
-      // Silent error during detection - don't log or emit
-      return;
+      const errorMsg = event instanceof ErrorEvent ? event.message : String(event);
+      this.connectionErrors.push(new Error(`[Attempt ${this.reconnectAttempts + 1}/${this.maxConnectionAttempts}] ${errorMsg}`));
+      console.debug('[WebSocket] Connection error during detection (attempt %d/%d): %s',
+        this.reconnectAttempts + 1,
+        this.maxConnectionAttempts,
+        errorMsg
+      );
+    } else if (!isTestEnv) {
+      // Full error logging outside test environments
+      logError(
+        ERROR_IDS.WS_ERROR_EVENT,
+        'WebSocket error event',
+        { error: event instanceof ErrorEvent ? event.message : String(event) }
+      );
+    } else {
+      // In test environments, log at debug level instead of error
+      console.debug('[WebSocket] Error in test environment:', event);
     }
 
-    // Suppress errors in test/Ladle environments (multiple checks for robustness)
-    const isTestEnv = typeof window !== 'undefined' && (
-      window.location.port === '61000' ||  // Ladle default port
-      (window as any).__LADLE_MOCK_WEBSOCKET__ ||  // Explicit mock flag
-      (window as any).__PLAYWRIGHT__  // Playwright test environment
-    );
-    if (isTestEnv) {
-      // Silent in test mode - don't log or emit
-      return;
+    // Emit error event unless in test environment
+    if (!isTestEnv) {
+      this.emit('error', { error: event });
     }
-
-    // Only log and emit errors when not in detection mode or test mode
-    console.error('[WebSocket] Error:', event);
-    this.emit('error', { error: event });
   }
 
   /**
@@ -348,7 +361,11 @@ export class WebSocketClient {
     }
 
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.error('[WebSocket] Max reconnection attempts reached');
+      logError(
+        ERROR_IDS.WS_MAX_RECONNECT_ATTEMPTS,
+        'Max reconnection attempts reached',
+        { attempts: this.reconnectAttempts }
+      );
       this.emit('max-reconnect-attempts', { attempts: this.reconnectAttempts });
       return;
     }
@@ -411,7 +428,11 @@ export class WebSocketClient {
         try {
           handler(data);
         } catch (error) {
-          console.error(`[WebSocket] Error in event handler for ${event}:`, error);
+          logError(
+            ERROR_IDS.WS_EVENT_HANDLER_ERROR,
+            `Error in WebSocket event handler for '${event}'`,
+            { error: error instanceof Error ? error.message : String(error), event }
+          );
         }
       });
     }
@@ -475,10 +496,41 @@ if (isTestEnvironment()) {
     get connectionState() { return 'connected' as const; },
     get transportMode() { return 'rest' as const; }
   };
-} else {
+} else if (typeof window !== 'undefined') {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const wsUrl = `${protocol}//${window.location.host}/ws`;
   websocketClient = new WebSocketClient(wsUrl, null);
+} else {
+  // Node.js/SSR environment: create a mock WebSocket client
+  const mockHandlers = new Map<string, Set<EventHandler>>();
+
+  websocketClient = {
+    setToken: () => {},
+    connect: () => {
+      setTimeout(() => {
+        const handlers = mockHandlers.get('rest-mode');
+        if (handlers) handlers.forEach(h => h({}));
+        const connectHandlers = mockHandlers.get('connect');
+        if (connectHandlers) connectHandlers.forEach(h => h({}));
+      }, 0);
+    },
+    disconnect: () => {},
+    subscribe: () => {},
+    send: () => {},
+    on: (event: string, handler: EventHandler) => {
+      if (!mockHandlers.has(event)) {
+        mockHandlers.set(event, new Set());
+      }
+      mockHandlers.get(event)!.add(handler);
+    },
+    off: (event: string, handler: EventHandler) => {
+      const handlers = mockHandlers.get(event);
+      if (handlers) handlers.delete(handler);
+    },
+    get isConnected() { return true; },
+    get connectionState() { return 'connected' as const; },
+    get transportMode() { return 'rest' as const; }
+  };
 }
 
 export { websocketClient };

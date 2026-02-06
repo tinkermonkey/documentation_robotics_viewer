@@ -43,6 +43,7 @@ export default defineConfig({
     'sidebar-consolidation.spec.ts',
     'zoom-to-layer.spec.ts',
     'edge-bundling-viewport-culling.spec.ts',
+    'chat-panel-container.spec.ts',
   ],
   fullyParallel: false, // Run E2E tests sequentially for reliability
   forbidOnly: !!process.env.CI,

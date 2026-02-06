@@ -2,29 +2,33 @@ import type { GlobalProvider } from "@ladle/react";
 import { MemoryRouter } from 'react-router-dom';
 import "@/index.css";
 
-// Mock WebSocket client for story rendering and suppress console errors globally
+// Setup test environment flags for WebSocket client detection
 if (typeof window !== 'undefined') {
   // @ts-ignore - Set mock flag for WebSocket client
   window.__LADLE_MOCK_WEBSOCKET__ = true;
 
-  // Suppress ALL console errors in Ladle to prevent test failures
-  // This is necessary because WebSocket connection attempts generate browser-level errors
+  // Create logger that distinguishes between test suppression and real errors
   const originalError = console.error;
+
   console.error = (...args: any[]) => {
-    // Convert args to string for checking
     const message = String(args[0] || '');
 
-    // Suppress WebSocket, EmbeddedLayout, and connection-related errors
-    if (
-      message.includes('[WebSocket]') ||
-      message.includes('[EmbeddedLayout]') ||
-      message.includes('WebSocket') ||
-      message.includes('Connection')
-    ) {
-      return; // Suppress these errors in test environment
+    // Only suppress expected WebSocket connection failure messages in test environment
+    // All other errors, including parsing, type errors, and legitimate bugs, pass through
+    const isExpectedConnectionFailure = (
+      message.includes('WebSocket connection to') ||  // Browser WebSocket connection error
+      message.includes('WebSocket connection failed') ||  // WebSocket failed
+      message.includes('WebSocket is closed before the connection is established') ||  // Expected closure
+      message.includes('The operation is insecure') // HTTPS/WSS requirement
+    );
+
+    if (isExpectedConnectionFailure) {
+      // Log as warning instead of error for test visibility
+      console.warn('[TEST] Expected connection failure (treating as warning):', message);
+      return;
     }
 
-    // Allow other errors through
+    // All other errors, including code bugs, go through normally
     originalError.apply(console, args);
   };
 }

@@ -103,6 +103,74 @@ Comprehensive validation of all 481 Ladle component stories using auto-generated
 
 ---
 
+### Chat Component Tests (`tests/unit/chat/` and `tests/chat.spec.ts`)
+
+Comprehensive testing for chat functionality including components, store, service, and E2E scenarios.
+
+**Unit Tests (`tests/unit/chat/chatComponents.spec.ts`):**
+- ChatTextContent component (markdown rendering, streaming, code blocks, tables)
+- ThinkingBlock component (expand/collapse, streaming, duration, auto-collapse)
+- ToolInvocationCard component (executing/complete/error states, input/output display)
+- UsageStatsBadge component (token formatting, cost display, tooltip)
+- ChatMessage component (user/assistant roles, part rendering, streaming placeholder)
+- ChatInput component (keyboard shortcuts, send/cancel buttons, SDK status, accessibility)
+
+**What the unit tests verify:**
+- Component rendering with various prop combinations
+- Data formatting (tokens with k suffix, duration formatting)
+- Accessibility attributes (aria-label, aria-expanded, data-testid)
+- Dark mode styling support
+- Memoization for performance
+- Error state handling
+
+**E2E Tests (`tests/chat.spec.ts`):**
+- SDK status check on initialization (FR-8)
+- Message sending and receiving
+- Streaming response indicators
+- Thinking block display and interaction
+- Tool invocation cards (status, input/output, duration)
+- Usage statistics badge (token counts, cost)
+- Error handling scenarios (FR-7)
+- Keyboard navigation and accessibility
+- Dark mode rendering
+
+**What the E2E tests verify:**
+- Full message flow (send → stream → complete)
+- UI updates during streaming
+- Cancellation during streaming
+- Error display and recovery
+- Accessibility (keyboard nav, aria labels)
+- SDK unavailability handling
+
+**Ladle Stories (`src/catalog/components/chat/ChatComponents.stories.tsx`):**
+- ChatTextContent: Basic, Markdown, Code blocks, Tables, Streaming, Mixed, Blockquotes, Lists
+- ThinkingBlock: Default, Expanded, With duration, Streaming, Long content, Short content
+- ToolInvocationCard: Executing, Complete, Error, Long output, Complex input, No output
+- UsageStatsBadge: Small, Medium, Large, Formatted, High volume
+- ChatMessage: User, Assistant, With thinking, With usage, With tools, Streaming, Error
+- ChatInput: Default, Streaming, SDK disabled, Sending, Disabled, Custom placeholder
+
+**Configuration:**
+- Unit tests: `playwright.config.ts` (default config)
+- E2E tests: `playwright.e2e.config.ts` (auto-starts servers)
+- Story tests: `playwright.refinement.config.ts` (requires Ladle)
+
+**Usage:**
+```bash
+# Run unit tests
+npm test tests/unit/chat
+
+# Run E2E tests (requires servers)
+npm run test:e2e tests/chat.spec.ts
+
+# Validate Ladle stories
+npm run catalog:dev                 # Terminal 1: Start Ladle
+npm run test:stories:generate       # Terminal 2: Generate tests
+npm run test:stories                # Run validation
+```
+
+---
+
 ### Embedded App Tests (`embedded-*.spec.ts`)
 
 Tests for the embedded viewer application with reference server integration.

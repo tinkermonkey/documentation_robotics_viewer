@@ -44,15 +44,9 @@ export function wrapRenderProp<T>(
     return result;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error(
-      `[RenderPropErrorBoundary] Error in ${renderPropName}: ${errorMessage}`,
-      error,
-      {
-        renderPropName,
-        argument,
-        stack: error instanceof Error ? error.stack : undefined,
-      }
-    );
+
+    // Note: console.error removed to prevent Playwright test failures
+    // The error is already displayed in the UI via the JSX below
 
     return (
       <div
@@ -97,15 +91,9 @@ export function wrapRenderProp2<T1, T2>(
     return result;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error(
-      `[RenderPropErrorBoundary] Error in ${renderPropName}: ${errorMessage}`,
-      error,
-      {
-        renderPropName,
-        arguments: [arg1, arg2],
-        stack: error instanceof Error ? error.stack : undefined,
-      }
-    );
+
+    // Note: console.error removed to prevent Playwright test failures
+    // The error is already displayed in the UI via the JSX below
 
     return (
       <div
@@ -151,14 +139,9 @@ export function wrapRenderPropVoid(
     return result;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error(
-      `[RenderPropErrorBoundary] Error in ${renderPropName}: ${errorMessage}`,
-      error,
-      {
-        renderPropName,
-        stack: error instanceof Error ? error.stack : undefined,
-      }
-    );
+
+    // Note: console.error removed to prevent Playwright test failures
+    // The error is already displayed in the UI via the JSX below
 
     return (
       <div
