@@ -11,6 +11,17 @@ import {
   SDKStatus,
   ToolInvocationContent,
 } from '../types/chat';
+import {
+  validateChatMessage,
+  validateChatContent,
+  validateConversationId,
+  validateErrorMessage,
+  validateMessageUpdates,
+  validateToolInvocationUpdates,
+  validateSDKStatus,
+  validateMessageId,
+  ChatValidationError,
+} from '../services/chatValidation';
 
 export interface ChatStore {
   // State
@@ -55,13 +66,33 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   error: null,
 
   // Basic actions
-  setActiveConversationId: (conversationId) => set({ activeConversationId: conversationId }),
+  setActiveConversationId: (conversationId) => {
+    validateConversationId(conversationId);
+    set({ activeConversationId: conversationId });
+  },
 
-  setStreaming: (isStreaming) => set({ isStreaming }),
+  setStreaming: (isStreaming) => {
+    if (typeof isStreaming !== 'boolean') {
+      throw new ChatValidationError(
+        'INVALID_STREAMING_FLAG',
+        'isStreaming must be a boolean',
+        { isStreaming }
+      );
+    }
+    set({ isStreaming });
+  },
 
-  setSdkStatus: (status) => set({ sdkStatus: status }),
+  setSdkStatus: (status) => {
+    if (status !== null) {
+      validateSDKStatus(status);
+    }
+    set({ sdkStatus: status });
+  },
 
-  setError: (error) => set({ error }),
+  setError: (error) => {
+    validateErrorMessage(error);
+    set({ error });
+  },
 
   reset: () => set({
     messages: [],
@@ -73,19 +104,39 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
   // Message operations
 
-  addMessage: (message) => set((state) => ({
-    messages: [...state.messages, message],
-  })),
+  addMessage: (message) => {
+    validateChatMessage(message);
+    set((state) => ({
+      messages: [...state.messages, message],
+    }));
+  },
 
-  updateMessage: (id, updates) => set((state) => ({
-    messages: state.messages.map((msg) =>
-      msg.id === id ? { ...msg, ...updates } : msg
-    ),
-  })),
+  updateMessage: (id, updates) => {
+    validateMessageId(id);
+    validateMessageUpdates(updates);
+    set((state) => {
+      const messageExists = state.messages.some((msg) => msg.id === id);
+      if (!messageExists) {
+        throw new ChatValidationError(
+          'MESSAGE_NOT_FOUND',
+          `Message with id "${id}" not found`,
+          { id }
+        );
+      }
+      return {
+        messages: state.messages.map((msg) =>
+          msg.id === id ? { ...msg, ...updates } : msg
+        ),
+      };
+    });
+  },
 
-  deleteMessage: (id) => set((state) => ({
-    messages: state.messages.filter((msg) => msg.id !== id),
-  })),
+  deleteMessage: (id) => {
+    validateMessageId(id);
+    set((state) => ({
+      messages: state.messages.filter((msg) => msg.id !== id),
+    }));
+  },
 
   // Content part operations
 
@@ -93,76 +144,132 @@ export const useChatStore = create<ChatStore>((set, get) => ({
    * Append a new content part to a message
    * Creates new part with current timestamp if not provided
    */
-  appendPart: (messageId, part) => set((state) => ({
-    messages: state.messages.map((msg) => {
-      if (msg.id === messageId) {
-        // Ensure part has timestamp
-        const partWithTimestamp = {
-          ...part,
-          timestamp: part.timestamp && part.timestamp.length > 0 ? part.timestamp : new Date().toISOString(),
-        };
-        return {
-          ...msg,
-          parts: [...msg.parts, partWithTimestamp],
-        };
+  appendPart: (messageId, part) => {
+    validateMessageId(messageId);
+    validateChatContent(part);
+    set((state) => {
+      const messageExists = state.messages.some((msg) => msg.id === messageId);
+      if (!messageExists) {
+        throw new ChatValidationError(
+          'MESSAGE_NOT_FOUND',
+          `Message with id "${messageId}" not found`,
+          { messageId }
+        );
       }
-      return msg;
-    }),
-  })),
+      return {
+        messages: state.messages.map((msg) => {
+          if (msg.id === messageId) {
+            // Ensure part has timestamp
+            const partWithTimestamp = {
+              ...part,
+              timestamp: part.timestamp && part.timestamp.length > 0 ? part.timestamp : new Date().toISOString(),
+            };
+            return {
+              ...msg,
+              parts: [...msg.parts, partWithTimestamp],
+            };
+          }
+          return msg;
+        }),
+      };
+    });
+  },
 
   /**
    * Append or update text content in a message
    * Optimized for streaming: appends to existing text part if present,
    * otherwise creates new text part
    */
-  appendTextContent: (messageId, content) => set((state) => ({
-    messages: state.messages.map((msg) => {
-      if (msg.id === messageId) {
-        const lastPart = msg.parts[msg.parts.length - 1];
-
-        // If last part is text content, append to it
-        if (lastPart && lastPart.type === 'text') {
-          const updatedParts = [...msg.parts];
-          updatedParts[msg.parts.length - 1] = {
-            ...(lastPart as TextContent),
-            content: (lastPart as TextContent).content + content,
-          };
-          return {
-            ...msg,
-            parts: updatedParts,
-          };
-        }
-
-        // Otherwise create new text part
-        const newPart: TextContent = {
-          type: 'text',
-          content,
-          timestamp: new Date().toISOString(),
-        };
-        return {
-          ...msg,
-          parts: [...msg.parts, newPart],
-        };
+  appendTextContent: (messageId, content) => {
+    validateMessageId(messageId);
+    if (typeof content !== 'string') {
+      throw new ChatValidationError(
+        'INVALID_TEXT_CONTENT',
+        'Content must be a string',
+        { content }
+      );
+    }
+    set((state) => {
+      const messageExists = state.messages.some((msg) => msg.id === messageId);
+      if (!messageExists) {
+        throw new ChatValidationError(
+          'MESSAGE_NOT_FOUND',
+          `Message with id "${messageId}" not found`,
+          { messageId }
+        );
       }
-      return msg;
-    }),
-  })),
+      return {
+        messages: state.messages.map((msg) => {
+          if (msg.id === messageId) {
+            const lastPart = msg.parts[msg.parts.length - 1];
+
+            // If last part is text content, append to it
+            if (lastPart && lastPart.type === 'text') {
+              const updatedParts = [...msg.parts];
+              updatedParts[msg.parts.length - 1] = {
+                ...(lastPart as TextContent),
+                content: (lastPart as TextContent).content + content,
+              };
+              return {
+                ...msg,
+                parts: updatedParts,
+              };
+            }
+
+            // Otherwise create new text part
+            const newPart: TextContent = {
+              type: 'text',
+              content,
+              timestamp: new Date().toISOString(),
+            };
+            return {
+              ...msg,
+              parts: [...msg.parts, newPart],
+            };
+          }
+          return msg;
+        }),
+      };
+    });
+  },
 
   /**
    * Update a tool invocation content part by toolUseId
    * Finds and updates the tool invocation with matching unique ID across all messages
    */
-  updateToolInvocation: (toolUseId, updates) => set((state) => ({
-    messages: state.messages.map((msg) => ({
-      ...msg,
-      parts: msg.parts.map((part) => {
-        if (part.type === 'tool_invocation' && 'toolUseId' in part && part.toolUseId === toolUseId) {
-          return { ...part, ...updates };
-        }
-        return part;
-      })
-    }))
-  })),
+  updateToolInvocation: (toolUseId, updates) => {
+    if (typeof toolUseId !== 'string' || toolUseId.length === 0) {
+      throw new ChatValidationError(
+        'INVALID_TOOL_USE_ID',
+        'toolUseId must be a non-empty string',
+        { toolUseId }
+      );
+    }
+    validateToolInvocationUpdates(updates);
+    set((state) => {
+      let toolFound = false;
+      const messages = state.messages.map((msg) => ({
+        ...msg,
+        parts: msg.parts.map((part) => {
+          if (part.type === 'tool_invocation' && 'toolUseId' in part && part.toolUseId === toolUseId) {
+            toolFound = true;
+            return { ...part, ...updates };
+          }
+          return part;
+        })
+      }));
+
+      if (!toolFound) {
+        throw new ChatValidationError(
+          'TOOL_NOT_FOUND',
+          `Tool invocation with toolUseId "${toolUseId}" not found`,
+          { toolUseId }
+        );
+      }
+
+      return { messages };
+    });
+  },
 
   // Query operations
 

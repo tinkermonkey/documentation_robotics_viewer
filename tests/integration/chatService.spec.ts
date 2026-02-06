@@ -456,9 +456,10 @@ test.describe('ChatService', () => {
 
       // Simulate tool invocation attempt
       (chatService as any).handleToolInvoke({
-        conversation_id: convId,
-        tool_name: 'test_tool',
-        tool_input: { query: 'test' },
+        conversationId: convId,
+        tool_use_id: 'toolu_test_123',
+        toolName: 'test_tool',
+        toolInput: { query: 'test' },
         status: 'executing',
         timestamp: new Date().toISOString(),
       });

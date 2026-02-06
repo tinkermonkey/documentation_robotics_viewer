@@ -161,12 +161,12 @@ test.describe('Chat Store', () => {
       expect(updated.id).toBe('msg-1'); // Other properties unchanged
     });
 
-    test('should not update non-existent message', () => {
+    test('should throw when updating non-existent message', () => {
       const message = createTestMessage('msg-1', 'conv-1');
       useChatStore.setState({ messages: [message] });
 
       const store = useChatStore.getState();
-      store.updateMessage('msg-999', { isStreaming: true });
+      expect(() => store.updateMessage('msg-999', { isStreaming: true })).toThrow();
 
       expect(useChatStore.getState().messages[0].isStreaming).toBeUndefined();
     });
@@ -327,7 +327,7 @@ test.describe('Chat Store', () => {
       expect(updatedTool.status.state === 'completed' && updatedTool.status.result).toEqual({ found: 3 });
     });
 
-    test('should not update tool invocation with wrong tool_use_id', () => {
+    test('should throw when updating tool invocation with wrong tool_use_id', () => {
       const message = createTestMessage('msg-1', 'conv-1');
       const toolPart: ToolInvocationContent = {
         type: 'tool_invocation',
@@ -342,9 +342,9 @@ test.describe('Chat Store', () => {
       useChatStore.setState({ messages: [message] });
 
       const store = useChatStore.getState();
-      store.updateToolInvocation('toolu_wrong', {
+      expect(() => store.updateToolInvocation('toolu_wrong', {
         status: { state: 'completed' },
-      });
+      })).toThrow();
 
       const updated = useChatStore.getState().messages[0];
       const updatedTool = updated.parts[1] as ToolInvocationContent;
