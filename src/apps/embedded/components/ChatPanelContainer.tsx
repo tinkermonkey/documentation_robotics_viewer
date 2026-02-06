@@ -6,6 +6,7 @@
 
 import { useEffect, useState } from 'react';
 import { ChatPanel } from './ChatPanel';
+import { ChatPanelErrorBoundary } from './ChatPanelErrorBoundary';
 import { chatService } from '../services/chatService';
 import { useChatStore } from '../stores/chatStore';
 import { websocketClient } from '../services/websocketClient';
@@ -94,21 +95,24 @@ export const ChatPanelContainer = ({
   }
 
   // Show initialization error (but still render ChatPanel for user feedback)
+  // Wrap ChatPanel with error boundary to catch rendering errors
   return (
-    <>
-      {initError && !initError.includes('not available') && (
-        <div className="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded-lg">
-          <p className="text-sm text-yellow-800 dark:text-yellow-200">
-            <span className="font-semibold">Warning:</span> {initError}
-          </p>
-        </div>
-      )}
-      <ChatPanel
-        title={title}
-        showCostInfo={showCostInfo}
-        testId={testId}
-      />
-    </>
+    <ChatPanelErrorBoundary>
+      <>
+        {initError && !initError.includes('not available') && (
+          <div className="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded-lg">
+            <p className="text-sm text-yellow-800 dark:text-yellow-200">
+              <span className="font-semibold">Warning:</span> {initError}
+            </p>
+          </div>
+        )}
+        <ChatPanel
+          title={title}
+          showCostInfo={showCostInfo}
+          testId={testId}
+        />
+      </>
+    </ChatPanelErrorBoundary>
   );
 };
 
