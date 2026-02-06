@@ -28,6 +28,7 @@ export class WebSocketClient {
   private mode: 'websocket' | 'rest' | 'detecting' = 'detecting';
   private connectionTimeout: NodeJS.Timeout | null = null;
   private maxConnectionAttempts: number = 3; // Try connecting 3 times before falling back
+  private connectionErrors: Error[] = []; // Buffer for capturing errors during detection phase
 
   constructor(url: string, token: string | null = null) {
     this.url = url;
@@ -98,13 +99,23 @@ export class WebSocketClient {
         }, 3000); // 3 second timeout
       }
     } catch (error) {
-      console.error('[WebSocket] Connection error:', error);
       if (this.mode === 'detecting') {
+        console.debug('[WebSocket] Connection error during detection:', error);
         this.handleConnectionFailure();
+        // Capture error for debugging
+        this.connectionErrors.push(error instanceof Error ? error : new Error(String(error)));
       } else {
+        console.error('[WebSocket] Connection error:', error);
         this.scheduleReconnect();
       }
     }
+  }
+
+  /**
+   * Get captured connection errors from detection phase (for debugging)
+   */
+  getConnectionErrors(): Error[] {
+    return [...this.connectionErrors];
   }
 
   /**
@@ -211,8 +222,14 @@ export class WebSocketClient {
     this.reconnectAttempts++;
 
     if (this.reconnectAttempts >= this.maxConnectionAttempts) {
-      // Switch to REST mode
+      // Switch to REST mode and log collected errors from detection phase
       console.log('[WebSocket] Server does not support WebSocket, using REST mode');
+      if (this.connectionErrors.length > 0) {
+        console.warn('[WebSocket] Connection attempts failed with the following errors:');
+        this.connectionErrors.forEach((error, index) => {
+          console.warn(`  [${index + 1}] ${error.message}`);
+        });
+      }
       this.mode = 'rest';
       this.reconnectAttempts = 0;
       this.emit('rest-mode', {});
@@ -268,18 +285,17 @@ export class WebSocketClient {
    * Handle WebSocket error
    */
   private handleError(event: Event): void {
-    // Always log errors for debugging, but adjust verbosity by mode
-    const isTestEnv = typeof window !== 'undefined' && (
-      window.location.port === '61000' ||  // Ladle default port
-      (window as any).__LADLE_MOCK_WEBSOCKET__ ||  // Explicit mock flag
-      (window as any).__PLAYWRIGHT__  // Playwright test environment
-    );
+    // Use existing test environment detection to avoid duplication
+    const isTestEnv = isTestEnvironment();
 
-    // Log error details for debugging in all modes
+    // Capture error during detection for later debugging
     if (this.mode === 'detecting') {
-      console.debug('[WebSocket] Connection error during detection (attempt %d/%d)',
+      const errorMsg = event instanceof ErrorEvent ? event.message : String(event);
+      this.connectionErrors.push(new Error(`[Attempt ${this.reconnectAttempts + 1}/${this.maxConnectionAttempts}] ${errorMsg}`));
+      console.debug('[WebSocket] Connection error during detection (attempt %d/%d): %s',
         this.reconnectAttempts + 1,
-        this.maxConnectionAttempts
+        this.maxConnectionAttempts,
+        errorMsg
       );
     } else if (!isTestEnv) {
       // Full error logging outside test environments

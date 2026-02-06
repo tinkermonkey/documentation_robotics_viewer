@@ -9,26 +9,26 @@ if (typeof window !== 'undefined') {
 
   // Create logger that distinguishes between test suppression and real errors
   const originalError = console.error;
-  const originalWarn = console.warn;
 
   console.error = (...args: any[]) => {
     const message = String(args[0] || '');
 
-    // For connection-related messages in test environment, downgrade to warning
-    // This avoids CI failures while still maintaining visibility via console.warn
-    if (
-      message.includes('[WebSocket]') ||
-      message.includes('[EmbeddedLayout]') ||
-      message.includes('[JsonRpcHandler]') ||
-      message.includes('WebSocket is') ||
-      message.includes('WebSocket connection')
-    ) {
+    // Only suppress expected WebSocket connection failure messages in test environment
+    // All other errors, including parsing, type errors, and legitimate bugs, pass through
+    const isExpectedConnectionFailure = (
+      message.includes('WebSocket connection to') ||  // Browser WebSocket connection error
+      message.includes('WebSocket connection failed') ||  // WebSocket failed
+      message.includes('WebSocket is closed before the connection is established') ||  // Expected closure
+      message.includes('The operation is insecure') // HTTPS/WSS requirement
+    );
+
+    if (isExpectedConnectionFailure) {
       // Log as warning instead of error for test visibility
-      originalWarn('[TEST] Suppressed error (treating as warning):', ...args);
+      console.warn('[TEST] Expected connection failure (treating as warning):', message);
       return;
     }
 
-    // All other errors go through normally
+    // All other errors, including code bugs, go through normally
     originalError.apply(console, args);
   };
 }
