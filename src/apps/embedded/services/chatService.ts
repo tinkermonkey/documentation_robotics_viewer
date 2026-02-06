@@ -165,7 +165,7 @@ export class ChatService {
 
       const result = await jsonRpcHandler.sendRequest<ChatSendResult>(
         'chat.send',
-        { message } as Record<string, unknown>,
+        { message } as ChatSendParams,
         60000 // 60 second timeout for streaming
       );
 
@@ -209,7 +209,7 @@ export class ChatService {
     try {
       const result = await jsonRpcHandler.sendRequest<ChatCancelResult>(
         'chat.cancel',
-        {} as Record<string, unknown>,
+        {} as ChatCancelParams,
         5000 // 5 second timeout for cancel
       );
 
