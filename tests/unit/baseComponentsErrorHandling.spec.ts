@@ -1,84 +1,203 @@
 import { test, expect } from '@playwright/test';
+import { wrapRenderProp, wrapRenderProp2, wrapRenderPropVoid } from '../../src/core/components/base/RenderPropErrorBoundary';
+import React from 'react';
 
 /**
- * Integration tests for render prop error handling in base components.
- * These tests verify that render props are properly wrapped with error boundaries
- * and that errors don't silently fail.
+ * Unit tests for RenderPropErrorBoundary utility functions
+ *
+ * These tests verify that render props are properly wrapped with error handling
+ * and errors are caught, logged, and displayed to users rather than silently failing.
  */
 
-test.describe('Render Prop Error Handling Integration', () => {
-  test('render prop wrapper utility catches errors', () => {
-    // This test verifies the utility functions work correctly
-    // Actual component integration tests are covered via E2E tests
-
-    // Test that error is logged
-    const consoleSpy = test.step('verify error logging', async () => {
-      const originalError = console.error;
-      const calls: any[] = [];
-      console.error = (...args) => calls.push(args);
-
-      try {
-        // Simulate what happens in a render prop
-        const renderProp = () => {
-          throw new Error('Test render prop error');
-        };
-
-        // Should be caught and logged
-        let errorCaught = false;
-        try {
-          renderProp();
-        } catch {
-          errorCaught = true;
-        }
-
-        expect(errorCaught).toBe(true);
-      } finally {
-        console.error = originalError;
-      }
-    });
-  });
-
-  test('error boundaries prevent silent failures', () => {
-    // Verify that the error boundary approach works
-    // by ensuring errors throw rather than silently fail
-    const failingRenderProp = () => {
-      throw new Error('Intentional render failure');
+test.describe('wrapRenderProp Error Handling', () => {
+  test('should catch render prop errors and return error UI', () => {
+    // Setup: Create a render prop that throws an error
+    const failingRenderProp = (data: string) => {
+      throw new Error('Render prop error');
     };
 
-    // Error should be thrown when called directly
-    expect(() => {
-      failingRenderProp();
-    }).toThrow('Intentional render failure');
+    // Act: Call wrapRenderProp with failing function
+    const result = wrapRenderProp(failingRenderProp, 'test data', 'testRenderProp');
+
+    // Assert: Result should be a React element (error UI)
+    expect(result).toBeDefined();
+    expect((result as any)?.type).toBe('div');
+    expect((result as any)?.props['data-testid']).toBe('render-prop-error-testRenderProp');
+    expect((result as any)?.props.role).toBe('alert');
   });
 
-  test('successful render props return expected values', () => {
-    // Test the happy path
-    const successfulRenderProp = () => 'Rendered content';
+  test('should successfully call and return result from working render prop', () => {
+    // Setup: Create a render prop that works correctly
+    const workingRenderProp = (data: string) => {
+      return React.createElement('span', { key: 'test' }, `Value: ${data}`);
+    };
 
-    const result = successfulRenderProp();
-    expect(result).toBe('Rendered content');
+    // Act: Call wrapRenderProp with working function
+    const result = wrapRenderProp(workingRenderProp, 'test data', 'testRenderProp');
+
+    // Assert: Result should be the returned element
+    expect(result).toBeDefined();
+    expect((result as any)?.type).toBe('span');
+    expect((result as any)?.props.children).toContain('Value: test data');
   });
 
-  test('render prop wrapper maintains error context', () => {
-    // Verify error logging includes context information
+  test('should log error details to console when render prop fails', () => {
+    // Setup: Spy on console.error
     const originalError = console.error;
-    const calls: any[] = [];
-    console.error = (...args) => calls.push(args);
+    const errorCalls: any[] = [];
+    console.error = (...args) => errorCalls.push(args);
 
     try {
-      const error = new Error('Test error with context');
-      console.error(
-        'Test log',
-        error,
-        {
-          propName: 'testProp',
-          context: 'test context',
-        }
-      );
+      // Act: Call failing render prop
+      const failingRenderProp = () => {
+        throw new Error('Test error message');
+      };
+      wrapRenderProp(failingRenderProp, 'arg', 'myRenderProp');
 
-      expect(calls.length).toBeGreaterThan(0);
-      const errorCall = calls[0];
-      expect(errorCall[0]).toBe('Test log');
+      // Assert: console.error should have been called with error details
+      expect(errorCalls.length).toBeGreaterThan(0);
+      const firstCall = errorCalls[0];
+      expect(firstCall[0]).toContain('[RenderPropErrorBoundary]');
+      expect(firstCall[0]).toContain('myRenderProp');
+      expect(firstCall[0]).toContain('Test error message');
+
+      // Verify error context object was logged
+      expect(firstCall.length).toBeGreaterThanOrEqual(3);
+      const contextObj = firstCall[2];
+      expect(contextObj.renderPropName).toBe('myRenderProp');
+      expect(contextObj.argument).toBe('arg');
+    } finally {
+      console.error = originalError;
+    }
+  });
+
+  test('should handle null/undefined argument gracefully', () => {
+    // Setup: Create a render prop that expects an optional argument
+    const renderProp = (data: any) => {
+      if (!data) return React.createElement('div', { key: 'null' }, 'No data');
+      return React.createElement('div', { key: 'data' }, data);
+    };
+
+    // Act: Call with null
+    const result = wrapRenderProp(renderProp, null, 'testRenderProp');
+
+    // Assert: Should return element with "No data"
+    expect(result).toBeDefined();
+    expect((result as any)?.type).toBe('div');
+    expect((result as any)?.props.children).toBe('No data');
+  });
+});
+
+test.describe('wrapRenderProp2 Error Handling', () => {
+  test('should catch errors in two-argument render props', () => {
+    // Setup: Create a render prop that takes two arguments and fails
+    const failingRenderProp = (arg1: string, arg2: number) => {
+      throw new Error('Two-arg render prop error');
+    };
+
+    // Act: Call wrapRenderProp2
+    const result = wrapRenderProp2(failingRenderProp, 'test', 42, 'testRenderProp2');
+
+    // Assert: Should return error UI
+    expect(result).toBeDefined();
+    expect((result as any)?.type).toBe('div');
+    expect((result as any)?.props['data-testid']).toBe('render-prop-error-testRenderProp2');
+  });
+
+  test('should successfully call two-argument render props', () => {
+    // Setup: Create a working two-argument render prop
+    const workingRenderProp = (name: string, count: number) => {
+      return React.createElement('div', { key: 'result' }, `${name}: ${count}`);
+    };
+
+    // Act: Call wrapRenderProp2
+    const result = wrapRenderProp2(workingRenderProp, 'Items', 5, 'testRenderProp2');
+
+    // Assert: Should return the element
+    expect(result).toBeDefined();
+    expect((result as any)?.props.children).toBe('Items: 5');
+  });
+
+  test('should log both arguments in error context for two-argument render props', () => {
+    // Setup: Spy on console.error
+    const originalError = console.error;
+    const errorCalls: any[] = [];
+    console.error = (...args) => errorCalls.push(args);
+
+    try {
+      // Act: Call failing two-argument render prop
+      const failingRenderProp = (arg1: string, arg2: number) => {
+        throw new Error('Two-arg error');
+      };
+      wrapRenderProp2(failingRenderProp, 'value1', 99, 'myTwoArgProp');
+
+      // Assert: Both arguments should be logged
+      expect(errorCalls.length).toBeGreaterThan(0);
+      const contextObj = errorCalls[0][2];
+      expect(contextObj.arguments).toEqual(['value1', 99]);
+    } finally {
+      console.error = originalError;
+    }
+  });
+});
+
+test.describe('wrapRenderPropVoid Error Handling', () => {
+  test('should return null when render prop is undefined', () => {
+    // Act: Call wrapRenderPropVoid with undefined
+    const result = wrapRenderPropVoid(undefined, 'testRenderProp');
+
+    // Assert: Should return null
+    expect(result).toBeNull();
+  });
+
+  test('should catch errors in void render props', () => {
+    // Setup: Create a void render prop that fails
+    const failingRenderProp = () => {
+      throw new Error('Void render prop error');
+    };
+
+    // Act: Call wrapRenderPropVoid
+    const result = wrapRenderPropVoid(failingRenderProp, 'testVoidProp');
+
+    // Assert: Should return error UI
+    expect(result).toBeDefined();
+    expect((result as any)?.type).toBe('div');
+    expect((result as any)?.props['data-testid']).toBe('render-prop-error-testVoidProp');
+  });
+
+  test('should successfully call void render props', () => {
+    // Setup: Create a working void render prop
+    const workingRenderProp = () => {
+      return React.createElement('p', { key: 'result' }, 'Void render success');
+    };
+
+    // Act: Call wrapRenderPropVoid
+    const result = wrapRenderPropVoid(workingRenderProp, 'testVoidProp');
+
+    // Assert: Should return the element
+    expect(result).toBeDefined();
+    expect((result as any)?.props.children).toBe('Void render success');
+  });
+
+  test('should log error stack trace for void render props', () => {
+    // Setup: Spy on console.error
+    const originalError = console.error;
+    const errorCalls: any[] = [];
+    console.error = (...args) => errorCalls.push(args);
+
+    try {
+      // Act: Call failing void render prop
+      const failingRenderProp = () => {
+        throw new Error('Void error with stack');
+      };
+      wrapRenderPropVoid(failingRenderProp, 'myVoidProp');
+
+      // Assert: Error stack should be logged
+      expect(errorCalls.length).toBeGreaterThan(0);
+      const contextObj = errorCalls[0][2];
+      expect(contextObj.renderPropName).toBe('myVoidProp');
+      expect(contextObj.stack).toBeDefined();
+      expect(typeof contextObj.stack).toBe('string');
     } finally {
       console.error = originalError;
     }
