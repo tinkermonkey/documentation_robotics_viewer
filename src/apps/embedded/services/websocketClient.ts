@@ -4,6 +4,9 @@
  * Features: auto-reconnect, exponential backoff, event handling, token authentication
  */
 
+import { logError, logWarning } from './errorTracker';
+import { ERROR_IDS } from '@/constants/errorIds';
+
 type EventHandler = (data: any) => void;
 
 interface WebSocketMessage {
@@ -105,7 +108,11 @@ export class WebSocketClient {
         // Capture error for debugging
         this.connectionErrors.push(error instanceof Error ? error : new Error(String(error)));
       } else {
-        console.error('[WebSocket] Connection error:', error);
+        logError(
+          ERROR_IDS.WS_CONNECTION_ERROR,
+          'WebSocket connection error',
+          { error: error instanceof Error ? error.message : String(error) }
+        );
         this.scheduleReconnect();
       }
     }
@@ -277,7 +284,11 @@ export class WebSocketClient {
       // Also emit a generic 'message' event
       this.emit('message', message);
     } catch (error) {
-      console.error('[WebSocket] Failed to parse message:', error);
+      logError(
+        ERROR_IDS.WS_MESSAGE_PARSE_FAILED,
+        'Failed to parse WebSocket message',
+        { error: error instanceof Error ? error.message : String(error), data: event.data }
+      );
     }
   }
 
@@ -299,7 +310,11 @@ export class WebSocketClient {
       );
     } else if (!isTestEnv) {
       // Full error logging outside test environments
-      console.error('[WebSocket] Error:', event);
+      logError(
+        ERROR_IDS.WS_ERROR_EVENT,
+        'WebSocket error event',
+        { error: event instanceof ErrorEvent ? event.message : String(event) }
+      );
     } else {
       // In test environments, log at debug level instead of error
       console.debug('[WebSocket] Error in test environment:', event);
@@ -346,7 +361,11 @@ export class WebSocketClient {
     }
 
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.error('[WebSocket] Max reconnection attempts reached');
+      logError(
+        ERROR_IDS.WS_MAX_RECONNECT_ATTEMPTS,
+        'Max reconnection attempts reached',
+        { attempts: this.reconnectAttempts }
+      );
       this.emit('max-reconnect-attempts', { attempts: this.reconnectAttempts });
       return;
     }
@@ -409,7 +428,11 @@ export class WebSocketClient {
         try {
           handler(data);
         } catch (error) {
-          console.error(`[WebSocket] Error in event handler for ${event}:`, error);
+          logError(
+            ERROR_IDS.WS_EVENT_HANDLER_ERROR,
+            `Error in WebSocket event handler for '${event}'`,
+            { error: error instanceof Error ? error.message : String(error), event }
+          );
         }
       });
     }

@@ -12,6 +12,8 @@ import {
   JsonRpcMessage,
   JsonRpcError,
 } from '../types/chat';
+import { logError, logWarning } from './errorTracker';
+import { ERROR_IDS } from '@/constants/errorIds';
 
 /**
  * Represents a pending JSON-RPC request awaiting a response
@@ -77,7 +79,11 @@ export class JsonRpcHandler {
           // Message is already parsed by websocketClient
           this.handleMessage(message as JsonRpcMessage);
         } catch (error) {
-          console.error('[JsonRpcHandler] Failed to handle message:', error);
+          logError(
+            ERROR_IDS.JSONRPC_MESSAGE_PARSE_FAILED,
+            'Failed to handle message',
+            { error: error instanceof Error ? error.message : String(error), message: String(message) }
+          );
         }
       });
 
@@ -91,7 +97,11 @@ export class JsonRpcHandler {
     if (this.messageListenerAttached) return;
     // Trigger async attachment and log any failures
     this.ensureMessageListenerAttachedAsync().catch((error) => {
-      console.error('[JsonRpcHandler] Failed to attach message listener in background:', error);
+      logError(
+        ERROR_IDS.JSONRPC_ATTACH_LISTENER_BACKGROUND_FAILED,
+        'Failed to attach message listener in background',
+        { error: error instanceof Error ? error.message : String(error) }
+      );
     });
   }
 
@@ -171,11 +181,13 @@ export class JsonRpcHandler {
     } catch (error) {
       this.pendingRequests.delete(id);
       clearTimeout(timeoutHandle);
-      reject(
-        new Error(
-          `Failed to send JSON-RPC request: ${error instanceof Error ? error.message : 'Unknown error'}`
-        )
+      const errorMessage = `Failed to send JSON-RPC request: ${error instanceof Error ? error.message : 'Unknown error'}`;
+      logError(
+        ERROR_IDS.JSONRPC_SEND_REQUEST_FAILED,
+        errorMessage,
+        { error: error instanceof Error ? error.message : String(error), method: request.method }
       );
+      reject(new Error(errorMessage));
     }
   }
 
@@ -190,9 +202,10 @@ export class JsonRpcHandler {
       const websocketClient = await this.getWebSocketClient();
       websocketClient.send(notification as any);
     } catch (error) {
-      console.error(
-        `[JsonRpcHandler] Failed to send notification for method '${method}':`,
-        error
+      logError(
+        ERROR_IDS.JSONRPC_SEND_NOTIFICATION_FAILED,
+        `Failed to send notification for method '${method}'`,
+        { error: error instanceof Error ? error.message : String(error), method }
       );
     }
   }
@@ -267,7 +280,7 @@ export class JsonRpcHandler {
     const { method, params } = message;
 
     if (!method) {
-      console.warn('[JsonRpcHandler] Received notification without method');
+      logWarning('Received notification without method');
       return;
     }
 
@@ -282,14 +295,19 @@ export class JsonRpcHandler {
         try {
           handler(params);
         } catch (error) {
-          console.error(
-            `[JsonRpcHandler] Error in notification handler for '${method}':`,
-            error
+          logError(
+            ERROR_IDS.JSONRPC_NOTIFICATION_HANDLER_ERROR,
+            `Error in notification handler for '${method}'`,
+            { error: error instanceof Error ? error.message : String(error), method }
           );
         }
       });
     } catch (error) {
-      console.error(`[JsonRpcHandler] Error handling notification '${method}':`, error);
+      logError(
+        ERROR_IDS.JSONRPC_HANDLE_NOTIFICATION_ERROR,
+        `Error handling notification '${method}'`,
+        { error: error instanceof Error ? error.message : String(error), method }
+      );
     }
   }
 

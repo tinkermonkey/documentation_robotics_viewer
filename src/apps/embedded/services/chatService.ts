@@ -6,6 +6,8 @@
 
 import { jsonRpcHandler } from './jsonRpcHandler';
 import { useChatStore } from '../stores/chatStore';
+import { logError, logWarning } from './errorTracker';
+import { ERROR_IDS } from '@/constants/errorIds';
 import {
   ChatStatusResult,
   ChatSendParams,
@@ -86,11 +88,16 @@ export class ChatService {
         errorMessage: result.errorMessage,
       };
     } catch (error) {
-      console.error('[ChatService] Failed to get status:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      logError(
+        ERROR_IDS.CHAT_GET_STATUS_FAILED,
+        'Failed to get status',
+        { error: errorMessage }
+      );
       const status: SDKStatus = {
         sdkAvailable: false,
         sdkVersion: null,
-        errorMessage: error instanceof Error ? error.message : 'Unknown error',
+        errorMessage: errorMessage,
       };
       useChatStore.getState().setSdkStatus(status);
       throw error;
@@ -174,6 +181,12 @@ export class ChatService {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       store.setError(errorMessage);
 
+      logError(
+        ERROR_IDS.CHAT_SEND_FAILED,
+        'Failed to send message',
+        { error: errorMessage, message }
+      );
+
       // Add error to assistant message
       store.appendPart(assistantMessageId, {
         type: 'error',
@@ -204,7 +217,12 @@ export class ChatService {
 
       return result;
     } catch (error) {
-      console.error('[ChatService] Failed to cancel:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      logError(
+        ERROR_IDS.CHAT_CANCEL_FAILED,
+        'Failed to cancel',
+        { error: errorMessage }
+      );
       store.setStreaming(false);
       throw error;
     }
@@ -218,7 +236,7 @@ export class ChatService {
     const currentMessage = store.getCurrentStreamingMessage();
 
     if (!currentMessage) {
-      console.warn('[ChatService] Received response chunk but no streaming message');
+      logWarning('Received response chunk but no streaming message');
       return;
     }
 
@@ -234,7 +252,7 @@ export class ChatService {
     const currentMessage = store.getCurrentStreamingMessage();
 
     if (!currentMessage) {
-      console.warn('[ChatService] Received tool invoke but no streaming message');
+      logWarning('Received tool invoke but no streaming message');
       return;
     }
 
@@ -270,7 +288,7 @@ export class ChatService {
     const currentMessage = store.getCurrentStreamingMessage();
 
     if (!currentMessage) {
-      console.warn('[ChatService] Received thinking but no streaming message');
+      logWarning('Received thinking but no streaming message');
       return;
     }
 
@@ -289,7 +307,7 @@ export class ChatService {
     const currentMessage = store.getCurrentStreamingMessage();
 
     if (!currentMessage) {
-      console.warn('[ChatService] Received usage but no streaming message');
+      logWarning('Received usage but no streaming message');
       return;
     }
 
