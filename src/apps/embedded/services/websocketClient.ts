@@ -4,7 +4,7 @@
  * Features: auto-reconnect, exponential backoff, event handling, token authentication
  */
 
-import { logError, logWarning } from './errorTracker';
+import { logError } from './errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
 
 type EventHandler = (data: any) => void;
