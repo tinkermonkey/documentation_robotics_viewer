@@ -77,7 +77,7 @@ test.describe('ChatService', () => {
     test('should reject empty message', async () => {
       try {
         await chatService.sendMessage('');
-        expect.fail('Expected empty message to be rejected');
+        throw new Error('Expected empty message to be rejected');
       } catch (error) {
         expect(error).toBeInstanceOf(Error);
         expect((error as Error).message).toContain('empty');
@@ -87,7 +87,7 @@ test.describe('ChatService', () => {
     test('should reject message with only whitespace', async () => {
       try {
         await chatService.sendMessage('   ');
-        expect.fail('Expected whitespace-only message to be rejected');
+        throw new Error('Expected whitespace-only message to be rejected');
       } catch (error) {
         expect(error).toBeInstanceOf(Error);
         expect((error as Error).message).toContain('empty');
