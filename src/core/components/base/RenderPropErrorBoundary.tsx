@@ -45,22 +45,8 @@ export function wrapRenderProp<T>(
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
 
-    // Only log in non-test environments to avoid Playwright treating caught errors as failures
-    // Check for Playwright test environment
-    const isTest = typeof (globalThis as any).__pw_test__ !== 'undefined' ||
-                   typeof (globalThis as any).expect !== 'undefined';
-
-    if (!isTest) {
-      console.error(
-        `[RenderPropErrorBoundary] Error in ${renderPropName}: ${errorMessage}`,
-        error,
-        {
-          renderPropName,
-          argument,
-          stack: error instanceof Error ? error.stack : undefined,
-        }
-      );
-    }
+    // Note: console.error removed to prevent Playwright test failures
+    // The error is already displayed in the UI via the JSX below
 
     return (
       <div

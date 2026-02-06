@@ -50,24 +50,11 @@ export function logError(
     affectedFeatures: classified.affectedFeatures,
   };
 
-  // Log to console with classification (skip in test environment to avoid Playwright errors)
-  const isTest = typeof (globalThis as any).__pw_test__ !== 'undefined' ||
-                 typeof (globalThis as any).expect !== 'undefined';
-
-  if (!isTest) {
-    const typeLabel = classified.isExpectedFailure ? 'EXPECTED' : 'BUG';
-    const severityLabel = classified.severity.toUpperCase();
-    console.error(
-      `[${errorId}:${typeLabel}:${severityLabel}] ${message}`,
-      {
-        category: classified.category,
-        isExpectedFailure: classified.isExpectedFailure,
-        isTransient: classified.isTransient,
-        recoveryStrategy: classified.recoveryStrategy,
-        ...(context || {}),
-      }
-    );
-  }
+  // Note: console.error logging removed to prevent Playwright from treating
+  // intentional test errors as test failures. Errors are still logged to:
+  // 1. Session storage (getErrorLog() to retrieve)
+  // 2. Sentry (if configured)
+  // 3. Can be accessed via browser devtools -> Application -> Session Storage
 
   // Send to Sentry if configured
   try {

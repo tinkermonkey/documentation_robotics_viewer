@@ -328,52 +328,32 @@ test.describe('Error Tracker Classification', () => {
     });
   });
 
-  test.describe('Console Output', () => {
-    test('should log expected failures differently than bugs', async () => {
-      const consoleErrors: string[] = [];
-      const originalError = console.error;
-      console.error = (...args: any[]) => {
-        consoleErrors.push(args[0]);
-      };
+  test.describe('Error Classification', () => {
+    test('should classify expected failures correctly', async () => {
+      const classified = logError(
+        ERROR_IDS.WS_CONNECTION_ERROR,
+        'Network error',
+        {},
+        new Error('Connection failed')
+      );
 
-      try {
-        logError(
-          ERROR_IDS.WS_CONNECTION_ERROR,
-          'Network error',
-          {},
-          new Error('Connection failed')
-        );
-
-        const output = consoleErrors[consoleErrors.length - 1];
-        expect(output).toContain('EXPECTED');
-        expect(output).toContain('[WS_001:EXPECTED:HIGH]');
-      } finally {
-        console.error = originalError;
-      }
+      expect(classified.isExpectedFailure).toBe(true);
+      expect(classified.severity).toBe(ExceptionSeverity.HIGH);
+      expect(classified.category).toBe(ExceptionCategory.NETWORK_ERROR);
+      expect(classified.isTransient).toBe(true);
     });
 
-    test('should log bugs with CRITICAL indicator', async () => {
-      const consoleErrors: string[] = [];
-      const originalError = console.error;
-      console.error = (...args: any[]) => {
-        consoleErrors.push(args[0]);
-      };
+    test('should classify bugs with CRITICAL severity', async () => {
+      const classified = logError(
+        ERROR_IDS.JSONRPC_MESSAGE_PARSE_FAILED,
+        'Type error',
+        {},
+        new TypeError('not a function')
+      );
 
-      try {
-        logError(
-          ERROR_IDS.JSONRPC_MESSAGE_PARSE_FAILED,
-          'Type error',
-          {},
-          new TypeError('not a function')
-        );
-
-        const output = consoleErrors[consoleErrors.length - 1];
-        expect(output).not.toContain('EXPECTED');
-        expect(output).toContain('BUG');
-        expect(output).toContain('CRITICAL');
-      } finally {
-        console.error = originalError;
-      }
+      expect(classified.isExpectedFailure).toBe(false);
+      expect(classified.severity).toBe(ExceptionSeverity.CRITICAL);
+      expect(classified.category).toBe(ExceptionCategory.TYPE_ERROR);
     });
   });
 

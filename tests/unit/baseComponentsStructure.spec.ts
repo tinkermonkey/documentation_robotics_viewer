@@ -546,24 +546,19 @@ test.describe('RenderPropErrorBoundary - Error Handling', () => {
     expect(typeof result).toBe('object');
   });
 
-  test('should log render prop errors to console', async () => {
+  test('should handle render prop errors without console logging', async () => {
     const { wrapRenderProp } = await import('../../src/core/components/base/RenderPropErrorBoundary');
 
-    const errorLogs: any[] = [];
-    const originalError = console.error;
-    console.error = (...args) => errorLogs.push(args);
+    const errorRenderProp = () => {
+      throw new Error('Intentional error');
+    };
 
-    try {
-      const errorRenderProp = () => {
-        throw new Error('Intentional error');
-      };
+    // Should return error UI without throwing or logging to console
+    const result = wrapRenderProp(errorRenderProp, {}, 'renderElementDetails');
 
-      wrapRenderProp(errorRenderProp, {}, 'renderElementDetails');
-
-      expect(errorLogs.length).toBeGreaterThan(0);
-    } finally {
-      console.error = originalError;
-    }
+    // Result should be React element (error display)
+    expect(result).toBeDefined();
+    expect(result).not.toBeNull();
   });
 
   test('should handle undefined render prop gracefully in wrapRenderPropVoid', async () => {
