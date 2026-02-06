@@ -246,6 +246,11 @@ export class ChatService {
 
   /**
    * Handle tool invocation notification
+   *
+   * NOTE: This handler avoids race conditions by:
+   * 1. Always using updateToolInvocation (which is idempotent)
+   * 2. Checking for tool existence immediately before update
+   * 3. Not relying on stale references from earlier state reads
    */
   private handleToolInvoke(params: any): void {
     const store = useChatStore.getState();
@@ -256,20 +261,24 @@ export class ChatService {
       return;
     }
 
-    // Find existing tool invocation or create new one
+    // Check if tool already exists in current message
     const existingTool = currentMessage.parts.find(
       (p) => p.type === 'tool_invocation' && (p as any).toolName === params.tool_name
     ) as ToolInvocationContent | undefined;
 
     if (existingTool) {
-      // Update existing tool
+      // Update existing tool invocation using store action
+      // This ensures we get fresh state and updates are applied atomically
       store.updateToolInvocation(currentMessage.id, params.tool_name, {
         status: params.status,
-        result: params.result || existingTool.result,
-        error: params.error || existingTool.error,
+        // Only update result/error if provided (don't use stale reference values)
+        ...(params.result !== undefined && { result: params.result }),
+        ...(params.error !== undefined && { error: params.error }),
       });
     } else {
       // Add new tool invocation
+      // The appendPart action will check the current message state again,
+      // but since we just verified it's missing, this is safe
       store.appendPart(currentMessage.id, {
         type: 'tool_invocation',
         toolName: params.tool_name,

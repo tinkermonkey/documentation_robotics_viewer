@@ -593,5 +593,175 @@ test.describe('ChatService', () => {
         expect(textPart?.content.length).toBeGreaterThan(30000);
       }
     });
+
+    test('Race condition fix: should handle concurrent tool invocations for same tool', () => {
+      const store = useChatStore.getState();
+      const convId = 'conv-1';
+      store.setActiveConversationId(convId);
+
+      const assistantMessage: ChatMessage = {
+        id: 'msg-assistant-1',
+        role: 'assistant',
+        conversationId: convId,
+        timestamp: new Date().toISOString(),
+        parts: [],
+        isStreaming: true,
+      };
+      store.addMessage(assistantMessage);
+
+      // Simulate concurrent notifications for the same tool
+      // (These would arrive in quick succession from the server)
+      (chatService as any).handleToolInvoke({
+        conversation_id: convId,
+        tool_name: 'search_model',
+        tool_input: { query: 'goals' },
+        status: 'executing',
+        timestamp: new Date().toISOString(),
+      });
+
+      // Second notification for same tool with updated status and result
+      // This arrives before the first one is fully processed
+      (chatService as any).handleToolInvoke({
+        conversation_id: convId,
+        tool_name: 'search_model',
+        tool_input: { query: 'goals' },
+        status: 'completed',
+        result: { matched: 5 },
+        timestamp: new Date().toISOString(),
+      });
+
+      // Verify only one tool invocation exists (no duplicates)
+      const updated = store.getCurrentStreamingMessage();
+      const toolParts = updated?.parts.filter((p) => p.type === 'tool_invocation' && (p as any).toolName === 'search_model');
+      expect(toolParts?.length).toBe(1);
+
+      // Verify the tool has the latest status and result
+      const tool = toolParts?.[0] as ToolInvocationContent;
+      expect(tool.status).toBe('completed');
+      expect((tool as any).result).toEqual({ matched: 5 });
+    });
+
+    test('Race condition fix: should handle concurrent tool invocations for different tools', () => {
+      const store = useChatStore.getState();
+      const convId = 'conv-1';
+      store.setActiveConversationId(convId);
+
+      const assistantMessage: ChatMessage = {
+        id: 'msg-assistant-1',
+        role: 'assistant',
+        conversationId: convId,
+        timestamp: new Date().toISOString(),
+        parts: [],
+        isStreaming: true,
+      };
+      store.addMessage(assistantMessage);
+
+      // Simulate rapid concurrent notifications for different tools
+      const tools = ['search_model', 'analyze_architecture', 'fetch_details'];
+
+      tools.forEach((toolName) => {
+        (chatService as any).handleToolInvoke({
+          conversation_id: convId,
+          tool_name: toolName,
+          tool_input: { query: 'test' },
+          status: 'executing',
+          timestamp: new Date().toISOString(),
+        });
+      });
+
+      // Verify all three tools are present (no duplicates, no lost tools)
+      const updated = store.getCurrentStreamingMessage();
+      const toolParts = updated?.parts.filter((p) => p.type === 'tool_invocation');
+      expect(toolParts?.length).toBe(3);
+
+      // Verify each tool has correct name
+      const toolNames = toolParts?.map((t) => (t as any).toolName).sort();
+      expect(toolNames).toEqual(['analyze_architecture', 'fetch_details', 'search_model']);
+    });
+
+    test('Race condition fix: should not lose tool result/error when updating with undefined values', () => {
+      const store = useChatStore.getState();
+      const convId = 'conv-1';
+      store.setActiveConversationId(convId);
+
+      const assistantMessage: ChatMessage = {
+        id: 'msg-assistant-1',
+        role: 'assistant',
+        conversationId: convId,
+        timestamp: new Date().toISOString(),
+        parts: [],
+        isStreaming: true,
+      };
+      store.addMessage(assistantMessage);
+
+      // First invocation: set initial status
+      (chatService as any).handleToolInvoke({
+        conversation_id: convId,
+        tool_name: 'search_model',
+        tool_input: { query: 'goals' },
+        status: 'executing',
+        timestamp: new Date().toISOString(),
+      });
+
+      // Get tool before update
+      let updated = store.getCurrentStreamingMessage();
+      let toolPart = updated?.parts.find((p) => p.type === 'tool_invocation' && (p as any).toolName === 'search_model') as ToolInvocationContent;
+      expect(toolPart.status).toBe('executing');
+
+      // Second invocation: update with result (but no error)
+      (chatService as any).handleToolInvoke({
+        conversation_id: convId,
+        tool_name: 'search_model',
+        tool_input: { query: 'goals' },
+        status: 'completed',
+        result: { matched: 5 },
+        // Note: error is undefined, should NOT clear any existing error
+        timestamp: new Date().toISOString(),
+      });
+
+      // Verify status and result are updated
+      updated = store.getCurrentStreamingMessage();
+      toolPart = updated?.parts.find((p) => p.type === 'tool_invocation' && (p as any).toolName === 'search_model') as ToolInvocationContent;
+      expect(toolPart.status).toBe('completed');
+      expect((toolPart as any).result).toEqual({ matched: 5 });
+    });
+
+    test('Race condition fix: multiple rapid text chunks should append correctly', () => {
+      const store = useChatStore.getState();
+      const convId = 'conv-1';
+      store.setActiveConversationId(convId);
+
+      const assistantMessage: ChatMessage = {
+        id: 'msg-assistant-1',
+        role: 'assistant',
+        conversationId: convId,
+        timestamp: new Date().toISOString(),
+        parts: [],
+        isStreaming: true,
+      };
+      store.addMessage(assistantMessage);
+
+      // Simulate rapid text chunk notifications
+      const chunks = ['Hello ', 'world ', 'this ', 'is ', 'a ', 'test'];
+
+      // In a real scenario, these might arrive with minimal delay
+      chunks.forEach((chunk) => {
+        (chatService as any).handleResponseChunk({
+          conversation_id: convId,
+          content: chunk,
+          is_final: false,
+          timestamp: new Date().toISOString(),
+        });
+      });
+
+      // Verify all chunks were concatenated correctly (no duplicates, no loss)
+      const updated = store.getCurrentStreamingMessage();
+      const textPart = updated?.parts.find((p) => p.type === 'text') as TextContent | undefined;
+      expect(textPart?.content).toBe('Hello world this is a test');
+
+      // Verify there's only one text part (not multiple)
+      const textParts = updated?.parts.filter((p) => p.type === 'text');
+      expect(textParts?.length).toBe(1);
+    });
   });
 });

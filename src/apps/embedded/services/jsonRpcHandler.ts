@@ -41,6 +41,7 @@ export class JsonRpcHandler {
   private requestTimeout: number = 30000; // 30 seconds
   private requestIdCounter: number = 1;
   private messageListenerAttached: boolean = false;
+  private messageListenerAttachmentInProgress: boolean = false;
   private cachedWebSocketClient: any = null;
 
   constructor() {
@@ -67,9 +68,21 @@ export class JsonRpcHandler {
 
   /**
    * Ensure message listener is attached to WebSocket client
+   *
+   * NOTE: This uses a two-flag synchronization pattern to prevent race conditions:
+   * 1. messageListenerAttachmentInProgress prevents duplicate attachment attempts
+   * 2. messageListenerAttached tracks successful attachment completion
+   * This prevents multiple concurrent attachment attempts when sendRequest() is called rapidly.
    */
   private async ensureMessageListenerAttachedAsync(): Promise<void> {
+    // Already attached
     if (this.messageListenerAttached) return;
+
+    // Prevent duplicate attachment attempts if already in progress
+    if (this.messageListenerAttachmentInProgress) return;
+
+    // Mark attachment as in progress to prevent concurrent attempts
+    this.messageListenerAttachmentInProgress = true;
 
     try {
       const websocketClient = await this.getWebSocketClient();
@@ -90,11 +103,18 @@ export class JsonRpcHandler {
       this.messageListenerAttached = true;
     } catch (error) {
       console.warn('[JsonRpcHandler] Failed to attach message listener:', error);
+    } finally {
+      this.messageListenerAttachmentInProgress = false;
     }
   }
 
   private ensureMessageListenerAttached(): void {
+    // Fast path: if already attached, return immediately
     if (this.messageListenerAttached) return;
+
+    // If attachment is already in progress from another call, skip to avoid duplicate attempts
+    if (this.messageListenerAttachmentInProgress) return;
+
     // Trigger async attachment and log any failures
     this.ensureMessageListenerAttachedAsync().catch((error) => {
       logError(
