@@ -2,6 +2,12 @@
  * WebSocket Client Service
  * Manages WebSocket connection to the Python CLI server
  * Features: auto-reconnect, exponential backoff, event handling, token authentication
+ *
+ * Authentication:
+ * - Tokens are passed via Sec-WebSocket-Protocol header (browser-compatible)
+ * - Format: new WebSocket(url, ['token', 'ACTUAL_TOKEN'])
+ * - Browser sends: Sec-WebSocket-Protocol: token, ACTUAL_TOKEN
+ * - Fallback to no-auth if token is not present
  */
 
 import { logError } from './errorTracker';
@@ -47,16 +53,19 @@ export class WebSocketClient {
   }
 
   /**
-   * Get WebSocket URL with authentication token
+   * Get WebSocket protocols for authentication
+   * Uses Sec-WebSocket-Protocol header to pass token
+   * This is the standard way to pass auth tokens for browser WebSocket connections
    */
-  private getAuthenticatedUrl(): string {
+  private getAuthProtocols(): string[] | undefined {
     if (!this.token) {
-      return this.url;
+      return undefined;
     }
 
-    // Add token as query parameter
-    const separator = this.url.includes('?') ? '&' : '?';
-    return `${this.url}${separator}token=${this.token}`;
+    // Pass token as two-part protocol: ['token', 'ACTUAL_TOKEN']
+    // Browser sends: Sec-WebSocket-Protocol: token, ACTUAL_TOKEN
+    // Server responds with: Sec-WebSocket-Protocol: token
+    return ['token', this.token];
   }
 
   /**
@@ -83,9 +92,11 @@ export class WebSocketClient {
     }
 
     try {
-      const authenticatedUrl = this.getAuthenticatedUrl();
+      // Use protocols parameter to pass auth token instead of query params
+      // This sends the token via Sec-WebSocket-Protocol header
+      const protocols = this.getAuthProtocols();
 
-      this.ws = new WebSocket(authenticatedUrl);
+      this.ws = new WebSocket(this.url, protocols);
 
       this.ws.onopen = this.handleOpen.bind(this);
       this.ws.onmessage = this.handleMessage.bind(this);
