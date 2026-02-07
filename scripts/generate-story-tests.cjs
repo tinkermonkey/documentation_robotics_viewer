@@ -57,8 +57,20 @@ function fetchMetaJson(offline = false) {
     }
 
     // Online mode: try to fetch from running Ladle server first
-    http
-      .get(`http://localhost:${LADLE_PORT}/meta.json`, (res) => {
+    const request = http.get(
+      `http://localhost:${LADLE_PORT}/meta.json`,
+      { timeout: 5000 },
+      (res) => {
+        // Check HTTP response status code
+        if (res.statusCode !== 200) {
+          reject(
+            new Error(
+              `Ladle server returned HTTP ${res.statusCode}. Expected 200 OK.\n\nIs Ladle running? Try:\n  npm run catalog:dev`
+            )
+          );
+          return;
+        }
+
         let data = '';
 
         res.on('data', (chunk) => {
@@ -73,26 +85,38 @@ function fetchMetaJson(offline = false) {
             reject(new Error(`Failed to parse meta.json: ${error.message}`));
           }
         });
-      })
-      .on('error', (error) => {
-        // Fallback: try to read from built catalog
-        const builtMetaPath = path.join(__dirname, '..', 'dist', 'catalog', 'meta.json');
-        if (fs.existsSync(builtMetaPath)) {
-          console.log('📁 Ladle server not running, reading from built catalog...\n');
-          try {
-            const data = fs.readFileSync(builtMetaPath, 'utf8');
-            resolve(JSON.parse(data));
-          } catch (readError) {
-            reject(new Error(`Failed to read built meta.json: ${readError.message}`));
-          }
-        } else {
-          reject(
-            new Error(
-              `Failed to fetch meta.json. Is Ladle running on port ${LADLE_PORT}? Error: ${error.message}\n\nAlternatively, run: npm run catalog:build`
-            )
-          );
+      }
+    );
+
+    // Handle timeout
+    request.on('timeout', () => {
+      request.destroy();
+      reject(
+        new Error(
+          `HTTP request timed out after 5 seconds. Is Ladle running on port ${LADLE_PORT}?\n\nTry:\n  npm run catalog:dev`
+        )
+      );
+    });
+
+    request.on('error', (error) => {
+      // Fallback: try to read from built catalog
+      const builtMetaPath = path.join(__dirname, '..', 'dist', 'catalog', 'meta.json');
+      if (fs.existsSync(builtMetaPath)) {
+        console.log('📁 Ladle server not running, reading from built catalog...\n');
+        try {
+          const data = fs.readFileSync(builtMetaPath, 'utf8');
+          resolve(JSON.parse(data));
+        } catch (readError) {
+          reject(new Error(`Failed to read built meta.json: ${readError.message}`));
         }
-      });
+      } else {
+        reject(
+          new Error(
+            `Failed to fetch meta.json. Is Ladle running on port ${LADLE_PORT}? Error: ${error.message}\n\nAlternatively, run: npm run catalog:build`
+          )
+        );
+      }
+    });
   });
 }
 
@@ -204,7 +228,7 @@ async function validateStory(
   const pageErrors: string[] = [];
 
   // ErrorBoundary "With error" story is SUPPOSED to trigger errors
-  const shouldAllowErrors = storyName === 'Components / Errorboundary / With error';
+  const shouldAllowErrors = storyName.includes('Errorboundary / With error');
 
   const consoleHandler = (msg: ConsoleMessage) => {
     if (msg.type() === 'error') {
@@ -334,14 +358,38 @@ async function main() {
 
     const validCount = Object.keys(validStories).length;
 
-    // Ensure output directory exists
+    // Ensure output directory exists with error handling
     if (!fs.existsSync(OUTPUT_DIR)) {
-      fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+      try {
+        fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+      } catch (error) {
+        if (error.code === 'EACCES') {
+          throw new Error(`Permission denied: Cannot create directory ${OUTPUT_DIR}. Check file permissions.`);
+        } else if (error.code === 'ENOSPC') {
+          throw new Error(`No space left on device: Cannot write to ${OUTPUT_DIR}.`);
+        } else {
+          throw new Error(`Failed to create directory ${OUTPUT_DIR}: ${error.message}`);
+        }
+      }
     }
 
     // Generate test file with only valid stories
     const testContent = generateTestFile(validStories);
-    fs.writeFileSync(OUTPUT_FILE, testContent, 'utf8');
+
+    // Write test file with error handling
+    try {
+      fs.writeFileSync(OUTPUT_FILE, testContent, 'utf8');
+    } catch (error) {
+      if (error.code === 'EACCES') {
+        throw new Error(`Permission denied: Cannot write to ${OUTPUT_FILE}. Check file permissions.`);
+      } else if (error.code === 'ENOSPC') {
+        throw new Error(`No space left on device: Cannot write to ${OUTPUT_FILE}.`);
+      } else if (error.code === 'EISDIR') {
+        throw new Error(`${OUTPUT_FILE} is a directory, not a file.`);
+      } else {
+        throw new Error(`Failed to write test file ${OUTPUT_FILE}: ${error.message}`);
+      }
+    }
 
     // Report results
     console.log(`✅ Generated test file: ${OUTPUT_FILE}`);
