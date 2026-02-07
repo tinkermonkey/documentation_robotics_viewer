@@ -6,12 +6,15 @@ import {
   HiLightBulb,
   HiViewGrid,
   HiCollection,
+  HiChatAlt2,
 } from 'react-icons/hi';
 import ConnectionStatus from './components/ConnectionStatus';
 import SubTabNavigation, { SubTab } from './components/SubTabNavigation';
+import { FloatingChatPanel } from './components/FloatingChatPanel';
 import { useConnectionStore } from './stores/connectionStore';
 import { useViewPreferenceStore } from './stores/viewPreferenceStore';
 import { useAuthStore } from './stores/authStore';
+import { useFloatingChatStore } from './stores/floatingChatStore';
 import { websocketClient } from './services/websocketClient';
 
 // Route metadata for sub-tab navigation
@@ -39,6 +42,7 @@ const routeMetadata: Record<string, { subTabs?: SubTab[] }> = {
 export default function EmbeddedLayout() {
   const connectionStore = useConnectionStore();
   const { token } = useAuthStore();
+  const { toggle: toggleChat, isOpen: isChatOpen } = useFloatingChatStore();
   const matches = useMatches();
   const navigate = useNavigate();
   const { specView, changesetView, modelView } = useViewPreferenceStore();
@@ -147,7 +151,22 @@ export default function EmbeddedLayout() {
           <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
             Documentation Robotics Viewer
           </h1>
-          <ConnectionStatus />
+          <div className="flex items-center gap-3">
+            <button
+              onClick={toggleChat}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                isChatOpen
+                  ? 'bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+              }`}
+              title="Toggle DrBot Chat"
+              data-testid="chat-toggle-button"
+            >
+              <HiChatAlt2 className="w-5 h-5" />
+              <span>Chat</span>
+            </button>
+            <ConnectionStatus />
+          </div>
         </div>
 
         {/* Main Tabs Row */}
@@ -181,6 +200,9 @@ export default function EmbeddedLayout() {
       <div className="h-[calc(100vh-180px)]">
         <Outlet />
       </div>
+
+      {/* Floating Chat Panel - persists across all routes */}
+      <FloatingChatPanel />
     </div>
   );
 }
