@@ -9,7 +9,6 @@ import { useChatStore } from '../stores/chatStore';
 import { logError, logWarning } from './errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
 import {
-  ChatStatusResult,
   ChatSendParams,
   ChatSendResult,
   ChatCancelParams,
