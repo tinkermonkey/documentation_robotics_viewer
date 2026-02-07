@@ -15,7 +15,7 @@ import { useModelStore } from '../../../core/stores/modelStore';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { embeddedDataLoader, LinkRegistry, SpecDataResponse } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
-import { LoadingState, ErrorState, ViewToggle } from '../components/shared';
+import { LoadingState, ErrorState } from '../components/shared';
 import type { MetaModel } from '../../../core/types';
 
 /**
@@ -203,16 +203,6 @@ export default function ModelRoute() {
       }
     >
       <div className="flex flex-col h-full overflow-hidden">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <ViewToggle
-            views={[
-              { key: 'graph', label: 'Graph' },
-              { key: 'json', label: 'JSON' },
-            ]}
-            activeView={activeView}
-            onViewChange={(v) => navigate({ to: `/model/${v}`, search: { layer: selectedLayerId || undefined } })}
-          />
-        </div>
         {activeView === 'graph' ? (
           <GraphViewer
             model={model}

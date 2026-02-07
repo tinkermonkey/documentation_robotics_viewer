@@ -254,9 +254,14 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
 
   const renderLayerDetails = () => {
     if (!selectedLayer) {
+      // Calculate total element count from all layers
+      const totalElements = Object.values(layers).reduce((sum, layer) => {
+        return sum + (layer.elements?.length || 0);
+      }, 0);
+
       const metadataItems: MetadataItem[] = [
         { label: 'Version', value: model.version },
-        { label: 'Total Elements', value: model.metadata?.elementCount || 0 },
+        { label: 'Total Elements', value: totalElements },
         { label: 'Total Layers', value: layerNames.length },
         ...(model.metadata?.loadedAt
           ? [{ label: 'Loaded', value: new Date(model.metadata.loadedAt).toLocaleString() }]
