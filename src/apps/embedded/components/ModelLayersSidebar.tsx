@@ -23,11 +23,11 @@ const ModelLayersSidebar: React.FC<ModelLayersSidebarProps> = ({
   const layerInfo = useMemo(() => {
     if (!model?.layers) return [];
 
-    return Object.values(model.layers)
-      .map(layer => ({
-        id: layer.id,
-        name: layer.name,
-        type: layer.type,
+    return Object.entries(model.layers)
+      .map(([layerKey, layer]) => ({
+        id: layerKey,  // Use the layer key from Object.entries
+        name: layer.name || layerKey,
+        type: layer.type || layerKey,
         count: layer.elements?.length || 0,
         order: layer.order || 999
       }))
@@ -45,13 +45,13 @@ const ModelLayersSidebar: React.FC<ModelLayersSidebarProps> = ({
       </h3>
       <div className="space-y-1">
         {layerInfo.map((layer) => {
-          const layerColor = getLayerColor(layer.type, 'primary');
-          const isSelected = selectedLayerId === layer.type;
+          const layerColor = getLayerColor(layer.id, 'primary');
+          const isSelected = selectedLayerId === layer.id;
 
           return (
             <button
               key={layer.id}
-              onClick={() => onSelectLayer(isSelected ? null : layer.type)}
+              onClick={() => onSelectLayer(isSelected ? null : layer.id)}
               className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
                 isSelected
                   ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
