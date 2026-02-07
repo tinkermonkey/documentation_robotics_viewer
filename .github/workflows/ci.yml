@@ -40,9 +40,6 @@ jobs:
     - name: Generate story tests
       run: npm run test:stories:generate
 
-    - name: Run story validation tests
-      run: npm run test:stories
-
     - name: Verify story tests are committed
       run: |
         if git diff --quiet tests/stories/; then
@@ -57,6 +54,9 @@ jobs:
           git diff tests/stories/ | head -100
           exit 1
         fi
+
+    - name: Run story validation tests
+      run: npm run test:stories
 
     - name: Set version from tag
       if: startsWith(github.ref, 'refs/tags/v')
