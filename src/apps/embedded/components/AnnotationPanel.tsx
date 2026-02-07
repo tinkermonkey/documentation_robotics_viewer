@@ -6,7 +6,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { Badge, Avatar, Button, Modal, Textarea, Label } from 'flowbite-react';
-import { Plus } from 'lucide-react';
+import { Plus, Check, MessageSquare } from 'lucide-react';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { useModelStore } from '../../../core/stores/modelStore';
 import { Annotation } from '../types/annotations';
@@ -14,13 +14,28 @@ import { parseMentions, resolveElementName } from '../utils/mentionParser';
 import { EmptyState, LoadingState, ErrorState } from './shared';
 
 const AnnotationPanel: React.FC = () => {
-  const { annotations, selectedElementId, loading, error, createAnnotation, setHighlightedElementId } = useAnnotationStore();
+  const {
+    annotations,
+    selectedElementId,
+    loading,
+    error,
+    createAnnotation,
+    resolveAnnotation,
+    unresolveAnnotation,
+    createAnnotationReply,
+    setHighlightedElementId
+  } = useAnnotationStore();
   const { model } = useModelStore();
 
   // Modal state for create/edit
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [commentContent, setCommentContent] = useState('');
   const [commentAuthor, setCommentAuthor] = useState('');
+
+  // Reply state
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyContent, setReplyContent] = useState('');
+  const [replyAuthor, setReplyAuthor] = useState('');
 
   // Filter annotations based on selection
   const displayedAnnotations = useMemo(() => {
@@ -90,6 +105,43 @@ const AnnotationPanel: React.FC = () => {
     } catch (err) {
       // Error is already set in store, modal will stay open
       console.error('Failed to create annotation:', err);
+    }
+  };
+
+  const handleToggleResolve = async (annotation: Annotation) => {
+    try {
+      if (annotation.resolved) {
+        await unresolveAnnotation(annotation.id);
+      } else {
+        await resolveAnnotation(annotation.id);
+      }
+    } catch (err) {
+      console.error('Failed to toggle resolve status:', err);
+    }
+  };
+
+  const handleStartReply = (annotationId: string) => {
+    setReplyingTo(annotationId);
+    setReplyContent('');
+    setReplyAuthor('');
+  };
+
+  const handleCancelReply = () => {
+    setReplyingTo(null);
+    setReplyContent('');
+    setReplyAuthor('');
+  };
+
+  const handleSubmitReply = async (annotationId: string) => {
+    if (!replyContent.trim() || !replyAuthor.trim()) {
+      return;
+    }
+
+    try {
+      await createAnnotationReply(annotationId, replyAuthor, replyContent);
+      handleCancelReply();
+    } catch (err) {
+      console.error('Failed to create reply:', err);
     }
   };
 
@@ -175,11 +227,67 @@ const AnnotationPanel: React.FC = () => {
           {/* Comment text with @mentions */}
           <div className="mb-2">{renderContentWithMentions(annotation.content)}</div>
 
+          {/* Action buttons */}
+          <div className="flex items-center gap-2 mt-2">
+            <Button
+              size="xs"
+              color={annotation.resolved ? 'gray' : 'success'}
+              onClick={() => handleToggleResolve(annotation)}
+              data-testid={`resolve-btn-${annotation.id}`}
+            >
+              <Check className="mr-1 h-3 w-3" />
+              {annotation.resolved ? 'Unresolve' : 'Resolve'}
+            </Button>
+            <Button
+              size="xs"
+              color="light"
+              onClick={() => handleStartReply(annotation.id)}
+              data-testid={`reply-btn-${annotation.id}`}
+            >
+              <MessageSquare className="mr-1 h-3 w-3" />
+              Reply
+            </Button>
+          </div>
+
+          {/* Reply form */}
+          {replyingTo === annotation.id && (
+            <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg" data-testid={`reply-form-${annotation.id}`}>
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  placeholder="Your name"
+                  value={replyAuthor}
+                  onChange={(e) => setReplyAuthor(e.target.value)}
+                  className="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2 text-sm text-gray-900 dark:text-white focus:border-blue-500 focus:ring-blue-500"
+                />
+                <Textarea
+                  placeholder="Write your reply..."
+                  rows={2}
+                  value={replyContent}
+                  onChange={(e) => setReplyContent(e.target.value)}
+                  className="text-sm"
+                />
+                <div className="flex gap-2">
+                  <Button
+                    size="xs"
+                    onClick={() => handleSubmitReply(annotation.id)}
+                    disabled={!replyContent.trim() || !replyAuthor.trim()}
+                  >
+                    Submit Reply
+                  </Button>
+                  <Button size="xs" color="gray" onClick={handleCancelReply}>
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Replies */}
           {annotation.replies && annotation.replies.length > 0 && (
             <div className="mt-3 pl-4 border-l-2 border-gray-200 dark:border-gray-700 space-y-3">
               {annotation.replies.map((reply) => (
-                <div key={reply.id} className="flex gap-2">
+                <div key={reply.id} className="flex gap-2" data-testid={`reply-${reply.id}`}>
                   <Avatar placeholderInitials={getInitials(reply.author)} rounded size="xs" />
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">

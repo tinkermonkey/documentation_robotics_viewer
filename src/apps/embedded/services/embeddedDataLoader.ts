@@ -458,6 +458,53 @@ export class EmbeddedDataLoader {
   }
 
   /**
+   * Unresolve an annotation
+   */
+  async unresolveAnnotation(id: string): Promise<Annotation> {
+    return this.updateAnnotation(id, { resolved: false });
+  }
+
+  /**
+   * Load replies for an annotation
+   */
+  async loadAnnotationReplies(annotationId: string): Promise<import('../types/annotations').AnnotationReply[]> {
+    const response = await fetch(`${API_BASE}/annotations/${annotationId}/replies`, {
+      headers: getAuthHeaders(),
+      credentials: 'include'
+    });
+
+    await ensureOk(response, `load replies for annotation ${annotationId}`);
+
+    const data = await response.json();
+    console.log(`Loaded ${data.replies?.length || 0} replies for annotation ${annotationId}`);
+    return data.replies || [];
+  }
+
+  /**
+   * Create a reply to an annotation
+   */
+  async createAnnotationReply(
+    annotationId: string,
+    input: { author: string; content: string }
+  ): Promise<import('../types/annotations').AnnotationReply> {
+    const response = await fetch(`${API_BASE}/annotations/${annotationId}/replies`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
+      body: JSON.stringify(input),
+      credentials: 'include'
+    });
+
+    await ensureOk(response, 'create annotation reply');
+
+    const data = await response.json();
+    console.log('Created annotation reply:', data.id);
+    return data;
+  }
+
+  /**
    * Delete an annotation
    */
   async deleteAnnotation(id: string): Promise<void> {

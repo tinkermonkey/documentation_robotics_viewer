@@ -29,7 +29,10 @@ interface AnnotationStore {
   // Async actions
   createAnnotation: (elementId: string, content: string, author: string) => Promise<void>;
   resolveAnnotation: (id: string) => Promise<void>;
+  unresolveAnnotation: (id: string) => Promise<void>;
   deleteAnnotation: (id: string) => Promise<void>;
+  loadAnnotationReplies: (annotationId: string) => Promise<void>;
+  createAnnotationReply: (annotationId: string, author: string, content: string) => Promise<void>;
 
   // Computed
   getAnnotationsForElement: (elementId: string) => Annotation[];
@@ -133,7 +136,75 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to resolve annotation';
       set({ error: errorMessage });
+      // Rollback optimistic update
+      get().updateAnnotation(id, { resolved: false });
       console.error('[AnnotationStore] Failed to resolve annotation:', err);
+      throw err;
+    }
+  },
+
+  unresolveAnnotation: async (id) => {
+    try {
+      set({ error: null });
+
+      // Optimistic update
+      get().updateAnnotation(id, { resolved: false });
+
+      // Call API
+      await embeddedDataLoader.unresolveAnnotation(id);
+
+      console.log('[AnnotationStore] Unresolved annotation:', id);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to unresolve annotation';
+      set({ error: errorMessage });
+      // Rollback optimistic update
+      get().updateAnnotation(id, { resolved: true });
+      console.error('[AnnotationStore] Failed to unresolve annotation:', err);
+      throw err;
+    }
+  },
+
+  loadAnnotationReplies: async (annotationId) => {
+    try {
+      set({ error: null });
+
+      // Call API
+      const replies = await embeddedDataLoader.loadAnnotationReplies(annotationId);
+
+      // Update annotation with replies
+      get().updateAnnotation(annotationId, { replies });
+
+      console.log('[AnnotationStore] Loaded replies for annotation:', annotationId);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load replies';
+      set({ error: errorMessage });
+      console.error('[AnnotationStore] Failed to load replies:', err);
+      throw err;
+    }
+  },
+
+  createAnnotationReply: async (annotationId, author, content) => {
+    try {
+      set({ error: null });
+
+      // Call API
+      const reply = await embeddedDataLoader.createAnnotationReply(annotationId, {
+        author,
+        content
+      });
+
+      // Add reply to annotation
+      const annotation = get().annotations.find(ann => ann.id === annotationId);
+      if (annotation) {
+        const updatedReplies = [...(annotation.replies || []), reply];
+        get().updateAnnotation(annotationId, { replies: updatedReplies });
+      }
+
+      console.log('[AnnotationStore] Created reply for annotation:', annotationId);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to create reply';
+      set({ error: errorMessage });
+      console.error('[AnnotationStore] Failed to create reply:', err);
       throw err;
     }
   },
