@@ -74,6 +74,42 @@ npm run test:stories:ui       # Run story tests with Playwright UI
 
 **Note:** Story validation requires Ladle to be running (`npm run catalog:dev`)
 
+## Story Validation Tests
+
+Location: `tests/stories/all-stories.spec.ts` (auto-generated, do not edit manually)
+
+**Purpose**: Validate that all Ladle component stories render without errors.
+
+**How It Works**:
+1. Ladle builds catalog → generates `meta.json` with 401+ stories
+2. Generator script creates one test per story
+3. Each test navigates to story URL and checks for console errors
+4. CI enforces synchronization between stories and tests
+
+**Regenerating Tests**:
+```bash
+npm run test:stories:generate
+```
+
+**Running Tests**:
+```bash
+npm run test:stories              # Full suite (30-60s)
+npm test -- tests/stories         # Watch mode for debugging
+```
+
+**Expected Errors** (filtered automatically):
+- React prop validation warnings
+- WebSocket connection failures (expected in test environment)
+- Flowbite initialization messages
+- React DevTools messages
+
+**Unexpected Errors** (cause test failure):
+- Component render exceptions
+- Uncaught JavaScript errors
+- Error boundary triggers
+
+**Error Filtering**: See `tests/stories/ERROR_FILTERS.md` for complete documentation of console error filters and when to add new filters.
+
 ## Test Categories
 
 ### Individual Story Tests

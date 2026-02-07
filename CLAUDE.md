@@ -1112,6 +1112,39 @@ npm run test:stories:generate   # Generate tests
 npm run test:stories            # Run validation
 ```
 
+### Story Test Synchronization
+
+The story validation system ensures complete test coverage for all Ladle component stories:
+
+**Coverage Guarantee**: Every story in `meta.json` has a corresponding Playwright test. Tests are auto-generated and synchronized via CI.
+
+**Developer Workflow**:
+```bash
+# After adding/removing story files or exports:
+npm run test:stories:generate    # Regenerates all tests
+npm run test:stories             # Validates all stories load without errors
+```
+
+**What Gets Validated**:
+- ✅ Story loads without HTTP errors
+- ✅ No unexpected console errors (React warnings filtered)
+- ✅ No error boundary triggers
+- ✅ Source file exists for every story in meta.json
+
+**CI Enforcement**:
+- Pre-commit: Automatically regenerates tests when `.stories.tsx` files change
+- CI Pipeline: Fails if committed tests don't match generated output
+- Fix: Run `npm run test:stories:generate` and commit the result
+
+**Coverage Report**:
+```
+=== Story Coverage Report ===
+Total stories in meta.json: 401
+Valid source files found: 401
+Missing source files: 0
+Coverage: 100.0%
+```
+
 ### Debugging Tests
 
 **Run single test file:**
