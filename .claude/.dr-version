@@ -1,5 +1,5 @@
 version: 0.1.0
-installed_at: 2026-01-23T23:00:37.827Z
+installed_at: 2026-02-07T18:34:30.395Z
 components:
   reference_sheets:
     dr-layer-reference.md:
@@ -7,29 +7,29 @@ components:
       modified: false
   commands:
     dr-changeset.md:
-      hash: 6c2ff15e
+      hash: f2c13ab8
       modified: false
     dr-ingest.md:
       hash: 41b339ed
       modified: false
     dr-init.md:
-      hash: 332dccad
+      hash: 0c2e49e0
       modified: false
     dr-model.md:
-      hash: 8cade6c2
+      hash: bc3cfdee
       modified: false
     dr-source-tracking.md:
-      hash: 7a94772f
+      hash: ada36f9d
       modified: false
     dr-validate.md:
-      hash: c8d6b307
+      hash: daee36c0
       modified: false
   agents:
     dr-advisor.md:
       hash: f88d9f24
       modified: false
     dr-architect.md:
-      hash: 58030b19
+      hash: 8ee1a7b1
       modified: false
   skills:
     dr_01_motivation_layer/SKILL.md:
@@ -70,8 +70,4 @@ components:
       modified: false
     dr_changeset_reviewer/SKILL.md:
       hash: 88c2ff5e
-      modified: false
-  templates:
-    archimate-template.xml:
-      hash: 7ec61d45
       modified: false
