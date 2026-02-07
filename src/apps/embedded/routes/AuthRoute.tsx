@@ -1,19 +1,22 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearch } from '@tanstack/react-router';
+import { useAuthStore } from '../stores/authStore';
 
 /**
  * Auth Route
  * Dedicated entrypoint for handling token from magic link
- * 
+ *
  * Flow:
  * 1. User clicks magic link: /?token=xyz#/model/graph
  * 2. AuthRoute extracts token and stores in localStorage
- * 3. Cleans URL to remove token query param
- * 4. Redirects to requested destination
+ * 3. Updates authStore to prevent race condition
+ * 4. Cleans URL to remove token query param
+ * 5. Redirects to requested destination
  */
 export default function AuthRoute() {
   const navigate = useNavigate();
   const search = useSearch({ strict: false }) as { token?: string };
+  const { setToken } = useAuthStore();
 
   useEffect(() => {
     const token = search?.token;
@@ -23,6 +26,11 @@ export default function AuthRoute() {
       console.log('[AuthRoute] Storing token in localStorage');
       localStorage.setItem('dr_auth_token', token);
 
+      // CRITICAL: Update authStore with new token to prevent race condition
+      // This ensures WebSocket connection uses the fresh token
+      setToken(token);
+      console.log('[AuthRoute] Updated authStore with new token');
+
       // Remove token from URL completely by changing location
       // This bypasses react-router to avoid it re-adding search params
       console.log('[AuthRoute] URL cleaning and redirecting to', hashPath);
@@ -31,7 +39,7 @@ export default function AuthRoute() {
       // No token, just navigate
       navigate({ to: hashPath as any });
     }
-  }, [search?.token, navigate]);
+  }, [search?.token, navigate, setToken]);
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-50">
