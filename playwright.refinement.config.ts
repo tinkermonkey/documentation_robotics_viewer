@@ -26,7 +26,7 @@ export default defineConfig({
   ],
   timeout: 30000,
   use: {
-    baseURL: 'http://localhost:61000', // Ladle default port
+    baseURL: 'http://localhost:61000', // Ladle production/test port
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     headless: true,
