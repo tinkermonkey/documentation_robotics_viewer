@@ -115,24 +115,23 @@ export class ChatService {
    */
   async getStatus(): Promise<SDKStatus> {
     try {
-      const result = await jsonRpcHandler.sendRequest<ChatStatusResult>(
+      const result = await jsonRpcHandler.sendRequest<any>(
         'chat.status',
         {}
       );
 
+      // Convert snake_case from Python backend to camelCase for TypeScript
+      const status: SDKStatus = {
+        sdkAvailable: result.sdkAvailable ?? result.sdk_available ?? false,
+        sdkVersion: result.sdkVersion ?? result.sdk_version ?? null,
+        errorMessage: result.errorMessage ?? result.error_message ?? null,
+      };
+
       // Update store
       const store = useChatStore.getState();
-      store.setSdkStatus({
-        sdkAvailable: result.sdkAvailable,
-        sdkVersion: result.sdkVersion,
-        errorMessage: result.errorMessage,
-      });
+      store.setSdkStatus(status);
 
-      return {
-        sdkAvailable: result.sdkAvailable,
-        sdkVersion: result.sdkVersion,
-        errorMessage: result.errorMessage,
-      };
+      return status;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       logError(
