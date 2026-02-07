@@ -22,10 +22,11 @@ const OUTPUT_DIR = path.join(__dirname, '..', 'tests', 'stories');
 const OUTPUT_FILE = path.join(OUTPUT_DIR, 'all-stories.spec.ts');
 
 /**
- * Fetches meta.json from Ladle server
+ * Fetches meta.json from Ladle server or from built catalog as fallback
  */
 function fetchMetaJson() {
   return new Promise((resolve, reject) => {
+    // Try to fetch from running Ladle server first
     http
       .get(`http://localhost:${LADLE_PORT}/meta.json`, (res) => {
         let data = '';
@@ -43,11 +44,23 @@ function fetchMetaJson() {
         });
       })
       .on('error', (error) => {
-        reject(
-          new Error(
-            `Failed to fetch meta.json. Is Ladle running on port ${LADLE_PORT}? Error: ${error.message}`
-          )
-        );
+        // Fallback: try to read from built catalog
+        const builtMetaPath = path.join(__dirname, '..', 'dist', 'catalog', 'meta.json');
+        if (fs.existsSync(builtMetaPath)) {
+          console.log('📁 Ladle server not running, reading from built catalog...\n');
+          try {
+            const data = fs.readFileSync(builtMetaPath, 'utf8');
+            resolve(JSON.parse(data));
+          } catch (readError) {
+            reject(new Error(`Failed to read built meta.json: ${readError.message}`));
+          }
+        } else {
+          reject(
+            new Error(
+              `Failed to fetch meta.json. Is Ladle running on port ${LADLE_PORT}? Error: ${error.message}\n\nAlternatively, run: npm run catalog:build`
+            )
+          );
+        }
       });
   });
 }

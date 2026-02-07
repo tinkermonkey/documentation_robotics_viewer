@@ -40,7 +40,7 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'npm run ladle:build && npm run ladle:serve',
+    command: 'npm run catalog:build && npm run catalog:serve',
     url: 'http://localhost:61000',
     reuseExistingServer: !process.env.CI,
     timeout: 60000,
