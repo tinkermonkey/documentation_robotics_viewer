@@ -12,6 +12,3 @@ export * from './businessGraphBuilder';
 export * from './crossLayerReferenceResolver';
 
 export * from './exportUtils';
-
-// Phase 2: Validation and Metadata Services
-export * from './validation';
