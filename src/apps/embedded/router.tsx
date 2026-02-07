@@ -6,6 +6,7 @@ import SpecRoute from './routes/SpecRoute';
 import MotivationRoute from './routes/MotivationRoute';
 import ArchitectureRoute from './routes/ArchitectureRoute';
 import ChangesetRoute from './routes/ChangesetRoute';
+import AuthRoute from './routes/AuthRoute';
 
 const rootRoute = createRootRoute({
   component: EmbeddedLayout,
@@ -14,7 +15,12 @@ const rootRoute = createRootRoute({
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: () => <Navigate to="/model" />,
+  validateSearch: (search: any): { token?: string } => {
+    return {
+      token: typeof search.token === 'string' ? search.token : undefined,
+    };
+  },
+  component: AuthRoute,
 });
 
 const modelRoute = createRoute({
