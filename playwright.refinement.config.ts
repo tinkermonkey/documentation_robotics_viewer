@@ -40,9 +40,16 @@ export default defineConfig({
   ],
 
   webServer: {
+    // Note: WebServer logs are captured and analyzed in scripts/test-stories.sh
+    // Error detection patterns look for specific failures in the output
+    // (e.g., "browserType.launch", "ECONNREFUSED", "TimeoutError")
     command: 'npm run catalog:build && npm run catalog:serve',
     url: 'http://localhost:61000',
     reuseExistingServer: !process.env.CI,
     timeout: 60000,
+    // Stdout/stderr capture handled via shell redirection in test-stories.sh (2>&1)
+    // This ensures logs are available for error analysis even on older Playwright versions
+    stdout: 'pipe',
+    stderr: 'pipe',
   },
 });
