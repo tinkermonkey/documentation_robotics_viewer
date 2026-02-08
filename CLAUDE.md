@@ -861,7 +861,7 @@ npm test -- tests/unit/motivationGraphBuilder.spec.ts
 
 ### Story Validation
 
-Stories validate that components render without errors across 481+ Ladle component variations. When adding new components:
+Stories validate that components render without errors across ~510 Ladle component variations. When adding new components:
 
 1. Create `.stories.tsx` file alongside component
 2. Run `npm run test:stories:generate` to auto-create tests
@@ -875,7 +875,7 @@ Stories validate that components render without errors across 481+ Ladle compone
 | Unit tests (components) | ~60 | ✅ Good coverage |
 | Integration tests | ~50 | ✅ Comprehensive |
 | E2E tests (Playwright) | ~70 | ✅ Good coverage |
-| Story validation (Ladle) | 481+ | ✅ All validated |
+| Story validation (Ladle) | ~510 | ✅ All validated |
 | **Total** | **~860** | ✅ Complete suite |
 
 **Overall test run time**: Approximately 6-10 seconds for unit/integration tests, 30-60 seconds for full E2E suite with servers

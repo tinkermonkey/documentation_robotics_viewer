@@ -75,6 +75,36 @@ This document describes the **specific regex patterns** used to filter expected 
 **Reason**: React development warnings about deprecations, performance, or property issues.
 **Status**: Expected React warnings during component development
 
+## Filter Performance Notes
+
+The error filtering system uses a sequential pattern-matching approach in `isExpectedConsoleError()`. With 13 active filters, the complexity is O(n*m) where n is the number of console messages (typically <100 in tests) and m is the number of filter patterns (13). This results in negligible overhead (~1-2ms per test) and is not a performance bottleneck for typical usage.
+
+As new filters are added, maintain this complexity by:
+- Keeping patterns specific (avoid broad substring matching that requires more processing)
+- Using anchors (`^`, `$`) to short-circuit regex matching
+- Grouping related patterns to fail fast
+- Monitoring filter count and consolidating related patterns if approaching 30+ filters
+
+## Quarterly Filter Maintenance
+
+To keep error filters aligned with evolving codebase:
+
+1. **Quarterly Review** (each quarter):
+   - Review filters that haven't matched errors in 90+ days (update timestamp in code comments)
+   - Verify filters still match only expected errors (test with `npm test -- tests/unit/storyErrorFilters.spec.ts`)
+   - Check for redundant or overlapping patterns
+
+2. **Removal Process**:
+   - Remove filters that haven't triggered in 6+ months
+   - Remove filters for dependencies that have been upgraded/removed
+   - Remove filters for bugs that have been fixed
+   - Update this documentation when removing filters
+
+3. **Documentation**:
+   - Keep timestamp comments in code: `// Added 2024-01-15, last seen 2024-02-08`
+   - Document reason for removal in git commit
+   - Update this file to reflect current filter set
+
 ## Adding New Filters
 
 When you encounter a legitimate expected error:

@@ -72,7 +72,7 @@ npm run test:stories          # Run all story validation tests
 npm run test:stories:ui       # Run story tests with Playwright UI
 ```
 
-**Note:** Story validation requires Ladle to be running (`npm run catalog:dev`)
+**Note:** Playwright automatically starts Ladle via the `webServer` configuration in `playwright.config.ts`, so manual setup is not required. The tests will wait for Ladle to be ready before running.
 
 ## Story Validation Tests
 
@@ -81,7 +81,7 @@ Location: `tests/stories/all-stories.spec.ts` (auto-generated, do not edit manua
 **Purpose**: Validate that all Ladle component stories render without errors.
 
 **How It Works**:
-1. Ladle builds catalog → generates `meta.json` with 401+ stories
+1. Ladle builds catalog → generates `meta.json` with ~510 stories
 2. Generator script creates one test per story
 3. Each test navigates to story URL and checks for console errors
 4. CI enforces synchronization between stories and tests
@@ -114,7 +114,7 @@ npm test -- tests/stories         # Watch mode for debugging
 
 ### Individual Story Tests
 
-Comprehensive validation of all 481 Ladle component stories using auto-generated tests.
+Comprehensive validation of all ~510 Ladle component stories using auto-generated tests.
 
 **Files:**
 - `tests/stories/all-stories.spec.ts` - Individual test per story (auto-generated)
