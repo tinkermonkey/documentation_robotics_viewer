@@ -861,7 +861,7 @@ npm test -- tests/unit/motivationGraphBuilder.spec.ts
 
 ### Story Validation
 
-Stories validate that components render without errors across 481+ Ladle component variations. When adding new components:
+Stories validate that components render without errors across ~510 Ladle component variations. When adding new components:
 
 1. Create `.stories.tsx` file alongside component
 2. Run `npm run test:stories:generate` to auto-create tests
@@ -875,7 +875,7 @@ Stories validate that components render without errors across 481+ Ladle compone
 | Unit tests (components) | ~60 | ✅ Good coverage |
 | Integration tests | ~50 | ✅ Comprehensive |
 | E2E tests (Playwright) | ~70 | ✅ Good coverage |
-| Story validation (Ladle) | 481+ | ✅ All validated |
+| Story validation (Ladle) | ~510 | ✅ All validated |
 | **Total** | **~860** | ✅ Complete suite |
 
 **Overall test run time**: Approximately 6-10 seconds for unit/integration tests, 30-60 seconds for full E2E suite with servers
@@ -1110,6 +1110,39 @@ export const Loading: Story = {
 npm run catalog:dev              # Start Ladle
 npm run test:stories:generate   # Generate tests
 npm run test:stories            # Run validation
+```
+
+### Story Test Synchronization
+
+The story validation system ensures complete test coverage for all Ladle component stories:
+
+**Coverage Guarantee**: Every story in `meta.json` has a corresponding Playwright test. Tests are auto-generated and synchronized via CI.
+
+**Developer Workflow**:
+```bash
+# After adding/removing story files or exports:
+npm run test:stories:generate    # Regenerates all tests
+npm run test:stories             # Validates all stories load without errors
+```
+
+**What Gets Validated**:
+- ✅ Story loads without HTTP errors
+- ✅ No unexpected console errors (React warnings filtered)
+- ✅ No error boundary triggers
+- ✅ Source file exists for every story in meta.json
+
+**CI Enforcement**:
+- Pre-commit: Automatically regenerates tests when `.stories.tsx` files change
+- CI Pipeline: Fails if committed tests don't match generated output
+- Fix: Run `npm run test:stories:generate` and commit the result
+
+**Coverage Report**:
+```
+=== Story Coverage Report ===
+Total stories in meta.json: 401
+Valid source files found: 401
+Missing source files: 0
+Coverage: 100.0%
 ```
 
 ### Debugging Tests

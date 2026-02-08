@@ -6,6 +6,7 @@ export default {
   ],
   viteConfig: "./vite.config.catalog.ts",
   outDir: "dist/catalog",
+  port: 6006, // Development mode port (overridable via --port CLI flag)
 
   /**
    * Story ordering configuration for organized navigation sidebar.

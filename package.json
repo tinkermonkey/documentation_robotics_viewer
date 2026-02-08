@@ -15,6 +15,7 @@
     "verify": "bash scripts/verify-setup.sh",
     "catalog:dev": "ladle serve --port 6006",
     "catalog:build": "ladle build --outDir dist/catalog",
+    "catalog:serve": "ladle preview --outDir dist/catalog --port 61000",
     "test": "playwright test",
     "test:debug": "playwright test --debug",
     "test:e2e": "playwright test --config=playwright.e2e.config.ts",

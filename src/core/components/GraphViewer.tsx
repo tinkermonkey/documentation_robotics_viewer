@@ -281,7 +281,7 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
       >
         Skip cross-layer edges
       </a>
-      <div id="graph-content">
+      <div id="graph-content" style={{ width: '100%', height: '100%' }}>
         <CrossLayerEdgeErrorBoundary>
           <ReactFlow
           nodes={nodes}
