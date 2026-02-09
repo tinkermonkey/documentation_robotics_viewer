@@ -8,9 +8,9 @@
 
 import { test, expect } from '@playwright/test';
 
-/**
- * Validates story metadata structure (mirrors scripts/generate-story-tests.cjs)
- */
+// Note: validateStoryMetadata is re-implemented here because the CJS script
+// cannot be directly imported from TypeScript tests. Keep in sync with
+// scripts/generate-story-tests.cjs validateStoryMetadata().
 function validateStoryMetadata(storyKey: string, metadata: any) {
   const errors: string[] = [];
 
@@ -57,9 +57,9 @@ function validateStoryMetadata(storyKey: string, metadata: any) {
   return { valid: errors.length === 0, errors };
 }
 
-/**
- * Escapes special characters in test names (mirrors scripts/generate-story-tests.cjs)
- */
+// Note: escapeTestName is re-implemented here because the CJS script
+// cannot be directly imported from TypeScript tests. Keep in sync with
+// scripts/generate-story-tests.cjs escapeTestName().
 function escapeTestName(str: string): string {
   return str
     .replace(/\\/g, '\\\\') // Backslash
@@ -333,7 +333,7 @@ test.describe('Test Name Escaping', () => {
     expect(typeof escaped).toBe('string');
   });
 
-  test('should be idempotent (escaping twice produces same result)', () => {
+  test('should not be idempotent (escaping twice produces different result due to backslash escaping)', () => {
     const input = "test'story`with$special";
     const escaped1 = escapeTestName(input);
     const escaped2 = escapeTestName(escaped1);

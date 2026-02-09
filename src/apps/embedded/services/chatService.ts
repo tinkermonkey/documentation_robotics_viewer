@@ -35,6 +35,7 @@ function convertToolStatus(wireStatus: string, result?: unknown, error?: string)
     case 'failed':
       return { state: 'failed', error: error || 'Unknown error' };
     default:
+      console.warn(`[ChatService] Unknown tool status: "${wireStatus}", treating as executing`);
       return { state: 'executing' };
   }
 }

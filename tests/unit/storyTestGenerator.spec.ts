@@ -10,7 +10,9 @@ import * as path from 'path';
 // Get workspace root using process.cwd()
 const workspaceRoot = process.cwd();
 
-// Mock validateSourceFiles function (extracted from generate-story-tests.cjs)
+// Note: validateSourceFiles is re-implemented here because the CJS script
+// cannot be directly imported from TypeScript tests. Keep in sync with
+// scripts/generate-story-tests.cjs validateSourceFiles().
 function validateSourceFiles(stories: Record<string, { filePath?: string }>): {
   total: number;
   valid: number;

@@ -150,9 +150,9 @@ test.describe('Story Error Filtering', () => {
       expect(isExpectedConsoleError('WebSocket connection to wss://api.example.com/ws failed')).toBe(true);
     });
 
-    test('should match WebSocket prefix messages', () => {
+    test('should NOT match WebSocket prefix messages without connection failure', () => {
       const error = '[WebSocket] Connection timeout after 5000ms';
-      expect(isExpectedConsoleError(error)).toBe(true);
+      expect(isExpectedConsoleError(error)).toBe(false);
     });
 
     test('should NOT match unrelated WebSocket errors', () => {
@@ -162,14 +162,15 @@ test.describe('Story Error Filtering', () => {
   });
 
   test.describe('EmbeddedLayout Component Filter', () => {
-    test('should match EmbeddedLayout errors', () => {
-      const error = '[EmbeddedLayout] Model loading failed';
-      expect(isExpectedConsoleError(error)).toBe(true);
+    test('should match specific EmbeddedLayout warnings', () => {
+      expect(isExpectedConsoleError('[EmbeddedLayout] No container found')).toBe(true);
+      expect(isExpectedConsoleError('[EmbeddedLayout] Missing required props')).toBe(true);
+      expect(isExpectedConsoleError('[EmbeddedLayout] Layout calculation error')).toBe(true);
     });
 
-    test('should match various EmbeddedLayout messages', () => {
-      expect(isExpectedConsoleError('[EmbeddedLayout] Warning during initialization')).toBe(true);
-      expect(isExpectedConsoleError('[EmbeddedLayout] Unexpected prop type')).toBe(true);
+    test('should NOT match generic EmbeddedLayout messages', () => {
+      expect(isExpectedConsoleError('[EmbeddedLayout] Model loading failed')).toBe(false);
+      expect(isExpectedConsoleError('[EmbeddedLayout] Unexpected prop type')).toBe(false);
     });
 
     test('should NOT match unrelated layout errors', () => {
@@ -196,19 +197,32 @@ test.describe('Story Error Filtering', () => {
   });
 
   test.describe('Failed Resource Load Filter', () => {
-    test('should match failed resource loads', () => {
-      const error = 'Failed to load resource: the server responded with a status of 404';
-      expect(isExpectedConsoleError(error)).toBe(true);
+    test('should match failed resource loads from known test ports', () => {
+      expect(isExpectedConsoleError('Failed to load resource: localhost:3002/api/model')).toBe(true);
+      expect(isExpectedConsoleError('Failed to load resource: localhost:8765/ws')).toBe(true);
     });
 
-    test('should match various resource types', () => {
-      expect(isExpectedConsoleError('Failed to load resource: the server responded with a status of 500')).toBe(true);
-      expect(isExpectedConsoleError('Failed to load resource: net::ERR_CONNECTION_REFUSED')).toBe(true);
+    test('should NOT match failed resource loads from unknown ports', () => {
+      expect(isExpectedConsoleError('Failed to load resource: the server responded with a status of 404')).toBe(false);
+      expect(isExpectedConsoleError('Failed to load resource: net::ERR_CONNECTION_REFUSED')).toBe(false);
     });
 
     test('should NOT match other failures', () => {
       const error = 'Failed to process resource';
       expect(isExpectedConsoleError(error)).toBe(false);
+    });
+  });
+
+  test.describe('Server 500 Error Filter', () => {
+    test('should match 500 status errors', () => {
+      expect(isExpectedConsoleError('the server responded with a status of 500')).toBe(true);
+      expect(isExpectedConsoleError('the server responded with a status of 502')).toBe(true);
+      expect(isExpectedConsoleError('the server responded with a status of 503')).toBe(true);
+    });
+
+    test('should NOT match 400 status errors', () => {
+      expect(isExpectedConsoleError('the server responded with a status of 400')).toBe(false);
+      expect(isExpectedConsoleError('the server responded with a status of 404')).toBe(false);
     });
   });
 
@@ -251,6 +265,11 @@ test.describe('Story Error Filtering', () => {
       expect(isExpectedConsoleError(error)).toBe(false);
     });
 
+    test('should NOT match generic "WebSocket" prefix', () => {
+      const error = '[WebSocket] some random error';
+      expect(isExpectedConsoleError(error)).toBe(false);
+    });
+
     test('should NOT match overly broad "WebSocket" match', () => {
       const error = 'WebSocket message handler error';
       expect(isExpectedConsoleError(error)).toBe(false);
@@ -274,11 +293,11 @@ test.describe('Story Error Filtering', () => {
         'The tag <custom> is unrecognized',
         'source/target node not found',
         'WebSocket connection to ws://localhost failed',
-        '[WebSocket] error',
-        '[EmbeddedLayout] error',
+        '[EmbeddedLayout] No container found',
         '[ModelRoute] Error loading model',
-        'Failed to load resource',
-        'Warning: deprecated API'
+        'Failed to load resource: localhost:3002/api',
+        'Warning: deprecated API',
+        'the server responded with a status of 500'
       ];
 
       const unmatchedErrors = expectedErrors.filter(error => !isExpectedConsoleError(error));

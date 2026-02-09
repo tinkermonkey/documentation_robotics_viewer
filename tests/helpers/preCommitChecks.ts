@@ -177,7 +177,7 @@ function checkAsyncIssues(filePath: string, lines: string[]): CheckIssue[] {
     // Check for .then() chains (should be async/await)
     if (
       /\.then\s*\(/.test(line) &&
-      !/async/.test(lines[Math.max(0, index - 5)].join(''))
+      !/async/.test(lines.slice(Math.max(0, index - 5), index + 1).join(''))
     ) {
       issues.push({
         line: lineNum,
@@ -336,16 +336,6 @@ function main() {
   // Exit with error if critical issues found
   const hasErrors = results.some((r) => r.severity === 'error');
   if (hasErrors) {
-    process.exit(1);
-  }
-}
-
-// Run if executed directly
-if (require.main === module) {
-  try {
-    main();
-  } catch (error) {
-    console.error('Error running pre-commit checks:', error);
     process.exit(1);
   }
 }

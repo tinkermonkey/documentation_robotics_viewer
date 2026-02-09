@@ -43,16 +43,18 @@ export function isExpectedConsoleError(text: string): boolean {
 
   // WebSocket errors when server unavailable - expected in isolated test
   if (/WebSocket connection to .* failed/.test(text)) return true;
-  if (/\[WebSocket\]/.test(text)) return true;
 
   // EmbeddedLayout errors - expected component-level warnings
-  if (/\[EmbeddedLayout\]/.test(text)) return true;
+  if (/\[EmbeddedLayout\] (?:No container|Missing required|Layout calculation)/.test(text)) return true;
 
   // Model loading route errors - expected when model endpoint not available
   if (/\[ModelRoute\] Error loading model/.test(text)) return true;
 
-  // Failed resource loads - expected when external resources unavailable in test
-  if (/Failed to load resource/.test(text)) return true;
+  // Failed resource loads - expected when test backend ports unavailable
+  if (/Failed to load resource.*localhost:(3002|8765)/.test(text)) return true;
+
+  // 500 errors from backend not running in story test environment
+  if (/the server responded with a status of 5\d{2}/.test(text)) return true;
 
   // Generic warning prefix - filters React development warnings
   // Note: This is only safe because it's combined with error type check in validateStory()

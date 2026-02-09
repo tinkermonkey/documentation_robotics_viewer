@@ -283,7 +283,7 @@ export async function assertNoConsoleErrors(
   const errors: string[] = [];
   const warnings: string[] = [];
 
-  page.on('console', (msg) => {
+  const handler = (msg: import('@playwright/test').ConsoleMessage) => {
     const text = msg.text();
     const shouldIgnore =
       options?.ignorePatterns?.some((pattern) => pattern.test(text)) ?? false;
@@ -295,21 +295,27 @@ export async function assertNoConsoleErrors(
         warnings.push(text);
       }
     }
-  });
+  };
 
-  // Give page time to log errors
-  await page.waitForTimeout(500);
+  page.on('console', handler);
 
-  if (errors.length > 0) {
-    throw new Error(
-      `Console errors detected:\n${errors.map((e) => `  - ${e}`).join('\n')}`
-    );
-  }
+  try {
+    // Wait for any pending console messages to flush
+    await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
 
-  if (warnings.length > 0) {
-    throw new Error(
-      `Console warnings detected:\n${warnings.map((w) => `  - ${w}`).join('\n')}`
-    );
+    if (errors.length > 0) {
+      throw new Error(
+        `Console errors detected:\n${errors.map((e) => `  - ${e}`).join('\n')}`
+      );
+    }
+
+    if (warnings.length > 0) {
+      throw new Error(
+        `Console warnings detected:\n${warnings.map((w) => `  - ${w}`).join('\n')}`
+      );
+    }
+  } finally {
+    page.off('console', handler);
   }
 }
 

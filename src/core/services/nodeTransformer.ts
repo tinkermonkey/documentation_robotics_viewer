@@ -242,6 +242,18 @@ export class NodeTransformer {
 
     console.log(`[NodeTransformer] Created ${nodes.length} nodes and ${edges.length} edges`);
 
+    // STEP 4: Dev-mode validation - warn about missing elements
+    if (typeof window !== 'undefined' && (window as any).__DEV__ !== false) {
+      const expectedCount = Object.values(model.layers)
+        .reduce((sum, layer) => sum + (layer.elements?.length || 0), 0);
+      if (nodes.length < expectedCount) {
+        console.warn(
+          `[NodeTransformer] Rendered ${nodes.length} of ${expectedCount} elements. ` +
+          `${expectedCount - nodes.length} elements may be missing from the graph.`
+        );
+      }
+    }
+
     return { nodes, edges, layout };
   }
 
@@ -338,7 +350,11 @@ export class NodeTransformer {
       'ExternalSystem': 'c4ExternalActor',
     };
 
-    return typeMap[element.type] || 'businessProcess';
+    const mapped = typeMap[element.type];
+    if (!mapped) {
+      console.warn(`[NodeTransformer] Unknown element type "${element.type}" for "${element.name}". Falling back to businessProcess.`);
+    }
+    return mapped || 'businessProcess';
   }
 
   /**

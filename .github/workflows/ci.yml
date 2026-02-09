@@ -38,7 +38,7 @@ jobs:
       run: npm run catalog:build
 
     - name: Generate story tests
-      run: npm run test:stories:generate
+      run: node scripts/generate-story-tests.cjs --from-build
 
     - name: Verify story tests are committed
       run: |
