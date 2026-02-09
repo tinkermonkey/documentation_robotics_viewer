@@ -85,11 +85,7 @@ export const ChatMessage = memo(({ message }: ChatMessageProps) => {
 
   return (
     <div
-      className={`mb-4 flex gap-3 p-4 ${
-        isUser
-          ? 'justify-end bg-gray-50 dark:bg-gray-800/50'
-          : 'justify-start bg-white dark:bg-gray-900'
-      }`}
+      className={`mb-4 flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}
       data-testid={`message-${message.id}`}
     >
       {!isUser && (
@@ -100,8 +96,14 @@ export const ChatMessage = memo(({ message }: ChatMessageProps) => {
         </div>
       )}
 
-      <div className="flex-1 max-w-md">
-        <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">
+      <div
+        className={`flex-1 max-w-2xl rounded-lg p-4 ${
+          isUser
+            ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800'
+            : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
+        }`}
+      >
+        <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">
           {isUser ? 'You' : 'Assistant'}
         </div>
 
