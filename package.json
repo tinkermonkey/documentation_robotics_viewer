@@ -27,7 +27,8 @@
     "openapi:generate": ".venv/bin/python scripts/generate-openapi.py",
     "test:stories:generate": "node scripts/generate-story-tests.cjs",
     "test:stories": "bash scripts/test-stories.sh",
-    "test:stories:ui": "bash scripts/test-stories.sh --ui"
+    "test:stories:ui": "bash scripts/test-stories.sh --ui",
+    "test:stories:a11y": "npx playwright test tests/stories/accessibility.spec.ts --config=playwright.refinement.config.ts"
   },
   "keywords": [],
   "author": "",

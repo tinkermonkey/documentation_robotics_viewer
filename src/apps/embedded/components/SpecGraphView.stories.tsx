@@ -1,6 +1,7 @@
 // @ts-nocheck
 import type { StoryDefault, Story } from '@ladle/react';
 import SpecGraphView from './SpecGraphView';
+import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 export default {
   title: 'Views & Layouts / Other Views / SpecGraphView',
@@ -47,19 +48,23 @@ const mockSpecData = {
 };
 
 export const Default: Story = () => (
-  <div className="w-full h-96 bg-white border border-gray-200">
-    <SpecGraphView
-      specData={mockSpecData}
-      selectedSchemaId={null}
-    />
-  </div>
+  <StoryLoadedWrapper testId="spec-graph-default">
+    <div className="w-full h-96 bg-white border border-gray-200">
+      <SpecGraphView
+        specData={mockSpecData}
+        selectedSchemaId={null}
+      />
+    </div>
+  </StoryLoadedWrapper>
 );
 
 export const WithSelection: Story = () => (
-  <div className="w-full h-96 bg-white border border-gray-200">
-    <SpecGraphView
-      specData={mockSpecData}
-      selectedSchemaId="BusinessProcess"
-    />
-  </div>
+  <StoryLoadedWrapper testId="spec-graph-selection">
+    <div className="w-full h-96 bg-white border border-gray-200">
+      <SpecGraphView
+        specData={mockSpecData}
+        selectedSchemaId="BusinessProcess"
+      />
+    </div>
+  </StoryLoadedWrapper>
 );

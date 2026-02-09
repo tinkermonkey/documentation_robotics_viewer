@@ -1,6 +1,7 @@
 import type { StoryDefault, Story } from '@ladle/react';
 import ChangesetGraphView from './ChangesetGraphView';
 import type { ChangesetDetails } from '../services/embeddedDataLoader';
+import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 export default {
   title: 'Views & Layouts / Graph Views / ChangesetGraphView',
@@ -56,9 +57,11 @@ const mockChangeset: ChangesetDetails = {
 
 export const ActiveChangeset: Story = () => {
   return (
-    <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-      <ChangesetGraphView changeset={mockChangeset} />
-    </div>
+    <StoryLoadedWrapper testId="changeset-graph-active">
+      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+        <ChangesetGraphView changeset={mockChangeset} />
+      </div>
+    </StoryLoadedWrapper>
   );
 };
 
@@ -72,9 +75,11 @@ export const AddOperationsOnly: Story = () => {
   };
 
   return (
-    <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-      <ChangesetGraphView changeset={addOnlyChangeset} />
-    </div>
+    <StoryLoadedWrapper testId="changeset-graph-add">
+      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+        <ChangesetGraphView changeset={addOnlyChangeset} />
+      </div>
+    </StoryLoadedWrapper>
   );
 };
 
@@ -88,9 +93,11 @@ export const UpdateOperationsOnly: Story = () => {
   };
 
   return (
-    <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-      <ChangesetGraphView changeset={updateOnlyChangeset} />
-    </div>
+    <StoryLoadedWrapper testId="changeset-graph-update">
+      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+        <ChangesetGraphView changeset={updateOnlyChangeset} />
+      </div>
+    </StoryLoadedWrapper>
   );
 };
 
@@ -104,9 +111,11 @@ export const DeleteOperationsOnly: Story = () => {
   };
 
   return (
-    <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-      <ChangesetGraphView changeset={deleteOnlyChangeset} />
-    </div>
+    <StoryLoadedWrapper testId="changeset-graph-delete">
+      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+        <ChangesetGraphView changeset={deleteOnlyChangeset} />
+      </div>
+    </StoryLoadedWrapper>
   );
 };
 
@@ -127,8 +136,10 @@ export const ManyChanges: Story = () => {
   };
 
   return (
-    <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-      <ChangesetGraphView changeset={manyChangesChangeset} />
-    </div>
+    <StoryLoadedWrapper testId="changeset-graph-many">
+      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+        <ChangesetGraphView changeset={manyChangesChangeset} />
+      </div>
+    </StoryLoadedWrapper>
   );
 };
