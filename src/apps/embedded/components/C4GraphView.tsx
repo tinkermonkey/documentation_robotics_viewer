@@ -37,7 +37,8 @@ import {
 } from '../types/c4Graph';
 import { SpaceMouseHandler } from '../../../core/components/SpaceMouseHandler';
 import { C4LayoutAlgorithm } from './C4ControlPanel';
-import { OverviewPanel, NodeWithLayerData } from '../../../core/components/OverviewPanel';
+import { MiniMap } from './MiniMap';
+import { Panel } from '@xyflow/react';
 
 // Debug logging helper - only logs in development mode
 const DEBUG = import.meta.env.DEV;
@@ -344,12 +345,29 @@ const C4GraphView = React.forwardRef<C4GraphViewRef, C4GraphViewProps>(
               <Background color="#e5e7eb" gap={16} />
               <Controls />
               <SpaceMouseHandler />
-              <OverviewPanel
-                nodeColor={(node: NodeWithLayerData) => {
-                  // Use C4-specific stroke color
-                  return (node.data.stroke as string) || '#6b7280';
-                }}
-              />
+              <Panel position="bottom-right" className="m-4">
+                <div
+                  className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200
+                             dark:border-gray-700 shadow-sm overflow-hidden"
+                  data-testid="overview-panel"
+                >
+                  <div
+                    className="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400
+                               border-b border-gray-200 dark:border-gray-700 bg-gray-50
+                               dark:bg-gray-900"
+                  >
+                    Overview
+                  </div>
+                  <div className="p-2">
+                    <MiniMap
+                      nodeColor={(node: any) => {
+                        // Use C4-specific stroke color
+                        return (node.data.stroke as string) || '#6b7280';
+                      }}
+                    />
+                  </div>
+                </div>
+              </Panel>
             </ReactFlow>
           </div>
         </div>

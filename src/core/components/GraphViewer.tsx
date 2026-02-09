@@ -28,7 +28,8 @@ import { edgeTypes } from '../edges';
 import { elementStore } from '../stores/elementStore';
 import { AppNode, AppEdge } from '../types/reactflow';
 import { SpaceMouseHandler } from './SpaceMouseHandler';
-import { OverviewPanel, NodeWithLayerData } from './OverviewPanel';
+import { MiniMap } from '../../apps/embedded/components/MiniMap';
+import { Panel } from '@xyflow/react';
 import { getLayerColor } from '../utils/layerColors';
 import { getEngine, LayoutEngineType } from '../layout/engines';
 import { CrossLayerEdgeErrorBoundary } from './CrossLayerEdgeErrorBoundary';
@@ -316,30 +317,40 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
             edges={edges}
             onCulledEdgesChange={setCulledEdges}
           />
-          {/* Only render OverviewPanel after viewport is stable to prevent NaN in MiniMap SVG */}
           {showMiniMap && (
-            <OverviewPanel
-              nodeColor={(node: NodeWithLayerData) => {
-                // Guard against invalid node data that can cause NaN in SVG
-                if (!node || typeof node !== 'object') {
-                  return '#6B7280';
-                }
+            <Panel position="bottom-right" className="m-4">
+              <div
+                className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200
+                           dark:border-gray-700 shadow-sm overflow-hidden"
+                data-testid="overview-panel"
+              >
+                <div
+                  className="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400
+                             border-b border-gray-200 dark:border-gray-700 bg-gray-50
+                             dark:bg-gray-900"
+                >
+                  Overview
+                </div>
+                <div className="p-2">
+                  <MiniMap
+                    nodeColor={(node: any) => {
+                      // Guard against invalid node data
+                      if (!node || typeof node !== 'object') {
+                        return '#6B7280';
+                      }
 
-                // Check for NaN dimensions
-                if ((node.width !== undefined && (isNaN(node.width) || node.width === null)) ||
-                    (node.height !== undefined && (isNaN(node.height) || node.height === null))) {
-                  return '#6B7280';
-                }
-
-                // Color nodes based on their layer
-                const layer = node.data?.layer;
-                if (layer) {
-                  return getLayerColor(layer, 'primary');
-                }
-                // Fallback to fill color
-                return node.data?.fill || '#ffffff';
-              }}
-            />
+                      // Color nodes based on their layer
+                      const layer = node.data?.layer;
+                      if (layer) {
+                        return getLayerColor(layer, 'primary');
+                      }
+                      // Fallback to fill color
+                      return node.data?.fill || '#ffffff';
+                    }}
+                  />
+                </div>
+              </div>
+            </Panel>
           )}
         </ReactFlow>
         </CrossLayerEdgeErrorBoundary>

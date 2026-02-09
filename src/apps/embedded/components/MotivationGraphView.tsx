@@ -37,7 +37,8 @@ import {
   MotivationGraph,
 } from '../types/motivationGraph';
 import { SpaceMouseHandler } from '../../../core/components/SpaceMouseHandler';
-import { OverviewPanel } from '../../../core/components/OverviewPanel';
+import { MiniMap } from './MiniMap';
+import { Panel } from '@xyflow/react';
 import { getLayerColor } from '../../../core/utils/layerColors';
 
 export interface MotivationGraphViewProps {
@@ -410,12 +411,29 @@ const MotivationGraphView = forwardRef<MotivationGraphViewRef, MotivationGraphVi
           <Background color="#e5e7eb" gap={16} />
           <Controls />
           <SpaceMouseHandler />
-          <OverviewPanel
-            nodeColor={() => {
-              // All nodes use Motivation layer color
-              return getLayerColor('Motivation', 'primary');
-            }}
-          />
+          <Panel position="bottom-right" className="m-4">
+            <div
+              className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200
+                         dark:border-gray-700 shadow-sm overflow-hidden"
+              data-testid="overview-panel"
+            >
+              <div
+                className="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400
+                           border-b border-gray-200 dark:border-gray-700 bg-gray-50
+                           dark:bg-gray-900"
+              >
+                Overview
+              </div>
+              <div className="p-2">
+                <MiniMap
+                  nodeColor={() => {
+                    // All nodes use Motivation layer color
+                    return getLayerColor('Motivation', 'primary');
+                  }}
+                />
+              </div>
+            </div>
+          </Panel>
         </ReactFlow>
       </div>
     </ErrorBoundary>

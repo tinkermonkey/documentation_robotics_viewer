@@ -4,10 +4,10 @@ import { MiniMap } from './MiniMap';
 import '@xyflow/react/dist/style.css';
 
 /**
- * MiniMap - Bare React Flow MiniMap component for showing graph overview
+ * MiniMap - React Flow MiniMap component for showing graph overview
  *
- * For production use, prefer OverviewPanel which wraps MiniMap with proper styling
- * (border, header, shadow) to match the design system.
+ * For production use with styled Panel wrapper, see usage in GraphViewer.tsx,
+ * MotivationGraphView.tsx, BusinessLayerView.tsx, and C4GraphView.tsx.
  */
 export default {
   title: 'Building Blocks / Utilities / MiniMap',
@@ -107,6 +107,6 @@ export const DirectReactFlowMiniMap: Story = () => (
 
 export const WithColorOptions: Story = () => (
   <ReactFlowProvider>
-    <MiniMapDemo nodeColor={(node) => '#4f46e5'} maskColor="rgba(79, 70, 229, 0.1)" />
+    <MiniMapDemo nodeColor={() => '#4f46e5'} maskColor="rgba(79, 70, 229, 0.1)" />
   </ReactFlowProvider>
 );

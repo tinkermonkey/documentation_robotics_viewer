@@ -62,8 +62,8 @@ inspector-panel:
       reference:
         provenance: manual
         locations:
-          - file: src/core/components/OverviewPanel.tsx
-            symbol: OverviewPanel
+          - file: src/apps/embedded/components/MiniMap.tsx
+            symbol: MiniMap
     x-ui-component: ux.component.inspector-panel
 motivation-graph-view:
   id: application.component.motivation-graph-view

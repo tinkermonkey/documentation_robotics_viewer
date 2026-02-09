@@ -39,7 +39,7 @@ import {
   exportTraceabilityReport,
   exportImpactAnalysisReport,
 } from '@/core/services/businessExportService';
-import { OverviewPanel } from '@/core/components/OverviewPanel';
+import { MiniMap } from '../MiniMap';
 import { getLayerColor } from '@/core/utils/layerColors';
 
 interface BusinessLayerViewProps {
@@ -456,12 +456,29 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
         >
         <Background color="#aaa" gap={16} />
         <Controls />
-        <OverviewPanel
-          nodeColor={() => {
-            // All nodes use Business layer color
-            return getLayerColor('Business', 'primary');
-          }}
-        />
+        <Panel position="bottom-right" className="m-4">
+          <div
+            className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200
+                       dark:border-gray-700 shadow-sm overflow-hidden"
+            data-testid="overview-panel"
+          >
+            <div
+              className="px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400
+                         border-b border-gray-200 dark:border-gray-700 bg-gray-50
+                         dark:bg-gray-900"
+            >
+              Overview
+            </div>
+            <div className="p-2">
+              <MiniMap
+                nodeColor={() => {
+                  // All nodes use Business layer color
+                  return getLayerColor('Business', 'primary');
+                }}
+              />
+            </div>
+          </div>
+        </Panel>
         <Panel position="top-left">
           <div className="bg-white p-3 rounded-lg shadow-md font-sans">
             <h3 className="m-0 mb-2 text-base text-gray-800">
