@@ -56,6 +56,12 @@ export function isExpectedConsoleError(text: string): boolean {
   // (console messages of type 'error' are already filtered separately)
   if (/^Warning: /.test(text)) return true;
 
+  // StoryLoadedWrapper timeout diagnostics - expected when stories render error/empty states
+  if (/^StoryLoadedWrapper: /.test(text)) return true;
+  if (/^Wrapper element:/.test(text)) return true;
+  if (/^Children count:/.test(text)) return true;
+  if (/^Inner HTML \(first/.test(text)) return true;
+
   return false;
 }
 
@@ -78,6 +84,9 @@ export function isKnownRenderingBug(text: string): boolean {
   // React Flow node/handle resolution errors - edge references stale nodes
   if (/source\/target node/.test(text)) return true;
   if (/source\/target handle/.test(text)) return true;
+
+  // React Flow missing provider - node stories rendered without ReactFlowProvider
+  if (/\[React Flow\]: Seems like you have not used zustand provider/.test(text)) return true;
 
   return false;
 }

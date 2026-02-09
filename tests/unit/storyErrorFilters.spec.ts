@@ -277,7 +277,11 @@ test.describe('Story Error Filtering', () => {
           '[ModelRoute] Error loading model',
           'Failed to load resource: localhost:3002/api',
           'Warning: deprecated API',
-          'the server responded with a status of 500'
+          'the server responded with a status of 500',
+          'StoryLoadedWrapper: Timeout waiting for React Flow nodes',
+          'Wrapper element: DIV',
+          'Children count: 3',
+          'Inner HTML (first 500 chars): <div>'
         ];
 
         const unmatchedErrors = expectedErrors.filter(error => !isExpectedConsoleError(error));
@@ -286,6 +290,26 @@ test.describe('Story Error Filtering', () => {
           unmatchedErrors.length,
           `These expected errors were not caught: ${unmatchedErrors.join(', ')}`
         ).toBe(0);
+      });
+    });
+
+    test.describe('StoryLoadedWrapper Timeout Filter', () => {
+      test('should match StoryLoadedWrapper timeout message', () => {
+        expect(isExpectedConsoleError('StoryLoadedWrapper: Timeout waiting for React Flow nodes')).toBe(true);
+      });
+
+      test('should match StoryLoadedWrapper loaded message', () => {
+        expect(isExpectedConsoleError('StoryLoadedWrapper: Loaded in 250ms with 5 nodes')).toBe(true);
+      });
+
+      test('should match wrapper diagnostics', () => {
+        expect(isExpectedConsoleError('Wrapper element: DIV')).toBe(true);
+        expect(isExpectedConsoleError('Children count: 3')).toBe(true);
+        expect(isExpectedConsoleError('Inner HTML (first 500 chars): <div class="react-flow">')).toBe(true);
+      });
+
+      test('should NOT match unrelated wrapper messages', () => {
+        expect(isExpectedConsoleError('Error in StoryWrapper component')).toBe(false);
       });
     });
 
@@ -350,6 +374,16 @@ test.describe('Story Error Filtering', () => {
       });
     });
 
+    test.describe('React Flow Missing Provider Error', () => {
+      test('should match zustand provider error', () => {
+        expect(isKnownRenderingBug('Error: [React Flow]: Seems like you have not used zustand provider as an ancestor.')).toBe(true);
+      });
+
+      test('should NOT match unrelated React Flow errors', () => {
+        expect(isKnownRenderingBug('React Flow rendered with wrong props')).toBe(false);
+      });
+    });
+
     test.describe('Filter Accuracy - Known Bugs Are Caught', () => {
       test('should catch all documented known rendering bug patterns', () => {
         const knownBugs = [
@@ -358,6 +392,7 @@ test.describe('Story Error Filtering', () => {
           '<svg> attribute viewBox: Expected number',
           'source/target node not found',
           'source/target handle not found',
+          'Error: [React Flow]: Seems like you have not used zustand provider as an ancestor.',
         ];
 
         const unmatchedBugs = knownBugs.filter(error => !isKnownRenderingBug(error));
