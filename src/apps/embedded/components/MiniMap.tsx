@@ -18,6 +18,8 @@ export interface MiniMapProps {
   nodeBorderRadius?: number;
   /** Mask color */
   maskColor?: string;
+  /** Mask stroke color (viewport indicator border) */
+  maskStrokeColor?: string;
   /** Show mask strokeWidth */
   maskStrokeWidth?: number;
   /** Height of minimap */
@@ -55,14 +57,6 @@ const defaultNodeColor = (node: any): string => {
     return FALLBACK_COLOR;
   }
 
-  // Guard against NaN dimensions which can cause SVG rendering errors
-  if (node.width !== undefined && (isNaN(node.width) || node.width === null)) {
-    return FALLBACK_COLOR;
-  }
-  if (node.height !== undefined && (isNaN(node.height) || node.height === null)) {
-    return FALLBACK_COLOR;
-  }
-
   const nodeType = node.type || 'default';
 
   // Get the layer for this node type
@@ -78,31 +72,34 @@ const defaultNodeColor = (node: any): string => {
 
 export const MiniMap = memo(
   ({
-    nodeColor = defaultNodeColor,
+    nodeColor,
     nodeStrokeColor = '#fff',
     nodeBorderRadius = 4,
     maskColor = 'rgb(240, 240, 240, 0.6)',
+    maskStrokeColor = '#3b82f6',
     maskStrokeWidth = 2,
     height = 150,
     className = '',
   }: MiniMapProps) => {
-    return (
-      <ReactFlowMiniMap
-        nodeColor={nodeColor}
-        nodeStrokeColor={nodeStrokeColor}
-        nodeBorderRadius={nodeBorderRadius}
-        maskColor={maskColor}
-        maskStrokeWidth={maskStrokeWidth}
-        className={className}
-        style={{
-          backgroundColor: 'transparent',
-          height: `${height}px`,
-        }}
-        pannable
-        zoomable
-        data-testid="minimap-container"
-      />
-    );
+    // Build props object conditionally to avoid passing undefined nodeColor
+    const miniMapProps: any = {
+      nodeStrokeColor,
+      nodeBorderRadius,
+      maskColor,
+      maskStrokeColor,
+      maskStrokeWidth,
+      className,
+      pannable: true,
+      zoomable: true,
+      'data-testid': 'minimap-container',
+    };
+
+    // Only add nodeColor if explicitly provided
+    if (nodeColor) {
+      miniMapProps.nodeColor = nodeColor;
+    }
+
+    return <ReactFlowMiniMap {...miniMapProps} />;
   }
 );
 
