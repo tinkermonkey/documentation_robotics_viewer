@@ -6,6 +6,10 @@ on:
     tags: [ 'v*' ]
   pull_request:
     branches: [ main, master ]
+  schedule:
+    # Weekly story validation + cross-browser tests: Monday 4am UTC
+    - cron: '0 4 * * 1'
+  workflow_dispatch:
 
 jobs:
   build-and-test:
@@ -60,3 +64,47 @@ jobs:
         generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  story-validation:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps
+
+    - name: Build catalog
+      run: npm run catalog:build
+
+    - name: Generate story tests
+      run: node scripts/generate-story-tests.cjs --from-build
+
+    - name: Verify story tests are committed
+      run: |
+        if git diff --quiet tests/stories/; then
+          echo "✓ Story tests are synchronized"
+        else
+          echo "✗ Story tests are out of sync with story files"
+          echo ""
+          echo "Changes detected in tests/stories/:"
+          git diff --stat tests/stories/
+          echo ""
+          echo "Please run 'npm run test:stories:generate' locally and commit the changes:"
+          git diff tests/stories/ | head -100
+          exit 1
+        fi
+
+    - name: Run story validation tests
+      run: npm run test:stories
+      env:
+        STORY_ALL_BROWSERS: ${{ github.event_name == 'schedule' && 'true' || '' }}

@@ -37,7 +37,6 @@ import {
   BUSINESS_CAPABILITY_NODE_WIDTH,
   BUSINESS_CAPABILITY_NODE_HEIGHT,
 } from '../nodes/business/BusinessCapabilityNode';
-import { GraphElementValidator } from './validation/graphElementValidator';
 import { extractCrossLayerReferences, referencesToEdges } from './crossLayerLinksExtractor';
 
 /**
@@ -53,11 +52,7 @@ export interface NodeTransformResult {
  * Transforms a MetaModel into React Flow nodes and edges with proper layout
  */
 export class NodeTransformer {
-  private validator: GraphElementValidator;
-
-  constructor(private layoutEngine: VerticalLayerLayout | LayoutEngine) {
-    this.validator = new GraphElementValidator();
-  }
+  constructor(private layoutEngine: VerticalLayerLayout | LayoutEngine) {}
 
   /**
    * Transform a complete model into React Flow nodes and edges
@@ -247,36 +242,16 @@ export class NodeTransformer {
 
     console.log(`[NodeTransformer] Created ${nodes.length} nodes and ${edges.length} edges`);
 
-    // STEP 4: Validate that all elements are rendered
-    const validationReport = this.validator.validate(model, nodes, edges);
-    if (!validationReport.isValid) {
-      console.warn('[NodeTransformer] Validation detected missing elements:');
-      console.warn(this.validator.getDiagnosticMessage(validationReport));
-
-      // Log details about missing elements for debugging
-      if (validationReport.missingNodes.length > 0) {
-        console.warn(`[NodeTransformer] Missing ${validationReport.missingNodes.length} nodes - reasons:`);
-        const reasonCounts = new Map<string, number>();
-        validationReport.missingNodes.forEach((node) => {
-          reasonCounts.set(node.reason, (reasonCounts.get(node.reason) || 0) + 1);
-        });
-        reasonCounts.forEach((count, reason) => {
-          console.warn(`  - ${reason}: ${count} nodes`);
-        });
+    // STEP 4: Dev-mode validation - warn about missing elements
+    if (typeof window !== 'undefined' && (window as any).__DEV__ !== false) {
+      const expectedCount = Object.values(model.layers)
+        .reduce((sum, layer) => sum + (layer.elements?.length || 0), 0);
+      if (nodes.length < expectedCount) {
+        console.warn(
+          `[NodeTransformer] Rendered ${nodes.length} of ${expectedCount} elements. ` +
+          `${expectedCount - nodes.length} elements may be missing from the graph.`
+        );
       }
-
-      if (validationReport.missingEdges.length > 0) {
-        console.warn(`[NodeTransformer] Missing ${validationReport.missingEdges.length} edges - reasons:`);
-        const reasonCounts = new Map<string, number>();
-        validationReport.missingEdges.forEach((edge) => {
-          reasonCounts.set(edge.reason, (reasonCounts.get(edge.reason) || 0) + 1);
-        });
-        reasonCounts.forEach((count, reason) => {
-          console.warn(`  - ${reason}: ${count} edges`);
-        });
-      }
-    } else {
-      console.log('[NodeTransformer] ✓ All elements validated successfully');
     }
 
     return { nodes, edges, layout };
@@ -375,7 +350,11 @@ export class NodeTransformer {
       'ExternalSystem': 'c4ExternalActor',
     };
 
-    return typeMap[element.type] || 'businessProcess';
+    const mapped = typeMap[element.type];
+    if (!mapped) {
+      console.warn(`[NodeTransformer] Unknown element type "${element.type}" for "${element.name}". Falling back to businessProcess.`);
+    }
+    return mapped || 'businessProcess';
   }
 
   /**

@@ -20,74 +20,128 @@ const __dirname = path.dirname(__filename);
 const AUTH_TOKEN_FILE = path.join(__dirname, '../.test-auth-token');
 const REFERENCE_SERVER_URL = 'http://localhost:8765';
 
+// Configuration with sensible defaults
+const CONFIG = {
+  REFERENCE_SERVER_TIMEOUT: 30000,  // 30 seconds
+  REFERENCE_SERVER_RETRY_INTERVAL: 500, // Check every 500ms
+  AUTH_CHECK_TIMEOUT: 5000,
+  AUTH_SETUP_TIMEOUT: 10000,
+};
+
 async function globalSetup(config: FullConfig) {
-  console.log('\n🔧 Global Setup: Checking authentication...');
+  console.log('\n🔧 Global Setup: Initializing E2E test environment...');
 
-  // Wait for reference server to be ready
-  console.log('   Waiting for reference server...');
-  await waitForServer(REFERENCE_SERVER_URL + '/health', 30000);
-  console.log('   ✓ Reference server is ready');
+  try {
+    // Wait for reference server to be ready
+    console.log('   [1/3] Waiting for reference server (http://localhost:8765)...');
+    await waitForServer(
+      REFERENCE_SERVER_URL + '/health',
+      CONFIG.REFERENCE_SERVER_TIMEOUT,
+      CONFIG.REFERENCE_SERVER_RETRY_INTERVAL
+    );
+    console.log('   ✓ Reference server is ready');
 
-  // Test if authentication is required
-  const authRequired = await checkAuthRequired();
+    // Test if authentication is required
+    console.log('   [2/3] Checking authentication configuration...');
+    const authRequired = await checkAuthRequired();
 
-  if (authRequired) {
-    console.log('   ⚠ Authentication is ENABLED on reference server');
-    console.log('   ℹ Tests will fail unless you provide an auth token');
-    console.log('   ℹ To disable auth for testing, restart server without --auth flag');
+    if (authRequired) {
+      console.log('   ⚠ Authentication is ENABLED on reference server');
 
-    // Check if there's a token file we can use
-    if (fs.existsSync(AUTH_TOKEN_FILE)) {
-      const token = fs.readFileSync(AUTH_TOKEN_FILE, 'utf-8').trim();
-      console.log(`   ✓ Found auth token from file: ${AUTH_TOKEN_FILE}`);
+      // Check if there's a token file we can use
+      if (fs.existsSync(AUTH_TOKEN_FILE)) {
+        const token = fs.readFileSync(AUTH_TOKEN_FILE, 'utf-8').trim();
+        console.log(`   ✓ Found auth token file: ${path.basename(AUTH_TOKEN_FILE)}`);
 
-      // Verify token works
-      const tokenWorks = await verifyToken(token);
-      if (tokenWorks) {
-        console.log('   ✓ Auth token is valid');
+        // Verify token works
+        console.log('   [3/3] Verifying authentication token...');
+        const tokenWorks = await verifyToken(token);
+        if (tokenWorks) {
+          console.log('   ✓ Auth token is valid');
 
-        // Store token in localStorage for all tests
-        await setupAuthForTests(token);
+          // Store token in localStorage for all tests
+          await setupAuthForTests(token);
+          console.log('   ✓ Auth token configured for tests');
+        } else {
+          throw new Error(
+            'Auth token verification failed\n' +
+            '  Token may be invalid or expired\n' +
+            '  Solution: Restart reference server without --auth flag, or provide valid token'
+          );
+        }
       } else {
-        console.log('   ✗ Auth token is invalid or expired');
-        throw new Error('Authentication token is invalid. Please restart the reference server or provide a valid token.');
+        throw new Error(
+          'Authentication required but no token file found\n' +
+          `  Expected: ${AUTH_TOKEN_FILE}\n` +
+          '  Solution: Create token file with: echo "YOUR_TOKEN" > .test-auth-token\n' +
+          '  Or: Restart reference server without --auth flag for testing'
+        );
       }
     } else {
-      console.log('   ✗ No auth token found');
-      console.log(`   ℹ Expected token file at: ${AUTH_TOKEN_FILE}`);
-      console.log('   ℹ To create: echo "YOUR_TOKEN" > .test-auth-token');
-      throw new Error('Authentication required but no token found. See logs above for instructions.');
+      console.log('   ✓ Authentication is DISABLED (test mode)');
+      // Clean up any old token file
+      if (fs.existsSync(AUTH_TOKEN_FILE)) {
+        fs.unlinkSync(AUTH_TOKEN_FILE);
+        console.log('   ℹ Cleaned up old auth token file');
+      }
     }
-  } else {
-    console.log('   ✓ Authentication is DISABLED (test mode)');
-    // Clean up any old token file
-    if (fs.existsSync(AUTH_TOKEN_FILE)) {
-      fs.unlinkSync(AUTH_TOKEN_FILE);
-    }
-  }
 
-  console.log('✅ Global Setup Complete\n');
+    console.log('✅ Global Setup Complete - Ready for E2E tests\n');
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('\n❌ Global Setup Failed:\n');
+    console.error(message);
+    console.error('\n📋 Troubleshooting:\n');
+    console.error('  1. Ensure reference server is running:');
+    console.error('     cd reference_server && source .venv/bin/activate && python main.py\n');
+    console.error('  2. Verify server health:');
+    console.error('     curl http://localhost:8765/health\n');
+    console.error('  3. Check firewall/network:');
+    console.error('     netstat -an | grep 8765\n');
+    console.error('See: tests/README.md#troubleshooting for more help\n');
+    process.exit(1);
+  }
 }
 
 /**
- * Wait for server to be available
+ * Wait for server to be available with intelligent retries
  */
-async function waitForServer(url: string, timeout: number): Promise<void> {
+async function waitForServer(
+  url: string,
+  timeout: number,
+  retryInterval: number = 500
+): Promise<void> {
   const startTime = Date.now();
+  let lastError: Error | undefined;
+  let attemptCount = 0;
 
   while (Date.now() - startTime < timeout) {
+    attemptCount++;
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        method: 'GET',
+        timeout: 5000
+      });
       if (response.ok) {
+        const elapsedTime = Date.now() - startTime;
+        console.log(`   (connected in ${elapsedTime}ms)`);
         return;
       }
+      lastError = new Error(`Server returned ${response.status} ${response.statusText}`);
     } catch (error) {
-      // Server not ready yet, continue waiting
+      lastError = error instanceof Error ? error : new Error(String(error));
     }
-    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const remainingTime = timeout - (Date.now() - startTime);
+    if (remainingTime > 0) {
+      await new Promise(resolve => setTimeout(resolve, Math.min(retryInterval, remainingTime)));
+    }
   }
 
-  throw new Error(`Server at ${url} did not become ready within ${timeout}ms`);
+  throw new Error(
+    `Server at ${url} did not become ready within ${timeout}ms (${attemptCount} attempts)\n` +
+    `  Last error: ${lastError?.message || 'Unknown error'}`
+  );
 }
 
 /**
@@ -95,19 +149,33 @@ async function waitForServer(url: string, timeout: number): Promise<void> {
  */
 async function checkAuthRequired(): Promise<boolean> {
   try {
-    // Try to access /api/model without auth
-    const response = await fetch(REFERENCE_SERVER_URL + '/api/model');
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), CONFIG.AUTH_CHECK_TIMEOUT);
 
-    // If we get 401/403, auth is required
-    if (response.status === 401 || response.status === 403) {
-      return true;
+    try {
+      // Try to access /api/model without auth
+      const response = await fetch(REFERENCE_SERVER_URL + '/api/model', {
+        signal: controller.signal,
+        timeout: CONFIG.AUTH_CHECK_TIMEOUT
+      });
+
+      clearTimeout(timeoutId);
+
+      // If we get 401/403, auth is required
+      if (response.status === 401 || response.status === 403) {
+        return true;
+      }
+
+      // If we get 404, 500, or 200 - auth is not required
+      return false;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      // If we can't connect, assume no auth is required
+      // (the earlier waitForServer check would have already failed if server is down)
+      return false;
     }
-
-    // If we get 404 or 500, that's fine - auth is not required (data just doesn't exist)
-    // If we get 200, auth is not required
-    return false;
   } catch (error) {
-    console.error('   Error checking auth:', error);
+    console.warn('   ⚠ Error checking auth configuration (assuming not required)');
     return false;
   }
 }
@@ -117,17 +185,27 @@ async function checkAuthRequired(): Promise<boolean> {
  */
 async function verifyToken(token: string): Promise<boolean> {
   try {
-    const response = await fetch(REFERENCE_SERVER_URL + '/api/model', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), CONFIG.AUTH_CHECK_TIMEOUT);
 
-    // 200, 404, or 500 are all fine - means auth worked
-    // 401/403 means auth failed
-    return response.status !== 401 && response.status !== 403;
+    try {
+      const response = await fetch(REFERENCE_SERVER_URL + '/api/model', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      // 200, 404, or 500 are all fine - means auth worked
+      // 401/403 means auth failed
+      return response.status !== 401 && response.status !== 403;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      return false;
+    }
   } catch (error) {
-    console.error('   Error verifying token:', error);
     return false;
   }
 }
@@ -137,20 +215,28 @@ async function verifyToken(token: string): Promise<boolean> {
  */
 async function setupAuthForTests(token: string): Promise<void> {
   const browser = await chromium.launch();
-  const context = await browser.newContext();
-  const page = await context.newPage();
+  let context = null;
+  let page = null;
 
-  // Navigate to the app
-  await page.goto('http://localhost:3001');
+  try {
+    context = await browser.newContext();
+    page = await context.newPage();
 
-  // Set auth token in localStorage
-  await page.evaluate((authToken) => {
-    localStorage.setItem('dr_auth_token', authToken);
-  }, token);
+    // Set timeout for navigation
+    page.setDefaultTimeout(CONFIG.AUTH_SETUP_TIMEOUT);
 
-  console.log('   ✓ Auth token configured in localStorage for tests');
+    // Navigate to the app
+    await page.goto('http://localhost:3001', { waitUntil: 'domcontentloaded' });
 
-  await browser.close();
+    // Set auth token in localStorage
+    await page.evaluate((authToken) => {
+      localStorage.setItem('dr_auth_token', authToken);
+    }, token);
+  } finally {
+    if (page) await page.close().catch(() => {});
+    if (context) await context.close().catch(() => {});
+    await browser.close().catch(() => {});
+  }
 }
 
 export default globalSetup;

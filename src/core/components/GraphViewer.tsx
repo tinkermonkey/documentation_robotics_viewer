@@ -100,6 +100,7 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
   const [culledEdges, setCulledEdges] = useState<AppEdge[]>([]);
   const { layers: layerStates } = useLayerStore();
   const [isRendering, setIsRendering] = useState(false);
+  const [renderError, setRenderError] = useState<string | null>(null);
   const reactFlowInstance = useReactFlow();
   const [isInitialized, setIsInitialized] = useState(false);
   const [showMiniMap, setShowMiniMap] = useState(false);
@@ -172,6 +173,8 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
     setShowMiniMap(false); // Reset MiniMap flag for new model
 
     try {
+      setRenderError(null);
+
       // Clear element store
       elementStore.clear();
 
@@ -212,7 +215,9 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
       }, 100);
 
     } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown rendering error';
       console.error('Error rendering model:', error);
+      setRenderError(message);
     } finally {
       setIsRendering(false);
     }
@@ -281,7 +286,7 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
       >
         Skip cross-layer edges
       </a>
-      <div id="graph-content">
+      <div id="graph-content" style={{ width: '100%', height: '100%' }}>
         <CrossLayerEdgeErrorBoundary>
           <ReactFlow
           nodes={nodes}
@@ -338,6 +343,15 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
           )}
         </ReactFlow>
         </CrossLayerEdgeErrorBoundary>
+
+        {renderError && (
+          <div className="flex items-center justify-center h-full text-red-600 dark:text-red-400 p-4">
+            <div className="text-center">
+              <p className="font-semibold">Failed to render graph</p>
+              <p className="text-sm mt-1">{renderError}</p>
+            </div>
+          </div>
+        )}
 
         {isRendering && (
           <div className="rendering-overlay">

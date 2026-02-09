@@ -2,6 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import GraphViewer from './GraphViewer';
 import { ReactFlowProvider } from '@xyflow/react';
 import { createCompleteModelFixture, createMinimalModelFixture } from '@catalog/fixtures/modelFixtures';
+import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 export default {
   title: 'Views & Layouts / Graph Views / GraphViewer',
@@ -12,9 +13,11 @@ export const MinimalGraph: Story = () => {
 
   return (
     <ReactFlowProvider>
-      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-        <GraphViewer model={model} />
-      </div>
+      <StoryLoadedWrapper testId="graph-viewer-minimal">
+        <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <GraphViewer model={model} />
+        </div>
+      </StoryLoadedWrapper>
     </ReactFlowProvider>
   );
 };
@@ -24,9 +27,11 @@ export const CompleteModel: Story = () => {
 
   return (
     <ReactFlowProvider>
-      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-        <GraphViewer model={model} />
-      </div>
+      <StoryLoadedWrapper testId="graph-viewer-complete">
+        <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <GraphViewer model={model} />
+        </div>
+      </StoryLoadedWrapper>
     </ReactFlowProvider>
   );
 };
@@ -36,9 +41,11 @@ export const MotivationLayer: Story = () => {
 
   return (
     <ReactFlowProvider>
-      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-        <GraphViewer model={model} selectedLayerId="motivation" />
-      </div>
+      <StoryLoadedWrapper testId="graph-viewer-motivation">
+        <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <GraphViewer model={model} selectedLayerId="motivation" />
+        </div>
+      </StoryLoadedWrapper>
     </ReactFlowProvider>
   );
 };
@@ -48,9 +55,11 @@ export const BusinessLayer: Story = () => {
 
   return (
     <ReactFlowProvider>
-      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-        <GraphViewer model={model} selectedLayerId="business" />
-      </div>
+      <StoryLoadedWrapper testId="graph-viewer-business">
+        <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <GraphViewer model={model} selectedLayerId="business" />
+        </div>
+      </StoryLoadedWrapper>
     </ReactFlowProvider>
   );
 };
@@ -60,9 +69,11 @@ export const ApplicationLayer: Story = () => {
 
   return (
     <ReactFlowProvider>
-      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-        <GraphViewer model={model} selectedLayerId="application" />
-      </div>
+      <StoryLoadedWrapper testId="graph-viewer-application">
+        <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <GraphViewer model={model} selectedLayerId="application" />
+        </div>
+      </StoryLoadedWrapper>
     </ReactFlowProvider>
   );
 };
@@ -72,9 +83,11 @@ export const TechnologyLayer: Story = () => {
 
   return (
     <ReactFlowProvider>
-      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-        <GraphViewer model={model} selectedLayerId="technology" />
-      </div>
+      <StoryLoadedWrapper testId="graph-viewer-technology">
+        <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <GraphViewer model={model} selectedLayerId="technology" />
+        </div>
+      </StoryLoadedWrapper>
     </ReactFlowProvider>
   );
 };
