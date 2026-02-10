@@ -8,7 +8,7 @@ import type { Story, StoryDefault } from '@ladle/react';
 import type { Node } from '@xyflow/react';
 
 export default {
-  title: '05 Compositions / Graph Compositions / ModelRouteComposition',
+  title: 'E - Compositions / Graph Compositions / ModelRouteComposition',
 } satisfies StoryDefault;
 import { ModelRouteComposition } from '@/catalog/components/ModelRouteComposition';
 import { StoryProviderWrapper } from '@/catalog/providers/StoryProviderWrapper';

@@ -6,7 +6,7 @@ import { LayerType } from '@/core/types/layers';
 import { ReferenceType } from '@/core/types/model';
 
 export default {
-  title: '03 Graphs / Edges / Base / CrossLayerEdge',
+  title: 'C - Graphs / Edges / Base / CrossLayerEdge',
   decorators: [withReactFlowDecorator({ width: 400, height: 250, showBackground: true, renderAsEdge: true })],
 } satisfies StoryDefault;
 

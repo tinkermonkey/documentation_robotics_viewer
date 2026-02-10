@@ -3,7 +3,7 @@ import { ViewToggle, ViewToggleProps } from '@/apps/embedded/components/shared/V
 import { BarChart3, Table, Code } from 'lucide-react';
 
 export default {
-  title: '01 Primitives / Navigation / ViewToggle',
+  title: 'A - Primitives / Navigation / ViewToggle',
 } satisfies StoryDefault;
 
 /**

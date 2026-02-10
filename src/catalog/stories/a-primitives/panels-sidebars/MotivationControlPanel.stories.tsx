@@ -3,7 +3,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { MotivationControlPanel } from '@/apps/embedded/components/MotivationControlPanel';
 
 export default {
-  title: '01 Primitives / Panels and Sidebars / MotivationControlPanel',
+  title: 'A - Primitives / Panels and Sidebars / MotivationControlPanel',
 } satisfies StoryDefault;
 
 export const Default: Story = () => (

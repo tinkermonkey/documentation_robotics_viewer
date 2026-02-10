@@ -4,7 +4,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createValueStreamNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 export default {
-  title: '03 Graphs / Nodes / Motivation / ValueStreamNode',
+  title: 'C - Graphs / Nodes / Motivation / ValueStreamNode',
   decorators: [withReactFlowDecorator({ width: VALUE_STREAM_NODE_WIDTH, height: VALUE_STREAM_NODE_HEIGHT })],
 } satisfies StoryDefault;
 

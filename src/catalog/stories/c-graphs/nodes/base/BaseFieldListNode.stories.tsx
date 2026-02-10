@@ -3,7 +3,7 @@ import { BaseFieldListNode, FieldItem } from '@/core/nodes/BaseFieldListNode';
 import { createBaseFieldListNodeConfig } from '@/catalog/fixtures/nodeDataFixtures';
 
 export default {
-  title: '03 Graphs / Nodes / Base / BaseFieldListNode',
+  title: 'C - Graphs / Nodes / Base / BaseFieldListNode',
 } satisfies StoryDefault;
 
 export const Default: Story = () => {

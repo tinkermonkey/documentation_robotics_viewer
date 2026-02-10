@@ -3,7 +3,7 @@ import C4BreadcrumbNav from '@/apps/embedded/components/C4BreadcrumbNav';
 import type { C4BreadcrumbSegment } from '@/apps/embedded/types/c4Graph';
 
 export default {
-  title: '01 Primitives / Navigation / C4BreadcrumbNav',
+  title: 'A - Primitives / Navigation / C4BreadcrumbNav',
 } satisfies StoryDefault;
 
 const contextBreadcrumb: C4BreadcrumbSegment[] = [

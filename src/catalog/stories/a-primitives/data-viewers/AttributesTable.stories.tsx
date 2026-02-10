@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import AttributesTable, { AttributeRow } from '@/apps/embedded/components/common/AttributesTable';
 
 export default {
-  title: '01 Primitives / Data Viewers / AttributesTable',
+  title: 'A - Primitives / Data Viewers / AttributesTable',
 } satisfies StoryDefault;
 
 const sampleAttributes: AttributeRow[] = [

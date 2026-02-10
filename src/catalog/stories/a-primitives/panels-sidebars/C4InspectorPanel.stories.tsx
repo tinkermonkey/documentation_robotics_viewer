@@ -4,7 +4,7 @@ import type { C4Graph, C4Node, C4Edge } from '@/apps/embedded/types/c4Graph';
 import { C4Type, ContainerType, ProtocolType, CommunicationDirection } from '@/apps/embedded/types/c4Graph';
 
 export default {
-  title: '01 Primitives / Panels and Sidebars / C4InspectorPanel',
+  title: 'A - Primitives / Panels and Sidebars / C4InspectorPanel',
 } satisfies StoryDefault;
 
 const mockNodes: C4Node[] = [

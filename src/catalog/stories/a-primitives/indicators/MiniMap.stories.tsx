@@ -10,7 +10,7 @@ import '@xyflow/react/dist/style.css';
  * MotivationGraphView.tsx, BusinessLayerView.tsx, and C4GraphView.tsx.
  */
 export default {
-  title: '01 Primitives / Indicators / MiniMap',
+  title: 'A - Primitives / Indicators / MiniMap',
 } satisfies StoryDefault;
 
 // Sample nodes for MiniMap demonstration - spread out to show viewport indicator

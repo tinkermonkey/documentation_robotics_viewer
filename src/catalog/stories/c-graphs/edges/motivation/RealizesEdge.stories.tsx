@@ -4,7 +4,7 @@ import { RealizesEdge } from '@/core/edges/motivation/RealizesEdge';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 export default {
-  title: '03 Graphs / Edges / Motivation / RealizesEdge',
+  title: 'C - Graphs / Edges / Motivation / RealizesEdge',
   decorators: [withReactFlowDecorator({ width: 400, height: 200, showBackground: true, renderAsEdge: true })],
 } satisfies StoryDefault;
 

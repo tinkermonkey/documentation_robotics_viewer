@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { MotivationContextMenu } from '@/apps/embedded/components/MotivationContextMenu';
 
 export default {
-  title: '01 Primitives / Panels and Sidebars / MotivationContextMenu',
+  title: 'A - Primitives / Panels and Sidebars / MotivationContextMenu',
 } satisfies StoryDefault;
 
 export const Default: Story = () => (

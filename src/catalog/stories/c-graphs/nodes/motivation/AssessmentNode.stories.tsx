@@ -4,7 +4,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createAssessmentNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 export default {
-  title: '03 Graphs / Nodes / Motivation / AssessmentNode',
+  title: 'C - Graphs / Nodes / Motivation / AssessmentNode',
   decorators: [withReactFlowDecorator({ width: ASSESSMENT_NODE_WIDTH, height: ASSESSMENT_NODE_HEIGHT })],
 } satisfies StoryDefault;
 

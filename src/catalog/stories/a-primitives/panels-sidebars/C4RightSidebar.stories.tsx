@@ -7,7 +7,7 @@ import { ContainerType, C4Type } from '@/apps/embedded/types/c4Graph';
 import { useState } from 'react';
 
 export default {
-  title: '01 Primitives / Panels and Sidebars / C4RightSidebar',
+  title: 'A - Primitives / Panels and Sidebars / C4RightSidebar',
 } satisfies StoryDefault;
 
 const mockFilterCounts: C4FilterCounts = {

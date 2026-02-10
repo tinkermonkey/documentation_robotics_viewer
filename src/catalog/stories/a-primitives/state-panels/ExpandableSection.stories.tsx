@@ -3,7 +3,7 @@ import { useState } from 'react';
 import ExpandableSection from '@/apps/embedded/components/common/ExpandableSection';
 
 export default {
-  title: '01 Primitives / State Panels / ExpandableSection',
+  title: 'A - Primitives / State Panels / ExpandableSection',
 } satisfies StoryDefault;
 
 export const Expanded: Story = () => (

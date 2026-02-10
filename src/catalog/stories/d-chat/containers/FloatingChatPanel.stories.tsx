@@ -6,7 +6,7 @@
 import type { Story, StoryDefault } from '@ladle/react';
 
 export default {
-  title: '04 Chat / Containers / FloatingChatPanel',
+  title: 'D - Chat / Containers / FloatingChatPanel',
 } satisfies StoryDefault;
 import { FloatingChatPanel } from '@/apps/embedded/components/FloatingChatPanel';
 import { useFloatingChatStore } from '@/apps/embedded/stores/floatingChatStore';

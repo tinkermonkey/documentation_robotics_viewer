@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import type { ChangesetSummary } from '@/apps/embedded/services/embeddedDataLoader';
 
 export default {
-  title: '01 Primitives / Data Viewers / ChangesetList',
+  title: 'A - Primitives / Data Viewers / ChangesetList',
 } satisfies StoryDefault;
 
 const mockChangesets: Array<ChangesetSummary & { id: string }> = [

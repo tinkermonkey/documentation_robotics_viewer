@@ -4,7 +4,7 @@ import SpecGraphView from '@/apps/embedded/components/SpecGraphView';
 import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 export default {
-  title: '03 Graphs / Views / SpecGraphView',
+  title: 'C - Graphs / Views / SpecGraphView',
 } satisfies StoryDefault;
 
 const mockSpecData = {

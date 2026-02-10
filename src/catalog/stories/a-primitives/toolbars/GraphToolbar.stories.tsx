@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { GraphToolbar } from '@/apps/embedded/components/GraphToolbar';
 
 export default {
-  title: '01 Primitives / Toolbars / GraphToolbar',
+  title: 'A - Primitives / Toolbars / GraphToolbar',
 } satisfies StoryDefault;
 
 export const Default: Story = () => (

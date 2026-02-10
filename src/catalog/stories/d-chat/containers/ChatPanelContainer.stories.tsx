@@ -2,7 +2,7 @@ import { Story, type StoryDefault } from '@ladle/react';
 import { ChatPanel } from '@/apps/embedded/components/ChatPanel';
 
 export default {
-  title: '04 Chat / Containers / ChatPanelContainer',
+  title: 'D - Chat / Containers / ChatPanelContainer',
 } satisfies StoryDefault;
 
 /**

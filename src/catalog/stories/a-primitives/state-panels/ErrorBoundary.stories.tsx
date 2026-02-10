@@ -3,7 +3,7 @@ import { ErrorBoundary } from '@/apps/embedded/components/ErrorBoundary';
 import { Component } from 'react';
 
 export default {
-  title: '01 Primitives / State Panels / ErrorBoundary',
+  title: 'A - Primitives / State Panels / ErrorBoundary',
 } satisfies StoryDefault;
 
 // Component that throws an error

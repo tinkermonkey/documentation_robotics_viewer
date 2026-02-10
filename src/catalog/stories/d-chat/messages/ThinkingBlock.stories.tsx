@@ -6,7 +6,7 @@ import type { Story } from '@ladle/react';
 import { ThinkingBlock } from '@/apps/embedded/components/chat/ThinkingBlock';
 
 export default {
-  title: '04 Chat / Messages / ThinkingBlock',
+  title: 'D - Chat / Messages / ThinkingBlock',
 };
 
 /**

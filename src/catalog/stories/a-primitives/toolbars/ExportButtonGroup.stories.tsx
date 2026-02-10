@@ -3,7 +3,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { ExportButtonGroup, ExportService } from '@/apps/embedded/components/shared/ExportButtonGroup';
 
 export default {
-  title: '01 Primitives / Toolbars / ExportButtonGroup',
+  title: 'A - Primitives / Toolbars / ExportButtonGroup',
 } satisfies StoryDefault;
 
 // Mock export service for stories

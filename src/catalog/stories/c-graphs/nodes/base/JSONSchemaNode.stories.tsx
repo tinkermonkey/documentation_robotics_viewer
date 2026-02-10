@@ -4,7 +4,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { JSONSchemaNodeData } from '@/core/types/reactflow';
 
 export default {
-  title: '03 Graphs / Nodes / Base / JSONSchemaNode',
+  title: 'C - Graphs / Nodes / Base / JSONSchemaNode',
   decorators: [withReactFlowDecorator({ width: JSON_SCHEMA_NODE_WIDTH, height: 300 })],
 } satisfies StoryDefault;
 

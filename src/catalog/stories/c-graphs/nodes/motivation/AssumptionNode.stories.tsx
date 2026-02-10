@@ -4,7 +4,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createAssumptionNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 export default {
-  title: '03 Graphs / Nodes / Motivation / AssumptionNode',
+  title: 'C - Graphs / Nodes / Motivation / AssumptionNode',
   decorators: [withReactFlowDecorator({ width: ASSUMPTION_NODE_WIDTH, height: ASSUMPTION_NODE_HEIGHT })],
 } satisfies StoryDefault;
 
