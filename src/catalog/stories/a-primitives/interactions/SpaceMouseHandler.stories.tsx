@@ -3,7 +3,7 @@ import { SpaceMouseHandler } from '@/core/components/SpaceMouseHandler';
 import { ReactFlowProvider } from '@xyflow/react';
 
 export default {
-  title: 'A - Primitives / Interactions / SpaceMouseHandler',
+  title: 'A Primitives / Interactions / SpaceMouseHandler',
 } satisfies StoryDefault;
 
 export const Default: Story = () => {

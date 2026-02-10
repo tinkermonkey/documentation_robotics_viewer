@@ -4,7 +4,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createOutcomeNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 export default {
-  title: 'C - Graphs / Nodes / Motivation / OutcomeNode',
+  title: 'C Graphs / Nodes / Motivation / OutcomeNode',
   decorators: [withReactFlowDecorator({ width: OUTCOME_NODE_WIDTH, height: OUTCOME_NODE_HEIGHT })],
 } satisfies StoryDefault;
 

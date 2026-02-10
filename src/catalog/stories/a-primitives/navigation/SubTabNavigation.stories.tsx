@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import SubTabNavigation, { type SubTab } from '@/apps/embedded/components/SubTabNavigation';
 
 export default {
-  title: 'A - Primitives / Navigation / SubTabNavigation',
+  title: 'A Primitives / Navigation / SubTabNavigation',
 } satisfies StoryDefault;
 
 export const Default: Story = () => {

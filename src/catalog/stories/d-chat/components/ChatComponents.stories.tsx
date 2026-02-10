@@ -8,7 +8,7 @@ import { ChatInput } from '@/apps/embedded/components/chat/ChatInput';
 import type { ChatMessage as ChatMessageType } from '@/apps/embedded/types/chat';
 
 export default {
-  title: 'D - Chat / Components / ChatComponents',
+  title: 'D Chat / Components / ChatComponents',
 } satisfies StoryDefault;
 
 /**

@@ -4,7 +4,7 @@ import ModelJSONViewer from '@/apps/embedded/components/ModelJSONViewer';
 import type { MetaModel } from '@/core/types/model';
 
 export default {
-  title: 'B - Details / Model Details / ModelJSONViewer',
+  title: 'B Details / Model Details / ModelJSONViewer',
 } satisfies StoryDefault;
 
 const mockModel: MetaModel = {

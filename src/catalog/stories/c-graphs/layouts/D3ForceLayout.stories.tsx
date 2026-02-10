@@ -8,7 +8,7 @@ import { StoryProviderWrapper } from '@/catalog';
 import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';
 
 export default {
-  title: 'C - Graphs / Layouts / D3ForceLayout',
+  title: 'C Graphs / Layouts / D3ForceLayout',
 };
 
 /**

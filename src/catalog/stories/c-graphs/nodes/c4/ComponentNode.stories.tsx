@@ -4,7 +4,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createC4ComponentNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 export default {
-  title: 'C - Graphs / Nodes / C4 / ComponentNode',
+  title: 'C Graphs / Nodes / C4 / ComponentNode',
   decorators: [withReactFlowDecorator({ width: COMPONENT_NODE_WIDTH, height: COMPONENT_NODE_HEIGHT })],
 } satisfies StoryDefault;
 

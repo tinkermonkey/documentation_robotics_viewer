@@ -5,7 +5,7 @@ import { MotivationElementType, MotivationRelationshipType } from '../types/moti
 import { useState } from 'react';
 
 export default {
-  title: 'A - Primitives / Panels and Sidebars / MotivationFilterPanel',
+  title: 'A Primitives / Panels and Sidebars / MotivationFilterPanel',
 } satisfies StoryDefault;
 
 const mockFilterCounts = {

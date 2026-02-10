@@ -4,7 +4,7 @@ import { LayoutOption, ExportOption } from '@/core/components/base/types';
 import { Download, Share2, FileJson, Image } from 'lucide-react';
 
 export default {
-  title: 'A - Primitives / Panels and Sidebars / BaseControlPanel',
+  title: 'A Primitives / Panels and Sidebars / BaseControlPanel',
 } satisfies StoryDefault;
 
 /**

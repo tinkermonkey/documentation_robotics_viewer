@@ -3,7 +3,7 @@ import { LayerContainerNode } from '@/core/nodes/LayerContainerNode';
 import { createLayerContainerNodeData } from '@/catalog/fixtures/nodeDataFixtures';
 
 export default {
-  title: 'C - Graphs / Nodes / Base / LayerContainerNode',
+  title: 'C Graphs / Nodes / Base / LayerContainerNode',
 } satisfies StoryDefault;
 
 export const Default: Story = () => {

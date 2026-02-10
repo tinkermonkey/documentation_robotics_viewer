@@ -6,7 +6,7 @@ import { MotivationElementType, MotivationRelationshipType } from '@/apps/embedd
 import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 export default {
-  title: 'C - Graphs / Views / MotivationGraphView',
+  title: 'C Graphs / Views / MotivationGraphView',
 } satisfies StoryDefault;
 
 export const Default: Story = () => {

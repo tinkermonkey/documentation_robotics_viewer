@@ -6,7 +6,7 @@ import type { Story } from '@ladle/react';
 import { UsageStatsBadge } from '@/apps/embedded/components/chat/UsageStatsBadge';
 
 export default {
-  title: 'D - Chat / Messages / UsageStatsBadge',
+  title: 'D Chat / Messages / UsageStatsBadge',
 };
 
 /**

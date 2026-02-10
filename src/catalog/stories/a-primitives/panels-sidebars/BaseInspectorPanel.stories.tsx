@@ -4,7 +4,7 @@ import type { BaseGraph, BaseNode, BaseEdge } from '@/core/components/base/types
 import { ArrowUp, ArrowDown, Eye } from 'lucide-react';
 
 export default {
-  title: 'A - Primitives / Panels and Sidebars / BaseInspectorPanel',
+  title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
 } satisfies StoryDefault;
 
 /**
@@ -167,7 +167,7 @@ export const Default: Story = () => {
           quickActions={[
             {
               id: 'trace-up',
-              title: 'A - Primitives / Panels and Sidebars / BaseInspectorPanel',
+              title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
               icon: <ArrowUp className="w-4 h-4" />,
               color: 'gray' as const,
               onClick: (node: DemoNode) => console.log('Trace upstream:', node.id),
@@ -175,7 +175,7 @@ export const Default: Story = () => {
             },
             {
               id: 'trace-down',
-              title: 'A - Primitives / Panels and Sidebars / BaseInspectorPanel',
+              title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
               icon: <ArrowDown className="w-4 h-4" />,
               color: 'gray' as const,
               onClick: (node: DemoNode) => console.log('Trace downstream:', node.id),
@@ -183,7 +183,7 @@ export const Default: Story = () => {
             },
             {
               id: 'focus',
-              title: 'A - Primitives / Panels and Sidebars / BaseInspectorPanel',
+              title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
               icon: <Eye className="w-4 h-4" />,
               color: 'gray' as const,
               onClick: (node: DemoNode) => console.log('Focus on:', node.id),
@@ -322,7 +322,7 @@ export const ConditionalQuickActions: Story = () => {
           quickActions={[
             {
               id: 'trace-up',
-              title: 'A - Primitives / Panels and Sidebars / BaseInspectorPanel',
+              title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
               icon: <ArrowUp className="w-4 h-4" />,
               color: 'gray' as const,
               onClick: (node: DemoNode) => console.log('Trace upstream:', node.id),
@@ -330,14 +330,14 @@ export const ConditionalQuickActions: Story = () => {
             },
             {
               id: 'trace-down',
-              title: 'A - Primitives / Panels and Sidebars / BaseInspectorPanel',
+              title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
               icon: <ArrowDown className="w-4 h-4" />,
               color: 'gray' as const,
               onClick: (node: DemoNode) => console.log('Trace downstream:', node.id),
             },
             {
               id: 'focus',
-              title: 'A - Primitives / Panels and Sidebars / BaseInspectorPanel',
+              title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
               icon: <Eye className="w-4 h-4" />,
               color: 'blue' as const,
               onClick: (node: DemoNode) => console.log('Focus on:', node.id),

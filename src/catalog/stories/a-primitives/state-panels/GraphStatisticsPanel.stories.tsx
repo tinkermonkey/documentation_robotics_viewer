@@ -3,7 +3,7 @@ import GraphStatisticsPanel from '@/apps/embedded/components/GraphStatisticsPane
 import type { MetaModel } from '@/core/types/model';
 
 export default {
-  title: 'A - Primitives / State Panels / GraphStatisticsPanel',
+  title: 'A Primitives / State Panels / GraphStatisticsPanel',
 } satisfies StoryDefault;
 
 const mockModelSmall: MetaModel = {

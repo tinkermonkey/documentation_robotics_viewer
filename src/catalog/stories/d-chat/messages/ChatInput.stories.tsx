@@ -6,7 +6,7 @@ import type { Story } from '@ladle/react';
 import { ChatInput } from '@/apps/embedded/components/chat/ChatInput';
 
 export default {
-  title: 'D - Chat / Messages / ChatInput',
+  title: 'D Chat / Messages / ChatInput',
 };
 
 /**

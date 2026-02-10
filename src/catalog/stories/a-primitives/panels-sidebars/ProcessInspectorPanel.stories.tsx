@@ -3,7 +3,7 @@ import { ProcessInspectorPanel } from '@/apps/embedded/components/businessLayer/
 import type { BusinessNode, BusinessGraph } from '@/core/types/businessLayer';
 
 export default {
-  title: 'A - Primitives / Panels and Sidebars / ProcessInspectorPanel',
+  title: 'A Primitives / Panels and Sidebars / ProcessInspectorPanel',
 } satisfies StoryDefault;
 
 const mockProcess: BusinessNode = {

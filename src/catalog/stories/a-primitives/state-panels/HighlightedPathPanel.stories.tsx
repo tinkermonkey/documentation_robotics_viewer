@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import HighlightedPathPanel from '@/apps/embedded/components/HighlightedPathPanel';
 
 export default {
-  title: 'A - Primitives / State Panels / HighlightedPathPanel',
+  title: 'A Primitives / State Panels / HighlightedPathPanel',
 } satisfies StoryDefault;
 
 export const WithPath: Story = () => (
