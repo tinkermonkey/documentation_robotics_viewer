@@ -1,9 +1,11 @@
 import type { StoryDefault, Story } from '@ladle/react';
 import { LayerContainerNode } from '@/core/nodes/LayerContainerNode';
 import { createLayerContainerNodeData } from '@/catalog/fixtures/nodeDataFixtures';
+import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 export default {
   title: 'C Graphs / Nodes / Base / LayerContainerNode',
+  decorators: [withReactFlowDecorator({ width: 400, height: 300 })],
 } satisfies StoryDefault;
 
 export const Default: Story = () => {

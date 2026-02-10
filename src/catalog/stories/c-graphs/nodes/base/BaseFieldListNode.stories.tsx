@@ -1,9 +1,11 @@
 import type { StoryDefault, Story } from '@ladle/react';
 import { BaseFieldListNode, FieldItem } from '@/core/nodes/BaseFieldListNode';
 import { createBaseFieldListNodeConfig } from '@/catalog/fixtures/nodeDataFixtures';
+import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 export default {
   title: 'C Graphs / Nodes / Base / BaseFieldListNode',
+  decorators: [withReactFlowDecorator({ width: 300, height: 300 })],
 } satisfies StoryDefault;
 
 export const Default: Story = () => {
