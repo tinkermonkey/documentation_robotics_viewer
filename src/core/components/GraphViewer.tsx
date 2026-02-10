@@ -55,7 +55,7 @@ const ViewportCullingLayer: React.FC<{
   const viewport = useViewport();
   const VIEWPORT_MARGIN = 100; // Buffer around viewport for edge culling
 
-  useMemo(() => {
+  useEffect(() => {
     // Calculate visible node IDs based on viewport
     const visibleNodeIds = new Set<string>();
 
@@ -85,8 +85,7 @@ const ViewportCullingLayer: React.FC<{
     );
 
     onCulledEdgesChange?.(filtered);
-    return filtered;
-  }, [nodes, edges, viewport]);
+  }, [nodes, edges, viewport, onCulledEdgesChange]);
 
   return null;
 };
@@ -139,16 +138,14 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
   useEffect(() => {
     if (!isInitialized || !reactFlowInstance || nodes.length === 0) return;
 
-    // Use setTimeout to ensure React Flow has completed its internal calculations
-    setTimeout(() => {
-      reactFlowInstance.fitView({ padding: 0.1, duration: 200 });
+    // React Flow 12.5.0+ handles internal calculations synchronously
+    reactFlowInstance.fitView({ padding: 0.1, duration: 0 });
 
-      // Enable MiniMap after fitView completes
-      // Only show MiniMap for graphs with 30+ nodes (most useful for large graphs)
-      if (nodes.length >= 30) {
-        setShowMiniMap(true);
-      }
-    }, 100);
+    // Enable MiniMap after fitView completes
+    // Only show MiniMap for graphs with 30+ nodes (most useful for large graphs)
+    if (nodes.length >= 30) {
+      setShowMiniMap(true);
+    }
   }, [isInitialized, reactFlowInstance, nodes.length]);
 
   // Zoom to selected layer effect
@@ -161,7 +158,7 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
     reactFlowInstance.fitView({
       nodes: layerNodes,
       padding: 0.2,
-      duration: 400
+      duration: 0
     });
   }, [selectedLayerId, nodes, reactFlowInstance]);
 

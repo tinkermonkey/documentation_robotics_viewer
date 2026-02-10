@@ -24,6 +24,27 @@ export {
   type MockWebSocketClientOptions
 } from './providers/MockWebSocketProvider';
 
+export {
+  MockRouterProvider,
+  useParams,
+  useSearch,
+  useNavigate,
+  useMockRouter,
+  type NavigateOptions,
+  type MockRouterProviderProps
+} from './providers/MockRouterProvider';
+
+export {
+  MockDataLoaderProvider,
+  useMockDataLoader,
+  type MockDataLoaderProviderProps
+} from './providers/MockDataLoaderProvider';
+
+export {
+  StoryProviderWrapper,
+  type StoryProviderWrapperProps
+} from './providers/StoryProviderWrapper';
+
 // Decorators
 export {
   withReactFlowDecorator,
@@ -108,8 +129,27 @@ export {
   createAnnotationExamplesFixture
 } from './fixtures/annotationFixtures';
 
+// Fixtures - Spec Data
+export {
+  createMinimalSpecFixture,
+  createCompleteSpecFixture,
+  createMinimalLinkRegistryFixture,
+  createCustomSpecFixture
+} from './fixtures/specFixtures';
+
 // Components - Story Support
 export {
   StoryLoadedWrapper,
   type StoryLoadedWrapperProps
 } from './components/StoryLoadedWrapper';
+
+// Components - Route Compositions
+export {
+  ModelRouteComposition,
+  type ModelRouteCompositionProps
+} from './components/ModelRouteComposition';
+
+export {
+  SpecRouteComposition,
+  type SpecRouteCompositionProps
+} from './components/SpecRouteComposition';
