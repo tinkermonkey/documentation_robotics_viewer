@@ -1,6 +1,5 @@
 import { Story } from '@ladle/react';
-import { useState } from 'react';
-import { ChatPanel } from '@/apps/embedded/components/ChatPanelContainer';
+import { ChatPanel } from '@/apps/embedded/components/ChatPanel';
 
 /**
  * ChatPanelContainer Stories
