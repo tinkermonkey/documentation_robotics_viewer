@@ -3,7 +3,7 @@ import { BusinessLayerControls } from '@/apps/embedded/components/businessLayer/
 import type { BusinessGraph } from '@/core/types/businessLayer';
 
 export default {
-  title: 'Primitives / Panels and Sidebars / BusinessLayerControls',
+  title: '01 Primitives / Panels and Sidebars / BusinessLayerControls',
 } satisfies StoryDefault;
 
 const mockBusinessGraph: BusinessGraph = {

@@ -7,7 +7,7 @@ import { ChatMessage } from '@/apps/embedded/components/chat/ChatMessage';
 import type { ChatMessage as ChatMessageType } from '@/apps/embedded/types/chat';
 
 export default {
-  title: 'Chat / Messages / ChatMessage',
+  title: '04 Chat / Messages / ChatMessage',
 };
 
 /**

@@ -5,7 +5,7 @@ import { createCompleteModelFixture, createMinimalModelFixture } from '@catalog/
 import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 export default {
-  title: 'Graphs / Views / BusinessLayerView',
+  title: '03 Graphs / Views / BusinessLayerView',
 } satisfies StoryDefault;
 
 export const Default: Story = () => {

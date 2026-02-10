@@ -3,12 +3,12 @@ import { useState } from 'react';
 import { FilterPanel, type FilterSection } from '@/apps/embedded/components/shared/FilterPanel';
 
 export default {
-  title: 'Primitives / State Panels / FilterPanel',
+  title: '01 Primitives / State Panels / FilterPanel',
 } satisfies StoryDefault;
 
 const createLayerSection = (): FilterSection => ({
   id: 'layers',
-  title: 'Primitives / State Panels / FilterPanel',
+  title: '01 Primitives / State Panels / FilterPanel',
   items: [
     {
       value: 'motivation',
@@ -37,7 +37,7 @@ const createLayerSection = (): FilterSection => ({
 
 const createElementTypeSection = (): FilterSection => ({
   id: 'elementTypes',
-  title: 'Primitives / State Panels / FilterPanel',
+  title: '01 Primitives / State Panels / FilterPanel',
   items: [
     {
       value: 'goal',
@@ -70,7 +70,7 @@ export const EmptyFilters: Story = () => (
       sections={[
         {
           id: 'layers',
-          title: 'Primitives / State Panels / FilterPanel',
+          title: '01 Primitives / State Panels / FilterPanel',
           items: [],
           selectedValues: new Set<string>(),
           onToggle: () => {},
@@ -101,7 +101,7 @@ export const MultipleCategories: Story = () => {
         sections={[
           {
             id: 'layers',
-            title: 'Primitives / State Panels / FilterPanel',
+            title: '01 Primitives / State Panels / FilterPanel',
             items: [
               {
                 value: 'motivation',
@@ -134,7 +134,7 @@ export const MultipleCategories: Story = () => {
           },
           {
             id: 'elementTypes',
-            title: 'Primitives / State Panels / FilterPanel',
+            title: '01 Primitives / State Panels / FilterPanel',
             items: [
               {
                 value: 'goal',

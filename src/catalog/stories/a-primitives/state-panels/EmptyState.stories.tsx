@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { EmptyState } from '@/apps/embedded/components/shared/EmptyState';
 
 export default {
-  title: 'Primitives / State Panels / EmptyState',
+  title: '01 Primitives / State Panels / EmptyState',
 } satisfies StoryDefault;
 
 export const NoAnnotations: Story = () => (

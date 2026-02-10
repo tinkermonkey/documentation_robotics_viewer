@@ -4,7 +4,7 @@ import { useChangesetStore } from '@/apps/embedded/stores/changesetStore';
 import { useEffect } from 'react';
 
 export default {
-  title: 'Primitives / Panels and Sidebars / ChangesetViewer',
+  title: '01 Primitives / Panels and Sidebars / ChangesetViewer',
 } satisfies StoryDefault;
 
 const mockChangeset = {

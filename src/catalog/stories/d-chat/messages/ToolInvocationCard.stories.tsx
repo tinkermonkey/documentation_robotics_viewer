@@ -7,7 +7,7 @@ import { ToolInvocationCard } from '@/apps/embedded/components/chat/ToolInvocati
 import type { ToolInvocationContent } from '@/apps/embedded/types/chat';
 
 export default {
-  title: 'Chat / Messages / ToolInvocationCard',
+  title: '04 Chat / Messages / ToolInvocationCard',
 };
 
 /**

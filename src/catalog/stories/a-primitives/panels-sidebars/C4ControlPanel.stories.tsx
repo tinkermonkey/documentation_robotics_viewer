@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { C4ControlPanel } from '@/apps/embedded/components/C4ControlPanel';
 
 export default {
-  title: 'Primitives / Panels and Sidebars / C4ControlPanel',
+  title: '01 Primitives / Panels and Sidebars / C4ControlPanel',
 } satisfies StoryDefault;
 
 export const ContextLevel: Story = () => (

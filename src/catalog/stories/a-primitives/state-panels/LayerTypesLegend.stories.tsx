@@ -3,7 +3,7 @@ import LayerTypesLegend from '@/apps/embedded/components/LayerTypesLegend';
 import type { MetaModel } from '@/core/types/model';
 
 export default {
-  title: 'Primitives / State Panels / LayerTypesLegend',
+  title: '01 Primitives / State Panels / LayerTypesLegend',
 } satisfies StoryDefault;
 
 const mockModel: MetaModel = {

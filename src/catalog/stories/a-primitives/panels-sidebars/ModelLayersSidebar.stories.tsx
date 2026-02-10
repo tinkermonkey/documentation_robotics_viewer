@@ -5,7 +5,7 @@ import type { MetaModel } from '@/core/types/model';
 import { useEffect } from 'react';
 
 export default {
-  title: 'Primitives / Panels and Sidebars / ModelLayersSidebar',
+  title: '01 Primitives / Panels and Sidebars / ModelLayersSidebar',
 } satisfies StoryDefault;
 
 const mockModel: MetaModel = {

@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { wrapRenderProp, wrapRenderProp2, wrapRenderPropVoid } from '@/core/components/base/RenderPropErrorBoundary';
 
 export default {
-  title: 'Primitives / State Panels / RenderPropErrorBoundary',
+  title: '01 Primitives / State Panels / RenderPropErrorBoundary',
 } satisfies StoryDefault;
 
 /**

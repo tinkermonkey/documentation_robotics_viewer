@@ -4,7 +4,7 @@ import { ConstrainsEdge } from '@/core/edges/motivation/ConstrainsEdge';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 export default {
-  title: 'Graphs / Edges / Motivation / ConstrainsEdge',
+  title: '03 Graphs / Edges / Motivation / ConstrainsEdge',
   decorators: [withReactFlowDecorator({ width: 400, height: 200, showBackground: true, renderAsEdge: true })],
 } satisfies StoryDefault;
 

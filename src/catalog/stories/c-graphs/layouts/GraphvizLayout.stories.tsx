@@ -8,7 +8,7 @@ import { StoryProviderWrapper } from '@/catalog';
 import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';
 
 export default {
-  title: 'Graphs / Layouts / GraphvizLayout',
+  title: '03 Graphs / Layouts / GraphvizLayout',
 };
 
 /**

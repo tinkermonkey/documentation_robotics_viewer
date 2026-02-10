@@ -4,7 +4,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createDriverNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 export default {
-  title: 'Graphs / Nodes / Motivation / DriverNode',
+  title: '03 Graphs / Nodes / Motivation / DriverNode',
   decorators: [withReactFlowDecorator({ width: DRIVER_NODE_WIDTH, height: DRIVER_NODE_HEIGHT })],
 } satisfies StoryDefault;
 

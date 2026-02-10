@@ -4,7 +4,11 @@
  */
 
 import { useState } from 'react';
-import type { Story } from '@ladle/react';
+import type { Story, StoryDefault } from '@ladle/react';
+
+export default {
+  title: '05 Compositions / Spec Compositions / SpecRouteComposition',
+} satisfies StoryDefault;
 import { SpecRouteComposition } from '@/catalog/components/SpecRouteComposition';
 import { StoryProviderWrapper } from '@/catalog/providers/StoryProviderWrapper';
 import {

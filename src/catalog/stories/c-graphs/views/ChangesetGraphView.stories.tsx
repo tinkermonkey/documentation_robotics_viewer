@@ -4,7 +4,7 @@ import type { ChangesetDetails } from '@/apps/embedded/services/embeddedDataLoad
 import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 export default {
-  title: 'Graphs / Views / ChangesetGraphView',
+  title: '03 Graphs / Views / ChangesetGraphView',
 } satisfies StoryDefault;
 
 const mockChangeset: ChangesetDetails = {

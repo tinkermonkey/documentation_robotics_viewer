@@ -4,7 +4,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createPrincipleNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 export default {
-  title: 'Graphs / Nodes / Motivation / PrincipleNode',
+  title: '03 Graphs / Nodes / Motivation / PrincipleNode',
   decorators: [withReactFlowDecorator({ width: PRINCIPLE_NODE_WIDTH, height: PRINCIPLE_NODE_HEIGHT })],
 } satisfies StoryDefault;
 

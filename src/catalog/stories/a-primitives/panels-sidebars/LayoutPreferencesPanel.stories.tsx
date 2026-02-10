@@ -3,7 +3,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { LayoutPreferencesPanel } from '@/apps/embedded/components/LayoutPreferencesPanel';
 
 export default {
-  title: 'Primitives / Panels and Sidebars / LayoutPreferencesPanel',
+  title: '01 Primitives / Panels and Sidebars / LayoutPreferencesPanel',
 } satisfies StoryDefault;
 
 export const Default: Story = () => {

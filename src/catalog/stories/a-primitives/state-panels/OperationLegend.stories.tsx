@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { OperationLegend } from '@/apps/embedded/components/OperationLegend';
 
 export default {
-  title: 'Primitives / State Panels / OperationLegend',
+  title: '01 Primitives / State Panels / OperationLegend',
 } satisfies StoryDefault;
 
 export const Default: Story = () => (

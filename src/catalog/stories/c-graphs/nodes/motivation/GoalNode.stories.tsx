@@ -4,7 +4,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createGoalNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 export default {
-  title: 'Graphs / Nodes / Motivation / GoalNode',
+  title: '03 Graphs / Nodes / Motivation / GoalNode',
   decorators: [withReactFlowDecorator({ width: GOAL_NODE_WIDTH, height: GOAL_NODE_HEIGHT })],
 } satisfies StoryDefault;
 

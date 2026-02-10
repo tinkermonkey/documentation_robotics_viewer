@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import MetadataGrid from '@/apps/embedded/components/common/MetadataGrid';
 
 export default {
-  title: 'Primitives / Data Viewers / MetadataGrid',
+  title: '01 Primitives / Data Viewers / MetadataGrid',
 } satisfies StoryDefault;
 
 const sampleMetadata = [

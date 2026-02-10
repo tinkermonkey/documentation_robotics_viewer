@@ -5,7 +5,7 @@ import type { MotivationGraph } from '../types/motivationGraph';
 import { MotivationElementType, MotivationRelationshipType, RelationshipDirection } from '../types/motivationGraph';
 
 export default {
-  title: 'Primitives / Panels and Sidebars / MotivationInspectorPanel',
+  title: '01 Primitives / Panels and Sidebars / MotivationInspectorPanel',
 } satisfies StoryDefault;
 
 const mockGraph: MotivationGraph = {

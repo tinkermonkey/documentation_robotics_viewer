@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { RelationshipBadge } from '@/core/nodes/motivation/RelationshipBadge';
 
 export default {
-  title: 'Primitives / Indicators / RelationshipBadge',
+  title: '01 Primitives / Indicators / RelationshipBadge',
 } satisfies StoryDefault;
 
 const nodeWithBadgeStyle = {

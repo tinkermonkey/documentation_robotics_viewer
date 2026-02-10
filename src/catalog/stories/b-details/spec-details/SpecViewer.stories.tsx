@@ -4,7 +4,7 @@ import type { SpecDataResponse } from '@/apps/embedded/services/embeddedDataLoad
 import { LayerType } from '@/core/types';
 
 export default {
-  title: 'Details / Spec Details / SpecViewer',
+  title: '02 Details / Spec Details / SpecViewer',
 } satisfies StoryDefault;
 
 const mockSpecData: SpecDataResponse = {
@@ -14,7 +14,7 @@ const mockSpecData: SpecDataResponse = {
     'business.schema.json': {
       $schema: 'http://json-schema.org/draft-07/schema#',
       $id: 'https://example.com/schemas/02-business-layer.schema.json',
-      title: 'Details / Spec Details / SpecViewer',
+      title: '02 Details / Spec Details / SpecViewer',
       description: 'Represents business services, processes, actors, and objects that define the organization\'s operational structure and capabilities.',
       type: 'object',
       definitions: {

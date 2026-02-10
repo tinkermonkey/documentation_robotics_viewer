@@ -4,7 +4,7 @@ import type { Node } from '@xyflow/react';
 import type { MetaModel } from '@/core/types';
 
 export default {
-  title: 'Details / Model Details / NodeDetailsPanel',
+  title: '02 Details / Model Details / NodeDetailsPanel',
 } satisfies StoryDefault;
 
 const mockModel: MetaModel = {

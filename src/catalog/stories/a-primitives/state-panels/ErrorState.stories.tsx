@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { ErrorState } from '@/apps/embedded/components/shared/ErrorState';
 
 export default {
-  title: 'Primitives / State Panels / ErrorState',
+  title: '01 Primitives / State Panels / ErrorState',
 } satisfies StoryDefault;
 
 export const PageError: Story = () => (

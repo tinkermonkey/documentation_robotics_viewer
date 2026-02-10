@@ -4,7 +4,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createConstraintNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 export default {
-  title: 'Graphs / Nodes / Motivation / ConstraintNode',
+  title: '03 Graphs / Nodes / Motivation / ConstraintNode',
   decorators: [withReactFlowDecorator({ width: CONSTRAINT_NODE_WIDTH, height: CONSTRAINT_NODE_HEIGHT })],
 } satisfies StoryDefault;
 

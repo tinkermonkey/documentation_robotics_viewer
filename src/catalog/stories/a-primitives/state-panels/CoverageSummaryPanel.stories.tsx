@@ -3,7 +3,7 @@ import { CoverageSummaryPanel } from '@/apps/embedded/components/CoverageSummary
 import type { CoverageSummary } from '@/apps/embedded/services/coverageAnalyzer';
 
 export default {
-  title: 'Primitives / State Panels / CoverageSummaryPanel',
+  title: '01 Primitives / State Panels / CoverageSummaryPanel',
 } satisfies StoryDefault;
 
 const mockSummaryComplete: CoverageSummary = {

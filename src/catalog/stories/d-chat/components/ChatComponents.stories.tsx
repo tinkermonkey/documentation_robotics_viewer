@@ -1,4 +1,4 @@
-import type { Story } from '@ladle/react';
+import type { Story, StoryDefault } from '@ladle/react';
 import { ChatTextContent } from '@/apps/embedded/components/chat/ChatTextContent';
 import { ThinkingBlock } from '@/apps/embedded/components/chat/ThinkingBlock';
 import { ToolInvocationCard } from '@/apps/embedded/components/chat/ToolInvocationCard';
@@ -6,6 +6,10 @@ import { UsageStatsBadge } from '@/apps/embedded/components/chat/UsageStatsBadge
 import { ChatMessage } from '@/apps/embedded/components/chat/ChatMessage';
 import { ChatInput } from '@/apps/embedded/components/chat/ChatInput';
 import type { ChatMessage as ChatMessageType } from '@/apps/embedded/types/chat';
+
+export default {
+  title: '04 Chat / Components / ChatComponents',
+} satisfies StoryDefault;
 
 /**
  * Ladle Stories for Chat Components

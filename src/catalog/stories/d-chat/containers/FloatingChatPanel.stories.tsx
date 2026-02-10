@@ -3,7 +3,11 @@
  * Demonstrates the draggable, persistent chat panel in various states
  */
 
-import type { Story } from '@ladle/react';
+import type { Story, StoryDefault } from '@ladle/react';
+
+export default {
+  title: '04 Chat / Containers / FloatingChatPanel',
+} satisfies StoryDefault;
 import { FloatingChatPanel } from '@/apps/embedded/components/FloatingChatPanel';
 import { useFloatingChatStore } from '@/apps/embedded/stores/floatingChatStore';
 import { useEffect } from 'react';

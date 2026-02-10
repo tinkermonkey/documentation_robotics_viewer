@@ -2,7 +2,7 @@ import type { StoryDefault, Story } from '@ladle/react';
 import { MotivationBreadcrumb, BreadcrumbItem } from '@/apps/embedded/components/MotivationBreadcrumb';
 
 export default {
-  title: 'Primitives / Navigation / MotivationBreadcrumb',
+  title: '01 Primitives / Navigation / MotivationBreadcrumb',
 } satisfies StoryDefault;
 
 const shortPath: BreadcrumbItem[] = [

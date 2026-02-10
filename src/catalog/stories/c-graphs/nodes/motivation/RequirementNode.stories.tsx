@@ -4,7 +4,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createRequirementNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 export default {
-  title: 'Graphs / Nodes / Motivation / RequirementNode',
+  title: '03 Graphs / Nodes / Motivation / RequirementNode',
   decorators: [withReactFlowDecorator({ width: REQUIREMENT_NODE_WIDTH, height: REQUIREMENT_NODE_HEIGHT })],
 } satisfies StoryDefault;
 
