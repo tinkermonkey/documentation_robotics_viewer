@@ -1,10 +1,16 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ProcessInspectorPanel } from '@/apps/embedded/components/businessLayer/ProcessInspectorPanel';
 import type { BusinessNode, BusinessGraph } from '@/core/types/businessLayer';
 
-export default {
+const meta = {
   title: 'A Primitives / Panels and Sidebars / ProcessInspectorPanel',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 const mockProcess: BusinessNode = {
   id: 'process-1',
@@ -82,18 +88,21 @@ const mockBusinessGraph: BusinessGraph = {
   },
 };
 
-export const Default: Story = () => (
-  <ProcessInspectorPanel
+export const Default: Story = {
+  render: () => (
+    <ProcessInspectorPanel
     selectedNode={null}
     businessGraph={mockBusinessGraph}
     onTraceUpstream={() => console.log('Trace upstream')}
     onTraceDownstream={() => console.log('Trace downstream')}
     onIsolate={() => console.log('Isolate')}
   />
-);
+  ),
+};
 
-export const ProcessSelected: Story = () => (
-  <ProcessInspectorPanel
+export const ProcessSelected: Story = {
+  render: () => (
+    <ProcessInspectorPanel
     selectedNode={mockProcess}
     businessGraph={mockBusinessGraph}
     onTraceUpstream={() => console.log('Trace upstream')}
@@ -101,10 +110,12 @@ export const ProcessSelected: Story = () => (
     onIsolate={() => console.log('Isolate')}
     onNavigateToCrossLayer={(layer, id) => console.log('Navigate to', layer, id)}
   />
-);
+  ),
+};
 
-export const ProcessWithCrossLayerLinks: Story = () => (
-  <ProcessInspectorPanel
+export const ProcessWithCrossLayerLinks: Story = {
+  render: () => (
+    <ProcessInspectorPanel
     selectedNode={mockProcess}
     businessGraph={mockBusinessGraph}
     onTraceUpstream={() => console.log('Trace upstream')}
@@ -112,10 +123,12 @@ export const ProcessWithCrossLayerLinks: Story = () => (
     onIsolate={() => console.log('Isolate')}
     onNavigateToCrossLayer={(layer, id) => console.log('Navigate to', layer, id)}
   />
-);
+  ),
+};
 
-export const ComplexProcess: Story = () => {
-  const complexProcess: BusinessNode = {
+export const ComplexProcess: Story = {
+  render: () => (
+    const complexProcess: BusinessNode = {
     id: 'process-complex',
     type: 'process',
     name: 'Enterprise Integration Bus',
@@ -159,10 +172,12 @@ export const ComplexProcess: Story = () => {
       onNavigateToCrossLayer={(layer, id) => console.log('Navigate to', layer, id)}
     />
   );
+  ),
 };
 
-export const SimpleFunction: Story = () => {
-  const simpleFunction: BusinessNode = {
+export const SimpleFunction: Story = {
+  render: () => (
+    const simpleFunction: BusinessNode = {
     id: 'function-1',
     type: 'function',
     name: 'Calculate Tax',
@@ -187,4 +202,5 @@ export const SimpleFunction: Story = () => {
       onIsolate={() => console.log('Isolate')}
     />
   );
+  ),
 };

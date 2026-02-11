@@ -1,12 +1,18 @@
 // @ts-nocheck
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { MotivationInspectorPanel } from '@/apps/embedded/components/MotivationInspectorPanel';
 import type { MotivationGraph } from '../types/motivationGraph';
 import { MotivationElementType, MotivationRelationshipType, RelationshipDirection } from '../types/motivationGraph';
 
-export default {
+const meta = {
   title: 'A Primitives / Panels and Sidebars / MotivationInspectorPanel',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 const mockGraph: MotivationGraph = {
   nodes: new Map([
@@ -83,8 +89,9 @@ const mockGraph: MotivationGraph = {
   },
 };
 
-export const Default: Story = () => (
-  <div className="w-96 bg-gray-50 p-4">
+export const Default: Story = {
+  render: () => (
+    <div className="w-96 bg-gray-50 p-4">
     <MotivationInspectorPanel
       selectedNodeId="goal-1"
       graph={mockGraph}
@@ -95,10 +102,12 @@ export const Default: Story = () => (
       onClose={() => console.log('Close inspector')}
     />
   </div>
-);
+  ),
+};
 
-export const RequirementNode: Story = () => (
-  <div className="w-96 bg-gray-50 p-4">
+export const RequirementNode: Story = {
+  render: () => (
+    <div className="w-96 bg-gray-50 p-4">
     <MotivationInspectorPanel
       selectedNodeId="req-1"
       graph={mockGraph}
@@ -107,4 +116,5 @@ export const RequirementNode: Story = () => (
       onClose={() => console.log('Close inspector')}
     />
   </div>
-);
+  ),
+};

@@ -1,12 +1,18 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import ModelLayersSidebar from '@/apps/embedded/components/ModelLayersSidebar';
 import { useModelStore } from '@/core/stores/modelStore';
 import type { MetaModel } from '@/core/types/model';
 import { useEffect } from 'react';
 
-export default {
+const meta = {
   title: 'A Primitives / Panels and Sidebars / ModelLayersSidebar',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 const mockModel: MetaModel = {
   version: '1.0',
@@ -47,8 +53,9 @@ const mockModel: MetaModel = {
   },
 };
 
-export const Default: Story = () => {
-  useEffect(() => {
+export const Default: Story = {
+  render: () => (
+    useEffect(() => {
     useModelStore.setState({ model: mockModel });
   }, []);
 
@@ -60,10 +67,12 @@ export const Default: Story = () => {
       />
     </div>
   );
+  ),
 };
 
-export const WithSelection: Story = () => {
-  useEffect(() => {
+export const WithSelection: Story = {
+  render: () => (
+    useEffect(() => {
     useModelStore.setState({ model: mockModel });
   }, []);
 
@@ -75,9 +84,11 @@ export const WithSelection: Story = () => {
       />
     </div>
   );
+  ),
 };
 
-export const EmptyModel: Story = () => {
+export const EmptyModel: Story = {
+  render: () => {
   useEffect(() => {
     useModelStore.setState({ model: { version: '1.0', references: [], layers: {} } });
   }, []);
@@ -90,4 +101,5 @@ export const EmptyModel: Story = () => {
       />
     </div>
   );
+  },
 };

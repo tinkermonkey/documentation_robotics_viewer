@@ -1,12 +1,18 @@
 // @ts-nocheck
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { MotivationFilterPanel } from '@/apps/embedded/components/MotivationFilterPanel';
 import { MotivationElementType, MotivationRelationshipType } from '../types/motivationGraph';
 import { useState } from 'react';
 
-export default {
+const meta = {
   title: 'A Primitives / Panels and Sidebars / MotivationFilterPanel',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 const mockFilterCounts = {
   elements: {
@@ -38,7 +44,8 @@ const mockFilterCounts = {
   },
 };
 
-export const Default: Story = () => {
+export const Default: Story = {
+  render: () => {
   const [selectedTypes, setSelectedTypes] = useState<Set<MotivationElementType>>(new Set());
   const [selectedRelTypes, setSelectedRelTypes] = useState<Set<MotivationRelationshipType>>(new Set());
 
@@ -73,9 +80,11 @@ export const Default: Story = () => {
       />
     </div>
   );
+  },
 };
 
-export const WithFiltersApplied: Story = () => {
+export const WithFiltersApplied: Story = {
+  render: () => {
   const [selectedTypes, setSelectedTypes] = useState<Set<MotivationElementType>>(
     new Set([MotivationElementType.Goal, MotivationElementType.Requirement])
   );
@@ -114,4 +123,5 @@ export const WithFiltersApplied: Story = () => {
       />
     </div>
   );
+  },
 };

@@ -1,15 +1,22 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { wrapRenderProp, wrapRenderProp2, wrapRenderPropVoid } from '@/core/components/base/RenderPropErrorBoundary';
 
-export default {
+const meta = {
   title: 'A Primitives / State Panels / RenderPropErrorBoundary',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 /**
  * Story showing successful render prop
  */
-export const SuccessfulRenderProp: Story = () => {
-  const renderElement = (element: { id: string; name: string; type: string }) => (
+export const SuccessfulRenderProp: Story = {
+  render: () => (
+    const renderElement = (element: { id: string; name: string; type: string }) => (
     <div className="space-y-2 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded">
       <h3 className="font-semibold text-green-900 dark:text-green-300">Successful Render</h3>
       <p className="text-sm text-green-800 dark:text-green-200">ID: {element.id}</p>
@@ -28,13 +35,15 @@ export const SuccessfulRenderProp: Story = () => {
       )}
     </div>
   );
+  ),
 };
 
 /**
  * Story showing error in render prop
  */
-export const ErrorInRenderProp: Story = () => {
-  const throwingRender = (_element: any) => {
+export const ErrorInRenderProp: Story = {
+  render: () => (
+    const throwingRender = (_element: any) => {
     throw new Error('Failed to render element - invalid data structure');
   };
 
@@ -48,13 +57,15 @@ export const ErrorInRenderProp: Story = () => {
       )}
     </div>
   );
+  ),
 };
 
 /**
  * Story showing successful render prop with two arguments
  */
-export const SuccessfulRenderProp2: Story = () => {
-  const renderRelationship = (source: { name: string }, target: { name: string }) => (
+export const SuccessfulRenderProp2: Story = {
+  render: () => (
+    const renderRelationship = (source: { name: string }, target: { name: string }) => (
     <div className="space-y-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded">
       <h3 className="font-semibold text-blue-900 dark:text-blue-300">Relationship Found</h3>
       <p className="text-sm text-blue-800 dark:text-blue-200">{source.name} → {target.name}</p>
@@ -72,13 +83,15 @@ export const SuccessfulRenderProp2: Story = () => {
       )}
     </div>
   );
+  ),
 };
 
 /**
  * Story showing error in render prop with two arguments
  */
-export const ErrorInRenderProp2: Story = () => {
-  const throwingRender = (_source: any, _target: any) => {
+export const ErrorInRenderProp2: Story = {
+  render: () => (
+    const throwingRender = (_source: any, _target: any) => {
     throw new Error('Cannot find relationship between these elements');
   };
 
@@ -93,13 +106,15 @@ export const ErrorInRenderProp2: Story = () => {
       )}
     </div>
   );
+  ),
 };
 
 /**
  * Story showing successful void render prop
  */
-export const SuccessfulVoidRenderProp: Story = () => {
-  const renderHeader = () => (
+export const SuccessfulVoidRenderProp: Story = {
+  render: () => (
+    const renderHeader = () => (
     <div className="p-3 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded">
       <h3 className="font-semibold text-purple-900 dark:text-purple-300">Header Content</h3>
       <p className="text-sm text-purple-800 dark:text-purple-200">This header renders successfully</p>
@@ -112,13 +127,15 @@ export const SuccessfulVoidRenderProp: Story = () => {
       {wrapRenderPropVoid(renderHeader, 'renderHeader')}
     </div>
   );
+  ),
 };
 
 /**
  * Story showing error in void render prop
  */
-export const ErrorInVoidRenderProp: Story = () => {
-  const throwingRender = () => {
+export const ErrorInVoidRenderProp: Story = {
+  render: () => (
+    const throwingRender = () => {
     throw new Error('Header data is corrupted or unavailable');
   };
 
@@ -128,13 +145,15 @@ export const ErrorInVoidRenderProp: Story = () => {
       {wrapRenderPropVoid(throwingRender, 'renderHeader')}
     </div>
   );
+  ),
 };
 
 /**
  * Story showing undefined void render prop (returns null)
  */
-export const UndefinedVoidRenderProp: Story = () => {
-  return (
+export const UndefinedVoidRenderProp: Story = {
+  render: () => (
+    (
     <div style={{ width: '100%', maxWidth: 400, padding: '20px', backgroundColor: '#f9fafb' }}>
       <h2 className="text-lg font-bold mb-4">wrapRenderPropVoid - Undefined Case</h2>
       <div className="p-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded">
@@ -149,14 +168,16 @@ export const UndefinedVoidRenderProp: Story = () => {
         </div>
       </div>
     </div>
-  );
+  )
+  ),
 };
 
 /**
  * Story showing multiple error cases together
  */
-export const MultipleErrorCases: Story = () => {
-  const failingRender1 = () => {
+export const MultipleErrorCases: Story = {
+  render: () => (
+    const failingRender1 = () => {
     throw new Error('Failed to load filters');
   };
 
@@ -207,4 +228,5 @@ export const MultipleErrorCases: Story = () => {
       </div>
     </div>
   );
+  ),
 };

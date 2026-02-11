@@ -1,10 +1,16 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ErrorBoundary } from '@/apps/embedded/components/ErrorBoundary';
 import { Component } from 'react';
 
-export default {
+const meta = {
   title: 'A Primitives / State Panels / ErrorBoundary',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 // Component that throws an error
 class ThrowError extends Component<{ shouldThrow?: boolean }> {
@@ -16,19 +22,23 @@ class ThrowError extends Component<{ shouldThrow?: boolean }> {
   }
 }
 
-export const NoError: Story = () => (
-  <ErrorBoundary>
+export const NoError: Story = {
+  render: () => (
+    <ErrorBoundary>
     <div className="p-4 bg-white border border-gray-200">
       <p>This content is wrapped in an ErrorBoundary</p>
       <ThrowError shouldThrow={false} />
     </div>
   </ErrorBoundary>
-);
+  ),
+};
 
-export const WithError: Story = () => (
-  <ErrorBoundary>
+export const WithError: Story = {
+  render: () => (
+    <ErrorBoundary>
     <div className="p-4 bg-white border border-gray-200">
       <ThrowError shouldThrow={true} />
     </div>
   </ErrorBoundary>
-);
+  ),
+};

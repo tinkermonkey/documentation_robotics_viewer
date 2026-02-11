@@ -1,11 +1,17 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { BaseControlPanel, BaseControlPanelProps } from '@/core/components/base/BaseControlPanel';
 import { LayoutOption, ExportOption } from '@/core/components/base/types';
 import { Download, Share2, FileJson, Image } from 'lucide-react';
 
-export default {
+const meta = {
   title: 'A Primitives / Panels and Sidebars / BaseControlPanel',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 /**
  * Layout options for demo
@@ -66,8 +72,8 @@ const exportOptions: ExportOption[] = [
 /**
  * Default story showing all control panel features
  */
-export const Default: Story<BaseControlPanelProps<'vertical' | 'hierarchical' | 'force' | 'swimlane'>> = () => {
-  return (
+export const Default: Story = {
+  render: () => (
     <div style={{ width: '100%', maxWidth: 320, padding: '20px', backgroundColor: '#f9fafb' }}>
       <BaseControlPanel
         selectedLayout="vertical"
@@ -78,14 +84,14 @@ export const Default: Story<BaseControlPanelProps<'vertical' | 'hierarchical' | 
         testId="control-panel-demo"
       />
     </div>
-  );
+  ),
 };
 
 /**
  * Story showing control panel with focus mode and highlighting
  */
-export const WithFocusAndHighlighting: Story<BaseControlPanelProps<'vertical' | 'hierarchical' | 'force' | 'swimlane'>> = () => {
-  return (
+export const WithFocusAndHighlighting: Story = {
+  render: () => (
     <div style={{ width: '100%', maxWidth: 320, padding: '20px', backgroundColor: '#f9fafb' }}>
       <BaseControlPanel
         selectedLayout="hierarchical"
@@ -100,14 +106,14 @@ export const WithFocusAndHighlighting: Story<BaseControlPanelProps<'vertical' | 
         testId="control-panel-focus-highlighting"
       />
     </div>
-  );
+  ),
 };
 
 /**
  * Story showing control panel with changesets
  */
-export const WithChangesets: Story<BaseControlPanelProps<'vertical' | 'hierarchical' | 'force' | 'swimlane'>> = () => {
-  return (
+export const WithChangesets: Story = {
+  render: () => (
     <div style={{ width: '100%', maxWidth: 320, padding: '20px', backgroundColor: '#f9fafb' }}>
       <BaseControlPanel
         selectedLayout="force"
@@ -123,14 +129,14 @@ export const WithChangesets: Story<BaseControlPanelProps<'vertical' | 'hierarchi
         testId="control-panel-changesets"
       />
     </div>
-  );
+  ),
 };
 
 /**
  * Story showing control panel during layout computation
  */
-export const IsLayouting: Story<BaseControlPanelProps<'vertical' | 'hierarchical' | 'force' | 'swimlane'>> = () => {
-  return (
+export const IsLayouting: Story = {
+  render: () => (
     <div style={{ width: '100%', maxWidth: 320, padding: '20px', backgroundColor: '#f9fafb' }}>
       <BaseControlPanel
         selectedLayout="swimlane"
@@ -142,14 +148,14 @@ export const IsLayouting: Story<BaseControlPanelProps<'vertical' | 'hierarchical
         testId="control-panel-layouting"
       />
     </div>
-  );
+  ),
 };
 
 /**
  * Story showing control panel with render props for custom content
  */
-export const WithRenderProps: Story<BaseControlPanelProps<'vertical' | 'hierarchical' | 'force' | 'swimlane'>> = () => {
-  return (
+export const WithRenderProps: Story = {
+  render: () => (
     <div style={{ width: '100%', maxWidth: 320, padding: '20px', backgroundColor: '#f9fafb' }}>
       <BaseControlPanel
         selectedLayout="vertical"
@@ -170,14 +176,14 @@ export const WithRenderProps: Story<BaseControlPanelProps<'vertical' | 'hierarch
         testId="control-panel-render-props"
       />
     </div>
-  );
+  ),
 };
 
 /**
  * Story showing control panel with children slot
  */
-export const WithChildren: Story<BaseControlPanelProps<'vertical' | 'hierarchical' | 'force' | 'swimlane'>> = () => {
-  return (
+export const WithChildren: Story = {
+  render: () => (
     <div style={{ width: '100%', maxWidth: 320, padding: '20px', backgroundColor: '#f9fafb' }}>
       <BaseControlPanel
         selectedLayout="vertical"
@@ -202,14 +208,14 @@ export const WithChildren: Story<BaseControlPanelProps<'vertical' | 'hierarchica
         </div>
       </BaseControlPanel>
     </div>
-  );
+  ),
 };
 
 /**
  * Story showing control panel with all features enabled
  */
-export const AllFeatures: Story<BaseControlPanelProps<'vertical' | 'hierarchical' | 'force' | 'swimlane'>> = () => {
-  return (
+export const AllFeatures: Story = {
+  render: () => (
     <div style={{ width: '100%', maxWidth: 320, padding: '20px', backgroundColor: '#f9fafb' }}>
       <BaseControlPanel
         selectedLayout="hierarchical"
@@ -236,5 +242,5 @@ export const AllFeatures: Story<BaseControlPanelProps<'vertical' | 'hierarchical
         </div>
       </BaseControlPanel>
     </div>
-  );
+  ),
 };

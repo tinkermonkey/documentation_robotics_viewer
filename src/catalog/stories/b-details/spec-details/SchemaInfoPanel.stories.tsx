@@ -1,12 +1,18 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { SchemaInfoPanel } from '@/apps/embedded/components/SchemaInfoPanel';
 import { useModelStore } from '@/core/stores/modelStore';
 import { useEffect } from 'react';
 import type { MetaModel } from '@/core/types';
 
-export default {
+const meta = {
   title: 'B Details / Spec Details / SchemaInfoPanel',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 function SchemaInfoPanelStory({ model }: { model: MetaModel | null }) {
   useEffect(() => {
@@ -28,7 +34,8 @@ function SchemaInfoPanelStory({ model }: { model: MetaModel | null }) {
   return <SchemaInfoPanel />;
 }
 
-export const Default: Story = () => {
+export const Default: Story = {
+  render: () => {
   const model: MetaModel = {
     version: '1.0.0',
     layers: {
@@ -65,9 +72,11 @@ export const Default: Story = () => {
   };
 
   return <SchemaInfoPanelStory model={model} />;
+  },
 };
 
-export const ValidModel: Story = () => {
+export const ValidModel: Story = {
+  render: () => {
   const model: MetaModel = {
     version: '2.1.0',
     layers: {
@@ -134,9 +143,11 @@ export const ValidModel: Story = () => {
   };
 
   return <SchemaInfoPanelStory model={model} />;
+  },
 };
 
-export const WithValidationErrors: Story = () => {
+export const WithValidationErrors: Story = {
+  render: () => {
   const model: MetaModel = {
     version: '1.5.0',
     layers: {
@@ -177,9 +188,11 @@ export const WithValidationErrors: Story = () => {
   };
 
   return <SchemaInfoPanelStory model={model} />;
+  },
 };
 
-export const LargeModel: Story = () => {
+export const LargeModel: Story = {
+  render: () => {
   const elementCount = 47;
 
   const model: MetaModel = {
@@ -216,18 +229,22 @@ export const LargeModel: Story = () => {
   };
 
   return <SchemaInfoPanelStory model={model} />;
+  },
 };
 
-export const NoModel: Story = () => {
-  return (
+export const NoModel: Story = {
+  render: () => (
+    (
     <div className="p-4 text-gray-500 text-sm">
       <SchemaInfoPanel />
       <p className="mt-4">No model loaded (component returns null)</p>
     </div>
-  );
+  )
+  ),
 };
 
-export const MinimalMetadata: Story = () => {
+export const MinimalMetadata: Story = {
+  render: () => {
   const model: MetaModel = {
     version: '1.0.0',
     layers: {
@@ -248,9 +265,11 @@ export const MinimalMetadata: Story = () => {
   };
 
   return <SchemaInfoPanelStory model={model} />;
+  },
 };
 
-export const WithCustomClassName: Story = () => {
+export const WithCustomClassName: Story = {
+  render: () => {
   const model: MetaModel = {
     version: '1.0.0',
     layers: {
@@ -288,4 +307,5 @@ export const WithCustomClassName: Story = () => {
   return (
     <SchemaInfoPanelStory model={model} />
   );
+  },
 };

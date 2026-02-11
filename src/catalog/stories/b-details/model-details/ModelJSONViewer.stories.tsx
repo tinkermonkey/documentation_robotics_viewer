@@ -1,11 +1,17 @@
 // @ts-nocheck
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import ModelJSONViewer from '@/apps/embedded/components/ModelJSONViewer';
 import type { MetaModel } from '@/core/types/model';
 
-export default {
+const meta = {
   title: 'B Details / Model Details / ModelJSONViewer',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 const mockModel: MetaModel = {
   layers: {
@@ -267,8 +273,9 @@ const mockLinkRegistry = {
   }
 };
 
-export const Default: Story = () => (
-  <div className="w-full max-w-4xl p-4 bg-gray-50">
+export const Default: Story = {
+  render: () => (
+    <div className="w-full max-w-4xl p-4 bg-gray-50">
     <ModelJSONViewer
       model={mockModel}
       selectedLayer={null}
@@ -276,10 +283,12 @@ export const Default: Story = () => (
       linkRegistry={mockLinkRegistry}
     />
   </div>
-);
+  ),
+};
 
-export const WithSelectedLayer: Story = () => (
-  <div className="w-full max-w-4xl p-4 bg-gray-50">
+export const WithSelectedLayer: Story = {
+  render: () => (
+    <div className="w-full max-w-4xl p-4 bg-gray-50">
     <ModelJSONViewer
       model={mockModel}
       selectedLayer="motivation-layer"
@@ -287,10 +296,12 @@ export const WithSelectedLayer: Story = () => (
       linkRegistry={mockLinkRegistry}
     />
   </div>
-);
+  ),
+};
 
-export const WithBusinessLayer: Story = () => (
-  <div className="w-full max-w-4xl p-4 bg-gray-50">
+export const WithBusinessLayer: Story = {
+  render: () => (
+    <div className="w-full max-w-4xl p-4 bg-gray-50">
     <ModelJSONViewer
       model={mockModel}
       selectedLayer="business-layer"
@@ -298,10 +309,12 @@ export const WithBusinessLayer: Story = () => (
       linkRegistry={mockLinkRegistry}
     />
   </div>
-);
+  ),
+};
 
-export const WithPathHighlight: Story = () => (
-  <div className="w-full max-w-4xl p-4 bg-gray-50">
+export const WithPathHighlight: Story = {
+  render: () => (
+    <div className="w-full max-w-4xl p-4 bg-gray-50">
     <ModelJSONViewer
       model={mockModel}
       selectedLayer="motivation-layer"
@@ -310,4 +323,5 @@ export const WithPathHighlight: Story = () => (
       onPathHighlight={(path) => console.log('Path highlighted:', path)}
     />
   </div>
-);
+  ),
+};

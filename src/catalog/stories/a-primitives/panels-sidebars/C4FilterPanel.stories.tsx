@@ -1,12 +1,18 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { C4FilterPanel } from '@/apps/embedded/components/C4FilterPanel';
 import type { C4FilterCounts } from '@/apps/embedded/components/C4FilterPanel';
 import { ContainerType } from '@/apps/embedded/types/c4Graph';
 import { useState } from 'react';
 
-export default {
+const meta = {
   title: 'A Primitives / Panels and Sidebars / C4FilterPanel',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 const mockFilterCounts: C4FilterCounts = {
   containerTypes: {
@@ -33,7 +39,8 @@ const mockFilterCounts: C4FilterCounts = {
 
 const availableTechnologies = ['React', 'Node.js', 'PostgreSQL', 'Redis', 'RabbitMQ', 'MongoDB', 'AWS S3'];
 
-export const Default: Story = () => {
+export const Default: Story = {
+  render: () => {
   const [selectedTypes, setSelectedTypes] = useState<Set<ContainerType>>(new Set());
   const [selectedTechs, setSelectedTechs] = useState<Set<string>>(new Set());
 
@@ -69,9 +76,11 @@ export const Default: Story = () => {
       />
     </div>
   );
+  },
 };
 
-export const WithFiltersApplied: Story = () => {
+export const WithFiltersApplied: Story = {
+  render: () => {
   const [selectedTypes, setSelectedTypes] = useState<Set<ContainerType>>(
     new Set([ContainerType.WebApp, ContainerType.Api])
   );
@@ -111,4 +120,5 @@ export const WithFiltersApplied: Story = () => {
       />
     </div>
   );
+  },
 };

@@ -1,11 +1,17 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import NodeDetailsPanel from '@/apps/embedded/components/NodeDetailsPanel';
 import type { Node } from '@xyflow/react';
 import type { MetaModel } from '@/core/types';
 
-export default {
+const meta = {
   title: 'B Details / Model Details / NodeDetailsPanel',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 const mockModel: MetaModel = {
   version: '1.0.0',
@@ -88,12 +94,15 @@ const mockModel: MetaModel = {
   },
 };
 
-export const NoNodeSelected: Story = () => {
-  return <NodeDetailsPanel selectedNode={null} model={mockModel} />;
+export const NoNodeSelected: Story = {
+  render: () => (
+    <NodeDetailsPanel selectedNode={null} model={mockModel} />
+  ),
 };
 
-export const GoalNodeSelected: Story = () => {
-  const selectedNode: Node = {
+export const GoalNodeSelected: Story = {
+  render: () => (
+    const selectedNode: Node = {
     id: 'goal-1',
     position: { x: 0, y: 0 },
     data: {
@@ -104,10 +113,12 @@ export const GoalNodeSelected: Story = () => {
   };
 
   return <NodeDetailsPanel selectedNode={selectedNode} model={mockModel} />;
+  ),
 };
 
-export const RequirementNodeSelected: Story = () => {
-  const selectedNode: Node = {
+export const RequirementNodeSelected: Story = {
+  render: () => (
+    const selectedNode: Node = {
     id: 'requirement-1',
     position: { x: 200, y: 50 },
     data: {
@@ -118,10 +129,12 @@ export const RequirementNodeSelected: Story = () => {
   };
 
   return <NodeDetailsPanel selectedNode={selectedNode} model={mockModel} />;
+  ),
 };
 
-export const DriverNodeSelected: Story = () => {
-  const selectedNode: Node = {
+export const DriverNodeSelected: Story = {
+  render: () => (
+    const selectedNode: Node = {
     id: 'driver-1',
     position: { x: 0, y: 100 },
     data: {
@@ -132,10 +145,12 @@ export const DriverNodeSelected: Story = () => {
   };
 
   return <NodeDetailsPanel selectedNode={selectedNode} model={mockModel} />;
+  ),
 };
 
-export const BusinessServiceNodeSelected: Story = () => {
-  const selectedNode: Node = {
+export const BusinessServiceNodeSelected: Story = {
+  render: () => (
+    const selectedNode: Node = {
     id: 'service-1',
     position: { x: 0, y: 200 },
     data: {
@@ -146,9 +161,11 @@ export const BusinessServiceNodeSelected: Story = () => {
   };
 
   return <NodeDetailsPanel selectedNode={selectedNode} model={mockModel} />;
+  ),
 };
 
-export const NodeWithManyConnections: Story = () => {
+export const NodeWithManyConnections: Story = {
+  render: () => {
   const modelWithConnections: MetaModel = {
     ...mockModel,
     layers: {
@@ -189,10 +206,12 @@ export const NodeWithManyConnections: Story = () => {
   };
 
   return <NodeDetailsPanel selectedNode={selectedNode} model={modelWithConnections} />;
+  },
 };
 
-export const NodeWithLongName: Story = () => {
-  const selectedNode: Node = {
+export const NodeWithLongName: Story = {
+  render: () => (
+    const selectedNode: Node = {
     id: 'goal-1',
     position: { x: 0, y: 0 },
     data: {
@@ -203,10 +222,12 @@ export const NodeWithLongName: Story = () => {
   };
 
   return <NodeDetailsPanel selectedNode={selectedNode} model={mockModel} />;
+  ),
 };
 
-export const NodeWithoutLabel: Story = () => {
-  const selectedNode: Node = {
+export const NodeWithoutLabel: Story = {
+  render: () => (
+    const selectedNode: Node = {
     id: 'orphan-node-123',
     position: { x: 100, y: 100 },
     data: {
@@ -216,10 +237,12 @@ export const NodeWithoutLabel: Story = () => {
   };
 
   return <NodeDetailsPanel selectedNode={selectedNode} model={mockModel} />;
+  ),
 };
 
-export const NodeWithNegativePosition: Story = () => {
-  const selectedNode: Node = {
+export const NodeWithNegativePosition: Story = {
+  render: () => (
+    const selectedNode: Node = {
     id: 'goal-1',
     position: { x: -450, y: -250 },
     data: {
@@ -230,10 +253,12 @@ export const NodeWithNegativePosition: Story = () => {
   };
 
   return <NodeDetailsPanel selectedNode={selectedNode} model={mockModel} />;
+  ),
 };
 
-export const EmptyModel: Story = () => {
-  const emptyModel: MetaModel = {
+export const EmptyModel: Story = {
+  render: () => (
+    const emptyModel: MetaModel = {
     version: '1.0.0',
     layers: {},
     references: [],
@@ -250,10 +275,12 @@ export const EmptyModel: Story = () => {
   };
 
   return <NodeDetailsPanel selectedNode={selectedNode} model={emptyModel} />;
+  ),
 };
 
-export const DarkModePreview: Story = () => {
-  const selectedNode: Node = {
+export const DarkModePreview: Story = {
+  render: () => (
+    const selectedNode: Node = {
     id: 'goal-1',
     position: { x: 123, y: 456 },
     data: {
@@ -270,4 +297,5 @@ export const DarkModePreview: Story = () => {
       </div>
     </div>
   );
+  ),
 };

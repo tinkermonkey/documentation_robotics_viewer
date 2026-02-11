@@ -1,13 +1,20 @@
 // @ts-nocheck
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { MotivationControlPanel } from '@/apps/embedded/components/MotivationControlPanel';
 
-export default {
+const meta = {
   title: 'A Primitives / Panels and Sidebars / MotivationControlPanel',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
 
-export const Default: Story = () => (
-  <div className="w-96 p-4 bg-white border border-gray-200">
+export default meta;
+type Story = StoryObj;
+
+export const Default: Story = {
+  render: () => (
+    <div className="w-96 p-4 bg-white border border-gray-200">
     <MotivationControlPanel
       selectedLayout="force"
       onLayoutChange={(layout) => console.log('Layout changed:', layout)}
@@ -26,10 +33,12 @@ export const Default: Story = () => (
       onExportTraceabilityReport={() => console.log('Export traceability')}
     />
   </div>
-);
+  ),
+};
 
-export const WithFocusMode: Story = () => (
-  <div className="w-96 p-4 bg-white border border-gray-200">
+export const WithFocusMode: Story = {
+  render: () => (
+    <div className="w-96 p-4 bg-white border border-gray-200">
     <MotivationControlPanel
       selectedLayout="hierarchical"
       onLayoutChange={(layout) => console.log('Layout changed:', layout)}
@@ -48,10 +57,12 @@ export const WithFocusMode: Story = () => (
       onExportTraceabilityReport={() => console.log('Export traceability')}
     />
   </div>
-);
+  ),
+};
 
-export const WithChangesetVisualization: Story = () => (
-  <div className="w-96 p-4 bg-white border border-gray-200">
+export const WithChangesetVisualization: Story = {
+  render: () => (
+    <div className="w-96 p-4 bg-white border border-gray-200">
     <MotivationControlPanel
       selectedLayout="radial"
       onLayoutChange={(layout) => console.log('Layout changed:', layout)}
@@ -70,10 +81,12 @@ export const WithChangesetVisualization: Story = () => (
       onExportTraceabilityReport={() => console.log('Export traceability')}
     />
   </div>
-);
+  ),
+};
 
-export const WithLayouting: Story = () => (
-  <div className="w-96 p-4 bg-white border border-gray-200">
+export const WithLayouting: Story = {
+  render: () => (
+    <div className="w-96 p-4 bg-white border border-gray-200">
     <MotivationControlPanel
       selectedLayout="force"
       onLayoutChange={(layout) => console.log('Layout changed:', layout)}
@@ -92,4 +105,5 @@ export const WithLayouting: Story = () => (
       onExportTraceabilityReport={() => console.log('Export traceability')}
     />
   </div>
-);
+  ),
+};

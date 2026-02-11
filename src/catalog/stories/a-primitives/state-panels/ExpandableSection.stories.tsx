@@ -1,13 +1,20 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 import ExpandableSection from '@/apps/embedded/components/common/ExpandableSection';
 
-export default {
+const meta = {
   title: 'A Primitives / State Panels / ExpandableSection',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
 
-export const Expanded: Story = () => (
-  <div className="w-96">
+export default meta;
+type Story = StoryObj;
+
+export const Expanded: Story = {
+  render: () => (
+    <div className="w-96">
     <ExpandableSection
       title="Expanded Section"
       defaultExpanded={true}
@@ -17,10 +24,12 @@ export const Expanded: Story = () => (
       </div>
     </ExpandableSection>
   </div>
-);
+  ),
+};
 
-export const Collapsed: Story = () => (
-  <div className="w-96">
+export const Collapsed: Story = {
+  render: () => (
+    <div className="w-96">
     <ExpandableSection
       title="Collapsed Section"
       defaultExpanded={false}
@@ -30,10 +39,12 @@ export const Collapsed: Story = () => (
       </div>
     </ExpandableSection>
   </div>
-);
+  ),
+};
 
-export const WithCount: Story = () => (
-  <div className="w-96">
+export const WithCount: Story = {
+  render: () => (
+    <div className="w-96">
     <ExpandableSection
       title="Elements"
       count={12}
@@ -46,10 +57,12 @@ export const WithCount: Story = () => (
       </div>
     </ExpandableSection>
   </div>
-);
+  ),
+};
 
-export const WithBadge: Story = () => (
-  <div className="w-96">
+export const WithBadge: Story = {
+  render: () => (
+    <div className="w-96">
     <ExpandableSection
       title="Active Changesets"
       badge="3 new"
@@ -62,10 +75,12 @@ export const WithBadge: Story = () => (
       </div>
     </ExpandableSection>
   </div>
-);
+  ),
+};
 
-export const WithCountAndBadge: Story = () => (
-  <div className="w-96">
+export const WithCountAndBadge: Story = {
+  render: () => (
+    <div className="w-96">
     <ExpandableSection
       title="Results"
       count={45}
@@ -77,10 +92,12 @@ export const WithCountAndBadge: Story = () => (
       </div>
     </ExpandableSection>
   </div>
-);
+  ),
+};
 
-export const Controlled: Story = () => {
-  const [isExpanded, setIsExpanded] = useState(false);
+export const Controlled: Story = {
+  render: () => (
+    const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <div className="w-96 space-y-4">
@@ -101,4 +118,5 @@ export const Controlled: Story = () => {
       </ExpandableSection>
     </div>
   );
+  ),
 };

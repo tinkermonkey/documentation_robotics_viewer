@@ -1,10 +1,16 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import GraphStatisticsPanel from '@/apps/embedded/components/GraphStatisticsPanel';
 import type { MetaModel } from '@/core/types/model';
 
-export default {
+const meta = {
   title: 'A Primitives / State Panels / GraphStatisticsPanel',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 const mockModelSmall: MetaModel = {
   layers: {
@@ -89,30 +95,38 @@ const mockModelLarge: MetaModel = {
   references: [],
 };
 
-export const SmallGraph: Story = () => (
-  <div className="w-80 bg-white">
+export const SmallGraph: Story = {
+  render: () => (
+    <div className="w-80 bg-white">
     <GraphStatisticsPanel model={mockModelSmall} />
   </div>
-);
+  ),
+};
 
-export const LargeGraph: Story = () => (
-  <div className="w-80 bg-white">
+export const LargeGraph: Story = {
+  render: () => (
+    <div className="w-80 bg-white">
     <GraphStatisticsPanel model={mockModelLarge} />
   </div>
-);
+  ),
+};
 
-export const EmptyGraph: Story = () => (
-  <div className="w-80 bg-white">
+export const EmptyGraph: Story = {
+  render: () => (
+    <div className="w-80 bg-white">
     <GraphStatisticsPanel model={{ layers: {}, version: '1.0', references: [] }} />
   </div>
-);
+  ),
+};
 
-export const InSidebar: Story = () => (
-  <div className="w-80 bg-gray-50 border border-gray-200">
+export const InSidebar: Story = {
+  render: () => (
+    <div className="w-80 bg-gray-50 border border-gray-200">
     <div className="p-4 bg-white">
       <h3 className="text-lg font-semibold mb-2">Graph View</h3>
       <p className="text-sm text-gray-600">Other sidebar content here...</p>
     </div>
     <GraphStatisticsPanel model={mockModelLarge} />
   </div>
-);
+  ),
+};

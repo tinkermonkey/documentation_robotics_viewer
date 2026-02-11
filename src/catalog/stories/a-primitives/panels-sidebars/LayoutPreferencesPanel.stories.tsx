@@ -1,13 +1,20 @@
 // @ts-nocheck
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { LayoutPreferencesPanel } from '@/apps/embedded/components/LayoutPreferencesPanel';
 
-export default {
+const meta = {
   title: 'A Primitives / Panels and Sidebars / LayoutPreferencesPanel',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
 
-export const Default: Story = () => {
-  return (
+export default meta;
+type Story = StoryObj;
+
+export const Default: Story = {
+  render: () => (
+    (
     <div style={{ width: 800, height: 700 }}>
       <LayoutPreferencesPanel
         onChange={() => {
@@ -15,5 +22,6 @@ export const Default: Story = () => {
         }}
       />
     </div>
-  );
+  )
+  ),
 };

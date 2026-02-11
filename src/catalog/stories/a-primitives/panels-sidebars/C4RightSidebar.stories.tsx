@@ -1,14 +1,20 @@
 // @ts-nocheck
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { C4RightSidebar } from '@/apps/embedded/components/C4RightSidebar';
 import type { C4FilterCounts } from '@/apps/embedded/components/C4FilterPanel';
 import type { C4Graph } from '@/apps/embedded/types/c4Graph';
 import { ContainerType, C4Type } from '@/apps/embedded/types/c4Graph';
 import { useState } from 'react';
 
-export default {
+const meta = {
   title: 'A Primitives / Panels and Sidebars / C4RightSidebar',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 const mockFilterCounts: C4FilterCounts = {
   containerTypes: {
@@ -53,8 +59,9 @@ const mockGraph: C4Graph = {
   systems: new Map(),
 };
 
-export const Default: Story = () => {
-  const [selectedTypes, setSelectedTypes] = useState<Set<ContainerType>>(new Set());
+export const Default: Story = {
+  render: () => (
+    const [selectedTypes, setSelectedTypes] = useState<Set<ContainerType>>(new Set());
   const [selectedTechs, setSelectedTechs] = useState<Set<string>>(new Set());
 
   return (
@@ -99,4 +106,5 @@ export const Default: Story = () => {
       />
     </div>
   );
+  ),
 };

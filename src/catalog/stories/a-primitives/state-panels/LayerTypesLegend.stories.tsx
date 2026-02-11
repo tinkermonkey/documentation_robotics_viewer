@@ -1,10 +1,16 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import LayerTypesLegend from '@/apps/embedded/components/LayerTypesLegend';
 import type { MetaModel } from '@/core/types/model';
 
-export default {
+const meta = {
   title: 'A Primitives / State Panels / LayerTypesLegend',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 const mockModel: MetaModel = {
   layers: {
@@ -15,13 +21,16 @@ const mockModel: MetaModel = {
   references: [],
 };
 
-export const Default: Story = () => (
-  <div className="p-4 bg-white border border-gray-200 w-64">
+export const Default: Story = {
+  render: () => (
+    <div className="p-4 bg-white border border-gray-200 w-64">
     <LayerTypesLegend model={mockModel} />
   </div>
-);
+  ),
+};
 
-export const ManyTypes: Story = () => {
+export const ManyTypes: Story = {
+  render: () => {
   const largeModel: MetaModel = {
     layers: {
       'motivation': { id: 'motivation', type: 'motivation', name: 'Motivation', elements: Array.from({ length: 5 }, (_, i) => ({ id: `m${i}`, name: `Goal ${i}`, type: 'Goal', layerId: 'motivation', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } })), relationships: [] },
@@ -36,10 +45,13 @@ export const ManyTypes: Story = () => {
       <LayerTypesLegend model={largeModel} />
     </div>
   );
+  },
 };
 
-export const Empty: Story = () => (
-  <div className="p-4 bg-white border border-gray-200 w-64">
+export const Empty: Story = {
+  render: () => (
+    <div className="p-4 bg-white border border-gray-200 w-64">
     <LayerTypesLegend model={{ layers: {}, version: '1.0', references: [] }} />
   </div>
-);
+  ),
+};

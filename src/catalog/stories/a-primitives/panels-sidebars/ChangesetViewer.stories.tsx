@@ -1,11 +1,17 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import ChangesetViewer from '@/apps/embedded/components/ChangesetViewer';
 import { useChangesetStore } from '@/apps/embedded/stores/changesetStore';
 import { useEffect } from 'react';
 
-export default {
+const meta = {
   title: 'A Primitives / Panels and Sidebars / ChangesetViewer',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 const mockChangeset = {
   id: 'cs-1',
@@ -74,8 +80,9 @@ const mockChangeset = {
   },
 };
 
-export const WithChangeset: Story = () => {
-  useEffect(() => {
+export const WithChangeset: Story = {
+  render: () => (
+    useEffect(() => {
     useChangesetStore.setState({ 
       selectedChangeset: mockChangeset,
       loading: false,
@@ -88,10 +95,12 @@ export const WithChangeset: Story = () => {
       <ChangesetViewer />
     </div>
   );
+  ),
 };
 
-export const Loading: Story = () => {
-  useEffect(() => {
+export const Loading: Story = {
+  render: () => (
+    useEffect(() => {
     useChangesetStore.setState({ 
       selectedChangeset: null,
       loading: true,
@@ -104,10 +113,12 @@ export const Loading: Story = () => {
       <ChangesetViewer />
     </div>
   );
+  ),
 };
 
-export const NoSelection: Story = () => {
-  useEffect(() => {
+export const NoSelection: Story = {
+  render: () => (
+    useEffect(() => {
     useChangesetStore.setState({ 
       selectedChangeset: null,
       loading: false,
@@ -120,10 +131,12 @@ export const NoSelection: Story = () => {
       <ChangesetViewer />
     </div>
   );
+  ),
 };
 
-export const WithError: Story = () => {
-  useEffect(() => {
+export const WithError: Story = {
+  render: () => (
+    useEffect(() => {
     useChangesetStore.setState({ 
       selectedChangeset: null,
       loading: false,
@@ -136,4 +149,5 @@ export const WithError: Story = () => {
       <ChangesetViewer />
     </div>
   );
+  ),
 };

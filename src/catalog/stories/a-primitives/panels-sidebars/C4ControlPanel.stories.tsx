@@ -1,12 +1,19 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { C4ControlPanel } from '@/apps/embedded/components/C4ControlPanel';
 
-export default {
+const meta = {
   title: 'A Primitives / Panels and Sidebars / C4ControlPanel',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
 
-export const ContextLevel: Story = () => (
-  <div className="w-96 p-4 bg-white border border-gray-200">
+export default meta;
+type Story = StoryObj;
+
+export const ContextLevel: Story = {
+  render: () => (
+    <div className="w-96 p-4 bg-white border border-gray-200">
     <C4ControlPanel
       selectedLayout="hierarchical"
       currentViewLevel="context"
@@ -25,10 +32,12 @@ export const ContextLevel: Story = () => (
       onScenarioPresetChange={(preset) => console.log('Scenario preset:', preset)}
     />
   </div>
-);
+  ),
+};
 
-export const ContainerLevel: Story = () => (
-  <div className="w-96 p-4 bg-white border border-gray-200">
+export const ContainerLevel: Story = {
+  render: () => (
+    <div className="w-96 p-4 bg-white border border-gray-200">
     <C4ControlPanel
       selectedLayout="force"
       currentViewLevel="container"
@@ -48,10 +57,12 @@ export const ContainerLevel: Story = () => (
       onScenarioPresetChange={(preset) => console.log('Scenario preset:', preset)}
     />
   </div>
-);
+  ),
+};
 
-export const WithLayouting: Story = () => (
-  <div className="w-96 p-4 bg-white border border-gray-200">
+export const WithLayouting: Story = {
+  render: () => (
+    <div className="w-96 p-4 bg-white border border-gray-200">
     <C4ControlPanel
       selectedLayout="orthogonal"
       currentViewLevel="component"
@@ -70,4 +81,5 @@ export const WithLayouting: Story = () => (
       onScenarioPresetChange={(preset) => console.log('Scenario preset:', preset)}
     />
   </div>
-);
+  ),
+};
