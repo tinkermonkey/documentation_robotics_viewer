@@ -86,8 +86,7 @@ export function isKnownRenderingBug(text: string): boolean {
   if (/<svg> attribute viewBox: Expected number/.test(text)) return true;
 
   // React Flow node/handle resolution errors - edge references stale nodes
-  if (/source\/target node/.test(text)) return true;
-  if (/source\/target handle/.test(text)) return true;
+  if (/source\/target (?:node|handle).*(?:not found|with id)/.test(text)) return true;
 
   // React Flow missing provider - node stories rendered without ReactFlowProvider
   if (/\[React Flow\]: Seems like you have not used zustand provider/.test(text)) return true;

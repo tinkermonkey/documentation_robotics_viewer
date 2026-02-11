@@ -134,7 +134,7 @@ export default function EmbeddedLayout() {
     // Suppress WebSocket errors in test/Storybook environments (multiple checks for robustness)
     const isTestEnv = typeof window !== 'undefined' && (
       window.location.port === '61001' ||  // Storybook default port
-      (window as any).__LADLE_MOCK_WEBSOCKET__ ||  // Explicit mock flag
+      (window as any).__STORYBOOK_MOCK_WEBSOCKET__ ||  // Explicit mock flag
       (window as any).__PLAYWRIGHT__  // Playwright test environment
     );
     if (!isTestEnv) {

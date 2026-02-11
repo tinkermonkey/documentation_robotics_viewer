@@ -29,7 +29,7 @@ COPY package.json package-lock.json ./
 COPY reference_server/requirements.txt ./reference_server/
 
 # Pre-install npm dependencies
-# Note: --legacy-peer-deps needed due to vite@7.x vs @storybook/react-vite peer dep conflict
+# Note: --legacy-peer-deps needed due to vite@6.x vs @storybook/react-vite peer dep conflict
 RUN --mount=type=cache,target=/root/.npm \
     npm ci --ignore-scripts --legacy-peer-deps && \
     npm cache clean --force
