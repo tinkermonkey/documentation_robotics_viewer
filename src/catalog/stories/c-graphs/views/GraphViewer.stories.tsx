@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import GraphViewer from '@/core/components/GraphViewer';
 import { ReactFlowProvider } from '@xyflow/react';
-import { createCompleteModelFixture, createMinimalModelFixture } from '@catalog/fixtures/modelFixtures';
+import { createCompleteModelFixture } from '@catalog/fixtures/modelFixtures';
 import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 const meta = {
