@@ -5,15 +5,15 @@ import { createBusinessFunctionNodeData } from '@catalog/fixtures/nodeDataFixtur
 
 const meta = {
   title: 'C Graphs / Nodes / Business / BusinessFunctionNode',
-  component: BusinessFunctionNode,
+
   decorators: [withReactFlowDecorator({ width: BUSINESS_FUNCTION_NODE_WIDTH, height: BUSINESS_FUNCTION_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<typeof BusinessFunctionNode>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = {
   render: () => (
@@ -138,6 +138,18 @@ export const Dimmed: Story = {
         })}
         id="function-11"
       />
+  ),
+};
+
+export const Highlighted: Story = {
+  render: () => (
+    <BusinessFunctionNode
+      data={createBusinessFunctionNodeData({
+        label: 'Highlighted Node',
+        strokeWidth: 3
+      })}
+      id="1"
+    />
   ),
 };
 

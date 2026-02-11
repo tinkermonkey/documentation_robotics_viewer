@@ -5,15 +5,15 @@ import { createAssessmentNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / AssessmentNode',
-  component: AssessmentNode,
+
   decorators: [withReactFlowDecorator({ width: ASSESSMENT_NODE_WIDTH, height: ASSESSMENT_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<typeof AssessmentNode>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = {
   render: () => (
@@ -102,6 +102,18 @@ export const Dimmed: Story = {
         })}
         id="assessment-8"
       />
+  ),
+};
+
+export const Highlighted: Story = {
+  render: () => (
+    <AssessmentNode
+      data={createAssessmentNodeData({
+        label: 'Highlighted Node',
+        strokeWidth: 3
+      })}
+      id="1"
+    />
   ),
 };
 

@@ -5,15 +5,15 @@ import { createOutcomeNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / OutcomeNode',
-  component: OutcomeNode,
+
   decorators: [withReactFlowDecorator({ width: OUTCOME_NODE_WIDTH, height: OUTCOME_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<typeof OutcomeNode>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = {
   render: () => (
@@ -114,6 +114,18 @@ export const Dimmed: Story = {
         })}
         id="outcome-9"
       />
+  ),
+};
+
+export const Highlighted: Story = {
+  render: () => (
+    <OutcomeNode
+      data={createOutcomeNodeData({
+        label: 'Highlighted Node',
+        strokeWidth: 3
+      })}
+      id="1"
+    />
   ),
 };
 

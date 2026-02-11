@@ -5,15 +5,15 @@ import { createConstraintNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / ConstraintNode',
-  component: ConstraintNode,
+
   decorators: [withReactFlowDecorator({ width: CONSTRAINT_NODE_WIDTH, height: CONSTRAINT_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<typeof ConstraintNode>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = {
   render: () => (
@@ -112,6 +112,18 @@ export const Dimmed: Story = {
         })}
         id="constraint-9"
       />
+  ),
+};
+
+export const Highlighted: Story = {
+  render: () => (
+    <ConstraintNode
+      data={createConstraintNodeData({
+        label: 'Highlighted Node',
+        strokeWidth: 3
+      })}
+      id="1"
+    />
   ),
 };
 

@@ -5,15 +5,15 @@ import { createRequirementNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / RequirementNode',
-  component: RequirementNode,
+
   decorators: [withReactFlowDecorator({ width: REQUIREMENT_NODE_WIDTH, height: REQUIREMENT_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<typeof RequirementNode>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = {
   render: () => (
@@ -114,6 +114,18 @@ export const Dimmed: Story = {
         })}
         id="requirement-9"
       />
+  ),
+};
+
+export const Highlighted: Story = {
+  render: () => (
+    <RequirementNode
+      data={createRequirementNodeData({
+        label: 'Highlighted Node',
+        strokeWidth: 3
+      })}
+      id="1"
+    />
   ),
 };
 

@@ -5,15 +5,15 @@ import { createDriverNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / DriverNode',
-  component: DriverNode,
+
   decorators: [withReactFlowDecorator({ width: DRIVER_NODE_WIDTH, height: DRIVER_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<typeof DriverNode>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = {
   render: () => (
@@ -114,6 +114,18 @@ export const Dimmed: Story = {
         })}
         id="driver-9"
       />
+  ),
+};
+
+export const Highlighted: Story = {
+  render: () => (
+    <DriverNode
+      data={createDriverNodeData({
+        label: 'Highlighted Node',
+        strokeWidth: 3
+      })}
+      id="1"
+    />
   ),
 };
 

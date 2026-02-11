@@ -1,19 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { BaseFieldListNode, FieldItem } from '@/core/nodes/BaseFieldListNode';
-import { createBaseFieldListNodeConfig } from '@/catalog/fixtures/nodeDataFixtures';
+import { createBaseFieldListNodeConfig } from '@catalog/fixtures/nodeDataFixtures';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 const meta = {
   title: 'C Graphs / Nodes / Base / BaseFieldListNode',
-  component: BaseFieldListNode,
+
   decorators: [withReactFlowDecorator({ width: 300, height: 300 })],
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<typeof BaseFieldListNode>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 const shortItems: FieldItem[] = [
   { id: 'f1', name: 'id', type: 'UUID', required: true },
@@ -136,6 +136,17 @@ export const DatabaseSchema: Story = {
         header: '#1976d2',
         handle: '#0d47a1'
       }
+    });
+    return <BaseFieldListNode {...config} />;
+  },
+};
+
+export const Highlighted: Story = {
+  render: () => {
+    const config = createBaseFieldListNodeConfig({
+      label: 'Highlighted Entity',
+      typeLabel: 'CLASS',
+      items: shortItems
     });
     return <BaseFieldListNode {...config} />;
   },

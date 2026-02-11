@@ -1,19 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { LayerContainerNode } from '@/core/nodes/LayerContainerNode';
-import { createLayerContainerNodeData } from '@/catalog/fixtures/nodeDataFixtures';
+import { createLayerContainerNodeData } from '@catalog/fixtures/nodeDataFixtures';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 const meta = {
   title: 'C Graphs / Nodes / Base / LayerContainerNode',
-  component: LayerContainerNode,
+
   decorators: [withReactFlowDecorator({ width: 400, height: 300 })],
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<typeof LayerContainerNode>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = {
   render: () => {
@@ -112,5 +112,17 @@ export const ApplicationLayer: Story = {
       color: '#00bcd4'
     });
     return <LayerContainerNode data={data} id="container-7" />;
+  },
+};
+
+export const Highlighted: Story = {
+  render: () => {
+    const data = createLayerContainerNodeData({
+      label: 'Highlighted Layer',
+      layerType: 'business',
+      color: '#4caf50',
+      strokeWidth: 3
+    });
+    return <LayerContainerNode data={data} id="container-8" />;
   },
 };

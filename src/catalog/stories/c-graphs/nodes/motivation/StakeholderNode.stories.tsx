@@ -5,15 +5,15 @@ import { createStakeholderNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / StakeholderNode',
-  component: StakeholderNode,
+
   decorators: [withReactFlowDecorator({ width: STAKEHOLDER_NODE_WIDTH, height: STAKEHOLDER_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<typeof StakeholderNode>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = {
   render: () => (
@@ -102,6 +102,18 @@ export const Dimmed: Story = {
         })}
         id="stakeholder-8"
       />
+  ),
+};
+
+export const Highlighted: Story = {
+  render: () => (
+    <StakeholderNode
+      data={createStakeholderNodeData({
+        label: 'Highlighted Node',
+        strokeWidth: 3
+      })}
+      id="1"
+    />
   ),
 };
 

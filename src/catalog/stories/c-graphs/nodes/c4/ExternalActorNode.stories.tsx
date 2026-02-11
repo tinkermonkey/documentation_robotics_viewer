@@ -1,19 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ExternalActorNode, EXTERNAL_ACTOR_NODE_WIDTH, EXTERNAL_ACTOR_NODE_HEIGHT } from '@/core/nodes/c4/ExternalActorNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createExternalActorNodeData } from '@catalog/fixtures/nodeDataFixtures';
+import { createC4ExternalActorNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / C4 / ExternalActorNode',
-  component: ExternalActorNode,
+
   decorators: [withReactFlowDecorator({ width: EXTERNAL_ACTOR_NODE_WIDTH, height: EXTERNAL_ACTOR_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<typeof ExternalActorNode>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = {
   render: () => (
@@ -118,6 +118,18 @@ export const Dimmed: Story = {
         })}
         id="actor-9"
       />
+  ),
+};
+
+export const Highlighted: Story = {
+  render: () => (
+    <ExternalActorNode
+      data={createC4ExternalActorNodeData({
+        label: 'Highlighted Node',
+        strokeWidth: 3
+      })}
+      id="1"
+    />
   ),
 };
 

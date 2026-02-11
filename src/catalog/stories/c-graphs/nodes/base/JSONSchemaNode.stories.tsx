@@ -5,15 +5,15 @@ import { JSONSchemaNodeData } from '@/core/types/reactflow';
 
 const meta = {
   title: 'C Graphs / Nodes / Base / JSONSchemaNode',
-  component: JSONSchemaNode,
+
   decorators: [withReactFlowDecorator({ width: JSON_SCHEMA_NODE_WIDTH, height: 300 })],
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<typeof JSONSchemaNode>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 /**
  * JSONSchemaNode Stories
@@ -99,5 +99,25 @@ export const EmptySchema: Story = {
     };
 
     return <JSONSchemaNode data={data} id="test-node-4" />;
+  },
+};
+
+export const Highlighted: Story = {
+  render: () => {
+    const data: JSONSchemaNodeData = {
+      label: 'HighlightedSchema',
+      elementId: 'schema-highlighted',
+      schemaElementId: 'schema-highlighted',
+      layerId: 'data-model',
+      fill: '#ffffff',
+      stroke: '#1e40af',
+      strokeWidth: 3,
+      properties: [
+        { id: 'id', name: 'id', type: 'string', required: true },
+        { id: 'name', name: 'name', type: 'string', required: true },
+      ],
+    };
+
+    return <JSONSchemaNode data={data} id="test-node-5" />;
   },
 };

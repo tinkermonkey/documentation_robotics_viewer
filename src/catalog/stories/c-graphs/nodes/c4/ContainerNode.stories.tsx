@@ -1,19 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ContainerNode, CONTAINER_NODE_WIDTH, CONTAINER_NODE_HEIGHT } from '@/core/nodes/c4/ContainerNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createContainerNodeData } from '@catalog/fixtures/nodeDataFixtures';
+import { createC4ContainerNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / C4 / ContainerNode',
-  component: ContainerNode,
+
   decorators: [withReactFlowDecorator({ width: CONTAINER_NODE_WIDTH, height: CONTAINER_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<typeof ContainerNode>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = {
   render: () => (
@@ -136,6 +136,18 @@ export const Dimmed: Story = {
         })}
         id="container-10"
       />
+  ),
+};
+
+export const Highlighted: Story = {
+  render: () => (
+    <ContainerNode
+      data={createC4ContainerNodeData({
+        label: 'Highlighted Node',
+        strokeWidth: 3
+      })}
+      id="1"
+    />
   ),
 };
 

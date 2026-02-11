@@ -5,15 +5,15 @@ import { createAssumptionNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / AssumptionNode',
-  component: AssumptionNode,
+
   decorators: [withReactFlowDecorator({ width: ASSUMPTION_NODE_WIDTH, height: ASSUMPTION_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<typeof AssumptionNode>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = {
   render: () => (
@@ -102,6 +102,18 @@ export const Dimmed: Story = {
         })}
         id="assumption-8"
       />
+  ),
+};
+
+export const Highlighted: Story = {
+  render: () => (
+    <AssumptionNode
+      data={createAssumptionNodeData({
+        label: 'Highlighted Node',
+        strokeWidth: 3
+      })}
+      id="1"
+    />
   ),
 };
 

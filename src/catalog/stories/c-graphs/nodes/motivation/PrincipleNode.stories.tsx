@@ -5,15 +5,15 @@ import { createPrincipleNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / PrincipleNode',
-  component: PrincipleNode,
+
   decorators: [withReactFlowDecorator({ width: PRINCIPLE_NODE_WIDTH, height: PRINCIPLE_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<typeof PrincipleNode>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = {
   render: () => (
@@ -102,6 +102,18 @@ export const Dimmed: Story = {
         })}
         id="principle-8"
       />
+  ),
+};
+
+export const Highlighted: Story = {
+  render: () => (
+    <PrincipleNode
+      data={createPrincipleNodeData({
+        label: 'Highlighted Node',
+        strokeWidth: 3
+      })}
+      id="1"
+    />
   ),
 };
 

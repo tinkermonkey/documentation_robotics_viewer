@@ -5,15 +5,15 @@ import { createGoalNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / GoalNode',
-  component: GoalNode,
+
   decorators: [withReactFlowDecorator({ width: GOAL_NODE_WIDTH, height: GOAL_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',
   },
-} satisfies Meta<typeof GoalNode>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = {
   render: () => (
@@ -114,6 +114,18 @@ export const Dimmed: Story = {
         })}
         id="goal-9"
       />
+  ),
+};
+
+export const Highlighted: Story = {
+  render: () => (
+    <GoalNode
+      data={createGoalNodeData({
+        label: 'Highlighted Node',
+        strokeWidth: 3
+      })}
+      id="1"
+    />
   ),
 };
 
