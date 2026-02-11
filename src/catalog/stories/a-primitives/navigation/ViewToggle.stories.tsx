@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, within, userEvent } from '@storybook/test';
 import { ViewToggle, ViewToggleProps } from '@/apps/embedded/components/shared/ViewToggle';
 import { BarChart3, Table, Code } from 'lucide-react';
 
@@ -28,6 +29,11 @@ export const Default: Story = {
       />
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const buttons = canvas.getAllByRole('button');
+    expect(buttons.length).toBeGreaterThan(0);
+  },
 };
 
 /**
@@ -48,6 +54,11 @@ export const GraphView: Story = {
       />
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const buttons = canvas.getAllByRole('button');
+    expect(buttons.length).toBeGreaterThanOrEqual(3);
+  },
 };
 
 /**
@@ -175,6 +186,13 @@ export const Disabled: Story = {
       </div>
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const buttons = canvas.getAllByRole('button');
+    buttons.forEach((button) => {
+      expect(button).toBeDisabled();
+    });
+  },
 };
 
 /**

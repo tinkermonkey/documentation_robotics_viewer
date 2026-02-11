@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, within, userEvent, waitFor } from '@storybook/test';
 import { useState } from 'react';
 import ExpandableSection from '@/apps/embedded/components/common/ExpandableSection';
 
@@ -25,6 +26,12 @@ export const Expanded: Story = {
       </ExpandableSection>
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // Verify content is visible when expanded
+    const content = canvas.getByText(/This section is expanded by default/);
+    expect(content).toBeInTheDocument();
+  },
 };
 
 export const Collapsed: Story = {
@@ -40,6 +47,22 @@ export const Collapsed: Story = {
       </ExpandableSection>
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // Verify title is visible
+    const title = canvas.getByText('Collapsed Section');
+    expect(title).toBeInTheDocument();
+    // Click to expand
+    const button = title.closest('button') || canvas.getByRole('button').find((b) => b.textContent?.includes('Collapsed Section'));
+    if (button) {
+      await userEvent.click(button);
+      // Content should now be visible
+      await waitFor(() => {
+        const content = canvas.getByText(/This section is collapsed by default/);
+        expect(content).toBeInTheDocument();
+      });
+    }
+  },
 };
 
 export const WithCount: Story = {
