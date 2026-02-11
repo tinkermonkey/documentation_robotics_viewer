@@ -8,10 +8,10 @@ import { ChatInput } from '@/apps/embedded/components/chat/ChatInput';
 const meta = {
   title: 'D Chat / Messages / ChatInput',
   component: ChatInput,
-} satisfies Meta<typeof ChatInput>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 /**
  * Default empty input

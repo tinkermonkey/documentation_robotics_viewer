@@ -4,12 +4,15 @@
  */
 
 import { useState } from 'react';
-import type { Story, StoryDefault } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import type { Node } from '@xyflow/react';
 
-export default {
+const meta = {
   title: 'E Compositions / Graph Compositions / ModelRouteComposition',
-} 
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj; 
 import { ModelRouteComposition } from '@/catalog/components/ModelRouteComposition';
 import { StoryProviderWrapper } from '@/catalog/providers/StoryProviderWrapper';
 import {

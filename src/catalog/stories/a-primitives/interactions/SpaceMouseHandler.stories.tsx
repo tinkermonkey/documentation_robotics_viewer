@@ -5,10 +5,10 @@ import { ReactFlowProvider } from '@xyflow/react';
 const meta = {
   title: 'A Primitives / Interactions / SpaceMouseHandler',
   component: SpaceMouseHandler,
-} satisfies Meta<typeof SpaceMouseHandler>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = {
   render: () => {

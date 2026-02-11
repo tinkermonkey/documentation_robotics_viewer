@@ -4,10 +4,10 @@ import { GraphToolbar } from '@/apps/embedded/components/GraphToolbar';
 const meta = {
   title: 'A Primitives / Toolbars / GraphToolbar',
   component: GraphToolbar,
-} satisfies Meta<typeof GraphToolbar>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = { render: () => (
   <div className="w-full h-96 bg-gray-50 relative">

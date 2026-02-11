@@ -7,10 +7,10 @@ import type { ChangesetSummary } from '@/apps/embedded/services/embeddedDataLoad
 const meta = {
   title: 'A Primitives / Data Viewers / ChangesetList',
   component: ChangesetList,
-} satisfies Meta<typeof ChangesetList>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 const mockChangesets: Array<ChangesetSummary & { id: string }> = [
   {
@@ -19,9 +19,6 @@ const mockChangesets: Array<ChangesetSummary & { id: string }> = [
     type: 'feature',
     status: 'active',
     created_at: '2024-12-20T10:00:00Z',
-    created_by: 'Alice',
-    description: 'Implement OAuth2 authentication',
-    changes: { changes: [] },
     elements_count: 5,
   },
   {
@@ -30,9 +27,6 @@ const mockChangesets: Array<ChangesetSummary & { id: string }> = [
     type: 'bugfix',
     status: 'applied',
     created_at: '2024-12-19T14:30:00Z',
-    created_by: 'Bob',
-    description: 'Correct validation logic',
-    changes: { changes: [] },
     elements_count: 3,
   },
   {
@@ -41,9 +35,6 @@ const mockChangesets: Array<ChangesetSummary & { id: string }> = [
     type: 'exploration',
     status: 'active',
     created_at: '2024-12-18T09:15:00Z',
-    created_by: 'Charlie',
-    description: 'Research ML model integration',
-    changes: { changes: [] },
     elements_count: 8,
   },
   {
@@ -52,9 +43,6 @@ const mockChangesets: Array<ChangesetSummary & { id: string }> = [
     type: 'feature',
     status: 'abandoned',
     created_at: '2024-12-10T11:00:00Z',
-    created_by: 'Alice',
-    description: 'Abandoned due to requirements change',
-    changes: { changes: [] },
     elements_count: 2,
   },
 ];

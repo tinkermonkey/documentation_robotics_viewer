@@ -5,34 +5,12 @@ import { createCompleteModelFixture } from '@catalog/fixtures/modelFixtures';
 import { MotivationElementType, MotivationRelationshipType } from '@/apps/embedded/types/motivationGraph';
 import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
-export default {
-  title: 'C Graphs / Views / MotivationGraphView',
-} 
+const meta = {
+    title: 'C Graphs / Views / MotivationGraphView',
+} satisfies Meta;
 
-export const Default: Story = {
-  render: () => {
-const model = createCompleteModelFixture();
-  const allElementTypes = new Set(Object.values(MotivationElementType));
-  const allRelationshipTypes = new Set(Object.values(MotivationRelationshipType));
-
-      return (
-      
-    <ReactFlowProvider>
-      <StoryLoadedWrapper testId="motivation-graph-default">
-        <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-          <MotivationGraphView
-            model={model}
-            selectedElementTypes={allElementTypes}
-            selectedRelationshipTypes={allRelationshipTypes}
-            layout="hierarchical"
-          />
-        </div>
-      </StoryLoadedWrapper>
-    </ReactFlowProvider>
-  
-    );
-  }
-};
+export default meta;
+type Story = StoryObj;
 
 export const FilteredView: Story = {
   render: () => {

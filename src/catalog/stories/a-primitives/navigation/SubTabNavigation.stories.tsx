@@ -4,10 +4,10 @@ import SubTabNavigation, { type SubTab } from '@/apps/embedded/components/SubTab
 const meta = {
   title: 'A Primitives / Navigation / SubTabNavigation',
   component: SubTabNavigation,
-} satisfies Meta<typeof SubTabNavigation>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = { render: () => {
   const tabs: SubTab[] = [

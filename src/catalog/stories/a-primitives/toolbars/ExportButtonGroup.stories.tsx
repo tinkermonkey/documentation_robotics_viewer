@@ -5,10 +5,10 @@ import { ExportButtonGroup, ExportService } from '@/apps/embedded/components/sha
 const meta = {
   title: 'A Primitives / Toolbars / ExportButtonGroup',
   component: ExportButtonGroup,
-} satisfies Meta<typeof ExportButtonGroup>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 // Mock export service for stories
 const createMockExportService = (overrides: Partial<ExportService> = {}): ExportService => ({

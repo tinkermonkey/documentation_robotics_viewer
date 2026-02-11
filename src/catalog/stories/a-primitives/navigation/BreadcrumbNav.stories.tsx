@@ -5,10 +5,10 @@ import { HiOutlineCubeTransparent, HiOutlineRectangleStack } from 'react-icons/h
 const meta = {
   title: 'A Primitives / Navigation / BreadcrumbNav',
   component: BreadcrumbNav,
-} satisfies Meta<typeof BreadcrumbNav>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = { render: () => {
   const segments: BreadcrumbSegment[] = [

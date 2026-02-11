@@ -5,10 +5,10 @@ import { BarChart3, Table, Code } from 'lucide-react';
 const meta = {
   title: 'A Primitives / Navigation / ViewToggle',
   component: ViewToggle,
-} satisfies Meta<typeof ViewToggle>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 /**
  * Default story showing basic view toggle with text labels

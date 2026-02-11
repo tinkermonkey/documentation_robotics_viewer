@@ -7,9 +7,12 @@ import GraphViewer from '@/core/components/GraphViewer';
 import { StoryProviderWrapper } from '@/catalog';
 import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';
 
-export default {
+const meta = {
   title: 'C Graphs / Layouts / GraphvizLayout',
-};
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 /**
  * Dot algorithm - hierarchical directed graphs

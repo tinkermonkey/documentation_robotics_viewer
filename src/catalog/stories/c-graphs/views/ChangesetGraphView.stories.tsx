@@ -3,9 +3,12 @@ import ChangesetGraphView from '@/apps/embedded/components/ChangesetGraphView';
 import type { ChangesetDetails } from '@/apps/embedded/services/embeddedDataLoader';
 import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
-export default {
-  title: 'C Graphs / Views / ChangesetGraphView',
-} 
+const meta = {
+    title: 'C Graphs / Views / ChangesetGraphView',
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 const mockChangeset: ChangesetDetails = {
   metadata: {

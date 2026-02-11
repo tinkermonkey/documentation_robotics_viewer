@@ -4,10 +4,10 @@ import { RelationshipBadge } from '@/core/nodes/motivation/RelationshipBadge';
 const meta = {
   title: 'A Primitives / Indicators / RelationshipBadge',
   component: RelationshipBadge,
-} satisfies Meta<typeof RelationshipBadge>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 const nodeWithBadgeStyle = {
   position: 'relative' as const,

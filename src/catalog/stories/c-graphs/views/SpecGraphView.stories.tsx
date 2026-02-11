@@ -2,9 +2,12 @@ import type { Meta, StoryObj } from '@storybook/react';
 import SpecGraphView from '@/apps/embedded/components/SpecGraphView';
 import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
-export default {
-  title: 'C Graphs / Views / SpecGraphView',
-} 
+const meta = {
+    title: 'C Graphs / Views / SpecGraphView',
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 const mockSpecData = {
   version: '1.0.0',

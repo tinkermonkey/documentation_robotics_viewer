@@ -16,10 +16,10 @@ import {
 const meta = {
   title: 'E Compositions / Spec Compositions / SpecRouteComposition',
   component: SpecRouteComposition,
-} satisfies Meta<typeof SpecRouteComposition>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 /**
  * Graph View - Default

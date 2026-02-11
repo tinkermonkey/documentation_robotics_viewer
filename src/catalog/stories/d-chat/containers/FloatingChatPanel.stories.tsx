@@ -11,10 +11,10 @@ import { useEffect } from 'react';
 const meta = {
   title: 'D Chat / Containers / FloatingChatPanel',
   component: FloatingChatPanel,
-} satisfies Meta<typeof FloatingChatPanel>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 const DefaultWrapper = () => {
   useEffect(() => {

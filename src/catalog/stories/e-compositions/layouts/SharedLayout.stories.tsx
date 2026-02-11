@@ -4,10 +4,10 @@ import SharedLayout from '@/apps/embedded/components/SharedLayout';
 const meta = {
   title: 'E Compositions / Layouts / SharedLayout',
   component: SharedLayout,
-} satisfies Meta<typeof SharedLayout>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const ThreeColumn: Story = { render: () => (
   <div className="h-screen bg-gray-100">

@@ -6,10 +6,10 @@ import { useEffect } from 'react';
 const meta = {
   title: 'A Primitives / Indicators / ConnectionStatus',
   component: ConnectionStatus,
-} satisfies Meta<typeof ConnectionStatus>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Connected: Story = {
   render: () => {

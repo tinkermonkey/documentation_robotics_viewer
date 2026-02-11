@@ -1,4 +1,4 @@
-import type { Story, StoryDefault } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ChatTextContent } from '@/apps/embedded/components/chat/ChatTextContent';
 import { ThinkingBlock } from '@/apps/embedded/components/chat/ThinkingBlock';
 import { ToolInvocationCard } from '@/apps/embedded/components/chat/ToolInvocationCard';
@@ -7,9 +7,12 @@ import { ChatMessage } from '@/apps/embedded/components/chat/ChatMessage';
 import { ChatInput } from '@/apps/embedded/components/chat/ChatInput';
 import type { ChatMessage as ChatMessageType } from '@/apps/embedded/types/chat';
 
-export default {
+const meta = {
   title: 'D Chat / Components / ChatComponents',
-} 
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj; 
 
 /**
  * Ladle Stories for Chat Components

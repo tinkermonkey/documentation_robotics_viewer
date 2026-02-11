@@ -5,9 +5,12 @@ import { createCompleteModelFixture } from '@catalog/fixtures/modelFixtures';
 import { ContainerType } from '@/apps/embedded/types/c4Graph';
 import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
-export default {
+const meta = {
   title: 'C Graphs / Views / C4GraphView',
-} 
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj; 
 
 export const Default: Story = {
   render: () => {

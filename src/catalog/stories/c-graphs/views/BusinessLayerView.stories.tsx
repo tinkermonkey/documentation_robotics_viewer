@@ -4,9 +4,12 @@ import { ReactFlowProvider } from '@xyflow/react';
 import { createCompleteModelFixture, createMinimalModelFixture } from '@catalog/fixtures/modelFixtures';
 import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
-export default {
+const meta = {
   title: 'C Graphs / Views / BusinessLayerView',
-} 
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj; 
 
 export const Default: Story = {
   render: () => {

@@ -4,27 +4,12 @@ import { ReactFlowProvider } from '@xyflow/react';
 import { createCompleteModelFixture, createMinimalModelFixture } from '@catalog/fixtures/modelFixtures';
 import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
-export default {
-  title: 'C Graphs / Views / GraphViewer',
-} 
+const meta = {
+    title: 'C Graphs / Views / GraphViewer',
+} satisfies Meta;
 
-export const MinimalGraph: Story = {
-  render: () => {
-const model = createMinimalModelFixture();
-
-      return (
-      
-    <ReactFlowProvider>
-      <StoryLoadedWrapper testId="graph-viewer-minimal">
-        <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-          <GraphViewer model={model} />
-        </div>
-      </StoryLoadedWrapper>
-    </ReactFlowProvider>
-  
-    );
-  }
-};
+export default meta;
+type Story = StoryObj;
 
 export const CompleteModel: Story = {
   render: () => {

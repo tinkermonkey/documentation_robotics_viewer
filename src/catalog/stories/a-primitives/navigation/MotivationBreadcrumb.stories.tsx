@@ -4,10 +4,10 @@ import { MotivationBreadcrumb, BreadcrumbItem } from '@/apps/embedded/components
 const meta = {
   title: 'A Primitives / Navigation / MotivationBreadcrumb',
   component: MotivationBreadcrumb,
-} satisfies Meta<typeof MotivationBreadcrumb>;
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 const shortPath: BreadcrumbItem[] = [
   { id: '1', name: 'Improve Customer Satisfaction', type: 'Goal' },

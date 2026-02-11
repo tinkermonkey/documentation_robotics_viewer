@@ -1,9 +1,12 @@
-import { Story, type StoryDefault } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ChatPanel } from '@/apps/embedded/components/ChatPanel';
 
-export default {
+const meta = {
   title: 'D Chat / Containers / ChatPanelContainer',
-} 
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj; 
 
 /**
  * ChatPanelContainer Stories
