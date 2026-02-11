@@ -381,7 +381,7 @@ const examples = createAnnotationExamplesFixture();
 ### Tier 3: Store-Connected Component
 
 ```typescript
-import type { Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import {
   MockStoreProvider,
   createCompleteModelFixture,
@@ -389,84 +389,103 @@ import {
 } from '@catalog';
 import { AnnotationPanel } from '@apps/embedded/components/AnnotationPanel';
 
-export default {
-  title: 'Panels / AnnotationPanel'
-};
+type Story = StoryObj<typeof AnnotationPanel>;
 
-export const Default: Story = () => (
-  <MockStoreProvider
-    modelStoreOverrides={{ model: createCompleteModelFixture() }}
-    initialAnnotations={createAnnotationListFixture(5)}
-  >
-    <AnnotationPanel elementId="goal-1" />
-  </MockStoreProvider>
-);
+export default {
+  title: 'Panels / AnnotationPanel',
+  component: AnnotationPanel
+} satisfies Meta<typeof AnnotationPanel>;
+
+export const Default: Story = {
+  render: () => (
+    <MockStoreProvider
+      modelStoreOverrides={{ model: createCompleteModelFixture() }}
+      initialAnnotations={createAnnotationListFixture(5)}
+    >
+      <AnnotationPanel elementId="goal-1" />
+    </MockStoreProvider>
+  )
+};
 ```
 
 ### Tier 4: React Flow Node
 
 ```typescript
-import type { Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import {
   withReactFlowDecorator,
   createGoalNodeData
 } from '@catalog';
 import { GoalNode } from '@core/nodes/motivation/GoalNode';
 
+type Story = StoryObj<typeof GoalNode>;
+
 export default {
   title: 'Nodes / Motivation / GoalNode',
+  component: GoalNode,
   decorators: [withReactFlowDecorator({ width: 180, height: 100 })]
+} satisfies Meta<typeof GoalNode>;
+
+export const Default: Story = {
+  args: {
+    data: createGoalNodeData({ label: 'Sample Goal' })
+  }
 };
 
-export const Default: Story = () => (
-  <GoalNode data={createGoalNodeData({ label: 'Sample Goal' })} />
-);
+export const HighPriority: Story = {
+  args: {
+    data: createGoalNodeData({
+      label: 'Critical Goal',
+      priority: 'high'
+    })
+  }
+};
 
-export const HighPriority: Story = () => (
-  <GoalNode data={createGoalNodeData({
-    label: 'Critical Goal',
-    priority: 'high'
-  })} />
-);
-
-export const WithCoverage: Story = () => (
-  <GoalNode data={createGoalNodeData({
-    label: 'Covered Goal',
-    coverageIndicator: {
-      status: 'covered',
-      requirementCount: 5,
-      constraintCount: 2
-    }
-  })} />
-);
+export const WithCoverage: Story = {
+  args: {
+    data: createGoalNodeData({
+      label: 'Covered Goal',
+      coverageIndicator: {
+        status: 'covered',
+        requirementCount: 5,
+        constraintCount: 2
+      }
+    })
+  }
+};
 ```
 
 ### Tier 5: Composite View
 
 ```typescript
-import type { Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import {
   MockStoreProvider,
   createCompleteModelFixture
 } from '@catalog';
 import { GraphViewer } from '@core/components/GraphViewer';
 
-export default {
-  title: 'Views / GraphViewer'
-};
+type Story = StoryObj<typeof GraphViewer>;
 
-export const Complete: Story = () => (
-  <MockStoreProvider
-    modelStoreOverrides={{
-      model: createCompleteModelFixture(),
-      loading: false
-    }}
-  >
-    <div style={{ width: '100%', height: '600px' }}>
-      <GraphViewer />
-    </div>
-  </MockStoreProvider>
-);
+export default {
+  title: 'Views / GraphViewer',
+  component: GraphViewer
+} satisfies Meta<typeof GraphViewer>;
+
+export const Complete: Story = {
+  render: () => (
+    <MockStoreProvider
+      modelStoreOverrides={{
+        model: createCompleteModelFixture(),
+        loading: false
+      }}
+    >
+      <div style={{ width: '100%', height: '600px' }}>
+        <GraphViewer />
+      </div>
+    </MockStoreProvider>
+  )
+};
 ```
 
 ## Best Practices

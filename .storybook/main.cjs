@@ -3,7 +3,7 @@ const path = require('path');
 /**
  * Storybook 8 configuration with Vite builder
  *
- * Mirrors path aliases and optimizations from vite.config.catalog.ts:
+ * Configured with:
  * - Path aliases (@, @core, @catalog, etc.)
  * - optimizeDeps for React Flow
  * - React plugin configuration

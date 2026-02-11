@@ -83,28 +83,11 @@ jobs:
     - name: Install Playwright browsers
       run: npx playwright install --with-deps
 
-    - name: Build catalog
-      run: npm run catalog:build
+    - name: Build Storybook
+      run: npm run storybook:build
 
-    - name: Generate story tests
-      run: node scripts/generate-story-tests.cjs --from-build
+    - name: Run Storybook tests
+      run: npm run test:storybook
 
-    - name: Verify story tests are committed
-      run: |
-        if git diff --quiet tests/stories/; then
-          echo "✓ Story tests are synchronized"
-        else
-          echo "✗ Story tests are out of sync with story files"
-          echo ""
-          echo "Changes detected in tests/stories/:"
-          git diff --stat tests/stories/
-          echo ""
-          echo "Please run 'npm run test:stories:generate' locally and commit the changes:"
-          git diff tests/stories/ | head -100
-          exit 1
-        fi
-
-    - name: Run story validation tests
-      run: npm run test:stories
-      env:
-        STORY_ALL_BROWSERS: ${{ github.event_name == 'schedule' && 'true' || '' }}
+    - name: Run accessibility tests
+      run: npm run test:storybook:a11y

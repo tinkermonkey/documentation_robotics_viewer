@@ -155,7 +155,7 @@ npm run test:e2e                  # E2E with reference server
 npm run test:e2e:headed           # E2E with visible browser
 npm run storybook:dev             # Start Storybook on port 61001
 npm run storybook:build           # Build Storybook for production
-npm run test:storybook            # Validate all stories (510 stories)
+npm run test:storybook            # Validate all stories (578 stories)
 npm run test:storybook:a11y       # Generate accessibility report
 ```
 
