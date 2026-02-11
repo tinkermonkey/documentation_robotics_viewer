@@ -9,76 +9,64 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj; 
+type Story = StoryObj;
 
 export const Default: Story = {
   render: () => {
-const model = createCompleteModelFixture();
-
-      return (
-      
-    <ReactFlowProvider>
-      <StoryLoadedWrapper testId="business-layer-default">
-        <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-          <BusinessLayerView model={model} />
-        </div>
-      </StoryLoadedWrapper>
-    </ReactFlowProvider>
-  
+    const model = createCompleteModelFixture();
+    return (
+      <ReactFlowProvider>
+        <StoryLoadedWrapper testId="business-layer-default">
+          <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+            <BusinessLayerView model={model} />
+          </div>
+        </StoryLoadedWrapper>
+      </ReactFlowProvider>
     );
-  }
+  },
 };
 
 export const MinimalGraph: Story = {
   render: () => {
-const model = createMinimalModelFixture();
-
-      return (
-      
-    <ReactFlowProvider>
-      <StoryLoadedWrapper testId="business-layer-minimal">
-        <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-          <BusinessLayerView model={model} />
-        </div>
-      </StoryLoadedWrapper>
-    </ReactFlowProvider>
-  
+    const model = createMinimalModelFixture();
+    return (
+      <ReactFlowProvider>
+        <StoryLoadedWrapper testId="business-layer-minimal">
+          <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+            <BusinessLayerView model={model} />
+          </div>
+        </StoryLoadedWrapper>
+      </ReactFlowProvider>
     );
-  }
+  },
 };
 
 export const LargeGraph: Story = {
   render: () => {
-const model = createCompleteModelFixture();
-
-      return (
-      
-    <ReactFlowProvider>
-      <StoryLoadedWrapper testId="business-layer-large">
-        <div style={{ width: '100%', height: 800, border: '1px solid #e5e7eb' }}>
-          <BusinessLayerView model={model} />
-        </div>
-      </StoryLoadedWrapper>
-    </ReactFlowProvider>
-  
+    const model = createCompleteModelFixture();
+    return (
+      <ReactFlowProvider>
+        <StoryLoadedWrapper testId="business-layer-large">
+          <div style={{ width: '100%', height: 800, border: '1px solid #e5e7eb' }}>
+            <BusinessLayerView model={model} />
+          </div>
+        </StoryLoadedWrapper>
+      </ReactFlowProvider>
     );
-  }
+  },
 };
 
 export const WithControls: Story = {
   render: () => {
-const model = createCompleteModelFixture();
-
-      return (
-      
-    <ReactFlowProvider>
-      <StoryLoadedWrapper testId="business-layer-controls">
-        <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
-          <BusinessLayerView model={model} />
-        </div>
-      </StoryLoadedWrapper>
-    </ReactFlowProvider>
-  
+    const model = createCompleteModelFixture();
+    return (
+      <ReactFlowProvider>
+        <StoryLoadedWrapper testId="business-layer-controls">
+          <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+            <BusinessLayerView model={model} />
+          </div>
+        </StoryLoadedWrapper>
+      </ReactFlowProvider>
     );
-  }
+  },
 };

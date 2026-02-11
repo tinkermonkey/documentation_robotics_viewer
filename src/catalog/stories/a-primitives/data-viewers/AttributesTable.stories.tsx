@@ -3,7 +3,6 @@ import AttributesTable, { AttributeRow } from '@/apps/embedded/components/common
 
 const meta = {
   title: 'A Primitives / Data Viewers / AttributesTable',
-  component: AttributesTable,
 } satisfies Meta;
 
 export default meta;
