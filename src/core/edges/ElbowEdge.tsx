@@ -113,8 +113,26 @@ export const ElbowEdge = memo(({
     ? `Connection labeled ${label} from node ${source} to node ${target}`
     : `Connection from node ${source} to node ${target}`;
 
+  const handleEdgeClick = () => {
+    // Edge click handler for potential future interactions
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleEdgeClick();
+    }
+  };
+
   return (
     <>
+      {/* Keyboard-accessible edge path */}
+      <style>{`
+        #${id}:focus-visible {
+          outline: 2px solid #0ea5e9;
+          outline-offset: 2px;
+        }
+      `}</style>
       <BaseEdge
         id={id}
         path={path}
@@ -122,11 +140,14 @@ export const ElbowEdge = memo(({
         style={{
           stroke: '#6b7280',
           strokeWidth: 2,
+          cursor: 'pointer',
           ...style,
         }}
         className="react-flow__edge-path"
         aria-label={ariaLabel}
-        role="img"
+        role="button"
+        tabIndex={0}
+        onKeyDown={handleKeyDown}
       />
       {label && (
         <EdgeLabelRenderer>

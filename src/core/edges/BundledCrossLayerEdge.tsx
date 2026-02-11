@@ -134,7 +134,13 @@ export const BundledCrossLayerEdge = memo(({
 
   return (
     <>
-      {/* Bundled edge path */}
+      {/* Bundled edge path - keyboard accessible with focus indicator */}
+      <style>{`
+        #${id}:focus-visible {
+          outline: 2px solid #0ea5e9;
+          outline-offset: 2px;
+        }
+      `}</style>
       <path
         id={id}
         d={edgePath}
@@ -162,7 +168,7 @@ export const BundledCrossLayerEdge = memo(({
         }}
       />
 
-      {/* Bundle count badge */}
+      {/* Bundle count badge - fully keyboard accessible */}
       <EdgeLabelRenderer>
         <div
           style={{
@@ -183,9 +189,30 @@ export const BundledCrossLayerEdge = memo(({
             zIndex: 10,
             cursor: 'pointer',
             userSelect: 'none',
+            outline: 'none',
+            transition: 'box-shadow 200ms ease-out',
           }}
           className="nodrag nopan"
+          role="button"
+          tabIndex={0}
           onClick={handleBundleClick}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleBundleClick(e as any);
+            }
+          }}
+          onFocus={(e) => {
+            // Add visible focus indicator
+            (e.currentTarget as HTMLDivElement).style.boxShadow =
+              '0 0 0 3px rgba(14, 165, 233, 0.5), 0 4px 6px rgba(0, 0, 0, 0.1)';
+          }}
+          onBlur={(e) => {
+            // Remove focus indicator
+            (e.currentTarget as HTMLDivElement).style.boxShadow =
+              '0 4px 6px rgba(0, 0, 0, 0.1)';
+          }}
+          aria-label={`Expand ${bundleCount} bundled relationships`}
           title={`${bundleCount} linked relationships`}
           data-testid={`bundle-badge-${id}`}
         >
