@@ -1,9 +1,13 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { RelationshipBadge } from '@/core/nodes/motivation/RelationshipBadge';
 
-export default {
+const meta = {
   title: 'A Primitives / Indicators / RelationshipBadge',
-} satisfies StoryDefault;
+  component: RelationshipBadge,
+} satisfies Meta<typeof RelationshipBadge>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 const nodeWithBadgeStyle = {
   position: 'relative' as const,
@@ -30,7 +34,7 @@ const containerStyle = {
   alignItems: 'flex-start'
 };
 
-export const Default: Story = () => (
+export const Default: Story = { render: () => (
   <div style={containerStyle}>
     <div style={nodeWithBadgeStyle}>
       Goal Node
@@ -40,9 +44,10 @@ export const Default: Story = () => (
       />
     </div>
   </div>
-);
+) };
 
-export const Influences: Story = () => (
+
+export const Influences: Story = { render: () => (
   <div style={containerStyle}>
     <div style={nodeWithBadgeStyle}>
       Influences Goal
@@ -52,9 +57,10 @@ export const Influences: Story = () => (
       />
     </div>
   </div>
-);
+) };
 
-export const Constrains: Story = () => (
+
+export const Constrains: Story = { render: () => (
   <div style={containerStyle}>
     <div style={nodeWithBadgeStyle}>
       Constraint Node
@@ -64,9 +70,10 @@ export const Constrains: Story = () => (
       />
     </div>
   </div>
-);
+) };
 
-export const Realizes: Story = () => (
+
+export const Realizes: Story = { render: () => (
   <div style={containerStyle}>
     <div style={nodeWithBadgeStyle}>
       Realizes Req
@@ -76,9 +83,10 @@ export const Realizes: Story = () => (
       />
     </div>
   </div>
-);
+) };
 
-export const Refines: Story = () => (
+
+export const Refines: Story = { render: () => (
   <div style={containerStyle}>
     <div style={nodeWithBadgeStyle}>
       Refines Goal
@@ -88,9 +96,10 @@ export const Refines: Story = () => (
       />
     </div>
   </div>
-);
+) };
 
-export const Conflicts: Story = () => (
+
+export const Conflicts: Story = { render: () => (
   <div style={containerStyle}>
     <div style={nodeWithBadgeStyle}>
       Conflicts With
@@ -100,9 +109,10 @@ export const Conflicts: Story = () => (
       />
     </div>
   </div>
-);
+) };
 
-export const HighConnectionCount: Story = () => (
+
+export const HighConnectionCount: Story = { render: () => (
   <div style={containerStyle}>
     <div style={nodeWithBadgeStyle}>
       Hub Node
@@ -112,9 +122,10 @@ export const HighConnectionCount: Story = () => (
       />
     </div>
   </div>
-);
+) };
 
-export const NotDimmed: Story = () => (
+
+export const NotDimmed: Story = { render: () => (
   <div style={containerStyle}>
     <div style={nodeWithBadgeStyle}>
       Active Node
@@ -124,9 +135,10 @@ export const NotDimmed: Story = () => (
       />
     </div>
   </div>
-);
+) };
 
-export const ZeroRelationships: Story = () => (
+
+export const ZeroRelationships: Story = { render: () => (
   <div style={containerStyle}>
     <div style={nodeWithBadgeStyle}>
       Isolated Node
@@ -136,4 +148,5 @@ export const ZeroRelationships: Story = () => (
       />
     </div>
   </div>
-);
+) };
+

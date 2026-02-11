@@ -2,7 +2,7 @@
  * ThinkingBlock Component Stories
  * Demonstrates the collapsible reasoning display for extended thinking
  */
-import type { Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ThinkingBlock } from '@/apps/embedded/components/chat/ThinkingBlock';
 
 export default {
@@ -12,21 +12,26 @@ export default {
 /**
  * Short thinking content (initially collapsed)
  */
-export const Short: Story = () => {
-  const content = "The user is asking about stakeholders. I should search the motivation layer for stakeholder elements.";
+export const Short: Story = {
+  render: () => {
+const content = "The user is asking about stakeholders. I should search the motivation layer for stakeholder elements.";
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
       <ThinkingBlock content={content} />
     </div>
-  );
+  
+    );
+  }
 };
 
 /**
  * Extended thinking with analysis
  */
-export const Extended: Story = () => {
-  const content = `
+export const Extended: Story = {
+  render: () => {
+const content = `
 To answer this question comprehensively, I need to:
 
 1. Identify all business goals in the motivation layer
@@ -37,18 +42,22 @@ To answer this question comprehensively, I need to:
 Starting with the motivation layer, I can see three primary business goals: customer satisfaction, cost reduction, and time to market. Each of these has specific constraints...
   `;
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
       <ThinkingBlock content={content} />
     </div>
-  );
+  
+    );
+  }
 };
 
 /**
  * Thinking with structured reasoning
  */
-export const Structured: Story = () => {
-  const content = `
+export const Structured: Story = {
+  render: () => {
+const content = `
 **Analysis Approach:**
 
 1. Layer Identification
@@ -69,18 +78,22 @@ export const Structured: Story = () => {
 **Conclusion:** The model structure follows standard ArchiMate patterns and appears well-formed.
   `;
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
       <ThinkingBlock content={content} />
     </div>
-  );
+  
+    );
+  }
 };
 
 /**
  * Very long thinking content
  */
-export const VeryLong: Story = () => {
-  const content = `
+export const VeryLong: Story = {
+  render: () => {
+const content = `
 Let me break down this complex question systematically:
 
 **Part 1: Understanding the Request**
@@ -114,9 +127,12 @@ The motivation layer provides the "why" that shapes the "what" in the business l
 Ensure every business capability traces back to at least one motivation element (goal, driver, or requirement) to maintain strategic alignment.
   `;
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
       <ThinkingBlock content={content} />
     </div>
-  );
+  
+    );
+  }
 };

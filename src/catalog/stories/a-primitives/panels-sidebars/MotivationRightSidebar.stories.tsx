@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from '@storybook/react';
 import { MotivationRightSidebar } from '@/apps/embedded/components/MotivationRightSidebar';
 import { MotivationElementType, MotivationRelationshipType } from '../types/motivationGraph';
@@ -45,7 +44,7 @@ const mockFilterCounts = {
 };
 
 export const Default: Story = {
-  render: () => (
+  render: () => {
     const [selectedTypes, setSelectedTypes] = useState<Set<MotivationElementType>>(new Set());
   const [selectedRelTypes, setSelectedRelTypes] = useState<Set<MotivationRelationshipType>>(new Set());
 
@@ -86,5 +85,5 @@ export const Default: Story = {
       />
     </div>
   );
-  ),
+  },
 };

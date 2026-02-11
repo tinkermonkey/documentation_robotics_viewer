@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import ModelLayersSidebar from '@/apps/embedded/components/ModelLayersSidebar';
 import { useModelStore } from '@/core/stores/modelStore';
 import type { MetaModel } from '@/core/types/model';
-import { useEffect } from 'react';
+import { useEffect, ReactNode } from 'react';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / ModelLayersSidebar',
@@ -13,6 +13,22 @@ const meta = {
 
 export default meta;
 type Story = StoryObj;
+
+// Wrapper component to handle state setup
+const ModelLayersSidebarWrapper = ({ model, selectedLayerId, onSelectLayer }: { model: MetaModel; selectedLayerId: string | null; onSelectLayer: (id: string | null) => void }): ReactNode => {
+  useEffect(() => {
+    useModelStore.setState({ model });
+  }, [model]);
+
+  return (
+    <div className="w-64 bg-white border border-gray-200">
+      <ModelLayersSidebar
+        selectedLayerId={selectedLayerId}
+        onSelectLayer={onSelectLayer}
+      />
+    </div>
+  );
+};
 
 const mockModel: MetaModel = {
   version: '1.0',
@@ -55,51 +71,30 @@ const mockModel: MetaModel = {
 
 export const Default: Story = {
   render: () => (
-    useEffect(() => {
-    useModelStore.setState({ model: mockModel });
-  }, []);
-
-  return (
-    <div className="w-64 bg-white border border-gray-200">
-      <ModelLayersSidebar
-        selectedLayerId={null}
-        onSelectLayer={(id) => console.log('Selected layer:', id)}
-      />
-    </div>
-  );
+    <ModelLayersSidebarWrapper
+      model={mockModel}
+      selectedLayerId={null}
+      onSelectLayer={(id) => console.log('Selected layer:', id)}
+    />
   ),
 };
 
 export const WithSelection: Story = {
   render: () => (
-    useEffect(() => {
-    useModelStore.setState({ model: mockModel });
-  }, []);
-
-  return (
-    <div className="w-64 bg-white border border-gray-200">
-      <ModelLayersSidebar
-        selectedLayerId="business"
-        onSelectLayer={(id) => console.log('Selected layer:', id)}
-      />
-    </div>
-  );
+    <ModelLayersSidebarWrapper
+      model={mockModel}
+      selectedLayerId="business"
+      onSelectLayer={(id) => console.log('Selected layer:', id)}
+    />
   ),
 };
 
 export const EmptyModel: Story = {
-  render: () => {
-  useEffect(() => {
-    useModelStore.setState({ model: { version: '1.0', references: [], layers: {} } });
-  }, []);
-
-  return (
-    <div className="w-64 bg-white border border-gray-200">
-      <ModelLayersSidebar
-        selectedLayerId={null}
-        onSelectLayer={(id) => console.log('Selected layer:', id)}
-      />
-    </div>
-  );
-  },
+  render: () => (
+    <ModelLayersSidebarWrapper
+      model={{ version: '1.0', references: [], layers: {} }}
+      selectedLayerId={null}
+      onSelectLayer={(id) => console.log('Selected layer:', id)}
+    />
+  ),
 };

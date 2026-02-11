@@ -4,12 +4,12 @@
  */
 
 import { useState } from 'react';
-import type { Story, StoryDefault } from '@ladle/react';
+import type { Story, StoryDefault } from '@storybook/react';
 import type { Node } from '@xyflow/react';
 
 export default {
   title: 'E Compositions / Graph Compositions / ModelRouteComposition',
-} satisfies StoryDefault;
+} 
 import { ModelRouteComposition } from '@/catalog/components/ModelRouteComposition';
 import { StoryProviderWrapper } from '@/catalog/providers/StoryProviderWrapper';
 import {
@@ -24,8 +24,9 @@ import {
  * Graph View - Default
  * Full model route composition with graph view and all sidebars
  */
-export const GraphViewDefault: Story = () => {
-  const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
+export const GraphViewDefault: Story = {
+  render: () => {
+const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
 
@@ -34,7 +35,8 @@ export const GraphViewDefault: Story = () => {
   const linkRegistry = createMinimalLinkRegistryFixture();
   const specData = createCompleteSpecFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper
       model={model}
       annotations={annotations}
@@ -60,15 +62,18 @@ export const GraphViewDefault: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };
 
 /**
  * Graph View - Layer Filter Active
  * Shows graph view with a specific layer selected
  */
-export const GraphViewWithLayerFilter: Story = () => {
-  const [selectedLayerId, setSelectedLayerId] = useState<string | null>('motivation');
+export const GraphViewWithLayerFilter: Story = {
+  render: () => {
+const [selectedLayerId, setSelectedLayerId] = useState<string | null>('motivation');
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
 
@@ -76,7 +81,8 @@ export const GraphViewWithLayerFilter: Story = () => {
   const annotations = createAnnotationListFixture(3);
   const linkRegistry = createMinimalLinkRegistryFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper
       model={model}
       annotations={annotations}
@@ -100,15 +106,18 @@ export const GraphViewWithLayerFilter: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };
 
 /**
  * JSON View - Default
  * Full model route composition with JSON viewer and sidebars
  */
-export const JSONView: Story = () => {
-  const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
+export const JSONView: Story = {
+  render: () => {
+const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
 
@@ -117,7 +126,8 @@ export const JSONView: Story = () => {
   const linkRegistry = createMinimalLinkRegistryFixture();
   const specData = createCompleteSpecFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper
       model={model}
       annotations={annotations}
@@ -142,15 +152,18 @@ export const JSONView: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };
 
 /**
  * JSON View - With Highlighted Path
  * JSON view with a specific path highlighted (simulates clicking in the tree)
  */
-export const JSONViewWithHighlightedPath: Story = () => {
-  const [selectedLayerId, setSelectedLayerId] = useState<string | null>('motivation');
+export const JSONViewWithHighlightedPath: Story = {
+  render: () => {
+const [selectedLayerId, setSelectedLayerId] = useState<string | null>('motivation');
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [highlightedPath, setHighlightedPath] = useState<string | null>('layers.motivation.elements[0].name');
 
@@ -159,7 +172,8 @@ export const JSONViewWithHighlightedPath: Story = () => {
   const linkRegistry = createMinimalLinkRegistryFixture();
   const specData = createCompleteSpecFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper
       model={model}
       annotations={annotations}
@@ -185,21 +199,25 @@ export const JSONViewWithHighlightedPath: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };
 
 /**
  * Minimal Model - Compact View
  * Minimal model with no sidebars for compact testing
  */
-export const CompactNoSidebars: Story = () => {
-  const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
+export const CompactNoSidebars: Story = {
+  render: () => {
+const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
 
   const model = createMinimalModelFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper
       model={model}
       initialParams={{ view: 'graph' }}
@@ -219,15 +237,18 @@ export const CompactNoSidebars: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };
 
 /**
  * Graph View - With Selected Node
  * Graph view showing a selected node with details panel
  */
-export const GraphViewWithSelectedNode: Story = () => {
-  const [selectedLayerId, setSelectedLayerId] = useState<string | null>('motivation');
+export const GraphViewWithSelectedNode: Story = {
+  render: () => {
+const [selectedLayerId, setSelectedLayerId] = useState<string | null>('motivation');
   const [selectedNode, setSelectedNode] = useState<Node | null>({
     id: 'goal-1',
     data: { label: 'Increase Revenue', fill: '#fbbf24', stroke: '#d97706' },
@@ -239,7 +260,8 @@ export const GraphViewWithSelectedNode: Story = () => {
   const model = createCompleteModelFixture();
   const annotations = createAnnotationListFixture(3);
 
-  return (
+      return (
+      
     <StoryProviderWrapper
       model={model}
       annotations={annotations}
@@ -261,5 +283,7 @@ export const GraphViewWithSelectedNode: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };

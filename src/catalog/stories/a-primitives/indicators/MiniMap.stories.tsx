@@ -1,4 +1,4 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ReactFlow, ReactFlowProvider, useNodesState, useEdgesState, useNodesInitialized, MiniMap as ReactFlowMiniMap } from '@xyflow/react';
 import { MiniMap } from '@/apps/embedded/components/MiniMap';
 import '@xyflow/react/dist/style.css';
@@ -9,9 +9,13 @@ import '@xyflow/react/dist/style.css';
  * For production use with styled Panel wrapper, see usage in GraphViewer.tsx,
  * MotivationGraphView.tsx, BusinessLayerView.tsx, and C4GraphView.tsx.
  */
-export default {
+const meta = {
   title: 'A Primitives / Indicators / MiniMap',
-} satisfies StoryDefault;
+  component: MiniMap,
+} satisfies Meta<typeof MiniMap>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Sample nodes for MiniMap demonstration - spread out to show viewport indicator
 // MiniMap automatically reflects these nodes without manual configuration
@@ -64,11 +68,13 @@ const MiniMapDemo = ({ nodeColor, maskColor }: { nodeColor?: any; maskColor?: st
   );
 };
 
-export const Default: Story = () => (
-  <ReactFlowProvider>
-    <MiniMapDemo />
-  </ReactFlowProvider>
-);
+export const Default: Story = {
+  render: () => (
+    <ReactFlowProvider>
+      <MiniMapDemo />
+    </ReactFlowProvider>
+  )
+};
 
 const DirectMiniMapDemo = () => {
   const [nodes, , onNodesChange] = useNodesState(sampleNodes);
@@ -99,14 +105,18 @@ const DirectMiniMapDemo = () => {
   );
 };
 
-export const DirectReactFlowMiniMap: Story = () => (
-  <ReactFlowProvider>
-    <DirectMiniMapDemo />
-  </ReactFlowProvider>
-);
+export const DirectReactFlowMiniMap: Story = {
+  render: () => (
+    <ReactFlowProvider>
+      <DirectMiniMapDemo />
+    </ReactFlowProvider>
+  )
+};
 
-export const WithColorOptions: Story = () => (
-  <ReactFlowProvider>
-    <MiniMapDemo nodeColor={() => '#4f46e5'} maskColor="rgba(79, 70, 229, 0.1)" />
-  </ReactFlowProvider>
-);
+export const WithColorOptions: Story = {
+  render: () => (
+    <ReactFlowProvider>
+      <MiniMapDemo nodeColor={() => '#4f46e5'} maskColor="rgba(79, 70, 229, 0.1)" />
+    </ReactFlowProvider>
+  )
+};

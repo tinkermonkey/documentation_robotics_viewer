@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from '@storybook/react';
 import { LayoutPreferencesPanel } from '@/apps/embedded/components/LayoutPreferencesPanel';
 
@@ -14,7 +13,6 @@ type Story = StoryObj;
 
 export const Default: Story = {
   render: () => (
-    (
     <div style={{ width: 800, height: 700 }}>
       <LayoutPreferencesPanel
         onChange={() => {
@@ -22,6 +20,5 @@ export const Default: Story = {
         }}
       />
     </div>
-  )
   ),
 };

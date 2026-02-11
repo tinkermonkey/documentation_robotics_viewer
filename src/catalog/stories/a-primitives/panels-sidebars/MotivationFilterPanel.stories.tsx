@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from '@storybook/react';
 import { MotivationFilterPanel } from '@/apps/embedded/components/MotivationFilterPanel';
 import { MotivationElementType, MotivationRelationshipType } from '../types/motivationGraph';

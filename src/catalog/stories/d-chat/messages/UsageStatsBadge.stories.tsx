@@ -2,7 +2,7 @@
  * UsageStatsBadge Component Stories
  * Demonstrates token usage and cost display
  */
-import type { Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { UsageStatsBadge } from '@/apps/embedded/components/chat/UsageStatsBadge';
 
 export default {
@@ -12,8 +12,8 @@ export default {
 /**
  * Small usage (< 1000 tokens)
  */
-export const SmallUsage: Story = () => {
-  return (
+export const SmallUsage: Story = { render: () => (
+    
     <div className="p-4 bg-white dark:bg-gray-800">
       <UsageStatsBadge
         inputTokens={350}
@@ -22,14 +22,14 @@ export const SmallUsage: Story = () => {
         totalCostUsd={0.0079}
       />
     </div>
-  );
-};
+  
+  ) };
 
 /**
  * Medium usage (1000-5000 tokens)
  */
-export const MediumUsage: Story = () => {
-  return (
+export const MediumUsage: Story = { render: () => (
+    
     <div className="p-4 bg-white dark:bg-gray-800">
       <UsageStatsBadge
         inputTokens={2100}
@@ -38,14 +38,14 @@ export const MediumUsage: Story = () => {
         totalCostUsd={0.0443}
       />
     </div>
-  );
-};
+  
+  ) };
 
 /**
  * Large usage (> 5000 tokens)
  */
-export const LargeUsage: Story = () => {
-  return (
+export const LargeUsage: Story = { render: () => (
+    
     <div className="p-4 bg-white dark:bg-gray-800">
       <UsageStatsBadge
         inputTokens={8500}
@@ -54,14 +54,14 @@ export const LargeUsage: Story = () => {
         totalCostUsd={0.1755}
       />
     </div>
-  );
-};
+  
+  ) };
 
 /**
  * Very large usage with high cost
  */
-export const VeryLargeUsage: Story = () => {
-  return (
+export const VeryLargeUsage: Story = { render: () => (
+    
     <div className="p-4 bg-white dark:bg-gray-800">
       <UsageStatsBadge
         inputTokens={25000}
@@ -70,14 +70,14 @@ export const VeryLargeUsage: Story = () => {
         totalCostUsd={0.555}
       />
     </div>
-  );
-};
+  
+  ) };
 
 /**
  * Multiple badges in a row (typical usage)
  */
-export const MultipleBadges: Story = () => {
-  return (
+export const MultipleBadges: Story = { render: () => (
+    
     <div className="p-4 space-y-4 bg-white dark:bg-gray-800">
       <div>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Query 1: Simple question</p>
@@ -107,5 +107,5 @@ export const MultipleBadges: Story = () => {
         />
       </div>
     </div>
-  );
-};
+  
+  ) };

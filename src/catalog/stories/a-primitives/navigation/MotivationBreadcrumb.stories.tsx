@@ -1,9 +1,13 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { MotivationBreadcrumb, BreadcrumbItem } from '@/apps/embedded/components/MotivationBreadcrumb';
 
-export default {
+const meta = {
   title: 'A Primitives / Navigation / MotivationBreadcrumb',
-} satisfies StoryDefault;
+  component: MotivationBreadcrumb,
+} satisfies Meta<typeof MotivationBreadcrumb>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 const shortPath: BreadcrumbItem[] = [
   { id: '1', name: 'Improve Customer Satisfaction', type: 'Goal' },
@@ -23,7 +27,7 @@ const longPath: BreadcrumbItem[] = [
   { id: '5', name: 'Optimize API Performance', type: 'Requirement' },
 ];
 
-export const ShortPath: Story = () => (
+export const ShortPath: Story = { render: () => (
   <div className="p-4 bg-white border border-gray-200">
     <MotivationBreadcrumb
       path={shortPath}
@@ -31,9 +35,9 @@ export const ShortPath: Story = () => (
       onClearFocus={() => console.log('Clear focus')}
     />
   </div>
-);
+) };
 
-export const MediumPath: Story = () => (
+export const MediumPath: Story = { render: () => (
   <div className="p-4 bg-white border border-gray-200">
     <MotivationBreadcrumb
       path={mediumPath}
@@ -41,9 +45,9 @@ export const MediumPath: Story = () => (
       onClearFocus={() => console.log('Clear focus')}
     />
   </div>
-);
+) };
 
-export const LongPath: Story = () => (
+export const LongPath: Story = { render: () => (
   <div className="p-4 bg-white border border-gray-200">
     <MotivationBreadcrumb
       path={longPath}
@@ -51,9 +55,9 @@ export const LongPath: Story = () => (
       onClearFocus={() => console.log('Clear focus')}
     />
   </div>
-);
+) };
 
-export const EmptyPath: Story = () => (
+export const EmptyPath: Story = { render: () => (
   <div className="p-4 bg-white border border-gray-200">
     <MotivationBreadcrumb
       path={[]}
@@ -62,4 +66,4 @@ export const EmptyPath: Story = () => (
     />
     <div className="mt-2 text-sm text-gray-500">Breadcrumb is hidden when path is empty</div>
   </div>
-);
+) };

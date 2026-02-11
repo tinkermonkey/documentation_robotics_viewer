@@ -91,116 +91,116 @@ const mockBusinessGraph: BusinessGraph = {
 export const Default: Story = {
   render: () => (
     <ProcessInspectorPanel
-    selectedNode={null}
-    businessGraph={mockBusinessGraph}
-    onTraceUpstream={() => console.log('Trace upstream')}
-    onTraceDownstream={() => console.log('Trace downstream')}
-    onIsolate={() => console.log('Isolate')}
-  />
+      selectedNode={null}
+      businessGraph={mockBusinessGraph}
+      onTraceUpstream={() => console.log('Trace upstream')}
+      onTraceDownstream={() => console.log('Trace downstream')}
+      onIsolate={() => console.log('Isolate')}
+    />
   ),
 };
 
 export const ProcessSelected: Story = {
   render: () => (
     <ProcessInspectorPanel
-    selectedNode={mockProcess}
-    businessGraph={mockBusinessGraph}
-    onTraceUpstream={() => console.log('Trace upstream')}
-    onTraceDownstream={() => console.log('Trace downstream')}
-    onIsolate={() => console.log('Isolate')}
-    onNavigateToCrossLayer={(layer, id) => console.log('Navigate to', layer, id)}
-  />
+      selectedNode={mockProcess}
+      businessGraph={mockBusinessGraph}
+      onTraceUpstream={() => console.log('Trace upstream')}
+      onTraceDownstream={() => console.log('Trace downstream')}
+      onIsolate={() => console.log('Isolate')}
+      onNavigateToCrossLayer={(layer, id) => console.log('Navigate to', layer, id)}
+    />
   ),
 };
 
 export const ProcessWithCrossLayerLinks: Story = {
   render: () => (
     <ProcessInspectorPanel
-    selectedNode={mockProcess}
-    businessGraph={mockBusinessGraph}
-    onTraceUpstream={() => console.log('Trace upstream')}
-    onTraceDownstream={() => console.log('Trace downstream')}
-    onIsolate={() => console.log('Isolate')}
-    onNavigateToCrossLayer={(layer, id) => console.log('Navigate to', layer, id)}
-  />
-  ),
-};
-
-export const ComplexProcess: Story = {
-  render: () => (
-    const complexProcess: BusinessNode = {
-    id: 'process-complex',
-    type: 'process',
-    name: 'Enterprise Integration Bus',
-    description: 'Centralized message broker and integration platform for all business services',
-    metadata: {
-      owner: 'Integration Team',
-      domain: 'Infrastructure',
-      criticality: 'high',
-      lifecycle: 'active',
-      subprocessCount: 12,
-    },
-    hierarchyLevel: 0,
-    childIds: ['process-1', 'process-2'],
-    properties: {},
-  };
-
-  const complexGraph: BusinessGraph = {
-    nodes: new Map([
-      ...mockBusinessGraph.nodes,
-      ['process-complex', complexProcess],
-    ]),
-    edges: new Map([
-      ...mockBusinessGraph.edges,
-      ['edge-complex-1', { id: 'edge-complex-1', source: 'process-complex', sourceId: 'process-complex', target: 'process-1', targetId: 'process-1', type: 'flows_to' }],
-      ['edge-complex-2', { id: 'edge-complex-2', source: 'process-complex', sourceId: 'process-complex', target: 'process-2', targetId: 'process-2', type: 'flows_to' }],
-      ['edge-complex-3', { id: 'edge-complex-3', source: 'service-1', sourceId: 'service-1', target: 'process-complex', targetId: 'process-complex', type: 'depends_on' }],
-    ]),
-    crossLayerLinks: mockBusinessGraph.crossLayerLinks,
-    indices: mockBusinessGraph.indices,
-    hierarchy: mockBusinessGraph.hierarchy,
-    metrics: mockBusinessGraph.metrics,
-  };
-
-  return (
-    <ProcessInspectorPanel
-      selectedNode={complexProcess}
-      businessGraph={complexGraph}
+      selectedNode={mockProcess}
+      businessGraph={mockBusinessGraph}
       onTraceUpstream={() => console.log('Trace upstream')}
       onTraceDownstream={() => console.log('Trace downstream')}
       onIsolate={() => console.log('Isolate')}
       onNavigateToCrossLayer={(layer, id) => console.log('Navigate to', layer, id)}
     />
-  );
   ),
 };
 
-export const SimpleFunction: Story = {
-  render: () => (
-    const simpleFunction: BusinessNode = {
-    id: 'function-1',
-    type: 'function',
-    name: 'Calculate Tax',
-    description: 'Computes applicable tax for order items',
-    metadata: {
-      owner: 'Finance',
-      domain: 'Finance',
-      criticality: 'medium',
-      lifecycle: 'active',
-    },
-    hierarchyLevel: 1,
-    childIds: [],
-    properties: {},
-  };
+export const ComplexProcess: Story = {
+  render: () => {
+    const complexProcess: BusinessNode = {
+      id: 'process-complex',
+      type: 'process',
+      name: 'Enterprise Integration Bus',
+      description: 'Centralized message broker and integration platform for all business services',
+      metadata: {
+        owner: 'Integration Team',
+        domain: 'Infrastructure',
+        criticality: 'high',
+        lifecycle: 'active',
+        subprocessCount: 12,
+      },
+      hierarchyLevel: 0,
+      childIds: ['process-1', 'process-2'],
+      properties: {},
+    };
 
-  return (
-    <ProcessInspectorPanel
-      selectedNode={simpleFunction}
-      businessGraph={mockBusinessGraph}
-      onTraceUpstream={() => console.log('Trace upstream')}
-      onTraceDownstream={() => console.log('Trace downstream')}
-      onIsolate={() => console.log('Isolate')}
-    />
-  );
-  ),
+    const complexGraph: BusinessGraph = {
+      nodes: new Map([
+        ...mockBusinessGraph.nodes,
+        ['process-complex', complexProcess],
+      ]),
+      edges: new Map([
+        ...mockBusinessGraph.edges,
+        ['edge-complex-1', { id: 'edge-complex-1', source: 'process-complex', sourceId: 'process-complex', target: 'process-1', targetId: 'process-1', type: 'flows_to' }],
+        ['edge-complex-2', { id: 'edge-complex-2', source: 'process-complex', sourceId: 'process-complex', target: 'process-2', targetId: 'process-2', type: 'flows_to' }],
+        ['edge-complex-3', { id: 'edge-complex-3', source: 'service-1', sourceId: 'service-1', target: 'process-complex', targetId: 'process-complex', type: 'depends_on' }],
+      ]),
+      crossLayerLinks: mockBusinessGraph.crossLayerLinks,
+      indices: mockBusinessGraph.indices,
+      hierarchy: mockBusinessGraph.hierarchy,
+      metrics: mockBusinessGraph.metrics,
+    };
+
+    return (
+      <ProcessInspectorPanel
+        selectedNode={complexProcess}
+        businessGraph={complexGraph}
+        onTraceUpstream={() => console.log('Trace upstream')}
+        onTraceDownstream={() => console.log('Trace downstream')}
+        onIsolate={() => console.log('Isolate')}
+        onNavigateToCrossLayer={(layer, id) => console.log('Navigate to', layer, id)}
+      />
+    );
+  },
+};
+
+export const SimpleFunction: Story = {
+  render: () => {
+    const simpleFunction: BusinessNode = {
+      id: 'function-1',
+      type: 'function',
+      name: 'Calculate Tax',
+      description: 'Computes applicable tax for order items',
+      metadata: {
+        owner: 'Finance',
+        domain: 'Finance',
+        criticality: 'medium',
+        lifecycle: 'active',
+      },
+      hierarchyLevel: 1,
+      childIds: [],
+      properties: {},
+    };
+
+    return (
+      <ProcessInspectorPanel
+        selectedNode={simpleFunction}
+        businessGraph={mockBusinessGraph}
+        onTraceUpstream={() => console.log('Trace upstream')}
+        onTraceDownstream={() => console.log('Trace downstream')}
+        onIsolate={() => console.log('Isolate')}
+      />
+    );
+  },
 };

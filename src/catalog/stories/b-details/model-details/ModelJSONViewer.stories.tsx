@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from '@storybook/react';
 import ModelJSONViewer from '@/apps/embedded/components/ModelJSONViewer';
 import type { MetaModel } from '@/core/types/model';
@@ -276,52 +275,52 @@ const mockLinkRegistry = {
 export const Default: Story = {
   render: () => (
     <div className="w-full max-w-4xl p-4 bg-gray-50">
-    <ModelJSONViewer
-      model={mockModel}
-      selectedLayer={null}
-      specData={mockSpecData}
-      linkRegistry={mockLinkRegistry}
-    />
-  </div>
+      <ModelJSONViewer
+        model={mockModel}
+        selectedLayer={null}
+        specData={mockSpecData}
+        linkRegistry={mockLinkRegistry}
+      />
+    </div>
   ),
 };
 
 export const WithSelectedLayer: Story = {
   render: () => (
     <div className="w-full max-w-4xl p-4 bg-gray-50">
-    <ModelJSONViewer
-      model={mockModel}
-      selectedLayer="motivation-layer"
-      specData={mockSpecData}
-      linkRegistry={mockLinkRegistry}
-    />
-  </div>
+      <ModelJSONViewer
+        model={mockModel}
+        selectedLayer="motivation-layer"
+        specData={mockSpecData}
+        linkRegistry={mockLinkRegistry}
+      />
+    </div>
   ),
 };
 
 export const WithBusinessLayer: Story = {
   render: () => (
     <div className="w-full max-w-4xl p-4 bg-gray-50">
-    <ModelJSONViewer
-      model={mockModel}
-      selectedLayer="business-layer"
-      specData={mockSpecData}
-      linkRegistry={mockLinkRegistry}
-    />
-  </div>
+      <ModelJSONViewer
+        model={mockModel}
+        selectedLayer="business-layer"
+        specData={mockSpecData}
+        linkRegistry={mockLinkRegistry}
+      />
+    </div>
   ),
 };
 
 export const WithPathHighlight: Story = {
   render: () => (
     <div className="w-full max-w-4xl p-4 bg-gray-50">
-    <ModelJSONViewer
-      model={mockModel}
-      selectedLayer="motivation-layer"
-      specData={mockSpecData}
-      linkRegistry={mockLinkRegistry}
-      onPathHighlight={(path) => console.log('Path highlighted:', path)}
-    />
-  </div>
+      <ModelJSONViewer
+        model={mockModel}
+        selectedLayer="motivation-layer"
+        specData={mockSpecData}
+        linkRegistry={mockLinkRegistry}
+        onPathHighlight={(path) => console.log('Path highlighted:', path)}
+      />
+    </div>
   ),
 };

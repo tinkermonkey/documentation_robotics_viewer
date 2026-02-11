@@ -1,10 +1,14 @@
 import React from 'react';
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ExportButtonGroup, ExportService } from '@/apps/embedded/components/shared/ExportButtonGroup';
 
-export default {
+const meta = {
   title: 'A Primitives / Toolbars / ExportButtonGroup',
-} satisfies StoryDefault;
+  component: ExportButtonGroup,
+} satisfies Meta<typeof ExportButtonGroup>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Mock export service for stories
 const createMockExportService = (overrides: Partial<ExportService> = {}): ExportService => ({
@@ -22,7 +26,7 @@ const createMockExportService = (overrides: Partial<ExportService> = {}): Export
   ...overrides,
 });
 
-export const Default: Story = () => (
+export const Default: Story = { render: () => (
   <div style={{ padding: '20px', background: '#f3f4f6', borderRadius: '8px' }}>
     <div style={{ marginBottom: '20px' }}>
       <h3 style={{ marginBottom: '8px' }}>Graph Container (Mock)</h3>
@@ -53,9 +57,9 @@ export const Default: Story = () => (
       />
     </div>
   </div>
-);
+) };
 
-export const Loading: Story = () => {
+export const Loading: Story = { render: () => {
   const [isExporting, setIsExporting] = React.useState(false);
 
   return (
@@ -101,14 +105,14 @@ export const Loading: Story = () => {
       </div>
       {isExporting && (
         <div style={{ color: '#f59e0b', fontSize: '14px' }}>
-          ⏳ Simulating export (click buttons above to see loading state)
+          Simulating export (click buttons above to see loading state)
         </div>
       )}
     </div>
   );
-};
+} };
 
-export const Error: Story = () => (
+export const Error: Story = { render: () => (
   <div style={{ padding: '20px', background: '#f3f4f6', borderRadius: '8px' }}>
     <div style={{ marginBottom: '20px' }}>
       <h3 style={{ marginBottom: '8px' }}>Export Error Scenario</h3>
@@ -149,13 +153,13 @@ export const Error: Story = () => (
         }
       />
       <div style={{ marginTop: '12px', color: '#dc2626', fontSize: '13px' }}>
-        💥 Check console for error messages
+        Check console for error messages
       </div>
     </div>
   </div>
-);
+) };
 
-export const SingleFormat: Story = () => (
+export const SingleFormat: Story = { render: () => (
   <div style={{ padding: '20px', background: '#f3f4f6', borderRadius: '8px' }}>
     <div style={{ marginBottom: '20px' }}>
       <h3 style={{ marginBottom: '8px' }}>PNG Export Only</h3>
@@ -185,9 +189,9 @@ export const SingleFormat: Story = () => (
       />
     </div>
   </div>
-);
+) };
 
-export const MultiFormat: Story = () => (
+export const MultiFormat: Story = { render: () => (
   <div style={{ padding: '20px', background: '#f3f4f6', borderRadius: '8px' }}>
     <div style={{ marginBottom: '20px' }}>
       <h3 style={{ marginBottom: '8px' }}>All Formats Available</h3>
@@ -223,4 +227,4 @@ export const MultiFormat: Story = () => (
       />
     </div>
   </div>
-);
+) };

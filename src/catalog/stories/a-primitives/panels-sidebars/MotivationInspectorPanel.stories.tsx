@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from '@storybook/react';
 import { MotivationInspectorPanel } from '@/apps/embedded/components/MotivationInspectorPanel';
 import type { MotivationGraph } from '../types/motivationGraph';
@@ -92,29 +91,29 @@ const mockGraph: MotivationGraph = {
 export const Default: Story = {
   render: () => (
     <div className="w-96 bg-gray-50 p-4">
-    <MotivationInspectorPanel
-      selectedNodeId="goal-1"
-      graph={mockGraph}
-      onTraceUpstream={(id) => console.log('Trace upstream:', id)}
-      onTraceDownstream={(id) => console.log('Trace downstream:', id)}
-      onShowNetwork={(id) => console.log('Show network:', id)}
-      onFocusOnElement={(id) => console.log('Focus on element:', id)}
-      onClose={() => console.log('Close inspector')}
-    />
-  </div>
+      <MotivationInspectorPanel
+        selectedNodeId="goal-1"
+        graph={mockGraph}
+        onTraceUpstream={(id) => console.log('Trace upstream:', id)}
+        onTraceDownstream={(id) => console.log('Trace downstream:', id)}
+        onShowNetwork={(id) => console.log('Show network:', id)}
+        onFocusOnElement={(id) => console.log('Focus on element:', id)}
+        onClose={() => console.log('Close inspector')}
+      />
+    </div>
   ),
 };
 
 export const RequirementNode: Story = {
   render: () => (
     <div className="w-96 bg-gray-50 p-4">
-    <MotivationInspectorPanel
-      selectedNodeId="req-1"
-      graph={mockGraph}
-      onTraceUpstream={(id) => console.log('Trace upstream:', id)}
-      onTraceDownstream={(id) => console.log('Trace downstream:', id)}
-      onClose={() => console.log('Close inspector')}
-    />
-  </div>
+      <MotivationInspectorPanel
+        selectedNodeId="req-1"
+        graph={mockGraph}
+        onTraceUpstream={(id) => console.log('Trace upstream:', id)}
+        onTraceDownstream={(id) => console.log('Trace downstream:', id)}
+        onClose={() => console.log('Close inspector')}
+      />
+    </div>
   ),
 };

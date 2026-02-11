@@ -1,68 +1,82 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import ConnectionStatus from '@/apps/embedded/components/ConnectionStatus';
 import { useConnectionStore } from '@/apps/embedded/stores/connectionStore';
 import { useEffect } from 'react';
 
-export default {
+const meta = {
   title: 'A Primitives / Indicators / ConnectionStatus',
-} satisfies StoryDefault;
+  component: ConnectionStatus,
+} satisfies Meta<typeof ConnectionStatus>;
 
-export const Connected: Story = () => {
-  useEffect(() => {
-    useConnectionStore.setState({ state: 'connected', reconnectAttempt: 0 });
-  }, []);
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-  return (
-    <div className="p-4 bg-gray-50">
-      <ConnectionStatus />
-    </div>
-  );
+export const Connected: Story = {
+  render: () => {
+    useEffect(() => {
+      useConnectionStore.setState({ state: 'connected', reconnectAttempt: 0 });
+    }, []);
+
+    return (
+      <div className="p-4 bg-gray-50">
+        <ConnectionStatus />
+      </div>
+    );
+  }
 };
 
-export const Connecting: Story = () => {
-  useEffect(() => {
-    useConnectionStore.setState({ state: 'connecting', reconnectAttempt: 0 });
-  }, []);
+export const Connecting: Story = {
+  render: () => {
+    useEffect(() => {
+      useConnectionStore.setState({ state: 'connecting', reconnectAttempt: 0 });
+    }, []);
 
-  return (
-    <div className="p-4 bg-gray-50">
-      <ConnectionStatus />
-    </div>
-  );
+    return (
+      <div className="p-4 bg-gray-50">
+        <ConnectionStatus />
+      </div>
+    );
+  }
 };
 
-export const Reconnecting: Story = () => {
-  useEffect(() => {
-    useConnectionStore.setState({ state: 'reconnecting', reconnectAttempt: 3 });
-  }, []);
+export const Reconnecting: Story = {
+  render: () => {
+    useEffect(() => {
+      useConnectionStore.setState({ state: 'reconnecting', reconnectAttempt: 3 });
+    }, []);
 
-  return (
-    <div className="p-4 bg-gray-50">
-      <ConnectionStatus />
-    </div>
-  );
+    return (
+      <div className="p-4 bg-gray-50">
+        <ConnectionStatus />
+      </div>
+    );
+  }
 };
 
-export const Disconnected: Story = () => {
-  useEffect(() => {
-    useConnectionStore.setState({ state: 'disconnected', reconnectAttempt: 0 });
-  }, []);
+export const Disconnected: Story = {
+  render: () => {
+    useEffect(() => {
+      useConnectionStore.setState({ state: 'disconnected', reconnectAttempt: 0 });
+    }, []);
 
-  return (
-    <div className="p-4 bg-gray-50">
-      <ConnectionStatus />
-    </div>
-  );
+    return (
+      <div className="p-4 bg-gray-50">
+        <ConnectionStatus />
+      </div>
+    );
+  }
 };
 
-export const Error: Story = () => {
-  useEffect(() => {
-    useConnectionStore.setState({ state: 'error', reconnectAttempt: 0 });
-  }, []);
+export const Error: Story = {
+  render: () => {
+    useEffect(() => {
+      useConnectionStore.setState({ state: 'error', reconnectAttempt: 0 });
+    }, []);
 
-  return (
-    <div className="p-4 bg-gray-50">
-      <ConnectionStatus />
-    </div>
-  );
+    return (
+      <div className="p-4 bg-gray-50">
+        <ConnectionStatus />
+      </div>
+    );
+  }
 };

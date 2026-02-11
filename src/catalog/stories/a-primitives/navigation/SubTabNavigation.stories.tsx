@@ -1,29 +1,33 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import SubTabNavigation, { type SubTab } from '@/apps/embedded/components/SubTabNavigation';
 
-export default {
+const meta = {
   title: 'A Primitives / Navigation / SubTabNavigation',
-} satisfies StoryDefault;
+  component: SubTabNavigation,
+} satisfies Meta<typeof SubTabNavigation>;
 
-export const Default: Story = () => {
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = { render: () => {
   const tabs: SubTab[] = [
     { id: 'graph', label: 'Graph', path: '/view/graph' },
     { id: 'json', label: 'JSON', path: '/view/json' },
   ];
 
   return <SubTabNavigation tabs={tabs} activePath="/view/graph" />;
-};
+} };
 
-export const TwoTabs: Story = () => {
+export const TwoTabs: Story = { render: () => {
   const tabs: SubTab[] = [
     { id: 'graph', label: 'Graph View', path: '/model/graph' },
     { id: 'list', label: 'List View', path: '/model/list' },
   ];
 
   return <SubTabNavigation tabs={tabs} activePath="/model/list" />;
-};
+} };
 
-export const FiveTabs: Story = () => {
+export const FiveTabs: Story = { render: () => {
   const tabs: SubTab[] = [
     { id: 'overview', label: 'Overview', path: '/dashboard/overview' },
     { id: 'motivation', label: 'Motivation', path: '/dashboard/motivation' },
@@ -33,9 +37,9 @@ export const FiveTabs: Story = () => {
   ];
 
   return <SubTabNavigation tabs={tabs} activePath="/dashboard/business" />;
-};
+} };
 
-export const FirstTabActive: Story = () => {
+export const FirstTabActive: Story = { render: () => {
   const tabs: SubTab[] = [
     { id: 'graph', label: 'Graph', path: '/view/graph' },
     { id: 'json', label: 'JSON', path: '/view/json' },
@@ -43,9 +47,9 @@ export const FirstTabActive: Story = () => {
   ];
 
   return <SubTabNavigation tabs={tabs} activePath="/view/graph" />;
-};
+} };
 
-export const LastTabActive: Story = () => {
+export const LastTabActive: Story = { render: () => {
   const tabs: SubTab[] = [
     { id: 'graph', label: 'Graph', path: '/view/graph' },
     { id: 'json', label: 'JSON', path: '/view/json' },
@@ -53,18 +57,18 @@ export const LastTabActive: Story = () => {
   ];
 
   return <SubTabNavigation tabs={tabs} activePath="/view/diff" />;
-};
+} };
 
-export const NoTabs: Story = () => {
+export const NoTabs: Story = { render: () => {
   return (
     <div className="p-4 text-gray-500 text-sm">
       <SubTabNavigation tabs={[]} activePath="/view" />
       <p className="mt-4">No sub-tabs to display (component returns null)</p>
     </div>
   );
-};
+} };
 
-export const PathNotExactMatch: Story = () => {
+export const PathNotExactMatch: Story = { render: () => {
   const tabs: SubTab[] = [
     { id: 'graph', label: 'Graph', path: '/model/graph' },
     { id: 'json', label: 'JSON', path: '/model/json' },
@@ -80,4 +84,4 @@ export const PathNotExactMatch: Story = () => {
       </div>
     </div>
   );
-};
+} };

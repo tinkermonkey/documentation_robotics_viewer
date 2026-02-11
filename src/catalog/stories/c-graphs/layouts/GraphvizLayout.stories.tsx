@@ -2,7 +2,7 @@
  * Graphviz Layout Engine Stories
  * Demonstrates classic Graphviz layout algorithms
  */
-import type { Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import GraphViewer from '@/core/components/GraphViewer';
 import { StoryProviderWrapper } from '@/catalog';
 import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';
@@ -14,10 +14,12 @@ export default {
 /**
  * Dot algorithm - hierarchical directed graphs
  */
-export const Dot: Story = () => {
-  const model = createCompleteModelFixture();
+export const Dot: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper model={model}>
       <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
         <GraphViewer
@@ -32,16 +34,20 @@ export const Dot: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };
 
 /**
  * Neato algorithm - spring model layout
  */
-export const Neato: Story = () => {
-  const model = createCompleteModelFixture();
+export const Neato: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper model={model}>
       <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
         <GraphViewer
@@ -54,16 +60,20 @@ export const Neato: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };
 
 /**
  * FDP algorithm - force-directed placement
  */
-export const FDP: Story = () => {
-  const model = createCompleteModelFixture();
+export const FDP: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper model={model}>
       <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
         <GraphViewer
@@ -76,16 +86,20 @@ export const FDP: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };
 
 /**
  * Circo algorithm - circular layout
  */
-export const Circo: Story = () => {
-  const model = createCompleteModelFixture();
+export const Circo: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper model={model}>
       <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
         <GraphViewer
@@ -97,16 +111,20 @@ export const Circo: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };
 
 /**
  * Twopi algorithm - radial layout
  */
-export const Twopi: Story = () => {
-  const model = createCompleteModelFixture();
+export const Twopi: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper model={model}>
       <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
         <GraphViewer
@@ -119,5 +137,7 @@ export const Twopi: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };

@@ -2,7 +2,7 @@
  * ELK Layout Engine Stories
  * Demonstrates advanced layouts using Eclipse Layout Kernel (ELK)
  */
-import type { Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import GraphViewer from '@/core/components/GraphViewer';
 import { StoryProviderWrapper } from '@/catalog';
 import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';
@@ -14,10 +14,12 @@ export default {
 /**
  * Default layered hierarchical layout
  */
-export const Hierarchical: Story = () => {
-  const model = createCompleteModelFixture();
+export const Hierarchical: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper model={model}>
       <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
         <GraphViewer
@@ -32,16 +34,20 @@ export const Hierarchical: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };
 
 /**
  * Force-directed layout with spring model
  */
-export const ForceDirected: Story = () => {
-  const model = createCompleteModelFixture();
+export const ForceDirected: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper model={model}>
       <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
         <GraphViewer
@@ -54,16 +60,20 @@ export const ForceDirected: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };
 
 /**
  * Stress layout for minimal edge crossings
  */
-export const Stress: Story = () => {
-  const model = createCompleteModelFixture();
+export const Stress: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper model={model}>
       <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
         <GraphViewer
@@ -76,16 +86,20 @@ export const Stress: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };
 
 /**
  * Orthogonal edge routing
  */
-export const OrthogonalRouting: Story = () => {
-  const model = createCompleteModelFixture();
+export const OrthogonalRouting: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper model={model}>
       <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
         <GraphViewer
@@ -101,5 +115,7 @@ export const OrthogonalRouting: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };

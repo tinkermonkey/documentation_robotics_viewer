@@ -1,9 +1,9 @@
-import { Story, type StoryDefault } from '@ladle/react';
+import { Story, type StoryDefault } from '@storybook/react';
 import { ChatPanel } from '@/apps/embedded/components/ChatPanel';
 
 export default {
   title: 'D Chat / Containers / ChatPanelContainer',
-} satisfies StoryDefault;
+} 
 
 /**
  * ChatPanelContainer Stories
@@ -15,31 +15,31 @@ export default {
  * For error state demonstration, we show a mock error display.
  */
 
-export const Default: Story = () => (
+export const Default: Story = { render: () => (
   <div style={{ height: '500px' }}>
     <ChatPanel title="DrBot Chat" showCostInfo={true} testId="chat-panel-container" />
   </div>
-);
+) };
 
-export const WithCustomTitle: Story = () => (
+export const WithCustomTitle: Story = { render: () => (
   <div style={{ height: '500px' }}>
     <ChatPanel title="Architecture Assistant" showCostInfo={true} testId="chat-panel-container" />
   </div>
-);
+) };
 
-export const WithoutCostInfo: Story = () => (
+export const WithoutCostInfo: Story = { render: () => (
   <div style={{ height: '500px' }}>
     <ChatPanel title="DrBot Chat" showCostInfo={false} testId="chat-panel-container" />
   </div>
-);
+) };
 
-export const WithCustomTestId: Story = () => (
+export const WithCustomTestId: Story = { render: () => (
   <div style={{ height: '500px' }}>
     <ChatPanel title="DrBot Chat" showCostInfo={true} testId="custom-chat-panel" />
   </div>
-);
+) };
 
-export const AllCustomProps: Story = () => (
+export const AllCustomProps: Story = { render: () => (
   <div style={{ height: '500px' }}>
     <ChatPanel
       title="Custom Chat"
@@ -47,13 +47,13 @@ export const AllCustomProps: Story = () => (
       testId="all-custom"
     />
   </div>
-);
+) };
 
 /**
  * Error State - Demonstrates what the error display looks like
  * when chat service connection fails
  */
-export const ErrorState: Story = () => (
+export const ErrorState: Story = { render: () => (
   <div style={{ height: '500px' }}>
     <div className="flex flex-col h-full bg-white dark:bg-gray-800 border rounded-lg">
       <div className="flex-1 flex items-center justify-center p-6">
@@ -79,4 +79,6 @@ export const ErrorState: Story = () => (
       </div>
     </div>
   </div>
-);
+) };
+
+

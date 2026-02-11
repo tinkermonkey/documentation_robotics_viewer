@@ -1,4 +1,4 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import C4GraphView from '@/apps/embedded/components/C4GraphView';
 import { ReactFlowProvider } from '@xyflow/react';
 import { createCompleteModelFixture } from '@catalog/fixtures/modelFixtures';
@@ -7,13 +7,15 @@ import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 export default {
   title: 'C Graphs / Views / C4GraphView',
-} satisfies StoryDefault;
+} 
 
-export const Default: Story = () => {
-  const model = createCompleteModelFixture();
+export const Default: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
   const allContainerTypes = new Set(Object.values(ContainerType));
 
-  return (
+      return (
+      
     <ReactFlowProvider>
       <StoryLoadedWrapper testId="c4-graph-default">
         <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
@@ -26,13 +28,17 @@ export const Default: Story = () => {
         </div>
       </StoryLoadedWrapper>
     </ReactFlowProvider>
-  );
+  
+    );
+  }
 };
 
-export const ContainerView: Story = () => {
-  const model = createCompleteModelFixture();
+export const ContainerView: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <ReactFlowProvider>
       <StoryLoadedWrapper testId="c4-graph-container">
         <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
@@ -45,14 +51,18 @@ export const ContainerView: Story = () => {
         </div>
       </StoryLoadedWrapper>
     </ReactFlowProvider>
-  );
+  
+    );
+  }
 };
 
-export const FilteredByTechnology: Story = () => {
-  const model = createCompleteModelFixture();
+export const FilteredByTechnology: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
   const allContainerTypes = new Set(Object.values(ContainerType));
 
-  return (
+      return (
+      
     <ReactFlowProvider>
       <StoryLoadedWrapper testId="c4-graph-filtered-tech">
         <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
@@ -65,13 +75,17 @@ export const FilteredByTechnology: Story = () => {
         </div>
       </StoryLoadedWrapper>
     </ReactFlowProvider>
-  );
+  
+    );
+  }
 };
 
-export const MultiFilter: Story = () => {
-  const model = createCompleteModelFixture();
+export const MultiFilter: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <ReactFlowProvider>
       <StoryLoadedWrapper testId="c4-graph-multi-filter">
         <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
@@ -84,5 +98,7 @@ export const MultiFilter: Story = () => {
         </div>
       </StoryLoadedWrapper>
     </ReactFlowProvider>
-  );
+  
+    );
+  }
 };

@@ -1,4 +1,4 @@
-import type { Story, StoryDefault } from '@ladle/react';
+import type { Story, StoryDefault } from '@storybook/react';
 import { ChatTextContent } from '@/apps/embedded/components/chat/ChatTextContent';
 import { ThinkingBlock } from '@/apps/embedded/components/chat/ThinkingBlock';
 import { ToolInvocationCard } from '@/apps/embedded/components/chat/ToolInvocationCard';
@@ -9,7 +9,7 @@ import type { ChatMessage as ChatMessageType } from '@/apps/embedded/types/chat'
 
 export default {
   title: 'D Chat / Components / ChatComponents',
-} satisfies StoryDefault;
+} 
 
 /**
  * Ladle Stories for Chat Components
@@ -20,100 +20,100 @@ export default {
 // ChatTextContent Stories
 // ============================================================================
 
-export const ChatTextContentBasic: Story = () => (
+export const ChatTextContentBasic: Story = { render: () => (
   <ChatTextContent
     content="This is plain text content without any formatting."
     isStreaming={false}
   />
-);
+) };
 
-export const ChatTextContentMarkdown: Story = () => (
+export const ChatTextContentMarkdown: Story = { render: () => (
   <ChatTextContent
     content="This is **bold text** and *italic text* and a [link](https://example.com) and `inline code`."
     isStreaming={false}
   />
-);
+) };
 
-export const ChatTextContentCodeBlock: Story = () => (
+export const ChatTextContentCodeBlock: Story = { render: () => (
   <ChatTextContent
     content={`Here's a code block:\n\`\`\`javascript\nconst greeting = "Hello, World!";\nconsole.log(greeting);\n\`\`\``}
     isStreaming={false}
   />
-);
+) };
 
-export const ChatTextContentTable: Story = () => (
+export const ChatTextContentTable: Story = { render: () => (
   <ChatTextContent
     content={`| Feature | Status |\n|---------|--------|\n| Chat | Active |\n| Tools | Active |\n| Thinking | Active |`}
     isStreaming={false}
   />
-);
+) };
 
-export const ChatTextContentStreaming: Story = () => (
+export const ChatTextContentStreaming: Story = { render: () => (
   <ChatTextContent
     content="This content is currently streaming..."
     isStreaming={true}
   />
-);
+) };
 
-export const ChatTextContentMixed: Story = () => (
+export const ChatTextContentMixed: Story = { render: () => (
   <ChatTextContent
     content={`# Heading\n\nThis is **bold** and *italic* text.\n\n\`\`\`python\ndef hello():\n    print("Hello")\n\`\`\`\n\nAnd a [link](https://example.com) to check out.`}
     isStreaming={false}
   />
-);
+) };
 
-export const ChatTextContentBlockquote: Story = () => (
+export const ChatTextContentBlockquote: Story = { render: () => (
   <ChatTextContent
     content={`> This is a blockquote\n> with multiple lines\n> to demonstrate formatting`}
     isStreaming={false}
   />
-);
+) };
 
-export const ChatTextContentLists: Story = () => (
+export const ChatTextContentLists: Story = { render: () => (
   <ChatTextContent
     content={`## Unordered List\n- Item 1\n- Item 2\n- Item 3\n\n## Ordered List\n1. First\n2. Second\n3. Third`}
     isStreaming={false}
   />
-);
+) };
 
 // ============================================================================
 // ThinkingBlock Stories
 // ============================================================================
 
-export const ThinkingBlockDefault: Story = () => (
+export const ThinkingBlockDefault: Story = { render: () => (
   <ThinkingBlock
     content="I'm thinking about how to solve this problem. Let me consider the requirements and come up with the best approach."
     isStreaming={false}
     defaultExpanded={false}
   />
-);
+) };
 
-export const ThinkingBlockExpanded: Story = () => (
+export const ThinkingBlockExpanded: Story = { render: () => (
   <ThinkingBlock
     content="I'm thinking about how to solve this problem. Let me consider the requirements and come up with the best approach."
     isStreaming={false}
     defaultExpanded={true}
   />
-);
+) };
 
-export const ThinkingBlockWithDuration: Story = () => (
+export const ThinkingBlockWithDuration: Story = { render: () => (
   <ThinkingBlock
     content="I analyzed the problem carefully and determined the optimal solution."
     durationMs={2500}
     isStreaming={false}
     defaultExpanded={false}
   />
-);
+) };
 
-export const ThinkingBlockStreaming: Story = () => (
+export const ThinkingBlockStreaming: Story = { render: () => (
   <ThinkingBlock
     content="Analyzing requirements... considering edge cases... formulating response..."
     isStreaming={true}
     defaultExpanded={true}
   />
-);
+) };
 
-export const ThinkingBlockLongContent: Story = () => (
+export const ThinkingBlockLongContent: Story = { render: () => (
   <ThinkingBlock
     content={`This is a very long thinking block that demonstrates how the component handles content that exceeds 100 characters.
 The preview will be truncated when collapsed. When expanded, the full thinking process will be visible to the user.
@@ -121,30 +121,30 @@ This allows users to understand the reasoning behind the assistant's response wi
     isStreaming={false}
     defaultExpanded={false}
   />
-);
+) };
 
-export const ThinkingBlockShortContent: Story = () => (
+export const ThinkingBlockShortContent: Story = { render: () => (
   <ThinkingBlock
     content="Brief thought"
     isStreaming={false}
     defaultExpanded={false}
   />
-);
+) };
 
 // ============================================================================
 // ToolInvocationCard Stories
 // ============================================================================
 
-export const ToolInvocationCardExecuting: Story = () => (
+export const ToolInvocationCardExecuting: Story = { render: () => (
   <ToolInvocationCard
     toolName="calculator"
     toolInput={{ expression: "2 + 2" }}
     status={{ state: 'executing' }}
     timestamp="2024-01-15T10:30:00Z"
   />
-);
+) };
 
-export const ToolInvocationCardComplete: Story = () => (
+export const ToolInvocationCardComplete: Story = { render: () => (
   <ToolInvocationCard
     toolName="calculator"
     toolInput={{ expression: "2 + 2" }}
@@ -153,9 +153,9 @@ export const ToolInvocationCardComplete: Story = () => (
     timestamp="2024-01-15T10:30:00Z"
     duration={245}
   />
-);
+) };
 
-export const ToolInvocationCardError: Story = () => (
+export const ToolInvocationCardError: Story = { render: () => (
   <ToolInvocationCard
     toolName="calculator"
     toolInput={{ expression: "invalid" }}
@@ -164,9 +164,9 @@ export const ToolInvocationCardError: Story = () => (
     timestamp="2024-01-15T10:30:00Z"
     duration={150}
   />
-);
+) };
 
-export const ToolInvocationCardLongOutput: Story = () => (
+export const ToolInvocationCardLongOutput: Story = { render: () => (
   <ToolInvocationCard
     toolName="search"
     toolInput={{ query: "documentation" }}
@@ -179,9 +179,9 @@ export const ToolInvocationCardLongOutput: Story = () => (
     timestamp="2024-01-15T10:30:00Z"
     duration={420}
   />
-);
+) };
 
-export const ToolInvocationCardComplexInput: Story = () => (
+export const ToolInvocationCardComplexInput: Story = { render: () => (
   <ToolInvocationCard
     toolName="database_query"
     toolInput={{
@@ -195,9 +195,9 @@ export const ToolInvocationCardComplexInput: Story = () => (
     timestamp="2024-01-15T10:30:00Z"
     duration={320}
   />
-);
+) };
 
-export const ToolInvocationCardNoOutput: Story = () => (
+export const ToolInvocationCardNoOutput: Story = { render: () => (
   <ToolInvocationCard
     toolName="logger"
     toolInput={{ message: "Event logged", level: "info" }}
@@ -205,51 +205,51 @@ export const ToolInvocationCardNoOutput: Story = () => (
     timestamp="2024-01-15T10:30:00Z"
     duration={50}
   />
-);
+) };
 
 // ============================================================================
 // UsageStatsBadge Stories
 // ============================================================================
 
-export const UsageStatsBadgeSmall: Story = () => (
+export const UsageStatsBadgeSmall: Story = { render: () => (
   <UsageStatsBadge
     inputTokens={50}
     outputTokens={75}
     totalTokens={125}
   />
-);
+) };
 
-export const UsageStatsBadgeMedium: Story = () => (
+export const UsageStatsBadgeMedium: Story = { render: () => (
   <UsageStatsBadge
     inputTokens={500}
     outputTokens={750}
     totalTokens={1250}
   />
-);
+) };
 
-export const UsageStatsBadgeLarge: Story = () => (
+export const UsageStatsBadgeLarge: Story = { render: () => (
   <UsageStatsBadge
     inputTokens={5000}
     outputTokens={7500}
     totalTokens={12500}
   />
-);
+) };
 
-export const UsageStatsBadgeFormatted: Story = () => (
+export const UsageStatsBadgeFormatted: Story = { render: () => (
   <UsageStatsBadge
     inputTokens={1234}
     outputTokens={1234}
     totalTokens={2468}
   />
-);
+) };
 
-export const UsageStatsBadgeHighVolume: Story = () => (
+export const UsageStatsBadgeHighVolume: Story = { render: () => (
   <UsageStatsBadge
     inputTokens={50000}
     outputTokens={75000}
     totalTokens={125000}
   />
-);
+) };
 
 // ============================================================================
 // ChatMessage Stories
@@ -413,58 +413,58 @@ export const ChatMessageWithError: Story = () => {
 // ChatInput Stories
 // ============================================================================
 
-export const ChatInputDefault: Story = () => (
+export const ChatInputDefault: Story = { render: () => (
   <ChatInput
     onSendMessage={async (msg: string) => console.log('Sending:', msg)}
     sdkStatus={{ sdkAvailable: true, sdkVersion: '1.0.0', errorMessage: null }}
   />
-);
+) };
 
-export const ChatInputStreaming: Story = () => (
+export const ChatInputStreaming: Story = { render: () => (
   <ChatInput
     onSendMessage={async (msg: string) => console.log('Sending:', msg)}
     onCancel={async () => console.log('Cancelled')}
     isStreaming={true}
     sdkStatus={{ sdkAvailable: true, sdkVersion: '1.0.0', errorMessage: null }}
   />
-);
+) };
 
-export const ChatInputDisabledSDK: Story = () => (
+export const ChatInputDisabledSDK: Story = { render: () => (
   <ChatInput
     onSendMessage={async (msg: string) => console.log('Sending:', msg)}
     sdkStatus={{ sdkAvailable: false, sdkVersion: null, errorMessage: 'SDK not initialized' }}
   />
-);
+) };
 
-export const ChatInputSending: Story = () => (
+export const ChatInputSending: Story = { render: () => (
   <ChatInput
     onSendMessage={async (msg: string) => console.log('Sending:', msg)}
     isSending={true}
     sdkStatus={{ sdkAvailable: true, sdkVersion: '1.0.0', errorMessage: null }}
   />
-);
+) };
 
-export const ChatInputDisabled: Story = () => (
+export const ChatInputDisabled: Story = { render: () => (
   <ChatInput
     onSendMessage={async (msg: string) => console.log('Sending:', msg)}
     disabled={true}
     sdkStatus={{ sdkAvailable: true, sdkVersion: '1.0.0', errorMessage: null }}
   />
-);
+) };
 
-export const ChatInputCustomPlaceholder: Story = () => (
+export const ChatInputCustomPlaceholder: Story = { render: () => (
   <ChatInput
     onSendMessage={async (msg: string) => console.log('Sending:', msg)}
     placeholder="Ask me anything..."
     sdkStatus={{ sdkAvailable: true, sdkVersion: '1.0.0', errorMessage: null }}
   />
-);
+) };
 
 // ============================================================================
 // Combined Chat Panel Stories (if needed)
 // ============================================================================
 
-export const ChatPanelConversation: Story = () => (
+export const ChatPanelConversation: Story = { render: () => (
   <div className="space-y-4 p-4 bg-white dark:bg-gray-900">
     <div className="text-sm text-gray-500">Conversation Example</div>
     <ChatMessage
@@ -494,4 +494,6 @@ export const ChatPanelConversation: Story = () => (
       sdkStatus={{ sdkAvailable: true, sdkVersion: '1.0.0', errorMessage: null }}
     />
   </div>
-);
+) };
+
+

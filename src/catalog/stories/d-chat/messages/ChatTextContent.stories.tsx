@@ -2,7 +2,7 @@
  * ChatTextContent Component Stories
  * Demonstrates markdown text rendering in chat messages
  */
-import type { Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ChatTextContent } from '@/apps/embedded/components/chat/ChatTextContent';
 
 export default {
@@ -12,19 +12,20 @@ export default {
 /**
  * Plain text without markdown
  */
-export const PlainText: Story = () => {
-  return (
+export const PlainText: Story = { render: () => (
+    
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
       <ChatTextContent content="This is a simple text message without any markdown formatting." />
     </div>
-  );
-};
+  
+  ) };
 
 /**
  * Text with markdown formatting
  */
-export const WithMarkdown: Story = () => {
-  const content = `
+export const WithMarkdown: Story = {
+  render: () => {
+const content = `
 Here's a **bold** statement and an *italic* one.
 
 You can also have \`inline code\` in your messages.
@@ -35,18 +36,22 @@ Lists work too:
 - Item three
   `;
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
       <ChatTextContent content={content} />
     </div>
-  );
+  
+    );
+  }
 };
 
 /**
  * Code block with syntax highlighting
  */
-export const CodeBlock: Story = () => {
-  const content = `
+export const CodeBlock: Story = {
+  render: () => {
+const content = `
 Here's an example TypeScript function:
 
 \`\`\`typescript
@@ -64,18 +69,22 @@ function findGoals(model: MetaModel): Goal[] {
 This demonstrates syntax highlighting in chat.
   `;
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
       <ChatTextContent content={content} />
     </div>
-  );
+  
+    );
+  }
 };
 
 /**
  * Table formatting
  */
-export const Table: Story = () => {
-  const content = `
+export const Table: Story = {
+  render: () => {
+const content = `
 Here's a summary of the layers:
 
 | Layer | Element Count | Status |
@@ -86,18 +95,22 @@ Here's a summary of the layers:
 | Technology | 6 | Planned |
   `;
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
       <ChatTextContent content={content} />
     </div>
-  );
+  
+    );
+  }
 };
 
 /**
  * Links and references
  */
-export const Links: Story = () => {
-  const content = `
+export const Links: Story = {
+  render: () => {
+const content = `
 You can learn more about:
 - [ArchiMate specification](https://www.opengroup.org/archimate-forum)
 - [React Flow documentation](https://reactflow.dev)
@@ -106,18 +119,22 @@ You can learn more about:
 Reference format: See element \`motivation.goal.improve-customer-satisfaction\` for details.
   `;
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
       <ChatTextContent content={content} />
     </div>
-  );
+  
+    );
+  }
 };
 
 /**
  * Nested lists with mixed content
  */
-export const NestedLists: Story = () => {
-  const content = `
+export const NestedLists: Story = {
+  render: () => {
+const content = `
 Architecture analysis results:
 
 1. **Motivation Layer**
@@ -136,9 +153,12 @@ Architecture analysis results:
    - Database schemas defined
   `;
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
       <ChatTextContent content={content} />
     </div>
-  );
+  
+    );
+  }
 };

@@ -1,4 +1,4 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import MotivationGraphView from '@/apps/embedded/components/MotivationGraphView';
 import { ReactFlowProvider } from '@xyflow/react';
 import { createCompleteModelFixture } from '@catalog/fixtures/modelFixtures';
@@ -7,14 +7,16 @@ import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 export default {
   title: 'C Graphs / Views / MotivationGraphView',
-} satisfies StoryDefault;
+} 
 
-export const Default: Story = () => {
-  const model = createCompleteModelFixture();
+export const Default: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
   const allElementTypes = new Set(Object.values(MotivationElementType));
   const allRelationshipTypes = new Set(Object.values(MotivationRelationshipType));
 
-  return (
+      return (
+      
     <ReactFlowProvider>
       <StoryLoadedWrapper testId="motivation-graph-default">
         <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
@@ -27,14 +29,18 @@ export const Default: Story = () => {
         </div>
       </StoryLoadedWrapper>
     </ReactFlowProvider>
-  );
+  
+    );
+  }
 };
 
-export const FilteredView: Story = () => {
-  const model = createCompleteModelFixture();
+export const FilteredView: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
   const allRelationshipTypes = new Set(Object.values(MotivationRelationshipType));
 
-  return (
+      return (
+      
     <ReactFlowProvider>
       <StoryLoadedWrapper testId="motivation-graph-filtered">
         <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
@@ -47,14 +53,18 @@ export const FilteredView: Story = () => {
         </div>
       </StoryLoadedWrapper>
     </ReactFlowProvider>
-  );
+  
+    );
+  }
 };
 
-export const OnlyGoals: Story = () => {
-  const model = createCompleteModelFixture();
+export const OnlyGoals: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
   const allRelationshipTypes = new Set(Object.values(MotivationRelationshipType));
 
-  return (
+      return (
+      
     <ReactFlowProvider>
       <StoryLoadedWrapper testId="motivation-graph-goals">
         <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
@@ -67,5 +77,7 @@ export const OnlyGoals: Story = () => {
         </div>
       </StoryLoadedWrapper>
     </ReactFlowProvider>
-  );
+  
+    );
+  }
 };

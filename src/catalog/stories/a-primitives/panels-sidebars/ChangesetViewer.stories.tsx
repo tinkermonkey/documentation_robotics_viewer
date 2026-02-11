@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import ChangesetViewer from '@/apps/embedded/components/ChangesetViewer';
 import { useChangesetStore } from '@/apps/embedded/stores/changesetStore';
-import { useEffect } from 'react';
+import { useEffect, ReactNode } from 'react';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / ChangesetViewer',
@@ -12,6 +12,19 @@ const meta = {
 
 export default meta;
 type Story = StoryObj;
+
+// Wrapper component to handle state setup
+const ChangesetViewerWrapper = ({ initialState }: { initialState: any }): ReactNode => {
+  useEffect(() => {
+    useChangesetStore.setState(initialState);
+  }, [initialState]);
+
+  return (
+    <div className="w-full max-w-4xl p-4 bg-gray-50">
+      <ChangesetViewer />
+    </div>
+  );
+};
 
 const mockChangeset = {
   id: 'cs-1',
@@ -82,72 +95,48 @@ const mockChangeset = {
 
 export const WithChangeset: Story = {
   render: () => (
-    useEffect(() => {
-    useChangesetStore.setState({ 
-      selectedChangeset: mockChangeset,
-      loading: false,
-      error: null
-    });
-  }, []);
-
-  return (
-    <div className="w-full max-w-4xl p-4 bg-gray-50">
-      <ChangesetViewer />
-    </div>
-  );
+    <ChangesetViewerWrapper
+      initialState={{
+        selectedChangeset: mockChangeset,
+        loading: false,
+        error: null,
+      }}
+    />
   ),
 };
 
 export const Loading: Story = {
   render: () => (
-    useEffect(() => {
-    useChangesetStore.setState({ 
-      selectedChangeset: null,
-      loading: true,
-      error: null
-    });
-  }, []);
-
-  return (
-    <div className="w-full max-w-4xl p-4 bg-gray-50">
-      <ChangesetViewer />
-    </div>
-  );
+    <ChangesetViewerWrapper
+      initialState={{
+        selectedChangeset: null,
+        loading: true,
+        error: null,
+      }}
+    />
   ),
 };
 
 export const NoSelection: Story = {
   render: () => (
-    useEffect(() => {
-    useChangesetStore.setState({ 
-      selectedChangeset: null,
-      loading: false,
-      error: null
-    });
-  }, []);
-
-  return (
-    <div className="w-full max-w-4xl p-4 bg-gray-50">
-      <ChangesetViewer />
-    </div>
-  );
+    <ChangesetViewerWrapper
+      initialState={{
+        selectedChangeset: null,
+        loading: false,
+        error: null,
+      }}
+    />
   ),
 };
 
 export const WithError: Story = {
   render: () => (
-    useEffect(() => {
-    useChangesetStore.setState({ 
-      selectedChangeset: null,
-      loading: false,
-      error: 'Failed to load changeset details'
-    });
-  }, []);
-
-  return (
-    <div className="w-full max-w-4xl p-4 bg-gray-50">
-      <ChangesetViewer />
-    </div>
-  );
+    <ChangesetViewerWrapper
+      initialState={{
+        selectedChangeset: null,
+        loading: false,
+        error: 'Failed to load changeset details',
+      }}
+    />
   ),
 };

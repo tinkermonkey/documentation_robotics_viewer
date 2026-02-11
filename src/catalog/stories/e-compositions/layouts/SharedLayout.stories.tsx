@@ -1,11 +1,15 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import SharedLayout from '@/apps/embedded/components/SharedLayout';
 
-export default {
+const meta = {
   title: 'E Compositions / Layouts / SharedLayout',
-} satisfies StoryDefault;
+  component: SharedLayout,
+} satisfies Meta<typeof SharedLayout>;
 
-export const ThreeColumn: Story = () => (
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const ThreeColumn: Story = { render: () => (
   <div className="h-screen bg-gray-100">
     <SharedLayout
       showLeftSidebar={true}
@@ -38,9 +42,9 @@ export const ThreeColumn: Story = () => (
       </div>
     </SharedLayout>
   </div>
-);
+) };
 
-export const TwoColumnLeft: Story = () => (
+export const TwoColumnLeft: Story = { render: () => (
   <div className="h-screen bg-gray-100">
     <SharedLayout
       showLeftSidebar={true}
@@ -63,9 +67,9 @@ export const TwoColumnLeft: Story = () => (
       </div>
     </SharedLayout>
   </div>
-);
+) };
 
-export const TwoColumnRight: Story = () => (
+export const TwoColumnRight: Story = { render: () => (
   <div className="h-screen bg-gray-100">
     <SharedLayout
       showLeftSidebar={false}
@@ -88,9 +92,9 @@ export const TwoColumnRight: Story = () => (
       </div>
     </SharedLayout>
   </div>
-);
+) };
 
-export const SingleColumn: Story = () => (
+export const SingleColumn: Story = { render: () => (
   <div className="h-screen bg-gray-100">
     <SharedLayout showLeftSidebar={false} showRightSidebar={false}>
       <div className="h-full flex items-center justify-center">
@@ -101,4 +105,6 @@ export const SingleColumn: Story = () => (
       </div>
     </SharedLayout>
   </div>
-);
+) };
+
+

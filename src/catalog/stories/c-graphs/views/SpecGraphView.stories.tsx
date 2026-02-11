@@ -1,11 +1,10 @@
-// @ts-nocheck
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import SpecGraphView from '@/apps/embedded/components/SpecGraphView';
 import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 export default {
   title: 'C Graphs / Views / SpecGraphView',
-} satisfies StoryDefault;
+} 
 
 const mockSpecData = {
   version: '1.0.0',
@@ -47,7 +46,7 @@ const mockSpecData = {
   },
 };
 
-export const Default: Story = () => (
+export const Default: Story = { render: () => (
   <StoryLoadedWrapper testId="spec-graph-default">
     <div className="w-full h-96 bg-white border border-gray-200">
       <SpecGraphView
@@ -56,9 +55,9 @@ export const Default: Story = () => (
       />
     </div>
   </StoryLoadedWrapper>
-);
+) };
 
-export const WithSelection: Story = () => (
+export const WithSelection: Story = { render: () => (
   <StoryLoadedWrapper testId="spec-graph-selection">
     <div className="w-full h-96 bg-white border border-gray-200">
       <SpecGraphView
@@ -67,4 +66,6 @@ export const WithSelection: Story = () => (
       />
     </div>
   </StoryLoadedWrapper>
-);
+) };
+
+

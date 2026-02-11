@@ -3,17 +3,20 @@
  * Demonstrates the draggable, persistent chat panel in various states
  */
 
-import type { Story, StoryDefault } from '@ladle/react';
-
-export default {
-  title: 'D Chat / Containers / FloatingChatPanel',
-} satisfies StoryDefault;
+import type { Meta, StoryObj } from '@storybook/react';
 import { FloatingChatPanel } from '@/apps/embedded/components/FloatingChatPanel';
 import { useFloatingChatStore } from '@/apps/embedded/stores/floatingChatStore';
 import { useEffect } from 'react';
 
-export const Default: Story = () => {
-  // Open the panel by default for demo
+const meta = {
+  title: 'D Chat / Containers / FloatingChatPanel',
+  component: FloatingChatPanel,
+} satisfies Meta<typeof FloatingChatPanel>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+const DefaultWrapper = () => {
   useEffect(() => {
     useFloatingChatStore.getState().open();
   }, []);
@@ -38,9 +41,7 @@ export const Default: Story = () => {
   );
 };
 
-Default.storyName = 'Default State';
-
-export const Minimized: Story = () => {
+const MinimizedWrapper = () => {
   useEffect(() => {
     const store = useFloatingChatStore.getState();
     store.open();
@@ -64,9 +65,7 @@ export const Minimized: Story = () => {
   );
 };
 
-Minimized.storyName = 'Minimized';
-
-export const CustomPosition: Story = () => {
+const CustomPositionWrapper = () => {
   useEffect(() => {
     const store = useFloatingChatStore.getState();
     store.open();
@@ -96,9 +95,7 @@ export const CustomPosition: Story = () => {
   );
 };
 
-CustomPosition.storyName = 'Custom Position & Size';
-
-export const DarkMode: Story = () => {
+const DarkModeWrapper = () => {
   useEffect(() => {
     useFloatingChatStore.getState().open();
     document.documentElement.classList.add('dark');
@@ -118,4 +115,14 @@ export const DarkMode: Story = () => {
   );
 };
 
+export const Default: Story = { render: () => <DefaultWrapper /> };
+Default.storyName = 'Default State';
+
+export const Minimized: Story = { render: () => <MinimizedWrapper /> };
+Minimized.storyName = 'Minimized';
+
+export const CustomPosition: Story = { render: () => <CustomPositionWrapper /> };
+CustomPosition.storyName = 'Custom Position & Size';
+
+export const DarkMode: Story = { render: () => <DarkModeWrapper /> };
 DarkMode.storyName = 'Dark Mode';

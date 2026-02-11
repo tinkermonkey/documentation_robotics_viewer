@@ -1,4 +1,4 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import GraphViewer from '@/core/components/GraphViewer';
 import { ReactFlowProvider } from '@xyflow/react';
 import { createCompleteModelFixture, createMinimalModelFixture } from '@catalog/fixtures/modelFixtures';
@@ -6,12 +6,14 @@ import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 export default {
   title: 'C Graphs / Views / GraphViewer',
-} satisfies StoryDefault;
+} 
 
-export const MinimalGraph: Story = () => {
-  const model = createMinimalModelFixture();
+export const MinimalGraph: Story = {
+  render: () => {
+const model = createMinimalModelFixture();
 
-  return (
+      return (
+      
     <ReactFlowProvider>
       <StoryLoadedWrapper testId="graph-viewer-minimal">
         <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
@@ -19,13 +21,17 @@ export const MinimalGraph: Story = () => {
         </div>
       </StoryLoadedWrapper>
     </ReactFlowProvider>
-  );
+  
+    );
+  }
 };
 
-export const CompleteModel: Story = () => {
-  const model = createCompleteModelFixture();
+export const CompleteModel: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <ReactFlowProvider>
       <StoryLoadedWrapper testId="graph-viewer-complete">
         <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
@@ -33,13 +39,17 @@ export const CompleteModel: Story = () => {
         </div>
       </StoryLoadedWrapper>
     </ReactFlowProvider>
-  );
+  
+    );
+  }
 };
 
-export const MotivationLayer: Story = () => {
-  const model = createCompleteModelFixture();
+export const MotivationLayer: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <ReactFlowProvider>
       <StoryLoadedWrapper testId="graph-viewer-motivation">
         <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
@@ -47,13 +57,17 @@ export const MotivationLayer: Story = () => {
         </div>
       </StoryLoadedWrapper>
     </ReactFlowProvider>
-  );
+  
+    );
+  }
 };
 
-export const BusinessLayer: Story = () => {
-  const model = createCompleteModelFixture();
+export const BusinessLayer: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <ReactFlowProvider>
       <StoryLoadedWrapper testId="graph-viewer-business">
         <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
@@ -61,13 +75,17 @@ export const BusinessLayer: Story = () => {
         </div>
       </StoryLoadedWrapper>
     </ReactFlowProvider>
-  );
+  
+    );
+  }
 };
 
-export const ApplicationLayer: Story = () => {
-  const model = createCompleteModelFixture();
+export const ApplicationLayer: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <ReactFlowProvider>
       <StoryLoadedWrapper testId="graph-viewer-application">
         <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
@@ -75,13 +93,17 @@ export const ApplicationLayer: Story = () => {
         </div>
       </StoryLoadedWrapper>
     </ReactFlowProvider>
-  );
+  
+    );
+  }
 };
 
-export const TechnologyLayer: Story = () => {
-  const model = createCompleteModelFixture();
+export const TechnologyLayer: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <ReactFlowProvider>
       <StoryLoadedWrapper testId="graph-viewer-technology">
         <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
@@ -89,5 +111,7 @@ export const TechnologyLayer: Story = () => {
         </div>
       </StoryLoadedWrapper>
     </ReactFlowProvider>
-  );
+  
+    );
+  }
 };

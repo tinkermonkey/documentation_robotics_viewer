@@ -2,7 +2,7 @@
  * ChatMessage Component Stories
  * Demonstrates the main message container with different roles and content types
  */
-import type { Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ChatMessage } from '@/apps/embedded/components/chat/ChatMessage';
 import type { ChatMessage as ChatMessageType } from '@/apps/embedded/types/chat';
 
@@ -13,8 +13,9 @@ export default {
 /**
  * User message with simple text
  */
-export const UserMessage: Story = () => {
-  const message: ChatMessageType = {
+export const UserMessage: Story = {
+  render: () => {
+const message: ChatMessageType = {
     id: '1',
     role: 'user',
     conversationId: 'conv-1',
@@ -28,18 +29,22 @@ export const UserMessage: Story = () => {
     ]
   };
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
       <ChatMessage message={message} />
     </div>
-  );
+  
+    );
+  }
 };
 
 /**
  * Assistant message with simple text response
  */
-export const AssistantMessage: Story = () => {
-  const message: ChatMessageType = {
+export const AssistantMessage: Story = {
+  render: () => {
+const message: ChatMessageType = {
     id: '2',
     role: 'assistant',
     conversationId: 'conv-1',
@@ -53,18 +58,22 @@ export const AssistantMessage: Story = () => {
     ]
   };
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
       <ChatMessage message={message} />
     </div>
-  );
+  
+    );
+  }
 };
 
 /**
  * Assistant message being streamed
  */
-export const StreamingMessage: Story = () => {
-  const message: ChatMessageType = {
+export const StreamingMessage: Story = {
+  render: () => {
+const message: ChatMessageType = {
     id: '3',
     role: 'assistant',
     conversationId: 'conv-1',
@@ -79,18 +88,22 @@ export const StreamingMessage: Story = () => {
     ]
   };
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
       <ChatMessage message={message} />
     </div>
-  );
+  
+    );
+  }
 };
 
 /**
  * Message with tool invocations
  */
-export const WithToolInvocations: Story = () => {
-  const message: ChatMessageType = {
+export const WithToolInvocations: Story = {
+  render: () => {
+const message: ChatMessageType = {
     id: '4',
     role: 'assistant',
     conversationId: 'conv-1',
@@ -117,18 +130,22 @@ export const WithToolInvocations: Story = () => {
     ]
   };
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
       <ChatMessage message={message} />
     </div>
-  );
+  
+    );
+  }
 };
 
 /**
  * Message with extended thinking
  */
-export const WithThinking: Story = () => {
-  const message: ChatMessageType = {
+export const WithThinking: Story = {
+  render: () => {
+const message: ChatMessageType = {
     id: '5',
     role: 'assistant',
     conversationId: 'conv-1',
@@ -147,18 +164,22 @@ export const WithThinking: Story = () => {
     ]
   };
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
       <ChatMessage message={message} />
     </div>
-  );
+  
+    );
+  }
 };
 
 /**
  * Message with usage statistics
  */
-export const WithUsageStats: Story = () => {
-  const message: ChatMessageType = {
+export const WithUsageStats: Story = {
+  render: () => {
+const message: ChatMessageType = {
     id: '6',
     role: 'assistant',
     conversationId: 'conv-1',
@@ -180,9 +201,12 @@ export const WithUsageStats: Story = () => {
     ]
   };
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
       <ChatMessage message={message} />
     </div>
-  );
+  
+    );
+  }
 };

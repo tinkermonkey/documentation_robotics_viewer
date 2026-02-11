@@ -1,4 +1,3 @@
-// @ts-nocheck
 import type { Meta, StoryObj } from '@storybook/react';
 import { C4RightSidebar } from '@/apps/embedded/components/C4RightSidebar';
 import type { C4FilterCounts } from '@/apps/embedded/components/C4FilterPanel';
@@ -60,7 +59,7 @@ const mockGraph: C4Graph = {
 };
 
 export const Default: Story = {
-  render: () => (
+  render: () => {
     const [selectedTypes, setSelectedTypes] = useState<Set<ContainerType>>(new Set());
   const [selectedTechs, setSelectedTechs] = useState<Set<string>>(new Set());
 
@@ -106,5 +105,5 @@ export const Default: Story = {
       />
     </div>
   );
-  ),
+  },
 };

@@ -1,16 +1,20 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ViewToggle, ViewToggleProps } from '@/apps/embedded/components/shared/ViewToggle';
 import { BarChart3, Table, Code } from 'lucide-react';
 
-export default {
+const meta = {
   title: 'A Primitives / Navigation / ViewToggle',
-} satisfies StoryDefault;
+  component: ViewToggle,
+} satisfies Meta<typeof ViewToggle>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 /**
  * Default story showing basic view toggle with text labels
  */
-export const Default: Story<ViewToggleProps> = () => {
-  return (
+export const Default: Story = {
+  render: () => (
     <div style={{ width: '100%', maxWidth: 600, padding: '20px', backgroundColor: '#f9fafb' }}>
       <h2 className="text-lg font-bold mb-4">Default View Toggle</h2>
       <ViewToggle
@@ -23,14 +27,14 @@ export const Default: Story<ViewToggleProps> = () => {
         onViewChange={(view) => console.log('View changed to:', view)}
       />
     </div>
-  );
+  ),
 };
 
 /**
  * Story showing Graph View selected
  */
-export const GraphView: Story<ViewToggleProps> = () => {
-  return (
+export const GraphView: Story = {
+  render: () => (
     <div style={{ width: '100%', maxWidth: 600, padding: '20px', backgroundColor: '#f9fafb' }}>
       <h2 className="text-lg font-bold mb-4">Graph View Selected</h2>
       <ViewToggle
@@ -43,14 +47,14 @@ export const GraphView: Story<ViewToggleProps> = () => {
         onViewChange={(view) => console.log('View changed to:', view)}
       />
     </div>
-  );
+  ),
 };
 
 /**
  * Story showing JSON View selected
  */
-export const JSONView: Story<ViewToggleProps> = () => {
-  return (
+export const JSONView: Story = {
+  render: () => (
     <div style={{ width: '100%', maxWidth: 600, padding: '20px', backgroundColor: '#f9fafb' }}>
       <h2 className="text-lg font-bold mb-4">JSON View Selected</h2>
       <ViewToggle
@@ -63,14 +67,14 @@ export const JSONView: Story<ViewToggleProps> = () => {
         onViewChange={(view) => console.log('View changed to:', view)}
       />
     </div>
-  );
+  ),
 };
 
 /**
  * Story with icons
  */
-export const WithIcons: Story<ViewToggleProps> = () => {
-  return (
+export const WithIcons: Story = {
+  render: () => (
     <div style={{ width: '100%', maxWidth: 600, padding: '20px', backgroundColor: '#f9fafb' }}>
       <h2 className="text-lg font-bold mb-4">View Toggle with Icons</h2>
       <ViewToggle
@@ -83,14 +87,14 @@ export const WithIcons: Story<ViewToggleProps> = () => {
         onViewChange={(view) => console.log('View changed to:', view)}
       />
     </div>
-  );
+  ),
 };
 
 /**
  * Story showing different sizes
  */
-export const SizeSmall: Story<ViewToggleProps> = () => {
-  return (
+export const SizeSmall: Story = {
+  render: () => (
     <div style={{ width: '100%', maxWidth: 600, padding: '20px', backgroundColor: '#f9fafb' }}>
       <h2 className="text-lg font-bold mb-4">Small Size</h2>
       <ViewToggle
@@ -103,14 +107,14 @@ export const SizeSmall: Story<ViewToggleProps> = () => {
         size="sm"
       />
     </div>
-  );
+  ),
 };
 
 /**
  * Story with medium size
  */
-export const SizeMedium: Story<ViewToggleProps> = () => {
-  return (
+export const SizeMedium: Story = {
+  render: () => (
     <div style={{ width: '100%', maxWidth: 600, padding: '20px', backgroundColor: '#f9fafb' }}>
       <h2 className="text-lg font-bold mb-4">Medium Size (Default)</h2>
       <ViewToggle
@@ -124,14 +128,14 @@ export const SizeMedium: Story<ViewToggleProps> = () => {
         size="md"
       />
     </div>
-  );
+  ),
 };
 
 /**
  * Story with large size
  */
-export const SizeLarge: Story<ViewToggleProps> = () => {
-  return (
+export const SizeLarge: Story = {
+  render: () => (
     <div style={{ width: '100%', maxWidth: 600, padding: '20px', backgroundColor: '#f9fafb' }}>
       <h2 className="text-lg font-bold mb-4">Large Size</h2>
       <ViewToggle
@@ -144,14 +148,14 @@ export const SizeLarge: Story<ViewToggleProps> = () => {
         size="lg"
       />
     </div>
-  );
+  ),
 };
 
 /**
  * Story showing disabled state
  */
-export const Disabled: Story<ViewToggleProps> = () => {
-  return (
+export const Disabled: Story = {
+  render: () => (
     <div style={{ width: '100%', maxWidth: 600, padding: '20px', backgroundColor: '#f9fafb' }}>
       <h2 className="text-lg font-bold mb-4">Disabled View Toggle</h2>
       <div className="space-y-4">
@@ -170,60 +174,62 @@ export const Disabled: Story<ViewToggleProps> = () => {
         </div>
       </div>
     </div>
-  );
+  ),
 };
 
 /**
  * Story showing different active views
  */
-export const DifferentActiveViews: Story = () => {
-  const views = [
-    { key: 'overview', label: 'Overview', icon: BarChart3 },
-    { key: 'details', label: 'Details', icon: Table },
-    { key: 'code', label: 'Code', icon: Code },
-  ];
+export const DifferentActiveViews: Story = {
+  render: () => {
+    const views = [
+      { key: 'overview', label: 'Overview', icon: BarChart3 },
+      { key: 'details', label: 'Details', icon: Table },
+      { key: 'code', label: 'Code', icon: Code },
+    ];
 
-  return (
-    <div style={{ width: '100%', maxWidth: 600, padding: '20px', backgroundColor: '#f9fafb' }}>
-      <h2 className="text-lg font-bold mb-6">Different Active Views</h2>
+    return (
+      <div style={{ width: '100%', maxWidth: 600, padding: '20px', backgroundColor: '#f9fafb' }}>
+        <h2 className="text-lg font-bold mb-6">Different Active Views</h2>
 
-      <div className="space-y-6">
-        <div>
-          <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Active: Overview</p>
-          <ViewToggle
-            views={views}
-            activeView="overview"
-            onViewChange={(view) => console.log('View changed to:', view)}
-          />
-        </div>
+        <div className="space-y-6">
+          <div>
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Active: Overview</p>
+            <ViewToggle
+              views={views}
+              activeView="overview"
+              onViewChange={(view) => console.log('View changed to:', view)}
+            />
+          </div>
 
-        <div>
-          <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Active: Details</p>
-          <ViewToggle
-            views={views}
-            activeView="details"
-            onViewChange={(view) => console.log('View changed to:', view)}
-          />
-        </div>
+          <div>
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Active: Details</p>
+            <ViewToggle
+              views={views}
+              activeView="details"
+              onViewChange={(view) => console.log('View changed to:', view)}
+            />
+          </div>
 
-        <div>
-          <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Active: Code</p>
-          <ViewToggle
-            views={views}
-            activeView="code"
-            onViewChange={(view) => console.log('View changed to:', view)}
-          />
+          <div>
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Active: Code</p>
+            <ViewToggle
+              views={views}
+              activeView="code"
+              onViewChange={(view) => console.log('View changed to:', view)}
+            />
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  },
 };
 
 /**
  * Story with many view options
  */
-export const ManyViews: Story<ViewToggleProps> = () => {
-  return (
+export const ManyViews: Story = {
+  render: () => (
     <div style={{ width: '100%', maxWidth: 800, padding: '20px', backgroundColor: '#f9fafb' }}>
       <h2 className="text-lg font-bold mb-4">Multiple View Options</h2>
       <ViewToggle
@@ -238,14 +244,14 @@ export const ManyViews: Story<ViewToggleProps> = () => {
         onViewChange={(view) => console.log('View changed to:', view)}
       />
     </div>
-  );
+  ),
 };
 
 /**
  * Story showing accessibility features
  */
-export const AccessibilityDemo: Story<ViewToggleProps> = () => {
-  return (
+export const AccessibilityDemo: Story = {
+  render: () => (
     <div style={{ width: '100%', maxWidth: 600, padding: '20px', backgroundColor: '#f9fafb' }}>
       <h2 className="text-lg font-bold mb-4">Accessibility Features</h2>
       <div className="space-y-4">
@@ -275,5 +281,5 @@ export const AccessibilityDemo: Story<ViewToggleProps> = () => {
         </p>
       </div>
     </div>
-  );
+  ),
 };

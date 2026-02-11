@@ -104,7 +104,6 @@ const DemoAnnotationPanel = () => (
  */
 export const Default: Story = {
   render: () => (
-    (
     <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb', display: 'flex' }}>
       <div style={{ width: '100%', maxWidth: 320, overflow: 'hidden' }}>
         <GraphViewSidebar
@@ -114,7 +113,6 @@ export const Default: Story = {
         />
       </div>
     </div>
-  )
   ),
 };
 
@@ -123,7 +121,6 @@ export const Default: Story = {
  */
 export const WithInspector: Story = {
   render: () => (
-    (
     <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb', display: 'flex' }}>
       <div style={{ width: '100%', maxWidth: 320, overflow: 'hidden' }}>
         <GraphViewSidebar
@@ -135,7 +132,6 @@ export const WithInspector: Story = {
         />
       </div>
     </div>
-  )
   ),
 };
 
@@ -144,7 +140,6 @@ export const WithInspector: Story = {
  */
 export const WithAnnotations: Story = {
   render: () => (
-    (
     <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb', display: 'flex' }}>
       <div style={{ width: '100%', maxWidth: 320, overflow: 'hidden' }}>
         <GraphViewSidebar
@@ -157,7 +152,6 @@ export const WithAnnotations: Story = {
         />
       </div>
     </div>
-  )
   ),
 };
 
@@ -166,7 +160,6 @@ export const WithAnnotations: Story = {
  */
 export const CustomDefaultOpen: Story = {
   render: () => (
-    (
     <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb', display: 'flex' }}>
       <div style={{ width: '100%', maxWidth: 320, overflow: 'hidden' }}>
         <GraphViewSidebar
@@ -180,7 +173,6 @@ export const CustomDefaultOpen: Story = {
         />
       </div>
     </div>
-  )
   ),
 };
 
@@ -189,7 +181,6 @@ export const CustomDefaultOpen: Story = {
  */
 export const MinimalSidebar: Story = {
   render: () => (
-    (
     <div style={{ width: '100%', height: 500, border: '1px solid #e5e7eb', display: 'flex' }}>
       <div style={{ width: '100%', maxWidth: 320, overflow: 'hidden' }}>
         <GraphViewSidebar
@@ -200,7 +191,6 @@ export const MinimalSidebar: Story = {
         />
       </div>
     </div>
-  )
   ),
 };
 
@@ -209,7 +199,6 @@ export const MinimalSidebar: Story = {
  */
 export const AllSectionsExpanded: Story = {
   render: () => (
-    (
     <div style={{ width: '100%', height: 800, border: '1px solid #e5e7eb', display: 'flex' }}>
       <div style={{ width: '100%', maxWidth: 320, overflow: 'hidden' }}>
         <GraphViewSidebar
@@ -223,6 +212,5 @@ export const AllSectionsExpanded: Story = {
         />
       </div>
     </div>
-  )
   ),
 };

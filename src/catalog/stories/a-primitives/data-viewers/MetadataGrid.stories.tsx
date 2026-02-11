@@ -1,9 +1,13 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import MetadataGrid from '@/apps/embedded/components/common/MetadataGrid';
 
-export default {
+const meta = {
   title: 'A Primitives / Data Viewers / MetadataGrid',
-} satisfies StoryDefault;
+  component: MetadataGrid,
+} satisfies Meta<typeof MetadataGrid>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 const sampleMetadata = [
   { label: 'Created', value: '2024-01-15' },
@@ -12,19 +16,19 @@ const sampleMetadata = [
   { label: 'Status', value: 'Active' },
 ];
 
-export const Default: Story = () => (
+export const Default: Story = { render: () => (
   <div className="p-4 bg-white border border-gray-200 w-96">
     <MetadataGrid items={sampleMetadata} />
   </div>
-);
+) };
 
-export const TwoColumns: Story = () => (
+export const TwoColumns: Story = { render: () => (
   <div className="p-4 bg-white border border-gray-200 w-full max-w-2xl">
     <MetadataGrid items={sampleMetadata} columns={2} />
   </div>
-);
+) };
 
-export const ManyItems: Story = () => (
+export const ManyItems: Story = { render: () => (
   <div className="p-4 bg-white border border-gray-200 w-full max-w-2xl">
     <MetadataGrid
       items={[
@@ -42,4 +46,4 @@ export const ManyItems: Story = () => (
       columns={2}
     />
   </div>
-);
+) };

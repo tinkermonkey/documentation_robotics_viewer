@@ -1,12 +1,16 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { BreadcrumbNav, type BreadcrumbSegment } from '@/apps/embedded/components/shared/BreadcrumbNav';
 import { HiOutlineCubeTransparent, HiOutlineRectangleStack } from 'react-icons/hi2';
 
-export default {
+const meta = {
   title: 'A Primitives / Navigation / BreadcrumbNav',
-} satisfies StoryDefault;
+  component: BreadcrumbNav,
+} satisfies Meta<typeof BreadcrumbNav>;
 
-export const Default: Story = () => {
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = { render: () => {
   const segments: BreadcrumbSegment[] = [
     { id: 'goal-1', label: 'Increase Revenue', type: 'Goal' },
     { id: 'req-1', label: 'Customer Satisfaction', type: 'Requirement' },
@@ -18,9 +22,9 @@ export const Default: Story = () => {
       onNavigate={(id) => console.log('Navigate to:', id)}
     />
   );
-};
+} };
 
-export const SingleLevel: Story = () => {
+export const SingleLevel: Story = { render: () => {
   const segments: BreadcrumbSegment[] = [
     { id: 'goal-1', label: 'Increase Revenue', type: 'Goal' },
   ];
@@ -31,9 +35,9 @@ export const SingleLevel: Story = () => {
       onNavigate={(id) => console.log('Navigate to:', id)}
     />
   );
-};
+} };
 
-export const MultiLevel: Story = () => {
+export const MultiLevel: Story = { render: () => {
   const segments: BreadcrumbSegment[] = [
     { id: 'stakeholder-1', label: 'Board of Directors', type: 'Stakeholder', icon: <HiOutlineCubeTransparent className="w-4 h-4" /> },
     { id: 'driver-1', label: 'Digital Transformation', type: 'Driver', icon: <HiOutlineRectangleStack className="w-4 h-4" /> },
@@ -48,9 +52,9 @@ export const MultiLevel: Story = () => {
       onNavigate={(id) => console.log('Navigate to:', id)}
     />
   );
-};
+} };
 
-export const WithClearButton: Story = () => {
+export const WithClearButton: Story = { render: () => {
   const segments: BreadcrumbSegment[] = [
     { id: 'goal-1', label: 'Increase Revenue', type: 'Goal' },
     { id: 'req-1', label: 'Customer Satisfaction', type: 'Requirement' },
@@ -65,9 +69,9 @@ export const WithClearButton: Story = () => {
       showLevelBadge={true}
     />
   );
-};
+} };
 
-export const WithoutLevelBadge: Story = () => {
+export const WithoutLevelBadge: Story = { render: () => {
   const segments: BreadcrumbSegment[] = [
     { id: 'goal-1', label: 'Increase Revenue', type: 'Goal' },
     { id: 'req-1', label: 'Customer Satisfaction', type: 'Requirement' },
@@ -81,9 +85,9 @@ export const WithoutLevelBadge: Story = () => {
       showLevelBadge={false}
     />
   );
-};
+} };
 
-export const WithIcons: Story = () => {
+export const WithIcons: Story = { render: () => {
   const segments: BreadcrumbSegment[] = [
     {
       id: 'stakeholder-1',
@@ -113,9 +117,9 @@ export const WithIcons: Story = () => {
       showLevelBadge={true}
     />
   );
-};
+} };
 
-export const Empty: Story = () => {
+export const Empty: Story = { render: () => {
   return (
     <div className="p-4 text-gray-500 text-sm">
       <BreadcrumbNav
@@ -125,4 +129,4 @@ export const Empty: Story = () => {
       <p className="mt-4">No breadcrumbs to display (component returns null)</p>
     </div>
   );
-};
+} };
