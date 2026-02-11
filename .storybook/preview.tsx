@@ -7,28 +7,20 @@ if (typeof window !== 'undefined') {
   // @ts-ignore - Set mock flag for WebSocket client
   window.__LADLE_MOCK_WEBSOCKET__ = true;
 
-  // Create logger that distinguishes between test suppression and real errors
+  // Filter expected errors from test environment
   const originalError = console.error;
 
   console.error = (...args: any[]) => {
-    const message = String(args[0] || '');
+    const errorString = args.join(' ');
 
-    // Only suppress expected WebSocket connection failure messages in test environment
-    // All other errors, including parsing, type errors, and legitimate bugs, pass through
-    const isExpectedConnectionFailure = (
-      message.includes('WebSocket connection to') || // Browser WebSocket connection error
-      message.includes('WebSocket connection failed') || // WebSocket failed
-      message.includes('WebSocket is closed before the connection is established') || // Expected closure
-      message.includes('The operation is insecure') // HTTPS/WSS requirement
-    );
-
-    if (isExpectedConnectionFailure) {
-      // Log as warning instead of error for test visibility
-      console.warn('[TEST] Expected connection failure (treating as warning):', message);
+    // Filter expected errors (from design guidance)
+    if (
+      errorString.includes('Warning: ReactDOM.render') ||
+      errorString.includes('Not implemented: HTMLFormElement.prototype.requestSubmit')
+    ) {
       return;
     }
 
-    // All other errors, including code bugs, go through normally
     originalError.apply(console, args);
   };
 }

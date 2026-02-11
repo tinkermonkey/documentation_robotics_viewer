@@ -1,4 +1,8 @@
-const path = require('path');
+import type { StorybookConfig } from '@storybook/react-vite';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Storybook 8 configuration with Vite builder
@@ -8,7 +12,7 @@ const path = require('path');
  * - optimizeDeps for React Flow
  * - React plugin configuration
  */
-const config = {
+const config: StorybookConfig = {
   stories: ['../src/**/*.stories.@(js|jsx|ts|tsx)'],
   addons: [
     '@storybook/addon-essentials',
@@ -46,4 +50,4 @@ const config = {
   staticDirs: ['../public'],
 };
 
-module.exports = config;
+export default config;
