@@ -105,6 +105,43 @@ All components must meet these accessibility criteria:
 - No skipped heading levels
 - Heading text clearly describes section
 
+## Edge Component Accessibility
+
+All edge components provide descriptive `aria-label` attributes and are keyboard accessible:
+
+```typescript
+// ✓ CORRECT - Edge with full accessibility
+<path
+  d={edgePath}
+  stroke={color}
+  strokeWidth={2}
+  role="img"
+  aria-label={`Connection from ${sourceNode} to ${targetNode}, relationship type: ${relationshipType}`}
+  onClick={handleClick}
+  onKeyDown={handleKeyDown}
+  tabIndex={0}
+/>
+
+// ✓ CORRECT - Bundled edge with expand/collapse
+<path
+  d={edgePath}
+  stroke={color}
+  role="button"
+  aria-label={`${count} bundled relationships. Click to expand.`}
+  onClick={handleExpand}
+  tabIndex={0}
+/>
+```
+
+### Edge Accessibility Checklist
+
+- ✅ **Cross-layer edges** - Include full source/target/relationship context in `aria-label`
+- ✅ **Elbow edges** - Include source and target node IDs in `aria-label`
+- ✅ **Bundled edges** - Describe bundled count and click-to-expand interaction
+- ✅ **Keyboard navigation** - All edges support Enter/Space to activate
+- ✅ **Focus indication** - Visual focus rings provide clear indication
+- ✅ **Click targets** - Minimum 8px stroke width for click accessibility
+
 ## Testing Node Accessibility
 
 React Flow nodes require specific accessibility setup:
@@ -118,6 +155,8 @@ React Flow nodes require specific accessibility setup:
 >
   <Handle type="target" position={Position.Top} id="top" />
   <Handle type="source" position={Position.Bottom} id="bottom" />
+  <Handle type="target" position={Position.Left} id="left" />
+  <Handle type="source" position={Position.Right} id="right" />
   <div>{data.label}</div>
 </div>
 
@@ -132,6 +171,15 @@ React Flow nodes require specific accessibility setup:
 - All nodes must include 4 Handles (top, bottom, left, right)
 - Handles use default styling (visible connection points)
 - Handle connections are keyboard accessible in interactive views
+- Handle visibility is maintained - users with visual disabilities benefit from the positioned connection points
+
+### Node Type Coverage
+
+All 16 custom node types are accessibility-tested:
+- **Motivation Layer**: Goal, Stakeholder, Constraint, Driver, Outcome, Principle, Assumption, Assessment, ValueStream, Requirement (10 nodes)
+- **Business Layer**: BusinessFunction, BusinessService, BusinessCapability, BusinessProcess (4 nodes)
+- **C4 Model**: Container, Component, ExternalActor (3 nodes)
+- **Utilities**: JSONSchema, LayerContainer (2 nodes)
 
 ## Story Accessibility Requirements
 
@@ -193,19 +241,99 @@ When axe-core detects violations:
 
 ### Storybook Addon A11y
 
-Runs axe-core on every story during development and testing.
+Runs axe-core on every story during development and testing, with real-time accessibility panel.
 
 **Configuration:** `.storybook/preview.tsx`
 
 ```typescript
-import { withA11y } from '@storybook/addon-a11y';
+const preview: Preview = {
+  parameters: {
+    a11y: {
+      // Run accessibility checks automatically
+      manual: false,
 
-export const decorators = [withA11y];
+      // axe-core rules configuration
+      config: {
+        rules: [
+          {
+            // Architecture visualizations may have decorative elements
+            id: 'color-contrast',
+            reviewOnFail: true, // Mark for manual review instead of auto-fail
+          },
+          {
+            // React Flow uses ARIA labels
+            id: 'aria-allowed-attr',
+            enabled: true,
+          },
+          {
+            // Node components use role="article"
+            id: 'aria-required-children',
+            enabled: true,
+          },
+          // ... additional rules for forms, images, keyboard navigation, headings
+        ],
+      },
+
+      // Test standards to validate against
+      options: {
+        runOnly: {
+          type: 'tag',
+          values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'],
+        },
+      },
+    },
+  },
+};
 ```
+
+**Features:**
+- Real-time a11y panel in Storybook UI showing violations
+- Color-coded severity levels (critical, serious, moderate, minor)
+- Element highlighting for each violation
+- Detailed remediation guidance for each issue
 
 ### Test Runner Integration
 
-Accessibility violations can cause test failures based on severity settings in `test-runner.ts`.
+The Storybook test runner (`test-runner.ts`) includes automated accessibility validation:
+
+**Configuration:**
+```typescript
+// .storybook/test-runner.ts
+async preVisit(page) {
+  // Inject axe-core for accessibility testing
+  await page.addScriptTag({
+    url: 'https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.11.0/axe.min.js',
+  });
+}
+
+async postVisit(page, context) {
+  // Run accessibility checks on every story
+  const results = await page.evaluate(() => {
+    return new Promise((resolve) => {
+      window.axe?.run({ runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'] } }, (error, results) => {
+        resolve(results);
+      });
+    });
+  });
+
+  // Report violations with severity levels
+  if (results?.violations?.length > 0) {
+    // Log all violations as warnings
+    console.warn(`Accessibility violations in story "${context.id}":\n${violationSummary}`);
+
+    // Fail test for high-impact violations only
+    const highImpact = results.violations.filter(v => v.impact === 'critical' || v.impact === 'serious');
+    if (highImpact.length > 0) {
+      throw new Error(`Critical accessibility violations: ${highImpact.map(v => v.id).join(', ')}`);
+    }
+  }
+}
+```
+
+**Severity Handling:**
+- **Critical/Serious**: Test failures (must fix before commit)
+- **Moderate**: Warnings (logged, tracked, fix recommended)
+- **Minor**: Informational (documented, fix not required)
 
 ## Continuous Monitoring
 

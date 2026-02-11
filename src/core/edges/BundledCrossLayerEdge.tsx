@@ -129,6 +129,9 @@ export const BundledCrossLayerEdge = memo(({
     );
   }
 
+  // Create accessible label for the bundled edge
+  const ariaLabel = `${bundleCount} bundled cross-layer relationships. Click to expand and see individual relationships.`;
+
   return (
     <>
       {/* Bundled edge path */}
@@ -148,6 +151,15 @@ export const BundledCrossLayerEdge = memo(({
         onClick={handleBundleClick}
         data-testid={`bundled-edge-${id}`}
         markerEnd={markerEnd}
+        role="button"
+        aria-label={ariaLabel}
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleBundleClick(e as any);
+          }
+        }}
       />
 
       {/* Bundle count badge */}
