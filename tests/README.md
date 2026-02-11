@@ -391,7 +391,7 @@ Current coverage:
 - ✅ Dual view functionality (Graph/JSON/List)
 - ✅ Console error detection
 - ✅ View preference persistence
-- ✅ Ladle story validation
+- ✅ Storybook story validation
 
 Needed coverage (see `TESTING_STRATEGY.md`):
 - ❌ Unit tests for NodeTransformer

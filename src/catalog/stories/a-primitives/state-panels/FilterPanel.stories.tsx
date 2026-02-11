@@ -189,7 +189,7 @@ export const MultipleCategories: Story = {
 
 export const DarkMode: Story = {
   render: () => (
-    <div className="w-80 bg-gray-900 border border-gray-700 p-4 rounded">
+    <div className="dark w-80 bg-gray-900 border border-gray-700 p-4 rounded">
       <FilterPanel
         sections={[createLayerSection(), createElementTypeSection()]}
         onClearAll={() => console.log('Clear all clicked')}
@@ -203,7 +203,7 @@ export const DarkMode: Story = {
 
 export const DarkModeEmpty: Story = {
   render: () => (
-    <div className="w-80 bg-gray-900 border border-gray-700 p-4 rounded">
+    <div className="dark w-80 bg-gray-900 border border-gray-700 p-4 rounded">
       <FilterPanel
         sections={[
           {

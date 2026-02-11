@@ -146,7 +146,7 @@ export const Controlled: Story = {
 
 export const DarkModeExpanded: Story = {
   render: () => (
-    <div className="w-96 bg-gray-900 p-4 rounded">
+    <div className="dark w-96 bg-gray-900 p-4 rounded">
       <ExpandableSection
         title="Expanded Dark Mode"
         defaultExpanded={true}
@@ -164,7 +164,7 @@ export const DarkModeExpanded: Story = {
 
 export const DarkModeCollapsed: Story = {
   render: () => (
-    <div className="w-96 bg-gray-900 p-4 rounded">
+    <div className="dark w-96 bg-gray-900 p-4 rounded">
       <ExpandableSection
         title="Collapsed Dark Mode"
         defaultExpanded={false}
