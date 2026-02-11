@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { MotivationRightSidebar } from '@/apps/embedded/components/MotivationRightSidebar';
-import { MotivationElementType, MotivationRelationshipType } from '../types/motivationGraph';
+import { MotivationElementType, MotivationRelationshipType } from '@/apps/embedded/types/motivationGraph';
 import { useState } from 'react';
 
 const meta = {

@@ -62,6 +62,10 @@ export function isExpectedConsoleError(text: string): boolean {
   if (/^Children count:/.test(text)) return true;
   if (/^Inner HTML \(first/.test(text)) return true;
 
+  // ErrorBoundary test errors - expected in error state test stories
+  if (/\[ErrorBoundary\] Caught error/.test(text)) return true;
+  if (/Test error for ErrorBoundary/.test(text)) return true;
+
   return false;
 }
 

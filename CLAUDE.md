@@ -153,8 +153,10 @@ npm test                          # Unit/integration tests (~1027 tests, ~10s)
 npm test -- tests/unit/foo.spec.ts  # Single file
 npm run test:e2e                  # E2E with reference server
 npm run test:e2e:headed           # E2E with visible browser
-npm run test:stories:generate     # Regenerate story tests (after adding/removing .stories.tsx)
-npm run test:stories              # Validate all stories (requires: npm run catalog:dev)
+npm run storybook:dev             # Start Storybook on port 61001
+npm run storybook:build           # Build Storybook for production
+npm run test:storybook            # Validate all stories (510 stories)
+npm run test:storybook:a11y       # Generate accessibility report
 ```
 
 ### Test Organization
@@ -162,10 +164,16 @@ npm run test:stories              # Validate all stories (requires: npm run cata
 tests/
 ├── unit/           # Services, utilities, nodes, hooks, layout engines, stores
 ├── integration/    # Cross-component data flow
-├── stories/        # Auto-generated story validation
+├── stories/        # Story validation & error filters
 ├── helpers/        # Test utilities and factories
 ├── fixtures/       # Test data
 └── *.spec.ts       # E2E tests (embedded-*, c4-*, etc.)
+
+.storybook/
+├── main.cjs        # Storybook configuration
+├── preview.tsx     # Global decorators and providers
+├── manager.ts      # UI customization
+└── test-runner.ts  # Test runner configuration
 ```
 
 ### Key Test Patterns
@@ -173,8 +181,11 @@ tests/
 - **Framework**: All tests use Playwright test runner (`import { test, expect } from '@playwright/test'`)
 - **Unit tests**: Arrange-Act-Assert, one assertion per test, mock external deps
 - **E2E tests**: Wait for specific selectors (not timeouts), check console errors, validate actual rendering (node counts)
-- **Stories**: Create `.stories.tsx` alongside components; run `test:stories:generate` after changes
-- **CI**: Pre-commit auto-regenerates story tests when `.stories.tsx` files change
+- **Stories**: Create `.stories.tsx` alongside components using CSF3 format (`Meta<typeof Component>`, `StoryObj`)
+  - Import decorators from `@catalog/decorators/`
+  - Use `@storybook/react` (not `@ladle/react`)
+  - Run `npm run storybook:dev` to preview stories
+- **Storybook Tests**: Use `test-runner.ts` for custom error filtering via `storyErrorFilters.ts`
 
 ## Key Files
 
@@ -209,4 +220,4 @@ Supports **JSON Schema** (UUIDs) and **YAML instances** (dot-notation IDs like `
 
 ---
 
-**Last Updated:** 2026-02-08 | **Test Suite:** 1027 tests in 52 files | **Stories:** 85 files
+**Last Updated:** 2026-02-11 | **Test Suite:** 1027 tests in 52 files | **Stories:** 578 in Storybook (96 story files)

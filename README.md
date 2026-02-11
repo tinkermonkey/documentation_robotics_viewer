@@ -106,19 +106,26 @@ Expected results: **20/22 tests passing (91% pass rate)**
 
 ### Component Catalog
 
-The project includes a Ladle-based component catalog for developing and testing components in isolation:
+The project includes a Storybook-based component catalog for developing and testing components in isolation:
 
 ```bash
-# Start the component catalog (port 6006)
-npm run catalog:dev
+# Start the component catalog (port 61001)
+npm run storybook:dev
+
+# Run all 578 story tests
+npm run test:storybook
+
+# Generate accessibility report
+npm run test:storybook:a11y
 ```
 
-Open [http://localhost:6006](http://localhost:6006) to browse component stories.
+Open [http://localhost:61001](http://localhost:61001) to browse component stories.
 
 **Key Features:**
 - **Isolated Testing**: Each story runs independently without global state pollution
 - **Fast Iteration**: 40% faster startup than embedded app (2-3s vs 3-5s)
-- **Automated Discovery**: Stories are discoverable and testable in isolation
+- **Automated Discovery**: 578 stories (510 components + 68 autodocs) are discoverable and testable in isolation
+- **Accessibility Testing**: Built-in a11y validation via Storybook addon
 
 ### Building for Production
 

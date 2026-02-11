@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { MotivationInspectorPanel } from '@/apps/embedded/components/MotivationInspectorPanel';
-import type { MotivationGraph } from '../types/motivationGraph';
-import { MotivationElementType, MotivationRelationshipType, RelationshipDirection } from '../types/motivationGraph';
+import type { MotivationGraph } from '@/apps/embedded/types/motivationGraph';
+import { MotivationElementType, MotivationRelationshipType, RelationshipDirection } from '@/apps/embedded/types/motivationGraph';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / MotivationInspectorPanel',
