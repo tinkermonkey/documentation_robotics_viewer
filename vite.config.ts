@@ -1,10 +1,12 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import flowbiteReact from 'flowbite-react/plugin/vite';
+// Flowbite React Vite plugin has issues with Tailwind v4 - disabling for now
+// import flowbiteReact from 'flowbite-react/plugin/vite';
 import path from 'path';
 
 export default defineConfig({
-  plugins: [react(), flowbiteReact()],
+  plugins: [react()],
+  // flowbiteReact() // Disabled: incompatible with Tailwind v4 @import
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
