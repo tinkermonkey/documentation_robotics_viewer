@@ -24,11 +24,20 @@ function setupErrorFiltering(page: import('@playwright/test').Page) {
   });
 }
 
+/**
+ * Convert Ladle story ID to Storybook iframe URL
+ * Ladle: /?story=architecture-edges--general--elbowedge--default&mode=preview
+ * Storybook: /iframe.html?id=architecture-edges--general--elbowedge--default&viewMode=story
+ */
+function storyUrl(storyId: string): string {
+  return `/iframe.html?id=${storyId}&viewMode=story`;
+}
+
 test.describe('Architecture Edge Stories', () => {
   test.describe('ElbowEdge', () => {
     test('Default: renders SVG path', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=architecture-edges--general--elbowedge--default&mode=preview');
+      await page.goto(storyUrl('architecture-edges--general--elbowedge--default'));
       await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
       const paths = await page.locator('svg path').count();
       expect(paths, 'ElbowEdge Default should render SVG paths').toBeGreaterThan(0);
@@ -36,7 +45,7 @@ test.describe('Architecture Edge Stories', () => {
 
     test('WithLabel: label is visible', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=architecture-edges--general--elbowedge--with-label&mode=preview');
+      await page.goto(storyUrl('architecture-edges--general--elbowedge--with-label'));
       await page.locator('svg').first().waitFor({ state: 'attached', timeout: 10000 });
       // Edge labels appear in foreignObject or text elements
       const labelVisible = await page.locator('text=connection').count() > 0
@@ -47,7 +56,7 @@ test.describe('Architecture Edge Stories', () => {
 
     test('Animated: renders SVG path', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=architecture-edges--general--elbowedge--animated&mode=preview');
+      await page.goto(storyUrl('architecture-edges--general--elbowedge--animated'));
       await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
       const paths = await page.locator('svg path').count();
       expect(paths).toBeGreaterThan(0);
@@ -55,7 +64,7 @@ test.describe('Architecture Edge Stories', () => {
 
     test('ChangesetAdd: renders SVG path', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=architecture-edges--general--elbowedge--changeset-add&mode=preview');
+      await page.goto(storyUrl('architecture-edges--general--elbowedge--changeset-add'));
       await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
       const paths = await page.locator('svg path').count();
       expect(paths).toBeGreaterThan(0);
@@ -65,7 +74,7 @@ test.describe('Architecture Edge Stories', () => {
   test.describe('CrossLayerEdge', () => {
     test('Default: renders SVG path', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=architecture-edges--general--crosslayeredge--default&mode=preview');
+      await page.goto(storyUrl('architecture-edges--general--crosslayeredge--default'));
       await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
       const paths = await page.locator('svg path').count();
       expect(paths, 'CrossLayerEdge Default should render SVG paths').toBeGreaterThan(0);
@@ -73,7 +82,7 @@ test.describe('Architecture Edge Stories', () => {
 
     test('Animated: renders SVG path', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=architecture-edges--general--crosslayeredge--animated&mode=preview');
+      await page.goto(storyUrl('architecture-edges--general--crosslayeredge--animated'));
       await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
       const paths = await page.locator('svg path').count();
       expect(paths).toBeGreaterThan(0);
@@ -83,7 +92,7 @@ test.describe('Architecture Edge Stories', () => {
   test.describe('InfluenceEdge', () => {
     test('Default: renders SVG path', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=architecture-edges--motivation--influenceedge--default&mode=preview');
+      await page.goto(storyUrl('architecture-edges--motivation--influenceedge--default'));
       await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
       const paths = await page.locator('svg path').count();
       expect(paths, 'InfluenceEdge Default should render SVG paths').toBeGreaterThan(0);
@@ -93,7 +102,7 @@ test.describe('Architecture Edge Stories', () => {
   test.describe('RefinesEdge', () => {
     test('Default: renders SVG path', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=architecture-edges--motivation--refinesedge--default&mode=preview');
+      await page.goto(storyUrl('architecture-edges--motivation--refinesedge--default'));
       await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
       const paths = await page.locator('svg path').count();
       expect(paths, 'RefinesEdge Default should render SVG paths').toBeGreaterThan(0);
@@ -103,7 +112,7 @@ test.describe('Architecture Edge Stories', () => {
   test.describe('RealizesEdge', () => {
     test('Default: renders SVG path', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=architecture-edges--motivation--realizesedge--default&mode=preview');
+      await page.goto(storyUrl('architecture-edges--motivation--realizesedge--default'));
       await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
       const paths = await page.locator('svg path').count();
       expect(paths, 'RealizesEdge Default should render SVG paths').toBeGreaterThan(0);
@@ -113,7 +122,7 @@ test.describe('Architecture Edge Stories', () => {
   test.describe('ConstrainsEdge', () => {
     test('Default: renders SVG path', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=architecture-edges--motivation--constrainsedge--default&mode=preview');
+      await page.goto(storyUrl('architecture-edges--motivation--constrainsedge--default'));
       await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
       const paths = await page.locator('svg path').count();
       expect(paths, 'ConstrainsEdge Default should render SVG paths').toBeGreaterThan(0);
@@ -123,7 +132,7 @@ test.describe('Architecture Edge Stories', () => {
   test.describe('ConflictsEdge', () => {
     test('Default: renders SVG path', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=architecture-edges--motivation--conflictsedge--default&mode=preview');
+      await page.goto(storyUrl('architecture-edges--motivation--conflictsedge--default'));
       await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
       const paths = await page.locator('svg path').count();
       expect(paths, 'ConflictsEdge Default should render SVG paths').toBeGreaterThan(0);

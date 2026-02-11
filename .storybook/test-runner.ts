@@ -24,25 +24,30 @@ declare global {
 
 const config: TestRunnerConfig = {
   async preVisit(page) {
-    // Register error listeners once per page visit
-    const errorMessages: string[] = [];
-    const pageErrors: string[] = [];
+    // Initialize error collection arrays on the page context
+    await page.evaluate(() => {
+      (window as any).__errorMessages__ = [];
+      (window as any).__pageErrors__ = [];
+    });
 
+    // Register console error listener - push errors to page's __errorMessages__
     page.on('console', (msg) => {
-      const text = msg.text();
       if (msg.type() === 'error') {
-        errorMessages.push(text);
+        const text = msg.text();
+        // Push to window.__errorMessages__ which will be read in postVisit
+        page.evaluate((error) => {
+          (window as any).__errorMessages__?.push(error);
+        }, text);
       }
     });
 
+    // Register page error listener - push errors to page's __pageErrors__
     page.on('pageerror', (error) => {
-      pageErrors.push(error.toString());
-    });
-
-    // Store error collectors on page context for access in postVisit
-    await page.evaluate(() => {
-      window.__errorMessages__ = [];
-      window.__pageErrors__ = [];
+      const errorText = error.toString();
+      // Push to window.__pageErrors__ which will be read in postVisit
+      page.evaluate((err) => {
+        (window as any).__pageErrors__?.push(err);
+      }, errorText);
     });
 
     // Inject axe-core for accessibility testing
@@ -162,8 +167,15 @@ const config: TestRunnerConfig = {
       }
     }
 
-    // Check for console errors after all tests
-    const errors = await page.evaluate(() => window.__ERRORS__ || []);
+    // Check for collected console and page errors after all tests
+    const errors = await page.evaluate(() => {
+      const collected = [
+        ...((window as any).__errorMessages__ || []),
+        ...((window as any).__pageErrors__ || []),
+      ];
+      return collected;
+    });
+
     for (const error of errors) {
       if (!isExpectedConsoleError(error) && !isKnownRenderingBug(error)) {
         throw new Error(`Critical error in story ${context.id}: ${error}`);

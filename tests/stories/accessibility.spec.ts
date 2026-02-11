@@ -29,6 +29,15 @@ function setupErrorFiltering(page: import('@playwright/test').Page) {
   });
 }
 
+/**
+ * Convert Ladle story ID to Storybook iframe URL
+ * Ladle: /?story=...&mode=preview
+ * Storybook: /iframe.html?id=...&viewMode=story
+ */
+function storyUrl(storyId: string): string {
+  return `/iframe.html?id=${storyId}&viewMode=story`;
+}
+
 test.describe('Accessibility - Graph Views', () => {
   const graphStories = [
     { key: 'views---layouts--graph-views--c4graphview--default', name: 'C4GraphView Default' },

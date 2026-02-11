@@ -86,6 +86,12 @@ jobs:
     - name: Build Storybook
       run: npm run storybook:build
 
+    - name: Start Storybook server
+      run: npm run storybook:serve &
+
+    - name: Wait for Storybook server
+      run: npx wait-on http://localhost:61001 --timeout 60000
+
     - name: Run Storybook tests
       run: npm run test:storybook
 

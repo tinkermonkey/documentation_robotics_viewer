@@ -25,11 +25,20 @@ function setupErrorFiltering(page: import('@playwright/test').Page) {
   });
 }
 
+/**
+ * Convert Ladle story ID to Storybook iframe URL
+ * Ladle: /?story=...&mode=preview
+ * Storybook: /iframe.html?id=...&viewMode=story
+ */
+function storyUrl(storyId: string): string {
+  return `/iframe.html?id=${storyId}&viewMode=story`;
+}
+
 test.describe('Panels & Inspectors Stories', () => {
   test.describe('AnnotationPanel', () => {
     test('Empty: shows empty state message', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=panels---inspectors--common--annotationpanel--empty&mode=preview');
+      await page.goto(storyUrl('panels---inspectors--common--annotationpanel--empty'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
       const bodyText = await page.locator('body').innerText();
@@ -38,7 +47,7 @@ test.describe('Panels & Inspectors Stories', () => {
 
     test('WithAnnotations: renders annotation content', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=panels---inspectors--common--annotationpanel--with-annotations&mode=preview');
+      await page.goto(storyUrl('panels---inspectors--common--annotationpanel--with-annotations'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
       const bodyText = await page.locator('body').innerText();
@@ -49,7 +58,7 @@ test.describe('Panels & Inspectors Stories', () => {
   test.describe('C4InspectorPanel', () => {
     test('ContainerSelected: renders element details', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=panels---inspectors--c4--c4inspectorpanel--container-selected&mode=preview');
+      await page.goto(storyUrl('panels---inspectors--c4--c4inspectorpanel--container-selected'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
       const bodyText = await page.locator('body').innerText();
@@ -60,7 +69,7 @@ test.describe('Panels & Inspectors Stories', () => {
   test.describe('C4ControlPanel', () => {
     test('ContextLevel: renders controls', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=panels---inspectors--c4--c4controlpanel--context-level&mode=preview');
+      await page.goto(storyUrl('panels---inspectors--c4--c4controlpanel--context-level'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
       const bodyText = await page.locator('body').innerText();
@@ -71,7 +80,7 @@ test.describe('Panels & Inspectors Stories', () => {
   test.describe('MotivationFilterPanel', () => {
     test('Default: renders filter checkboxes', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=panels---inspectors--motivation--motivationfilterpanel--default&mode=preview');
+      await page.goto(storyUrl('panels---inspectors--motivation--motivationfilterpanel--default'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
       // Filter panels typically contain checkboxes or toggle elements
@@ -86,7 +95,7 @@ test.describe('Panels & Inspectors Stories', () => {
 
     test('WithFiltersApplied: shows applied filters', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=panels---inspectors--motivation--motivationfilterpanel--with-filters-applied&mode=preview');
+      await page.goto(storyUrl('panels---inspectors--motivation--motivationfilterpanel--with-filters-applied'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
       const bodyText = await page.locator('body').innerText();
@@ -97,7 +106,7 @@ test.describe('Panels & Inspectors Stories', () => {
   test.describe('SchemaInfoPanel', () => {
     test('Default: renders schema information', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=panels---inspectors--common--schemainfopanel--default&mode=preview');
+      await page.goto(storyUrl('panels---inspectors--common--schemainfopanel--default'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
       const bodyText = await page.locator('body').innerText();
@@ -106,7 +115,7 @@ test.describe('Panels & Inspectors Stories', () => {
 
     test('NoModel: shows appropriate message', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=panels---inspectors--common--schemainfopanel--no-model&mode=preview');
+      await page.goto(storyUrl('panels---inspectors--common--schemainfopanel--no-model'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
       const bodyText = await page.locator('body').innerText();
@@ -117,7 +126,7 @@ test.describe('Panels & Inspectors Stories', () => {
   test.describe('NodeDetailsPanel', () => {
     test('NoNodeSelected: shows empty state', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=panels---inspectors--common--nodedetailspanel--no-node-selected&mode=preview');
+      await page.goto(storyUrl('panels---inspectors--common--nodedetailspanel--no-node-selected'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
       const bodyText = await page.locator('body').innerText();
@@ -126,7 +135,7 @@ test.describe('Panels & Inspectors Stories', () => {
 
     test('GoalNodeSelected: shows goal details', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=panels---inspectors--common--nodedetailspanel--goal-node-selected&mode=preview');
+      await page.goto(storyUrl('panels---inspectors--common--nodedetailspanel--goal-node-selected'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
       const bodyText = await page.locator('body').innerText();
