@@ -23,7 +23,7 @@ import {
  */
 export const GraphView: Story = () => {
   const [activeView, setActiveView] = useState<'graph' | 'json'>('graph');
-  const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null);
+  const selectedSchemaId: string | null = null;
 
   const specData = createCompleteSpecFixture();
   const annotations = createAnnotationListFixture(3);
@@ -53,7 +53,7 @@ export const GraphView: Story = () => {
  */
 export const JSONView: Story = () => {
   const [activeView, setActiveView] = useState<'graph' | 'json'>('json');
-  const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null);
+  const selectedSchemaId: string | null = null;
 
   const specData = createCompleteSpecFixture();
   const annotations = createAnnotationListFixture(5);
@@ -83,7 +83,7 @@ export const JSONView: Story = () => {
  */
 export const MinimalSpec: Story = () => {
   const [activeView, setActiveView] = useState<'graph' | 'json'>('graph');
-  const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null);
+  const selectedSchemaId: string | null = null;
 
   const specData = createMinimalSpecFixture();
 
@@ -111,7 +111,7 @@ export const MinimalSpec: Story = () => {
  */
 export const CompactNoSidebar: Story = () => {
   const [activeView, setActiveView] = useState<'graph' | 'json'>('graph');
-  const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null);
+  const selectedSchemaId: string | null = null;
 
   const specData = createCompleteSpecFixture();
 
@@ -139,7 +139,7 @@ export const CompactNoSidebar: Story = () => {
  */
 export const WithSelectedSchema: Story = () => {
   const [activeView, setActiveView] = useState<'graph' | 'json'>('graph');
-  const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>('goal');
+  const selectedSchemaId: string | null = 'goal';
 
   const specData = createCompleteSpecFixture();
   const annotations = createAnnotationListFixture(2);
@@ -169,7 +169,7 @@ export const WithSelectedSchema: Story = () => {
  */
 export const ViewToggleInteraction: Story = () => {
   const [activeView, setActiveView] = useState<'graph' | 'json'>('graph');
-  const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null);
+  const selectedSchemaId: string | null = null;
 
   const specData = createCompleteSpecFixture();
   const annotations = createAnnotationListFixture(3);
