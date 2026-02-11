@@ -5,13 +5,13 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { LayerType } from '@/core/types/layers';
 import { ReferenceType } from '@/core/types/model';
 
-const meta: Meta = {
+const meta = {
   title: 'C Graphs / Edges / Base / CrossLayerEdge',
   decorators: [withReactFlowDecorator({ width: 400, height: 250, showBackground: true, renderAsEdge: true })],
-};
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = {
   render: () => (
@@ -83,6 +83,24 @@ export const VerticalFlow: Story = {
   ),
 };
 
+export const Selected: Story = {
+  render: () => (
+    <CrossLayerEdge
+      id="crosslayer-selected"
+      source="element-sel-1"
+      target="element-sel-2"
+      sourceX={50}
+      sourceY={50}
+      targetX={350}
+      targetY={200}
+      sourcePosition={Position.Right}
+      targetPosition={Position.Left}
+      selected={true}
+      markerEnd={MarkerType.ArrowClosed}
+    />
+  ),
+};
+
 export const ChangesetAdd: Story = {
   render: () => (
     <CrossLayerEdge
@@ -96,6 +114,24 @@ export const ChangesetAdd: Story = {
       sourcePosition={Position.Right}
       targetPosition={Position.Left}
       data={{ sourceLayer: LayerType.Business, changesetOperation: 'add', targetLayer: LayerType.Application, relationshipType: ReferenceType.BusinessService }}
+      markerEnd={MarkerType.ArrowClosed}
+    />
+  ),
+};
+
+export const ChangesetUpdate: Story = {
+  render: () => (
+    <CrossLayerEdge
+      id="crosslayer-update"
+      source="element-update-1"
+      target="element-update-2"
+      sourceX={50}
+      sourceY={50}
+      targetX={350}
+      targetY={200}
+      sourcePosition={Position.Right}
+      targetPosition={Position.Left}
+      data={{ sourceLayer: LayerType.Business, changesetOperation: 'update', targetLayer: LayerType.Technology, relationshipType: ReferenceType.BusinessService }}
       markerEnd={MarkerType.ArrowClosed}
     />
   ),

@@ -3,13 +3,13 @@ import { Position, MarkerType } from '@xyflow/react';
 import { ElbowEdge } from '@/core/edges/ElbowEdge';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
-const meta: Meta = {
+const meta = {
   title: 'C Graphs / Edges / Base / ElbowEdge',
   decorators: [withReactFlowDecorator({ width: 400, height: 250, showBackground: true, renderAsEdge: true })],
-};
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = {
   render: () => (
@@ -81,6 +81,24 @@ export const VerticalFlow: Story = {
   ),
 };
 
+export const Selected: Story = {
+  render: () => (
+    <ElbowEdge
+      id="elbow-selected"
+      source="node-sel-1"
+      target="node-sel-2"
+      sourceX={50}
+      sourceY={50}
+      targetX={350}
+      targetY={200}
+      sourcePosition={Position.Right}
+      targetPosition={Position.Left}
+      selected={true}
+      markerEnd={MarkerType.ArrowClosed}
+    />
+  ),
+};
+
 export const ChangesetAdd: Story = {
   render: () => (
     <ElbowEdge
@@ -94,6 +112,24 @@ export const ChangesetAdd: Story = {
       sourcePosition={Position.Right}
       targetPosition={Position.Left}
       data={{ changesetOperation: 'add' }}
+      markerEnd={MarkerType.ArrowClosed}
+    />
+  ),
+};
+
+export const ChangesetUpdate: Story = {
+  render: () => (
+    <ElbowEdge
+      id="elbow-update"
+      source="node-update-1"
+      target="node-update-2"
+      sourceX={50}
+      sourceY={50}
+      targetX={350}
+      targetY={200}
+      sourcePosition={Position.Right}
+      targetPosition={Position.Left}
+      data={{ changesetOperation: 'update' }}
       markerEnd={MarkerType.ArrowClosed}
     />
   ),

@@ -3,13 +3,13 @@ import { Position, MarkerType } from '@xyflow/react';
 import { ConstrainsEdge } from '@/core/edges/motivation/ConstrainsEdge';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
-const meta: Meta = {
+const meta = {
   title: 'C Graphs / Edges / Motivation / ConstrainsEdge',
   decorators: [withReactFlowDecorator({ width: 400, height: 200, showBackground: true, renderAsEdge: true })],
-};
+} satisfies Meta;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj;
 
 export const Default: Story = {
   render: () => (
@@ -41,6 +41,24 @@ export const Animated: Story = {
       sourcePosition={Position.Right}
       targetPosition={Position.Left}
       animated={true}
+      markerEnd={MarkerType.ArrowClosed}
+    />
+  ),
+};
+
+export const Selected: Story = {
+  render: () => (
+    <ConstrainsEdge
+      id="constrains-selected"
+      source="constraint-sel"
+      target="goal-sel"
+      sourceX={50}
+      sourceY={50}
+      targetX={350}
+      targetY={150}
+      sourcePosition={Position.Right}
+      targetPosition={Position.Left}
+      selected={true}
       markerEnd={MarkerType.ArrowClosed}
     />
   ),
