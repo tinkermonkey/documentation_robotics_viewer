@@ -113,7 +113,7 @@ src/
 │   ├── services/           # App-specific graph builders
 │   ├── stores/             # annotationStore, authStore, businessLayerStore, changesetStore, chatStore, connectionStore, floatingChatStore, viewPreferenceStore
 │   ├── hooks/, types/, utils/
-├── catalog/                # Ladle storybook (components/, fixtures/, providers/)
+├── catalog/                # Storybook catalog (components/, fixtures/, providers/)
 └── theme/                  # Tailwind CSS theming
 ```
 
