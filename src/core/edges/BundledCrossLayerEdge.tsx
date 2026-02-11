@@ -134,13 +134,6 @@ export const BundledCrossLayerEdge = memo(({
 
   return (
     <>
-      {/* Bundled edge path - keyboard accessible with focus indicator */}
-      <style>{`
-        #${id}:focus-visible {
-          outline: 2px solid #0ea5e9;
-          outline-offset: 2px;
-        }
-      `}</style>
       <path
         id={id}
         d={edgePath}

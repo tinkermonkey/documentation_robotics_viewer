@@ -450,12 +450,12 @@ export class WebSocketClient {
   }
 }
 
-// Detect if we're in a test/story environment (Ladle or Playwright)
+// Detect if we're in a test/story environment (Storybook or Playwright)
 function isTestEnvironment(): boolean {
   if (typeof window === 'undefined') return false;
 
-  // Check for Ladle environment (runs on port 61000 by default)
-  if (window.location.port === '61000') return true;
+  // Check for Storybook environment (runs on port 61001 by default)
+  if (window.location.port === '61001') return true;
 
   // Check for Playwright test environment
   if ((window as any).__PLAYWRIGHT__) return true;

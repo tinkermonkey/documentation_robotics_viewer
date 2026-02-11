@@ -66,3 +66,9 @@
   stroke: #2563eb !important;
   stroke-width: 3 !important;
 }
+
+/* Edge focus indicator for keyboard accessibility */
+.react-flow__edge-path:focus-visible {
+  outline: 2px solid #0ea5e9;
+  outline-offset: 2px;
+}

@@ -6,13 +6,6 @@
 import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import type { Node } from '@xyflow/react';
-
-const meta = {
-  title: 'E Compositions / Graph Compositions / ModelRouteComposition',
-} satisfies Meta;
-
-export default meta;
-type Story = StoryObj; 
 import { ModelRouteComposition } from '@/catalog/components/ModelRouteComposition';
 import { StoryProviderWrapper } from '@/catalog/providers/StoryProviderWrapper';
 import {
@@ -23,49 +16,54 @@ import {
   createMinimalLinkRegistryFixture
 } from '@/catalog/fixtures';
 
+const meta = {
+  title: 'E Compositions / Graph Compositions / ModelRouteComposition',
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
+
 /**
  * Graph View - Default
  * Full model route composition with graph view and all sidebars
  */
 export const GraphViewDefault: Story = {
   render: () => {
-const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
-  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
-  const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
+    const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
+    const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+    const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
 
-  const model = createCompleteModelFixture();
-  const annotations = createAnnotationListFixture(5);
-  const linkRegistry = createMinimalLinkRegistryFixture();
-  const specData = createCompleteSpecFixture();
+    const model = createCompleteModelFixture();
+    const annotations = createAnnotationListFixture(5);
+    const linkRegistry = createMinimalLinkRegistryFixture();
+    const specData = createCompleteSpecFixture();
 
-      return (
-      
-    <StoryProviderWrapper
-      model={model}
-      annotations={annotations}
-      linkRegistry={linkRegistry}
-      spec={specData}
-      initialParams={{ view: 'graph' }}
-      initialSearch={{ layer: selectedLayerId || undefined }}
-    >
-      <div className="h-screen w-screen">
-        <ModelRouteComposition
-          model={model}
-          linkRegistry={linkRegistry}
-          specData={specData}
-          activeView="graph"
-          selectedLayerId={selectedLayerId}
-          selectedNode={selectedNode}
-          highlightedPath={highlightedPath}
-          onLayerSelect={setSelectedLayerId}
-          onNodeClick={setSelectedNode}
-          onPathHighlight={setHighlightedPath}
-          showLeftSidebar={true}
-          showRightSidebar={true}
-        />
-      </div>
-    </StoryProviderWrapper>
-  
+    return (
+      <StoryProviderWrapper
+        model={model}
+        annotations={annotations}
+        linkRegistry={linkRegistry}
+        spec={specData}
+        initialParams={{ view: 'graph' }}
+        initialSearch={{ layer: selectedLayerId || undefined }}
+      >
+        <div className="h-screen w-screen">
+          <ModelRouteComposition
+            model={model}
+            linkRegistry={linkRegistry}
+            specData={specData}
+            activeView="graph"
+            selectedLayerId={selectedLayerId}
+            selectedNode={selectedNode}
+            highlightedPath={highlightedPath}
+            onLayerSelect={setSelectedLayerId}
+            onNodeClick={setSelectedNode}
+            onPathHighlight={setHighlightedPath}
+            showLeftSidebar={true}
+            showRightSidebar={true}
+          />
+        </div>
+      </StoryProviderWrapper>
     );
   }
 };
@@ -76,40 +74,38 @@ const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
  */
 export const GraphViewWithLayerFilter: Story = {
   render: () => {
-const [selectedLayerId, setSelectedLayerId] = useState<string | null>('motivation');
-  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
-  const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
+    const [selectedLayerId, setSelectedLayerId] = useState<string | null>('motivation');
+    const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+    const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
 
-  const model = createCompleteModelFixture();
-  const annotations = createAnnotationListFixture(3);
-  const linkRegistry = createMinimalLinkRegistryFixture();
+    const model = createCompleteModelFixture();
+    const annotations = createAnnotationListFixture(3);
+    const linkRegistry = createMinimalLinkRegistryFixture();
 
-      return (
-      
-    <StoryProviderWrapper
-      model={model}
-      annotations={annotations}
-      linkRegistry={linkRegistry}
-      initialParams={{ view: 'graph' }}
-      initialSearch={{ layer: 'motivation' }}
-    >
-      <div className="h-screen w-screen">
-        <ModelRouteComposition
-          model={model}
-          linkRegistry={linkRegistry}
-          activeView="graph"
-          selectedLayerId={selectedLayerId}
-          selectedNode={selectedNode}
-          highlightedPath={highlightedPath}
-          onLayerSelect={setSelectedLayerId}
-          onNodeClick={setSelectedNode}
-          onPathHighlight={setHighlightedPath}
-          showLeftSidebar={true}
-          showRightSidebar={true}
-        />
-      </div>
-    </StoryProviderWrapper>
-  
+    return (
+      <StoryProviderWrapper
+        model={model}
+        annotations={annotations}
+        linkRegistry={linkRegistry}
+        initialParams={{ view: 'graph' }}
+        initialSearch={{ layer: 'motivation' }}
+      >
+        <div className="h-screen w-screen">
+          <ModelRouteComposition
+            model={model}
+            linkRegistry={linkRegistry}
+            activeView="graph"
+            selectedLayerId={selectedLayerId}
+            selectedNode={selectedNode}
+            highlightedPath={highlightedPath}
+            onLayerSelect={setSelectedLayerId}
+            onNodeClick={setSelectedNode}
+            onPathHighlight={setHighlightedPath}
+            showLeftSidebar={true}
+            showRightSidebar={true}
+          />
+        </div>
+      </StoryProviderWrapper>
     );
   }
 };
@@ -120,42 +116,40 @@ const [selectedLayerId, setSelectedLayerId] = useState<string | null>('motivatio
  */
 export const JSONView: Story = {
   render: () => {
-const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
-  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
-  const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
+    const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
+    const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+    const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
 
-  const model = createCompleteModelFixture();
-  const annotations = createAnnotationListFixture(5);
-  const linkRegistry = createMinimalLinkRegistryFixture();
-  const specData = createCompleteSpecFixture();
+    const model = createCompleteModelFixture();
+    const annotations = createAnnotationListFixture(5);
+    const linkRegistry = createMinimalLinkRegistryFixture();
+    const specData = createCompleteSpecFixture();
 
-      return (
-      
-    <StoryProviderWrapper
-      model={model}
-      annotations={annotations}
-      linkRegistry={linkRegistry}
-      spec={specData}
-      initialParams={{ view: 'json' }}
-    >
-      <div className="h-screen w-screen">
-        <ModelRouteComposition
-          model={model}
-          linkRegistry={linkRegistry}
-          specData={specData}
-          activeView="json"
-          selectedLayerId={selectedLayerId}
-          selectedNode={selectedNode}
-          highlightedPath={highlightedPath}
-          onLayerSelect={setSelectedLayerId}
-          onNodeClick={setSelectedNode}
-          onPathHighlight={setHighlightedPath}
-          showLeftSidebar={true}
-          showRightSidebar={true}
-        />
-      </div>
-    </StoryProviderWrapper>
-  
+    return (
+      <StoryProviderWrapper
+        model={model}
+        annotations={annotations}
+        linkRegistry={linkRegistry}
+        spec={specData}
+        initialParams={{ view: 'json' }}
+      >
+        <div className="h-screen w-screen">
+          <ModelRouteComposition
+            model={model}
+            linkRegistry={linkRegistry}
+            specData={specData}
+            activeView="json"
+            selectedLayerId={selectedLayerId}
+            selectedNode={selectedNode}
+            highlightedPath={highlightedPath}
+            onLayerSelect={setSelectedLayerId}
+            onNodeClick={setSelectedNode}
+            onPathHighlight={setHighlightedPath}
+            showLeftSidebar={true}
+            showRightSidebar={true}
+          />
+        </div>
+      </StoryProviderWrapper>
     );
   }
 };
@@ -166,43 +160,41 @@ const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
  */
 export const JSONViewWithHighlightedPath: Story = {
   render: () => {
-const [selectedLayerId, setSelectedLayerId] = useState<string | null>('motivation');
-  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
-  const [highlightedPath, setHighlightedPath] = useState<string | null>('layers.motivation.elements[0].name');
+    const [selectedLayerId, setSelectedLayerId] = useState<string | null>('motivation');
+    const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+    const [highlightedPath, setHighlightedPath] = useState<string | null>('layers.motivation.elements[0].name');
 
-  const model = createCompleteModelFixture();
-  const annotations = createAnnotationListFixture(2);
-  const linkRegistry = createMinimalLinkRegistryFixture();
-  const specData = createCompleteSpecFixture();
+    const model = createCompleteModelFixture();
+    const annotations = createAnnotationListFixture(2);
+    const linkRegistry = createMinimalLinkRegistryFixture();
+    const specData = createCompleteSpecFixture();
 
-      return (
-      
-    <StoryProviderWrapper
-      model={model}
-      annotations={annotations}
-      linkRegistry={linkRegistry}
-      spec={specData}
-      initialParams={{ view: 'json' }}
-      initialSearch={{ layer: 'motivation' }}
-    >
-      <div className="h-screen w-screen">
-        <ModelRouteComposition
-          model={model}
-          linkRegistry={linkRegistry}
-          specData={specData}
-          activeView="json"
-          selectedLayerId={selectedLayerId}
-          selectedNode={selectedNode}
-          highlightedPath={highlightedPath}
-          onLayerSelect={setSelectedLayerId}
-          onNodeClick={setSelectedNode}
-          onPathHighlight={setHighlightedPath}
-          showLeftSidebar={true}
-          showRightSidebar={true}
-        />
-      </div>
-    </StoryProviderWrapper>
-  
+    return (
+      <StoryProviderWrapper
+        model={model}
+        annotations={annotations}
+        linkRegistry={linkRegistry}
+        spec={specData}
+        initialParams={{ view: 'json' }}
+        initialSearch={{ layer: 'motivation' }}
+      >
+        <div className="h-screen w-screen">
+          <ModelRouteComposition
+            model={model}
+            linkRegistry={linkRegistry}
+            specData={specData}
+            activeView="json"
+            selectedLayerId={selectedLayerId}
+            selectedNode={selectedNode}
+            highlightedPath={highlightedPath}
+            onLayerSelect={setSelectedLayerId}
+            onNodeClick={setSelectedNode}
+            onPathHighlight={setHighlightedPath}
+            showLeftSidebar={true}
+            showRightSidebar={true}
+          />
+        </div>
+      </StoryProviderWrapper>
     );
   }
 };
@@ -213,34 +205,32 @@ const [selectedLayerId, setSelectedLayerId] = useState<string | null>('motivatio
  */
 export const CompactNoSidebars: Story = {
   render: () => {
-const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
-  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
-  const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
+    const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
+    const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+    const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
 
-  const model = createMinimalModelFixture();
+    const model = createMinimalModelFixture();
 
-      return (
-      
-    <StoryProviderWrapper
-      model={model}
-      initialParams={{ view: 'graph' }}
-    >
-      <div className="h-screen w-screen">
-        <ModelRouteComposition
-          model={model}
-          activeView="graph"
-          selectedLayerId={selectedLayerId}
-          selectedNode={selectedNode}
-          highlightedPath={highlightedPath}
-          onLayerSelect={setSelectedLayerId}
-          onNodeClick={setSelectedNode}
-          onPathHighlight={setHighlightedPath}
-          showLeftSidebar={false}
-          showRightSidebar={false}
-        />
-      </div>
-    </StoryProviderWrapper>
-  
+    return (
+      <StoryProviderWrapper
+        model={model}
+        initialParams={{ view: 'graph' }}
+      >
+        <div className="h-screen w-screen">
+          <ModelRouteComposition
+            model={model}
+            activeView="graph"
+            selectedLayerId={selectedLayerId}
+            selectedNode={selectedNode}
+            highlightedPath={highlightedPath}
+            onLayerSelect={setSelectedLayerId}
+            onNodeClick={setSelectedNode}
+            onPathHighlight={setHighlightedPath}
+            showLeftSidebar={false}
+            showRightSidebar={false}
+          />
+        </div>
+      </StoryProviderWrapper>
     );
   }
 };
@@ -251,42 +241,40 @@ const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
  */
 export const GraphViewWithSelectedNode: Story = {
   render: () => {
-const [selectedLayerId, setSelectedLayerId] = useState<string | null>('motivation');
-  const [selectedNode, setSelectedNode] = useState<Node | null>({
-    id: 'goal-1',
-    data: { label: 'Increase Revenue', fill: '#fbbf24', stroke: '#d97706' },
-    position: { x: 100, y: 100 },
-    type: 'goal'
-  });
-  const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
+    const [selectedLayerId, setSelectedLayerId] = useState<string | null>('motivation');
+    const [selectedNode, setSelectedNode] = useState<Node | null>({
+      id: 'goal-1',
+      data: { label: 'Increase Revenue', fill: '#fbbf24', stroke: '#d97706' },
+      position: { x: 100, y: 100 },
+      type: 'goal'
+    });
+    const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
 
-  const model = createCompleteModelFixture();
-  const annotations = createAnnotationListFixture(3);
+    const model = createCompleteModelFixture();
+    const annotations = createAnnotationListFixture(3);
 
-      return (
-      
-    <StoryProviderWrapper
-      model={model}
-      annotations={annotations}
-      initialParams={{ view: 'graph' }}
-      initialSearch={{ layer: 'motivation' }}
-    >
-      <div className="h-screen w-screen">
-        <ModelRouteComposition
-          model={model}
-          activeView="graph"
-          selectedLayerId={selectedLayerId}
-          selectedNode={selectedNode}
-          highlightedPath={highlightedPath}
-          onLayerSelect={setSelectedLayerId}
-          onNodeClick={setSelectedNode}
-          onPathHighlight={setHighlightedPath}
-          showLeftSidebar={true}
-          showRightSidebar={true}
-        />
-      </div>
-    </StoryProviderWrapper>
-  
+    return (
+      <StoryProviderWrapper
+        model={model}
+        annotations={annotations}
+        initialParams={{ view: 'graph' }}
+        initialSearch={{ layer: 'motivation' }}
+      >
+        <div className="h-screen w-screen">
+          <ModelRouteComposition
+            model={model}
+            activeView="graph"
+            selectedLayerId={selectedLayerId}
+            selectedNode={selectedNode}
+            highlightedPath={highlightedPath}
+            onLayerSelect={setSelectedLayerId}
+            onNodeClick={setSelectedNode}
+            onPathHighlight={setHighlightedPath}
+            showLeftSidebar={true}
+            showRightSidebar={true}
+          />
+        </div>
+      </StoryProviderWrapper>
     );
   }
 };

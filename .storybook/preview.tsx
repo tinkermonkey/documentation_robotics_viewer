@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MockRouterProvider } from '../src/catalog/providers/MockRouterProvider';
 import '../src/index.css';
 
 // Setup test environment flags for WebSocket client detection
@@ -28,11 +28,11 @@ if (typeof window !== 'undefined') {
 const preview: Preview = {
   decorators: [
     (Story) => (
-      <MemoryRouter>
+      <MockRouterProvider>
         <div className="min-h-screen bg-white dark:bg-gray-900">
           <Story />
         </div>
-      </MemoryRouter>
+      </MockRouterProvider>
     ),
   ],
   parameters: {
