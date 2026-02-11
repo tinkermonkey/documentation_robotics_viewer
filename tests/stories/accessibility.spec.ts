@@ -29,11 +29,6 @@ function setupErrorFiltering(page: import('@playwright/test').Page) {
   });
 }
 
-/**
- * Convert Ladle story ID to Storybook iframe URL
- * Ladle: /?story=...&mode=preview
- * Storybook: /iframe.html?id=...&viewMode=story
- */
 function storyUrl(storyId: string): string {
   return `/iframe.html?id=${storyId}&viewMode=story`;
 }
@@ -49,7 +44,7 @@ test.describe('Accessibility - Graph Views', () => {
   for (const story of graphStories) {
     test(`${story.name}: WCAG 2.1 AA compliance`, async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(`/?story=${story.key}&mode=preview`);
+      await page.goto(storyUrl(story.key));
       await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 }).catch(() => {
         return page.locator('.react-flow__node').first().waitFor({ state: 'attached', timeout: 10000 });
       });
@@ -79,7 +74,7 @@ test.describe('Accessibility - Panels', () => {
   for (const story of panelStories) {
     test(`${story.name}: WCAG 2.1 AA compliance`, async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(`/?story=${story.key}&mode=preview`);
+      await page.goto(storyUrl(story.key));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
 
@@ -107,7 +102,7 @@ test.describe('Accessibility - Nodes', () => {
   for (const story of nodeStories) {
     test(`${story.name}: has role="article" and aria-label`, async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(`/?story=${story.key}&mode=preview`);
+      await page.goto(storyUrl(story.key));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
 
       const article = page.locator('[role="article"]').first();

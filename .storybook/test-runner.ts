@@ -18,7 +18,6 @@ declare global {
   interface Window {
     __errorMessages__: string[];
     __pageErrors__: string[];
-    __ERRORS__: string[];
   }
 }
 
@@ -35,7 +34,7 @@ const config: TestRunnerConfig = {
       if (msg.type() === 'error') {
         const text = msg.text();
         // Push to window.__errorMessages__ which will be read in postVisit
-        page.evaluate((error) => {
+        void page.evaluate((error) => {
           (window as any).__errorMessages__?.push(error);
         }, text);
       }
@@ -45,7 +44,7 @@ const config: TestRunnerConfig = {
     page.on('pageerror', (error) => {
       const errorText = error.toString();
       // Push to window.__pageErrors__ which will be read in postVisit
-      page.evaluate((err) => {
+      void page.evaluate((err) => {
         (window as any).__pageErrors__?.push(err);
       }, errorText);
     });
