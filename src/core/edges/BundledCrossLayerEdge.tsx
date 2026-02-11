@@ -82,7 +82,7 @@ export const BundledCrossLayerEdge = memo(({
   const color = data?.targetLayer ? getLayerColor(data.targetLayer) : '#95a5a6';
   const bundleCount = data?.bundleCount || 1;
 
-  const handleBundleClick = (e: React.MouseEvent) => {
+  const handleBundleClick = (e: React.MouseEvent | React.KeyboardEvent) => {
     e.stopPropagation();
     setIsExpanded(!isExpanded);
   };
@@ -163,7 +163,7 @@ export const BundledCrossLayerEdge = memo(({
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
-            handleBundleClick(e as any);
+            handleBundleClick(e);
           }
         }}
       />
@@ -199,7 +199,7 @@ export const BundledCrossLayerEdge = memo(({
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
-              handleBundleClick(e as any);
+              handleBundleClick(e);
             }
           }}
           onFocus={(e) => {

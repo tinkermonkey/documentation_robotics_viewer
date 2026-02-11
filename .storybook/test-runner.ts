@@ -13,6 +13,15 @@ interface AxeResults {
   violations: AxeViolation[];
 }
 
+// Extend Window interface for test-runner injected properties
+declare global {
+  interface Window {
+    __errorMessages__: string[];
+    __pageErrors__: string[];
+    __ERRORS__: string[];
+  }
+}
+
 const config: TestRunnerConfig = {
   async preVisit(page) {
     // Register error listeners once per page visit
@@ -32,8 +41,8 @@ const config: TestRunnerConfig = {
 
     // Store error collectors on page context for access in postVisit
     await page.evaluate(() => {
-      (window as any).__errorMessages__ = [];
-      (window as any).__pageErrors__ = [];
+      window.__errorMessages__ = [];
+      window.__pageErrors__ = [];
     });
 
     // Inject axe-core for accessibility testing
@@ -93,9 +102,8 @@ const config: TestRunnerConfig = {
         try {
           const violations = await page.evaluate(() => {
             return new Promise<AxeResults | null>((resolve) => {
-              const axe = (window as any).axe;
-              if (typeof axe !== 'undefined' && axe.run) {
-                axe.run(
+              if (typeof window.axe !== 'undefined' && window.axe.run) {
+                window.axe.run(
                   {
                     runOnly: {
                       type: 'tag',
@@ -155,7 +163,7 @@ const config: TestRunnerConfig = {
     }
 
     // Check for console errors after all tests
-    const errors = await page.evaluate(() => (window as any).__ERRORS__ || []);
+    const errors = await page.evaluate(() => window.__ERRORS__ || []);
     for (const error of errors) {
       if (!isExpectedConsoleError(error) && !isKnownRenderingBug(error)) {
         throw new Error(`Critical error in story ${context.id}: ${error}`);

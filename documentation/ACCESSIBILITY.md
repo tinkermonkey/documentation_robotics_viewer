@@ -294,37 +294,71 @@ const preview: Preview = {
 
 ### Test Runner Integration
 
-The Storybook test runner (`test-runner.ts`) includes automated accessibility validation:
+The Storybook test runner (`test-runner.ts`) includes automated accessibility validation using the `axe-playwright` package:
 
 **Configuration:**
 ```typescript
 // .storybook/test-runner.ts
+import { injectAxe, checkA11y, configureAxe } from 'axe-playwright';
+
 async preVisit(page) {
   // Inject axe-core for accessibility testing
-  await page.addScriptTag({
-    url: 'https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.11.0/axe.min.js',
-  });
+  try {
+    await injectAxe(page);
+  } catch (err) {
+    console.warn('Could not inject axe-core:', err);
+  }
 }
 
 async postVisit(page, context) {
-  // Run accessibility checks on every story
-  const results = await page.evaluate(() => {
-    return new Promise((resolve) => {
-      window.axe?.run({ runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'] } }, (error, results) => {
-        resolve(results);
-      });
-    });
+  // Configure axe-core rules for architecture visualization context
+  await configureAxe(page, {
+    rules: [
+      {
+        id: 'color-contrast',
+        enabled: true,
+        reviewOnFail: true, // Mark for manual review instead of auto-fail
+      },
+      {
+        id: 'aria-allowed-attr',
+        enabled: true,
+      },
+      {
+        id: 'aria-required-children',
+        enabled: true,
+      },
+    ],
   });
 
-  // Report violations with severity levels
-  if (results?.violations?.length > 0) {
-    // Log all violations as warnings
-    console.warn(`Accessibility violations in story "${context.id}":\n${violationSummary}`);
+  // Run accessibility checks with detailed reporting
+  try {
+    await checkA11y(page, '#storybook-root', {
+      detailedReport: true,
+      detailedReportOptions: { html: true },
+    });
+  } catch (error) {
+    // Extract violation details and categorize by severity
+    const violations = await page.evaluate(() => {
+      return new Promise((resolve) => {
+        window.axe?.run(
+          { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'] } },
+          (err, results) => {
+            resolve(results?.violations || []);
+          }
+        );
+      });
+    });
 
-    // Fail test for high-impact violations only
-    const highImpact = results.violations.filter(v => v.impact === 'critical' || v.impact === 'serious');
+    // Fail on critical/serious violations
+    const highImpact = violations.filter(v => v.impact === 'critical' || v.impact === 'serious');
     if (highImpact.length > 0) {
-      throw new Error(`Critical accessibility violations: ${highImpact.map(v => v.id).join(', ')}`);
+      throw new Error(`High-impact accessibility violations in story "${context.id}": ${highImpact.map(v => v.id).join(', ')}`);
+    }
+
+    // Log moderate/minor violations as warnings
+    const otherViolations = violations.filter(v => v.impact === 'moderate' || v.impact === 'minor');
+    if (otherViolations.length > 0) {
+      console.warn(`Accessibility warnings in story "${context.id}": ${otherViolations.map(v => v.id).join(', ')}`);
     }
   }
 }
