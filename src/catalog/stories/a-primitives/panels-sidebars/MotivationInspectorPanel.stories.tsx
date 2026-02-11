@@ -16,6 +16,7 @@ type Story = StoryObj;
 const mockGraph: MotivationGraph = {
   nodes: new Map([
     ['goal-1', {
+      id: 'goal-1',
       element: {
         id: 'goal-1',
         type: MotivationElementType.Goal,
@@ -42,6 +43,7 @@ const mockGraph: MotivationGraph = {
       },
     }],
     ['req-1', {
+      id: 'req-1',
       element: {
         id: 'req-1',
         type: MotivationElementType.Requirement,

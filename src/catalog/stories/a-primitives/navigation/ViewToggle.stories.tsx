@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, within, userEvent } from '@storybook/test';
-import { ViewToggle, ViewToggleProps } from '@/apps/embedded/components/shared/ViewToggle';
+import { expect, within } from '@storybook/test';
+import { ViewToggle } from '@/apps/embedded/components/shared/ViewToggle';
 import { BarChart3, Table, Code } from 'lucide-react';
 
 const meta = {

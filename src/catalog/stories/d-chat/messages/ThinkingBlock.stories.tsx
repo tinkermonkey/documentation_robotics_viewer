@@ -5,9 +5,12 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ThinkingBlock } from '@/apps/embedded/components/chat/ThinkingBlock';
 
-export default {
+const meta = {
   title: 'D Chat / Messages / ThinkingBlock',
-};
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 /**
  * Short thinking content (initially collapsed)

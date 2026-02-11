@@ -5,9 +5,12 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { UsageStatsBadge } from '@/apps/embedded/components/chat/UsageStatsBadge';
 
-export default {
+const meta = {
   title: 'D Chat / Messages / UsageStatsBadge',
-};
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 /**
  * Small usage (< 1000 tokens)

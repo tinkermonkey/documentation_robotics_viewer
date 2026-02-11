@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { GraphViewSidebar, GraphViewSidebarProps } from '@/core/components/base/GraphViewSidebar';
+import { GraphViewSidebar } from '@/core/components/base/GraphViewSidebar';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / GraphViewSidebar',

@@ -258,158 +258,174 @@ export const UsageStatsBadgeHighVolume: Story = { render: () => (
 // ChatMessage Stories
 // ============================================================================
 
-export const ChatMessageUser: Story = () => {
-  const message: ChatMessageType = {
-    id: 'msg-1',
-    role: 'user',
-    conversationId: 'conv-1',
-    timestamp: new Date().toISOString(),
-    parts: [
-      {
-        type: 'text',
-        content: 'Hello, what can you help me with?',
-        timestamp: new Date().toISOString()
-      }
-    ]
-  };
-  return <ChatMessage message={message} />;
+export const ChatMessageUser: Story = {
+  render: () => {
+    const message: ChatMessageType = {
+      id: 'msg-1',
+      role: 'user',
+      conversationId: 'conv-1',
+      timestamp: new Date().toISOString(),
+      parts: [
+        {
+          type: 'text',
+          content: 'Hello, what can you help me with?',
+          timestamp: new Date().toISOString()
+        }
+      ]
+    };
+    return <ChatMessage message={message} />;
+  },
 };
 
-export const ChatMessageAssistant: Story = () => {
-  const message: ChatMessageType = {
-    id: 'msg-2',
-    role: 'assistant',
-    conversationId: 'conv-1',
-    timestamp: new Date().toISOString(),
-    parts: [
-      {
-        type: 'text',
-        content: "I can help you with a wide range of tasks! I'm knowledgeable about programming, writing, analysis, and more.",
-        timestamp: new Date().toISOString()
-      }
-    ]
-  };
-  return <ChatMessage message={message} />;
+export const ChatMessageAssistant: Story = {
+  render: () => {
+    const message: ChatMessageType = {
+      id: 'msg-2',
+      role: 'assistant',
+      conversationId: 'conv-1',
+      timestamp: new Date().toISOString(),
+      parts: [
+        {
+          type: 'text',
+          content: "I can help you with a wide range of tasks! I'm knowledgeable about programming, writing, analysis, and more.",
+          timestamp: new Date().toISOString()
+        }
+      ]
+    };
+    return <ChatMessage message={message} />;
+  },
 };
 
-export const ChatMessageWithThinking: Story = () => {
-  const message: ChatMessageType = {
-    id: 'msg-3',
-    role: 'assistant',
-    conversationId: 'conv-1',
-    timestamp: new Date().toISOString(),
-    parts: [
-      {
-        type: 'thinking',
-        content: 'The user is asking about my capabilities. I should provide a comprehensive overview.',
-        timestamp: new Date().toISOString()
-      },
-      {
-        type: 'text',
-        content: 'I can assist with: writing, coding, analysis, and much more!',
-        timestamp: new Date().toISOString()
-      }
-    ]
-  };
-  return <ChatMessage message={message} />;
+export const ChatMessageWithThinking: Story = {
+  render: () => {
+    const message: ChatMessageType = {
+      id: 'msg-3',
+      role: 'assistant',
+      conversationId: 'conv-1',
+      timestamp: new Date().toISOString(),
+      parts: [
+        {
+          type: 'thinking',
+          content: 'The user is asking about my capabilities. I should provide a comprehensive overview.',
+          timestamp: new Date().toISOString()
+        },
+        {
+          type: 'text',
+          content: 'I can assist with: writing, coding, analysis, and much more!',
+          timestamp: new Date().toISOString()
+        }
+      ]
+    };
+    return <ChatMessage message={message} />;
+  },
 };
 
-export const ChatMessageWithUsage: Story = () => {
-  const message: ChatMessageType = {
-    id: 'msg-4',
-    role: 'assistant',
-    conversationId: 'conv-1',
-    timestamp: new Date().toISOString(),
-    parts: [
-      {
-        type: 'text',
-        content: 'Here is my response with token usage information included.',
-        timestamp: new Date().toISOString()
-      },
-      {
-        type: 'usage',
-        inputTokens: 150,
-        outputTokens: 200,
-        totalTokens: 350,
-        totalCostUsd: 0.00125,
-        timestamp: new Date().toISOString()
-      }
-    ]
-  };
-  return <ChatMessage message={message} />;
+export const ChatMessageWithUsage: Story = {
+  render: () => {
+    const message: ChatMessageType = {
+      id: 'msg-4',
+      role: 'assistant',
+      conversationId: 'conv-1',
+      timestamp: new Date().toISOString(),
+      parts: [
+        {
+          type: 'text',
+          content: 'Here is my response with token usage information included.',
+          timestamp: new Date().toISOString()
+        },
+        {
+          type: 'usage',
+          inputTokens: 150,
+          outputTokens: 200,
+          totalTokens: 350,
+          totalCostUsd: 0.00125,
+          timestamp: new Date().toISOString()
+        }
+      ]
+    };
+    return <ChatMessage message={message} />;
+  },
 };
 
-export const ChatMessageWithToolInvocation: Story = () => {
-  const message: ChatMessageType = {
-    id: 'msg-5',
-    role: 'assistant',
-    conversationId: 'conv-1',
-    timestamp: new Date().toISOString(),
-    parts: [
-      {
-        type: 'text',
-        content: 'Let me search for that information.',
-        timestamp: new Date().toISOString()
-      },
-      {
-        type: 'tool_invocation',
-        toolUseId: 'tool-use-1',
-        toolName: 'search',
-        toolInput: { query: 'example' },
-        status: { state: 'completed', result: 'Found 10 results' },
-        timestamp: new Date().toISOString()
-      }
-    ]
-  };
-  return <ChatMessage message={message} />;
+export const ChatMessageWithToolInvocation: Story = {
+  render: () => {
+    const message: ChatMessageType = {
+      id: 'msg-5',
+      role: 'assistant',
+      conversationId: 'conv-1',
+      timestamp: new Date().toISOString(),
+      parts: [
+        {
+          type: 'text',
+          content: 'Let me search for that information.',
+          timestamp: new Date().toISOString()
+        },
+        {
+          type: 'tool_invocation',
+          toolUseId: 'tool-use-1',
+          toolName: 'search',
+          toolInput: { query: 'example' },
+          status: { state: 'completed', result: 'Found 10 results' },
+          timestamp: new Date().toISOString()
+        }
+      ]
+    };
+    return <ChatMessage message={message} />;
+  },
 };
 
-export const ChatMessageStreaming: Story = () => {
-  const message: ChatMessageType = {
-    id: 'msg-6',
-    role: 'assistant',
-    conversationId: 'conv-1',
-    timestamp: new Date().toISOString(),
-    parts: [
-      {
-        type: 'text',
-        content: 'This response is currently being streamed to you...',
-        timestamp: new Date().toISOString()
-      }
-    ],
-    isStreaming: true
-  };
-  return <ChatMessage message={message} />;
+export const ChatMessageStreaming: Story = {
+  render: () => {
+    const message: ChatMessageType = {
+      id: 'msg-6',
+      role: 'assistant',
+      conversationId: 'conv-1',
+      timestamp: new Date().toISOString(),
+      parts: [
+        {
+          type: 'text',
+          content: 'This response is currently being streamed to you...',
+          timestamp: new Date().toISOString()
+        }
+      ],
+      isStreaming: true
+    };
+    return <ChatMessage message={message} />;
+  },
 };
 
-export const ChatMessageStreamingEmpty: Story = () => {
-  const message: ChatMessageType = {
-    id: 'msg-7',
-    role: 'assistant',
-    conversationId: 'conv-1',
-    timestamp: new Date().toISOString(),
-    parts: [],
-    isStreaming: true
-  };
-  return <ChatMessage message={message} />;
+export const ChatMessageStreamingEmpty: Story = {
+  render: () => {
+    const message: ChatMessageType = {
+      id: 'msg-7',
+      role: 'assistant',
+      conversationId: 'conv-1',
+      timestamp: new Date().toISOString(),
+      parts: [],
+      isStreaming: true
+    };
+    return <ChatMessage message={message} />;
+  },
 };
 
-export const ChatMessageWithError: Story = () => {
-  const message: ChatMessageType = {
-    id: 'msg-8',
-    role: 'assistant',
-    conversationId: 'conv-1',
-    timestamp: new Date().toISOString(),
-    parts: [
-      {
-        type: 'error',
-        code: 'SEND_FAILED',
-        message: 'Failed to process your request. Please try again.',
-        timestamp: new Date().toISOString()
-      }
-    ]
-  };
-  return <ChatMessage message={message} />;
+export const ChatMessageWithError: Story = {
+  render: () => {
+    const message: ChatMessageType = {
+      id: 'msg-8',
+      role: 'assistant',
+      conversationId: 'conv-1',
+      timestamp: new Date().toISOString(),
+      parts: [
+        {
+          type: 'error',
+          code: 'SEND_FAILED',
+          message: 'Failed to process your request. Please try again.',
+          timestamp: new Date().toISOString()
+        }
+      ]
+    };
+    return <ChatMessage message={message} />;
+  },
 };
 
 // ============================================================================

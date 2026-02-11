@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import ModelJSONViewer from '@/apps/embedded/components/ModelJSONViewer';
 import type { MetaModel } from '@/core/types/model';
+import { LayerType } from '@/core/types/layers';
 
 const meta = {
   title: 'B Details / Model Details / ModelJSONViewer',
@@ -241,8 +242,8 @@ const mockLinkRegistry = {
       id: 'motivation-supports-goals',
       name: 'Supports Goals',
       category: 'motivation',
-      sourceLayers: ['business-layer', 'application-layer'],
-      targetLayer: 'motivation-layer',
+      sourceLayers: [LayerType.Business, LayerType.Application],
+      targetLayer: LayerType.Motivation,
       targetElementTypes: ['Goal'],
       fieldPaths: ['supports-goals'],
       description: 'Elements that support achievement of goals',
@@ -255,8 +256,8 @@ const mockLinkRegistry = {
       id: 'motivation-governed-by-principles',
       name: 'Governed by Principles',
       category: 'governance',
-      sourceLayers: ['business-layer', 'application-layer'],
-      targetLayer: 'motivation-layer',
+      sourceLayers: [LayerType.Business, LayerType.Application],
+      targetLayer: LayerType.Motivation,
       targetElementTypes: ['Principle'],
       fieldPaths: ['governed-by-principles'],
       description: 'Elements governed by architectural principles',

@@ -53,7 +53,7 @@ export const Collapsed: Story = {
     const title = canvas.getByText('Collapsed Section');
     expect(title).toBeInTheDocument();
     // Click to expand
-    const button = title.closest('button') || canvas.getByRole('button').find((b) => b.textContent?.includes('Collapsed Section'));
+    const button = title.closest('button') || canvas.queryAllByRole('button').find((b: HTMLElement) => b.textContent?.includes('Collapsed Section'));
     if (button) {
       await userEvent.click(button);
       // Content should now be visible

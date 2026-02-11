@@ -6,9 +6,12 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { ToolInvocationCard } from '@/apps/embedded/components/chat/ToolInvocationCard';
 import type { ToolInvocationContent } from '@/apps/embedded/types/chat';
 
-export default {
+const meta = {
   title: 'D Chat / Messages / ToolInvocationCard',
-};
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 /**
  * Tool currently executing

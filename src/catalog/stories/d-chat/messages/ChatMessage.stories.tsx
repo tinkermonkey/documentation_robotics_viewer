@@ -6,9 +6,12 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { ChatMessage } from '@/apps/embedded/components/chat/ChatMessage';
 import type { ChatMessage as ChatMessageType } from '@/apps/embedded/types/chat';
 
-export default {
+const meta = {
   title: 'D Chat / Messages / ChatMessage',
-};
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 /**
  * User message with simple text
