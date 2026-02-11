@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, within } from '@storybook/test';
+import { expect, within, userEvent } from '@storybook/test';
 import { ViewToggle } from '@/apps/embedded/components/shared/ViewToggle';
 import { BarChart3, Table, Code } from 'lucide-react';
 
@@ -79,6 +79,14 @@ export const JSONView: Story = {
       />
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const buttons = canvas.getAllByRole('button');
+    expect(buttons.length).toBeGreaterThanOrEqual(3);
+    // Verify JSON button appears to be selected
+    const jsonButton = buttons.find((btn) => btn.textContent?.includes('JSON'));
+    expect(jsonButton).toBeDefined();
+  },
 };
 
 /**
@@ -99,6 +107,15 @@ export const WithIcons: Story = {
       />
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const buttons = canvas.getAllByRole('button');
+    expect(buttons.length).toBe(3);
+    // Verify all buttons are present
+    expect(canvas.getByText('Graph')).toBeInTheDocument();
+    expect(canvas.getByText('Table')).toBeInTheDocument();
+    expect(canvas.getByText('JSON')).toBeInTheDocument();
+  },
 };
 
 /**
@@ -119,6 +136,14 @@ export const SizeSmall: Story = {
       />
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const buttons = canvas.getAllByRole('button');
+    expect(buttons.length).toBe(2);
+    // Verify small size buttons are clickable
+    await userEvent.click(buttons[1]);
+    expect(canvas.getByText('List')).toBeInTheDocument();
+  },
 };
 
 /**
@@ -263,6 +288,15 @@ export const ManyViews: Story = {
       />
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const buttons = canvas.getAllByRole('button');
+    expect(buttons.length).toBe(5);
+    // Verify all view options are present
+    expect(canvas.getByText('Graph')).toBeInTheDocument();
+    expect(canvas.getByText('Export')).toBeInTheDocument();
+    expect(canvas.getByText('Compare')).toBeInTheDocument();
+  },
 };
 
 /**

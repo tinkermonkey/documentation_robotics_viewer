@@ -143,3 +143,44 @@ export const Controlled: Story = {
   );
   },
 };
+
+export const DarkModeExpanded: Story = {
+  render: () => (
+    <div className="w-96 bg-gray-900 p-4 rounded">
+      <ExpandableSection
+        title="Expanded Dark Mode"
+        defaultExpanded={true}
+      >
+        <div className="text-sm text-gray-400">
+          This section demonstrates dark mode styling with proper contrast.
+        </div>
+      </ExpandableSection>
+    </div>
+  ),
+  parameters: {
+    backgrounds: { default: 'dark' },
+  },
+};
+
+export const DarkModeCollapsed: Story = {
+  render: () => (
+    <div className="w-96 bg-gray-900 p-4 rounded">
+      <ExpandableSection
+        title="Collapsed Dark Mode"
+        defaultExpanded={false}
+      >
+        <div className="text-sm text-gray-400">
+          Click the header to expand this dark mode section.
+        </div>
+      </ExpandableSection>
+    </div>
+  ),
+  parameters: {
+    backgrounds: { default: 'dark' },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const title = canvas.getByText('Collapsed Dark Mode');
+    expect(title).toBeInTheDocument();
+  },
+};

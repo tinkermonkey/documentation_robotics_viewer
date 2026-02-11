@@ -59,29 +59,29 @@ npm run test:e2e:headed    # Run in headed mode
 
 ### 3. Story Tests (`playwright.refinement.config.ts`)
 
-Ladle component story validation tests.
+Storybook component story validation tests.
 
 **Runs:**
-- `tests/stories/*.spec.ts` - Ladle story validation
+- `tests/stories/*.spec.ts` - Storybook story validation
 
 **Usage:**
 ```bash
-# Story validation (requires Ladle to be running: npm run catalog:dev)
+# Story validation (requires Storybook to be running: npm run catalog:dev)
 npm run test:stories:generate  # Generate story tests (run when stories change)
 npm run test:stories          # Run all story validation tests
 npm run test:stories:ui       # Run story tests with Playwright UI
 ```
 
-**Note:** Playwright automatically starts Ladle via the `webServer` configuration in `playwright.config.ts`, so manual setup is not required. The tests will wait for Ladle to be ready before running.
+**Note:** Playwright automatically starts Storybook via the `webServer` configuration in `playwright.config.ts`, so manual setup is not required. The tests will wait for Storybook to be ready before running.
 
 ## Story Validation Tests
 
 Location: `tests/stories/all-stories.spec.ts` (auto-generated, do not edit manually)
 
-**Purpose**: Validate that all Ladle component stories render without errors.
+**Purpose**: Validate that all Storybook component stories render without errors.
 
 **How It Works**:
-1. Ladle builds catalog → generates `meta.json` with ~510 stories
+1. Storybook builds catalog → generates story metadata with ~578 stories
 2. Generator script creates one test per story
 3. Each test navigates to story URL and checks for console errors
 4. CI enforces synchronization between stories and tests
@@ -114,7 +114,7 @@ npm test -- tests/stories         # Watch mode for debugging
 
 ### Individual Story Tests
 
-Comprehensive validation of all ~510 Ladle component stories using auto-generated tests.
+Comprehensive validation of all ~578 Storybook component stories using auto-generated tests.
 
 **Files:**
 - `tests/stories/all-stories.spec.ts` - Individual test per story (auto-generated)
@@ -128,7 +128,7 @@ Comprehensive validation of all ~510 Ladle component stories using auto-generate
 - Basic rendering succeeds
 
 **Prerequisites:**
-- Ladle must be running: `npm run catalog:dev`
+- Storybook must be running: `npm run catalog:dev`
 
 **Workflow:**
 1. Add or modify stories
@@ -178,7 +178,7 @@ Comprehensive testing for chat functionality including components, store, servic
 - Accessibility (keyboard nav, aria labels)
 - SDK unavailability handling
 
-**Ladle Stories (`src/catalog/components/chat/ChatComponents.stories.tsx`):**
+**Storybook Stories (`src/catalog/components/chat/ChatComponents.stories.tsx`):**
 - ChatTextContent: Basic, Markdown, Code blocks, Tables, Streaming, Mixed, Blockquotes, Lists
 - ThinkingBlock: Default, Expanded, With duration, Streaming, Long content, Short content
 - ToolInvocationCard: Executing, Complete, Error, Long output, Complex input, No output
@@ -189,7 +189,7 @@ Comprehensive testing for chat functionality including components, store, servic
 **Configuration:**
 - Unit tests: `playwright.config.ts` (default config)
 - E2E tests: `playwright.e2e.config.ts` (auto-starts servers)
-- Story tests: `playwright.refinement.config.ts` (requires Ladle)
+- Story tests: `playwright.refinement.config.ts` (requires Storybook)
 
 **Usage:**
 ```bash
@@ -199,8 +199,8 @@ npm test tests/unit/chat
 # Run E2E tests (requires servers)
 npm run test:e2e tests/chat.spec.ts
 
-# Validate Ladle stories
-npm run catalog:dev                 # Terminal 1: Start Ladle
+# Validate Storybook stories
+npm run catalog:dev                 # Terminal 1: Start Storybook
 npm run test:stories:generate       # Terminal 2: Generate tests
 npm run test:stories                # Run validation
 ```
