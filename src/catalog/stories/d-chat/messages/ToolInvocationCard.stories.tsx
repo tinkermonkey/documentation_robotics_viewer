@@ -28,7 +28,12 @@ export const Executing: Story = () => {
 
   return (
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
-      <ToolInvocationCard invocation={toolInvocation} />
+      <ToolInvocationCard
+        toolName={toolInvocation.toolName}
+        toolInput={toolInvocation.toolInput}
+        status={toolInvocation.status}
+        timestamp={toolInvocation.timestamp}
+      />
     </div>
   );
 };
@@ -62,7 +67,12 @@ export const Completed: Story = () => {
 
   return (
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
-      <ToolInvocationCard invocation={toolInvocation} />
+      <ToolInvocationCard
+        toolName={toolInvocation.toolName}
+        toolInput={toolInvocation.toolInput}
+        status={toolInvocation.status}
+        timestamp={toolInvocation.timestamp}
+      />
     </div>
   );
 };
@@ -88,7 +98,12 @@ export const Failed: Story = () => {
 
   return (
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
-      <ToolInvocationCard invocation={toolInvocation} />
+      <ToolInvocationCard
+        toolName={toolInvocation.toolName}
+        toolInput={toolInvocation.toolInput}
+        status={toolInvocation.status}
+        timestamp={toolInvocation.timestamp}
+      />
     </div>
   );
 };
@@ -148,7 +163,12 @@ export const LargeOutput: Story = () => {
 
   return (
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
-      <ToolInvocationCard invocation={toolInvocation} />
+      <ToolInvocationCard
+        toolName={toolInvocation.toolName}
+        toolInput={toolInvocation.toolInput}
+        status={toolInvocation.status}
+        timestamp={toolInvocation.timestamp}
+      />
     </div>
   );
 };
@@ -203,7 +223,12 @@ export const ComplexInput: Story = () => {
 
   return (
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
-      <ToolInvocationCard invocation={toolInvocation} />
+      <ToolInvocationCard
+        toolName={toolInvocation.toolName}
+        toolInput={toolInvocation.toolInput}
+        status={toolInvocation.status}
+        timestamp={toolInvocation.timestamp}
+      />
     </div>
   );
 };
