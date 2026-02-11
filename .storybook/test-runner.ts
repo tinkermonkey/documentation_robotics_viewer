@@ -18,6 +18,8 @@ declare global {
   interface Window {
     __errorMessages__: string[];
     __pageErrors__: string[];
+    __axeInjected__: boolean;
+    __axeConfigured__: boolean;
   }
 }
 
@@ -27,6 +29,8 @@ const config: TestRunnerConfig = {
     await page.evaluate(() => {
       (window as any).__errorMessages__ = [];
       (window as any).__pageErrors__ = [];
+      (window as any).__axeInjected__ = false;
+      (window as any).__axeConfigured__ = false;
     });
 
     // Register console error listener - push errors to page's __errorMessages__
@@ -52,12 +56,22 @@ const config: TestRunnerConfig = {
     // Inject axe-core for accessibility testing
     try {
       await injectAxe(page);
+      // Mark injection as successful so we know axe is available
+      await page.evaluate(() => {
+        (window as any).__axeInjected__ = true;
+      });
     } catch (err) {
-      console.warn('Could not inject axe-core:', err);
+      throw new Error(`Failed to inject axe-core: ${err instanceof Error ? err.message : String(err)}. Accessibility testing cannot proceed without axe-core.`);
     }
   },
 
   async postVisit(page, context) {
+    // Check that axe was successfully injected before proceeding
+    const axeInjected = await page.evaluate(() => (window as any).__axeInjected__);
+    if (!axeInjected) {
+      throw new Error(`Skipping accessibility checks for story "${context.id}": axe-core injection failed in preVisit.`);
+    }
+
     // Configure axe-core rules for architecture visualization context
     try {
       await configureAxe(page, {
@@ -85,8 +99,18 @@ const config: TestRunnerConfig = {
           },
         ],
       });
+      // Mark configuration as successful
+      await page.evaluate(() => {
+        (window as any).__axeConfigured__ = true;
+      });
     } catch (err) {
-      console.warn(`Failed to configure axe-core for story "${context.id}":`, err);
+      throw new Error(`Failed to configure axe-core for story "${context.id}": ${err instanceof Error ? err.message : String(err)}. Accessibility testing cannot proceed with inconsistent configuration.`);
+    }
+
+    // Check that axe was successfully configured before running checks
+    const axeConfigured = await page.evaluate(() => (window as any).__axeConfigured__);
+    if (!axeConfigured) {
+      throw new Error(`Skipping accessibility checks for story "${context.id}": axe-core configuration failed.`);
     }
 
     // Run accessibility checks
@@ -100,8 +124,8 @@ const config: TestRunnerConfig = {
       // Extract violation details from the error message
       const errorMsg = error instanceof Error ? error.message : String(error);
 
-      // Check if violations are from critical/serious issues
-      if (errorMsg.includes('axe-core') || errorMsg.includes('violations')) {
+      // Check if this is an axe-core violation error (contains violation details)
+      if (errorMsg.startsWith('Accessibility') || errorMsg.includes('violations')) {
         // Try to parse violations from page if available
         try {
           const violations = await page.evaluate(() => {
@@ -157,12 +181,20 @@ const config: TestRunnerConfig = {
             }
           }
         } catch (parseError) {
-          // If we can't parse violations, log the original error
+          // If parse error is a High-impact violation that we threw, re-throw it
           if (parseError instanceof Error && parseError.message.includes('High-impact')) {
             throw parseError;
           }
-          console.warn(`Accessibility check warning in story "${context.id}":`, parseError);
+          // Otherwise, this is a real error in parsing/running axe - re-throw it
+          throw new Error(
+            `Error processing accessibility violations for story "${context.id}": ${parseError instanceof Error ? parseError.message : String(parseError)}`
+          );
         }
+      } else {
+        // Error from checkA11y but not a violation report - this is a real error (timeout, type error, etc.)
+        throw new Error(
+          `Accessibility check failed for story "${context.id}": ${errorMsg}`
+        );
       }
     }
 

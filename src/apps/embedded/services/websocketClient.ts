@@ -460,8 +460,8 @@ function isTestEnvironment(): boolean {
   // Check for Playwright test environment
   if ((window as any).__PLAYWRIGHT__) return true;
 
-  // Check for explicit mock flag
-  if ((window as any).__LADLE_MOCK_WEBSOCKET__) return true;
+  // Check for explicit mock flag (used in Storybook test environment)
+  if ((window as any).__STORYBOOK_MOCK_WEBSOCKET__) return true;
 
   // Check if we're in a test environment by looking for test-specific globals
   if ((window as any).__karma__ || (window as any).jasmine || (window as any).jest) return true;

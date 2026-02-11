@@ -4,8 +4,8 @@ import '../src/index.css';
 
 // Setup test environment flags for WebSocket client detection
 if (typeof window !== 'undefined') {
-  // @ts-ignore - Set mock flag for WebSocket client
-  window.__LADLE_MOCK_WEBSOCKET__ = true;
+  // @ts-ignore - Set mock flag for WebSocket client (used by WebSocket client to detect test environment)
+  window.__STORYBOOK_MOCK_WEBSOCKET__ = true;
 
   // Filter expected errors from test environment
   const originalError = console.error;
@@ -14,9 +14,10 @@ if (typeof window !== 'undefined') {
     const errorString = args.join(' ');
 
     // Filter expected errors (from design guidance)
+    // Use exact string matching at the start to avoid accidentally filtering unrelated errors
     if (
-      errorString.includes('Warning: ReactDOM.render') ||
-      errorString.includes('Not implemented: HTMLFormElement.prototype.requestSubmit')
+      errorString.startsWith('Warning: ReactDOM.render') ||
+      errorString.startsWith('Not implemented: HTMLFormElement.prototype.requestSubmit')
     ) {
       return;
     }
