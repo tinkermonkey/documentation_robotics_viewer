@@ -35,7 +35,7 @@ test.describe('Architecture Node Stories', () => {
   test.describe('GoalNode', () => {
     test('Default: has role="article" with aria-label', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--goalnode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-goalnode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       const ariaLabel = await article.getAttribute('aria-label');
@@ -45,14 +45,14 @@ test.describe('Architecture Node Stories', () => {
 
     test('Default: label text is visible', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--goalnode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-goalnode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       await expect(page.locator('text=Increase Revenue')).toBeVisible();
     });
 
     test('Default: has connection handles', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--goalnode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-goalnode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const handles = await page.locator('.react-flow__handle').count();
       expect(handles, 'GoalNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
@@ -60,14 +60,14 @@ test.describe('Architecture Node Stories', () => {
 
     test('HighPriority: shows label text', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--goalnode--high-priority'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-goalnode--high-priority'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       await expect(page.locator('text=Customer Satisfaction')).toBeVisible();
     });
 
     test('ChangesetAdd: renders with correct label', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--goalnode--changeset-add'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-goalnode--changeset-add'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       await expect(page.locator('text=New Goal')).toBeVisible();
     });
@@ -76,7 +76,7 @@ test.describe('Architecture Node Stories', () => {
   test.describe('ContainerNode', () => {
     test('Default: has role="article" with aria-label', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--c4--containernode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-c4-containernode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       const ariaLabel = await article.getAttribute('aria-label');
@@ -85,7 +85,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('Default: has connection handles', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--c4--containernode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-c4-containernode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const handles = await page.locator('.react-flow__handle').count();
       expect(handles, 'ContainerNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
@@ -93,7 +93,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('Database: renders with label', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--c4--containernode--database'));
+      await page.goto(storyUrl('c-graphs-nodes-c4-containernode--database'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       await expect(article).toBeVisible();
@@ -103,7 +103,7 @@ test.describe('Architecture Node Stories', () => {
   test.describe('BusinessFunctionNode', () => {
     test('Default: has role="article" with aria-label', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--business--businessfunctionnode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-business-businessfunctionnode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       const ariaLabel = await article.getAttribute('aria-label');
@@ -112,7 +112,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('Default: has connection handles', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--business--businessfunctionnode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-business-businessfunctionnode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const handles = await page.locator('.react-flow__handle').count();
       expect(handles, 'BusinessFunctionNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
@@ -120,7 +120,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('ChangesetDelete: renders with label', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--business--businessfunctionnode--changeset-delete'));
+      await page.goto(storyUrl('c-graphs-nodes-business-businessfunctionnode--changeset-delete'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       await expect(article).toBeVisible();
@@ -130,7 +130,7 @@ test.describe('Architecture Node Stories', () => {
   test.describe('StakeholderNode', () => {
     test('Default: has role="article" with aria-label', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--stakeholdernode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-stakeholdernode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       const ariaLabel = await article.getAttribute('aria-label');
@@ -139,7 +139,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('Default: has connection handles', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--stakeholdernode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-stakeholdernode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const handles = await page.locator('.react-flow__handle').count();
       expect(handles, 'StakeholderNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
@@ -147,7 +147,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('InternalStakeholder: renders with label', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--stakeholdernode--internal-stakeholder'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-stakeholdernode--internal-stakeholder'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       await expect(article).toBeVisible();
@@ -155,7 +155,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('ChangesetAdd: renders with changeset styling', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--stakeholdernode--changeset-add'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-stakeholdernode--changeset-add'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       await expect(article).toBeVisible();
@@ -165,7 +165,7 @@ test.describe('Architecture Node Stories', () => {
   test.describe('AssessmentNode', () => {
     test('Default: has role="article" with aria-label', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--assessmentnode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-assessmentnode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       const ariaLabel = await article.getAttribute('aria-label');
@@ -174,7 +174,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('Default: has connection handles', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--assessmentnode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-assessmentnode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const handles = await page.locator('.react-flow__handle').count();
       expect(handles, 'AssessmentNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
@@ -182,7 +182,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('Rating5: renders with rating variant', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--assessmentnode--rating5'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-assessmentnode--rating5'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       await expect(article).toBeVisible();
@@ -192,7 +192,7 @@ test.describe('Architecture Node Stories', () => {
   test.describe('AssumptionNode', () => {
     test('Default: has role="article" with aria-label', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--assumptionnode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-assumptionnode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       const ariaLabel = await article.getAttribute('aria-label');
@@ -201,7 +201,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('Default: SVG renders without NaN errors', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--assumptionnode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-assumptionnode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const paths = page.locator('svg path[d]');
       const pathCount = await paths.count();
@@ -215,7 +215,7 @@ test.describe('Architecture Node Stories', () => {
   test.describe('ConstraintNode', () => {
     test('Default: has role="article" with aria-label', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--constraintnode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-constraintnode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       const ariaLabel = await article.getAttribute('aria-label');
@@ -224,7 +224,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('Default: has connection handles', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--constraintnode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-constraintnode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const handles = await page.locator('.react-flow__handle').count();
       expect(handles, 'ConstraintNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
@@ -232,7 +232,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('RegulatoryConstraint: renders with constraint type', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--constraintnode--regulatory-constraint'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-constraintnode--regulatory-constraint'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       await expect(article).toBeVisible();
@@ -240,7 +240,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('ChangesetUpdate: renders with update styling', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--constraintnode--changeset-update'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-constraintnode--changeset-update'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       await expect(article).toBeVisible();
@@ -250,7 +250,7 @@ test.describe('Architecture Node Stories', () => {
   test.describe('DriverNode', () => {
     test('Default: has role="article" with aria-label', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--drivernode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-drivernode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       const ariaLabel = await article.getAttribute('aria-label');
@@ -259,7 +259,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('Default: has connection handles', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--drivernode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-drivernode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const handles = await page.locator('.react-flow__handle').count();
       expect(handles, 'DriverNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
@@ -267,7 +267,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('MarketDriver: renders with driver type', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--drivernode--market-driver'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-drivernode--market-driver'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       await expect(article).toBeVisible();
@@ -277,7 +277,7 @@ test.describe('Architecture Node Stories', () => {
   test.describe('OutcomeNode', () => {
     test('Default: has role="article" with aria-label', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--outcomenode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-outcomenode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       const ariaLabel = await article.getAttribute('aria-label');
@@ -286,7 +286,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('Default: has connection handles', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--outcomenode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-outcomenode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const handles = await page.locator('.react-flow__handle').count();
       expect(handles, 'OutcomeNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
@@ -294,7 +294,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('Achieved: renders with status variant', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--outcomenode--achieved'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-outcomenode--achieved'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       await expect(article).toBeVisible();
@@ -304,7 +304,7 @@ test.describe('Architecture Node Stories', () => {
   test.describe('PrincipleNode', () => {
     test('Default: has role="article" with aria-label', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--principlenode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-principlenode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       const ariaLabel = await article.getAttribute('aria-label');
@@ -313,7 +313,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('Default: SVG renders without NaN errors', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--principlenode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-principlenode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const paths = page.locator('svg path[d]');
       const pathCount = await paths.count();
@@ -325,7 +325,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('ApplicationScope: renders with scope variant', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--principlenode--application-scope'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-principlenode--application-scope'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       await expect(article).toBeVisible();
@@ -335,7 +335,7 @@ test.describe('Architecture Node Stories', () => {
   test.describe('RequirementNode', () => {
     test('Default: has role="article" with aria-label', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--requirementnode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-requirementnode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       const ariaLabel = await article.getAttribute('aria-label');
@@ -344,7 +344,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('Default: has connection handles', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--requirementnode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-requirementnode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const handles = await page.locator('.react-flow__handle').count();
       expect(handles, 'RequirementNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
@@ -352,7 +352,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('NonFunctional: renders with requirement type', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--requirementnode--non-functional'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-requirementnode--non-functional'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       await expect(article).toBeVisible();
@@ -360,7 +360,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('HighPriority: renders with priority variant', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--requirementnode--high-priority'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-requirementnode--high-priority'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       await expect(article).toBeVisible();
@@ -370,7 +370,7 @@ test.describe('Architecture Node Stories', () => {
   test.describe('ValueStreamNode', () => {
     test('Default: has role="article" with aria-label', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--valuestreamnode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-valuestreamnode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       const ariaLabel = await article.getAttribute('aria-label');
@@ -379,7 +379,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('Default: has connection handles', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--valuestreamnode--default'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-valuestreamnode--default'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const handles = await page.locator('.react-flow__handle').count();
       expect(handles, 'ValueStreamNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
@@ -387,7 +387,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('LongStream: renders with stream length variant', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--valuestreamnode--long-stream'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-valuestreamnode--long-stream'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       await expect(article).toBeVisible();
@@ -395,7 +395,7 @@ test.describe('Architecture Node Stories', () => {
 
     test('ChangesetDelete: renders with delete styling', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-nodes--motivation--valuestreamnode--changeset-delete'));
+      await page.goto(storyUrl('c-graphs-nodes-motivation-valuestreamnode--changeset-delete'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const article = page.locator('[role="article"]').first();
       await expect(article).toBeVisible();

@@ -30,7 +30,7 @@ test.describe('Layout Engine Stories', () => {
   test.describe('DagreLayout (Hierarchical)', () => {
     test('Default: renders nodes with correct dimensions and handles', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--dagreLayout--default'));
+      await page.goto(storyUrl('c-graphs-layouts-dagrelayout--default'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       // Validate nodes render with article role
@@ -50,7 +50,7 @@ test.describe('Layout Engine Stories', () => {
 
     test('Default: SVG edges render without NaN errors', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--dagreLayout--default'));
+      await page.goto(storyUrl('c-graphs-layouts-dagrelayout--default'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       // Get all SVG paths representing edges
@@ -68,7 +68,7 @@ test.describe('Layout Engine Stories', () => {
 
     test('Horizontal: renders with left-to-right layout', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--dagreLayout--horizontal'));
+      await page.goto(storyUrl('c-graphs-layouts-dagrelayout--horizontal'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       const nodes = page.locator('[role="article"]');
@@ -81,7 +81,7 @@ test.describe('Layout Engine Stories', () => {
 
     test('Compact: renders with reduced spacing', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--dagreLayout--compact'));
+      await page.goto(storyUrl('c-graphs-layouts-dagrelayout--compact'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       const nodes = page.locator('[role="article"]');
@@ -90,7 +90,7 @@ test.describe('Layout Engine Stories', () => {
 
     test('Spacious: renders with increased spacing', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--dagreLayout--spacious'));
+      await page.goto(storyUrl('c-graphs-layouts-dagrelayout--spacious'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       const nodes = page.locator('[role="article"]');
@@ -101,7 +101,7 @@ test.describe('Layout Engine Stories', () => {
   test.describe('D3ForceLayout (Force-Directed)', () => {
     test('Default: renders nodes with force-directed positioning', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--d3forceLayout--default'));
+      await page.goto(storyUrl('c-graphs-layouts-d3forcelayout--default'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       // Validate nodes render
@@ -118,7 +118,7 @@ test.describe('Layout Engine Stories', () => {
 
     test('Default: nodes have collision detection (no overlap)', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--d3forceLayout--default'));
+      await page.goto(storyUrl('c-graphs-layouts-d3forcelayout--default'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       // Get node positions - force layout should spread nodes out
@@ -141,7 +141,7 @@ test.describe('Layout Engine Stories', () => {
 
     test('HighRepulsion: renders with strong repulsive forces', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--d3forceLayout--high-repulsion'));
+      await page.goto(storyUrl('c-graphs-layouts-d3forcelayout--high-repulsion'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       const nodes = page.locator('[role="article"]');
@@ -150,7 +150,7 @@ test.describe('Layout Engine Stories', () => {
 
     test('TightClustering: renders with clustering enabled', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--d3forceLayout--tight-clustering'));
+      await page.goto(storyUrl('c-graphs-layouts-d3forcelayout--tight-clustering'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       const nodes = page.locator('[role="article"]');
@@ -159,7 +159,7 @@ test.describe('Layout Engine Stories', () => {
 
     test('ExtendedSimulation: renders after extended simulation', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--d3forceLayout--extended-simulation'));
+      await page.goto(storyUrl('c-graphs-layouts-d3forcelayout--extended-simulation'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       const nodes = page.locator('[role="article"]');
@@ -170,7 +170,7 @@ test.describe('Layout Engine Stories', () => {
   test.describe('ELKLayout (ELK Layering)', () => {
     test('Default: renders nodes with ELK port-based connections', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--elkLayout--default'));
+      await page.goto(storyUrl('c-graphs-layouts-elklayout--default'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       // Validate nodes render
@@ -186,7 +186,7 @@ test.describe('Layout Engine Stories', () => {
 
     test('Default: edges have no NaN values in paths', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--elkLayout--default'));
+      await page.goto(storyUrl('c-graphs-layouts-elklayout--default'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       // Check all SVG paths for valid geometry
@@ -202,7 +202,7 @@ test.describe('Layout Engine Stories', () => {
 
     test('Hierarchical: renders with ELK hierarchical layout', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--elkLayout--hierarchical'));
+      await page.goto(storyUrl('c-graphs-layouts-elklayout--hierarchical'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       const nodes = page.locator('[role="article"]');
@@ -211,7 +211,7 @@ test.describe('Layout Engine Stories', () => {
 
     test('ForceDirected: renders with force-directed ELK mode', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--elkLayout--force-directed'));
+      await page.goto(storyUrl('c-graphs-layouts-elklayout--force-directed'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       const nodes = page.locator('[role="article"]');
@@ -220,7 +220,7 @@ test.describe('Layout Engine Stories', () => {
 
     test('Stress: renders with stress-minimization layout', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--elkLayout--stress'));
+      await page.goto(storyUrl('c-graphs-layouts-elklayout--stress'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       const nodes = page.locator('[role="article"]');
@@ -229,7 +229,7 @@ test.describe('Layout Engine Stories', () => {
 
     test('OrthogonalRouting: renders with orthogonal edge routing', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--elkLayout--orthogonal-routing'));
+      await page.goto(storyUrl('c-graphs-layouts-elklayout--orthogonal-routing'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       const nodes = page.locator('[role="article"]');
@@ -240,7 +240,7 @@ test.describe('Layout Engine Stories', () => {
   test.describe('GraphvizLayout', () => {
     test('Default: renders nodes with graphviz positioning', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--graphvizLayout--default'));
+      await page.goto(storyUrl('c-graphs-layouts-graphvizlayout--default'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       // Validate nodes render with article role
@@ -258,7 +258,7 @@ test.describe('Layout Engine Stories', () => {
 
     test('Default: subgraph nesting and clustering respected', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--graphvizLayout--default'));
+      await page.goto(storyUrl('c-graphs-layouts-graphvizlayout--default'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       // Get all SVG groups (g elements) which may represent subgraphs
@@ -274,7 +274,7 @@ test.describe('Layout Engine Stories', () => {
 
     test('Dot: renders with dot (hierarchical) algorithm', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--graphvizLayout--dot'));
+      await page.goto(storyUrl('c-graphs-layouts-graphvizlayout--dot'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       const nodes = page.locator('[role="article"]');
@@ -283,7 +283,7 @@ test.describe('Layout Engine Stories', () => {
 
     test('Neato: renders with neato (spring model) algorithm', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--graphvizLayout--neato'));
+      await page.goto(storyUrl('c-graphs-layouts-graphvizlayout--neato'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       const nodes = page.locator('[role="article"]');
@@ -292,7 +292,7 @@ test.describe('Layout Engine Stories', () => {
 
     test('FDP: renders with FDP (spring model) algorithm', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--graphvizLayout--fdp'));
+      await page.goto(storyUrl('c-graphs-layouts-graphvizlayout--fdp'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       const nodes = page.locator('[role="article"]');
@@ -301,7 +301,7 @@ test.describe('Layout Engine Stories', () => {
 
     test('Circo: renders with circo (circular) algorithm', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--graphvizLayout--circo'));
+      await page.goto(storyUrl('c-graphs-layouts-graphvizlayout--circo'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       const nodes = page.locator('[role="article"]');
@@ -310,7 +310,7 @@ test.describe('Layout Engine Stories', () => {
 
     test('Twopi: renders with twopi (radial) algorithm', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('layout-engines--graphvizLayout--twopi'));
+      await page.goto(storyUrl('c-graphs-layouts-graphvizlayout--twopi'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       const nodes = page.locator('[role="article"]');

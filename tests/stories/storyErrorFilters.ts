@@ -41,7 +41,7 @@ export function isExpectedConsoleError(text: string): boolean {
 
   // WebSocket errors when server unavailable - expected in isolated test environment
   // Only filter localhost/127.0.0.1 connections (not production URLs)
-  if (/WebSocket connection to (ws:\/\/(localhost|127\.0\.0\.1):[0-9]+|wss?:\/\/[\w]+) failed/.test(text)) return true;
+  if (/WebSocket connection to ws:\/\/(localhost|127\.0\.0\.1):[0-9]+ failed/.test(text)) return true;
 
   // EmbeddedLayout errors - expected component-level warnings
   if (/\[EmbeddedLayout\] (?:No container|Missing required|Layout calculation)/.test(text)) return true;
@@ -59,7 +59,6 @@ export function isExpectedConsoleError(text: string): boolean {
 
   // Expected React warnings - whitelist approach to avoid hiding deprecation warnings or real issues
   // Only filter explicitly known, safe-to-ignore warnings from legitimate React libraries
-  if (/^Warning: React does not recognize.*prop/.test(text)) return true;
   if (/^Warning: Received `false`.*instead of `true`/.test(text)) return true;
   if (/^Warning: componentWillReceiveProps has been renamed/.test(text)) return true;
   if (/^Warning: Unknown event handler property/.test(text)) return true;

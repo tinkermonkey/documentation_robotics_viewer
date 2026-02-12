@@ -14,8 +14,8 @@
  * Convert Storybook story ID to iframe URL
  *
  * Example:
- *   storyUrl('architecture-nodes--motivation--goalnode--default')
- *   → '/iframe.html?id=architecture-nodes--motivation--goalnode--default&viewMode=story'
+ *   storyUrl('c-graphs-nodes-motivation-goalnode--default')
+ *   → '/iframe.html?id=c-graphs-nodes-motivation-goalnode--default&viewMode=story'
  *
  * @param storyId - The Storybook story ID from CSF3 meta.id + story key
  * @returns Full iframe URL for navigating to the story
