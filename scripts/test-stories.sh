@@ -26,10 +26,10 @@ fi
 if [[ ! "$*" =~ --reporter ]]; then
   # Use only list reporter to ensure non-interactive execution
   # Capture output to log file for error analysis
-  npx playwright test tests/stories/all-stories.spec.ts --config=playwright.refinement.config.ts --reporter=list "$@" 2>&1 | tee test-output.log
+  npx playwright test tests/stories/*.spec.ts --config=playwright.refinement.config.ts --reporter=list "$@" 2>&1 | tee test-output.log
   TEST_EXIT_CODE=${PIPESTATUS[0]}
 else
-  npx playwright test tests/stories/all-stories.spec.ts --config=playwright.refinement.config.ts "$@" 2>&1 | tee test-output.log
+  npx playwright test tests/stories/*.spec.ts --config=playwright.refinement.config.ts "$@" 2>&1 | tee test-output.log
   TEST_EXIT_CODE=${PIPESTATUS[0]}
 fi
 
@@ -38,8 +38,7 @@ if [ $TEST_EXIT_CODE -eq 0 ]; then
   echo -e "${GREEN}✓ All story tests passed!${NC}"
 elif grep -q "Error: No tests found" test-output.log; then
   echo -e "${RED}✗ Playwright found no tests to run${NC}"
-  echo -e "${RED}  Make sure test file exists: tests/stories/all-stories.spec.ts${NC}"
-  echo -e "${RED}  Regenerate with: npm run test:stories:generate${NC}"
+  echo -e "${RED}  Make sure test files exist in: tests/stories/*.spec.ts${NC}"
   TEST_EXIT_CODE=1
 elif grep -q "browserType.launch" test-output.log; then
   echo -e "${RED}✗ Playwright browser failed to launch${NC}"

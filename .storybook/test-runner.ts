@@ -20,6 +20,12 @@ declare global {
     __pageErrors__: string[];
     __axeInjected__: boolean;
     __axeConfigured__: boolean;
+    axe: {
+      run: (
+        options: object,
+        callback: (err: Error | null, results: any) => void
+      ) => void;
+    };
   }
 }
 

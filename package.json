@@ -34,7 +34,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@axe-core/playwright": "^4.11.0",
     "@hpcc-js/wasm": "^2.30.0",
     "@tanstack/react-router": "^1.139.12",
     "@types/d3-force": "^3.0.10",
