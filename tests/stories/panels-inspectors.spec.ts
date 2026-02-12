@@ -20,18 +20,19 @@ test.describe('Panels & Inspectors Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('panels---inspectors--common--annotationpanel--empty'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
+      await page.waitForSelector('text=/[Aa]nnotation|[Ee]mpty|[Pp]anel/', { timeout: 5000 });
       const bodyText = await page.locator('body').innerText();
-      expect(bodyText.length, 'Empty AnnotationPanel should render content').toBeGreaterThan(0);
+      expect(bodyText, 'Empty AnnotationPanel should render with visible content').toBeTruthy();
+      expect(bodyText.length).toBeGreaterThan(0);
     });
 
     test('WithAnnotations: renders annotation content', async ({ page }) => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('panels---inspectors--common--annotationpanel--with-annotations'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
+      await page.waitForSelector('text=/[Aa]nnotation|[Cc]omment|[Nn]ote/', { timeout: 5000 });
       const bodyText = await page.locator('body').innerText();
-      expect(bodyText.length, 'WithAnnotations should render annotation text').toBeGreaterThan(10);
+      expect(bodyText, 'WithAnnotations should contain annotation or comment text').toMatch(/[Aa]nnotation|[Cc]omment|[Nn]ote|[Cc]ontent/);
     });
   });
 
@@ -40,9 +41,9 @@ test.describe('Panels & Inspectors Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('panels---inspectors--c4--c4inspectorpanel--container-selected'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
+      await page.waitForSelector('text=/[Cc]ontainer|[Dd]etails|[Pp]roperties/', { timeout: 5000 });
       const bodyText = await page.locator('body').innerText();
-      expect(bodyText.length, 'ContainerSelected should show element details').toBeGreaterThan(10);
+      expect(bodyText, 'ContainerSelected should display element details').toMatch(/[Cc]ontainer|[Dd]etails|[Pp]roperties|[Ii]nspector/);
     });
   });
 
@@ -51,9 +52,9 @@ test.describe('Panels & Inspectors Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('panels---inspectors--c4--c4controlpanel--context-level'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
-      const bodyText = await page.locator('body').innerText();
-      expect(bodyText.length, 'ContextLevel should show controls').toBeGreaterThan(0);
+      await page.waitForSelector('button, input, [role="button"]', { timeout: 5000 });
+      const controlElements = await page.locator('button, input, [role="button"]').count();
+      expect(controlElements, 'ContextLevel should render control elements').toBeGreaterThan(0);
     });
   });
 
@@ -77,9 +78,9 @@ test.describe('Panels & Inspectors Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('panels---inspectors--motivation--motivationfilterpanel--with-filters-applied'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
-      const bodyText = await page.locator('body').innerText();
-      expect(bodyText.length).toBeGreaterThan(0);
+      await page.waitForSelector('input[type="checkbox"], [role="checkbox"]', { timeout: 5000 });
+      const filterCount = await page.locator('input[type="checkbox"], [role="checkbox"]').count();
+      expect(filterCount, 'WithFiltersApplied should display filter controls').toBeGreaterThan(0);
     });
   });
 
@@ -88,18 +89,18 @@ test.describe('Panels & Inspectors Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('panels---inspectors--common--schemainfopanel--default'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
+      await page.waitForSelector('text=/[Ss]chema|[Pp]roperties|[Tt]ype|[Ii]nformation/', { timeout: 5000 });
       const bodyText = await page.locator('body').innerText();
-      expect(bodyText.length, 'SchemaInfoPanel should render schema details').toBeGreaterThan(10);
+      expect(bodyText, 'SchemaInfoPanel should contain schema information').toMatch(/[Ss]chema|[Pp]roperties|[Tt]ype|[Dd]efinition/);
     });
 
     test('NoModel: shows appropriate message', async ({ page }) => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('panels---inspectors--common--schemainfopanel--no-model'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
+      await page.waitForSelector('text=/[Nn]o|[Ee]mpty|[Ss]elect|[Cc]hoose/', { timeout: 5000 });
       const bodyText = await page.locator('body').innerText();
-      expect(bodyText.length, 'NoModel should display some content').toBeGreaterThan(0);
+      expect(bodyText, 'NoModel should display appropriate message').toBeTruthy();
     });
   });
 
@@ -108,18 +109,18 @@ test.describe('Panels & Inspectors Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('panels---inspectors--common--nodedetailspanel--no-node-selected'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
+      await page.waitForSelector('text=/[Nn]o [Nn]ode|[Ss]elect|[Ee]mpty|[Dd]etails/', { timeout: 5000 });
       const bodyText = await page.locator('body').innerText();
-      expect(bodyText.length, 'NoNodeSelected should display empty state').toBeGreaterThan(0);
+      expect(bodyText, 'NoNodeSelected should show empty state message').toBeTruthy();
     });
 
     test('GoalNodeSelected: shows goal details', async ({ page }) => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('panels---inspectors--common--nodedetailspanel--goal-node-selected'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
+      await page.waitForSelector('text=/[Gg]oal|[Dd]etails|[Pp]roperties/', { timeout: 5000 });
       const bodyText = await page.locator('body').innerText();
-      expect(bodyText.length, 'GoalNodeSelected should show element details').toBeGreaterThan(10);
+      expect(bodyText, 'GoalNodeSelected should display goal-related content').toMatch(/[Gg]oal|[Dd]etails|[Pp]roperties|[Ii]nformation/);
     });
   });
 });

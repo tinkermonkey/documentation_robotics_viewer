@@ -44,9 +44,11 @@ const config: TestRunnerConfig = {
       if (msg.type() === 'error') {
         const text = msg.text();
         // Push to window.__errorMessages__ which will be read in postVisit
-        void page.evaluate((error) => {
+        page.evaluate((error) => {
           (window as any).__errorMessages__?.push(error);
-        }, text);
+        }, text).catch((err) => {
+          console.warn('Failed to record console error in page context:', err);
+        });
       }
     });
 
@@ -54,9 +56,11 @@ const config: TestRunnerConfig = {
     page.on('pageerror', (error) => {
       const errorText = error.toString();
       // Push to window.__pageErrors__ which will be read in postVisit
-      void page.evaluate((err) => {
+      page.evaluate((err) => {
         (window as any).__pageErrors__?.push(err);
-      }, errorText);
+      }, errorText).catch((err) => {
+        console.warn('Failed to record page error in page context:', err);
+      });
     });
 
     // Inject axe-core for accessibility testing

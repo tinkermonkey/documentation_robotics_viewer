@@ -175,11 +175,13 @@ React Flow nodes require specific accessibility setup:
 
 ### Node Type Coverage
 
-All 16 custom node types are accessibility-tested:
+All 19 custom node types are accessibility-tested:
 - **Motivation Layer**: Goal, Stakeholder, Constraint, Driver, Outcome, Principle, Assumption, Assessment, ValueStream, Requirement (10 nodes)
 - **Business Layer**: BusinessFunction, BusinessService, BusinessCapability, BusinessProcess (4 nodes)
 - **C4 Model**: Container, Component, ExternalActor (3 nodes)
 - **Utilities**: JSONSchema, LayerContainer (2 nodes)
+
+Total: 10 + 4 + 3 + 2 = 19 nodes
 
 ## Story Accessibility Requirements
 
@@ -305,8 +307,12 @@ async preVisit(page) {
   // Inject axe-core for accessibility testing
   try {
     await injectAxe(page);
+    // Mark injection as successful so we know axe is available
+    await page.evaluate(() => {
+      (window as any).__axeInjected__ = true;
+    });
   } catch (err) {
-    console.warn('Could not inject axe-core:', err);
+    throw new Error(`Failed to inject axe-core: ${err instanceof Error ? err.message : String(err)}. Accessibility testing cannot proceed without axe-core.`);
   }
 }
 
