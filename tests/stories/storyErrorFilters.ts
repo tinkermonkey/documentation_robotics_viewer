@@ -48,13 +48,19 @@ export function isExpectedConsoleError(text: string): boolean {
   // Failed resource loads - expected when test backend ports unavailable
   if (/Failed to load resource.*localhost:(3002|8765)/.test(text)) return true;
 
-  // 500 errors from backend not running in story test environment
-  if (/the server responded with a status of 5\d{2}/.test(text)) return true;
+  // 500 errors from expected backend ports not running in story test environment
+  // IMPORTANT: Only filter 500 errors from localhost dev servers (3002 = DataLoader, 8765 = test backend)
+  // Production/staging API failures will NOT be filtered
+  if (/the server responded with a status of 5\d{2}.*localhost:(3002|8765)/.test(text)) return true;
 
-  // Generic warning prefix - filters React development warnings
-  // Note: This is only safe because it's combined with error type check in validateStory()
-  // (console messages of type 'error' are already filtered separately)
-  if (/^Warning: /.test(text)) return true;
+  // Expected React warnings - whitelist approach to avoid hiding deprecation warnings or real issues
+  // Only filter explicitly known, safe-to-ignore warnings from legitimate React libraries
+  if (/^Warning: React does not recognize.*prop/.test(text)) return true;
+  if (/^Warning: Received `false`.*instead of `true`/.test(text)) return true;
+  if (/^Warning: componentWillReceiveProps has been renamed/.test(text)) return true;
+  if (/^Warning: Unknown event handler property/.test(text)) return true;
+  if (/^Warning: useLayoutEffect does nothing on the server/.test(text)) return true;
+  if (/^Warning: An update to .* inside a test was not wrapped in act/.test(text)) return true;
 
   // StoryLoadedWrapper timeout diagnostics - expected when stories render error/empty states
   if (/^StoryLoadedWrapper: /.test(text)) return true;

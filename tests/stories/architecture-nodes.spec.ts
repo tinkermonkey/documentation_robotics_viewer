@@ -6,13 +6,19 @@
  * - Label text is visible
  * - Connection handles are present
  * - Node dimensions are applied
+ * - SVG paths render without NaN errors
  *
- * Covers representative nodes: GoalNode, ContainerNode,
- *         BusinessFunctionNode, StakeholderNode
+ * Covers nodes:
+ * - Motivation: GoalNode, StakeholderNode, AssessmentNode, AssumptionNode,
+ *              ConstraintNode, DriverNode, OutcomeNode, PrincipleNode,
+ *              RequirementNode, ValueStreamNode
+ * - C4: ContainerNode
+ * - Business: BusinessFunctionNode
  */
 
 import { test, expect } from '@playwright/test';
 import { isExpectedConsoleError, isKnownRenderingBug } from './storyErrorFilters';
+import { storyUrl } from '../helpers/storyTestUtils';
 
 function setupErrorFiltering(page: import('@playwright/test').Page) {
   page.on('console', (msg) => {
@@ -23,15 +29,6 @@ function setupErrorFiltering(page: import('@playwright/test').Page) {
       }
     }
   });
-}
-
-/**
- * Convert Ladle story ID to Storybook iframe URL
- * Ladle: /?story=architecture-nodes--motivation--goalnode--default&mode=preview
- * Storybook: /iframe.html?id=architecture-nodes--motivation--goalnode--default&viewMode=story
- */
-function storyUrl(storyId: string): string {
-  return `/iframe.html?id=${storyId}&viewMode=story`;
 }
 
 test.describe('Architecture Node Stories', () => {
@@ -146,6 +143,166 @@ test.describe('Architecture Node Stories', () => {
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const handles = await page.locator('.react-flow__handle').count();
       expect(handles, 'StakeholderNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
+    });
+  });
+
+  test.describe('AssessmentNode', () => {
+    test('Default: has role="article" with aria-label', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--assessmentnode--default'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      const ariaLabel = await article.getAttribute('aria-label');
+      expect(ariaLabel).toBeTruthy();
+    });
+
+    test('Default: has connection handles', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--assessmentnode--default'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const handles = await page.locator('.react-flow__handle').count();
+      expect(handles, 'AssessmentNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
+    });
+  });
+
+  test.describe('AssumptionNode', () => {
+    test('Default: has role="article" with aria-label', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--assumptionnode--default'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      const ariaLabel = await article.getAttribute('aria-label');
+      expect(ariaLabel).toBeTruthy();
+    });
+
+    test('Default: SVG renders without NaN errors', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--assumptionnode--default'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const paths = page.locator('svg path[d]');
+      const pathCount = await paths.count();
+      for (let i = 0; i < pathCount; i++) {
+        const d = await paths.nth(i).getAttribute('d');
+        expect(d).not.toContain('NaN');
+      }
+    });
+  });
+
+  test.describe('ConstraintNode', () => {
+    test('Default: has role="article" with aria-label', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--constraintnode--default'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      const ariaLabel = await article.getAttribute('aria-label');
+      expect(ariaLabel).toBeTruthy();
+    });
+
+    test('Default: has connection handles', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--constraintnode--default'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const handles = await page.locator('.react-flow__handle').count();
+      expect(handles, 'ConstraintNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
+    });
+  });
+
+  test.describe('DriverNode', () => {
+    test('Default: has role="article" with aria-label', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--drivernode--default'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      const ariaLabel = await article.getAttribute('aria-label');
+      expect(ariaLabel).toBeTruthy();
+    });
+
+    test('Default: has connection handles', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--drivernode--default'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const handles = await page.locator('.react-flow__handle').count();
+      expect(handles, 'DriverNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
+    });
+  });
+
+  test.describe('OutcomeNode', () => {
+    test('Default: has role="article" with aria-label', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--outcomenode--default'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      const ariaLabel = await article.getAttribute('aria-label');
+      expect(ariaLabel).toBeTruthy();
+    });
+
+    test('Default: has connection handles', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--outcomenode--default'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const handles = await page.locator('.react-flow__handle').count();
+      expect(handles, 'OutcomeNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
+    });
+  });
+
+  test.describe('PrincipleNode', () => {
+    test('Default: has role="article" with aria-label', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--principlenode--default'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      const ariaLabel = await article.getAttribute('aria-label');
+      expect(ariaLabel).toBeTruthy();
+    });
+
+    test('Default: SVG renders without NaN errors', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--principlenode--default'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const paths = page.locator('svg path[d]');
+      const pathCount = await paths.count();
+      for (let i = 0; i < pathCount; i++) {
+        const d = await paths.nth(i).getAttribute('d');
+        expect(d).not.toContain('NaN');
+      }
+    });
+  });
+
+  test.describe('RequirementNode', () => {
+    test('Default: has role="article" with aria-label', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--requirementnode--default'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      const ariaLabel = await article.getAttribute('aria-label');
+      expect(ariaLabel).toBeTruthy();
+    });
+
+    test('Default: has connection handles', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--requirementnode--default'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const handles = await page.locator('.react-flow__handle').count();
+      expect(handles, 'RequirementNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
+    });
+  });
+
+  test.describe('ValueStreamNode', () => {
+    test('Default: has role="article" with aria-label', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--valuestreamnode--default'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      const ariaLabel = await article.getAttribute('aria-label');
+      expect(ariaLabel).toBeTruthy();
+    });
+
+    test('Default: has connection handles', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--valuestreamnode--default'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const handles = await page.locator('.react-flow__handle').count();
+      expect(handles, 'ValueStreamNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
     });
   });
 });

@@ -28,6 +28,7 @@ export function StoryLoadedWrapper({
   onLayoutComplete,
 }: StoryLoadedWrapperProps) {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isTimedOut, setIsTimedOut] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const checkIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isLoadedRef = useRef(false);
@@ -54,11 +55,12 @@ export function StoryLoadedWrapper({
         }
         onLayoutComplete?.();
       } else if (Date.now() - startTimeRef.current > MAX_WAIT_TIME) {
-        // Timeout - log detailed error for debugging
+        // Timeout - log detailed error for debugging and update state
         console.error('StoryLoadedWrapper: Timeout waiting for React Flow nodes');
         console.error('Wrapper element:', wrapperRef.current?.tagName);
         console.error('Children count:', wrapperRef.current?.children.length);
         console.error('Inner HTML (first 500 chars):', wrapperRef.current?.innerHTML.substring(0, 500));
+        setIsTimedOut(true);
         if (checkIntervalRef.current !== null) {
           clearInterval(checkIntervalRef.current);
           checkIntervalRef.current = null;
@@ -89,7 +91,7 @@ export function StoryLoadedWrapper({
     <div
       ref={wrapperRef}
       data-testid={testId}
-      data-storyloaded={isLoaded ? 'true' : undefined}
+      data-storyloaded={isLoaded ? 'true' : isTimedOut ? 'timeout' : undefined}
     >
       {children}
     </div>
