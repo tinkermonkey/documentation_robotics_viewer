@@ -79,9 +79,8 @@ test.describe('Building Blocks Stories', () => {
       if (await clickableHeader.count() > 0) {
         const textBefore = await page.locator('body').innerText();
         await clickableHeader.click();
-        await page.waitForFunction(() => {
-          return true; // Wait for potential DOM updates
-        }, { timeout: 5000 });
+        // Wait for DOM to update after click
+        await page.waitForLoadState('networkidle', { timeout: 5000 });
         const textAfter = await page.locator('body').innerText();
         // Content should change after toggle
         expect(textBefore !== textAfter || textAfter.length > 0).toBe(true);

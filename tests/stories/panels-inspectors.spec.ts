@@ -22,8 +22,7 @@ test.describe('Panels & Inspectors Stories', () => {
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.waitForSelector('text=/[Aa]nnotation|[Ee]mpty|[Pp]anel/', { timeout: 5000 });
       const bodyText = await page.locator('body').innerText();
-      expect(bodyText, 'Empty AnnotationPanel should render with visible content').toBeTruthy();
-      expect(bodyText.length).toBeGreaterThan(0);
+      expect(bodyText, 'Empty AnnotationPanel should render with visible content').toMatch(/[Aa]nnotation|[Ee]mpty|[Pp]anel/);
     });
 
     test('WithAnnotations: renders annotation content', async ({ page }) => {
@@ -63,7 +62,8 @@ test.describe('Panels & Inspectors Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('panels---inspectors--motivation--motivationfilterpanel--default'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
+      // Wait for filter elements to be rendered
+      await page.waitForSelector('input[type="checkbox"], button, [role="button"]', { timeout: 5000 });
       // Filter panels typically contain checkboxes or toggle elements
       const hasCheckboxes = await page.locator('input[type="checkbox"]').count();
       const hasButtons = await page.locator('button').count();
@@ -100,7 +100,7 @@ test.describe('Panels & Inspectors Stories', () => {
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.waitForSelector('text=/[Nn]o|[Ee]mpty|[Ss]elect|[Cc]hoose/', { timeout: 5000 });
       const bodyText = await page.locator('body').innerText();
-      expect(bodyText, 'NoModel should display appropriate message').toBeTruthy();
+      expect(bodyText, 'NoModel should display appropriate message').toMatch(/[Nn]o|[Ee]mpty|[Ss]elect|[Cc]hoose/);
     });
   });
 
@@ -111,7 +111,7 @@ test.describe('Panels & Inspectors Stories', () => {
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.waitForSelector('text=/[Nn]o [Nn]ode|[Ss]elect|[Ee]mpty|[Dd]etails/', { timeout: 5000 });
       const bodyText = await page.locator('body').innerText();
-      expect(bodyText, 'NoNodeSelected should show empty state message').toBeTruthy();
+      expect(bodyText, 'NoNodeSelected should show empty state message').toMatch(/[Nn]o [Nn]ode|[Ss]elect|[Ee]mpty|[Dd]etails/);
     });
 
     test('GoalNodeSelected: shows goal details', async ({ page }) => {

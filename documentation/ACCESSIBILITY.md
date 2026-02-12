@@ -181,7 +181,7 @@ All 19 custom node types are accessibility-tested:
 - **C4 Model**: Container, Component, ExternalActor (3 nodes)
 - **Utilities**: JSONSchema, LayerContainer (2 nodes)
 
-Total: 10 + 4 + 3 + 2 = 19 nodes
+Total: 10 + 4 + 3 + 2 = **19 nodes** ✓
 
 ## Story Accessibility Requirements
 
