@@ -20,19 +20,35 @@ export interface StoryLoadedWrapperProps {
   testId: string;
   /** Optional callback when layout is complete */
   onLayoutComplete?: () => void;
+  /** Optional callback when timeout occurs - allows tests to detect and handle failures */
+  onTimeout?: (diagnostics: TimeoutDiagnostics) => void;
+  /** Optional flag to throw error instead of just setting state on timeout */
+  throwOnTimeout?: boolean;
+}
+
+export interface TimeoutDiagnostics {
+  maxWaitTime: number;
+  actualWaitTime: number;
+  wrapperElement: HTMLDivElement | null;
+  childrenCount: number;
+  innerHtmlPreview: string;
 }
 
 export function StoryLoadedWrapper({
   children,
   testId,
   onLayoutComplete,
+  onTimeout,
+  throwOnTimeout,
 }: StoryLoadedWrapperProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isTimedOut, setIsTimedOut] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const checkIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isLoadedRef = useRef(false);
   const startTimeRef = useRef<number>(0);
+  const timeoutHandledRef = useRef(false);
 
   useEffect(() => {
     const MAX_WAIT_TIME = 30000; // 30 seconds
@@ -55,12 +71,39 @@ export function StoryLoadedWrapper({
         }
         onLayoutComplete?.();
       } else if (Date.now() - startTimeRef.current > MAX_WAIT_TIME) {
-        // Timeout - log detailed error for debugging and update state
-        console.error('StoryLoadedWrapper: Timeout waiting for React Flow nodes');
+        // Timeout - create detailed diagnostics and signal failure
+        const actualWaitTime = Date.now() - startTimeRef.current;
+        const diagnostics: TimeoutDiagnostics = {
+          maxWaitTime: MAX_WAIT_TIME,
+          actualWaitTime,
+          wrapperElement: wrapperRef.current,
+          childrenCount: wrapperRef.current?.children.length || 0,
+          innerHtmlPreview: wrapperRef.current?.innerHTML.substring(0, 500) || '',
+        };
+
+        // Log detailed error for debugging
+        console.error('StoryLoadedWrapper: Timeout waiting for React Flow nodes after 30s');
         console.error('Wrapper element:', wrapperRef.current?.tagName);
-        console.error('Children count:', wrapperRef.current?.children.length);
-        console.error('Inner HTML (first 500 chars):', wrapperRef.current?.innerHTML.substring(0, 500));
-        setIsTimedOut(true);
+        console.error('Children count:', diagnostics.childrenCount);
+        console.error('Inner HTML (first 500 chars):', diagnostics.innerHtmlPreview);
+
+        // Only handle timeout once
+        if (!timeoutHandledRef.current) {
+          timeoutHandledRef.current = true;
+          setIsTimedOut(true);
+
+          // Call onTimeout callback if provided
+          onTimeout?.(diagnostics);
+
+          // Optionally throw error to fail the test
+          if (throwOnTimeout) {
+            const errorMsg = `StoryLoadedWrapper timeout: React Flow nodes not found after ${actualWaitTime}ms`;
+            const err = new Error(errorMsg);
+            setError(err);
+            throw err;
+          }
+        }
+
         if (checkIntervalRef.current !== null) {
           clearInterval(checkIntervalRef.current);
           checkIntervalRef.current = null;
@@ -85,7 +128,22 @@ export function StoryLoadedWrapper({
         checkIntervalRef.current = null;
       }
     };
-  }, [onLayoutComplete]);
+  }, [onLayoutComplete, onTimeout, throwOnTimeout]);
+
+  if (error && throwOnTimeout) {
+    return (
+      <div
+        ref={wrapperRef}
+        data-testid={testId}
+        data-storyloaded="timeout"
+        role="alert"
+        style={{ padding: 16, color: '#dc2626', backgroundColor: '#fee2e2', border: '1px solid #fca5a5' }}
+      >
+        <div style={{ fontWeight: 600, marginBottom: 8 }}>Story Load Error</div>
+        <div style={{ fontSize: 14 }}>{error.message}</div>
+      </div>
+    );
+  }
 
   return (
     <div

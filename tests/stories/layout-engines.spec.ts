@@ -65,6 +65,37 @@ test.describe('Layout Engine Stories', () => {
         expect(d).toBeTruthy();
       }
     });
+
+    test('Horizontal: renders with left-to-right layout', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('layout-engines--dagreLayout--horizontal'));
+      await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
+
+      const nodes = page.locator('[role="article"]');
+      expect(await nodes.count()).toBeGreaterThan(0);
+
+      // Verify nodes are visible (left-to-right layout should display horizontally)
+      const firstNode = nodes.first();
+      await expect(firstNode).toBeVisible();
+    });
+
+    test('Compact: renders with reduced spacing', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('layout-engines--dagreLayout--compact'));
+      await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
+
+      const nodes = page.locator('[role="article"]');
+      expect(await nodes.count()).toBeGreaterThan(0);
+    });
+
+    test('Spacious: renders with increased spacing', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('layout-engines--dagreLayout--spacious'));
+      await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
+
+      const nodes = page.locator('[role="article"]');
+      expect(await nodes.count()).toBeGreaterThan(0);
+    });
   });
 
   test.describe('D3ForceLayout (Force-Directed)', () => {
@@ -107,6 +138,33 @@ test.describe('Layout Engine Stories', () => {
         }
       }
     });
+
+    test('HighRepulsion: renders with strong repulsive forces', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('layout-engines--d3forceLayout--high-repulsion'));
+      await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
+
+      const nodes = page.locator('[role="article"]');
+      expect(await nodes.count()).toBeGreaterThan(0);
+    });
+
+    test('TightClustering: renders with clustering enabled', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('layout-engines--d3forceLayout--tight-clustering'));
+      await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
+
+      const nodes = page.locator('[role="article"]');
+      expect(await nodes.count()).toBeGreaterThan(0);
+    });
+
+    test('ExtendedSimulation: renders after extended simulation', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('layout-engines--d3forceLayout--extended-simulation'));
+      await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
+
+      const nodes = page.locator('[role="article"]');
+      expect(await nodes.count()).toBeGreaterThan(0);
+    });
   });
 
   test.describe('ELKLayout (ELK Layering)', () => {
@@ -140,6 +198,42 @@ test.describe('Layout Engine Stories', () => {
         expect(d).not.toContain('NaN');
         expect(d).not.toContain('undefined');
       }
+    });
+
+    test('Hierarchical: renders with ELK hierarchical layout', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('layout-engines--elkLayout--hierarchical'));
+      await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
+
+      const nodes = page.locator('[role="article"]');
+      expect(await nodes.count()).toBeGreaterThan(0);
+    });
+
+    test('ForceDirected: renders with force-directed ELK mode', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('layout-engines--elkLayout--force-directed'));
+      await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
+
+      const nodes = page.locator('[role="article"]');
+      expect(await nodes.count()).toBeGreaterThan(0);
+    });
+
+    test('Stress: renders with stress-minimization layout', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('layout-engines--elkLayout--stress'));
+      await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
+
+      const nodes = page.locator('[role="article"]');
+      expect(await nodes.count()).toBeGreaterThan(0);
+    });
+
+    test('OrthogonalRouting: renders with orthogonal edge routing', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('layout-engines--elkLayout--orthogonal-routing'));
+      await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
+
+      const nodes = page.locator('[role="article"]');
+      expect(await nodes.count()).toBeGreaterThan(0);
     });
   });
 
@@ -176,6 +270,51 @@ test.describe('Layout Engine Stories', () => {
       const nodes = page.locator('[role="article"]');
       const nodeCount = await nodes.count();
       expect(nodeCount).toBeGreaterThan(0);
+    });
+
+    test('Dot: renders with dot (hierarchical) algorithm', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('layout-engines--graphvizLayout--dot'));
+      await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
+
+      const nodes = page.locator('[role="article"]');
+      expect(await nodes.count()).toBeGreaterThan(0);
+    });
+
+    test('Neato: renders with neato (spring model) algorithm', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('layout-engines--graphvizLayout--neato'));
+      await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
+
+      const nodes = page.locator('[role="article"]');
+      expect(await nodes.count()).toBeGreaterThan(0);
+    });
+
+    test('FDP: renders with FDP (spring model) algorithm', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('layout-engines--graphvizLayout--fdp'));
+      await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
+
+      const nodes = page.locator('[role="article"]');
+      expect(await nodes.count()).toBeGreaterThan(0);
+    });
+
+    test('Circo: renders with circo (circular) algorithm', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('layout-engines--graphvizLayout--circo'));
+      await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
+
+      const nodes = page.locator('[role="article"]');
+      expect(await nodes.count()).toBeGreaterThan(0);
+    });
+
+    test('Twopi: renders with twopi (radial) algorithm', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('layout-engines--graphvizLayout--twopi'));
+      await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
+
+      const nodes = page.locator('[role="article"]');
+      expect(await nodes.count()).toBeGreaterThan(0);
     });
   });
 });

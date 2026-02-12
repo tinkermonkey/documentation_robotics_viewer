@@ -25,19 +25,23 @@ export function isExpectedConsoleError(text: string): boolean {
   if (/Download the React DevTools/.test(text)) return true;
 
   // Specific port connection failure - expected when DataLoader backend not running
-  if (/ECONNREFUSED.*:3002/.test(text)) return true;
+  // Only filter ECONNREFUSED from localhost dev ports (3002, 8765) to avoid hiding production errors
+  if (/ECONNREFUSED.*(localhost|127\.0\.0\.1):(3002|8765)/.test(text)) return true;
 
   // Specific model loading failure - expected when no model data provided
   if (/\[DataLoader\] Failed to fetch model/.test(text)) return true;
 
   // React prop validation for unknown props - expected with legacy/external components
-  if (/React does not recognize.*prop/.test(text)) return true;
+  // Match only when it's a Warning prefix to avoid false positives
+  if (/^Warning: React does not recognize the `[\w-]+` prop/.test(text)) return true;
 
   // Unrecognized HTML tags - expected with custom or dynamic elements
-  if (/The tag <.*> is unrecognized/.test(text)) return true;
+  // Use specific tag name pattern (alphanumeric and hyphens) not greedy match
+  if (/^The tag <[\w-]+> is unrecognized/.test(text)) return true;
 
-  // WebSocket errors when server unavailable - expected in isolated test
-  if (/WebSocket connection to .* failed/.test(text)) return true;
+  // WebSocket errors when server unavailable - expected in isolated test environment
+  // Only filter localhost/127.0.0.1 connections (not production URLs)
+  if (/WebSocket connection to (ws:\/\/(localhost|127\.0\.0\.1):[0-9]+|wss?:\/\/[\w]+) failed/.test(text)) return true;
 
   // EmbeddedLayout errors - expected component-level warnings
   if (/\[EmbeddedLayout\] (?:No container|Missing required|Layout calculation)/.test(text)) return true;
@@ -85,7 +89,8 @@ export function isExpectedConsoleError(text: string): boolean {
  */
 export function isKnownRenderingBug(text: string): boolean {
   // SVG/path attribute validation - NaN values from layout calculation bugs
-  if (/Invalid value for <.*> attribute/.test(text)) return true;
+  // Match specific SVG element names (path, rect, circle, etc) not greedy match
+  if (/Invalid value for <[\w-]+> attribute/.test(text)) return true;
 
   // SVG numeric attribute validation - NaN/undefined in path data
   if (/<path> attribute d: Expected number/.test(text)) return true;

@@ -33,9 +33,9 @@ test.describe('Story Error Filtering', () => {
         expect(isExpectedConsoleError(error)).toBe(true);
       });
 
-      test('should match various ECONNREFUSED port 3002 formats', () => {
+      test('should match various ECONNREFUSED port 3002/8765 formats', () => {
         expect(isExpectedConsoleError('ECONNREFUSED localhost:3002')).toBe(true);
-        expect(isExpectedConsoleError('ECONNREFUSED: 127.0.0.1:3002 ECONNREFUSED')).toBe(true);
+        expect(isExpectedConsoleError('ECONNREFUSED 127.0.0.1:8765')).toBe(true);
       });
 
       test('should NOT match other port connection errors', () => {
@@ -43,8 +43,8 @@ test.describe('Story Error Filtering', () => {
         expect(isExpectedConsoleError(error)).toBe(false);
       });
 
-      test('should NOT match generic ECONNREFUSED without port', () => {
-        const error = 'ECONNREFUSED somewhere';
+      test('should NOT match production URL errors', () => {
+        const error = 'ECONNREFUSED api.example.com:3002';
         expect(isExpectedConsoleError(error)).toBe(false);
       });
 
@@ -65,14 +65,19 @@ test.describe('Story Error Filtering', () => {
     });
 
     test.describe('React Prop Validation Filter', () => {
-      test('should match React unknown prop warnings', () => {
-        const error = 'React does not recognize the `data-custom` prop on a DOM element';
+      test('should match React unknown prop warnings with Warning prefix', () => {
+        const error = 'Warning: React does not recognize the `data-custom` prop on a DOM element';
         expect(isExpectedConsoleError(error)).toBe(true);
       });
 
-      test('should match various prop validation messages', () => {
-        expect(isExpectedConsoleError('React does not recognize the `unknownProp` prop')).toBe(true);
-        expect(isExpectedConsoleError('React does not recognize the `custom-attr` prop on a div')).toBe(true);
+      test('should match various React warning prop validation messages', () => {
+        expect(isExpectedConsoleError('Warning: React does not recognize the `unknownProp` prop')).toBe(true);
+        expect(isExpectedConsoleError('Warning: React does not recognize the `custom-attr` prop on a div')).toBe(true);
+      });
+
+      test('should NOT match without Warning prefix', () => {
+        const error = 'React does not recognize the `unknownProp` prop';
+        expect(isExpectedConsoleError(error)).toBe(false);
       });
 
       test('should NOT match unrelated React messages', () => {
@@ -97,14 +102,19 @@ test.describe('Story Error Filtering', () => {
     });
 
     test.describe('Unrecognized HTML Tag Filter', () => {
-      test('should match unrecognized tag warning', () => {
+      test('should match unrecognized tag warning with proper format', () => {
         const error = 'The tag <custom-element> is unrecognized in this browser';
         expect(isExpectedConsoleError(error)).toBe(true);
       });
 
-      test('should match various custom tag formats', () => {
+      test('should match custom tag names with hyphens', () => {
         expect(isExpectedConsoleError('The tag <my-component> is unrecognized')).toBe(true);
         expect(isExpectedConsoleError('The tag <foo-bar-baz> is unrecognized in this browser')).toBe(true);
+      });
+
+      test('should NOT match tags with spaces (malformed HTML)', () => {
+        const error = 'The tag <my weird tag> is unrecognized';
+        expect(isExpectedConsoleError(error)).toBe(false);
       });
 
       test('should NOT match other unrecognized errors', () => {
@@ -124,14 +134,19 @@ test.describe('Story Error Filtering', () => {
     });
 
     test.describe('WebSocket Error Filter', () => {
-      test('should match WebSocket connection failures', () => {
+      test('should match WebSocket connection failures on localhost', () => {
         const error = 'WebSocket connection to ws://localhost:3002 failed';
         expect(isExpectedConsoleError(error)).toBe(true);
       });
 
-      test('should match various WebSocket URLs', () => {
+      test('should match localhost WebSocket URLs', () => {
         expect(isExpectedConsoleError('WebSocket connection to ws://localhost:8080 failed')).toBe(true);
-        expect(isExpectedConsoleError('WebSocket connection to wss://api.example.com/ws failed')).toBe(true);
+        expect(isExpectedConsoleError('WebSocket connection to ws://127.0.0.1:3002 failed')).toBe(true);
+      });
+
+      test('should NOT match production WebSocket URLs', () => {
+        const error = 'WebSocket connection to wss://api.example.com/ws failed';
+        expect(isExpectedConsoleError(error)).toBe(false);
       });
 
       test('should NOT match WebSocket prefix messages without connection failure', () => {
@@ -198,31 +213,40 @@ test.describe('Story Error Filtering', () => {
     });
 
     test.describe('Server 500 Error Filter', () => {
-      test('should match 500 status errors', () => {
-        expect(isExpectedConsoleError('the server responded with a status of 500')).toBe(true);
-        expect(isExpectedConsoleError('the server responded with a status of 502')).toBe(true);
-        expect(isExpectedConsoleError('the server responded with a status of 503')).toBe(true);
+      test('should match 500 errors from localhost dev servers', () => {
+        expect(isExpectedConsoleError('the server responded with a status of 500 at localhost:3002')).toBe(true);
+        expect(isExpectedConsoleError('the server responded with a status of 502 at localhost:8765')).toBe(true);
+      });
+
+      test('should NOT match 500 errors without localhost context', () => {
+        expect(isExpectedConsoleError('the server responded with a status of 500')).toBe(false);
+        expect(isExpectedConsoleError('the server responded with a status of 503 at api.example.com')).toBe(false);
       });
 
       test('should NOT match 400 status errors', () => {
-        expect(isExpectedConsoleError('the server responded with a status of 400')).toBe(false);
-        expect(isExpectedConsoleError('the server responded with a status of 404')).toBe(false);
+        expect(isExpectedConsoleError('the server responded with a status of 400 at localhost:3002')).toBe(false);
+        expect(isExpectedConsoleError('the server responded with a status of 404 at localhost:3002')).toBe(false);
       });
     });
 
     test.describe('Warning Prefix Filter', () => {
-      test('should match generic warnings', () => {
-        const error = 'Warning: React version mismatch';
+      test('should match known React warnings', () => {
+        const error = 'Warning: Received `false` for a boolean attribute `disabled`, instead of `true`';
         expect(isExpectedConsoleError(error)).toBe(true);
       });
 
-      test('should match various warning types', () => {
-        expect(isExpectedConsoleError('Warning: deprecated API used')).toBe(true);
-        expect(isExpectedConsoleError('Warning: Expected error')).toBe(true);
+      test('should match documented warning types', () => {
+        expect(isExpectedConsoleError('Warning: componentWillReceiveProps has been renamed')).toBe(true);
+        expect(isExpectedConsoleError('Warning: Unknown event handler property `onMyEvent`')).toBe(true);
       });
 
       test('should NOT match errors without warning prefix', () => {
         const error = 'Error: React version mismatch';
+        expect(isExpectedConsoleError(error)).toBe(false);
+      });
+
+      test('should NOT match generic warnings (only specific documented ones)', () => {
+        const error = 'Warning: deprecated API used';
         expect(isExpectedConsoleError(error)).toBe(false);
       });
 
@@ -269,15 +293,20 @@ test.describe('Story Error Filtering', () => {
         const expectedErrors = [
           'Download the React DevTools for better development',
           'ECONNREFUSED localhost:3002',
+          'ECONNREFUSED 127.0.0.1:8765',
           '[DataLoader] Failed to fetch model',
-          'React does not recognize the `customAttr` prop',
+          'Warning: React does not recognize the `customAttr` prop',
           'The tag <custom> is unrecognized',
-          'WebSocket connection to ws://localhost failed',
+          'WebSocket connection to ws://localhost:3002 failed',
+          'WebSocket connection to ws://127.0.0.1:8080 failed',
           '[EmbeddedLayout] No container found',
+          '[EmbeddedLayout] Missing required props',
           '[ModelRoute] Error loading model',
           'Failed to load resource: localhost:3002/api',
-          'Warning: deprecated API',
-          'the server responded with a status of 500',
+          'Failed to load resource: localhost:8765/ws',
+          'the server responded with a status of 500 at localhost:3002',
+          'Warning: Received `false` instead of `true`',
+          'Warning: componentWillReceiveProps has been renamed',
           'StoryLoadedWrapper: Timeout waiting for React Flow nodes',
           'Wrapper element: DIV',
           'Children count: 3',

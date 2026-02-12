@@ -144,6 +144,22 @@ test.describe('Architecture Node Stories', () => {
       const handles = await page.locator('.react-flow__handle').count();
       expect(handles, 'StakeholderNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
     });
+
+    test('InternalStakeholder: renders with label', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--stakeholdernode--internal-stakeholder'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      await expect(article).toBeVisible();
+    });
+
+    test('ChangesetAdd: renders with changeset styling', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--stakeholdernode--changeset-add'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      await expect(article).toBeVisible();
+    });
   });
 
   test.describe('AssessmentNode', () => {
@@ -162,6 +178,14 @@ test.describe('Architecture Node Stories', () => {
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const handles = await page.locator('.react-flow__handle').count();
       expect(handles, 'AssessmentNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
+    });
+
+    test('Rating5: renders with rating variant', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--assessmentnode--rating5'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      await expect(article).toBeVisible();
     });
   });
 
@@ -205,6 +229,22 @@ test.describe('Architecture Node Stories', () => {
       const handles = await page.locator('.react-flow__handle').count();
       expect(handles, 'ConstraintNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
     });
+
+    test('RegulatoryConstraint: renders with constraint type', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--constraintnode--regulatory-constraint'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      await expect(article).toBeVisible();
+    });
+
+    test('ChangesetUpdate: renders with update styling', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--constraintnode--changeset-update'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      await expect(article).toBeVisible();
+    });
   });
 
   test.describe('DriverNode', () => {
@@ -224,6 +264,14 @@ test.describe('Architecture Node Stories', () => {
       const handles = await page.locator('.react-flow__handle').count();
       expect(handles, 'DriverNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
     });
+
+    test('MarketDriver: renders with driver type', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--drivernode--market-driver'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      await expect(article).toBeVisible();
+    });
   });
 
   test.describe('OutcomeNode', () => {
@@ -242,6 +290,14 @@ test.describe('Architecture Node Stories', () => {
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const handles = await page.locator('.react-flow__handle').count();
       expect(handles, 'OutcomeNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
+    });
+
+    test('Achieved: renders with status variant', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--outcomenode--achieved'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      await expect(article).toBeVisible();
     });
   });
 
@@ -266,6 +322,14 @@ test.describe('Architecture Node Stories', () => {
         expect(d).not.toContain('NaN');
       }
     });
+
+    test('ApplicationScope: renders with scope variant', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--principlenode--application-scope'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      await expect(article).toBeVisible();
+    });
   });
 
   test.describe('RequirementNode', () => {
@@ -285,6 +349,22 @@ test.describe('Architecture Node Stories', () => {
       const handles = await page.locator('.react-flow__handle').count();
       expect(handles, 'RequirementNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
     });
+
+    test('NonFunctional: renders with requirement type', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--requirementnode--non-functional'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      await expect(article).toBeVisible();
+    });
+
+    test('HighPriority: renders with priority variant', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--requirementnode--high-priority'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      await expect(article).toBeVisible();
+    });
   });
 
   test.describe('ValueStreamNode', () => {
@@ -303,6 +383,22 @@ test.describe('Architecture Node Stories', () => {
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       const handles = await page.locator('.react-flow__handle').count();
       expect(handles, 'ValueStreamNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
+    });
+
+    test('LongStream: renders with stream length variant', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--valuestreamnode--long-stream'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      await expect(article).toBeVisible();
+    });
+
+    test('ChangesetDelete: renders with delete styling', async ({ page }) => {
+      setupErrorFiltering(page);
+      await page.goto(storyUrl('architecture-nodes--motivation--valuestreamnode--changeset-delete'));
+      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
+      const article = page.locator('[role="article"]').first();
+      await expect(article).toBeVisible();
     });
   });
 });
