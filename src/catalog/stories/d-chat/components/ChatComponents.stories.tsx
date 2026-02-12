@@ -15,7 +15,7 @@ export default meta;
 type Story = StoryObj; 
 
 /**
- * Ladle Stories for Chat Components
+ * Storybook Stories for Chat Components
  * Comprehensive component variations for validation and visual testing
  */
 

@@ -17,19 +17,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { isExpectedConsoleError, isKnownRenderingBug } from './storyErrorFilters';
-import { storyUrl } from '../helpers/storyTestUtils';
-
-function setupErrorFiltering(page: import('@playwright/test').Page) {
-  page.on('console', (msg) => {
-    if (msg.type() === 'error') {
-      const text = msg.text();
-      if (!isExpectedConsoleError(text) && !isKnownRenderingBug(text)) {
-        console.error(`[UNEXPECTED ERROR]: ${text}`);
-      }
-    }
-  });
-}
+import { storyUrl, setupErrorFiltering } from '../helpers/storyTestUtils';
 
 test.describe('Architecture Node Stories', () => {
   test.describe('GoalNode', () => {

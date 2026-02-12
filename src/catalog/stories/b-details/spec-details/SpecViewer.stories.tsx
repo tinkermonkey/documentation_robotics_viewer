@@ -332,7 +332,7 @@ const mockSpecData: SpecDataResponse = {
     metadata: {
       generatedDate: new Date().toISOString(),
       generatedFrom: 'mock-spec',
-      generator: 'ladle-story',
+      generator: 'storybook-story',
       totalLinkTypes: 10,
       totalCategories: 2,
       version: '1.0.0',
@@ -380,7 +380,7 @@ export const EmptySpecData: Story = {
           metadata: {
             generatedDate: new Date().toISOString(),
             generatedFrom: 'empty-spec',
-            generator: 'ladle-story',
+            generator: 'storybook-story',
             totalLinkTypes: 0,
             totalCategories: 0,
             version: '1.0.0',

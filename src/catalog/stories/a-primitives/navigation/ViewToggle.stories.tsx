@@ -5,7 +5,6 @@ import { BarChart3, Table, Code } from 'lucide-react';
 
 const meta = {
   title: 'A Primitives / Navigation / ViewToggle',
-  component: ViewToggle,
 } satisfies Meta;
 
 export default meta;

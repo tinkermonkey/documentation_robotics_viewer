@@ -27,7 +27,7 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
-      run: npm ci
+      run: npm ci --legacy-peer-deps
 
     - name: Type check
       run: npx tsc --noEmit
@@ -78,7 +78,7 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
-      run: npm ci
+      run: npm ci --legacy-peer-deps
 
     - name: Install Playwright browsers
       run: npx playwright install --with-deps
@@ -94,6 +94,5 @@ jobs:
 
     - name: Run Storybook tests
       run: npm run test:storybook
-
-    - name: Run accessibility tests
-      run: npm run test:storybook:a11y
+      # Note: Accessibility tests (axe-core) are already run for every story by the test-runner
+      # in .storybook/test-runner.ts via postVisit hook. Removed redundant test:storybook:a11y step.

@@ -23,7 +23,7 @@ export interface ReactFlowDecoratorOptions {
  * HOC decorator that wraps a story component with ReactFlowProvider and a configured ReactFlow container.
  * This enables rendering React Flow nodes and edges in isolation for component stories.
  *
- * Note: Storybook and Ladle provide their own error boundary wrappers at the top level, so component
+ * Note: Storybook provides an error boundary wrapper at the top level, so component
  * errors will be caught and displayed by the story framework. If a Story component throws, the error
  * will be caught by the framework's error boundary.
  *

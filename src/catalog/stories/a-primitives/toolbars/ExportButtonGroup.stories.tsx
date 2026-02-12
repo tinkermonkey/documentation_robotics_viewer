@@ -4,7 +4,6 @@ import { ExportButtonGroup, ExportService } from '@/apps/embedded/components/sha
 
 const meta = {
   title: 'A Primitives / Toolbars / ExportButtonGroup',
-  component: ExportButtonGroup,
 } satisfies Meta;
 
 export default meta;

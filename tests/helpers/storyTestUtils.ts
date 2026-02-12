@@ -10,6 +10,8 @@
  * preventing duplication across multiple test files.
  */
 
+import { isExpectedConsoleError, isKnownRenderingBug } from '../stories/storyErrorFilters';
+
 /**
  * Convert Storybook story ID to iframe URL
  *
@@ -22,6 +24,37 @@
  */
 export function storyUrl(storyId: string): string {
   return `/iframe.html?id=${storyId}&viewMode=story`;
+}
+
+/**
+ * Wait for a story to load with explicit success/failure states
+ *
+ * Storybook wraps stories in StoryLoadedWrapper which sets data-storyloaded:
+ * - 'true': Story loaded successfully with React Flow initialized
+ * - 'timeout': Story timed out waiting for React Flow nodes
+ * - undefined: Story still loading
+ *
+ * @param page - Playwright page object
+ * @param options - Configuration options
+ * @returns Promise that resolves when story loads or times out
+ */
+/**
+ * Setup console error filtering for story tests
+ *
+ * Attaches a console listener that logs only unexpected errors,
+ * filtering out known rendering bugs and expected console messages.
+ *
+ * @param page - Playwright page object
+ */
+export function setupErrorFiltering(page: import('@playwright/test').Page): void {
+  page.on('console', (msg) => {
+    if (msg.type() === 'error') {
+      const text = msg.text();
+      if (!isExpectedConsoleError(text) && !isKnownRenderingBug(text)) {
+        console.error(`[UNEXPECTED ERROR]: ${text}`);
+      }
+    }
+  });
 }
 
 /**

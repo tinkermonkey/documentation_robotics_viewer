@@ -11,27 +11,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { isExpectedConsoleError, isKnownRenderingBug } from './storyErrorFilters';
-
-function setupErrorFiltering(page: import('@playwright/test').Page) {
-  page.on('console', (msg) => {
-    if (msg.type() === 'error') {
-      const text = msg.text();
-      if (!isExpectedConsoleError(text) && !isKnownRenderingBug(text)) {
-        console.error(`[UNEXPECTED ERROR]: ${text}`);
-      }
-    }
-  });
-}
-
-/**
- * Convert Ladle story ID to Storybook iframe URL
- * Ladle: /?story=architecture-edges--general--elbowedge--default&mode=preview
- * Storybook: /iframe.html?id=architecture-edges--general--elbowedge--default&viewMode=story
- */
-function storyUrl(storyId: string): string {
-  return `/iframe.html?id=${storyId}&viewMode=story`;
-}
+import { storyUrl, setupErrorFiltering } from '../helpers/storyTestUtils';
 
 test.describe('Architecture Edge Stories', () => {
   test.describe('ElbowEdge', () => {
