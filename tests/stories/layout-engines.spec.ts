@@ -168,9 +168,9 @@ test.describe('Layout Engine Stories', () => {
   });
 
   test.describe('ELKLayout (ELK Layering)', () => {
-    test('Default: renders nodes with ELK port-based connections', async ({ page }) => {
+    test('Hierarchical: renders nodes with ELK port-based connections', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('c-graphs-layouts-elklayout--default'));
+      await page.goto(storyUrl('c-graphs-layouts-elklayout--hierarchical'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       // Validate nodes render
@@ -184,9 +184,9 @@ test.describe('Layout Engine Stories', () => {
       expect(await handles.count()).toBeGreaterThanOrEqual(2); // At least left and right
     });
 
-    test('Default: edges have no NaN values in paths', async ({ page }) => {
+    test('Hierarchical: edges have no NaN values in paths', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('c-graphs-layouts-elklayout--default'));
+      await page.goto(storyUrl('c-graphs-layouts-elklayout--hierarchical'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       // Check all SVG paths for valid geometry
@@ -238,9 +238,9 @@ test.describe('Layout Engine Stories', () => {
   });
 
   test.describe('GraphvizLayout', () => {
-    test('Default: renders nodes with graphviz positioning', async ({ page }) => {
+    test('Dot: renders nodes with graphviz positioning', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('c-graphs-layouts-graphvizlayout--default'));
+      await page.goto(storyUrl('c-graphs-layouts-graphvizlayout--dot'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       // Validate nodes render with article role
@@ -256,9 +256,9 @@ test.describe('Layout Engine Stories', () => {
       }
     });
 
-    test('Default: subgraph nesting and clustering respected', async ({ page }) => {
+    test('Dot: subgraph nesting and clustering respected', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('c-graphs-layouts-graphvizlayout--default'));
+      await page.goto(storyUrl('c-graphs-layouts-graphvizlayout--dot'));
       await page.locator('[data-storyloaded="true"]').waitFor({ timeout: 30000 });
 
       // Get all SVG groups (g elements) which may represent subgraphs
