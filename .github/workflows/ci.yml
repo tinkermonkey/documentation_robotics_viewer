@@ -27,6 +27,9 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
+      # --legacy-peer-deps: Required for React 19 compatibility with dependencies that declare
+      # React 18 as peer dependency (e.g., Storybook, some React Flow plugins). These dependencies
+      # work fine with React 19 but haven't updated their peer dependency declarations yet.
       run: npm ci --legacy-peer-deps
 
     - name: Type check
@@ -79,6 +82,9 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
+      # --legacy-peer-deps: Required for React 19 compatibility with dependencies that declare
+      # React 18 as peer dependency (e.g., Storybook, some React Flow plugins). These dependencies
+      # work fine with React 19 but haven't updated their peer dependency declarations yet.
       run: npm ci --legacy-peer-deps
 
     - name: Install Playwright browsers

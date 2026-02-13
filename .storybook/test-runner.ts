@@ -48,7 +48,8 @@ const config: TestRunnerConfig = {
         void page.evaluate((error) => {
           (window as any).__errorMessages__?.push(error);
         }, text).catch((err) => {
-          console.warn('Failed to record console error in page context:', err);
+          const errorMsg = err instanceof Error ? err.message : String(err);
+          console.warn(`[test-runner] Failed to record console error: ${errorMsg}`);
         });
       }
     });
@@ -61,7 +62,8 @@ const config: TestRunnerConfig = {
       void page.evaluate((err) => {
         (window as any).__pageErrors__?.push(err);
       }, errorText).catch((err) => {
-        console.warn('Failed to record page error in page context:', err);
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        console.warn(`[test-runner] Failed to record page error: ${errorMsg}`);
       });
     });
 
@@ -152,6 +154,8 @@ const config: TestRunnerConfig = {
                   },
                   (err: Error | null, results: AxeResults) => {
                     if (err) {
+                      // Log axe execution errors (timeout, crash, etc.) to distinguish from "no violations"
+                      console.warn(`[test-runner] axe-core execution error: ${err instanceof Error ? err.message : String(err)}`);
                       resolve(null);
                     } else {
                       resolve(results);

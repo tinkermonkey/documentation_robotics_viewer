@@ -9,16 +9,23 @@ if (typeof window !== 'undefined') {
 
   // Filter expected errors from test environment
   const originalError = console.error;
+  const DEBUG = false; // Set to true to log filtered errors for debugging
+  const filteredErrorPatterns = [
+    'Warning: ReactDOM.render',
+    'Not implemented: HTMLFormElement.prototype.requestSubmit'
+  ];
+  let filteredErrorCount = 0;
 
   console.error = (...args: any[]) => {
     const errorString = args.join(' ');
 
     // Filter expected errors (from design guidance)
     // Use exact string matching at the start to avoid accidentally filtering unrelated errors
-    if (
-      errorString.startsWith('Warning: ReactDOM.render') ||
-      errorString.startsWith('Not implemented: HTMLFormElement.prototype.requestSubmit')
-    ) {
+    if (filteredErrorPatterns.some(pattern => errorString.startsWith(pattern))) {
+      filteredErrorCount++;
+      if (DEBUG) {
+        console.debug(`[Storybook] Filtered error #${filteredErrorCount}: ${errorString}`);
+      }
       return;
     }
 

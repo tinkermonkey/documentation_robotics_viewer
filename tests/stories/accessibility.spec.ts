@@ -78,10 +78,10 @@ test.describe('Accessibility - Panels', () => {
 
 test.describe('Accessibility - Nodes', () => {
   const nodeStories = [
-    { key: 'architecture-nodes--motivation--goalnode--default', name: 'GoalNode', expectedLabel: 'Increase Revenue' },
-    { key: 'architecture-nodes--c4--containernode--default', name: 'ContainerNode' },
-    { key: 'architecture-nodes--business--businessfunctionnode--default', name: 'BusinessFunctionNode' },
-    { key: 'architecture-nodes--motivation--stakeholdernode--default', name: 'StakeholderNode' },
+    { key: 'c-graphs-nodes-motivation-goalnode--default', name: 'GoalNode', expectedLabel: 'Increase Revenue' },
+    { key: 'c-graphs-nodes-c4-containernode--default', name: 'ContainerNode' },
+    { key: 'c-graphs-nodes-business-businessfunctionnode--default', name: 'BusinessFunctionNode' },
+    { key: 'c-graphs-nodes-motivation-stakeholdernode--default', name: 'StakeholderNode' },
   ];
 
   for (const story of nodeStories) {
