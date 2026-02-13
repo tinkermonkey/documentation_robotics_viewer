@@ -75,6 +75,9 @@ export function isExpectedConsoleError(text: string): boolean {
   if (/\[ErrorBoundary\] Caught error/.test(text)) return true;
   if (/Test error for ErrorBoundary/.test(text)) return true;
 
+  // RenderPropErrorBoundary test errors - expected when testing error handling in render props
+  if (/\[RenderPropError\]/.test(text)) return true;
+
   return false;
 }
 
