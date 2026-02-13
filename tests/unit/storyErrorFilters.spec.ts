@@ -307,6 +307,7 @@ test.describe('Story Error Filtering', () => {
           'the server responded with a status of 500 at localhost:3002',
           'Warning: Received `false` instead of `true`',
           'Warning: componentWillReceiveProps has been renamed',
+          '[RenderPropError] renderElement: Failed to render',
           'StoryLoadedWrapper: Timeout waiting for React Flow nodes',
           'Wrapper element: DIV',
           'Children count: 3',
@@ -319,6 +320,22 @@ test.describe('Story Error Filtering', () => {
           unmatchedErrors.length,
           `These expected errors were not caught: ${unmatchedErrors.join(', ')}`
         ).toBe(0);
+      });
+    });
+
+    test.describe('RenderPropErrorBoundary Error Filter', () => {
+      test('should match RenderPropError prefix', () => {
+        expect(isExpectedConsoleError('[RenderPropError] renderElement: Failed to render')).toBe(true);
+      });
+
+      test('should match various RenderPropError messages', () => {
+        expect(isExpectedConsoleError('[RenderPropError] renderFilters: Failed to load filters')).toBe(true);
+        expect(isExpectedConsoleError('[RenderPropError] renderComparison: Cannot compare elements')).toBe(true);
+      });
+
+      test('should NOT match similar but different errors', () => {
+        expect(isExpectedConsoleError('RenderPropError in component')).toBe(false);
+        expect(isExpectedConsoleError('Error in render prop')).toBe(false);
       });
     });
 

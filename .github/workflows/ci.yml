@@ -66,6 +66,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   story-validation:
+    # Runs on: PRs (catch regressions), scheduled (weekly comprehensive), manual dispatch
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
