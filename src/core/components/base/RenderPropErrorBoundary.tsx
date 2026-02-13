@@ -45,8 +45,8 @@ export function wrapRenderProp<T>(
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
 
-    // Note: console.error removed to prevent Playwright test failures
-    // The error is already displayed in the UI via the JSX below
+    // Log with filterable prefix for test suite error filtering
+    console.error(`[RenderPropError] ${renderPropName}: ${errorMessage}`);
 
     return (
       <div
@@ -92,8 +92,8 @@ export function wrapRenderProp2<T1, T2>(
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
 
-    // Note: console.error removed to prevent Playwright test failures
-    // The error is already displayed in the UI via the JSX below
+    // Log with filterable prefix for test suite error filtering
+    console.error(`[RenderPropError] ${renderPropName}: ${errorMessage}`);
 
     return (
       <div
@@ -140,8 +140,8 @@ export function wrapRenderPropVoid(
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
 
-    // Note: console.error removed to prevent Playwright test failures
-    // The error is already displayed in the UI via the JSX below
+    // Log with filterable prefix for test suite error filtering
+    console.error(`[RenderPropError] ${renderPropName}: ${errorMessage}`);
 
     return (
       <div

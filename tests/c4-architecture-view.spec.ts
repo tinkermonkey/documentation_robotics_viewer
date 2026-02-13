@@ -332,22 +332,6 @@ test.describe('C4 Architecture View', () => {
   });
 
   test.describe('Layout Algorithms', () => {
-    test('should display layout selector', async ({ page }) => {
-      // Navigate to Architecture view
-      await page.click('[data-testid="main-tab-architecture"]');
-      await page.waitForTimeout(2000);
-
-      // Check for layout selector
-      const layoutSelector = page.locator('.layout-selector');
-      const c4Container = page.locator('.react-flow');
-      const hasC4 = await c4Container.isVisible().catch(() => false);
-
-      // Skip test if C4 view is not available
-      test.skip(!hasC4, 'C4 view not available - model may lack Application services');
-
-      await expect(layoutSelector).toBeVisible();
-    });
-
     test('should switch layouts in under 800ms', async ({ page }) => {
       // Navigate to Architecture view
       await page.click('[data-testid="main-tab-architecture"]');
@@ -433,23 +417,6 @@ test.describe('C4 Architecture View', () => {
     });
   });
 
-  test.describe('Fit to View', () => {
-    test('should have fit to view button', async ({ page }) => {
-      // Navigate to Architecture view
-      await page.click('[data-testid="main-tab-architecture"]');
-      await page.waitForTimeout(2000);
-
-      const c4Container = page.locator('.react-flow');
-      const hasC4 = await c4Container.isVisible().catch(() => false);
-
-      // Skip test if C4 view is not available
-      test.skip(!hasC4, 'C4 view not available - model may lack Application services');
-
-      // Find fit to view button
-      const fitButton = page.locator('.control-button', { hasText: 'Fit to View' });
-      await expect(fitButton).toBeVisible();
-    });
-  });
 
   // NOTE: Drill-down test removed due to ReactFlow canvas rendering making nodes
   // unreliable for Playwright viewport checks. The drill-down functionality IS

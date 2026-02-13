@@ -108,6 +108,11 @@ export const ElbowEdge = memo(({
     labelY = (p1.y + p2.y) / 2;
   }
 
+  // Create accessible label for the edge
+  const ariaLabel = label
+    ? `Connection labeled ${label} from node ${source} to node ${target}`
+    : `Connection from node ${source} to node ${target}`;
+
   return (
     <>
       <BaseEdge
@@ -119,7 +124,9 @@ export const ElbowEdge = memo(({
           strokeWidth: 2,
           ...style,
         }}
-        className="react-flow__edge-path" 
+        className="react-flow__edge-path"
+        aria-label={ariaLabel}
+        role="img"
       />
       {label && (
         <EdgeLabelRenderer>

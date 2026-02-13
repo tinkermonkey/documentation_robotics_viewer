@@ -27,7 +27,10 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
-      run: npm ci
+      # --legacy-peer-deps: Required for React 19 compatibility with dependencies that declare
+      # React 18 as peer dependency (e.g., Storybook, some React Flow plugins). These dependencies
+      # work fine with React 19 but haven't updated their peer dependency declarations yet.
+      run: npm ci --legacy-peer-deps
 
     - name: Type check
       run: npx tsc --noEmit
@@ -66,7 +69,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   story-validation:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    # Runs on: PRs (catch regressions), scheduled (weekly comprehensive), manual dispatch
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -78,33 +82,24 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
-      run: npm ci
+      # --legacy-peer-deps: Required for React 19 compatibility with dependencies that declare
+      # React 18 as peer dependency (e.g., Storybook, some React Flow plugins). These dependencies
+      # work fine with React 19 but haven't updated their peer dependency declarations yet.
+      run: npm ci --legacy-peer-deps
 
     - name: Install Playwright browsers
       run: npx playwright install --with-deps
 
-    - name: Build catalog
-      run: npm run catalog:build
+    - name: Build Storybook
+      run: npm run storybook:build
 
-    - name: Generate story tests
-      run: node scripts/generate-story-tests.cjs --from-build
+    - name: Start Storybook server
+      run: npm run storybook:serve &
 
-    - name: Verify story tests are committed
-      run: |
-        if git diff --quiet tests/stories/; then
-          echo "✓ Story tests are synchronized"
-        else
-          echo "✗ Story tests are out of sync with story files"
-          echo ""
-          echo "Changes detected in tests/stories/:"
-          git diff --stat tests/stories/
-          echo ""
-          echo "Please run 'npm run test:stories:generate' locally and commit the changes:"
-          git diff tests/stories/ | head -100
-          exit 1
-        fi
+    - name: Wait for Storybook server
+      run: npx wait-on http://localhost:61001 --timeout 60000
 
-    - name: Run story validation tests
-      run: npm run test:stories
-      env:
-        STORY_ALL_BROWSERS: ${{ github.event_name == 'schedule' && 'true' || '' }}
+    - name: Run Storybook tests
+      run: npm run test:storybook
+      # Note: Accessibility tests (axe-core) are already run for every story by the test-runner
+      # in .storybook/test-runner.ts via postVisit hook. Removed redundant test:storybook:a11y step.

@@ -12,24 +12,13 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { isExpectedConsoleError, isKnownRenderingBug } from './storyErrorFilters';
-
-function setupErrorFiltering(page: import('@playwright/test').Page) {
-  page.on('console', (msg) => {
-    if (msg.type() === 'error') {
-      const text = msg.text();
-      if (!isExpectedConsoleError(text) && !isKnownRenderingBug(text)) {
-        console.error(`[UNEXPECTED ERROR]: ${text}`);
-      }
-    }
-  });
-}
+import { storyUrl, setupErrorFiltering } from '../helpers/storyTestUtils';
 
 test.describe('Chat Component Stories', () => {
   test.describe('ChatTextContent', () => {
     test('Basic: renders text content', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=chat-components--chat-text-content-basic&mode=preview');
+      await page.goto(storyUrl('chat-components--chat-text-content-basic'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 300)));
       const bodyText = await page.locator('body').innerText();
@@ -38,7 +27,7 @@ test.describe('Chat Component Stories', () => {
 
     test('Markdown: renders formatted content', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=chat-components--chat-text-content-markdown&mode=preview');
+      await page.goto(storyUrl('chat-components--chat-text-content-markdown'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 300)));
       const bodyText = await page.locator('body').innerText();
@@ -47,7 +36,7 @@ test.describe('Chat Component Stories', () => {
 
     test('CodeBlock: renders code content', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=chat-components--chat-text-content-code-block&mode=preview');
+      await page.goto(storyUrl('chat-components--chat-text-content-code-block'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 300)));
       // Code blocks typically have pre/code elements
@@ -60,7 +49,7 @@ test.describe('Chat Component Stories', () => {
   test.describe('ThinkingBlock', () => {
     test('Default: renders thinking content', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=chat-components--thinking-block-default&mode=preview');
+      await page.goto(storyUrl('chat-components--thinking-block-default'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 300)));
       const bodyText = await page.locator('body').innerText();
@@ -69,7 +58,7 @@ test.describe('Chat Component Stories', () => {
 
     test('Expanded: shows full thinking text', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=chat-components--thinking-block-expanded&mode=preview');
+      await page.goto(storyUrl('chat-components--thinking-block-expanded'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 300)));
       const bodyText = await page.locator('body').innerText();
@@ -78,7 +67,7 @@ test.describe('Chat Component Stories', () => {
 
     test('Default: toggle expands content', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=chat-components--thinking-block-default&mode=preview');
+      await page.goto(storyUrl('chat-components--thinking-block-default'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 300)));
       // Find the toggle/expand button
@@ -95,7 +84,7 @@ test.describe('Chat Component Stories', () => {
   test.describe('ToolInvocationCard', () => {
     test('Executing: shows tool name and status', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=chat-components--tool-invocation-card-executing&mode=preview');
+      await page.goto(storyUrl('chat-components--tool-invocation-card-executing'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 300)));
       const bodyText = await page.locator('body').innerText();
@@ -104,7 +93,7 @@ test.describe('Chat Component Stories', () => {
 
     test('Complete: shows completed status', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=chat-components--tool-invocation-card-complete&mode=preview');
+      await page.goto(storyUrl('chat-components--tool-invocation-card-complete'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 300)));
       const bodyText = await page.locator('body').innerText();
@@ -113,7 +102,7 @@ test.describe('Chat Component Stories', () => {
 
     test('Error: shows error status', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=chat-components--tool-invocation-card-error&mode=preview');
+      await page.goto(storyUrl('chat-components--tool-invocation-card-error'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 300)));
       const bodyText = await page.locator('body').innerText();
@@ -124,7 +113,7 @@ test.describe('Chat Component Stories', () => {
   test.describe('ChatInput', () => {
     test('Default: input field is visible', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=chat-components--chat-input-default&mode=preview');
+      await page.goto(storyUrl('chat-components--chat-input-default'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 300)));
       const inputs = await page.locator('input, textarea').count();
@@ -133,7 +122,7 @@ test.describe('Chat Component Stories', () => {
 
     test('Default: send button is present', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=chat-components--chat-input-default&mode=preview');
+      await page.goto(storyUrl('chat-components--chat-input-default'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 300)));
       const buttons = await page.locator('button').count();
@@ -142,7 +131,7 @@ test.describe('Chat Component Stories', () => {
 
     test('Default: input accepts text', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=chat-components--chat-input-default&mode=preview');
+      await page.goto(storyUrl('chat-components--chat-input-default'));
       await page.locator('input, textarea').first().waitFor({ state: 'attached', timeout: 5000 });
       const input = page.locator('input, textarea').first();
       await input.fill('Test message');
@@ -154,7 +143,7 @@ test.describe('Chat Component Stories', () => {
   test.describe('ChatMessage', () => {
     test('User: renders user message', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=chat-components--chat-message-user&mode=preview');
+      await page.goto(storyUrl('chat-components--chat-message-user'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 300)));
       const bodyText = await page.locator('body').innerText();
@@ -163,7 +152,7 @@ test.describe('Chat Component Stories', () => {
 
     test('Assistant: renders assistant message', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto('/?story=chat-components--chat-message-assistant&mode=preview');
+      await page.goto(storyUrl('chat-components--chat-message-assistant'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 300)));
       const bodyText = await page.locator('body').innerText();

@@ -1,6 +1,6 @@
 /**
  * Mock Data Loader Provider
- * Provides pre-loaded data and mocked useDataLoader hook for Ladle stories
+ * Provides pre-loaded data and mocked useDataLoader hook for Storybook stories
  *
  * NOTE: This provider is for FUTURE use in full-route stories that use useDataLoader.
  * Current composition components accept data as props and do not use useDataLoader.

@@ -1,6 +1,6 @@
 /**
  * Spec Route Composition
- * Extracted UI layout from SpecRoute for testing in Ladle
+ * Extracted UI layout from SpecRoute for testing in Storybook
  *
  * This composition accepts all state and callbacks as props (no router/data loader hooks).
  * It matches the exact layout of SpecRoute but is fully controlled from parent stories.

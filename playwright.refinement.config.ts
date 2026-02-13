@@ -3,8 +3,8 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * Story Test Configuration
  *
- * Runs story validation tests (Ladle component tests)
- * - Validates component rendering in isolated Ladle environment
+ * Runs story validation tests (Storybook component tests)
+ * - Validates component rendering in isolated Storybook environment
  * - Tests story definitions and component exports
  * - Generates story test metrics
  *
@@ -26,7 +26,7 @@ export default defineConfig({
   ],
   timeout: 30000,
   use: {
-    baseURL: 'http://localhost:61000', // Ladle production/test port
+    baseURL: 'http://localhost:61001', // Storybook production/test port
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     headless: true,
@@ -53,8 +53,8 @@ export default defineConfig({
     // Note: WebServer logs are captured and analyzed in scripts/test-stories.sh
     // Error detection patterns look for specific failures in the output
     // (e.g., "browserType.launch", "ECONNREFUSED", "TimeoutError")
-    command: 'npm run catalog:build && npm run catalog:serve',
-    url: 'http://localhost:61000',
+    command: 'npm run storybook:build && npm run storybook:serve',
+    url: 'http://localhost:61001',
     reuseExistingServer: !process.env.CI,
     timeout: 60000,
     // Stdout/stderr capture handled via shell redirection in test-stories.sh (2>&1)

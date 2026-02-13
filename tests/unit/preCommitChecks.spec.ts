@@ -17,12 +17,15 @@ import { checkFile } from '../helpers/preCommitChecks';
  */
 function checkContent(content: string) {
   const tmpDir = os.tmpdir();
-  const tmpFile = path.join(tmpDir, `test-${Date.now()}.spec.ts`);
+  const uniqueId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const tmpFile = path.join(tmpDir, `test-${uniqueId}.spec.ts`);
   fs.writeFileSync(tmpFile, content, 'utf-8');
   try {
     return checkFile(tmpFile);
   } finally {
-    fs.unlinkSync(tmpFile);
+    if (fs.existsSync(tmpFile)) {
+      fs.unlinkSync(tmpFile);
+    }
   }
 }
 

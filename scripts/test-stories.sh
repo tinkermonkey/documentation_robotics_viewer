@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Script to run story tests with automatic server management
-# Lets Playwright's webServer config handle the Ladle server automatically
+# Lets Playwright's webServer config handle the Storybook server automatically
 
 set -e
 
@@ -12,11 +12,11 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 echo -e "${YELLOW}Running story validation tests...${NC}"
-echo -e "${YELLOW}(Playwright will automatically start and stop the Ladle server)${NC}"
+echo -e "${YELLOW}(Playwright will automatically start and stop the Storybook server)${NC}"
 
 # Check port availability before running tests
-echo -e "${YELLOW}Checking port 61000 availability...${NC}"
-if ! node scripts/check-port.cjs 61000 "Ladle catalog server"; then
+echo -e "${YELLOW}Checking port 61001 availability...${NC}"
+if ! node scripts/check-port.cjs 61001 "Storybook catalog server"; then
   echo -e "${RED}✗ Port check failed. Exiting.${NC}"
   exit 1
 fi
@@ -26,10 +26,10 @@ fi
 if [[ ! "$*" =~ --reporter ]]; then
   # Use only list reporter to ensure non-interactive execution
   # Capture output to log file for error analysis
-  npx playwright test tests/stories/all-stories.spec.ts --config=playwright.refinement.config.ts --reporter=list "$@" 2>&1 | tee test-output.log
+  npx playwright test tests/stories/*.spec.ts --config=playwright.refinement.config.ts --reporter=list "$@" 2>&1 | tee test-output.log
   TEST_EXIT_CODE=${PIPESTATUS[0]}
 else
-  npx playwright test tests/stories/all-stories.spec.ts --config=playwright.refinement.config.ts "$@" 2>&1 | tee test-output.log
+  npx playwright test tests/stories/*.spec.ts --config=playwright.refinement.config.ts "$@" 2>&1 | tee test-output.log
   TEST_EXIT_CODE=${PIPESTATUS[0]}
 fi
 
@@ -38,21 +38,20 @@ if [ $TEST_EXIT_CODE -eq 0 ]; then
   echo -e "${GREEN}✓ All story tests passed!${NC}"
 elif grep -q "Error: No tests found" test-output.log; then
   echo -e "${RED}✗ Playwright found no tests to run${NC}"
-  echo -e "${RED}  Make sure test file exists: tests/stories/all-stories.spec.ts${NC}"
-  echo -e "${RED}  Regenerate with: npm run test:stories:generate${NC}"
+  echo -e "${RED}  Make sure test files exist in: tests/stories/*.spec.ts${NC}"
   TEST_EXIT_CODE=1
 elif grep -q "browserType.launch" test-output.log; then
   echo -e "${RED}✗ Playwright browser failed to launch${NC}"
   echo -e "${RED}  Try: npx playwright install --with-deps${NC}"
   TEST_EXIT_CODE=1
-elif grep -q "ECONNREFUSED.*61000" test-output.log; then
-  echo -e "${RED}✗ Could not connect to Ladle server (port 61000)${NC}"
-  echo -e "${RED}  The Ladle server may have failed to start. Check logs above.${NC}"
+elif grep -q "ECONNREFUSED.*61001" test-output.log; then
+  echo -e "${RED}✗ Could not connect to Storybook server (port 61001)${NC}"
+  echo -e "${RED}  The Storybook server may have failed to start. Check logs above.${NC}"
   echo -e "${RED}  Possible causes: Port conflict, build failure, or missing dependencies${NC}"
   TEST_EXIT_CODE=1
 elif grep -qE "Test timeout of|TimeoutError:|Timeout .* exceeded" test-output.log; then
   echo -e "${RED}✗ Test execution timed out${NC}"
-  echo -e "${RED}  The Ladle server may be taking too long to start or stories are slow to load${NC}"
+  echo -e "${RED}  The Storybook server may be taking too long to start or stories are slow to load${NC}"
   TEST_EXIT_CODE=1
 else
   echo -e "${RED}✗ Some story tests failed (exit code: $TEST_EXIT_CODE)${NC}"

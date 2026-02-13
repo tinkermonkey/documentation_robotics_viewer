@@ -8,7 +8,7 @@
  *
  * Usage:
  *   node scripts/check-port.cjs 61000
- *   node scripts/check-port.cjs 61000 "Ladle catalog server"
+ *   node scripts/check-port.cjs 61000 "Storybook catalog server"
  *
  * Exit codes:
  *   0 = Port is available
@@ -32,7 +32,7 @@ if (isNaN(PORT) || PORT < 1 || PORT > 65535) {
 /**
  * Checks if a port is available
  * @param {number} port - Port number to check
- * @returns {Promise<boolean>} true if port is available, false if in use
+ * @returns {Promise<{available: boolean, error?: string}>} Availability status and error details
  */
 function isPortAvailable(port) {
   return new Promise((resolve) => {
@@ -40,15 +40,17 @@ function isPortAvailable(port) {
 
     server.once('error', (err) => {
       if (err.code === 'EADDRINUSE') {
-        resolve(false); // Port is in use
+        resolve({ available: false, error: 'PORT_IN_USE' });
+      } else if (err.code === 'EACCES') {
+        resolve({ available: false, error: 'PERMISSION_DENIED' });
       } else {
-        resolve(false); // Some other error
+        resolve({ available: false, error: `SYSTEM_ERROR: ${err.code}` });
       }
     });
 
     server.once('listening', () => {
       server.close();
-      resolve(true); // Port is available
+      resolve({ available: true });
     });
 
     server.listen(port, '127.0.0.1');
@@ -99,39 +101,54 @@ function getProcessUsingPort(port) {
 async function main() {
   process.stdout.write(`Checking if port ${PORT} is available for ${SERVICE_NAME}... `);
 
-  const available = await isPortAvailable(PORT);
+  const result = await isPortAvailable(PORT);
 
-  if (available) {
+  if (result.available) {
     console.log('✓ Available');
     process.exit(0);
   } else {
-    console.log('✗ In use');
-    console.error(`\n❌ Error: Port ${PORT} is already in use.`);
-    console.error(`\n${SERVICE_NAME} requires port ${PORT} but it's currently bound to another process.\n`);
+    console.log('✗ Not available');
 
-    // Try to find what's using the port
-    const processInfo = await getProcessUsingPort(PORT);
-    if (processInfo) {
-      console.error('Process using this port:');
-      console.error(processInfo);
-      console.error('');
-    }
+    // Handle different error types
+    if (result.error === 'PERMISSION_DENIED') {
+      console.error(`\n❌ Error: Permission denied to use port ${PORT}.`);
+      console.error(`\nYou don't have permission to bind to port ${PORT}. Ports below 1024 require elevated privileges.\n`);
+      console.error('Solutions:');
+      console.error(`  1. Use a port above 1024 (e.g., 8000, 3000)`);
+      console.error(`  2. Run with elevated privileges (not recommended for security)\n`);
+      process.exit(1);
+    } else if (result.error === 'PORT_IN_USE') {
+      console.error(`\n❌ Error: Port ${PORT} is already in use.`);
+      console.error(`\n${SERVICE_NAME} requires port ${PORT} but it's currently bound to another process.\n`);
 
-    // Provide helpful suggestions
-    console.error('Solutions:');
-    console.error(`  1. Wait for the existing service to stop`);
-    console.error(`  2. Kill the process using port ${PORT}:`);
+      // Try to find what's using the port
+      const processInfo = await getProcessUsingPort(PORT);
+      if (processInfo) {
+        console.error('Process using this port:');
+        console.error(processInfo);
+        console.error('');
+      }
 
-    if (process.platform === 'darwin') {
-      console.error(`     lsof -ti:${PORT} | xargs kill -9`);
-    } else if (process.platform === 'linux') {
-      console.error(`     fuser -k ${PORT}/tcp`);
+      // Provide helpful suggestions
+      console.error('Solutions:');
+      console.error(`  1. Wait for the existing service to stop`);
+      console.error(`  2. Kill the process using port ${PORT}:`);
+
+      if (process.platform === 'darwin') {
+        console.error(`     lsof -ti:${PORT} | xargs kill -9`);
+      } else if (process.platform === 'linux') {
+        console.error(`     fuser -k ${PORT}/tcp`);
+      } else {
+        console.error(`     # Use your OS tools to kill the process on port ${PORT}`);
+      }
+
+      console.error(`  3. Use a different port by setting environment variables\n`);
+      process.exit(1);
     } else {
-      console.error(`     # Use your OS tools to kill the process on port ${PORT}`);
+      console.error(`\n❌ Error: ${result.error}`);
+      console.error(`\nAn unexpected system error occurred while checking port ${PORT}.\n`);
+      process.exit(2);
     }
-
-    console.error(`  3. Use a different port by setting environment variables\n`);
-    process.exit(1);
   }
 }
 

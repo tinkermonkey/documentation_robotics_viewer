@@ -1,6 +1,6 @@
 /**
  * Mock Router Provider
- * Provides mock TanStack Router hooks for testing route compositions in Ladle
+ * Provides mock TanStack Router hooks for testing route compositions in Storybook
  *
  * NOTE: This provider is for FUTURE use in full-route stories that import actual route components.
  * Current composition components (ModelRouteComposition, SpecRouteComposition) accept all state

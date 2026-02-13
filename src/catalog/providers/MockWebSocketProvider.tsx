@@ -77,13 +77,19 @@ export function createMockWebSocketClient(options?: MockWebSocketClientOptions):
       log(`[Mock WS] Emitting '${event}' with data:`, data);
       const eventHandlers = handlers.get(event);
       if (eventHandlers) {
+        const errors: any[] = [];
         eventHandlers.forEach(handler => {
           try {
             handler(data);
           } catch (error) {
             log(`[Mock WS] Error in handler for '${event}':`, error);
+            errors.push(error);
           }
         });
+        // Propagate first handler error to surface issues in tests
+        if (errors.length > 0) {
+          throw errors[0];
+        }
       }
     },
 
