@@ -3,7 +3,6 @@ import { GraphToolbar } from '@/apps/embedded/components/GraphToolbar';
 
 const meta = {
   title: 'A Primitives / Toolbars / GraphToolbar',
-  component: GraphToolbar,
 } satisfies Meta;
 
 export default meta;

@@ -5,7 +5,6 @@ import { LayerType } from '@/core/types';
 
 const meta = {
   title: 'B Details / Spec Details / SpecViewer',
-  component: LayerType,
   parameters: {
     layout: 'centered',
   },

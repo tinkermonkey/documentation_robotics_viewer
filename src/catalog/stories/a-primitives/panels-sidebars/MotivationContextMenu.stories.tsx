@@ -3,7 +3,6 @@ import { MotivationContextMenu } from '@/apps/embedded/components/MotivationCont
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / MotivationContextMenu',
-  component: MotivationContextMenu,
   parameters: {
     layout: 'centered',
   },

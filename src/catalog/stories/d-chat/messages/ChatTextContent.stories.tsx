@@ -7,7 +7,6 @@ import { ChatTextContent } from '@/apps/embedded/components/chat/ChatTextContent
 
 const meta = {
   title: 'D Chat / Messages / ChatTextContent',
-  component: ChatTextContent,
 } satisfies Meta;
 
 export default meta;

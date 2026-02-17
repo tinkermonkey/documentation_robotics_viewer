@@ -5,8 +5,6 @@ import { createConstraintNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / ConstraintNode',
-  component: ConstraintNode,
-
   decorators: [withReactFlowDecorator({ width: CONSTRAINT_NODE_WIDTH, height: CONSTRAINT_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',

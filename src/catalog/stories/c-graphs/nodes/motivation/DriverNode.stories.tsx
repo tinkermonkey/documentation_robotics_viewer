@@ -5,8 +5,6 @@ import { createDriverNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / DriverNode',
-  component: DriverNode,
-
   decorators: [withReactFlowDecorator({ width: DRIVER_NODE_WIDTH, height: DRIVER_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',

@@ -9,7 +9,6 @@ import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';
 
 const meta = {
   title: 'C Graphs / Layouts / ELKLayout',
-  component: StoryProviderWrapper,
 } satisfies Meta;
 
 export default meta;

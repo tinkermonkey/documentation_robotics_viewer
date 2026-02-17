@@ -3,7 +3,6 @@ import { EmptyState } from '@/apps/embedded/components/shared/EmptyState';
 
 const meta = {
   title: 'A Primitives / State Panels / EmptyState',
-  component: EmptyState,
   parameters: {
     layout: 'centered',
   },

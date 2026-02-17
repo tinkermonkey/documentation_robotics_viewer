@@ -5,8 +5,6 @@ import { createAssumptionNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / AssumptionNode',
-  component: AssumptionNode,
-
   decorators: [withReactFlowDecorator({ width: ASSUMPTION_NODE_WIDTH, height: ASSUMPTION_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',

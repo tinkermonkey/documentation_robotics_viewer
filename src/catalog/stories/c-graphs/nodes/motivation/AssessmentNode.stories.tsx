@@ -5,8 +5,6 @@ import { createAssessmentNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / AssessmentNode',
-  component: AssessmentNode,
-
   decorators: [withReactFlowDecorator({ width: ASSESSMENT_NODE_WIDTH, height: ASSESSMENT_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',

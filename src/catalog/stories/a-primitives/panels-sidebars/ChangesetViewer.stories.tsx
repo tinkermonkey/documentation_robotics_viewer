@@ -5,7 +5,6 @@ import { useEffect, ReactNode } from 'react';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / ChangesetViewer',
-  component: useChangesetStore,
   parameters: {
     layout: 'centered',
   },

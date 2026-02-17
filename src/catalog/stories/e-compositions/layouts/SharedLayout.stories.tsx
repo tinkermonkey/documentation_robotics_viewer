@@ -3,7 +3,6 @@ import SharedLayout from '@/apps/embedded/components/SharedLayout';
 
 const meta = {
   title: 'E Compositions / Layouts / SharedLayout',
-  component: SharedLayout,
 } satisfies Meta;
 
 export default meta;

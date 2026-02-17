@@ -5,7 +5,6 @@ import { Download, Share2, FileJson, Image } from 'lucide-react';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / BaseControlPanel',
-  component: BaseControlPanel,
   parameters: {
     layout: 'centered',
   },

@@ -4,7 +4,6 @@ import type { BusinessNode, BusinessGraph } from '@/core/types/businessLayer';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / ProcessInspectorPanel',
-  component: ProcessInspectorPanel,
   parameters: {
     layout: 'centered',
   },

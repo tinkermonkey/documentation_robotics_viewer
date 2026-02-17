@@ -3,7 +3,6 @@ import { LayoutPreferencesPanel } from '@/apps/embedded/components/LayoutPrefere
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / LayoutPreferencesPanel',
-  component: LayoutPreferencesPanel,
   parameters: {
     layout: 'centered',
   },

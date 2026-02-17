@@ -8,7 +8,6 @@ import type { ToolInvocationContent } from '@/apps/embedded/types/chat';
 
 const meta = {
   title: 'D Chat / Messages / ToolInvocationCard',
-  component: ToolInvocationCard,
 } satisfies Meta;
 
 export default meta;

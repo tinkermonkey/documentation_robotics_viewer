@@ -5,8 +5,6 @@ import { createOutcomeNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / OutcomeNode',
-  component: OutcomeNode,
-
   decorators: [withReactFlowDecorator({ width: OUTCOME_NODE_WIDTH, height: OUTCOME_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',

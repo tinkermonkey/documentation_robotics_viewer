@@ -3,7 +3,6 @@ import SubTabNavigation, { type SubTab } from '@/apps/embedded/components/SubTab
 
 const meta = {
   title: 'A Primitives / Navigation / SubTabNavigation',
-  component: SubTabNavigation,
 } satisfies Meta;
 
 export default meta;

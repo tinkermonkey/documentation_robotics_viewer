@@ -36,7 +36,6 @@ test.describe('Backend-Dependent Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('primitives--indicators--connectionstatus--disconnected'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
       const bodyText = await page.locator('body').innerText();
       expect(bodyText.length, 'Disconnected status should render content').toBeGreaterThan(0);
     });
@@ -45,7 +44,6 @@ test.describe('Backend-Dependent Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('primitives--indicators--connectionstatus--connecting'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
       const bodyText = await page.locator('body').innerText();
       expect(bodyText.length, 'Connecting status should render content').toBeGreaterThan(0);
     });
@@ -54,7 +52,6 @@ test.describe('Backend-Dependent Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('primitives--indicators--connectionstatus--reconnecting'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
       const bodyText = await page.locator('body').innerText();
       expect(bodyText.length, 'Reconnecting status should render content').toBeGreaterThan(0);
     });
@@ -63,7 +60,6 @@ test.describe('Backend-Dependent Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('primitives--indicators--connectionstatus--error'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
       const bodyText = await page.locator('body').innerText();
       expect(bodyText.length, 'Error status should render content').toBeGreaterThan(0);
     });
@@ -73,12 +69,10 @@ test.describe('Backend-Dependent Stories', () => {
       // Collect text content from two different states to verify they differ
       await page.goto(storyUrl('primitives--indicators--connectionstatus--connected'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
       const connectedHtml = await page.locator('body').innerHTML();
 
       await page.goto(storyUrl('primitives--indicators--connectionstatus--disconnected'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
       const disconnectedHtml = await page.locator('body').innerHTML();
 
       expect(
@@ -93,7 +87,6 @@ test.describe('Backend-Dependent Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('chat-components--chat-panel-container-default'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
       const bodyText = await page.locator('body').innerText();
       // ChatPanelContainer should render at minimum a container div
       const hasElements = await page.locator('[data-testid], div').count();
@@ -109,7 +102,6 @@ test.describe('Backend-Dependent Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('chat-components--floating-chat-panel-default'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
       const bodyText = await page.locator('body').innerText();
       const hasElements = await page.locator('[data-testid], div').count();
       expect(

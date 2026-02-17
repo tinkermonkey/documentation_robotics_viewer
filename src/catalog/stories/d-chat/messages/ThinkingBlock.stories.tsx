@@ -7,7 +7,6 @@ import { ThinkingBlock } from '@/apps/embedded/components/chat/ThinkingBlock';
 
 const meta = {
   title: 'D Chat / Messages / ThinkingBlock',
-  component: ThinkingBlock,
 } satisfies Meta;
 
 export default meta;

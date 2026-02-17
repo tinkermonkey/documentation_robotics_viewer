@@ -3,7 +3,6 @@ import { OperationLegend } from '@/apps/embedded/components/OperationLegend';
 
 const meta = {
   title: 'A Primitives / State Panels / OperationLegend',
-  component: OperationLegend,
   parameters: {
     layout: 'centered',
   },

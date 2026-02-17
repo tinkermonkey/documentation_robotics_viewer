@@ -4,7 +4,6 @@ import type { MetaModel } from '@/core/types/model';
 
 const meta = {
   title: 'A Primitives / State Panels / LayerTypesLegend',
-  component: LayerTypesLegend,
   parameters: {
     layout: 'centered',
   },

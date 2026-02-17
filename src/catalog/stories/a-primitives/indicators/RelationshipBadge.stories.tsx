@@ -3,7 +3,6 @@ import { RelationshipBadge } from '@/core/nodes/motivation/RelationshipBadge';
 
 const meta = {
   title: 'A Primitives / Indicators / RelationshipBadge',
-  component: RelationshipBadge,
 } satisfies Meta;
 
 export default meta;

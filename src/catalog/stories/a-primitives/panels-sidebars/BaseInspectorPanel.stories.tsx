@@ -5,7 +5,6 @@ import { ArrowUp, ArrowDown, Eye } from 'lucide-react';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
-  component: BaseInspectorPanel,
   parameters: {
     layout: 'centered',
   },

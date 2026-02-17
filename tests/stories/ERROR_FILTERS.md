@@ -231,9 +231,9 @@ This ensures:
 ## CI/CD Integration
 
 Error filters are validated as part of the CI pipeline:
-1. Story tests are regenerated before running (`npm run test:stories:generate`)
-2. Git diff is checked to ensure tests are up to date
-3. All story validation tests are run with 30-second timeout
+1. Story validation tests are run against Storybook (`npm run test:storybook`)
+2. Unit tests for filter logic are executed (`npm test -- tests/unit/storyErrorFilters.spec.ts`)
+3. All story tests are run with 30-second timeout
 4. Any new unexpected errors fail the build
 
 See `.github/workflows/ci.yml` for implementation details.

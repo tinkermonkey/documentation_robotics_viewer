@@ -9,7 +9,6 @@ import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';
 
 const meta = {
   title: 'C Graphs / Layouts / D3ForceLayout',
-  component: StoryProviderWrapper,
 } satisfies Meta;
 
 export default meta;

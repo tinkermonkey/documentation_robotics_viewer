@@ -6,7 +6,6 @@ import type { ChangesetSummary } from '@/apps/embedded/services/embeddedDataLoad
 
 const meta = {
   title: 'A Primitives / Data Viewers / ChangesetList',
-  component: ChangesetList,
 } satisfies Meta;
 
 export default meta;

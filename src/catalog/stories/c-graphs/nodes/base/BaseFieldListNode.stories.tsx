@@ -5,8 +5,6 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 const meta = {
   title: 'C Graphs / Nodes / Base / BaseFieldListNode',
-  component: BaseFieldListNode,
-
   decorators: [withReactFlowDecorator({ width: 300, height: 300 })],
   parameters: {
     layout: 'centered',

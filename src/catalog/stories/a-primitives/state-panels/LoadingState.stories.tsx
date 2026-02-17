@@ -3,7 +3,6 @@ import { LoadingState } from '@/apps/embedded/components/shared/LoadingState';
 
 const meta = {
   title: 'A Primitives / State Panels / LoadingState',
-  component: LoadingState,
   parameters: {
     layout: 'centered',
   },

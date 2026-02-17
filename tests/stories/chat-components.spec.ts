@@ -20,7 +20,6 @@ test.describe('Chat Component Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('chat-components--chat-text-content-basic'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
       const bodyText = await page.locator('body').innerText();
       expect(bodyText.length, 'ChatTextContent Basic should render text').toBeGreaterThan(5);
     });
@@ -29,7 +28,6 @@ test.describe('Chat Component Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('chat-components--chat-text-content-markdown'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
       const bodyText = await page.locator('body').innerText();
       expect(bodyText.length, 'ChatTextContent Markdown should render formatted text').toBeGreaterThan(10);
     });
@@ -51,7 +49,6 @@ test.describe('Chat Component Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('chat-components--thinking-block-default'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
       const bodyText = await page.locator('body').innerText();
       expect(bodyText.length, 'ThinkingBlock should render content').toBeGreaterThan(0);
     });
@@ -60,7 +57,6 @@ test.describe('Chat Component Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('chat-components--thinking-block-expanded'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
       const bodyText = await page.locator('body').innerText();
       expect(bodyText.length, 'Expanded ThinkingBlock should show full text').toBeGreaterThan(10);
     });
@@ -74,7 +70,6 @@ test.describe('Chat Component Stories', () => {
       const toggle = page.locator('button, [role="button"], summary').first();
       if (await toggle.count() > 0) {
         await toggle.click();
-        await page.waitForTimeout(100);
         const bodyText = await page.locator('body').innerText();
         expect(bodyText.length).toBeGreaterThan(0);
       }
@@ -86,7 +81,6 @@ test.describe('Chat Component Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('chat-components--tool-invocation-card-executing'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
       const bodyText = await page.locator('body').innerText();
       expect(bodyText.length, 'ToolInvocationCard should show tool info').toBeGreaterThan(5);
     });
@@ -95,7 +89,6 @@ test.describe('Chat Component Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('chat-components--tool-invocation-card-complete'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
       const bodyText = await page.locator('body').innerText();
       expect(bodyText.length).toBeGreaterThan(5);
     });
@@ -104,7 +97,6 @@ test.describe('Chat Component Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('chat-components--tool-invocation-card-error'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
       const bodyText = await page.locator('body').innerText();
       expect(bodyText.length).toBeGreaterThan(5);
     });
@@ -115,7 +107,6 @@ test.describe('Chat Component Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('chat-components--chat-input-default'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
       const inputs = await page.locator('input, textarea').count();
       expect(inputs, 'ChatInput should render an input field').toBeGreaterThan(0);
     });
@@ -124,7 +115,6 @@ test.describe('Chat Component Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('chat-components--chat-input-default'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
       const buttons = await page.locator('button').count();
       expect(buttons, 'ChatInput should have a send button').toBeGreaterThan(0);
     });
@@ -145,7 +135,6 @@ test.describe('Chat Component Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('chat-components--chat-message-user'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
       const bodyText = await page.locator('body').innerText();
       expect(bodyText.length, 'User message should render content').toBeGreaterThan(5);
     });
@@ -154,7 +143,6 @@ test.describe('Chat Component Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('chat-components--chat-message-assistant'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
       const bodyText = await page.locator('body').innerText();
       expect(bodyText.length, 'Assistant message should render content').toBeGreaterThan(5);
     });

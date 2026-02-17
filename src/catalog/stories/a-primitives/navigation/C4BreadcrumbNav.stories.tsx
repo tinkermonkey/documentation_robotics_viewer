@@ -4,7 +4,6 @@ import type { C4BreadcrumbSegment } from '@/apps/embedded/types/c4Graph';
 
 const meta = {
   title: 'A Primitives / Navigation / C4BreadcrumbNav',
-  component: C4BreadcrumbNav,
 } satisfies Meta;
 
 export default meta;

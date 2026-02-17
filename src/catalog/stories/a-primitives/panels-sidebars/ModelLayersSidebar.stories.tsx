@@ -6,7 +6,6 @@ import { useEffect, ReactNode } from 'react';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / ModelLayersSidebar',
-  component: useModelStore,
   parameters: {
     layout: 'centered',
   },

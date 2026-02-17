@@ -4,7 +4,6 @@ import { Component } from 'react';
 
 const meta = {
   title: 'A Primitives / State Panels / ErrorBoundary',
-  component: ErrorBoundary,
   parameters: {
     layout: 'centered',
   },

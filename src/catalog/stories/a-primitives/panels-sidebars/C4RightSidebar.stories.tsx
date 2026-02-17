@@ -7,7 +7,6 @@ import { useState } from 'react';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / C4RightSidebar',
-  component: C4RightSidebar,
   parameters: {
     layout: 'centered',
   },

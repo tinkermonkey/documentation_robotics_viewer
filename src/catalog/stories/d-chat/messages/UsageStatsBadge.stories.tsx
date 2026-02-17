@@ -7,7 +7,6 @@ import { UsageStatsBadge } from '@/apps/embedded/components/chat/UsageStatsBadge
 
 const meta = {
   title: 'D Chat / Messages / UsageStatsBadge',
-  component: UsageStatsBadge,
 } satisfies Meta;
 
 export default meta;

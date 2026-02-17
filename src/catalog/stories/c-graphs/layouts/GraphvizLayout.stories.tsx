@@ -9,7 +9,6 @@ import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';
 
 const meta = {
   title: 'C Graphs / Layouts / GraphvizLayout',
-  component: StoryProviderWrapper,
 } satisfies Meta;
 
 export default meta;

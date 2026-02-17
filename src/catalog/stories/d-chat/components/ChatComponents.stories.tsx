@@ -9,7 +9,6 @@ import type { ChatMessage as ChatMessageType } from '@/apps/embedded/types/chat'
 
 const meta = {
   title: 'D Chat / Components / ChatComponents',
-  component: ChatTextContent,
 } satisfies Meta;
 
 export default meta;

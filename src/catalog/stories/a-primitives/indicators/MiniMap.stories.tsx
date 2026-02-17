@@ -11,7 +11,6 @@ import '@xyflow/react/dist/style.css';
  */
 const meta = {
   title: 'A Primitives / Indicators / MiniMap',
-  component: ReactFlow,
 } satisfies Meta;
 
 export default meta;

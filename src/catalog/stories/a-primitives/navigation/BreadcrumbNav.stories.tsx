@@ -4,7 +4,6 @@ import { HiOutlineCubeTransparent, HiOutlineRectangleStack } from 'react-icons/h
 
 const meta = {
   title: 'A Primitives / Navigation / BreadcrumbNav',
-  component: BreadcrumbNav,
 } satisfies Meta;
 
 export default meta;

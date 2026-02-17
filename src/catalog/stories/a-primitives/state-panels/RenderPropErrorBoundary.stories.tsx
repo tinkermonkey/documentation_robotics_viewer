@@ -3,7 +3,6 @@ import { wrapRenderProp, wrapRenderProp2, wrapRenderPropVoid } from '@/core/comp
 
 const meta = {
   title: 'A Primitives / State Panels / RenderPropErrorBoundary',
-  component: wrapRenderProp,
   parameters: {
     layout: 'centered',
   },

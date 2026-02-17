@@ -3,7 +3,6 @@ import HighlightedPathPanel from '@/apps/embedded/components/HighlightedPathPane
 
 const meta = {
   title: 'A Primitives / State Panels / HighlightedPathPanel',
-  component: HighlightedPathPanel,
   parameters: {
     layout: 'centered',
   },

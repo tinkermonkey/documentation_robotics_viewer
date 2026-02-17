@@ -15,7 +15,6 @@ import {
 
 const meta = {
   title: 'E Compositions / Spec Compositions / SpecRouteComposition',
-  component: useState,
 } satisfies Meta;
 
 export default meta;

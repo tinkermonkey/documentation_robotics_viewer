@@ -3,7 +3,6 @@ import MetadataGrid from '@/apps/embedded/components/common/MetadataGrid';
 
 const meta = {
   title: 'A Primitives / Data Viewers / MetadataGrid',
-  component: MetadataGrid,
 } satisfies Meta;
 
 export default meta;

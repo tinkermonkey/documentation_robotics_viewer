@@ -5,8 +5,6 @@ import { createRequirementNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / RequirementNode',
-  component: RequirementNode,
-
   decorators: [withReactFlowDecorator({ width: REQUIREMENT_NODE_WIDTH, height: REQUIREMENT_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',

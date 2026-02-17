@@ -5,7 +5,6 @@ import ExpandableSection from '@/apps/embedded/components/common/ExpandableSecti
 
 const meta = {
   title: 'A Primitives / State Panels / ExpandableSection',
-  component: expect,
   parameters: {
     layout: 'centered',
   },

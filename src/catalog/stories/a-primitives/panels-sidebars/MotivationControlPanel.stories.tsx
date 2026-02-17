@@ -3,7 +3,6 @@ import { MotivationControlPanel } from '@/apps/embedded/components/MotivationCon
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / MotivationControlPanel',
-  component: MotivationControlPanel,
   parameters: {
     layout: 'centered',
   },

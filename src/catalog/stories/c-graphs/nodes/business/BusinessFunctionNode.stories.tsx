@@ -5,8 +5,6 @@ import { createBusinessFunctionNodeData } from '@catalog/fixtures/nodeDataFixtur
 
 const meta = {
   title: 'C Graphs / Nodes / Business / BusinessFunctionNode',
-  component: BusinessFunctionNode,
-
   decorators: [withReactFlowDecorator({ width: BUSINESS_FUNCTION_NODE_WIDTH, height: BUSINESS_FUNCTION_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',

@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 
 const meta = {
   title: 'A Primitives / Indicators / ConnectionStatus',
-  component: useConnectionStore,
 } satisfies Meta;
 
 export default meta;

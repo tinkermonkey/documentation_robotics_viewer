@@ -6,7 +6,6 @@ import { useState } from 'react';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / C4FilterPanel',
-  component: C4FilterPanel,
   parameters: {
     layout: 'centered',
   },

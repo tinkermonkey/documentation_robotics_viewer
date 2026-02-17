@@ -5,8 +5,6 @@ import { createC4ComponentNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / C4 / ComponentNode',
-  component: ComponentNode,
-
   decorators: [withReactFlowDecorator({ width: COMPONENT_NODE_WIDTH, height: COMPONENT_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',

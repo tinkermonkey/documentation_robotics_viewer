@@ -5,7 +5,6 @@ import { MotivationElementType, MotivationRelationshipType, RelationshipDirectio
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / MotivationInspectorPanel',
-  component: MotivationInspectorPanel,
   parameters: {
     layout: 'centered',
   },

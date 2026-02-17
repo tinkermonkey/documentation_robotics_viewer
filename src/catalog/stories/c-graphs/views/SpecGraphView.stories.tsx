@@ -4,7 +4,6 @@ import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 const meta = {
   title: 'C Graphs / Views / SpecGraphView',
-  component: StoryLoadedWrapper,
 } satisfies Meta;
 
 export default meta;

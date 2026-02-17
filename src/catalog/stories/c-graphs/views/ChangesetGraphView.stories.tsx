@@ -5,7 +5,6 @@ import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 const meta = {
   title: 'C Graphs / Views / ChangesetGraphView',
-  component: StoryLoadedWrapper,
 } satisfies Meta;
 
 export default meta;

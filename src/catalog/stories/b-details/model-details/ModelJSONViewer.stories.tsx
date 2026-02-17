@@ -5,7 +5,6 @@ import { LayerType } from '@/core/types/layers';
 
 const meta = {
   title: 'B Details / Model Details / ModelJSONViewer',
-  component: LayerType,
   parameters: {
     layout: 'centered',
   },

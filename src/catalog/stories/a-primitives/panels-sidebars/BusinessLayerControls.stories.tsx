@@ -4,7 +4,6 @@ import type { BusinessGraph } from '@/core/types/businessLayer';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / BusinessLayerControls',
-  component: BusinessLayerControls,
   parameters: {
     layout: 'centered',
   },

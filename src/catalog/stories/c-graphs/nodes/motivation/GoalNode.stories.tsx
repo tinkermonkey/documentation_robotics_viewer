@@ -5,8 +5,6 @@ import { createGoalNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / GoalNode',
-  component: GoalNode,
-
   decorators: [withReactFlowDecorator({ width: GOAL_NODE_WIDTH, height: GOAL_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',

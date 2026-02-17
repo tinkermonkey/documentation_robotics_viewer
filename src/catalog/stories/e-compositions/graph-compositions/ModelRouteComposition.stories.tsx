@@ -18,7 +18,6 @@ import {
 
 const meta = {
   title: 'E Compositions / Graph Compositions / ModelRouteComposition',
-  component: useState,
 } satisfies Meta;
 
 export default meta;

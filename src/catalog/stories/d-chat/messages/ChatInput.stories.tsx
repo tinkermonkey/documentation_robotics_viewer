@@ -7,7 +7,6 @@ import { ChatInput } from '@/apps/embedded/components/chat/ChatInput';
 
 const meta = {
   title: 'D Chat / Messages / ChatInput',
-  component: ChatInput,
 } satisfies Meta;
 
 export default meta;

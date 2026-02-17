@@ -6,8 +6,7 @@ import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 const meta = {
   title: 'C Graphs / Views / GraphViewer',
-  component: GraphViewer,
-} satisfies Meta<typeof GraphViewer>;
+} satisfies Meta;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

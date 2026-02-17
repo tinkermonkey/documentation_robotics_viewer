@@ -3,7 +3,6 @@ import { ErrorState } from '@/apps/embedded/components/shared/ErrorState';
 
 const meta = {
   title: 'A Primitives / State Panels / ErrorState',
-  component: ErrorState,
   parameters: {
     layout: 'centered',
   },

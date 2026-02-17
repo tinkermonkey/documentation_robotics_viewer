@@ -4,7 +4,6 @@ import type { CoverageSummary } from '@/apps/embedded/services/coverageAnalyzer'
 
 const meta = {
   title: 'A Primitives / State Panels / CoverageSummaryPanel',
-  component: CoverageSummaryPanel,
   parameters: {
     layout: 'centered',
   },

@@ -5,8 +5,6 @@ import { createPrincipleNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / PrincipleNode',
-  component: PrincipleNode,
-
   decorators: [withReactFlowDecorator({ width: PRINCIPLE_NODE_WIDTH, height: PRINCIPLE_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',

@@ -5,7 +5,6 @@ import { useState } from 'react';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / MotivationRightSidebar',
-  component: MotivationRightSidebar,
   parameters: {
     layout: 'centered',
   },

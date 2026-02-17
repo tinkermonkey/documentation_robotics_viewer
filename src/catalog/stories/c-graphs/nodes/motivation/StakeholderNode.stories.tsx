@@ -5,8 +5,6 @@ import { createStakeholderNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / StakeholderNode',
-  component: StakeholderNode,
-
   decorators: [withReactFlowDecorator({ width: STAKEHOLDER_NODE_WIDTH, height: STAKEHOLDER_NODE_HEIGHT })],
   parameters: {
     layout: 'centered',

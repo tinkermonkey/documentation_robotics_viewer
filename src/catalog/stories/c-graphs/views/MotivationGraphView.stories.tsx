@@ -7,7 +7,6 @@ import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 const meta = {
   title: 'C Graphs / Views / MotivationGraphView',
-  component: ReactFlowProvider,
 } satisfies Meta;
 
 export default meta;

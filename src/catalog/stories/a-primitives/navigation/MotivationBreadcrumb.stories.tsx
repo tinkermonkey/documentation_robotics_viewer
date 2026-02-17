@@ -3,7 +3,6 @@ import { MotivationBreadcrumb, BreadcrumbItem } from '@/apps/embedded/components
 
 const meta = {
   title: 'A Primitives / Navigation / MotivationBreadcrumb',
-  component: MotivationBreadcrumb,
 } satisfies Meta;
 
 export default meta;

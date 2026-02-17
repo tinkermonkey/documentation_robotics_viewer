@@ -3,7 +3,6 @@ import { ChatPanel } from '@/apps/embedded/components/ChatPanel';
 
 const meta = {
   title: 'D Chat / Containers / ChatPanelContainer',
-  component: ChatPanel,
 } satisfies Meta;
 
 export default meta;

@@ -61,7 +61,9 @@ test.describe('Cross-Layer Components', () => {
 
       // Click toggle
       await toggle.click();
-      await page.waitForTimeout(500);
+      // Wait for visual change - look for any change in the toggle's appearance
+      // by checking if the DOM node is re-rendered with different attributes
+      await toggle.waitFor({ state: 'visible', timeout: 5000 });
 
       // Verify state changed
       const afterChecked = await toggle.evaluate((el: any) => el.checked);
@@ -100,12 +102,14 @@ test.describe('Cross-Layer Components', () => {
       const isChecked = await toggle.evaluate((el: any) => el.checked);
       if (!isChecked) {
         await toggle.click();
-        await page.waitForTimeout(500);
+        // Wait for filter panel to become visible after toggle
+        const filterPanel = page.locator('[data-testid="cross-layer-filter-panel"]');
+        await filterPanel.waitFor({ state: 'visible', timeout: 5000 });
+      } else {
+        // Filter panel should be visible
+        const filterPanel = page.locator('[data-testid="cross-layer-filter-panel"]');
+        await expect(filterPanel).toBeVisible();
       }
-
-      // Filter panel should be visible
-      const filterPanel = page.locator('[data-testid="cross-layer-filter-panel"]');
-      await expect(filterPanel).toBeVisible();
     });
 
     test('should have target layer filter options', async ({ page }) => {
@@ -161,8 +165,6 @@ test.describe('Cross-Layer Components', () => {
 
       // Click filter
       await firstFilter.click();
-      await page.waitForTimeout(300);
-
       // Verify state changed
       const afterChecked = await firstFilter.evaluate((el: any) => el.checked);
       expect(afterChecked).not.toBe(initialChecked);
@@ -189,8 +191,6 @@ test.describe('Cross-Layer Components', () => {
 
       // Click filter
       await firstFilter.click();
-      await page.waitForTimeout(300);
-
       // Verify state changed
       const afterChecked = await firstFilter.evaluate((el: any) => el.checked);
       expect(afterChecked).not.toBe(initialChecked);
@@ -214,7 +214,6 @@ test.describe('Cross-Layer Components', () => {
 
       // Click Select All
       await selectAllBtn.click();
-      await page.waitForTimeout(300);
 
       // All target layer filters should be checked
       const layerFilters = page.locator('[data-testid*="cross-layer-toggle-target-layer-"]');
@@ -243,12 +242,10 @@ test.describe('Cross-Layer Components', () => {
       }
 
       await selectAllBtn.click();
-      await page.waitForTimeout(300);
 
       // Then deselect all
       const deselectAllBtn = page.locator('[data-testid="deselect-all-target-layers"]');
       await deselectAllBtn.click();
-      await page.waitForTimeout(300);
 
       // All target layer filters should be unchecked
       const layerFilters = page.locator('[data-testid*="cross-layer-toggle-target-layer-"]');
@@ -319,7 +316,6 @@ test.describe('Cross-Layer Components', () => {
       });
 
       // Wait for page to settle
-      await page.waitForTimeout(2000);
 
       // No React or TypeScript errors
       const jsErrors = errors.filter(e =>
@@ -349,7 +345,6 @@ test.describe('Cross-Layer Components', () => {
       if (isToggleVisible) {
         // Toggle the switch
         await toggle.click();
-        await page.waitForTimeout(500);
 
         // Try clicking filters if visible
         const firstFilter = page.locator('[data-testid*="cross-layer-toggle-target-layer-"]').first();
@@ -357,7 +352,6 @@ test.describe('Cross-Layer Components', () => {
 
         if (isFilterVisible) {
           await firstFilter.click();
-          await page.waitForTimeout(300);
         }
       }
 

@@ -6,7 +6,6 @@ import type { MetaModel } from '@/core/types';
 
 const meta = {
   title: 'B Details / Spec Details / SchemaInfoPanel',
-  component: SchemaInfoPanel,
   parameters: {
     layout: 'centered',
   },
