@@ -20,6 +20,7 @@ declare global {
     __pageErrors__: string[];
     __axeInjected__: boolean;
     __axeConfigured__: boolean;
+    __STORYBOOK_MOCK_WEBSOCKET__?: boolean;
     axe: {
       run: (
         options: object,
@@ -33,10 +34,10 @@ const config: TestRunnerConfig = {
   async preVisit(page) {
     // Initialize error collection arrays on the page context
     await page.evaluate(() => {
-      (window as any).__errorMessages__ = [];
-      (window as any).__pageErrors__ = [];
-      (window as any).__axeInjected__ = false;
-      (window as any).__axeConfigured__ = false;
+      window.__errorMessages__ = [];
+      window.__pageErrors__ = [];
+      window.__axeInjected__ = false;
+      window.__axeConfigured__ = false;
     });
 
     // Register console error listener - push errors to page's __errorMessages__
@@ -46,7 +47,7 @@ const config: TestRunnerConfig = {
         // Push to window.__errorMessages__ which will be read in postVisit
         // Use void to explicitly indicate we're not awaiting, but handle rejections
         void page.evaluate((error) => {
-          (window as any).__errorMessages__?.push(error);
+          window.__errorMessages__?.push(error);
         }, text).catch((err) => {
           const errorMsg = err instanceof Error ? err.message : String(err);
           console.warn(`[test-runner] Failed to record console error: ${errorMsg}`);
@@ -60,7 +61,7 @@ const config: TestRunnerConfig = {
       // Push to window.__pageErrors__ which will be read in postVisit
       // Use void to explicitly indicate we're not awaiting, but handle rejections
       void page.evaluate((err) => {
-        (window as any).__pageErrors__?.push(err);
+        window.__pageErrors__?.push(err);
       }, errorText).catch((err) => {
         const errorMsg = err instanceof Error ? err.message : String(err);
         console.warn(`[test-runner] Failed to record page error: ${errorMsg}`);
@@ -72,7 +73,7 @@ const config: TestRunnerConfig = {
       await injectAxe(page);
       // Mark injection as successful so we know axe is available
       await page.evaluate(() => {
-        (window as any).__axeInjected__ = true;
+        window.__axeInjected__ = true;
       });
     } catch (err) {
       throw new Error(`Failed to inject axe-core: ${err instanceof Error ? err.message : String(err)}. Accessibility testing cannot proceed without axe-core.`);
@@ -81,7 +82,7 @@ const config: TestRunnerConfig = {
 
   async postVisit(page, context) {
     // Check that axe was successfully injected before proceeding
-    const axeInjected = await page.evaluate(() => (window as any).__axeInjected__);
+    const axeInjected = await page.evaluate(() => window.__axeInjected__);
     if (!axeInjected) {
       throw new Error(`Skipping accessibility checks for story "${context.id}": axe-core injection failed in preVisit.`);
     }
@@ -115,14 +116,14 @@ const config: TestRunnerConfig = {
       });
       // Mark configuration as successful
       await page.evaluate(() => {
-        (window as any).__axeConfigured__ = true;
+        window.__axeConfigured__ = true;
       });
     } catch (err) {
       throw new Error(`Failed to configure axe-core for story "${context.id}": ${err instanceof Error ? err.message : String(err)}. Accessibility testing cannot proceed with inconsistent configuration.`);
     }
 
     // Check that axe was successfully configured before running checks
-    const axeConfigured = await page.evaluate(() => (window as any).__axeConfigured__);
+    const axeConfigured = await page.evaluate(() => window.__axeConfigured__);
     if (!axeConfigured) {
       throw new Error(`Skipping accessibility checks for story "${context.id}": axe-core configuration failed.`);
     }
@@ -217,8 +218,8 @@ const config: TestRunnerConfig = {
     // Check for collected console and page errors after all tests
     const errors = await page.evaluate(() => {
       const collected = [
-        ...((window as any).__errorMessages__ || []),
-        ...((window as any).__pageErrors__ || []),
+        ...(window.__errorMessages__ || []),
+        ...(window.__pageErrors__ || []),
       ];
       return collected;
     });

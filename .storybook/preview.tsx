@@ -2,9 +2,15 @@ import type { Preview } from '@storybook/react';
 import { MockRouterProvider } from '../src/catalog/providers/MockRouterProvider';
 import '../src/index.css';
 
+// Extend Window interface for Storybook environment flag
+declare global {
+  interface Window {
+    __STORYBOOK_MOCK_WEBSOCKET__?: boolean;
+  }
+}
+
 // Setup test environment flags for WebSocket client detection
 if (typeof window !== 'undefined') {
-  // @ts-ignore - Set mock flag for WebSocket client (used by WebSocket client to detect test environment)
   window.__STORYBOOK_MOCK_WEBSOCKET__ = true;
 
   // Filter expected errors from test environment

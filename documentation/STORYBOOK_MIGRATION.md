@@ -37,7 +37,7 @@ This document outlines the migration strategy from Ladle to Storybook for the Do
 **Current Status**:
 - **97 story files** created across 9 functional categories
 - **578 total stories** covering business, motivation, and technical components
-- **0% of stories** have Playwright test functions (play() hooks) implemented
+- **~8% of stories** have Playwright test functions (play() hooks) implemented (8 files with 32 play() functions)
 
 **Remaining Work**:
 - Implement play() test functions for remaining stories (Phase 2b deliverable)
@@ -55,7 +55,17 @@ This document outlines the migration strategy from Ladle to Storybook for the Do
   } satisfies Meta;  // Missing: component: ComponentName
   ```
   This affects Storybook's autodocs generation and static analysis capabilities. Will be standardized in Phase 2b using an automated script.
-- **Play() test functions**: Currently 0% of stories implement play() functions. Phase 1 focused on story creation; Phase 2b will systematically add interactive tests.
+- **Play() test functions**: Currently 8 of 97 story files (~8%) implement play() functions, with 32 total play() implementations across:
+  - ViewToggle.stories.tsx (7 play() functions)
+  - GraphViewSidebar.stories.tsx (6 play() functions)
+  - BaseInspectorPanel.stories.tsx (5 play() functions)
+  - ExportButtonGroup.stories.tsx (5 play() functions)
+  - SpaceMouseHandler.stories.tsx (3 play() functions)
+  - ExpandableSection.stories.tsx (3 play() functions)
+  - RelationshipBadge.stories.tsx (2 play() functions)
+  - LayerContainerNode.stories.tsx (1 play() function)
+
+  Phase 2b will systematically expand interactive test coverage across remaining story categories.
 
 **Coverage Strategy**:
 1. **By Category**: Stories organized into 9 functional areas (see `src/catalog/README.md`)
@@ -114,14 +124,14 @@ This document outlines the migration strategy from Ladle to Storybook for the Do
 
 | Category | Story Files | Total Stories | Play() Coverage |
 |----------|-------------|---------------|--------------------|
-| Business | 12 | 89 | 0% |
-| Motivation | 15 | 134 | 0% |
-| Technical (C4) | 8 | 95 | 0% |
-| Layout & Tools | 18 | 118 | 0% |
-| Dialogs & Panels | 22 | 96 | 0% |
-| **Total** | **97** | **578** | **0%** |
+| Business | 12 | 89 | 0% (0 files) |
+| Motivation | 15 | 134 | 0% (0 files) |
+| Technical (C4) | 8 | 95 | 0% (0 files) |
+| Layout & Tools | 18 | 118 | 28% (5 files: ViewToggle, GraphViewSidebar, BaseInspectorPanel, ExportButtonGroup, SpaceMouseHandler) |
+| Dialogs & Panels | 22 | 96 | 14% (3 files: ExpandableSection, RelationshipBadge, LayerContainerNode) |
+| **Total** | **97** | **578** | **~8% (8 files, 32 play() functions)** |
 
-**Note**: Phase 1 focused on story structure and component coverage. Phase 2b will implement play() test functions systematically across all story categories.
+**Note**: Phase 1 focused on story structure and component coverage. Interaction testing was added selectively for Layout & Tools and Dialogs & Panels categories during Phase 2a. Phase 2b will expand play() test functions systematically across Business, Motivation, and Technical (C4) categories.
 
 ## Preservation Strategy: Ladle Archive
 
