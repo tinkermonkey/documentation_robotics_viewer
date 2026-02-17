@@ -11,7 +11,7 @@ This document outlines the migration strategy from Ladle to Storybook for the Do
 **Objective**: Establish Storybook build system and test infrastructure alongside Ladle
 
 **What Was Done**:
-- Installed Storybook 7 with React configuration
+- Installed Storybook 8 with React configuration
 - Configured Storybook dev server on port 61001 (moved from Ladle's 6006)
 - Integrated Playwright test runner for component testing
 - Implemented 16 custom error filters to handle framework compatibility warnings
@@ -37,13 +37,25 @@ This document outlines the migration strategy from Ladle to Storybook for the Do
 **Current Status**:
 - **97 story files** created across 9 functional categories
 - **578 total stories** covering business, motivation, and technical components
-- **~2% of stories** have Playwright test functions (play() hooks) implemented
+- **0% of stories** have Playwright test functions (play() hooks) implemented
 
 **Remaining Work**:
-- Implement play() test functions for remaining ~550 stories (Phase 2 deliverable)
-- Standardize CSF3 format across all stories
+- Implement play() test functions for remaining stories (Phase 2b deliverable)
+- Complete CSF3 `component` property standardization (Phase 2b deliverable)
 - Complete decorator pattern standardization
 - Validate interactive stories against actual component behavior
+
+**Known Implementation Gaps**:
+- **CSF3 `component` property**: All 97 story files lack the `component` property in their meta objects. Current pattern:
+  ```typescript
+  const meta = {
+    title: 'Category / ComponentName',
+    decorators: [...],
+    ...
+  } satisfies Meta;  // Missing: component: ComponentName
+  ```
+  This affects Storybook's autodocs generation and static analysis capabilities. Will be standardized in Phase 2b using an automated script.
+- **Play() test functions**: Currently 0% of stories implement play() functions. Phase 1 focused on story creation; Phase 2b will systematically add interactive tests.
 
 **Coverage Strategy**:
 1. **By Category**: Stories organized into 9 functional areas (see `src/catalog/README.md`)
@@ -93,23 +105,23 @@ This document outlines the migration strategy from Ladle to Storybook for the Do
 **Decision**: Standardize on Component Story Format v3
 
 **Rationale**:
-- Aligns with Storybook 7+ best practices
+- Aligns with Storybook 8+ best practices
 - Enables static analysis and automation
 - Supports play() functions for interactive testing
 - Compatible with Storybook's future roadmap
 
 ## Coverage Metrics
 
-| Category | Story Files | Total Stories | Est. Play() Coverage |
-|----------|-------------|---------------|----------------------|
-| Business | 12 | 89 | 3% |
-| Motivation | 15 | 134 | 2% |
-| Technical (C4) | 8 | 95 | 1% |
-| Layout & Tools | 18 | 118 | 1% |
-| Dialogs & Panels | 22 | 96 | 2% |
-| **Total** | **97** | **578** | **~2%** |
+| Category | Story Files | Total Stories | Play() Coverage |
+|----------|-------------|---------------|--------------------|
+| Business | 12 | 89 | 0% |
+| Motivation | 15 | 134 | 0% |
+| Technical (C4) | 8 | 95 | 0% |
+| Layout & Tools | 18 | 118 | 0% |
+| Dialogs & Panels | 22 | 96 | 0% |
+| **Total** | **97** | **578** | **0%** |
 
-**Note**: Low play() function coverage is expected for Phase 1. Phase 2 will systematize this coverage.
+**Note**: Phase 1 focused on story structure and component coverage. Phase 2b will implement play() test functions systematically across all story categories.
 
 ## Preservation Strategy: Ladle Archive
 

@@ -155,8 +155,8 @@ npm run test:e2e                  # E2E with reference server
 npm run test:e2e:headed           # E2E with visible browser
 npm run storybook:dev             # Start Storybook on port 61001
 npm run storybook:build           # Build Storybook for production
-npm run test:storybook            # Validate all stories (578 stories)
-npm run test:storybook:a11y       # Generate accessibility report
+npm run test:storybook            # Validate all stories (578 stories across 97 files)
+npm run test:storybook:a11y       # Generate accessibility report for all stories
 ```
 
 ### Test Organization
@@ -266,7 +266,7 @@ npm run storybook:dev
 # Open Storybook → any story → Accessibility tab (bottom)
 
 npm run test:storybook:a11y
-# Runs automated axe-core tests against all 578 stories
+# Runs automated axe-core tests against all stories
 ```
 
 For details: `documentation/ACCESSIBILITY.md`
@@ -285,4 +285,4 @@ Supports **JSON Schema** (UUIDs) and **YAML instances** (dot-notation IDs like `
 
 ---
 
-**Last Updated:** 2026-02-17 | **Test Suite:** 1008 tests in 70 files | **Stories:** 593 in Storybook (97 story files)
+**Last Updated:** 2026-02-17 | **Test Suite:** 1008 tests in 50 files | **Stories:** 578 in Storybook (97 story files)

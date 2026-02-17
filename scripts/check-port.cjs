@@ -7,8 +7,8 @@
  * Useful for early detection of port conflicts.
  *
  * Usage:
- *   node scripts/check-port.cjs 61000
- *   node scripts/check-port.cjs 61000 "Storybook catalog server"
+ *   node scripts/check-port.cjs 61001
+ *   node scripts/check-port.cjs 61001 "Storybook catalog server"
  *
  * Exit codes:
  *   0 = Port is available
