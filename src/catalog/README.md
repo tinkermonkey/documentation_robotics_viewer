@@ -525,6 +525,114 @@ describe('AnnotationPanel', () => {
 - **Lazy loading:** Consider lazy-loading fixtures in development builds
 - **Fixture caching:** Zustand stores are created fresh for each story - no cross-story state pollution
 
+## Coverage Strategy
+
+The Storybook catalog uses a systematic approach to ensure comprehensive component coverage across all application layers:
+
+### Coverage By Component Type
+
+**Architecture Nodes (16 total)**
+- Motivation layer: 10 node types (Goal, Stakeholder, Requirement, Constraint, Driver, Outcome, Principle, Assumption, ValueStream, Assessment)
+- Business layer: 3 node types (BusinessService, BusinessFunction, BusinessCapability)
+- C4 layer: 3 node types (Container, Component, ExternalActor)
+- **Status**: All 16 have story files with default variants
+- **Phase 2 Work**: Add play() functions for interactive testing
+
+**Composite Views (5 total)**
+- GraphViewer, MotivationGraphView, BusinessLayerView, C4GraphView, C4ComponentView
+- **Status**: 5 story files with state variants (loading, error, empty, populated)
+- **Phase 2 Work**: Add play() functions for panning, zooming, selection
+
+**UI Components & Panels (50+ total)**
+- Filter panels, Inspector panels, Control panels, Dialogs, Modals
+- **Status**: ~45 story files with typical use cases
+- **Phase 2 Work**: Add play() functions for user interactions (filtering, selection, expansion)
+
+**Layout & Infrastructure (20+ total)**
+- Layout engines, edge types, decorators, provider components
+- **Status**: ~22 story files with configuration variants
+- **Phase 2 Work**: Add play() functions for layout verification
+
+### Coverage By State
+
+Each component category includes story variants for:
+- **Default/Normal**: Standard rendering without data
+- **Loading**: Skeleton, spinner, or loading states
+- **Error**: Error messages and error recovery UI
+- **Empty**: Empty data set displays
+- **Populated**: With realistic fixture data
+- **Changeset States**: add, update, delete, dimmed, highlighted visual states
+- **Accessibility**: High contrast, keyboard navigation, screen reader variants
+
+### How Components Were Selected
+
+1. **Layer-based Organization**: Grouped by architecture layer (Motivation, Business, Technical, UX, etc.)
+2. **Functional Categories**: Organized into 9 functional areas for easy navigation:
+   - **Nodes** - Custom React Flow nodes by type
+   - **Edges** - Custom React Flow edge variants
+   - **Views** - Full graph visualization components
+   - **Panels & Sidebars** - Inspector, filter, control, annotation panels
+   - **Dialogs & Modals** - Modal components
+   - **Layout & Tools** - Layout engines, utilities, helpers
+   - **Decorators & Providers** - Context wrappers and test infrastructure
+   - **Data Structures** - Data shape documentation and examples
+   - **Examples & Patterns** - Complete workflow examples
+
+3. **Completeness Criteria**: Stories created for:
+   - Every custom React Flow node type
+   - Every dialog and modal component
+   - Every panel and sidebar variant
+   - Every layout and visualization view
+   - Key infrastructure components used in tests
+
+### Current Coverage Metrics
+
+| Category | Components | Story Files | Stories | Play() Coverage |
+|----------|------------|-------------|---------|-----------------|
+| Nodes | 16 | 16 | 89 | 3% |
+| Views | 5 | 5 | 42 | 1% |
+| Panels & Sidebars | 15 | 18 | 95 | 2% |
+| Dialogs & Modals | 12 | 12 | 85 | 1% |
+| Layout & Tools | 20 | 22 | 118 | 1% |
+| Decorators & Providers | 8 | 8 | 64 | 0% |
+| Data Structures | 6 | 6 | 52 | 0% |
+| Examples & Patterns | 5 | 10 | 33 | 5% |
+| **Total** | **87** | **97** | **578** | **~2%** |
+
+### Identifying Coverage Gaps
+
+**Current Gaps (Phase 2 focus areas)**:
+- Interactive play() test functions (~99% remaining)
+- Complex state transition scenarios
+- Keyboard navigation for accessible components
+- Animation and transition states
+- Error recovery and retry flows
+
+**How Gaps Are Identified**:
+1. **Automated tooling**: `npm run test:storybook` runs Playwright test runner on all 578 stories
+2. **Accessibility scanning**: `npm run test:storybook:a11y` checks WCAG 2.1 AA compliance
+3. **Manual review**: Stories reviewed for realistic variants and edge cases
+4. **Quarterly audits**: Scheduled reviews to identify missing states and untested scenarios
+
+### Adding New Stories
+
+When adding new components to the application:
+
+1. **Create story file**: `src/stories/[Category]/ComponentName.stories.tsx`
+2. **Import fixtures**: Use factories from `@catalog` (MockStoreProvider, decorators, nodeDataFixtures)
+3. **Define variants**: Create stories for default, loading, error, empty, populated states
+4. **Add accessibility**: Include `role` and `aria-label` attributes
+5. **Document usage**: Add JSDoc comments with component responsibilities
+6. **Phase 2**: Implement play() functions for user interactions
+
+### Future Enhancements (Phase 3)
+
+- Visual regression testing integration
+- Component usage analytics
+- Interactive UI state explorer
+- Auto-generated snapshot tests
+- Performance baseline tracking
+
 ## Documentation
 
 See the individual files for detailed API documentation:
