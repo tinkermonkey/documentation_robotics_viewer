@@ -3,13 +3,14 @@ import { LoadingState } from '@/apps/embedded/components/shared/LoadingState';
 
 const meta = {
   title: 'A Primitives / State Panels / LoadingState',
+  component: LoadingState,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const PageLoading: Story = {
   render: () => (

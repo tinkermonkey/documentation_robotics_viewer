@@ -11,10 +11,11 @@ import '@xyflow/react/dist/style.css';
  */
 const meta = {
   title: 'A Primitives / Indicators / MiniMap',
+  component: ReactFlow,
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 // Sample nodes for MiniMap demonstration - spread out to show viewport indicator
 // MiniMap automatically reflects these nodes without manual configuration

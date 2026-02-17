@@ -5,6 +5,7 @@ import { createC4ContainerNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / C4 / ContainerNode',
+  component: ContainerNode,
 
   decorators: [withReactFlowDecorator({ width: CONTAINER_NODE_WIDTH, height: CONTAINER_NODE_HEIGHT })],
   parameters: {
@@ -13,7 +14,7 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (

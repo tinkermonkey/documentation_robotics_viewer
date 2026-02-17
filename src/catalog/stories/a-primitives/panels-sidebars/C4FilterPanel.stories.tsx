@@ -6,13 +6,14 @@ import { useState } from 'react';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / C4FilterPanel',
+  component: C4FilterPanel,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const mockFilterCounts: C4FilterCounts = {
   containerTypes: {

@@ -5,13 +5,14 @@ import { MotivationElementType, MotivationRelationshipType, RelationshipDirectio
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / MotivationInspectorPanel',
+  component: MotivationInspectorPanel,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const mockGraph: MotivationGraph = {
   nodes: new Map([

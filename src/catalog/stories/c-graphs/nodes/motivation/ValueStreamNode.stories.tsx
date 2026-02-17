@@ -5,6 +5,7 @@ import { createValueStreamNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / ValueStreamNode',
+  component: ValueStreamNode,
 
   decorators: [withReactFlowDecorator({ width: VALUE_STREAM_NODE_WIDTH, height: VALUE_STREAM_NODE_HEIGHT })],
   parameters: {
@@ -13,7 +14,7 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (

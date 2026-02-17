@@ -95,12 +95,13 @@ export function StoryLoadedWrapper({
           // Call onTimeout callback if provided
           onTimeout?.(diagnostics);
 
-          // Optionally throw error to fail the test
+          // Optionally throw error to fail the test (use error state, not throw from useEffect)
           if (throwOnTimeout) {
             const errorMsg = `StoryLoadedWrapper timeout: React Flow nodes not found after ${actualWaitTime}ms`;
             const err = new Error(errorMsg);
             setError(err);
-            throw err;
+            // Log error for debugging instead of throwing from useEffect
+            console.error(errorMsg);
           }
         }
 
@@ -130,12 +131,13 @@ export function StoryLoadedWrapper({
     };
   }, [onLayoutComplete, onTimeout, throwOnTimeout]);
 
-  if (error && throwOnTimeout) {
+  // Show error state only if error was set due to timeout
+  if (error) {
     return (
       <div
         ref={wrapperRef}
         data-testid={testId}
-        data-storyloaded="timeout"
+        data-storyloaded="error"
         role="alert"
         style={{ padding: 16, color: '#dc2626', backgroundColor: '#fee2e2', border: '1px solid #fca5a5' }}
       >

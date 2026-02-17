@@ -6,10 +6,11 @@ import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 const meta = {
   title: 'C Graphs / Views / GraphViewer',
-} satisfies Meta;
+  component: GraphViewer,
+} satisfies Meta<typeof GraphViewer>;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const CompleteModel: Story = {
   render: () => {

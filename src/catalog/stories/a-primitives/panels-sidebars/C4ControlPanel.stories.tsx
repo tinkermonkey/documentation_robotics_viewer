@@ -3,13 +3,14 @@ import { C4ControlPanel } from '@/apps/embedded/components/C4ControlPanel';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / C4ControlPanel',
+  component: C4ControlPanel,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const ContextLevel: Story = {
   render: () => (

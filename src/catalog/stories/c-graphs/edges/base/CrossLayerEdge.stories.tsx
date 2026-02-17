@@ -7,11 +7,12 @@ import { ReferenceType } from '@/core/types/model';
 
 const meta = {
   title: 'C Graphs / Edges / Base / CrossLayerEdge',
+  component: Position,
   decorators: [withReactFlowDecorator({ width: 400, height: 250, showBackground: true, renderAsEdge: true })],
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (

@@ -5,13 +5,14 @@ import { LayerType } from '@/core/types/layers';
 
 const meta = {
   title: 'B Details / Model Details / ModelJSONViewer',
+  component: LayerType,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const mockModel: MetaModel = {
   layers: {

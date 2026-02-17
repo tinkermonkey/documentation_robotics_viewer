@@ -6,13 +6,14 @@ import type { MetaModel } from '@/core/types';
 
 const meta = {
   title: 'B Details / Spec Details / SchemaInfoPanel',
+  component: SchemaInfoPanel,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 function SchemaInfoPanelStory({ model }: { model: MetaModel | null }) {
   useEffect(() => {

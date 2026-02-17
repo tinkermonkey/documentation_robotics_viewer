@@ -8,13 +8,14 @@ import { useEffect } from 'react';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / AnnotationPanel',
+  component: useAnnotationStore,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 /**
  * Helper to set up store state for stories

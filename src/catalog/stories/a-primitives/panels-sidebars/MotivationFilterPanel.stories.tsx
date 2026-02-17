@@ -5,13 +5,14 @@ import { useState } from 'react';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / MotivationFilterPanel',
+  component: MotivationFilterPanel,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const mockFilterCounts = {
   elements: {

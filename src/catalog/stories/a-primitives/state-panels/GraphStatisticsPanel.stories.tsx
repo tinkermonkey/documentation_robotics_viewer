@@ -4,13 +4,14 @@ import type { MetaModel } from '@/core/types/model';
 
 const meta = {
   title: 'A Primitives / State Panels / GraphStatisticsPanel',
+  component: GraphStatisticsPanel,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const mockModelSmall: MetaModel = {
   layers: {

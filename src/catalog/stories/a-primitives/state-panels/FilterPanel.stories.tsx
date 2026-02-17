@@ -4,13 +4,14 @@ import { FilterPanel, type FilterSection } from '@/apps/embedded/components/shar
 
 const meta = {
   title: 'A Primitives / State Panels / FilterPanel',
+  component: useState,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const createLayerSection = (): FilterSection => ({
   id: 'layers',

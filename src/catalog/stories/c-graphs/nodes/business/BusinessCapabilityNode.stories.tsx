@@ -5,6 +5,7 @@ import { createBusinessCapabilityNodeData } from '@catalog/fixtures/nodeDataFixt
 
 const meta = {
   title: 'C Graphs / Nodes / Business / BusinessCapabilityNode',
+  component: BusinessCapabilityNode,
 
   decorators: [withReactFlowDecorator({ width: BUSINESS_CAPABILITY_NODE_WIDTH, height: BUSINESS_CAPABILITY_NODE_HEIGHT })],
   parameters: {
@@ -13,7 +14,7 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (

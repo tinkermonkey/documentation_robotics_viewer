@@ -5,13 +5,14 @@ import { useEffect, ReactNode } from 'react';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / ChangesetViewer',
+  component: useChangesetStore,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 // Wrapper component to handle state setup
 const ChangesetViewerWrapper = ({ initialState }: { initialState: any }): ReactNode => {

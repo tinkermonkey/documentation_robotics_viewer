@@ -5,6 +5,7 @@ import { createBusinessServiceNodeData } from '@catalog/fixtures/nodeDataFixture
 
 const meta = {
   title: 'C Graphs / Nodes / Business / BusinessServiceNode',
+  component: BusinessServiceNode,
 
   decorators: [withReactFlowDecorator({ width: BUSINESS_SERVICE_NODE_WIDTH, height: BUSINESS_SERVICE_NODE_HEIGHT })],
   parameters: {
@@ -13,7 +14,7 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (

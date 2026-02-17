@@ -5,13 +5,14 @@ import { LayerType } from '@/core/types';
 
 const meta = {
   title: 'B Details / Spec Details / SpecViewer',
+  component: LayerType,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const mockSpecData: SpecDataResponse = {
   version: '1.0.0',

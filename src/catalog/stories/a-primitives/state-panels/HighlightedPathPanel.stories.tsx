@@ -3,13 +3,14 @@ import HighlightedPathPanel from '@/apps/embedded/components/HighlightedPathPane
 
 const meta = {
   title: 'A Primitives / State Panels / HighlightedPathPanel',
+  component: HighlightedPathPanel,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const WithPath: Story = {
   render: () => (

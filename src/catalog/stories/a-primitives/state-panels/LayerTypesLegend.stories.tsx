@@ -4,13 +4,14 @@ import type { MetaModel } from '@/core/types/model';
 
 const meta = {
   title: 'A Primitives / State Panels / LayerTypesLegend',
+  component: LayerTypesLegend,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const mockModel: MetaModel = {
   layers: {

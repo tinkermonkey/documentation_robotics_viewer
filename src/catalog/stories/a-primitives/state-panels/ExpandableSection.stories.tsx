@@ -5,13 +5,14 @@ import ExpandableSection from '@/apps/embedded/components/common/ExpandableSecti
 
 const meta = {
   title: 'A Primitives / State Panels / ExpandableSection',
+  component: expect,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const Expanded: Story = {
   render: () => (

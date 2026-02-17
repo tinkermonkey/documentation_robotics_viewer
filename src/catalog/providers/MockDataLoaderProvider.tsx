@@ -91,7 +91,9 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
         try {
           onSuccess(result);
         } catch (successError) {
+          // Log the error and propagate it to be caught by error boundary
           console.error('[MockDataLoader] onSuccess callback failed:', successError);
+          throw successError;
         }
       }
     } catch (err) {
@@ -110,7 +112,9 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
         try {
           onError(err instanceof Error ? err : new Error(errorMessage));
         } catch (errorHandlerError) {
+          // Log the error and propagate it to be caught by error boundary
           console.error('[MockDataLoader] onError callback failed:', errorHandlerError);
+          throw errorHandlerError;
         }
       }
     } finally {

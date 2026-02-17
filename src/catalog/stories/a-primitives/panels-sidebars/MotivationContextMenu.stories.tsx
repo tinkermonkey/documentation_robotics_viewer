@@ -3,13 +3,14 @@ import { MotivationContextMenu } from '@/apps/embedded/components/MotivationCont
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / MotivationContextMenu',
+  component: MotivationContextMenu,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (

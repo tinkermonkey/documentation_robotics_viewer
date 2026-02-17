@@ -3,13 +3,14 @@ import { MotivationControlPanel } from '@/apps/embedded/components/MotivationCon
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / MotivationControlPanel',
+  component: MotivationControlPanel,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (

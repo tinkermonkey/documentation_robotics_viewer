@@ -5,6 +5,7 @@ import { JSONSchemaNodeData } from '@/core/types/reactflow';
 
 const meta = {
   title: 'C Graphs / Nodes / Base / JSONSchemaNode',
+  component: JSONSchemaNode,
 
   decorators: [withReactFlowDecorator({ width: JSON_SCHEMA_NODE_WIDTH, height: 300 })],
   parameters: {
@@ -13,7 +14,7 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 /**
  * JSONSchemaNode Stories

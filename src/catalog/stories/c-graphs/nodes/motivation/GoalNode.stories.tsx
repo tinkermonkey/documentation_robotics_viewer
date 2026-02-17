@@ -5,6 +5,7 @@ import { createGoalNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / GoalNode',
+  component: GoalNode,
 
   decorators: [withReactFlowDecorator({ width: GOAL_NODE_WIDTH, height: GOAL_NODE_HEIGHT })],
   parameters: {
@@ -13,7 +14,7 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (

@@ -9,10 +9,11 @@ import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';
 
 const meta = {
   title: 'C Graphs / Layouts / GraphvizLayout',
+  component: StoryProviderWrapper,
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 /**
  * Dot algorithm - hierarchical directed graphs

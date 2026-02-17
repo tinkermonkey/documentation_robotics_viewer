@@ -7,10 +7,11 @@ import { ThinkingBlock } from '@/apps/embedded/components/chat/ThinkingBlock';
 
 const meta = {
   title: 'D Chat / Messages / ThinkingBlock',
+  component: ThinkingBlock,
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 /**
  * Short thinking content (initially collapsed)

@@ -5,6 +5,7 @@ import { createC4ExternalActorNodeData } from '@catalog/fixtures/nodeDataFixture
 
 const meta = {
   title: 'C Graphs / Nodes / C4 / ExternalActorNode',
+  component: ExternalActorNode,
 
   decorators: [withReactFlowDecorator({ width: EXTERNAL_ACTOR_NODE_WIDTH, height: EXTERNAL_ACTOR_NODE_HEIGHT })],
   parameters: {
@@ -13,7 +14,7 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (

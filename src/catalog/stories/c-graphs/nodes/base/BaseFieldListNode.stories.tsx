@@ -5,6 +5,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 const meta = {
   title: 'C Graphs / Nodes / Base / BaseFieldListNode',
+  component: BaseFieldListNode,
 
   decorators: [withReactFlowDecorator({ width: 300, height: 300 })],
   parameters: {
@@ -13,7 +14,7 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const shortItems: FieldItem[] = [
   { id: 'f1', name: 'id', type: 'UUID', required: true },

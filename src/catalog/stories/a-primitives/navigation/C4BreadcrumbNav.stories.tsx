@@ -4,10 +4,11 @@ import type { C4BreadcrumbSegment } from '@/apps/embedded/types/c4Graph';
 
 const meta = {
   title: 'A Primitives / Navigation / C4BreadcrumbNav',
+  component: C4BreadcrumbNav,
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const contextBreadcrumb: C4BreadcrumbSegment[] = [
   { level: 'context', label: 'System Context' },

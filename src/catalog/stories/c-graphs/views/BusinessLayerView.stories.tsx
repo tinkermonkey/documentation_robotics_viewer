@@ -6,10 +6,11 @@ import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 const meta = {
   title: 'C Graphs / Views / BusinessLayerView',
+  component: BusinessLayerView,
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => {

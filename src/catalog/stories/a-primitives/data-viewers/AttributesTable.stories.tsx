@@ -3,10 +3,11 @@ import AttributesTable, { AttributeRow } from '@/apps/embedded/components/common
 
 const meta = {
   title: 'A Primitives / Data Viewers / AttributesTable',
-} satisfies Meta;
+  component: AttributesTable,
+} satisfies Meta<typeof AttributesTable>;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const sampleAttributes: AttributeRow[] = [
   { name: 'name', value: 'User Authentication Service' },

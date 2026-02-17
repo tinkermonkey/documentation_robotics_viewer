@@ -5,13 +5,14 @@ import { C4Type, ContainerType, ProtocolType, CommunicationDirection } from '@/a
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / C4InspectorPanel',
+  component: C4InspectorPanel,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const mockNodes: C4Node[] = [
   {

@@ -3,10 +3,11 @@ import MetadataGrid from '@/apps/embedded/components/common/MetadataGrid';
 
 const meta = {
   title: 'A Primitives / Data Viewers / MetadataGrid',
+  component: MetadataGrid,
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const sampleMetadata = [
   { label: 'Created', value: '2024-01-15' },

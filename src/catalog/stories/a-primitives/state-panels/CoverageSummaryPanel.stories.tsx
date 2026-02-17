@@ -4,13 +4,14 @@ import type { CoverageSummary } from '@/apps/embedded/services/coverageAnalyzer'
 
 const meta = {
   title: 'A Primitives / State Panels / CoverageSummaryPanel',
+  component: CoverageSummaryPanel,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const mockSummaryComplete: CoverageSummary = {
   totalGoals: 10,

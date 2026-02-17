@@ -4,13 +4,14 @@ import type { BusinessNode, BusinessGraph } from '@/core/types/businessLayer';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / ProcessInspectorPanel',
+  component: ProcessInspectorPanel,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const mockProcess: BusinessNode = {
   id: 'process-1',

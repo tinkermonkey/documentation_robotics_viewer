@@ -3,13 +3,14 @@ import { EmptyState } from '@/apps/embedded/components/shared/EmptyState';
 
 const meta = {
   title: 'A Primitives / State Panels / EmptyState',
+  component: EmptyState,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const NoAnnotations: Story = {
   render: () => (

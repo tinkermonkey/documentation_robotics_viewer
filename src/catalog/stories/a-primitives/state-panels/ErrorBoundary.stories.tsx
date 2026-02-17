@@ -4,13 +4,14 @@ import { Component } from 'react';
 
 const meta = {
   title: 'A Primitives / State Panels / ErrorBoundary',
+  component: ErrorBoundary,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 // Component that throws an error
 class ThrowError extends Component<{ shouldThrow?: boolean }> {

@@ -8,23 +8,31 @@ import type { ReactNode } from 'react';
 export interface MockWebSocketClient {
   /**
    * Register a handler for a specific event
+   * @param event - Event name
+   * @param handler - Function called with event data as argument
    */
-  on: (event: string, handler: (...args: any[]) => void) => void;
+  on: (event: string, handler: (data: unknown) => void) => void;
 
   /**
    * Unregister a handler for an event, or all handlers if no handler specified
+   * @param event - Event name
+   * @param handler - Specific handler to remove, or undefined to remove all
    */
-  off: (event: string, handler?: (...args: any[]) => void) => void;
+  off: (event: string, handler?: (data: unknown) => void) => void;
 
   /**
    * Emit an event (for testing purposes)
+   * @param event - Event name
+   * @param data - Event data passed to all handlers
    */
-  emit: (event: string, data: any) => void;
+  emit: (event: string, data: unknown) => void;
 
   /**
    * Get all registered handlers for debugging
+   * @param event - Event name
+   * @returns Set of handlers registered for this event
    */
-  getHandlers: (event: string) => Set<(...args: any[]) => void>;
+  getHandlers: (event: string) => Set<(data: unknown) => void>;
 }
 
 /**
@@ -42,11 +50,11 @@ export interface MockWebSocketClientOptions {
  */
 export function createMockWebSocketClient(options?: MockWebSocketClientOptions): MockWebSocketClient {
   const { debug = true } = options || {};
-  const handlers = new Map<string, Set<(...args: any[]) => void>>();
+  const handlers = new Map<string, Set<(data: unknown) => void>>();
 
-  const log = (message: string, data?: any) => {
+  const log = (message: string, data?: unknown): void => {
     if (debug) {
-      if (data) {
+      if (data !== undefined) {
         console.log(message, data);
       } else {
         console.log(message);
@@ -55,7 +63,7 @@ export function createMockWebSocketClient(options?: MockWebSocketClientOptions):
   };
 
   return {
-    on: (event: string, handler: (...args: any[]) => void) => {
+    on: (event: string, handler: (data: unknown) => void): void => {
       if (!handlers.has(event)) {
         handlers.set(event, new Set());
       }
@@ -63,7 +71,7 @@ export function createMockWebSocketClient(options?: MockWebSocketClientOptions):
       log(`[Mock WS] Registered handler for '${event}'`);
     },
 
-    off: (event: string, handler?: (...args: any[]) => void) => {
+    off: (event: string, handler?: (data: unknown) => void): void => {
       if (!handler) {
         handlers.delete(event);
         log(`[Mock WS] Removed all handlers for '${event}'`);
@@ -73,17 +81,17 @@ export function createMockWebSocketClient(options?: MockWebSocketClientOptions):
       }
     },
 
-    emit: (event: string, data: any) => {
+    emit: (event: string, data: unknown): void => {
       log(`[Mock WS] Emitting '${event}' with data:`, data);
       const eventHandlers = handlers.get(event);
       if (eventHandlers) {
-        const errors: any[] = [];
+        const errors: Error[] = [];
         eventHandlers.forEach(handler => {
           try {
             handler(data);
           } catch (error) {
             log(`[Mock WS] Error in handler for '${event}':`, error);
-            errors.push(error);
+            errors.push(error instanceof Error ? error : new Error(String(error)));
           }
         });
         // Propagate first handler error to surface issues in tests
@@ -93,7 +101,7 @@ export function createMockWebSocketClient(options?: MockWebSocketClientOptions):
       }
     },
 
-    getHandlers: (event: string) => {
+    getHandlers: (event: string): Set<(data: unknown) => void> => {
       return handlers.get(event) || new Set();
     }
   };
@@ -143,10 +151,10 @@ export function MockWebSocketProvider({
  * Utility hook to simulate WebSocket events in tests
  * Returns a function that can be called to emit events
  */
-export function useWebSocketEventSimulator() {
+export function useWebSocketEventSimulator(): (event: string, data: unknown) => void {
   const client = useMockWebSocket();
 
-  return useCallback((event: string, data: any) => {
+  return useCallback((event: string, data: unknown): void => {
     client.emit(event, data);
   }, [client]);
 }

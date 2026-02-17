@@ -45,13 +45,27 @@ function useMockRouterContext(strict: boolean = true): MockRouterContext {
     );
   }
 
-  return context || {
-    params: {},
-    search: {},
-    navigate: () => console.warn('[MockRouter] navigate called outside provider'),
-    setParams: () => {},
-    setSearch: () => {}
-  };
+  if (!context) {
+    console.warn(
+      '[MockRouter] Fallback object used (context not available). ' +
+      'Navigation methods are ineffective. Wrap story component with MockRouterProvider.'
+    );
+    return {
+      params: {},
+      search: {},
+      navigate: () => {
+        console.warn('[MockRouter] navigate called outside provider');
+      },
+      setParams: () => {
+        console.warn('[MockRouter] setParams called outside provider');
+      },
+      setSearch: () => {
+        console.warn('[MockRouter] setSearch called outside provider');
+      }
+    };
+  }
+
+  return context;
 }
 
 /**

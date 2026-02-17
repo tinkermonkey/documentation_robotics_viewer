@@ -5,13 +5,14 @@ import type { MetaModel } from '@/core/types';
 
 const meta = {
   title: 'B Details / Model Details / NodeDetailsPanel',
+  component: NodeDetailsPanel,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const mockModel: MetaModel = {
   version: '1.0.0',

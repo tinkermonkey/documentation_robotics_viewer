@@ -5,6 +5,7 @@ import { createAssumptionNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / AssumptionNode',
+  component: AssumptionNode,
 
   decorators: [withReactFlowDecorator({ width: ASSUMPTION_NODE_WIDTH, height: ASSUMPTION_NODE_HEIGHT })],
   parameters: {
@@ -13,7 +14,7 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (

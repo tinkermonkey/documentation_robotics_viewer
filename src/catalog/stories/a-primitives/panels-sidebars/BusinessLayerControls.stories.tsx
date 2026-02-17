@@ -4,13 +4,14 @@ import type { BusinessGraph } from '@/core/types/businessLayer';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / BusinessLayerControls',
+  component: BusinessLayerControls,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const mockBusinessGraph: BusinessGraph = {
   nodes: new Map([

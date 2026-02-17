@@ -5,6 +5,7 @@ import { createDriverNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / DriverNode',
+  component: DriverNode,
 
   decorators: [withReactFlowDecorator({ width: DRIVER_NODE_WIDTH, height: DRIVER_NODE_HEIGHT })],
   parameters: {
@@ -13,7 +14,7 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (

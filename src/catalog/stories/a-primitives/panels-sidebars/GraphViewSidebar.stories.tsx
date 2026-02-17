@@ -3,13 +3,14 @@ import { GraphViewSidebar } from '@/core/components/base/GraphViewSidebar';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / GraphViewSidebar',
+  component: GraphViewSidebar,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 /**
  * Demo filter panel content

@@ -5,10 +5,11 @@ import { useEffect } from 'react';
 
 const meta = {
   title: 'A Primitives / Indicators / ConnectionStatus',
+  component: useConnectionStore,
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const Connected: Story = {
   render: () => {

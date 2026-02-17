@@ -7,13 +7,14 @@ import { useState } from 'react';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / C4RightSidebar',
+  component: C4RightSidebar,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const mockFilterCounts: C4FilterCounts = {
   containerTypes: {

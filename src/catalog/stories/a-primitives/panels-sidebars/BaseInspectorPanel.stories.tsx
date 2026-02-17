@@ -5,13 +5,14 @@ import { ArrowUp, ArrowDown, Eye } from 'lucide-react';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
+  component: BaseInspectorPanel,
   parameters: {
     layout: 'centered',
   },
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 /**
  * Sample node type for demo

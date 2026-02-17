@@ -8,10 +8,11 @@ import type { ChatMessage as ChatMessageType } from '@/apps/embedded/types/chat'
 
 const meta = {
   title: 'D Chat / Messages / ChatMessage',
+  component: ChatMessage,
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 /**
  * User message with simple text

@@ -131,10 +131,10 @@ export default function EmbeddedLayout() {
   };
 
   const handleError = (data: { error: any }) => {
-    // Suppress WebSocket errors in test/Storybook environments (multiple checks for robustness)
+    // Only suppress WebSocket errors in explicit mock environments
+    // DO NOT use port detection (61001) as it could be production port
     const isTestEnv = typeof window !== 'undefined' && (
-      window.location.port === '61001' ||  // Storybook default port
-      (window as any).__STORYBOOK_MOCK_WEBSOCKET__ ||  // Explicit mock flag
+      (window as any).__STORYBOOK_MOCK_WEBSOCKET__ ||  // Explicit mock flag for Storybook
       (window as any).__PLAYWRIGHT__  // Playwright test environment
     );
     if (!isTestEnv) {
