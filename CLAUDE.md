@@ -285,4 +285,4 @@ Supports **JSON Schema** (UUIDs) and **YAML instances** (dot-notation IDs like `
 
 ---
 
-**Last Updated:** 2026-02-17 | **Test Suite:** 1008 tests in 50 files | **Stories:** 578 in Storybook (97 story files)
+**Last Updated:** 2026-02-17 | **Test Suite:** 1008 tests in 70 files | **Stories:** 578 in Storybook (97 story files)
