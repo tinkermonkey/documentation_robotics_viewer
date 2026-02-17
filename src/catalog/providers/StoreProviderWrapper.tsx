@@ -4,7 +4,7 @@
  * This allows components designed with hooks to work in isolated story contexts
  */
 
-import { ReactNode, useMemo } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { createMockAnnotationStore, createMockModelStore, createMockFilterStore } from './MockStoreProvider';
 import type { Annotation } from '../../apps/embedded/types/annotations';
 import type { MetaModel } from '../../core/types';
@@ -71,7 +71,7 @@ export function StoreProviderWrapper({
   initialModel,
   initialFilters = {}
 }: StoreProviderWrapperProps) {
-  useMemo(() => {
+  useEffect(() => {
     // Initialize annotation store
     const annotationStore = createMockAnnotationStore(initialAnnotations);
     globalAnnotationStore = annotationStore;

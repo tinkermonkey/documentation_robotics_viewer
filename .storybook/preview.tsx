@@ -19,7 +19,8 @@ if (typeof window !== 'undefined') {
   console.error = (...args: any[]) => {
     const errorString = args.join(' ');
 
-    // Filter expected errors (from design guidance)
+    // Filter expected errors that don't impact story functionality
+    // (e.g., React 17/18 compatibility warnings, expected console logs)
     // Use exact string matching at the start to avoid accidentally filtering unrelated errors
     if (filteredErrorPatterns.some(pattern => errorString.startsWith(pattern))) {
       filteredErrorCount++;

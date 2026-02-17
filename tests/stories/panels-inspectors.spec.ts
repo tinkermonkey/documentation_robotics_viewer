@@ -20,9 +20,9 @@ test.describe('Panels & Inspectors Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('panels---inspectors--common--annotationpanel--empty'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForSelector('text=/[Aa]nnotation|[Ee]mpty|[Pp]anel/', { timeout: 5000 });
+      await page.waitForSelector('text=/No annotations|Empty state|AnnotationPanel/', { timeout: 5000 });
       const bodyText = await page.locator('body').innerText();
-      expect(bodyText, 'Empty AnnotationPanel should render with visible content').toMatch(/[Aa]nnotation|[Ee]mpty|[Pp]anel/);
+      expect(bodyText, 'Empty AnnotationPanel should show empty state message').toMatch(/No annotations|Empty state|AnnotationPanel/);
     });
 
     test('WithAnnotations: renders annotation content', async ({ page }) => {

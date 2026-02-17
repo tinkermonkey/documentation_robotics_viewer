@@ -169,7 +169,6 @@ export interface MockFilterState {
   elementTypes?: string[];
   relationshipTypes?: string[];
   searchText?: string;
-  [key: string]: unknown;
 }
 
 interface MockFilterStore {
