@@ -149,7 +149,7 @@ Use `<T extends unknown>` for generic arrow function components in JSX to avoid 
 
 ### Commands
 ```bash
-npm test                          # Unit/integration tests (~1027 tests, ~10s)
+npm test                          # Unit/integration tests (~1008 tests, ~10s)
 npm test -- tests/unit/foo.spec.ts  # Single file
 npm run test:e2e                  # E2E with reference server
 npm run test:e2e:headed           # E2E with visible browser
@@ -285,4 +285,4 @@ Supports **JSON Schema** (UUIDs) and **YAML instances** (dot-notation IDs like `
 
 ---
 
-**Last Updated:** 2026-02-11 | **Test Suite:** 1027 tests in 52 files | **Stories:** 578 in Storybook (96 story files)
+**Last Updated:** 2026-02-17 | **Test Suite:** 1008 tests in 70 files | **Stories:** 593 in Storybook (97 story files)
