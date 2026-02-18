@@ -95,7 +95,7 @@ function BaseInspectorPanelComponent<
           {/* Header */}
           <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>
-            <Button color="gray" size="xs" onClick={onClose} pill data-testid={`${testId}-close-button`}>
+            <Button color="gray" size="xs" onClick={onClose} pill data-testid={`${testId}-close-button`} aria-label="Close inspector">
               <X className="w-4 h-4" />
             </Button>
           </div>
@@ -122,7 +122,7 @@ function BaseInspectorPanelComponent<
           {/* Header */}
           <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>
-            <Button color="gray" size="xs" onClick={onClose} pill data-testid={`${testId}-close-button`}>
+            <Button color="gray" size="xs" onClick={onClose} pill data-testid={`${testId}-close-button`} aria-label="Close inspector">
               <X className="w-4 h-4" />
             </Button>
           </div>
@@ -150,7 +150,7 @@ function BaseInspectorPanelComponent<
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>
-          <Button color="gray" size="xs" onClick={onClose} pill data-testid={`${testId}-close-button`}>
+          <Button color="gray" size="xs" onClick={onClose} pill data-testid={`${testId}-close-button`} aria-label="Close inspector">
             <X className="w-4 h-4" />
           </Button>
         </div>

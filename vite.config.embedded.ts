@@ -32,6 +32,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      // Same fix as vite.config.ts: redirect flowbite-react CSS plugin import to the CSS file
+      'flowbite-react/plugin/tailwindcss': path.resolve(__dirname, 'node_modules/flowbite-react/dist/plugin/tailwindcss/index.css'),
       '@': path.resolve(__dirname, './src'),
       '@core': path.resolve(__dirname, './src/core'),
       '@components': path.resolve(__dirname, './src/core/components'),

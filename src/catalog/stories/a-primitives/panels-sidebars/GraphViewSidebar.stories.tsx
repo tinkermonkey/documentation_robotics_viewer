@@ -30,10 +30,10 @@ const DemoFilterPanel = () => (
       </div>
     </div>
     <div>
-      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+      <label htmlFor="element-type-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
         Element Type
       </label>
-      <select className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700">
+      <select id="element-type-select" className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700">
         <option>All Types</option>
         <option>Services</option>
         <option>Functions</option>
@@ -48,10 +48,10 @@ const DemoFilterPanel = () => (
 const DemoControlPanel = () => (
   <div className="space-y-3">
     <div>
-      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+      <label htmlFor="layout-algorithm-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
         Layout Algorithm
       </label>
-      <select className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700">
+      <select id="layout-algorithm-select" className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700">
         <option>Vertical</option>
         <option>Hierarchical</option>
         <option>Force-Directed</option>

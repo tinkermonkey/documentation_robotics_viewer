@@ -238,6 +238,7 @@ export const ChatTextContent = memo(
           <span
             className="inline-block w-2 h-4 bg-gray-400 dark:bg-gray-500 animate-pulse ml-1"
             data-testid="streaming-indicator"
+            role="status"
             aria-label="Content is streaming"
           />
         )}

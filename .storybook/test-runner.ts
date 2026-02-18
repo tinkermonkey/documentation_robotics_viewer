@@ -140,7 +140,7 @@ const config: TestRunnerConfig = {
       const errorMsg = error instanceof Error ? error.message : String(error);
 
       // Check if this is an axe-core violation error (contains violation details)
-      if (errorMsg.startsWith('Accessibility') || errorMsg.includes('violations')) {
+      if (errorMsg.startsWith('Accessibility') || errorMsg.includes('violation')) {
         // Try to parse violations from page if available
         try {
           const violations = await page.evaluate(() => {

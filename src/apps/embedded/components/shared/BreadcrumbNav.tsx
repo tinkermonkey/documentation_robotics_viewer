@@ -77,6 +77,7 @@ export const BreadcrumbNav = memo(
               pill
               onClick={onClear}
               data-testid="clear-breadcrumb-btn"
+              aria-label="Clear breadcrumb"
             >
               <HiX className="h-3 w-3" />
             </Button>
