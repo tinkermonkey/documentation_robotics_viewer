@@ -57,7 +57,7 @@ export const ChatTextContent = memo(
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 dark:text-blue-400 hover:underline"
+            className="text-blue-600 dark:text-blue-400 underline hover:no-underline"
             data-testid="markdown-link"
           >
             {children}
