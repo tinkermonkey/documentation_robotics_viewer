@@ -24,6 +24,8 @@ module.exports = {
     return mergeConfig(config, {
       resolve: {
         alias: {
+          // Redirect flowbite-react/plugin/tailwindcss to the CSS file (same fix as vite.config.ts)
+          'flowbite-react/plugin/tailwindcss': path.resolve(__dirname, '../node_modules/flowbite-react/dist/plugin/tailwindcss/index.css'),
           '@': path.resolve(__dirname, '../src'),
           '@core': path.resolve(__dirname, '../src/core'),
           '@components': path.resolve(__dirname, '../src/core/components'),
