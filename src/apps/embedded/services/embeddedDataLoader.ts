@@ -111,11 +111,9 @@ export interface SpecDataResponse {
   description?: string;
   source?: string;
   schemas: Record<string, SchemaDefinition>;
-  schema_count?: number;
   schemaCount?: number;
   manifest?: SchemaManifest;
   relationshipCatalog?: RelationshipCatalog;
-  relationship_catalog?: RelationshipCatalog;
 }
 
 export interface ChangesetSummary {
@@ -183,6 +181,7 @@ export class EmbeddedDataLoader {
 
   /**
    * Load the specification (JSON Schema format)
+   * Normalizes server response to camelCase property names
    */
   async loadSpec(): Promise<SpecDataResponse> {
     const response = await fetch(`${API_BASE}/spec`, {
@@ -194,6 +193,7 @@ export class EmbeddedDataLoader {
 
     const data = await response.json();
 
+    // Normalize snake_case from server to camelCase for TypeScript
     const schemaCount = data.schemaCount ?? data.schema_count ?? (data.schemas ? Object.keys(data.schemas).length : 0);
     const relationshipCatalog: RelationshipCatalog | undefined = data.relationshipCatalog || data.relationship_catalog;
 
@@ -207,7 +207,10 @@ export class EmbeddedDataLoader {
     return {
       ...data,
       schemaCount,
-      relationshipCatalog
+      relationshipCatalog,
+      // Exclude snake_case versions to ensure consistent interface
+      schema_count: undefined,
+      relationship_catalog: undefined
     };
   }
 

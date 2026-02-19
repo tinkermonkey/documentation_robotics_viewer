@@ -14,6 +14,8 @@ import { MetaModel } from '../../../core/types';
 import { SpecDataResponse } from '../services/embeddedDataLoader';
 import { LoadingState, ErrorState, EmptyState } from './shared';
 import { LayoutEngineType } from '@/core/layout/engines';
+import { logError } from '../services/errorTracker';
+import { ERROR_IDS } from '@/constants/errorIds';
 
 export interface SpecGraphViewProps {
   specData: SpecDataResponse;
@@ -102,7 +104,13 @@ const SpecGraphView: React.FC<SpecGraphViewProps> = ({
         console.log('[SpecGraphView] Model state updated successfully');
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to convert spec to model';
-        console.error('[SpecGraphView] Error converting spec:', err);
+        const error = err instanceof Error ? err : new Error(errorMessage);
+        logError(
+          ERROR_IDS.SPEC_CONVERSION_FAILED,
+          'Failed to convert specification to graph model',
+          { specDataKeys: specData ? Object.keys(specData) : [] },
+          error
+        );
         setError(errorMessage);
       } finally {
         setLoading(false);

@@ -16,6 +16,8 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { websocketClient } from '../services/websocketClient';
+import { logError } from '../services/errorTracker';
+import { ERROR_IDS } from '@/constants/errorIds';
 
 /**
  * Options for the useDataLoader hook
@@ -96,7 +98,18 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
           onSuccess(result);
         } catch (successError) {
           console.error('[useDataLoader] onSuccess callback failed:', successError);
-          // Don't fail the load if the success callback fails
+          // Track callback failure for observability
+          const callbackError = successError instanceof Error ? successError : new Error(String(successError));
+          logError(
+            ERROR_IDS.DATA_LOADER_SUCCESS_CALLBACK_FAILED,
+            'Success callback threw an error',
+            {
+              callbackName: onSuccess.name || 'anonymous',
+              message: callbackError.message
+            },
+            callbackError
+          );
+          // Don't fail the load if the success callback fails - UI state may be partially updated
         }
       }
     } catch (err) {

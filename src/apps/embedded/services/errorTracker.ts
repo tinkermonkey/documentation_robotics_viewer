@@ -13,7 +13,7 @@ import {
 import { classifyException } from '@/core/services/exceptionClassifier';
 
 interface ErrorContext {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 /**

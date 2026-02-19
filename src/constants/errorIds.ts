@@ -25,6 +25,10 @@ export const ERROR_IDS = {
   WS_ERROR_EVENT: 'WS_003',
   WS_EVENT_HANDLER_ERROR: 'WS_004',
   WS_MAX_RECONNECT_ATTEMPTS: 'WS_005',
+
+  // Data Loading Errors
+  SPEC_CONVERSION_FAILED: 'DATA_001',
+  DATA_LOADER_SUCCESS_CALLBACK_FAILED: 'DATA_002',
 } as const;
 
 export type ErrorId = typeof ERROR_IDS[keyof typeof ERROR_IDS];

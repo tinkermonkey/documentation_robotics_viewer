@@ -1,6 +1,6 @@
 /**
  * WebSocket Client Service
- * Manages WebSocket connection to the Python CLI server
+ * Manages WebSocket connection to the DR CLI server
  * Features: auto-reconnect, exponential backoff, event handling, token authentication
  *
  * Authentication:
@@ -13,11 +13,11 @@
 import { logError } from './errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
 
-type EventHandler = (data: any) => void;
+type EventHandler = (data: unknown) => void;
 
 interface WebSocketMessage {
   type: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 /**
@@ -38,7 +38,7 @@ interface WebSocketClientInterface {
   readonly transportMode: 'websocket' | 'rest' | 'detecting';
 }
 
-export class WebSocketClient {
+export class WebSocketClient implements WebSocketClientInterface {
   private ws: WebSocket | null = null;
   private url: string;
   private token: string | null = null;
