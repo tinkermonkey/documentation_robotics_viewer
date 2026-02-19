@@ -11,7 +11,7 @@
  * tests verify the view handles this gracefully.
  *
  * Prerequisites:
- * 1. Reference server running with example model
+ * 1. DR CLI server running with example model
  * 2. Playwright browsers installed: npx playwright install chromium
  *
  * Run tests: npm run test:e2e

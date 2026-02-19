@@ -171,6 +171,7 @@ async function checkAuthRequired(): Promise<boolean> {
       clearTimeout(timeoutId);
       // If we can't connect, assume no auth is required
       // (the earlier checkDRServer check would have already failed if server is down)
+      console.warn('   ⚠ Auth check failed:', error instanceof Error ? error.message : String(error));
       return false;
     }
   } catch (error) {
@@ -202,9 +203,11 @@ async function verifyToken(token: string): Promise<boolean> {
       return response.status !== 401 && response.status !== 403;
     } catch (error) {
       clearTimeout(timeoutId);
+      console.warn('   ⚠ Token verification failed:', error instanceof Error ? error.message : String(error));
       return false;
     }
   } catch (error) {
+    console.warn('   ⚠ Token verification error:', error instanceof Error ? error.message : String(error));
     return false;
   }
 }
