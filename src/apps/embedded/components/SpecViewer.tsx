@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import { SpecDataResponse, LinkType } from '../services/embeddedDataLoader'
+import { SpecDataResponse } from '../services/embeddedDataLoader'
 import { Badge } from 'flowbite-react'
 import ExpandableSection from './common/ExpandableSection'
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid'
@@ -67,61 +67,8 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
     const definitions = schema.definitions || {}
     const defNames = Object.keys(definitions)
 
-    // Get cross-layer links for this schema's layer
-    const linkRegistry = specData.linkRegistry
-    const intraLayerLinks: LinkType[] = []
-    const interLayerLinks: LinkType[] = []
-    let intraLayerCount = 0
-    let interLayerCount = 0
-
-    if (linkRegistry && linkRegistry.linkTypes) {
-      // Extract layer name from schema ID (e.g., 'business.schema.json' -> 'business')
-      const layerNameStr = selectedSchemaId.split('.')[0]
-
-      // Convert to proper LayerType enum value
-      // Map lowercase schema names to LayerType enum values
-      const layerTypeMap: Record<string, LayerType> = {
-        'business': LayerType.Business,
-        'motivation': LayerType.Motivation,
-        'security': LayerType.Security,
-        'application': LayerType.Application,
-        'technology': LayerType.Technology,
-        'api': LayerType.Api,
-        'data-model': LayerType.DataModel,
-        'datastore': LayerType.Datastore,
-        'ux': LayerType.Ux,
-        'navigation': LayerType.Navigation,
-        'apm': LayerType.ApmObservability,
-        'federated-architecture': LayerType.FederatedArchitecture,
-      }
-
-      const layerName = layerTypeMap[layerNameStr]
-      if (!layerName) return // Skip if layer name cannot be mapped
-
-      // Find links where this layer is either source or target
-      linkRegistry.linkTypes.forEach((linkType: LinkType) => {
-        if (
-          linkType.sourceLayers.includes(layerName) ||
-          linkType.targetLayer === layerName
-        ) {
-          // Separate intra-layer vs inter-layer
-          const isIntraLayer = linkType.sourceLayers.includes(layerName) &&
-            linkType.targetLayer === layerName
-          if (isIntraLayer) {
-            intraLayerLinks.push(linkType)
-            intraLayerCount++
-          } else {
-            interLayerLinks.push(linkType)
-            interLayerCount++
-          }
-        }
-      })
-    }
-
     const schemaMetadata: MetadataItem[] = [
-      { label: 'Element Types', value: defNames.length },
-      { label: 'Intra-Layer Links', value: intraLayerCount },
-      { label: 'Inter-Layer Links', value: interLayerCount }
+      { label: 'Element Types', value: defNames.length }
     ]
 
     return (
@@ -192,84 +139,6 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
               })}
             </div>
           </div>
-        </section>
-
-        {/* Intra-Layer Links Section */}
-        <section className="border-t border-gray-200 dark:border-gray-700 pt-6 mb-8" data-testid="intra-layer-links-section">
-          <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-            Intra-Layer Links
-          </h3>
-
-          {intraLayerLinks.length > 0 ? (
-            <div className="space-y-2">
-              {intraLayerLinks.map((linkType: LinkType) => {
-                const linkDetailsItems: MetadataItem[] = [
-                  { label: 'Source Element Types', value: linkType.sourceElementTypes?.join(', ') || 'N/A' },
-                  { label: 'Target Element Types', value: linkType.targetElementTypes.join(', ') },
-                  { label: 'Field Paths', value: linkType.fieldPaths.join(', ') },
-                  { label: 'Cardinality', value: linkType.cardinality },
-                  { label: 'Format', value: linkType.format }
-                ]
-
-                return (
-                  <ExpandableSection
-                    key={linkType.id}
-                    title={linkType.name}
-                    badge={linkType.cardinality}
-                  >
-                    <p className="text-gray-700 dark:text-gray-300 mb-4">
-                      {linkType.description}
-                    </p>
-                    <MetadataGrid title="Link Details" items={linkDetailsItems} columns={2} />
-                  </ExpandableSection>
-                )
-              })}
-            </div>
-          ) : (
-            <p className="text-gray-500 dark:text-gray-400">
-              No intra-layer links found for this schema.
-            </p>
-          )}
-        </section>
-
-        {/* Inter-Layer Links Section */}
-        <section className="border-t border-gray-200 dark:border-gray-700 pt-6" data-testid="inter-layer-links-section">
-          <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-            Inter-Layer Links
-          </h3>
-
-          {interLayerLinks.length > 0 ? (
-            <div className="space-y-2">
-              {interLayerLinks.map((linkType: LinkType) => {
-                const linkDetailsItems: MetadataItem[] = [
-                  { label: 'Source Layers', value: linkType.sourceLayers.join(', ') },
-                  { label: 'Target Layer', value: linkType.targetLayer },
-                  { label: 'Source Element Types', value: linkType.sourceElementTypes?.join(', ') || 'N/A' },
-                  { label: 'Target Element Types', value: linkType.targetElementTypes.join(', ') },
-                  { label: 'Field Paths', value: linkType.fieldPaths.join(', ') },
-                  { label: 'Cardinality', value: linkType.cardinality },
-                  { label: 'Format', value: linkType.format }
-                ]
-
-                return (
-                  <ExpandableSection
-                    key={linkType.id}
-                    title={linkType.name}
-                    badge={linkType.cardinality}
-                  >
-                    <p className="text-gray-700 dark:text-gray-300 mb-4">
-                      {linkType.description}
-                    </p>
-                    <MetadataGrid title="Link Details" items={linkDetailsItems} columns={2} />
-                  </ExpandableSection>
-                )
-              })}
-            </div>
-          ) : (
-            <p className="text-gray-500 dark:text-gray-400">
-              No inter-layer links found for this schema.
-            </p>
-          )}
         </section>
       </div>
     )

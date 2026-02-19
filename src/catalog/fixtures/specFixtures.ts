@@ -1,15 +1,12 @@
 /**
  * Spec Fixture Factories
- * Creates realistic mock SpecDataResponse and LinkRegistry instances for testing
+ * Creates realistic mock SpecDataResponse instances for testing
  * spec visualization and schema-related components
  */
 
 import { LayerType } from '../../core/types';
 import type {
-  SpecDataResponse,
-  LinkRegistry,
-  LinkType,
-  LinkCategory
+  SpecDataResponse
 } from '../../apps/embedded/services/embeddedDataLoader';
 
 /**
@@ -32,53 +29,6 @@ function createMinimalSchema(
   };
 }
 
-/**
- * Helper to create a LinkType
- */
-function createLinkType(
-  id: string,
-  name: string,
-  category: string,
-  sourceLayers: LayerType[],
-  targetLayer: LayerType,
-  targetElementTypes: string[],
-  fieldPaths: string[] = ['id'],
-  cardinality: string = 'many-to-one',
-  format: string = 'uuid'
-): LinkType {
-  return {
-    id,
-    name,
-    category,
-    sourceLayers,
-    targetLayer,
-    targetElementTypes,
-    fieldPaths,
-    cardinality,
-    format,
-    description: `Link from ${sourceLayers.join(', ')} to ${targetLayer}`,
-    examples: [`${targetLayer}-element-id`],
-    validationRules: {
-      targetExists: true,
-      targetType: targetElementTypes[0] || 'any'
-    }
-  };
-}
-
-/**
- * Helper to create a LinkCategory
- */
-function createLinkCategory(
-  name: string,
-  description: string,
-  color: string
-): LinkCategory {
-  return {
-    name,
-    description,
-    color
-  };
-}
 
 /**
  * Create a minimal SpecDataResponse with basic schemas
@@ -142,8 +92,7 @@ export function createMinimalSpecFixture(): SpecDataResponse {
     version: '1.0.0',
     type: 'json-schema',
     schemas,
-    schemaCount: Object.keys(schemas).length,
-    linkRegistry: createMinimalLinkRegistryFixture()
+    schemaCount: Object.keys(schemas).length
   };
 }
 
@@ -317,228 +266,17 @@ export function createCompleteSpecFixture(): SpecDataResponse {
     description: 'Complete DR model JSON schemas',
     source: 'Test Fixture',
     schemas,
-    schemaCount: Object.keys(schemas).length,
-    linkRegistry: createCompleteLinkRegistryFixture()
+    schemaCount: Object.keys(schemas).length
   };
 }
 
-/**
- * Create a minimal LinkRegistry with basic cross-layer links
- */
-export function createMinimalLinkRegistryFixture(): LinkRegistry {
-  const linkTypes = [
-    createLinkType(
-      'goal-to-requirement',
-      'Goal Realizes Requirement',
-      'motivation',
-      [LayerType.Motivation],
-      LayerType.Motivation,
-      ['requirement'],
-      ['requirements'],
-      'one-to-many',
-      'uuid'
-    ),
-    createLinkType(
-      'requirement-to-service',
-      'Requirement to Business Service',
-      'cross-layer',
-      [LayerType.Motivation],
-      LayerType.Business,
-      ['businessService'],
-      ['businessServices'],
-      'many-to-many',
-      'uuid'
-    )
-  ];
-
-  const categories = {
-    'motivation': createLinkCategory(
-      'Motivation Links',
-      'Links within the Motivation layer',
-      '#fbbf24'
-    ),
-    'cross-layer': createLinkCategory(
-      'Cross-Layer Links',
-      'Links spanning multiple architectural layers',
-      '#6366f1'
-    )
-  };
-
-  return {
-    version: '1.0.0',
-    linkTypes,
-    categories,
-    metadata: {
-      generatedDate: new Date().toISOString(),
-      generatedFrom: 'Test Fixture',
-      generator: 'specFixtures.ts',
-      totalLinkTypes: linkTypes.length,
-      totalCategories: Object.keys(categories).length,
-      version: '1.0.0',
-      schemaVersion: '1.0.0'
-    }
-  };
-}
-
-/**
- * Create a complete LinkRegistry with comprehensive cross-layer links
- */
-function createCompleteLinkRegistryFixture(): LinkRegistry {
-  const linkTypes = [
-    // Motivation Layer Internal Links
-    createLinkType(
-      'stakeholder-to-goal',
-      'Stakeholder Influences Goal',
-      'motivation',
-      [LayerType.Motivation],
-      LayerType.Motivation,
-      ['goal'],
-      ['goals'],
-      'many-to-many',
-      'uuid'
-    ),
-    createLinkType(
-      'goal-to-requirement',
-      'Goal Realizes Requirement',
-      'motivation',
-      [LayerType.Motivation],
-      LayerType.Motivation,
-      ['requirement'],
-      ['requirements'],
-      'one-to-many',
-      'uuid'
-    ),
-    createLinkType(
-      'goal-to-outcome',
-      'Goal to Outcome',
-      'motivation',
-      [LayerType.Motivation],
-      LayerType.Motivation,
-      ['outcome'],
-      ['outcomes'],
-      'many-to-many',
-      'uuid'
-    ),
-
-    // Business Layer Internal Links
-    createLinkType(
-      'service-to-capability',
-      'Service Provides Capability',
-      'business',
-      [LayerType.Business],
-      LayerType.Business,
-      ['businessCapability'],
-      ['capabilities'],
-      'many-to-many',
-      'uuid'
-    ),
-
-    // C4 Layer Internal Links
-    createLinkType(
-      'container-to-component',
-      'Container Contains Component',
-      'c4',
-      [LayerType.Technology],
-      LayerType.Technology,
-      ['c4Component'],
-      ['components'],
-      'one-to-many',
-      'uuid'
-    ),
-    createLinkType(
-      'actor-to-container',
-      'Actor Uses Container',
-      'c4',
-      [LayerType.Technology],
-      LayerType.Technology,
-      ['c4Container'],
-      ['uses'],
-      'many-to-many',
-      'uuid'
-    ),
-
-    // Cross-Layer Links
-    createLinkType(
-      'requirement-to-service',
-      'Requirement to Business Service',
-      'cross-layer',
-      [LayerType.Motivation],
-      LayerType.Business,
-      ['businessService'],
-      ['businessServices'],
-      'many-to-many',
-      'uuid'
-    ),
-    createLinkType(
-      'service-to-container',
-      'Business Service to Container',
-      'cross-layer',
-      [LayerType.Business],
-      LayerType.Technology,
-      ['c4Container'],
-      ['containers'],
-      'many-to-many',
-      'uuid'
-    ),
-    createLinkType(
-      'requirement-to-component',
-      'Requirement to Component',
-      'cross-layer',
-      [LayerType.Motivation],
-      LayerType.Technology,
-      ['c4Component'],
-      ['components'],
-      'many-to-many',
-      'uuid'
-    )
-  ];
-
-  const categories = {
-    'motivation': createLinkCategory(
-      'Motivation Links',
-      'Links within the Motivation layer',
-      '#fbbf24'
-    ),
-    'business': createLinkCategory(
-      'Business Links',
-      'Links within the Business layer',
-      '#10b981'
-    ),
-    'c4': createLinkCategory(
-      'C4 Architecture Links',
-      'Links within the C4 layer',
-      '#6366f1'
-    ),
-    'cross-layer': createLinkCategory(
-      'Cross-Layer Links',
-      'Links spanning multiple architectural layers',
-      '#8b5cf6'
-    )
-  };
-
-  return {
-    version: '1.0.0',
-    linkTypes,
-    categories,
-    metadata: {
-      generatedDate: new Date().toISOString(),
-      generatedFrom: 'Test Fixture',
-      generator: 'specFixtures.ts',
-      totalLinkTypes: linkTypes.length,
-      totalCategories: Object.keys(categories).length,
-      version: '1.0.0',
-      schemaVersion: '1.0.0'
-    }
-  };
-}
 
 /**
  * Create a custom SpecDataResponse with specified schema IDs
  * Allows flexible fixture creation for specific test scenarios
  */
 export function createCustomSpecFixture(
-  schemaIds: string[],
-  linkRegistry?: LinkRegistry
+  schemaIds: string[]
 ): SpecDataResponse {
   const allSchemas = {
     ...createCompleteSpecFixture().schemas
@@ -555,7 +293,6 @@ export function createCustomSpecFixture(
     version: '1.0.0',
     type: 'json-schema',
     schemas,
-    schemaCount: Object.keys(schemas).length,
-    linkRegistry: linkRegistry || createMinimalLinkRegistryFixture()
+    schemaCount: Object.keys(schemas).length
   };
 }

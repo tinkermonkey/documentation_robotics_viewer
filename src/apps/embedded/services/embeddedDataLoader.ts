@@ -54,45 +54,6 @@ function getAuthHeaders(): Record<string, string> {
   };
 }
 
-export interface LinkType {
-  id: string;
-  name: string;
-  category: string;
-  sourceLayers: LayerType[];
-  sourceElementTypes?: string[];
-  targetLayer: LayerType;
-  targetElementTypes: string[];
-  fieldPaths: string[];
-  cardinality: string;
-  format: string;
-  description: string;
-  examples: string[];
-  validationRules: {
-    targetExists: boolean;
-    targetType: string;
-  };
-}
-
-export interface LinkCategory {
-  name: string;
-  description: string;
-  color: string;
-}
-
-export interface LinkRegistry {
-  version: string;
-  linkTypes: LinkType[];
-  categories: Record<string, LinkCategory>;
-  metadata: {
-    generatedDate: string;
-    generatedFrom: string;
-    generator: string;
-    totalLinkTypes: number;
-    totalCategories: number;
-    version: string;
-    schemaVersion: string;
-  };
-}
 
 export interface RelationshipType {
   id: string;
@@ -131,7 +92,6 @@ export interface SpecDataResponse {
   manifest?: SchemaManifest;
   relationshipCatalog?: RelationshipCatalog;
   relationship_catalog?: RelationshipCatalog;
-  linkRegistry?: LinkRegistry;
 }
 
 export interface ChangesetSummary {
@@ -213,49 +173,20 @@ export class EmbeddedDataLoader {
     const schemaCount = data.schemaCount ?? data.schema_count ?? (data.schemas ? Object.keys(data.schemas).length : 0);
     const relationshipCatalog: RelationshipCatalog | undefined = data.relationshipCatalog || data.relationship_catalog;
 
-    // Also load link registry
-    let linkRegistry: LinkRegistry | undefined;
-    try {
-      linkRegistry = await this.loadLinkRegistry();
-    } catch (err) {
-      console.warn('[EmbeddedDataLoader] Failed to load link registry:', err);
-    }
-
     console.log('[EmbeddedDataLoader] Loaded spec from server:', {
       version: data.version,
       type: data.type,
       schemaCount,
-      hasLinkRegistry: !!linkRegistry,
-      linkTypesCount: linkRegistry?.linkTypes?.length || 0,
       hasRelationshipCatalog: !!relationshipCatalog
     });
 
     return {
       ...data,
       schemaCount,
-      relationshipCatalog,
-      linkRegistry
+      relationshipCatalog
     };
   }
 
-  /**
-   * Load link registry
-   */
-  async loadLinkRegistry(): Promise<LinkRegistry> {
-    const response = await fetch(`${API_BASE}/link-registry`, {
-      headers: getAuthHeaders(),
-      credentials: 'include'
-    });
-
-    await ensureOk(response, 'load link registry');
-
-    const data = await response.json();
-    console.log('[EmbeddedDataLoader] Loaded link registry:', {
-      linkTypesCount: data.linkTypes?.length || 0,
-      categoriesCount: Object.keys(data.categories || {}).length
-    });
-    return data;
-  }
 
   /**
    * Load the current model (YAML instance format)

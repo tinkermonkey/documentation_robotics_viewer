@@ -12,7 +12,7 @@ import { GitHubService } from '../../../core/services/githubService';
 import { LocalFileLoader } from '../../../core/services/localFileLoader';
 import { SpecParser } from '../../../core/services/specParser';
 import { MetaModel, Relationship } from '../../../core/types';
-import { SpecDataResponse, LinkType } from '../services/embeddedDataLoader';
+import { SpecDataResponse } from '../services/embeddedDataLoader';
 import { LoadingState, ErrorState, EmptyState } from './shared';
 import { LayoutEngineType } from '@/core/layout/engines';
 
@@ -58,9 +58,7 @@ const SpecGraphView: React.FC<SpecGraphViewProps> = ({
           specDataKeys: specData ? Object.keys(specData) : [],
           hasSchemas: !!(specData?.schemas),
           schemaCount: specData?.schemas ? Object.keys(specData.schemas).length : 0,
-          schemaKeys: specData?.schemas ? Object.keys(specData.schemas).slice(0, 3) : [],
-          hasLinkRegistry: !!(specData?.linkRegistry),
-          linkTypesCount: specData?.linkRegistry?.linkTypes?.length || 0
+          schemaKeys: specData?.schemas ? Object.keys(specData.schemas).slice(0, 3) : []
         });
 
         if (!specData || !specData.schemas) {
@@ -94,11 +92,6 @@ const SpecGraphView: React.FC<SpecGraphViewProps> = ({
           specData.version || '0.1.0'
         );
 
-        // Add cross-layer links from link registry
-        if (specData.linkRegistry) {
-          addCrossLayerLinks(metamodel, specData.linkRegistry.linkTypes);
-        }
-
         console.log('[SpecGraphView] Conversion complete:', {
           layerCount: Object.keys(metamodel.layers).length,
           layerNames: Object.keys(metamodel.layers),
@@ -119,73 +112,6 @@ const SpecGraphView: React.FC<SpecGraphViewProps> = ({
 
     convertSpecToModel();
   }, [specData, dataLoader]);
-
-  /**
-   * Add cross-layer links from link registry to the MetaModel
-   */
-  const addCrossLayerLinks = (metamodel: MetaModel, linkTypes: LinkType[]) => {
-    console.log('[SpecGraphView] Adding cross-layer links:', linkTypes.length);
-
-    // Group link types by source layer
-    const linksBySourceLayer = new Map<string, LinkType[]>();
-    for (const linkType of linkTypes) {
-      for (const sourceLayer of linkType.sourceLayers) {
-        const layerName = normalizeLayerName(sourceLayer);
-        if (!linksBySourceLayer.has(layerName)) {
-          linksBySourceLayer.set(layerName, []);
-        }
-        linksBySourceLayer.get(layerName)!.push(linkType);
-      }
-    }
-
-    // Add relationships to each layer
-    let totalLinksAdded = 0;
-    for (const [layerName, layer] of Object.entries(metamodel.layers)) {
-      const layerLinks = linksBySourceLayer.get(layerName) || [];
-
-      if (!layer.relationships) {
-        layer.relationships = [];
-      }
-
-      // Create virtual relationships for each link type
-      for (const linkType of layerLinks) {
-        const targetLayerName = normalizeLayerName(linkType.targetLayer);
-
-        // Add a relationship representing this cross-layer link
-        const relationship: Relationship = {
-          id: `link-${linkType.id}`,
-          type: linkType.category,
-          sourceId: layerName,
-          targetId: targetLayerName,
-          properties: {
-            name: linkType.name,
-            description: linkType.description,
-            linkTypeId: linkType.id,
-            fieldPaths: linkType.fieldPaths,
-            cardinality: linkType.cardinality,
-            format: linkType.format,
-            targetElementTypes: linkType.targetElementTypes
-          }
-        };
-
-        layer.relationships.push(relationship);
-        totalLinksAdded++;
-      }
-    }
-
-    console.log('[SpecGraphView] Added cross-layer links:', totalLinksAdded);
-  };
-
-  /**
-   * Normalize layer name from link registry format (e.g., "01-motivation" -> "Motivation")
-   */
-  const normalizeLayerName = (layerRef: string): string => {
-    return layerRef
-      .replace(/^\d+-/, '')              // Remove number prefix
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join('');
-  };
 
   // Loading state
   if (loading) {

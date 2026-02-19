@@ -13,7 +13,7 @@ import HighlightedPathPanel from '../components/HighlightedPathPanel';
 import SharedLayout from '../components/SharedLayout';
 import { useModelStore } from '../../../core/stores/modelStore';
 import { useAnnotationStore } from '../stores/annotationStore';
-import { embeddedDataLoader, LinkRegistry, SpecDataResponse } from '../services/embeddedDataLoader';
+import { embeddedDataLoader, SpecDataResponse } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
 import { LoadingState, ErrorState } from '../components/shared';
 import type { MetaModel } from '../../../core/types';
@@ -68,7 +68,6 @@ export default function ModelRoute() {
   const search = useSearch({ strict: false }) as { layer?: string };
   const { setModel } = useModelStore();
   const annotationStore = useAnnotationStore();
-  const [linkRegistry, setLinkRegistry] = useState<LinkRegistry | null>(null);
   const [specData, setSpecData] = useState<SpecDataResponse | null>(null);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
@@ -133,15 +132,6 @@ export default function ModelRoute() {
 
       const annotations = await embeddedDataLoader.loadAnnotations();
       annotationStore.setAnnotations(annotations);
-
-      // Load link registry
-      try {
-        const registry = await embeddedDataLoader.loadLinkRegistry();
-        setLinkRegistry(registry);
-        console.log('[ModelRoute] Link registry loaded:', registry.linkTypes.length, 'link types');
-      } catch (err) {
-        console.warn('[ModelRoute] Failed to load link registry:', err);
-      }
 
       // Load spec data for schema definitions
       try {
@@ -212,7 +202,6 @@ export default function ModelRoute() {
         ) : (
           <ModelJSONViewer
             model={model}
-            linkRegistry={linkRegistry || undefined}
             specData={specData || undefined}
             onPathHighlight={handlePathHighlight}
             selectedLayer={selectedLayerId}

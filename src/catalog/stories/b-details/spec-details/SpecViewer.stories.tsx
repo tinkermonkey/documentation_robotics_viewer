@@ -131,26 +131,6 @@ const mockSpecData: SpecDataResponse = {
       },
     },
   },
-  linkRegistry: {
-    linkTypes: [
-      // Intra-layer relationships
-      {
-        id: 'intra-composition',
-        name: 'Composition (Intra-layer)',
-        category: 'intra-layer',
-        description: 'Business collaboration composes business roles that participate in it',
-        sourceLayers: [LayerType.Business],
-        targetLayer: LayerType.Business,
-        sourceElementTypes: ['BusinessCollaboration'],
-        targetElementTypes: ['BusinessRole'],
-        fieldPaths: ['relationships.composition'],
-        cardinality: 'many-to-many',
-        format: 'reference',
-        examples: [],
-        validationRules: {
-          targetExists: true,
-          targetType: 'BusinessRole',
-        },
       },
       {
         id: 'intra-assignment',
@@ -373,19 +353,6 @@ export const EmptySpecData: Story = {
         version: '1.0.0',
         type: 'empty-spec',
         schemas: {},
-        linkRegistry: {
-          version: '1.0.0',
-          linkTypes: [],
-          categories: {},
-          metadata: {
-            generatedDate: new Date().toISOString(),
-            generatedFrom: 'empty-spec',
-            generator: 'storybook-story',
-            totalLinkTypes: 0,
-            totalCategories: 0,
-            version: '1.0.0',
-            schemaVersion: '1.0.0',
-          },
         }
       }}
       selectedSchemaId={null}

@@ -5,7 +5,7 @@
 
 import { createContext, useContext, useState, useCallback, useEffect, useMemo, type ReactNode } from 'react';
 import type { MetaModel } from '../../core/types';
-import type { SpecDataResponse, LinkRegistry } from '../../apps/embedded/services/embeddedDataLoader';
+import type { SpecDataResponse } from '../../apps/embedded/services/embeddedDataLoader';
 import type { Annotation } from '../../apps/embedded/types/annotations';
 import type { DataLoaderOptions, DataLoaderResult } from '../../apps/embedded/hooks/useDataLoader';
 import { useMockWebSocket } from './MockWebSocketProvider';
@@ -16,13 +16,11 @@ import { useMockWebSocket } from './MockWebSocketProvider';
 interface MockDataLoaderContext {
   model: MetaModel | null;
   spec: SpecDataResponse | null;
-  linkRegistry: LinkRegistry | null;
   annotations: Annotation[];
   loading: boolean;
   error: string | null;
   setModel: (model: MetaModel | null) => void;
   setSpec: (spec: SpecDataResponse | null) => void;
-  setLinkRegistry: (registry: LinkRegistry | null) => void;
   setAnnotations: (annotations: Annotation[]) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
@@ -170,8 +168,6 @@ export interface MockDataLoaderProviderProps {
   model?: MetaModel | null;
   /** Pre-loaded SpecDataResponse data */
   spec?: SpecDataResponse | null;
-  /** Pre-loaded LinkRegistry data */
-  linkRegistry?: LinkRegistry | null;
   /** Pre-loaded annotations */
   annotations?: Annotation[];
   /** Initial loading state (default: false) */
@@ -197,7 +193,6 @@ export interface MockDataLoaderProviderProps {
 export function MockDataLoaderProvider({
   model: initialModel = null,
   spec: initialSpec = null,
-  linkRegistry: initialLinkRegistry = null,
   annotations: initialAnnotations = [],
   initialLoading = false,
   initialError = null,
@@ -205,7 +200,6 @@ export function MockDataLoaderProvider({
 }: MockDataLoaderProviderProps) {
   const [model, setModel] = useState<MetaModel | null>(initialModel);
   const [spec, setSpec] = useState<SpecDataResponse | null>(initialSpec);
-  const [linkRegistry, setLinkRegistry] = useState<LinkRegistry | null>(initialLinkRegistry);
   const [annotations, setAnnotations] = useState<Annotation[]>(initialAnnotations);
   const [loading, setLoading] = useState(initialLoading);
   const [error, setError] = useState<string | null>(initialError);
@@ -213,17 +207,15 @@ export function MockDataLoaderProvider({
   const value = useMemo<MockDataLoaderContext>(() => ({
     model,
     spec,
-    linkRegistry,
     annotations,
     loading,
     error,
     setModel,
     setSpec,
-    setLinkRegistry,
     setAnnotations,
     setLoading,
     setError
-  }), [model, spec, linkRegistry, annotations, loading, error]);
+  }), [model, spec, annotations, loading, error]);
 
   return (
     <MockDataLoaderContext.Provider value={value}>
