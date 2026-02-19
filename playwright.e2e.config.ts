@@ -71,7 +71,7 @@ export default defineConfig({
   },
 
   use: {
-    baseURL: 'http://localhost:3001',
+    baseURL: process.env.BASE_URL || 'http://localhost:3001',
     trace: 'retain-on-failure', // Keep traces for failed tests
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -86,14 +86,12 @@ export default defineConfig({
   ],
 
   // Start frontend dev server (DR CLI should be running separately)
-  webServer: [
-    {
-      command: 'npm run dev',
-      url: 'http://localhost:3001',
-      reuseExistingServer: !process.env.CI,
-      timeout: 60000,  // 60 seconds to start (Vite can be slow)
-      stdout: 'pipe',
-      stderr: 'pipe',
-    },
-  ],
+  webServer: {
+    command: 'npm run dev:embedded',
+    url: 'http://localhost:3001',
+    reuseExistingServer: !process.env.CI,
+    timeout: 60000,  // 60 seconds to start (Vite can be slow)
+    stdout: 'pipe',
+    stderr: 'pipe',
+  },
 });
