@@ -13,7 +13,7 @@ import { Release } from '../types';
 export class GitHubService {
   private serverUrl: string;
 
-  constructor(serverUrl: string = 'http://localhost:3002') {
+  constructor(serverUrl: string = 'http://localhost:8080') {
     this.serverUrl = serverUrl;
   }
 

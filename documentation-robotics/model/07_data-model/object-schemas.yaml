@@ -6,7 +6,7 @@ subscribe-message:
   properties:
     source:
       reference:
-        provenance: extracted
+        provenance: manual
         locations:
-          - file: reference_server/main.py
+          - file: src/apps/embedded/services/websocketClient.ts
             symbol: subscribe

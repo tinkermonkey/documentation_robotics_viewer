@@ -60,31 +60,6 @@ node-transformer:
             symbol: transformElement
     x-monitored-by:
       - apm.metric.render-time
-reference-server:
-  id: application.service.reference-server
-  name: Reference Server
-  type: service
-  documentation: Python FastAPI server for serving model data and live updates
-  properties:
-    source:
-      reference:
-        provenance: manual
-        locations:
-          - file: server/index.cjs
-            symbol: referenceServer
-    x-exposes:
-      - api.operation.health-check
-      - api.operation.get-spec
-      - api.operation.get-model
-      - api.operation.list-changesets
-      - api.operation.get-changeset
-      - api.operation.get-annotations
-      - api.operation.create-annotation
-      - api.operation.update-annotation
-      - api.operation.delete-annotation
-      - api.operation.create-changeset
-      - api.operation.apply-changeset
-      - api.operation.websocket-connect
 business-export-service:
   id: application.service.business-export-service
   name: Business Export Service

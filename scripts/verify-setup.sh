@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Verification script for Documentation Robotics Viewer setup
-# This script checks that all prerequisites are met for testing the reference implementation
+# This script checks that all prerequisites are met for running the DR CLI server and tests
 
 echo "=== Documentation Robotics Viewer Setup Verification ==="
 echo ""

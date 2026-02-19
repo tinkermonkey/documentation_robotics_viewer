@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Edge Bundling, Viewport Culling, and Progressive Loading', () => {
-  // Note: Tests run with E2E config which starts DR CLI server on localhost:8080 (backend)
+  // Note: Tests require DR CLI server running on localhost:8080 (start manually before running tests)
   const VIEWPORT_MARGIN = 100;
 
   // Helper function to get visible edges with their source and target node positions
