@@ -43,13 +43,13 @@ info:
   license:
     name: ISC
 servers:
-- url: http://localhost:3000
+- url: http://localhost:8080
   description: DR CLI visualization server (default port)
 - url: http://localhost:{port}
   description: Configurable port server
   variables:
     port:
-      default: '3000'
+      default: '8080'
       description: DR CLI server port
 tags:
 - name: Health

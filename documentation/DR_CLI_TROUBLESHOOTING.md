@@ -18,14 +18,14 @@ node --version  # Should be v18 or higher
 dr --version    # Should be 0.7.0 or higher
 
 # 3. Check if server is running
-curl http://localhost:3000/health
+curl http://localhost:8080/health
 
 # 4. Check if viewer can connect
 curl http://localhost:3001/
 
 # 5. Check for port conflicts
-lsof -i :3000
-lsof -i :3001
+lsof -i :8080   # DR CLI server
+lsof -i :3001   # Viewer dev server
 ```
 
 ---
@@ -89,7 +89,7 @@ sudo dr visualize ./my-model
 **Solution:**
 ```bash
 # 1. Verify server is running
-curl http://localhost:3000/health
+curl http://localhost:8080/health
 # Should return: {"status": "healthy"}
 
 # 2. Check network connectivity
@@ -121,7 +121,7 @@ dr visualize ./my-model
 
 # 4. Try localhost instead of 127.0.0.1
 # Edit vite.config.ts or environment variable
-export DR_CLI_URL=http://localhost:3000
+export DR_CLI_URL=http://localhost:8080
 ```
 
 ---
@@ -136,7 +136,7 @@ export DR_CLI_URL=http://localhost:3000
 curl -i -N \
   -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  http://localhost:3000/ws
+  http://localhost:8080/ws
 
 # 2. Check browser DevTools
 # - Open F12 → Network tab
@@ -154,7 +154,7 @@ curl -i -N \
 # - Disable ad blockers, proxy extensions
 
 # 5. Check if server supports WebSocket
-curl -v http://localhost:3000/health
+curl -v http://localhost:8080/health
 # Should show "200 OK"
 ```
 
@@ -280,7 +280,7 @@ dr visualize --version
 
 # 3. Include token in requests
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  http://localhost:3000/api/model
+  http://localhost:8080/api/model
 
 # 4. Check token format
 echo "YOUR_TOKEN" | jq '.'  # Should decode as JWT
@@ -366,7 +366,7 @@ dr visualize --no-auth ./my-model
 ```bash
 # Mixed content error (HTTP + HTTPS)
 # Solution: Use consistent protocol
-export DR_CLI_URL=http://localhost:3000  # All HTTP
+export DR_CLI_URL=http://localhost:8080  # All HTTP
 
 # ServiceWorker conflicts
 # Solution: Clear cache
@@ -378,7 +378,7 @@ export DR_CLI_URL=http://localhost:3000  # All HTTP
 ```bash
 # WebSocket origin check
 # Solution: Check CORS headers
-curl -v http://localhost:3000/health
+curl -v http://localhost:8080/health
 
 # Memory usage high
 # Solution: Reduce layer count or model size
@@ -408,7 +408,7 @@ curl -v http://localhost:3000/health
 dr visualize ./example-implementation/
 
 # 2. Verify server is healthy
-curl http://localhost:3000/health
+curl http://localhost:8080/health
 
 # 3. Check test config uses correct URL
 # playwright.e2e.config.ts should reference port 3000
@@ -434,7 +434,7 @@ timeout: 60000,  // Increase from default
 
 # 2. Check server response time
 # Is DR CLI server slow?
-time curl http://localhost:3000/api/model
+time curl http://localhost:8080/api/model
 
 # 3. Run tests serially (not in parallel)
 # In config: workers: 1
@@ -466,7 +466,7 @@ console.log(sessionStorage.getItem('dr_events'));
 
 ```bash
 # Using curl (verbose)
-curl -v http://localhost:3000/api/model
+curl -v http://localhost:8080/api/model
 
 # Using tcpdump (Linux/Mac)
 sudo tcpdump -i lo0 -n 'tcp port 3000'  # Mac
@@ -541,8 +541,8 @@ dr --version                         # Check version
 dr validate ./my-model               # Validate model
 
 # Network diagnostics
-curl http://localhost:3000/health    # Health check
-curl http://localhost:3000/api/model # Get model
+curl http://localhost:8080/health    # Health check
+curl http://localhost:8080/api/model # Get model
 netstat -an | grep 3000             # Check port usage
 
 # Viewer management

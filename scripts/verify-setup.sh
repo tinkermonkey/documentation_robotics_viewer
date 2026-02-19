@@ -45,11 +45,11 @@ fi
 
 # Check if DR CLI server is running
 echo "Checking DR CLI server..."
-if curl -s http://localhost:3000/health > /dev/null 2>&1; then
-    SERVER_STATUS=$(curl -s http://localhost:3000/health | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
+if curl -s http://localhost:8080/health > /dev/null 2>&1; then
+    SERVER_STATUS=$(curl -s http://localhost:8080/health | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
     echo "✓ DR CLI server is running (status: $SERVER_STATUS)"
 else
-    echo "⚠ DR CLI server not running on port 3000"
+    echo "⚠ DR CLI server not running on port 8080"
     echo "  Start it with: dr visualize [path-to-your-model]"
 fi
 

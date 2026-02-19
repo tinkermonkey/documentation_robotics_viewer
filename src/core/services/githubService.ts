@@ -65,7 +65,7 @@ export class GitHubService {
       console.error('Error fetching latest spec release:', error);
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error(
-          'Unable to connect to server. Please ensure the server is running on port 3000.'
+          'Unable to connect to server. Please ensure the server is running on port 3002.'
         );
       }
       throw error;
@@ -107,7 +107,7 @@ export class GitHubService {
       console.error('Error downloading schemas:', error);
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error(
-          'Unable to connect to server. Please ensure the server is running on port 3000.'
+          'Unable to connect to server. Please ensure the server is running on port 3002.'
         );
       }
       throw error;

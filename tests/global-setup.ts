@@ -87,16 +87,17 @@ async function globalSetup(config: FullConfig) {
     console.log('✅ Global Setup Complete - Ready for E2E tests\n');
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    console.warn('\n⚠️  Global Setup Warning:\n');
-    console.warn(message);
-    console.warn('\n📋 E2E Test Prerequisites:\n');
-    console.warn('  1. Start DR CLI server:');
-    console.warn('     dr visualize --model tests/fixtures/test-model.yaml --port 8080\n');
-    console.warn('  2. Verify server is running:');
-    console.warn(`     curl ${DR_API_URL}/health\n`);
-    console.warn('  3. Set custom URL if needed:');
-    console.warn('     DR_API_URL=http://your-server:8080 npm run test:e2e\n');
-    console.warn('See: documentation/TESTING.md for more help\n');
+    console.error('\n❌ Global Setup Failed:\n');
+    console.error(message);
+    console.error('\n📋 E2E Test Prerequisites:\n');
+    console.error('  1. Start DR CLI server:');
+    console.error('     dr visualize --model tests/fixtures/test-model.yaml --port 8080\n');
+    console.error('  2. Verify server is running:');
+    console.error(`     curl ${DR_API_URL}/health\n`);
+    console.error('  3. Set custom URL if needed:');
+    console.error('     DR_API_URL=http://your-server:8080 npm run test:e2e\n');
+    console.error('See: documentation/TESTING.md for more help\n');
+    process.exit(1);
   }
 }
 

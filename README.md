@@ -135,7 +135,7 @@ The Documentation Robotics CLI server provides:
 - Embedded visualization UI integration
 - Optional token-based authentication
 
-The viewer connects to the CLI server on port 3000 (configurable) to fetch model definitions and receive live updates via WebSocket.
+The viewer connects to the CLI server on port 8080 (the DR CLI default, configurable via `--port`) to fetch model definitions and receive live updates via WebSocket.
 
 ### API Endpoints
 
@@ -313,10 +313,10 @@ curl http://localhost:3000/health
 # If "Connection refused", start the server
 dr visualize ./my-model
 
-# Check if port 3000 is in use
-lsof -i :3000
+# Check if port 8080 is in use (DR CLI default)
+lsof -i :8080
 
-# Kill process on port 3000 (if stuck)
+# Kill process on port 8080 (if stuck)
 kill -9 <PID>
 ```
 
@@ -356,7 +356,7 @@ dr visualize $(pwd)/my-model  # Use absolute path
 #### Port Already in Use
 
 ```bash
-# Kill existing process on port 3000
+# Kill existing process on port 8080
 lsof -i :3000 | grep LISTEN | awk '{print $2}' | xargs kill -9
 
 # Or use different port (check DR CLI docs)

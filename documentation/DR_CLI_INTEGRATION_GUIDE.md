@@ -46,7 +46,7 @@ The Documentation Robotics Viewer is a React-based frontend that connects to the
             │
 ┌───────────▼─────────────┐
 │   DR CLI Server         │
-│  Express.js (port 3000) │
+│  Express.js (port 8080) │
 └───────────┬─────────────┘
             │
             │ File I/O
@@ -61,8 +61,8 @@ The Documentation Robotics Viewer is a React-based frontend that connects to the
 
 - **HTTP REST**: Initial model loading, health checks
 - **WebSocket JSON-RPC 2.0**: Real-time updates, bidirectional communication
-- **Port**: 3000 (default)
-- **Base URL**: `http://localhost:3000`
+- **Port**: 8080 (DR CLI default)
+- **Base URL**: `http://localhost:8080`
 
 ---
 
@@ -166,7 +166,7 @@ npm run test:e2e
 
 **Expected Output:**
 ```
-✓ DR CLI server running on http://localhost:3000
+✓ DR CLI server running on http://localhost:8080
 ✓ Embedded viewer running on http://localhost:3001
 ✓ WebSocket connection established
 ✓ Model loaded successfully
@@ -276,7 +276,7 @@ Content-Type: application/json
 The viewer establishes a WebSocket connection for real-time model updates:
 
 ```javascript
-const ws = new WebSocket('ws://localhost:3000/ws');
+const ws = new WebSocket('ws://localhost:8080/ws');
 
 ws.onopen = () => {
   console.log('Connected to DR CLI');
@@ -436,7 +436,7 @@ If the DR CLI server requires authentication:
 ./scripts/capture-auth-token.sh
 
 # Or manually
-curl -X POST http://localhost:3000/api/auth/token \
+curl -X POST http://localhost:8080/api/auth/token \
   -H "Content-Type: application/json" \
   -d '{"username": "user", "password": "pass"}'
 ```
@@ -573,7 +573,7 @@ npm run test:e2e:headed
 **Solutions:**
 ```bash
 # 1. Verify server is running
-curl http://localhost:3000/health
+curl http://localhost:8080/health
 
 # 2. Check port availability
 lsof -i :3000
@@ -600,7 +600,7 @@ dr visualize --port 3001 ./my-model
 # 2. Verify WebSocket endpoint
 curl -i -N -H "Connection: Upgrade" \
   -H "Upgrade: websocket" \
-  http://localhost:3000/ws
+  http://localhost:8080/ws
 
 # 3. Clear browser cache
 # - Open DevTools
@@ -624,7 +624,7 @@ curl -i -N -H "Connection: Upgrade" \
 
 # 2. Verify token is included
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-  http://localhost:3000/api/model
+  http://localhost:8080/api/model
 
 # 3. Check token expiration
 echo "YOUR_TOKEN" | jq '.' # Decode JWT claims
