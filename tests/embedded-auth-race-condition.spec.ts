@@ -12,21 +12,22 @@ import { test, expect } from '@playwright/test';
  * Run with: npm run test:e2e
  */
 test.describe('Auth Token Race Condition Fix', () => {
-  const appUrl = process.env.DR_API_URL || 'http://localhost:8080';
+  const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
+  const apiUrl = process.env.DR_API_URL || 'http://localhost:8080';
 
   test.beforeAll(async ({ request }) => {
     // Check if server is available, skip tests if not
     try {
-      await request.get(appUrl, { timeout: 5000 });
+      await request.get(`${apiUrl}/health`, { timeout: 5000 });
     } catch (error) {
-      test.skip(true, `DR CLI server not running on ${appUrl}`);
+      test.skip(true, `DR CLI server not running on ${apiUrl}`);
     }
   });
 
-  test('should use fresh token from URL instead of stale localStorage token', async ({ page, context }) => {
+  test('should use fresh token from URL instead of stale localStorage token', async ({ page }) => {
 
     // Step 1: Simulate previous session with old token in localStorage
-    await page.goto(appUrl);
+    await page.goto(baseUrl);
     await page.evaluate(() => {
       localStorage.setItem('dr_auth_token', 'stale-token-from-previous-session');
       console.log('[Test] Stored stale token in localStorage');
@@ -34,7 +35,7 @@ test.describe('Auth Token Race Condition Fix', () => {
 
     // Step 2: Visit with NEW token in URL (magic link scenario)
     const newToken = 'fresh-token-from-magic-link';
-    await page.goto(`${appUrl}/?token=${newToken}#/model/graph`);
+    await page.goto(`${baseUrl}/?token=${newToken}#/model/graph`);
 
     // Wait for app to initialize - document should be ready
     await page.waitForLoadState('domcontentloaded');
@@ -75,14 +76,14 @@ test.describe('Auth Token Race Condition Fix', () => {
   test('should reconnect WebSocket with correct token after race condition fix', async ({ page }) => {
 
     // Step 1: Set up old token
-    await page.goto(appUrl);
+    await page.goto(baseUrl);
     await page.evaluate(() => {
       localStorage.setItem('dr_auth_token', 'old-websocket-token');
     });
 
     // Step 2: Visit with new token
     const newToken = 'new-websocket-token';
-    await page.goto(`${appUrl}/?token=${newToken}#/model/graph`);
+    await page.goto(`${baseUrl}/?token=${newToken}#/model/graph`);
 
     // Wait for WebSocket connection attempt - wait for DOM to be ready
     await page.waitForLoadState('domcontentloaded');
@@ -110,14 +111,14 @@ test.describe('Auth Token Race Condition Fix', () => {
   test('should handle case when no stale token exists', async ({ page }) => {
 
     // Step 1: Clear localStorage (fresh browser scenario)
-    await page.goto(appUrl);
+    await page.goto(baseUrl);
     await page.evaluate(() => {
       localStorage.clear();
     });
 
     // Step 2: Visit with token in URL (first-time magic link)
     const newToken = 'first-time-token';
-    await page.goto(`${appUrl}/?token=${newToken}#/model/graph`);
+    await page.goto(`${baseUrl}/?token=${newToken}#/model/graph`);
 
     await page.waitForLoadState('domcontentloaded');
 
