@@ -51,8 +51,6 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
     }
   }, [highlightedElementId, model, onPathHighlight]);
 
-
-
   if (!model) {
     return (
       <div className="w-full h-full flex items-center justify-center flex-col text-gray-500 dark:text-gray-400">
@@ -113,8 +111,6 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
 
     return specData.schemas[layerSchemaKey]?.description;
   };
-
-
 
   const renderLayerDetails = () => {
     if (!selectedLayer) {
