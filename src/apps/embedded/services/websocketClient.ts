@@ -31,8 +31,6 @@ interface WebSocketClientInterface {
   send(message: WebSocketMessage): void;
   on(event: string, handler: EventHandler): void;
   off(event: string, handler: EventHandler): void;
-  triggerCloseForTesting?(): void;
-  simulateMaxReconnectAttemptsForTesting?(): void;
   readonly isConnected: boolean;
   readonly connectionState: 'connecting' | 'connected' | 'disconnected' | 'reconnecting';
   readonly transportMode: 'websocket' | 'rest' | 'detecting';
@@ -156,7 +154,7 @@ export class WebSocketClient implements WebSocketClientInterface {
 
   /**
    * TEST HOOK: Trigger a WebSocket close event (for testing reconnection logic)
-   * Only available in development/test mode - guarded by environment check
+   * Only available in test environment - checked via isTestEnvironment() function
    */
   triggerCloseForTesting(): void {
     if (!isTestEnvironment()) {
@@ -175,7 +173,7 @@ export class WebSocketClient implements WebSocketClientInterface {
 
   /**
    * TEST HOOK: Simulate exhausted reconnection attempts (for testing failure handling)
-   * Only available in development/test mode - guarded by environment check
+   * Only available in test environment - checked via isTestEnvironment() function
    */
   simulateMaxReconnectAttemptsForTesting(): void {
     if (!isTestEnvironment()) {

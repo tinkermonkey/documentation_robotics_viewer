@@ -81,9 +81,9 @@ Phase 2 successfully implements the complete WebSocket service and JSON-RPC 2.0 
 
 ---
 
-### Backend (Python/FastAPI)
+### Backend (DR CLI Server)
 
-#### 1. **Chat Handler** (DR CLI Server)
+#### 1. **Chat Handler**
 - **Purpose**: Implements chat.* RPC methods
 - **Key Classes**:
   - `ChatSession` - Manages individual conversation sessions

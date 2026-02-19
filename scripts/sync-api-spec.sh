@@ -7,6 +7,15 @@ OUTPUT_PATH="docs/api-spec.yaml"
 echo "Fetching latest API spec from upstream..."
 mkdir -p "$(dirname "$OUTPUT_PATH")"
 
+# Create temporary TypeScript file to validate the spec
+TEMP_TS=$(mktemp)
+
+# Clean up temp files on exit, interrupt, or error
+cleanup() {
+  rm -f "$TEMP_TS" "${TEMP_TS%.ts}.js"
+}
+trap cleanup EXIT INT TERM
+
 if ! curl -f -s -S -L "$SPEC_URL" -o "$OUTPUT_PATH"; then
   echo "✗ Failed to fetch API spec from $SPEC_URL"
   echo "  Please check network connectivity and verify the URL is valid"
@@ -19,8 +28,6 @@ echo "✓ API spec synced successfully to $OUTPUT_PATH"
 if command -v tsc &> /dev/null; then
   echo "Validating API spec against TypeScript types..."
 
-  # Create temporary TypeScript file to validate the spec
-  TEMP_TS=$(mktemp)
   cat > "$TEMP_TS" << 'EOF'
 import * as YAML from 'js-yaml';
 import * as fs from 'fs';
@@ -44,10 +51,8 @@ EOF
 
   if tsc --esModuleInterop --skipLibCheck "$TEMP_TS" && node "$TEMP_TS"; then
     echo "✓ TypeScript validation successful"
-    rm -f "$TEMP_TS" "${TEMP_TS%.ts}.js"
   else
     echo "⚠ TypeScript validation failed (non-blocking)"
-    rm -f "$TEMP_TS" "${TEMP_TS%.ts}.js"
   fi
 else
   echo "⚠ TypeScript compiler not found in PATH (skipping validation)"

@@ -40,6 +40,11 @@ export const SchemaInfoPanel: React.FC<SchemaInfoPanelProps> = ({ className = ''
 
     try {
       const date = new Date(dateString);
+      // Check for Invalid Date
+      if (isNaN(date.getTime())) {
+        console.warn('[SchemaInfoPanel] Invalid date string provided:', dateString);
+        return dateString;
+      }
       return date.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
@@ -47,7 +52,8 @@ export const SchemaInfoPanel: React.FC<SchemaInfoPanelProps> = ({ className = ''
         hour: '2-digit',
         minute: '2-digit',
       });
-    } catch {
+    } catch (error) {
+      console.warn('[SchemaInfoPanel] Date parsing error:', error, 'for string:', dateString);
       return dateString;
     }
   };

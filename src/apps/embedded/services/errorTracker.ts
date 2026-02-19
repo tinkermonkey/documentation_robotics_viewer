@@ -16,6 +16,20 @@ interface ErrorContext {
   [key: string]: unknown;
 }
 
+interface ErrorLogEntry {
+  errorId: ErrorId;
+  message: string;
+  timestamp: string;
+  context: ErrorContext;
+  category: ExceptionCategory;
+  severity: ExceptionSeverity;
+  isExpectedFailure: boolean;
+  isTransient: boolean;
+  recoveryStrategy: RecoveryStrategy;
+  canRetry: boolean;
+  affectedFeatures?: string[];
+}
+
 /**
  * Log an error with tracking ID and automatic classification
  * @param errorId - Unique error identifier from ERROR_IDS
@@ -157,7 +171,7 @@ export function logWarning(
 /**
  * Get all logged errors from session storage
  */
-export function getErrorLog(): any[] {
+export function getErrorLog(): ErrorLogEntry[] {
   try {
     const storageKey = 'app:error_log';
     const existing = sessionStorage.getItem(storageKey);

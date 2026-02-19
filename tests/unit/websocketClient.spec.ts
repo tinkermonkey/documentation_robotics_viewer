@@ -74,13 +74,19 @@ test.describe('WebSocketClient Test Hooks', () => {
     expect(methodBlock).toContain('return');
   });
 
-  test('WebSocketClientInterface should define test hooks as optional methods', () => {
+  test('WebSocketClientInterface should not expose test hooks in production interface', () => {
     const source = readWebSocketClientSource();
 
-    // Verify interface definition
+    // Verify interface definition exists
     expect(source).toContain('interface WebSocketClientInterface');
-    expect(source).toContain('triggerCloseForTesting?(): void;');
-    expect(source).toContain('simulateMaxReconnectAttemptsForTesting?(): void;');
+
+    // Verify test hooks are NOT in the interface (not production-facing)
+    const interfaceBlock = source.substring(
+      source.indexOf('interface WebSocketClientInterface'),
+      source.indexOf('interface WebSocketClientInterface') + 1500
+    );
+    expect(interfaceBlock).not.toContain('triggerCloseForTesting');
+    expect(interfaceBlock).not.toContain('simulateMaxReconnectAttemptsForTesting');
   });
 
   test('test hooks should emit proper events', () => {
@@ -134,19 +140,18 @@ test.describe('WebSocketClient Test Hooks', () => {
     expect(triggerCloseBlock).toContain('return;');
   });
 
-  test('test hooks should be properly typed in interface', () => {
+  test('test hooks should be properly implemented in WebSocketClient class', () => {
     const source = readWebSocketClientSource();
 
-    // Verify interface is defined (may not be exported)
-    expect(source).toContain('interface WebSocketClientInterface');
+    // Verify class is exported
+    expect(source).toContain('export class WebSocketClient');
 
-    // Verify both test methods are in interface as optional
-    const interfaceBlock = source.substring(
-      source.indexOf('interface WebSocketClientInterface'),
-      source.indexOf('interface WebSocketClientInterface') + 1500
-    );
-    expect(interfaceBlock).toContain('triggerCloseForTesting?(): void;');
-    expect(interfaceBlock).toContain('simulateMaxReconnectAttemptsForTesting?(): void;');
+    // Verify both test methods are implemented in class (not in interface)
+    expect(source).toContain('triggerCloseForTesting(): void {');
+    expect(source).toContain('simulateMaxReconnectAttemptsForTesting(): void {');
+
+    // Verify they are guarded by isTestEnvironment check
+    expect(source).toContain('if (!isTestEnvironment())');
   });
 
   test('WebSocketClient class should implement test hooks correctly', () => {

@@ -8,6 +8,8 @@
  * - Permanent: Won't recover without intervention (invalid data)
  */
 
+import type { ErrorId } from '@/constants/errorIds';
+
 /**
  * Exception category defines the type of failure
  */
@@ -61,7 +63,7 @@ export enum RecoveryStrategy {
  */
 export interface ClassifiedException {
   // Core error info
-  errorId: string;
+  errorId: ErrorId;
   message: string;
   originalError?: Error;
 
