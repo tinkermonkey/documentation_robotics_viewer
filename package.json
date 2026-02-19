@@ -13,6 +13,7 @@
     "server": "node server/index.cjs",
     "start": "bash scripts/start-servers.sh",
     "verify": "bash scripts/verify-setup.sh",
+    "sync:api-spec": "bash scripts/sync-api-spec.sh",
     "test": "playwright test",
     "test:debug": "playwright test --debug",
     "test:e2e": "playwright test --config=playwright.e2e.config.ts",

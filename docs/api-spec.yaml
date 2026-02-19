@@ -1,3 +1,9 @@
+# AUTO-GENERATED: This OpenAPI specification is programmatically generated.
+# DO NOT EDIT MANUALLY - all changes will be overwritten on next generation.
+# To update this spec, modify the route schemas in server.ts (using Zod schemas),
+# then regenerate with: npm run generate:openapi
+# This ensures the specification always matches the actual implementation.
+
 openapi: 3.0.3
 info:
   title: Documentation Robotics Visualization Server API
@@ -38,7 +44,7 @@ info:
 
     - **Schemas**: Bundled schemas from CLI installation
 
-    - **Model**: `.dr/` directory (JSON files)
+    - **Model**: `documentation-robotics/model/` directory (YAML/JSON files)
 
     - **Changesets**: In-memory storage (future: persistent storage)
 
@@ -136,7 +142,9 @@ paths:
   /api/spec:
     get:
       summary: Get JSON Schema specifications
-      description: "Returns all JSON Schema files from `.dr/schemas/` directory.
+      description: "Returns all JSON Schema files from the configured schema directory.
+
+        The schema directory location depends on the deployment environment: typically `.dr/schemas/` for local deployments, or configured via `SCHEMA_BASE_PATH` environment variable.
 
         Includes layer schemas, relationship catalog, and link registry."
       tags:
@@ -181,33 +189,6 @@ paths:
                 $ref: "#/components/schemas/Error"
               example:
                 error: Model manifest not found. Is dr CLI initialized?
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-  /api/link-registry:
-    get:
-      summary: Get cross-layer link registry
-      description: "Returns the link registry defining valid cross-layer relationships.
-
-        Located at `.dr/schemas/link-registry.json`."
-      tags:
-        - Schema
-      responses:
-        "200":
-          description: Link registry successfully retrieved
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/LinkRegistry"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-        "404":
-          description: Link registry not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "500":
           $ref: "#/components/responses/InternalServerError"
   /api/layers/{layerName}:
@@ -274,7 +255,7 @@ paths:
           description: Element ID
           schema:
             type: string
-          example: business-service-payment-processing
+          example: business.service.payment-processing
       responses:
         "200":
           description: Element data successfully retrieved
@@ -636,33 +617,33 @@ paths:
 
         1. **Sec-WebSocket-Protocol header** (recommended for browsers):
 
-           ```javascript
+        ```javascript
 
-           const ws = new WebSocket(''ws://localhost:8080/ws'', [''token'', ''YOUR_TOKEN'']);
+        const ws = new WebSocket(''ws://localhost:8080/ws'', [''token'', ''YOUR_TOKEN'']);
 
-           ```
+        ```
 
-           The browser will send: `Sec-WebSocket-Protocol: token, YOUR_TOKEN`
+        The browser will send: `Sec-WebSocket-Protocol: token, YOUR_TOKEN`
 
 
         2. **Query parameter** (simple, works everywhere):
 
-           ```
+        ```
 
-           ws://localhost:8080/ws?token=YOUR_TOKEN
+        ws://localhost:8080/ws?token=YOUR_TOKEN
 
-           ```
+        ```
 
 
         3. **Authorization header** (non-browser clients only):
 
-           ```
+        ```
 
-           Authorization: Bearer YOUR_TOKEN
+        Authorization: Bearer YOUR_TOKEN
 
-           ```
+        ```
 
-           Note: Not supported by browser WebSocket API - use method #1 instead
+        Note: Not supported by browser WebSocket API - use method #1 instead
 
 
         ## Legacy Protocol - Model Updates
@@ -699,6 +680,8 @@ paths:
         - `{"type": "annotation.updated", "annotationId": "..."}` - Annotation updated
 
         - `{"type": "annotation.deleted", "annotationId": "..."}` - Annotation deleted
+
+        - `{"type": "annotation.reply.added", "annotationId": "...", "replyId": "...", "timestamp": "..."}` - Reply added to annotation
 
         - `{"type": "annotation", "data": {...}}` - Annotation broadcast (legacy, from annotate message)
 
@@ -908,13 +891,10 @@ components:
           additionalProperties:
             type: object
           description: Map of schema filename to JSON Schema object
-        schema_count:
+        schemaCount:
           type: integer
           description: Number of schemas included
           example: 12
-        schemaCount:
-          type: integer
-          description: Alternative field name for schema count
         manifest:
           type: object
           description: Schema manifest metadata
@@ -941,8 +921,6 @@ components:
           $ref: "#/components/schemas/RelationshipCatalog"
         relationship_catalog:
           $ref: "#/components/schemas/RelationshipCatalog"
-        linkRegistry:
-          $ref: "#/components/schemas/LinkRegistry"
     RelationshipCatalog:
       type: object
       properties:
@@ -963,92 +941,6 @@ components:
                 type: string
               description:
                 type: string
-    LinkRegistry:
-      type: object
-      required:
-        - version
-        - linkTypes
-        - categories
-        - metadata
-      properties:
-        version:
-          type: string
-          example: 1.0.0
-        linkTypes:
-          type: array
-          items:
-            $ref: "#/components/schemas/LinkType"
-        categories:
-          type: object
-          additionalProperties:
-            $ref: "#/components/schemas/LinkCategory"
-        metadata:
-          type: object
-          properties:
-            generatedDate:
-              type: string
-              format: date-time
-            generatedFrom:
-              type: string
-            generator:
-              type: string
-            totalLinkTypes:
-              type: integer
-            totalCategories:
-              type: integer
-            version:
-              type: string
-            schemaVersion:
-              type: string
-    LinkType:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        category:
-          type: string
-        sourceLayers:
-          type: array
-          items:
-            type: string
-        targetLayer:
-          type: string
-        targetElementTypes:
-          type: array
-          items:
-            type: string
-        fieldPaths:
-          type: array
-          items:
-            type: string
-        cardinality:
-          type: string
-        format:
-          type: string
-        description:
-          type: string
-        examples:
-          type: array
-          items:
-            type: string
-        validationRules:
-          type: object
-          properties:
-            targetExists:
-              type: boolean
-            targetType:
-              type: string
-    LinkCategory:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        color:
-          type: string
     ModelResponse:
       type: object
       required:
