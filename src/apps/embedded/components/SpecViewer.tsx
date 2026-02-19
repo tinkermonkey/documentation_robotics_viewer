@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import { SpecDataResponse } from '../services/embeddedDataLoader'
+import { SpecDataResponse, SchemaDefinition } from '../services/embeddedDataLoader'
 import { Badge } from 'flowbite-react'
 import ExpandableSection from './common/ExpandableSection'
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid'
@@ -12,16 +12,6 @@ import MetadataGrid, { MetadataItem } from './common/MetadataGrid'
 interface SpecViewerProps {
   specData: SpecDataResponse
   selectedSchemaId: string | null
-}
-
-/**
- * Raw JSON Schema property definition
- */
-interface RawSchemaProperty {
-  type?: string | string[]
-  description?: string
-  format?: string
-  [key: string]: unknown
 }
 
 const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) => {
@@ -63,7 +53,7 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
       )
     }
 
-    const definitions = schema.definitions || {}
+    const definitions = (schema.definitions || {}) as Record<string, SchemaDefinition>
     const defNames = Object.keys(definitions)
 
     const schemaMetadata: MetadataItem[] = [
@@ -75,9 +65,9 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
         {/* Schema Header */}
         <section className="mb-8" data-testid="schema-definitions-section">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            {schema.title || selectedSchemaId}
+            {typeof schema.title === 'string' ? schema.title : selectedSchemaId}
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">{schema.description}</p>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">{typeof schema.description === 'string' ? schema.description : ''}</p>
           <MetadataGrid items={schemaMetadata} columns={3} />
 
           <div className="mt-6">
@@ -92,9 +82,9 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
                   <ExpandableSection
                     key={defName}
                     title={defName}
-                    badge={definition.type}
+                    badge={typeof definition.type === 'string' ? definition.type : Array.isArray(definition.type) ? definition.type.join(', ') : 'object'}
                   >
-                    {definition.description && (
+                    {typeof definition.description === 'string' && definition.description && (
                       <p className="text-gray-700 dark:text-gray-300 mb-4">
                         {definition.description}
                       </p>
@@ -106,8 +96,8 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
                           Properties:
                         </h5>
                         <ul className="space-y-2 ml-4">
-                          {Object.entries(definition.properties).map(([propName, propSchema]) => {
-                            const prop = propSchema as RawSchemaProperty
+                          {Object.entries(definition.properties || {}).map(([propName, propSchema]) => {
+                            const prop = propSchema as SchemaDefinition
                             return (
                               <li key={propName} className="text-sm">
                                 <div className="flex items-start gap-2">
@@ -115,13 +105,13 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
                                     {propName}
                                   </code>
                                   <span className="text-gray-600 dark:text-gray-400">
-                                    {prop.type || 'object'}
-                                    {prop.format && ` (${prop.format})`}
+                                    {typeof prop.type === 'string' ? prop.type : Array.isArray(prop.type) ? prop.type.join(', ') : 'object'}
+                                    {typeof prop.format === 'string' && prop.format && ` (${prop.format})`}
                                   </span>
-                                  {definition.required?.includes(propName) && (
+                                  {(definition.required as string[] | undefined)?.includes(propName) && (
                                     <Badge color="failure" size="xs">required</Badge>
                                   )}
-                                  {prop.description && (
+                                  {typeof prop.description === 'string' && prop.description && (
                                     <p className="text-gray-600 dark:text-gray-400 ml-2">
                                       {prop.description}
                                     </p>
