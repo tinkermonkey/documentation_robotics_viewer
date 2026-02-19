@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Phase 4: Edge Bundling, Viewport Culling, and Progressive Loading', () => {
+test.describe('Edge Bundling, Viewport Culling, and Progressive Loading', () => {
   // Note: Tests run with E2E config which starts DR CLI server on localhost:3000 (backend)
   const VIEWPORT_MARGIN = 100;
 
