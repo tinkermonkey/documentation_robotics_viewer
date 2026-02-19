@@ -214,6 +214,40 @@ export class EmbeddedDataLoader {
   }
 
   /**
+   * Load a specific layer by name
+   */
+  async loadLayer(layerName: string): Promise<{ name: string; elements: any[]; elementCount: number }> {
+    const response = await fetch(`${API_BASE}/layers/${encodeURIComponent(layerName)}`, {
+      headers: getAuthHeaders(),
+      credentials: 'include'
+    });
+
+    await ensureOk(response, `load layer ${layerName}`);
+
+    const data = await response.json();
+    console.log(`[DataLoader] Loaded layer ${layerName}:`, {
+      elementCount: data.elementCount || data.elements?.length || 0
+    });
+    return data;
+  }
+
+  /**
+   * Load a specific element by ID
+   */
+  async loadElement(elementId: string): Promise<any> {
+    const response = await fetch(`${API_BASE}/elements/${encodeURIComponent(elementId)}`, {
+      headers: getAuthHeaders(),
+      credentials: 'include'
+    });
+
+    await ensureOk(response, `load element ${elementId}`);
+
+    const data = await response.json();
+    console.log(`[DataLoader] Loaded element ${elementId}`);
+    return data;
+  }
+
+  /**
    * Load the current model (YAML instance format)
    */
   async loadModel(): Promise<MetaModel> {

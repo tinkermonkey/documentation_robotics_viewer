@@ -300,7 +300,31 @@ npm test
 
 # Run E2E tests with UI
 npm run test:e2e:ui
+
+# Sync API specification from upstream DR CLI repository
+npm run sync:api-spec
 ```
+
+### Syncing API Specification
+
+The `npm run sync:api-spec` command pulls the latest API specification from the upstream Documentation Robotics CLI repository. This keeps the local `docs/api-spec.yaml` synchronized with the official API definition.
+
+**When to use:**
+- Before implementing changes to API client code
+- When updating to a new version of the DR CLI
+- When the API specification has changed in the upstream repository
+
+**What it does:**
+1. Fetches the latest `api-spec.yaml` from the official DR CLI repository
+2. Saves it to `docs/api-spec.yaml` in your local project
+3. The API specification is then used by the REST API client (`EmbeddedDataLoader`) to determine available endpoints
+
+**Usage:**
+```bash
+npm run sync:api-spec
+```
+
+The command is a wrapper around the `scripts/sync-api-spec.sh` script, which handles the actual download and validation.
 
 ### Troubleshooting
 
