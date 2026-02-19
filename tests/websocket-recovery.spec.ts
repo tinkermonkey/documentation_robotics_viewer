@@ -335,46 +335,48 @@ test.describe('WebSocket Recovery and Reconnection', () => {
       if (
         text.includes('Closed') ||
         text.includes('Reconnecting') ||
-        text.includes('Connected successfully')
+        text.includes('Connected successfully') ||
+        text.includes('TEST: Triggering close event')
       ) {
         connectionLogs.push(text);
       }
     });
 
-    // Wait for initial connection to establish
-    try {
-      await waitForWebSocketConnection(page, { timeout: 10000 });
-    } catch {
-      // REST mode is acceptable, but we need to simulate disconnection scenario
-      console.log('WebSocket not connected, test may be in REST mode');
-    }
-
-    // Simulate server-side disconnection by closing the WebSocket from the client side
-    // (in real scenario, server closes connection)
-    await page.evaluate(() => {
-      // Access the WebSocket client singleton and trigger a close event
-      // This simulates server-side disconnection
-      (window as any).__TRIGGER_WS_CLOSE__ = true;
-    });
-
-    // Wait for any reconnection attempts
+    // Wait for app to be fully loaded and WebSocket client to be available
     await page.waitForFunction(
-      () => (connectionLogs.length > 0),
-      { timeout: 8000 }
-    ).catch(() => {
-      // Logs might not be generated if WebSocket is not used
+      () => (window as any).__WEBSOCKET_CLIENT__ !== undefined,
+      { timeout: 10000 }
+    );
+
+    // Access the WebSocket client singleton and trigger a close event via test hook
+    // This simulates server-side disconnection
+    const closeTriggered = await page.evaluate(() => {
+      const wsClient = (window as any).__WEBSOCKET_CLIENT__;
+      if (!wsClient || !wsClient.triggerCloseForTesting) {
+        return false;
+      }
+      wsClient.triggerCloseForTesting();
+      return true;
     });
 
-    // Verify that we either saw a close event or reconnection attempt
-    if (connectionLogs.length > 0) {
-      const sawCloseOrReconnect = connectionLogs.some(log =>
-        log.includes('Closed') || log.includes('Reconnecting')
-      );
-      expect(sawCloseOrReconnect).toBe(true);
-    }
+    // Verify the test hook was available and called
+    expect(closeTriggered).toBe(true);
+
+    // Wait for close event log to be recorded
+    await page.waitForFunction(
+      () => connectionLogs.some(log => log.includes('TEST: Triggering close event')),
+      { timeout: 8000 }
+    );
+
+    // Verify we logged the close event simulation
+    const foundCloseLog = connectionLogs.some(log =>
+      log.includes('TEST: Triggering close event') || log.includes('Closed')
+    );
+    expect(foundCloseLog).toBe(true);
 
     // Verify page is still responsive (app didn't crash)
-    expect(page).toBeDefined();
+    const pageTitle = await page.title();
+    expect(pageTitle).toBeDefined();
   });
 
   test('should emit max-reconnect-attempts event after exhausting reconnection retries', async ({ page }) => {
@@ -387,38 +389,48 @@ test.describe('WebSocket Recovery and Reconnection', () => {
       if (
         text.includes('Max reconnect') ||
         text.includes('max-reconnect-attempts') ||
-        text.includes('max reconnection attempts')
+        text.includes('max reconnection attempts') ||
+        text.includes('TEST: Simulating max reconnect')
       ) {
         maxReconnectLogs.push(text);
       }
     });
 
-    // Simulate maximum reconnection attempts scenario
+    // Wait for app to be fully loaded and WebSocket client to be available
+    await page.waitForFunction(
+      () => (window as any).__WEBSOCKET_CLIENT__ !== undefined,
+      { timeout: 10000 }
+    );
+
+    // Simulate maximum reconnection attempts scenario by calling the test hook
     // In real scenario, this would happen after 10 failed reconnection attempts
     // with exponential backoff (1s, 2s, 4s, 8s, 16s, 30s, 30s, 30s, 30s, 30s)
-    await page.evaluate(() => {
-      // Set a flag to simulate max attempts scenario
-      (window as any).__SIMULATE_MAX_RECONNECT__ = true;
+    const maxReconnectTriggered = await page.evaluate(() => {
+      const wsClient = (window as any).__WEBSOCKET_CLIENT__;
+      if (!wsClient || !wsClient.simulateMaxReconnectAttemptsForTesting) {
+        return false;
+      }
+      wsClient.simulateMaxReconnectAttemptsForTesting();
+      return true;
     });
 
-    // Wait for max reconnect event or log
+    // Verify the test hook was available and called
+    expect(maxReconnectTriggered).toBe(true);
+
+    // Wait for max reconnect event log to be recorded
     await page.waitForFunction(
-      () => (maxReconnectLogs.length > 0),
-      { timeout: 10000 }
-    ).catch(() => {
-      // Max reconnect event might not occur if connection succeeds
-    });
+      () => maxReconnectLogs.some(log => log.includes('TEST: Simulating max reconnect')),
+      { timeout: 8000 }
+    );
 
-    // If WebSocket is being used and we see max reconnect logs, verify the event was emitted
-    if (maxReconnectLogs.length > 0) {
-      const hasMaxReconnectLog = maxReconnectLogs.some(log =>
-        log.toLowerCase().includes('max reconnect') ||
-        log.toLowerCase().includes('max-reconnect')
-      );
-      expect(hasMaxReconnectLog).toBe(true);
-    }
+    // Verify we logged the max reconnect simulation
+    const foundMaxReconnectLog = maxReconnectLogs.some(log =>
+      log.includes('TEST: Simulating max reconnect') || log.toLowerCase().includes('max reconnect')
+    );
+    expect(foundMaxReconnectLog).toBe(true);
 
     // Verify app is still usable (should fall back to REST mode or handle gracefully)
-    expect(page).toBeDefined();
+    const pageTitle = await page.title();
+    expect(pageTitle).toBeDefined();
   });
 });

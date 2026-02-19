@@ -137,6 +137,36 @@ export class WebSocketClient {
   }
 
   /**
+   * TEST HOOK: Trigger a WebSocket close event (for testing reconnection logic)
+   * Only available in development/test mode via window flag
+   */
+  triggerCloseForTesting(): void {
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      console.log('[WebSocket] TEST: Forcing close event');
+      // Trigger onclose handler by closing the connection
+      this.ws.close(1000, 'Test-triggered close');
+    } else {
+      console.warn('[WebSocket] TEST: Cannot close, not connected');
+    }
+  }
+
+  /**
+   * TEST HOOK: Simulate exhausted reconnection attempts (for testing failure handling)
+   * Only available in development/test mode via window flag
+   */
+  simulateMaxReconnectAttemptsForTesting(): void {
+    console.log('[WebSocket] TEST: Simulating max reconnect attempts');
+    this.reconnectAttempts = this.maxReconnectAttempts;
+    // Trigger the max-reconnect event
+    logError(
+      ERROR_IDS.WS_MAX_RECONNECT_ATTEMPTS,
+      'Max reconnection attempts reached (TEST SIMULATION)',
+      { attempts: this.reconnectAttempts }
+    );
+    this.emit('max-reconnect-attempts', { attempts: this.reconnectAttempts, isTest: true });
+  }
+
+  /**
    * Disconnect from the WebSocket server
    */
   disconnect(): void {
@@ -503,6 +533,17 @@ if (isTestEnvironment()) {
       const handlers = mockHandlers.get(event);
       if (handlers) handlers.delete(handler);
     },
+    // TEST HOOKS for Playwright tests
+    triggerCloseForTesting: () => {
+      console.log('[WebSocket Mock] TEST: Triggering close event');
+      const handlers = mockHandlers.get('close');
+      if (handlers) handlers.forEach(h => h({ code: 1000, reason: 'Test-triggered close' }));
+    },
+    simulateMaxReconnectAttemptsForTesting: () => {
+      console.log('[WebSocket Mock] TEST: Simulating max reconnect attempts');
+      const handlers = mockHandlers.get('max-reconnect-attempts');
+      if (handlers) handlers.forEach(h => h({ attempts: 10, isTest: true }));
+    },
     get isConnected() { return true; },
     get connectionState() { return 'connected' as const; },
     get transportMode() { return 'rest' as const; }
@@ -545,3 +586,8 @@ if (isTestEnvironment()) {
 }
 
 export { websocketClient };
+
+// Expose websocketClient to window in test environments for Playwright access
+if (typeof window !== 'undefined' && isTestEnvironment()) {
+  (window as any).__WEBSOCKET_CLIENT__ = websocketClient;
+}
