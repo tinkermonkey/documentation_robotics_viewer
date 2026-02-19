@@ -38,6 +38,11 @@ test.describe('Story Error Filtering', () => {
         expect(isExpectedConsoleError('ECONNREFUSED 127.0.0.1:3002')).toBe(true);
       });
 
+      test('should match ECONNREFUSED port 8080 formats', () => {
+        expect(isExpectedConsoleError('ECONNREFUSED localhost:8080')).toBe(true);
+        expect(isExpectedConsoleError('ECONNREFUSED 127.0.0.1:8080')).toBe(true);
+      });
+
       test('should NOT match other port connection errors', () => {
         const error = 'ECONNREFUSED: connection refused localhost:5000';
         expect(isExpectedConsoleError(error)).toBe(false);
@@ -198,6 +203,7 @@ test.describe('Story Error Filtering', () => {
     test.describe('Failed Resource Load Filter', () => {
       test('should match failed resource loads from known test ports', () => {
         expect(isExpectedConsoleError('Failed to load resource: localhost:3002/api/model')).toBe(true);
+        expect(isExpectedConsoleError('Failed to load resource: localhost:8080/api/model')).toBe(true);
       });
 
       test('should NOT match failed resource loads from unknown ports', () => {
@@ -215,6 +221,8 @@ test.describe('Story Error Filtering', () => {
       test('should match 500 errors from localhost dev servers', () => {
         expect(isExpectedConsoleError('the server responded with a status of 500 at localhost:3002')).toBe(true);
         expect(isExpectedConsoleError('the server responded with a status of 502 at localhost:3002')).toBe(true);
+        expect(isExpectedConsoleError('the server responded with a status of 500 at localhost:8080')).toBe(true);
+        expect(isExpectedConsoleError('the server responded with a status of 502 at localhost:8080')).toBe(true);
       });
 
       test('should NOT match 500 errors without localhost context', () => {

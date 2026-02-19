@@ -6,9 +6,9 @@ import { Release } from '../types';
  * Uses server proxy to avoid CORS issues
  *
  * NOTE: This service requires a separate backend server that is not included
- * with the embedded viewer. The local reference server (port 3002) has been
- * removed. If GitHub release downloading is needed, a custom backend must
- * be implemented or use the DR CLI server if it provides this functionality.
+ * with the embedded viewer. The local reference server has been removed.
+ * If GitHub release downloading is needed, use the DR CLI server (port 8080)
+ * or implement a custom backend service.
  */
 export class GitHubService {
   private serverUrl: string;

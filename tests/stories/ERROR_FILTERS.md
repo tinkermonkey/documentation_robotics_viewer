@@ -16,8 +16,8 @@ This document describes the **specific regex patterns** used to filter expected 
 **Status**: Expected in development environment
 
 ### 2. DataLoader Backend Connection Failure
-**Pattern**: `/ECONNREFUSED.*(localhost|127\.0\.0\.1):3002/`
-**Reason**: Connection refused when DataLoader backend service is not running on port 3002. Stories render with mock or local data.
+**Pattern**: `/ECONNREFUSED.*(localhost|127\.0\.0\.1):(3002|8080)/`
+**Reason**: Connection refused when DataLoader or DR CLI service is not running on port 3002 or 8080. Stories render with mock or local data.
 **Status**: Expected when running tests without full backend stack
 
 ### 3. Model Loading Failure
@@ -66,8 +66,8 @@ This document describes the **specific regex patterns** used to filter expected 
 **Status**: Expected when model endpoint not available
 
 ### 12. Failed Resource Loads
-**Pattern**: `/Failed to load resource.*localhost:3002/`
-**Reason**: Browser resource load failures when DataLoader service unavailable in test environment (localhost only, not production).
+**Pattern**: `/Failed to load resource.*localhost:(3002|8080)/`
+**Reason**: Browser resource load failures when DataLoader or DR CLI service unavailable in test environment (localhost only, not production).
 **Status**: Expected when running tests in isolation
 
 ### 13. React Warning Messages (Whitelisted Patterns)

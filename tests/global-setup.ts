@@ -118,8 +118,7 @@ async function checkDRServer(
     attemptCount++;
     try {
       const response = await fetch(url, {
-        method: 'GET',
-        timeout: 5000
+        method: 'GET'
       });
       if (response.ok) {
         const elapsedTime = Date.now() - startTime;
@@ -154,8 +153,7 @@ async function checkAuthRequired(): Promise<boolean> {
     try {
       // Try to access /api/model without auth
       const response = await fetch(DR_API_URL + '/api/model', {
-        signal: controller.signal,
-        timeout: CONFIG.AUTH_CHECK_TIMEOUT
+        signal: controller.signal
       });
 
       clearTimeout(timeoutId);

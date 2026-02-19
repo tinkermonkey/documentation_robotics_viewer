@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import { waitForElement } from './helpers/testUtils';
 
 /**
  * E2E tests for auth token race condition fix

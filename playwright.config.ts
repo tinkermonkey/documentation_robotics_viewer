@@ -23,6 +23,7 @@ export default defineConfig({
     '**/sidebar-consolidation.spec.ts',
     '**/zoom-to-layer.spec.ts',
     '**/edge-bundling-viewport-culling.spec.ts',
+    '**/websocket-recovery.spec.ts',
     // Story tests (use playwright.refinement.config.ts)
     '**/stories/**/*.spec.ts',
   ],

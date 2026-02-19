@@ -18,6 +18,7 @@ import { defineConfig, devices } from '@playwright/test';
  *   npm run test:auth:debug        # Run with debug mode
  *
  * Environment Variables:
+ *   BASE_URL                       # Override frontend app URL (default: http://localhost:3001)
  *   DR_API_URL                     # Override DR CLI API URL (default: http://localhost:8080)
  *   DR_WS_URL                      # Override DR CLI WebSocket URL (default: ws://localhost:8080)
  */
@@ -35,7 +36,7 @@ export default defineConfig({
     ['list'],
   ],
   use: {
-    baseURL: process.env.DR_API_URL || 'http://localhost:8080',
+    baseURL: process.env.BASE_URL || 'http://localhost:3001',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
