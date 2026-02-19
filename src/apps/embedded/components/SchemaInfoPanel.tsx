@@ -125,10 +125,10 @@ export const SchemaInfoPanel: React.FC<SchemaInfoPanelProps> = ({ className = ''
         {/* Spec Data Loading Error */}
         {specDataError && (
           <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-            <div className="text-xs font-medium text-yellow-600 dark:text-yellow-400 mb-2">
-              Schema Load Warning
+            <div className="text-xs font-medium text-red-600 dark:text-red-400 mb-2">
+              Schema Load Error
             </div>
-            <div className="text-xs text-yellow-700 dark:text-yellow-300 bg-yellow-50 dark:bg-yellow-900/20 p-2 rounded">
+            <div className="text-xs text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/20 p-2 rounded">
               {specDataError}
             </div>
           </div>

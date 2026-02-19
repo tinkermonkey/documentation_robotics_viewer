@@ -156,9 +156,14 @@ export class WebSocketClient {
 
   /**
    * TEST HOOK: Trigger a WebSocket close event (for testing reconnection logic)
-   * Only available in development/test mode via window flag
+   * Only available in development/test mode - guarded by environment check
    */
   triggerCloseForTesting(): void {
+    if (!isTestEnvironment()) {
+      console.warn('[WebSocket] Test hook called in production - ignoring');
+      return;
+    }
+
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       console.log('[WebSocket] TEST: Forcing close event');
       // Trigger onclose handler by closing the connection
@@ -170,9 +175,14 @@ export class WebSocketClient {
 
   /**
    * TEST HOOK: Simulate exhausted reconnection attempts (for testing failure handling)
-   * Only available in development/test mode via window flag
+   * Only available in development/test mode - guarded by environment check
    */
   simulateMaxReconnectAttemptsForTesting(): void {
+    if (!isTestEnvironment()) {
+      console.warn('[WebSocket] Test hook called in production - ignoring');
+      return;
+    }
+
     console.log('[WebSocket] TEST: Simulating max reconnect attempts');
     this.reconnectAttempts = this.maxReconnectAttempts;
     // Trigger the max-reconnect event
@@ -375,14 +385,13 @@ export class WebSocketClient {
         { error: event instanceof ErrorEvent ? event.message : String(event) }
       );
     } else {
-      // In test environments, log at debug level instead of error
+      // In test environments, log at debug level to reduce noise but still emit the error event
       console.debug('[WebSocket] Error in test environment:', event);
     }
 
-    // Emit error event unless in test environment
-    if (!isTestEnv) {
-      this.emit('error', { error: event });
-    }
+    // Always emit error event regardless of environment
+    // Tests can choose to ignore or handle these events as needed
+    this.emit('error', { error: event });
   }
 
   /**

@@ -87,12 +87,30 @@ export interface SchemaManifest {
   files?: Record<string, SchemaManifestFileEntry>;
 }
 
+/**
+ * JSON Schema definition with common properties
+ * Supports both minimal schemas and full JSON Schema Draft 7+ schemas
+ */
+export interface SchemaDefinition {
+  type?: string | string[];
+  title?: string;
+  description?: string;
+  properties?: Record<string, SchemaDefinition>;
+  required?: string[];
+  items?: SchemaDefinition;
+  enum?: unknown[];
+  const?: unknown;
+  default?: unknown;
+  examples?: unknown[];
+  [key: string]: unknown;
+}
+
 export interface SpecDataResponse {
   version: string;
   type: string;
   description?: string;
   source?: string;
-  schemas: Record<string, any>;
+  schemas: Record<string, SchemaDefinition>;
   schema_count?: number;
   schemaCount?: number;
   manifest?: SchemaManifest;

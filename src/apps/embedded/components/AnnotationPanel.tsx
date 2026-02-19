@@ -13,7 +13,12 @@ import { Annotation } from '../types/annotations';
 import { parseMentions, resolveElementName } from '../utils/mentionParser';
 import { EmptyState, LoadingState, ErrorState } from './shared';
 
-const AnnotationPanel: React.FC = () => {
+export interface AnnotationPanelProps {
+  /** Error from annotation loading */
+  loadError?: string | null;
+}
+
+const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) => {
   const {
     annotations,
     selectedElementId,
@@ -315,6 +320,21 @@ const AnnotationPanel: React.FC = () => {
 
   if (error) {
     return <ErrorState variant="panel" message={error} />;
+  }
+
+  if (loadError) {
+    return (
+      <div className="p-4">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
+          <div className="text-xs font-medium text-red-600 dark:text-red-400 mb-1">
+            Failed to Load Annotations
+          </div>
+          <div className="text-xs text-red-700 dark:text-red-300">
+            {loadError}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (annotations.length === 0) {

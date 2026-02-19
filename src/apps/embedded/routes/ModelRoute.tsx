@@ -70,6 +70,7 @@ export default function ModelRoute() {
   const annotationStore = useAnnotationStore();
   const [specData, setSpecData] = useState<SpecDataResponse | null>(null);
   const [specDataError, setSpecDataError] = useState<string | null>(null);
+  const [annotationsError, setAnnotationsError] = useState<string | null>(null);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
   const [selectedLayerId, setSelectedLayerId] = useState<string | null>(search?.layer || null);
@@ -135,9 +136,12 @@ export default function ModelRoute() {
       try {
         const annotations = await embeddedDataLoader.loadAnnotations();
         annotationStore.setAnnotations(annotations);
+        setAnnotationsError(null);
         console.log('[ModelRoute] Annotations loaded:', annotations.length, 'annotations');
       } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load annotations';
         console.warn('[ModelRoute] Failed to load annotations:', err);
+        setAnnotationsError(errorMessage);
         // Continue loading other data even if annotations fail
         annotationStore.setAnnotations([]);
       }
@@ -190,14 +194,14 @@ export default function ModelRoute() {
       rightSidebarContent={
         activeView === 'graph' ? (
           <>
-            <AnnotationPanel />
+            <AnnotationPanel loadError={annotationsError} />
             <LayerTypesLegend model={model} />
             <NodeDetailsPanel selectedNode={selectedNode} model={model} />
             <GraphStatisticsPanel model={model} />
           </>
         ) : (
           <>
-            <AnnotationPanel />
+            <AnnotationPanel loadError={annotationsError} />
             <HighlightedPathPanel highlightedPath={highlightedPath} />
             <SchemaInfoPanel specDataError={specDataError} />
           </>
