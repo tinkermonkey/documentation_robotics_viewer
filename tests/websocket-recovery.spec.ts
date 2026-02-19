@@ -149,8 +149,12 @@ test.describe('WebSocket Recovery and Reconnection', () => {
       }
     });
 
-    // Wait for some activity
-    await page.waitForTimeout(2000);
+    // Wait for some activity to be logged
+    await page.waitForFunction(() => {
+      return (window as any).__LOG_ACTIVITY__ !== undefined;
+    }, { timeout: 5000 }).catch(() => {
+      // Activity logging might not be enabled, that's okay
+    });
 
     // Connection should remain stable
     const hasErrors = connectionStates.some(log =>
@@ -268,7 +272,12 @@ test.describe('WebSocket Recovery and Reconnection', () => {
     });
 
     // Wait for connection to establish and potentially fail
-    await page.waitForTimeout(5000);
+    await page.waitForFunction(() => {
+      // Wait for either connection success or at least one reconnect attempt log
+      return (window as any).__RECONNECT_STARTED__ === true;
+    }, { timeout: 10000 }).catch(() => {
+      // Reconnect logs might not be generated if connection succeeds immediately
+    });
 
     // If we saw reconnect logs, verify they show increasing delays
     if (reconnectLogEntries.length > 1) {
@@ -297,8 +306,13 @@ test.describe('WebSocket Recovery and Reconnection', () => {
       }
     });
 
-    // Wait for connection attempts
-    await page.waitForTimeout(3000);
+    // Wait for connection attempts to be logged or error state to be observable
+    await page.waitForFunction(() => {
+      // Check if app has logged any connection attempt info
+      return (window as any).__CONNECTION_ATTEMPT_LOGGED__ === true;
+    }, { timeout: 8000 }).catch(() => {
+      // Connection might succeed without errors being logged
+    });
 
     // Filter for only critical errors (not expected connection detection errors)
     const criticalErrors = errorLogs.filter(log =>

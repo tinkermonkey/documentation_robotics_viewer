@@ -69,7 +69,6 @@ test.describe('Environment Variable Overrides', () => {
       expect(baseUrl).toMatch(/^https?:\/\//);
     } else {
       // Default should be localhost:3001
-      const defaultBase = 'http://localhost:3001';
       expect(baseUrl).toBeUndefined();
     }
   });
