@@ -51,14 +51,6 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
     }
   }, [highlightedElementId, model, onPathHighlight]);
 
-  // Helper function to normalize layer names
-  const normalizeLayerName = (layerRef: string): string => {
-    return layerRef
-      .replace(/^\d+-/, '')
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join('');
-  };
 
 
   if (!model) {

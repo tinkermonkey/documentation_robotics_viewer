@@ -11,7 +11,7 @@ import { DataLoader } from '../../../core/services/dataLoader';
 import { GitHubService } from '../../../core/services/githubService';
 import { LocalFileLoader } from '../../../core/services/localFileLoader';
 import { SpecParser } from '../../../core/services/specParser';
-import { MetaModel, Relationship } from '../../../core/types';
+import { MetaModel } from '../../../core/types';
 import { SpecDataResponse } from '../services/embeddedDataLoader';
 import { LoadingState, ErrorState, EmptyState } from './shared';
 import { LayoutEngineType } from '@/core/layout/engines';

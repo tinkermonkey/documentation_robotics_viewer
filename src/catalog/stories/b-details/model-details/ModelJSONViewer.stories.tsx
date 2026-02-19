@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import ModelJSONViewer from '@/apps/embedded/components/ModelJSONViewer';
 import type { MetaModel } from '@/core/types/model';
-import { LayerType } from '@/core/types/layers';
 
 const meta = {
   title: 'B Details / Model Details / ModelJSONViewer',

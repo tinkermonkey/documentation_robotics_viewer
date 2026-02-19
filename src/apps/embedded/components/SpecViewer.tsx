@@ -8,7 +8,6 @@ import { SpecDataResponse } from '../services/embeddedDataLoader'
 import { Badge } from 'flowbite-react'
 import ExpandableSection from './common/ExpandableSection'
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid'
-import { LayerType } from '../../../core/types'
 
 interface SpecViewerProps {
   specData: SpecDataResponse

@@ -4,7 +4,6 @@
  * spec visualization and schema-related components
  */
 
-import { LayerType } from '../../core/types';
 import type {
   SpecDataResponse
 } from '../../apps/embedded/services/embeddedDataLoader';
