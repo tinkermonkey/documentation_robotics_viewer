@@ -58,7 +58,8 @@ async function globalSetup(config: FullConfig) {
           console.log('   ✓ Auth token is valid');
 
           // Store token in localStorage for all tests
-          await setupAuthForTests(token);
+          const baseURL = config.use?.baseURL || 'http://localhost:3001';
+          await setupAuthForTests(token, baseURL);
           console.log('   ✓ Auth token configured for tests');
         } else {
           throw new Error(
@@ -96,7 +97,7 @@ async function globalSetup(config: FullConfig) {
     console.error(`     curl ${DR_API_URL}/health\n`);
     console.error('  3. Set custom URL if needed:');
     console.error('     DR_API_URL=http://your-server:8080 npm run test:e2e\n');
-    console.error('See: documentation/TESTING.md for more help\n');
+    console.error('See: tests/README.md for more help\n');
     process.exit(1);
   }
 }
@@ -210,8 +211,10 @@ async function verifyToken(token: string): Promise<boolean> {
 
 /**
  * Set up authentication token in browser localStorage for all tests
+ * @param token - Auth token to store
+ * @param baseURL - Frontend base URL (respects BASE_URL env var)
  */
-async function setupAuthForTests(token: string): Promise<void> {
+async function setupAuthForTests(token: string, baseURL: string = 'http://localhost:3001'): Promise<void> {
   const browser = await chromium.launch();
   let context = null;
   let page = null;
@@ -224,7 +227,7 @@ async function setupAuthForTests(token: string): Promise<void> {
     page.setDefaultTimeout(CONFIG.AUTH_SETUP_TIMEOUT);
 
     // Navigate to the app
-    await page.goto('http://localhost:3001', { waitUntil: 'domcontentloaded' });
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
 
     // Set auth token in localStorage
     await page.evaluate((authToken) => {

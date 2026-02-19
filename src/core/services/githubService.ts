@@ -4,6 +4,11 @@ import { Release } from '../types';
 /**
  * Service for interacting with GitHub releases via backend server
  * Uses server proxy to avoid CORS issues
+ *
+ * NOTE: This service requires a separate backend server that is not included
+ * with the embedded viewer. The local reference server (port 3002) has been
+ * removed. If GitHub release downloading is needed, a custom backend must
+ * be implemented or use the DR CLI server if it provides this functionality.
  */
 export class GitHubService {
   private serverUrl: string;
@@ -31,7 +36,9 @@ export class GitHubService {
       // Provide helpful error for network failures
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error(
-          'Unable to connect to server. Please ensure the server is running on port 3002.'
+          `Unable to connect to backend server at ${this.serverUrl}. ` +
+          'GitHub release downloading requires a custom backend server. ' +
+          'This functionality is optional and not provided by the embedded viewer.'
         );
       }
       throw error;
@@ -65,7 +72,9 @@ export class GitHubService {
       console.error('Error fetching latest spec release:', error);
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error(
-          'Unable to connect to server. Please ensure the server is running on port 3002.'
+          `Unable to connect to backend server at ${this.serverUrl}. ` +
+          'GitHub release downloading requires a custom backend server. ' +
+          'This functionality is optional and not provided by the embedded viewer.'
         );
       }
       throw error;
@@ -107,7 +116,9 @@ export class GitHubService {
       console.error('Error downloading schemas:', error);
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error(
-          'Unable to connect to server. Please ensure the server is running on port 3002.'
+          `Unable to connect to backend server at ${this.serverUrl}. ` +
+          'GitHub release downloading requires a custom backend server. ' +
+          'This functionality is optional and not provided by the embedded viewer.'
         );
       }
       throw error;
