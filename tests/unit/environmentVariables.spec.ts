@@ -14,37 +14,33 @@ import { test, expect } from '@playwright/test';
 test.describe('Environment Variable Overrides', () => {
   test('DR_API_URL should be a valid HTTP URL when set', () => {
     const apiUrl = process.env.DR_API_URL;
+    test.skip(!apiUrl, 'DR_API_URL not set');
 
-    if (apiUrl) {
-      expect(apiUrl).toMatch(/^https?:\/\//);
-    }
+    expect(apiUrl).toMatch(/^https?:\/\//);
   });
 
   test('DR_WS_URL should be a valid WebSocket URL when set', () => {
     const wsUrl = process.env.DR_WS_URL;
+    test.skip(!wsUrl, 'DR_WS_URL not set');
 
-    if (wsUrl) {
-      expect(wsUrl).toMatch(/^wss?:\/\//);
-    }
+    expect(wsUrl).toMatch(/^wss?:\/\//);
   });
 
   test('BASE_URL should be a valid HTTP URL when set', () => {
     const baseUrl = process.env.BASE_URL;
+    test.skip(!baseUrl, 'BASE_URL not set');
 
-    if (baseUrl) {
-      expect(baseUrl).toMatch(/^https?:\/\//);
-    }
+    expect(baseUrl).toMatch(/^https?:\/\//);
   });
 
   test('DR_API_URL and DR_WS_URL should be different when both are set', () => {
     const apiUrl = process.env.DR_API_URL;
     const wsUrl = process.env.DR_WS_URL;
+    test.skip(!apiUrl || !wsUrl, 'DR_API_URL or DR_WS_URL not set');
 
-    if (apiUrl && wsUrl) {
-      // API URL should use http/https, WS URL should use ws/wss
-      expect(apiUrl).toMatch(/^https?:\/\//);
-      expect(wsUrl).toMatch(/^wss?:\/\//);
-    }
+    // API URL should use http/https, WS URL should use ws/wss
+    expect(apiUrl).toMatch(/^https?:\/\//);
+    expect(wsUrl).toMatch(/^wss?:\/\//);
   });
 
   test('DR_API_URL endpoint should be reachable when server is running', async ({ request }) => {

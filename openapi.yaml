@@ -143,33 +143,6 @@ paths:
                 error: Model manifest not found. Is dr CLI initialized?
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /api/link-registry:
-    get:
-      summary: Get cross-layer link registry
-      description: 'Returns the link registry defining valid cross-layer relationships.
-
-        Located at `.dr/schemas/link-registry.json`.'
-      tags:
-      - Schema
-      responses:
-        '200':
-          description: Link registry successfully retrieved
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LinkRegistry'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          description: Link registry not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
   /api/changesets:
     get:
       summary: List all changesets

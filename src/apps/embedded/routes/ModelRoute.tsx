@@ -69,6 +69,7 @@ export default function ModelRoute() {
   const { setModel } = useModelStore();
   const annotationStore = useAnnotationStore();
   const [specData, setSpecData] = useState<SpecDataResponse | null>(null);
+  const [specDataError, setSpecDataError] = useState<string | null>(null);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
   const [selectedLayerId, setSelectedLayerId] = useState<string | null>(search?.layer || null);
@@ -145,9 +146,12 @@ export default function ModelRoute() {
       try {
         const spec = await embeddedDataLoader.loadSpec();
         setSpecData(spec);
+        setSpecDataError(null);
         console.log('[ModelRoute] Spec data loaded:', Object.keys(spec.schemas || {}).length, 'schemas');
       } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load schema information';
         console.warn('[ModelRoute] Failed to load spec data:', err);
+        setSpecDataError(errorMessage);
       }
     },
   });
@@ -195,7 +199,7 @@ export default function ModelRoute() {
           <>
             <AnnotationPanel />
             <HighlightedPathPanel highlightedPath={highlightedPath} />
-            <SchemaInfoPanel />
+            <SchemaInfoPanel specDataError={specDataError} />
           </>
         )
       }
