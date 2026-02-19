@@ -4,8 +4,8 @@
  * sidebar layout is consistent, and all Phase 1-5 fixes are working
  *
  * Prerequisites:
- * 1. Python dependencies (reference server):
- *    cd reference_server && source .venv/bin/activate && pip install -r requirements.txt
+ * 1. DR CLI server running:
+ *    dr visualize [path-to-model]
  *
  * 2. Playwright browsers:
  *    npx playwright install chromium
@@ -13,8 +13,7 @@
  * 3. Run tests with the E2E config:
  *    npm run test:e2e
  *
- * STATUS: These tests verify US-8 requirements for graph rendering,
- *         sidebar layout, and screenshot validation.
+ * STATUS: These tests verify graph rendering, sidebar layout, and visual validation.
  */
 
 import { test, expect } from '@playwright/test';

@@ -83,7 +83,7 @@ Phase 2 successfully implements the complete WebSocket service and JSON-RPC 2.0 
 
 ### Backend (Python/FastAPI)
 
-#### 1. **Chat Handler** (`reference_server/chat_handler.py`)
+#### 1. **Chat Handler** (DR CLI Server)
 - **Purpose**: Implements chat.* RPC methods
 - **Key Classes**:
   - `ChatSession` - Manages individual conversation sessions
@@ -117,7 +117,7 @@ Phase 2 successfully implements the complete WebSocket service and JSON-RPC 2.0 
   - Message history per conversation
   - Graceful error handling
 
-#### 2. **Message Router** (`reference_server/message_router.py`)
+#### 2. **Message Router** (DR CLI Server)
 - **Purpose**: Routes JSON-RPC 2.0 messages to handlers
 - **Key Features**:
   - JSON-RPC format validation
@@ -135,7 +135,7 @@ Phase 2 successfully implements the complete WebSocket service and JSON-RPC 2.0 
   - SDK unavailable (-32001) - Anthropic SDK not installed
   - Operation cancelled (-32002) - User cancelled
 
-#### 3. **Main Server Integration** (`reference_server/main.py`)
+#### 3. **Main Server Integration** (DR CLI Server)
 - **Updates**:
   - Imports chat handler and message router
   - Updates WebSocket endpoint to route JSON-RPC messages
@@ -426,10 +426,6 @@ workspace/
 │   │   └── chat.ts                    (existing)
 │   └── components/
 │       └── ChatPanel.tsx              ✨ NEW
-├── reference_server/
-│   ├── chat_handler.py                ✨ NEW
-│   ├── message_router.py              ✨ NEW
-│   └── main.py                        (updated)
 └── tests/
     ├── unit/
     │   └── jsonRpcHandler.spec.ts     ✨ NEW

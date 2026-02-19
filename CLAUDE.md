@@ -149,9 +149,9 @@ Use `<T extends unknown>` for generic arrow function components in JSX to avoid 
 
 ### Commands
 ```bash
-npm test                          # Unit/integration tests (~1008 tests, ~10s)
+npm test                          # Unit/integration tests (1008 tests, ~10s)
 npm test -- tests/unit/foo.spec.ts  # Single file
-npm run test:e2e                  # E2E with reference server
+npm run test:e2e                  # E2E with DR CLI server
 npm run test:e2e:headed           # E2E with visible browser
 npm run storybook:dev             # Start Storybook on port 61001
 npm run storybook:build           # Build Storybook for production
@@ -283,22 +283,21 @@ Supports **JSON Schema** (UUIDs) and **YAML instances** (dot-notation IDs like `
 - `/dr-init [name]` - Initialize new DR architecture model
 - `/dr-ingest <path>` - Generate DR model from existing codebase
 
-## Phase 5: Documentation Updates for DR CLI Integration
+## Documentation: DR CLI Integration
 
 **Status:** Complete (February 2026)
 
-### What Was Updated
+### Documentation Files
 
-1. **Main README.md Enhancements**
-   - Expanded DR CLI Server section with API endpoint details
-   - Added comprehensive troubleshooting section
-   - Included system architecture diagram
-   - Enhanced technology stack documentation
-   - Added real-time updates workflow explanation
+1. **Main README.md**
+   - DR CLI Server section with API endpoint details
+   - System architecture diagram
+   - Technology stack documentation
+   - Troubleshooting section
 
 2. **New Documentation Files**
    - `documentation/DR_CLI_INTEGRATION_GUIDE.md` - Comprehensive integration guide (400+ lines)
-     - Architecture overview with component diagram
+     - Architecture overview with system diagram
      - Complete REST API reference with examples
      - WebSocket JSON-RPC 2.0 protocol documentation
      - Authentication implementation guide
@@ -306,31 +305,31 @@ Supports **JSON Schema** (UUIDs) and **YAML instances** (dot-notation IDs like `
      - Detailed troubleshooting section
    - `documentation/DR_CLI_TROUBLESHOOTING.md` - Standalone troubleshooting guide
 
-3. **Documentation Structure Updates**
-   - Cross-referenced new guides from README.md
+3. **Documentation Structure**
+   - Cross-referenced guides from README.md
    - Linked troubleshooting docs from multiple entry points
    - Updated TESTING_REFERENCE_IMPLEMENTATION.md
-   - Ensured all documentation maintains consistency
+   - Maintained consistency across all documentation
 
-### Key Improvements
+### Content Areas
 
 - **API Documentation**: Complete REST endpoint reference with request/response examples
 - **WebSocket Protocol**: Detailed JSON-RPC 2.0 message format documentation
 - **Authentication**: Token-based auth implementation and troubleshooting
 - **Development Workflow**: Step-by-step guide for local model development
-- **Troubleshooting**: 10+ common issues with solutions
+- **Troubleshooting**: Common issues with solutions
 
 ### Documentation Navigation
 
 - **Getting Started**: See [README.md](README.md#getting-started)
 - **Setup Issues**: See [README.md](README.md#troubleshooting) (Quick Reference)
-- **Detailed API**: See [DR CLI Integration Guide](documentation/DR_CLI_INTEGRATION_GUIDE.md)
-- **Complex Troubleshooting**: See [DR CLI Integration Guide - Troubleshooting](documentation/DR_CLI_INTEGRATION_GUIDE.md#troubleshooting)
-- **Testing Setup**: See [TESTING_REFERENCE_IMPLEMENTATION.md](documentation/claude_thoughts/TESTING_REFERENCE_IMPLEMENTATION.md)
+- **Detailed API**: See [DR CLI Integration Guide](../documentation/DR_CLI_INTEGRATION_GUIDE.md)
+- **Complex Troubleshooting**: See [DR CLI Integration Guide - Troubleshooting](../documentation/DR_CLI_INTEGRATION_GUIDE.md#troubleshooting)
+- **Testing Setup**: See [TESTING_REFERENCE_IMPLEMENTATION.md](../documentation/claude_thoughts/TESTING_REFERENCE_IMPLEMENTATION.md)
 
-### Integration with Existing Docs
+### Related Documentation
 
-- **TESTING_REFERENCE_IMPLEMENTATION.md**: Migration guide from Python server
+- **TESTING_REFERENCE_IMPLEMENTATION.md**: DR CLI server setup for testing
 - **YAML_MODELS.md**: Model format specification
 - **WEBSOCKET_JSONRPC_IMPLEMENTATION.md**: WebSocket protocol details
 - **architecture-overview.md**: System design and components
@@ -338,4 +337,4 @@ Supports **JSON Schema** (UUIDs) and **YAML instances** (dot-notation IDs like `
 
 ---
 
-**Last Updated:** 2026-02-19 | **Test Suite:** 1008 tests in 70 files | **Stories:** 578 in Storybook (97 story files) | **Phase 5 Docs:** Complete
+**Last Updated:** 2026-02-19 | **Test Suite:** 1008 tests in 70 files | **Stories:** 578 in Storybook (97 story files)

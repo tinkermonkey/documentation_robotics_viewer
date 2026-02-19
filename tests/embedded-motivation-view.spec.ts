@@ -1,12 +1,12 @@
 /**
  * E2E Tests for Motivation View in Embedded App
- * Tests the motivation graph visualization with reference server integration
+ * Tests the motivation graph visualization with DR CLI server integration
  *
- * IMPORTANT: These tests require the Python reference server to be running.
+ * IMPORTANT: These tests require the DR CLI server to be running.
  *
  * Prerequisites:
- * 1. Python dependencies (reference server):
- *    cd reference_server && source .venv/bin/activate && pip install -r requirements.txt
+ * 1. DR CLI server running:
+ *    dr visualize [path-to-model]
  *
  * 2. Playwright browsers:
  *    npx playwright install chromium

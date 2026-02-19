@@ -1,12 +1,12 @@
 /**
  * E2E Tests for Embedded App
- * Tests the embedded viewer with reference server integration
+ * Tests the embedded viewer with DR CLI server integration
  *
- * IMPORTANT: These tests require the Python reference server to be running.
+ * IMPORTANT: These tests require the DR CLI server to be running.
  *
  * Prerequisites:
- * 1. Python dependencies (reference server):
- *    cd reference_server && source .venv/bin/activate && pip install -r requirements.txt
+ * 1. DR CLI server running:
+ *    dr visualize [path-to-model]
  *
  * 2. Playwright browsers:
  *    npx playwright install chromium
@@ -15,7 +15,7 @@
  *    npm run test:e2e
  *
  * STATUS: These tests are VALID and test real functionality in the embedded app.
- *         They automatically run with the E2E config which starts both servers.
+ *         They automatically run with the E2E config which connects to the DR CLI server.
  */
 
 import { test, expect } from '@playwright/test';
@@ -24,8 +24,8 @@ import { test, expect } from '@playwright/test';
 test.setTimeout(30000);
 
 // These tests run automatically with: npm run test:e2e
-// The E2E config (playwright.e2e.config.ts) starts both the reference server and dev server
-test.describe('Embedded App - Reference Server Integration', () => {
+// The E2E config (playwright.e2e.config.ts) connects to the DR CLI server
+test.describe('Embedded App - DR CLI Server Integration', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the embedded app
     await page.goto('/');

@@ -3,13 +3,13 @@
  * Tests spec and changeset URL routing and redirects
  *
  * Note: Tests for ViewTabSwitcher visibility and tab switching require the
- * reference server to be running because the UI only shows tabs after data loads.
+ * DR CLI server to be running because the UI only shows tabs after data loads.
  * Those tests are covered in embedded-app.spec.ts when run with:
  *   npm run test:e2e (uses playwright.e2e.config.ts)
  *
  * Prerequisites:
- * 1. Python dependencies (reference server):
- *    cd reference_server && source .venv/bin/activate && pip install -r requirements.txt
+ * 1. DR CLI server running:
+ *    dr visualize [path-to-model]
  *
  * 2. Playwright browsers:
  *    npx playwright install chromium

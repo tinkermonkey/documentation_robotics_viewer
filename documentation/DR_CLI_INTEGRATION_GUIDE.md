@@ -755,7 +755,7 @@ console.log('DR Events:', sessionStorage.getItem('dr_events'));
 ## See Also
 
 ### Documentation
-- [YAML Models Guide](./CLAUDE.md#yaml-instance-models) - Model format specification
+- [YAML Models Guide](../CLAUDE.md#yaml-instance-models) - Model format specification
 - [Testing Guide](../tests/README.md) - E2E and unit testing
 - [WebSocket Implementation](./WEBSOCKET_JSONRPC_IMPLEMENTATION.md) - Detailed protocol docs
 - [Architecture Overview](./architecture-overview.md) - System architecture

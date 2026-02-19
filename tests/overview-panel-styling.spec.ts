@@ -6,12 +6,12 @@
  * - Dark mode color variants
  * - Proper positioning in graph views
  *
- * IMPORTANT: This test requires the Python reference server to be running.
+ * IMPORTANT: This test requires the DR CLI server to be running.
  *
  * Run with: npm run test:e2e
  *
- * This test is configured in playwright.e2e.config.ts which automatically
- * starts both the dev server and reference server.
+ * This test is configured in playwright.e2e.config.ts which connects to
+ * the DR CLI server and starts the dev server.
  */
 
 import { test, expect } from '@playwright/test';

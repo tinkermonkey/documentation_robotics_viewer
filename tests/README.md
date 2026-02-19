@@ -4,7 +4,7 @@
 
 ### 1. Default Tests (`playwright.config.ts`)
 
-Basic tests for integration, unit, and component testing without the reference server.
+Basic tests for integration, unit, and component testing without the DR CLI server.
 
 **Runs:**
 - Integration tests in `tests/integration/`

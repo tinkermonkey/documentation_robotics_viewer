@@ -256,7 +256,7 @@ The viewer expects these endpoints:
 - \`GET /api/changesets/{id}\` - Get changeset details
 - \`WS /ws\` - WebSocket for live updates
 
-See the reference server implementation in \`reference_server/main.py\` for examples.
+See the DR CLI server for implementation examples.
 
 ### 4. WebSocket Events
 
@@ -313,8 +313,8 @@ To update the viewer bundle:
 ## Support
 
 For issues or questions about the embedded viewer:
-- Repository: https://github.com/your-org/documentation-robotics-viewer
-- Reference Server: See \`reference_server/\` directory for implementation example
+- Viewer Repository: https://github.com/tinkermonkey/documentation-robotics-viewer
+- DR CLI Repository: https://github.com/tinkermonkey/documentation-robotics
 `;
 
   fs.writeFileSync(path.join(BUNDLE_DIR, 'README.md'), readme);
