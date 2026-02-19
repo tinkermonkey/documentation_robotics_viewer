@@ -576,7 +576,7 @@ npm run test:e2e:headed
 curl http://localhost:8080/health
 
 # 2. Check port availability
-lsof -i :3000
+lsof -i :8080
 
 # 3. Start server in correct terminal
 dr visualize ./my-model

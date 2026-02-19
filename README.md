@@ -357,7 +357,7 @@ dr visualize $(pwd)/my-model  # Use absolute path
 
 ```bash
 # Kill existing process on port 8080
-lsof -i :3000 | grep LISTEN | awk '{print $2}' | xargs kill -9
+lsof -i :8080 | grep LISTEN | awk '{print $2}' | xargs kill -9
 
 # Or use different port (check DR CLI docs)
 dr visualize --port 3001 ./my-model
