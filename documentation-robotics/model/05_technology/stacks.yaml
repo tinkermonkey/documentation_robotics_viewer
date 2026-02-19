@@ -380,14 +380,14 @@ prettier:
   properties:
     package: prettier
     version: 3.x
-ladle:
-  id: technology.tool.ladle
-  name: Ladle
+storybook:
+  id: technology.tool.storybook
+  name: Storybook
   type: stack
-  documentation: Fast component development environment and stories viewer
+  documentation: Component development and testing environment for building and showcasing stories
   properties:
-    package: "@ladle/react"
-    version: 4.x
+    package: "storybook"
+    version: 8.x
 react-testing-library:
   id: technology.library.react-testing-library
   name: React Testing Library

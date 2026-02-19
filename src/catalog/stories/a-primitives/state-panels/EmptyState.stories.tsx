@@ -1,44 +1,64 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { EmptyState } from '@/apps/embedded/components/shared/EmptyState';
 
-export default {
+const meta = {
   title: 'A Primitives / State Panels / EmptyState',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
 
-export const NoAnnotations: Story = () => (
-  <EmptyState variant="annotations" />
-);
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const NoChangesets: Story = () => (
-  <EmptyState variant="changesets" />
-);
+export const NoAnnotations: Story = {
+  render: () => (
+    <EmptyState variant="annotations" />
+  ),
+};
 
-export const NoElements: Story = () => (
-  <EmptyState variant="elements" />
-);
+export const NoChangesets: Story = {
+  render: () => (
+    <EmptyState variant="changesets" />
+  ),
+};
 
-export const NoModel: Story = () => (
-  <EmptyState variant="model" />
-);
+export const NoElements: Story = {
+  render: () => (
+    <EmptyState variant="elements" />
+  ),
+};
 
-export const ErrorVariant: Story = () => (
-  <EmptyState variant="error" />
-);
+export const NoModel: Story = {
+  render: () => (
+    <EmptyState variant="model" />
+  ),
+};
 
-export const WithCustomTitle: Story = () => (
-  <EmptyState
+export const ErrorVariant: Story = {
+  render: () => (
+    <EmptyState variant="error" />
+  ),
+};
+
+export const WithCustomTitle: Story = {
+  render: () => (
+    <EmptyState
     variant="annotations"
     title="No annotations found"
     description="This element has no annotations yet. Click the button below to add one."
   />
-);
+  ),
+};
 
-export const WithAction: Story = () => (
-  <EmptyState
+export const WithAction: Story = {
+  render: () => (
+    <EmptyState
     variant="changesets"
     action={{
       label: 'Create Changeset',
       onClick: () => console.log('Create changeset clicked'),
     }}
   />
-);
+  ),
+};

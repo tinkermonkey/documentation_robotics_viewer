@@ -2,22 +2,27 @@
  * Dagre Layout Engine Stories
  * Demonstrates hierarchical tree layouts using the Dagre algorithm
  */
-import type { Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import GraphViewer from '@/core/components/GraphViewer';
 import { StoryProviderWrapper } from '@/catalog';
 import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';
 
-export default {
+const meta = {
   title: 'C Graphs / Layouts / DagreLayout',
-};
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 /**
  * Default top-to-bottom hierarchical layout
  */
-export const Default: Story = () => {
-  const model = createCompleteModelFixture();
+export const Default: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper model={model}>
       <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
         <GraphViewer
@@ -27,16 +32,20 @@ export const Default: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };
 
 /**
  * Left-to-right horizontal layout
  */
-export const Horizontal: Story = () => {
-  const model = createCompleteModelFixture();
+export const Horizontal: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper model={model}>
       <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
         <GraphViewer
@@ -46,16 +55,20 @@ export const Horizontal: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };
 
 /**
  * Compact layout with minimal spacing
  */
-export const Compact: Story = () => {
-  const model = createCompleteModelFixture();
+export const Compact: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper model={model}>
       <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
         <GraphViewer
@@ -65,16 +78,20 @@ export const Compact: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };
 
 /**
  * Spacious layout with generous spacing
  */
-export const Spacious: Story = () => {
-  const model = createCompleteModelFixture();
+export const Spacious: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper model={model}>
       <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
         <GraphViewer
@@ -84,5 +101,7 @@ export const Spacious: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };

@@ -1,26 +1,40 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { LoadingState } from '@/apps/embedded/components/shared/LoadingState';
 
-export default {
+const meta = {
   title: 'A Primitives / State Panels / LoadingState',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
 
-export const PageLoading: Story = () => (
-  <LoadingState message="Loading application..." variant="page" />
-);
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const PanelLoading: Story = () => (
-  <div className="w-96 bg-white border border-gray-200">
+export const PageLoading: Story = {
+  render: () => (
+    <LoadingState message="Loading application..." variant="page" />
+  ),
+};
+
+export const PanelLoading: Story = {
+  render: () => (
+    <div className="w-96 bg-white border border-gray-200">
     <LoadingState message="Loading panel data..." variant="panel" />
   </div>
-);
+  ),
+};
 
-export const InlineLoading: Story = () => (
-  <div className="p-4 bg-white border border-gray-200">
+export const InlineLoading: Story = {
+  render: () => (
+    <div className="p-4 bg-white border border-gray-200">
     <LoadingState message="Processing..." variant="inline" />
   </div>
-);
+  ),
+};
 
-export const DefaultMessage: Story = () => (
-  <LoadingState />
-);
+export const DefaultMessage: Story = {
+  render: () => (
+    <LoadingState />
+  ),
+};

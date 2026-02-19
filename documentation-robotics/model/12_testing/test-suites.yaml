@@ -364,20 +364,20 @@ impact-analysis-service-unit:
         locations:
           - file: tests/unit/impactAnalysisService.spec.ts
             symbol: test
-ladle-story-validation:
-  id: testing.test-suite.ladle-story-validation
-  name: Ladle Story Validation Test Suite
+storybook-story-validation:
+  id: testing.test-suite.storybook-story-validation
+  name: Storybook Story Validation Test Suite
   type: test-suite
-  documentation: Validates all Ladle component stories render without errors
+  documentation: Validates all Storybook component stories render without errors
   properties:
-    file: tests/ladle-story-validation.spec.ts
+    file: tests/storybook-story-validation.spec.ts
     x-covers:
       - testing.test-case-sketch.component-tests
     source:
       reference:
         provenance: manual
         locations:
-          - file: tests/ladle-story-validation.spec.ts
+          - file: tests/storybook-story-validation.spec.ts
             symbol: test
 refinement-workflow-e2e:
   id: testing.test-suite.refinement-workflow-e2e
@@ -751,22 +751,22 @@ example-implementation-e2e:
         locations:
           - file: tests/example-implementation.spec.ts
             symbol: test
-all-refinement-ladle-suites:
-  id: testing.test-suite.all-refinement-ladle-suites
-  name: All Refinement Ladle Suites
+all-refinement-storybook-suites:
+  id: testing.test-suite.all-refinement-storybook-suites
+  name: All Refinement Storybook Suites
   type: test-suite
-  documentation: 12 Ladle refinement test suites covering all layers (API, APM,
+  documentation: 12 Storybook refinement test suites covering all layers (API, APM,
     Application, Business, C4, CrossLayer, DataModel, Datastore, Motivation,
     Navigation, Security, Technology, UX)
   properties:
-    files: tests/refinement/*.ladle.spec.ts
+    files: tests/refinement/*.storybook.spec.ts
     x-covers:
       - testing.test-case-sketch.refinement-tests
 all-stories-validation:
   id: testing.test-suite.all-stories-validation
   name: All Stories Validation Test Suite
   type: test-suite
-  documentation: Validates all Ladle component stories
+  documentation: Validates all Storybook component stories
   properties:
     file: tests/stories/all-stories.spec.ts
     x-covers:
@@ -777,35 +777,35 @@ all-stories-validation:
         locations:
           - file: tests/stories/all-stories.spec.ts
             symbol: test
-ladle-story-validation-components:
-  id: testing.test-suite.ladle-story-validation-components
-  name: Ladle Story Validation Components Test Suite
+storybook-story-validation-components:
+  id: testing.test-suite.storybook-story-validation-components
+  name: Storybook Story Validation Components Test Suite
   type: test-suite
-  documentation: Validates Ladle component stories for UI components
+  documentation: Validates Storybook component stories for UI components
   properties:
-    file: tests/ladle-story-validation-components.spec.ts
+    file: tests/storybook-story-validation-components.spec.ts
     x-covers:
       - testing.test-case-sketch.component-tests
     source:
       reference:
         provenance: manual
         locations:
-          - file: tests/ladle-story-validation-components.spec.ts
+          - file: tests/storybook-story-validation-components.spec.ts
             symbol: test
-ladle-story-validation-graphs:
-  id: testing.test-suite.ladle-story-validation-graphs
-  name: Ladle Story Validation Graphs Test Suite
+storybook-story-validation-graphs:
+  id: testing.test-suite.storybook-story-validation-graphs
+  name: Storybook Story Validation Graphs Test Suite
   type: test-suite
-  documentation: Validates Ladle component stories for graph components
+  documentation: Validates Storybook component stories for graph components
   properties:
-    file: tests/ladle-story-validation-graphs.spec.ts
+    file: tests/storybook-story-validation-graphs.spec.ts
     x-covers:
       - testing.test-case-sketch.component-tests
     source:
       reference:
         provenance: manual
         locations:
-          - file: tests/ladle-story-validation-graphs.spec.ts
+          - file: tests/storybook-story-validation-graphs.spec.ts
             symbol: test
 graph-element-validator-unit:
   id: testing.test-suite.graph-element-validator-unit

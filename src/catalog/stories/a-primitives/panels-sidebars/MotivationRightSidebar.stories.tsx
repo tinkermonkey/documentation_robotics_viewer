@@ -1,12 +1,17 @@
-// @ts-nocheck
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { MotivationRightSidebar } from '@/apps/embedded/components/MotivationRightSidebar';
-import { MotivationElementType, MotivationRelationshipType } from '../types/motivationGraph';
+import { MotivationElementType, MotivationRelationshipType } from '@/apps/embedded/types/motivationGraph';
 import { useState } from 'react';
 
-export default {
+const meta = {
   title: 'A Primitives / Panels and Sidebars / MotivationRightSidebar',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 const mockFilterCounts = {
   elements: {
@@ -38,8 +43,9 @@ const mockFilterCounts = {
   },
 };
 
-export const Default: Story = () => {
-  const [selectedTypes, setSelectedTypes] = useState<Set<MotivationElementType>>(new Set());
+export const Default: Story = {
+  render: () => {
+    const [selectedTypes, setSelectedTypes] = useState<Set<MotivationElementType>>(new Set());
   const [selectedRelTypes, setSelectedRelTypes] = useState<Set<MotivationRelationshipType>>(new Set());
 
   return (
@@ -79,4 +85,5 @@ export const Default: Story = () => {
       />
     </div>
   );
+  },
 };

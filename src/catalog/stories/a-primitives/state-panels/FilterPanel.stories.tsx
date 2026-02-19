@@ -1,10 +1,16 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 import { FilterPanel, type FilterSection } from '@/apps/embedded/components/shared/FilterPanel';
 
-export default {
+const meta = {
   title: 'A Primitives / State Panels / FilterPanel',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 const createLayerSection = (): FilterSection => ({
   id: 'layers',
@@ -64,8 +70,9 @@ const createElementTypeSection = (): FilterSection => ({
   onToggle: (value, selected) => console.log(`Toggle ${value}: ${selected}`),
 });
 
-export const EmptyFilters: Story = () => (
-  <div className="w-80 bg-white border border-gray-200 p-4 rounded">
+export const EmptyFilters: Story = {
+  render: () => (
+    <div className="w-80 bg-white border border-gray-200 p-4 rounded">
     <FilterPanel
       sections={[
         {
@@ -78,18 +85,22 @@ export const EmptyFilters: Story = () => (
       ]}
     />
   </div>
-);
+  ),
+};
 
-export const ActiveFilters: Story = () => (
-  <div className="w-80 bg-white border border-gray-200 p-4 rounded">
+export const ActiveFilters: Story = {
+  render: () => (
+    <div className="w-80 bg-white border border-gray-200 p-4 rounded">
     <FilterPanel
       sections={[createLayerSection(), createElementTypeSection()]}
       onClearAll={() => console.log('Clear all clicked')}
     />
   </div>
-);
+  ),
+};
 
-export const MultipleCategories: Story = () => {
+export const MultipleCategories: Story = {
+  render: () => {
   const [selectedLayers, setSelectedLayers] = useState(
     new Set(['motivation', 'business', 'technology'])
   );
@@ -173,4 +184,40 @@ export const MultipleCategories: Story = () => {
       />
     </div>
   );
+  },
+};
+
+export const DarkMode: Story = {
+  render: () => (
+    <div className="dark w-80 bg-gray-900 border border-gray-700 p-4 rounded">
+      <FilterPanel
+        sections={[createLayerSection(), createElementTypeSection()]}
+        onClearAll={() => console.log('Clear all clicked')}
+      />
+    </div>
+  ),
+  parameters: {
+    backgrounds: { default: 'dark' },
+  },
+};
+
+export const DarkModeEmpty: Story = {
+  render: () => (
+    <div className="dark w-80 bg-gray-900 border border-gray-700 p-4 rounded">
+      <FilterPanel
+        sections={[
+          {
+            id: 'layers',
+            title: 'A Primitives / State Panels / FilterPanel',
+            items: [],
+            selectedValues: new Set<string>(),
+            onToggle: () => {},
+          },
+        ]}
+      />
+    </div>
+  ),
+  parameters: {
+    backgrounds: { default: 'dark' },
+  },
 };

@@ -1,11 +1,13 @@
-// @ts-nocheck
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import SpecGraphView from '@/apps/embedded/components/SpecGraphView';
 import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
-export default {
+const meta = {
   title: 'C Graphs / Views / SpecGraphView',
-} satisfies StoryDefault;
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 const mockSpecData = {
   version: '1.0.0',
@@ -47,24 +49,24 @@ const mockSpecData = {
   },
 };
 
-export const Default: Story = () => (
-  <StoryLoadedWrapper testId="spec-graph-default">
-    <div className="w-full h-96 bg-white border border-gray-200">
-      <SpecGraphView
-        specData={mockSpecData}
-        selectedSchemaId={null}
-      />
-    </div>
-  </StoryLoadedWrapper>
-);
+export const Default: Story = {
+  render: () => (
+    <StoryLoadedWrapper testId="spec-graph-default">
+      <div className="w-full h-96 bg-white border border-gray-200">
+        <SpecGraphView specData={mockSpecData} selectedSchemaId={null} />
+      </div>
+    </StoryLoadedWrapper>
+  ),
+};
 
-export const WithSelection: Story = () => (
-  <StoryLoadedWrapper testId="spec-graph-selection">
-    <div className="w-full h-96 bg-white border border-gray-200">
-      <SpecGraphView
-        specData={mockSpecData}
-        selectedSchemaId="BusinessProcess"
-      />
-    </div>
-  </StoryLoadedWrapper>
-);
+export const WithSelection: Story = {
+  render: () => (
+    <StoryLoadedWrapper testId="spec-graph-selection">
+      <div className="w-full h-96 bg-white border border-gray-200">
+        <SpecGraphView specData={mockSpecData} selectedSchemaId="BusinessProcess" />
+      </div>
+    </StoryLoadedWrapper>
+  ),
+};
+
+

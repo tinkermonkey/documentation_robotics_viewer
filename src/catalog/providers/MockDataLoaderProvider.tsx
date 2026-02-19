@@ -1,9 +1,6 @@
 /**
  * Mock Data Loader Provider
- * Provides pre-loaded data and mocked useDataLoader hook for Ladle stories
- *
- * NOTE: This provider is for FUTURE use in full-route stories that use useDataLoader.
- * Current composition components accept data as props and do not use useDataLoader.
+ * Provides pre-loaded data and mocked useDataLoader hook for Storybook stories
  */
 
 import { createContext, useContext, useState, useCallback, useEffect, useMemo, type ReactNode } from 'react';
@@ -91,6 +88,8 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
         try {
           onSuccess(result);
         } catch (successError) {
+          // Log the error from callback but don't re-throw since we're in an async context
+          // This prevents unhandled promise rejections
           console.error('[MockDataLoader] onSuccess callback failed:', successError);
         }
       }
@@ -110,6 +109,8 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
         try {
           onError(err instanceof Error ? err : new Error(errorMessage));
         } catch (errorHandlerError) {
+          // Log the error from callback but don't re-throw since we're in an async context
+          // This prevents unhandled promise rejections
           console.error('[MockDataLoader] onError callback failed:', errorHandlerError);
         }
       }

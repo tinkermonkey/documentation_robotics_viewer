@@ -1,10 +1,16 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { CoverageSummaryPanel } from '@/apps/embedded/components/CoverageSummaryPanel';
 import type { CoverageSummary } from '@/apps/embedded/services/coverageAnalyzer';
 
-export default {
+const meta = {
   title: 'A Primitives / State Panels / CoverageSummaryPanel',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 const mockSummaryComplete: CoverageSummary = {
   totalGoals: 10,
@@ -55,36 +61,44 @@ const mockSummaryPoor: CoverageSummary = {
   goalCoverages: [],
 };
 
-export const CompleteCoverage: Story = () => (
-  <div className="p-4 bg-gray-50">
+export const CompleteCoverage: Story = {
+  render: () => (
+    <div className="p-4 bg-gray-50">
     <CoverageSummaryPanel summary={mockSummaryComplete} />
   </div>
-);
+  ),
+};
 
-export const MixedCoverage: Story = () => (
-  <div className="p-4 bg-gray-50">
+export const MixedCoverage: Story = {
+  render: () => (
+    <div className="p-4 bg-gray-50">
     <CoverageSummaryPanel
       summary={mockSummaryMixed}
       onGoalClick={(goalId) => console.log('Goal clicked:', goalId)}
     />
   </div>
-);
+  ),
+};
 
-export const PoorCoverage: Story = () => (
-  <div className="p-4 bg-gray-50">
+export const PoorCoverage: Story = {
+  render: () => (
+    <div className="p-4 bg-gray-50">
     <CoverageSummaryPanel
       summary={mockSummaryPoor}
       onGoalClick={(goalId) => console.log('Goal clicked:', goalId)}
     />
   </div>
-);
+  ),
+};
 
-export const Collapsed: Story = () => (
-  <div className="p-4 bg-gray-50">
+export const Collapsed: Story = {
+  render: () => (
+    <div className="p-4 bg-gray-50">
     <CoverageSummaryPanel
       summary={mockSummaryMixed}
       collapsed={true}
       onToggleCollapse={() => console.log('Toggle clicked')}
     />
   </div>
-);
+  ),
+};

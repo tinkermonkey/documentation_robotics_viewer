@@ -1,10 +1,6 @@
 /**
  * Mock Router Provider
- * Provides mock TanStack Router hooks for testing route compositions in Ladle
- *
- * NOTE: This provider is for FUTURE use in full-route stories that import actual route components.
- * Current composition components (ModelRouteComposition, SpecRouteComposition) accept all state
- * as props and do not use router hooks directly.
+ * Provides mock TanStack Router hooks for testing route compositions in Storybook
  */
 
 import { createContext, useContext, useState, useCallback, useMemo, type ReactNode } from 'react';
@@ -45,13 +41,27 @@ function useMockRouterContext(strict: boolean = true): MockRouterContext {
     );
   }
 
-  return context || {
-    params: {},
-    search: {},
-    navigate: () => console.warn('[MockRouter] navigate called outside provider'),
-    setParams: () => {},
-    setSearch: () => {}
-  };
+  if (!context) {
+    console.warn(
+      '[MockRouter] Fallback object used (context not available). ' +
+      'Navigation methods are ineffective. Wrap story component with MockRouterProvider.'
+    );
+    return {
+      params: {},
+      search: {},
+      navigate: () => {
+        console.warn('[MockRouter] navigate called outside provider');
+      },
+      setParams: () => {
+        console.warn('[MockRouter] setParams called outside provider');
+      },
+      setSearch: () => {
+        console.warn('[MockRouter] setSearch called outside provider');
+      }
+    };
+  }
+
+  return context;
 }
 
 /**

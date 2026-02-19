@@ -1,11 +1,17 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { C4InspectorPanel } from '@/apps/embedded/components/C4InspectorPanel';
 import type { C4Graph, C4Node, C4Edge } from '@/apps/embedded/types/c4Graph';
 import { C4Type, ContainerType, ProtocolType, CommunicationDirection } from '@/apps/embedded/types/c4Graph';
 
-export default {
+const meta = {
   title: 'A Primitives / Panels and Sidebars / C4InspectorPanel',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 const mockNodes: C4Node[] = [
   {
@@ -115,8 +121,9 @@ const mockGraph: C4Graph = {
   },
 };
 
-export const ContainerSelected: Story = () => (
-  <div className="w-96 bg-gray-50 p-4">
+export const ContainerSelected: Story = {
+  render: () => (
+    <div className="w-96 bg-gray-50 p-4">
     <C4InspectorPanel
       selectedNodeId="web-app"
       graph={mockGraph}
@@ -126,10 +133,12 @@ export const ContainerSelected: Story = () => (
       onClose={() => console.log('Close inspector')}
     />
   </div>
-);
+  ),
+};
 
-export const ApiSelected: Story = () => (
-  <div className="w-96 bg-gray-50 p-4">
+export const ApiSelected: Story = {
+  render: () => (
+    <div className="w-96 bg-gray-50 p-4">
     <C4InspectorPanel
       selectedNodeId="api-gateway"
       graph={mockGraph}
@@ -139,10 +148,12 @@ export const ApiSelected: Story = () => (
       onClose={() => console.log('Close inspector')}
     />
   </div>
-);
+  ),
+};
 
-export const DatabaseSelected: Story = () => (
-  <div className="w-96 bg-gray-50 p-4">
+export const DatabaseSelected: Story = {
+  render: () => (
+    <div className="w-96 bg-gray-50 p-4">
     <C4InspectorPanel
       selectedNodeId="database"
       graph={mockGraph}
@@ -151,4 +162,5 @@ export const DatabaseSelected: Story = () => (
       onClose={() => console.log('Close inspector')}
     />
   </div>
-);
+  ),
+};

@@ -82,7 +82,7 @@ export const BundledCrossLayerEdge = memo(({
   const color = data?.targetLayer ? getLayerColor(data.targetLayer) : '#95a5a6';
   const bundleCount = data?.bundleCount || 1;
 
-  const handleBundleClick = (e: React.MouseEvent) => {
+  const handleBundleClick = (e: React.MouseEvent | React.KeyboardEvent) => {
     e.stopPropagation();
     setIsExpanded(!isExpanded);
   };
@@ -129,9 +129,11 @@ export const BundledCrossLayerEdge = memo(({
     );
   }
 
+  // Create accessible label for the bundled edge
+  const ariaLabel = `${bundleCount} bundled cross-layer relationships. Click to expand and see individual relationships.`;
+
   return (
     <>
-      {/* Bundled edge path */}
       <path
         id={id}
         d={edgePath}
@@ -148,9 +150,18 @@ export const BundledCrossLayerEdge = memo(({
         onClick={handleBundleClick}
         data-testid={`bundled-edge-${id}`}
         markerEnd={markerEnd}
+        role="button"
+        aria-label={ariaLabel}
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleBundleClick(e);
+          }
+        }}
       />
 
-      {/* Bundle count badge */}
+      {/* Bundle count badge - fully keyboard accessible */}
       <EdgeLabelRenderer>
         <div
           style={{
@@ -171,9 +182,30 @@ export const BundledCrossLayerEdge = memo(({
             zIndex: 10,
             cursor: 'pointer',
             userSelect: 'none',
+            outline: 'none',
+            transition: 'box-shadow 200ms ease-out',
           }}
           className="nodrag nopan"
+          role="button"
+          tabIndex={0}
           onClick={handleBundleClick}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleBundleClick(e);
+            }
+          }}
+          onFocus={(e) => {
+            // Add visible focus indicator
+            (e.currentTarget as HTMLDivElement).style.boxShadow =
+              '0 0 0 3px rgba(14, 165, 233, 0.5), 0 4px 6px rgba(0, 0, 0, 0.1)';
+          }}
+          onBlur={(e) => {
+            // Remove focus indicator
+            (e.currentTarget as HTMLDivElement).style.boxShadow =
+              '0 4px 6px rgba(0, 0, 0, 0.1)';
+          }}
+          aria-label={`Expand ${bundleCount} bundled relationships`}
           title={`${bundleCount} linked relationships`}
           data-testid={`bundle-badge-${id}`}
         >

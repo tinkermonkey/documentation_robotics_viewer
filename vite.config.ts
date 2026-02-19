@@ -7,6 +7,11 @@ export default defineConfig({
   plugins: [react(), flowbiteReact()],
   resolve: {
     alias: {
+      // Redirect the flowbite-react Tailwind CSS plugin import to the actual CSS file.
+      // The package exports map resolves 'flowbite-react/plugin/tailwindcss' to a JS file
+      // under the 'import' condition, which PostCSS cannot parse. Point it directly at
+      // the CSS asset so Vite's CSS pipeline loads it correctly.
+      'flowbite-react/plugin/tailwindcss': path.resolve(__dirname, 'node_modules/flowbite-react/dist/plugin/tailwindcss/index.css'),
       '@': path.resolve(__dirname, './src'),
       '@components': path.resolve(__dirname, './src/components'),
       '@shapes': path.resolve(__dirname, './src/shapes'),

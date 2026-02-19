@@ -120,6 +120,7 @@ export const ToolInvocationCard = memo(
               <pre
                 className="bg-gray-100 dark:bg-gray-800 rounded p-3 text-xs font-mono text-gray-900 dark:text-gray-100 overflow-x-auto"
                 data-testid="tool-input-code"
+                tabIndex={0}
               >
                 {formattedInput}
               </pre>
@@ -134,6 +135,7 @@ export const ToolInvocationCard = memo(
                 <pre
                   className="bg-gray-100 dark:bg-gray-800 rounded p-3 text-xs font-mono text-gray-900 dark:text-gray-100 overflow-x-auto max-h-60"
                   data-testid="tool-output-code"
+                  tabIndex={0}
                 >
                   {formattedOutput}
                 </pre>

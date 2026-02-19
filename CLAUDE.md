@@ -113,7 +113,7 @@ src/
 │   ├── services/           # App-specific graph builders
 │   ├── stores/             # annotationStore, authStore, businessLayerStore, changesetStore, chatStore, connectionStore, floatingChatStore, viewPreferenceStore
 │   ├── hooks/, types/, utils/
-├── catalog/                # Ladle storybook (components/, fixtures/, providers/)
+├── catalog/                # Storybook catalog (components/, fixtures/, providers/)
 └── theme/                  # Tailwind CSS theming
 ```
 
@@ -149,12 +149,14 @@ Use `<T extends unknown>` for generic arrow function components in JSX to avoid 
 
 ### Commands
 ```bash
-npm test                          # Unit/integration tests (~1027 tests, ~10s)
+npm test                          # Unit/integration tests (~1008 tests, ~10s)
 npm test -- tests/unit/foo.spec.ts  # Single file
 npm run test:e2e                  # E2E with reference server
 npm run test:e2e:headed           # E2E with visible browser
-npm run test:stories:generate     # Regenerate story tests (after adding/removing .stories.tsx)
-npm run test:stories              # Validate all stories (requires: npm run catalog:dev)
+npm run storybook:dev             # Start Storybook on port 61001
+npm run storybook:build           # Build Storybook for production
+npm run test:storybook            # Validate all stories (578 stories across 97 files)
+npm run test:storybook:a11y       # Generate accessibility report for all stories
 ```
 
 ### Test Organization
@@ -162,10 +164,16 @@ npm run test:stories              # Validate all stories (requires: npm run cata
 tests/
 ├── unit/           # Services, utilities, nodes, hooks, layout engines, stores
 ├── integration/    # Cross-component data flow
-├── stories/        # Auto-generated story validation
+├── stories/        # Story validation & error filters
 ├── helpers/        # Test utilities and factories
 ├── fixtures/       # Test data
 └── *.spec.ts       # E2E tests (embedded-*, c4-*, etc.)
+
+.storybook/
+├── main.cjs        # Storybook configuration
+├── preview.tsx     # Global decorators and providers
+├── manager.ts      # UI customization
+└── test-runner.ts  # Test runner configuration
 ```
 
 ### Key Test Patterns
@@ -173,8 +181,11 @@ tests/
 - **Framework**: All tests use Playwright test runner (`import { test, expect } from '@playwright/test'`)
 - **Unit tests**: Arrange-Act-Assert, one assertion per test, mock external deps
 - **E2E tests**: Wait for specific selectors (not timeouts), check console errors, validate actual rendering (node counts)
-- **Stories**: Create `.stories.tsx` alongside components; run `test:stories:generate` after changes
-- **CI**: Pre-commit auto-regenerates story tests when `.stories.tsx` files change
+- **Stories**: Create `.stories.tsx` alongside components using CSF3 format (`Meta<typeof Component>`, `StoryObj`)
+  - Import decorators from `@catalog/decorators/`
+  - Use `@storybook/react` (not `@ladle/react`)
+  - Run `npm run storybook:dev` to preview stories
+- **Storybook Tests**: Use `test-runner.ts` for custom error filtering via `storyErrorFilters.ts`
 
 ## Key Files
 
@@ -195,6 +206,71 @@ tests/
 | Edges not connecting | Missing/wrong Handle IDs | Verify Handle `id` matches edge definitions |
 | Tests failing | Model data changed | Update test fixtures/mocks |
 
+## Accessibility Standards (WCAG 2.1 AA)
+
+All components must meet **WCAG 2.1 Level AA** compliance. Automated testing via Storybook a11y addon in all stories.
+
+### Node Accessibility Pattern
+
+All custom nodes MUST include:
+
+```typescript
+<div
+  role="article"                          // ✓ Semantic role
+  aria-label={`${type}: ${data.label}`}  // ✓ Descriptive label including type
+  style={{ /* inline styles */ }}
+>
+  {/* 4 Handles: top, bottom, left, right */}
+  <Handle type="target" position={Position.Top} id="top" />
+  <Handle type="source" position={Position.Bottom} id="bottom" />
+  <Handle type="target" position={Position.Left} id="left" />
+  <Handle type="source" position={Position.Right} id="right" />
+  {/* Node content */}
+</div>
+```
+
+### Edge Accessibility Pattern
+
+All custom edges MUST include:
+
+```typescript
+<path
+  d={edgePath}
+  role="img"  // or "button" for interactive edges
+  aria-label={`${relationship}: from ${sourceNode} to ${targetNode}`}
+  onClick={handleClick}
+  onKeyDown={handleKeyDown}
+  tabIndex={0}  // if interactive
+/>
+```
+
+### Color Contrast
+
+- **Text**: Minimum 4.5:1 contrast ratio
+- **UI Components**: Minimum 3:1 contrast ratio
+- Architecture visualizations may use `reviewOnFail: true` for color contrast violations (marked for manual review)
+
+### Keyboard Navigation
+
+- All interactive elements must be keyboard accessible
+- Tab order must be logical (top-to-bottom, left-to-right)
+- Escape key closes modals/overlays
+- Focus must be visible on all focusable elements
+
+### Testing
+
+Run accessibility tests locally:
+
+```bash
+npm run storybook:dev
+# Open Storybook → any story → Accessibility tab (bottom)
+
+npm run test:storybook:a11y
+# Runs automated axe-core tests against all stories
+```
+
+For details: `documentation/ACCESSIBILITY.md`
+
 ## YAML Instance Models
 
 Supports **JSON Schema** (UUIDs) and **YAML instances** (dot-notation IDs like `business.function.name`). Parser auto-resolves dot-notation to UUIDs. Full spec: `documentation/YAML_MODELS.md`
@@ -209,4 +285,4 @@ Supports **JSON Schema** (UUIDs) and **YAML instances** (dot-notation IDs like `
 
 ---
 
-**Last Updated:** 2026-02-08 | **Test Suite:** 1027 tests in 52 files | **Stories:** 85 files
+**Last Updated:** 2026-02-17 | **Test Suite:** 1008 tests in 70 files | **Stories:** 578 in Storybook (97 story files)

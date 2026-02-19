@@ -1,9 +1,12 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import AttributesTable, { AttributeRow } from '@/apps/embedded/components/common/AttributesTable';
 
-export default {
+const meta = {
   title: 'A Primitives / Data Viewers / AttributesTable',
-} satisfies StoryDefault;
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 const sampleAttributes: AttributeRow[] = [
   { name: 'name', value: 'User Authentication Service' },
@@ -14,13 +17,13 @@ const sampleAttributes: AttributeRow[] = [
   { name: 'owner', value: 'Platform Team' },
 ];
 
-export const Default: Story = () => (
+export const Default: Story = { render: () => (
   <div className="p-4 bg-white border border-gray-200 w-96">
     <AttributesTable attributes={sampleAttributes} />
   </div>
-);
+) };
 
-export const ManyAttributes: Story = () => (
+export const ManyAttributes: Story = { render: () => (
   <div className="p-4 bg-white border border-gray-200 w-96">
     <AttributesTable
       attributes={[
@@ -38,15 +41,15 @@ export const ManyAttributes: Story = () => (
       ]}
     />
   </div>
-);
+) };
 
-export const Empty: Story = () => (
+export const Empty: Story = { render: () => (
   <div className="p-4 bg-white border border-gray-200 w-96">
     <AttributesTable attributes={[]} />
   </div>
-);
+) };
 
-export const WithLongValues: Story = () => (
+export const WithLongValues: Story = { render: () => (
   <div className="p-4 bg-white border border-gray-200 w-96">
     <AttributesTable
       attributes={[
@@ -59,4 +62,4 @@ export const WithLongValues: Story = () => (
       ]}
     />
   </div>
-);
+) };

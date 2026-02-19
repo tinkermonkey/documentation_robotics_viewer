@@ -2,19 +2,23 @@
  * ToolInvocationCard Component Stories
  * Demonstrates tool execution display with input/output
  */
-import type { Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ToolInvocationCard } from '@/apps/embedded/components/chat/ToolInvocationCard';
 import type { ToolInvocationContent } from '@/apps/embedded/types/chat';
 
-export default {
+const meta = {
   title: 'D Chat / Messages / ToolInvocationCard',
-};
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 /**
  * Tool currently executing
  */
-export const Executing: Story = () => {
-  const toolInvocation: ToolInvocationContent = {
+export const Executing: Story = {
+  render: () => {
+const toolInvocation: ToolInvocationContent = {
     type: 'tool_invocation',
     toolUseId: 'tool-1',
     toolName: 'searchModel',
@@ -26,18 +30,27 @@ export const Executing: Story = () => {
     timestamp: new Date().toISOString()
   };
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
-      <ToolInvocationCard invocation={toolInvocation} />
+      <ToolInvocationCard
+        toolName={toolInvocation.toolName}
+        toolInput={toolInvocation.toolInput}
+        status={toolInvocation.status}
+        timestamp={toolInvocation.timestamp}
+      />
     </div>
-  );
+  
+    );
+  }
 };
 
 /**
  * Tool completed successfully with result
  */
-export const Completed: Story = () => {
-  const toolInvocation: ToolInvocationContent = {
+export const Completed: Story = {
+  render: () => {
+const toolInvocation: ToolInvocationContent = {
     type: 'tool_invocation',
     toolUseId: 'tool-2',
     toolName: 'getElement',
@@ -60,18 +73,27 @@ export const Completed: Story = () => {
     timestamp: new Date().toISOString()
   };
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
-      <ToolInvocationCard invocation={toolInvocation} />
+      <ToolInvocationCard
+        toolName={toolInvocation.toolName}
+        toolInput={toolInvocation.toolInput}
+        status={toolInvocation.status}
+        timestamp={toolInvocation.timestamp}
+      />
     </div>
-  );
+  
+    );
+  }
 };
 
 /**
  * Tool execution failed with error
  */
-export const Failed: Story = () => {
-  const toolInvocation: ToolInvocationContent = {
+export const Failed: Story = {
+  render: () => {
+const toolInvocation: ToolInvocationContent = {
     type: 'tool_invocation',
     toolUseId: 'tool-3',
     toolName: 'validateModel',
@@ -86,18 +108,27 @@ export const Failed: Story = () => {
     timestamp: new Date().toISOString()
   };
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
-      <ToolInvocationCard invocation={toolInvocation} />
+      <ToolInvocationCard
+        toolName={toolInvocation.toolName}
+        toolInput={toolInvocation.toolInput}
+        status={toolInvocation.status}
+        timestamp={toolInvocation.timestamp}
+      />
     </div>
-  );
+  
+    );
+  }
 };
 
 /**
  * Tool with large JSON output
  */
-export const LargeOutput: Story = () => {
-  const toolInvocation: ToolInvocationContent = {
+export const LargeOutput: Story = {
+  render: () => {
+const toolInvocation: ToolInvocationContent = {
     type: 'tool_invocation',
     toolUseId: 'tool-4',
     toolName: 'analyzeLayer',
@@ -146,18 +177,27 @@ export const LargeOutput: Story = () => {
     timestamp: new Date().toISOString()
   };
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
-      <ToolInvocationCard invocation={toolInvocation} />
+      <ToolInvocationCard
+        toolName={toolInvocation.toolName}
+        toolInput={toolInvocation.toolInput}
+        status={toolInvocation.status}
+        timestamp={toolInvocation.timestamp}
+      />
     </div>
-  );
+  
+    );
+  }
 };
 
 /**
  * Tool with complex nested input
  */
-export const ComplexInput: Story = () => {
-  const toolInvocation: ToolInvocationContent = {
+export const ComplexInput: Story = {
+  render: () => {
+const toolInvocation: ToolInvocationContent = {
     type: 'tool_invocation',
     toolUseId: 'tool-5',
     toolName: 'createChangeset',
@@ -201,9 +241,17 @@ export const ComplexInput: Story = () => {
     timestamp: new Date().toISOString()
   };
 
-  return (
+      return (
+      
     <div className="p-4 max-w-3xl bg-white dark:bg-gray-800">
-      <ToolInvocationCard invocation={toolInvocation} />
+      <ToolInvocationCard
+        toolName={toolInvocation.toolName}
+        toolInput={toolInvocation.toolInput}
+        status={toolInvocation.status}
+        timestamp={toolInvocation.timestamp}
+      />
     </div>
-  );
+  
+    );
+  }
 };

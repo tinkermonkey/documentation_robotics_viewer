@@ -26,12 +26,12 @@ This document describes the **specific regex patterns** used to filter expected 
 **Status**: Expected in test environment without configured data source
 
 ### 4. React Prop Validation
-**Pattern**: `/React does not recognize.*prop/`
+**Pattern**: `/^Warning: React does not recognize the `[\w-]+` prop/`
 **Reason**: Warning about unknown props passed to DOM elements. Components still function correctly.
 **Status**: Expected with third-party or legacy components
 
 ### 5. SVG Path Attribute Errors
-**Pattern**: `/Invalid value for <.*> attribute/` and `/<path> attribute d: Expected number/`
+**Pattern**: `/Invalid value for <[\w-]+> attribute/` and `/<path> attribute d: Expected number/`
 **Reason**: SVG rendering errors during dynamic path generation or attribute validation. Does not prevent rendering.
 **Status**: Expected during graph visualization with variable/calculated dimensions
 
@@ -41,22 +41,22 @@ This document describes the **specific regex patterns** used to filter expected 
 **Status**: Expected during graph initialization
 
 ### 7. Unrecognized HTML Tags
-**Pattern**: `/The tag <.*> is unrecognized in this browser/`
+**Pattern**: `/^The tag <[\w-]+> is unrecognized/`
 **Reason**: Browser warning about custom or dynamic HTML elements. Does not prevent functionality.
 **Status**: Expected with web components or dynamic element generation
 
 ### 8. React Flow Node Connection Errors
-**Pattern**: `/source\/target node/` and `/source\/target handle/`
+**Pattern**: `/source\/target (?:node|handle).*(?:not found|with id)/`
 **Reason**: React Flow internal warnings about missing connection points during graph building. Non-critical during edge creation.
 **Status**: Expected during dynamic graph construction
 
 ### 9. WebSocket Connection Failures
-**Pattern**: `/WebSocket connection to .* failed/` and `/\[WebSocket\]/`
-**Reason**: WebSocket connection failures when backend services unavailable. App has fallback mechanisms.
+**Pattern**: `/WebSocket connection to ws:\/\/(localhost|127\.0\.0\.1):[0-9]+ failed/`
+**Reason**: WebSocket connection failures when backend services unavailable (localhost only, not production). App has fallback mechanisms.
 **Status**: Expected in isolated test environment without running services
 
 ### 10. EmbeddedLayout Component Errors
-**Pattern**: `/\[EmbeddedLayout\]/`
+**Pattern**: `/\[EmbeddedLayout\] (?:No container|Missing required|Layout calculation)/`
 **Reason**: Component-level warnings during EmbeddedLayout initialization or property resolution.
 **Status**: Expected component warnings in test environment
 
@@ -66,14 +66,29 @@ This document describes the **specific regex patterns** used to filter expected 
 **Status**: Expected when model endpoint not available
 
 ### 12. Failed Resource Loads
-**Pattern**: `/Failed to load resource/`
-**Reason**: Browser resource load failures when external resources unavailable in test environment.
+**Pattern**: `/Failed to load resource.*localhost:(3002|8765)/`
+**Reason**: Browser resource load failures when external resources unavailable in test environment (localhost only, not production).
 **Status**: Expected when running tests in isolation
 
-### 13. React Warning Messages
-**Pattern**: `/^Warning: /` (prefix match only)
-**Reason**: React development warnings about deprecations, performance, or property issues.
-**Status**: Expected React warnings during component development
+### 13. React Warning Messages (Whitelisted Patterns)
+**Pattern**: `/^Warning: Received `false`.*instead of `true`/`, `/^Warning: componentWillReceiveProps has been renamed/`, `/^Warning: Unknown event handler property/`, `/^Warning: useLayoutEffect does nothing on the server/`, `/^Warning: An update to .* inside a test was not wrapped in act/`
+**Reason**: Specific React development warnings about deprecations, performance, or property issues that are safe to ignore in test environments.
+**Status**: Expected React warnings during component development (whitelist approach to avoid hiding real issues)
+
+### 14. StoryLoadedWrapper Timeout Diagnostics
+**Pattern**: `/^StoryLoadedWrapper: /`, `/^Wrapper element:/`, `/^Children count:/`, `/^Inner HTML \(first/`
+**Reason**: Diagnostic messages from StoryLoadedWrapper when components fail to load React Flow nodes within timeout.
+**Status**: Expected when testing error/empty states
+
+### 15. ErrorBoundary Test Errors
+**Pattern**: `/\[ErrorBoundary\] Caught error/`, `/Test error for ErrorBoundary/`
+**Reason**: Expected errors when testing ErrorBoundary error handling behavior.
+**Status**: Expected in error state test stories
+
+### 16. RenderPropErrorBoundary Test Errors
+**Pattern**: `/\[RenderPropError\]/`
+**Reason**: Expected errors when testing error handling in render prop-based error boundaries.
+**Status**: Expected when testing error handling in render props
 
 ## Filter Performance Notes
 
@@ -135,8 +150,7 @@ When you encounter a legitimate expected error:
 5. **Run tests to verify**:
    ```bash
    npm test -- tests/unit/storyErrorFilters.spec.ts  # Verify filter logic
-   npm run test:stories:generate                     # Regenerate story tests
-   npm run test:stories                              # Run all story validations
+   npm run test:storybook                            # Run all story validations
    ```
 
 ### Example: Adding a New Filter
@@ -205,25 +219,21 @@ After modifying filters, always verify:
 # Run unit tests for the filter logic
 npm test -- tests/unit/storyErrorFilters.spec.ts
 
-# Regenerate story tests based on updated filters
-npm run test:stories:generate
-
-# Run all story validation tests
-npm run test:stories
+# Run all story validation tests against Storybook
+npm run test:storybook
 ```
 
 This ensures:
 1. Filter unit tests pass for new/modified patterns
-2. No unexpected test failures from filter changes
-3. Story tests are synchronized with filter updates
-4. New filters don't accidentally hide real errors
+2. Story tests are synchronized with filter updates
+3. New filters don't accidentally hide real errors
 
 ## CI/CD Integration
 
 Error filters are validated as part of the CI pipeline:
-1. Story tests are regenerated before running (`npm run test:stories:generate`)
-2. Git diff is checked to ensure tests are up to date
-3. All story validation tests are run with 30-second timeout
+1. Story validation tests are run against Storybook (`npm run test:storybook`)
+2. Unit tests for filter logic are executed (`npm test -- tests/unit/storyErrorFilters.spec.ts`)
+3. All story tests are run with 30-second timeout
 4. Any new unexpected errors fail the build
 
 See `.github/workflows/ci.yml` for implementation details.

@@ -1,12 +1,19 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { MotivationContextMenu } from '@/apps/embedded/components/MotivationContextMenu';
 
-export default {
+const meta = {
   title: 'A Primitives / Panels and Sidebars / MotivationContextMenu',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
 
-export const Default: Story = () => (
-  <div className="p-8 bg-gray-100 h-96 relative">
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  render: () => (
+    <div className="p-8 bg-gray-100 h-96 relative">
     <div className="absolute top-24 left-24">
       <MotivationContextMenu
         x={100}
@@ -20,10 +27,12 @@ export const Default: Story = () => (
       />
     </div>
   </div>
-);
+  ),
+};
 
-export const LongNodeName: Story = () => (
-  <div className="p-8 bg-gray-100 h-96 relative">
+export const LongNodeName: Story = {
+  render: () => (
+    <div className="p-8 bg-gray-100 h-96 relative">
     <div className="absolute top-24 left-24">
       <MotivationContextMenu
         x={100}
@@ -37,4 +46,5 @@ export const LongNodeName: Story = () => (
       />
     </div>
   </div>
-);
+  ),
+};

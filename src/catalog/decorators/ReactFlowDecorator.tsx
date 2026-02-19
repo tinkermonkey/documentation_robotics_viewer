@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { ReactFlowProvider, ReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import type { ReactElement } from 'react';
@@ -23,7 +22,7 @@ export interface ReactFlowDecoratorOptions {
  * HOC decorator that wraps a story component with ReactFlowProvider and a configured ReactFlow container.
  * This enables rendering React Flow nodes and edges in isolation for component stories.
  *
- * Note: Storybook and Ladle provide their own error boundary wrappers at the top level, so component
+ * Note: Storybook provides an error boundary wrapper at the top level, so component
  * errors will be caught and displayed by the story framework. If a Story component throws, the error
  * will be caught by the framework's error boundary.
  *
@@ -61,11 +60,17 @@ export const withReactFlowDecorator = (options: ReactFlowDecoratorOptions = {}) 
       const edgeProps = (isValidElement(storyElement) ? storyElement.props : {}) as any;
 
       // Create a mock edge configuration that ReactFlow can render
+      const getComponentName = (component: any): string => {
+        if (typeof component === 'string') return component;
+        if (typeof component === 'function') return component.displayName || component.name || 'default';
+        return 'default';
+      };
+
       const mockEdge = {
         id: edgeProps.id || 'edge-1',
         source: edgeProps.source || 'source',
         target: edgeProps.target || 'target',
-        type: storyElement.type?.displayName || 'default',
+        type: getComponentName(storyElement.type),
         data: edgeProps.data,
         animated: edgeProps.animated,
         label: edgeProps.label,

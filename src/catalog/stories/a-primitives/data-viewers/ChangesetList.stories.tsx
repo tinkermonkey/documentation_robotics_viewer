@@ -1,13 +1,15 @@
-// @ts-nocheck
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import ChangesetList from '@/apps/embedded/components/ChangesetList';
 import { useChangesetStore } from '@/apps/embedded/stores/changesetStore';
 import { useEffect } from 'react';
 import type { ChangesetSummary } from '@/apps/embedded/services/embeddedDataLoader';
 
-export default {
+const meta = {
   title: 'A Primitives / Data Viewers / ChangesetList',
-} satisfies StoryDefault;
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj;
 
 const mockChangesets: Array<ChangesetSummary & { id: string }> = [
   {
@@ -16,9 +18,6 @@ const mockChangesets: Array<ChangesetSummary & { id: string }> = [
     type: 'feature',
     status: 'active',
     created_at: '2024-12-20T10:00:00Z',
-    created_by: 'Alice',
-    description: 'Implement OAuth2 authentication',
-    changes: { changes: [] },
     elements_count: 5,
   },
   {
@@ -27,9 +26,6 @@ const mockChangesets: Array<ChangesetSummary & { id: string }> = [
     type: 'bugfix',
     status: 'applied',
     created_at: '2024-12-19T14:30:00Z',
-    created_by: 'Bob',
-    description: 'Correct validation logic',
-    changes: { changes: [] },
     elements_count: 3,
   },
   {
@@ -38,9 +34,6 @@ const mockChangesets: Array<ChangesetSummary & { id: string }> = [
     type: 'exploration',
     status: 'active',
     created_at: '2024-12-18T09:15:00Z',
-    created_by: 'Charlie',
-    description: 'Research ML model integration',
-    changes: { changes: [] },
     elements_count: 8,
   },
   {
@@ -49,54 +42,57 @@ const mockChangesets: Array<ChangesetSummary & { id: string }> = [
     type: 'feature',
     status: 'abandoned',
     created_at: '2024-12-10T11:00:00Z',
-    created_by: 'Alice',
-    description: 'Abandoned due to requirements change',
-    changes: { changes: [] },
     elements_count: 2,
   },
 ];
 
-export const WithMultipleChangesets: Story = () => {
-  useEffect(() => {
-    useChangesetStore.setState({ 
-      changesets: mockChangesets,
-      selectedChangesetId: null 
-    });
-  }, []);
+export const WithMultipleChangesets: Story = {
+  render: () => {
+    useEffect(() => {
+      useChangesetStore.setState({
+        changesets: mockChangesets,
+        selectedChangesetId: null
+      });
+    }, []);
 
-  return (
-    <div className="w-96 bg-gray-50 p-4">
-      <ChangesetList onChangesetSelect={(id) => console.log('Selected:', id)} />
-    </div>
-  );
+    return (
+      <div className="w-96 bg-gray-50 p-4">
+        <ChangesetList onChangesetSelect={(id) => console.log('Selected:', id)} />
+      </div>
+    );
+  }
 };
 
-export const WithSelection: Story = () => {
-  useEffect(() => {
-    useChangesetStore.setState({ 
-      changesets: mockChangesets,
-      selectedChangesetId: 'cs-1' 
-    });
-  }, []);
+export const WithSelection: Story = {
+  render: () => {
+    useEffect(() => {
+      useChangesetStore.setState({
+        changesets: mockChangesets,
+        selectedChangesetId: 'cs-1'
+      });
+    }, []);
 
-  return (
-    <div className="w-96 bg-gray-50 p-4">
-      <ChangesetList onChangesetSelect={(id) => console.log('Selected:', id)} />
-    </div>
-  );
+    return (
+      <div className="w-96 bg-gray-50 p-4">
+        <ChangesetList onChangesetSelect={(id) => console.log('Selected:', id)} />
+      </div>
+    );
+  }
 };
 
-export const EmptyList: Story = () => {
-  useEffect(() => {
-    useChangesetStore.setState({ 
-      changesets: [],
-      selectedChangesetId: null 
-    });
-  }, []);
+export const EmptyList: Story = {
+  render: () => {
+    useEffect(() => {
+      useChangesetStore.setState({
+        changesets: [],
+        selectedChangesetId: null
+      });
+    }, []);
 
-  return (
-    <div className="w-96 bg-gray-50 p-4">
-      <ChangesetList onChangesetSelect={(id) => console.log('Selected:', id)} />
-    </div>
-  );
+    return (
+      <div className="w-96 bg-gray-50 p-4">
+        <ChangesetList onChangesetSelect={(id) => console.log('Selected:', id)} />
+      </div>
+    );
+  }
 };

@@ -2,22 +2,27 @@
  * D3 Force Layout Engine Stories
  * Demonstrates physics-based force-directed layouts using D3
  */
-import type { Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import GraphViewer from '@/core/components/GraphViewer';
 import { StoryProviderWrapper } from '@/catalog';
 import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';
 
-export default {
+const meta = {
   title: 'C Graphs / Layouts / D3ForceLayout',
-};
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 /**
  * Default force-directed simulation
  */
-export const Default: Story = () => {
-  const model = createCompleteModelFixture();
+export const Default: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper model={model}>
       <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
         <GraphViewer
@@ -32,16 +37,20 @@ export const Default: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };
 
 /**
  * High repulsion for spread-out layout
  */
-export const HighRepulsion: Story = () => {
-  const model = createCompleteModelFixture();
+export const HighRepulsion: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper model={model}>
       <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
         <GraphViewer
@@ -56,16 +65,20 @@ export const HighRepulsion: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };
 
 /**
  * Tight clustering for compact layout
  */
-export const TightClustering: Story = () => {
-  const model = createCompleteModelFixture();
+export const TightClustering: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper model={model}>
       <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
         <GraphViewer
@@ -80,16 +93,20 @@ export const TightClustering: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };
 
 /**
  * Extended simulation for stable layout
  */
-export const ExtendedSimulation: Story = () => {
-  const model = createCompleteModelFixture();
+export const ExtendedSimulation: Story = {
+  render: () => {
+const model = createCompleteModelFixture();
 
-  return (
+      return (
+      
     <StoryProviderWrapper model={model}>
       <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
         <GraphViewer
@@ -104,5 +121,7 @@ export const ExtendedSimulation: Story = () => {
         />
       </div>
     </StoryProviderWrapper>
-  );
+  
+    );
+  }
 };

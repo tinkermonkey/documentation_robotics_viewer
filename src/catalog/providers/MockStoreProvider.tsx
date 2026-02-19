@@ -164,12 +164,12 @@ export function createMockAnnotationStore(initialAnnotations: Annotation[] = [],
  * Mock Filter Store
  */
 export interface MockFilterState {
+  [key: string]: unknown;
   layers?: string[];
   changesetOperations?: Array<'add' | 'update' | 'delete'>;
   elementTypes?: string[];
   relationshipTypes?: string[];
   searchText?: string;
-  [key: string]: unknown;
 }
 
 interface MockFilterStore {

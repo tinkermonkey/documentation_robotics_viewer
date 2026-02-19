@@ -16,18 +16,7 @@
 
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { isExpectedConsoleError, isKnownRenderingBug } from './storyErrorFilters';
-
-function setupErrorFiltering(page: import('@playwright/test').Page) {
-  page.on('console', (msg) => {
-    if (msg.type() === 'error') {
-      const text = msg.text();
-      if (!isExpectedConsoleError(text) && !isKnownRenderingBug(text)) {
-        console.error(`[UNEXPECTED ERROR]: ${text}`);
-      }
-    }
-  });
-}
+import { storyUrl, setupErrorFiltering } from '../helpers/storyTestUtils';
 
 test.describe('Accessibility - Graph Views', () => {
   const graphStories = [
@@ -40,7 +29,7 @@ test.describe('Accessibility - Graph Views', () => {
   for (const story of graphStories) {
     test(`${story.name}: WCAG 2.1 AA compliance`, async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(`/?story=${story.key}&mode=preview`);
+      await page.goto(storyUrl(story.key));
       await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 }).catch(() => {
         return page.locator('.react-flow__node').first().waitFor({ state: 'attached', timeout: 10000 });
       });
@@ -70,7 +59,7 @@ test.describe('Accessibility - Panels', () => {
   for (const story of panelStories) {
     test(`${story.name}: WCAG 2.1 AA compliance`, async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(`/?story=${story.key}&mode=preview`);
+      await page.goto(storyUrl(story.key));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
 
@@ -89,16 +78,16 @@ test.describe('Accessibility - Panels', () => {
 
 test.describe('Accessibility - Nodes', () => {
   const nodeStories = [
-    { key: 'architecture-nodes--motivation--goalnode--default', name: 'GoalNode', expectedLabel: 'Increase Revenue' },
-    { key: 'architecture-nodes--c4--containernode--default', name: 'ContainerNode' },
-    { key: 'architecture-nodes--business--businessfunctionnode--default', name: 'BusinessFunctionNode' },
-    { key: 'architecture-nodes--motivation--stakeholdernode--default', name: 'StakeholderNode' },
+    { key: 'c-graphs-nodes-motivation-goalnode--default', name: 'GoalNode', expectedLabel: 'Increase Revenue' },
+    { key: 'c-graphs-nodes-c4-containernode--default', name: 'ContainerNode' },
+    { key: 'c-graphs-nodes-business-businessfunctionnode--default', name: 'BusinessFunctionNode' },
+    { key: 'c-graphs-nodes-motivation-stakeholdernode--default', name: 'StakeholderNode' },
   ];
 
   for (const story of nodeStories) {
     test(`${story.name}: has role="article" and aria-label`, async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(`/?story=${story.key}&mode=preview`);
+      await page.goto(storyUrl(story.key));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
 
       const article = page.locator('[role="article"]').first();

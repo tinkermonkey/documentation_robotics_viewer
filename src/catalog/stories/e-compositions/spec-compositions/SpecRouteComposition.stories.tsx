@@ -4,11 +4,7 @@
  */
 
 import { useState } from 'react';
-import type { Story, StoryDefault } from '@ladle/react';
-
-export default {
-  title: 'E Compositions / Spec Compositions / SpecRouteComposition',
-} satisfies StoryDefault;
+import type { Meta, StoryObj } from '@storybook/react';
 import { SpecRouteComposition } from '@/catalog/components/SpecRouteComposition';
 import { StoryProviderWrapper } from '@/catalog/providers/StoryProviderWrapper';
 import {
@@ -17,13 +13,20 @@ import {
   createAnnotationListFixture
 } from '@/catalog/fixtures';
 
+const meta = {
+  title: 'E Compositions / Spec Compositions / SpecRouteComposition',
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
 /**
  * Graph View - Default
  * Full spec route composition with graph view showing schema relationships
  */
-export const GraphView: Story = () => {
+const GraphViewWrapper = () => {
   const [activeView, setActiveView] = useState<'graph' | 'json'>('graph');
-  const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null);
+  const selectedSchemaId: string | null = null;
 
   const specData = createCompleteSpecFixture();
   const annotations = createAnnotationListFixture(3);
@@ -47,13 +50,15 @@ export const GraphView: Story = () => {
   );
 };
 
+export const GraphView: Story = { render: () => <GraphViewWrapper /> };
+
 /**
  * JSON View - Default
  * Full spec route composition with JSON viewer showing schema definitions
  */
-export const JSONView: Story = () => {
+const JSONViewWrapper = () => {
   const [activeView, setActiveView] = useState<'graph' | 'json'>('json');
-  const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null);
+  const selectedSchemaId: string | null = null;
 
   const specData = createCompleteSpecFixture();
   const annotations = createAnnotationListFixture(5);
@@ -77,13 +82,15 @@ export const JSONView: Story = () => {
   );
 };
 
+export const JSONView: Story = { render: () => <JSONViewWrapper /> };
+
 /**
  * Minimal Spec - Graph View
  * Shows minimal spec with only 5 basic schemas
  */
-export const MinimalSpec: Story = () => {
+const MinimalSpecWrapper = () => {
   const [activeView, setActiveView] = useState<'graph' | 'json'>('graph');
-  const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null);
+  const selectedSchemaId: string | null = null;
 
   const specData = createMinimalSpecFixture();
 
@@ -105,13 +112,15 @@ export const MinimalSpec: Story = () => {
   );
 };
 
+export const MinimalSpec: Story = { render: () => <MinimalSpecWrapper /> };
+
 /**
  * Compact - No Sidebar
  * Spec viewer with no right sidebar for compact testing
  */
-export const CompactNoSidebar: Story = () => {
+const CompactNoSidebarWrapper = () => {
   const [activeView, setActiveView] = useState<'graph' | 'json'>('graph');
-  const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null);
+  const selectedSchemaId: string | null = null;
 
   const specData = createCompleteSpecFixture();
 
@@ -133,13 +142,15 @@ export const CompactNoSidebar: Story = () => {
   );
 };
 
+export const CompactNoSidebar: Story = { render: () => <CompactNoSidebarWrapper /> };
+
 /**
  * With Selected Schema
  * Spec view with a specific schema selected
  */
-export const WithSelectedSchema: Story = () => {
+const WithSelectedSchemaWrapper = () => {
   const [activeView, setActiveView] = useState<'graph' | 'json'>('graph');
-  const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>('goal');
+  const selectedSchemaId: string | null = 'goal';
 
   const specData = createCompleteSpecFixture();
   const annotations = createAnnotationListFixture(2);
@@ -163,13 +174,15 @@ export const WithSelectedSchema: Story = () => {
   );
 };
 
+export const WithSelectedSchema: Story = { render: () => <WithSelectedSchemaWrapper /> };
+
 /**
  * View Toggle Interaction
  * Demonstrates toggling between graph and JSON views
  */
-export const ViewToggleInteraction: Story = () => {
+const ViewToggleInteractionWrapper = () => {
   const [activeView, setActiveView] = useState<'graph' | 'json'>('graph');
-  const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null);
+  const selectedSchemaId: string | null = null;
 
   const specData = createCompleteSpecFixture();
   const annotations = createAnnotationListFixture(3);
@@ -195,3 +208,5 @@ export const ViewToggleInteraction: Story = () => {
     </StoryProviderWrapper>
   );
 };
+
+export const ViewToggleInteraction: Story = { render: () => <ViewToggleInteractionWrapper /> };

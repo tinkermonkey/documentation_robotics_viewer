@@ -1,11 +1,17 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { BaseInspectorPanel } from '@/core/components/base/BaseInspectorPanel';
 import type { BaseGraph, BaseNode, BaseEdge } from '@/core/components/base/types';
 import { ArrowUp, ArrowDown, Eye } from 'lucide-react';
 
-export default {
+const meta = {
   title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 /**
  * Sample node type for demo
@@ -127,226 +133,236 @@ function createDemoGraph(): DemoGraph {
 /**
  * Default story showing inspector panel with a selected node
  */
-export const Default: Story = () => {
-  const graph = createDemoGraph();
-  const selectedNodeId = 'node-1';
+export const Default: Story = {
+  render: () => {
+    const graph = createDemoGraph();
+    const selectedNodeId = 'node-1';
 
-  return (
-    <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb', display: 'flex' }}>
-      <div style={{ width: '100%', maxWidth: 400, borderRight: '1px solid #e5e7eb' }}>
-        <BaseInspectorPanel
-          selectedNodeId={selectedNodeId}
-          graph={graph}
-          onClose={() => console.log('Close clicked')}
-          renderElementDetails={(node: DemoNode) => (
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Name:</span>
-                <span className="text-sm font-semibold">{node.name}</span>
-              </div>
-              {node.description && (
-                <div>
-                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Description:</span>
-                  <p className="text-sm mt-1">{node.description}</p>
-                </div>
-              )}
-              <div className="flex justify-between">
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Type:</span>
-                <span className="text-sm">{node.type}</span>
-              </div>
-              {node.priority && (
+    return (
+      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb', display: 'flex' }}>
+        <div style={{ width: '100%', maxWidth: 400, borderRight: '1px solid #e5e7eb' }}>
+          <BaseInspectorPanel
+            selectedNodeId={selectedNodeId}
+            graph={graph}
+            onClose={() => console.log('Close clicked')}
+            renderElementDetails={(node: DemoNode) => (
+              <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Priority:</span>
-                  <span className="text-sm">{node.priority}</span>
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Name:</span>
+                  <span className="text-sm font-semibold">{node.name}</span>
                 </div>
-              )}
-            </div>
-          )}
-          getNodeName={(node: DemoNode) => node.name}
-          getEdgeType={(edge: DemoEdge) => edge.type}
-          quickActions={[
-            {
-              id: 'trace-up',
-              title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
-              icon: <ArrowUp className="w-4 h-4" />,
-              color: 'gray' as const,
-              onClick: (node: DemoNode) => console.log('Trace upstream:', node.id),
-              description: 'Show all elements that influence this element',
-            },
-            {
-              id: 'trace-down',
-              title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
-              icon: <ArrowDown className="w-4 h-4" />,
-              color: 'gray' as const,
-              onClick: (node: DemoNode) => console.log('Trace downstream:', node.id),
-              description: 'Show all elements influenced by this element',
-            },
-            {
-              id: 'focus',
-              title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
-              icon: <Eye className="w-4 h-4" />,
-              color: 'gray' as const,
-              onClick: (node: DemoNode) => console.log('Focus on:', node.id),
-              condition: (node: DemoNode) => node.type === 'Goal',
-              description: 'Dim other elements to focus on this one',
-            },
-          ]}
-        />
+                {node.description && (
+                  <div>
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Description:</span>
+                    <p className="text-sm mt-1">{node.description}</p>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Type:</span>
+                  <span className="text-sm">{node.type}</span>
+                </div>
+                {node.priority && (
+                  <div className="flex justify-between">
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Priority:</span>
+                    <span className="text-sm">{node.priority}</span>
+                  </div>
+                )}
+              </div>
+            )}
+            getNodeName={(node: DemoNode) => node.name}
+            getEdgeType={(edge: DemoEdge) => edge.type}
+            quickActions={[
+              {
+                id: 'trace-up',
+                title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
+                icon: <ArrowUp className="w-4 h-4" />,
+                color: 'gray' as const,
+                onClick: (node: DemoNode) => console.log('Trace upstream:', node.id),
+                description: 'Show all elements that influence this element',
+              },
+              {
+                id: 'trace-down',
+                title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
+                icon: <ArrowDown className="w-4 h-4" />,
+                color: 'gray' as const,
+                onClick: (node: DemoNode) => console.log('Trace downstream:', node.id),
+                description: 'Show all elements influenced by this element',
+              },
+              {
+                id: 'focus',
+                title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
+                icon: <Eye className="w-4 h-4" />,
+                color: 'gray' as const,
+                onClick: (node: DemoNode) => console.log('Focus on:', node.id),
+                condition: (node: DemoNode) => node.type === 'Goal',
+                description: 'Dim other elements to focus on this one',
+              },
+            ]}
+          />
+        </div>
       </div>
-    </div>
-  );
+    );
+  },
 };
 
 /**
  * Story showing inspector panel with no element selected
  */
-export const NoSelection: Story = () => {
-  const graph = createDemoGraph();
+export const NoSelection: Story = {
+  render: () => {
+    const graph = createDemoGraph();
 
-  return (
-    <div style={{ width: '100%', height: 400, border: '1px solid #e5e7eb', display: 'flex' }}>
-      <div style={{ width: '100%', maxWidth: 400, borderRight: '1px solid #e5e7eb' }}>
-        <BaseInspectorPanel
-          selectedNodeId={null}
-          graph={graph}
-          onClose={() => console.log('Close clicked')}
-          renderElementDetails={(node: DemoNode) => <div>{node.name}</div>}
-          getNodeName={(node: DemoNode) => node.name}
-          getEdgeType={(edge: DemoEdge) => edge.type}
-        />
+    return (
+      <div style={{ width: '100%', height: 400, border: '1px solid #e5e7eb', display: 'flex' }}>
+        <div style={{ width: '100%', maxWidth: 400, borderRight: '1px solid #e5e7eb' }}>
+          <BaseInspectorPanel
+            selectedNodeId={null}
+            graph={graph}
+            onClose={() => console.log('Close clicked')}
+            renderElementDetails={(node: DemoNode) => <div>{node.name}</div>}
+            getNodeName={(node: DemoNode) => node.name}
+            getEdgeType={(edge: DemoEdge) => edge.type}
+          />
+        </div>
       </div>
-    </div>
-  );
+    );
+  },
 };
 
 /**
  * Story showing inspector panel with custom relationship badges
  */
-export const CustomRelationshipBadges: Story = () => {
-  const graph = createDemoGraph();
-  const selectedNodeId = 'node-3';
+export const CustomRelationshipBadges: Story = {
+  render: () => {
+    const graph = createDemoGraph();
+    const selectedNodeId = 'node-3';
 
-  return (
-    <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb', display: 'flex' }}>
-      <div style={{ width: '100%', maxWidth: 400, borderRight: '1px solid #e5e7eb' }}>
-        <BaseInspectorPanel
-          selectedNodeId={selectedNodeId}
-          graph={graph}
-          onClose={() => console.log('Close clicked')}
-          renderElementDetails={(node: DemoNode) => (
-            <div className="space-y-2">
-              <div>
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Name:</span>
-                <p className="text-sm font-semibold mt-1">{node.name}</p>
+    return (
+      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb', display: 'flex' }}>
+        <div style={{ width: '100%', maxWidth: 400, borderRight: '1px solid #e5e7eb' }}>
+          <BaseInspectorPanel
+            selectedNodeId={selectedNodeId}
+            graph={graph}
+            onClose={() => console.log('Close clicked')}
+            renderElementDetails={(node: DemoNode) => (
+              <div className="space-y-2">
+                <div>
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Name:</span>
+                  <p className="text-sm font-semibold mt-1">{node.name}</p>
+                </div>
               </div>
-            </div>
-          )}
-          getNodeName={(node: DemoNode) => node.name}
-          getEdgeType={(edge: DemoEdge) => edge.type}
-          renderRelationshipBadge={(edge: DemoEdge) => (
-            <div className="mb-1">
-              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                {edge.type} ({(edge.weight as number | undefined)?.toFixed(1) || 'N/A'})
-              </span>
-            </div>
-          )}
-        />
+            )}
+            getNodeName={(node: DemoNode) => node.name}
+            getEdgeType={(edge: DemoEdge) => edge.type}
+            renderRelationshipBadge={(edge: DemoEdge) => (
+              <div className="mb-1">
+                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                  {edge.type} ({(edge.weight as number | undefined)?.toFixed(1) || 'N/A'})
+                </span>
+              </div>
+            )}
+          />
+        </div>
       </div>
-    </div>
-  );
+    );
+  },
 };
 
 /**
  * Story showing inspector panel with multiple relationships
  */
-export const MultipleRelationships: Story = () => {
-  const graph = createDemoGraph();
-  const selectedNodeId = 'node-1';
+export const MultipleRelationships: Story = {
+  render: () => {
+    const graph = createDemoGraph();
+    const selectedNodeId = 'node-1';
 
-  return (
-    <div style={{ width: '100%', height: 700, border: '1px solid #e5e7eb', display: 'flex' }}>
-      <div style={{ width: '100%', maxWidth: 400, borderRight: '1px solid #e5e7eb' }}>
-        <BaseInspectorPanel
-          selectedNodeId={selectedNodeId}
-          graph={graph}
-          onClose={() => console.log('Close clicked')}
-          renderElementDetails={(node: DemoNode) => (
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Name:</span>
-                <span className="text-sm font-semibold">{node.name}</span>
+    return (
+      <div style={{ width: '100%', height: 700, border: '1px solid #e5e7eb', display: 'flex' }}>
+        <div style={{ width: '100%', maxWidth: 400, borderRight: '1px solid #e5e7eb' }}>
+          <BaseInspectorPanel
+            selectedNodeId={selectedNodeId}
+            graph={graph}
+            onClose={() => console.log('Close clicked')}
+            renderElementDetails={(node: DemoNode) => (
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Name:</span>
+                  <span className="text-sm font-semibold">{node.name}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Type:</span>
+                  <span className="text-sm">{node.type}</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Type:</span>
-                <span className="text-sm">{node.type}</span>
-              </div>
-            </div>
-          )}
-          getNodeName={(node: DemoNode) => node.name}
-          getEdgeType={(edge: DemoEdge) => edge.type}
-          title="Element Inspector"
-        />
+            )}
+            getNodeName={(node: DemoNode) => node.name}
+            getEdgeType={(edge: DemoEdge) => edge.type}
+            title="Element Inspector"
+          />
+        </div>
       </div>
-    </div>
-  );
+    );
+  },
 };
 
 /**
  * Story showing inspector panel with conditional quick actions
  */
-export const ConditionalQuickActions: Story = () => {
-  const graph = createDemoGraph();
-  const selectedNodeId = 'node-2';
+export const ConditionalQuickActions: Story = {
+  render: () => {
+    const graph = createDemoGraph();
+    const selectedNodeId = 'node-2';
 
-  return (
-    <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb', display: 'flex' }}>
-      <div style={{ width: '100%', maxWidth: 400, borderRight: '1px solid #e5e7eb' }}>
-        <BaseInspectorPanel
-          selectedNodeId={selectedNodeId}
-          graph={graph}
-          onClose={() => console.log('Close clicked')}
-          renderElementDetails={(node: DemoNode) => (
-            <div className="space-y-2">
-              <div>
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Name:</span>
-                <p className="text-sm font-semibold mt-1">{node.name}</p>
+    return (
+      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb', display: 'flex' }}>
+        <div style={{ width: '100%', maxWidth: 400, borderRight: '1px solid #e5e7eb' }}>
+          <BaseInspectorPanel
+            selectedNodeId={selectedNodeId}
+            graph={graph}
+            onClose={() => console.log('Close clicked')}
+            renderElementDetails={(node: DemoNode) => (
+              <div className="space-y-2">
+                <div>
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Name:</span>
+                  <p className="text-sm font-semibold mt-1">{node.name}</p>
+                </div>
+                <div>
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Description:</span>
+                  <p className="text-sm mt-1">{node.description}</p>
+                </div>
               </div>
-              <div>
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Description:</span>
-                <p className="text-sm mt-1">{node.description}</p>
-              </div>
-            </div>
-          )}
-          getNodeName={(node: DemoNode) => node.name}
-          getEdgeType={(edge: DemoEdge) => edge.type}
-          quickActions={[
-            {
-              id: 'trace-up',
-              title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
-              icon: <ArrowUp className="w-4 h-4" />,
-              color: 'gray' as const,
-              onClick: (node: DemoNode) => console.log('Trace upstream:', node.id),
-              condition: (node: DemoNode) => node.type === 'Goal' || node.type === 'Outcome',
-            },
-            {
-              id: 'trace-down',
-              title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
-              icon: <ArrowDown className="w-4 h-4" />,
-              color: 'gray' as const,
-              onClick: (node: DemoNode) => console.log('Trace downstream:', node.id),
-            },
-            {
-              id: 'focus',
-              title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
-              icon: <Eye className="w-4 h-4" />,
-              color: 'blue' as const,
-              onClick: (node: DemoNode) => console.log('Focus on:', node.id),
-              condition: (node: DemoNode) => node.priority === 'high',
-            },
-          ]}
-          title="Outcome Inspector"
-        />
+            )}
+            getNodeName={(node: DemoNode) => node.name}
+            getEdgeType={(edge: DemoEdge) => edge.type}
+            quickActions={[
+              {
+                id: 'trace-up',
+                title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
+                icon: <ArrowUp className="w-4 h-4" />,
+                color: 'gray' as const,
+                onClick: (node: DemoNode) => console.log('Trace upstream:', node.id),
+                condition: (node: DemoNode) => node.type === 'Goal' || node.type === 'Outcome',
+              },
+              {
+                id: 'trace-down',
+                title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
+                icon: <ArrowDown className="w-4 h-4" />,
+                color: 'gray' as const,
+                onClick: (node: DemoNode) => console.log('Trace downstream:', node.id),
+              },
+              {
+                id: 'focus',
+                title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
+                icon: <Eye className="w-4 h-4" />,
+                color: 'blue' as const,
+                onClick: (node: DemoNode) => console.log('Focus on:', node.id),
+                condition: (node: DemoNode) => node.priority === 'high',
+              },
+            ]}
+            title="Outcome Inspector"
+          />
+        </div>
       </div>
-    </div>
-  );
+    );
+  },
 };

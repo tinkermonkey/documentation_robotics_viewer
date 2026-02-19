@@ -1,10 +1,16 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { BusinessLayerControls } from '@/apps/embedded/components/businessLayer/BusinessLayerControls';
 import type { BusinessGraph } from '@/core/types/businessLayer';
 
-export default {
+const meta = {
   title: 'A Primitives / Panels and Sidebars / BusinessLayerControls',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 const mockBusinessGraph: BusinessGraph = {
   nodes: new Map([
@@ -52,42 +58,50 @@ const mockBusinessGraph: BusinessGraph = {
   },
 };
 
-export const Default: Story = () => (
-  <BusinessLayerControls
+export const Default: Story = {
+  render: () => (
+    <BusinessLayerControls
     businessGraph={mockBusinessGraph}
     onExport={(type) => console.log('Export:', type)}
     isExporting={false}
     visibleCount={5}
     totalCount={5}
   />
-);
+  ),
+};
 
-export const WithFilters: Story = () => (
-  <BusinessLayerControls
+export const WithFilters: Story = {
+  render: () => (
+    <BusinessLayerControls
     businessGraph={mockBusinessGraph}
     onExport={(type) => console.log('Export:', type)}
     isExporting={false}
     visibleCount={3}
     totalCount={5}
   />
-);
+  ),
+};
 
-export const Exporting: Story = () => (
-  <BusinessLayerControls
+export const Exporting: Story = {
+  render: () => (
+    <BusinessLayerControls
     businessGraph={mockBusinessGraph}
     onExport={(type) => console.log('Export:', type)}
     isExporting={true}
     visibleCount={5}
     totalCount={5}
   />
-);
+  ),
+};
 
-export const NoGraph: Story = () => (
-  <BusinessLayerControls
+export const NoGraph: Story = {
+  render: () => (
+    <BusinessLayerControls
     businessGraph={null}
     onExport={(type) => console.log('Export:', type)}
     isExporting={false}
     visibleCount={0}
     totalCount={0}
   />
-);
+  ),
+};

@@ -1,9 +1,15 @@
-import type { StoryDefault, Story } from '@ladle/react';
-import { GraphViewSidebar, GraphViewSidebarProps } from '@/core/components/base/GraphViewSidebar';
+import type { Meta, StoryObj } from '@storybook/react';
+import { GraphViewSidebar } from '@/core/components/base/GraphViewSidebar';
 
-export default {
+const meta = {
   title: 'A Primitives / Panels and Sidebars / GraphViewSidebar',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 /**
  * Demo filter panel content
@@ -24,10 +30,10 @@ const DemoFilterPanel = () => (
       </div>
     </div>
     <div>
-      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+      <label htmlFor="element-type-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
         Element Type
       </label>
-      <select className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700">
+      <select id="element-type-select" className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700">
         <option>All Types</option>
         <option>Services</option>
         <option>Functions</option>
@@ -42,10 +48,10 @@ const DemoFilterPanel = () => (
 const DemoControlPanel = () => (
   <div className="space-y-3">
     <div>
-      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+      <label htmlFor="layout-algorithm-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
         Layout Algorithm
       </label>
-      <select className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700">
+      <select id="layout-algorithm-select" className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700">
         <option>Vertical</option>
         <option>Hierarchical</option>
         <option>Force-Directed</option>
@@ -96,8 +102,8 @@ const DemoAnnotationPanel = () => (
 /**
  * Default story showing filters and controls sections
  */
-export const Default: Story<GraphViewSidebarProps> = () => {
-  return (
+export const Default: Story = {
+  render: () => (
     <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb', display: 'flex' }}>
       <div style={{ width: '100%', maxWidth: 320, overflow: 'hidden' }}>
         <GraphViewSidebar
@@ -107,14 +113,14 @@ export const Default: Story<GraphViewSidebarProps> = () => {
         />
       </div>
     </div>
-  );
+  ),
 };
 
 /**
  * Story showing all sections including inspector
  */
-export const WithInspector: Story<GraphViewSidebarProps> = () => {
-  return (
+export const WithInspector: Story = {
+  render: () => (
     <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb', display: 'flex' }}>
       <div style={{ width: '100%', maxWidth: 320, overflow: 'hidden' }}>
         <GraphViewSidebar
@@ -126,14 +132,14 @@ export const WithInspector: Story<GraphViewSidebarProps> = () => {
         />
       </div>
     </div>
-  );
+  ),
 };
 
 /**
  * Story showing all sections including annotations
  */
-export const WithAnnotations: Story<GraphViewSidebarProps> = () => {
-  return (
+export const WithAnnotations: Story = {
+  render: () => (
     <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb', display: 'flex' }}>
       <div style={{ width: '100%', maxWidth: 320, overflow: 'hidden' }}>
         <GraphViewSidebar
@@ -146,14 +152,14 @@ export const WithAnnotations: Story<GraphViewSidebarProps> = () => {
         />
       </div>
     </div>
-  );
+  ),
 };
 
 /**
  * Story with custom default open sections
  */
-export const CustomDefaultOpen: Story<GraphViewSidebarProps> = () => {
-  return (
+export const CustomDefaultOpen: Story = {
+  render: () => (
     <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb', display: 'flex' }}>
       <div style={{ width: '100%', maxWidth: 320, overflow: 'hidden' }}>
         <GraphViewSidebar
@@ -167,14 +173,14 @@ export const CustomDefaultOpen: Story<GraphViewSidebarProps> = () => {
         />
       </div>
     </div>
-  );
+  ),
 };
 
 /**
  * Story showing only controls and filters (no inspector or annotations)
  */
-export const MinimalSidebar: Story<GraphViewSidebarProps> = () => {
-  return (
+export const MinimalSidebar: Story = {
+  render: () => (
     <div style={{ width: '100%', height: 500, border: '1px solid #e5e7eb', display: 'flex' }}>
       <div style={{ width: '100%', maxWidth: 320, overflow: 'hidden' }}>
         <GraphViewSidebar
@@ -185,14 +191,14 @@ export const MinimalSidebar: Story<GraphViewSidebarProps> = () => {
         />
       </div>
     </div>
-  );
+  ),
 };
 
 /**
  * Story with all sections visible and all open
  */
-export const AllSectionsExpanded: Story<GraphViewSidebarProps> = () => {
-  return (
+export const AllSectionsExpanded: Story = {
+  render: () => (
     <div style={{ width: '100%', height: 800, border: '1px solid #e5e7eb', display: 'flex' }}>
       <div style={{ width: '100%', maxWidth: 320, overflow: 'hidden' }}>
         <GraphViewSidebar
@@ -206,5 +212,5 @@ export const AllSectionsExpanded: Story<GraphViewSidebarProps> = () => {
         />
       </div>
     </div>
-  );
+  ),
 };

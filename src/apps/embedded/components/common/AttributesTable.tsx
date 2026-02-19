@@ -50,7 +50,7 @@ const AttributesTable: React.FC<AttributesTableProps> = ({
           {title}
         </h4>
       )}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto" tabIndex={0}>
         <Table>
           <TableBody className="divide-y">
             {attributes.map((attr, index) => (

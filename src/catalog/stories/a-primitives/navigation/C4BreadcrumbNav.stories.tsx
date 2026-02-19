@@ -1,10 +1,13 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import C4BreadcrumbNav from '@/apps/embedded/components/C4BreadcrumbNav';
 import type { C4BreadcrumbSegment } from '@/apps/embedded/types/c4Graph';
 
-export default {
+const meta = {
   title: 'A Primitives / Navigation / C4BreadcrumbNav',
-} satisfies StoryDefault;
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 const contextBreadcrumb: C4BreadcrumbSegment[] = [
   { level: 'context', label: 'System Context' },
@@ -21,7 +24,7 @@ const componentBreadcrumb: C4BreadcrumbSegment[] = [
   { level: 'component', label: 'Payment Service', nodeId: 'payment' },
 ];
 
-export const ContextLevel: Story = () => (
+export const ContextLevel: Story = { render: () => (
   <div className="p-4 bg-white border border-gray-200">
     <C4BreadcrumbNav
       breadcrumb={contextBreadcrumb}
@@ -31,9 +34,9 @@ export const ContextLevel: Story = () => (
       }
     />
   </div>
-);
+) };
 
-export const ContainerLevel: Story = () => (
+export const ContainerLevel: Story = { render: () => (
   <div className="p-4 bg-white border border-gray-200">
     <C4BreadcrumbNav
       breadcrumb={containerBreadcrumb}
@@ -43,9 +46,9 @@ export const ContainerLevel: Story = () => (
       }
     />
   </div>
-);
+) };
 
-export const ComponentLevel: Story = () => (
+export const ComponentLevel: Story = { render: () => (
   <div className="p-4 bg-white border border-gray-200">
     <C4BreadcrumbNav
       breadcrumb={componentBreadcrumb}
@@ -55,4 +58,4 @@ export const ComponentLevel: Story = () => (
       }
     />
   </div>
-);
+) };

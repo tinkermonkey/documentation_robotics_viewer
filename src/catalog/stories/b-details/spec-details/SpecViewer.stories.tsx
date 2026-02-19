@@ -1,11 +1,17 @@
-import type { StoryDefault, Story } from '@ladle/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import SpecViewer from '@/apps/embedded/components/SpecViewer';
 import type { SpecDataResponse } from '@/apps/embedded/services/embeddedDataLoader';
 import { LayerType } from '@/core/types';
 
-export default {
+const meta = {
   title: 'B Details / Spec Details / SpecViewer',
-} satisfies StoryDefault;
+  parameters: {
+    layout: 'centered',
+  },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 const mockSpecData: SpecDataResponse = {
   version: '1.0.0',
@@ -326,7 +332,7 @@ const mockSpecData: SpecDataResponse = {
     metadata: {
       generatedDate: new Date().toISOString(),
       generatedFrom: 'mock-spec',
-      generator: 'ladle-story',
+      generator: 'storybook-story',
       totalLinkTypes: 10,
       totalCategories: 2,
       version: '1.0.0',
@@ -335,26 +341,33 @@ const mockSpecData: SpecDataResponse = {
   },
 };
 
-export const WithSchemaSelected: Story = () => (
-  <div className="w-full max-w-4xl p-4 bg-gray-50">
+export const WithSchemaSelected: Story = {
+  render: () => (
+    <div className="w-full max-w-4xl p-4 bg-gray-50">
     <SpecViewer specData={mockSpecData} selectedSchemaId="business.schema.json" />
   </div>
-);
+  ),
+};
 
-export const WithFullBusinessLayerSchema: Story = () => (
-  <div className="w-full max-w-4xl p-4 bg-gray-50">
+export const WithFullBusinessLayerSchema: Story = {
+  render: () => (
+    <div className="w-full max-w-4xl p-4 bg-gray-50">
     <SpecViewer specData={mockSpecData} selectedSchemaId="business.schema.json" />
   </div>
-);
+  ),
+};
 
-export const NoSchemaSelected: Story = () => (
-  <div className="w-full max-w-4xl p-4 bg-gray-50">
+export const NoSchemaSelected: Story = {
+  render: () => (
+    <div className="w-full max-w-4xl p-4 bg-gray-50">
     <SpecViewer specData={mockSpecData} selectedSchemaId={null} />
   </div>
-);
+  ),
+};
 
-export const EmptySpecData: Story = () => (
-  <div className="w-full max-w-4xl p-4 bg-gray-50">
+export const EmptySpecData: Story = {
+  render: () => (
+    <div className="w-full max-w-4xl p-4 bg-gray-50">
     <SpecViewer
       specData={{
         version: '1.0.0',
@@ -367,7 +380,7 @@ export const EmptySpecData: Story = () => (
           metadata: {
             generatedDate: new Date().toISOString(),
             generatedFrom: 'empty-spec',
-            generator: 'ladle-story',
+            generator: 'storybook-story',
             totalLinkTypes: 0,
             totalCategories: 0,
             version: '1.0.0',
@@ -378,4 +391,5 @@ export const EmptySpecData: Story = () => (
       selectedSchemaId={null}
     />
   </div>
-);
+  ),
+};
