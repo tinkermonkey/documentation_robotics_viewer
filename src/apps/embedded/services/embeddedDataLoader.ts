@@ -18,9 +18,16 @@ function getCookieToken(): string | null {
   if (!match) return null;
   try {
     return decodeURIComponent(match.split('=')[1] || '');
-  } catch (_err) {
-    console.debug('[Auth] Cookie decode failed, using raw value');
-    return match.split('=')[1] || null;
+  } catch (decodeError) {
+    // Log decode failures at warning level to prevent silent auth failures
+    const rawValue = match.split('=')[1] || null;
+    console.warn(
+      '[Auth] Cookie decode failed - token may be malformed:',
+      decodeError instanceof Error ? decodeError.message : String(decodeError),
+      { cookieName: AUTH_COOKIE_NAME, hasValue: !!rawValue }
+    );
+    // Return raw value as fallback, but caller should be aware it may be invalid
+    return rawValue;
   }
 }
 

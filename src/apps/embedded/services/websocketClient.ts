@@ -499,20 +499,23 @@ export class WebSocketClient {
 }
 
 // Detect if we're in a test/story environment (Storybook or Playwright)
+// IMPORTANT: Only check explicit flags, not port-based heuristics
+// Port-based detection (e.g., port 61001) can accidentally activate in production-like environments
 function isTestEnvironment(): boolean {
   if (typeof window === 'undefined') return false;
 
-  // Check for Storybook environment (runs on port 61001 by default)
-  if (window.location.port === '61001') return true;
-
-  // Check for Playwright test environment
+  // Check for Playwright test environment (set by Playwright test runner)
   if ((window as any).__PLAYWRIGHT__) return true;
 
-  // Check for explicit mock flag (used in Storybook test environment)
+  // Check for explicit mock flag (must be set by Storybook/test configuration)
   if ((window as any).__STORYBOOK_MOCK_WEBSOCKET__) return true;
 
   // Check if we're in a test environment by looking for test-specific globals
   if ((window as any).__karma__ || (window as any).jasmine || (window as any).jest) return true;
+
+  // Note: Do NOT check window.location.port (e.g., port 61001) as this can incorrectly
+  // activate the mock client in production environments that use port-based routing
+  // or reverse proxies. Only use explicit flags set by the test framework.
 
   return false;
 }

@@ -78,8 +78,13 @@ export function logError(
 
       Sentry.captureException(error);
     }
-  } catch {
-    // Fail silently if Sentry is not available
+  } catch (sentryError) {
+    // Log Sentry capture failures to prevent silent debugging black hole
+    console.warn(
+      '[ErrorTracker] Failed to capture error in Sentry:',
+      sentryError instanceof Error ? sentryError.message : String(sentryError),
+      { errorId, message }
+    );
   }
 
   // Store in session storage for debugging (keep last 50 errors)
@@ -96,8 +101,13 @@ export function logError(
     }
 
     sessionStorage.setItem(storageKey, JSON.stringify(logs));
-  } catch {
-    // Fail silently if storage is not available
+  } catch (storageError) {
+    // Log storage failures to prevent silent loss of error tracking
+    console.warn(
+      '[ErrorTracker] Failed to store error log in session storage:',
+      storageError instanceof Error ? storageError.message : String(storageError),
+      { errorId, message }
+    );
   }
 
   return classified;
@@ -134,8 +144,13 @@ export function logWarning(
     }
 
     sessionStorage.setItem(storageKey, JSON.stringify(logs));
-  } catch {
-    // Fail silently if storage is not available
+  } catch (storageError) {
+    // Log storage failures to maintain visibility of storage issues
+    console.warn(
+      '[ErrorTracker] Failed to store warning log in session storage:',
+      storageError instanceof Error ? storageError.message : String(storageError),
+      { message }
+    );
   }
 }
 
@@ -147,7 +162,12 @@ export function getErrorLog(): any[] {
     const storageKey = 'app:error_log';
     const existing = sessionStorage.getItem(storageKey);
     return existing ? JSON.parse(existing) : [];
-  } catch {
+  } catch (storageError) {
+    // Log retrieval failures to prevent silent data loss
+    console.warn(
+      '[ErrorTracker] Failed to retrieve error log from session storage:',
+      storageError instanceof Error ? storageError.message : String(storageError)
+    );
     return [];
   }
 }
@@ -159,8 +179,12 @@ export function clearErrorLog(): void {
   try {
     sessionStorage.removeItem('app:error_log');
     sessionStorage.removeItem('app:warning_log');
-  } catch {
-    // Fail silently if storage is not available
+  } catch (storageError) {
+    // Log deletion failures to maintain visibility of storage issues
+    console.warn(
+      '[ErrorTracker] Failed to clear error logs from session storage:',
+      storageError instanceof Error ? storageError.message : String(storageError)
+    );
   }
 }
 
@@ -208,7 +232,12 @@ export function getErrorsByCategory(category: ExceptionCategory): any[] {
     const logs = existing ? JSON.parse(existing) : [];
 
     return logs.filter((log: any) => log.category === category);
-  } catch {
+  } catch (storageError) {
+    console.warn(
+      '[ErrorTracker] Failed to retrieve error logs for category filter:',
+      storageError instanceof Error ? storageError.message : String(storageError),
+      { category }
+    );
     return [];
   }
 }
@@ -223,7 +252,12 @@ export function getErrorsBySeverity(severity: ExceptionSeverity): any[] {
     const logs = existing ? JSON.parse(existing) : [];
 
     return logs.filter((log: any) => log.severity === severity);
-  } catch {
+  } catch (storageError) {
+    console.warn(
+      '[ErrorTracker] Failed to retrieve error logs for severity filter:',
+      storageError instanceof Error ? storageError.message : String(storageError),
+      { severity }
+    );
     return [];
   }
 }
@@ -238,7 +272,11 @@ export function getBugLogs(): any[] {
     const logs = existing ? JSON.parse(existing) : [];
 
     return logs.filter((log: any) => !log.isExpectedFailure);
-  } catch {
+  } catch (storageError) {
+    console.warn(
+      '[ErrorTracker] Failed to retrieve bug logs:',
+      storageError instanceof Error ? storageError.message : String(storageError)
+    );
     return [];
   }
 }
@@ -253,7 +291,11 @@ export function getExpectedFailureLogs(): any[] {
     const logs = existing ? JSON.parse(existing) : [];
 
     return logs.filter((log: any) => log.isExpectedFailure);
-  } catch {
+  } catch (storageError) {
+    console.warn(
+      '[ErrorTracker] Failed to retrieve expected failure logs:',
+      storageError instanceof Error ? storageError.message : String(storageError)
+    );
     return [];
   }
 }
