@@ -204,13 +204,12 @@ export class EmbeddedDataLoader {
       hasRelationshipCatalog: !!relationshipCatalog
     });
 
+    // Exclude snake_case versions to ensure consistent interface
+    const { schema_count: _, relationship_catalog: __, ...rest } = data;
     return {
-      ...data,
+      ...rest,
       schemaCount,
-      relationshipCatalog,
-      // Exclude snake_case versions to ensure consistent interface
-      schema_count: undefined,
-      relationship_catalog: undefined
+      relationshipCatalog
     };
   }
 

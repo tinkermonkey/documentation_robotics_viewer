@@ -13,7 +13,7 @@
 import { logError } from './errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
 
-type EventHandler = (data: unknown) => void;
+type EventHandler = (data: any) => void;
 
 interface WebSocketMessage {
   type: string;
@@ -489,7 +489,7 @@ export class WebSocketClient implements WebSocketClientInterface {
   /**
    * Emit an event to all registered handlers
    */
-  private emit(event: string, data: any): void {
+  private emit(event: string, data: unknown): void {
     const handlers = this.eventHandlers.get(event);
     if (handlers) {
       handlers.forEach(handler => {
