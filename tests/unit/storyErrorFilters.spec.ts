@@ -33,9 +33,9 @@ test.describe('Story Error Filtering', () => {
         expect(isExpectedConsoleError(error)).toBe(true);
       });
 
-      test('should match various ECONNREFUSED port 3002/8765 formats', () => {
+      test('should match ECONNREFUSED port 3002 formats', () => {
         expect(isExpectedConsoleError('ECONNREFUSED localhost:3002')).toBe(true);
-        expect(isExpectedConsoleError('ECONNREFUSED 127.0.0.1:8765')).toBe(true);
+        expect(isExpectedConsoleError('ECONNREFUSED 127.0.0.1:3002')).toBe(true);
       });
 
       test('should NOT match other port connection errors', () => {
@@ -198,7 +198,6 @@ test.describe('Story Error Filtering', () => {
     test.describe('Failed Resource Load Filter', () => {
       test('should match failed resource loads from known test ports', () => {
         expect(isExpectedConsoleError('Failed to load resource: localhost:3002/api/model')).toBe(true);
-        expect(isExpectedConsoleError('Failed to load resource: localhost:8765/ws')).toBe(true);
       });
 
       test('should NOT match failed resource loads from unknown ports', () => {
@@ -215,7 +214,7 @@ test.describe('Story Error Filtering', () => {
     test.describe('Server 500 Error Filter', () => {
       test('should match 500 errors from localhost dev servers', () => {
         expect(isExpectedConsoleError('the server responded with a status of 500 at localhost:3002')).toBe(true);
-        expect(isExpectedConsoleError('the server responded with a status of 502 at localhost:8765')).toBe(true);
+        expect(isExpectedConsoleError('the server responded with a status of 502 at localhost:3002')).toBe(true);
       });
 
       test('should NOT match 500 errors without localhost context', () => {
@@ -293,7 +292,7 @@ test.describe('Story Error Filtering', () => {
         const expectedErrors = [
           'Download the React DevTools for better development',
           'ECONNREFUSED localhost:3002',
-          'ECONNREFUSED 127.0.0.1:8765',
+          'ECONNREFUSED 127.0.0.1:3002',
           '[DataLoader] Failed to fetch model',
           'Warning: React does not recognize the `customAttr` prop',
           'The tag <custom> is unrecognized',
@@ -303,7 +302,6 @@ test.describe('Story Error Filtering', () => {
           '[EmbeddedLayout] Missing required props',
           '[ModelRoute] Error loading model',
           'Failed to load resource: localhost:3002/api',
-          'Failed to load resource: localhost:8765/ws',
           'the server responded with a status of 500 at localhost:3002',
           'Warning: Received `false` instead of `true`',
           'Warning: componentWillReceiveProps has been renamed',

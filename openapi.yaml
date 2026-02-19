@@ -43,14 +43,14 @@ info:
   license:
     name: ISC
 servers:
-- url: http://localhost:8765
-  description: Local development server
+- url: http://localhost:3000
+  description: DR CLI visualization server (default port)
 - url: http://localhost:{port}
   description: Configurable port server
   variables:
     port:
-      default: '8765'
-      description: Server port
+      default: '3000'
+      description: DR CLI server port
 tags:
 - name: Health
   description: Server health and status

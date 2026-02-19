@@ -21,24 +21,19 @@ npm run test:debug    # Run with debugger
 
 ### 2. E2E Tests (`playwright.e2e.config.ts`)
 
-Complete end-to-end tests with both servers automatically started.
+Complete end-to-end tests with the DR CLI server.
 
 **Runs:**
 - `embedded-*.spec.ts` - Embedded app with WebSocket
 - `c4-*.spec.ts` - C4 architecture views and accessibility
-- All integration tests requiring the reference server
-
-**Auto-starts:**
-- Python reference server (port 8765)
-- Frontend dev server (port 3001)
+- All integration tests requiring the DR CLI server
 
 **Prerequisites:**
-1. **Python Dependencies**:
+1. **DR CLI Server Running**:
    ```bash
-   cd reference_server
-   source .venv/bin/activate
-   pip install -r requirements.txt
+   dr visualize [path-to-your-model]
    ```
+   This starts the DR CLI server which serves the embedded app and WebSocket endpoint.
 
 2. **Playwright Browsers**:
    ```bash
@@ -209,17 +204,17 @@ npm run test:stories                # Run validation
 
 ### Embedded App Tests (`embedded-*.spec.ts`)
 
-Tests for the embedded viewer application with reference server integration.
+Tests for the embedded viewer application with DR CLI server integration.
 
 **Files:**
 - `tests/embedded-app.spec.ts` - Basic embedded app functionality
 - `tests/embedded-dual-view.spec.ts` - Dual view (Graph/JSON/List) functionality
 - `tests/embedded-motivation-view.spec.ts` - Motivation view specific tests
 
-**Configuration:** `playwright.e2e.config.ts` (automatically starts both servers)
+**Configuration:** `playwright.e2e.config.ts` (uses DR CLI server)
 
 **What the tests verify:**
-- WebSocket connection to reference server
+- WebSocket connection to DR CLI server
 - Model loading and display
 - View mode switching (Model, Spec, Changesets, Motivation)
 - Graph/JSON/List view toggling
@@ -228,21 +223,23 @@ Tests for the embedded viewer application with reference server integration.
 - Version badge display
 - Console error checking
 
+### C4 Architecture Tests (`c4-*.spec.ts`)
+
 Tests for C4 architecture views and accessibility.
 
 **Files:**
 - `tests/c4-architecture-view.spec.ts` - C4 architecture view rendering and performance
 - `tests/c4-accessibility.spec.ts` - WCAG accessibility compliance
 
-**Configuration:** `playwright.e2e.config.ts` (automatically starts both servers)
+**Configuration:** `playwright.e2e.config.ts` (uses DR CLI server)
 
 ## Test Execution Flow
 
 ### E2E Tests Setup
 
-The `playwright.e2e.config.ts` automatically:
+The `playwright.e2e.config.ts` configuration expects:
 
-1. **Starts Python Reference Server** (port 8765)
+1. **DR CLI Server** (running at `http://localhost:3000` or configured port)
    - Serves the embedded app static files
    - Provides WebSocket endpoint at `/ws`
    - Serves REST API endpoints:
@@ -252,13 +249,9 @@ The `playwright.e2e.config.ts` automatically:
      - `GET /api/changesets` - Changesets list
      - `GET /api/annotations` - Annotations
 
-2. **Starts Vite Dev Server** (port 3001)
-   - Serves the embedded React app
-   - Proxies API calls to reference server
-
-3. **Runs Tests**
+2. **Runs Tests**
    - Opens Chromium browser
-   - Navigates to `http://localhost:3001/`
+   - Navigates to the DR CLI server URL
    - Executes test scenarios
 
 ## Troubleshooting
@@ -307,13 +300,12 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-**Cause 2:** Port already in use.
+**Cause 2:** DR CLI server not running.
 
 **Fix:**
 ```bash
-# Kill processes on ports 3001 and 8765
-fuser -k 3001/tcp
-fuser -k 8765/tcp
+# Start the DR CLI server
+dr visualize [path-to-your-model]
 ```
 
 ### "browserType.launch: Target page, context or browser has been closed"
@@ -336,12 +328,11 @@ For CI environments, add this to your workflow:
     npm ci
     npx playwright install --with-deps chromium
 
-- name: Install Python dependencies
-  run: |
-    cd reference_server
-    python -m venv .venv
-    source .venv/bin/activate
-    pip install -r requirements.txt
+- name: Start DR CLI server
+  run: dr visualize [path-to-your-model] &
+
+- name: Wait for server to be ready
+  run: npx wait-on http://localhost:3000
 
 - name: Run embedded tests
   run: npm run test:e2e

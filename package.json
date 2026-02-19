@@ -10,7 +10,6 @@
     "build": "vite build --config vite.config.embedded.ts && npm run package:embedded",
     "package:embedded": "node scripts/package-embedded.cjs",
     "preview": "vite preview --config vite.config.embedded.ts",
-    "server": "node server/index.cjs",
     "start": "bash scripts/start-servers.sh",
     "verify": "bash scripts/verify-setup.sh",
     "sync:api-spec": "bash scripts/sync-api-spec.sh",

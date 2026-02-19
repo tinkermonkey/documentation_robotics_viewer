@@ -25,8 +25,8 @@ export function isExpectedConsoleError(text: string): boolean {
   if (/Download the React DevTools/.test(text)) return true;
 
   // Specific port connection failure - expected when DataLoader backend not running
-  // Only filter ECONNREFUSED from localhost dev ports (3002, 8765) to avoid hiding production errors
-  if (/ECONNREFUSED.*(localhost|127\.0\.0\.1):(3002|8765)/.test(text)) return true;
+  // Only filter ECONNREFUSED from localhost dev ports (3002) to avoid hiding production errors
+  if (/ECONNREFUSED.*(localhost|127\.0\.0\.1):3002/.test(text)) return true;
 
   // Specific model loading failure - expected when no model data provided
   if (/\[DataLoader\] Failed to fetch model/.test(text)) return true;
@@ -50,12 +50,12 @@ export function isExpectedConsoleError(text: string): boolean {
   if (/\[ModelRoute\] Error loading model/.test(text)) return true;
 
   // Failed resource loads - expected when test backend ports unavailable
-  if (/Failed to load resource.*localhost:(3002|8765)/.test(text)) return true;
+  if (/Failed to load resource.*localhost:3002/.test(text)) return true;
 
   // 500 errors from expected backend ports not running in story test environment
-  // IMPORTANT: Only filter 500 errors from localhost dev servers (3002 = DataLoader, 8765 = test backend)
+  // IMPORTANT: Only filter 500 errors from localhost dev servers (3002 = DataLoader)
   // Production/staging API failures will NOT be filtered
-  if (/the server responded with a status of 5\d{2}.*localhost:(3002|8765)/.test(text)) return true;
+  if (/the server responded with a status of 5\d{2}.*localhost:3002/.test(text)) return true;
 
   // Expected React warnings - whitelist approach to avoid hiding deprecation warnings or real issues
   // Only filter explicitly known, safe-to-ignore warnings from legitimate React libraries
