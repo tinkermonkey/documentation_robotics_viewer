@@ -362,11 +362,11 @@ test.describe('WebSocket Recovery and Reconnection', () => {
     // Verify the test hook was available and called
     expect(closeTriggered).toBe(true);
 
-    // Wait for close event log to be recorded
-    await page.waitForFunction(
+    // Wait for close event log to be recorded using expect.poll() which executes in Node.js context
+    await expect.poll(
       () => connectionLogs.some(log => log.includes('TEST: Triggering close event')),
       { timeout: 8000 }
-    );
+    ).toBe(true);
 
     // Verify we logged the close event simulation
     const foundCloseLog = connectionLogs.some(log =>
@@ -417,11 +417,11 @@ test.describe('WebSocket Recovery and Reconnection', () => {
     // Verify the test hook was available and called
     expect(maxReconnectTriggered).toBe(true);
 
-    // Wait for max reconnect event log to be recorded
-    await page.waitForFunction(
+    // Wait for max reconnect event log to be recorded using expect.poll() which executes in Node.js context
+    await expect.poll(
       () => maxReconnectLogs.some(log => log.includes('TEST: Simulating max reconnect')),
       { timeout: 8000 }
-    );
+    ).toBe(true);
 
     // Verify we logged the max reconnect simulation
     const foundMaxReconnectLog = maxReconnectLogs.some(log =>
