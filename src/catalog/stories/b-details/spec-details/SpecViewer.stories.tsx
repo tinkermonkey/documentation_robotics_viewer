@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import SpecViewer from '@/apps/embedded/components/SpecViewer';
 import type { SpecDataResponse } from '@/apps/embedded/services/embeddedDataLoader';
-import { LayerType } from '@/core/types';
 
 const meta = {
   title: 'B Details / Spec Details / SpecViewer',
