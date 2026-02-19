@@ -100,7 +100,7 @@ test.describe('Motivation View', () => {
 
     // End on Motivation
     await page.click('.mode-selector button:has-text("Motivation")');
-    await page.waitForTimeout(1000);
+    await page.waitForLoadState('networkidle');
 
     // Should still be functional - either showing graph or message or error
     const motivationContainer = page.locator('.motivation-graph-container');

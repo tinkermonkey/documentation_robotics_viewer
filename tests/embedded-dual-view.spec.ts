@@ -197,7 +197,7 @@ test.describe('Embedded App - Dual View URL Routing', () => {
 
       // Switch to Model mode
       await page.click('[data-testid="main-tab-model"]');
-      await page.waitForTimeout(1000);
+      await page.waitForLoadState('networkidle');
 
       // Switch back to Spec mode
       await page.click('[data-testid="main-tab-spec"]');
@@ -256,7 +256,7 @@ test.describe('Embedded App - Dual View URL Routing', () => {
       const firstSchemaButton = page.locator('button').filter({ hasText: /.schema.json$/ }).first();
       if (await firstSchemaButton.isVisible()) {
         await firstSchemaButton.click();
-        await page.waitForTimeout(1000);
+        await page.waitForLoadState('networkidle');
 
         // Both sections should be visible in merged view
         await expect(page.locator('text=Schema Definitions')).toBeVisible();

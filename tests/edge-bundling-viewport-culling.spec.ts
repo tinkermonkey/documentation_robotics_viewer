@@ -196,7 +196,7 @@ test.describe('Edge Bundling, Viewport Culling, and Progressive Loading', () => 
     if (await bundledEdge.isVisible()) {
       // Expand
       await bundledEdge.click();
-      await page.waitForTimeout(100);
+      await page.waitForLoadState('networkidle');
 
       // Get count of expanded edges
       let expandedEdges = page.locator('[data-testid^="expanded-edge-"]');
@@ -205,7 +205,7 @@ test.describe('Edge Bundling, Viewport Culling, and Progressive Loading', () => 
       if (expandedCount > 0) {
         // Collapse by clicking on edge again
         await bundledEdge.click();
-        await page.waitForTimeout(100);
+        await page.waitForLoadState('networkidle');
 
         expandedEdges = page.locator('[data-testid^="expanded-edge-"]');
         const collapsedCount = await expandedEdges.count();
@@ -239,7 +239,7 @@ test.describe('Edge Bundling, Viewport Culling, and Progressive Loading', () => 
       // Pan to a different area (simulate zoom/pan)
       const canvas = page.locator('.react-flow');
       await canvas.dragTo(canvas, { sourcePosition: { x: 100, y: 100 }, targetPosition: { x: 500, y: 500 } });
-      await page.waitForTimeout(500);
+      await page.waitForLoadState('networkidle');
 
       const edgesAfterPan = await page.locator('.react-flow__edge').count();
 
@@ -273,7 +273,7 @@ test.describe('Edge Bundling, Viewport Culling, and Progressive Loading', () => 
         }
       });
 
-      await page.waitForTimeout(300);
+      await page.waitForLoadState('networkidle');
 
       // Get edges after panning - should be fewer visible
       const afterPanEdges = await getVisibleEdges(page);
@@ -338,7 +338,7 @@ test.describe('Edge Bundling, Viewport Culling, and Progressive Loading', () => 
           }
         }, { x: firstNodeX, y: firstNodeY });
 
-        await page.waitForTimeout(300);
+        await page.waitForLoadState('networkidle');
 
         const afterPanEdges = await getVisibleEdges(page);
         const visibleCount = afterPanEdges.filter((e) => e.isVisible).length;
@@ -386,7 +386,7 @@ test.describe('Edge Bundling, Viewport Culling, and Progressive Loading', () => 
       await page.keyboard.press('ArrowRight');
       await page.keyboard.press('ArrowRight');
       await page.keyboard.press('ArrowRight');
-      await page.waitForTimeout(200);
+      await page.waitForLoadState('networkidle');
 
       // Get node visibility after panning
       const afterPan = await page.evaluate((margin: number) => {
@@ -415,7 +415,7 @@ test.describe('Edge Bundling, Viewport Culling, and Progressive Loading', () => 
       for (let i = 0; i < 5; i++) {
         await page.keyboard.press('ArrowLeft');
       }
-      await page.waitForTimeout(200);
+      await page.waitForLoadState('networkidle');
 
       // Should have similar visibility to initial state
       const finalVisible = await page.evaluate((margin: number) => {
@@ -458,23 +458,23 @@ test.describe('Edge Bundling, Viewport Culling, and Progressive Loading', () => 
         // Pan right
         await page.keyboard.press('ArrowRight');
         await page.keyboard.press('ArrowRight');
-        await page.waitForTimeout(200);
+        await page.waitForLoadState('networkidle');
         edgeCountSnapshots.push(await page.locator('.react-flow__edge').count());
 
         // Pan left
         await page.keyboard.press('ArrowLeft');
         await page.keyboard.press('ArrowLeft');
-        await page.waitForTimeout(200);
+        await page.waitForLoadState('networkidle');
         edgeCountSnapshots.push(await page.locator('.react-flow__edge').count());
 
         // Zoom in
         await page.keyboard.press('PageUp');
-        await page.waitForTimeout(200);
+        await page.waitForLoadState('networkidle');
         edgeCountSnapshots.push(await page.locator('.react-flow__edge').count());
 
         // Zoom out
         await page.keyboard.press('PageDown');
-        await page.waitForTimeout(200);
+        await page.waitForLoadState('networkidle');
         edgeCountSnapshots.push(await page.locator('.react-flow__edge').count());
       }
 
@@ -513,7 +513,7 @@ test.describe('Edge Bundling, Viewport Culling, and Progressive Loading', () => 
       // Pan viewport
       await page.keyboard.press('ArrowDown');
       await page.keyboard.press('ArrowDown');
-      await page.waitForTimeout(300);
+      await page.waitForLoadState('networkidle');
 
       // Get edge count after pan
       const afterPanEdgeCount = await page.locator('.react-flow__edge').count();
@@ -524,7 +524,7 @@ test.describe('Edge Bundling, Viewport Culling, and Progressive Loading', () => 
       // Pan back to initial position
       await page.keyboard.press('ArrowUp');
       await page.keyboard.press('ArrowUp');
-      await page.waitForTimeout(300);
+      await page.waitForLoadState('networkidle');
 
       const finalEdgeCount = await page.locator('.react-flow__edge').count();
 
@@ -543,7 +543,7 @@ test.describe('Edge Bundling, Viewport Culling, and Progressive Loading', () => 
 
     // Perform zoom (using keyboard shortcut or control)
     await page.keyboard.press('ArrowUp');
-    await page.waitForTimeout(100);
+    await page.waitForLoadState('networkidle');
 
     const newTransform = await viewport.evaluate((el) => el.style.transform);
 
@@ -578,7 +578,7 @@ test.describe('Edge Bundling, Viewport Culling, and Progressive Loading', () => 
 
         // Enable cross-layer edges
         await crossLayerToggle.click();
-        await page.waitForTimeout(500);
+        await page.waitForLoadState('networkidle');
 
         const enabledCount = await crossLayerEdges.count();
 
@@ -597,7 +597,7 @@ test.describe('Edge Bundling, Viewport Culling, and Progressive Loading', () => 
 
       // Click Load More
       await loadMoreButton.click();
-      await page.waitForTimeout(500);
+      await page.waitForLoadState('networkidle');
 
       const newCount = await page.locator('.react-flow__edge').count();
 
@@ -611,7 +611,7 @@ test.describe('Edge Bundling, Viewport Culling, and Progressive Loading', () => 
     const crossLayerToggle = page.locator('[data-testid="cross-layer-toggle"]').first();
     if (await crossLayerToggle.isVisible()) {
       await crossLayerToggle.click();
-      await page.waitForTimeout(500);
+      await page.waitForLoadState('networkidle');
     }
 
     // Check for Load More button
@@ -680,7 +680,7 @@ test.describe('Edge Bundling, Viewport Culling, and Progressive Loading', () => 
     const crossLayerToggle = page.locator('[data-testid="cross-layer-toggle"]').first();
     if (await crossLayerToggle.isVisible()) {
       await crossLayerToggle.click();
-      await page.waitForTimeout(500);
+      await page.waitForLoadState('networkidle');
     }
 
     // Measure frame performance during pan
@@ -718,7 +718,7 @@ test.describe('Edge Bundling, Viewport Culling, and Progressive Loading', () => 
       const isChecked = await crossLayerToggle.isChecked?.();
       if (isChecked) {
         await crossLayerToggle.click();
-        await page.waitForTimeout(500);
+        await page.waitForLoadState('networkidle');
 
         const crossLayerEdges = page.locator('[data-testid^="cross-layer-edge-"], [data-testid^="bundled-edge-"]');
         const count = await crossLayerEdges.count();
@@ -742,14 +742,14 @@ test.describe('Edge Bundling, Viewport Culling, and Progressive Loading', () => 
     const crossLayerToggle = page.locator('[data-testid="cross-layer-toggle"]').first();
     if (await crossLayerToggle.isVisible()) {
       await crossLayerToggle.click();
-      await page.waitForTimeout(500);
+      await page.waitForLoadState('networkidle');
     }
 
     // Interact with bundled edge if available
     const bundledEdge = page.locator('[data-testid^="bundled-edge-"]').first();
     if (await bundledEdge.isVisible()) {
       await bundledEdge.click();
-      await page.waitForTimeout(200);
+      await page.waitForLoadState('networkidle');
       await bundledEdge.click();
     }
 

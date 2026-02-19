@@ -25,9 +25,9 @@ test.describe('Sidebar Consolidation', () => {
 
     // Navigate to Motivation view
     await header.getByRole('button', { name: 'Motivation' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     // Verify SharedLayout is present
     const sharedLayout = page.locator('[data-testid="shared-layout"]');
@@ -57,9 +57,9 @@ test.describe('Sidebar Consolidation', () => {
 
     // Navigate to Motivation view
     await header.getByRole('button', { name: 'Motivation' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     const rightSidebar = page.locator('[data-testid="right-sidebar"]');
     await expect(rightSidebar).toBeVisible();
@@ -91,9 +91,9 @@ test.describe('Sidebar Consolidation', () => {
 
     // Navigate to Motivation view
     await header.getByRole('button', { name: 'Motivation' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     const rightSidebar = page.locator('[data-testid="right-sidebar"]');
 
@@ -106,11 +106,11 @@ test.describe('Sidebar Consolidation', () => {
 
       // Click to toggle
       await firstTitle.click();
-      await page.waitForTimeout(300);
+      await page.waitForLoadState('networkidle');
 
       // Click again to toggle back
       await firstTitle.click();
-      await page.waitForTimeout(300);
+      await page.waitForLoadState('networkidle');
 
       // Section should still be accessible
       await expect(firstTitle).toBeVisible();
@@ -122,9 +122,9 @@ test.describe('Sidebar Consolidation', () => {
 
     // Navigate to Motivation view
     await header.getByRole('button', { name: 'Motivation' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     // Click a node to select it
     const nodes = page.locator('.react-flow__node');
@@ -132,7 +132,7 @@ test.describe('Sidebar Consolidation', () => {
 
     if (nodeCount > 0) {
       await nodes.first().click();
-      await page.waitForTimeout(500);
+      await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
       // Check for Inspector section or panel
       const rightSidebar = page.locator('[data-testid="right-sidebar"]');
@@ -156,9 +156,9 @@ test.describe('Sidebar Consolidation', () => {
 
     // Navigate to Architecture view
     await header.getByRole('button', { name: 'Architecture' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     // Verify SharedLayout is present
     const sharedLayout = page.locator('[data-testid="shared-layout"]');
@@ -182,9 +182,9 @@ test.describe('Sidebar Consolidation', () => {
 
     // Navigate to Architecture view
     await header.getByRole('button', { name: 'Architecture' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     const rightSidebar = page.locator('[data-testid="right-sidebar"]');
     await expect(rightSidebar).toBeVisible();
@@ -218,9 +218,9 @@ test.describe('Sidebar Consolidation', () => {
 
     // Navigate to Architecture view
     await header.getByRole('button', { name: 'Architecture' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     // Click a node
     const nodes = page.locator('.react-flow__node');
@@ -228,7 +228,7 @@ test.describe('Sidebar Consolidation', () => {
 
     if (nodeCount > 0) {
       await nodes.first().click();
-      await page.waitForTimeout(500);
+      await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
       // Check for Inspector section
       const rightSidebar = page.locator('[data-testid="right-sidebar"]');
@@ -245,9 +245,9 @@ test.describe('Sidebar Consolidation', () => {
 
     // Navigate to Motivation view
     await header.getByRole('button', { name: 'Motivation' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     const rightSidebar = page.locator('[data-testid="right-sidebar"]');
 
@@ -263,7 +263,7 @@ test.describe('Sidebar Consolidation', () => {
       await page.mouse.down();
       await page.mouse.move(bbox.x + bbox.width / 2 + 50, bbox.y + bbox.height / 2 + 50);
       await page.mouse.up();
-      await page.waitForTimeout(300);
+      await page.waitForLoadState('networkidle');
     }
 
     // Check that sidebar sections are still present
@@ -279,9 +279,9 @@ test.describe('Sidebar Consolidation', () => {
 
     // Navigate to Motivation view
     await header.getByRole('button', { name: 'Motivation' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     // On narrow viewports, sidebar might collapse or overlay
     // Verify that the app is still functional
@@ -303,9 +303,9 @@ test.describe('Sidebar Consolidation', () => {
 
     // Navigate to Motivation view
     await header.getByRole('button', { name: 'Motivation' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     // Count all <aside> elements (typical sidebar element)
     const allSidebars = page.locator('aside');
@@ -325,9 +325,9 @@ test.describe('Sidebar Consolidation', () => {
 
     // Navigate to Motivation view
     await header.getByRole('button', { name: 'Motivation' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     const rightSidebar = page.locator('[data-testid="right-sidebar"]');
 
@@ -341,7 +341,7 @@ test.describe('Sidebar Consolidation', () => {
       const accordionButton = annotationsHeading.first().locator('..').getByRole('button');
       if (await accordionButton.count() > 0) {
         await accordionButton.first().click();
-        await page.waitForTimeout(300);
+        await page.waitForLoadState('networkidle');
       }
 
       // Verify annotation panel content is accessible

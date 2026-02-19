@@ -227,7 +227,7 @@ test.describe('Graph Rendering - Phase 6 Verification', () => {
       const firstSchemaButton = page.locator('[data-testid="left-sidebar"] button').first();
       if (await firstSchemaButton.isVisible()) {
         await firstSchemaButton.click();
-        await page.waitForTimeout(1000);
+        await page.waitForLoadState('networkidle');
 
         // Verify Schema Definitions section exists
         const schemaSection = page.locator('[data-testid="schema-definitions-section"]');

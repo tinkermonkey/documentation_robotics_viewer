@@ -54,7 +54,7 @@ test.describe('C4 Architecture View', () => {
       await page.click('[data-testid="main-tab-architecture"]');
 
       // Wait for view to load
-      await page.waitForTimeout(2000);
+      await page.waitForFunction(() => document.readyState === 'complete');
 
       // Verify Architecture mode is active (blue button in Flowbite)
       const architectureButton = page.locator('[data-testid="main-tab-architecture"]');
@@ -72,7 +72,7 @@ test.describe('C4 Architecture View', () => {
     test('should display architecture view container or message overlay', async ({ page }) => {
       // Navigate to Architecture view
       await page.click('[data-testid="main-tab-architecture"]');
-      await page.waitForTimeout(2000);
+      await page.waitForFunction(() => document.readyState === 'complete');
 
       // The view should either show the ReactFlow container (if C4 elements exist)
       // or a loading/error/empty state message
@@ -98,7 +98,7 @@ test.describe('C4 Architecture View', () => {
     test('should gracefully handle model without C4 containers', async ({ page }) => {
       // Navigate to Architecture view
       await page.click('[data-testid="main-tab-architecture"]');
-      await page.waitForTimeout(3000);
+      await page.waitForFunction(() => document.readyState === 'complete');
 
       // The example model may not have Application services (only components)
       // so C4 view should show either:
@@ -124,14 +124,14 @@ test.describe('C4 Architecture View', () => {
       // Rapidly switch between views
       for (let i = 0; i < 3; i++) {
         await page.click('[data-testid="main-tab-architecture"]');
-        await page.waitForTimeout(100);
+        await page.waitForLoadState('networkidle');
         await page.click('[data-testid="main-tab-model"]');
-        await page.waitForTimeout(100);
+        await page.waitForLoadState('networkidle');
       }
 
       // End on Architecture
       await page.click('[data-testid="main-tab-architecture"]');
-      await page.waitForTimeout(1000);
+      await page.waitForLoadState('networkidle');
 
       // Should still be functional - either showing graph or empty state
       const c4Container = page.locator('.react-flow');
@@ -150,7 +150,7 @@ test.describe('C4 Architecture View', () => {
     test('should support Escape key without errors', async ({ page }) => {
       // Navigate to Architecture view
       await page.click('[data-testid="main-tab-architecture"]');
-      await page.waitForTimeout(2000);
+      await page.waitForFunction(() => document.readyState === 'complete');
 
       // Listen for errors during keyboard interaction
       const errors: string[] = [];
@@ -162,7 +162,7 @@ test.describe('C4 Architecture View', () => {
 
       // Press Escape key
       await page.keyboard.press('Escape');
-      await page.waitForTimeout(300);
+      await page.waitForLoadState('networkidle');
 
       // Should not cause any critical errors
       const criticalErrors = errors.filter(e =>
@@ -183,7 +183,7 @@ test.describe('C4 Architecture View', () => {
 
       // Navigate to Architecture view
       await page.click('[data-testid="main-tab-architecture"]');
-      await page.waitForTimeout(3000);
+      await page.waitForFunction(() => document.readyState === 'complete');
 
       // Check if error boundary is showing
       const renderingError = page.locator('h3:has-text("Rendering Error")');
@@ -225,7 +225,7 @@ test.describe('C4 Architecture View', () => {
     test('should display scenario preset selector', async ({ page }) => {
       // Navigate to Architecture view
       await page.click('[data-testid="main-tab-architecture"]');
-      await page.waitForTimeout(2000);
+      await page.waitForFunction(() => document.readyState === 'complete');
 
       // Check for scenario preset buttons
       const presetButtons = page.locator('.scenario-preset-button');
@@ -245,7 +245,7 @@ test.describe('C4 Architecture View', () => {
     test('should toggle scenario preset on click', async ({ page }) => {
       // Navigate to Architecture view
       await page.click('[data-testid="main-tab-architecture"]');
-      await page.waitForTimeout(2000);
+      await page.waitForFunction(() => document.readyState === 'complete');
 
       const c4Container = page.locator('.react-flow');
       const hasC4 = await c4Container.isVisible().catch(() => false);
@@ -280,7 +280,7 @@ test.describe('C4 Architecture View', () => {
     test('should display view level selector', async ({ page }) => {
       // Navigate to Architecture view
       await page.click('[data-testid="main-tab-architecture"]');
-      await page.waitForTimeout(2000);
+      await page.waitForFunction(() => document.readyState === 'complete');
 
       // Check for view level buttons
       const viewLevelButtons = page.locator('.view-level-button');
@@ -299,7 +299,7 @@ test.describe('C4 Architecture View', () => {
     test('should switch view levels without error', async ({ page }) => {
       // Navigate to Architecture view
       await page.click('[data-testid="main-tab-architecture"]');
-      await page.waitForTimeout(2000);
+      await page.waitForFunction(() => document.readyState === 'complete');
 
       // Listen for errors
       const errors: string[] = [];
@@ -335,7 +335,7 @@ test.describe('C4 Architecture View', () => {
     test('should switch layouts in under 800ms', async ({ page }) => {
       // Navigate to Architecture view
       await page.click('[data-testid="main-tab-architecture"]');
-      await page.waitForTimeout(2000);
+      await page.waitForFunction(() => document.readyState === 'complete');
 
       const c4Container = page.locator('.react-flow');
       const hasC4 = await c4Container.isVisible().catch(() => false);
@@ -353,7 +353,7 @@ test.describe('C4 Architecture View', () => {
       // Measure layout switch time (increased tolerance due to async layout calculations)
       const startTime = Date.now();
       await layoutSelector.selectOption('force');
-      await page.waitForTimeout(1000);
+      await page.waitForLoadState('networkidle');
       const endTime = Date.now();
 
       // Layout switch should complete in reasonable time (relaxed tolerance for CI)
@@ -365,7 +365,7 @@ test.describe('C4 Architecture View', () => {
     test('should display export buttons', async ({ page }) => {
       // Navigate to Architecture view
       await page.click('[data-testid="main-tab-architecture"]');
-      await page.waitForTimeout(2000);
+      await page.waitForFunction(() => document.readyState === 'complete');
 
       // Check for export buttons
       const exportButtons = page.locator('.export-button');
@@ -384,7 +384,7 @@ test.describe('C4 Architecture View', () => {
     test('should toggle focus mode', async ({ page }) => {
       // Navigate to Architecture view
       await page.click('[data-testid="main-tab-architecture"]');
-      await page.waitForTimeout(2000);
+      await page.waitForFunction(() => document.readyState === 'complete');
 
       const c4Container = page.locator('.react-flow');
       const hasC4 = await c4Container.isVisible().catch(() => false);
@@ -406,13 +406,13 @@ test.describe('C4 Architecture View', () => {
       // Toggle on if not already on
       if (initialState === 'false') {
         await focusModeToggle.click();
-        await page.waitForTimeout(300);
+        await page.waitForLoadState('networkidle');
         await expect(focusModeToggle).toHaveAttribute('aria-checked', 'true');
       }
 
       // Toggle off
       await focusModeToggle.click();
-      await page.waitForTimeout(300);
+      await page.waitForLoadState('networkidle');
       await expect(focusModeToggle).toHaveAttribute('aria-checked', 'false');
     });
   });

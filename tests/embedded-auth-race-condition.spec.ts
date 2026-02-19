@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { waitForElement } from './helpers/testUtils';
 
 /**
  * E2E tests for auth token race condition fix
@@ -36,8 +37,8 @@ test.describe('Auth Token Race Condition Fix', () => {
     const newToken = 'fresh-token-from-magic-link';
     await page.goto(`${appUrl}/?token=${newToken}#/model/graph`);
 
-    // Wait for app to initialize
-    await page.waitForTimeout(1000);
+    // Wait for app to initialize - document should be ready
+    await page.waitForLoadState('domcontentloaded');
 
     // Step 3: Verify localStorage has been updated with NEW token
     const storedToken = await page.evaluate(() => {
@@ -63,7 +64,7 @@ test.describe('Auth Token Race Condition Fix', () => {
 
     // Reload to see initialization logs
     await page.reload();
-    await page.waitForTimeout(1000);
+    await page.waitForLoadState('domcontentloaded');
 
     // Should see the fix message in logs
     const hasFixLog = logs.some(log => log.includes('Updated authStore with new token'));
@@ -84,8 +85,8 @@ test.describe('Auth Token Race Condition Fix', () => {
     const newToken = 'new-websocket-token';
     await page.goto(`${appUrl}/?token=${newToken}#/model/graph`);
 
-    // Wait for WebSocket connection attempt
-    await page.waitForTimeout(2000);
+    // Wait for WebSocket connection attempt - wait for DOM to be ready
+    await page.waitForLoadState('domcontentloaded');
 
     // Step 3: Capture WebSocket events
     const wsLogs: string[] = [];
@@ -98,7 +99,7 @@ test.describe('Auth Token Race Condition Fix', () => {
 
     // Trigger reconnection
     await page.reload();
-    await page.waitForTimeout(2000);
+    await page.waitForLoadState('domcontentloaded');
 
     // Verify WebSocket is using updated token (check logs)
     const tokenUpdatedLog = wsLogs.find(log => log.includes('[Auth] Token updated: present'));
@@ -119,7 +120,7 @@ test.describe('Auth Token Race Condition Fix', () => {
     const newToken = 'first-time-token';
     await page.goto(`${appUrl}/?token=${newToken}#/model/graph`);
 
-    await page.waitForTimeout(1000);
+    await page.waitForLoadState('domcontentloaded');
 
     // Step 3: Verify token is stored
     const storedToken = await page.evaluate(() => {

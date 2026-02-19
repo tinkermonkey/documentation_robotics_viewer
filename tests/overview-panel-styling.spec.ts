@@ -30,10 +30,10 @@ test.describe('Overview Panel Styling', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     // Check for MiniMap
     const miniMap = page.locator('.react-flow__minimap');
@@ -51,10 +51,10 @@ test.describe('Overview Panel Styling', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     // Check for "Overview" text near MiniMap
     const overviewPanel = page.locator('[data-testid="overview-panel"]');
@@ -78,10 +78,10 @@ test.describe('Overview Panel Styling', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     const overviewPanel = page.locator('[data-testid="overview-panel"]');
 
@@ -113,16 +113,16 @@ test.describe('Overview Panel Styling', () => {
 
       if (isDark) {
         await darkModeToggle.click();
-        await page.waitForTimeout(300);
+        await page.waitForLoadState('networkidle');
       }
     }
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     const overviewPanel = page.locator('[data-testid="overview-panel"]');
 
@@ -154,10 +154,10 @@ test.describe('Overview Panel Styling', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     const overviewPanel = page.locator('[data-testid="overview-panel"]');
 
@@ -182,7 +182,7 @@ test.describe('Overview Panel Styling', () => {
     const darkModeToggle = page.locator('[data-testid="dark-mode-toggle"]');
     if (await darkModeToggle.count() > 0) {
       await darkModeToggle.click();
-      await page.waitForTimeout(500);
+      await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
       // Get dark mode colors
       if (await overviewPanel.count() > 0) {
@@ -207,10 +207,10 @@ test.describe('Overview Panel Styling', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     // MiniMap should be in bottom-right
     const miniMap = page.locator('.react-flow__minimap');
@@ -233,10 +233,10 @@ test.describe('Overview Panel Styling', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     const overviewPanel = page.locator('[data-testid="overview-panel"]');
 
@@ -256,10 +256,10 @@ test.describe('Overview Panel Styling', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     const overviewPanel = page.locator('[data-testid="overview-panel"]');
 
@@ -296,38 +296,38 @@ test.describe('Overview Panel Styling', () => {
 
     // Test Model view
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     let miniMap = page.locator('.react-flow__minimap');
     await expect(miniMap).toBeVisible();
 
     // Test Spec view
     await header.getByRole('button', { name: 'Spec' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     miniMap = page.locator('.react-flow__minimap');
     await expect(miniMap).toBeVisible();
 
     // Test Motivation view
     await header.getByRole('button', { name: 'Motivation' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     miniMap = page.locator('.react-flow__minimap');
     await expect(miniMap).toBeVisible();
 
     // Test Architecture view
     await header.getByRole('button', { name: 'Architecture' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     miniMap = page.locator('.react-flow__minimap');
     await expect(miniMap).toBeVisible();
@@ -338,10 +338,10 @@ test.describe('Overview Panel Styling', () => {
 
     // Navigate to Model graph
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
     await header.getByRole('button', { name: 'Graph' }).click();
     await page.waitForSelector('.react-flow', { timeout: 10000 });
-    await page.waitForTimeout(500);
+    await page.waitForSelector('[data-testid="embedded-header"] button', { timeout: 5000 });
 
     const overviewPanel = page.locator('[data-testid="overview-panel"]');
 
@@ -355,7 +355,7 @@ test.describe('Overview Panel Styling', () => {
     const reactFlow = page.locator('.react-flow');
     await reactFlow.click();
     await page.keyboard.press('Equal'); // Zoom in
-    await page.waitForTimeout(300);
+    await page.waitForLoadState('networkidle');
 
     // Check styling is preserved
     if (await overviewPanel.count() > 0) {

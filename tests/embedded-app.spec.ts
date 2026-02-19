@@ -71,8 +71,8 @@ test.describe('Embedded App - DR CLI Server Integration', () => {
     const modelTab = header.getByRole('button', { name: 'Model' });
     await modelTab.click();
 
-    // Wait for model to load
-    await page.waitForTimeout(2000);
+    // Wait for model to load - check for actual React Flow element
+    await page.waitForSelector('.react-flow', { timeout: 10000 });
 
     // Check that SharedLayout is visible (graph or JSON view)
     const sharedLayout = page.locator('[data-testid="shared-layout"]');
@@ -103,8 +103,8 @@ test.describe('Embedded App - DR CLI Server Integration', () => {
     // Wait for WebSocket connection
     await page.waitForSelector('[data-connection-state="connected"]', { timeout: 5000 });
 
-    // Wait for model to load
-    await page.waitForTimeout(2000);
+    // Wait for model to load - check for React Flow or other content indicators
+    await page.waitForSelector('.react-flow, .annotation-panel, .annotation-item', { timeout: 10000 });
 
     // Annotations may be displayed in various ways - check for any content
     const hasReactFlow = await page.locator('.react-flow').isVisible();
@@ -125,8 +125,8 @@ test.describe('Embedded App - DR CLI Server Integration', () => {
     // Wait for WebSocket connection
     await page.waitForSelector('[data-connection-state="connected"]', { timeout: 5000 });
 
-    // Wait for model to load
-    await page.waitForTimeout(2000);
+    // Wait for model to load - check for header elements
+    await page.waitForSelector('[data-testid="embedded-header"]', { timeout: 10000 });
 
     // Check for version badge in header
     const versionBadge = page.locator('.version-badge');
@@ -142,7 +142,8 @@ test.describe('Embedded App - DR CLI Server Integration', () => {
     // Navigate to Model JSON view
     const header = page.locator('[data-testid="embedded-header"]');
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(500);
+    // Wait for JSON tab to be available
+    await header.getByRole('button', { name: 'JSON' }).waitFor({ timeout: 5000 });
     await header.getByRole('button', { name: 'JSON' }).click();
 
     // Wait for JSON view to render
@@ -170,7 +171,8 @@ test.describe('Embedded App - DR CLI Server Integration', () => {
     // Navigate to Model graph view
     const header = page.locator('[data-testid="embedded-header"]');
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(500);
+    // Wait for Graph tab to be available
+    await header.getByRole('button', { name: 'Graph' }).waitFor({ timeout: 5000 });
     await header.getByRole('button', { name: 'Graph' }).click();
 
     // Wait for right sidebar
@@ -196,7 +198,8 @@ test.describe('Embedded App - DR CLI Server Integration', () => {
     // Navigate to Model graph view
     const header = page.locator('[data-testid="embedded-header"]');
     await header.getByRole('button', { name: 'Model' }).click();
-    await page.waitForTimeout(500);
+    // Wait for Graph tab to be available
+    await header.getByRole('button', { name: 'Graph' }).waitFor({ timeout: 5000 });
     await header.getByRole('button', { name: 'Graph' }).click();
 
     // Wait for React Flow
