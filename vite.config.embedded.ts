@@ -55,15 +55,15 @@ export default defineConfig({
     strictPort: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:8765', // Python CLI default port
+        target: process.env.DR_API_URL || 'http://localhost:8080',
         changeOrigin: true
       },
       '/health': {
-        target: 'http://localhost:8765',
+        target: process.env.DR_API_URL || 'http://localhost:8080',
         changeOrigin: true
       },
       '/ws': {
-        target: 'ws://localhost:8765', // WebSocket proxy
+        target: process.env.DR_WS_URL || 'ws://localhost:8080',
         ws: true
       }
     }
