@@ -153,6 +153,7 @@ export class GitHubService {
     const zip = new JSZip();
     const loadedZip = await zip.loadAsync(zipData);
     const schemas: Record<string, unknown> = {};
+    const skippedFiles: string[] = [];
 
     // Check if this is a YAML instance model by looking for manifest.yaml
     let hasManifest = false;
@@ -178,6 +179,7 @@ export class GitHubService {
           schemas[layerName] = json;
         } catch (error) {
           console.warn(`Failed to parse JSON ${filename}:`, error);
+          skippedFiles.push(filename);
         }
       }
       // Handle YAML files (instance models)
@@ -216,8 +218,14 @@ export class GitHubService {
           }
         } catch (error) {
           console.warn(`Failed to extract YAML ${filename}:`, error);
+          skippedFiles.push(filename);
         }
       }
+    }
+
+    // Log summary of extraction results
+    if (skippedFiles.length > 0) {
+      console.warn(`ZIP extraction completed with ${skippedFiles.length} skipped file(s): ${skippedFiles.join(', ')}`);
     }
 
     return schemas;

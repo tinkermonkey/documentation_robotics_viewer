@@ -28,6 +28,14 @@ test.describe('WebSocket Recovery and Reconnection', () => {
   });
 
   test('should establish WebSocket connection on app load', async ({ page }) => {
+    // Register error listener BEFORE navigation to catch all errors
+    const errors: string[] = [];
+    page.on('console', msg => {
+      if (msg.type() === 'error') {
+        errors.push(msg.text());
+      }
+    });
+
     // Navigate to app
     await page.goto(baseUrl);
 
@@ -52,14 +60,6 @@ test.describe('WebSocket Recovery and Reconnection', () => {
       // WebSocket connection might use REST mode fallback, which is acceptable
       console.log('WebSocket connection test:', error instanceof Error ? error.message : String(error));
     }
-
-    // Verify no console errors occurred during connection
-    const errors: string[] = [];
-    page.on('console', msg => {
-      if (msg.type() === 'error') {
-        errors.push(msg.text());
-      }
-    });
 
     expect(errors.length).toBe(0);
   });

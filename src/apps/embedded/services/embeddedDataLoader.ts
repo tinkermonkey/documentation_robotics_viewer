@@ -19,6 +19,7 @@ function getCookieToken(): string | null {
   try {
     return decodeURIComponent(match.split('=')[1] || '');
   } catch (_err) {
+    console.debug('[Auth] Cookie decode failed, using raw value');
     return match.split('=')[1] || null;
   }
 }

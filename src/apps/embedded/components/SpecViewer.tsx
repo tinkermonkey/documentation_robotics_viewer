@@ -1,6 +1,6 @@
 /**
  * SpecViewer Component
- * Displays JSON Schema files in a readable format with cross-layer links
+ * Displays JSON Schema files in a readable format
  */
 
 import React from 'react'
@@ -44,7 +44,7 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
 
   const schemas = specData.schemas || {}
 
-  // Render merged view with schema definitions and cross-layer links
+  // Render schema definitions view
   const renderMergedView = () => {
     if (!selectedSchemaId) {
       return (

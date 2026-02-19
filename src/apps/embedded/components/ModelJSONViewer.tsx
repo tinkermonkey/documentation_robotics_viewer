@@ -1,7 +1,6 @@
 /**
  * ModelJSONViewer Component
  * Displays model instance data in a readable JSON format
- * Shows cross-layer links for each element
  */
 
 import React, { useEffect } from 'react';

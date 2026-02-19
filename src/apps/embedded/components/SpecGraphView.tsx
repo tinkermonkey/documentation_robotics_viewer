@@ -2,7 +2,6 @@
  * SpecGraphView Component
  * Displays JSON Schema specifications as an interactive graph using GraphViewer
  * Converts spec data to MetaModel using DataLoader.parseSchemaDefinitions()
- * Includes cross-layer links from link registry
  */
 
 import { useState, useEffect, useMemo } from 'react';
