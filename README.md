@@ -141,17 +141,17 @@ The viewer connects to the CLI server on port 8080 (the DR CLI default, configur
 
 **Health Check** (no auth required):
 ```bash
-curl http://localhost:3000/health
+curl http://localhost:8080/health
 ```
 
 **Get Model** (returns current architecture):
 ```bash
-curl http://localhost:3000/api/model
+curl http://localhost:8080/api/model
 ```
 
 **WebSocket Connection** (for real-time updates):
 ```javascript
-const ws = new WebSocket('ws://localhost:3000/ws');
+const ws = new WebSocket('ws://localhost:8080/ws');
 ```
 
 ### Real-Time Updates
@@ -308,7 +308,7 @@ npm run test:e2e:ui
 
 ```bash
 # Check if DR CLI server is running
-curl http://localhost:3000/health
+curl http://localhost:8080/health
 
 # If "Connection refused", start the server
 dr visualize ./my-model
@@ -324,7 +324,7 @@ kill -9 <PID>
 
 ```bash
 # 1. Verify server is responding
-curl -i http://localhost:3000/api/model
+curl -i http://localhost:8080/api/model
 
 # 2. Check browser console for detailed error
 # - Open DevTools (F12)
@@ -370,7 +370,7 @@ dr visualize --port 3001 ./my-model
 dr visualize ./example-implementation/
 
 # 2. Verify server is healthy
-curl http://localhost:3000/health
+curl http://localhost:8080/health
 
 # 3. Run tests with verbose output
 npm run test:e2e -- --verbose
@@ -383,7 +383,7 @@ For detailed troubleshooting, see [DR CLI Integration Guide - Troubleshooting](d
 
 ### Key URLs
 - **Embedded Viewer**: http://localhost:3001
-- **DR CLI Server**: http://localhost:3000
+- **DR CLI Server**: http://localhost:8080
 
 ## License
 

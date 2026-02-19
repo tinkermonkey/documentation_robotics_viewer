@@ -50,18 +50,18 @@ echo $PATH
 
 ---
 
-**Error:** `Port 3000 already in use`
+**Error:** `Port 8080 already in use`
 
 **Solution:**
 ```bash
-# Find process using port 3000
-lsof -i :3000
+# Find process using port 8080
+lsof -i :8080
 
 # Kill the process (replace 12345 with PID)
 kill -9 12345
 
 # Or use a different port (check DR CLI docs)
-dr visualize --port 3001 ./my-model
+dr visualize --port 8081 ./my-model
 ```
 
 ---
@@ -389,7 +389,7 @@ curl -v http://localhost:8080/health
 ```bash
 # WebSocket not connecting
 # Solution: Check port forwarding if remote
-# Make sure port 3000 is accessible
+# Make sure port 8080 is accessible
 
 # Local storage quota exceeded
 # Solution: Clear storage
@@ -411,7 +411,7 @@ dr visualize ./example-implementation/
 curl http://localhost:8080/health
 
 # 3. Check test config uses correct URL
-# playwright.e2e.config.ts should reference port 3000
+# playwright.e2e.config.ts should reference port 8080
 
 # 4. Run single test file for debugging
 npm run test:e2e -- tests/embedded-basic.spec.ts
@@ -469,11 +469,11 @@ console.log(sessionStorage.getItem('dr_events'));
 curl -v http://localhost:8080/api/model
 
 # Using tcpdump (Linux/Mac)
-sudo tcpdump -i lo0 -n 'tcp port 3000'  # Mac
-sudo tcpdump -i lo -n 'tcp port 3000'   # Linux
+sudo tcpdump -i lo0 -n 'tcp port 8080'  # Mac
+sudo tcpdump -i lo -n 'tcp port 8080'   # Linux
 
 # Using Wireshark (GUI)
-# Filter: tcp.port == 3000
+# Filter: tcp.port == 8080
 ```
 
 ### Check Server Logs

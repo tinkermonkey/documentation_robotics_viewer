@@ -12,14 +12,14 @@ import { test, expect } from '@playwright/test';
  * Run with: npm run test:e2e
  */
 test.describe('Auth Token Race Condition Fix', () => {
-  const appUrl = 'http://localhost:3000';
+  const appUrl = 'http://localhost:8080';
 
   test.beforeAll(async ({ request }) => {
     // Check if server is available, skip tests if not
     try {
       await request.get(appUrl, { timeout: 5000 });
     } catch (error) {
-      test.skip(true, 'DR CLI server not running on localhost:3000');
+      test.skip(true, 'DR CLI server not running on localhost:8080');
     }
   });
 

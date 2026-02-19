@@ -239,7 +239,7 @@ Tests for C4 architecture views and accessibility.
 
 The `playwright.e2e.config.ts` configuration expects:
 
-1. **DR CLI Server** (running at `http://localhost:3000` or configured port)
+1. **DR CLI Server** (running at `http://localhost:8080` or configured port)
    - Serves the embedded app static files
    - Provides WebSocket endpoint at `/ws`
    - Serves REST API endpoints:
@@ -323,7 +323,7 @@ For CI environments, add this to your workflow:
   run: dr visualize [path-to-your-model] &
 
 - name: Wait for server to be ready
-  run: npx wait-on http://localhost:3000
+  run: npx wait-on http://localhost:8080
 
 - name: Run embedded tests
   run: npm run test:e2e
@@ -346,7 +346,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Feature Name', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:3000/');  // DR CLI server on port 3000
+    await page.goto('http://localhost:8080/');  // DR CLI server on port 8080
     await page.waitForSelector('[data-testid="embedded-app"]', { timeout: 10000 });
     await page.waitForSelector('.connection-status.connected', { timeout: 10000 });
   });

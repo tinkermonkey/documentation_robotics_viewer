@@ -67,7 +67,7 @@ Generated: """ + datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         },
         "servers": [
             {
-                "url": "http://localhost:3000",
+                "url": "http://localhost:8080",
                 "description": "Local DR CLI server"
             },
             {
@@ -75,8 +75,8 @@ Generated: """ + datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "description": "Configurable port server",
                 "variables": {
                     "port": {
-                        "default": "3000",
-                        "description": "Server port (DR CLI default is 3000)"
+                        "default": "8080",
+                        "description": "Server port (DR CLI default is 8080)"
                     }
                 }
             }
