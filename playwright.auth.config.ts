@@ -49,7 +49,7 @@ export default defineConfig({
   ],
   // Start frontend dev server (DR CLI should be running separately)
   webServer: {
-    command: 'npm run dev:embedded',
+    command: 'npm run dev',
     url: 'http://localhost:3001',
     timeout: 120 * 1000,
     reuseExistingServer: !process.env.CI,

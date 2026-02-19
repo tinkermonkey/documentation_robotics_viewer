@@ -88,7 +88,7 @@ export default defineConfig({
 
   // Start frontend dev server (DR CLI should be running separately)
   webServer: {
-    command: 'npm run dev:embedded',
+    command: 'npm run dev',
     url: 'http://localhost:3001',
     reuseExistingServer: !process.env.CI,
     timeout: 60000,  // 60 seconds to start (Vite can be slow)

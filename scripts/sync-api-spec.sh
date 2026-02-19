@@ -14,3 +14,41 @@ if ! curl -f -s -S -L "$SPEC_URL" -o "$OUTPUT_PATH"; then
 fi
 
 echo "✓ API spec synced successfully to $OUTPUT_PATH"
+
+# Optionally validate against TypeScript types
+if command -v tsc &> /dev/null; then
+  echo "Validating API spec against TypeScript types..."
+
+  # Create temporary TypeScript file to validate the spec
+  TEMP_TS=$(mktemp)
+  cat > "$TEMP_TS" << 'EOF'
+import * as YAML from 'js-yaml';
+import * as fs from 'fs';
+
+const specContent = fs.readFileSync('./docs/api-spec.yaml', 'utf8');
+const spec = YAML.load(specContent) as Record<string, unknown>;
+
+// Basic validation: ensure spec has required OpenAPI structure
+if (!spec.openapi && !spec.swagger) {
+  throw new Error('API spec missing required openapi/swagger field');
+}
+if (!spec.info) {
+  throw new Error('API spec missing required info field');
+}
+if (!spec.paths) {
+  throw new Error('API spec missing required paths field');
+}
+
+console.log('✓ API spec validation passed');
+EOF
+
+  if tsc --esModuleInterop --skipLibCheck "$TEMP_TS" && node "$TEMP_TS"; then
+    echo "✓ TypeScript validation successful"
+    rm -f "$TEMP_TS" "${TEMP_TS%.ts}.js"
+  else
+    echo "⚠ TypeScript validation failed (non-blocking)"
+    rm -f "$TEMP_TS" "${TEMP_TS%.ts}.js"
+  fi
+else
+  echo "⚠ TypeScript compiler not found in PATH (skipping validation)"
+fi
