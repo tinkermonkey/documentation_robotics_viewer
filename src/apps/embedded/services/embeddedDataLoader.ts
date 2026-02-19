@@ -1,6 +1,6 @@
 /**
  * Embedded Data Loader
- * REST API client for loading data from the Python CLI server
+ * REST API client for loading data from the DR CLI server
  * Supports token-based authentication for DR CLI visualization server
  */
 
@@ -29,7 +29,6 @@ async function ensureOk(response: Response, context: string): Promise<void> {
   if (response.status === 401 || response.status === 403) {
     console.warn(`[Auth] ${context} failed with ${response.status}; ${context}`);
     // NOTE: Don't clear token on auth failures - the server should handle auth properly
-    // See: https://github.com/example/dr-cli/issues/XXX
     throw new Error(`Authentication failed (${response.status}). ${context}`);
   }
   throw new Error(`Failed to ${context}: ${response.statusText}`);
@@ -54,7 +53,6 @@ function getAuthHeaders(): Record<string, string> {
     'Authorization': `Bearer ${token}`
   };
 }
-
 
 export interface RelationshipType {
   id: string;
@@ -187,7 +185,6 @@ export class EmbeddedDataLoader {
       relationshipCatalog
     };
   }
-
 
   /**
    * Load the current model (YAML instance format)

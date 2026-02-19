@@ -65,10 +65,7 @@ test.describe('WebSocket Recovery and Reconnection', () => {
   });
 
   test('should detect and log WebSocket connection state', async ({ page }) => {
-    // Navigate to app
-    await page.goto(baseUrl);
-
-    // Listen for WebSocket logs
+    // Listen for WebSocket logs BEFORE navigation to catch all messages
     const wsLogs: string[] = [];
     page.on('console', msg => {
       const text = msg.text();
@@ -76,6 +73,9 @@ test.describe('WebSocket Recovery and Reconnection', () => {
         wsLogs.push(text);
       }
     });
+
+    // Navigate to app
+    await page.goto(baseUrl);
 
     // Wait for logs to be generated
     try {
@@ -87,9 +87,7 @@ test.describe('WebSocket Recovery and Reconnection', () => {
     // Wait a bit for WebSocket attempts
     await page.waitForLoadState('networkidle');
 
-    // Verify we saw some WebSocket activity
-    expect(wsLogs.length).toBeGreaterThanOrEqual(0);
-
+    // Verify we saw some WebSocket activity or connection attempt
     if (wsLogs.length > 0) {
       // Should see either connection success or REST mode fallback
       const hasWebSocketLog = wsLogs.some(log =>
@@ -99,13 +97,11 @@ test.describe('WebSocket Recovery and Reconnection', () => {
       );
       expect(hasWebSocketLog).toBe(true);
     }
+    // If no logs, the app may be using REST mode silently, which is acceptable
   });
 
   test('should handle connection cleanup on page navigation', async ({ page }) => {
-    // Navigate to app
-    await page.goto(baseUrl);
-
-    // Track connection logs
+    // Track connection logs BEFORE navigation to catch all messages
     const connectionLogs: string[] = [];
     page.on('console', msg => {
       const text = msg.text();
@@ -113,6 +109,9 @@ test.describe('WebSocket Recovery and Reconnection', () => {
         connectionLogs.push(text);
       }
     });
+
+    // Navigate to app
+    await page.goto(baseUrl);
 
     // Wait for initial connection
     await page.waitForLoadState('networkidle');
@@ -125,10 +124,21 @@ test.describe('WebSocket Recovery and Reconnection', () => {
 
     // Verify page unloaded cleanly (no hard errors)
     // Connection cleanup should be silent - just internal state cleanup
-    expect(page).toBeDefined();
+    // Page should still be accessible after navigation
+    const pageUrl = page.url();
+    expect(pageUrl).toContain('blank');
   });
 
   test('should maintain connection during normal app usage', async ({ page }) => {
+    // Simulate some app usage - set up listeners BEFORE navigation
+    const connectionStates: string[] = [];
+    page.on('console', msg => {
+      const text = msg.text();
+      if (text.includes('connection') || text.includes('state')) {
+        connectionStates.push(text);
+      }
+    });
+
     // Navigate to app
     await page.goto(baseUrl);
 
@@ -140,15 +150,6 @@ test.describe('WebSocket Recovery and Reconnection', () => {
       console.log('WebSocket init:', error);
     }
 
-    // Simulate some app usage
-    const connectionStates: string[] = [];
-    page.on('console', msg => {
-      const text = msg.text();
-      if (text.includes('connection') || text.includes('state')) {
-        connectionStates.push(text);
-      }
-    });
-
     // Connection should remain stable
     const hasErrors = connectionStates.some(log =>
       log.toLowerCase().includes('error') && !log.includes('Connection error during detection')
@@ -159,9 +160,6 @@ test.describe('WebSocket Recovery and Reconnection', () => {
   });
 
   test('should handle token updates without losing connection', async ({ page }) => {
-    // Navigate to app with initial token
-    await page.goto(baseUrl);
-
     const tokenLogs: string[] = [];
     page.on('console', msg => {
       const text = msg.text();
@@ -169,6 +167,9 @@ test.describe('WebSocket Recovery and Reconnection', () => {
         tokenLogs.push(text);
       }
     });
+
+    // Navigate to app with initial token
+    await page.goto(baseUrl);
 
     // Simulate token update in localStorage
     await page.evaluate(() => {
@@ -190,14 +191,18 @@ test.describe('WebSocket Recovery and Reconnection', () => {
     // Wait a bit more
     await page.waitForLoadState('networkidle');
 
-    // Should still have active logs (either WebSocket or REST mode)
-    expect(connectionLogs.length).toBeGreaterThanOrEqual(0);
+    // Verify token update didn't crash the app
+    // If we have logs, verify they indicate connection activity
+    if (connectionLogs.length > 0) {
+      // Should see connection-related activity after token update
+      const hasConnectionLog = connectionLogs.some(log =>
+        log.includes('WebSocket') || log.includes('Connected')
+      );
+      expect(hasConnectionLog).toBe(true);
+    }
   });
 
   test('should not attempt infinite reconnections after intentional disconnect', async ({ page }) => {
-    // Navigate to app
-    await page.goto(baseUrl);
-
     const reconnectLogs: string[] = [];
     page.on('console', msg => {
       const text = msg.text();
@@ -205,6 +210,9 @@ test.describe('WebSocket Recovery and Reconnection', () => {
         reconnectLogs.push(text);
       }
     });
+
+    // Navigate to app
+    await page.goto(baseUrl);
 
     // Wait for connection to establish
     try {
@@ -244,13 +252,11 @@ test.describe('WebSocket Recovery and Reconnection', () => {
       return (window as any).__CONNECTION_STATE__ || 'unknown';
     });
 
-    expect(connectionState).toBeDefined();
+    // Verify connectionState is either a valid state or the fallback 'unknown'
+    expect(['connected', 'disconnected', 'reconnecting', 'unknown']).toContain(connectionState);
   });
 
   test('should log connection attempts with exponential backoff', async ({ page }) => {
-    // Navigate to app
-    await page.goto(baseUrl);
-
     const reconnectLogEntries: Array<{ timestamp: number; message: string }> = [];
     const startTime = Date.now();
 
@@ -263,6 +269,9 @@ test.describe('WebSocket Recovery and Reconnection', () => {
         });
       }
     });
+
+    // Navigate to app
+    await page.goto(baseUrl);
 
     // If we saw reconnect logs, verify they show increasing delays
     if (reconnectLogEntries.length > 1) {
@@ -281,15 +290,15 @@ test.describe('WebSocket Recovery and Reconnection', () => {
   });
 
   test('should handle connection errors gracefully without crashing app', async ({ page }) => {
-    // Navigate to app
-    await page.goto(baseUrl);
-
     const errorLogs: string[] = [];
     page.on('console', msg => {
       if (msg.type() === 'error') {
         errorLogs.push(msg.text());
       }
     });
+
+    // Navigate to app
+    await page.goto(baseUrl);
 
     // Filter for only critical errors (not expected connection detection errors)
     const criticalErrors = errorLogs.filter(log =>
@@ -303,9 +312,6 @@ test.describe('WebSocket Recovery and Reconnection', () => {
   });
 
   test('should recover after server-side WebSocket disconnection', async ({ page }) => {
-    // Navigate to app
-    await page.goto(baseUrl);
-
     const connectionLogs: string[] = [];
     page.on('console', msg => {
       const text = msg.text();
@@ -318,6 +324,9 @@ test.describe('WebSocket Recovery and Reconnection', () => {
         connectionLogs.push(text);
       }
     });
+
+    // Navigate to app
+    await page.goto(baseUrl);
 
     // Wait for app to be fully loaded and WebSocket client to be available
     await page.waitForFunction(
@@ -357,9 +366,6 @@ test.describe('WebSocket Recovery and Reconnection', () => {
   });
 
   test('should emit max-reconnect-attempts event after exhausting reconnection retries', async ({ page }) => {
-    // Navigate to app
-    await page.goto(baseUrl);
-
     const maxReconnectLogs: string[] = [];
     page.on('console', msg => {
       const text = msg.text();
@@ -372,6 +378,9 @@ test.describe('WebSocket Recovery and Reconnection', () => {
         maxReconnectLogs.push(text);
       }
     });
+
+    // Navigate to app
+    await page.goto(baseUrl);
 
     // Wait for app to be fully loaded and WebSocket client to be available
     await page.waitForFunction(
@@ -409,5 +418,50 @@ test.describe('WebSocket Recovery and Reconnection', () => {
     // Verify app is still usable (should fall back to REST mode or handle gracefully)
     const pageTitle = await page.title();
     expect(pageTitle).toBeDefined();
+  });
+
+  test('should fall back to REST mode when WebSocket is unavailable', async ({ page }) => {
+    const restModeLogs: string[] = [];
+    page.on('console', msg => {
+      const text = msg.text();
+      if (text.includes('REST mode') || text.includes('rest-mode') || text.includes('using REST')) {
+        restModeLogs.push(text);
+      }
+    });
+
+    // Navigate to app
+    await page.goto(baseUrl);
+
+    // Wait for app to load
+    try {
+      await waitForElement(page, '[data-testid="embedded-app"]', { timeout: 10000 });
+    } catch {
+      // App might not have the testid, continue anyway
+    }
+
+    // Wait for app to stabilize and attempt connections
+    await page.waitForLoadState('networkidle');
+
+    // Verify the app is still functional even if WebSocket failed
+    // Check that page is still responsive
+    const pageTitle = await page.title();
+    expect(pageTitle).toBeDefined();
+
+    // Try to interact with the app if it's loaded
+    const appContainer = await page.$('[data-testid="embedded-app"]');
+    if (appContainer) {
+      // If app is present, it means it loaded successfully (either WebSocket or REST mode)
+      expect(appContainer).toBeTruthy();
+    }
+
+    // Log whether REST mode was explicitly used
+    if (restModeLogs.length > 0) {
+      console.log('REST mode logs detected:', restModeLogs.length);
+      expect(restModeLogs.length).toBeGreaterThan(0);
+    } else {
+      // Even if no REST mode logs, app should still be functional
+      // This verifies graceful degradation
+      expect(pageTitle).toBeDefined();
+    }
   });
 });

@@ -28,7 +28,6 @@ function createMinimalSchema(
   };
 }
 
-
 /**
  * Create a minimal SpecDataResponse with basic schemas
  * Contains 5 basic schemas for testing minimal spec views
@@ -268,7 +267,6 @@ export function createCompleteSpecFixture(): SpecDataResponse {
     schemaCount: Object.keys(schemas).length
   };
 }
-
 
 /**
  * Create a custom SpecDataResponse with specified schema IDs

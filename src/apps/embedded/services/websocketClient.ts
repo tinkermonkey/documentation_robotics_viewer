@@ -20,6 +20,24 @@ interface WebSocketMessage {
   [key: string]: any;
 }
 
+/**
+ * Interface for WebSocket client - implemented by both real WebSocketClient and mocks
+ */
+interface WebSocketClientInterface {
+  setToken(token: string | null): void;
+  connect(): void;
+  disconnect(): void;
+  subscribe(topics: string[]): void;
+  send(message: WebSocketMessage): void;
+  on(event: string, handler: EventHandler): void;
+  off(event: string, handler: EventHandler): void;
+  triggerCloseForTesting?(): void;
+  simulateMaxReconnectAttemptsForTesting?(): void;
+  readonly isConnected: boolean;
+  readonly connectionState: 'connecting' | 'connected' | 'disconnected' | 'reconnecting';
+  readonly transportMode: 'websocket' | 'rest' | 'detecting';
+}
+
 export class WebSocketClient {
   private ws: WebSocket | null = null;
   private url: string;
@@ -499,10 +517,21 @@ function isTestEnvironment(): boolean {
   return false;
 }
 
+/**
+ * Module augmentation to add WebSocket client to window for Playwright tests
+ */
+declare global {
+  interface Window {
+    __WEBSOCKET_CLIENT__?: WebSocketClientInterface;
+    __INTENTIONAL_DISCONNECT__?: boolean;
+    __CONNECTION_STATE__?: string;
+  }
+}
+
 // Create singleton instance
 // In test environments, use a mock that never attempts WebSocket connections
 // In production, use the real WebSocketClient
-let websocketClient: WebSocketClient | any;
+let websocketClient: WebSocketClientInterface;
 
 if (isTestEnvironment()) {
   // Import mock client dynamically to avoid bundling it in production
@@ -589,5 +618,5 @@ export { websocketClient };
 
 // Expose websocketClient to window in test environments for Playwright access
 if (typeof window !== 'undefined' && isTestEnvironment()) {
-  (window as any).__WEBSOCKET_CLIENT__ = websocketClient;
+  window.__WEBSOCKET_CLIENT__ = websocketClient;
 }
