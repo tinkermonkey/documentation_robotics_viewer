@@ -8,18 +8,18 @@ import { test, expect } from '@playwright/test';
  * 2. User clicks a new magic link with a fresh token
  * 3. The fresh token should be used (not the stale one)
  *
- * Requires: Dev server running on http://localhost:8765
+ * Requires: DR CLI server running with: dr visualize [path-to-model]
  * Run with: npm run test:e2e
  */
 test.describe('Auth Token Race Condition Fix', () => {
-  const appUrl = 'http://localhost:8765';
+  const appUrl = 'http://localhost:3000';
 
   test.beforeAll(async ({ request }) => {
     // Check if server is available, skip tests if not
     try {
       await request.get(appUrl, { timeout: 5000 });
     } catch (error) {
-      test.skip(true, 'Dev server not running on localhost:8765');
+      test.skip(true, 'DR CLI server not running on localhost:3000');
     }
   });
 

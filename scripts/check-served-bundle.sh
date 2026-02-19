@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Deprecated script
-echo "This script is deprecated. Use scripts/triage-auth.sh instead." >&2
-echo "Example: bash scripts/triage-auth.sh 8765" >&2
+# Deprecated script - reference server was removed in Phase 4
+echo "This script is deprecated. The reference server has been removed." >&2
+echo "Use the DR CLI server instead: dr visualize [path-to-model]" >&2
 exit 1

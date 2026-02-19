@@ -291,16 +291,7 @@ apt-get update && apt-get install -y \
 
 ### "Process from config.webServer was not able to start"
 
-**Cause 1:** Python dependencies not installed.
-
-**Fix:**
-```bash
-cd reference_server
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-**Cause 2:** DR CLI server not running.
+**Cause:** DR CLI server not running.
 
 **Fix:**
 ```bash
@@ -355,20 +346,20 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Feature Name', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:8765/');
-    await page.waitForSelector('.embedded-app', { timeout: 10000 });
+    await page.goto('http://localhost:3000/');  // DR CLI server on port 3000
+    await page.waitForSelector('[data-testid="embedded-app"]', { timeout: 10000 });
     await page.waitForSelector('.connection-status.connected', { timeout: 10000 });
   });
 
   test('should do something', async ({ page }) => {
     // Arrange
-    await page.click('.some-button');
+    await page.click('[data-testid="some-button"]');
 
     // Act
-    await page.waitForSelector('.expected-element');
+    await page.waitForSelector('[data-testid="expected-element"]');
 
     // Assert
-    await expect(page.locator('.expected-element')).toBeVisible();
+    await expect(page.locator('[data-testid="expected-element"]')).toBeVisible();
   });
 });
 ```

@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Phase 4: Edge Bundling, Viewport Culling, and Progressive Loading', () => {
+  // Note: Tests run with E2E config which starts DR CLI server on localhost:3000 (backend)
   const VIEWPORT_MARGIN = 100;
 
   // Helper function to get visible edges with their source and target node positions
@@ -126,7 +127,6 @@ test.describe('Phase 4: Edge Bundling, Viewport Culling, and Progressive Loading
 
   test.beforeEach(async ({ page }) => {
     // Navigate to the Motivation view where cross-layer edges are implemented
-    // Tests run with E2E config which starts servers on localhost:3001 (frontend) and localhost:8765 (backend)
     await page.goto('/motivation');
 
     // Wait for embedded app to load
