@@ -130,8 +130,16 @@ export default function ModelRoute() {
     onSuccess: async (modelData) => {
       setModel(modelData);
 
-      const annotations = await embeddedDataLoader.loadAnnotations();
-      annotationStore.setAnnotations(annotations);
+      // Load annotations with error handling
+      try {
+        const annotations = await embeddedDataLoader.loadAnnotations();
+        annotationStore.setAnnotations(annotations);
+        console.log('[ModelRoute] Annotations loaded:', annotations.length, 'annotations');
+      } catch (err) {
+        console.warn('[ModelRoute] Failed to load annotations:', err);
+        // Continue loading other data even if annotations fail
+        annotationStore.setAnnotations([]);
+      }
 
       // Load spec data for schema definitions
       try {

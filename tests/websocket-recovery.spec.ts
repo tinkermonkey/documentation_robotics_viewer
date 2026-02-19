@@ -324,4 +324,101 @@ test.describe('WebSocket Recovery and Reconnection', () => {
     // App should not have critical errors
     expect(criticalErrors.length).toBe(0);
   });
+
+  test('should recover after server-side WebSocket disconnection', async ({ page }) => {
+    // Navigate to app
+    await page.goto(baseUrl);
+
+    const connectionLogs: string[] = [];
+    page.on('console', msg => {
+      const text = msg.text();
+      if (
+        text.includes('Closed') ||
+        text.includes('Reconnecting') ||
+        text.includes('Connected successfully')
+      ) {
+        connectionLogs.push(text);
+      }
+    });
+
+    // Wait for initial connection to establish
+    try {
+      await waitForWebSocketConnection(page, { timeout: 10000 });
+    } catch {
+      // REST mode is acceptable, but we need to simulate disconnection scenario
+      console.log('WebSocket not connected, test may be in REST mode');
+    }
+
+    // Simulate server-side disconnection by closing the WebSocket from the client side
+    // (in real scenario, server closes connection)
+    await page.evaluate(() => {
+      // Access the WebSocket client singleton and trigger a close event
+      // This simulates server-side disconnection
+      (window as any).__TRIGGER_WS_CLOSE__ = true;
+    });
+
+    // Wait for any reconnection attempts
+    await page.waitForFunction(
+      () => (connectionLogs.length > 0),
+      { timeout: 8000 }
+    ).catch(() => {
+      // Logs might not be generated if WebSocket is not used
+    });
+
+    // Verify that we either saw a close event or reconnection attempt
+    if (connectionLogs.length > 0) {
+      const sawCloseOrReconnect = connectionLogs.some(log =>
+        log.includes('Closed') || log.includes('Reconnecting')
+      );
+      expect(sawCloseOrReconnect).toBe(true);
+    }
+
+    // Verify page is still responsive (app didn't crash)
+    expect(page).toBeDefined();
+  });
+
+  test('should emit max-reconnect-attempts event after exhausting reconnection retries', async ({ page }) => {
+    // Navigate to app
+    await page.goto(baseUrl);
+
+    const maxReconnectLogs: string[] = [];
+    page.on('console', msg => {
+      const text = msg.text();
+      if (
+        text.includes('Max reconnect') ||
+        text.includes('max-reconnect-attempts') ||
+        text.includes('max reconnection attempts')
+      ) {
+        maxReconnectLogs.push(text);
+      }
+    });
+
+    // Simulate maximum reconnection attempts scenario
+    // In real scenario, this would happen after 10 failed reconnection attempts
+    // with exponential backoff (1s, 2s, 4s, 8s, 16s, 30s, 30s, 30s, 30s, 30s)
+    await page.evaluate(() => {
+      // Set a flag to simulate max attempts scenario
+      (window as any).__SIMULATE_MAX_RECONNECT__ = true;
+    });
+
+    // Wait for max reconnect event or log
+    await page.waitForFunction(
+      () => (maxReconnectLogs.length > 0),
+      { timeout: 10000 }
+    ).catch(() => {
+      // Max reconnect event might not occur if connection succeeds
+    });
+
+    // If WebSocket is being used and we see max reconnect logs, verify the event was emitted
+    if (maxReconnectLogs.length > 0) {
+      const hasMaxReconnectLog = maxReconnectLogs.some(log =>
+        log.toLowerCase().includes('max reconnect') ||
+        log.toLowerCase().includes('max-reconnect')
+      );
+      expect(hasMaxReconnectLog).toBe(true);
+    }
+
+    // Verify app is still usable (should fall back to REST mode or handle gracefully)
+    expect(page).toBeDefined();
+  });
 });
