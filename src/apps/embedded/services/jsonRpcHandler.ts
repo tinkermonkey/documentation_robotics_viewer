@@ -377,8 +377,8 @@ export class JsonRpcHandler {
         const result = handler(params) as unknown;
 
         // If handler returns a promise, catch async errors
-        if (result && typeof (result as any).then === 'function') {
-          (result as Promise<any>).catch((error: Error) => {
+        if (result && typeof (result as Promise<unknown>).then === 'function') {
+          (result as Promise<unknown>).catch((error: Error) => {
             logError(
               ERROR_IDS.JSONRPC_NOTIFICATION_HANDLER_ERROR,
               `Error in notification handler for '${method}'`,
