@@ -9,9 +9,19 @@ import { EmbeddedDataLoader } from '../../src/apps/embedded/services/embeddedDat
 test.describe('EmbeddedDataLoader.normalizeModel()', () => {
   const dataLoader = new EmbeddedDataLoader();
 
+  /**
+   * Helper to access private normalizeModel method via reflection.
+   * Used consistently throughout tests to avoid repeated `as any` casts.
+   */
+  const getNormalizeModelFunction = () => {
+    return (dataLoader as Record<string, unknown>).normalizeModel as (
+      input: unknown
+    ) => ReturnType<EmbeddedDataLoader['normalizeElements']>;
+  };
+
   test('should normalize valid model with all properties', () => {
-    // Use reflection to access private method
-    const normalizeModel = (dataLoader as any).normalizeModel.bind(dataLoader);
+    // Use reflection to access private method via helper
+    const normalizeModel = getNormalizeModelFunction();
 
     const input = {
       version: '1.0.0',
@@ -45,7 +55,7 @@ test.describe('EmbeddedDataLoader.normalizeModel()', () => {
   });
 
   test('should handle null input by throwing error', () => {
-    const normalizeModel = (dataLoader as any).normalizeModel.bind(dataLoader);
+    const normalizeModel = getNormalizeModelFunction();
 
     expect(() => {
       normalizeModel(null);
@@ -53,7 +63,7 @@ test.describe('EmbeddedDataLoader.normalizeModel()', () => {
   });
 
   test('should handle undefined input by throwing error', () => {
-    const normalizeModel = (dataLoader as any).normalizeModel.bind(dataLoader);
+    const normalizeModel = getNormalizeModelFunction();
 
     expect(() => {
       normalizeModel(undefined);
@@ -61,7 +71,7 @@ test.describe('EmbeddedDataLoader.normalizeModel()', () => {
   });
 
   test('should handle non-object input by throwing error', () => {
-    const normalizeModel = (dataLoader as any).normalizeModel.bind(dataLoader);
+    const normalizeModel = getNormalizeModelFunction();
 
     expect(() => {
       normalizeModel('not an object');
@@ -73,7 +83,7 @@ test.describe('EmbeddedDataLoader.normalizeModel()', () => {
   });
 
   test('should use default version when version is missing', () => {
-    const normalizeModel = (dataLoader as any).normalizeModel.bind(dataLoader);
+    const normalizeModel = getNormalizeModelFunction();
 
     const input = {
       layers: {},
@@ -86,7 +96,7 @@ test.describe('EmbeddedDataLoader.normalizeModel()', () => {
   });
 
   test('should use default version when version is not string', () => {
-    const normalizeModel = (dataLoader as any).normalizeModel.bind(dataLoader);
+    const normalizeModel = getNormalizeModelFunction();
 
     const input = {
       version: 123,
@@ -100,7 +110,7 @@ test.describe('EmbeddedDataLoader.normalizeModel()', () => {
   });
 
   test('should preserve optional metadata', () => {
-    const normalizeModel = (dataLoader as any).normalizeModel.bind(dataLoader);
+    const normalizeModel = getNormalizeModelFunction();
 
     const input = {
       version: '2.0.0',
@@ -121,7 +131,7 @@ test.describe('EmbeddedDataLoader.normalizeModel()', () => {
   });
 
   test('should skip invalid layers (non-objects)', () => {
-    const normalizeModel = (dataLoader as any).normalizeModel.bind(dataLoader);
+    const normalizeModel = getNormalizeModelFunction();
 
     const input = {
       version: '1.0.0',
@@ -147,7 +157,7 @@ test.describe('EmbeddedDataLoader.normalizeModel()', () => {
   });
 
   test('should use default empty arrays for missing references', () => {
-    const normalizeModel = (dataLoader as any).normalizeModel.bind(dataLoader);
+    const normalizeModel = getNormalizeModelFunction();
 
     const input = {
       version: '1.0.0',
@@ -162,7 +172,7 @@ test.describe('EmbeddedDataLoader.normalizeModel()', () => {
   });
 
   test('should handle layers with missing elements array', () => {
-    const normalizeModel = (dataLoader as any).normalizeModel.bind(dataLoader);
+    const normalizeModel = getNormalizeModelFunction();
 
     const input = {
       version: '1.0.0',
@@ -184,7 +194,7 @@ test.describe('EmbeddedDataLoader.normalizeModel()', () => {
   });
 
   test('should handle empty layers object', () => {
-    const normalizeModel = (dataLoader as any).normalizeModel.bind(dataLoader);
+    const normalizeModel = getNormalizeModelFunction();
 
     const input = {
       version: '1.0.0',
@@ -198,7 +208,7 @@ test.describe('EmbeddedDataLoader.normalizeModel()', () => {
   });
 
   test('should normalize layer elements with default properties', () => {
-    const normalizeModel = (dataLoader as any).normalizeModel.bind(dataLoader);
+    const normalizeModel = getNormalizeModelFunction();
 
     const input = {
       version: '1.0.0',
@@ -231,7 +241,7 @@ test.describe('EmbeddedDataLoader.normalizeModel()', () => {
   });
 
   test('should filter out non-object elements from layer', () => {
-    const normalizeModel = (dataLoader as any).normalizeModel.bind(dataLoader);
+    const normalizeModel = getNormalizeModelFunction();
 
     const input = {
       version: '1.0.0',
@@ -266,7 +276,7 @@ test.describe('EmbeddedDataLoader.normalizeModel()', () => {
   });
 
   test('should preserve layer optional properties', () => {
-    const normalizeModel = (dataLoader as any).normalizeModel.bind(dataLoader);
+    const normalizeModel = getNormalizeModelFunction();
 
     const input = {
       version: '1.0.0',
