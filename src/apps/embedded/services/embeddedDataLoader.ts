@@ -2,6 +2,10 @@
  * Embedded Data Loader
  * REST API client for loading data from the DR CLI server
  * Supports token-based authentication for DR CLI visualization server
+ *
+ * NOTE: Uses generated types from src/core/services/generatedApiClient.ts
+ * to ensure consistency with OpenAPI spec. This replaces manual type definitions
+ * that can drift from the actual API contract.
  */
 
 import { MetaModel, Layer, Reference, Relationship, ModelElement, ModelMetadata, LayerData, ElementVisual } from '../../../core/types';

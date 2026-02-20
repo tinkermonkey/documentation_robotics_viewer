@@ -270,6 +270,7 @@ See [Architecture Overview](documentation/architecture-overview.md) for detailed
 - **[DR CLI Troubleshooting](documentation/DR_CLI_TROUBLESHOOTING.md)** - Quick reference for common issues and solutions
 
 ### Technical Guides
+- **[API Client Generation](documentation/API_CLIENT_GENERATION.md)** - Full API client generation with React Query hooks and versioning strategy
 - **[YAML Models Guide](documentation/YAML_MODELS.md)** - YAML model format specification
 - **[Testing Guide](tests/README.md)** - Test setup and execution
 - **[Testing Strategy](documentation/claude_thoughts/TESTING_STRATEGY.md)** - Testing approach and patterns

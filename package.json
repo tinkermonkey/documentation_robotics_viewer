@@ -14,7 +14,8 @@
     "start": "bash scripts/start-servers.sh",
     "verify": "bash scripts/verify-setup.sh",
     "sync:api-spec": "bash scripts/sync-api-spec.sh",
-    "client:generate": "openapi-typescript docs/api-spec.yaml -o src/core/types/api-client.ts",
+    "client:generate": "openapi-typescript docs/api-spec.yaml -o src/core/types/api-client.ts && node scripts/generate-api-client.js",
+    "client:check-version": "node scripts/check-api-version.js",
     "test": "playwright test",
     "test:debug": "playwright test --debug",
     "test:e2e": "playwright test --config=playwright.e2e.config.ts",
@@ -37,6 +38,7 @@
   "license": "ISC",
   "dependencies": {
     "@hpcc-js/wasm": "^2.30.0",
+    "@tanstack/react-query": "^5.51.0",
     "@tanstack/react-router": "^1.139.12",
     "@types/d3-force": "^3.0.10",
     "@types/js-yaml": "^4.0.9",
