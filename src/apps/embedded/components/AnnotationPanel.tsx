@@ -4,7 +4,7 @@
  * Enhanced with create/edit UI and @mention support
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { Badge, Avatar, Button, Modal, Textarea, Label } from 'flowbite-react';
 import { Plus, Check, MessageSquare } from 'lucide-react';
 import { useAnnotationStore } from '../stores/annotationStore';
@@ -47,6 +47,24 @@ const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) =
   // Local notification state for action feedback
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
+  // Refs to track timer IDs for cleanup
+  const notificationTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const highlightTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  /**
+   * Cleanup timers on unmount to prevent memory leaks
+   */
+  useEffect(() => {
+    return () => {
+      if (notificationTimerRef.current) {
+        clearTimeout(notificationTimerRef.current);
+      }
+      if (highlightTimerRef.current) {
+        clearTimeout(highlightTimerRef.current);
+      }
+    };
+  }, []);
+
   /**
    * Show a temporary notification (success notifications auto-clear after 3 seconds)
    * Error notifications persist until manually dismissed
@@ -55,7 +73,10 @@ const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) =
     setNotification({ type, message });
     // Only auto-clear success notifications
     if (type === 'success') {
-      setTimeout(() => setNotification(null), 3000);
+      if (notificationTimerRef.current) {
+        clearTimeout(notificationTimerRef.current);
+      }
+      notificationTimerRef.current = setTimeout(() => setNotification(null), 3000);
     }
   };
 
@@ -186,7 +207,10 @@ const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) =
     setHighlightedElementId(elementId);
 
     // Auto-clear highlight after 3 seconds
-    setTimeout(() => {
+    if (highlightTimerRef.current) {
+      clearTimeout(highlightTimerRef.current);
+    }
+    highlightTimerRef.current = setTimeout(() => {
       setHighlightedElementId(null);
     }, 3000);
   };

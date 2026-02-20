@@ -159,6 +159,20 @@ export interface ChangesetMetadata {
   };
 }
 
+/**
+ * ChangesetChange - Discriminated union type for changeset operations
+ *
+ * NOTE: Type design
+ * This manual definition uses a proper discriminated union with `never` types
+ * to enforce mutual exclusivity of operation-specific fields:
+ * - 'add' requires 'data', forbids 'before'/'after'
+ * - 'update' requires 'before'/'after', forbids 'data'
+ * - 'delete' requires 'before', forbids 'data'/'after'
+ *
+ * The generated type in src/core/types/api-client.ts uses optional properties
+ * (data?, before?, after?) which is less type-safe. This manual definition is
+ * preferred for runtime type checking. See validateChangesetChanges() for usage.
+ */
 export type ChangesetChange =
   | {
       timestamp: string;
@@ -578,7 +592,7 @@ export class EmbeddedDataLoader {
 
     console.log(
       `Loaded changeset ${changesetId}:`,
-      data.changes.changes.length,
+      data.changes?.changes?.length ?? 0,
       'changes'
     );
     return data;

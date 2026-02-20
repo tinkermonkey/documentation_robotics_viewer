@@ -56,6 +56,15 @@ const mockChangesets: Changeset[] = [];
 const mockAnnotations: Annotation[] = [];
 
 /**
+ * Reset mock data arrays for test isolation
+ * Clears all accumulated changesets and annotations to prevent state bleed between tests
+ */
+export function resetMockData(): void {
+  mockChangesets.length = 0;
+  mockAnnotations.length = 0;
+}
+
+/**
  * MSW HTTP handlers matching the OpenAPI spec
  * These intercept network requests and return mock responses
  */
@@ -160,15 +169,25 @@ export const handlers = [
 ];
 
 /**
- * MSW Server for browser/integration testing
- * Use this in browser-based tests to intercept all network requests
+ * MSW Server setup for browser/integration testing
+ *
+ * Usage:
+ * - In browser-based tests, call setupMswServer() to get handlers for MSW server
+ * - In Node.js tests, use the handlers array directly with MSW test server
+ *
+ * IMPORTANT: Call resetMockData() between tests to prevent state bleed.
+ * Example: beforeEach(() => { resetMockData(); })
+ *
+ * This function validates that it's running in a browser environment where
+ * the MSW server can intercept network requests.
  */
 export function setupMswServer() {
   if (typeof window === 'undefined') {
-    throw new Error('MSW Server should only be used in browser environment');
+    throw new Error('MSW Server should only be used in browser environment. For Node.js tests, use handlers directly with setupServer()');
   }
 
-  // This would be configured in a test setup file
-  // For now, just export the handlers for use with MSW
+  // Ensure clean state when setting up
+  resetMockData();
+
   return handlers;
 }

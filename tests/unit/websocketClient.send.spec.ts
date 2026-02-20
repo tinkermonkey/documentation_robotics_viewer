@@ -109,4 +109,64 @@ test.describe('WebSocketClient.send() Return Value', () => {
     expect(typeof result).toBe('boolean');
     expect(result).toBe(false);
   });
+
+  test('should return true when WebSocket is connected and open', () => {
+    const client = new WebSocketClient('ws://localhost:9001');
+
+    // Create a mock WebSocket with OPEN state
+    const mockSendCalls: string[] = [];
+    const mockWebSocket = {
+      readyState: 1, // WebSocket.OPEN
+      send: (data: string) => {
+        mockSendCalls.push(data);
+      },
+      close: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {}
+    } as any;
+
+    (client as any).ws = mockWebSocket;
+
+    const message = {
+      type: 'test',
+      data: { foo: 'bar' }
+    };
+
+    const result = client.send(message);
+
+    expect(result).toBe(true);
+    expect(mockSendCalls.length).toBe(1);
+    expect(mockSendCalls[0]).toBe(JSON.stringify(message));
+  });
+
+  test('should successfully send JSON-RPC request when connected', () => {
+    const client = new WebSocketClient('ws://localhost:9001');
+
+    // Create a mock WebSocket with OPEN state
+    const mockSendCalls: string[] = [];
+    const mockWebSocket = {
+      readyState: 1, // WebSocket.OPEN
+      send: (data: string) => {
+        mockSendCalls.push(data);
+      },
+      close: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {}
+    } as any;
+
+    (client as any).ws = mockWebSocket;
+
+    const jsonRpcRequest: JsonRpcRequest = {
+      jsonrpc: '2.0',
+      method: 'test.method',
+      params: { key: 'value' },
+      id: 42
+    };
+
+    const result = client.send(jsonRpcRequest);
+
+    expect(result).toBe(true);
+    expect(mockSendCalls.length).toBe(1);
+    expect(mockSendCalls[0]).toBe(JSON.stringify(jsonRpcRequest));
+  });
 });

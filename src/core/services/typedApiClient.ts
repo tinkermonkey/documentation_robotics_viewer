@@ -170,7 +170,11 @@ export class TypedRestApiClient {
 
     const contentType = response.headers.get('content-type');
     if (contentType?.includes('application/json')) {
-      return await response.json();
+      try {
+        return await response.json();
+      } catch (parseError) {
+        throw new Error(`Failed to parse JSON response from ${path}: ${parseError instanceof Error ? parseError.message : String(parseError)}`);
+      }
     }
 
     return await response.text();
