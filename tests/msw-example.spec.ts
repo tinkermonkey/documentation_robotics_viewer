@@ -140,36 +140,28 @@ test.describe('API Client - MSW Mocked Responses (Node.js)', () => {
 /**
  * Playwright Browser Tests with API Mocking
  *
- * NOTE: These tests show the CORRECT pattern for Playwright E2E tests.
- * Use page.route() for browser-based request interception, not MSW's setupServer.
+ * NOTE: For Playwright E2E tests with API mocking, use page.route() for
+ * browser-based request interception, not MSW's setupServer.
  *
  * For a running DR CLI server (current approach):
  * - Tests validate against real API responses
  * - Useful for integration testing
  * - Requires server infrastructure
+ * - See tests/embedded-*.spec.ts for examples
  *
  * For Playwright route interception (alternative):
  * - Can mock API responses without running server
  * - Use `page.route()` to intercept requests
  * - See documentation/MSW_TESTING_GUIDE.md for detailed pattern
+ *
+ * Example pattern:
+ * ```typescript
+ * test('example with route interception', async ({ page }) => {
+ *   await page.route('http://localhost:8080/api/model', route => {
+ *     route.fulfill({ json: { uuid: 'test', name: 'Test Model' } });
+ *   });
+ *   await page.goto('/');
+ *   // Test continues...
+ * });
+ * ```
  */
-test.describe('Embedded App - Playwright Route Interception Example', () => {
-  test('should load with route interception pattern (reference)', async ({ page }) => {
-    // NOTE: This is a reference example showing the pattern
-    // Actual implementation would:
-    // 1. Use page.route() to intercept fetch/XHR
-    // 2. Return mock responses for API calls
-    // 3. Works with or without real server
-
-    // Example pattern (not executed):
-    // await page.route('http://localhost:8080/api/model', route => {
-    //   route.abort();  // or return mock response
-    // });
-
-    // For production E2E tests, either:
-    // Option A: Use real DR CLI server (current approach)
-    // Option B: Use page.route() for request interception
-
-    expect(true).toBe(true);
-  });
-});
