@@ -4,7 +4,7 @@
  * Supports token-based authentication for DR CLI visualization server
  */
 
-import { MetaModel } from '../../../core/types';
+import { MetaModel, Layer, Reference, Relationship, ModelElement, ModelMetadata, LayerData } from '../../../core/types';
 import { Annotation, AnnotationCreate, AnnotationUpdate } from '../types/annotations';
 
 const API_BASE = '/api';
@@ -328,44 +328,79 @@ export class EmbeddedDataLoader {
     }
     const modelData = data as Record<string, unknown>;
     const normalized: MetaModel = {
-      ...modelData,
-      layers: {}
+      version: typeof modelData.version === 'string' ? modelData.version : '1.0.0',
+      layers: {},
+      references: Array.isArray(modelData.references) ? (modelData.references as Reference[]) : []
     };
+
+    // Preserve optional metadata from original data
+    if (typeof modelData.id === 'string') normalized.id = modelData.id;
+    if (typeof modelData.name === 'string') normalized.name = modelData.name;
+    if (typeof modelData.description === 'string') normalized.description = modelData.description;
+    if (typeof modelData.metadata === 'object' && modelData.metadata !== null) {
+      normalized.metadata = modelData.metadata as ModelMetadata;
+    }
 
     for (const [layerId, layer] of Object.entries(modelData.layers || {})) {
       if (typeof layer !== 'object' || layer === null) {
         continue;
       }
       const layerObj = layer as Record<string, unknown>;
-      const normalizedLayer = {
-        ...layerObj,
-        elements: (Array.isArray(layerObj.elements) ? layerObj.elements : []).map((element: unknown) => {
-          if (typeof element !== 'object' || element === null) {
-            return element;
-          }
-          const elementObj = element as Record<string, unknown>;
-          return {
-            ...elementObj,
-            // Ensure visual properties exist with defaults
-            visual: (elementObj.visual as Record<string, unknown>) || {
-              position: { x: 0, y: 0 },
-              size: { width: 200, height: 100 },
-              style: { backgroundColor: '#e3f2fd', borderColor: '#1976d2' }
-            },
-            properties: (elementObj.properties as Record<string, unknown>) || {}
-          };
-        }),
-        relationships: Array.isArray(layerObj.relationships) ? layerObj.relationships : []
+      const normalizedLayer: Layer = {
+        id: typeof layerObj.id === 'string' ? layerObj.id : layerId,
+        type: typeof layerObj.type === 'string' ? layerObj.type : 'unknown',
+        name: typeof layerObj.name === 'string' ? layerObj.name : layerId,
+        elements: this.normalizeElements(layerObj.elements),
+        relationships: Array.isArray(layerObj.relationships) ? (layerObj.relationships as Relationship[]) : []
       };
+
+      // Preserve optional layer properties
+      if (typeof layerObj.description === 'string') normalizedLayer.description = layerObj.description;
+      if (typeof layerObj.order === 'number') normalizedLayer.order = layerObj.order;
+      if (typeof layerObj.data === 'object' && layerObj.data !== null) {
+        normalizedLayer.data = layerObj.data as LayerData;
+      }
+
       normalized.layers[layerId] = normalizedLayer;
     }
 
-    // Ensure references array exists
-    if (!normalized.references) {
-      normalized.references = Array.isArray(modelData.references) ? modelData.references : [];
-    }
-
     return normalized;
+  }
+
+  /**
+   * Normalize elements array with default visual properties
+   */
+  private normalizeElements(elements: unknown): ModelElement[] {
+    if (!Array.isArray(elements)) return [];
+
+    return elements.map((element: unknown) => {
+      if (typeof element !== 'object' || element === null) {
+        return element as ModelElement;
+      }
+      const elementObj = element as Record<string, unknown>;
+      return {
+        id: typeof elementObj.id === 'string' ? elementObj.id : '',
+        type: typeof elementObj.type === 'string' ? elementObj.type : '',
+        name: typeof elementObj.name === 'string' ? elementObj.name : '',
+        layerId: typeof elementObj.layerId === 'string' ? elementObj.layerId : '',
+        properties: typeof elementObj.properties === 'object' && elementObj.properties !== null ? (elementObj.properties as Record<string, unknown>) : {},
+        visual: this.normalizeVisual(elementObj.visual)
+      } as ModelElement;
+    });
+  }
+
+  /**
+   * Normalize element visual properties with defaults
+   */
+  private normalizeVisual(visual: unknown) {
+    if (typeof visual === 'object' && visual !== null) {
+      return visual;
+    }
+    return {
+      position: { x: 0, y: 0 },
+      size: { width: 200, height: 100 },
+      style: { backgroundColor: '#e3f2fd', borderColor: '#1976d2' }
+    };
   }
 
   /**

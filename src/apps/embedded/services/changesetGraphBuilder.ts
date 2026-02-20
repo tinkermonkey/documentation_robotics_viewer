@@ -137,9 +137,9 @@ export class ChangesetGraphBuilder {
     if (change.operation === 'add') {
       elementData = change.data || {};
     } else if (change.operation === 'update') {
-      elementData = change.after || change.data || {};
+      elementData = change.after || {};
     } else if (change.operation === 'delete') {
-      elementData = change.before || change.data || {};
+      elementData = change.before || {};
     } else {
       elementData = {};
     }
