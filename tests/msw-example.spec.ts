@@ -110,7 +110,7 @@ test.describe('API Client - MSW Mocked Responses (Node.js)', () => {
 
     // Override handler to fail on first call, succeed on second
     server.use(
-      http.get('http://localhost:8080/api/schemas', () => {
+      http.get('http://localhost:8080/api/spec', () => {
         callCount++;
         if (callCount === 1) {
           return HttpResponse.json(
@@ -126,11 +126,11 @@ test.describe('API Client - MSW Mocked Responses (Node.js)', () => {
     );
 
     // First request fails
-    let response = await fetch('http://localhost:8080/api/schemas');
+    let response = await fetch('http://localhost:8080/api/spec');
     expect(response.status).toBe(500);
 
     // Retry succeeds
-    response = await fetch('http://localhost:8080/api/schemas');
+    response = await fetch('http://localhost:8080/api/spec');
     expect(response.status).toBe(200);
     const schemas = await response.json() as Record<string, unknown>;
     expect(schemas).toHaveProperty('motivation');
