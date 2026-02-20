@@ -89,6 +89,7 @@ export interface SchemaManifest {
 /**
  * JSON Schema definition with common properties
  * Supports both minimal schemas and full JSON Schema Draft 7+ schemas
+ * Note: Explicit properties are intentional and strict. Use type guards for additional properties.
  */
 export interface SchemaDefinition {
   type?: string | string[];
@@ -101,6 +102,16 @@ export interface SchemaDefinition {
   const?: unknown;
   default?: unknown;
   examples?: unknown[];
+  // Additional JSON Schema properties allowed but not explicitly typed
+  // Use type guards to safely access: const maybeMinimum = (obj as Record<string, unknown>).minimum;
+  additionalProperties?: boolean | SchemaDefinition;
+  minimum?: number;
+  maximum?: number;
+  minLength?: number;
+  maxLength?: number;
+  pattern?: string;
+  $ref?: string;
+  definitions?: Record<string, SchemaDefinition>;
   [key: string]: unknown;
 }
 
@@ -236,7 +247,7 @@ export class EmbeddedDataLoader {
   /**
    * Load a specific layer by name
    */
-  async loadLayer(layerName: string): Promise<{ name: string; elements: any[]; elementCount: number }> {
+  async loadLayer(layerName: string): Promise<{ name: string; elements: unknown[]; elementCount: number }> {
     const response = await fetch(`${API_BASE}/layers/${encodeURIComponent(layerName)}`, {
       headers: getAuthHeaders(),
       credentials: 'include'
@@ -254,7 +265,7 @@ export class EmbeddedDataLoader {
   /**
    * Load a specific element by ID
    */
-  async loadElement(elementId: string): Promise<any> {
+  async loadElement(elementId: string): Promise<unknown> {
     const response = await fetch(`${API_BASE}/elements/${encodeURIComponent(elementId)}`, {
       headers: getAuthHeaders(),
       credentials: 'include'
@@ -310,34 +321,47 @@ export class EmbeddedDataLoader {
   /**
    * Normalize model data to ensure all required properties are present
    */
-  private normalizeModel(data: any): MetaModel {
+  private normalizeModel(data: unknown): MetaModel {
+    if (typeof data !== 'object' || data === null) {
+      throw new Error('Invalid model data: expected object');
+    }
+    const modelData = data as Record<string, unknown>;
     const normalized: MetaModel = {
-      ...data,
+      ...modelData,
       layers: {}
     };
 
-    for (const [layerId, layer] of Object.entries(data.layers || {})) {
-      const layerObj = layer as any;
+    for (const [layerId, layer] of Object.entries(modelData.layers || {})) {
+      if (typeof layer !== 'object' || layer === null) {
+        continue;
+      }
+      const layerObj = layer as Record<string, unknown>;
       const normalizedLayer = {
         ...layerObj,
-        elements: (layerObj.elements || []).map((element: any) => ({
-          ...element,
-          // Ensure visual properties exist with defaults
-          visual: element.visual || {
-            position: { x: 0, y: 0 },
-            size: { width: 200, height: 100 },
-            style: { backgroundColor: '#e3f2fd', borderColor: '#1976d2' }
-          },
-          properties: element.properties || {}
-        })),
-        relationships: layerObj.relationships || []
+        elements: (Array.isArray(layerObj.elements) ? layerObj.elements : []).map((element: unknown) => {
+          if (typeof element !== 'object' || element === null) {
+            return element;
+          }
+          const elementObj = element as Record<string, unknown>;
+          return {
+            ...elementObj,
+            // Ensure visual properties exist with defaults
+            visual: (elementObj.visual as Record<string, unknown>) || {
+              position: { x: 0, y: 0 },
+              size: { width: 200, height: 100 },
+              style: { backgroundColor: '#e3f2fd', borderColor: '#1976d2' }
+            },
+            properties: (elementObj.properties as Record<string, unknown>) || {}
+          };
+        }),
+        relationships: Array.isArray(layerObj.relationships) ? layerObj.relationships : []
       };
       normalized.layers[layerId] = normalizedLayer;
     }
 
     // Ensure references array exists
     if (!normalized.references) {
-      normalized.references = data.references || [];
+      normalized.references = Array.isArray(modelData.references) ? modelData.references : [];
     }
 
     return normalized;

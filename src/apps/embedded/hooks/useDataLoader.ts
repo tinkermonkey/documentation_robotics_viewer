@@ -52,6 +52,9 @@ export interface DataLoaderResult<T> {
   /** Error message if loading failed, or null */
   error: string | null;
 
+  /** Error from onSuccess callback, or null if callback didn't throw */
+  callbackError: string | null;
+
   /** Function to manually trigger a reload */
   reload: () => Promise<void>;
 }
@@ -74,6 +77,7 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [callbackError, setCallbackError] = useState<string | null>(null);
 
   // Create stable ref to avoid effect re-runs and subscription churn
   const reloadRef = useRef<(() => Promise<void>) | undefined>(undefined);
@@ -89,6 +93,7 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
     try {
       setLoading(true);
       setError(null);
+      setCallbackError(null);
 
       const result = await loadFn();
       setData(result);
@@ -98,18 +103,19 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
           onSuccess(result);
         } catch (successError) {
           console.error('[useDataLoader] onSuccess callback failed:', successError);
-          // Track callback failure for observability
-          const callbackError = successError instanceof Error ? successError : new Error(String(successError));
+          // Track callback failure for observability and surface to user
+          const callbackErr = successError instanceof Error ? successError : new Error(String(successError));
+          const errorMessage = `Callback failed: ${callbackErr.message}`;
+          setCallbackError(errorMessage);
           logError(
             ERROR_IDS.DATA_LOADER_SUCCESS_CALLBACK_FAILED,
-            'Success callback threw an error',
+            errorMessage,
             {
               callbackName: onSuccess.name || 'anonymous',
-              message: callbackError.message
+              message: callbackErr.message
             },
-            callbackError
+            callbackErr
           );
-          // Don't fail the load if the success callback fails - UI state may be partially updated
         }
       }
     } catch (err) {
@@ -176,5 +182,5 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
     };
   }, [websocketEvents]); // Remove reload from deps to prevent subscription churn
 
-  return { data, loading, error, reload };
+  return { data, loading, error, callbackError, reload };
 }

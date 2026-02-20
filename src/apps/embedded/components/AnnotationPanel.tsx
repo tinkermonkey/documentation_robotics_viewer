@@ -12,6 +12,8 @@ import { useModelStore } from '../../../core/stores/modelStore';
 import { Annotation } from '../types/annotations';
 import { parseMentions, resolveElementName } from '../utils/mentionParser';
 import { EmptyState, LoadingState, ErrorState } from './shared';
+import { logError } from '../services/errorTracker';
+import { ERROR_IDS } from '../../../constants/errorIds';
 
 export interface AnnotationPanelProps {
   /** Error from annotation loading */
@@ -114,8 +116,8 @@ const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) =
       setTimeout(() => setNotification(null), 3000);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create annotation';
+      logError(ERROR_IDS.ANNOTATION_CREATE_FAILED, errorMessage, { elementId: selectedElementId }, err instanceof Error ? err : undefined);
       setNotification({ type: 'error', message: errorMessage });
-      console.error('Failed to create annotation:', err);
     }
   };
 
@@ -131,8 +133,8 @@ const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) =
       setTimeout(() => setNotification(null), 3000);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to toggle resolve status';
+      logError(ERROR_IDS.ANNOTATION_RESOLVE_FAILED, errorMessage, { annotationId: annotation.id }, err instanceof Error ? err : undefined);
       setNotification({ type: 'error', message: errorMessage });
-      console.error('Failed to toggle resolve status:', err);
     }
   };
 
@@ -160,8 +162,8 @@ const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) =
       setTimeout(() => setNotification(null), 3000);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create reply';
+      logError(ERROR_IDS.ANNOTATION_REPLY_FAILED, errorMessage, { annotationId }, err instanceof Error ? err : undefined);
       setNotification({ type: 'error', message: errorMessage });
-      console.error('Failed to create reply:', err);
     }
   };
 
@@ -333,10 +335,6 @@ const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) =
     return <LoadingState variant="panel" message="Loading annotations..." />;
   }
 
-  if (error) {
-    return <ErrorState variant="panel" message={error} />;
-  }
-
   if (loadError) {
     return (
       <div className="p-4">
@@ -350,6 +348,10 @@ const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) =
         </div>
       </div>
     );
+  }
+
+  if (error) {
+    return <ErrorState variant="panel" message={error} />;
   }
 
   if (annotations.length === 0) {

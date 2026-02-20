@@ -278,7 +278,7 @@ All chat messages follow JSON-RPC 2.0 specification:
 - **Solution**: Timestamp-based unique IDs with Map for tracking
 - **Benefit**: Supports concurrent operations, prevents response mixing
 
-### 4. **Chat Session Management (Python)**
+### 4. **Chat Session Management (Node.js)**
 - **Why**: Need to track conversation context per WebSocket connection
 - **Solution**: Per-connection session with conversation history
 - **Benefit**: Enables multi-turn conversations, proper context for Claude API
@@ -324,7 +324,7 @@ ChatPanel re-renders
 - `chatStore` - Messages, conversations, SDK status
 - `useChatStore.getState()` - Direct state access
 
-**Backend Sessions** (Python):
+**Backend Sessions** (Node.js):
 - `ChatSession` - Per-conversation message history
 - `chat_handler.sessions` - Session persistence
 
@@ -403,10 +403,10 @@ ChatPanel re-renders
 - `typescript` (5.0+) - Type safety
 
 ### Backend
-- `fastapi` - Web framework
-- `websockets` - WebSocket protocol
-- `anthropic` (optional) - SDK for Claude API
-- `pydantic` - Data validation
+- `express` - Web framework
+- `ws` - WebSocket protocol
+- `@anthropic-ai/sdk` (optional) - SDK for Claude API
+- `zod` or `joi` - Data validation
 
 ---
 
@@ -455,7 +455,7 @@ workspace/
 | Metric | Value |
 |--------|-------|
 | Lines of Code (TypeScript) | ~900 |
-| Lines of Code (Python) | ~750 |
+| Lines of Code (Node.js) | ~750 |
 | Unit/Integration Tests | 35 |
 | Test Coverage | Comprehensive |
 | Test Pass Rate | 100% (715/715) |

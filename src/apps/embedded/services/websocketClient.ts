@@ -13,12 +13,27 @@
 import { logError } from './errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
 
-type EventHandler = (data: any) => void;
-
 interface WebSocketMessage {
   type: string;
   [key: string]: unknown;
 }
+
+/**
+ * Typed event payloads for WebSocket events
+ */
+interface WebSocketEventMap {
+  'connect': Record<string, unknown>;
+  'disconnect': Record<string, unknown>;
+  'message': WebSocketMessage;
+  'error': { error: Event };
+  'close': { code: number; reason: string };
+  'reconnecting': { attempt: number; delay: number };
+  'rest-mode': Record<string, unknown>;
+  'max-reconnect-attempts': { attempts: number; isTest?: boolean };
+  [key: string]: unknown; // Allow additional event types for messages
+}
+
+type EventHandler<T = unknown> = (data: T) => void;
 
 /**
  * Interface for WebSocket client - implemented by both real WebSocketClient and mocks
@@ -29,8 +44,8 @@ interface WebSocketClientInterface {
   disconnect(): void;
   subscribe(topics: string[]): void;
   send(message: WebSocketMessage): boolean;
-  on(event: string, handler: EventHandler): void;
-  off(event: string, handler: EventHandler): void;
+  on<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void;
+  off<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void;
   readonly isConnected: boolean;
   readonly connectionState: 'connecting' | 'connected' | 'disconnected' | 'reconnecting';
   readonly transportMode: 'websocket' | 'rest' | 'detecting';
@@ -50,7 +65,7 @@ export class WebSocketClient implements WebSocketClientInterface {
   private reconnectTimer: NodeJS.Timeout | null = null;
   private heartbeatTimer: NodeJS.Timeout | null = null;
   private heartbeatInterval: number = 30000; // 30 seconds
-  private eventHandlers: Map<string, Set<EventHandler>> = new Map();
+  private eventHandlers: Map<string, Set<EventHandler<unknown>>> = new Map();
   private isIntentionallyClosed: boolean = false;
   private subscribedTopics: string[] = [];
   private mode: 'websocket' | 'rest' | 'detecting' = 'detecting';
@@ -256,20 +271,20 @@ export class WebSocketClient implements WebSocketClientInterface {
   /**
    * Register an event handler
    */
-  on(event: string, handler: EventHandler): void {
-    if (!this.eventHandlers.has(event)) {
-      this.eventHandlers.set(event, new Set());
+  on<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void {
+    if (!this.eventHandlers.has(event as string)) {
+      this.eventHandlers.set(event as string, new Set());
     }
-    this.eventHandlers.get(event)!.add(handler);
+    this.eventHandlers.get(event as string)!.add(handler as EventHandler<unknown>);
   }
 
   /**
    * Unregister an event handler
    */
-  off(event: string, handler: EventHandler): void {
-    const handlers = this.eventHandlers.get(event);
+  off<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void {
+    const handlers = this.eventHandlers.get(event as string);
     if (handlers) {
-      handlers.delete(handler);
+      handlers.delete(handler as EventHandler<unknown>);
     }
   }
 
