@@ -39,6 +39,33 @@ const DEFAULT_STATE = {
   isMinimized: false,
 };
 
+// Create a safe storage wrapper that falls back gracefully when localStorage is unavailable
+const createStorage = () => {
+  // Check if we're in a browser environment with localStorage
+  if (typeof window !== 'undefined' && window.localStorage) {
+    return window.localStorage;
+  }
+
+  // Fallback storage for SSR/test environments
+  let memoryStorage: Record<string, string> = {};
+  return {
+    getItem: (key: string) => memoryStorage[key] || null,
+    setItem: (key: string, value: string) => {
+      memoryStorage[key] = value;
+    },
+    removeItem: (key: string) => {
+      delete memoryStorage[key];
+    },
+    clear: () => {
+      memoryStorage = {};
+    },
+    get length() {
+      return Object.keys(memoryStorage).length;
+    },
+    key: (index: number) => Object.keys(memoryStorage)[index] || null,
+  };
+};
+
 export const useFloatingChatStore = create<FloatingChatState>()(
   persist(
     (set) => ({
@@ -62,6 +89,21 @@ export const useFloatingChatStore = create<FloatingChatState>()(
     }),
     {
       name: 'dr-floating-chat-state',
+      storage: {
+        getItem: (key) => {
+          const storage = createStorage();
+          const value = storage.getItem(key);
+          return value ? JSON.parse(value) : null;
+        },
+        setItem: (key, value) => {
+          const storage = createStorage();
+          storage.setItem(key, JSON.stringify(value));
+        },
+        removeItem: (key) => {
+          const storage = createStorage();
+          storage.removeItem(key);
+        },
+      },
       partialize: (state) => ({
         isOpen: state.isOpen,
         position: state.position,

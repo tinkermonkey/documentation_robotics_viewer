@@ -70,44 +70,46 @@ export function logError(
   // 2. Sentry (if configured)
   // 3. Can be accessed via browser devtools -> Application -> Session Storage
 
-  // Send to Sentry if configured
-  try {
-    const Sentry = (window as any).__SENTRY__;
-    if (Sentry && Sentry.captureException) {
-      const error = originalError || new Error(message);
-      (error as any).errorId = errorId;
-      (error as any).context = context;
-      (error as any).category = classified.category;
-      (error as any).severity = classified.severity;
-      (error as any).isExpectedFailure = classified.isExpectedFailure;
-      (error as any).isTransient = classified.isTransient;
-      (error as any).recoveryStrategy = classified.recoveryStrategy;
+  // Send to Sentry if configured (only in browser environment)
+  if (typeof window !== 'undefined') {
+    try {
+      const Sentry = (window as any).__SENTRY__;
+      if (Sentry && Sentry.captureException) {
+        const error = originalError || new Error(message);
+        (error as any).errorId = errorId;
+        (error as any).context = context;
+        (error as any).category = classified.category;
+        (error as any).severity = classified.severity;
+        (error as any).isExpectedFailure = classified.isExpectedFailure;
+        (error as any).isTransient = classified.isTransient;
+        (error as any).recoveryStrategy = classified.recoveryStrategy;
 
-      // Set Sentry tags for filtering/grouping
-      Sentry.setTag('error_id', errorId);
-      Sentry.setTag('error_category', classified.category);
-      Sentry.setTag('error_severity', classified.severity);
-      Sentry.setTag('is_expected', String(classified.isExpectedFailure));
-      Sentry.setTag('is_transient', String(classified.isTransient));
+        // Set Sentry tags for filtering/grouping
+        Sentry.setTag('error_id', errorId);
+        Sentry.setTag('error_category', classified.category);
+        Sentry.setTag('error_severity', classified.severity);
+        Sentry.setTag('is_expected', String(classified.isExpectedFailure));
+        Sentry.setTag('is_transient', String(classified.isTransient));
 
-      Sentry.captureException(error);
+        Sentry.captureException(error);
+      }
+    } catch (sentryError) {
+      // Log Sentry capture failures to prevent silent debugging black hole
+      console.warn(
+        '[ErrorTracker] Failed to capture error in Sentry:',
+        sentryError instanceof Error ? sentryError.message : String(sentryError),
+        { errorId, message }
+      );
     }
-  } catch (sentryError) {
-    // Log Sentry capture failures to prevent silent debugging black hole
-    console.warn(
-      '[ErrorTracker] Failed to capture error in Sentry:',
-      sentryError instanceof Error ? sentryError.message : String(sentryError),
-      { errorId, message }
-    );
   }
 
-  // Store in session storage for debugging (keep last 50 errors)
+  // Store in session storage for debugging (keep last 50 errors, only in browser environment)
   // CRITICAL: Skip storage operations for SESSION_STORAGE_PARSE_ERROR to prevent circular dependency
   // when the storage system itself is corrupted. If we attempted to store this error to the same
   // corrupted storage, it would trigger another parse error, leading to infinite recursion.
   // This guard ensures SESSION_STORAGE_PARSE_ERROR can be logged and reported without triggering
   // recursive failures.
-  if (errorId !== ERROR_IDS.SESSION_STORAGE_PARSE_ERROR) {
+  if (errorId !== ERROR_IDS.SESSION_STORAGE_PARSE_ERROR && typeof sessionStorage !== 'undefined') {
     try {
       const storageKey = 'app:error_log';
       const existing = sessionStorage.getItem(storageKey);
@@ -147,31 +149,33 @@ export function logWarning(
 
   console.warn(message, context ? context : '');
 
-  // Store in session storage for debugging
-  try {
-    const storageKey = 'app:warning_log';
-    const existing = sessionStorage.getItem(storageKey);
-    const logs = existing ? JSON.parse(existing) : [];
+  // Store in session storage for debugging (only in browser environment)
+  if (typeof sessionStorage !== 'undefined') {
+    try {
+      const storageKey = 'app:warning_log';
+      const existing = sessionStorage.getItem(storageKey);
+      const logs = existing ? JSON.parse(existing) : [];
 
-    logs.push({
-      message,
-      timestamp,
-      context: context || {},
-    });
+      logs.push({
+        message,
+        timestamp,
+        context: context || {},
+      });
 
-    // Keep only last 50 warnings
-    if (logs.length > 50) {
-      logs.shift();
+      // Keep only last 50 warnings
+      if (logs.length > 50) {
+        logs.shift();
+      }
+
+      sessionStorage.setItem(storageKey, JSON.stringify(logs));
+    } catch (storageError) {
+      // Log storage failures to maintain visibility of storage issues
+      console.warn(
+        '[ErrorTracker] Failed to store warning log in session storage:',
+        storageError instanceof Error ? storageError.message : String(storageError),
+        { message }
+      );
     }
-
-    sessionStorage.setItem(storageKey, JSON.stringify(logs));
-  } catch (storageError) {
-    // Log storage failures to maintain visibility of storage issues
-    console.warn(
-      '[ErrorTracker] Failed to store warning log in session storage:',
-      storageError instanceof Error ? storageError.message : String(storageError),
-      { message }
-    );
   }
 }
 
@@ -179,6 +183,10 @@ export function logWarning(
  * Get all logged errors from session storage
  */
 export function getErrorLog(): ErrorLogEntry[] {
+  if (typeof sessionStorage === 'undefined') {
+    return [];
+  }
+
   try {
     const storageKey = 'app:error_log';
     const existing = sessionStorage.getItem(storageKey);
@@ -204,6 +212,10 @@ export function getErrorLog(): ErrorLogEntry[] {
  * Clear all logged errors from session storage
  */
 export function clearErrorLog(): void {
+  if (typeof sessionStorage === 'undefined') {
+    return;
+  }
+
   try {
     sessionStorage.removeItem('app:error_log');
     sessionStorage.removeItem('app:warning_log');
@@ -254,6 +266,10 @@ export function getRetryDelay(
  * Filter logged errors by category
  */
 export function getErrorsByCategory(category: ExceptionCategory): ErrorLogEntry[] {
+  if (typeof sessionStorage === 'undefined') {
+    return [];
+  }
+
   try {
     const storageKey = 'app:error_log';
     const existing = sessionStorage.getItem(storageKey);
@@ -280,6 +296,10 @@ export function getErrorsByCategory(category: ExceptionCategory): ErrorLogEntry[
  * Filter logged errors by severity
  */
 export function getErrorsBySeverity(severity: ExceptionSeverity): ErrorLogEntry[] {
+  if (typeof sessionStorage === 'undefined') {
+    return [];
+  }
+
   try {
     const storageKey = 'app:error_log';
     const existing = sessionStorage.getItem(storageKey);
@@ -306,6 +326,10 @@ export function getErrorsBySeverity(severity: ExceptionSeverity): ErrorLogEntry[
  * Get all bugs (unexpected/programming errors) from logs
  */
 export function getBugLogs(): ErrorLogEntry[] {
+  if (typeof sessionStorage === 'undefined') {
+    return [];
+  }
+
   try {
     const storageKey = 'app:error_log';
     const existing = sessionStorage.getItem(storageKey);
@@ -331,6 +355,10 @@ export function getBugLogs(): ErrorLogEntry[] {
  * Get all expected failures from logs
  */
 export function getExpectedFailureLogs(): ErrorLogEntry[] {
+  if (typeof sessionStorage === 'undefined') {
+    return [];
+  }
+
   try {
     const storageKey = 'app:error_log';
     const existing = sessionStorage.getItem(storageKey);
