@@ -173,7 +173,7 @@ export const handlers = [
       return HttpResponse.json({ error: 'Not found' }, { status: 404 });
     }
     mockAnnotations.splice(index, 1);
-    return HttpResponse.json(null, { status: 204 });
+    return new HttpResponse(null, { status: 204 });
   })
 ];
 

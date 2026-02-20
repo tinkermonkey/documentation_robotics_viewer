@@ -1,6 +1,5 @@
 import JSZip from 'jszip';
 import { Release } from '../types';
-import { logError } from '../../apps/embedded/services/errorTracker';
 
 /**
  * Service for interacting with GitHub releases via backend server
@@ -33,7 +32,9 @@ export class GitHubService {
 
       return await response.json();
     } catch (error) {
-      logError('GitHubService.getAvailableReleases', error, { url });
+      // Note: Core services use console.error for logging to avoid dependencies on embedded services.
+      // For structured error tracking with Sentry integration, use errorTracker from embedded layer.
+      console.error('GitHubService.getAvailableReleases error:', { url, error });
       // Provide helpful error for network failures
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error(
@@ -70,7 +71,9 @@ export class GitHubService {
 
       return await response.json();
     } catch (error) {
-      logError('GitHubService.getLatestSpecRelease', error, { url });
+      // Note: Core services use console.error for logging to avoid dependencies on embedded services.
+      // For structured error tracking with Sentry integration, use errorTracker from embedded layer.
+      console.error('GitHubService.getLatestSpecRelease error:', { url, error });
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error(
           `Unable to connect to backend server at ${this.serverUrl}. ` +
@@ -114,7 +117,9 @@ export class GitHubService {
 
       return schemas;
     } catch (error) {
-      logError('GitHubService.downloadSchemas', error, { version });
+      // Note: Core services use console.error for logging to avoid dependencies on embedded services.
+      // For structured error tracking with Sentry integration, use errorTracker from embedded layer.
+      console.error('GitHubService.downloadSchemas error:', { version, error });
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error(
           `Unable to connect to backend server at ${this.serverUrl}. ` +

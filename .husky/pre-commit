@@ -19,7 +19,11 @@ fi
 # Run the sync script (will fail if no network)
 if ! npm run sync:api-spec; then
   echo "⚠️  Failed to sync API spec (network unreachable)"
-  echo "   To proceed offline, run: HUSKY_OFFLINE=1 git commit"
+  echo "   To proceed offline, run:"
+  echo "     export HUSKY_OFFLINE=1"
+  echo "     git commit -m \"message\""
+  echo "   or in one line:"
+  echo "     HUSKY_OFFLINE=1 git commit -m \"message\""
   exit 1
 fi
 
