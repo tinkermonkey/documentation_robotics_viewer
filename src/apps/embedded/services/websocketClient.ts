@@ -14,6 +14,13 @@ import { logError } from './errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
 import type { WebSocketMessage, EventHandler, WebSocketEventMap, WebSocketSendMessage } from '../types/websocket';
 
+// WebSocket ready state constants (mirrors WebSocket.CONNECTING/OPEN/CLOSING/CLOSED)
+// Defined locally so they work in test environments where the global WebSocket may not be available
+const WS_CONNECTING = 0;
+const WS_OPEN = 1;
+const WS_CLOSING = 2;
+const WS_CLOSED = 3;
+
 /**
  * Interface for WebSocket client - implemented by both real WebSocketClient and mocks
  */
@@ -86,7 +93,7 @@ export class WebSocketClient implements WebSocketClientInterface {
    * Connect to the WebSocket server
    */
   connect(): void {
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+    if (this.ws && this.ws.readyState === WS_OPEN) {
       console.log('[WebSocket] Already connected');
       return;
     }
@@ -120,7 +127,7 @@ export class WebSocketClient implements WebSocketClientInterface {
       // Set connection timeout for initial detection
       if (this.mode === 'detecting') {
         this.connectionTimeout = setTimeout(() => {
-          if (this.ws && this.ws.readyState !== WebSocket.OPEN) {
+          if (this.ws && this.ws.readyState !== WS_OPEN) {
             console.log('[WebSocket] Connection timeout during detection phase');
             this.ws.close();
           }
@@ -167,7 +174,7 @@ export class WebSocketClient implements WebSocketClientInterface {
       return;
     }
 
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+    if (this.ws && this.ws.readyState === WS_OPEN) {
       console.log('[WebSocket] TEST: Forcing close event');
       // Trigger onclose handler by closing the connection
       this.ws.close(1000, 'Test-triggered close');
@@ -219,7 +226,7 @@ export class WebSocketClient implements WebSocketClientInterface {
   subscribe(topics: string[]): void {
     this.subscribedTopics = topics;
 
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+    if (this.ws && this.ws.readyState === WS_OPEN) {
       this.send({
         type: 'subscribe',
         topics: topics
@@ -232,7 +239,7 @@ export class WebSocketClient implements WebSocketClientInterface {
    * @returns true if message was sent, false if connection is not open
    */
   send(message: WebSocketSendMessage): boolean {
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+    if (this.ws && this.ws.readyState === WS_OPEN) {
       try {
         this.ws.send(JSON.stringify(message));
         return true;
@@ -284,7 +291,7 @@ export class WebSocketClient implements WebSocketClientInterface {
    * Get connection state
    */
   get isConnected(): boolean {
-    return this.ws !== null && this.ws.readyState === WebSocket.OPEN;
+    return this.ws !== null && this.ws.readyState === WS_OPEN;
   }
 
   /**
@@ -296,12 +303,12 @@ export class WebSocketClient implements WebSocketClientInterface {
     }
 
     switch (this.ws.readyState) {
-      case WebSocket.CONNECTING:
+      case WS_CONNECTING:
         return 'connecting';
-      case WebSocket.OPEN:
+      case WS_OPEN:
         return 'connected';
-      case WebSocket.CLOSING:
-      case WebSocket.CLOSED:
+      case WS_CLOSING:
+      case WS_CLOSED:
         return this.reconnectTimer ? 'reconnecting' : 'disconnected';
       default:
         return 'disconnected';
@@ -495,7 +502,7 @@ export class WebSocketClient implements WebSocketClientInterface {
     this.stopHeartbeat();
 
     this.heartbeatTimer = setInterval(() => {
-      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      if (this.ws && this.ws.readyState === WS_OPEN) {
         this.send({ type: 'ping' });
       }
     }, this.heartbeatInterval);
