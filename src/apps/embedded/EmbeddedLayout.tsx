@@ -40,7 +40,6 @@ const routeMetadata: Record<string, { subTabs?: SubTab[] }> = {
 };
 
 export default function EmbeddedLayout() {
-  const connectionStore = useConnectionStore();
   const { token } = useAuthStore();
   const { toggle: toggleChat, isOpen: isChatOpen } = useFloatingChatStore();
   const matches = useMatches();

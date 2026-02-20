@@ -478,6 +478,15 @@ export class EmbeddedDataLoader {
 
     for (const [layerId, layer] of Object.entries(modelData.layers || {})) {
       if (typeof layer !== 'object' || layer === null) {
+        logError(
+          ERROR_IDS.DATA_NORMALIZATION_FAILED,
+          'Invalid layer object encountered - skipping layer',
+          {
+            layerId,
+            layerType: typeof layer,
+            context: 'normalizeModel layer validation'
+          }
+        );
         continue;
       }
       const layerObj = layer as Record<string, unknown>;
