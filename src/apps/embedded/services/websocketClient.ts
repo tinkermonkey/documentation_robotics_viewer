@@ -610,7 +610,11 @@ if (typeof window !== 'undefined') {
     subscribe: () => {},
     send: () => {
       // Explicitly fail sends in mock environment
-      console.error('[WebSocketClient] Cannot send message in SSR/Node.js environment - use REST API instead');
+      logError(
+        ERROR_IDS.WS_SEND_FAILED,
+        'Cannot send message in SSR/Node.js environment - use REST API instead',
+        { environment: 'SSR/Node.js' }
+      );
       return false;
     },
     on: (event: string, handler: EventHandler<unknown>) => {

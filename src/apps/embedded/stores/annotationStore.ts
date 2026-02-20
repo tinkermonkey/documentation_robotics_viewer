@@ -276,23 +276,13 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
       const rollback = () => {
         // Rollback optimistic delete - restore at original position if not already in the store
         if (annotationToRestore && !get().annotations.find(ann => ann.id === id)) {
-          try {
-            set((state) => {
-              const restored = [...state.annotations];
-              // Insert at original position (or at end if position is out of bounds)
-              const insertPos = Math.min(annotationIndex, restored.length);
-              restored.splice(insertPos, 0, annotationToRestore);
-              return { annotations: restored };
-            });
-          } catch (rollbackErr) {
-            // Rollback failed - log the error but don't suppress the original error
-            logError(
-              ERROR_IDS.ANNOTATION_DELETE_ROLLBACK_FAILED,
-              'Failed to rollback deleted annotation',
-              { annotationId: id, rollbackError: rollbackErr instanceof Error ? rollbackErr.message : String(rollbackErr) },
-              rollbackErr instanceof Error ? rollbackErr : new Error(String(rollbackErr))
-            );
-          }
+          set((state) => {
+            const restored = [...state.annotations];
+            // Insert at original position (or at end if position is out of bounds)
+            const insertPos = Math.min(annotationIndex, restored.length);
+            restored.splice(insertPos, 0, annotationToRestore);
+            return { annotations: restored };
+          });
         }
       };
       handleAnnotationError(

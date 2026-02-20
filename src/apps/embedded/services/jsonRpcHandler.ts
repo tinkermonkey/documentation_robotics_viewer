@@ -515,11 +515,6 @@ export class JsonRpcHandler {
       return true;
     }
 
-    // Request: has method and id (not handled by this handler, but valid)
-    if (hasMethod && hasId) {
-      return true;
-    }
-
     return false;
   }
 }

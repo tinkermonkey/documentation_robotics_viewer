@@ -121,9 +121,6 @@ export interface SchemaDefinition {
   definitions?: Record<string, SchemaDefinition>;
   // JSON Schema Draft 2019-09+ style definitions (modern standard)
   $defs?: Record<string, SchemaDefinition>;
-  // NOTE: The index signature [key: string]: unknown allows JSON Schema properties not listed above.
-  // This is necessary for JSON Schema compatibility but is a TypeScript trade-off: accessing properties
-  // via bracket notation may lose type information. Access known properties directly when possible.
   [key: string]: unknown;
 }
 
@@ -168,6 +165,16 @@ export interface ChangesetMetadata {
 }
 
 /**
+ * Base fields common to all changeset operations
+ */
+interface ChangesetChangeBase {
+  timestamp: string;
+  element_id: string;
+  layer: string;
+  element_type: string;
+}
+
+/**
  * ChangesetChange - Discriminated union type for changeset operations
  *
  * NOTE: Type design
@@ -182,36 +189,24 @@ export interface ChangesetMetadata {
  * preferred for runtime type checking. See validateChangesetChanges() for usage.
  */
 export type ChangesetChange =
-  | {
-      timestamp: string;
+  | (ChangesetChangeBase & {
       operation: 'add';
-      element_id: string;
-      layer: string;
-      element_type: string;
       data: Record<string, unknown>;
       before?: never;
       after?: never;
-    }
-  | {
-      timestamp: string;
+    })
+  | (ChangesetChangeBase & {
       operation: 'update';
-      element_id: string;
-      layer: string;
-      element_type: string;
       before: Record<string, unknown>;
       after: Record<string, unknown>;
       data?: never;
-    }
-  | {
-      timestamp: string;
+    })
+  | (ChangesetChangeBase & {
       operation: 'delete';
-      element_id: string;
-      layer: string;
-      element_type: string;
       before: Record<string, unknown>;
       data?: never;
       after?: never;
-    };
+    });
 
 /**
  * Type guard for ChangesetChange discriminated union
@@ -316,14 +311,10 @@ export class EmbeddedDataLoader {
    * Check server health
    */
   async healthCheck(): Promise<{ status: string; version: string }> {
-    const response = await fetch('/health', {
-      headers: getAuthHeaders(),
-      credentials: 'include'
-    });
-
-    await ensureOk(response, 'health check');
-
-    return await response.json();
+    return this.fetchJson<{ status: string; version: string }>(
+      '/health',
+      'health check'
+    );
   }
 
   /**
@@ -360,24 +351,22 @@ export class EmbeddedDataLoader {
       hasRelationshipCatalog: !!relationshipCatalog
     });
 
-    // Exclude snake_case versions to ensure consistent interface
-    const { schema_count: _, relationship_catalog: __, description, source, manifest, ...rest } = data;
     const result: SpecDataResponse = {
-      version: rest.version ?? '',
-      type: rest.type ?? '',
-      schemas: (rest.schemas ?? {}) as Record<string, SchemaDefinition>,
+      version: data.version ?? '',
+      type: data.type ?? '',
+      schemas: (data.schemas ?? {}) as Record<string, SchemaDefinition>,
       schemaCount,
       relationshipCatalog
     };
 
-    if (typeof description === 'string') {
-      result.description = description;
+    if (typeof data.description === 'string') {
+      result.description = data.description;
     }
-    if (typeof source === 'string') {
-      result.source = source;
+    if (typeof data.source === 'string') {
+      result.source = data.source;
     }
-    if (manifest && typeof manifest === 'object') {
-      result.manifest = manifest as SchemaManifest;
+    if (data.manifest && typeof data.manifest === 'object') {
+      result.manifest = data.manifest as SchemaManifest;
     }
 
     return result;
@@ -656,17 +645,7 @@ export class EmbeddedDataLoader {
 
     // Validate changes array at runtime
     if (data.changes && Array.isArray(data.changes.changes)) {
-      try {
-        validateChangesetChanges(data.changes.changes);
-      } catch (validationError) {
-        throw new Error(
-          `Invalid changeset format: ${
-            validationError instanceof Error
-              ? validationError.message
-              : String(validationError)
-          }`
-        );
-      }
+      validateChangesetChanges(data.changes.changes);
     }
 
     console.log(

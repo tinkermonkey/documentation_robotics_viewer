@@ -221,14 +221,14 @@ test.describe('JsonRpcHandler', () => {
       expect((handler as any).isValidJsonRpcMessage(message)).toBe(true);
     });
 
-    test('should accept valid request with method and id', () => {
+    test('should reject request message with method and id', () => {
       const message = {
         jsonrpc: '2.0',
         id: 1,
         method: 'add',
         params: [2, 3]
       };
-      expect((handler as any).isValidJsonRpcMessage(message)).toBe(true);
+      expect((handler as any).isValidJsonRpcMessage(message)).toBe(false);
     });
 
     test('should reject non-object messages', () => {

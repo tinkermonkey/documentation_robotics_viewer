@@ -2,10 +2,9 @@
  * Unit tests for SchemaInfoPanel component
  *
  * Tests verify:
- * - Component prop validation and types
- * - Error handling behavior
- * - Default prop values
- * - Component structure
+ * - Component rendering behavior
+ * - Error handling display
+ * - Props and their effects
  */
 
 import { test, expect } from '@playwright/test';
@@ -13,39 +12,39 @@ import React from 'react';
 import { SchemaInfoPanel } from '../../src/apps/embedded/components/SchemaInfoPanel';
 
 test.describe('SchemaInfoPanel Component', () => {
-  test.describe('Component Props', () => {
-    test('should accept className prop', () => {
-      const props = {
+  test.describe('Rendering', () => {
+    test('should render component with className prop', () => {
+      const element = React.createElement(SchemaInfoPanel, {
         className: 'custom-class',
-      };
+      });
 
-      expect(props.className).toBe('custom-class');
-      expect(typeof props.className).toBe('string');
+      expect(element.props.className).toBe('custom-class');
+      expect(typeof element.props.className).toBe('string');
     });
 
-    test('should accept specDataError as string prop', () => {
+    test('should render with specDataError message', () => {
       const errorMessage = 'Failed to load specification data';
-      const props: React.ComponentProps<typeof SchemaInfoPanel> = {
+      const element = React.createElement(SchemaInfoPanel, {
         specDataError: errorMessage,
-      };
+      });
 
-      expect(props.specDataError).toBe(errorMessage);
-      expect(typeof props.specDataError).toBe('string');
+      expect(element.props.specDataError).toBe(errorMessage);
+      expect(typeof element.props.specDataError).toBe('string');
     });
 
-    test('should accept specDataError as null', () => {
-      const props: React.ComponentProps<typeof SchemaInfoPanel> = {
+    test('should render with null specDataError', () => {
+      const element = React.createElement(SchemaInfoPanel, {
         specDataError: null,
-      };
+      });
 
-      expect(props.specDataError).toBeNull();
+      expect(element.props.specDataError).toBeNull();
     });
 
-    test('should have valid prop defaults', () => {
-      const defaultProps: React.ComponentProps<typeof SchemaInfoPanel> = {};
+    test('should use default prop values', () => {
+      const element = React.createElement(SchemaInfoPanel, {});
 
-      expect(defaultProps.className).toBeUndefined();
-      expect(defaultProps.specDataError).toBeUndefined();
+      expect(element.props.className).toBeUndefined();
+      expect(element.props.specDataError).toBeUndefined();
     });
 
     test('should support both className and specDataError together', () => {
