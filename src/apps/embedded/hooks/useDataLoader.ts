@@ -139,6 +139,19 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
           onError(err instanceof Error ? err : new Error(errorMessage));
         } catch (errorHandlerError) {
           console.error('[useDataLoader] onError callback failed:', errorHandlerError);
+          // Track callback failure for observability and surface to user
+          const callbackErr = errorHandlerError instanceof Error ? errorHandlerError : new Error(String(errorHandlerError));
+          const callbackErrorMessage = `Callback failed: ${callbackErr.message}`;
+          setCallbackError(callbackErrorMessage);
+          logError(
+            ERROR_IDS.DATA_LOADER_ERROR_CALLBACK_FAILED,
+            callbackErrorMessage,
+            {
+              callbackName: onError.name || 'anonymous',
+              message: callbackErr.message
+            },
+            callbackErr
+          );
         }
       }
     } finally {

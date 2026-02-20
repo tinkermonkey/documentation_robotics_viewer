@@ -81,7 +81,7 @@ export class WebSocketClient {
   constructor(url: string)
   connect(): Promise<void>
   disconnect(): void
-  send(message: WebSocketMessage): void
+  send(message: WebSocketMessage): boolean
   on(event: string, handler: Function): void
   isConnected(): boolean
 }
