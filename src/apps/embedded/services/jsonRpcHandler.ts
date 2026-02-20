@@ -61,7 +61,13 @@ export class JsonRpcHandler {
       this.cachedWebSocketClient = module.websocketClient;
       return this.cachedWebSocketClient;
     } catch (error) {
-      console.warn('[JsonRpcHandler] Failed to load WebSocket client:', error);
+      const errorMessage = 'Failed to load WebSocket client - JSON-RPC communication will not be available';
+      logError(
+        ERROR_IDS.JSONRPC_WEBSOCKET_LOAD_FAILED,
+        errorMessage,
+        {},
+        error instanceof Error ? error : new Error(String(error))
+      );
       throw error;
     }
   }
@@ -326,8 +332,12 @@ export class JsonRpcHandler {
     const pendingRequest = this.pendingRequests.get(id);
 
     if (!pendingRequest) {
-      console.warn(
-        `[JsonRpcHandler] Received response for unknown request ID: ${id}`
+      const errorMessage = `Received JSON-RPC response for unknown request ID: ${id}. This may indicate a timing issue or protocol error.`;
+      logError(
+        ERROR_IDS.JSONRPC_UNKNOWN_RESPONSE_ID,
+        errorMessage,
+        { responseId: id },
+        new Error(errorMessage)
       );
       return;
     }

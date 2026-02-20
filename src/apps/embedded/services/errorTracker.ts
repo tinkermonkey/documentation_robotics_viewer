@@ -102,26 +102,30 @@ export function logError(
   }
 
   // Store in session storage for debugging (keep last 50 errors)
-  try {
-    const storageKey = 'app:error_log';
-    const existing = sessionStorage.getItem(storageKey);
-    const logs = existing ? JSON.parse(existing) : [];
+  // Skip storage operations for SESSION_STORAGE_PARSE_ERROR to prevent circular dependency
+  // when the storage system itself is corrupted
+  if (errorId !== ERROR_IDS.SESSION_STORAGE_PARSE_ERROR) {
+    try {
+      const storageKey = 'app:error_log';
+      const existing = sessionStorage.getItem(storageKey);
+      const logs = existing ? JSON.parse(existing) : [];
 
-    logs.push(errorLog);
+      logs.push(errorLog);
 
-    // Keep only last 50 errors
-    if (logs.length > 50) {
-      logs.shift();
+      // Keep only last 50 errors
+      if (logs.length > 50) {
+        logs.shift();
+      }
+
+      sessionStorage.setItem(storageKey, JSON.stringify(logs));
+    } catch (storageError) {
+      // Log storage failures to prevent silent loss of error tracking
+      console.warn(
+        '[ErrorTracker] Failed to store error log in session storage:',
+        storageError instanceof Error ? storageError.message : String(storageError),
+        { errorId, message }
+      );
     }
-
-    sessionStorage.setItem(storageKey, JSON.stringify(logs));
-  } catch (storageError) {
-    // Log storage failures to prevent silent loss of error tracking
-    console.warn(
-      '[ErrorTracker] Failed to store error log in session storage:',
-      storageError instanceof Error ? storageError.message : String(storageError),
-      { errorId, message }
-    );
   }
 
   return classified;

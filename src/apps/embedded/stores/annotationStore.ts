@@ -262,7 +262,12 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
       if (annotationToRestore && !get().annotations.find(ann => ann.id === id)) {
         get().addAnnotation(annotationToRestore);
       }
-      console.error('[AnnotationStore] Failed to delete annotation:', err);
+      logError(
+        ERROR_IDS.ANNOTATION_DELETE_FAILED,
+        errorMessage,
+        { annotationId: id },
+        err instanceof Error ? err : new Error(String(err))
+      );
       throw err;
     }
   },
