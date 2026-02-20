@@ -4,6 +4,10 @@
  *
  * Generated types: Use `npm run client:generate` to regenerate from OpenAPI spec
  * These types ensure compile-time safety when calling API endpoints
+ *
+ * Integration Status: Optional. The embeddedDataLoader.ts currently uses manual fetch()
+ * calls with inline types. This client is available as a type-safe alternative for future
+ * integration. To integrate, replace embeddedDataLoader fetch calls with client methods.
  */
 
 import type { paths } from '../types/api-client';
@@ -37,8 +41,12 @@ export class TypedRestApiClient {
   private baseUrl: string;
   private token: string | null = null;
 
-  constructor(baseUrl: string = 'http://localhost:8080', token: string | null = null) {
-    this.baseUrl = baseUrl;
+  constructor(baseUrl?: string, token: string | null = null) {
+    // Use environment variable for API URL, with fallback to localhost
+    this.baseUrl = baseUrl ||
+      (typeof process !== 'undefined' && process.env.DR_API_URL) ||
+      (typeof import.meta !== 'undefined' && import.meta.env.VITE_DR_API_URL) ||
+      'http://localhost:8080';
     this.token = token;
   }
 
@@ -133,16 +141,11 @@ export class TypedRestApiClient {
       });
     }
 
-    // Add token to query params if provided (for WebSocket compatibility)
-    if (this.token) {
-      url.searchParams.set('token', this.token);
-    }
-
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
 
-    // Also add token to Authorization header for standard REST
+    // Add token to Authorization header (standard REST convention)
     if (this.token) {
       headers['Authorization'] = `Bearer ${this.token}`;
     }

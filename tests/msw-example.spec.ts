@@ -53,7 +53,7 @@ test.describe('API Client - MSW Mocked Responses (Node.js)', () => {
   test('should handle health check request', async () => {
     // This test demonstrates calling an API that would normally hit the DR CLI server
     // But MSW intercepts it and returns mock data instead
-    const response = await fetch('http://localhost:8080/api/health');
+    const response = await fetch('http://localhost:8080/health');
     const data = await response.json() as Record<string, unknown>;
 
     expect(response.status).toBe(200);
@@ -81,7 +81,7 @@ test.describe('API Client - MSW Mocked Responses (Node.js)', () => {
   test('should handle error scenarios with handler override', async () => {
     // Override the health check handler to return an error
     server.use(
-      http.get('http://localhost:8080/api/health', () => {
+      http.get('http://localhost:8080/health', () => {
         return HttpResponse.json(
           { error: 'Service temporarily unavailable' },
           { status: 503 }
@@ -89,7 +89,7 @@ test.describe('API Client - MSW Mocked Responses (Node.js)', () => {
       })
     );
 
-    const response = await fetch('http://localhost:8080/api/health');
+    const response = await fetch('http://localhost:8080/health');
     expect(response.status).toBe(503);
     const data = await response.json() as Record<string, unknown>;
     expect(data).toHaveProperty('error');

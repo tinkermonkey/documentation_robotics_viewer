@@ -61,7 +61,7 @@ const mockAnnotations: Annotation[] = [];
  */
 export const handlers = [
   // Health check endpoint
-  http.get('http://localhost:8080/api/health', () => {
+  http.get('http://localhost:8080/health', () => {
     return HttpResponse.json({
       status: 'ok',
       timestamp: new Date().toISOString(),
@@ -74,15 +74,9 @@ export const handlers = [
     return HttpResponse.json(mockModelData);
   }),
 
-  // Get bundled schemas
-  http.get('http://localhost:8080/api/schemas', () => {
+  // Get bundled API spec and schemas
+  http.get('http://localhost:8080/api/spec', () => {
     return HttpResponse.json(mockSchemas);
-  }),
-
-  // Get a specific schema
-  http.get('http://localhost:8080/api/schemas/:layer', ({ params }) => {
-    const layer = String(params.layer);
-    return HttpResponse.json(mockSchemas[layer] || {});
   }),
 
   // Get changesets

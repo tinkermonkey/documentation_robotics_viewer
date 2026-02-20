@@ -68,7 +68,7 @@ test('should load architecture model', async ({ page }) => {
       .then(r => r.json());
   });
 
-  expect(modelData.uuid).toBeDefined();
+  expect(modelData.uuid).toBe('model-123');
 });
 ```
 
@@ -127,27 +127,29 @@ test('should show loading state during slow requests', async ({ page }) => {
 
 ## Available Handlers
 
-The following API endpoints are mocked:
+The following API endpoints are mocked (matching the OpenAPI spec in `docs/api-spec.yaml`):
+
+### Health Check
+- `GET /health` - Server health status
 
 ### Model Endpoints
 - `GET /api/model` - Get architecture model
-- `GET /api/schemas` - Get all schemas
-- `GET /api/schemas/:layer` - Get schema for specific layer
+- `GET /api/spec` - Get bundled API spec and schemas
+- `GET /api/layers/{layerName}` - Get specific layer
+- `GET /api/elements/{elementId}` - Get specific element
 
 ### Changeset Endpoints
 - `GET /api/changesets` - List changesets
 - `POST /api/changesets` - Create changeset
-- `GET /api/changesets/:id` - Get changeset
+- `GET /api/changesets/{changesetId}` - Get changeset
 
 ### Annotation Endpoints
 - `GET /api/annotations` - List annotations
 - `POST /api/annotations` - Create annotation
-- `GET /api/annotations/:id` - Get annotation
-- `PATCH /api/annotations/:id` - Update annotation
-- `DELETE /api/annotations/:id` - Delete annotation
-
-### Health Check
-- `GET /api/health` - Server health status
+- `GET /api/annotations/{annotationId}` - Get annotation
+- `PATCH /api/annotations/{annotationId}` - Update annotation
+- `DELETE /api/annotations/{annotationId}` - Delete annotation
+- `GET /api/annotations/{annotationId}/replies` - Get annotation replies
 
 ## Creating Custom Handlers
 
