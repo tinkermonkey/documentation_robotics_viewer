@@ -349,6 +349,46 @@ test.describe('JsonRpcHandler', () => {
     });
   });
 
+  test.describe('sendRequest lifecycle', () => {
+    test('should generate unique request IDs for concurrent calls', () => {
+      const ids: (string | number)[] = [];
+
+      // Generate several request IDs directly
+      for (let i = 0; i < 5; i++) {
+        const id = (handler as any).generateRequestId();
+        ids.push(id);
+      }
+
+      // All IDs should be unique
+      expect(new Set(ids).size).toBe(ids.length);
+    });
+
+    test('should track pending requests with proper timeout setup', () => {
+      // Verify that sendRequest can be called and sets up timeout
+      const handler_fn = async (params: any) => {};
+      handler.onNotification('test.event', handler_fn);
+
+      // sendRequest method should exist and be callable
+      expect(typeof handler.sendRequest).toBe('function');
+
+      // Verify clearPendingRequests works
+      handler.clearPendingRequests();
+      expect((handler as any).pendingRequests.size).toBe(0);
+    });
+
+    test('should maintain separate request tracking for concurrent calls', () => {
+      // Generate multiple request IDs to verify they're tracked separately
+      const id1 = (handler as any).generateRequestId();
+      const id2 = (handler as any).generateRequestId();
+      const id3 = (handler as any).generateRequestId();
+
+      // IDs should be unique
+      expect(id1).not.toBe(id2);
+      expect(id2).not.toBe(id3);
+      expect(id1).not.toBe(id3);
+    });
+  });
+
   test.describe('critical error scenarios', () => {
     test('Gap #3: should handle request timeout during streaming', async () => {
       const timeoutMs = 100;

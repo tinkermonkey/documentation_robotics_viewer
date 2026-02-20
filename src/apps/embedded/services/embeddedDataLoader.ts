@@ -6,6 +6,8 @@
 
 import { MetaModel, Layer, Reference, Relationship, ModelElement, ModelMetadata, LayerData, ElementVisual } from '../../../core/types';
 import { Annotation, AnnotationCreate, AnnotationUpdate } from '../types/annotations';
+import { logError } from './errorTracker';
+import { ERROR_IDS } from '@/constants/errorIds';
 
 const API_BASE = '/api';
 
@@ -518,10 +520,14 @@ export class EmbeddedDataLoader {
         // Skip non-object elements (null, numbers, strings, etc.)
         // Valid elements must be objects to have required properties
         if (typeof element !== 'object' || element === null) {
-          console.warn(
-            '[DataLoader] Skipping non-object element in normalizeElements (possible server data corruption):',
-            typeof element,
-            element
+          logError(
+            ERROR_IDS.DATA_NORMALIZATION_FAILED,
+            'Skipping non-object element in normalizeElements - possible server data corruption',
+            {
+              elementType: typeof element,
+              element,
+              context: 'normalizeElements filter'
+            }
           );
           return false;
         }
@@ -551,6 +557,17 @@ export class EmbeddedDataLoader {
     };
 
     if (typeof visual !== 'object' || visual === null) {
+      if (visual !== undefined) {
+        logError(
+          ERROR_IDS.DATA_NORMALIZATION_FAILED,
+          'Invalid visual data structure - using default visual values',
+          {
+            visualType: typeof visual,
+            visual,
+            context: 'normalizeVisual - null/invalid input'
+          }
+        );
+      }
       return defaultVisual;
     }
 
@@ -562,6 +579,15 @@ export class EmbeddedDataLoader {
       const pos = visualObj.position as Record<string, unknown>;
       if (typeof pos.x === 'number' && typeof pos.y === 'number') {
         position = { x: pos.x, y: pos.y };
+      } else {
+        logError(
+          ERROR_IDS.DATA_NORMALIZATION_FAILED,
+          'Invalid position data in visual properties - using default position',
+          {
+            position: visualObj.position,
+            context: 'normalizeVisual - position'
+          }
+        );
       }
     }
 
@@ -571,6 +597,15 @@ export class EmbeddedDataLoader {
       const sz = visualObj.size as Record<string, unknown>;
       if (typeof sz.width === 'number' && typeof sz.height === 'number') {
         size = { width: sz.width, height: sz.height };
+      } else {
+        logError(
+          ERROR_IDS.DATA_NORMALIZATION_FAILED,
+          'Invalid size data in visual properties - using default size',
+          {
+            size: visualObj.size,
+            context: 'normalizeVisual - size'
+          }
+        );
       }
     }
 

@@ -124,13 +124,16 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load data';
 
-      // CRITICAL: Add comprehensive error logging with context
-      console.error('[useDataLoader] Load failed:', {
-        error: err,
-        message: errorMessage,
-        loadFn: loadFn.name || 'anonymous',
-        stack: err instanceof Error ? err.stack : undefined,
-      });
+      // Track primary load failure with error tracking (Sentry integration)
+      logError(
+        ERROR_IDS.DATA_LOADER_LOAD_FAILED,
+        'Data loading failed',
+        {
+          message: errorMessage,
+          loadFn: loadFn.name || 'anonymous',
+        },
+        err instanceof Error ? err : new Error(errorMessage)
+      );
 
       setError(errorMessage);
 
