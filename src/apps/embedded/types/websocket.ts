@@ -36,11 +36,12 @@ export interface UnsubscribeMessage extends WebSocketMessage {
 /**
  * Messages that can be sent over WebSocket
  * Includes both WebSocket protocol messages (with type) and JSON-RPC messages
+ * Note: JSON-RPC messages must come before WebSocketMessage in union to prevent catch-all matching
  */
 export type WebSocketSendMessage =
-  | WebSocketMessage
   | { method: string; params?: unknown; jsonrpc?: string; id?: string | number }  // JsonRpcRequest
-  | { method: string; params?: unknown; jsonrpc?: string };  // JsonRpcNotification
+  | { method: string; params?: unknown; jsonrpc?: string }  // JsonRpcNotification
+  | WebSocketMessage;  // Fallback for protocol messages with optional type field
 
 /**
  * Typed event payloads for WebSocket events

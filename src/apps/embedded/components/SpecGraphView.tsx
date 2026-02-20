@@ -55,16 +55,7 @@ const SpecGraphView: React.FC<SpecGraphViewProps> = ({
         setLoading(true);
         setError('');
 
-        console.log('[SpecGraphView] Starting conversion with input:', {
-          hasSpecData: !!specData,
-          specDataKeys: specData ? Object.keys(specData) : [],
-          hasSchemas: !!(specData?.schemas),
-          schemaCount: specData?.schemas ? Object.keys(specData.schemas).length : 0,
-          schemaKeys: specData?.schemas ? Object.keys(specData.schemas).slice(0, 3) : []
-        });
-
         if (!specData || !specData.schemas) {
-          console.error('[SpecGraphView] Invalid spec data:', { hasSpecData: !!specData, hasSchemas: !!(specData?.schemas) });
           throw new Error('Invalid spec data: missing schemas');
         }
 
@@ -79,14 +70,8 @@ const SpecGraphView: React.FC<SpecGraphViewProps> = ({
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))
             .join('');
 
-          console.log(`[SpecGraphView] Mapping "${filename}" -> "${layerName}"`);
           cleanedSchemas[layerName] = schema;
         }
-
-        console.log('[SpecGraphView] Cleaned schemas:', {
-          count: Object.keys(cleanedSchemas).length,
-          layerNames: Object.keys(cleanedSchemas)
-        });
 
         // Use DataLoader.parseSchemaDefinitions() to convert schemas to MetaModel
         const metamodel = dataLoader.parseSchemaDefinitions(
@@ -94,15 +79,7 @@ const SpecGraphView: React.FC<SpecGraphViewProps> = ({
           specData.version || '0.1.0'
         );
 
-        console.log('[SpecGraphView] Conversion complete:', {
-          layerCount: Object.keys(metamodel.layers).length,
-          layerNames: Object.keys(metamodel.layers),
-          elementCount: metamodel.metadata?.elementCount || 0,
-          relationshipCount: Object.values(metamodel.layers).reduce((acc, layer) => acc + (layer.relationships?.length || 0), 0)
-        });
-
         setModel(metamodel);
-        console.log('[SpecGraphView] Model state updated successfully');
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to convert spec to model';
         const error = err instanceof Error ? err : new Error(errorMessage);
@@ -133,7 +110,6 @@ const SpecGraphView: React.FC<SpecGraphViewProps> = ({
 
   // Empty state
   if (!model) {
-    console.warn('[SpecGraphView] Rendering empty state - no model');
     return <EmptyState variant="model" title="No Schema Data" description="No schema data available to display" />;
   }
 
@@ -148,14 +124,6 @@ const SpecGraphView: React.FC<SpecGraphViewProps> = ({
     : null;
 
   // Render GraphViewer with converted model
-  console.log('[SpecGraphView] Rendering GraphViewer with model:', {
-    layerCount: Object.keys(model.layers).length,
-    elementCount: model.metadata?.elementCount || 0,
-    selectedSchemaId,
-    normalizedSchemaId,
-    layoutEngine,
-    hasLayoutParameters: !!layoutParameters
-  });
   return (
     <GraphViewer
       model={model}

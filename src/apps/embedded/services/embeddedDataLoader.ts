@@ -42,9 +42,15 @@ function getCookieToken(): string | null {
 async function ensureOk(response: Response, context: string): Promise<void> {
   if (response.ok) return;
   if (response.status === 401 || response.status === 403) {
-    console.warn(`[Auth] ${context} failed with ${response.status}; ${context}`);
+    const errorMessage = `Authentication failed (${response.status}). ${context}`;
+    logError(
+      ERROR_IDS.AUTH_REQUEST_FAILED,
+      errorMessage,
+      { context, statusCode: response.status },
+      new Error(errorMessage)
+    );
     // NOTE: Don't clear token on auth failures - the server should handle auth properly
-    throw new Error(`Authentication failed (${response.status}). ${context}`);
+    throw new Error(errorMessage);
   }
   throw new Error(`Failed to ${context}: ${response.statusText}`);
 }
@@ -60,7 +66,6 @@ function getAuthHeaders(): Record<string, string> {
   const token = localStorage.getItem(AUTH_STORAGE_KEY) || getCookieToken();
 
   if (!token) {
-    console.log('[Auth] No token found in localStorage, request will be unauthenticated');
     return {};
   }
 
@@ -307,7 +312,6 @@ export class EmbeddedDataLoader {
     await ensureOk(response, context);
 
     const data = await response.json();
-    console.log(`[DataLoader] ${context}: success`);
     return data as T;
   }
 
@@ -348,13 +352,6 @@ export class EmbeddedDataLoader {
     const schemaCount = data.schemaCount ?? data.schema_count ?? (data.schemas ? Object.keys(data.schemas).length : 0);
     const relationshipCatalog: RelationshipCatalog | undefined = data.relationshipCatalog || data.relationship_catalog;
 
-    console.log('[EmbeddedDataLoader] Loaded spec from server:', {
-      version: data.version,
-      type: data.type,
-      schemaCount,
-      hasRelationshipCatalog: !!relationshipCatalog
-    });
-
     const result: SpecDataResponse = {
       version: data.version ?? '',
       type: data.type ?? '',
@@ -384,9 +381,6 @@ export class EmbeddedDataLoader {
       `${API_BASE}/layers/${encodeURIComponent(layerName)}`,
       `load layer ${layerName}`
     );
-    console.log(`[DataLoader] Loaded layer ${layerName}:`, {
-      elementCount: data.elementCount || data.elements?.length || 0
-    });
     return data;
   }
 
@@ -399,7 +393,6 @@ export class EmbeddedDataLoader {
       `${API_BASE}/elements/${encodeURIComponent(elementId)}`,
       `load element ${elementId}`
     );
-    console.log(`[DataLoader] Loaded element ${elementId}`);
     return data;
   }
 
@@ -434,23 +427,9 @@ export class EmbeddedDataLoader {
     };
 
     const stats = extractStatistics(data.metadata);
-    console.log('[DataLoader] Loaded model from server:', {
-      version: data.version,
-      totalLayers: stats.totalLayers,
-      totalElements: stats.totalElements,
-      layerCount: Object.keys(data.layers || {}).length
-    });
 
     // Normalize model data: ensure all elements have required visual properties
     const normalized = this.normalizeModel(data);
-    console.log('[DataLoader] Normalized model:', {
-      version: normalized.version,
-      layers: Object.entries(normalized.layers).map(([id, layer]) => ({
-        id,
-        elementCount: layer.elements?.length || 0,
-        relationshipCount: layer.relationships?.length || 0
-      }))
-    });
     return normalized;
   }
 
@@ -684,11 +663,6 @@ export class EmbeddedDataLoader {
       validateChangesetChanges(data.changes.changes);
     }
 
-    console.log(
-      `Loaded changeset ${changesetId}:`,
-      data.changes?.changes?.length ?? 0,
-      'changes'
-    );
     return data;
   }
 
@@ -716,7 +690,6 @@ export class EmbeddedDataLoader {
     await ensureOk(response, 'load annotations');
 
     const data = await response.json();
-    console.log('Loaded annotations:', data.annotations?.length || 0);
     return data.annotations || [];
   }
 
@@ -752,7 +725,6 @@ export class EmbeddedDataLoader {
     await ensureOk(response, 'create annotation');
 
     const data = await response.json();
-    console.log('Created annotation:', data.id);
     return data;
   }
 
@@ -773,7 +745,6 @@ export class EmbeddedDataLoader {
     await ensureOk(response, 'update annotation');
 
     const data = await response.json();
-    console.log('Updated annotation:', id);
     return data;
   }
 
@@ -803,7 +774,6 @@ export class EmbeddedDataLoader {
     await ensureOk(response, `load replies for annotation ${annotationId}`);
 
     const data = await response.json();
-    console.log(`Loaded ${data.replies?.length || 0} replies for annotation ${annotationId}`);
     return data.replies || [];
   }
 
@@ -827,7 +797,6 @@ export class EmbeddedDataLoader {
     await ensureOk(response, 'create annotation reply');
 
     const data = await response.json();
-    console.log('Created annotation reply:', data.id);
     return data;
   }
 
@@ -842,8 +811,6 @@ export class EmbeddedDataLoader {
     });
 
     await ensureOk(response, 'delete annotation');
-
-    console.log('Deleted annotation:', id);
   }
 }
 

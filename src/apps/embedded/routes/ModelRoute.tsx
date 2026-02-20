@@ -118,29 +118,11 @@ export default function ModelRoute() {
 
   const { data: model, loading, error, reload } = useDataLoader({
     loadFn: async () => {
-      console.log('[ModelRoute] Loading model data...');
-
       const modelData = await embeddedDataLoader.loadModel();
-
-      // Debug: log the structure of the model
-      console.log('[ModelRoute] Received model from loader:', {
-        version: modelData.version,
-        metadata: modelData.metadata,
-        layerCount: Object.keys(modelData.layers).length,
-        layers: Object.entries(modelData.layers).map(([id, layer]) => ({
-          id,
-          type: layer.type,
-          elementCount: layer.elements?.length || 0,
-          relationshipCount: layer.relationships?.length || 0,
-          firstElementVisual: layer.elements?.[0]?.visual
-        })),
-        referenceCount: modelData.references?.length || 0
-      });
 
       // Sanitize model data to ensure all elements have valid visual properties
       const sanitizedModel = sanitizeModel(modelData);
 
-      console.log('[ModelRoute] Model loaded successfully');
       return sanitizedModel;
     },
     websocketEvents: ['model.updated', 'annotation.added'],
@@ -152,10 +134,8 @@ export default function ModelRoute() {
         const annotations = await embeddedDataLoader.loadAnnotations();
         annotationStore.setAnnotations(annotations);
         setAnnotationsError(null);
-        console.log('[ModelRoute] Annotations loaded:', annotations.length, 'annotations');
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to load annotations';
-        console.warn('[ModelRoute] Failed to load annotations:', err);
         setAnnotationsError(errorMessage);
         // Continue loading other data even if annotations fail
         annotationStore.setAnnotations([]);
@@ -166,10 +146,8 @@ export default function ModelRoute() {
         const spec = await embeddedDataLoader.loadSpec();
         setSpecData(spec);
         setSpecDataError(null);
-        console.log('[ModelRoute] Spec data loaded:', Object.keys(spec.schemas || {}).length, 'schemas');
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to load schema information';
-        console.warn('[ModelRoute] Failed to load spec data:', err);
         setSpecDataError(errorMessage);
       }
     },

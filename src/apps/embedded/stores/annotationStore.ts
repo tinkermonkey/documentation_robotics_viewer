@@ -140,7 +140,6 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
         )
       }));
 
-      console.log('[AnnotationStore] Created annotation:', createdAnnotation.id);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create annotation';
       handleAnnotationError(
@@ -164,7 +163,6 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
       // Call API
       await embeddedDataLoader.resolveAnnotation(id);
 
-      console.log('[AnnotationStore] Resolved annotation:', id);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to resolve annotation';
       handleAnnotationError(
@@ -188,7 +186,6 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
       // Call API
       await embeddedDataLoader.unresolveAnnotation(id);
 
-      console.log('[AnnotationStore] Unresolved annotation:', id);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to unresolve annotation';
       handleAnnotationError(
@@ -212,7 +209,6 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
       // Update annotation with replies
       get().updateAnnotation(annotationId, { replies });
 
-      console.log('[AnnotationStore] Loaded replies for annotation:', annotationId);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load replies';
       handleAnnotationError(
@@ -242,7 +238,6 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
         get().updateAnnotation(annotationId, { replies: updatedReplies });
       }
 
-      console.log('[AnnotationStore] Created reply for annotation:', annotationId);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create reply';
       handleAnnotationError(
@@ -261,6 +256,19 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
     const annotationIndex = annotations.findIndex(ann => ann.id === id);
     const annotationToRestore = annotations[annotationIndex];
 
+    // Early return if annotation not found locally - don't attempt API deletion
+    if (!annotationToRestore) {
+      const errorMessage = `Annotation not found: ${id}`;
+      set({ error: errorMessage });
+      logError(
+        ERROR_IDS.ANNOTATION_DELETE_FAILED,
+        errorMessage,
+        { annotationId: id },
+        new Error(errorMessage)
+      );
+      throw new Error(errorMessage);
+    }
+
     try {
       set({ error: null });
 
@@ -269,8 +277,6 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
 
       // Call API
       await embeddedDataLoader.deleteAnnotation(id);
-
-      console.log('[AnnotationStore] Deleted annotation:', id);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to delete annotation';
       const rollback = () => {
