@@ -69,28 +69,37 @@ export default function EmbeddedLayout() {
   const currentMainTab = tabs.find(tab => currentPath.startsWith(tab.path));
   const subTabs = currentMainTab ? routeMetadata[currentMainTab.path]?.subTabs || [] : [];
 
+  // Use individual action selectors to avoid re-render loops from whole store reference
+  // When using useConnectionStore() with whole store in dependency array, it causes
+  // the store reference to change on every render, triggering useCallback recreation
+  // and the effect to re-run. Instead, select individual actions via Zustand selector.
+  const setConnected = useConnectionStore((state) => state.setConnected);
+  const setDisconnected = useConnectionStore((state) => state.setDisconnected);
+  const setReconnecting = useConnectionStore((state) => state.setReconnecting);
+  const setError = useConnectionStore((state) => state.setError);
+
   // Define event handlers with useCallback to prevent stale closures
   const handleConnect = useCallback(() => {
     console.log('[EmbeddedLayout] WebSocket connected');
-    connectionStore.setConnected();
+    setConnected();
     if (websocketClient.transportMode === 'websocket') {
       websocketClient.subscribe(['model', 'changesets', 'annotations']);
     }
-  }, [connectionStore]);
+  }, [setConnected]);
 
   const handleRestMode = useCallback(() => {
     console.log('[EmbeddedLayout] Using REST mode');
-    connectionStore.setConnected();
-  }, [connectionStore]);
+    setConnected();
+  }, [setConnected]);
 
   const handleDisconnect = useCallback(() => {
     console.log('[EmbeddedLayout] WebSocket disconnected');
-    connectionStore.setDisconnected();
-  }, [connectionStore]);
+    setDisconnected();
+  }, [setDisconnected]);
 
   const handleReconnecting = useCallback((data: { attempt: number; delay: number }) => {
-    connectionStore.setReconnecting(data.attempt, data.delay);
-  }, [connectionStore]);
+    setReconnecting(data.attempt, data.delay);
+  }, [setReconnecting]);
 
   const handleError = useCallback((data: { kind: 'event'; error: Event } | { kind: 'code'; code: string; message: string }) => {
     // Only suppress WebSocket errors in explicit mock environments
@@ -103,8 +112,8 @@ export default function EmbeddedLayout() {
       const errorDetail = data.kind === 'event' ? data.error : `${data.code}: ${data.message}`;
       console.error('[EmbeddedLayout] WebSocket error:', errorDetail);
     }
-    connectionStore.setError('Connection error');
-  }, [connectionStore]);
+    setError('Connection error');
+  }, [setError]);
 
   /**
    * Initialize WebSocket connection and event handlers

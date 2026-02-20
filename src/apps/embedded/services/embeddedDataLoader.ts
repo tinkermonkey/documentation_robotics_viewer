@@ -516,7 +516,17 @@ export class EmbeddedDataLoader {
    * visibility into problems via console logs.
    */
   private normalizeElements(elements: unknown): ModelElement[] {
-    if (!Array.isArray(elements)) return [];
+    if (!Array.isArray(elements)) {
+      logError(
+        ERROR_IDS.DATA_NORMALIZATION_FAILED,
+        'Expected elements array but received non-array - possible server data corruption',
+        {
+          elementType: typeof elements,
+          context: 'normalizeElements non-array check'
+        }
+      );
+      return [];
+    }
 
     return elements
       .filter((element: unknown): element is Record<string, unknown> => {
@@ -644,15 +654,10 @@ export class EmbeddedDataLoader {
    * Load changeset registry (list of all changesets)
    */
   async loadChangesetRegistry(): Promise<ChangesetRegistry> {
-    const response = await fetch(`${API_BASE}/changesets`, {
-      headers: getAuthHeaders(),
-      credentials: 'include'
-    });
-
-    await ensureOk(response, 'load changesets');
-
-    const data = await response.json();
-    console.log('Loaded changeset registry:', Object.keys(data.changesets || {}).length, 'changesets');
+    const data = await this.fetchJson<ChangesetRegistry>(
+      `${API_BASE}/changesets`,
+      'load changesets'
+    );
     return data;
   }
 

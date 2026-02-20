@@ -169,4 +169,116 @@ test.describe('WebSocketClient.send() Return Value', () => {
     expect(mockSendCalls.length).toBe(1);
     expect(mockSendCalls[0]).toBe(JSON.stringify(jsonRpcRequest));
   });
+
+  test('should handle ws.send() throwing an exception', () => {
+    const client = new WebSocketClient('ws://localhost:9001');
+
+    // Create a mock WebSocket that throws on send
+    const mockWebSocket = {
+      readyState: 1, // WebSocket.OPEN
+      send: () => {
+        throw new Error('Failed to send message');
+      },
+      close: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {}
+    } as any;
+
+    (client as any).ws = mockWebSocket;
+
+    const message = {
+      type: 'test',
+      data: { foo: 'bar' }
+    };
+
+    // Should not throw, but return false
+    const result = client.send(message);
+
+    expect(result).toBe(false);
+  });
+
+  test('should return false when send() throws exception', () => {
+    const client = new WebSocketClient('ws://localhost:9001');
+
+    // Create a mock WebSocket with OPEN state but failing send
+    const mockWebSocket = {
+      readyState: 1, // WebSocket.OPEN
+      send: () => {
+        throw new Error('Network error');
+      },
+      close: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {}
+    } as any;
+
+    (client as any).ws = mockWebSocket;
+
+    const jsonRpcRequest: JsonRpcRequest = {
+      jsonrpc: '2.0',
+      method: 'test.method',
+      params: { key: 'value' },
+      id: 123
+    };
+
+    const result = client.send(jsonRpcRequest);
+
+    // Should gracefully return false instead of throwing
+    expect(result).toBe(false);
+  });
+
+  test('should catch exception when JSON.stringify throws', () => {
+    const client = new WebSocketClient('ws://localhost:9001');
+
+    // Create a mock WebSocket with OPEN state
+    const mockWebSocket = {
+      readyState: 1, // WebSocket.OPEN
+      send: () => {
+        // Would not be called if JSON.stringify throws first
+      },
+      close: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {}
+    } as any;
+
+    (client as any).ws = mockWebSocket;
+
+    // Create a message with a circular reference (will cause JSON.stringify to throw)
+    const message: any = {
+      type: 'test',
+      data: {}
+    };
+    message.data.self = message; // Create circular reference
+
+    const result = client.send(message);
+
+    // Should gracefully return false instead of throwing
+    expect(result).toBe(false);
+  });
+
+  test('should handle multiple consecutive send failures', () => {
+    const client = new WebSocketClient('ws://localhost:9001');
+
+    const mockWebSocket = {
+      readyState: 1, // WebSocket.OPEN
+      send: () => {
+        throw new Error('Send failed');
+      },
+      close: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {}
+    } as any;
+
+    (client as any).ws = mockWebSocket;
+
+    const message = { type: 'test', data: {} };
+
+    // All attempts should gracefully fail
+    const result1 = client.send(message);
+    const result2 = client.send(message);
+    const result3 = client.send(message);
+
+    expect(result1).toBe(false);
+    expect(result2).toBe(false);
+    expect(result3).toBe(false);
+  });
 });
