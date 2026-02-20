@@ -276,10 +276,17 @@ export interface ChangesetDetails {
 export class EmbeddedDataLoader {
   /**
    * Generic fetch helper that combines common pattern: fetch -> ensureOk -> json -> log
+   *
+   * IMPORTANT: This method uses a type assertion (as T) without runtime validation.
+   * The response is NOT validated to match the expected type T. Unlike ChangesetChange
+   * which uses runtime validation (validateChangesetChanges), this method assumes the
+   * server response matches the declared type. Use only for endpoints with stable,
+   * well-documented response schemas. For new endpoints, consider adding runtime validation.
+   *
    * @param url - URL to fetch
    * @param context - Context string for error logging
    * @param options - Additional fetch options
-   * @returns Parsed JSON response
+   * @returns Parsed JSON response (type assertion only, not validated)
    */
   private async fetchJson<T>(
     url: string,

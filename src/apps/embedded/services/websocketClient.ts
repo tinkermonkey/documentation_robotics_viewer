@@ -274,7 +274,7 @@ export class WebSocketClient implements WebSocketClientInterface {
    */
   on<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void;
   on(event: string, handler: EventHandler<unknown>): void;
-  on<K extends keyof WebSocketEventMap>(event: K | string, handler: EventHandler<any>): void {
+  on<K extends keyof WebSocketEventMap>(event: K | string, handler: EventHandler<unknown>): void {
     if (!this.eventHandlers.has(event as string)) {
       this.eventHandlers.set(event as string, new Set());
     }
@@ -287,7 +287,7 @@ export class WebSocketClient implements WebSocketClientInterface {
    */
   off<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void;
   off(event: string, handler: EventHandler<unknown>): void;
-  off<K extends keyof WebSocketEventMap>(event: K | string, handler: EventHandler<any>): void {
+  off<K extends keyof WebSocketEventMap>(event: K | string, handler: EventHandler<unknown>): void {
     const handlers = this.eventHandlers.get(event as string);
     if (handlers) {
       handlers.delete(handler as EventHandler<unknown>);

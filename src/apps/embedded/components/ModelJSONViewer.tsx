@@ -9,11 +9,28 @@ import { Badge, Accordion, AccordionPanel, AccordionTitle, AccordionContent } fr
 import AttributesTable, { AttributeRow } from './common/AttributesTable';
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid';
 import { useAnnotationStore } from '../stores/annotationStore';
+import { SchemaDefinition } from '../services/embeddedDataLoader';
+
+interface ModelElement {
+  id: string;
+  name?: string;
+  type?: string;
+  [key: string]: unknown;
+}
+
+interface ModelLayer {
+  id?: string;
+  name?: string;
+  order?: number;
+  description?: string;
+  elements?: ModelElement[];
+  [key: string]: unknown;
+}
 
 interface ModelJSONViewerProps {
   model: MetaModel;
   specData?: {
-    schemas: Record<string, any>;
+    schemas: Record<string, SchemaDefinition>;
   };
   onPathHighlight?: (path: string | null) => void;
   selectedLayer: string | null;
@@ -35,8 +52,8 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
     let foundPath: string | null = null;
 
     for (const [layerName, layer] of Object.entries(model.layers)) {
-      const elements = layer.elements || [];
-      const elementIndex = elements.findIndex((el: any) => el.id === highlightedElementId);
+      const elements = (layer as ModelLayer).elements || [];
+      const elementIndex = elements.findIndex((el: ModelElement) => el.id === highlightedElementId);
 
       if (elementIndex !== -1) {
         const element = elements[elementIndex];
@@ -160,7 +177,7 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
     const elements = actualLayer.elements || [];
 
     // Group elements by type
-    const elementsByType = elements.reduce((acc: Record<string, any[]>, element: any) => {
+    const elementsByType = elements.reduce((acc: Record<string, ModelElement[]>, element: ModelElement) => {
       const type = element.type || 'unknown';
       if (!acc[type]) {
         acc[type] = [];
@@ -242,10 +259,10 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
                             <div className="text-sm">
                               <strong className="text-gray-900 dark:text-white">Properties:</strong>
                               <ul className="mt-2 space-y-1 ml-4">
-                                {Object.entries(typeSchema.properties).map(([propName, propDef]: [string, any]) => (
+                                {Object.entries(typeSchema.properties).map(([propName, propDef]: [string, SchemaDefinition]) => (
                                   <li key={propName} className="text-gray-700 dark:text-gray-300">
                                     <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">{propName}</code>
-                                    {propDef.type && <span className="text-gray-500"> ({propDef.type})</span>}
+                                    {propDef.type && <span className="text-gray-500"> ({typeof propDef.type === 'string' ? propDef.type : propDef.type.join(' | ')})</span>}
                                     {propDef.description && <span> - {propDef.description}</span>}
                                   </li>
                                 ))}
@@ -257,7 +274,7 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
 
                       {/* Elements of this type */}
                       <div className="space-y-3">
-                        {typeElements.map((element: any) => {
+                        {typeElements.map((element: ModelElement) => {
                           // Build attributes array
                           const attributes: AttributeRow[] = [];
 
@@ -267,16 +284,16 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
                           if (element.type) attributes.push({ name: 'Type', value: element.type });
 
                           // Extract documentation field (ArchiMate standard)
-                          const documentation = element.documentation || element.properties?.documentation;
+                          const documentation = element.documentation || (element.properties as Record<string, unknown> | undefined)?.documentation;
 
                           // Properties (excluding core fields and documentation)
-                          if (element.properties) {
-                            Object.entries(element.properties)
+                          if (element.properties && typeof element.properties === 'object') {
+                            Object.entries(element.properties as Record<string, unknown>)
                               .filter(([key]) => !['id', 'name', 'type', 'description', 'documentation'].includes(key))
                               .forEach(([key, value]) => {
                                 attributes.push({
                                   name: key,
-                                  value: value as any,
+                                  value,
                                   isObject: typeof value === 'object' && value !== null
                                 });
                               });
@@ -290,7 +307,7 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
                             .forEach(([key, value]) => {
                               attributes.push({
                                 name: key,
-                                value: value as any,
+                                value,
                                 isObject: typeof value === 'object' && value !== null
                               });
                             });

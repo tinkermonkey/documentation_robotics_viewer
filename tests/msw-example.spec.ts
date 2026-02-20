@@ -135,6 +135,85 @@ test.describe('API Client - MSW Mocked Responses (Node.js)', () => {
     const schemas = await response.json() as Record<string, unknown>;
     expect(schemas).toHaveProperty('motivation');
   });
+
+  test('should handle 404 error for non-existent resources', async () => {
+    // Test 404 response for missing model
+    const response = await fetch('http://localhost:8080/api/model/non-existent');
+    expect(response.status).toBe(404);
+    const error = await response.json() as Record<string, unknown>;
+    expect(error).toHaveProperty('error');
+  });
+
+  test('should handle PATCH annotation request', async () => {
+    // First, create an annotation
+    const createResponse = await fetch('http://localhost:8080/api/annotations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        content: 'Initial annotation',
+        elementId: 'elem-1'
+      })
+    });
+    expect(createResponse.status).toBe(201);
+    const annotation = await createResponse.json() as Record<string, unknown>;
+    const annotationId = annotation.id as string;
+
+    // Now patch it
+    const patchResponse = await fetch(`http://localhost:8080/api/annotations/${annotationId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: 'Updated annotation' })
+    });
+
+    expect(patchResponse.status).toBe(200);
+    const result = await patchResponse.json() as Record<string, unknown>;
+    expect(result).toHaveProperty('id', annotationId);
+    expect(result).toHaveProperty('content', 'Updated annotation');
+  });
+
+  test('should handle DELETE annotation request', async () => {
+    // First, create an annotation
+    const createResponse = await fetch('http://localhost:8080/api/annotations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        content: 'To be deleted',
+        elementId: 'elem-1'
+      })
+    });
+    expect(createResponse.status).toBe(201);
+    const annotation = await createResponse.json() as Record<string, unknown>;
+    const annotationId = annotation.id as string;
+
+    // Now delete it
+    const deleteResponse = await fetch(`http://localhost:8080/api/annotations/${annotationId}`, {
+      method: 'DELETE'
+    });
+
+    expect(deleteResponse.status).toBe(204);
+  });
+
+  test('should handle PATCH annotation error - annotation not found', async () => {
+    const response = await fetch('http://localhost:8080/api/annotations/non-existent', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: 'test' })
+    });
+
+    expect(response.status).toBe(404);
+    const error = await response.json() as Record<string, unknown>;
+    expect(error).toHaveProperty('error');
+  });
+
+  test('should handle DELETE annotation error - annotation not found', async () => {
+    const response = await fetch('http://localhost:8080/api/annotations/non-existent', {
+      method: 'DELETE'
+    });
+
+    expect(response.status).toBe(404);
+    const error = await response.json() as Record<string, unknown>;
+    expect(error).toHaveProperty('error');
+  });
 });
 
 /**

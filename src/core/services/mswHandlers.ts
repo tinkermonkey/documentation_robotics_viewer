@@ -83,6 +83,15 @@ export const handlers = [
     return HttpResponse.json(mockModelData);
   }),
 
+  // Get a specific model by ID (404 if not found)
+  http.get('http://localhost:8080/api/model/:id', ({ params }) => {
+    const modelId = String(params.id);
+    if (modelId !== mockModelData.uuid) {
+      return HttpResponse.json({ error: 'Model not found' }, { status: 404 });
+    }
+    return HttpResponse.json(mockModelData);
+  }),
+
   // Get bundled API spec and schemas
   http.get('http://localhost:8080/api/spec', () => {
     return HttpResponse.json(mockSchemas);
@@ -164,7 +173,7 @@ export const handlers = [
       return HttpResponse.json({ error: 'Not found' }, { status: 404 });
     }
     mockAnnotations.splice(index, 1);
-    return HttpResponse.json({ success: true });
+    return HttpResponse.json(null, { status: 204 });
   })
 ];
 

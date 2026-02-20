@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import { Release } from '../types';
+import { logError } from '../../apps/embedded/services/errorTracker';
 
 /**
  * Service for interacting with GitHub releases via backend server
@@ -32,7 +33,7 @@ export class GitHubService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error fetching releases:', error);
+      logError('GitHubService.getAvailableReleases', error, { url });
       // Provide helpful error for network failures
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error(
@@ -69,7 +70,7 @@ export class GitHubService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error fetching latest spec release:', error);
+      logError('GitHubService.getLatestSpecRelease', error, { url });
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error(
           `Unable to connect to backend server at ${this.serverUrl}. ` +
@@ -113,7 +114,7 @@ export class GitHubService {
 
       return schemas;
     } catch (error) {
-      console.error('Error downloading schemas:', error);
+      logError('GitHubService.downloadSchemas', error, { version });
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error(
           `Unable to connect to backend server at ${this.serverUrl}. ` +

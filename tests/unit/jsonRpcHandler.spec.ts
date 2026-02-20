@@ -193,6 +193,115 @@ test.describe('JsonRpcHandler', () => {
     });
   });
 
+  test.describe('isValidJsonRpcMessage', () => {
+    test('should accept valid response with result', () => {
+      const message = {
+        jsonrpc: '2.0',
+        id: 1,
+        result: { data: 'test' }
+      };
+      expect((handler as any).isValidJsonRpcMessage(message)).toBe(true);
+    });
+
+    test('should accept valid response with error', () => {
+      const message = {
+        jsonrpc: '2.0',
+        id: 1,
+        error: { code: -32600, message: 'Invalid Request' }
+      };
+      expect((handler as any).isValidJsonRpcMessage(message)).toBe(true);
+    });
+
+    test('should accept valid notification with method', () => {
+      const message = {
+        jsonrpc: '2.0',
+        method: 'update',
+        params: { updates: [] }
+      };
+      expect((handler as any).isValidJsonRpcMessage(message)).toBe(true);
+    });
+
+    test('should accept valid request with method and id', () => {
+      const message = {
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'add',
+        params: [2, 3]
+      };
+      expect((handler as any).isValidJsonRpcMessage(message)).toBe(true);
+    });
+
+    test('should reject non-object messages', () => {
+      expect((handler as any).isValidJsonRpcMessage('string')).toBe(false);
+      expect((handler as any).isValidJsonRpcMessage(123)).toBe(false);
+      expect((handler as any).isValidJsonRpcMessage(null)).toBe(false);
+    });
+
+    test('should reject wrong jsonrpc version', () => {
+      const message = {
+        jsonrpc: '1.0',
+        id: 1,
+        result: {}
+      };
+      expect((handler as any).isValidJsonRpcMessage(message)).toBe(false);
+    });
+
+    test('should reject response with both result and error', () => {
+      const message = {
+        jsonrpc: '2.0',
+        id: 1,
+        result: {},
+        error: { code: -32600, message: 'Invalid' }
+      };
+      expect((handler as any).isValidJsonRpcMessage(message)).toBe(false);
+    });
+
+    test('should reject response without result or error', () => {
+      const message = {
+        jsonrpc: '2.0',
+        id: 1
+      };
+      expect((handler as any).isValidJsonRpcMessage(message)).toBe(false);
+    });
+
+    test('should accept response with null result', () => {
+      const message = {
+        jsonrpc: '2.0',
+        id: 1,
+        result: null
+      };
+      expect((handler as any).isValidJsonRpcMessage(message)).toBe(true);
+    });
+
+    test('should accept response with id 0', () => {
+      const message = {
+        jsonrpc: '2.0',
+        id: 0,
+        result: {}
+      };
+      expect((handler as any).isValidJsonRpcMessage(message)).toBe(true);
+    });
+
+    test('should accept response with string id', () => {
+      const message = {
+        jsonrpc: '2.0',
+        id: 'abc-123',
+        result: {}
+      };
+      expect((handler as any).isValidJsonRpcMessage(message)).toBe(true);
+    });
+
+    test('should accept messages with additional properties', () => {
+      const message = {
+        jsonrpc: '2.0',
+        id: 1,
+        result: {},
+        extra: 'property'
+      };
+      expect((handler as any).isValidJsonRpcMessage(message)).toBe(true);
+    });
+  });
+
   test.describe('error handling', () => {
     test('should create proper error from JSON-RPC error response', () => {
       const createError = (handler as any).createError.bind(handler);

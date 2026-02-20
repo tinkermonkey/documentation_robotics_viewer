@@ -66,8 +66,9 @@ const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) =
   }, []);
 
   /**
-   * Show a temporary notification (success notifications auto-clear after 3 seconds)
-   * Error notifications persist until manually dismissed
+   * Show a temporary notification
+   * Success notifications: auto-clear after 3 seconds
+   * Error notifications: persist indefinitely (user must navigate away or page reload to dismiss)
    */
   const showNotification = (type: 'success' | 'error', message: string) => {
     setNotification({ type, message });
