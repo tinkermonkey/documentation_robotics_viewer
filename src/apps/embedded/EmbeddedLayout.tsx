@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { Outlet, useMatches, useNavigate } from '@tanstack/react-router';
 import {
   HiDocumentText,
@@ -69,6 +69,43 @@ export default function EmbeddedLayout() {
   const currentMainTab = tabs.find(tab => currentPath.startsWith(tab.path));
   const subTabs = currentMainTab ? routeMetadata[currentMainTab.path]?.subTabs || [] : [];
 
+  // Define event handlers with useCallback to prevent stale closures
+  const handleConnect = useCallback(() => {
+    console.log('[EmbeddedLayout] WebSocket connected');
+    connectionStore.setConnected();
+    if (websocketClient.transportMode === 'websocket') {
+      websocketClient.subscribe(['model', 'changesets', 'annotations']);
+    }
+  }, [connectionStore]);
+
+  const handleRestMode = useCallback(() => {
+    console.log('[EmbeddedLayout] Using REST mode');
+    connectionStore.setConnected();
+  }, [connectionStore]);
+
+  const handleDisconnect = useCallback(() => {
+    console.log('[EmbeddedLayout] WebSocket disconnected');
+    connectionStore.setDisconnected();
+  }, [connectionStore]);
+
+  const handleReconnecting = useCallback((data: { attempt: number; delay: number }) => {
+    connectionStore.setReconnecting(data.attempt, data.delay);
+  }, [connectionStore]);
+
+  const handleError = useCallback((data: { error: Event } | { code: string; message: string }) => {
+    // Only suppress WebSocket errors in explicit mock environments
+    // DO NOT use port detection (61001) as it could be production port
+    const isTestEnv = typeof window !== 'undefined' && (
+      window.__STORYBOOK_MOCK_WEBSOCKET__ ||  // Explicit mock flag for Storybook
+      window.__PLAYWRIGHT__  // Playwright test environment
+    );
+    if (!isTestEnv) {
+      const errorDetail = 'error' in data ? data.error : `${data.code}: ${data.message}`;
+      console.error('[EmbeddedLayout] WebSocket error:', errorDetail);
+    }
+    connectionStore.setError('Connection error');
+  }, [connectionStore]);
+
   /**
    * Initialize WebSocket connection and event handlers
    */
@@ -100,43 +137,7 @@ export default function EmbeddedLayout() {
       websocketClient.off('rest-mode', handleRestMode);
       websocketClient.disconnect();
     };
-  }, [token]); // Re-initialize if token changes
-
-  const handleConnect = () => {
-    console.log('[EmbeddedLayout] WebSocket connected');
-    connectionStore.setConnected();
-    if (websocketClient.transportMode === 'websocket') {
-      websocketClient.subscribe(['model', 'changesets', 'annotations']);
-    }
-  };
-
-  const handleRestMode = () => {
-    console.log('[EmbeddedLayout] Using REST mode');
-    connectionStore.setConnected();
-  };
-
-  const handleDisconnect = () => {
-    console.log('[EmbeddedLayout] WebSocket disconnected');
-    connectionStore.setDisconnected();
-  };
-
-  const handleReconnecting = (data: { attempt: number; delay: number }) => {
-    connectionStore.setReconnecting(data.attempt, data.delay);
-  };
-
-  const handleError = (data: { error: Event } | { code: string; message: string }) => {
-    // Only suppress WebSocket errors in explicit mock environments
-    // DO NOT use port detection (61001) as it could be production port
-    const isTestEnv = typeof window !== 'undefined' && (
-      window.__STORYBOOK_MOCK_WEBSOCKET__ ||  // Explicit mock flag for Storybook
-      window.__PLAYWRIGHT__  // Playwright test environment
-    );
-    if (!isTestEnv) {
-      const errorDetail = 'error' in data ? data.error : `${data.code}: ${data.message}`;
-      console.error('[EmbeddedLayout] WebSocket error:', errorDetail);
-    }
-    connectionStore.setError('Connection error');
-  };
+  }, [token, handleConnect, handleDisconnect, handleReconnecting, handleError, handleRestMode]);
 
   return (
     <div data-testid="embedded-app" className="min-h-screen bg-gray-50 dark:bg-gray-900">

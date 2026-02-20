@@ -16,6 +16,27 @@ interface ErrorContext {
   [key: string]: unknown;
 }
 
+interface ErrorWithMetadata extends Error {
+  errorId?: ErrorId;
+  context?: ErrorContext;
+  category?: ExceptionCategory;
+  severity?: ExceptionSeverity;
+  isExpectedFailure?: boolean;
+  isTransient?: boolean;
+  recoveryStrategy?: RecoveryStrategy;
+}
+
+interface SentryLike {
+  captureException: (error: Error) => void;
+  setTag: (key: string, value: string) => void;
+}
+
+declare global {
+  interface Window {
+    __SENTRY__?: SentryLike;
+  }
+}
+
 export interface ErrorLogEntry {
   errorId: ErrorId;
   message: string;
@@ -73,16 +94,16 @@ export function logError(
   // Send to Sentry if configured (only in browser environment)
   if (typeof window !== 'undefined') {
     try {
-      const Sentry = (window as any).__SENTRY__;
+      const Sentry = window.__SENTRY__;
       if (Sentry && Sentry.captureException) {
-        const error = originalError || new Error(message);
-        (error as any).errorId = errorId;
-        (error as any).context = context;
-        (error as any).category = classified.category;
-        (error as any).severity = classified.severity;
-        (error as any).isExpectedFailure = classified.isExpectedFailure;
-        (error as any).isTransient = classified.isTransient;
-        (error as any).recoveryStrategy = classified.recoveryStrategy;
+        const error: ErrorWithMetadata = originalError || new Error(message);
+        error.errorId = errorId;
+        error.context = context;
+        error.category = classified.category;
+        error.severity = classified.severity;
+        error.isExpectedFailure = classified.isExpectedFailure;
+        error.isTransient = classified.isTransient;
+        error.recoveryStrategy = classified.recoveryStrategy;
 
         // Set Sentry tags for filtering/grouping
         Sentry.setTag('error_id', errorId);

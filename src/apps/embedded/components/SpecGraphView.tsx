@@ -5,6 +5,7 @@
  */
 
 import { useState, useEffect, useMemo } from 'react';
+import { type Node, type Edge } from '@xyflow/react';
 import GraphViewer from '../../../core/components/GraphViewer';
 import { DataLoader } from '../../../core/services/dataLoader';
 import { GitHubService } from '../../../core/services/githubService';
@@ -17,12 +18,19 @@ import { LayoutEngineType } from '@/core/layout/engines';
 import { logError } from '../services/errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
 
+interface SchemaDefinition {
+  [key: string]: unknown;
+  type?: string;
+  properties?: Record<string, unknown>;
+  required?: string[];
+}
+
 export interface SpecGraphViewProps {
   specData: SpecDataResponse;
   selectedSchemaId?: string | null;
   layoutEngine?: LayoutEngineType;
-  layoutParameters?: Record<string, any>;
-  onNodesEdgesChange?: (nodes: any[], edges: any[]) => void;
+  layoutParameters?: Record<string, unknown>;
+  onNodesEdgesChange?: (nodes: Node[], edges: Edge[]) => void;
 }
 
 const SpecGraphView: React.FC<SpecGraphViewProps> = ({
@@ -68,7 +76,7 @@ const SpecGraphView: React.FC<SpecGraphViewProps> = ({
         }
 
         // Clean up schema keys (remove file extensions and prefixes)
-        const cleanedSchemas: Record<string, any> = {};
+        const cleanedSchemas: Record<string, SchemaDefinition> = {};
         for (const [filename, schema] of Object.entries(specData.schemas)) {
           // Extract layer name from filename (e.g., "01-motivation-layer.schema.json" -> "Motivation")
           const layerName = filename

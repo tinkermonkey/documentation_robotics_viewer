@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useParams, useSearch, useNavigate } from '@tanstack/react-router';
 import type { Node } from '@xyflow/react';
 import GraphViewer from '../../../core/components/GraphViewer';
@@ -20,46 +20,42 @@ import type { MetaModel } from '../../../core/types';
 
 /**
  * Sanitize model data to ensure all elements have required visual properties.
+ * Uses immutable updates to prevent mutation of input data.
  * This prevents NaN viewBox errors when rendering graphs.
  */
 function sanitizeModel(model: MetaModel): MetaModel {
-  const sanitized = { ...model };
-  
-  for (const layer of Object.values(sanitized.layers)) {
-    if (!layer.elements || !Array.isArray(layer.elements)) continue;
-    
-    for (const element of layer.elements) {
-      // Ensure visual object exists with valid defaults
-      if (!element.visual) {
-        element.visual = {
-          position: { x: 0, y: 0 },
-          size: { width: 200, height: 100 },
-          style: { backgroundColor: '#e3f2fd', borderColor: '#1976d2' }
-        };
-      }
-      
-      // Ensure position has valid numbers
-      if (!element.visual.position) {
-        element.visual.position = { x: 0, y: 0 };
-      }
-      element.visual.position.x = Number.isFinite(element.visual.position.x) ? element.visual.position.x : 0;
-      element.visual.position.y = Number.isFinite(element.visual.position.y) ? element.visual.position.y : 0;
-      
-      // Ensure size has valid numbers
-      if (!element.visual.size) {
-        element.visual.size = { width: 200, height: 100 };
-      }
-      element.visual.size.width = Number.isFinite(element.visual.size.width) && element.visual.size.width > 0 ? element.visual.size.width : 200;
-      element.visual.size.height = Number.isFinite(element.visual.size.height) && element.visual.size.height > 0 ? element.visual.size.height : 100;
-      
-      // Ensure style object exists
-      if (!element.visual.style) {
-        element.visual.style = { backgroundColor: '#e3f2fd', borderColor: '#1976d2' };
-      }
-    }
-  }
-  
-  return sanitized;
+  return {
+    ...model,
+    layers: Object.fromEntries(
+      Object.entries(model.layers).map(([layerId, layer]) => [
+        layerId,
+        {
+          ...layer,
+          elements: layer.elements?.map(element => ({
+            ...element,
+            visual: {
+              position: {
+                x: Number.isFinite(element.visual?.position?.x) ? element.visual.position.x : 0,
+                y: Number.isFinite(element.visual?.position?.y) ? element.visual.position.y : 0,
+              },
+              size: {
+                width: Number.isFinite(element.visual?.size?.width) && (element.visual?.size?.width ?? 0) > 0
+                  ? element.visual.size.width
+                  : 200,
+                height: Number.isFinite(element.visual?.size?.height) && (element.visual?.size?.height ?? 0) > 0
+                  ? element.visual.size.height
+                  : 100,
+              },
+              style: element.visual?.style || {
+                backgroundColor: '#e3f2fd',
+                borderColor: '#1976d2',
+              },
+            },
+          })) ?? [],
+        },
+      ])
+    ),
+  };
 }
 
 export default function ModelRoute() {
@@ -74,8 +70,18 @@ export default function ModelRoute() {
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
   const [selectedLayerId, setSelectedLayerId] = useState<string | null>(search?.layer || null);
+  const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const activeView = view === 'json' ? 'json' : 'graph';
+
+  // Cleanup highlight timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (highlightTimeoutRef.current) {
+        clearTimeout(highlightTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Handle layer selection and update URL
   const handleLayerSelect = (layerId: string | null) => {
@@ -95,9 +101,18 @@ export default function ModelRoute() {
 
   // Handle path highlight in JSON view (auto-clear after 3 seconds)
   const handlePathHighlight = (path: string | null) => {
+    // Clear any existing timeout
+    if (highlightTimeoutRef.current) {
+      clearTimeout(highlightTimeoutRef.current);
+      highlightTimeoutRef.current = null;
+    }
+
     setHighlightedPath(path);
     if (path) {
-      setTimeout(() => setHighlightedPath(null), 3000);
+      highlightTimeoutRef.current = setTimeout(() => {
+        setHighlightedPath(null);
+        highlightTimeoutRef.current = null;
+      }, 3000);
     }
   };
 

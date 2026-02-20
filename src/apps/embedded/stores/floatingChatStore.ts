@@ -93,7 +93,14 @@ export const useFloatingChatStore = create<FloatingChatState>()(
         getItem: (key) => {
           const storage = createStorage();
           const value = storage.getItem(key);
-          return value ? JSON.parse(value) : null;
+          if (!value) return null;
+          try {
+            return JSON.parse(value);
+          } catch {
+            // If parsing fails, clear corrupted data and return null
+            storage.removeItem(key);
+            return null;
+          }
         },
         setItem: (key, value) => {
           const storage = createStorage();
