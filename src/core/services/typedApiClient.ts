@@ -43,10 +43,12 @@ export class TypedRestApiClient {
 
   constructor(baseUrl?: string, token: string | null = null) {
     // Use environment variable for API URL, with fallback to localhost
-    this.baseUrl = baseUrl ||
-      (typeof process !== 'undefined' && process.env.DR_API_URL) ||
-      (typeof import.meta !== 'undefined' && import.meta.env.VITE_DR_API_URL) ||
-      'http://localhost:8080';
+    // Browser builds use import.meta.env (Vite)
+    let envUrl: string | undefined;
+    if (typeof import.meta !== 'undefined' && import.meta.env) {
+      envUrl = import.meta.env.VITE_DR_API_URL as string | undefined;
+    }
+    this.baseUrl = baseUrl || envUrl || 'http://localhost:8080';
     this.token = token;
   }
 
@@ -129,7 +131,7 @@ export class TypedRestApiClient {
     path: string,
     body?: unknown,
     params?: Record<string, unknown>
-  ): Promise<any> {
+  ): Promise<unknown> {
     const url = new URL(path, this.baseUrl);
 
     // Add query parameters

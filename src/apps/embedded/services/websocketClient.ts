@@ -13,35 +13,13 @@
 import { logError } from './errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
 import type { JsonRpcRequest, JsonRpcNotification } from '../types/chat';
-
-interface WebSocketMessage {
-  type?: string;
-  [key: string]: unknown;
-}
+import type { WebSocketMessage, EventHandler, WebSocketEventMap } from '../types/websocket';
 
 /**
  * Messages that can be sent over WebSocket
  * Includes both WebSocket protocol messages (with type) and JSON-RPC messages
  */
 type WebSocketSendMessage = WebSocketMessage | JsonRpcRequest | JsonRpcNotification;
-
-/**
- * Typed event payloads for WebSocket events
- * Uses mapped event interface pattern with string literal keys mapping to payload types for full type safety.
- * All event names must be explicitly defined here to prevent typos and enable compile-time validation.
- */
-interface WebSocketEventMap {
-  'connect': {};
-  'disconnect': {};
-  'message': WebSocketMessage;
-  'error': { error: Event };
-  'close': { code: number; reason: string };
-  'reconnecting': { attempt: number; delay: number };
-  'rest-mode': {};
-  'max-reconnect-attempts': { attempts: number };
-}
-
-type EventHandler<T = unknown> = (data: T) => void;
 
 /**
  * Interface for WebSocket client - implemented by both real WebSocketClient and mocks
@@ -655,6 +633,9 @@ if (typeof window !== 'undefined') {
 }
 
 export { websocketClient };
+
+// Re-export types from websocket.ts for backward compatibility
+export type { WebSocketMessage, EventHandler, WebSocketEventMap } from '../types/websocket';
 
 // Expose websocketClient to window in test environments for Playwright access
 if (typeof window !== 'undefined' && isTestEnvironment()) {

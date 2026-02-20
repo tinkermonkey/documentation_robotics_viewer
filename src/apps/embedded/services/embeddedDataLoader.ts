@@ -557,7 +557,7 @@ export class EmbeddedDataLoader {
    */
   async loadChangeset(changesetId: string): Promise<ChangesetDetails> {
     const data = await this.fetchJson<ChangesetDetails>(
-      `${API_BASE}/changesets/${changesetId}`,
+      `${API_BASE}/changesets/${encodeURIComponent(changesetId)}`,
       `load changeset ${changesetId}`
     );
 
@@ -652,7 +652,7 @@ export class EmbeddedDataLoader {
    * Update an existing annotation
    */
   async updateAnnotation(id: string, updates: Omit<AnnotationUpdate, 'id'>): Promise<Annotation> {
-    const response = await fetch(`${API_BASE}/annotations/${id}`, {
+    const response = await fetch(`${API_BASE}/annotations/${encodeURIComponent(id)}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -687,7 +687,7 @@ export class EmbeddedDataLoader {
    * Load replies for an annotation
    */
   async loadAnnotationReplies(annotationId: string): Promise<import('../types/annotations').AnnotationReply[]> {
-    const response = await fetch(`${API_BASE}/annotations/${annotationId}/replies`, {
+    const response = await fetch(`${API_BASE}/annotations/${encodeURIComponent(annotationId)}/replies`, {
       headers: getAuthHeaders(),
       credentials: 'include'
     });
@@ -706,7 +706,7 @@ export class EmbeddedDataLoader {
     annotationId: string,
     input: { author: string; content: string }
   ): Promise<import('../types/annotations').AnnotationReply> {
-    const response = await fetch(`${API_BASE}/annotations/${annotationId}/replies`, {
+    const response = await fetch(`${API_BASE}/annotations/${encodeURIComponent(annotationId)}/replies`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -727,7 +727,7 @@ export class EmbeddedDataLoader {
    * Delete an annotation
    */
   async deleteAnnotation(id: string): Promise<void> {
-    const response = await fetch(`${API_BASE}/annotations/${id}`, {
+    const response = await fetch(`${API_BASE}/annotations/${encodeURIComponent(id)}`, {
       method: 'DELETE',
       headers: getAuthHeaders(),
       credentials: 'include'
