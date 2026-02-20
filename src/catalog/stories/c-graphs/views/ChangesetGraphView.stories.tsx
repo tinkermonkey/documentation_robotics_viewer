@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import ChangesetGraphView from '@/apps/embedded/components/ChangesetGraphView';
-import type { ChangesetDetails } from '@/apps/embedded/services/embeddedDataLoader';
+import type { ChangesetDetails, ChangesetChange } from '@/apps/embedded/services/embeddedDataLoader';
 import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 const meta = {
@@ -131,14 +131,24 @@ export const ManyChanges: Story = {
       ...mockChangeset,
       changes: {
         version: '1.0',
-        changes: Array.from({ length: 20 }, (_, i) => ({
-          timestamp: new Date().toISOString(),
-          operation: ['add', 'update', 'delete'][i % 3] as 'add' | 'update' | 'delete',
-          element_id: `element-${i}`,
-          element_type: 'BusinessService',
-          layer: 'business',
-          data: { name: `Element ${i}` },
-        })),
+        changes: Array.from({ length: 20 }, (_, i): ChangesetChange => {
+          const operation = ['add', 'update', 'delete'][i % 3] as 'add' | 'update' | 'delete';
+          const base = {
+            timestamp: new Date().toISOString(),
+            operation,
+            element_id: `element-${i}`,
+            element_type: 'BusinessService',
+            layer: 'business',
+          };
+
+          if (operation === 'add') {
+            return { ...base, data: { name: `Element ${i}` } } as ChangesetChange;
+          } else if (operation === 'update') {
+            return { ...base, before: {}, after: { name: `Element ${i}` } } as ChangesetChange;
+          } else {
+            return { ...base, before: { name: `Element ${i}` } } as ChangesetChange;
+          }
+        }),
       },
     };
     return (
