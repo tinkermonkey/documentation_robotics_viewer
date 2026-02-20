@@ -265,6 +265,7 @@ See [Architecture Overview](documentation/architecture-overview.md) for detailed
 
 ### Getting Started
 - **[Getting Started](#getting-started)** - Quick setup instructions
+- **[CI/CD Setup](#cicd-setup)** - Configure automated E2E tests with DR CLI in CI environments
 - **[DR CLI Integration Guide](documentation/DR_CLI_INTEGRATION_GUIDE.md)** - Comprehensive API, WebSocket, and architecture documentation
 - **[DR CLI Troubleshooting](documentation/DR_CLI_TROUBLESHOOTING.md)** - Quick reference for common issues and solutions
 
@@ -325,6 +326,209 @@ npm run sync:api-spec
 ```
 
 The command is a wrapper around the `scripts/sync-api-spec.sh` script, which handles the actual download and validation.
+
+## CI/CD Setup
+
+### Running E2E Tests in CI Environments
+
+The E2E tests require the Documentation Robotics CLI server to be running. This section explains how to configure your CI/CD pipeline for automated test runs.
+
+#### Installing DR CLI in CI
+
+The CLI must be installed globally before running E2E tests. Add these steps to your CI workflow:
+
+```bash
+# Install DR CLI globally (v1.0.0 or higher)
+npm install -g @tinkermonkey/dr-cli
+
+# Verify installation
+dr --version
+```
+
+#### GitHub Actions Example
+
+Add this job to your `.github/workflows/ci.yml`:
+
+```yaml
+name: E2E Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Install DR CLI
+        run: npm install -g @tinkermonkey/dr-cli@latest
+
+      - name: Verify DR CLI
+        run: dr --version
+
+      - name: Start DR CLI server
+        run: dr visualize ./example-implementation/ &
+
+      - name: Wait for server to be ready
+        run: |
+          max_attempts=30
+          attempt=0
+          while [ $attempt -lt $max_attempts ]; do
+            if curl -f http://localhost:8080/health > /dev/null 2>&1; then
+              echo "Server is ready"
+              exit 0
+            fi
+            attempt=$((attempt + 1))
+            sleep 1
+          done
+          echo "Server failed to start"
+          exit 1
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-results
+          path: test-results/
+```
+
+#### Other CI Systems
+
+**GitLab CI** (`.gitlab-ci.yml`):
+```yaml
+e2e_tests:
+  image: node:18
+  services:
+    - name: mongo:latest
+  before_script:
+    - npm install
+    - npx playwright install --with-deps
+    - npm install -g @tinkermonkey/dr-cli@latest
+    - dr visualize ./example-implementation/ &
+    - sleep 5  # Wait for server to start
+  script:
+    - npm run test:e2e
+  artifacts:
+    when: always
+    paths:
+      - test-results/
+```
+
+**CircleCI** (`.circleci/config.yml`):
+```yaml
+jobs:
+  e2e-tests:
+    docker:
+      - image: cimg/node:18.0
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run:
+          name: Install Playwright browsers
+          command: npx playwright install --with-deps
+      - run:
+          name: Install DR CLI
+          command: npm install -g @tinkermonkey/dr-cli@latest
+      - run:
+          name: Start DR CLI server
+          command: dr visualize ./example-implementation/ &
+      - run:
+          name: Wait for server
+          command: |
+            for i in {1..30}; do
+              curl http://localhost:8080/health && break
+              sleep 1
+            done
+      - run:
+          name: Run E2E tests
+          command: npm run test:e2e
+      - store_artifacts:
+          path: test-results/
+```
+
+### Environment Variables
+
+The following environment variables can be set in your CI environment:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DR_CLI_PORT` | `8080` | Port for the DR CLI server |
+| `DR_CLI_HOST` | `localhost` | Host for the DR CLI server |
+| `TEST_TIMEOUT` | `30000` | Playwright test timeout (ms) |
+| `DR_CLI_INSTALL_VERSION` | `latest` | Specific DR CLI version to install |
+
+Example:
+```yaml
+env:
+  DR_CLI_PORT: 8080
+  DR_CLI_HOST: localhost
+```
+
+### Prerequisites for CI
+
+Before running E2E tests in CI, ensure:
+
+1. **Node.js 18+** is installed
+2. **npm** is available
+3. **Network access** to install npm packages
+4. **Port 8080** is available (or configure `DR_CLI_PORT`)
+5. **Disk space** for Playwright browsers (typically ~400MB)
+
+### Troubleshooting CI Tests
+
+If E2E tests fail in CI but pass locally:
+
+1. **Verify DR CLI installation**:
+   ```bash
+   npm install -g @tinkermonkey/dr-cli@latest
+   dr --version
+   ```
+
+2. **Check server startup logs**:
+   ```bash
+   dr visualize ./example-implementation/ --verbose
+   ```
+
+3. **Confirm network connectivity**:
+   ```bash
+   curl http://localhost:8080/health
+   curl http://localhost:8080/api/model
+   ```
+
+4. **Increase timeout for slower runners**:
+   ```bash
+   npm run test:e2e -- --timeout=60000
+   ```
+
+5. **Review test-results directory** after failure:
+   ```bash
+   ls -la test-results/
+   cat test-results/*/results.json
+   ```
+
+For more advanced CI setup and troubleshooting, see [DR CLI Integration Guide - Troubleshooting](documentation/DR_CLI_INTEGRATION_GUIDE.md#troubleshooting).
 
 ### Troubleshooting
 
