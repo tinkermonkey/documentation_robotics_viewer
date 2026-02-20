@@ -79,10 +79,10 @@ export interface SchemaManifestFileEntry {
 }
 
 export interface SchemaManifest {
-  spec_version?: string;
+  specVersion?: string;
   source?: string;
-  created_at?: string;
-  created_by?: string;
+  createdAt?: string;
+  createdBy?: string;
   files?: Record<string, SchemaManifestFileEntry>;
 }
 
@@ -332,7 +332,16 @@ export class EmbeddedDataLoader {
 
     await ensureOk(response, 'load spec');
 
-    const data = await response.json();
+    // Type the raw response to narrow the untyped JSON
+    const data = (await response.json()) as Record<string, unknown> & {
+      version?: string;
+      type?: string;
+      schemas?: Record<string, unknown>;
+      schemaCount?: number;
+      schema_count?: number;
+      relationshipCatalog?: RelationshipCatalog;
+      relationship_catalog?: RelationshipCatalog;
+    };
 
     // Normalize snake_case from server to camelCase for TypeScript
     const schemaCount = data.schemaCount ?? data.schema_count ?? (data.schemas ? Object.keys(data.schemas).length : 0);
@@ -348,7 +357,7 @@ export class EmbeddedDataLoader {
     // Exclude snake_case versions to ensure consistent interface
     const { schema_count: _, relationship_catalog: __, ...rest } = data;
     return {
-      ...rest,
+      ...rest as Omit<typeof data, 'schema_count' | 'relationship_catalog'>,
       schemaCount,
       relationshipCatalog
     };
@@ -370,9 +379,10 @@ export class EmbeddedDataLoader {
 
   /**
    * Load a specific element by ID
+   * Generic type parameter allows callers to specify expected return type
    */
-  async loadElement(elementId: string): Promise<unknown> {
-    const data = await this.fetchJson<unknown>(
+  async loadElement<T = unknown>(elementId: string): Promise<T> {
+    const data = await this.fetchJson<T>(
       `${API_BASE}/elements/${encodeURIComponent(elementId)}`,
       `load element ${elementId}`
     );

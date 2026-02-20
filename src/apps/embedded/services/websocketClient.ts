@@ -552,13 +552,13 @@ function isTestEnvironment(): boolean {
   if (typeof window === 'undefined') return false;
 
   // Check for Playwright test environment (set by Playwright test runner)
-  if ((window as any).__PLAYWRIGHT__) return true;
+  if (window.__PLAYWRIGHT__) return true;
 
   // Check for explicit mock flag (must be set by Storybook/test configuration)
-  if ((window as any).__STORYBOOK_MOCK_WEBSOCKET__) return true;
+  if (window.__STORYBOOK_MOCK_WEBSOCKET__) return true;
 
   // Check if we're in a test environment by looking for test-specific globals
-  if ((window as any).__karma__ || (window as any).jasmine || (window as any).jest) return true;
+  if (window.__karma__ || window.__jasmine__ || window.__jest__) return true;
 
   // Note: Do NOT check window.location.port (e.g., port 61001) as this can incorrectly
   // activate the mock client in production environments that use port-based routing
@@ -575,6 +575,11 @@ declare global {
     __WEBSOCKET_CLIENT__?: WebSocketClientInterface;
     __INTENTIONAL_DISCONNECT__?: boolean;
     __CONNECTION_STATE__?: string;
+    __PLAYWRIGHT__?: boolean;
+    __STORYBOOK_MOCK_WEBSOCKET__?: boolean;
+    __karma__?: boolean;
+    __jasmine__?: boolean;
+    __jest__?: boolean;
   }
 }
 

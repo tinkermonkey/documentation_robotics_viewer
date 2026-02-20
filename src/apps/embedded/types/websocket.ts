@@ -30,8 +30,8 @@ export interface WebSocketEventMap {
   'disconnect': {};
   /** Emitted when a message is received from the server */
   'message': WebSocketMessage;
-  /** Emitted when a WebSocket error occurs (connection refused, protocol error, etc.) */
-  'error': { error: Event };
+  /** Emitted when a WebSocket error occurs (connection refused, protocol error, etc.). May include code/message for SSR mock or error Event for browser. */
+  'error': { error: Event } | { code: string; message: string };
   /** Emitted when WebSocket connection closes with status code and reason */
   'close': { code: number; reason: string };
   /** Emitted when client attempts to reconnect after connection loss */

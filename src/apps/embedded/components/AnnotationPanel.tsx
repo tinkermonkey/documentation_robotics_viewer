@@ -404,6 +404,8 @@ const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) =
       {/* Notification Toast */}
       {notification && (
         <div
+          role={notification.type === 'error' ? 'alert' : 'status'}
+          aria-live={notification.type === 'error' ? 'assertive' : 'polite'}
           className={`mb-4 p-3 rounded-lg ${
             notification.type === 'success'
               ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
