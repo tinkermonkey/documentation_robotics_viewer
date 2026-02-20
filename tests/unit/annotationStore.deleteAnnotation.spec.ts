@@ -3,45 +3,41 @@
  * Tests verify the implementation includes proper error handling
  */
 
-import { test, expect, beforeEach } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { useAnnotationStore } from '../../src/apps/embedded/stores/annotationStore';
-import { EmbeddedDataLoader } from '../../src/apps/embedded/services/embeddedDataLoader';
-import type { ModelAnnotation } from '../../src/apps/embedded/types/annotation';
+import type { Annotation } from '../../src/apps/embedded/types/annotations';
 
 test.describe('annotationStore.deleteAnnotation() Rollback Logic', () => {
-  let store: ReturnType<typeof useAnnotationStore.getState>;
-  let dataLoader: EmbeddedDataLoader;
-
-  beforeEach(() => {
+  test.beforeEach(() => {
     // Reset store state before each test
     useAnnotationStore.setState({
       annotations: [],
+      selectedElementId: null,
+      highlightedElementId: null,
+      loading: false,
       error: null
     });
-    store = useAnnotationStore.getState();
-    dataLoader = new EmbeddedDataLoader();
   });
 
   test('deleteAnnotation performs optimistic update by removing annotation immediately', async () => {
     // Add annotation to store
-    const annotation: ModelAnnotation = {
+    const annotation: Annotation = {
       id: 'ann-1',
       elementId: 'elem-1',
-      type: 'issue',
-      title: 'Test Annotation',
+      author: 'test-user',
       content: 'Test content',
       createdAt: new Date().toISOString(),
-      status: 'open'
+      resolved: false
     };
 
-    store.addAnnotation(annotation);
-    expect(store.annotations).toHaveLength(1);
+    useAnnotationStore.getState().addAnnotation(annotation);
+    expect(useAnnotationStore.getState().annotations).toHaveLength(1);
 
     // Start delete (but don't await the API call to test optimistic update)
-    const deletePromise = store.deleteAnnotation('ann-1');
+    const deletePromise = useAnnotationStore.getState().deleteAnnotation('ann-1');
 
     // Optimistic update should remove immediately
-    expect(store.annotations).toHaveLength(0);
+    expect(useAnnotationStore.getState().annotations).toHaveLength(0);
 
     // Clean up promise to prevent unhandled rejection
     deletePromise.catch(() => {
@@ -51,98 +47,94 @@ test.describe('annotationStore.deleteAnnotation() Rollback Logic', () => {
 
   test('deleteAnnotation restores annotation when API call fails', async () => {
     // Add annotation to store
-    const annotation: ModelAnnotation = {
+    const annotation: Annotation = {
       id: 'ann-2',
       elementId: 'elem-2',
-      type: 'question',
-      title: 'Test Annotation',
+      author: 'test-user',
       content: 'Test content',
       createdAt: new Date().toISOString(),
-      status: 'open'
+      resolved: false
     };
 
-    store.addAnnotation(annotation);
-    const initialCount = store.annotations.length;
+    useAnnotationStore.getState().addAnnotation(annotation);
+    const initialCount = useAnnotationStore.getState().annotations.length;
 
     // deleteAnnotation will fail because dataLoader.deleteAnnotation doesn't exist
     // This tests the rollback path
     try {
-      await store.deleteAnnotation('ann-2');
+      await useAnnotationStore.getState().deleteAnnotation('ann-2');
     } catch (_err) {
       // Expected to throw
     }
 
     // Annotation should be restored after failed delete
-    expect(store.annotations).toHaveLength(initialCount);
-    expect(store.annotations.find(a => a.id === 'ann-2')).toBeDefined();
+    expect(useAnnotationStore.getState().annotations).toHaveLength(initialCount);
+    expect(useAnnotationStore.getState().annotations.find(a => a.id === 'ann-2')).toBeDefined();
   });
 
   test('deleteAnnotation sets error state when API call fails', async () => {
-    const annotation: ModelAnnotation = {
+    const annotation: Annotation = {
       id: 'ann-3',
       elementId: 'elem-3',
-      type: 'note',
-      title: 'Test Annotation',
+      author: 'test-user',
       content: 'Test content',
       createdAt: new Date().toISOString(),
-      status: 'open'
+      resolved: false
     };
 
-    store.addAnnotation(annotation);
+    useAnnotationStore.getState().addAnnotation(annotation);
 
     // deleteAnnotation will fail
     try {
-      await store.deleteAnnotation('ann-3');
+      await useAnnotationStore.getState().deleteAnnotation('ann-3');
     } catch (_err) {
       // Expected to throw
     }
 
     // Error should be set in state
-    expect(store.error).toBeTruthy();
+    expect(useAnnotationStore.getState().error).toBeTruthy();
   });
 
   test('deleteAnnotation prevents double-restoration when annotation already exists', async () => {
-    const annotation: ModelAnnotation = {
+    const annotation: Annotation = {
       id: 'ann-4',
       elementId: 'elem-4',
-      type: 'issue',
-      title: 'Test Annotation',
+      author: 'test-user',
       content: 'Test content',
       createdAt: new Date().toISOString(),
-      status: 'open'
+      resolved: false
     };
 
-    store.addAnnotation(annotation);
+    useAnnotationStore.getState().addAnnotation(annotation);
 
     // Simulate a failure that triggers rollback
     try {
-      await store.deleteAnnotation('ann-4');
+      await useAnnotationStore.getState().deleteAnnotation('ann-4');
     } catch (_err) {
       // Expected to throw
     }
 
     // Should have exactly one annotation (no duplicates)
-    const restoredAnnotations = store.annotations.filter(a => a.id === 'ann-4');
+    const restoredAnnotations = useAnnotationStore.getState().annotations.filter(a => a.id === 'ann-4');
     expect(restoredAnnotations).toHaveLength(1);
   });
 
   test('deleteAnnotation rethrows error after handling rollback', async () => {
-    const annotation: ModelAnnotation = {
+    const annotation: Annotation = {
       id: 'ann-5',
       elementId: 'elem-5',
-      type: 'question',
-      title: 'Test Annotation',
+      author: 'test-user',
       content: 'Test content',
       createdAt: new Date().toISOString(),
-      status: 'open'
+      resolved: false
     };
 
-    store.addAnnotation(annotation);
+    useAnnotationStore.getState().addAnnotation(annotation);
 
     // deleteAnnotation should rethrow the error after rollback attempt
     let errorWasThrown = false;
     try {
-      await store.deleteAnnotation('ann-5');
+      await useAnnotationStore.getState().deleteAnnotation('ann-5');
     } catch (_err) {
       errorWasThrown = true;
     }
@@ -152,30 +144,29 @@ test.describe('annotationStore.deleteAnnotation() Rollback Logic', () => {
 
   test('deleteAnnotation clears error state before attempting delete', async () => {
     // Set an error in state first
-    store.setError('Previous error');
-    expect(store.error).toBe('Previous error');
+    useAnnotationStore.getState().setError('Previous error');
+    expect(useAnnotationStore.getState().error).toBe('Previous error');
 
-    const annotation: ModelAnnotation = {
+    const annotation: Annotation = {
       id: 'ann-6',
       elementId: 'elem-6',
-      type: 'issue',
-      title: 'Test Annotation',
+      author: 'test-user',
       content: 'Test content',
       createdAt: new Date().toISOString(),
-      status: 'open'
+      resolved: false
     };
 
-    store.addAnnotation(annotation);
+    useAnnotationStore.getState().addAnnotation(annotation);
 
     // deleteAnnotation should clear error at start
     try {
-      await store.deleteAnnotation('ann-6');
+      await useAnnotationStore.getState().deleteAnnotation('ann-6');
     } catch (_err) {
       // Expected to throw
     }
 
     // Error should be set (to the new delete error, not the previous one)
-    expect(store.error).toBeTruthy();
-    expect(store.error).not.toBe('Previous error');
+    expect(useAnnotationStore.getState().error).toBeTruthy();
+    expect(useAnnotationStore.getState().error).not.toBe('Previous error');
   });
 });

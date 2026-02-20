@@ -5,6 +5,7 @@
 
 import { test, expect } from '@playwright/test';
 import { EmbeddedDataLoader } from '../../src/apps/embedded/services/embeddedDataLoader';
+import type { MetaModel } from '../../src/core/types';
 
 test.describe('EmbeddedDataLoader.normalizeModel()', () => {
   const dataLoader = new EmbeddedDataLoader();
@@ -12,11 +13,13 @@ test.describe('EmbeddedDataLoader.normalizeModel()', () => {
   /**
    * Helper to access private normalizeModel method via reflection.
    * Used consistently throughout tests to avoid repeated `as any` casts.
+   * Binds `this` context to preserve instance method access.
    */
   const getNormalizeModelFunction = () => {
-    return (dataLoader as Record<string, unknown>).normalizeModel as (
+    const method = ((dataLoader as unknown) as Record<string, unknown>).normalizeModel as (
       input: unknown
-    ) => ReturnType<EmbeddedDataLoader['normalizeElements']>;
+    ) => MetaModel;
+    return method.bind(dataLoader);
   };
 
   test('should normalize valid model with all properties', () => {
