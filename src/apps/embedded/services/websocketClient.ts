@@ -46,7 +46,9 @@ interface WebSocketClientInterface {
   subscribe(topics: string[]): void;
   send(message: WebSocketMessage): boolean;
   on<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void;
+  on(event: string, handler: EventHandler<unknown>): void;
   off<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void;
+  off(event: string, handler: EventHandler<unknown>): void;
   /** Direct WebSocket connection state (true only if ws.readyState === OPEN) */
   readonly isConnected: boolean;
   /** High-level state machine: connecting, connected, disconnected, or reconnecting */
@@ -273,8 +275,11 @@ export class WebSocketClient implements WebSocketClientInterface {
 
   /**
    * Register an event handler
+   * Supports both typed WebSocket events and custom message types from the server
    */
-  on<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void {
+  on<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void;
+  on(event: string, handler: EventHandler<unknown>): void;
+  on<K extends keyof WebSocketEventMap>(event: K | string, handler: EventHandler<any>): void {
     if (!this.eventHandlers.has(event as string)) {
       this.eventHandlers.set(event as string, new Set());
     }
@@ -283,8 +288,11 @@ export class WebSocketClient implements WebSocketClientInterface {
 
   /**
    * Unregister an event handler
+   * Supports both typed WebSocket events and custom message types from the server
    */
-  off<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void {
+  off<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void;
+  off(event: string, handler: EventHandler<unknown>): void;
+  off<K extends keyof WebSocketEventMap>(event: K | string, handler: EventHandler<any>): void {
     const handlers = this.eventHandlers.get(event as string);
     if (handlers) {
       handlers.delete(handler as EventHandler<unknown>);

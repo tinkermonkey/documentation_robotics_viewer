@@ -87,7 +87,6 @@ export default function EmbeddedLayout() {
     websocketClient.on('reconnecting', handleReconnecting);
     websocketClient.on('error', handleError);
     websocketClient.on('rest-mode', handleRestMode);
-    websocketClient.on('connected', handleServerConnected);
 
     // Connect to WebSocket
     websocketClient.connect();
@@ -99,7 +98,6 @@ export default function EmbeddedLayout() {
       websocketClient.off('reconnecting', handleReconnecting);
       websocketClient.off('error', handleError);
       websocketClient.off('rest-mode', handleRestMode);
-      websocketClient.off('connected', handleServerConnected);
       websocketClient.disconnect();
     };
   }, [token]); // Re-initialize if token changes
@@ -115,10 +113,6 @@ export default function EmbeddedLayout() {
   const handleRestMode = () => {
     console.log('[EmbeddedLayout] Using REST mode');
     connectionStore.setConnected();
-  };
-
-  const handleServerConnected = (data: any) => {
-    console.log('[EmbeddedLayout] Server connection confirmed:', data);
   };
 
   const handleDisconnect = () => {
