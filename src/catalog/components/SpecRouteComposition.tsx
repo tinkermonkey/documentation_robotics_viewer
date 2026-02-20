@@ -12,7 +12,6 @@ import SpecGraphView from '../../apps/embedded/components/SpecGraphView';
 import AnnotationPanel from '../../apps/embedded/components/AnnotationPanel';
 import SchemaInfoPanel from '../../apps/embedded/components/SchemaInfoPanel';
 import SharedLayout from '../../apps/embedded/components/SharedLayout';
-import { ViewToggle } from '../../apps/embedded/components/shared';
 import type { SpecDataResponse } from '../../apps/embedded/services/embeddedDataLoader';
 
 /**
@@ -25,8 +24,6 @@ export interface SpecRouteCompositionProps {
   activeView: 'graph' | 'json';
   /** Currently selected schema ID (null for none) */
   selectedSchemaId: string | null;
-  /** Callback when view is changed */
-  onViewChange: (view: 'graph' | 'json') => void;
   /** Whether to show right sidebar (default: true) */
   showRightSidebar?: boolean;
 }
@@ -47,7 +44,6 @@ export const SpecRouteComposition = memo<SpecRouteCompositionProps>(({
   specData,
   activeView,
   selectedSchemaId,
-  onViewChange,
   showRightSidebar = true
 }) => {
   return (
@@ -61,23 +57,11 @@ export const SpecRouteComposition = memo<SpecRouteCompositionProps>(({
         </>
       }
     >
-      <div className="flex flex-col h-full overflow-hidden">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <ViewToggle
-            views={[
-              { key: 'graph', label: 'Graph' },
-              { key: 'json', label: 'JSON' },
-            ]}
-            activeView={activeView}
-            onViewChange={(v) => onViewChange(v as 'graph' | 'json')}
-          />
-        </div>
-        {activeView === 'graph' ? (
-          <SpecGraphView specData={specData} selectedSchemaId={selectedSchemaId} />
-        ) : (
-          <SpecViewer specData={specData} selectedSchemaId={selectedSchemaId} />
-        )}
-      </div>
+      {activeView === 'graph' ? (
+        <SpecGraphView specData={specData} selectedSchemaId={selectedSchemaId} />
+      ) : (
+        <SpecViewer specData={specData} selectedSchemaId={selectedSchemaId} />
+      )}
     </SharedLayout>
   );
 });

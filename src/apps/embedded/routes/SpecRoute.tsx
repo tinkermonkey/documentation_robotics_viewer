@@ -5,7 +5,7 @@ import SpecGraphView from '../components/SpecGraphView';
 import AnnotationPanel from '../components/AnnotationPanel';
 import SchemaInfoPanel from '../components/SchemaInfoPanel';
 import SharedLayout from '../components/SharedLayout';
-import { LoadingState, ErrorState, ViewToggle } from '../components/shared';
+import { LoadingState, ErrorState } from '../components/shared';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
@@ -74,23 +74,11 @@ export default function SpecRoute() {
         </>
       }
     >
-      <div className="flex flex-col h-full overflow-hidden">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <ViewToggle
-            views={[
-              { key: 'graph', label: 'Graph' },
-              { key: 'json', label: 'JSON' },
-            ]}
-            activeView={activeView}
-            onViewChange={(v) => navigate({ to: `/spec/${v}` })}
-          />
-        </div>
-        {activeView === 'graph' ? (
-          <SpecGraphView specData={specData} selectedSchemaId={selectedSchemaId} />
-        ) : (
-          <SpecViewer specData={specData} selectedSchemaId={selectedSchemaId} />
-        )}
-      </div>
+      {activeView === 'graph' ? (
+        <SpecGraphView specData={specData} selectedSchemaId={selectedSchemaId} />
+      ) : (
+        <SpecViewer specData={specData} selectedSchemaId={selectedSchemaId} />
+      )}
     </SharedLayout>
   );
 }

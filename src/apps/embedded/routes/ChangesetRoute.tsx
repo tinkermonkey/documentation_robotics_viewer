@@ -9,7 +9,7 @@ import { useChangesetStore } from '../stores/changesetStore';
 import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
-import { LoadingState, ErrorState, ViewToggle } from '../components/shared';
+import { LoadingState, ErrorState } from '../components/shared';
 
 export default function ChangesetRoute() {
   const { view } = useParams({ strict: false });
@@ -77,23 +77,11 @@ export default function ChangesetRoute() {
       leftSidebarContent={<ChangesetList onChangesetSelect={handleChangesetSelect} />}
       rightSidebarContent={<AnnotationPanel />}
     >
-      <div className="flex flex-col h-full overflow-hidden">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <ViewToggle
-            views={[
-              { key: 'graph', label: 'Graph' },
-              { key: 'list', label: 'List' },
-            ]}
-            activeView={activeView}
-            onViewChange={(v) => navigate({ to: `/changesets/${v}` })}
-          />
-        </div>
-        {activeView === 'graph' ? (
-          <ChangesetGraphView changeset={changesetStore.selectedChangeset} />
-        ) : (
-          <ChangesetViewer />
-        )}
-      </div>
+      {activeView === 'graph' ? (
+        <ChangesetGraphView changeset={changesetStore.selectedChangeset} />
+      ) : (
+        <ChangesetViewer />
+      )}
     </SharedLayout>
   );
 }
