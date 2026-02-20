@@ -111,12 +111,8 @@ export const useFloatingChatStore = create<FloatingChatState>()(
           storage.removeItem(key);
         },
       },
-      partialize: (state) => ({
-        isOpen: state.isOpen,
-        position: state.position,
-        size: state.size,
-        isMinimized: state.isMinimized,
-      }),
+      // Zustand persist middleware automatically excludes function properties from serialization
+      // so we don't need an explicit partialize function here
     }
   )
 );

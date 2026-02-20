@@ -12,18 +12,11 @@ import { GitHubService } from '../../../core/services/githubService';
 import { LocalFileLoader } from '../../../core/services/localFileLoader';
 import { SpecParser } from '../../../core/services/specParser';
 import { MetaModel } from '../../../core/types';
-import { SpecDataResponse } from '../services/embeddedDataLoader';
+import { SpecDataResponse, SchemaDefinition } from '../services/embeddedDataLoader';
 import { LoadingState, ErrorState, EmptyState } from './shared';
 import { LayoutEngineType } from '@/core/layout/engines';
 import { logError } from '../services/errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
-
-interface SchemaDefinition {
-  [key: string]: unknown;
-  type?: string;
-  properties?: Record<string, unknown>;
-  required?: string[];
-}
 
 export interface SpecGraphViewProps {
   specData: SpecDataResponse;
