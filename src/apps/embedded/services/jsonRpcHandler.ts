@@ -37,7 +37,7 @@ type NotificationHandler = (params: Record<string, unknown>) => void;
  * Provides type-safe JSON-RPC 2.0 message handling over WebSocket
  */
 export class JsonRpcHandler {
-  private pendingRequests: Map<string | number, PendingRequest<unknown>> = new Map();
+  private pendingRequests: Map<string | number, PendingRequest> = new Map();
   private notificationHandlers: Map<string, Set<NotificationHandler>> = new Map();
   private requestTimeout: number = 30000; // 30 seconds
   private requestIdCounter: number = 1;
@@ -482,16 +482,21 @@ export class JsonRpcHandler {
   /**
    * Validate if a message is a valid JSON-RPC message structure
    */
-  private isValidJsonRpcMessage(message: Record<string, unknown>): message is JsonRpcMessage {
-    if (message.jsonrpc !== '2.0') {
+  private isValidJsonRpcMessage(message: unknown): message is JsonRpcMessage {
+    if (typeof message !== 'object' || message === null) {
+      return false;
+    }
+
+    const msg = message as Record<string, unknown>;
+    if (msg.jsonrpc !== '2.0') {
       return false;
     }
 
     // Must be either a response (with id and result/error) or notification (with method, no id)
-    const hasId = 'id' in message;
-    const hasMethod = 'method' in message;
-    const hasResult = 'result' in message;
-    const hasError = 'error' in message;
+    const hasId = 'id' in msg;
+    const hasMethod = 'method' in msg;
+    const hasResult = 'result' in msg;
+    const hasError = 'error' in msg;
 
     // Response: has id and either result or error (but not both)
     if (hasId && (hasResult || hasError)) {
