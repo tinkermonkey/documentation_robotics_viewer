@@ -24,13 +24,13 @@ export type WebSocketSendMessage = WebSocketMessage | Record<string, unknown>;
  * All event names must be explicitly defined here to prevent typos and enable compile-time validation.
  */
 export interface WebSocketEventMap {
-  'connect': Record<string, unknown>;
-  'disconnect': Record<string, unknown>;
+  'connect': {};
+  'disconnect': {};
   'message': WebSocketMessage;
   'error': { error: Event };
   'close': { code: number; reason: string };
   'reconnecting': { attempt: number; delay: number };
-  'rest-mode': Record<string, unknown>;
+  'rest-mode': {};
   'max-reconnect-attempts': { attempts: number };
 }
 
