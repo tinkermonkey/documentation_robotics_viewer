@@ -92,17 +92,47 @@ export class JsonRpcHandler {
           // Message is already parsed by websocketClient
           this.handleMessage(message as JsonRpcMessage);
         } catch (error) {
-          logError(
-            ERROR_IDS.JSONRPC_MESSAGE_PARSE_FAILED,
-            'Failed to handle message',
-            { error: error instanceof Error ? error.message : String(error), message: String(message) }
-          );
+          // Distinguish between message handling errors and programming bugs
+          // Message validation/handling errors (expected failures)
+          if (
+            error instanceof TypeError &&
+            (error.message.includes('Cannot read property') ||
+             error.message.includes('Cannot access property'))
+          ) {
+            // Invalid message structure - expected in some cases
+            logError(
+              ERROR_IDS.JSONRPC_MESSAGE_PARSE_FAILED,
+              'Invalid JSON-RPC message structure',
+              { error: error instanceof Error ? error.message : String(error), message: String(message) },
+              error instanceof Error ? error : new Error(String(error))
+            );
+          } else {
+            // Programming error or unexpected exception - log as bug
+            logError(
+              ERROR_IDS.JSONRPC_MESSAGE_HANDLER_ERROR,
+              'Unexpected error while handling JSON-RPC message - possible programming bug',
+              {
+                error: error instanceof Error ? error.message : String(error),
+                errorType: error instanceof Error ? error.constructor.name : typeof error,
+                message: String(message),
+                stack: error instanceof Error ? error.stack : undefined
+              },
+              error instanceof Error ? error : new Error(String(error))
+            );
+          }
         }
       });
 
       this.messageListenerAttached = true;
     } catch (error) {
-      console.warn('[JsonRpcHandler] Failed to attach message listener:', error);
+      // Use structured error logging instead of console.warn
+      // This error is critical because it prevents any JSON-RPC responses from being received
+      logError(
+        ERROR_IDS.JSONRPC_ATTACH_LISTENER_FAILED,
+        'Failed to attach message listener to WebSocket - JSON-RPC responses will not be received',
+        { error: error instanceof Error ? error.message : String(error) },
+        error instanceof Error ? error : new Error(String(error))
+      );
     } finally {
       this.messageListenerAttachmentInProgress = false;
     }

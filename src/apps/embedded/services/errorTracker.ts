@@ -3,7 +3,7 @@
  * Handles error logging with tracking IDs, exception classification, and Sentry integration
  */
 
-import { ErrorId } from '@/constants/errorIds';
+import { ErrorId, ERROR_IDS } from '@/constants/errorIds';
 import {
   ClassifiedException,
   ExceptionCategory,
@@ -177,10 +177,17 @@ export function getErrorLog(): ErrorLogEntry[] {
     const existing = sessionStorage.getItem(storageKey);
     return existing ? JSON.parse(existing) : [];
   } catch (storageError) {
-    // Log retrieval failures to prevent silent data loss
-    console.warn(
-      '[ErrorTracker] Failed to retrieve error log from session storage:',
-      storageError instanceof Error ? storageError.message : String(storageError)
+    // Log retrieval failures with structured error tracking
+    // This surfaces storage corruption in Sentry and error logs
+    logError(
+      ERROR_IDS.SESSION_STORAGE_PARSE_ERROR,
+      'Failed to retrieve error log from session storage - session storage may be corrupted',
+      {
+        operation: 'getErrorLog',
+        storageKey: 'app:error_log',
+        error: storageError instanceof Error ? storageError.message : String(storageError)
+      },
+      storageError instanceof Error ? storageError : new Error(String(storageError))
     );
     return [];
   }
@@ -247,10 +254,16 @@ export function getErrorsByCategory(category: ExceptionCategory): ErrorLogEntry[
 
     return logs.filter((log: ErrorLogEntry) => log.category === category);
   } catch (storageError) {
-    console.warn(
-      '[ErrorTracker] Failed to retrieve error logs for category filter:',
-      storageError instanceof Error ? storageError.message : String(storageError),
-      { category }
+    logError(
+      ERROR_IDS.SESSION_STORAGE_PARSE_ERROR,
+      'Failed to retrieve error logs for category filter - session storage may be corrupted',
+      {
+        operation: 'getErrorsByCategory',
+        storageKey: 'app:error_log',
+        category,
+        error: storageError instanceof Error ? storageError.message : String(storageError)
+      },
+      storageError instanceof Error ? storageError : new Error(String(storageError))
     );
     return [];
   }
@@ -267,10 +280,16 @@ export function getErrorsBySeverity(severity: ExceptionSeverity): ErrorLogEntry[
 
     return logs.filter((log: ErrorLogEntry) => log.severity === severity);
   } catch (storageError) {
-    console.warn(
-      '[ErrorTracker] Failed to retrieve error logs for severity filter:',
-      storageError instanceof Error ? storageError.message : String(storageError),
-      { severity }
+    logError(
+      ERROR_IDS.SESSION_STORAGE_PARSE_ERROR,
+      'Failed to retrieve error logs for severity filter - session storage may be corrupted',
+      {
+        operation: 'getErrorsBySeverity',
+        storageKey: 'app:error_log',
+        severity,
+        error: storageError instanceof Error ? storageError.message : String(storageError)
+      },
+      storageError instanceof Error ? storageError : new Error(String(storageError))
     );
     return [];
   }
@@ -287,9 +306,15 @@ export function getBugLogs(): ErrorLogEntry[] {
 
     return logs.filter((log: ErrorLogEntry) => !log.isExpectedFailure);
   } catch (storageError) {
-    console.warn(
-      '[ErrorTracker] Failed to retrieve bug logs:',
-      storageError instanceof Error ? storageError.message : String(storageError)
+    logError(
+      ERROR_IDS.SESSION_STORAGE_PARSE_ERROR,
+      'Failed to retrieve bug logs - session storage may be corrupted',
+      {
+        operation: 'getBugLogs',
+        storageKey: 'app:error_log',
+        error: storageError instanceof Error ? storageError.message : String(storageError)
+      },
+      storageError instanceof Error ? storageError : new Error(String(storageError))
     );
     return [];
   }
@@ -306,9 +331,15 @@ export function getExpectedFailureLogs(): ErrorLogEntry[] {
 
     return logs.filter((log: ErrorLogEntry) => log.isExpectedFailure);
   } catch (storageError) {
-    console.warn(
-      '[ErrorTracker] Failed to retrieve expected failure logs:',
-      storageError instanceof Error ? storageError.message : String(storageError)
+    logError(
+      ERROR_IDS.SESSION_STORAGE_PARSE_ERROR,
+      'Failed to retrieve expected failure logs - session storage may be corrupted',
+      {
+        operation: 'getExpectedFailureLogs',
+        storageKey: 'app:error_log',
+        error: storageError instanceof Error ? storageError.message : String(storageError)
+      },
+      storageError instanceof Error ? storageError : new Error(String(storageError))
     );
     return [];
   }

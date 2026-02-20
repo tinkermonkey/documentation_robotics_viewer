@@ -592,22 +592,34 @@ if (typeof window !== 'undefined') {
   const wsUrl = `${protocol}//${window.location.host}/ws`;
   websocketClient = new WebSocketClient(wsUrl, null);
 } else {
-  // Node.js/SSR environment: create a mock WebSocket client
+  // Node.js/SSR environment: create a mock WebSocket client that explicitly fails
+  // This prevents silent failures where the app thinks it has a real connection
   const mockHandlers = new Map<string, Set<EventHandler<unknown>>>();
 
   websocketClient = {
     setToken: () => {},
     connect: () => {
+      // Emit error event to indicate mock environment cannot create real connection
       setTimeout(() => {
+        const errorHandlers = mockHandlers.get('error');
+        if (errorHandlers) {
+          errorHandlers.forEach(h => h({
+            code: 'SSR_ENVIRONMENT',
+            message: 'WebSocket not available in SSR/Node.js environment'
+          }));
+        }
+        // Also emit rest-mode event for fallback behavior
         const handlers = mockHandlers.get('rest-mode');
         if (handlers) handlers.forEach(h => h({}));
-        const connectHandlers = mockHandlers.get('connect');
-        if (connectHandlers) connectHandlers.forEach(h => h({}));
       }, 0);
     },
     disconnect: () => {},
     subscribe: () => {},
-    send: () => true,
+    send: () => {
+      // Explicitly fail sends in mock environment
+      console.error('[WebSocketClient] Cannot send message in SSR/Node.js environment - use REST API instead');
+      return false;
+    },
     on: (event: string, handler: EventHandler<unknown>) => {
       if (!mockHandlers.has(event)) {
         mockHandlers.set(event, new Set());
@@ -618,8 +630,8 @@ if (typeof window !== 'undefined') {
       const handlers = mockHandlers.get(event);
       if (handlers) handlers.delete(handler);
     },
-    get isConnected() { return true; },
-    get connectionState() { return 'connected' as const; },
+    get isConnected() { return false; },
+    get connectionState() { return 'disconnected' as const; },
     get transportMode() { return 'rest' as const; }
   };
 }

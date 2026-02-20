@@ -6,6 +6,8 @@
 import { create } from 'zustand';
 import { Annotation } from '../types/annotations';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
+import { logError } from '../services/errorTracker';
+import { ERROR_IDS } from '@/constants/errorIds';
 
 interface AnnotationStore {
   // State
@@ -117,7 +119,13 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create annotation';
       set({ error: errorMessage });
-      console.error('[AnnotationStore] Failed to create annotation:', err);
+      // Use structured error logging instead of console.error
+      logError(
+        ERROR_IDS.ANNOTATION_CREATE_FAILED,
+        errorMessage,
+        { elementId, author },
+        err instanceof Error ? err : new Error(String(err))
+      );
       throw err;
     }
   },
@@ -138,7 +146,13 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
       set({ error: errorMessage });
       // Rollback optimistic update
       get().updateAnnotation(id, { resolved: false });
-      console.error('[AnnotationStore] Failed to resolve annotation:', err);
+      // Use structured error logging instead of console.error
+      logError(
+        ERROR_IDS.ANNOTATION_RESOLVE_FAILED,
+        errorMessage,
+        { annotationId: id },
+        err instanceof Error ? err : new Error(String(err))
+      );
       throw err;
     }
   },
@@ -159,7 +173,13 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
       set({ error: errorMessage });
       // Rollback optimistic update
       get().updateAnnotation(id, { resolved: true });
-      console.error('[AnnotationStore] Failed to unresolve annotation:', err);
+      // Use structured error logging instead of console.error
+      logError(
+        ERROR_IDS.ANNOTATION_RESOLVE_FAILED,
+        errorMessage,
+        { annotationId: id },
+        err instanceof Error ? err : new Error(String(err))
+      );
       throw err;
     }
   },
@@ -178,7 +198,13 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load replies';
       set({ error: errorMessage });
-      console.error('[AnnotationStore] Failed to load replies:', err);
+      // Use structured error logging instead of console.error
+      logError(
+        ERROR_IDS.ANNOTATION_REPLY_FAILED,
+        errorMessage,
+        { annotationId },
+        err instanceof Error ? err : new Error(String(err))
+      );
       throw err;
     }
   },
@@ -204,7 +230,13 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create reply';
       set({ error: errorMessage });
-      console.error('[AnnotationStore] Failed to create reply:', err);
+      // Use structured error logging instead of console.error
+      logError(
+        ERROR_IDS.ANNOTATION_REPLY_FAILED,
+        errorMessage,
+        { annotationId, author },
+        err instanceof Error ? err : new Error(String(err))
+      );
       throw err;
     }
   },
