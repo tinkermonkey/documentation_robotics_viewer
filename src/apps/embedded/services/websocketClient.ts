@@ -20,6 +20,8 @@ interface WebSocketMessage {
 
 /**
  * Typed event payloads for WebSocket events
+ * Use discriminated union of specific event types for full type safety.
+ * All event names must be explicitly defined here to prevent typos and enable compile-time validation.
  */
 interface WebSocketEventMap {
   'connect': Record<string, unknown>;
@@ -30,7 +32,6 @@ interface WebSocketEventMap {
   'reconnecting': { attempt: number; delay: number };
   'rest-mode': Record<string, unknown>;
   'max-reconnect-attempts': { attempts: number; isTest?: boolean };
-  [key: string]: unknown; // Allow additional event types for messages
 }
 
 type EventHandler<T = unknown> = (data: T) => void;

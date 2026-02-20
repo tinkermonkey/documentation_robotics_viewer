@@ -285,7 +285,7 @@ All chat messages follow JSON-RPC 2.0 specification:
 
 ### 5. **Streaming Response Pattern**
 - **Why**: Long-running operations need real-time feedback
-- **Solution**: AsyncGenerator for Python, notification subscriptions for TypeScript
+- **Solution**: Event streams with notification subscriptions for TypeScript backend
 - **Benefit**: Responsive UX with progressivelyavailable results
 
 ---
@@ -440,7 +440,7 @@ workspace/
 - ✅ JSON-RPC 2.0 protocol fully implemented
 - ✅ Chat service high-level API works
 - ✅ ChatPanel UI component complete
-- ✅ Python backend handles all chat methods
+- ✅ Node.js backend handles all chat methods
 - ✅ Message routing and error handling robust
 - ✅ All 715 tests passing
 - ✅ Backward compatible with existing code
