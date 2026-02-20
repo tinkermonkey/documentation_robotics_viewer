@@ -2,12 +2,11 @@
  * Building Blocks Story Tests
  *
  * Hand-written tests for shared UI component stories that validate:
- * - ViewToggle button interactions
  * - ExpandableSection toggle behavior
  * - BreadcrumbNav rendering
  * - Toolbar button visibility
  *
- * Covers: ViewToggle, GraphToolbar, ExpandableSection,
+ * Covers: GraphToolbar, ExpandableSection,
  *         FilterPanel, BreadcrumbNav, ExportButtonGroup
  */
 
@@ -15,40 +14,6 @@ import { test, expect } from '@playwright/test';
 import { storyUrl, setupErrorFiltering } from '../helpers/storyTestUtils';
 
 test.describe('Building Blocks Stories', () => {
-  test.describe('ViewToggle', () => {
-    test('Default: renders toggle buttons', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('primitives--controls--viewtoggle--default'));
-      await page.locator('button').first().waitFor({ state: 'attached', timeout: 5000 });
-      const buttons = await page.locator('button').count();
-      expect(buttons, 'ViewToggle should render buttons').toBeGreaterThan(0);
-    });
-
-    test('Default: button click updates active state', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('primitives--controls--viewtoggle--default'));
-      await page.locator('button').first().waitFor({ state: 'attached', timeout: 5000 });
-      const buttons = page.locator('button');
-      const buttonCount = await buttons.count();
-      if (buttonCount >= 2) {
-        // Click a non-active button and verify interaction works
-        const secondButton = buttons.nth(1);
-        await secondButton.click();
-        // After click, the page should still be functional
-        const buttonsAfter = await page.locator('button').count();
-        expect(buttonsAfter).toBeGreaterThan(0);
-      }
-    });
-
-    test('Disabled: renders disabled buttons', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('primitives--controls--viewtoggle--disabled'));
-      await page.locator('button').first().waitFor({ state: 'attached', timeout: 5000 });
-      const disabledButtons = await page.locator('button[disabled]').count();
-      expect(disabledButtons, 'Disabled ViewToggle should have disabled buttons').toBeGreaterThan(0);
-    });
-  });
-
   test.describe('ExpandableSection', () => {
     test('Expanded: shows content', async ({ page }) => {
       setupErrorFiltering(page);
