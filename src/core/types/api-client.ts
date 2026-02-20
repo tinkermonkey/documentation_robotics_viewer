@@ -890,7 +890,7 @@ export interface paths {
         trace?: never;
     };
 }
-export type webhooks = Record<string, never>;
+export type webhooks = Record<string, unknown>;
 export interface components {
     schemas: {
         /**
@@ -925,7 +925,7 @@ export interface components {
             source?: string;
             /** @description Map of schema filename to JSON Schema object */
             schemas: {
-                [key: string]: Record<string, never>;
+                [key: string]: Record<string, unknown>;
             };
             /**
              * @description Number of schemas included
@@ -972,9 +972,9 @@ export interface components {
                 /** @example dr-cli */
                 source: string;
                 /** @description Project metadata from manifest */
-                project?: Record<string, never>;
+                project?: Record<string, unknown>;
                 /** @description Model statistics */
-                statistics?: Record<string, never>;
+                statistics?: Record<string, unknown>;
             };
             /** @description Map of layer ID to layer data */
             layers: {
@@ -1024,7 +1024,7 @@ export interface components {
              */
             layerId: string;
             /** @description Element-specific properties */
-            properties: Record<string, never>;
+            properties: Record<string, unknown>;
             /** @description Visual layout information */
             visual?: {
                 position?: {
@@ -1050,7 +1050,7 @@ export interface components {
             /** @description Relationship type */
             type: string;
             /** @description Additional relationship properties */
-            properties?: Record<string, never>;
+            properties?: Record<string, unknown>;
         };
         CrossLayerReference: {
             source: {
@@ -1114,11 +1114,11 @@ export interface components {
             layer: string;
             element_type: string;
             /** @description New element data (for add operations) */
-            data?: Record<string, never>;
+            data?: Record<string, unknown>;
             /** @description Element state before change (for update operations) */
-            before?: Record<string, never>;
+            before?: Record<string, unknown>;
             /** @description Element state after change (for update operations) */
-            after?: Record<string, never>;
+            after?: Record<string, unknown>;
         };
         Annotation: {
             /** @description Unique annotation ID */
@@ -1215,5 +1215,5 @@ export interface components {
     headers: never;
     pathItems: never;
 }
-export type $defs = Record<string, never>;
-export type operations = Record<string, never>;
+export type $defs = Record<string, unknown>;
+export type operations = Record<string, unknown>;
