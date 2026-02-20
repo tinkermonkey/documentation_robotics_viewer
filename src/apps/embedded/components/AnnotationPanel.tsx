@@ -15,6 +15,11 @@ import { EmptyState, LoadingState, ErrorState } from './shared';
 import { logError } from '../services/errorTracker';
 import { ERROR_IDS } from '../../../constants/errorIds';
 
+/**
+ * Props for the AnnotationPanel component.
+ * Displays and manages annotations (comments) with @mention support and threaded replies.
+ * Handles creating, resolving, and viewing annotations for architecture elements.
+ */
 export interface AnnotationPanelProps {
   /** Error from annotation loading */
   loadError?: string | null;

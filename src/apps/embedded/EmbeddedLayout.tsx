@@ -77,7 +77,11 @@ export default function EmbeddedLayout() {
   const setReconnecting = useConnectionStore((state) => state.setReconnecting);
   const setError = useConnectionStore((state) => state.setError);
 
-  // Define event handlers with useCallback to prevent stale closures
+  // Define event handlers with useCallback to prevent stale closures. Without useCallback,
+  // the event handler functions registered in useEffect would capture old closure values
+  // (stale state) from when they were last created. Using useCallback with explicit
+  // dependencies ensures handlers are recreated only when their dependencies change,
+  // and event listeners receive the current version of the handlers.
   const handleConnect = useCallback(() => {
     console.log('[EmbeddedLayout] WebSocket connected');
     setConnected();

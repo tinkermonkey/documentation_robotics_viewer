@@ -4,11 +4,13 @@
  */
 
 /**
- * Base WebSocket message format
- * Can include optional type field for protocol messages
+ * Base WebSocket message format with required type discriminator
+ * All WebSocket protocol messages must specify a type field to ensure
+ * valid protocol message construction. Specific message types override
+ * this to provide more restrictive type definitions.
  */
 export interface WebSocketMessage {
-  type?: string;
+  type: string;
   [key: string]: unknown;
 }
 
