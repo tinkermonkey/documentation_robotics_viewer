@@ -8,7 +8,11 @@ import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
 import { Alert } from 'flowbite-react';
 import C4GraphView, { C4GraphViewRef } from '../components/C4GraphView';
-import { C4RightSidebar } from '../components/C4RightSidebar';
+import { LayerRightSidebar } from '../components/shared/LayerRightSidebar';
+import { CrossLayerPanel } from '../components/CrossLayerPanel';
+import AnnotationPanel from '../components/AnnotationPanel';
+import { C4ControlPanel } from '../components/C4ControlPanel';
+import { C4InspectorPanel } from '../components/C4InspectorPanel';
 import SharedLayout from '../components/SharedLayout';
 import { useModelStore } from '../../../core/stores/modelStore';
 import { useAnnotationStore } from '../stores/annotationStore';
@@ -17,8 +21,9 @@ import { embeddedDataLoader } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
 import { LoadingState, ErrorState } from '../components/shared';
 import { ExportButtonGroup } from '../components/shared/ExportButtonGroup';
-import { C4Graph, ContainerType, C4ViewLevel, VALID_CONTAINER_TYPES } from '../types/c4Graph';
+import { C4Graph, ContainerType, C4ViewLevel } from '../types/c4Graph';
 import { C4LayoutAlgorithm } from '../components/C4ControlPanel';
+import { buildC4FilterSections } from '../utils/graphFilterUtils';
 import { C4GraphBuilder } from '../services/c4Parser';
 import {
   exportC4AsPNG,
@@ -119,80 +124,6 @@ function ArchitectureRouteContent() {
     []
   );
 
-  // Calculate filter counts
-  const filterCounts = useMemo(() => {
-    if (!fullGraphRef.current) {
-      const emptyContainerCounts: Record<ContainerType, { visible: number; total: number }> = VALID_CONTAINER_TYPES.reduce(
-        (acc, type) => {
-          acc[type] = { visible: 0, total: 0 };
-          return acc;
-        },
-        {} as Record<ContainerType, { visible: number; total: number }>
-      );
-
-      return {
-        containerTypes: emptyContainerCounts,
-        technologies: {},
-      };
-    }
-
-    const graph = fullGraphRef.current;
-
-    // Validate graph.indexes exists before accessing its properties
-    if (!graph.indexes) {
-      const emptyContainerCounts: Record<ContainerType, { visible: number; total: number }> = VALID_CONTAINER_TYPES.reduce(
-        (acc, type) => {
-          acc[type] = { visible: 0, total: 0 };
-          return acc;
-        },
-        {} as Record<ContainerType, { visible: number; total: number }>
-      );
-
-      return {
-        containerTypes: emptyContainerCounts,
-        technologies: {},
-      };
-    }
-
-    // Count by container type
-    const containerTypeCounts: Record<ContainerType, { visible: number; total: number }> = VALID_CONTAINER_TYPES.reduce(
-      (acc, type) => {
-        acc[type] = { visible: 0, total: 0 };
-        return acc;
-      },
-      {} as Record<ContainerType, { visible: number; total: number }>
-    );
-    for (const containerType of VALID_CONTAINER_TYPES) {
-      const typeNodes = graph.indexes.byContainerType.get(containerType);
-      const total = typeNodes?.size || 0;
-      const visible = selectedContainerTypes.has(containerType) ? total : 0;
-      containerTypeCounts[containerType] = { visible, total };
-    }
-
-    // Count by technology
-    const technologyCounts: Record<string, { visible: number; total: number }> = {};
-    for (const [tech, nodeIds] of graph.indexes.byTechnology) {
-      // Validate that nodeIds is a Set with a valid size property
-      if (!nodeIds || typeof nodeIds.size !== 'number') {
-        continue;
-      }
-      const total = nodeIds.size;
-      const visible = selectedTechnologyStacks.has(tech) ? total : 0;
-      technologyCounts[tech] = { visible, total };
-    }
-
-    return {
-      containerTypes: containerTypeCounts,
-      technologies: technologyCounts,
-    };
-  }, [graphVersion, selectedContainerTypes, selectedTechnologyStacks]);
-
-  // Get available technologies from graph
-  const availableTechnologies = useMemo((): string[] => {
-    if (!fullGraphRef.current) return [];
-    return fullGraphRef.current.metadata.technologies;
-  }, [graphVersion]);
-
   // Callback handlers
   const handleContainerTypeChange = useCallback(
     (containerType: ContainerType, selected: boolean) => {
@@ -224,12 +155,24 @@ function ArchitectureRouteContent() {
 
   const handleClearAllFilters = useCallback(() => {
     const allContainerTypes = new Set(Object.values(ContainerType));
-    const allTechnologies = new Set(availableTechnologies);
+    const allTechnologies = new Set<string>(fullGraphRef.current?.metadata.technologies ?? []);
     setSelectedContainerTypes(allContainerTypes);
     setSelectedTechnologyStacks(allTechnologies);
     setC4VisibleContainerTypes(allContainerTypes);
     setC4VisibleTechnologyStacks(allTechnologies);
-  }, [availableTechnologies, setC4VisibleContainerTypes, setC4VisibleTechnologyStacks]);
+  }, [setC4VisibleContainerTypes, setC4VisibleTechnologyStacks]);
+
+  // Build data-driven filter sections from live graph data (after callbacks are declared)
+  const filterSections = useMemo(() => {
+    if (!fullGraphRef.current?.indexes) return [];
+    return buildC4FilterSections(
+      fullGraphRef.current,
+      selectedContainerTypes,
+      selectedTechnologyStacks,
+      handleContainerTypeChange,
+      handleTechnologyChange,
+    );
+  }, [graphVersion, selectedContainerTypes, selectedTechnologyStacks, handleContainerTypeChange, handleTechnologyChange]);
 
   const handleLayoutChange = useCallback(
     (layout: C4LayoutAlgorithm) => {
@@ -364,37 +307,46 @@ function ArchitectureRouteContent() {
       showLeftSidebar={false}
       showRightSidebar={true}
       rightSidebarContent={
-        <C4RightSidebar
-          selectedContainerTypes={selectedContainerTypes}
-          onContainerTypeChange={handleContainerTypeChange}
-          selectedTechnologyStacks={selectedTechnologyStacks}
-          onTechnologyChange={handleTechnologyChange}
-          onClearAllFilters={handleClearAllFilters}
-          filterCounts={filterCounts}
-          availableTechnologies={availableTechnologies}
-          selectedLayout={selectedLayout}
-          currentViewLevel={c4Preferences.viewLevel}
-          onLayoutChange={handleLayoutChange}
-          onViewLevelChange={handleViewLevelChange}
-          onFitToView={handleFitToView}
-          focusModeEnabled={c4Preferences.focusContextEnabled}
-          onFocusModeToggle={handleFocusModeToggle}
-          onClearHighlighting={handleClearHighlighting}
-          isHighlightingActive={c4Preferences.pathTracing.mode !== 'none'}
-          isLayouting={false}
-          onExportPNG={handleExportPNG}
-          onExportSVG={handleExportSVG}
-          onExportGraphData={handleExportGraphData}
-          hasSelectedContainer={!!c4Preferences.selectedContainerId}
-          scenarioPreset={c4Preferences.scenarioPreset}
-          onScenarioPresetChange={setC4ScenarioPreset}
-          selectedNodeId={c4Preferences.selectedNodeId}
-          graph={fullGraphRef.current || undefined}
-          inspectorPanelVisible={c4Preferences.inspectorPanelVisible}
-          onTraceUpstream={handleTraceUpstream}
-          onTraceDownstream={handleTraceDownstream}
-          onDrillDown={handleDrillDown}
-          onCloseInspector={handleCloseInspector}
+        <LayerRightSidebar
+          filterSections={filterSections}
+          onClearFilters={handleClearAllFilters}
+          controlContent={
+            <C4ControlPanel
+              selectedLayout={selectedLayout}
+              currentViewLevel={c4Preferences.viewLevel}
+              onLayoutChange={handleLayoutChange}
+              onViewLevelChange={handleViewLevelChange}
+              onFitToView={handleFitToView}
+              focusModeEnabled={c4Preferences.focusContextEnabled}
+              onFocusModeToggle={handleFocusModeToggle}
+              onClearHighlighting={handleClearHighlighting}
+              isHighlightingActive={c4Preferences.pathTracing.mode !== 'none'}
+              isLayouting={false}
+              onExportPNG={handleExportPNG}
+              onExportSVG={handleExportSVG}
+              onExportGraphData={handleExportGraphData}
+              hasSelectedContainer={!!c4Preferences.selectedContainerId}
+              scenarioPreset={c4Preferences.scenarioPreset}
+              onScenarioPresetChange={setC4ScenarioPreset}
+            />
+          }
+          inspectorContent={
+            c4Preferences.inspectorPanelVisible &&
+            c4Preferences.selectedNodeId &&
+            fullGraphRef.current ? (
+              <C4InspectorPanel
+                selectedNodeId={c4Preferences.selectedNodeId}
+                graph={fullGraphRef.current}
+                onTraceUpstream={handleTraceUpstream}
+                onTraceDownstream={handleTraceDownstream}
+                onDrillDown={handleDrillDown}
+                onClose={handleCloseInspector}
+              />
+            ) : undefined
+          }
+          annotationContent={<AnnotationPanel />}
+          crossLayerContent={<CrossLayerPanel />}
+          testId="c4-right-sidebar"
         />
       }
     >

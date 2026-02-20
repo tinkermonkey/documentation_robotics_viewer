@@ -3,7 +3,11 @@ import { ReactFlowProvider } from '@xyflow/react';
 import { useSearch } from '@tanstack/react-router';
 import { Alert } from 'flowbite-react';
 import MotivationGraphView, { MotivationGraphViewRef } from '../components/MotivationGraphView';
-import { MotivationRightSidebar } from '../components/MotivationRightSidebar';
+import { LayerRightSidebar } from '../components/shared/LayerRightSidebar';
+import { CrossLayerPanel } from '../components/CrossLayerPanel';
+import AnnotationPanel from '../components/AnnotationPanel';
+import { MotivationControlPanel } from '../components/MotivationControlPanel';
+import { MotivationInspectorPanel } from '../components/MotivationInspectorPanel';
 import SharedLayout from '../components/SharedLayout';
 import { useModelStore } from '../../../core/stores/modelStore';
 import { useAnnotationStore } from '../stores/annotationStore';
@@ -14,6 +18,7 @@ import { LoadingState, ErrorState } from '../components/shared';
 import { ExportButtonGroup } from '../components/shared/ExportButtonGroup';
 import { MotivationElementType, MotivationRelationshipType, MotivationGraph } from '../types/motivationGraph';
 import { LayoutAlgorithm } from '../components/MotivationControlPanel';
+import { buildMotivationFilterSections } from '../utils/graphFilterUtils';
 import { MotivationGraphBuilder } from '../services/motivationGraphBuilder';
 import {
   exportAsPNG,
@@ -114,52 +119,6 @@ function MotivationRouteContent() {
     []
   );
 
-  // Calculate filter counts
-  const filterCounts = useMemo(() => {
-    if (!fullGraphRef.current) {
-      return {
-        elements: {} as Record<MotivationElementType, { visible: number; total: number }>,
-        relationships: {} as Record<MotivationRelationshipType, { visible: number; total: number }>,
-      };
-    }
-
-    const graph = fullGraphRef.current;
-
-    // Validate graph structure
-    if (!graph.nodes || !graph.edges) {
-      return {
-        elements: {} as Record<MotivationElementType, { visible: number; total: number }>,
-        relationships: {} as Record<MotivationRelationshipType, { visible: number; total: number }>,
-      };
-    }
-
-    // Count elements by type
-    const elementCounts: Record<MotivationElementType, { visible: number; total: number }> = {} as Record<MotivationElementType, { visible: number; total: number }>;
-    for (const elementType of Object.values(MotivationElementType)) {
-      const total = Array.from(graph.nodes.values()).filter(
-        (n) => n.element.type === elementType
-      ).length;
-      const visible = selectedElementTypes.has(elementType) ? total : 0;
-      elementCounts[elementType] = { visible, total };
-    }
-
-    // Count relationships by type
-    const relationshipCounts: Record<
-      MotivationRelationshipType,
-      { visible: number; total: number }
-    > = {} as Record<MotivationRelationshipType, { visible: number; total: number }>;
-    for (const relationshipType of Object.values(MotivationRelationshipType)) {
-      const total = Array.from(graph.edges.values()).filter((e) => e.type === relationshipType).length;
-      const visible = selectedRelationshipTypes.has(relationshipType) ? total : 0;
-      relationshipCounts[relationshipType] = { visible, total };
-    }
-
-    return {
-      elements: elementCounts,
-      relationships: relationshipCounts,
-    };
-  }, [graphVersion, selectedElementTypes, selectedRelationshipTypes]);
-
   // Callback handlers
   const handleElementTypeChange = useCallback(
     (elementType: MotivationElementType, selected: boolean) => {
@@ -197,6 +156,18 @@ function MotivationRouteContent() {
     setVisibleElementTypes(allElementTypes);
     setVisibleRelationshipTypes(allRelationshipTypes);
   }, [setVisibleElementTypes, setVisibleRelationshipTypes]);
+
+  // Build data-driven filter sections from live graph data (after callbacks are declared)
+  const filterSections = useMemo(() => {
+    if (!fullGraphRef.current?.nodes || !fullGraphRef.current?.edges) return [];
+    return buildMotivationFilterSections(
+      fullGraphRef.current,
+      selectedElementTypes,
+      selectedRelationshipTypes,
+      handleElementTypeChange,
+      handleRelationshipTypeChange,
+    );
+  }, [graphVersion, selectedElementTypes, selectedRelationshipTypes, handleElementTypeChange, handleRelationshipTypeChange]);
 
   const handleFitToView = useCallback(() => {
     graphViewRef.current?.fitView();
@@ -351,33 +322,43 @@ function MotivationRouteContent() {
       showLeftSidebar={false}
       showRightSidebar={true}
       rightSidebarContent={
-        <MotivationRightSidebar
-          selectedElementTypes={selectedElementTypes}
-          onElementTypesChange={handleElementTypeChange}
-          selectedRelationshipTypes={selectedRelationshipTypes}
-          onRelationshipTypesChange={handleRelationshipTypeChange}
-          onClearAllFilters={handleClearAllFilters}
-          filterCounts={filterCounts}
-          selectedLayout={selectedLayout}
-          onLayoutChange={setSelectedLayout}
-          onFitToView={handleFitToView}
-          focusModeEnabled={motivationPreferences.focusContextEnabled}
-          onFocusModeToggle={setFocusContextEnabled}
-          onClearHighlighting={handleClearHighlighting}
-          isHighlightingActive={motivationPreferences.pathTracing.mode !== 'none'}
-          isLayouting={false}
-          onExportPNG={handleExportPNG}
-          onExportSVG={handleExportSVG}
-          onExportGraphData={handleExportGraphData}
-          onExportTraceabilityReport={handleExportTraceabilityReport}
-          selectedNodeId={motivationPreferences.selectedNodeId}
-          graph={fullGraphRef.current || undefined}
-          onTraceUpstream={handleTraceUpstream}
-          onTraceDownstream={handleTraceDownstream}
-          onShowNetwork={handleShowNetwork}
-          onFocusOnElement={handleFocusOnElement}
-          onCloseInspector={handleCloseInspector}
-          inspectorPanelVisible={motivationPreferences.inspectorPanelVisible}
+        <LayerRightSidebar
+          filterSections={filterSections}
+          onClearFilters={handleClearAllFilters}
+          controlContent={
+            <MotivationControlPanel
+              selectedLayout={selectedLayout}
+              onLayoutChange={setSelectedLayout}
+              onFitToView={handleFitToView}
+              focusModeEnabled={motivationPreferences.focusContextEnabled}
+              onFocusModeToggle={setFocusContextEnabled}
+              onClearHighlighting={handleClearHighlighting}
+              isHighlightingActive={motivationPreferences.pathTracing.mode !== 'none'}
+              isLayouting={false}
+              onExportPNG={handleExportPNG}
+              onExportSVG={handleExportSVG}
+              onExportGraphData={handleExportGraphData}
+              onExportTraceabilityReport={handleExportTraceabilityReport}
+            />
+          }
+          inspectorContent={
+            motivationPreferences.inspectorPanelVisible &&
+            motivationPreferences.selectedNodeId &&
+            fullGraphRef.current ? (
+              <MotivationInspectorPanel
+                selectedNodeId={motivationPreferences.selectedNodeId}
+                graph={fullGraphRef.current}
+                onTraceUpstream={handleTraceUpstream}
+                onTraceDownstream={handleTraceDownstream}
+                onShowNetwork={handleShowNetwork}
+                onFocusOnElement={handleFocusOnElement}
+                onClose={handleCloseInspector}
+              />
+            ) : undefined
+          }
+          annotationContent={<AnnotationPanel />}
+          crossLayerContent={<CrossLayerPanel />}
+          testId="motivation-right-sidebar"
         />
       }
     >
