@@ -47,7 +47,9 @@ interface WebSocketClientInterface {
   send(message: WebSocketMessage): boolean;
   on<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void;
   off<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void;
+  /** Direct WebSocket connection state (true only if ws.readyState === OPEN) */
   readonly isConnected: boolean;
+  /** High-level state machine: connecting, connected, disconnected, or reconnecting */
   readonly connectionState: 'connecting' | 'connected' | 'disconnected' | 'reconnecting';
   readonly transportMode: 'websocket' | 'rest' | 'detecting';
   // Test hooks - only available in test environments
@@ -542,7 +544,6 @@ export class WebSocketClient implements WebSocketClientInterface {
 
 // Detect if we're in a test/story environment (Storybook or Playwright)
 // IMPORTANT: Only check explicit flags, not port-based heuristics
-// Port-based detection (e.g., port 61001) can accidentally activate in production-like environments
 function isTestEnvironment(): boolean {
   if (typeof window === 'undefined') return false;
 

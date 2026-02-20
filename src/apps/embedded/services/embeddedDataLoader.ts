@@ -110,6 +110,7 @@ export interface SchemaDefinition {
   minLength?: number;
   maxLength?: number;
   pattern?: string;
+  format?: string;
   $ref?: string;
   definitions?: Record<string, SchemaDefinition>;
   [key: string]: unknown;

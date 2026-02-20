@@ -69,8 +69,8 @@ test.describe('Environment Variable Overrides', () => {
     // Test that URL is properly formatted and can be reached or fails gracefully
     try {
       const response = await request.get(`${apiUrl}/health`, { timeout: 5000 });
-      // Accept any response status - we're testing URL resolution works
-      expect(response.status).toBeGreaterThan(0);
+      // Validate HTTP success response (2xx or 3xx status codes)
+      expect(response.status).toBeLessThan(400);
     } catch (error) {
       // Server not running or unreachable is acceptable - we're validating URL format
       const message = error instanceof Error ? error.message : String(error);

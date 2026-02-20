@@ -64,9 +64,12 @@ export interface DataLoaderResult<T> {
  *
  * Manages loading, error, and data state, and optionally:
  * - Executes loadFn on mount if immediate is true (default)
- * - Calls success/error callbacks with proper error handling
+ * - Calls success/error callbacks with proper error handling (failures are tracked via error tracking service)
  * - Subscribes to WebSocket events and reloads on event
  * - Cleans up subscriptions on unmount
+ *
+ * Note: Callback failures are logged to the error tracking service for observability.
+ * Both onSuccess and onError callback failures are captured and available in callbackError state.
  *
  * @param options Configuration options
  * @returns Data loading state and reload function
