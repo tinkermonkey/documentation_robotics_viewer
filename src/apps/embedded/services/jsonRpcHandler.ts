@@ -19,10 +19,10 @@ import type { WebSocketClientInterface } from './websocketClient';
 /**
  * Represents a pending JSON-RPC request awaiting a response
  */
-interface PendingRequest {
+interface PendingRequest<T = unknown> {
   id: string | number;
   method: string;
-  resolve: (value: unknown) => void;
+  resolve: (value: T) => void;
   reject: (error: Error) => void;
   timeout: NodeJS.Timeout;
 }
@@ -49,7 +49,7 @@ export class JsonRpcErrorResult extends Error {
  * Provides type-safe JSON-RPC 2.0 message handling over WebSocket
  */
 export class JsonRpcHandler {
-  private pendingRequests: Map<string | number, PendingRequest> = new Map();
+  private pendingRequests: Map<string | number, PendingRequest<unknown>> = new Map();
   private notificationHandlers: Map<string, Set<NotificationHandler>> = new Map();
   private requestTimeout: number = 30000; // 30 seconds
   private requestIdCounter: number = 1;
@@ -206,7 +206,7 @@ export class JsonRpcHandler {
       request.params = params;
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise<T>((resolve, reject) => {
       const timeoutMs = timeout ?? this.requestTimeout;
       const timeoutHandle = setTimeout(() => {
         this.pendingRequests.delete(id);
@@ -220,7 +220,7 @@ export class JsonRpcHandler {
       this.pendingRequests.set(id, {
         id,
         method,
-        resolve: resolve as (value: unknown) => void,
+        resolve: (value: unknown) => resolve(value as T),
         reject,
         timeout: timeoutHandle,
       });
