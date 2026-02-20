@@ -28,12 +28,15 @@ interface WebSocketClientInterface {
   connect(): void;
   disconnect(): void;
   subscribe(topics: string[]): void;
-  send(message: WebSocketMessage): void;
+  send(message: WebSocketMessage): boolean;
   on(event: string, handler: EventHandler): void;
   off(event: string, handler: EventHandler): void;
   readonly isConnected: boolean;
   readonly connectionState: 'connecting' | 'connected' | 'disconnected' | 'reconnecting';
   readonly transportMode: 'websocket' | 'rest' | 'detecting';
+  // Test hooks - only available in test environments
+  triggerCloseForTesting?: () => void;
+  simulateMaxReconnectAttemptsForTesting?: () => void;
 }
 
 export class WebSocketClient implements WebSocketClientInterface {
@@ -225,12 +228,28 @@ export class WebSocketClient implements WebSocketClientInterface {
 
   /**
    * Send a message to the server
+   * @returns true if message was sent, false if connection is not open
    */
-  send(message: WebSocketMessage): void {
+  send(message: WebSocketMessage): boolean {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(message));
+      try {
+        this.ws.send(JSON.stringify(message));
+        return true;
+      } catch (error) {
+        logError(
+          ERROR_IDS.WS_SEND_FAILED,
+          'Failed to send WebSocket message',
+          { error: error instanceof Error ? error.message : String(error), message }
+        );
+        return false;
+      }
     } else {
-      console.warn('[WebSocket] Cannot send message, not connected');
+      logError(
+        ERROR_IDS.WS_NOT_CONNECTED,
+        'Cannot send message, WebSocket not connected',
+        { connectionState: this.ws?.readyState, message }
+      );
+      return false;
     }
   }
 
@@ -543,51 +562,7 @@ declare global {
 // In production, use the real WebSocketClient
 let websocketClient: WebSocketClientInterface;
 
-if (isTestEnvironment()) {
-  // Import mock client dynamically to avoid bundling it in production
-  // Create a simple inline mock that implements the same interface
-  const mockHandlers = new Map<string, Set<EventHandler>>();
-
-  websocketClient = {
-    setToken: () => {},
-    connect: () => {
-      // Immediately emit REST mode events without any WebSocket connection attempt
-      setTimeout(() => {
-        const handlers = mockHandlers.get('rest-mode');
-        if (handlers) handlers.forEach(h => h({}));
-        const connectHandlers = mockHandlers.get('connect');
-        if (connectHandlers) connectHandlers.forEach(h => h({}));
-      }, 0);
-    },
-    disconnect: () => {},
-    subscribe: () => {},
-    send: () => {},
-    on: (event: string, handler: EventHandler) => {
-      if (!mockHandlers.has(event)) {
-        mockHandlers.set(event, new Set());
-      }
-      mockHandlers.get(event)!.add(handler);
-    },
-    off: (event: string, handler: EventHandler) => {
-      const handlers = mockHandlers.get(event);
-      if (handlers) handlers.delete(handler);
-    },
-    // TEST HOOKS for Playwright tests
-    triggerCloseForTesting: () => {
-      console.log('[WebSocket Mock] TEST: Triggering close event');
-      const handlers = mockHandlers.get('close');
-      if (handlers) handlers.forEach(h => h({ code: 1000, reason: 'Test-triggered close' }));
-    },
-    simulateMaxReconnectAttemptsForTesting: () => {
-      console.log('[WebSocket Mock] TEST: Simulating max reconnect attempts');
-      const handlers = mockHandlers.get('max-reconnect-attempts');
-      if (handlers) handlers.forEach(h => h({ attempts: 10, isTest: true }));
-    },
-    get isConnected() { return true; },
-    get connectionState() { return 'connected' as const; },
-    get transportMode() { return 'rest' as const; }
-  };
-} else if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined') {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const wsUrl = `${protocol}//${window.location.host}/ws`;
   websocketClient = new WebSocketClient(wsUrl, null);
@@ -607,7 +582,7 @@ if (isTestEnvironment()) {
     },
     disconnect: () => {},
     subscribe: () => {},
-    send: () => {},
+    send: () => true,
     on: (event: string, handler: EventHandler) => {
       if (!mockHandlers.has(event)) {
         mockHandlers.set(event, new Set());

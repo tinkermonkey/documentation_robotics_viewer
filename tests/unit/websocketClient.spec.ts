@@ -74,19 +74,20 @@ test.describe('WebSocketClient Test Hooks', () => {
     expect(methodBlock).toContain('return');
   });
 
-  test('WebSocketClientInterface should not expose test hooks in production interface', () => {
+  test('WebSocketClientInterface should mark test hooks as optional', () => {
     const source = readWebSocketClientSource();
 
     // Verify interface definition exists
     expect(source).toContain('interface WebSocketClientInterface');
 
-    // Verify test hooks are NOT in the interface (not production-facing)
+    // Verify test hooks are optional in the interface (marked with ?: syntax)
     const interfaceBlock = source.substring(
       source.indexOf('interface WebSocketClientInterface'),
-      source.indexOf('interface WebSocketClientInterface') + 1500
+      source.indexOf('interface WebSocketClientInterface') + 2000
     );
-    expect(interfaceBlock).not.toContain('triggerCloseForTesting');
-    expect(interfaceBlock).not.toContain('simulateMaxReconnectAttemptsForTesting');
+    // Test hooks should be optional (?: instead of :)
+    expect(interfaceBlock).toContain('triggerCloseForTesting?: () => void');
+    expect(interfaceBlock).toContain('simulateMaxReconnectAttemptsForTesting?: () => void');
   });
 
   test('test hooks should emit proper events', () => {

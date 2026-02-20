@@ -4,6 +4,7 @@
  * with severity levels and recovery strategies
  */
 
+import type { ErrorId } from '@/constants/errorIds';
 import {
   ClassifiedException,
   ExceptionCategory,
@@ -53,7 +54,7 @@ const ERROR_PATTERNS = {
  * Classify an exception based on error message, type, and context
  */
 export function classifyException(
-  errorId: string,
+  errorId: ErrorId,
   message: string,
   originalError?: Error,
   context?: Record<string, any>

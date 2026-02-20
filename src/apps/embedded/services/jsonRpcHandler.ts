@@ -197,7 +197,19 @@ export class JsonRpcHandler {
   ): Promise<void> {
     try {
       const websocketClient = await this.getWebSocketClient();
-      websocketClient.send(request as any);
+      const sendSuccess = websocketClient.send(request as any);
+
+      if (!sendSuccess) {
+        this.pendingRequests.delete(id);
+        clearTimeout(timeoutHandle);
+        const errorMessage = `Failed to send JSON-RPC request: WebSocket not connected`;
+        logError(
+          ERROR_IDS.JSONRPC_SEND_REQUEST_FAILED,
+          errorMessage,
+          { method: request.method }
+        );
+        reject(new Error(errorMessage));
+      }
     } catch (error) {
       this.pendingRequests.delete(id);
       clearTimeout(timeoutHandle);
@@ -220,7 +232,15 @@ export class JsonRpcHandler {
   ): Promise<void> {
     try {
       const websocketClient = await this.getWebSocketClient();
-      websocketClient.send(notification as any);
+      const sendSuccess = websocketClient.send(notification as any);
+
+      if (!sendSuccess) {
+        logError(
+          ERROR_IDS.JSONRPC_SEND_NOTIFICATION_FAILED,
+          `Failed to send notification for method '${method}': WebSocket not connected`,
+          { method }
+        );
+      }
     } catch (error) {
       logError(
         ERROR_IDS.JSONRPC_SEND_NOTIFICATION_FAILED,
