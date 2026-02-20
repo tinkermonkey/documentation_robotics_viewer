@@ -26,7 +26,7 @@ import { edgeTypes } from '../../../core/edges';
 import { C4GraphBuilder } from '../services/c4Parser';
 import { C4ViewTransformer } from '../services/c4ViewTransformer';
 import { ErrorBoundary } from './ErrorBoundary';
-import { C4BreadcrumbNav } from './C4BreadcrumbNav';
+import { BreadcrumbNav, BreadcrumbSegment } from './shared/BreadcrumbNav';
 import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import {
   C4Graph,
@@ -241,6 +241,49 @@ const C4GraphView = React.forwardRef<C4GraphViewRef, C4GraphViewProps>(
     );
 
     /**
+     * Map C4 breadcrumb segments to BreadcrumbNav segments
+     */
+    const c4BreadcrumbSegments: BreadcrumbSegment[] = useMemo(
+      () =>
+        breadcrumb.map((segment) => ({
+          id: segment.nodeId || segment.level,
+          label: segment.label,
+          type: segment.level,
+        })),
+      [breadcrumb]
+    );
+
+    const C4_VIEW_LEVEL_LABELS: Record<C4ViewLevel, string> = {
+      context: 'System Context',
+      container: 'Container',
+      component: 'Component',
+      code: 'Code',
+    };
+
+    /**
+     * Adapt BreadcrumbNav's string-based onNavigate to C4 view level navigation
+     */
+    const handleBreadcrumbNavigate = useCallback(
+      (segmentId: string) => {
+        if (segmentId === 'root') {
+          handleViewLevelChange('context');
+          return;
+        }
+        const segment = breadcrumb.find((s) => (s.nodeId || s.level) === segmentId);
+        if (!segment) return;
+        if (segment.level === 'context') {
+          handleViewLevelChange('context');
+        } else if (segment.level === 'container') {
+          handleViewLevelChange('container', segment.nodeId);
+        } else if (segment.level === 'component') {
+          const containerSegment = breadcrumb.find((s) => s.level === 'container');
+          handleViewLevelChange('component', containerSegment?.nodeId, segment.nodeId);
+        }
+      },
+      [breadcrumb, handleViewLevelChange]
+    );
+
+    /**
      * Handle node click - drill-down or selection
      */
     const onNodeClick: NodeMouseHandler = useCallback(
@@ -312,10 +355,10 @@ const C4GraphView = React.forwardRef<C4GraphViewRef, C4GraphViewProps>(
         <div className="flex flex-col w-full h-full bg-gray-50 dark:bg-gray-950 relative c4-graph-viewer">
           {/* Breadcrumb Navigation */}
           {breadcrumb.length > 0 && (
-            <C4BreadcrumbNav
-              breadcrumb={breadcrumb}
-              currentViewLevel={c4Preferences.viewLevel}
-              onNavigate={handleViewLevelChange}
+            <BreadcrumbNav
+              segments={c4BreadcrumbSegments}
+              currentLevel={C4_VIEW_LEVEL_LABELS[c4Preferences.viewLevel]}
+              onNavigate={handleBreadcrumbNavigate}
             />
           )}
 
