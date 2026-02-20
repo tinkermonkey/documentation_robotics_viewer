@@ -47,6 +47,9 @@ export const ERROR_IDS = {
 
   // Session Storage Errors
   SESSION_STORAGE_PARSE_ERROR: 'STORAGE_001',
+
+  // Authentication Errors
+  AUTH_COOKIE_DECODE_FAILED: 'AUTH_001',
 } as const;
 
 export type ErrorId = typeof ERROR_IDS[keyof typeof ERROR_IDS];

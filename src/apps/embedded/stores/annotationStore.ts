@@ -7,15 +7,15 @@ import { create } from 'zustand';
 import { Annotation } from '../types/annotations';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
 import { logError } from '../services/errorTracker';
-import { ERROR_IDS } from '@/constants/errorIds';
+import { ERROR_IDS, type ErrorId } from '@/constants/errorIds';
 
 /**
  * Handle errors in async store mutations
  * Sets error state, logs error with structured tracking, and rethrows
  */
 function handleAnnotationError(
-  set: Parameters<typeof create>[0],
-  errorId: string,
+  set: (partial: Partial<AnnotationStore>) => void,
+  errorId: ErrorId,
   errorMessage: string,
   context: Record<string, unknown>,
   error: unknown,
