@@ -85,20 +85,20 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
 
   // Async actions with optimistic updates
   createAnnotation: async (elementId, content, author) => {
+    const tempId = `temp-${Date.now()}`;
+    const tempAnnotation: Annotation = {
+      id: tempId,
+      elementId,
+      author,
+      content,
+      createdAt: new Date().toISOString(),
+      resolved: false,
+    };
+
     try {
       set({ error: null });
 
       // Optimistic update: create temporary annotation
-      const tempId = `temp-${Date.now()}`;
-      const tempAnnotation: Annotation = {
-        id: tempId,
-        elementId,
-        author,
-        content,
-        createdAt: new Date().toISOString(),
-        resolved: false,
-      };
-
       get().addAnnotation(tempAnnotation);
 
       // Call API
@@ -119,6 +119,8 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create annotation';
       set({ error: errorMessage });
+      // Rollback optimistic update: remove temporary annotation
+      get().removeAnnotation(tempId);
       // Use structured error logging instead of console.error
       logError(
         ERROR_IDS.ANNOTATION_CREATE_FAILED,

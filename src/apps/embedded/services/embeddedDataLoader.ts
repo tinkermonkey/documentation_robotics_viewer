@@ -433,7 +433,7 @@ export class EmbeddedDataLoader {
       version: data.version,
       totalLayers: data.metadata?.statistics?.total_layers,
       totalElements: data.metadata?.statistics?.total_elements,
-      layerCount: Object.keys(data.layers).length
+      layerCount: Object.keys(data.layers || {}).length
     });
 
     // Normalize model data: ensure all elements have required visual properties
