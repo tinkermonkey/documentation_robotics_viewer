@@ -57,7 +57,7 @@ export function classifyException(
   errorId: ErrorId,
   message: string,
   originalError?: Error,
-  context?: Record<string, any>
+  context?: Record<string, unknown>
 ): ClassifiedException {
   const timestamp = Date.now();
   const stackTrace = originalError?.stack;
@@ -197,7 +197,7 @@ function detectCategory(
  */
 function detectSeverity(
   category: ExceptionCategory,
-  context?: Record<string, any>
+  context?: Record<string, unknown>
 ): ExceptionSeverity {
   // Check context for severity override first
   if (context?.isCritical) {
@@ -460,7 +460,7 @@ function generateDevMessage(
  * Detect affected features based on context and error category
  */
 function detectAffectedFeatures(
-  context?: Record<string, any>,
+  context?: Record<string, unknown>,
   category?: ExceptionCategory
 ): string[] {
   const features: string[] = [];

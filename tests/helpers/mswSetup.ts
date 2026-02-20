@@ -9,7 +9,7 @@
  */
 
 import { setupServer } from 'msw/node';
-import { handlers } from '../../src/core/services/mswHandlers';
+import { handlers } from './mswHandlers';
 
 /**
  * Global MSW server instance for tests

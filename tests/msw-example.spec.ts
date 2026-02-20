@@ -26,7 +26,7 @@
 import { test, expect } from '@playwright/test';
 import { setupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
-import { handlers } from '../src/core/services/mswHandlers';
+import { handlers } from './helpers/mswHandlers';
 
 /**
  * Example: Node.js API client tests with MSW

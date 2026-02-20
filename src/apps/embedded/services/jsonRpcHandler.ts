@@ -33,6 +33,18 @@ interface PendingRequest {
 type NotificationHandler = (params: Record<string, unknown>) => void;
 
 /**
+ * Typed error class for JSON-RPC error results
+ * Extends Error with code and rpcError properties for better type safety
+ */
+class JsonRpcErrorResult extends Error {
+  constructor(public code: number, public rpcError: JsonRpcError, message: string) {
+    super(message);
+    this.name = 'JsonRpcErrorResult';
+    Object.setPrototypeOf(this, JsonRpcErrorResult.prototype);
+  }
+}
+
+/**
  * JSON-RPC Handler Service
  * Provides type-safe JSON-RPC 2.0 message handling over WebSocket
  */
@@ -411,10 +423,7 @@ export class JsonRpcHandler {
    */
   private createError(error: JsonRpcError, method: string): Error {
     const message = `JSON-RPC Error (${error.code}): ${error.message} [method: ${method}]`;
-    const err = new Error(message);
-    (err as any).code = error.code;
-    (err as any).rpcError = error;
-    return err;
+    return new JsonRpcErrorResult(error.code, error, message);
   }
 
   /**

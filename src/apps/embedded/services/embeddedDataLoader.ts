@@ -362,9 +362,14 @@ export class EmbeddedDataLoader {
     // Exclude snake_case versions to ensure consistent interface
     const { schema_count: _, relationship_catalog: __, ...rest } = data;
     return {
-      ...rest as Omit<typeof data, 'schema_count' | 'relationship_catalog'>,
+      version: rest.version ?? '',
+      type: rest.type ?? '',
+      schemas: (rest.schemas ?? {}) as Record<string, SchemaDefinition>,
       schemaCount,
-      relationshipCatalog
+      relationshipCatalog,
+      ...(rest.description !== undefined && { description: rest.description }),
+      ...(rest.source !== undefined && { source: rest.source }),
+      ...(rest.manifest !== undefined && { manifest: rest.manifest })
     };
   }
 

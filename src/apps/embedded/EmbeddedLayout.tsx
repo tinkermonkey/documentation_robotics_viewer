@@ -124,15 +124,16 @@ export default function EmbeddedLayout() {
     connectionStore.setReconnecting(data.attempt, data.delay);
   };
 
-  const handleError = (data: { error: Event }) => {
+  const handleError = (data: { error: Event } | { code: string; message: string }) => {
     // Only suppress WebSocket errors in explicit mock environments
     // DO NOT use port detection (61001) as it could be production port
     const isTestEnv = typeof window !== 'undefined' && (
-      (window as any).__STORYBOOK_MOCK_WEBSOCKET__ ||  // Explicit mock flag for Storybook
-      (window as any).__PLAYWRIGHT__  // Playwright test environment
+      window.__STORYBOOK_MOCK_WEBSOCKET__ ||  // Explicit mock flag for Storybook
+      window.__PLAYWRIGHT__  // Playwright test environment
     );
     if (!isTestEnv) {
-      console.error('[EmbeddedLayout] WebSocket error:', data.error);
+      const errorDetail = 'error' in data ? data.error : `${data.code}: ${data.message}`;
+      console.error('[EmbeddedLayout] WebSocket error:', errorDetail);
     }
     connectionStore.setError('Connection error');
   };
