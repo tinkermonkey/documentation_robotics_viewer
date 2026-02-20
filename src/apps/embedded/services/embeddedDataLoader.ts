@@ -208,8 +208,9 @@ export type ChangesetChange =
 /**
  * Type guard for ChangesetChange discriminated union
  * Validates that JSON deserialized from API conforms to expected ChangesetChange type
+ * @internal For testing only - do not use in application code
  */
-function isChangesetChange(value: unknown): value is ChangesetChange {
+export function isChangesetChange(value: unknown): value is ChangesetChange {
   if (typeof value !== 'object' || value === null) return false;
 
   const obj = value as Record<string, unknown>;
@@ -246,8 +247,9 @@ function isChangesetChange(value: unknown): value is ChangesetChange {
 /**
  * Validate an array of changes from API response
  * @throws Error if any change is invalid
+ * @internal For testing only - do not use in application code
  */
-function validateChangesetChanges(
+export function validateChangesetChanges(
   changes: unknown[]
 ): asserts changes is ChangesetChange[] {
   if (!Array.isArray(changes)) {

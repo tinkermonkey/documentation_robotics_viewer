@@ -5,12 +5,8 @@
 
 import { test, expect } from '@playwright/test';
 
-// Import the module to test the type guards
-import { EmbeddedDataLoader } from '../../src/apps/embedded/services/embeddedDataLoader';
-
-// We need to test the private type guard functions
-// Since they're private, we'll need to test through the public API (loadChangeset)
-// or by directly importing them if exposed
+// Import the type guard functions for testing
+import { isChangesetChange, validateChangesetChanges } from '../../src/apps/embedded/services/embeddedDataLoader';
 
 test.describe('ChangesetChange Type Guards', () => {
   test('should validate valid add operation', () => {
@@ -23,11 +19,8 @@ test.describe('ChangesetChange Type Guards', () => {
       data: { name: 'Test Function' }
     };
 
-    // This should not throw
-    expect(() => {
-      // Validates through the type structure
-      JSON.stringify(validAdd);
-    }).not.toThrow();
+    // Test that the type guard correctly identifies valid add operations
+    expect(isChangesetChange(validAdd)).toBe(true);
   });
 
   test('should validate valid update operation', () => {
@@ -41,9 +34,8 @@ test.describe('ChangesetChange Type Guards', () => {
       after: { name: 'New Name' }
     };
 
-    expect(() => {
-      JSON.stringify(validUpdate);
-    }).not.toThrow();
+    // Test that the type guard correctly identifies valid update operations
+    expect(isChangesetChange(validUpdate)).toBe(true);
   });
 
   test('should validate valid delete operation', () => {
@@ -56,9 +48,8 @@ test.describe('ChangesetChange Type Guards', () => {
       before: { name: 'Deleted Function' }
     };
 
-    expect(() => {
-      JSON.stringify(validDelete);
-    }).not.toThrow();
+    // Test that the type guard correctly identifies valid delete operations
+    expect(isChangesetChange(validDelete)).toBe(true);
   });
 
   test('should reject add operation without data field', () => {
@@ -71,8 +62,8 @@ test.describe('ChangesetChange Type Guards', () => {
       // Missing 'data' field
     };
 
-    // This is not strictly a type check at compile time, but validates structure
-    expect(typeof invalidAdd.data).toBe('undefined');
+    // Test that the type guard rejects invalid add operations
+    expect(isChangesetChange(invalidAdd)).toBe(false);
   });
 
   test('should reject update operation without before/after fields', () => {
@@ -85,8 +76,8 @@ test.describe('ChangesetChange Type Guards', () => {
       // Missing 'before' and 'after' fields
     };
 
-    expect(typeof invalidUpdate.before).toBe('undefined');
-    expect(typeof invalidUpdate.after).toBe('undefined');
+    // Test that the type guard rejects invalid update operations
+    expect(isChangesetChange(invalidUpdate)).toBe(false);
   });
 
   test('should reject delete operation without before field', () => {
@@ -99,7 +90,8 @@ test.describe('ChangesetChange Type Guards', () => {
       // Missing 'before' field
     };
 
-    expect(typeof invalidDelete.before).toBe('undefined');
+    // Test that the type guard rejects invalid delete operations
+    expect(isChangesetChange(invalidDelete)).toBe(false);
   });
 
   test('should reject change without required common fields', () => {
@@ -109,8 +101,8 @@ test.describe('ChangesetChange Type Guards', () => {
       // Missing timestamp, element_id, layer, element_type
     };
 
-    expect(typeof invalidChange.timestamp).toBe('undefined');
-    expect(typeof invalidChange.element_id).toBe('undefined');
+    // Test that the type guard rejects changes missing required fields
+    expect(isChangesetChange(invalidChange)).toBe(false);
   });
 
   test('should reject null or non-object values', () => {
@@ -122,9 +114,9 @@ test.describe('ChangesetChange Type Guards', () => {
       true
     ];
 
+    // Test that the type guard rejects non-object values
     nonObjectValues.forEach((value) => {
-      const isValidChange = typeof value === 'object' && value !== null;
-      expect(isValidChange).toBe(false);
+      expect(isChangesetChange(value)).toBe(false);
     });
   });
 
@@ -140,7 +132,10 @@ test.describe('ChangesetChange Type Guards', () => {
       }
     ];
 
-    expect(Array.isArray(validChangesArray)).toBe(true);
+    // Test that validateChangesetChanges accepts valid arrays without throwing
+    expect(() => {
+      validateChangesetChanges(validChangesArray);
+    }).not.toThrow();
   });
 
   test('should reject change with invalid operation', () => {
@@ -152,7 +147,8 @@ test.describe('ChangesetChange Type Guards', () => {
       element_type: 'function'
     };
 
-    expect(['add', 'update', 'delete'].includes(String(invalidOp.operation))).toBe(false);
+    // Test that the type guard rejects changes with invalid operation types
+    expect(isChangesetChange(invalidOp)).toBe(false);
   });
 
   test('should validate array of changes', () => {
@@ -184,14 +180,10 @@ test.describe('ChangesetChange Type Guards', () => {
       }
     ];
 
-    expect(Array.isArray(changes)).toBe(true);
-    expect(changes.length).toBe(3);
-    changes.forEach((change) => {
-      expect(typeof change.timestamp).toBe('string');
-      expect(typeof change.element_id).toBe('string');
-      expect(typeof change.layer).toBe('string');
-      expect(typeof change.element_type).toBe('string');
-    });
+    // Test that validateChangesetChanges validates mixed change arrays
+    expect(() => {
+      validateChangesetChanges(changes);
+    }).not.toThrow();
   });
 
   test('should handle changes with additional properties gracefully', () => {
@@ -207,8 +199,37 @@ test.describe('ChangesetChange Type Guards', () => {
       metadata: { source: 'test' }
     };
 
-    // Should still be valid even with extra fields
-    expect(typeof changeWithExtra.timestamp).toBe('string');
-    expect(typeof changeWithExtra.operation).toBe('string');
+    // Test that the type guard accepts valid changes even with extra properties
+    expect(isChangesetChange(changeWithExtra)).toBe(true);
+  });
+
+  test('should reject array with invalid change', () => {
+    const invalidArray = [
+      {
+        timestamp: '2024-01-01T00:00:00Z',
+        operation: 'add',
+        element_id: 'elem-1',
+        layer: 'business',
+        element_type: 'function',
+        data: { name: 'Valid' }
+      },
+      {
+        // Missing required fields
+        operation: 'update',
+        element_id: 'elem-2'
+      }
+    ];
+
+    // Test that validateChangesetChanges throws when array contains invalid change
+    expect(() => {
+      validateChangesetChanges(invalidArray);
+    }).toThrow('Invalid change at index 1');
+  });
+
+  test('should reject non-array input to validateChangesetChanges', () => {
+    // Test that validateChangesetChanges rejects non-array inputs
+    expect(() => {
+      validateChangesetChanges({ changes: [] } as never);
+    }).toThrow('Changes must be an array');
   });
 });
