@@ -1,16 +1,14 @@
-# PR Review: Implementation Gaps - API Infrastructure
+# API Infrastructure Implementation Guide
 
-## Overview
+## Purpose
 
-This review addresses three critical gaps in API infrastructure identified by the Idea Researcher:
+This guide provides implementation steps to address three critical gaps in API infrastructure identified during code review:
 
 1. **CI/CD Integration for API Spec Synchronization**
 2. **API Client Generation from OpenAPI Spec**
 3. **MSW (Mock Service Worker) Testing Strategy**
 
-### Current State
-
-The codebase has a well-implemented `scripts/sync-api-spec.sh` script and functional REST/WebSocket API clients (`embeddedDataLoader.ts`, `websocketClient.ts`), but **none of these are integrated into automated workflows or enhanced with generated types**.
+This is a reference document for developers implementing these enhancements. For context on why these gaps exist, see the PR review analysis.
 
 ---
 
@@ -432,17 +430,17 @@ test('handles API errors gracefully', async ({ page }) => {
 
 ### Migration Path
 
-1. **Phase 1 - Add MSW (no changes to existing tests)**
+1. **Setup MSW Foundation** - Add handlers for existing endpoints, configure server, tests still run with mocks available
    - Add handlers for existing endpoints
    - Configure server
    - Tests still run, now with mocks available
 
-2. **Phase 2 - Refactor E2E tests**
+2. **Migrate E2E Tests** - Remove server requirement and update tests to use override handlers for error scenarios
    - Remove `npm run start` requirement
    - Update tests to use `server.use()` for error scenarios
    - Remove server state checking
 
-3. **Phase 3 - Expand coverage**
+3. **Expand Coverage and Documentation** - Add handlers for edge cases and extend MSW usage to unit tests
    - Add edge case handlers (timeouts, offline, bad data)
    - Use MSW in unit tests for embeddedDataLoader, websocketClient
    - Document mock patterns for new tests
@@ -509,4 +507,3 @@ After implementation:
 - ✅ Tests run with `npm test` (no separate server needed)
 - ✅ Error scenarios fully testable without network failures
 - ✅ New developers can run full test suite on first `npm install && npm test`
-
