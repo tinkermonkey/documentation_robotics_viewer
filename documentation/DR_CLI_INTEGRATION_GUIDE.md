@@ -771,4 +771,4 @@ console.log('DR Events:', sessionStorage.getItem('dr_events'));
 
 ---
 
-**Questions?** Check the [Testing Reference Implementation](./claude_thoughts/TESTING_REFERENCE_IMPLEMENTATION.md) or open an issue on GitHub.
+**Questions?** Open an issue on GitHub.

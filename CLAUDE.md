@@ -308,7 +308,6 @@ Supports **JSON Schema** (UUIDs) and **YAML instances** (dot-notation IDs like `
 3. **Documentation Structure**
    - Cross-referenced guides from README.md
    - Linked troubleshooting docs from multiple entry points
-   - Updated TESTING_REFERENCE_IMPLEMENTATION.md
    - Maintained consistency across all documentation
 
 ### Content Areas
@@ -325,11 +324,9 @@ Supports **JSON Schema** (UUIDs) and **YAML instances** (dot-notation IDs like `
 - **Setup Issues**: See [README.md](README.md#troubleshooting) (Quick Reference)
 - **Detailed API**: See [DR CLI Integration Guide](../documentation/DR_CLI_INTEGRATION_GUIDE.md)
 - **Complex Troubleshooting**: See [DR CLI Integration Guide - Troubleshooting](../documentation/DR_CLI_INTEGRATION_GUIDE.md#troubleshooting)
-- **Testing Setup**: See [TESTING_REFERENCE_IMPLEMENTATION.md](../documentation/claude_thoughts/TESTING_REFERENCE_IMPLEMENTATION.md)
 
 ### Related Documentation
 
-- **TESTING_REFERENCE_IMPLEMENTATION.md**: DR CLI server setup for testing
 - **YAML_MODELS.md**: Model format specification
 - **WEBSOCKET_JSONRPC_IMPLEMENTATION.md**: WebSocket protocol details
 - **architecture-overview.md**: System design and components

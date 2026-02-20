@@ -1,8 +1,8 @@
 reference-api:
   id: api.interface.reference-api
-  name: Reference Server API
+  name: DR CLI Server API
   type: interface
-  documentation: REST and WebSocket API for the Reference Server
+  documentation: REST and WebSocket API for the DR CLI Server
   properties:
     x-secured-by:
       - security.policy.local-access

@@ -274,7 +274,6 @@ See [Architecture Overview](documentation/architecture-overview.md) for detailed
 - **[YAML Models Guide](documentation/YAML_MODELS.md)** - YAML model format specification
 - **[Testing Guide](tests/README.md)** - Test setup and execution
 - **[Testing Strategy](documentation/claude_thoughts/TESTING_STRATEGY.md)** - Testing approach and patterns
-- **[Testing Reference Implementation](documentation/claude_thoughts/TESTING_REFERENCE_IMPLEMENTATION.md)** - DR CLI server migration guide
 - **[Architecture Overview](documentation/architecture-overview.md)** - System design and components
 - **[WebSocket Implementation](documentation/WEBSOCKET_JSONRPC_IMPLEMENTATION.md)** - WebSocket JSON-RPC protocol details
 - **[Accessibility](documentation/ACCESSIBILITY.md)** - WCAG 2.1 AA compliance guidelines
