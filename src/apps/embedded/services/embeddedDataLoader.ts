@@ -373,20 +373,26 @@ export class EmbeddedDataLoader {
   private normalizeElements(elements: unknown): ModelElement[] {
     if (!Array.isArray(elements)) return [];
 
-    return elements.map((element: unknown) => {
-      if (typeof element !== 'object' || element === null) {
-        return element as ModelElement;
-      }
-      const elementObj = element as Record<string, unknown>;
-      return {
-        id: typeof elementObj.id === 'string' ? elementObj.id : '',
-        type: typeof elementObj.type === 'string' ? elementObj.type : '',
-        name: typeof elementObj.name === 'string' ? elementObj.name : '',
-        layerId: typeof elementObj.layerId === 'string' ? elementObj.layerId : '',
-        properties: typeof elementObj.properties === 'object' && elementObj.properties !== null ? (elementObj.properties as Record<string, unknown>) : {},
-        visual: this.normalizeVisual(elementObj.visual)
-      } as ModelElement;
-    });
+    return elements
+      .filter((element: unknown): element is Record<string, unknown> => {
+        // Skip non-object elements (null, numbers, strings, etc.)
+        // Valid elements must be objects to have required properties
+        if (typeof element !== 'object' || element === null) {
+          console.warn('[DataLoader] Skipping non-object element in normalizeElements:', typeof element, element);
+          return false;
+        }
+        return true;
+      })
+      .map((elementObj: Record<string, unknown>) => {
+        return {
+          id: typeof elementObj.id === 'string' ? elementObj.id : '',
+          type: typeof elementObj.type === 'string' ? elementObj.type : '',
+          name: typeof elementObj.name === 'string' ? elementObj.name : '',
+          layerId: typeof elementObj.layerId === 'string' ? elementObj.layerId : '',
+          properties: typeof elementObj.properties === 'object' && elementObj.properties !== null ? (elementObj.properties as Record<string, unknown>) : {},
+          visual: this.normalizeVisual(elementObj.visual)
+        } as ModelElement;
+      });
   }
 
   /**

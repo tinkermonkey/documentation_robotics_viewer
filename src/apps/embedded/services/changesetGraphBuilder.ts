@@ -132,8 +132,8 @@ export class ChangesetGraphBuilder {
   private buildElement(change: ChangesetChange): ModelElement {
     const colors = OPERATION_COLORS[change.operation];
 
-    // Get element data based on operation
-    let elementData: any;
+    // Get element data based on operation using discriminated union
+    let elementData: Record<string, unknown>;
     if (change.operation === 'add') {
       elementData = change.data || {};
     } else if (change.operation === 'update') {

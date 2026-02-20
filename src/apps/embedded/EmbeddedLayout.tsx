@@ -124,7 +124,7 @@ export default function EmbeddedLayout() {
     connectionStore.setReconnecting(data.attempt, data.delay);
   };
 
-  const handleError = (data: { error: any }) => {
+  const handleError = (data: { error: Event }) => {
     // Only suppress WebSocket errors in explicit mock environments
     // DO NOT use port detection (61001) as it could be production port
     const isTestEnv = typeof window !== 'undefined' && (

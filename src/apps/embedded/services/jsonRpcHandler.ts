@@ -233,7 +233,7 @@ export class JsonRpcHandler {
   ): Promise<void> {
     try {
       const websocketClient = await this.getWebSocketClient();
-      const sendSuccess = websocketClient.send(request as any);
+      const sendSuccess = websocketClient.send(request);
 
       if (!sendSuccess) {
         this.pendingRequests.delete(id);
@@ -268,7 +268,7 @@ export class JsonRpcHandler {
   ): Promise<void> {
     try {
       const websocketClient = await this.getWebSocketClient();
-      const sendSuccess = websocketClient.send(notification as any);
+      const sendSuccess = websocketClient.send(notification);
 
       if (!sendSuccess) {
         logError(

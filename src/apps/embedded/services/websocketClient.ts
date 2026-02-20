@@ -12,11 +12,18 @@
 
 import { logError } from './errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
+import type { JsonRpcRequest, JsonRpcNotification } from '../types/chat';
 
 interface WebSocketMessage {
-  type: string;
+  type?: string;
   [key: string]: unknown;
 }
+
+/**
+ * Messages that can be sent over WebSocket
+ * Includes both WebSocket protocol messages (with type) and JSON-RPC messages
+ */
+type WebSocketSendMessage = WebSocketMessage | JsonRpcRequest | JsonRpcNotification;
 
 /**
  * Typed event payloads for WebSocket events
@@ -44,7 +51,7 @@ interface WebSocketClientInterface {
   connect(): void;
   disconnect(): void;
   subscribe(topics: string[]): void;
-  send(message: WebSocketMessage): boolean;
+  send(message: WebSocketSendMessage): boolean;
   on<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void;
   on(event: string, handler: EventHandler<unknown>): void;
   off<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void;
@@ -250,7 +257,7 @@ export class WebSocketClient implements WebSocketClientInterface {
    * Send a message to the server
    * @returns true if message was sent, false if connection is not open
    */
-  send(message: WebSocketMessage): boolean {
+  send(message: WebSocketSendMessage): boolean {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       try {
         this.ws.send(JSON.stringify(message));
@@ -583,8 +590,8 @@ declare global {
 }
 
 // Create singleton instance
-// In test environments, use a mock that never attempts WebSocket connections
-// In production, use the real WebSocketClient
+// In browser environments (window is defined), create a real WebSocket client
+// In SSR/Node.js environments (window is undefined), use a mock that explicitly fails
 let websocketClient: WebSocketClientInterface;
 
 if (typeof window !== 'undefined') {
