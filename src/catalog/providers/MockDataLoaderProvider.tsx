@@ -65,6 +65,7 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
   const [data, setData] = useState<T | null>(null);
   const [localLoading, setLocalLoading] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
+  const [callbackError, setCallbackError] = useState<string | null>(null);
 
   /**
    * Reload function that simulates async loading with 100ms delay
@@ -75,6 +76,7 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
       context.setLoading(true);
       setLocalError(null);
       context.setError(null);
+      setCallbackError(null);
 
       // Simulate network delay
       await new Promise(resolve => setTimeout(resolve, 100));
@@ -89,6 +91,9 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
           // Log the error from callback but don't re-throw since we're in an async context
           // This prevents unhandled promise rejections
           console.error('[MockDataLoader] onSuccess callback failed:', successError);
+          const callbackErr = successError instanceof Error ? successError : new Error(String(successError));
+          const errorMessage = `Callback failed: ${callbackErr.message}`;
+          setCallbackError(errorMessage);
         }
       }
     } catch (err) {
@@ -156,6 +161,7 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
     data,
     loading: localLoading || context.loading,
     error: localError || context.error,
+    callbackError,
     reload
   };
 }

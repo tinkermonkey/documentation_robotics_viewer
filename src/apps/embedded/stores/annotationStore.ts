@@ -210,11 +210,11 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
   },
 
   deleteAnnotation: async (id) => {
+    // Store annotation for rollback in case of failure
+    const annotationToRestore = get().annotations.find(ann => ann.id === id);
+
     try {
       set({ error: null });
-
-      // Store annotation for rollback in case of failure
-      const annotationToRestore = get().annotations.find(ann => ann.id === id);
 
       // Optimistic update
       get().removeAnnotation(id);
