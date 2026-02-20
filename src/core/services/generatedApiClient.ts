@@ -1,7 +1,7 @@
 /**
  * Auto-generated API Client with React Query Hooks
  * Generated from: /workspace/docs/api-spec.yaml
- * Generated at: 2026-02-20T08:29:07.401Z
+ * Generated at: 2026-02-20T08:33:35.401Z
  * API Version: 0.1.0
  *
  * IMPORTANT: This file is auto-generated. Do not edit directly.
@@ -66,31 +66,11 @@ export class ApiClient {
     return headers;
   }
 
-  /**
-   * Generic fetch wrapper with error handling
-   */
-  private async fetch<T>(url: string, options: RequestInit): Promise<T> {
-    const response = await fetch(url, {
-      ...options,
-      headers: { ...this.getHeaders(), ...options.headers }
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      const error = new Error(`HTTP ${response.status}: ${errorText}`);
-      (error as any).status = response.status;
-      throw error;
-    }
-
-    const data = await response.json();
-    return data as T;
-  }
-
   // Generated fetch methods
 
   async gethealth(): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `'/health'`;
+    const pathStr = `/health`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -105,7 +85,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`${method.toUpperCase()} /health failed: ${response.status} ${errorText}`);
+      throw new Error(`GET /health failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -113,7 +93,7 @@ export class ApiClient {
 
   async getapispec(): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `'/api/spec'`;
+    const pathStr = `/api/spec`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -128,7 +108,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`${method.toUpperCase()} /api/spec failed: ${response.status} ${errorText}`);
+      throw new Error(`GET /api/spec failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -136,7 +116,7 @@ export class ApiClient {
 
   async getapimodel(): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `'/api/model'`;
+    const pathStr = `/api/model`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -151,7 +131,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`${method.toUpperCase()} /api/model failed: ${response.status} ${errorText}`);
+      throw new Error(`GET /api/model failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -159,7 +139,7 @@ export class ApiClient {
 
   async getapilayerslayerName(layerName: string): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `'/api/layers/${layerName}'`;
+    const pathStr = `/api/layers/${layerName}`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -174,7 +154,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`${method.toUpperCase()} /api/layers/{layerName} failed: ${response.status} ${errorText}`);
+      throw new Error(`GET /api/layers/{layerName} failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -182,7 +162,7 @@ export class ApiClient {
 
   async getapielementselementId(elementId: string): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `'/api/elements/${elementId}'`;
+    const pathStr = `/api/elements/${elementId}`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -197,7 +177,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`${method.toUpperCase()} /api/elements/{elementId} failed: ${response.status} ${errorText}`);
+      throw new Error(`GET /api/elements/{elementId} failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -205,7 +185,7 @@ export class ApiClient {
 
   async getapichangesets(): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `'/api/changesets'`;
+    const pathStr = `/api/changesets`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -220,7 +200,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`${method.toUpperCase()} /api/changesets failed: ${response.status} ${errorText}`);
+      throw new Error(`GET /api/changesets failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -228,7 +208,7 @@ export class ApiClient {
 
   async getapichangesetschangesetId(changesetId: string): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `'/api/changesets/${changesetId}'`;
+    const pathStr = `/api/changesets/${changesetId}`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -243,7 +223,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`${method.toUpperCase()} /api/changesets/{changesetId} failed: ${response.status} ${errorText}`);
+      throw new Error(`GET /api/changesets/{changesetId} failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -251,7 +231,7 @@ export class ApiClient {
 
   async getapiannotations(query?: { elementId?: string }): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `'/api/annotations'`;
+    const pathStr = `/api/annotations`;
     
     const queryString = new URLSearchParams();
     if (query) {
@@ -277,7 +257,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`${method.toUpperCase()} /api/annotations failed: ${response.status} ${errorText}`);
+      throw new Error(`GET /api/annotations failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -285,7 +265,7 @@ export class ApiClient {
 
   async postapiannotations(body?: unknown): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `'/api/annotations'`;
+    const pathStr = `/api/annotations`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -300,7 +280,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`${method.toUpperCase()} /api/annotations failed: ${response.status} ${errorText}`);
+      throw new Error(`POST /api/annotations failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -308,7 +288,7 @@ export class ApiClient {
 
   async putapiannotationsannotationId(annotationId: string, body?: unknown): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `'/api/annotations/${annotationId}'`;
+    const pathStr = `/api/annotations/${annotationId}`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -323,7 +303,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`${method.toUpperCase()} /api/annotations/{annotationId} failed: ${response.status} ${errorText}`);
+      throw new Error(`PUT /api/annotations/{annotationId} failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -331,7 +311,7 @@ export class ApiClient {
 
   async patchapiannotationsannotationId(annotationId: string, body?: unknown): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `'/api/annotations/${annotationId}'`;
+    const pathStr = `/api/annotations/${annotationId}`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -346,7 +326,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`${method.toUpperCase()} /api/annotations/{annotationId} failed: ${response.status} ${errorText}`);
+      throw new Error(`PATCH /api/annotations/{annotationId} failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -354,7 +334,7 @@ export class ApiClient {
 
   async deleteapiannotationsannotationId(annotationId: string): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `'/api/annotations/${annotationId}'`;
+    const pathStr = `/api/annotations/${annotationId}`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -369,7 +349,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`${method.toUpperCase()} /api/annotations/{annotationId} failed: ${response.status} ${errorText}`);
+      throw new Error(`DELETE /api/annotations/{annotationId} failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -377,7 +357,7 @@ export class ApiClient {
 
   async getapiannotationsannotationIdreplies(annotationId: string): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `'/api/annotations/${annotationId}/replies'`;
+    const pathStr = `/api/annotations/${annotationId}/replies`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -392,7 +372,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`${method.toUpperCase()} /api/annotations/{annotationId}/replies failed: ${response.status} ${errorText}`);
+      throw new Error(`GET /api/annotations/{annotationId}/replies failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -400,7 +380,7 @@ export class ApiClient {
 
   async postapiannotationsannotationIdreplies(annotationId: string, body?: unknown): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `'/api/annotations/${annotationId}/replies'`;
+    const pathStr = `/api/annotations/${annotationId}/replies`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -415,7 +395,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`${method.toUpperCase()} /api/annotations/{annotationId}/replies failed: ${response.status} ${errorText}`);
+      throw new Error(`POST /api/annotations/{annotationId}/replies failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -423,7 +403,7 @@ export class ApiClient {
 
   async getws(): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `'/ws'`;
+    const pathStr = `/ws`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -438,7 +418,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`${method.toUpperCase()} /ws failed: ${response.status} ${errorText}`);
+      throw new Error(`GET /ws failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -470,6 +450,9 @@ export function setApiToken(token: string | null): void {
   getApiClient().setToken(token);
 }
 
+// Initialize singleton instance for hook usage
+const apiClient = getApiClient();
+
 // React Query Hooks
 
   /**
@@ -477,12 +460,10 @@ export function setApiToken(token: string | null): void {
    * Auto-manages caching and invalidation
    */
   export function useGethealth(options?: QueryOptions) {
-    const queryClient = useQueryClient();
-
     return useQuery({
       queryKey: ['gethealth'],
       queryFn: () => apiClient.gethealth(),
-      ...options
+      ...(options || {})
     });
   }
 
@@ -491,12 +472,10 @@ export function setApiToken(token: string | null): void {
    * Auto-manages caching and invalidation
    */
   export function useGetapispec(options?: QueryOptions) {
-    const queryClient = useQueryClient();
-
     return useQuery({
       queryKey: ['getapispec'],
       queryFn: () => apiClient.getapispec(),
-      ...options
+      ...(options || {})
     });
   }
 
@@ -505,12 +484,10 @@ export function setApiToken(token: string | null): void {
    * Auto-manages caching and invalidation
    */
   export function useGetapimodel(options?: QueryOptions) {
-    const queryClient = useQueryClient();
-
     return useQuery({
       queryKey: ['getapimodel'],
       queryFn: () => apiClient.getapimodel(),
-      ...options
+      ...(options || {})
     });
   }
 
@@ -518,12 +495,10 @@ export function setApiToken(token: string | null): void {
    * React Query hook for getapilayerslayerName
    * Auto-manages caching and invalidation
    */
-  export function useGetapilayerslayerName(options?: QueryOptions) {
-    const queryClient = useQueryClient();
-
+  export function useGetapilayerslayerName(layerName: string, options?: QueryOptions) {
     return useQuery({
-      queryKey: ['getapilayerslayerName'],
-      queryFn: () => apiClient.getapilayerslayerName(),
+      queryKey: ['getapilayerslayerName', layerName],
+      queryFn: () => apiClient.getapilayerslayerName(layerName),
       ...options
     });
   }
@@ -532,12 +507,10 @@ export function setApiToken(token: string | null): void {
    * React Query hook for getapielementselementId
    * Auto-manages caching and invalidation
    */
-  export function useGetapielementselementId(options?: QueryOptions) {
-    const queryClient = useQueryClient();
-
+  export function useGetapielementselementId(elementId: string, options?: QueryOptions) {
     return useQuery({
-      queryKey: ['getapielementselementId'],
-      queryFn: () => apiClient.getapielementselementId(),
+      queryKey: ['getapielementselementId', elementId],
+      queryFn: () => apiClient.getapielementselementId(elementId),
       ...options
     });
   }
@@ -547,12 +520,10 @@ export function setApiToken(token: string | null): void {
    * Auto-manages caching and invalidation
    */
   export function useGetapichangesets(options?: QueryOptions) {
-    const queryClient = useQueryClient();
-
     return useQuery({
       queryKey: ['getapichangesets'],
       queryFn: () => apiClient.getapichangesets(),
-      ...options
+      ...(options || {})
     });
   }
 
@@ -560,12 +531,10 @@ export function setApiToken(token: string | null): void {
    * React Query hook for getapichangesetschangesetId
    * Auto-manages caching and invalidation
    */
-  export function useGetapichangesetschangesetId(options?: QueryOptions) {
-    const queryClient = useQueryClient();
-
+  export function useGetapichangesetschangesetId(changesetId: string, options?: QueryOptions) {
     return useQuery({
-      queryKey: ['getapichangesetschangesetId'],
-      queryFn: () => apiClient.getapichangesetschangesetId(),
+      queryKey: ['getapichangesetschangesetId', changesetId],
+      queryFn: () => apiClient.getapichangesetschangesetId(changesetId),
       ...options
     });
   }
@@ -575,12 +544,10 @@ export function setApiToken(token: string | null): void {
    * Auto-manages caching and invalidation
    */
   export function useGetapiannotations(options?: QueryOptions) {
-    const queryClient = useQueryClient();
-
     return useQuery({
       queryKey: ['getapiannotations'],
       queryFn: () => apiClient.getapiannotations(),
-      ...options
+      ...(options || {})
     });
   }
 
@@ -596,64 +563,62 @@ export function setApiToken(token: string | null): void {
         queryClient.invalidateQueries({ queryKey: ['data'] });
       },
       ...options
-    });
+    } as any);
   }
 
   /**
    * React Query mutation hook for putapiannotationsannotationId
    */
-  export function usePutapiannotationsannotationId(options?: MutationOptions) {
+  export function usePutapiannotationsannotationId(annotationId: string, options?: MutationOptions) {
     const queryClient = useQueryClient();
 
     return useMutation({
-      mutationFn: (data: unknown) => apiClient.putapiannotationsannotationId(data),
+      mutationFn: (data: unknown) => apiClient.putapiannotationsannotationId(annotationId, data),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['data'] });
       },
       ...options
-    });
+    } as any);
   }
 
   /**
    * React Query mutation hook for patchapiannotationsannotationId
    */
-  export function usePatchapiannotationsannotationId(options?: MutationOptions) {
+  export function usePatchapiannotationsannotationId(annotationId: string, options?: MutationOptions) {
     const queryClient = useQueryClient();
 
     return useMutation({
-      mutationFn: (data: unknown) => apiClient.patchapiannotationsannotationId(data),
+      mutationFn: (data: unknown) => apiClient.patchapiannotationsannotationId(annotationId, data),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['data'] });
       },
       ...options
-    });
+    } as any);
   }
 
   /**
    * React Query mutation hook for deleteapiannotationsannotationId
    */
-  export function useDeleteapiannotationsannotationId(options?: MutationOptions) {
+  export function useDeleteapiannotationsannotationId(annotationId: string, options?: MutationOptions) {
     const queryClient = useQueryClient();
 
     return useMutation({
-      mutationFn: (data: unknown) => apiClient.deleteapiannotationsannotationId(data),
+      mutationFn: () => apiClient.deleteapiannotationsannotationId(annotationId),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['data'] });
       },
       ...options
-    });
+    } as any);
   }
 
   /**
    * React Query hook for getapiannotationsannotationIdreplies
    * Auto-manages caching and invalidation
    */
-  export function useGetapiannotationsannotationIdreplies(options?: QueryOptions) {
-    const queryClient = useQueryClient();
-
+  export function useGetapiannotationsannotationIdreplies(annotationId: string, options?: QueryOptions) {
     return useQuery({
-      queryKey: ['getapiannotationsannotationIdreplies'],
-      queryFn: () => apiClient.getapiannotationsannotationIdreplies(),
+      queryKey: ['getapiannotationsannotationIdreplies', annotationId],
+      queryFn: () => apiClient.getapiannotationsannotationIdreplies(annotationId),
       ...options
     });
   }
@@ -661,16 +626,16 @@ export function setApiToken(token: string | null): void {
   /**
    * React Query mutation hook for postapiannotationsannotationIdreplies
    */
-  export function usePostapiannotationsannotationIdreplies(options?: MutationOptions) {
+  export function usePostapiannotationsannotationIdreplies(annotationId: string, options?: MutationOptions) {
     const queryClient = useQueryClient();
 
     return useMutation({
-      mutationFn: (data: unknown) => apiClient.postapiannotationsannotationIdreplies(data),
+      mutationFn: (data: unknown) => apiClient.postapiannotationsannotationIdreplies(annotationId, data),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['data'] });
       },
       ...options
-    });
+    } as any);
   }
 
   /**
@@ -678,12 +643,10 @@ export function setApiToken(token: string | null): void {
    * Auto-manages caching and invalidation
    */
   export function useGetws(options?: QueryOptions) {
-    const queryClient = useQueryClient();
-
     return useQuery({
       queryKey: ['getws'],
       queryFn: () => apiClient.getws(),
-      ...options
+      ...(options || {})
     });
   }
 

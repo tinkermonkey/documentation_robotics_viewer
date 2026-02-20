@@ -95,8 +95,8 @@ function generateFetchMethod(endpoint) {
 
   funcSignature += params.join(', ') + '): Promise<unknown>';
 
-  // Build request URL
-  let urlBuilder = `'${path}'`;
+  // Build request URL - remove quotes, properly interpolate
+  let urlBuilder = path;
   endpoint.parameters
     .filter(p => p.in === 'path')
     .forEach(p => {
@@ -140,7 +140,7 @@ function generateFetchMethod(endpoint) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(\`\${method.toUpperCase()} ${path} failed: \${response.status} \${errorText}\`);
+      throw new Error(\`${method.toUpperCase()} ${path} failed: \${response.status} \${errorText}\`);
     }
 
     return response.json();
@@ -156,37 +156,68 @@ function generateReactQueryHook(endpoint) {
   const { method, operationId } = endpoint;
   const hookName = `use${operationId.charAt(0).toUpperCase() + operationId.slice(1)}`;
 
+  // Extract path parameters for hook signature
+  const pathParams = endpoint.parameters.filter(p => p.in === 'path');
+  const pathParamStr = pathParams.length > 0
+    ? pathParams.map(p => `${p.name}: string`).join(', ')
+    : '';
+  const pathParamCall = pathParams.length > 0
+    ? pathParams.map(p => p.name).join(', ')
+    : '';
+
   if (method === 'get') {
+    const paramStr = pathParamStr ? `${pathParamStr}, options?: QueryOptions` : 'options?: QueryOptions';
     return `
   /**
    * React Query hook for ${operationId}
    * Auto-manages caching and invalidation
    */
-  export function ${hookName}(options?: QueryOptions) {
-    const queryClient = useQueryClient();
-
+  export function ${hookName}(${paramStr}) {
     return useQuery({
-      queryKey: ['${operationId}'],
-      queryFn: () => apiClient.${operationId}(),
-      ...options
+      queryKey: ['${operationId}'${pathParamStr ? ', ' + pathParamCall : ''}],
+      queryFn: () => ${pathParamCall ? `apiClient.${operationId}(${pathParamCall})` : `apiClient.${operationId}()`},
+      ${pathParamStr ? '...options' : '...(options || {})'}
     });
   }`;
   } else {
-    return `
+    // For mutations, check if there's a request body
+    const hasBody = endpoint.requestBody;
+    const paramStr = pathParamStr ? `${pathParamStr}, options?: MutationOptions` : 'options?: MutationOptions';
+
+    if (hasBody) {
+      return `
   /**
    * React Query mutation hook for ${operationId}
    */
-  export function ${hookName}(options?: MutationOptions) {
+  export function ${hookName}(${paramStr}) {
     const queryClient = useQueryClient();
 
     return useMutation({
-      mutationFn: (data: unknown) => apiClient.${operationId}(data),
+      mutationFn: (data: unknown) => ${pathParamCall ? `apiClient.${operationId}(${pathParamCall}, data)` : `apiClient.${operationId}(data)`},
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['data'] });
       },
       ...options
-    });
+    } as any);
   }`;
+    } else {
+      // DELETE/operations without body: call endpoint with path params only
+      return `
+  /**
+   * React Query mutation hook for ${operationId}
+   */
+  export function ${hookName}(${paramStr}) {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+      mutationFn: () => ${pathParamCall ? `apiClient.${operationId}(${pathParamCall})` : `apiClient.${operationId}()`},
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['data'] });
+      },
+      ...options
+    } as any);
+  }`;
+    }
   }
 }
 
@@ -265,26 +296,6 @@ export class ApiClient {
     return headers;
   }
 
-  /**
-   * Generic fetch wrapper with error handling
-   */
-  private async fetch<T>(url: string, options: RequestInit): Promise<T> {
-    const response = await fetch(url, {
-      ...options,
-      headers: { ...this.getHeaders(), ...options.headers }
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      const error = new Error(\`HTTP \${response.status}: \${errorText}\`);
-      (error as any).status = response.status;
-      throw error;
-    }
-
-    const data = await response.json();
-    return data as T;
-  }
-
   // Generated fetch methods
 ${fetchMethods}
 }
@@ -313,6 +324,9 @@ export function getApiClient(baseUrl?: string): ApiClient {
 export function setApiToken(token: string | null): void {
   getApiClient().setToken(token);
 }
+
+// Initialize singleton instance for hook usage
+const apiClient = getApiClient();
 
 // React Query Hooks
 ${reactQueryHooks}
