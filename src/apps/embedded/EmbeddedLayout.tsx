@@ -92,7 +92,7 @@ export default function EmbeddedLayout() {
     connectionStore.setReconnecting(data.attempt, data.delay);
   }, [connectionStore]);
 
-  const handleError = useCallback((data: { error: Event } | { code: string; message: string }) => {
+  const handleError = useCallback((data: { kind: 'event'; error: Event } | { kind: 'code'; code: string; message: string }) => {
     // Only suppress WebSocket errors in explicit mock environments
     // DO NOT use port detection (61001) as it could be production port
     const isTestEnv = typeof window !== 'undefined' && (
@@ -100,7 +100,7 @@ export default function EmbeddedLayout() {
       window.__PLAYWRIGHT__  // Playwright test environment
     );
     if (!isTestEnv) {
-      const errorDetail = 'error' in data ? data.error : `${data.code}: ${data.message}`;
+      const errorDetail = data.kind === 'event' ? data.error : `${data.code}: ${data.message}`;
       console.error('[EmbeddedLayout] WebSocket error:', errorDetail);
     }
     connectionStore.setError('Connection error');

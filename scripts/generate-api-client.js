@@ -96,11 +96,12 @@ function generateFetchMethod(endpoint) {
   funcSignature += params.join(', ') + '): Promise<unknown>';
 
   // Build request URL - remove quotes, properly interpolate
+  // URL-encode path parameters to handle special characters
   let urlBuilder = path;
   endpoint.parameters
     .filter(p => p.in === 'path')
     .forEach(p => {
-      urlBuilder = urlBuilder.replace(`{${p.name}}`, `\${${p.name}}`);
+      urlBuilder = urlBuilder.replace(`{${p.name}}`, `\${encodeURIComponent(${p.name})}`);
     });
 
   // Build query string

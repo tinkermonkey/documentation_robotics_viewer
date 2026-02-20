@@ -96,8 +96,17 @@ export const useFloatingChatStore = create<FloatingChatState>()(
           if (!value) return null;
           try {
             return JSON.parse(value);
-          } catch {
-            // If parsing fails, clear corrupted data and return null
+          } catch (error) {
+            // If parsing fails, clear corrupted data and log error before returning null
+            console.error(
+              '[FloatingChatStore] Failed to parse persisted chat state from localStorage:',
+              {
+                key,
+                error: error instanceof Error ? error.message : String(error),
+                valueLength: value?.length,
+                storageSize: storage.length
+              }
+            );
             storage.removeItem(key);
             return null;
           }

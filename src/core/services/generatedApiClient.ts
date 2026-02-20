@@ -1,7 +1,7 @@
 /**
  * Auto-generated API Client with React Query Hooks
  * Generated from: /workspace/docs/api-spec.yaml
- * Generated at: 2026-02-20T08:41:03.284Z
+ * Generated at: 2026-02-20T09:07:22.989Z
  * API Version: 0.1.0
  *
  * IMPORTANT: This file is auto-generated. Do not edit directly.
@@ -139,7 +139,7 @@ export class ApiClient {
 
   async getapilayerslayerName(layerName: string): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/layers/${layerName}`;
+    const pathStr = `/api/layers/${encodeURIComponent(layerName)}`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -162,7 +162,7 @@ export class ApiClient {
 
   async getapielementselementId(elementId: string): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/elements/${elementId}`;
+    const pathStr = `/api/elements/${encodeURIComponent(elementId)}`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -208,7 +208,7 @@ export class ApiClient {
 
   async getapichangesetschangesetId(changesetId: string): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/changesets/${changesetId}`;
+    const pathStr = `/api/changesets/${encodeURIComponent(changesetId)}`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -288,7 +288,7 @@ export class ApiClient {
 
   async putapiannotationsannotationId(annotationId: string, body?: unknown): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/annotations/${annotationId}`;
+    const pathStr = `/api/annotations/${encodeURIComponent(annotationId)}`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -311,7 +311,7 @@ export class ApiClient {
 
   async patchapiannotationsannotationId(annotationId: string, body?: unknown): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/annotations/${annotationId}`;
+    const pathStr = `/api/annotations/${encodeURIComponent(annotationId)}`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -334,7 +334,7 @@ export class ApiClient {
 
   async deleteapiannotationsannotationId(annotationId: string): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/annotations/${annotationId}`;
+    const pathStr = `/api/annotations/${encodeURIComponent(annotationId)}`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -357,7 +357,7 @@ export class ApiClient {
 
   async getapiannotationsannotationIdreplies(annotationId: string): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/annotations/${annotationId}/replies`;
+    const pathStr = `/api/annotations/${encodeURIComponent(annotationId)}/replies`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -380,7 +380,7 @@ export class ApiClient {
 
   async postapiannotationsannotationIdreplies(annotationId: string, body?: unknown): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/annotations/${annotationId}/replies`;
+    const pathStr = `/api/annotations/${encodeURIComponent(annotationId)}/replies`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {

@@ -416,10 +416,28 @@ export class EmbeddedDataLoader {
       'load model'
     );
 
+    // Extract statistics from metadata with proper type safety
+    const extractStatistics = (metadata: unknown): { totalLayers?: number; totalElements?: number } => {
+      if (typeof metadata !== 'object' || metadata === null) {
+        return {};
+      }
+      const metadataObj = metadata as Record<string, unknown>;
+      const statistics = metadataObj.statistics;
+      if (typeof statistics !== 'object' || statistics === null) {
+        return {};
+      }
+      const statsObj = statistics as Record<string, unknown>;
+      return {
+        totalLayers: typeof statsObj.total_layers === 'number' ? statsObj.total_layers : undefined,
+        totalElements: typeof statsObj.total_elements === 'number' ? statsObj.total_elements : undefined
+      };
+    };
+
+    const stats = extractStatistics(data.metadata);
     console.log('[DataLoader] Loaded model from server:', {
       version: data.version,
-      totalLayers: (data.metadata as any)?.statistics?.total_layers,
-      totalElements: (data.metadata as any)?.statistics?.total_elements,
+      totalLayers: stats.totalLayers,
+      totalElements: stats.totalElements,
       layerCount: Object.keys(data.layers || {}).length
     });
 
