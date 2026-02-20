@@ -276,6 +276,9 @@ export class GitHubService {
 
   /**
    * Cache schemas to localStorage for offline use
+   * Note: Storage failures (quota exceeded, permissions denied) are logged but don't
+   * block schema loading - the app continues without cache. Callers should not retry
+   * on cache failure; the API fetch is the primary source.
    */
   cacheSchemas(version: string, schemas: Record<string, unknown>): void {
     try {
@@ -286,12 +289,20 @@ export class GitHubService {
         schemas
       }));
     } catch (error) {
-      console.warn('Failed to cache schemas:', error);
+      // Log storage errors (quota exceeded, etc.) to warn users of potential data loss
+      // but don't re-throw - cache is non-critical for functionality
+      console.warn(
+        '[GitHubService] Failed to cache schemas (may indicate localStorage quota exceeded):',
+        error instanceof Error ? error.message : String(error),
+        { version }
+      );
     }
   }
 
   /**
    * Load cached schemas from localStorage
+   * Note: Failures to load cache (parse errors, quota exceeded) are logged but don't
+   * block app functionality. Cache is a performance optimization, not a requirement.
    */
   loadCachedSchemas(version: string): Record<string, unknown> | null {
     try {
@@ -310,7 +321,13 @@ export class GitHubService {
         }
       }
     } catch (error) {
-      console.warn('Failed to load cached schemas:', error);
+      // Log parse/access errors but gracefully degrade - cache failures should not
+      // prevent app from fetching fresh schemas via API
+      console.warn(
+        '[GitHubService] Failed to load cached schemas (corrupted or quota issue):',
+        error instanceof Error ? error.message : String(error),
+        { version }
+      );
     }
 
     return null;

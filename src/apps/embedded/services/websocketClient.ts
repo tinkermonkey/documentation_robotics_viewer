@@ -548,6 +548,8 @@ export class WebSocketClient implements WebSocketClientInterface {
 
 // Detect if we're in a test/story environment (Storybook or Playwright)
 // IMPORTANT: Only check explicit flags, not port-based heuristics
+// In test environment, this method returns true and the WebSocket client uses a mock
+// (does NOT connect to real server). In production, returns false and uses real WebSocket.
 function isTestEnvironment(): boolean {
   if (typeof window === 'undefined') return false;
 
@@ -557,8 +559,12 @@ function isTestEnvironment(): boolean {
   // Check for explicit mock flag (must be set by Storybook/test configuration)
   if (window.__STORYBOOK_MOCK_WEBSOCKET__) return true;
 
-  // Check if we're in a test environment by looking for test-specific globals
-  if (window.__karma__ || window.__jasmine__ || window.__jest__) return true;
+  // Check if we're in a test environment by looking for test-specific globals.
+  // - karma: sets window.__karma__ (test runner property)
+  // - jasmine: sets window.jasmine (lowercase, global scope)
+  // - jest: sets window.jest (lowercase, global scope)
+  // These checks gracefully enable mock WebSocket when test frameworks are detected.
+  if (window.__karma__ || (window as any).jasmine || (window as any).jest) return true;
 
   // Note: Do NOT check window.location.port (e.g., port 61001) as this can incorrectly
   // activate the mock client in production environments that use port-based routing
@@ -578,8 +584,7 @@ declare global {
     __PLAYWRIGHT__?: boolean;
     __STORYBOOK_MOCK_WEBSOCKET__?: boolean;
     __karma__?: boolean;
-    __jasmine__?: boolean;
-    __jest__?: boolean;
+    // Note: jasmine and jest use lowercase property names (not __jasmine__, __jest__)
   }
 }
 

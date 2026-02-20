@@ -102,8 +102,11 @@ export function logError(
   }
 
   // Store in session storage for debugging (keep last 50 errors)
-  // Skip storage operations for SESSION_STORAGE_PARSE_ERROR to prevent circular dependency
-  // when the storage system itself is corrupted
+  // CRITICAL: Skip storage operations for SESSION_STORAGE_PARSE_ERROR to prevent circular dependency
+  // when the storage system itself is corrupted. If we attempted to store this error to the same
+  // corrupted storage, it would trigger another parse error, leading to infinite recursion.
+  // This guard ensures SESSION_STORAGE_PARSE_ERROR can be logged and reported without triggering
+  // recursive failures.
   if (errorId !== ERROR_IDS.SESSION_STORAGE_PARSE_ERROR) {
     try {
       const storageKey = 'app:error_log';

@@ -25,7 +25,9 @@ function getCookieToken(): string | null {
       decodeError instanceof Error ? decodeError.message : String(decodeError),
       { cookieName: AUTH_COOKIE_NAME }
     );
-    // Return null instead of invalid token since localStorage is primary and cookies are fallback
+    // Return null instead of invalid token. Auth architecture uses localStorage as the primary
+    // source (populated by authStore on app init) with cookies as a fallback mechanism.
+    // Failing to decode the cookie gracefully falls back to localStorage for the token.
     return null;
   }
 }
@@ -112,7 +114,10 @@ export interface SchemaDefinition {
   pattern?: string;
   format?: string;
   $ref?: string;
+  // JSON Schema Draft 7 style definitions
   definitions?: Record<string, SchemaDefinition>;
+  // JSON Schema Draft 2019-09+ style definitions (modern standard)
+  $defs?: Record<string, SchemaDefinition>;
   // NOTE: The index signature [key: string]: unknown allows JSON Schema properties not listed above.
   // This is necessary for JSON Schema compatibility but is a TypeScript trade-off: accessing properties
   // via bracket notation may lose type information. Access known properties directly when possible.
@@ -480,6 +485,16 @@ export class EmbeddedDataLoader {
 
   /**
    * Normalize elements array with default visual properties
+   * This function filters out invalid elements and applies sensible defaults to handle
+   * malformed data from the server without throwing. Warnings are logged to help identify
+   * data corruption issues without blocking the UI.
+   *
+   * Filtering behavior:
+   * - Non-object elements (null, primitives) are skipped silently as type-invalid
+   * - All remaining elements are coerced to string defaults if properties are missing
+   *
+   * This approach prevents data corruption from rendering broken UI while maintaining
+   * visibility into problems via console logs.
    */
   private normalizeElements(elements: unknown): ModelElement[] {
     if (!Array.isArray(elements)) return [];
@@ -489,7 +504,11 @@ export class EmbeddedDataLoader {
         // Skip non-object elements (null, numbers, strings, etc.)
         // Valid elements must be objects to have required properties
         if (typeof element !== 'object' || element === null) {
-          console.warn('[DataLoader] Skipping non-object element in normalizeElements:', typeof element, element);
+          console.warn(
+            '[DataLoader] Skipping non-object element in normalizeElements (possible server data corruption):',
+            typeof element,
+            element
+          );
           return false;
         }
         return true;

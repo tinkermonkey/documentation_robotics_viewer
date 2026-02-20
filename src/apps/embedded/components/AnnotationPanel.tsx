@@ -401,7 +401,13 @@ const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) =
 
   return (
     <div className="p-4" data-testid="annotation-panel">
-      {/* Notification Toast */}
+      {/* Notification Toast
+          Displays feedback for annotation operations (create, resolve, reply):
+          - Success notifications: role="status" + aria-live="polite" (auto-clear after 3s)
+          - Error notifications: role="alert" + aria-live="assertive" (persist indefinitely)
+          The loadError prop displays async load-time errors during component initialization.
+          Tests validate ARIA attributes, auto-clear behavior, and timer cleanup.
+      */}
       {notification && (
         <div
           role={notification.type === 'error' ? 'alert' : 'status'}
