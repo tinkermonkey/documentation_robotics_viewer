@@ -1,25 +1,20 @@
 /**
  * ModelJSONViewer Component
  * Displays model instance data in a readable JSON format
- * Shows cross-layer links for each element
  */
 
-import React, { useMemo, useEffect } from 'react';
-import { MetaModel } from '../../../core/types';
-import { LinkType } from '../services/embeddedDataLoader';
+import React, { useEffect } from 'react';
+import { MetaModel, ModelElement } from '../../../core/types';
 import { Badge, Accordion, AccordionPanel, AccordionTitle, AccordionContent } from 'flowbite-react';
 import AttributesTable, { AttributeRow } from './common/AttributesTable';
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid';
 import { useAnnotationStore } from '../stores/annotationStore';
+import { SchemaDefinition } from '../services/embeddedDataLoader';
 
 interface ModelJSONViewerProps {
   model: MetaModel;
-  linkRegistry?: {
-    linkTypes: LinkType[];
-    categories: Record<string, any>;
-  };
   specData?: {
-    schemas: Record<string, any>;
+    schemas: Record<string, SchemaDefinition>;
   };
   onPathHighlight?: (path: string | null) => void;
   selectedLayer: string | null;
@@ -27,7 +22,6 @@ interface ModelJSONViewerProps {
 
 const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
   model,
-  linkRegistry,
   specData,
   onPathHighlight,
   selectedLayer
@@ -43,7 +37,7 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
 
     for (const [layerName, layer] of Object.entries(model.layers)) {
       const elements = layer.elements || [];
-      const elementIndex = elements.findIndex((el: any) => el.id === highlightedElementId);
+      const elementIndex = elements.findIndex((el: ModelElement) => el.id === highlightedElementId);
 
       if (elementIndex !== -1) {
         const element = elements[elementIndex];
@@ -56,42 +50,6 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
       onPathHighlight(foundPath);
     }
   }, [highlightedElementId, model, onPathHighlight]);
-
-  // Helper function to normalize layer names
-  const normalizeLayerName = (layerRef: string): string => {
-    return layerRef
-      .replace(/^\d+-/, '')
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join('');
-  };
-
-  // Build index of links by layer
-  const linksByLayer = useMemo(() => {
-    if (!linkRegistry) return new Map<string, { outgoing: LinkType[]; incoming: LinkType[] }>();
-
-    const index = new Map<string, { outgoing: LinkType[]; incoming: LinkType[] }>();
-
-    for (const linkType of linkRegistry.linkTypes) {
-      // Add to source layers (outgoing)
-      for (const sourceLayer of linkType.sourceLayers) {
-        const layerName = normalizeLayerName(sourceLayer);
-        if (!index.has(layerName)) {
-          index.set(layerName, { outgoing: [], incoming: [] });
-        }
-        index.get(layerName)!.outgoing.push(linkType);
-      }
-
-      // Add to target layer (incoming)
-      const targetLayerName = normalizeLayerName(linkType.targetLayer);
-      if (!index.has(targetLayerName)) {
-        index.set(targetLayerName, { outgoing: [], incoming: [] });
-      }
-      index.get(targetLayerName)!.incoming.push(linkType);
-    }
-
-    return index;
-  }, [linkRegistry]);
 
   if (!model) {
     return (
@@ -154,104 +112,6 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
     return specData.schemas[layerSchemaKey]?.description;
   };
 
-  const renderElementLinks = (layerName: string) => {
-    // Try to find the layer in linksByLayer with case-insensitive matching
-    let links = linksByLayer.get(layerName);
-    
-    if (!links) {
-      // Try to find with different case variations
-      for (const [key, value] of linksByLayer) {
-        if (key.toLowerCase() === layerName.toLowerCase()) {
-          links = value;
-          break;
-        }
-      }
-    }
-    
-    if (!links || (links.outgoing.length === 0 && links.incoming.length === 0)) {
-      return (
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          No cross-layer links for this layer
-        </p>
-      );
-    }
-
-    return (
-      <div className="space-y-4">
-        {links.outgoing.length > 0 && (
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-            <h5 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-              Outgoing Links ({links.outgoing.length})
-            </h5>
-            <div className="space-y-2">
-              {links.outgoing.map(link => {
-                const category = linkRegistry?.categories[link.category];
-                return (
-                  <div
-                    key={link.id}
-                    className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  >
-                    <div
-                      className="w-2 h-2 rounded-full flex-shrink-0 mt-1.5"
-                      style={{ backgroundColor: category?.color || '#9ca3af' }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-gray-900 dark:text-white">
-                        {link.name}
-                      </div>
-                      <div className="text-xs text-gray-600 dark:text-gray-300 mt-1">
-                        → {link.targetLayer} ({link.targetElementTypes.join(', ')})
-                      </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                        {link.fieldPaths.join(', ')}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {links.incoming.length > 0 && (
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-            <h5 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-              Incoming Links ({links.incoming.length})
-            </h5>
-            <div className="space-y-2">
-              {links.incoming.map(link => {
-                const category = linkRegistry?.categories[link.category];
-                return (
-                  <div
-                    key={link.id}
-                    className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                  >
-                    <div
-                      className="w-2 h-2 rounded-full flex-shrink-0 mt-1.5"
-                      style={{ backgroundColor: category?.color || '#9ca3af' }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-gray-900 dark:text-white">
-                        {link.name}
-                      </div>
-                      <div className="text-xs text-gray-600 dark:text-gray-300 mt-1">
-                        ← {link.sourceLayers.join(', ')}
-                      </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                        {link.fieldPaths.join(', ')}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
-
-
   const renderLayerDetails = () => {
     if (!selectedLayer) {
       // Calculate total element count from all layers
@@ -301,7 +161,7 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
     const elements = actualLayer.elements || [];
 
     // Group elements by type
-    const elementsByType = elements.reduce((acc: Record<string, any[]>, element: any) => {
+    const elementsByType = elements.reduce((acc: Record<string, ModelElement[]>, element) => {
       const type = element.type || 'unknown';
       if (!acc[type]) {
         acc[type] = [];
@@ -383,10 +243,10 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
                             <div className="text-sm">
                               <strong className="text-gray-900 dark:text-white">Properties:</strong>
                               <ul className="mt-2 space-y-1 ml-4">
-                                {Object.entries(typeSchema.properties).map(([propName, propDef]: [string, any]) => (
+                                {Object.entries(typeSchema.properties).map(([propName, propDef]: [string, SchemaDefinition]) => (
                                   <li key={propName} className="text-gray-700 dark:text-gray-300">
                                     <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">{propName}</code>
-                                    {propDef.type && <span className="text-gray-500"> ({propDef.type})</span>}
+                                    {propDef.type && <span className="text-gray-500"> ({typeof propDef.type === 'string' ? propDef.type : propDef.type.join(' | ')})</span>}
                                     {propDef.description && <span> - {propDef.description}</span>}
                                   </li>
                                 ))}
@@ -398,7 +258,7 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
 
                       {/* Elements of this type */}
                       <div className="space-y-3">
-                        {typeElements.map((element: any) => {
+                        {typeElements.map((element) => {
                           // Build attributes array
                           const attributes: AttributeRow[] = [];
 
@@ -408,33 +268,36 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
                           if (element.type) attributes.push({ name: 'Type', value: element.type });
 
                           // Extract documentation field (ArchiMate standard)
-                          const documentation = element.documentation || element.properties?.documentation;
+                          const documentation = element.properties?.documentation;
+                          const documentationString = typeof documentation === 'string' ? documentation : undefined;
 
                           // Properties (excluding core fields and documentation)
-                          if (element.properties) {
+                          if (element.properties && typeof element.properties === 'object') {
                             Object.entries(element.properties)
                               .filter(([key]) => !['id', 'name', 'type', 'description', 'documentation'].includes(key))
                               .forEach(([key, value]) => {
                                 attributes.push({
                                   name: key,
-                                  value: value as any,
+                                  value: value as string | number | boolean | null | undefined | Record<string, unknown> | unknown[],
                                   isObject: typeof value === 'object' && value !== null
                                 });
                               });
                           }
 
                           // Other top-level attributes (relationships, custom fields)
-                          Object.entries(element)
+                          const elementAsRecord = element as unknown as Record<string, unknown>;
+                          const elementEntries = Object.entries(elementAsRecord)
                             .filter(([key]) =>
-                              !['id', 'name', 'type', 'description', 'documentation', 'properties', 'visual', 'layerId'].includes(key)
-                            )
-                            .forEach(([key, value]) => {
-                              attributes.push({
-                                name: key,
-                                value: value as any,
-                                isObject: typeof value === 'object' && value !== null
-                              });
+                              !['id', 'name', 'type', 'description', 'properties', 'visual', 'layerId'].includes(key)
+                            );
+
+                          elementEntries.forEach(([key, value]) => {
+                            attributes.push({
+                              name: key,
+                              value: value as string | number | boolean | null | undefined | Record<string, unknown> | unknown[],
+                              isObject: typeof value === 'object' && value !== null
                             });
+                          });
 
                           return (
                             <Accordion key={element.id} collapseAll>
@@ -445,25 +308,18 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
                                 <AccordionContent className="bg-white dark:bg-gray-900">
                                   <div className="space-y-4">
                                     {/* Documentation section - prominently displayed */}
-                                    {documentation && (
+                                    {documentationString && (
                                       <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                                         <h6 className="text-xs font-semibold text-blue-900 dark:text-blue-300 mb-1 uppercase tracking-wide">
                                           Documentation
                                         </h6>
                                         <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
-                                          {documentation}
+                                          {documentationString}
                                         </p>
                                       </div>
                                     )}
 
                                     <AttributesTable attributes={attributes} title="Attributes" />
-
-                                    {/* Show related cross-layer links */}
-                                    {linkRegistry && selectedLayer && linksByLayer.has(selectedLayer) && (
-                                      <div className="mt-4">
-                                        {renderElementLinks(selectedLayer)}
-                                      </div>
-                                    )}
                                   </div>
                                 </AccordionContent>
                               </AccordionPanel>

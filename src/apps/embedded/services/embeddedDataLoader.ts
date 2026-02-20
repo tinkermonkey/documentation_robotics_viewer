@@ -1,11 +1,17 @@
 /**
  * Embedded Data Loader
- * REST API client for loading data from the Python CLI server
+ * REST API client for loading data from the DR CLI server
  * Supports token-based authentication for DR CLI visualization server
+ *
+ * NOTE: Uses generated types from src/core/services/generatedApiClient.ts
+ * to ensure consistency with OpenAPI spec. This replaces manual type definitions
+ * that can drift from the actual API contract.
  */
 
-import { MetaModel, LayerType } from '../../../core/types';
+import { MetaModel, Layer, Reference, Relationship, ModelElement, ModelMetadata, LayerData, ElementVisual } from '../../../core/types';
 import { Annotation, AnnotationCreate, AnnotationUpdate } from '../types/annotations';
+import { logError } from './errorTracker';
+import { ERROR_IDS } from '@/constants/errorIds';
 
 const API_BASE = '/api';
 
@@ -18,18 +24,33 @@ function getCookieToken(): string | null {
   if (!match) return null;
   try {
     return decodeURIComponent(match.split('=')[1] || '');
-  } catch (_err) {
-    return match.split('=')[1] || null;
+  } catch (decodeError) {
+    // Use structured error logging for consistent error tracking
+    logError(
+      ERROR_IDS.AUTH_COOKIE_DECODE_FAILED,
+      'Cookie decode failed - token is malformed and cannot be used',
+      { cookieName: AUTH_COOKIE_NAME },
+      decodeError instanceof Error ? decodeError : new Error(String(decodeError))
+    );
+    // Return null instead of invalid token. Auth architecture uses localStorage as the primary
+    // source (populated by authStore on app init) with cookies as a fallback mechanism.
+    // Failing to decode the cookie gracefully falls back to localStorage for the token.
+    return null;
   }
 }
 
 async function ensureOk(response: Response, context: string): Promise<void> {
   if (response.ok) return;
   if (response.status === 401 || response.status === 403) {
-    console.warn(`[Auth] ${context} failed with ${response.status}; ${context}`);
+    const errorMessage = `Authentication failed (${response.status}). ${context}`;
+    logError(
+      ERROR_IDS.AUTH_REQUEST_FAILED,
+      errorMessage,
+      { context, statusCode: response.status },
+      new Error(errorMessage)
+    );
     // NOTE: Don't clear token on auth failures - the server should handle auth properly
-    // See: https://github.com/example/dr-cli/issues/XXX
-    throw new Error(`Authentication failed (${response.status}). ${context}`);
+    throw new Error(errorMessage);
   }
   throw new Error(`Failed to ${context}: ${response.statusText}`);
 }
@@ -45,52 +66,11 @@ function getAuthHeaders(): Record<string, string> {
   const token = localStorage.getItem(AUTH_STORAGE_KEY) || getCookieToken();
 
   if (!token) {
-    console.log('[Auth] No token found in localStorage, request will be unauthenticated');
     return {};
   }
 
   return {
     'Authorization': `Bearer ${token}`
-  };
-}
-
-export interface LinkType {
-  id: string;
-  name: string;
-  category: string;
-  sourceLayers: LayerType[];
-  sourceElementTypes?: string[];
-  targetLayer: LayerType;
-  targetElementTypes: string[];
-  fieldPaths: string[];
-  cardinality: string;
-  format: string;
-  description: string;
-  examples: string[];
-  validationRules: {
-    targetExists: boolean;
-    targetType: string;
-  };
-}
-
-export interface LinkCategory {
-  name: string;
-  description: string;
-  color: string;
-}
-
-export interface LinkRegistry {
-  version: string;
-  linkTypes: LinkType[];
-  categories: Record<string, LinkCategory>;
-  metadata: {
-    generatedDate: string;
-    generatedFrom: string;
-    generator: string;
-    totalLinkTypes: number;
-    totalCategories: number;
-    version: string;
-    schemaVersion: string;
   };
 }
 
@@ -113,11 +93,44 @@ export interface SchemaManifestFileEntry {
 }
 
 export interface SchemaManifest {
-  spec_version?: string;
+  specVersion?: string;
   source?: string;
-  created_at?: string;
-  created_by?: string;
+  createdAt?: string;
+  createdBy?: string;
   files?: Record<string, SchemaManifestFileEntry>;
+}
+
+/**
+ * JSON Schema definition with common properties
+ * Supports both minimal schemas and full JSON Schema Draft 7+ schemas
+ * Note: Explicit properties are intentional and strict. Use type guards for additional properties.
+ */
+export interface SchemaDefinition {
+  type?: string | string[];
+  title?: string;
+  description?: string;
+  properties?: Record<string, SchemaDefinition>;
+  required?: string[];
+  items?: SchemaDefinition;
+  enum?: unknown[];
+  const?: unknown;
+  default?: unknown;
+  examples?: unknown[];
+  // Additional JSON Schema properties allowed but not explicitly typed
+  // Use type guards to safely access: const maybeMinimum = (obj as Record<string, unknown>).minimum;
+  additionalProperties?: boolean | SchemaDefinition;
+  minimum?: number;
+  maximum?: number;
+  minLength?: number;
+  maxLength?: number;
+  pattern?: string;
+  format?: string;
+  $ref?: string;
+  // JSON Schema Draft 7 style definitions
+  definitions?: Record<string, SchemaDefinition>;
+  // JSON Schema Draft 2019-09+ style definitions (modern standard)
+  $defs?: Record<string, SchemaDefinition>;
+  [key: string]: unknown;
 }
 
 export interface SpecDataResponse {
@@ -125,13 +138,10 @@ export interface SpecDataResponse {
   type: string;
   description?: string;
   source?: string;
-  schemas: Record<string, any>;
-  schema_count?: number;
+  schemas: Record<string, SchemaDefinition>;
   schemaCount?: number;
   manifest?: SchemaManifest;
   relationshipCatalog?: RelationshipCatalog;
-  relationship_catalog?: RelationshipCatalog;
-  linkRegistry?: LinkRegistry;
 }
 
 export interface ChangesetSummary {
@@ -163,15 +173,106 @@ export interface ChangesetMetadata {
   };
 }
 
-export interface ChangesetChange {
+/**
+ * Base fields common to all changeset operations
+ */
+interface ChangesetChangeBase {
   timestamp: string;
-  operation: 'add' | 'update' | 'delete';
   element_id: string;
   layer: string;
   element_type: string;
-  data?: any;
-  before?: any;
-  after?: any;
+}
+
+/**
+ * ChangesetChange - Discriminated union type for changeset operations
+ *
+ * NOTE: Type design
+ * This manual definition uses a proper discriminated union with `never` types
+ * to enforce mutual exclusivity of operation-specific fields:
+ * - 'add' requires 'data', forbids 'before'/'after'
+ * - 'update' requires 'before'/'after', forbids 'data'
+ * - 'delete' requires 'before', forbids 'data'/'after'
+ *
+ * The generated type in src/core/types/api-client.ts uses optional properties
+ * (data?, before?, after?) which is less type-safe. This manual definition is
+ * preferred for runtime type checking. See validateChangesetChanges() for usage.
+ */
+export type ChangesetChange =
+  | (ChangesetChangeBase & {
+      operation: 'add';
+      data: Record<string, unknown>;
+      before?: never;
+      after?: never;
+    })
+  | (ChangesetChangeBase & {
+      operation: 'update';
+      before: Record<string, unknown>;
+      after: Record<string, unknown>;
+      data?: never;
+    })
+  | (ChangesetChangeBase & {
+      operation: 'delete';
+      before: Record<string, unknown>;
+      data?: never;
+      after?: never;
+    });
+
+/**
+ * Type guard for ChangesetChange discriminated union
+ * Validates that JSON deserialized from API conforms to expected ChangesetChange type
+ */
+export function isChangesetChange(value: unknown): value is ChangesetChange {
+  if (typeof value !== 'object' || value === null) return false;
+
+  const obj = value as Record<string, unknown>;
+  const operation = obj.operation;
+
+  // Validate common required fields
+  if (
+    typeof obj.timestamp !== 'string' ||
+    typeof obj.element_id !== 'string' ||
+    typeof obj.layer !== 'string' ||
+    typeof obj.element_type !== 'string'
+  ) {
+    return false;
+  }
+
+  // Validate based on discriminator
+  switch (operation) {
+    case 'add':
+      return typeof obj.data === 'object' && obj.data !== null;
+    case 'update':
+      return (
+        typeof obj.before === 'object' &&
+        obj.before !== null &&
+        typeof obj.after === 'object' &&
+        obj.after !== null
+      );
+    case 'delete':
+      return typeof obj.before === 'object' && obj.before !== null;
+    default:
+      return false;
+  }
+}
+
+/**
+ * Validate an array of changes from API response
+ * @throws Error if any change is invalid
+ */
+export function validateChangesetChanges(
+  changes: unknown[]
+): asserts changes is ChangesetChange[] {
+  if (!Array.isArray(changes)) {
+    throw new Error('Changes must be an array');
+  }
+
+  for (let i = 0; i < changes.length; i++) {
+    if (!isChangesetChange(changes[i])) {
+      throw new Error(
+        `Invalid change at index ${i}: ${JSON.stringify(changes[i])}`
+      );
+    }
+  }
 }
 
 export interface ChangesetDetails {
@@ -184,21 +285,49 @@ export interface ChangesetDetails {
 
 export class EmbeddedDataLoader {
   /**
+   * Generic fetch helper that combines common pattern: fetch -> ensureOk -> json -> log
+   *
+   * IMPORTANT: This method uses a type assertion (as T) without runtime validation.
+   * The response is NOT validated to match the expected type T. Unlike ChangesetChange
+   * which uses runtime validation (validateChangesetChanges), this method assumes the
+   * server response matches the declared type. Use only for endpoints with stable,
+   * well-documented response schemas. For new endpoints, consider adding runtime validation.
+   *
+   * @param url - URL to fetch
+   * @param context - Context string for error logging
+   * @param options - Additional fetch options
+   * @returns Parsed JSON response (type assertion only, not validated)
+   */
+  private async fetchJson<T>(
+    url: string,
+    context: string,
+    options?: RequestInit
+  ): Promise<T> {
+    const response = await fetch(url, {
+      headers: getAuthHeaders(),
+      credentials: 'include',
+      ...options
+    });
+
+    await ensureOk(response, context);
+
+    const data = await response.json();
+    return data as T;
+  }
+
+  /**
    * Check server health
    */
   async healthCheck(): Promise<{ status: string; version: string }> {
-    const response = await fetch('/health', {
-      headers: getAuthHeaders(),
-      credentials: 'include'
-    });
-
-    await ensureOk(response, 'health check');
-
-    return await response.json();
+    return this.fetchJson<{ status: string; version: string }>(
+      '/health',
+      'health check'
+    );
   }
 
   /**
    * Load the specification (JSON Schema format)
+   * Normalizes server response to camelCase property names
    */
   async loadSpec(): Promise<SpecDataResponse> {
     const response = await fetch(`${API_BASE}/spec`, {
@@ -208,52 +337,62 @@ export class EmbeddedDataLoader {
 
     await ensureOk(response, 'load spec');
 
-    const data = await response.json();
+    // Type the raw response to narrow the untyped JSON
+    const data = (await response.json()) as Record<string, unknown> & {
+      version?: string;
+      type?: string;
+      schemas?: Record<string, unknown>;
+      schemaCount?: number;
+      schema_count?: number;
+      relationshipCatalog?: RelationshipCatalog;
+      relationship_catalog?: RelationshipCatalog;
+    };
 
+    // Normalize snake_case from server to camelCase for TypeScript
     const schemaCount = data.schemaCount ?? data.schema_count ?? (data.schemas ? Object.keys(data.schemas).length : 0);
     const relationshipCatalog: RelationshipCatalog | undefined = data.relationshipCatalog || data.relationship_catalog;
 
-    // Also load link registry
-    let linkRegistry: LinkRegistry | undefined;
-    try {
-      linkRegistry = await this.loadLinkRegistry();
-    } catch (err) {
-      console.warn('[EmbeddedDataLoader] Failed to load link registry:', err);
+    const result: SpecDataResponse = {
+      version: data.version ?? '',
+      type: data.type ?? '',
+      schemas: (data.schemas ?? {}) as Record<string, SchemaDefinition>,
+      schemaCount,
+      relationshipCatalog
+    };
+
+    if (typeof data.description === 'string') {
+      result.description = data.description;
+    }
+    if (typeof data.source === 'string') {
+      result.source = data.source;
+    }
+    if (data.manifest && typeof data.manifest === 'object') {
+      result.manifest = data.manifest as SchemaManifest;
     }
 
-    console.log('[EmbeddedDataLoader] Loaded spec from server:', {
-      version: data.version,
-      type: data.type,
-      schemaCount,
-      hasLinkRegistry: !!linkRegistry,
-      linkTypesCount: linkRegistry?.linkTypes?.length || 0,
-      hasRelationshipCatalog: !!relationshipCatalog
-    });
-
-    return {
-      ...data,
-      schemaCount,
-      relationshipCatalog,
-      linkRegistry
-    };
+    return result;
   }
 
   /**
-   * Load link registry
+   * Load a specific layer by name
    */
-  async loadLinkRegistry(): Promise<LinkRegistry> {
-    const response = await fetch(`${API_BASE}/link-registry`, {
-      headers: getAuthHeaders(),
-      credentials: 'include'
-    });
+  async loadLayer(layerName: string): Promise<{ name: string; elements: unknown[]; elementCount: number }> {
+    const data = await this.fetchJson<{ name: string; elements: unknown[]; elementCount: number }>(
+      `${API_BASE}/layers/${encodeURIComponent(layerName)}`,
+      `load layer ${layerName}`
+    );
+    return data;
+  }
 
-    await ensureOk(response, 'load link registry');
-
-    const data = await response.json();
-    console.log('[EmbeddedDataLoader] Loaded link registry:', {
-      linkTypesCount: data.linkTypes?.length || 0,
-      categoriesCount: Object.keys(data.categories || {}).length
-    });
+  /**
+   * Load a specific element by ID
+   * Generic type parameter allows callers to specify expected return type
+   */
+  async loadElement<T = unknown>(elementId: string): Promise<T> {
+    const data = await this.fetchJson<T>(
+      `${API_BASE}/elements/${encodeURIComponent(elementId)}`,
+      `load element ${elementId}`
+    );
     return data;
   }
 
@@ -261,91 +400,253 @@ export class EmbeddedDataLoader {
    * Load the current model (YAML instance format)
    */
   async loadModel(): Promise<MetaModel> {
-    const headers = getAuthHeaders();
-    console.log('[DataLoader] Loading model with headers:', Object.keys(headers).join(', ') || 'none');
+    const data = await this.fetchJson<Record<string, unknown> & {
+      version?: string;
+      metadata?: Record<string, unknown>;
+      layers?: Record<string, unknown>;
+    }>(
+      `${API_BASE}/model`,
+      'load model'
+    );
 
-    const response = await fetch(`${API_BASE}/model`, {
-      headers,
-      credentials: 'include'
-    });
+    // Extract statistics from metadata with proper type safety
+    const extractStatistics = (metadata: unknown): { totalLayers?: number; totalElements?: number } => {
+      if (typeof metadata !== 'object' || metadata === null) {
+        return {};
+      }
+      const metadataObj = metadata as Record<string, unknown>;
+      const statistics = metadataObj.statistics;
+      if (typeof statistics !== 'object' || statistics === null) {
+        return {};
+      }
+      const statsObj = statistics as Record<string, unknown>;
+      return {
+        totalLayers: typeof statsObj.total_layers === 'number' ? statsObj.total_layers : undefined,
+        totalElements: typeof statsObj.total_elements === 'number' ? statsObj.total_elements : undefined
+      };
+    };
 
-    try {
-      await ensureOk(response, 'load model');
-    } catch (err) {
-      console.error('[DataLoader] Model load failed:', response.status, response.statusText);
-      throw err;
-    }
-
-    const data = await response.json();
-    console.log('[DataLoader] Loaded model from server:', {
-      version: data.version,
-      totalLayers: data.metadata?.statistics?.total_layers,
-      totalElements: data.metadata?.statistics?.total_elements,
-      layerCount: Object.keys(data.layers).length
-    });
+    // Extract statistics (for potential future use or telemetry)
+    extractStatistics(data.metadata);
 
     // Normalize model data: ensure all elements have required visual properties
     const normalized = this.normalizeModel(data);
-    console.log('[DataLoader] Normalized model:', {
-      version: normalized.version,
-      layers: Object.entries(normalized.layers).map(([id, layer]) => ({
-        id,
-        elementCount: layer.elements?.length || 0,
-        relationshipCount: layer.relationships?.length || 0
-      }))
-    });
     return normalized;
   }
 
   /**
    * Normalize model data to ensure all required properties are present
    */
-  private normalizeModel(data: any): MetaModel {
+  private normalizeModel(data: unknown): MetaModel {
+    if (typeof data !== 'object' || data === null) {
+      throw new Error('Invalid model data: expected object');
+    }
+    const modelData = data as Record<string, unknown>;
     const normalized: MetaModel = {
-      ...data,
-      layers: {}
+      version: typeof modelData.version === 'string' ? modelData.version : '1.0.0',
+      layers: {},
+      references: Array.isArray(modelData.references) ? (modelData.references as Reference[]) : []
     };
 
-    for (const [layerId, layer] of Object.entries(data.layers || {})) {
-      const layerObj = layer as any;
-      const normalizedLayer = {
-        ...layerObj,
-        elements: (layerObj.elements || []).map((element: any) => ({
-          ...element,
-          // Ensure visual properties exist with defaults
-          visual: element.visual || {
-            position: { x: 0, y: 0 },
-            size: { width: 200, height: 100 },
-            style: { backgroundColor: '#e3f2fd', borderColor: '#1976d2' }
-          },
-          properties: element.properties || {}
-        })),
-        relationships: layerObj.relationships || []
-      };
-      normalized.layers[layerId] = normalizedLayer;
+    // Preserve optional metadata from original data
+    if (typeof modelData.id === 'string') normalized.id = modelData.id;
+    if (typeof modelData.name === 'string') normalized.name = modelData.name;
+    if (typeof modelData.description === 'string') normalized.description = modelData.description;
+    if (typeof modelData.metadata === 'object' && modelData.metadata !== null) {
+      normalized.metadata = modelData.metadata as ModelMetadata;
     }
 
-    // Ensure references array exists
-    if (!normalized.references) {
-      normalized.references = data.references || [];
+    for (const [layerId, layer] of Object.entries(modelData.layers || {})) {
+      if (typeof layer !== 'object' || layer === null) {
+        logError(
+          ERROR_IDS.DATA_NORMALIZATION_FAILED,
+          'Invalid layer object encountered - skipping layer',
+          {
+            layerId,
+            layerType: typeof layer,
+            context: 'normalizeModel layer validation'
+          }
+        );
+        continue;
+      }
+      const layerObj = layer as Record<string, unknown>;
+      const normalizedLayer: Layer = {
+        id: typeof layerObj.id === 'string' ? layerObj.id : layerId,
+        type: typeof layerObj.type === 'string' ? layerObj.type : 'unknown',
+        name: typeof layerObj.name === 'string' ? layerObj.name : layerId,
+        elements: this.normalizeElements(layerObj.elements),
+        relationships: Array.isArray(layerObj.relationships) ? (layerObj.relationships as Relationship[]) : []
+      };
+
+      // Preserve optional layer properties
+      if (typeof layerObj.description === 'string') normalizedLayer.description = layerObj.description;
+      if (typeof layerObj.order === 'number') normalizedLayer.order = layerObj.order;
+      if (typeof layerObj.data === 'object' && layerObj.data !== null) {
+        normalizedLayer.data = layerObj.data as LayerData;
+      }
+
+      normalized.layers[layerId] = normalizedLayer;
     }
 
     return normalized;
   }
 
   /**
+   * Normalize elements array with default visual properties
+   * This function filters out invalid elements and applies sensible defaults to handle
+   * malformed data from the server without throwing. Warnings are logged to help identify
+   * data corruption issues without blocking the UI.
+   *
+   * Filtering behavior:
+   * - Non-object elements (null, primitives) are skipped silently as type-invalid
+   * - All remaining elements are coerced to string defaults if properties are missing
+   *
+   * This approach prevents data corruption from rendering broken UI while maintaining
+   * visibility into problems via console logs.
+   */
+  private normalizeElements(elements: unknown): ModelElement[] {
+    if (!Array.isArray(elements)) {
+      logError(
+        ERROR_IDS.DATA_NORMALIZATION_FAILED,
+        'Expected elements array but received non-array - possible server data corruption',
+        {
+          elementType: typeof elements,
+          context: 'normalizeElements non-array check'
+        }
+      );
+      return [];
+    }
+
+    return elements
+      .filter((element: unknown): element is Record<string, unknown> => {
+        // Skip non-object elements (null, numbers, strings, etc.)
+        // Valid elements must be objects to have required properties
+        if (typeof element !== 'object' || element === null) {
+          logError(
+            ERROR_IDS.DATA_NORMALIZATION_FAILED,
+            'Skipping non-object element in normalizeElements - possible server data corruption',
+            {
+              elementType: typeof element,
+              element,
+              context: 'normalizeElements filter'
+            }
+          );
+          return false;
+        }
+        return true;
+      })
+      .map((elementObj: Record<string, unknown>) => {
+        return {
+          id: typeof elementObj.id === 'string' ? elementObj.id : '',
+          type: typeof elementObj.type === 'string' ? elementObj.type : '',
+          name: typeof elementObj.name === 'string' ? elementObj.name : '',
+          layerId: typeof elementObj.layerId === 'string' ? elementObj.layerId : '',
+          properties: typeof elementObj.properties === 'object' && elementObj.properties !== null ? (elementObj.properties as Record<string, unknown>) : {},
+          visual: this.normalizeVisual(elementObj.visual)
+        } as ModelElement;
+      });
+  }
+
+  /**
+   * Normalize element visual properties with defaults
+   */
+  private normalizeVisual(visual: unknown): ElementVisual {
+    // Return default visual if input is invalid
+    const defaultVisual: ElementVisual = {
+      position: { x: 0, y: 0 },
+      size: { width: 200, height: 100 },
+      style: { backgroundColor: '#e3f2fd', borderColor: '#1976d2' }
+    };
+
+    if (typeof visual !== 'object' || visual === null) {
+      if (visual !== undefined) {
+        logError(
+          ERROR_IDS.DATA_NORMALIZATION_FAILED,
+          'Invalid visual data structure - using default visual values',
+          {
+            visualType: typeof visual,
+            visual,
+            context: 'normalizeVisual - null/invalid input'
+          }
+        );
+      }
+      return defaultVisual;
+    }
+
+    const visualObj = visual as Record<string, unknown>;
+
+    // Ensure position is valid
+    let position = defaultVisual.position;
+    if (typeof visualObj.position === 'object' && visualObj.position !== null) {
+      const pos = visualObj.position as Record<string, unknown>;
+      if (typeof pos.x === 'number' && typeof pos.y === 'number') {
+        position = { x: pos.x, y: pos.y };
+      } else {
+        logError(
+          ERROR_IDS.DATA_NORMALIZATION_FAILED,
+          'Invalid position data in visual properties - using default position',
+          {
+            position: visualObj.position,
+            context: 'normalizeVisual - position'
+          }
+        );
+      }
+    }
+
+    // Ensure size is valid
+    let size = defaultVisual.size;
+    if (typeof visualObj.size === 'object' && visualObj.size !== null) {
+      const sz = visualObj.size as Record<string, unknown>;
+      if (typeof sz.width === 'number' && typeof sz.height === 'number') {
+        size = { width: sz.width, height: sz.height };
+      } else {
+        logError(
+          ERROR_IDS.DATA_NORMALIZATION_FAILED,
+          'Invalid size data in visual properties - using default size',
+          {
+            size: visualObj.size,
+            context: 'normalizeVisual - size'
+          }
+        );
+      }
+    }
+
+    // Ensure style is valid (at minimum an empty object)
+    let style = defaultVisual.style;
+    if (typeof visualObj.style === 'object' && visualObj.style !== null) {
+      const st = visualObj.style as Record<string, unknown>;
+      style = {
+        backgroundColor: typeof st.backgroundColor === 'string' ? st.backgroundColor : style.backgroundColor,
+        borderColor: typeof st.borderColor === 'string' ? st.borderColor : style.borderColor,
+        borderStyle: typeof st.borderStyle === 'string' ? st.borderStyle : undefined,
+        textColor: typeof st.textColor === 'string' ? st.textColor : undefined,
+        icon: typeof st.icon === 'string' ? st.icon : undefined,
+        shape: typeof st.shape === 'string' ? st.shape as import('../../../core/types/model').ShapeType : undefined
+      };
+    }
+
+    // Include layoutHints if present
+    let layoutHints: ElementVisual['layoutHints'];
+    if (typeof visualObj.layoutHints === 'object' && visualObj.layoutHints !== null) {
+      layoutHints = visualObj.layoutHints as ElementVisual['layoutHints'];
+    }
+
+    return {
+      position,
+      size,
+      style,
+      ...(layoutHints && { layoutHints })
+    };
+  }
+
+  /**
    * Load changeset registry (list of all changesets)
    */
   async loadChangesetRegistry(): Promise<ChangesetRegistry> {
-    const response = await fetch(`${API_BASE}/changesets`, {
-      headers: getAuthHeaders(),
-      credentials: 'include'
-    });
-
-    await ensureOk(response, 'load changesets');
-
-    const data = await response.json();
-    console.log('Loaded changeset registry:', Object.keys(data.changesets || {}).length, 'changesets');
+    const data = await this.fetchJson<ChangesetRegistry>(
+      `${API_BASE}/changesets`,
+      'load changesets'
+    );
     return data;
   }
 
@@ -353,15 +654,16 @@ export class EmbeddedDataLoader {
    * Load specific changeset details
    */
   async loadChangeset(changesetId: string): Promise<ChangesetDetails> {
-    const response = await fetch(`${API_BASE}/changesets/${changesetId}`, {
-      headers: getAuthHeaders(),
-      credentials: 'include'
-    });
+    const data = await this.fetchJson<ChangesetDetails>(
+      `${API_BASE}/changesets/${encodeURIComponent(changesetId)}`,
+      `load changeset ${changesetId}`
+    );
 
-    await ensureOk(response, `load changeset ${changesetId}`);
+    // Validate changes array at runtime
+    if (data.changes && Array.isArray(data.changes.changes)) {
+      validateChangesetChanges(data.changes.changes);
+    }
 
-    const data = await response.json();
-    console.log(`Loaded changeset ${changesetId}:`, data.changes.changes.length, 'changes');
     return data;
   }
 
@@ -389,7 +691,6 @@ export class EmbeddedDataLoader {
     await ensureOk(response, 'load annotations');
 
     const data = await response.json();
-    console.log('Loaded annotations:', data.annotations?.length || 0);
     return data.annotations || [];
   }
 
@@ -425,7 +726,6 @@ export class EmbeddedDataLoader {
     await ensureOk(response, 'create annotation');
 
     const data = await response.json();
-    console.log('Created annotation:', data.id);
     return data;
   }
 
@@ -433,7 +733,7 @@ export class EmbeddedDataLoader {
    * Update an existing annotation
    */
   async updateAnnotation(id: string, updates: Omit<AnnotationUpdate, 'id'>): Promise<Annotation> {
-    const response = await fetch(`${API_BASE}/annotations/${id}`, {
+    const response = await fetch(`${API_BASE}/annotations/${encodeURIComponent(id)}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -446,7 +746,6 @@ export class EmbeddedDataLoader {
     await ensureOk(response, 'update annotation');
 
     const data = await response.json();
-    console.log('Updated annotation:', id);
     return data;
   }
 
@@ -468,7 +767,7 @@ export class EmbeddedDataLoader {
    * Load replies for an annotation
    */
   async loadAnnotationReplies(annotationId: string): Promise<import('../types/annotations').AnnotationReply[]> {
-    const response = await fetch(`${API_BASE}/annotations/${annotationId}/replies`, {
+    const response = await fetch(`${API_BASE}/annotations/${encodeURIComponent(annotationId)}/replies`, {
       headers: getAuthHeaders(),
       credentials: 'include'
     });
@@ -476,7 +775,6 @@ export class EmbeddedDataLoader {
     await ensureOk(response, `load replies for annotation ${annotationId}`);
 
     const data = await response.json();
-    console.log(`Loaded ${data.replies?.length || 0} replies for annotation ${annotationId}`);
     return data.replies || [];
   }
 
@@ -487,7 +785,7 @@ export class EmbeddedDataLoader {
     annotationId: string,
     input: { author: string; content: string }
   ): Promise<import('../types/annotations').AnnotationReply> {
-    const response = await fetch(`${API_BASE}/annotations/${annotationId}/replies`, {
+    const response = await fetch(`${API_BASE}/annotations/${encodeURIComponent(annotationId)}/replies`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -500,7 +798,6 @@ export class EmbeddedDataLoader {
     await ensureOk(response, 'create annotation reply');
 
     const data = await response.json();
-    console.log('Created annotation reply:', data.id);
     return data;
   }
 
@@ -508,15 +805,13 @@ export class EmbeddedDataLoader {
    * Delete an annotation
    */
   async deleteAnnotation(id: string): Promise<void> {
-    const response = await fetch(`${API_BASE}/annotations/${id}`, {
+    const response = await fetch(`${API_BASE}/annotations/${encodeURIComponent(id)}`, {
       method: 'DELETE',
       headers: getAuthHeaders(),
       credentials: 'include'
     });
 
     await ensureOk(response, 'delete annotation');
-
-    console.log('Deleted annotation:', id);
   }
 }
 

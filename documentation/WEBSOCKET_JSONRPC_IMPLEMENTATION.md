@@ -81,9 +81,9 @@ Phase 2 successfully implements the complete WebSocket service and JSON-RPC 2.0 
 
 ---
 
-### Backend (Python/FastAPI)
+### Backend (DR CLI Server)
 
-#### 1. **Chat Handler** (`reference_server/chat_handler.py`)
+#### 1. **Chat Handler**
 - **Purpose**: Implements chat.* RPC methods
 - **Key Classes**:
   - `ChatSession` - Manages individual conversation sessions
@@ -117,7 +117,7 @@ Phase 2 successfully implements the complete WebSocket service and JSON-RPC 2.0 
   - Message history per conversation
   - Graceful error handling
 
-#### 2. **Message Router** (`reference_server/message_router.py`)
+#### 2. **Message Router** (DR CLI Server)
 - **Purpose**: Routes JSON-RPC 2.0 messages to handlers
 - **Key Features**:
   - JSON-RPC format validation
@@ -135,7 +135,7 @@ Phase 2 successfully implements the complete WebSocket service and JSON-RPC 2.0 
   - SDK unavailable (-32001) - Anthropic SDK not installed
   - Operation cancelled (-32002) - User cancelled
 
-#### 3. **Main Server Integration** (`reference_server/main.py`)
+#### 3. **Main Server Integration** (DR CLI Server)
 - **Updates**:
   - Imports chat handler and message router
   - Updates WebSocket endpoint to route JSON-RPC messages
@@ -278,14 +278,14 @@ All chat messages follow JSON-RPC 2.0 specification:
 - **Solution**: Timestamp-based unique IDs with Map for tracking
 - **Benefit**: Supports concurrent operations, prevents response mixing
 
-### 4. **Chat Session Management (Python)**
+### 4. **Chat Session Management (Node.js)**
 - **Why**: Need to track conversation context per WebSocket connection
 - **Solution**: Per-connection session with conversation history
 - **Benefit**: Enables multi-turn conversations, proper context for Claude API
 
 ### 5. **Streaming Response Pattern**
 - **Why**: Long-running operations need real-time feedback
-- **Solution**: AsyncGenerator for Python, notification subscriptions for TypeScript
+- **Solution**: Event streams with notification subscriptions for TypeScript backend
 - **Benefit**: Responsive UX with progressivelyavailable results
 
 ---
@@ -324,7 +324,7 @@ ChatPanel re-renders
 - `chatStore` - Messages, conversations, SDK status
 - `useChatStore.getState()` - Direct state access
 
-**Backend Sessions** (Python):
+**Backend Sessions** (Node.js):
 - `ChatSession` - Per-conversation message history
 - `chat_handler.sessions` - Session persistence
 
@@ -403,10 +403,10 @@ ChatPanel re-renders
 - `typescript` (5.0+) - Type safety
 
 ### Backend
-- `fastapi` - Web framework
-- `websockets` - WebSocket protocol
-- `anthropic` (optional) - SDK for Claude API
-- `pydantic` - Data validation
+- `express` - Web framework
+- `ws` - WebSocket protocol
+- `@anthropic-ai/sdk` (optional) - SDK for Claude API
+- `zod` or `joi` - Data validation
 
 ---
 
@@ -426,10 +426,6 @@ workspace/
 │   │   └── chat.ts                    (existing)
 │   └── components/
 │       └── ChatPanel.tsx              ✨ NEW
-├── reference_server/
-│   ├── chat_handler.py                ✨ NEW
-│   ├── message_router.py              ✨ NEW
-│   └── main.py                        (updated)
 └── tests/
     ├── unit/
     │   └── jsonRpcHandler.spec.ts     ✨ NEW
@@ -444,7 +440,7 @@ workspace/
 - ✅ JSON-RPC 2.0 protocol fully implemented
 - ✅ Chat service high-level API works
 - ✅ ChatPanel UI component complete
-- ✅ Python backend handles all chat methods
+- ✅ Node.js backend handles all chat methods
 - ✅ Message routing and error handling robust
 - ✅ All 715 tests passing
 - ✅ Backward compatible with existing code
@@ -459,7 +455,7 @@ workspace/
 | Metric | Value |
 |--------|-------|
 | Lines of Code (TypeScript) | ~900 |
-| Lines of Code (Python) | ~750 |
+| Lines of Code (Node.js) | ~750 |
 | Unit/Integration Tests | 35 |
 | Test Coverage | Comprehensive |
 | Test Pass Rate | 100% (715/715) |

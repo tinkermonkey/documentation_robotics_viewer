@@ -16,6 +16,8 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { websocketClient } from '../services/websocketClient';
+import { logError } from '../services/errorTracker';
+import { ERROR_IDS } from '@/constants/errorIds';
 
 /**
  * Options for the useDataLoader hook
@@ -50,6 +52,9 @@ export interface DataLoaderResult<T> {
   /** Error message if loading failed, or null */
   error: string | null;
 
+  /** Error from onSuccess callback, or null if callback didn't throw */
+  callbackError: string | null;
+
   /** Function to manually trigger a reload */
   reload: () => Promise<void>;
 }
@@ -59,9 +64,12 @@ export interface DataLoaderResult<T> {
  *
  * Manages loading, error, and data state, and optionally:
  * - Executes loadFn on mount if immediate is true (default)
- * - Calls success/error callbacks with proper error handling
+ * - Calls success/error callbacks with proper error handling (failures are tracked via error tracking service)
  * - Subscribes to WebSocket events and reloads on event
  * - Cleans up subscriptions on unmount
+ *
+ * Note: Callback failures are logged to the error tracking service for observability.
+ * Both onSuccess and onError callback failures are captured and available in callbackError state.
  *
  * @param options Configuration options
  * @returns Data loading state and reload function
@@ -72,6 +80,7 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [callbackError, setCallbackError] = useState<string | null>(null);
 
   // Create stable ref to avoid effect re-runs and subscription churn
   const reloadRef = useRef<(() => Promise<void>) | undefined>(undefined);
@@ -87,6 +96,7 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
     try {
       setLoading(true);
       setError(null);
+      setCallbackError(null);
 
       const result = await loadFn();
       setData(result);
@@ -96,19 +106,34 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
           onSuccess(result);
         } catch (successError) {
           console.error('[useDataLoader] onSuccess callback failed:', successError);
-          // Don't fail the load if the success callback fails
+          // Track callback failure for observability and surface to user
+          const callbackErr = successError instanceof Error ? successError : new Error(String(successError));
+          const errorMessage = `Callback failed: ${callbackErr.message}`;
+          setCallbackError(errorMessage);
+          logError(
+            ERROR_IDS.DATA_LOADER_SUCCESS_CALLBACK_FAILED,
+            errorMessage,
+            {
+              callbackName: onSuccess.name || 'anonymous',
+              message: callbackErr.message
+            },
+            callbackErr
+          );
         }
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load data';
 
-      // CRITICAL: Add comprehensive error logging with context
-      console.error('[useDataLoader] Load failed:', {
-        error: err,
-        message: errorMessage,
-        loadFn: loadFn.name || 'anonymous',
-        stack: err instanceof Error ? err.stack : undefined,
-      });
+      // Track primary load failure with error tracking (Sentry integration)
+      logError(
+        ERROR_IDS.DATA_LOADER_LOAD_FAILED,
+        'Data loading failed',
+        {
+          message: errorMessage,
+          loadFn: loadFn.name || 'anonymous',
+        },
+        err instanceof Error ? err : new Error(errorMessage)
+      );
 
       setError(errorMessage);
 
@@ -117,6 +142,19 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
           onError(err instanceof Error ? err : new Error(errorMessage));
         } catch (errorHandlerError) {
           console.error('[useDataLoader] onError callback failed:', errorHandlerError);
+          // Track callback failure for observability and surface to user
+          const callbackErr = errorHandlerError instanceof Error ? errorHandlerError : new Error(String(errorHandlerError));
+          const callbackErrorMessage = `Callback failed: ${callbackErr.message}`;
+          setCallbackError(callbackErrorMessage);
+          logError(
+            ERROR_IDS.DATA_LOADER_ERROR_CALLBACK_FAILED,
+            callbackErrorMessage,
+            {
+              callbackName: onError.name || 'anonymous',
+              message: callbackErr.message
+            },
+            callbackErr
+          );
         }
       }
     } finally {
@@ -163,5 +201,5 @@ export function useDataLoader<T>(options: DataLoaderOptions<T>): DataLoaderResul
     };
   }, [websocketEvents]); // Remove reload from deps to prevent subscription churn
 
-  return { data, loading, error, reload };
+  return { data, loading, error, callbackError, reload };
 }

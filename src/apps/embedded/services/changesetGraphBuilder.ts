@@ -132,14 +132,14 @@ export class ChangesetGraphBuilder {
   private buildElement(change: ChangesetChange): ModelElement {
     const colors = OPERATION_COLORS[change.operation];
 
-    // Get element data based on operation
-    let elementData: any;
+    // Get element data based on operation using discriminated union
+    let elementData: Record<string, unknown>;
     if (change.operation === 'add') {
       elementData = change.data || {};
     } else if (change.operation === 'update') {
-      elementData = change.after || change.data || {};
+      elementData = change.after || {};
     } else if (change.operation === 'delete') {
-      elementData = change.before || change.data || {};
+      elementData = change.before || {};
     } else {
       elementData = {};
     }
@@ -147,7 +147,7 @@ export class ChangesetGraphBuilder {
     const element: ModelElement = {
       id: change.element_id,
       type: change.element_type || 'generic',
-      name: elementData.name || change.element_id,
+      name: typeof elementData.name === 'string' ? elementData.name : change.element_id,
       layerId: change.layer,
       properties: {
         ...elementData,

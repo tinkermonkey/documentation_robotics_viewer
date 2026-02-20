@@ -9,12 +9,14 @@ import { useModelStore } from '../../../core/stores/modelStore';
 export interface SchemaInfoPanelProps {
   /** Additional CSS classes */
   className?: string;
+  /** Error message from spec data loading */
+  specDataError?: string | null;
 }
 
 /**
  * SchemaInfoPanel Component
  */
-export const SchemaInfoPanel: React.FC<SchemaInfoPanelProps> = ({ className = '' }) => {
+export const SchemaInfoPanel: React.FC<SchemaInfoPanelProps> = ({ className = '', specDataError = null }) => {
   const { model } = useModelStore();
 
   if (!model) {
@@ -38,6 +40,11 @@ export const SchemaInfoPanel: React.FC<SchemaInfoPanelProps> = ({ className = ''
 
     try {
       const date = new Date(dateString);
+      // Check for Invalid Date
+      if (isNaN(date.getTime())) {
+        console.warn('[SchemaInfoPanel] Invalid date string provided:', dateString);
+        return dateString;
+      }
       return date.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
@@ -45,7 +52,8 @@ export const SchemaInfoPanel: React.FC<SchemaInfoPanelProps> = ({ className = ''
         hour: '2-digit',
         minute: '2-digit',
       });
-    } catch {
+    } catch (error) {
+      console.warn('[SchemaInfoPanel] Date parsing error:', error, 'for string:', dateString);
       return dateString;
     }
   };
@@ -119,6 +127,18 @@ export const SchemaInfoPanel: React.FC<SchemaInfoPanelProps> = ({ className = ''
             </div>
           </div>
         </div>
+
+        {/* Spec Data Loading Error */}
+        {specDataError && (
+          <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+            <div className="text-xs font-medium text-red-600 dark:text-red-400 mb-2">
+              Schema Load Error
+            </div>
+            <div className="text-xs text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/20 p-2 rounded">
+              {specDataError}
+            </div>
+          </div>
+        )}
 
         {/* Validation Errors */}
         {!isValid && validationErrors.length > 0 && (

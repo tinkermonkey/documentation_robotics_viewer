@@ -43,14 +43,14 @@ info:
   license:
     name: ISC
 servers:
-- url: http://localhost:8765
-  description: Local development server
+- url: http://localhost:8080
+  description: DR CLI visualization server (default port)
 - url: http://localhost:{port}
   description: Configurable port server
   variables:
     port:
-      default: '8765'
-      description: Server port
+      default: '8080'
+      description: DR CLI server port
 tags:
 - name: Health
   description: Server health and status
@@ -141,33 +141,6 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 error: Model manifest not found. Is dr CLI initialized?
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-  /api/link-registry:
-    get:
-      summary: Get cross-layer link registry
-      description: 'Returns the link registry defining valid cross-layer relationships.
-
-        Located at `.dr/schemas/link-registry.json`.'
-      tags:
-      - Schema
-      responses:
-        '200':
-          description: Link registry successfully retrieved
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LinkRegistry'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          description: Link registry not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /api/changesets:

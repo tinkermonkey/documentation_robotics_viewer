@@ -4,8 +4,8 @@
  * sidebar layout is consistent, and all Phase 1-5 fixes are working
  *
  * Prerequisites:
- * 1. Python dependencies (reference server):
- *    cd reference_server && source .venv/bin/activate && pip install -r requirements.txt
+ * 1. DR CLI server running:
+ *    dr visualize [path-to-model]
  *
  * 2. Playwright browsers:
  *    npx playwright install chromium
@@ -13,8 +13,7 @@
  * 3. Run tests with the E2E config:
  *    npm run test:e2e
  *
- * STATUS: These tests verify US-8 requirements for graph rendering,
- *         sidebar layout, and screenshot validation.
+ * STATUS: These tests verify graph rendering, sidebar layout, and visual validation.
  */
 
 import { test, expect } from '@playwright/test';
@@ -228,7 +227,7 @@ test.describe('Graph Rendering - Phase 6 Verification', () => {
       const firstSchemaButton = page.locator('[data-testid="left-sidebar"] button').first();
       if (await firstSchemaButton.isVisible()) {
         await firstSchemaButton.click();
-        await page.waitForTimeout(1000);
+        await page.waitForLoadState('networkidle');
 
         // Verify Schema Definitions section exists
         const schemaSection = page.locator('[data-testid="schema-definitions-section"]');

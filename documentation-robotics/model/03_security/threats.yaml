@@ -40,7 +40,7 @@ xss-attack:
       - security.countermeasure.input-sanitization
       - security.countermeasure.output-encoding
     threatsServices:
-      - application.service.reference-server
+      - application.component.viewer-app
 websocket-hijacking:
   id: security.threat.websocket-hijacking
   name: WebSocket Hijacking
@@ -54,7 +54,7 @@ websocket-hijacking:
     mitigatedBy:
       - security.countermeasure.websocket-origin-validation
     threatsServices:
-      - application.service.reference-server
+      - application.service.websocket-client
 csrf-attack:
   id: security.threat.csrf-attack
   name: Cross-Site Request Forgery (CSRF)

@@ -2,11 +2,11 @@ import { defineConfig, devices } from '@playwright/test';
 
 /**
  * E2E Test Configuration
- * 
+ *
  * Runs complete end-to-end tests with both servers:
  * - Frontend dev server (port 3001) - automatically started
- * - Python reference server (port 8765) - automatically started
- * 
+ * - DR CLI server (port 8080) - uses environment variable or default
+ *
  * Tests covered:
  * - Embedded app functionality
  * - WebSocket communication
@@ -14,21 +14,26 @@ import { defineConfig, devices } from '@playwright/test';
  * - C4 architecture views
  * - Accessibility checks
  * - Performance tests
- * 
+ *
  * SETUP REQUIREMENTS:
- * 1. Install Python dependencies:
- *    cd reference_server && source .venv/bin/activate && pip install -r requirements.txt
- * 
+ * 1. Start DR CLI server:
+ *    dr --port 8080
+ *    OR set custom URL via DR_API_URL/DR_WS_URL environment variables
+ *
  * 2. Install Playwright browsers:
  *    npx playwright install chromium
- * 
+ *
  * 3. Install system dependencies (requires sudo):
  *    npx playwright install-deps chromium
- * 
+ *
  * Usage:
  *   npm run test:e2e         # Run all E2E tests
  *   npm run test:e2e:ui      # Run with UI mode
  *   npm run test:e2e:headed  # Run in headed mode
+ *
+ * Environment Variables:
+ *   DR_API_URL              # Override DR CLI API URL (default: http://localhost:8080)
+ *   DR_WS_URL               # Override DR CLI WebSocket URL (default: ws://localhost:8080)
  */
 export default defineConfig({
   testDir: './tests',
@@ -37,13 +42,14 @@ export default defineConfig({
     'embedded-dual-view.spec.ts',
     'embedded-motivation-view.spec.ts',
     'embedded-graph-rendering.spec.ts',
+    'embedded-auth-race-condition.spec.ts',
     'c4-architecture-view.spec.ts',
     'c4-accessibility.spec.ts',
     'overview-panel-styling.spec.ts',
     'sidebar-consolidation.spec.ts',
     'zoom-to-layer.spec.ts',
     'edge-bundling-viewport-culling.spec.ts',
-    'chat-panel-container.spec.ts',
+    'websocket-recovery.spec.ts',
   ],
   fullyParallel: false, // Run E2E tests sequentially for reliability
   forbidOnly: !!process.env.CI,
@@ -66,7 +72,7 @@ export default defineConfig({
   },
 
   use: {
-    baseURL: 'http://localhost:3001',
+    baseURL: process.env.BASE_URL || 'http://localhost:3001',
     trace: 'retain-on-failure', // Keep traces for failed tests
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -80,23 +86,13 @@ export default defineConfig({
     },
   ],
 
-  // Start both servers automatically
-  webServer: [
-    {
-      command: 'bash -c "cd reference_server && source .venv/bin/activate && python main.py"',
-      url: 'http://localhost:8765/health',
-      reuseExistingServer: !process.env.CI,
-      timeout: 30000,  // 30 seconds to start
-      stdout: 'pipe',
-      stderr: 'pipe',
-    },
-    {
-      command: 'npm run dev',
-      url: 'http://localhost:3001',
-      reuseExistingServer: !process.env.CI,
-      timeout: 60000,  // 60 seconds to start (Vite can be slow)
-      stdout: 'pipe',
-      stderr: 'pipe',
-    },
-  ],
+  // Start frontend dev server (DR CLI should be running separately)
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:3001',
+    reuseExistingServer: !process.env.CI,
+    timeout: 60000,  // 60 seconds to start (Vite can be slow)
+    stdout: 'pipe',
+    stderr: 'pipe',
+  },
 });

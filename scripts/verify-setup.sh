@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Verification script for Documentation Robotics Viewer setup
-# This script checks that all prerequisites are met for testing the reference implementation
+# This script checks that all prerequisites are met for running the DR CLI server and tests
 
 echo "=== Documentation Robotics Viewer Setup Verification ==="
 echo ""
@@ -26,33 +26,12 @@ else
     exit 1
 fi
 
-# Check Python
-echo "Checking Python..."
-if command -v python &> /dev/null || command -v python3 &> /dev/null; then
-    PYTHON_CMD=$(command -v python3 || command -v python)
-    PYTHON_VERSION=$($PYTHON_CMD --version)
-    echo "✓ Python installed: $PYTHON_VERSION"
-else
-    echo "✗ Python not found. Please install Python 3.9 or higher."
-    exit 1
-fi
-
 # Check node_modules
 echo "Checking Node.js dependencies..."
 if [ -d "node_modules" ]; then
     echo "✓ node_modules found"
 else
     echo "✗ node_modules not found. Run: npm install"
-    exit 1
-fi
-
-# Check Python virtual environment
-echo "Checking Python virtual environment..."
-if [ -d "reference_server/.venv" ]; then
-    echo "✓ Python virtual environment found"
-else
-    echo "✗ Python virtual environment not found."
-    echo "  Run: cd reference_server && python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt"
     exit 1
 fi
 
@@ -64,32 +43,21 @@ else
     echo "⚠ Playwright browsers may not be installed. Run: npx playwright install"
 fi
 
-# Check if reference server is running
-echo "Checking reference server..."
-if curl -s http://localhost:8765/health > /dev/null 2>&1; then
-    SERVER_STATUS=$(curl -s http://localhost:8765/health | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
-    echo "✓ Reference server is running (status: $SERVER_STATUS)"
+# Check if DR CLI server is running
+echo "Checking DR CLI server..."
+if curl -s http://localhost:8080/health > /dev/null 2>&1; then
+    SERVER_STATUS=$(curl -s http://localhost:8080/health | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
+    echo "✓ DR CLI server is running (status: $SERVER_STATUS)"
 else
-    echo "⚠ Reference server not running on port 8765"
-    echo "  Start it with: cd reference_server && source .venv/bin/activate && python main.py"
-fi
-
-# Check if embedded viewer is running
-echo "Checking embedded viewer..."
-if curl -s http://localhost:3001 > /dev/null 2>&1; then
-    echo "✓ Embedded viewer is running on port 3001"
-else
-    echo "⚠ Embedded viewer not running on port 3001"
-    echo "  Start it with: npm run dev:embedded"
+    echo "⚠ DR CLI server not running on port 8080"
+    echo "  Start it with: dr visualize [path-to-your-model]"
 fi
 
 echo ""
 echo "=== Setup Verification Complete ==="
 echo ""
-echo "To test the reference implementation:"
-echo "1. Start reference server: cd reference_server && source .venv/bin/activate && python main.py"
-echo "2. Start embedded viewer: npm run dev:embedded"
-echo "3. Open browser: http://localhost:3001"
-echo "4. Run tests: npm test"
+echo "To run tests with the DR CLI server:"
+echo "1. Start DR CLI server: dr visualize [path-to-your-model]"
+echo "2. Run tests: npm run test:e2e"
 echo ""
-echo "See documentation/TESTING_REFERENCE_IMPLEMENTATION.md for detailed instructions."
+echo "For more details, see tests/README.md"

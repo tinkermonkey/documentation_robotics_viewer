@@ -2,20 +2,25 @@ import { defineConfig, devices } from '@playwright/test';
 
 /**
  * E2E Test Configuration for Authentication Tests
- * 
- * Runs authentication and token persistence tests with the reference server.
- * 
- * IMPORTANT: These tests verify token persistence WITHOUT requiring --auth flag.
+ *
+ * Runs authentication and token persistence tests with the DR CLI server.
+ *
+ * IMPORTANT: These tests verify token persistence without requiring server-side auth.
  * The tests verify that token storage mechanisms (cookie, localStorage, sessionStorage)
- * work correctly, which can be tested even without server-side auth validation.
- * 
- * For full auth testing with server validation, manually run:
- *   python reference_server/main.py --auth
- * 
+ * work correctly, which can be tested even without full auth validation.
+ *
+ * For full auth testing with server validation, ensure DR CLI is running with:
+ *   dr --auth --port 8080
+ *
  * Usage:
  *   npm run test:auth              # Run auth tests
  *   npm run test:auth:ui           # Run with UI mode
  *   npm run test:auth:debug        # Run with debug mode
+ *
+ * Environment Variables:
+ *   BASE_URL                       # Override frontend app URL (default: http://localhost:3001)
+ *   DR_API_URL                     # Override DR CLI API URL (default: http://localhost:8080)
+ *   DR_WS_URL                      # Override DR CLI WebSocket URL (default: ws://localhost:8080)
  */
 export default defineConfig({
   testDir: './tests',
@@ -31,7 +36,7 @@ export default defineConfig({
     ['list'],
   ],
   use: {
-    baseURL: 'http://localhost:8765',
+    baseURL: process.env.BASE_URL || 'http://localhost:3001',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -42,24 +47,13 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  
-  // Start the reference server (without auth for basic token storage testing)
-  webServer: [
-    {
-      command: 'bash -c "cd reference_server && source .venv/bin/activate && python main.py"',
-      url: 'http://localhost:8765/health',
-      timeout: 120 * 1000,
-      reuseExistingServer: !process.env.CI,
-      stdout: 'pipe',
-      stderr: 'pipe',
-    },
-    {
-      command: 'npm run dev',
-      url: 'http://localhost:3001',
-      timeout: 120 * 1000,
-      reuseExistingServer: !process.env.CI,
-      stdout: 'pipe',
-      stderr: 'pipe',
-    },
-  ],
+  // Start frontend dev server (DR CLI should be running separately)
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:3001',
+    timeout: 120 * 1000,
+    reuseExistingServer: !process.env.CI,
+    stdout: 'pipe',
+    stderr: 'pipe',
+  },
 });

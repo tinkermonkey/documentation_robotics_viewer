@@ -7,12 +7,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite --config vite.config.embedded.ts --port 3001 --host",
-    "build": "vite build --config vite.config.embedded.ts && npm run package:embedded",
+    "dev:embedded": "vite --config vite.config.embedded.ts --port 3001 --host",
+    "build": "npm run client:generate && npm run client:check-version && vite build --config vite.config.embedded.ts && npm run package:embedded",
     "package:embedded": "node scripts/package-embedded.cjs",
     "preview": "vite preview --config vite.config.embedded.ts",
-    "server": "node server/index.cjs",
     "start": "bash scripts/start-servers.sh",
     "verify": "bash scripts/verify-setup.sh",
+    "sync:api-spec": "bash scripts/sync-api-spec.sh",
+    "client:generate": "openapi-typescript docs/api-spec.yaml -o src/core/types/api-client.ts && node scripts/generate-api-client.js",
+    "client:check-version": "node scripts/check-api-version.js",
     "test": "playwright test",
     "test:debug": "playwright test --debug",
     "test:e2e": "playwright test --config=playwright.e2e.config.ts",
@@ -35,6 +38,7 @@
   "license": "ISC",
   "dependencies": {
     "@hpcc-js/wasm": "^2.30.0",
+    "@tanstack/react-query": "^5.51.0",
     "@tanstack/react-router": "^1.139.12",
     "@types/d3-force": "^3.0.10",
     "@types/js-yaml": "^4.0.9",
@@ -78,6 +82,9 @@
     "autoprefixer": "^10.4.22",
     "axe-playwright": "^2.2.2",
     "flowbite": "^4.0.1",
+    "husky": "^9.1.7",
+    "msw": "^2.6.8",
+    "openapi-typescript": "^7.5.0",
     "playwright": "^1.57.0",
     "storybook": "^8.6.15",
     "tailwindcss": "^4.1.17",
@@ -85,5 +92,12 @@
     "typescript": "^5.9.3",
     "vite": "^6.4.0",
     "wait-on": "^9.0.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": ".husky/pre-commit",
+      "post-merge": ".husky/post-merge",
+      "post-checkout": ".husky/post-checkout"
+    }
   }
 }

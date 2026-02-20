@@ -20,7 +20,7 @@ health-check:
                 version:
                   type: string
     x-archimate-ref:
-      - application.service.reference-server
+      - api.interface.reference-api
     x-protected-by:
       - security.permission.access-api-endpoints
     x-response-schema:
@@ -413,7 +413,7 @@ websocket-connect:
         - subscribe
         - ping
     x-archimate-ref:
-      - application.service.reference-server
+      - api.interface.reference-api
     x-protected-by:
       - security.permission.websocket-permission
       - security.countermeasure.websocket-origin-validation

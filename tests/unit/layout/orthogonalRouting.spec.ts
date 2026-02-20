@@ -308,13 +308,13 @@ test.describe('Orthogonal Edge Routing', () => {
 
     const graphInput = {
       nodes: [
-        { id: 'n1', width: 100, height: 60 },
-        { id: 'n2', width: 100, height: 60 },
-        { id: 'n3', width: 100, height: 60 },
+        { id: 'n1', width: 100, height: 60, data: { label: 'Node 1' } },
+        { id: 'n2', width: 100, height: 60, data: { label: 'Node 2' } },
+        { id: 'n3', width: 100, height: 60, data: { label: 'Node 3' } },
       ],
       edges: [
-        { id: 'e1', source: 'n1', target: 'n2' },
-        { id: 'e2', source: 'n2', target: 'n3' },
+        { id: 'e1', source: 'n1', target: 'n2', data: {} },
+        { id: 'e2', source: 'n2', target: 'n3', data: {} },
       ],
     };
 

@@ -3,13 +3,13 @@
  * Tests spec and changeset URL routing and redirects
  *
  * Note: Tests for ViewTabSwitcher visibility and tab switching require the
- * reference server to be running because the UI only shows tabs after data loads.
+ * DR CLI server to be running because the UI only shows tabs after data loads.
  * Those tests are covered in embedded-app.spec.ts when run with:
  *   npm run test:e2e (uses playwright.e2e.config.ts)
  *
  * Prerequisites:
- * 1. Python dependencies (reference server):
- *    cd reference_server && source .venv/bin/activate && pip install -r requirements.txt
+ * 1. DR CLI server running:
+ *    dr visualize [path-to-model]
  *
  * 2. Playwright browsers:
  *    npx playwright install chromium
@@ -197,7 +197,7 @@ test.describe('Embedded App - Dual View URL Routing', () => {
 
       // Switch to Model mode
       await page.click('[data-testid="main-tab-model"]');
-      await page.waitForTimeout(1000);
+      await page.waitForLoadState('networkidle');
 
       // Switch back to Spec mode
       await page.click('[data-testid="main-tab-spec"]');
@@ -256,7 +256,7 @@ test.describe('Embedded App - Dual View URL Routing', () => {
       const firstSchemaButton = page.locator('button').filter({ hasText: /.schema.json$/ }).first();
       if (await firstSchemaButton.isVisible()) {
         await firstSchemaButton.click();
-        await page.waitForTimeout(1000);
+        await page.waitForLoadState('networkidle');
 
         // Both sections should be visible in merged view
         await expect(page.locator('text=Schema Definitions')).toBeVisible();

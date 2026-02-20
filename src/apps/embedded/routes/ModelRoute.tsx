@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useParams, useSearch, useNavigate } from '@tanstack/react-router';
 import type { Node } from '@xyflow/react';
 import GraphViewer from '../../../core/components/GraphViewer';
@@ -13,53 +13,49 @@ import HighlightedPathPanel from '../components/HighlightedPathPanel';
 import SharedLayout from '../components/SharedLayout';
 import { useModelStore } from '../../../core/stores/modelStore';
 import { useAnnotationStore } from '../stores/annotationStore';
-import { embeddedDataLoader, LinkRegistry, SpecDataResponse } from '../services/embeddedDataLoader';
+import { embeddedDataLoader, SpecDataResponse } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
 import { LoadingState, ErrorState } from '../components/shared';
 import type { MetaModel } from '../../../core/types';
 
 /**
  * Sanitize model data to ensure all elements have required visual properties.
+ * Uses immutable updates to prevent mutation of input data.
  * This prevents NaN viewBox errors when rendering graphs.
  */
 function sanitizeModel(model: MetaModel): MetaModel {
-  const sanitized = { ...model };
-  
-  for (const layer of Object.values(sanitized.layers)) {
-    if (!layer.elements || !Array.isArray(layer.elements)) continue;
-    
-    for (const element of layer.elements) {
-      // Ensure visual object exists with valid defaults
-      if (!element.visual) {
-        element.visual = {
-          position: { x: 0, y: 0 },
-          size: { width: 200, height: 100 },
-          style: { backgroundColor: '#e3f2fd', borderColor: '#1976d2' }
-        };
-      }
-      
-      // Ensure position has valid numbers
-      if (!element.visual.position) {
-        element.visual.position = { x: 0, y: 0 };
-      }
-      element.visual.position.x = Number.isFinite(element.visual.position.x) ? element.visual.position.x : 0;
-      element.visual.position.y = Number.isFinite(element.visual.position.y) ? element.visual.position.y : 0;
-      
-      // Ensure size has valid numbers
-      if (!element.visual.size) {
-        element.visual.size = { width: 200, height: 100 };
-      }
-      element.visual.size.width = Number.isFinite(element.visual.size.width) && element.visual.size.width > 0 ? element.visual.size.width : 200;
-      element.visual.size.height = Number.isFinite(element.visual.size.height) && element.visual.size.height > 0 ? element.visual.size.height : 100;
-      
-      // Ensure style object exists
-      if (!element.visual.style) {
-        element.visual.style = { backgroundColor: '#e3f2fd', borderColor: '#1976d2' };
-      }
-    }
-  }
-  
-  return sanitized;
+  return {
+    ...model,
+    layers: Object.fromEntries(
+      Object.entries(model.layers).map(([layerId, layer]) => [
+        layerId,
+        {
+          ...layer,
+          elements: layer.elements?.map(element => ({
+            ...element,
+            visual: {
+              position: {
+                x: Number.isFinite(element.visual?.position?.x) ? element.visual.position.x : 0,
+                y: Number.isFinite(element.visual?.position?.y) ? element.visual.position.y : 0,
+              },
+              size: {
+                width: Number.isFinite(element.visual?.size?.width) && (element.visual?.size?.width ?? 0) > 0
+                  ? element.visual.size.width
+                  : 200,
+                height: Number.isFinite(element.visual?.size?.height) && (element.visual?.size?.height ?? 0) > 0
+                  ? element.visual.size.height
+                  : 100,
+              },
+              style: element.visual?.style || {
+                backgroundColor: '#e3f2fd',
+                borderColor: '#1976d2',
+              },
+            },
+          })) ?? [],
+        },
+      ])
+    ),
+  };
 }
 
 export default function ModelRoute() {
@@ -68,13 +64,24 @@ export default function ModelRoute() {
   const search = useSearch({ strict: false }) as { layer?: string };
   const { setModel } = useModelStore();
   const annotationStore = useAnnotationStore();
-  const [linkRegistry, setLinkRegistry] = useState<LinkRegistry | null>(null);
   const [specData, setSpecData] = useState<SpecDataResponse | null>(null);
+  const [specDataError, setSpecDataError] = useState<string | null>(null);
+  const [annotationsError, setAnnotationsError] = useState<string | null>(null);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
   const [selectedLayerId, setSelectedLayerId] = useState<string | null>(search?.layer || null);
+  const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const activeView = view === 'json' ? 'json' : 'graph';
+
+  // Cleanup highlight timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (highlightTimeoutRef.current) {
+        clearTimeout(highlightTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Handle layer selection and update URL
   const handleLayerSelect = (layerId: string | null) => {
@@ -94,62 +101,54 @@ export default function ModelRoute() {
 
   // Handle path highlight in JSON view (auto-clear after 3 seconds)
   const handlePathHighlight = (path: string | null) => {
+    // Clear any existing timeout
+    if (highlightTimeoutRef.current) {
+      clearTimeout(highlightTimeoutRef.current);
+      highlightTimeoutRef.current = null;
+    }
+
     setHighlightedPath(path);
     if (path) {
-      setTimeout(() => setHighlightedPath(null), 3000);
+      highlightTimeoutRef.current = setTimeout(() => {
+        setHighlightedPath(null);
+        highlightTimeoutRef.current = null;
+      }, 3000);
     }
   };
 
   const { data: model, loading, error, reload } = useDataLoader({
     loadFn: async () => {
-      console.log('[ModelRoute] Loading model data...');
-
       const modelData = await embeddedDataLoader.loadModel();
-
-      // Debug: log the structure of the model
-      console.log('[ModelRoute] Received model from loader:', {
-        version: modelData.version,
-        metadata: modelData.metadata,
-        layerCount: Object.keys(modelData.layers).length,
-        layers: Object.entries(modelData.layers).map(([id, layer]) => ({
-          id,
-          type: layer.type,
-          elementCount: layer.elements?.length || 0,
-          relationshipCount: layer.relationships?.length || 0,
-          firstElementVisual: layer.elements?.[0]?.visual
-        })),
-        referenceCount: modelData.references?.length || 0
-      });
 
       // Sanitize model data to ensure all elements have valid visual properties
       const sanitizedModel = sanitizeModel(modelData);
 
-      console.log('[ModelRoute] Model loaded successfully');
       return sanitizedModel;
     },
     websocketEvents: ['model.updated', 'annotation.added'],
     onSuccess: async (modelData) => {
       setModel(modelData);
 
-      const annotations = await embeddedDataLoader.loadAnnotations();
-      annotationStore.setAnnotations(annotations);
-
-      // Load link registry
+      // Load annotations with error handling
       try {
-        const registry = await embeddedDataLoader.loadLinkRegistry();
-        setLinkRegistry(registry);
-        console.log('[ModelRoute] Link registry loaded:', registry.linkTypes.length, 'link types');
+        const annotations = await embeddedDataLoader.loadAnnotations();
+        annotationStore.setAnnotations(annotations);
+        setAnnotationsError(null);
       } catch (err) {
-        console.warn('[ModelRoute] Failed to load link registry:', err);
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load annotations';
+        setAnnotationsError(errorMessage);
+        // Continue loading other data even if annotations fail
+        annotationStore.setAnnotations([]);
       }
 
       // Load spec data for schema definitions
       try {
         const spec = await embeddedDataLoader.loadSpec();
         setSpecData(spec);
-        console.log('[ModelRoute] Spec data loaded:', Object.keys(spec.schemas || {}).length, 'schemas');
+        setSpecDataError(null);
       } catch (err) {
-        console.warn('[ModelRoute] Failed to load spec data:', err);
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load schema information';
+        setSpecDataError(errorMessage);
       }
     },
   });
@@ -188,16 +187,16 @@ export default function ModelRoute() {
       rightSidebarContent={
         activeView === 'graph' ? (
           <>
-            <AnnotationPanel />
+            <AnnotationPanel loadError={annotationsError} />
             <LayerTypesLegend model={model} />
             <NodeDetailsPanel selectedNode={selectedNode} model={model} />
             <GraphStatisticsPanel model={model} />
           </>
         ) : (
           <>
-            <AnnotationPanel />
+            <AnnotationPanel loadError={annotationsError} />
             <HighlightedPathPanel highlightedPath={highlightedPath} />
-            <SchemaInfoPanel />
+            <SchemaInfoPanel specDataError={specDataError} />
           </>
         )
       }
@@ -212,7 +211,6 @@ export default function ModelRoute() {
         ) : (
           <ModelJSONViewer
             model={model}
-            linkRegistry={linkRegistry || undefined}
             specData={specData || undefined}
             onPathHighlight={handlePathHighlight}
             selectedLayer={selectedLayerId}

@@ -873,11 +873,12 @@ export class MotivationGraphBuilder {
    */
   private applyAddChange(graph: MotivationGraph, change: ChangesetChange): void {
     const elementData = change.data || {};
+    const name = typeof elementData.name === 'string' ? elementData.name : change.element_id;
 
     const element: ModelElement = {
       id: change.element_id,
       type: change.element_type,
-      name: elementData.name || change.element_id,
+      name,
       layerId: 'Motivation',
       properties: elementData,
       visual: {
@@ -928,7 +929,7 @@ export class MotivationGraphBuilder {
       ...updatedData
     };
 
-    if (updatedData.name) {
+    if (typeof updatedData.name === 'string') {
       existingNode.element.name = updatedData.name;
     }
 

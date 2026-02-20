@@ -1,6 +1,6 @@
 /**
  * WebSocket Client Service
- * Manages WebSocket connection to the Python CLI server
+ * Manages WebSocket connection to the DR CLI server
  * Features: auto-reconnect, exponential backoff, event handling, token authentication
  *
  * Authentication:
@@ -12,15 +12,36 @@
 
 import { logError } from './errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
+import type { WebSocketMessage, EventHandler, WebSocketEventMap, WebSocketSendMessage } from '../types/websocket';
 
-type EventHandler = (data: any) => void;
+// WebSocket ready state constants (mirrors WebSocket.CONNECTING/OPEN/CLOSING/CLOSED)
+// Defined locally so they work in test environments where the global WebSocket may not be available
+const WS_CONNECTING = 0;
+const WS_OPEN = 1;
+const WS_CLOSING = 2;
+const WS_CLOSED = 3;
 
-interface WebSocketMessage {
-  type: string;
-  [key: string]: any;
+/**
+ * Interface for WebSocket client - implemented by both real WebSocketClient and mocks
+ */
+export interface WebSocketClientInterface {
+  setToken(token: string | null): void;
+  connect(): void;
+  disconnect(): void;
+  subscribe(topics: string[]): void;
+  send(message: WebSocketSendMessage): boolean;
+  on<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void;
+  on(event: string, handler: EventHandler<unknown>): void;
+  off<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void;
+  off(event: string, handler: EventHandler<unknown>): void;
+  /** Direct WebSocket connection state (true only if ws.readyState === OPEN) */
+  readonly isConnected: boolean;
+  /** High-level state machine: connecting, connected, disconnected, or reconnecting */
+  readonly connectionState: 'connecting' | 'connected' | 'disconnected' | 'reconnecting';
+  readonly transportMode: 'websocket' | 'rest' | 'detecting';
 }
 
-export class WebSocketClient {
+export class WebSocketClient implements WebSocketClientInterface {
   private ws: WebSocket | null = null;
   private url: string;
   private token: string | null = null;
@@ -31,7 +52,7 @@ export class WebSocketClient {
   private reconnectTimer: NodeJS.Timeout | null = null;
   private heartbeatTimer: NodeJS.Timeout | null = null;
   private heartbeatInterval: number = 30000; // 30 seconds
-  private eventHandlers: Map<string, Set<EventHandler>> = new Map();
+  private eventHandlers: Map<string, Set<EventHandler<unknown>>> = new Map();
   private isIntentionallyClosed: boolean = false;
   private subscribedTopics: string[] = [];
   private mode: 'websocket' | 'rest' | 'detecting' = 'detecting';
@@ -72,7 +93,7 @@ export class WebSocketClient {
    * Connect to the WebSocket server
    */
   connect(): void {
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+    if (this.ws && this.ws.readyState === WS_OPEN) {
       console.log('[WebSocket] Already connected');
       return;
     }
@@ -106,7 +127,7 @@ export class WebSocketClient {
       // Set connection timeout for initial detection
       if (this.mode === 'detecting') {
         this.connectionTimeout = setTimeout(() => {
-          if (this.ws && this.ws.readyState !== WebSocket.OPEN) {
+          if (this.ws && this.ws.readyState !== WS_OPEN) {
             console.log('[WebSocket] Connection timeout during detection phase');
             this.ws.close();
           }
@@ -137,6 +158,52 @@ export class WebSocketClient {
   }
 
   /**
+   * Check if we're in test environment
+   * Returns false if not in test environment, allowing callers to return early
+   */
+  private isTestEnvironment(): boolean {
+    return isTestEnvironment();
+  }
+
+  /**
+   * TEST HOOK: Trigger a WebSocket close event (for testing reconnection logic)
+   * Only available in test environment - checked via isTestEnvironment() function
+   */
+  triggerCloseForTesting(): void {
+    if (!this.isTestEnvironment()) {
+      return;
+    }
+
+    if (this.ws && this.ws.readyState === WS_OPEN) {
+      console.log('[WebSocket] TEST: Forcing close event');
+      // Trigger onclose handler by closing the connection
+      this.ws.close(1000, 'Test-triggered close');
+    } else {
+      console.warn('[WebSocket] TEST: Cannot close, not connected');
+    }
+  }
+
+  /**
+   * TEST HOOK: Simulate exhausted reconnection attempts (for testing failure handling)
+   * Only available in test environment - checked via isTestEnvironment() function
+   */
+  simulateMaxReconnectAttemptsForTesting(): void {
+    if (!this.isTestEnvironment()) {
+      return;
+    }
+
+    console.log('[WebSocket] TEST: Simulating max reconnect attempts');
+    this.reconnectAttempts = this.maxReconnectAttempts;
+    // Trigger the max-reconnect event
+    logError(
+      ERROR_IDS.WS_MAX_RECONNECT_ATTEMPTS,
+      'Max reconnection attempts reached (TEST SIMULATION)',
+      { attempts: this.reconnectAttempts }
+    );
+    this.emit('max-reconnect-attempts', { attempts: this.reconnectAttempts });
+  }
+
+  /**
    * Disconnect from the WebSocket server
    */
   disconnect(): void {
@@ -159,7 +226,7 @@ export class WebSocketClient {
   subscribe(topics: string[]): void {
     this.subscribedTopics = topics;
 
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+    if (this.ws && this.ws.readyState === WS_OPEN) {
       this.send({
         type: 'subscribe',
         topics: topics
@@ -169,32 +236,54 @@ export class WebSocketClient {
 
   /**
    * Send a message to the server
+   * @returns true if message was sent, false if connection is not open
    */
-  send(message: WebSocketMessage): void {
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(message));
+  send(message: WebSocketSendMessage): boolean {
+    if (this.ws && this.ws.readyState === WS_OPEN) {
+      try {
+        this.ws.send(JSON.stringify(message));
+        return true;
+      } catch (error) {
+        logError(
+          ERROR_IDS.WS_SEND_FAILED,
+          'Failed to send WebSocket message',
+          { error: error instanceof Error ? error.message : String(error), message }
+        );
+        return false;
+      }
     } else {
-      console.warn('[WebSocket] Cannot send message, not connected');
+      logError(
+        ERROR_IDS.WS_NOT_CONNECTED,
+        'Cannot send message, WebSocket not connected',
+        { connectionState: this.ws?.readyState, message }
+      );
+      return false;
     }
   }
 
   /**
    * Register an event handler
+   * Supports both typed WebSocket events and custom message types from the server
    */
-  on(event: string, handler: EventHandler): void {
-    if (!this.eventHandlers.has(event)) {
-      this.eventHandlers.set(event, new Set());
+  on<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void;
+  on(event: string, handler: EventHandler<unknown>): void;
+  on<K extends keyof WebSocketEventMap>(event: K | string, handler: EventHandler<unknown>): void {
+    if (!this.eventHandlers.has(event as string)) {
+      this.eventHandlers.set(event as string, new Set());
     }
-    this.eventHandlers.get(event)!.add(handler);
+    this.eventHandlers.get(event as string)!.add(handler as EventHandler<unknown>);
   }
 
   /**
    * Unregister an event handler
+   * Supports both typed WebSocket events and custom message types from the server
    */
-  off(event: string, handler: EventHandler): void {
-    const handlers = this.eventHandlers.get(event);
+  off<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void;
+  off(event: string, handler: EventHandler<unknown>): void;
+  off<K extends keyof WebSocketEventMap>(event: K | string, handler: EventHandler<unknown>): void {
+    const handlers = this.eventHandlers.get(event as string);
     if (handlers) {
-      handlers.delete(handler);
+      handlers.delete(handler as EventHandler<unknown>);
     }
   }
 
@@ -202,7 +291,7 @@ export class WebSocketClient {
    * Get connection state
    */
   get isConnected(): boolean {
-    return this.ws !== null && this.ws.readyState === WebSocket.OPEN;
+    return this.ws !== null && this.ws.readyState === WS_OPEN;
   }
 
   /**
@@ -214,12 +303,12 @@ export class WebSocketClient {
     }
 
     switch (this.ws.readyState) {
-      case WebSocket.CONNECTING:
+      case WS_CONNECTING:
         return 'connecting';
-      case WebSocket.OPEN:
+      case WS_OPEN:
         return 'connected';
-      case WebSocket.CLOSING:
-      case WebSocket.CLOSED:
+      case WS_CLOSING:
+      case WS_CLOSED:
         return this.reconnectTimer ? 'reconnecting' : 'disconnected';
       default:
         return 'disconnected';
@@ -287,10 +376,11 @@ export class WebSocketClient {
   private handleMessage(event: MessageEvent): void {
     try {
       const message: WebSocketMessage = JSON.parse(event.data);
-      console.log('[WebSocket] Received:', message.type);
+      const messageType = message.type ?? 'message';
+      console.log('[WebSocket] Received:', messageType);
 
       // Emit event for this message type
-      this.emit(message.type, message);
+      this.emit(messageType, message);
 
       // Also emit a generic 'message' event
       this.emit('message', message);
@@ -327,14 +417,13 @@ export class WebSocketClient {
         { error: event instanceof ErrorEvent ? event.message : String(event) }
       );
     } else {
-      // In test environments, log at debug level instead of error
+      // In test environments, log at debug level to reduce noise but still emit the error event
       console.debug('[WebSocket] Error in test environment:', event);
     }
 
-    // Emit error event unless in test environment
-    if (!isTestEnv) {
-      this.emit('error', { error: event });
-    }
+    // Always emit error event regardless of environment
+    // Tests can choose to ignore or handle these events as needed
+    this.emit('error', { kind: 'event', error: event });
   }
 
   /**
@@ -413,7 +502,7 @@ export class WebSocketClient {
     this.stopHeartbeat();
 
     this.heartbeatTimer = setInterval(() => {
-      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      if (this.ws && this.ws.readyState === WS_OPEN) {
         this.send({ type: 'ping' });
       }
     }, this.heartbeatInterval);
@@ -432,7 +521,7 @@ export class WebSocketClient {
   /**
    * Emit an event to all registered handlers
    */
-  private emit(event: string, data: any): void {
+  private emit(event: string, data: unknown): void {
     const handlers = this.eventHandlers.get(event);
     if (handlers) {
       handlers.forEach(handler => {
@@ -451,97 +540,112 @@ export class WebSocketClient {
 }
 
 // Detect if we're in a test/story environment (Storybook or Playwright)
+// IMPORTANT: Only check explicit flags, not port-based heuristics
+// In test environment, this method returns true and the WebSocket client uses a mock
+// (does NOT connect to real server). In production, returns false and uses real WebSocket.
 function isTestEnvironment(): boolean {
   if (typeof window === 'undefined') return false;
 
-  // Check for Storybook environment (runs on port 61001 by default)
-  if (window.location.port === '61001') return true;
+  // Check for Playwright test environment (set by Playwright test runner)
+  if (window.__PLAYWRIGHT__) return true;
 
-  // Check for Playwright test environment
-  if ((window as any).__PLAYWRIGHT__) return true;
+  // Check for explicit mock flag (must be set by Storybook/test configuration)
+  if (window.__STORYBOOK_MOCK_WEBSOCKET__) return true;
 
-  // Check for explicit mock flag (used in Storybook test environment)
-  if ((window as any).__STORYBOOK_MOCK_WEBSOCKET__) return true;
+  // Check if we're in a test environment by looking for test-specific globals.
+  // - karma: sets window.__karma__ (test runner property)
+  // - jasmine: sets window.jasmine (lowercase, global scope)
+  // - jest: sets window.jest (lowercase, global scope)
+  // These checks gracefully enable mock WebSocket when test frameworks are detected.
+  if (window.__karma__ || window.jasmine || window.jest) return true;
 
-  // Check if we're in a test environment by looking for test-specific globals
-  if ((window as any).__karma__ || (window as any).jasmine || (window as any).jest) return true;
+  // Note: Do NOT check window.location.port (e.g., port 61001) as this can incorrectly
+  // activate the mock client in production environments that use port-based routing
+  // or reverse proxies. Only use explicit flags set by the test framework.
 
   return false;
 }
 
+/**
+ * Module augmentation to add WebSocket client to window for Playwright tests
+ */
+declare global {
+  interface Window {
+    __WEBSOCKET_CLIENT__?: WebSocketClientInterface;
+    __INTENTIONAL_DISCONNECT__?: boolean;
+    __CONNECTION_STATE__?: string;
+    __PLAYWRIGHT__?: boolean;
+    __STORYBOOK_MOCK_WEBSOCKET__?: boolean;
+    __karma__?: boolean;
+    jasmine?: unknown;
+    jest?: unknown;
+  }
+}
+
 // Create singleton instance
-// In test environments, use a mock that never attempts WebSocket connections
-// In production, use the real WebSocketClient
-let websocketClient: WebSocketClient | any;
+// In browser environments (window is defined), create a real WebSocket client
+// In SSR/Node.js environments (window is undefined), use a mock that explicitly fails
+let websocketClient: WebSocketClientInterface;
 
-if (isTestEnvironment()) {
-  // Import mock client dynamically to avoid bundling it in production
-  // Create a simple inline mock that implements the same interface
-  const mockHandlers = new Map<string, Set<EventHandler>>();
-
-  websocketClient = {
-    setToken: () => {},
-    connect: () => {
-      // Immediately emit REST mode events without any WebSocket connection attempt
-      setTimeout(() => {
-        const handlers = mockHandlers.get('rest-mode');
-        if (handlers) handlers.forEach(h => h({}));
-        const connectHandlers = mockHandlers.get('connect');
-        if (connectHandlers) connectHandlers.forEach(h => h({}));
-      }, 0);
-    },
-    disconnect: () => {},
-    subscribe: () => {},
-    send: () => {},
-    on: (event: string, handler: EventHandler) => {
-      if (!mockHandlers.has(event)) {
-        mockHandlers.set(event, new Set());
-      }
-      mockHandlers.get(event)!.add(handler);
-    },
-    off: (event: string, handler: EventHandler) => {
-      const handlers = mockHandlers.get(event);
-      if (handlers) handlers.delete(handler);
-    },
-    get isConnected() { return true; },
-    get connectionState() { return 'connected' as const; },
-    get transportMode() { return 'rest' as const; }
-  };
-} else if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined') {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const wsUrl = `${protocol}//${window.location.host}/ws`;
   websocketClient = new WebSocketClient(wsUrl, null);
 } else {
-  // Node.js/SSR environment: create a mock WebSocket client
-  const mockHandlers = new Map<string, Set<EventHandler>>();
+  // Node.js/SSR environment: create a mock WebSocket client that explicitly fails
+  // This prevents silent failures where the app thinks it has a real connection
+  const mockHandlers = new Map<string, Set<EventHandler<unknown>>>();
 
   websocketClient = {
     setToken: () => {},
     connect: () => {
+      // Emit error event to indicate mock environment cannot create real connection
       setTimeout(() => {
+        const errorHandlers = mockHandlers.get('error');
+        if (errorHandlers) {
+          errorHandlers.forEach(h => h({
+            code: 'SSR_ENVIRONMENT',
+            message: 'WebSocket not available in SSR/Node.js environment'
+          }));
+        }
+        // Also emit rest-mode event for fallback behavior
         const handlers = mockHandlers.get('rest-mode');
         if (handlers) handlers.forEach(h => h({}));
-        const connectHandlers = mockHandlers.get('connect');
-        if (connectHandlers) connectHandlers.forEach(h => h({}));
       }, 0);
     },
     disconnect: () => {},
     subscribe: () => {},
-    send: () => {},
-    on: (event: string, handler: EventHandler) => {
+    send: () => {
+      // Explicitly fail sends in mock environment
+      logError(
+        ERROR_IDS.WS_SEND_FAILED,
+        'Cannot send message in SSR/Node.js environment - use REST API instead',
+        { environment: 'SSR/Node.js' }
+      );
+      return false;
+    },
+    on: (event: string, handler: EventHandler<unknown>) => {
       if (!mockHandlers.has(event)) {
         mockHandlers.set(event, new Set());
       }
       mockHandlers.get(event)!.add(handler);
     },
-    off: (event: string, handler: EventHandler) => {
+    off: (event: string, handler: EventHandler<unknown>) => {
       const handlers = mockHandlers.get(event);
       if (handlers) handlers.delete(handler);
     },
-    get isConnected() { return true; },
-    get connectionState() { return 'connected' as const; },
+    get isConnected() { return false; },
+    get connectionState() { return 'disconnected' as const; },
     get transportMode() { return 'rest' as const; }
   };
 }
 
 export { websocketClient };
+
+// Re-export types from websocket.ts for backward compatibility
+export type { WebSocketMessage, EventHandler, WebSocketEventMap } from '../types/websocket';
+
+// Expose websocketClient to window in test environments for Playwright access
+if (typeof window !== 'undefined' && isTestEnvironment()) {
+  window.__WEBSOCKET_CLIENT__ = websocketClient;
+}

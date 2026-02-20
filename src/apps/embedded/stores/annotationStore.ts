@@ -6,6 +6,33 @@
 import { create } from 'zustand';
 import { Annotation } from '../types/annotations';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
+import { logError } from '../services/errorTracker';
+import { ERROR_IDS, type ErrorId } from '@/constants/errorIds';
+
+/**
+ * Handle errors in async store mutations
+ * Sets error state, logs error with structured tracking, and rethrows
+ */
+function handleAnnotationError(
+  set: (partial: Partial<AnnotationStore>) => void,
+  errorId: ErrorId,
+  errorMessage: string,
+  context: Record<string, unknown>,
+  error: unknown,
+  rollback?: () => void
+): never {
+  set({ error: errorMessage });
+  if (rollback) {
+    rollback();
+  }
+  logError(
+    errorId,
+    errorMessage,
+    context,
+    error instanceof Error ? error : new Error(String(error))
+  );
+  throw error;
+}
 
 interface AnnotationStore {
   // State
@@ -83,20 +110,20 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
 
   // Async actions with optimistic updates
   createAnnotation: async (elementId, content, author) => {
+    const tempId = `temp-${Date.now()}`;
+    const tempAnnotation: Annotation = {
+      id: tempId,
+      elementId,
+      author,
+      content,
+      createdAt: new Date().toISOString(),
+      resolved: false,
+    };
+
     try {
       set({ error: null });
 
       // Optimistic update: create temporary annotation
-      const tempId = `temp-${Date.now()}`;
-      const tempAnnotation: Annotation = {
-        id: tempId,
-        elementId,
-        author,
-        content,
-        createdAt: new Date().toISOString(),
-        resolved: false,
-      };
-
       get().addAnnotation(tempAnnotation);
 
       // Call API
@@ -113,12 +140,16 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
         )
       }));
 
-      console.log('[AnnotationStore] Created annotation:', createdAnnotation.id);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create annotation';
-      set({ error: errorMessage });
-      console.error('[AnnotationStore] Failed to create annotation:', err);
-      throw err;
+      handleAnnotationError(
+        set,
+        ERROR_IDS.ANNOTATION_CREATE_FAILED,
+        errorMessage,
+        { elementId, author },
+        err,
+        () => get().removeAnnotation(tempId)
+      );
     }
   },
 
@@ -132,14 +163,16 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
       // Call API
       await embeddedDataLoader.resolveAnnotation(id);
 
-      console.log('[AnnotationStore] Resolved annotation:', id);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to resolve annotation';
-      set({ error: errorMessage });
-      // Rollback optimistic update
-      get().updateAnnotation(id, { resolved: false });
-      console.error('[AnnotationStore] Failed to resolve annotation:', err);
-      throw err;
+      handleAnnotationError(
+        set,
+        ERROR_IDS.ANNOTATION_RESOLVE_FAILED,
+        errorMessage,
+        { annotationId: id },
+        err,
+        () => get().updateAnnotation(id, { resolved: false })
+      );
     }
   },
 
@@ -153,14 +186,16 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
       // Call API
       await embeddedDataLoader.unresolveAnnotation(id);
 
-      console.log('[AnnotationStore] Unresolved annotation:', id);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to unresolve annotation';
-      set({ error: errorMessage });
-      // Rollback optimistic update
-      get().updateAnnotation(id, { resolved: true });
-      console.error('[AnnotationStore] Failed to unresolve annotation:', err);
-      throw err;
+      handleAnnotationError(
+        set,
+        ERROR_IDS.ANNOTATION_RESOLVE_FAILED,
+        errorMessage,
+        { annotationId: id },
+        err,
+        () => get().updateAnnotation(id, { resolved: true })
+      );
     }
   },
 
@@ -174,12 +209,15 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
       // Update annotation with replies
       get().updateAnnotation(annotationId, { replies });
 
-      console.log('[AnnotationStore] Loaded replies for annotation:', annotationId);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load replies';
-      set({ error: errorMessage });
-      console.error('[AnnotationStore] Failed to load replies:', err);
-      throw err;
+      handleAnnotationError(
+        set,
+        ERROR_IDS.ANNOTATION_REPLY_FAILED,
+        errorMessage,
+        { annotationId },
+        err
+      );
     }
   },
 
@@ -200,16 +238,37 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
         get().updateAnnotation(annotationId, { replies: updatedReplies });
       }
 
-      console.log('[AnnotationStore] Created reply for annotation:', annotationId);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create reply';
-      set({ error: errorMessage });
-      console.error('[AnnotationStore] Failed to create reply:', err);
-      throw err;
+      handleAnnotationError(
+        set,
+        ERROR_IDS.ANNOTATION_REPLY_FAILED,
+        errorMessage,
+        { annotationId, author },
+        err
+      );
     }
   },
 
   deleteAnnotation: async (id) => {
+    // Store annotation and its original index for positional rollback
+    const annotations = get().annotations;
+    const annotationIndex = annotations.findIndex(ann => ann.id === id);
+    const annotationToRestore = annotations[annotationIndex];
+
+    // Early return if annotation not found locally - don't attempt API deletion
+    if (!annotationToRestore) {
+      const errorMessage = `Annotation not found: ${id}`;
+      set({ error: errorMessage });
+      logError(
+        ERROR_IDS.ANNOTATION_DELETE_FAILED,
+        errorMessage,
+        { annotationId: id },
+        new Error(errorMessage)
+      );
+      throw new Error(errorMessage);
+    }
+
     try {
       set({ error: null });
 
@@ -218,13 +277,28 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
 
       // Call API
       await embeddedDataLoader.deleteAnnotation(id);
-
-      console.log('[AnnotationStore] Deleted annotation:', id);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to delete annotation';
-      set({ error: errorMessage });
-      console.error('[AnnotationStore] Failed to delete annotation:', err);
-      throw err;
+      const rollback = () => {
+        // Rollback optimistic delete - restore at original position if not already in the store
+        if (annotationToRestore && !get().annotations.find(ann => ann.id === id)) {
+          set((state) => {
+            const restored = [...state.annotations];
+            // Insert at original position (or at end if position is out of bounds)
+            const insertPos = Math.min(annotationIndex, restored.length);
+            restored.splice(insertPos, 0, annotationToRestore);
+            return { annotations: restored };
+          });
+        }
+      };
+      handleAnnotationError(
+        set,
+        ERROR_IDS.ANNOTATION_DELETE_FAILED,
+        errorMessage,
+        { annotationId: id },
+        err,
+        rollback
+      );
     }
   },
 

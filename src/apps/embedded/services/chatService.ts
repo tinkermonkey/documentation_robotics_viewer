@@ -120,7 +120,7 @@ export class ChatService {
         {}
       );
 
-      // Convert snake_case from Python backend to camelCase for TypeScript
+      // Convert snake_case from DR CLI server API to camelCase for TypeScript
       const status: SDKStatus = {
         sdkAvailable: result.sdkAvailable ?? result.sdk_available ?? false,
         sdkVersion: result.sdkVersion ?? result.sdk_version ?? null,

@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import ModelJSONViewer from '@/apps/embedded/components/ModelJSONViewer';
 import type { MetaModel } from '@/core/types/model';
-import { LayerType } from '@/core/types/layers';
 
 const meta = {
   title: 'B Details / Model Details / ModelJSONViewer',
@@ -236,42 +235,6 @@ const mockSpecData = {
   }
 };
 
-const mockLinkRegistry = {
-  linkTypes: [
-    {
-      id: 'motivation-supports-goals',
-      name: 'Supports Goals',
-      category: 'motivation',
-      sourceLayers: [LayerType.Business, LayerType.Application],
-      targetLayer: LayerType.Motivation,
-      targetElementTypes: ['Goal'],
-      fieldPaths: ['supports-goals'],
-      description: 'Elements that support achievement of goals',
-      cardinality: '1..n',
-      format: 'reference',
-      examples: ['goal-1', 'goal-2'],
-      validationRules: { targetExists: true, targetType: 'Goal' }
-    },
-    {
-      id: 'motivation-governed-by-principles',
-      name: 'Governed by Principles',
-      category: 'governance',
-      sourceLayers: [LayerType.Business, LayerType.Application],
-      targetLayer: LayerType.Motivation,
-      targetElementTypes: ['Principle'],
-      fieldPaths: ['governed-by-principles'],
-      description: 'Elements governed by architectural principles',
-      cardinality: 'n..n',
-      format: 'reference',
-      examples: ['principle-1', 'principle-2'],
-      validationRules: { targetExists: true, targetType: 'Principle' }
-    }
-  ],
-  categories: {
-    motivation: { name: 'Motivation', description: 'Motivation links' },
-    governance: { name: 'Governance', description: 'Governance links' }
-  }
-};
 
 export const Default: Story = {
   render: () => (
@@ -280,7 +243,6 @@ export const Default: Story = {
         model={mockModel}
         selectedLayer={null}
         specData={mockSpecData}
-        linkRegistry={mockLinkRegistry}
       />
     </div>
   ),
@@ -293,7 +255,6 @@ export const WithSelectedLayer: Story = {
         model={mockModel}
         selectedLayer="motivation-layer"
         specData={mockSpecData}
-        linkRegistry={mockLinkRegistry}
       />
     </div>
   ),
@@ -306,7 +267,6 @@ export const WithBusinessLayer: Story = {
         model={mockModel}
         selectedLayer="business-layer"
         specData={mockSpecData}
-        linkRegistry={mockLinkRegistry}
       />
     </div>
   ),
@@ -319,7 +279,6 @@ export const WithPathHighlight: Story = {
         model={mockModel}
         selectedLayer="motivation-layer"
         specData={mockSpecData}
-        linkRegistry={mockLinkRegistry}
         onPathHighlight={(path) => console.log('Path highlighted:', path)}
       />
     </div>

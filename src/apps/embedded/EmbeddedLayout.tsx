@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { Outlet, useMatches, useNavigate } from '@tanstack/react-router';
 import {
   HiDocumentText,
@@ -40,7 +40,6 @@ const routeMetadata: Record<string, { subTabs?: SubTab[] }> = {
 };
 
 export default function EmbeddedLayout() {
-  const connectionStore = useConnectionStore();
   const { token } = useAuthStore();
   const { toggle: toggleChat, isOpen: isChatOpen } = useFloatingChatStore();
   const matches = useMatches();
@@ -69,6 +68,56 @@ export default function EmbeddedLayout() {
   const currentMainTab = tabs.find(tab => currentPath.startsWith(tab.path));
   const subTabs = currentMainTab ? routeMetadata[currentMainTab.path]?.subTabs || [] : [];
 
+  // Use individual action selectors to avoid re-render loops from whole store reference
+  // When using useConnectionStore() with whole store in dependency array, it causes
+  // the store reference to change on every render, triggering useCallback recreation
+  // and the effect to re-run. Instead, select individual actions via Zustand selector.
+  const setConnected = useConnectionStore((state) => state.setConnected);
+  const setDisconnected = useConnectionStore((state) => state.setDisconnected);
+  const setReconnecting = useConnectionStore((state) => state.setReconnecting);
+  const setError = useConnectionStore((state) => state.setError);
+
+  // Define event handlers with useCallback to prevent stale closures. Without useCallback,
+  // the event handler functions registered in useEffect would capture old closure values
+  // (stale state) from when they were last created. Using useCallback with explicit
+  // dependencies ensures handlers are recreated only when their dependencies change,
+  // and event listeners receive the current version of the handlers.
+  const handleConnect = useCallback(() => {
+    console.log('[EmbeddedLayout] WebSocket connected');
+    setConnected();
+    if (websocketClient.transportMode === 'websocket') {
+      websocketClient.subscribe(['model', 'changesets', 'annotations']);
+    }
+  }, [setConnected]);
+
+  const handleRestMode = useCallback(() => {
+    console.log('[EmbeddedLayout] Using REST mode');
+    setConnected();
+  }, [setConnected]);
+
+  const handleDisconnect = useCallback(() => {
+    console.log('[EmbeddedLayout] WebSocket disconnected');
+    setDisconnected();
+  }, [setDisconnected]);
+
+  const handleReconnecting = useCallback((data: { attempt: number; delay: number }) => {
+    setReconnecting(data.attempt, data.delay);
+  }, [setReconnecting]);
+
+  const handleError = useCallback((data: { kind: 'event'; error: Event } | { kind: 'code'; code: string; message: string }) => {
+    // Only suppress WebSocket errors in explicit mock environments
+    // DO NOT use port detection (61001) as it could be production port
+    const isTestEnv = typeof window !== 'undefined' && (
+      window.__STORYBOOK_MOCK_WEBSOCKET__ ||  // Explicit mock flag for Storybook
+      window.__PLAYWRIGHT__  // Playwright test environment
+    );
+    if (!isTestEnv) {
+      const errorDetail = data.kind === 'event' ? data.error : `${data.code}: ${data.message}`;
+      console.error('[EmbeddedLayout] WebSocket error:', errorDetail);
+    }
+    setError('Connection error');
+  }, [setError]);
+
   /**
    * Initialize WebSocket connection and event handlers
    */
@@ -87,7 +136,6 @@ export default function EmbeddedLayout() {
     websocketClient.on('reconnecting', handleReconnecting);
     websocketClient.on('error', handleError);
     websocketClient.on('rest-mode', handleRestMode);
-    websocketClient.on('connected', handleServerConnected);
 
     // Connect to WebSocket
     websocketClient.connect();
@@ -99,49 +147,9 @@ export default function EmbeddedLayout() {
       websocketClient.off('reconnecting', handleReconnecting);
       websocketClient.off('error', handleError);
       websocketClient.off('rest-mode', handleRestMode);
-      websocketClient.off('connected', handleServerConnected);
       websocketClient.disconnect();
     };
-  }, [token]); // Re-initialize if token changes
-
-  const handleConnect = () => {
-    console.log('[EmbeddedLayout] WebSocket connected');
-    connectionStore.setConnected();
-    if (websocketClient.transportMode === 'websocket') {
-      websocketClient.subscribe(['model', 'changesets', 'annotations']);
-    }
-  };
-
-  const handleRestMode = () => {
-    console.log('[EmbeddedLayout] Using REST mode');
-    connectionStore.setConnected();
-  };
-
-  const handleServerConnected = (data: any) => {
-    console.log('[EmbeddedLayout] Server connection confirmed:', data);
-  };
-
-  const handleDisconnect = () => {
-    console.log('[EmbeddedLayout] WebSocket disconnected');
-    connectionStore.setDisconnected();
-  };
-
-  const handleReconnecting = (data: { attempt: number; delay: number }) => {
-    connectionStore.setReconnecting(data.attempt, data.delay);
-  };
-
-  const handleError = (data: { error: any }) => {
-    // Only suppress WebSocket errors in explicit mock environments
-    // DO NOT use port detection (61001) as it could be production port
-    const isTestEnv = typeof window !== 'undefined' && (
-      (window as any).__STORYBOOK_MOCK_WEBSOCKET__ ||  // Explicit mock flag for Storybook
-      (window as any).__PLAYWRIGHT__  // Playwright test environment
-    );
-    if (!isTestEnv) {
-      console.error('[EmbeddedLayout] WebSocket error:', data.error);
-    }
-    connectionStore.setError('Connection error');
-  };
+  }, [token, handleConnect, handleDisconnect, handleReconnecting, handleError, handleRestMode]);
 
   return (
     <div data-testid="embedded-app" className="min-h-screen bg-gray-50 dark:bg-gray-900">

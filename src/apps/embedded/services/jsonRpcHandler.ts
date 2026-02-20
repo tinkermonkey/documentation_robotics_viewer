@@ -14,14 +14,15 @@ import {
 } from '../types/chat';
 import { logError, logWarning } from './errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
+import type { WebSocketClientInterface } from './websocketClient';
 
 /**
  * Represents a pending JSON-RPC request awaiting a response
  */
-interface PendingRequest {
+interface PendingRequest<T = unknown> {
   id: string | number;
   method: string;
-  resolve: (value: any) => void;
+  resolve: (value: T) => void;
   reject: (error: Error) => void;
   timeout: NodeJS.Timeout;
 }
@@ -29,20 +30,32 @@ interface PendingRequest {
 /**
  * Handler for JSON-RPC 2.0 notifications (server→client without response)
  */
-type NotificationHandler = (params: any) => void;
+type NotificationHandler = (params: Record<string, unknown>) => void;
+
+/**
+ * Typed error class for JSON-RPC error results
+ * Extends Error with code and rpcError properties for better type safety
+ */
+export class JsonRpcErrorResult extends Error {
+  constructor(public code: number, public rpcError: JsonRpcError, message: string) {
+    super(message);
+    this.name = 'JsonRpcErrorResult';
+    Object.setPrototypeOf(this, JsonRpcErrorResult.prototype);
+  }
+}
 
 /**
  * JSON-RPC Handler Service
  * Provides type-safe JSON-RPC 2.0 message handling over WebSocket
  */
 export class JsonRpcHandler {
-  private pendingRequests: Map<string | number, PendingRequest> = new Map();
+  private pendingRequests: Map<string | number, PendingRequest<unknown>> = new Map();
   private notificationHandlers: Map<string, Set<NotificationHandler>> = new Map();
   private requestTimeout: number = 30000; // 30 seconds
   private requestIdCounter: number = 1;
   private messageListenerAttached: boolean = false;
   private messageListenerAttachmentInProgress: boolean = false;
-  private cachedWebSocketClient: any = null;
+  private cachedWebSocketClient: WebSocketClientInterface | null = null;
 
   constructor() {
     this.ensureMessageListenerAttached();
@@ -51,17 +64,23 @@ export class JsonRpcHandler {
   /**
    * Get cached or load WebSocket client
    */
-  private async getWebSocketClient(): Promise<any> {
+  private async getWebSocketClient(): Promise<WebSocketClientInterface> {
     if (this.cachedWebSocketClient) {
       return this.cachedWebSocketClient;
     }
 
     try {
       const module = await import('./websocketClient');
-      this.cachedWebSocketClient = module.websocketClient;
+      this.cachedWebSocketClient = module.websocketClient as WebSocketClientInterface;
       return this.cachedWebSocketClient;
     } catch (error) {
-      console.warn('[JsonRpcHandler] Failed to load WebSocket client:', error);
+      const errorMessage = 'Failed to load WebSocket client - JSON-RPC communication will not be available';
+      logError(
+        ERROR_IDS.JSONRPC_WEBSOCKET_LOAD_FAILED,
+        errorMessage,
+        {},
+        error instanceof Error ? error : new Error(String(error))
+      );
       throw error;
     }
   }
@@ -87,22 +106,59 @@ export class JsonRpcHandler {
     try {
       const websocketClient = await this.getWebSocketClient();
 
-      websocketClient.on('message', (message: any) => {
+      websocketClient.on('message', (message: Record<string, unknown>) => {
         try {
           // Message is already parsed by websocketClient
-          this.handleMessage(message as JsonRpcMessage);
+          // Type guard: validate message structure before casting
+          if (!this.isValidJsonRpcMessage(message)) {
+            logError(
+              ERROR_IDS.JSONRPC_MESSAGE_PARSE_FAILED,
+              'Invalid JSON-RPC message structure - missing required fields',
+              { message: String(message) }
+            );
+            return;
+          }
+          this.handleMessage(message);
         } catch (error) {
-          logError(
-            ERROR_IDS.JSONRPC_MESSAGE_PARSE_FAILED,
-            'Failed to handle message',
-            { error: error instanceof Error ? error.message : String(error), message: String(message) }
-          );
+          // Distinguish between message structure errors and programming bugs
+          // Structure validation errors indicate invalid message properties (TypeError from null/undefined access)
+          const isStructureError = error instanceof TypeError;
+
+          if (isStructureError) {
+            // Invalid message structure - expected in some cases
+            logError(
+              ERROR_IDS.JSONRPC_MESSAGE_PARSE_FAILED,
+              'Invalid JSON-RPC message structure',
+              { error: error instanceof Error ? error.message : String(error), message: String(message) },
+              error instanceof Error ? error : new Error(String(error))
+            );
+          } else {
+            // Programming error or unexpected exception - log as bug
+            logError(
+              ERROR_IDS.JSONRPC_MESSAGE_HANDLER_ERROR,
+              'Unexpected error while handling JSON-RPC message - possible programming bug',
+              {
+                error: error instanceof Error ? error.message : String(error),
+                errorType: error instanceof Error ? error.constructor.name : typeof error,
+                message: String(message),
+                stack: error instanceof Error ? error.stack : undefined
+              },
+              error instanceof Error ? error : new Error(String(error))
+            );
+          }
         }
       });
 
       this.messageListenerAttached = true;
     } catch (error) {
-      console.warn('[JsonRpcHandler] Failed to attach message listener:', error);
+      // Use structured error logging instead of console.warn
+      // This error is critical because it prevents any JSON-RPC responses from being received
+      logError(
+        ERROR_IDS.JSONRPC_ATTACH_LISTENER_FAILED,
+        'Failed to attach message listener to WebSocket - JSON-RPC responses will not be received',
+        { error: error instanceof Error ? error.message : String(error) },
+        error instanceof Error ? error : new Error(String(error))
+      );
     } finally {
       this.messageListenerAttachmentInProgress = false;
     }
@@ -148,7 +204,7 @@ export class JsonRpcHandler {
       request.params = params;
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise<T>((resolve, reject) => {
       const timeoutMs = timeout ?? this.requestTimeout;
       const timeoutHandle = setTimeout(() => {
         this.pendingRequests.delete(id);
@@ -162,7 +218,7 @@ export class JsonRpcHandler {
       this.pendingRequests.set(id, {
         id,
         method,
-        resolve,
+        resolve: (value: unknown) => resolve(value as T),
         reject,
         timeout: timeoutHandle,
       });
@@ -197,7 +253,19 @@ export class JsonRpcHandler {
   ): Promise<void> {
     try {
       const websocketClient = await this.getWebSocketClient();
-      websocketClient.send(request as any);
+      const sendSuccess = websocketClient.send(request);
+
+      if (!sendSuccess) {
+        this.pendingRequests.delete(id);
+        clearTimeout(timeoutHandle);
+        const errorMessage = `Failed to send JSON-RPC request: WebSocket not connected`;
+        logError(
+          ERROR_IDS.JSONRPC_SEND_REQUEST_FAILED,
+          errorMessage,
+          { method: request.method }
+        );
+        reject(new Error(errorMessage));
+      }
     } catch (error) {
       this.pendingRequests.delete(id);
       clearTimeout(timeoutHandle);
@@ -220,7 +288,15 @@ export class JsonRpcHandler {
   ): Promise<void> {
     try {
       const websocketClient = await this.getWebSocketClient();
-      websocketClient.send(notification as any);
+      const sendSuccess = websocketClient.send(notification);
+
+      if (!sendSuccess) {
+        logError(
+          ERROR_IDS.JSONRPC_SEND_NOTIFICATION_FAILED,
+          `Failed to send notification for method '${method}': WebSocket not connected`,
+          { method }
+        );
+      }
     } catch (error) {
       logError(
         ERROR_IDS.JSONRPC_SEND_NOTIFICATION_FAILED,
@@ -276,8 +352,12 @@ export class JsonRpcHandler {
     const pendingRequest = this.pendingRequests.get(id);
 
     if (!pendingRequest) {
-      console.warn(
-        `[JsonRpcHandler] Received response for unknown request ID: ${id}`
+      const errorMessage = `Received JSON-RPC response for unknown request ID: ${id}. This may indicate a timing issue or protocol error.`;
+      logError(
+        ERROR_IDS.JSONRPC_UNKNOWN_RESPONSE_ID,
+        errorMessage,
+        { responseId: id },
+        new Error(errorMessage)
       );
       return;
     }
@@ -296,7 +376,7 @@ export class JsonRpcHandler {
   /**
    * Handle JSON-RPC notification (server→client)
    */
-  private handleNotification(message: any): void {
+  private handleNotification(message: JsonRpcNotification): void {
     const { method, params } = message;
 
     if (!method) {
@@ -313,11 +393,11 @@ export class JsonRpcHandler {
     // Execute handlers - catch both sync and async errors
     handlers.forEach((handler) => {
       try {
-        const result = handler(params) as unknown;
+        const result = handler(params ?? {}) as unknown;
 
         // If handler returns a promise, catch async errors
-        if (result && typeof (result as any).then === 'function') {
-          (result as Promise<any>).catch((error: Error) => {
+        if (result && typeof (result as Promise<unknown>).then === 'function') {
+          (result as Promise<unknown>).catch((error: Error) => {
             logError(
               ERROR_IDS.JSONRPC_NOTIFICATION_HANDLER_ERROR,
               `Error in notification handler for '${method}'`,
@@ -341,10 +421,7 @@ export class JsonRpcHandler {
    */
   private createError(error: JsonRpcError, method: string): Error {
     const message = `JSON-RPC Error (${error.code}): ${error.message} [method: ${method}]`;
-    const err = new Error(message);
-    (err as any).code = error.code;
-    (err as any).rpcError = error;
-    return err;
+    return new JsonRpcErrorResult(error.code, error, message);
   }
 
   /**
@@ -385,7 +462,7 @@ export class JsonRpcHandler {
       return false;
     }
 
-    const req = request as any;
+    const req = request as Record<string, unknown>;
     return (
       req.jsonrpc === '2.0' &&
       typeof req.method === 'string' &&
@@ -401,12 +478,44 @@ export class JsonRpcHandler {
       return false;
     }
 
-    const resp = response as any;
+    const resp = response as Record<string, unknown>;
     if (resp.jsonrpc !== '2.0' || (resp.id === undefined && resp.id !== 0)) {
       return false;
     }
 
     return ('result' in resp && !('error' in resp)) || ('error' in resp && !('result' in resp));
+  }
+
+  /**
+   * Validate if a message is a valid JSON-RPC message structure
+   */
+  private isValidJsonRpcMessage(message: unknown): message is JsonRpcMessage {
+    if (typeof message !== 'object' || message === null) {
+      return false;
+    }
+
+    const msg = message as Record<string, unknown>;
+    if (msg.jsonrpc !== '2.0') {
+      return false;
+    }
+
+    // Must be either a response (with id and result/error) or notification (with method, no id)
+    const hasId = 'id' in msg;
+    const hasMethod = 'method' in msg;
+    const hasResult = 'result' in msg;
+    const hasError = 'error' in msg;
+
+    // Response: has id and either result or error (but not both)
+    if (hasId && (hasResult || hasError)) {
+      return (hasResult && !hasError) || (!hasResult && hasError);
+    }
+
+    // Notification: has method but no id
+    if (hasMethod && !hasId) {
+      return true;
+    }
+
+    return false;
   }
 }
 

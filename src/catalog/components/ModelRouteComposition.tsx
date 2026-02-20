@@ -19,7 +19,7 @@ import GraphStatisticsPanel from '../../apps/embedded/components/GraphStatistics
 import HighlightedPathPanel from '../../apps/embedded/components/HighlightedPathPanel';
 import SharedLayout from '../../apps/embedded/components/SharedLayout';
 import type { MetaModel } from '../../core/types';
-import type { LinkRegistry, SpecDataResponse } from '../../apps/embedded/services/embeddedDataLoader';
+import type { SpecDataResponse } from '../../apps/embedded/services/embeddedDataLoader';
 
 /**
  * Props for ModelRouteComposition
@@ -27,8 +27,6 @@ import type { LinkRegistry, SpecDataResponse } from '../../apps/embedded/service
 export interface ModelRouteCompositionProps {
   /** The model data to display */
   model: MetaModel;
-  /** Optional link registry for cross-layer references */
-  linkRegistry?: LinkRegistry;
   /** Optional spec data for schema definitions */
   specData?: SpecDataResponse;
   /** Active view mode: 'graph' or 'json' */
@@ -69,7 +67,6 @@ export interface ModelRouteCompositionProps {
  */
 export const ModelRouteComposition = memo<ModelRouteCompositionProps>(({
   model,
-  linkRegistry,
   specData,
   activeView,
   selectedLayerId,
@@ -118,7 +115,6 @@ export const ModelRouteComposition = memo<ModelRouteCompositionProps>(({
         ) : (
           <ModelJSONViewer
             model={model}
-            linkRegistry={linkRegistry}
             specData={specData}
             onPathHighlight={onPathHighlight}
             selectedLayer={selectedLayerId}

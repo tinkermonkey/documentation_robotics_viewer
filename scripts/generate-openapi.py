@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """
-Generate OpenAPI specification from the reference server implementation.
+Generate OpenAPI specification for the DR CLI server.
 
-This script analyzes reference_server/main.py and generates openapi.yaml
-to keep the API documentation in sync with the implementation.
+This script generates openapi.yaml to document the API for the DR CLI server.
 
 Usage:
     python scripts/generate-openapi.py
@@ -68,16 +67,16 @@ Generated: """ + datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         },
         "servers": [
             {
-                "url": "http://localhost:8765",
-                "description": "Local development server"
+                "url": "http://localhost:8080",
+                "description": "Local DR CLI server"
             },
             {
                 "url": "http://localhost:{port}",
                 "description": "Configurable port server",
                 "variables": {
                     "port": {
-                        "default": "8765",
-                        "description": "Server port"
+                        "default": "8080",
+                        "description": "Server port (DR CLI default is 8080)"
                     }
                 }
             }
@@ -845,7 +844,7 @@ def main():
     """Main entry point"""
     import argparse
     
-    parser = argparse.ArgumentParser(description="Generate OpenAPI specification from reference server")
+    parser = argparse.ArgumentParser(description="Generate OpenAPI specification for DR CLI server")
     parser.add_argument("--output", "-o", default="openapi.yaml", help="Output file path (default: openapi.yaml)")
     args = parser.parse_args()
     

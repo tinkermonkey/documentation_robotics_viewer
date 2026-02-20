@@ -4,7 +4,7 @@
  * Enhanced with create/edit UI and @mention support
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { Badge, Avatar, Button, Modal, Textarea, Label } from 'flowbite-react';
 import { Plus, Check, MessageSquare } from 'lucide-react';
 import { useAnnotationStore } from '../stores/annotationStore';
@@ -12,8 +12,20 @@ import { useModelStore } from '../../../core/stores/modelStore';
 import { Annotation } from '../types/annotations';
 import { parseMentions, resolveElementName } from '../utils/mentionParser';
 import { EmptyState, LoadingState, ErrorState } from './shared';
+import { logError } from '../services/errorTracker';
+import { ERROR_IDS } from '../../../constants/errorIds';
 
-const AnnotationPanel: React.FC = () => {
+/**
+ * Props for the AnnotationPanel component.
+ * Displays and manages annotations (comments) with @mention support and threaded replies.
+ * Handles creating, resolving, and viewing annotations for architecture elements.
+ */
+export interface AnnotationPanelProps {
+  /** Error from annotation loading */
+  loadError?: string | null;
+}
+
+const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) => {
   const {
     annotations,
     selectedElementId,
@@ -36,6 +48,43 @@ const AnnotationPanel: React.FC = () => {
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState('');
   const [replyAuthor, setReplyAuthor] = useState('');
+
+  // Local notification state for action feedback
+  const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  // Refs to track timer IDs for cleanup
+  const notificationTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const highlightTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  /**
+   * Cleanup timers on unmount to prevent memory leaks
+   */
+  useEffect(() => {
+    return () => {
+      if (notificationTimerRef.current) {
+        clearTimeout(notificationTimerRef.current);
+      }
+      if (highlightTimerRef.current) {
+        clearTimeout(highlightTimerRef.current);
+      }
+    };
+  }, []);
+
+  /**
+   * Show a temporary notification
+   * Success notifications: auto-clear after 3 seconds
+   * Error notifications: persist indefinitely (user must navigate away or page reload to dismiss)
+   */
+  const showNotification = (type: 'success' | 'error', message: string) => {
+    setNotification({ type, message });
+    // Only auto-clear success notifications
+    if (type === 'success') {
+      if (notificationTimerRef.current) {
+        clearTimeout(notificationTimerRef.current);
+      }
+      notificationTimerRef.current = setTimeout(() => setNotification(null), 3000);
+    }
+  };
 
   // Filter annotations based on selection
   const displayedAnnotations = useMemo(() => {
@@ -102,9 +151,11 @@ const AnnotationPanel: React.FC = () => {
         commentAuthor
       );
       handleCloseModal();
+      showNotification('success', 'Comment added successfully');
     } catch (err) {
-      // Error is already set in store, modal will stay open
-      console.error('Failed to create annotation:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to create annotation';
+      logError(ERROR_IDS.ANNOTATION_CREATE_FAILED, errorMessage, { elementId: selectedElementId }, err instanceof Error ? err : undefined);
+      showNotification('error', errorMessage);
     }
   };
 
@@ -112,11 +163,15 @@ const AnnotationPanel: React.FC = () => {
     try {
       if (annotation.resolved) {
         await unresolveAnnotation(annotation.id);
+        showNotification('success', 'Annotation unresolved');
       } else {
         await resolveAnnotation(annotation.id);
+        showNotification('success', 'Annotation resolved');
       }
     } catch (err) {
-      console.error('Failed to toggle resolve status:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to toggle resolve status';
+      logError(ERROR_IDS.ANNOTATION_RESOLVE_FAILED, errorMessage, { annotationId: annotation.id }, err instanceof Error ? err : undefined);
+      showNotification('error', errorMessage);
     }
   };
 
@@ -140,8 +195,11 @@ const AnnotationPanel: React.FC = () => {
     try {
       await createAnnotationReply(annotationId, replyAuthor, replyContent);
       handleCancelReply();
+      showNotification('success', 'Reply added successfully');
     } catch (err) {
-      console.error('Failed to create reply:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to create reply';
+      logError(ERROR_IDS.ANNOTATION_REPLY_FAILED, errorMessage, { annotationId }, err instanceof Error ? err : undefined);
+      showNotification('error', errorMessage);
     }
   };
 
@@ -155,7 +213,10 @@ const AnnotationPanel: React.FC = () => {
     setHighlightedElementId(elementId);
 
     // Auto-clear highlight after 3 seconds
-    setTimeout(() => {
+    if (highlightTimerRef.current) {
+      clearTimeout(highlightTimerRef.current);
+    }
+    highlightTimerRef.current = setTimeout(() => {
       setHighlightedElementId(null);
     }, 3000);
   };
@@ -313,6 +374,21 @@ const AnnotationPanel: React.FC = () => {
     return <LoadingState variant="panel" message="Loading annotations..." />;
   }
 
+  if (loadError) {
+    return (
+      <div className="p-4" data-testid="annotation-load-error">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
+          <div className="text-xs font-medium text-red-600 dark:text-red-400 mb-1">
+            Failed to Load Annotations
+          </div>
+          <div className="text-xs text-red-700 dark:text-red-300">
+            {loadError}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (error) {
     return <ErrorState variant="panel" message={error} />;
   }
@@ -330,6 +406,36 @@ const AnnotationPanel: React.FC = () => {
 
   return (
     <div className="p-4" data-testid="annotation-panel">
+      {/* Notification Toast
+          Displays feedback for annotation operations (create, resolve, reply):
+          - Success notifications: role="status" + aria-live="polite" (auto-clear after 3s)
+          - Error notifications: role="alert" + aria-live="assertive" (persist indefinitely)
+          The loadError prop displays async load-time errors during component initialization.
+          Tests validate ARIA attributes, auto-clear behavior, and timer cleanup.
+      */}
+      {notification && (
+        <div
+          role={notification.type === 'error' ? 'alert' : 'status'}
+          aria-live={notification.type === 'error' ? 'assertive' : 'polite'}
+          className={`mb-4 p-3 rounded-lg ${
+            notification.type === 'success'
+              ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
+              : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'
+          }`}
+          data-testid={`notification-${notification.type}`}
+        >
+          <p
+            className={`text-sm ${
+              notification.type === 'success'
+                ? 'text-green-700 dark:text-green-300'
+                : 'text-red-700 dark:text-red-300'
+            }`}
+          >
+            {notification.message}
+          </p>
+        </div>
+      )}
+
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
           {selectedElementId ? 'Element Annotations' : 'Comments'} ({displayedAnnotations.length})

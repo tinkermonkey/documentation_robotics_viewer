@@ -14,7 +14,7 @@ import { MockDataLoaderProvider } from './MockDataLoaderProvider';
 import { MockStoreProvider } from './MockStoreProvider';
 import { MockWebSocketProvider, createMockWebSocketClient } from './MockWebSocketProvider';
 import type { MetaModel } from '../../core/types';
-import type { SpecDataResponse, LinkRegistry } from '../../apps/embedded/services/embeddedDataLoader';
+import type { SpecDataResponse } from '../../apps/embedded/services/embeddedDataLoader';
 import type { Annotation } from '../../apps/embedded/types/annotations';
 import type { MockFilterState } from './MockStoreProvider';
 
@@ -37,8 +37,6 @@ export interface StoryProviderWrapperProps {
   model?: MetaModel | null;
   /** Pre-loaded SpecDataResponse data */
   spec?: SpecDataResponse | null;
-  /** Pre-loaded LinkRegistry data */
-  linkRegistry?: LinkRegistry | null;
   /** Pre-loaded annotations */
   annotations?: Annotation[];
 
@@ -79,7 +77,6 @@ export function StoryProviderWrapper({
   // Data loader props
   model = null,
   spec = null,
-  linkRegistry = null,
   annotations = [],
   // Store props
   modelStoreOverrides = {},
@@ -105,7 +102,6 @@ export function StoryProviderWrapper({
         <MockDataLoaderProvider
           model={model}
           spec={spec}
-          linkRegistry={linkRegistry}
           annotations={annotations}
         >
           <MockStoreProvider

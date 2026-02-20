@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Pre-commit hook: Sync and validate API spec before commit
+# This ensures the API spec is always in sync with upstream
+#
+# Supports offline mode: Set HUSKY_OFFLINE=1 environment variable to skip network operations
+
+set -e
+
+echo "🔄 Checking API spec synchronization..."
+
+# Check if running offline
+if [ "$HUSKY_OFFLINE" = "1" ]; then
+  echo "⚠️  Running in offline mode - skipping API spec sync"
+  echo "✓ Commit allowed (offline mode enabled)"
+  exit 0
+fi
+
+# Run the sync script (will fail if no network)
+if ! npm run sync:api-spec; then
+  echo "⚠️  Failed to sync API spec (network unreachable)"
+  echo "   To proceed offline, run:"
+  echo "     export HUSKY_OFFLINE=1"
+  echo "     git commit -m \"message\""
+  echo "   or in one line:"
+  echo "     HUSKY_OFFLINE=1 git commit -m \"message\""
+  exit 1
+fi
+
+# Check if the spec changed
+if ! git diff --quiet docs/api-spec.yaml 2>/dev/null; then
+  echo "📝 API spec was updated but not staged"
+  echo "   To include these changes in your commit, run:"
+  echo "     git add docs/api-spec.yaml"
+else
+  echo "✓ API spec is already in sync"
+fi
+
+exit 0

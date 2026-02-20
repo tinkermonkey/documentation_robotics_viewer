@@ -1,12 +1,11 @@
 /**
  * Playwright Global Setup
- * Handles authentication token retrieval for E2E tests
+ * Handles DR CLI server health checks for E2E tests
  *
  * This setup:
- * 1. Waits for the reference server to start
- * 2. Checks if authentication is required
- * 3. If auth is enabled, captures the magic link token from server logs
- * 4. Stores the token for use in tests
+ * 1. Checks if DR CLI server is available at configured URL
+ * 2. Provides helpful error messages if server is unavailable
+ * 3. Configures authentication if needed
  */
 
 import { chromium, FullConfig } from '@playwright/test';
@@ -18,12 +17,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const AUTH_TOKEN_FILE = path.join(__dirname, '../.test-auth-token');
-const REFERENCE_SERVER_URL = 'http://localhost:8765';
+const DR_API_URL = process.env.DR_API_URL || 'http://localhost:8080';
 
 // Configuration with sensible defaults
 const CONFIG = {
-  REFERENCE_SERVER_TIMEOUT: 30000,  // 30 seconds
-  REFERENCE_SERVER_RETRY_INTERVAL: 500, // Check every 500ms
+  DR_API_TIMEOUT: 30000,  // 30 seconds
+  DR_API_RETRY_INTERVAL: 500, // Check every 500ms
   AUTH_CHECK_TIMEOUT: 5000,
   AUTH_SETUP_TIMEOUT: 10000,
 };
@@ -32,21 +31,21 @@ async function globalSetup(config: FullConfig) {
   console.log('\n🔧 Global Setup: Initializing E2E test environment...');
 
   try {
-    // Wait for reference server to be ready
-    console.log('   [1/3] Waiting for reference server (http://localhost:8765)...');
-    await waitForServer(
-      REFERENCE_SERVER_URL + '/health',
-      CONFIG.REFERENCE_SERVER_TIMEOUT,
-      CONFIG.REFERENCE_SERVER_RETRY_INTERVAL
+    // Check if DR CLI server is available
+    console.log(`   [1/2] Checking DR CLI server (${DR_API_URL})...`);
+    await checkDRServer(
+      DR_API_URL + '/health',
+      CONFIG.DR_API_TIMEOUT,
+      CONFIG.DR_API_RETRY_INTERVAL
     );
-    console.log('   ✓ Reference server is ready');
+    console.log('   ✓ DR CLI server is available');
 
     // Test if authentication is required
-    console.log('   [2/3] Checking authentication configuration...');
+    console.log('   [2/2] Checking authentication configuration...');
     const authRequired = await checkAuthRequired();
 
     if (authRequired) {
-      console.log('   ⚠ Authentication is ENABLED on reference server');
+      console.log('   ⚠ Authentication is ENABLED on DR CLI server');
 
       // Check if there's a token file we can use
       if (fs.existsSync(AUTH_TOKEN_FILE)) {
@@ -54,19 +53,19 @@ async function globalSetup(config: FullConfig) {
         console.log(`   ✓ Found auth token file: ${path.basename(AUTH_TOKEN_FILE)}`);
 
         // Verify token works
-        console.log('   [3/3] Verifying authentication token...');
         const tokenWorks = await verifyToken(token);
         if (tokenWorks) {
           console.log('   ✓ Auth token is valid');
 
           // Store token in localStorage for all tests
-          await setupAuthForTests(token);
+          const baseURL = config.use?.baseURL || 'http://localhost:3001';
+          await setupAuthForTests(token, baseURL);
           console.log('   ✓ Auth token configured for tests');
         } else {
           throw new Error(
             'Auth token verification failed\n' +
             '  Token may be invalid or expired\n' +
-            '  Solution: Restart reference server without --auth flag, or provide valid token'
+            '  Solution: Provide a valid token or run DR CLI without --auth flag for testing'
           );
         }
       } else {
@@ -74,7 +73,7 @@ async function globalSetup(config: FullConfig) {
           'Authentication required but no token file found\n' +
           `  Expected: ${AUTH_TOKEN_FILE}\n` +
           '  Solution: Create token file with: echo "YOUR_TOKEN" > .test-auth-token\n' +
-          '  Or: Restart reference server without --auth flag for testing'
+          '  Or: Run DR CLI without --auth flag for testing'
         );
       }
     } else {
@@ -91,22 +90,22 @@ async function globalSetup(config: FullConfig) {
     const message = error instanceof Error ? error.message : String(error);
     console.error('\n❌ Global Setup Failed:\n');
     console.error(message);
-    console.error('\n📋 Troubleshooting:\n');
-    console.error('  1. Ensure reference server is running:');
-    console.error('     cd reference_server && source .venv/bin/activate && python main.py\n');
-    console.error('  2. Verify server health:');
-    console.error('     curl http://localhost:8765/health\n');
-    console.error('  3. Check firewall/network:');
-    console.error('     netstat -an | grep 8765\n');
-    console.error('See: tests/README.md#troubleshooting for more help\n');
+    console.error('\n📋 E2E Test Prerequisites:\n');
+    console.error('  1. Start DR CLI server:');
+    console.error('     dr visualize --model tests/fixtures/test-model.yaml --port 8080\n');
+    console.error('  2. Verify server is running:');
+    console.error(`     curl ${DR_API_URL}/health\n`);
+    console.error('  3. Set custom URL if needed:');
+    console.error('     DR_API_URL=http://your-server:8080 npm run test:e2e\n');
+    console.error('See: tests/README.md for more help\n');
     process.exit(1);
   }
 }
 
 /**
- * Wait for server to be available with intelligent retries
+ * Check if DR CLI server is available with intelligent retries
  */
-async function waitForServer(
+async function checkDRServer(
   url: string,
   timeout: number,
   retryInterval: number = 500
@@ -119,8 +118,7 @@ async function waitForServer(
     attemptCount++;
     try {
       const response = await fetch(url, {
-        method: 'GET',
-        timeout: 5000
+        method: 'GET'
       });
       if (response.ok) {
         const elapsedTime = Date.now() - startTime;
@@ -139,13 +137,13 @@ async function waitForServer(
   }
 
   throw new Error(
-    `Server at ${url} did not become ready within ${timeout}ms (${attemptCount} attempts)\n` +
+    `DR CLI server at ${url} did not become ready within ${timeout}ms (${attemptCount} attempts)\n` +
     `  Last error: ${lastError?.message || 'Unknown error'}`
   );
 }
 
 /**
- * Check if the reference server requires authentication
+ * Check if the DR CLI server requires authentication
  */
 async function checkAuthRequired(): Promise<boolean> {
   try {
@@ -154,9 +152,8 @@ async function checkAuthRequired(): Promise<boolean> {
 
     try {
       // Try to access /api/model without auth
-      const response = await fetch(REFERENCE_SERVER_URL + '/api/model', {
-        signal: controller.signal,
-        timeout: CONFIG.AUTH_CHECK_TIMEOUT
+      const response = await fetch(DR_API_URL + '/api/model', {
+        signal: controller.signal
       });
 
       clearTimeout(timeoutId);
@@ -171,7 +168,8 @@ async function checkAuthRequired(): Promise<boolean> {
     } catch (error) {
       clearTimeout(timeoutId);
       // If we can't connect, assume no auth is required
-      // (the earlier waitForServer check would have already failed if server is down)
+      // (the earlier checkDRServer check would have already failed if server is down)
+      console.warn('   ⚠ Auth check failed:', error instanceof Error ? error.message : String(error));
       return false;
     }
   } catch (error) {
@@ -181,7 +179,7 @@ async function checkAuthRequired(): Promise<boolean> {
 }
 
 /**
- * Verify that an auth token works
+ * Verify that an auth token works with DR CLI server
  */
 async function verifyToken(token: string): Promise<boolean> {
   try {
@@ -189,7 +187,7 @@ async function verifyToken(token: string): Promise<boolean> {
     const timeoutId = setTimeout(() => controller.abort(), CONFIG.AUTH_CHECK_TIMEOUT);
 
     try {
-      const response = await fetch(REFERENCE_SERVER_URL + '/api/model', {
+      const response = await fetch(DR_API_URL + '/api/model', {
         headers: {
           'Authorization': `Bearer ${token}`
         },
@@ -203,17 +201,21 @@ async function verifyToken(token: string): Promise<boolean> {
       return response.status !== 401 && response.status !== 403;
     } catch (error) {
       clearTimeout(timeoutId);
+      console.warn('   ⚠ Token verification failed:', error instanceof Error ? error.message : String(error));
       return false;
     }
   } catch (error) {
+    console.warn('   ⚠ Token verification error:', error instanceof Error ? error.message : String(error));
     return false;
   }
 }
 
 /**
  * Set up authentication token in browser localStorage for all tests
+ * @param token - Auth token to store
+ * @param baseURL - Frontend base URL (respects BASE_URL env var)
  */
-async function setupAuthForTests(token: string): Promise<void> {
+async function setupAuthForTests(token: string, baseURL: string = 'http://localhost:3001'): Promise<void> {
   const browser = await chromium.launch();
   let context = null;
   let page = null;
@@ -226,7 +228,7 @@ async function setupAuthForTests(token: string): Promise<void> {
     page.setDefaultTimeout(CONFIG.AUTH_SETUP_TIMEOUT);
 
     // Navigate to the app
-    await page.goto('http://localhost:3001', { waitUntil: 'domcontentloaded' });
+    await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
 
     // Set auth token in localStorage
     await page.evaluate((authToken) => {

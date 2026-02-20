@@ -92,12 +92,12 @@ docker-hub:
   id: technology.deployment.docker-hub
   name: Docker Hub
   type: stack
-  documentation: Container registry for distributing reference server as Docker image
+  documentation: Container registry for distributing standalone viewer as Docker image
   properties:
     registry: hub.docker.com
-    image-name: documentation-robotics/viewer-server
+    image-name: documentation-robotics/viewer
     x-supports:
-      - application.service.reference-server
+      - application.component.viewer-app
 cdn-delivery:
   id: technology.deployment.cdn-delivery
   name: CDN Delivery

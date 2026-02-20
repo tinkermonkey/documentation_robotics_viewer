@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableRow } from 'flowbite-react';
 
 export interface AttributeRow {
   name: string;
-  value: string | number | boolean | null | undefined;
+  value: string | number | boolean | null | undefined | Record<string, unknown> | unknown[];
   isObject?: boolean;
 }
 

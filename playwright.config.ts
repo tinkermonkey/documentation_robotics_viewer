@@ -3,12 +3,12 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * Default Playwright Test Configuration
  *
- * Runs basic tests that don't require the reference server:
+ * Runs basic tests that don't require the DR CLI server:
  * - Integration tests
  * - Unit tests
  * - Component tests
  *
- * For E2E tests with reference server, use: npm run test:e2e
+ * For E2E tests with DR CLI server, use: npm run test:e2e
  */
 export default defineConfig({
   testDir: './tests',
@@ -23,6 +23,7 @@ export default defineConfig({
     '**/sidebar-consolidation.spec.ts',
     '**/zoom-to-layer.spec.ts',
     '**/edge-bundling-viewport-culling.spec.ts',
+    '**/websocket-recovery.spec.ts',
     // Story tests (use playwright.refinement.config.ts)
     '**/stories/**/*.spec.ts',
   ],

@@ -7,7 +7,7 @@ local-access:
     have full read/write access to model files.
   properties:
     x-governs:
-      - application.service.reference-server
       - application.service.data-loader
       - application.service.yaml-parser
       - application.service.json-schema-parser
+      - application.service.local-file-loader

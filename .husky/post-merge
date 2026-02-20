@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Post-merge hook: Sync API spec after pulling changes
+# Ensures local spec is updated if it changed in the remote
+
+if git diff HEAD@{1}..HEAD --name-only | grep -q docs/api-spec.yaml; then
+  echo "🔄 API spec changed in this merge. Syncing..."
+  npm run sync:api-spec
+  echo "✓ API spec synced"
+fi
+
+exit 0

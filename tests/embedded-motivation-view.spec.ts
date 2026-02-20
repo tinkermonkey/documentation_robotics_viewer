@@ -1,12 +1,12 @@
 /**
  * E2E Tests for Motivation View in Embedded App
- * Tests the motivation graph visualization with reference server integration
+ * Tests the motivation graph visualization with DR CLI server integration
  *
- * IMPORTANT: These tests require the Python reference server to be running.
+ * IMPORTANT: These tests require the DR CLI server to be running.
  *
  * Prerequisites:
- * 1. Python dependencies (reference server):
- *    cd reference_server && source .venv/bin/activate && pip install -r requirements.txt
+ * 1. DR CLI server running:
+ *    dr visualize [path-to-model]
  *
  * 2. Playwright browsers:
  *    npx playwright install chromium
@@ -100,7 +100,7 @@ test.describe('Motivation View', () => {
 
     // End on Motivation
     await page.click('.mode-selector button:has-text("Motivation")');
-    await page.waitForTimeout(1000);
+    await page.waitForLoadState('networkidle');
 
     // Should still be functional - either showing graph or message or error
     const motivationContainer = page.locator('.motivation-graph-container');

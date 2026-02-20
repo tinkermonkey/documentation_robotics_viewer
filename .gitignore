@@ -11,12 +11,6 @@ test-results/
 # Build artifacts (keep dist/ but ignore the bundled package)
 dist/embedded/dr-viewer-bundle/
 
-# Reference server (Python)
-reference_server/venv/
-reference_server/**/__pycache__/
-reference_server/**/*.pyc
-reference_server/mock_data/
-
 # Logs
 logs
 *.log

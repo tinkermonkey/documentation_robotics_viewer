@@ -133,7 +133,6 @@ export {
 export {
   createMinimalSpecFixture,
   createCompleteSpecFixture,
-  createMinimalLinkRegistryFixture,
   createCustomSpecFixture
 } from './fixtures/specFixtures';
 

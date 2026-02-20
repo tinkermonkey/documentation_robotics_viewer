@@ -1262,48 +1262,6 @@
   category: cross-layer
 
 # Application → API
-- source: application.service.reference-server
-  target: api.operation.health-check
-  predicate: exposes
-  fromLayer: application
-  toLayer: api
-  category: cross-layer
-- source: application.service.reference-server
-  target: api.operation.get-spec
-  predicate: exposes
-  fromLayer: application
-  toLayer: api
-  category: cross-layer
-- source: application.service.reference-server
-  target: api.operation.get-model
-  predicate: exposes
-  fromLayer: application
-  toLayer: api
-  category: cross-layer
-- source: application.service.reference-server
-  target: api.operation.list-changesets
-  predicate: exposes
-  fromLayer: application
-  toLayer: api
-  category: cross-layer
-- source: application.service.reference-server
-  target: api.operation.get-changeset
-  predicate: exposes
-  fromLayer: application
-  toLayer: api
-  category: cross-layer
-- source: application.service.reference-server
-  target: api.operation.get-annotations
-  predicate: exposes
-  fromLayer: application
-  toLayer: api
-  category: cross-layer
-- source: application.service.reference-server
-  target: api.operation.websocket-connect
-  predicate: exposes
-  fromLayer: application
-  toLayer: api
-  category: cross-layer
 
 # API → Data Model
 - source: api.operation.get-model
@@ -1506,12 +1464,6 @@
   fromLayer: application
   toLayer: apm
   category: cross-layer
-- source: application.service.reference-server
-  target: apm.metric.websocket-latency
-  predicate: instrumented-by
-  fromLayer: application
-  toLayer: apm
-  category: cross-layer
 - source: application.service.yaml-parser
   target: apm.metric.model-parse-time
   predicate: instrumented-by
@@ -1582,12 +1534,6 @@
   category: cross-layer
 
 # Security → Application
-- source: security.threat.xss-attack
-  target: application.service.reference-server
-  predicate: threatens
-  fromLayer: security
-  toLayer: application
-  category: cross-layer
 - source: security.countermeasure.input-sanitization
   target: security.threat.xss-attack
   predicate: mitigates
@@ -1618,23 +1564,11 @@
   fromLayer: security
   toLayer: security
   category: cross-layer
-- source: security.threat.websocket-hijacking
-  target: application.service.reference-server
-  predicate: threatens
-  fromLayer: security
-  toLayer: application
-  category: cross-layer
 - source: security.countermeasure.websocket-origin-validation
   target: security.threat.websocket-hijacking
   predicate: mitigates
   fromLayer: security
   toLayer: security
-  category: cross-layer
-- source: security.secure-resource.api-endpoints
-  target: application.service.reference-server
-  predicate: protects
-  fromLayer: security
-  toLayer: application
   category: cross-layer
 - source: security.secure-resource.file-system
   target: application.service.local-file-loader

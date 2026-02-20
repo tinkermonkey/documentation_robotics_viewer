@@ -12,8 +12,7 @@ import {
   createCompleteModelFixture,
   createMinimalModelFixture,
   createAnnotationListFixture,
-  createCompleteSpecFixture,
-  createMinimalLinkRegistryFixture
+  createCompleteSpecFixture
 } from '@/catalog/fixtures';
 
 const meta = {
@@ -35,14 +34,12 @@ export const GraphViewDefault: Story = {
 
     const model = createCompleteModelFixture();
     const annotations = createAnnotationListFixture(5);
-    const linkRegistry = createMinimalLinkRegistryFixture();
     const specData = createCompleteSpecFixture();
 
     return (
       <StoryProviderWrapper
         model={model}
         annotations={annotations}
-        linkRegistry={linkRegistry}
         spec={specData}
         initialParams={{ view: 'graph' }}
         initialSearch={{ layer: selectedLayerId || undefined }}
@@ -50,7 +47,6 @@ export const GraphViewDefault: Story = {
         <div className="h-screen w-screen">
           <ModelRouteComposition
             model={model}
-            linkRegistry={linkRegistry}
             specData={specData}
             activeView="graph"
             selectedLayerId={selectedLayerId}
@@ -80,20 +76,17 @@ export const GraphViewWithLayerFilter: Story = {
 
     const model = createCompleteModelFixture();
     const annotations = createAnnotationListFixture(3);
-    const linkRegistry = createMinimalLinkRegistryFixture();
 
     return (
       <StoryProviderWrapper
         model={model}
         annotations={annotations}
-        linkRegistry={linkRegistry}
         initialParams={{ view: 'graph' }}
         initialSearch={{ layer: 'motivation' }}
       >
         <div className="h-screen w-screen">
           <ModelRouteComposition
             model={model}
-            linkRegistry={linkRegistry}
             activeView="graph"
             selectedLayerId={selectedLayerId}
             selectedNode={selectedNode}
@@ -122,21 +115,18 @@ export const JSONView: Story = {
 
     const model = createCompleteModelFixture();
     const annotations = createAnnotationListFixture(5);
-    const linkRegistry = createMinimalLinkRegistryFixture();
     const specData = createCompleteSpecFixture();
 
     return (
       <StoryProviderWrapper
         model={model}
         annotations={annotations}
-        linkRegistry={linkRegistry}
         spec={specData}
         initialParams={{ view: 'json' }}
       >
         <div className="h-screen w-screen">
           <ModelRouteComposition
             model={model}
-            linkRegistry={linkRegistry}
             specData={specData}
             activeView="json"
             selectedLayerId={selectedLayerId}
@@ -166,14 +156,12 @@ export const JSONViewWithHighlightedPath: Story = {
 
     const model = createCompleteModelFixture();
     const annotations = createAnnotationListFixture(2);
-    const linkRegistry = createMinimalLinkRegistryFixture();
     const specData = createCompleteSpecFixture();
 
     return (
       <StoryProviderWrapper
         model={model}
         annotations={annotations}
-        linkRegistry={linkRegistry}
         spec={specData}
         initialParams={{ view: 'json' }}
         initialSearch={{ layer: 'motivation' }}
@@ -181,7 +169,6 @@ export const JSONViewWithHighlightedPath: Story = {
         <div className="h-screen w-screen">
           <ModelRouteComposition
             model={model}
-            linkRegistry={linkRegistry}
             specData={specData}
             activeView="json"
             selectedLayerId={selectedLayerId}

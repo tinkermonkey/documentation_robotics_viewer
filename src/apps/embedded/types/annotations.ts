@@ -27,7 +27,6 @@ export interface AnnotationCreate {
 }
 
 export interface AnnotationUpdate {
-  id: string;
   content?: string;
   resolved?: boolean;
 }

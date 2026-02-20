@@ -72,12 +72,12 @@ websocket-latency:
   id: apm.metric.websocket-latency
   name: WebSocket Latency
   type: performance
-  documentation: Round-trip time for WebSocket messages between client and server
+  documentation: Round-trip time for WebSocket messages between client and DR CLI server
   properties:
     x-measures:
       - application.service.connection-store
     instrumentsServices:
-      - application.service.reference-server
+      - application.service.websocket-client
 annotation-load-time:
   id: apm.metric.annotation-load-time
   name: Annotation Load Time

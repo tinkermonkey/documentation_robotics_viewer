@@ -39,6 +39,33 @@ const DEFAULT_STATE = {
   isMinimized: false,
 };
 
+// Create a safe storage wrapper that falls back gracefully when localStorage is unavailable
+const createStorage = () => {
+  // Check if we're in a browser environment with localStorage
+  if (typeof window !== 'undefined' && window.localStorage) {
+    return window.localStorage;
+  }
+
+  // Fallback storage for SSR/test environments
+  let memoryStorage: Record<string, string> = {};
+  return {
+    getItem: (key: string) => memoryStorage[key] || null,
+    setItem: (key: string, value: string) => {
+      memoryStorage[key] = value;
+    },
+    removeItem: (key: string) => {
+      delete memoryStorage[key];
+    },
+    clear: () => {
+      memoryStorage = {};
+    },
+    get length() {
+      return Object.keys(memoryStorage).length;
+    },
+    key: (index: number) => Object.keys(memoryStorage)[index] || null,
+  };
+};
+
 export const useFloatingChatStore = create<FloatingChatState>()(
   persist(
     (set) => ({
@@ -62,12 +89,39 @@ export const useFloatingChatStore = create<FloatingChatState>()(
     }),
     {
       name: 'dr-floating-chat-state',
-      partialize: (state) => ({
-        isOpen: state.isOpen,
-        position: state.position,
-        size: state.size,
-        isMinimized: state.isMinimized,
-      }),
+      storage: {
+        getItem: (key) => {
+          const storage = createStorage();
+          const value = storage.getItem(key);
+          if (!value) return null;
+          try {
+            return JSON.parse(value);
+          } catch (error) {
+            // If parsing fails, clear corrupted data and log error before returning null
+            console.error(
+              '[FloatingChatStore] Failed to parse persisted chat state from localStorage:',
+              {
+                key,
+                error: error instanceof Error ? error.message : String(error),
+                valueLength: value?.length,
+                storageSize: storage.length
+              }
+            );
+            storage.removeItem(key);
+            return null;
+          }
+        },
+        setItem: (key, value) => {
+          const storage = createStorage();
+          storage.setItem(key, JSON.stringify(value));
+        },
+        removeItem: (key) => {
+          const storage = createStorage();
+          storage.removeItem(key);
+        },
+      },
+      // Zustand persist middleware automatically excludes function properties from serialization
+      // so we don't need an explicit partialize function here
     }
   )
 );

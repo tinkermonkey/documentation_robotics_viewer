@@ -4,11 +4,16 @@ import { Release } from '../types';
 /**
  * Service for interacting with GitHub releases via backend server
  * Uses server proxy to avoid CORS issues
+ *
+ * NOTE: This service requires a separate backend server that is not included
+ * with the embedded viewer. The local reference server has been removed.
+ * If GitHub release downloading is needed, use the DR CLI server (port 8080)
+ * or implement a custom backend service.
  */
 export class GitHubService {
   private serverUrl: string;
 
-  constructor(serverUrl: string = 'http://localhost:3002') {
+  constructor(serverUrl: string = 'http://localhost:8080') {
     this.serverUrl = serverUrl;
   }
 
@@ -27,11 +32,15 @@ export class GitHubService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error fetching releases:', error);
+      // Note: Core services use console.error for logging to avoid dependencies on embedded services.
+      // For structured error tracking with Sentry integration, use errorTracker from embedded layer.
+      console.error('GitHubService.getAvailableReleases error:', { url, error });
       // Provide helpful error for network failures
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error(
-          'Unable to connect to server. Please ensure the server is running on port 3002.'
+          `Unable to connect to backend server at ${this.serverUrl}. ` +
+          'GitHub release downloading requires a custom backend server. ' +
+          'This functionality is optional and not provided by the embedded viewer.'
         );
       }
       throw error;
@@ -62,10 +71,14 @@ export class GitHubService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error fetching latest spec release:', error);
+      // Note: Core services use console.error for logging to avoid dependencies on embedded services.
+      // For structured error tracking with Sentry integration, use errorTracker from embedded layer.
+      console.error('GitHubService.getLatestSpecRelease error:', { url, error });
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error(
-          'Unable to connect to server. Please ensure the server is running on port 3000.'
+          `Unable to connect to backend server at ${this.serverUrl}. ` +
+          'GitHub release downloading requires a custom backend server. ' +
+          'This functionality is optional and not provided by the embedded viewer.'
         );
       }
       throw error;
@@ -104,10 +117,14 @@ export class GitHubService {
 
       return schemas;
     } catch (error) {
-      console.error('Error downloading schemas:', error);
+      // Note: Core services use console.error for logging to avoid dependencies on embedded services.
+      // For structured error tracking with Sentry integration, use errorTracker from embedded layer.
+      console.error('GitHubService.downloadSchemas error:', { version, error });
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error(
-          'Unable to connect to server. Please ensure the server is running on port 3000.'
+          `Unable to connect to backend server at ${this.serverUrl}. ` +
+          'GitHub release downloading requires a custom backend server. ' +
+          'This functionality is optional and not provided by the embedded viewer.'
         );
       }
       throw error;
@@ -142,6 +159,7 @@ export class GitHubService {
     const zip = new JSZip();
     const loadedZip = await zip.loadAsync(zipData);
     const schemas: Record<string, unknown> = {};
+    const skippedFiles: string[] = [];
 
     // Check if this is a YAML instance model by looking for manifest.yaml
     let hasManifest = false;
@@ -167,6 +185,7 @@ export class GitHubService {
           schemas[layerName] = json;
         } catch (error) {
           console.warn(`Failed to parse JSON ${filename}:`, error);
+          skippedFiles.push(filename);
         }
       }
       // Handle YAML files (instance models)
@@ -205,8 +224,14 @@ export class GitHubService {
           }
         } catch (error) {
           console.warn(`Failed to extract YAML ${filename}:`, error);
+          skippedFiles.push(filename);
         }
       }
+    }
+
+    // Log summary of extraction results
+    if (skippedFiles.length > 0) {
+      console.warn(`ZIP extraction completed with ${skippedFiles.length} skipped file(s): ${skippedFiles.join(', ')}`);
     }
 
     return schemas;
@@ -251,6 +276,9 @@ export class GitHubService {
 
   /**
    * Cache schemas to localStorage for offline use
+   * Note: Storage failures (quota exceeded, permissions denied) are logged but don't
+   * block schema loading - the app continues without cache. Callers should not retry
+   * on cache failure; the API fetch is the primary source.
    */
   cacheSchemas(version: string, schemas: Record<string, unknown>): void {
     try {
@@ -261,12 +289,20 @@ export class GitHubService {
         schemas
       }));
     } catch (error) {
-      console.warn('Failed to cache schemas:', error);
+      // Log storage errors (quota exceeded, etc.) to warn users of potential data loss
+      // but don't re-throw - cache is non-critical for functionality
+      console.warn(
+        '[GitHubService] Failed to cache schemas (may indicate localStorage quota exceeded):',
+        error instanceof Error ? error.message : String(error),
+        { version }
+      );
     }
   }
 
   /**
    * Load cached schemas from localStorage
+   * Note: Failures to load cache (parse errors, quota exceeded) are logged but don't
+   * block app functionality. Cache is a performance optimization, not a requirement.
    */
   loadCachedSchemas(version: string): Record<string, unknown> | null {
     try {
@@ -285,7 +321,13 @@ export class GitHubService {
         }
       }
     } catch (error) {
-      console.warn('Failed to load cached schemas:', error);
+      // Log parse/access errors but gracefully degrade - cache failures should not
+      // prevent app from fetching fresh schemas via API
+      console.warn(
+        '[GitHubService] Failed to load cached schemas (corrupted or quota issue):',
+        error instanceof Error ? error.message : String(error),
+        { version }
+      );
     }
 
     return null;
