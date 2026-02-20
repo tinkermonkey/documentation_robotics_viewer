@@ -120,13 +120,11 @@ export class JsonRpcHandler {
           }
           this.handleMessage(message);
         } catch (error) {
-          // Distinguish between message handling errors and programming bugs
-          // Message validation/handling errors (expected failures)
-          if (
-            error instanceof TypeError &&
-            (error.message.includes('Cannot read property') ||
-             error.message.includes('Cannot access property'))
-          ) {
+          // Distinguish between message structure errors and programming bugs
+          // Structure validation errors indicate invalid message properties (TypeError from null/undefined access)
+          const isStructureError = error instanceof TypeError;
+
+          if (isStructureError) {
             // Invalid message structure - expected in some cases
             logError(
               ERROR_IDS.JSONRPC_MESSAGE_PARSE_FAILED,

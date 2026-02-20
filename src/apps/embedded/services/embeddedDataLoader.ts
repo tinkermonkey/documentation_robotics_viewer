@@ -21,11 +21,12 @@ function getCookieToken(): string | null {
   try {
     return decodeURIComponent(match.split('=')[1] || '');
   } catch (decodeError) {
-    // Log decode failures at warning level to prevent silent auth failures
-    console.warn(
-      '[Auth] Cookie decode failed - token is malformed and cannot be used:',
-      decodeError instanceof Error ? decodeError.message : String(decodeError),
-      { cookieName: AUTH_COOKIE_NAME }
+    // Use structured error logging for consistent error tracking
+    logError(
+      ERROR_IDS.AUTH_COOKIE_DECODE_FAILED,
+      'Cookie decode failed - token is malformed and cannot be used',
+      { cookieName: AUTH_COOKIE_NAME },
+      decodeError instanceof Error ? decodeError : new Error(String(decodeError))
     );
     // Return null instead of invalid token. Auth architecture uses localStorage as the primary
     // source (populated by authStore on app init) with cookies as a fallback mechanism.
@@ -215,7 +216,6 @@ export type ChangesetChange =
 /**
  * Type guard for ChangesetChange discriminated union
  * Validates that JSON deserialized from API conforms to expected ChangesetChange type
- * @internal For testing only - do not use in application code
  */
 export function isChangesetChange(value: unknown): value is ChangesetChange {
   if (typeof value !== 'object' || value === null) return false;
@@ -254,7 +254,6 @@ export function isChangesetChange(value: unknown): value is ChangesetChange {
 /**
  * Validate an array of changes from API response
  * @throws Error if any change is invalid
- * @internal For testing only - do not use in application code
  */
 export function validateChangesetChanges(
   changes: unknown[]
@@ -415,26 +414,19 @@ export class EmbeddedDataLoader {
    * Load the current model (YAML instance format)
    */
   async loadModel(): Promise<MetaModel> {
-    const headers = getAuthHeaders();
-    console.log('[DataLoader] Loading model with headers:', Object.keys(headers).join(', ') || 'none');
+    const data = await this.fetchJson<Record<string, unknown> & {
+      version?: string;
+      metadata?: Record<string, unknown>;
+      layers?: Record<string, unknown>;
+    }>(
+      `${API_BASE}/model`,
+      'load model'
+    );
 
-    const response = await fetch(`${API_BASE}/model`, {
-      headers,
-      credentials: 'include'
-    });
-
-    try {
-      await ensureOk(response, 'load model');
-    } catch (err) {
-      console.error('[DataLoader] Model load failed:', response.status, response.statusText);
-      throw err;
-    }
-
-    const data = await response.json();
     console.log('[DataLoader] Loaded model from server:', {
       version: data.version,
-      totalLayers: data.metadata?.statistics?.total_layers,
-      totalElements: data.metadata?.statistics?.total_elements,
+      totalLayers: (data.metadata as any)?.statistics?.total_layers,
+      totalElements: (data.metadata as any)?.statistics?.total_elements,
       layerCount: Object.keys(data.layers || {}).length
     });
 

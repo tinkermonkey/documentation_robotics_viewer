@@ -12,14 +12,7 @@
 
 import { logError } from './errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
-import type { JsonRpcRequest, JsonRpcNotification } from '../types/chat';
-import type { WebSocketMessage, EventHandler, WebSocketEventMap } from '../types/websocket';
-
-/**
- * Messages that can be sent over WebSocket
- * Includes both WebSocket protocol messages (with type) and JSON-RPC messages
- */
-type WebSocketSendMessage = WebSocketMessage | JsonRpcRequest | JsonRpcNotification;
+import type { WebSocketMessage, EventHandler, WebSocketEventMap, WebSocketSendMessage } from '../types/websocket';
 
 /**
  * Interface for WebSocket client - implemented by both real WebSocketClient and mocks
@@ -158,14 +151,11 @@ export class WebSocketClient implements WebSocketClientInterface {
   }
 
   /**
-   * Assert we're in test environment, throwing early for test hooks
-   * Reduces duplication of environment checks across test methods
+   * Check if we're in test environment
+   * Returns false if not in test environment, allowing callers to return early
    */
-  private assertTestEnvironment(): void {
-    if (!isTestEnvironment()) {
-      console.warn('[WebSocket] Test hook called in production - ignoring');
-      throw new Error('[WebSocket] Test hook not available in production');
-    }
+  private isTestEnvironment(): boolean {
+    return isTestEnvironment();
   }
 
   /**
@@ -173,9 +163,7 @@ export class WebSocketClient implements WebSocketClientInterface {
    * Only available in test environment - checked via isTestEnvironment() function
    */
   triggerCloseForTesting(): void {
-    try {
-      this.assertTestEnvironment();
-    } catch {
+    if (!this.isTestEnvironment()) {
       return;
     }
 
@@ -193,9 +181,7 @@ export class WebSocketClient implements WebSocketClientInterface {
    * Only available in test environment - checked via isTestEnvironment() function
    */
   simulateMaxReconnectAttemptsForTesting(): void {
-    try {
-      this.assertTestEnvironment();
-    } catch {
+    if (!this.isTestEnvironment()) {
       return;
     }
 
@@ -430,7 +416,7 @@ export class WebSocketClient implements WebSocketClientInterface {
 
     // Always emit error event regardless of environment
     // Tests can choose to ignore or handle these events as needed
-    this.emit('error', { error: event });
+    this.emit('error', { kind: 'event', error: event });
   }
 
   /**

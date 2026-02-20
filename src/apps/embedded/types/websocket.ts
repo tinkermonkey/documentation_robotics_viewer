@@ -13,10 +13,34 @@ export interface WebSocketMessage {
 }
 
 /**
+ * Specific message types for common protocol messages
+ */
+export interface PingMessage extends WebSocketMessage {
+  type: 'ping';
+}
+
+export interface PongMessage extends WebSocketMessage {
+  type: 'pong';
+}
+
+export interface SubscribeMessage extends WebSocketMessage {
+  type: 'subscribe';
+  topic: string;
+}
+
+export interface UnsubscribeMessage extends WebSocketMessage {
+  type: 'unsubscribe';
+  topic: string;
+}
+
+/**
  * Messages that can be sent over WebSocket
  * Includes both WebSocket protocol messages (with type) and JSON-RPC messages
  */
-export type WebSocketSendMessage = WebSocketMessage | Record<string, unknown>;
+export type WebSocketSendMessage =
+  | WebSocketMessage
+  | { method: string; params?: unknown; jsonrpc?: string; id?: string | number }  // JsonRpcRequest
+  | { method: string; params?: unknown; jsonrpc?: string };  // JsonRpcNotification
 
 /**
  * Typed event payloads for WebSocket events
@@ -30,8 +54,8 @@ export interface WebSocketEventMap {
   'disconnect': {};
   /** Emitted when a message is received from the server */
   'message': WebSocketMessage;
-  /** Emitted when a WebSocket error occurs (connection refused, protocol error, etc.). May include code/message for SSR mock or error Event for browser. */
-  'error': { error: Event } | { code: string; message: string };
+  /** Emitted when a WebSocket error occurs (connection refused, protocol error, etc.). Browser: Event object. SSR mock: code/message. */
+  'error': { kind: 'event'; error: Event } | { kind: 'code'; code: string; message: string };
   /** Emitted when WebSocket connection closes with status code and reason */
   'close': { code: number; reason: string };
   /** Emitted when client attempts to reconnect after connection loss */
