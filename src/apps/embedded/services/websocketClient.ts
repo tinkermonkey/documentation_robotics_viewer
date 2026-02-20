@@ -564,7 +564,7 @@ function isTestEnvironment(): boolean {
   // - jasmine: sets window.jasmine (lowercase, global scope)
   // - jest: sets window.jest (lowercase, global scope)
   // These checks gracefully enable mock WebSocket when test frameworks are detected.
-  if (window.__karma__ || (window as any).jasmine || (window as any).jest) return true;
+  if (window.__karma__ || window.jasmine || window.jest) return true;
 
   // Note: Do NOT check window.location.port (e.g., port 61001) as this can incorrectly
   // activate the mock client in production environments that use port-based routing
@@ -584,7 +584,8 @@ declare global {
     __PLAYWRIGHT__?: boolean;
     __STORYBOOK_MOCK_WEBSOCKET__?: boolean;
     __karma__?: boolean;
-    // Note: jasmine and jest use lowercase property names (not __jasmine__, __jest__)
+    jasmine?: unknown;
+    jest?: unknown;
   }
 }
 

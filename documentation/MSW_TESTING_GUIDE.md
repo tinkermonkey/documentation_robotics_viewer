@@ -37,7 +37,7 @@ setupMswForTests();
 Import MSW handlers in your test file:
 
 ```typescript
-import { handlers } from '@/core/services/mswHandlers';
+import { handlers } from '../helpers/mswHandlers';
 import { setupServer } from 'msw/node';
 
 const mswServer = setupServer(...handlers);

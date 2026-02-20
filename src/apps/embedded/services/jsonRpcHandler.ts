@@ -36,7 +36,7 @@ type NotificationHandler = (params: Record<string, unknown>) => void;
  * Typed error class for JSON-RPC error results
  * Extends Error with code and rpcError properties for better type safety
  */
-class JsonRpcErrorResult extends Error {
+export class JsonRpcErrorResult extends Error {
   constructor(public code: number, public rpcError: JsonRpcError, message: string) {
     super(message);
     this.name = 'JsonRpcErrorResult';
