@@ -191,6 +191,64 @@ export type ChangesetChange =
       after?: never;
     };
 
+/**
+ * Type guard for ChangesetChange discriminated union
+ * Validates that JSON deserialized from API conforms to expected ChangesetChange type
+ */
+function isChangesetChange(value: unknown): value is ChangesetChange {
+  if (typeof value !== 'object' || value === null) return false;
+
+  const obj = value as Record<string, unknown>;
+  const operation = obj.operation;
+
+  // Validate common required fields
+  if (
+    typeof obj.timestamp !== 'string' ||
+    typeof obj.element_id !== 'string' ||
+    typeof obj.layer !== 'string' ||
+    typeof obj.element_type !== 'string'
+  ) {
+    return false;
+  }
+
+  // Validate based on discriminator
+  switch (operation) {
+    case 'add':
+      return typeof obj.data === 'object' && obj.data !== null;
+    case 'update':
+      return (
+        typeof obj.before === 'object' &&
+        obj.before !== null &&
+        typeof obj.after === 'object' &&
+        obj.after !== null
+      );
+    case 'delete':
+      return typeof obj.before === 'object' && obj.before !== null;
+    default:
+      return false;
+  }
+}
+
+/**
+ * Validate an array of changes from API response
+ * @throws Error if any change is invalid
+ */
+function validateChangesetChanges(
+  changes: unknown[]
+): asserts changes is ChangesetChange[] {
+  if (!Array.isArray(changes)) {
+    throw new Error('Changes must be an array');
+  }
+
+  for (let i = 0; i < changes.length; i++) {
+    if (!isChangesetChange(changes[i])) {
+      throw new Error(
+        `Invalid change at index ${i}: ${JSON.stringify(changes[i])}`
+      );
+    }
+  }
+}
+
 export interface ChangesetDetails {
   metadata: ChangesetMetadata;
   changes: {
@@ -200,6 +258,31 @@ export interface ChangesetDetails {
 }
 
 export class EmbeddedDataLoader {
+  /**
+   * Generic fetch helper that combines common pattern: fetch -> ensureOk -> json -> log
+   * @param url - URL to fetch
+   * @param context - Context string for error logging
+   * @param options - Additional fetch options
+   * @returns Parsed JSON response
+   */
+  private async fetchJson<T>(
+    url: string,
+    context: string,
+    options?: RequestInit
+  ): Promise<T> {
+    const response = await fetch(url, {
+      headers: getAuthHeaders(),
+      credentials: 'include',
+      ...options
+    });
+
+    await ensureOk(response, context);
+
+    const data = await response.json();
+    console.log(`[DataLoader] ${context}: success`);
+    return data as T;
+  }
+
   /**
    * Check server health
    */
@@ -252,14 +335,10 @@ export class EmbeddedDataLoader {
    * Load a specific layer by name
    */
   async loadLayer(layerName: string): Promise<{ name: string; elements: unknown[]; elementCount: number }> {
-    const response = await fetch(`${API_BASE}/layers/${encodeURIComponent(layerName)}`, {
-      headers: getAuthHeaders(),
-      credentials: 'include'
-    });
-
-    await ensureOk(response, `load layer ${layerName}`);
-
-    const data = await response.json();
+    const data = await this.fetchJson<{ name: string; elements: unknown[]; elementCount: number }>(
+      `${API_BASE}/layers/${encodeURIComponent(layerName)}`,
+      `load layer ${layerName}`
+    );
     console.log(`[DataLoader] Loaded layer ${layerName}:`, {
       elementCount: data.elementCount || data.elements?.length || 0
     });
@@ -270,14 +349,10 @@ export class EmbeddedDataLoader {
    * Load a specific element by ID
    */
   async loadElement(elementId: string): Promise<unknown> {
-    const response = await fetch(`${API_BASE}/elements/${encodeURIComponent(elementId)}`, {
-      headers: getAuthHeaders(),
-      credentials: 'include'
-    });
-
-    await ensureOk(response, `load element ${elementId}`);
-
-    const data = await response.json();
+    const data = await this.fetchJson<unknown>(
+      `${API_BASE}/elements/${encodeURIComponent(elementId)}`,
+      `load element ${elementId}`
+    );
     console.log(`[DataLoader] Loaded element ${elementId}`);
     return data;
   }
@@ -481,15 +556,31 @@ export class EmbeddedDataLoader {
    * Load specific changeset details
    */
   async loadChangeset(changesetId: string): Promise<ChangesetDetails> {
-    const response = await fetch(`${API_BASE}/changesets/${changesetId}`, {
-      headers: getAuthHeaders(),
-      credentials: 'include'
-    });
+    const data = await this.fetchJson<ChangesetDetails>(
+      `${API_BASE}/changesets/${changesetId}`,
+      `load changeset ${changesetId}`
+    );
 
-    await ensureOk(response, `load changeset ${changesetId}`);
+    // Validate changes array at runtime
+    if (data.changes && Array.isArray(data.changes.changes)) {
+      try {
+        validateChangesetChanges(data.changes.changes);
+      } catch (validationError) {
+        throw new Error(
+          `Invalid changeset format: ${
+            validationError instanceof Error
+              ? validationError.message
+              : String(validationError)
+          }`
+        );
+      }
+    }
 
-    const data = await response.json();
-    console.log(`Loaded changeset ${changesetId}:`, data.changes.changes.length, 'changes');
+    console.log(
+      `Loaded changeset ${changesetId}:`,
+      data.changes.changes.length,
+      'changes'
+    );
     return data;
   }
 

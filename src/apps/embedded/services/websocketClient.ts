@@ -31,14 +31,14 @@ type WebSocketSendMessage = WebSocketMessage | JsonRpcRequest | JsonRpcNotificat
  * All event names must be explicitly defined here to prevent typos and enable compile-time validation.
  */
 interface WebSocketEventMap {
-  'connect': Record<string, unknown>;
-  'disconnect': Record<string, unknown>;
+  'connect': {};
+  'disconnect': {};
   'message': WebSocketMessage;
   'error': { error: Event };
   'close': { code: number; reason: string };
   'reconnecting': { attempt: number; delay: number };
-  'rest-mode': Record<string, unknown>;
-  'max-reconnect-attempts': { attempts: number; isTest?: boolean };
+  'rest-mode': {};
+  'max-reconnect-attempts': { attempts: number };
 }
 
 type EventHandler<T = unknown> = (data: T) => void;
@@ -61,9 +61,6 @@ export interface WebSocketClientInterface {
   /** High-level state machine: connecting, connected, disconnected, or reconnecting */
   readonly connectionState: 'connecting' | 'connected' | 'disconnected' | 'reconnecting';
   readonly transportMode: 'websocket' | 'rest' | 'detecting';
-  // Test hooks - only available in test environments
-  triggerCloseForTesting?: () => void;
-  simulateMaxReconnectAttemptsForTesting?: () => void;
 }
 
 export class WebSocketClient implements WebSocketClientInterface {
@@ -232,7 +229,7 @@ export class WebSocketClient implements WebSocketClientInterface {
       'Max reconnection attempts reached (TEST SIMULATION)',
       { attempts: this.reconnectAttempts }
     );
-    this.emit('max-reconnect-attempts', { attempts: this.reconnectAttempts, isTest: true });
+    this.emit('max-reconnect-attempts', { attempts: this.reconnectAttempts });
   }
 
   /**

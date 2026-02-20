@@ -16,7 +16,7 @@ interface ErrorContext {
   [key: string]: unknown;
 }
 
-interface ErrorLogEntry {
+export interface ErrorLogEntry {
   errorId: ErrorId;
   message: string;
   timestamp: string;
