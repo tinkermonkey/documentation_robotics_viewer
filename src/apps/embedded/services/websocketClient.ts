@@ -593,7 +593,7 @@ if (typeof window !== 'undefined') {
   websocketClient = new WebSocketClient(wsUrl, null);
 } else {
   // Node.js/SSR environment: create a mock WebSocket client
-  const mockHandlers = new Map<string, Set<EventHandler>>();
+  const mockHandlers = new Map<string, Set<EventHandler<unknown>>>();
 
   websocketClient = {
     setToken: () => {},
@@ -608,13 +608,13 @@ if (typeof window !== 'undefined') {
     disconnect: () => {},
     subscribe: () => {},
     send: () => true,
-    on: (event: string, handler: EventHandler) => {
+    on: (event: string, handler: EventHandler<unknown>) => {
       if (!mockHandlers.has(event)) {
         mockHandlers.set(event, new Set());
       }
       mockHandlers.get(event)!.add(handler);
     },
-    off: (event: string, handler: EventHandler) => {
+    off: (event: string, handler: EventHandler<unknown>) => {
       const handlers = mockHandlers.get(event);
       if (handlers) handlers.delete(handler);
     },
