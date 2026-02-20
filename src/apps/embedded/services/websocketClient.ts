@@ -46,7 +46,7 @@ type EventHandler<T = unknown> = (data: T) => void;
 /**
  * Interface for WebSocket client - implemented by both real WebSocketClient and mocks
  */
-interface WebSocketClientInterface {
+export interface WebSocketClientInterface {
   setToken(token: string | null): void;
   connect(): void;
   disconnect(): void;

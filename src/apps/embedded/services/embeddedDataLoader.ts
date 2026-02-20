@@ -4,7 +4,7 @@
  * Supports token-based authentication for DR CLI visualization server
  */
 
-import { MetaModel, Layer, Reference, Relationship, ModelElement, ModelMetadata, LayerData } from '../../../core/types';
+import { MetaModel, Layer, Reference, Relationship, ModelElement, ModelMetadata, LayerData, ElementVisual } from '../../../core/types';
 import { Annotation, AnnotationCreate, AnnotationUpdate } from '../types/annotations';
 
 const API_BASE = '/api';
@@ -401,14 +401,63 @@ export class EmbeddedDataLoader {
   /**
    * Normalize element visual properties with defaults
    */
-  private normalizeVisual(visual: unknown): Record<string, unknown> {
-    if (typeof visual === 'object' && visual !== null) {
-      return visual as Record<string, unknown>;
-    }
-    return {
+  private normalizeVisual(visual: unknown): ElementVisual {
+    // Return default visual if input is invalid
+    const defaultVisual: ElementVisual = {
       position: { x: 0, y: 0 },
       size: { width: 200, height: 100 },
       style: { backgroundColor: '#e3f2fd', borderColor: '#1976d2' }
+    };
+
+    if (typeof visual !== 'object' || visual === null) {
+      return defaultVisual;
+    }
+
+    const visualObj = visual as Record<string, unknown>;
+
+    // Ensure position is valid
+    let position = defaultVisual.position;
+    if (typeof visualObj.position === 'object' && visualObj.position !== null) {
+      const pos = visualObj.position as Record<string, unknown>;
+      if (typeof pos.x === 'number' && typeof pos.y === 'number') {
+        position = { x: pos.x, y: pos.y };
+      }
+    }
+
+    // Ensure size is valid
+    let size = defaultVisual.size;
+    if (typeof visualObj.size === 'object' && visualObj.size !== null) {
+      const sz = visualObj.size as Record<string, unknown>;
+      if (typeof sz.width === 'number' && typeof sz.height === 'number') {
+        size = { width: sz.width, height: sz.height };
+      }
+    }
+
+    // Ensure style is valid (at minimum an empty object)
+    let style = defaultVisual.style;
+    if (typeof visualObj.style === 'object' && visualObj.style !== null) {
+      const st = visualObj.style as Record<string, unknown>;
+      style = {
+        backgroundColor: typeof st.backgroundColor === 'string' ? st.backgroundColor : style.backgroundColor,
+        borderColor: typeof st.borderColor === 'string' ? st.borderColor : style.borderColor,
+        borderStyle: typeof st.borderStyle === 'string' ? st.borderStyle : undefined,
+        textColor: typeof st.textColor === 'string' ? st.textColor : undefined,
+        icon: typeof st.icon === 'string' ? st.icon : undefined,
+        shape: typeof st.shape === 'string' ? st.shape as import('../../../core/types/model').ShapeType : undefined
+      };
+    }
+
+    // Include layoutHints if present
+    let layoutHints: ElementVisual['layoutHints'];
+    if (typeof visualObj.layoutHints === 'object' && visualObj.layoutHints !== null) {
+      layoutHints = visualObj.layoutHints as ElementVisual['layoutHints'];
+    }
+
+    return {
+      position,
+      size,
+      style,
+      ...(layoutHints && { layoutHints })
     };
   }
 

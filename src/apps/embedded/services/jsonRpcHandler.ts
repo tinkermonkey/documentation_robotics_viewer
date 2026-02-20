@@ -19,10 +19,10 @@ import type { WebSocketClientInterface } from './websocketClient';
 /**
  * Represents a pending JSON-RPC request awaiting a response
  */
-interface PendingRequest<T = unknown> {
+interface PendingRequest {
   id: string | number;
   method: string;
-  resolve: (value: T) => void;
+  resolve: (value: unknown) => void;
   reject: (error: Error) => void;
   timeout: NodeJS.Timeout;
 }
@@ -97,7 +97,16 @@ export class JsonRpcHandler {
       websocketClient.on('message', (message: Record<string, unknown>) => {
         try {
           // Message is already parsed by websocketClient
-          this.handleMessage(message as JsonRpcMessage);
+          // Type guard: validate message structure before casting
+          if (!this.isValidJsonRpcMessage(message)) {
+            logError(
+              ERROR_IDS.JSONRPC_MESSAGE_PARSE_FAILED,
+              'Invalid JSON-RPC message structure - missing required fields',
+              { message: String(message) }
+            );
+            return;
+          }
+          this.handleMessage(message);
         } catch (error) {
           // Distinguish between message handling errors and programming bugs
           // Message validation/handling errors (expected failures)
@@ -357,8 +366,8 @@ export class JsonRpcHandler {
   /**
    * Handle JSON-RPC notification (server→client)
    */
-  private handleNotification(message: Record<string, unknown>): void {
-    const { method, params } = message as { method?: string; params?: Record<string, unknown> };
+  private handleNotification(message: JsonRpcNotification): void {
+    const { method, params } = message;
 
     if (!method) {
       logWarning('Received notification without method');
@@ -374,7 +383,7 @@ export class JsonRpcHandler {
     // Execute handlers - catch both sync and async errors
     handlers.forEach((handler) => {
       try {
-        const result = handler(params) as unknown;
+        const result = handler(params ?? {}) as unknown;
 
         // If handler returns a promise, catch async errors
         if (result && typeof (result as Promise<unknown>).then === 'function') {
@@ -468,6 +477,38 @@ export class JsonRpcHandler {
     }
 
     return ('result' in resp && !('error' in resp)) || ('error' in resp && !('result' in resp));
+  }
+
+  /**
+   * Validate if a message is a valid JSON-RPC message structure
+   */
+  private isValidJsonRpcMessage(message: Record<string, unknown>): message is JsonRpcMessage {
+    if (message.jsonrpc !== '2.0') {
+      return false;
+    }
+
+    // Must be either a response (with id and result/error) or notification (with method, no id)
+    const hasId = 'id' in message;
+    const hasMethod = 'method' in message;
+    const hasResult = 'result' in message;
+    const hasError = 'error' in message;
+
+    // Response: has id and either result or error (but not both)
+    if (hasId && (hasResult || hasError)) {
+      return (hasResult && !hasError) || (!hasResult && hasError);
+    }
+
+    // Notification: has method but no id
+    if (hasMethod && !hasId) {
+      return true;
+    }
+
+    // Request: has method and id (not handled by this handler, but valid)
+    if (hasMethod && hasId) {
+      return true;
+    }
+
+    return false;
   }
 }
 
