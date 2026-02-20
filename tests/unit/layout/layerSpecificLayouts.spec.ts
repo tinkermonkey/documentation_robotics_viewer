@@ -47,10 +47,10 @@ test.describe('Layer-Specific Layout Optimizations', () => {
       ];
 
       const edges: Edge[] = [
-        { id: 'e1', source: 'vision-1', target: 'strategic-1' },
-        { id: 'e2', source: 'vision-1', target: 'strategic-2' },
-        { id: 'e3', source: 'strategic-1', target: 'tactical-1' },
-        { id: 'e4', source: 'strategic-2', target: 'tactical-2' },
+        { id: 'e1', source: 'vision-1', target: 'strategic-1', data: {} },
+        { id: 'e2', source: 'vision-1', target: 'strategic-2', data: {} },
+        { id: 'e3', source: 'strategic-1', target: 'tactical-1', data: {} },
+        { id: 'e4', source: 'strategic-2', target: 'tactical-2', data: {} },
       ];
 
       // Use ELK layered algorithm for hierarchical layout
@@ -146,12 +146,12 @@ test.describe('Layer-Specific Layout Optimizations', () => {
       ];
 
       const edges: Edge[] = [
-        { id: 'e1', source: 'start', target: 'task-1' },
-        { id: 'e2', source: 'task-1', target: 'gateway' },
+        { id: 'e1', source: 'start', target: 'task-1', data: {} },
+        { id: 'e2', source: 'task-1', target: 'gateway', data: {} },
         { id: 'e3', source: 'gateway', target: 'task-2', data: { label: 'Yes' } },
         { id: 'e4', source: 'gateway', target: 'task-3', data: { label: 'No' } },
-        { id: 'e5', source: 'task-2', target: 'end' },
-        { id: 'e6', source: 'task-3', target: 'end' },
+        { id: 'e5', source: 'task-2', target: 'end', data: {} },
+        { id: 'e6', source: 'task-3', target: 'end', data: {} },
       ];
 
       // Use ELK with orthogonal routing for business processes
@@ -198,10 +198,10 @@ test.describe('Layer-Specific Layout Optimizations', () => {
       ];
 
       const edges: Edge[] = [
-        { id: 'e1', source: 'customer-start', target: 'business-receive' },
-        { id: 'e2', source: 'business-receive', target: 'business-process' },
-        { id: 'e3', source: 'business-process', target: 'business-ship' },
-        { id: 'e4', source: 'business-ship', target: 'customer-wait' },
+        { id: 'e1', source: 'customer-start', target: 'business-receive', data: {} },
+        { id: 'e2', source: 'business-receive', target: 'business-process', data: {} },
+        { id: 'e3', source: 'business-process', target: 'business-ship', data: {} },
+        { id: 'e4', source: 'business-ship', target: 'customer-wait', data: {} },
       ];
 
       const result = await engine.calculateLayout({ nodes, edges }, {
@@ -376,8 +376,8 @@ test.describe('Layer-Specific Layout Optimizations', () => {
       ];
 
       const edges: Edge[] = [
-        { id: 'e1', source: 'a1', target: 'a2' },
-        { id: 'e2', source: 'b1', target: 'b2' },
+        { id: 'e1', source: 'a1', target: 'a2', data: {} },
+        { id: 'e2', source: 'b1', target: 'b2', data: {} },
       ];
 
       const result = await engine.calculateLayout({ nodes, edges }, {
