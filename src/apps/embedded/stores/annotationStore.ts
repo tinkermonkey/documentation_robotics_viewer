@@ -213,6 +213,9 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
     try {
       set({ error: null });
 
+      // Store annotation for rollback in case of failure
+      const annotationToRestore = get().annotations.find(ann => ann.id === id);
+
       // Optimistic update
       get().removeAnnotation(id);
 
@@ -223,6 +226,10 @@ export const useAnnotationStore = create<AnnotationStore>((set, get) => ({
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to delete annotation';
       set({ error: errorMessage });
+      // Rollback optimistic delete - restore the annotation if it's not already in the store
+      if (annotationToRestore && !get().annotations.find(ann => ann.id === id)) {
+        get().addAnnotation(annotationToRestore);
+      }
       console.error('[AnnotationStore] Failed to delete annotation:', err);
       throw err;
     }

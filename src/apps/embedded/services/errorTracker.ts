@@ -239,13 +239,13 @@ export function getRetryDelay(
 /**
  * Filter logged errors by category
  */
-export function getErrorsByCategory(category: ExceptionCategory): any[] {
+export function getErrorsByCategory(category: ExceptionCategory): ErrorLogEntry[] {
   try {
     const storageKey = 'app:error_log';
     const existing = sessionStorage.getItem(storageKey);
     const logs = existing ? JSON.parse(existing) : [];
 
-    return logs.filter((log: any) => log.category === category);
+    return logs.filter((log: ErrorLogEntry) => log.category === category);
   } catch (storageError) {
     console.warn(
       '[ErrorTracker] Failed to retrieve error logs for category filter:',
@@ -259,13 +259,13 @@ export function getErrorsByCategory(category: ExceptionCategory): any[] {
 /**
  * Filter logged errors by severity
  */
-export function getErrorsBySeverity(severity: ExceptionSeverity): any[] {
+export function getErrorsBySeverity(severity: ExceptionSeverity): ErrorLogEntry[] {
   try {
     const storageKey = 'app:error_log';
     const existing = sessionStorage.getItem(storageKey);
     const logs = existing ? JSON.parse(existing) : [];
 
-    return logs.filter((log: any) => log.severity === severity);
+    return logs.filter((log: ErrorLogEntry) => log.severity === severity);
   } catch (storageError) {
     console.warn(
       '[ErrorTracker] Failed to retrieve error logs for severity filter:',
@@ -279,13 +279,13 @@ export function getErrorsBySeverity(severity: ExceptionSeverity): any[] {
 /**
  * Get all bugs (unexpected/programming errors) from logs
  */
-export function getBugLogs(): any[] {
+export function getBugLogs(): ErrorLogEntry[] {
   try {
     const storageKey = 'app:error_log';
     const existing = sessionStorage.getItem(storageKey);
     const logs = existing ? JSON.parse(existing) : [];
 
-    return logs.filter((log: any) => !log.isExpectedFailure);
+    return logs.filter((log: ErrorLogEntry) => !log.isExpectedFailure);
   } catch (storageError) {
     console.warn(
       '[ErrorTracker] Failed to retrieve bug logs:',
@@ -298,13 +298,13 @@ export function getBugLogs(): any[] {
 /**
  * Get all expected failures from logs
  */
-export function getExpectedFailureLogs(): any[] {
+export function getExpectedFailureLogs(): ErrorLogEntry[] {
   try {
     const storageKey = 'app:error_log';
     const existing = sessionStorage.getItem(storageKey);
     const logs = existing ? JSON.parse(existing) : [];
 
-    return logs.filter((log: any) => log.isExpectedFailure);
+    return logs.filter((log: ErrorLogEntry) => log.isExpectedFailure);
   } catch (storageError) {
     console.warn(
       '[ErrorTracker] Failed to retrieve expected failure logs:',

@@ -42,6 +42,9 @@ const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) =
   const [replyContent, setReplyContent] = useState('');
   const [replyAuthor, setReplyAuthor] = useState('');
 
+  // Local notification state for action feedback
+  const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
   // Filter annotations based on selection
   const displayedAnnotations = useMemo(() => {
     if (selectedElementId) {
@@ -107,8 +110,11 @@ const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) =
         commentAuthor
       );
       handleCloseModal();
+      setNotification({ type: 'success', message: 'Comment added successfully' });
+      setTimeout(() => setNotification(null), 3000);
     } catch (err) {
-      // Error is already set in store, modal will stay open
+      const errorMessage = err instanceof Error ? err.message : 'Failed to create annotation';
+      setNotification({ type: 'error', message: errorMessage });
       console.error('Failed to create annotation:', err);
     }
   };
@@ -117,10 +123,15 @@ const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) =
     try {
       if (annotation.resolved) {
         await unresolveAnnotation(annotation.id);
+        setNotification({ type: 'success', message: 'Annotation unresolved' });
       } else {
         await resolveAnnotation(annotation.id);
+        setNotification({ type: 'success', message: 'Annotation resolved' });
       }
+      setTimeout(() => setNotification(null), 3000);
     } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to toggle resolve status';
+      setNotification({ type: 'error', message: errorMessage });
       console.error('Failed to toggle resolve status:', err);
     }
   };
@@ -145,7 +156,11 @@ const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) =
     try {
       await createAnnotationReply(annotationId, replyAuthor, replyContent);
       handleCancelReply();
+      setNotification({ type: 'success', message: 'Reply added successfully' });
+      setTimeout(() => setNotification(null), 3000);
     } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to create reply';
+      setNotification({ type: 'error', message: errorMessage });
       console.error('Failed to create reply:', err);
     }
   };
@@ -350,6 +365,28 @@ const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) =
 
   return (
     <div className="p-4" data-testid="annotation-panel">
+      {/* Notification Toast */}
+      {notification && (
+        <div
+          className={`mb-4 p-3 rounded-lg ${
+            notification.type === 'success'
+              ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
+              : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'
+          }`}
+          data-testid={`notification-${notification.type}`}
+        >
+          <p
+            className={`text-sm ${
+              notification.type === 'success'
+                ? 'text-green-700 dark:text-green-300'
+                : 'text-red-700 dark:text-red-300'
+            }`}
+          >
+            {notification.message}
+          </p>
+        </div>
+      )}
+
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
           {selectedElementId ? 'Element Annotations' : 'Comments'} ({displayedAnnotations.length})

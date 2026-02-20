@@ -8,7 +8,7 @@ echo "Fetching latest API spec from upstream..."
 mkdir -p "$(dirname "$OUTPUT_PATH")"
 
 # Create temporary TypeScript file to validate the spec
-TEMP_TS=$(mktemp)
+TEMP_TS=$(mktemp --suffix=.ts)
 
 # Clean up temp files on exit, interrupt, or error
 cleanup() {

@@ -20,14 +20,13 @@ function getCookieToken(): string | null {
     return decodeURIComponent(match.split('=')[1] || '');
   } catch (decodeError) {
     // Log decode failures at warning level to prevent silent auth failures
-    const rawValue = match.split('=')[1] || null;
     console.warn(
-      '[Auth] Cookie decode failed - token may be malformed:',
+      '[Auth] Cookie decode failed - token is malformed and cannot be used:',
       decodeError instanceof Error ? decodeError.message : String(decodeError),
-      { cookieName: AUTH_COOKIE_NAME, hasValue: !!rawValue }
+      { cookieName: AUTH_COOKIE_NAME }
     );
-    // Return raw value as fallback, but caller should be aware it may be invalid
-    return rawValue;
+    // Return null instead of invalid token to allow proper fallback to localStorage
+    return null;
   }
 }
 
@@ -145,16 +144,37 @@ export interface ChangesetMetadata {
   };
 }
 
-export interface ChangesetChange {
-  timestamp: string;
-  operation: 'add' | 'update' | 'delete';
-  element_id: string;
-  layer: string;
-  element_type: string;
-  data?: any;
-  before?: any;
-  after?: any;
-}
+export type ChangesetChange =
+  | {
+      timestamp: string;
+      operation: 'add';
+      element_id: string;
+      layer: string;
+      element_type: string;
+      data: Record<string, unknown>;
+      before?: never;
+      after?: never;
+    }
+  | {
+      timestamp: string;
+      operation: 'update';
+      element_id: string;
+      layer: string;
+      element_type: string;
+      before: Record<string, unknown>;
+      after: Record<string, unknown>;
+      data?: never;
+    }
+  | {
+      timestamp: string;
+      operation: 'delete';
+      element_id: string;
+      layer: string;
+      element_type: string;
+      before: Record<string, unknown>;
+      data?: never;
+      after?: never;
+    };
 
 export interface ChangesetDetails {
   metadata: ChangesetMetadata;

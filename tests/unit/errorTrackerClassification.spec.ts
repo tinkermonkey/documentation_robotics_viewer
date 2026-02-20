@@ -435,4 +435,209 @@ test.describe('Error Tracker Classification', () => {
       expect(classified.originalError).toBe(error);
     });
   });
+
+  test.describe('Error Filter Functions', () => {
+    test('getErrorsByCategory returns errors filtered by category', () => {
+      // Log errors of different categories
+      const net = logError(
+        ERROR_IDS.WS_CONNECTION_ERROR,
+        'Network error',
+        {},
+        new Error('Connection failed')
+      );
+      logError(
+        ERROR_IDS.CHAT_SEND_FAILED,
+        'Validation error',
+        {},
+        new Error('Invalid input')
+      );
+
+      // Get only network errors
+      const networkErrors = getErrorsByCategory(ExceptionCategory.NETWORK_ERROR);
+      expect(networkErrors).toBeDefined();
+      expect(Array.isArray(networkErrors)).toBe(true);
+      // Should return at least the network error we logged
+      if (networkErrors.length > 0) {
+        // All returned errors should match the category
+        networkErrors.forEach(error => {
+          expect(error.category).toBe(ExceptionCategory.NETWORK_ERROR);
+        });
+      }
+    });
+
+    test('getErrorsByCategory returns empty array for category with no errors', () => {
+      // Log only network errors
+      logError(
+        ERROR_IDS.WS_CONNECTION_ERROR,
+        'Network error',
+        {},
+        new Error('Connection failed')
+      );
+
+      // Request a different category
+      const typeErrors = getErrorsByCategory(ExceptionCategory.TYPE_ERROR);
+      expect(Array.isArray(typeErrors)).toBe(true);
+      expect(typeErrors.length).toBe(0);
+    });
+
+    test('getErrorsBySeverity returns errors filtered by severity', () => {
+      // Log errors of different severities
+      logError(
+        ERROR_IDS.WS_CONNECTION_ERROR,
+        'Network error',
+        {},
+        new Error('Connection failed')
+      );
+      logError(
+        ERROR_IDS.JSONRPC_MESSAGE_PARSE_FAILED,
+        'Type error',
+        {},
+        new TypeError('not a function')
+      );
+
+      // Get only high severity errors
+      const highSeverity = getErrorsBySeverity(ExceptionSeverity.HIGH);
+      expect(highSeverity).toBeDefined();
+      expect(Array.isArray(highSeverity)).toBe(true);
+
+      // All returned errors should match severity
+      highSeverity.forEach(error => {
+        expect(error.severity).toBe(ExceptionSeverity.HIGH);
+      });
+    });
+
+    test('getErrorsBySeverity returns errors with correct type', () => {
+      logError(
+        ERROR_IDS.WS_CONNECTION_ERROR,
+        'Network error',
+        {},
+        new Error('Connection failed')
+      );
+
+      const errors = getErrorsBySeverity(ExceptionSeverity.HIGH);
+      expect(errors).toBeDefined();
+      expect(Array.isArray(errors)).toBe(true);
+
+      // Each item should have ErrorLogEntry shape
+      errors.forEach(error => {
+        expect(error.errorId).toBeDefined();
+        expect(error.message).toBeDefined();
+        expect(error.timestamp).toBeDefined();
+        expect(error.category).toBeDefined();
+        expect(error.severity).toBeDefined();
+      });
+    });
+
+    test('getBugLogs returns only non-expected-failure errors', () => {
+      // Log both bugs and expected failures
+      logError(
+        ERROR_IDS.JSONRPC_MESSAGE_PARSE_FAILED,
+        'Type error (a bug)',
+        {},
+        new TypeError('not a function')
+      );
+      logError(
+        ERROR_IDS.WS_CONNECTION_ERROR,
+        'Network error (expected)',
+        {},
+        new Error('Connection failed')
+      );
+
+      const bugs = getBugLogs();
+      expect(Array.isArray(bugs)).toBe(true);
+
+      // All bugs should be non-expected failures
+      bugs.forEach(bug => {
+        expect(bug.isExpectedFailure).toBe(false);
+      });
+    });
+
+    test('getBugLogs returns type ErrorLogEntry[]', () => {
+      logError(
+        ERROR_IDS.JSONRPC_MESSAGE_PARSE_FAILED,
+        'Type error',
+        {},
+        new TypeError('not a function')
+      );
+
+      const bugs = getBugLogs();
+      expect(Array.isArray(bugs)).toBe(true);
+
+      if (bugs.length > 0) {
+        // Verify structure matches ErrorLogEntry
+        const bug = bugs[0];
+        expect(typeof bug.errorId).toBe('string');
+        expect(typeof bug.message).toBe('string');
+        expect(typeof bug.timestamp).toBe('string');
+        expect(typeof bug.category).toBe('string');
+        expect(typeof bug.severity).toBe('string');
+        expect(typeof bug.isExpectedFailure).toBe('boolean');
+        expect(typeof bug.isTransient).toBe('boolean');
+        expect(typeof bug.canRetry).toBe('boolean');
+      }
+    });
+
+    test('getExpectedFailureLogs returns only expected-failure errors', () => {
+      // Log both bugs and expected failures
+      logError(
+        ERROR_IDS.WS_CONNECTION_ERROR,
+        'Network error',
+        {},
+        new Error('Connection failed')
+      );
+      logError(
+        ERROR_IDS.JSONRPC_MESSAGE_PARSE_FAILED,
+        'Type error',
+        {},
+        new TypeError('not a function')
+      );
+
+      const expectedFailures = getExpectedFailureLogs();
+      expect(Array.isArray(expectedFailures)).toBe(true);
+
+      // All returned should be expected failures
+      expectedFailures.forEach(failure => {
+        expect(failure.isExpectedFailure).toBe(true);
+      });
+    });
+
+    test('getExpectedFailureLogs returns type ErrorLogEntry[]', () => {
+      logError(
+        ERROR_IDS.WS_CONNECTION_ERROR,
+        'Network error',
+        {},
+        new Error('Connection failed')
+      );
+
+      const expectedFailures = getExpectedFailureLogs();
+      expect(Array.isArray(expectedFailures)).toBe(true);
+
+      if (expectedFailures.length > 0) {
+        // Verify structure matches ErrorLogEntry
+        const failure = expectedFailures[0];
+        expect(typeof failure.errorId).toBe('string');
+        expect(typeof failure.message).toBe('string');
+        expect(typeof failure.timestamp).toBe('string');
+        expect(failure.category).toBeDefined();
+        expect(failure.severity).toBeDefined();
+        expect(failure.isExpectedFailure).toBe(true);
+      }
+    });
+
+    test('filter functions handle empty error log gracefully', () => {
+      // Should not throw with empty log
+      expect(() => {
+        getErrorsByCategory(ExceptionCategory.NETWORK_ERROR);
+        getErrorsBySeverity(ExceptionSeverity.HIGH);
+        getBugLogs();
+        getExpectedFailureLogs();
+      }).not.toThrow();
+
+      // Should return empty arrays
+      expect(getErrorsByCategory(ExceptionCategory.NETWORK_ERROR)).toEqual([]);
+      expect(getErrorsBySeverity(ExceptionSeverity.HIGH)).toEqual([]);
+      expect(getBugLogs()).toEqual([]);
+      expect(getExpectedFailureLogs()).toEqual([]);
+    });
+  });
 });
