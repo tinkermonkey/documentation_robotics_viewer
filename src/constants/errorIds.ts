@@ -50,6 +50,7 @@ export const ERROR_IDS = {
 
   // Authentication Errors
   AUTH_COOKIE_DECODE_FAILED: 'AUTH_001',
+  AUTH_REQUEST_FAILED: 'AUTH_002',
 } as const;
 
 export type ErrorId = typeof ERROR_IDS[keyof typeof ERROR_IDS];

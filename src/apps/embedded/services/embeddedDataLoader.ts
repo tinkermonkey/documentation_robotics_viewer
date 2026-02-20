@@ -426,7 +426,8 @@ export class EmbeddedDataLoader {
       };
     };
 
-    const stats = extractStatistics(data.metadata);
+    // Extract statistics (for potential future use or telemetry)
+    extractStatistics(data.metadata);
 
     // Normalize model data: ensure all elements have required visual properties
     const normalized = this.normalizeModel(data);
