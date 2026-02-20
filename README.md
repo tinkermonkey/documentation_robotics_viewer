@@ -419,8 +419,6 @@ jobs:
 ```yaml
 e2e_tests:
   image: node:18
-  services:
-    - name: mongo:latest
   before_script:
     - npm install
     - npx playwright install --with-deps
