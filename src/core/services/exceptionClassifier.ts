@@ -465,10 +465,10 @@ function detectAffectedFeatures(
 ): string[] {
   const features: string[] = [];
 
-  if (context?.feature) {
+  if (context?.feature && typeof context.feature === 'string') {
     features.push(context.feature);
   }
-  if (context?.layer) {
+  if (context?.layer && typeof context.layer === 'string') {
     features.push(`${context.layer}_layer`);
   }
 

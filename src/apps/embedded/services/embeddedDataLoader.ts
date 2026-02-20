@@ -360,17 +360,26 @@ export class EmbeddedDataLoader {
     });
 
     // Exclude snake_case versions to ensure consistent interface
-    const { schema_count: _, relationship_catalog: __, ...rest } = data;
-    return {
+    const { schema_count: _, relationship_catalog: __, description, source, manifest, ...rest } = data;
+    const result: SpecDataResponse = {
       version: rest.version ?? '',
       type: rest.type ?? '',
       schemas: (rest.schemas ?? {}) as Record<string, SchemaDefinition>,
       schemaCount,
-      relationshipCatalog,
-      ...(rest.description !== undefined && { description: rest.description }),
-      ...(rest.source !== undefined && { source: rest.source }),
-      ...(rest.manifest !== undefined && { manifest: rest.manifest })
+      relationshipCatalog
     };
+
+    if (typeof description === 'string') {
+      result.description = description;
+    }
+    if (typeof source === 'string') {
+      result.source = source;
+    }
+    if (manifest && typeof manifest === 'object') {
+      result.manifest = manifest as SchemaManifest;
+    }
+
+    return result;
   }
 
   /**
