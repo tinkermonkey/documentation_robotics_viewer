@@ -14,14 +14,15 @@ import {
 } from '../types/chat';
 import { logError, logWarning } from './errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
+import type { WebSocketClientInterface } from './websocketClient';
 
 /**
  * Represents a pending JSON-RPC request awaiting a response
  */
-interface PendingRequest {
+interface PendingRequest<T = unknown> {
   id: string | number;
   method: string;
-  resolve: (value: any) => void;
+  resolve: (value: T) => void;
   reject: (error: Error) => void;
   timeout: NodeJS.Timeout;
 }
@@ -29,20 +30,20 @@ interface PendingRequest {
 /**
  * Handler for JSON-RPC 2.0 notifications (server→client without response)
  */
-type NotificationHandler = (params: any) => void;
+type NotificationHandler = (params: Record<string, unknown>) => void;
 
 /**
  * JSON-RPC Handler Service
  * Provides type-safe JSON-RPC 2.0 message handling over WebSocket
  */
 export class JsonRpcHandler {
-  private pendingRequests: Map<string | number, PendingRequest> = new Map();
+  private pendingRequests: Map<string | number, PendingRequest<unknown>> = new Map();
   private notificationHandlers: Map<string, Set<NotificationHandler>> = new Map();
   private requestTimeout: number = 30000; // 30 seconds
   private requestIdCounter: number = 1;
   private messageListenerAttached: boolean = false;
   private messageListenerAttachmentInProgress: boolean = false;
-  private cachedWebSocketClient: any = null;
+  private cachedWebSocketClient: WebSocketClientInterface | null = null;
 
   constructor() {
     this.ensureMessageListenerAttached();
@@ -51,14 +52,14 @@ export class JsonRpcHandler {
   /**
    * Get cached or load WebSocket client
    */
-  private async getWebSocketClient(): Promise<any> {
+  private async getWebSocketClient(): Promise<WebSocketClientInterface> {
     if (this.cachedWebSocketClient) {
       return this.cachedWebSocketClient;
     }
 
     try {
       const module = await import('./websocketClient');
-      this.cachedWebSocketClient = module.websocketClient;
+      this.cachedWebSocketClient = module.websocketClient as WebSocketClientInterface;
       return this.cachedWebSocketClient;
     } catch (error) {
       const errorMessage = 'Failed to load WebSocket client - JSON-RPC communication will not be available';
@@ -93,7 +94,7 @@ export class JsonRpcHandler {
     try {
       const websocketClient = await this.getWebSocketClient();
 
-      websocketClient.on('message', (message: any) => {
+      websocketClient.on('message', (message: Record<string, unknown>) => {
         try {
           // Message is already parsed by websocketClient
           this.handleMessage(message as JsonRpcMessage);
@@ -356,8 +357,8 @@ export class JsonRpcHandler {
   /**
    * Handle JSON-RPC notification (server→client)
    */
-  private handleNotification(message: any): void {
-    const { method, params } = message;
+  private handleNotification(message: Record<string, unknown>): void {
+    const { method, params } = message as { method?: string; params?: Record<string, unknown> };
 
     if (!method) {
       logWarning('Received notification without method');
@@ -445,7 +446,7 @@ export class JsonRpcHandler {
       return false;
     }
 
-    const req = request as any;
+    const req = request as Record<string, unknown>;
     return (
       req.jsonrpc === '2.0' &&
       typeof req.method === 'string' &&
@@ -461,7 +462,7 @@ export class JsonRpcHandler {
       return false;
     }
 
-    const resp = response as any;
+    const resp = response as Record<string, unknown>;
     if (resp.jsonrpc !== '2.0' || (resp.id === undefined && resp.id !== 0)) {
       return false;
     }

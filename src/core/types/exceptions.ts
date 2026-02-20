@@ -80,7 +80,7 @@ export interface ClassifiedException {
   retryDelayMs?: number;          // Initial retry delay
 
   // Context
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
   userFacingMessage?: string;     // Message safe to show to users
   devMessage?: string;            // Detailed message for developers
 

@@ -25,7 +25,7 @@ function getCookieToken(): string | null {
       decodeError instanceof Error ? decodeError.message : String(decodeError),
       { cookieName: AUTH_COOKIE_NAME }
     );
-    // Return null instead of invalid token to allow proper fallback to localStorage
+    // Return null instead of invalid token since localStorage is primary and cookies are fallback
     return null;
   }
 }
@@ -113,6 +113,9 @@ export interface SchemaDefinition {
   format?: string;
   $ref?: string;
   definitions?: Record<string, SchemaDefinition>;
+  // NOTE: The index signature [key: string]: unknown allows JSON Schema properties not listed above.
+  // This is necessary for JSON Schema compatibility but is a TypeScript trade-off: accessing properties
+  // via bracket notation may lose type information. Access known properties directly when possible.
   [key: string]: unknown;
 }
 
@@ -398,9 +401,9 @@ export class EmbeddedDataLoader {
   /**
    * Normalize element visual properties with defaults
    */
-  private normalizeVisual(visual: unknown) {
+  private normalizeVisual(visual: unknown): Record<string, unknown> {
     if (typeof visual === 'object' && visual !== null) {
-      return visual;
+      return visual as Record<string, unknown>;
     }
     return {
       position: { x: 0, y: 0 },

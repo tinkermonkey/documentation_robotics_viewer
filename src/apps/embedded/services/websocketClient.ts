@@ -27,7 +27,7 @@ type WebSocketSendMessage = WebSocketMessage | JsonRpcRequest | JsonRpcNotificat
 
 /**
  * Typed event payloads for WebSocket events
- * Use discriminated union of specific event types for full type safety.
+ * Uses mapped event interface pattern with string literal keys mapping to payload types for full type safety.
  * All event names must be explicitly defined here to prevent typos and enable compile-time validation.
  */
 interface WebSocketEventMap {
@@ -183,12 +183,24 @@ export class WebSocketClient implements WebSocketClientInterface {
   }
 
   /**
+   * Assert we're in test environment, throwing early for test hooks
+   * Reduces duplication of environment checks across test methods
+   */
+  private assertTestEnvironment(): void {
+    if (!isTestEnvironment()) {
+      console.warn('[WebSocket] Test hook called in production - ignoring');
+      throw new Error('[WebSocket] Test hook not available in production');
+    }
+  }
+
+  /**
    * TEST HOOK: Trigger a WebSocket close event (for testing reconnection logic)
    * Only available in test environment - checked via isTestEnvironment() function
    */
   triggerCloseForTesting(): void {
-    if (!isTestEnvironment()) {
-      console.warn('[WebSocket] Test hook called in production - ignoring');
+    try {
+      this.assertTestEnvironment();
+    } catch {
       return;
     }
 
@@ -206,8 +218,9 @@ export class WebSocketClient implements WebSocketClientInterface {
    * Only available in test environment - checked via isTestEnvironment() function
    */
   simulateMaxReconnectAttemptsForTesting(): void {
-    if (!isTestEnvironment()) {
-      console.warn('[WebSocket] Test hook called in production - ignoring');
+    try {
+      this.assertTestEnvironment();
+    } catch {
       return;
     }
 
