@@ -4,28 +4,12 @@
  */
 
 import React, { useEffect } from 'react';
-import { MetaModel } from '../../../core/types';
+import { MetaModel, ModelElement } from '../../../core/types';
 import { Badge, Accordion, AccordionPanel, AccordionTitle, AccordionContent } from 'flowbite-react';
 import AttributesTable, { AttributeRow } from './common/AttributesTable';
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { SchemaDefinition } from '../services/embeddedDataLoader';
-
-interface ModelElement {
-  id: string;
-  name?: string;
-  type?: string;
-  [key: string]: unknown;
-}
-
-interface ModelLayer {
-  id?: string;
-  name?: string;
-  order?: number;
-  description?: string;
-  elements?: ModelElement[];
-  [key: string]: unknown;
-}
 
 interface ModelJSONViewerProps {
   model: MetaModel;
@@ -52,7 +36,7 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
     let foundPath: string | null = null;
 
     for (const [layerName, layer] of Object.entries(model.layers)) {
-      const elements = (layer as ModelLayer).elements || [];
+      const elements = layer.elements || [];
       const elementIndex = elements.findIndex((el: ModelElement) => el.id === highlightedElementId);
 
       if (elementIndex !== -1) {
@@ -177,7 +161,7 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
     const elements = actualLayer.elements || [];
 
     // Group elements by type
-    const elementsByType = elements.reduce((acc: Record<string, ModelElement[]>, element: ModelElement) => {
+    const elementsByType = elements.reduce((acc: Record<string, ModelElement[]>, element) => {
       const type = element.type || 'unknown';
       if (!acc[type]) {
         acc[type] = [];
@@ -274,7 +258,7 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
 
                       {/* Elements of this type */}
                       <div className="space-y-3">
-                        {typeElements.map((element: ModelElement) => {
+                        {typeElements.map((element) => {
                           // Build attributes array
                           const attributes: AttributeRow[] = [];
 
@@ -284,33 +268,36 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
                           if (element.type) attributes.push({ name: 'Type', value: element.type });
 
                           // Extract documentation field (ArchiMate standard)
-                          const documentation = element.documentation || (element.properties as Record<string, unknown> | undefined)?.documentation;
+                          const documentation = element.properties?.documentation;
+                          const documentationString = typeof documentation === 'string' ? documentation : undefined;
 
                           // Properties (excluding core fields and documentation)
                           if (element.properties && typeof element.properties === 'object') {
-                            Object.entries(element.properties as Record<string, unknown>)
+                            Object.entries(element.properties)
                               .filter(([key]) => !['id', 'name', 'type', 'description', 'documentation'].includes(key))
                               .forEach(([key, value]) => {
                                 attributes.push({
                                   name: key,
-                                  value,
+                                  value: value as string | number | boolean | null | undefined | Record<string, unknown> | unknown[],
                                   isObject: typeof value === 'object' && value !== null
                                 });
                               });
                           }
 
                           // Other top-level attributes (relationships, custom fields)
-                          Object.entries(element)
+                          const elementAsRecord = element as unknown as Record<string, unknown>;
+                          const elementEntries = Object.entries(elementAsRecord)
                             .filter(([key]) =>
-                              !['id', 'name', 'type', 'description', 'documentation', 'properties', 'visual', 'layerId'].includes(key)
-                            )
-                            .forEach(([key, value]) => {
-                              attributes.push({
-                                name: key,
-                                value,
-                                isObject: typeof value === 'object' && value !== null
-                              });
+                              !['id', 'name', 'type', 'description', 'properties', 'visual', 'layerId'].includes(key)
+                            );
+
+                          elementEntries.forEach(([key, value]) => {
+                            attributes.push({
+                              name: key,
+                              value: value as string | number | boolean | null | undefined | Record<string, unknown> | unknown[],
+                              isObject: typeof value === 'object' && value !== null
                             });
+                          });
 
                           return (
                             <Accordion key={element.id} collapseAll>
@@ -321,13 +308,13 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
                                 <AccordionContent className="bg-white dark:bg-gray-900">
                                   <div className="space-y-4">
                                     {/* Documentation section - prominently displayed */}
-                                    {documentation && (
+                                    {documentationString && (
                                       <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                                         <h6 className="text-xs font-semibold text-blue-900 dark:text-blue-300 mb-1 uppercase tracking-wide">
                                           Documentation
                                         </h6>
                                         <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
-                                          {documentation}
+                                          {documentationString}
                                         </p>
                                       </div>
                                     )}
