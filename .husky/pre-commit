@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Pre-commit hook: Sync and validate API spec before commit
+# This ensures the API spec is always in sync with upstream
+
+set -e
+
+echo "🔄 Checking API spec synchronization..."
+
+# Run the sync script
+npm run sync:api-spec
+
+# Check if the spec changed
+if ! git diff --quiet docs/api-spec.yaml 2>/dev/null; then
+  echo "📝 API spec was updated. Staging changes..."
+  git add docs/api-spec.yaml
+  echo "✓ API spec changes staged automatically"
+else
+  echo "✓ API spec is already in sync"
+fi
+
+exit 0

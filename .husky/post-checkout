@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Post-checkout hook: Sync API spec after branch switching
+# Ensures spec is updated when checking out branches with different specs
+
+if git diff HEAD@{1}..HEAD --name-only 2>/dev/null | grep -q docs/api-spec.yaml; then
+  echo "🔄 API spec changed. Syncing..."
+  npm run sync:api-spec
+  echo "✓ API spec synced"
+fi
+
+exit 0

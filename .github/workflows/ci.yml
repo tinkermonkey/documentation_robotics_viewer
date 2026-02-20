@@ -35,6 +35,18 @@ jobs:
     - name: Type check
       run: npx tsc --noEmit
 
+    - name: Check API spec sync
+      run: |
+        npm run sync:api-spec
+        if git diff --quiet docs/api-spec.yaml; then
+          echo "✓ API spec is in sync with upstream"
+        else
+          echo "✗ API spec is out of sync with upstream"
+          echo "Please run 'npm run sync:api-spec' and commit the changes"
+          git diff docs/api-spec.yaml
+          exit 1
+        fi
+
     - name: Install Playwright browsers
       run: npx playwright install --with-deps
 
