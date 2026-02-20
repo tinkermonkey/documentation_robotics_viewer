@@ -11,15 +11,39 @@
 
 import { http, HttpResponse } from 'msw';
 
+// Type definitions for mock data
+interface ModelData {
+  uuid: string;
+  name: string;
+  version: string;
+  layers: unknown[];
+}
+
+interface Schemas {
+  [key: string]: Record<string, unknown>;
+}
+
+interface Changeset {
+  id: string;
+  createdAt: string;
+  [key: string]: unknown;
+}
+
+interface Annotation {
+  id: string;
+  createdAt: string;
+  [key: string]: unknown;
+}
+
 // Mock data for API endpoints
-const mockModelData = {
+const mockModelData: ModelData = {
   uuid: 'model-123',
   name: 'Test Architecture Model',
   version: '1.0.0',
   layers: []
 };
 
-const mockSchemas = {
+const mockSchemas: Schemas = {
   motivation: {},
   business: {},
   technology: {},
@@ -27,9 +51,9 @@ const mockSchemas = {
   dataModel: {}
 };
 
-const mockChangesets = [];
+const mockChangesets: Changeset[] = [];
 
-const mockAnnotations = [];
+const mockAnnotations: Annotation[] = [];
 
 /**
  * MSW HTTP handlers matching the OpenAPI spec
@@ -57,8 +81,8 @@ export const handlers = [
 
   // Get a specific schema
   http.get('http://localhost:8080/api/schemas/:layer', ({ params }) => {
-    const layer = params.layer as string;
-    return HttpResponse.json(mockSchemas[layer as keyof typeof mockSchemas] || {});
+    const layer = String(params.layer);
+    return HttpResponse.json(mockSchemas[layer] || {});
   }),
 
   // Get changesets
@@ -68,11 +92,11 @@ export const handlers = [
 
   // Create a changeset
   http.post('http://localhost:8080/api/changesets', async ({ request }) => {
-    const body = await request.json();
-    const changeset = {
+    const body = (await request.json()) as Record<string, unknown>;
+    const changeset: Changeset = {
       id: `cs-${Date.now()}`,
-      ...body,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      ...body
     };
     mockChangesets.push(changeset);
     return HttpResponse.json(changeset, { status: 201 });
@@ -80,7 +104,8 @@ export const handlers = [
 
   // Get a specific changeset
   http.get('http://localhost:8080/api/changesets/:id', ({ params }) => {
-    const changeset = mockChangesets.find(cs => cs.id === params.id);
+    const changesetId = String(params.id);
+    const changeset = mockChangesets.find(cs => cs.id === changesetId);
     if (!changeset) {
       return HttpResponse.json({ error: 'Not found' }, { status: 404 });
     }
@@ -94,11 +119,11 @@ export const handlers = [
 
   // Create an annotation
   http.post('http://localhost:8080/api/annotations', async ({ request }) => {
-    const body = await request.json();
-    const annotation = {
+    const body = (await request.json()) as Record<string, unknown>;
+    const annotation: Annotation = {
       id: `ann-${Date.now()}`,
-      ...body,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      ...body
     };
     mockAnnotations.push(annotation);
     return HttpResponse.json(annotation, { status: 201 });
@@ -106,7 +131,8 @@ export const handlers = [
 
   // Get a specific annotation
   http.get('http://localhost:8080/api/annotations/:id', ({ params }) => {
-    const annotation = mockAnnotations.find(a => a.id === params.id);
+    const annotationId = String(params.id);
+    const annotation = mockAnnotations.find(a => a.id === annotationId);
     if (!annotation) {
       return HttpResponse.json({ error: 'Not found' }, { status: 404 });
     }
@@ -115,12 +141,13 @@ export const handlers = [
 
   // Update an annotation
   http.patch('http://localhost:8080/api/annotations/:id', async ({ params, request }) => {
-    const annotation = mockAnnotations.find(a => a.id === params.id);
+    const annotationId = String(params.id);
+    const annotation = mockAnnotations.find(a => a.id === annotationId);
     if (!annotation) {
       return HttpResponse.json({ error: 'Not found' }, { status: 404 });
     }
-    const updates = await request.json();
-    const updated = { ...annotation, ...updates };
+    const updates = (await request.json()) as Record<string, unknown>;
+    const updated: Annotation = { ...annotation, ...updates } as Annotation;
     const index = mockAnnotations.indexOf(annotation);
     mockAnnotations[index] = updated;
     return HttpResponse.json(updated);
@@ -128,7 +155,8 @@ export const handlers = [
 
   // Delete an annotation
   http.delete('http://localhost:8080/api/annotations/:id', ({ params }) => {
-    const index = mockAnnotations.findIndex(a => a.id === params.id);
+    const annotationId = String(params.id);
+    const index = mockAnnotations.findIndex(a => a.id === annotationId);
     if (index === -1) {
       return HttpResponse.json({ error: 'Not found' }, { status: 404 });
     }

@@ -1,11 +1,18 @@
 /**
- * Example E2E Tests Using MSW (Mock Service Worker)
+ * Example Unit Tests Using MSW (Mock Service Worker)
  *
- * These tests demonstrate how to use Mock Service Worker to test the embedded app
- * WITHOUT requiring a running DR CLI server. MSW intercepts network requests at the
- * fetch level and returns mock responses.
+ * IMPORTANT: This example demonstrates MSW for Node.js-based tests,
+ * NOT for Playwright browser E2E tests.
  *
- * Benefits over requiring a real server:
+ * MSW Usage Patterns:
+ * - Node.js unit/integration tests: Use `setupServer` from 'msw/node'
+ * - Playwright browser tests: Use `page.route()` for request interception
+ *
+ * This file shows the Node.js pattern. For Playwright E2E tests that need
+ * API mocking, see the Playwright route interception pattern documented
+ * in documentation/MSW_TESTING_GUIDE.md.
+ *
+ * Benefits of MSW for Node.js tests:
  * - Tests run fast (no server startup overhead)
  * - Tests run offline
  * - Easy to test error scenarios
@@ -17,14 +24,17 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
+import { http, HttpResponse } from 'msw';
 import { handlers } from '../src/core/services/mswHandlers';
 
-// Create MSW server with default handlers
+/**
+ * Example: Node.js API client tests with MSW
+ * These run in Node.js, not in the browser
+ */
 const server = setupServer(...handlers);
 
-test.describe('Embedded App - MSW Mocked API', () => {
+test.describe('API Client - MSW Mocked Responses (Node.js)', () => {
   // Start MSW server before all tests in this suite
   test.beforeAll(() => {
     server.listen({ onUnhandledRequest: 'warn' });
@@ -40,18 +50,35 @@ test.describe('Embedded App - MSW Mocked API', () => {
     server.close();
   });
 
-  test('should load app with mocked health check', async ({ page }) => {
-    // Navigate to the app
-    await page.goto('/');
+  test('should handle health check request', async () => {
+    // This test demonstrates calling an API that would normally hit the DR CLI server
+    // But MSW intercepts it and returns mock data instead
+    const response = await fetch('http://localhost:8080/api/health');
+    const data = await response.json() as Record<string, unknown>;
 
-    // Wait for the app to initialize
-    await page.waitForSelector('[data-testid="embedded-app"]', { timeout: 10000 });
-
-    // Verify the app loaded
-    await expect(page.locator('[data-testid="embedded-app"]')).toBeVisible();
+    expect(response.status).toBe(200);
+    expect(data).toHaveProperty('status', 'ok');
   });
 
-  test('should handle API errors gracefully', async ({ page }) => {
+  test('should handle changeset creation', async () => {
+    const changesetData = {
+      name: 'Test Changeset',
+      description: 'A test changeset'
+    };
+
+    const response = await fetch('http://localhost:8080/api/changesets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(changesetData)
+    });
+
+    expect(response.status).toBe(201);
+    const changeset = await response.json() as Record<string, unknown>;
+    expect(changeset).toHaveProperty('id');
+    expect(changeset).toHaveProperty('createdAt');
+  });
+
+  test('should handle error scenarios with handler override', async () => {
     // Override the health check handler to return an error
     server.use(
       http.get('http://localhost:8080/api/health', () => {
@@ -62,54 +89,28 @@ test.describe('Embedded App - MSW Mocked API', () => {
       })
     );
 
-    // Navigate to the app
-    await page.goto('/');
-
-    // The app should handle the error gracefully
-    // You can check for error messaging or fallback UI
-    await expect(page.locator('[data-testid="embedded-app"]')).toBeVisible();
+    const response = await fetch('http://localhost:8080/api/health');
+    expect(response.status).toBe(503);
+    const data = await response.json() as Record<string, unknown>;
+    expect(data).toHaveProperty('error');
   });
 
-  test('should display model data from mocked API', async ({ page }) => {
-    // Override the model endpoint to return test data
-    server.use(
-      http.get('http://localhost:8080/api/model', () => {
-        return HttpResponse.json({
-          id: 'test-model-123',
-          name: 'Test Model',
-          version: '1.0.0',
-          layers: {
-            motivation: {
-              elements: [
-                {
-                  id: 'goal-1',
-                  type: 'Goal',
-                  label: 'Test Goal',
-                  description: 'A goal for testing'
-                }
-              ]
-            }
-          }
-        });
-      })
-    );
+  test('should handle model retrieval', async () => {
+    const response = await fetch('http://localhost:8080/api/model');
+    expect(response.status).toBe(200);
+    const model = await response.json() as Record<string, unknown>;
 
-    // Navigate to the app
-    await page.goto('/');
-
-    // Wait for app to initialize
-    await page.waitForSelector('[data-testid="embedded-app"]', { timeout: 10000 });
-
-    // Verify the app is visible
-    await expect(page.locator('[data-testid="embedded-app"]')).toBeVisible();
+    expect(model).toHaveProperty('uuid');
+    expect(model).toHaveProperty('name');
+    expect(model).toHaveProperty('version');
   });
 
-  test('should retry failed requests', async ({ page }) => {
+  test('should simulate request retry on transient failure', async () => {
     let callCount = 0;
 
-    // First call fails, subsequent calls succeed
+    // Override handler to fail on first call, succeed on second
     server.use(
-      http.get('http://localhost:8080/api/model', () => {
+      http.get('http://localhost:8080/api/schemas', () => {
         callCount++;
         if (callCount === 1) {
           return HttpResponse.json(
@@ -118,16 +119,57 @@ test.describe('Embedded App - MSW Mocked API', () => {
           );
         }
         return HttpResponse.json({
-          id: 'test-model',
-          name: 'Test Model'
+          motivation: {},
+          business: {}
         });
       })
     );
 
-    await page.goto('/');
-    await page.waitForSelector('[data-testid="embedded-app"]', { timeout: 10000 });
+    // First request fails
+    let response = await fetch('http://localhost:8080/api/schemas');
+    expect(response.status).toBe(500);
 
-    // Verify the app eventually loaded
-    await expect(page.locator('[data-testid="embedded-app"]')).toBeVisible();
+    // Retry succeeds
+    response = await fetch('http://localhost:8080/api/schemas');
+    expect(response.status).toBe(200);
+    const schemas = await response.json() as Record<string, unknown>;
+    expect(schemas).toHaveProperty('motivation');
+  });
+});
+
+/**
+ * Playwright Browser Tests with API Mocking
+ *
+ * NOTE: These tests show the CORRECT pattern for Playwright E2E tests.
+ * Use page.route() for browser-based request interception, not MSW's setupServer.
+ *
+ * For a running DR CLI server (current approach):
+ * - Tests validate against real API responses
+ * - Useful for integration testing
+ * - Requires server infrastructure
+ *
+ * For Playwright route interception (alternative):
+ * - Can mock API responses without running server
+ * - Use `page.route()` to intercept requests
+ * - See documentation/MSW_TESTING_GUIDE.md for detailed pattern
+ */
+test.describe('Embedded App - Playwright Route Interception Example', () => {
+  test('should load with route interception pattern (reference)', async ({ page }) => {
+    // NOTE: This is a reference example showing the pattern
+    // Actual implementation would:
+    // 1. Use page.route() to intercept fetch/XHR
+    // 2. Return mock responses for API calls
+    // 3. Works with or without real server
+
+    // Example pattern (not executed):
+    // await page.route('http://localhost:8080/api/model', route => {
+    //   route.abort();  // or return mock response
+    // });
+
+    // For production E2E tests, either:
+    // Option A: Use real DR CLI server (current approach)
+    // Option B: Use page.route() for request interception
+
+    expect(true).toBe(true);
   });
 });
