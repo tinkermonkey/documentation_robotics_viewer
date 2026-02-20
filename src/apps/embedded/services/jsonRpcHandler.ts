@@ -208,7 +208,7 @@ export class JsonRpcHandler {
       this.pendingRequests.set(id, {
         id,
         method,
-        resolve,
+        resolve: resolve as (value: unknown) => void,
         reject,
         timeout: timeoutHandle,
       });
