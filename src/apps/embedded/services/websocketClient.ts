@@ -395,10 +395,11 @@ export class WebSocketClient implements WebSocketClientInterface {
   private handleMessage(event: MessageEvent): void {
     try {
       const message: WebSocketMessage = JSON.parse(event.data);
-      console.log('[WebSocket] Received:', message.type);
+      const messageType = message.type ?? 'message';
+      console.log('[WebSocket] Received:', messageType);
 
       // Emit event for this message type
-      this.emit(message.type, message);
+      this.emit(messageType, message);
 
       // Also emit a generic 'message' event
       this.emit('message', message);

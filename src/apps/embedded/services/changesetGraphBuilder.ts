@@ -147,7 +147,7 @@ export class ChangesetGraphBuilder {
     const element: ModelElement = {
       id: change.element_id,
       type: change.element_type || 'generic',
-      name: elementData.name || change.element_id,
+      name: typeof elementData.name === 'string' ? elementData.name : change.element_id,
       layerId: change.layer,
       properties: {
         ...elementData,

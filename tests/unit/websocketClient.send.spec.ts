@@ -5,6 +5,7 @@
 
 import { test, expect } from '@playwright/test';
 import { WebSocketClient } from '../../src/apps/embedded/services/websocketClient';
+import type { JsonRpcRequest, JsonRpcNotification } from '../../src/apps/embedded/types/chat';
 
 test.describe('WebSocketClient.send() Return Value', () => {
   test('should return false when WebSocket is not connected', () => {
@@ -42,7 +43,7 @@ test.describe('WebSocketClient.send() Return Value', () => {
 
   test('should accept JSON-RPC request format', () => {
     const client = new WebSocketClient('ws://localhost:9001');
-    const jsonRpcRequest = {
+    const jsonRpcRequest: JsonRpcRequest = {
       jsonrpc: '2.0',
       method: 'test.method',
       params: { foo: 'bar' },
@@ -50,20 +51,20 @@ test.describe('WebSocketClient.send() Return Value', () => {
     };
 
     // Should not throw
-    const result = client.send(jsonRpcRequest as any);
+    const result = client.send(jsonRpcRequest);
     expect(typeof result).toBe('boolean');
   });
 
   test('should accept JSON-RPC notification format', () => {
     const client = new WebSocketClient('ws://localhost:9001');
-    const jsonRpcNotification = {
+    const jsonRpcNotification: JsonRpcNotification = {
       jsonrpc: '2.0',
       method: 'test.notification',
       params: { foo: 'bar' }
     };
 
     // Should not throw
-    const result = client.send(jsonRpcNotification as any);
+    const result = client.send(jsonRpcNotification);
     expect(typeof result).toBe('boolean');
   });
 
@@ -85,18 +86,27 @@ test.describe('WebSocketClient.send() Return Value', () => {
   test('should handle send() calls with various message structures', () => {
     const client = new WebSocketClient('ws://localhost:9001');
 
-    const messages = [
+    const messages: Array<{ type?: string; [key: string]: unknown }> = [
       { type: 'ping' },
       { type: 'subscribe', topics: ['test'] },
-      { type: 'custom', data: { nested: { obj: true } } },
-      { jsonrpc: '2.0', method: 'test', id: 1 }
+      { type: 'custom', data: { nested: { obj: true } } }
     ];
 
     messages.forEach((message) => {
-      const result = client.send(message as any);
+      const result = client.send(message);
       expect(typeof result).toBe('boolean');
       // Not connected, so should be false
       expect(result).toBe(false);
     });
+
+    // Also test JSON-RPC format
+    const jsonRpcRequest: JsonRpcRequest = {
+      jsonrpc: '2.0',
+      method: 'test',
+      id: 1
+    };
+    const result = client.send(jsonRpcRequest);
+    expect(typeof result).toBe('boolean');
+    expect(result).toBe(false);
   });
 });
