@@ -121,7 +121,7 @@ export class TypedRestApiClient {
     path: string,
     body?: unknown,
     params?: Record<string, unknown>
-  ): Promise<unknown> {
+  ): Promise<any> {
     const url = new URL(path, this.baseUrl);
 
     // Add query parameters
