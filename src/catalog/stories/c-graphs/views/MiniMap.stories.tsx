@@ -10,7 +10,7 @@ import '@xyflow/react/dist/style.css';
  * MotivationGraphView.tsx, BusinessLayerView.tsx, and C4GraphView.tsx.
  */
 const meta = {
-  title: 'A Primitives / Indicators / MiniMap',
+  title: 'C Graphs / Views / MiniMap',
 } satisfies Meta;
 
 export default meta;
