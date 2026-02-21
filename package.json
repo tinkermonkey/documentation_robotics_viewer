@@ -24,7 +24,6 @@
     "test:auth": "playwright test --config=playwright.auth.config.ts",
     "test:auth:ui": "playwright test --config=playwright.auth.config.ts --ui",
     "test:auth:debug": "playwright test --config=playwright.auth.config.ts --debug",
-    "openapi:generate": ".venv/bin/python scripts/generate-openapi.py",
     "storybook:dev": "storybook dev -p 61001",
     "storybook:build": "storybook build -o dist/storybook",
     "storybook:serve": "npx http-server dist/storybook -p 61001",
