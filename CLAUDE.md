@@ -183,7 +183,7 @@ tests/
 - **E2E tests**: Wait for specific selectors (not timeouts), check console errors, validate actual rendering (node counts)
 - **Stories**: Create `.stories.tsx` alongside components using CSF3 format (`Meta<typeof Component>`, `StoryObj`)
   - Import decorators from `@catalog/decorators/`
-  - Use `@storybook/react` (not `@ladle/react`)
+  - Use `@storybook/react`
   - Run `npm run storybook:dev` to preview stories
 - **Storybook Tests**: Use `test-runner.ts` for custom error filtering via `storyErrorFilters.ts`
 
