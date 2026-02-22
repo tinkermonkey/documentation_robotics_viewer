@@ -7,8 +7,7 @@
  * - Filter checkboxes are clickable
  * - Empty states show appropriate messages
  *
- * Covers: AnnotationPanel, C4InspectorPanel, C4ControlPanel,
- *         MotivationFilterPanel, SchemaInfoPanel, NodeDetailsPanel
+ * Covers: AnnotationPanel, SchemaInfoPanel, NodeDetailsPanel
  */
 
 import { test, expect } from '@playwright/test';
@@ -32,55 +31,6 @@ test.describe('Panels & Inspectors Stories', () => {
       await page.waitForSelector('text=/[Aa]nnotation|[Cc]omment|[Nn]ote/', { timeout: 5000 });
       const bodyText = await page.locator('body').innerText();
       expect(bodyText, 'WithAnnotations should contain annotation or comment text').toMatch(/[Aa]nnotation|[Cc]omment|[Nn]ote|[Cc]ontent/);
-    });
-  });
-
-  test.describe('C4InspectorPanel', () => {
-    test('ContainerSelected: renders element details', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('panels---inspectors--c4--c4inspectorpanel--container-selected'));
-      await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForSelector('text=/[Cc]ontainer|[Dd]etails|[Pp]roperties/', { timeout: 5000 });
-      const bodyText = await page.locator('body').innerText();
-      expect(bodyText, 'ContainerSelected should display element details').toMatch(/[Cc]ontainer|[Dd]etails|[Pp]roperties|[Ii]nspector/);
-    });
-  });
-
-  test.describe('C4ControlPanel', () => {
-    test('ContextLevel: renders controls', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('panels---inspectors--c4--c4controlpanel--context-level'));
-      await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForSelector('button, input, [role="button"]', { timeout: 5000 });
-      const controlElements = await page.locator('button, input, [role="button"]').count();
-      expect(controlElements, 'ContextLevel should render control elements').toBeGreaterThan(0);
-    });
-  });
-
-  test.describe('MotivationFilterPanel', () => {
-    test('Default: renders filter checkboxes', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('panels---inspectors--motivation--motivationfilterpanel--default'));
-      await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      // Wait for filter elements to be rendered
-      await page.waitForSelector('input[type="checkbox"], button, [role="button"]', { timeout: 5000 });
-      // Filter panels typically contain checkboxes or toggle elements
-      const hasCheckboxes = await page.locator('input[type="checkbox"]').count();
-      const hasButtons = await page.locator('button').count();
-      const hasContent = (await page.locator('body').innerText()).length > 10;
-      expect(
-        hasCheckboxes > 0 || hasButtons > 0 || hasContent,
-        'MotivationFilterPanel should have interactive elements or content'
-      ).toBe(true);
-    });
-
-    test('WithFiltersApplied: shows applied filters', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('panels---inspectors--motivation--motivationfilterpanel--with-filters-applied'));
-      await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForSelector('input[type="checkbox"], [role="checkbox"]', { timeout: 5000 });
-      const filterCount = await page.locator('input[type="checkbox"], [role="checkbox"]').count();
-      expect(filterCount, 'WithFiltersApplied should display filter controls').toBeGreaterThan(0);
     });
   });
 

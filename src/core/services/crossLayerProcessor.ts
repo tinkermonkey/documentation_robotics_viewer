@@ -203,7 +203,7 @@ export function referenceToEdge(ref: CrossLayerReference): CrossLayerEdge | null
       id: `cross-layer-${ref.sourceId}-${ref.targetId}`,
       source: ref.sourceId,
       target: ref.targetId,
-      type: 'crossLayer',
+      type: 'elbow',
       data: {
         targetLayer: ref.targetLayer,
         sourceLayer: ref.sourceLayer,

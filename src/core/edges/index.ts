@@ -3,43 +3,26 @@
  * Exports all custom edge types and the edgeTypes object for React Flow
  */
 
+import type { EdgeTypes } from '@xyflow/react';
+
 import { ElbowEdge } from './ElbowEdge';
-import { CrossLayerEdge } from './CrossLayerEdge';
 import { BundledCrossLayerEdge } from './BundledCrossLayerEdge';
-import {
-  InfluenceEdge,
-  ConstrainsEdge,
-  RealizesEdge,
-  RefinesEdge,
-  ConflictsEdge,
-} from './motivation';
 
 // Export edge components
 export {
   ElbowEdge,
-  CrossLayerEdge,
   BundledCrossLayerEdge,
-  InfluenceEdge,
-  ConstrainsEdge,
-  RealizesEdge,
-  RefinesEdge,
-  ConflictsEdge,
 };
 
 // Edge types object for React Flow
 // Maps edge type strings to their component implementations
 // Note: Built-in types like 'smoothstep', 'step', 'straight', 'default' don't need to be registered here
 // They are automatically available when you set type: 'smoothstep' etc. in edge data
+// Cast as EdgeTypes to satisfy React Flow's strict type requirements
 export const edgeTypes = {
   elbow: ElbowEdge,
-  crossLayer: CrossLayerEdge,
   bundledCrossLayer: BundledCrossLayerEdge,
-  influence: InfluenceEdge,
-  constrains: ConstrainsEdge,
-  realizes: RealizesEdge,
-  refines: RefinesEdge,
-  conflicts: ConflictsEdge,
-};
+} as EdgeTypes;
 
 // Export pathfinding utilities
 export * from './pathfinding';

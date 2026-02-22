@@ -126,7 +126,7 @@ test.describe('Cross-Layer Link Extraction Logic', () => {
     const model = createTestModel([reference]);
     const result = getCrossLayerEdges(model, true, new Set(), new Set());
     expect(result).toHaveLength(1);
-    expect(result[0].type).toBe('crossLayer');
+    expect(result[0].type).toBe('elbow');
     expect(result[0].data?.targetLayer).toBe(LayerType.Application);
     expect(result[0].data?.relationshipType).toBe(ReferenceType.Goal);
   });

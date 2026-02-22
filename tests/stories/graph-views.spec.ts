@@ -7,66 +7,13 @@
  * - StoryLoadedWrapper signals completion
  * - Zoom controls are functional
  *
- * Covers: C4GraphView, MotivationGraphView, BusinessLayerView,
- *         GraphViewer, ChangesetGraphView, SpecGraphView
+ * Covers: BusinessLayerView, GraphViewer, ChangesetGraphView
  */
 
 import { test, expect } from '@playwright/test';
 import { storyUrl, setupErrorFiltering } from '../helpers/storyTestUtils';
 
 test.describe('Graph View Stories', () => {
-  test.describe('C4GraphView', () => {
-    test('Default: renders nodes', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('views---layouts--graph-views--c4graphview--default'));
-      await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 });
-      const nodeCount = await page.locator('.react-flow__node').count();
-      expect(nodeCount, 'C4GraphView Default should render nodes').toBeGreaterThan(0);
-    });
-
-    test('Default: renders edges', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('views---layouts--graph-views--c4graphview--default'));
-      await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 });
-      const edgeCount = await page.locator('.react-flow__edge').count();
-      expect(edgeCount, 'C4GraphView Default should render edges').toBeGreaterThan(0);
-    });
-
-    test('Default: data-storyloaded is set', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('views---layouts--graph-views--c4graphview--default'));
-      await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 });
-      const wrapper = page.locator('[data-testid="c4-graph-default"]');
-      await expect(wrapper).toHaveAttribute('data-storyloaded', 'true');
-    });
-  });
-
-  test.describe('MotivationGraphView', () => {
-    test('Default: renders nodes', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('views---layouts--graph-views--motivationgraphview--default'));
-      await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 });
-      const nodeCount = await page.locator('.react-flow__node').count();
-      expect(nodeCount, 'MotivationGraphView Default should render nodes').toBeGreaterThan(0);
-    });
-
-    test('Default: renders edges', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('views---layouts--graph-views--motivationgraphview--default'));
-      await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 });
-      const edgeCount = await page.locator('.react-flow__edge').count();
-      expect(edgeCount, 'MotivationGraphView Default should render edges').toBeGreaterThan(0);
-    });
-
-    test('FilteredView: renders fewer nodes than Default', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('views---layouts--graph-views--motivationgraphview--filtered-view'));
-      await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 });
-      const nodeCount = await page.locator('.react-flow__node').count();
-      expect(nodeCount, 'FilteredView should render some nodes').toBeGreaterThan(0);
-    });
-  });
-
   test.describe('BusinessLayerView', () => {
     test('Default: renders nodes', async ({ page }) => {
       setupErrorFiltering(page);
@@ -129,20 +76,10 @@ test.describe('Graph View Stories', () => {
     });
   });
 
-  test.describe('SpecGraphView', () => {
-    test('Default: renders nodes', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('views---layouts--other-views--specgraphview--default'));
-      await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 });
-      const nodeCount = await page.locator('.react-flow__node').count();
-      expect(nodeCount, 'SpecGraphView Default should render nodes').toBeGreaterThan(0);
-    });
-  });
-
   test.describe('Zoom Controls', () => {
-    test('C4GraphView: fit view button is functional', async ({ page }) => {
+    test('GraphViewer: fit view button is functional', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('views---layouts--graph-views--c4graphview--default'));
+      await page.goto(storyUrl('views---layouts--graph-views--graphviewer--complete-model'));
       await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 });
       const fitViewButton = page.locator('.react-flow__controls-fitview');
       if (await fitViewButton.count() > 0) {

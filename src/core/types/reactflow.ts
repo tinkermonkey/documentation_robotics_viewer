@@ -312,37 +312,32 @@ export type AppNode =
 export interface ElbowEdgeData {
   /** User-defined intermediate waypoints that override A* routing. */
   waypoints?: Array<{ x: number; y: number }>;
-  [key: string]: unknown;
-}
-
-/**
- * Motivation edge data
- */
-export interface MotivationEdgeData {
-  relationshipType: 'influence' | 'constrains' | 'realizes' | 'refines' | 'conflicts' | 'custom';
+  /** Style overrides (used by motivation edges, cross-layer edges) */
+  color?: string;
+  strokeDasharray?: string;
+  /** Optional label text for the edge */
   label?: string;
-  weight?: number;
-  changesetOperation?: 'add' | 'update' | 'delete';
-  [key: string]: unknown;
-}
-
-/**
- * Cross-layer edge data
- * Enforces type safety using enums for layer and relationship types
- */
-export interface CrossLayerEdgeData {
-  sourceLayer: LayerType;
-  targetLayer: LayerType;
-  relationshipType: ReferenceType;
+  /** Cross-layer navigation (all optional; absence = non-navigable edge) */
+  sourceLayer?: LayerType;
+  targetLayer?: LayerType;
+  relationshipType?: ReferenceType | string;
   sourceElementName?: string;
   targetElementName?: string;
-  label?: string;
-  // Optional metadata for enhanced tooltips
   description?: string;
   tags?: string[];
   changesetOperation?: 'add' | 'update' | 'delete';
   [key: string]: unknown;
 }
+
+/**
+ * Motivation edge data (alias for ElbowEdgeData for callers that use this type)
+ */
+export type MotivationEdgeData = ElbowEdgeData;
+
+/**
+ * Cross-layer edge data (alias for ElbowEdgeData; cross-layer behavior is gated on targetLayer presence)
+ */
+export type CrossLayerEdgeData = ElbowEdgeData;
 
 /**
  * Factory function to create and validate cross-layer edge data
@@ -361,7 +356,7 @@ export function createCrossLayerEdgeData(
     tags?: string[];
     changesetOperation?: 'add' | 'update' | 'delete';
   }
-): CrossLayerEdgeData {
+): ElbowEdgeData {
   if (sourceLayer === targetLayer) {
     throw new Error(
       `Cross-layer edge must span different layers. Got source=${sourceLayer}, target=${targetLayer}`
@@ -381,11 +376,6 @@ export function createCrossLayerEdgeData(
  */
 export type AppEdge =
   | Edge<ElbowEdgeData, 'elbow'>
-  | Edge<CrossLayerEdgeData, 'crossLayer'>
-  | Edge<MotivationEdgeData, 'influence'>
-  | Edge<MotivationEdgeData, 'constrains'>
-  | Edge<MotivationEdgeData, 'realizes'>
-  | Edge<MotivationEdgeData, 'refines'>
   | Edge<Record<string, unknown>, 'default'>
   | Edge<Record<string, unknown>, 'smoothstep'>;
 

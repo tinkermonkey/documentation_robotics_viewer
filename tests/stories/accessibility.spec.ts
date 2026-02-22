@@ -20,8 +20,6 @@ import { storyUrl, setupErrorFiltering } from '../helpers/storyTestUtils';
 
 test.describe('Accessibility - Graph Views', () => {
   const graphStories = [
-    { key: 'views---layouts--graph-views--c4graphview--default', name: 'C4GraphView Default' },
-    { key: 'views---layouts--graph-views--motivationgraphview--default', name: 'MotivationGraphView Default' },
     { key: 'views---layouts--graph-views--businesslayerview--default', name: 'BusinessLayerView Default' },
     { key: 'views---layouts--graph-views--graphviewer--complete-model', name: 'GraphViewer CompleteModel' },
   ];
@@ -51,7 +49,6 @@ test.describe('Accessibility - Graph Views', () => {
 test.describe('Accessibility - Panels', () => {
   const panelStories = [
     { key: 'panels---inspectors--common--annotationpanel--with-annotations', name: 'AnnotationPanel WithAnnotations' },
-    { key: 'panels---inspectors--c4--c4controlpanel--context-level', name: 'C4ControlPanel ContextLevel' },
     { key: 'panels---inspectors--common--nodedetailspanel--goal-node-selected', name: 'NodeDetailsPanel GoalNodeSelected' },
     { key: 'panels---inspectors--common--schemainfopanel--default', name: 'SchemaInfoPanel Default' },
   ];

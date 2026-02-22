@@ -165,7 +165,7 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
           id: `cross-${link.source}-${link.target}`,
           source: link.source,
           target: link.target,
-          type: 'crossLayer',
+          type: 'elbow',
           data: {
             targetLayer: link.targetLayer,
             relationshipType: link.type,

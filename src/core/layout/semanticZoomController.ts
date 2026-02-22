@@ -15,8 +15,6 @@
  * - Detailed: Name + type + metadata (priority, status, etc.)
  */
 
-import { MotivationElementType } from '../../apps/embedded/types/motivationGraph';
-
 /**
  * Zoom level thresholds
  */
@@ -54,51 +52,6 @@ export class SemanticZoomController {
     } else {
       return 'detail';
     }
-  }
-
-  /**
-   * Get visible element types based on current zoom level
-   *
-   * Overview (< 0.4): Stakeholders, Goals (top-level only)
-   * Medium (0.4-1.0): + Drivers, Outcomes, Requirements (primary)
-   * Detail (>= 1.0): All elements including Constraints, Principles, etc.
-   */
-  getVisibleElementTypes(zoomLevel: number): Set<MotivationElementType> {
-    const category = this.getZoomCategory(zoomLevel);
-    const visibleTypes = new Set<MotivationElementType>();
-
-    // Overview: Only core strategic elements
-    if (category === 'overview') {
-      visibleTypes.add(MotivationElementType.Stakeholder);
-      visibleTypes.add(MotivationElementType.Goal);
-      return visibleTypes;
-    }
-
-    // Medium: Add operational elements
-    if (category === 'medium') {
-      visibleTypes.add(MotivationElementType.Stakeholder);
-      visibleTypes.add(MotivationElementType.Goal);
-      visibleTypes.add(MotivationElementType.Driver);
-      visibleTypes.add(MotivationElementType.Outcome);
-      visibleTypes.add(MotivationElementType.Requirement);
-      return visibleTypes;
-    }
-
-    // Detail: All elements
-    visibleTypes.add(MotivationElementType.Stakeholder);
-    visibleTypes.add(MotivationElementType.Goal);
-    visibleTypes.add(MotivationElementType.Driver);
-    visibleTypes.add(MotivationElementType.Outcome);
-    visibleTypes.add(MotivationElementType.Requirement);
-    visibleTypes.add(MotivationElementType.Constraint);
-    visibleTypes.add(MotivationElementType.Principle);
-    visibleTypes.add(MotivationElementType.Assessment);
-    visibleTypes.add(MotivationElementType.Meaning);
-    visibleTypes.add(MotivationElementType.Value);
-    visibleTypes.add(MotivationElementType.Assumption);
-    visibleTypes.add(MotivationElementType.ValueStream);
-
-    return visibleTypes;
   }
 
   /**
@@ -185,44 +138,6 @@ export class SemanticZoomController {
       default:
         return 100;
     }
-  }
-
-  /**
-   * Filter elements based on importance and zoom level
-   * For overview mode, only show "top-level" goals (high priority or root goals)
-   *
-   * @param elements - All motivation elements
-   * @param zoomLevel - Current zoom level
-   * @returns Filtered element IDs to show
-   */
-  filterElementsByImportance(
-    elements: Array<{ id: string; type: string; properties?: any }>,
-    zoomLevel: number
-  ): Set<string> {
-    const category = this.getZoomCategory(zoomLevel);
-    const visibleTypes = this.getVisibleElementTypes(zoomLevel);
-    const filteredIds = new Set<string>();
-
-    for (const element of elements) {
-      // Check if element type is visible
-      if (!visibleTypes.has(element.type as MotivationElementType)) {
-        continue;
-      }
-
-      // At overview level, filter goals by priority
-      if (category === 'overview' && element.type === MotivationElementType.Goal) {
-        // Only show high priority or root goals
-        const priority = element.properties?.priority;
-        if (priority === 'high' || priority === 'critical') {
-          filteredIds.add(element.id);
-        }
-      } else {
-        // Include all elements of visible types at medium/detail levels
-        filteredIds.add(element.id);
-      }
-    }
-
-    return filteredIds;
   }
 
   /**

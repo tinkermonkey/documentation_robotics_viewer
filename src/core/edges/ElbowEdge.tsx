@@ -1,8 +1,11 @@
-import { memo } from 'react';
-import { EdgeProps, BaseEdge, useNodes, useEdges, EdgeLabelRenderer } from '@xyflow/react';
+import { memo, useState } from 'react';
+import { EdgeProps, BaseEdge, useNodes, useEdges, EdgeLabelRenderer, Edge } from '@xyflow/react';
+import { useNavigate } from '@tanstack/react-router';
 import { getControlPoints, pointsToSVGPath, Rectangle, Point } from './pathfinding';
 import { EdgeControllers } from './EdgeControllers';
 import { ElbowEdgeData } from '../types/reactflow';
+import { getLayerColor, getLayerDisplayName } from '../utils/layerColors';
+import { useCrossLayerStore } from '../stores/crossLayerStore';
 
 /**
  * Elbow Edge Component with A* obstacle avoidance and interactive waypoints.
@@ -10,6 +13,8 @@ import { ElbowEdgeData } from '../types/reactflow';
  * - Routes around nodes using A* pathfinding with rounded corners.
  * - When selected, displays draggable waypoint handles.
  * - When edge.data.waypoints is set (by dragging handles), uses those points directly.
+ * - When edge.data.targetLayer is set, acts as a navigable cross-layer edge with
+ *   hover tooltips, focus ring, and click/keyboard navigation.
  */
 export const ElbowEdge = memo(({
   id,
@@ -29,7 +34,12 @@ export const ElbowEdge = memo(({
   labelStyle,
   selected,
   data,
-}: EdgeProps<ElbowEdgeData>) => {
+}: EdgeProps<Edge<ElbowEdgeData, 'elbow'>>) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const navigate = useNavigate();
+  const pushNavigation = useCrossLayerStore((state) => state.pushNavigation);
+  const setLastError = useCrossLayerStore((state) => state.setLastError);
   const nodes = useNodes();
   const edges = useEdges();
 
@@ -127,12 +137,84 @@ export const ElbowEdge = memo(({
     labelY = (p1.y + p2.y) / 2;
   }
 
-  const ariaLabel = label
-    ? `Connection labeled ${label} from node ${source} to node ${target}`
-    : `Connection from node ${source} to node ${target}`;
+  // Cross-layer mode: activated when targetLayer is present in data
+  const isCrossLayer = !!data?.targetLayer;
+  const targetLayerDisplayName = isCrossLayer ? getLayerDisplayName(data!.targetLayer!) : undefined;
+
+  // Style resolution: cross-layer overrides color/dash; then data overrides; then defaults
+  const strokeColor = isCrossLayer
+    ? getLayerColor(data!.targetLayer!)
+    : (data?.color ?? '#6b7280');
+  const strokeDasharray = isCrossLayer ? '5,5' : (data?.strokeDasharray ?? undefined);
+  const strokeWidth = isHovered || isFocused ? 3 : 2;
+
+  // Navigation handler — only active for cross-layer edges
+  const handleClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!isCrossLayer || !data?.targetLayer || !target) return;
+
+    try {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      pushNavigation({
+        layerId: data.targetLayer,
+        elementId: target,
+        elementName: data.targetElementName || 'Unknown Element',
+        timestamp: Date.now(),
+      });
+      await navigate({
+        to: `/${data.targetLayer.toLowerCase()}`,
+        search: (prev: Record<string, unknown>) => ({
+          ...prev,
+          selectedElement: target,
+          skipAnimation: prefersReducedMotion,
+        }),
+      });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Failed to navigate via cross-layer edge:', {
+        sourceElement: data?.sourceElementName,
+        targetElement: data?.targetElementName,
+        targetLayer: data?.targetLayer,
+        error: errorMessage,
+      });
+      setLastError({
+        message: `Failed to navigate to ${data?.targetElementName || 'target'}: ${errorMessage}`,
+        timestamp: Date.now(),
+        type: 'navigation_failed',
+        sourceElement: data?.sourceElementName,
+        targetElement: data?.targetElementName,
+      });
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleClick(e as unknown as React.MouseEvent).catch((error) => {
+        console.error('Keyboard navigation failed:', error);
+      });
+    }
+  };
+
+  const ariaLabel = isCrossLayer
+    ? `Cross-layer link from ${data?.sourceElementName || 'Unknown'} to ${data?.targetElementName || 'Unknown'} in ${targetLayerDisplayName}, relationship type ${data?.relationshipType || 'Unknown'}. Press Enter to navigate.`
+    : (label
+        ? `Connection labeled ${label} from node ${source} to node ${target}`
+        : `Connection from node ${source} to node ${target}`);
 
   // Intermediate waypoints (exclude start and end) used for control handles
   const intermediateWaypoints = pathPoints.slice(1, -1);
+
+  // Format cross-layer tooltip label
+  const crossLayerLabel = isCrossLayer
+    ? (data?.relationshipType && data?.targetElementName
+        ? `${data.relationshipType}: ${data.targetElementName}`
+        : (data?.label || data?.relationshipType))
+    : undefined;
+
+  const truncatedCrossLayerLabel = crossLayerLabel && crossLayerLabel.length > 30
+    ? `${crossLayerLabel.slice(0, 27)}...`
+    : crossLayerLabel;
 
   return (
     <>
@@ -141,18 +223,43 @@ export const ElbowEdge = memo(({
         path={path}
         markerEnd={markerEnd}
         style={{
-          stroke: '#6b7280',
-          strokeWidth: 2,
+          stroke: strokeColor,
+          strokeWidth,
+          strokeDasharray,
+          opacity: isCrossLayer ? 0.8 : undefined,
+          cursor: isCrossLayer ? 'pointer' : undefined,
+          transition: isFocused ? 'none' : (isCrossLayer ? 'stroke-width 200ms ease-out' : undefined),
           ...style,
         }}
         className="react-flow__edge-path"
         aria-label={ariaLabel}
-        role="img"
+        role={isCrossLayer ? 'button' : 'img'}
+        onClick={isCrossLayer ? handleClick : undefined}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       />
+
+      {/* Focus ring for keyboard accessibility (cross-layer only) */}
+      {isFocused && isCrossLayer && (
+        <BaseEdge
+          id={`${id}-focus-ring`}
+          path={path}
+          style={{
+            stroke: '#3b82f6',
+            strokeWidth: strokeWidth + 2,
+            strokeDasharray: '5,5',
+            opacity: 0.5,
+            pointerEvents: 'none',
+          }}
+        />
+      )}
+
       {selected && intermediateWaypoints.length > 0 && (
         <EdgeControllers edgeId={id} waypoints={intermediateWaypoints} />
       )}
-      {label && (
+
+      {/* Cross-layer edge label */}
+      {isCrossLayer && truncatedCrossLayerLabel && (
         <EdgeLabelRenderer>
           <div
             style={{
@@ -163,8 +270,39 @@ export const ElbowEdge = memo(({
               borderRadius: 4,
               fontSize: 10,
               fontWeight: 500,
-              color: '#555',
-              border: '1px solid #e5e7eb',
+              color: strokeColor,
+              border: `1px solid ${strokeColor}`,
+              pointerEvents: 'all',
+              zIndex: 10,
+              whiteSpace: 'nowrap',
+            }}
+            className="nodrag nopan"
+            title={crossLayerLabel}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            tabIndex={-1}
+          >
+            {truncatedCrossLayerLabel}
+          </div>
+        </EdgeLabelRenderer>
+      )}
+
+      {/* Standard edge label (non-cross-layer) */}
+      {!isCrossLayer && label && (
+        <EdgeLabelRenderer>
+          <div
+            style={{
+              position: 'absolute',
+              transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
+              background: '#ffffff',
+              padding: '2px 6px',
+              borderRadius: 4,
+              fontSize: 10,
+              fontWeight: 500,
+              color: strokeColor,
+              border: `1px solid ${strokeColor}`,
               pointerEvents: 'all',
               zIndex: 10,
               ...labelStyle,
@@ -174,6 +312,62 @@ export const ElbowEdge = memo(({
             {label}
           </div>
         </EdgeLabelRenderer>
+      )}
+
+      {/* Hover tooltip (cross-layer only) */}
+      {isHovered && isCrossLayer && (
+        <EdgeLabelRenderer>
+          <div
+            style={{
+              position: 'absolute',
+              transform: `translate(-50%, calc(-100% - 10px)) translate(${labelX}px,${labelY}px)`,
+              background: '#ffffff',
+              border: '1px solid #d1d5db',
+              borderRadius: 6,
+              padding: '8px 10px',
+              fontSize: 12,
+              zIndex: 20,
+              pointerEvents: 'none',
+              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+              maxWidth: 280,
+            }}
+            className="nodrag nopan"
+          >
+            <div className="font-semibold text-gray-900 mb-2">
+              {data?.relationshipType || 'Relationship'}
+            </div>
+            <div className="text-gray-700 space-y-1 text-xs">
+              <div><strong>From:</strong> {data?.sourceElementName || 'Unknown'}</div>
+              <div><strong>To:</strong> {data?.targetElementName || 'Unknown'}</div>
+              <div><strong>Target Layer:</strong> {targetLayerDisplayName}</div>
+              {data?.label && <div><strong>Details:</strong> {data.label}</div>}
+            </div>
+          </div>
+        </EdgeLabelRenderer>
+      )}
+
+      {/* Invisible wide hit-target for keyboard focus and click (cross-layer only) */}
+      {isCrossLayer && (
+        <path
+          d={path}
+          stroke="transparent"
+          strokeWidth={8}
+          fill="none"
+          style={{
+            cursor: 'pointer',
+            pointerEvents: 'stroke',
+          }}
+          onClick={handleClick}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          onKeyDown={handleKeyDown}
+          tabIndex={0}
+          role="button"
+          aria-label={ariaLabel}
+          data-testid={`cross-layer-edge-${id}`}
+        />
       )}
     </>
   );

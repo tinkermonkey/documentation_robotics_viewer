@@ -3,6 +3,8 @@
  * Exports all custom node types and the nodeTypes object for React Flow
  */
 
+import type { NodeTypes } from '@xyflow/react';
+
 import {
   BusinessProcessNode,
   BUSINESS_PROCESS_NODE_WIDTH,
@@ -80,6 +82,7 @@ export {
 
 // Node types object for React Flow
 // Maps node type strings to their component implementations
+// Cast as NodeTypes to satisfy React Flow's strict type requirements (components accept subset of Node props)
 export const nodeTypes = {
   businessProcess: BusinessProcessNode,
   businessFunction: BusinessFunctionNode,
@@ -102,4 +105,4 @@ export const nodeTypes = {
   c4Container: ContainerNode,
   c4Component: ComponentNode,
   c4ExternalActor: ExternalActorNode,
-};
+} as NodeTypes;

@@ -8,7 +8,6 @@
 
 import { memo } from 'react';
 import SpecViewer from '../../apps/embedded/components/SpecViewer';
-import SpecGraphView from '../../apps/embedded/components/SpecGraphView';
 import AnnotationPanel from '../../apps/embedded/components/AnnotationPanel';
 import SchemaInfoPanel from '../../apps/embedded/components/SchemaInfoPanel';
 import SharedLayout from '../../apps/embedded/components/SharedLayout';
@@ -20,8 +19,8 @@ import type { SpecDataResponse } from '../../apps/embedded/services/embeddedData
 export interface SpecRouteCompositionProps {
   /** The spec data to display */
   specData: SpecDataResponse;
-  /** Active view mode: 'graph' or 'json' */
-  activeView: 'graph' | 'json';
+  /** Active view mode (graph view is removed; both modes render SpecViewer) */
+  activeView?: 'graph' | 'json';
   /** Currently selected schema ID (null for none) */
   selectedSchemaId: string | null;
   /** Whether to show right sidebar (default: true) */
@@ -42,7 +41,6 @@ export interface SpecRouteCompositionProps {
  */
 export const SpecRouteComposition = memo<SpecRouteCompositionProps>(({
   specData,
-  activeView,
   selectedSchemaId,
   showRightSidebar = true
 }) => {
@@ -57,11 +55,7 @@ export const SpecRouteComposition = memo<SpecRouteCompositionProps>(({
         </>
       }
     >
-      {activeView === 'graph' ? (
-        <SpecGraphView specData={specData} selectedSchemaId={selectedSchemaId} />
-      ) : (
-        <SpecViewer specData={specData} selectedSchemaId={selectedSchemaId} />
-      )}
+      <SpecViewer specData={specData} selectedSchemaId={selectedSchemaId} />
     </SharedLayout>
   );
 });

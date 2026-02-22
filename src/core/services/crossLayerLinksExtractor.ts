@@ -109,7 +109,7 @@ export function referenceToEdge(
     id: `edge-ref-${reference.source.elementId}-${reference.target.elementId}-${index}`,
     source: sourceNodeId,
     target: targetNodeId,
-    type: 'crossLayer',
+    type: 'elbow',
     label: reference.type,
     labelStyle: { fill: '#555', fontWeight: 500, fontSize: 12 },
     labelBgStyle: { fill: '#fff', fillOpacity: 0.8, rx: 4, ry: 4 },

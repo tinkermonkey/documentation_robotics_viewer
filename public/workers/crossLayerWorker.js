@@ -154,7 +154,7 @@ self.onmessage = function(e) {
           id: `cross-layer-${sourceId}-${targetId}`,
           source: sourceId,
           target: targetId,
-          type: 'crossLayer',
+          type: 'elbow',
           data: {
             targetLayer,
             sourceLayer,

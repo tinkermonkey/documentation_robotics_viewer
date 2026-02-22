@@ -1,317 +1,17 @@
-import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { ReactFlowProvider } from '@xyflow/react';
-import { useSearch } from '@tanstack/react-router';
-import { Alert } from 'flowbite-react';
-import MotivationGraphView, { MotivationGraphViewRef } from '../components/MotivationGraphView';
 import { LayerRightSidebar } from '../components/shared/LayerRightSidebar';
 import { CrossLayerPanel } from '../components/CrossLayerPanel';
 import AnnotationPanel from '../components/AnnotationPanel';
-import { MotivationControlPanel } from '../components/MotivationControlPanel';
-import { MotivationInspectorPanel } from '../components/MotivationInspectorPanel';
 import SharedLayout from '../components/SharedLayout';
 import { useModelStore } from '../../../core/stores/modelStore';
 import { useAnnotationStore } from '../stores/annotationStore';
-import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
 import { LoadingState, ErrorState } from '../components/shared';
-import { ExportButtonGroup } from '../components/shared/ExportButtonGroup';
-import { MotivationElementType, MotivationRelationshipType, MotivationGraph } from '../types/motivationGraph';
-import { LayoutAlgorithm } from '../components/MotivationControlPanel';
-import { buildMotivationFilterSections } from '../utils/graphFilterUtils';
-import { MotivationGraphBuilder } from '../services/motivationGraphBuilder';
-import {
-  exportAsPNG,
-  exportAsSVG,
-  exportTraceabilityReport,
-  exportGraphDataAsJSON,
-} from '../services/motivationExportService';
+import GraphViewer from '../../../core/components/GraphViewer';
 
 function MotivationRouteContent() {
   const { model } = useModelStore();
-  const search = useSearch({ from: '/motivation' });
-  const {
-    motivationPreferences,
-    setVisibleElementTypes,
-    setVisibleRelationshipTypes,
-    setFocusContextEnabled,
-  } = useViewPreferenceStore();
-
-  // Panel state (extracted from MotivationGraphView)
-  const [selectedElementTypes, setSelectedElementTypes] = useState<Set<MotivationElementType>>(
-    motivationPreferences.visibleElementTypes
-  );
-  const [selectedRelationshipTypes, setSelectedRelationshipTypes] = useState<Set<MotivationRelationshipType>>(
-    motivationPreferences.visibleRelationshipTypes
-  );
-  const [selectedLayout, setSelectedLayout] = useState<LayoutAlgorithm>(
-    motivationPreferences.selectedLayout
-  );
-  const [exportError, setExportError] = useState<string | null>(null);
-
-  // Store reference to the full graph for inspector and export
-  const fullGraphRef = useRef<MotivationGraph | null>(null);
-
-  // Track graph version to trigger useMemo recalculation
-  const [graphVersion, setGraphVersion] = useState(0);
-
-  // Ref to MotivationGraphView for calling fitView
-  const graphViewRef = useRef<MotivationGraphViewRef>(null);
-
-  // Create graph builder service
-  const motivationGraphBuilder = useMemo(() => new MotivationGraphBuilder(), []);
-
-  // Build the full motivation graph
-  useEffect(() => {
-    if (model) {
-      const graph = motivationGraphBuilder.build(model);
-      fullGraphRef.current = graph;
-      setGraphVersion((v) => v + 1); // Trigger useMemo recalculation
-    }
-  }, [model, motivationGraphBuilder]);
-
-  // Handle selectedElement search parameter for cross-layer navigation
-  useEffect(() => {
-    if (search.selectedElement && graphViewRef.current) {
-      // Use a small delay to ensure the graph is fully rendered
-      const timer = setTimeout(() => {
-        graphViewRef.current?.centerAndSelectElement(search.selectedElement!);
-      }, 100);
-
-      return () => clearTimeout(timer);
-    }
-  }, [search.selectedElement]);
-
-  // Create export service wrapper for ExportButtonGroup
-  const motivationExportService = useMemo(
-    () => ({
-      exportAsPNG: (container: HTMLElement, filename: string) =>
-        exportAsPNG(container, filename),
-      exportAsSVG: (container: HTMLElement, filename: string) =>
-        exportAsSVG(container, filename),
-      exportAsJSON: (_data: unknown, filename: string) => {
-        if (!fullGraphRef.current) {
-          throw new Error('No graph data available');
-        }
-        // Validate that nodes and edges are valid Maps before processing
-        if (!fullGraphRef.current.nodes || !fullGraphRef.current.edges) {
-          throw new Error('Graph data is incomplete - missing nodes or edges');
-        }
-        const nodes = Array.from(fullGraphRef.current.nodes.values()).map(
-          (n) => ({
-            id: n.element.id,
-            type: n.element.type,
-            data: n.element,
-          })
-        );
-        const edges = Array.from(fullGraphRef.current.edges.values()).map(
-          (e) => ({
-            id: e.id,
-            source: e.sourceId,
-            target: e.targetId,
-            type: e.type,
-            label: (e.relationship.properties?.description as string) || '',
-          })
-        );
-        exportGraphDataAsJSON(nodes as any, edges as any, fullGraphRef.current, filename);
-      },
-    }),
-    []
-  );
-
-  // Callback handlers
-  const handleElementTypeChange = useCallback(
-    (elementType: MotivationElementType, selected: boolean) => {
-      const newTypes = new Set(selectedElementTypes);
-      if (selected) {
-        newTypes.add(elementType);
-      } else {
-        newTypes.delete(elementType);
-      }
-      setSelectedElementTypes(newTypes);
-      setVisibleElementTypes(newTypes);
-    },
-    [selectedElementTypes, setVisibleElementTypes]
-  );
-
-  const handleRelationshipTypeChange = useCallback(
-    (relationshipType: MotivationRelationshipType, selected: boolean) => {
-      const newTypes = new Set(selectedRelationshipTypes);
-      if (selected) {
-        newTypes.add(relationshipType);
-      } else {
-        newTypes.delete(relationshipType);
-      }
-      setSelectedRelationshipTypes(newTypes);
-      setVisibleRelationshipTypes(newTypes);
-    },
-    [selectedRelationshipTypes, setVisibleRelationshipTypes]
-  );
-
-  const handleClearAllFilters = useCallback(() => {
-    const allElementTypes = new Set(Object.values(MotivationElementType));
-    const allRelationshipTypes = new Set(Object.values(MotivationRelationshipType));
-    setSelectedElementTypes(allElementTypes);
-    setSelectedRelationshipTypes(allRelationshipTypes);
-    setVisibleElementTypes(allElementTypes);
-    setVisibleRelationshipTypes(allRelationshipTypes);
-  }, [setVisibleElementTypes, setVisibleRelationshipTypes]);
-
-  // Build data-driven filter sections from live graph data (after callbacks are declared)
-  const filterSections = useMemo(() => {
-    if (!fullGraphRef.current?.nodes || !fullGraphRef.current?.edges) return [];
-    return buildMotivationFilterSections(
-      fullGraphRef.current,
-      selectedElementTypes,
-      selectedRelationshipTypes,
-      handleElementTypeChange,
-      handleRelationshipTypeChange,
-    );
-  }, [graphVersion, selectedElementTypes, selectedRelationshipTypes, handleElementTypeChange, handleRelationshipTypeChange]);
-
-  const handleFitToView = useCallback(() => {
-    graphViewRef.current?.fitView();
-  }, []);
-
-  const handleClearHighlighting = useCallback(() => {
-    useViewPreferenceStore.getState().setPathTracing({
-      mode: 'none',
-      selectedNodeIds: [],
-      highlightedNodeIds: new Set(),
-      highlightedEdgeIds: new Set(),
-    });
-  }, []);
-
-  const handleTraceUpstream = useCallback(
-    (nodeId: string) => {
-      if (!fullGraphRef.current) return;
-      const result = motivationGraphBuilder.traceUpstreamInfluences(
-        nodeId,
-        fullGraphRef.current,
-        10
-      );
-      useViewPreferenceStore.getState().setPathTracing({
-        mode: 'upstream',
-        selectedNodeIds: [nodeId],
-        highlightedNodeIds: result.nodeIds,
-        highlightedEdgeIds: result.edgeIds,
-      });
-    },
-    [motivationGraphBuilder]
-  );
-
-  const handleTraceDownstream = useCallback(
-    (nodeId: string) => {
-      if (!fullGraphRef.current) return;
-      const result = motivationGraphBuilder.traceDownstreamImpacts(
-        nodeId,
-        fullGraphRef.current,
-        10
-      );
-      useViewPreferenceStore.getState().setPathTracing({
-        mode: 'downstream',
-        selectedNodeIds: [nodeId],
-        highlightedNodeIds: result.nodeIds,
-        highlightedEdgeIds: result.edgeIds,
-      });
-    },
-    [motivationGraphBuilder]
-  );
-
-  const handleShowNetwork = useCallback(
-    (nodeId: string) => {
-      useViewPreferenceStore.getState().setCenterNodeId(nodeId);
-      setSelectedLayout('radial');
-    },
-    []
-  );
-
-  const handleFocusOnElement = useCallback(
-    (nodeId: string) => {
-      if (!fullGraphRef.current) return;
-      const directRelationships = motivationGraphBuilder.getDirectRelationships(
-        nodeId,
-        fullGraphRef.current
-      );
-
-      const highlightedEdgeIds = new Set(directRelationships.map((r) => r.id));
-      const highlightedNodeIds = new Set<string>();
-
-      highlightedNodeIds.add(nodeId);
-      directRelationships.forEach((rel) => {
-        highlightedNodeIds.add(rel.sourceId);
-        highlightedNodeIds.add(rel.targetId);
-      });
-
-      useViewPreferenceStore.getState().setPathTracing({
-        mode: 'direct',
-        selectedNodeIds: [nodeId],
-        highlightedNodeIds,
-        highlightedEdgeIds,
-      });
-      setFocusContextEnabled(true);
-    },
-    [motivationGraphBuilder, setFocusContextEnabled]
-  );
-
-  const handleCloseInspector = useCallback(() => {
-    useViewPreferenceStore.getState().setInspectorPanelVisible(false);
-    useViewPreferenceStore.getState().setSelectedNodeId(undefined);
-  }, []);
-
-  const handleExportPNG = useCallback(async () => {
-    try {
-      const reactFlowContainer = document.querySelector('.react-flow') as HTMLElement;
-      if (!reactFlowContainer) {
-        throw new Error('Graph container not found');
-      }
-      await motivationExportService.exportAsPNG(reactFlowContainer, 'motivation-graph.png');
-    } catch (error) {
-      console.error('[MotivationRoute] PNG export failed:', error);
-      setExportError('Failed to export PNG: ' + (error instanceof Error ? error.message : String(error)));
-      setTimeout(() => setExportError(null), 5000);
-    }
-  }, [motivationExportService]);
-
-  const handleExportSVG = useCallback(async () => {
-    try {
-      const reactFlowContainer = document.querySelector('.react-flow') as HTMLElement;
-      if (!reactFlowContainer) {
-        throw new Error('Graph container not found');
-      }
-      await motivationExportService.exportAsSVG(reactFlowContainer, 'motivation-graph.svg');
-    } catch (error) {
-      console.error('[MotivationRoute] SVG export failed:', error);
-      setExportError('Failed to export SVG: ' + (error instanceof Error ? error.message : String(error)));
-      setTimeout(() => setExportError(null), 5000);
-    }
-  }, [motivationExportService]);
-
-  const handleExportGraphData = useCallback(() => {
-    try {
-      if (!motivationExportService.exportAsJSON) {
-        throw new Error('JSON export not available');
-      }
-      motivationExportService.exportAsJSON(null, 'motivation-graph-data.json');
-    } catch (error) {
-      console.error('[MotivationRoute] Graph data export failed:', error);
-      setExportError('Failed to export graph data: ' + (error instanceof Error ? error.message : String(error)));
-      setTimeout(() => setExportError(null), 5000);
-    }
-  }, [motivationExportService]);
-
-  const handleExportTraceabilityReport = useCallback(() => {
-    try {
-      if (!fullGraphRef.current) {
-        throw new Error('No graph data available');
-      }
-      exportTraceabilityReport(fullGraphRef.current, 'traceability-report.json');
-    } catch (error) {
-      console.error('[MotivationRoute] Traceability report export failed:', error);
-      setExportError('Failed to export traceability report: ' + (error instanceof Error ? error.message : String(error)));
-      setTimeout(() => setExportError(null), 5000);
-    }
-  }, []);
 
   if (!model) {
     return null;
@@ -323,76 +23,16 @@ function MotivationRouteContent() {
       showRightSidebar={true}
       rightSidebarContent={
         <LayerRightSidebar
-          filterSections={filterSections}
-          onClearFilters={handleClearAllFilters}
-          controlContent={
-            <MotivationControlPanel
-              selectedLayout={selectedLayout}
-              onLayoutChange={setSelectedLayout}
-              onFitToView={handleFitToView}
-              focusModeEnabled={motivationPreferences.focusContextEnabled}
-              onFocusModeToggle={setFocusContextEnabled}
-              onClearHighlighting={handleClearHighlighting}
-              isHighlightingActive={motivationPreferences.pathTracing.mode !== 'none'}
-              isLayouting={false}
-              onExportPNG={handleExportPNG}
-              onExportSVG={handleExportSVG}
-              onExportGraphData={handleExportGraphData}
-              onExportTraceabilityReport={handleExportTraceabilityReport}
-            />
-          }
-          inspectorContent={
-            motivationPreferences.inspectorPanelVisible &&
-            motivationPreferences.selectedNodeId &&
-            fullGraphRef.current ? (
-              <MotivationInspectorPanel
-                selectedNodeId={motivationPreferences.selectedNodeId}
-                graph={fullGraphRef.current}
-                onTraceUpstream={handleTraceUpstream}
-                onTraceDownstream={handleTraceDownstream}
-                onShowNetwork={handleShowNetwork}
-                onFocusOnElement={handleFocusOnElement}
-                onClose={handleCloseInspector}
-              />
-            ) : undefined
-          }
+          filterSections={[]}
+          onClearFilters={() => {}}
+          controlContent={null}
           annotationContent={<AnnotationPanel />}
           crossLayerContent={<CrossLayerPanel />}
           testId="motivation-right-sidebar"
         />
       }
     >
-      <div className="relative w-full h-full">
-        {exportError && (
-          <div className="fixed top-4 right-4 z-50 max-w-md">
-            <Alert color="failure" onDismiss={() => setExportError(null)}>
-              <span className="font-medium">Export failed:</span> {exportError}
-            </Alert>
-          </div>
-        )}
-        <div className="absolute top-4 right-4 z-10">
-          <ExportButtonGroup
-            service={motivationExportService}
-            containerSelector=".react-flow"
-            filenamePrefix="motivation-graph"
-            data={{}}
-            formats={['png', 'svg', 'json']}
-            onExportError={(format, error) => {
-              console.error(`[MotivationRoute] ${format} export error:`, error);
-              setExportError(`Failed to export ${format.toUpperCase()}: ${error.message}`);
-              // Auto-clear after 5 seconds
-              setTimeout(() => setExportError(null), 5000);
-            }}
-          />
-        </div>
-        <MotivationGraphView
-          ref={graphViewRef}
-          model={model}
-          selectedElementTypes={selectedElementTypes}
-          selectedRelationshipTypes={selectedRelationshipTypes}
-          layout={selectedLayout}
-        />
-      </div>
+      <GraphViewer model={model} />
     </SharedLayout>
   );
 }
@@ -403,9 +43,7 @@ export default function MotivationRoute() {
 
   const { data: model, loading, error, reload } = useDataLoader({
     loadFn: async () => {
-      console.log('[MotivationRoute] Loading model data...');
       const modelData = await embeddedDataLoader.loadModel();
-      console.log('[MotivationRoute] Model loaded successfully');
       return modelData;
     },
     websocketEvents: ['model.updated', 'annotation.added'],

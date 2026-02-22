@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import SpecViewer from '../components/SpecViewer';
-import SpecGraphView from '../components/SpecGraphView';
 import AnnotationPanel from '../components/AnnotationPanel';
 import SchemaInfoPanel from '../components/SchemaInfoPanel';
 import SharedLayout from '../components/SharedLayout';
@@ -14,7 +13,6 @@ import { useDataLoader } from '../hooks/useDataLoader';
 export default function SpecRoute() {
   const { view } = useParams({ strict: false });
   const navigate = useNavigate();
-  const selectedSchemaId: string | null = null;
   const annotationStore = useAnnotationStore();
   const { specView, setSpecView } = useViewPreferenceStore();
 
@@ -62,7 +60,6 @@ export default function SpecRoute() {
     );
   }
 
-  // Standard graph/json views use SharedLayout
   return (
     <SharedLayout
       showLeftSidebar={false}
@@ -74,11 +71,7 @@ export default function SpecRoute() {
         </>
       }
     >
-      {activeView === 'graph' ? (
-        <SpecGraphView specData={specData} selectedSchemaId={selectedSchemaId} />
-      ) : (
-        <SpecViewer specData={specData} selectedSchemaId={selectedSchemaId} />
-      )}
+      <SpecViewer specData={specData} selectedSchemaId={null} />
     </SharedLayout>
   );
 }

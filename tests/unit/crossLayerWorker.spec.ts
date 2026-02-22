@@ -137,7 +137,7 @@ test.describe('Cross-Layer Reference Processing', () => {
     expect(edge.id).toBe('cross-layer-bus-1-app-1');
     expect(edge.source).toBe('bus-1');
     expect(edge.target).toBe('app-1');
-    expect(edge.type).toBe('crossLayer');
+    expect(edge.type).toBe('elbow');
     expect(edge.data.sourceLayer).toBe('Business');
     expect(edge.data.targetLayer).toBe('Application');
     expect(edge.data.relationshipType).toBe(ReferenceType.Custom);

@@ -1,164 +1,41 @@
-import React from 'react';
-import { Handle, Position } from '@xyflow/react';
-import { RelationshipBadge } from './RelationshipBadge';
+import { createLayerNode, NodeBadge } from '../BaseLayerNode';
 import { AssessmentNodeData } from '../../types/reactflow';
 
 export const ASSESSMENT_NODE_WIDTH = 180;
 export const ASSESSMENT_NODE_HEIGHT = 100;
 
-/**
- * AssessmentNode - Represents assessments in the motivation layer
- *
- * Visual Design:
- * - Clipboard/checklist icon to represent evaluation
- * - Rating indicator (1-5 stars or score)
- * - Changeset operation styling support
- * - Accessibility: Full ARIA labeling for screen readers
- */
-export const AssessmentNode = React.memo(({ data, selected, id: _id }: { data: AssessmentNodeData; selected?: boolean; id?: string }) => {
-  const { label, fill = '#f3e8ff', stroke = '#a855f7', rating = 0, changesetOperation } = data;
+function getRatingColors(rating: number): { bg: string; text: string } {
+  if (rating >= 4) return { bg: '#10b981', text: '#ffffff' };
+  if (rating >= 3) return { bg: '#f59e0b', text: '#ffffff' };
+  if (rating > 0)  return { bg: '#ef4444', text: '#ffffff' };
+  return { bg: '#6b7280', text: '#ffffff' };
+}
 
-  // Changeset styling
-  let borderColor = stroke;
-  let opacity = data.opacity !== undefined ? data.opacity : 1;
-  if (changesetOperation === 'add') {
-    borderColor = '#10b981'; // green
-  } else if (changesetOperation === 'update') {
-    borderColor = '#f59e0b'; // amber
-  } else if (changesetOperation === 'delete') {
-    borderColor = '#ef4444'; // red
-    opacity = 0.5;
-  }
-
-  const isDimmed = opacity < 1;
-
-  // Rating color based on score
-  let ratingColor = '#6b7280'; // gray
-  if (rating >= 4) {
-    ratingColor = '#10b981'; // green
-  } else if (rating >= 3) {
-    ratingColor = '#f59e0b'; // amber
-  } else if (rating > 0) {
-    ratingColor = '#ef4444'; // red
-  }
-
-  const ratingLabel = rating > 0 ? `${rating}/5` : 'N/A';
-
-  return (
-    <div
-      role="article"
-      aria-label={`Assessment: ${label}, Rating: ${ratingLabel}${changesetOperation ? `, ${changesetOperation} operation` : ''}`}
-      style={{
-        width: 180,
-        height: 100,
-        border: `2px solid ${borderColor}`,
-        borderRadius: 8,
-        backgroundColor: fill,
-        opacity,
-        boxShadow: selected ? '0 0 0 2px #3b82f6' : '0 2px 4px rgba(0,0,0,0.1)',
-        display: 'flex',
-        flexDirection: 'column',
-        padding: 12,
-        fontFamily: 'system-ui, -apple-system, sans-serif',
-        position: 'relative',
-        transition: 'box-shadow 0.2s',
-      }}
-    >
-      {/* Rating Badge */}
-      <div
-        aria-label={`Rating: ${ratingLabel}`}
-        style={{
-          position: 'absolute',
-          top: 8,
-          right: 8,
-          backgroundColor: ratingColor,
-          color: 'white',
-          fontSize: 10,
-          fontWeight: 600,
-          padding: '2px 8px',
-          borderRadius: 4,
-        }}
-      >
-        {ratingLabel}
-      </div>
-
-      {/* Clipboard Icon Indicator */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'absolute',
-          top: 8,
-          left: 8,
-          fontSize: 16,
-          fontWeight: 700,
-          color: borderColor,
-        }}
-      >
-        ✓
-      </div>
-
-      {/* Label */}
-      <div
-        style={{
-          flex: 1,
-          fontSize: 13,
-          fontWeight: 500,
-          color: '#1f2937',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          display: '-webkit-box',
-          WebkitLineClamp: 3,
-          WebkitBoxOrient: 'vertical',
-          marginTop: 20,
-        }}
-      >
-        {label}
-      </div>
-
-      {/* Type Indicator */}
-      <div
-        style={{
-          fontSize: 10,
-          color: '#6b7280',
-          fontWeight: 500,
-          marginTop: 4,
-        }}
-      >
-        ASSESSMENT
-      </div>
-
-      {/* Connection Handles */}
-      <Handle
-        type="target"
-        position={Position.Top}
-        id="top"
-        style={{ background: borderColor }}
-      />
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        id="bottom"
-        style={{ background: borderColor }}
-      />
-      <Handle
-        type="target"
-        position={Position.Left}
-        id="left"
-        style={{ background: borderColor }}
-      />
-      <Handle
-        type="source"
-        position={Position.Right}
-        id="right"
-        style={{ background: borderColor }}
-      />
-
-      {/* Relationship badge (when dimmed) */}
-      {data.relationshipBadge && (
-        <RelationshipBadge badge={data.relationshipBadge} isDimmed={isDimmed} />
-      )}
-    </div>
-  );
+export const AssessmentNode = createLayerNode<AssessmentNodeData>({
+  width: ASSESSMENT_NODE_WIDTH,
+  height: ASSESSMENT_NODE_HEIGHT,
+  defaultFill: '#f3e8ff',
+  defaultStroke: '#a855f7',
+  typeLabel: 'Assessment',
+  icon: '✓',
+  layout: 'left',
+  getAriaLabel: (data) => {
+    const rating = data.rating ?? 0;
+    const ratingLabel = rating > 0 ? `${rating}/5` : 'N/A';
+    return `Assessment: ${data.label}, Rating: ${ratingLabel}${data.changesetOperation ? `, ${data.changesetOperation} operation` : ''}`;
+  },
+  getBadges: (data): Array<NodeBadge | null> => {
+    const rating = data.rating ?? 0;
+    const ratingLabel = rating > 0 ? `${rating}/5` : 'N/A';
+    return [
+      {
+        label: ratingLabel,
+        position: 'top-right',
+        colors: getRatingColors(rating),
+        ariaLabel: `Rating: ${ratingLabel}`,
+      },
+    ];
+  },
 });
 
 AssessmentNode.displayName = 'AssessmentNode';

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ReactFlow, ReactFlowProvider, MarkerType, useNodesState, useEdgesState, Handle, Position } from '@xyflow/react';
-import type { Edge, Node } from '@xyflow/react';
+import type { Edge, EdgeTypes, Node, NodeTypes } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { memo } from 'react';
 import { ElbowEdge } from '@/core/edges/ElbowEdge';
@@ -41,8 +41,8 @@ const DemoNode = memo(({ data }: { data: { label: string } }) => (
 ));
 DemoNode.displayName = 'DemoNode';
 
-const nodeTypes = { demo: DemoNode };
-const edgeTypes = { elbow: ElbowEdge };
+const nodeTypes = { demo: DemoNode } as NodeTypes;
+const edgeTypes = { elbow: ElbowEdge } as EdgeTypes;
 
 // Node A (source) lower-left, Node B (target) upper-right.
 // The A* router exits Node A's top handle going upward, arcs over,

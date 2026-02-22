@@ -8,10 +8,10 @@
 
 import { memo, useState } from 'react';
 import { EdgeProps, getBezierPath, EdgeLabelRenderer, Edge } from '@xyflow/react';
-import { CrossLayerEdgeData } from '../types/reactflow';
+import { ElbowEdgeData } from '../types/reactflow';
 import { getLayerColor } from '../utils/layerColors';
 
-interface BundledEdgeData extends CrossLayerEdgeData {
+interface BundledEdgeData extends ElbowEdgeData {
   bundledEdgeIds: string[];
   bundleCount: number;
   originalEdges?: Edge[];
