@@ -7,7 +7,7 @@ const meta = {
   title: 'C Graphs / Nodes / Motivation / StakeholderNode',
   decorators: [withReactFlowDecorator({ width: STAKEHOLDER_NODE_WIDTH, height: STAKEHOLDER_NODE_HEIGHT })],
   parameters: {
-    layout: 'centered',
+    layout: 'fullscreen',
   },
 } satisfies Meta;
 

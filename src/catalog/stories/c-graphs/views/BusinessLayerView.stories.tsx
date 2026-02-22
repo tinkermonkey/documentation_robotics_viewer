@@ -6,6 +6,7 @@ import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 const meta = {
   title: 'C Graphs / Views / BusinessLayerView',
+  parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
 export default meta;
@@ -17,7 +18,7 @@ export const Default: Story = {
     return (
       <ReactFlowProvider>
         <StoryLoadedWrapper testId="business-layer-default">
-          <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <div style={{ width: '100%', height: '100vh' }}>
             <BusinessLayerView model={model} />
           </div>
         </StoryLoadedWrapper>
@@ -32,7 +33,7 @@ export const MinimalGraph: Story = {
     return (
       <ReactFlowProvider>
         <StoryLoadedWrapper testId="business-layer-minimal">
-          <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <div style={{ width: '100%', height: '100vh' }}>
             <BusinessLayerView model={model} />
           </div>
         </StoryLoadedWrapper>
@@ -47,7 +48,7 @@ export const LargeGraph: Story = {
     return (
       <ReactFlowProvider>
         <StoryLoadedWrapper testId="business-layer-large">
-          <div style={{ width: '100%', height: 800, border: '1px solid #e5e7eb' }}>
+          <div style={{ width: '100%', height: '100vh' }}>
             <BusinessLayerView model={model} />
           </div>
         </StoryLoadedWrapper>
@@ -62,7 +63,7 @@ export const WithControls: Story = {
     return (
       <ReactFlowProvider>
         <StoryLoadedWrapper testId="business-layer-controls">
-          <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <div style={{ width: '100%', height: '100vh' }}>
             <BusinessLayerView model={model} />
           </div>
         </StoryLoadedWrapper>

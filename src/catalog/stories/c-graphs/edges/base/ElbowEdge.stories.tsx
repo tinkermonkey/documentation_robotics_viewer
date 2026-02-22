@@ -1,154 +1,72 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Position, MarkerType } from '@xyflow/react';
+import { ReactFlow, ReactFlowProvider, MarkerType, useNodesState, useEdgesState } from '@xyflow/react';
+import type { Edge, Node } from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
+import { GoalNode } from '@/core/nodes/motivation/GoalNode';
 import { ElbowEdge } from '@/core/edges/ElbowEdge';
-import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
+import { createGoalNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Edges / Base / ElbowEdge',
-  decorators: [withReactFlowDecorator({ width: 400, height: 250, showBackground: true, renderAsEdge: true })],
+  parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  render: () => (
-    <ElbowEdge
-      id="elbow-1"
-      source="node-1"
-      target="node-2"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={200}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+const nodeTypes = { goal: GoalNode };
+const edgeTypes = { elbow: ElbowEdge };
 
-export const Animated: Story = {
-  render: () => (
-    <ElbowEdge
-      id="elbow-2"
-      source="node-3"
-      target="node-4"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={200}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      animated={true}
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+// Horizontal layout: source left, target right
+const HORIZONTAL_NODES: Node[] = [
+  { id: 'source', type: 'goal', position: { x: 50, y: 100 }, data: createGoalNodeData({ label: 'Node A', elementId: 'goal-source' }) as Record<string, unknown> },
+  { id: 'target', type: 'goal', position: { x: 350, y: 100 }, data: createGoalNodeData({ label: 'Node B', elementId: 'goal-target' }) as Record<string, unknown> },
+];
 
-export const WithLabel: Story = {
-  render: () => (
-    <ElbowEdge
-      id="elbow-3"
-      source="node-5"
-      target="node-6"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={200}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      label="connection"
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+// Vertical layout: source above, target below
+const VERTICAL_NODES: Node[] = [
+  { id: 'source', type: 'goal', position: { x: 200, y: 50 }, data: createGoalNodeData({ label: 'Node A', elementId: 'goal-vsource' }) as Record<string, unknown> },
+  { id: 'target', type: 'goal', position: { x: 200, y: 280 }, data: createGoalNodeData({ label: 'Node B', elementId: 'goal-vtarget' }) as Record<string, unknown> },
+];
 
-export const VerticalFlow: Story = {
-  render: () => (
-    <ElbowEdge
-      id="elbow-4"
-      source="node-7"
-      target="node-8"
-      sourceX={200}
-      sourceY={50}
-      targetX={200}
-      targetY={200}
-      sourcePosition={Position.Bottom}
-      targetPosition={Position.Top}
-      markerEnd={MarkerType.ArrowClosed}
+function GraphDemoInner({ initialNodes, edge }: { initialNodes: Node[]; edge: Edge }) {
+  const [nodes] = useNodesState(initialNodes);
+  const [edges] = useEdgesState([edge]);
+  return (
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      nodeTypes={nodeTypes}
+      edgeTypes={edgeTypes}
+      fitView
+      fitViewOptions={{ padding: 0.3 }}
+      panOnDrag={false}
+      zoomOnScroll={false}
+      nodesDraggable={false}
+      elementsSelectable={false}
+      nodesFocusable={false}
     />
-  ),
-};
+  );
+}
 
-export const Selected: Story = {
-  render: () => (
-    <ElbowEdge
-      id="elbow-selected"
-      source="node-sel-1"
-      target="node-sel-2"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={200}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      selected={true}
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+function GraphDemo({ edge, vertical = false }: { edge: Edge; vertical?: boolean }) {
+  const nodes = vertical ? VERTICAL_NODES : HORIZONTAL_NODES;
+  return (
+    <ReactFlowProvider>
+      <div style={{ width: '100%', height: '100vh', background: '#f9fafb' }}>
+        <GraphDemoInner initialNodes={nodes} edge={edge} />
+      </div>
+    </ReactFlowProvider>
+  );
+}
 
-export const ChangesetAdd: Story = {
-  render: () => (
-    <ElbowEdge
-      id="elbow-5"
-      source="node-9"
-      target="node-10"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={200}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      data={{ changesetOperation: 'add' }}
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+const BASE_EDGE: Edge = { id: 'e1', source: 'source', target: 'target', type: 'elbow', markerEnd: MarkerType.ArrowClosed };
 
-export const ChangesetUpdate: Story = {
-  render: () => (
-    <ElbowEdge
-      id="elbow-update"
-      source="node-update-1"
-      target="node-update-2"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={200}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      data={{ changesetOperation: 'update' }}
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
-
-export const ChangesetDelete: Story = {
-  render: () => (
-    <ElbowEdge
-      id="elbow-6"
-      source="node-11"
-      target="node-12"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={200}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      data={{ changesetOperation: 'delete' }}
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+export const Default: Story = { render: () => <GraphDemo edge={BASE_EDGE} /> };
+export const Animated: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e2', animated: true }} /> };
+export const WithLabel: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e3', label: 'connection' }} /> };
+export const VerticalFlow: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e4' }} vertical /> };
+export const Selected: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e5', selected: true }} /> };
+export const ChangesetAdd: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e6', data: { changesetOperation: 'add' } }} /> };
+export const ChangesetUpdate: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e7', data: { changesetOperation: 'update' } }} /> };
+export const ChangesetDelete: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e8', data: { changesetOperation: 'delete' } }} /> };

@@ -5,6 +5,7 @@ import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 const meta = {
   title: 'C Graphs / Views / ChangesetGraphView',
+  parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
 export default meta;
@@ -61,7 +62,7 @@ const mockChangeset: ChangesetDetails = {
 export const ActiveChangeset: Story = {
   render: () => (
     <StoryLoadedWrapper testId="changeset-graph-active">
-      <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+      <div style={{ width: '100%', height: '100vh' }}>
         <ChangesetGraphView changeset={mockChangeset} />
       </div>
     </StoryLoadedWrapper>
@@ -79,7 +80,7 @@ export const AddOperationsOnly: Story = {
     };
     return (
       <StoryLoadedWrapper testId="changeset-graph-add">
-        <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+        <div style={{ width: '100%', height: '100vh' }}>
           <ChangesetGraphView changeset={addOnlyChangeset} />
         </div>
       </StoryLoadedWrapper>
@@ -98,7 +99,7 @@ export const UpdateOperationsOnly: Story = {
     };
     return (
       <StoryLoadedWrapper testId="changeset-graph-update">
-        <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+        <div style={{ width: '100%', height: '100vh' }}>
           <ChangesetGraphView changeset={updateOnlyChangeset} />
         </div>
       </StoryLoadedWrapper>
@@ -117,7 +118,7 @@ export const DeleteOperationsOnly: Story = {
     };
     return (
       <StoryLoadedWrapper testId="changeset-graph-delete">
-        <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+        <div style={{ width: '100%', height: '100vh' }}>
           <ChangesetGraphView changeset={deleteOnlyChangeset} />
         </div>
       </StoryLoadedWrapper>
@@ -153,7 +154,7 @@ export const ManyChanges: Story = {
     };
     return (
       <StoryLoadedWrapper testId="changeset-graph-many">
-        <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+        <div style={{ width: '100%', height: '100vh' }}>
           <ChangesetGraphView changeset={manyChangesChangeset} />
         </div>
       </StoryLoadedWrapper>

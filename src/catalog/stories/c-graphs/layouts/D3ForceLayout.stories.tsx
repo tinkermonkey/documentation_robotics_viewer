@@ -9,6 +9,7 @@ import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';
 
 const meta = {
   title: 'C Graphs / Layouts / D3ForceLayout',
+  parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
 export default meta;

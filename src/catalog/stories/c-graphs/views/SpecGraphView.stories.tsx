@@ -4,6 +4,7 @@ import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 const meta = {
   title: 'C Graphs / Views / SpecGraphView',
+  parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
 export default meta;
@@ -38,7 +39,7 @@ const mockSpecData = {
 export const Default: Story = {
   render: () => (
     <StoryLoadedWrapper testId="spec-graph-default">
-      <div className="w-full h-96 bg-white border border-gray-200">
+      <div className="w-full h-screen bg-white">
         <SpecGraphView specData={mockSpecData} selectedSchemaId={null} />
       </div>
     </StoryLoadedWrapper>
@@ -48,7 +49,7 @@ export const Default: Story = {
 export const WithSelection: Story = {
   render: () => (
     <StoryLoadedWrapper testId="spec-graph-selection">
-      <div className="w-full h-96 bg-white border border-gray-200">
+      <div className="w-full h-screen bg-white">
         <SpecGraphView specData={mockSpecData} selectedSchemaId="BusinessProcess" />
       </div>
     </StoryLoadedWrapper>

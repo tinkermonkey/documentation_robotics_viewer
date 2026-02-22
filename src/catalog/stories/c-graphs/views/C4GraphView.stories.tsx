@@ -7,6 +7,7 @@ import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 const meta = {
   title: 'C Graphs / Views / C4GraphView',
+  parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
 export default meta;
@@ -19,7 +20,7 @@ export const Default: Story = {
     return (
       <ReactFlowProvider>
         <StoryLoadedWrapper testId="c4-graph-default">
-          <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <div style={{ width: '100%', height: '100vh' }}>
             <C4GraphView
               model={model}
               selectedContainerTypes={allContainerTypes}
@@ -39,7 +40,7 @@ export const ContainerView: Story = {
     return (
       <ReactFlowProvider>
         <StoryLoadedWrapper testId="c4-graph-container">
-          <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <div style={{ width: '100%', height: '100vh' }}>
             <C4GraphView
               model={model}
               selectedContainerTypes={new Set([ContainerType.Api, ContainerType.WebApp, ContainerType.Database])}
@@ -60,7 +61,7 @@ export const FilteredByTechnology: Story = {
     return (
       <ReactFlowProvider>
         <StoryLoadedWrapper testId="c4-graph-filtered-tech">
-          <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <div style={{ width: '100%', height: '100vh' }}>
             <C4GraphView
               model={model}
               selectedContainerTypes={allContainerTypes}
@@ -80,7 +81,7 @@ export const MultiFilter: Story = {
     return (
       <ReactFlowProvider>
         <StoryLoadedWrapper testId="c4-graph-multi-filter">
-          <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <div style={{ width: '100%', height: '100vh' }}>
             <C4GraphView
               model={model}
               selectedContainerTypes={new Set([ContainerType.WebApp])}

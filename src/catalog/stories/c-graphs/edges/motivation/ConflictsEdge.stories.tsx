@@ -1,137 +1,63 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Position, MarkerType } from '@xyflow/react';
+import { ReactFlow, ReactFlowProvider, MarkerType, useNodesState, useEdgesState } from '@xyflow/react';
+import type { Edge, Node } from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
+import { GoalNode } from '@/core/nodes/motivation/GoalNode';
 import { ConflictsEdge } from '@/core/edges/motivation/ConflictsEdge';
-import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
+import { createGoalNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Edges / Motivation / ConflictsEdge',
-  decorators: [withReactFlowDecorator({ width: 400, height: 200, showBackground: true, renderAsEdge: true })],
+  parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  render: () => (
-    <ConflictsEdge
-      id="conflicts-1"
-      source="goal-1"
-      target="goal-2"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={150}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+const nodeTypes = { goal: GoalNode };
+const edgeTypes = { conflicts: ConflictsEdge };
 
-export const Animated: Story = {
-  render: () => (
-    <ConflictsEdge
-      id="conflicts-2"
-      source="goal-3"
-      target="goal-4"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={150}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      animated={true}
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+const NODES: Node[] = [
+  { id: 'source', type: 'goal', position: { x: 50, y: 100 }, data: createGoalNodeData({ label: 'Goal A', elementId: 'goal-source' }) as Record<string, unknown> },
+  { id: 'target', type: 'goal', position: { x: 350, y: 100 }, data: createGoalNodeData({ label: 'Goal B', elementId: 'goal-target' }) as Record<string, unknown> },
+];
 
-export const Selected: Story = {
-  render: () => (
-    <ConflictsEdge
-      id="conflicts-selected"
-      source="goal-sel-1"
-      target="goal-sel-2"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={150}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      selected={true}
-      markerEnd={MarkerType.ArrowClosed}
+function GraphDemoInner({ edge }: { edge: Edge }) {
+  const [nodes] = useNodesState(NODES);
+  const [edges] = useEdgesState([edge]);
+  return (
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      nodeTypes={nodeTypes}
+      edgeTypes={edgeTypes}
+      fitView
+      fitViewOptions={{ padding: 0.3 }}
+      panOnDrag={false}
+      zoomOnScroll={false}
+      nodesDraggable={false}
+      elementsSelectable={false}
+      nodesFocusable={false}
     />
-  ),
-};
+  );
+}
 
-export const WithLabel: Story = {
-  render: () => (
-    <ConflictsEdge
-      id="conflicts-3"
-      source="goal-5"
-      target="goal-6"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={150}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      label="conflicts"
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+function GraphDemo({ edge }: { edge: Edge }) {
+  return (
+    <ReactFlowProvider>
+      <div style={{ width: '100%', height: '100vh', background: '#f9fafb' }}>
+        <GraphDemoInner edge={edge} />
+      </div>
+    </ReactFlowProvider>
+  );
+}
 
-export const ChangesetAdd: Story = {
-  render: () => (
-    <ConflictsEdge
-      id="conflicts-4"
-      source="goal-7"
-      target="goal-8"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={150}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      data={{ changesetOperation: 'add' }}
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+const BASE_EDGE: Edge = { id: 'e1', source: 'source', target: 'target', type: 'conflicts', markerEnd: MarkerType.ArrowClosed };
 
-export const ChangesetUpdate: Story = {
-  render: () => (
-    <ConflictsEdge
-      id="conflicts-5"
-      source="goal-9"
-      target="goal-10"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={150}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      data={{ changesetOperation: 'update' }}
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
-
-export const ChangesetDelete: Story = {
-  render: () => (
-    <ConflictsEdge
-      id="conflicts-6"
-      source="goal-11"
-      target="goal-12"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={150}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      data={{ changesetOperation: 'delete' }}
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+export const Default: Story = { render: () => <GraphDemo edge={BASE_EDGE} /> };
+export const Animated: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e2', animated: true }} /> };
+export const Selected: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e3', selected: true }} /> };
+export const WithLabel: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e4', label: 'conflicts' }} /> };
+export const ChangesetAdd: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e5', data: { changesetOperation: 'add' } }} /> };
+export const ChangesetUpdate: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e6', data: { changesetOperation: 'update' } }} /> };
+export const ChangesetDelete: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e7', data: { changesetOperation: 'delete' } }} /> };

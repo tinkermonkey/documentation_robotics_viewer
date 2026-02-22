@@ -17,6 +17,7 @@ import {
 
 const meta = {
   title: 'E Compositions / Graph Compositions / ModelRouteComposition',
+  parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
 export default meta;

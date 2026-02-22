@@ -7,7 +7,7 @@ const meta = {
   title: 'C Graphs / Nodes / Base / LayerContainerNode',
   decorators: [withReactFlowDecorator({ width: 400, height: 300 })],
   parameters: {
-    layout: 'centered',
+    layout: 'fullscreen',
   },
 } satisfies Meta;
 

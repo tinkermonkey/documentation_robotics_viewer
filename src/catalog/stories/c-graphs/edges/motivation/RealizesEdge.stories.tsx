@@ -1,137 +1,63 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Position, MarkerType } from '@xyflow/react';
+import { ReactFlow, ReactFlowProvider, MarkerType, useNodesState, useEdgesState } from '@xyflow/react';
+import type { Edge, Node } from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
+import { GoalNode } from '@/core/nodes/motivation/GoalNode';
 import { RealizesEdge } from '@/core/edges/motivation/RealizesEdge';
-import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
+import { createGoalNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Edges / Motivation / RealizesEdge',
-  decorators: [withReactFlowDecorator({ width: 400, height: 200, showBackground: true, renderAsEdge: true })],
+  parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  render: () => (
-    <RealizesEdge
-      id="realizes-1"
-      source="goal-1"
-      target="requirement-1"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={150}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+const nodeTypes = { goal: GoalNode };
+const edgeTypes = { realizes: RealizesEdge };
 
-export const Animated: Story = {
-  render: () => (
-    <RealizesEdge
-      id="realizes-2"
-      source="goal-2"
-      target="requirement-2"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={150}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      animated={true}
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+const NODES: Node[] = [
+  { id: 'source', type: 'goal', position: { x: 50, y: 100 }, data: createGoalNodeData({ label: 'Goal', elementId: 'goal-source' }) as Record<string, unknown> },
+  { id: 'target', type: 'goal', position: { x: 350, y: 100 }, data: createGoalNodeData({ label: 'Requirement', elementId: 'goal-target' }) as Record<string, unknown> },
+];
 
-export const Selected: Story = {
-  render: () => (
-    <RealizesEdge
-      id="realizes-selected"
-      source="goal-sel"
-      target="requirement-sel"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={150}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      selected={true}
-      markerEnd={MarkerType.ArrowClosed}
+function GraphDemoInner({ edge }: { edge: Edge }) {
+  const [nodes] = useNodesState(NODES);
+  const [edges] = useEdgesState([edge]);
+  return (
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      nodeTypes={nodeTypes}
+      edgeTypes={edgeTypes}
+      fitView
+      fitViewOptions={{ padding: 0.3 }}
+      panOnDrag={false}
+      zoomOnScroll={false}
+      nodesDraggable={false}
+      elementsSelectable={false}
+      nodesFocusable={false}
     />
-  ),
-};
+  );
+}
 
-export const WithLabel: Story = {
-  render: () => (
-    <RealizesEdge
-      id="realizes-3"
-      source="goal-3"
-      target="requirement-3"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={150}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      label="realizes"
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+function GraphDemo({ edge }: { edge: Edge }) {
+  return (
+    <ReactFlowProvider>
+      <div style={{ width: '100%', height: '100vh', background: '#f9fafb' }}>
+        <GraphDemoInner edge={edge} />
+      </div>
+    </ReactFlowProvider>
+  );
+}
 
-export const ChangesetAdd: Story = {
-  render: () => (
-    <RealizesEdge
-      id="realizes-4"
-      source="goal-4"
-      target="requirement-4"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={150}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      data={{ changesetOperation: 'add' }}
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+const BASE_EDGE: Edge = { id: 'e1', source: 'source', target: 'target', type: 'realizes', markerEnd: MarkerType.ArrowClosed };
 
-export const ChangesetUpdate: Story = {
-  render: () => (
-    <RealizesEdge
-      id="realizes-5"
-      source="goal-5"
-      target="requirement-5"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={150}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      data={{ changesetOperation: 'update' }}
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
-
-export const ChangesetDelete: Story = {
-  render: () => (
-    <RealizesEdge
-      id="realizes-6"
-      source="goal-6"
-      target="requirement-6"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={150}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      data={{ changesetOperation: 'delete' }}
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+export const Default: Story = { render: () => <GraphDemo edge={BASE_EDGE} /> };
+export const Animated: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e2', animated: true }} /> };
+export const Selected: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e3', selected: true }} /> };
+export const WithLabel: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e4', label: 'realizes' }} /> };
+export const ChangesetAdd: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e5', data: { changesetOperation: 'add' } }} /> };
+export const ChangesetUpdate: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e6', data: { changesetOperation: 'update' } }} /> };
+export const ChangesetDelete: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e7', data: { changesetOperation: 'delete' } }} /> };

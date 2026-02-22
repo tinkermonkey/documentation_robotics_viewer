@@ -7,7 +7,7 @@ const meta = {
   title: 'C Graphs / Nodes / Business / BusinessServiceNode',
   decorators: [withReactFlowDecorator({ width: BUSINESS_SERVICE_NODE_WIDTH, height: BUSINESS_SERVICE_NODE_HEIGHT })],
   parameters: {
-    layout: 'centered',
+    layout: 'fullscreen',
   },
 } satisfies Meta;
 

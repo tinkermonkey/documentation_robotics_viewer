@@ -7,7 +7,7 @@ const meta = {
   title: 'C Graphs / Nodes / Motivation / GoalNode',
   decorators: [withReactFlowDecorator({ width: GOAL_NODE_WIDTH, height: GOAL_NODE_HEIGHT })],
   parameters: {
-    layout: 'centered',
+    layout: 'fullscreen',
   },
 } satisfies Meta;
 

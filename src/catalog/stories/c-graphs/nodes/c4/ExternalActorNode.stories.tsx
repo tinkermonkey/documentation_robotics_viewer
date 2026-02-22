@@ -7,7 +7,7 @@ const meta = {
   title: 'C Graphs / Nodes / C4 / ExternalActorNode',
   decorators: [withReactFlowDecorator({ width: EXTERNAL_ACTOR_NODE_WIDTH, height: EXTERNAL_ACTOR_NODE_HEIGHT })],
   parameters: {
-    layout: 'centered',
+    layout: 'fullscreen',
   },
 } satisfies Meta;
 

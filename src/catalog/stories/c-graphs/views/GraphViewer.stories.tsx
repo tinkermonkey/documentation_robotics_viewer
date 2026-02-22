@@ -6,6 +6,7 @@ import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 const meta = {
   title: 'C Graphs / Views / GraphViewer',
+  parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
 export default meta;
@@ -17,7 +18,7 @@ export const CompleteModel: Story = {
     return (
       <ReactFlowProvider>
         <StoryLoadedWrapper testId="graph-viewer-complete">
-          <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <div style={{ width: '100%', height: '100vh' }}>
             <GraphViewer model={model} />
           </div>
         </StoryLoadedWrapper>
@@ -32,7 +33,7 @@ export const MotivationLayer: Story = {
     return (
       <ReactFlowProvider>
         <StoryLoadedWrapper testId="graph-viewer-motivation">
-          <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <div style={{ width: '100%', height: '100vh' }}>
             <GraphViewer model={model} selectedLayerId="motivation" />
           </div>
         </StoryLoadedWrapper>
@@ -47,7 +48,7 @@ export const BusinessLayer: Story = {
     return (
       <ReactFlowProvider>
         <StoryLoadedWrapper testId="graph-viewer-business">
-          <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <div style={{ width: '100%', height: '100vh' }}>
             <GraphViewer model={model} selectedLayerId="business" />
           </div>
         </StoryLoadedWrapper>
@@ -62,7 +63,7 @@ export const ApplicationLayer: Story = {
     return (
       <ReactFlowProvider>
         <StoryLoadedWrapper testId="graph-viewer-application">
-          <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <div style={{ width: '100%', height: '100vh' }}>
             <GraphViewer model={model} selectedLayerId="application" />
           </div>
         </StoryLoadedWrapper>
@@ -77,7 +78,7 @@ export const TechnologyLayer: Story = {
     return (
       <ReactFlowProvider>
         <StoryLoadedWrapper testId="graph-viewer-technology">
-          <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <div style={{ width: '100%', height: '100vh' }}>
             <GraphViewer model={model} selectedLayerId="technology" />
           </div>
         </StoryLoadedWrapper>

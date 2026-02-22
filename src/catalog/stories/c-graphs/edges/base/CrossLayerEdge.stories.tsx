@@ -1,156 +1,92 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Position, MarkerType } from '@xyflow/react';
+import { ReactFlow, ReactFlowProvider, MarkerType, useNodesState, useEdgesState } from '@xyflow/react';
+import type { Edge, Node } from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
+import { GoalNode } from '@/core/nodes/motivation/GoalNode';
 import { CrossLayerEdge } from '@/core/edges/CrossLayerEdge';
-import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
+import { createGoalNodeData } from '@catalog/fixtures/nodeDataFixtures';
 import { LayerType } from '@/core/types/layers';
 import { ReferenceType } from '@/core/types/model';
 
 const meta = {
   title: 'C Graphs / Edges / Base / CrossLayerEdge',
-  decorators: [withReactFlowDecorator({ width: 400, height: 250, showBackground: true, renderAsEdge: true })],
+  parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  render: () => (
-    <CrossLayerEdge
-      id="crosslayer-1"
-      source="motivation-element"
-      target="business-element"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={200}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+const nodeTypes = { goal: GoalNode };
+const edgeTypes = { crossLayer: CrossLayerEdge };
 
-export const Animated: Story = {
-  render: () => (
-    <CrossLayerEdge
-      id="crosslayer-2"
-      source="business-element"
-      target="technology-element"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={200}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      animated={true}
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+// Horizontal layout: source left, target right
+const HORIZONTAL_NODES: Node[] = [
+  { id: 'source', type: 'goal', position: { x: 50, y: 100 }, data: createGoalNodeData({ label: 'Motivation', elementId: 'goal-source' }) as Record<string, unknown> },
+  { id: 'target', type: 'goal', position: { x: 350, y: 100 }, data: createGoalNodeData({ label: 'Business', elementId: 'goal-target' }) as Record<string, unknown> },
+];
 
-export const WithLabel: Story = {
-  render: () => (
-    <CrossLayerEdge
-      id="crosslayer-3"
-      source="c4-element"
-      target="application-element"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={200}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      label="implements"
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+// Vertical layout: source above, target below
+const VERTICAL_NODES: Node[] = [
+  { id: 'source', type: 'goal', position: { x: 200, y: 50 }, data: createGoalNodeData({ label: 'Top Layer', elementId: 'goal-vsource' }) as Record<string, unknown> },
+  { id: 'target', type: 'goal', position: { x: 200, y: 280 }, data: createGoalNodeData({ label: 'Bottom Layer', elementId: 'goal-vtarget' }) as Record<string, unknown> },
+];
 
-export const VerticalFlow: Story = {
-  render: () => (
-    <CrossLayerEdge
-      id="crosslayer-4"
-      source="top-layer"
-      target="bottom-layer"
-      sourceX={200}
-      sourceY={50}
-      targetX={200}
-      targetY={200}
-      sourcePosition={Position.Bottom}
-      targetPosition={Position.Top}
-      markerEnd={MarkerType.ArrowClosed}
+function GraphDemoInner({ initialNodes, edge }: { initialNodes: Node[]; edge: Edge }) {
+  const [nodes] = useNodesState(initialNodes);
+  const [edges] = useEdgesState([edge]);
+  return (
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      nodeTypes={nodeTypes}
+      edgeTypes={edgeTypes}
+      fitView
+      fitViewOptions={{ padding: 0.3 }}
+      panOnDrag={false}
+      zoomOnScroll={false}
+      nodesDraggable={false}
+      elementsSelectable={false}
+      nodesFocusable={false}
     />
-  ),
-};
+  );
+}
 
-export const Selected: Story = {
-  render: () => (
-    <CrossLayerEdge
-      id="crosslayer-selected"
-      source="element-sel-1"
-      target="element-sel-2"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={200}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      selected={true}
-      markerEnd={MarkerType.ArrowClosed}
-    />
-  ),
-};
+function GraphDemo({ edge, vertical = false }: { edge: Edge; vertical?: boolean }) {
+  const nodes = vertical ? VERTICAL_NODES : HORIZONTAL_NODES;
+  return (
+    <ReactFlowProvider>
+      <div style={{ width: '100%', height: '100vh', background: '#f9fafb' }}>
+        <GraphDemoInner initialNodes={nodes} edge={edge} />
+      </div>
+    </ReactFlowProvider>
+  );
+}
 
+const BASE_EDGE: Edge = { id: 'e1', source: 'source', target: 'target', type: 'crossLayer', markerEnd: MarkerType.ArrowClosed };
+
+export const Default: Story = { render: () => <GraphDemo edge={BASE_EDGE} /> };
+export const Animated: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e2', animated: true }} /> };
+export const WithLabel: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e3', label: 'implements' }} /> };
+export const VerticalFlow: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e4' }} vertical /> };
+export const Selected: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e5', selected: true }} /> };
 export const ChangesetAdd: Story = {
   render: () => (
-    <CrossLayerEdge
-      id="crosslayer-5"
-      source="element-1"
-      target="element-2"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={200}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      data={{ sourceLayer: LayerType.Business, changesetOperation: 'add', targetLayer: LayerType.Application, relationshipType: ReferenceType.BusinessService }}
-      markerEnd={MarkerType.ArrowClosed}
+    <GraphDemo
+      edge={{ ...BASE_EDGE, id: 'e6', data: { sourceLayer: LayerType.Business, changesetOperation: 'add', targetLayer: LayerType.Application, relationshipType: ReferenceType.BusinessService } }}
     />
   ),
 };
-
 export const ChangesetUpdate: Story = {
   render: () => (
-    <CrossLayerEdge
-      id="crosslayer-update"
-      source="element-update-1"
-      target="element-update-2"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={200}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      data={{ sourceLayer: LayerType.Business, changesetOperation: 'update', targetLayer: LayerType.Technology, relationshipType: ReferenceType.BusinessService }}
-      markerEnd={MarkerType.ArrowClosed}
+    <GraphDemo
+      edge={{ ...BASE_EDGE, id: 'e7', data: { sourceLayer: LayerType.Business, changesetOperation: 'update', targetLayer: LayerType.Technology, relationshipType: ReferenceType.BusinessService } }}
     />
   ),
 };
-
 export const ChangesetDelete: Story = {
   render: () => (
-    <CrossLayerEdge
-      id="crosslayer-6"
-      source="element-3"
-      target="element-4"
-      sourceX={50}
-      sourceY={50}
-      targetX={350}
-      targetY={200}
-      sourcePosition={Position.Right}
-      targetPosition={Position.Left}
-      data={{ sourceLayer: LayerType.Business, changesetOperation: 'delete', targetLayer: LayerType.Api, relationshipType: ReferenceType.APIOperation }}
-      markerEnd={MarkerType.ArrowClosed}
+    <GraphDemo
+      edge={{ ...BASE_EDGE, id: 'e8', data: { sourceLayer: LayerType.Business, changesetOperation: 'delete', targetLayer: LayerType.Api, relationshipType: ReferenceType.APIOperation } }}
     />
   ),
 };

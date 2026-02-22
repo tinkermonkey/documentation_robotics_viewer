@@ -11,6 +11,7 @@ import '@xyflow/react/dist/style.css';
  */
 const meta = {
   title: 'C Graphs / Views / MiniMap',
+  parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
 export default meta;
@@ -45,7 +46,7 @@ const MiniMapDemo = ({ nodeColor, maskColor }: { nodeColor?: any; maskColor?: st
   const nodesInitialized = useNodesInitialized();
 
   return (
-    <div className="w-full h-96 bg-gray-50 border border-gray-300 rounded" style={{ width: '100%', height: '384px' }}>
+    <div className="w-full h-screen bg-gray-50">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -81,7 +82,7 @@ const DirectMiniMapDemo = () => {
   const nodesInitialized = useNodesInitialized();
 
   return (
-    <div className="w-full h-96 bg-gray-50 border border-gray-300 rounded" style={{ width: '100%', height: '384px' }}>
+    <div className="w-full h-screen bg-gray-50">
       <ReactFlow
         nodes={nodes}
         edges={edges}

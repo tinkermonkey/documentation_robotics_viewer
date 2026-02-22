@@ -7,6 +7,7 @@ import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 const meta = {
   title: 'C Graphs / Views / MotivationGraphView',
+  parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
 export default meta;
@@ -19,7 +20,7 @@ export const FilteredView: Story = {
     return (
       <ReactFlowProvider>
         <StoryLoadedWrapper testId="motivation-graph-filtered">
-          <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <div style={{ width: '100%', height: '100vh' }}>
             <MotivationGraphView
               model={model}
               selectedElementTypes={new Set([MotivationElementType.Goal, MotivationElementType.Requirement])}
@@ -40,7 +41,7 @@ export const OnlyGoals: Story = {
     return (
       <ReactFlowProvider>
         <StoryLoadedWrapper testId="motivation-graph-goals">
-          <div style={{ width: '100%', height: 600, border: '1px solid #e5e7eb' }}>
+          <div style={{ width: '100%', height: '100vh' }}>
             <MotivationGraphView
               model={model}
               selectedElementTypes={new Set([MotivationElementType.Goal])}

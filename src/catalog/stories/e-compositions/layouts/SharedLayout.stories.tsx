@@ -3,6 +3,7 @@ import SharedLayout from '@/apps/embedded/components/SharedLayout';
 
 const meta = {
   title: 'E Compositions / Layouts / SharedLayout',
+  parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
 export default meta;

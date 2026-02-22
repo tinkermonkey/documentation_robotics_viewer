@@ -14,6 +14,7 @@ import {
 
 const meta = {
   title: 'E Compositions / Spec Compositions / SpecRouteComposition',
+  parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
 export default meta;

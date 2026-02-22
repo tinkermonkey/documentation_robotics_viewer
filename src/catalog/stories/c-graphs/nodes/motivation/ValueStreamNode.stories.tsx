@@ -7,7 +7,7 @@ const meta = {
   title: 'C Graphs / Nodes / Motivation / ValueStreamNode',
   decorators: [withReactFlowDecorator({ width: VALUE_STREAM_NODE_WIDTH, height: VALUE_STREAM_NODE_HEIGHT })],
   parameters: {
-    layout: 'centered',
+    layout: 'fullscreen',
   },
 } satisfies Meta;
 

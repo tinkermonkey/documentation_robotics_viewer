@@ -9,6 +9,7 @@ import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';
 
 const meta = {
   title: 'C Graphs / Layouts / DagreLayout',
+  parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
 export default meta;

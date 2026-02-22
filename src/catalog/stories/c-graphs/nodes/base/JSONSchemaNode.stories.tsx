@@ -7,7 +7,7 @@ const meta = {
   title: 'C Graphs / Nodes / Base / JSONSchemaNode',
   decorators: [withReactFlowDecorator({ width: JSON_SCHEMA_NODE_WIDTH, height: 300 })],
   parameters: {
-    layout: 'centered',
+    layout: 'fullscreen',
   },
 } satisfies Meta;
 
