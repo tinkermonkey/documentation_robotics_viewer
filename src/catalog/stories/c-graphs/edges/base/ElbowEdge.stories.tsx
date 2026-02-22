@@ -17,20 +17,16 @@ type Story = StoryObj<typeof meta>;
 const nodeTypes = { goal: GoalNode };
 const edgeTypes = { elbow: ElbowEdge };
 
-// Horizontal layout: source left, target right
-const HORIZONTAL_NODES: Node[] = [
-  { id: 'source', type: 'goal', position: { x: 50, y: 100 }, data: createGoalNodeData({ label: 'Node A', elementId: 'goal-source' }) as Record<string, unknown> },
-  { id: 'target', type: 'goal', position: { x: 350, y: 100 }, data: createGoalNodeData({ label: 'Node B', elementId: 'goal-target' }) as Record<string, unknown> },
+// Node A (source) lower-left, Node B (target) upper-right.
+// Edge exits the top of Node A going upward, routes around, and
+// arrives at the bottom of Node B from below.
+const NODES: Node[] = [
+  { id: 'source', type: 'goal', position: { x: 50, y: 200 }, data: createGoalNodeData({ label: 'Node A', elementId: 'goal-source' }) as Record<string, unknown> },
+  { id: 'target', type: 'goal', position: { x: 400, y: 80 }, data: createGoalNodeData({ label: 'Node B', elementId: 'goal-target' }) as Record<string, unknown> },
 ];
 
-// Vertical layout: source above, target below
-const VERTICAL_NODES: Node[] = [
-  { id: 'source', type: 'goal', position: { x: 200, y: 50 }, data: createGoalNodeData({ label: 'Node A', elementId: 'goal-vsource' }) as Record<string, unknown> },
-  { id: 'target', type: 'goal', position: { x: 200, y: 280 }, data: createGoalNodeData({ label: 'Node B', elementId: 'goal-vtarget' }) as Record<string, unknown> },
-];
-
-function GraphDemoInner({ initialNodes, edge }: { initialNodes: Node[]; edge: Edge }) {
-  const [nodes] = useNodesState(initialNodes);
+function GraphDemoInner({ edge }: { edge: Edge }) {
+  const [nodes] = useNodesState(NODES);
   const [edges] = useEdgesState([edge]);
   return (
     <ReactFlow
@@ -49,24 +45,33 @@ function GraphDemoInner({ initialNodes, edge }: { initialNodes: Node[]; edge: Ed
   );
 }
 
-function GraphDemo({ edge, vertical = false }: { edge: Edge; vertical?: boolean }) {
-  const nodes = vertical ? VERTICAL_NODES : HORIZONTAL_NODES;
+function GraphDemo({ edge }: { edge: Edge }) {
   return (
     <ReactFlowProvider>
       <div style={{ width: '100%', height: '100vh', background: '#f9fafb' }}>
-        <GraphDemoInner initialNodes={nodes} edge={edge} />
+        <GraphDemoInner edge={edge} />
       </div>
     </ReactFlowProvider>
   );
 }
 
-const BASE_EDGE: Edge = { id: 'e1', source: 'source', target: 'target', type: 'elbow', markerEnd: MarkerType.ArrowClosed };
+// Edge runs from the top handle of Node A to the bottom handle of Node B.
+// sourceHandle='top'   → Position.Top   → exits going upward
+// targetHandle='bottom' → Position.Bottom → arrives from below
+const BASE_EDGE: Edge = {
+  id: 'e1',
+  source: 'source',
+  target: 'target',
+  type: 'elbow',
+  sourceHandle: 'top',
+  targetHandle: 'bottom',
+  markerEnd: MarkerType.ArrowClosed,
+};
 
 export const Default: Story = { render: () => <GraphDemo edge={BASE_EDGE} /> };
 export const Animated: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e2', animated: true }} /> };
 export const WithLabel: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e3', label: 'connection' }} /> };
-export const VerticalFlow: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e4' }} vertical /> };
-export const Selected: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e5', selected: true }} /> };
-export const ChangesetAdd: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e6', data: { changesetOperation: 'add' } }} /> };
-export const ChangesetUpdate: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e7', data: { changesetOperation: 'update' } }} /> };
-export const ChangesetDelete: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e8', data: { changesetOperation: 'delete' } }} /> };
+export const Selected: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e4', selected: true }} /> };
+export const ChangesetAdd: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e5', data: { changesetOperation: 'add' } }} /> };
+export const ChangesetUpdate: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e6', data: { changesetOperation: 'update' } }} /> };
+export const ChangesetDelete: Story = { render: () => <GraphDemo edge={{ ...BASE_EDGE, id: 'e7', data: { changesetOperation: 'delete' } }} /> };
