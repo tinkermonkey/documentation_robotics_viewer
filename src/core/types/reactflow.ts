@@ -310,7 +310,8 @@ export type AppNode =
  * Edge data for custom edges
  */
 export interface ElbowEdgeData {
-  // Can add custom data for edges if needed
+  /** User-defined intermediate waypoints that override A* routing. */
+  waypoints?: Array<{ x: number; y: number }>;
   [key: string]: unknown;
 }
 

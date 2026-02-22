@@ -20,19 +20,17 @@ import '@xyflow/react/dist/style.css';
 import './GraphViewer.css';
 
 import { MetaModel } from '../types';
-import { NodeTransformer } from '../services/nodeTransformer';
-import { VerticalLayerLayout } from '../layout/verticalLayerLayout';
 import { useLayerStore } from '../stores/layerStore';
 import { nodeTypes } from '../nodes';
 import { edgeTypes } from '../edges';
-import { elementStore } from '../stores/elementStore';
 import { AppNode, AppEdge } from '../types/reactflow';
 import { SpaceMouseHandler } from './SpaceMouseHandler';
 import { MiniMap } from '../../apps/embedded/components/MiniMap';
 import { Panel } from '@xyflow/react';
 import { getLayerColor } from '../utils/layerColors';
-import { getEngine, LayoutEngineType } from '../layout/engines';
+import { LayoutEngineType } from '../layout/engines';
 import { CrossLayerEdgeErrorBoundary } from './CrossLayerEdgeErrorBoundary';
+import { useAutoLayout } from '../hooks/useAutoLayout';
 
 interface GraphViewerProps {
   model: MetaModel;
@@ -96,11 +94,9 @@ const ViewportCullingLayer: React.FC<{
  */
 const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, selectedLayerId, layoutEngine, layoutParameters, onNodesEdgesChange }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<AppEdge>([]);
+  const [edges, , onEdgesChange] = useEdgesState<AppEdge>([]);
   const [culledEdges, setCulledEdges] = useState<AppEdge[]>([]);
   const { layers: layerStates } = useLayerStore();
-  const [isRendering, setIsRendering] = useState(false);
-  const [renderError, setRenderError] = useState<string | null>(null);
   const reactFlowInstance = useReactFlow();
   const [isInitialized, setIsInitialized] = useState(false);
   const [showMiniMap, setShowMiniMap] = useState(false);
@@ -120,33 +116,63 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
     [onNodeClick]
   );
 
-  // Main effect: render the model when model or layout engine changes
-  useEffect(() => {
-    if (!model || isRendering) return;
+  /**
+   * Update node visibility with a specific nodes array (for initial render)
+   */
+  const updateLayerVisibilityWithNodes = useCallback((nodesToUpdate: AppNode[]) => {
+    setNodes(
+      nodesToUpdate.map((node) => {
+        const layerId = node.data.layerId;
+        if (layerId && layerStates[layerId]) {
+          const layerState = layerStates[layerId];
+          return {
+            ...node,
+            hidden: !layerState.visible, // Use React Flow's hidden property
+            style: {
+              ...node.style,
+              opacity: layerState.visible ? layerState.opacity : 0,
+              transition: 'opacity 0.3s ease-in-out',
+            },
+          };
+        }
+        return node;
+      })
+    );
+  }, [layerStates, setNodes]);
 
-    renderModel(model);
-  }, [model, layoutEngine, layoutParameters]);
+  // Callback passed to useAutoLayout — applies layer visibility after each layout pass
+  const handleNodesEdgesChange = useCallback(
+    (newNodes: AppNode[], newEdges: AppEdge[]) => {
+      setShowMiniMap(false);
+      setTimeout(() => updateLayerVisibilityWithNodes(newNodes), 100);
+      onNodesEdgesChange?.(newNodes, newEdges);
+    },
+    [updateLayerVisibilityWithNodes, onNodesEdgesChange]
+  );
+
+  // Two-pass layout: pass 1 uses estimated sizes, pass 2 uses measured DOM sizes
+  const { isLayouting, error: renderError } = useAutoLayout({
+    model,
+    layoutEngine,
+    layoutParameters,
+    onNodesEdgesChange: handleNodesEdgesChange,
+  });
 
   // Secondary effect: update node visibility when layer states change
   useEffect(() => {
     if (nodes.length === 0) return;
 
     updateLayerVisibility();
-  }, [layerStates]);
+  }, [layerStates]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Fit view after React Flow is initialized and nodes are loaded
+  // Show MiniMap after layout completes for large graphs
   useEffect(() => {
-    if (!isInitialized || !reactFlowInstance || nodes.length === 0) return;
+    if (!isInitialized || nodes.length === 0) return;
 
-    // React Flow 12.5.0+ handles internal calculations synchronously
-    reactFlowInstance.fitView({ padding: 0.1, duration: 0 });
-
-    // Enable MiniMap after fitView completes
-    // Only show MiniMap for graphs with 30+ nodes (most useful for large graphs)
-    if (nodes.length >= 30) {
+    if (!isLayouting && nodes.length >= 30) {
       setShowMiniMap(true);
     }
-  }, [isInitialized, reactFlowInstance, nodes.length]);
+  }, [isInitialized, isLayouting, nodes.length]);
 
   // Zoom to selected layer effect
   useEffect(() => {
@@ -161,65 +187,6 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
       duration: 0
     });
   }, [selectedLayerId, nodes, reactFlowInstance]);
-
-  /**
-   * Render the complete model
-   */
-  const renderModel = async (model: MetaModel) => {
-    setIsRendering(true);
-    setIsInitialized(false); // Reset initialization flag for new model
-    setShowMiniMap(false); // Reset MiniMap flag for new model
-
-    try {
-      setRenderError(null);
-
-      // Clear element store
-      elementStore.clear();
-
-      // Create layout engine and transformer
-      let layoutEngineInstance;
-
-      if (layoutEngine) {
-        // Use specified layout engine from props
-        layoutEngineInstance = getEngine(layoutEngine);
-
-        // Fallback if engine not found
-        if (!layoutEngineInstance) {
-          console.warn(`[GraphViewer] Layout engine "${layoutEngine}" not found, using default`);
-          layoutEngineInstance = new VerticalLayerLayout();
-        }
-      } else {
-        // Fallback to vertical layer layout for backward compatibility
-        layoutEngineInstance = new VerticalLayerLayout();
-      }
-
-      const transformer = new NodeTransformer(layoutEngineInstance);
-
-      // Transform the model into nodes and edges
-      const result = await transformer.transformModel(model, layoutParameters);
-
-      // Set nodes and edges
-      setNodes(result.nodes);
-      setEdges(result.edges);
-
-      // Notify parent of nodes/edges change
-      if (onNodesEdgesChange) {
-        onNodesEdgesChange(result.nodes, result.edges);
-      }
-
-      // Apply initial layer visibility
-      setTimeout(() => {
-        updateLayerVisibilityWithNodes(result.nodes);
-      }, 100);
-
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown rendering error';
-      console.error('Error rendering model:', error);
-      setRenderError(message);
-    } finally {
-      setIsRendering(false);
-    }
-  };
 
   /**
    * Update node visibility based on layer states (uses current nodes from state)
@@ -244,30 +211,6 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
       })
     );
   }, [layerStates, setNodes]);
-
-  /**
-   * Update node visibility with a specific nodes array (for initial render)
-   */
-  const updateLayerVisibilityWithNodes = (nodesToUpdate: AppNode[]) => {
-    setNodes(
-      nodesToUpdate.map((node) => {
-        const layerId = node.data.layerId;
-        if (layerId && layerStates[layerId]) {
-          const layerState = layerStates[layerId];
-          return {
-            ...node,
-            hidden: !layerState.visible, // Use React Flow's hidden property
-            style: {
-              ...node.style,
-              opacity: layerState.visible ? layerState.opacity : 0,
-              transition: 'opacity 0.3s ease-in-out',
-            },
-          };
-        }
-        return node;
-      })
-    );
-  };
 
   return (
     <div className="graph-viewer">
@@ -361,7 +304,7 @@ const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, sele
           </div>
         )}
 
-        {isRendering && (
+        {isLayouting && (
           <div className="rendering-overlay">
             <div className="rendering-message">Rendering graph...</div>
           </div>

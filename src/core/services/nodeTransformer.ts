@@ -6,8 +6,9 @@
 import { MetaModel, Relationship, ModelElement } from '../types';
 import { VerticalLayerLayout } from '../layout/verticalLayerLayout';
 import { LayoutEngine } from '../layout/engines';
-import { MarkerType } from '@xyflow/react';
+import { MarkerType, Edge } from '@xyflow/react';
 import { elementStore } from '../stores/elementStore';
+import { applyEdgeBundling, calculateOptimalThreshold } from '../layout/edgeBundling';
 import { LayoutResult, LayerLayoutResult } from '../types/shapes';
 import { AppNode, AppEdge } from '../types/reactflow';
 import { FALLBACK_COLOR } from '../utils/layerColors';
@@ -60,9 +61,13 @@ export class NodeTransformer {
    * @param layoutParameters - Optional parameters for the layout engine
    * @returns Transform result with nodes, edges, and layout
    */
-  async transformModel(model: MetaModel, layoutParameters?: Record<string, any>): Promise<NodeTransformResult> {
-    // STEP 0: Pre-calculate dimensions for dynamic shapes
-    this.precalculateDimensions(model);
+  async transformModel(
+    model: MetaModel,
+    layoutParameters?: Record<string, any>,
+    measuredNodeSizes?: Map<string, { width: number; height: number }>
+  ): Promise<NodeTransformResult> {
+    // STEP 0: Pre-calculate dimensions for dynamic shapes (override with DOM-measured sizes if provided)
+    this.precalculateDimensions(model, measuredNodeSizes);
 
     // STEP 1: Calculate layout for all layers
     let layout: any;
@@ -238,7 +243,11 @@ export class NodeTransformer {
     // Create edges from cross-layer references using shared utility
     const crossLayerReferences = extractCrossLayerReferences(model, true, new Set(), new Set());
     const crossLayerEdges = referencesToEdges(crossLayerReferences, model, (elementId) => nodeMap.get(elementId));
-    edges.push(...crossLayerEdges);
+
+    // Apply edge bundling to reduce visual clutter in dense cross-layer graphs
+    const threshold = calculateOptimalThreshold(nodes.length, crossLayerEdges.length);
+    const { bundledEdges } = applyEdgeBundling(crossLayerEdges as Edge[], { threshold });
+    edges.push(...(bundledEdges as AppEdge[]));
 
     console.log(`[NodeTransformer] Created ${nodes.length} nodes and ${edges.length} edges`);
 
@@ -453,7 +462,10 @@ export class NodeTransformer {
    * CRITICAL: These dimensions MUST match the actual rendered component sizes
    * This ensures dagre layout and React Flow positioning are correct
    */
-  private precalculateDimensions(model: MetaModel): void {
+  private precalculateDimensions(
+    model: MetaModel,
+    measuredNodeSizes?: Map<string, { width: number; height: number }>
+  ): void {
     for (const layer of Object.values(model.layers)) {
       // Skip layers without elements
       if (!layer.elements || !Array.isArray(layer.elements)) {
@@ -592,6 +604,12 @@ export class NodeTransformer {
               height: 100,
             };
             break;
+        }
+
+        // Override with DOM-measured sizes from pass 1 (two-pass layout)
+        const measured = measuredNodeSizes?.get(`node-${element.id}`);
+        if (measured) {
+          element.visual.size = { width: measured.width, height: measured.height };
         }
       }
     }

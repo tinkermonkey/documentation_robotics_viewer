@@ -1,10 +1,15 @@
 import { memo } from 'react';
 import { EdgeProps, BaseEdge, useNodes, useEdges, EdgeLabelRenderer } from '@xyflow/react';
-import { calculateElbowPath, pointsToSVGPath, Rectangle } from './pathfinding';
+import { getControlPoints, pointsToSVGPath, Rectangle, Point } from './pathfinding';
+import { EdgeControllers } from './EdgeControllers';
+import { ElbowEdgeData } from '../types/reactflow';
 
 /**
- * Elbow Edge Component with Obstacle Avoidance
- * Creates elbow-style paths that route around nodes
+ * Elbow Edge Component with A* obstacle avoidance and interactive waypoints.
+ *
+ * - Routes around nodes using A* pathfinding with rounded corners.
+ * - When selected, displays draggable waypoint handles.
+ * - When edge.data.waypoints is set (by dragging handles), uses those points directly.
  */
 export const ElbowEdge = memo(({
   id,
@@ -22,13 +27,12 @@ export const ElbowEdge = memo(({
   markerEnd,
   label,
   labelStyle,
-
-}: EdgeProps) => {
+  selected,
+  data,
+}: EdgeProps<ElbowEdgeData>) => {
   const nodes = useNodes();
   const edges = useEdges();
 
-  // Calculate spacing for multiple edges entering/leaving the same node side
-  // Only apply spacing if not using a specific handle (like fields)
   let adjustedSourceX = sourceX;
   let adjustedSourceY = sourceY;
   let adjustedTargetX = targetX;
@@ -36,12 +40,10 @@ export const ElbowEdge = memo(({
 
   const spacing = 10;
 
-  // Adjust source position if no specific handle
   if (!sourceHandleId) {
     const sourceEdges = edges.filter(
       (e) => e.source === source && !e.sourceHandle
     ).sort((a, b) => a.id.localeCompare(b.id));
-    
     const index = sourceEdges.findIndex((e) => e.id === id);
     if (index !== -1 && sourceEdges.length > 1) {
       const offset = (index - (sourceEdges.length - 1) / 2) * spacing;
@@ -53,12 +55,10 @@ export const ElbowEdge = memo(({
     }
   }
 
-  // Adjust target position if no specific handle
   if (!targetHandleId) {
     const targetEdges = edges.filter(
       (e) => e.target === target && !e.targetHandle
     ).sort((a, b) => a.id.localeCompare(b.id));
-    
     const index = targetEdges.findIndex((e) => e.id === id);
     if (index !== -1 && targetEdges.length > 1) {
       const offset = (index - (targetEdges.length - 1) / 2) * spacing;
@@ -70,37 +70,56 @@ export const ElbowEdge = memo(({
     }
   }
 
-  // Get all node rectangles as obstacles (excluding source, target, and layer containers)
-  const obstacles: Rectangle[] = nodes
-    .filter((node) => 
-      node.id !== source && 
-      node.id !== target && 
-      node.type !== 'layerContainer'
-    )
-    .map((node) => ({
-      x: node.position.x,
-      y: node.position.y,
-      width: node.measured?.width ?? node.width ?? 200,
-      height: node.measured?.height ?? node.height ?? 100,
-    }));
+  // If user has stored custom waypoints, use them directly (skip A* re-calculation)
+  let pathPoints: Point[];
+  const storedWaypoints = data?.waypoints;
+  if (storedWaypoints && storedWaypoints.length > 0) {
+    pathPoints = [
+      { x: adjustedSourceX, y: adjustedSourceY },
+      ...storedWaypoints,
+      { x: adjustedTargetX, y: adjustedTargetY },
+    ];
+  } else {
+    const obstacles: Rectangle[] = nodes
+      .filter((node) =>
+        node.id !== source &&
+        node.id !== target &&
+        node.type !== 'layerContainer'
+      )
+      .map((node) => ({
+        x: node.position.x,
+        y: node.position.y,
+        width: node.measured?.width ?? node.width ?? 200,
+        height: node.measured?.height ?? node.height ?? 100,
+      }));
 
-  // Calculate elbow path with obstacle avoidance
-  const pathPoints = calculateElbowPath(
-    { x: adjustedSourceX, y: adjustedSourceY },
-    { x: adjustedTargetX, y: adjustedTargetY },
-    obstacles,
-    sourcePosition as 'top' | 'bottom' | 'left' | 'right',
-    targetPosition as 'top' | 'bottom' | 'left' | 'right'
-  );
+    const sourceNode = nodes.find((n) => n.id === source);
+    const targetNode = nodes.find((n) => n.id === target);
+    const sourceRect: Rectangle | undefined = sourceNode
+      ? { x: sourceNode.position.x, y: sourceNode.position.y, width: sourceNode.measured?.width ?? sourceNode.width ?? 200, height: sourceNode.measured?.height ?? sourceNode.height ?? 100 }
+      : undefined;
+    const targetRect: Rectangle | undefined = targetNode
+      ? { x: targetNode.position.x, y: targetNode.position.y, width: targetNode.measured?.width ?? targetNode.width ?? 200, height: targetNode.measured?.height ?? targetNode.height ?? 100 }
+      : undefined;
 
-  // Convert points to SVG path
+    pathPoints = getControlPoints({
+      sourceX: adjustedSourceX,
+      sourceY: adjustedSourceY,
+      targetX: adjustedTargetX,
+      targetY: adjustedTargetY,
+      sourcePosition: sourcePosition as string,
+      targetPosition: targetPosition as string,
+      obstacles,
+      sourceRect,
+      targetRect,
+    });
+  }
+
   const path = pointsToSVGPath(pathPoints);
 
-  // Calculate label position (midpoint of the middle segment)
   let labelX = 0;
   let labelY = 0;
   if (pathPoints.length > 1) {
-    // Find the longest segment or the middle segment
     const midIndex = Math.floor((pathPoints.length - 1) / 2);
     const p1 = pathPoints[midIndex];
     const p2 = pathPoints[midIndex + 1];
@@ -108,10 +127,12 @@ export const ElbowEdge = memo(({
     labelY = (p1.y + p2.y) / 2;
   }
 
-  // Create accessible label for the edge
   const ariaLabel = label
     ? `Connection labeled ${label} from node ${source} to node ${target}`
     : `Connection from node ${source} to node ${target}`;
+
+  // Intermediate waypoints (exclude start and end) used for control handles
+  const intermediateWaypoints = pathPoints.slice(1, -1);
 
   return (
     <>
@@ -128,6 +149,9 @@ export const ElbowEdge = memo(({
         aria-label={ariaLabel}
         role="img"
       />
+      {selected && intermediateWaypoints.length > 0 && (
+        <EdgeControllers edgeId={id} waypoints={intermediateWaypoints} />
+      )}
       {label && (
         <EdgeLabelRenderer>
           <div

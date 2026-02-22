@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { EdgeProps, BaseEdge, useNodes, useEdges, EdgeLabelRenderer } from '@xyflow/react';
-import { calculateElbowPath, pointsToSVGPath, Rectangle } from '../pathfinding';
+import { getControlPoints, pointsToSVGPath, Rectangle } from '../pathfinding';
 
 /**
  * Influence Edge Component
@@ -82,14 +82,26 @@ export const InfluenceEdge = memo(({
       height: node.measured?.height ?? node.height ?? 100,
     }));
 
-  // Calculate elbow path
-  const pathPoints = calculateElbowPath(
-    { x: adjustedSourceX, y: adjustedSourceY },
-    { x: adjustedTargetX, y: adjustedTargetY },
+  const sourceNode = nodes.find((n) => n.id === source);
+  const targetNode = nodes.find((n) => n.id === target);
+  const sourceRect: Rectangle | undefined = sourceNode
+    ? { x: sourceNode.position.x, y: sourceNode.position.y, width: sourceNode.measured?.width ?? sourceNode.width ?? 200, height: sourceNode.measured?.height ?? sourceNode.height ?? 100 }
+    : undefined;
+  const targetRect: Rectangle | undefined = targetNode
+    ? { x: targetNode.position.x, y: targetNode.position.y, width: targetNode.measured?.width ?? targetNode.width ?? 200, height: targetNode.measured?.height ?? targetNode.height ?? 100 }
+    : undefined;
+
+  const pathPoints = getControlPoints({
+    sourceX: adjustedSourceX,
+    sourceY: adjustedSourceY,
+    targetX: adjustedTargetX,
+    targetY: adjustedTargetY,
+    sourcePosition: sourcePosition as string,
+    targetPosition: targetPosition as string,
     obstacles,
-    sourcePosition as 'top' | 'bottom' | 'left' | 'right',
-    targetPosition as 'top' | 'bottom' | 'left' | 'right'
-  );
+    sourceRect,
+    targetRect,
+  });
 
   // Convert to SVG path
   const path = pointsToSVGPath(pathPoints);
@@ -137,6 +149,8 @@ export const InfluenceEdge = memo(({
           strokeDasharray,
           ...style,
         }}
+        role="img"
+        aria-label={label ? `Influence: ${label} from ${source} to ${target}` : `Influence from ${source} to ${target}`}
       />
       {label && (
         <EdgeLabelRenderer>

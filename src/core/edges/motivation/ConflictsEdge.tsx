@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { EdgeProps, BaseEdge, useNodes, useEdges, EdgeLabelRenderer } from '@xyflow/react';
-import { calculateElbowPath, pointsToSVGPath, Rectangle } from '../pathfinding';
+import { getControlPoints, pointsToSVGPath, Rectangle } from '../pathfinding';
 
 /**
  * Conflicts Edge Component
@@ -79,18 +79,30 @@ export const ConflictsEdge = memo(({
     .map((node) => ({
       x: node.position.x,
       y: node.position.y,
-      width: node.measured?.width || (node as any).width || 200,
-      height: node.measured?.height || (node as any).height || 100,
+      width: node.measured?.width ?? node.width ?? 200,
+      height: node.measured?.height ?? node.height ?? 100,
     }));
 
-  // Calculate elbow path
-  const pathPoints = calculateElbowPath(
-    { x: adjustedSourceX, y: adjustedSourceY },
-    { x: adjustedTargetX, y: adjustedTargetY },
+  const sourceNode = nodes.find((n) => n.id === source);
+  const targetNode = nodes.find((n) => n.id === target);
+  const sourceRect: Rectangle | undefined = sourceNode
+    ? { x: sourceNode.position.x, y: sourceNode.position.y, width: sourceNode.measured?.width ?? sourceNode.width ?? 200, height: sourceNode.measured?.height ?? sourceNode.height ?? 100 }
+    : undefined;
+  const targetRect: Rectangle | undefined = targetNode
+    ? { x: targetNode.position.x, y: targetNode.position.y, width: targetNode.measured?.width ?? targetNode.width ?? 200, height: targetNode.measured?.height ?? targetNode.height ?? 100 }
+    : undefined;
+
+  const pathPoints = getControlPoints({
+    sourceX: adjustedSourceX,
+    sourceY: adjustedSourceY,
+    targetX: adjustedTargetX,
+    targetY: adjustedTargetY,
+    sourcePosition: (sourcePosition || 'right').toString(),
+    targetPosition: (targetPosition || 'left').toString(),
     obstacles,
-    (sourcePosition || 'right').toString(),
-    (targetPosition || 'left').toString()
-  );
+    sourceRect,
+    targetRect,
+  });
 
   // Convert to SVG path
   const pathString = pointsToSVGPath(pathPoints);
@@ -118,6 +130,8 @@ export const ConflictsEdge = memo(({
           strokeDasharray: '6 4',
         }}
         markerEnd={markerEnd}
+        role="img"
+        aria-label={label ? `Conflicts: ${label} from ${source} to ${target}` : `Conflicts from ${source} to ${target}`}
       />
 
       {label && (
