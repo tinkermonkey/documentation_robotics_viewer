@@ -12,7 +12,6 @@ export interface FieldItem {
 
 interface FieldListProps {
   items: FieldItem[];
-  nodeId?: string;
   itemHeight: number;
   strokeColor: string;
   handleColor: string;
@@ -25,6 +24,11 @@ interface FieldListProps {
  * Each field can have left and right connection handles.
  * Alternating row backgrounds for visual clarity.
  * Displays required/optional indicators and optional tooltips.
+ *
+ * NOTE: Uses inline styles for layout and dynamic colors because:
+ * - React Flow nodes require dynamic sizing based on field count
+ * - Per-field layout (alternating backgrounds, flex positioning) needs precise control
+ * - Text colors are data-driven and not theme-dependent
  */
 const FieldList = memo<FieldListProps>(({ items, itemHeight, strokeColor, handleColor }) => {
   if (!items || items.length === 0) {
@@ -85,6 +89,7 @@ const FieldList = memo<FieldListProps>(({ items, itemHeight, strokeColor, handle
                 background: handleColor,
                 width: 8,
                 height: 8,
+                left: -4,
               }}
             />
 
@@ -153,6 +158,7 @@ const FieldList = memo<FieldListProps>(({ items, itemHeight, strokeColor, handle
                 background: handleColor,
                 width: 8,
                 height: 8,
+                right: -4,
               }}
             />
           </div>

@@ -8,6 +8,12 @@
  *
  * Accepts a NodeType enum parameter that drives all styling and behavioral
  * variations through external JSON configuration.
+ *
+ * NOTE: Uses inline styles for dimensions and colors (not Tailwind) because:
+ * - React Flow nodes require dynamic sizing based on content
+ * - Colors come from JSON configuration to support multiple themes
+ * - Inline styles provide consistent rendering across light/dark modes
+ *   (the node colors are theme-agnostic from the config system)
  */
 
 import React, { memo } from 'react';

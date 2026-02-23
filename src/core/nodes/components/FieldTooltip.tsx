@@ -11,6 +11,11 @@ interface FieldTooltipProps {
  * Displays a tooltip on hover for field information.
  * Uses React Portal to render outside node boundaries to avoid clipping.
  * Positioned above the trigger element with a small arrow.
+ *
+ * NOTE: Uses inline styles for positioning because:
+ * - Portal rendering requires absolute positioning relative to viewport
+ * - Tooltip position is dynamically calculated based on trigger element location
+ * - Fixed dark background (#1f2937) matches Tailwind gray-900 for visibility
  */
 const FieldTooltip = memo<FieldTooltipProps>(({ content }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -69,7 +74,7 @@ const FieldTooltip = memo<FieldTooltipProps>(({ content }) => {
             zIndex: 10000,
             pointerEvents: 'none',
             boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-            whiteSpace: 'nowrap' as const,
+            wordWrap: 'break-word' as const,
           }}
         >
           {content}
