@@ -17,83 +17,6 @@ React-based visualization tool for multi-layer architecture documentation models
 5. **Test thoroughly** - Run `npm test` before completing tasks
 6. **Avoid over-engineering** - Only make requested changes, don't add unrequested features/comments/refactoring
 
-## Critical React Flow Node Pattern
-
-**MUST follow this exact pattern** - deviations cause rendering failures. Reference existing nodes before creating new ones.
-
-### Node Directory
-
-```
-src/core/nodes/
-├── business/       # BusinessFunction, BusinessService, BusinessCapability
-├── motivation/     # Goal, Stakeholder, Constraint, Driver, Outcome, Principle, Assumption, Assessment, ValueStream, Requirement
-├── c4/             # Container, Component, ExternalActor
-├── BusinessProcessNode.tsx, JSONSchemaNode.tsx, LayerContainerNode.tsx, BaseFieldListNode.tsx
-└── index.ts        # Master nodeTypes export
-```
-
-### Creating a Custom Node
-
-```typescript
-// src/core/nodes/<category>/<NodeName>Node.tsx
-import { memo } from 'react';
-import { Handle, Position } from '@xyflow/react';
-import { YourNodeData } from '../../types/reactflow';  // Extend BaseNodeData in types/reactflow.ts
-
-export const YOUR_NODE_WIDTH = 180;
-export const YOUR_NODE_HEIGHT = 100;
-
-export const YourNode = memo(({ data, id: _id }: { data: YourNodeData; id?: string }) => {
-  return (
-    <div
-      role="article"
-      aria-label={`Your Type: ${data.label}`}
-      style={{
-        width: YOUR_NODE_WIDTH,    // MUST use the exported constant
-        height: YOUR_NODE_HEIGHT,  // MUST use the exported constant
-        display: 'flex',
-        flexDirection: 'column',
-        fontFamily: 'system-ui, sans-serif',
-        border: `2px solid ${data.stroke || '#333'}`,
-        backgroundColor: data.fill || '#fff',
-        borderRadius: 8,
-        padding: 12,
-      }}
-    >
-      <Handle type="target" position={Position.Top} id="top" style={{ background: '#555' }} />
-      <Handle type="source" position={Position.Bottom} id="bottom" style={{ background: '#555' }} />
-      <Handle type="target" position={Position.Left} id="left" style={{ background: '#555' }} />
-      <Handle type="source" position={Position.Right} id="right" style={{ background: '#555' }} />
-      <div style={{ fontSize: 14, fontWeight: 600, color: '#1f2937' }}>
-        {data.label}
-      </div>
-    </div>
-  );
-});
-
-YourNode.displayName = 'YourNode';
-```
-
-### Register the Node
-
-1. **`src/core/types/reactflow.ts`** - Add `YourNodeData` interface extending `BaseNodeData`
-2. **`src/core/nodes/<category>/index.ts`** - Export node + dimension constants
-3. **`src/core/nodes/index.ts`** - Add to `nodeTypes` map (e.g., `yourType: YourNode`)
-4. **`src/core/services/nodeTransformer.ts`** - Three places:
-   - `getNodeTypeForElement()` - Map element type to node type string
-   - `extractNodeData()` - Map element properties to node data
-   - `precalculateDimensions()` - Import and use dimension constants
-
-### Node Rules
-
-1. **ALWAYS use `memo`** - Prevents unnecessary re-renders
-2. **ALWAYS include 4 Handles** - top, bottom, left, right (see existing nodes)
-3. **ALWAYS match dimensions** - Component style MUST use the exported dimension constants
-4. **ALWAYS use inline styles** - Nodes use inline styles, not Tailwind classes
-5. **ALWAYS use `role="article"` + `aria-label`** - For accessibility
-6. **ALWAYS set `displayName`** - For React DevTools debugging
-7. **ALWAYS export dimension constants** - `YOUR_NODE_WIDTH` / `YOUR_NODE_HEIGHT` pattern
-
 ## Component Organization
 
 ```
@@ -210,46 +133,6 @@ tests/
 
 All components must meet **WCAG 2.1 Level AA** compliance. Automated testing via Storybook a11y addon in all stories.
 
-### Node Accessibility Pattern
-
-All custom nodes MUST include:
-
-```typescript
-<div
-  role="article"                          // ✓ Semantic role
-  aria-label={`${type}: ${data.label}`}  // ✓ Descriptive label including type
-  style={{ /* inline styles */ }}
->
-  {/* 4 Handles: top, bottom, left, right */}
-  <Handle type="target" position={Position.Top} id="top" />
-  <Handle type="source" position={Position.Bottom} id="bottom" />
-  <Handle type="target" position={Position.Left} id="left" />
-  <Handle type="source" position={Position.Right} id="right" />
-  {/* Node content */}
-</div>
-```
-
-### Edge Accessibility Pattern
-
-All custom edges MUST include:
-
-```typescript
-<path
-  d={edgePath}
-  role="img"  // or "button" for interactive edges
-  aria-label={`${relationship}: from ${sourceNode} to ${targetNode}`}
-  onClick={handleClick}
-  onKeyDown={handleKeyDown}
-  tabIndex={0}  // if interactive
-/>
-```
-
-### Color Contrast
-
-- **Text**: Minimum 4.5:1 contrast ratio
-- **UI Components**: Minimum 3:1 contrast ratio
-- Architecture visualizations may use `reviewOnFail: true` for color contrast violations (marked for manual review)
-
 ### Keyboard Navigation
 
 - All interactive elements must be keyboard accessible
@@ -271,9 +154,6 @@ npm run test:storybook:a11y
 
 For details: `documentation/ACCESSIBILITY.md`
 
-## YAML Instance Models
-
-Supports **JSON Schema** (UUIDs) and **YAML instances** (dot-notation IDs like `business.function.name`). Parser auto-resolves dot-notation to UUIDs. Full spec: `documentation/YAML_MODELS.md`
 
 ## DR Slash Commands
 
@@ -334,4 +214,37 @@ Supports **JSON Schema** (UUIDs) and **YAML instances** (dot-notation IDs like `
 
 ---
 
-**Last Updated:** 2026-02-19 | **Test Suite:** 1170 tests in 70 files | **Stories:** 578 in Storybook (97 story files)
+<!-- generated-agents-section -->
+
+## Specialized Sub-Agents
+
+Specialized sub-agents are available via the `Task` tool. Use them instead of working from general knowledge — they have deep project-specific context.
+
+| Agent | When to use |
+|---|---|
+| `documentation_robotics_viewer-architect` | Complex architectural reasoning needed for Core/App separation, 15+ node types, 4 layout engines, and MetaModel transformation pipeline |
+| `documentation_robotics_viewer-guardian` | Critical for preventing boundary violations (Core importing App), React Flow node pattern violations, missing accessibility, and Tailwind antipatterns |
+| `documentation_robotics_viewer-tester` | Project has comprehensive test suite requiring dedicated testing expertise for Playwright, Storybook, and axe-core accessibility validation |
+| `documentation_robotics_viewer-deployer` | Dockerfile |
+| `documentation_robotics_viewer-api-expert` | OpenAPI integration with automated TypeScript generation and DR CLI server WebSocket communication requires API-specific knowledge |
+| `documentation_robotics_viewer-flow-expert` | Critical for 15+ custom node types with complex requirements: dimension constants, 4 handles, inline styles, nodeTransformer registration, and 4 layout engine integration |
+| `documentation_robotics_viewer-state-expert` | All state managed via Zustand (NO Redux/Context), with 8+ stores (modelStore, layerStore, elementStore, etc |
+
+```
+Task(subagent_type="documentation_robotics_viewer-architect", prompt="<your question about Expert in layered architecture, React Flow patterns, and data pipeline design>")
+Task(subagent_type="documentation_robotics_viewer-guardian", prompt="<your question about Enforces architectural boundaries and catches antipatterns in code reviews>")
+```
+
+## Skills
+
+| Skill | What it does |
+|---|---|
+| `/documentation_robotics_viewer-architecture` | Display architectural overview and critical file locations |
+| `/documentation_robotics_viewer-test` | Run Playwright tests and Storybook validation |
+| `/documentation_robotics_viewer-build` | Run Vite build and check bundle size |
+| `/documentation_robotics_viewer-storybook` | Start Storybook server and list available stories |
+| `/documentation_robotics_viewer-api-sync` | Sync OpenAPI specs and generate TypeScript types |
+| `/documentation_robotics_viewer-patterns` | Show coding patterns for React Flow nodes, Zustand, and Tailwind |
+| `/documentation_robotics_viewer-deploy` | Build Docker image and run deployment checks |
+
+<!-- /generated-agents-section -->
