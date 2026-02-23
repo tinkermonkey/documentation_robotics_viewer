@@ -55,7 +55,6 @@ import {
 } from './components';
 import type {
   UnifiedNodeData,
-  UnifiedNodeType,
   NodeBadge,
   DetailLevel,
   ChangesetOperation,
@@ -116,7 +115,6 @@ export type {
   NodeColors,
   ChangesetColors,
   UnifiedNodeData,
-  UnifiedNodeType,
   NodeBadge,
   DetailLevel,
   ChangesetOperation,

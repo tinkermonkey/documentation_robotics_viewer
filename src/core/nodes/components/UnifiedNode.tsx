@@ -17,8 +17,7 @@
  */
 
 import React, { memo } from 'react';
-import { Handle, Position, NodeProps } from '@xyflow/react';
-import type { Node } from '@xyflow/react';
+import { Handle, Position } from '@xyflow/react';
 import { NodeType } from '../NodeType';
 import { nodeConfigLoader } from '../nodeConfigLoader';
 import { RelationshipBadge, RelationshipBadgeData } from './RelationshipBadge';
@@ -43,12 +42,11 @@ export interface UnifiedNodeData {
   detailLevel?: DetailLevel;
   changesetOperation?: ChangesetOperation;
   relationshipBadge?: RelationshipBadgeData;
+  // Index signature for React Flow compatibility
+  [key: string]: unknown;
 }
 
-export type UnifiedNodeType = Node<UnifiedNodeData>;
-
-function UnifiedNodeComponent(props: any): React.ReactElement {
-  const { data, id } = props as NodeProps<UnifiedNodeData>;
+function UnifiedNodeComponent({ data, id: _id }: { data: UnifiedNodeData; id?: string }): React.ReactElement {
   const {
     nodeType,
     label,
@@ -320,7 +318,6 @@ function UnifiedNodeComponent(props: any): React.ReactElement {
       {showFields && !isMinimal && (
         <FieldList
           items={items}
-          nodeId={id}
           itemHeight={itemHeight}
           strokeColor={finalStrokeColor}
           handleColor={colors.handle || colors.stroke}

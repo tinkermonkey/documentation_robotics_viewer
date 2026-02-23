@@ -5,7 +5,7 @@
  */
 
 export { default as UnifiedNode } from './UnifiedNode';
-export type { UnifiedNodeData, UnifiedNodeType, NodeBadge, DetailLevel, ChangesetOperation } from './UnifiedNode';
+export type { UnifiedNodeData, NodeBadge, DetailLevel, ChangesetOperation } from './UnifiedNode';
 
 export { default as FieldList } from './FieldList';
 export type { FieldItem } from './FieldList';

@@ -35,8 +35,6 @@ export const CenteredLayout: UnifiedNodeStory = {
       detailLevel: 'standard',
     },
     id: 'node-1',
-    isConnectable: true,
-    selected: false,
   },
 };
 
@@ -49,8 +47,6 @@ export const LeftLayout: UnifiedNodeStory = {
       detailLevel: 'standard',
     },
     id: 'node-2',
-    isConnectable: true,
-    selected: false,
   },
 };
 
@@ -71,8 +67,6 @@ export const WithTopLeftBadge: UnifiedNodeStory = {
       detailLevel: 'standard',
     },
     id: 'node-3',
-    isConnectable: true,
-    selected: false,
   },
 };
 
@@ -93,8 +87,6 @@ export const WithTopRightBadge: UnifiedNodeStory = {
       detailLevel: 'standard',
     },
     id: 'node-4',
-    isConnectable: true,
-    selected: false,
   },
 };
 
@@ -115,8 +107,6 @@ export const WithInlineBadges: UnifiedNodeStory = {
       detailLevel: 'standard',
     },
     id: 'node-5',
-    isConnectable: true,
-    selected: false,
   },
 };
 
@@ -148,8 +138,6 @@ export const WithMultipleBadges: UnifiedNodeStory = {
       detailLevel: 'standard',
     },
     id: 'node-6',
-    isConnectable: true,
-    selected: false,
   },
 };
 
@@ -191,8 +179,6 @@ export const WithFieldList: UnifiedNodeStory = {
       detailLevel: 'standard',
     },
     id: 'node-7',
-    isConnectable: true,
-    selected: false,
   },
 };
 
@@ -205,8 +191,6 @@ export const SemanticZoomMinimal: UnifiedNodeStory = {
       detailLevel: 'minimal' as const,
     },
     id: 'node-8',
-    isConnectable: true,
-    selected: false,
   },
 };
 
@@ -219,8 +203,6 @@ export const SemanticZoomStandard: UnifiedNodeStory = {
       detailLevel: 'standard' as const,
     },
     id: 'node-9',
-    isConnectable: true,
-    selected: false,
   },
 };
 
@@ -240,8 +222,6 @@ export const SemanticZoomDetailed: UnifiedNodeStory = {
       detailLevel: 'detailed' as const,
     },
     id: 'node-10',
-    isConnectable: true,
-    selected: false,
   },
 };
 
@@ -255,8 +235,6 @@ export const ChangesetAdd: UnifiedNodeStory = {
       detailLevel: 'standard',
     },
     id: 'node-11',
-    isConnectable: true,
-    selected: false,
   },
 };
 
@@ -270,8 +248,6 @@ export const ChangesetUpdate: UnifiedNodeStory = {
       detailLevel: 'standard',
     },
     id: 'node-12',
-    isConnectable: true,
-    selected: false,
   },
 };
 
@@ -285,8 +261,6 @@ export const ChangesetDelete: UnifiedNodeStory = {
       detailLevel: 'standard',
     },
     id: 'node-13',
-    isConnectable: true,
-    selected: false,
   },
 };
 
@@ -305,8 +279,6 @@ export const WithRelationshipBadge: UnifiedNodeStory = {
       detailLevel: 'standard',
     },
     id: 'node-14',
-    isConnectable: true,
-    selected: false,
   },
 };
 
@@ -334,8 +306,6 @@ export const HiddenFields: UnifiedNodeStory = {
       detailLevel: 'standard',
     },
     id: 'node-15',
-    isConnectable: true,
-    selected: false,
   },
 };
 
