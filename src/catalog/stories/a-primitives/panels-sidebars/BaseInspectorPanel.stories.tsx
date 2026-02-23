@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { BaseInspectorPanel } from '@/core/components/base/BaseInspectorPanel';
 import type { BaseGraph, BaseNode, BaseEdge } from '@/core/components/base/types';
 import { ArrowUp, ArrowDown, Eye } from 'lucide-react';
