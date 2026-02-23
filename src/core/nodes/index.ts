@@ -44,6 +44,9 @@ import {
   JSON_SCHEMA_NODE_WIDTH,
   JSON_SCHEMA_NODE_MIN_HEIGHT,
 } from './JSONSchemaNode';
+import { NodeType, isValidNodeType } from './NodeType';
+import { nodeConfigLoader } from './nodeConfigLoader';
+import type { NodeConfig, NodeStyleConfig, NodeDimensions, NodeColors, ChangesetColors } from './nodeConfig.types';
 
 // Export all node components
 export {
@@ -78,7 +81,14 @@ export {
   JSONSchemaNode,
   JSON_SCHEMA_NODE_WIDTH,
   JSON_SCHEMA_NODE_MIN_HEIGHT,
+  // Configuration infrastructure
+  NodeType,
+  isValidNodeType,
+  nodeConfigLoader,
 };
+
+// Export types for configuration
+export type { NodeConfig, NodeStyleConfig, NodeDimensions, NodeColors, ChangesetColors };
 
 // Node types object for React Flow
 // Maps node type strings to their component implementations
