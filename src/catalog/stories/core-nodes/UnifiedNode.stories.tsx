@@ -1,16 +1,13 @@
 /**
  * UnifiedNode Component Stories
  *
- * Comprehensive Storybook stories for the UnifiedNode component and its sub-components.
+ * Comprehensive Storybook stories for the UnifiedNode component.
  * Demonstrates all features: layouts, badges, semantic zoom, changesets, field lists, and handles.
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
 import { NodeType } from '@/core/nodes/NodeType';
 import UnifiedNode from '@/core/nodes/components/UnifiedNode';
-import FieldList from '@/core/nodes/components/FieldList';
-import FieldTooltip from '@/core/nodes/components/FieldTooltip';
-import { RelationshipBadge } from '@/core/nodes/components/RelationshipBadge';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 // ============================================================================
@@ -20,7 +17,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 const unifiedNodeMeta = {
   title: 'Core Nodes / UnifiedNode',
   component: UnifiedNode,
-  decorators: [withReactFlowDecorator],
+  decorators: [withReactFlowDecorator()],
   parameters: {
     layout: 'centered',
   },
@@ -342,178 +339,3 @@ export const HiddenFields: UnifiedNodeStory = {
   },
 };
 
-// Error state - Invalid NodeType
-export const ErrorInvalidNodeType: UnifiedNodeStory = {
-  args: {
-    data: {
-      nodeType: 'INVALID_TYPE' as any,
-      label: 'This should show error',
-      detailLevel: 'standard',
-    },
-    id: 'node-error-1',
-    isConnectable: true,
-    selected: false,
-  },
-};
-
-// ============================================================================
-// FieldList Stories
-// ============================================================================
-
-const fieldListMeta = {
-  title: 'Core Nodes / FieldList',
-  component: FieldList,
-  decorators: [],
-  parameters: {
-    layout: 'centered',
-  },
-} satisfies Meta<typeof FieldList>;
-
-export const FieldListBasic: StoryObj<typeof fieldListMeta> = {
-  args: {
-    items: [
-      {
-        id: 'field-1',
-        label: 'id',
-        value: 'UUID',
-        required: true,
-      },
-      {
-        id: 'field-2',
-        label: 'name',
-        value: 'string',
-        required: true,
-      },
-      {
-        id: 'field-3',
-        label: 'email',
-        value: 'string',
-        required: true,
-      },
-      {
-        id: 'field-4',
-        label: 'phone',
-        value: 'string',
-        required: false,
-      },
-    ],
-    itemHeight: 24,
-    strokeColor: '#059669',
-    handleColor: '#059669',
-  },
-};
-
-export const FieldListEmpty: StoryObj<typeof fieldListMeta> = {
-  args: {
-    items: [],
-    itemHeight: 24,
-    strokeColor: '#059669',
-    handleColor: '#059669',
-  },
-};
-
-export const FieldListWithTooltips: StoryObj<typeof fieldListMeta> = {
-  args: {
-    items: [
-      {
-        id: 'field-1',
-        label: 'id',
-        value: 'UUID',
-        required: true,
-        tooltip: 'Unique identifier for the resource',
-      },
-      {
-        id: 'field-2',
-        label: 'createdAt',
-        value: 'ISO8601',
-        required: true,
-        tooltip: 'RFC 3339 formatted timestamp',
-      },
-    ],
-    itemHeight: 24,
-    strokeColor: '#2563eb',
-    handleColor: '#2563eb',
-  },
-};
-
-// ============================================================================
-// FieldTooltip Stories
-// ============================================================================
-
-const fieldTooltipMeta = {
-  title: 'Core Nodes / FieldTooltip',
-  component: FieldTooltip,
-  decorators: [],
-  parameters: {
-    layout: 'centered',
-  },
-} satisfies Meta<typeof FieldTooltip>;
-
-export const FieldTooltipBasic: StoryObj<typeof fieldTooltipMeta> = {
-  args: {
-    content: 'This is a helpful tooltip explaining the field',
-  },
-};
-
-export const FieldTooltipLongContent: StoryObj<typeof fieldTooltipMeta> = {
-  args: {
-    content: 'This is a longer tooltip with more detailed information about what this field represents in the system',
-  },
-};
-
-// ============================================================================
-// RelationshipBadge Stories
-// ============================================================================
-
-const relationshipBadgeMeta = {
-  title: 'Core Nodes / RelationshipBadge',
-  component: RelationshipBadge,
-  decorators: [],
-  parameters: {
-    layout: 'centered',
-  },
-} satisfies Meta<typeof RelationshipBadge>;
-
-export const RelationshipBadgeVisible: StoryObj<typeof relationshipBadgeMeta> = {
-  args: {
-    badge: {
-      count: 12,
-      incoming: 5,
-      outgoing: 7,
-    },
-    isDimmed: true,
-  },
-};
-
-export const RelationshipBadgeHidden: StoryObj<typeof relationshipBadgeMeta> = {
-  args: {
-    badge: {
-      count: 12,
-      incoming: 5,
-      outgoing: 7,
-    },
-    isDimmed: false,
-  },
-};
-
-export const RelationshipBadgeZeroCount: StoryObj<typeof relationshipBadgeMeta> = {
-  args: {
-    badge: {
-      count: 0,
-      incoming: 0,
-      outgoing: 0,
-    },
-    isDimmed: true,
-  },
-};
-
-export const RelationshipBadgeHighCount: StoryObj<typeof relationshipBadgeMeta> = {
-  args: {
-    badge: {
-      count: 42,
-      incoming: 20,
-      outgoing: 22,
-    },
-    isDimmed: true,
-  },
-};

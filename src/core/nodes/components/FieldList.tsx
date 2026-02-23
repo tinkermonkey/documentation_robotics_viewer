@@ -57,6 +57,8 @@ const FieldList = memo<FieldListProps>(({ items, itemHeight, strokeColor, handle
         display: 'flex',
         flexDirection: 'column',
       }}
+      role="list"
+      tabIndex={0}
     >
       {items.map((item, idx) => {
         const isEven = idx % 2 === 0;
