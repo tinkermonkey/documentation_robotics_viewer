@@ -1,4 +1,4 @@
-import nodeConfigData from './nodeConfig.json' assert { type: 'json' };
+import nodeConfigData from './nodeConfig.json' with { type: 'json' };
 import type { NodeConfig, NodeStyleConfig } from './nodeConfig.types';
 import { NodeType, isValidNodeType } from './NodeType';
 
@@ -21,27 +21,44 @@ class NodeConfigLoader {
 
   /**
    * Validate that all required NodeType enum values have corresponding nodeStyles entries.
-   * Logs warnings for missing configurations.
+   * Also validates that all typeMap entries reference valid NodeType values.
+   * Logs warnings for missing or invalid configurations in development mode.
    */
   private validateConfig(): void {
     const styleKeys = Object.keys(this.config.nodeStyles);
     const enumValues = Object.values(NodeType);
+    const isDev = typeof import.meta !== 'undefined' && import.meta.env?.DEV;
 
+    // Validate nodeStyles coverage
     for (const nodeType of enumValues) {
-      // LayerContainerNode has special handling, so we allow it to be missing
+      // LAYER_CONTAINER is included in nodeStyles for consistency, but validation allows it to be skipped
+      // if needed due to its minimal/optional styling requirements in some contexts
       if (nodeType === NodeType.LAYER_CONTAINER) {
         continue;
       }
 
       if (!styleKeys.includes(nodeType)) {
-        console.warn(`[NodeConfigLoader] Missing style config for NodeType: ${nodeType}`);
+        if (isDev) {
+          console.warn(`[NodeConfigLoader] Missing style config for NodeType: ${nodeType}`);
+        }
       }
     }
 
-    // Log info about loaded configuration
-    console.log(
-      `[NodeConfigLoader] Loaded configuration with ${styleKeys.length} node styles and ${Object.keys(this.config.typeMap).length} type mappings`
-    );
+    // Validate typeMap entries point to valid NodeType values
+    for (const [key, mappedType] of Object.entries(this.config.typeMap)) {
+      if (!isValidNodeType(mappedType)) {
+        if (isDev) {
+          console.warn(`[NodeConfigLoader] Invalid typeMap entry: "${key}" -> "${mappedType}"`);
+        }
+      }
+    }
+
+    // Log info about loaded configuration in development mode
+    if (isDev) {
+      console.log(
+        `[NodeConfigLoader] Loaded configuration with ${styleKeys.length} node styles and ${Object.keys(this.config.typeMap).length} type mappings`
+      );
+    }
   }
 
   /**
