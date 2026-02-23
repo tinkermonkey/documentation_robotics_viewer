@@ -1,0 +1,13 @@
+import{j as e}from"./iframe-DSSgKmXl.js";import{E as n}from"./ErrorState-uaa9-pX2.js";import"./preload-helper-Dp1pzeXC.js";import"./index-NvR17eTZ.js";import"./Alert-B-2krvq0.js";import"./create-theme-BOkxhGns.js";import"./Button-DjdbHWkm.js";import"./Card-dBO4-pIe.js";const k={title:"A Primitives / State Panels / ErrorState",parameters:{layout:"centered"}},r={render:()=>e.jsx(n,{title:"Failed to Load",message:"An unexpected error occurred while loading the application. Please try again.",variant:"page"})},a={render:()=>e.jsx(n,{title:"Connection Error",message:"Could not connect to the server. Please check your connection and try again.",variant:"page",onRetry:()=>console.log("Retry clicked")})},o={render:()=>e.jsx("div",{className:"w-96 bg-white border border-gray-200",children:e.jsx(n,{title:"Load Failed",message:"Failed to load panel data.",variant:"panel"})})},t={render:()=>e.jsx("div",{className:"p-4 bg-white border border-gray-200",children:e.jsx(n,{message:"Something went wrong. Please try again.",variant:"inline",onRetry:()=>console.log("Retry clicked")})})};var s,i,c;r.parameters={...r.parameters,docs:{...(s=r.parameters)==null?void 0:s.docs,source:{originalSource:`{
+  render: () => <ErrorState title="Failed to Load" message="An unexpected error occurred while loading the application. Please try again." variant="page" />
+}`,...(c=(i=r.parameters)==null?void 0:i.docs)==null?void 0:c.source}}};var d,l,m;a.parameters={...a.parameters,docs:{...(d=a.parameters)==null?void 0:d.docs,source:{originalSource:`{
+  render: () => <ErrorState title="Connection Error" message="Could not connect to the server. Please check your connection and try again." variant="page" onRetry={() => console.log('Retry clicked')} />
+}`,...(m=(l=a.parameters)==null?void 0:l.docs)==null?void 0:m.source}}};var g,p,u;o.parameters={...o.parameters,docs:{...(g=o.parameters)==null?void 0:g.docs,source:{originalSource:`{
+  render: () => <div className="w-96 bg-white border border-gray-200">
+    <ErrorState title="Load Failed" message="Failed to load panel data." variant="panel" />
+  </div>
+}`,...(u=(p=o.parameters)==null?void 0:p.docs)==null?void 0:u.source}}};var y,E,h;t.parameters={...t.parameters,docs:{...(y=t.parameters)==null?void 0:y.docs,source:{originalSource:`{
+  render: () => <div className="p-4 bg-white border border-gray-200">
+    <ErrorState message="Something went wrong. Please try again." variant="inline" onRetry={() => console.log('Retry clicked')} />
+  </div>
+}`,...(h=(E=t.parameters)==null?void 0:E.docs)==null?void 0:h.source}}};const F=["PageError","PageErrorWithRetry","PanelError","InlineError"];export{t as InlineError,r as PageError,a as PageErrorWithRetry,o as PanelError,F as __namedExportsOrder,k as default};

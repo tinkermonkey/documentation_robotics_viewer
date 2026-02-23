@@ -1,0 +1,16 @@
+import{j as e}from"./iframe-DSSgKmXl.js";import{R as d,u as h,a as b,k as f,i as j,j as R}from"./index-DzsatpJz.js";import{M as D}from"./MiniMap-CP89tgTE.js";/* empty css              */import"./preload-helper-Dp1pzeXC.js";import"./index-DVMEuaP3.js";import"./index-B3kNdT8l.js";import"./index-CsUALWJS.js";const I={title:"C Graphs / Views / MiniMap",parameters:{layout:"fullscreen",docs:{description:{component:`MiniMap - React Flow MiniMap component for showing graph overview
+
+For production use with styled Panel wrapper, see usage in GraphViewer.tsx,
+MotivationGraphView.tsx, BusinessLayerView.tsx, and C4GraphView.tsx.`}}}},y=[{id:"1",position:{x:0,y:0},data:{label:"Node 1"}},{id:"2",position:{x:250,y:0},data:{label:"Node 2"}},{id:"3",position:{x:500,y:0},data:{label:"Node 3"}},{id:"4",position:{x:750,y:0},data:{label:"Node 4"}},{id:"5",position:{x:0,y:150},data:{label:"Node 5"}},{id:"6",position:{x:250,y:150},data:{label:"Node 6"}},{id:"7",position:{x:500,y:150},data:{label:"Node 7"}},{id:"8",position:{x:750,y:150},data:{label:"Node 8"}}],N=[{id:"e1-2",source:"1",target:"2"},{id:"e2-3",source:"2",target:"3"},{id:"e3-4",source:"3",target:"4"},{id:"e1-5",source:"1",target:"5"},{id:"e5-6",source:"5",target:"6"},{id:"e6-7",source:"6",target:"7"},{id:"e7-8",source:"7",target:"8"}],C=({nodeColor:s,maskColor:t})=>{const[i,,n]=h(y),[k]=b(N),v=f();return e.jsx("div",{className:"w-full h-screen bg-gray-50",children:e.jsx(j,{nodes:i,edges:k,onNodesChange:n,defaultViewport:{x:50,y:50,zoom:.8},minZoom:.1,maxZoom:4,children:v&&e.jsx(D,{nodeColor:s,maskColor:t||"rgba(100, 100, 100, 0.2)",maskStrokeColor:"#3b82f6",maskStrokeWidth:2})})})},o={render:()=>e.jsx(d,{children:e.jsx(C,{})})},F=()=>{const[s,,t]=h(y),[i]=b(N),n=f();return e.jsx("div",{className:"w-full h-screen bg-gray-50",children:e.jsx(j,{nodes:s,edges:i,onNodesChange:t,defaultViewport:{x:50,y:50,zoom:.8},minZoom:.1,maxZoom:4,children:n&&e.jsx(R,{maskColor:"rgba(100, 100, 100, 0.2)",maskStrokeColor:"#3b82f6",maskStrokeWidth:2,pannable:!0,zoomable:!0})})})},r={render:()=>e.jsx(d,{children:e.jsx(F,{})})},a={render:()=>e.jsx(d,{children:e.jsx(C,{nodeColor:()=>"#4f46e5",maskColor:"rgba(79, 70, 229, 0.1)"})})};var c,l,p;o.parameters={...o.parameters,docs:{...(c=o.parameters)==null?void 0:c.docs,source:{originalSource:`{
+  render: () => <ReactFlowProvider>
+      <MiniMapDemo />
+    </ReactFlowProvider>
+}`,...(p=(l=o.parameters)==null?void 0:l.docs)==null?void 0:p.source}}};var m,u,x;r.parameters={...r.parameters,docs:{...(m=r.parameters)==null?void 0:m.docs,source:{originalSource:`{
+  render: () => <ReactFlowProvider>
+      <DirectMiniMapDemo />
+    </ReactFlowProvider>
+}`,...(x=(u=r.parameters)==null?void 0:u.docs)==null?void 0:x.source}}};var g,M,w;a.parameters={...a.parameters,docs:{...(g=a.parameters)==null?void 0:g.docs,source:{originalSource:`{
+  render: () => <ReactFlowProvider>
+      <MiniMapDemo nodeColor={() => '#4f46e5'} maskColor="rgba(79, 70, 229, 0.1)" />
+    </ReactFlowProvider>
+}`,...(w=(M=a.parameters)==null?void 0:M.docs)==null?void 0:w.source}}};const O=["Default","DirectReactFlowMiniMap","WithColorOptions"];export{o as Default,r as DirectReactFlowMiniMap,a as WithColorOptions,O as __namedExportsOrder,I as default};
