@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import { C4ContainerNodeData } from '../../types/reactflow';
-import { RelationshipBadge } from '../motivation/RelationshipBadge';
+import { RelationshipBadge } from '../components/RelationshipBadge';
 
 /**
  * Node dimensions for layout calculation

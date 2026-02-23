@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import { BaseNodeData } from '../types/reactflow';
-import { RelationshipBadge } from './motivation/RelationshipBadge';
+import { RelationshipBadge } from './components/RelationshipBadge';
 
 /**
  * Badge descriptor returned by the getBadges callback.
