@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { BusinessProcessNode, BUSINESS_PROCESS_NODE_WIDTH, BUSINESS_PROCESS_NODE_HEIGHT } from '@/core/nodes/BusinessProcessNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createBusinessProcessNodeData } from '@catalog/fixtures/nodeDataFixtures';

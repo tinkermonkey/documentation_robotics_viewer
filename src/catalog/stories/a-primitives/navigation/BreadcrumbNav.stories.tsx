@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { BreadcrumbNav, type BreadcrumbSegment } from '@/apps/embedded/components/shared/BreadcrumbNav';
 import { HiOutlineCubeTransparent, HiOutlineRectangleStack } from 'react-icons/hi2';
 

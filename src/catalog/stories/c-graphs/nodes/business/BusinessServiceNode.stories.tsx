@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { BusinessServiceNode, BUSINESS_SERVICE_NODE_WIDTH, BUSINESS_SERVICE_NODE_HEIGHT } from '@/core/nodes/business/BusinessServiceNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createBusinessServiceNodeData } from '@catalog/fixtures/nodeDataFixtures';

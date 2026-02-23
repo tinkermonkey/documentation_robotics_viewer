@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SchemaInfoPanel } from '@/apps/embedded/components/SchemaInfoPanel';
 import { useModelStore } from '@/core/stores/modelStore';
 import { useEffect } from 'react';

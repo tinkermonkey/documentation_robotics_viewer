@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { JSONSchemaNode, JSON_SCHEMA_NODE_WIDTH } from '@/core/nodes/JSONSchemaNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { JSONSchemaNodeData } from '@/core/types/reactflow';

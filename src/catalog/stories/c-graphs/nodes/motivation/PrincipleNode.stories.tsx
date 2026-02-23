@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { PrincipleNode, PRINCIPLE_NODE_WIDTH, PRINCIPLE_NODE_HEIGHT } from '@/core/nodes/motivation/PrincipleNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createPrincipleNodeData } from '@catalog/fixtures/nodeDataFixtures';

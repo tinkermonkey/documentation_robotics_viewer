@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import GraphViewer from '@/core/components/GraphViewer';
 import { ReactFlowProvider } from '@xyflow/react';
 import { createCompleteModelFixture } from '@catalog/fixtures/modelFixtures';

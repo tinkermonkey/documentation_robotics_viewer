@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChatTextContent } from '@/apps/embedded/components/chat/ChatTextContent';
 import { ThinkingBlock } from '@/apps/embedded/components/chat/ThinkingBlock';
 import { ToolInvocationCard } from '@/apps/embedded/components/chat/ToolInvocationCard';

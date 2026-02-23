@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import ChangesetGraphView from '@/apps/embedded/components/ChangesetGraphView';
 import type { ChangesetDetails, ChangesetChange } from '@/apps/embedded/services/embeddedDataLoader';
 import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';

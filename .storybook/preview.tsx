@@ -1,4 +1,4 @@
-import type { Preview } from '@storybook/react';
+import type { Preview } from '@storybook/react-vite';
 import { MockRouterProvider } from '../src/catalog/providers/MockRouterProvider';
 import '../src/index.css';
 
@@ -50,6 +50,7 @@ const preview: Preview = {
       </MockRouterProvider>
     ),
   ],
+
   parameters: {
     controls: {
       matchers: {
@@ -115,6 +116,8 @@ const preview: Preview = {
       },
     },
   },
+
+  tags: ['autodocs']
 };
 
 export default preview;

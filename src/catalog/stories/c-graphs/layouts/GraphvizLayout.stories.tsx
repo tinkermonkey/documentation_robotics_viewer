@@ -2,7 +2,7 @@
  * Graphviz Layout Engine Stories
  * Demonstrates classic Graphviz layout algorithms
  */
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import GraphViewer from '@/core/components/GraphViewer';
 import { StoryProviderWrapper } from '@/catalog';
 import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';

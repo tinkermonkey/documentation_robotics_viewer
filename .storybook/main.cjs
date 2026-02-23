@@ -10,15 +10,13 @@ const path = require('path');
  */
 module.exports = {
   stories: ['../src/**/*.stories.@(js|jsx|ts|tsx)'],
-  addons: [
-    '@storybook/addon-essentials',
-    '@storybook/addon-a11y',
-    '@storybook/addon-interactions',
-  ],
+  addons: ['@storybook/addon-a11y', '@storybook/addon-docs'],
+
   framework: {
     name: '@storybook/react-vite',
     options: {},
   },
+
   viteFinal: async (config) => {
     const { mergeConfig } = await import('vite');
     return mergeConfig(config, {
@@ -44,6 +42,6 @@ module.exports = {
       },
     });
   },
-  docs: { autodocs: true },
-  staticDirs: ['../public'],
+
+  staticDirs: ['../public']
 };

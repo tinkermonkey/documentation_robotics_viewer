@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AssessmentNode, ASSESSMENT_NODE_WIDTH, ASSESSMENT_NODE_HEIGHT } from '@/core/nodes/motivation/AssessmentNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createAssessmentNodeData } from '@catalog/fixtures/nodeDataFixtures';

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { OutcomeNode, OUTCOME_NODE_WIDTH, OUTCOME_NODE_HEIGHT } from '@/core/nodes/motivation/OutcomeNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createOutcomeNodeData } from '@catalog/fixtures/nodeDataFixtures';

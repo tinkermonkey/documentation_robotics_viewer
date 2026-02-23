@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import HighlightedPathPanel from '@/apps/embedded/components/HighlightedPathPanel';
 
 const meta = {

@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { Node } from '@xyflow/react';
 import { ModelRouteComposition } from '@/catalog/components/ModelRouteComposition';
 import { StoryProviderWrapper } from '@/catalog/providers/StoryProviderWrapper';

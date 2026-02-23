@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { wrapRenderProp, wrapRenderProp2, wrapRenderPropVoid } from '@/core/components/base/RenderPropErrorBoundary';
 
 const meta = {

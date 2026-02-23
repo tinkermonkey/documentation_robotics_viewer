@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { NodeContextMenu } from '@/apps/embedded/components/shared/NodeContextMenu';
 
 const meta = {

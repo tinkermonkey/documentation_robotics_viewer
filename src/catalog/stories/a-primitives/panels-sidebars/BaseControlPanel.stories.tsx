@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { BaseControlPanel } from '@/core/components/base/BaseControlPanel';
 import { LayoutOption, ExportOption } from '@/core/components/base/types';
 import { Download, Share2, FileJson, Image } from 'lucide-react';

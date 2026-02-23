@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import ChangesetViewer from '@/apps/embedded/components/ChangesetViewer';
 import { useChangesetStore } from '@/apps/embedded/stores/changesetStore';
 import { useEffect, ReactNode } from 'react';

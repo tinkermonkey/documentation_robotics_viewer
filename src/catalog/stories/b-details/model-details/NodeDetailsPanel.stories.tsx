@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import NodeDetailsPanel from '@/apps/embedded/components/NodeDetailsPanel';
 import type { Node } from '@xyflow/react';
 import type { MetaModel } from '@/core/types';

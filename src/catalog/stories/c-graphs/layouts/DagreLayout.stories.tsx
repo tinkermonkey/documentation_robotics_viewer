@@ -2,7 +2,7 @@
  * Dagre Layout Engine Stories
  * Demonstrates hierarchical tree layouts using the Dagre algorithm
  */
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import GraphViewer from '@/core/components/GraphViewer';
 import { StoryProviderWrapper } from '@/catalog';
 import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';

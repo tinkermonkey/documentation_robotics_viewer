@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ExternalActorNode, EXTERNAL_ACTOR_NODE_WIDTH, EXTERNAL_ACTOR_NODE_HEIGHT } from '@/core/nodes/c4/ExternalActorNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createC4ExternalActorNodeData } from '@catalog/fixtures/nodeDataFixtures';

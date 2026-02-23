@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import AnnotationPanel from '@/apps/embedded/components/AnnotationPanel';
 import { useAnnotationStore } from '@/apps/embedded/stores/annotationStore';
 import { useModelStore } from '@/core/stores/modelStore';

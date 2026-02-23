@@ -2,7 +2,7 @@
  * ChatMessage Component Stories
  * Demonstrates the main message container with different roles and content types
  */
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChatMessage } from '@/apps/embedded/components/chat/ChatMessage';
 import type { ChatMessage as ChatMessageType } from '@/apps/embedded/types/chat';
 

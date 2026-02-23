@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { GraphViewSidebar } from '@/core/components/base/GraphViewSidebar';
 
 const meta = {

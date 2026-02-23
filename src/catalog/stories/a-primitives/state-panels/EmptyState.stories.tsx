@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { EmptyState } from '@/apps/embedded/components/shared/EmptyState';
 
 const meta = {

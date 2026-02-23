@@ -2,7 +2,7 @@
  * ThinkingBlock Component Stories
  * Demonstrates the collapsible reasoning display for extended thinking
  */
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ThinkingBlock } from '@/apps/embedded/components/chat/ThinkingBlock';
 
 const meta = {

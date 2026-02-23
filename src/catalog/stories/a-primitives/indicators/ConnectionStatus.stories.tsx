@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import ConnectionStatus from '@/apps/embedded/components/ConnectionStatus';
 import { useConnectionStore } from '@/apps/embedded/stores/connectionStore';
 import { useEffect } from 'react';

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import MetadataGrid from '@/apps/embedded/components/common/MetadataGrid';
 
 const meta = {

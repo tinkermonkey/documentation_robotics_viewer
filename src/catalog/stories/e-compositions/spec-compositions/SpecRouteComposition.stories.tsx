@@ -3,7 +3,7 @@
  * Demonstrates larger combinatorial views of the spec route with complete layouts
  */
 
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SpecRouteComposition } from '@/catalog/components/SpecRouteComposition';
 import { StoryProviderWrapper } from '@/catalog/providers/StoryProviderWrapper';
 import {

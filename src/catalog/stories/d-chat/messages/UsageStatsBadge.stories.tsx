@@ -2,7 +2,7 @@
  * UsageStatsBadge Component Stories
  * Demonstrates token usage and cost display
  */
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { UsageStatsBadge } from '@/apps/embedded/components/chat/UsageStatsBadge';
 
 const meta = {
