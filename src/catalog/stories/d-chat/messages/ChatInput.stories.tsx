@@ -2,7 +2,7 @@
  * ChatInput Component Stories
  * Demonstrates the message composition form
  */
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ChatInput } from '@/apps/embedded/components/chat/ChatInput';
 
 const meta = {

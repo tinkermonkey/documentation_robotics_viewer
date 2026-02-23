@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import LayerTypesLegend from '@/apps/embedded/components/LayerTypesLegend';
 import type { MetaModel } from '@/core/types/model';
 

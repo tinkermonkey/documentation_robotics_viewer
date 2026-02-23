@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { RequirementNode, REQUIREMENT_NODE_WIDTH, REQUIREMENT_NODE_HEIGHT } from '@/core/nodes/motivation/RequirementNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createRequirementNodeData } from '@catalog/fixtures/nodeDataFixtures';

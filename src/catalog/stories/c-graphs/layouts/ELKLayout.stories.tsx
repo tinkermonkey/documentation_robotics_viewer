@@ -2,7 +2,7 @@
  * ELK Layout Engine Stories
  * Demonstrates advanced layouts using Eclipse Layout Kernel (ELK)
  */
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import GraphViewer from '@/core/components/GraphViewer';
 import { StoryProviderWrapper } from '@/catalog';
 import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';

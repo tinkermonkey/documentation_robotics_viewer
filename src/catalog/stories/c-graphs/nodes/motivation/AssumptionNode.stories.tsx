@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { AssumptionNode, ASSUMPTION_NODE_WIDTH, ASSUMPTION_NODE_HEIGHT } from '@/core/nodes/motivation/AssumptionNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createAssumptionNodeData } from '@catalog/fixtures/nodeDataFixtures';

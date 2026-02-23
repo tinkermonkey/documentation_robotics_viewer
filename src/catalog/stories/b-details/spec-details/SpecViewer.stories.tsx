@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import SpecViewer from '@/apps/embedded/components/SpecViewer';
 import type { SpecDataResponse } from '@/apps/embedded/services/embeddedDataLoader';
 

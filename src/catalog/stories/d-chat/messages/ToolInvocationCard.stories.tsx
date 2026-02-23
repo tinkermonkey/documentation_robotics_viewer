@@ -2,7 +2,7 @@
  * ToolInvocationCard Component Stories
  * Demonstrates tool execution display with input/output
  */
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ToolInvocationCard } from '@/apps/embedded/components/chat/ToolInvocationCard';
 import type { ToolInvocationContent } from '@/apps/embedded/types/chat';
 

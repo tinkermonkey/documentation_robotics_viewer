@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { LayerContainerNode } from '@/core/nodes/LayerContainerNode';
 import { createLayerContainerNodeData } from '@catalog/fixtures/nodeDataFixtures';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';

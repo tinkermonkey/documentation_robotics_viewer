@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ContainerNode, CONTAINER_NODE_WIDTH, CONTAINER_NODE_HEIGHT } from '@/core/nodes/c4/ContainerNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createC4ContainerNodeData } from '@catalog/fixtures/nodeDataFixtures';

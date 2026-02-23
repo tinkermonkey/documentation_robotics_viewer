@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { StakeholderNode, STAKEHOLDER_NODE_WIDTH, STAKEHOLDER_NODE_HEIGHT } from '@/core/nodes/motivation/StakeholderNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createStakeholderNodeData } from '@catalog/fixtures/nodeDataFixtures';

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ValueStreamNode, VALUE_STREAM_NODE_WIDTH, VALUE_STREAM_NODE_HEIGHT } from '@/core/nodes/motivation/ValueStreamNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createValueStreamNodeData } from '@catalog/fixtures/nodeDataFixtures';

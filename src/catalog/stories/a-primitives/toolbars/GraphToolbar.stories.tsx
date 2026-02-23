@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { GraphToolbar } from '@/apps/embedded/components/GraphToolbar';
 
 const meta = {

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { BusinessCapabilityNode, BUSINESS_CAPABILITY_NODE_WIDTH, BUSINESS_CAPABILITY_NODE_HEIGHT } from '@/core/nodes/business/BusinessCapabilityNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createBusinessCapabilityNodeData } from '@catalog/fixtures/nodeDataFixtures';

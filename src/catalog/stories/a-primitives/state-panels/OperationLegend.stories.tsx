@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { OperationLegend } from '@/apps/embedded/components/OperationLegend';
 
 const meta = {

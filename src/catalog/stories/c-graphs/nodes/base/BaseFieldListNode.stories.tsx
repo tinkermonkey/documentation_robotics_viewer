@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { BaseFieldListNode, FieldItem } from '@/core/nodes/BaseFieldListNode';
 import { createBaseFieldListNodeConfig } from '@catalog/fixtures/nodeDataFixtures';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';

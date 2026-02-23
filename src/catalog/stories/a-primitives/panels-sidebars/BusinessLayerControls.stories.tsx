@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { BusinessLayerControls } from '@/apps/embedded/components/businessLayer/BusinessLayerControls';
 import type { BusinessGraph } from '@/core/types/businessLayer';
 

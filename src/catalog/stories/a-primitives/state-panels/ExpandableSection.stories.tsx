@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within, userEvent, waitFor } from 'storybook/test';
 import { useState } from 'react';
 import ExpandableSection from '@/apps/embedded/components/common/ExpandableSection';

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { DriverNode, DRIVER_NODE_WIDTH, DRIVER_NODE_HEIGHT } from '@/core/nodes/motivation/DriverNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createDriverNodeData } from '@catalog/fixtures/nodeDataFixtures';

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { GoalNode, GOAL_NODE_WIDTH, GOAL_NODE_HEIGHT } from '@/core/nodes/motivation/GoalNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createGoalNodeData } from '@catalog/fixtures/nodeDataFixtures';

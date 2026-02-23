@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ConstraintNode, CONSTRAINT_NODE_WIDTH, CONSTRAINT_NODE_HEIGHT } from '@/core/nodes/motivation/ConstraintNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createConstraintNodeData } from '@catalog/fixtures/nodeDataFixtures';
