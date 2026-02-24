@@ -706,11 +706,12 @@ export class NodeTransformer {
     const items: FieldItemType[] = [];
 
     // Add description as first field item if present
-    if (element.properties?.description || element.description) {
+    const description = (element.properties?.description as string | undefined) || element.description;
+    if (description) {
       items.push({
         id: 'description',
         label: 'Description',
-        value: element.properties?.description || element.description,
+        value: description,
         required: false,
       });
     }
@@ -720,7 +721,7 @@ export class NodeTransformer {
       items.push({
         id: 'technologies',
         label: 'Technologies',
-        value: element.properties.technology.join(', '),
+        value: (element.properties.technology as string[]).join(', '),
         required: false,
       });
     }
@@ -730,7 +731,7 @@ export class NodeTransformer {
       items.push({
         id: 'role',
         label: 'Role',
-        value: element.properties.role,
+        value: String(element.properties.role),
         required: false,
       });
     }
@@ -740,7 +741,7 @@ export class NodeTransformer {
       items.push({
         id: 'containerType',
         label: 'Type',
-        value: element.properties.containerType,
+        value: String(element.properties.containerType),
         required: false,
       });
     }
@@ -750,7 +751,7 @@ export class NodeTransformer {
       items.push({
         id: 'actorType',
         label: 'Type',
-        value: element.properties.actorType,
+        value: String(element.properties.actorType),
         required: false,
       });
     }
@@ -760,19 +761,23 @@ export class NodeTransformer {
       items.push({
         id: 'interfaces',
         label: 'Interfaces',
-        value: element.properties.interfaces.join(', '),
+        value: (element.properties.interfaces as string[]).join(', '),
         required: false,
       });
     }
+
+    const detailLevel = (element.properties?.detailLevel as 'minimal' | 'standard' | 'detailed' | undefined) || 'standard';
+    const changesetOperation = element.properties?.changesetOperation as 'add' | 'update' | 'delete' | undefined;
+    const relationshipBadge = element.properties?.relationshipBadge as any;
 
     const unifiedData: UnifiedNodeData = {
       nodeType,
       label: element.name || element.id,
       items: items.length > 0 ? items : undefined,
       badges: [],
-      detailLevel: element.properties?.detailLevel || 'standard',
-      changesetOperation: element.properties?.changesetOperation,
-      relationshipBadge: element.properties?.relationshipBadge,
+      detailLevel,
+      changesetOperation,
+      relationshipBadge,
     };
 
     return unifiedData;
