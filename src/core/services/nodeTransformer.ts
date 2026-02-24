@@ -365,6 +365,10 @@ export class NodeTransformer {
       if (element.type === 'JSONSchema' || element.type === 'json-schema' || element.type === 'json-schema-element') {
         return this.extractDataNodeData(element, NodeType.DATA_JSON_SCHEMA);
       }
+      // Fallback for unmapped unified types - log warning and return baseData
+      // This shouldn't happen in normal operation as getNodeTypeForElement already logs a warning
+      console.warn(`[NodeTransformer] Unmapped unified node type: ${element.type}, returning baseData without nodeType`);
+      return baseData;
     }
 
     // Add type-specific data

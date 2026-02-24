@@ -1,6 +1,6 @@
 /**
- * ELK Layout Engine Stories
- * Demonstrates advanced layouts using Eclipse Layout Kernel (ELK)
+ * Dagre Layout Engine Stories
+ * Demonstrates hierarchical layouts using the Dagre library
  *
  * Note: These stories are for visual demonstration only. Smoke tests are disabled
  * due to test-runner infrastructure issues affecting graph rendering visualization tests.
@@ -11,7 +11,7 @@ import { StoryProviderWrapper } from '@/catalog';
 import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';
 
 const meta = {
-  title: 'C Graphs / Layouts / ELKLayout',
+  title: 'C Graphs / Layouts / DagreLayout',
   parameters: { layout: 'fullscreen' },
   tags: ['skip-test'],
 } satisfies Meta;
@@ -20,9 +20,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * Default layered hierarchical layout
+ * Top-to-bottom layout (default)
  */
-export const Hierarchical: Story = {
+export const TopToBottom: Story = {
   render: () => {
     const model = createCompleteModelFixture();
 
@@ -31,12 +31,11 @@ export const Hierarchical: Story = {
         <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
           <GraphViewer
             model={model}
-            layoutEngine="elk"
+            layoutEngine="dagre"
             layoutParameters={{
-              'elk.algorithm': 'layered',
-              'elk.direction': 'DOWN',
-              'elk.spacing.nodeNode': '50',
-              'elk.layered.spacing.nodeNodeBetweenLayers': '80'
+              rankdir: 'TB',
+              nodesep: 50,
+              ranksep: 80
             }}
           />
         </div>
@@ -46,9 +45,9 @@ export const Hierarchical: Story = {
 };
 
 /**
- * Force-directed layout with spring model
+ * Left-to-right layout
  */
-export const ForceDirected: Story = {
+export const LeftToRight: Story = {
   render: () => {
     const model = createCompleteModelFixture();
 
@@ -57,10 +56,11 @@ export const ForceDirected: Story = {
         <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
           <GraphViewer
             model={model}
-            layoutEngine="elk"
+            layoutEngine="dagre"
             layoutParameters={{
-              'elk.algorithm': 'force',
-              'elk.spacing.nodeNode': '60'
+              rankdir: 'LR',
+              nodesep: 50,
+              ranksep: 80
             }}
           />
         </div>
@@ -70,9 +70,9 @@ export const ForceDirected: Story = {
 };
 
 /**
- * Stress layout for minimal edge crossings
+ * Bottom-to-top layout
  */
-export const Stress: Story = {
+export const BottomToTop: Story = {
   render: () => {
     const model = createCompleteModelFixture();
 
@@ -81,10 +81,11 @@ export const Stress: Story = {
         <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
           <GraphViewer
             model={model}
-            layoutEngine="elk"
+            layoutEngine="dagre"
             layoutParameters={{
-              'elk.algorithm': 'stress',
-              'elk.spacing.nodeNode': '50'
+              rankdir: 'BT',
+              nodesep: 50,
+              ranksep: 80
             }}
           />
         </div>
@@ -94,9 +95,9 @@ export const Stress: Story = {
 };
 
 /**
- * Orthogonal edge routing
+ * Right-to-left layout
  */
-export const OrthogonalRouting: Story = {
+export const RightToLeft: Story = {
   render: () => {
     const model = createCompleteModelFixture();
 
@@ -105,13 +106,36 @@ export const OrthogonalRouting: Story = {
         <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
           <GraphViewer
             model={model}
-            layoutEngine="elk"
+            layoutEngine="dagre"
             layoutParameters={{
-              'elk.algorithm': 'layered',
-              'elk.direction': 'RIGHT',
-              'elk.edgeRouting': 'ORTHOGONAL',
-              'elk.spacing.nodeNode': '50',
-              'elk.layered.spacing.nodeNodeBetweenLayers': '80'
+              rankdir: 'RL',
+              nodesep: 50,
+              ranksep: 80
+            }}
+          />
+        </div>
+      </StoryProviderWrapper>
+    );
+  }
+};
+
+/**
+ * Compact layout with smaller spacing
+ */
+export const Compact: Story = {
+  render: () => {
+    const model = createCompleteModelFixture();
+
+    return (
+      <StoryProviderWrapper model={model}>
+        <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
+          <GraphViewer
+            model={model}
+            layoutEngine="dagre"
+            layoutParameters={{
+              rankdir: 'TB',
+              nodesep: 30,
+              ranksep: 50
             }}
           />
         </div>

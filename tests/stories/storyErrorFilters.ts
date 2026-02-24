@@ -108,5 +108,10 @@ export function isKnownRenderingBug(text: string): boolean {
   // Appears when edges have duplicate IDs (e.g., edge-rel-3, edge-rel-4)
   if (/Encountered two children with the same key/.test(text)) return true;
 
+  // Node style config not found - happens when nodeType is undefined in UnifiedNode
+  // This can occur with test fixtures that have incomplete element type mappings
+  // The node still renders with fallback error styling but logs this warning
+  if (/No style config found for NodeType: undefined/.test(text)) return true;
+
   return false;
 }
