@@ -326,7 +326,7 @@ export class NodeTransformer {
    */
   private getNodeTypeForElement(element: ModelElement): string {
     // For motivation layer elements, use unified node type
-    if (element.layer === 'Motivation') {
+    if (element.layerId === 'Motivation') {
       const mappedType = nodeConfigLoader.mapElementType(element.type);
       if (mappedType && mappedType.startsWith('motivation.')) {
         return 'unified';
@@ -485,7 +485,7 @@ export class NodeTransformer {
   private extractMotivationNodeData(element: ModelElement, nodeType: NodeType): UnifiedNodeData {
     return {
       nodeType,
-      label: element.name || element.label || element.id,
+      label: element.name || element.id,
       items: this.extractFieldItems(element),
       badges: this.extractMotivationBadges(element, nodeType),
       detailLevel: (element as any).detailLevel || 'standard',
