@@ -22,12 +22,15 @@ class NodeConfigLoader {
   /**
    * Validate that all required NodeType enum values have corresponding nodeStyles entries.
    * Also validates that all typeMap entries reference valid NodeType values.
-   * Logs warnings for missing or invalid configurations in development mode.
+   * Logs warnings for missing or invalid configurations (both dev and production).
+   * These configuration problems should never occur in either environment - if they do,
+   * it indicates a serious build/deployment issue and must be visible.
    */
   private validateConfig(): void {
     const styleKeys = Object.keys(this.config.nodeStyles);
     const enumValues = Object.values(NodeType);
-    const isDev = typeof import.meta !== 'undefined' && import.meta.env?.DEV;
+    const missingStyles: string[] = [];
+    const invalidMappings: Array<[string, string]> = [];
 
     // Validate nodeStyles coverage
     for (const nodeType of enumValues) {
@@ -38,23 +41,35 @@ class NodeConfigLoader {
       }
 
       if (!styleKeys.includes(nodeType)) {
-        if (isDev) {
-          console.warn(`[NodeConfigLoader] Missing style config for NodeType: ${nodeType}`);
-        }
+        missingStyles.push(nodeType);
       }
     }
 
     // Validate typeMap entries point to valid NodeType values
     for (const [key, mappedType] of Object.entries(this.config.typeMap)) {
       if (!isValidNodeType(mappedType)) {
-        if (isDev) {
-          console.warn(`[NodeConfigLoader] Invalid typeMap entry: "${key}" -> "${mappedType}"`);
-        }
+        invalidMappings.push([key, mappedType]);
       }
     }
 
-    // Log info about loaded configuration in development mode
-    if (isDev) {
+    // Report all validation issues (both dev and production)
+    // Configuration problems indicate build/deployment failures and must always be visible
+    if (missingStyles.length > 0) {
+      console.error(
+        `[NodeConfigLoader] Missing style config for NodeTypes: ${missingStyles.join(', ')}. ` +
+        `This indicates a build/deployment issue. All NodeType enum values must have corresponding nodeStyles entries.`
+      );
+    }
+
+    if (invalidMappings.length > 0) {
+      const mappingDetails = invalidMappings.map(([k, v]) => `"${k}" -> "${v}"`).join(', ');
+      console.error(
+        `[NodeConfigLoader] Invalid typeMap entries: ${mappingDetails}. ` +
+        `All typeMap values must reference valid NodeType enum values.`
+      );
+    }
+
+    if (missingStyles.length === 0 && invalidMappings.length === 0) {
       console.log(
         `[NodeConfigLoader] Loaded configuration with ${styleKeys.length} node styles and ${Object.keys(this.config.typeMap).length} type mappings`
       );
@@ -68,10 +83,22 @@ class NodeConfigLoader {
    */
   getStyleConfig(nodeType: NodeType | string): NodeStyleConfig | undefined {
     if (!isValidNodeType(nodeType)) {
-      console.warn(`[NodeConfigLoader] Invalid NodeType: ${nodeType}`);
+      console.error(
+        `[NodeConfigLoader] Invalid NodeType: ${nodeType}. ` +
+        `This indicates incomplete fixture data or type mapping configuration. ` +
+        `Verify that all model elements have valid types mapped in nodeConfig.json typeMap.`
+      );
       return undefined;
     }
-    return this.config.nodeStyles[nodeType];
+    const config = this.config.nodeStyles[nodeType];
+    if (!config) {
+      console.error(
+        `[NodeConfigLoader] No style config found for NodeType: ${nodeType}. ` +
+        `This should have been caught during initialization. ` +
+        `Verify nodeConfig.json contains a nodeStyles entry for this NodeType.`
+      );
+    }
+    return config;
   }
 
   /**
@@ -83,11 +110,19 @@ class NodeConfigLoader {
   mapElementType(elementType: string): NodeType | undefined {
     const mappedType = this.config.typeMap[elementType];
     if (!mappedType) {
+      console.warn(
+        `[NodeConfigLoader] No type mapping found for element type: "${elementType}". ` +
+        `Add an entry to nodeConfig.json typeMap to support this element type.`
+      );
       return undefined;
     }
 
     if (!isValidNodeType(mappedType)) {
-      console.warn(`[NodeConfigLoader] Type mapping "${elementType}" -> "${mappedType}" is invalid`);
+      console.error(
+        `[NodeConfigLoader] Type mapping "${elementType}" -> "${mappedType}" is invalid. ` +
+        `The mapped value must be a valid NodeType enum value. ` +
+        `This indicates a configuration error in nodeConfig.json.`
+      );
       return undefined;
     }
 

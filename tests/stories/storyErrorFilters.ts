@@ -104,13 +104,31 @@ export function isKnownRenderingBug(text: string): boolean {
   // React Flow missing provider - node stories rendered without ReactFlowProvider
   if (/\[React Flow\]: Seems like you have not used zustand provider/.test(text)) return true;
 
+  return false;
+}
+
+/**
+ * Check if a console error is a critical bug that must be addressed.
+ * These errors appear in the log but should NOT be suppressed - they indicate
+ * serious issues in the codebase that require fixes to the root cause.
+ *
+ * Currently tracked but not filtered:
+ * - "Encountered two children with the same key" (edge-rel-*) - indicates duplicate edge IDs
+ * - "No style config found for NodeType: undefined" - indicates incomplete fixture data
+ *
+ * These are logged by the test framework and tracked in test reports.
+ * @param text - The error message from the console
+ * @returns true if this is a critical bug, false otherwise
+ */
+export function isCriticalBug(text: string): boolean {
   // React duplicate key errors in graph rendering - fixture data or edge rendering bug
   // Appears when edges have duplicate IDs (e.g., edge-rel-3, edge-rel-4)
+  // CRITICAL: This is a real bug that must be fixed - edge ID generation may have collisions
   if (/Encountered two children with the same key/.test(text)) return true;
 
   // Node style config not found - happens when nodeType is undefined in UnifiedNode
-  // This can occur with test fixtures that have incomplete element type mappings
-  // The node still renders with fallback error styling but logs this warning
+  // CRITICAL: This indicates incomplete fixture data or type mapping issues
+  // Root cause: element types not properly mapped to NodeType enum values
   if (/No style config found for NodeType: undefined/.test(text)) return true;
 
   return false;

@@ -67,7 +67,8 @@ function UnifiedNodeComponent({ data, id }: { data: UnifiedNodeData; id?: string
   // Load style config from JSON
   const styleConfig = nodeConfigLoader.getStyleConfig(nodeType);
   if (!styleConfig) {
-    console.error(`No style config found for NodeType: ${nodeType}`);
+    // Error logging is done by nodeConfigLoader - this is a fallback guard
+    // to ensure the component can render even with missing config
     return (
       <div
         style={{
@@ -79,6 +80,7 @@ function UnifiedNodeComponent({ data, id }: { data: UnifiedNodeData; id?: string
           color: '#dc2626',
         }}
         role="alert"
+        data-testid="unified-node-error"
       >
         Invalid node type: {nodeType}
       </div>
