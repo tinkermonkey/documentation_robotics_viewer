@@ -593,11 +593,12 @@ export class NodeTransformer {
     // Special handling for BusinessProcess expand/collapse
     const subprocessCount = props.subprocessCount ? Number(props.subprocessCount) : 0;
     if (nodeType === NodeType.BUSINESS_PROCESS && subprocessCount > 0) {
+      const expanded = this.validateBoolean(props.expanded) ?? false;
       badges.push({
         position: 'top-right' as const,
-        content: (props.expanded as boolean) ? '▼' : '▶',
+        content: expanded ? '▼' : '▶',
         className: 'cursor-pointer text-lg leading-none',
-        ariaLabel: (props.expanded as boolean) ? 'Collapse subprocesses' : 'Expand subprocesses',
+        ariaLabel: expanded ? 'Collapse subprocesses' : 'Expand subprocesses',
       });
     }
 
@@ -817,12 +818,16 @@ export class NodeTransformer {
 
             // Dynamic height calculation for nodes with field lists
             if (element.properties) {
-              const itemCount = Object.keys(element.properties || {}).length;
+              // Count only properties that will actually be rendered in field list
+              // (excluding null/undefined values and internal properties starting with _)
+              const fieldItems = Object.entries(element.properties)
+                .filter(([key, value]) => value !== null && value !== undefined && !key.startsWith('_'))
+                .length;
 
-              if (itemCount > 0) {
+              if (fieldItems > 0) {
                 const headerHeight = dimensions.headerHeight || 40;
                 const itemHeight = dimensions.itemHeight || 24;
-                height = headerHeight + itemCount * itemHeight;
+                height = headerHeight + fieldItems * itemHeight;
               }
             }
 
@@ -856,47 +861,6 @@ export class NodeTransformer {
     }
   }
 
-  /**
-   * Convert MetaModel to LayoutGraphInput for new layout engines
-   * @unused - Reserved for future layout engine integration
-   */
-  // @ts-ignore - Reserved for future use
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private __modelToGraphInput(model: MetaModel): any {
-    const nodes: any[] = [];
-    const edges: any[] = [];
-
-    // Collect all nodes from all layers
-    for (const [layerId, layer] of Object.entries(model.layers)) {
-      for (const element of layer.elements) {
-        nodes.push({
-          id: element.id,
-          width: element.visual?.size?.width || 200,
-          height: element.visual?.size?.height || 100,
-          data: {
-            layer: layerId,
-            type: element.type,
-            ...element.properties,
-          },
-        });
-      }
-
-      // Add relationships as edges
-      for (const rel of layer.relationships) {
-        edges.push({
-          id: `${rel.sourceId}-${rel.targetId}`,
-          source: rel.sourceId,
-          target: rel.targetId,
-          data: {
-            type: rel.type,
-            ...rel.properties,
-          },
-        });
-      }
-    }
-
-    return { nodes, edges };
-  }
 
   /**
    * Layout each layer separately using the selected engine, then stack vertically
@@ -1036,80 +1000,6 @@ export class NodeTransformer {
     return { nodes, edges };
   }
 
-  /**
-   * Convert LayoutResult back to old layer-based layout format
-   * @unused - Reserved for future layout engine integration
-   */
-  // @ts-ignore - Reserved for future use
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private __layoutResultToLayerLayout(result: any, model: MetaModel): any {
-    const layers: any = {};
-
-    console.log(`[NodeTransformer] Converting layout result with ${result.nodes.length} nodes to layer layout`);
-
-    // Group nodes by layer
-    for (const [layerId, _layer] of Object.entries(model.layers)) {
-      const layerNodes = result.nodes.filter((n: any) => n.data?.layer === layerId);
-
-      if (layerNodes.length === 0) continue;
-
-      console.log(`[NodeTransformer] Layer ${layerId}: ${layerNodes.length} nodes`);
-
-      // Calculate bounds for this layer
-      let minX = Infinity,
-        maxX = -Infinity,
-        minY = Infinity,
-        maxY = -Infinity;
-
-      const elements: any[] = [];
-      const positions: Record<string, { x: number; y: number }> = {};
-
-      for (const node of layerNodes) {
-        const width = node.data?.width || 200;
-        const height = node.data?.height || 100;
-
-        minX = Math.min(minX, node.position.x);
-        maxX = Math.max(maxX, node.position.x + width);
-        minY = Math.min(minY, node.position.y);
-        maxY = Math.max(maxY, node.position.y + height);
-
-        elements.push({
-          id: node.id,
-          x: node.position.x,
-          y: node.position.y,
-        });
-
-        // Also create positions map for element ID lookup
-        positions[node.id] = {
-          x: node.position.x,
-          y: node.position.y,
-        };
-      }
-
-      // Log sample positions for debugging
-      const samplePositions = Object.entries(positions).slice(0, 3);
-      console.log(`[NodeTransformer] Sample positions for ${layerId}:`, samplePositions);
-
-      layers[layerId] = {
-        yOffset: 0,
-        bounds: {
-          minX,
-          maxX,
-          minY,
-          maxY,
-          width: maxX - minX,
-          height: maxY - minY,
-        },
-        elements,
-        positions,
-      };
-    }
-
-    return {
-      layers,
-      bounds: result.bounds,
-    };
-  }
 
   /**
    * Extract optional properties from an element with proper type validation
@@ -1185,6 +1075,13 @@ export class NodeTransformer {
       typeof value.incoming === 'number' &&
       typeof value.outgoing === 'number'
     );
+  }
+
+  /**
+   * Validate that a value is a boolean, return it or undefined
+   */
+  private validateBoolean(value: unknown): boolean | undefined {
+    return typeof value === 'boolean' ? value : undefined;
   }
 
   /**
