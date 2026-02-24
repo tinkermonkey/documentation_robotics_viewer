@@ -1,7 +1,7 @@
 /**
  * UnifiedNode Component
  *
- * Core component that merges capabilities from BaseLayerNode and custom implementations.
+ * Unified node implementation that replaces layer-specific node factories.
  * Uses JSON configuration system to drive rendering and supports all existing features:
  * changeset styling, badges, semantic zoom, field lists, per-field handles, and
  * RelationshipBadge integration.
