@@ -17,7 +17,8 @@
 import { test, expect } from '@playwright/test';
 import { NodeTransformer } from '../../src/core/services/nodeTransformer';
 import { NodeType } from '../../src/core/nodes/NodeType';
-import type { ModelElement, MetaModel, Layer, LayerType } from '../../src/core/types';
+import type { ModelElement, MetaModel, Layer } from '../../src/core/types';
+import { LayerType } from '../../src/core/types/layers';
 import { VerticalLayerLayout } from '../../src/core/layout/verticalLayerLayout';
 
 /**
@@ -32,8 +33,17 @@ function createElement(
     id,
     type,
     name: `Test ${id}`,
+    layerId: 'test-layer',
     properties,
-    relationships: [],
+    visual: {
+      position: { x: 0, y: 0 },
+      size: { width: 200, height: 100 },
+      style: {},
+    },
+    relationships: {
+      incoming: [],
+      outgoing: [],
+    },
     description: 'Test element',
   };
 }
@@ -45,25 +55,31 @@ function createTestModel(layers: Record<string, ModelElement[]>): MetaModel {
   const layerMap: Record<string, Layer> = {};
 
   const layerTypeMap: Record<string, LayerType> = {
-    motivation: 'Motivation',
-    business: 'Business',
-    security: 'Security',
-    application: 'Application',
-    technology: 'Technology',
-    api: 'Api',
-    data_model: 'DataModel',
-    datastore: 'Datastore',
-    ux: 'Ux',
-    navigation: 'Navigation',
-    apm: 'ApmObservability',
+    motivation: LayerType.Motivation,
+    business: LayerType.Business,
+    security: LayerType.Security,
+    application: LayerType.Application,
+    technology: LayerType.Technology,
+    api: LayerType.Api,
+    data_model: LayerType.DataModel,
+    datastore: LayerType.Datastore,
+    ux: LayerType.Ux,
+    navigation: LayerType.Navigation,
+    apm: LayerType.ApmObservability,
   };
 
   for (const [layerKey, elements] of Object.entries(layers)) {
+    // Update layerId in elements to match the layer they belong to
+    const elementsWithLayerId = elements.map(el => ({
+      ...el,
+      layerId: layerKey,
+    }));
+
     layerMap[layerKey] = {
       id: layerKey,
-      type: layerTypeMap[layerKey] as LayerType || layerKey,
+      type: layerTypeMap[layerKey] || layerKey,
       name: layerKey.charAt(0).toUpperCase() + layerKey.slice(1),
-      elements,
+      elements: elementsWithLayerId,
       relationships: [],
     };
   }
@@ -71,9 +87,10 @@ function createTestModel(layers: Record<string, ModelElement[]>): MetaModel {
   return {
     id: 'test-model',
     name: 'Test Model',
+    version: '1.0.0',
     description: 'Integration test model',
     layers: layerMap,
-    relationships: [],
+    references: [],
   };
 }
 
@@ -566,13 +583,22 @@ test.describe('NodeTransformer Pipeline Integration', () => {
         id: 'complete-element',
         type: 'Goal',
         name: 'Complete Goal Element',
+        layerId: 'motivation',
         properties: {
           priority: 'High',
           description: 'Comprehensive goal with all details',
           status: 'Active',
           owner: 'Product Team',
         },
-        relationships: [],
+        visual: {
+          position: { x: 0, y: 0 },
+          size: { width: 200, height: 100 },
+          style: {},
+        },
+        relationships: {
+          incoming: [],
+          outgoing: [],
+        },
         description: 'A complete element',
       };
 
@@ -599,8 +625,18 @@ test.describe('NodeTransformer Pipeline Integration', () => {
       const elementWithoutName: ModelElement = {
         id: 'elem-2',
         type: 'Goal',
+        name: 'elem-2',
+        layerId: 'motivation',
         properties: {},
-        relationships: [],
+        visual: {
+          position: { x: 0, y: 0 },
+          size: { width: 200, height: 100 },
+          style: {},
+        },
+        relationships: {
+          incoming: [],
+          outgoing: [],
+        },
       };
 
       const model2 = createTestModel({ motivation: [elementWithoutName] });
