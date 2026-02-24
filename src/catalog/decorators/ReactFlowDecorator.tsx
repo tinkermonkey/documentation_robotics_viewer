@@ -1,7 +1,6 @@
 import { ReactFlowProvider, ReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import type { ReactElement } from 'react';
-import type { DecoratorFunction, ReactRenderer } from '@storybook/react';
 
 /**
  * Options for ReactFlowDecorator
@@ -40,7 +39,7 @@ export interface ReactFlowDecoratorOptions {
  */
 export const withReactFlowDecorator = (
   options: ReactFlowDecoratorOptions = {}
-): DecoratorFunction<ReactRenderer> => {
+) => {
   const {
     showBackground = false,
     fitView = false,
