@@ -84,7 +84,7 @@ function UnifiedNodeComponent({ data, id }: { data: UnifiedNodeData; id?: string
     );
   }
 
-  const { layout, icon, typeLabel, colors, dimensions } = styleConfig;
+  const { layout, icon, typeLabel, colors, dimensions, borderStyle = 'solid' } = styleConfig;
 
   // Determine if fields should be visible
   const showFields = !hideFields && items.length > 0;
@@ -118,7 +118,7 @@ function UnifiedNodeComponent({ data, id }: { data: UnifiedNodeData; id?: string
     backgroundColor: finalFillColor,
     borderColor: finalStrokeColor,
     borderWidth: 2,
-    borderStyle: 'solid',
+    borderStyle: borderStyle,
     borderRadius: 8,
     opacity: finalOpacity,
     display: 'flex',

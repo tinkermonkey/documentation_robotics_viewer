@@ -27,6 +27,7 @@ export interface NodeStyleConfig {
   typeLabel: string;
   colors: NodeColors;
   dimensions: NodeDimensions;
+  borderStyle?: 'solid' | 'dashed';
 }
 
 /**

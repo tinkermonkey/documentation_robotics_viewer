@@ -213,14 +213,15 @@
       }
     },
     "motivation.assumption": {
-      "layout": "centered",
+      "layout": "left",
       "icon": "💭",
       "typeLabel": "Assumption",
+      "borderStyle": "dashed",
       "colors": {
         "fill": "#e0e7ff",
-        "stroke": "#4f46e5",
-        "header": "#4f46e5",
-        "handle": "#4f46e5"
+        "stroke": "#6366f1",
+        "header": "#6366f1",
+        "handle": "#6366f1"
       },
       "dimensions": {
         "width": 180,
