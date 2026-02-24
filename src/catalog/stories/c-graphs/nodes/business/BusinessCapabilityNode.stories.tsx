@@ -7,8 +7,7 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
-import { NodeType } from '@/core/nodes/NodeType';
-import UnifiedNode from '@/core/nodes/components/UnifiedNode';
+import { UnifiedNode, NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 const meta = {
@@ -18,186 +17,145 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
-  args: {
-    data: {
-      nodeType: NodeType.BUSINESS_CAPABILITY,
-      label: '',
-      detailLevel: 'standard',
-    },
-    id: '',
-  },
 } satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        label: 'Customer Management',
-        detailLevel: 'standard',
-      }}
-      id="capability-1"
-    />
-  ),
+  args: {
+    id: 'capability-1',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      label: 'Customer Management',
+    },
+  },
 };
 
 export const HighCriticality: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        label: 'Order Management',
-        badges: [
-          {
-            position: 'inline' as const,
-            content: 'high',
-            className: 'px-2 py-1 bg-red-100 text-red-800 rounded text-xs font-semibold',
-            ariaLabel: 'Criticality: high',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="capability-2"
-    />
-  ),
+  args: {
+    id: 'capability-2',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      label: 'Order Management',
+      badges: [
+        {
+          position: 'inline' as const,
+          content: 'high',
+          ariaLabel: 'Criticality: high',
+        },
+      ],
+    },
+  },
 };
 
 export const MediumCriticality: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        label: 'Marketing',
-        badges: [
-          {
-            position: 'inline' as const,
-            content: 'medium',
-            className: 'px-2 py-1 bg-orange-100 text-orange-800 rounded text-xs font-semibold',
-            ariaLabel: 'Criticality: medium',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="capability-3"
-    />
-  ),
+  args: {
+    id: 'capability-3',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      label: 'Marketing',
+      badges: [
+        {
+          position: 'inline' as const,
+          content: 'medium',
+          ariaLabel: 'Criticality: medium',
+        },
+      ],
+    },
+  },
 };
 
 export const LowCriticality: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        label: 'Compliance',
-        badges: [
-          {
-            position: 'inline' as const,
-            content: 'low',
-            className: 'px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-semibold',
-            ariaLabel: 'Criticality: low',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="capability-4"
-    />
-  ),
+  args: {
+    id: 'capability-4',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      label: 'Compliance',
+      badges: [
+        {
+          position: 'inline' as const,
+          content: 'low',
+          ariaLabel: 'Criticality: low',
+        },
+      ],
+    },
+  },
 };
 
 export const ActiveLifecycle: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        label: 'User Analytics',
-        items: [
-          { id: 'lifecycle', label: 'Lifecycle', value: 'active' },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="capability-5"
-    />
-  ),
+  args: {
+    id: 'capability-5',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      label: 'User Analytics',
+      items: [
+        { id: 'lifecycle', label: 'Lifecycle', value: 'active' },
+      ],
+    },
+  },
 };
 
 export const DeprecatedLifecycle: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        label: 'Legacy Reporting',
-        items: [
-          { id: 'lifecycle', label: 'Lifecycle', value: 'deprecated' },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="capability-6"
-    />
-  ),
+  args: {
+    id: 'capability-6',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      label: 'Legacy Reporting',
+      items: [
+        { id: 'lifecycle', label: 'Lifecycle', value: 'deprecated' },
+      ],
+    },
+  },
 };
 
 export const WithOwner: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        label: 'Supply Chain',
-        badges: [
-          {
-            position: 'inline' as const,
-            content: 'Operations',
-            ariaLabel: 'Owner: Operations',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="capability-7"
-    />
-  ),
+  args: {
+    id: 'capability-7',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      label: 'Supply Chain',
+      badges: [
+        {
+          position: 'inline' as const,
+          content: 'Operations',
+          ariaLabel: 'Owner: Operations',
+        },
+      ],
+    },
+  },
 };
 
 export const ChangesetAdd: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        label: 'New Capability',
-        changesetOperation: 'add',
-        detailLevel: 'standard',
-      }}
-      id="capability-8"
-    />
-  ),
+  args: {
+    id: 'capability-8',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      label: 'New Capability',
+      changesetOperation: 'add',
+    },
+  },
 };
 
 export const ChangesetUpdate: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        label: 'Updated Capability',
-        changesetOperation: 'update',
-        detailLevel: 'standard',
-      }}
-      id="capability-9"
-    />
-  ),
+  args: {
+    id: 'capability-9',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      label: 'Updated Capability',
+      changesetOperation: 'update',
+    },
+  },
 };
 
 export const ChangesetDelete: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        label: 'Deleted Capability',
-        changesetOperation: 'delete',
-        detailLevel: 'standard',
-      }}
-      id="capability-10"
-    />
-  ),
+  args: {
+    id: 'capability-10',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      label: 'Deleted Capability',
+      changesetOperation: 'delete',
+    },
+  },
 };
 
