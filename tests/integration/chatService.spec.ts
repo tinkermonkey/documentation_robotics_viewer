@@ -20,21 +20,6 @@ test.describe('ChatService', () => {
     chatService = new ChatService();
   });
 
-  test.describe('getStatus', () => {
-    test.skip('should check SDK availability', async () => {
-      // SKIPPED: Requires a running server with JSON-RPC endpoint
-      // This test makes actual RPC calls and requires infrastructure
-      try {
-        const status = await chatService.getStatus();
-        expect(status).toHaveProperty('sdkAvailable');
-        expect(status).toHaveProperty('sdkVersion');
-        expect(status).toHaveProperty('errorMessage');
-      } catch (error) {
-        // Expected if WebSocket is not connected
-        expect(error).toBeInstanceOf(Error);
-      }
-    });
-  });
 
   test.describe('message generation', () => {
     test('should generate unique message IDs', () => {
@@ -338,69 +323,6 @@ test.describe('ChatService', () => {
   });
 
   test.describe('critical error scenarios', () => {
-    test.skip('Gap #1: should handle WebSocket connection failure during send', async () => {
-      // SKIPPED: Requires server infrastructure to send messages through JSON-RPC
-      const store = useChatStore.getState();
-      const convId = 'conv-1';
-      store.setActiveConversationId(convId);
-
-      // Create a mock WebSocket client that fails on send
-      const mockClient = {
-        send: async () => {
-          throw new Error('WebSocket connection failed: cannot send data');
-        },
-      };
-      (chatService as any).client = mockClient;
-
-      // Attempt to send message
-      let errorOccurred = false;
-      try {
-        await chatService.sendMessage('test message');
-      } catch (error) {
-        errorOccurred = true;
-        expect(error).toBeInstanceOf(Error);
-      }
-
-      // Either error occurred or service handled gracefully
-      // Verify store state remains consistent
-      expect(store.isStreaming).toBe(false);
-    });
-
-    test.skip('Gap #2: should handle race condition with rapid messages', async () => {
-      // SKIPPED: Requires server infrastructure to send messages through JSON-RPC
-      const store = useChatStore.getState();
-      const convId = 'conv-1';
-      store.setActiveConversationId(convId);
-
-      // Simulate rapid message submissions
-      const messages = ['message 1', 'message 2', 'message 3'];
-      const requestIds = new Set<string>();
-
-      // Track request IDs to ensure they're unique
-      const mockClient = {
-        send: async (request: any) => {
-          if (request.id) {
-            expect(requestIds.has(request.id)).toBe(false);
-            requestIds.add(request.id);
-          }
-        },
-      };
-      (chatService as any).client = mockClient;
-
-      // Attempt to send messages rapidly
-      try {
-        await Promise.all(
-          messages.map((msg) => chatService.sendMessage(msg))
-        );
-
-        // All requests should have unique IDs
-        expect(requestIds.size).toBe(3);
-      } catch (error) {
-        // Some failures may occur due to rapid sending, verify store consistency
-        expect(store.messages).toBeDefined();
-      }
-    });
-
     test('Gap #4: should handle WebSocket disconnect during streaming', async () => {
       const store = useChatStore.getState();
       const convId = 'conv-1';
