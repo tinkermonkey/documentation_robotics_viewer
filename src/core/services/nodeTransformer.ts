@@ -310,93 +310,27 @@ export class NodeTransformer {
 
   /**
    * Get node type for an element
-   * Motivation and Business layer nodes use the unified node type with configuration-driven styling
-   * C4 layer nodes also use the unified node type with field-based rendering
+   * Uses JSON configuration to map element types to React Flow node types.
+   * Special case: LayerContainer remains separate for layout purposes.
+   * All other nodes attempt config lookup first, then fallback to unified node type.
    */
   private getNodeTypeForElement(element: ModelElement): string {
-    // For motivation layer elements, use unified node type
-    if (element.layerId?.toLowerCase() === 'motivation') {
-      const mappedType = nodeConfigLoader.mapElementType(element.type);
-      if (mappedType && mappedType.startsWith('motivation.')) {
-        return 'unified';
-      }
+    // Special case: LayerContainer remains separate
+    if (element.type === 'LayerContainer' || element.type === 'layer-container') {
+      return 'layerContainer';
     }
 
-    // For business layer elements, use unified node type with config lookup
-    if (element.layerId?.toLowerCase() === 'business') {
-      const mappedType = nodeConfigLoader.mapElementType(element.type);
-      if (mappedType && mappedType.startsWith('business.')) {
-        return 'unified';
-      }
-    }
+    // Attempt to map via config for all other element types
+    const mappedType = nodeConfigLoader.mapElementType(element.type);
 
-    // For C4 layer elements, use unified node type with config lookup
-    if (element.layerId?.toLowerCase() === 'c4' || element.type?.startsWith('c4.') || element.type?.startsWith('c4-')) {
-      const mappedType = nodeConfigLoader.mapElementType(element.type);
-      if (mappedType && mappedType.startsWith('c4.')) {
-        return 'unified';
-      }
-      // Fallback: check if type itself indicates C4 element and has been registered
-      if (element.type && (element.type.startsWith('c4.') || element.type.startsWith('c4-'))) {
-        return 'unified';
-      }
-    }
-
-    // For data layer elements, use unified node type with config lookup
-    if (element.layerId?.toLowerCase() === 'data' || element.type?.startsWith('data.')) {
-      const mappedType = nodeConfigLoader.mapElementType(element.type);
-      if (mappedType && (mappedType === NodeType.DATA_JSON_SCHEMA || mappedType === NodeType.DATA_MODEL)) {
-        return 'unified';
-      }
-    }
-
-    // Special handling for JSONSchema elements (legacy support)
-    if (element.type === 'JSONSchema' || element.type === 'json-schema' || element.type === 'json-schema-element') {
+    if (mappedType) {
+      // All mapped types use UnifiedNode for consistent rendering
       return 'unified';
     }
 
-    const typeMap: Record<string, string> = {
-      'data-model-component': 'dataModel',
-      'DataModelComponent': 'dataModel',
-      'Entity': 'dataModel',
-      'Interface': 'dataModel',
-      'Enum': 'dataModel',
-      'api-endpoint': 'apiEndpoint',
-      'APIEndpoint': 'apiEndpoint',
-      'Endpoint': 'apiEndpoint',
-      'role': 'role',
-      'Role': 'role',
-      'permission': 'permission',
-      'Permission': 'permission',
-      'Policy': 'permission',
-      'business-process': 'businessProcess',
-      'BusinessProcess': 'businessProcess',
-      'Process': 'businessProcess',
-      'business-service': 'businessService',
-      'BusinessService': 'businessService',
-      'Service': 'businessService',
-      'business-function': 'businessFunction',
-      'BusinessFunction': 'businessFunction',
-      'Function': 'businessFunction',
-      'business-capability': 'businessCapability',
-      'BusinessCapability': 'businessCapability',
-      'Capability': 'businessCapability',
-      'json-schema-element': 'jsonSchema',
-      'layer-container': 'layerContainer',
-      // C4 type fallback mappings for robustness
-      'c4.container': 'unified',
-      'c4-container': 'unified',
-      'c4.component': 'unified',
-      'c4-component': 'unified',
-      'c4.external-actor': 'unified',
-      'c4-external-actor': 'unified',
-    };
-
-    const mapped = typeMap[element.type];
-    if (!mapped) {
-      console.warn(`[NodeTransformer] Unknown element type "${element.type}" for "${element.name}". Falling back to businessProcess.`);
-    }
-    return mapped || 'businessProcess';
+    // Fallback for unmapped types
+    console.warn(`[NodeTransformer] No type mapping found for element type: ${element.type}`);
+    return 'unified';
   }
 
   /**
@@ -897,9 +831,10 @@ export class NodeTransformer {
   }
 
   /**
-   * Pre-calculate dimensions for all node types
+   * Pre-calculate dimensions for all node types from JSON configuration.
    * CRITICAL: These dimensions MUST match the actual rendered component sizes
-   * This ensures dagre layout and React Flow positioning are correct
+   * This ensures dagre layout and React Flow positioning are correct.
+   * Reads all dimensions from nodeConfig.json via nodeConfigLoader.
    */
   private precalculateDimensions(
     model: MetaModel,
@@ -921,151 +856,58 @@ export class NodeTransformer {
           };
         }
 
-        // Get node type to determine dimensions
-        const nodeType = this.getNodeTypeForElement(element);
+        // Map element type to NodeType via config
+        const mappedType = nodeConfigLoader.mapElementType(element.type);
 
-        switch (nodeType) {
-          case 'jsonSchema':
-            // JSONSchemaNode: width 280, height dynamic
-            const schemaHeaderHeight = 36;
-            const propertyHeight = 24;
-            // JSON Schema elements store properties in schemaInfo.properties
-            const properties = (element as any).schemaInfo?.properties || [];
-            const schemaHeight = properties.length > 0
-              ? schemaHeaderHeight + properties.length * propertyHeight
-              : schemaHeaderHeight + 60; // "No properties" message
+        if (!mappedType) {
+          console.warn(`[NodeTransformer] No type mapping found for element type: ${element.type}`);
+          element.visual.size = { width: 180, height: 100 };
+        } else {
+          // Get style config from JSON
+          const styleConfig = nodeConfigLoader.getStyleConfig(mappedType);
 
-            element.visual.size = {
-              width: 280,
-              height: schemaHeight,
-            };
-            break;
-
-          case 'dataModel':
-            // DataModelNode: width 280, height dynamic
-            const modelHeaderHeight = 36;
-            const fieldHeight = 24;
-            const fields = (element.properties.fields as any[]) || [];
-            const modelHeight = fields.length > 0
-              ? modelHeaderHeight + fields.length * fieldHeight
-              : modelHeaderHeight + 60; // "No properties" message
-
-            element.visual.size = {
-              width: 280,
-              height: modelHeight,
-            };
-            break;
-
-          case 'role':
-            // RoleNode: fixed dimensions from RoleNode.tsx
-            element.visual.size = {
-              width: 160,
-              height: 90,
-            };
-            break;
-
-          case 'permission':
-            // PermissionNode: fixed dimensions from PermissionNode.tsx
-            element.visual.size = {
-              width: 180,
-              height: 90,
-            };
-            break;
-
-          case 'apiEndpoint':
-            // APIEndpointNode: fixed dimensions from APIEndpointNode.tsx
-            element.visual.size = {
-              width: 250,
-              height: 80,
-            };
-            break;
-
-          case 'businessProcess':
-          case 'businessService':
-          case 'businessFunction':
-          case 'businessCapability':
-            // Business layer nodes are now handled by unified node type
-            // Dimensions will be loaded from nodeConfigLoader in the unified case
+          if (!styleConfig) {
+            console.warn(`[NodeTransformer] No style config found for NodeType: ${mappedType}`);
             element.visual.size = { width: 180, height: 100 };
-            break;
+          } else {
+            const { dimensions } = styleConfig;
 
-          case 'unified':
-            // Unified node type - get dimensions from configuration
-            const mappedType = nodeConfigLoader.mapElementType(element.type);
-            if (mappedType && mappedType.startsWith('motivation.')) {
-              const styleConfig = nodeConfigLoader.getStyleConfig(mappedType);
-              if (styleConfig?.dimensions) {
-                element.visual.size = {
-                  width: styleConfig.dimensions.width,
-                  height: styleConfig.dimensions.height,
-                };
-              } else {
-                // Fallback for motivation nodes
-                element.visual.size = { width: 180, height: 100 };
+            // Base dimensions from config
+            let width = dimensions.width;
+            let height = dimensions.height;
+
+            // Dynamic height calculation for nodes with field lists
+            if (element.attributes || element.properties) {
+              const itemCount = element.attributes
+                ? Object.keys(element.attributes).length
+                : Object.keys(element.properties || {}).length;
+
+              if (itemCount > 0 && !element.hideFields) {
+                const headerHeight = dimensions.headerHeight || 40;
+                const itemHeight = dimensions.itemHeight || 24;
+                height = headerHeight + itemCount * itemHeight;
               }
-            } else if (mappedType && mappedType.startsWith('business.')) {
-              // Business layer nodes with configuration
-              const styleConfig = nodeConfigLoader.getStyleConfig(mappedType);
-              if (styleConfig?.dimensions) {
-                element.visual.size = {
-                  width: styleConfig.dimensions.width,
-                  height: styleConfig.dimensions.height,
-                };
-              } else {
-                // Fallback for business nodes based on type
-                const businessFallbackDimensions: Record<string, { width: number; height: number }> = {
-                  'business.function': { width: 180, height: 100 },
-                  'business.service': { width: 180, height: 90 },
-                  'business.capability': { width: 160, height: 70 },
-                  'business.process': { width: 200, height: 80 },
-                };
-                element.visual.size = businessFallbackDimensions[mappedType] || { width: 180, height: 100 };
-              }
-            } else if (mappedType && mappedType.startsWith('c4.')) {
-              // C4 unified nodes use configuration-based dimensions with dynamic height
-              const styleConfig = nodeConfigLoader.getStyleConfig(mappedType);
-              if (styleConfig?.dimensions) {
-                // Calculate height based on field items
-                const headerHeight = styleConfig.dimensions.headerHeight || 40;
-                const itemHeight = styleConfig.dimensions.itemHeight || 24;
-
-                // Count field items
-                let itemCount = 0;
-                if (element.properties?.description || element.description) itemCount++;
-                if (element.properties?.technology && Array.isArray(element.properties.technology) && element.properties.technology.length > 0) itemCount++;
-                if (mappedType === NodeType.C4_COMPONENT && element.properties?.role) itemCount++;
-                if (mappedType === NodeType.C4_CONTAINER && element.properties?.containerType) itemCount++;
-                if (mappedType === NodeType.C4_EXTERNAL_ACTOR && element.properties?.actorType) itemCount++;
-                if (mappedType === NodeType.C4_COMPONENT && element.properties?.interfaces && Array.isArray(element.properties.interfaces) && element.properties.interfaces.length > 0) itemCount++;
-
-                const calculatedHeight = itemCount > 0 ? headerHeight + itemCount * itemHeight : styleConfig.dimensions.height;
-
-                element.visual.size = {
-                  width: styleConfig.dimensions.width,
-                  height: calculatedHeight,
-                };
-              } else {
-                // Fallback to original C4 node dimensions
-                const fallbackDimensions: Record<string, { width: number; height: number }> = {
-                  'c4.container': { width: 280, height: 180 },
-                  'c4.component': { width: 240, height: 140 },
-                  'c4.externalActor': { width: 160, height: 120 },
-                };
-                element.visual.size = fallbackDimensions[mappedType] || { width: 200, height: 100 };
-              }
-            } else {
-              // Default fallback
-              element.visual.size = { width: 180, height: 100 };
             }
-            break;
 
-          default:
-            // Default fallback dimensions
-            element.visual.size = element.visual.size || {
-              width: 200,
-              height: 100,
-            };
-            break;
+            // Special handling for C4 nodes with technologies and description
+            if (mappedType.startsWith('c4.')) {
+              let itemCount = 0;
+              if (element.description) itemCount++;
+              if (element.properties?.technology && Array.isArray(element.properties.technology) && element.properties.technology.length > 0) itemCount++;
+              if (mappedType === NodeType.C4_COMPONENT && element.properties?.role) itemCount++;
+              if (mappedType === NodeType.C4_CONTAINER && element.properties?.containerType) itemCount++;
+              if (mappedType === NodeType.C4_EXTERNAL_ACTOR && element.properties?.actorType) itemCount++;
+              if (mappedType === NodeType.C4_COMPONENT && element.properties?.interfaces && Array.isArray(element.properties.interfaces) && element.properties.interfaces.length > 0) itemCount++;
+
+              if (itemCount > 0 && !element.hideFields) {
+                const headerHeight = dimensions.headerHeight || 40;
+                const itemHeight = dimensions.itemHeight || 24;
+                height = headerHeight + itemCount * itemHeight;
+              }
+            }
+
+            element.visual.size = { width, height };
+          }
         }
 
         // Override with DOM-measured sizes from pass 1 (two-pass layout)
