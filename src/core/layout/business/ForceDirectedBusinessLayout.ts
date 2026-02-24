@@ -169,7 +169,7 @@ export class ForceDirectedBusinessLayout implements BusinessLayoutEngine {
 
       const node: Node = {
         id: `node-${forceNode.id}`,
-        type: this.getNodeType(businessNode),
+        type: this.getNodeType(),
         position: { x, y },
         data: this.extractNodeData(businessNode),
         width: dimensions.width,
@@ -279,7 +279,7 @@ export class ForceDirectedBusinessLayout implements BusinessLayoutEngine {
   /**
    * Get node type for React Flow (delegates to BusinessNodeTransformer)
    */
-  private getNodeType(node: BusinessNode): string {
+  private getNodeType(): string {
     return this.transformer.getNodeType();
   }
 
