@@ -6,13 +6,6 @@
 import type { NodeTypes } from '@xyflow/react';
 
 import { LayerContainerNode } from './LayerContainerNode';
-// Motivation layer nodes are now using UnifiedNode
-// Original node components kept for backwards compatibility in exports
-import {
-  ContainerNode,
-  ComponentNode,
-  ExternalActorNode,
-} from './c4';
 import {
   JSONSchemaNode,
   JSON_SCHEMA_NODE_WIDTH,
@@ -40,10 +33,6 @@ import type {
 // Export all node components
 export {
   LayerContainerNode,
-  // C4 nodes
-  ContainerNode,
-  ComponentNode,
-  ExternalActorNode,
   // Schema nodes
   JSONSchemaNode,
   JSON_SCHEMA_NODE_WIDTH,
@@ -83,8 +72,4 @@ export const nodeTypes = {
   layerContainer: LayerContainerNode,
   // Schema node types
   jsonSchema: JSONSchemaNode,
-  // C4 node types
-  c4Container: ContainerNode,
-  c4Component: ComponentNode,
-  c4ExternalActor: ExternalActorNode,
 } as NodeTypes;

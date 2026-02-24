@@ -15,21 +15,7 @@ import { FALLBACK_COLOR } from '../utils/layerColors';
 import { nodeConfigLoader } from '../nodes/nodeConfigLoader';
 import { NodeType } from '../nodes/NodeType';
 import type { UnifiedNodeData } from '../nodes/components/UnifiedNode';
-// Import C4 node dimension constants to prevent drift
-import {
-  CONTAINER_NODE_WIDTH,
-  CONTAINER_NODE_HEIGHT,
-} from '../nodes/c4/ContainerNode';
-import {
-  COMPONENT_NODE_WIDTH,
-  COMPONENT_NODE_HEIGHT,
-} from '../nodes/c4/ComponentNode';
-import {
-  EXTERNAL_ACTOR_NODE_WIDTH,
-  EXTERNAL_ACTOR_NODE_HEIGHT,
-} from '../nodes/c4/ExternalActorNode';
-// Business and Motivation layer node dimensions are loaded from nodeConfigLoader
-// These constants are no longer imported directly from node files
+// C4 node dimensions are loaded from nodeConfigLoader
 import { extractCrossLayerReferences, referencesToEdges } from './crossLayerLinksExtractor';
 
 /**
@@ -310,6 +296,7 @@ export class NodeTransformer {
   /**
    * Get node type for an element
    * Motivation and Business layer nodes use the unified node type with configuration-driven styling
+   * C4 layer nodes also use the unified node type with field-based rendering
    */
   private getNodeTypeForElement(element: ModelElement): string {
     // For motivation layer elements, use unified node type
@@ -324,6 +311,14 @@ export class NodeTransformer {
     if (element.layerId === 'Business') {
       const mappedType = nodeConfigLoader.mapElementType(element.type);
       if (mappedType && mappedType.startsWith('business.')) {
+        return 'unified';
+      }
+    }
+
+    // For C4 layer elements, use unified node type with config lookup
+    if (element.layerId === 'C4' || element.type?.startsWith('c4.') || element.type?.startsWith('c4-')) {
+      const mappedType = nodeConfigLoader.mapElementType(element.type);
+      if (mappedType && mappedType.startsWith('c4.')) {
         return 'unified';
       }
     }
@@ -356,16 +351,6 @@ export class NodeTransformer {
       'Capability': 'businessCapability',
       'json-schema-element': 'jsonSchema',
       'layer-container': 'layerContainer',
-      // C4 node types
-      'c4-container': 'c4Container',
-      'C4Container': 'c4Container',
-      'Container': 'c4Container',
-      'c4-component': 'c4Component',
-      'C4Component': 'c4Component',
-      'c4-external-actor': 'c4ExternalActor',
-      'C4ExternalActor': 'c4ExternalActor',
-      'ExternalActor': 'c4ExternalActor',
-      'ExternalSystem': 'c4ExternalActor',
     };
 
     const mapped = typeMap[element.type];
@@ -388,7 +373,7 @@ export class NodeTransformer {
       modelElement: element,
     };
 
-    // Handle unified node type for motivation and business layers
+    // Handle unified node type for motivation, business, and C4 layers
     if (nodeType === 'unified') {
       const mappedType = nodeConfigLoader.mapElementType(element.type);
       if (mappedType && mappedType.startsWith('motivation.')) {
@@ -396,6 +381,9 @@ export class NodeTransformer {
       }
       if (mappedType && mappedType.startsWith('business.')) {
         return this.extractBusinessNodeData(element, mappedType as NodeType);
+      }
+      if (mappedType && mappedType.startsWith('c4.')) {
+        return this.extractC4NodeData(element, mappedType as NodeType);
       }
     }
 
@@ -693,6 +681,87 @@ export class NodeTransformer {
   }
 
   /**
+   * Extract unified node data for C4 layer elements
+   */
+  private extractC4NodeData(element: ModelElement, nodeType: NodeType): UnifiedNodeData {
+    const items: any[] = [];
+
+    // Add description as first field item if present
+    if (element.properties?.description || element.description) {
+      items.push({
+        id: 'description',
+        label: 'Description',
+        value: element.properties?.description || element.description,
+        required: false,
+      });
+    }
+
+    // Add technologies as field item if present (comma-separated)
+    if (element.properties?.technology && Array.isArray(element.properties.technology) && element.properties.technology.length > 0) {
+      items.push({
+        id: 'technologies',
+        label: 'Technologies',
+        value: element.properties.technology.join(', '),
+        required: false,
+      });
+    }
+
+    // Add role for components
+    if (nodeType === NodeType.C4_COMPONENT && element.properties?.role) {
+      items.push({
+        id: 'role',
+        label: 'Role',
+        value: element.properties.role,
+        required: false,
+      });
+    }
+
+    // Add containerType for containers
+    if (nodeType === NodeType.C4_CONTAINER && element.properties?.containerType) {
+      items.push({
+        id: 'containerType',
+        label: 'Type',
+        value: element.properties.containerType,
+        required: false,
+      });
+    }
+
+    // Add actorType for external actors
+    if (nodeType === NodeType.C4_EXTERNAL_ACTOR && element.properties?.actorType) {
+      items.push({
+        id: 'actorType',
+        label: 'Type',
+        value: element.properties.actorType,
+        required: false,
+      });
+    }
+
+    // Add interfaces for components if present
+    if (nodeType === NodeType.C4_COMPONENT && element.properties?.interfaces && Array.isArray(element.properties.interfaces) && element.properties.interfaces.length > 0) {
+      items.push({
+        id: 'interfaces',
+        label: 'Interfaces',
+        value: element.properties.interfaces.join(', '),
+        required: false,
+      });
+    }
+
+    return {
+      nodeType,
+      label: element.name || element.id,
+      items: items.length > 0 ? items : undefined,
+      badges: [],
+      detailLevel: (element as any).detailLevel || 'standard',
+      changesetOperation: (element as any).changesetOperation,
+      relationshipBadge: (element as any).relationshipBadge,
+      // Keep original data for compatibility
+      elementId: element.id,
+      layerId: element.layerId,
+      modelElement: element,
+    } as any;
+  }
+
+  /**
    * Format field labels (camelCase → Title Case)
    */
   private formatFieldLabel(key: string): string {
@@ -827,34 +896,42 @@ export class NodeTransformer {
                 };
                 element.visual.size = businessFallbackDimensions[mappedType] || { width: 180, height: 100 };
               }
+            } else if (mappedType && mappedType.startsWith('c4.')) {
+              // C4 unified nodes use configuration-based dimensions with dynamic height
+              const styleConfig = nodeConfigLoader.getStyleConfig(mappedType);
+              if (styleConfig?.dimensions) {
+                // Calculate height based on field items
+                const headerHeight = styleConfig.dimensions.headerHeight || 40;
+                const itemHeight = styleConfig.dimensions.itemHeight || 24;
+
+                // Count field items
+                let itemCount = 0;
+                if (element.properties?.description || element.description) itemCount++;
+                if (element.properties?.technology && Array.isArray(element.properties.technology) && element.properties.technology.length > 0) itemCount++;
+                if (mappedType === NodeType.C4_COMPONENT && element.properties?.role) itemCount++;
+                if (mappedType === NodeType.C4_CONTAINER && element.properties?.containerType) itemCount++;
+                if (mappedType === NodeType.C4_EXTERNAL_ACTOR && element.properties?.actorType) itemCount++;
+                if (mappedType === NodeType.C4_COMPONENT && element.properties?.interfaces && Array.isArray(element.properties.interfaces) && element.properties.interfaces.length > 0) itemCount++;
+
+                const calculatedHeight = itemCount > 0 ? headerHeight + itemCount * itemHeight : styleConfig.dimensions.height;
+
+                element.visual.size = {
+                  width: styleConfig.dimensions.width,
+                  height: calculatedHeight,
+                };
+              } else {
+                // Fallback to original C4 node dimensions
+                const fallbackDimensions: Record<string, { width: number; height: number }> = {
+                  'c4.container': { width: 280, height: 180 },
+                  'c4.component': { width: 240, height: 140 },
+                  'c4.externalActor': { width: 160, height: 120 },
+                };
+                element.visual.size = fallbackDimensions[mappedType] || { width: 200, height: 100 };
+              }
             } else {
               // Default fallback
               element.visual.size = { width: 180, height: 100 };
             }
-            break;
-
-          case 'c4Container':
-            // C4 ContainerNode: uses imported constants from ContainerNode.tsx
-            element.visual.size = {
-              width: CONTAINER_NODE_WIDTH,
-              height: CONTAINER_NODE_HEIGHT,
-            };
-            break;
-
-          case 'c4Component':
-            // C4 ComponentNode: uses imported constants from ComponentNode.tsx
-            element.visual.size = {
-              width: COMPONENT_NODE_WIDTH,
-              height: COMPONENT_NODE_HEIGHT,
-            };
-            break;
-
-          case 'c4ExternalActor':
-            // C4 ExternalActorNode: uses imported constants from ExternalActorNode.tsx
-            element.visual.size = {
-              width: EXTERNAL_ACTOR_NODE_WIDTH,
-              height: EXTERNAL_ACTOR_NODE_HEIGHT,
-            };
             break;
 
           default:
