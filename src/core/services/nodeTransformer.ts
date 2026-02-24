@@ -877,12 +877,10 @@ export class NodeTransformer {
             let height = dimensions.height;
 
             // Dynamic height calculation for nodes with field lists
-            if (element.attributes || element.properties) {
-              const itemCount = element.attributes
-                ? Object.keys(element.attributes).length
-                : Object.keys(element.properties || {}).length;
+            if (element.properties) {
+              const itemCount = Object.keys(element.properties || {}).length;
 
-              if (itemCount > 0 && !element.hideFields) {
+              if (itemCount > 0) {
                 const headerHeight = dimensions.headerHeight || 40;
                 const itemHeight = dimensions.itemHeight || 24;
                 height = headerHeight + itemCount * itemHeight;
@@ -899,7 +897,7 @@ export class NodeTransformer {
               if (mappedType === NodeType.C4_EXTERNAL_ACTOR && element.properties?.actorType) itemCount++;
               if (mappedType === NodeType.C4_COMPONENT && element.properties?.interfaces && Array.isArray(element.properties.interfaces) && element.properties.interfaces.length > 0) itemCount++;
 
-              if (itemCount > 0 && !element.hideFields) {
+              if (itemCount > 0) {
                 const headerHeight = dimensions.headerHeight || 40;
                 const itemHeight = dimensions.itemHeight || 24;
                 height = headerHeight + itemCount * itemHeight;
