@@ -656,18 +656,15 @@ export class NodeTransformer {
     // Criticality badge (color-coded, common to all business node types)
     if (props.criticality) {
       const criticality = String(props.criticality);
-      const criticityLevels: Record<string, string> = {
-        'high': '#ffebee',
-        'medium': '#fff3e0',
-        'low': '#e8f5e9',
+      const criticityColorClasses: Record<string, string> = {
+        'high': 'bg-red-100',
+        'medium': 'bg-orange-100',
+        'low': 'bg-green-100',
       };
       badges.push({
         position: 'inline' as const,
         content: criticality,
-        className: `text-xs px-2 py-0.5 rounded`,
-        style: {
-          backgroundColor: criticityLevels[criticality] || '#f5f5f5',
-        },
+        className: `text-xs px-2 py-0.5 rounded ${criticityColorClasses[criticality] || 'bg-gray-100'}`,
         ariaLabel: `Criticality: ${criticality}`,
       });
     }
@@ -682,12 +679,13 @@ export class NodeTransformer {
     }
 
     // Special handling for BusinessProcess expand/collapse
-    if (nodeType === NodeType.BUSINESS_PROCESS && props.subprocessCount && Number(props.subprocessCount) > 0) {
+    const subprocessCount = props.subprocessCount ? Number(props.subprocessCount) : 0;
+    if (nodeType === NodeType.BUSINESS_PROCESS && subprocessCount > 0) {
       badges.push({
         position: 'top-right' as const,
-        content: props.expanded ? '▼' : '▶',
+        content: (props.expanded as boolean) ? '▼' : '▶',
         className: 'cursor-pointer text-lg leading-none',
-        ariaLabel: props.expanded ? 'Collapse subprocesses' : 'Expand subprocesses',
+        ariaLabel: (props.expanded as boolean) ? 'Collapse subprocesses' : 'Expand subprocesses',
       });
     }
 
