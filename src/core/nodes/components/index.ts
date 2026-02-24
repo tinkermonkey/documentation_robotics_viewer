@@ -14,3 +14,6 @@ export { default as FieldTooltip } from './FieldTooltip';
 
 export { RelationshipBadge } from './RelationshipBadge';
 export type { RelationshipBadgeData, RelationshipBadgeProps } from './RelationshipBadge';
+
+export { default as BadgeRenderer } from './BadgeRenderer';
+export type { BadgeRendererProps } from './BadgeRenderer';

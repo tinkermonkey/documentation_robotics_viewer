@@ -9,7 +9,7 @@
  */
 
 import React, { memo } from 'react';
-import { NodeBadge } from './UnifiedNode';
+import type { NodeBadge } from './index';
 
 export interface BadgeRendererProps {
   badges: NodeBadge[];
