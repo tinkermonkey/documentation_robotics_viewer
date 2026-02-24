@@ -656,4 +656,383 @@ test.describe('NodeTransformer Pipeline Integration', () => {
       await expect(transformer.transformModel(model)).rejects.toThrow();
     });
   });
+
+  test.describe('Motivation Layer - Direct Extraction Tests', () => {
+    test('should extract complete motivation data including all optional properties', async () => {
+      const element: ModelElement = {
+        id: 'complete-motivation',
+        type: 'Goal',
+        name: 'Complete Goal Element',
+        layerId: 'motivation',
+        properties: {
+          priority: 'Critical',
+          description: 'Complete test element',
+        },
+        visual: {
+          position: { x: 0, y: 0 },
+          size: { width: 200, height: 100 },
+          style: {},
+        },
+        relationships: {
+          incoming: [],
+          outgoing: [],
+        },
+        detailLevel: 'detailed',
+        changesetOperation: 'add',
+        relationshipBadge: {
+          count: 5,
+          incoming: 2,
+          outgoing: 3,
+        },
+      } as unknown as ModelElement;
+
+      const model = createTestModel({ motivation: [element] });
+      const result = await transformer.transformModel(model);
+
+      const nodeData = findNodeData(result.nodes, 'complete-motivation');
+      expect(nodeData).toBeDefined();
+      expect(nodeData.nodeType).toBe(NodeType.MOTIVATION_GOAL);
+      expect(nodeData.detailLevel).toBe('detailed');
+      expect(nodeData.changesetOperation).toBe('add');
+      expect(nodeData.relationshipBadge).toBeDefined();
+      expect(nodeData.relationshipBadge.count).toBe(5);
+      expect(nodeData.relationshipBadge.incoming).toBe(2);
+      expect(nodeData.relationshipBadge.outgoing).toBe(3);
+    });
+
+    test('should extract stakeholder with all properties as field items', async () => {
+      const element = createElement('stakeholder-full', 'Stakeholder', {
+        stakeholderType: 'Executive',
+        description: 'C-level executive',
+        department: 'Executive',
+      });
+
+      const model = createTestModel({ motivation: [element] });
+      const result = await transformer.transformModel(model);
+
+      const nodeData = findNodeData(result.nodes, 'stakeholder-full');
+      const items = nodeData.items || [];
+
+      expect(items.length).toBeGreaterThan(0);
+      expect(items.some((item: any) => item.id === 'stakeholderType')).toBe(true);
+      expect(items.some((item: any) => item.id === 'description')).toBe(true);
+      expect(items.some((item: any) => item.id === 'department')).toBe(true);
+    });
+
+    test('should apply correct detail levels to motivation nodes', async () => {
+      const testCases = [
+        { detailLevel: 'minimal' as const },
+        { detailLevel: 'standard' as const },
+        { detailLevel: 'detailed' as const },
+      ];
+
+      for (const testCase of testCases) {
+        const element: ModelElement = {
+          id: `detail-${testCase.detailLevel}`,
+          type: 'Goal',
+          name: `Goal with ${testCase.detailLevel} detail`,
+          layerId: 'motivation',
+          properties: { priority: 'High' },
+          visual: {
+            position: { x: 0, y: 0 },
+            size: { width: 200, height: 100 },
+            style: {},
+          },
+          relationships: { incoming: [], outgoing: [] },
+          detailLevel: testCase.detailLevel,
+        } as unknown as ModelElement;
+
+        const model = createTestModel({ motivation: [element] });
+        const result = await transformer.transformModel(model);
+
+        const nodeData = findNodeData(result.nodes, `detail-${testCase.detailLevel}`);
+        expect(nodeData.detailLevel).toBe(testCase.detailLevel);
+      }
+    });
+
+    test('should apply changeset styling to motivation nodes', async () => {
+      const operations: Array<'add' | 'update' | 'delete'> = ['add', 'update', 'delete'];
+
+      for (const operation of operations) {
+        const element: ModelElement = {
+          id: `changeset-${operation}`,
+          type: 'Goal',
+          name: `Goal with ${operation} operation`,
+          layerId: 'motivation',
+          properties: { priority: 'High' },
+          visual: {
+            position: { x: 0, y: 0 },
+            size: { width: 200, height: 100 },
+            style: {},
+          },
+          relationships: { incoming: [], outgoing: [] },
+          changesetOperation: operation,
+        } as unknown as ModelElement;
+
+        const model = createTestModel({ motivation: [element] });
+        const result = await transformer.transformModel(model);
+
+        const nodeData = findNodeData(result.nodes, `changeset-${operation}`);
+        expect(nodeData.changesetOperation).toBe(operation);
+      }
+    });
+  });
+
+  test.describe('Business Layer - Direct Extraction Tests', () => {
+    test('should extract complete business node with multiple badges', async () => {
+      const element = createElement('process-full', 'Process', {
+        owner: 'Finance Team',
+        criticality: 'High',
+        domain: 'Finance',
+        subprocessCount: 3,
+        expanded: true,
+        description: 'Comprehensive business process',
+      });
+
+      const model = createTestModel({ business: [element] });
+      const result = await transformer.transformModel(model);
+
+      const nodeData = findNodeData(result.nodes, 'process-full');
+      const badges = nodeData.badges || [];
+
+      // Should have owner, criticality, and expand/collapse badges
+      expect(badges.length).toBeGreaterThan(0);
+      expect(badges.some((b: any) => b.ariaLabel?.includes('Owner'))).toBe(true);
+      expect(badges.some((b: any) => b.ariaLabel?.includes('Criticality'))).toBe(true);
+      expect(badges.some((b: any) => b.ariaLabel?.includes('Expand') || b.ariaLabel?.includes('Collapse'))).toBe(true);
+    });
+
+    test('should apply criticality color classes correctly', async () => {
+      const criticalityLevels = ['high', 'medium', 'low'];
+
+      for (const level of criticalityLevels) {
+        const element = createElement(`criticality-${level}`, 'Process', {
+          criticality: level.charAt(0).toUpperCase() + level.slice(1),
+        });
+
+        const model = createTestModel({ business: [element] });
+        const result = await transformer.transformModel(model);
+
+        const nodeData = findNodeData(result.nodes, `criticality-${level}`);
+        const badges = nodeData.badges || [];
+        const criticalityBadge = badges.find((b: any) => b.ariaLabel?.includes('Criticality'));
+
+        expect(criticalityBadge).toBeDefined();
+        expect(criticalityBadge?.className).toBeDefined();
+        expect(criticalityBadge?.className).toContain('text-');
+      }
+    });
+
+    test('should extract domain badge only for Function and Service nodes', async () => {
+      // Test Function with domain
+      const functionElement = createElement('function-with-domain', 'Function', {
+        domain: 'Finance',
+      });
+
+      const model1 = createTestModel({ business: [functionElement] });
+      const result1 = await transformer.transformModel(model1);
+      const functionData = findNodeData(result1.nodes, 'function-with-domain');
+      const functionBadges = functionData.badges || [];
+      expect(functionBadges.some((b: any) => b.ariaLabel?.includes('Domain'))).toBe(true);
+
+      // Test Capability with domain (should NOT appear)
+      const capabilityElement = createElement('capability-with-domain', 'Capability', {
+        domain: 'Finance',
+      });
+
+      const model2 = createTestModel({ business: [capabilityElement] });
+      const result2 = await transformer.transformModel(model2);
+      const capabilityData = findNodeData(result2.nodes, 'capability-with-domain');
+      const capabilityBadges = capabilityData.badges || [];
+      expect(capabilityBadges.some((b: any) => b.ariaLabel?.includes('Domain'))).toBe(false);
+    });
+
+    test('should handle expand/collapse badge for BusinessProcess', async () => {
+      // No subprocesses - should not have expand/collapse badge
+      const noSubElement = createElement('process-no-subs', 'Process', {
+        subprocessCount: 0,
+      });
+
+      const model1 = createTestModel({ business: [noSubElement] });
+      const result1 = await transformer.transformModel(model1);
+      const noSubData = findNodeData(result1.nodes, 'process-no-subs');
+      const noSubBadges = noSubData.badges || [];
+      expect(noSubBadges.some((b: any) => b.ariaLabel?.includes('Expand') || b.ariaLabel?.includes('Collapse'))).toBe(false);
+
+      // With subprocesses - should have expand/collapse badge
+      const expandedElement = createElement('process-expanded', 'Process', {
+        subprocessCount: 2,
+        expanded: true,
+      });
+
+      const model2 = createTestModel({ business: [expandedElement] });
+      const result2 = await transformer.transformModel(model2);
+      const expandedData = findNodeData(result2.nodes, 'process-expanded');
+      const expandedBadges = expandedData.badges || [];
+      expect(expandedBadges.some((b: any) => b.ariaLabel?.includes('Collapse'))).toBe(true);
+    });
+  });
+
+  test.describe('C4 Layer - Direct Extraction Tests', () => {
+    test('should extract complete C4 container with all properties', async () => {
+      const element = createElement('container-full', 'Container', {
+        containerType: 'Web Application',
+        description: 'Main web application',
+        technology: ['React', 'TypeScript', 'Vite'],
+      });
+
+      const model = createTestModel({ application: [element] });
+      const result = await transformer.transformModel(model);
+
+      const nodeData = findNodeData(result.nodes, 'container-full');
+      const items = nodeData.items || [];
+
+      expect(items.length).toBeGreaterThan(0);
+      expect(items.some((item: any) => item.id === 'description')).toBe(true);
+      expect(items.some((item: any) => item.id === 'technologies')).toBe(true);
+      expect(items.some((item: any) => item.id === 'containerType')).toBe(true);
+    });
+
+    test('should extract C4 component with role and interfaces', async () => {
+      const element = createElement('component-1', 'c4-component', {
+        description: 'Core component',
+        role: 'Service',
+        interfaces: ['AuthService', 'DataService'],
+        technology: ['TypeScript'],
+      });
+
+      const model = createTestModel({ application: [element] });
+      const result = await transformer.transformModel(model);
+
+      const nodeData = findNodeData(result.nodes, 'component-1');
+      expect(nodeData.nodeType).toBe(NodeType.C4_COMPONENT);
+      // C4 nodes can have items if they have description or technology
+      expect(nodeData).toBeDefined();
+    });
+
+    test('should extract external actor with type', async () => {
+      const element = createElement('actor-full', 'ExternalActor', {
+        actorType: 'User',
+        description: 'End user of the system',
+      });
+
+      const model = createTestModel({ application: [element] });
+      const result = await transformer.transformModel(model);
+
+      const nodeData = findNodeData(result.nodes, 'actor-full');
+      const items = nodeData.items || [];
+
+      expect(items.some((item: any) => item.id === 'actorType')).toBe(true);
+      expect(items.some((item: any) => item.id === 'description')).toBe(true);
+    });
+
+    test('should format technology arrays as comma-separated strings', async () => {
+      const element = createElement('container-tech', 'Container', {
+        technology: ['Node.js', 'Express', 'PostgreSQL', 'Redis'],
+      });
+
+      const model = createTestModel({ application: [element] });
+      const result = await transformer.transformModel(model);
+
+      const nodeData = findNodeData(result.nodes, 'container-tech');
+      const items = nodeData.items || [];
+      const techItem = items.find((item: any) => item.id === 'technologies');
+
+      expect(techItem).toBeDefined();
+      expect(techItem?.value).toContain('Node.js');
+      expect(techItem?.value).toContain('Express');
+      expect(techItem?.value).toContain('PostgreSQL');
+      expect(techItem?.value).toContain('Redis');
+    });
+  });
+
+  test.describe('Data Layer - Direct Extraction Tests', () => {
+    test('should extract data node with properties', async () => {
+      const element = createElement('entity-1', 'Entity', {
+        properties: {
+          id: { type: 'UUID', description: 'Unique identifier' },
+          name: { type: 'string', description: 'User name' },
+        },
+      });
+
+      const model = createTestModel({ data_model: [element] });
+      const result = await transformer.transformModel(model);
+
+      const nodeData = findNodeData(result.nodes, 'entity-1');
+      expect(nodeData.nodeType).toBe(NodeType.DATA_MODEL);
+      // Data nodes may have items if properties exist
+      expect(nodeData).toBeDefined();
+    });
+
+    test('should handle data node without properties', async () => {
+      const element = createElement('interface-1', 'Interface');
+
+      const model = createTestModel({ data_model: [element] });
+      const result = await transformer.transformModel(model);
+
+      const nodeData = findNodeData(result.nodes, 'interface-1');
+      expect(nodeData.nodeType).toBe(NodeType.DATA_MODEL);
+      expect(nodeData.items).toBeUndefined();
+    });
+
+    test('should transform enum element', async () => {
+      const element = createElement('enum-1', 'Enum', {
+        properties: {
+          ACTIVE: { type: 'string' },
+          INACTIVE: { type: 'string' },
+        },
+      });
+
+      const model = createTestModel({ data_model: [element] });
+      const result = await transformer.transformModel(model);
+
+      const nodeData = findNodeData(result.nodes, 'enum-1');
+      expect(nodeData.nodeType).toBe(NodeType.DATA_MODEL);
+    });
+  });
+
+  test.describe('Cross-Layer Extraction Consistency', () => {
+    test('should extract consistent label from element name or ID', async () => {
+      const elementWithName = createElement('elem-with-name', 'Goal');
+      elementWithName.name = 'Custom Label';
+
+      const model1 = createTestModel({ motivation: [elementWithName] });
+      const result1 = await transformer.transformModel(model1);
+      const nodeData1 = findNodeData(result1.nodes, 'elem-with-name');
+
+      expect(nodeData1.label).toBe('Custom Label');
+
+      // Element without custom name should use generated name
+      const elementDefaultName = createElement('elem-default', 'Goal');
+      const model2 = createTestModel({ motivation: [elementDefaultName] });
+      const result2 = await transformer.transformModel(model2);
+      const nodeData2 = findNodeData(result2.nodes, 'elem-default');
+
+      expect(nodeData2.label).toBe('Test elem-default');
+    });
+
+    test('should extract nodes consistently across all layers', async () => {
+      const testCases = [
+        { layerId: 'motivation', type: 'Goal', expectedType: NodeType.MOTIVATION_GOAL },
+        { layerId: 'business', type: 'Process', expectedType: NodeType.BUSINESS_PROCESS },
+        { layerId: 'application', type: 'Container', expectedType: NodeType.C4_CONTAINER },
+        { layerId: 'data_model', type: 'Entity', expectedType: NodeType.DATA_MODEL },
+      ];
+
+      for (const testCase of testCases) {
+        const element = createElement(`elem-${testCase.layerId}`, testCase.type, {
+          property1: 'value1',
+          property2: 'value2',
+        });
+
+        const model = createTestModel({ [testCase.layerId]: [element] });
+        const result = await transformer.transformModel(model);
+
+        const nodeData = findNodeData(result.nodes, `elem-${testCase.layerId}`);
+        expect(nodeData).toBeDefined();
+        expect(nodeData.nodeType).toBe(testCase.expectedType);
+        expect(nodeData.label).toBeDefined();
+      }
+    });
+  });
 });
