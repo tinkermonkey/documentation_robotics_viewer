@@ -18,6 +18,14 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_SERVICE,
+      label: '',
+      detailLevel: 'standard',
+    },
+    id: '',
+  },
 } satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
@@ -46,6 +54,7 @@ export const HighCriticality: Story = {
           {
             position: 'inline' as const,
             content: 'high',
+            className: 'px-2 py-1 bg-red-100 text-red-800 rounded text-xs font-semibold',
             ariaLabel: 'Criticality: high',
           },
         ],
@@ -66,6 +75,7 @@ export const MediumCriticality: Story = {
           {
             position: 'inline' as const,
             content: 'medium',
+            className: 'px-2 py-1 bg-orange-100 text-orange-800 rounded text-xs font-semibold',
             ariaLabel: 'Criticality: medium',
           },
         ],
@@ -86,6 +96,7 @@ export const LowCriticality: Story = {
           {
             position: 'inline' as const,
             content: 'low',
+            className: 'px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-semibold',
             ariaLabel: 'Criticality: low',
           },
         ],
