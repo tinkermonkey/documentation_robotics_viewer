@@ -1,6 +1,7 @@
 import { ReactFlowProvider, ReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import type { ReactElement } from 'react';
+import type { DecoratorFunction, ReactRenderer } from '@storybook/react';
 
 /**
  * Options for ReactFlowDecorator
@@ -37,7 +38,9 @@ export interface ReactFlowDecoratorOptions {
  * @param options Configuration options for the decorator
  * @returns A decorator function that wraps a story component
  */
-export const withReactFlowDecorator = (options: ReactFlowDecoratorOptions = {}) => {
+export const withReactFlowDecorator = (
+  options: ReactFlowDecoratorOptions = {}
+): DecoratorFunction<ReactRenderer> => {
   const {
     showBackground = false,
     fitView = false,

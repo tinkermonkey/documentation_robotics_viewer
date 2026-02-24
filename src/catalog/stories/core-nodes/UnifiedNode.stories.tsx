@@ -14,298 +14,327 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 // UnifiedNode Stories
 // ============================================================================
 
-const unifiedNodeMeta = {
+const meta = {
   title: 'Core Nodes / UnifiedNode',
-  component: UnifiedNode,
   decorators: [withReactFlowDecorator()],
   parameters: {
-    layout: 'centered',
+    layout: 'fullscreen',
   },
-} satisfies Meta<typeof UnifiedNode>;
+} satisfies Meta;
 
-export default unifiedNodeMeta;
-type UnifiedNodeStory = StoryObj<typeof unifiedNodeMeta>;
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 // Basic centered layout (Motivation style)
-export const CenteredLayout: UnifiedNodeStory = {
-  args: {
-    data: {
-      nodeType: NodeType.MOTIVATION_GOAL,
-      label: 'Improve Customer Experience',
-      detailLevel: 'standard',
-    },
-    id: 'node-1',
-  },
+export const CenteredLayout: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_GOAL,
+        label: 'Improve Customer Experience',
+        detailLevel: 'standard',
+      }}
+      id="node-1"
+    />
+  ),
 };
 
 // Left-aligned layout (Business style)
-export const LeftLayout: UnifiedNodeStory = {
-  args: {
-    data: {
-      nodeType: NodeType.BUSINESS_FUNCTION,
-      label: 'Process Payments',
-      detailLevel: 'standard',
-    },
-    id: 'node-2',
-  },
+export const LeftLayout: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_FUNCTION,
+        label: 'Process Payments',
+        detailLevel: 'standard',
+      }}
+      id="node-2"
+    />
+  ),
 };
 
 // With top-left badge
-export const WithTopLeftBadge: UnifiedNodeStory = {
-  args: {
-    data: {
-      nodeType: NodeType.MOTIVATION_REQUIREMENT,
-      label: 'User Authentication',
-      badges: [
-        {
-          position: 'top-left' as const,
-          content: '✓',
-          className: 'w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs',
-          ariaLabel: 'Requirement satisfied',
-        },
-      ],
-      detailLevel: 'standard',
-    },
-    id: 'node-3',
-  },
+export const WithTopLeftBadge: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_REQUIREMENT,
+        label: 'User Authentication',
+        badges: [
+          {
+            position: 'top-left' as const,
+            content: '✓',
+            className: 'w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs',
+            ariaLabel: 'Requirement satisfied',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="node-3"
+    />
+  ),
 };
 
 // With top-right badge
-export const WithTopRightBadge: UnifiedNodeStory = {
-  args: {
-    data: {
-      nodeType: NodeType.MOTIVATION_PRINCIPLE,
-      label: 'Security First',
-      badges: [
-        {
-          position: 'top-right' as const,
-          content: 'Enterprise',
-          className: 'px-2 py-1 bg-purple-500 text-white rounded text-xs font-semibold',
-          ariaLabel: 'Scope: Enterprise',
-        },
-      ],
-      detailLevel: 'standard',
-    },
-    id: 'node-4',
-  },
+export const WithTopRightBadge: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_PRINCIPLE,
+        label: 'Security First',
+        badges: [
+          {
+            position: 'top-right' as const,
+            content: 'Enterprise',
+            className: 'px-2 py-1 bg-purple-500 text-white rounded text-xs font-semibold',
+            ariaLabel: 'Scope: Enterprise',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="node-4"
+    />
+  ),
 };
 
 // With inline badges
-export const WithInlineBadges: UnifiedNodeStory = {
-  args: {
-    data: {
-      nodeType: NodeType.BUSINESS_CAPABILITY,
-      label: 'Order Management',
-      badges: [
-        {
-          position: 'inline' as const,
-          content: 'High',
-          className: 'px-2 py-1 bg-red-500 text-white rounded text-xs font-semibold',
-          ariaLabel: 'Criticality: High',
-        },
-      ],
-      detailLevel: 'standard',
-    },
-    id: 'node-5',
-  },
+export const WithInlineBadges: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_CAPABILITY,
+        label: 'Order Management',
+        badges: [
+          {
+            position: 'inline' as const,
+            content: 'High',
+            className: 'px-2 py-1 bg-red-500 text-white rounded text-xs font-semibold',
+            ariaLabel: 'Criticality: High',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="node-5"
+    />
+  ),
 };
 
 // With multiple badges
-export const WithMultipleBadges: UnifiedNodeStory = {
-  args: {
-    data: {
-      nodeType: NodeType.MOTIVATION_GOAL,
-      label: 'System Reliability',
-      badges: [
-        {
-          position: 'top-left' as const,
-          content: '📊',
-          ariaLabel: 'Coverage indicator',
-        },
-        {
-          position: 'top-right' as const,
-          content: 'High',
-          className: 'px-2 py-1 bg-orange-500 text-white rounded text-xs font-semibold',
-          ariaLabel: 'Priority: High',
-        },
-        {
-          position: 'inline' as const,
-          content: 'Active',
-          className: 'px-2 py-1 bg-blue-500 text-white rounded text-xs font-semibold',
-          ariaLabel: 'Status: Active',
-        },
-      ],
-      detailLevel: 'standard',
-    },
-    id: 'node-6',
-  },
+export const WithMultipleBadges: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_GOAL,
+        label: 'System Reliability',
+        badges: [
+          {
+            position: 'top-left' as const,
+            content: '📊',
+            ariaLabel: 'Coverage indicator',
+          },
+          {
+            position: 'top-right' as const,
+            content: 'High',
+            className: 'px-2 py-1 bg-orange-500 text-white rounded text-xs font-semibold',
+            ariaLabel: 'Priority: High',
+          },
+          {
+            position: 'inline' as const,
+            content: 'Active',
+            className: 'px-2 py-1 bg-blue-500 text-white rounded text-xs font-semibold',
+            ariaLabel: 'Status: Active',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="node-6"
+    />
+  ),
 };
 
 // With field list
-export const WithFieldList: UnifiedNodeStory = {
-  args: {
-    data: {
-      nodeType: NodeType.DATA_JSON_SCHEMA,
-      label: 'User Schema',
-      items: [
-        {
-          id: 'field-1',
-          label: 'id',
-          value: 'UUID',
-          required: true,
-          tooltip: 'Unique identifier for the user',
-        },
-        {
-          id: 'field-2',
-          label: 'name',
-          value: 'string',
-          required: true,
-        },
-        {
-          id: 'field-3',
-          label: 'email',
-          value: 'string',
-          required: true,
-          tooltip: 'Must be a valid email address',
-        },
-        {
-          id: 'field-4',
-          label: 'phone',
-          value: 'string',
-          required: false,
-          tooltip: 'Optional phone number',
-        },
-      ],
-      detailLevel: 'standard',
-    },
-    id: 'node-7',
-  },
+export const WithFieldList: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.DATA_JSON_SCHEMA,
+        label: 'User Schema',
+        items: [
+          {
+            id: 'field-1',
+            label: 'id',
+            value: 'UUID',
+            required: true,
+            tooltip: 'Unique identifier for the user',
+          },
+          {
+            id: 'field-2',
+            label: 'name',
+            value: 'string',
+            required: true,
+          },
+          {
+            id: 'field-3',
+            label: 'email',
+            value: 'string',
+            required: true,
+            tooltip: 'Must be a valid email address',
+          },
+          {
+            id: 'field-4',
+            label: 'phone',
+            value: 'string',
+            required: false,
+            tooltip: 'Optional phone number',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="node-7"
+    />
+  ),
 };
 
 // Semantic zoom - Minimal
-export const SemanticZoomMinimal: UnifiedNodeStory = {
-  args: {
-    data: {
-      nodeType: NodeType.MOTIVATION_GOAL,
-      label: 'Improve Performance',
-      detailLevel: 'minimal' as const,
-    },
-    id: 'node-8',
-  },
+export const SemanticZoomMinimal: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_GOAL,
+        label: 'Improve Performance',
+        detailLevel: 'minimal' as const,
+      }}
+      id="node-8"
+    />
+  ),
 };
 
 // Semantic zoom - Standard
-export const SemanticZoomStandard: UnifiedNodeStory = {
-  args: {
-    data: {
-      nodeType: NodeType.MOTIVATION_GOAL,
-      label: 'Improve Performance',
-      detailLevel: 'standard' as const,
-    },
-    id: 'node-9',
-  },
+export const SemanticZoomStandard: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_GOAL,
+        label: 'Improve Performance',
+        detailLevel: 'standard' as const,
+      }}
+      id="node-9"
+    />
+  ),
 };
 
 // Semantic zoom - Detailed
-export const SemanticZoomDetailed: UnifiedNodeStory = {
-  args: {
-    data: {
-      nodeType: NodeType.MOTIVATION_GOAL,
-      label: 'Improve Performance',
-      badges: [
-        {
-          position: 'top-right' as const,
-          content: 'High',
-          className: 'px-2 py-1 bg-orange-500 text-white rounded text-xs font-semibold',
-        },
-      ],
-      detailLevel: 'detailed' as const,
-    },
-    id: 'node-10',
-  },
+export const SemanticZoomDetailed: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_GOAL,
+        label: 'Improve Performance',
+        badges: [
+          {
+            position: 'top-right' as const,
+            content: 'High',
+            className: 'px-2 py-1 bg-orange-500 text-white rounded text-xs font-semibold',
+          },
+        ],
+        detailLevel: 'detailed' as const,
+      }}
+      id="node-10"
+    />
+  ),
 };
 
 // Changeset - Add operation
-export const ChangesetAdd: UnifiedNodeStory = {
-  args: {
-    data: {
-      nodeType: NodeType.BUSINESS_SERVICE,
-      label: 'New Payment Service',
-      changesetOperation: 'add' as const,
-      detailLevel: 'standard',
-    },
-    id: 'node-11',
-  },
+export const ChangesetAdd: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        label: 'New Payment Service',
+        changesetOperation: 'add' as const,
+        detailLevel: 'standard',
+      }}
+      id="node-11"
+    />
+  ),
 };
 
 // Changeset - Update operation
-export const ChangesetUpdate: UnifiedNodeStory = {
-  args: {
-    data: {
-      nodeType: NodeType.BUSINESS_SERVICE,
-      label: 'Payment Service',
-      changesetOperation: 'update' as const,
-      detailLevel: 'standard',
-    },
-    id: 'node-12',
-  },
+export const ChangesetUpdate: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        label: 'Payment Service',
+        changesetOperation: 'update' as const,
+        detailLevel: 'standard',
+      }}
+      id="node-12"
+    />
+  ),
 };
 
 // Changeset - Delete operation
-export const ChangesetDelete: UnifiedNodeStory = {
-  args: {
-    data: {
-      nodeType: NodeType.BUSINESS_SERVICE,
-      label: 'Legacy Payment Service',
-      changesetOperation: 'delete' as const,
-      detailLevel: 'standard',
-    },
-    id: 'node-13',
-  },
+export const ChangesetDelete: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        label: 'Legacy Payment Service',
+        changesetOperation: 'delete' as const,
+        detailLevel: 'standard',
+      }}
+      id="node-13"
+    />
+  ),
 };
 
 // With RelationshipBadge (focused mode)
-export const WithRelationshipBadge: UnifiedNodeStory = {
-  args: {
-    data: {
-      nodeType: NodeType.MOTIVATION_GOAL,
-      label: 'Core Business Objective',
-      relationshipBadge: {
-        count: 12,
-        incoming: 5,
-        outgoing: 7,
-      },
-      changesetOperation: 'add',
-      detailLevel: 'standard',
-    },
-    id: 'node-14',
-  },
+export const WithRelationshipBadge: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_GOAL,
+        label: 'Core Business Objective',
+        relationshipBadge: {
+          count: 12,
+          incoming: 5,
+          outgoing: 7,
+        },
+        changesetOperation: 'add',
+        detailLevel: 'standard',
+      }}
+      id="node-14"
+    />
+  ),
 };
 
 // Hidden fields
-export const HiddenFields: UnifiedNodeStory = {
-  args: {
-    data: {
-      nodeType: NodeType.DATA_JSON_SCHEMA,
-      label: 'Hidden Fields',
-      items: [
-        {
-          id: 'field-1',
-          label: 'id',
-          value: 'UUID',
-          required: true,
-        },
-        {
-          id: 'field-2',
-          label: 'data',
-          value: 'object',
-          required: true,
-        },
-      ],
-      hideFields: true,
-      detailLevel: 'standard',
-    },
-    id: 'node-15',
-  },
+export const HiddenFields: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.DATA_JSON_SCHEMA,
+        label: 'Hidden Fields',
+        items: [
+          {
+            id: 'field-1',
+            label: 'id',
+            value: 'UUID',
+            required: true,
+          },
+          {
+            id: 'field-2',
+            label: 'data',
+            value: 'object',
+            required: true,
+          },
+        ],
+        hideFields: true,
+        detailLevel: 'standard',
+      }}
+      id="node-15"
+    />
+  ),
 };
 
