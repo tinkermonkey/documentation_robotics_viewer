@@ -55,7 +55,7 @@ Maps element type strings (from YAML models) to NodeType enum values.
 - Format is case-sensitive
 - Supports various naming conventions (camelCase, PascalCase, kebab-case, lowercase, spaces)
 - Type strings from YAML/JSON models are matched against this map
-- If no match is found, the node will not render
+- If no match is found, a warning is logged and the node renders an error state (red border with "Invalid node type" message)
 
 ## nodeStyles
 
@@ -85,12 +85,13 @@ interface NodeStyleConfig {
 **Layout Modes:**
 
 - **`centered`**: Label and icon centered vertically and horizontally
-  - Used by: Motivation layer nodes (Goal, Requirement, Driver, etc.)
+  - Used by: Most Motivation layer nodes (Goal, Requirement, Driver, Outcome, Constraint, Stakeholder); C4 External Actor; Layer Container
+  - Exceptions: Some Motivation nodes use `left` layout (Assessment, Principle, Value Stream, Assumption)
   - Ideal for: Simple conceptual nodes without detailed content
   - Example: 180x110 pixel nodes
 
 - **`left`**: Label and icon left-aligned, content below
-  - Used by: Business and C4 layers (Function, Service, Container, Component)
+  - Used by: Business layer (Function, Service, Capability, Process); C4 layers (Container, Component); some Motivation nodes (Assessment, Principle, Value Stream, Assumption)
   - Ideal for: Nodes with hierarchical structure or nested content
   - Example: 200x120 pixel nodes
 
@@ -325,24 +326,13 @@ To add a new node type without code changes:
 
 ## Theme Support
 
-Multiple JSON config files with identical structure but different colors can support different themes:
+Currently, the node configuration uses a single `nodeConfig.json` file for all themes. The colors defined in the configuration are theme-agnostic and remain consistent across light and dark modes. The application's dark mode styling is handled at the component level through Tailwind CSS classes (e.g., `dark:bg-gray-800`, `dark:text-white`).
 
-- `nodeConfig.json` - Default theme
-- `nodeConfig.dark.json` - Dark theme variant
-- `nodeConfig.highContrast.json` - High contrast theme for accessibility
-
-**Implementation:**
-- Keep a shared `typeMap` section for all themes (can be identical)
-- Vary only the `nodeStyles` colors between themes
-- Vary only the `changesetColors` between themes
-- Use the same icon and typeLabel across themes
-- Adjust dimensions if needed for readability in specific themes
-
-**Theme Selection Example:**
-```typescript
-const configFile = isDarkMode ? 'nodeConfig.dark.json' : 'nodeConfig.json';
-const config = await loadNodeConfig(configFile);
-```
+Future support for multiple theme variants could be implemented by:
+- Creating additional config files (e.g., `nodeConfig.dark.json`)
+- Modifying the `nodeConfigLoader` to accept a theme parameter
+- Loading different `nodeStyles` and `changesetColors` based on the selected theme
+- Keeping the `typeMap` consistent across all theme variants
 
 ## Field Visibility Configuration
 
