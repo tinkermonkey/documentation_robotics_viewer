@@ -176,8 +176,8 @@ test.describe('Embedded App - Dual View URL Routing', () => {
       // Wait for React Flow to load
       await page.waitForSelector('.react-flow', { timeout: 10000 });
 
-      // Wait a bit for nodes to render
-      await page.waitForTimeout(2000);
+      // Wait for network to stabilize
+      await page.waitForLoadState('networkidle');
 
       // Check for nodes
       const nodes = page.locator('.react-flow__node');
@@ -308,8 +308,8 @@ test.describe('Embedded App - Dual View URL Routing', () => {
       // Wait for React Flow to load
       await page.waitForSelector('.react-flow', { timeout: 10000 });
 
-      // Wait for rendering to complete
-      await page.waitForTimeout(2000);
+      // Wait for network to stabilize
+      await page.waitForLoadState('networkidle');
 
       // Check for critical errors
       const criticalErrors = errors.filter(e =>

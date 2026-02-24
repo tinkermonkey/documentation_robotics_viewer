@@ -53,7 +53,7 @@ test.describe('Motivation View', () => {
     await page.click('.mode-selector button:has-text("Motivation")');
 
     // Wait for view to load
-    await page.waitForTimeout(2000);
+    await page.waitForLoadState('networkidle');
 
     // Verify Motivation mode is active
     const motivationButton = page.locator('.mode-selector button', { hasText: 'Motivation' });
@@ -72,7 +72,7 @@ test.describe('Motivation View', () => {
   test('should display motivation view container or message overlay', async ({ page }) => {
     // Navigate to Motivation view
     await page.click('.mode-selector button:has-text("Motivation")');
-    await page.waitForTimeout(2000);
+    await page.waitForLoadState('networkidle');
 
     // The view should either show the motivation graph container (if motivation elements exist)
     // or a message overlay (for loading, error, or empty state)
@@ -93,9 +93,9 @@ test.describe('Motivation View', () => {
     // Rapidly switch between views
     for (let i = 0; i < 3; i++) {
       await page.click('.mode-selector button:has-text("Motivation")');
-      await page.waitForTimeout(100);
+      // No wait needed - view switching is immediate
       await page.click('.mode-selector button:has-text("Model")');
-      await page.waitForTimeout(100);
+      // No wait needed - view switching is immediate
     }
 
     // End on Motivation
@@ -127,7 +127,7 @@ test.describe('Motivation View', () => {
 
     // Navigate to Motivation view
     await page.click('.mode-selector button:has-text("Motivation")');
-    await page.waitForTimeout(3000);
+    await page.waitForLoadState('networkidle');
 
     // Check if error boundary is showing
     const renderingError = page.locator('h3:has-text("Rendering Error")');
@@ -141,7 +141,7 @@ test.describe('Motivation View', () => {
       if (errorDetails) {
         // Try to get error details
         await page.click('details summary:has-text("Error Details")');
-        await page.waitForTimeout(500);
+        // No wait needed - details expand synchronously
         const preContent = await page.locator('details pre').textContent().catch(() => '');
         errorText += `\nError details: ${preContent}`;
       }

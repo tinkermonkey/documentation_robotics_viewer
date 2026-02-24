@@ -30,7 +30,7 @@ test.describe('C4 Architecture View Accessibility', () => {
 
     // Navigate to Architecture view using the correct test ID
     await page.click('[data-testid="main-tab-architecture"]');
-    await page.waitForTimeout(3000);
+    await page.waitForLoadState('networkidle');
   });
 
   test.describe('Automated Accessibility Scanning', () => {
@@ -128,7 +128,7 @@ test.describe('C4 Architecture View Accessibility', () => {
 
       // Tab backward
       await page.keyboard.press('Shift+Tab');
-      await page.waitForTimeout(100);
+      // No wait needed - focus moves synchronously
 
       // Get new focused element with unique identifier
       const backwardFocused = await page.evaluate(() => {
@@ -153,7 +153,8 @@ test.describe('C4 Architecture View Accessibility', () => {
 
         // Press Enter
         await page.keyboard.press('Enter');
-        await page.waitForTimeout(300);
+        // Wait for potential async updates
+        await page.waitForLoadState('networkidle');
 
         // Button should have been activated (no error)
         // The view should still be showing either the ReactFlow container or loading/error state
@@ -175,7 +176,7 @@ test.describe('C4 Architecture View Accessibility', () => {
         // Focus and press Space
         await checkbox.focus();
         await page.keyboard.press('Space');
-        await page.waitForTimeout(200);
+        // No wait needed - checkbox toggles synchronously
 
         // Checkbox state should have toggled
         const newState = await checkbox.isChecked();
@@ -189,14 +190,15 @@ test.describe('C4 Architecture View Accessibility', () => {
 
       if (await node.isVisible()) {
         await node.click();
-        await page.waitForTimeout(500);
+        // Wait for inspector to potentially open
+        await page.waitForLoadState('networkidle');
 
         // Inspector should be visible
         const inspector = page.locator('.c4-inspector-panel');
         if (await inspector.isVisible()) {
           // Press Escape
           await page.keyboard.press('Escape');
-          await page.waitForTimeout(300);
+          // No wait needed - escape closes synchronously
 
           // Inspector might close or node might deselect
           // Just verify no errors occurred - view should still be showing
@@ -378,7 +380,7 @@ test.describe('C4 Architecture View Accessibility', () => {
       if (await node.isVisible()) {
         // Select the node
         await node.click();
-        await page.waitForTimeout(300);
+        // No wait needed - selection updates synchronously
 
         // Check for non-color selection indicator
         const hasNonColorIndicator = await node.evaluate((el) => {
@@ -414,7 +416,7 @@ test.describe('C4 Architecture View Accessibility', () => {
 
       // Navigate to Architecture view
       await page.click('[data-testid="main-tab-architecture"]');
-      await page.waitForTimeout(2000);
+      await page.waitForLoadState('networkidle');
 
       // Check that animations are reduced
       // ReactFlow and CSS should respect prefers-reduced-motion

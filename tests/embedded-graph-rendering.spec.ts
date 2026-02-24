@@ -32,8 +32,8 @@ test.describe('Graph Rendering - Phase 6 Verification', () => {
     // Wait for WebSocket connection
     await page.waitForSelector('[data-connection-state="connected"]', { timeout: 10000 });
 
-    // Give time for model to load
-    await page.waitForTimeout(2000);
+    // Wait for network to stabilize instead of hardcoded delay
+    await page.waitForLoadState('networkidle');
   });
 
   test.describe('Model Tab - Graph Rendering', () => {
@@ -42,8 +42,8 @@ test.describe('Graph Rendering - Phase 6 Verification', () => {
       const header = page.locator('[data-testid="embedded-header"]');
       await header.getByRole('button', { name: 'Model' }).click();
 
-      // Wait for graph sub-tab
-      await page.waitForTimeout(500);
+      // Wait for graph sub-tab to be clickable
+      await header.getByRole('button', { name: 'Graph' }).isVisible({ timeout: 5000 });
       await header.getByRole('button', { name: 'Graph' }).click();
 
       // Wait for React Flow to initialize
@@ -77,7 +77,7 @@ test.describe('Graph Rendering - Phase 6 Verification', () => {
       // Navigate to Model graph view
       const header = page.locator('[data-testid="embedded-header"]');
       await header.getByRole('button', { name: 'Model' }).click();
-      await page.waitForTimeout(500);
+      await header.getByRole('button', { name: 'Graph' }).isVisible({ timeout: 5000 });
       await header.getByRole('button', { name: 'Graph' }).click();
 
       // Wait for all components to render
@@ -112,7 +112,7 @@ test.describe('Graph Rendering - Phase 6 Verification', () => {
       // Navigate to Model JSON view
       const header = page.locator('[data-testid="embedded-header"]');
       await header.getByRole('button', { name: 'Model' }).click();
-      await page.waitForTimeout(500);
+      await header.getByRole('button', { name: 'JSON' }).isVisible({ timeout: 5000 });
       await header.getByRole('button', { name: 'JSON' }).click();
 
       // Wait for JSON view to render
@@ -163,7 +163,7 @@ test.describe('Graph Rendering - Phase 6 Verification', () => {
       // Navigate to Spec JSON view
       const header = page.locator('[data-testid="embedded-header"]');
       await header.getByRole('button', { name: 'Spec' }).click();
-      await page.waitForTimeout(500);
+      await header.getByRole('button', { name: 'JSON' }).isVisible({ timeout: 5000 });
       await header.getByRole('button', { name: 'JSON' }).click();
 
       // Wait for JSON view to render
@@ -179,7 +179,7 @@ test.describe('Graph Rendering - Phase 6 Verification', () => {
       // Navigate to Spec JSON view
       const header = page.locator('[data-testid="embedded-header"]');
       await header.getByRole('button', { name: 'Spec' }).click();
-      await page.waitForTimeout(500);
+      await header.getByRole('button', { name: 'JSON' }).isVisible({ timeout: 5000 });
       await header.getByRole('button', { name: 'JSON' }).click();
 
       // Wait for SpecViewer to render
@@ -189,7 +189,7 @@ test.describe('Graph Rendering - Phase 6 Verification', () => {
       const firstSchemaButton = page.locator('[data-testid="left-sidebar"] button').first();
       if (await firstSchemaButton.isVisible()) {
         await firstSchemaButton.click();
-        await page.waitForTimeout(500);
+        await page.waitForLoadState('networkidle');
       }
 
       // Count all tab lists on the page
@@ -217,7 +217,7 @@ test.describe('Graph Rendering - Phase 6 Verification', () => {
       // Navigate to Spec JSON view
       const header = page.locator('[data-testid="embedded-header"]');
       await header.getByRole('button', { name: 'Spec' }).click();
-      await page.waitForTimeout(500);
+      await header.getByRole('button', { name: 'JSON' }).isVisible({ timeout: 5000 });
       await header.getByRole('button', { name: 'JSON' }).click();
 
       // Wait for SpecViewer
@@ -334,7 +334,7 @@ test.describe('Graph Rendering - Phase 6 Verification', () => {
       // Navigate to Model graph view
       const header = page.locator('[data-testid="embedded-header"]');
       await header.getByRole('button', { name: 'Model' }).click();
-      await page.waitForTimeout(500);
+      await header.getByRole('button', { name: 'Graph' }).isVisible({ timeout: 5000 });
       await header.getByRole('button', { name: 'Graph' }).click();
 
       await page.waitForSelector('[data-testid="right-sidebar"]', { timeout: 5000 });
@@ -399,7 +399,7 @@ test.describe('Graph Rendering - Phase 6 Verification', () => {
       // Navigate to Model graph
       const header = page.locator('[data-testid="embedded-header"]');
       await header.getByRole('button', { name: 'Model' }).click();
-      await page.waitForTimeout(500);
+      await header.getByRole('button', { name: 'Graph' }).isVisible({ timeout: 5000 });
       await header.getByRole('button', { name: 'Graph' }).click();
 
       await page.waitForSelector('.react-flow', { timeout: 10000 });
@@ -408,7 +408,7 @@ test.describe('Graph Rendering - Phase 6 Verification', () => {
       const themeToggle = page.locator('[data-testid="theme-toggle"]');
       if (await themeToggle.isVisible()) {
         await themeToggle.click();
-        await page.waitForTimeout(500);
+        await page.waitForLoadState('networkidle');
 
         // Screenshot in dark mode
         await page.screenshot({
@@ -424,7 +424,7 @@ test.describe('Graph Rendering - Phase 6 Verification', () => {
       // Navigate to Spec JSON
       const header = page.locator('[data-testid="embedded-header"]');
       await header.getByRole('button', { name: 'Spec' }).click();
-      await page.waitForTimeout(500);
+      await header.getByRole('button', { name: 'JSON' }).isVisible({ timeout: 5000 });
       await header.getByRole('button', { name: 'JSON' }).click();
 
       await page.waitForSelector('[data-testid="spec-viewer"]', { timeout: 10000 });
@@ -433,7 +433,7 @@ test.describe('Graph Rendering - Phase 6 Verification', () => {
       const themeToggle = page.locator('[data-testid="theme-toggle"]');
       if (await themeToggle.isVisible()) {
         await themeToggle.click();
-        await page.waitForTimeout(500);
+        await page.waitForLoadState('networkidle');
 
         // Screenshot in dark mode
         await page.screenshot({
@@ -467,7 +467,7 @@ test.describe('Graph Rendering - Phase 6 Verification', () => {
 
         // Navigate to graph subtab if needed
         if (tab.hasSubtabs) {
-          await page.waitForTimeout(500);
+          await header.getByRole('button', { name: tab.subtab }).isVisible({ timeout: 5000 });
           await header.getByRole('button', { name: tab.subtab }).click();
         }
 
@@ -478,8 +478,8 @@ test.describe('Graph Rendering - Phase 6 Verification', () => {
         const reactFlow = page.locator('.react-flow');
         await expect(reactFlow).toBeVisible();
 
-        // Wait for rendering
-        await page.waitForTimeout(2000);
+        // Wait for network to stabilize
+        await page.waitForLoadState('networkidle');
 
         // Check for critical errors
         const criticalErrors = errors.filter(e =>
@@ -502,7 +502,7 @@ test.describe('Graph Rendering - Phase 6 Verification', () => {
       // Navigate to Model graph
       const header = page.locator('[data-testid="embedded-header"]');
       await header.getByRole('button', { name: 'Model' }).click();
-      await page.waitForTimeout(500);
+      await header.getByRole('button', { name: 'Graph' }).isVisible({ timeout: 5000 });
       await header.getByRole('button', { name: 'Graph' }).click();
 
       await page.waitForSelector('.react-flow', { timeout: 10000 });
