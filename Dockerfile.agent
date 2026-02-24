@@ -15,6 +15,24 @@ FROM clauditoreum-orchestrator:latest
 USER root
 
 # ============================================================================
+# Stage 2: Git Configuration for CI Environment
+# ============================================================================
+# The base image already has user identity and safe.directory configured in /etc/gitconfig
+# We add network timeout and CI-specific settings to the system config
+
+RUN git config --system credential.helper 'cache --timeout=3600' && \
+    git config --system http.postBuffer 524288000 && \
+    git config --system http.lowSpeedLimit 1000 && \
+    git config --system http.lowSpeedTime 60 && \
+    git config --system core.askpass '' && \
+    git config --system pull.rebase false && \
+    git config --system init.defaultBranch main
+
+# Set environment variables for git in CI
+ENV GIT_TERMINAL_PROMPT=0
+ENV GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=30"
+
+# ============================================================================
 # Stage 3: Pre-install Dependencies (OPTIONAL but RECOMMENDED)
 # ============================================================================
 # Pre-installing dependencies speeds up agent startup time because the agent
@@ -66,6 +84,10 @@ RUN node --version && npm --version
 
 # Verify Playwright installation
 RUN npx playwright --version
+
+# Verify git configuration is properly set up
+RUN git config --system --list | grep -E 'user\.(name|email)|safe\.directory|http\.postBuffer' && \
+    echo "Git configuration verified successfully"
 
 # ============================================================================
 # Default command

@@ -46,15 +46,26 @@ const colors = {
  */
 function getStagedTestFiles(): string[] {
   try {
+    // Use environment variables to bypass corrupted ~/.gitconfig if present
+    // GIT_CONFIG_GLOBAL=/dev/null prevents loading system/global git config
+    // GIT_CONFIG_SYSTEM=/dev/null prevents loading system git config
     const output = execSync('git diff --cached --name-only --diff-filter=ACM', {
-      encoding: 'utf-8'
+      encoding: 'utf-8',
+      env: {
+        ...process.env,
+        GIT_CONFIG_GLOBAL: '/dev/null',
+        GIT_CONFIG_SYSTEM: '/dev/null'
+      }
     });
 
     return output
       .split('\n')
       .filter((file) => file.endsWith('.spec.ts') && fs.existsSync(file));
   } catch (error) {
-    console.error('Error getting staged files:', error);
+    // If git command fails (e.g., corrupted gitconfig), gracefully return empty array
+    // This allows the script to continue running instead of crashing
+    console.error('Warning: Could not get staged files from git. This may indicate a corrupted git config.');
+    console.error('Try running: GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_SYSTEM=/dev/null git status');
     return [];
   }
 }
