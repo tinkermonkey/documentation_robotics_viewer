@@ -22,6 +22,7 @@ import { NodeType } from '../NodeType';
 import { nodeConfigLoader } from '../nodeConfigLoader';
 import { RelationshipBadge, RelationshipBadgeData } from './RelationshipBadge';
 import FieldList, { FieldItem } from './FieldList';
+import { useShouldHideFields } from '../../stores/fieldVisibilityStore';
 
 export interface NodeBadge {
   position: 'top-left' | 'top-right' | 'inline';
@@ -44,17 +45,23 @@ export interface UnifiedNodeData extends Record<string, unknown> {
   relationshipBadge?: RelationshipBadgeData;
 }
 
-function UnifiedNodeComponent({ data, id: _id }: { data: UnifiedNodeData; id?: string }): React.ReactElement {
+function UnifiedNodeComponent({ data, id }: { data: UnifiedNodeData; id?: string }): React.ReactElement {
   const {
     nodeType,
     label,
     items = [],
-    hideFields = false,
+    hideFields: nodeHideFields = false,
     badges = [],
     detailLevel = 'standard',
     changesetOperation,
     relationshipBadge,
   } = data;
+
+  // Get visibility from store (graph-level overrides node-level)
+  const storeHideFields = useShouldHideFields(id);
+
+  // Final decision: store overrides data prop
+  const hideFields = storeHideFields || nodeHideFields;
 
   // Load style config from JSON
   const styleConfig = nodeConfigLoader.getStyleConfig(nodeType);
