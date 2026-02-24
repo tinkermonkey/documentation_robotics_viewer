@@ -24,7 +24,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['react', 'react-dom', '@xyflow/react'],
-    force: true
+    force: process.env.CI ? false : true
   },
   server: {
     port: 3000,

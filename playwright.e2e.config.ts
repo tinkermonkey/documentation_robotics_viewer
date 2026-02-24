@@ -91,7 +91,7 @@ export default defineConfig({
     command: 'npm run dev',
     url: 'http://localhost:3001',
     reuseExistingServer: !process.env.CI,
-    timeout: 60000,  // 60 seconds to start (Vite can be slow)
+    timeout: process.env.CI ? 120000 : 60000,  // 120 seconds in CI, 60 seconds locally
     stdout: 'pipe',
     stderr: 'pipe',
   },

@@ -56,7 +56,7 @@ export default defineConfig({
     command: 'npm run storybook:build && npm run storybook:serve',
     url: 'http://localhost:61001',
     reuseExistingServer: !process.env.CI,
-    timeout: 60000,
+    timeout: process.env.CI ? 120000 : 60000,  // 120 seconds in CI, 60 seconds locally
     // Stdout/stderr capture handled via shell redirection in test-stories.sh (2>&1)
     // This ensures logs are available for error analysis even on older Playwright versions
     stdout: 'pipe',
