@@ -1,7 +1,7 @@
 /**
  * NodeType Enum
  *
- * Defines all 21+ node types across the architecture layers.
+ * Defines all 20 node types across the architecture layers.
  * Maps to JSON configuration for styling, dimensions, and layout.
  *
  * Layers:

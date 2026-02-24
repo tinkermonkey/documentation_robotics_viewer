@@ -799,7 +799,7 @@ export class NodeTransformer {
         const mappedType = nodeConfigLoader.mapElementType(element.type);
 
         if (!mappedType) {
-          console.warn(`[NodeTransformer] No type mapping found for element type: ${element.type}`);
+          // Warning already logged by nodeConfigLoader.mapElementType()
           element.visual.size = { width: 180, height: 100 };
         } else {
           // Get style config from JSON

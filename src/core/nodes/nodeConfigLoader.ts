@@ -123,7 +123,7 @@ class NodeConfigLoader {
 
   /**
    * Check if loader is initialized
-   * @returns True if validation completed successfully
+   * @returns True if configuration has been loaded and validated
    */
   isInitialized(): boolean {
     return this.initialized;

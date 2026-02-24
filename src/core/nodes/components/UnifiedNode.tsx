@@ -62,7 +62,7 @@ function UnifiedNodeComponent({ data, id }: { data: UnifiedNodeData; id?: string
   // Get visibility from store (graph-level overrides node-level)
   const storeHideFields = useShouldHideFields(id);
 
-  // Final decision: store overrides data prop
+  // Final decision: fields are hidden if either store or data prop indicates hiding
   const hideFields = storeHideFields || nodeHideFields;
 
   // Load style config from JSON
