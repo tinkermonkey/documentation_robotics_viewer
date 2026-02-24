@@ -848,7 +848,7 @@ export class NodeTransformer {
     // Extract schema properties or model attributes as field items
     // Handle both direct properties and schemaInfo.properties (for JSONSchema)
     const properties = element.properties || element.schemaInfo?.properties || {};
-    const requiredFields = element.required || element.schemaInfo?.required;
+    const requiredFields = element.schemaInfo?.required;
 
     // Handle object format (key-value pairs)
     if (properties && typeof properties === 'object' && !Array.isArray(properties)) {
@@ -866,8 +866,8 @@ export class NodeTransformer {
       });
     }
 
-    // Extract badges if available
-    const badges = extractBadges(element) || [];
+    // Data layer nodes do not have special badge extraction logic
+    const badges: any[] = [];
 
     const unifiedData: UnifiedNodeData = {
       nodeType,
