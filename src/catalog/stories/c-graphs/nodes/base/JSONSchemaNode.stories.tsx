@@ -3,10 +3,16 @@ import { NodeType } from '@/core/nodes/NodeType';
 import UnifiedNode from '@/core/nodes/components/UnifiedNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import type { UnifiedNodeData } from '@/core/nodes/components/UnifiedNode';
+import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
+
+// Get dimensions from node configuration for consistency
+const jsonSchemaConfig = nodeConfigLoader.getStyleConfig(NodeType.DATA_JSON_SCHEMA);
+const storyWidth = jsonSchemaConfig?.dimensions.width || 280;
+const storyHeight = 300;
 
 const meta = {
   title: 'C Graphs / Nodes / Base / JSONSchemaNode',
-  decorators: [withReactFlowDecorator({ width: 280, height: 300 })],
+  decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
     layout: 'fullscreen',
   },

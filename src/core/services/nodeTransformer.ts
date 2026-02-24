@@ -15,6 +15,7 @@ import { FALLBACK_COLOR } from '../utils/layerColors';
 import { nodeConfigLoader } from '../nodes/nodeConfigLoader';
 import { NodeType } from '../nodes/NodeType';
 import type { UnifiedNodeData } from '../nodes/components/UnifiedNode';
+import type { FieldItem } from '../nodes/components/FieldList';
 // C4 node dimensions are loaded from nodeConfigLoader
 import { extractCrossLayerReferences, referencesToEdges } from './crossLayerLinksExtractor';
 
@@ -25,6 +26,20 @@ export interface NodeTransformResult {
   nodes: AppNode[];
   edges: AppEdge[];
   layout: LayoutResult;
+}
+
+/**
+ * Extended ModelElement interface for data layer elements
+ * Adds optional properties that may be present on schema/data model elements
+ */
+interface DataLayerModelElement extends ModelElement {
+  detailLevel?: 'minimal' | 'standard' | 'detailed';
+  changesetOperation?: 'add' | 'update' | 'delete';
+  relationshipBadge?: any;
+  schemaInfo?: {
+    properties?: Record<string, any> | any[];
+    required?: string[];
+  };
 }
 
 /**
@@ -803,40 +818,43 @@ export class NodeTransformer {
   }
 
   /**
+   * Create a field item from property data
+   * Handles both object and array property formats with consistent structure
+   */
+  private createFieldItemFromProperty(
+    key: string,
+    prop: any,
+    requiredFields: string[] | undefined
+  ): FieldItem {
+    const propType = prop?.type || prop?.dataType || 'unknown';
+    const description = prop?.description || prop?.tooltip || '';
+    const isRequired = Array.isArray(requiredFields) ? requiredFields.includes(key) : false;
+
+    return {
+      id: key,
+      label: key,
+      value: propType,
+      required: isRequired,
+      tooltip: description ? String(description) : undefined,
+    };
+  }
+
+  /**
    * Extract unified node data for data layer elements (JSONSchema, DataModel)
    */
-  private extractDataNodeData(element: ModelElement, nodeType: NodeType): UnifiedNodeData {
-    type FieldItemType = {
-      id: string;
-      label: string;
-      value?: string;
-      required?: boolean;
-      tooltip?: string;
-    };
-
-    const items: FieldItemType[] = [];
+  private extractDataNodeData(element: DataLayerModelElement, nodeType: NodeType): UnifiedNodeData {
+    const items: FieldItem[] = [];
 
     // Extract schema properties or model attributes as field items
     // Handle both direct properties and schemaInfo.properties (for JSONSchema)
-    const properties = element.properties || (element as any).schemaInfo?.properties || {};
-    const requiredFields = element.required || (element as any).schemaInfo?.required || [];
+    const properties = element.properties || element.schemaInfo?.properties || {};
+    const requiredFields = element.required || element.schemaInfo?.required;
 
+    // Handle object format (key-value pairs)
     if (properties && typeof properties === 'object' && !Array.isArray(properties)) {
       Object.entries(properties).forEach(([key, prop]: [string, any]) => {
         if (key.startsWith('_')) return; // Skip internal properties
-
-        // Handle different property formats
-        const propType = prop?.type || prop?.dataType || 'unknown';
-        const description = prop?.description || prop?.tooltip || '';
-        const isRequired = Array.isArray(requiredFields) ? requiredFields.includes(key) : false;
-
-        items.push({
-          id: key,
-          label: key,
-          value: propType,
-          required: isRequired,
-          tooltip: description ? String(description) : undefined,
-        });
+        items.push(this.createFieldItemFromProperty(key, prop, requiredFields));
       });
     }
 
@@ -844,28 +862,21 @@ export class NodeTransformer {
     if (Array.isArray(properties)) {
       properties.forEach((prop: any) => {
         const propName = prop.name || prop.id || 'unknown';
-        const propType = prop.type || prop.dataType || 'unknown';
-        const description = prop.description || prop.tooltip || '';
-        const isRequired = prop.required || false;
-
-        items.push({
-          id: propName,
-          label: propName,
-          value: propType,
-          required: isRequired,
-          tooltip: description ? String(description) : undefined,
-        });
+        items.push(this.createFieldItemFromProperty(propName, prop, requiredFields));
       });
     }
+
+    // Extract badges if available
+    const badges = extractBadges(element) || [];
 
     const unifiedData: UnifiedNodeData = {
       nodeType,
       label: element.name || element.id,
       items: items.length > 0 ? items : undefined,
-      badges: [],
-      detailLevel: ((element as any).detailLevel as 'minimal' | 'standard' | 'detailed' | undefined) || 'standard',
-      changesetOperation: (element as any).changesetOperation as 'add' | 'update' | 'delete' | undefined,
-      relationshipBadge: (element as any).relationshipBadge,
+      badges: badges.length > 0 ? badges : undefined,
+      detailLevel: element.detailLevel || 'standard',
+      changesetOperation: element.changesetOperation,
+      relationshipBadge: element.relationshipBadge,
       // Keep original data for compatibility
       elementId: element.id,
       layerId: element.layerId,

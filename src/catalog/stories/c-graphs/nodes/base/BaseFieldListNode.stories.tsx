@@ -3,8 +3,12 @@
  *
  * This file is kept for backward compatibility during the migration period.
  * New stories should use:
- * - JSONSchemaNode.stories.tsx - For JSON schema node examples
- * - DataModelNode.stories.tsx - For data model node examples
+ * - JSONSchemaNode.stories.tsx - For JSON schema node examples using:
+ *   import { NodeType } from '@/core/nodes/NodeType';
+ *   import UnifiedNode from '@/core/nodes/components/UnifiedNode';
+ * - DataModelNode.stories.tsx - For data model node examples using:
+ *   import { NodeType } from '@/core/nodes/NodeType';
+ *   import UnifiedNode from '@/core/nodes/components/UnifiedNode';
  *
  * Both now use UnifiedNode with configuration from nodeConfig.json
  */

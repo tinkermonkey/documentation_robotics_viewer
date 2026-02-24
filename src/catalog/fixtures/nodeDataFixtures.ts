@@ -4,7 +4,9 @@
  * Supports all changeset operations (add/update/delete) and visual states
  *
  * NOTE: createBaseFieldListNodeConfig is deprecated and kept for backward compatibility.
- * BaseFieldListNode has been migrated to UnifiedNode.
+ * BaseFieldListNode has been migrated to UnifiedNode. See:
+ * - src/catalog/stories/c-graphs/nodes/base/JSONSchemaNode.stories.tsx
+ * - src/catalog/stories/c-graphs/nodes/base/DataModelNode.stories.tsx
  */
 
 import type {
@@ -30,13 +32,16 @@ import type {
   RelationshipBadge
 } from '../../core/types';
 
-// DEPRECATED: FieldItem moved to components
-// Import FieldItem type (was from BaseFieldListNode, now in UnifiedNode)
+// DEPRECATED: FieldItem type definition kept for backward compatibility
+// The actual FieldItem interface is imported from UnifiedNode component
+// and uses 'label' and 'value' properties instead of 'name' and 'type'
+// See: src/core/nodes/components/FieldList.tsx for the actual type definition
 export type FieldItem = {
   id: string;
-  name: string;
-  type: string;
-  required: boolean;
+  label: string;
+  value?: string;
+  required?: boolean;
+  tooltip?: string;
 };
 
 export interface BaseFieldListNodeConfig {
@@ -53,6 +58,11 @@ export interface BaseFieldListNodeConfig {
   headerHeight?: number;
   itemHeight?: number;
 }
+
+/**
+ * NOTE: FieldItem in this fixture includes optional 'tooltip' property (see type definition above).
+ * This tooltip field is now used in the migrated UnifiedNode implementation for field-level help text.
+ */
 
 /**
  * Validation helper functions
@@ -821,11 +831,11 @@ export interface BaseFieldListNodeOptions {
 
 export function createBaseFieldListNodeConfig(options: BaseFieldListNodeOptions = {}): BaseFieldListNodeConfig {
   const defaultItems: FieldItem[] = [
-    { id: 'field-1', name: 'id', type: 'UUID', required: true },
-    { id: 'field-2', name: 'name', type: 'string', required: true },
-    { id: 'field-3', name: 'email', type: 'string', required: true },
-    { id: 'field-4', name: 'createdAt', type: 'timestamp', required: false },
-    { id: 'field-5', name: 'updatedAt', type: 'timestamp', required: false }
+    { id: 'field-1', label: 'id', value: 'UUID', required: true },
+    { id: 'field-2', label: 'name', value: 'string', required: true },
+    { id: 'field-3', label: 'email', value: 'string', required: true },
+    { id: 'field-4', label: 'createdAt', value: 'timestamp', required: false },
+    { id: 'field-5', label: 'updatedAt', value: 'timestamp', required: false }
   ];
 
   const {
@@ -860,9 +870,9 @@ export function createBaseFieldListNodeConfig(options: BaseFieldListNodeOptions 
 
   // Validate field items have required properties
   items.forEach((item, index) => {
-    if (!item.id || !item.name || !item.type) {
+    if (!item.id || !item.label) {
       throw new Error(
-        `Invalid field item at index ${index}: missing required properties (id, name, or type)`
+        `Invalid field item at index ${index}: missing required properties (id or label)`
       );
     }
   });
