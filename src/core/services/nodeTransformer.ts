@@ -458,11 +458,14 @@ export class NodeTransformer {
     switch (nodeType) {
       case NodeType.MOTIVATION_STAKEHOLDER:
         if (props.stakeholderType) {
-          badges.push({
-            position: 'inline' as const,
-            content: props.stakeholderType,
-            ariaLabel: `Type: ${props.stakeholderType}`,
-          });
+          const stakeholderType = this.validateString(props.stakeholderType);
+          if (stakeholderType) {
+            badges.push({
+              position: 'inline' as const,
+              content: stakeholderType,
+              ariaLabel: `Type: ${stakeholderType}`,
+            });
+          }
         }
         break;
 
@@ -488,31 +491,40 @@ export class NodeTransformer {
 
       case NodeType.MOTIVATION_DRIVER:
         if (props.category) {
-          badges.push({
-            position: 'top-right' as const,
-            content: props.category,
-            ariaLabel: `Category: ${props.category}`,
-          });
+          const category = this.validateString(props.category);
+          if (category) {
+            badges.push({
+              position: 'top-right' as const,
+              content: category,
+              ariaLabel: `Category: ${category}`,
+            });
+          }
         }
         break;
 
       case NodeType.MOTIVATION_OUTCOME:
         if (props.status) {
-          badges.push({
-            position: 'top-right' as const,
-            content: props.status,
-            ariaLabel: `Status: ${props.status}`,
-          });
+          const status = this.validateString(props.status);
+          if (status) {
+            badges.push({
+              position: 'top-right' as const,
+              content: status,
+              ariaLabel: `Status: ${status}`,
+            });
+          }
         }
         break;
 
       case NodeType.MOTIVATION_CONSTRAINT:
         if (props.negotiability) {
-          badges.push({
-            position: 'top-right' as const,
-            content: props.negotiability,
-            ariaLabel: `Negotiability: ${props.negotiability}`,
-          });
+          const negotiability = this.validateString(props.negotiability);
+          if (negotiability) {
+            badges.push({
+              position: 'top-right' as const,
+              content: negotiability,
+              ariaLabel: `Negotiability: ${negotiability}`,
+            });
+          }
         }
         break;
 
@@ -539,11 +551,14 @@ export class NodeTransformer {
 
     // Owner badge (common to all business node types)
     if (props.owner) {
-      badges.push({
-        position: 'inline' as const,
-        content: props.owner,
-        ariaLabel: `Owner: ${props.owner}`,
-      });
+      const owner = this.validateString(props.owner);
+      if (owner) {
+        badges.push({
+          position: 'inline' as const,
+          content: owner,
+          ariaLabel: `Owner: ${owner}`,
+        });
+      }
     }
 
     // Criticality badge (color-coded, common to all business node types)
@@ -565,11 +580,14 @@ export class NodeTransformer {
 
     // Domain badge (only for Function and Service nodes)
     if ((nodeType === NodeType.BUSINESS_FUNCTION || nodeType === NodeType.BUSINESS_SERVICE) && props.domain) {
-      badges.push({
-        position: 'inline' as const,
-        content: props.domain,
-        ariaLabel: `Domain: ${props.domain}`,
-      });
+      const domain = this.validateString(props.domain);
+      if (domain) {
+        badges.push({
+          position: 'inline' as const,
+          content: domain,
+          ariaLabel: `Domain: ${domain}`,
+        });
+      }
     }
 
     // Special handling for BusinessProcess expand/collapse
@@ -683,7 +701,7 @@ export class NodeTransformer {
     prop: Record<string, unknown>,
     requiredFields: string[] | undefined
   ): FieldItem {
-    const propType = prop?.type || prop?.dataType || 'unknown';
+    const propType = this.validateString(prop?.type as unknown) || this.validateString(prop?.dataType as unknown) || 'unknown';
     const description = prop?.description || prop?.tooltip || '';
     const isRequired = Array.isArray(requiredFields) ? requiredFields.includes(key) : false;
 
@@ -713,7 +731,9 @@ export class NodeTransformer {
     if (this.isObjectProperties(properties)) {
       Object.entries(properties).forEach(([key, prop]) => {
         if (key.startsWith('_')) return; // Skip internal properties
-        items.push(this.createFieldItemFromProperty(key, prop, requiredFields));
+        if (this.isRecord(prop)) {
+          items.push(this.createFieldItemFromProperty(key, prop, requiredFields));
+        }
       });
     }
 
@@ -1118,10 +1138,12 @@ export class NodeTransformer {
     // Safely extract schemaInfo if present
     const schemaInfo = (element as unknown as Record<string, unknown>).schemaInfo;
     if (this.isRecord(schemaInfo)) {
+      const properties = (schemaInfo as Record<string, unknown>).properties;
+      const required = (schemaInfo as Record<string, unknown>).required;
       props.schemaInfo = {
-        properties: (schemaInfo as Record<string, unknown>).properties,
-        required: this.isStringArray((schemaInfo as Record<string, unknown>).required)
-          ? (schemaInfo as Record<string, unknown>).required as string[]
+        properties: (this.isRecord(properties) || Array.isArray(properties)) ? properties : undefined,
+        required: this.isStringArray(required)
+          ? (required as string[])
           : undefined,
       };
     }
@@ -1138,10 +1160,13 @@ export class NodeTransformer {
       return undefined;
     }
 
+    const properties = (schemaInfo as Record<string, unknown>).properties;
+    const required = (schemaInfo as Record<string, unknown>).required;
+
     return {
-      properties: (schemaInfo as Record<string, unknown>).properties,
-      required: this.isStringArray((schemaInfo as Record<string, unknown>).required)
-        ? (schemaInfo as Record<string, unknown>).required as string[]
+      properties: (this.isRecord(properties) || Array.isArray(properties)) ? properties : undefined,
+      required: this.isStringArray(required)
+        ? (required as string[])
         : undefined,
     };
   }

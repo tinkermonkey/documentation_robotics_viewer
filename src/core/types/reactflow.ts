@@ -280,8 +280,10 @@ export interface C4ExternalActorNodeData extends BaseNodeData {
 
 /**
  * Union type for all custom node types
+ * Includes both legacy specific node types and modern unified node type
  */
 export type AppNode =
+  | Node<any, 'unified'>
   | Node<DataModelNodeData, 'dataModel'>
   | Node<JSONSchemaNodeData, 'jsonSchema'>
   | Node<APIEndpointNodeData, 'apiEndpoint'>
