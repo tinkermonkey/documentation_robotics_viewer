@@ -57,7 +57,24 @@
     "Value Stream": "motivation.valueStream",
     "motivation-value-stream": "motivation.valueStream",
     "Assumption": "motivation.assumption",
-    "motivation-assumption": "motivation.assumption"
+    "motivation-assumption": "motivation.assumption",
+    "goal": "motivation.goal",
+    "stakeholder": "motivation.stakeholder",
+    "requirement": "motivation.requirement",
+    "assessment": "motivation.assessment",
+    "driver": "motivation.driver",
+    "outcome": "motivation.outcome",
+    "principle": "motivation.principle",
+    "constraint": "motivation.constraint",
+    "valueStream": "motivation.valueStream",
+    "assumption": "motivation.assumption",
+    "businessService": "business.service",
+    "businessFunction": "business.function",
+    "businessCapability": "business.capability",
+    "businessProcess": "business.process",
+    "c4Container": "c4.container",
+    "c4Component": "c4.component",
+    "c4ExternalActor": "c4.externalActor"
   },
   "nodeStyles": {
     "motivation.stakeholder": {

@@ -20,25 +20,23 @@ type Story = StoryObj<typeof meta>;
  */
 export const Dot: Story = {
   render: () => {
-const model = createCompleteModelFixture();
+    const model = createCompleteModelFixture();
 
-      return (
-      
-    <StoryProviderWrapper model={model}>
-      <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
-        <GraphViewer
-          model={model}
-          layoutEngine="graphviz"
-          layoutParameters={{
-            engine: 'dot',
-            rankdir: 'TB',
-            nodesep: 0.5,
-            ranksep: 1.0
-          }}
-        />
-      </div>
-    </StoryProviderWrapper>
-  
+    return (
+      <StoryProviderWrapper model={model}>
+        <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
+          <GraphViewer
+            model={model}
+            layoutEngine="graphviz"
+            layoutParameters={{
+              engine: 'dot',
+              rankdir: 'TB',
+              nodesep: 0.5,
+              ranksep: 1.0
+            }}
+          />
+        </div>
+      </StoryProviderWrapper>
     );
   }
 };
@@ -48,23 +46,21 @@ const model = createCompleteModelFixture();
  */
 export const Neato: Story = {
   render: () => {
-const model = createCompleteModelFixture();
+    const model = createCompleteModelFixture();
 
-      return (
-      
-    <StoryProviderWrapper model={model}>
-      <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
-        <GraphViewer
-          model={model}
-          layoutEngine="graphviz"
-          layoutParameters={{
-            engine: 'neato',
-            overlap: 'scale'
-          }}
-        />
-      </div>
-    </StoryProviderWrapper>
-  
+    return (
+      <StoryProviderWrapper model={model}>
+        <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
+          <GraphViewer
+            model={model}
+            layoutEngine="graphviz"
+            layoutParameters={{
+              engine: 'neato',
+              overlap: 'scale'
+            }}
+          />
+        </div>
+      </StoryProviderWrapper>
     );
   }
 };
@@ -74,23 +70,21 @@ const model = createCompleteModelFixture();
  */
 export const FDP: Story = {
   render: () => {
-const model = createCompleteModelFixture();
+    const model = createCompleteModelFixture();
 
-      return (
-      
-    <StoryProviderWrapper model={model}>
-      <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
-        <GraphViewer
-          model={model}
-          layoutEngine="graphviz"
-          layoutParameters={{
-            engine: 'fdp',
-            K: 0.3
-          }}
-        />
-      </div>
-    </StoryProviderWrapper>
-  
+    return (
+      <StoryProviderWrapper model={model}>
+        <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
+          <GraphViewer
+            model={model}
+            layoutEngine="graphviz"
+            layoutParameters={{
+              engine: 'fdp',
+              K: 0.3
+            }}
+          />
+        </div>
+      </StoryProviderWrapper>
     );
   }
 };
@@ -100,22 +94,20 @@ const model = createCompleteModelFixture();
  */
 export const Circo: Story = {
   render: () => {
-const model = createCompleteModelFixture();
+    const model = createCompleteModelFixture();
 
-      return (
-      
-    <StoryProviderWrapper model={model}>
-      <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
-        <GraphViewer
-          model={model}
-          layoutEngine="graphviz"
-          layoutParameters={{
-            engine: 'circo'
-          }}
-        />
-      </div>
-    </StoryProviderWrapper>
-  
+    return (
+      <StoryProviderWrapper model={model}>
+        <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
+          <GraphViewer
+            model={model}
+            layoutEngine="graphviz"
+            layoutParameters={{
+              engine: 'circo'
+            }}
+          />
+        </div>
+      </StoryProviderWrapper>
     );
   }
 };
@@ -125,23 +117,21 @@ const model = createCompleteModelFixture();
  */
 export const Twopi: Story = {
   render: () => {
-const model = createCompleteModelFixture();
+    const model = createCompleteModelFixture();
 
-      return (
-      
-    <StoryProviderWrapper model={model}>
-      <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
-        <GraphViewer
-          model={model}
-          layoutEngine="graphviz"
-          layoutParameters={{
-            engine: 'twopi',
-            ranksep: 1.5
-          }}
-        />
-      </div>
-    </StoryProviderWrapper>
-  
+    return (
+      <StoryProviderWrapper model={model}>
+        <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
+          <GraphViewer
+            model={model}
+            layoutEngine="graphviz"
+            layoutParameters={{
+              engine: 'twopi',
+              ranksep: 1.5
+            }}
+          />
+        </div>
+      </StoryProviderWrapper>
     );
   }
 };
