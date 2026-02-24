@@ -1,153 +1,242 @@
+/**
+ * BusinessServiceNode Stories (Unified)
+ *
+ * Storybook stories for BusinessServiceNode migrated to use UnifiedNode.
+ * Demonstrates all business layer service capabilities: criticality levels,
+ * lifecycle states, ownership, domains, and changeset operations.
+ */
+
 import type { Meta, StoryObj } from '@storybook/react';
-import { BusinessServiceNode, BUSINESS_SERVICE_NODE_WIDTH, BUSINESS_SERVICE_NODE_HEIGHT } from '@/core/nodes/business/BusinessServiceNode';
+import { NodeType } from '@/core/nodes/NodeType';
+import UnifiedNode from '@/core/nodes/components/UnifiedNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createBusinessServiceNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Business / BusinessServiceNode',
-  decorators: [withReactFlowDecorator({ width: BUSINESS_SERVICE_NODE_WIDTH, height: BUSINESS_SERVICE_NODE_HEIGHT })],
+  component: UnifiedNode,
+  decorators: [withReactFlowDecorator()],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
-    <BusinessServiceNode data={createBusinessServiceNodeData({ label: 'Payment Service' })} id="service-1" />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        label: 'Payment Service',
+        detailLevel: 'standard',
+      }}
+      id="service-1"
+    />
   ),
 };
 
 export const HighCriticality: Story = {
   render: () => (
-    <BusinessServiceNode
-        data={createBusinessServiceNodeData({
-          label: 'Authentication Service',
-          criticality: 'high',
-        })}
-        id="service-2"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        label: 'Authentication Service',
+        badges: [
+          {
+            position: 'inline' as const,
+            content: 'high',
+            style: { backgroundColor: '#ffebee' },
+            ariaLabel: 'Criticality: high',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="service-2"
+    />
   ),
 };
 
 export const MediumCriticality: Story = {
   render: () => (
-    <BusinessServiceNode
-        data={createBusinessServiceNodeData({
-          label: 'Analytics Service',
-          criticality: 'medium',
-        })}
-        id="service-3"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        label: 'Notification Service',
+        badges: [
+          {
+            position: 'inline' as const,
+            content: 'medium',
+            style: { backgroundColor: '#fff3e0' },
+            ariaLabel: 'Criticality: medium',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="service-3"
+    />
   ),
 };
 
 export const LowCriticality: Story = {
   render: () => (
-    <BusinessServiceNode
-        data={createBusinessServiceNodeData({
-          label: 'Notification Service',
-          criticality: 'low',
-        })}
-        id="service-4"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        label: 'Analytics Service',
+        badges: [
+          {
+            position: 'inline' as const,
+            content: 'low',
+            style: { backgroundColor: '#e8f5e9' },
+            ariaLabel: 'Criticality: low',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="service-4"
+    />
   ),
 };
 
 export const ActiveLifecycle: Story = {
   render: () => (
-    <BusinessServiceNode
-        data={createBusinessServiceNodeData({
-          label: 'Customer Portal',
-          lifecycle: 'active',
-        })}
-        id="service-5"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        label: 'Inventory Service',
+        items: [
+          { id: 'lifecycle', label: 'Lifecycle', value: 'active' },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="service-5"
+    />
   ),
 };
 
 export const DeprecatedLifecycle: Story = {
   render: () => (
-    <BusinessServiceNode
-        data={createBusinessServiceNodeData({
-          label: 'Legacy API',
-          lifecycle: 'deprecated',
-        })}
-        id="service-6"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        label: 'Legacy API Service',
+        items: [
+          { id: 'lifecycle', label: 'Lifecycle', value: 'deprecated' },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="service-6"
+    />
   ),
 };
 
 export const WithOwner: Story = {
   render: () => (
-    <BusinessServiceNode
-        data={createBusinessServiceNodeData({
-          label: 'Billing Service',
-          owner: 'Finance Team',
-        })}
-        id="service-7"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        label: 'Order Service',
+        badges: [
+          {
+            position: 'inline' as const,
+            content: 'Finance Team',
+            ariaLabel: 'Owner: Finance Team',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="service-7"
+    />
+  ),
+};
+
+export const WithDomain: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        label: 'Billing Service',
+        badges: [
+          {
+            position: 'inline' as const,
+            content: 'Finance',
+            ariaLabel: 'Domain: Finance',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="service-8"
+    />
   ),
 };
 
 export const ChangesetAdd: Story = {
   render: () => (
-    <BusinessServiceNode
-        data={createBusinessServiceNodeData({
-          label: 'New Service',
-          changesetOperation: 'add',
-        })}
-        id="service-8"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        label: 'New Service',
+        changesetOperation: 'add',
+        detailLevel: 'standard',
+      }}
+      id="service-9"
+    />
   ),
 };
 
 export const ChangesetUpdate: Story = {
   render: () => (
-    <BusinessServiceNode
-        data={createBusinessServiceNodeData({
-          label: 'Updated Service',
-          changesetOperation: 'update',
-        })}
-        id="service-9"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        label: 'Updated Service',
+        changesetOperation: 'update',
+        detailLevel: 'standard',
+      }}
+      id="service-10"
+    />
   ),
 };
 
 export const ChangesetDelete: Story = {
   render: () => (
-    <BusinessServiceNode
-        data={createBusinessServiceNodeData({
-          label: 'Deleted Service',
-          changesetOperation: 'delete',
-        })}
-        id="service-10"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        label: 'Deleted Service',
+        changesetOperation: 'delete',
+        detailLevel: 'standard',
+      }}
+      id="service-11"
+    />
   ),
 };
 
 export const Dimmed: Story = {
   render: () => (
-    <BusinessServiceNode
-        data={createBusinessServiceNodeData({
-          label: 'Dimmed Service',
-          opacity: 0.5,
-        })}
-        id="service-11"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        label: 'Dimmed Service',
+        detailLevel: 'standard',
+      }}
+      id="service-12"
+      style={{ opacity: 0.5 }}
+    />
   ),
 };
 
 export const Highlighted: Story = {
   render: () => (
-    <BusinessServiceNode
-      data={createBusinessServiceNodeData({
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
         label: 'Highlighted Node',
-        strokeWidth: 3
-      })}
-      id="1"
+        detailLevel: 'standard',
+      }}
+      id="service-13"
+      style={{ boxShadow: '0 0 0 3px currentColor' }}
     />
   ),
 };

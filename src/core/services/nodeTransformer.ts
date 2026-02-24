@@ -28,20 +28,7 @@ import {
   EXTERNAL_ACTOR_NODE_WIDTH,
   EXTERNAL_ACTOR_NODE_HEIGHT,
 } from '../nodes/c4/ExternalActorNode';
-// Import Business node dimension constants
-import {
-  BUSINESS_SERVICE_NODE_WIDTH,
-  BUSINESS_SERVICE_NODE_HEIGHT,
-} from '../nodes/business/BusinessServiceNode';
-import {
-  BUSINESS_FUNCTION_NODE_WIDTH,
-  BUSINESS_FUNCTION_NODE_HEIGHT,
-} from '../nodes/business/BusinessFunctionNode';
-import {
-  BUSINESS_CAPABILITY_NODE_WIDTH,
-  BUSINESS_CAPABILITY_NODE_HEIGHT,
-} from '../nodes/business/BusinessCapabilityNode';
-// Motivation layer node dimensions are loaded from nodeConfigLoader
+// Business and Motivation layer node dimensions are loaded from nodeConfigLoader
 // These constants are no longer imported directly from node files
 import { extractCrossLayerReferences, referencesToEdges } from './crossLayerLinksExtractor';
 
@@ -322,13 +309,21 @@ export class NodeTransformer {
 
   /**
    * Get node type for an element
-   * Motivation layer nodes use the unified node type with configuration-driven styling
+   * Motivation and Business layer nodes use the unified node type with configuration-driven styling
    */
   private getNodeTypeForElement(element: ModelElement): string {
     // For motivation layer elements, use unified node type
     if (element.layerId === 'Motivation') {
       const mappedType = nodeConfigLoader.mapElementType(element.type);
       if (mappedType && mappedType.startsWith('motivation.')) {
+        return 'unified';
+      }
+    }
+
+    // For business layer elements, use unified node type with config lookup
+    if (element.layerId === 'Business') {
+      const mappedType = nodeConfigLoader.mapElementType(element.type);
+      if (mappedType && mappedType.startsWith('business.')) {
         return 'unified';
       }
     }
@@ -393,11 +388,14 @@ export class NodeTransformer {
       modelElement: element,
     };
 
-    // Handle unified node type for motivation layer
+    // Handle unified node type for motivation and business layers
     if (nodeType === 'unified') {
       const mappedType = nodeConfigLoader.mapElementType(element.type);
       if (mappedType && mappedType.startsWith('motivation.')) {
         return this.extractMotivationNodeData(element, mappedType as NodeType);
+      }
+      if (mappedType && mappedType.startsWith('business.')) {
+        return this.extractBusinessNodeData(element, mappedType as NodeType);
       }
     }
 
@@ -491,6 +489,24 @@ export class NodeTransformer {
       detailLevel: (element as any).detailLevel || 'standard',
       changesetOperation: (element as any).changesetOperation,
       relationshipBadge: (element as any).relationshipBadge,
+      // Keep original data for compatibility
+      elementId: element.id,
+      layerId: element.layerId,
+      modelElement: element,
+    } as any;
+  }
+
+  /**
+   * Extract unified node data for business layer elements
+   */
+  private extractBusinessNodeData(element: ModelElement, nodeType: NodeType): UnifiedNodeData {
+    return {
+      nodeType,
+      label: element.name || element.id,
+      items: this.extractFieldItems(element),
+      badges: this.extractBusinessBadges(element, nodeType),
+      detailLevel: (element as any).detailLevel || 'standard',
+      changesetOperation: (element as any).changesetOperation,
       // Keep original data for compatibility
       elementId: element.id,
       layerId: element.layerId,
@@ -622,6 +638,62 @@ export class NodeTransformer {
   }
 
   /**
+   * Extract badges for business nodes based on type and data
+   */
+  private extractBusinessBadges(element: ModelElement, nodeType: NodeType): any[] {
+    const badges: any[] = [];
+    const props = element.properties || {};
+
+    // Owner badge (common to all business node types)
+    if (props.owner) {
+      badges.push({
+        position: 'inline' as const,
+        content: props.owner,
+        ariaLabel: `Owner: ${props.owner}`,
+      });
+    }
+
+    // Criticality badge (color-coded, common to all business node types)
+    if (props.criticality) {
+      const criticityLevels: Record<string, string> = {
+        'high': '#ffebee',
+        'medium': '#fff3e0',
+        'low': '#e8f5e9',
+      };
+      badges.push({
+        position: 'inline' as const,
+        content: props.criticality,
+        className: `text-xs px-2 py-0.5 rounded`,
+        style: {
+          backgroundColor: criticityLevels[props.criticality] || '#f5f5f5',
+        },
+        ariaLabel: `Criticality: ${props.criticality}`,
+      });
+    }
+
+    // Domain badge (only for Function and Service nodes)
+    if ((nodeType === NodeType.BUSINESS_FUNCTION || nodeType === NodeType.BUSINESS_SERVICE) && props.domain) {
+      badges.push({
+        position: 'inline' as const,
+        content: props.domain,
+        ariaLabel: `Domain: ${props.domain}`,
+      });
+    }
+
+    // Special handling for BusinessProcess expand/collapse
+    if (nodeType === NodeType.BUSINESS_PROCESS && props.subprocessCount && props.subprocessCount > 0) {
+      badges.push({
+        position: 'top-right' as const,
+        content: (props.expanded ? '▼' : '▶') || (props.subprocessCount > 0 ? '▶' : ''),
+        className: 'cursor-pointer text-lg leading-none',
+        ariaLabel: props.expanded ? 'Collapse subprocesses' : 'Expand subprocesses',
+      });
+    }
+
+    return badges;
+  }
+
+  /**
    * Format field labels (camelCase → Title Case)
    */
   private formatFieldLabel(key: string): string {
@@ -716,35 +788,12 @@ export class NodeTransformer {
             break;
 
           case 'businessProcess':
-            // BusinessProcessNode: fixed dimensions from BusinessProcessNode.tsx
-            element.visual.size = {
-              width: 180,
-              height: 100,
-            };
-            break;
-
           case 'businessService':
-            // BusinessServiceNode: uses imported constants from BusinessServiceNode.tsx
-            element.visual.size = {
-              width: BUSINESS_SERVICE_NODE_WIDTH,
-              height: BUSINESS_SERVICE_NODE_HEIGHT,
-            };
-            break;
-
           case 'businessFunction':
-            // BusinessFunctionNode: uses imported constants from BusinessFunctionNode.tsx
-            element.visual.size = {
-              width: BUSINESS_FUNCTION_NODE_WIDTH,
-              height: BUSINESS_FUNCTION_NODE_HEIGHT,
-            };
-            break;
-
           case 'businessCapability':
-            // BusinessCapabilityNode: uses imported constants from BusinessCapabilityNode.tsx
-            element.visual.size = {
-              width: BUSINESS_CAPABILITY_NODE_WIDTH,
-              height: BUSINESS_CAPABILITY_NODE_HEIGHT,
-            };
+            // Business layer nodes are now handled by unified node type
+            // Dimensions will be loaded from nodeConfigLoader in the unified case
+            element.visual.size = { width: 180, height: 100 };
             break;
 
           case 'unified':
@@ -760,6 +809,24 @@ export class NodeTransformer {
               } else {
                 // Fallback for motivation nodes
                 element.visual.size = { width: 180, height: 100 };
+              }
+            } else if (mappedType && mappedType.startsWith('business.')) {
+              // Business layer nodes with configuration
+              const styleConfig = nodeConfigLoader.getStyleConfig(mappedType);
+              if (styleConfig?.dimensions) {
+                element.visual.size = {
+                  width: styleConfig.dimensions.width,
+                  height: styleConfig.dimensions.height,
+                };
+              } else {
+                // Fallback for business nodes based on type
+                const businessFallbackDimensions: Record<string, { width: number; height: number }> = {
+                  'business.function': { width: 180, height: 100 },
+                  'business.service': { width: 180, height: 90 },
+                  'business.capability': { width: 160, height: 70 },
+                  'business.process': { width: 200, height: 80 },
+                };
+                element.visual.size = businessFallbackDimensions[mappedType] || { width: 180, height: 100 };
               }
             } else {
               // Default fallback

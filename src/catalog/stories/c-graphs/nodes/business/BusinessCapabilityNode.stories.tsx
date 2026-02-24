@@ -1,154 +1,222 @@
+/**
+ * BusinessCapabilityNode Stories (Unified)
+ *
+ * Storybook stories for BusinessCapabilityNode migrated to use UnifiedNode.
+ * Demonstrates all business layer capability capabilities: criticality levels,
+ * lifecycle states, ownership, and changeset operations.
+ */
+
 import type { Meta, StoryObj } from '@storybook/react';
-import { BusinessCapabilityNode, BUSINESS_CAPABILITY_NODE_WIDTH, BUSINESS_CAPABILITY_NODE_HEIGHT } from '@/core/nodes/business/BusinessCapabilityNode';
+import { NodeType } from '@/core/nodes/NodeType';
+import UnifiedNode from '@/core/nodes/components/UnifiedNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createBusinessCapabilityNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Business / BusinessCapabilityNode',
-  decorators: [withReactFlowDecorator({ width: BUSINESS_CAPABILITY_NODE_WIDTH, height: BUSINESS_CAPABILITY_NODE_HEIGHT })],
+  component: UnifiedNode,
+  decorators: [withReactFlowDecorator()],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
-    <BusinessCapabilityNode data={createBusinessCapabilityNodeData({ label: 'Customer Management' })} id="capability-1" />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_CAPABILITY,
+        label: 'Customer Management',
+        detailLevel: 'standard',
+      }}
+      id="capability-1"
+    />
   ),
 };
 
 export const HighCriticality: Story = {
   render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'Order Management',
-          criticality: 'high',
-        })}
-        id="capability-2"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_CAPABILITY,
+        label: 'Order Management',
+        badges: [
+          {
+            position: 'inline' as const,
+            content: 'high',
+            style: { backgroundColor: '#ffebee' },
+            ariaLabel: 'Criticality: high',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="capability-2"
+    />
   ),
 };
 
 export const MediumCriticality: Story = {
   render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'Marketing',
-          criticality: 'medium',
-        })}
-        id="capability-3"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_CAPABILITY,
+        label: 'Marketing',
+        badges: [
+          {
+            position: 'inline' as const,
+            content: 'medium',
+            style: { backgroundColor: '#fff3e0' },
+            ariaLabel: 'Criticality: medium',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="capability-3"
+    />
   ),
 };
 
 export const LowCriticality: Story = {
   render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'Training',
-          criticality: 'low',
-        })}
-        id="capability-4"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_CAPABILITY,
+        label: 'Compliance',
+        badges: [
+          {
+            position: 'inline' as const,
+            content: 'low',
+            style: { backgroundColor: '#e8f5e9' },
+            ariaLabel: 'Criticality: low',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="capability-4"
+    />
   ),
 };
 
 export const ActiveLifecycle: Story = {
   render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'Sales',
-          lifecycle: 'active',
-        })}
-        id="capability-5"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_CAPABILITY,
+        label: 'User Analytics',
+        items: [
+          { id: 'lifecycle', label: 'Lifecycle', value: 'active' },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="capability-5"
+    />
   ),
 };
 
 export const DeprecatedLifecycle: Story = {
   render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'Legacy Support',
-          lifecycle: 'deprecated',
-        })}
-        id="capability-6"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_CAPABILITY,
+        label: 'Legacy Reporting',
+        items: [
+          { id: 'lifecycle', label: 'Lifecycle', value: 'deprecated' },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="capability-6"
+    />
   ),
 };
 
 export const WithOwner: Story = {
   render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'Supply Chain',
-          owner: 'Supply Chain Director',
-        })}
-        id="capability-7"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_CAPABILITY,
+        label: 'Supply Chain',
+        badges: [
+          {
+            position: 'inline' as const,
+            content: 'Operations',
+            ariaLabel: 'Owner: Operations',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="capability-7"
+    />
   ),
 };
 
 export const ChangesetAdd: Story = {
   render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'New Capability',
-          changesetOperation: 'add',
-        })}
-        id="capability-8"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_CAPABILITY,
+        label: 'New Capability',
+        changesetOperation: 'add',
+        detailLevel: 'standard',
+      }}
+      id="capability-8"
+    />
   ),
 };
 
 export const ChangesetUpdate: Story = {
   render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'Updated Capability',
-          changesetOperation: 'update',
-        })}
-        id="capability-9"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_CAPABILITY,
+        label: 'Updated Capability',
+        changesetOperation: 'update',
+        detailLevel: 'standard',
+      }}
+      id="capability-9"
+    />
   ),
 };
 
 export const ChangesetDelete: Story = {
   render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'Deleted Capability',
-          changesetOperation: 'delete',
-        })}
-        id="capability-10"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_CAPABILITY,
+        label: 'Deleted Capability',
+        changesetOperation: 'delete',
+        detailLevel: 'standard',
+      }}
+      id="capability-10"
+    />
   ),
 };
 
 export const Dimmed: Story = {
   render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'Dimmed Capability',
-          opacity: 0.5,
-        })}
-        id="capability-11"
-      />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_CAPABILITY,
+        label: 'Dimmed Capability',
+        detailLevel: 'standard',
+      }}
+      id="capability-11"
+      style={{ opacity: 0.5 }}
+    />
   ),
 };
 
 export const Highlighted: Story = {
   render: () => (
-    <BusinessCapabilityNode
-      data={createBusinessCapabilityNodeData({
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_CAPABILITY,
         label: 'Highlighted Node',
-        strokeWidth: 3
-      })}
-      id="1"
+        detailLevel: 'standard',
+      }}
+      id="capability-12"
+      style={{ boxShadow: '0 0 0 3px currentColor' }}
     />
   ),
 };
-

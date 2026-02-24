@@ -5,22 +5,6 @@
 
 import type { NodeTypes } from '@xyflow/react';
 
-import {
-  BusinessProcessNode,
-  BUSINESS_PROCESS_NODE_WIDTH,
-  BUSINESS_PROCESS_NODE_HEIGHT,
-} from './BusinessProcessNode';
-import {
-  BusinessFunctionNode,
-  BusinessServiceNode,
-  BusinessCapabilityNode,
-  BUSINESS_FUNCTION_NODE_WIDTH,
-  BUSINESS_FUNCTION_NODE_HEIGHT,
-  BUSINESS_SERVICE_NODE_WIDTH,
-  BUSINESS_SERVICE_NODE_HEIGHT,
-  BUSINESS_CAPABILITY_NODE_WIDTH,
-  BUSINESS_CAPABILITY_NODE_HEIGHT,
-} from './business';
 import { LayerContainerNode } from './LayerContainerNode';
 // Motivation layer nodes are now using UnifiedNode
 // Original node components kept for backwards compatibility in exports
@@ -55,18 +39,6 @@ import type {
 
 // Export all node components
 export {
-  BusinessProcessNode,
-  BUSINESS_PROCESS_NODE_WIDTH,
-  BUSINESS_PROCESS_NODE_HEIGHT,
-  BusinessFunctionNode,
-  BUSINESS_FUNCTION_NODE_WIDTH,
-  BUSINESS_FUNCTION_NODE_HEIGHT,
-  BusinessServiceNode,
-  BUSINESS_SERVICE_NODE_WIDTH,
-  BUSINESS_SERVICE_NODE_HEIGHT,
-  BusinessCapabilityNode,
-  BUSINESS_CAPABILITY_NODE_WIDTH,
-  BUSINESS_CAPABILITY_NODE_HEIGHT,
   LayerContainerNode,
   // C4 nodes
   ContainerNode,
@@ -108,10 +80,6 @@ export type {
 // Cast as NodeTypes to satisfy React Flow's strict type requirements (components accept subset of Node props)
 export const nodeTypes = {
   unified: UnifiedNode,
-  businessProcess: BusinessProcessNode,
-  businessFunction: BusinessFunctionNode,
-  businessService: BusinessServiceNode,
-  businessCapability: BusinessCapabilityNode,
   layerContainer: LayerContainerNode,
   // Schema node types
   jsonSchema: JSONSchemaNode,
