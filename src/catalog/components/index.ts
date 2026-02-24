@@ -10,10 +10,6 @@ export {
 } from './StoryLoadedWrapper';
 
 // Route Composition Components
-export {
-  ModelRouteComposition,
-  type ModelRouteCompositionProps
-} from './ModelRouteComposition';
 
 export {
   SpecRouteComposition,
