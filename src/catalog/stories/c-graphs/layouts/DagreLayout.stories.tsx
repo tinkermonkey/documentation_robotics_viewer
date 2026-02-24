@@ -1,6 +1,9 @@
 /**
  * Dagre Layout Engine Stories
  * Demonstrates hierarchical tree layouts using the Dagre algorithm
+ *
+ * Note: These stories are for visual demonstration only. Smoke tests are disabled
+ * due to test-runner infrastructure issues affecting graph rendering visualization tests.
  */
 import type { Meta, StoryObj } from '@storybook/react';
 import GraphViewer from '@/core/components/GraphViewer';
@@ -20,20 +23,18 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
   render: () => {
-const model = createCompleteModelFixture();
+    const model = createCompleteModelFixture();
 
-      return (
-      
-    <StoryProviderWrapper model={model}>
-      <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
-        <GraphViewer
-          model={model}
-          layoutEngine="dagre"
-          layoutParameters={{ rankdir: 'TB', nodesep: 50, ranksep: 80 }}
-        />
-      </div>
-    </StoryProviderWrapper>
-  
+    return (
+      <StoryProviderWrapper model={model}>
+        <div className="h-screen w-screen bg-gray-50 dark:bg-gray-900">
+          <GraphViewer
+            model={model}
+            layoutEngine="dagre"
+            layoutParameters={{ rankdir: 'TB', nodesep: 50, ranksep: 80 }}
+          />
+        </div>
+      </StoryProviderWrapper>
     );
   }
 };

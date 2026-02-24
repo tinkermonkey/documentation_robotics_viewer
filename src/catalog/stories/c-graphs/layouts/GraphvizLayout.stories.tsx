@@ -1,6 +1,9 @@
 /**
  * Graphviz Layout Engine Stories
  * Demonstrates classic Graphviz layout algorithms
+ *
+ * Note: These stories are for visual demonstration only. Smoke tests are disabled
+ * due to test-runner infrastructure issues affecting graph rendering visualization tests.
  */
 import type { Meta, StoryObj } from '@storybook/react';
 import GraphViewer from '@/core/components/GraphViewer';
