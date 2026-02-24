@@ -23,6 +23,7 @@ import { nodeConfigLoader } from '../nodeConfigLoader';
 import { RelationshipBadge, RelationshipBadgeData } from './RelationshipBadge';
 import FieldList, { FieldItem } from './FieldList';
 import TableFieldList from './TableFieldList';
+import BadgeRenderer from './BadgeRenderer';
 import { useShouldHideFields } from '../../stores/fieldVisibilityStore';
 
 export interface NodeBadge {
@@ -143,10 +144,6 @@ function UnifiedNodeComponent({ data, id }: { data: UnifiedNodeData; id?: string
     gap: 8,
   };
 
-  // Render badges by position
-  const topLeftBadges = badges.filter((b: NodeBadge) => b.position === 'top-left');
-  const topRightBadges = badges.filter((b: NodeBadge) => b.position === 'top-right');
-  const inlineBadges = badges.filter((b: NodeBadge) => b.position === 'inline');
 
   // Semantic zoom: hide content at minimal level
   const isMinimal = detailLevel === 'minimal';
@@ -213,68 +210,10 @@ function UnifiedNodeComponent({ data, id }: { data: UnifiedNodeData; id?: string
       />
 
       {/* Top-left badges */}
-      {topLeftBadges.length > 0 && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 4,
-            left: 4,
-            display: 'flex',
-            gap: 4,
-          }}
-        >
-          {topLeftBadges.map((badge: NodeBadge, idx: number) => (
-            <span
-              key={idx}
-              className={badge.className}
-              aria-label={badge.ariaLabel}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '2px 6px',
-                borderRadius: 4,
-                fontSize: 11,
-                fontWeight: 600,
-              }}
-            >
-              {badge.content}
-            </span>
-          ))}
-        </div>
-      )}
+      <BadgeRenderer badges={badges} position="top-left" />
 
       {/* Top-right badges */}
-      {topRightBadges.length > 0 && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 4,
-            right: 4,
-            display: 'flex',
-            gap: 4,
-          }}
-        >
-          {topRightBadges.map((badge: NodeBadge, idx: number) => (
-            <span
-              key={idx}
-              className={badge.className}
-              aria-label={badge.ariaLabel}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '2px 6px',
-                borderRadius: 4,
-                fontSize: 11,
-                fontWeight: 600,
-              }}
-            >
-              {badge.content}
-            </span>
-          ))}
-        </div>
-      )}
+      <BadgeRenderer badges={badges} position="top-right" />
 
       {/* Header - hidden at minimal detail level */}
       {!isMinimal && (
@@ -299,26 +238,7 @@ function UnifiedNodeComponent({ data, id }: { data: UnifiedNodeData; id?: string
           >
             {label}
           </span>
-          {inlineBadges.map((badge: NodeBadge, idx: number) => (
-            <span
-              key={idx}
-              className={badge.className}
-              aria-label={badge.ariaLabel}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginLeft: 'auto',
-                padding: '2px 6px',
-                borderRadius: 4,
-                fontSize: 11,
-                fontWeight: 600,
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {badge.content}
-            </span>
-          ))}
+          <BadgeRenderer badges={badges} position="inline" />
         </div>
       )}
 
