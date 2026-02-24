@@ -379,7 +379,7 @@ export class MatrixBusinessLayout implements BusinessLayoutEngine {
    * Get node type for React Flow (delegates to BusinessNodeTransformer)
    */
   private getNodeType(node: BusinessNode): string {
-    return this.transformer.getNodeType(node);
+    return this.transformer.getNodeType();
   }
 
   /**
