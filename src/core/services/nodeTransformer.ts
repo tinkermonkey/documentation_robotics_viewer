@@ -560,7 +560,7 @@ export class NodeTransformer {
    */
   private extractMotivationBadges(element: ModelElement, nodeType: NodeType): any[] {
     const badges: any[] = [];
-    const props = element.properties || {};
+    const props: Record<string, unknown> = element.properties || {};
 
     switch (nodeType) {
       case NodeType.MOTIVATION_STAKEHOLDER:
@@ -642,7 +642,7 @@ export class NodeTransformer {
    */
   private extractBusinessBadges(element: ModelElement, nodeType: NodeType): any[] {
     const badges: any[] = [];
-    const props = element.properties || {};
+    const props: Record<string, unknown> = element.properties || {};
 
     // Owner badge (common to all business node types)
     if (props.owner) {
@@ -655,6 +655,7 @@ export class NodeTransformer {
 
     // Criticality badge (color-coded, common to all business node types)
     if (props.criticality) {
+      const criticality = String(props.criticality);
       const criticityLevels: Record<string, string> = {
         'high': '#ffebee',
         'medium': '#fff3e0',
@@ -662,12 +663,12 @@ export class NodeTransformer {
       };
       badges.push({
         position: 'inline' as const,
-        content: props.criticality,
+        content: criticality,
         className: `text-xs px-2 py-0.5 rounded`,
         style: {
-          backgroundColor: criticityLevels[props.criticality] || '#f5f5f5',
+          backgroundColor: criticityLevels[criticality] || '#f5f5f5',
         },
-        ariaLabel: `Criticality: ${props.criticality}`,
+        ariaLabel: `Criticality: ${criticality}`,
       });
     }
 
@@ -681,7 +682,7 @@ export class NodeTransformer {
     }
 
     // Special handling for BusinessProcess expand/collapse
-    if (nodeType === NodeType.BUSINESS_PROCESS && props.subprocessCount && props.subprocessCount > 0) {
+    if (nodeType === NodeType.BUSINESS_PROCESS && props.subprocessCount && Number(props.subprocessCount) > 0) {
       badges.push({
         position: 'top-right' as const,
         content: props.expanded ? '▼' : '▶',

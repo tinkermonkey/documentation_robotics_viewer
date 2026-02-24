@@ -18,6 +18,14 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_PROCESS,
+      label: '',
+      detailLevel: 'standard',
+    },
+    id: '',
+  },
 } satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
