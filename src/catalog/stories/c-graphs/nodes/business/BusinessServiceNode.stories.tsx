@@ -46,7 +46,6 @@ export const HighCriticality: Story = {
           {
             position: 'inline' as const,
             content: 'high',
-            style: { backgroundColor: '#ffebee' },
             ariaLabel: 'Criticality: high',
           },
         ],
@@ -67,7 +66,6 @@ export const MediumCriticality: Story = {
           {
             position: 'inline' as const,
             content: 'medium',
-            style: { backgroundColor: '#fff3e0' },
             ariaLabel: 'Criticality: medium',
           },
         ],
@@ -88,7 +86,6 @@ export const LowCriticality: Story = {
           {
             position: 'inline' as const,
             content: 'low',
-            style: { backgroundColor: '#e8f5e9' },
             ariaLabel: 'Criticality: low',
           },
         ],
@@ -222,7 +219,6 @@ export const Dimmed: Story = {
         detailLevel: 'standard',
       }}
       id="service-12"
-      style={{ opacity: 0.5 }}
     />
   ),
 };
@@ -236,7 +232,6 @@ export const Highlighted: Story = {
         detailLevel: 'standard',
       }}
       id="service-13"
-      style={{ boxShadow: '0 0 0 3px currentColor' }}
     />
   ),
 };

@@ -6,17 +6,17 @@
  * lifecycle states, ownership, and changeset operations.
  */
 
-import type { Meta, StoryObj } from '@storybook/react';
-import { NodeType } from '@/core/nodes/NodeType';
-import UnifiedNode from '@/core/nodes/components/UnifiedNode';
-import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
+import type { Meta, StoryObj } from "@storybook/react";
+import { NodeType } from "@/core/nodes/NodeType";
+import UnifiedNode from "@/core/nodes/components/UnifiedNode";
+import { withReactFlowDecorator } from "@catalog/decorators/ReactFlowDecorator";
 
 const meta = {
-  title: 'C Graphs / Nodes / Business / BusinessFunctionNode',
+  title: "C Graphs / Nodes / Business / BusinessFunctionNode",
   component: UnifiedNode,
   decorators: [withReactFlowDecorator()],
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
 } satisfies Meta<typeof UnifiedNode>;
 
@@ -24,199 +24,165 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_FUNCTION,
-        label: 'Order Processing',
-        detailLevel: 'standard',
-      }}
-      id="function-1"
-    />
-  ),
+  args: {
+    id: "function-1",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+      label: "Order Processing",
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const HighCriticality: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_FUNCTION,
-        label: 'Customer Onboarding',
-        badges: [
-          {
-            position: 'inline' as const,
-            content: 'high',
-            style: { backgroundColor: '#ffebee' },
-            ariaLabel: 'Criticality: high',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="function-2"
-    />
-  ),
+  args: {
+    id: "function-2",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+      label: "Customer Onboarding",
+      badges: [
+        {
+          position: "inline" as const,
+          content: "high",
+          ariaLabel: "Criticality: high",
+        },
+      ],
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const MediumCriticality: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_FUNCTION,
-        label: 'Inventory Management',
-        badges: [
-          {
-            position: 'inline' as const,
-            content: 'medium',
-            style: { backgroundColor: '#fff3e0' },
-            ariaLabel: 'Criticality: medium',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="function-3"
-    />
-  ),
+  args: {
+    id: "function-3",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+      label: "Inventory Management",
+      badges: [
+        {
+          position: "inline" as const,
+          content: "medium",
+          ariaLabel: "Criticality: medium",
+        },
+      ],
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const LowCriticality: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_FUNCTION,
-        label: 'Reporting',
-        badges: [
-          {
-            position: 'inline' as const,
-            content: 'low',
-            style: { backgroundColor: '#e8f5e9' },
-            ariaLabel: 'Criticality: low',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="function-4"
-    />
-  ),
+  args: {
+    id: "function-4",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+      label: "Reporting",
+      badges: [
+        {
+          position: "inline" as const,
+          content: "low",
+          ariaLabel: "Criticality: low",
+        },
+      ],
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const ActiveLifecycle: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_FUNCTION,
-        label: 'Fulfillment',
-        items: [
-          { id: 'lifecycle', label: 'Lifecycle', value: 'active' },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="function-5"
-    />
-  ),
+  args: {
+    id: "function-5",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+      label: "Fulfillment",
+      items: [{ id: "lifecycle", label: "Lifecycle", value: "active" }],
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const DeprecatedLifecycle: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_FUNCTION,
-        label: 'Manual Approval',
-        items: [
-          { id: 'lifecycle', label: 'Lifecycle', value: 'deprecated' },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="function-6"
-    />
-  ),
+  args: {
+    id: "function-6",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+      label: "Manual Approval",
+      items: [{ id: "lifecycle", label: "Lifecycle", value: "deprecated" }],
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const WithOwner: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_FUNCTION,
-        label: 'Returns Processing',
-        badges: [
-          {
-            position: 'inline' as const,
-            content: 'Operations Team',
-            ariaLabel: 'Owner: Operations Team',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="function-7"
-    />
-  ),
+  args: {
+    id: "function-7",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+      label: "Returns Processing",
+      badges: [
+        {
+          position: "inline" as const,
+          content: "Operations Team",
+          ariaLabel: "Owner: Operations Team",
+        },
+      ],
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const ChangesetAdd: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_FUNCTION,
-        label: 'New Function',
-        changesetOperation: 'add',
-        detailLevel: 'standard',
-      }}
-      id="function-8"
-    />
-  ),
+  args: {
+    id: "function-8",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+      label: "New Function",
+      changesetOperation: "add",
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const ChangesetUpdate: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_FUNCTION,
-        label: 'Updated Function',
-        changesetOperation: 'update',
-        detailLevel: 'standard',
-      }}
-      id="function-9"
-    />
-  ),
+  args: {
+    id: "function-9",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+      label: "Updated Function",
+      changesetOperation: "update",
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const ChangesetDelete: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_FUNCTION,
-        label: 'Deleted Function',
-        changesetOperation: 'delete',
-        detailLevel: 'standard',
-      }}
-      id="function-10"
-    />
-  ),
+  args: {
+    id: "function-10",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+      label: "Deleted Function",
+      changesetOperation: "delete",
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const Dimmed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_FUNCTION,
-        label: 'Dimmed Function',
-        detailLevel: 'standard',
-      }}
-      id="function-11"
-      style={{ opacity: 0.5 }}
-    />
-  ),
+  args: {
+    id: "function-11",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+      label: "Dimmed Function",
+      relationshipBadge: { count: 5, incoming: 3, outgoing: 2 },
+    },
+  },
 };
 
 export const Highlighted: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_FUNCTION,
-        label: 'Highlighted Node',
-        detailLevel: 'standard',
-      }}
-      id="function-12"
-      style={{ boxShadow: '0 0 0 3px currentColor' }}
-    />
-  ),
+  args: {
+    id: "function-12",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+      label: "Highlighted Node",
+    },
+  },
 };
