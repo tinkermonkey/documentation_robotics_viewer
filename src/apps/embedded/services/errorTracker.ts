@@ -168,7 +168,11 @@ export function logWarning(
 ): void {
   const timestamp = new Date().toISOString();
 
-  console.warn(message, context ? context : '');
+  if (context) {
+    console.warn(message, context);
+  } else {
+    console.warn(message);
+  }
 
   // Store in session storage for debugging (only in browser environment)
   if (typeof sessionStorage !== 'undefined') {
