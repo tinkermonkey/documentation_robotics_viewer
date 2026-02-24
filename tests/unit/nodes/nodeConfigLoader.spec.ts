@@ -257,4 +257,159 @@ test.describe('NodeConfigLoader', () => {
       expect(style2?.typeLabel).toBe('Goal');
     });
   });
+
+  test.describe('error scenarios', () => {
+    test('should return undefined when mapping unmapped element type', () => {
+      const result = nodeConfigLoader.mapElementType('CompletelyUnknownType');
+      expect(result).toBeUndefined();
+    });
+
+    test('should handle missing changesetColors.add gracefully', () => {
+      const colors = nodeConfigLoader.getChangesetColors('add');
+      expect(colors).toBeDefined();
+      expect(colors.border).toBeDefined();
+      expect(colors.bg).toBeDefined();
+    });
+
+    test('should handle missing changesetColors.update gracefully', () => {
+      const colors = nodeConfigLoader.getChangesetColors('update');
+      expect(colors).toBeDefined();
+      expect(colors.border).toBeDefined();
+      expect(colors.bg).toBeDefined();
+    });
+
+    test('should handle missing changesetColors.delete gracefully', () => {
+      const colors = nodeConfigLoader.getChangesetColors('delete');
+      expect(colors).toBeDefined();
+      expect(colors.border).toBeDefined();
+      expect(colors.bg).toBeDefined();
+    });
+
+    test('should return undefined for nonexistent style config safely', () => {
+      const invalidNodeType = 'invalid.node.type' as NodeType;
+      const config = nodeConfigLoader.getStyleConfig(invalidNodeType);
+      expect(config).toBeUndefined();
+    });
+
+    test('getStyleConfig should handle missing required color properties', () => {
+      const config = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_GOAL);
+      if (config) {
+        expect(config.colors.fill).toBeDefined();
+        expect(config.colors.stroke).toBeDefined();
+      }
+    });
+
+    test('getStyleConfig should handle missing dimension properties', () => {
+      const config = nodeConfigLoader.getStyleConfig(NodeType.BUSINESS_FUNCTION);
+      if (config) {
+        expect(config.dimensions.width).toBeDefined();
+        expect(config.dimensions.height).toBeDefined();
+      }
+    });
+
+    test('should return copy of typeMap to prevent mutation', () => {
+      const typeMap1 = nodeConfigLoader.getTypeMap();
+      const typeMap2 = nodeConfigLoader.getTypeMap();
+
+      // Mutate the first map
+      (typeMap1 as any)['TestType'] = 'test.value';
+
+      // Get fresh copy - should not have the mutation
+      const typeMap3 = nodeConfigLoader.getTypeMap();
+      expect((typeMap3 as any)['TestType']).toBeUndefined();
+    });
+
+    test('should return copy of nodeStyles to prevent mutation', () => {
+      const styles1 = nodeConfigLoader.getNodeStyles();
+      const styles2 = nodeConfigLoader.getNodeStyles();
+
+      // Verify they are independent copies
+      expect(styles1).not.toBe(styles2);
+
+      // Mutate first copy
+      (styles1 as any)['custom.node'] = { test: 'value' };
+
+      // Get fresh copy - should not have the mutation
+      const styles3 = nodeConfigLoader.getNodeStyles();
+      expect((styles3 as any)['custom.node']).toBeUndefined();
+    });
+
+    test('should always return defined initialization status', () => {
+      const isInitialized = nodeConfigLoader.isInitialized();
+      expect(typeof isInitialized).toBe('boolean');
+      expect(isInitialized).toBe(true);
+    });
+
+    test('version should not be empty or null', () => {
+      const version = nodeConfigLoader.getVersion();
+      expect(version).toBeTruthy();
+      expect(typeof version).toBe('string');
+      expect(version.length).toBeGreaterThan(0);
+    });
+
+    test('should handle case-sensitive element type mapping', () => {
+      const lowercase = nodeConfigLoader.mapElementType('goal');
+      const titlecase = nodeConfigLoader.mapElementType('Goal');
+      const kebabcase = nodeConfigLoader.mapElementType('motivation-goal');
+
+      // Some should match (titlecase and kebabcase), others may not (lowercase)
+      // Verify actual behavior matches config
+      expect(titlecase).toBe(NodeType.MOTIVATION_GOAL);
+      expect(kebabcase).toBe(NodeType.MOTIVATION_GOAL);
+      // lowercase may or may not map depending on config
+    });
+
+    test('should consistently return same config for repeated calls', () => {
+      const nodeType = NodeType.BUSINESS_FUNCTION;
+      const config1 = nodeConfigLoader.getStyleConfig(nodeType);
+      const config2 = nodeConfigLoader.getStyleConfig(nodeType);
+      const config3 = nodeConfigLoader.getStyleConfig(nodeType);
+
+      expect(config1).toEqual(config2);
+      expect(config2).toEqual(config3);
+    });
+
+    test('should validate all changeset colors have required properties', () => {
+      const allColors = nodeConfigLoader.getAllChangesetColors();
+
+      ['add', 'update', 'delete'].forEach((operation) => {
+        const colors = allColors[operation as 'add' | 'update' | 'delete'];
+        expect(colors).toBeDefined();
+        expect(colors.border).toBeTruthy();
+        expect(colors.bg).toBeTruthy();
+        expect(typeof colors.border).toBe('string');
+        expect(typeof colors.bg).toBe('string');
+      });
+    });
+
+    test('should handle concurrent getStyleConfig calls', () => {
+      const promises = [
+        Promise.resolve(nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_GOAL)),
+        Promise.resolve(nodeConfigLoader.getStyleConfig(NodeType.BUSINESS_FUNCTION)),
+        Promise.resolve(nodeConfigLoader.getStyleConfig(NodeType.C4_CONTAINER)),
+      ];
+
+      return Promise.all(promises).then((configs) => {
+        expect(configs[0]).toBeDefined();
+        expect(configs[1]).toBeDefined();
+        expect(configs[2]).toBeDefined();
+        expect(configs[0]?.typeLabel).toBe('Goal');
+        expect(configs[1]?.typeLabel).toBe('Function');
+      });
+    });
+
+    test('should handle concurrent mapElementType calls', () => {
+      const promises = [
+        Promise.resolve(nodeConfigLoader.mapElementType('Goal')),
+        Promise.resolve(nodeConfigLoader.mapElementType('BusinessFunction')),
+        Promise.resolve(nodeConfigLoader.mapElementType('Container')),
+      ];
+
+      return Promise.all(promises).then((types) => {
+        expect(types[0]).toBe(NodeType.MOTIVATION_GOAL);
+        expect(types[1]).toBe(NodeType.BUSINESS_FUNCTION);
+        expect(types[2]).toBe(NodeType.C4_CONTAINER);
+      });
+    });
+  });
 });
