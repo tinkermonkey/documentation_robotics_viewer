@@ -1,3 +1,4 @@
+import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { BaseControlPanel } from '@/core/components/base/BaseControlPanel';
 import { LayoutOption, ExportOption } from '@/core/components/base/types';
@@ -212,35 +213,69 @@ export const WithChildren: Story = {
 };
 
 /**
+ * Story showing control panel with field visibility toggle
+ */
+export const WithFieldVisibility: Story = {
+  render: () => {
+    const [hideFields, setHideFields] = React.useState(false);
+    return (
+      <div style={{ width: '100%', maxWidth: 320, padding: '20px', backgroundColor: '#f9fafb' }}>
+        <BaseControlPanel
+          selectedLayout="hierarchical"
+          onLayoutChange={(layout) => console.log('Layout changed to:', layout)}
+          layoutOptions={layoutOptions}
+          onFitToView={() => console.log('Fit to view clicked')}
+          graphLevelHideFields={hideFields}
+          onFieldVisibilityToggle={(hidden) => {
+            setHideFields(hidden);
+            console.log('Field visibility toggled:', hidden);
+          }}
+          exportOptions={exportOptions}
+          testId="control-panel-field-visibility"
+        />
+      </div>
+    );
+  },
+};
+
+/**
  * Story showing control panel with all features enabled
  */
 export const AllFeatures: Story = {
-  render: () => (
-    <div style={{ width: '100%', maxWidth: 320, padding: '20px', backgroundColor: '#f9fafb' }}>
-      <BaseControlPanel
-        selectedLayout="hierarchical"
-        onLayoutChange={(layout) => console.log('Layout changed to:', layout)}
-        layoutOptions={layoutOptions}
-        onFitToView={() => console.log('Fit to view clicked')}
-        focusModeEnabled={true}
-        onFocusModeToggle={(enabled) => console.log('Focus mode toggled:', enabled)}
-        isHighlightingActive={true}
-        onClearHighlighting={() => console.log('Clear highlighting clicked')}
-        hasChangesets={true}
-        changesetVisualizationEnabled={true}
-        onChangesetVisualizationToggle={(enabled) => console.log('Changeset visualization toggled:', enabled)}
-        exportOptions={exportOptions}
-        testId="control-panel-all-features"
-      >
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Domain Controls
-          </label>
-          <button className="w-full px-2 py-1 text-sm bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded hover:bg-purple-200 dark:hover:bg-purple-800">
-            Custom Action
-          </button>
-        </div>
-      </BaseControlPanel>
-    </div>
-  ),
+  render: () => {
+    const [hideFields, setHideFields] = React.useState(false);
+    return (
+      <div style={{ width: '100%', maxWidth: 320, padding: '20px', backgroundColor: '#f9fafb' }}>
+        <BaseControlPanel
+          selectedLayout="hierarchical"
+          onLayoutChange={(layout) => console.log('Layout changed to:', layout)}
+          layoutOptions={layoutOptions}
+          onFitToView={() => console.log('Fit to view clicked')}
+          focusModeEnabled={true}
+          onFocusModeToggle={(enabled) => console.log('Focus mode toggled:', enabled)}
+          isHighlightingActive={true}
+          onClearHighlighting={() => console.log('Clear highlighting clicked')}
+          hasChangesets={true}
+          changesetVisualizationEnabled={true}
+          onChangesetVisualizationToggle={(enabled) => console.log('Changeset visualization toggled:', enabled)}
+          graphLevelHideFields={hideFields}
+          onFieldVisibilityToggle={(hidden) => {
+            setHideFields(hidden);
+            console.log('Field visibility toggled:', hidden);
+          }}
+          exportOptions={exportOptions}
+          testId="control-panel-all-features"
+        >
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Domain Controls
+            </label>
+            <button className="w-full px-2 py-1 text-sm bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded hover:bg-purple-200 dark:hover:bg-purple-800">
+              Custom Action
+            </button>
+          </div>
+        </BaseControlPanel>
+      </div>
+    );
+  },
 };
