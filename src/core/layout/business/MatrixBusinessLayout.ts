@@ -170,7 +170,7 @@ export class MatrixBusinessLayout implements BusinessLayoutEngine {
 
           nodes.push({
             id: `node-${node.id}`,
-            type: this.getNodeType(node),
+            type: this.getNodeType(),
             position: { x, y },
             data: this.extractNodeData(node),
             width: dimensions.width,
@@ -258,7 +258,7 @@ export class MatrixBusinessLayout implements BusinessLayoutEngine {
 
       nodes.push({
         id: `node-${forceNode.id}`,
-        type: this.getNodeType(forceNode.businessNode),
+        type: this.getNodeType(),
         position: { x, y },
         data: this.extractNodeData(forceNode.businessNode),
         width: dimensions.width,
@@ -378,7 +378,7 @@ export class MatrixBusinessLayout implements BusinessLayoutEngine {
   /**
    * Get node type for React Flow (delegates to BusinessNodeTransformer)
    */
-  private getNodeType(node: BusinessNode): string {
+  private getNodeType(): string {
     return this.transformer.getNodeType();
   }
 
