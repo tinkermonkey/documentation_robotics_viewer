@@ -33,7 +33,7 @@ export interface NodeBadge {
 export type DetailLevel = 'minimal' | 'standard' | 'detailed';
 export type ChangesetOperation = 'add' | 'update' | 'delete';
 
-export interface UnifiedNodeData {
+export interface UnifiedNodeData extends Record<string, unknown> {
   nodeType: NodeType;
   label: string;
   items?: FieldItem[];
@@ -42,8 +42,6 @@ export interface UnifiedNodeData {
   detailLevel?: DetailLevel;
   changesetOperation?: ChangesetOperation;
   relationshipBadge?: RelationshipBadgeData;
-  // Index signature for React Flow compatibility
-  [key: string]: unknown;
 }
 
 function UnifiedNodeComponent({ data, id: _id }: { data: UnifiedNodeData; id?: string }): React.ReactElement {
