@@ -18,6 +18,14 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      label: '',
+      detailLevel: 'standard',
+    },
+    id: '',
+  },
 } satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
@@ -46,7 +54,7 @@ export const HighCriticality: Story = {
           {
             position: 'inline' as const,
             content: 'high',
-            style: { backgroundColor: '#ffebee' },
+            className: 'px-2 py-1 bg-red-100 text-red-800 rounded text-xs font-semibold',
             ariaLabel: 'Criticality: high',
           },
         ],
@@ -67,7 +75,7 @@ export const MediumCriticality: Story = {
           {
             position: 'inline' as const,
             content: 'medium',
-            style: { backgroundColor: '#fff3e0' },
+            className: 'px-2 py-1 bg-orange-100 text-orange-800 rounded text-xs font-semibold',
             ariaLabel: 'Criticality: medium',
           },
         ],
@@ -88,7 +96,7 @@ export const LowCriticality: Story = {
           {
             position: 'inline' as const,
             content: 'low',
-            style: { backgroundColor: '#e8f5e9' },
+            className: 'px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-semibold',
             ariaLabel: 'Criticality: low',
           },
         ],
@@ -193,30 +201,3 @@ export const ChangesetDelete: Story = {
   ),
 };
 
-export const Dimmed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        label: 'Dimmed Capability',
-        detailLevel: 'standard',
-      }}
-      id="capability-11"
-      style={{ opacity: 0.5 }}
-    />
-  ),
-};
-
-export const Highlighted: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        label: 'Highlighted Node',
-        detailLevel: 'standard',
-      }}
-      id="capability-12"
-      style={{ boxShadow: '0 0 0 3px currentColor' }}
-    />
-  ),
-};
