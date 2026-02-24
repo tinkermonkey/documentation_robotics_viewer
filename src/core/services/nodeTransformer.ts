@@ -16,6 +16,7 @@ import { nodeConfigLoader } from '../nodes/nodeConfigLoader';
 import { NodeType } from '../nodes/NodeType';
 import type { UnifiedNodeData } from '../nodes/components/UnifiedNode';
 import type { FieldItem } from '../nodes/components/FieldList';
+import type { RelationshipBadgeData } from '../nodes/components/RelationshipBadge';
 // C4 node dimensions are loaded from nodeConfigLoader
 import { extractCrossLayerReferences, referencesToEdges } from './crossLayerLinksExtractor';
 
@@ -40,15 +41,6 @@ interface OptionalElementProperties {
     properties?: Record<string, unknown> | Array<Record<string, unknown>>;
     required?: string[];
   };
-}
-
-/**
- * Type for relationship badge data
- */
-interface RelationshipBadgeData {
-  inbound?: number;
-  outbound?: number;
-  isFocused?: boolean;
 }
 
 /**
@@ -418,12 +410,12 @@ export class NodeTransformer {
   /**
    * Extract field items from element attributes or properties
    */
-  private extractFieldItems(element: ModelElement): any[] | undefined {
+  private extractFieldItems(element: ModelElement): FieldItem[] | undefined {
     if (!element.properties || typeof element.properties !== 'object') {
       return undefined;
     }
 
-    const items: any[] = [];
+    const items: FieldItem[] = [];
 
     // Map common motivation node properties to field items
     const propertyMap: Record<string, string> = {
@@ -459,8 +451,8 @@ export class NodeTransformer {
   /**
    * Extract badges for motivation nodes based on type and data
    */
-  private extractMotivationBadges(element: ModelElement, nodeType: NodeType): any[] {
-    const badges: any[] = [];
+  private extractMotivationBadges(element: ModelElement, nodeType: NodeType): UnifiedNodeData['badges'] {
+    const badges: UnifiedNodeData['badges'] = [];
     const props: Record<string, unknown> = element.properties || {};
 
     switch (nodeType) {
@@ -541,8 +533,8 @@ export class NodeTransformer {
   /**
    * Extract badges for business nodes based on type and data
    */
-  private extractBusinessBadges(element: ModelElement, nodeType: NodeType): any[] {
-    const badges: any[] = [];
+  private extractBusinessBadges(element: ModelElement, nodeType: NodeType): UnifiedNodeData['badges'] {
+    const badges: UnifiedNodeData['badges'] = [];
     const props: Record<string, unknown> = element.properties || {};
 
     // Owner badge (common to all business node types)
@@ -557,15 +549,16 @@ export class NodeTransformer {
     // Criticality badge (color-coded, common to all business node types)
     if (props.criticality) {
       const criticality = String(props.criticality);
+      // Map criticality levels to static Tailwind classes that are detected at build time
       const criticityColorClasses: Record<string, string> = {
-        'high': 'bg-red-100',
-        'medium': 'bg-orange-100',
-        'low': 'bg-green-100',
+        'high': 'bg-red-100 text-red-900',
+        'medium': 'bg-orange-100 text-orange-900',
+        'low': 'bg-green-100 text-green-900',
       };
       badges.push({
         position: 'inline' as const,
         content: criticality,
-        className: `text-xs px-2 py-0.5 rounded ${criticityColorClasses[criticality] || 'bg-gray-100'}`,
+        className: criticityColorClasses[criticality] || 'bg-gray-100 text-gray-900',
         ariaLabel: `Criticality: ${criticality}`,
       });
     }
@@ -687,7 +680,7 @@ export class NodeTransformer {
    */
   private createFieldItemFromProperty(
     key: string,
-    prop: any,
+    prop: Record<string, unknown>,
     requiredFields: string[] | undefined
   ): FieldItem {
     const propType = prop?.type || prop?.dataType || 'unknown';
@@ -1116,10 +1109,10 @@ export class NodeTransformer {
       props.changesetOperation = changesetOperation;
     }
 
-    // Safely extract relationshipBadge if present
-    const relationshipBadge = (element as unknown as Record<string, unknown>).relationshipBadge;
-    if (this.isRecord(relationshipBadge)) {
-      props.relationshipBadge = relationshipBadge as RelationshipBadgeData;
+    // Safely extract relationshipBadge if present and validate structure
+    const relationshipBadgeData = (element as unknown as Record<string, unknown>).relationshipBadge;
+    if (this.isRelationshipBadgeData(relationshipBadgeData)) {
+      props.relationshipBadge = relationshipBadgeData;
     }
 
     // Safely extract schemaInfo if present
@@ -1127,7 +1120,9 @@ export class NodeTransformer {
     if (this.isRecord(schemaInfo)) {
       props.schemaInfo = {
         properties: (schemaInfo as Record<string, unknown>).properties,
-        required: (schemaInfo as Record<string, unknown>).required as string[] | undefined,
+        required: this.isStringArray((schemaInfo as Record<string, unknown>).required)
+          ? (schemaInfo as Record<string, unknown>).required as string[]
+          : undefined,
       };
     }
 
@@ -1145,8 +1140,22 @@ export class NodeTransformer {
 
     return {
       properties: (schemaInfo as Record<string, unknown>).properties,
-      required: (schemaInfo as Record<string, unknown>).required as string[] | undefined,
+      required: this.isStringArray((schemaInfo as Record<string, unknown>).required)
+        ? (schemaInfo as Record<string, unknown>).required as string[]
+        : undefined,
     };
+  }
+
+  /**
+   * Type guard for RelationshipBadgeData - validates all required fields are present and have correct types
+   */
+  private isRelationshipBadgeData(value: unknown): value is RelationshipBadgeData {
+    if (!this.isRecord(value)) return false;
+    return (
+      typeof value.count === 'number' &&
+      typeof value.incoming === 'number' &&
+      typeof value.outgoing === 'number'
+    );
   }
 
   /**
