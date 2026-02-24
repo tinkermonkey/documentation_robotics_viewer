@@ -20,6 +20,8 @@ export const Default: Story = {
     id: 'container-1',
     data: {
       nodeType: NodeType.C4_CONTAINER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Web Application',
       items: [],
     },
@@ -31,6 +33,8 @@ export const WebApplication: Story = {
     id: 'container-2',
     data: {
       nodeType: NodeType.C4_CONTAINER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'React Web UI',
       items: [
         { id: 'description', label: 'Description', value: 'Provides user interface for the system', required: false },
@@ -46,6 +50,8 @@ export const MobileApplication: Story = {
     id: 'container-3',
     data: {
       nodeType: NodeType.C4_CONTAINER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Mobile App',
       items: [
         { id: 'description', label: 'Description', value: 'Native mobile application', required: false },
@@ -61,6 +67,8 @@ export const Microservice: Story = {
     id: 'container-4',
     data: {
       nodeType: NodeType.C4_CONTAINER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'API Service',
       items: [
         { id: 'description', label: 'Description', value: 'RESTful API backend service', required: false },
@@ -76,6 +84,8 @@ export const Database: Story = {
     id: 'container-5',
     data: {
       nodeType: NodeType.C4_CONTAINER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Database',
       items: [
         { id: 'description', label: 'Description', value: 'Stores all application data', required: false },
@@ -91,6 +101,8 @@ export const MessageQueue: Story = {
     id: 'container-6',
     data: {
       nodeType: NodeType.C4_CONTAINER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Message Queue',
       items: [
         { id: 'description', label: 'Description', value: 'Asynchronous message processing', required: false },
@@ -106,6 +118,8 @@ export const ChangesetAdd: Story = {
     id: 'container-7',
     data: {
       nodeType: NodeType.C4_CONTAINER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'New Container',
       items: [],
       changesetOperation: 'add',
@@ -118,6 +132,8 @@ export const ChangesetUpdate: Story = {
     id: 'container-8',
     data: {
       nodeType: NodeType.C4_CONTAINER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Updated Container',
       items: [],
       changesetOperation: 'update',
@@ -130,6 +146,8 @@ export const ChangesetDelete: Story = {
     id: 'container-9',
     data: {
       nodeType: NodeType.C4_CONTAINER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Deleted Container',
       items: [],
       changesetOperation: 'delete',
@@ -142,6 +160,8 @@ export const Dimmed: Story = {
     id: 'container-10',
     data: {
       nodeType: NodeType.C4_CONTAINER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Dimmed Container',
       items: [],
       detailLevel: 'minimal',
@@ -154,6 +174,8 @@ export const Highlighted: Story = {
     id: 'container-11',
     data: {
       nodeType: NodeType.C4_CONTAINER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Highlighted Node',
     },
   },

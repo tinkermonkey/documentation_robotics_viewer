@@ -39,12 +39,16 @@ export type ChangesetOperation = 'add' | 'update' | 'delete';
 export interface UnifiedNodeData {
   nodeType: NodeType;
   label: string;
+  layerId: string;
+  elementId: string;
   items?: FieldItem[];
   hideFields?: boolean;
   badges?: NodeBadge[];
   detailLevel?: DetailLevel;
   changesetOperation?: ChangesetOperation;
   relationshipBadge?: RelationshipBadgeData;
+  // Index signature for React Flow compatibility
+  [key: string]: unknown;
 }
 
 function UnifiedNodeComponent({ data, id }: { data: UnifiedNodeData; id?: string }): React.ReactElement {

@@ -39,6 +39,8 @@ export const Default: Story = {
   render: () => {
     const data: UnifiedNodeData = {
       nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Entity',
       items: [
         { id: 'f1', label: 'id', value: 'UUID', required: true },
@@ -54,6 +56,8 @@ export const ShortList: Story = {
   render: () => {
     const data: UnifiedNodeData = {
       nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Order Status',
       items: [
         { id: 'f1', label: 'id', value: 'UUID', required: true },
@@ -69,6 +73,8 @@ export const LongList: Story = {
   render: () => {
     const data: UnifiedNodeData = {
       nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Customer',
       items: [
         { id: 'f1', label: 'id', value: 'UUID', required: true },
@@ -94,6 +100,8 @@ export const WithComplexTypes: Story = {
   render: () => {
     const data: UnifiedNodeData = {
       nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Product',
       items: [
         { id: 'f1', label: 'identifier', value: 'UUID', required: true },
@@ -112,6 +120,8 @@ export const ChangesetUpdate: Story = {
   render: () => {
     const data: UnifiedNodeData = {
       nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'User',
       items: [
         { id: 'f1', label: 'id', value: 'UUID', required: true },
@@ -130,6 +140,8 @@ export const EmptyFields: Story = {
   render: () => {
     const data: UnifiedNodeData = {
       nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Empty Entity',
       items: [],
       detailLevel: 'standard',
@@ -142,6 +154,8 @@ export const DatabaseSchema: Story = {
   render: () => {
     const data: UnifiedNodeData = {
       nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'users',
       items: [
         { id: 'col1', label: 'user_id', value: 'BIGINT', required: true },
@@ -160,6 +174,8 @@ export const Highlighted: Story = {
   render: () => {
     const data: UnifiedNodeData = {
       nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Highlighted Entity',
       items: [
         { id: 'f1', label: 'id', value: 'UUID', required: true },

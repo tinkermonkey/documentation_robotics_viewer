@@ -20,6 +20,8 @@ export const Default: Story = {
     id: 'stakeholder-1',
     data: {
       nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'CEO',
       items: [
         { id: 'stakeholderType', label: 'Type', value: 'internal' },
@@ -36,6 +38,8 @@ export const InternalStakeholder: Story = {
     id: 'stakeholder-2',
     data: {
       nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Product Manager',
       items: [
         { id: 'stakeholderType', label: 'Type', value: 'internal' },
@@ -52,6 +56,8 @@ export const ExternalStakeholder: Story = {
     id: 'stakeholder-3',
     data: {
       nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Customer',
       items: [
         { id: 'stakeholderType', label: 'Type', value: 'external' },
@@ -68,6 +74,8 @@ export const WithInterests: Story = {
     id: 'stakeholder-4',
     data: {
       nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Investor',
       items: [
         { id: 'interests', label: 'Interests', value: 'profitability, growth, innovation' },
@@ -81,6 +89,8 @@ export const ChangesetAdd: Story = {
     id: 'stakeholder-5',
     data: {
       nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'New Stakeholder',
       changesetOperation: 'add',
     },
@@ -92,6 +102,8 @@ export const ChangesetUpdate: Story = {
     id: 'stakeholder-6',
     data: {
       nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Updated Stakeholder',
       changesetOperation: 'update',
     },
@@ -103,6 +115,8 @@ export const ChangesetDelete: Story = {
     id: 'stakeholder-7',
     data: {
       nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Deleted Stakeholder',
       changesetOperation: 'delete',
     },
@@ -114,6 +128,8 @@ export const Dimmed: Story = {
     id: 'stakeholder-8',
     data: {
       nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Dimmed Stakeholder',
       relationshipBadge: { count: 3, incoming: 2, outgoing: 1 },
     },
@@ -125,6 +141,8 @@ export const Highlighted: Story = {
     id: 'stakeholder-9',
     data: {
       nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Highlighted Node',
     },
   },

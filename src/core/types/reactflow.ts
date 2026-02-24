@@ -6,6 +6,7 @@ import {
   HTTPMethod
 } from './shapes';
 import { LayerType } from './layers';
+import type { UnifiedNodeData } from '../nodes';
 
 export type { HTTPMethod };
 import { NodeDetailLevel } from '../../core/layout/semanticZoomController';
@@ -283,7 +284,7 @@ export interface C4ExternalActorNodeData extends BaseNodeData {
  * Includes both legacy specific node types and modern unified node type
  */
 export type AppNode =
-  | Node<any, 'unified'>
+  | Node<UnifiedNodeData, 'unified'>
   | Node<DataModelNodeData, 'dataModel'>
   | Node<JSONSchemaNodeData, 'jsonSchema'>
   | Node<APIEndpointNodeData, 'apiEndpoint'>

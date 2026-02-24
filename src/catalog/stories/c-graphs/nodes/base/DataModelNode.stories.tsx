@@ -24,6 +24,8 @@ export const WithMultipleAttributes: Story = {
   render: () => {
     const data: UnifiedNodeData = {
       nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'User',
       items: [
         { id: 'id', label: 'id', value: 'UUID', required: true },
@@ -44,6 +46,8 @@ export const WithDatabaseColumns: Story = {
   render: () => {
     const data: UnifiedNodeData = {
       nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'users',
       items: [
         { id: 'col1', label: 'user_id', value: 'BIGINT', required: true },
@@ -63,6 +67,8 @@ export const WithComplexTypes: Story = {
   render: () => {
     const data: UnifiedNodeData = {
       nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Order',
       items: [
         { id: 'orderId', label: 'orderId', value: 'UUID', required: true },
@@ -83,6 +89,8 @@ export const Minimal: Story = {
   render: () => {
     const data: UnifiedNodeData = {
       nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Status',
       items: [
         { id: 'id', label: 'id', value: 'UUID', required: true },
@@ -99,6 +107,8 @@ export const EmptyModel: Story = {
   render: () => {
     const data: UnifiedNodeData = {
       nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'EmptyModel',
       items: [],
       detailLevel: 'standard',
@@ -112,6 +122,8 @@ export const WithTooltips: Story = {
   render: () => {
     const data: UnifiedNodeData = {
       nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Product',
       items: [
         {

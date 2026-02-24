@@ -31,6 +31,8 @@ export const CenteredLayout: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.MOTIVATION_GOAL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Improve Customer Experience',
         detailLevel: 'standard',
       }}
@@ -45,6 +47,8 @@ export const LeftLayout: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_FUNCTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Process Payments',
         detailLevel: 'standard',
       }}
@@ -59,6 +63,8 @@ export const WithTopLeftBadge: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.MOTIVATION_REQUIREMENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'User Authentication',
         badges: [
           {
@@ -81,6 +87,8 @@ export const WithTopRightBadge: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.MOTIVATION_PRINCIPLE,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Security First',
         badges: [
           {
@@ -103,6 +111,8 @@ export const WithInlineBadges: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_CAPABILITY,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Order Management',
         badges: [
           {
@@ -125,6 +135,8 @@ export const WithMultipleBadges: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.MOTIVATION_GOAL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'System Reliability',
         badges: [
           {
@@ -158,6 +170,8 @@ export const WithFieldList: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.DATA_JSON_SCHEMA,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'User Schema',
         items: [
           {
@@ -201,6 +215,8 @@ export const SemanticZoomMinimal: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.MOTIVATION_GOAL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Improve Performance',
         detailLevel: 'minimal' as const,
       }}
@@ -215,6 +231,8 @@ export const SemanticZoomStandard: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.MOTIVATION_GOAL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Improve Performance',
         detailLevel: 'standard' as const,
       }}
@@ -229,6 +247,8 @@ export const SemanticZoomDetailed: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.MOTIVATION_GOAL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Improve Performance',
         badges: [
           {
@@ -250,6 +270,8 @@ export const ChangesetAdd: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_SERVICE,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'New Payment Service',
         changesetOperation: 'add' as const,
         detailLevel: 'standard',
@@ -265,6 +287,8 @@ export const ChangesetUpdate: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_SERVICE,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Payment Service',
         changesetOperation: 'update' as const,
         detailLevel: 'standard',
@@ -280,6 +304,8 @@ export const ChangesetDelete: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_SERVICE,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Legacy Payment Service',
         changesetOperation: 'delete' as const,
         detailLevel: 'standard',
@@ -295,6 +321,8 @@ export const WithRelationshipBadge: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.MOTIVATION_GOAL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Core Business Objective',
         relationshipBadge: {
           count: 12,
@@ -315,6 +343,8 @@ export const HiddenFields: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.DATA_JSON_SCHEMA,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Hidden Fields',
         items: [
           {

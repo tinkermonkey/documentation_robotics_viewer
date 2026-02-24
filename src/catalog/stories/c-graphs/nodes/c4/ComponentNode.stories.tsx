@@ -20,6 +20,8 @@ export const Default: Story = {
     id: 'component-1',
     data: {
       nodeType: NodeType.C4_COMPONENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'GraphViewer Component',
       items: [],
     },
@@ -31,6 +33,8 @@ export const ControllerComponent: Story = {
     id: 'component-2',
     data: {
       nodeType: NodeType.C4_COMPONENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'User Controller',
       items: [
         { id: 'description', label: 'Description', value: 'Handles user-related API endpoints', required: false },
@@ -46,6 +50,8 @@ export const ServiceComponent: Story = {
     id: 'component-3',
     data: {
       nodeType: NodeType.C4_COMPONENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Authentication Service',
       items: [
         { id: 'description', label: 'Description', value: 'Manages user authentication and authorization', required: false },
@@ -61,6 +67,8 @@ export const RepositoryComponent: Story = {
     id: 'component-4',
     data: {
       nodeType: NodeType.C4_COMPONENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'User Repository',
       items: [
         { id: 'description', label: 'Description', value: 'Data access layer for users', required: false },
@@ -76,6 +84,8 @@ export const UIComponentExample: Story = {
     id: 'component-5',
     data: {
       nodeType: NodeType.C4_COMPONENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Dashboard Panel',
       items: [
         { id: 'description', label: 'Description', value: 'Renders main dashboard interface', required: false },
@@ -91,6 +101,8 @@ export const WithInterfaces: Story = {
     id: 'component-6',
     data: {
       nodeType: NodeType.C4_COMPONENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Payment Processor',
       items: [
         { id: 'description', label: 'Description', value: 'Processes payment transactions', required: false },
@@ -105,6 +117,8 @@ export const ChangesetAdd: Story = {
     id: 'component-7',
     data: {
       nodeType: NodeType.C4_COMPONENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'New Component',
       items: [],
       changesetOperation: 'add',
@@ -117,6 +131,8 @@ export const ChangesetUpdate: Story = {
     id: 'component-8',
     data: {
       nodeType: NodeType.C4_COMPONENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Updated Component',
       items: [],
       changesetOperation: 'update',
@@ -129,6 +145,8 @@ export const ChangesetDelete: Story = {
     id: 'component-9',
     data: {
       nodeType: NodeType.C4_COMPONENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Deleted Component',
       items: [],
       changesetOperation: 'delete',
@@ -141,6 +159,8 @@ export const Dimmed: Story = {
     id: 'component-10',
     data: {
       nodeType: NodeType.C4_COMPONENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Dimmed Component',
       items: [],
       detailLevel: 'minimal',
@@ -153,6 +173,8 @@ export const Highlighted: Story = {
     id: 'component-11',
     data: {
       nodeType: NodeType.C4_COMPONENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Highlighted Node',
     },
   },

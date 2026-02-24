@@ -20,6 +20,8 @@ export const Default: Story = {
     id: 'driver-1',
     data: {
       nodeType: NodeType.MOTIVATION_DRIVER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Market Competition',
     },
   },
@@ -30,6 +32,8 @@ export const BusinessDriver: Story = {
     id: 'driver-2',
     data: {
       nodeType: NodeType.MOTIVATION_DRIVER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Revenue Growth Target',
       items: [
         { id: 'category', label: 'Category', value: 'business' },
@@ -46,6 +50,8 @@ export const TechnicalDriver: Story = {
     id: 'driver-3',
     data: {
       nodeType: NodeType.MOTIVATION_DRIVER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Technology Modernization',
       items: [
         { id: 'category', label: 'Category', value: 'technical' },
@@ -62,6 +68,8 @@ export const RegulatoryDriver: Story = {
     id: 'driver-4',
     data: {
       nodeType: NodeType.MOTIVATION_DRIVER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Compliance Requirements',
       items: [
         { id: 'category', label: 'Category', value: 'regulatory' },
@@ -78,6 +86,8 @@ export const MarketDriver: Story = {
     id: 'driver-5',
     data: {
       nodeType: NodeType.MOTIVATION_DRIVER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Customer Demand',
       items: [
         { id: 'category', label: 'Category', value: 'market' },
@@ -94,6 +104,8 @@ export const ChangesetAdd: Story = {
     id: 'driver-6',
     data: {
       nodeType: NodeType.MOTIVATION_DRIVER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'New Driver',
       changesetOperation: 'add',
     },
@@ -105,6 +117,8 @@ export const ChangesetUpdate: Story = {
     id: 'driver-7',
     data: {
       nodeType: NodeType.MOTIVATION_DRIVER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Updated Driver',
       changesetOperation: 'update',
     },
@@ -116,6 +130,8 @@ export const ChangesetDelete: Story = {
     id: 'driver-8',
     data: {
       nodeType: NodeType.MOTIVATION_DRIVER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Deleted Driver',
       changesetOperation: 'delete',
     },
@@ -127,6 +143,8 @@ export const Dimmed: Story = {
     id: 'driver-9',
     data: {
       nodeType: NodeType.MOTIVATION_DRIVER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Dimmed Driver',
       relationshipBadge: { count: 3, incoming: 2, outgoing: 1 },
     },
@@ -138,6 +156,8 @@ export const Highlighted: Story = {
     id: 'driver-10',
     data: {
       nodeType: NodeType.MOTIVATION_DRIVER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Highlighted Node',
     },
   },

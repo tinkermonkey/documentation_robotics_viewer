@@ -20,6 +20,8 @@ export const Default: Story = {
     id: 'assumption-1',
     data: {
       nodeType: NodeType.MOTIVATION_ASSUMPTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Cloud Infrastructure Availability',
     },
   },
@@ -30,6 +32,8 @@ export const Validated: Story = {
     id: 'assumption-2',
     data: {
       nodeType: NodeType.MOTIVATION_ASSUMPTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Vendor Support Available',
       items: [
         { id: 'validationStatus', label: 'Status', value: 'validated' },
@@ -46,6 +50,8 @@ export const Unvalidated: Story = {
     id: 'assumption-3',
     data: {
       nodeType: NodeType.MOTIVATION_ASSUMPTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Budget Approval Expected',
       items: [
         { id: 'validationStatus', label: 'Status', value: 'unvalidated' },
@@ -62,6 +68,8 @@ export const Invalidated: Story = {
     id: 'assumption-4',
     data: {
       nodeType: NodeType.MOTIVATION_ASSUMPTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Legacy System Support',
       items: [
         { id: 'validationStatus', label: 'Status', value: 'invalidated' },
@@ -78,6 +86,8 @@ export const ChangesetAdd: Story = {
     id: 'assumption-5',
     data: {
       nodeType: NodeType.MOTIVATION_ASSUMPTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'New Assumption',
       changesetOperation: 'add',
     },
@@ -89,6 +99,8 @@ export const ChangesetUpdate: Story = {
     id: 'assumption-6',
     data: {
       nodeType: NodeType.MOTIVATION_ASSUMPTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Updated Assumption',
       changesetOperation: 'update',
     },
@@ -100,6 +112,8 @@ export const ChangesetDelete: Story = {
     id: 'assumption-7',
     data: {
       nodeType: NodeType.MOTIVATION_ASSUMPTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Deleted Assumption',
       changesetOperation: 'delete',
     },
@@ -111,6 +125,8 @@ export const Dimmed: Story = {
     id: 'assumption-8',
     data: {
       nodeType: NodeType.MOTIVATION_ASSUMPTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Dimmed Assumption',
       relationshipBadge: { count: 3, incoming: 2, outgoing: 1 },
     },
@@ -122,6 +138,8 @@ export const Highlighted: Story = {
     id: 'assumption-9',
     data: {
       nodeType: NodeType.MOTIVATION_ASSUMPTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Highlighted Node',
     },
   },

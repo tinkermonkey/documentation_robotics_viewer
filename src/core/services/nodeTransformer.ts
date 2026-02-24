@@ -210,7 +210,7 @@ export class NodeTransformer {
           id: nodeId,
           type: 'unified' as const,
           position: { x: topLeftX, y: topLeftY },
-          data: this.extractNodeData(element, nodeType),
+          data: this.extractNodeData(element, nodeType, layerType),
           width: element.visual.size.width,
           height: element.visual.size.height,
           style: { zIndex: 1 }, // Above layer containers (which have zIndex: -1)
@@ -339,7 +339,7 @@ export class NodeTransformer {
    * Extract node data based on element type
    * All element types are mapped to NodeType enum and use UnifiedNode
    */
-  private extractNodeData(element: ModelElement, nodeType: string): UnifiedNodeData {
+  private extractNodeData(element: ModelElement, nodeType: string, layerId: string): UnifiedNodeData {
     // All modern paths use 'unified' node type
     if (nodeType !== 'unified') {
       throw new Error(`[NodeTransformer] Invalid node type "${nodeType}" - expected "unified". Element type: ${element.type}`);
@@ -353,19 +353,19 @@ export class NodeTransformer {
 
     // Route to appropriate extraction method based on layer prefix
     if (mappedType.startsWith('motivation.')) {
-      return this.extractMotivationNodeData(element, mappedType as NodeType);
+      return this.extractMotivationNodeData(element, mappedType as NodeType, layerId);
     }
 
     if (mappedType.startsWith('business.')) {
-      return this.extractBusinessNodeData(element, mappedType as NodeType);
+      return this.extractBusinessNodeData(element, mappedType as NodeType, layerId);
     }
 
     if (mappedType.startsWith('c4.')) {
-      return this.extractC4NodeData(element, mappedType as NodeType);
+      return this.extractC4NodeData(element, mappedType as NodeType, layerId);
     }
 
     if (mappedType.startsWith('data.')) {
-      return this.extractDataNodeData(element, mappedType as NodeType);
+      return this.extractDataNodeData(element, mappedType as NodeType, layerId);
     }
 
     // Should not reach here if nodeConfig.json is properly configured
@@ -377,12 +377,14 @@ export class NodeTransformer {
   /**
    * Extract unified node data for motivation layer elements
    */
-  private extractMotivationNodeData(element: ModelElement, nodeType: NodeType): UnifiedNodeData {
+  private extractMotivationNodeData(element: ModelElement, nodeType: NodeType, layerId: string): UnifiedNodeData {
     const optionalProps = this.extractOptionalProperties(element);
 
     return {
       nodeType,
       label: element.name || element.id,
+      layerId,
+      elementId: element.id,
       items: this.extractFieldItems(element),
       badges: this.extractMotivationBadges(element, nodeType),
       detailLevel: optionalProps.detailLevel,
@@ -394,12 +396,14 @@ export class NodeTransformer {
   /**
    * Extract unified node data for business layer elements
    */
-  private extractBusinessNodeData(element: ModelElement, nodeType: NodeType): UnifiedNodeData {
+  private extractBusinessNodeData(element: ModelElement, nodeType: NodeType, layerId: string): UnifiedNodeData {
     const optionalProps = this.extractOptionalProperties(element);
 
     return {
       nodeType,
       label: element.name || element.id,
+      layerId,
+      elementId: element.id,
       items: this.extractFieldItems(element),
       badges: this.extractBusinessBadges(element, nodeType),
       detailLevel: optionalProps.detailLevel,
@@ -608,7 +612,7 @@ export class NodeTransformer {
   /**
    * Extract unified node data for C4 layer elements
    */
-  private extractC4NodeData(element: ModelElement, nodeType: NodeType): UnifiedNodeData {
+  private extractC4NodeData(element: ModelElement, nodeType: NodeType, layerId: string): UnifiedNodeData {
     const items: FieldItem[] = [];
     const optionalProps = this.extractOptionalProperties(element);
 
@@ -685,6 +689,8 @@ export class NodeTransformer {
     return {
       nodeType,
       label: element.name || element.id,
+      layerId,
+      elementId: element.id,
       items: items.length > 0 ? items : undefined,
       badges: [],
       detailLevel: optionalProps.detailLevel,
@@ -720,7 +726,7 @@ export class NodeTransformer {
   /**
    * Extract unified node data for data layer elements (JSONSchema, DataModel)
    */
-  private extractDataNodeData(element: ModelElement, nodeType: NodeType): UnifiedNodeData {
+  private extractDataNodeData(element: ModelElement, nodeType: NodeType, layerId: string): UnifiedNodeData {
     const items: FieldItem[] = [];
     const optionalProps = this.extractOptionalProperties(element);
 
@@ -752,6 +758,8 @@ export class NodeTransformer {
     return {
       nodeType,
       label: element.name || element.id,
+      layerId,
+      elementId: element.id,
       items: items.length > 0 ? items : undefined,
       badges: undefined,
       detailLevel: optionalProps.detailLevel,

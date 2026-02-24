@@ -21,6 +21,8 @@ const meta = {
   args: {
     data: {
       nodeType: NodeType.BUSINESS_PROCESS,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: '',
       detailLevel: 'standard',
     },
@@ -36,6 +38,8 @@ export const Default: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_PROCESS,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Order Processing',
         detailLevel: 'standard',
       }}
@@ -49,6 +53,8 @@ export const HighCriticality: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_PROCESS,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Payment Processing',
         badges: [
           {
@@ -69,6 +75,8 @@ export const MediumCriticality: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_PROCESS,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Inventory Check',
         badges: [
           {
@@ -89,6 +97,8 @@ export const LowCriticality: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_PROCESS,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Logging Process',
         badges: [
           {
@@ -109,6 +119,8 @@ export const WithOwner: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_PROCESS,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Returns Processing',
         badges: [
           {
@@ -129,6 +141,8 @@ export const WithSubprocesses: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_PROCESS,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Order Fulfillment',
         items: [
           { id: 'sp-1', label: 'Pick Items', value: 'Pick items from warehouse' },
@@ -157,6 +171,8 @@ export const ExpandedSubprocesses: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_PROCESS,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Order Fulfillment',
         items: [
           { id: 'sp-1', label: 'Pick Items', value: 'Pick items from warehouse' },
@@ -185,6 +201,8 @@ export const ChangesetAdd: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_PROCESS,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'New Process',
         changesetOperation: 'add',
         detailLevel: 'standard',
@@ -199,6 +217,8 @@ export const ChangesetUpdate: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_PROCESS,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Updated Process',
         changesetOperation: 'update',
         detailLevel: 'standard',
@@ -213,6 +233,8 @@ export const ChangesetDelete: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_PROCESS,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
         label: 'Deleted Process',
         changesetOperation: 'delete',
         detailLevel: 'standard',

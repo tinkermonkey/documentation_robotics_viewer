@@ -20,6 +20,8 @@ export const Default: Story = {
     id: 'constraint-1',
     data: {
       nodeType: NodeType.MOTIVATION_CONSTRAINT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'GDPR Compliance',
     },
   },
@@ -30,6 +32,8 @@ export const FixedConstraint: Story = {
     id: 'constraint-2',
     data: {
       nodeType: NodeType.MOTIVATION_CONSTRAINT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Must use HTTPS',
       items: [
         { id: 'negotiability', label: 'Negotiability', value: 'fixed' },
@@ -46,6 +50,8 @@ export const NegotiableConstraint: Story = {
     id: 'constraint-3',
     data: {
       nodeType: NodeType.MOTIVATION_CONSTRAINT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Budget Limitation',
       items: [
         { id: 'negotiability', label: 'Negotiability', value: 'negotiable' },
@@ -62,6 +68,8 @@ export const RegulatoryConstraint: Story = {
     id: 'constraint-4',
     data: {
       nodeType: NodeType.MOTIVATION_CONSTRAINT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Data Residency Requirements',
       items: [
         { id: 'type', label: 'Type', value: 'regulatory' },
@@ -78,6 +86,8 @@ export const BusinessConstraint: Story = {
     id: 'constraint-5',
     data: {
       nodeType: NodeType.MOTIVATION_CONSTRAINT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Timeline Constraint',
       items: [
         { id: 'type', label: 'Type', value: 'business' },
@@ -94,6 +104,8 @@ export const ChangesetAdd: Story = {
     id: 'constraint-6',
     data: {
       nodeType: NodeType.MOTIVATION_CONSTRAINT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'New Constraint',
       changesetOperation: 'add',
     },
@@ -105,6 +117,8 @@ export const ChangesetUpdate: Story = {
     id: 'constraint-7',
     data: {
       nodeType: NodeType.MOTIVATION_CONSTRAINT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Updated Constraint',
       changesetOperation: 'update',
     },
@@ -116,6 +130,8 @@ export const ChangesetDelete: Story = {
     id: 'constraint-8',
     data: {
       nodeType: NodeType.MOTIVATION_CONSTRAINT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Deleted Constraint',
       changesetOperation: 'delete',
     },
@@ -127,6 +143,8 @@ export const Dimmed: Story = {
     id: 'constraint-9',
     data: {
       nodeType: NodeType.MOTIVATION_CONSTRAINT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Dimmed Constraint',
       relationshipBadge: { count: 3, incoming: 2, outgoing: 1 },
     },
@@ -138,6 +156,8 @@ export const Highlighted: Story = {
     id: 'constraint-10',
     data: {
       nodeType: NodeType.MOTIVATION_CONSTRAINT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Highlighted Node',
     },
   },
