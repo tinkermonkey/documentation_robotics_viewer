@@ -10,7 +10,7 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
-import FieldList, { type FieldItem } from '@/core/nodes/components/FieldList';
+import FieldList from '@/core/nodes/components/FieldList';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 const meta = {
@@ -29,13 +29,14 @@ type Story = StoryObj<typeof meta>;
  * Empty state - no fields defined
  */
 export const EmptyState: Story = {
-  render: () => (
-    <FieldList
-      items={[]}
-      itemHeight={28}
-      strokeColor="#d1d5db"
-      handleColor="#3b82f6"
-    />
+  args: {
+    items: [],
+    itemHeight: 28,
+    strokeColor: '#d1d5db',
+    handleColor: '#3b82f6',
+  },
+  render: (args) => (
+    <FieldList {...args} />
   ),
 };
 
@@ -43,79 +44,67 @@ export const EmptyState: Story = {
  * Single field with required indicator
  */
 export const SingleFieldRequired: Story = {
-  render: () => {
-    const items: FieldItem[] = [
+  args: {
+    items: [
       {
         id: 'f1',
         label: 'Email',
         value: 'string',
         required: true,
       },
-    ];
-    return (
-      <FieldList
-        items={items}
-        itemHeight={28}
-        strokeColor="#d1d5db"
-        handleColor="#3b82f6"
-      />
-    );
+    ],
+    itemHeight: 28,
+    strokeColor: '#d1d5db',
+    handleColor: '#3b82f6',
   },
+  render: (args) => <FieldList {...args} />,
 };
 
 /**
  * Single field with optional indicator
  */
 export const SingleFieldOptional: Story = {
-  render: () => {
-    const items: FieldItem[] = [
+  args: {
+    items: [
       {
         id: 'f1',
         label: 'Phone',
         value: 'string',
         required: false,
       },
-    ];
-    return (
-      <FieldList
-        items={items}
-        itemHeight={28}
-        strokeColor="#d1d5db"
-        handleColor="#3b82f6"
-      />
-    );
+    ],
+    itemHeight: 28,
+    strokeColor: '#d1d5db',
+    handleColor: '#3b82f6',
   },
+  render: (args) => <FieldList {...args} />,
 };
 
 /**
  * Single field without required indicator
  */
 export const SingleFieldNoIndicator: Story = {
-  render: () => {
-    const items: FieldItem[] = [
+  args: {
+    items: [
       {
         id: 'f1',
         label: 'Name',
         value: 'string',
       },
-    ];
-    return (
-      <FieldList
-        items={items}
-        itemHeight={28}
-        strokeColor="#d1d5db"
-        handleColor="#3b82f6"
-      />
-    );
+    ],
+    itemHeight: 28,
+    strokeColor: '#d1d5db',
+    handleColor: '#3b82f6',
   },
+  render: (args) => <FieldList {...args} />,
 };
 
 /**
  * Field with tooltip
  */
 export const FieldWithTooltip: Story = {
-  render: () => {
-    const items: FieldItem[] = [
+  args: {
+    items: [
       {
         id: 'f1',
         label: 'Timestamp',
@@ -123,70 +112,58 @@ export const FieldWithTooltip: Story = {
         required: true,
         tooltip: 'When the record was created',
       },
-    ];
-    return (
-      <FieldList
-        items={items}
-        itemHeight={28}
-        strokeColor="#d1d5db"
-        handleColor="#3b82f6"
-      />
-    );
+    ],
+    itemHeight: 28,
+    strokeColor: '#d1d5db',
+    handleColor: '#3b82f6',
   },
+  render: (args) => <FieldList {...args} />,
 };
 
 /**
  * Multiple fields with mixed required/optional
  */
 export const MultipleFields: Story = {
-  render: () => {
-    const items: FieldItem[] = [
+  args: {
+    items: [
       { id: 'f1', label: 'id', value: 'UUID', required: true },
       { id: 'f2', label: 'firstName', value: 'string', required: true },
       { id: 'f3', label: 'lastName', value: 'string', required: true },
       { id: 'f4', label: 'email', value: 'string', required: true },
       { id: 'f5', label: 'phone', value: 'string', required: false },
       { id: 'f6', label: 'address', value: 'string', required: false },
-    ];
-    return (
-      <FieldList
-        items={items}
-        itemHeight={28}
-        strokeColor="#d1d5db"
-        handleColor="#3b82f6"
-      />
-    );
+    ],
+    itemHeight: 28,
+    strokeColor: '#d1d5db',
+    handleColor: '#3b82f6',
   },
+  render: (args) => <FieldList {...args} />,
 };
 
 /**
  * Long field list with scrolling
  */
 export const LongFieldList: Story = {
-  render: () => {
-    const items: FieldItem[] = Array.from({ length: 20 }, (_, i) => ({
+  args: {
+    items: Array.from({ length: 20 }, (_, i) => ({
       id: `f${i + 1}`,
       label: `field_${i + 1}`,
       value: i % 2 === 0 ? 'string' : 'integer',
       required: i % 3 === 0,
-    }));
-    return (
-      <FieldList
-        items={items}
-        itemHeight={28}
-        strokeColor="#d1d5db"
-        handleColor="#3b82f6"
-      />
-    );
+    })),
+    itemHeight: 28,
+    strokeColor: '#d1d5db',
+    handleColor: '#3b82f6',
   },
+  render: (args) => <FieldList {...args} />,
 };
 
 /**
  * Fields with long labels (truncation testing)
  */
 export const LongLabels: Story = {
-  render: () => {
-    const items: FieldItem[] = [
+  args: {
+    items: [
       {
         id: 'f1',
         label: 'VeryLongFieldNameThatShouldBeTruncatedWithEllipsis',
@@ -199,24 +176,20 @@ export const LongLabels: Story = {
         value: 'integer',
         required: false,
       },
-    ];
-    return (
-      <FieldList
-        items={items}
-        itemHeight={28}
-        strokeColor="#d1d5db"
-        handleColor="#3b82f6"
-      />
-    );
+    ],
+    itemHeight: 28,
+    strokeColor: '#d1d5db',
+    handleColor: '#3b82f6',
   },
+  render: (args) => <FieldList {...args} />,
 };
 
 /**
  * Fields with long values (truncation testing)
  */
 export const LongValues: Story = {
-  render: () => {
-    const items: FieldItem[] = [
+  args: {
+    items: [
       {
         id: 'f1',
         label: 'description',
@@ -229,87 +202,71 @@ export const LongValues: Story = {
         value: 'ComplexTypeNameWithQualifiersLikeNamespace.ClassName.InnerClassName',
         required: false,
       },
-    ];
-    return (
-      <FieldList
-        items={items}
-        itemHeight={28}
-        strokeColor="#d1d5db"
-        handleColor="#3b82f6"
-      />
-    );
+    ],
+    itemHeight: 28,
+    strokeColor: '#d1d5db',
+    handleColor: '#3b82f6',
   },
+  render: (args) => <FieldList {...args} />,
 };
 
 /**
  * Custom itemHeight (larger)
  */
 export const LargeItemHeight: Story = {
-  render: () => {
-    const items: FieldItem[] = [
+  args: {
+    items: [
       { id: 'f1', label: 'id', value: 'UUID', required: true },
       { id: 'f2', label: 'name', value: 'string', required: true },
       { id: 'f3', label: 'description', value: 'text', required: false },
-    ];
-    return (
-      <FieldList
-        items={items}
-        itemHeight={40}
-        strokeColor="#d1d5db"
-        handleColor="#3b82f6"
-      />
-    );
+    ],
+    itemHeight: 40,
+    strokeColor: '#d1d5db',
+    handleColor: '#3b82f6',
   },
+  render: (args) => <FieldList {...args} />,
 };
 
 /**
  * Custom itemHeight (smaller)
  */
 export const SmallItemHeight: Story = {
-  render: () => {
-    const items: FieldItem[] = [
+  args: {
+    items: [
       { id: 'f1', label: 'id', value: 'UUID', required: true },
       { id: 'f2', label: 'name', value: 'string', required: true },
       { id: 'f3', label: 'description', value: 'text', required: false },
-    ];
-    return (
-      <FieldList
-        items={items}
-        itemHeight={20}
-        strokeColor="#d1d5db"
-        handleColor="#3b82f6"
-      />
-    );
+    ],
+    itemHeight: 20,
+    strokeColor: '#d1d5db',
+    handleColor: '#3b82f6',
   },
+  render: (args) => <FieldList {...args} />,
 };
 
 /**
  * Custom stroke and handle colors
  */
 export const CustomColors: Story = {
-  render: () => {
-    const items: FieldItem[] = [
+  args: {
+    items: [
       { id: 'f1', label: 'id', value: 'UUID', required: true },
       { id: 'f2', label: 'status', value: 'enum', required: true },
       { id: 'f3', label: 'notes', value: 'string', required: false },
-    ];
-    return (
-      <FieldList
-        items={items}
-        itemHeight={28}
-        strokeColor="#ef4444"
-        handleColor="#f97316"
-      />
-    );
+    ],
+    itemHeight: 28,
+    strokeColor: '#ef4444',
+    handleColor: '#f97316',
   },
+  render: (args) => <FieldList {...args} />,
 };
 
 /**
  * Fields with special characters
  */
 export const SpecialCharacters: Story = {
-  render: () => {
-    const items: FieldItem[] = [
+  args: {
+    items: [
       {
         id: 'f1',
         label: 'email@domain',
@@ -328,45 +285,37 @@ export const SpecialCharacters: Story = {
         value: 'string | null',
         required: false,
       },
-    ];
-    return (
-      <FieldList
-        items={items}
-        itemHeight={28}
-        strokeColor="#d1d5db"
-        handleColor="#3b82f6"
-      />
-    );
+    ],
+    itemHeight: 28,
+    strokeColor: '#d1d5db',
+    handleColor: '#3b82f6',
   },
+  render: (args) => <FieldList {...args} />,
 };
 
 /**
  * Fields without values (only labels and indicators)
  */
 export const LabelsOnly: Story = {
-  render: () => {
-    const items: FieldItem[] = [
+  args: {
+    items: [
       { id: 'f1', label: 'Field One', required: true },
       { id: 'f2', label: 'Field Two', required: false },
       { id: 'f3', label: 'Field Three' },
-    ];
-    return (
-      <FieldList
-        items={items}
-        itemHeight={28}
-        strokeColor="#d1d5db"
-        handleColor="#3b82f6"
-      />
-    );
+    ],
+    itemHeight: 28,
+    strokeColor: '#d1d5db',
+    handleColor: '#3b82f6',
   },
+  render: (args) => <FieldList {...args} />,
 };
 
 /**
  * Multiple tooltips (hover over info icons)
  */
 export const MultipleTooltips: Story = {
-  render: () => {
-    const items: FieldItem[] = [
+  args: {
+    items: [
       {
         id: 'f1',
         label: 'userId',
@@ -388,24 +337,20 @@ export const MultipleTooltips: Story = {
         required: false,
         tooltip: 'When the record was last modified',
       },
-    ];
-    return (
-      <FieldList
-        items={items}
-        itemHeight={28}
-        strokeColor="#d1d5db"
-        handleColor="#3b82f6"
-      />
-    );
+    ],
+    itemHeight: 28,
+    strokeColor: '#d1d5db',
+    handleColor: '#3b82f6',
   },
+  render: (args) => <FieldList {...args} />,
 };
 
 /**
  * Database schema example
  */
 export const DatabaseSchema: Story = {
-  render: () => {
-    const items: FieldItem[] = [
+  args: {
+    items: [
       {
         id: 'user_id',
         label: 'user_id',
@@ -441,24 +386,20 @@ export const DatabaseSchema: Story = {
         required: false,
         tooltip: 'Last login timestamp',
       },
-    ];
-    return (
-      <FieldList
-        items={items}
-        itemHeight={28}
-        strokeColor="#6b7280"
-        handleColor="#8b5cf6"
-      />
-    );
+    ],
+    itemHeight: 28,
+    strokeColor: '#6b7280',
+    handleColor: '#8b5cf6',
   },
+  render: (args) => <FieldList {...args} />,
 };
 
 /**
  * JSON schema field example
  */
 export const JSONSchemaFields: Story = {
-  render: () => {
-    const items: FieldItem[] = [
+  args: {
+    items: [
       {
         id: 'properties',
         label: 'properties',
@@ -489,14 +430,10 @@ export const JSONSchemaFields: Story = {
         value: 'string',
         required: false,
       },
-    ];
-    return (
-      <FieldList
-        items={items}
-        itemHeight={28}
-        strokeColor="#059669"
-        handleColor="#10b981"
-      />
-    );
+    ],
+    itemHeight: 28,
+    strokeColor: '#059669',
+    handleColor: '#10b981',
   },
+  render: (args) => <FieldList {...args} />,
 };
