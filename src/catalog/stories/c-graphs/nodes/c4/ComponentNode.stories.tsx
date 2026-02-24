@@ -106,6 +106,7 @@ export const ChangesetAdd: Story = {
     data: {
       nodeType: NodeType.C4_COMPONENT,
       label: 'New Component',
+      items: [],
       changesetOperation: 'add',
     },
   },
@@ -117,6 +118,7 @@ export const ChangesetUpdate: Story = {
     data: {
       nodeType: NodeType.C4_COMPONENT,
       label: 'Updated Component',
+      items: [],
       changesetOperation: 'update',
     },
   },
@@ -128,6 +130,7 @@ export const ChangesetDelete: Story = {
     data: {
       nodeType: NodeType.C4_COMPONENT,
       label: 'Deleted Component',
+      items: [],
       changesetOperation: 'delete',
     },
   },
@@ -139,7 +142,8 @@ export const Dimmed: Story = {
     data: {
       nodeType: NodeType.C4_COMPONENT,
       label: 'Dimmed Component',
-      detailLevel: 'standard',
+      items: [],
+      detailLevel: 'minimal',
     },
   },
 };

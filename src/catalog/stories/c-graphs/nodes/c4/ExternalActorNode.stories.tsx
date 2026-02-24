@@ -88,6 +88,7 @@ export const ChangesetAdd: Story = {
     data: {
       nodeType: NodeType.C4_EXTERNAL_ACTOR,
       label: 'New Actor',
+      items: [],
       changesetOperation: 'add',
     },
   },
@@ -99,6 +100,7 @@ export const ChangesetUpdate: Story = {
     data: {
       nodeType: NodeType.C4_EXTERNAL_ACTOR,
       label: 'Updated Actor',
+      items: [],
       changesetOperation: 'update',
     },
   },
@@ -110,6 +112,7 @@ export const ChangesetDelete: Story = {
     data: {
       nodeType: NodeType.C4_EXTERNAL_ACTOR,
       label: 'Deleted Actor',
+      items: [],
       changesetOperation: 'delete',
     },
   },
@@ -121,7 +124,8 @@ export const Dimmed: Story = {
     data: {
       nodeType: NodeType.C4_EXTERNAL_ACTOR,
       label: 'Dimmed Actor',
-      detailLevel: 'standard',
+      items: [],
+      detailLevel: 'minimal',
     },
   },
 };

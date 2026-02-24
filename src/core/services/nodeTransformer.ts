@@ -300,7 +300,7 @@ export class NodeTransformer {
    */
   private getNodeTypeForElement(element: ModelElement): string {
     // For motivation layer elements, use unified node type
-    if (element.layerId === 'Motivation') {
+    if (element.layerId?.toLowerCase() === 'motivation') {
       const mappedType = nodeConfigLoader.mapElementType(element.type);
       if (mappedType && mappedType.startsWith('motivation.')) {
         return 'unified';
@@ -308,7 +308,7 @@ export class NodeTransformer {
     }
 
     // For business layer elements, use unified node type with config lookup
-    if (element.layerId === 'Business') {
+    if (element.layerId?.toLowerCase() === 'business') {
       const mappedType = nodeConfigLoader.mapElementType(element.type);
       if (mappedType && mappedType.startsWith('business.')) {
         return 'unified';
@@ -316,9 +316,13 @@ export class NodeTransformer {
     }
 
     // For C4 layer elements, use unified node type with config lookup
-    if (element.layerId === 'C4' || element.type?.startsWith('c4.') || element.type?.startsWith('c4-')) {
+    if (element.layerId?.toLowerCase() === 'c4' || element.type?.startsWith('c4.') || element.type?.startsWith('c4-')) {
       const mappedType = nodeConfigLoader.mapElementType(element.type);
       if (mappedType && mappedType.startsWith('c4.')) {
+        return 'unified';
+      }
+      // Fallback: check if type itself indicates C4 element and has been registered
+      if (element.type && (element.type.startsWith('c4.') || element.type.startsWith('c4-'))) {
         return 'unified';
       }
     }
@@ -351,6 +355,13 @@ export class NodeTransformer {
       'Capability': 'businessCapability',
       'json-schema-element': 'jsonSchema',
       'layer-container': 'layerContainer',
+      // C4 type fallback mappings for robustness
+      'c4.container': 'unified',
+      'c4-container': 'unified',
+      'c4.component': 'unified',
+      'c4-component': 'unified',
+      'c4.external-actor': 'unified',
+      'c4-external-actor': 'unified',
     };
 
     const mapped = typeMap[element.type];
@@ -684,7 +695,15 @@ export class NodeTransformer {
    * Extract unified node data for C4 layer elements
    */
   private extractC4NodeData(element: ModelElement, nodeType: NodeType): UnifiedNodeData {
-    const items: any[] = [];
+    // Import FieldItem type from FieldList
+    type FieldItemType = {
+      id: string;
+      label: string;
+      value: string;
+      required?: boolean;
+    };
+
+    const items: FieldItemType[] = [];
 
     // Add description as first field item if present
     if (element.properties?.description || element.description) {
@@ -746,19 +765,17 @@ export class NodeTransformer {
       });
     }
 
-    return {
+    const unifiedData: UnifiedNodeData = {
       nodeType,
       label: element.name || element.id,
       items: items.length > 0 ? items : undefined,
       badges: [],
-      detailLevel: (element as any).detailLevel || 'standard',
-      changesetOperation: (element as any).changesetOperation,
-      relationshipBadge: (element as any).relationshipBadge,
-      // Keep original data for compatibility
-      elementId: element.id,
-      layerId: element.layerId,
-      modelElement: element,
-    } as any;
+      detailLevel: element.properties?.detailLevel || 'standard',
+      changesetOperation: element.properties?.changesetOperation,
+      relationshipBadge: element.properties?.relationshipBadge,
+    };
+
+    return unifiedData;
   }
 
   /**
