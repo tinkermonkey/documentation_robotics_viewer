@@ -206,17 +206,17 @@ export class NodeTransformer {
         const nodeType = this.getNodeTypeForElement(element);
 
         // Create node with type-specific data
-        const node = {
+        const node: AppNode = {
           id: nodeId,
-          type: nodeType,
+          type: 'unified' as const,
           position: { x: topLeftX, y: topLeftY },
           data: this.extractNodeData(element, nodeType),
           width: element.visual.size.width,
           height: element.visual.size.height,
           style: { zIndex: 1 }, // Above layer containers (which have zIndex: -1)
-        };
+        } as AppNode;
 
-        nodes.push(node as AppNode);
+        nodes.push(node);
       }
     }
 
@@ -459,7 +459,7 @@ export class NodeTransformer {
       case NodeType.MOTIVATION_STAKEHOLDER:
         if (props.stakeholderType) {
           const stakeholderType = this.validateString(props.stakeholderType);
-          if (stakeholderType) {
+          if (stakeholderType !== undefined) {
             badges.push({
               position: 'inline' as const,
               content: stakeholderType,
@@ -492,7 +492,7 @@ export class NodeTransformer {
       case NodeType.MOTIVATION_DRIVER:
         if (props.category) {
           const category = this.validateString(props.category);
-          if (category) {
+          if (category !== undefined) {
             badges.push({
               position: 'top-right' as const,
               content: category,
@@ -505,7 +505,7 @@ export class NodeTransformer {
       case NodeType.MOTIVATION_OUTCOME:
         if (props.status) {
           const status = this.validateString(props.status);
-          if (status) {
+          if (status !== undefined) {
             badges.push({
               position: 'top-right' as const,
               content: status,
@@ -518,7 +518,7 @@ export class NodeTransformer {
       case NodeType.MOTIVATION_CONSTRAINT:
         if (props.negotiability) {
           const negotiability = this.validateString(props.negotiability);
-          if (negotiability) {
+          if (negotiability !== undefined) {
             badges.push({
               position: 'top-right' as const,
               content: negotiability,
@@ -552,7 +552,7 @@ export class NodeTransformer {
     // Owner badge (common to all business node types)
     if (props.owner) {
       const owner = this.validateString(props.owner);
-      if (owner) {
+      if (owner !== undefined) {
         badges.push({
           position: 'inline' as const,
           content: owner,
@@ -581,7 +581,7 @@ export class NodeTransformer {
     // Domain badge (only for Function and Service nodes)
     if ((nodeType === NodeType.BUSINESS_FUNCTION || nodeType === NodeType.BUSINESS_SERVICE) && props.domain) {
       const domain = this.validateString(props.domain);
-      if (domain) {
+      if (domain !== undefined) {
         badges.push({
           position: 'inline' as const,
           content: domain,
@@ -635,7 +635,7 @@ export class NodeTransformer {
     // Add role for components
     if (nodeType === NodeType.C4_COMPONENT) {
       const role = this.validateString(element.properties?.role);
-      if (role) {
+      if (role !== undefined) {
         items.push({
           id: 'role',
           label: 'Role',
@@ -648,7 +648,7 @@ export class NodeTransformer {
     // Add containerType for containers
     if (nodeType === NodeType.C4_CONTAINER) {
       const containerType = this.validateString(element.properties?.containerType);
-      if (containerType) {
+      if (containerType !== undefined) {
         items.push({
           id: 'containerType',
           label: 'Type',
@@ -661,7 +661,7 @@ export class NodeTransformer {
     // Add actorType for external actors
     if (nodeType === NodeType.C4_EXTERNAL_ACTOR) {
       const actorType = this.validateString(element.properties?.actorType);
-      if (actorType) {
+      if (actorType !== undefined) {
         items.push({
           id: 'actorType',
           label: 'Type',
@@ -701,7 +701,9 @@ export class NodeTransformer {
     prop: Record<string, unknown>,
     requiredFields: string[] | undefined
   ): FieldItem {
-    const propType = this.validateString(prop?.type as unknown) || this.validateString(prop?.dataType as unknown) || 'unknown';
+    const typeValue = this.validateString(prop?.type as unknown);
+    const dataTypeValue = this.validateString(prop?.dataType as unknown);
+    const propType = typeValue ?? dataTypeValue ?? 'unknown';
     const description = prop?.description || prop?.tooltip || '';
     const isRequired = Array.isArray(requiredFields) ? requiredFields.includes(key) : false;
 
@@ -1114,9 +1116,10 @@ export class NodeTransformer {
    */
   private extractOptionalProperties(element: ModelElement): OptionalElementProperties {
     const props: OptionalElementProperties = {};
+    const elementData = element as unknown as Record<string, unknown>;
 
     // Safely extract detailLevel if present
-    const detailLevel = (element as unknown as Record<string, unknown>).detailLevel;
+    const detailLevel = elementData.detailLevel;
     if (detailLevel === 'minimal' || detailLevel === 'standard' || detailLevel === 'detailed') {
       props.detailLevel = detailLevel;
     } else {
@@ -1124,26 +1127,27 @@ export class NodeTransformer {
     }
 
     // Safely extract changesetOperation if present
-    const changesetOperation = (element as unknown as Record<string, unknown>).changesetOperation;
+    const changesetOperation = elementData.changesetOperation;
     if (changesetOperation === 'add' || changesetOperation === 'update' || changesetOperation === 'delete') {
       props.changesetOperation = changesetOperation;
     }
 
     // Safely extract relationshipBadge if present and validate structure
-    const relationshipBadgeData = (element as unknown as Record<string, unknown>).relationshipBadge;
+    const relationshipBadgeData = elementData.relationshipBadge;
     if (this.isRelationshipBadgeData(relationshipBadgeData)) {
       props.relationshipBadge = relationshipBadgeData;
     }
 
     // Safely extract schemaInfo if present
-    const schemaInfo = (element as unknown as Record<string, unknown>).schemaInfo;
+    const schemaInfo = elementData.schemaInfo;
     if (this.isRecord(schemaInfo)) {
-      const properties = (schemaInfo as Record<string, unknown>).properties;
-      const required = (schemaInfo as Record<string, unknown>).required;
+      const schemaData = schemaInfo as Record<string, unknown>;
+      const properties = schemaData.properties;
+      const required = schemaData.required;
       props.schemaInfo = {
         properties: (this.isRecord(properties) || Array.isArray(properties)) ? properties : undefined,
         required: this.isStringArray(required)
-          ? (required as string[])
+          ? required
           : undefined,
       };
     }
