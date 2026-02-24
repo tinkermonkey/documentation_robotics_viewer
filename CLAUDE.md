@@ -271,7 +271,7 @@ For details: `documentation/ACCESSIBILITY.md`
 
 ## Specialized Sub-Agents
 
-Specialized sub-agents are available via the `Task` tool. Use them instead of working from general knowledge — they have deep project-specific context.
+**MANDATORY**: Before implementing, identify which specialist agent applies to your task and consult it via the `Task` tool. Do not proceed with implementation until you have consulted the relevant agent. These agents have deep project-specific context that general knowledge cannot replicate.
 
 | Agent | When to use |
 |---|---|
