@@ -66,7 +66,7 @@ export class BusinessNodeTransformer {
    * This method is retained for backward compatibility with the BusinessNodeTransformer API
    * and to maintain consistency with other layer transformers.
    */
-  getNodeType(node: BusinessNode): string {
+  getNodeType(): string {
     // All business nodes now render as 'unified' type
     return 'unified';
   }
@@ -81,7 +81,7 @@ export class BusinessNodeTransformer {
     | BusinessFunctionNodeData
     | BusinessServiceNodeData
     | BusinessCapabilityNodeData {
-    const nodeType = this.getNodeType(node);
+    const nodeType = this.getNodeType();
 
     const baseData = {
       label: node.name,
