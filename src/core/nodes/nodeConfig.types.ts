@@ -1,3 +1,5 @@
+import { NodeType } from './NodeType';
+
 /**
  * Dimensions configuration for a node type
  */
@@ -44,8 +46,8 @@ export interface ChangesetColors {
  */
 export interface NodeConfig {
   version: string;
-  typeMap: Record<string, string>; // Maps element type strings to NodeType enum values
-  nodeStyles: Record<string, NodeStyleConfig>; // Maps NodeType to styling config
+  typeMap: Record<string, NodeType>; // Maps element type strings to NodeType enum values (enforces NodeType)
+  nodeStyles: Record<NodeType, NodeStyleConfig>; // Maps NodeType to styling config (enforces coverage)
   changesetColors: {
     add: ChangesetColors;
     update: ChangesetColors;

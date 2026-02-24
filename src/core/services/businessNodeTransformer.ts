@@ -17,6 +17,7 @@ import {
   BusinessCapabilityNodeData,
 } from '../types/reactflow';
 import { nodeConfigLoader } from '../nodes/nodeConfigLoader';
+import { NodeType } from '../nodes/NodeType';
 
 /**
  * BusinessNodeTransformer - Transforms business nodes to React Flow format
@@ -38,11 +39,11 @@ export class BusinessNodeTransformer {
    */
   getNodeDimensions(node: BusinessNode): { width: number; height: number } {
     // Map business node types to configuration keys
-    const typeToConfig: Record<string, string> = {
-      process: 'business.process',
-      function: 'business.function',
-      service: 'business.service',
-      capability: 'business.capability',
+    const typeToConfig: Record<string, NodeType> = {
+      process: NodeType.BUSINESS_PROCESS,
+      function: NodeType.BUSINESS_FUNCTION,
+      service: NodeType.BUSINESS_SERVICE,
+      capability: NodeType.BUSINESS_CAPABILITY,
     };
 
     const configKey = typeToConfig[node.type];

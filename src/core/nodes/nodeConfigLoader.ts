@@ -1,6 +1,6 @@
 import nodeConfigData from './nodeConfig.json' with { type: 'json' };
 import type { NodeConfig, NodeStyleConfig } from './nodeConfig.types';
-import { NodeType, isValidNodeType } from './NodeType';
+import { NodeType } from './NodeType';
 
 /**
  * NodeConfigLoader
@@ -21,16 +21,15 @@ class NodeConfigLoader {
 
   /**
    * Validate that all required NodeType enum values have corresponding nodeStyles entries.
-   * Also validates that all typeMap entries reference valid NodeType values.
-   * Logs warnings for missing or invalid configurations (both dev and production).
+   * TypeMap is now type-safe (values are NodeType enum), so validation is simplified.
+   * Logs warnings for missing configurations (both dev and production).
    * These configuration problems should never occur in either environment - if they do,
    * it indicates a serious build/deployment issue and must be visible.
    */
   private validateConfig(): void {
-    const styleKeys = Object.keys(this.config.nodeStyles);
+    const styleKeys = Object.keys(this.config.nodeStyles) as NodeType[];
     const enumValues = Object.values(NodeType);
     const missingStyles: string[] = [];
-    const invalidMappings: Array<[string, string]> = [];
 
     // Validate nodeStyles coverage
     for (const nodeType of enumValues) {
@@ -45,13 +44,6 @@ class NodeConfigLoader {
       }
     }
 
-    // Validate typeMap entries point to valid NodeType values
-    for (const [key, mappedType] of Object.entries(this.config.typeMap)) {
-      if (!isValidNodeType(mappedType)) {
-        invalidMappings.push([key, mappedType]);
-      }
-    }
-
     // Report all validation issues (both dev and production)
     // Configuration problems indicate build/deployment failures and must always be visible
     if (missingStyles.length > 0) {
@@ -61,15 +53,7 @@ class NodeConfigLoader {
       );
     }
 
-    if (invalidMappings.length > 0) {
-      const mappingDetails = invalidMappings.map(([k, v]) => `"${k}" -> "${v}"`).join(', ');
-      console.error(
-        `[NodeConfigLoader] Invalid typeMap entries: ${mappingDetails}. ` +
-        `All typeMap values must reference valid NodeType enum values.`
-      );
-    }
-
-    if (missingStyles.length === 0 && invalidMappings.length === 0) {
+    if (missingStyles.length === 0) {
       console.log(
         `[NodeConfigLoader] Loaded configuration with ${styleKeys.length} node styles and ${Object.keys(this.config.typeMap).length} type mappings`
       );
@@ -81,15 +65,7 @@ class NodeConfigLoader {
    * @param nodeType - The NodeType enum value
    * @returns Style configuration or undefined if not found
    */
-  getStyleConfig(nodeType: NodeType | string): NodeStyleConfig | undefined {
-    if (!isValidNodeType(nodeType)) {
-      console.error(
-        `[NodeConfigLoader] Invalid NodeType: ${nodeType}. ` +
-        `This indicates incomplete fixture data or type mapping configuration. ` +
-        `Verify that all model elements have valid types mapped in nodeConfig.json typeMap.`
-      );
-      return undefined;
-    }
+  getStyleConfig(nodeType: NodeType): NodeStyleConfig | undefined {
     const config = this.config.nodeStyles[nodeType];
     if (!config) {
       console.error(
@@ -117,16 +93,7 @@ class NodeConfigLoader {
       return undefined;
     }
 
-    if (!isValidNodeType(mappedType)) {
-      console.error(
-        `[NodeConfigLoader] Type mapping "${elementType}" -> "${mappedType}" is invalid. ` +
-        `The mapped value must be a valid NodeType enum value. ` +
-        `This indicates a configuration error in nodeConfig.json.`
-      );
-      return undefined;
-    }
-
-    return mappedType as NodeType;
+    return mappedType;
   }
 
   /**
@@ -166,7 +133,7 @@ class NodeConfigLoader {
    * Get type map for debugging/inspection
    * @returns Complete type map
    */
-  getTypeMap(): Record<string, string> {
+  getTypeMap(): Record<string, NodeType> {
     return { ...this.config.typeMap };
   }
 
@@ -174,7 +141,7 @@ class NodeConfigLoader {
    * Get all node styles for debugging/inspection
    * @returns Complete node styles map
    */
-  getNodeStyles(): Record<string, NodeStyleConfig> {
+  getNodeStyles(): Record<NodeType, NodeStyleConfig> {
     return { ...this.config.nodeStyles };
   }
 }

@@ -35,7 +35,7 @@ export interface NodeBadge {
 export type DetailLevel = 'minimal' | 'standard' | 'detailed';
 export type ChangesetOperation = 'add' | 'update' | 'delete';
 
-export interface UnifiedNodeData extends Record<string, unknown> {
+export interface UnifiedNodeData {
   nodeType: NodeType;
   label: string;
   items?: FieldItem[];
