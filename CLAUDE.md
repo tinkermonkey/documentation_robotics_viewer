@@ -110,6 +110,57 @@ tests/
   - Run `npm run storybook:dev` to preview stories
 - **Storybook Tests**: Use `test-runner.ts` for custom error filtering via `storyErrorFilters.ts`
 
+## Node Component Architecture
+
+All graph nodes use the unified `UnifiedNode` component driven by JSON configuration.
+
+**Node Configuration:**
+- `NodeType` enum defines 21 node types across 10 architectural layers
+- `nodeConfig.json` maps NodeType → styling (colors, dimensions, layout mode, icon)
+- `typeMap` section maps element type strings → NodeType enum values
+- Single component handles all rendering variations
+
+**Node Features:**
+- Three layout modes: 'centered' (motivation), 'left' (business/C4), 'table' (data)
+- Changeset styling: add/update/delete operations with color overrides
+- Badge system: top-left, top-right, inline positions
+- Semantic zoom: minimal/standard/detailed detail levels
+- Field lists: per-field handles, tooltips, required indicators, alternating rows
+- RelationshipBadge: focus mode with inbound/outbound counts
+- Field visibility: graph-level and node-level toggles (graph overrides node)
+
+**Component Structure:**
+```
+src/core/nodes/
+├── UnifiedNode.tsx          # Main component (MOVED TO components/)
+├── NodeType.ts              # Enum definition (21 types)
+├── nodeConfig.json          # Styling configuration
+├── nodeConfig.types.ts      # TypeScript interfaces
+├── nodeConfigLoader.ts      # Config loader utility
+├── components/
+│   ├── UnifiedNode.tsx      # Main component
+│   ├── FieldList.tsx        # Field list rendering
+│   ├── FieldTooltip.tsx     # Tooltip via portal
+│   ├── RelationshipBadge.tsx # Focus mode badge
+│   └── BadgeRenderer.tsx    # Badge positioning
+└── LayerContainerNode.tsx   # Special case: background swimlanes
+```
+
+**Adding New Node Types:**
+1. Add NodeType enum value in `NodeType.ts`
+2. Add styling entry in `nodeConfig.json` `nodeStyles` section
+3. Add type mapping in `nodeConfig.json` `typeMap` section
+4. No code changes required
+
+**Field Visibility Store:**
+- Zustand store: `fieldVisibilityStore.ts` in `src/core/stores/`
+- Graph-level toggle: `setGraphLevelVisibility(hide: boolean)`
+- Node-level toggle: `setNodeLevelVisibility(nodeId: string, hide: boolean)`
+- Selector: `shouldHideFields(nodeId?: string)` (graph overrides node)
+
+**JSON Config Schema:**
+See [NODE_CONFIG_SCHEMA.md](documentation/NODE_CONFIG_SCHEMA.md) for complete schema documentation.
+
 ## Key Files
 
 **Core Pipeline:** `nodeTransformer.ts` -> layout engines -> `GraphViewer.tsx`
@@ -122,12 +173,14 @@ tests/
 
 | Issue | Cause | Fix |
 |-------|-------|-----|
-| Node not rendering | Type not mapped in `getNodeTypeForElement()` | Check `nodeTransformer.ts` case statement |
-| Node not rendering | Node not in `nodeTypes` export | Check `src/core/nodes/index.ts` |
-| Node not rendering | Dimension mismatch | Ensure style uses exported constants |
-| Layout overlaps | Bounds calculation wrong | Check layout engine `calculate()` |
-| Edges not connecting | Missing/wrong Handle IDs | Verify Handle `id` matches edge definitions |
-| Tests failing | Model data changed | Update test fixtures/mocks |
+| Node not rendering | NodeType not in config | Add entry to `nodeConfig.json` `nodeStyles` |
+| Node not rendering | Type mapping missing | Add mapping to `nodeConfig.json` `typeMap` |
+| Node wrong color | Changeset color override | Check `changesetOperation` in node data |
+| Fields not hiding | Graph-level override active | Check `fieldVisibilityStore.graphLevelHideFields` |
+| Layout wrong | Layout mode mismatch | Check `nodeConfig.json` layout value (centered/left/table) |
+| Dimension wrong | Config mismatch | Check `nodeConfig.json` dimensions section |
+| Edges not connecting | Handle ID mismatch | Verify handle IDs: `top`, `bottom`, `left`, `right`, `field-{id}-left/right` |
+| Tests failing | Fixture not updated | Update test fixtures to use `NodeType` enum and `UnifiedNodeData` |
 
 ## Accessibility Standards (WCAG 2.1 AA)
 
