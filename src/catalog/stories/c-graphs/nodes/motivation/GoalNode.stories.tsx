@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import UnifiedNode from '@/core/nodes/UnifiedNode';
-import { NodeType } from '@/core/nodes/NodeType';
+import { UnifiedNode, NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 const meta = {
