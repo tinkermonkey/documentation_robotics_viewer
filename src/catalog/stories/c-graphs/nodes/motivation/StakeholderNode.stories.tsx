@@ -1,118 +1,132 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { StakeholderNode, STAKEHOLDER_NODE_WIDTH, STAKEHOLDER_NODE_HEIGHT } from '@/core/nodes/motivation/StakeholderNode';
+import UnifiedNode from '@/core/nodes/UnifiedNode';
+import { NodeType } from '@/core/nodes/NodeType';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createStakeholderNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / StakeholderNode',
-  decorators: [withReactFlowDecorator({ width: STAKEHOLDER_NODE_WIDTH, height: STAKEHOLDER_NODE_HEIGHT })],
+  component: UnifiedNode,
+  decorators: [withReactFlowDecorator({ width: 180, height: 120 })],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
-    <StakeholderNode data={createStakeholderNodeData({ label: 'CEO' })} id="stakeholder-1" />
-  ),
+  args: {
+    id: 'stakeholder-1',
+    data: {
+      nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      label: 'CEO',
+      items: [
+        { id: 'stakeholderType', label: 'Type', value: 'internal' },
+      ],
+      badges: [
+        { position: 'inline' as const, content: 'internal', ariaLabel: 'Type: internal' },
+      ],
+    },
+  },
 };
 
 export const InternalStakeholder: Story = {
-  render: () => (
-    <StakeholderNode
-        data={createStakeholderNodeData({
-          label: 'Product Manager',
-          stakeholderType: 'internal',
-        })}
-        id="stakeholder-2"
-      />
-  ),
+  args: {
+    id: 'stakeholder-2',
+    data: {
+      nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      label: 'Product Manager',
+      items: [
+        { id: 'stakeholderType', label: 'Type', value: 'internal' },
+      ],
+      badges: [
+        { position: 'inline' as const, content: 'internal', ariaLabel: 'Type: internal' },
+      ],
+    },
+  },
 };
 
 export const ExternalStakeholder: Story = {
-  render: () => (
-    <StakeholderNode
-        data={createStakeholderNodeData({
-          label: 'Customer',
-          stakeholderType: 'external',
-        })}
-        id="stakeholder-3"
-      />
-  ),
+  args: {
+    id: 'stakeholder-3',
+    data: {
+      nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      label: 'Customer',
+      items: [
+        { id: 'stakeholderType', label: 'Type', value: 'external' },
+      ],
+      badges: [
+        { position: 'inline' as const, content: 'external', ariaLabel: 'Type: external' },
+      ],
+    },
+  },
 };
 
 export const WithInterests: Story = {
-  render: () => (
-    <StakeholderNode
-        data={createStakeholderNodeData({
-          label: 'Investor',
-          interests: ['profitability', 'growth', 'innovation'],
-        })}
-        id="stakeholder-4"
-      />
-  ),
+  args: {
+    id: 'stakeholder-4',
+    data: {
+      nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      label: 'Investor',
+      items: [
+        { id: 'interests', label: 'Interests', value: 'profitability, growth, innovation' },
+      ],
+    },
+  },
 };
 
 export const ChangesetAdd: Story = {
-  render: () => (
-    <StakeholderNode
-        data={createStakeholderNodeData({
-          label: 'New Stakeholder',
-          changesetOperation: 'add',
-        })}
-        id="stakeholder-5"
-      />
-  ),
+  args: {
+    id: 'stakeholder-5',
+    data: {
+      nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      label: 'New Stakeholder',
+      changesetOperation: 'add',
+    },
+  },
 };
 
 export const ChangesetUpdate: Story = {
-  render: () => (
-    <StakeholderNode
-        data={createStakeholderNodeData({
-          label: 'Updated Stakeholder',
-          changesetOperation: 'update',
-        })}
-        id="stakeholder-6"
-      />
-  ),
+  args: {
+    id: 'stakeholder-6',
+    data: {
+      nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      label: 'Updated Stakeholder',
+      changesetOperation: 'update',
+    },
+  },
 };
 
 export const ChangesetDelete: Story = {
-  render: () => (
-    <StakeholderNode
-        data={createStakeholderNodeData({
-          label: 'Deleted Stakeholder',
-          changesetOperation: 'delete',
-        })}
-        id="stakeholder-7"
-      />
-  ),
+  args: {
+    id: 'stakeholder-7',
+    data: {
+      nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      label: 'Deleted Stakeholder',
+      changesetOperation: 'delete',
+    },
+  },
 };
 
 export const Dimmed: Story = {
-  render: () => (
-    <StakeholderNode
-        data={createStakeholderNodeData({
-          label: 'Dimmed Stakeholder',
-          opacity: 0.5,
-        })}
-        id="stakeholder-8"
-      />
-  ),
+  args: {
+    id: 'stakeholder-8',
+    data: {
+      nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      label: 'Dimmed Stakeholder',
+      relationshipBadge: { count: 3, incoming: 2, outgoing: 1 },
+    },
+  },
 };
 
 export const Highlighted: Story = {
-  render: () => (
-    <StakeholderNode
-      data={createStakeholderNodeData({
-        label: 'Highlighted Node',
-        strokeWidth: 3
-      })}
-      id="1"
-    />
-  ),
+  args: {
+    id: 'stakeholder-9',
+    data: {
+      nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      label: 'Highlighted Node',
+    },
+  },
 };
 

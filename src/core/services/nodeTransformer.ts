@@ -12,6 +12,9 @@ import { applyEdgeBundling, calculateOptimalThreshold } from '../layout/edgeBund
 import { LayoutResult, LayerLayoutResult } from '../types/shapes';
 import { AppNode, AppEdge } from '../types/reactflow';
 import { FALLBACK_COLOR } from '../utils/layerColors';
+import { nodeConfigLoader } from '../nodes/nodeConfigLoader';
+import { NodeType } from '../nodes/NodeType';
+import type { UnifiedNodeData } from '../nodes/components/UnifiedNode';
 // Import C4 node dimension constants to prevent drift
 import {
   CONTAINER_NODE_WIDTH,
@@ -38,6 +41,8 @@ import {
   BUSINESS_CAPABILITY_NODE_WIDTH,
   BUSINESS_CAPABILITY_NODE_HEIGHT,
 } from '../nodes/business/BusinessCapabilityNode';
+// Motivation layer node dimensions are loaded from nodeConfigLoader
+// These constants are no longer imported directly from node files
 import { extractCrossLayerReferences, referencesToEdges } from './crossLayerLinksExtractor';
 
 /**
@@ -317,8 +322,17 @@ export class NodeTransformer {
 
   /**
    * Get node type for an element
+   * Motivation layer nodes use the unified node type with configuration-driven styling
    */
   private getNodeTypeForElement(element: ModelElement): string {
+    // For motivation layer elements, use unified node type
+    if (element.layer === 'Motivation') {
+      const mappedType = nodeConfigLoader.mapElementType(element.type);
+      if (mappedType && mappedType.startsWith('motivation.')) {
+        return 'unified';
+      }
+    }
+
     const typeMap: Record<string, string> = {
       'data-model-component': 'dataModel',
       'DataModelComponent': 'dataModel',
@@ -378,6 +392,14 @@ export class NodeTransformer {
       stroke: element.visual.style.borderColor || '#000000',
       modelElement: element,
     };
+
+    // Handle unified node type for motivation layer
+    if (nodeType === 'unified') {
+      const mappedType = nodeConfigLoader.mapElementType(element.type);
+      if (mappedType && mappedType.startsWith('motivation.')) {
+        return this.extractMotivationNodeData(element, mappedType as NodeType);
+      }
+    }
 
     // Add type-specific data
     if (nodeType === 'dataModel') {
@@ -455,6 +477,158 @@ export class NodeTransformer {
     }
 
     return baseData;
+  }
+
+  /**
+   * Extract unified node data for motivation layer elements
+   */
+  private extractMotivationNodeData(element: ModelElement, nodeType: NodeType): UnifiedNodeData {
+    return {
+      nodeType,
+      label: element.name || element.label || element.id,
+      items: this.extractFieldItems(element),
+      badges: this.extractMotivationBadges(element, nodeType),
+      detailLevel: (element as any).detailLevel || 'standard',
+      changesetOperation: (element as any).changesetOperation,
+      relationshipBadge: (element as any).relationshipBadge,
+      // Keep original data for compatibility
+      elementId: element.id,
+      layerId: element.layerId,
+      modelElement: element,
+    } as any;
+  }
+
+  /**
+   * Extract field items from element attributes or properties
+   */
+  private extractFieldItems(element: ModelElement): any[] | undefined {
+    if (!element.properties || typeof element.properties !== 'object') {
+      return undefined;
+    }
+
+    const items: any[] = [];
+
+    // Map common motivation node properties to field items
+    const propertyMap: Record<string, string> = {
+      description: 'Description',
+      priority: 'Priority',
+      status: 'Status',
+      category: 'Category',
+      scope: 'Scope',
+      negotiability: 'Negotiability',
+      validationStatus: 'Validation Status',
+      assumptionType: 'Type',
+      stakeholderType: 'Type',
+      owner: 'Owner',
+      criticality: 'Criticality',
+    };
+
+    for (const [key, value] of Object.entries(element.properties)) {
+      if (value === null || value === undefined) continue;
+      if (key.startsWith('_')) continue; // Skip internal properties
+
+      const label = propertyMap[key] || this.formatFieldLabel(key);
+      items.push({
+        id: key,
+        label,
+        value: String(value),
+        required: false,
+      });
+    }
+
+    return items.length > 0 ? items : undefined;
+  }
+
+  /**
+   * Extract badges for motivation nodes based on type and data
+   */
+  private extractMotivationBadges(element: ModelElement, nodeType: NodeType): any[] {
+    const badges: any[] = [];
+    const props = element.properties || {};
+
+    switch (nodeType) {
+      case NodeType.MOTIVATION_STAKEHOLDER:
+        if (props.stakeholderType) {
+          badges.push({
+            position: 'inline' as const,
+            content: props.stakeholderType,
+            ariaLabel: `Type: ${props.stakeholderType}`,
+          });
+        }
+        break;
+
+      case NodeType.MOTIVATION_GOAL:
+        if (props.priority) {
+          badges.push({
+            position: 'top-right' as const,
+            content: `${props.priority}`,
+            ariaLabel: `Priority: ${props.priority}`,
+          });
+        }
+        break;
+
+      case NodeType.MOTIVATION_REQUIREMENT:
+        if (props.status) {
+          badges.push({
+            position: 'top-left' as const,
+            content: props.status === 'satisfied' ? '✓' : '○',
+            ariaLabel: `Status: ${props.status}`,
+          });
+        }
+        break;
+
+      case NodeType.MOTIVATION_DRIVER:
+        if (props.category) {
+          badges.push({
+            position: 'top-right' as const,
+            content: props.category,
+            ariaLabel: `Category: ${props.category}`,
+          });
+        }
+        break;
+
+      case NodeType.MOTIVATION_OUTCOME:
+        if (props.status) {
+          badges.push({
+            position: 'top-right' as const,
+            content: props.status,
+            ariaLabel: `Status: ${props.status}`,
+          });
+        }
+        break;
+
+      case NodeType.MOTIVATION_CONSTRAINT:
+        if (props.negotiability) {
+          badges.push({
+            position: 'top-right' as const,
+            content: props.negotiability,
+            ariaLabel: `Negotiability: ${props.negotiability}`,
+          });
+        }
+        break;
+
+      case NodeType.MOTIVATION_ASSESSMENT:
+        if (props.rating) {
+          badges.push({
+            position: 'top-right' as const,
+            content: `${props.rating}/5`,
+            ariaLabel: `Rating: ${props.rating} out of 5`,
+          });
+        }
+        break;
+    }
+
+    return badges.length > 0 ? badges : [];
+  }
+
+  /**
+   * Format field labels (camelCase → Title Case)
+   */
+  private formatFieldLabel(key: string): string {
+    return key
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, str => str.toUpperCase())
+      .trim();
   }
 
   /**
@@ -571,6 +745,26 @@ export class NodeTransformer {
               width: BUSINESS_CAPABILITY_NODE_WIDTH,
               height: BUSINESS_CAPABILITY_NODE_HEIGHT,
             };
+            break;
+
+          case 'unified':
+            // Unified node type - get dimensions from configuration
+            const mappedType = nodeConfigLoader.mapElementType(element.type);
+            if (mappedType && mappedType.startsWith('motivation.')) {
+              const styleConfig = nodeConfigLoader.getStyleConfig(mappedType);
+              if (styleConfig?.dimensions) {
+                element.visual.size = {
+                  width: styleConfig.dimensions.width,
+                  height: styleConfig.dimensions.height,
+                };
+              } else {
+                // Fallback for motivation nodes
+                element.visual.size = { width: 180, height: 100 };
+              }
+            } else {
+              // Default fallback
+              element.visual.size = { width: 180, height: 100 };
+            }
             break;
 
           case 'c4Container':

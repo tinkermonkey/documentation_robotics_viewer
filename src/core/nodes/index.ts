@@ -22,18 +22,8 @@ import {
   BUSINESS_CAPABILITY_NODE_HEIGHT,
 } from './business';
 import { LayerContainerNode } from './LayerContainerNode';
-import {
-  StakeholderNode,
-  GoalNode,
-  RequirementNode,
-  ConstraintNode,
-  DriverNode,
-  OutcomeNode,
-  PrincipleNode,
-  AssumptionNode,
-  ValueStreamNode,
-  AssessmentNode,
-} from './motivation';
+// Motivation layer nodes are now using UnifiedNode
+// Original node components kept for backwards compatibility in exports
 import {
   ContainerNode,
   ComponentNode,
@@ -78,16 +68,6 @@ export {
   BUSINESS_CAPABILITY_NODE_WIDTH,
   BUSINESS_CAPABILITY_NODE_HEIGHT,
   LayerContainerNode,
-  StakeholderNode,
-  GoalNode,
-  RequirementNode,
-  ConstraintNode,
-  DriverNode,
-  OutcomeNode,
-  PrincipleNode,
-  AssumptionNode,
-  ValueStreamNode,
-  AssessmentNode,
   // C4 nodes
   ContainerNode,
   ComponentNode,
@@ -127,21 +107,12 @@ export type {
 // Maps node type strings to their component implementations
 // Cast as NodeTypes to satisfy React Flow's strict type requirements (components accept subset of Node props)
 export const nodeTypes = {
+  unified: UnifiedNode,
   businessProcess: BusinessProcessNode,
   businessFunction: BusinessFunctionNode,
   businessService: BusinessServiceNode,
   businessCapability: BusinessCapabilityNode,
   layerContainer: LayerContainerNode,
-  stakeholder: StakeholderNode,
-  goal: GoalNode,
-  requirement: RequirementNode,
-  constraint: ConstraintNode,
-  driver: DriverNode,
-  outcome: OutcomeNode,
-  principle: PrincipleNode,
-  assumption: AssumptionNode,
-  valueStream: ValueStreamNode,
-  assessment: AssessmentNode,
   // Schema node types
   jsonSchema: JSONSchemaNode,
   // C4 node types

@@ -1,106 +1,106 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ValueStreamNode, VALUE_STREAM_NODE_WIDTH, VALUE_STREAM_NODE_HEIGHT } from '@/core/nodes/motivation/ValueStreamNode';
+import { UnifiedNode } from '@/core/nodes';
+import { NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createValueStreamNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / ValueStreamNode',
-  decorators: [withReactFlowDecorator({ width: VALUE_STREAM_NODE_WIDTH, height: VALUE_STREAM_NODE_HEIGHT })],
+  component: UnifiedNode,
+  decorators: [withReactFlowDecorator({ width: 200, height: 100 })],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
-    <ValueStreamNode data={createValueStreamNodeData({ label: 'Order Processing Stream' })} id="valuestream-1" />
-  ),
+  args: {
+    id: 'valuestream-1',
+    data: {
+      nodeType: NodeType.MOTIVATION_VALUE_STREAM,
+      label: 'Order Processing Stream',
+    },
+  },
 };
 
 export const ShortStream: Story = {
-  render: () => (
-    <ValueStreamNode
-        data={createValueStreamNodeData({
-          label: 'Quick Checkout',
-          stageCount: 2,
-        })}
-        id="valuestream-2"
-      />
-  ),
+  args: {
+    id: 'valuestream-2',
+    data: {
+      nodeType: NodeType.MOTIVATION_VALUE_STREAM,
+      label: 'Quick Checkout',
+      items: [
+        { id: 'stageCount', label: 'Stages', value: '2' },
+      ],
+    },
+  },
 };
 
 export const LongStream: Story = {
-  render: () => (
-    <ValueStreamNode
-        data={createValueStreamNodeData({
-          label: 'Complex Fulfillment',
-          stageCount: 8,
-        })}
-        id="valuestream-3"
-      />
-  ),
+  args: {
+    id: 'valuestream-3',
+    data: {
+      nodeType: NodeType.MOTIVATION_VALUE_STREAM,
+      label: 'Complex Fulfillment',
+      items: [
+        { id: 'stageCount', label: 'Stages', value: '8' },
+      ],
+    },
+  },
 };
 
 export const ChangesetAdd: Story = {
-  render: () => (
-    <ValueStreamNode
-        data={createValueStreamNodeData({
-          label: 'New Value Stream',
-          changesetOperation: 'add',
-        })}
-        id="valuestream-4"
-      />
-  ),
+  args: {
+    id: 'valuestream-4',
+    data: {
+      nodeType: NodeType.MOTIVATION_VALUE_STREAM,
+      label: 'New Value Stream',
+      changesetOperation: 'add',
+    },
+  },
 };
 
 export const ChangesetUpdate: Story = {
-  render: () => (
-    <ValueStreamNode
-        data={createValueStreamNodeData({
-          label: 'Updated Value Stream',
-          changesetOperation: 'update',
-        })}
-        id="valuestream-5"
-      />
-  ),
+  args: {
+    id: 'valuestream-5',
+    data: {
+      nodeType: NodeType.MOTIVATION_VALUE_STREAM,
+      label: 'Updated Value Stream',
+      changesetOperation: 'update',
+    },
+  },
 };
 
 export const ChangesetDelete: Story = {
-  render: () => (
-    <ValueStreamNode
-        data={createValueStreamNodeData({
-          label: 'Deleted Value Stream',
-          changesetOperation: 'delete',
-        })}
-        id="valuestream-6"
-      />
-  ),
+  args: {
+    id: 'valuestream-6',
+    data: {
+      nodeType: NodeType.MOTIVATION_VALUE_STREAM,
+      label: 'Deleted Value Stream',
+      changesetOperation: 'delete',
+    },
+  },
 };
 
 export const Dimmed: Story = {
-  render: () => (
-    <ValueStreamNode
-        data={createValueStreamNodeData({
-          label: 'Dimmed Value Stream',
-          opacity: 0.5,
-        })}
-        id="valuestream-7"
-      />
-  ),
+  args: {
+    id: 'valuestream-7',
+    data: {
+      nodeType: NodeType.MOTIVATION_VALUE_STREAM,
+      label: 'Dimmed Value Stream',
+      relationshipBadge: { count: 3, incoming: 2, outgoing: 1 },
+    },
+  },
 };
 
 export const Highlighted: Story = {
-  render: () => (
-    <ValueStreamNode
-      data={createValueStreamNodeData({
-        label: 'Highlighted Node',
-        strokeWidth: 3
-      })}
-      id="1"
-    />
-  ),
+  args: {
+    id: 'valuestream-8',
+    data: {
+      nodeType: NodeType.MOTIVATION_VALUE_STREAM,
+      label: 'Highlighted Node',
+    },
+  },
 };
-

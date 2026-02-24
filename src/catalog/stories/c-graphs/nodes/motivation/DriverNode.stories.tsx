@@ -1,130 +1,144 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { DriverNode, DRIVER_NODE_WIDTH, DRIVER_NODE_HEIGHT } from '@/core/nodes/motivation/DriverNode';
+import { UnifiedNode } from '@/core/nodes';
+import { NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createDriverNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / DriverNode',
-  decorators: [withReactFlowDecorator({ width: DRIVER_NODE_WIDTH, height: DRIVER_NODE_HEIGHT })],
+  component: UnifiedNode,
+  decorators: [withReactFlowDecorator({ width: 180, height: 110 })],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
-    <DriverNode data={createDriverNodeData({ label: 'Market Competition' })} id="driver-1" />
-  ),
+  args: {
+    id: 'driver-1',
+    data: {
+      nodeType: NodeType.MOTIVATION_DRIVER,
+      label: 'Market Competition',
+    },
+  },
 };
 
 export const BusinessDriver: Story = {
-  render: () => (
-    <DriverNode
-        data={createDriverNodeData({
-          label: 'Revenue Growth Target',
-          category: 'business',
-        })}
-        id="driver-2"
-      />
-  ),
+  args: {
+    id: 'driver-2',
+    data: {
+      nodeType: NodeType.MOTIVATION_DRIVER,
+      label: 'Revenue Growth Target',
+      items: [
+        { id: 'category', label: 'Category', value: 'business' },
+      ],
+      badges: [
+        { position: 'inline' as const, content: 'business', ariaLabel: 'Category: business' },
+      ],
+    },
+  },
 };
 
 export const TechnicalDriver: Story = {
-  render: () => (
-    <DriverNode
-        data={createDriverNodeData({
-          label: 'Technology Modernization',
-          category: 'technical',
-        })}
-        id="driver-3"
-      />
-  ),
+  args: {
+    id: 'driver-3',
+    data: {
+      nodeType: NodeType.MOTIVATION_DRIVER,
+      label: 'Technology Modernization',
+      items: [
+        { id: 'category', label: 'Category', value: 'technical' },
+      ],
+      badges: [
+        { position: 'inline' as const, content: 'technical', ariaLabel: 'Category: technical' },
+      ],
+    },
+  },
 };
 
 export const RegulatoryDriver: Story = {
-  render: () => (
-    <DriverNode
-        data={createDriverNodeData({
-          label: 'Compliance Requirements',
-          category: 'regulatory',
-        })}
-        id="driver-4"
-      />
-  ),
+  args: {
+    id: 'driver-4',
+    data: {
+      nodeType: NodeType.MOTIVATION_DRIVER,
+      label: 'Compliance Requirements',
+      items: [
+        { id: 'category', label: 'Category', value: 'regulatory' },
+      ],
+      badges: [
+        { position: 'inline' as const, content: 'regulatory', ariaLabel: 'Category: regulatory' },
+      ],
+    },
+  },
 };
 
 export const MarketDriver: Story = {
-  render: () => (
-    <DriverNode
-        data={createDriverNodeData({
-          label: 'Customer Demand',
-          category: 'market',
-        })}
-        id="driver-5"
-      />
-  ),
+  args: {
+    id: 'driver-5',
+    data: {
+      nodeType: NodeType.MOTIVATION_DRIVER,
+      label: 'Customer Demand',
+      items: [
+        { id: 'category', label: 'Category', value: 'market' },
+      ],
+      badges: [
+        { position: 'inline' as const, content: 'market', ariaLabel: 'Category: market' },
+      ],
+    },
+  },
 };
 
 export const ChangesetAdd: Story = {
-  render: () => (
-    <DriverNode
-        data={createDriverNodeData({
-          label: 'New Driver',
-          changesetOperation: 'add',
-        })}
-        id="driver-6"
-      />
-  ),
+  args: {
+    id: 'driver-6',
+    data: {
+      nodeType: NodeType.MOTIVATION_DRIVER,
+      label: 'New Driver',
+      changesetOperation: 'add',
+    },
+  },
 };
 
 export const ChangesetUpdate: Story = {
-  render: () => (
-    <DriverNode
-        data={createDriverNodeData({
-          label: 'Updated Driver',
-          changesetOperation: 'update',
-        })}
-        id="driver-7"
-      />
-  ),
+  args: {
+    id: 'driver-7',
+    data: {
+      nodeType: NodeType.MOTIVATION_DRIVER,
+      label: 'Updated Driver',
+      changesetOperation: 'update',
+    },
+  },
 };
 
 export const ChangesetDelete: Story = {
-  render: () => (
-    <DriverNode
-        data={createDriverNodeData({
-          label: 'Deleted Driver',
-          changesetOperation: 'delete',
-        })}
-        id="driver-8"
-      />
-  ),
+  args: {
+    id: 'driver-8',
+    data: {
+      nodeType: NodeType.MOTIVATION_DRIVER,
+      label: 'Deleted Driver',
+      changesetOperation: 'delete',
+    },
+  },
 };
 
 export const Dimmed: Story = {
-  render: () => (
-    <DriverNode
-        data={createDriverNodeData({
-          label: 'Dimmed Driver',
-          opacity: 0.5,
-        })}
-        id="driver-9"
-      />
-  ),
+  args: {
+    id: 'driver-9',
+    data: {
+      nodeType: NodeType.MOTIVATION_DRIVER,
+      label: 'Dimmed Driver',
+      relationshipBadge: { count: 3, incoming: 2, outgoing: 1 },
+    },
+  },
 };
 
 export const Highlighted: Story = {
-  render: () => (
-    <DriverNode
-      data={createDriverNodeData({
-        label: 'Highlighted Node',
-        strokeWidth: 3
-      })}
-      id="1"
-    />
-  ),
+  args: {
+    id: 'driver-10',
+    data: {
+      nodeType: NodeType.MOTIVATION_DRIVER,
+      label: 'Highlighted Node',
+    },
+  },
 };
-
