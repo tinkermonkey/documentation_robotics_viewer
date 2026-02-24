@@ -684,7 +684,7 @@ export class NodeTransformer {
     if (nodeType === NodeType.BUSINESS_PROCESS && props.subprocessCount && props.subprocessCount > 0) {
       badges.push({
         position: 'top-right' as const,
-        content: (props.expanded ? '▼' : '▶') || (props.subprocessCount > 0 ? '▶' : ''),
+        content: props.expanded ? '▼' : '▶',
         className: 'cursor-pointer text-lg leading-none',
         ariaLabel: props.expanded ? 'Collapse subprocesses' : 'Expand subprocesses',
       });

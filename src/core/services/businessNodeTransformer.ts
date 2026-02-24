@@ -5,7 +5,8 @@
  * Pre-calculates dimensions and extracts metadata for visualization.
  *
  * NOTE: Business layer nodes are now migrated to use UnifiedNode component.
- * This transformer provides dimension lookups using nodeConfigLoader.
+ * This transformer provides dimension lookups and metadata extraction
+ * for business nodes to support the unified node rendering pipeline.
  */
 
 import { BusinessNode } from '../types/businessLayer';
@@ -61,7 +62,9 @@ export class BusinessNodeTransformer {
 
   /**
    * Get node type string for React Flow
-   * Business nodes now use unified type
+   * Post-migration: All business nodes now render as 'unified' type.
+   * This method is retained for backward compatibility with the BusinessNodeTransformer API
+   * and to maintain consistency with other layer transformers.
    */
   getNodeType(node: BusinessNode): string {
     // All business nodes now render as 'unified' type

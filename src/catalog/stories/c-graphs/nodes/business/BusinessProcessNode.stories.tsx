@@ -147,6 +147,34 @@ export const WithSubprocesses: Story = {
   ),
 };
 
+export const ExpandedSubprocesses: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_PROCESS,
+        label: 'Order Fulfillment',
+        items: [
+          { id: 'sp-1', label: 'Pick Items', value: 'Pick items from warehouse' },
+          { id: 'sp-2', label: 'Pack Order', value: 'Pack items into box' },
+          { id: 'sp-3', label: 'Label Package', value: 'Generate and apply label' },
+          { id: 'sp-4', label: 'Schedule Pickup', value: 'Schedule carrier pickup' },
+          { id: 'sp-5', label: 'Confirm Shipment', value: 'Send shipment confirmation' },
+        ],
+        badges: [
+          {
+            position: 'top-right' as const,
+            content: '▼',
+            className: 'cursor-pointer text-lg leading-none',
+            ariaLabel: 'Collapse subprocesses',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="process-6-expanded"
+    />
+  ),
+};
+
 export const ChangesetAdd: Story = {
   render: () => (
     <UnifiedNode
