@@ -35,7 +35,9 @@ export class BusinessNodeTransformer {
 
   /**
    * Get node dimensions based on type
-   * Uses nodeConfigLoader to get dimensions from configuration
+   * Uses nodeConfigLoader to get dimensions from configuration.
+   * Falls back to default dimensions if configuration is missing,
+   * logging a warning to help identify configuration issues.
    */
   getNodeDimensions(node: BusinessNode): { width: number; height: number } {
     // Map business node types to configuration keys
@@ -57,7 +59,19 @@ export class BusinessNodeTransformer {
       }
     }
 
-    // Fallback dimensions
+    // Fallback: Log warning when config is not available
+    // This indicates either an unknown node type or a configuration issue
+    const reason =
+      configKey && !nodeConfigLoader.getStyleConfig(configKey)
+        ? `missing configuration for NodeType "${configKey}"`
+        : `unknown node type "${node.type}"`;
+
+    console.warn(
+      `[BusinessNodeTransformer] Using fallback dimensions for node "${node.id}" (${reason}). ` +
+      `Node may render with unexpected size. ` +
+      `Verify node.type is mapped in typeToConfig and nodeConfig.json has corresponding style configuration.`
+    );
+
     return { width: 180, height: 100 };
   }
 

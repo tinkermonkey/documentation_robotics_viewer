@@ -14,20 +14,84 @@ class NodeConfigLoader {
   private initialized = false;
 
   constructor() {
-    this.config = nodeConfigData as NodeConfig;
-    this.validateConfig();
+    this.config = this.loadAndValidateConfig();
     this.initialized = true;
   }
 
   /**
-   * Validate that all required NodeType enum values have corresponding nodeStyles entries.
-   * TypeMap is now type-safe (values are NodeType enum), so validation is simplified.
-   * Logs warnings for missing configurations (both dev and production).
-   * These configuration problems should never occur in either environment - if they do,
-   * it indicates a serious build/deployment issue and must be visible.
+   * Load and validate configuration with runtime type checking.
+   * Throws an error if configuration is invalid to prevent initialization
+   * of the application in a broken state.
    */
-  private validateConfig(): void {
-    const styleKeys = Object.keys(this.config.nodeStyles) as NodeType[];
+  private loadAndValidateConfig(): NodeConfig {
+    // Runtime validation: ensure JSON data has the expected structure
+    if (!nodeConfigData || typeof nodeConfigData !== 'object') {
+      throw new Error(
+        '[NodeConfigLoader] Configuration data is not a valid object. ' +
+        'Verify nodeConfig.json was loaded correctly.'
+      );
+    }
+
+    const config = nodeConfigData as NodeConfig;
+
+    // Validate required top-level properties
+    if (!config.version) {
+      throw new Error(
+        '[NodeConfigLoader] Configuration missing "version" property. ' +
+        'Verify nodeConfig.json has a valid version field.'
+      );
+    }
+
+    if (!config.nodeStyles || typeof config.nodeStyles !== 'object') {
+      throw new Error(
+        '[NodeConfigLoader] Configuration missing or invalid "nodeStyles" property. ' +
+        'Verify nodeConfig.json contains a nodeStyles object.'
+      );
+    }
+
+    if (!config.typeMap || typeof config.typeMap !== 'object') {
+      throw new Error(
+        '[NodeConfigLoader] Configuration missing or invalid "typeMap" property. ' +
+        'Verify nodeConfig.json contains a typeMap object.'
+      );
+    }
+
+    if (!config.changesetColors || typeof config.changesetColors !== 'object') {
+      throw new Error(
+        '[NodeConfigLoader] Configuration missing or invalid "changesetColors" property. ' +
+        'Verify nodeConfig.json contains a changesetColors object.'
+      );
+    }
+
+    // Validate changesetColors has required operations
+    const requiredOps = ['add', 'update', 'delete'] as const;
+    for (const op of requiredOps) {
+      if (!config.changesetColors[op]) {
+        throw new Error(
+          `[NodeConfigLoader] Changeset colors missing "${op}" operation configuration. ` +
+          'Verify nodeConfig.json changesetColors has entries for add, update, and delete.'
+        );
+      }
+    }
+
+    // Validate nodeStyles coverage for all NodeType enum values
+    this.validateStylesCoverage(config);
+
+    console.log(
+      `[NodeConfigLoader] Configuration loaded successfully: ` +
+      `${Object.keys(config.nodeStyles).length} node styles, ` +
+      `${Object.keys(config.typeMap).length} type mappings`
+    );
+
+    return config;
+  }
+
+  /**
+   * Validate that all required NodeType enum values have corresponding nodeStyles entries.
+   * Throws an error if any required configuration is missing.
+   */
+  private validateStylesCoverage(config: NodeConfig): void {
+    const styleKeys = Object.keys(config.nodeStyles) as NodeType[];
     const enumValues = Object.values(NodeType);
     const missingStyles: string[] = [];
 
@@ -44,34 +108,63 @@ class NodeConfigLoader {
       }
     }
 
-    // Report all validation issues (both dev and production)
-    // Configuration problems indicate build/deployment failures and must always be visible
+    // Fail fast if any required styles are missing
     if (missingStyles.length > 0) {
-      console.error(
-        `[NodeConfigLoader] Missing style config for NodeTypes: ${missingStyles.join(', ')}. ` +
-        `This indicates a build/deployment issue. All NodeType enum values must have corresponding nodeStyles entries.`
+      throw new Error(
+        `[NodeConfigLoader] Missing style configuration for NodeTypes: ${missingStyles.join(', ')}. ` +
+        'This indicates a build/deployment issue. All NodeType enum values must have corresponding ' +
+        'nodeStyles entries in nodeConfig.json.'
       );
     }
 
-    if (missingStyles.length === 0) {
-      console.log(
-        `[NodeConfigLoader] Loaded configuration with ${styleKeys.length} node styles and ${Object.keys(this.config.typeMap).length} type mappings`
-      );
+    // Validate that each style config has required properties
+    for (const [nodeType, styleConfig] of Object.entries(config.nodeStyles)) {
+      if (!styleConfig.layout || !styleConfig.icon || !styleConfig.typeLabel) {
+        throw new Error(
+          `[NodeConfigLoader] Style config for NodeType "${nodeType}" is missing required properties ` +
+          '(layout, icon, or typeLabel). Verify all node style entries are complete in nodeConfig.json.'
+        );
+      }
+
+      if (!styleConfig.colors || !styleConfig.dimensions) {
+        throw new Error(
+          `[NodeConfigLoader] Style config for NodeType "${nodeType}" is missing required sub-objects ` +
+          '(colors or dimensions). Verify all node style entries are complete in nodeConfig.json.'
+        );
+      }
+
+      if (!styleConfig.colors.fill || !styleConfig.colors.stroke) {
+        throw new Error(
+          `[NodeConfigLoader] Colors config for NodeType "${nodeType}" is missing required fields ` +
+          '(fill or stroke). Verify nodeConfig.json color entries are complete.'
+        );
+      }
+
+      if (!styleConfig.dimensions.width || !styleConfig.dimensions.height) {
+        throw new Error(
+          `[NodeConfigLoader] Dimensions config for NodeType "${nodeType}" is missing required fields ` +
+          '(width or height). Verify nodeConfig.json dimension entries are complete.'
+        );
+      }
     }
   }
 
   /**
-   * Get styling configuration for a node type
+   * Get styling configuration for a node type.
+   * This method should never return undefined for a valid NodeType because
+   * coverage is validated during initialization. If it does, it indicates
+   * a configuration corruption issue.
    * @param nodeType - The NodeType enum value
-   * @returns Style configuration or undefined if not found
+   * @returns Style configuration (guaranteed if nodeType is valid)
    */
   getStyleConfig(nodeType: NodeType): NodeStyleConfig | undefined {
     const config = this.config.nodeStyles[nodeType];
     if (!config) {
       console.error(
-        `[NodeConfigLoader] No style config found for NodeType: ${nodeType}. ` +
-        `This should have been caught during initialization. ` +
-        `Verify nodeConfig.json contains a nodeStyles entry for this NodeType.`
+        `[NodeConfigLoader] No style config found for NodeType: "${nodeType}". ` +
+        `This should have been caught during initialization and indicates a critical error. ` +
+        `Verify nodeConfig.json contains a nodeStyles entry for this NodeType and that ` +
+        `the NodeType enum value matches a nodeStyles key.`
       );
     }
     return config;

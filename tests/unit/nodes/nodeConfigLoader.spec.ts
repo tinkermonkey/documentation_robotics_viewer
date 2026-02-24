@@ -128,6 +128,20 @@ test.describe('NodeConfigLoader', () => {
       expect(nodeType).toBeUndefined();
     });
 
+    test('should warn when mapping unknown element type', () => {
+      const originalWarn = console.warn;
+      const calls: any[] = [];
+      console.warn = (...args) => calls.push(args);
+
+      try {
+        nodeConfigLoader.mapElementType('UnknownType');
+        expect(calls.length).toBe(1);
+        expect(calls[0][0]).toContain('[NodeConfigLoader] No type mapping found for element type: "UnknownType"');
+      } finally {
+        console.warn = originalWarn;
+      }
+    });
+
     test('should handle multiple mappings for same type', () => {
       const mapping1 = nodeConfigLoader.mapElementType('C4Container');
       const mapping2 = nodeConfigLoader.mapElementType('c4-container');
