@@ -221,29 +221,3 @@ export const ChangesetDelete: Story = {
     />
   ),
 };
-
-export const Dimmed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_PROCESS,
-        label: 'Dimmed Process',
-        detailLevel: 'standard',
-      }}
-      id="process-10"
-    />
-  ),
-};
-
-export const Highlighted: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_PROCESS,
-        label: 'Highlighted Node',
-        detailLevel: 'standard',
-      }}
-      id="process-11"
-    />
-  ),
-};

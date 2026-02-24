@@ -6,10 +6,9 @@
  * lifecycle states, ownership, and changeset operations.
  */
 
-import type { Meta, StoryObj } from "@storybook/react";
-import { NodeType } from "@/core/nodes/NodeType";
-import UnifiedNode from "@/core/nodes/components/UnifiedNode";
-import { withReactFlowDecorator } from "@catalog/decorators/ReactFlowDecorator";
+import type { Meta, StoryObj } from '@storybook/react';
+import { NodeType, UnifiedNode } from '@/core/nodes';
+import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 const meta = {
   title: "C Graphs / Nodes / Business / BusinessFunctionNode",
