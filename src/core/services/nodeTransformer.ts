@@ -327,6 +327,19 @@ export class NodeTransformer {
       }
     }
 
+    // For data layer elements, use unified node type with config lookup
+    if (element.layerId?.toLowerCase() === 'data' || element.type?.startsWith('data.')) {
+      const mappedType = nodeConfigLoader.mapElementType(element.type);
+      if (mappedType && (mappedType === NodeType.DATA_JSON_SCHEMA || mappedType === NodeType.DATA_MODEL)) {
+        return 'unified';
+      }
+    }
+
+    // Special handling for JSONSchema elements (legacy support)
+    if (element.type === 'JSONSchema' || element.type === 'json-schema' || element.type === 'json-schema-element') {
+      return 'unified';
+    }
+
     const typeMap: Record<string, string> = {
       'data-model-component': 'dataModel',
       'DataModelComponent': 'dataModel',
@@ -384,7 +397,7 @@ export class NodeTransformer {
       modelElement: element,
     };
 
-    // Handle unified node type for motivation, business, and C4 layers
+    // Handle unified node type for motivation, business, C4, and data layers
     if (nodeType === 'unified') {
       const mappedType = nodeConfigLoader.mapElementType(element.type);
       if (mappedType && mappedType.startsWith('motivation.')) {
@@ -395,6 +408,13 @@ export class NodeTransformer {
       }
       if (mappedType && mappedType.startsWith('c4.')) {
         return this.extractC4NodeData(element, mappedType as NodeType);
+      }
+      if (mappedType && mappedType.startsWith('data.')) {
+        return this.extractDataNodeData(element, mappedType as NodeType);
+      }
+      // Special handling for legacy JSONSchema elements
+      if (element.type === 'JSONSchema' || element.type === 'json-schema' || element.type === 'json-schema-element') {
+        return this.extractDataNodeData(element, NodeType.DATA_JSON_SCHEMA);
       }
     }
 
@@ -777,6 +797,79 @@ export class NodeTransformer {
       detailLevel: ((element as any).detailLevel as 'minimal' | 'standard' | 'detailed' | undefined) || 'standard',
       changesetOperation: (element as any).changesetOperation as 'add' | 'update' | 'delete' | undefined,
       relationshipBadge: (element as any).relationshipBadge,
+    } as any;
+
+    return unifiedData;
+  }
+
+  /**
+   * Extract unified node data for data layer elements (JSONSchema, DataModel)
+   */
+  private extractDataNodeData(element: ModelElement, nodeType: NodeType): UnifiedNodeData {
+    type FieldItemType = {
+      id: string;
+      label: string;
+      value?: string;
+      required?: boolean;
+      tooltip?: string;
+    };
+
+    const items: FieldItemType[] = [];
+
+    // Extract schema properties or model attributes as field items
+    // Handle both direct properties and schemaInfo.properties (for JSONSchema)
+    const properties = element.properties || (element as any).schemaInfo?.properties || {};
+    const requiredFields = element.required || (element as any).schemaInfo?.required || [];
+
+    if (properties && typeof properties === 'object' && !Array.isArray(properties)) {
+      Object.entries(properties).forEach(([key, prop]: [string, any]) => {
+        if (key.startsWith('_')) return; // Skip internal properties
+
+        // Handle different property formats
+        const propType = prop?.type || prop?.dataType || 'unknown';
+        const description = prop?.description || prop?.tooltip || '';
+        const isRequired = Array.isArray(requiredFields) ? requiredFields.includes(key) : false;
+
+        items.push({
+          id: key,
+          label: key,
+          value: propType,
+          required: isRequired,
+          tooltip: description ? String(description) : undefined,
+        });
+      });
+    }
+
+    // Handle array format (for some schema definitions)
+    if (Array.isArray(properties)) {
+      properties.forEach((prop: any) => {
+        const propName = prop.name || prop.id || 'unknown';
+        const propType = prop.type || prop.dataType || 'unknown';
+        const description = prop.description || prop.tooltip || '';
+        const isRequired = prop.required || false;
+
+        items.push({
+          id: propName,
+          label: propName,
+          value: propType,
+          required: isRequired,
+          tooltip: description ? String(description) : undefined,
+        });
+      });
+    }
+
+    const unifiedData: UnifiedNodeData = {
+      nodeType,
+      label: element.name || element.id,
+      items: items.length > 0 ? items : undefined,
+      badges: [],
+      detailLevel: ((element as any).detailLevel as 'minimal' | 'standard' | 'detailed' | undefined) || 'standard',
+      changesetOperation: (element as any).changesetOperation as 'add' | 'update' | 'delete' | undefined,
+      relationshipBadge: (element as any).relationshipBadge,
+      // Keep original data for compatibility
+      elementId: element.id,
+      layerId: element.layerId,
+      modelElement: element,
     } as any;
 
     return unifiedData;

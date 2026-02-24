@@ -1,10 +1,10 @@
 /**
  * UnifiedNode Component
  *
- * Core component that merges capabilities from BaseLayerNode, BaseFieldListNode,
- * and custom implementations. Uses JSON configuration system to drive rendering
- * and supports all existing features: changeset styling, badges, semantic zoom,
- * field lists, per-field handles, and RelationshipBadge integration.
+ * Core component that merges capabilities from BaseLayerNode and custom implementations.
+ * Uses JSON configuration system to drive rendering and supports all existing features:
+ * changeset styling, badges, semantic zoom, field lists, per-field handles, and
+ * RelationshipBadge integration.
  *
  * Accepts a NodeType enum parameter that drives all styling and behavioral
  * variations through external JSON configuration.

@@ -1,8 +1,10 @@
 /**
  * Node Data Fixture Factories
  * Factory functions for creating realistic mock data for custom node types across all layers
- * Includes 18 node data factories plus BaseFieldListNode configuration factory
  * Supports all changeset operations (add/update/delete) and visual states
+ *
+ * NOTE: createBaseFieldListNodeConfig is deprecated and kept for backward compatibility.
+ * BaseFieldListNode has been migrated to UnifiedNode.
  */
 
 import type {
@@ -27,7 +29,30 @@ import type {
   CoverageIndicator,
   RelationshipBadge
 } from '../../core/types';
-import type { BaseFieldListNodeConfig, FieldItem } from '../../core/nodes/BaseFieldListNode';
+
+// DEPRECATED: FieldItem moved to components
+// Import FieldItem type (was from BaseFieldListNode, now in UnifiedNode)
+export type FieldItem = {
+  id: string;
+  name: string;
+  type: string;
+  required: boolean;
+};
+
+export interface BaseFieldListNodeConfig {
+  label: string;
+  typeLabel: string;
+  items: FieldItem[];
+  colors: {
+    border: string;
+    background: string;
+    header: string;
+    handle: string;
+  };
+  width?: number;
+  headerHeight?: number;
+  itemHeight?: number;
+}
 
 /**
  * Validation helper functions

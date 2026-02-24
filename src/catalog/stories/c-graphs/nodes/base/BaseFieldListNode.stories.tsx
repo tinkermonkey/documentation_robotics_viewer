@@ -1,7 +1,19 @@
+/**
+ * DEPRECATED: BaseFieldListNode has been migrated to UnifiedNode
+ *
+ * This file is kept for backward compatibility during the migration period.
+ * New stories should use:
+ * - JSONSchemaNode.stories.tsx - For JSON schema node examples
+ * - DataModelNode.stories.tsx - For data model node examples
+ *
+ * Both now use UnifiedNode with configuration from nodeConfig.json
+ */
+
 import type { Meta, StoryObj } from '@storybook/react';
-import { BaseFieldListNode, FieldItem } from '@/core/nodes/BaseFieldListNode';
-import { createBaseFieldListNodeConfig } from '@catalog/fixtures/nodeDataFixtures';
+import { NodeType } from '@/core/nodes/NodeType';
+import UnifiedNode from '@/core/nodes/components/UnifiedNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
+import type { UnifiedNodeData } from '@/core/nodes/components/UnifiedNode';
 
 const meta = {
   title: 'C Graphs / Nodes / Base / BaseFieldListNode',
@@ -14,139 +26,143 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const shortItems: FieldItem[] = [
-  { id: 'f1', name: 'id', type: 'UUID', required: true },
-  { id: 'f2', name: 'status', type: 'enum', required: true }
-];
-
-const longItems: FieldItem[] = [
-  { id: 'f1', name: 'id', type: 'UUID', required: true },
-  { id: 'f2', name: 'firstName', type: 'string', required: true },
-  { id: 'f3', name: 'lastName', type: 'string', required: true },
-  { id: 'f4', name: 'email', type: 'string', required: true },
-  { id: 'f5', name: 'phone', type: 'string', required: false },
-  { id: 'f6', name: 'address', type: 'string', required: false },
-  { id: 'f7', name: 'city', type: 'string', required: false },
-  { id: 'f8', name: 'state', type: 'string', required: false },
-  { id: 'f9', name: 'postalCode', type: 'string', required: false },
-  { id: 'f10', name: 'country', type: 'string', required: false },
-  { id: 'f11', name: 'createdAt', type: 'timestamp', required: false },
-  { id: 'f12', name: 'updatedAt', type: 'timestamp', required: false }
-];
-
-const itemsWithTypes: FieldItem[] = [
-  { id: 'f1', name: 'identifier', type: 'UUID', required: true },
-  { id: 'f2', name: 'name', type: 'string', required: true },
-  { id: 'f3', name: 'quantity', type: 'integer', required: true },
-  { id: 'f4', name: 'price', type: 'decimal', required: true },
-  { id: 'f5', name: 'active', type: 'boolean', required: false }
-];
-
-const schemaItems: FieldItem[] = [
-  { id: 'col1', name: 'user_id', type: 'BIGINT', required: true },
-  { id: 'col2', name: 'email', type: 'VARCHAR(255)', required: true },
-  { id: 'col3', name: 'password_hash', type: 'VARCHAR(256)', required: true },
-  { id: 'col4', name: 'created_at', type: 'TIMESTAMP', required: false },
-  { id: 'col5', name: 'last_login', type: 'TIMESTAMP', required: false }
-];
+/**
+ * DEPRECATED: All BaseFieldListNode stories have been migrated to UnifiedNode
+ * See JSONSchemaNode.stories.tsx and DataModelNode.stories.tsx for updated examples
+ */
 
 export const Default: Story = {
   render: () => {
-    const config = createBaseFieldListNodeConfig();
-    return <BaseFieldListNode {...config} />;
+    const data: UnifiedNodeData = {
+      nodeType: NodeType.DATA_MODEL,
+      label: 'Entity',
+      items: [
+        { id: 'f1', label: 'id', value: 'UUID', required: true },
+        { id: 'f2', label: 'name', value: 'string', required: true },
+      ],
+      detailLevel: 'standard',
+    };
+    return <UnifiedNode data={data} id="test-node-default" />;
   },
 };
 
 export const ShortList: Story = {
   render: () => {
-    const config = createBaseFieldListNodeConfig({
+    const data: UnifiedNodeData = {
+      nodeType: NodeType.DATA_MODEL,
       label: 'Order Status',
-      typeLabel: 'ENUM',
-      items: shortItems
-    });
-    return <BaseFieldListNode {...config} />;
+      items: [
+        { id: 'f1', label: 'id', value: 'UUID', required: true },
+        { id: 'f2', label: 'status', value: 'enum', required: true },
+      ],
+      detailLevel: 'standard',
+    };
+    return <UnifiedNode data={data} id="test-node-short" />;
   },
 };
 
 export const LongList: Story = {
   render: () => {
-    const config = createBaseFieldListNodeConfig({
+    const data: UnifiedNodeData = {
+      nodeType: NodeType.DATA_MODEL,
       label: 'Customer',
-      typeLabel: 'CLASS',
-      items: longItems
-    });
-    return <BaseFieldListNode {...config} />;
+      items: [
+        { id: 'f1', label: 'id', value: 'UUID', required: true },
+        { id: 'f2', label: 'firstName', value: 'string', required: true },
+        { id: 'f3', label: 'lastName', value: 'string', required: true },
+        { id: 'f4', label: 'email', value: 'string', required: true },
+        { id: 'f5', label: 'phone', value: 'string', required: false },
+        { id: 'f6', label: 'address', value: 'string', required: false },
+        { id: 'f7', label: 'city', value: 'string', required: false },
+        { id: 'f8', label: 'state', value: 'string', required: false },
+        { id: 'f9', label: 'postalCode', value: 'string', required: false },
+        { id: 'f10', label: 'country', value: 'string', required: false },
+        { id: 'f11', label: 'createdAt', value: 'timestamp', required: false },
+        { id: 'f12', label: 'updatedAt', value: 'timestamp', required: false },
+      ],
+      detailLevel: 'standard',
+    };
+    return <UnifiedNode data={data} id="test-node-long" />;
   },
 };
 
-export const WithIcons: Story = {
+export const WithComplexTypes: Story = {
   render: () => {
-    const config = createBaseFieldListNodeConfig({
+    const data: UnifiedNodeData = {
+      nodeType: NodeType.DATA_MODEL,
       label: 'Product',
-      typeLabel: 'CLASS',
-      items: itemsWithTypes
-    });
-    return <BaseFieldListNode {...config} />;
+      items: [
+        { id: 'f1', label: 'identifier', value: 'UUID', required: true },
+        { id: 'f2', label: 'name', value: 'string', required: true },
+        { id: 'f3', label: 'quantity', value: 'integer', required: true },
+        { id: 'f4', label: 'price', value: 'decimal', required: true },
+        { id: 'f5', label: 'active', value: 'boolean', required: false },
+      ],
+      detailLevel: 'standard',
+    };
+    return <UnifiedNode data={data} id="test-node-complex" />;
   },
 };
 
 export const ChangesetUpdate: Story = {
   render: () => {
-    const config = createBaseFieldListNodeConfig({
-      label: 'User (Updated)',
-      typeLabel: 'CLASS',
+    const data: UnifiedNodeData = {
+      nodeType: NodeType.DATA_MODEL,
+      label: 'User',
       items: [
-        { id: 'f1', name: 'id', type: 'UUID', required: true },
-        { id: 'f2', name: 'username', type: 'string', required: true },
-        { id: 'f3', name: 'email', type: 'string', required: true },
-        { id: 'f4', name: 'role', type: 'enum', required: true }
+        { id: 'f1', label: 'id', value: 'UUID', required: true },
+        { id: 'f2', label: 'username', value: 'string', required: true },
+        { id: 'f3', label: 'email', value: 'string', required: true },
+        { id: 'f4', label: 'role', value: 'enum', required: true },
       ],
-      colors: {
-        border: '#ff9800',
-        background: '#fff3e0',
-        header: '#f57c00',
-        handle: '#e65100'
-      }
-    });
-    return <BaseFieldListNode {...config} />;
+      changesetOperation: 'update' as const,
+      detailLevel: 'standard',
+    };
+    return <UnifiedNode data={data} id="test-node-changeset" />;
   },
 };
 
 export const EmptyFields: Story = {
   render: () => {
-    const config = createBaseFieldListNodeConfig({
+    const data: UnifiedNodeData = {
+      nodeType: NodeType.DATA_MODEL,
       label: 'Empty Entity',
-      typeLabel: 'CLASS',
-      items: []
-    });
-    return <BaseFieldListNode {...config} />;
+      items: [],
+      detailLevel: 'standard',
+    };
+    return <UnifiedNode data={data} id="test-node-empty" />;
   },
 };
 
 export const DatabaseSchema: Story = {
   render: () => {
-    const config = createBaseFieldListNodeConfig({
+    const data: UnifiedNodeData = {
+      nodeType: NodeType.DATA_MODEL,
       label: 'users',
-      typeLabel: 'TABLE',
-      items: schemaItems,
-      colors: {
-        border: '#2196f3',
-        background: '#e3f2fd',
-        header: '#1976d2',
-        handle: '#0d47a1'
-      }
-    });
-    return <BaseFieldListNode {...config} />;
+      items: [
+        { id: 'col1', label: 'user_id', value: 'BIGINT', required: true },
+        { id: 'col2', label: 'email', value: 'VARCHAR(255)', required: true },
+        { id: 'col3', label: 'password_hash', value: 'VARCHAR(256)', required: true },
+        { id: 'col4', label: 'created_at', value: 'TIMESTAMP', required: false },
+        { id: 'col5', label: 'last_login', value: 'TIMESTAMP', required: false },
+      ],
+      detailLevel: 'standard',
+    };
+    return <UnifiedNode data={data} id="test-node-db" />;
   },
 };
 
 export const Highlighted: Story = {
   render: () => {
-    const config = createBaseFieldListNodeConfig({
+    const data: UnifiedNodeData = {
+      nodeType: NodeType.DATA_MODEL,
       label: 'Highlighted Entity',
-      typeLabel: 'CLASS',
-      items: shortItems
-    });
-    return <BaseFieldListNode {...config} />;
+      items: [
+        { id: 'f1', label: 'id', value: 'UUID', required: true },
+        { id: 'f2', label: 'status', value: 'enum', required: true },
+      ],
+      detailLevel: 'standard',
+    };
+    return <UnifiedNode data={data} id="test-node-highlighted" />;
   },
 };

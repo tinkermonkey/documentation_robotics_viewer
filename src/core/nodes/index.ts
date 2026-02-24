@@ -6,11 +6,6 @@
 import type { NodeTypes } from '@xyflow/react';
 
 import { LayerContainerNode } from './LayerContainerNode';
-import {
-  JSONSchemaNode,
-  JSON_SCHEMA_NODE_WIDTH,
-  JSON_SCHEMA_NODE_MIN_HEIGHT,
-} from './JSONSchemaNode';
 import { NodeType, isValidNodeType } from './NodeType';
 import { nodeConfigLoader } from './nodeConfigLoader';
 import type { NodeConfig, NodeStyleConfig, NodeDimensions, NodeColors, ChangesetColors } from './nodeConfig.types';
@@ -33,10 +28,6 @@ import type {
 // Export all node components
 export {
   LayerContainerNode,
-  // Schema nodes
-  JSONSchemaNode,
-  JSON_SCHEMA_NODE_WIDTH,
-  JSON_SCHEMA_NODE_MIN_HEIGHT,
   // Unified node components
   UnifiedNode,
   FieldList,
@@ -70,6 +61,4 @@ export type {
 export const nodeTypes = {
   unified: UnifiedNode,
   layerContainer: LayerContainerNode,
-  // Schema node types
-  jsonSchema: JSONSchemaNode,
 } as NodeTypes;

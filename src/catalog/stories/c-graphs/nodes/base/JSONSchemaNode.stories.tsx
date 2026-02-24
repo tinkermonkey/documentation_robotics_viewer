@@ -1,11 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { JSONSchemaNode, JSON_SCHEMA_NODE_WIDTH } from '@/core/nodes/JSONSchemaNode';
+import { NodeType } from '@/core/nodes/NodeType';
+import UnifiedNode from '@/core/nodes/components/UnifiedNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { JSONSchemaNodeData } from '@/core/types/reactflow';
+import type { UnifiedNodeData } from '@/core/nodes/components/UnifiedNode';
 
 const meta = {
   title: 'C Graphs / Nodes / Base / JSONSchemaNode',
-  decorators: [withReactFlowDecorator({ width: JSON_SCHEMA_NODE_WIDTH, height: 300 })],
+  decorators: [withReactFlowDecorator({ width: 280, height: 300 })],
   parameters: {
     layout: 'fullscreen',
   },
@@ -15,108 +16,92 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * JSONSchemaNode Stories
+ * JSONSchemaNode Stories (Migrated to UnifiedNode)
  * Displays schema definitions with properties and field-level connection handles
  */
 
 export const WithMultipleProperties: Story = {
   render: () => {
-    const data: JSONSchemaNodeData = {
+    const data: UnifiedNodeData = {
+      nodeType: NodeType.DATA_JSON_SCHEMA,
       label: 'UserProfile',
-      elementId: 'schema-user-profile',
-      schemaElementId: 'schema-user-profile',
-      layerId: 'data-model',
-      fill: '#ffffff',
-      stroke: '#1e40af',
-      properties: [
-        { id: 'id', name: 'id', type: 'string', required: true },
-        { id: 'username', name: 'username', type: 'string', required: true },
-        { id: 'email', name: 'email', type: 'string', required: true },
-        { id: 'firstName', name: 'firstName', type: 'string', required: false },
-        { id: 'lastName', name: 'lastName', type: 'string', required: false },
-        { id: 'age', name: 'age', type: 'number', required: false },
-        { id: 'isActive', name: 'isActive', type: 'boolean', required: false },
+      items: [
+        { id: 'id', label: 'id', value: 'string', required: true },
+        { id: 'username', label: 'username', value: 'string', required: true },
+        { id: 'email', label: 'email', value: 'string', required: true },
+        { id: 'firstName', label: 'firstName', value: 'string', required: false },
+        { id: 'lastName', label: 'lastName', value: 'string', required: false },
+        { id: 'age', label: 'age', value: 'number', required: false },
+        { id: 'isActive', label: 'isActive', value: 'boolean', required: false },
       ],
+      detailLevel: 'standard',
     };
 
-    return <JSONSchemaNode data={data} id="test-node-1" />;
+    return <UnifiedNode data={data} id="test-node-1" />;
   },
 };
 
 export const WithRequiredOnly: Story = {
   render: () => {
-    const data: JSONSchemaNodeData = {
+    const data: UnifiedNodeData = {
+      nodeType: NodeType.DATA_JSON_SCHEMA,
       label: 'LoginRequest',
-      elementId: 'schema-login',
-      schemaElementId: 'schema-login',
-      layerId: 'api',
-      fill: '#ffffff',
-      stroke: '#1e40af',
-      properties: [
-        { id: 'username', name: 'username', type: 'string', required: true },
-        { id: 'password', name: 'password', type: 'string', required: true },
+      items: [
+        { id: 'username', label: 'username', value: 'string', required: true },
+        { id: 'password', label: 'password', value: 'string', required: true },
       ],
+      detailLevel: 'standard',
     };
 
-    return <JSONSchemaNode data={data} id="test-node-2" />;
+    return <UnifiedNode data={data} id="test-node-2" />;
   },
 };
 
 export const WithComplexTypes: Story = {
   render: () => {
-    const data: JSONSchemaNodeData = {
+    const data: UnifiedNodeData = {
+      nodeType: NodeType.DATA_JSON_SCHEMA,
       label: 'OrderDetails',
-      elementId: 'schema-order',
-      schemaElementId: 'schema-order',
-      layerId: 'data-model',
-      fill: '#ffffff',
-      stroke: '#1e40af',
-      properties: [
-        { id: 'orderId', name: 'orderId', type: 'string', required: true },
-        { id: 'items', name: 'items', type: 'OrderItem[]', required: true },
-        { id: 'total', name: 'total', type: 'number', required: true },
-        { id: 'customer', name: 'customer', type: 'Customer', required: true },
-        { id: 'shippingAddress', name: 'shippingAddress', type: 'Address', required: false },
-        { id: 'metadata', name: 'metadata', type: 'Record<string, any>', required: false },
+      items: [
+        { id: 'orderId', label: 'orderId', value: 'string', required: true },
+        { id: 'items', label: 'items', value: 'OrderItem[]', required: true },
+        { id: 'total', label: 'total', value: 'number', required: true },
+        { id: 'customer', label: 'customer', value: 'Customer', required: true },
+        { id: 'shippingAddress', label: 'shippingAddress', value: 'Address', required: false },
+        { id: 'metadata', label: 'metadata', value: 'Record<string, any>', required: false },
       ],
+      detailLevel: 'standard',
     };
 
-    return <JSONSchemaNode data={data} id="test-node-3" />;
+    return <UnifiedNode data={data} id="test-node-3" />;
   },
 };
 
 export const EmptySchema: Story = {
   render: () => {
-    const data: JSONSchemaNodeData = {
+    const data: UnifiedNodeData = {
+      nodeType: NodeType.DATA_JSON_SCHEMA,
       label: 'EmptyObject',
-      elementId: 'schema-empty',
-      schemaElementId: 'schema-empty',
-      layerId: 'data-model',
-      fill: '#ffffff',
-      stroke: '#1e40af',
-      properties: [],
+      items: [],
+      detailLevel: 'standard',
     };
 
-    return <JSONSchemaNode data={data} id="test-node-4" />;
+    return <UnifiedNode data={data} id="test-node-4" />;
   },
 };
 
 export const Highlighted: Story = {
   render: () => {
-    const data: JSONSchemaNodeData = {
+    const data: UnifiedNodeData = {
+      nodeType: NodeType.DATA_JSON_SCHEMA,
       label: 'HighlightedSchema',
-      elementId: 'schema-highlighted',
-      schemaElementId: 'schema-highlighted',
-      layerId: 'data-model',
-      fill: '#ffffff',
-      stroke: '#1e40af',
-      strokeWidth: 3,
-      properties: [
-        { id: 'id', name: 'id', type: 'string', required: true },
-        { id: 'name', name: 'name', type: 'string', required: true },
+      items: [
+        { id: 'id', label: 'id', value: 'string', required: true },
+        { id: 'name', label: 'name', value: 'string', required: true },
       ],
+      detailLevel: 'standard',
     };
 
-    return <JSONSchemaNode data={data} id="test-node-5" />;
+    return <UnifiedNode data={data} id="test-node-5" />;
   },
 };
