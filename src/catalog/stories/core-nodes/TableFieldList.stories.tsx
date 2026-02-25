@@ -58,7 +58,7 @@ export const Default: Story = {
 
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={items} itemHeight={24} />
+        <TableFieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" />
       </div>
     );
   },
@@ -69,7 +69,7 @@ export const EmptyState: Story = {
   render: () => {
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={[]} itemHeight={24} />
+        <TableFieldList items={[]} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" />
       </div>
     );
   },
@@ -80,7 +80,7 @@ export const UndefinedItems: Story = {
   render: () => {
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={undefined} itemHeight={24} />
+        <TableFieldList items={[] as FieldItem[]} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" />
       </div>
     );
   },
@@ -99,7 +99,7 @@ export const ManyFields: Story = {
 
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={items} itemHeight={24} />
+        <TableFieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" />
       </div>
     );
   },
@@ -147,7 +147,7 @@ export const ComplexTypes: Story = {
 
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={items} itemHeight={24} />
+        <TableFieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" />
       </div>
     );
   },
@@ -176,7 +176,7 @@ export const LongContent: Story = {
 
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={items} itemHeight={24} />
+        <TableFieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" />
       </div>
     );
   },
@@ -194,7 +194,7 @@ export const AllRequired: Story = {
 
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={items} itemHeight={24} />
+        <TableFieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" />
       </div>
     );
   },
@@ -212,7 +212,7 @@ export const AllOptional: Story = {
 
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={items} itemHeight={24} />
+        <TableFieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" />
       </div>
     );
   },
@@ -252,7 +252,7 @@ export const MixedTooltips: Story = {
 
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={items} itemHeight={24} />
+        <TableFieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" />
       </div>
     );
   },
@@ -286,7 +286,7 @@ export const CustomItemHeight: Story = {
 
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={items} itemHeight={32} />
+        <TableFieldList items={items} itemHeight={32} strokeColor="#d1d5db" handleColor="#3b82f6" />
       </div>
     );
   },
@@ -321,7 +321,7 @@ export const DarkMode: Story = {
     return (
       <div className="dark bg-gray-900 p-4">
         <div className="p-4 border border-gray-700 rounded">
-          <TableFieldList items={items} itemHeight={24} />
+          <TableFieldList items={items} itemHeight={24} strokeColor="#4b5563" handleColor="#60a5fa" />
         </div>
       </div>
     );

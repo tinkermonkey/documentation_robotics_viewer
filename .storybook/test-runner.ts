@@ -1,6 +1,6 @@
 import type { TestRunnerConfig } from '@storybook/test-runner';
 import { injectAxe, checkA11y, configureAxe } from 'axe-playwright';
-import { isExpectedConsoleError, isKnownRenderingBug } from '../tests/stories/storyErrorFilters';
+import { isExpectedConsoleError, isKnownRenderingBug } from '../tests/stories/storyErrorFilters.ts';
 
 interface AxeViolation {
   id: string;
@@ -20,6 +20,7 @@ declare global {
     __pageErrors__: string[];
     __axeInjected__: boolean;
     __axeConfigured__: boolean;
+    __axeRunning__: boolean;
     __STORYBOOK_MOCK_WEBSOCKET__?: boolean;
     axe: {
       run: (
@@ -32,12 +33,13 @@ declare global {
 
 const config: TestRunnerConfig = {
   async preVisit(page) {
-    // Initialize error collection arrays on the page context
+    // Initialize error collection arrays and axe state on the page context
     await page.evaluate(() => {
       window.__errorMessages__ = [];
       window.__pageErrors__ = [];
       window.__axeInjected__ = false;
       window.__axeConfigured__ = false;
+      window.__axeRunning__ = false;
     });
 
     // Register console error listener - push errors to page's __errorMessages__
@@ -151,7 +153,8 @@ const config: TestRunnerConfig = {
       throw new Error(`Skipping accessibility checks for story "${context.id}": axe-core configuration failed.`);
     }
 
-    // Run accessibility checks
+    // Run accessibility checks with proper axe sequencing
+    // Use configureAxe option to prevent concurrent axe runs
     try {
       await checkA11y(page, '#storybook-root', {
         detailedReport: true,
@@ -165,10 +168,30 @@ const config: TestRunnerConfig = {
       // Check if this is an axe-core violation error (contains violation details)
       if (errorMsg.startsWith('Accessibility') || errorMsg.includes('violation')) {
         // Try to parse violations from page if available
+        // Add a small delay to ensure previous axe run is fully complete
+        await page.waitForTimeout(100);
+
         try {
           const violations = await page.evaluate(() => {
             return new Promise<AxeResults | null>((resolve) => {
               if (typeof window.axe !== 'undefined' && window.axe.run) {
+                // Prevent concurrent axe runs by checking a lock flag
+                if (window.__axeRunning__) {
+                  console.warn('[test-runner] axe-core is already running - skipping concurrent execution');
+                  resolve(null);
+                  return;
+                }
+
+                // Set the lock to prevent concurrent executions
+                window.__axeRunning__ = true;
+
+                // Use a timeout to ensure axe doesn't hang indefinitely
+                const timeoutId = setTimeout(() => {
+                  window.__axeRunning__ = false;
+                  console.warn('[test-runner] axe-core execution timeout - using checkA11y results');
+                  resolve(null);
+                }, 5000);
+
                 window.axe.run(
                   {
                     runOnly: {
@@ -177,6 +200,8 @@ const config: TestRunnerConfig = {
                     },
                   },
                   (err: Error | null, results: AxeResults) => {
+                    clearTimeout(timeoutId);
+                    window.__axeRunning__ = false;
                     if (err) {
                       // Log axe execution errors (timeout, crash, etc.) to distinguish from "no violations"
                       console.warn(`[test-runner] axe-core execution error: ${err instanceof Error ? err.message : String(err)}`);
