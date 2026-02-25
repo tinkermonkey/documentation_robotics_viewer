@@ -20,8 +20,8 @@ export const Default: Story = {
     id: 'actor-1',
     data: {
       nodeType: NodeType.C4_EXTERNAL_ACTOR,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'End User',
       items: [],
     },
@@ -33,8 +33,8 @@ export const UserActor: Story = {
     id: 'actor-2',
     data: {
       nodeType: NodeType.C4_EXTERNAL_ACTOR,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Customer',
       items: [
         { id: 'description', label: 'Description', value: 'A customer using the e-commerce platform', required: false },
@@ -49,8 +49,8 @@ export const AdminActor: Story = {
     id: 'actor-3',
     data: {
       nodeType: NodeType.C4_EXTERNAL_ACTOR,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Administrator',
       items: [
         { id: 'description', label: 'Description', value: 'System administrator with elevated privileges', required: false },
@@ -65,8 +65,8 @@ export const SystemActor: Story = {
     id: 'actor-4',
     data: {
       nodeType: NodeType.C4_EXTERNAL_ACTOR,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Email Service',
       items: [
         { id: 'description', label: 'Description', value: 'External email delivery service', required: false },
@@ -81,8 +81,8 @@ export const ExternalService: Story = {
     id: 'actor-5',
     data: {
       nodeType: NodeType.C4_EXTERNAL_ACTOR,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Payment Gateway',
       items: [
         { id: 'description', label: 'Description', value: 'Third-party payment processing service', required: false },
@@ -97,8 +97,8 @@ export const ChangesetAdd: Story = {
     id: 'actor-6',
     data: {
       nodeType: NodeType.C4_EXTERNAL_ACTOR,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'New Actor',
       items: [],
       changesetOperation: 'add',
@@ -111,8 +111,8 @@ export const ChangesetUpdate: Story = {
     id: 'actor-7',
     data: {
       nodeType: NodeType.C4_EXTERNAL_ACTOR,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Updated Actor',
       items: [],
       changesetOperation: 'update',
@@ -125,8 +125,8 @@ export const ChangesetDelete: Story = {
     id: 'actor-8',
     data: {
       nodeType: NodeType.C4_EXTERNAL_ACTOR,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Deleted Actor',
       items: [],
       changesetOperation: 'delete',
@@ -139,8 +139,8 @@ export const Dimmed: Story = {
     id: 'actor-9',
     data: {
       nodeType: NodeType.C4_EXTERNAL_ACTOR,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Dimmed Actor',
       items: [],
       detailLevel: 'minimal',
@@ -153,8 +153,8 @@ export const Highlighted: Story = {
     id: 'actor-10',
     data: {
       nodeType: NodeType.C4_EXTERNAL_ACTOR,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Highlighted Node',
     },
   },

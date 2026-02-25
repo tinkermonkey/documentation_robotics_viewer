@@ -55,7 +55,7 @@ const toolInvocation: ToolInvocationContent = {
     toolUseId: 'tool-2',
     toolName: 'getElement',
     toolInput: {
-      elementId: 'motivation.goal.customer-satisfaction'
+        elementId: 'motivation.goal.customer-satisfaction'
     },
     status: {
       state: 'completed',

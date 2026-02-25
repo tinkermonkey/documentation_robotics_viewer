@@ -20,6 +20,8 @@ test.describe('UnifiedNode Component', () => {
       const nodeData: UnifiedNodeData = {
         nodeType: NodeType.MOTIVATION_STAKEHOLDER,
         label: 'Test Node',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       };
 
       expect(nodeData.nodeType).toBe(NodeType.MOTIVATION_STAKEHOLDER);
@@ -30,6 +32,8 @@ test.describe('UnifiedNode Component', () => {
       const nodeData: UnifiedNodeData = {
         nodeType: NodeType.BUSINESS_FUNCTION,
         label: 'Test',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         items: [],
         hideFields: false,
         badges: [],
@@ -125,6 +129,8 @@ test.describe('UnifiedNode Component', () => {
         const nodeData: UnifiedNodeData = {
           nodeType: NodeType.MOTIVATION_STAKEHOLDER,
           label: 'Test',
+          layerId: 'test-layer',
+          elementId: 'test-element-id',
           changesetOperation: op,
         };
 
@@ -143,6 +149,8 @@ test.describe('UnifiedNode Component', () => {
       const nodeData: UnifiedNodeData = {
         nodeType: NodeType.BUSINESS_FUNCTION,
         label: 'Test',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         items: fields,
         hideFields: false,
       };
@@ -159,6 +167,8 @@ test.describe('UnifiedNode Component', () => {
       const nodeData: UnifiedNodeData = {
         nodeType: NodeType.BUSINESS_FUNCTION,
         label: 'Test',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         items: fields,
         hideFields: true,
       };
@@ -220,6 +230,8 @@ test.describe('UnifiedNode Component', () => {
       const nodeData: UnifiedNodeData = {
         nodeType: NodeType.MOTIVATION_STAKEHOLDER,
         label: 'Test',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         badges: [
           { position: 'top-left', content: 'Badge 1' },
           { position: 'top-left', content: 'Badge 2' },
@@ -260,6 +272,8 @@ test.describe('UnifiedNode Component', () => {
       const nodeData: UnifiedNodeData = {
         nodeType: NodeType.MOTIVATION_GOAL,
         label: 'Test',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         detailLevel: 'minimal',
       };
 
@@ -270,6 +284,8 @@ test.describe('UnifiedNode Component', () => {
       const nodeData: UnifiedNodeData = {
         nodeType: NodeType.MOTIVATION_GOAL,
         label: 'Test',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         detailLevel: 'standard',
       };
 
@@ -280,6 +296,8 @@ test.describe('UnifiedNode Component', () => {
       const nodeData: UnifiedNodeData = {
         nodeType: NodeType.MOTIVATION_GOAL,
         label: 'Test',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         detailLevel: 'detailed',
         items: [{ id: '1', label: 'Field' }],
       };
@@ -360,6 +378,8 @@ test.describe('UnifiedNode Component', () => {
       const nodeData: UnifiedNodeData = {
         nodeType: invalidType,
         label: 'Test',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       };
 
       expect(nodeData.nodeType).toBe(invalidType);
@@ -420,6 +440,8 @@ test.describe('UnifiedNode Component', () => {
       const nodeData: UnifiedNodeData = {
         nodeType: NodeType.MOTIVATION_STAKEHOLDER,
         label: 'Test',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         relationshipBadge: {
           count: 5,
           incoming: 2,
@@ -476,6 +498,8 @@ test.describe('UnifiedNode Component', () => {
       const nodeData: UnifiedNodeData = {
         nodeType: NodeType.BUSINESS_FUNCTION,
         label: 'New Aggregate',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         changesetOperation: 'add',
       };
 
@@ -486,6 +510,8 @@ test.describe('UnifiedNode Component', () => {
       const nodeData: UnifiedNodeData = {
         nodeType: NodeType.BUSINESS_FUNCTION,
         label: 'Updated Aggregate',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         changesetOperation: 'update',
       };
 
@@ -496,6 +522,8 @@ test.describe('UnifiedNode Component', () => {
       const nodeData: UnifiedNodeData = {
         nodeType: NodeType.BUSINESS_FUNCTION,
         label: 'Deleted Aggregate',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         changesetOperation: 'delete',
       };
 
@@ -515,6 +543,8 @@ test.describe('UnifiedNode Component', () => {
       const nodeData: UnifiedNodeData = {
         nodeType: NodeType.MOTIVATION_GOAL,
         label: 'Strategic Goal',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         items: [
           { id: 'f1', label: 'Objective', required: true, tooltip: 'Key objective' },
           { id: 'f2', label: 'Owner', required: true },

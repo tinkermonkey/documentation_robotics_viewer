@@ -47,7 +47,10 @@ export interface UnifiedNodeData {
   detailLevel?: DetailLevel;
   changesetOperation?: ChangesetOperation;
   relationshipBadge?: RelationshipBadgeData;
-  // Index signature for React Flow compatibility
+  // React Flow requires Node data to extend Record<string, unknown>.
+  // This index signature allows arbitrary properties to be passed through
+  // without type errors, which is necessary for framework compatibility
+  // while the explicitly typed fields above provide type safety for known properties.
   [key: string]: unknown;
 }
 

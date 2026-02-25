@@ -27,8 +27,8 @@ export const Default: Story = {
     id: "function-1",
     data: {
       nodeType: NodeType.BUSINESS_FUNCTION,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: "Order Processing",
       detailLevel: "standard",
     },
@@ -40,8 +40,8 @@ export const HighCriticality: Story = {
     id: "function-2",
     data: {
       nodeType: NodeType.BUSINESS_FUNCTION,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: "Customer Onboarding",
       badges: [
         {
@@ -60,8 +60,8 @@ export const MediumCriticality: Story = {
     id: "function-3",
     data: {
       nodeType: NodeType.BUSINESS_FUNCTION,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: "Inventory Management",
       badges: [
         {
@@ -80,8 +80,8 @@ export const LowCriticality: Story = {
     id: "function-4",
     data: {
       nodeType: NodeType.BUSINESS_FUNCTION,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: "Reporting",
       badges: [
         {
@@ -100,8 +100,8 @@ export const ActiveLifecycle: Story = {
     id: "function-5",
     data: {
       nodeType: NodeType.BUSINESS_FUNCTION,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: "Fulfillment",
       items: [{ id: "lifecycle", label: "Lifecycle", value: "active" }],
       detailLevel: "standard",
@@ -114,8 +114,8 @@ export const DeprecatedLifecycle: Story = {
     id: "function-6",
     data: {
       nodeType: NodeType.BUSINESS_FUNCTION,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: "Manual Approval",
       items: [{ id: "lifecycle", label: "Lifecycle", value: "deprecated" }],
       detailLevel: "standard",
@@ -128,8 +128,8 @@ export const WithOwner: Story = {
     id: "function-7",
     data: {
       nodeType: NodeType.BUSINESS_FUNCTION,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: "Returns Processing",
       badges: [
         {
@@ -148,8 +148,8 @@ export const ChangesetAdd: Story = {
     id: "function-8",
     data: {
       nodeType: NodeType.BUSINESS_FUNCTION,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: "New Function",
       changesetOperation: "add",
       detailLevel: "standard",
@@ -162,8 +162,8 @@ export const ChangesetUpdate: Story = {
     id: "function-9",
     data: {
       nodeType: NodeType.BUSINESS_FUNCTION,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: "Updated Function",
       changesetOperation: "update",
       detailLevel: "standard",
@@ -176,8 +176,8 @@ export const ChangesetDelete: Story = {
     id: "function-10",
     data: {
       nodeType: NodeType.BUSINESS_FUNCTION,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: "Deleted Function",
       changesetOperation: "delete",
       detailLevel: "standard",
@@ -190,8 +190,8 @@ export const Dimmed: Story = {
     id: "function-11",
     data: {
       nodeType: NodeType.BUSINESS_FUNCTION,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: "Dimmed Function",
       relationshipBadge: { count: 5, incoming: 3, outgoing: 2 },
     },
@@ -203,8 +203,8 @@ export const Highlighted: Story = {
     id: "function-12",
     data: {
       nodeType: NodeType.BUSINESS_FUNCTION,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: "Highlighted Node",
     },
   },

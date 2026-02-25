@@ -93,6 +93,8 @@ function extractC4NodeData(element: ModelElement, nodeType: NodeType): UnifiedNo
   const unifiedData: UnifiedNodeData = {
     nodeType,
     label: element.name || element.id,
+    layerId: element.layerId,
+    elementId: element.id,
     items: items.length > 0 ? items : undefined,
     badges: [],
     detailLevel,

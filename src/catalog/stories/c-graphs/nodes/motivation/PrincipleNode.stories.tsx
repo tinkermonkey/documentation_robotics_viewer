@@ -20,8 +20,8 @@ export const Default: Story = {
     id: 'principle-1',
     data: {
       nodeType: NodeType.MOTIVATION_PRINCIPLE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'API-First Architecture',
     },
   },
@@ -32,8 +32,8 @@ export const EnterpriseScope: Story = {
     id: 'principle-2',
     data: {
       nodeType: NodeType.MOTIVATION_PRINCIPLE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Security First',
       items: [
         { id: 'scope', label: 'Scope', value: 'enterprise' },
@@ -50,8 +50,8 @@ export const DomainScope: Story = {
     id: 'principle-3',
     data: {
       nodeType: NodeType.MOTIVATION_PRINCIPLE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Microservices Architecture',
       items: [
         { id: 'scope', label: 'Scope', value: 'domain' },
@@ -68,8 +68,8 @@ export const ApplicationScope: Story = {
     id: 'principle-4',
     data: {
       nodeType: NodeType.MOTIVATION_PRINCIPLE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Component Reusability',
       items: [
         { id: 'scope', label: 'Scope', value: 'application' },
@@ -86,8 +86,8 @@ export const ChangesetAdd: Story = {
     id: 'principle-5',
     data: {
       nodeType: NodeType.MOTIVATION_PRINCIPLE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'New Principle',
       changesetOperation: 'add',
     },
@@ -99,8 +99,8 @@ export const ChangesetUpdate: Story = {
     id: 'principle-6',
     data: {
       nodeType: NodeType.MOTIVATION_PRINCIPLE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Updated Principle',
       changesetOperation: 'update',
     },
@@ -112,8 +112,8 @@ export const ChangesetDelete: Story = {
     id: 'principle-7',
     data: {
       nodeType: NodeType.MOTIVATION_PRINCIPLE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Deleted Principle',
       changesetOperation: 'delete',
     },
@@ -125,8 +125,8 @@ export const Dimmed: Story = {
     id: 'principle-8',
     data: {
       nodeType: NodeType.MOTIVATION_PRINCIPLE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Dimmed Principle',
       relationshipBadge: { count: 3, incoming: 2, outgoing: 1 },
     },
@@ -138,8 +138,8 @@ export const Highlighted: Story = {
     id: 'principle-9',
     data: {
       nodeType: NodeType.MOTIVATION_PRINCIPLE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Highlighted Node',
     },
   },

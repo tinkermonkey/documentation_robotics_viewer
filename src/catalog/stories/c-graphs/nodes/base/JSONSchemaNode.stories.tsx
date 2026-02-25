@@ -30,8 +30,8 @@ export const WithMultipleProperties: Story = {
   render: () => {
     const data: UnifiedNodeData = {
       nodeType: NodeType.DATA_JSON_SCHEMA,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'UserProfile',
       items: [
         { id: 'id', label: 'id', value: 'string', required: true },
@@ -53,8 +53,8 @@ export const WithRequiredOnly: Story = {
   render: () => {
     const data: UnifiedNodeData = {
       nodeType: NodeType.DATA_JSON_SCHEMA,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'LoginRequest',
       items: [
         { id: 'username', label: 'username', value: 'string', required: true },
@@ -71,8 +71,8 @@ export const WithComplexTypes: Story = {
   render: () => {
     const data: UnifiedNodeData = {
       nodeType: NodeType.DATA_JSON_SCHEMA,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'OrderDetails',
       items: [
         { id: 'orderId', label: 'orderId', value: 'string', required: true },
@@ -93,8 +93,8 @@ export const EmptySchema: Story = {
   render: () => {
     const data: UnifiedNodeData = {
       nodeType: NodeType.DATA_JSON_SCHEMA,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'EmptyObject',
       items: [],
       detailLevel: 'standard',
@@ -108,8 +108,8 @@ export const Highlighted: Story = {
   render: () => {
     const data: UnifiedNodeData = {
       nodeType: NodeType.DATA_JSON_SCHEMA,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'HighlightedSchema',
       items: [
         { id: 'id', label: 'id', value: 'string', required: true },

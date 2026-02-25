@@ -20,8 +20,8 @@ export const Default: Story = {
     id: 'assessment-1',
     data: {
       nodeType: NodeType.MOTIVATION_ASSESSMENT,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Technology Assessment',
       items: [
         { id: 'rating', label: 'Rating', value: '2' },
@@ -35,8 +35,8 @@ export const Rating1: Story = {
     id: 'assessment-2',
     data: {
       nodeType: NodeType.MOTIVATION_ASSESSMENT,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Current Architecture',
       items: [
         { id: 'rating', label: 'Rating', value: '1' },
@@ -53,8 +53,8 @@ export const Rating3: Story = {
     id: 'assessment-3',
     data: {
       nodeType: NodeType.MOTIVATION_ASSESSMENT,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Team Capability',
       items: [
         { id: 'rating', label: 'Rating', value: '3' },
@@ -71,8 +71,8 @@ export const Rating5: Story = {
     id: 'assessment-4',
     data: {
       nodeType: NodeType.MOTIVATION_ASSESSMENT,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Infrastructure Maturity',
       items: [
         { id: 'rating', label: 'Rating', value: '5' },
@@ -89,8 +89,8 @@ export const ChangesetAdd: Story = {
     id: 'assessment-5',
     data: {
       nodeType: NodeType.MOTIVATION_ASSESSMENT,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'New Assessment',
       changesetOperation: 'add',
     },
@@ -102,8 +102,8 @@ export const ChangesetUpdate: Story = {
     id: 'assessment-6',
     data: {
       nodeType: NodeType.MOTIVATION_ASSESSMENT,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Updated Assessment',
       changesetOperation: 'update',
     },
@@ -115,8 +115,8 @@ export const ChangesetDelete: Story = {
     id: 'assessment-7',
     data: {
       nodeType: NodeType.MOTIVATION_ASSESSMENT,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Deleted Assessment',
       changesetOperation: 'delete',
     },
@@ -128,8 +128,8 @@ export const Dimmed: Story = {
     id: 'assessment-8',
     data: {
       nodeType: NodeType.MOTIVATION_ASSESSMENT,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Dimmed Assessment',
       relationshipBadge: { count: 3, incoming: 2, outgoing: 1 },
     },
@@ -141,8 +141,8 @@ export const Highlighted: Story = {
     id: 'assessment-9',
     data: {
       nodeType: NodeType.MOTIVATION_ASSESSMENT,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: 'Highlighted Node',
     },
   },

@@ -21,8 +21,8 @@ const meta = {
   args: {
     data: {
       nodeType: NodeType.BUSINESS_SERVICE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
       label: '',
       detailLevel: 'standard',
     },
@@ -39,8 +39,8 @@ export const Default: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_SERVICE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'Payment Service',
         detailLevel: 'standard',
       }}
@@ -55,8 +55,8 @@ export const HighCriticality: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_SERVICE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'Authentication Service',
         badges: [
           {
@@ -79,8 +79,8 @@ export const MediumCriticality: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_SERVICE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'Notification Service',
         badges: [
           {
@@ -103,8 +103,8 @@ export const LowCriticality: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_SERVICE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'Analytics Service',
         badges: [
           {
@@ -127,8 +127,8 @@ export const ActiveLifecycle: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_SERVICE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'Inventory Service',
         items: [
           { id: 'lifecycle', label: 'Lifecycle', value: 'active' },
@@ -146,8 +146,8 @@ export const DeprecatedLifecycle: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_SERVICE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'Legacy API Service',
         items: [
           { id: 'lifecycle', label: 'Lifecycle', value: 'deprecated' },
@@ -165,8 +165,8 @@ export const WithOwner: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_SERVICE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'Order Service',
         badges: [
           {
@@ -188,8 +188,8 @@ export const WithDomain: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_SERVICE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'Billing Service',
         badges: [
           {
@@ -211,8 +211,8 @@ export const ChangesetAdd: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_SERVICE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'New Service',
         changesetOperation: 'add',
         detailLevel: 'standard',
@@ -228,8 +228,8 @@ export const ChangesetUpdate: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_SERVICE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'Updated Service',
         changesetOperation: 'update',
         detailLevel: 'standard',
@@ -245,8 +245,8 @@ export const ChangesetDelete: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_SERVICE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'Deleted Service',
         changesetOperation: 'delete',
         detailLevel: 'standard',
@@ -262,8 +262,8 @@ export const Dimmed: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_SERVICE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'Dimmed Service',
         detailLevel: 'standard',
       }}
@@ -278,8 +278,8 @@ export const Highlighted: Story = {
     <UnifiedNode
       data={{
         nodeType: NodeType.BUSINESS_SERVICE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'Highlighted Node',
         detailLevel: 'standard',
       }}
