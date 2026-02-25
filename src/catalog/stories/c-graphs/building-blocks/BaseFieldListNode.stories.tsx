@@ -49,45 +49,47 @@ type Story = StoryObj<typeof meta>;
  */
 
 export const Default: Story = {
-  render: () => {
-    const data: UnifiedNodeData = {
+  args: {
+    data: {
       nodeType: NodeType.DATA_MODEL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Entity',
       items: [
         { id: 'f1', label: 'id', value: 'UUID', required: true },
         { id: 'f2', label: 'name', value: 'string', required: true },
       ],
       detailLevel: 'standard',
-    };
-    return <UnifiedNode data={data} id="test-node-default" />;
+    },
+    id: 'test-node-default',
   },
+  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const ShortList: Story = {
-  render: () => {
-    const data: UnifiedNodeData = {
+  args: {
+    data: {
       nodeType: NodeType.DATA_MODEL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Order Status',
       items: [
         { id: 'f1', label: 'id', value: 'UUID', required: true },
         { id: 'f2', label: 'status', value: 'enum', required: true },
       ],
       detailLevel: 'standard',
-    };
-    return <UnifiedNode data={data} id="test-node-short" />;
+    },
+    id: 'test-node-short',
   },
+  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const LongList: Story = {
-  render: () => {
-    const data: UnifiedNodeData = {
+  args: {
+    data: {
       nodeType: NodeType.DATA_MODEL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Customer',
       items: [
         { id: 'f1', label: 'id', value: 'UUID', required: true },
@@ -104,17 +106,18 @@ export const LongList: Story = {
         { id: 'f12', label: 'updatedAt', value: 'timestamp', required: false },
       ],
       detailLevel: 'standard',
-    };
-    return <UnifiedNode data={data} id="test-node-long" />;
+    },
+    id: 'test-node-long',
   },
+  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const WithComplexTypes: Story = {
-  render: () => {
-    const data: UnifiedNodeData = {
+  args: {
+    data: {
       nodeType: NodeType.DATA_MODEL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Product',
       items: [
         { id: 'f1', label: 'identifier', value: 'UUID', required: true },
@@ -124,17 +127,18 @@ export const WithComplexTypes: Story = {
         { id: 'f5', label: 'active', value: 'boolean', required: false },
       ],
       detailLevel: 'standard',
-    };
-    return <UnifiedNode data={data} id="test-node-complex" />;
+    },
+    id: 'test-node-complex',
   },
+  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const ChangesetUpdate: Story = {
-  render: () => {
-    const data: UnifiedNodeData = {
+  args: {
+    data: {
       nodeType: NodeType.DATA_MODEL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'User',
       items: [
         { id: 'f1', label: 'id', value: 'UUID', required: true },
@@ -144,31 +148,33 @@ export const ChangesetUpdate: Story = {
       ],
       changesetOperation: 'update' as const,
       detailLevel: 'standard',
-    };
-    return <UnifiedNode data={data} id="test-node-changeset" />;
+    },
+    id: 'test-node-changeset',
   },
+  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const EmptyFields: Story = {
-  render: () => {
-    const data: UnifiedNodeData = {
+  args: {
+    data: {
       nodeType: NodeType.DATA_MODEL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Empty Entity',
       items: [],
       detailLevel: 'standard',
-    };
-    return <UnifiedNode data={data} id="test-node-empty" />;
+    },
+    id: 'test-node-empty',
   },
+  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const DatabaseSchema: Story = {
-  render: () => {
-    const data: UnifiedNodeData = {
+  args: {
+    data: {
       nodeType: NodeType.DATA_MODEL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'users',
       items: [
         { id: 'col1', label: 'user_id', value: 'BIGINT', required: true },
@@ -178,24 +184,26 @@ export const DatabaseSchema: Story = {
         { id: 'col5', label: 'last_login', value: 'TIMESTAMP', required: false },
       ],
       detailLevel: 'standard',
-    };
-    return <UnifiedNode data={data} id="test-node-db" />;
+    },
+    id: 'test-node-db',
   },
+  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const Highlighted: Story = {
-  render: () => {
-    const data: UnifiedNodeData = {
+  args: {
+    data: {
       nodeType: NodeType.DATA_MODEL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Highlighted Entity',
       items: [
         { id: 'f1', label: 'id', value: 'UUID', required: true },
         { id: 'f2', label: 'status', value: 'enum', required: true },
       ],
       detailLevel: 'standard',
-    };
-    return <UnifiedNode data={data} id="test-node-highlighted" />;
+    },
+    id: 'test-node-highlighted',
   },
+  render: (args) => <UnifiedNode {...args} />,
 };

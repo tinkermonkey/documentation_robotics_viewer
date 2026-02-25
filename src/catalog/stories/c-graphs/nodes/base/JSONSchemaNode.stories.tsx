@@ -28,11 +28,11 @@ type Story = StoryObj<typeof meta>;
  */
 
 export const WithMultipleProperties: Story = {
-  render: () => {
-    const data: UnifiedNodeData = {
+  args: {
+    data: {
       nodeType: NodeType.DATA_JSON_SCHEMA,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'UserProfile',
       items: [
         { id: 'id', label: 'id', value: 'string', required: true },
@@ -44,36 +44,36 @@ export const WithMultipleProperties: Story = {
         { id: 'isActive', label: 'isActive', value: 'boolean', required: false },
       ],
       detailLevel: 'standard',
-    };
-
-    return <UnifiedNode data={data} id="test-node-1" />;
+    },
+    id: 'test-node-1',
   },
+  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const WithRequiredOnly: Story = {
-  render: () => {
-    const data: UnifiedNodeData = {
+  args: {
+    data: {
       nodeType: NodeType.DATA_JSON_SCHEMA,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'LoginRequest',
       items: [
         { id: 'username', label: 'username', value: 'string', required: true },
         { id: 'password', label: 'password', value: 'string', required: true },
       ],
       detailLevel: 'standard',
-    };
-
-    return <UnifiedNode data={data} id="test-node-2" />;
+    },
+    id: 'test-node-2',
   },
+  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const WithComplexTypes: Story = {
-  render: () => {
-    const data: UnifiedNodeData = {
+  args: {
+    data: {
       nodeType: NodeType.DATA_JSON_SCHEMA,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'OrderDetails',
       items: [
         { id: 'orderId', label: 'orderId', value: 'string', required: true },
@@ -84,41 +84,41 @@ export const WithComplexTypes: Story = {
         { id: 'metadata', label: 'metadata', value: 'Record<string, any>', required: false },
       ],
       detailLevel: 'standard',
-    };
-
-    return <UnifiedNode data={data} id="test-node-3" />;
+    },
+    id: 'test-node-3',
   },
+  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const EmptySchema: Story = {
-  render: () => {
-    const data: UnifiedNodeData = {
+  args: {
+    data: {
       nodeType: NodeType.DATA_JSON_SCHEMA,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'EmptyObject',
       items: [],
       detailLevel: 'standard',
-    };
-
-    return <UnifiedNode data={data} id="test-node-4" />;
+    },
+    id: 'test-node-4',
   },
+  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const Highlighted: Story = {
-  render: () => {
-    const data: UnifiedNodeData = {
+  args: {
+    data: {
       nodeType: NodeType.DATA_JSON_SCHEMA,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'HighlightedSchema',
       items: [
         { id: 'id', label: 'id', value: 'string', required: true },
         { id: 'name', label: 'name', value: 'string', required: true },
       ],
       detailLevel: 'standard',
-    };
-
-    return <UnifiedNode data={data} id="test-node-5" />;
+    },
+    id: 'test-node-5',
   },
+  render: (args) => <UnifiedNode {...args} />,
 };

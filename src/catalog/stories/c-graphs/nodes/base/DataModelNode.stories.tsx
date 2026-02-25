@@ -22,11 +22,11 @@ type Story = StoryObj<typeof meta>;
  */
 
 export const WithMultipleAttributes: Story = {
-  render: () => {
-    const data: UnifiedNodeData = {
+  args: {
+    data: {
       nodeType: NodeType.DATA_MODEL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'User',
       items: [
         { id: 'id', label: 'id', value: 'UUID', required: true },
@@ -37,18 +37,18 @@ export const WithMultipleAttributes: Story = {
         { id: 'createdAt', label: 'createdAt', value: 'timestamp', required: false },
       ],
       detailLevel: 'standard',
-    };
-
-    return <UnifiedNode data={data} id="test-node-1" />;
+    },
+    id: 'test-node-1',
   },
+  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const WithDatabaseColumns: Story = {
-  render: () => {
-    const data: UnifiedNodeData = {
+  args: {
+    data: {
       nodeType: NodeType.DATA_MODEL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'users',
       items: [
         { id: 'col1', label: 'user_id', value: 'BIGINT', required: true },
@@ -58,18 +58,18 @@ export const WithDatabaseColumns: Story = {
         { id: 'col5', label: 'last_login', value: 'TIMESTAMP', required: false },
       ],
       detailLevel: 'standard',
-    };
-
-    return <UnifiedNode data={data} id="test-node-2" />;
+    },
+    id: 'test-node-2',
   },
+  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const WithComplexTypes: Story = {
-  render: () => {
-    const data: UnifiedNodeData = {
+  args: {
+    data: {
       nodeType: NodeType.DATA_MODEL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Order',
       items: [
         { id: 'orderId', label: 'orderId', value: 'UUID', required: true },
@@ -80,51 +80,51 @@ export const WithComplexTypes: Story = {
         { id: 'metadata', label: 'metadata', value: 'Record<string, any>', required: false },
       ],
       detailLevel: 'standard',
-    };
-
-    return <UnifiedNode data={data} id="test-node-3" />;
+    },
+    id: 'test-node-3',
   },
+  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const Minimal: Story = {
-  render: () => {
-    const data: UnifiedNodeData = {
+  args: {
+    data: {
       nodeType: NodeType.DATA_MODEL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Status',
       items: [
         { id: 'id', label: 'id', value: 'UUID', required: true },
         { id: 'name', label: 'name', value: 'string', required: true },
       ],
       detailLevel: 'standard',
-    };
-
-    return <UnifiedNode data={data} id="test-node-4" />;
+    },
+    id: 'test-node-4',
   },
+  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const EmptyModel: Story = {
-  render: () => {
-    const data: UnifiedNodeData = {
+  args: {
+    data: {
       nodeType: NodeType.DATA_MODEL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'EmptyModel',
       items: [],
       detailLevel: 'standard',
-    };
-
-    return <UnifiedNode data={data} id="test-node-5" />;
+    },
+    id: 'test-node-5',
   },
+  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const WithTooltips: Story = {
-  render: () => {
-    const data: UnifiedNodeData = {
+  args: {
+    data: {
       nodeType: NodeType.DATA_MODEL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Product',
       items: [
         {
@@ -157,8 +157,8 @@ export const WithTooltips: Story = {
         },
       ],
       detailLevel: 'standard',
-    };
-
-    return <UnifiedNode data={data} id="test-node-6" />;
+    },
+    id: 'test-node-6',
   },
+  render: (args) => <UnifiedNode {...args} />,
 };
