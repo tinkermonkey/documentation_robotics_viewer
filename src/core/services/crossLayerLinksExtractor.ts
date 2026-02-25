@@ -5,7 +5,7 @@
 
 import { MetaModel, Reference, ReferenceType } from '@/core/types/model';
 import { LayerType } from '@/core/types/layers';
-import { AppEdge, createCrossLayerEdgeData } from '@/core/types/reactflow';
+import { AppEdge, createCrossLayerEdgeData, CrossLayerEdgeValidationError } from '@/core/types/reactflow';
 import { MarkerType } from '@xyflow/react';
 import { FALLBACK_COLOR, normalizeLayerKey } from '@/core/utils/layerColors';
 
@@ -97,12 +97,16 @@ export function referenceToEdge(
     );
   } catch (error) {
     // Skip edges that fail validation (e.g., same source and target layer)
-    console.warn('Failed to create cross-layer edge:', {
-      error: error instanceof Error ? error.message : String(error),
-      sourceLayer,
-      targetLayer,
-    });
-    return null;
+    if (error instanceof CrossLayerEdgeValidationError) {
+      console.warn('Skipped invalid cross-layer edge:', {
+        error: error.message,
+        sourceLayer,
+        targetLayer,
+      });
+      return null;
+    }
+    // Unexpected errors propagate to surface bugs
+    throw error;
   }
 
   return {
