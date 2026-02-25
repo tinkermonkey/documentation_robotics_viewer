@@ -49,6 +49,7 @@ type Story = StoryObj<typeof meta>;
  */
 
 export const Default: Story = {
+  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_MODEL,
@@ -63,10 +64,10 @@ export const Default: Story = {
     },
     id: 'test-node-default',
   },
-  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const ShortList: Story = {
+  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_MODEL,
@@ -81,10 +82,10 @@ export const ShortList: Story = {
     },
     id: 'test-node-short',
   },
-  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const LongList: Story = {
+  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_MODEL,
@@ -109,10 +110,10 @@ export const LongList: Story = {
     },
     id: 'test-node-long',
   },
-  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const WithComplexTypes: Story = {
+  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_MODEL,
@@ -130,10 +131,10 @@ export const WithComplexTypes: Story = {
     },
     id: 'test-node-complex',
   },
-  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const ChangesetUpdate: Story = {
+  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_MODEL,
@@ -151,10 +152,10 @@ export const ChangesetUpdate: Story = {
     },
     id: 'test-node-changeset',
   },
-  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const EmptyFields: Story = {
+  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_MODEL,
@@ -166,10 +167,10 @@ export const EmptyFields: Story = {
     },
     id: 'test-node-empty',
   },
-  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const DatabaseSchema: Story = {
+  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_MODEL,
@@ -187,10 +188,10 @@ export const DatabaseSchema: Story = {
     },
     id: 'test-node-db',
   },
-  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const Highlighted: Story = {
+  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_MODEL,
@@ -205,5 +206,4 @@ export const Highlighted: Story = {
     },
     id: 'test-node-highlighted',
   },
-  render: (args) => <UnifiedNode {...args} />,
 };

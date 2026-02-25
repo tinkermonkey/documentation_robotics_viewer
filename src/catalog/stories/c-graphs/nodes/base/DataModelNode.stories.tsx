@@ -22,6 +22,7 @@ type Story = StoryObj<typeof meta>;
  */
 
 export const WithMultipleAttributes: Story = {
+  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_MODEL,
@@ -40,10 +41,10 @@ export const WithMultipleAttributes: Story = {
     },
     id: 'test-node-1',
   },
-  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const WithDatabaseColumns: Story = {
+  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_MODEL,
@@ -61,10 +62,10 @@ export const WithDatabaseColumns: Story = {
     },
     id: 'test-node-2',
   },
-  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const WithComplexTypes: Story = {
+  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_MODEL,
@@ -83,10 +84,10 @@ export const WithComplexTypes: Story = {
     },
     id: 'test-node-3',
   },
-  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const Minimal: Story = {
+  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_MODEL,
@@ -101,10 +102,10 @@ export const Minimal: Story = {
     },
     id: 'test-node-4',
   },
-  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const EmptyModel: Story = {
+  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_MODEL,
@@ -116,10 +117,10 @@ export const EmptyModel: Story = {
     },
     id: 'test-node-5',
   },
-  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const WithTooltips: Story = {
+  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_MODEL,
@@ -160,5 +161,4 @@ export const WithTooltips: Story = {
     },
     id: 'test-node-6',
   },
-  render: (args) => <UnifiedNode {...args} />,
 };

@@ -28,6 +28,7 @@ type Story = StoryObj<typeof meta>;
  */
 
 export const WithMultipleProperties: Story = {
+  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_JSON_SCHEMA,
@@ -47,10 +48,10 @@ export const WithMultipleProperties: Story = {
     },
     id: 'test-node-1',
   },
-  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const WithRequiredOnly: Story = {
+  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_JSON_SCHEMA,
@@ -65,10 +66,10 @@ export const WithRequiredOnly: Story = {
     },
     id: 'test-node-2',
   },
-  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const WithComplexTypes: Story = {
+  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_JSON_SCHEMA,
@@ -87,10 +88,10 @@ export const WithComplexTypes: Story = {
     },
     id: 'test-node-3',
   },
-  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const EmptySchema: Story = {
+  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_JSON_SCHEMA,
@@ -102,10 +103,10 @@ export const EmptySchema: Story = {
     },
     id: 'test-node-4',
   },
-  render: (args) => <UnifiedNode {...args} />,
 };
 
 export const Highlighted: Story = {
+  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_JSON_SCHEMA,
@@ -120,5 +121,4 @@ export const Highlighted: Story = {
     },
     id: 'test-node-5',
   },
-  render: (args) => <UnifiedNode {...args} />,
 };

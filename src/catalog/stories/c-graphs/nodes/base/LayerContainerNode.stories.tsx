@@ -16,6 +16,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
+  render: (args) => <LayerContainerNode {...args} />,
   args: {
     data: createLayerContainerNodeData({
       label: 'Business Layer',
@@ -24,18 +25,9 @@ export const Default: Story = {
     }),
     id: 'container-1',
   },
-  render: (args) => <LayerContainerNode {...args} />,
 };
 
 export const WithChildren: Story = {
-  args: {
-    data: createLayerContainerNodeData({
-      label: 'Technology Layer',
-      layerType: 'technology',
-      color: '#2196f3'
-    }),
-    id: 'container-2',
-  },
   render: (args) => (
     <div style={{ position: 'relative', width: '600px', height: '400px' }}>
       <LayerContainerNode {...args} />
@@ -59,9 +51,18 @@ export const WithChildren: Story = {
       </div>
     </div>
   ),
+  args: {
+    data: createLayerContainerNodeData({
+      label: 'Technology Layer',
+      layerType: 'technology',
+      color: '#2196f3'
+    }),
+    id: 'container-2',
+  },
 };
 
 export const Collapsed: Story = {
+  render: (args) => <LayerContainerNode {...args} />,
   args: {
     data: createLayerContainerNodeData({
       label: 'API Layer',
@@ -70,10 +71,10 @@ export const Collapsed: Story = {
     }),
     id: 'container-3',
   },
-  render: (args) => <LayerContainerNode {...args} />,
 };
 
 export const Expanded: Story = {
+  render: (args) => <LayerContainerNode {...args} />,
   args: {
     data: createLayerContainerNodeData({
       label: 'Data Model Layer',
@@ -82,10 +83,10 @@ export const Expanded: Story = {
     }),
     id: 'container-4',
   },
-  render: (args) => <LayerContainerNode {...args} />,
 };
 
 export const ChangesetAdd: Story = {
+  render: (args) => <LayerContainerNode {...args} />,
   args: {
     data: createLayerContainerNodeData({
       label: 'New Security Layer',
@@ -95,10 +96,10 @@ export const ChangesetAdd: Story = {
     }),
     id: 'container-5',
   },
-  render: (args) => <LayerContainerNode {...args} />,
 };
 
 export const MotivationLayer: Story = {
+  render: (args) => <LayerContainerNode {...args} />,
   args: {
     data: createLayerContainerNodeData({
       label: 'Motivation Layer',
@@ -107,10 +108,10 @@ export const MotivationLayer: Story = {
     }),
     id: 'container-6',
   },
-  render: (args) => <LayerContainerNode {...args} />,
 };
 
 export const ApplicationLayer: Story = {
+  render: (args) => <LayerContainerNode {...args} />,
   args: {
     data: createLayerContainerNodeData({
       label: 'Application Layer',
@@ -119,10 +120,10 @@ export const ApplicationLayer: Story = {
     }),
     id: 'container-7',
   },
-  render: (args) => <LayerContainerNode {...args} />,
 };
 
 export const Highlighted: Story = {
+  render: (args) => <LayerContainerNode {...args} />,
   args: {
     data: createLayerContainerNodeData({
       label: 'Highlighted Layer',
@@ -132,5 +133,4 @@ export const Highlighted: Story = {
     }),
     id: 'container-8',
   },
-  render: (args) => <LayerContainerNode {...args} />,
 };
