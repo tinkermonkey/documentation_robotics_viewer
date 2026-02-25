@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { NodeType } from '@/core/nodes/NodeType';
 import UnifiedNode from '@/core/nodes/components/UnifiedNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import type { UnifiedNodeData } from '@/core/nodes/components/UnifiedNode';
 
 const meta = {
   title: 'C Graphs / Nodes / Base / DataModelNode',

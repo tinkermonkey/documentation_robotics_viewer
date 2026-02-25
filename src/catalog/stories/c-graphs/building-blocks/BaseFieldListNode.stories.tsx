@@ -17,7 +17,6 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { NodeType } from '@/core/nodes/NodeType';
 import UnifiedNode from '@/core/nodes/components/UnifiedNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import type { UnifiedNodeData } from '@/core/nodes/components/UnifiedNode';
 
 /**
  * BaseFieldListNode is an internal building block component consumed only by JSONSchemaNode.
