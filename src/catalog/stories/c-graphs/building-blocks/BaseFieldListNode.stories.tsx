@@ -19,13 +19,26 @@ import UnifiedNode from '@/core/nodes/components/UnifiedNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import type { UnifiedNodeData } from '@/core/nodes/components/UnifiedNode';
 
+/**
+ * BaseFieldListNode is an internal building block component consumed only by JSONSchemaNode.
+ * It is not exported from src/core/nodes/index.ts and is not registered as a React Flow node type.
+ *
+ * This story documents the field list rendering patterns used internally.
+ * For documentation of public node types, see the nodes/ directory stories.
+ */
 const meta = {
-  title: 'C Graphs / Nodes / Base / BaseFieldListNode',
+  title: 'C Graphs / Building Blocks / BaseFieldListNode',
+  component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: 300, height: 300 })],
   parameters: {
     layout: 'fullscreen',
+    docs: {
+      description: {
+        component: 'Internal building block consumed by JSONSchemaNode. Not a React Flow node type — cannot be used directly in graphs.',
+      },
+    },
   },
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

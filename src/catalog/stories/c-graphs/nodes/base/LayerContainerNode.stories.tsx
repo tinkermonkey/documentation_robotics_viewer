@@ -5,11 +5,12 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 const meta = {
   title: 'C Graphs / Nodes / Base / LayerContainerNode',
+  component: LayerContainerNode,
   decorators: [withReactFlowDecorator({ width: 400, height: 300 })],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta;
+} satisfies Meta<typeof LayerContainerNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

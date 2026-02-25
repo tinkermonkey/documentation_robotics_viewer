@@ -6,11 +6,12 @@ import type { UnifiedNodeData } from '@/core/nodes/components/UnifiedNode';
 
 const meta = {
   title: 'C Graphs / Nodes / Base / DataModelNode',
+  component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: 280, height: 300 })],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

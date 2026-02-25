@@ -12,11 +12,12 @@ const storyHeight = 300;
 
 const meta = {
   title: 'C Graphs / Nodes / Base / JSONSchemaNode',
+  component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
