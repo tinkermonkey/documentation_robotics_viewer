@@ -82,6 +82,9 @@ export function isExpectedConsoleError(text: string): boolean {
   // RenderPropErrorBoundary test errors - expected when testing error handling in render props
   if (/\[RenderPropError\]/.test(text)) return true;
 
+  // NodeConfigLoader errors for invalid NodeType - expected in ErrorState story testing error handling
+  if (/\[NodeConfigLoader\] No style config found for NodeType/.test(text)) return true;
+
   return false;
 }
 

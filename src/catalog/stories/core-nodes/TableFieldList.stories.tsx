@@ -8,6 +8,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import TableFieldList from '@/core/nodes/components/TableFieldList';
 import type { FieldItem } from '@/core/nodes/components/FieldList';
+import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 // ============================================================================
 // TableFieldList Stories
@@ -15,8 +16,9 @@ import type { FieldItem } from '@/core/nodes/components/FieldList';
 
 const meta = {
   title: 'Core Nodes / TableFieldList',
+  decorators: [withReactFlowDecorator({ width: 400, height: 500 })],
   parameters: {
-    layout: 'padded',
+    layout: 'fullscreen',
   },
 } satisfies Meta<typeof TableFieldList>;
 
