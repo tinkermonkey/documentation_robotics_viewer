@@ -26,11 +26,9 @@ import type {
 } from './components';
 import {
   useChangesetStyling,
-  useNodeOpacity,
   useNodeHandles,
-  useRelationshipBadge,
-  useBadgeRenderer,
 } from './hooks';
+import type { HandleConfig } from './hooks';
 
 // Export all node components
 export {
@@ -46,10 +44,7 @@ export {
   nodeConfigLoader,
   // Node hooks
   useChangesetStyling,
-  useNodeOpacity,
   useNodeHandles,
-  useRelationshipBadge,
-  useBadgeRenderer,
 };
 
 // Export types for configuration and unified node
@@ -66,6 +61,7 @@ export type {
   FieldItem,
   RelationshipBadgeData,
   RelationshipBadgeProps,
+  HandleConfig,
 };
 
 // Node types object for React Flow

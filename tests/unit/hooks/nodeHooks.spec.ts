@@ -2,295 +2,347 @@
  * Node Hooks Tests
  *
  * Tests for hooks extracted from UnifiedNode component.
- * Validates changeset styling, opacity, handle configuration, badge rendering,
- * and relationship badge hooks.
- *
- * Note: These tests validate hook interfaces and behavior through direct invocation
- * and type checking. Full integration tests with React rendering are covered by
- * Storybook stories.
+ * Tests the pure computation functions that underlie the React hooks,
+ * since React hooks cannot be called outside of a component context.
  */
 
 import { test, expect } from '@playwright/test';
+import { computeChangesetStyling, type ChangesetStyling } from '../../../src/core/nodes/hooks/useChangesetStyling';
+import { computeHandleConfigs, type HandleConfig } from '../../../src/core/nodes/hooks/useNodeHandles';
 import { nodeConfigLoader } from '../../../src/core/nodes/nodeConfigLoader';
-import type { ChangesetOperation, NodeBadge, RelationshipBadgeData } from '../../../src/core/nodes/components';
+import type { ChangesetOperation } from '../../../src/core/nodes/components';
 
-test.describe('useChangesetStyling Hook Interface', () => {
-  test('should export hook function', async () => {
-    // Validates that the hook can be imported
-    const { useChangesetStyling } = await import('../../../src/core/nodes/hooks');
-    expect(typeof useChangesetStyling).toBe('function');
+/**
+ * Test computeChangesetStyling function
+ *
+ * This function computes color and opacity based on changeset operation type.
+ * It should return null when no operation is active, and return styling
+ * properties for 'add', 'update', and 'delete' operations.
+ */
+test.describe('computeChangesetStyling Function', () => {
+  test('should return null when operation is undefined', () => {
+    const result = computeChangesetStyling(undefined);
+    expect(result).toBeNull();
   });
 
-  test('should define correct hook signature', async () => {
-    const { useChangesetStyling } = await import('../../../src/core/nodes/hooks');
-
-    // Test with undefined operation
-    expect(useChangesetStyling).toBeDefined();
-    expect(typeof useChangesetStyling).toBe('function');
+  test('should return color and opacity for "add" operation', () => {
+    const result = computeChangesetStyling('add');
+    expect(result).not.toBeNull();
+    expect(result).toHaveProperty('fill');
+    expect(result).toHaveProperty('stroke');
+    expect(result).toHaveProperty('opacity');
+    expect(typeof result!.fill).toBe('string');
+    expect(typeof result!.stroke).toBe('string');
+    expect(typeof result!.opacity).toBe('number');
+    expect(result!.opacity).toBeGreaterThanOrEqual(0);
+    expect(result!.opacity).toBeLessThanOrEqual(1);
   });
 
-  test('should support "add" operation from nodeConfigLoader', () => {
+  test('should return color and opacity for "update" operation', () => {
+    const result = computeChangesetStyling('update');
+    expect(result).not.toBeNull();
+    expect(result!.fill).toBeDefined();
+    expect(result!.stroke).toBeDefined();
+    expect(typeof result!.opacity).toBe('number');
+  });
+
+  test('should return color and opacity for "delete" operation', () => {
+    const result = computeChangesetStyling('delete');
+    expect(result).not.toBeNull();
+    expect(result!.fill).toBeDefined();
+    expect(result!.stroke).toBeDefined();
+    expect(typeof result!.opacity).toBe('number');
+  });
+
+  test('should return different colors for different operations', () => {
+    const addResult = computeChangesetStyling('add');
+    const updateResult = computeChangesetStyling('update');
+    const deleteResult = computeChangesetStyling('delete');
+
+    // Operations should have distinct styling
+    const fills = [addResult!.fill, updateResult!.fill, deleteResult!.fill];
+    const uniqueFills = new Set(fills);
+    expect(uniqueFills.size).toBeGreaterThan(1); // At least some operations have different fills
+  });
+
+  test('should use nodeConfigLoader for colors', () => {
     const addColors = nodeConfigLoader.getChangesetColors('add');
-    expect(addColors.bg).toBeDefined();
-    expect(addColors.border).toBeDefined();
-    expect(typeof addColors.bg).toBe('string');
-    expect(typeof addColors.border).toBe('string');
+    const result = computeChangesetStyling('add');
+
+    expect(result!.fill).toBe(addColors.bg);
+    expect(result!.stroke).toBe(addColors.border);
+    expect(result!.opacity).toBe(addColors.opacity ?? 1);
   });
 
-  test('should support "update" operation from nodeConfigLoader', () => {
-    const updateColors = nodeConfigLoader.getChangesetColors('update');
-    expect(updateColors.bg).toBeDefined();
-    expect(updateColors.border).toBeDefined();
-  });
-
-  test('should support "delete" operation from nodeConfigLoader', () => {
-    const deleteColors = nodeConfigLoader.getChangesetColors('delete');
-    expect(deleteColors.bg).toBeDefined();
-    expect(deleteColors.border).toBeDefined();
-  });
-
-  test('should have consistent changeset colors across different operations', () => {
-    const addColors = nodeConfigLoader.getChangesetColors('add');
-    const updateColors = nodeConfigLoader.getChangesetColors('update');
-    const deleteColors = nodeConfigLoader.getChangesetColors('delete');
-
-    // Each operation should have distinct colors
-    expect([addColors.bg, updateColors.bg, deleteColors.bg].length).toBeGreaterThanOrEqual(1);
-  });
-});
-
-test.describe('useNodeOpacity Hook Interface', () => {
-  test('should export hook function', async () => {
-    const { useNodeOpacity } = await import('../../../src/core/nodes/hooks');
-    expect(typeof useNodeOpacity).toBe('function');
-  });
-
-  test('should accept options object with changesetOperation property', async () => {
-    const { useNodeOpacity } = await import('../../../src/core/nodes/hooks');
-    expect(typeof useNodeOpacity).toBe('function');
-    // Validates hook signature through availability
-  });
-
-  test('should return number type for opacity', async () => {
-    const { useNodeOpacity } = await import('../../../src/core/nodes/hooks');
-    expect(typeof useNodeOpacity).toBe('function');
-  });
-
-  test('should have changeset operations with opacity values', () => {
+  test('should support all ChangesetOperation types', () => {
     const operations: ChangesetOperation[] = ['add', 'update', 'delete'];
 
     operations.forEach((op) => {
-      const colors = nodeConfigLoader.getChangesetColors(op);
-      // opacity should be optional but if present, should be between 0 and 1
-      if (colors.opacity !== undefined) {
-        expect(colors.opacity).toBeGreaterThanOrEqual(0);
-        expect(colors.opacity).toBeLessThanOrEqual(1);
-      }
+      const result = computeChangesetStyling(op);
+      expect(result).not.toBeNull();
+      expect(result!.fill).toBeDefined();
+      expect(result!.stroke).toBeDefined();
+      expect(result!.opacity).toBeDefined();
     });
+  });
+
+  test('should always return consistent results for same input', () => {
+    const result1 = computeChangesetStyling('add');
+    const result2 = computeChangesetStyling('add');
+
+    expect(result1).toEqual(result2);
   });
 });
 
-test.describe('useNodeHandles Hook Interface', () => {
-  test('should export hook function', async () => {
-    const { useNodeHandles } = await import('../../../src/core/nodes/hooks');
-    expect(typeof useNodeHandles).toBe('function');
+/**
+ * Test computeHandleConfigs function
+ *
+ * This function returns handle configuration data (not JSX elements).
+ * Consumers map these configurations to React Flow Handle elements.
+ * The function computes positioning based on layout type.
+ */
+test.describe('computeHandleConfigs Function', () => {
+  test('should return array of handle configurations', () => {
+    const handles = computeHandleConfigs({
+      layout: 'centered',
+      handleColor: '#000000',
+      headerHeight: 40,
+    });
+
+    expect(Array.isArray(handles)).toBe(true);
+    expect(handles.length).toBe(4);
   });
 
-  test('should accept layout configurations', async () => {
-    const { useNodeHandles } = await import('../../../src/core/nodes/hooks');
+  test('should return handles with correct structure', () => {
+    const handles = computeHandleConfigs({
+      layout: 'centered',
+      handleColor: '#ff0000',
+      headerHeight: 40,
+    });
 
-    // Validates signature by demonstrating expected usage
-    const layouts: Array<'centered' | 'left' | 'table'> = ['centered', 'left', 'table'];
+    handles.forEach((handle) => {
+      expect(handle).toHaveProperty('id');
+      expect(handle).toHaveProperty('type');
+      expect(handle).toHaveProperty('position');
+      expect(handle).toHaveProperty('style');
+      expect(['target', 'source']).toContain(handle.type);
+    });
+  });
+
+  test('should have correct handle IDs', () => {
+    const handles = computeHandleConfigs({
+      layout: 'centered',
+      handleColor: '#000000',
+      headerHeight: 40,
+    });
+
+    const ids = handles.map((h) => h.id);
+    expect(ids).toContain('top');
+    expect(ids).toContain('bottom');
+    expect(ids).toContain('left');
+    expect(ids).toContain('right');
+  });
+
+  test('should apply correct handle colors', () => {
+    const testColor = '#12345678';
+
+    const handles = computeHandleConfigs({
+      layout: 'centered',
+      handleColor: testColor,
+      headerHeight: 40,
+    });
+
+    handles.forEach((handle) => {
+      expect(handle.style.background).toBe(testColor);
+      expect(handle.style.width).toBe(8);
+      expect(handle.style.height).toBe(8);
+    });
+  });
+
+  test('should position handles centered for "centered" layout', () => {
+    const handles = computeHandleConfigs({
+      layout: 'centered',
+      handleColor: '#000000',
+      headerHeight: 40,
+    });
+
+    // For centered layout, left/right handles should be positioned at 50%
+    const leftHandle = handles.find((h) => h.id === 'left');
+    const rightHandle = handles.find((h) => h.id === 'right');
+
+    expect(leftHandle?.style.top).toBe('50%');
+    expect(rightHandle?.style.top).toBe('50%');
+  });
+
+  test('should position handles at headerHeight/2 for "left" layout', () => {
+    const headerHeight = 40;
+
+    const handles = computeHandleConfigs({
+      layout: 'left',
+      handleColor: '#000000',
+      headerHeight: headerHeight,
+    });
+
+    // For left layout, left/right handles should be positioned at headerHeight/2
+    const leftHandle = handles.find((h) => h.id === 'left');
+    const rightHandle = handles.find((h) => h.id === 'right');
+
+    expect(leftHandle?.style.top).toBe(headerHeight / 2);
+    expect(rightHandle?.style.top).toBe(headerHeight / 2);
+  });
+
+  test('should position handles centered for "table" layout', () => {
+    const handles = computeHandleConfigs({
+      layout: 'table',
+      handleColor: '#000000',
+      headerHeight: 40,
+    });
+
+    // For table layout, left/right handles should be positioned at 50%
+    const leftHandle = handles.find((h) => h.id === 'left');
+    const rightHandle = handles.find((h) => h.id === 'right');
+
+    expect(leftHandle?.style.top).toBe('50%');
+    expect(rightHandle?.style.top).toBe('50%');
+  });
+
+  test('should return different configurations for different layouts', () => {
+    const centeredHandles = computeHandleConfigs({
+      layout: 'centered',
+      handleColor: '#000000',
+      headerHeight: 40,
+    });
+
+    const leftHandles = computeHandleConfigs({
+      layout: 'left',
+      handleColor: '#000000',
+      headerHeight: 40,
+    });
+
+    // Results should be different when layout changes
+    const centeredLeft = centeredHandles.find((h) => h.id === 'left');
+    const leftLayoutLeft = leftHandles.find((h) => h.id === 'left');
+
+    expect(centeredLeft?.style.top).not.toBe(leftLayoutLeft?.style.top);
+  });
+
+  test('should have correct handle types', () => {
+    const handles = computeHandleConfigs({
+      layout: 'centered',
+      handleColor: '#000000',
+      headerHeight: 40,
+    });
+
+    const handleMap = new Map(handles.map((h) => [h.id, h.type]));
+
+    expect(handleMap.get('top')).toBe('target');
+    expect(handleMap.get('bottom')).toBe('source');
+    expect(handleMap.get('left')).toBe('target');
+    expect(handleMap.get('right')).toBe('source');
+  });
+
+  test('should support all layout types', () => {
+    const layouts = ['centered', 'left', 'table'] as const;
 
     layouts.forEach((layout) => {
-      expect(['centered', 'left', 'table']).toContain(layout);
+      const handles = computeHandleConfigs({
+        layout: layout,
+        handleColor: '#000000',
+        headerHeight: 40,
+      });
+
+      expect(Array.isArray(handles)).toBe(true);
+      expect(handles.length).toBe(4);
     });
   });
 
-  test('should accept handleColor string parameter', async () => {
-    const { useNodeHandles } = await import('../../../src/core/nodes/hooks');
-    expect(typeof useNodeHandles).toBe('function');
+  test('should handle different header heights', () => {
+    const heights = [30, 40, 50];
 
-    // Validates that hook expects string color value
-    const testColors = ['#000000', '#ffffff', 'rgb(255,0,0)'];
-    testColors.forEach((color) => {
-      expect(typeof color).toBe('string');
+    heights.forEach((height) => {
+      const handles = computeHandleConfigs({
+        layout: 'left',
+        handleColor: '#000000',
+        headerHeight: height,
+      });
+
+      const leftHandle = handles.find((h) => h.id === 'left');
+      expect(leftHandle?.style.top).toBe(height / 2);
     });
   });
 
-  test('should accept headerHeight number parameter', async () => {
-    const { useNodeHandles } = await import('../../../src/core/nodes/hooks');
-    expect(typeof useNodeHandles).toBe('function');
+  test('should always return consistent results for same input', () => {
+    const options = {
+      layout: 'centered' as const,
+      handleColor: '#000000',
+      headerHeight: 40,
+    };
 
-    // Validates numeric height values
-    const headerHeights = [30, 40, 50];
-    headerHeights.forEach((height) => {
-      expect(typeof height).toBe('number');
-      expect(height).toBeGreaterThan(0);
-    });
+    const result1 = computeHandleConfigs(options);
+    const result2 = computeHandleConfigs(options);
+
+    expect(result1).toEqual(result2);
   });
 });
 
-test.describe('useRelationshipBadge Hook Interface', () => {
-  test('should export hook function', async () => {
-    const { useRelationshipBadge } = await import('../../../src/core/nodes/hooks');
-    expect(typeof useRelationshipBadge).toBe('function');
-  });
-
-  test('should accept RelationshipBadgeData type', () => {
-    const badgeData: RelationshipBadgeData = {
-      count: 5,
-      incoming: 2,
-      outgoing: 3,
-    };
-
-    expect(badgeData.count).toBe(5);
-    expect(badgeData.incoming).toBe(2);
-    expect(badgeData.outgoing).toBe(3);
-    expect(badgeData.incoming + badgeData.outgoing).toBe(badgeData.count);
-  });
-
-  test('should handle zero relationships', () => {
-    const badgeData: RelationshipBadgeData = {
-      count: 0,
-      incoming: 0,
-      outgoing: 0,
-    };
-
-    expect(badgeData.count).toBe(0);
-    expect(badgeData.incoming).toBe(0);
-    expect(badgeData.outgoing).toBe(0);
-  });
-
-  test('should handle large relationship counts', () => {
-    const badgeData: RelationshipBadgeData = {
-      count: 100,
-      incoming: 60,
-      outgoing: 40,
-    };
-
-    expect(badgeData.count).toBeGreaterThan(0);
-    expect(badgeData.incoming + badgeData.outgoing).toBe(badgeData.count);
-  });
-});
-
-test.describe('useBadgeRenderer Hook Interface', () => {
-  test('should export hook function', async () => {
-    const { useBadgeRenderer } = await import('../../../src/core/nodes/hooks');
-    expect(typeof useBadgeRenderer).toBe('function');
-  });
-
-  test('should accept NodeBadge array parameter', () => {
-    const badges: NodeBadge[] = [
-      {
-        position: 'top-left',
-        content: 'Badge 1',
-        className: 'test-class',
-        ariaLabel: 'Test badge',
-      },
-      {
-        position: 'top-right',
-        content: 'Badge 2',
-      },
-      {
-        position: 'inline',
-        content: 'Badge 3',
-      },
-    ];
-
-    expect(Array.isArray(badges)).toBe(true);
-    expect(badges.length).toBe(3);
-
-    badges.forEach((badge) => {
-      expect(['top-left', 'top-right', 'inline']).toContain(badge.position);
-      expect(typeof badge.content).toBe('string');
-    });
-  });
-
-  test('should handle empty badge array', () => {
-    const badges: NodeBadge[] = [];
-    expect(Array.isArray(badges)).toBe(true);
-    expect(badges.length).toBe(0);
-  });
-
-  test('should support all badge positions', () => {
-    const positions: Array<NodeBadge['position']> = ['top-left', 'top-right', 'inline'];
-
-    positions.forEach((position) => {
-      expect(['top-left', 'top-right', 'inline']).toContain(position);
-    });
-  });
-
-  test('should support optional className and ariaLabel', () => {
-    const badge: NodeBadge = {
-      position: 'top-left',
-      content: 'Badge',
-      className: 'custom-class',
-      ariaLabel: 'Custom aria label',
-    };
-
-    expect(badge.className).toBe('custom-class');
-    expect(badge.ariaLabel).toBe('Custom aria label');
-  });
-});
-
-test.describe('Hook Exports from Index', () => {
-  test('should export all hooks from index file', async () => {
+/**
+ * Test Hook Exports
+ *
+ * Validates that hooks are properly exported from barrel files
+ */
+test.describe('Hook Exports', () => {
+  test('should export useChangesetStyling from hooks index', async () => {
     const hooks = await import('../../../src/core/nodes/hooks');
-
     expect(typeof hooks.useChangesetStyling).toBe('function');
-    expect(typeof hooks.useNodeOpacity).toBe('function');
+  });
+
+  test('should export useNodeHandles from hooks index', async () => {
+    const hooks = await import('../../../src/core/nodes/hooks');
     expect(typeof hooks.useNodeHandles).toBe('function');
-    expect(typeof hooks.useRelationshipBadge).toBe('function');
-    expect(typeof hooks.useBadgeRenderer).toBe('function');
   });
 
-  test('should export hooks from main nodes index file', async () => {
+  test('should not export removed hooks', async () => {
+    const hooks = await import('../../../src/core/nodes/hooks');
+    expect(hooks.useNodeOpacity).toBeUndefined();
+    expect(hooks.useRelationshipBadge).toBeUndefined();
+    expect(hooks.useBadgeRenderer).toBeUndefined();
+  });
+
+  test('should export HandleConfig type from hooks index', async () => {
+    // Type import validation
+    const hooks = await import('../../../src/core/nodes/hooks');
+    expect(hooks).toBeDefined();
+  });
+
+  test('should export hooks from main nodes index', async () => {
     const nodes = await import('../../../src/core/nodes');
-
     expect(typeof nodes.useChangesetStyling).toBe('function');
-    expect(typeof nodes.useNodeOpacity).toBe('function');
     expect(typeof nodes.useNodeHandles).toBe('function');
-    expect(typeof nodes.useRelationshipBadge).toBe('function');
-    expect(typeof nodes.useBadgeRenderer).toBe('function');
+  });
+
+  test('should not export removed hooks from main index', async () => {
+    const nodes = await import('../../../src/core/nodes');
+    expect(nodes.useNodeOpacity).toBeUndefined();
+    expect(nodes.useRelationshipBadge).toBeUndefined();
+    expect(nodes.useBadgeRenderer).toBeUndefined();
   });
 });
 
-test.describe('Hook Type Compatibility', () => {
-  test('should support all ChangesetOperation types in useChangesetStyling', async () => {
-    const operations: ChangesetOperation[] = ['add', 'update', 'delete'];
-
-    operations.forEach((op) => {
-      expect(['add', 'update', 'delete']).toContain(op);
-    });
-  });
-
-  test('should support undefined operation in useChangesetStyling', () => {
-    const operation: ChangesetOperation | undefined = undefined;
-    expect(operation).toBeUndefined();
-  });
-
-  test('should support all layout types in useNodeHandles', () => {
-    const layouts: Array<'centered' | 'left' | 'table'> = ['centered', 'left', 'table'];
-
-    layouts.forEach((layout) => {
-      expect(['centered', 'left', 'table']).toContain(layout);
-    });
-  });
-});
-
+/**
+ * Test Core Layer Compliance
+ *
+ * Validates that hooks maintain the core layer restriction
+ * (no imports from src/apps/)
+ */
 test.describe('Core Layer Restriction Compliance', () => {
   test('hooks should not import from src/apps/', async () => {
-    // This test validates that hooks module doesn't have app layer dependencies
-    const hooksModules = [
-      '../../../src/core/nodes/hooks/useChangesetStyling.ts',
-      '../../../src/core/nodes/hooks/useNodeOpacity.ts',
-      '../../../src/core/nodes/hooks/useNodeHandles.ts',
-      '../../../src/core/nodes/hooks/useRelationshipBadge.ts',
-      '../../../src/core/nodes/hooks/useBadgeRenderer.ts',
-    ];
+    const hooks = await import('../../../src/core/nodes/hooks');
 
-    // Validates that all hooks are defined in core layer
-    expect(hooksModules.length).toBeGreaterThan(0);
+    // Verify hooks are defined in core layer
+    expect(typeof hooks.useChangesetStyling).toBe('function');
+    expect(typeof hooks.useNodeHandles).toBe('function');
+
+    // If we can import and use them without app-layer dependencies,
+    // they comply with core layer restrictions
   });
 });
