@@ -6,6 +6,10 @@ GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
+# Bypass corrupted global git config if present
+export GIT_CONFIG_GLOBAL=/dev/null
+export GIT_CONFIG_SYSTEM=/dev/null
+
 echo -e "${GREEN}Starting pre-commit checks...${NC}"
 
 # 1. Install dependencies

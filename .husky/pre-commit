@@ -7,6 +7,10 @@
 
 set -e
 
+# Bypass corrupted global git config if present
+export GIT_CONFIG_GLOBAL=/dev/null
+export GIT_CONFIG_SYSTEM=/dev/null
+
 echo "🔄 Checking API spec synchronization..."
 
 # Check if running offline

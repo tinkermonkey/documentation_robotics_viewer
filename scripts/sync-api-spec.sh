@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+# Bypass corrupted global git config if present
+export GIT_CONFIG_GLOBAL=/dev/null
+export GIT_CONFIG_SYSTEM=/dev/null
+
 SPEC_URL="https://raw.githubusercontent.com/tinkermonkey/documentation_robotics/main/docs/api-spec.yaml"
 OUTPUT_PATH="docs/api-spec.yaml"
 
