@@ -167,7 +167,7 @@ function UnifiedNodeComponent({ data, id }: { data: UnifiedNodeData; id?: string
       aria-label={`${typeLabel}: ${label}`}
       data-testid={`unified-node-${nodeType}`}
     >
-      {/* Relationship badge - displays in top-right when node is dimmed */}
+      {/* Relationship badge - displays in top-right when node is dimmed and badge.count > 0 */}
       {relationshipBadge && (
         <RelationshipBadge badge={relationshipBadge} isDimmed={finalOpacity < 1} />
       )}
