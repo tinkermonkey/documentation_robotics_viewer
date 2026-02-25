@@ -115,7 +115,7 @@ tests/
 All graph nodes use the unified `UnifiedNode` component driven by JSON configuration.
 
 **Node Configuration:**
-- `NodeType` enum defines 21 node types across 10 architectural layers
+- `NodeType` enum defines 20 node types across 10 architectural layers
 - `nodeConfig.json` maps NodeType → styling (colors, dimensions, layout mode, icon)
 - `typeMap` section maps element type strings → NodeType enum values
 - Single component handles all rendering variations
@@ -132,8 +132,7 @@ All graph nodes use the unified `UnifiedNode` component driven by JSON configura
 **Component Structure:**
 ```
 src/core/nodes/
-├── UnifiedNode.tsx          # Main component (MOVED TO components/)
-├── NodeType.ts              # Enum definition (21 types)
+├── NodeType.ts              # Enum definition (20 types)
 ├── nodeConfig.json          # Styling configuration
 ├── nodeConfig.types.ts      # TypeScript interfaces
 ├── nodeConfigLoader.ts      # Config loader utility

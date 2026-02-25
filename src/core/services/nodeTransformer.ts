@@ -17,7 +17,6 @@ import { NodeType } from '../nodes/NodeType';
 import type { UnifiedNodeData } from '../nodes/components/UnifiedNode';
 import type { FieldItem } from '../nodes/components/FieldList';
 import type { RelationshipBadgeData } from '../nodes/components/RelationshipBadge';
-// C4 node dimensions are loaded from nodeConfigLoader
 import { extractCrossLayerReferences, referencesToEdges } from './crossLayerLinksExtractor';
 
 /**
