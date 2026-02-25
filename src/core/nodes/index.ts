@@ -24,6 +24,13 @@ import type {
   RelationshipBadgeData,
   RelationshipBadgeProps,
 } from './components';
+import {
+  useChangesetStyling,
+  useNodeOpacity,
+  useNodeHandles,
+  useRelationshipBadge,
+  useBadgeRenderer,
+} from './hooks';
 
 // Export all node components
 export {
@@ -37,6 +44,12 @@ export {
   NodeType,
   isValidNodeType,
   nodeConfigLoader,
+  // Node hooks
+  useChangesetStyling,
+  useNodeOpacity,
+  useNodeHandles,
+  useRelationshipBadge,
+  useBadgeRenderer,
 };
 
 // Export types for configuration and unified node
