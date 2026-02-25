@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import ModelLayersSidebar from '@/apps/embedded/components/ModelLayersSidebar';
 import { useModelStore } from '@/core/stores/modelStore';
 import type { MetaModel } from '@/core/types/model';

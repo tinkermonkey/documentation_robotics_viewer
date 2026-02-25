@@ -1,5 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// Bypass corrupted global git config if present (prevents CI failures)
+// See: https://github.com/tinkermonkey/documentation_robotics/issues/341
+process.env.GIT_CONFIG_GLOBAL ??= '/dev/null';
+process.env.GIT_CONFIG_SYSTEM ??= '/dev/null';
+
 /**
  * Default Playwright Test Configuration
  *
@@ -54,6 +59,6 @@ export default defineConfig({
     command: 'npm run dev',
     url: 'http://localhost:3001',
     reuseExistingServer: !process.env.CI,
-    timeout: 60000,
+    timeout: process.env.CI ? 120000 : 60000,
   },
 });

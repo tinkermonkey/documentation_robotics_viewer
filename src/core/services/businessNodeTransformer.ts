@@ -3,6 +3,10 @@
  *
  * Transforms BusinessGraph nodes to React Flow node data.
  * Pre-calculates dimensions and extracts metadata for visualization.
+ *
+ * NOTE: Business layer nodes are now migrated to use UnifiedNode component.
+ * This transformer provides dimension lookups and metadata extraction
+ * for business nodes to support the unified node rendering pipeline.
  */
 
 import { BusinessNode } from '../types/businessLayer';
@@ -12,16 +16,8 @@ import {
   BusinessServiceNodeData,
   BusinessCapabilityNodeData,
 } from '../types/reactflow';
-import {
-  BUSINESS_PROCESS_NODE_WIDTH,
-  BUSINESS_PROCESS_NODE_HEIGHT,
-  BUSINESS_FUNCTION_NODE_WIDTH,
-  BUSINESS_FUNCTION_NODE_HEIGHT,
-  BUSINESS_SERVICE_NODE_WIDTH,
-  BUSINESS_SERVICE_NODE_HEIGHT,
-  BUSINESS_CAPABILITY_NODE_WIDTH,
-  BUSINESS_CAPABILITY_NODE_HEIGHT,
-} from '../nodes';
+import { nodeConfigLoader } from '../nodes/nodeConfigLoader';
+import { NodeType } from '../nodes/NodeType';
 
 /**
  * BusinessNodeTransformer - Transforms business nodes to React Flow format
@@ -39,42 +35,55 @@ export class BusinessNodeTransformer {
 
   /**
    * Get node dimensions based on type
-   * Uses constants from node components to ensure synchronization
+   * Uses nodeConfigLoader to get dimensions from configuration.
+   * Falls back to default dimensions if configuration is missing,
+   * logging a warning to help identify configuration issues.
    */
   getNodeDimensions(node: BusinessNode): { width: number; height: number } {
-    switch (node.type) {
-      case 'process':
-        return { width: BUSINESS_PROCESS_NODE_WIDTH, height: BUSINESS_PROCESS_NODE_HEIGHT };
-      case 'function':
-        return { width: BUSINESS_FUNCTION_NODE_WIDTH, height: BUSINESS_FUNCTION_NODE_HEIGHT };
-      case 'service':
-        return { width: BUSINESS_SERVICE_NODE_WIDTH, height: BUSINESS_SERVICE_NODE_HEIGHT };
-      case 'capability':
+    // Map business node types to configuration keys
+    const typeToConfig: Record<string, NodeType> = {
+      process: NodeType.BUSINESS_PROCESS,
+      function: NodeType.BUSINESS_FUNCTION,
+      service: NodeType.BUSINESS_SERVICE,
+      capability: NodeType.BUSINESS_CAPABILITY,
+    };
+
+    const configKey = typeToConfig[node.type];
+    if (configKey) {
+      const styleConfig = nodeConfigLoader.getStyleConfig(configKey);
+      if (styleConfig?.dimensions) {
         return {
-          width: BUSINESS_CAPABILITY_NODE_WIDTH,
-          height: BUSINESS_CAPABILITY_NODE_HEIGHT,
+          width: styleConfig.dimensions.width,
+          height: styleConfig.dimensions.height,
         };
-      default:
-        return { width: BUSINESS_PROCESS_NODE_WIDTH, height: BUSINESS_PROCESS_NODE_HEIGHT };
+      }
     }
+
+    // Fallback: Log warning when config is not available
+    // This indicates either an unknown node type or a configuration issue
+    const reason =
+      configKey && !nodeConfigLoader.getStyleConfig(configKey)
+        ? `missing configuration for NodeType "${configKey}"`
+        : `unknown node type "${node.type}"`;
+
+    console.warn(
+      `[BusinessNodeTransformer] Using fallback dimensions for node "${node.id}" (${reason}). ` +
+      `Node may render with unexpected size. ` +
+      `Verify node.type is mapped in typeToConfig and nodeConfig.json has corresponding style configuration.`
+    );
+
+    return { width: 180, height: 100 };
   }
 
   /**
    * Get node type string for React Flow
+   * Post-migration: All business nodes now render as 'unified' type.
+   * This method is retained for backward compatibility with the BusinessNodeTransformer API
+   * and to maintain consistency with other layer transformers.
    */
-  getNodeType(node: BusinessNode): string {
-    switch (node.type) {
-      case 'process':
-        return 'businessProcess';
-      case 'function':
-        return 'businessFunction';
-      case 'service':
-        return 'businessService';
-      case 'capability':
-        return 'businessCapability';
-      default:
-        return 'businessProcess';
-    }
+  getNodeType(): string {
+    // All business nodes now render as 'unified' type
+    return 'unified';
   }
 
   /**
@@ -87,7 +96,7 @@ export class BusinessNodeTransformer {
     | BusinessFunctionNodeData
     | BusinessServiceNodeData
     | BusinessCapabilityNodeData {
-    const nodeType = this.getNodeType(node);
+    const nodeType = this.getNodeType();
 
     const baseData = {
       label: node.name,

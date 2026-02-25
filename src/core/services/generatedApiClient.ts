@@ -1,7 +1,7 @@
 /**
  * Auto-generated API Client with React Query Hooks
  * Generated from: /workspace/docs/api-spec.yaml
- * Generated at: 2026-02-20T09:52:00.603Z
+ * Generated at: 2026-02-25T00:07:23.725Z
  * API Version: 0.1.0
  *
  * IMPORTANT: This file is auto-generated. Do not edit directly.
@@ -91,29 +91,6 @@ export class ApiClient {
     return response.json();
   }
 
-  async getapispec(): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/spec`;
-    const url = `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'GET',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`GET /api/spec failed: ${response.status} ${errorText}`);
-    }
-
-    return response.json();
-  }
-
   async getapimodel(): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
     const pathStr = `/api/model`;
@@ -154,15 +131,15 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`GET /api/layers/{layerName} failed: ${response.status} ${errorText}`);
+      throw new Error(`GET /api/layers/:layerName failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
   }
 
-  async getapielementselementId(elementId: string): Promise<unknown> {
+  async getapielementsid(id: string): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/elements/${encodeURIComponent(elementId)}`;
+    const pathStr = `/api/elements/${encodeURIComponent(id)}`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -177,15 +154,15 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`GET /api/elements/{elementId} failed: ${response.status} ${errorText}`);
+      throw new Error(`GET /api/elements/:id failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
   }
 
-  async getapichangesets(): Promise<unknown> {
+  async getapispec(): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/changesets`;
+    const pathStr = `/api/spec`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -200,36 +177,13 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`GET /api/changesets failed: ${response.status} ${errorText}`);
+      throw new Error(`GET /api/spec failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
   }
 
-  async getapichangesetschangesetId(changesetId: string): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/changesets/${encodeURIComponent(changesetId)}`;
-    const url = `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'GET',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`GET /api/changesets/{changesetId} failed: ${response.status} ${errorText}`);
-    }
-
-    return response.json();
-  }
-
-  async getapiannotations(query?: { elementId?: string }): Promise<unknown> {
+  async getapiannotations(query?: { elementId?: string, author?: string, tags?: string, resolved?: string }): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
     const pathStr = `/api/annotations`;
     
@@ -286,6 +240,29 @@ export class ApiClient {
     return response.json();
   }
 
+  async getapiannotationsannotationId(annotationId: string): Promise<unknown> {
+    const baseUrl = this.getBaseUrl();
+    const pathStr = `/api/annotations/${encodeURIComponent(annotationId)}`;
+    const url = `${baseUrl}${pathStr}`;
+
+    const options: RequestInit = {
+      method: 'GET',
+      headers: this.getHeaders(),
+      credentials: 'include'
+    };
+
+    
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`GET /api/annotations/:annotationId failed: ${response.status} ${errorText}`);
+    }
+
+    return response.json();
+  }
+
   async putapiannotationsannotationId(annotationId: string, body?: unknown): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
     const pathStr = `/api/annotations/${encodeURIComponent(annotationId)}`;
@@ -303,7 +280,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`PUT /api/annotations/{annotationId} failed: ${response.status} ${errorText}`);
+      throw new Error(`PUT /api/annotations/:annotationId failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -326,7 +303,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`PATCH /api/annotations/{annotationId} failed: ${response.status} ${errorText}`);
+      throw new Error(`PATCH /api/annotations/:annotationId failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -349,7 +326,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`DELETE /api/annotations/{annotationId} failed: ${response.status} ${errorText}`);
+      throw new Error(`DELETE /api/annotations/:annotationId failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -372,7 +349,7 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`GET /api/annotations/{annotationId}/replies failed: ${response.status} ${errorText}`);
+      throw new Error(`GET /api/annotations/:annotationId/replies failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -395,15 +372,15 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`POST /api/annotations/{annotationId}/replies failed: ${response.status} ${errorText}`);
+      throw new Error(`POST /api/annotations/:annotationId/replies failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
   }
 
-  async getws(): Promise<unknown> {
+  async getapichangesets(): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
-    const pathStr = `/ws`;
+    const pathStr = `/api/changesets`;
     const url = `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
@@ -418,7 +395,30 @@ export class ApiClient {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`GET /ws failed: ${response.status} ${errorText}`);
+      throw new Error(`GET /api/changesets failed: ${response.status} ${errorText}`);
+    }
+
+    return response.json();
+  }
+
+  async getapichangesetschangesetId(changesetId: string): Promise<unknown> {
+    const baseUrl = this.getBaseUrl();
+    const pathStr = `/api/changesets/${encodeURIComponent(changesetId)}`;
+    const url = `${baseUrl}${pathStr}`;
+
+    const options: RequestInit = {
+      method: 'GET',
+      headers: this.getHeaders(),
+      credentials: 'include'
+    };
+
+    
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`GET /api/changesets/:changesetId failed: ${response.status} ${errorText}`);
     }
 
     return response.json();
@@ -468,18 +468,6 @@ const apiClient = getApiClient();
   }
 
   /**
-   * React Query hook for getapispec
-   * Auto-manages caching and invalidation
-   */
-  export function useGetapispec(options?: QueryOptions) {
-    return useQuery({
-      queryKey: ['getapispec'],
-      queryFn: () => apiClient.getapispec(),
-      ...(options || {})
-    });
-  }
-
-  /**
    * React Query hook for getapimodel
    * Auto-manages caching and invalidation
    */
@@ -504,38 +492,26 @@ const apiClient = getApiClient();
   }
 
   /**
-   * React Query hook for getapielementselementId
+   * React Query hook for getapielementsid
    * Auto-manages caching and invalidation
    */
-  export function useGetapielementselementId(elementId: string, options?: QueryOptions) {
+  export function useGetapielementsid(id: string, options?: QueryOptions) {
     return useQuery({
-      queryKey: ['getapielementselementId', elementId],
-      queryFn: () => apiClient.getapielementselementId(elementId),
+      queryKey: ['getapielementsid', id],
+      queryFn: () => apiClient.getapielementsid(id),
       ...options
     });
   }
 
   /**
-   * React Query hook for getapichangesets
+   * React Query hook for getapispec
    * Auto-manages caching and invalidation
    */
-  export function useGetapichangesets(options?: QueryOptions) {
+  export function useGetapispec(options?: QueryOptions) {
     return useQuery({
-      queryKey: ['getapichangesets'],
-      queryFn: () => apiClient.getapichangesets(),
+      queryKey: ['getapispec'],
+      queryFn: () => apiClient.getapispec(),
       ...(options || {})
-    });
-  }
-
-  /**
-   * React Query hook for getapichangesetschangesetId
-   * Auto-manages caching and invalidation
-   */
-  export function useGetapichangesetschangesetId(changesetId: string, options?: QueryOptions) {
-    return useQuery({
-      queryKey: ['getapichangesetschangesetId', changesetId],
-      queryFn: () => apiClient.getapichangesetschangesetId(changesetId),
-      ...options
     });
   }
 
@@ -564,6 +540,18 @@ const apiClient = getApiClient();
       },
       ...options
     } as any);
+  }
+
+  /**
+   * React Query hook for getapiannotationsannotationId
+   * Auto-manages caching and invalidation
+   */
+  export function useGetapiannotationsannotationId(annotationId: string, options?: QueryOptions) {
+    return useQuery({
+      queryKey: ['getapiannotationsannotationId', annotationId],
+      queryFn: () => apiClient.getapiannotationsannotationId(annotationId),
+      ...options
+    });
   }
 
   /**
@@ -639,14 +627,26 @@ const apiClient = getApiClient();
   }
 
   /**
-   * React Query hook for getws
+   * React Query hook for getapichangesets
    * Auto-manages caching and invalidation
    */
-  export function useGetws(options?: QueryOptions) {
+  export function useGetapichangesets(options?: QueryOptions) {
     return useQuery({
-      queryKey: ['getws'],
-      queryFn: () => apiClient.getws(),
+      queryKey: ['getapichangesets'],
+      queryFn: () => apiClient.getapichangesets(),
       ...(options || {})
+    });
+  }
+
+  /**
+   * React Query hook for getapichangesetschangesetId
+   * Auto-manages caching and invalidation
+   */
+  export function useGetapichangesetschangesetId(changesetId: string, options?: QueryOptions) {
+    return useQuery({
+      queryKey: ['getapichangesetschangesetId', changesetId],
+      queryFn: () => apiClient.getapichangesetschangesetId(changesetId),
+      ...options
     });
   }
 

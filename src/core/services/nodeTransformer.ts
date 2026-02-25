@@ -12,32 +12,11 @@ import { applyEdgeBundling, calculateOptimalThreshold } from '../layout/edgeBund
 import { LayoutResult, LayerLayoutResult } from '../types/shapes';
 import { AppNode, AppEdge } from '../types/reactflow';
 import { FALLBACK_COLOR } from '../utils/layerColors';
-// Import C4 node dimension constants to prevent drift
-import {
-  CONTAINER_NODE_WIDTH,
-  CONTAINER_NODE_HEIGHT,
-} from '../nodes/c4/ContainerNode';
-import {
-  COMPONENT_NODE_WIDTH,
-  COMPONENT_NODE_HEIGHT,
-} from '../nodes/c4/ComponentNode';
-import {
-  EXTERNAL_ACTOR_NODE_WIDTH,
-  EXTERNAL_ACTOR_NODE_HEIGHT,
-} from '../nodes/c4/ExternalActorNode';
-// Import Business node dimension constants
-import {
-  BUSINESS_SERVICE_NODE_WIDTH,
-  BUSINESS_SERVICE_NODE_HEIGHT,
-} from '../nodes/business/BusinessServiceNode';
-import {
-  BUSINESS_FUNCTION_NODE_WIDTH,
-  BUSINESS_FUNCTION_NODE_HEIGHT,
-} from '../nodes/business/BusinessFunctionNode';
-import {
-  BUSINESS_CAPABILITY_NODE_WIDTH,
-  BUSINESS_CAPABILITY_NODE_HEIGHT,
-} from '../nodes/business/BusinessCapabilityNode';
+import { nodeConfigLoader } from '../nodes/nodeConfigLoader';
+import { NodeType } from '../nodes/NodeType';
+import type { UnifiedNodeData } from '../nodes/components/UnifiedNode';
+import type { FieldItem } from '../nodes/components/FieldList';
+import type { RelationshipBadgeData } from '../nodes/components/RelationshipBadge';
 import { extractCrossLayerReferences, referencesToEdges } from './crossLayerLinksExtractor';
 
 /**
@@ -47,6 +26,20 @@ export interface NodeTransformResult {
   nodes: AppNode[];
   edges: AppEdge[];
   layout: LayoutResult;
+}
+
+/**
+ * Optional extended properties that may be present on elements
+ * These are only accessed after proper validation
+ */
+interface OptionalElementProperties {
+  detailLevel?: 'minimal' | 'standard' | 'detailed';
+  changesetOperation?: 'add' | 'update' | 'delete';
+  relationshipBadge?: RelationshipBadgeData;
+  schemaInfo?: {
+    properties?: Record<string, unknown> | Array<Record<string, unknown>>;
+    required?: string[];
+  };
 }
 
 /**
@@ -212,17 +205,17 @@ export class NodeTransformer {
         const nodeType = this.getNodeTypeForElement(element);
 
         // Create node with type-specific data
-        const node = {
+        const node: AppNode = {
           id: nodeId,
-          type: nodeType,
+          type: 'unified' as const,
           position: { x: topLeftX, y: topLeftY },
-          data: this.extractNodeData(element, nodeType),
+          data: this.extractNodeData(element, nodeType, layerType),
           width: element.visual.size.width,
           height: element.visual.size.height,
           style: { zIndex: 1 }, // Above layer containers (which have zIndex: -1)
-        };
+        } as AppNode;
 
-        nodes.push(node as AppNode);
+        nodes.push(node);
       }
     }
 
@@ -317,150 +310,478 @@ export class NodeTransformer {
 
   /**
    * Get node type for an element
+   * All element types must be mapped via configuration to NodeType enum.
+   * LayerContainer is a special structural node type.
    */
   private getNodeTypeForElement(element: ModelElement): string {
-    const typeMap: Record<string, string> = {
-      'data-model-component': 'dataModel',
-      'DataModelComponent': 'dataModel',
-      'Entity': 'dataModel',
-      'Interface': 'dataModel',
-      'Enum': 'dataModel',
-      'api-endpoint': 'apiEndpoint',
-      'APIEndpoint': 'apiEndpoint',
-      'Endpoint': 'apiEndpoint',
-      'role': 'role',
-      'Role': 'role',
-      'permission': 'permission',
-      'Permission': 'permission',
-      'Policy': 'permission',
-      'business-process': 'businessProcess',
-      'BusinessProcess': 'businessProcess',
-      'Process': 'businessProcess',
-      'business-service': 'businessService',
-      'BusinessService': 'businessService',
-      'Service': 'businessService',
-      'business-function': 'businessFunction',
-      'BusinessFunction': 'businessFunction',
-      'Function': 'businessFunction',
-      'business-capability': 'businessCapability',
-      'BusinessCapability': 'businessCapability',
-      'Capability': 'businessCapability',
-      'json-schema-element': 'jsonSchema',
-      'layer-container': 'layerContainer',
-      // C4 node types
-      'c4-container': 'c4Container',
-      'C4Container': 'c4Container',
-      'Container': 'c4Container',
-      'c4-component': 'c4Component',
-      'C4Component': 'c4Component',
-      'c4-external-actor': 'c4ExternalActor',
-      'C4ExternalActor': 'c4ExternalActor',
-      'ExternalActor': 'c4ExternalActor',
-      'ExternalSystem': 'c4ExternalActor',
-    };
-
-    const mapped = typeMap[element.type];
-    if (!mapped) {
-      console.warn(`[NodeTransformer] Unknown element type "${element.type}" for "${element.name}". Falling back to businessProcess.`);
+    // Special case: LayerContainer remains separate for layout purposes
+    if (element.type === 'LayerContainer' || element.type === 'layer-container') {
+      return 'layerContainer';
     }
-    return mapped || 'businessProcess';
+
+    // All other element types MUST be mapped via nodeConfig.json
+    const mappedType = nodeConfigLoader.mapElementType(element.type);
+
+    if (!mappedType) {
+      // Critical error: element type has no mapping
+      throw new Error(
+        `[NodeTransformer] Cannot map element type "${element.type}" to NodeType enum. ` +
+        `Add a mapping in nodeConfig.json typeMap section. Element ID: ${element.id}`
+      );
+    }
+
+    // All mapped types use unified node for consistent rendering
+    return 'unified';
   }
 
   /**
    * Extract node data based on element type
+   * All element types are mapped to NodeType enum and use UnifiedNode
    */
-  private extractNodeData(element: ModelElement, nodeType: string): any {
-    const baseData = {
-      label: element.name,
-      elementId: element.id,
-      layerId: element.layerId,
-      fill: element.visual.style.backgroundColor || '#ffffff',
-      stroke: element.visual.style.borderColor || '#000000',
-      modelElement: element,
-    };
-
-    // Add type-specific data
-    if (nodeType === 'dataModel') {
-      return {
-        ...baseData,
-        fields: element.properties.fields || [],
-        componentType: element.properties.componentType || 'entity',
-      };
-    } else if (nodeType === 'jsonSchema') {
-      // JSON Schema elements store properties in schemaInfo.properties
-      // We need to transform them to the format expected by BaseFieldListNode
-      const schemaProperties = (element as any).schemaInfo?.properties || [];
-      const properties = schemaProperties.map((prop: any) => ({
-        id: prop.name,
-        name: prop.name,
-        type: prop.type || 'any',
-        required: prop.required || false,
-      }));
-
-      return {
-        ...baseData,
-        schemaElementId: element.id,
-        expanded: false,
-        properties,
-      };
-    } else if (nodeType === 'apiEndpoint') {
-      return {
-        ...baseData,
-        path: element.properties.path || '/api/endpoint',
-        method: element.properties.method || 'GET',
-        operationId: element.properties.operationId,
-      };
-    } else if (nodeType === 'role') {
-      return {
-        ...baseData,
-        level: element.properties.level,
-        inheritsFrom: element.properties.inheritsFrom,
-      };
-    } else if (nodeType === 'permission') {
-      return {
-        ...baseData,
-        scope: element.properties.scope || 'resource',
-        resource: element.properties.resource,
-        action: element.properties.action,
-      };
-    } else if (nodeType === 'c4Container') {
-      return {
-        ...baseData,
-        containerType: element.properties.containerType || 'other',
-        technology: element.properties.technology || [],
-        description: element.properties.description || element.description,
-      };
-    } else if (nodeType === 'c4Component') {
-      return {
-        ...baseData,
-        role: element.properties.role,
-        technology: element.properties.technology || [],
-        description: element.properties.description || element.description,
-        interfaces: element.properties.interfaces || [],
-      };
-    } else if (nodeType === 'c4ExternalActor') {
-      return {
-        ...baseData,
-        actorType: element.properties.actorType || 'user',
-        description: element.properties.description || element.description,
-      };
-    } else if (nodeType === 'businessService' || nodeType === 'businessFunction' || nodeType === 'businessCapability') {
-      return {
-        ...baseData,
-        owner: element.properties.owner,
-        criticality: element.properties.criticality,
-        lifecycle: element.properties.lifecycle,
-        domain: element.properties.domain,
-      };
+  private extractNodeData(element: ModelElement, nodeType: string, layerId: string): UnifiedNodeData {
+    // All modern paths use 'unified' node type
+    if (nodeType !== 'unified') {
+      throw new Error(`[NodeTransformer] Invalid node type "${nodeType}" - expected "unified". Element type: ${element.type}`);
     }
 
-    return baseData;
+    const mappedType = nodeConfigLoader.mapElementType(element.type);
+
+    if (!mappedType) {
+      throw new Error(`[NodeTransformer] Cannot map element type "${element.type}" to NodeType`);
+    }
+
+    // Route to appropriate extraction method based on layer prefix
+    if (mappedType.startsWith('motivation.')) {
+      return this.extractMotivationNodeData(element, mappedType as NodeType, layerId);
+    }
+
+    if (mappedType.startsWith('business.')) {
+      return this.extractBusinessNodeData(element, mappedType as NodeType, layerId);
+    }
+
+    if (mappedType.startsWith('c4.')) {
+      return this.extractC4NodeData(element, mappedType as NodeType, layerId);
+    }
+
+    if (mappedType.startsWith('data.')) {
+      return this.extractDataNodeData(element, mappedType as NodeType, layerId);
+    }
+
+    // Should not reach here if nodeConfig.json is properly configured
+    throw new Error(
+      `[NodeTransformer] No extraction method for mapped type "${mappedType}" (element type: "${element.type}")`
+    );
   }
 
   /**
-   * Pre-calculate dimensions for all node types
+   * Extract unified node data for motivation layer elements
+   */
+  private extractMotivationNodeData(element: ModelElement, nodeType: NodeType, layerId: string): UnifiedNodeData {
+    const optionalProps = this.extractOptionalProperties(element);
+
+    return {
+      nodeType,
+      label: element.name || element.id,
+      layerId,
+      elementId: element.id,
+      items: this.extractFieldItems(element),
+      badges: this.extractMotivationBadges(element, nodeType),
+      detailLevel: optionalProps.detailLevel,
+      changesetOperation: optionalProps.changesetOperation,
+      relationshipBadge: optionalProps.relationshipBadge,
+    };
+  }
+
+  /**
+   * Extract unified node data for business layer elements
+   */
+  private extractBusinessNodeData(element: ModelElement, nodeType: NodeType, layerId: string): UnifiedNodeData {
+    const optionalProps = this.extractOptionalProperties(element);
+
+    return {
+      nodeType,
+      label: element.name || element.id,
+      layerId,
+      elementId: element.id,
+      items: this.extractFieldItems(element),
+      badges: this.extractBusinessBadges(element, nodeType),
+      detailLevel: optionalProps.detailLevel,
+      changesetOperation: optionalProps.changesetOperation,
+    };
+  }
+
+  /**
+   * Extract field items from element attributes or properties
+   */
+  private extractFieldItems(element: ModelElement): FieldItem[] | undefined {
+    if (!element.properties || typeof element.properties !== 'object') {
+      return undefined;
+    }
+
+    const items: FieldItem[] = [];
+
+    // Map common motivation node properties to field items
+    const propertyMap: Record<string, string> = {
+      description: 'Description',
+      priority: 'Priority',
+      status: 'Status',
+      category: 'Category',
+      scope: 'Scope',
+      negotiability: 'Negotiability',
+      validationStatus: 'Validation Status',
+      assumptionType: 'Type',
+      stakeholderType: 'Type',
+      owner: 'Owner',
+      criticality: 'Criticality',
+    };
+
+    for (const [key, value] of Object.entries(element.properties)) {
+      if (value === null || value === undefined) continue;
+      if (key.startsWith('_')) continue; // Skip internal properties
+
+      const label = propertyMap[key] || this.formatFieldLabel(key);
+      items.push({
+        id: key,
+        label,
+        value: String(value),
+        required: false,
+      });
+    }
+
+    return items.length > 0 ? items : undefined;
+  }
+
+  /**
+   * Extract badges for motivation nodes based on type and data
+   */
+  private extractMotivationBadges(element: ModelElement, nodeType: NodeType): UnifiedNodeData['badges'] {
+    const badges: UnifiedNodeData['badges'] = [];
+    const props: Record<string, unknown> = element.properties || {};
+
+    switch (nodeType) {
+      case NodeType.MOTIVATION_STAKEHOLDER:
+        if (props.stakeholderType) {
+          const stakeholderType = this.validateString(props.stakeholderType);
+          if (stakeholderType !== undefined) {
+            badges.push({
+              position: 'inline' as const,
+              content: stakeholderType,
+              ariaLabel: `Type: ${stakeholderType}`,
+            });
+          }
+        }
+        break;
+
+      case NodeType.MOTIVATION_GOAL:
+        if (props.priority) {
+          badges.push({
+            position: 'top-right' as const,
+            content: `${props.priority}`,
+            ariaLabel: `Priority: ${props.priority}`,
+          });
+        }
+        break;
+
+      case NodeType.MOTIVATION_REQUIREMENT:
+        if (props.status) {
+          badges.push({
+            position: 'top-left' as const,
+            content: props.status === 'satisfied' ? '✓' : '○',
+            ariaLabel: `Status: ${props.status}`,
+          });
+        }
+        break;
+
+      case NodeType.MOTIVATION_DRIVER:
+        if (props.category) {
+          const category = this.validateString(props.category);
+          if (category !== undefined) {
+            badges.push({
+              position: 'top-right' as const,
+              content: category,
+              ariaLabel: `Category: ${category}`,
+            });
+          }
+        }
+        break;
+
+      case NodeType.MOTIVATION_OUTCOME:
+        if (props.status) {
+          const status = this.validateString(props.status);
+          if (status !== undefined) {
+            badges.push({
+              position: 'top-right' as const,
+              content: status,
+              ariaLabel: `Status: ${status}`,
+            });
+          }
+        }
+        break;
+
+      case NodeType.MOTIVATION_CONSTRAINT:
+        if (props.negotiability) {
+          const negotiability = this.validateString(props.negotiability);
+          if (negotiability !== undefined) {
+            badges.push({
+              position: 'top-right' as const,
+              content: negotiability,
+              ariaLabel: `Negotiability: ${negotiability}`,
+            });
+          }
+        }
+        break;
+
+      case NodeType.MOTIVATION_ASSESSMENT:
+        if (props.rating) {
+          badges.push({
+            position: 'top-right' as const,
+            content: `${props.rating}/5`,
+            ariaLabel: `Rating: ${props.rating} out of 5`,
+          });
+        }
+        break;
+    }
+
+    return badges.length > 0 ? badges : [];
+  }
+
+  /**
+   * Extract badges for business nodes based on type and data
+   */
+  private extractBusinessBadges(element: ModelElement, nodeType: NodeType): UnifiedNodeData['badges'] {
+    const badges: UnifiedNodeData['badges'] = [];
+    const props: Record<string, unknown> = element.properties || {};
+
+    // Owner badge (common to all business node types)
+    if (props.owner) {
+      const owner = this.validateString(props.owner);
+      if (owner !== undefined) {
+        badges.push({
+          position: 'inline' as const,
+          content: owner,
+          ariaLabel: `Owner: ${owner}`,
+        });
+      }
+    }
+
+    // Criticality badge (color-coded, common to all business node types)
+    if (props.criticality) {
+      const criticality = String(props.criticality);
+      // Map criticality levels to static Tailwind classes that are detected at build time
+      const criticityColorClasses: Record<string, string> = {
+        'high': 'bg-red-100 text-red-900',
+        'medium': 'bg-orange-100 text-orange-900',
+        'low': 'bg-green-100 text-green-900',
+      };
+      badges.push({
+        position: 'inline' as const,
+        content: criticality,
+        className: criticityColorClasses[criticality] || 'bg-gray-100 text-gray-900',
+        ariaLabel: `Criticality: ${criticality}`,
+      });
+    }
+
+    // Domain badge (only for Function and Service nodes)
+    if ((nodeType === NodeType.BUSINESS_FUNCTION || nodeType === NodeType.BUSINESS_SERVICE) && props.domain) {
+      const domain = this.validateString(props.domain);
+      if (domain !== undefined) {
+        badges.push({
+          position: 'inline' as const,
+          content: domain,
+          ariaLabel: `Domain: ${domain}`,
+        });
+      }
+    }
+
+    // Special handling for BusinessProcess expand/collapse
+    const subprocessCount = props.subprocessCount ? Number(props.subprocessCount) : 0;
+    if (nodeType === NodeType.BUSINESS_PROCESS && subprocessCount > 0) {
+      const expanded = this.validateBoolean(props.expanded) ?? false;
+      badges.push({
+        position: 'top-right' as const,
+        content: expanded ? '▼' : '▶',
+        className: 'cursor-pointer text-lg leading-none',
+        ariaLabel: expanded ? 'Collapse subprocesses' : 'Expand subprocesses',
+      });
+    }
+
+    return badges;
+  }
+
+  /**
+   * Extract unified node data for C4 layer elements
+   */
+  private extractC4NodeData(element: ModelElement, nodeType: NodeType, layerId: string): UnifiedNodeData {
+    const items: FieldItem[] = [];
+    const optionalProps = this.extractOptionalProperties(element);
+
+    // Add description as first field item if present
+    const description = this.validateString(element.properties?.description) || element.description;
+    if (description) {
+      items.push({
+        id: 'description',
+        label: 'Description',
+        value: description,
+        required: false,
+      });
+    }
+
+    // Add technologies as field item if present (comma-separated)
+    if (this.isStringArray(element.properties?.technology) && element.properties.technology.length > 0) {
+      items.push({
+        id: 'technologies',
+        label: 'Technologies',
+        value: element.properties.technology.join(', '),
+        required: false,
+      });
+    }
+
+    // Add role for components
+    if (nodeType === NodeType.C4_COMPONENT) {
+      const role = this.validateString(element.properties?.role);
+      if (role !== undefined) {
+        items.push({
+          id: 'role',
+          label: 'Role',
+          value: role,
+          required: false,
+        });
+      }
+    }
+
+    // Add containerType for containers
+    if (nodeType === NodeType.C4_CONTAINER) {
+      const containerType = this.validateString(element.properties?.containerType);
+      if (containerType !== undefined) {
+        items.push({
+          id: 'containerType',
+          label: 'Type',
+          value: containerType,
+          required: false,
+        });
+      }
+    }
+
+    // Add actorType for external actors
+    if (nodeType === NodeType.C4_EXTERNAL_ACTOR) {
+      const actorType = this.validateString(element.properties?.actorType);
+      if (actorType !== undefined) {
+        items.push({
+          id: 'actorType',
+          label: 'Type',
+          value: actorType,
+          required: false,
+        });
+      }
+    }
+
+    // Add interfaces for components if present
+    if (nodeType === NodeType.C4_COMPONENT && this.isStringArray(element.properties?.interfaces) && element.properties.interfaces.length > 0) {
+      items.push({
+        id: 'interfaces',
+        label: 'Interfaces',
+        value: element.properties.interfaces.join(', '),
+        required: false,
+      });
+    }
+
+    return {
+      nodeType,
+      label: element.name || element.id,
+      layerId,
+      elementId: element.id,
+      items: items.length > 0 ? items : undefined,
+      badges: [],
+      detailLevel: optionalProps.detailLevel,
+      changesetOperation: optionalProps.changesetOperation,
+      relationshipBadge: optionalProps.relationshipBadge,
+    };
+  }
+
+  /**
+   * Create a field item from property data
+   * Handles both object and array property formats with consistent structure
+   */
+  private createFieldItemFromProperty(
+    key: string,
+    prop: Record<string, unknown>,
+    requiredFields: string[] | undefined
+  ): FieldItem {
+    const typeValue = this.validateString(prop?.type as unknown);
+    const dataTypeValue = this.validateString(prop?.dataType as unknown);
+    const propType = typeValue ?? dataTypeValue ?? 'unknown';
+    const description = prop?.description || prop?.tooltip || '';
+    const isRequired = Array.isArray(requiredFields) ? requiredFields.includes(key) : false;
+
+    return {
+      id: key,
+      label: key,
+      value: propType,
+      required: isRequired,
+      tooltip: description ? String(description) : undefined,
+    };
+  }
+
+  /**
+   * Extract unified node data for data layer elements (JSONSchema, DataModel)
+   */
+  private extractDataNodeData(element: ModelElement, nodeType: NodeType, layerId: string): UnifiedNodeData {
+    const items: FieldItem[] = [];
+    const optionalProps = this.extractOptionalProperties(element);
+
+    // Extract schema properties or model attributes as field items
+    // Handle both direct properties and schemaInfo.properties (for JSONSchema)
+    const schemaInfo = this.extractSchemaInfo(element);
+    const properties = element.properties || schemaInfo?.properties || {};
+    const requiredFields = schemaInfo?.required;
+
+    // Handle object format (key-value pairs)
+    if (this.isObjectProperties(properties)) {
+      Object.entries(properties).forEach(([key, prop]) => {
+        if (key.startsWith('_')) return; // Skip internal properties
+        if (this.isRecord(prop)) {
+          items.push(this.createFieldItemFromProperty(key, prop, requiredFields));
+        }
+      });
+    }
+
+    // Handle array format (for some schema definitions)
+    if (Array.isArray(properties)) {
+      properties.forEach((prop) => {
+        if (!this.isRecord(prop)) return;
+        const propName = this.validateString(prop.name) || this.validateString(prop.id) || 'unknown';
+        items.push(this.createFieldItemFromProperty(propName, prop, requiredFields));
+      });
+    }
+
+    return {
+      nodeType,
+      label: element.name || element.id,
+      layerId,
+      elementId: element.id,
+      items: items.length > 0 ? items : undefined,
+      badges: undefined,
+      detailLevel: optionalProps.detailLevel,
+      changesetOperation: optionalProps.changesetOperation,
+      relationshipBadge: optionalProps.relationshipBadge,
+    };
+  }
+
+  /**
+   * Format field labels (camelCase → Title Case)
+   */
+  private formatFieldLabel(key: string): string {
+    return key
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, str => str.toUpperCase())
+      .trim();
+  }
+
+  /**
+   * Pre-calculate dimensions for all node types from JSON configuration.
    * CRITICAL: These dimensions MUST match the actual rendered component sizes
-   * This ensures dagre layout and React Flow positioning are correct
+   * This ensures dagre layout and React Flow positioning are correct.
+   * Reads all dimensions from nodeConfig.json via nodeConfigLoader.
    */
   private precalculateDimensions(
     model: MetaModel,
@@ -482,128 +803,60 @@ export class NodeTransformer {
           };
         }
 
-        // Get node type to determine dimensions
-        const nodeType = this.getNodeTypeForElement(element);
+        // Map element type to NodeType via config
+        const mappedType = nodeConfigLoader.mapElementType(element.type);
 
-        switch (nodeType) {
-          case 'jsonSchema':
-            // JSONSchemaNode: width 280, height dynamic
-            const schemaHeaderHeight = 36;
-            const propertyHeight = 24;
-            // JSON Schema elements store properties in schemaInfo.properties
-            const properties = (element as any).schemaInfo?.properties || [];
-            const schemaHeight = properties.length > 0
-              ? schemaHeaderHeight + properties.length * propertyHeight
-              : schemaHeaderHeight + 60; // "No properties" message
+        if (!mappedType) {
+          // Warning already logged by nodeConfigLoader.mapElementType()
+          element.visual.size = { width: 180, height: 100 };
+        } else {
+          // Get style config from JSON
+          const styleConfig = nodeConfigLoader.getStyleConfig(mappedType);
 
-            element.visual.size = {
-              width: 280,
-              height: schemaHeight,
-            };
-            break;
+          if (!styleConfig) {
+            console.warn(`[NodeTransformer] No style config found for NodeType: ${mappedType}`);
+            element.visual.size = { width: 180, height: 100 };
+          } else {
+            const { dimensions } = styleConfig;
 
-          case 'dataModel':
-            // DataModelNode: width 280, height dynamic
-            const modelHeaderHeight = 36;
-            const fieldHeight = 24;
-            const fields = (element.properties.fields as any[]) || [];
-            const modelHeight = fields.length > 0
-              ? modelHeaderHeight + fields.length * fieldHeight
-              : modelHeaderHeight + 60; // "No properties" message
+            // Base dimensions from config
+            let width = dimensions.width;
+            let height = dimensions.height;
 
-            element.visual.size = {
-              width: 280,
-              height: modelHeight,
-            };
-            break;
+            // Dynamic height calculation for nodes with field lists
+            if (element.properties) {
+              // Count only properties that will actually be rendered in field list
+              // (excluding null/undefined values and internal properties starting with _)
+              const fieldItems = Object.entries(element.properties)
+                .filter(([key, value]) => value !== null && value !== undefined && !key.startsWith('_'))
+                .length;
 
-          case 'role':
-            // RoleNode: fixed dimensions from RoleNode.tsx
-            element.visual.size = {
-              width: 160,
-              height: 90,
-            };
-            break;
+              if (fieldItems > 0) {
+                const headerHeight = dimensions.headerHeight || 40;
+                const itemHeight = dimensions.itemHeight || 24;
+                height = headerHeight + fieldItems * itemHeight;
+              }
+            }
 
-          case 'permission':
-            // PermissionNode: fixed dimensions from PermissionNode.tsx
-            element.visual.size = {
-              width: 180,
-              height: 90,
-            };
-            break;
+            // Special handling for C4 nodes with technologies and description
+            if (mappedType.startsWith('c4.')) {
+              let itemCount = 0;
+              if (element.description) itemCount++;
+              if (element.properties?.technology && Array.isArray(element.properties.technology) && element.properties.technology.length > 0) itemCount++;
+              if (mappedType === NodeType.C4_COMPONENT && element.properties?.role) itemCount++;
+              if (mappedType === NodeType.C4_CONTAINER && element.properties?.containerType) itemCount++;
+              if (mappedType === NodeType.C4_EXTERNAL_ACTOR && element.properties?.actorType) itemCount++;
+              if (mappedType === NodeType.C4_COMPONENT && element.properties?.interfaces && Array.isArray(element.properties.interfaces) && element.properties.interfaces.length > 0) itemCount++;
 
-          case 'apiEndpoint':
-            // APIEndpointNode: fixed dimensions from APIEndpointNode.tsx
-            element.visual.size = {
-              width: 250,
-              height: 80,
-            };
-            break;
+              if (itemCount > 0) {
+                const headerHeight = dimensions.headerHeight || 40;
+                const itemHeight = dimensions.itemHeight || 24;
+                height = headerHeight + itemCount * itemHeight;
+              }
+            }
 
-          case 'businessProcess':
-            // BusinessProcessNode: fixed dimensions from BusinessProcessNode.tsx
-            element.visual.size = {
-              width: 180,
-              height: 100,
-            };
-            break;
-
-          case 'businessService':
-            // BusinessServiceNode: uses imported constants from BusinessServiceNode.tsx
-            element.visual.size = {
-              width: BUSINESS_SERVICE_NODE_WIDTH,
-              height: BUSINESS_SERVICE_NODE_HEIGHT,
-            };
-            break;
-
-          case 'businessFunction':
-            // BusinessFunctionNode: uses imported constants from BusinessFunctionNode.tsx
-            element.visual.size = {
-              width: BUSINESS_FUNCTION_NODE_WIDTH,
-              height: BUSINESS_FUNCTION_NODE_HEIGHT,
-            };
-            break;
-
-          case 'businessCapability':
-            // BusinessCapabilityNode: uses imported constants from BusinessCapabilityNode.tsx
-            element.visual.size = {
-              width: BUSINESS_CAPABILITY_NODE_WIDTH,
-              height: BUSINESS_CAPABILITY_NODE_HEIGHT,
-            };
-            break;
-
-          case 'c4Container':
-            // C4 ContainerNode: uses imported constants from ContainerNode.tsx
-            element.visual.size = {
-              width: CONTAINER_NODE_WIDTH,
-              height: CONTAINER_NODE_HEIGHT,
-            };
-            break;
-
-          case 'c4Component':
-            // C4 ComponentNode: uses imported constants from ComponentNode.tsx
-            element.visual.size = {
-              width: COMPONENT_NODE_WIDTH,
-              height: COMPONENT_NODE_HEIGHT,
-            };
-            break;
-
-          case 'c4ExternalActor':
-            // C4 ExternalActorNode: uses imported constants from ExternalActorNode.tsx
-            element.visual.size = {
-              width: EXTERNAL_ACTOR_NODE_WIDTH,
-              height: EXTERNAL_ACTOR_NODE_HEIGHT,
-            };
-            break;
-
-          default:
-            // Default fallback dimensions
-            element.visual.size = element.visual.size || {
-              width: 200,
-              height: 100,
-            };
-            break;
+            element.visual.size = { width, height };
+          }
         }
 
         // Override with DOM-measured sizes from pass 1 (two-pass layout)
@@ -615,47 +868,6 @@ export class NodeTransformer {
     }
   }
 
-  /**
-   * Convert MetaModel to LayoutGraphInput for new layout engines
-   * @unused - Reserved for future layout engine integration
-   */
-  // @ts-ignore - Reserved for future use
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private __modelToGraphInput(model: MetaModel): any {
-    const nodes: any[] = [];
-    const edges: any[] = [];
-
-    // Collect all nodes from all layers
-    for (const [layerId, layer] of Object.entries(model.layers)) {
-      for (const element of layer.elements) {
-        nodes.push({
-          id: element.id,
-          width: element.visual?.size?.width || 200,
-          height: element.visual?.size?.height || 100,
-          data: {
-            layer: layerId,
-            type: element.type,
-            ...element.properties,
-          },
-        });
-      }
-
-      // Add relationships as edges
-      for (const rel of layer.relationships) {
-        edges.push({
-          id: `${rel.sourceId}-${rel.targetId}`,
-          source: rel.sourceId,
-          target: rel.targetId,
-          data: {
-            type: rel.type,
-            ...rel.properties,
-          },
-        });
-      }
-    }
-
-    return { nodes, edges };
-  }
 
   /**
    * Layout each layer separately using the selected engine, then stack vertically
@@ -795,78 +1007,115 @@ export class NodeTransformer {
     return { nodes, edges };
   }
 
+
   /**
-   * Convert LayoutResult back to old layer-based layout format
-   * @unused - Reserved for future layout engine integration
+   * Extract optional properties from an element with proper type validation
    */
-  // @ts-ignore - Reserved for future use
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private __layoutResultToLayerLayout(result: any, model: MetaModel): any {
-    const layers: any = {};
+  private extractOptionalProperties(element: ModelElement): OptionalElementProperties {
+    const props: OptionalElementProperties = {};
+    const elementData = element as unknown as Record<string, unknown>;
 
-    console.log(`[NodeTransformer] Converting layout result with ${result.nodes.length} nodes to layer layout`);
+    // Safely extract detailLevel if present
+    const detailLevel = elementData.detailLevel;
+    if (detailLevel === 'minimal' || detailLevel === 'standard' || detailLevel === 'detailed') {
+      props.detailLevel = detailLevel;
+    } else {
+      props.detailLevel = 'standard';
+    }
 
-    // Group nodes by layer
-    for (const [layerId, _layer] of Object.entries(model.layers)) {
-      const layerNodes = result.nodes.filter((n: any) => n.data?.layer === layerId);
+    // Safely extract changesetOperation if present
+    const changesetOperation = elementData.changesetOperation;
+    if (changesetOperation === 'add' || changesetOperation === 'update' || changesetOperation === 'delete') {
+      props.changesetOperation = changesetOperation;
+    }
 
-      if (layerNodes.length === 0) continue;
+    // Safely extract relationshipBadge if present and validate structure
+    const relationshipBadgeData = elementData.relationshipBadge;
+    if (this.isRelationshipBadgeData(relationshipBadgeData)) {
+      props.relationshipBadge = relationshipBadgeData;
+    }
 
-      console.log(`[NodeTransformer] Layer ${layerId}: ${layerNodes.length} nodes`);
-
-      // Calculate bounds for this layer
-      let minX = Infinity,
-        maxX = -Infinity,
-        minY = Infinity,
-        maxY = -Infinity;
-
-      const elements: any[] = [];
-      const positions: Record<string, { x: number; y: number }> = {};
-
-      for (const node of layerNodes) {
-        const width = node.data?.width || 200;
-        const height = node.data?.height || 100;
-
-        minX = Math.min(minX, node.position.x);
-        maxX = Math.max(maxX, node.position.x + width);
-        minY = Math.min(minY, node.position.y);
-        maxY = Math.max(maxY, node.position.y + height);
-
-        elements.push({
-          id: node.id,
-          x: node.position.x,
-          y: node.position.y,
-        });
-
-        // Also create positions map for element ID lookup
-        positions[node.id] = {
-          x: node.position.x,
-          y: node.position.y,
-        };
-      }
-
-      // Log sample positions for debugging
-      const samplePositions = Object.entries(positions).slice(0, 3);
-      console.log(`[NodeTransformer] Sample positions for ${layerId}:`, samplePositions);
-
-      layers[layerId] = {
-        yOffset: 0,
-        bounds: {
-          minX,
-          maxX,
-          minY,
-          maxY,
-          width: maxX - minX,
-          height: maxY - minY,
-        },
-        elements,
-        positions,
+    // Safely extract schemaInfo if present
+    const schemaInfo = elementData.schemaInfo;
+    if (this.isRecord(schemaInfo)) {
+      const schemaData = schemaInfo as Record<string, unknown>;
+      const properties = schemaData.properties;
+      const required = schemaData.required;
+      props.schemaInfo = {
+        properties: (this.isRecord(properties) || Array.isArray(properties)) ? properties : undefined,
+        required: this.isStringArray(required)
+          ? required
+          : undefined,
       };
     }
 
+    return props;
+  }
+
+  /**
+   * Extract schemaInfo from an element
+   */
+  private extractSchemaInfo(element: ModelElement): OptionalElementProperties['schemaInfo'] | undefined {
+    const schemaInfo = (element as unknown as Record<string, unknown>).schemaInfo;
+    if (!this.isRecord(schemaInfo)) {
+      return undefined;
+    }
+
+    const properties = (schemaInfo as Record<string, unknown>).properties;
+    const required = (schemaInfo as Record<string, unknown>).required;
+
     return {
-      layers,
-      bounds: result.bounds,
+      properties: (this.isRecord(properties) || Array.isArray(properties)) ? properties : undefined,
+      required: this.isStringArray(required)
+        ? (required as string[])
+        : undefined,
     };
+  }
+
+  /**
+   * Type guard for RelationshipBadgeData - validates all required fields are present and have correct types
+   */
+  private isRelationshipBadgeData(value: unknown): value is RelationshipBadgeData {
+    if (!this.isRecord(value)) return false;
+    return (
+      typeof value.count === 'number' &&
+      typeof value.incoming === 'number' &&
+      typeof value.outgoing === 'number'
+    );
+  }
+
+  /**
+   * Validate that a value is a boolean, return it or undefined
+   */
+  private validateBoolean(value: unknown): boolean | undefined {
+    return typeof value === 'boolean' ? value : undefined;
+  }
+
+  /**
+   * Validate that a value is a string, return it or undefined
+   */
+  private validateString(value: unknown): string | undefined {
+    return typeof value === 'string' && value.length > 0 ? value : undefined;
+  }
+
+  /**
+   * Check if a value is a string array
+   */
+  private isStringArray(value: unknown): value is string[] {
+    return Array.isArray(value) && value.every(item => typeof item === 'string');
+  }
+
+  /**
+   * Check if a value is a record (plain object)
+   */
+  private isRecord(value: unknown): value is Record<string, unknown> {
+    return value !== null && typeof value === 'object' && !Array.isArray(value);
+  }
+
+  /**
+   * Check if a value is object-format properties (not array)
+   */
+  private isObjectProperties(value: unknown): value is Record<string, unknown> {
+    return this.isRecord(value);
   }
 }

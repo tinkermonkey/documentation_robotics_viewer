@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ProcessInspectorPanel } from '@/apps/embedded/components/businessLayer/ProcessInspectorPanel';
 import type { BusinessNode, BusinessGraph } from '@/core/types/businessLayer';
 

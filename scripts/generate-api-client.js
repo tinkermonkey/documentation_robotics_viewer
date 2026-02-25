@@ -101,7 +101,9 @@ function generateFetchMethod(endpoint) {
   endpoint.parameters
     .filter(p => p.in === 'path')
     .forEach(p => {
+      // Handle both {paramName} (OpenAPI 3.0 standard) and :paramName (custom) syntax
       urlBuilder = urlBuilder.replace(`{${p.name}}`, `\${encodeURIComponent(${p.name})}`);
+      urlBuilder = urlBuilder.replace(`:${p.name}`, `\${encodeURIComponent(${p.name})}`);
     });
 
   // Build query string

@@ -1,130 +1,162 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { GoalNode, GOAL_NODE_WIDTH, GOAL_NODE_HEIGHT } from '@/core/nodes/motivation/GoalNode';
+import type { Meta, StoryObj } from '@storybook/react';
+import { UnifiedNode, NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createGoalNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / GoalNode',
-  decorators: [withReactFlowDecorator({ width: GOAL_NODE_WIDTH, height: GOAL_NODE_HEIGHT })],
+  component: UnifiedNode,
+  decorators: [withReactFlowDecorator({ width: 180, height: 110 })],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
-    <GoalNode data={createGoalNodeData({ label: 'Increase Revenue' })} id="goal-1" />
-  ),
+  args: {
+    id: 'goal-1',
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Increase Revenue',
+    },
+  },
 };
 
 export const HighPriority: Story = {
-  render: () => (
-    <GoalNode
-        data={createGoalNodeData({
-          label: 'Customer Satisfaction',
-          priority: 'high',
-        })}
-        id="goal-2"
-      />
-  ),
+  args: {
+    id: 'goal-2',
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Customer Satisfaction',
+      items: [
+        { id: 'priority', label: 'Priority', value: 'high' },
+      ],
+      badges: [
+        { position: 'top-right' as const, content: 'high', ariaLabel: 'Priority: high' },
+      ],
+    },
+  },
 };
 
 export const MediumPriority: Story = {
-  render: () => (
-    <GoalNode
-        data={createGoalNodeData({
-          label: 'Operational Efficiency',
-          priority: 'medium',
-        })}
-        id="goal-3"
-      />
-  ),
+  args: {
+    id: 'goal-3',
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Operational Efficiency',
+      items: [
+        { id: 'priority', label: 'Priority', value: 'medium' },
+      ],
+      badges: [
+        { position: 'top-right' as const, content: 'medium', ariaLabel: 'Priority: medium' },
+      ],
+    },
+  },
 };
 
 export const LowPriority: Story = {
-  render: () => (
-    <GoalNode
-        data={createGoalNodeData({
-          label: 'Nice to Have Feature',
-          priority: 'low',
-        })}
-        id="goal-4"
-      />
-  ),
+  args: {
+    id: 'goal-4',
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Nice to Have Feature',
+      items: [
+        { id: 'priority', label: 'Priority', value: 'low' },
+      ],
+      badges: [
+        { position: 'top-right' as const, content: 'low', ariaLabel: 'Priority: low' },
+      ],
+    },
+  },
 };
 
 export const WithCoverage: Story = {
-  render: () => (
-    <GoalNode
-        data={createGoalNodeData({
-          label: 'Security Compliance',
-          coverageIndicator: { status: 'complete', requirementCount: 5, constraintCount: 2 },
-        })}
-        id="goal-5"
-      />
-  ),
+  args: {
+    id: 'goal-5',
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Security Compliance',
+      items: [
+        { id: 'requirementCount', label: 'Requirements', value: '5' },
+        { id: 'constraintCount', label: 'Constraints', value: '2' },
+      ],
+    },
+  },
 };
 
 export const ChangesetAdd: Story = {
-  render: () => (
-    <GoalNode
-        data={createGoalNodeData({
-          label: 'New Goal',
-          changesetOperation: 'add',
-        })}
-        id="goal-6"
-      />
-  ),
+  args: {
+    id: 'goal-6',
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'New Goal',
+      changesetOperation: 'add',
+    },
+  },
 };
 
 export const ChangesetUpdate: Story = {
-  render: () => (
-    <GoalNode
-        data={createGoalNodeData({
-          label: 'Updated Goal',
-          changesetOperation: 'update',
-        })}
-        id="goal-7"
-      />
-  ),
+  args: {
+    id: 'goal-7',
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Updated Goal',
+      changesetOperation: 'update',
+    },
+  },
 };
 
 export const ChangesetDelete: Story = {
-  render: () => (
-    <GoalNode
-        data={createGoalNodeData({
-          label: 'Deleted Goal',
-          changesetOperation: 'delete',
-        })}
-        id="goal-8"
-      />
-  ),
+  args: {
+    id: 'goal-8',
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Deleted Goal',
+      changesetOperation: 'delete',
+    },
+  },
 };
 
 export const Dimmed: Story = {
-  render: () => (
-    <GoalNode
-        data={createGoalNodeData({
-          label: 'Dimmed Goal',
-          opacity: 0.5,
-        })}
-        id="goal-9"
-      />
-  ),
+  args: {
+    id: 'goal-9',
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Dimmed Goal',
+      relationshipBadge: { count: 5, incoming: 3, outgoing: 2 },
+    },
+  },
 };
 
 export const Highlighted: Story = {
-  render: () => (
-    <GoalNode
-      data={createGoalNodeData({
-        label: 'Highlighted Node',
-        strokeWidth: 3
-      })}
-      id="1"
-    />
-  ),
+  args: {
+    id: 'goal-10',
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Highlighted Node',
+    },
+  },
 };
 

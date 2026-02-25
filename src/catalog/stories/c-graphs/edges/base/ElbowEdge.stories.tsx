@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ReactFlow, ReactFlowProvider, MarkerType, useNodesState, useEdgesState, Handle, Position } from '@xyflow/react';
 import type { Edge, EdgeTypes, Node, NodeTypes } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';

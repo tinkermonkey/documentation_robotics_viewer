@@ -1,152 +1,183 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { ContainerNode, CONTAINER_NODE_WIDTH, CONTAINER_NODE_HEIGHT } from '@/core/nodes/c4/ContainerNode';
+import type { Meta, StoryObj } from '@storybook/react';
+import { UnifiedNode } from '@/core/nodes/components';
+import { NodeType } from '@/core/nodes/NodeType';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createC4ContainerNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / C4 / ContainerNode',
-  decorators: [withReactFlowDecorator({ width: CONTAINER_NODE_WIDTH, height: CONTAINER_NODE_HEIGHT })],
+  component: UnifiedNode,
+  decorators: [withReactFlowDecorator({ width: 280, height: 180 })],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
-    <ContainerNode data={createC4ContainerNodeData({ label: 'Web Application' })} id="container-1" />
-  ),
+  args: {
+    id: 'container-1',
+    data: {
+      nodeType: NodeType.C4_CONTAINER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Web Application',
+      items: [],
+    },
+  },
 };
 
 export const WebApplication: Story = {
-  render: () => (
-    <ContainerNode
-        data={createC4ContainerNodeData({
-          label: 'React Web UI',
-          containerType: 'webApp',
-          technology: ['React', 'TypeScript', 'Vite'],
-          description: 'Provides user interface for the system',
-        })}
-        id="container-2"
-      />
-  ),
+  args: {
+    id: 'container-2',
+    data: {
+      nodeType: NodeType.C4_CONTAINER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'React Web UI',
+      items: [
+        { id: 'description', label: 'Description', value: 'Provides user interface for the system', required: false },
+        { id: 'technologies', label: 'Technologies', value: 'React, TypeScript, Vite', required: false },
+        { id: 'containerType', label: 'Type', value: 'webApp', required: false },
+      ],
+    },
+  },
 };
 
 export const MobileApplication: Story = {
-  render: () => (
-    <ContainerNode
-        data={createC4ContainerNodeData({
-          label: 'Mobile App',
-          containerType: 'mobileApp',
-          technology: ['React Native'],
-          description: 'Native mobile application',
-        })}
-        id="container-3"
-      />
-  ),
+  args: {
+    id: 'container-3',
+    data: {
+      nodeType: NodeType.C4_CONTAINER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Mobile App',
+      items: [
+        { id: 'description', label: 'Description', value: 'Native mobile application', required: false },
+        { id: 'technologies', label: 'Technologies', value: 'React Native', required: false },
+        { id: 'containerType', label: 'Type', value: 'mobileApp', required: false },
+      ],
+    },
+  },
 };
 
 export const Microservice: Story = {
-  render: () => (
-    <ContainerNode
-        data={createC4ContainerNodeData({
-          label: 'API Service',
-          containerType: 'service',
-          technology: ['Node.js', 'Express'],
-          description: 'RESTful API backend service',
-        })}
-        id="container-4"
-      />
-  ),
+  args: {
+    id: 'container-4',
+    data: {
+      nodeType: NodeType.C4_CONTAINER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'API Service',
+      items: [
+        { id: 'description', label: 'Description', value: 'RESTful API backend service', required: false },
+        { id: 'technologies', label: 'Technologies', value: 'Node.js, Express', required: false },
+        { id: 'containerType', label: 'Type', value: 'service', required: false },
+      ],
+    },
+  },
 };
 
 export const Database: Story = {
-  render: () => (
-    <ContainerNode
-        data={createC4ContainerNodeData({
-          label: 'Database',
-          containerType: 'database',
-          technology: ['PostgreSQL'],
-          description: 'Stores all application data',
-        })}
-        id="container-5"
-      />
-  ),
+  args: {
+    id: 'container-5',
+    data: {
+      nodeType: NodeType.C4_CONTAINER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Database',
+      items: [
+        { id: 'description', label: 'Description', value: 'Stores all application data', required: false },
+        { id: 'technologies', label: 'Technologies', value: 'PostgreSQL', required: false },
+        { id: 'containerType', label: 'Type', value: 'database', required: false },
+      ],
+    },
+  },
 };
 
 export const MessageQueue: Story = {
-  render: () => (
-    <ContainerNode
-        data={createC4ContainerNodeData({
-          label: 'Message Queue',
-          containerType: 'queue',
-          technology: ['RabbitMQ'],
-          description: 'Asynchronous message processing',
-        })}
-        id="container-6"
-      />
-  ),
+  args: {
+    id: 'container-6',
+    data: {
+      nodeType: NodeType.C4_CONTAINER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Message Queue',
+      items: [
+        { id: 'description', label: 'Description', value: 'Asynchronous message processing', required: false },
+        { id: 'technologies', label: 'Technologies', value: 'RabbitMQ', required: false },
+        { id: 'containerType', label: 'Type', value: 'queue', required: false },
+      ],
+    },
+  },
 };
 
 export const ChangesetAdd: Story = {
-  render: () => (
-    <ContainerNode
-        data={createC4ContainerNodeData({
-          label: 'New Container',
-          changesetOperation: 'add',
-        })}
-        id="container-7"
-      />
-  ),
+  args: {
+    id: 'container-7',
+    data: {
+      nodeType: NodeType.C4_CONTAINER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'New Container',
+      items: [],
+      changesetOperation: 'add',
+    },
+  },
 };
 
 export const ChangesetUpdate: Story = {
-  render: () => (
-    <ContainerNode
-        data={createC4ContainerNodeData({
-          label: 'Updated Container',
-          changesetOperation: 'update',
-        })}
-        id="container-8"
-      />
-  ),
+  args: {
+    id: 'container-8',
+    data: {
+      nodeType: NodeType.C4_CONTAINER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Updated Container',
+      items: [],
+      changesetOperation: 'update',
+    },
+  },
 };
 
 export const ChangesetDelete: Story = {
-  render: () => (
-    <ContainerNode
-        data={createC4ContainerNodeData({
-          label: 'Deleted Container',
-          changesetOperation: 'delete',
-        })}
-        id="container-9"
-      />
-  ),
+  args: {
+    id: 'container-9',
+    data: {
+      nodeType: NodeType.C4_CONTAINER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Deleted Container',
+      items: [],
+      changesetOperation: 'delete',
+    },
+  },
 };
 
 export const Dimmed: Story = {
-  render: () => (
-    <ContainerNode
-        data={createC4ContainerNodeData({
-          label: 'Dimmed Container',
-          opacity: 0.5,
-        })}
-        id="container-10"
-      />
-  ),
+  args: {
+    id: 'container-10',
+    data: {
+      nodeType: NodeType.C4_CONTAINER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Dimmed Container',
+      items: [],
+      detailLevel: 'minimal',
+    },
+  },
 };
 
 export const Highlighted: Story = {
-  render: () => (
-    <ContainerNode
-      data={createC4ContainerNodeData({
-        label: 'Highlighted Node',
-        strokeWidth: 3
-      })}
-      id="1"
-    />
-  ),
+  args: {
+    id: 'container-11',
+    data: {
+      nodeType: NodeType.C4_CONTAINER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Highlighted Node',
+    },
+  },
 };
 

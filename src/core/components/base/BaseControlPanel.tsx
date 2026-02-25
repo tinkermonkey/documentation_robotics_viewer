@@ -13,6 +13,7 @@
 import { memo } from 'react';
 import { Card, Button, Select, Label, ToggleSwitch, Spinner } from 'flowbite-react';
 import { Grid, X } from 'lucide-react';
+import { HiEye, HiEyeOff } from 'react-icons/hi';
 import { LayoutOption, ExportOption } from './types';
 import { wrapRenderPropVoid } from './RenderPropErrorBoundary';
 
@@ -79,6 +80,13 @@ export interface BaseControlPanelProps<TLayout extends string = string> {
   /** Callback when changeset visualization toggles */
   onChangesetVisualizationToggle?: (enabled: boolean) => void;
 
+  // Field visibility controls
+  /** Graph-level field visibility state (true = fields hidden) */
+  graphLevelHideFields?: boolean;
+
+  /** Callback when field visibility toggle changes */
+  onFieldVisibilityToggle?: (hideFields: boolean) => void;
+
   // Slot for domain-specific controls (rendered BEFORE layout selector)
   /** Domain-specific controls to render at top of panel */
   children?: React.ReactNode;
@@ -134,6 +142,8 @@ function BaseControlPanelComponent<TLayout extends string = string>(
     hasChangesets = false,
     changesetVisualizationEnabled = false,
     onChangesetVisualizationToggle,
+    graphLevelHideFields = false,
+    onFieldVisibilityToggle,
     children,
     renderBeforeLayout,
     renderBetweenLayoutAndView,
@@ -301,6 +311,28 @@ function BaseControlPanelComponent<TLayout extends string = string>(
               );
             })}
           </div>
+        </Card>
+      )}
+
+      {/* Field Visibility Toggle Button */}
+      {onFieldVisibilityToggle && (
+        <Card className="dark:bg-gray-800 dark:border-gray-700" data-testid={`${testId}-field-visibility-card`}>
+          <Button
+            size="sm"
+            color={graphLevelHideFields ? 'gray' : 'blue'}
+            onClick={() => onFieldVisibilityToggle(!graphLevelHideFields)}
+            disabled={isLayouting}
+            className="w-full"
+            data-testid="toggle-field-visibility"
+            aria-label={graphLevelHideFields ? 'Show node fields' : 'Hide node fields'}
+          >
+            {graphLevelHideFields ? (
+              <HiEyeOff className="mr-2 h-4 w-4" />
+            ) : (
+              <HiEye className="mr-2 h-4 w-4" />
+            )}
+            <span>{graphLevelHideFields ? 'Show Fields' : 'Hide Fields'}</span>
+          </Button>
         </Card>
       )}
 

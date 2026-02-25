@@ -1,118 +1,146 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { AssumptionNode, ASSUMPTION_NODE_WIDTH, ASSUMPTION_NODE_HEIGHT } from '@/core/nodes/motivation/AssumptionNode';
+import type { Meta, StoryObj } from '@storybook/react';
+import { UnifiedNode } from '@/core/nodes';
+import { NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createAssumptionNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / AssumptionNode',
-  decorators: [withReactFlowDecorator({ width: ASSUMPTION_NODE_WIDTH, height: ASSUMPTION_NODE_HEIGHT })],
+  component: UnifiedNode,
+  decorators: [withReactFlowDecorator({ width: 180, height: 100 })],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
-    <AssumptionNode data={createAssumptionNodeData({ label: 'Cloud Infrastructure Availability' })} id="assumption-1" />
-  ),
+  args: {
+    id: 'assumption-1',
+    data: {
+      nodeType: NodeType.MOTIVATION_ASSUMPTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Cloud Infrastructure Availability',
+    },
+  },
 };
 
 export const Validated: Story = {
-  render: () => (
-    <AssumptionNode
-        data={createAssumptionNodeData({
-          label: 'Vendor Support Available',
-          validationStatus: 'validated',
-        })}
-        id="assumption-2"
-      />
-  ),
+  args: {
+    id: 'assumption-2',
+    data: {
+      nodeType: NodeType.MOTIVATION_ASSUMPTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Vendor Support Available',
+      items: [
+        { id: 'validationStatus', label: 'Status', value: 'validated' },
+      ],
+      badges: [
+        { position: 'inline' as const, content: 'validated', ariaLabel: 'Status: validated' },
+      ],
+    },
+  },
 };
 
 export const Unvalidated: Story = {
-  render: () => (
-    <AssumptionNode
-        data={createAssumptionNodeData({
-          label: 'Budget Approval Expected',
-          validationStatus: 'unvalidated',
-        })}
-        id="assumption-3"
-      />
-  ),
+  args: {
+    id: 'assumption-3',
+    data: {
+      nodeType: NodeType.MOTIVATION_ASSUMPTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Budget Approval Expected',
+      items: [
+        { id: 'validationStatus', label: 'Status', value: 'unvalidated' },
+      ],
+      badges: [
+        { position: 'inline' as const, content: 'unvalidated', ariaLabel: 'Status: unvalidated' },
+      ],
+    },
+  },
 };
 
 export const Invalidated: Story = {
-  render: () => (
-    <AssumptionNode
-        data={createAssumptionNodeData({
-          label: 'Legacy System Support',
-          validationStatus: 'invalidated',
-        })}
-        id="assumption-4"
-      />
-  ),
+  args: {
+    id: 'assumption-4',
+    data: {
+      nodeType: NodeType.MOTIVATION_ASSUMPTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Legacy System Support',
+      items: [
+        { id: 'validationStatus', label: 'Status', value: 'invalidated' },
+      ],
+      badges: [
+        { position: 'inline' as const, content: 'invalidated', ariaLabel: 'Status: invalidated' },
+      ],
+    },
+  },
 };
 
 export const ChangesetAdd: Story = {
-  render: () => (
-    <AssumptionNode
-        data={createAssumptionNodeData({
-          label: 'New Assumption',
-          changesetOperation: 'add',
-        })}
-        id="assumption-5"
-      />
-  ),
+  args: {
+    id: 'assumption-5',
+    data: {
+      nodeType: NodeType.MOTIVATION_ASSUMPTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'New Assumption',
+      changesetOperation: 'add',
+    },
+  },
 };
 
 export const ChangesetUpdate: Story = {
-  render: () => (
-    <AssumptionNode
-        data={createAssumptionNodeData({
-          label: 'Updated Assumption',
-          changesetOperation: 'update',
-        })}
-        id="assumption-6"
-      />
-  ),
+  args: {
+    id: 'assumption-6',
+    data: {
+      nodeType: NodeType.MOTIVATION_ASSUMPTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Updated Assumption',
+      changesetOperation: 'update',
+    },
+  },
 };
 
 export const ChangesetDelete: Story = {
-  render: () => (
-    <AssumptionNode
-        data={createAssumptionNodeData({
-          label: 'Deleted Assumption',
-          changesetOperation: 'delete',
-        })}
-        id="assumption-7"
-      />
-  ),
+  args: {
+    id: 'assumption-7',
+    data: {
+      nodeType: NodeType.MOTIVATION_ASSUMPTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Deleted Assumption',
+      changesetOperation: 'delete',
+    },
+  },
 };
 
 export const Dimmed: Story = {
-  render: () => (
-    <AssumptionNode
-        data={createAssumptionNodeData({
-          label: 'Dimmed Assumption',
-          opacity: 0.5,
-        })}
-        id="assumption-8"
-      />
-  ),
+  args: {
+    id: 'assumption-8',
+    data: {
+      nodeType: NodeType.MOTIVATION_ASSUMPTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Dimmed Assumption',
+      relationshipBadge: { count: 3, incoming: 2, outgoing: 1 },
+    },
+  },
 };
 
 export const Highlighted: Story = {
-  render: () => (
-    <AssumptionNode
-      data={createAssumptionNodeData({
-        label: 'Highlighted Node',
-        strokeWidth: 3
-      })}
-      id="1"
-    />
-  ),
+  args: {
+    id: 'assumption-9',
+    data: {
+      nodeType: NodeType.MOTIVATION_ASSUMPTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Highlighted Node',
+    },
+  },
 };
-

@@ -37,7 +37,9 @@ export interface ReactFlowDecoratorOptions {
  * @param options Configuration options for the decorator
  * @returns A decorator function that wraps a story component
  */
-export const withReactFlowDecorator = (options: ReactFlowDecoratorOptions = {}) => {
+export const withReactFlowDecorator = (
+  options: ReactFlowDecoratorOptions = {}
+) => {
   const {
     showBackground = false,
     fitView = false,

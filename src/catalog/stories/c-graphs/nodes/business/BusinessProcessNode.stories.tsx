@@ -1,32 +1,70 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { BusinessProcessNode, BUSINESS_PROCESS_NODE_WIDTH, BUSINESS_PROCESS_NODE_HEIGHT } from '@/core/nodes/BusinessProcessNode';
+/**
+ * BusinessProcessNode Stories (Unified)
+ *
+ * Storybook stories for BusinessProcessNode migrated to use UnifiedNode.
+ * Demonstrates all business layer process capabilities: criticality levels,
+ * subprocess handling, and changeset operations.
+ */
+
+import type { Meta, StoryObj } from '@storybook/react';
+import { NodeType } from '@/core/nodes/NodeType';
+import UnifiedNode from '@/core/nodes/components/UnifiedNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createBusinessProcessNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Business / BusinessProcessNode',
-  decorators: [withReactFlowDecorator({ width: BUSINESS_PROCESS_NODE_WIDTH, height: BUSINESS_PROCESS_NODE_HEIGHT })],
+  component: UnifiedNode,
+  decorators: [withReactFlowDecorator()],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta;
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_PROCESS,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: '',
+      detailLevel: 'standard',
+    },
+    id: '',
+  },
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
-    <BusinessProcessNode data={createBusinessProcessNodeData({ label: 'Order Processing' })} id="process-1" />
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_PROCESS,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Order Processing',
+        detailLevel: 'standard',
+      }}
+      id="process-1"
+    />
   ),
 };
 
 export const HighCriticality: Story = {
   render: () => (
-    <BusinessProcessNode
-      data={createBusinessProcessNodeData({
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_PROCESS,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'Payment Processing',
-        criticality: 'high',
-      })}
+        badges: [
+          {
+            position: 'inline' as const,
+            content: 'high',
+            ariaLabel: 'Criticality: high',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
       id="process-2"
     />
   ),
@@ -34,11 +72,21 @@ export const HighCriticality: Story = {
 
 export const MediumCriticality: Story = {
   render: () => (
-    <BusinessProcessNode
-      data={createBusinessProcessNodeData({
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_PROCESS,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'Inventory Check',
-        criticality: 'medium',
-      })}
+        badges: [
+          {
+            position: 'inline' as const,
+            content: 'medium',
+            ariaLabel: 'Criticality: medium',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
       id="process-3"
     />
   ),
@@ -46,11 +94,21 @@ export const MediumCriticality: Story = {
 
 export const LowCriticality: Story = {
   render: () => (
-    <BusinessProcessNode
-      data={createBusinessProcessNodeData({
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_PROCESS,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'Logging Process',
-        criticality: 'low',
-      })}
+        badges: [
+          {
+            position: 'inline' as const,
+            content: 'low',
+            ariaLabel: 'Criticality: low',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
       id="process-4"
     />
   ),
@@ -58,11 +116,21 @@ export const LowCriticality: Story = {
 
 export const WithOwner: Story = {
   render: () => (
-    <BusinessProcessNode
-      data={createBusinessProcessNodeData({
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_PROCESS,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'Returns Processing',
-        owner: 'Operations Team',
-      })}
+        badges: [
+          {
+            position: 'inline' as const,
+            content: 'Operations Team',
+            ariaLabel: 'Owner: Operations Team',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
       id="process-5"
     />
   ),
@@ -70,30 +138,75 @@ export const WithOwner: Story = {
 
 export const WithSubprocesses: Story = {
   render: () => (
-    <BusinessProcessNode
-      data={createBusinessProcessNodeData({
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_PROCESS,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'Order Fulfillment',
-        subprocessCount: 5,
-        subprocesses: [
-          { id: 'sp-1', name: 'Pick Items', description: 'Pick items from warehouse' },
-          { id: 'sp-2', name: 'Pack Order', description: 'Pack items into box' },
-          { id: 'sp-3', name: 'Label Package', description: 'Generate and apply label' },
-          { id: 'sp-4', name: 'Schedule Pickup', description: 'Schedule carrier pickup' },
-          { id: 'sp-5', name: 'Confirm Shipment', description: 'Send shipment confirmation' },
+        items: [
+          { id: 'sp-1', label: 'Pick Items', value: 'Pick items from warehouse' },
+          { id: 'sp-2', label: 'Pack Order', value: 'Pack items into box' },
+          { id: 'sp-3', label: 'Label Package', value: 'Generate and apply label' },
+          { id: 'sp-4', label: 'Schedule Pickup', value: 'Schedule carrier pickup' },
+          { id: 'sp-5', label: 'Confirm Shipment', value: 'Send shipment confirmation' },
         ],
-      })}
+        badges: [
+          {
+            position: 'top-right' as const,
+            content: '▶',
+            className: 'cursor-pointer text-lg leading-none',
+            ariaLabel: 'Expand subprocesses',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
       id="process-6"
+    />
+  ),
+};
+
+export const ExpandedSubprocesses: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_PROCESS,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Order Fulfillment',
+        items: [
+          { id: 'sp-1', label: 'Pick Items', value: 'Pick items from warehouse' },
+          { id: 'sp-2', label: 'Pack Order', value: 'Pack items into box' },
+          { id: 'sp-3', label: 'Label Package', value: 'Generate and apply label' },
+          { id: 'sp-4', label: 'Schedule Pickup', value: 'Schedule carrier pickup' },
+          { id: 'sp-5', label: 'Confirm Shipment', value: 'Send shipment confirmation' },
+        ],
+        badges: [
+          {
+            position: 'top-right' as const,
+            content: '▼',
+            className: 'cursor-pointer text-lg leading-none',
+            ariaLabel: 'Collapse subprocesses',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="process-6-expanded"
     />
   ),
 };
 
 export const ChangesetAdd: Story = {
   render: () => (
-    <BusinessProcessNode
-      data={createBusinessProcessNodeData({
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_PROCESS,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'New Process',
         changesetOperation: 'add',
-      })}
+        detailLevel: 'standard',
+      }}
       id="process-7"
     />
   ),
@@ -101,11 +214,15 @@ export const ChangesetAdd: Story = {
 
 export const ChangesetUpdate: Story = {
   render: () => (
-    <BusinessProcessNode
-      data={createBusinessProcessNodeData({
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_PROCESS,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'Updated Process',
         changesetOperation: 'update',
-      })}
+        detailLevel: 'standard',
+      }}
       id="process-8"
     />
   ),
@@ -113,36 +230,16 @@ export const ChangesetUpdate: Story = {
 
 export const ChangesetDelete: Story = {
   render: () => (
-    <BusinessProcessNode
-      data={createBusinessProcessNodeData({
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_PROCESS,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
         label: 'Deleted Process',
         changesetOperation: 'delete',
-      })}
+        detailLevel: 'standard',
+      }}
       id="process-9"
-    />
-  ),
-};
-
-export const Dimmed: Story = {
-  render: () => (
-    <BusinessProcessNode
-      data={createBusinessProcessNodeData({
-        label: 'Dimmed Process',
-        opacity: 0.5,
-      })}
-      id="process-10"
-    />
-  ),
-};
-
-export const Highlighted: Story = {
-  render: () => (
-    <BusinessProcessNode
-      data={createBusinessProcessNodeData({
-        label: 'Highlighted Process',
-        strokeWidth: 3,
-      })}
-      id="process-11"
     />
   ),
 };

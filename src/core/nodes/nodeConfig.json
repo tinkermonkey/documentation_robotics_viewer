@@ -1,0 +1,403 @@
+{
+  "version": "1.0",
+  "typeMap": {
+    "data-model-component": "data.model",
+    "DataModelComponent": "data.model",
+    "Entity": "data.model",
+    "Interface": "data.model",
+    "Enum": "data.model",
+    "api-endpoint": "business.process",
+    "APIEndpoint": "business.process",
+    "Endpoint": "business.process",
+    "role": "business.process",
+    "Role": "business.process",
+    "permission": "business.process",
+    "Permission": "business.process",
+    "Policy": "business.process",
+    "business-process": "business.process",
+    "BusinessProcess": "business.process",
+    "Process": "business.process",
+    "business-service": "business.service",
+    "BusinessService": "business.service",
+    "Service": "business.service",
+    "business-function": "business.function",
+    "BusinessFunction": "business.function",
+    "Function": "business.function",
+    "business-capability": "business.capability",
+    "BusinessCapability": "business.capability",
+    "Capability": "business.capability",
+    "json-schema-element": "data.jsonSchema",
+    "layer-container": "layer.container",
+    "c4-container": "c4.container",
+    "C4Container": "c4.container",
+    "Container": "c4.container",
+    "c4-component": "c4.component",
+    "C4Component": "c4.component",
+    "c4-external-actor": "c4.externalActor",
+    "C4ExternalActor": "c4.externalActor",
+    "ExternalActor": "c4.externalActor",
+    "ExternalSystem": "c4.externalActor",
+    "Stakeholder": "motivation.stakeholder",
+    "motivation-stakeholder": "motivation.stakeholder",
+    "Goal": "motivation.goal",
+    "motivation-goal": "motivation.goal",
+    "Requirement": "motivation.requirement",
+    "motivation-requirement": "motivation.requirement",
+    "Assessment": "motivation.assessment",
+    "motivation-assessment": "motivation.assessment",
+    "Driver": "motivation.driver",
+    "motivation-driver": "motivation.driver",
+    "Outcome": "motivation.outcome",
+    "motivation-outcome": "motivation.outcome",
+    "Principle": "motivation.principle",
+    "motivation-principle": "motivation.principle",
+    "Constraint": "motivation.constraint",
+    "motivation-constraint": "motivation.constraint",
+    "ValueStream": "motivation.valueStream",
+    "Value Stream": "motivation.valueStream",
+    "motivation-value-stream": "motivation.valueStream",
+    "Assumption": "motivation.assumption",
+    "motivation-assumption": "motivation.assumption",
+    "goal": "motivation.goal",
+    "stakeholder": "motivation.stakeholder",
+    "requirement": "motivation.requirement",
+    "assessment": "motivation.assessment",
+    "driver": "motivation.driver",
+    "outcome": "motivation.outcome",
+    "principle": "motivation.principle",
+    "constraint": "motivation.constraint",
+    "valueStream": "motivation.valueStream",
+    "assumption": "motivation.assumption",
+    "businessService": "business.service",
+    "businessFunction": "business.function",
+    "businessCapability": "business.capability",
+    "businessProcess": "business.process",
+    "c4Container": "c4.container",
+    "c4Component": "c4.component",
+    "c4ExternalActor": "c4.externalActor"
+  },
+  "nodeStyles": {
+    "motivation.stakeholder": {
+      "layout": "centered",
+      "icon": "👤",
+      "typeLabel": "Stakeholder",
+      "colors": {
+        "fill": "#f3e8ff",
+        "stroke": "#7c3aed",
+        "header": "#7c3aed",
+        "handle": "#7c3aed"
+      },
+      "dimensions": {
+        "width": 180,
+        "height": 120
+      }
+    },
+    "motivation.goal": {
+      "layout": "centered",
+      "icon": "🎯",
+      "typeLabel": "Goal",
+      "colors": {
+        "fill": "#d1fae5",
+        "stroke": "#059669",
+        "header": "#059669",
+        "handle": "#059669"
+      },
+      "dimensions": {
+        "width": 180,
+        "height": 110
+      }
+    },
+    "motivation.requirement": {
+      "layout": "centered",
+      "icon": "✓",
+      "typeLabel": "Requirement",
+      "colors": {
+        "fill": "#dbeafe",
+        "stroke": "#2563eb",
+        "header": "#2563eb",
+        "handle": "#2563eb"
+      },
+      "dimensions": {
+        "width": 180,
+        "height": 110
+      }
+    },
+    "motivation.assessment": {
+      "layout": "left",
+      "icon": "✓",
+      "typeLabel": "Assessment",
+      "colors": {
+        "fill": "#f3e8ff",
+        "stroke": "#a855f7",
+        "header": "#a855f7",
+        "handle": "#a855f7"
+      },
+      "dimensions": {
+        "width": 180,
+        "height": 100
+      }
+    },
+    "motivation.driver": {
+      "layout": "centered",
+      "icon": "⚡",
+      "typeLabel": "Driver",
+      "colors": {
+        "fill": "#ffedd5",
+        "stroke": "#ea580c",
+        "header": "#ea580c",
+        "handle": "#ea580c"
+      },
+      "dimensions": {
+        "width": 180,
+        "height": 110
+      }
+    },
+    "motivation.outcome": {
+      "layout": "centered",
+      "icon": "🏆",
+      "typeLabel": "Outcome",
+      "colors": {
+        "fill": "#cffafe",
+        "stroke": "#0891b2",
+        "header": "#0891b2",
+        "handle": "#0891b2"
+      },
+      "dimensions": {
+        "width": 180,
+        "height": 110
+      }
+    },
+    "motivation.principle": {
+      "layout": "left",
+      "icon": "📋",
+      "typeLabel": "Principle",
+      "colors": {
+        "fill": "#fef3c7",
+        "stroke": "#f59e0b",
+        "header": "#f59e0b",
+        "handle": "#f59e0b"
+      },
+      "dimensions": {
+        "width": 180,
+        "height": 100
+      }
+    },
+    "motivation.constraint": {
+      "layout": "centered",
+      "icon": "🚫",
+      "typeLabel": "Constraint",
+      "colors": {
+        "fill": "#fee2e2",
+        "stroke": "#dc2626",
+        "header": "#dc2626",
+        "handle": "#dc2626"
+      },
+      "dimensions": {
+        "width": 180,
+        "height": 110
+      }
+    },
+    "motivation.valueStream": {
+      "layout": "left",
+      "icon": "→",
+      "typeLabel": "Value Stream",
+      "colors": {
+        "fill": "#dbeafe",
+        "stroke": "#3b82f6",
+        "header": "#3b82f6",
+        "handle": "#3b82f6"
+      },
+      "dimensions": {
+        "width": 200,
+        "height": 100
+      }
+    },
+    "motivation.assumption": {
+      "layout": "left",
+      "icon": "💭",
+      "typeLabel": "Assumption",
+      "borderStyle": "dashed",
+      "colors": {
+        "fill": "#e0e7ff",
+        "stroke": "#6366f1",
+        "header": "#6366f1",
+        "handle": "#6366f1"
+      },
+      "dimensions": {
+        "width": 180,
+        "height": 100
+      }
+    },
+    "business.function": {
+      "layout": "left",
+      "icon": "📊",
+      "typeLabel": "Function",
+      "colors": {
+        "fill": "#e3f2fd",
+        "stroke": "#1565c0",
+        "header": "#1565c0",
+        "handle": "#1565c0"
+      },
+      "dimensions": {
+        "width": 180,
+        "height": 100
+      }
+    },
+    "business.service": {
+      "layout": "left",
+      "icon": "🔌",
+      "typeLabel": "Service",
+      "colors": {
+        "fill": "#f3e5f5",
+        "stroke": "#6a1b9a",
+        "header": "#6a1b9a",
+        "handle": "#6a1b9a"
+      },
+      "dimensions": {
+        "width": 180,
+        "height": 90
+      }
+    },
+    "business.capability": {
+      "layout": "left",
+      "icon": "⭐",
+      "typeLabel": "Capability",
+      "colors": {
+        "fill": "#e8f5e9",
+        "stroke": "#2e7d32",
+        "header": "#2e7d32",
+        "handle": "#2e7d32"
+      },
+      "dimensions": {
+        "width": 160,
+        "height": 70
+      }
+    },
+    "business.process": {
+      "layout": "left",
+      "icon": "⚙️",
+      "typeLabel": "Process",
+      "colors": {
+        "fill": "#fff3e0",
+        "stroke": "#f57c00",
+        "header": "#f57c00",
+        "handle": "#f57c00"
+      },
+      "dimensions": {
+        "width": 200,
+        "height": 120
+      }
+    },
+    "c4.container": {
+      "layout": "left",
+      "icon": "📦",
+      "typeLabel": "Container",
+      "colors": {
+        "fill": "#e1f5fe",
+        "stroke": "#438dd5",
+        "header": "#1976d2",
+        "handle": "#1976d2"
+      },
+      "dimensions": {
+        "width": 280,
+        "height": 180
+      }
+    },
+    "c4.component": {
+      "layout": "left",
+      "icon": "🧩",
+      "typeLabel": "Component",
+      "colors": {
+        "fill": "#f0f9ff",
+        "stroke": "#85bbf0",
+        "header": "#1e40af",
+        "handle": "#1e40af"
+      },
+      "dimensions": {
+        "width": 240,
+        "height": 140
+      }
+    },
+    "c4.externalActor": {
+      "layout": "centered",
+      "icon": "👥",
+      "typeLabel": "External Actor",
+      "colors": {
+        "fill": "#f5f5f5",
+        "stroke": "#999999",
+        "header": "#666666",
+        "handle": "#666666"
+      },
+      "dimensions": {
+        "width": 160,
+        "height": 120
+      }
+    },
+    "data.jsonSchema": {
+      "layout": "table",
+      "icon": "📋",
+      "typeLabel": "SCHEMA",
+      "colors": {
+        "fill": "#ffffff",
+        "stroke": "#1e40af",
+        "header": "#2563eb",
+        "handle": "#1e40af"
+      },
+      "dimensions": {
+        "width": 280,
+        "height": 96,
+        "headerHeight": 36,
+        "itemHeight": 24
+      }
+    },
+    "data.model": {
+      "layout": "table",
+      "icon": "📊",
+      "typeLabel": "MODEL",
+      "colors": {
+        "fill": "#f8fafc",
+        "stroke": "#0f766e",
+        "header": "#0d9488",
+        "handle": "#0f766e"
+      },
+      "dimensions": {
+        "width": 280,
+        "height": 96,
+        "headerHeight": 36,
+        "itemHeight": 24
+      }
+    },
+    "layer.container": {
+      "layout": "centered",
+      "icon": "📦",
+      "typeLabel": "Layer",
+      "colors": {
+        "fill": "#f3f4f6",
+        "stroke": "#d1d5db",
+        "header": "#6b7280",
+        "handle": "#6b7280"
+      },
+      "dimensions": {
+        "width": 100,
+        "height": 100
+      }
+    }
+  },
+  "changesetColors": {
+    "add": {
+      "border": "#10b981",
+      "bg": "#d1fae5",
+      "opacity": 1
+    },
+    "update": {
+      "border": "#f59e0b",
+      "bg": "#fef3c7",
+      "opacity": 1
+    },
+    "delete": {
+      "border": "#ef4444",
+      "bg": "#fee2e2",
+      "opacity": 0.6
+    }
+  }
+}

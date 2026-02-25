@@ -1,154 +1,211 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { BusinessFunctionNode, BUSINESS_FUNCTION_NODE_WIDTH, BUSINESS_FUNCTION_NODE_HEIGHT } from '@/core/nodes/business/BusinessFunctionNode';
+/**
+ * BusinessFunctionNode Stories (Unified)
+ *
+ * Storybook stories for BusinessFunctionNode migrated to use UnifiedNode.
+ * Demonstrates all business layer function capabilities: criticality levels,
+ * lifecycle states, ownership, and changeset operations.
+ */
+
+import type { Meta, StoryObj } from '@storybook/react';
+import { NodeType, UnifiedNode } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createBusinessFunctionNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
-  title: 'C Graphs / Nodes / Business / BusinessFunctionNode',
-  decorators: [withReactFlowDecorator({ width: BUSINESS_FUNCTION_NODE_WIDTH, height: BUSINESS_FUNCTION_NODE_HEIGHT })],
+  title: "C Graphs / Nodes / Business / BusinessFunctionNode",
+  component: UnifiedNode,
+  decorators: [withReactFlowDecorator()],
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
-    <BusinessFunctionNode data={createBusinessFunctionNodeData({ label: 'Order Processing' })} id="function-1" />
-  ),
+  args: {
+    id: "function-1",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: "Order Processing",
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const HighCriticality: Story = {
-  render: () => (
-    <BusinessFunctionNode
-        data={createBusinessFunctionNodeData({
-          label: 'Customer Onboarding',
-          criticality: 'high',
-        })}
-        id="function-2"
-      />
-  ),
+  args: {
+    id: "function-2",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: "Customer Onboarding",
+      badges: [
+        {
+          position: "inline" as const,
+          content: "high",
+          ariaLabel: "Criticality: high",
+        },
+      ],
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const MediumCriticality: Story = {
-  render: () => (
-    <BusinessFunctionNode
-        data={createBusinessFunctionNodeData({
-          label: 'Inventory Management',
-          criticality: 'medium',
-        })}
-        id="function-3"
-      />
-  ),
+  args: {
+    id: "function-3",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: "Inventory Management",
+      badges: [
+        {
+          position: "inline" as const,
+          content: "medium",
+          ariaLabel: "Criticality: medium",
+        },
+      ],
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const LowCriticality: Story = {
-  render: () => (
-    <BusinessFunctionNode
-        data={createBusinessFunctionNodeData({
-          label: 'Reporting',
-          criticality: 'low',
-        })}
-        id="function-4"
-      />
-  ),
+  args: {
+    id: "function-4",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: "Reporting",
+      badges: [
+        {
+          position: "inline" as const,
+          content: "low",
+          ariaLabel: "Criticality: low",
+        },
+      ],
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const ActiveLifecycle: Story = {
-  render: () => (
-    <BusinessFunctionNode
-        data={createBusinessFunctionNodeData({
-          label: 'Fulfillment',
-          lifecycle: 'active',
-        })}
-        id="function-5"
-      />
-  ),
+  args: {
+    id: "function-5",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: "Fulfillment",
+      items: [{ id: "lifecycle", label: "Lifecycle", value: "active" }],
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const DeprecatedLifecycle: Story = {
-  render: () => (
-    <BusinessFunctionNode
-        data={createBusinessFunctionNodeData({
-          label: 'Manual Approval',
-          lifecycle: 'deprecated',
-        })}
-        id="function-6"
-      />
-  ),
+  args: {
+    id: "function-6",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: "Manual Approval",
+      items: [{ id: "lifecycle", label: "Lifecycle", value: "deprecated" }],
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const WithOwner: Story = {
-  render: () => (
-    <BusinessFunctionNode
-        data={createBusinessFunctionNodeData({
-          label: 'Returns Processing',
-          owner: 'Operations Team',
-        })}
-        id="function-7"
-      />
-  ),
+  args: {
+    id: "function-7",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: "Returns Processing",
+      badges: [
+        {
+          position: "inline" as const,
+          content: "Operations Team",
+          ariaLabel: "Owner: Operations Team",
+        },
+      ],
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const ChangesetAdd: Story = {
-  render: () => (
-    <BusinessFunctionNode
-        data={createBusinessFunctionNodeData({
-          label: 'New Function',
-          changesetOperation: 'add',
-        })}
-        id="function-8"
-      />
-  ),
+  args: {
+    id: "function-8",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: "New Function",
+      changesetOperation: "add",
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const ChangesetUpdate: Story = {
-  render: () => (
-    <BusinessFunctionNode
-        data={createBusinessFunctionNodeData({
-          label: 'Updated Function',
-          changesetOperation: 'update',
-        })}
-        id="function-9"
-      />
-  ),
+  args: {
+    id: "function-9",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: "Updated Function",
+      changesetOperation: "update",
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const ChangesetDelete: Story = {
-  render: () => (
-    <BusinessFunctionNode
-        data={createBusinessFunctionNodeData({
-          label: 'Deleted Function',
-          changesetOperation: 'delete',
-        })}
-        id="function-10"
-      />
-  ),
+  args: {
+    id: "function-10",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: "Deleted Function",
+      changesetOperation: "delete",
+      detailLevel: "standard",
+    },
+  },
 };
 
 export const Dimmed: Story = {
-  render: () => (
-    <BusinessFunctionNode
-        data={createBusinessFunctionNodeData({
-          label: 'Dimmed Function',
-          opacity: 0.5,
-        })}
-        id="function-11"
-      />
-  ),
+  args: {
+    id: "function-11",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: "Dimmed Function",
+      relationshipBadge: { count: 5, incoming: 3, outgoing: 2 },
+    },
+  },
 };
 
 export const Highlighted: Story = {
-  render: () => (
-    <BusinessFunctionNode
-      data={createBusinessFunctionNodeData({
-        label: 'Highlighted Node',
-        strokeWidth: 3
-      })}
-      id="1"
-    />
-  ),
+  args: {
+    id: "function-12",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: "Highlighted Node",
+    },
+  },
 };
-

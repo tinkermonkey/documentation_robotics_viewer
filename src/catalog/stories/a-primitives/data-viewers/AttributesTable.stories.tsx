@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import AttributesTable, { AttributeRow } from '@/apps/embedded/components/common/AttributesTable';
 
 const meta = {

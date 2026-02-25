@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { GraphToolbar } from '@/apps/embedded/components/GraphToolbar';
 
 const meta = {
@@ -6,7 +6,7 @@ const meta = {
 } satisfies Meta;
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = { render: () => (
   <div className="w-full h-96 bg-gray-50 relative">

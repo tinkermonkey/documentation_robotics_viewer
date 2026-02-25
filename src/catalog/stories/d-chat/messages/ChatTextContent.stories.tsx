@@ -2,7 +2,7 @@
  * ChatTextContent Component Stories
  * Demonstrates markdown text rendering in chat messages
  */
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ChatTextContent } from '@/apps/embedded/components/chat/ChatTextContent';
 
 const meta = {

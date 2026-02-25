@@ -1,118 +1,146 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { PrincipleNode, PRINCIPLE_NODE_WIDTH, PRINCIPLE_NODE_HEIGHT } from '@/core/nodes/motivation/PrincipleNode';
+import type { Meta, StoryObj } from '@storybook/react';
+import { UnifiedNode } from '@/core/nodes';
+import { NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createPrincipleNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / PrincipleNode',
-  decorators: [withReactFlowDecorator({ width: PRINCIPLE_NODE_WIDTH, height: PRINCIPLE_NODE_HEIGHT })],
+  component: UnifiedNode,
+  decorators: [withReactFlowDecorator({ width: 180, height: 100 })],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
-    <PrincipleNode data={createPrincipleNodeData({ label: 'API-First Architecture' })} id="principle-1" />
-  ),
+  args: {
+    id: 'principle-1',
+    data: {
+      nodeType: NodeType.MOTIVATION_PRINCIPLE,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'API-First Architecture',
+    },
+  },
 };
 
 export const EnterpriseScope: Story = {
-  render: () => (
-    <PrincipleNode
-        data={createPrincipleNodeData({
-          label: 'Security First',
-          scope: 'enterprise',
-        })}
-        id="principle-2"
-      />
-  ),
+  args: {
+    id: 'principle-2',
+    data: {
+      nodeType: NodeType.MOTIVATION_PRINCIPLE,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Security First',
+      items: [
+        { id: 'scope', label: 'Scope', value: 'enterprise' },
+      ],
+      badges: [
+        { position: 'inline' as const, content: 'enterprise', ariaLabel: 'Scope: enterprise' },
+      ],
+    },
+  },
 };
 
 export const DomainScope: Story = {
-  render: () => (
-    <PrincipleNode
-        data={createPrincipleNodeData({
-          label: 'Microservices Architecture',
-          scope: 'domain',
-        })}
-        id="principle-3"
-      />
-  ),
+  args: {
+    id: 'principle-3',
+    data: {
+      nodeType: NodeType.MOTIVATION_PRINCIPLE,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Microservices Architecture',
+      items: [
+        { id: 'scope', label: 'Scope', value: 'domain' },
+      ],
+      badges: [
+        { position: 'inline' as const, content: 'domain', ariaLabel: 'Scope: domain' },
+      ],
+    },
+  },
 };
 
 export const ApplicationScope: Story = {
-  render: () => (
-    <PrincipleNode
-        data={createPrincipleNodeData({
-          label: 'Component Reusability',
-          scope: 'application',
-        })}
-        id="principle-4"
-      />
-  ),
+  args: {
+    id: 'principle-4',
+    data: {
+      nodeType: NodeType.MOTIVATION_PRINCIPLE,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Component Reusability',
+      items: [
+        { id: 'scope', label: 'Scope', value: 'application' },
+      ],
+      badges: [
+        { position: 'inline' as const, content: 'application', ariaLabel: 'Scope: application' },
+      ],
+    },
+  },
 };
 
 export const ChangesetAdd: Story = {
-  render: () => (
-    <PrincipleNode
-        data={createPrincipleNodeData({
-          label: 'New Principle',
-          changesetOperation: 'add',
-        })}
-        id="principle-5"
-      />
-  ),
+  args: {
+    id: 'principle-5',
+    data: {
+      nodeType: NodeType.MOTIVATION_PRINCIPLE,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'New Principle',
+      changesetOperation: 'add',
+    },
+  },
 };
 
 export const ChangesetUpdate: Story = {
-  render: () => (
-    <PrincipleNode
-        data={createPrincipleNodeData({
-          label: 'Updated Principle',
-          changesetOperation: 'update',
-        })}
-        id="principle-6"
-      />
-  ),
+  args: {
+    id: 'principle-6',
+    data: {
+      nodeType: NodeType.MOTIVATION_PRINCIPLE,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Updated Principle',
+      changesetOperation: 'update',
+    },
+  },
 };
 
 export const ChangesetDelete: Story = {
-  render: () => (
-    <PrincipleNode
-        data={createPrincipleNodeData({
-          label: 'Deleted Principle',
-          changesetOperation: 'delete',
-        })}
-        id="principle-7"
-      />
-  ),
+  args: {
+    id: 'principle-7',
+    data: {
+      nodeType: NodeType.MOTIVATION_PRINCIPLE,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Deleted Principle',
+      changesetOperation: 'delete',
+    },
+  },
 };
 
 export const Dimmed: Story = {
-  render: () => (
-    <PrincipleNode
-        data={createPrincipleNodeData({
-          label: 'Dimmed Principle',
-          opacity: 0.5,
-        })}
-        id="principle-8"
-      />
-  ),
+  args: {
+    id: 'principle-8',
+    data: {
+      nodeType: NodeType.MOTIVATION_PRINCIPLE,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Dimmed Principle',
+      relationshipBadge: { count: 3, incoming: 2, outgoing: 1 },
+    },
+  },
 };
 
 export const Highlighted: Story = {
-  render: () => (
-    <PrincipleNode
-      data={createPrincipleNodeData({
-        label: 'Highlighted Node',
-        strokeWidth: 3
-      })}
-      id="1"
-    />
-  ),
+  args: {
+    id: 'principle-9',
+    data: {
+      nodeType: NodeType.MOTIVATION_PRINCIPLE,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Highlighted Node',
+    },
+  },
 };
-

@@ -1,154 +1,181 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { BusinessCapabilityNode, BUSINESS_CAPABILITY_NODE_WIDTH, BUSINESS_CAPABILITY_NODE_HEIGHT } from '@/core/nodes/business/BusinessCapabilityNode';
+/**
+ * BusinessCapabilityNode Stories (Unified)
+ *
+ * Storybook stories for BusinessCapabilityNode migrated to use UnifiedNode.
+ * Demonstrates all business layer capability capabilities: criticality levels,
+ * lifecycle states, ownership, and changeset operations.
+ */
+
+import type { Meta, StoryObj } from '@storybook/react';
+import { UnifiedNode, NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createBusinessCapabilityNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Business / BusinessCapabilityNode',
-  decorators: [withReactFlowDecorator({ width: BUSINESS_CAPABILITY_NODE_WIDTH, height: BUSINESS_CAPABILITY_NODE_HEIGHT })],
+  component: UnifiedNode,
+  decorators: [withReactFlowDecorator()],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
-    <BusinessCapabilityNode data={createBusinessCapabilityNodeData({ label: 'Customer Management' })} id="capability-1" />
-  ),
+  args: {
+    id: 'capability-1',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Customer Management',
+    },
+  },
 };
 
 export const HighCriticality: Story = {
-  render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'Order Management',
-          criticality: 'high',
-        })}
-        id="capability-2"
-      />
-  ),
+  args: {
+    id: 'capability-2',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Order Management',
+      badges: [
+        {
+          position: 'inline' as const,
+          content: 'high',
+          ariaLabel: 'Criticality: high',
+        },
+      ],
+    },
+  },
 };
 
 export const MediumCriticality: Story = {
-  render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'Marketing',
-          criticality: 'medium',
-        })}
-        id="capability-3"
-      />
-  ),
+  args: {
+    id: 'capability-3',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Marketing',
+      badges: [
+        {
+          position: 'inline' as const,
+          content: 'medium',
+          ariaLabel: 'Criticality: medium',
+        },
+      ],
+    },
+  },
 };
 
 export const LowCriticality: Story = {
-  render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'Training',
-          criticality: 'low',
-        })}
-        id="capability-4"
-      />
-  ),
+  args: {
+    id: 'capability-4',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Compliance',
+      badges: [
+        {
+          position: 'inline' as const,
+          content: 'low',
+          ariaLabel: 'Criticality: low',
+        },
+      ],
+    },
+  },
 };
 
 export const ActiveLifecycle: Story = {
-  render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'Sales',
-          lifecycle: 'active',
-        })}
-        id="capability-5"
-      />
-  ),
+  args: {
+    id: 'capability-5',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'User Analytics',
+      items: [
+        { id: 'lifecycle', label: 'Lifecycle', value: 'active' },
+      ],
+    },
+  },
 };
 
 export const DeprecatedLifecycle: Story = {
-  render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'Legacy Support',
-          lifecycle: 'deprecated',
-        })}
-        id="capability-6"
-      />
-  ),
+  args: {
+    id: 'capability-6',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Legacy Reporting',
+      items: [
+        { id: 'lifecycle', label: 'Lifecycle', value: 'deprecated' },
+      ],
+    },
+  },
 };
 
 export const WithOwner: Story = {
-  render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'Supply Chain',
-          owner: 'Supply Chain Director',
-        })}
-        id="capability-7"
-      />
-  ),
+  args: {
+    id: 'capability-7',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Supply Chain',
+      badges: [
+        {
+          position: 'inline' as const,
+          content: 'Operations',
+          ariaLabel: 'Owner: Operations',
+        },
+      ],
+    },
+  },
 };
 
 export const ChangesetAdd: Story = {
-  render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'New Capability',
-          changesetOperation: 'add',
-        })}
-        id="capability-8"
-      />
-  ),
+  args: {
+    id: 'capability-8',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'New Capability',
+      changesetOperation: 'add',
+    },
+  },
 };
 
 export const ChangesetUpdate: Story = {
-  render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'Updated Capability',
-          changesetOperation: 'update',
-        })}
-        id="capability-9"
-      />
-  ),
+  args: {
+    id: 'capability-9',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Updated Capability',
+      changesetOperation: 'update',
+    },
+  },
 };
 
 export const ChangesetDelete: Story = {
-  render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'Deleted Capability',
-          changesetOperation: 'delete',
-        })}
-        id="capability-10"
-      />
-  ),
-};
-
-export const Dimmed: Story = {
-  render: () => (
-    <BusinessCapabilityNode
-        data={createBusinessCapabilityNodeData({
-          label: 'Dimmed Capability',
-          opacity: 0.5,
-        })}
-        id="capability-11"
-      />
-  ),
-};
-
-export const Highlighted: Story = {
-  render: () => (
-    <BusinessCapabilityNode
-      data={createBusinessCapabilityNodeData({
-        label: 'Highlighted Node',
-        strokeWidth: 3
-      })}
-      id="1"
-    />
-  ),
+  args: {
+    id: 'capability-10',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Deleted Capability',
+      changesetOperation: 'delete',
+    },
+  },
 };
 

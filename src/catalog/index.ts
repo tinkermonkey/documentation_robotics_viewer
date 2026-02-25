@@ -143,10 +143,6 @@ export {
 } from './components/StoryLoadedWrapper';
 
 // Components - Route Compositions
-export {
-  ModelRouteComposition,
-  type ModelRouteCompositionProps
-} from './components/ModelRouteComposition';
 
 export {
   SpecRouteComposition,

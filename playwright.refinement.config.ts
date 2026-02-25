@@ -1,5 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// Bypass corrupted global git config if present (prevents CI failures)
+// See: https://github.com/tinkermonkey/documentation_robotics/issues/341
+process.env.GIT_CONFIG_GLOBAL ??= '/dev/null';
+process.env.GIT_CONFIG_SYSTEM ??= '/dev/null';
+
 /**
  * Story Test Configuration
  *
@@ -56,7 +61,7 @@ export default defineConfig({
     command: 'npm run storybook:build && npm run storybook:serve',
     url: 'http://localhost:61001',
     reuseExistingServer: !process.env.CI,
-    timeout: 60000,
+    timeout: process.env.CI ? 120000 : 60000,  // 120 seconds in CI, 60 seconds locally
     // Stdout/stderr capture handled via shell redirection in test-stories.sh (2>&1)
     // This ensures logs are available for error analysis even on older Playwright versions
     stdout: 'pipe',

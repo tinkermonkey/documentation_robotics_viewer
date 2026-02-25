@@ -6,10 +6,22 @@ import {
   HTTPMethod
 } from './shapes';
 import { LayerType } from './layers';
+import type { UnifiedNodeData } from '../nodes';
 
 export type { HTTPMethod };
 import { NodeDetailLevel } from '../../core/layout/semanticZoomController';
 import { CoverageStatus } from '../../apps/embedded/services/coverageAnalyzer';
+
+/**
+ * Validation error for cross-layer edge constraints
+ * Thrown when a cross-layer edge fails validation (e.g., same source and target layer)
+ */
+export class CrossLayerEdgeValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'CrossLayerEdgeValidationError';
+  }
+}
 
 /**
  * Relationship badge data (shown when node is dimmed)
@@ -280,8 +292,10 @@ export interface C4ExternalActorNodeData extends BaseNodeData {
 
 /**
  * Union type for all custom node types
+ * Includes both legacy specific node types and modern unified node type
  */
 export type AppNode =
+  | Node<UnifiedNodeData, 'unified'>
   | Node<DataModelNodeData, 'dataModel'>
   | Node<JSONSchemaNodeData, 'jsonSchema'>
   | Node<APIEndpointNodeData, 'apiEndpoint'>
@@ -342,7 +356,7 @@ export type CrossLayerEdgeData = ElbowEdgeData;
 /**
  * Factory function to create and validate cross-layer edge data
  * Enforces the invariant that edges must span different layers
- * @throws Error if sourceLayer equals targetLayer
+ * @throws CrossLayerEdgeValidationError if sourceLayer equals targetLayer
  */
 export function createCrossLayerEdgeData(
   sourceLayer: LayerType,
@@ -358,7 +372,7 @@ export function createCrossLayerEdgeData(
   }
 ): ElbowEdgeData {
   if (sourceLayer === targetLayer) {
-    throw new Error(
+    throw new CrossLayerEdgeValidationError(
       `Cross-layer edge must span different layers. Got source=${sourceLayer}, target=${targetLayer}`
     );
   }

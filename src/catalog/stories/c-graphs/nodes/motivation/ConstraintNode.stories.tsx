@@ -1,128 +1,164 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { ConstraintNode, CONSTRAINT_NODE_WIDTH, CONSTRAINT_NODE_HEIGHT } from '@/core/nodes/motivation/ConstraintNode';
+import type { Meta, StoryObj } from '@storybook/react';
+import { UnifiedNode } from '@/core/nodes';
+import { NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createConstraintNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / ConstraintNode',
-  decorators: [withReactFlowDecorator({ width: CONSTRAINT_NODE_WIDTH, height: CONSTRAINT_NODE_HEIGHT })],
+  component: UnifiedNode,
+  decorators: [withReactFlowDecorator({ width: 180, height: 110 })],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
-    <ConstraintNode data={createConstraintNodeData({ label: 'GDPR Compliance' })} id="constraint-1" />
-  ),
+  args: {
+    id: 'constraint-1',
+    data: {
+      nodeType: NodeType.MOTIVATION_CONSTRAINT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'GDPR Compliance',
+    },
+  },
 };
 
 export const FixedConstraint: Story = {
-  render: () => (
-    <ConstraintNode
-        data={createConstraintNodeData({
-          label: 'Must use HTTPS',
-          negotiability: 'fixed',
-        })}
-        id="constraint-2"
-      />
-  ),
+  args: {
+    id: 'constraint-2',
+    data: {
+      nodeType: NodeType.MOTIVATION_CONSTRAINT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Must use HTTPS',
+      items: [
+        { id: 'negotiability', label: 'Negotiability', value: 'fixed' },
+      ],
+      badges: [
+        { position: 'inline' as const, content: 'fixed', ariaLabel: 'Negotiability: fixed' },
+      ],
+    },
+  },
 };
 
 export const NegotiableConstraint: Story = {
-  render: () => (
-    <ConstraintNode
-        data={createConstraintNodeData({
-          label: 'Budget Limitation',
-          negotiability: 'negotiable',
-        })}
-        id="constraint-3"
-      />
-  ),
+  args: {
+    id: 'constraint-3',
+    data: {
+      nodeType: NodeType.MOTIVATION_CONSTRAINT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Budget Limitation',
+      items: [
+        { id: 'negotiability', label: 'Negotiability', value: 'negotiable' },
+      ],
+      badges: [
+        { position: 'inline' as const, content: 'negotiable', ariaLabel: 'Negotiability: negotiable' },
+      ],
+    },
+  },
 };
 
 export const RegulatoryConstraint: Story = {
-  render: () => (
-    <ConstraintNode
-        data={createConstraintNodeData({
-          label: 'Data Residency Requirements',
-        })}
-        id="constraint-4"
-      />
-  ),
+  args: {
+    id: 'constraint-4',
+    data: {
+      nodeType: NodeType.MOTIVATION_CONSTRAINT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Data Residency Requirements',
+      items: [
+        { id: 'type', label: 'Type', value: 'regulatory' },
+      ],
+      badges: [
+        { position: 'inline' as const, content: 'regulatory', ariaLabel: 'Type: regulatory' },
+      ],
+    },
+  },
 };
 
 export const BusinessConstraint: Story = {
-  render: () => (
-    <ConstraintNode
-        data={createConstraintNodeData({
-          label: 'Timeline Constraint',
-        })}
-        id="constraint-5"
-      />
-  ),
+  args: {
+    id: 'constraint-5',
+    data: {
+      nodeType: NodeType.MOTIVATION_CONSTRAINT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Timeline Constraint',
+      items: [
+        { id: 'type', label: 'Type', value: 'business' },
+      ],
+      badges: [
+        { position: 'inline' as const, content: 'business', ariaLabel: 'Type: business' },
+      ],
+    },
+  },
 };
 
 export const ChangesetAdd: Story = {
-  render: () => (
-    <ConstraintNode
-        data={createConstraintNodeData({
-          label: 'New Constraint',
-          changesetOperation: 'add',
-        })}
-        id="constraint-6"
-      />
-  ),
+  args: {
+    id: 'constraint-6',
+    data: {
+      nodeType: NodeType.MOTIVATION_CONSTRAINT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'New Constraint',
+      changesetOperation: 'add',
+    },
+  },
 };
 
 export const ChangesetUpdate: Story = {
-  render: () => (
-    <ConstraintNode
-        data={createConstraintNodeData({
-          label: 'Updated Constraint',
-          changesetOperation: 'update',
-        })}
-        id="constraint-7"
-      />
-  ),
+  args: {
+    id: 'constraint-7',
+    data: {
+      nodeType: NodeType.MOTIVATION_CONSTRAINT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Updated Constraint',
+      changesetOperation: 'update',
+    },
+  },
 };
 
 export const ChangesetDelete: Story = {
-  render: () => (
-    <ConstraintNode
-        data={createConstraintNodeData({
-          label: 'Deleted Constraint',
-          changesetOperation: 'delete',
-        })}
-        id="constraint-8"
-      />
-  ),
+  args: {
+    id: 'constraint-8',
+    data: {
+      nodeType: NodeType.MOTIVATION_CONSTRAINT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Deleted Constraint',
+      changesetOperation: 'delete',
+    },
+  },
 };
 
 export const Dimmed: Story = {
-  render: () => (
-    <ConstraintNode
-        data={createConstraintNodeData({
-          label: 'Dimmed Constraint',
-          opacity: 0.5,
-        })}
-        id="constraint-9"
-      />
-  ),
+  args: {
+    id: 'constraint-9',
+    data: {
+      nodeType: NodeType.MOTIVATION_CONSTRAINT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Dimmed Constraint',
+      relationshipBadge: { count: 3, incoming: 2, outgoing: 1 },
+    },
+  },
 };
 
 export const Highlighted: Story = {
-  render: () => (
-    <ConstraintNode
-      data={createConstraintNodeData({
-        label: 'Highlighted Node',
-        strokeWidth: 3
-      })}
-      id="1"
-    />
-  ),
+  args: {
+    id: 'constraint-10',
+    data: {
+      nodeType: NodeType.MOTIVATION_CONSTRAINT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Highlighted Node',
+    },
+  },
 };
-

@@ -36,7 +36,7 @@ test.describe('Chat Component Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('chat-components--chat-text-content-code-block'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
+      // No wait needed - body rendering is synchronous
       // Code blocks typically have pre/code elements
       const hasCode = await page.locator('pre, code').count();
       const bodyText = await page.locator('body').innerText();
@@ -65,7 +65,7 @@ test.describe('Chat Component Stories', () => {
       setupErrorFiltering(page);
       await page.goto(storyUrl('chat-components--thinking-block-default'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
-      await page.waitForTimeout(100);
+      // No wait needed - body rendering is synchronous
       // Find the toggle/expand button
       const toggle = page.locator('button, [role="button"], summary').first();
       if (await toggle.count() > 0) {

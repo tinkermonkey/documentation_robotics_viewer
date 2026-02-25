@@ -13,7 +13,7 @@ export interface paths {
         };
         /**
          * Health check
-         * @description Check if the server is running. No authentication required.
+         * @description Check if the server is running and healthy
          */
         get: {
             parameters: {
@@ -30,17 +30,253 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        /**
-                         * @example {
-                         *       "status": "ok",
-                         *       "version": "0.1.0"
-                         *     }
-                         */
                         "application/json": {
-                            /** @enum {string} */
-                            status?: "ok";
-                            /** @example 0.1.0 */
-                            version?: string;
+                            /** @description Server health status */
+                            status: string;
+                            /** @description API version */
+                            version: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/model": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get full model
+         * @description Retrieve the complete architecture model across all layers
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Model data retrieved successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Model manifest metadata */
+                            manifest: {
+                                [key: string]: unknown;
+                            };
+                            /** @description All layers in the model (key-value pairs mapping layer names to layer objects) */
+                            layers: {
+                                [key: string]: {
+                                    [key: string]: unknown;
+                                };
+                            };
+                            /** @description Total number of elements across all layers */
+                            totalElements: number;
+                        };
+                    };
+                };
+                /** @description Server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/layers/:layerName": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get layer
+         * @description Retrieve a specific layer with all its elements
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    layerName: "motivation" | "business" | "security" | "application" | "technology" | "api" | "data-model" | "data-store" | "ux" | "navigation" | "apm" | "testing";
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Layer retrieved successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Layer name */
+                            name: string;
+                            /** @description Layer elements (each element is an object with id, name, type, and properties) */
+                            elements: {
+                                [key: string]: unknown;
+                            }[];
+                            /** @description Total element count */
+                            elementCount: number;
+                        };
+                    };
+                };
+                /** @description Layer not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/elements/:id": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get element
+         * @description Retrieve a specific architecture element with its metadata and annotations
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Element retrieved successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Element ID */
+                            id: string;
+                            /** @description Element name */
+                            name: string;
+                            /** @description Element type */
+                            type: string;
+                            /** @description Element description */
+                            description?: string;
+                            /** @description Element properties (key-value pairs with arbitrary values) */
+                            properties?: {
+                                [key: string]: unknown;
+                            };
+                            /** @description Associated annotations */
+                            annotations?: {
+                                /** @description Annotation ID */
+                                id: string;
+                                /** @description Target element ID */
+                                elementId: string;
+                                /** @description Author name */
+                                author: string;
+                                /** @description Annotation content */
+                                content: string;
+                                /** @description Creation timestamp */
+                                createdAt: string;
+                                /** @description Last update timestamp */
+                                updatedAt?: string;
+                                /** @description Annotation tags */
+                                tags?: string[];
+                                /** @description Resolution status */
+                                resolved?: boolean;
+                                /** @description Annotation replies */
+                                replies?: {
+                                    id: string;
+                                    author: string;
+                                    content: string;
+                                    createdAt: string;
+                                }[];
+                            }[];
+                        };
+                    };
+                };
+                /** @description Element not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
                         };
                     };
                 };
@@ -62,10 +298,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get JSON Schema specifications
-         * @description Returns all JSON Schema files from the configured schema directory.
-         *     The schema directory location depends on the deployment environment: typically `.dr/schemas/` for local deployments, or configured via `SCHEMA_BASE_PATH` environment variable.
-         *     Includes layer schemas, relationship catalog, and link registry.
+         * Get JSON schemas
+         * @description Retrieve all JSON Schema definitions used by the system
          */
         get: {
             parameters: {
@@ -76,301 +310,42 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Schema collection successfully retrieved */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["SpecDataResponse"];
-                    };
-                };
-                401: components["responses"]["Unauthorized"];
-                403: components["responses"]["Forbidden"];
-                500: components["responses"]["InternalServerError"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/model": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get architecture model
-         * @description Returns the current architecture model from `documentation-robotics/model/`.
-         *     Includes all layers, elements, relationships, and cross-layer references.
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Model successfully retrieved */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ModelResponse"];
-                    };
-                };
-                401: components["responses"]["Unauthorized"];
-                403: components["responses"]["Forbidden"];
-                /** @description Model manifest not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        /**
-                         * @example {
-                         *       "error": "Model manifest not found. Is dr CLI initialized?"
-                         *     }
-                         */
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-                500: components["responses"]["InternalServerError"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/layers/{layerName}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get specific layer data
-         * @description Returns data for a specific layer by name.
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    /**
-                     * @description Layer name (e.g., "motivation", "business", "api")
-                     * @example business
-                     */
-                    layerName: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Layer data successfully retrieved */
+                /** @description Schemas retrieved successfully */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
-                            /**
-                             * @description Layer name
-                             * @example business
-                             */
-                            name: string;
-                            /** @description Array of elements in the layer */
-                            elements: components["schemas"]["Element"][];
-                            /**
-                             * @description Number of elements in the layer
-                             * @example 5
-                             */
-                            elementCount: number;
+                            /** @description Spec version */
+                            version: string;
+                            /** @description Response type */
+                            type: string;
+                            /** @description Response description */
+                            description: string;
+                            /** @description Schema source */
+                            source: string;
+                            /** @description JSON schema definitions (each schema is a JSON Schema object) */
+                            schemas: {
+                                [key: string]: unknown;
+                            };
+                            /** @description Number of schemas */
+                            schemaCount: number;
                         };
                     };
                 };
-                401: components["responses"]["Unauthorized"];
-                403: components["responses"]["Forbidden"];
-                /** @description Layer not found */
-                404: {
+                /** @description Server error */
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Error"];
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
                     };
                 };
-                500: components["responses"]["InternalServerError"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/elements/{elementId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get specific element data
-         * @description Returns data for a specific element by ID.
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    /**
-                     * @description Element ID
-                     * @example business.service.payment-processing
-                     */
-                    elementId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Element data successfully retrieved */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Element"];
-                    };
-                };
-                401: components["responses"]["Unauthorized"];
-                403: components["responses"]["Forbidden"];
-                /** @description Element not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-                500: components["responses"]["InternalServerError"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/changesets": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List all changesets
-         * @description Returns a registry of all available changesets with summaries.
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Changesets list successfully retrieved */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ChangesetRegistry"];
-                    };
-                };
-                401: components["responses"]["Unauthorized"];
-                403: components["responses"]["Forbidden"];
-                500: components["responses"]["InternalServerError"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/changesets/{changesetId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get changeset details
-         * @description Returns detailed information about a specific changeset including all changes.
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    /**
-                     * @description Unique identifier for the changeset
-                     * @example feature-add-payment-service
-                     */
-                    changesetId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Changeset details successfully retrieved */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ChangesetDetails"];
-                    };
-                };
-                401: components["responses"]["Unauthorized"];
-                403: components["responses"]["Forbidden"];
-                /** @description Changeset not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-                500: components["responses"]["InternalServerError"];
             };
         };
         put?: never;
@@ -390,17 +365,15 @@ export interface paths {
         };
         /**
          * Get annotations
-         * @description Returns annotations, optionally filtered by element ID.
-         *     Used for displaying user notes and comments on model elements.
+         * @description Retrieve all annotations, optionally filtered by element
          */
         get: {
             parameters: {
                 query?: {
-                    /**
-                     * @description Filter annotations by element ID
-                     * @example business.service.payment-processing
-                     */
                     elementId?: string;
+                    author?: string;
+                    tags?: string;
+                    resolved?: "true" | "false";
                 };
                 header?: never;
                 path?: never;
@@ -408,26 +381,48 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Annotations successfully retrieved */
+                /** @description Annotations retrieved successfully */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
-                            annotations?: components["schemas"]["Annotation"][];
+                            /** @description List of annotations */
+                            annotations: {
+                                /** @description Annotation ID */
+                                id: string;
+                                /** @description Target element ID */
+                                elementId: string;
+                                /** @description Author name */
+                                author: string;
+                                /** @description Annotation content */
+                                content: string;
+                                /** @description Creation timestamp */
+                                createdAt: string;
+                                /** @description Last update timestamp */
+                                updatedAt?: string;
+                                /** @description Annotation tags */
+                                tags?: string[];
+                                /** @description Resolution status */
+                                resolved?: boolean;
+                                /** @description Annotation replies */
+                                replies?: {
+                                    id: string;
+                                    author: string;
+                                    content: string;
+                                    createdAt: string;
+                                }[];
+                            }[];
                         };
                     };
                 };
-                401: components["responses"]["Unauthorized"];
-                403: components["responses"]["Forbidden"];
-                500: components["responses"]["InternalServerError"];
             };
         };
         put?: never;
         /**
          * Create annotation
-         * @description Create a new annotation on a model element.
+         * @description Create a new annotation on a model element
          */
         post: {
             parameters: {
@@ -436,9 +431,16 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody: {
+            requestBody?: {
                 content: {
-                    "application/json": components["schemas"]["AnnotationCreate"];
+                    "application/json": {
+                        elementId: string;
+                        /** @default Anonymous */
+                        author?: string;
+                        content: string;
+                        /** @default [] */
+                        tags?: string[];
+                    };
                 };
             };
             responses: {
@@ -448,7 +450,31 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Annotation"];
+                        "application/json": {
+                            /** @description Annotation ID */
+                            id: string;
+                            /** @description Target element ID */
+                            elementId: string;
+                            /** @description Author name */
+                            author: string;
+                            /** @description Annotation content */
+                            content: string;
+                            /** @description Creation timestamp */
+                            createdAt: string;
+                            /** @description Last update timestamp */
+                            updatedAt?: string;
+                            /** @description Annotation tags */
+                            tags?: string[];
+                            /** @description Resolution status */
+                            resolved?: boolean;
+                            /** @description Annotation replies */
+                            replies?: {
+                                id: string;
+                                author: string;
+                                content: string;
+                                createdAt: string;
+                            }[];
+                        };
                     };
                 };
                 /** @description Invalid request body */
@@ -457,12 +483,36 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Error"];
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
                     };
                 };
-                401: components["responses"]["Unauthorized"];
-                403: components["responses"]["Forbidden"];
-                500: components["responses"]["InternalServerError"];
+                /** @description Element not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
             };
         };
         delete?: never;
@@ -471,31 +521,107 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/annotations/{annotationId}": {
+    "/api/annotations/:annotationId": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
         /**
-         * Update annotation
-         * @description Update an existing annotation. Supports both PUT (full replacement) and PATCH (partial update) methods. PATCH is recommended for partial updates.
+         * Get annotation by ID
+         * @description Retrieve a specific annotation by its ID
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    annotationId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Annotation retrieved successfully */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Annotation ID */
+                            id: string;
+                            /** @description Target element ID */
+                            elementId: string;
+                            /** @description Author name */
+                            author: string;
+                            /** @description Annotation content */
+                            content: string;
+                            /** @description Creation timestamp */
+                            createdAt: string;
+                            /** @description Last update timestamp */
+                            updatedAt?: string;
+                            /** @description Annotation tags */
+                            tags?: string[];
+                            /** @description Resolution status */
+                            resolved?: boolean;
+                            /** @description Annotation replies */
+                            replies?: {
+                                id: string;
+                                author: string;
+                                content: string;
+                                createdAt: string;
+                            }[];
+                        };
+                    };
+                };
+                /** @description Annotation not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        /**
+         * Update annotation (partial)
+         * @description Update an existing annotation with partial fields (NOTE: partial updates, use PATCH for recommended behavior)
          */
         put: {
             parameters: {
                 query?: never;
                 header?: never;
                 path: {
-                    /** @description Unique identifier for the annotation */
                     annotationId: string;
                 };
                 cookie?: never;
             };
-            requestBody: {
+            requestBody?: {
                 content: {
-                    "application/json": components["schemas"]["AnnotationUpdate"];
+                    "application/json": {
+                        content?: string;
+                        tags?: string[];
+                        resolved?: boolean;
+                    };
                 };
             };
             responses: {
@@ -505,43 +631,69 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Annotation"];
+                        "application/json": {
+                            /** @description Annotation ID */
+                            id: string;
+                            /** @description Target element ID */
+                            elementId: string;
+                            /** @description Author name */
+                            author: string;
+                            /** @description Annotation content */
+                            content: string;
+                            /** @description Creation timestamp */
+                            createdAt: string;
+                            /** @description Last update timestamp */
+                            updatedAt?: string;
+                            /** @description Annotation tags */
+                            tags?: string[];
+                            /** @description Resolution status */
+                            resolved?: boolean;
+                            /** @description Annotation replies */
+                            replies?: {
+                                id: string;
+                                author: string;
+                                content: string;
+                                createdAt: string;
+                            }[];
+                        };
                     };
                 };
-                /** @description Invalid request body */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-                401: components["responses"]["Unauthorized"];
-                403: components["responses"]["Forbidden"];
                 /** @description Annotation not found */
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Error"];
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
                     };
                 };
-                500: components["responses"]["InternalServerError"];
+                /** @description Server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
             };
         };
         post?: never;
         /**
          * Delete annotation
-         * @description Delete an existing annotation.
+         * @description Delete an existing annotation
          */
         delete: {
             parameters: {
                 query?: never;
                 header?: never;
                 path: {
-                    /** @description Unique identifier for the annotation */
                     annotationId: string;
                 };
                 cookie?: never;
@@ -555,39 +707,54 @@ export interface paths {
                     };
                     content?: never;
                 };
-                401: components["responses"]["Unauthorized"];
-                403: components["responses"]["Forbidden"];
                 /** @description Annotation not found */
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Error"];
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
                     };
                 };
-                500: components["responses"]["InternalServerError"];
+                /** @description Server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
             };
         };
         options?: never;
         head?: never;
         /**
-         * Update annotation (partial)
-         * @description Partially update an existing annotation. Only provided fields will be updated. Preferred method for partial updates.
+         * Partially update annotation
+         * @description Partially update an existing annotation (recommended over PUT)
          */
         patch: {
             parameters: {
                 query?: never;
                 header?: never;
                 path: {
-                    /** @description Unique identifier for the annotation */
                     annotationId: string;
                 };
                 cookie?: never;
             };
-            requestBody: {
+            requestBody?: {
                 content: {
-                    "application/json": components["schemas"]["AnnotationUpdate"];
+                    "application/json": {
+                        content?: string;
+                        tags?: string[];
+                        resolved?: boolean;
+                    };
                 };
             };
             responses: {
@@ -597,35 +764,62 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Annotation"];
+                        "application/json": {
+                            /** @description Annotation ID */
+                            id: string;
+                            /** @description Target element ID */
+                            elementId: string;
+                            /** @description Author name */
+                            author: string;
+                            /** @description Annotation content */
+                            content: string;
+                            /** @description Creation timestamp */
+                            createdAt: string;
+                            /** @description Last update timestamp */
+                            updatedAt?: string;
+                            /** @description Annotation tags */
+                            tags?: string[];
+                            /** @description Resolution status */
+                            resolved?: boolean;
+                            /** @description Annotation replies */
+                            replies?: {
+                                id: string;
+                                author: string;
+                                content: string;
+                                createdAt: string;
+                            }[];
+                        };
                     };
                 };
-                /** @description Invalid request body */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-                401: components["responses"]["Unauthorized"];
-                403: components["responses"]["Forbidden"];
                 /** @description Annotation not found */
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Error"];
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
                     };
                 };
-                500: components["responses"]["InternalServerError"];
+                /** @description Server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
             };
         };
         trace?: never;
     };
-    "/api/annotations/{annotationId}/replies": {
+    "/api/annotations/:annotationId/replies": {
         parameters: {
             query?: never;
             header?: never;
@@ -634,66 +828,72 @@ export interface paths {
         };
         /**
          * Get annotation replies
-         * @description Returns all replies for a specific annotation.
+         * @description Retrieve all replies to an annotation
          */
         get: {
             parameters: {
                 query?: never;
                 header?: never;
                 path: {
-                    /** @description Unique identifier for the annotation */
                     annotationId: string;
                 };
                 cookie?: never;
             };
             requestBody?: never;
             responses: {
-                /** @description Replies successfully retrieved */
+                /** @description Replies retrieved successfully */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
-                            replies?: components["schemas"]["AnnotationReply"][];
+                            /** @description List of replies */
+                            replies: {
+                                /** @description Reply ID */
+                                id: string;
+                                /** @description Author name */
+                                author: string;
+                                /** @description Reply content */
+                                content: string;
+                                /** @description Creation timestamp */
+                                createdAt: string;
+                            }[];
                         };
                     };
                 };
-                401: components["responses"]["Unauthorized"];
-                403: components["responses"]["Forbidden"];
                 /** @description Annotation not found */
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Error"];
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
                     };
                 };
-                500: components["responses"]["InternalServerError"];
             };
         };
         put?: never;
         /**
          * Create annotation reply
-         * @description Add a reply to an existing annotation.
+         * @description Add a reply to an annotation
          */
         post: {
             parameters: {
                 query?: never;
                 header?: never;
                 path: {
-                    /** @description Unique identifier for the annotation */
                     annotationId: string;
                 };
                 cookie?: never;
             };
-            requestBody: {
+            requestBody?: {
                 content: {
                     "application/json": {
-                        /** @description Author of the reply */
                         author: string;
-                        /** @description Reply text content */
                         content: string;
                     };
                 };
@@ -705,30 +905,42 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["AnnotationReply"];
+                        "application/json": {
+                            /** @description Reply ID */
+                            id: string;
+                            /** @description Author name */
+                            author: string;
+                            /** @description Reply content */
+                            content: string;
+                            /** @description Creation timestamp */
+                            createdAt: string;
+                        };
                     };
                 };
-                /** @description Invalid request body */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-                401: components["responses"]["Unauthorized"];
-                403: components["responses"]["Forbidden"];
                 /** @description Annotation not found */
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Error"];
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
                     };
                 };
-                500: components["responses"]["InternalServerError"];
+                /** @description Server error */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
             };
         };
         delete?: never;
@@ -737,7 +949,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/ws": {
+    "/api/changesets": {
         parameters: {
             query?: never;
             header?: never;
@@ -745,109 +957,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * WebSocket connection for real-time updates and chat
-         * @description WebSocket endpoint supporting two protocols:
-         *
-         *     1. **Legacy Protocol** - Real-time model updates
-         *     2. **JSON-RPC 2.0** - AI chat with Claude Code CLI integration
-         *
-         *     ## Authentication
-         *
-         *     Token can be provided via (in order of preference):
-         *
-         *     1. **Sec-WebSocket-Protocol header** (recommended for browsers):
-         *     ```javascript
-         *     const ws = new WebSocket('ws://localhost:8080/ws', ['token', 'YOUR_TOKEN']);
-         *     ```
-         *     The browser will send: `Sec-WebSocket-Protocol: token, YOUR_TOKEN`
-         *
-         *     2. **Query parameter** (simple, works everywhere):
-         *     ```
-         *     ws://localhost:8080/ws?token=YOUR_TOKEN
-         *     ```
-         *
-         *     3. **Authorization header** (non-browser clients only):
-         *     ```
-         *     Authorization: Bearer YOUR_TOKEN
-         *     ```
-         *     Note: Not supported by browser WebSocket API - use method #1 instead
-         *
-         *     ## Legacy Protocol - Model Updates
-         *
-         *     **Client → Server Messages**:
-         *     - `{"type": "subscribe", "topics": ["model", "annotations"]}` - Subscribe to real-time updates (topics are optional, defaults to model and annotations)
-         *     - `{"type": "ping"}` - Heartbeat ping
-         *     - `{"type": "annotate", "annotation": {"elementId": "...", "author": "...", "text": "...", "timestamp": "..."}}` - Broadcast annotation to all clients (legacy - prefer REST API)
-         *
-         *     **Server → Client Messages**:
-         *     - `{"type": "connected", "version": "0.1.0", "timestamp": "..."}` - Connection established
-         *     - `{"type": "subscribed", "topics": [...], "timestamp": "..."}` - Subscription confirmed
-         *     - `{"type": "pong", "timestamp": "..."}` - Heartbeat response
-         *     - `{"type": "model", "data": {...}, "timestamp": "..."}` - Initial model state (sent after subscribe)
-         *     - `{"type": "model.updated", "data": {...}, "timestamp": "..."}` - Model changed (file watcher)
-         *     - `{"type": "annotation.added", "annotationId": "...", "elementId": "..."}` - Annotation added
-         *     - `{"type": "annotation.updated", "annotationId": "..."}` - Annotation updated
-         *     - `{"type": "annotation.deleted", "annotationId": "..."}` - Annotation deleted
-         *     - `{"type": "annotation.reply.added", "annotationId": "...", "replyId": "...", "timestamp": "..."}` - Reply added to annotation
-         *     - `{"type": "annotation", "data": {...}}` - Annotation broadcast (legacy, from annotate message)
-         *     - `{"type": "changeset.created", "changesetId": "...", "name": "...", "timestamp": "..."}` - Changeset created
-         *     - `{"type": "changeset.updated", "changesetId": "...", "timestamp": "..."}` - Changeset updated
-         *     - `{"type": "changeset.applied", "changesetId": "...", "timestamp": "..."}` - Changeset applied
-         *     - `{"type": "error", "message": "..."}` - Error message
-         *
-         *     ## JSON-RPC 2.0 Protocol - Chat
-         *
-         *     **Requires**: Claude Code CLI or GitHub Copilot installed
-         *
-         *     ### chat.status
-         *
-         *     Check if a chat client (Claude Code CLI or GitHub Copilot) is available.
-         *
-         *     **Request**: `{"jsonrpc": "2.0", "method": "chat.status", "id": "status-1"}`
-         *
-         *     **Response**: `{"jsonrpc": "2.0", "result": {"sdk_available": true, "sdk_version": "claude-code-cli" | "github-copilot", "error_message": null}, "id": "status-1"}`
-         *
-         *     ### chat.send
-         *
-         *     Send a message to the chat client (Claude Code CLI with dr-architect agent, or GitHub Copilot).
-         *
-         *     **Request**: `{"jsonrpc": "2.0", "method": "chat.send", "params": {"message": "What elements are in the business layer?"}, "id": "msg-1"}`
-         *
-         *     **Streaming Events** (notifications):
-         *     - `{"jsonrpc": "2.0", "method": "chat.response.chunk", "params": {"conversation_id": "conv-1-...", "content": "text...", "is_final": false, "timestamp": "..."}}`
-         *     - `{"jsonrpc": "2.0", "method": "chat.tool.invoke", "params": {"conversation_id": "conv-1-...", "tool_use_id": "toolu_...", "toolName": "Read", "toolInput": {...}, "status": "executing|completed|failed", "result": {...}, "error": "...", "timestamp": "..."}}`
-         *     - `{"jsonrpc": "2.0", "method": "chat.tool.result", "params": {"conversation_id": "conv-1-...", "tool_use_id": "toolu_...", "result": {...}, "timestamp": "..."}}`
-         *     - `{"jsonrpc": "2.0", "method": "chat.thinking", "params": {"conversation_id": "conv-1-...", "content": "thinking text...", "timestamp": "..."}}`
-         *     - `{"jsonrpc": "2.0", "method": "chat.usage", "params": {"conversation_id": "conv-1-...", "input_tokens": 100, "output_tokens": 50, "total_tokens": 150, "total_cost_usd": 0.001, "timestamp": "..."}}`
-         *     - `{"jsonrpc": "2.0", "method": "chat.error", "params": {"conversation_id": "conv-1-...", "code": "ERROR_CODE", "message": "error message", "timestamp": "..."}}`
-         *
-         *     **Completion**: `{"jsonrpc": "2.0", "result": {"conversation_id": "conv-1-...", "status": "complete", "exit_code": 0, "timestamp": "..."}, "id": "msg-1"}`
-         *
-         *     **Error**: `{"jsonrpc": "2.0", "error": {"code": -32001, "message": "No chat client available. Install Claude Code or GitHub Copilot."}, "id": "msg-1"}`
-         *
-         *     ### chat.cancel
-         *
-         *     Cancel active chat conversation.
-         *
-         *     **Request**: `{"jsonrpc": "2.0", "method": "chat.cancel", "params": {}, "id": "cancel-1"}`
-         *
-         *     **Response**: `{"jsonrpc": "2.0", "result": {"cancelled": true, "conversation_id": "conv-1-..."}, "id": "cancel-1"}`
-         *
-         *     ## Event Streaming Details
-         *
-         *     The server streams events from chat clients to the browser:
-         *
-         *     - **stdout** - Text responses, structured events (Claude Code CLI)
-         *     - **stderr** - Errors, diagnostics (Claude Code CLI)
-         *
-         *     Events are parsed line-by-line and classified as:
-         *     1. **Text chunks** (`chat.response.chunk`) - Any text output from the chat client
-         *     2. **Tool invocations** (`chat.tool.invoke`) - When Claude uses tools (Read, Edit, Bash, etc.) [Claude Code CLI only]
-         *     3. **Tool results** (`chat.tool.result`) - Results from tool executions [Claude Code CLI only]
-         *
-         *     All events include timestamps and conversation IDs for tracking.
-         *
-         *     **Note**: GitHub Copilot chat outputs plain text/markdown only (no structured tool events).
+         * Get changesets
+         * @description Retrieve a list of all changesets
          */
         get: {
             parameters: {
@@ -858,26 +969,115 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description WebSocket connection established */
-                101: {
+                /** @description Changesets retrieved successfully */
+                200: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": {
+                            version: string;
+                            changesets: {
+                                [key: string]: {
+                                    name: string;
+                                    /** @enum {string} */
+                                    status: "active" | "applied" | "abandoned";
+                                    /** @enum {string} */
+                                    type: "feature" | "bugfix" | "exploration";
+                                    created_at: string;
+                                    elements_count: number;
+                                };
+                            };
+                        };
+                    };
                 };
-                /** @description Authentication required */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/changesets/:changesetId": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get changeset
+         * @description Retrieve a specific changeset with all its changes
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    changesetId: string;
                 };
-                /** @description Invalid token */
-                403: {
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Changeset retrieved successfully */
+                200: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": {
+                            metadata: {
+                                id: string;
+                                name: string;
+                                description?: string;
+                                /** @enum {string} */
+                                type: "feature" | "bugfix" | "exploration";
+                                /** @enum {string} */
+                                status: "active" | "applied" | "abandoned";
+                                created_at: string;
+                                updated_at?: string;
+                                workflow?: string;
+                                summary: {
+                                    elements_added: number;
+                                    elements_updated: number;
+                                    elements_deleted: number;
+                                };
+                            };
+                            changes: {
+                                version: string;
+                                changes: {
+                                    timestamp: string;
+                                    /** @enum {string} */
+                                    operation: "add" | "update" | "delete";
+                                    element_id: string;
+                                    layer: string;
+                                    element_type: string;
+                                    /** @description Element data (varies by element type) */
+                                    data?: unknown;
+                                    /** @description Previous element state (for update operations) */
+                                    before?: unknown;
+                                    /** @description New element state (for update operations) */
+                                    after?: unknown;
+                                }[];
+                            };
+                        };
+                    };
+                };
+                /** @description Changeset not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
                 };
             };
         };
@@ -892,324 +1092,8 @@ export interface paths {
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        /**
-         * @example {
-         *       "error": "Failed to load model"
-         *     }
-         */
-        Error: {
-            /** @description Error message */
-            error: string;
-        };
-        SpecDataResponse: {
-            /**
-             * @description Specification version
-             * @example 0.1.0
-             */
-            version: string;
-            /**
-             * @description Response type identifier
-             * @enum {string}
-             */
-            type: "schema-collection";
-            /**
-             * @description Human-readable description
-             * @example JSON Schema definitions from dr CLI
-             */
-            description?: string;
-            /**
-             * @description Source of the schemas
-             * @example dr-cli
-             */
-            source?: string;
-            /** @description Map of schema filename to JSON Schema object */
-            schemas: {
-                [key: string]: Record<string, never>;
-            };
-            /**
-             * @description Number of schemas included
-             * @example 12
-             */
-            schemaCount?: number;
-            /** @description Schema manifest metadata */
-            manifest?: {
-                spec_version?: string;
-                source?: string;
-                /** Format: date-time */
-                created_at?: string;
-                created_by?: string;
-                files?: {
-                    [key: string]: {
-                        sha256?: string;
-                        size?: number;
-                    };
-                };
-            };
-            relationshipCatalog?: components["schemas"]["RelationshipCatalog"];
-            relationship_catalog?: components["schemas"]["RelationshipCatalog"];
-        };
-        RelationshipCatalog: {
-            version?: string;
-            relationshipTypes?: {
-                id?: string;
-                predicate?: string;
-                inversePredicate?: string;
-                category?: string;
-                description?: string;
-            }[];
-        };
-        ModelResponse: {
-            /**
-             * @description Model format version
-             * @example 0.1.0
-             */
-            version: string;
-            metadata: {
-                /** @enum {string} */
-                type: "yaml-instance" | "schema-collection";
-                description?: string;
-                /** @example dr-cli */
-                source: string;
-                /** @description Project metadata from manifest */
-                project?: Record<string, never>;
-                /** @description Model statistics */
-                statistics?: Record<string, never>;
-            };
-            /** @description Map of layer ID to layer data */
-            layers: {
-                [key: string]: components["schemas"]["Layer"];
-            };
-            /** @description Cross-layer references */
-            references: components["schemas"]["CrossLayerReference"][];
-        };
-        Layer: {
-            /**
-             * @description Normalized layer ID (lowercase, underscore-separated)
-             * @example business
-             */
-            id: string;
-            /**
-             * @description Layer type name
-             * @example Business
-             */
-            type: string;
-            /**
-             * @description Display name
-             * @example Business Layer
-             */
-            name: string;
-            elements: components["schemas"]["Element"][];
-            relationships: components["schemas"]["Relationship"][];
-        };
-        Element: {
-            /**
-             * @description Fully qualified element ID
-             * @example business.service.payment-processing
-             */
-            id: string;
-            /**
-             * @description Element type
-             * @example service
-             */
-            type: string;
-            /**
-             * @description Display name
-             * @example Payment Processing
-             */
-            name: string;
-            /**
-             * @description Parent layer ID
-             * @example business
-             */
-            layerId: string;
-            /** @description Element-specific properties */
-            properties: Record<string, never>;
-            /** @description Visual layout information */
-            visual?: {
-                position?: {
-                    x?: number;
-                    y?: number;
-                };
-                size?: {
-                    width?: number;
-                    height?: number;
-                };
-                style?: {
-                    backgroundColor?: string;
-                    borderColor?: string;
-                };
-            };
-        };
-        Relationship: {
-            id?: string;
-            /** @description Source element ID */
-            source: string;
-            /** @description Target element ID */
-            target: string;
-            /** @description Relationship type */
-            type: string;
-            /** @description Additional relationship properties */
-            properties?: Record<string, never>;
-        };
-        CrossLayerReference: {
-            source: {
-                layerId: string;
-                elementId: string;
-            };
-            target: {
-                layerId: string;
-                elementId: string;
-            };
-            /** @description Reference type (e.g., "realizes", "uses", "deployedTo") */
-            type: string;
-        };
-        ChangesetRegistry: {
-            /** @example 1.0.0 */
-            version: string;
-            changesets: {
-                [key: string]: components["schemas"]["ChangesetSummary"];
-            };
-        };
-        ChangesetSummary: {
-            name?: string;
-            /** @enum {string} */
-            status?: "active" | "applied" | "abandoned";
-            /** @enum {string} */
-            type?: "feature" | "bugfix" | "exploration";
-            /** Format: date-time */
-            created_at?: string;
-            elements_count?: number;
-        };
-        ChangesetDetails: {
-            metadata: components["schemas"]["ChangesetMetadata"];
-            changes: {
-                version: string;
-                changes: components["schemas"]["ChangesetChange"][];
-            };
-        };
-        ChangesetMetadata: {
-            id?: string;
-            name?: string;
-            description?: string;
-            type?: string;
-            status?: string;
-            /** Format: date-time */
-            created_at?: string;
-            /** Format: date-time */
-            updated_at?: string;
-            workflow?: string;
-            summary?: {
-                elements_added?: number;
-                elements_updated?: number;
-                elements_deleted?: number;
-            };
-        };
-        ChangesetChange: {
-            /** Format: date-time */
-            timestamp: string;
-            /** @enum {string} */
-            operation: "add" | "update" | "delete";
-            element_id: string;
-            layer: string;
-            element_type: string;
-            /** @description New element data (for add operations) */
-            data?: Record<string, never>;
-            /** @description Element state before change (for update operations) */
-            before?: Record<string, never>;
-            /** @description Element state after change (for update operations) */
-            after?: Record<string, never>;
-        };
-        Annotation: {
-            /** @description Unique annotation ID */
-            id: string;
-            /** @description ID of the annotated element */
-            elementId: string;
-            /** @description Annotation text content */
-            content: string;
-            /** @description Author of the annotation */
-            author?: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt?: string;
-            /**
-             * @description Whether the annotation has been resolved
-             * @default false
-             */
-            resolved: boolean;
-            /** @description Optional tags for categorization */
-            tags?: string[];
-            /** @description Thread of replies to this annotation */
-            replies?: components["schemas"]["AnnotationReply"][];
-        };
-        AnnotationCreate: {
-            elementId: string;
-            content: string;
-            author?: string;
-            tags?: string[];
-        };
-        AnnotationReply: {
-            /** @description Unique reply ID */
-            id: string;
-            /** @description Author of the reply */
-            author: string;
-            /** @description Reply text content */
-            content: string;
-            /**
-             * Format: date-time
-             * @description When the reply was created
-             */
-            createdAt: string;
-        };
-        AnnotationUpdate: {
-            /** @description Updated annotation text content */
-            content?: string;
-            /** @description Whether to mark the annotation as resolved */
-            resolved?: boolean;
-            /** @description Updated tags for categorization */
-            tags?: string[];
-        };
-    };
-    responses: {
-        /** @description Authentication required */
-        Unauthorized: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                /**
-                 * @example {
-                 *       "error": "Authentication required. Please provide a valid token."
-                 *     }
-                 */
-                "application/json": components["schemas"]["Error"];
-            };
-        };
-        /** @description Invalid authentication token */
-        Forbidden: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                /**
-                 * @example {
-                 *       "error": "Invalid authentication token"
-                 *     }
-                 */
-                "application/json": components["schemas"]["Error"];
-            };
-        };
-        /** @description Internal server error */
-        InternalServerError: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": components["schemas"]["Error"];
-            };
-        };
-    };
+    schemas: never;
+    responses: never;
     parameters: never;
     requestBodies: never;
     headers: never;

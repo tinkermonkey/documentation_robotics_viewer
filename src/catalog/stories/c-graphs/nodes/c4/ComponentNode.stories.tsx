@@ -1,151 +1,182 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { ComponentNode, COMPONENT_NODE_WIDTH, COMPONENT_NODE_HEIGHT } from '@/core/nodes/c4/ComponentNode';
+import type { Meta, StoryObj } from '@storybook/react';
+import { UnifiedNode } from '@/core/nodes/components';
+import { NodeType } from '@/core/nodes/NodeType';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createC4ComponentNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / C4 / ComponentNode',
-  decorators: [withReactFlowDecorator({ width: COMPONENT_NODE_WIDTH, height: COMPONENT_NODE_HEIGHT })],
+  component: UnifiedNode,
+  decorators: [withReactFlowDecorator({ width: 240, height: 140 })],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
-    <ComponentNode data={createC4ComponentNodeData({ label: 'GraphViewer Component' })} id="component-1" />
-  ),
+  args: {
+    id: 'component-1',
+    data: {
+      nodeType: NodeType.C4_COMPONENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'GraphViewer Component',
+      items: [],
+    },
+  },
 };
 
 export const ControllerComponent: Story = {
-  render: () => (
-    <ComponentNode
-        data={createC4ComponentNodeData({
-          label: 'User Controller',
-          role: 'Controller',
-          technology: ['Express', 'TypeScript'],
-          description: 'Handles user-related API endpoints',
-        })}
-        id="component-2"
-      />
-  ),
+  args: {
+    id: 'component-2',
+    data: {
+      nodeType: NodeType.C4_COMPONENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'User Controller',
+      items: [
+        { id: 'description', label: 'Description', value: 'Handles user-related API endpoints', required: false },
+        { id: 'technologies', label: 'Technologies', value: 'Express, TypeScript', required: false },
+        { id: 'role', label: 'Role', value: 'Controller', required: false },
+      ],
+    },
+  },
 };
 
 export const ServiceComponent: Story = {
-  render: () => (
-    <ComponentNode
-        data={createC4ComponentNodeData({
-          label: 'Authentication Service',
-          role: 'Service',
-          technology: ['Node.js', 'JWT'],
-          description: 'Manages user authentication and authorization',
-        })}
-        id="component-3"
-      />
-  ),
+  args: {
+    id: 'component-3',
+    data: {
+      nodeType: NodeType.C4_COMPONENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Authentication Service',
+      items: [
+        { id: 'description', label: 'Description', value: 'Manages user authentication and authorization', required: false },
+        { id: 'technologies', label: 'Technologies', value: 'Node.js, JWT', required: false },
+        { id: 'role', label: 'Role', value: 'Service', required: false },
+      ],
+    },
+  },
 };
 
 export const RepositoryComponent: Story = {
-  render: () => (
-    <ComponentNode
-        data={createC4ComponentNodeData({
-          label: 'User Repository',
-          role: 'Repository',
-          technology: ['TypeORM'],
-          description: 'Data access layer for users',
-        })}
-        id="component-4"
-      />
-  ),
+  args: {
+    id: 'component-4',
+    data: {
+      nodeType: NodeType.C4_COMPONENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'User Repository',
+      items: [
+        { id: 'description', label: 'Description', value: 'Data access layer for users', required: false },
+        { id: 'technologies', label: 'Technologies', value: 'TypeORM', required: false },
+        { id: 'role', label: 'Role', value: 'Repository', required: false },
+      ],
+    },
+  },
 };
 
 export const UIComponentExample: Story = {
-  render: () => (
-    <ComponentNode
-        data={createC4ComponentNodeData({
-          label: 'Dashboard Panel',
-          role: 'UI Component',
-          technology: ['React', '@xyflow/react'],
-          description: 'Renders main dashboard interface',
-        })}
-        id="component-5"
-      />
-  ),
+  args: {
+    id: 'component-5',
+    data: {
+      nodeType: NodeType.C4_COMPONENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Dashboard Panel',
+      items: [
+        { id: 'description', label: 'Description', value: 'Renders main dashboard interface', required: false },
+        { id: 'technologies', label: 'Technologies', value: 'React, @xyflow/react', required: false },
+        { id: 'role', label: 'Role', value: 'UI Component', required: false },
+      ],
+    },
+  },
 };
 
 export const WithInterfaces: Story = {
-  render: () => (
-    <ComponentNode
-        data={createC4ComponentNodeData({
-          label: 'Payment Processor',
-          interfaces: ['IPaymentService', 'ITransactionLogger'],
-          description: 'Processes payment transactions',
-        })}
-        id="component-6"
-      />
-  ),
+  args: {
+    id: 'component-6',
+    data: {
+      nodeType: NodeType.C4_COMPONENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Payment Processor',
+      items: [
+        { id: 'description', label: 'Description', value: 'Processes payment transactions', required: false },
+        { id: 'interfaces', label: 'Interfaces', value: 'IPaymentService, ITransactionLogger', required: false },
+      ],
+    },
+  },
 };
 
 export const ChangesetAdd: Story = {
-  render: () => (
-    <ComponentNode
-        data={createC4ComponentNodeData({
-          label: 'New Component',
-          changesetOperation: 'add',
-        })}
-        id="component-7"
-      />
-  ),
+  args: {
+    id: 'component-7',
+    data: {
+      nodeType: NodeType.C4_COMPONENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'New Component',
+      items: [],
+      changesetOperation: 'add',
+    },
+  },
 };
 
 export const ChangesetUpdate: Story = {
-  render: () => (
-    <ComponentNode
-        data={createC4ComponentNodeData({
-          label: 'Updated Component',
-          changesetOperation: 'update',
-        })}
-        id="component-8"
-      />
-  ),
+  args: {
+    id: 'component-8',
+    data: {
+      nodeType: NodeType.C4_COMPONENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Updated Component',
+      items: [],
+      changesetOperation: 'update',
+    },
+  },
 };
 
 export const ChangesetDelete: Story = {
-  render: () => (
-    <ComponentNode
-        data={createC4ComponentNodeData({
-          label: 'Deleted Component',
-          changesetOperation: 'delete',
-        })}
-        id="component-9"
-      />
-  ),
+  args: {
+    id: 'component-9',
+    data: {
+      nodeType: NodeType.C4_COMPONENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Deleted Component',
+      items: [],
+      changesetOperation: 'delete',
+    },
+  },
 };
 
 export const Dimmed: Story = {
-  render: () => (
-    <ComponentNode
-        data={createC4ComponentNodeData({
-          label: 'Dimmed Component',
-          opacity: 0.5,
-        })}
-        id="component-10"
-      />
-  ),
+  args: {
+    id: 'component-10',
+    data: {
+      nodeType: NodeType.C4_COMPONENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Dimmed Component',
+      items: [],
+      detailLevel: 'minimal',
+    },
+  },
 };
 
 export const Highlighted: Story = {
-  render: () => (
-    <ComponentNode
-      data={createC4ComponentNodeData({
-        label: 'Highlighted Node',
-        strokeWidth: 3
-      })}
-      id="1"
-    />
-  ),
+  args: {
+    id: 'component-11',
+    data: {
+      nodeType: NodeType.C4_COMPONENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Highlighted Node',
+    },
+  },
 };
 

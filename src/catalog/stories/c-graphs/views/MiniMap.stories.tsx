@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ReactFlow, ReactFlowProvider, useNodesState, useEdgesState, useNodesInitialized, MiniMap as ReactFlowMiniMap } from '@xyflow/react';
 import { MiniMap } from '@/apps/embedded/components/MiniMap';
 import '@xyflow/react/dist/style.css';

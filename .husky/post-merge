@@ -3,6 +3,10 @@
 # Post-merge hook: Sync API spec after pulling changes
 # Ensures local spec is updated if it changed in the remote
 
+# Bypass corrupted global git config if present
+export GIT_CONFIG_GLOBAL=/dev/null
+export GIT_CONFIG_SYSTEM=/dev/null
+
 if git diff HEAD@{1}..HEAD --name-only | grep -q docs/api-spec.yaml; then
   echo "🔄 API spec changed in this merge. Syncing..."
   npm run sync:api-spec

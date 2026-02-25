@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { RelationshipBadge } from '@/core/nodes/motivation/RelationshipBadge';
+import type { Meta, StoryObj } from '@storybook/react';
+import { RelationshipBadge } from '@/core/nodes/components/RelationshipBadge';
 
 const meta = {
   title: 'A Primitives / Indicators / RelationshipBadge',

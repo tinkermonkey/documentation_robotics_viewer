@@ -1,4 +1,4 @@
-import type { Preview } from '@storybook/react-vite';
+import type { Preview } from '@storybook/react';
 import { MockRouterProvider } from '../src/catalog/providers/MockRouterProvider';
 import '../src/index.css';
 

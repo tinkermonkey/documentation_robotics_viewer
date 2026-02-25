@@ -1,134 +1,162 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { ExternalActorNode, EXTERNAL_ACTOR_NODE_WIDTH, EXTERNAL_ACTOR_NODE_HEIGHT } from '@/core/nodes/c4/ExternalActorNode';
+import type { Meta, StoryObj } from '@storybook/react';
+import { UnifiedNode } from '@/core/nodes/components';
+import { NodeType } from '@/core/nodes/NodeType';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createC4ExternalActorNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / C4 / ExternalActorNode',
-  decorators: [withReactFlowDecorator({ width: EXTERNAL_ACTOR_NODE_WIDTH, height: EXTERNAL_ACTOR_NODE_HEIGHT })],
+  component: UnifiedNode,
+  decorators: [withReactFlowDecorator({ width: 160, height: 120 })],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
-    <ExternalActorNode data={createC4ExternalActorNodeData({ label: 'End User' })} id="actor-1" />
-  ),
+  args: {
+    id: 'actor-1',
+    data: {
+      nodeType: NodeType.C4_EXTERNAL_ACTOR,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'End User',
+      items: [],
+    },
+  },
 };
 
 export const UserActor: Story = {
-  render: () => (
-    <ExternalActorNode
-        data={createC4ExternalActorNodeData({
-          label: 'Customer',
-          actorType: 'user',
-          description: 'A customer using the e-commerce platform',
-        })}
-        id="actor-2"
-      />
-  ),
+  args: {
+    id: 'actor-2',
+    data: {
+      nodeType: NodeType.C4_EXTERNAL_ACTOR,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Customer',
+      items: [
+        { id: 'description', label: 'Description', value: 'A customer using the e-commerce platform', required: false },
+        { id: 'actorType', label: 'Type', value: 'user', required: false },
+      ],
+    },
+  },
 };
 
 export const AdminActor: Story = {
-  render: () => (
-    <ExternalActorNode
-        data={createC4ExternalActorNodeData({
-          label: 'Administrator',
-          actorType: 'user',
-          description: 'System administrator with elevated privileges',
-        })}
-        id="actor-3"
-      />
-  ),
+  args: {
+    id: 'actor-3',
+    data: {
+      nodeType: NodeType.C4_EXTERNAL_ACTOR,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Administrator',
+      items: [
+        { id: 'description', label: 'Description', value: 'System administrator with elevated privileges', required: false },
+        { id: 'actorType', label: 'Type', value: 'user', required: false },
+      ],
+    },
+  },
 };
 
 export const SystemActor: Story = {
-  render: () => (
-    <ExternalActorNode
-        data={createC4ExternalActorNodeData({
-          label: 'Email Service',
-          actorType: 'system',
-          description: 'External email delivery service',
-        })}
-        id="actor-4"
-      />
-  ),
+  args: {
+    id: 'actor-4',
+    data: {
+      nodeType: NodeType.C4_EXTERNAL_ACTOR,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Email Service',
+      items: [
+        { id: 'description', label: 'Description', value: 'External email delivery service', required: false },
+        { id: 'actorType', label: 'Type', value: 'system', required: false },
+      ],
+    },
+  },
 };
 
 export const ExternalService: Story = {
-  render: () => (
-    <ExternalActorNode
-        data={createC4ExternalActorNodeData({
-          label: 'Payment Gateway',
-          actorType: 'service',
-          description: 'Third-party payment processing service',
-        })}
-        id="actor-5"
-      />
-  ),
+  args: {
+    id: 'actor-5',
+    data: {
+      nodeType: NodeType.C4_EXTERNAL_ACTOR,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Payment Gateway',
+      items: [
+        { id: 'description', label: 'Description', value: 'Third-party payment processing service', required: false },
+        { id: 'actorType', label: 'Type', value: 'service', required: false },
+      ],
+    },
+  },
 };
 
 export const ChangesetAdd: Story = {
-  render: () => (
-    <ExternalActorNode
-        data={createC4ExternalActorNodeData({
-          label: 'New Actor',
-          changesetOperation: 'add',
-        })}
-        id="actor-6"
-      />
-  ),
+  args: {
+    id: 'actor-6',
+    data: {
+      nodeType: NodeType.C4_EXTERNAL_ACTOR,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'New Actor',
+      items: [],
+      changesetOperation: 'add',
+    },
+  },
 };
 
 export const ChangesetUpdate: Story = {
-  render: () => (
-    <ExternalActorNode
-        data={createC4ExternalActorNodeData({
-          label: 'Updated Actor',
-          changesetOperation: 'update',
-        })}
-        id="actor-7"
-      />
-  ),
+  args: {
+    id: 'actor-7',
+    data: {
+      nodeType: NodeType.C4_EXTERNAL_ACTOR,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Updated Actor',
+      items: [],
+      changesetOperation: 'update',
+    },
+  },
 };
 
 export const ChangesetDelete: Story = {
-  render: () => (
-    <ExternalActorNode
-        data={createC4ExternalActorNodeData({
-          label: 'Deleted Actor',
-          changesetOperation: 'delete',
-        })}
-        id="actor-8"
-      />
-  ),
+  args: {
+    id: 'actor-8',
+    data: {
+      nodeType: NodeType.C4_EXTERNAL_ACTOR,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Deleted Actor',
+      items: [],
+      changesetOperation: 'delete',
+    },
+  },
 };
 
 export const Dimmed: Story = {
-  render: () => (
-    <ExternalActorNode
-        data={createC4ExternalActorNodeData({
-          label: 'Dimmed Actor',
-          opacity: 0.5,
-        })}
-        id="actor-9"
-      />
-  ),
+  args: {
+    id: 'actor-9',
+    data: {
+      nodeType: NodeType.C4_EXTERNAL_ACTOR,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Dimmed Actor',
+      items: [],
+      detailLevel: 'minimal',
+    },
+  },
 };
 
 export const Highlighted: Story = {
-  render: () => (
-    <ExternalActorNode
-      data={createC4ExternalActorNodeData({
-        label: 'Highlighted Node',
-        strokeWidth: 3
-      })}
-      id="1"
-    />
-  ),
+  args: {
+    id: 'actor-10',
+    data: {
+      nodeType: NodeType.C4_EXTERNAL_ACTOR,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Highlighted Node',
+    },
+  },
 };
 
