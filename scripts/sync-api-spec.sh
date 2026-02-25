@@ -2,6 +2,8 @@
 set -e
 
 # Bypass corrupted global git config if present
+# Prevents: "unable to access .gitconfig: Is a directory" errors
+# See: https://github.com/tinkermonkey/documentation_robotics/issues/341
 export GIT_CONFIG_GLOBAL=/dev/null
 export GIT_CONFIG_SYSTEM=/dev/null
 

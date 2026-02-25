@@ -1,5 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// Bypass corrupted global git config if present (prevents CI failures)
+// See: https://github.com/tinkermonkey/documentation_robotics/issues/341
+process.env.GIT_CONFIG_GLOBAL ??= '/dev/null';
+process.env.GIT_CONFIG_SYSTEM ??= '/dev/null';
+
 /**
  * Default Playwright Test Configuration
  *
