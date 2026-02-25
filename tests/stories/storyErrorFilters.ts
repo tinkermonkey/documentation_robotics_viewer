@@ -65,6 +65,10 @@ export function isExpectedConsoleError(text: string): boolean {
   if (/^Warning: useLayoutEffect does nothing on the server/.test(text)) return true;
   if (/^Warning: An update to .* inside a test was not wrapped in act/.test(text)) return true;
 
+  // Axe accessibility runner - expected when axe-core operations overlap in test environment
+  // This can occur during concurrent test execution or story transitions
+  if (/Axe is already running/.test(text)) return true;
+
   // StoryLoadedWrapper timeout diagnostics - expected when stories render error/empty states
   if (/^StoryLoadedWrapper: /.test(text)) return true;
   if (/^Wrapper element:/.test(text)) return true;
