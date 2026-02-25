@@ -30,6 +30,34 @@ interface FieldVisibilityState {
 }
 
 /**
+ * Computes field visibility based on precedence rules.
+ * Graph-level overrides node-level, which overrides default (false).
+ *
+ * @param graphLevelHideFields - Global hide setting
+ * @param nodeLevelOverrides - Per-node visibility overrides
+ * @param nodeId - Optional node ID for node-level lookup
+ * @returns Whether fields should be hidden
+ */
+function computeShouldHideFields(
+  graphLevelHideFields: boolean,
+  nodeLevelOverrides: Map<string, boolean>,
+  nodeId?: string
+): boolean {
+  // If graph-level is enabled, always hide
+  if (graphLevelHideFields) {
+    return true;
+  }
+
+  // Otherwise check node-level setting (using !== undefined to handle empty string)
+  if (nodeId !== undefined && nodeLevelOverrides.has(nodeId)) {
+    return nodeLevelOverrides.get(nodeId) || false;
+  }
+
+  // Default: show fields
+  return false;
+}
+
+/**
  * Zustand store for field visibility management
  */
 export const useFieldVisibilityStore = create<FieldVisibilityState>()(
@@ -39,23 +67,10 @@ export const useFieldVisibilityStore = create<FieldVisibilityState>()(
       graphLevelHideFields: false,
       nodeLevelOverrides: new Map(),
 
-      // Selector: implements precedence logic
-      // Graph-level overrides node-level, which overrides default (false)
+      // Selector: computes visibility based on precedence rules
       shouldHideFields: (nodeId?: string) => {
         const state = get();
-
-        // If graph-level is enabled, always hide
-        if (state.graphLevelHideFields) {
-          return true;
-        }
-
-        // Otherwise check node-level setting (using !== undefined to handle empty string)
-        if (nodeId !== undefined && state.nodeLevelOverrides.has(nodeId)) {
-          return state.nodeLevelOverrides.get(nodeId) || false;
-        }
-
-        // Default: show fields
-        return false;
+        return computeShouldHideFields(state.graphLevelHideFields, state.nodeLevelOverrides, nodeId);
       },
 
       // Actions
@@ -105,26 +120,17 @@ export const useGraphLevelHideFields = () =>
 
 /**
  * Hook to check if fields should be hidden for a given node
- * Implements the precedence logic: graph-level > node-level > default (false)
+ *
+ * Applies the same precedence logic as the store selector:
+ * graph-level > node-level > default (false)
  *
  * PERFORMANCE NOTE: Selector computes visibility locally to avoid re-renders when
  * other nodes' visibility changes. Uses object equality for proper memoization.
  */
 export const useShouldHideFields = (nodeId?: string) =>
-  useFieldVisibilityStore((state) => {
-    // If graph-level is enabled, always hide
-    if (state.graphLevelHideFields) {
-      return true;
-    }
-
-    // Otherwise check node-level setting (using !== undefined to handle empty string)
-    if (nodeId !== undefined && state.nodeLevelOverrides.has(nodeId)) {
-      return state.nodeLevelOverrides.get(nodeId) || false;
-    }
-
-    // Default: show fields
-    return false;
-  });
+  useFieldVisibilityStore((state) =>
+    computeShouldHideFields(state.graphLevelHideFields, state.nodeLevelOverrides, nodeId)
+  );
 
 /**
  * Hook to get the action to set graph-level visibility
