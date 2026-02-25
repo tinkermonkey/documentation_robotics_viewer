@@ -368,3 +368,19 @@ export const HiddenFields: Story = {
   ),
 };
 
+// Error state - invalid nodeType with no config
+export const ErrorState: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: 'INVALID_NODE_TYPE' as unknown as NodeType,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'This node type does not exist',
+        detailLevel: 'standard',
+      }}
+      id="node-error"
+    />
+  ),
+};
+
