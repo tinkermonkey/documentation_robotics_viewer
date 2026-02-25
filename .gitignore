@@ -1,6 +1,7 @@
 documentation/claude_thoughts
 playwright-report/
 test-results/
+storybook-static/
 **/.venv/
 .dr/
 .flowbite-react/

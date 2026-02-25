@@ -1,3 +1,0 @@
-import{r as s,j as a}from"./iframe-DSSgKmXl.js";import{B as r}from"./BaseFieldListNode-bvohYiE_.js";const o=s.memo(({data:e})=>a.jsx(r,{label:e.label,typeLabel:"SCHEMA",items:e.properties||[],colors:{border:"#1e40af",background:"#ffffff",header:"#2563eb",handle:"#1e40af"}}));o.displayName="JSONSchemaNode";o.__docgenInfo={description:`JSON Schema Node Component for React Flow
-Displays schema definitions with properties and field-level handles
-Uses BaseFieldListNode for shared rendering logic`,methods:[],displayName:"JSONSchemaNode",props:{data:{required:!0,tsType:{name:"JSONSchemaNodeData"},description:""},id:{required:!1,tsType:{name:"string"},description:""}}};export{o as J};
