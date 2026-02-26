@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UnifiedNode, NodeType } from '@/core/nodes';
+import { UnifiedNode, NodeType, type UnifiedNodeData } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createValueStreamNodeData } from '@catalog/fixtures/nodeDataFixtures';
 

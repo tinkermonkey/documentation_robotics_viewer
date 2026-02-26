@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UnifiedNode, NodeType } from '@/core/nodes';
+import { UnifiedNode, NodeType, type UnifiedNodeData } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createStakeholderNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
@@ -100,7 +100,7 @@ export const ChangesetAdd: Story = {
       layerId: 'test-layer',
       elementId: 'test-element-id',
       label: 'New Stakeholder',
-      changesetOperation: 'add',
+      changesetOperation: 'add' as const,
     },
   },
 };
@@ -113,7 +113,7 @@ export const ChangesetUpdate: Story = {
       layerId: 'test-layer',
       elementId: 'test-element-id',
       label: 'Updated Stakeholder',
-      changesetOperation: 'update',
+      changesetOperation: 'update' as const,
     },
   },
 };
@@ -126,7 +126,7 @@ export const ChangesetDelete: Story = {
       layerId: 'test-layer',
       elementId: 'test-element-id',
       label: 'Deleted Stakeholder',
-      changesetOperation: 'delete',
+      changesetOperation: 'delete' as const,
     },
   },
 };
