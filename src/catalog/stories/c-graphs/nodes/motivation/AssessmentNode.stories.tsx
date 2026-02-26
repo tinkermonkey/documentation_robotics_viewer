@@ -101,7 +101,7 @@ export const ChangesetAdd: Story = {
         elementId: 'test-element-id',
       label: 'New Assessment',
       changesetOperation: 'add',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -114,7 +114,7 @@ export const ChangesetUpdate: Story = {
         elementId: 'test-element-id',
       label: 'Updated Assessment',
       changesetOperation: 'update',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -127,7 +127,7 @@ export const ChangesetDelete: Story = {
         elementId: 'test-element-id',
       label: 'Deleted Assessment',
       changesetOperation: 'delete',
-    },
+    } as UnifiedNodeData,
   },
 };
 
