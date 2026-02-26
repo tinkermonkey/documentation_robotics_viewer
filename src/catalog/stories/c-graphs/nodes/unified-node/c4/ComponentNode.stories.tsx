@@ -11,7 +11,7 @@ const storyWidth = componentConfig?.dimensions.width || 240;
 const storyHeight = componentConfig?.dimensions.height || 140;
 
 const meta = {
-  title: 'C Graphs / Nodes / C4 / ComponentNode',
+  title: 'C Graphs / Nodes / UnifiedNode / C4 / ComponentNode',
   component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {

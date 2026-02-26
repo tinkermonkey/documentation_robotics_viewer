@@ -1,17 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { UnifiedNode, NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createGoalNodeData } from '@catalog/fixtures/nodeDataFixtures';
+import { createRequirementNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
 
 // Get dimensions from node configuration for consistency
-const goalConfig = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_GOAL);
-const storyWidth = goalConfig?.dimensions.width || 180;
-const storyHeight = goalConfig?.dimensions.height || 100;
+const requirementConfig = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_REQUIREMENT);
+const storyWidth = requirementConfig?.dimensions.width || 180;
+const storyHeight = requirementConfig?.dimensions.height || 100;
 
 const meta = {
-  title: 'C Graphs / Nodes / Motivation / GoalNode',
+  title: 'C Graphs / Nodes / UnifiedNode / Motivation / RequirementNode',
   component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
@@ -25,47 +25,56 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    id: 'goal-1',
+    id: 'requirement-1',
     data: {
-      nodeType: NodeType.MOTIVATION_GOAL,
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
       layerId: 'test-layer',
       elementId: 'test-element-id',
-      label: 'Increase Revenue',
+      label: 'Support Payment Processing',
+    },
+  },
+};
+
+export const Functional: Story = {
+  args: {
+    id: 'requirement-2',
+    data: {
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Real-time Notifications',
+      items: [
+        { id: 'requirementType', label: 'Type', value: 'functional' },
+      ],
+    },
+  },
+};
+
+export const NonFunctional: Story = {
+  args: {
+    id: 'requirement-3',
+    data: {
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'System Performance',
+      items: [
+        { id: 'requirementType', label: 'Type', value: 'non-functional' },
+      ],
     },
   },
 };
 
 export const HighPriority: Story = {
   args: {
-    id: 'goal-2',
+    id: 'requirement-4',
     data: {
-      nodeType: NodeType.MOTIVATION_GOAL,
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
       layerId: 'test-layer',
       elementId: 'test-element-id',
-      label: 'Customer Satisfaction',
+      label: 'Security Requirement',
       items: [
         { id: 'priority', label: 'Priority', value: 'high' },
-      ],
-      badges: [
-        { position: 'top-right' as const, content: 'high', ariaLabel: 'Priority: high' },
-      ],
-    },
-  },
-};
-
-export const MediumPriority: Story = {
-  args: {
-    id: 'goal-3',
-    data: {
-      nodeType: NodeType.MOTIVATION_GOAL,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: 'Operational Efficiency',
-      items: [
-        { id: 'priority', label: 'Priority', value: 'medium' },
-      ],
-      badges: [
-        { position: 'top-right' as const, content: 'medium', ariaLabel: 'Priority: medium' },
       ],
     },
   },
@@ -73,33 +82,14 @@ export const MediumPriority: Story = {
 
 export const LowPriority: Story = {
   args: {
-    id: 'goal-4',
+    id: 'requirement-5',
     data: {
-      nodeType: NodeType.MOTIVATION_GOAL,
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
       layerId: 'test-layer',
       elementId: 'test-element-id',
       label: 'Nice to Have Feature',
       items: [
         { id: 'priority', label: 'Priority', value: 'low' },
-      ],
-      badges: [
-        { position: 'top-right' as const, content: 'low', ariaLabel: 'Priority: low' },
-      ],
-    },
-  },
-};
-
-export const WithCoverage: Story = {
-  args: {
-    id: 'goal-5',
-    data: {
-      nodeType: NodeType.MOTIVATION_GOAL,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: 'Security Compliance',
-      items: [
-        { id: 'requirementCount', label: 'Requirements', value: '5' },
-        { id: 'constraintCount', label: 'Constraints', value: '2' },
       ],
     },
   },
@@ -107,12 +97,12 @@ export const WithCoverage: Story = {
 
 export const ChangesetAdd: Story = {
   args: {
-    id: 'goal-6',
+    id: 'requirement-6',
     data: {
-      nodeType: NodeType.MOTIVATION_GOAL,
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
       layerId: 'test-layer',
       elementId: 'test-element-id',
-      label: 'New Goal',
+      label: 'New Requirement',
       changesetOperation: 'add' as const,
     },
   },
@@ -120,12 +110,12 @@ export const ChangesetAdd: Story = {
 
 export const ChangesetUpdate: Story = {
   args: {
-    id: 'goal-7',
+    id: 'requirement-7',
     data: {
-      nodeType: NodeType.MOTIVATION_GOAL,
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
       layerId: 'test-layer',
       elementId: 'test-element-id',
-      label: 'Updated Goal',
+      label: 'Updated Requirement',
       changesetOperation: 'update' as const,
     },
   },
@@ -133,12 +123,12 @@ export const ChangesetUpdate: Story = {
 
 export const ChangesetDelete: Story = {
   args: {
-    id: 'goal-8',
+    id: 'requirement-8',
     data: {
-      nodeType: NodeType.MOTIVATION_GOAL,
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
       layerId: 'test-layer',
       elementId: 'test-element-id',
-      label: 'Deleted Goal',
+      label: 'Deleted Requirement',
       changesetOperation: 'delete' as const,
     },
   },
@@ -146,22 +136,22 @@ export const ChangesetDelete: Story = {
 
 export const Dimmed: Story = {
   args: {
-    id: 'goal-9',
+    id: 'requirement-9',
     data: {
-      nodeType: NodeType.MOTIVATION_GOAL,
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
       layerId: 'test-layer',
       elementId: 'test-element-id',
-      label: 'Dimmed Goal',
-      relationshipBadge: { count: 5, incoming: 3, outgoing: 2 },
+      label: 'Dimmed Requirement',
+      relationshipBadge: { count: 2, incoming: 1, outgoing: 1 },
     },
   },
 };
 
 export const Highlighted: Story = {
   args: {
-    id: 'goal-10',
+    id: 'requirement-10',
     data: {
-      nodeType: NodeType.MOTIVATION_GOAL,
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
       layerId: 'test-layer',
       elementId: 'test-element-id',
       label: 'Highlighted Node',
@@ -171,10 +161,10 @@ export const Highlighted: Story = {
 
 export const MinimalDetail: Story = {
   args: {
-    id: 'goal-minimal',
+    id: 'requirement-minimal',
     data: {
-      ...createGoalNodeData({ label: 'Minimal Detail Goal' }),
-      nodeType: NodeType.MOTIVATION_GOAL,
+      ...createRequirementNodeData({ label: 'Minimal Detail Requirement' }),
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
       items: [
         { id: 'priority', label: 'Priority', value: 'high' },
       ],
@@ -185,13 +175,13 @@ export const MinimalDetail: Story = {
 
 export const StandardDetail: Story = {
   args: {
-    id: 'goal-standard',
+    id: 'requirement-standard',
     data: {
-      ...createGoalNodeData({ label: 'Standard Detail Goal' }),
-      nodeType: NodeType.MOTIVATION_GOAL,
+      ...createRequirementNodeData({ label: 'Standard Detail Requirement' }),
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
       items: [
+        { id: 'requirementType', label: 'Type', value: 'functional' },
         { id: 'priority', label: 'Priority', value: 'high' },
-        { id: 'status', label: 'Status', value: 'active' },
       ],
       detailLevel: 'standard',
     },
@@ -200,14 +190,14 @@ export const StandardDetail: Story = {
 
 export const DetailedDetail: Story = {
   args: {
-    id: 'goal-detailed',
+    id: 'requirement-detailed',
     data: {
-      ...createGoalNodeData({ label: 'Detailed Goal' }),
-      nodeType: NodeType.MOTIVATION_GOAL,
+      ...createRequirementNodeData({ label: 'Detailed Requirement' }),
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
       items: [
+        { id: 'requirementType', label: 'Type', value: 'functional' },
         { id: 'priority', label: 'Priority', value: 'high' },
         { id: 'status', label: 'Status', value: 'active' },
-        { id: 'owner', label: 'Owner', value: 'Strategy Team' },
       ],
       detailLevel: 'detailed',
     },

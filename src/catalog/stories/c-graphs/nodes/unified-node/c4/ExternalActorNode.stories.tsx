@@ -11,7 +11,7 @@ const storyWidth = externalActorConfig?.dimensions.width || 160;
 const storyHeight = externalActorConfig?.dimensions.height || 120;
 
 const meta = {
-  title: 'C Graphs / Nodes / C4 / ExternalActorNode',
+  title: 'C Graphs / Nodes / UnifiedNode / C4 / ExternalActorNode',
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
     layout: 'fullscreen',

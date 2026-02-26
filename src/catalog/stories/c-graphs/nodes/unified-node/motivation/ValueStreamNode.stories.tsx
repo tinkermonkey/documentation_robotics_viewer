@@ -11,7 +11,7 @@ const storyWidth = valueStreamConfig?.dimensions.width || 180;
 const storyHeight = valueStreamConfig?.dimensions.height || 100;
 
 const meta = {
-  title: 'C Graphs / Nodes / Motivation / ValueStreamNode',
+  title: 'C Graphs / Nodes / UnifiedNode / Motivation / ValueStreamNode',
   component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {

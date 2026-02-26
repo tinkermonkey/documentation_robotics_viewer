@@ -11,7 +11,7 @@ const storyWidth = assessmentConfig?.dimensions.width || 180;
 const storyHeight = assessmentConfig?.dimensions.height || 100;
 
 const meta = {
-  title: 'C Graphs / Nodes / Motivation / AssessmentNode',
+  title: 'C Graphs / Nodes / UnifiedNode / Motivation / AssessmentNode',
   component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {

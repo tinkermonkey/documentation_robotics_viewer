@@ -10,7 +10,7 @@ const storyWidth = dataModelConfig?.dimensions.width || 280;
 const storyHeight = dataModelConfig?.dimensions.height || 300;
 
 const meta = {
-  title: 'C Graphs / Nodes / Base / DataModelNode',
+  title: 'C Graphs / Nodes / UnifiedNode / Base / DataModelNode',
   component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {

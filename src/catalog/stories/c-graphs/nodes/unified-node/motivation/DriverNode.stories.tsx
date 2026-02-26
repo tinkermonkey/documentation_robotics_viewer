@@ -11,7 +11,7 @@ const storyWidth = driverConfig?.dimensions.width || 180;
 const storyHeight = driverConfig?.dimensions.height || 100;
 
 const meta = {
-  title: 'C Graphs / Nodes / Motivation / DriverNode',
+  title: 'C Graphs / Nodes / UnifiedNode / Motivation / DriverNode',
   component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {

@@ -11,7 +11,7 @@ const storyWidth = constraintConfig?.dimensions.width || 180;
 const storyHeight = constraintConfig?.dimensions.height || 100;
 
 const meta = {
-  title: 'C Graphs / Nodes / Motivation / ConstraintNode',
+  title: 'C Graphs / Nodes / UnifiedNode / Motivation / ConstraintNode',
   component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {

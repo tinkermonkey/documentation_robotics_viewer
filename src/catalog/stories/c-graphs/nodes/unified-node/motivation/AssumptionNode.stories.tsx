@@ -10,7 +10,7 @@ const storyWidth = assumptionConfig?.dimensions.width || 180;
 const storyHeight = assumptionConfig?.dimensions.height || 100;
 
 const meta = {
-  title: 'C Graphs / Nodes / Motivation / AssumptionNode',
+  title: 'C Graphs / Nodes / UnifiedNode / Motivation / AssumptionNode',
   component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {

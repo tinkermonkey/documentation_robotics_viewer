@@ -19,7 +19,7 @@ const storyWidth = processConfig?.dimensions.width || 240;
 const storyHeight = processConfig?.dimensions.height || 100;
 
 const meta = {
-  title: 'C Graphs / Nodes / Business / BusinessProcessNode',
+  title: 'C Graphs / Nodes / UnifiedNode / Business / BusinessProcessNode',
   component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {

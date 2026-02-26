@@ -11,7 +11,7 @@ const storyWidth = stakeholderConfig?.dimensions.width || 180;
 const storyHeight = stakeholderConfig?.dimensions.height || 100;
 
 const meta = {
-  title: 'C Graphs / Nodes / Motivation / StakeholderNode',
+  title: 'C Graphs / Nodes / UnifiedNode / Motivation / StakeholderNode',
   component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {

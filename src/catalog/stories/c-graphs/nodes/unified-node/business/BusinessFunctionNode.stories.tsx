@@ -19,7 +19,7 @@ const storyWidth = functionConfig?.dimensions.width || 240;
 const storyHeight = functionConfig?.dimensions.height || 100;
 
 const meta = {
-  title: 'C Graphs / Nodes / Business / BusinessFunctionNode',
+  title: 'C Graphs / Nodes / UnifiedNode / Business / BusinessFunctionNode',
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
     layout: 'fullscreen',

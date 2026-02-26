@@ -9,7 +9,7 @@ const storyWidth = jsonSchemaConfig?.dimensions.width || 280;
 const storyHeight = 300;
 
 const meta = {
-  title: 'C Graphs / Nodes / Base / JSONSchemaNode',
+  title: 'C Graphs / Nodes / UnifiedNode / Base / JSONSchemaNode',
   component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {

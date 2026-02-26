@@ -14,7 +14,7 @@ import FieldList from '@/core/nodes/components/FieldList';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 const meta = {
-  title: 'C Graphs / Nodes / Components / FieldList',
+  title: 'C Graphs / Nodes / UnifiedNode / Components / FieldList',
   component: FieldList,
   decorators: [withReactFlowDecorator({ width: 400, height: 500 })],
   parameters: {

@@ -11,7 +11,7 @@ const storyWidth = principleConfig?.dimensions.width || 180;
 const storyHeight = principleConfig?.dimensions.height || 100;
 
 const meta = {
-  title: 'C Graphs / Nodes / Motivation / PrincipleNode',
+  title: 'C Graphs / Nodes / UnifiedNode / Motivation / PrincipleNode',
   component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
