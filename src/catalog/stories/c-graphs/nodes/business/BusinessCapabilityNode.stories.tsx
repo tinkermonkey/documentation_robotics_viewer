@@ -20,7 +20,7 @@ const storyHeight = capabilityConfig?.dimensions.height || 100;
 const meta = {
   title: 'C Graphs / Nodes / Business / BusinessCapabilityNode',
   component: UnifiedNode,
-  decorators: [withReactFlowDecorator()],
+  decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
     layout: 'fullscreen',
   },
@@ -40,8 +40,8 @@ export const Default: Story = {
     id: 'capability-1',
     data: {
       nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Customer Management',
     },
   },
@@ -52,8 +52,8 @@ export const HighCriticality: Story = {
     id: 'capability-2',
     data: {
       nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Order Management',
       badges: [
         {
@@ -71,8 +71,8 @@ export const MediumCriticality: Story = {
     id: 'capability-3',
     data: {
       nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Marketing',
       badges: [
         {
@@ -90,8 +90,8 @@ export const LowCriticality: Story = {
     id: 'capability-4',
     data: {
       nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Compliance',
       badges: [
         {
@@ -109,8 +109,8 @@ export const ActiveLifecycle: Story = {
     id: 'capability-5',
     data: {
       nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'User Analytics',
       items: [
         { id: 'lifecycle', label: 'Lifecycle', value: 'active' },
@@ -124,8 +124,8 @@ export const DeprecatedLifecycle: Story = {
     id: 'capability-6',
     data: {
       nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Legacy Reporting',
       items: [
         { id: 'lifecycle', label: 'Lifecycle', value: 'deprecated' },
@@ -139,8 +139,8 @@ export const WithOwner: Story = {
     id: 'capability-7',
     data: {
       nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Supply Chain',
       badges: [
         {
@@ -158,8 +158,8 @@ export const ChangesetAdd: Story = {
     id: 'capability-8',
     data: {
       nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'New Capability',
       changesetOperation: 'add',
     },
@@ -171,8 +171,8 @@ export const ChangesetUpdate: Story = {
     id: 'capability-9',
     data: {
       nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Updated Capability',
       changesetOperation: 'update',
     },
@@ -184,8 +184,8 @@ export const ChangesetDelete: Story = {
     id: 'capability-10',
     data: {
       nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Deleted Capability',
       changesetOperation: 'delete',
     },
@@ -197,8 +197,8 @@ export const WithMultipleBadges: Story = {
     id: 'capability-11',
     data: {
       nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Complete Capability',
       badges: [
         {
@@ -229,8 +229,8 @@ export const MaturityBadge: Story = {
     id: 'capability-12',
     data: {
       nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Mature Capability',
       badges: [
         {

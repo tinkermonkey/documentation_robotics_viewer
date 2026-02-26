@@ -13,7 +13,7 @@ const storyHeight = valueStreamConfig?.dimensions.height || 100;
 const meta = {
   title: 'C Graphs / Nodes / Motivation / ValueStreamNode',
   component: UnifiedNode,
-  decorators: [withReactFlowDecorator({ width: 200, height: 100 })],
+  decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
     layout: 'fullscreen',
   },
@@ -27,8 +27,8 @@ export const Default: Story = {
     id: 'valuestream-1',
     data: {
       nodeType: NodeType.MOTIVATION_VALUE_STREAM,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Order Processing Stream',
     },
   },
@@ -39,8 +39,8 @@ export const ShortStream: Story = {
     id: 'valuestream-2',
     data: {
       nodeType: NodeType.MOTIVATION_VALUE_STREAM,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Quick Checkout',
       items: [
         { id: 'stageCount', label: 'Stages', value: '2' },
@@ -54,8 +54,8 @@ export const LongStream: Story = {
     id: 'valuestream-3',
     data: {
       nodeType: NodeType.MOTIVATION_VALUE_STREAM,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Complex Fulfillment',
       items: [
         { id: 'stageCount', label: 'Stages', value: '8' },
@@ -69,8 +69,8 @@ export const ChangesetAdd: Story = {
     id: 'valuestream-4',
     data: {
       nodeType: NodeType.MOTIVATION_VALUE_STREAM,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'New Value Stream',
       changesetOperation: 'add',
     },
@@ -82,8 +82,8 @@ export const ChangesetUpdate: Story = {
     id: 'valuestream-5',
     data: {
       nodeType: NodeType.MOTIVATION_VALUE_STREAM,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Updated Value Stream',
       changesetOperation: 'update',
     },
@@ -95,8 +95,8 @@ export const ChangesetDelete: Story = {
     id: 'valuestream-6',
     data: {
       nodeType: NodeType.MOTIVATION_VALUE_STREAM,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Deleted Value Stream',
       changesetOperation: 'delete',
     },
@@ -108,8 +108,8 @@ export const Dimmed: Story = {
     id: 'valuestream-7',
     data: {
       nodeType: NodeType.MOTIVATION_VALUE_STREAM,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Dimmed Value Stream',
       relationshipBadge: { count: 3, incoming: 2, outgoing: 1 },
     },
@@ -121,8 +121,8 @@ export const Highlighted: Story = {
     id: 'valuestream-8',
     data: {
       nodeType: NodeType.MOTIVATION_VALUE_STREAM,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Highlighted Node',
     },
   },

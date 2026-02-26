@@ -13,7 +13,7 @@ const storyHeight = outcomeConfig?.dimensions.height || 100;
 const meta = {
   title: 'C Graphs / Nodes / Motivation / OutcomeNode',
   component: UnifiedNode,
-  decorators: [withReactFlowDecorator({ width: 180, height: 110 })],
+  decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
     layout: 'fullscreen',
   },
@@ -27,8 +27,8 @@ export const Default: Story = {
     id: 'outcome-1',
     data: {
       nodeType: NodeType.MOTIVATION_OUTCOME,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Improved Customer Satisfaction',
     },
   },
@@ -39,8 +39,8 @@ export const Planned: Story = {
     id: 'outcome-2',
     data: {
       nodeType: NodeType.MOTIVATION_OUTCOME,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Reduce System Downtime',
       items: [
         { id: 'achievementStatus', label: 'Status', value: 'planned' },
@@ -57,8 +57,8 @@ export const InProgress: Story = {
     id: 'outcome-3',
     data: {
       nodeType: NodeType.MOTIVATION_OUTCOME,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Migrate to Cloud',
       items: [
         { id: 'achievementStatus', label: 'Status', value: 'in-progress' },
@@ -75,8 +75,8 @@ export const Achieved: Story = {
     id: 'outcome-4',
     data: {
       nodeType: NodeType.MOTIVATION_OUTCOME,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Complete Security Audit',
       items: [
         { id: 'achievementStatus', label: 'Status', value: 'achieved' },
@@ -93,8 +93,8 @@ export const AtRisk: Story = {
     id: 'outcome-5',
     data: {
       nodeType: NodeType.MOTIVATION_OUTCOME,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Launch New Product',
       items: [
         { id: 'achievementStatus', label: 'Status', value: 'at-risk' },
@@ -111,8 +111,8 @@ export const ChangesetAdd: Story = {
     id: 'outcome-6',
     data: {
       nodeType: NodeType.MOTIVATION_OUTCOME,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'New Outcome',
       changesetOperation: 'add',
     },
@@ -124,8 +124,8 @@ export const ChangesetUpdate: Story = {
     id: 'outcome-7',
     data: {
       nodeType: NodeType.MOTIVATION_OUTCOME,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Updated Outcome',
       changesetOperation: 'update',
     },
@@ -137,8 +137,8 @@ export const ChangesetDelete: Story = {
     id: 'outcome-8',
     data: {
       nodeType: NodeType.MOTIVATION_OUTCOME,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Deleted Outcome',
       changesetOperation: 'delete',
     },
@@ -150,8 +150,8 @@ export const Dimmed: Story = {
     id: 'outcome-9',
     data: {
       nodeType: NodeType.MOTIVATION_OUTCOME,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Dimmed Outcome',
       relationshipBadge: { count: 3, incoming: 2, outgoing: 1 },
     },
@@ -163,8 +163,8 @@ export const Highlighted: Story = {
     id: 'outcome-10',
     data: {
       nodeType: NodeType.MOTIVATION_OUTCOME,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Highlighted Node',
     },
   },

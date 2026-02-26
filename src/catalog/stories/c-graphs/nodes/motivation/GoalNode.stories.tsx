@@ -12,7 +12,7 @@ const storyHeight = goalConfig?.dimensions.height || 100;
 const meta = {
   title: 'C Graphs / Nodes / Motivation / GoalNode',
   component: UnifiedNode,
-  decorators: [withReactFlowDecorator({ width: 180, height: 110 })],
+  decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
     layout: 'fullscreen',
   },
@@ -26,8 +26,8 @@ export const Default: Story = {
     id: 'goal-1',
     data: {
       nodeType: NodeType.MOTIVATION_GOAL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Increase Revenue',
     },
   },
@@ -38,8 +38,8 @@ export const HighPriority: Story = {
     id: 'goal-2',
     data: {
       nodeType: NodeType.MOTIVATION_GOAL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Customer Satisfaction',
       items: [
         { id: 'priority', label: 'Priority', value: 'high' },
@@ -56,8 +56,8 @@ export const MediumPriority: Story = {
     id: 'goal-3',
     data: {
       nodeType: NodeType.MOTIVATION_GOAL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Operational Efficiency',
       items: [
         { id: 'priority', label: 'Priority', value: 'medium' },
@@ -74,8 +74,8 @@ export const LowPriority: Story = {
     id: 'goal-4',
     data: {
       nodeType: NodeType.MOTIVATION_GOAL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Nice to Have Feature',
       items: [
         { id: 'priority', label: 'Priority', value: 'low' },
@@ -92,8 +92,8 @@ export const WithCoverage: Story = {
     id: 'goal-5',
     data: {
       nodeType: NodeType.MOTIVATION_GOAL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Security Compliance',
       items: [
         { id: 'requirementCount', label: 'Requirements', value: '5' },
@@ -108,8 +108,8 @@ export const ChangesetAdd: Story = {
     id: 'goal-6',
     data: {
       nodeType: NodeType.MOTIVATION_GOAL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'New Goal',
       changesetOperation: 'add',
     },
@@ -121,8 +121,8 @@ export const ChangesetUpdate: Story = {
     id: 'goal-7',
     data: {
       nodeType: NodeType.MOTIVATION_GOAL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Updated Goal',
       changesetOperation: 'update',
     },
@@ -134,8 +134,8 @@ export const ChangesetDelete: Story = {
     id: 'goal-8',
     data: {
       nodeType: NodeType.MOTIVATION_GOAL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Deleted Goal',
       changesetOperation: 'delete',
     },
@@ -147,8 +147,8 @@ export const Dimmed: Story = {
     id: 'goal-9',
     data: {
       nodeType: NodeType.MOTIVATION_GOAL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Dimmed Goal',
       relationshipBadge: { count: 5, incoming: 3, outgoing: 2 },
     },
@@ -160,8 +160,8 @@ export const Highlighted: Story = {
     id: 'goal-10',
     data: {
       nodeType: NodeType.MOTIVATION_GOAL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
       label: 'Highlighted Node',
     },
   },
