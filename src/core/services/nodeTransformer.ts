@@ -221,6 +221,7 @@ export class NodeTransformer {
 
     // STEP 3: Create edges array
     const edges: AppEdge[] = [];
+    const edgeIdSet = new Set<string>(); // Track edge IDs to prevent duplicates
     let relationshipCount = 0;
 
     // Create edges from layer relationships
@@ -228,7 +229,15 @@ export class NodeTransformer {
       relationshipCount += layer.relationships.length;
       for (const relationship of layer.relationships) {
         const edge = this.createEdge(relationship, nodeMap);
-        if (edge) edges.push(edge);
+        if (edge) {
+          // Only add edge if we haven't seen this ID before
+          if (!edgeIdSet.has(edge.id)) {
+            edges.push(edge);
+            edgeIdSet.add(edge.id);
+          } else {
+            console.warn(`[NodeTransformer] Skipped duplicate edge ID: ${edge.id}`);
+          }
+        }
       }
     }
     console.log(`[NodeTransformer] Processed ${relationshipCount} relationships`);
@@ -240,7 +249,16 @@ export class NodeTransformer {
     // Apply edge bundling to reduce visual clutter in dense cross-layer graphs
     const threshold = calculateOptimalThreshold(nodes.length, crossLayerEdges.length);
     const { bundledEdges } = applyEdgeBundling(crossLayerEdges as Edge[], { threshold });
-    edges.push(...(bundledEdges as AppEdge[]));
+
+    // Add bundled edges while checking for duplicates
+    for (const edge of bundledEdges as AppEdge[]) {
+      if (!edgeIdSet.has(edge.id)) {
+        edges.push(edge);
+        edgeIdSet.add(edge.id);
+      } else {
+        console.warn(`[NodeTransformer] Skipped duplicate bundled edge ID: ${edge.id}`);
+      }
+    }
 
     console.log(`[NodeTransformer] Created ${nodes.length} nodes and ${edges.length} edges`);
 

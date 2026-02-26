@@ -74,6 +74,12 @@ const config: TestRunnerConfig = {
   },
 
   async postVisit(page, context) {
+    // Skip stories tagged with 'skip-test'
+    if (context.tags && Array.isArray(context.tags) && context.tags.includes('skip-test')) {
+      console.log(`[test-runner] Skipping story "${context.id}" - marked with skip-test tag`);
+      return;
+    }
+
     try {
       // Check that axe was successfully injected before proceeding
       let axeInjected = false;

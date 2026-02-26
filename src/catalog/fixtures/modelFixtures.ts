@@ -99,14 +99,14 @@ export function createCompleteModelFixture(): MetaModel {
   const motivationElements = [goal1, goal2, stakeholder1, requirement1];
   const motivationRelationships: Relationship[] = [
     {
-      id: 'rel-1',
+      id: 'rel-motivation-1',
       type: 'influence',
       sourceId: 'stakeholder-1',
       targetId: 'goal-1',
       properties: { label: 'influences' }
     },
     {
-      id: 'rel-2',
+      id: 'rel-motivation-2',
       type: 'realizes',
       sourceId: 'goal-1',
       targetId: 'requirement-1',
@@ -127,7 +127,7 @@ export function createCompleteModelFixture(): MetaModel {
   const businessElements = [service1, function1];
   const businessRelationships: Relationship[] = [
     {
-      id: 'rel-3',
+      id: 'rel-business-1',
       type: 'composition',
       sourceId: 'service-1',
       targetId: 'function-1',
@@ -151,7 +151,7 @@ export function createCompleteModelFixture(): MetaModel {
   const c4Elements = [container1, component1, actor1];
   const c4Relationships: Relationship[] = [
     {
-      id: 'rel-4',
+      id: 'rel-c4-1',
       type: 'composition',
       sourceId: 'container-1',
       targetId: 'component-1',
