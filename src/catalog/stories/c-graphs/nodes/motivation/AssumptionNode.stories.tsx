@@ -1,8 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UnifiedNode } from '@/core/nodes';
-import { NodeType } from '@/core/nodes';
+import { UnifiedNode, NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createAssumptionNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
 
@@ -158,8 +156,10 @@ export const MinimalDetail: Story = {
   args: {
     id: 'assumption-minimal',
     data: {
-      ...createAssumptionNodeData({ label: 'Minimal Detail Assumption' }),
       nodeType: NodeType.MOTIVATION_ASSUMPTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Minimal Detail Assumption',
       items: [
         { id: 'confidence', label: 'Confidence', value: 'high' },
       ],
@@ -172,8 +172,10 @@ export const StandardDetail: Story = {
   args: {
     id: 'assumption-standard',
     data: {
-      ...createAssumptionNodeData({ label: 'Standard Detail Assumption' }),
       nodeType: NodeType.MOTIVATION_ASSUMPTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Standard Detail Assumption',
       items: [
         { id: 'confidence', label: 'Confidence', value: 'high' },
         { id: 'risk', label: 'Risk', value: 'low' },
@@ -187,8 +189,10 @@ export const DetailedDetail: Story = {
   args: {
     id: 'assumption-detailed',
     data: {
-      ...createAssumptionNodeData({ label: 'Detailed Assumption' }),
       nodeType: NodeType.MOTIVATION_ASSUMPTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Detailed Assumption',
       items: [
         { id: 'confidence', label: 'Confidence', value: 'high' },
         { id: 'risk', label: 'Risk', value: 'low' },
