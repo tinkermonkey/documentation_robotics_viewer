@@ -46,6 +46,10 @@ export function isExpectedConsoleError(text: string): boolean {
   if (/WebSocket connection to ws:\/\/(localhost|127\.0\.0\.1):[0-9]+ failed/.test(text)) return true;
   if (/^WebSocket not connected/.test(text)) return true;
 
+  // JSON-RPC request failures when backend unavailable - expected in story environment without backend server
+  // ChatPanelContainer and other services attempt to send JSON-RPC messages to non-existent backend
+  if (/Failed to send JSON-RPC request: WebSocket not connected/.test(text)) return true;
+
   // EmbeddedLayout errors - expected component-level warnings
   if (/\[EmbeddedLayout\] (?:No container|Missing required|Layout calculation)/.test(text)) return true;
 
