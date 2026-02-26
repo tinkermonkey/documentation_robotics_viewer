@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UnifiedNode } from '@/core/nodes';
-import { NodeType } from '@/core/nodes';
+import { UnifiedNode, type UnifiedNodeData, NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createValueStreamNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
@@ -75,7 +74,7 @@ export const ChangesetAdd: Story = {
       elementId: 'test-element-id',
       label: 'New Value Stream',
       changesetOperation: 'add',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -88,7 +87,7 @@ export const ChangesetUpdate: Story = {
       elementId: 'test-element-id',
       label: 'Updated Value Stream',
       changesetOperation: 'update',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -101,7 +100,7 @@ export const ChangesetDelete: Story = {
       elementId: 'test-element-id',
       label: 'Deleted Value Stream',
       changesetOperation: 'delete',
-    },
+    } as UnifiedNodeData,
   },
 };
 
