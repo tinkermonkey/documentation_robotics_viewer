@@ -32,7 +32,6 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -48,7 +47,6 @@ export const Default: Story = {
 };
 
 export const HighCriticality: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -71,7 +69,6 @@ export const HighCriticality: Story = {
 };
 
 export const MediumCriticality: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -94,7 +91,6 @@ export const MediumCriticality: Story = {
 };
 
 export const LowCriticality: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -117,7 +113,6 @@ export const LowCriticality: Story = {
 };
 
 export const WithOwner: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -140,7 +135,6 @@ export const WithOwner: Story = {
 };
 
 export const WithSubprocesses: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -171,7 +165,6 @@ export const WithSubprocesses: Story = {
 };
 
 export const ExpandedSubprocesses: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -202,7 +195,6 @@ export const ExpandedSubprocesses: Story = {
 };
 
 export const ChangesetAdd: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -219,7 +211,6 @@ export const ChangesetAdd: Story = {
 };
 
 export const ChangesetUpdate: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -236,7 +227,6 @@ export const ChangesetUpdate: Story = {
 };
 
 export const ChangesetDelete: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -253,7 +243,6 @@ export const ChangesetDelete: Story = {
 };
 
 export const CriticalProcessWithOwner: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
