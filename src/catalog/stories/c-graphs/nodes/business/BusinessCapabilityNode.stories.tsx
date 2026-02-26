@@ -25,23 +25,12 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
-  args: {
-    data: {
-      nodeType: NodeType.BUSINESS_CAPABILITY,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: '',
-      detailLevel: 'standard',
-    },
-    id: '',
-  },
 } satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -57,7 +46,6 @@ export const Default: Story = {
 };
 
 export const HighCriticality: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -80,7 +68,6 @@ export const HighCriticality: Story = {
 };
 
 export const MediumCriticality: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -103,7 +90,6 @@ export const MediumCriticality: Story = {
 };
 
 export const LowCriticality: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -126,7 +112,6 @@ export const LowCriticality: Story = {
 };
 
 export const ActiveLifecycle: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -145,7 +130,6 @@ export const ActiveLifecycle: Story = {
 };
 
 export const DeprecatedLifecycle: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -164,7 +148,6 @@ export const DeprecatedLifecycle: Story = {
 };
 
 export const WithOwner: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -187,7 +170,6 @@ export const WithOwner: Story = {
 };
 
 export const ChangesetAdd: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -204,7 +186,6 @@ export const ChangesetAdd: Story = {
 };
 
 export const ChangesetUpdate: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -221,7 +202,6 @@ export const ChangesetUpdate: Story = {
 };
 
 export const ChangesetDelete: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -238,7 +218,6 @@ export const ChangesetDelete: Story = {
 };
 
 export const WithMultipleBadges: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
@@ -274,7 +253,6 @@ export const WithMultipleBadges: Story = {
 };
 
 export const MaturityBadge: Story = {
-  args: {},
   render: () => (
     <UnifiedNode
       data={{
