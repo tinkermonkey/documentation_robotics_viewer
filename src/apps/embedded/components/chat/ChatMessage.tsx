@@ -14,7 +14,7 @@ export interface ChatMessageProps {
 }
 
 
-export const ChatMessage = memo(({ message }: ChatMessageProps) => {
+export const ChatMessage: React.FC<ChatMessageProps> = memo(({ message }: ChatMessageProps) => {
   const isUser = message.role === 'user';
   const isAssistant = message.role === 'assistant';
 

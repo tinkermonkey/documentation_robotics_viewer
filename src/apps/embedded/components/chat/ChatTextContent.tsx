@@ -7,7 +7,7 @@ export interface ChatTextContentProps {
   isStreaming?: boolean;
 }
 
-export const ChatTextContent = memo(
+export const ChatTextContent: React.FC<ChatTextContentProps> = memo(
   ({ content, isStreaming = false }: ChatTextContentProps) => {
     const customComponents: Components = {
       // Code blocks with syntax highlighting placeholder

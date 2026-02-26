@@ -8,14 +8,14 @@
  * - Navigation breadcrumb
  */
 
-import { memo, useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { Badge, ToggleSwitch, Label } from 'flowbite-react';
 import { useCrossLayerStore } from '@/core/stores/crossLayerStore';
 import { useModelStore } from '@/core/stores/modelStore';
 import { CrossLayerFilterPanel } from './CrossLayerFilterPanel';
 import { CrossLayerBreadcrumb } from './CrossLayerBreadcrumb';
 
-export const CrossLayerPanel = memo(() => {
+export const CrossLayerPanel: React.FC = memo(() => {
   const model = useModelStore((state) => state.model);
   const visible = useCrossLayerStore((state) => state.visible);
   const toggleVisible = useCrossLayerStore((state) => state.toggleVisible);

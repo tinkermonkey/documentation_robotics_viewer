@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { Zap } from 'lucide-react';
 
 export interface UsageStatsBadgeProps {
@@ -8,7 +8,7 @@ export interface UsageStatsBadgeProps {
   totalCostUsd?: number;
 }
 
-export const UsageStatsBadge = memo(
+export const UsageStatsBadge: React.FC<UsageStatsBadgeProps> = memo(
   ({
     inputTokens,
     outputTokens,

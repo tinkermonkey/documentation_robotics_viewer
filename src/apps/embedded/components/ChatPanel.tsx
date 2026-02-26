@@ -145,4 +145,4 @@ const ChatPanelComponent = ({
 
 ChatPanelComponent.displayName = 'ChatPanel';
 
-export const ChatPanel = memo(ChatPanelComponent);
+export const ChatPanel: React.FC<ChatPanelProps> = memo(ChatPanelComponent);

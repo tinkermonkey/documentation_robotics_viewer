@@ -7,13 +7,13 @@
  * Click breadcrumb item to navigate to that layer/element combination
  */
 
-import { memo, useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { Button } from 'flowbite-react';
 import { X } from 'lucide-react';
 import { useCrossLayerStore } from '@/core/stores/crossLayerStore';
 import { useNavigate } from '@tanstack/react-router';
 
-export const CrossLayerBreadcrumb = memo(() => {
+export const CrossLayerBreadcrumb: React.FC = memo(() => {
   const navigationHistory = useCrossLayerStore((state) => state.navigationHistory);
   const clearNavigationHistory = useCrossLayerStore((state) => state.clearNavigationHistory);
   const setLastError = useCrossLayerStore((state) => state.setLastError);
