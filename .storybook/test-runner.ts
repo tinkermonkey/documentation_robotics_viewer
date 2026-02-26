@@ -78,35 +78,16 @@ const config: TestRunnerConfig = {
     const tags = Array.isArray(context.tags) ? context.tags : [];
 
     // Determine which validation steps to skip
+    // Note: skip-test is excluded at configuration level (main.cjs testRunner.tags.exclude)
+    // Only granular tags are supported at postVisit: skip-a11y and skip-errors
     const skipAccessibility = tags.includes('skip-a11y');
     const skipErrors = tags.includes('skip-errors');
-    const skipTest = tags.includes('skip-test');
 
-    // Handle skip-test: log deprecation warning and treat as skip-a11y only
-    // Rationale: Console error validation is a code quality requirement that should not be silently bypassed
-    // skip-test is deprecated; use granular flags for explicit control
-    if (skipTest) {
-      console.warn(
-        `[test-runner] Story "${context.id}" uses deprecated 'skip-test' tag. ` +
-        `Use granular tags instead: 'skip-a11y' (skip accessibility), 'skip-errors' (skip error validation). ` +
-        `'skip-test' now only skips accessibility checks. Console error validation always runs for code quality. ` +
-        `This tag will be removed in a future version.`
-      );
-    }
-
-    // Determine final skip flags: skip-test acts as alias for skip-a11y only
-    // Rationale: Console error validation is mandatory for code quality. Accessibility can be skipped for stories with known issues.
-    const skipAccessibilityFinal = skipAccessibility || skipTest;
-    const skipErrorsFinal = skipErrors; // Note: skip-test does NOT skip error validation
-
-    // Log what's being skipped
-    // Check skip-test first before building granular skip list to avoid redundant logs
-    if (skipTest) {
-      console.log(`[test-runner] Story "${context.id}" skipping: accessibility (via deprecated skip-test tag)`);
-    } else if (skipAccessibilityFinal || skipErrorsFinal) {
+    // Log what's being skipped for debugging
+    if (skipAccessibility || skipErrors) {
       const skipped = [];
-      if (skipAccessibilityFinal) skipped.push('accessibility');
-      if (skipErrorsFinal) skipped.push('error validation');
+      if (skipAccessibility) skipped.push('accessibility');
+      if (skipErrors) skipped.push('error validation');
       console.log(`[test-runner] Story "${context.id}" skipping: ${skipped.join(', ')}`);
     }
 
