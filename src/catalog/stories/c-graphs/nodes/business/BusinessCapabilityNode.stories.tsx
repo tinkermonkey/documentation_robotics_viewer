@@ -20,6 +20,7 @@ const storyHeight = capabilityConfig?.dimensions.height || 100;
 
 const meta = {
   title: 'C Graphs / Nodes / Business / BusinessCapabilityNode',
+  component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
     layout: 'fullscreen',

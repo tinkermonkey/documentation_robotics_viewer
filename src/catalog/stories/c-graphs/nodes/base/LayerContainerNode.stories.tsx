@@ -28,29 +28,6 @@ export const Default: Story = {
 };
 
 export const WithChildren: Story = {
-  render: (args) => (
-    <div style={{ position: 'relative', width: '600px', height: '400px' }}>
-      <LayerContainerNode {...args} />
-      <div
-        style={{
-          position: 'absolute',
-          top: '80px',
-          left: '80px',
-          width: '100px',
-          height: '80px',
-          background: '#fff',
-          border: '2px solid #ccc',
-          borderRadius: '4px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '12px'
-        }}
-      >
-        Child Node
-      </div>
-    </div>
-  ),
   args: {
     data: createLayerContainerNodeData({
       label: 'Technology Layer',
