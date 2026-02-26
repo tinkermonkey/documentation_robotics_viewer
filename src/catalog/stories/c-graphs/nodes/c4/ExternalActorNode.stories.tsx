@@ -118,7 +118,7 @@ export const ChangesetAdd: Story = {
         elementId: 'test-element-id',
         label: 'New Actor',
         items: [],
-        changesetOperation: 'add',
+        changesetOperation: 'add' as const,
       }}
       id="actor-6"
     />
@@ -134,7 +134,7 @@ export const ChangesetUpdate: Story = {
         elementId: 'test-element-id',
         label: 'Updated Actor',
         items: [],
-        changesetOperation: 'update',
+        changesetOperation: 'update' as const,
       }}
       id="actor-7"
     />
@@ -150,7 +150,7 @@ export const ChangesetDelete: Story = {
         elementId: 'test-element-id',
         label: 'Deleted Actor',
         items: [],
-        changesetOperation: 'delete',
+        changesetOperation: 'delete' as const,
       }}
       id="actor-8"
     />
