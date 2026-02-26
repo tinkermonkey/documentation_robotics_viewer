@@ -32,361 +32,329 @@ type Story = StoryObj<typeof meta>;
 
 // Basic centered layout (Motivation style)
 export const CenteredLayout: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_GOAL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Improve Customer Experience',
-        detailLevel: 'standard',
-      }}
-      id="node-1"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Improve Customer Experience',
+      detailLevel: 'standard',
+    },
+    id: 'node-1',
+  },
 };
 
 // Left-aligned layout (Business style)
 export const LeftLayout: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_FUNCTION,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Process Payments',
-        detailLevel: 'standard',
-      }}
-      id="node-2"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Process Payments',
+      detailLevel: 'standard',
+    },
+    id: 'node-2',
+  },
 };
 
 // With top-left badge
 export const WithTopLeftBadge: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_REQUIREMENT,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'User Authentication',
-        badges: [
-          {
-            position: 'top-left' as const,
-            content: '✓',
-            className: 'w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs',
-            ariaLabel: 'Requirement satisfied',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="node-3"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'User Authentication',
+      badges: [
+        {
+          position: 'top-left' as const,
+          content: '✓',
+          className: 'w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs',
+          ariaLabel: 'Requirement satisfied',
+        },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'node-3',
+  },
 };
 
 // With top-right badge
 export const WithTopRightBadge: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_PRINCIPLE,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Security First',
-        badges: [
-          {
-            position: 'top-right' as const,
-            content: 'Enterprise',
-            className: 'px-2 py-1 bg-purple-500 text-white rounded text-xs font-semibold',
-            ariaLabel: 'Scope: Enterprise',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="node-4"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_PRINCIPLE,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Security First',
+      badges: [
+        {
+          position: 'top-right' as const,
+          content: 'Enterprise',
+          className: 'px-2 py-1 bg-purple-500 text-white rounded text-xs font-semibold',
+          ariaLabel: 'Scope: Enterprise',
+        },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'node-4',
+  },
 };
 
 // With inline badges
 export const WithInlineBadges: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Order Management',
-        badges: [
-          {
-            position: 'inline' as const,
-            content: 'High',
-            className: 'px-2 py-1 bg-red-500 text-white rounded text-xs font-semibold',
-            ariaLabel: 'Criticality: High',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="node-5"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Order Management',
+      badges: [
+        {
+          position: 'inline' as const,
+          content: 'High',
+          className: 'px-2 py-1 bg-red-500 text-white rounded text-xs font-semibold',
+          ariaLabel: 'Criticality: High',
+        },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'node-5',
+  },
 };
 
 // With multiple badges
 export const WithMultipleBadges: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_GOAL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'System Reliability',
-        badges: [
-          {
-            position: 'top-left' as const,
-            content: '📊',
-            ariaLabel: 'Coverage indicator',
-          },
-          {
-            position: 'top-right' as const,
-            content: 'High',
-            className: 'px-2 py-1 bg-orange-500 text-white rounded text-xs font-semibold',
-            ariaLabel: 'Priority: High',
-          },
-          {
-            position: 'inline' as const,
-            content: 'Active',
-            className: 'px-2 py-1 bg-blue-500 text-white rounded text-xs font-semibold',
-            ariaLabel: 'Status: Active',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="node-6"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'System Reliability',
+      badges: [
+        {
+          position: 'top-left' as const,
+          content: '📊',
+          ariaLabel: 'Coverage indicator',
+        },
+        {
+          position: 'top-right' as const,
+          content: 'High',
+          className: 'px-2 py-1 bg-orange-500 text-white rounded text-xs font-semibold',
+          ariaLabel: 'Priority: High',
+        },
+        {
+          position: 'inline' as const,
+          content: 'Active',
+          className: 'px-2 py-1 bg-blue-500 text-white rounded text-xs font-semibold',
+          ariaLabel: 'Status: Active',
+        },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'node-6',
+  },
 };
 
 // With field list
 export const WithFieldList: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.DATA_JSON_SCHEMA,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'User Schema',
-        items: [
-          {
-            id: 'field-1',
-            label: 'id',
-            value: 'UUID',
-            required: true,
-            tooltip: 'Unique identifier for the user',
-          },
-          {
-            id: 'field-2',
-            label: 'name',
-            value: 'string',
-            required: true,
-          },
-          {
-            id: 'field-3',
-            label: 'email',
-            value: 'string',
-            required: true,
-            tooltip: 'Must be a valid email address',
-          },
-          {
-            id: 'field-4',
-            label: 'phone',
-            value: 'string',
-            required: false,
-            tooltip: 'Optional phone number',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="node-7"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.DATA_JSON_SCHEMA,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'User Schema',
+      items: [
+        {
+          id: 'field-1',
+          label: 'id',
+          value: 'UUID',
+          required: true,
+          tooltip: 'Unique identifier for the user',
+        },
+        {
+          id: 'field-2',
+          label: 'name',
+          value: 'string',
+          required: true,
+        },
+        {
+          id: 'field-3',
+          label: 'email',
+          value: 'string',
+          required: true,
+          tooltip: 'Must be a valid email address',
+        },
+        {
+          id: 'field-4',
+          label: 'phone',
+          value: 'string',
+          required: false,
+          tooltip: 'Optional phone number',
+        },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'node-7',
+  },
 };
 
 // Semantic zoom - Minimal
 export const SemanticZoomMinimal: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_GOAL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Improve Performance',
-        detailLevel: 'minimal' as const,
-      }}
-      id="node-8"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Improve Performance',
+      detailLevel: 'minimal' as const,
+    },
+    id: 'node-8',
+  },
 };
 
 // Semantic zoom - Standard
 export const SemanticZoomStandard: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_GOAL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Improve Performance',
-        detailLevel: 'standard' as const,
-      }}
-      id="node-9"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Improve Performance',
+      detailLevel: 'standard' as const,
+    },
+    id: 'node-9',
+  },
 };
 
 // Semantic zoom - Detailed
 export const SemanticZoomDetailed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_GOAL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Improve Performance',
-        badges: [
-          {
-            position: 'top-right' as const,
-            content: 'High',
-            className: 'px-2 py-1 bg-orange-500 text-white rounded text-xs font-semibold',
-          },
-        ],
-        detailLevel: 'detailed' as const,
-      }}
-      id="node-10"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Improve Performance',
+      badges: [
+        {
+          position: 'top-right' as const,
+          content: 'High',
+          className: 'px-2 py-1 bg-orange-500 text-white rounded text-xs font-semibold',
+        },
+      ],
+      detailLevel: 'detailed' as const,
+    },
+    id: 'node-10',
+  },
 };
 
 // Changeset - Add operation
 export const ChangesetAdd: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_SERVICE,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'New Payment Service',
-        changesetOperation: 'add' as const,
-        detailLevel: 'standard',
-      }}
-      id="node-11"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_SERVICE,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'New Payment Service',
+      changesetOperation: 'add' as const,
+      detailLevel: 'standard',
+    },
+    id: 'node-11',
+  },
 };
 
 // Changeset - Update operation
 export const ChangesetUpdate: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_SERVICE,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Payment Service',
-        changesetOperation: 'update' as const,
-        detailLevel: 'standard',
-      }}
-      id="node-12"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_SERVICE,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Payment Service',
+      changesetOperation: 'update' as const,
+      detailLevel: 'standard',
+    },
+    id: 'node-12',
+  },
 };
 
 // Changeset - Delete operation
 export const ChangesetDelete: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_SERVICE,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Legacy Payment Service',
-        changesetOperation: 'delete' as const,
-        detailLevel: 'standard',
-      }}
-      id="node-13"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_SERVICE,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Legacy Payment Service',
+      changesetOperation: 'delete' as const,
+      detailLevel: 'standard',
+    },
+    id: 'node-13',
+  },
 };
 
 // With RelationshipBadge (focused mode)
 export const WithRelationshipBadge: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_GOAL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Core Business Objective',
-        relationshipBadge: {
-          count: 12,
-          incoming: 5,
-          outgoing: 7,
-        },
-        changesetOperation: 'add',
-        detailLevel: 'standard',
-      }}
-      id="node-14"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Core Business Objective',
+      relationshipBadge: {
+        count: 12,
+        incoming: 5,
+        outgoing: 7,
+      },
+      changesetOperation: 'add',
+      detailLevel: 'standard',
+    },
+    id: 'node-14',
+  },
 };
 
 // Hidden fields
 export const HiddenFields: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.DATA_JSON_SCHEMA,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Hidden Fields',
-        items: [
-          {
-            id: 'field-1',
-            label: 'id',
-            value: 'UUID',
-            required: true,
-          },
-          {
-            id: 'field-2',
-            label: 'data',
-            value: 'object',
-            required: true,
-          },
-        ],
-        hideFields: true,
-        detailLevel: 'standard',
-      }}
-      id="node-15"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.DATA_JSON_SCHEMA,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Hidden Fields',
+      items: [
+        {
+          id: 'field-1',
+          label: 'id',
+          value: 'UUID',
+          required: true,
+        },
+        {
+          id: 'field-2',
+          label: 'data',
+          value: 'object',
+          required: true,
+        },
+      ],
+      hideFields: true,
+      detailLevel: 'standard',
+    },
+    id: 'node-15',
+  },
 };
 
 // Error state - invalid nodeType with no config
 export const ErrorState: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: 'INVALID_NODE_TYPE' as unknown as NodeType,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'This node type does not exist',
-        detailLevel: 'standard',
-      }}
-      id="node-error"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: 'INVALID_NODE_TYPE' as unknown as NodeType,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'This node type does not exist',
+      detailLevel: 'standard',
+    },
+    id: 'node-error',
+  },
 };
 
 // ============================================================================
@@ -399,928 +367,813 @@ export const ErrorState: Story = {
 // --- Base Layer (Data Model, JSON Schema) ---
 
 export const DataModelNodeDefault: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.DATA_MODEL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'User',
-        items: [
-          { id: 'id', label: 'id', value: 'UUID', required: true },
-          { id: 'username', label: 'username', value: 'string', required: true },
-          { id: 'email', label: 'email', value: 'string', required: true },
-          { id: 'firstName', label: 'firstName', value: 'string', required: false },
-          { id: 'lastName', label: 'lastName', value: 'string', required: false },
-          { id: 'createdAt', label: 'createdAt', value: 'timestamp', required: false },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="data-model-default"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'User',
+      items: [
+        { id: 'id', label: 'id', value: 'UUID', required: true },
+        { id: 'username', label: 'username', value: 'string', required: true },
+        { id: 'email', label: 'email', value: 'string', required: true },
+        { id: 'firstName', label: 'firstName', value: 'string', required: false },
+        { id: 'lastName', label: 'lastName', value: 'string', required: false },
+        { id: 'createdAt', label: 'createdAt', value: 'timestamp', required: false },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'data-model-default',
+  },
 };
 
 export const DataModelNodeChangeset: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.DATA_MODEL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'User',
-        items: [
-          { id: 'id', label: 'id', value: 'UUID', required: true },
-          { id: 'username', label: 'username', value: 'string', required: true },
-        ],
-        changesetOperation: 'update' as const,
-        detailLevel: 'standard',
-      }}
-      id="data-model-changeset"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'User',
+      items: [
+        { id: 'id', label: 'id', value: 'UUID', required: true },
+        { id: 'username', label: 'username', value: 'string', required: true },
+      ],
+      changesetOperation: 'update' as const,
+      detailLevel: 'standard',
+    },
+    id: 'data-model-changeset',
+  },
 };
 
 export const DataModelNodeDetailed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.DATA_MODEL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'User',
-        items: [
-          { id: 'id', label: 'id', value: 'UUID', required: true },
-          { id: 'username', label: 'username', value: 'string', required: true },
-          { id: 'email', label: 'email', value: 'string', required: true },
-        ],
-        detailLevel: 'detailed' as const,
-      }}
-      id="data-model-detailed"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'User',
+      items: [
+        { id: 'id', label: 'id', value: 'UUID', required: true },
+        { id: 'username', label: 'username', value: 'string', required: true },
+        { id: 'email', label: 'email', value: 'string', required: true },
+      ],
+      detailLevel: 'detailed' as const,
+    },
+    id: 'data-model-detailed',
+  },
 };
 
 export const JSONSchemaNodeDefault: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.DATA_JSON_SCHEMA,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'UserProfile',
-        items: [
-          { id: 'id', label: 'id', value: 'string', required: true },
-          { id: 'username', label: 'username', value: 'string', required: true },
-          { id: 'email', label: 'email', value: 'string', required: true },
-          { id: 'firstName', label: 'firstName', value: 'string', required: false },
-          { id: 'lastName', label: 'lastName', value: 'string', required: false },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="json-schema-default"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.DATA_JSON_SCHEMA,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'UserProfile',
+      items: [
+        { id: 'id', label: 'id', value: 'string', required: true },
+        { id: 'username', label: 'username', value: 'string', required: true },
+        { id: 'email', label: 'email', value: 'string', required: true },
+        { id: 'firstName', label: 'firstName', value: 'string', required: false },
+        { id: 'lastName', label: 'lastName', value: 'string', required: false },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'json-schema-default',
+  },
 };
 
 export const JSONSchemaNodeChangeset: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.DATA_JSON_SCHEMA,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'UserProfile',
-        items: [
-          { id: 'id', label: 'id', value: 'string', required: true },
-          { id: 'email', label: 'email', value: 'string', required: true },
-        ],
-        changesetOperation: 'add' as const,
-        detailLevel: 'standard',
-      }}
-      id="json-schema-changeset"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.DATA_JSON_SCHEMA,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'UserProfile',
+      items: [
+        { id: 'id', label: 'id', value: 'string', required: true },
+        { id: 'email', label: 'email', value: 'string', required: true },
+      ],
+      changesetOperation: 'add' as const,
+      detailLevel: 'standard',
+    },
+    id: 'json-schema-changeset',
+  },
 };
 
 export const JSONSchemaNodeMinimal: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.DATA_JSON_SCHEMA,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'UserProfile',
-        detailLevel: 'minimal' as const,
-      }}
-      id="json-schema-minimal"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.DATA_JSON_SCHEMA,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'UserProfile',
+      detailLevel: 'minimal' as const,
+    },
+    id: 'json-schema-minimal',
+  },
 };
 
 // --- Business Layer ---
 
 export const BusinessCapabilityNodeDefault: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Order Management',
-        items: [
-          { id: 'priority', label: 'Priority', value: 'High' },
-          { id: 'status', label: 'Status', value: 'Active' },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="business-capability-default"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Order Management',
+      items: [
+        { id: 'priority', label: 'Priority', value: 'High' },
+        { id: 'status', label: 'Status', value: 'Active' },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'business-capability-default',
+  },
 };
 
 export const BusinessCapabilityNodeChangeset: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Order Management',
-        changesetOperation: 'delete' as const,
-        detailLevel: 'standard',
-      }}
-      id="business-capability-changeset"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Order Management',
+      changesetOperation: 'delete' as const,
+      detailLevel: 'standard',
+    },
+    id: 'business-capability-changeset',
+  },
 };
 
 export const BusinessCapabilityNodeDetailed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Order Management',
-        badges: [
-          {
-            position: 'top-right' as const,
-            content: 'High',
-            className: 'px-2 py-1 bg-red-500 text-white rounded text-xs font-semibold',
-          },
-        ],
-        detailLevel: 'detailed' as const,
-      }}
-      id="business-capability-detailed"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Order Management',
+      badges: [
+        {
+          position: 'top-right' as const,
+          content: 'High',
+          className: 'px-2 py-1 bg-red-500 text-white rounded text-xs font-semibold',
+        },
+      ],
+      detailLevel: 'detailed' as const,
+    },
+    id: 'business-capability-detailed',
+  },
 };
 
 export const BusinessFunctionNodeDefault: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_FUNCTION,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Process Payments',
-        detailLevel: 'standard',
-      }}
-      id="business-function-default"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Process Payments',
+      detailLevel: 'standard',
+    },
+    id: 'business-function-default',
+  },
 };
 
 export const BusinessFunctionNodeChangeset: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_FUNCTION,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Process Payments',
-        changesetOperation: 'update' as const,
-        detailLevel: 'standard',
-      }}
-      id="business-function-changeset"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Process Payments',
+      changesetOperation: 'update' as const,
+      detailLevel: 'standard',
+    },
+    id: 'business-function-changeset',
+  },
 };
 
 export const BusinessFunctionNodeDetailed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_FUNCTION,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Process Payments',
-        detailLevel: 'detailed' as const,
-      }}
-      id="business-function-detailed"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Process Payments',
+      detailLevel: 'detailed' as const,
+    },
+    id: 'business-function-detailed',
+  },
 };
 
 export const BusinessProcessNodeDefault: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_PROCESS,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Order Fulfillment',
-        detailLevel: 'standard',
-      }}
-      id="business-process-default"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_PROCESS,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Order Fulfillment',
+      detailLevel: 'standard',
+    },
+    id: 'business-process-default',
+  },
 };
 
 export const BusinessProcessNodeChangeset: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_PROCESS,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Order Fulfillment',
-        changesetOperation: 'add' as const,
-        detailLevel: 'standard',
-      }}
-      id="business-process-changeset"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_PROCESS,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Order Fulfillment',
+      changesetOperation: 'add' as const,
+      detailLevel: 'standard',
+    },
+    id: 'business-process-changeset',
+  },
 };
 
 export const BusinessProcessNodeDetailed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_PROCESS,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Order Fulfillment',
-        detailLevel: 'detailed' as const,
-      }}
-      id="business-process-detailed"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_PROCESS,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Order Fulfillment',
+      detailLevel: 'detailed' as const,
+    },
+    id: 'business-process-detailed',
+  },
 };
 
 export const BusinessServiceNodeDefault: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_SERVICE,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Payment Service',
-        detailLevel: 'standard',
-      }}
-      id="business-service-default"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_SERVICE,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Payment Service',
+      detailLevel: 'standard',
+    },
+    id: 'business-service-default',
+  },
 };
 
 export const BusinessServiceNodeChangeset: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_SERVICE,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Payment Service',
-        changesetOperation: 'delete' as const,
-        detailLevel: 'standard',
-      }}
-      id="business-service-changeset"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_SERVICE,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Payment Service',
+      changesetOperation: 'delete' as const,
+      detailLevel: 'standard',
+    },
+    id: 'business-service-changeset',
+  },
 };
 
 export const BusinessServiceNodeDetailed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_SERVICE,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Payment Service',
-        detailLevel: 'detailed' as const,
-      }}
-      id="business-service-detailed"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_SERVICE,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Payment Service',
+      detailLevel: 'detailed' as const,
+    },
+    id: 'business-service-detailed',
+  },
 };
 
 // --- Motivation Layer ---
 
 export const GoalNodeDefault: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_GOAL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Increase Revenue',
-        detailLevel: 'standard',
-      }}
-      id="goal-default"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Increase Revenue',
+      detailLevel: 'standard',
+    },
+    id: 'goal-default',
+  },
 };
 
 export const GoalNodeChangeset: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_GOAL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Increase Revenue',
-        changesetOperation: 'update' as const,
-        detailLevel: 'standard',
-      }}
-      id="goal-changeset"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Increase Revenue',
+      changesetOperation: 'update' as const,
+      detailLevel: 'standard',
+    },
+    id: 'goal-changeset',
+  },
 };
 
 export const GoalNodeDetailed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_GOAL,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Increase Revenue',
-        badges: [
-          {
-            position: 'top-right' as const,
-            content: 'High',
-            className: 'px-2 py-1 bg-red-500 text-white rounded text-xs font-semibold',
-          },
-        ],
-        detailLevel: 'detailed' as const,
-      }}
-      id="goal-detailed"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Increase Revenue',
+      badges: [
+        {
+          position: 'top-right' as const,
+          content: 'High',
+          className: 'px-2 py-1 bg-red-500 text-white rounded text-xs font-semibold',
+        },
+      ],
+      detailLevel: 'detailed' as const,
+    },
+    id: 'goal-detailed',
+  },
 };
 
 export const StakeholderNodeDefault: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_STAKEHOLDER,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Board Members',
-        detailLevel: 'standard',
-      }}
-      id="stakeholder-default"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Board Members',
+      detailLevel: 'standard',
+    },
+    id: 'stakeholder-default',
+  },
 };
 
 export const StakeholderNodeChangeset: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_STAKEHOLDER,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Board Members',
-        changesetOperation: 'add' as const,
-        detailLevel: 'standard',
-      }}
-      id="stakeholder-changeset"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Board Members',
+      changesetOperation: 'add' as const,
+      detailLevel: 'standard',
+    },
+    id: 'stakeholder-changeset',
+  },
 };
 
 export const StakeholderNodeDetailed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_STAKEHOLDER,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Board Members',
-        detailLevel: 'detailed' as const,
-      }}
-      id="stakeholder-detailed"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Board Members',
+      detailLevel: 'detailed' as const,
+    },
+    id: 'stakeholder-detailed',
+  },
 };
 
 export const RequirementNodeDefault: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_REQUIREMENT,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'User Authentication',
-        detailLevel: 'standard',
-      }}
-      id="requirement-default"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'User Authentication',
+      detailLevel: 'standard',
+    },
+    id: 'requirement-default',
+  },
 };
 
 export const RequirementNodeChangeset: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_REQUIREMENT,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'User Authentication',
-        changesetOperation: 'delete' as const,
-        detailLevel: 'standard',
-      }}
-      id="requirement-changeset"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'User Authentication',
+      changesetOperation: 'delete' as const,
+      detailLevel: 'standard',
+    },
+    id: 'requirement-changeset',
+  },
 };
 
 export const RequirementNodeDetailed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_REQUIREMENT,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'User Authentication',
-        detailLevel: 'detailed' as const,
-      }}
-      id="requirement-detailed"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'User Authentication',
+      detailLevel: 'detailed' as const,
+    },
+    id: 'requirement-detailed',
+  },
 };
 
 export const ConstraintNodeDefault: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_CONSTRAINT,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Compliance Requirements',
-        detailLevel: 'standard',
-      }}
-      id="constraint-default"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_CONSTRAINT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Compliance Requirements',
+      detailLevel: 'standard',
+    },
+    id: 'constraint-default',
+  },
 };
 
 export const ConstraintNodeChangeset: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_CONSTRAINT,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Compliance Requirements',
-        changesetOperation: 'update' as const,
-        detailLevel: 'standard',
-      }}
-      id="constraint-changeset"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_CONSTRAINT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Compliance Requirements',
+      changesetOperation: 'update' as const,
+      detailLevel: 'standard',
+    },
+    id: 'constraint-changeset',
+  },
 };
 
 export const ConstraintNodeDetailed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_CONSTRAINT,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Compliance Requirements',
-        detailLevel: 'detailed' as const,
-      }}
-      id="constraint-detailed"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_CONSTRAINT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Compliance Requirements',
+      detailLevel: 'detailed' as const,
+    },
+    id: 'constraint-detailed',
+  },
 };
 
 export const PrincipleNodeDefault: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_PRINCIPLE,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Security First',
-        detailLevel: 'standard',
-      }}
-      id="principle-default"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_PRINCIPLE,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Security First',
+      detailLevel: 'standard',
+    },
+    id: 'principle-default',
+  },
 };
 
 export const PrincipleNodeChangeset: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_PRINCIPLE,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Security First',
-        changesetOperation: 'add' as const,
-        detailLevel: 'standard',
-      }}
-      id="principle-changeset"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_PRINCIPLE,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Security First',
+      changesetOperation: 'add' as const,
+      detailLevel: 'standard',
+    },
+    id: 'principle-changeset',
+  },
 };
 
 export const PrincipleNodeDetailed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_PRINCIPLE,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Security First',
-        detailLevel: 'detailed' as const,
-      }}
-      id="principle-detailed"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_PRINCIPLE,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Security First',
+      detailLevel: 'detailed' as const,
+    },
+    id: 'principle-detailed',
+  },
 };
 
 export const DriverNodeDefault: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_DRIVER,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Market Competition',
-        detailLevel: 'standard',
-      }}
-      id="driver-default"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_DRIVER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Market Competition',
+      detailLevel: 'standard',
+    },
+    id: 'driver-default',
+  },
 };
 
 export const DriverNodeChangeset: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_DRIVER,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Market Competition',
-        changesetOperation: 'delete' as const,
-        detailLevel: 'standard',
-      }}
-      id="driver-changeset"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_DRIVER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Market Competition',
+      changesetOperation: 'delete' as const,
+      detailLevel: 'standard',
+    },
+    id: 'driver-changeset',
+  },
 };
 
 export const DriverNodeDetailed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_DRIVER,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Market Competition',
-        detailLevel: 'detailed' as const,
-      }}
-      id="driver-detailed"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_DRIVER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Market Competition',
+      detailLevel: 'detailed' as const,
+    },
+    id: 'driver-detailed',
+  },
 };
 
 export const OutcomeNodeDefault: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_OUTCOME,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Improved Customer Satisfaction',
-        detailLevel: 'standard',
-      }}
-      id="outcome-default"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_OUTCOME,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Improved Customer Satisfaction',
+      detailLevel: 'standard',
+    },
+    id: 'outcome-default',
+  },
 };
 
 export const OutcomeNodeChangeset: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_OUTCOME,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Improved Customer Satisfaction',
-        changesetOperation: 'update' as const,
-        detailLevel: 'standard',
-      }}
-      id="outcome-changeset"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_OUTCOME,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Improved Customer Satisfaction',
+      changesetOperation: 'update' as const,
+      detailLevel: 'standard',
+    },
+    id: 'outcome-changeset',
+  },
 };
 
 export const OutcomeNodeDetailed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_OUTCOME,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Improved Customer Satisfaction',
-        detailLevel: 'detailed' as const,
-      }}
-      id="outcome-detailed"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_OUTCOME,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Improved Customer Satisfaction',
+      detailLevel: 'detailed' as const,
+    },
+    id: 'outcome-detailed',
+  },
 };
 
 export const AssessmentNodeDefault: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_ASSESSMENT,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'System Readiness',
-        detailLevel: 'standard',
-      }}
-      id="assessment-default"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_ASSESSMENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'System Readiness',
+      detailLevel: 'standard',
+    },
+    id: 'assessment-default',
+  },
 };
 
 export const AssessmentNodeChangeset: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_ASSESSMENT,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'System Readiness',
-        changesetOperation: 'add' as const,
-        detailLevel: 'standard',
-      }}
-      id="assessment-changeset"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_ASSESSMENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'System Readiness',
+      changesetOperation: 'add' as const,
+      detailLevel: 'standard',
+    },
+    id: 'assessment-changeset',
+  },
 };
 
 export const AssessmentNodeDetailed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_ASSESSMENT,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'System Readiness',
-        detailLevel: 'detailed' as const,
-      }}
-      id="assessment-detailed"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_ASSESSMENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'System Readiness',
+      detailLevel: 'detailed' as const,
+    },
+    id: 'assessment-detailed',
+  },
 };
 
 export const AssumptionNodeDefault: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_ASSUMPTION,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Users Will Adopt Platform',
-        detailLevel: 'standard',
-      }}
-      id="assumption-default"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_ASSUMPTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Users Will Adopt Platform',
+      detailLevel: 'standard',
+    },
+    id: 'assumption-default',
+  },
 };
 
 export const AssumptionNodeChangeset: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_ASSUMPTION,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Users Will Adopt Platform',
-        changesetOperation: 'delete' as const,
-        detailLevel: 'standard',
-      }}
-      id="assumption-changeset"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_ASSUMPTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Users Will Adopt Platform',
+      changesetOperation: 'delete' as const,
+      detailLevel: 'standard',
+    },
+    id: 'assumption-changeset',
+  },
 };
 
 export const AssumptionNodeDetailed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_ASSUMPTION,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Users Will Adopt Platform',
-        detailLevel: 'detailed' as const,
-      }}
-      id="assumption-detailed"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_ASSUMPTION,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Users Will Adopt Platform',
+      detailLevel: 'detailed' as const,
+    },
+    id: 'assumption-detailed',
+  },
 };
 
 export const ValueStreamNodeDefault: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_VALUE_STREAM,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Order to Cash',
-        detailLevel: 'standard',
-      }}
-      id="value-stream-default"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_VALUE_STREAM,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Order to Cash',
+      detailLevel: 'standard',
+    },
+    id: 'value-stream-default',
+  },
 };
 
 export const ValueStreamNodeChangeset: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_VALUE_STREAM,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Order to Cash',
-        changesetOperation: 'update' as const,
-        detailLevel: 'standard',
-      }}
-      id="value-stream-changeset"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_VALUE_STREAM,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Order to Cash',
+      changesetOperation: 'update' as const,
+      detailLevel: 'standard',
+    },
+    id: 'value-stream-changeset',
+  },
 };
 
 export const ValueStreamNodeDetailed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.MOTIVATION_VALUE_STREAM,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Order to Cash',
-        detailLevel: 'detailed' as const,
-      }}
-      id="value-stream-detailed"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.MOTIVATION_VALUE_STREAM,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Order to Cash',
+      detailLevel: 'detailed' as const,
+    },
+    id: 'value-stream-detailed',
+  },
 };
 
 // --- C4 Layer (Component, Container, External Actor) ---
 
 export const ComponentNodeDefault: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.C4_COMPONENT,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Payment Processor',
-        detailLevel: 'standard',
-      }}
-      id="component-default"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.C4_COMPONENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Payment Processor',
+      detailLevel: 'standard',
+    },
+    id: 'component-default',
+  },
 };
 
 export const ComponentNodeChangeset: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.C4_COMPONENT,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Payment Processor',
-        changesetOperation: 'add' as const,
-        detailLevel: 'standard',
-      }}
-      id="component-changeset"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.C4_COMPONENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Payment Processor',
+      changesetOperation: 'add' as const,
+      detailLevel: 'standard',
+    },
+    id: 'component-changeset',
+  },
 };
 
 export const ComponentNodeDetailed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.C4_COMPONENT,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Payment Processor',
-        detailLevel: 'detailed' as const,
-      }}
-      id="component-detailed"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.C4_COMPONENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Payment Processor',
+      detailLevel: 'detailed' as const,
+    },
+    id: 'component-detailed',
+  },
 };
 
 export const ContainerNodeDefault: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.C4_CONTAINER,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Web Application',
-        detailLevel: 'standard',
-      }}
-      id="container-default"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.C4_CONTAINER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Web Application',
+      detailLevel: 'standard',
+    },
+    id: 'container-default',
+  },
 };
 
 export const ContainerNodeChangeset: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.C4_CONTAINER,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Web Application',
-        changesetOperation: 'delete' as const,
-        detailLevel: 'standard',
-      }}
-      id="container-changeset"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.C4_CONTAINER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Web Application',
+      changesetOperation: 'delete' as const,
+      detailLevel: 'standard',
+    },
+    id: 'container-changeset',
+  },
 };
 
 export const ContainerNodeDetailed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.C4_CONTAINER,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Web Application',
-        detailLevel: 'detailed' as const,
-      }}
-      id="container-detailed"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.C4_CONTAINER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Web Application',
+      detailLevel: 'detailed' as const,
+    },
+    id: 'container-detailed',
+  },
 };
 
 export const ExternalActorNodeDefault: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.C4_EXTERNAL_ACTOR,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'End User',
-        detailLevel: 'standard',
-      }}
-      id="external-actor-default"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.C4_EXTERNAL_ACTOR,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'End User',
+      detailLevel: 'standard',
+    },
+    id: 'external-actor-default',
+  },
 };
 
 export const ExternalActorNodeChangeset: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.C4_EXTERNAL_ACTOR,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'End User',
-        changesetOperation: 'update' as const,
-        detailLevel: 'standard',
-      }}
-      id="external-actor-changeset"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.C4_EXTERNAL_ACTOR,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'End User',
+      changesetOperation: 'update' as const,
+      detailLevel: 'standard',
+    },
+    id: 'external-actor-changeset',
+  },
 };
 
 export const ExternalActorNodeDetailed: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.C4_EXTERNAL_ACTOR,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'End User',
-        detailLevel: 'detailed' as const,
-      }}
-      id="external-actor-detailed"
-    />
-  ),
+  args: {
+    data: {
+      nodeType: NodeType.C4_EXTERNAL_ACTOR,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'End User',
+      detailLevel: 'detailed' as const,
+    },
+    id: 'external-actor-detailed',
+  },
 };
-
