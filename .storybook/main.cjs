@@ -17,12 +17,7 @@ module.exports = {
     options: {},
   },
 
-  /**
-   * Test runner configuration:
-   * - skip-test tag is deprecated; use granular tags (skip-a11y, skip-errors) instead
-   * - Granular tags provide explicit control over what validation is skipped
-   * - Error validation (code quality) always runs unless explicitly skipped with skip-errors
-   */
+  // Exclude skip-test stories from test runs; use granular tags (skip-a11y, skip-errors) instead
   testRunner: {
     tags: {
       exclude: ['skip-test'],

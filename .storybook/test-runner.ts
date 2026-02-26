@@ -93,7 +93,7 @@ const config: TestRunnerConfig = {
 
     try {
       // Skip accessibility checks if requested
-      if (!skipAccessibilityFinal) {
+      if (!skipAccessibility) {
         // Check that axe was successfully injected before proceeding
         let axeInjected = false;
         try {
@@ -196,7 +196,7 @@ const config: TestRunnerConfig = {
       }
 
       // Check for collected console and page errors after all tests (unless skipped)
-      if (!skipErrorsFinal) {
+      if (!skipErrors) {
         let errors: string[] = [];
         try {
           errors = await page.evaluate(() => {
