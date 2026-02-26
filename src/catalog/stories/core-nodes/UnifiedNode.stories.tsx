@@ -13,7 +13,6 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { NodeType } from '@/core/nodes/NodeType';
 import UnifiedNode from '@/core/nodes/components/UnifiedNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
 
 // ============================================================================
 // UnifiedNode Stories
@@ -21,11 +20,12 @@ import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
 
 const meta = {
   title: 'Core Nodes / UnifiedNode',
+  component: UnifiedNode,
   decorators: [withReactFlowDecorator()],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -393,450 +393,934 @@ export const ErrorState: Story = {
 // Node Type Configuration Variants
 // ============================================================================
 // These stories demonstrate how UnifiedNode is configured for each specific
-// node type and layer. Each story shows typical usage patterns.
+// node type and layer. For each node type, stories show: default rendering,
+// a changeset operation variant, and detail level variations.
 
 // --- Base Layer (Data Model, JSON Schema) ---
 
-export const DataModelNodeExample: Story = {
-  render: () => {
-    const config = nodeConfigLoader.getStyleConfig(NodeType.DATA_MODEL);
-    const height = config?.dimensions.height || 300;
-    const width = config?.dimensions.width || 280;
-    return (
-      <div style={{ width, height }}>
-        <UnifiedNode
-          data={{
-            nodeType: NodeType.DATA_MODEL,
-            layerId: 'test-layer',
-            elementId: 'test-element-id',
-            label: 'User',
-            items: [
-              { id: 'id', label: 'id', value: 'UUID', required: true },
-              { id: 'username', label: 'username', value: 'string', required: true },
-              { id: 'email', label: 'email', value: 'string', required: true },
-              { id: 'firstName', label: 'firstName', value: 'string', required: false },
-              { id: 'lastName', label: 'lastName', value: 'string', required: false },
-              { id: 'createdAt', label: 'createdAt', value: 'timestamp', required: false },
-            ],
-            detailLevel: 'standard',
-          }}
-          id="data-model-1"
-        />
-      </div>
-    );
-  },
+export const DataModelNodeDefault: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.DATA_MODEL,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'User',
+        items: [
+          { id: 'id', label: 'id', value: 'UUID', required: true },
+          { id: 'username', label: 'username', value: 'string', required: true },
+          { id: 'email', label: 'email', value: 'string', required: true },
+          { id: 'firstName', label: 'firstName', value: 'string', required: false },
+          { id: 'lastName', label: 'lastName', value: 'string', required: false },
+          { id: 'createdAt', label: 'createdAt', value: 'timestamp', required: false },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="data-model-default"
+    />
+  ),
 };
 
-export const JSONSchemaNodeExample: Story = {
-  render: () => {
-    const config = nodeConfigLoader.getStyleConfig(NodeType.DATA_JSON_SCHEMA);
-    const height = config?.dimensions.height || 300;
-    const width = config?.dimensions.width || 280;
-    return (
-      <div style={{ width, height }}>
-        <UnifiedNode
-          data={{
-            nodeType: NodeType.DATA_JSON_SCHEMA,
-            layerId: 'test-layer',
-            elementId: 'test-element-id',
-            label: 'UserProfile',
-            items: [
-              { id: 'id', label: 'id', value: 'string', required: true },
-              { id: 'username', label: 'username', value: 'string', required: true },
-              { id: 'email', label: 'email', value: 'string', required: true },
-              { id: 'firstName', label: 'firstName', value: 'string', required: false },
-              { id: 'lastName', label: 'lastName', value: 'string', required: false },
-            ],
-            detailLevel: 'standard',
-          }}
-          id="json-schema-1"
-        />
-      </div>
-    );
-  },
+export const DataModelNodeChangeset: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.DATA_MODEL,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'User',
+        items: [
+          { id: 'id', label: 'id', value: 'UUID', required: true },
+          { id: 'username', label: 'username', value: 'string', required: true },
+        ],
+        changesetOperation: 'update' as const,
+        detailLevel: 'standard',
+      }}
+      id="data-model-changeset"
+    />
+  ),
+};
+
+export const DataModelNodeDetailed: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.DATA_MODEL,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'User',
+        items: [
+          { id: 'id', label: 'id', value: 'UUID', required: true },
+          { id: 'username', label: 'username', value: 'string', required: true },
+          { id: 'email', label: 'email', value: 'string', required: true },
+        ],
+        detailLevel: 'detailed' as const,
+      }}
+      id="data-model-detailed"
+    />
+  ),
+};
+
+export const JSONSchemaNodeDefault: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.DATA_JSON_SCHEMA,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'UserProfile',
+        items: [
+          { id: 'id', label: 'id', value: 'string', required: true },
+          { id: 'username', label: 'username', value: 'string', required: true },
+          { id: 'email', label: 'email', value: 'string', required: true },
+          { id: 'firstName', label: 'firstName', value: 'string', required: false },
+          { id: 'lastName', label: 'lastName', value: 'string', required: false },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="json-schema-default"
+    />
+  ),
+};
+
+export const JSONSchemaNodeChangeset: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.DATA_JSON_SCHEMA,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'UserProfile',
+        items: [
+          { id: 'id', label: 'id', value: 'string', required: true },
+          { id: 'email', label: 'email', value: 'string', required: true },
+        ],
+        changesetOperation: 'add' as const,
+        detailLevel: 'standard',
+      }}
+      id="json-schema-changeset"
+    />
+  ),
+};
+
+export const JSONSchemaNodeMinimal: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.DATA_JSON_SCHEMA,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'UserProfile',
+        detailLevel: 'minimal' as const,
+      }}
+      id="json-schema-minimal"
+    />
+  ),
 };
 
 // --- Business Layer ---
 
-export const BusinessCapabilityNodeExample: Story = {
-  render: () => {
-    const config = nodeConfigLoader.getStyleConfig(NodeType.BUSINESS_CAPABILITY);
-    const height = config?.dimensions.height || 100;
-    const width = config?.dimensions.width || 200;
-    return (
-      <div style={{ width, height }}>
-        <UnifiedNode
-          data={{
-            nodeType: NodeType.BUSINESS_CAPABILITY,
-            layerId: 'test-layer',
-            elementId: 'test-element-id',
-            label: 'Order Management',
-            items: [
-              { id: 'priority', label: 'Priority', value: 'High' },
-              { id: 'status', label: 'Status', value: 'Active' },
-            ],
-            detailLevel: 'standard',
-          }}
-          id="business-capability-1"
-        />
-      </div>
-    );
-  },
+export const BusinessCapabilityNodeDefault: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_CAPABILITY,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Order Management',
+        items: [
+          { id: 'priority', label: 'Priority', value: 'High' },
+          { id: 'status', label: 'Status', value: 'Active' },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="business-capability-default"
+    />
+  ),
 };
 
-export const BusinessFunctionNodeExample: Story = {
-  render: () => {
-    const config = nodeConfigLoader.getStyleConfig(NodeType.BUSINESS_FUNCTION);
-    const height = config?.dimensions.height || 100;
-    const width = config?.dimensions.width || 200;
-    return (
-      <div style={{ width, height }}>
-        <UnifiedNode
-          data={{
-            nodeType: NodeType.BUSINESS_FUNCTION,
-            layerId: 'test-layer',
-            elementId: 'test-element-id',
-            label: 'Process Payments',
-            detailLevel: 'standard',
-          }}
-          id="business-function-1"
-        />
-      </div>
-    );
-  },
+export const BusinessCapabilityNodeChangeset: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_CAPABILITY,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Order Management',
+        changesetOperation: 'delete' as const,
+        detailLevel: 'standard',
+      }}
+      id="business-capability-changeset"
+    />
+  ),
 };
 
-export const BusinessProcessNodeExample: Story = {
-  render: () => {
-    const config = nodeConfigLoader.getStyleConfig(NodeType.BUSINESS_PROCESS);
-    const height = config?.dimensions.height || 100;
-    const width = config?.dimensions.width || 200;
-    return (
-      <div style={{ width, height }}>
-        <UnifiedNode
-          data={{
-            nodeType: NodeType.BUSINESS_PROCESS,
-            layerId: 'test-layer',
-            elementId: 'test-element-id',
-            label: 'Order Fulfillment',
-            detailLevel: 'standard',
-          }}
-          id="business-process-1"
-        />
-      </div>
-    );
-  },
+export const BusinessCapabilityNodeDetailed: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_CAPABILITY,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Order Management',
+        badges: [
+          {
+            position: 'top-right' as const,
+            content: 'High',
+            className: 'px-2 py-1 bg-red-500 text-white rounded text-xs font-semibold',
+          },
+        ],
+        detailLevel: 'detailed' as const,
+      }}
+      id="business-capability-detailed"
+    />
+  ),
 };
 
-export const BusinessServiceNodeExample: Story = {
-  render: () => {
-    const config = nodeConfigLoader.getStyleConfig(NodeType.BUSINESS_SERVICE);
-    const height = config?.dimensions.height || 100;
-    const width = config?.dimensions.width || 200;
-    return (
-      <div style={{ width, height }}>
-        <UnifiedNode
-          data={{
-            nodeType: NodeType.BUSINESS_SERVICE,
-            layerId: 'test-layer',
-            elementId: 'test-element-id',
-            label: 'Payment Service',
-            detailLevel: 'standard',
-          }}
-          id="business-service-1"
-        />
-      </div>
-    );
-  },
+export const BusinessFunctionNodeDefault: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_FUNCTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Process Payments',
+        detailLevel: 'standard',
+      }}
+      id="business-function-default"
+    />
+  ),
+};
+
+export const BusinessFunctionNodeChangeset: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_FUNCTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Process Payments',
+        changesetOperation: 'update' as const,
+        detailLevel: 'standard',
+      }}
+      id="business-function-changeset"
+    />
+  ),
+};
+
+export const BusinessFunctionNodeDetailed: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_FUNCTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Process Payments',
+        detailLevel: 'detailed' as const,
+      }}
+      id="business-function-detailed"
+    />
+  ),
+};
+
+export const BusinessProcessNodeDefault: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_PROCESS,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Order Fulfillment',
+        detailLevel: 'standard',
+      }}
+      id="business-process-default"
+    />
+  ),
+};
+
+export const BusinessProcessNodeChangeset: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_PROCESS,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Order Fulfillment',
+        changesetOperation: 'add' as const,
+        detailLevel: 'standard',
+      }}
+      id="business-process-changeset"
+    />
+  ),
+};
+
+export const BusinessProcessNodeDetailed: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_PROCESS,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Order Fulfillment',
+        detailLevel: 'detailed' as const,
+      }}
+      id="business-process-detailed"
+    />
+  ),
+};
+
+export const BusinessServiceNodeDefault: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Payment Service',
+        detailLevel: 'standard',
+      }}
+      id="business-service-default"
+    />
+  ),
+};
+
+export const BusinessServiceNodeChangeset: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Payment Service',
+        changesetOperation: 'delete' as const,
+        detailLevel: 'standard',
+      }}
+      id="business-service-changeset"
+    />
+  ),
+};
+
+export const BusinessServiceNodeDetailed: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Payment Service',
+        detailLevel: 'detailed' as const,
+      }}
+      id="business-service-detailed"
+    />
+  ),
 };
 
 // --- Motivation Layer ---
 
-export const GoalNodeExample: Story = {
-  render: () => {
-    const config = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_GOAL);
-    const height = config?.dimensions.height || 100;
-    const width = config?.dimensions.width || 180;
-    return (
-      <div style={{ width, height }}>
-        <UnifiedNode
-          data={{
-            nodeType: NodeType.MOTIVATION_GOAL,
-            layerId: 'test-layer',
-            elementId: 'test-element-id',
-            label: 'Increase Revenue',
-            detailLevel: 'standard',
-          }}
-          id="goal-1"
-        />
-      </div>
-    );
-  },
+export const GoalNodeDefault: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_GOAL,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Increase Revenue',
+        detailLevel: 'standard',
+      }}
+      id="goal-default"
+    />
+  ),
 };
 
-export const StakeholderNodeExample: Story = {
-  render: () => {
-    const config = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_STAKEHOLDER);
-    const height = config?.dimensions.height || 100;
-    const width = config?.dimensions.width || 180;
-    return (
-      <div style={{ width, height }}>
-        <UnifiedNode
-          data={{
-            nodeType: NodeType.MOTIVATION_STAKEHOLDER,
-            layerId: 'test-layer',
-            elementId: 'test-element-id',
-            label: 'Board Members',
-            detailLevel: 'standard',
-          }}
-          id="stakeholder-1"
-        />
-      </div>
-    );
-  },
+export const GoalNodeChangeset: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_GOAL,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Increase Revenue',
+        changesetOperation: 'update' as const,
+        detailLevel: 'standard',
+      }}
+      id="goal-changeset"
+    />
+  ),
 };
 
-export const RequirementNodeExample: Story = {
-  render: () => {
-    const config = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_REQUIREMENT);
-    const height = config?.dimensions.height || 100;
-    const width = config?.dimensions.width || 180;
-    return (
-      <div style={{ width, height }}>
-        <UnifiedNode
-          data={{
-            nodeType: NodeType.MOTIVATION_REQUIREMENT,
-            layerId: 'test-layer',
-            elementId: 'test-element-id',
-            label: 'User Authentication',
-            detailLevel: 'standard',
-          }}
-          id="requirement-1"
-        />
-      </div>
-    );
-  },
+export const GoalNodeDetailed: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_GOAL,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Increase Revenue',
+        badges: [
+          {
+            position: 'top-right' as const,
+            content: 'High',
+            className: 'px-2 py-1 bg-red-500 text-white rounded text-xs font-semibold',
+          },
+        ],
+        detailLevel: 'detailed' as const,
+      }}
+      id="goal-detailed"
+    />
+  ),
 };
 
-export const ConstraintNodeExample: Story = {
-  render: () => {
-    const config = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_CONSTRAINT);
-    const height = config?.dimensions.height || 100;
-    const width = config?.dimensions.width || 180;
-    return (
-      <div style={{ width, height }}>
-        <UnifiedNode
-          data={{
-            nodeType: NodeType.MOTIVATION_CONSTRAINT,
-            layerId: 'test-layer',
-            elementId: 'test-element-id',
-            label: 'Compliance Requirements',
-            detailLevel: 'standard',
-          }}
-          id="constraint-1"
-        />
-      </div>
-    );
-  },
+export const StakeholderNodeDefault: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Board Members',
+        detailLevel: 'standard',
+      }}
+      id="stakeholder-default"
+    />
+  ),
 };
 
-export const PrincipleNodeExample: Story = {
-  render: () => {
-    const config = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_PRINCIPLE);
-    const height = config?.dimensions.height || 100;
-    const width = config?.dimensions.width || 180;
-    return (
-      <div style={{ width, height }}>
-        <UnifiedNode
-          data={{
-            nodeType: NodeType.MOTIVATION_PRINCIPLE,
-            layerId: 'test-layer',
-            elementId: 'test-element-id',
-            label: 'Security First',
-            detailLevel: 'standard',
-          }}
-          id="principle-1"
-        />
-      </div>
-    );
-  },
+export const StakeholderNodeChangeset: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Board Members',
+        changesetOperation: 'add' as const,
+        detailLevel: 'standard',
+      }}
+      id="stakeholder-changeset"
+    />
+  ),
 };
 
-export const DriverNodeExample: Story = {
-  render: () => {
-    const config = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_DRIVER);
-    const height = config?.dimensions.height || 100;
-    const width = config?.dimensions.width || 180;
-    return (
-      <div style={{ width, height }}>
-        <UnifiedNode
-          data={{
-            nodeType: NodeType.MOTIVATION_DRIVER,
-            layerId: 'test-layer',
-            elementId: 'test-element-id',
-            label: 'Market Competition',
-            detailLevel: 'standard',
-          }}
-          id="driver-1"
-        />
-      </div>
-    );
-  },
+export const StakeholderNodeDetailed: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Board Members',
+        detailLevel: 'detailed' as const,
+      }}
+      id="stakeholder-detailed"
+    />
+  ),
 };
 
-export const OutcomeNodeExample: Story = {
-  render: () => {
-    const config = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_OUTCOME);
-    const height = config?.dimensions.height || 100;
-    const width = config?.dimensions.width || 180;
-    return (
-      <div style={{ width, height }}>
-        <UnifiedNode
-          data={{
-            nodeType: NodeType.MOTIVATION_OUTCOME,
-            layerId: 'test-layer',
-            elementId: 'test-element-id',
-            label: 'Improved Customer Satisfaction',
-            detailLevel: 'standard',
-          }}
-          id="outcome-1"
-        />
-      </div>
-    );
-  },
+export const RequirementNodeDefault: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_REQUIREMENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'User Authentication',
+        detailLevel: 'standard',
+      }}
+      id="requirement-default"
+    />
+  ),
 };
 
-export const AssessmentNodeExample: Story = {
-  render: () => {
-    const config = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_ASSESSMENT);
-    const height = config?.dimensions.height || 100;
-    const width = config?.dimensions.width || 180;
-    return (
-      <div style={{ width, height }}>
-        <UnifiedNode
-          data={{
-            nodeType: NodeType.MOTIVATION_ASSESSMENT,
-            layerId: 'test-layer',
-            elementId: 'test-element-id',
-            label: 'System Readiness',
-            detailLevel: 'standard',
-          }}
-          id="assessment-1"
-        />
-      </div>
-    );
-  },
+export const RequirementNodeChangeset: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_REQUIREMENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'User Authentication',
+        changesetOperation: 'delete' as const,
+        detailLevel: 'standard',
+      }}
+      id="requirement-changeset"
+    />
+  ),
 };
 
-export const AssumptionNodeExample: Story = {
-  render: () => {
-    const config = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_ASSUMPTION);
-    const height = config?.dimensions.height || 100;
-    const width = config?.dimensions.width || 180;
-    return (
-      <div style={{ width, height }}>
-        <UnifiedNode
-          data={{
-            nodeType: NodeType.MOTIVATION_ASSUMPTION,
-            layerId: 'test-layer',
-            elementId: 'test-element-id',
-            label: 'Users Will Adopt Platform',
-            detailLevel: 'standard',
-          }}
-          id="assumption-1"
-        />
-      </div>
-    );
-  },
+export const RequirementNodeDetailed: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_REQUIREMENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'User Authentication',
+        detailLevel: 'detailed' as const,
+      }}
+      id="requirement-detailed"
+    />
+  ),
 };
 
-export const ValueStreamNodeExample: Story = {
-  render: () => {
-    const config = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_VALUE_STREAM);
-    const height = config?.dimensions.height || 100;
-    const width = config?.dimensions.width || 180;
-    return (
-      <div style={{ width, height }}>
-        <UnifiedNode
-          data={{
-            nodeType: NodeType.MOTIVATION_VALUE_STREAM,
-            layerId: 'test-layer',
-            elementId: 'test-element-id',
-            label: 'Order to Cash',
-            detailLevel: 'standard',
-          }}
-          id="value-stream-1"
-        />
-      </div>
-    );
-  },
+export const ConstraintNodeDefault: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_CONSTRAINT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Compliance Requirements',
+        detailLevel: 'standard',
+      }}
+      id="constraint-default"
+    />
+  ),
+};
+
+export const ConstraintNodeChangeset: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_CONSTRAINT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Compliance Requirements',
+        changesetOperation: 'update' as const,
+        detailLevel: 'standard',
+      }}
+      id="constraint-changeset"
+    />
+  ),
+};
+
+export const ConstraintNodeDetailed: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_CONSTRAINT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Compliance Requirements',
+        detailLevel: 'detailed' as const,
+      }}
+      id="constraint-detailed"
+    />
+  ),
+};
+
+export const PrincipleNodeDefault: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_PRINCIPLE,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Security First',
+        detailLevel: 'standard',
+      }}
+      id="principle-default"
+    />
+  ),
+};
+
+export const PrincipleNodeChangeset: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_PRINCIPLE,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Security First',
+        changesetOperation: 'add' as const,
+        detailLevel: 'standard',
+      }}
+      id="principle-changeset"
+    />
+  ),
+};
+
+export const PrincipleNodeDetailed: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_PRINCIPLE,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Security First',
+        detailLevel: 'detailed' as const,
+      }}
+      id="principle-detailed"
+    />
+  ),
+};
+
+export const DriverNodeDefault: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_DRIVER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Market Competition',
+        detailLevel: 'standard',
+      }}
+      id="driver-default"
+    />
+  ),
+};
+
+export const DriverNodeChangeset: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_DRIVER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Market Competition',
+        changesetOperation: 'delete' as const,
+        detailLevel: 'standard',
+      }}
+      id="driver-changeset"
+    />
+  ),
+};
+
+export const DriverNodeDetailed: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_DRIVER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Market Competition',
+        detailLevel: 'detailed' as const,
+      }}
+      id="driver-detailed"
+    />
+  ),
+};
+
+export const OutcomeNodeDefault: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_OUTCOME,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Improved Customer Satisfaction',
+        detailLevel: 'standard',
+      }}
+      id="outcome-default"
+    />
+  ),
+};
+
+export const OutcomeNodeChangeset: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_OUTCOME,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Improved Customer Satisfaction',
+        changesetOperation: 'update' as const,
+        detailLevel: 'standard',
+      }}
+      id="outcome-changeset"
+    />
+  ),
+};
+
+export const OutcomeNodeDetailed: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_OUTCOME,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Improved Customer Satisfaction',
+        detailLevel: 'detailed' as const,
+      }}
+      id="outcome-detailed"
+    />
+  ),
+};
+
+export const AssessmentNodeDefault: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_ASSESSMENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'System Readiness',
+        detailLevel: 'standard',
+      }}
+      id="assessment-default"
+    />
+  ),
+};
+
+export const AssessmentNodeChangeset: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_ASSESSMENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'System Readiness',
+        changesetOperation: 'add' as const,
+        detailLevel: 'standard',
+      }}
+      id="assessment-changeset"
+    />
+  ),
+};
+
+export const AssessmentNodeDetailed: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_ASSESSMENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'System Readiness',
+        detailLevel: 'detailed' as const,
+      }}
+      id="assessment-detailed"
+    />
+  ),
+};
+
+export const AssumptionNodeDefault: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_ASSUMPTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Users Will Adopt Platform',
+        detailLevel: 'standard',
+      }}
+      id="assumption-default"
+    />
+  ),
+};
+
+export const AssumptionNodeChangeset: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_ASSUMPTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Users Will Adopt Platform',
+        changesetOperation: 'delete' as const,
+        detailLevel: 'standard',
+      }}
+      id="assumption-changeset"
+    />
+  ),
+};
+
+export const AssumptionNodeDetailed: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_ASSUMPTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Users Will Adopt Platform',
+        detailLevel: 'detailed' as const,
+      }}
+      id="assumption-detailed"
+    />
+  ),
+};
+
+export const ValueStreamNodeDefault: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_VALUE_STREAM,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Order to Cash',
+        detailLevel: 'standard',
+      }}
+      id="value-stream-default"
+    />
+  ),
+};
+
+export const ValueStreamNodeChangeset: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_VALUE_STREAM,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Order to Cash',
+        changesetOperation: 'update' as const,
+        detailLevel: 'standard',
+      }}
+      id="value-stream-changeset"
+    />
+  ),
+};
+
+export const ValueStreamNodeDetailed: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.MOTIVATION_VALUE_STREAM,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Order to Cash',
+        detailLevel: 'detailed' as const,
+      }}
+      id="value-stream-detailed"
+    />
+  ),
 };
 
 // --- C4 Layer (Component, Container, External Actor) ---
 
-export const ComponentNodeExample: Story = {
-  render: () => {
-    const config = nodeConfigLoader.getStyleConfig(NodeType.C4_COMPONENT);
-    const height = config?.dimensions.height || 100;
-    const width = config?.dimensions.width || 200;
-    return (
-      <div style={{ width, height }}>
-        <UnifiedNode
-          data={{
-            nodeType: NodeType.C4_COMPONENT,
-            layerId: 'test-layer',
-            elementId: 'test-element-id',
-            label: 'Payment Processor',
-            detailLevel: 'standard',
-          }}
-          id="component-1"
-        />
-      </div>
-    );
-  },
+export const ComponentNodeDefault: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.C4_COMPONENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Payment Processor',
+        detailLevel: 'standard',
+      }}
+      id="component-default"
+    />
+  ),
 };
 
-export const ContainerNodeExample: Story = {
-  render: () => {
-    const config = nodeConfigLoader.getStyleConfig(NodeType.C4_CONTAINER);
-    const height = config?.dimensions.height || 100;
-    const width = config?.dimensions.width || 200;
-    return (
-      <div style={{ width, height }}>
-        <UnifiedNode
-          data={{
-            nodeType: NodeType.C4_CONTAINER,
-            layerId: 'test-layer',
-            elementId: 'test-element-id',
-            label: 'Web Application',
-            detailLevel: 'standard',
-          }}
-          id="container-1"
-        />
-      </div>
-    );
-  },
+export const ComponentNodeChangeset: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.C4_COMPONENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Payment Processor',
+        changesetOperation: 'add' as const,
+        detailLevel: 'standard',
+      }}
+      id="component-changeset"
+    />
+  ),
 };
 
-export const ExternalActorNodeExample: Story = {
-  render: () => {
-    const config = nodeConfigLoader.getStyleConfig(NodeType.C4_EXTERNAL_ACTOR);
-    const height = config?.dimensions.height || 100;
-    const width = config?.dimensions.width || 200;
-    return (
-      <div style={{ width, height }}>
-        <UnifiedNode
-          data={{
-            nodeType: NodeType.C4_EXTERNAL_ACTOR,
-            layerId: 'test-layer',
-            elementId: 'test-element-id',
-            label: 'End User',
-            detailLevel: 'standard',
-          }}
-          id="external-actor-1"
-        />
-      </div>
-    );
-  },
+export const ComponentNodeDetailed: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.C4_COMPONENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Payment Processor',
+        detailLevel: 'detailed' as const,
+      }}
+      id="component-detailed"
+    />
+  ),
+};
+
+export const ContainerNodeDefault: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.C4_CONTAINER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Web Application',
+        detailLevel: 'standard',
+      }}
+      id="container-default"
+    />
+  ),
+};
+
+export const ContainerNodeChangeset: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.C4_CONTAINER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Web Application',
+        changesetOperation: 'delete' as const,
+        detailLevel: 'standard',
+      }}
+      id="container-changeset"
+    />
+  ),
+};
+
+export const ContainerNodeDetailed: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.C4_CONTAINER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Web Application',
+        detailLevel: 'detailed' as const,
+      }}
+      id="container-detailed"
+    />
+  ),
+};
+
+export const ExternalActorNodeDefault: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.C4_EXTERNAL_ACTOR,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'End User',
+        detailLevel: 'standard',
+      }}
+      id="external-actor-default"
+    />
+  ),
+};
+
+export const ExternalActorNodeChangeset: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.C4_EXTERNAL_ACTOR,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'End User',
+        changesetOperation: 'update' as const,
+        detailLevel: 'standard',
+      }}
+      id="external-actor-changeset"
+    />
+  ),
+};
+
+export const ExternalActorNodeDetailed: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.C4_EXTERNAL_ACTOR,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'End User',
+        detailLevel: 'detailed' as const,
+      }}
+      id="external-actor-detailed"
+    />
+  ),
 };
 
