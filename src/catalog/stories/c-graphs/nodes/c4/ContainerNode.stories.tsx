@@ -18,15 +18,6 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
-  args: {
-    id: 'container-default',
-    data: {
-      nodeType: NodeType.C4_CONTAINER,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: 'Container',
-    } as UnifiedNodeData,
-  },
 } satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
