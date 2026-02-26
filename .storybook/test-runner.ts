@@ -82,26 +82,27 @@ const config: TestRunnerConfig = {
     const skipErrors = tags.includes('skip-errors');
     const skipTest = tags.includes('skip-test');
 
-    // Handle skip-test: log deprecation warning and treat as skip-a11y + skip-errors
-    // This prevents silent bypass of all validation (addresses skip-test bypass issue)
+    // Handle skip-test: log deprecation warning and treat as skip-a11y only
+    // This ensures console error validation always runs (WCAG 2.1 AA mandate: accessibility must be validated)
+    // skip-test is deprecated; use granular flags for explicit control
     if (skipTest) {
       console.warn(
         `[test-runner] Story "${context.id}" uses deprecated 'skip-test' tag. ` +
-        `Use granular tags instead: 'skip-a11y' (skip accessibility), ` +
-        `'skip-errors' (skip console/page errors). ` +
-        `Treating as skip-a11y + skip-errors, but this will be removed in a future version.`
+        `Use granular tags instead: 'skip-a11y' (skip accessibility). ` +
+        `'skip-test' now only skips accessibility checks. Console error validation always runs to ensure WCAG 2.1 AA compliance. ` +
+        `This tag will be removed in a future version.`
       );
     }
 
-    // Determine final skip flags: skip-test acts as alias for skip-a11y + skip-errors
+    // Determine final skip flags: skip-test acts as alias for skip-a11y only
+    // Rationale: WCAG 2.1 AA compliance (accessibility) must be enforced. Error validation is mandatory.
     const skipAccessibilityFinal = skipAccessibility || skipTest;
-    const skipErrorsFinal = skipErrors || skipTest;
+    const skipErrorsFinal = skipErrors; // Note: skip-test does NOT skip error validation
 
     // Log what's being skipped (addresses confusing logging issue)
     // Check skip-test first before building granular skip list to avoid redundant logs
     if (skipTest) {
-      const skipped = ['accessibility', 'error validation'];
-      console.log(`[test-runner] Story "${context.id}" skipping: ${skipped.join(', ')} (via deprecated skip-test tag)`);
+      console.log(`[test-runner] Story "${context.id}" skipping: accessibility (via deprecated skip-test tag). Console error validation still runs.`);
     } else if (skipAccessibilityFinal || skipErrorsFinal) {
       const skipped = [];
       if (skipAccessibilityFinal) skipped.push('accessibility');
