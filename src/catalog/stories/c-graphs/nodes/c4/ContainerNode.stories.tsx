@@ -131,7 +131,7 @@ export const ChangesetAdd: Story = {
       elementId: 'test-element-id',
       label: 'New Container',
       items: [],
-      changesetOperation: 'add',
+      changesetOperation: 'add' as const,
     } as UnifiedNodeData,
   },
 };
@@ -145,7 +145,7 @@ export const ChangesetUpdate: Story = {
       elementId: 'test-element-id',
       label: 'Updated Container',
       items: [],
-      changesetOperation: 'update',
+      changesetOperation: 'update' as const,
     } as UnifiedNodeData,
   },
 };
@@ -159,7 +159,7 @@ export const ChangesetDelete: Story = {
       elementId: 'test-element-id',
       label: 'Deleted Container',
       items: [],
-      changesetOperation: 'delete',
+      changesetOperation: 'delete' as const,
     } as UnifiedNodeData,
   },
 };
