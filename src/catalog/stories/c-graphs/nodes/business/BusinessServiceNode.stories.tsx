@@ -35,12 +35,6 @@ const meta = {
     },
     id: '',
   },
-  argTypes: {
-    'data.changesetOperation': {
-      control: 'select',
-      options: [undefined, 'add', 'update', 'delete'],
-    },
-  },
 } satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
