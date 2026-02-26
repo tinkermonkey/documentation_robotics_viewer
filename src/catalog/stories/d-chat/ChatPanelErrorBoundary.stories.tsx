@@ -58,26 +58,6 @@ export const HealthyContent: Story = {
   ),
 };
 
-/**
- * Error state - rendering error caught
- * Demonstrates the error boundary's fallback UI when a child component throws
- */
-export const ErrorCaught: Story = {
-  render: () => {
-    // Component that throws an error
-    const BrokenComponent = () => {
-      throw new Error('Failed to render chat message');
-    };
-
-    return (
-      <div className="w-full max-w-md h-96">
-        <ChatPanelErrorBoundary>
-          <BrokenComponent />
-        </ChatPanelErrorBoundary>
-      </div>
-    );
-  },
-};
 
 /**
  * With mock chat content
