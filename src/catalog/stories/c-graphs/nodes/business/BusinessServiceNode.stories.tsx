@@ -25,16 +25,6 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
-  args: {
-    data: {
-      nodeType: NodeType.BUSINESS_SERVICE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: '',
-      detailLevel: 'standard',
-    },
-    id: '',
-  },
 } satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
