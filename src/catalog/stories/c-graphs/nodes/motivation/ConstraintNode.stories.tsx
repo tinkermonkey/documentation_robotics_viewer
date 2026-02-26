@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UnifiedNode } from '@/core/nodes';
-import { NodeType } from '@/core/nodes';
+import { UnifiedNode, type UnifiedNodeData, NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createConstraintNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
@@ -117,7 +116,7 @@ export const ChangesetAdd: Story = {
       elementId: 'test-element-id',
       label: 'New Constraint',
       changesetOperation: 'add',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -130,7 +129,7 @@ export const ChangesetUpdate: Story = {
       elementId: 'test-element-id',
       label: 'Updated Constraint',
       changesetOperation: 'update',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -143,7 +142,7 @@ export const ChangesetDelete: Story = {
       elementId: 'test-element-id',
       label: 'Deleted Constraint',
       changesetOperation: 'delete',
-    },
+    } as UnifiedNodeData,
   },
 };
 
