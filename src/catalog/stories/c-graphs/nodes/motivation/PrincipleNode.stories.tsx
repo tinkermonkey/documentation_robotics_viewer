@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { UnifiedNode } from '@/core/nodes';
 import { NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
+import { createPrincipleNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
 
@@ -168,14 +169,27 @@ export const MinimalDetail: Story = {
   args: {
     id: 'principle-minimal',
     data: {
+      ...createPrincipleNodeData({ label: 'Minimal Detail Principle' }),
       nodeType: NodeType.MOTIVATION_PRINCIPLE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: 'Minimal Detail Principle',
       items: [
-        { id: 'property1', label: 'Property1', value: 'value' },
+        { id: 'scope', label: 'Scope', value: 'enterprise' },
       ],
       detailLevel: 'minimal',
+    },
+  },
+};
+
+export const StandardDetail: Story = {
+  args: {
+    id: 'principle-standard',
+    data: {
+      ...createPrincipleNodeData({ label: 'Standard Detail Principle' }),
+      nodeType: NodeType.MOTIVATION_PRINCIPLE,
+      items: [
+        { id: 'scope', label: 'Scope', value: 'enterprise' },
+        { id: 'category', label: 'Category', value: 'architecture' },
+      ],
+      detailLevel: 'standard',
     },
   },
 };
@@ -184,14 +198,12 @@ export const DetailedDetail: Story = {
   args: {
     id: 'principle-detailed',
     data: {
+      ...createPrincipleNodeData({ label: 'Detailed Principle' }),
       nodeType: NodeType.MOTIVATION_PRINCIPLE,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: 'Detailed Principle',
       items: [
-        { id: 'property1', label: 'Property1', value: 'value1' },
-        { id: 'property2', label: 'Property2', value: 'value2' },
-        { id: 'property3', label: 'Property3', value: 'value3' },
+        { id: 'scope', label: 'Scope', value: 'enterprise' },
+        { id: 'category', label: 'Category', value: 'architecture' },
+        { id: 'priority', label: 'Priority', value: 'high' },
       ],
       detailLevel: 'detailed',
     },

@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { UnifiedNode } from '@/core/nodes';
 import { NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
+import { createOutcomeNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
 
@@ -186,14 +187,27 @@ export const MinimalDetail: Story = {
   args: {
     id: 'outcome-minimal',
     data: {
+      ...createOutcomeNodeData({ label: 'Minimal Detail Outcome' }),
       nodeType: NodeType.MOTIVATION_OUTCOME,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: 'Minimal Detail Outcome',
       items: [
-        { id: 'property1', label: 'Property1', value: 'value' },
+        { id: 'achievementStatus', label: 'Status', value: 'planned' },
       ],
       detailLevel: 'minimal',
+    },
+  },
+};
+
+export const StandardDetail: Story = {
+  args: {
+    id: 'outcome-standard',
+    data: {
+      ...createOutcomeNodeData({ label: 'Standard Detail Outcome' }),
+      nodeType: NodeType.MOTIVATION_OUTCOME,
+      items: [
+        { id: 'achievementStatus', label: 'Status', value: 'in-progress' },
+        { id: 'timeline', label: 'Timeline', value: 'Q2 2026' },
+      ],
+      detailLevel: 'standard',
     },
   },
 };
@@ -202,14 +216,12 @@ export const DetailedDetail: Story = {
   args: {
     id: 'outcome-detailed',
     data: {
+      ...createOutcomeNodeData({ label: 'Detailed Outcome' }),
       nodeType: NodeType.MOTIVATION_OUTCOME,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: 'Detailed Outcome',
       items: [
-        { id: 'property1', label: 'Property1', value: 'value1' },
-        { id: 'property2', label: 'Property2', value: 'value2' },
-        { id: 'property3', label: 'Property3', value: 'value3' },
+        { id: 'achievementStatus', label: 'Status', value: 'in-progress' },
+        { id: 'timeline', label: 'Timeline', value: 'Q2 2026' },
+        { id: 'owner', label: 'Owner', value: 'Product Team' },
       ],
       detailLevel: 'detailed',
     },

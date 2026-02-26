@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { UnifiedNode } from '@/core/nodes';
 import { NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
+import { createValueStreamNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
 
@@ -144,14 +145,27 @@ export const MinimalDetail: Story = {
   args: {
     id: 'valuestream-minimal',
     data: {
+      ...createValueStreamNodeData({ label: 'Minimal Detail Value Stream' }),
       nodeType: NodeType.MOTIVATION_VALUE_STREAM,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: 'Minimal Detail ValueStream',
       items: [
-        { id: 'property1', label: 'Property1', value: 'value' },
+        { id: 'stage', label: 'Stage', value: 'discovery' },
       ],
       detailLevel: 'minimal',
+    },
+  },
+};
+
+export const StandardDetail: Story = {
+  args: {
+    id: 'valuestream-standard',
+    data: {
+      ...createValueStreamNodeData({ label: 'Standard Detail Value Stream' }),
+      nodeType: NodeType.MOTIVATION_VALUE_STREAM,
+      items: [
+        { id: 'stage', label: 'Stage', value: 'implementation' },
+        { id: 'duration', label: 'Duration', value: '3 months' },
+      ],
+      detailLevel: 'standard',
     },
   },
 };
@@ -160,14 +174,12 @@ export const DetailedDetail: Story = {
   args: {
     id: 'valuestream-detailed',
     data: {
+      ...createValueStreamNodeData({ label: 'Detailed Value Stream' }),
       nodeType: NodeType.MOTIVATION_VALUE_STREAM,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: 'Detailed ValueStream',
       items: [
-        { id: 'property1', label: 'Property1', value: 'value1' },
-        { id: 'property2', label: 'Property2', value: 'value2' },
-        { id: 'property3', label: 'Property3', value: 'value3' },
+        { id: 'stage', label: 'Stage', value: 'implementation' },
+        { id: 'duration', label: 'Duration', value: '3 months' },
+        { id: 'owner', label: 'Owner', value: 'Product Team' },
       ],
       detailLevel: 'detailed',
     },

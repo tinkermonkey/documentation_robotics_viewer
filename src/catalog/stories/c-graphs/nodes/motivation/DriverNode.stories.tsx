@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { UnifiedNode } from '@/core/nodes';
 import { NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
+import { createDriverNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
 
@@ -186,14 +187,27 @@ export const MinimalDetail: Story = {
   args: {
     id: 'driver-minimal',
     data: {
+      ...createDriverNodeData({ label: 'Minimal Detail Driver' }),
       nodeType: NodeType.MOTIVATION_DRIVER,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: 'Minimal Detail Driver',
       items: [
-        { id: 'property1', label: 'Property1', value: 'value' },
+        { id: 'category', label: 'Category', value: 'market' },
       ],
       detailLevel: 'minimal',
+    },
+  },
+};
+
+export const StandardDetail: Story = {
+  args: {
+    id: 'driver-standard',
+    data: {
+      ...createDriverNodeData({ label: 'Standard Detail Driver' }),
+      nodeType: NodeType.MOTIVATION_DRIVER,
+      items: [
+        { id: 'category', label: 'Category', value: 'market' },
+        { id: 'impact', label: 'Impact', value: 'high' },
+      ],
+      detailLevel: 'standard',
     },
   },
 };
@@ -202,14 +216,12 @@ export const DetailedDetail: Story = {
   args: {
     id: 'driver-detailed',
     data: {
+      ...createDriverNodeData({ label: 'Detailed Driver' }),
       nodeType: NodeType.MOTIVATION_DRIVER,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: 'Detailed Driver',
       items: [
-        { id: 'property1', label: 'Property1', value: 'value1' },
-        { id: 'property2', label: 'Property2', value: 'value2' },
-        { id: 'property3', label: 'Property3', value: 'value3' },
+        { id: 'category', label: 'Category', value: 'market' },
+        { id: 'impact', label: 'Impact', value: 'high' },
+        { id: 'owner', label: 'Owner', value: 'Sales' },
       ],
       detailLevel: 'detailed',
     },

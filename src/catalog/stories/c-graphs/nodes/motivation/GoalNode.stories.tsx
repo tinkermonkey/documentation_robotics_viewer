@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { UnifiedNode, NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
+import { createGoalNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
 
@@ -183,10 +184,8 @@ export const MinimalDetail: Story = {
   args: {
     id: 'goal-minimal',
     data: {
+      ...createGoalNodeData({ label: 'Minimal Detail Goal' }),
       nodeType: NodeType.MOTIVATION_GOAL,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: 'Minimal Detail Goal',
       items: [
         { id: 'priority', label: 'Priority', value: 'high' },
       ],
@@ -195,14 +194,27 @@ export const MinimalDetail: Story = {
   },
 };
 
+export const StandardDetail: Story = {
+  args: {
+    id: 'goal-standard',
+    data: {
+      ...createGoalNodeData({ label: 'Standard Detail Goal' }),
+      nodeType: NodeType.MOTIVATION_GOAL,
+      items: [
+        { id: 'priority', label: 'Priority', value: 'high' },
+        { id: 'status', label: 'Status', value: 'active' },
+      ],
+      detailLevel: 'standard',
+    },
+  },
+};
+
 export const DetailedDetail: Story = {
   args: {
     id: 'goal-detailed',
     data: {
+      ...createGoalNodeData({ label: 'Detailed Goal' }),
       nodeType: NodeType.MOTIVATION_GOAL,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: 'Detailed Goal',
       items: [
         { id: 'priority', label: 'Priority', value: 'high' },
         { id: 'status', label: 'Status', value: 'active' },

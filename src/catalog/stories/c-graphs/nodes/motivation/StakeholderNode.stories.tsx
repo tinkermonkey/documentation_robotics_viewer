@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { UnifiedNode } from '@/core/nodes';
 import { NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
+import { createStakeholderNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
 
@@ -171,14 +172,27 @@ export const MinimalDetail: Story = {
   args: {
     id: 'stakeholder-minimal',
     data: {
+      ...createStakeholderNodeData({ label: 'Minimal Detail Stakeholder' }),
       nodeType: NodeType.MOTIVATION_STAKEHOLDER,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: 'Minimal Detail Stakeholder',
       items: [
-        { id: 'property1', label: 'Property1', value: 'value' },
+        { id: 'stakeholderType', label: 'Type', value: 'internal' },
       ],
       detailLevel: 'minimal',
+    },
+  },
+};
+
+export const StandardDetail: Story = {
+  args: {
+    id: 'stakeholder-standard',
+    data: {
+      ...createStakeholderNodeData({ label: 'Standard Detail Stakeholder' }),
+      nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      items: [
+        { id: 'stakeholderType', label: 'Type', value: 'internal' },
+        { id: 'interests', label: 'Interests', value: 'profitability' },
+      ],
+      detailLevel: 'standard',
     },
   },
 };
@@ -187,14 +201,12 @@ export const DetailedDetail: Story = {
   args: {
     id: 'stakeholder-detailed',
     data: {
+      ...createStakeholderNodeData({ label: 'Detailed Stakeholder' }),
       nodeType: NodeType.MOTIVATION_STAKEHOLDER,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: 'Detailed Stakeholder',
       items: [
-        { id: 'property1', label: 'Property1', value: 'value1' },
-        { id: 'property2', label: 'Property2', value: 'value2' },
-        { id: 'property3', label: 'Property3', value: 'value3' },
+        { id: 'stakeholderType', label: 'Type', value: 'internal' },
+        { id: 'interests', label: 'Interests', value: 'profitability, growth' },
+        { id: 'department', label: 'Department', value: 'Strategy' },
       ],
       detailLevel: 'detailed',
     },

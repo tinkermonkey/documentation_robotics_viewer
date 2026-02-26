@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { UnifiedNode, NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
+import { createRequirementNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
 
@@ -173,10 +174,8 @@ export const MinimalDetail: Story = {
   args: {
     id: 'requirement-minimal',
     data: {
+      ...createRequirementNodeData({ label: 'Minimal Detail Requirement' }),
       nodeType: NodeType.MOTIVATION_REQUIREMENT,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: 'Minimal Detail Requirement',
       items: [
         { id: 'priority', label: 'Priority', value: 'high' },
       ],
@@ -185,14 +184,27 @@ export const MinimalDetail: Story = {
   },
 };
 
+export const StandardDetail: Story = {
+  args: {
+    id: 'requirement-standard',
+    data: {
+      ...createRequirementNodeData({ label: 'Standard Detail Requirement' }),
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
+      items: [
+        { id: 'requirementType', label: 'Type', value: 'functional' },
+        { id: 'priority', label: 'Priority', value: 'high' },
+      ],
+      detailLevel: 'standard',
+    },
+  },
+};
+
 export const DetailedDetail: Story = {
   args: {
     id: 'requirement-detailed',
     data: {
+      ...createRequirementNodeData({ label: 'Detailed Requirement' }),
       nodeType: NodeType.MOTIVATION_REQUIREMENT,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: 'Detailed Requirement',
       items: [
         { id: 'requirementType', label: 'Type', value: 'functional' },
         { id: 'priority', label: 'Priority', value: 'high' },
