@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UnifiedNode, NodeType } from '@/core/nodes';
+import { UnifiedNode, type UnifiedNodeData, NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createGoalNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
@@ -114,7 +114,7 @@ export const ChangesetAdd: Story = {
       elementId: 'test-element-id',
       label: 'New Goal',
       changesetOperation: 'add',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -127,7 +127,7 @@ export const ChangesetUpdate: Story = {
       elementId: 'test-element-id',
       label: 'Updated Goal',
       changesetOperation: 'update',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -140,7 +140,7 @@ export const ChangesetDelete: Story = {
       elementId: 'test-element-id',
       label: 'Deleted Goal',
       changesetOperation: 'delete',
-    },
+    } as UnifiedNodeData,
   },
 };
 
