@@ -230,13 +230,7 @@ export class NodeTransformer {
       for (const relationship of layer.relationships) {
         const edge = this.createEdge(relationship, nodeMap);
         if (edge) {
-          // Only add edge if we haven't seen this ID before
-          if (!edgeIdSet.has(edge.id)) {
-            edges.push(edge);
-            edgeIdSet.add(edge.id);
-          } else {
-            console.warn(`[NodeTransformer] Skipped duplicate edge ID: ${edge.id}`);
-          }
+          this.addEdgeIfUnique(edge, edges, edgeIdSet, 'layer relationship');
         }
       }
     }
@@ -252,12 +246,7 @@ export class NodeTransformer {
 
     // Add bundled edges while checking for duplicates
     for (const edge of bundledEdges as AppEdge[]) {
-      if (!edgeIdSet.has(edge.id)) {
-        edges.push(edge);
-        edgeIdSet.add(edge.id);
-      } else {
-        console.warn(`[NodeTransformer] Skipped duplicate bundled edge ID: ${edge.id}`);
-      }
+      this.addEdgeIfUnique(edge, edges, edgeIdSet, 'bundled cross-layer reference');
     }
 
     console.log(`[NodeTransformer] Created ${nodes.length} nodes and ${edges.length} edges`);
@@ -275,6 +264,30 @@ export class NodeTransformer {
     }
 
     return { nodes, edges, layout };
+  }
+
+  /**
+   * Add an edge to the edges array if it hasn't been seen before
+   * Uses edgeIdSet to track duplicates and logs warnings for skipped edges
+   * @param edge - The edge to potentially add
+   * @param edges - The edges array to add to
+   * @param edgeIdSet - Set tracking edge IDs that have been added
+   * @param source - Description of where the edge came from (for logging)
+   */
+  private addEdgeIfUnique(
+    edge: AppEdge,
+    edges: AppEdge[],
+    edgeIdSet: Set<string>,
+    source: string
+  ): void {
+    if (!edgeIdSet.has(edge.id)) {
+      edges.push(edge);
+      edgeIdSet.add(edge.id);
+    } else {
+      console.warn(
+        `[NodeTransformer] Skipped duplicate edge ID: ${edge.id} (source: ${source})`
+      );
+    }
   }
 
   /**
