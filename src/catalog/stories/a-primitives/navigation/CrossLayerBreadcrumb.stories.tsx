@@ -27,7 +27,6 @@ export const SingleLayer: Story = {
   render: () => {
     useCrossLayerStore.setState({
       visible: true,
-      sourceElementId: 'elem-1',
       targetLayerFilters: new Set([LayerType.Application]),
       navigationHistory: [],
     });
@@ -50,7 +49,6 @@ export const MultipleLayers: Story = {
   render: () => {
     useCrossLayerStore.setState({
       visible: true,
-      sourceElementId: 'elem-1',
       targetLayerFilters: new Set([LayerType.Business, LayerType.Application, LayerType.Technology]),
       navigationHistory: [
         { layerId: LayerType.Business, elementId: 'elem-1', elementName: 'Element 1', timestamp: Date.now() },
@@ -76,8 +74,7 @@ export const Empty: Story = {
   render: () => {
     useCrossLayerStore.setState({
       visible: false,
-      sourceElementId: null,
-      targetLayerFilters: [],
+      targetLayerFilters: new Set(),
       navigationHistory: [],
     });
 

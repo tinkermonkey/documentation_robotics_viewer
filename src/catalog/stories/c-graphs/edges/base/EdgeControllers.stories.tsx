@@ -57,12 +57,12 @@ export const BasicEdge: Story = {
 
     const EdgeWithControllers = () => {
       const { getEdges } = useReactFlow();
-      const [selectedEdge, setSelectedEdge] = useState(initialEdges[0]);
+      const [selectedEdge] = useState(initialEdges[0]);
 
       useEffect(() => {
         const edges = getEdges();
         if (edges.length > 0) {
-          setSelectedEdge(edges[0]);
+          // selectedEdge is initialized from initialEdges
         }
       }, [getEdges]);
 
@@ -137,12 +137,12 @@ export const MultipleWaypoints: Story = {
 
     const EdgeWithControllers = () => {
       const { getEdges } = useReactFlow();
-      const [selectedEdge, setSelectedEdge] = useState(initialEdges[0]);
+      const [selectedEdge] = useState(initialEdges[0]);
 
       useEffect(() => {
         const edges = getEdges();
         if (edges.length > 0) {
-          setSelectedEdge(edges[0]);
+          // selectedEdge is initialized from initialEdges
         }
       }, [getEdges]);
 
@@ -215,12 +215,12 @@ export const SingleWaypoint: Story = {
 
     const EdgeWithControllers = () => {
       const { getEdges } = useReactFlow();
-      const [selectedEdge, setSelectedEdge] = useState(initialEdges[0]);
+      const [selectedEdge] = useState(initialEdges[0]);
 
       useEffect(() => {
         const edges = getEdges();
         if (edges.length > 0) {
-          setSelectedEdge(edges[0]);
+          // selectedEdge is initialized from initialEdges
         }
       }, [getEdges]);
 
@@ -290,12 +290,12 @@ export const NoWaypoints: Story = {
 
     const EdgeWithControllers = () => {
       const { getEdges } = useReactFlow();
-      const [selectedEdge, setSelectedEdge] = useState(initialEdges[0]);
+      const [selectedEdge] = useState(initialEdges[0]);
 
       useEffect(() => {
         const edges = getEdges();
         if (edges.length > 0) {
-          setSelectedEdge(edges[0]);
+          // selectedEdge is initialized from initialEdges
         }
       }, [getEdges]);
 

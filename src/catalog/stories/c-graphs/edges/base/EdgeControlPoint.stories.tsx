@@ -5,9 +5,9 @@
  * Supports drag, keyboard navigation (arrow keys), and double-click removal.
  */
 import type { Meta, StoryObj } from '@storybook/react';
-import { ReactFlowProvider, ReactFlow, useReactFlow, Background } from '@xyflow/react';
+import { ReactFlowProvider, ReactFlow, Background } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { EdgeControlPoint } from '@/core/edges/EdgeControlPoint';
 
 const meta = {
