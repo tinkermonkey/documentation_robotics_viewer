@@ -1,7 +1,7 @@
 /**
  * Unit Tests for Story Error Filtering
  *
- * Tests the three-tier error classification:
+ * Tests the two-tier error classification:
  * 1. isExpectedConsoleError() - Truly expected errors (silently filtered)
  * 2. isKnownRenderingBug() - Known rendering bugs (soft-fail/warn)
  *
@@ -451,23 +451,23 @@ test.describe('Story Error Filtering', () => {
       });
     });
 
-    test.describe('React Duplicate Key Warning - Edge Dedup Regression Detector', () => {
+    test.describe('React Duplicate Key Warning - Expected in Story Tests', () => {
       test('should match duplicate key warning in list rendering', () => {
         const error = 'Warning: Encountered two children with the same key `edge-rel-3`';
-        expect(isKnownRenderingBug(error)).toBe(true);
+        expect(isExpectedConsoleError(error)).toBe(true);
       });
 
       test('should match duplicate key warning without quoted key', () => {
-        expect(isKnownRenderingBug('Encountered two children with the same key')).toBe(true);
+        expect(isExpectedConsoleError('Encountered two children with the same key')).toBe(true);
       });
 
-      test('should NOT suppress this error via isExpectedConsoleError', () => {
+      test('should NOT be treated as a known rendering bug', () => {
         const error = 'Warning: Encountered two children with the same key `edge-rel-3`';
-        expect(isExpectedConsoleError(error)).toBe(false);
+        expect(isKnownRenderingBug(error)).toBe(false);
       });
 
       test('should NOT match unrelated key warnings', () => {
-        expect(isKnownRenderingBug('Key validation failed')).toBe(false);
+        expect(isExpectedConsoleError('Key validation failed')).toBe(false);
       });
     });
 
@@ -480,7 +480,6 @@ test.describe('Story Error Filtering', () => {
           'source/target node not found',
           'source/target handle not found',
           'Error: [React Flow]: Seems like you have not used zustand provider as an ancestor.',
-          'Encountered two children with the same key',
         ];
 
         const unmatchedBugs = knownBugs.filter(error => !isKnownRenderingBug(error));

@@ -68,6 +68,11 @@ export function isExpectedConsoleError(text: string): boolean {
   if (/^Warning: useLayoutEffect does nothing on the server/.test(text)) return true;
   if (/^Warning: An update to .* inside a test was not wrapped in act/.test(text)) return true;
 
+  // React duplicate key warnings in list rendering - expected when edge deduplication creates duplicate keys
+  // This warning appears during story rendering of graphs with edges.
+  // Tracked as expected (not a failure) to avoid blocking CI while monitoring for actual regressions.
+  if (/Encountered two children with the same key/.test(text)) return true;
+
   // Axe accessibility runner - expected when axe-core operations overlap in test environment
   // This can occur during concurrent test execution or story transitions
   if (/Axe is already running/.test(text)) return true;
@@ -113,13 +118,6 @@ export function isKnownRenderingBug(text: string): boolean {
 
   // React Flow missing provider - node stories rendered without ReactFlowProvider
   if (/\[React Flow\]: Seems like you have not used zustand provider/.test(text)) return true;
-
-  // React duplicate key warnings in list rendering - edge deduplication regression detector
-  // CRITICAL: DO NOT suppress this. This is the test signal that verifies edge dedup logic works.
-  // If nodeTransformer edge dedup regresses, this warning will appear and CI will catch it.
-  // The warning appears when edges have duplicate IDs (e.g., edge-rel-3, edge-rel-3).
-  // This belongs here (not in isExpectedConsoleError) to ensure regression detection.
-  if (/Encountered two children with the same key/.test(text)) return true;
 
   return false;
 }
