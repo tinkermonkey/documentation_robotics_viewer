@@ -36,7 +36,7 @@ export function computeChangesetStyling(
  * the color and opacity configuration for the operation type.
  *
  * @param operation - The changeset operation type ('add', 'update', 'delete'), or undefined
- * @returns Object with fill, stroke, and required opacity, or null if no operation
+ * @returns Object with fill, stroke, and opacity (all required), or null if no operation
  */
 export function useChangesetStyling(operation: ChangesetOperation | undefined): ChangesetStyling | null {
   return useMemo(() => computeChangesetStyling(operation), [operation]);
