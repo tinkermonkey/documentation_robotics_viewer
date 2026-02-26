@@ -26,9 +26,9 @@ type Story = StoryObj<typeof meta>;
 export const SingleLayer: Story = {
   render: () => {
     useCrossLayerStore.setState({
-      visible: true,
-      targetLayerFilters: new Set([LayerType.Application]),
-      navigationHistory: [],
+      navigationHistory: [
+        { layerId: LayerType.Application, elementId: 'elem-1', elementName: 'Application Component', timestamp: Date.now() },
+      ],
     });
 
     return (
@@ -48,11 +48,9 @@ export const SingleLayer: Story = {
 export const MultipleLayers: Story = {
   render: () => {
     useCrossLayerStore.setState({
-      visible: true,
-      targetLayerFilters: new Set([LayerType.Business, LayerType.Application, LayerType.Technology]),
       navigationHistory: [
-        { layerId: LayerType.Business, elementId: 'elem-1', elementName: 'Element 1', timestamp: Date.now() },
-        { layerId: LayerType.Application, elementId: 'elem-2', elementName: 'Element 2', timestamp: Date.now() },
+        { layerId: LayerType.Business, elementId: 'elem-1', elementName: 'Business Process', timestamp: Date.now() - 1000 },
+        { layerId: LayerType.Application, elementId: 'elem-2', elementName: 'Application Service', timestamp: Date.now() },
       ],
     });
 
@@ -73,8 +71,6 @@ export const MultipleLayers: Story = {
 export const Empty: Story = {
   render: () => {
     useCrossLayerStore.setState({
-      visible: false,
-      targetLayerFilters: new Set(),
       navigationHistory: [],
     });
 
