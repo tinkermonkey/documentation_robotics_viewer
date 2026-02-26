@@ -20,262 +20,250 @@ const storyHeight = capabilityConfig?.dimensions.height || 100;
 
 const meta = {
   title: 'C Graphs / Nodes / Business / BusinessCapabilityNode',
+  component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
     layout: 'fullscreen',
   },
   argTypes: {},
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Customer Management',
-        detailLevel: 'standard',
-      }}
-      id="capability-1"
-    />
-  ),
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Customer Management',
+      detailLevel: 'standard',
+    },
+    id: 'capability-1',
+  },
 };
 
 export const HighCriticality: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Order Management',
-        badges: [
-          {
-            position: 'inline' as const,
-            content: 'high',
-            ariaLabel: 'Criticality: high',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="capability-2"
-    />
-  ),
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Order Management',
+      badges: [
+        {
+          position: 'inline' as const,
+          content: 'high',
+          ariaLabel: 'Criticality: high',
+        },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'capability-2',
+  },
 };
 
 export const MediumCriticality: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Marketing',
-        badges: [
-          {
-            position: 'inline' as const,
-            content: 'medium',
-            ariaLabel: 'Criticality: medium',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="capability-3"
-    />
-  ),
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Marketing',
+      badges: [
+        {
+          position: 'inline' as const,
+          content: 'medium',
+          ariaLabel: 'Criticality: medium',
+        },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'capability-3',
+  },
 };
 
 export const LowCriticality: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Compliance',
-        badges: [
-          {
-            position: 'inline' as const,
-            content: 'low',
-            ariaLabel: 'Criticality: low',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="capability-4"
-    />
-  ),
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Compliance',
+      badges: [
+        {
+          position: 'inline' as const,
+          content: 'low',
+          ariaLabel: 'Criticality: low',
+        },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'capability-4',
+  },
 };
 
 export const ActiveLifecycle: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'User Analytics',
-        items: [
-          { id: 'lifecycle', label: 'Lifecycle', value: 'active' },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="capability-5"
-    />
-  ),
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'User Analytics',
+      items: [
+        { id: 'lifecycle', label: 'Lifecycle', value: 'active' },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'capability-5',
+  },
 };
 
 export const DeprecatedLifecycle: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Legacy Reporting',
-        items: [
-          { id: 'lifecycle', label: 'Lifecycle', value: 'deprecated' },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="capability-6"
-    />
-  ),
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Legacy Reporting',
+      items: [
+        { id: 'lifecycle', label: 'Lifecycle', value: 'deprecated' },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'capability-6',
+  },
 };
 
 export const WithOwner: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Supply Chain',
-        badges: [
-          {
-            position: 'inline' as const,
-            content: 'Operations',
-            ariaLabel: 'Owner: Operations',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="capability-7"
-    />
-  ),
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Supply Chain',
+      badges: [
+        {
+          position: 'inline' as const,
+          content: 'Operations',
+          ariaLabel: 'Owner: Operations',
+        },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'capability-7',
+  },
 };
 
 export const ChangesetAdd: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'New Capability',
-        changesetOperation: 'add',
-        detailLevel: 'standard',
-      }}
-      id="capability-8"
-    />
-  ),
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'New Capability',
+      changesetOperation: 'add',
+      detailLevel: 'standard',
+    },
+    id: 'capability-8',
+  },
 };
 
 export const ChangesetUpdate: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Updated Capability',
-        changesetOperation: 'update',
-        detailLevel: 'standard',
-      }}
-      id="capability-9"
-    />
-  ),
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Updated Capability',
+      changesetOperation: 'update',
+      detailLevel: 'standard',
+    },
+    id: 'capability-9',
+  },
 };
 
 export const ChangesetDelete: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Deleted Capability',
-        changesetOperation: 'delete',
-        detailLevel: 'standard',
-      }}
-      id="capability-10"
-    />
-  ),
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Deleted Capability',
+      changesetOperation: 'delete',
+      detailLevel: 'standard',
+    },
+    id: 'capability-10',
+  },
 };
 
 export const WithMultipleBadges: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Complete Capability',
-        badges: [
-          {
-            position: 'top-left' as const,
-            content: 'high',
-            ariaLabel: 'Criticality: high',
-          },
-          {
-            position: 'inline' as const,
-            content: 'Customer',
-            ariaLabel: 'Domain: Customer',
-          },
-          {
-            position: 'top-right' as const,
-            content: 'Platform Team',
-            ariaLabel: 'Owner: Platform Team',
-          },
-        ],
-        items: [
-          { id: 'lifecycle', label: 'Lifecycle', value: 'active' },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="capability-11"
-    />
-  ),
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Complete Capability',
+      badges: [
+        {
+          position: 'top-left' as const,
+          content: 'high',
+          ariaLabel: 'Criticality: high',
+        },
+        {
+          position: 'inline' as const,
+          content: 'Customer',
+          ariaLabel: 'Domain: Customer',
+        },
+        {
+          position: 'top-right' as const,
+          content: 'Platform Team',
+          ariaLabel: 'Owner: Platform Team',
+        },
+      ],
+      items: [
+        { id: 'lifecycle', label: 'Lifecycle', value: 'active' },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'capability-11',
+  },
 };
 
 export const MaturityBadge: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_CAPABILITY,
-        layerId: 'test-layer',
-        elementId: 'test-element-id',
-        label: 'Mature Capability',
-        badges: [
-          {
-            position: 'top-right' as const,
-            content: 'Optimized',
-            ariaLabel: 'Maturity: Optimized',
-          },
-          {
-            position: 'inline' as const,
-            content: 'Operations',
-            ariaLabel: 'Owner: Operations',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="capability-12"
-    />
-  ),
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Mature Capability',
+      badges: [
+        {
+          position: 'top-right' as const,
+          content: 'Optimized',
+          ariaLabel: 'Maturity: Optimized',
+        },
+        {
+          position: 'inline' as const,
+          content: 'Operations',
+          ariaLabel: 'Owner: Operations',
+        },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'capability-12',
+  },
 };
-
