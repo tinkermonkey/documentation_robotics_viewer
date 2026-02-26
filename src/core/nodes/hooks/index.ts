@@ -5,5 +5,5 @@
  * These hooks provide reusable logic for changeset styling and handle configuration.
  */
 
-export { useChangesetStyling } from './useChangesetStyling';
+export { useChangesetStyling, type ChangesetStyling } from './useChangesetStyling';
 export { useNodeHandles, type HandleConfig } from './useNodeHandles';

@@ -28,7 +28,7 @@ import {
   useChangesetStyling,
   useNodeHandles,
 } from './hooks';
-import type { HandleConfig } from './hooks';
+import type { HandleConfig, ChangesetStyling } from './hooks';
 
 // Export all node components
 export {
@@ -62,6 +62,7 @@ export type {
   RelationshipBadgeData,
   RelationshipBadgeProps,
   HandleConfig,
+  ChangesetStyling,
 };
 
 // Node types object for React Flow
