@@ -1,7 +1,7 @@
 /**
  * Story Test Error Filter Patterns
  *
- * Three-tier error classification for story tests:
+ * Two-tier error classification for story tests:
  *
  * 1. **Expected errors** (`isExpectedConsoleError`) — Truly expected in isolated story
  *    environments (no backend, dev mode). These are silently filtered.
@@ -44,8 +44,7 @@ export function isExpectedConsoleError(text: string): boolean {
   // WebSocket errors when server unavailable - expected in isolated test environment
   // Only filter localhost/127.0.0.1 connections (not production URLs)
   if (/WebSocket connection to ws:\/\/(localhost|127\.0\.0\.1):[0-9]+ failed/.test(text)) return true;
-  if (/WebSocket not connected/.test(text)) return true;
-  if (/Failed to send JSON-RPC request: WebSocket not connected/.test(text)) return true;
+  if (/^WebSocket not connected/.test(text)) return true;
 
   // EmbeddedLayout errors - expected component-level warnings
   if (/\[EmbeddedLayout\] (?:No container|Missing required|Layout calculation)/.test(text)) return true;
@@ -115,36 +114,13 @@ export function isKnownRenderingBug(text: string): boolean {
   // React Flow missing provider - node stories rendered without ReactFlowProvider
   if (/\[React Flow\]: Seems like you have not used zustand provider/.test(text)) return true;
 
-  // React duplicate key warnings in list rendering - occurs with visualization graphs
-  // This is a test environment issue related to how React Flow renders edges in certain test scenarios
+  // React duplicate key warnings in list rendering - edge deduplication regression detector
+  // CRITICAL: DO NOT suppress this. This is the test signal that verifies edge dedup logic works.
+  // If nodeTransformer edge dedup regresses, this warning will appear and CI will catch it.
+  // The warning appears when edges have duplicate IDs (e.g., edge-rel-3, edge-rel-3).
+  // This belongs here (not in isExpectedConsoleError) to ensure regression detection.
   if (/Encountered two children with the same key/.test(text)) return true;
 
   return false;
 }
 
-/**
- * Check if a console error is a critical bug that must be addressed.
- * These errors appear in the log but should NOT be suppressed - they indicate
- * serious issues in the codebase that require fixes to the root cause.
- *
- * Currently tracked but not filtered:
- * - "Encountered two children with the same key" (edge-rel-*) - indicates duplicate edge IDs
- * - "No style config found for NodeType: undefined" - indicates incomplete fixture data
- *
- * These are logged by the test framework and tracked in test reports.
- * @param text - The error message from the console
- * @returns true if this is a critical bug, false otherwise
- */
-export function isCriticalBug(text: string): boolean {
-  // React duplicate key errors in graph rendering - fixture data or edge rendering bug
-  // Appears when edges have duplicate IDs (e.g., edge-rel-3, edge-rel-4)
-  // CRITICAL: This is a real bug that must be fixed - edge ID generation may have collisions
-  if (/Encountered two children with the same key/.test(text)) return true;
-
-  // Node style config not found - happens when nodeType is undefined in UnifiedNode
-  // CRITICAL: This indicates incomplete fixture data or type mapping issues
-  // Root cause: element types not properly mapped to NodeType enum values
-  if (/No style config found for NodeType: undefined/.test(text)) return true;
-
-  return false;
-}

@@ -117,6 +117,11 @@ test.describe('Story Error Filtering', () => {
         expect(isExpectedConsoleError('The tag <foo-bar-baz> is unrecognized in this browser')).toBe(true);
       });
 
+      test('should match placeholder tag names <%s>', () => {
+        expect(isExpectedConsoleError('The tag <%s> is unrecognized')).toBe(true);
+        expect(isExpectedConsoleError('The tag <%s> is unrecognized in this browser')).toBe(true);
+      });
+
       test('should NOT match tags with spaces (malformed HTML)', () => {
         const error = 'The tag <my weird tag> is unrecognized';
         expect(isExpectedConsoleError(error)).toBe(false);
@@ -161,6 +166,16 @@ test.describe('Story Error Filtering', () => {
 
       test('should NOT match unrelated WebSocket errors', () => {
         const error = 'WebSocket message failed to parse';
+        expect(isExpectedConsoleError(error)).toBe(false);
+      });
+
+      test('should match WebSocket not connected at start of message', () => {
+        const error = 'WebSocket not connected';
+        expect(isExpectedConsoleError(error)).toBe(true);
+      });
+
+      test('should NOT match WebSocket not connected in the middle of message', () => {
+        const error = 'Error: The WebSocket not connected properly';
         expect(isExpectedConsoleError(error)).toBe(false);
       });
     });
@@ -436,6 +451,26 @@ test.describe('Story Error Filtering', () => {
       });
     });
 
+    test.describe('React Duplicate Key Warning - Edge Dedup Regression Detector', () => {
+      test('should match duplicate key warning in list rendering', () => {
+        const error = 'Warning: Encountered two children with the same key `edge-rel-3`';
+        expect(isKnownRenderingBug(error)).toBe(true);
+      });
+
+      test('should match duplicate key warning without quoted key', () => {
+        expect(isKnownRenderingBug('Encountered two children with the same key')).toBe(true);
+      });
+
+      test('should NOT suppress this error via isExpectedConsoleError', () => {
+        const error = 'Warning: Encountered two children with the same key `edge-rel-3`';
+        expect(isExpectedConsoleError(error)).toBe(false);
+      });
+
+      test('should NOT match unrelated key warnings', () => {
+        expect(isKnownRenderingBug('Key validation failed')).toBe(false);
+      });
+    });
+
     test.describe('Filter Accuracy - Known Bugs Are Caught', () => {
       test('should catch all documented known rendering bug patterns', () => {
         const knownBugs = [
@@ -445,6 +480,7 @@ test.describe('Story Error Filtering', () => {
           'source/target node not found',
           'source/target handle not found',
           'Error: [React Flow]: Seems like you have not used zustand provider as an ancestor.',
+          'Encountered two children with the same key',
         ];
 
         const unmatchedBugs = knownBugs.filter(error => !isKnownRenderingBug(error));
