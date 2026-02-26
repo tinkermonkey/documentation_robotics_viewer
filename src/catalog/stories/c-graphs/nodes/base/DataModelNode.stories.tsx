@@ -3,10 +3,17 @@ import { NodeType } from '@/core/nodes/NodeType';
 import UnifiedNode from '@/core/nodes/components/UnifiedNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
+import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
+
+// Get dimensions from node configuration for consistency
+const dataModelConfig = nodeConfigLoader.getStyleConfig(NodeType.DATA_MODEL);
+const storyWidth = dataModelConfig?.dimensions.width || 280;
+const storyHeight = dataModelConfig?.dimensions.height || 300;
+
 const meta = {
   title: 'C Graphs / Nodes / Base / DataModelNode',
   component: UnifiedNode,
-  decorators: [withReactFlowDecorator({ width: 280, height: 300 })],
+  decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
     layout: 'fullscreen',
   },

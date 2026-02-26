@@ -2,6 +2,13 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { UnifiedNode, NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
+import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
+
+// Get dimensions from node configuration for consistency
+const requirementConfig = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_REQUIREMENT);
+const storyWidth = requirementConfig?.dimensions.width || 180;
+const storyHeight = requirementConfig?.dimensions.height || 100;
+
 const meta = {
   title: 'C Graphs / Nodes / Motivation / RequirementNode',
   component: UnifiedNode,

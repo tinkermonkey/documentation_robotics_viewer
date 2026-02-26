@@ -3,12 +3,25 @@ import { UnifiedNode } from '@/core/nodes/components';
 import { NodeType } from '@/core/nodes/NodeType';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
+import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
+
+// Get dimensions from node configuration for consistency
+const externalActorConfig = nodeConfigLoader.getStyleConfig(NodeType.C4_EXTERNAL_ACTOR);
+const storyWidth = externalActorConfig?.dimensions.width || 160;
+const storyHeight = externalActorConfig?.dimensions.height || 120;
+
 const meta = {
   title: 'C Graphs / Nodes / C4 / ExternalActorNode',
   component: UnifiedNode,
-  decorators: [withReactFlowDecorator({ width: 160, height: 120 })],
+  decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
     layout: 'fullscreen',
+  },
+  argTypes: {
+    'data.detailLevel': {
+      control: 'select',
+      options: ['minimal', 'standard', 'detailed'],
+    },
   },
 } satisfies Meta<typeof UnifiedNode>;
 
@@ -156,6 +169,55 @@ export const Highlighted: Story = {
         layerId: 'test-layer',
         elementId: 'test-element-id',
       label: 'Highlighted Node',
+    },
+  },
+};
+
+export const MinimalZoom: Story = {
+  args: {
+    id: 'actor-11',
+    data: {
+      nodeType: NodeType.C4_EXTERNAL_ACTOR,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Customer',
+      detailLevel: 'minimal',
+    },
+  },
+};
+
+export const StandardZoom: Story = {
+  args: {
+    id: 'actor-12',
+    data: {
+      nodeType: NodeType.C4_EXTERNAL_ACTOR,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Customer',
+      items: [
+        { id: 'description', label: 'Description', value: 'End user of the system', required: false },
+        { id: 'actorType', label: 'Type', value: 'user', required: false },
+      ],
+      detailLevel: 'standard',
+    },
+  },
+};
+
+export const DetailedZoom: Story = {
+  args: {
+    id: 'actor-13',
+    data: {
+      nodeType: NodeType.C4_EXTERNAL_ACTOR,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Customer',
+      items: [
+        { id: 'description', label: 'Description', value: 'An end user who interacts with the system through the web interface', required: false },
+        { id: 'actorType', label: 'Type', value: 'user', required: false },
+        { id: 'capabilities', label: 'Capabilities', value: 'Browse products, place orders, manage account', required: false },
+        { id: 'location', label: 'Location', value: 'External', required: false },
+      ],
+      detailLevel: 'detailed',
     },
   },
 };

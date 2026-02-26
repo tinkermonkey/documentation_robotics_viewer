@@ -10,12 +10,25 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { UnifiedNode, NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
+import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
+
+// Get dimensions from node configuration for consistency
+const capabilityConfig = nodeConfigLoader.getStyleConfig(NodeType.BUSINESS_CAPABILITY);
+const storyWidth = capabilityConfig?.dimensions.width || 240;
+const storyHeight = capabilityConfig?.dimensions.height || 100;
+
 const meta = {
   title: 'C Graphs / Nodes / Business / BusinessCapabilityNode',
   component: UnifiedNode,
   decorators: [withReactFlowDecorator()],
   parameters: {
     layout: 'fullscreen',
+  },
+  argTypes: {
+    'data.changesetOperation': {
+      control: 'select',
+      options: [undefined, 'add', 'update', 'delete'],
+    },
   },
 } satisfies Meta<typeof UnifiedNode>;
 
@@ -175,6 +188,62 @@ export const ChangesetDelete: Story = {
         elementId: 'test-element-id',
       label: 'Deleted Capability',
       changesetOperation: 'delete',
+    },
+  },
+};
+
+export const WithMultipleBadges: Story = {
+  args: {
+    id: 'capability-11',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Complete Capability',
+      badges: [
+        {
+          position: 'top-left' as const,
+          content: 'high',
+          ariaLabel: 'Criticality: high',
+        },
+        {
+          position: 'inline' as const,
+          content: 'Customer',
+          ariaLabel: 'Domain: Customer',
+        },
+        {
+          position: 'top-right' as const,
+          content: 'Platform Team',
+          ariaLabel: 'Owner: Platform Team',
+        },
+      ],
+      items: [
+        { id: 'lifecycle', label: 'Lifecycle', value: 'active' },
+      ],
+    },
+  },
+};
+
+export const MaturityBadge: Story = {
+  args: {
+    id: 'capability-12',
+    data: {
+      nodeType: NodeType.BUSINESS_CAPABILITY,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Mature Capability',
+      badges: [
+        {
+          position: 'top-right' as const,
+          content: 'Optimized',
+          ariaLabel: 'Maturity: Optimized',
+        },
+        {
+          position: 'inline' as const,
+          content: 'Operations',
+          ariaLabel: 'Owner: Operations',
+        },
+      ],
     },
   },
 };

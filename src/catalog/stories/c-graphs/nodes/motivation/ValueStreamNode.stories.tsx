@@ -3,6 +3,13 @@ import { UnifiedNode } from '@/core/nodes';
 import { NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
+import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
+
+// Get dimensions from node configuration for consistency
+const valueStreamConfig = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_VALUE_STREAM);
+const storyWidth = valueStreamConfig?.dimensions.width || 180;
+const storyHeight = valueStreamConfig?.dimensions.height || 100;
+
 const meta = {
   title: 'C Graphs / Nodes / Motivation / ValueStreamNode',
   component: UnifiedNode,

@@ -11,6 +11,13 @@ import { NodeType } from '@/core/nodes/NodeType';
 import UnifiedNode from '@/core/nodes/components/UnifiedNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
+import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
+
+// Get dimensions from node configuration for consistency
+const processConfig = nodeConfigLoader.getStyleConfig(NodeType.BUSINESS_PROCESS);
+const storyWidth = processConfig?.dimensions.width || 240;
+const storyHeight = processConfig?.dimensions.height || 100;
+
 const meta = {
   title: 'C Graphs / Nodes / Business / BusinessProcessNode',
   component: UnifiedNode,
@@ -27,6 +34,12 @@ const meta = {
       detailLevel: 'standard',
     },
     id: '',
+  },
+  argTypes: {
+    'data.changesetOperation': {
+      control: 'select',
+      options: [undefined, 'add', 'update', 'delete'],
+    },
   },
 } satisfies Meta<typeof UnifiedNode>;
 
@@ -240,6 +253,38 @@ export const ChangesetDelete: Story = {
         detailLevel: 'standard',
       }}
       id="process-9"
+    />
+  ),
+};
+
+export const CriticalProcessWithOwner: Story = {
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_PROCESS,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Critical Financial Process',
+        badges: [
+          {
+            position: 'top-left' as const,
+            content: 'high',
+            ariaLabel: 'Criticality: high',
+          },
+          {
+            position: 'inline' as const,
+            content: 'Finance Team',
+            ariaLabel: 'Owner: Finance Team',
+          },
+        ],
+        items: [
+          { id: 'sp-1', label: 'Validate', value: 'Validate transaction' },
+          { id: 'sp-2', label: 'Process', value: 'Process payment' },
+          { id: 'sp-3', label: 'Confirm', value: 'Send confirmation' },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="process-10"
     />
   ),
 };

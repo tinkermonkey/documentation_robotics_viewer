@@ -121,3 +121,102 @@ export const Highlighted: Story = {
     id: 'test-node-5',
   },
 };
+
+export const EntityConfiguration: Story = {
+  name: 'Entity (CLASS)',
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    data: {
+      nodeType: NodeType.DATA_JSON_SCHEMA,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'User',
+      items: [
+        { id: 'id', label: 'id', value: 'UUID', required: true },
+        { id: 'email', label: 'email', value: 'string', required: true },
+        { id: 'firstName', label: 'firstName', value: 'string', required: true },
+        { id: 'lastName', label: 'lastName', value: 'string', required: true },
+        { id: 'createdAt', label: 'createdAt', value: 'DateTime', required: true },
+        { id: 'updatedAt', label: 'updatedAt', value: 'DateTime', required: false },
+      ],
+      badges: [
+        { position: 'top-right' as const, content: 'CLASS', ariaLabel: 'Type: Class' },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'test-node-entity',
+  },
+};
+
+export const InterfaceConfiguration: Story = {
+  name: 'Interface (INTERFACE)',
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    data: {
+      nodeType: NodeType.DATA_JSON_SCHEMA,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'IAuthenticatable',
+      items: [
+        { id: 'authenticate', label: 'authenticate()', value: '(credentials: Credentials) => Promise<Token>', required: true },
+        { id: 'validate', label: 'validate()', value: '(token: Token) => boolean', required: true },
+        { id: 'refresh', label: 'refresh()', value: '(token: Token) => Promise<Token>', required: false },
+      ],
+      badges: [
+        { position: 'top-right' as const, content: 'INTERFACE', ariaLabel: 'Type: Interface' },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'test-node-interface',
+  },
+};
+
+export const EnumConfiguration: Story = {
+  name: 'Enum (ENUM)',
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    data: {
+      nodeType: NodeType.DATA_JSON_SCHEMA,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'UserRole',
+      items: [
+        { id: 'admin', label: 'ADMIN', value: '0', required: true },
+        { id: 'user', label: 'USER', value: '1', required: true },
+        { id: 'guest', label: 'GUEST', value: '2', required: true },
+        { id: 'moderator', label: 'MODERATOR', value: '3', required: false },
+      ],
+      badges: [
+        { position: 'top-right' as const, content: 'ENUM', ariaLabel: 'Type: Enum' },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'test-node-enum',
+  },
+};
+
+export const TableConfiguration: Story = {
+  name: 'Table (TABLE)',
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    data: {
+      nodeType: NodeType.DATA_JSON_SCHEMA,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'users',
+      items: [
+        { id: 'id', label: 'id', value: 'BIGINT PRIMARY KEY', required: true },
+        { id: 'email', label: 'email', value: 'VARCHAR(255) UNIQUE NOT NULL', required: true },
+        { id: 'password_hash', label: 'password_hash', value: 'VARCHAR(255) NOT NULL', required: true },
+        { id: 'first_name', label: 'first_name', value: 'VARCHAR(100)', required: false },
+        { id: 'last_name', label: 'last_name', value: 'VARCHAR(100)', required: false },
+        { id: 'created_at', label: 'created_at', value: 'TIMESTAMP DEFAULT NOW()', required: true },
+      ],
+      badges: [
+        { position: 'top-right' as const, content: 'TABLE', ariaLabel: 'Type: Database Table' },
+      ],
+      detailLevel: 'standard',
+    },
+    id: 'test-node-table',
+  },
+};

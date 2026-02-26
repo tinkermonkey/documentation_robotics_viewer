@@ -3,12 +3,25 @@ import { UnifiedNode } from '@/core/nodes/components';
 import { NodeType } from '@/core/nodes/NodeType';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
+import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
+
+// Get dimensions from node configuration for consistency
+const componentConfig = nodeConfigLoader.getStyleConfig(NodeType.C4_COMPONENT);
+const storyWidth = componentConfig?.dimensions.width || 240;
+const storyHeight = componentConfig?.dimensions.height || 140;
+
 const meta = {
   title: 'C Graphs / Nodes / C4 / ComponentNode',
   component: UnifiedNode,
-  decorators: [withReactFlowDecorator({ width: 240, height: 140 })],
+  decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
     layout: 'fullscreen',
+  },
+  argTypes: {
+    'data.detailLevel': {
+      control: 'select',
+      options: ['minimal', 'standard', 'detailed'],
+    },
   },
 } satisfies Meta<typeof UnifiedNode>;
 
@@ -176,6 +189,56 @@ export const Highlighted: Story = {
         layerId: 'test-layer',
         elementId: 'test-element-id',
       label: 'Highlighted Node',
+    },
+  },
+};
+
+export const MinimalZoom: Story = {
+  args: {
+    id: 'component-12',
+    data: {
+      nodeType: NodeType.C4_COMPONENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Auth Service',
+      detailLevel: 'minimal',
+    },
+  },
+};
+
+export const StandardZoom: Story = {
+  args: {
+    id: 'component-13',
+    data: {
+      nodeType: NodeType.C4_COMPONENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Authentication Service',
+      items: [
+        { id: 'description', label: 'Description', value: 'Manages user authentication and authorization', required: false },
+        { id: 'technologies', label: 'Technologies', value: 'Node.js, JWT, Express', required: false },
+      ],
+      detailLevel: 'standard',
+    },
+  },
+};
+
+export const DetailedZoom: Story = {
+  args: {
+    id: 'component-14',
+    data: {
+      nodeType: NodeType.C4_COMPONENT,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Authentication Service',
+      items: [
+        { id: 'description', label: 'Description', value: 'Provides centralized authentication, authorization, and token management for all microservices', required: false },
+        { id: 'technologies', label: 'Technologies', value: 'Node.js, Express, JWT, bcrypt, PostgreSQL', required: false },
+        { id: 'role', label: 'Role', value: 'Service', required: false },
+        { id: 'responsibility', label: 'Responsibility', value: 'User login, permission verification, token generation and validation', required: false },
+        { id: 'interfaces', label: 'Interfaces', value: 'IAuthService, ITokenProvider', required: false },
+      ],
+      detailLevel: 'detailed',
     },
   },
 };

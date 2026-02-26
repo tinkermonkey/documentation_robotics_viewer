@@ -11,6 +11,13 @@ import { NodeType } from '@/core/nodes/NodeType';
 import UnifiedNode from '@/core/nodes/components/UnifiedNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
+import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
+
+// Get dimensions from node configuration for consistency
+const serviceConfig = nodeConfigLoader.getStyleConfig(NodeType.BUSINESS_SERVICE);
+const storyWidth = serviceConfig?.dimensions.width || 240;
+const storyHeight = serviceConfig?.dimensions.height || 100;
+
 const meta = {
   title: 'C Graphs / Nodes / Business / BusinessServiceNode',
   component: UnifiedNode,
@@ -27,6 +34,12 @@ const meta = {
       detailLevel: 'standard',
     },
     id: '',
+  },
+  argTypes: {
+    'data.changesetOperation': {
+      control: 'select',
+      options: [undefined, 'add', 'update', 'delete'],
+    },
   },
 } satisfies Meta<typeof UnifiedNode>;
 
@@ -284,6 +297,71 @@ export const Highlighted: Story = {
         detailLevel: 'standard',
       }}
       id="service-13"
+    />
+  ),
+};
+
+export const WithMultipleBadges: Story = {
+  args: {},
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Complete Service',
+        badges: [
+          {
+            position: 'top-left' as const,
+            content: 'high',
+            className: 'px-2 py-1 bg-red-100 text-red-800 rounded text-xs font-semibold',
+            ariaLabel: 'Criticality: high',
+          },
+          {
+            position: 'inline' as const,
+            content: 'Finance',
+            ariaLabel: 'Domain: Finance',
+          },
+          {
+            position: 'top-right' as const,
+            content: 'Platform Team',
+            ariaLabel: 'Owner: Platform Team',
+          },
+        ],
+        items: [
+          { id: 'lifecycle', label: 'Lifecycle', value: 'active' },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="service-14"
+    />
+  ),
+};
+
+export const WithSLABadge: Story = {
+  args: {},
+  render: () => (
+    <UnifiedNode
+      data={{
+        nodeType: NodeType.BUSINESS_SERVICE,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+        label: 'Critical Service',
+        badges: [
+          {
+            position: 'inline' as const,
+            content: 'SLA: 99.99%',
+            ariaLabel: 'Service Level Agreement: 99.99%',
+          },
+          {
+            position: 'inline' as const,
+            content: 'high',
+            ariaLabel: 'Criticality: high',
+          },
+        ],
+        detailLevel: 'standard',
+      }}
+      id="service-15"
     />
   ),
 };

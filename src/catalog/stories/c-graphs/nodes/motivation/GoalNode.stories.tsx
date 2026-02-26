@@ -2,6 +2,13 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { UnifiedNode, NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
+import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
+
+// Get dimensions from node configuration for consistency
+const goalConfig = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_GOAL);
+const storyWidth = goalConfig?.dimensions.width || 180;
+const storyHeight = goalConfig?.dimensions.height || 100;
+
 const meta = {
   title: 'C Graphs / Nodes / Motivation / GoalNode',
   component: UnifiedNode,

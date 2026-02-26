@@ -10,12 +10,25 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { NodeType, UnifiedNode } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
+import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
+
+// Get dimensions from node configuration for consistency
+const functionConfig = nodeConfigLoader.getStyleConfig(NodeType.BUSINESS_FUNCTION);
+const storyWidth = functionConfig?.dimensions.width || 240;
+const storyHeight = functionConfig?.dimensions.height || 100;
+
 const meta = {
   title: "C Graphs / Nodes / Business / BusinessFunctionNode",
   component: UnifiedNode,
   decorators: [withReactFlowDecorator()],
   parameters: {
     layout: "fullscreen",
+  },
+  argTypes: {
+    'data.changesetOperation': {
+      control: 'select',
+      options: [undefined, 'add', 'update', 'delete'],
+    },
   },
 } satisfies Meta<typeof UnifiedNode>;
 
@@ -206,6 +219,64 @@ export const Highlighted: Story = {
         layerId: 'test-layer',
         elementId: 'test-element-id',
       label: "Highlighted Node",
+    },
+  },
+};
+
+export const WithMultipleBadges: Story = {
+  args: {
+    id: "function-13",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: "Complete Function",
+      badges: [
+        {
+          position: "top-left" as const,
+          content: "high",
+          ariaLabel: "Criticality: high",
+        },
+        {
+          position: "inline" as const,
+          content: "Operations Team",
+          ariaLabel: "Owner: Operations Team",
+        },
+        {
+          position: "top-right" as const,
+          content: "Finance",
+          ariaLabel: "Domain: Finance",
+        },
+      ],
+      items: [
+        { id: "lifecycle", label: "Lifecycle", value: "active" },
+      ],
+      detailLevel: "standard",
+    },
+  },
+};
+
+export const DomainAndOwnerBadges: Story = {
+  args: {
+    id: "function-14",
+    data: {
+      nodeType: NodeType.BUSINESS_FUNCTION,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: "Specialized Function",
+      badges: [
+        {
+          position: "inline" as const,
+          content: "Sales",
+          ariaLabel: "Domain: Sales",
+        },
+        {
+          position: "inline" as const,
+          content: "Sales Team",
+          ariaLabel: "Owner: Sales Team",
+        },
+      ],
+      detailLevel: "standard",
     },
   },
 };

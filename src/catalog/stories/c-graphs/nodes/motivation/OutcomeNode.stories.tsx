@@ -3,6 +3,13 @@ import { UnifiedNode } from '@/core/nodes';
 import { NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
+import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
+
+// Get dimensions from node configuration for consistency
+const outcomeConfig = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_OUTCOME);
+const storyWidth = outcomeConfig?.dimensions.width || 180;
+const storyHeight = outcomeConfig?.dimensions.height || 100;
+
 const meta = {
   title: 'C Graphs / Nodes / Motivation / OutcomeNode',
   component: UnifiedNode,

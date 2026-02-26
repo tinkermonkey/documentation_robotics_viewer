@@ -3,12 +3,25 @@ import { UnifiedNode } from '@/core/nodes/components';
 import { NodeType } from '@/core/nodes/NodeType';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
+import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
+
+// Get dimensions from node configuration for consistency
+const containerConfig = nodeConfigLoader.getStyleConfig(NodeType.C4_CONTAINER);
+const storyWidth = containerConfig?.dimensions.width || 280;
+const storyHeight = containerConfig?.dimensions.height || 180;
+
 const meta = {
   title: 'C Graphs / Nodes / C4 / ContainerNode',
   component: UnifiedNode,
-  decorators: [withReactFlowDecorator({ width: 280, height: 180 })],
+  decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
     layout: 'fullscreen',
+  },
+  argTypes: {
+    'data.detailLevel': {
+      control: 'select',
+      options: ['minimal', 'standard', 'detailed'],
+    },
   },
 } satisfies Meta<typeof UnifiedNode>;
 
@@ -177,6 +190,55 @@ export const Highlighted: Story = {
         layerId: 'test-layer',
         elementId: 'test-element-id',
       label: 'Highlighted Node',
+    },
+  },
+};
+
+export const MinimalZoom: Story = {
+  args: {
+    id: 'container-12',
+    data: {
+      nodeType: NodeType.C4_CONTAINER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'Web UI',
+      detailLevel: 'minimal',
+    },
+  },
+};
+
+export const StandardZoom: Story = {
+  args: {
+    id: 'container-13',
+    data: {
+      nodeType: NodeType.C4_CONTAINER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'React Web UI',
+      items: [
+        { id: 'description', label: 'Description', value: 'User-facing web application', required: false },
+        { id: 'technologies', label: 'Technologies', value: 'React, TypeScript', required: false },
+      ],
+      detailLevel: 'standard',
+    },
+  },
+};
+
+export const DetailedZoom: Story = {
+  args: {
+    id: 'container-14',
+    data: {
+      nodeType: NodeType.C4_CONTAINER,
+        layerId: 'test-layer',
+        elementId: 'test-element-id',
+      label: 'React Web UI',
+      items: [
+        { id: 'description', label: 'Description', value: 'Provides comprehensive user interface for system management and monitoring', required: false },
+        { id: 'technologies', label: 'Technologies', value: 'React 19, TypeScript, Vite, @xyflow/react, Tailwind CSS', required: false },
+        { id: 'containerType', label: 'Type', value: 'WebApplication', required: false },
+        { id: 'responsibility', label: 'Responsibility', value: 'Display system visualization and handle user interactions', required: false },
+      ],
+      detailLevel: 'detailed',
     },
   },
 };

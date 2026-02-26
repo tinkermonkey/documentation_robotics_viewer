@@ -3,10 +3,17 @@ import { UnifiedNode } from '@/core/nodes';
 import { NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
+import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
+
+// Get dimensions from node configuration for consistency
+const principleConfig = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_PRINCIPLE);
+const storyWidth = principleConfig?.dimensions.width || 180;
+const storyHeight = principleConfig?.dimensions.height || 100;
+
 const meta = {
   title: 'C Graphs / Nodes / Motivation / PrincipleNode',
   component: UnifiedNode,
-  decorators: [withReactFlowDecorator({ width: 180, height: 100 })],
+  decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
     layout: 'fullscreen',
   },
