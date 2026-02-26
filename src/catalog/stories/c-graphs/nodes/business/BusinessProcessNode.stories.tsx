@@ -32,244 +32,222 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_PROCESS,
+  args: {
+    id: 'process-1',
+    data: {
+      nodeType: NodeType.BUSINESS_PROCESS,
       layerId: 'test-layer',
       elementId: 'test-element-id',
-        label: 'Order Processing',
-        detailLevel: 'standard',
-      }}
-      id="process-1"
-    />
-  ),
+      label: 'Order Processing',
+      detailLevel: 'standard',
+    },
+  },
 };
 
 export const HighCriticality: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_PROCESS,
+  args: {
+    id: 'process-2',
+    data: {
+      nodeType: NodeType.BUSINESS_PROCESS,
       layerId: 'test-layer',
       elementId: 'test-element-id',
-        label: 'Payment Processing',
-        badges: [
-          {
-            position: 'inline' as const,
-            content: 'high',
-            ariaLabel: 'Criticality: high',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="process-2"
-    />
-  ),
+      label: 'Payment Processing',
+      badges: [
+        {
+          position: 'inline' as const,
+          content: 'high',
+          ariaLabel: 'Criticality: high',
+        },
+      ],
+      detailLevel: 'standard',
+    },
+  },
 };
 
 export const MediumCriticality: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_PROCESS,
+  args: {
+    id: 'process-3',
+    data: {
+      nodeType: NodeType.BUSINESS_PROCESS,
       layerId: 'test-layer',
       elementId: 'test-element-id',
-        label: 'Inventory Check',
-        badges: [
-          {
-            position: 'inline' as const,
-            content: 'medium',
-            ariaLabel: 'Criticality: medium',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="process-3"
-    />
-  ),
+      label: 'Inventory Check',
+      badges: [
+        {
+          position: 'inline' as const,
+          content: 'medium',
+          ariaLabel: 'Criticality: medium',
+        },
+      ],
+      detailLevel: 'standard',
+    },
+  },
 };
 
 export const LowCriticality: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_PROCESS,
+  args: {
+    id: 'process-4',
+    data: {
+      nodeType: NodeType.BUSINESS_PROCESS,
       layerId: 'test-layer',
       elementId: 'test-element-id',
-        label: 'Logging Process',
-        badges: [
-          {
-            position: 'inline' as const,
-            content: 'low',
-            ariaLabel: 'Criticality: low',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="process-4"
-    />
-  ),
+      label: 'Logging Process',
+      badges: [
+        {
+          position: 'inline' as const,
+          content: 'low',
+          ariaLabel: 'Criticality: low',
+        },
+      ],
+      detailLevel: 'standard',
+    },
+  },
 };
 
 export const WithOwner: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_PROCESS,
+  args: {
+    id: 'process-5',
+    data: {
+      nodeType: NodeType.BUSINESS_PROCESS,
       layerId: 'test-layer',
       elementId: 'test-element-id',
-        label: 'Returns Processing',
-        badges: [
-          {
-            position: 'inline' as const,
-            content: 'Operations Team',
-            ariaLabel: 'Owner: Operations Team',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="process-5"
-    />
-  ),
+      label: 'Returns Processing',
+      badges: [
+        {
+          position: 'inline' as const,
+          content: 'Operations Team',
+          ariaLabel: 'Owner: Operations Team',
+        },
+      ],
+      detailLevel: 'standard',
+    },
+  },
 };
 
 export const WithSubprocesses: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_PROCESS,
+  args: {
+    id: 'process-6',
+    data: {
+      nodeType: NodeType.BUSINESS_PROCESS,
       layerId: 'test-layer',
       elementId: 'test-element-id',
-        label: 'Order Fulfillment',
-        items: [
-          { id: 'sp-1', label: 'Pick Items', value: 'Pick items from warehouse' },
-          { id: 'sp-2', label: 'Pack Order', value: 'Pack items into box' },
-          { id: 'sp-3', label: 'Label Package', value: 'Generate and apply label' },
-          { id: 'sp-4', label: 'Schedule Pickup', value: 'Schedule carrier pickup' },
-          { id: 'sp-5', label: 'Confirm Shipment', value: 'Send shipment confirmation' },
-        ],
-        badges: [
-          {
-            position: 'top-right' as const,
-            content: '▶',
-            className: 'cursor-pointer text-lg leading-none',
-            ariaLabel: 'Expand subprocesses',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="process-6"
-    />
-  ),
+      label: 'Order Fulfillment',
+      items: [
+        { id: 'sp-1', label: 'Pick Items', value: 'Pick items from warehouse' },
+        { id: 'sp-2', label: 'Pack Order', value: 'Pack items into box' },
+        { id: 'sp-3', label: 'Label Package', value: 'Generate and apply label' },
+        { id: 'sp-4', label: 'Schedule Pickup', value: 'Schedule carrier pickup' },
+        { id: 'sp-5', label: 'Confirm Shipment', value: 'Send shipment confirmation' },
+      ],
+      badges: [
+        {
+          position: 'top-right' as const,
+          content: '▶',
+          className: 'cursor-pointer text-lg leading-none',
+          ariaLabel: 'Expand subprocesses',
+        },
+      ],
+      detailLevel: 'standard',
+    },
+  },
 };
 
 export const ExpandedSubprocesses: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_PROCESS,
+  args: {
+    id: 'process-6-expanded',
+    data: {
+      nodeType: NodeType.BUSINESS_PROCESS,
       layerId: 'test-layer',
       elementId: 'test-element-id',
-        label: 'Order Fulfillment',
-        items: [
-          { id: 'sp-1', label: 'Pick Items', value: 'Pick items from warehouse' },
-          { id: 'sp-2', label: 'Pack Order', value: 'Pack items into box' },
-          { id: 'sp-3', label: 'Label Package', value: 'Generate and apply label' },
-          { id: 'sp-4', label: 'Schedule Pickup', value: 'Schedule carrier pickup' },
-          { id: 'sp-5', label: 'Confirm Shipment', value: 'Send shipment confirmation' },
-        ],
-        badges: [
-          {
-            position: 'top-right' as const,
-            content: '▼',
-            className: 'cursor-pointer text-lg leading-none',
-            ariaLabel: 'Collapse subprocesses',
-          },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="process-6-expanded"
-    />
-  ),
+      label: 'Order Fulfillment',
+      items: [
+        { id: 'sp-1', label: 'Pick Items', value: 'Pick items from warehouse' },
+        { id: 'sp-2', label: 'Pack Order', value: 'Pack items into box' },
+        { id: 'sp-3', label: 'Label Package', value: 'Generate and apply label' },
+        { id: 'sp-4', label: 'Schedule Pickup', value: 'Schedule carrier pickup' },
+        { id: 'sp-5', label: 'Confirm Shipment', value: 'Send shipment confirmation' },
+      ],
+      badges: [
+        {
+          position: 'top-right' as const,
+          content: '▼',
+          className: 'cursor-pointer text-lg leading-none',
+          ariaLabel: 'Collapse subprocesses',
+        },
+      ],
+      detailLevel: 'standard',
+    },
+  },
 };
 
 export const ChangesetAdd: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_PROCESS,
+  args: {
+    id: 'process-7',
+    data: {
+      nodeType: NodeType.BUSINESS_PROCESS,
       layerId: 'test-layer',
       elementId: 'test-element-id',
-        label: 'New Process',
-        changesetOperation: 'add',
-        detailLevel: 'standard',
-      }}
-      id="process-7"
-    />
-  ),
+      label: 'New Process',
+      changesetOperation: 'add',
+      detailLevel: 'standard',
+    },
+  },
 };
 
 export const ChangesetUpdate: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_PROCESS,
+  args: {
+    id: 'process-8',
+    data: {
+      nodeType: NodeType.BUSINESS_PROCESS,
       layerId: 'test-layer',
       elementId: 'test-element-id',
-        label: 'Updated Process',
-        changesetOperation: 'update',
-        detailLevel: 'standard',
-      }}
-      id="process-8"
-    />
-  ),
+      label: 'Updated Process',
+      changesetOperation: 'update',
+      detailLevel: 'standard',
+    },
+  },
 };
 
 export const ChangesetDelete: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_PROCESS,
+  args: {
+    id: 'process-9',
+    data: {
+      nodeType: NodeType.BUSINESS_PROCESS,
       layerId: 'test-layer',
       elementId: 'test-element-id',
-        label: 'Deleted Process',
-        changesetOperation: 'delete',
-        detailLevel: 'standard',
-      }}
-      id="process-9"
-    />
-  ),
+      label: 'Deleted Process',
+      changesetOperation: 'delete',
+      detailLevel: 'standard',
+    },
+  },
 };
 
 export const CriticalProcessWithOwner: Story = {
-  render: () => (
-    <UnifiedNode
-      data={{
-        nodeType: NodeType.BUSINESS_PROCESS,
+  args: {
+    id: 'process-10',
+    data: {
+      nodeType: NodeType.BUSINESS_PROCESS,
       layerId: 'test-layer',
       elementId: 'test-element-id',
-        label: 'Critical Financial Process',
-        badges: [
-          {
-            position: 'top-left' as const,
-            content: 'high',
-            ariaLabel: 'Criticality: high',
-          },
-          {
-            position: 'inline' as const,
-            content: 'Finance Team',
-            ariaLabel: 'Owner: Finance Team',
-          },
-        ],
-        items: [
-          { id: 'sp-1', label: 'Validate', value: 'Validate transaction' },
-          { id: 'sp-2', label: 'Process', value: 'Process payment' },
-          { id: 'sp-3', label: 'Confirm', value: 'Send confirmation' },
-        ],
-        detailLevel: 'standard',
-      }}
-      id="process-10"
-    />
-  ),
+      label: 'Critical Financial Process',
+      badges: [
+        {
+          position: 'top-left' as const,
+          content: 'high',
+          ariaLabel: 'Criticality: high',
+        },
+        {
+          position: 'inline' as const,
+          content: 'Finance Team',
+          ariaLabel: 'Owner: Finance Team',
+        },
+      ],
+      items: [
+        { id: 'sp-1', label: 'Validate', value: 'Validate transaction' },
+        { id: 'sp-2', label: 'Process', value: 'Process payment' },
+        { id: 'sp-3', label: 'Confirm', value: 'Send confirmation' },
+      ],
+      detailLevel: 'standard',
+    },
+  },
 };
