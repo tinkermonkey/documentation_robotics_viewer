@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UnifiedNode } from '@/core/nodes/components';
+import UnifiedNode from '@/core/nodes/components/UnifiedNode';
 import { NodeType } from '@/core/nodes/NodeType';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
+import type { UnifiedNodeData } from '@/core/nodes/components/UnifiedNode';
 
 import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
 
@@ -31,7 +32,7 @@ export const Default: Story = {
       elementId: 'test-element-id',
       label: 'End User',
       items: [],
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -47,7 +48,7 @@ export const UserActor: Story = {
         { id: 'description', label: 'Description', value: 'A customer using the e-commerce platform', required: false },
         { id: 'actorType', label: 'Type', value: 'user', required: false },
       ],
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -63,7 +64,7 @@ export const AdminActor: Story = {
         { id: 'description', label: 'Description', value: 'System administrator with elevated privileges', required: false },
         { id: 'actorType', label: 'Type', value: 'user', required: false },
       ],
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -79,7 +80,7 @@ export const SystemActor: Story = {
         { id: 'description', label: 'Description', value: 'External email delivery service', required: false },
         { id: 'actorType', label: 'Type', value: 'system', required: false },
       ],
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -95,7 +96,7 @@ export const ExternalService: Story = {
         { id: 'description', label: 'Description', value: 'Third-party payment processing service', required: false },
         { id: 'actorType', label: 'Type', value: 'service', required: false },
       ],
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -109,7 +110,7 @@ export const ChangesetAdd: Story = {
       label: 'New Actor',
       items: [],
       changesetOperation: 'add',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -123,7 +124,7 @@ export const ChangesetUpdate: Story = {
       label: 'Updated Actor',
       items: [],
       changesetOperation: 'update',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -137,7 +138,7 @@ export const ChangesetDelete: Story = {
       label: 'Deleted Actor',
       items: [],
       changesetOperation: 'delete',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -151,7 +152,7 @@ export const Dimmed: Story = {
       label: 'Dimmed Actor',
       items: [],
       detailLevel: 'minimal',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -163,7 +164,7 @@ export const Highlighted: Story = {
       layerId: 'test-layer',
       elementId: 'test-element-id',
       label: 'Highlighted Node',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -176,7 +177,7 @@ export const MinimalZoom: Story = {
       elementId: 'test-element-id',
       label: 'Customer',
       detailLevel: 'minimal',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -193,7 +194,7 @@ export const StandardZoom: Story = {
         { id: 'actorType', label: 'Type', value: 'user', required: false },
       ],
       detailLevel: 'standard',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -212,7 +213,7 @@ export const DetailedZoom: Story = {
         { id: 'location', label: 'Location', value: 'External', required: false },
       ],
       detailLevel: 'detailed',
-    },
+    } as UnifiedNodeData,
   },
 };
 

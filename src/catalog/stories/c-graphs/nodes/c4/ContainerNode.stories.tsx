@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UnifiedNode } from '@/core/nodes/components';
+import UnifiedNode from '@/core/nodes/components/UnifiedNode';
 import { NodeType } from '@/core/nodes/NodeType';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
+import type { UnifiedNodeData } from '@/core/nodes/components/UnifiedNode';
 
 import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
 
@@ -17,6 +18,15 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
+  args: {
+    id: 'container-default',
+    data: {
+      nodeType: NodeType.C4_CONTAINER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Container',
+    } as UnifiedNodeData,
+  },
 } satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
@@ -31,7 +41,7 @@ export const Default: Story = {
       elementId: 'test-element-id',
       label: 'Web Application',
       items: [],
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -48,7 +58,7 @@ export const WebApplication: Story = {
         { id: 'technologies', label: 'Technologies', value: 'React, TypeScript, Vite', required: false },
         { id: 'containerType', label: 'Type', value: 'webApp', required: false },
       ],
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -65,7 +75,7 @@ export const MobileApplication: Story = {
         { id: 'technologies', label: 'Technologies', value: 'React Native', required: false },
         { id: 'containerType', label: 'Type', value: 'mobileApp', required: false },
       ],
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -82,7 +92,7 @@ export const Microservice: Story = {
         { id: 'technologies', label: 'Technologies', value: 'Node.js, Express', required: false },
         { id: 'containerType', label: 'Type', value: 'service', required: false },
       ],
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -99,7 +109,7 @@ export const Database: Story = {
         { id: 'technologies', label: 'Technologies', value: 'PostgreSQL', required: false },
         { id: 'containerType', label: 'Type', value: 'database', required: false },
       ],
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -116,7 +126,7 @@ export const MessageQueue: Story = {
         { id: 'technologies', label: 'Technologies', value: 'RabbitMQ', required: false },
         { id: 'containerType', label: 'Type', value: 'queue', required: false },
       ],
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -130,7 +140,7 @@ export const ChangesetAdd: Story = {
       label: 'New Container',
       items: [],
       changesetOperation: 'add',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -144,7 +154,7 @@ export const ChangesetUpdate: Story = {
       label: 'Updated Container',
       items: [],
       changesetOperation: 'update',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -158,7 +168,7 @@ export const ChangesetDelete: Story = {
       label: 'Deleted Container',
       items: [],
       changesetOperation: 'delete',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -172,7 +182,7 @@ export const Dimmed: Story = {
       label: 'Dimmed Container',
       items: [],
       detailLevel: 'minimal',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -184,7 +194,7 @@ export const Highlighted: Story = {
       layerId: 'test-layer',
       elementId: 'test-element-id',
       label: 'Highlighted Node',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -197,7 +207,7 @@ export const MinimalZoom: Story = {
       elementId: 'test-element-id',
       label: 'Web UI',
       detailLevel: 'minimal',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -214,7 +224,7 @@ export const StandardZoom: Story = {
         { id: 'technologies', label: 'Technologies', value: 'React, TypeScript', required: false },
       ],
       detailLevel: 'standard',
-    },
+    } as UnifiedNodeData,
   },
 };
 
@@ -233,7 +243,7 @@ export const DetailedZoom: Story = {
         { id: 'responsibility', label: 'Responsibility', value: 'Display system visualization and handle user interactions', required: false },
       ],
       detailLevel: 'detailed',
-    },
+    } as UnifiedNodeData,
   },
 };
 
