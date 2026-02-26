@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UnifiedNode, NodeType } from '@/core/nodes';
+import { UnifiedNode, NodeType, type UnifiedNodeData } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createPrincipleNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
@@ -98,7 +98,7 @@ export const ChangesetAdd: Story = {
       elementId: 'test-element-id',
       label: 'New Principle',
       changesetOperation: 'add' as const,
-    },
+    } satisfies UnifiedNodeData,
   },
 };
 
@@ -111,7 +111,7 @@ export const ChangesetUpdate: Story = {
       elementId: 'test-element-id',
       label: 'Updated Principle',
       changesetOperation: 'update' as const,
-    },
+    } satisfies UnifiedNodeData,
   },
 };
 
@@ -124,7 +124,7 @@ export const ChangesetDelete: Story = {
       elementId: 'test-element-id',
       label: 'Deleted Principle',
       changesetOperation: 'delete' as const,
-    },
+    } satisfies UnifiedNodeData,
   },
 };
 
