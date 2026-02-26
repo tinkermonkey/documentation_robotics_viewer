@@ -11,6 +11,7 @@ import '@xyflow/react/dist/style.css';
 import { memo } from 'react';
 import { EdgeControllers } from '@/core/edges/EdgeControllers';
 import { ElbowEdge } from '@/core/edges/ElbowEdge';
+import type { ElbowEdgeData } from '@/core/types/reactflow';
 
 const meta = {
   title: 'C Graphs / Edges / Base / EdgeControllers',
@@ -63,7 +64,7 @@ const NODES: Node[] = [
  */
 export const SingleWaypoint: Story = {
   render: () => {
-    const baseEdge: Edge = {
+    const baseEdge: Edge<ElbowEdgeData, 'elbow'> = {
       id: 'e1-2',
       source: 'source',
       target: 'target',
@@ -123,7 +124,7 @@ export const SingleWaypoint: Story = {
  */
 export const MultipleWaypoints: Story = {
   render: () => {
-    const baseEdge: Edge = {
+    const baseEdge: Edge<ElbowEdgeData, 'elbow'> = {
       id: 'e1-2-multi',
       source: 'source',
       target: 'target',
@@ -187,7 +188,7 @@ export const MultipleWaypoints: Story = {
  */
 export const NoWaypoints: Story = {
   render: () => {
-    const baseEdge: Edge = {
+    const baseEdge: Edge<ElbowEdgeData, 'elbow'> = {
       id: 'e1-2-none',
       source: 'source',
       target: 'target',
