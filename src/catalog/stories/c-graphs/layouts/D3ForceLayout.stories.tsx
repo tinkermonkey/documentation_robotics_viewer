@@ -13,7 +13,7 @@ import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';
 const meta = {
   title: 'C Graphs / Layouts / D3ForceLayout',
   parameters: { layout: 'fullscreen' },
-  tags: ['skip-test'],
+  tags: ['skip-a11y'],
 } satisfies Meta;
 
 export default meta;

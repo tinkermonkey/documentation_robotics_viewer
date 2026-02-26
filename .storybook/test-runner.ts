@@ -74,136 +74,159 @@ const config: TestRunnerConfig = {
   },
 
   async postVisit(page, context) {
-    // Skip stories tagged with 'skip-test'
-    if (context.tags && Array.isArray(context.tags) && context.tags.includes('skip-test')) {
-      console.log(`[test-runner] Skipping story "${context.id}" - marked with skip-test tag`);
-      return;
+    // Determine which validation steps to skip
+    const skipAccessibility = context.tags && Array.isArray(context.tags) && context.tags.includes('skip-a11y');
+    const skipErrors = context.tags && Array.isArray(context.tags) && context.tags.includes('skip-errors');
+    const skipTest = context.tags && Array.isArray(context.tags) && context.tags.includes('skip-test');
+
+    // Log what's being skipped for debugging
+    if (skipAccessibility || skipErrors || skipTest) {
+      const skipped = [];
+      if (skipAccessibility) skipped.push('accessibility');
+      if (skipErrors) skipped.push('error validation');
+      if (skipTest) skipped.push('all validation'); // backward compat - skip everything
+      if (skipTest) {
+        console.log(`[test-runner] Skipping story "${context.id}" - marked with skip-test tag (skipping ${skipped.join(', ')})`);
+        return;
+      }
+      if (skipped.length > 0) {
+        console.log(`[test-runner] Story "${context.id}" skipping: ${skipped.join(', ')}`);
+      }
     }
 
     try {
-      // Check that axe was successfully injected before proceeding
-      let axeInjected = false;
-      try {
-        axeInjected = await page.evaluate(() => window.__axeInjected__);
-      } catch (evalError) {
-        // If page.evaluate fails due to Storybook initialization issues, continue with a11y check anyway
-        const errMsg = evalError instanceof Error ? evalError.message : String(evalError);
-        if (!errMsg.includes('StorybookTestRunnerError')) {
-          console.warn(`[test-runner] Failed to check axe injection status: ${errMsg}`);
-        }
-        // Assume axe was injected and proceed
-        axeInjected = true;
-      }
-      if (!axeInjected) {
-        throw new Error(`Skipping accessibility checks for story "${context.id}": axe-core injection failed in preVisit.`);
-      }
-
-      // Configure axe-core rules for architecture visualization context
-      try {
-        await configureAxe(page, {
-          rules: [
-            {
-              id: 'color-contrast',
-              enabled: true,
-              reviewOnFail: true, // Mark for manual review instead of auto-fail
-            },
-            {
-              id: 'aria-allowed-attr',
-              enabled: true,
-            },
-            {
-              id: 'aria-required-children',
-              enabled: true,
-            },
-            {
-              id: 'label',
-              enabled: true,
-            },
-            {
-              id: 'image-alt',
-              enabled: true,
-            },
-          ],
-        });
-        // Mark configuration as successful
-        await page.evaluate(() => {
-          window.__axeConfigured__ = true;
-        });
-      } catch (err) {
-        throw new Error(`Failed to configure axe-core for story "${context.id}": ${err instanceof Error ? err.message : String(err)}. Accessibility testing cannot proceed with inconsistent configuration.`);
-      }
-
-      // Check that axe was successfully configured before running checks
-      let axeConfigured = false;
-      try {
-        axeConfigured = await page.evaluate(() => window.__axeConfigured__);
-      } catch (evalError) {
-        // If page.evaluate fails, continue anyway
-        const errMsg = evalError instanceof Error ? evalError.message : String(evalError);
-        if (!errMsg.includes('StorybookTestRunnerError')) {
-          console.warn(`[test-runner] Failed to check axe configuration status: ${errMsg}`);
-        }
-        // Assume axe was configured and proceed
-        axeConfigured = true;
-      }
-      if (!axeConfigured) {
-        throw new Error(`Skipping accessibility checks for story "${context.id}": axe-core configuration failed.`);
-      }
-
-      // Run accessibility checks with proper axe sequencing
-      // checkA11y properly awaits and sequences axe runs - no concurrent execution
-      try {
-        await checkA11y(page, '#storybook-root', {
-          detailedReport: true,
-          detailedReportOptions: { html: true },
-        });
-      } catch (error) {
-        // checkA11y throws if violations are found - extract violation details
-        const errorMsg = error instanceof Error ? error.message : String(error);
-
-        // Check if this is an axe-core violation error (contains violation details)
-        if (errorMsg.startsWith('Accessibility') || errorMsg.includes('violation')) {
-          // Parse the error message for high-impact violations
-          // checkA11y error message format includes "VIOLATIONS" section with details
-          if (errorMsg.includes('critical') || errorMsg.includes('serious')) {
-            // Re-throw as-is - checkA11y already properly ran axe and found violations
-            throw error;
+      // Skip accessibility checks if requested
+      if (!skipAccessibility) {
+        // Check that axe was successfully injected before proceeding
+        let axeInjected = false;
+        try {
+          axeInjected = await page.evaluate(() => window.__axeInjected__);
+        } catch (evalError) {
+          // If page.evaluate fails due to Storybook initialization issues, continue with a11y check anyway
+          const errMsg = evalError instanceof Error ? evalError.message : String(evalError);
+          if (!errMsg.includes('StorybookTestRunnerError')) {
+            console.warn(`[test-runner] Failed to check axe injection status: ${errMsg}`);
           }
-          // Moderate or minor violations - log as warning but don't fail
-          console.warn(`Accessibility warnings in story "${context.id}":\n${errorMsg}`);
-        } else {
-          // Error from checkA11y but not a violation report - this is a real error
-          throw new Error(
-            `Accessibility check failed for story "${context.id}": ${errorMsg}`
-          );
+          // Assume axe was injected and proceed
+          axeInjected = true;
         }
+        if (!axeInjected) {
+          throw new Error(`Skipping accessibility checks for story "${context.id}": axe-core injection failed in preVisit.`);
+        }
+
+        // Configure axe-core rules for architecture visualization context
+        try {
+          await configureAxe(page, {
+            rules: [
+              {
+                id: 'color-contrast',
+                enabled: true,
+                reviewOnFail: true, // Mark for manual review instead of auto-fail
+              },
+              {
+                id: 'aria-allowed-attr',
+                enabled: true,
+              },
+              {
+                id: 'aria-required-children',
+                enabled: true,
+              },
+              {
+                id: 'label',
+                enabled: true,
+              },
+              {
+                id: 'image-alt',
+                enabled: true,
+              },
+            ],
+          });
+          // Mark configuration as successful
+          await page.evaluate(() => {
+            window.__axeConfigured__ = true;
+          });
+        } catch (err) {
+          throw new Error(`Failed to configure axe-core for story "${context.id}": ${err instanceof Error ? err.message : String(err)}. Accessibility testing cannot proceed with inconsistent configuration.`);
+        }
+
+        // Check that axe was successfully configured before running checks
+        let axeConfigured = false;
+        try {
+          axeConfigured = await page.evaluate(() => window.__axeConfigured__);
+        } catch (evalError) {
+          // If page.evaluate fails, continue anyway
+          const errMsg = evalError instanceof Error ? evalError.message : String(evalError);
+          if (!errMsg.includes('StorybookTestRunnerError')) {
+            console.warn(`[test-runner] Failed to check axe configuration status: ${errMsg}`);
+          }
+          // Assume axe was configured and proceed
+          axeConfigured = true;
+        }
+        if (!axeConfigured) {
+          throw new Error(`Skipping accessibility checks for story "${context.id}": axe-core configuration failed.`);
+        }
+
+        // Run accessibility checks with proper axe sequencing
+        // checkA11y properly awaits and sequences axe runs - no concurrent execution
+        try {
+          await checkA11y(page, '#storybook-root', {
+            detailedReport: true,
+            detailedReportOptions: { html: true },
+          });
+        } catch (error) {
+          // checkA11y throws if violations are found - extract violation details
+          const errorMsg = error instanceof Error ? error.message : String(error);
+
+          // Check if this is an axe-core violation error (contains violation details)
+          if (errorMsg.startsWith('Accessibility') || errorMsg.includes('violation')) {
+            // Parse the error message for high-impact violations
+            // checkA11y error message format includes "VIOLATIONS" section with details
+            if (errorMsg.includes('critical') || errorMsg.includes('serious')) {
+              // Re-throw as-is - checkA11y already properly ran axe and found violations
+              throw error;
+            }
+            // Moderate or minor violations - log as warning but don't fail
+            console.warn(`Accessibility warnings in story "${context.id}":\n${errorMsg}`);
+          } else {
+            // Error from checkA11y but not a violation report - this is a real error
+            throw new Error(
+              `Accessibility check failed for story "${context.id}": ${errorMsg}`
+            );
+          }
+        }
+      } else {
+        console.log(`[test-runner] Skipping accessibility checks for story "${context.id}"`);
       }
 
-      // Check for collected console and page errors after all tests
-      let errors: string[] = [];
-      try {
-        errors = await page.evaluate(() => {
-          const collected = [
-            ...(window.__errorMessages__ || []),
-            ...(window.__pageErrors__ || []),
-          ];
-          return collected;
-        });
-      } catch (evalError) {
-        // If page.evaluate fails (e.g., due to Storybook test-runner initialization issues),
-        // log it but don't fail the story test - the accessibility checks already passed
-        const errMsg = evalError instanceof Error ? evalError.message : String(evalError);
-        if (!errMsg.includes('StorybookTestRunnerError')) {
-          console.warn(`[test-runner] Failed to collect page errors: ${errMsg}`);
+      // Check for collected console and page errors after all tests (unless skipped)
+      if (!skipErrors) {
+        let errors: string[] = [];
+        try {
+          errors = await page.evaluate(() => {
+            const collected = [
+              ...(window.__errorMessages__ || []),
+              ...(window.__pageErrors__ || []),
+            ];
+            return collected;
+          });
+        } catch (evalError) {
+          // If page.evaluate fails (e.g., due to Storybook test-runner initialization issues),
+          // log it but don't fail the story test - the accessibility checks already passed
+          const errMsg = evalError instanceof Error ? evalError.message : String(evalError);
+          if (!errMsg.includes('StorybookTestRunnerError')) {
+            console.warn(`[test-runner] Failed to collect page errors: ${errMsg}`);
+          }
+          // Continue without error check if page.evaluate fails - a11y checks already passed
+          return;
         }
-        // Continue without error check if page.evaluate fails - a11y checks already passed
-        return;
-      }
 
-      for (const error of errors) {
-        if (!isExpectedConsoleError(error) && !isKnownRenderingBug(error)) {
-          throw new Error(`Critical error in story ${context.id}: ${error}`);
+        for (const error of errors) {
+          if (!isExpectedConsoleError(error) && !isKnownRenderingBug(error)) {
+            throw new Error(`Critical error in story ${context.id}: ${error}`);
+          }
         }
+      } else {
+        console.log(`[test-runner] Skipping error validation for story "${context.id}"`);
       }
     } catch (postVisitError) {
       // If the entire postVisit fails due to Storybook test-runner issues, only throw if it's not the StorybookTestRunnerError
