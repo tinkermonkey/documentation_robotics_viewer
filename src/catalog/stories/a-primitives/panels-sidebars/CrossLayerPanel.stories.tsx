@@ -8,6 +8,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { CrossLayerPanel } from '@/apps/embedded/components/CrossLayerPanel';
 import { useCrossLayerStore } from '@/core/stores/crossLayerStore';
+import { LayerType } from '@/core/types/layers';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / CrossLayerPanel',
@@ -27,7 +28,7 @@ export const Default: Story = {
   render: () => {
     useCrossLayerStore.setState({
       visible: true,
-      targetLayerFilters: new Set(['application', 'technology']),
+      targetLayerFilters: new Set([LayerType.Application, LayerType.Technology]),
       relationshipTypeFilters: new Set(),
     });
 
@@ -49,7 +50,7 @@ export const Expanded: Story = {
   render: () => {
     useCrossLayerStore.setState({
       visible: true,
-      targetLayerFilters: new Set(['business', 'application', 'technology', 'infrastructure']),
+      targetLayerFilters: new Set([LayerType.Business, LayerType.Application, LayerType.Technology, LayerType.Datastore]),
       relationshipTypeFilters: new Set(),
     });
 
@@ -71,7 +72,7 @@ export const Compact: Story = {
   render: () => {
     useCrossLayerStore.setState({
       visible: true,
-      targetLayerFilters: new Set(['technology']),
+      targetLayerFilters: new Set([LayerType.Technology]),
       relationshipTypeFilters: new Set(),
     });
 
@@ -117,7 +118,7 @@ export const Loading: Story = {
   render: () => {
     useCrossLayerStore.setState({
       visible: true,
-      targetLayerFilters: new Set(['application']),
+      targetLayerFilters: new Set([LayerType.Application]),
     });
 
     return (

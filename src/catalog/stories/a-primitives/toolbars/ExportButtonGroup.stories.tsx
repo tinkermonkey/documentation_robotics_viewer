@@ -20,7 +20,7 @@ type Story = StoryObj<typeof meta>;
 
 // Mock export service for demo purposes
 const createMockExportService = (simulateDelay = true, simulateError = false): ExportService => ({
-  exportAsPNG: async (container: HTMLElement, filename: string) => {
+  exportAsPNG: async (_container: HTMLElement, filename: string) => {
     if (simulateDelay) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
@@ -29,7 +29,7 @@ const createMockExportService = (simulateDelay = true, simulateError = false): E
     }
     console.log(`Exported PNG: ${filename}`);
   },
-  exportAsSVG: async (container: HTMLElement, filename: string) => {
+  exportAsSVG: async (_container: HTMLElement, filename: string) => {
     if (simulateDelay) {
       await new Promise((resolve) => setTimeout(resolve, 800));
     }

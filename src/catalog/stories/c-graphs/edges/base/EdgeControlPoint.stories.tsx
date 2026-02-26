@@ -51,7 +51,6 @@ export const SingleControlPoint: Story = {
 
     const ControlPointDemo = () => {
       const [position, setPosition] = useState({ x: 250, y: 50 });
-      const { screenToFlowPosition } = useReactFlow();
 
       const handleMove = useCallback((_index: number, newPoint: { x: number; y: number }) => {
         setPosition(newPoint);

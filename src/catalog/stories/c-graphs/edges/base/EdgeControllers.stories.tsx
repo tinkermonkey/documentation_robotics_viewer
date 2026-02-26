@@ -7,7 +7,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ReactFlowProvider, ReactFlow, useReactFlow, Background } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { EdgeControllers } from '@/core/edges/EdgeControllers';
 
 const meta = {

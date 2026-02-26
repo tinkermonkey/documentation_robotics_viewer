@@ -8,6 +8,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { CrossLayerFilterPanel } from '@/apps/embedded/components/CrossLayerFilterPanel';
 import { useCrossLayerStore } from '@/core/stores/crossLayerStore';
+import { LayerType } from '@/core/types/layers';
 
 const meta = {
   title: 'A Primitives / State Panels / CrossLayerFilterPanel',
@@ -27,7 +28,7 @@ export const Default: Story = {
   render: () => {
     useCrossLayerStore.setState({
       visible: true,
-      targetLayerFilters: new Set(['application', 'technology']),
+      targetLayerFilters: new Set([LayerType.Application, LayerType.Technology]),
     });
 
     return (
@@ -52,11 +53,11 @@ export const AllLayersSelected: Story = {
     useCrossLayerStore.setState({
       visible: true,
       targetLayerFilters: new Set([
-        'motivation',
-        'business',
-        'application',
-        'technology',
-        'infrastructure',
+        LayerType.Motivation,
+        LayerType.Business,
+        LayerType.Application,
+        LayerType.Technology,
+        LayerType.Datastore,
       ]),
     });
 
@@ -108,7 +109,7 @@ export const SingleLayerSelected: Story = {
   render: () => {
     useCrossLayerStore.setState({
       visible: true,
-      targetLayerFilters: new Set(['application']),
+      targetLayerFilters: new Set([LayerType.Application]),
     });
 
     return (

@@ -7,6 +7,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { CrossLayerBreadcrumb } from '@/apps/embedded/components/CrossLayerBreadcrumb';
 import { useCrossLayerStore } from '@/core/stores/crossLayerStore';
+import { LayerType } from '@/core/types/layers';
 
 const meta = {
   title: 'A Primitives / Navigation / CrossLayerBreadcrumb',
@@ -27,7 +28,7 @@ export const SingleLayer: Story = {
     useCrossLayerStore.setState({
       visible: true,
       sourceElementId: 'elem-1',
-      targetLayerFilters: ['application'],
+      targetLayerFilters: new Set([LayerType.Application]),
       navigationHistory: [],
     });
 
@@ -50,10 +51,10 @@ export const MultipleLayers: Story = {
     useCrossLayerStore.setState({
       visible: true,
       sourceElementId: 'elem-1',
-      targetLayerFilters: ['business', 'application', 'technology'],
+      targetLayerFilters: new Set([LayerType.Business, LayerType.Application, LayerType.Technology]),
       navigationHistory: [
-        { elementId: 'elem-1', layerType: 'business' },
-        { elementId: 'elem-2', layerType: 'application' },
+        { layerId: LayerType.Business, elementId: 'elem-1', elementName: 'Element 1', timestamp: Date.now() },
+        { layerId: LayerType.Application, elementId: 'elem-2', elementName: 'Element 2', timestamp: Date.now() },
       ],
     });
 
