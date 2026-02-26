@@ -9,7 +9,6 @@ import { BusinessLayerParser } from '../src/core/services/businessLayerParser';
 import { BusinessGraphBuilder } from '../src/core/services/businessGraphBuilder';
 import { CrossLayerReferenceResolver } from '../src/core/services/crossLayerReferenceResolver';
 import { DataLoader } from '../src/core/services/dataLoader';
-import { GitHubService } from '../src/core/services/githubService';
 import { LocalFileLoader } from '../src/core/services/localFileLoader';
 import { SpecParser } from '../src/core/services/specParser';
 import { MetaModel } from '../src/core/types/model';
@@ -20,10 +19,9 @@ test.describe('Business Layer Parser Integration Tests', () => {
   let dataLoader: DataLoader;
 
   test.beforeAll(() => {
-    const githubService = new GitHubService();
     const localFileLoader = new LocalFileLoader();
     const specParser = new SpecParser();
-    dataLoader = new DataLoader(githubService, localFileLoader, specParser);
+    dataLoader = new DataLoader(undefined as any, localFileLoader, specParser);
   });
 
   test('should parse business layer from example-implementation model', async () => {

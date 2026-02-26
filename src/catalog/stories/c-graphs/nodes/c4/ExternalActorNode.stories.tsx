@@ -18,6 +18,15 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
+  args: {
+    id: 'actor-default',
+    data: {
+      nodeType: NodeType.C4_EXTERNAL_ACTOR,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'External Actor',
+    } as UnifiedNodeData,
+  },
 } satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
