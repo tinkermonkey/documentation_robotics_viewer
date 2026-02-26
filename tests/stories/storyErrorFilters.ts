@@ -42,9 +42,11 @@ export function isExpectedConsoleError(text: string): boolean {
   if (/^The tag <[\w-]+> is unrecognized/.test(text) || /^The tag <%s> is unrecognized/.test(text)) return true;
 
   // WebSocket errors when server unavailable - expected in isolated test environment
-  // Only filter localhost/127.0.0.1 connections (not production URLs)
+  // Only filter localhost/127.0.0.1 connections (not production/staging URLs)
   if (/WebSocket connection to ws:\/\/(localhost|127\.0\.0\.1):[0-9]+ failed/.test(text)) return true;
-  if (/^WebSocket not connected/.test(text)) return true;
+  // Match "WebSocket not connected" errors, but only when they mention localhost/127.0.0.1 to avoid masking production failures
+  // Pattern: "WebSocket not connected" with localhost/127.0.0.1 context anywhere in the message
+  if (/^WebSocket not connected/.test(text) && /(localhost|127\.0\.0\.1)/.test(text)) return true;
 
   // JSON-RPC request failures when backend unavailable - expected in story environment without backend server
   // ChatPanelContainer and other services attempt to send JSON-RPC messages to non-existent backend

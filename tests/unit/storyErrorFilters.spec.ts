@@ -169,9 +169,24 @@ test.describe('Story Error Filtering', () => {
         expect(isExpectedConsoleError(error)).toBe(false);
       });
 
-      test('should match WebSocket not connected at start of message', () => {
-        const error = 'WebSocket not connected';
+      test('should match WebSocket not connected with localhost context', () => {
+        const error = 'WebSocket not connected to localhost:8080';
         expect(isExpectedConsoleError(error)).toBe(true);
+      });
+
+      test('should match WebSocket not connected with 127.0.0.1 context', () => {
+        const error = 'WebSocket not connected to 127.0.0.1:8080';
+        expect(isExpectedConsoleError(error)).toBe(true);
+      });
+
+      test('should NOT match WebSocket not connected without host context', () => {
+        const error = 'WebSocket not connected';
+        expect(isExpectedConsoleError(error)).toBe(false);
+      });
+
+      test('should NOT match WebSocket not connected to production host', () => {
+        const error = 'WebSocket not connected to api.example.com:8080';
+        expect(isExpectedConsoleError(error)).toBe(false);
       });
 
       test('should NOT match WebSocket not connected in the middle of message', () => {
