@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Position } from '@xyflow/react';
 import type React from 'react';
+import type { NodeLayoutMode } from '../nodeConfig.types';
 
 export interface HandleConfig {
   id: string;
@@ -10,7 +11,7 @@ export interface HandleConfig {
 }
 
 interface UseNodeHandlesOptions {
-  layout: 'centered' | 'left' | 'table';
+  layout: NodeLayoutMode;
   handleColor: string;
   headerHeight: number;
 }
@@ -84,5 +85,5 @@ export function computeHandleConfigs(options: UseNodeHandlesOptions): HandleConf
 export function useNodeHandles(options: UseNodeHandlesOptions): HandleConfig[] {
   const { layout, handleColor, headerHeight } = options;
 
-  return useMemo(() => computeHandleConfigs(options), [layout, handleColor, headerHeight]);
+  return useMemo(() => computeHandleConfigs({ layout, handleColor, headerHeight }), [layout, handleColor, headerHeight]);
 }
