@@ -86,19 +86,6 @@ export const Expanded: Story = {
   },
 };
 
-export const ChangesetAdd: Story = {
-  render: (args) => <LayerContainerNode {...args} />,
-  args: {
-    data: createLayerContainerNodeData({
-      label: 'New Security Layer',
-      layerType: 'security',
-      color: '#f44336',
-      changesetOperation: 'add'
-    }),
-    id: 'container-5',
-  },
-};
-
 export const MotivationLayer: Story = {
   render: (args) => <LayerContainerNode {...args} />,
   args: {
