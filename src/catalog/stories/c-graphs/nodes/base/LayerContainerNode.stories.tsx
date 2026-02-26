@@ -17,7 +17,6 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: (args) => <LayerContainerNode {...args} />,
   args: {
     data: createLayerContainerNodeData({
       label: 'Business Layer',
@@ -63,7 +62,6 @@ export const WithChildren: Story = {
 };
 
 export const Collapsed: Story = {
-  render: (args) => <LayerContainerNode {...args} />,
   args: {
     data: createLayerContainerNodeData({
       label: 'API Layer',
@@ -75,7 +73,6 @@ export const Collapsed: Story = {
 };
 
 export const Expanded: Story = {
-  render: (args) => <LayerContainerNode {...args} />,
   args: {
     data: createLayerContainerNodeData({
       label: 'Data Model Layer',
@@ -87,7 +84,6 @@ export const Expanded: Story = {
 };
 
 export const MotivationLayer: Story = {
-  render: (args) => <LayerContainerNode {...args} />,
   args: {
     data: createLayerContainerNodeData({
       label: 'Motivation Layer',
@@ -99,7 +95,6 @@ export const MotivationLayer: Story = {
 };
 
 export const ApplicationLayer: Story = {
-  render: (args) => <LayerContainerNode {...args} />,
   args: {
     data: createLayerContainerNodeData({
       label: 'Application Layer',
@@ -111,7 +106,6 @@ export const ApplicationLayer: Story = {
 };
 
 export const Highlighted: Story = {
-  render: (args) => <LayerContainerNode {...args} />,
   args: {
     data: createLayerContainerNodeData({
       label: 'Highlighted Layer',

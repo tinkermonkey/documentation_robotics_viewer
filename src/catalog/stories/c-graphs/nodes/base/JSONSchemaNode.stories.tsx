@@ -27,7 +27,6 @@ type Story = StoryObj<typeof meta>;
  */
 
 export const WithMultipleProperties: Story = {
-  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_JSON_SCHEMA,
@@ -50,7 +49,6 @@ export const WithMultipleProperties: Story = {
 };
 
 export const WithRequiredOnly: Story = {
-  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_JSON_SCHEMA,
@@ -68,7 +66,6 @@ export const WithRequiredOnly: Story = {
 };
 
 export const WithComplexTypes: Story = {
-  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_JSON_SCHEMA,
@@ -90,7 +87,6 @@ export const WithComplexTypes: Story = {
 };
 
 export const EmptySchema: Story = {
-  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_JSON_SCHEMA,
@@ -105,7 +101,6 @@ export const EmptySchema: Story = {
 };
 
 export const Highlighted: Story = {
-  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_JSON_SCHEMA,
@@ -124,7 +119,6 @@ export const Highlighted: Story = {
 
 export const EntityConfiguration: Story = {
   name: 'Entity (CLASS)',
-  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_JSON_SCHEMA,
@@ -150,7 +144,6 @@ export const EntityConfiguration: Story = {
 
 export const InterfaceConfiguration: Story = {
   name: 'Interface (INTERFACE)',
-  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_JSON_SCHEMA,
@@ -173,7 +166,6 @@ export const InterfaceConfiguration: Story = {
 
 export const EnumConfiguration: Story = {
   name: 'Enum (ENUM)',
-  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_JSON_SCHEMA,
@@ -197,7 +189,6 @@ export const EnumConfiguration: Story = {
 
 export const TableConfiguration: Story = {
   name: 'Table (TABLE)',
-  render: (args) => <UnifiedNode {...args} />,
   args: {
     data: {
       nodeType: NodeType.DATA_JSON_SCHEMA,
@@ -222,7 +213,6 @@ export const TableConfiguration: Story = {
 };
 
 export const ChangesetAdd: Story = {
-  render: (args) => <UnifiedNode {...args} />,
   args: {
     id: 'jsonschema-7',
     data: {
@@ -240,7 +230,6 @@ export const ChangesetAdd: Story = {
 };
 
 export const ChangesetUpdate: Story = {
-  render: (args) => <UnifiedNode {...args} />,
   args: {
     id: 'jsonschema-8',
     data: {
@@ -259,7 +248,6 @@ export const ChangesetUpdate: Story = {
 };
 
 export const ChangesetDelete: Story = {
-  render: (args) => <UnifiedNode {...args} />,
   args: {
     id: 'jsonschema-9',
     data: {
