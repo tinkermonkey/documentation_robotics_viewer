@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from '@storybook/react';
 import UnifiedNode from '@/core/nodes/components/UnifiedNode';
 import { NodeType } from '@/core/nodes/NodeType';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import type { UnifiedNodeData } from '@/core/nodes/components/UnifiedNode';
 
 import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
 
@@ -25,7 +24,7 @@ const meta = {
       layerId: 'test-layer',
       elementId: 'test-element-id',
       label: 'Component',
-    } as UnifiedNodeData,
+    },
   },
   argTypes: {},
 } satisfies Meta<typeof UnifiedNode>;
@@ -42,7 +41,7 @@ export const Default: Story = {
       elementId: 'test-element-id',
       label: 'GraphViewer Component',
       items: [],
-    } as UnifiedNodeData,
+    },
   },
 };
 
@@ -59,7 +58,7 @@ export const ControllerComponent: Story = {
         { id: 'technologies', label: 'Technologies', value: 'Express, TypeScript', required: false },
         { id: 'role', label: 'Role', value: 'Controller', required: false },
       ],
-    } as UnifiedNodeData,
+    },
   },
 };
 
@@ -76,7 +75,7 @@ export const ServiceComponent: Story = {
         { id: 'technologies', label: 'Technologies', value: 'Node.js, JWT', required: false },
         { id: 'role', label: 'Role', value: 'Service', required: false },
       ],
-    } as UnifiedNodeData,
+    },
   },
 };
 
@@ -93,7 +92,7 @@ export const RepositoryComponent: Story = {
         { id: 'technologies', label: 'Technologies', value: 'TypeORM', required: false },
         { id: 'role', label: 'Role', value: 'Repository', required: false },
       ],
-    } as UnifiedNodeData,
+    },
   },
 };
 
@@ -110,7 +109,7 @@ export const UIComponentExample: Story = {
         { id: 'technologies', label: 'Technologies', value: 'React, @xyflow/react', required: false },
         { id: 'role', label: 'Role', value: 'UI Component', required: false },
       ],
-    } as UnifiedNodeData,
+    },
   },
 };
 
@@ -126,7 +125,7 @@ export const WithInterfaces: Story = {
         { id: 'description', label: 'Description', value: 'Processes payment transactions', required: false },
         { id: 'interfaces', label: 'Interfaces', value: 'IPaymentService, ITransactionLogger', required: false },
       ],
-    } as UnifiedNodeData,
+    },
   },
 };
 
@@ -139,8 +138,8 @@ export const ChangesetAdd: Story = {
       elementId: 'test-element-id',
       label: 'New Component',
       items: [],
-      changesetOperation: 'add',
-    } as UnifiedNodeData,
+      changesetOperation: 'add' as const,
+    },
   },
 };
 
@@ -153,8 +152,8 @@ export const ChangesetUpdate: Story = {
       elementId: 'test-element-id',
       label: 'Updated Component',
       items: [],
-      changesetOperation: 'update',
-    } as UnifiedNodeData,
+      changesetOperation: 'update' as const,
+    },
   },
 };
 
@@ -167,8 +166,8 @@ export const ChangesetDelete: Story = {
       elementId: 'test-element-id',
       label: 'Deleted Component',
       items: [],
-      changesetOperation: 'delete',
-    } as UnifiedNodeData,
+      changesetOperation: 'delete' as const,
+    },
   },
 };
 
@@ -180,8 +179,8 @@ export const MinimalZoom: Story = {
       layerId: 'test-layer',
       elementId: 'test-element-id',
       label: 'Auth Service',
-      detailLevel: 'minimal',
-    } as UnifiedNodeData,
+      detailLevel: 'minimal' as const,
+    },
   },
 };
 
@@ -193,7 +192,7 @@ export const Highlighted: Story = {
       layerId: 'test-layer',
       elementId: 'test-element-id',
       label: 'Highlighted Node',
-    } as UnifiedNodeData,
+    },
   },
 };
 
@@ -209,8 +208,8 @@ export const StandardZoom: Story = {
         { id: 'description', label: 'Description', value: 'Manages user authentication and authorization', required: false },
         { id: 'technologies', label: 'Technologies', value: 'Node.js, JWT, Express', required: false },
       ],
-      detailLevel: 'standard',
-    } as UnifiedNodeData,
+      detailLevel: 'standard' as const,
+    },
   },
 };
 
@@ -229,8 +228,8 @@ export const DetailedZoom: Story = {
         { id: 'responsibility', label: 'Responsibility', value: 'User login, permission verification, token generation and validation', required: false },
         { id: 'interfaces', label: 'Interfaces', value: 'IAuthService, ITokenProvider', required: false },
       ],
-      detailLevel: 'detailed',
-    } as UnifiedNodeData,
+      detailLevel: 'detailed' as const,
+    },
   },
 };
 
