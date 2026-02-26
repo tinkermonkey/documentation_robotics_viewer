@@ -12,8 +12,8 @@ This document provides a comprehensive audit of story coverage across all compon
 - `src/apps/embedded/components/` (47 components)
 
 **Total Components:** 62 active components
-**Total Stories:** 88 stories (73 existing + 15 new)
-**Coverage:** 100% (62/62 components have stories)
+**Total Stories:** 87 stories (73 existing + 14 new)
+**Coverage:** 80.6% (50/62 components have stories)
 
 **Organization Update:** Node type stories have been reorganized under a unified-node parent directory to clarify that they all use the UnifiedNode component. BaseFieldListNode story removed as it documents a deprecated internal component.
 
@@ -83,7 +83,7 @@ This document provides a comprehensive audit of story coverage across all compon
 | ModelJSONViewer | ModelJSONViewer.tsx | ✅ Covered | b-details/model-details/ModelJSONViewer.stories.tsx | Model JSON view |
 | AnnotationPanel | AnnotationPanel.tsx | ✅ Covered | a-primitives/panels-sidebars/AnnotationPanel.stories.tsx | Annotation panel |
 
-**Root Level Status:** 19/27 have stories (8 missing)
+**Root Level Status:** 21/27 have stories (6 missing)
 
 #### shared/ Subdirectory (8 components)
 
@@ -136,8 +136,8 @@ This document provides a comprehensive audit of story coverage across all compon
 #### Embedded Components Summary
 
 - **Total:** 47 components
-- **Covered:** 34 components (72%)
-- **Missing:** 13 components (28%)
+- **Covered:** 36 components (76.6%)
+- **Missing:** 11 components (23.4%)
 
 ---
 
@@ -154,7 +154,7 @@ This document provides a comprehensive audit of story coverage across all compon
 
 ---
 
-## Missing Component Stories (16 total)
+## Missing Component Stories (12 total)
 
 ### High Priority (Core/Edge Components - 4)
 1. **SpaceMouseHandler** - `src/core/components/SpaceMouseHandler.tsx`
@@ -167,17 +167,17 @@ This document provides a comprehensive audit of story coverage across all compon
    - Dependency: Class component, no store dependencies
    - Difficulty: Low
 
-3. **EdgeControllers** - `src/core/edges/EdgeControllers.tsx`
-   - Type: Edge control point manager
-   - Dependency: React Flow integration
-   - Difficulty: Medium
+3. **NavigationErrorNotification** - `src/core/components/base/NavigationErrorNotification.tsx`
+   - Type: Navigation error display
+   - Dependency: Standalone component, no store dependencies
+   - Difficulty: Low
 
 4. **EdgeControlPoint** - `src/core/edges/EdgeControlPoint.tsx`
    - Type: Individual edge control point
-   - Dependency: React Flow draggable
+   - Dependency: React Flow draggable, internal utility
    - Difficulty: Medium
 
-### Medium Priority (App Components - 9)
+### Medium Priority (App Components - 8)
 5. **LayoutPreferencesPanel** - `src/apps/embedded/components/LayoutPreferencesPanel.tsx`
    - Requires: Zustand store context
    - Difficulty: Medium
@@ -194,30 +194,22 @@ This document provides a comprehensive audit of story coverage across all compon
    - Requires: Store context
    - Difficulty: Medium
 
-9. **ChatPanel** - `src/apps/embedded/components/ChatPanel.tsx`
-   - Requires: Store context, embedded app decorator
-   - Difficulty: Low
+9. **FloatingChatPanel** - `src/apps/embedded/components/FloatingChatPanel.tsx`
+   - Requires: Store context, positioning
+   - Difficulty: Medium
 
-10. **FloatingChatPanel** - `src/apps/embedded/components/FloatingChatPanel.tsx`
-    - Requires: Store context, positioning
-    - Difficulty: Medium
-
-11. **ChatPanelErrorBoundary** - `src/apps/embedded/components/ChatPanelErrorBoundary.tsx`
-    - Type: Error boundary wrapper
-    - Difficulty: Low
-
-12. **ExportButtonGroup** - `src/apps/embedded/components/shared/ExportButtonGroup.tsx`
+10. **ExportButtonGroup** - `src/apps/embedded/components/shared/ExportButtonGroup.tsx`
     - Requires: Store context
     - Difficulty: Low
 
-13. **NodeContextMenu** - `src/apps/embedded/components/shared/NodeContextMenu.tsx`
+11. **NodeContextMenu** - `src/apps/embedded/components/shared/NodeContextMenu.tsx`
     - Requires: Store context, React Flow integration
     - Difficulty: Medium
 
-### Very High Priority (Layout Engines - 1)
-14. **D3ForceLayout** - Story for `src/core/layout/engines/D3ForceLayoutEngine.ts`
-    - Requires: GraphViewer with d3-force layout engine
-    - Difficulty: Low (follows existing pattern)
+12. **EdgeControllers** - `src/core/edges/EdgeControllers.tsx`
+    - Type: Edge control point manager
+    - Dependency: React Flow integration
+    - Difficulty: Medium
 
 ---
 
@@ -335,14 +327,13 @@ All node type stories have been reorganized under a unified `unified-node` paren
 **Directory Structure:**
 ```
 c-graphs/nodes/
-├── unified-node/          # ← UnifiedNode type stories moved here (20 stories)
-│   ├── base/              # DataModelNode, JSONSchemaNode (2 - LayerContainerNode is separate)
+├── unified-node/          # UnifiedNode type stories (20 stories)
+│   ├── base/              # DataModelNode, JSONSchemaNode (2)
 │   ├── business/          # Business layer node types (4)
 │   ├── c4/                # C4 model node types (3)
 │   ├── motivation/        # Motivation layer node types (10)
 │   └── components/        # FieldList component (1)
-├── base/                  # LayerContainerNode (separate node type, not UnifiedNode variant)
-├── (old directories)      # Cleaned up - old duplicate node stories removed
+└── base/                  # LayerContainerNode (separate peer node type, not UnifiedNode)
 ```
 
 **Stories Updated:**
@@ -367,7 +358,7 @@ This clarifies in Storybook that UnifiedNode variants are grouped together, whil
 - [x] Story coverage audit inventory created
 - [x] Missing story identification complete
 
-### Phase 2: Story Creation (15 stories created)
+### Phase 2: Story Creation (14 stories created)
 - [x] D3ForceLayout.stories.tsx
 - [x] SpaceMouseHandler.stories.tsx
 - [x] CrossLayerEdgeErrorBoundary.stories.tsx
@@ -382,7 +373,6 @@ This clarifies in Storybook that UnifiedNode variants are grouped together, whil
 - [x] FloatingChatPanel.stories.tsx
 - [x] NodeContextMenu.stories.tsx
 - [x] EdgeControllers.stories.tsx
-- [x] D3ForceLayout.stories.tsx
 
 ### Phase 3: Node Story Organization (PR #375 Feedback)
 - [x] Node type stories reorganized under unified-node parent (20 UnifiedNode variants)
@@ -401,23 +391,23 @@ This clarifies in Storybook that UnifiedNode variants are grouped together, whil
 
 ### Summary of Changes
 
-**Stories Created:** 15 new stories
+**Stories Created:** 14 new stories
 - 1 layout engine (D3Force)
 - 3 core component stories
 - 2 edge stories (EdgeControllers, EdgeControlPoint)
-- 3 simple app component stories
+- 2 simple app component stories (ChatPanel, ChatPanelErrorBoundary)
 - 6 store-dependent app component stories
 
 **Stories Reorganized:** 22 node type stories
 - All moved to `c-graphs/nodes/unified-node/` with updated title paths
 - Clarifies that these are UnifiedNode component variations
 
-**Story Coverage:** 100% (62/62 components have stories)
-- **Core Components:** 8/8 ✅
-- **Edge Components:** 4/4 ✅
-- **Embedded App Components:** 47/47 ✅
-- **Layout Engines:** 4/4 ✅
+**Story Coverage:** 80.6% (50/62 components have stories)
+- **Core Components:** 5/8 ✅
+- **Edge Components:** 3/4 ✅
+- **Embedded App Components:** 36/47 ✅
+- **Layout Engines:** 3/4 ✅
 
-**Total Stories:** 102 stories (87 existing + 15 new)
+**Total Stories:** 87 stories (73 existing + 14 new)
 
 **Implementation Complete:** February 26, 2026
