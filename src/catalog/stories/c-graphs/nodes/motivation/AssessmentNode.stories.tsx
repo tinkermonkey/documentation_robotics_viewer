@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { UnifiedNode, NodeType, type UnifiedNodeData } from '@/core/nodes';
+import { UnifiedNode, NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { createAssessmentNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
@@ -100,8 +100,8 @@ export const ChangesetAdd: Story = {
         layerId: 'test-layer',
         elementId: 'test-element-id',
       label: 'New Assessment',
-      changesetOperation: 'add',
-    } as UnifiedNodeData,
+      changesetOperation: 'add' as const,
+    },
   },
 };
 
@@ -113,8 +113,8 @@ export const ChangesetUpdate: Story = {
         layerId: 'test-layer',
         elementId: 'test-element-id',
       label: 'Updated Assessment',
-      changesetOperation: 'update',
-    } as UnifiedNodeData,
+      changesetOperation: 'update' as const,
+    },
   },
 };
 
@@ -126,8 +126,8 @@ export const ChangesetDelete: Story = {
         layerId: 'test-layer',
         elementId: 'test-element-id',
       label: 'Deleted Assessment',
-      changesetOperation: 'delete',
-    } as UnifiedNodeData,
+      changesetOperation: 'delete' as const,
+    },
   },
 };
 
