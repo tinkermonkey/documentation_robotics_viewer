@@ -38,7 +38,8 @@ export function isExpectedConsoleError(text: string): boolean {
   // Unrecognized HTML tags - expected with custom or dynamic elements
   // Use specific tag name pattern (alphanumeric and hyphens) not greedy match
   // Also matches formatted errors with placeholder <%s>
-  if (/^The tag </.test(text) && text.includes('is unrecognized')) return true;
+  // Only match valid tag names (no spaces): <tag-name> or <%s> (placeholder)
+  if (/^The tag <[\w-]+> is unrecognized/.test(text) || /^The tag <%s> is unrecognized/.test(text)) return true;
 
   // WebSocket errors when server unavailable - expected in isolated test environment
   // Only filter localhost/127.0.0.1 connections (not production URLs)
