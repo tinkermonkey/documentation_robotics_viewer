@@ -24,8 +24,7 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
-  argTypes: {},
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
