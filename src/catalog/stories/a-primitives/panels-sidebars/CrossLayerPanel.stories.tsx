@@ -25,19 +25,17 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
   render: () => {
-    
-      useCrossLayerStore.setState({
-        visible: true,
-        sourceElementId: 'elem-1',
-        targetLayerFilters: ['application', 'technology'],
-        relationshipTypes: [],
-      });
-    }, []);
+    useCrossLayerStore.setState({
+      visible: true,
+      sourceElementId: 'elem-1',
+      targetLayerFilters: new Set(['application', 'technology']),
+      relationshipTypeFilters: new Set(),
+    });
 
     return (
       <div className="w-full max-w-2xl h-96 p-4">
         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg h-full flex flex-col">
-          <CrossLayerPanel data-testid="cross-layer-panel-default" />
+          <CrossLayerPanel />
         </div>
       </div>
     );
@@ -50,19 +48,17 @@ export const Default: Story = {
  */
 export const Expanded: Story = {
   render: () => {
-    
-      useCrossLayerStore.setState({
-        visible: true,
-        sourceElementId: 'service-backend',
-        targetLayerFilters: ['business', 'application', 'technology', 'infrastructure'],
-        relationshipTypes: [],
-      });
-    }, []);
+    useCrossLayerStore.setState({
+      visible: true,
+      sourceElementId: 'service-backend',
+      targetLayerFilters: new Set(['business', 'application', 'technology', 'infrastructure']),
+      relationshipTypeFilters: new Set(),
+    });
 
     return (
       <div className="w-full max-w-3xl h-96 p-4">
         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg h-full flex flex-col">
-          <CrossLayerPanel data-testid="cross-layer-panel-expanded" />
+          <CrossLayerPanel />
         </div>
       </div>
     );
@@ -75,19 +71,17 @@ export const Expanded: Story = {
  */
 export const Compact: Story = {
   render: () => {
-    
-      useCrossLayerStore.setState({
-        visible: true,
-        sourceElementId: 'elem-2',
-        targetLayerFilters: ['technology'],
-        relationshipTypes: [],
-      });
-    }, []);
+    useCrossLayerStore.setState({
+      visible: true,
+      sourceElementId: 'elem-2',
+      targetLayerFilters: new Set(['technology']),
+      relationshipTypeFilters: new Set(),
+    });
 
     return (
       <div className="w-full max-w-md h-60 p-4">
         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg h-full flex flex-col">
-          <CrossLayerPanel data-testid="cross-layer-panel-compact" />
+          <CrossLayerPanel />
         </div>
       </div>
     );
@@ -100,13 +94,11 @@ export const Compact: Story = {
  */
 export const Hidden: Story = {
   render: () => {
-    
-      useCrossLayerStore.setState({
-        visible: false,
-        sourceElementId: null,
-        targetLayerFilters: [],
-      });
-    }, []);
+    useCrossLayerStore.setState({
+      visible: false,
+      sourceElementId: null,
+      targetLayerFilters: new Set(),
+    });
 
     return (
       <div className="w-full max-w-2xl p-4">
@@ -114,7 +106,7 @@ export const Hidden: Story = {
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Cross-layer panel is hidden when no element is selected
           </p>
-          <CrossLayerPanel data-testid="cross-layer-panel-hidden" />
+          <CrossLayerPanel />
         </div>
       </div>
     );
@@ -127,13 +119,11 @@ export const Hidden: Story = {
  */
 export const Loading: Story = {
   render: () => {
-    
-      useCrossLayerStore.setState({
-        visible: true,
-        sourceElementId: 'elem-3',
-        targetLayerFilters: ['application'],
-      });
-    }, []);
+    useCrossLayerStore.setState({
+      visible: true,
+      sourceElementId: 'elem-3',
+      targetLayerFilters: new Set(['application']),
+    });
 
     return (
       <div className="w-full max-w-2xl h-96 p-4">

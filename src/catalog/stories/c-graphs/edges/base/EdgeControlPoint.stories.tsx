@@ -100,10 +100,10 @@ export const SingleControlPoint: Story = {
         >
           <Background color="#aaa" gap={16} />
           <ControlPointDemo />
-          <div className="absolute bottom-4 left-4 bg-white p-3 rounded shadow text-sm">
-            <p className="font-semibold mb-2">Single Control Point</p>
-            <p className="text-gray-600">Drag the point to move it</p>
-            <p className="text-xs text-gray-500 mt-1">
+          <div className="absolute bottom-4 left-4 bg-white dark:bg-gray-800 p-3 rounded shadow text-sm border border-gray-200 dark:border-gray-700">
+            <p className="font-semibold text-gray-900 dark:text-white mb-2">Single Control Point</p>
+            <p className="text-gray-600 dark:text-gray-300">Drag the point to move it</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               Double-click or press Delete to remove
             </p>
           </div>
@@ -202,10 +202,10 @@ export const MultipleControlPoints: Story = {
         >
           <Background color="#aaa" gap={16} />
           <ControlPointsDemo />
-          <div className="absolute bottom-4 left-4 bg-white p-3 rounded shadow text-sm">
-            <p className="font-semibold mb-2">Multiple Control Points</p>
-            <p className="text-gray-600">Drag to move, double-click to remove</p>
-            <p className="text-xs text-gray-500 mt-1">
+          <div className="absolute bottom-4 left-4 bg-white dark:bg-gray-800 p-3 rounded shadow text-sm border border-gray-200 dark:border-gray-700">
+            <p className="font-semibold text-gray-900 dark:text-white mb-2">Multiple Control Points</p>
+            <p className="text-gray-600 dark:text-gray-300">Drag to move, double-click to remove</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               Complex paths can have many waypoints
             </p>
           </div>
@@ -293,10 +293,10 @@ export const KeyboardNavigation: Story = {
         >
           <Background color="#aaa" gap={16} />
           <KeyboardDemo />
-          <div className="absolute bottom-4 left-4 bg-white p-3 rounded shadow text-sm">
-            <p className="font-semibold mb-2">Keyboard Navigation</p>
-            <p className="text-gray-600">Try these interactions:</p>
-            <ul className="text-xs text-gray-500 mt-2 space-y-1">
+          <div className="absolute bottom-4 left-4 bg-white dark:bg-gray-800 p-3 rounded shadow text-sm border border-gray-200 dark:border-gray-700">
+            <p className="font-semibold text-gray-900 dark:text-white mb-2">Keyboard Navigation</p>
+            <p className="text-gray-600 dark:text-gray-300">Try these interactions:</p>
+            <ul className="text-xs text-gray-500 dark:text-gray-400 mt-2 space-y-1">
               <li>• Drag to reposition</li>
               <li>• Arrow keys to nudge (10px)</li>
               <li>• Double-click to remove</li>

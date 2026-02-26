@@ -71,9 +71,9 @@ export const BasicEdge: Story = {
       return (
         <div>
           <EdgeControllers edgeId={selectedEdge.id} waypoints={waypoints} />
-          <div className="absolute bottom-4 left-4 bg-white p-3 rounded shadow text-sm">
-            <p className="font-semibold mb-2">Edge Controllers Active</p>
-            <p className="text-gray-600">
+          <div className="absolute bottom-4 left-4 bg-white dark:bg-gray-800 p-3 rounded shadow text-sm border border-gray-200 dark:border-gray-700">
+            <p className="font-semibold text-gray-900 dark:text-white mb-2">Edge Controllers Active</p>
+            <p className="text-gray-600 dark:text-gray-300">
               Waypoints: {waypoints.length}
             </p>
           </div>
@@ -151,12 +151,12 @@ export const MultipleWaypoints: Story = {
       return (
         <div>
           <EdgeControllers edgeId={selectedEdge.id} waypoints={waypoints} />
-          <div className="absolute bottom-4 left-4 bg-white p-3 rounded shadow text-sm">
-            <p className="font-semibold mb-2">Complex Path</p>
-            <p className="text-gray-600">
+          <div className="absolute bottom-4 left-4 bg-white dark:bg-gray-800 p-3 rounded shadow text-sm border border-gray-200 dark:border-gray-700">
+            <p className="font-semibold text-gray-900 dark:text-white mb-2">Complex Path</p>
+            <p className="text-gray-600 dark:text-gray-300">
               Waypoints: {waypoints.length}
             </p>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               Drag each control point to reshape the path
             </p>
           </div>
@@ -229,9 +229,9 @@ export const SingleWaypoint: Story = {
       return (
         <div>
           <EdgeControllers edgeId={selectedEdge.id} waypoints={waypoints} />
-          <div className="absolute bottom-4 left-4 bg-white p-3 rounded shadow text-sm">
-            <p className="font-semibold mb-2">Single Waypoint</p>
-            <p className="text-gray-600">
+          <div className="absolute bottom-4 left-4 bg-white dark:bg-gray-800 p-3 rounded shadow text-sm border border-gray-200 dark:border-gray-700">
+            <p className="font-semibold text-gray-900 dark:text-white mb-2">Single Waypoint</p>
+            <p className="text-gray-600 dark:text-gray-300">
               Simple curved path with one control point
             </p>
           </div>
@@ -304,9 +304,9 @@ export const NoWaypoints: Story = {
       return (
         <div>
           <EdgeControllers edgeId={selectedEdge.id} waypoints={waypoints} />
-          <div className="absolute bottom-4 left-4 bg-white p-3 rounded shadow text-sm">
-            <p className="font-semibold mb-2">No Control Points</p>
-            <p className="text-gray-600">
+          <div className="absolute bottom-4 left-4 bg-white dark:bg-gray-800 p-3 rounded shadow text-sm border border-gray-200 dark:border-gray-700">
+            <p className="font-semibold text-gray-900 dark:text-white mb-2">No Control Points</p>
+            <p className="text-gray-600 dark:text-gray-300">
               Direct edge without waypoints
             </p>
           </div>

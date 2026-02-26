@@ -6,7 +6,7 @@
  */
 import type { Meta, StoryObj } from '@storybook/react';
 import { LayoutPreferencesPanel } from '@/apps/embedded/components/LayoutPreferencesPanel';
-import { useLayoutPreferencesStore } from '@/apps/embedded/stores/layoutPreferencesStore';
+import { useLayoutPreferencesStore } from '@/core/stores/layoutPreferencesStore';
 
 const meta = {
   title: 'A Primitives / State Panels / LayoutPreferencesPanel',
@@ -25,14 +25,13 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => {
     useLayoutPreferencesStore.setState({
-      layoutEngine: 'dagre',
-      autoLayout: true,
-      animateLayout: true,
+      defaultEngines: { motivation: 'dagre', business: 'dagre' },
+      activePreset: null,
     });
 
     return (
       <div className="w-full max-w-md p-4">
-        <LayoutPreferencesPanel data-testid="layout-preferences-panel" />
+        <LayoutPreferencesPanel />
       </div>
     );
   },
@@ -44,21 +43,14 @@ export const Default: Story = {
  */
 export const DagreLayout: Story = {
   render: () => {
-    
-      useLayoutPreferencesStore.setState({
-        layoutEngine: 'dagre',
-        autoLayout: true,
-        animateLayout: true,
-        dagreConfig: {
-          rankdir: 'TB',
-          nodesep: 50,
-          ranksep: 80,
-        },
-      });
+    useLayoutPreferencesStore.setState({
+      defaultEngines: { motivation: 'dagre', business: 'dagre', application: 'dagre' },
+      activePreset: null,
+    });
 
     return (
       <div className="w-full max-w-md p-4">
-        <LayoutPreferencesPanel data-testid="layout-dagre" />
+        <LayoutPreferencesPanel />
       </div>
     );
   },
@@ -70,20 +62,14 @@ export const DagreLayout: Story = {
  */
 export const ELKLayout: Story = {
   render: () => {
-    
-      useLayoutPreferencesStore.setState({
-        layoutEngine: 'elk',
-        autoLayout: true,
-        animateLayout: true,
-        elkConfig: {
-          'elk.algorithm': 'mrtree',
-          'elk.direction': 'DOWN',
-        },
-      });
+    useLayoutPreferencesStore.setState({
+      defaultEngines: { motivation: 'elk', business: 'elk', application: 'elk' },
+      activePreset: null,
+    });
 
     return (
       <div className="w-full max-w-md p-4">
-        <LayoutPreferencesPanel data-testid="layout-elk" />
+        <LayoutPreferencesPanel />
       </div>
     );
   },
@@ -95,21 +81,14 @@ export const ELKLayout: Story = {
  */
 export const D3ForceLayout: Story = {
   render: () => {
-    
-      useLayoutPreferencesStore.setState({
-        layoutEngine: 'd3-force',
-        autoLayout: false,
-        animateLayout: true,
-        d3ForceConfig: {
-          strength: -30,
-          distance: 100,
-          iterations: 200,
-        },
-      });
+    useLayoutPreferencesStore.setState({
+      defaultEngines: { motivation: 'd3-force', business: 'd3-force', application: 'd3-force' },
+      activePreset: null,
+    });
 
     return (
       <div className="w-full max-w-md p-4">
-        <LayoutPreferencesPanel data-testid="layout-d3force" />
+        <LayoutPreferencesPanel />
       </div>
     );
   },
@@ -121,16 +100,14 @@ export const D3ForceLayout: Story = {
  */
 export const NoAnimation: Story = {
   render: () => {
-    
-      useLayoutPreferencesStore.setState({
-        layoutEngine: 'dagre',
-        autoLayout: true,
-        animateLayout: false,
-      });
+    useLayoutPreferencesStore.setState({
+      defaultEngines: { motivation: 'dagre', business: 'dagre' },
+      activePreset: null,
+    });
 
     return (
       <div className="w-full max-w-md p-4">
-        <LayoutPreferencesPanel data-testid="layout-no-animation" />
+        <LayoutPreferencesPanel />
       </div>
     );
   },
@@ -142,16 +119,14 @@ export const NoAnimation: Story = {
  */
 export const ManualLayout: Story = {
   render: () => {
-    
-      useLayoutPreferencesStore.setState({
-        layoutEngine: 'dagre',
-        autoLayout: false,
-        animateLayout: true,
-      });
+    useLayoutPreferencesStore.setState({
+      defaultEngines: { motivation: 'dagre', business: 'dagre' },
+      activePreset: null,
+    });
 
     return (
       <div className="w-full max-w-md p-4">
-        <LayoutPreferencesPanel data-testid="layout-manual" />
+        <LayoutPreferencesPanel />
       </div>
     );
   },

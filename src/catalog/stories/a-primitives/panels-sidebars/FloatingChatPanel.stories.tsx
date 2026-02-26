@@ -25,14 +25,12 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
   render: () => {
-    
-      useFloatingChatStore.setState({
-        isOpen: true,
-        isMinimized: false,
-        position: { x: 500, y: 200 },
-        size: { width: 400, height: 500 },
-      });
-    }, []);
+    useFloatingChatStore.setState({
+      isOpen: true,
+      isMinimized: false,
+      position: { x: 500, y: 200 },
+      size: { width: 400, height: 500 },
+    });
 
     return (
       <div className="h-screen w-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center overflow-hidden">
@@ -58,14 +56,12 @@ export const Default: Story = {
  */
 export const Minimized: Story = {
   render: () => {
-    
-      useFloatingChatStore.setState({
-        isOpen: true,
-        isMinimized: true,
-        position: { x: 100, y: 100 },
-        size: { width: 350, height: 500 },
-      });
-    }, []);
+    useFloatingChatStore.setState({
+      isOpen: true,
+      isMinimized: true,
+      position: { x: 100, y: 100 },
+      size: { width: 350, height: 500 },
+    });
 
     return (
       <div className="h-screen w-screen bg-gradient-to-br from-purple-50 to-pink-100 dark:from-gray-900 dark:to-gray-800">
@@ -81,14 +77,12 @@ export const Minimized: Story = {
  */
 export const TopRight: Story = {
   render: () => {
-    
-      useFloatingChatStore.setState({
-        isOpen: true,
-        isMinimized: false,
-        position: { x: window.innerWidth - 420, y: 20 },
-        size: { width: 400, height: 500 },
-      });
-    }, []);
+    useFloatingChatStore.setState({
+      isOpen: true,
+      isMinimized: false,
+      position: { x: window.innerWidth - 420, y: 20 },
+      size: { width: 400, height: 500 },
+    });
 
     return (
       <div className="h-screen w-screen bg-gradient-to-br from-green-50 to-teal-100 dark:from-gray-900 dark:to-gray-800">
@@ -104,14 +98,12 @@ export const TopRight: Story = {
  */
 export const BottomLeft: Story = {
   render: () => {
-    
-      useFloatingChatStore.setState({
-        isOpen: true,
-        isMinimized: false,
-        position: { x: 20, y: window.innerHeight - 520 },
-        size: { width: 350, height: 500 },
-      });
-    }, []);
+    useFloatingChatStore.setState({
+      isOpen: true,
+      isMinimized: false,
+      position: { x: 20, y: window.innerHeight - 520 },
+      size: { width: 350, height: 500 },
+    });
 
     return (
       <div className="h-screen w-screen bg-gradient-to-br from-orange-50 to-red-100 dark:from-gray-900 dark:to-gray-800">
@@ -127,14 +119,12 @@ export const BottomLeft: Story = {
  */
 export const Closed: Story = {
   render: () => {
-    
-      useFloatingChatStore.setState({
-        isOpen: false,
-        isMinimized: false,
-        position: { x: 500, y: 200 },
-        size: { width: 400, height: 500 },
-      });
-    }, []);
+    useFloatingChatStore.setState({
+      isOpen: false,
+      isMinimized: false,
+      position: { x: 500, y: 200 },
+      size: { width: 400, height: 500 },
+    });
 
     return (
       <div className="h-screen w-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
@@ -157,14 +147,12 @@ export const Closed: Story = {
  */
 export const CompactSize: Story = {
   render: () => {
-    
-      useFloatingChatStore.setState({
-        isOpen: true,
-        isMinimized: false,
-        position: { x: 10, y: 10 },
-        size: { width: 300, height: 400 },
-      });
-    }, []);
+    useFloatingChatStore.setState({
+      isOpen: true,
+      isMinimized: false,
+      position: { x: 10, y: 10 },
+      size: { width: 300, height: 400 },
+    });
 
     return (
       <div className="h-screen w-screen bg-gradient-to-br from-yellow-50 to-amber-100 dark:from-gray-900 dark:to-gray-800">

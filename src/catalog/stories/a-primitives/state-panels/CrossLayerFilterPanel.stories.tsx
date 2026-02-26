@@ -25,12 +25,10 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
   render: () => {
-    
-      useCrossLayerStore.setState({
-        visible: true,
-        targetLayerFilters: ['application', 'technology'],
-      });
-    }, []);
+    useCrossLayerStore.setState({
+      visible: true,
+      targetLayerFilters: new Set(['application', 'technology']),
+    });
 
     return (
       <div className="w-full max-w-sm p-4">
@@ -38,7 +36,7 @@ export const Default: Story = {
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Cross-Layer Filters
           </h3>
-          <CrossLayerFilterPanel data-testid="cross-layer-filter-panel" />
+          <CrossLayerFilterPanel />
         </div>
       </div>
     );
@@ -51,18 +49,16 @@ export const Default: Story = {
  */
 export const AllLayersSelected: Story = {
   render: () => {
-    
-      useCrossLayerStore.setState({
-        visible: true,
-        targetLayerFilters: [
-          'motivation',
-          'business',
-          'application',
-          'technology',
-          'infrastructure',
-        ],
-      });
-    }, []);
+    useCrossLayerStore.setState({
+      visible: true,
+      targetLayerFilters: new Set([
+        'motivation',
+        'business',
+        'application',
+        'technology',
+        'infrastructure',
+      ]),
+    });
 
     return (
       <div className="w-full max-w-sm p-4">
@@ -70,7 +66,7 @@ export const AllLayersSelected: Story = {
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Cross-Layer Filters
           </h3>
-          <CrossLayerFilterPanel data-testid="cross-layer-filter-all" />
+          <CrossLayerFilterPanel />
         </div>
       </div>
     );
@@ -83,12 +79,10 @@ export const AllLayersSelected: Story = {
  */
 export const NoLayersSelected: Story = {
   render: () => {
-    
-      useCrossLayerStore.setState({
-        visible: true,
-        targetLayerFilters: [],
-      });
-    }, []);
+    useCrossLayerStore.setState({
+      visible: true,
+      targetLayerFilters: new Set(),
+    });
 
     return (
       <div className="w-full max-w-sm p-4">
@@ -96,7 +90,7 @@ export const NoLayersSelected: Story = {
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Cross-Layer Filters
           </h3>
-          <CrossLayerFilterPanel data-testid="cross-layer-filter-none" />
+          <CrossLayerFilterPanel />
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-4">
             No layers selected - no cross-layer relationships will be shown
           </p>
@@ -112,12 +106,10 @@ export const NoLayersSelected: Story = {
  */
 export const SingleLayerSelected: Story = {
   render: () => {
-    
-      useCrossLayerStore.setState({
-        visible: true,
-        targetLayerFilters: ['application'],
-      });
-    }, []);
+    useCrossLayerStore.setState({
+      visible: true,
+      targetLayerFilters: new Set(['application']),
+    });
 
     return (
       <div className="w-full max-w-sm p-4">
@@ -125,7 +117,7 @@ export const SingleLayerSelected: Story = {
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Cross-Layer Filters
           </h3>
-          <CrossLayerFilterPanel data-testid="cross-layer-filter-single" />
+          <CrossLayerFilterPanel />
         </div>
       </div>
     );
