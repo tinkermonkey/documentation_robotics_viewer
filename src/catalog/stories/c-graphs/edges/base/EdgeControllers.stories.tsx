@@ -24,7 +24,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // Demo node with handles for connection points
-const DemoNode = memo(({ data }: { data: { label: string } }) => (
+const DemoNode: React.FC<{ data: { label: string } }> = memo(({ data }: { data: { label: string } }) => (
   <div
     style={{
       width: 180,

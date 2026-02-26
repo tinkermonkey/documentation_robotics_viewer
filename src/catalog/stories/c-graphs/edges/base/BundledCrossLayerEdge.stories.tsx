@@ -14,7 +14,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // Story-local node with handles for the edge demonstration
-const DemoNode = memo(({ data }: { data: { label: string } }) => (
+const DemoNode: React.FC<{ data: { label: string } }> = memo(({ data }: { data: { label: string } }) => (
   <div
     style={{
       width: 180,
