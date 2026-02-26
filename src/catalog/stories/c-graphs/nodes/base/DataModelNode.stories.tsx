@@ -17,13 +17,7 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
-  argTypes: {
-    'data.changesetOperation': {
-      control: 'select',
-      options: [undefined, 'add', 'update', 'delete'],
-      description: 'Changeset operation affecting node styling',
-    },
-  },
+  argTypes: {},
 } satisfies Meta<typeof UnifiedNode>;
 
 export default meta;

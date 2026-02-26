@@ -18,11 +18,6 @@ const meta = {
     layout: 'fullscreen',
   },
   argTypes: {
-    'data.changesetOperation': {
-      control: 'select',
-      options: [undefined, 'add', 'update', 'delete'],
-      description: 'Changeset operation affecting node styling',
-    },
     'data.detailLevel': {
       control: 'select',
       options: ['minimal', 'standard', 'detailed'],
