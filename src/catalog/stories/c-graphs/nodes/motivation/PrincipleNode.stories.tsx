@@ -18,13 +18,7 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
-  argTypes: {
-    'data.detailLevel': {
-      control: 'select',
-      options: ['minimal', 'standard', 'detailed'],
-      description: 'Detail level for node content display',
-    },
-  },
+  argTypes: {},
 } satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
