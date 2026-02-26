@@ -170,6 +170,7 @@ export interface PermissionNodeData extends BaseNodeData {
 export interface LayerContainerNodeData extends BaseNodeData {
   layerType: string;
   color: string;
+  changesetOperation?: 'add' | 'update' | 'delete';
 }
 
 /**
