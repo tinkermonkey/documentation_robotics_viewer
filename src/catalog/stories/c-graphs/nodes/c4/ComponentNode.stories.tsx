@@ -27,6 +27,18 @@ const meta = {
       label: 'Component',
     } as UnifiedNodeData,
   },
+  argTypes: {
+    'data.changesetOperation': {
+      control: 'select',
+      options: [undefined, 'add', 'update', 'delete'],
+      description: 'Changeset operation affecting node styling',
+    },
+    'data.detailLevel': {
+      control: 'select',
+      options: ['minimal', 'standard', 'detailed'],
+      description: 'Semantic zoom level for C4 node content',
+    },
+  },
 } satisfies Meta<typeof UnifiedNode>;
 
 export default meta;

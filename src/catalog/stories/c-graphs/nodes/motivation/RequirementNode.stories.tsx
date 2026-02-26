@@ -16,6 +16,18 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
+  argTypes: {
+    'data.changesetOperation': {
+      control: 'select',
+      options: [undefined, 'add', 'update', 'delete'],
+      description: 'Changeset operation affecting node styling',
+    },
+    'data.detailLevel': {
+      control: 'select',
+      options: ['minimal', 'standard', 'detailed'],
+      description: 'Detail level for node content display',
+    },
+  },
 } satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
@@ -153,6 +165,40 @@ export const Highlighted: Story = {
       layerId: 'test-layer',
       elementId: 'test-element-id',
       label: 'Highlighted Node',
+    },
+  },
+};
+
+export const MinimalDetail: Story = {
+  args: {
+    id: 'requirement-minimal',
+    data: {
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Minimal Detail Requirement',
+      items: [
+        { id: 'priority', label: 'Priority', value: 'high' },
+      ],
+      detailLevel: 'minimal',
+    },
+  },
+};
+
+export const DetailedDetail: Story = {
+  args: {
+    id: 'requirement-detailed',
+    data: {
+      nodeType: NodeType.MOTIVATION_REQUIREMENT,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Detailed Requirement',
+      items: [
+        { id: 'requirementType', label: 'Type', value: 'functional' },
+        { id: 'priority', label: 'Priority', value: 'high' },
+        { id: 'status', label: 'Status', value: 'active' },
+      ],
+      detailLevel: 'detailed',
     },
   },
 };

@@ -17,6 +17,18 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
+  argTypes: {
+    'data.changesetOperation': {
+      control: 'select',
+      options: [undefined, 'add', 'update', 'delete'],
+      description: 'Changeset operation affecting node styling',
+    },
+    'data.detailLevel': {
+      control: 'select',
+      options: ['minimal', 'standard', 'detailed'],
+      description: 'Detail level for node content display',
+    },
+  },
 } satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
@@ -151,6 +163,40 @@ export const Highlighted: Story = {
       layerId: 'test-layer',
       elementId: 'test-element-id',
       label: 'Highlighted Node',
+    },
+  },
+};
+
+export const MinimalDetail: Story = {
+  args: {
+    id: 'stakeholder-minimal',
+    data: {
+      nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Minimal Detail Stakeholder',
+      items: [
+        { id: 'property1', label: 'Property1', value: 'value' },
+      ],
+      detailLevel: 'minimal',
+    },
+  },
+};
+
+export const DetailedDetail: Story = {
+  args: {
+    id: 'stakeholder-detailed',
+    data: {
+      nodeType: NodeType.MOTIVATION_STAKEHOLDER,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Detailed Stakeholder',
+      items: [
+        { id: 'property1', label: 'Property1', value: 'value1' },
+        { id: 'property2', label: 'Property2', value: 'value2' },
+        { id: 'property3', label: 'Property3', value: 'value3' },
+      ],
+      detailLevel: 'detailed',
     },
   },
 };

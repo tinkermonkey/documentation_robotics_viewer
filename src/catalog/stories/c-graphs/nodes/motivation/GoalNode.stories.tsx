@@ -16,6 +16,18 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
+  argTypes: {
+    'data.changesetOperation': {
+      control: 'select',
+      options: [undefined, 'add', 'update', 'delete'],
+      description: 'Changeset operation affecting node styling',
+    },
+    'data.detailLevel': {
+      control: 'select',
+      options: ['minimal', 'standard', 'detailed'],
+      description: 'Detail level for node content display',
+    },
+  },
 } satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
@@ -163,6 +175,40 @@ export const Highlighted: Story = {
       layerId: 'test-layer',
       elementId: 'test-element-id',
       label: 'Highlighted Node',
+    },
+  },
+};
+
+export const MinimalDetail: Story = {
+  args: {
+    id: 'goal-minimal',
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Minimal Detail Goal',
+      items: [
+        { id: 'priority', label: 'Priority', value: 'high' },
+      ],
+      detailLevel: 'minimal',
+    },
+  },
+};
+
+export const DetailedDetail: Story = {
+  args: {
+    id: 'goal-detailed',
+    data: {
+      nodeType: NodeType.MOTIVATION_GOAL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Detailed Goal',
+      items: [
+        { id: 'priority', label: 'Priority', value: 'high' },
+        { id: 'status', label: 'Status', value: 'active' },
+        { id: 'owner', label: 'Owner', value: 'Strategy Team' },
+      ],
+      detailLevel: 'detailed',
     },
   },
 };

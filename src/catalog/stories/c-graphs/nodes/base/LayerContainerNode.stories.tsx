@@ -10,6 +10,13 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
+  argTypes: {
+    'data.changesetOperation': {
+      control: 'select',
+      options: [undefined, 'add', 'update', 'delete'],
+      description: 'Changeset operation affecting node styling',
+    },
+  },
 } satisfies Meta<typeof LayerContainerNode>;
 
 export default meta;
