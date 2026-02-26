@@ -76,7 +76,8 @@ export function isExpectedConsoleError(text: string): boolean {
 
   // React duplicate key warnings in list rendering - expected when edge deduplication creates duplicate keys
   // This warning appears during story rendering of graphs with edges.
-  // Tracked as expected (not a failure) to avoid blocking CI while monitoring for actual regressions.
+  // IMPORTANT: Silently suppressed as an expected error. Will NOT detect regressions if nodeTransformer
+  // edge deduplication breaks — the warning is swallowed and CI will not catch it.
   if (/Encountered two children with the same key/.test(text)) return true;
 
   // Axe accessibility runner - expected when axe-core operations overlap in test environment
