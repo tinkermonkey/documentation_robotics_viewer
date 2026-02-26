@@ -20,22 +20,11 @@ const storyHeight = functionConfig?.dimensions.height || 100;
 
 const meta = {
   title: 'C Graphs / Nodes / Business / BusinessFunctionNode',
-  component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
     layout: 'fullscreen',
   },
-  args: {
-    data: {
-      nodeType: NodeType.BUSINESS_FUNCTION,
-      layerId: 'test-layer',
-      elementId: 'test-element-id',
-      label: '',
-      detailLevel: 'standard',
-    },
-    id: '',
-  },
-} satisfies Meta<typeof UnifiedNode>;
+} satisfies Meta;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
