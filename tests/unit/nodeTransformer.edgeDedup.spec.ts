@@ -12,7 +12,6 @@
 import { test, expect } from '@playwright/test';
 import { NodeTransformer } from '../../src/core/services/nodeTransformer';
 import type { AppEdge } from '../../src/core/types/reactflow';
-import { VerticalLayerLayout } from '../../src/core/layout/verticalLayerLayout';
 
 /**
  * Helper to create a test edge with specified ID
@@ -72,19 +71,37 @@ test.describe('NodeTransformer edge deduplication', () => {
     expect(edgeIdSet.has('edge-1')).toBe(true);
   });
 
-  test('should skip duplicate edges', () => {
+  test('should skip duplicate edges and log warning with source information', () => {
     const edges: AppEdge[] = [];
     const edgeIdSet = new Set<string>();
     const edge1 = createTestEdge('edge-1');
     const edge2 = createTestEdge('edge-1'); // Same ID, different object
 
-    // Add first edge
-    (transformer as any).addEdgeIfUnique(edge1, edges, edgeIdSet, 'first-source');
-    expect(edges).toHaveLength(1);
+    // Spy on console.warn to verify the warning message
+    const warnMessages: string[] = [];
+    const originalWarn = console.warn;
+    console.warn = (...args: any[]) => {
+      warnMessages.push(args.join(' '));
+    };
 
-    // Try to add duplicate
-    (transformer as any).addEdgeIfUnique(edge2, edges, edgeIdSet, 'second-source');
-    expect(edges).toHaveLength(1); // Should still be 1
+    try {
+      // Add first edge
+      (transformer as any).addEdgeIfUnique(edge1, edges, edgeIdSet, 'layer-relationship');
+      expect(edges).toHaveLength(1);
+      expect(warnMessages).toHaveLength(0); // No warning for first unique edge
+
+      // Try to add duplicate with different source
+      (transformer as any).addEdgeIfUnique(edge2, edges, edgeIdSet, 'bundled-reference');
+      expect(edges).toHaveLength(1); // Should still be 1
+
+      // Verify the warning was logged with correct format and source
+      expect(warnMessages).toHaveLength(1);
+      expect(warnMessages[0]).toContain('[NodeTransformer]');
+      expect(warnMessages[0]).toContain('edge-1');
+      expect(warnMessages[0]).toContain('bundled-reference');
+    } finally {
+      console.warn = originalWarn;
+    }
   });
 
   test('should add multiple unique edges', () => {
@@ -100,22 +117,6 @@ test.describe('NodeTransformer edge deduplication', () => {
 
     expect(edges).toHaveLength(3);
     expect(edgeIdSet.size).toBe(3);
-  });
-
-  test('should log warning message when adding duplicate edges', () => {
-    const edges: AppEdge[] = [];
-    const edgeIdSet = new Set<string>();
-    const edge1 = createTestEdge('edge-1');
-    const edge2 = createTestEdge('edge-1'); // Duplicate
-
-    // Verify console messages contain edge ID and source info
-    // (console.warn is automatically logged in the test output)
-    (transformer as any).addEdgeIfUnique(edge1, edges, edgeIdSet, 'layer-relationship');
-    (transformer as any).addEdgeIfUnique(edge2, edges, edgeIdSet, 'bundled-reference');
-
-    // Verify only first edge was added
-    expect(edges).toHaveLength(1);
-    expect(edgeIdSet.has('edge-1')).toBe(true);
   });
 
   test('should maintain edge ID set correctly through multiple operations', () => {
