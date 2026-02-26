@@ -272,7 +272,7 @@ function UnifiedNodeComponent({ data, id }: { data: UnifiedNodeData; id?: string
   );
 }
 
-const UnifiedNode = memo(UnifiedNodeComponent);
+const UnifiedNode: React.FC<{ data: UnifiedNodeData; id?: string }> = memo(UnifiedNodeComponent);
 UnifiedNode.displayName = 'UnifiedNode';
 
 export default UnifiedNode;
