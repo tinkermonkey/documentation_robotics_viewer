@@ -26,7 +26,6 @@ export const Default: Story = {
   render: () => {
     useLayoutPreferencesStore.setState({
       defaultEngines: { motivation: 'dagre', business: 'dagre' },
-      activePreset: null,
     });
 
     return (
@@ -45,7 +44,6 @@ export const DagreLayout: Story = {
   render: () => {
     useLayoutPreferencesStore.setState({
       defaultEngines: { motivation: 'dagre', business: 'dagre', application: 'dagre' },
-      activePreset: null,
     });
 
     return (
@@ -64,7 +62,6 @@ export const ELKLayout: Story = {
   render: () => {
     useLayoutPreferencesStore.setState({
       defaultEngines: { motivation: 'elk', business: 'elk', application: 'elk' },
-      activePreset: null,
     });
 
     return (
@@ -83,7 +80,6 @@ export const D3ForceLayout: Story = {
   render: () => {
     useLayoutPreferencesStore.setState({
       defaultEngines: { motivation: 'd3-force', business: 'd3-force', application: 'd3-force' },
-      activePreset: null,
     });
 
     return (
@@ -102,7 +98,6 @@ export const NoAnimation: Story = {
   render: () => {
     useLayoutPreferencesStore.setState({
       defaultEngines: { motivation: 'dagre', business: 'dagre' },
-      activePreset: null,
     });
 
     return (
@@ -121,7 +116,6 @@ export const ManualLayout: Story = {
   render: () => {
     useLayoutPreferencesStore.setState({
       defaultEngines: { motivation: 'dagre', business: 'dagre' },
-      activePreset: null,
     });
 
     return (

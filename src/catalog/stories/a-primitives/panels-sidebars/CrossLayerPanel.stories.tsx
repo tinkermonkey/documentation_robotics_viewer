@@ -27,7 +27,6 @@ export const Default: Story = {
   render: () => {
     useCrossLayerStore.setState({
       visible: true,
-      sourceElementId: 'elem-1',
       targetLayerFilters: new Set(['application', 'technology']),
       relationshipTypeFilters: new Set(),
     });
@@ -50,7 +49,6 @@ export const Expanded: Story = {
   render: () => {
     useCrossLayerStore.setState({
       visible: true,
-      sourceElementId: 'service-backend',
       targetLayerFilters: new Set(['business', 'application', 'technology', 'infrastructure']),
       relationshipTypeFilters: new Set(),
     });
@@ -73,7 +71,6 @@ export const Compact: Story = {
   render: () => {
     useCrossLayerStore.setState({
       visible: true,
-      sourceElementId: 'elem-2',
       targetLayerFilters: new Set(['technology']),
       relationshipTypeFilters: new Set(),
     });
@@ -96,7 +93,6 @@ export const Hidden: Story = {
   render: () => {
     useCrossLayerStore.setState({
       visible: false,
-      sourceElementId: null,
       targetLayerFilters: new Set(),
     });
 
@@ -121,7 +117,6 @@ export const Loading: Story = {
   render: () => {
     useCrossLayerStore.setState({
       visible: true,
-      sourceElementId: 'elem-3',
       targetLayerFilters: new Set(['application']),
     });
 
