@@ -4,7 +4,7 @@ import { createLayerContainerNodeData } from '@catalog/fixtures/nodeDataFixtures
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 const meta = {
-  title: 'C Graphs / Nodes / UnifiedNode / Base / LayerContainerNode',
+  title: 'C Graphs / Nodes / Base / LayerContainerNode',
   component: LayerContainerNode,
   decorators: [withReactFlowDecorator({ width: 400, height: 300 })],
   parameters: {
