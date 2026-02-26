@@ -74,29 +74,44 @@ const config: TestRunnerConfig = {
   },
 
   async postVisit(page, context) {
-    // Determine which validation steps to skip
-    const skipAccessibility = context.tags && Array.isArray(context.tags) && context.tags.includes('skip-a11y');
-    const skipErrors = context.tags && Array.isArray(context.tags) && context.tags.includes('skip-errors');
-    const skipTest = context.tags && Array.isArray(context.tags) && context.tags.includes('skip-test');
+    // Normalize tags to empty array if missing or not an array (addresses redundant guard issue)
+    const tags = Array.isArray(context.tags) ? context.tags : [];
 
-    // Log what's being skipped for debugging
-    if (skipAccessibility || skipErrors || skipTest) {
+    // Determine which validation steps to skip
+    const skipAccessibility = tags.includes('skip-a11y');
+    const skipErrors = tags.includes('skip-errors');
+    const skipTest = tags.includes('skip-test');
+
+    // Handle skip-test: log deprecation warning and treat as skip-a11y + skip-errors
+    // This prevents silent bypass of all validation (addresses skip-test bypass issue)
+    if (skipTest) {
+      console.warn(
+        `[test-runner] Story "${context.id}" uses deprecated 'skip-test' tag. ` +
+        `Use granular tags instead: 'skip-a11y' (skip accessibility), ` +
+        `'skip-errors' (skip console/page errors). ` +
+        `Treating as skip-a11y + skip-errors, but this will be removed in a future version.`
+      );
+    }
+
+    // Determine final skip flags: skip-test acts as alias for skip-a11y + skip-errors
+    const skipAccessibilityFinal = skipAccessibility || skipTest;
+    const skipErrorsFinal = skipErrors || skipTest;
+
+    // Log what's being skipped (addresses confusing logging issue)
+    // Check skip-test first before building granular skip list to avoid redundant logs
+    if (skipTest) {
+      const skipped = ['accessibility', 'error validation'];
+      console.log(`[test-runner] Story "${context.id}" skipping: ${skipped.join(', ')} (via deprecated skip-test tag)`);
+    } else if (skipAccessibilityFinal || skipErrorsFinal) {
       const skipped = [];
-      if (skipAccessibility) skipped.push('accessibility');
-      if (skipErrors) skipped.push('error validation');
-      if (skipTest) skipped.push('all validation'); // backward compat - skip everything
-      if (skipTest) {
-        console.log(`[test-runner] Skipping story "${context.id}" - marked with skip-test tag (skipping ${skipped.join(', ')})`);
-        return;
-      }
-      if (skipped.length > 0) {
-        console.log(`[test-runner] Story "${context.id}" skipping: ${skipped.join(', ')}`);
-      }
+      if (skipAccessibilityFinal) skipped.push('accessibility');
+      if (skipErrorsFinal) skipped.push('error validation');
+      console.log(`[test-runner] Story "${context.id}" skipping: ${skipped.join(', ')}`);
     }
 
     try {
       // Skip accessibility checks if requested
-      if (!skipAccessibility) {
+      if (!skipAccessibilityFinal) {
         // Check that axe was successfully injected before proceeding
         let axeInjected = false;
         try {
@@ -199,7 +214,7 @@ const config: TestRunnerConfig = {
       }
 
       // Check for collected console and page errors after all tests (unless skipped)
-      if (!skipErrors) {
+      if (!skipErrorsFinal) {
         let errors: string[] = [];
         try {
           errors = await page.evaluate(() => {
