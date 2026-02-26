@@ -1,8 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { NodeType } from '@/core/nodes/NodeType';
-import UnifiedNode from '@/core/nodes/components/UnifiedNode';
+import { UnifiedNode, NodeType } from '@/core/nodes';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import type { UnifiedNodeData } from '@/core/nodes/components/UnifiedNode';
 
 import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
 
@@ -13,12 +11,13 @@ const storyHeight = dataModelConfig?.dimensions.height || 300;
 
 const meta = {
   title: 'C Graphs / Nodes / Base / DataModelNode',
+  component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
     layout: 'fullscreen',
   },
   argTypes: {},
-} satisfies Meta;
+} satisfies Meta<typeof UnifiedNode>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -29,8 +28,8 @@ type Story = StoryObj<typeof meta>;
  */
 
 export const WithMultipleAttributes: Story = {
-  render: (args) => <UnifiedNode {...args} />,
   args: {
+    id: 'test-node-1',
     data: {
       nodeType: NodeType.DATA_MODEL,
       layerId: 'test-layer',
@@ -46,13 +45,12 @@ export const WithMultipleAttributes: Story = {
       ],
       detailLevel: 'standard',
     },
-    id: 'test-node-1',
   },
 };
 
 export const WithDatabaseColumns: Story = {
-  render: (args) => <UnifiedNode {...args} />,
   args: {
+    id: 'test-node-2',
     data: {
       nodeType: NodeType.DATA_MODEL,
       layerId: 'test-layer',
@@ -67,13 +65,12 @@ export const WithDatabaseColumns: Story = {
       ],
       detailLevel: 'standard',
     },
-    id: 'test-node-2',
   },
 };
 
 export const WithComplexTypes: Story = {
-  render: (args) => <UnifiedNode {...args} />,
   args: {
+    id: 'test-node-3',
     data: {
       nodeType: NodeType.DATA_MODEL,
       layerId: 'test-layer',
@@ -89,13 +86,12 @@ export const WithComplexTypes: Story = {
       ],
       detailLevel: 'standard',
     },
-    id: 'test-node-3',
   },
 };
 
 export const Minimal: Story = {
-  render: (args) => <UnifiedNode {...args} />,
   args: {
+    id: 'test-node-4',
     data: {
       nodeType: NodeType.DATA_MODEL,
       layerId: 'test-layer',
@@ -107,13 +103,12 @@ export const Minimal: Story = {
       ],
       detailLevel: 'standard',
     },
-    id: 'test-node-4',
   },
 };
 
 export const EmptyModel: Story = {
-  render: (args) => <UnifiedNode {...args} />,
   args: {
+    id: 'test-node-5',
     data: {
       nodeType: NodeType.DATA_MODEL,
       layerId: 'test-layer',
@@ -122,13 +117,12 @@ export const EmptyModel: Story = {
       items: [],
       detailLevel: 'standard',
     },
-    id: 'test-node-5',
   },
 };
 
 export const WithTooltips: Story = {
-  render: (args) => <UnifiedNode {...args} />,
   args: {
+    id: 'test-node-6',
     data: {
       nodeType: NodeType.DATA_MODEL,
       layerId: 'test-layer',
@@ -166,12 +160,10 @@ export const WithTooltips: Story = {
       ],
       detailLevel: 'standard',
     },
-    id: 'test-node-6',
   },
 };
 
 export const ChangesetAdd: Story = {
-  render: (args) => <UnifiedNode {...args} />,
   args: {
     id: 'datamodel-7',
     data: {
@@ -184,12 +176,11 @@ export const ChangesetAdd: Story = {
       ],
       detailLevel: 'standard',
       changesetOperation: 'add',
-    } as UnifiedNodeData,
+    },
   },
 };
 
 export const ChangesetUpdate: Story = {
-  render: (args) => <UnifiedNode {...args} />,
   args: {
     id: 'datamodel-8',
     data: {
@@ -203,12 +194,11 @@ export const ChangesetUpdate: Story = {
       ],
       detailLevel: 'standard',
       changesetOperation: 'update',
-    } as UnifiedNodeData,
+    },
   },
 };
 
 export const ChangesetDelete: Story = {
-  render: (args) => <UnifiedNode {...args} />,
   args: {
     id: 'datamodel-9',
     data: {
@@ -221,6 +211,6 @@ export const ChangesetDelete: Story = {
       ],
       detailLevel: 'standard',
       changesetOperation: 'delete',
-    } as UnifiedNodeData,
+    },
   },
 };
