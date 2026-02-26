@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { NodeType } from '@/core/nodes/NodeType';
 import UnifiedNode from '@/core/nodes/components/UnifiedNode';
+import type { UnifiedNodeData } from '@/core/nodes/components/UnifiedNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
 
@@ -219,5 +220,60 @@ export const TableConfiguration: Story = {
       detailLevel: 'standard',
     },
     id: 'test-node-table',
+  },
+};
+
+export const ChangesetAdd: Story = {
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    id: 'jsonschema-7',
+    data: {
+      nodeType: NodeType.DATA_JSON_SCHEMA,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'NewSchema',
+      items: [
+        { id: 'id', label: 'id', value: 'string', required: true },
+      ],
+      detailLevel: 'standard',
+      changesetOperation: 'add',
+    } as UnifiedNodeData,
+  },
+};
+
+export const ChangesetUpdate: Story = {
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    id: 'jsonschema-8',
+    data: {
+      nodeType: NodeType.DATA_JSON_SCHEMA,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'UpdatedSchema',
+      items: [
+        { id: 'id', label: 'id', value: 'string', required: true },
+        { id: 'name', label: 'name', value: 'string', required: true },
+      ],
+      detailLevel: 'standard',
+      changesetOperation: 'update',
+    } as UnifiedNodeData,
+  },
+};
+
+export const ChangesetDelete: Story = {
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    id: 'jsonschema-9',
+    data: {
+      nodeType: NodeType.DATA_JSON_SCHEMA,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'DeletedSchema',
+      items: [
+        { id: 'id', label: 'id', value: 'string', required: true },
+      ],
+      detailLevel: 'standard',
+      changesetOperation: 'delete',
+    } as UnifiedNodeData,
   },
 };

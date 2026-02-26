@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { NodeType } from '@/core/nodes/NodeType';
 import UnifiedNode from '@/core/nodes/components/UnifiedNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
+import type { UnifiedNodeData } from '@/core/nodes/components/UnifiedNode';
 
 import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
 
@@ -12,13 +13,12 @@ const storyHeight = dataModelConfig?.dimensions.height || 300;
 
 const meta = {
   title: 'C Graphs / Nodes / Base / DataModelNode',
-  component: UnifiedNode,
   decorators: [withReactFlowDecorator({ width: storyWidth, height: storyHeight })],
   parameters: {
     layout: 'fullscreen',
   },
   argTypes: {},
-} satisfies Meta<typeof UnifiedNode>;
+} satisfies Meta;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -167,5 +167,60 @@ export const WithTooltips: Story = {
       detailLevel: 'standard',
     },
     id: 'test-node-6',
+  },
+};
+
+export const ChangesetAdd: Story = {
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    id: 'datamodel-7',
+    data: {
+      nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'New Entity',
+      items: [
+        { id: 'id', label: 'id', value: 'UUID', required: true },
+      ],
+      detailLevel: 'standard',
+      changesetOperation: 'add',
+    } as UnifiedNodeData,
+  },
+};
+
+export const ChangesetUpdate: Story = {
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    id: 'datamodel-8',
+    data: {
+      nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Updated Entity',
+      items: [
+        { id: 'id', label: 'id', value: 'UUID', required: true },
+        { id: 'name', label: 'name', value: 'string', required: true },
+      ],
+      detailLevel: 'standard',
+      changesetOperation: 'update',
+    } as UnifiedNodeData,
+  },
+};
+
+export const ChangesetDelete: Story = {
+  render: (args) => <UnifiedNode {...args} />,
+  args: {
+    id: 'datamodel-9',
+    data: {
+      nodeType: NodeType.DATA_MODEL,
+      layerId: 'test-layer',
+      elementId: 'test-element-id',
+      label: 'Deleted Entity',
+      items: [
+        { id: 'id', label: 'id', value: 'UUID', required: true },
+      ],
+      detailLevel: 'standard',
+      changesetOperation: 'delete',
+    } as UnifiedNodeData,
   },
 };
