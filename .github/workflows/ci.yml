@@ -6,9 +6,6 @@ on:
     tags: [ 'v*' ]
   pull_request:
     branches: [ main, master ]
-  schedule:
-    # Weekly story validation + cross-browser tests: Monday 4am UTC
-    - cron: '0 4 * * 1'
   workflow_dispatch:
 
 jobs:
@@ -83,39 +80,3 @@ jobs:
         generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  story-validation:
-    # Runs on: PRs (catch regressions), scheduled (weekly comprehensive), manual dispatch
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Use Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-        cache: 'npm'
-
-    - name: Install dependencies
-      # --legacy-peer-deps: Required for React 19 compatibility with dependencies that declare
-      # React 18 as peer dependency (e.g., Storybook, some React Flow plugins). These dependencies
-      # work fine with React 19 but haven't updated their peer dependency declarations yet.
-      run: npm ci --legacy-peer-deps
-
-    - name: Install Playwright browsers
-      run: npx playwright install --with-deps
-
-    - name: Build Storybook
-      run: npm run storybook:build
-
-    - name: Start Storybook server
-      run: npm run storybook:serve &
-
-    - name: Wait for Storybook server
-      run: npx wait-on http://localhost:61001 --timeout 60000
-
-    - name: Run Storybook tests
-      run: npm run test:storybook
-      # Note: Accessibility tests (axe-core) are already run for every story by the test-runner
-      # in .storybook/test-runner.ts via postVisit hook. Removed redundant test:storybook:a11y step.

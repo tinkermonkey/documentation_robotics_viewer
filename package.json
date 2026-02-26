@@ -30,7 +30,8 @@
     "test:storybook": "test-storybook --url http://localhost:61001",
     "test:storybook:watch": "test-storybook --url http://localhost:61001 --watch",
     "test:storybook:debug": "test-storybook --url http://localhost:61001 --debug",
-    "test:storybook:a11y": "test-storybook --url http://localhost:61001 --stories-json"
+    "test:storybook:a11y": "test-storybook --url http://localhost:61001 --stories-json",
+    "test:storybook:full": "npm run storybook:build && (npm run storybook:serve &) && npx wait-on http://localhost:61001 --timeout 60000 && npm run test:storybook"
   },
   "keywords": [],
   "author": "",
