@@ -50,7 +50,8 @@ export function isExpectedConsoleError(text: string): boolean {
 
   // JSON-RPC request failures when backend unavailable - expected in story environment without backend server
   // ChatPanelContainer and other services attempt to send JSON-RPC messages to non-existent backend
-  if (/Failed to send JSON-RPC request: WebSocket not connected/.test(text)) return true;
+  // Only filter localhost/127.0.0.1 connections (not production/staging URLs) to avoid masking real backend failures
+  if (/Failed to send JSON-RPC request: WebSocket not connected/.test(text) && /(localhost|127\.0\.0\.1)/.test(text)) return true;
 
   // EmbeddedLayout errors - expected component-level warnings
   if (/\[EmbeddedLayout\] (?:No container|Missing required|Layout calculation)/.test(text)) return true;
@@ -75,10 +76,10 @@ export function isExpectedConsoleError(text: string): boolean {
   if (/^Warning: An update to .* inside a test was not wrapped in act/.test(text)) return true;
 
   // React duplicate key warnings in list rendering - expected when edge deduplication creates duplicate keys
-  // This warning appears during story rendering of graphs with edges.
-  // IMPORTANT: Silently suppressed as an expected error. Will NOT detect regressions if nodeTransformer
-  // edge deduplication breaks — the warning is swallowed and CI will not catch it.
-  if (/Encountered two children with the same key/.test(text)) return true;
+  // This warning appears during story rendering of graphs with edges (keys like "edge-rel-123").
+  // IMPORTANT: Silently suppressed as an expected error, but scoped to edge keys to detect other duplicate key regressions.
+  // Will NOT detect regressions if nodeTransformer edge deduplication breaks, but prevents masking unrelated duplicate key bugs.
+  if (/Encountered two children with the same key.*edge-/.test(text)) return true;
 
   // Axe accessibility runner - expected when axe-core operations overlap in test environment
   // This can occur during concurrent test execution or story transitions
