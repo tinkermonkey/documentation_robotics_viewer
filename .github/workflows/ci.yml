@@ -7,7 +7,8 @@ on:
   pull_request:
     branches: [ main, master ]
   schedule:
-    # Weekly story validation + cross-browser tests: Monday 4am UTC
+    # Weekly comprehensive testing: Monday 4am UTC
+    # Triggers both build-and-test (full test suite) and story-validation (all stories + a11y)
     - cron: '0 4 * * 1'
   workflow_dispatch:
 
@@ -88,6 +89,7 @@ jobs:
     # Runs on: PRs (catch regressions), scheduled (weekly comprehensive), manual dispatch
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
 
