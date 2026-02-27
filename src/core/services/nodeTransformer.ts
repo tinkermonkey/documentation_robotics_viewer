@@ -14,7 +14,7 @@ import { AppNode, AppEdge } from '../types/reactflow';
 import { FALLBACK_COLOR } from '../utils/layerColors';
 import { nodeConfigLoader } from '../nodes/nodeConfigLoader';
 import { NodeType } from '../nodes/NodeType';
-import type { UnifiedNodeData } from '../nodes/components/UnifiedNode';
+import type { UnifiedNodeData, ChangesetOperation } from '../nodes/components/UnifiedNode';
 import type { FieldItem } from '../nodes/components/FieldList';
 import type { RelationshipBadgeData } from '../nodes/components/RelationshipBadge';
 import { extractCrossLayerReferences, referencesToEdges } from './crossLayerLinksExtractor';
@@ -34,7 +34,7 @@ export interface NodeTransformResult {
  */
 interface OptionalElementProperties {
   detailLevel?: 'minimal' | 'standard' | 'detailed';
-  changesetOperation?: 'add' | 'update' | 'delete';
+  changesetOperation?: ChangesetOperation;
   relationshipBadge?: RelationshipBadgeData;
   schemaInfo?: {
     properties?: Record<string, unknown> | Array<Record<string, unknown>>;
