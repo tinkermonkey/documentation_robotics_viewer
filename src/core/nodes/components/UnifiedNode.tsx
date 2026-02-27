@@ -119,7 +119,7 @@ function UnifiedNodeComponent({ data, id }: { data: UnifiedNodeData; id?: string
   if (changesetColors) {
     finalFillColor = changesetColors.bg;
     finalStrokeColor = changesetColors.border;
-    finalOpacity = changesetColors.opacity || 1;
+    finalOpacity = changesetColors.opacity ?? 1;
   }
 
   // Build inline styles
