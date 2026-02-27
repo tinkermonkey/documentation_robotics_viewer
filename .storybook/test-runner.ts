@@ -20,6 +20,7 @@ declare global {
     __pageErrors__: string[];
     __axeInjected__: boolean;
     __axeConfigured__: boolean;
+    __axeRunning__: boolean;
     __STORYBOOK_MOCK_WEBSOCKET__?: boolean;
   }
 }
@@ -207,14 +208,16 @@ const config: TestRunnerConfig = {
             return collected;
           });
         } catch (evalError) {
-          // If page.evaluate fails (e.g., due to Storybook test-runner initialization issues),
-          // log it but don't fail the story test - the accessibility checks already passed
+          // If page.evaluate fails, only continue if it's a known Storybook initialization issue
           const errMsg = evalError instanceof Error ? evalError.message : String(evalError);
-          if (!errMsg.includes('StorybookTestRunnerError')) {
-            console.warn(`[test-runner] Failed to collect page errors: ${errMsg}`);
+          if (errMsg.includes('StorybookTestRunnerError')) {
+            // Known Storybook test-runner initialization issue - log but continue
+            console.warn(`[test-runner] Storybook test-runner initialization issue while collecting errors in story "${context.id}": ${errMsg}`);
+            // Continue without error check - accessibility checks already passed
+          } else {
+            // Non-Storybook errors should throw to avoid silently discarding real errors
+            throw new Error(`Failed to collect page errors in story "${context.id}": ${errMsg}`);
           }
-          // Continue without error check if page.evaluate fails - a11y checks already passed
-          return;
         }
 
         for (const error of errors) {
@@ -226,14 +229,7 @@ const config: TestRunnerConfig = {
         console.log(`[test-runner] Skipping error validation for story "${context.id}"`);
       }
     } catch (postVisitError) {
-      // If the entire postVisit fails due to Storybook test-runner issues, only throw if it's not the StorybookTestRunnerError
-      const errMsg = postVisitError instanceof Error ? postVisitError.message : String(postVisitError);
-      if (errMsg.includes('StorybookTestRunnerError')) {
-        // Known Storybook test-runner initialization issue - log but don't fail
-        console.warn(`[test-runner] Storybook test-runner initialization issue in story "${context.id}": skipping error checks`);
-        return;
-      }
-      // Re-throw other errors
+      // Re-throw all errors from postVisit - StorybookTestRunnerError handling is now scoped to specific page.evaluate calls
       throw postVisitError;
     }
   },
