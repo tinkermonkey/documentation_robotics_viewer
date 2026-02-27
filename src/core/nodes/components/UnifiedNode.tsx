@@ -145,7 +145,6 @@ function UnifiedNodeComponent({ data, id }: { data: UnifiedNodeData; id?: string
     gap: 8,
   };
 
-
   // Semantic zoom: hide content at minimal level
   const isMinimal = detailLevel === 'minimal';
 
