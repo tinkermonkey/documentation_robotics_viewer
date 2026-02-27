@@ -13,6 +13,7 @@ import { test, expect } from '@playwright/test';
 import { NodeType } from '@/core/nodes/NodeType';
 import type { ModelElement } from '@/core/types';
 import type { UnifiedNodeData } from '@/core/nodes/components/UnifiedNode';
+import type { ChangesetOperation } from '@/core/nodes';
 
 // Mock implementations for testing
 function extractC4NodeData(element: ModelElement, nodeType: NodeType): UnifiedNodeData {
@@ -87,7 +88,7 @@ function extractC4NodeData(element: ModelElement, nodeType: NodeType): UnifiedNo
   }
 
   const detailLevel = (element.properties?.detailLevel as 'minimal' | 'standard' | 'detailed' | undefined) || 'standard';
-  const changesetOperation = element.properties?.changesetOperation as 'add' | 'update' | 'delete' | undefined;
+  const changesetOperation = element.properties?.changesetOperation as ChangesetOperation | undefined;
   const relationshipBadge = element.properties?.relationshipBadge as any;
 
   const unifiedData: UnifiedNodeData = {

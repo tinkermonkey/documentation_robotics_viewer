@@ -295,7 +295,7 @@ export class JSONSchemaParser {
                 targetField = targetElement.schemaInfo.properties[0].name;
               } else {
                 // No fields available, don't use field-level connection
-                targetField = undefined as any;
+                targetField = undefined;
               }
             }
 

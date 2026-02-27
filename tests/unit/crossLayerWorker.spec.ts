@@ -13,7 +13,8 @@ import { ReferenceType } from '../../src/core/types';
 
 test.describe('Cross-Layer Reference Processing', () => {
   test('should handle missing references gracefully', () => {
-    const result = processReferences(undefined as any);
+    // Explicitly test with null to verify error handling without type bypass
+    const result = processReferences(null as unknown as Reference[]);
 
     expect(result.crossLayerLinks).toEqual([]);
     expect(result.error).not.toBeNull();
