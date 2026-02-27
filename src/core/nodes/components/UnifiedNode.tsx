@@ -17,7 +17,7 @@
  */
 
 import React, { memo } from 'react';
-import { Handle, Position } from '@xyflow/react';
+import { Handle } from '@xyflow/react';
 import { NodeType } from '../NodeType';
 import { nodeConfigLoader } from '../nodeConfigLoader';
 import { RelationshipBadge, RelationshipBadgeData } from './RelationshipBadge';
