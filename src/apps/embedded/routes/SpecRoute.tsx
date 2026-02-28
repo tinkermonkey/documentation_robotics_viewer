@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import SpecViewer from '../components/SpecViewer';
+import SpecSchemasSidebar from '../components/SpecSchemasSidebar';
 import AnnotationPanel from '../components/AnnotationPanel';
 import SchemaInfoPanel from '../components/SchemaInfoPanel';
 import SharedLayout from '../components/SharedLayout';
@@ -15,6 +16,7 @@ export default function SpecRoute() {
   const navigate = useNavigate();
   const annotationStore = useAnnotationStore();
   const { specView, setSpecView } = useViewPreferenceStore();
+  const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null);
 
   // Load spec data
   const { data: specData, loading, error, reload } = useDataLoader({
@@ -40,6 +42,14 @@ export default function SpecRoute() {
     }
   }, [view, activeView, specView, navigate, setSpecView]);
 
+  // Auto-select first schema when data loads
+  useEffect(() => {
+    if (specData && !selectedSchemaId) {
+      const firstId = Object.keys(specData.schemas || {})[0] ?? null;
+      setSelectedSchemaId(firstId);
+    }
+  }, [specData, selectedSchemaId]);
+
   if (loading) {
     return <LoadingState variant="page" message="Loading spec..." />;
   }
@@ -62,8 +72,15 @@ export default function SpecRoute() {
 
   return (
     <SharedLayout
-      showLeftSidebar={false}
+      showLeftSidebar={true}
       showRightSidebar={true}
+      leftSidebarContent={
+        <SpecSchemasSidebar
+          specData={specData}
+          selectedSchemaId={selectedSchemaId}
+          onSelectSchema={setSelectedSchemaId}
+        />
+      }
       rightSidebarContent={
         <>
           <AnnotationPanel />
@@ -71,7 +88,7 @@ export default function SpecRoute() {
         </>
       }
     >
-      <SpecViewer specData={specData} selectedSchemaId={null} />
+      <SpecViewer specData={specData} selectedSchemaId={selectedSchemaId} />
     </SharedLayout>
   );
 }
