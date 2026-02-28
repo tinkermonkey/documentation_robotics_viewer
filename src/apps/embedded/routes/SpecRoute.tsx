@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import SpecViewer from '../components/SpecViewer';
+import SpecGraphView from '../components/SpecGraphView';
 import SpecSchemasSidebar from '../components/SpecSchemasSidebar';
 import AnnotationPanel from '../components/AnnotationPanel';
 import SchemaInfoPanel from '../components/SchemaInfoPanel';
 import SharedLayout from '../components/SharedLayout';
 import { LoadingState, ErrorState } from '../components/shared';
 import { useAnnotationStore } from '../stores/annotationStore';
+import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
 
@@ -15,6 +17,9 @@ export default function SpecRoute() {
   const navigate = useNavigate();
   const annotationStore = useAnnotationStore();
   const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null);
+  const { specView, setSpecView } = useViewPreferenceStore();
+
+  const activeView = view === 'graph' ? 'graph' : 'details';
 
   // Load spec data
   const { data: specData, loading, error, reload } = useDataLoader({
@@ -29,12 +34,14 @@ export default function SpecRoute() {
     },
   });
 
-  // Redirect any non-details view to /spec/details
+  // Sync route param ↔ store preference
   useEffect(() => {
-    if (view !== 'details') {
-      navigate({ to: '/spec/$view', params: { view: 'details' }, replace: true });
+    if (!view) {
+      navigate({ to: `/spec/${specView}`, replace: true });
+    } else if (activeView !== specView) {
+      setSpecView(activeView);
     }
-  }, [view, navigate]);
+  }, [view, activeView, specView, navigate, setSpecView]);
 
   // Auto-select first schema when data loads
   useEffect(() => {
@@ -82,7 +89,9 @@ export default function SpecRoute() {
         </>
       }
     >
-      <SpecViewer specData={specData} selectedSchemaId={selectedSchemaId} />
+      {activeView === 'graph'
+        ? <SpecGraphView specData={specData} selectedSchemaId={selectedSchemaId} />
+        : <SpecViewer specData={specData} selectedSchemaId={selectedSchemaId} />}
     </SharedLayout>
   );
 }
