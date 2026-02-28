@@ -20,8 +20,6 @@ import type { SpecDataResponse } from '../../apps/embedded/services/embeddedData
 export interface SpecRouteCompositionProps {
   /** The spec data to display */
   specData: SpecDataResponse;
-  /** Active view mode (graph view is removed; both modes render SpecViewer) */
-  activeView?: 'graph' | 'json';
   /** Currently selected schema ID (null for none) */
   selectedSchemaId: string | null;
   /** Whether to show right sidebar (default: true) */
@@ -37,16 +35,14 @@ export interface SpecRouteCompositionProps {
  * @example
  * <SpecRouteComposition
  *   specData={createCompleteSpecFixture()}
- *   activeView="graph"
  *   selectedSchemaId={null}
- *   onViewChange={(view) => console.log('View:', view)}
  * />
  */
 export const SpecRouteComposition = memo<SpecRouteCompositionProps>(({
   specData,
   selectedSchemaId,
   showRightSidebar = true,
-  onSelectSchema = () => {},
+  onSelectSchema = () => {}
 }) => {
   return (
     <SharedLayout

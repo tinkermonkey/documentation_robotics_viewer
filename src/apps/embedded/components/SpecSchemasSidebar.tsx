@@ -7,6 +7,12 @@ interface SpecSchemasSidebarProps {
   onSelectSchema: (schemaId: string | null) => void;
 }
 
+const SCHEMA_META_KEYS = new Set([
+  '$schema', '$id', 'title', 'description', 'type', 'allOf', 'anyOf',
+  'oneOf', 'not', 'definitions', '$defs', 'required', 'additionalProperties',
+  'properties', 'examples', 'if', 'then', 'else'
+]);
+
 function getSchemaLabel(schemaId: string, title: unknown): string {
   if (typeof title === 'string' && title) return title;
   const parts = schemaId.split('/');
@@ -29,7 +35,8 @@ const SpecSchemasSidebar: React.FC<SpecSchemasSidebarProps> = ({
         {schemaEntries.map(([schemaId, schema]) => {
           const isSelected = selectedSchemaId === schemaId;
           const label = getSchemaLabel(schemaId, schema.title);
-          const defCount = Object.keys(schema.definitions || schema.$defs || {}).length;
+          const flatCount = Object.keys(schema).filter(k => !SCHEMA_META_KEYS.has(k) && typeof schema[k as keyof typeof schema] === 'object').length;
+          const defCount = flatCount || Object.keys((schema.definitions || schema.$defs || {}) as Record<string, unknown>).length;
 
           return (
             <button

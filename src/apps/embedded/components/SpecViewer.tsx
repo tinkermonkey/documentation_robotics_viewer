@@ -14,6 +14,23 @@ interface SpecViewerProps {
   selectedSchemaId: string | null
 }
 
+// JSON Schema meta-keys to exclude when iterating element types
+const SCHEMA_META_KEYS = new Set([
+  '$schema', '$id', 'title', 'description', 'type', 'allOf', 'anyOf',
+  'oneOf', 'not', 'definitions', '$defs', 'required', 'additionalProperties',
+  'properties', 'examples', 'if', 'then', 'else'
+]);
+
+function getElementTypes(schema: SchemaDefinition): Record<string, SchemaDefinition> {
+  // New format: element types are flat keys in the layer schema object
+  const flatEntries = Object.entries(schema).filter(
+    ([key, val]) => !SCHEMA_META_KEYS.has(key) && val !== null && typeof val === 'object'
+  );
+  if (flatEntries.length > 0) return Object.fromEntries(flatEntries) as Record<string, SchemaDefinition>;
+  // Fallback: legacy definitions/$defs format
+  return (schema.definitions || schema.$defs || {}) as Record<string, SchemaDefinition>;
+}
+
 const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) => {
 
   if (!specData) {
@@ -53,11 +70,11 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
       )
     }
 
-    const definitions = (schema.definitions || {}) as Record<string, SchemaDefinition>
-    const defNames = Object.keys(definitions)
+    const elementTypes = getElementTypes(schema)
+    const elementNames = Object.keys(elementTypes)
 
     const schemaMetadata: MetadataItem[] = [
-      { label: 'Element Types', value: defNames.length }
+      { label: 'Element Types', value: elementNames.length }
     ]
 
     return (
@@ -75,14 +92,18 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
               Element Definitions
             </h4>
             <div className="space-y-2">
-              {defNames.map(defName => {
-                const definition = definitions[defName]
+              {elementNames.map(elementName => {
+                const definition = elementTypes[elementName]
+                const displayName = typeof definition.title === 'string' && definition.title ? definition.title : elementName
+                // Spec v0.8.1 stores type-specific fields under properties.attributes.properties
+                const attributeProps = (definition.properties?.attributes as SchemaDefinition | undefined)?.properties
+                const attributeRequired = (definition.properties?.attributes as SchemaDefinition | undefined)?.required as string[] | undefined
 
                 return (
                   <ExpandableSection
-                    key={defName}
-                    title={defName}
-                    badge={typeof definition.type === 'string' ? definition.type : Array.isArray(definition.type) ? definition.type.join(', ') : 'object'}
+                    key={elementName}
+                    title={displayName}
+                    badge="object"
                   >
                     {typeof definition.description === 'string' && definition.description && (
                       <p className="text-gray-700 dark:text-gray-300 mb-4">
@@ -90,13 +111,13 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
                       </p>
                     )}
 
-                    {definition.properties && (
+                    {attributeProps && Object.keys(attributeProps).length > 0 && (
                       <div>
                         <h5 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                          Properties:
+                          Attributes:
                         </h5>
                         <ul className="space-y-2 ml-4">
-                          {Object.entries(definition.properties || {}).map(([propName, propSchema]) => {
+                          {Object.entries(attributeProps).map(([propName, propSchema]) => {
                             const prop = propSchema as SchemaDefinition
                             return (
                               <li key={propName} className="text-sm">
@@ -108,7 +129,7 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
                                     {typeof prop.type === 'string' ? prop.type : Array.isArray(prop.type) ? prop.type.join(', ') : 'object'}
                                     {typeof prop.format === 'string' && prop.format && ` (${prop.format})`}
                                   </span>
-                                  {(definition.required as string[] | undefined)?.includes(propName) && (
+                                  {attributeRequired?.includes(propName) && (
                                     <Badge color="failure" size="xs">required</Badge>
                                   )}
                                   {typeof prop.description === 'string' && prop.description && (

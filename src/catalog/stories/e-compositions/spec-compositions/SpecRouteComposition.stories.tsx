@@ -21,19 +21,18 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * Graph View - Default
- * Full spec route composition with graph view showing schema relationships
+ * Details View - Default
+ * Full spec route composition showing schema definitions
  */
-export const GraphView: Story = { render: () => (
+export const DetailsView: Story = { render: () => (
   <StoryProviderWrapper
     spec={createCompleteSpecFixture()}
     annotations={createAnnotationListFixture(3)}
-    initialParams={{ view: 'graph' }}
+    initialParams={{ view: 'details' }}
   >
     <div className="h-screen w-screen">
       <SpecRouteComposition
         specData={createCompleteSpecFixture()}
-        activeView="graph"
         selectedSchemaId={null}
         showRightSidebar={true}
       />
@@ -42,39 +41,17 @@ export const GraphView: Story = { render: () => (
 ) };
 
 /**
- * JSON View - Default
- * Full spec route composition with JSON viewer showing schema definitions
- */
-export const JSONView: Story = { render: () => (
-  <StoryProviderWrapper
-    spec={createCompleteSpecFixture()}
-    annotations={createAnnotationListFixture(5)}
-    initialParams={{ view: 'json' }}
-  >
-    <div className="h-screen w-screen">
-      <SpecRouteComposition
-        specData={createCompleteSpecFixture()}
-        activeView="json"
-        selectedSchemaId={null}
-        showRightSidebar={true}
-      />
-    </div>
-  </StoryProviderWrapper>
-) };
-
-/**
- * Minimal Spec - Graph View
+ * Minimal Spec
  * Shows minimal spec with only 5 basic schemas
  */
 export const MinimalSpec: Story = { render: () => (
   <StoryProviderWrapper
     spec={createMinimalSpecFixture()}
-    initialParams={{ view: 'graph' }}
+    initialParams={{ view: 'details' }}
   >
     <div className="h-screen w-screen">
       <SpecRouteComposition
         specData={createMinimalSpecFixture()}
-        activeView="graph"
         selectedSchemaId={null}
         showRightSidebar={true}
       />
@@ -89,12 +66,11 @@ export const MinimalSpec: Story = { render: () => (
 export const CompactNoSidebar: Story = { render: () => (
   <StoryProviderWrapper
     spec={createCompleteSpecFixture()}
-    initialParams={{ view: 'graph' }}
+    initialParams={{ view: 'details' }}
   >
     <div className="h-screen w-screen">
       <SpecRouteComposition
         specData={createCompleteSpecFixture()}
-        activeView="graph"
         selectedSchemaId={null}
         showRightSidebar={false}
       />
@@ -110,13 +86,12 @@ export const WithSelectedSchema: Story = { render: () => (
   <StoryProviderWrapper
     spec={createCompleteSpecFixture()}
     annotations={createAnnotationListFixture(2)}
-    initialParams={{ view: 'graph' }}
+    initialParams={{ view: 'details' }}
   >
     <div className="h-screen w-screen">
       <SpecRouteComposition
         specData={createCompleteSpecFixture()}
-        activeView="graph"
-        selectedSchemaId="goal"
+        selectedSchemaId="motivation"
         showRightSidebar={true}
       />
     </div>

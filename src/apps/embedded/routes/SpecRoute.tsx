@@ -7,7 +7,6 @@ import SchemaInfoPanel from '../components/SchemaInfoPanel';
 import SharedLayout from '../components/SharedLayout';
 import { LoadingState, ErrorState } from '../components/shared';
 import { useAnnotationStore } from '../stores/annotationStore';
-import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
 
@@ -15,7 +14,6 @@ export default function SpecRoute() {
   const { view } = useParams({ strict: false });
   const navigate = useNavigate();
   const annotationStore = useAnnotationStore();
-  const { specView, setSpecView } = useViewPreferenceStore();
   const [selectedSchemaId, setSelectedSchemaId] = useState<string | null>(null);
 
   // Load spec data
@@ -31,16 +29,12 @@ export default function SpecRoute() {
     },
   });
 
-  const activeView = view === 'json' ? 'json' : 'graph';
-
-  // Handle view synchronization in effect to avoid navigation during render
+  // Redirect any non-details view to /spec/details
   useEffect(() => {
-    if (!view) {
-      navigate({ to: `/spec/${specView}`, replace: true });
-    } else if (activeView !== specView) {
-      setSpecView(activeView);
+    if (view !== 'details') {
+      navigate({ to: '/spec/$view', params: { view: 'details' }, replace: true });
     }
-  }, [view, activeView, specView, navigate, setSpecView]);
+  }, [view, navigate]);
 
   // Auto-select first schema when data loads
   useEffect(() => {

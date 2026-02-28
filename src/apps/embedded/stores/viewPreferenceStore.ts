@@ -7,7 +7,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type SpecViewType = 'graph' | 'json';
+export type SpecViewType = 'details';
 export type ModelViewType = 'graph' | 'json';
 export type ChangesetViewType = 'graph' | 'list';
 
@@ -24,7 +24,7 @@ interface ViewPreferenceState {
 }
 
 const isValidSpecView = (view: unknown): view is SpecViewType =>
-  typeof view === 'string' && ['graph', 'json'].includes(view);
+  typeof view === 'string' && ['details'].includes(view);
 
 const isValidModelView = (view: unknown): view is ModelViewType =>
   typeof view === 'string' && ['graph', 'json'].includes(view);
@@ -33,7 +33,7 @@ const isValidChangesetView = (view: unknown): view is ChangesetViewType =>
   typeof view === 'string' && ['graph', 'list'].includes(view);
 
 const initialState = {
-  specView: 'graph' as SpecViewType,
+  specView: 'details' as SpecViewType,
   modelView: 'graph' as ModelViewType,
   changesetView: 'graph' as ChangesetViewType,
 };
@@ -73,7 +73,7 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
     }),
     {
       name: 'dr-viewer-preferences',
-      version: 3, // Incremented: removed motivation/c4 preference slices
+      version: 4, // Incremented: spec view simplified to 'details' only
     }
   )
 );

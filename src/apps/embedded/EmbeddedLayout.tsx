@@ -21,8 +21,7 @@ import { websocketClient } from './services/websocketClient';
 const routeMetadata: Record<string, { subTabs?: SubTab[] }> = {
   '/spec': {
     subTabs: [
-      { id: 'graph', label: 'Graph', path: '/spec/graph' },
-      { id: 'json', label: 'JSON', path: '/spec/json' }
+      { id: 'details', label: 'Details', path: '/spec/details' }
     ]
   },
   '/model': {

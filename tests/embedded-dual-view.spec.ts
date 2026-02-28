@@ -47,12 +47,12 @@ test.describe('Embedded App - Dual View URL Routing', () => {
   });
 
   test.describe('URL-based Navigation', () => {
-    test('should redirect /spec to /spec/graph by default', async ({ page }) => {
+    test('should redirect /spec to /spec/details by default', async ({ page }) => {
       await page.goto('/spec');
       await page.waitForSelector('[data-testid="embedded-app"]', { timeout: 10000 });
 
-      // Should be redirected to graph view
-      await expect(page).toHaveURL(/\/spec\/graph/);
+      // Should be redirected to details view
+      await expect(page).toHaveURL(/\/spec\/details/);
     });
 
     test('should redirect /changesets to /changesets/graph by default', async ({ page }) => {
@@ -71,12 +71,12 @@ test.describe('Embedded App - Dual View URL Routing', () => {
       await expect(page).toHaveURL(/\/model\/graph/);
     });
 
-    test('should load /spec/json route directly', async ({ page }) => {
-      await page.goto('/spec/json');
+    test('should load /spec/details route directly', async ({ page }) => {
+      await page.goto('/spec/details');
       await page.waitForSelector('[data-testid="embedded-app"]', { timeout: 10000 });
 
-      // Should stay on JSON view
-      await expect(page).toHaveURL(/\/spec\/json/);
+      // Should stay on details view
+      await expect(page).toHaveURL(/\/spec\/details/);
     });
 
     test('should load /changesets/list route directly', async ({ page }) => {
@@ -130,114 +130,29 @@ test.describe('Embedded App - Dual View URL Routing', () => {
       await expect(page.locator('[data-testid="sub-tab-list"]')).toBeVisible();
     });
 
-    test('should default to Graph view in spec mode', async ({ page }) => {
+    test('should default to Details view in spec mode', async ({ page }) => {
       // Switch to Spec mode
       await page.click('[data-testid="main-tab-spec"]');
 
       // Wait for navigation and sub-tab navigation to appear
       await page.waitForSelector('[data-testid="sub-tab-navigation"]', { timeout: 10000 });
 
-      // Graph tab should be active by default (router redirects /spec to /spec/graph)
-      // Active tabs have blue text color via CSS classes
-      const graphTab = page.locator('[data-testid="sub-tab-graph"]');
-      await expect(graphTab).toHaveClass(/text-blue-600/);
-
-      // GraphViewer should be visible
-      await expect(page.locator('.react-flow')).toBeVisible({ timeout: 10000 });
-    });
-
-    test('should switch to graph view when Graph tab clicked', async ({ page }) => {
-      // Switch to Spec mode (defaults to graph)
-      await page.click('[data-testid="main-tab-spec"]');
-      await page.waitForSelector('[data-testid="sub-tab-navigation"]', { timeout: 10000 });
-
-      // First switch to JSON view
-      await page.click('[data-testid="sub-tab-json"]');
-      await page.waitForSelector('[data-testid="spec-viewer"]', { timeout: 10000 });
-
-      // Now switch back to Graph view
-      await page.click('[data-testid="sub-tab-graph"]');
-      await page.waitForSelector('.react-flow', { timeout: 10000 });
-
-      // Graph tab should be active (has blue text color)
-      const graphTab = page.locator('[data-testid="sub-tab-graph"]');
-      await expect(graphTab).toHaveClass(/text-blue-600/);
-
-      // Check for React Flow (graph viewer)
-      const reactFlow = page.locator('.react-flow');
-      await expect(reactFlow).toBeVisible();
-    });
-
-    test('should render schema nodes in graph view', async ({ page }) => {
-      // Switch to Spec mode (defaults to graph view)
-      await page.click('[data-testid="main-tab-spec"]');
-      await page.waitForSelector('[data-testid="sub-tab-navigation"]', { timeout: 10000 });
-
-      // Wait for React Flow to load
-      await page.waitForSelector('.react-flow', { timeout: 10000 });
-
-      // Wait for network to stabilize
-      await page.waitForLoadState('networkidle');
-
-      // Check for nodes
-      const nodes = page.locator('.react-flow__node');
-      const nodeCount = await nodes.count();
-
-      console.log(`Found ${nodeCount} schema nodes in graph view`);
-      expect(nodeCount).toBeGreaterThan(0);
-    });
-
-    test('should remember graph view preference when returning to spec', async ({ page }) => {
-      // Switch to Spec mode (defaults to graph)
-      await page.click('[data-testid="main-tab-spec"]');
-      await page.waitForSelector('[data-testid="sub-tab-navigation"]', { timeout: 10000 });
-
-      // Verify graph is active (has blue text)
-      await expect(page.locator('[data-testid="sub-tab-graph"]')).toHaveClass(/text-blue-600/);
-
-      // Switch to Model mode
-      await page.click('[data-testid="main-tab-model"]');
-      await page.waitForLoadState('networkidle');
-
-      // Switch back to Spec mode
-      await page.click('[data-testid="main-tab-spec"]');
-      await page.waitForSelector('[data-testid="sub-tab-navigation"]', { timeout: 10000 });
-
-      // Graph tab should still be active (preference persisted)
-      const graphTab = page.locator('[data-testid="sub-tab-graph"]');
-      await expect(graphTab).toHaveClass(/text-blue-600/);
-    });
-
-    test('should switch back to JSON view', async ({ page }) => {
-      // Switch to Spec mode (defaults to graph)
-      await page.click('[data-testid="main-tab-spec"]');
-      await page.waitForSelector('[data-testid="sub-tab-navigation"]', { timeout: 10000 });
-
-      // Verify we're in graph view
-      await expect(page.locator('[data-testid="sub-tab-graph"]')).toHaveClass(/text-blue-600/);
-
-      // Switch to JSON
-      await page.click('[data-testid="sub-tab-json"]');
-      await page.waitForSelector('[data-testid="spec-viewer"]', { timeout: 10000 });
-
-      // JSON tab should be active (has blue text)
-      const jsonTab = page.locator('[data-testid="sub-tab-json"]');
-      await expect(jsonTab).toHaveClass(/text-blue-600/);
+      // Details tab should be active by default (router redirects /spec to /spec/details)
+      const detailsTab = page.locator('[data-testid="sub-tab-details"]');
+      await expect(detailsTab).toHaveClass(/text-blue-600/);
 
       // SpecViewer should be visible
-      await expect(page.locator('[data-testid="spec-viewer"]')).toBeVisible();
+      await expect(page.locator('[data-testid="spec-viewer"]')).toBeVisible({ timeout: 10000 });
     });
 
-    test('should not have third-level tabs in Spec JSON view', async ({ page }) => {
-      // Switch to Spec JSON view
+    test('should not have third-level tabs in Spec Details view', async ({ page }) => {
+      // Switch to Spec Details view
       await page.click('[data-testid="main-tab-spec"]');
       await page.waitForSelector('[data-testid="sub-tab-navigation"]', { timeout: 10000 });
-      await page.click('[data-testid="sub-tab-json"]');
       await page.waitForSelector('[data-testid="spec-viewer"]', { timeout: 10000 });
 
-      // Should only have 2 levels of tabs: main tabs and sub-tabs (Graph/JSON)
+      // Should only have 2 levels of tabs: main tabs and sub-tabs (Details only)
       // NO third level for Schemas/Cross-Layer Links
-      // We have 1 sub-tab-navigation element
       const subTabNav = page.locator('[data-testid="sub-tab-navigation"]');
       const count = await subTabNav.count();
 
@@ -245,25 +160,20 @@ test.describe('Embedded App - Dual View URL Routing', () => {
       expect(count).toBe(1);
     });
 
-    test('should show merged schema definitions and cross-layer links', async ({ page }) => {
-      // Switch to Spec JSON view
+    test('should show schema element definitions in Details view', async ({ page }) => {
+      // Switch to Spec Details view
       await page.click('[data-testid="main-tab-spec"]');
       await page.waitForSelector('[data-testid="sub-tab-navigation"]', { timeout: 10000 });
-      await page.click('[data-testid="sub-tab-json"]');
       await page.waitForSelector('[data-testid="spec-viewer"]', { timeout: 10000 });
 
-      // Select a schema
-      const firstSchemaButton = page.locator('button').filter({ hasText: /.schema.json$/ }).first();
+      // Select a schema from the sidebar
+      const firstSchemaButton = page.locator('[data-testid^="schema-item-"]').first();
       if (await firstSchemaButton.isVisible()) {
         await firstSchemaButton.click();
         await page.waitForLoadState('networkidle');
 
-        // Both sections should be visible in merged view
-        await expect(page.locator('text=Schema Definitions')).toBeVisible();
-
-        // Cross-layer links section may not exist if no links
-        const hasLinksSection = await page.locator('text=Cross-Layer Links').isVisible();
-        console.log(`Cross-Layer Links section ${hasLinksSection ? 'visible' : 'not visible (may have no links)'}`);
+        // Schema definitions section should be visible
+        await expect(page.locator('[data-testid="schema-definitions-section"]')).toBeVisible();
       }
     });
   });
@@ -293,7 +203,7 @@ test.describe('Embedded App - Dual View URL Routing', () => {
   });
 
   test.describe('Error Handling', () => {
-    test('should not have console errors in spec graph view', async ({ page }) => {
+    test('should not have console errors in spec details view', async ({ page }) => {
       const errors: string[] = [];
       page.on('console', msg => {
         if (msg.type() === 'error') {
@@ -301,12 +211,10 @@ test.describe('Embedded App - Dual View URL Routing', () => {
         }
       });
 
-      // Switch to Spec mode (defaults to Graph view)
+      // Switch to Spec mode (defaults to Details view)
       await page.click('[data-testid="main-tab-spec"]');
       await page.waitForSelector('[data-testid="sub-tab-navigation"]', { timeout: 10000 });
-
-      // Wait for React Flow to load
-      await page.waitForSelector('.react-flow', { timeout: 10000 });
+      await page.waitForSelector('[data-testid="spec-viewer"]', { timeout: 10000 });
 
       // Wait for network to stabilize
       await page.waitForLoadState('networkidle');
@@ -328,13 +236,10 @@ test.describe('Embedded App - Dual View URL Routing', () => {
   });
 
   test.describe('Persistence', () => {
-    test('should persist view preferences across page reloads', async ({ page }) => {
-      // Set Spec to JSON view (non-default)
+    test('should load spec in Details view after page reload', async ({ page }) => {
+      // Switch to Spec mode
       await page.click('[data-testid="main-tab-spec"]');
       await page.waitForSelector('[data-testid="sub-tab-navigation"]', { timeout: 10000 });
-
-      // Switch to JSON view
-      await page.click('[data-testid="sub-tab-json"]');
       await page.waitForSelector('[data-testid="spec-viewer"]', { timeout: 10000 });
 
       // Reload page
@@ -346,9 +251,9 @@ test.describe('Embedded App - Dual View URL Routing', () => {
       await page.click('[data-testid="main-tab-spec"]');
       await page.waitForSelector('[data-testid="sub-tab-navigation"]', { timeout: 10000 });
 
-      // JSON tab should still be active (preference persisted via blue text)
-      const jsonTab = page.locator('[data-testid="sub-tab-json"]');
-      await expect(jsonTab).toHaveClass(/text-blue-600/);
+      // Details tab should be active
+      const detailsTab = page.locator('[data-testid="sub-tab-details"]');
+      await expect(detailsTab).toHaveClass(/text-blue-600/);
     });
   });
 });
