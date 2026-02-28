@@ -13,8 +13,13 @@ const SCHEMA_META_KEYS = new Set([
   'properties', 'examples', 'if', 'then', 'else'
 ]);
 
-function getSchemaLabel(schemaId: string, title: unknown): string {
-  if (typeof title === 'string' && title) return title;
+function getSchemaLabel(schemaId: string, schema: Record<string, unknown>): string {
+  // CLI v0.8.1: layer name lives inside schema.layer.name
+  const layerName = (schema.layer as Record<string, unknown> | undefined)?.name;
+  if (typeof layerName === 'string' && layerName) return layerName;
+  // Flat title field
+  if (typeof schema.title === 'string' && schema.title) return schema.title;
+  // Fallback: derive from schema ID
   const parts = schemaId.split('/');
   return parts[parts.length - 1].replace(/\.json$/, '');
 }
@@ -34,8 +39,12 @@ const SpecSchemasSidebar: React.FC<SpecSchemasSidebarProps> = ({
       <div className="space-y-1">
         {schemaEntries.map(([schemaId, schema]) => {
           const isSelected = selectedSchemaId === schemaId;
-          const label = getSchemaLabel(schemaId, schema.title);
-          const flatCount = Object.keys(schema).filter(k => !SCHEMA_META_KEYS.has(k) && typeof schema[k as keyof typeof schema] === 'object').length;
+          const label = getSchemaLabel(schemaId, schema as Record<string, unknown>);
+          // CLI v0.8.1: element types live inside nodeSchemas
+          const nodeSchemas = schema.nodeSchemas as Record<string, unknown> | undefined;
+          const flatCount = nodeSchemas
+            ? Object.keys(nodeSchemas).length
+            : Object.keys(schema).filter(k => !SCHEMA_META_KEYS.has(k) && typeof schema[k as keyof typeof schema] === 'object').length;
           const defCount = flatCount || Object.keys((schema.definitions || schema.$defs || {}) as Record<string, unknown>).length;
 
           return (

@@ -22,12 +22,16 @@ const SCHEMA_META_KEYS = new Set([
 ]);
 
 function getElementTypes(schema: SchemaDefinition): Record<string, SchemaDefinition> {
-  // New format: element types are flat keys in the layer schema object
+  // CLI v0.8.1 format: element types live inside schema.nodeSchemas
+  if (schema.nodeSchemas && typeof schema.nodeSchemas === 'object') {
+    return schema.nodeSchemas as Record<string, SchemaDefinition>;
+  }
+  // Flat-key fallback: element types are top-level keys (excluding JSON Schema meta-keys)
   const flatEntries = Object.entries(schema).filter(
     ([key, val]) => !SCHEMA_META_KEYS.has(key) && val !== null && typeof val === 'object'
   );
   if (flatEntries.length > 0) return Object.fromEntries(flatEntries) as Record<string, SchemaDefinition>;
-  // Fallback: legacy definitions/$defs format
+  // Legacy fallback: definitions/$defs format
   return (schema.definitions || schema.$defs || {}) as Record<string, SchemaDefinition>;
 }
 
@@ -82,9 +86,19 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
         {/* Schema Header */}
         <section className="mb-8" data-testid="schema-definitions-section">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            {typeof schema.title === 'string' ? schema.title : selectedSchemaId}
+            {typeof schema.title === 'string'
+              ? schema.title
+              : typeof (schema.layer as Record<string, unknown> | undefined)?.name === 'string'
+                ? (schema.layer as Record<string, unknown>).name as string
+                : selectedSchemaId}
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">{typeof schema.description === 'string' ? schema.description : ''}</p>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            {typeof schema.description === 'string'
+              ? schema.description
+              : typeof (schema.layer as Record<string, unknown> | undefined)?.description === 'string'
+                ? (schema.layer as Record<string, unknown>).description as string
+                : ''}
+          </p>
           <MetadataGrid items={schemaMetadata} columns={3} />
 
           <div className="mt-6">
