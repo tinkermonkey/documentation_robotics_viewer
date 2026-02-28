@@ -1,12 +1,12 @@
-version: 0.1.0
-installed_at: 2026-01-30T12:46:19.710Z
+version: 0.1.1
+installed_at: 2026-02-28T14:18:55.173Z
 components:
   agents:
     dr-advisor.md:
-      hash: a3decb67
+      hash: 75de1048
       modified: false
     dr-architect.md:
-      hash: 84e1673f
+      hash: 479fb731
       modified: false
   skills:
     dr_01_motivation_layer/SKILL.md:
@@ -28,10 +28,10 @@ components:
       hash: 4e73ab69
       modified: false
     dr_07_data_model_layer/SKILL.md:
-      hash: 5488b7ba
+      hash: f12a5198
       modified: false
     dr_08_dataset_layer/SKILL.md:
-      hash: fb2784ab
+      hash: 21468d3d
       modified: false
     dr_09_ux_layer/SKILL.md:
       hash: 3843173e
@@ -40,7 +40,7 @@ components:
       hash: 0f5e2a66
       modified: false
     dr_11_apm_layer/SKILL.md:
-      hash: d3f956a9
+      hash: 075cb381
       modified: false
     dr_12_testing_layer/SKILL.md:
       hash: 899b60e6

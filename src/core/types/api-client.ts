@@ -215,18 +215,54 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            /** @description Element ID */
+                            /** @description Element ID (UUID for spec-aligned elements, semantic dot-ID for legacy elements) */
                             id: string;
-                            /** @description Element name */
-                            name: string;
-                            /** @description Element type */
+                            /** @description Spec node type ID (e.g. motivation.goal) */
+                            spec_node_id: string;
+                            /** @description Element type (e.g. goal, endpoint) */
                             type: string;
+                            /** @description Layer this element belongs to */
+                            layer_id: string;
+                            /** @description Element display name */
+                            name: string;
                             /** @description Element description */
                             description?: string;
-                            /** @description Element properties (key-value pairs with arbitrary values) */
+                            /** @description Typed attribute bag per spec-node schema */
+                            attributes?: {
+                                [key: string]: unknown;
+                            };
+                            /** @description Source file and symbol reference */
+                            source_reference?: {
+                                /** @enum {string} */
+                                provenance: "extracted" | "manual" | "inferred" | "generated";
+                                locations: {
+                                    file: string;
+                                    symbol?: string;
+                                }[];
+                                repository?: {
+                                    url?: string;
+                                    commit?: string;
+                                };
+                            };
+                            /** @description Element metadata */
+                            metadata?: {
+                                created_at?: string;
+                                updated_at?: string;
+                                created_by?: string;
+                                version?: number;
+                            } & {
+                                [key: string]: unknown;
+                            };
+                            /** @description Legacy flat properties (deprecated, use attributes) */
                             properties?: {
                                 [key: string]: unknown;
                             };
+                            /** @description Legacy semantic ID (deprecated, use id) */
+                            elementId?: string;
+                            /** @description Cross-layer references */
+                            references?: unknown[];
+                            /** @description Intra-layer relationships */
+                            relationships?: unknown[];
                             /** @description Associated annotations */
                             annotations?: {
                                 /** @description Annotation ID */
