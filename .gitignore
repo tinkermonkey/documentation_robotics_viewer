@@ -12,6 +12,9 @@ storybook-static/
 # Build artifacts (keep dist/ but ignore the bundled package)
 dist/embedded/dr-viewer-bundle/
 
+# API version cache (local build artifact, regenerated on each run)
+.api-version-cache.json
+
 # Logs
 logs
 *.log
