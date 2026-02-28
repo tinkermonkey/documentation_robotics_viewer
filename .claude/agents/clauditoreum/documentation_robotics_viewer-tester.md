@@ -518,15 +518,16 @@ tests/fixtures/
 **Example Story:**
 
 ```typescript
-// src/catalog/stories/c-graphs/nodes/motivation/GoalNode.stories.tsx
+// src/catalog/stories/core-nodes/UnifiedNode.stories.tsx
 import type { Meta, StoryObj } from '@storybook/react';
-import { GoalNode } from '../../../../../core/nodes/motivation/GoalNode';
-import { withReactFlowDecorator } from '@catalog/decorators/';
+import { NodeType } from '@/core/nodes/NodeType';
+import UnifiedNode from '@/core/nodes/components/UnifiedNode';
+import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 const meta = {
-  title: 'C/Graphs/Nodes/Motivation/GoalNode',
-  component: GoalNode,
-  decorators: [withReactFlowDecorator],
+  title: 'Core Nodes / UnifiedNode',
+  component: UnifiedNode,
+  decorators: [withReactFlowDecorator()],
 } satisfies Meta<typeof GoalNode>;
 
 export default meta;

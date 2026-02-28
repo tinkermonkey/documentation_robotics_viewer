@@ -17,8 +17,11 @@ USER root
 # ============================================================================
 # Stage 2: Git Configuration for CI Environment
 # ============================================================================
-# The base image already has user identity and safe.directory configured in /etc/gitconfig
-# We add network timeout and CI-specific settings to the system config
+# IMPORTANT: /home/orchestrator/.gitconfig is a RUNTIME BIND MOUNT injected by
+# the orchestrator. Do NOT create, touch, or modify ~/.gitconfig in this Dockerfile.
+# All git config must use --system (writes to /etc/gitconfig) to avoid conflicts.
+# The base image already has user identity and safe.directory configured in /etc/gitconfig.
+# We add network timeout and CI-specific settings to the system config.
 
 RUN git config --system credential.helper 'cache --timeout=3600' && \
     git config --system http.postBuffer 524288000 && \

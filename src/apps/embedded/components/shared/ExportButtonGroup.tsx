@@ -152,4 +152,4 @@ const ExportButtonGroupComponent: FC<ExportButtonGroupProps> = ({
 
 ExportButtonGroupComponent.displayName = 'ExportButtonGroup';
 
-export const ExportButtonGroup = memo(ExportButtonGroupComponent);
+export const ExportButtonGroup: FC<ExportButtonGroupProps> = memo(ExportButtonGroupComponent);

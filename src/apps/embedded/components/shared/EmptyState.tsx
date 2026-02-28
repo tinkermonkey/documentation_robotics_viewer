@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import React, { memo } from 'react';
 import { Button } from 'flowbite-react';
 import {
   HiOutlineDocumentText,
@@ -61,7 +61,7 @@ const VARIANT_CONFIG: Record<
   },
 };
 
-export const EmptyState = memo(({ variant, title, description, action }: EmptyStateProps) => {
+export const EmptyState: React.FC<EmptyStateProps> = memo(({ variant, title, description, action }: EmptyStateProps) => {
   const config = VARIANT_CONFIG[variant];
   const Icon = config.icon;
 

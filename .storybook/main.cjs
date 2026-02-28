@@ -17,6 +17,13 @@ module.exports = {
     options: {},
   },
 
+  // Exclude skip-test stories from test runs; use granular tags (skip-a11y, skip-errors) instead
+  testRunner: {
+    tags: {
+      exclude: ['skip-test'],
+    },
+  },
+
   viteFinal: async (config) => {
     const { mergeConfig } = await import('vite');
     return mergeConfig(config, {

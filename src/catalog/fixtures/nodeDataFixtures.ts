@@ -4,9 +4,8 @@
  * Supports all changeset operations (add/update/delete) and visual states
  *
  * NOTE: createBaseFieldListNodeConfig is deprecated and kept for backward compatibility.
- * BaseFieldListNode has been migrated to UnifiedNode. See:
- * - src/catalog/stories/c-graphs/nodes/base/JSONSchemaNode.stories.tsx
- * - src/catalog/stories/c-graphs/nodes/base/DataModelNode.stories.tsx
+ * BaseFieldListNode has been migrated to UnifiedNode. See consolidated stories in:
+ * - src/catalog/stories/core-nodes/UnifiedNode.stories.tsx
  */
 
 import type {
@@ -31,6 +30,7 @@ import type {
   CoverageIndicator,
   RelationshipBadge
 } from '../../core/types';
+import type { ChangesetOperation } from '../../core/nodes';
 
 // DEPRECATED: FieldItem type definition kept for backward compatibility
 // The actual FieldItem interface is imported from UnifiedNode component
@@ -109,7 +109,7 @@ export interface BaseNodeOptions {
   layerId?: string;
   fill?: string;
   stroke?: string;
-  changesetOperation?: 'add' | 'update' | 'delete';
+  changesetOperation?: ChangesetOperation;
   opacity?: number;
   strokeWidth?: number;
   relationshipBadge?: RelationshipBadge;

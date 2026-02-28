@@ -1,7 +1,7 @@
 /**
  * Unit Tests for Story Error Filtering
  *
- * Tests the three-tier error classification:
+ * Tests the two-tier error classification:
  * 1. isExpectedConsoleError() - Truly expected errors (silently filtered)
  * 2. isKnownRenderingBug() - Known rendering bugs (soft-fail/warn)
  *
@@ -117,6 +117,11 @@ test.describe('Story Error Filtering', () => {
         expect(isExpectedConsoleError('The tag <foo-bar-baz> is unrecognized in this browser')).toBe(true);
       });
 
+      test('should match placeholder tag names <%s>', () => {
+        expect(isExpectedConsoleError('The tag <%s> is unrecognized')).toBe(true);
+        expect(isExpectedConsoleError('The tag <%s> is unrecognized in this browser')).toBe(true);
+      });
+
       test('should NOT match tags with spaces (malformed HTML)', () => {
         const error = 'The tag <my weird tag> is unrecognized';
         expect(isExpectedConsoleError(error)).toBe(false);
@@ -161,6 +166,31 @@ test.describe('Story Error Filtering', () => {
 
       test('should NOT match unrelated WebSocket errors', () => {
         const error = 'WebSocket message failed to parse';
+        expect(isExpectedConsoleError(error)).toBe(false);
+      });
+
+      test('should match WebSocket not connected with localhost context', () => {
+        const error = 'WebSocket not connected to localhost:8080';
+        expect(isExpectedConsoleError(error)).toBe(true);
+      });
+
+      test('should match WebSocket not connected with 127.0.0.1 context', () => {
+        const error = 'WebSocket not connected to 127.0.0.1:8080';
+        expect(isExpectedConsoleError(error)).toBe(true);
+      });
+
+      test('should NOT match WebSocket not connected without host context', () => {
+        const error = 'WebSocket not connected';
+        expect(isExpectedConsoleError(error)).toBe(false);
+      });
+
+      test('should NOT match WebSocket not connected to production host', () => {
+        const error = 'WebSocket not connected to api.example.com:8080';
+        expect(isExpectedConsoleError(error)).toBe(false);
+      });
+
+      test('should NOT match WebSocket not connected in the middle of message', () => {
+        const error = 'Error: The WebSocket not connected properly';
         expect(isExpectedConsoleError(error)).toBe(false);
       });
     });
@@ -236,6 +266,28 @@ test.describe('Story Error Filtering', () => {
       });
     });
 
+    test.describe('JSON-RPC Request Failure Filter', () => {
+      test('should match JSON-RPC failure with localhost context', () => {
+        const error = 'Failed to send JSON-RPC request: WebSocket not connected to localhost:8080';
+        expect(isExpectedConsoleError(error)).toBe(true);
+      });
+
+      test('should match JSON-RPC failure with 127.0.0.1 context', () => {
+        const error = 'Failed to send JSON-RPC request: WebSocket not connected to 127.0.0.1:8080';
+        expect(isExpectedConsoleError(error)).toBe(true);
+      });
+
+      test('should NOT match JSON-RPC failure without localhost context', () => {
+        const error = 'Failed to send JSON-RPC request: WebSocket not connected';
+        expect(isExpectedConsoleError(error)).toBe(false);
+      });
+
+      test('should NOT match JSON-RPC failure to production host', () => {
+        const error = 'Failed to send JSON-RPC request: WebSocket not connected to api.example.com:8080';
+        expect(isExpectedConsoleError(error)).toBe(false);
+      });
+    });
+
     test.describe('Warning Prefix Filter', () => {
       test('should match known React warnings', () => {
         const error = 'Warning: Received `false` for a boolean attribute `disabled`, instead of `true`';
@@ -259,6 +311,45 @@ test.describe('Story Error Filtering', () => {
 
       test('should NOT match warnings in the middle of text', () => {
         const error = 'This is a warning: something';
+        expect(isExpectedConsoleError(error)).toBe(false);
+      });
+    });
+
+    test.describe('useLayoutEffect Server Warning Filter', () => {
+      test('should match useLayoutEffect server warning', () => {
+        const error = 'Warning: useLayoutEffect does nothing on the server';
+        expect(isExpectedConsoleError(error)).toBe(true);
+      });
+
+      test('should NOT match without Warning prefix', () => {
+        const error = 'useLayoutEffect does nothing on the server';
+        expect(isExpectedConsoleError(error)).toBe(false);
+      });
+
+      test('should NOT match useEffect warnings', () => {
+        const error = 'Warning: useEffect does nothing on the server';
+        expect(isExpectedConsoleError(error)).toBe(false);
+      });
+    });
+
+    test.describe('Act() Wrapper Warning Filter', () => {
+      test('should match act() wrapper warning', () => {
+        const error = 'Warning: An update to Component inside a test was not wrapped in act(...)';
+        expect(isExpectedConsoleError(error)).toBe(true);
+      });
+
+      test('should match act() wrapper warning with various component names', () => {
+        expect(isExpectedConsoleError('Warning: An update to TestComponent inside a test was not wrapped in act(...)')).toBe(true);
+        expect(isExpectedConsoleError('Warning: An update to MyElement inside a test was not wrapped in act(...)')).toBe(true);
+      });
+
+      test('should NOT match without act context', () => {
+        const error = 'Warning: An update to Component inside something was not wrapped in act(...)';
+        expect(isExpectedConsoleError(error)).toBe(false);
+      });
+
+      test('should NOT match without Warning prefix', () => {
+        const error = 'An update to Component inside a test was not wrapped in act(...)';
         expect(isExpectedConsoleError(error)).toBe(false);
       });
     });
@@ -313,6 +404,14 @@ test.describe('Story Error Filtering', () => {
           'the server responded with a status of 500 at localhost:3002',
           'Warning: Received `false` instead of `true`',
           'Warning: componentWillReceiveProps has been renamed',
+          'Warning: useLayoutEffect does nothing on the server',
+          'Warning: An update to Component inside a test was not wrapped in act(...)',
+          'Failed to send JSON-RPC request: WebSocket not connected to localhost:8080',
+          'Encountered two children with the same key edge-rel-123',
+          'Axe is already running',
+          '[ErrorBoundary] Caught error: Test error',
+          'Test error for ErrorBoundary',
+          '[NodeConfigLoader] No style config found for NodeType: TEST_TYPE',
           '[RenderPropError] renderElement: Failed to render',
           'StoryLoadedWrapper: Timeout waiting for React Flow nodes',
           'Wrapper element: DIV',
@@ -326,6 +425,80 @@ test.describe('Story Error Filtering', () => {
           unmatchedErrors.length,
           `These expected errors were not caught: ${unmatchedErrors.join(', ')}`
         ).toBe(0);
+      });
+    });
+
+    test.describe('Axe Accessibility Runner Filter', () => {
+      test('should match Axe already running error', () => {
+        const error = 'Axe is already running';
+        expect(isExpectedConsoleError(error)).toBe(true);
+      });
+
+      test('should match Axe error with context', () => {
+        expect(isExpectedConsoleError('Error: Axe is already running in another test')).toBe(true);
+      });
+
+      test('should NOT match unrelated Axe messages', () => {
+        const error = 'Axe check failed';
+        expect(isExpectedConsoleError(error)).toBe(false);
+      });
+
+      test('should NOT match Axe with different errors', () => {
+        const error = 'Axe validation error';
+        expect(isExpectedConsoleError(error)).toBe(false);
+      });
+    });
+
+    test.describe('ErrorBoundary Error Filter', () => {
+      test('should match ErrorBoundary caught error prefix', () => {
+        const error = '[ErrorBoundary] Caught error: TypeError: cannot read property';
+        expect(isExpectedConsoleError(error)).toBe(true);
+      });
+
+      test('should match ErrorBoundary errors with various messages', () => {
+        expect(isExpectedConsoleError('[ErrorBoundary] Caught error: ReferenceError: x is not defined')).toBe(true);
+        expect(isExpectedConsoleError('[ErrorBoundary] Caught error in component render')).toBe(true);
+      });
+
+      test('should match test error for ErrorBoundary', () => {
+        const error = 'Test error for ErrorBoundary component testing';
+        expect(isExpectedConsoleError(error)).toBe(true);
+      });
+
+      test('should match test error messages in ErrorBoundary context', () => {
+        expect(isExpectedConsoleError('Test error for ErrorBoundary')).toBe(true);
+        expect(isExpectedConsoleError('Test error for ErrorBoundary component')).toBe(true);
+      });
+
+      test('should NOT match similar but different error boundary messages', () => {
+        expect(isExpectedConsoleError('Error caught in boundary')).toBe(false);
+        expect(isExpectedConsoleError('ErrorBoundary caught something')).toBe(false);
+      });
+
+      test('should NOT match unrelated test errors', () => {
+        expect(isExpectedConsoleError('Test error in component')).toBe(false);
+      });
+    });
+
+    test.describe('NodeConfigLoader Style Config Filter', () => {
+      test('should match NodeConfigLoader no style config error', () => {
+        const error = '[NodeConfigLoader] No style config found for NodeType: BUSINESS_SERVICE';
+        expect(isExpectedConsoleError(error)).toBe(true);
+      });
+
+      test('should match various NodeConfigLoader style config messages', () => {
+        expect(isExpectedConsoleError('[NodeConfigLoader] No style config found for NodeType: MOTIVATION_GOAL')).toBe(true);
+        expect(isExpectedConsoleError('[NodeConfigLoader] No style config found for NodeType: INVALID_TYPE')).toBe(true);
+      });
+
+      test('should NOT match generic NodeConfigLoader errors', () => {
+        const error = '[NodeConfigLoader] Failed to load config file';
+        expect(isExpectedConsoleError(error)).toBe(false);
+      });
+
+      test('should NOT match unrelated config errors', () => {
+        expect(isExpectedConsoleError('NodeConfig parsing failed')).toBe(false);
+        expect(isExpectedConsoleError('Missing style configuration')).toBe(false);
       });
     });
 
@@ -433,6 +606,41 @@ test.describe('Story Error Filtering', () => {
 
       test('should NOT match unrelated React Flow errors', () => {
         expect(isKnownRenderingBug('React Flow rendered with wrong props')).toBe(false);
+      });
+    });
+
+    test.describe('React Duplicate Key Warning - Expected in Story Tests', () => {
+      test('should match duplicate key warning for edge keys', () => {
+        const error = 'Warning: Encountered two children with the same key `edge-rel-3`';
+        expect(isExpectedConsoleError(error)).toBe(true);
+      });
+
+      test('should match duplicate key warning with edge prefix', () => {
+        expect(isExpectedConsoleError('Encountered two children with the same key edge-123')).toBe(true);
+      });
+
+      test('should match duplicate key warning with edge- prefix in various formats', () => {
+        expect(isExpectedConsoleError('Encountered two children with the same key `edge-connection-5`')).toBe(true);
+        expect(isExpectedConsoleError('Encountered two children with the same key edge-dedup-key')).toBe(true);
+      });
+
+      test('should NOT match duplicate key warning without edge scope', () => {
+        const error = 'Encountered two children with the same key';
+        expect(isExpectedConsoleError(error)).toBe(false);
+      });
+
+      test('should NOT match duplicate key warning for non-edge keys', () => {
+        expect(isExpectedConsoleError('Encountered two children with the same key `node-123`')).toBe(false);
+        expect(isExpectedConsoleError('Encountered two children with the same key `item-1`')).toBe(false);
+      });
+
+      test('should NOT be treated as a known rendering bug', () => {
+        const error = 'Warning: Encountered two children with the same key `edge-rel-3`';
+        expect(isKnownRenderingBug(error)).toBe(false);
+      });
+
+      test('should NOT match unrelated key warnings', () => {
+        expect(isExpectedConsoleError('Key validation failed')).toBe(false);
       });
     });
 

@@ -20,6 +20,7 @@ import { NodeType } from '../../src/core/nodes/NodeType';
 import type { ModelElement, MetaModel, Layer } from '../../src/core/types';
 import { LayerType } from '../../src/core/types/layers';
 import { VerticalLayerLayout } from '../../src/core/layout/verticalLayerLayout';
+import type { ChangesetOperation } from '../../src/core/nodes';
 
 /**
  * Helper to create minimal ModelElement for testing
@@ -751,7 +752,7 @@ test.describe('NodeTransformer Pipeline Integration', () => {
     });
 
     test('should apply changeset styling to motivation nodes', async () => {
-      const operations: Array<'add' | 'update' | 'delete'> = ['add', 'update', 'delete'];
+      const operations: Array<ChangesetOperation> = ['add', 'update', 'delete'];
 
       for (const operation of operations) {
         const element: ModelElement = {

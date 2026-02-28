@@ -91,7 +91,7 @@ function BaseInspectorPanelComponent<
     // Case 1: No selection (user hasn't selected anything)
     if (!selectedNodeId) {
       return (
-        <div data-testid={testId} className={`flex flex-col h-full bg-white dark:bg-gray-900 ${className}`}>
+        <div data-testid={testId} className={`flex flex-col h-full bg-white dark:bg-gray-900 ${className}`} role="region" aria-label={title}>
           {/* Header */}
           <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>
@@ -118,7 +118,7 @@ function BaseInspectorPanelComponent<
       );
 
       return (
-        <div data-testid={testId} className={`flex flex-col h-full bg-white dark:bg-gray-900 ${className}`}>
+        <div data-testid={testId} className={`flex flex-col h-full bg-white dark:bg-gray-900 ${className}`} role="region" aria-label={title}>
           {/* Header */}
           <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>
@@ -146,7 +146,7 @@ function BaseInspectorPanelComponent<
     );
 
     return (
-      <div data-testid={testId} className={`flex flex-col h-full bg-white dark:bg-gray-900 overflow-y-auto ${className}`}>
+      <div data-testid={testId} className={`flex flex-col h-full bg-white dark:bg-gray-900 overflow-y-auto ${className}`} role="region" aria-label={title}>
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>

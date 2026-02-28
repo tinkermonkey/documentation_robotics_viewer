@@ -15,7 +15,7 @@ type Story = StoryObj<typeof meta>;
 
 // Story-local node with top as a source handle and bottom as a target handle,
 // matching the direction of the edge being demonstrated.
-const DemoNode = memo(({ data }: { data: { label: string } }) => (
+const DemoNode: React.FC<{ data: { label: string } }> = memo(({ data }: { data: { label: string } }) => (
   <div
     style={{
       width: 180,

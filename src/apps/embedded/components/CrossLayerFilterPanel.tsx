@@ -9,7 +9,7 @@
  * - "Clear All Filters" button
  */
 
-import { memo, useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import {
   Accordion,
   AccordionPanel,
@@ -138,7 +138,7 @@ function calculateFilterCounts(model: MetaModel | null): CrossLayerFilterCounts 
   return counts;
 }
 
-const CrossLayerFilterPanelComponent = memo(() => {
+const CrossLayerFilterPanelComponent: React.FC = memo(() => {
   const model = useModelStore((state) => state.model);
   const targetLayerFilters = useCrossLayerStore((state) => state.targetLayerFilters);
   const relationshipTypeFilters = useCrossLayerStore((state) => state.relationshipTypeFilters);

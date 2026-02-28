@@ -1,6 +1,11 @@
 import { NodeType } from './NodeType';
 
 /**
+ * Layout mode for node rendering
+ */
+export type NodeLayoutMode = 'centered' | 'left' | 'table';
+
+/**
  * Dimensions configuration for a node type
  */
 export interface NodeDimensions {
@@ -24,7 +29,7 @@ export interface NodeColors {
  * Complete styling configuration for a single node type
  */
 export interface NodeStyleConfig {
-  layout: 'centered' | 'left' | 'table';
+  layout: NodeLayoutMode;
   icon: string;
   typeLabel: string;
   colors: NodeColors;

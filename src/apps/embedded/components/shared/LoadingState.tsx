@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import React, { memo } from 'react';
 import { Spinner, Card } from 'flowbite-react';
 
 interface LoadingStateProps {
@@ -6,7 +6,7 @@ interface LoadingStateProps {
   variant?: 'page' | 'panel' | 'inline';
 }
 
-export const LoadingState = memo(
+export const LoadingState: React.FC<LoadingStateProps> = memo(
   ({ message = 'Loading...', variant = 'page' }: LoadingStateProps) => {
     if (variant === 'inline') {
       return (

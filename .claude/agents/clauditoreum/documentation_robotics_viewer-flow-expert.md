@@ -294,13 +294,13 @@ All nodes MUST include:
 
 **Every node requires a `.stories.tsx` file** in `src/catalog/stories/c-graphs/nodes/`
 
-**Example:** `src/catalog/stories/c-graphs/nodes/motivation/GoalNode.stories.tsx` (131 lines)
+**Example:** `src/catalog/stories/core-nodes/UnifiedNode.stories.tsx` (consolidated node type variants)
 
 ```typescript
 import type { Meta, StoryObj } from '@storybook/react';
-import { GoalNode, GOAL_NODE_WIDTH, GOAL_NODE_HEIGHT } from '@/core/nodes/motivation/GoalNode';
+import { NodeType } from '@/core/nodes/NodeType';
+import UnifiedNode from '@/core/nodes/components/UnifiedNode';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
-import { createGoalNodeData } from '@catalog/fixtures/nodeDataFixtures';
 
 const meta = {
   title: 'C Graphs / Nodes / Motivation / GoalNode',

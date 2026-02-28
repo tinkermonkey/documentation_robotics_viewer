@@ -19,7 +19,7 @@ export interface ChatInputProps {
   testId?: string;
 }
 
-export const ChatInput = memo(
+export const ChatInput: React.FC<ChatInputProps> = memo(
   ({
     onSendMessage,
     onCancel,

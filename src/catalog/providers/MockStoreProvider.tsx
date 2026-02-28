@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { useMemo, createContext, useContext } from 'react';
 import type { MetaModel, Layer, ModelElement } from '../../core/types';
 import type { Annotation } from '../../apps/embedded/types/annotations';
+import type { ChangesetOperation } from '../../core/nodes';
 
 /**
  * Mock Model Store
@@ -166,7 +167,7 @@ export function createMockAnnotationStore(initialAnnotations: Annotation[] = [],
 export interface MockFilterState {
   [key: string]: unknown;
   layers?: string[];
-  changesetOperations?: Array<'add' | 'update' | 'delete'>;
+  changesetOperations?: ChangesetOperation[];
   elementTypes?: string[];
   relationshipTypes?: string[];
   searchText?: string;

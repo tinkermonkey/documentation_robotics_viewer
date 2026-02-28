@@ -174,7 +174,7 @@ export const Default: Story = {
             quickActions={[
               {
                 id: 'trace-up',
-                title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
+                title: 'Trace Upstream',
                 icon: <ArrowUp className="w-4 h-4" />,
                 color: 'gray' as const,
                 onClick: (node: DemoNode) => console.log('Trace upstream:', node.id),
@@ -182,7 +182,7 @@ export const Default: Story = {
               },
               {
                 id: 'trace-down',
-                title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
+                title: 'Trace Downstream',
                 icon: <ArrowDown className="w-4 h-4" />,
                 color: 'gray' as const,
                 onClick: (node: DemoNode) => console.log('Trace downstream:', node.id),
@@ -190,7 +190,7 @@ export const Default: Story = {
               },
               {
                 id: 'focus',
-                title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
+                title: 'Focus',
                 icon: <Eye className="w-4 h-4" />,
                 color: 'gray' as const,
                 onClick: (node: DemoNode) => console.log('Focus on:', node.id),
@@ -337,7 +337,7 @@ export const ConditionalQuickActions: Story = {
             quickActions={[
               {
                 id: 'trace-up',
-                title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
+                title: 'Trace Upstream',
                 icon: <ArrowUp className="w-4 h-4" />,
                 color: 'gray' as const,
                 onClick: (node: DemoNode) => console.log('Trace upstream:', node.id),
@@ -345,18 +345,20 @@ export const ConditionalQuickActions: Story = {
               },
               {
                 id: 'trace-down',
-                title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
+                title: 'Trace Downstream',
                 icon: <ArrowDown className="w-4 h-4" />,
                 color: 'gray' as const,
                 onClick: (node: DemoNode) => console.log('Trace downstream:', node.id),
+                description: 'Show all elements influenced by this element',
               },
               {
                 id: 'focus',
-                title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
+                title: 'Focus',
                 icon: <Eye className="w-4 h-4" />,
                 color: 'blue' as const,
                 onClick: (node: DemoNode) => console.log('Focus on:', node.id),
                 condition: (node: DemoNode) => node.priority === 'high',
+                description: 'Dim other elements to focus on this one',
               },
             ]}
             title="Outcome Inspector"

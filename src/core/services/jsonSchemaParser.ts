@@ -282,7 +282,7 @@ export class JSONSchemaParser {
           const targetElement = elementsByKey.get(ref.to);
           if (targetElement) {
             // Determine target field - look for 'id' field in target schema
-            let targetField = 'id'; // Default assumption for foreign key references
+            let targetField: string | undefined = 'id'; // Default assumption for foreign key references
 
             // Check if target schema has an 'id' property
             const hasIdField = targetElement.schemaInfo.properties.some(
@@ -295,7 +295,7 @@ export class JSONSchemaParser {
                 targetField = targetElement.schemaInfo.properties[0].name;
               } else {
                 // No fields available, don't use field-level connection
-                targetField = undefined as any;
+                targetField = undefined;
               }
             }
 

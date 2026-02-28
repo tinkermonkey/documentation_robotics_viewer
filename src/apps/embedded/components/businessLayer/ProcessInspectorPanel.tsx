@@ -5,7 +5,7 @@
  * Uses BaseInspectorPanel for shared structure with domain-specific adapters.
  */
 
-import { memo } from 'react';
+import React, { memo } from 'react';
 import { BaseInspectorPanel } from '@/core/components/base/BaseInspectorPanel';
 import type { QuickAction } from '@/core/components/base';
 import type { BusinessNode, BusinessGraph, BusinessEdge } from '@/core/types/businessLayer';
@@ -271,5 +271,5 @@ function ProcessInspectorPanelComponent({
   );
 }
 
-export const ProcessInspectorPanel = memo(ProcessInspectorPanelComponent);
+export const ProcessInspectorPanel: React.FC<ProcessInspectorPanelProps> = memo(ProcessInspectorPanelComponent);
 ProcessInspectorPanel.displayName = 'ProcessInspectorPanel';
