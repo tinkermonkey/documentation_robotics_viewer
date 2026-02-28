@@ -5,7 +5,6 @@
  * Provides a cross-functional view showing interactions between business domains.
  */
 
-import { forceSimulation, forceLink, forceManyBody, forceCollide, forceCenter } from 'd3-force';
 import { Node, Edge, MarkerType } from '@xyflow/react';
 import { BusinessGraph, BusinessNode } from '../../types/businessLayer';
 import { BusinessLayoutEngine, LayoutOptions, LayoutResult } from './types';
@@ -23,28 +22,6 @@ import { BusinessNodeTransformer } from '../../services/businessNodeTransformer'
 const CELL_WIDTH = 500;
 const CELL_HEIGHT = 500;
 const CELL_PADDING = 50;
-
-/**
- * D3 Force Node (for internal force simulation)
- */
-interface ForceNode {
-  id: string;
-  x?: number;
-  y?: number;
-  vx?: number;
-  vy?: number;
-  fx?: number | null;
-  fy?: number | null;
-  businessNode: BusinessNode;
-}
-
-/**
- * D3 Force Link (for internal force simulation)
- */
-interface ForceLink {
-  source: string | ForceNode;
-  target: string | ForceNode;
-}
 
 /**
  * Matrix layout engine
@@ -178,14 +155,11 @@ export class MatrixBusinessLayout implements BusinessLayoutEngine {
           });
         });
       } else {
-        // For larger groups, use force simulation within cell
-        const cellNodes = this.layoutCellWithForce(
+        // For larger groups, use a grid layout within the cell
+        const cellNodes = this.layoutCellWithGrid(
           domainNodes,
-          graph,
-          baseX + CELL_WIDTH / 2,
-          baseY + CELL_HEIGHT / 2,
-          CELL_WIDTH - CELL_PADDING * 2,
-          CELL_HEIGHT - CELL_PADDING * 2
+          baseX,
+          baseY
         );
         nodes.push(...cellNodes);
       }
@@ -195,75 +169,42 @@ export class MatrixBusinessLayout implements BusinessLayoutEngine {
   }
 
   /**
-   * Layout nodes within a cell using force simulation
+   * Layout nodes within a cell using a simple row-based grid
    */
-  private layoutCellWithForce(
+  private layoutCellWithGrid(
     domainNodes: BusinessNode[],
-    graph: BusinessGraph,
-    centerX: number,
-    centerY: number,
-    maxWidth: number,
-    maxHeight: number
+    baseX: number,
+    baseY: number
   ): Node[] {
-    // Create force nodes
-    const forceNodes: ForceNode[] = domainNodes.map((node) => ({
-      id: node.id,
-      businessNode: node,
-    }));
+    const nodesep = 20;
+    const ranksep = 20;
+    const maxRowWidth = CELL_WIDTH - CELL_PADDING * 2;
 
-    // Create force links within this domain
-    const forceLinks: ForceLink[] = [];
-    for (const edge of graph.edges.values()) {
-      const sourceInDomain = domainNodes.find((n) => n.id === edge.source);
-      const targetInDomain = domainNodes.find((n) => n.id === edge.target);
-
-      if (sourceInDomain && targetInDomain) {
-        forceLinks.push({
-          source: edge.source,
-          target: edge.target,
-        });
-      }
-    }
-
-    // Run force simulation
-    const simulation = forceSimulation(forceNodes)
-      .force(
-        'link',
-        forceLink(forceLinks)
-          .id((d: any) => d.id)
-          .distance(100)
-      )
-      .force('charge', forceManyBody().strength(-200))
-      .force('collision', forceCollide().radius(60))
-      .force('center', forceCenter(0, 0))
-      .stop();
-
-    // Run simulation to completion
-    for (let i = 0; i < 300 && simulation.alpha() > 0.01; i++) {
-      simulation.tick();
-    }
-
-    // Convert to React Flow nodes with bounds checking
     const nodes: Node[] = [];
-    for (const forceNode of forceNodes) {
-      const dimensions = this.getNodeDimensions(forceNode.businessNode);
+    let curX = CELL_PADDING;
+    let curY = CELL_PADDING;
+    let rowMaxHeight = 0;
 
-      // Clamp positions to cell bounds
-      let x = centerX + (forceNode.x || 0);
-      let y = centerY + (forceNode.y || 0);
+    for (const node of domainNodes) {
+      const { width, height } = this.getNodeDimensions(node);
 
-      // Ensure node stays within cell
-      x = Math.max(centerX - maxWidth / 2, Math.min(x, centerX + maxWidth / 2 - dimensions.width));
-      y = Math.max(centerY - maxHeight / 2, Math.min(y, centerY + maxHeight / 2 - dimensions.height));
+      if (curX > CELL_PADDING && curX + width > maxRowWidth) {
+        curX = CELL_PADDING;
+        curY += rowMaxHeight + ranksep;
+        rowMaxHeight = 0;
+      }
 
       nodes.push({
-        id: `node-${forceNode.id}`,
+        id: `node-${node.id}`,
         type: this.getNodeType(),
-        position: { x, y },
-        data: this.extractNodeData(forceNode.businessNode),
-        width: dimensions.width,
-        height: dimensions.height,
+        position: { x: baseX + curX, y: baseY + curY },
+        data: this.extractNodeData(node),
+        width,
+        height,
       });
+
+      curX += width + nodesep;
+      rowMaxHeight = Math.max(rowMaxHeight, height);
     }
 
     return nodes;

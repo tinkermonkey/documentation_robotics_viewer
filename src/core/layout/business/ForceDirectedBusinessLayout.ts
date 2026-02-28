@@ -1,11 +1,9 @@
 /**
  * Force-Directed Business Layout Engine
  *
- * Uses d3-force physics simulation to create organic clustering of related processes.
- * Nodes are attracted to connected nodes and repelled from unconnected nodes.
+ * Arranges business processes using a simple row-based grid layout.
  */
 
-import { forceSimulation, forceLink, forceManyBody, forceCollide, forceCenter } from 'd3-force';
 import { Node, Edge, MarkerType } from '@xyflow/react';
 import { BusinessGraph, BusinessNode } from '../../types/businessLayer';
 import { BusinessLayoutEngine, LayoutOptions, LayoutResult } from './types';
@@ -18,28 +16,7 @@ import {
 import { BusinessNodeTransformer } from '../../services/businessNodeTransformer';
 
 /**
- * D3 Force Node (for internal force simulation)
- */
-interface ForceNode {
-  id: string;
-  x?: number;
-  y?: number;
-  vx?: number;
-  vy?: number;
-  businessNode: BusinessNode;
-}
-
-/**
- * D3 Force Link (for internal force simulation)
- */
-interface ForceLink {
-  source: string | ForceNode;
-  target: string | ForceNode;
-  edgeType?: string;
-}
-
-/**
- * Force-directed layout engine
+ * Force-directed layout engine (uses grid layout)
  */
 export class ForceDirectedBusinessLayout implements BusinessLayoutEngine {
   private transformer: BusinessNodeTransformer;
@@ -57,129 +34,71 @@ export class ForceDirectedBusinessLayout implements BusinessLayoutEngine {
   }
 
   /**
-   * Calculate force-directed layout using d3-force
+   * Calculate layout using a simple row-based grid
    */
   calculate(graph: BusinessGraph, _options: LayoutOptions): LayoutResult {
     const startTime = performance.now();
+    const nodesep = 80;
+    const ranksep = 120;
+    const marginx = 30;
+    const marginy = 30;
+    const maxRowWidth = 1800;
 
-    // Convert to d3-force compatible format
-    const forceNodes: ForceNode[] = Array.from(graph.nodes.values()).map((node) => ({
-      id: node.id,
-      businessNode: node,
-    }));
+    const nodes: Node[] = [];
+    let curX = marginx;
+    let curY = marginy;
+    let rowMaxHeight = 0;
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
 
-    const forceLinks: ForceLink[] = Array.from(graph.edges.values()).map((edge) => ({
-      source: edge.source,
-      target: edge.target,
-      edgeType: edge.type,
-    }));
+    for (const businessNode of graph.nodes.values()) {
+      const { width, height } = this.getNodeDimensions(businessNode);
 
-    // Create force simulation
-    const simulation = forceSimulation(forceNodes)
-      .force(
-        'link',
-        forceLink(forceLinks)
-          .id((d: any) => d.id)
-          .distance(this.getLinkDistance)
-          .strength(this.getLinkStrength)
-      )
-      .force('charge', forceManyBody().strength(-300))
-      .force('collision', forceCollide().radius(this.getCollisionRadius))
-      .force('center', forceCenter(500, 400))
-      .stop();
+      if (curX > marginx && curX + width > maxRowWidth) {
+        curX = marginx;
+        curY += rowMaxHeight + ranksep;
+        rowMaxHeight = 0;
+      }
 
-    // Run simulation to completion (alpha < 0.01 or max 300 iterations)
-    let iterations = 0;
-    while (iterations < 300 && simulation.alpha() > 0.01) {
-      simulation.tick();
-      iterations++;
+      const x = curX;
+      const y = curY;
+
+      nodes.push({
+        id: `node-${businessNode.id}`,
+        type: this.getNodeType(),
+        position: { x, y },
+        data: this.extractNodeData(businessNode),
+        width,
+        height,
+      });
+
+      minX = Math.min(minX, x);
+      maxX = Math.max(maxX, x + width);
+      minY = Math.min(minY, y);
+      maxY = Math.max(maxY, y + height);
+
+      curX += width + nodesep;
+      rowMaxHeight = Math.max(rowMaxHeight, height);
     }
 
-    // Extract positions from d3 nodes
-    const nodes = this.convertToReactFlowNodes(forceNodes);
-
-    // Create edges
     const edges = this.routeEdges(graph, nodes);
-
     const calculationTime = performance.now() - startTime;
-
-    // Calculate bounds
-    const bounds = this.calculateBounds(nodes);
+    const hasNodes = minX !== Infinity;
 
     return {
       nodes,
       edges,
       metadata: {
         calculationTime,
-        bounds,
+        bounds: {
+          minX: hasNodes ? minX : 0,
+          maxX: hasNodes ? maxX : 0,
+          minY: hasNodes ? minY : 0,
+          maxY: hasNodes ? maxY : 0,
+          width: hasNodes ? maxX - minX : 0,
+          height: hasNodes ? maxY - minY : 0,
+        },
       },
     };
-  }
-
-  /**
-   * Get link distance based on edge type
-   */
-  private getLinkDistance(link: any): number {
-    // Hierarchy edges should be shorter to keep parents/children close
-    if (link.edgeType === 'composes' || link.edgeType === 'aggregates') {
-      return 100;
-    }
-    // Flow and dependency edges can be longer
-    if (link.edgeType === 'flows_to' || link.edgeType === 'depends_on') {
-      return 180;
-    }
-    // Default distance
-    return 150;
-  }
-
-  /**
-   * Get link strength based on edge type
-   */
-  private getLinkStrength(link: any): number {
-    // Hierarchy edges should be stronger
-    if (link.edgeType === 'composes' || link.edgeType === 'aggregates') {
-      return 1.5;
-    }
-    // Other edges have default strength
-    return 1;
-  }
-
-  /**
-   * Get collision radius for a node
-   */
-  private getCollisionRadius(node: any): number {
-    const dimensions = node.businessNode.dimensions || { width: 200, height: 100 };
-    // Use average of width and height, plus padding
-    return (dimensions.width + dimensions.height) / 4 + 20;
-  }
-
-  /**
-   * Convert force simulation nodes to React Flow nodes
-   */
-  private convertToReactFlowNodes(forceNodes: ForceNode[]): Node[] {
-    const nodes: Node[] = [];
-
-    for (const forceNode of forceNodes) {
-      const businessNode = forceNode.businessNode;
-      const dimensions = this.getNodeDimensions(businessNode);
-
-      // Use force simulation positions (already centered)
-      const x = (forceNode.x || 0) - dimensions.width / 2;
-      const y = (forceNode.y || 0) - dimensions.height / 2;
-
-      const node: Node = {
-        id: `node-${forceNode.id}`,
-        type: this.getNodeType(),
-        position: { x, y },
-        data: this.extractNodeData(businessNode),
-        width: dimensions.width,
-        height: dimensions.height,
-      };
-
-      nodes.push(node);
-    }
-
-    return nodes;
   }
 
   /**
@@ -232,48 +151,6 @@ export class ForceDirectedBusinessLayout implements BusinessLayoutEngine {
     }
 
     return edges;
-  }
-
-  /**
-   * Calculate layout bounds
-   */
-  private calculateBounds(nodes: Node[]): {
-    width: number;
-    height: number;
-    minX: number;
-    maxX: number;
-    minY: number;
-    maxY: number;
-  } {
-    if (nodes.length === 0) {
-      return { width: 0, height: 0, minX: 0, maxX: 0, minY: 0, maxY: 0 };
-    }
-
-    let minX = Infinity;
-    let maxX = -Infinity;
-    let minY = Infinity;
-    let maxY = -Infinity;
-
-    for (const node of nodes) {
-      const x = node.position.x;
-      const y = node.position.y;
-      const width = node.width || 200;
-      const height = node.height || 100;
-
-      minX = Math.min(minX, x);
-      maxX = Math.max(maxX, x + width);
-      minY = Math.min(minY, y);
-      maxY = Math.max(maxY, y + height);
-    }
-
-    return {
-      width: maxX - minX,
-      height: maxY - minY,
-      minX,
-      maxX,
-      minY,
-      maxY,
-    };
   }
 
   /**

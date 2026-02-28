@@ -1,14 +1,14 @@
 /**
  * Layout Engine Abstraction Layer
  *
- * Defines the common interface for all layout engines (dagre, d3-force, ELK, Graphviz).
+ * Defines the common interface for all layout engines.
  * Supports runtime switching between engines and provides consistent parameter handling.
  */
 
 /**
  * Layout engine type enumeration
  */
-export type LayoutEngineType = 'dagre' | 'd3-force' | 'elk' | 'graphviz' | 'custom';
+export type LayoutEngineType = 'elk' | 'custom';
 
 /**
  * Engine capabilities for different layout algorithm types

@@ -18,8 +18,8 @@ test.describe('Layout Preferences Store', () => {
       expect(defaultEngines['motivation']).toBe('elk');
 
       // Set different engine for different layer
-      defaultEngines['business'] = 'graphviz';
-      expect(defaultEngines['business']).toBe('graphviz');
+      defaultEngines['business'] = 'elk';
+      expect(defaultEngines['business']).toBe('elk');
       expect(defaultEngines['motivation']).toBe('elk');
     });
 
@@ -63,7 +63,7 @@ test.describe('Layout Preferences Store', () => {
           id: 'preset-2',
           name: 'Preset 2',
           diagramType: 'business',
-          engineType: 'dagre',
+          engineType: 'elk',
           parameters: {},
         },
       ];
@@ -81,14 +81,14 @@ test.describe('Layout Preferences Store', () => {
       const config = {
         defaultEngines: {
           motivation: 'elk',
-          business: 'dagre',
+          business: 'elk',
         },
         presets: [
           {
             id: 'preset-1',
             name: 'Test Preset',
             diagramType: 'c4',
-            engineType: 'graphviz',
+            engineType: 'elk',
             parameters: { spacing: 50 },
           },
         ],
@@ -99,7 +99,7 @@ test.describe('Layout Preferences Store', () => {
 
       expect(parsed.defaultEngines).toEqual({
         motivation: 'elk',
-        business: 'dagre',
+        business: 'elk',
       });
       expect(parsed.presets).toHaveLength(1);
       expect(parsed.presets[0].name).toBe('Test Preset');
@@ -113,7 +113,7 @@ test.describe('Layout Preferences Store', () => {
             id: 'imported-preset',
             name: 'Imported Preset',
             diagramType: 'motivation',
-            engineType: 'd3-force',
+            engineType: 'elk',
             parameters: {},
           },
         ],
@@ -186,8 +186,8 @@ test.describe('Layout Preferences Store', () => {
       const feedback = {
         timestamp,
         diagramType: 'c4',
-        engineType: 'graphviz',
-        parameters: { algorithm: 'dot', rankdir: 'TB' },
+        engineType: 'elk',
+        parameters: { algorithm: 'layered', direction: 'TB' },
         accepted: true,
       };
 
@@ -202,7 +202,7 @@ test.describe('Layout Preferences Store', () => {
     test('should persist preferences structure', async () => {
       const key = 'layout-preferences';
       const preferences = {
-        defaultEngines: { motivation: 'elk', business: 'dagre' },
+        defaultEngines: { motivation: 'elk', business: 'elk' },
         presets: [],
       };
 
@@ -214,7 +214,7 @@ test.describe('Layout Preferences Store', () => {
 
     test('should load preferences structure from serialized data', async () => {
       const savedPreferences = {
-        defaultEngines: { c4: 'graphviz' },
+        defaultEngines: { c4: 'elk' },
         presets: [
           {
             id: 'saved-preset',
@@ -229,7 +229,7 @@ test.describe('Layout Preferences Store', () => {
       const serialized = JSON.stringify(savedPreferences);
       const parsed = JSON.parse(serialized);
 
-      expect(parsed.defaultEngines.c4).toBe('graphviz');
+      expect(parsed.defaultEngines.c4).toBe('elk');
       expect(parsed.presets).toHaveLength(1);
     });
   });

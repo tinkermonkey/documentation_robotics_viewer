@@ -1,9 +1,8 @@
 /**
  * Vertical Layer Layout Engine
- * Arranges layers in a vertical stack with internal dagre-based layout
+ * Arranges layers in a vertical stack with internal grid-based layout
  */
 
-import dagre from 'dagre';
 import { Layer, LayerType } from '../types';
 import { LayoutResult } from '../types/shapes';
 import { getLayerColor } from '../utils/layerColors';
@@ -97,7 +96,7 @@ layout(layers: Record<string, Layer>): LayoutResult {
   }
 
   /**
-   * Layout elements within a single layer using dagre
+   * Layout elements within a single layer using a simple row-based grid
    * @param layer - The layer to layout
    * @returns Positions and bounds for the layer
    */
@@ -105,97 +104,45 @@ layout(layers: Record<string, Layer>): LayoutResult {
     positions: Record<string, { x: number; y: number }>;
     bounds: { minX: number; minY: number; maxX: number; maxY: number; width: number; height: number };
   } {
-    // Create dagre graph
-    const g = new dagre.graphlib.Graph();
+    const nodesep = 80;
+    const ranksep = 150;
+    const marginx = 30;
+    const marginy = 30;
+    const maxRowWidth = 1800;
 
-    // Configure graph for top-to-bottom layout
-    // TB rankdir arranges nodes horizontally within each rank (row)
-    g.setGraph({
-      rankdir: 'TB',    // Top to bottom - creates horizontal rows
-      nodesep: 80,      // Horizontal spacing between nodes in the same rank
-      ranksep: 150,     // Vertical spacing between ranks (rows)
-      marginx: 30,
-      marginy: 30,
-      align: 'UL',      // Align to upper-left for consistent layout
-      ranker: 'tight-tree'  // Use tight-tree ranker for compact layout
-    });
-
-    g.setDefaultEdgeLabel(() => ({}));
-
-    // Add nodes (elements) to the graph
-    layer.elements.forEach(element => {
-      // Ensure visual properties exist and are valid numbers
-      const width = element.visual?.size?.width;
-      const height = element.visual?.size?.height;
-
-      // Validate dimensions - use fallback if invalid
-      const validWidth = (typeof width === 'number' && !isNaN(width) && width > 0) ? width : 200;
-      const validHeight = (typeof height === 'number' && !isNaN(height) && height > 0) ? height : 100;
-
-      if (width !== validWidth || height !== validHeight) {
-        console.warn(`[VerticalLayerLayout] Invalid dimensions for element ${element.id} (${element.name}): width=${width}, height=${height}. Using fallback: ${validWidth}x${validHeight}`);
-      }
-
-      g.setNode(element.id, {
-        width: validWidth,
-        height: validHeight,
-        label: element.name
-      });
-    });
-
-    // Add edges (relationships) to the graph
-    layer.relationships.forEach(relationship => {
-      g.setEdge(relationship.sourceId, relationship.targetId, {
-        label: relationship.type
-      });
-    });
-
-    // Run dagre layout algorithm
-    dagre.layout(g);
-
-    // Extract positions from dagre results
     const positions: Record<string, { x: number; y: number }> = {};
-    const bounds = {
-      minX: Infinity,
-      minY: Infinity,
-      maxX: -Infinity,
-      maxY: -Infinity
-    };
+    const bounds = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity };
 
-    g.nodes().forEach(nodeId => {
-      const node = g.node(nodeId);
+    let curX = marginx;
+    let curY = marginy;
+    let rowMaxHeight = 0;
 
-      // Safety check: skip if node is undefined
-      if (!node) {
-        console.warn(`[VerticalLayerLayout] Node ${nodeId} is undefined in dagre graph, skipping`);
-        return;
+    for (const element of layer.elements) {
+      const w = element.visual?.size?.width;
+      const h = element.visual?.size?.height;
+      const width = (typeof w === 'number' && !isNaN(w) && w > 0) ? w : 200;
+      const height = (typeof h === 'number' && !isNaN(h) && h > 0) ? h : 100;
+
+      if (curX > marginx && curX + width > maxRowWidth) {
+        curX = marginx;
+        curY += rowMaxHeight + ranksep;
+        rowMaxHeight = 0;
       }
 
-      // Validate positions from dagre - fallback to (0, 0) if invalid
-      const x = (typeof node.x === 'number' && !isNaN(node.x)) ? node.x : 0;
-      const y = (typeof node.y === 'number' && !isNaN(node.y)) ? node.y : 0;
+      const cx = curX + width / 2;
+      const cy = curY + height / 2;
+      positions[element.id] = { x: cx, y: cy };
 
-      if (node.x !== x || node.y !== y) {
-        console.warn(`[VerticalLayerLayout] Invalid position from dagre for node ${nodeId}: x=${node.x}, y=${node.y}. Using fallback: (${x}, ${y})`);
-      }
+      bounds.minX = Math.min(bounds.minX, cx - width / 2);
+      bounds.maxX = Math.max(bounds.maxX, cx + width / 2);
+      bounds.minY = Math.min(bounds.minY, cy - height / 2);
+      bounds.maxY = Math.max(bounds.maxY, cy + height / 2);
 
-      // Dagre gives center positions, store them as-is
-      positions[nodeId] = { x, y };
+      curX += width + nodesep;
+      rowMaxHeight = Math.max(rowMaxHeight, height);
+    }
 
-      // Update bounds to include full node extent
-      const halfWidth = node.width / 2;
-      const halfHeight = node.height / 2;
-      bounds.minX = Math.min(bounds.minX, x - halfWidth);
-      bounds.maxX = Math.max(bounds.maxX, x + halfWidth);
-      bounds.minY = Math.min(bounds.minY, y - halfHeight);
-      bounds.maxY = Math.max(bounds.maxY, y + halfHeight);
-    });
-
-    // Calculate final dimensions
-    // Guard against Infinity bounds when no nodes were processed
-    const hasValidBounds = bounds.minX !== Infinity && bounds.maxX !== -Infinity;
-    const width = hasValidBounds ? bounds.maxX - bounds.minX : 0;
-    const height = hasValidBounds ? bounds.maxY - bounds.minY : 0;
+    const hasValidBounds = bounds.minX !== Infinity;
 
     return {
       positions,
@@ -204,9 +151,9 @@ layout(layers: Record<string, Layer>): LayoutResult {
         minY: hasValidBounds ? bounds.minY : 0,
         maxX: hasValidBounds ? bounds.maxX : 0,
         maxY: hasValidBounds ? bounds.maxY : 0,
-        width: Math.max(width, 0),
-        height: Math.max(height, 0)
-      }
+        width: hasValidBounds ? bounds.maxX - bounds.minX : 0,
+        height: hasValidBounds ? bounds.maxY - bounds.minY : 0,
+      },
     };
   }
 

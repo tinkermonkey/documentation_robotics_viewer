@@ -40,10 +40,7 @@ const DIAGRAM_TYPES: Array<{ value: DiagramType; label: string }> = [
  * Available layout engines
  */
 const LAYOUT_ENGINES: Array<{ value: LayoutEngineType; label: string }> = [
-  { value: 'dagre', label: 'Dagre (Hierarchical)' },
-  { value: 'd3-force', label: 'D3 Force (Physics)' },
   { value: 'elk', label: 'ELK (Eclipse)' },
-  { value: 'graphviz', label: 'Graphviz (DOT)' },
 ];
 
 /**

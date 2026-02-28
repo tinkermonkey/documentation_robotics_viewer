@@ -26,22 +26,8 @@ export {
 } from './LayoutEngineRegistry';
 
 // Concrete engine implementations
-export { DagreLayoutEngine } from './DagreLayoutEngine';
-export type { DagreParameters } from './DagreLayoutEngine';
-
-export { D3ForceLayoutEngine } from './D3ForceLayoutEngine';
-export type { D3ForceParameters } from './D3ForceLayoutEngine';
-
 export { ELKLayoutEngine } from './ELKLayoutEngine';
 export type { ELKParameters, ELKAlgorithm, ELKDirection, ELKLayeringStrategy } from './ELKLayoutEngine';
-
-export { GraphvizLayoutEngine } from './GraphvizLayoutEngine';
-export type {
-  GraphvizParameters,
-  GraphvizAlgorithm,
-  GraphvizRankDir,
-  GraphvizSplines,
-} from './GraphvizLayoutEngine';
 
 // Utility functions
 
@@ -50,34 +36,16 @@ export type {
  */
 export async function initializeDefaultEngines(): Promise<void> {
   const { getGlobalRegistry } = await import('./LayoutEngineRegistry');
-  const { DagreLayoutEngine } = await import('./DagreLayoutEngine');
-  const { D3ForceLayoutEngine } = await import('./D3ForceLayoutEngine');
   const { ELKLayoutEngine } = await import('./ELKLayoutEngine');
-  const { GraphvizLayoutEngine } = await import('./GraphvizLayoutEngine');
 
   const registry = getGlobalRegistry();
-
-  // Register dagre engine
-  const dagreEngine = new DagreLayoutEngine();
-  await dagreEngine.initialize();
-  registry.register('dagre', dagreEngine, ['hierarchical', 'tree']);
-
-  // Register d3-force engine
-  const d3ForceEngine = new D3ForceLayoutEngine();
-  await d3ForceEngine.initialize();
-  registry.register('d3-force', d3ForceEngine, ['force', 'force-directed']);
 
   // Register ELK engine
   const elkEngine = new ELKLayoutEngine();
   await elkEngine.initialize();
   registry.register('elk', elkEngine, ['eclipse-layout-kernel', 'layered']);
 
-  // Register Graphviz engine
-  const graphvizEngine = new GraphvizLayoutEngine();
-  await graphvizEngine.initialize();
-  registry.register('graphviz', graphvizEngine, ['dot', 'neato']);
-
-  console.log('[Layout Engines] All engines initialized and registered (dagre, d3-force, elk, graphviz)');
+  console.log('[Layout Engines] ELK engine initialized and registered');
 }
 
 /**

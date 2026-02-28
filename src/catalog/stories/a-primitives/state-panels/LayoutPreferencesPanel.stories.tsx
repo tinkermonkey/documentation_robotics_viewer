@@ -25,7 +25,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => {
     useLayoutPreferencesStore.setState({
-      defaultEngines: { motivation: 'dagre', business: 'dagre' },
+      defaultEngines: { motivation: 'elk', business: 'elk' },
     });
 
     return (
@@ -37,13 +37,13 @@ export const Default: Story = {
 };
 
 /**
- * With Dagre layout selected
- * Shows Dagre-specific configuration options
+ * With ELK layout selected for all layers
+ * Shows ELK configuration options
  */
-export const DagreLayout: Story = {
+export const AllELKLayout: Story = {
   render: () => {
     useLayoutPreferencesStore.setState({
-      defaultEngines: { motivation: 'dagre', business: 'dagre', application: 'dagre' },
+      defaultEngines: { motivation: 'elk', business: 'elk', application: 'elk' },
     });
 
     return (
@@ -73,31 +73,13 @@ export const ELKLayout: Story = {
 };
 
 /**
- * With D3Force layout selected
- * Shows force-directed simulation options
- */
-export const D3ForceLayout: Story = {
-  render: () => {
-    useLayoutPreferencesStore.setState({
-      defaultEngines: { motivation: 'd3-force', business: 'd3-force', application: 'd3-force' },
-    });
-
-    return (
-      <div className="w-full max-w-md p-4">
-        <LayoutPreferencesPanel />
-      </div>
-    );
-  },
-};
-
-/**
  * Animation disabled
  * Shows preferences with animation turned off
  */
 export const NoAnimation: Story = {
   render: () => {
     useLayoutPreferencesStore.setState({
-      defaultEngines: { motivation: 'dagre', business: 'dagre' },
+      defaultEngines: { motivation: 'elk', business: 'elk' },
     });
 
     return (
@@ -115,7 +97,7 @@ export const NoAnimation: Story = {
 export const ManualLayout: Story = {
   render: () => {
     useLayoutPreferencesStore.setState({
-      defaultEngines: { motivation: 'dagre', business: 'dagre' },
+      defaultEngines: { motivation: 'elk', business: 'elk' },
     });
 
     return (

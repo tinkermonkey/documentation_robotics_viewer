@@ -5,7 +5,6 @@
  * organizational role, domain, lifecycle phase, or capability.
  */
 
-import dagre from 'dagre';
 import { Node, Edge, MarkerType } from '@xyflow/react';
 import { BusinessGraph, BusinessNode } from '../../types/businessLayer';
 import { BusinessLayoutEngine, LayoutOptions, LayoutResult } from './types';
@@ -172,91 +171,49 @@ export class SwimlaneBusinessLayout implements BusinessLayoutEngine {
   }
 
   /**
-   * Layout nodes within each lane using dagre
+   * Layout nodes within each lane using a simple row-based grid
    */
   private layoutNodesWithinLanes(
-    graph: BusinessGraph,
+    _graph: BusinessGraph,
     lanes: Map<string, BusinessNode[]>,
     lanePositions: Map<string, { x: number; y: number }>,
     options: LayoutOptions,
-    orientation: SwimlaneOrientation
+    _orientation: SwimlaneOrientation
   ): Node[] {
     const nodes: Node[] = [];
+    const nodesep = options.spacing?.node ?? 80;
+    const ranksep = options.spacing?.rank ?? 120;
+    const marginx = 20;
+    const marginy = 20;
+    const maxRowWidth = 1800;
 
     for (const [laneKey, laneNodes] of lanes.entries()) {
       const lanePosition = lanePositions.get(laneKey) || { x: 0, y: 0 };
 
-      // Create a dagre graph for this lane
-      const dagreGraph = new dagre.graphlib.Graph();
+      let curX = marginx;
+      let curY = marginy;
+      let rowMaxHeight = 0;
 
-      // Configure based on orientation
-      dagreGraph.setGraph({
-        rankdir: orientation === 'horizontal' ? 'LR' : 'TB',
-        nodesep: options.spacing?.node || 80,
-        ranksep: options.spacing?.rank || 120,
-        marginx: 20,
-        marginy: 20,
-      });
-
-      dagreGraph.setDefaultEdgeLabel(() => ({}));
-
-      // Add nodes to dagre graph
       for (const node of laneNodes) {
-        const dimensions = this.getNodeDimensions(node);
-        dagreGraph.setNode(node.id, {
-          width: dimensions.width,
-          height: dimensions.height,
-        });
-      }
+        const { width, height } = this.getNodeDimensions(node);
 
-      // Add edges within this lane
-      for (const edge of graph.edges.values()) {
-        const sourceInLane = laneNodes.find((n) => n.id === edge.source);
-        const targetInLane = laneNodes.find((n) => n.id === edge.target);
-
-        if (sourceInLane && targetInLane) {
-          dagreGraph.setEdge(edge.source, edge.target);
+        if (curX > marginx && curX + width > maxRowWidth) {
+          curX = marginx;
+          curY += rowMaxHeight + ranksep;
+          rowMaxHeight = 0;
         }
-      }
-
-      // Run dagre layout
-      dagre.layout(dagreGraph);
-
-      // Convert to React Flow nodes with lane offset
-      for (const node of laneNodes) {
-        const dagreNode = dagreGraph.node(node.id);
-
-        if (!dagreNode) {
-          // Node not in dagre graph (disconnected), place at lane start
-          const dimensions = this.getNodeDimensions(node);
-          const x = lanePosition.x;
-          const y = lanePosition.y;
-
-          nodes.push({
-            id: `node-${node.id}`,
-            type: this.getNodeType(),
-            position: { x, y },
-            data: this.extractNodeData(node),
-            width: dimensions.width,
-            height: dimensions.height,
-          });
-          continue;
-        }
-
-        const dimensions = this.getNodeDimensions(node);
-
-        // Dagre gives center positions, convert to top-left and apply lane offset
-        const x = lanePosition.x + dagreNode.x - dimensions.width / 2;
-        const y = lanePosition.y + dagreNode.y - dimensions.height / 2;
 
         nodes.push({
           id: `node-${node.id}`,
           type: this.getNodeType(),
-          position: { x, y },
+          position: { x: lanePosition.x + curX, y: lanePosition.y + curY },
           data: this.extractNodeData(node),
-          width: dimensions.width,
-          height: dimensions.height,
+          width,
+          height,
         });
+
+        curX += width + nodesep;
+        rowMaxHeight = Math.max(rowMaxHeight, height);
       }
     }
 

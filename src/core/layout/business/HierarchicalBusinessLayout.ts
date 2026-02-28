@@ -1,13 +1,11 @@
 /**
  * Hierarchical Business Layout Engine
  *
- * Uses dagre to create hierarchical layouts for business layer graphs.
- * Supports top-down (TB), left-right (LR), bottom-up (BT), and right-left (RL) orientations.
+ * Creates hierarchical layouts for business layer graphs using a simple row-based grid.
  */
 
-import dagre from 'dagre';
 import { Node, Edge, MarkerType } from '@xyflow/react';
-import { BusinessGraph, BusinessNode, BusinessEdge } from '../../types/businessLayer';
+import { BusinessGraph, BusinessNode } from '../../types/businessLayer';
 import { BusinessLayoutEngine, LayoutOptions, LayoutResult } from './types';
 import {
   BusinessProcessNodeData,
@@ -123,134 +121,72 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
   }
 
   /**
-   * Calculate layout with dagre on main thread (for <=100 nodes)
+   * Calculate layout using a simple row-based grid (for <=100 nodes)
    */
   private calculateWithDagre(
     graph: BusinessGraph,
     options: LayoutOptions,
     startTime: number
   ): LayoutResult {
-    // Create dagre graph
-    const dagreGraph = this.convertToDAG(graph, options);
+    const nodesep = options.spacing?.node ?? 80;
+    const ranksep = options.spacing?.rank ?? 120;
+    const marginx = 30;
+    const marginy = 30;
+    const maxRowWidth = 1800;
 
-    // Run dagre layout
-    dagre.layout(dagreGraph);
-
-    // Convert back to React Flow format
-    const result = this.convertToReactFlow(dagreGraph, graph);
-
-    // Add calculation time to metadata
-    const calculationTime = performance.now() - startTime;
-    if (result.metadata) {
-      result.metadata.calculationTime = calculationTime;
-      result.metadata.usedWorker = false;
-    }
-
-    return result;
-  }
-
-  /**
-   * Convert BusinessGraph to dagre graph
-   */
-  private convertToDAG(graph: BusinessGraph, options: LayoutOptions): dagre.graphlib.Graph {
-    const g = new dagre.graphlib.Graph();
-
-    // Configure graph layout
-    g.setGraph({
-      rankdir: options.direction || 'TB',
-      nodesep: options.spacing?.node || 80,
-      ranksep: options.spacing?.rank || 120,
-      marginx: 30,
-      marginy: 30,
-      align: 'UL', // Upper-left alignment for consistent layout
-      ranker: 'tight-tree', // Use tight-tree ranker for compact hierarchical layout
-    });
-
-    g.setDefaultEdgeLabel(() => ({}));
-
-    // Add nodes to dagre graph
-    for (const [nodeId, node] of graph.nodes.entries()) {
-      const dimensions = this.getNodeDimensions(node);
-
-      g.setNode(nodeId, {
-        width: dimensions.width,
-        height: dimensions.height,
-        label: node.name,
-      });
-    }
-
-    // Add edges to dagre graph
-    for (const edge of graph.edges.values()) {
-      g.setEdge(edge.source, edge.target, {
-        label: edge.label || edge.type,
-        weight: this.getEdgeWeight(edge),
-      });
-    }
-
-    return g;
-  }
-
-  /**
-   * Convert dagre graph to React Flow nodes and edges
-   */
-  private convertToReactFlow(
-    dagreGraph: dagre.graphlib.Graph,
-    businessGraph: BusinessGraph
-  ): LayoutResult {
     const nodes: Node[] = [];
+    let curX = marginx;
+    let curY = marginy;
+    let rowMaxHeight = 0;
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
 
-    let minX = Infinity;
-    let maxX = -Infinity;
-    let minY = Infinity;
-    let maxY = -Infinity;
+    for (const [, businessNode] of graph.nodes.entries()) {
+      const { width, height } = this.getNodeDimensions(businessNode);
 
-    // Convert nodes
-    for (const [nodeId, businessNode] of businessGraph.nodes.entries()) {
-      const dagreNode = dagreGraph.node(nodeId);
-
-      if (!dagreNode) {
-        continue;
+      if (curX > marginx && curX + width > maxRowWidth) {
+        curX = marginx;
+        curY += rowMaxHeight + ranksep;
+        rowMaxHeight = 0;
       }
 
-      const dimensions = this.getNodeDimensions(businessNode);
+      const x = curX;
+      const y = curY;
 
-      // Dagre gives center positions, convert to top-left for React Flow
-      const x = dagreNode.x - dimensions.width / 2;
-      const y = dagreNode.y - dimensions.height / 2;
-
-      // Track bounds
-      minX = Math.min(minX, x);
-      maxX = Math.max(maxX, x + dimensions.width);
-      minY = Math.min(minY, y);
-      maxY = Math.max(maxY, y + dimensions.height);
-
-      const node: Node = {
-        id: `node-${nodeId}`,
+      nodes.push({
+        id: `node-${businessNode.id}`,
         type: this.getNodeType(businessNode),
         position: { x, y },
         data: this.extractNodeData(businessNode),
-        width: dimensions.width,
-        height: dimensions.height,
-      };
+        width,
+        height,
+      });
 
-      nodes.push(node);
+      minX = Math.min(minX, x);
+      maxX = Math.max(maxX, x + width);
+      minY = Math.min(minY, y);
+      maxY = Math.max(maxY, y + height);
+
+      curX += width + nodesep;
+      rowMaxHeight = Math.max(rowMaxHeight, height);
     }
 
-    // Convert edges using shared method
-    const edges = this.convertEdges(businessGraph);
+    const edges = this.convertEdges(graph);
+    const calculationTime = performance.now() - startTime;
+    const hasNodes = minX !== Infinity;
 
     return {
       nodes,
       edges,
       metadata: {
-        calculationTime: 0, // Will be set by caller
+        calculationTime,
+        usedWorker: false,
         bounds: {
-          width: maxX - minX,
-          height: maxY - minY,
-          minX,
-          maxX,
-          minY,
-          maxY,
+          minX: hasNodes ? minX : 0,
+          maxX: hasNodes ? maxX : 0,
+          minY: hasNodes ? minY : 0,
+          maxY: hasNodes ? maxY : 0,
+          width: hasNodes ? maxX - minX : 0,
+          height: hasNodes ? maxY - minY : 0,
         },
       },
     };
@@ -346,19 +282,6 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
     | BusinessServiceNodeData
     | BusinessCapabilityNodeData {
     return this.transformer.extractNodeData(node);
-  }
-
-  /**
-   * Get edge weight for layout (higher weight = closer together)
-   */
-  private getEdgeWeight(edge: BusinessEdge): number {
-    // Hierarchy edges get higher weight to keep parents/children close
-    if (edge.type === 'composes' || edge.type === 'aggregates') {
-      return 10;
-    }
-
-    // Other relationship types get default weight
-    return 1;
   }
 
   /**
