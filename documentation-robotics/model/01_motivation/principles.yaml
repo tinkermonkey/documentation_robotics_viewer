@@ -1,7 +1,8 @@
-user-centric-design:
-  id: motivation.principle.user-centric-design
+af743270-a281-42a1-85dd-0ddd19cfd490:
+  id: af743270-a281-42a1-85dd-0ddd19cfd490
   name: User-Centric Design
   type: principle
+  layer: motivation
   documentation: All design decisions prioritize the user experience. The
     interface should be intuitive, discoverable, and require minimal learning
     curve. User feedback directly influences feature development and UI
@@ -19,10 +20,12 @@ user-centric-design:
     governsGoals:
       - motivation.goal.visualize-architecture
       - motivation.goal.ensure-accessibility
-performance-first:
-  id: motivation.principle.performance-first
+    __elementId__: motivation.principle.user-centric-design
+a0c5a531-298c-4920-b32b-3484fbf96977:
+  id: a0c5a531-298c-4920-b32b-3484fbf96977
   name: Performance First
   type: principle
+  layer: motivation
   documentation: "Performance is a feature, not an afterthought. All components
     must meet defined performance targets: initial render under 3 seconds for
     500 elements, filter operations under 500ms, and 60fps pan/zoom
@@ -39,10 +42,12 @@ performance-first:
       - motivation.goal.visualize-architecture
     governsGoals:
       - motivation.goal.maintain-performance
-accessibility-by-default:
-  id: motivation.principle.accessibility-by-default
+    __elementId__: motivation.principle.performance-first
+f4e0db49-996e-4870-9d9d-9da9dbf54bc5:
+  id: f4e0db49-996e-4870-9d9d-9da9dbf54bc5
   name: Accessibility by Default
   type: principle
+  layer: motivation
   documentation: Accessibility is built into every component from the start, not
     retrofitted. The application must meet WCAG 2.1 AA compliance. All
     interactive elements must be keyboard accessible with proper focus
@@ -60,10 +65,12 @@ accessibility-by-default:
       - motivation.requirement.interactive-graphs
     governsGoals:
       - motivation.goal.ensure-accessibility
-progressive-enhancement:
-  id: motivation.principle.progressive-enhancement
+    __elementId__: motivation.principle.accessibility-by-default
+7501415e-e272-4f85-bce5-89e816fdd7ab:
+  id: 7501415e-e272-4f85-bce5-89e816fdd7ab
   name: Progressive Enhancement
   type: principle
+  layer: motivation
   documentation: Core functionality works in basic environments with enhanced
     features for capable browsers. The application degrades gracefully when
     advanced features are unavailable. Embedded mode works with minimal
@@ -80,3 +87,4 @@ progressive-enhancement:
       - motivation.requirement.embedded-mode
     governsGoals:
       - motivation.goal.support-embedding
+    __elementId__: motivation.principle.progressive-enhancement

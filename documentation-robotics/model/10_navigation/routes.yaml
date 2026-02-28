@@ -1,0 +1,141 @@
+2ca072ad-56f6-4010-a561-515e5aa28ee3:
+  id: 2ca072ad-56f6-4010-a561-515e5aa28ee3
+  name: Root Route
+  type: route
+  layer: navigation
+  documentation: Root layout route providing EmbeddedLayout wrapper for all child routes
+  properties:
+    displaysComponents:
+      - ux.component.shared-layout
+    __elementId__: navigation.route.root
+b05b8e9d-2147-42b6-b97d-3968f14719a5:
+  id: b05b8e9d-2147-42b6-b97d-3968f14719a5
+  name: Model View Route
+  type: route
+  layer: navigation
+  documentation: Parametric route for model graph and JSON views (/model/:view)
+  properties:
+    x-renders:
+      - ux.view.model-graph-screen
+    x-loads:
+      - application.component.graph-view
+    displaysComponents:
+      - ux.component.graph-viewer
+      - ux.component.model-layers-sidebar
+    __elementId__: navigation.route.model-view
+1536225e-f197-4d9c-a7de-e5f42453363f:
+  id: 1536225e-f197-4d9c-a7de-e5f42453363f
+  name: Spec View Route
+  type: route
+  layer: navigation
+  documentation: Parametric route for spec graph and JSON views (/spec/:view)
+  properties:
+    x-renders:
+      - ux.view.spec-view
+    x-loads:
+      - application.component.viewer-app
+    __elementId__: navigation.route.spec-view
+17869ec8-f669-4742-ba11-0af53b7075fd:
+  id: 17869ec8-f669-4742-ba11-0af53b7075fd
+  name: Motivation Route
+  type: route
+  layer: navigation
+  documentation: Motivation layer visualization route (/motivation)
+  properties:
+    x-renders:
+      - ux.view.motivation-screen
+    x-loads:
+      - application.component.motivation-graph-view
+    __elementId__: navigation.route.motivation
+73c486f8-fd34-4dde-be4f-548d577a974f:
+  id: 73c486f8-fd34-4dde-be4f-548d577a974f
+  name: Architecture (C4) Route
+  type: route
+  layer: navigation
+  documentation: C4 architecture model visualization route (/architecture)
+  properties:
+    x-renders:
+      - ux.view.model-graph-screen
+    x-loads:
+      - application.component.c4-graph-view
+    __elementId__: navigation.route.architecture
+a1ef1e01-2797-4d34-9c8b-9e33f6a3aa6e:
+  id: a1ef1e01-2797-4d34-9c8b-9e33f6a3aa6e
+  name: Changesets View Route
+  type: route
+  layer: navigation
+  documentation: Parametric route for changeset graph and list views (/changesets/:view)
+  properties:
+    __elementId__: navigation.route.changesets-view
+2d26103e-1095-439b-b33c-3c6410f5aa27:
+  id: 2d26103e-1095-439b-b33c-3c6410f5aa27
+  name: Model Refine Route
+  type: route
+  layer: navigation
+  documentation: Graph refinement view for model visualization with layout
+    parameter tuning and quality metrics
+  properties:
+    path: /model/refine
+    x-renders:
+      - ux.view.graph-refinement
+    x-loads:
+      - application.component.graph-view
+    __elementId__: navigation.route.model-refine
+a1557c55-cf4c-4d75-a0fc-3544a99c6e69:
+  id: a1557c55-cf4c-4d75-a0fc-3544a99c6e69
+  name: Spec Refine Route
+  type: route
+  layer: navigation
+  documentation: Graph refinement view for spec visualization with layout
+    parameter tuning and quality metrics
+  properties:
+    path: /spec/refine
+    x-renders:
+      - ux.view.spec-graph-screen
+    x-loads:
+      - application.component.graph-view
+    __elementId__: navigation.route.spec-refine
+75a9d612-1f59-44f0-b8da-7c1c96ca689b:
+  id: 75a9d612-1f59-44f0-b8da-7c1c96ca689b
+  name: Auth Route
+  type: route
+  layer: navigation
+  documentation: Magic link authentication handler route for DR CLI token
+    extraction and storage
+  properties:
+    path: /
+    handles: token-extraction-and-storage
+    redirects-to: requested-destination
+    __elementId__: navigation.route.auth
+c1c6b0be-0719-4080-840e-17cf0bd364f1:
+  id: c1c6b0be-0719-4080-840e-17cf0bd364f1
+  name: Index Route
+  type: route
+  layer: navigation
+  documentation: Root index route that redirects to /model
+  properties:
+    __elementId__: navigation.route.index
+d4b05044-cc77-414a-91c3-7a65af141cb5:
+  id: d4b05044-cc77-414a-91c3-7a65af141cb5
+  name: Model Base Route
+  type: route
+  layer: navigation
+  documentation: Model section base route that redirects to default view (graph)
+  properties:
+    __elementId__: navigation.route.model
+8f4a478b-80c7-4176-9924-87d3a607b62a:
+  id: 8f4a478b-80c7-4176-9924-87d3a607b62a
+  name: Spec Base Route
+  type: route
+  layer: navigation
+  documentation: Spec section base route that redirects to default view (graph)
+  properties:
+    __elementId__: navigation.route.spec
+9bd4b7cb-b65b-42a2-b546-0bf55d36fdf0:
+  id: 9bd4b7cb-b65b-42a2-b546-0bf55d36fdf0
+  name: Changesets Base Route
+  type: route
+  layer: navigation
+  documentation: Changesets section base route that redirects to default view (graph)
+  properties:
+    __elementId__: navigation.route.changesets

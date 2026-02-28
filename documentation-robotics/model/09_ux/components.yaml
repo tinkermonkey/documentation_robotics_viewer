@@ -1,7 +1,8 @@
-shared-layout:
-  id: ux.component.shared-layout
+67bf9c9d-c6c4-4b59-aeae-8cee8ad3b26e:
+  id: 67bf9c9d-c6c4-4b59-aeae-8cee8ad3b26e
   name: SharedLayout
-  type: custom
+  type: component
+  layer: ux
   documentation: Three-column responsive layout wrapper with conditional sidebars
     (left 256px, main flex-1, right 320px)
   properties:
@@ -13,10 +14,12 @@ shared-layout:
         locations:
           - file: src/apps/embedded/components/SharedLayout.tsx
             symbol: SharedLayout
-embedded-layout:
-  id: ux.component.embedded-layout
+    __elementId__: ux.component.shared-layout
+5c232126-375d-451c-bf79-b4b1ed24215f:
+  id: 5c232126-375d-451c-bf79-b4b1ed24215f
   name: EmbeddedLayout
-  type: custom
+  type: component
+  layer: ux
   documentation: Main application shell with header, main tab navigation, sub-tab
     navigation, and connection status indicator
   properties:
@@ -26,10 +29,12 @@ embedded-layout:
         locations:
           - file: src/apps/embedded/components/EmbeddedLayout.tsx
             symbol: EmbeddedLayout
-graph-viewer:
-  id: ux.component.graph-viewer
+    __elementId__: ux.component.embedded-layout
+9a133725-ef06-4b45-9f66-3d4f120690bc:
+  id: 9a133725-ef06-4b45-9f66-3d4f120690bc
   name: GraphViewer
-  type: custom
+  type: component
+  layer: ux
   documentation: Core React Flow-based graph visualization component with pan,
     zoom, minimap, and layer filtering
   properties:
@@ -43,10 +48,12 @@ graph-viewer:
             symbol: GraphViewer
     implementsComponent:
       - application.component.viewer-app
-c4-graph-view:
-  id: ux.component.c4-graph-view
+    __elementId__: ux.component.graph-viewer
+06a14615-2e86-46b8-9d2f-eee356ff19aa:
+  id: 06a14615-2e86-46b8-9d2f-eee356ff19aa
   name: C4GraphView
-  type: custom
+  type: component
+  layer: ux
   documentation: C4 architecture graph viewer with hierarchical drill-down (System
     → Container → Component) and technology filtering
   properties:
@@ -60,10 +67,12 @@ c4-graph-view:
             symbol: C4GraphView
     implementsComponent:
       - application.component.c4-graph-view
-motivation-graph-view:
-  id: ux.component.motivation-graph-view
+    __elementId__: ux.component.c4-graph-view
+7812736e-02fb-4965-bb90-6cf0c217e033:
+  id: 7812736e-02fb-4965-bb90-6cf0c217e033
   name: MotivationGraphView
-  type: custom
+  type: component
+  layer: ux
   documentation: Motivation layer graph with element type filtering, relationship
     filtering, and path tracing capabilities
   properties:
@@ -77,10 +86,12 @@ motivation-graph-view:
             symbol: MotivationGraphView
     implementsComponent:
       - application.component.motivation-graph-view
-model-json-viewer:
-  id: ux.component.model-json-viewer
+    __elementId__: ux.component.motivation-graph-view
+4278c891-3883-4a60-9d40-fbebc637b7a6:
+  id: 4278c891-3883-4a60-9d40-fbebc637b7a6
   name: ModelJSONViewer
-  type: custom
+  type: component
+  layer: ux
   documentation: Interactive JSON viewer with syntax highlighting, collapsible
     sections, path navigation, and schema info integration
   properties:
@@ -92,10 +103,12 @@ model-json-viewer:
             symbol: ModelJSONViewer
     implementsComponent:
       - application.component.model-json-viewer
-spec-viewer:
-  id: ux.component.spec-viewer
+    __elementId__: ux.component.model-json-viewer
+beefb054-85da-46da-97ed-ff8b6d21bc90:
+  id: beefb054-85da-46da-97ed-ff8b6d21bc90
   name: SpecViewer
-  type: custom
+  type: component
+  layer: ux
   documentation: DR specification JSON viewer with schema navigation and relationship mapping
   properties:
     source:
@@ -106,10 +119,12 @@ spec-viewer:
             symbol: SpecViewer
     implementsComponent:
       - application.component.spec-viewer
-spec-graph-view:
-  id: ux.component.spec-graph-view
+    __elementId__: ux.component.spec-viewer
+2ce5aab5-84aa-4557-87d0-b34bdece5c12:
+  id: 2ce5aab5-84aa-4557-87d0-b34bdece5c12
   name: SpecGraphView
-  type: custom
+  type: component
+  layer: ux
   documentation: Graph visualization of DR specification structure showing entity
     relationships
   properties:
@@ -119,10 +134,12 @@ spec-graph-view:
         locations:
           - file: src/apps/embedded/components/SpecGraphView.tsx
             symbol: SpecGraphView
-changeset-graph-view:
-  id: ux.component.changeset-graph-view
+    __elementId__: ux.component.spec-graph-view
+65b4b8fe-3627-4ab1-8a5c-0d8495592065:
+  id: 65b4b8fe-3627-4ab1-8a5c-0d8495592065
   name: ChangesetGraphView
-  type: custom
+  type: component
+  layer: ux
   documentation: Graph view of changeset showing added/modified/removed elements
     with operation indicators
   properties:
@@ -134,10 +151,12 @@ changeset-graph-view:
             symbol: ChangesetGraphView
     implementsComponent:
       - application.component.changeset-graph-view
-sub-tab-navigation:
-  id: ux.component.sub-tab-navigation
+    __elementId__: ux.component.changeset-graph-view
+8ba56f27-7d2f-4d37-8658-dd2c66202cd4:
+  id: 8ba56f27-7d2f-4d37-8658-dd2c66202cd4
   name: SubTabNavigation
-  type: custom
+  type: component
+  layer: ux
   documentation: Secondary navigation tabs for view switching (Graph/JSON, Graph/List)
   properties:
     source:
@@ -146,10 +165,12 @@ sub-tab-navigation:
         locations:
           - file: src/apps/embedded/components/SubTabNavigation.tsx
             symbol: SubTabNavigation
-c4-breadcrumb-nav:
-  id: ux.component.c4-breadcrumb-nav
+    __elementId__: ux.component.sub-tab-navigation
+0fbc756a-e0a9-4ee4-9a66-6acd69b49b50:
+  id: 0fbc756a-e0a9-4ee4-9a66-6acd69b49b50
   name: C4BreadcrumbNav
-  type: custom
+  type: component
+  layer: ux
   documentation: Hierarchical breadcrumb navigation for C4 view levels (System >
     Container > Component)
   properties:
@@ -159,10 +180,12 @@ c4-breadcrumb-nav:
         locations:
           - file: src/apps/embedded/components/C4BreadcrumbNav.tsx
             symbol: C4BreadcrumbNav
-motivation-breadcrumb:
-  id: ux.component.motivation-breadcrumb
+    __elementId__: ux.component.c4-breadcrumb-nav
+b54e537c-ab24-4a23-890e-42b299dfd3f1:
+  id: b54e537c-ab24-4a23-890e-42b299dfd3f1
   name: MotivationBreadcrumb
-  type: custom
+  type: component
+  layer: ux
   documentation: Breadcrumb navigation for motivation layer with element type indicators
   properties:
     source:
@@ -171,10 +194,12 @@ motivation-breadcrumb:
         locations:
           - file: src/apps/embedded/components/MotivationBreadcrumb.tsx
             symbol: MotivationBreadcrumb
-model-layers-sidebar:
-  id: ux.component.model-layers-sidebar
+    __elementId__: ux.component.motivation-breadcrumb
+337cbd59-89be-4464-a528-e64a561c0107:
+  id: 337cbd59-89be-4464-a528-e64a561c0107
   name: ModelLayersSidebar
-  type: custom
+  type: component
+  layer: ux
   documentation: Layer selector sidebar showing all 12 DR layers with selection state
   properties:
     source:
@@ -183,10 +208,12 @@ model-layers-sidebar:
         locations:
           - file: src/apps/embedded/components/ModelLayersSidebar.tsx
             symbol: ModelLayersSidebar
-spec-schemas-sidebar:
-  id: ux.component.spec-schemas-sidebar
+    __elementId__: ux.component.model-layers-sidebar
+56d6bd66-15a3-4bc5-9fa9-290f59766b48:
+  id: 56d6bd66-15a3-4bc5-9fa9-290f59766b48
   name: SpecSchemasSidebar
-  type: custom
+  type: component
+  layer: ux
   documentation: Schema browser sidebar for navigating DR specification entity types
   properties:
     source:
@@ -195,10 +222,12 @@ spec-schemas-sidebar:
         locations:
           - file: src/apps/embedded/components/SpecSchemasSidebar.tsx
             symbol: SpecSchemasSidebar
-c4-right-sidebar:
-  id: ux.component.c4-right-sidebar
+    __elementId__: ux.component.spec-schemas-sidebar
+1ba0adfa-5c2a-44dc-bd7d-073ef4ea5427:
+  id: 1ba0adfa-5c2a-44dc-bd7d-073ef4ea5427
   name: C4RightSidebar
-  type: custom
+  type: component
+  layer: ux
   documentation: Comprehensive control sidebar for C4 view with filters, controls,
     inspector, and export options
   properties:
@@ -208,10 +237,12 @@ c4-right-sidebar:
         locations:
           - file: src/apps/embedded/components/C4RightSidebar.tsx
             symbol: C4RightSidebar
-motivation-right-sidebar:
-  id: ux.component.motivation-right-sidebar
+    __elementId__: ux.component.c4-right-sidebar
+7cd67c7c-9d0e-47c6-8c3d-60331b39bb63:
+  id: 7cd67c7c-9d0e-47c6-8c3d-60331b39bb63
   name: MotivationRightSidebar
-  type: custom
+  type: component
+  layer: ux
   documentation: Comprehensive control sidebar for motivation view with filters,
     controls, inspector, and export options
   properties:
@@ -221,10 +252,12 @@ motivation-right-sidebar:
         locations:
           - file: src/apps/embedded/components/MotivationRightSidebar.tsx
             symbol: MotivationRightSidebar
-annotation-panel:
-  id: ux.component.annotation-panel
+    __elementId__: ux.component.motivation-right-sidebar
+48d5a5b1-099d-4a43-8c89-c981f0c7cee0:
+  id: 48d5a5b1-099d-4a43-8c89-c981f0c7cee0
   name: AnnotationPanel
-  type: custom
+  type: component
+  layer: ux
   documentation: Annotation creation and display panel for collaborative documentation
   properties:
     source:
@@ -235,10 +268,12 @@ annotation-panel:
             symbol: AnnotationPanel
     implementsComponent:
       - application.component.annotation-panel
-schema-info-panel:
-  id: ux.component.schema-info-panel
+    __elementId__: ux.component.annotation-panel
+f1f211d2-a3e7-4852-96e1-855fd024f08b:
+  id: f1f211d2-a3e7-4852-96e1-855fd024f08b
   name: SchemaInfoPanel
-  type: custom
+  type: component
+  layer: ux
   documentation: Panel displaying schema definition information for selected elements
   properties:
     source:
@@ -247,10 +282,12 @@ schema-info-panel:
         locations:
           - file: src/apps/embedded/components/SchemaInfoPanel.tsx
             symbol: SchemaInfoPanel
-node-details-panel:
-  id: ux.component.node-details-panel
+    __elementId__: ux.component.schema-info-panel
+10199aae-095f-48fe-a8e5-66a3cf192b16:
+  id: 10199aae-095f-48fe-a8e5-66a3cf192b16
   name: NodeDetailsPanel
-  type: custom
+  type: component
+  layer: ux
   documentation: Detailed information panel for selected graph node showing
     properties and metadata
   properties:
@@ -260,10 +297,12 @@ node-details-panel:
         locations:
           - file: src/apps/embedded/components/NodeDetailsPanel.tsx
             symbol: NodeDetailsPanel
-graph-statistics-panel:
-  id: ux.component.graph-statistics-panel
+    __elementId__: ux.component.node-details-panel
+a38ebf92-7737-4484-bb62-f8e7b7b25130:
+  id: a38ebf92-7737-4484-bb62-f8e7b7b25130
   name: GraphStatisticsPanel
-  type: custom
+  type: component
+  layer: ux
   documentation: Statistics panel showing element counts, layer distribution, and
     model metrics
   properties:
@@ -273,10 +312,12 @@ graph-statistics-panel:
         locations:
           - file: src/apps/embedded/components/GraphStatisticsPanel.tsx
             symbol: GraphStatisticsPanel
-highlighted-path-panel:
-  id: ux.component.highlighted-path-panel
+    __elementId__: ux.component.graph-statistics-panel
+c74708d6-30c5-416e-aff8-1da995ac9be8:
+  id: c74708d6-30c5-416e-aff8-1da995ac9be8
   name: HighlightedPathPanel
-  type: custom
+  type: component
+  layer: ux
   documentation: Panel showing currently highlighted JSON path (3 second auto-clear)
   properties:
     source:
@@ -285,10 +326,12 @@ highlighted-path-panel:
         locations:
           - file: src/apps/embedded/components/HighlightedPathPanel.tsx
             symbol: HighlightedPathPanel
-layer-types-legend:
-  id: ux.component.layer-types-legend
+    __elementId__: ux.component.highlighted-path-panel
+c4e8c556-d168-4bda-ad86-c536c28e4250:
+  id: c4e8c556-d168-4bda-ad86-c536c28e4250
   name: LayerTypesLegend
-  type: custom
+  type: component
+  layer: ux
   documentation: Visual legend showing element types and their colors for the current model
   properties:
     source:
@@ -297,10 +340,12 @@ layer-types-legend:
         locations:
           - file: src/apps/embedded/components/LayerTypesLegend.tsx
             symbol: LayerTypesLegend
-c4-control-panel:
-  id: ux.component.c4-control-panel
+    __elementId__: ux.component.layer-types-legend
+6ff8ac71-f60b-4ff2-a433-03b5c3b0b71c:
+  id: 6ff8ac71-f60b-4ff2-a433-03b5c3b0b71c
   name: C4ControlPanel
-  type: custom
+  type: component
+  layer: ux
   documentation: Control panel for C4 view with layout selection, view level
     navigation, and view controls
   properties:
@@ -310,10 +355,12 @@ c4-control-panel:
         locations:
           - file: src/apps/embedded/components/C4ControlPanel.tsx
             symbol: C4ControlPanel
-c4-filter-panel:
-  id: ux.component.c4-filter-panel
+    __elementId__: ux.component.c4-control-panel
+180f6170-e03d-4ba9-8d0b-c077898283b8:
+  id: 180f6170-e03d-4ba9-8d0b-c077898283b8
   name: C4FilterPanel
-  type: custom
+  type: component
+  layer: ux
   documentation: Filter panel for C4 view with container type and technology stack filtering
   properties:
     source:
@@ -322,10 +369,12 @@ c4-filter-panel:
         locations:
           - file: src/apps/embedded/components/C4FilterPanel.tsx
             symbol: C4FilterPanel
-c4-inspector-panel:
-  id: ux.component.c4-inspector-panel
+    __elementId__: ux.component.c4-filter-panel
+38c9b714-abb2-4882-bb0b-cc46368b5a6b:
+  id: 38c9b714-abb2-4882-bb0b-cc46368b5a6b
   name: C4InspectorPanel
-  type: custom
+  type: component
+  layer: ux
   documentation: Detailed inspector panel for selected C4 element with metadata and actions
   properties:
     source:
@@ -334,10 +383,12 @@ c4-inspector-panel:
         locations:
           - file: src/apps/embedded/components/C4InspectorPanel.tsx
             symbol: C4InspectorPanel
-motivation-control-panel:
-  id: ux.component.motivation-control-panel
+    __elementId__: ux.component.c4-inspector-panel
+f8aaa5a9-3d75-479d-b6ea-7f8300eddfa7:
+  id: f8aaa5a9-3d75-479d-b6ea-7f8300eddfa7
   name: MotivationControlPanel
-  type: custom
+  type: component
+  layer: ux
   documentation: Control panel for motivation view with layout selection and view controls
   properties:
     source:
@@ -346,10 +397,12 @@ motivation-control-panel:
         locations:
           - file: src/apps/embedded/components/MotivationControlPanel.tsx
             symbol: MotivationControlPanel
-motivation-filter-panel:
-  id: ux.component.motivation-filter-panel
+    __elementId__: ux.component.motivation-control-panel
+6dde0e05-4019-4eba-9776-6159b3fec6c8:
+  id: 6dde0e05-4019-4eba-9776-6159b3fec6c8
   name: MotivationFilterPanel
-  type: custom
+  type: component
+  layer: ux
   documentation: Filter panel for motivation view with element type and
     relationship type filtering
   properties:
@@ -359,10 +412,12 @@ motivation-filter-panel:
         locations:
           - file: src/apps/embedded/components/MotivationFilterPanel.tsx
             symbol: MotivationFilterPanel
-motivation-inspector-panel:
-  id: ux.component.motivation-inspector-panel
+    __elementId__: ux.component.motivation-filter-panel
+6fa5ca2d-8f83-4999-8fec-08bff9d89ba9:
+  id: 6fa5ca2d-8f83-4999-8fec-08bff9d89ba9
   name: MotivationInspectorPanel
-  type: custom
+  type: component
+  layer: ux
   documentation: Detailed inspector panel for selected motivation element with
     relationship analysis
   properties:
@@ -372,10 +427,12 @@ motivation-inspector-panel:
         locations:
           - file: src/apps/embedded/components/MotivationInspectorPanel.tsx
             symbol: MotivationInspectorPanel
-motivation-context-menu:
-  id: ux.component.motivation-context-menu
+    __elementId__: ux.component.motivation-inspector-panel
+6b309660-e786-4a7c-97d8-f42a904dcea4:
+  id: 6b309660-e786-4a7c-97d8-f42a904dcea4
   name: MotivationContextMenu
-  type: custom
+  type: component
+  layer: ux
   documentation: Right-click context menu for motivation graph nodes with
     navigation and analysis actions
   properties:
@@ -385,10 +442,12 @@ motivation-context-menu:
         locations:
           - file: src/apps/embedded/components/MotivationContextMenu.tsx
             symbol: MotivationContextMenu
-connection-status:
-  id: ux.component.connection-status
+    __elementId__: ux.component.motivation-context-menu
+3a143e1d-e491-4e24-89c8-fd77c4605048:
+  id: 3a143e1d-e491-4e24-89c8-fd77c4605048
   name: ConnectionStatus
-  type: custom
+  type: component
+  layer: ux
   documentation: WebSocket connection status indicator with reconnection feedback
   properties:
     source:
@@ -397,10 +456,12 @@ connection-status:
         locations:
           - file: src/apps/embedded/components/ConnectionStatus.tsx
             symbol: ConnectionStatus
-graph-toolbar:
-  id: ux.component.graph-toolbar
+    __elementId__: ux.component.connection-status
+2e5e60ca-37bf-44a4-a636-e37d0d17deb1:
+  id: 2e5e60ca-37bf-44a4-a636-e37d0d17deb1
   name: GraphToolbar
-  type: custom
+  type: component
+  layer: ux
   documentation: Floating toolbar for graph view controls (zoom, fit, reset)
   properties:
     source:
@@ -409,10 +470,12 @@ graph-toolbar:
         locations:
           - file: src/apps/embedded/components/GraphToolbar.tsx
             symbol: GraphToolbar
-minimap:
-  id: ux.component.minimap
+    __elementId__: ux.component.graph-toolbar
+6b73cdab-0200-4834-92b2-019712b986af:
+  id: 6b73cdab-0200-4834-92b2-019712b986af
   name: MiniMap
-  type: custom
+  type: component
+  layer: ux
   documentation: Mini-map overview of graph with viewport indicator
   properties:
     source:
@@ -421,10 +484,12 @@ minimap:
         locations:
           - file: src/apps/embedded/components/MiniMap.tsx
             symbol: MiniMap
-operation-legend:
-  id: ux.component.operation-legend
+    __elementId__: ux.component.minimap
+944ba129-f960-4626-94c9-7d16baf3f850:
+  id: 944ba129-f960-4626-94c9-7d16baf3f850
   name: OperationLegend
-  type: custom
+  type: component
+  layer: ux
   documentation: Legend showing changeset operation types (added, modified, removed)
   properties:
     source:
@@ -433,10 +498,12 @@ operation-legend:
         locations:
           - file: src/apps/embedded/components/OperationLegend.tsx
             symbol: OperationLegend
-error-boundary:
-  id: ux.component.error-boundary
+    __elementId__: ux.component.operation-legend
+f6396847-1a41-4cc5-8e2f-f1a7d3b8c99c:
+  id: f6396847-1a41-4cc5-8e2f-f1a7d3b8c99c
   name: ErrorBoundary
-  type: custom
+  type: component
+  layer: ux
   documentation: React error boundary for graceful error handling and display
   properties:
     source:
@@ -445,258 +512,418 @@ error-boundary:
         locations:
           - file: src/apps/embedded/components/ErrorBoundary.tsx
             symbol: ErrorBoundary
-c4-view:
-  id: ux.view.c4-view
-  name: C4 View
-  type: custom
-  documentation: Hierarchical view (Context, Container, Component)
-filter-panel:
-  id: ux.component.filter-panel
+    __elementId__: ux.component.error-boundary
+9c9407d4-8145-423b-8b29-f2b087fa4f58:
+  id: 9c9407d4-8145-423b-8b29-f2b087fa4f58
   name: Filter Panel
-  type: custom
+  type: component
+  layer: ux
   documentation: Reusable filter panel with sections, checkboxes, and bulk actions
-breadcrumb-nav:
-  id: ux.component.breadcrumb-nav
+  properties:
+    __elementId__: ux.component.filter-panel
+2b85c9be-3437-479e-8f6c-2143e18191af:
+  id: 2b85c9be-3437-479e-8f6c-2143e18191af
   name: Breadcrumb Nav
-  type: custom
+  type: component
+  layer: ux
   documentation: Base breadcrumb navigation component for hierarchical navigation
-empty-state:
-  id: ux.component.empty-state
+  properties:
+    __elementId__: ux.component.breadcrumb-nav
+18aff574-e90c-4d9f-89a7-6cd4c45bfec7:
+  id: 18aff574-e90c-4d9f-89a7-6cd4c45bfec7
   name: Empty State
-  type: custom
+  type: component
+  layer: ux
   documentation: Empty state placeholder with icon and message when no data to display
-error-state:
-  id: ux.component.error-state
+  properties:
+    __elementId__: ux.component.empty-state
+48442664-010f-4565-b8ee-5dd7dabead81:
+  id: 48442664-010f-4565-b8ee-5dd7dabead81
   name: Error State
-  type: custom
+  type: component
+  layer: ux
   documentation: Error state display with retry action for error handling
-loading-state:
-  id: ux.component.loading-state
+  properties:
+    __elementId__: ux.component.error-state
+84ff157b-1eda-4c27-9ec6-d8244423b1a1:
+  id: 84ff157b-1eda-4c27-9ec6-d8244423b1a1
   name: Loading State
-  type: custom
+  type: component
+  layer: ux
   documentation: Loading state indicator with spinner for async operations
-expandable-section:
-  id: ux.component.expandable-section
+  properties:
+    __elementId__: ux.component.loading-state
+3bf36c8e-835c-42cc-9b37-04453a16db80:
+  id: 3bf36c8e-835c-42cc-9b37-04453a16db80
   name: Expandable Section
-  type: custom
+  type: component
+  layer: ux
   documentation: Collapsible content section with toggle control
-metadata-grid:
-  id: ux.component.metadata-grid
+  properties:
+    __elementId__: ux.component.expandable-section
+a77b0559-b52c-43ae-adf3-78b9ec70a402:
+  id: a77b0559-b52c-43ae-adf3-78b9ec70a402
   name: Metadata Grid
-  type: custom
+  type: component
+  layer: ux
   documentation: Grid display for element metadata key-value pairs
-attributes-table:
-  id: ux.component.attributes-table
+  properties:
+    __elementId__: ux.component.metadata-grid
+9bb3ea95-c207-4572-9009-1afa225ecb94:
+  id: 9bb3ea95-c207-4572-9009-1afa225ecb94
   name: Attributes Table
-  type: custom
+  type: component
+  layer: ux
   documentation: Table display for element attributes and properties
-node-business-capability:
-  id: ux.component.node-business-capability
+  properties:
+    __elementId__: ux.component.attributes-table
+e7510ca4-fc57-47e0-a4e6-79a566d71a87:
+  id: e7510ca4-fc57-47e0-a4e6-79a566d71a87
   name: Business Capability Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow node component for visualizing business capabilities
-node-business-function:
-  id: ux.component.node-business-function
+  properties:
+    __elementId__: ux.component.node-business-capability
+71f8b6f9-c9ef-4148-b2c4-01f3a966b8a8:
+  id: 71f8b6f9-c9ef-4148-b2c4-01f3a966b8a8
   name: Business Function Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow node component for visualizing business functions
-node-business-service:
-  id: ux.component.node-business-service
+  properties:
+    __elementId__: ux.component.node-business-function
+ff930ae9-532e-409f-b906-d44890ad7f21:
+  id: ff930ae9-532e-409f-b906-d44890ad7f21
   name: Business Service Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow node component for visualizing business services
-node-business-process:
-  id: ux.component.node-business-process
+  properties:
+    __elementId__: ux.component.node-business-service
+69063d8f-e5ff-442b-860f-fd0ccfa99ead:
+  id: 69063d8f-e5ff-442b-860f-fd0ccfa99ead
   name: Business Process Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow node component for visualizing business processes
-node-goal:
-  id: ux.component.node-goal
+  properties:
+    __elementId__: ux.component.node-business-process
+1fba55aa-1818-490d-aa3e-a2ea69f0457f:
+  id: 1fba55aa-1818-490d-aa3e-a2ea69f0457f
   name: Goal Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow node component for visualizing motivation layer goals
-node-requirement:
-  id: ux.component.node-requirement
+  properties:
+    __elementId__: ux.component.node-goal
+867cd4cb-0b5f-4820-8742-008771eb4e64:
+  id: 867cd4cb-0b5f-4820-8742-008771eb4e64
   name: Requirement Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow node component for visualizing motivation layer requirements
-node-principle:
-  id: ux.component.node-principle
+  properties:
+    __elementId__: ux.component.node-requirement
+a03f8cb7-8757-4a6e-85dd-edcca03857a3:
+  id: a03f8cb7-8757-4a6e-85dd-edcca03857a3
   name: Principle Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow node component for visualizing motivation layer principles
-node-constraint:
-  id: ux.component.node-constraint
+  properties:
+    __elementId__: ux.component.node-principle
+f8806c0e-7c09-41fe-90ce-5d341d8a87f8:
+  id: f8806c0e-7c09-41fe-90ce-5d341d8a87f8
   name: Constraint Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow node component for visualizing motivation layer constraints
-node-stakeholder:
-  id: ux.component.node-stakeholder
+  properties:
+    __elementId__: ux.component.node-constraint
+1edb565a-2378-4284-8648-876f3f50d590:
+  id: 1edb565a-2378-4284-8648-876f3f50d590
   name: Stakeholder Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow node component for visualizing motivation layer stakeholders
-node-outcome:
-  id: ux.component.node-outcome
+  properties:
+    __elementId__: ux.component.node-stakeholder
+bab3a350-0eb8-4072-9a2d-6ae9468cfa41:
+  id: bab3a350-0eb8-4072-9a2d-6ae9468cfa41
   name: Outcome Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow node component for visualizing motivation layer outcomes
-node-driver:
-  id: ux.component.node-driver
+  properties:
+    __elementId__: ux.component.node-outcome
+833f0b89-bad0-4dae-ba15-b2d6bda9a990:
+  id: 833f0b89-bad0-4dae-ba15-b2d6bda9a990
   name: Driver Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow node component for visualizing motivation layer drivers
-node-assumption:
-  id: ux.component.node-assumption
+  properties:
+    __elementId__: ux.component.node-driver
+b432748d-57c9-4838-ab8f-db0586644ab8:
+  id: b432748d-57c9-4838-ab8f-db0586644ab8
   name: Assumption Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow node component for visualizing motivation layer assumptions
-node-assessment:
-  id: ux.component.node-assessment
+  properties:
+    __elementId__: ux.component.node-assumption
+de2a6ab0-c15b-4f1e-b19a-5709dc63a82c:
+  id: de2a6ab0-c15b-4f1e-b19a-5709dc63a82c
   name: Assessment Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow node component for visualizing motivation layer assessments
-node-value-stream:
-  id: ux.component.node-value-stream
+  properties:
+    __elementId__: ux.component.node-assessment
+dffe1d65-e141-4eea-8bab-7d4d10bf59fe:
+  id: dffe1d65-e141-4eea-8bab-7d4d10bf59fe
   name: Value Stream Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow node component for visualizing motivation layer value streams
-node-component:
-  id: ux.component.node-component
+  properties:
+    __elementId__: ux.component.node-value-stream
+d7893e0d-5bec-4208-a015-5a58b606af77:
+  id: d7893e0d-5bec-4208-a015-5a58b606af77
   name: Component Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow node component for visualizing C4 architecture components
-node-container:
-  id: ux.component.node-container
+  properties:
+    __elementId__: ux.component.node-component
+d3d86534-d718-4796-a96c-5c3300e783a9:
+  id: d3d86534-d718-4796-a96c-5c3300e783a9
   name: Container Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow node component for visualizing C4 architecture containers
-node-external-actor:
-  id: ux.component.node-external-actor
+  properties:
+    __elementId__: ux.component.node-container
+84eab76c-2ee1-4258-915a-71b4865c0dae:
+  id: 84eab76c-2ee1-4258-915a-71b4865c0dae
   name: External Actor Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow node component for visualizing C4 external actors
-node-json-schema:
-  id: ux.component.node-json-schema
+  properties:
+    __elementId__: ux.component.node-external-actor
+300c5122-63bd-4e95-84a9-13333bf3d04b:
+  id: 300c5122-63bd-4e95-84a9-13333bf3d04b
   name: JSON Schema Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow node component for visualizing JSON Schema definitions
-node-base-field-list:
-  id: ux.component.node-base-field-list
+  properties:
+    __elementId__: ux.component.node-json-schema
+e6d5bb9f-3229-4343-b39a-6de0e9ae6f21:
+  id: e6d5bb9f-3229-4343-b39a-6de0e9ae6f21
   name: Base Field List Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow base node component for displaying field lists
-node-layer-container:
-  id: ux.component.node-layer-container
+  properties:
+    __elementId__: ux.component.node-base-field-list
+6cada6a4-f0e7-4036-9070-37e9f07093ab:
+  id: 6cada6a4-f0e7-4036-9070-37e9f07093ab
   name: Layer Container Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow layout utility node for layer grouping
-node-relationship-badge:
-  id: ux.component.node-relationship-badge
+  properties:
+    __elementId__: ux.component.node-layer-container
+8e47af71-265a-461a-a645-0da4c4aeeceb:
+  id: 8e47af71-265a-461a-a645-0da4c4aeeceb
   name: Relationship Badge Node
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow decoration node for relationship indicators
-edge-cross-layer:
-  id: ux.component.edge-cross-layer
+  properties:
+    __elementId__: ux.component.node-relationship-badge
+6e13b5c2-eda0-4f2b-b4cb-d0ee9e8b91c3:
+  id: 6e13b5c2-eda0-4f2b-b4cb-d0ee9e8b91c3
   name: Cross-Layer Edge
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow edge component for visualizing cross-layer relationships
-edge-elbow:
-  id: ux.component.edge-elbow
+  properties:
+    __elementId__: ux.component.edge-cross-layer
+1a11a550-99bb-4c13-b519-dea57ecbb0ca:
+  id: 1a11a550-99bb-4c13-b519-dea57ecbb0ca
   name: Elbow Edge
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow edge component with orthogonal routing for clean layouts
-edge-influence:
-  id: ux.component.edge-influence
+  properties:
+    __elementId__: ux.component.edge-elbow
+780cc48a-a0ee-4a3a-82e1-ac1f89d593bb:
+  id: 780cc48a-a0ee-4a3a-82e1-ac1f89d593bb
   name: Influence Edge
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow edge component for visualizing motivation influence relationships
-edge-realizes:
-  id: ux.component.edge-realizes
+  properties:
+    __elementId__: ux.component.edge-influence
+364d3599-a225-42f1-83d2-f3bd01a20c34:
+  id: 364d3599-a225-42f1-83d2-f3bd01a20c34
   name: Realizes Edge
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow edge component for visualizing motivation realization
     relationships
-edge-refines:
-  id: ux.component.edge-refines
+  properties:
+    __elementId__: ux.component.edge-realizes
+f64c5796-773f-4823-b42d-4d727dac3fbe:
+  id: f64c5796-773f-4823-b42d-4d727dac3fbe
   name: Refines Edge
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow edge component for visualizing motivation refinement relationships
-edge-constrains:
-  id: ux.component.edge-constrains
+  properties:
+    __elementId__: ux.component.edge-refines
+31b34eb0-77b4-4d35-b066-5b5b59fce8d3:
+  id: 31b34eb0-77b4-4d35-b066-5b5b59fce8d3
   name: Constrains Edge
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow edge component for visualizing motivation constraint relationships
-edge-conflicts:
-  id: ux.component.edge-conflicts
+  properties:
+    __elementId__: ux.component.edge-constrains
+425fbeab-edbd-4fd1-87fc-115846e01141:
+  id: 425fbeab-edbd-4fd1-87fc-115846e01141
   name: Conflicts Edge
-  type: custom
+  type: component
+  layer: ux
   documentation: React Flow edge component for visualizing motivation conflict relationships
-business-layer-view:
-  id: ux.component.business-layer-view
+  properties:
+    __elementId__: ux.component.edge-conflicts
+776fbd77-c67c-47d8-b173-ccf78426a762:
+  id: 776fbd77-c67c-47d8-b173-ccf78426a762
   name: Business Layer View
-  type: custom
+  type: component
+  layer: ux
   documentation: Business layer graph visualization component with processes,
     functions, and services
-business-layer-controls:
-  id: ux.component.business-layer-controls
+  properties:
+    __elementId__: ux.component.business-layer-view
+cf71aa80-17bd-4901-8faf-9227d14b460a:
+  id: cf71aa80-17bd-4901-8faf-9227d14b460a
   name: Business Layer Controls
-  type: custom
+  type: component
+  layer: ux
   documentation: Control panel for business layer view with layout and filter options
-process-inspector-panel:
-  id: ux.component.process-inspector-panel
+  properties:
+    __elementId__: ux.component.business-layer-controls
+c8a42211-7112-48c9-ad2c-987e7ca21ae1:
+  id: c8a42211-7112-48c9-ad2c-987e7ca21ae1
   name: Process Inspector Panel
-  type: custom
+  type: component
+  layer: ux
   documentation: Detailed inspector panel for business processes with metadata and
     relationships
-layout-history:
-  id: ux.component.layout-history
+  properties:
+    __elementId__: ux.component.process-inspector-panel
+7728b617-531b-40be-9a61-33733b0181ed:
+  id: 7728b617-531b-40be-9a61-33733b0181ed
   name: Layout History
-  type: custom
+  type: component
+  layer: ux
   documentation: Historical view of layout iterations with timeline and diff comparison
-session-history-browser:
-  id: ux.component.session-history-browser
+  properties:
+    __elementId__: ux.component.layout-history
+6a6d976b-d641-4296-9813-24b8517bfcff:
+  id: 6a6d976b-d641-4296-9813-24b8517bfcff
   name: Session History Browser
-  type: custom
+  type: component
+  layer: ux
   documentation: Browser for layout refinement sessions with quality metrics
-metrics-dashboard:
-  id: ux.component.metrics-dashboard
+  properties:
+    __elementId__: ux.component.session-history-browser
+7006e415-cca3-4ab2-a4d4-1511aa905c6c:
+  id: 7006e415-cca3-4ab2-a4d4-1511aa905c6c
   name: Metrics Dashboard
-  type: custom
+  type: component
+  layer: ux
   documentation: Dashboard showing layout quality metrics and performance trends
-refinement-feedback-panel:
-  id: ux.component.refinement-feedback-panel
+  properties:
+    __elementId__: ux.component.metrics-dashboard
+b348c992-6280-4e65-9d42-06d509d90648:
+  id: b348c992-6280-4e65-9d42-06d509d90648
   name: Refinement Feedback Panel
-  type: custom
+  type: component
+  layer: ux
   documentation: Panel for providing layout quality feedback and improvement suggestions
-parameter-adjustment-panel:
-  id: ux.component.parameter-adjustment-panel
+  properties:
+    __elementId__: ux.component.refinement-feedback-panel
+bfb60915-6d75-4de0-938f-082e26abda68:
+  id: bfb60915-6d75-4de0-938f-082e26abda68
   name: Parameter Adjustment Panel
-  type: custom
+  type: component
+  layer: ux
   documentation: Panel for adjusting layout algorithm parameters in real-time
-screenshot-diff-visualization:
-  id: ux.component.screenshot-diff-visualization
+  properties:
+    __elementId__: ux.component.parameter-adjustment-panel
+59098e41-e834-482a-ba39-67434a739d8d:
+  id: 59098e41-e834-482a-ba39-67434a739d8d
   name: Screenshot Diff Visualization
-  type: custom
+  type: component
+  layer: ux
   documentation: Visual diff comparison of layout screenshots with heatmap overlay
-overview-panel:
-  id: ux.component.overview-panel
+  properties:
+    __elementId__: ux.component.screenshot-diff-visualization
+e128d978-69e0-4b16-aa08-99bcc01cf839:
+  id: e128d978-69e0-4b16-aa08-99bcc01cf839
   name: Overview Panel
-  type: custom
+  type: component
+  layer: ux
   documentation: Graph overview panel with statistics, element counts, and navigation tools
-coverage-summary-panel:
-  id: ux.component.coverage-summary-panel
+  properties:
+    __elementId__: ux.component.overview-panel
+f46bb683-8750-494a-af6e-44f3f74a928e:
+  id: f46bb683-8750-494a-af6e-44f3f74a928e
   name: Coverage Summary Panel
-  type: custom
+  type: component
+  layer: ux
   documentation: Model coverage metrics panel showing element distribution across layers
-space-mouse-handler:
-  id: ux.component.space-mouse-handler
+  properties:
+    __elementId__: ux.component.coverage-summary-panel
+4444521f-f1a9-461d-ac23-62427417df25:
+  id: 4444521f-f1a9-461d-ac23-62427417df25
   name: Space Mouse Handler
-  type: custom
+  type: component
+  layer: ux
   documentation: Handles 3D mouse/gamepad input for React Flow pan and zoom
     navigation with optional debug panel
-layout-preferences-panel:
-  id: ux.component.layout-preferences-panel
+  properties:
+    __elementId__: ux.component.space-mouse-handler
+a38f6d38-4cb2-4b1f-99da-572a0520f509:
+  id: a38f6d38-4cb2-4b1f-99da-572a0520f509
   name: LayoutPreferencesPanel
-  type: custom
+  type: component
+  layer: ux
   documentation: Panel for configuring graph layout algorithm preferences with
     real-time preview
+  properties:
+    __elementId__: ux.component.layout-preferences-panel
+bfc1ab5d-da65-4b2b-aeb7-cad36c4c3118:
+  id: bfc1ab5d-da65-4b2b-aeb7-cad36c4c3118
+  name: ChangesetViewer
+  type: component
+  layer: ux
+  documentation: Detailed list view of changeset contents with element metadata
+    and operation types
+  properties:
+    __elementId__: ux.component.changeset-viewer
+d37fe281-3fb8-481c-a230-0e5850ccfec3:
+  id: d37fe281-3fb8-481c-a230-0e5850ccfec3
+  name: ChangesetList
+  type: component
+  layer: ux
+  documentation: List of available changesets with metadata (ID, timestamp, element count)
+  properties:
+    __elementId__: ux.component.changeset-list

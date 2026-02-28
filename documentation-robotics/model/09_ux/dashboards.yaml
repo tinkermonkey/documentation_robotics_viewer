@@ -1,5 +1,0 @@
-motivation-view:
-  id: ux.view.motivation-view
-  name: Motivation View
-  type: dashboard
-  documentation: Goal and requirement visualization

@@ -1,9 +1,9 @@
 version: 0.1.0
 schema: documentation-robotics-v1
-cli_version: 0.1.0
-spec_version: 0.7.1
+cli_version: 0.1.1
+spec_version: 0.8.1
 created: 2025-12-05T22:17:22.732040Z
-updated: 2026-02-07T18:34:14.323Z
+updated: 2026-02-28T15:48:19.850Z
 project:
   name: documentation_robotics_viewer
   description: Architecture model for documentation_robotics_viewer
@@ -20,10 +20,9 @@ layers:
       assessment: 4
       assumption: 4
       constraint: 4
-      customer: 5
+      stakeholder: 7
       driver: 6
       goal: 5
-      internal: 2
       outcome: 6
       principle: 4
       requirement: 5
@@ -34,7 +33,7 @@ layers:
     schema: .dr/schemas/02-business-layer.schema.json
     enabled: true
     elements:
-      capabilitie: 10
+      capability: 10
       service: 6
   security:
     order: 3
@@ -43,16 +42,13 @@ layers:
     schema: .dr/schemas/03-security-layer.schema.json
     enabled: true
     elements:
-      api: 1
-      detective: 1
-      file: 1
+      secure-resource: 3
+      countermeasure: 10
       permission: 4
       policy-rule: 1
-      preventive: 9
       resource-operation: 7
       role: 2
-      security-policie: 1
-      service: 1
+      policy: 1
       threat: 8
   application:
     order: 4
@@ -62,7 +58,7 @@ layers:
     enabled: true
     elements:
       component: 20
-      service: 62
+      service: 61
   technology:
     order: 5
     name: Technology
@@ -70,7 +66,14 @@ layers:
     schema: .dr/schemas/05-technology-layer.schema.json
     enabled: true
     elements:
-      stack: 46
+      cicd: 6
+      deployment: 6
+      framework: 4
+      library: 16
+      tool: 9
+      language: 1
+      runtime: 3
+      protocol: 1
       worker: 1
   api:
     order: 6
@@ -80,7 +83,8 @@ layers:
     enabled: true
     elements:
       interface: 1
-      operation: 27
+      operation: 24
+      event: 3
   data_model:
     order: 7
     name: Data Model
@@ -88,8 +92,8 @@ layers:
     schema: .dr/schemas/07-data-model-layer.schema.json
     enabled: true
     elements:
-      object-schema: 58
-      object: 19
+      object-schema: 70
+      entity: 7
   datastore:
     order: 8
     name: Data Store
@@ -98,8 +102,7 @@ layers:
     enabled: true
     elements:
       browser-storage: 4
-      filesystem: 1
-      store: 10
+      store: 11
   ux:
     order: 9
     name: UX
@@ -107,12 +110,9 @@ layers:
     schema: .dr/schemas/09-ux-layer.schema.json
     enabled: true
     elements:
-      custom: 84
-      dashboard: 1
-      detail: 1
+      component: 85
+      view: 13
       interaction: 35
-      list: 3
-      view: 9
   navigation:
     order: 10
     name: Navigation
@@ -120,18 +120,14 @@ layers:
     schema: .dr/schemas/10-navigation-layer.schema.json
     enabled: true
     elements:
-      breadcrumb: 2
-      checklist: 6
-      context-menu: 5
-      experience: 13
-      hierarchical: 1
-      horizontal-tabs: 5
+      breadcrumb: 3
+      menu: 18
+      route: 13
+      experience: 4
+      horizontal-tabs: 1
       legend: 2
-      list: 2
       panel: 9
-      redirect: 4
       sidebar: 3
-      tree: 1
   apm:
     order: 11
     name: APM/Observability
@@ -139,9 +135,7 @@ layers:
     schema: .dr/schemas/11-apm-observability-layer.schema.json
     enabled: true
     elements:
-      metric: 1
-      performance: 17
-      reliability: 10
+      metric: 28
   testing:
     order: 12
     name: Testing
@@ -152,10 +146,10 @@ layers:
       context-variation: 2
       coverage-requirement: 1
       coverage-target: 2
-      test-case-sketche: 11
+      test-case-sketch: 11
       test-suite: 59
 statistics:
-  total_elements: 635
+  total_elements: 634
   elements_by_layer:
     motivation: 14
     business: 9

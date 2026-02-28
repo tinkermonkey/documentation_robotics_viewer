@@ -1,35 +1,56 @@
-read-file:
-  id: security.resource-operation.read-file
+75e75af5-779e-49a8-a1ca-61d61ec5eef1:
+  id: 75e75af5-779e-49a8-a1ca-61d61ec5eef1
   name: Read File
   type: resource-operation
+  layer: security
   documentation: Read file contents from the local file system
-write-file:
-  id: security.resource-operation.write-file
+  properties:
+    __elementId__: security.resource-operation.read-file
+6b0215d5-bf69-493a-9766-84a765cf0062:
+  id: 6b0215d5-bf69-493a-9766-84a765cf0062
   name: Write File
   type: resource-operation
+  layer: security
   documentation: Write or modify file contents on the local file system
-get-model:
-  id: security.resource-operation.get-model
+  properties:
+    __elementId__: security.resource-operation.write-file
+3cf0a4ab-794e-4f69-943b-7a94d8edbb2e:
+  id: 3cf0a4ab-794e-4f69-943b-7a94d8edbb2e
   name: Get Model
   type: resource-operation
+  layer: security
   documentation: Retrieve DR model data via API
-get-spec:
-  id: security.resource-operation.get-spec
+  properties:
+    __elementId__: security.resource-operation.get-model
+cb066965-5bbb-479f-9a80-db438588f8c3:
+  id: cb066965-5bbb-479f-9a80-db438588f8c3
   name: Get Spec
   type: resource-operation
+  layer: security
   documentation: Retrieve DR specification schemas via API
-list-changesets:
-  id: security.resource-operation.list-changesets
+  properties:
+    __elementId__: security.resource-operation.get-spec
+8a9de4c0-66fb-457c-b343-5ce86eb98d6d:
+  id: 8a9de4c0-66fb-457c-b343-5ce86eb98d6d
   name: List Changesets
   type: resource-operation
+  layer: security
   documentation: List available changesets via API
-ws-connect:
-  id: security.resource-operation.ws-connect
+  properties:
+    __elementId__: security.resource-operation.list-changesets
+21c59194-d842-4579-b62f-29f9c40570ad:
+  id: 21c59194-d842-4579-b62f-29f9c40570ad
   name: WebSocket Connect
   type: resource-operation
+  layer: security
   documentation: Establish WebSocket connection
-ws-subscribe:
-  id: security.resource-operation.ws-subscribe
+  properties:
+    __elementId__: security.resource-operation.ws-connect
+8e3ef7ba-709d-4c29-a3ad-2015e6c3ec7f:
+  id: 8e3ef7ba-709d-4c29-a3ad-2015e6c3ec7f
   name: WebSocket Subscribe
   type: resource-operation
+  layer: security
   documentation: Subscribe to WebSocket event channels
+  properties:
+    __elementId__: security.resource-operation.ws-subscribe

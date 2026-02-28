@@ -1,7 +1,8 @@
-local-access:
-  id: security.policy.local-access
+7831ad20-0a8e-49fd-988b-55a1c30290d3:
+  id: 7831ad20-0a8e-49fd-988b-55a1c30290d3
   name: Local File Access Policy
-  type: security-policie
+  type: policy
+  layer: security
   documentation: Security policy for local desktop/browser usage. Viewer runs
     locally and accesses files directly without authentication. All local users
     have full read/write access to model files.
@@ -11,3 +12,4 @@ local-access:
       - application.service.yaml-parser
       - application.service.json-schema-parser
       - application.service.local-file-loader
+    __elementId__: security.policy.local-access

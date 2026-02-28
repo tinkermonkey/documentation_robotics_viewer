@@ -1,14 +1,28 @@
-file-system-sandboxing:
-  id: security.countermeasure.file-system-sandboxing
+bd7d68fc-0563-43ad-a8bc-0fdee06e9541:
+  id: bd7d68fc-0563-43ad-a8bc-0fdee06e9541
+  name: WebSocket Message Validation
+  type: countermeasure
+  layer: security
+  documentation: Validate all incoming WebSocket messages against expected schemas
+    before processing. Rejects malformed or unexpected message types to prevent
+    injection attacks.
+  properties:
+    __elementId__: security.countermeasure.message-validation
+e7153966-a277-4f53-ab73-e599e73c1bcb:
+  id: e7153966-a277-4f53-ab73-e599e73c1bcb
   name: File System Sandboxing
-  type: preventive
+  type: countermeasure
+  layer: security
   documentation: Restrict file system access to the designated model directory
     only. All file operations are validated to ensure they remain within the
     allowed directory scope. Uses path resolution and prefix checking.
-path-validation:
-  id: security.countermeasure.path-validation
+  properties:
+    __elementId__: security.countermeasure.file-system-sandboxing
+3c20795a-4a05-4a18-9787-b91c1ca8fdf6:
+  id: 3c20795a-4a05-4a18-9787-b91c1ca8fdf6
   name: Path Validation
-  type: preventive
+  type: countermeasure
+  layer: security
   documentation: Validate all file paths to prevent directory traversal attacks.
     Rejects paths containing '../', absolute paths outside allowed directories,
     and symbolic links pointing outside the model directory.
@@ -19,10 +33,12 @@ path-validation:
         locations:
           - file: server/index.cjs
             symbol: validatePath
-input-sanitization:
-  id: security.countermeasure.input-sanitization
+    __elementId__: security.countermeasure.path-validation
+17e4476d-4cc7-4464-9b0f-512622add536:
+  id: 17e4476d-4cc7-4464-9b0f-512622add536
   name: Input Sanitization
-  type: preventive
+  type: countermeasure
+  layer: security
   documentation: Sanitize all user-provided and model-derived content before
     rendering in the UI. Escapes HTML entities, removes potentially dangerous
     attributes, and validates data against expected schemas.
@@ -33,17 +49,22 @@ input-sanitization:
         locations:
           - file: server/index.cjs
             symbol: sanitizeInput
-output-encoding:
-  id: security.countermeasure.output-encoding
+    __elementId__: security.countermeasure.input-sanitization
+683d9113-fea3-4273-9fd7-2525fcc38e0a:
+  id: 683d9113-fea3-4273-9fd7-2525fcc38e0a
   name: Output Encoding
-  type: preventive
+  type: countermeasure
+  layer: security
   documentation: Encode all dynamic content appropriately for the output context.
     HTML encoding for DOM insertion, URL encoding for links, and JavaScript
     encoding for script contexts.
-websocket-origin-validation:
-  id: security.countermeasure.websocket-origin-validation
+  properties:
+    __elementId__: security.countermeasure.output-encoding
+a01c1984-0d02-4fd4-a572-4cc1f36bb718:
+  id: a01c1984-0d02-4fd4-a572-4cc1f36bb718
   name: WebSocket Origin Validation
-  type: preventive
+  type: countermeasure
+  layer: security
   documentation: Validate the origin header of WebSocket connection requests to
     ensure connections only come from allowed sources. Rejects cross-origin
     connection attempts.
@@ -54,10 +75,12 @@ websocket-origin-validation:
         locations:
           - file: server/index.cjs
             symbol: validateOrigin
-jwt-authentication:
-  id: security.countermeasure.jwt-authentication
+    __elementId__: security.countermeasure.websocket-origin-validation
+97c2530e-9f1d-415e-b40e-5f98d458f7ae:
+  id: 97c2530e-9f1d-415e-b40e-5f98d458f7ae
   name: JWT Authentication
-  type: preventive
+  type: countermeasure
+  layer: security
   documentation: JSON Web Token based authentication for stateless API access.
     Tokens contain claims about user identity and permissions, cryptographically
     signed to prevent tampering.
@@ -68,21 +91,31 @@ jwt-authentication:
         locations:
           - file: src/apps/embedded/stores/authStore.ts
             symbol: authenticateJWT
-oauth2-authentication:
-  id: security.countermeasure.oauth2-authentication
+    __elementId__: security.countermeasure.jwt-authentication
+b22bd0b5-9700-466b-88f8-af758928854e:
+  id: b22bd0b5-9700-466b-88f8-af758928854e
   name: OAuth2 Authentication
-  type: preventive
+  type: countermeasure
+  layer: security
   documentation: OAuth 2.0 protocol for delegated authorization allowing
     third-party applications to access user data without exposing credentials.
-magic-link-authentication:
-  id: security.countermeasure.magic-link-authentication
+  properties:
+    __elementId__: security.countermeasure.oauth2-authentication
+c044e99b-28aa-4428-bd20-3b0983363ba0:
+  id: c044e99b-28aa-4428-bd20-3b0983363ba0
   name: Magic Link Authentication
-  type: preventive
+  type: countermeasure
+  layer: security
   documentation: Passwordless authentication via email magic links containing
     time-limited tokens for one-time login access.
-token-based-authorization:
-  id: security.countermeasure.token-based-authorization
+  properties:
+    __elementId__: security.countermeasure.magic-link-authentication
+2bff2a5c-32df-4870-b26d-b93a056859e4:
+  id: 2bff2a5c-32df-4870-b26d-b93a056859e4
   name: Token-Based Authorization
-  type: preventive
+  type: countermeasure
+  layer: security
   documentation: Bearer token validation for API and WebSocket endpoints. Tokens
     contain user roles and permissions for fine-grained access control.
+  properties:
+    __elementId__: security.countermeasure.token-based-authorization

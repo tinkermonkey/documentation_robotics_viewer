@@ -1,7 +1,8 @@
-visualize-architecture:
-  id: motivation.goal.visualize-architecture
+729c83fb-4d25-4364-bbae-5155bf085cf1:
+  id: 729c83fb-4d25-4364-bbae-5155bf085cf1
   name: Visualize Architecture
   type: goal
+  layer: motivation
   documentation: Provide interactive visualization of DR models across all layers
   properties:
     goal:
@@ -11,10 +12,12 @@ visualize-architecture:
       - business.capability.visualization
     realizedByServices:
       - business.service.architecture-visualization
-enable-collaboration:
-  id: motivation.goal.enable-collaboration
+    __elementId__: motivation.goal.visualize-architecture
+266b36ef-4e07-4de9-ab7c-d6cf53a6f0f1:
+  id: 266b36ef-4e07-4de9-ab7c-d6cf53a6f0f1
   name: Enable Cross-Team Collaboration
   type: goal
+  layer: motivation
   documentation: Provide a shared visualization platform that enables architects,
     developers, and stakeholders to communicate about architecture using a
     common visual language
@@ -23,22 +26,32 @@ enable-collaboration:
       - business.capability.collaboration
     realizedByServices:
       - business.service.architecture-analysis
-support-embedding:
-  id: motivation.goal.support-embedding
+    __elementId__: motivation.goal.enable-collaboration
+8ac969a3-9a67-4f13-af2e-a40e5b72c747:
+  id: 8ac969a3-9a67-4f13-af2e-a40e5b72c747
   name: Support Embedded Integration
   type: goal
+  layer: motivation
   documentation: Enable seamless embedding of architecture visualizations into
     documentation platforms, wikis, and development tools
-maintain-performance:
-  id: motivation.goal.maintain-performance
+  properties:
+    __elementId__: motivation.goal.support-embedding
+0e9b30af-9c07-431a-b5dc-a217e26c3e39:
+  id: 0e9b30af-9c07-431a-b5dc-a217e26c3e39
   name: Maintain High Performance
   type: goal
+  layer: motivation
   documentation: Deliver fast, responsive visualization even for large
     architecture models with hundreds of elements through optimized rendering
     and layout algorithms
-ensure-accessibility:
-  id: motivation.goal.ensure-accessibility
+  properties:
+    __elementId__: motivation.goal.maintain-performance
+fc173b49-6bcc-4925-8a8e-d20c263e41d9:
+  id: fc173b49-6bcc-4925-8a8e-d20c263e41d9
   name: Ensure Universal Accessibility
   type: goal
+  layer: motivation
   documentation: Make architecture visualizations accessible to all users
     including those using assistive technologies, meeting WCAG 2.1 AA standards
+  properties:
+    __elementId__: motivation.goal.ensure-accessibility

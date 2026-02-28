@@ -1,0 +1,12 @@
+6584182e-9cf8-47a7-b998-51611356235b:
+  id: 6584182e-9cf8-47a7-b998-51611356235b
+  name: WebSockets
+  type: protocol
+  layer: technology
+  documentation: Full-duplex communication protocol for real-time data exchange
+  properties:
+    protocol: ws
+    x-supports:
+      - application.service.connection-store
+      - api.operation.websocket-connect
+    __elementId__: technology.protocol.websockets

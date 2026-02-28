@@ -1,7 +1,8 @@
-architecture-visualization:
-  id: business.service.architecture-visualization
+9cddfd71-3cd0-49ae-93dc-b2daf4edaa3c:
+  id: 9cddfd71-3cd0-49ae-93dc-b2daf4edaa3c
   name: Architecture Visualization
   type: service
+  layer: business
   documentation: Visualize architecture models as interactive graphs across multiple layers
   properties:
     x-supports-goals:
@@ -23,10 +24,12 @@ architecture-visualization:
       - application.service.hierarchical-business-layout
       - application.service.matrix-business-layout
       - application.service.swimlane-business-layout
-model-data-management:
-  id: business.service.model-data-management
+    __elementId__: business.service.architecture-visualization
+5a4fe7b0-2c00-4e39-9c49-f5777f3e6c20:
+  id: 5a4fe7b0-2c00-4e39-9c49-f5777f3e6c20
   name: Model Data Management
   type: service
+  layer: business
   documentation: Load, parse, and manage architecture model data from various sources
   properties:
     x-supports-goals:
@@ -41,10 +44,12 @@ model-data-management:
       - application.service.changeset-store
       - application.service.cross-layer-reference-resolver
       - application.service.cross-layer-reference-extractor
-documentation-export:
-  id: business.service.documentation-export
+    __elementId__: business.service.model-data-management
+dfcb85a1-903e-4306-af35-660386a504e7:
+  id: dfcb85a1-903e-4306-af35-660386a504e7
   name: Documentation Export
   type: service
+  layer: business
   documentation: Export architecture visualizations and reports in multiple formats
   properties:
     x-supports-goals:
@@ -55,10 +60,12 @@ documentation-export:
       - application.service.motivation-export-service
       - application.service.c4-export-service
       - application.service.screenshot-service
-external-model-integration:
-  id: business.service.external-model-integration
+    __elementId__: business.service.documentation-export
+785728e2-74ac-44c3-9474-619075c44125:
+  id: 785728e2-74ac-44c3-9474-619075c44125
   name: External Model Integration
   type: service
+  layer: business
   documentation: Integrate with external sources like GitHub to fetch and serve models
   properties:
     x-realized-by:
@@ -67,10 +74,12 @@ external-model-integration:
       - application.service.demo-data-service
     x-supports-goals:
       - motivation.outcome.standardized-architecture-documentation
-architecture-analysis:
-  id: business.service.architecture-analysis
+    __elementId__: business.service.external-model-integration
+bc258734-4a46-4210-bb8d-88a188e8b944:
+  id: bc258734-4a46-4210-bb8d-88a188e8b944
   name: Architecture Analysis
   type: service
+  layer: business
   documentation: Analyze architecture for impact, traceability, and dependencies
   properties:
     x-realized-by:
@@ -79,10 +88,12 @@ architecture-analysis:
     x-supports-goals:
       - motivation.outcome.faster-impact-analysis
       - motivation.outcome.improved-architecture-understanding
-quality-assurance:
-  id: business.service.quality-assurance
+    __elementId__: business.service.architecture-analysis
+d765a480-8b02-4954-a889-211d19f07fc9:
+  id: d765a480-8b02-4954-a889-211d19f07fc9
   name: Quality Assurance
   type: service
+  layer: business
   documentation: Ensure visualization quality through testing, metrics, and comparison
   properties:
     x-realized-by:
@@ -98,3 +109,4 @@ quality-assurance:
       - application.service.optimization-strategies-service
     x-supports-goals:
       - motivation.outcome.reduced-architectural-debt
+    __elementId__: business.service.quality-assurance

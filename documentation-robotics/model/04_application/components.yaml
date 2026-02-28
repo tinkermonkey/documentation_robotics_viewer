@@ -1,7 +1,8 @@
-viewer-app:
-  id: application.component.viewer-app
+0dec7b48-dbc5-45c7-8b28-dac372cb0a01:
+  id: 0dec7b48-dbc5-45c7-8b28-dac372cb0a01
   name: Viewer App
   type: component
+  layer: application
   documentation: Main application container
   properties:
     x-uses:
@@ -23,10 +24,12 @@ viewer-app:
       - testing.test-suite.embedded-app
       - testing.test-suite.overview-panel-styling
       - testing.test-suite.sidebar-consolidation
-graph-view:
-  id: application.component.graph-view
+    __elementId__: application.component.viewer-app
+25baec70-59f2-40df-beb8-faa95dabeb01:
+  id: 25baec70-59f2-40df-beb8-faa95dabeb01
   name: Graph View
   type: component
+  layer: application
   documentation: Core graph rendering component
   properties:
     x-uses:
@@ -52,10 +55,12 @@ graph-view:
       - testing.test-suite.zoom-to-layer
       - testing.test-suite.graph-readability-integration
     x-ui-component: ux.component.graph-viewer
-inspector-panel:
-  id: application.component.inspector-panel
+    __elementId__: application.component.graph-view
+bfb7e7d5-da98-45c5-a62e-fba8e4ffa9c4:
+  id: bfb7e7d5-da98-45c5-a62e-fba8e4ffa9c4
   name: Inspector Panel
   type: component
+  layer: application
   documentation: Side panel for element details
   properties:
     source:
@@ -65,10 +70,12 @@ inspector-panel:
           - file: src/apps/embedded/components/MiniMap.tsx
             symbol: MiniMap
     x-ui-component: ux.component.inspector-panel
-motivation-graph-view:
-  id: application.component.motivation-graph-view
+    __elementId__: application.component.inspector-panel
+67210483-e2be-4b6b-9bb4-ce1871834d7d:
+  id: 67210483-e2be-4b6b-9bb4-ce1871834d7d
   name: Motivation Graph View
   type: component
+  layer: application
   documentation: Displays motivation layer graph with filtering, export, and
     traceability features
   properties:
@@ -88,10 +95,12 @@ motivation-graph-view:
     x-tested-by:
       - testing.test-suite.embedded-motivation-view
     x-ui-component: ux.component.motivation-graph-view
-business-layer-view:
-  id: application.component.business-layer-view
+    __elementId__: application.component.motivation-graph-view
+98349214-f009-491d-81cf-b23b4aed4704:
+  id: 98349214-f009-491d-81cf-b23b4aed4704
   name: Business Layer View
   type: component
+  layer: application
   documentation: Displays business layer graph with processes, functions,
     services, and capabilities
   properties:
@@ -110,10 +119,12 @@ business-layer-view:
       - apm.metric.filter-latency
     x-tested-by:
       - testing.test-suite.business-layer-integration
-c4-graph-view:
-  id: application.component.c4-graph-view
+    __elementId__: application.component.business-layer-view
+3a7901a8-4430-4565-9143-e4e4afcbfa59:
+  id: 3a7901a8-4430-4565-9143-e4e4afcbfa59
   name: C4 Graph View
   type: component
+  layer: application
   documentation: Displays C4 architecture view with containers, components, and focus modes
   properties:
     x-uses:
@@ -133,10 +144,12 @@ c4-graph-view:
       - testing.test-suite.c4-architecture-view
       - testing.test-suite.c4-accessibility
     x-ui-component: ux.component.c4-graph-view
-changeset-graph-view:
-  id: application.component.changeset-graph-view
+    __elementId__: application.component.c4-graph-view
+bb3b5a5e-6a08-40e3-8868-cf4372b05956:
+  id: bb3b5a5e-6a08-40e3-8868-cf4372b05956
   name: Changeset Graph View
   type: component
+  layer: application
   documentation: Visualizes changesets showing added, modified, and deleted elements
   properties:
     source:
@@ -146,10 +159,12 @@ changeset-graph-view:
           - file: src/apps/embedded/components/ChangesetGraphView.tsx
             symbol: ChangesetGraphView
     x-ui-component: ux.component.changeset-graph-view
-motivation-filter-panel:
-  id: application.component.motivation-filter-panel
+    __elementId__: application.component.changeset-graph-view
+5379be0f-2402-4a24-b4cd-751dd8a77922:
+  id: 5379be0f-2402-4a24-b4cd-751dd8a77922
   name: Motivation Filter Panel
   type: component
+  layer: application
   documentation: Filter controls for motivation layer (element types, traceability mode)
   properties:
     x-monitored-by:
@@ -160,10 +175,12 @@ motivation-filter-panel:
         locations:
           - file: src/apps/embedded/components/MotivationFilterPanel.tsx
             symbol: MotivationFilterPanel
-c4-filter-panel:
-  id: application.component.c4-filter-panel
+    __elementId__: application.component.motivation-filter-panel
+63f25b02-e7b6-4d13-a9a7-d60a8daf609f:
+  id: 63f25b02-e7b6-4d13-a9a7-d60a8daf609f
   name: C4 Filter Panel
   type: component
+  layer: application
   documentation: Filter controls for C4 view (scenario presets, detail levels, focus context)
   properties:
     x-monitored-by:
@@ -174,10 +191,12 @@ c4-filter-panel:
         locations:
           - file: src/apps/embedded/components/C4FilterPanel.tsx
             symbol: C4FilterPanel
-error-boundary:
-  id: application.component.error-boundary
+    __elementId__: application.component.c4-filter-panel
+840fbaf9-a119-4d29-8a35-badc128ee357:
+  id: 840fbaf9-a119-4d29-8a35-badc128ee357
   name: Error Boundary
   type: component
+  layer: application
   documentation: React error boundary for graceful error handling and user feedback
   properties:
     source:
@@ -188,10 +207,12 @@ error-boundary:
             symbol: ErrorState
     x-monitored-by:
       - apm.metric.error-boundary
-view-tab-switcher:
-  id: application.component.view-tab-switcher
+    __elementId__: application.component.error-boundary
+c09e438c-9c49-4086-8bfd-ca691d8bfde2:
+  id: c09e438c-9c49-4086-8bfd-ca691d8bfde2
   name: View Tab Switcher
   type: component
+  layer: application
   documentation: Tab navigation for switching between model, architecture,
     motivation, and spec views
   properties:
@@ -203,10 +224,12 @@ view-tab-switcher:
             symbol: BreadcrumbNav
     x-tested-by:
       - testing.test-suite.embedded-dual-view
-motivation-breadcrumb:
-  id: application.component.motivation-breadcrumb
+    __elementId__: application.component.view-tab-switcher
+f64a1ca1-88b8-4de7-9b5c-c6a8d37319ab:
+  id: f64a1ca1-88b8-4de7-9b5c-c6a8d37319ab
   name: Motivation Breadcrumb
   type: component
+  layer: application
   documentation: Breadcrumb navigation showing current filter state and traceability mode
   properties:
     source:
@@ -215,10 +238,12 @@ motivation-breadcrumb:
         locations:
           - file: src/apps/embedded/components/MotivationControlPanel.tsx
             symbol: MotivationControlPanel
-mode-selector:
-  id: application.component.mode-selector
+    __elementId__: application.component.motivation-breadcrumb
+2223eda4-ca4c-47fe-8d3b-e81dc917b59a:
+  id: 2223eda4-ca4c-47fe-8d3b-e81dc917b59a
   name: Mode Selector
   type: component
+  layer: application
   documentation: UI control for selecting visualization modes and layouts
   properties:
     source:
@@ -227,10 +252,12 @@ mode-selector:
         locations:
           - file: src/apps/embedded/components/C4ControlPanel.tsx
             symbol: C4ControlPanel
-layer-panel:
-  id: application.component.layer-panel
+    __elementId__: application.component.mode-selector
+776cf2cb-3f91-4a61-bb31-83090ca7c493:
+  id: 776cf2cb-3f91-4a61-bb31-83090ca7c493
   name: Layer Panel
   type: component
+  layer: application
   documentation: Side panel showing layer hierarchy and element counts
   properties:
     source:
@@ -242,10 +269,12 @@ layer-panel:
     x-tested-by:
       - testing.test-suite.layer-colors
     x-ui-component: ux.component.layer-panel
-spec-viewer:
-  id: application.component.spec-viewer
+    __elementId__: application.component.layer-panel
+ef456a05-0c3e-43ce-963b-f5705ada60af:
+  id: ef456a05-0c3e-43ce-963b-f5705ada60af
   name: Spec Viewer
   type: component
+  layer: application
   documentation: Displays JSON Schema specifications in formatted view
   properties:
     source:
@@ -254,10 +283,12 @@ spec-viewer:
         locations:
           - file: src/apps/embedded/components/SpecViewer.tsx
             symbol: SpecViewer
-model-json-viewer:
-  id: application.component.model-json-viewer
+    __elementId__: application.component.spec-viewer
+4c2e6451-4173-4cbd-a4f2-564de77749d7:
+  id: 4c2e6451-4173-4cbd-a4f2-564de77749d7
   name: Model JSON Viewer
   type: component
+  layer: application
   documentation: Displays raw model JSON in formatted tree view
   properties:
     source:
@@ -266,10 +297,12 @@ model-json-viewer:
         locations:
           - file: src/apps/embedded/components/ModelJSONViewer.tsx
             symbol: ModelJSONViewer
-changeset-viewer:
-  id: application.component.changeset-viewer
+    __elementId__: application.component.model-json-viewer
+c44cf6d5-b144-4f05-84f0-75bb348e8943:
+  id: c44cf6d5-b144-4f05-84f0-75bb348e8943
   name: Changeset Viewer
   type: component
+  layer: application
   documentation: Displays changeset details with element diff view
   properties:
     source:
@@ -278,10 +311,12 @@ changeset-viewer:
         locations:
           - file: src/apps/embedded/components/ChangesetViewer.tsx
             symbol: ChangesetViewer
-connection-status:
-  id: application.component.connection-status
+    __elementId__: application.component.changeset-viewer
+198694e7-0329-4638-9b99-6ed1bd446292:
+  id: 198694e7-0329-4638-9b99-6ed1bd446292
   name: Connection Status
   type: component
+  layer: application
   documentation: Real-time WebSocket connection status indicator
   properties:
     source:
@@ -293,10 +328,12 @@ connection-status:
     x-monitored-by:
       - apm.metric.websocket-reconnections
       - apm.metric.websocket-errors
-changeset-list:
-  id: application.component.changeset-list
+    __elementId__: application.component.connection-status
+258bd699-9522-4e5b-8c19-4a05f05d5552:
+  id: 258bd699-9522-4e5b-8c19-4a05f05d5552
   name: Changeset List
   type: component
+  layer: application
   documentation: Lists all available changesets with metadata
   properties:
     source:
@@ -305,10 +342,12 @@ changeset-list:
         locations:
           - file: src/apps/embedded/components/ChangesetList.tsx
             symbol: ChangesetList
-annotation-panel:
-  id: application.component.annotation-panel
+    __elementId__: application.component.changeset-list
+e51ad9e5-a5c3-4110-9443-ff93b460a666:
+  id: e51ad9e5-a5c3-4110-9443-ff93b460a666
   name: Annotation Panel
   type: component
+  layer: application
   documentation: User annotations and comments on model elements
   properties:
     source:
@@ -317,3 +356,4 @@ annotation-panel:
         locations:
           - file: src/apps/embedded/components/AnnotationPanel.tsx
             symbol: AnnotationPanel
+    __elementId__: application.component.annotation-panel

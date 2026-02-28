@@ -1,7 +1,8 @@
-visualization:
-  id: business.capability.visualization
+a128f0eb-7203-4f96-9c24-a8eeef0e0d24:
+  id: a128f0eb-7203-4f96-9c24-a8eeef0e0d24
   name: Visualization
-  type: capabilitie
+  type: capability
+  layer: business
   documentation: Rendering of architectural models as interactive graphs
   properties:
     x-supports-goals:
@@ -10,10 +11,12 @@ visualization:
     x-realized-by:
       - business.service.architecture-visualization
       - business.service.model-data-management
-documentation:
-  id: business.capability.documentation
+    __elementId__: business.capability.visualization
+a0a9aa40-26cd-4495-982a-3ecfaf00e503:
+  id: a0a9aa40-26cd-4495-982a-3ecfaf00e503
   name: Documentation
-  type: capabilitie
+  type: capability
+  layer: business
   documentation: Displaying detailed documentation for model elements
   properties:
     x-realized-by:
@@ -21,10 +24,12 @@ documentation:
     x-supports-goals:
       - motivation.goal.enable-collaboration
       - motivation.goal.visualize-architecture
-export:
-  id: business.capability.export
+    __elementId__: business.capability.documentation
+e4cbff58-173e-4ce3-b606-2296717543c2:
+  id: e4cbff58-173e-4ce3-b606-2296717543c2
   name: Export
-  type: capabilitie
+  type: capability
+  layer: business
   documentation: Exporting views as images or data
   properties:
     x-realized-by:
@@ -32,40 +37,48 @@ export:
     x-supports-goals:
       - motivation.goal.support-embedded-integration
       - motivation.goal.enable-collaboration
-model-authoring:
-  id: business.capability.model-authoring
+    __elementId__: business.capability.export
+df694ac5-32b0-4eb8-870f-c87295be76af:
+  id: df694ac5-32b0-4eb8-870f-c87295be76af
   name: Model Authoring
-  type: capabilitie
+  type: capability
+  layer: business
   documentation: Creating and editing architecture model elements via CLI or UI
   properties:
     x-realized-by:
       - business.service.model-data-management
     x-supports-goals:
       - motivation.goal.enable-collaboration
-collaboration:
-  id: business.capability.collaboration
+    __elementId__: business.capability.model-authoring
+a8900c44-46e9-4d8e-b176-966065b38182:
+  id: a8900c44-46e9-4d8e-b176-966065b38182
   name: Collaboration
-  type: capabilitie
+  type: capability
+  layer: business
   documentation: Multi-user editing with annotations, comments, and real-time updates
   properties:
     x-realized-by:
       - business.service.external-model-integration
     x-supports-goals:
       - motivation.goal.enable-collaboration
-version-control:
-  id: business.capability.version-control
+    __elementId__: business.capability.collaboration
+7251637d-4884-43f1-ae0d-2a2855e5a0a2:
+  id: 7251637d-4884-43f1-ae0d-2a2855e5a0a2
   name: Version Control
-  type: capabilitie
+  type: capability
+  layer: business
   documentation: Model versioning, changesets, branching, and history tracking
   properties:
     x-realized-by:
       - business.service.model-data-management
     x-supports-goals:
       - motivation.goal.enable-collaboration
-search-discovery:
-  id: business.capability.search-discovery
+    __elementId__: business.capability.version-control
+00f3d90b-d068-4c4c-be79-1124a806d8e3:
+  id: 00f3d90b-d068-4c4c-be79-1124a806d8e3
   name: Search & Discovery
-  type: capabilitie
+  type: capability
+  layer: business
   documentation: Finding elements, searching model content, and navigating architecture
   properties:
     x-realized-by:
@@ -73,10 +86,12 @@ search-discovery:
     x-supports-goals:
       - motivation.goal.visualize-architecture
       - motivation.goal.enable-collaboration
-reporting:
-  id: business.capability.reporting
+    __elementId__: business.capability.search-discovery
+f170aa82-1743-49cb-8188-baa84e78c15e:
+  id: f170aa82-1743-49cb-8188-baa84e78c15e
   name: Reporting
-  type: capabilitie
+  type: capability
+  layer: business
   documentation: Generating architecture reports, impact analysis, and
     traceability documentation
   properties:
@@ -86,20 +101,24 @@ reporting:
     x-supports-goals:
       - motivation.goal.visualize-architecture
       - motivation.goal.enable-collaboration
-integration:
-  id: business.capability.integration
+    __elementId__: business.capability.reporting
+125fb216-87e7-4657-ab0c-ecd92b4d0165:
+  id: 125fb216-87e7-4657-ab0c-ecd92b4d0165
   name: Integration
-  type: capabilitie
+  type: capability
+  layer: business
   documentation: API access, webhooks, and third-party tool integrations
   properties:
     x-realized-by:
       - business.service.external-model-integration
     x-supports-goals:
       - motivation.goal.support-embedded-integration
-administration:
-  id: business.capability.administration
+    __elementId__: business.capability.integration
+002d02e8-25de-43a7-94ac-65d574fb2429:
+  id: 002d02e8-25de-43a7-94ac-65d574fb2429
   name: Administration
-  type: capabilitie
+  type: capability
+  layer: business
   documentation: User management, permissions, system configuration, and monitoring
   properties:
     x-realized-by:
@@ -107,3 +126,4 @@ administration:
     x-supports-goals:
       - motivation.goal.ensure-accessibility
       - motivation.goal.maintain-performance
+    __elementId__: business.capability.administration

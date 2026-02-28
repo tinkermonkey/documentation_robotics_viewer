@@ -1,7 +1,8 @@
-core-logic:
-  id: testing.coverage-target.core-logic
+e5185f64-d85c-45ea-9e73-9a04f4a74575:
+  id: e5185f64-d85c-45ea-9e73-9a04f4a74575
   name: Core Logic
   type: coverage-target
+  layer: testing
   documentation: Business logic, parsers, and data transformers
   properties:
     coversServices:
@@ -9,13 +10,16 @@ core-logic:
       - application.service.layout-engine
       - application.service.yaml-parser
       - application.service.cross-layer-reference-resolver
-ui-experience:
-  id: testing.coverage-target.ui-experience
+    __elementId__: testing.coverage-target.core-logic
+d4bfd830-11c9-4cac-aa22-0fe4fc1d10c6:
+  id: d4bfd830-11c9-4cac-aa22-0fe4fc1d10c6
   name: UI Experience
   type: coverage-target
+  layer: testing
   documentation: User interface components, interactions, and accessibility
   properties:
     coversComponents:
       - application.component.viewer-app
       - application.component.graph-view
       - application.component.inspector-panel
+    __elementId__: testing.coverage-target.ui-experience

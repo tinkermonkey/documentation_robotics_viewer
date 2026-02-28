@@ -1,30 +1,8 @@
-main-tabs:
-  id: navigation.menu.main-tabs
-  name: Main Tab Menu
-  type: horizontal-tabs
-  documentation: Primary navigation menu with 5 main sections
-  properties:
-    x-rendered-by:
-      - application.component.viewer-app
-spec-sub-tabs:
-  id: navigation.menu.spec-sub-tabs
-  name: Spec Sub-Tab Menu
-  type: horizontal-tabs
-  documentation: Secondary navigation for Spec section (Graph/JSON)
-model-sub-tabs:
-  id: navigation.menu.model-sub-tabs
-  name: Model Sub-Tab Menu
-  type: horizontal-tabs
-  documentation: Secondary navigation for Model section (Graph/JSON)
-changesets-sub-tabs:
-  id: navigation.menu.changesets-sub-tabs
-  name: Changesets Sub-Tab Menu
-  type: horizontal-tabs
-  documentation: Secondary navigation for Changesets section (Graph/List)
-sub-tab-navigation:
-  id: navigation.horizontal-tabs.sub-tab-navigation
+55af5b0c-026c-40db-9eca-94a349fb4791:
+  id: 55af5b0c-026c-40db-9eca-94a349fb4791
   name: Sub-Tab Navigation
   type: horizontal-tabs
+  layer: navigation
   documentation: Sub-tab navigation component for switching between graph and JSON views
   properties:
     tabs:
@@ -32,3 +10,4 @@ sub-tab-navigation:
       - json
     x-rendered-by:
       - ux.component.sub-tab-navigation
+    __elementId__: navigation.horizontal-tabs.sub-tab-navigation

@@ -1,7 +1,8 @@
-graph-builder:
-  id: application.service.graph-builder
+c7a3d2a8-688c-4bbc-9bce-63c76eebc6d0:
+  id: c7a3d2a8-688c-4bbc-9bce-63c76eebc6d0
   name: Graph Builder
   type: service
+  layer: application
   documentation: Transforms model data into graph nodes and edges
   properties:
     x-realizes:
@@ -22,10 +23,12 @@ graph-builder:
     x-monitored-by:
       - apm.metric.model-parse-time
       - apm.metric.validation-time
-layout-engine:
-  id: application.service.layout-engine
+    __elementId__: application.service.graph-builder
+89bba100-a0a4-4a0a-b7e6-e233de864720:
+  id: 89bba100-a0a4-4a0a-b7e6-e233de864720
   name: Layout Engine
   type: service
+  layer: application
   documentation: Calculates node positions
   properties:
     x-realizes:
@@ -44,10 +47,12 @@ layout-engine:
         locations:
           - file: src/core/services/layerLayoutConfig.ts
             symbol: getLayerLayoutConfig
-node-transformer:
-  id: application.service.node-transformer
+    __elementId__: application.service.layout-engine
+d4268831-df93-4eb4-bbca-d3bd6ea38151:
+  id: d4268831-df93-4eb4-bbca-d3bd6ea38151
   name: Node Transformer
   type: service
+  layer: application
   documentation: Converts model elements to React Flow nodes
   properties:
     x-realizes:
@@ -60,10 +65,12 @@ node-transformer:
             symbol: transformElement
     x-monitored-by:
       - apm.metric.render-time
-business-export-service:
-  id: application.service.business-export-service
+    __elementId__: application.service.node-transformer
+43e2482f-c5ed-4186-bbbf-19d5b93f212b:
+  id: 43e2482f-c5ed-4186-bbbf-19d5b93f212b
   name: Business Export Service
   type: service
+  layer: application
   documentation: Exports business layer graphs as PNG, SVG, and JSON with
     traceability reports and impact analysis
   properties:
@@ -81,10 +88,12 @@ business-export-service:
     x-monitored-by:
       - apm.metric.export-generation-time
       - apm.metric.export-errors
-motivation-export-service:
-  id: application.service.motivation-export-service
+    __elementId__: application.service.business-export-service
+a2bb3686-9d01-43a7-bb27-80ea49ad5754:
+  id: a2bb3686-9d01-43a7-bb27-80ea49ad5754
   name: Motivation Export Service
   type: service
+  layer: application
   documentation: Exports motivation layer graphs (goals, drivers, stakeholders) as
     PNG, SVG, JSON with traceability reports
   properties:
@@ -102,10 +111,12 @@ motivation-export-service:
     x-monitored-by:
       - apm.metric.export-generation-time
       - apm.metric.export-errors
-c4-export-service:
-  id: application.service.c4-export-service
+    __elementId__: application.service.motivation-export-service
+0883f67b-63a5-421f-b226-5dab605a5dcf:
+  id: 0883f67b-63a5-421f-b226-5dab605a5dcf
   name: C4 Export Service
   type: service
+  layer: application
   documentation: Exports C4 architecture diagrams as PNG, SVG with scenario
     presets and focus context
   properties:
@@ -123,10 +134,12 @@ c4-export-service:
     x-monitored-by:
       - apm.metric.export-generation-time
       - apm.metric.export-errors
-business-graph-builder:
-  id: application.service.business-graph-builder
+    __elementId__: application.service.c4-export-service
+e67da5ec-769c-4d20-a2b3-35be7511a7a8:
+  id: e67da5ec-769c-4d20-a2b3-35be7511a7a8
   name: Business Graph Builder
   type: service
+  layer: application
   documentation: Constructs business layer graph from parsed elements with
     cross-layer links and indices
   properties:
@@ -143,10 +156,12 @@ business-graph-builder:
             symbol: buildBusinessGraph
     x-tested-by:
       - testing.test-suite.business-graph-builder-unit
-business-layer-parser:
-  id: application.service.business-layer-parser
+    __elementId__: application.service.business-graph-builder
+e5770754-1dc8-4065-891d-7df79cd254ad:
+  id: e5770754-1dc8-4065-891d-7df79cd254ad
   name: Business Layer Parser
   type: service
+  layer: application
   documentation: Parses business layer YAML files into business elements
     (processes, functions, services, capabilities)
   properties:
@@ -159,10 +174,12 @@ business-layer-parser:
     x-tested-by:
       - testing.test-suite.business-layer-parser-unit
       - testing.test-suite.business-layer-integration
-yaml-parser:
-  id: application.service.yaml-parser
+    __elementId__: application.service.business-layer-parser
+e1dcf3b7-442c-4c81-b80f-0461a7801a37:
+  id: e1dcf3b7-442c-4c81-b80f-0461a7801a37
   name: YAML Parser
   type: service
+  layer: application
   documentation: Parses YAML instance models with manifest orchestration and
     dot-notation ID resolution
   properties:
@@ -185,10 +202,12 @@ yaml-parser:
       - apm.metric.model-parse-time
       - apm.metric.parsing-errors
       - apm.metric.validation-errors
-json-schema-parser:
-  id: application.service.json-schema-parser
+    __elementId__: application.service.yaml-parser
+ad20e89d-909b-45f3-a85e-f80b4d9f389f:
+  id: ad20e89d-909b-45f3-a85e-f80b4d9f389f
   name: JSON Schema Parser
   type: service
+  layer: application
   documentation: Parses JSON Schema definitions into model elements with auto-generated UUIDs
   properties:
     x-realizes:
@@ -208,10 +227,12 @@ json-schema-parser:
     x-monitored-by:
       - apm.metric.model-parse-time
       - apm.metric.parsing-errors
-c4-parser:
-  id: application.service.c4-parser
+    __elementId__: application.service.json-schema-parser
+5d20bff1-3446-4be3-a85a-d54376c10aee:
+  id: 5d20bff1-3446-4be3-a85a-d54376c10aee
   name: C4 Parser
   type: service
+  layer: application
   documentation: Parses C4 architecture model elements (containers, components,
     external actors)
   properties:
@@ -227,10 +248,12 @@ c4-parser:
     x-tested-by:
       - testing.test-suite.c4-parser-unit
       - testing.test-suite.c4-parser-integration
-cross-layer-reference-resolver:
-  id: application.service.cross-layer-reference-resolver
+    __elementId__: application.service.c4-parser
+7a316b8d-dad5-4dfb-9cf6-81f8a5566bd3:
+  id: 7a316b8d-dad5-4dfb-9cf6-81f8a5566bd3
   name: Cross-Layer Reference Resolver
   type: service
+  layer: application
   documentation: Resolves references between layers and validates traceability links
   properties:
     source:
@@ -241,10 +264,12 @@ cross-layer-reference-resolver:
             symbol: resolveCrossLayerReferences
     x-tested-by:
       - testing.test-suite.cross-layer-reference-resolver-unit
-data-loader:
-  id: application.service.data-loader
+    __elementId__: application.service.cross-layer-reference-resolver
+2b3de1d9-d27b-4a54-981b-c0041c41cb5d:
+  id: 2b3de1d9-d27b-4a54-981b-c0041c41cb5d
   name: Data Loader
   type: service
+  layer: application
   documentation: Orchestrates model loading from JSON Schema, YAML instances, or demo data
   properties:
     x-monitored-by:
@@ -266,10 +291,12 @@ data-loader:
             symbol: loadModel
     x-exposes:
       - api.operation.get-model
-git-hub-service:
-  id: application.service.git-hub-service
+    __elementId__: application.service.data-loader
+d5379083-34fc-4167-814a-6101a6ffb8ee:
+  id: d5379083-34fc-4167-814a-6101a6ffb8ee
   name: GitHub Service
   type: service
+  layer: application
   documentation: Fetches models and releases from GitHub repositories via backend proxy
   properties:
     x-realizes:
@@ -280,10 +307,12 @@ git-hub-service:
         locations:
           - file: src/core/services/githubService.ts
             symbol: GitHubService
-impact-analysis-service:
-  id: application.service.impact-analysis-service
+    __elementId__: application.service.git-hub-service
+afb94211-5356-41e7-993e-ae37282fadbf:
+  id: afb94211-5356-41e7-993e-ae37282fadbf
   name: Impact Analysis Service
   type: service
+  layer: application
   documentation: Analyzes downstream impact of changes across process dependencies
   properties:
     x-realizes:
@@ -298,10 +327,12 @@ impact-analysis-service:
       - apm.metric.similarity-calculation-time
     x-tested-by:
       - testing.test-suite.impact-analysis-service-unit
-motivation-graph-builder:
-  id: application.service.motivation-graph-builder
+    __elementId__: application.service.impact-analysis-service
+ea7e0e9a-843d-4fc4-8d86-98d6c4c5f795:
+  id: ea7e0e9a-843d-4fc4-8d86-98d6c4c5f795
   name: Motivation Graph Builder
   type: service
+  layer: application
   documentation: Constructs motivation layer graph from goals, drivers,
     stakeholders, and requirements
   properties:
@@ -315,10 +346,12 @@ motivation-graph-builder:
             symbol: buildMotivationGraph
     x-tested-by:
       - testing.test-suite.motivation-graph-builder-unit
-motivation-graph-transformer:
-  id: application.service.motivation-graph-transformer
+    __elementId__: application.service.motivation-graph-builder
+96569edf-9570-4655-8f18-66440b3d879b:
+  id: 96569edf-9570-4655-8f18-66440b3d879b
   name: Motivation Graph Transformer
   type: service
+  layer: application
   documentation: Transforms motivation graph into ReactFlow nodes and edges with filtering
   properties:
     source:
@@ -329,10 +362,12 @@ motivation-graph-transformer:
             symbol: transformMotivationGraph
     x-tested-by:
       - testing.test-suite.motivation-graph-transformer-unit
-c4-view-transformer:
-  id: application.service.c4-view-transformer
+    __elementId__: application.service.motivation-graph-transformer
+691b489b-ea7e-4966-96b2-cdbb62d8ad46:
+  id: 691b489b-ea7e-4966-96b2-cdbb62d8ad46
   name: C4 View Transformer
   type: service
+  layer: application
   documentation: Transforms C4 model into hierarchical ReactFlow visualization
     with focus context
   properties:
@@ -345,10 +380,12 @@ c4-view-transformer:
     x-tested-by:
       - testing.test-suite.c4-view-transformer-unit
       - testing.test-suite.c4-parser-integration
-reference-diagram-service:
-  id: application.service.reference-diagram-service
+    __elementId__: application.service.c4-view-transformer
+3112da95-2efd-4aa6-874d-69e4f8d3201c:
+  id: 3112da95-2efd-4aa6-874d-69e4f8d3201c
   name: Reference Diagram Service
   type: service
+  layer: application
   documentation: Generates reference diagrams for testing and visual regression analysis
   properties:
     source:
@@ -360,10 +397,12 @@ reference-diagram-service:
     x-tested-by:
       - testing.test-suite.reference-diagram-service-unit
       - testing.test-suite.reference-diagram-integration
-graph-readability-service:
-  id: application.service.graph-readability-service
+    __elementId__: application.service.reference-diagram-service
+7fdd148d-8c56-4a70-8de7-69724ce6fc4e:
+  id: 7fdd148d-8c56-4a70-8de7-69724ce6fc4e
   name: Graph Readability Service
   type: service
+  layer: application
   documentation: Calculates graph readability metrics (overlap, spacing, aspect ratio)
   properties:
     source:
@@ -375,10 +414,12 @@ graph-readability-service:
     x-tested-by:
       - testing.test-suite.graph-readability-unit
       - testing.test-suite.graph-readability-integration
-image-similarity-service:
-  id: application.service.image-similarity-service
+    __elementId__: application.service.graph-readability-service
+d59f0f3c-7d4f-43dd-b562-1b0442172618:
+  id: d59f0f3c-7d4f-43dd-b562-1b0442172618
   name: Image Similarity Service
   type: service
+  layer: application
   documentation: Compares screenshots using SSIM and perceptual hash algorithms
   properties:
     x-monitored-by:
@@ -387,10 +428,12 @@ image-similarity-service:
     x-tested-by:
       - testing.test-suite.image-similarity-unit
       - testing.test-suite.visual-similarity-integration
-screenshot-service:
-  id: application.service.screenshot-service
+    __elementId__: application.service.image-similarity-service
+e35b8dba-ee51-411d-95dd-8f70b924120f:
+  id: e35b8dba-ee51-411d-95dd-8f70b924120f
   name: Screenshot Service
   type: service
+  layer: application
   documentation: Captures screenshots of graph visualizations for comparison
   properties:
     source:
@@ -404,10 +447,12 @@ screenshot-service:
     x-tested-by:
       - testing.test-suite.visual-comparison-tools-unit
       - testing.test-suite.visual-similarity-integration
-quality-score-service:
-  id: application.service.quality-score-service
+    __elementId__: application.service.screenshot-service
+40e7808b-c7d2-4fb7-b619-b2aa12a0b898:
+  id: 40e7808b-c7d2-4fb7-b619-b2aa12a0b898
   name: Quality Score Service
   type: service
+  layer: application
   documentation: Calculates composite quality scores for graph layouts
   properties:
     x-monitored-by:
@@ -415,10 +460,12 @@ quality-score-service:
     x-tested-by:
       - testing.test-suite.extended-quality-metrics-unit
       - testing.test-suite.quality-regression-integration
-heatmap-service:
-  id: application.service.heatmap-service
+    __elementId__: application.service.quality-score-service
+7944a206-b836-4fd2-b1aa-309dc393e6ed:
+  id: 7944a206-b836-4fd2-b1aa-309dc393e6ed
   name: Heatmap Service
   type: service
+  layer: application
   documentation: Generates visual heatmaps highlighting differences between screenshots
   properties:
     source:
@@ -427,10 +474,12 @@ heatmap-service:
         locations:
           - file: src/core/services/comparison/heatmapService.ts
             symbol: generateHeatmap
-metrics-history-service:
-  id: application.service.metrics-history-service
+    __elementId__: application.service.heatmap-service
+4f826f74-bc0c-457c-b306-7925d3d8ab9a:
+  id: 4f826f74-bc0c-457c-b306-7925d3d8ab9a
   name: Metrics History Service
   type: service
+  layer: application
   documentation: Tracks and stores historical metrics for regression analysis
   properties:
     source:
@@ -441,10 +490,12 @@ metrics-history-service:
             symbol: MetricsHistoryService
     x-tested-by:
       - testing.test-suite.quality-regression-integration
-feedback-to-parameter-service:
-  id: application.service.feedback-to-parameter-service
+    __elementId__: application.service.metrics-history-service
+b7f1425e-b9df-4197-984c-77d10bb3a616:
+  id: b7f1425e-b9df-4197-984c-77d10bb3a616
   name: Feedback to Parameter Service
   type: service
+  layer: application
   documentation: Converts user feedback into layout parameter adjustments for refinement
   properties:
     source:
@@ -455,10 +506,12 @@ feedback-to-parameter-service:
             symbol: convertFeedbackToParameters
     x-tested-by:
       - testing.test-suite.feedback-to-parameter-unit
-local-file-loader:
-  id: application.service.local-file-loader
+    __elementId__: application.service.feedback-to-parameter-service
+e4c69da4-6f22-417c-9933-8880b167925e:
+  id: e4c69da4-6f22-417c-9933-8880b167925e
   name: Local File Loader
   type: service
+  layer: application
   documentation: Loads models from local file uploads (ZIP archives)
   properties:
     source:
@@ -467,10 +520,12 @@ local-file-loader:
         locations:
           - file: src/core/services/localFileLoader.ts
             symbol: loadLocalFile
-business-node-transformer:
-  id: application.service.business-node-transformer
+    __elementId__: application.service.local-file-loader
+fd0e224e-d56f-420b-89c2-fdad3340debc:
+  id: fd0e224e-d56f-420b-89c2-fdad3340debc
   name: Business Node Transformer
   type: service
+  layer: application
   documentation: Transforms business layer elements into custom React Flow nodes
   properties:
     source:
@@ -479,10 +534,12 @@ business-node-transformer:
         locations:
           - file: src/core/services/businessNodeTransformer.ts
             symbol: transformBusinessNode
-cross-layer-reference-extractor:
-  id: application.service.cross-layer-reference-extractor
+    __elementId__: application.service.business-node-transformer
+dab68e93-5f0d-42c1-819c-a8b7cabb7723:
+  id: dab68e93-5f0d-42c1-819c-a8b7cabb7723
   name: Cross Layer Reference Extractor
   type: service
+  layer: application
   documentation: Extracts cross-layer references from parsed model elements
   properties:
     source:
@@ -491,10 +548,12 @@ cross-layer-reference-extractor:
         locations:
           - file: src/core/services/crossLayerReferenceExtractor.ts
             symbol: extractCrossLayerReferences
-demo-data-service:
-  id: application.service.demo-data-service
+    __elementId__: application.service.cross-layer-reference-extractor
+b8b4b96d-6417-47b0-9bbc-6b64768db192:
+  id: b8b4b96d-6417-47b0-9bbc-6b64768db192
   name: Demo Data Service
   type: service
+  layer: application
   documentation: Provides sample architecture data for testing and demos
   properties:
     source:
@@ -503,10 +562,12 @@ demo-data-service:
         locations:
           - file: src/apps/embedded/services/embeddedDataLoader.ts
             symbol: loadDemoData
-spec-parser-service:
-  id: application.service.spec-parser-service
+    __elementId__: application.service.demo-data-service
+875187fc-fe8c-4c9e-a10a-4d18e129a938:
+  id: 875187fc-fe8c-4c9e-a10a-4d18e129a938
   name: Spec Parser Service
   type: service
+  layer: application
   documentation: Parses specification documents and extracts metadata
   properties:
     source:
@@ -518,10 +579,12 @@ spec-parser-service:
     x-monitored-by:
       - apm.metric.validation-time
       - apm.metric.validation-errors
-model-store:
-  id: application.service.model-store
+    __elementId__: application.service.spec-parser-service
+9fd6d4b0-dbab-4499-bca1-10a5e2e3ba35:
+  id: 9fd6d4b0-dbab-4499-bca1-10a5e2e3ba35
   name: Model Store
   type: service
+  layer: application
   documentation: Central Zustand store managing loaded model data with selectors
     for layers and elements
   properties:
@@ -546,10 +609,12 @@ model-store:
       - apm.metric.memory-usage
       - apm.metric.initialization-time
       - apm.metric.model-parse-time
-annotation-store:
-  id: application.service.annotation-store
+    __elementId__: application.service.model-store
+e07d5e53-c47c-4e15-8433-525d41f4be95:
+  id: e07d5e53-c47c-4e15-8433-525d41f4be95
   name: Annotation Store
   type: service
+  layer: application
   documentation: Zustand store managing annotation state with optimistic updates
     and WebSocket synchronization
   properties:
@@ -574,10 +639,12 @@ annotation-store:
       - api.operation.create-annotation
       - api.operation.update-annotation
       - api.operation.delete-annotation
-changeset-store:
-  id: application.service.changeset-store
+    __elementId__: application.service.annotation-store
+6713984a-508e-4b45-be4d-8ce1c2f1e38d:
+  id: 6713984a-508e-4b45-be4d-8ce1c2f1e38d
   name: Changeset Store
   type: service
+  layer: application
   documentation: Zustand store managing changeset selection and loading state
   properties:
     x-uses:
@@ -604,10 +671,12 @@ changeset-store:
       - api.operation.get-changeset
       - api.operation.create-changeset
       - api.operation.apply-changeset
-auth-store:
-  id: application.service.auth-store
+    __elementId__: application.service.changeset-store
+0f62867d-0b2d-4597-a808-55deb6b4e725:
+  id: 0f62867d-0b2d-4597-a808-55deb6b4e725
   name: Auth Store
   type: service
+  layer: application
   documentation: Zustand store managing authentication token from DR CLI magic
     links with localStorage persistence
   properties:
@@ -623,10 +692,12 @@ auth-store:
         locations:
           - file: src/apps/embedded/stores/authStore.ts
             symbol: authStore
-connection-store:
-  id: application.service.connection-store
+    __elementId__: application.service.auth-store
+ac9d6cb7-ca43-4a8e-922b-684b3f5b453b:
+  id: ac9d6cb7-ca43-4a8e-922b-684b3f5b453b
   name: Connection Store
   type: service
+  layer: application
   documentation: Zustand store tracking WebSocket connection state and reconnection attempts
   properties:
     x-uses:
@@ -645,10 +716,12 @@ connection-store:
       - apm.metric.websocket-latency
       - apm.metric.websocket-reconnections
       - apm.metric.websocket-errors
-view-preference-store:
-  id: application.service.view-preference-store
+    __elementId__: application.service.connection-store
+7bc248b7-2bba-4d06-af40-0a6b3de7f392:
+  id: 7bc248b7-2bba-4d06-af40-0a6b3de7f392
   name: View Preference Store
   type: service
+  layer: application
   documentation: Zustand store managing user view mode preferences
     (graph/JSON/list) with localStorage persistence
   properties:
@@ -666,10 +739,12 @@ view-preference-store:
         locations:
           - file: src/apps/embedded/stores/viewPreferenceStore.ts
             symbol: viewPreferenceStore
-layer-store:
-  id: application.service.layer-store
+    __elementId__: application.service.view-preference-store
+939a3fef-22d0-451d-9870-da7d7af03a39:
+  id: 939a3fef-22d0-451d-9870-da7d7af03a39
   name: Layer Store
   type: service
+  layer: application
   documentation: Zustand store managing layer visibility, opacity, locking, and focus state
   properties:
     x-uses:
@@ -685,10 +760,12 @@ layer-store:
         locations:
           - file: src/core/stores/layerStore.ts
             symbol: layerStore
-element-store:
-  id: application.service.element-store
+    __elementId__: application.service.layer-store
+03727834-2856-449f-a7d1-d2aa2ebb207a:
+  id: 03727834-2856-449f-a7d1-d2aa2ebb207a
   name: Element Store
   type: service
+  layer: application
   documentation: Temporary in-memory store for model elements (workaround for
     tldraw JSON serialization)
   properties:
@@ -705,10 +782,12 @@ element-store:
         locations:
           - file: src/core/stores/elementStore.ts
             symbol: elementStore
-layout-preferences-store:
-  id: application.service.layout-preferences-store
+    __elementId__: application.service.element-store
+1e9fd5a6-0218-4f70-b0c9-fcd81557adae:
+  id: 1e9fd5a6-0218-4f70-b0c9-fcd81557adae
   name: Layout Preferences Store
   type: service
+  layer: application
   documentation: Zustand store managing layout engine preferences, custom presets,
     and refinement session state with localStorage
   properties:
@@ -732,10 +811,12 @@ layout-preferences-store:
     x-monitored-by:
       - apm.metric.layout-calculation-time
       - apm.metric.performance-tracing
-business-layer-store:
-  id: application.service.business-layer-store
+    __elementId__: application.service.layout-preferences-store
+e935dbfb-edd8-45fc-8edf-629c8138c437:
+  id: e935dbfb-edd8-45fc-8edf-629c8138c437
   name: Business Layer Store
   type: service
+  layer: application
   documentation: Zustand store managing business layer visualization preferences
     (filters, layout, focus modes) with localStorage
   properties:
@@ -751,10 +832,12 @@ business-layer-store:
         locations:
           - file: src/stores/businessLayerStore.ts
             symbol: businessLayerStore
-dagre-layout-engine:
-  id: application.service.dagre-layout-engine
+    __elementId__: application.service.business-layer-store
+aa25401f-5cf4-47ad-b832-9094235be2cc:
+  id: aa25401f-5cf4-47ad-b832-9094235be2cc
   name: Dagre Layout Engine
   type: service
+  layer: application
   documentation: Hierarchical layout engine using Dagre algorithm for directed acyclic graphs
   properties:
     x-uses:
@@ -773,10 +856,12 @@ dagre-layout-engine:
     x-tested-by:
       - testing.test-suite.third-party-engines-unit
       - testing.test-suite.layout-engine-workflow-integration
-d3-force-layout-engine:
-  id: application.service.d3-force-layout-engine
+    __elementId__: application.service.dagre-layout-engine
+dccfa10e-938d-4e83-94e6-6aa9145aa6f0:
+  id: dccfa10e-938d-4e83-94e6-6aa9145aa6f0
   name: D3 Force Layout Engine
   type: service
+  layer: application
   documentation: Force-directed layout engine using D3 force simulation for
     organic, physics-based layouts
   properties:
@@ -793,10 +878,12 @@ d3-force-layout-engine:
     x-monitored-by:
       - apm.metric.layout-calculation-time
       - apm.metric.performance-tracing
-elk-layout-engine:
-  id: application.service.elk-layout-engine
+    __elementId__: application.service.d3-force-layout-engine
+e5b5d43a-84ca-4a5c-a96b-9f17af6142d5:
+  id: e5b5d43a-84ca-4a5c-a96b-9f17af6142d5
   name: ELK Layout Engine
   type: service
+  layer: application
   documentation: Eclipse Layout Kernel engine supporting multiple layout
     algorithms (Layered, Force, Box, etc.)
   properties:
@@ -815,10 +902,12 @@ elk-layout-engine:
       - apm.metric.performance-tracing
     x-tested-by:
       - testing.test-suite.third-party-engines-unit
-graphviz-layout-engine:
-  id: application.service.graphviz-layout-engine
+    __elementId__: application.service.elk-layout-engine
+b7315295-d62d-450b-863e-3bdbbf812803:
+  id: b7315295-d62d-450b-863e-3bdbbf812803
   name: Graphviz Layout Engine
   type: service
+  layer: application
   documentation: Graphviz DOT layout engine for hierarchical graph layouts
   properties:
     x-uses:
@@ -833,10 +922,12 @@ graphviz-layout-engine:
             symbol: graphvizLayout
     x-tested-by:
       - testing.test-suite.third-party-engines-unit
-layout-engine-registry:
-  id: application.service.layout-engine-registry
+    __elementId__: application.service.graphviz-layout-engine
+8a1b61dc-9ed5-4666-89fe-6ab3c7386a9b:
+  id: 8a1b61dc-9ed5-4666-89fe-6ab3c7386a9b
   name: Layout Engine Registry
   type: service
+  layer: application
   documentation: Registry and factory for layout engines with algorithm selection
     and configuration
   properties:
@@ -851,10 +942,12 @@ layout-engine-registry:
     x-tested-by:
       - testing.test-suite.layout-engine-interface-unit
       - testing.test-suite.layout-engine-workflow-integration
-semantic-zoom-controller:
-  id: application.service.semantic-zoom-controller
+    __elementId__: application.service.layout-engine-registry
+8435a712-f497-4473-af06-3b2b6bdcd51a:
+  id: 8435a712-f497-4473-af06-3b2b6bdcd51a
   name: Semantic Zoom Controller
   type: service
+  layer: application
   documentation: Controls semantic zoom levels and detail adaptation based on viewport scale
   properties:
     x-realizes:
@@ -865,10 +958,12 @@ semantic-zoom-controller:
         locations:
           - file: src/core/services/layerLayoutConfig.ts
             symbol: semanticZoomController
-refinement-loop-service:
-  id: application.service.refinement-loop-service
+    __elementId__: application.service.semantic-zoom-controller
+c243d929-8533-4144-8cfb-187581ef417b:
+  id: c243d929-8533-4144-8cfb-187581ef417b
   name: Refinement Loop Service
   type: service
+  layer: application
   documentation: Orchestrates iterative layout optimization with quality scoring,
     early stopping, and iteration history
   properties:
@@ -881,10 +976,12 @@ refinement-loop-service:
       - application.service.screenshot-service
     x-tested-by:
       - testing.test-suite.refinement-loop-unit
-layout-parameters-service:
-  id: application.service.layout-parameters-service
+    __elementId__: application.service.refinement-loop-service
+c2dae5cd-731c-4bfe-8317-693b245278ad:
+  id: c2dae5cd-731c-4bfe-8317-693b245278ad
   name: Layout Parameters Service
   type: service
+  layer: application
   documentation: Manages layout parameter definitions, ranges, validation, and
     random generation for refinement
   properties:
@@ -896,10 +993,12 @@ layout-parameters-service:
         locations:
           - file: src/core/services/refinement/layoutParameters.ts
             symbol: LayoutParameters
-optimization-strategies-service:
-  id: application.service.optimization-strategies-service
+    __elementId__: application.service.layout-parameters-service
+1a2b0996-7c56-454c-8fbc-2eed8cc1d827:
+  id: 1a2b0996-7c56-454c-8fbc-2eed8cc1d827
   name: Optimization Strategies Service
   type: service
+  layer: application
   documentation: Implements optimization strategies (grid search, random search,
     hill climbing) for layout refinement
   properties:
@@ -911,10 +1010,12 @@ optimization-strategies-service:
         locations:
           - file: src/core/services/refinement/optimizationStrategies.ts
             symbol: OptimizationStrategies
-force-directed-business-layout:
-  id: application.service.force-directed-business-layout
+    __elementId__: application.service.optimization-strategies-service
+fe9e3825-78f8-4251-b6b0-688086483838:
+  id: fe9e3825-78f8-4251-b6b0-688086483838
   name: Force Directed Business Layout
   type: service
+  layer: application
   documentation: Force-directed layout specialized for business layer with
     service/capability clustering
   properties:
@@ -930,10 +1031,12 @@ force-directed-business-layout:
             symbol: forceDirectedLayout
     x-tested-by:
       - testing.test-suite.force-directed-business-layout-unit
-hierarchical-business-layout:
-  id: application.service.hierarchical-business-layout
+    __elementId__: application.service.force-directed-business-layout
+7fa22780-ac8a-4c82-9f87-632b9a2d60df:
+  id: 7fa22780-ac8a-4c82-9f87-632b9a2d60df
   name: Hierarchical Business Layout
   type: service
+  layer: application
   documentation: Hierarchical layout for business processes with swimlane organization
   properties:
     x-uses:
@@ -948,10 +1051,12 @@ hierarchical-business-layout:
             symbol: hierarchicalLayout
     x-tested-by:
       - testing.test-suite.hierarchical-business-layout-unit
-matrix-business-layout:
-  id: application.service.matrix-business-layout
+    __elementId__: application.service.hierarchical-business-layout
+e1dddbef-1353-497a-9334-3a78a5e8f6d4:
+  id: e1dddbef-1353-497a-9334-3a78a5e8f6d4
   name: Matrix Business Layout
   type: service
+  layer: application
   documentation: Matrix layout for business capability maps with grid-based positioning
   properties:
     x-realizes:
@@ -964,10 +1069,12 @@ matrix-business-layout:
             symbol: matrixLayout
     x-tested-by:
       - testing.test-suite.matrix-business-layout-unit
-swimlane-business-layout:
-  id: application.service.swimlane-business-layout
+    __elementId__: application.service.matrix-business-layout
+e8ad82fc-c431-4d85-b1ae-53c7f18f6da2:
+  id: e8ad82fc-c431-4d85-b1ae-53c7f18f6da2
   name: Swimlane Business Layout
   type: service
+  layer: application
   documentation: Swimlane layout for business processes with role-based lanes
   properties:
     x-realizes:
@@ -980,10 +1087,12 @@ swimlane-business-layout:
             symbol: swimlaneLayout
     x-tested-by:
       - testing.test-suite.swimlane-business-layout-unit
-edge-bundling-service:
-  id: application.service.edge-bundling-service
+    __elementId__: application.service.swimlane-business-layout
+97e009ba-7562-404c-bf2a-a97c462034df:
+  id: 97e009ba-7562-404c-bf2a-a97c462034df
   name: Edge Bundling Service
   type: service
+  layer: application
   documentation: Edge bundling algorithm to reduce visual clutter by grouping related edges
   properties:
     x-uses:
@@ -998,10 +1107,12 @@ edge-bundling-service:
             symbol: EdgeBundle
     x-tested-by:
       - testing.test-suite.orthogonal-routing-unit
-graph-element-validator:
-  id: application.service.graph-element-validator
+    __elementId__: application.service.edge-bundling-service
+fcef1d55-5442-4482-a763-3bdc36fd2a8b:
+  id: fcef1d55-5442-4482-a763-3bdc36fd2a8b
   name: Graph Element Validator
   type: service
+  layer: application
   documentation: Validates graph structure, node/edge data, and cross-layer references
   properties:
     x-realizes:
@@ -1014,10 +1125,12 @@ graph-element-validator:
             symbol: validateGraphElement
     x-tested-by:
       - testing.test-suite.graph-element-validator-unit
-pathfinding-service:
-  id: application.service.pathfinding-service
+    __elementId__: application.service.graph-element-validator
+ae8e5d5b-9a12-436b-a191-6a8c4a5dd88e:
+  id: ae8e5d5b-9a12-436b-a191-6a8c4a5dd88e
   name: Pathfinding Service
   type: service
+  layer: application
   documentation: Pathfinding algorithms for edge routing and obstacle avoidance
   properties:
     x-realizes:
@@ -1028,10 +1141,12 @@ pathfinding-service:
         locations:
           - file: src/core/edges/pathfinding.ts
             symbol: lineIntersectsRect
-websocket-client:
-  id: application.service.websocket-client
+    __elementId__: application.service.pathfinding-service
+cc0f0ab0-fede-4c1b-a2c9-bd1e2804d2e1:
+  id: cc0f0ab0-fede-4c1b-a2c9-bd1e2804d2e1
   name: WebSocket Client
   type: service
+  layer: application
   documentation: Real-time bidirectional communication client for model updates,
     annotation sync, and changeset notifications
   properties:
@@ -1045,10 +1160,12 @@ websocket-client:
         provenance: manual
         locations:
           - file: src/apps/embedded/services/websocketClient.ts
-coverage-analyzer:
-  id: application.service.coverage-analyzer
+    __elementId__: application.service.websocket-client
+e67ba3c2-a0bd-472b-9350-6dcd167ea1d8:
+  id: e67ba3c2-a0bd-472b-9350-6dcd167ea1d8
   name: Coverage Analyzer
   type: service
+  layer: application
   documentation: Analyzes test coverage and architecture coverage metrics for
     quality assessment
   properties:
@@ -1057,10 +1174,12 @@ coverage-analyzer:
         provenance: manual
         locations:
           - file: src/apps/embedded/services/coverageAnalyzer.ts
-changeset-graph-builder:
-  id: application.service.changeset-graph-builder
+    __elementId__: application.service.coverage-analyzer
+c8068202-a174-4284-ad29-376eb3e58f5e:
+  id: c8068202-a174-4284-ad29-376eb3e58f5e
   name: Changeset Graph Builder
   type: service
+  layer: application
   documentation: Builds graph visualizations for changesets showing added,
     modified, and deleted elements
   properties:
@@ -1069,10 +1188,12 @@ changeset-graph-builder:
         provenance: manual
         locations:
           - file: src/apps/embedded/services/changesetGraphBuilder.ts
-embedded-data-loader:
-  id: application.service.embedded-data-loader
+    __elementId__: application.service.changeset-graph-builder
+516fa4bb-4c9a-4ee3-a9db-82739d1a48a8:
+  id: 516fa4bb-4c9a-4ee3-a9db-82739d1a48a8
   name: Embedded Data Loader
   type: service
+  layer: application
   documentation: Loads model data, annotations, changesets, and specifications for
     embedded viewer with token-based authentication
   properties:
@@ -1081,3 +1202,4 @@ embedded-data-loader:
         provenance: manual
         locations:
           - file: src/apps/embedded/services/embeddedDataLoader.ts
+    __elementId__: application.service.embedded-data-loader

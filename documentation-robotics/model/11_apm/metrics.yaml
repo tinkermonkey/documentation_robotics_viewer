@@ -1,9 +1,320 @@
-render-time:
-  id: apm.metric.render-time
+b66934d4-d4ec-4ece-95ad-f65ef49924c4:
+  id: b66934d4-d4ec-4ece-95ad-f65ef49924c4
   name: Graph Render Time
   type: metric
+  layer: apm
   documentation: Time taken to layout and render the graph
   properties:
     instrumentsServices:
       - application.service.graph-builder
       - application.service.layout-engine
+    __elementId__: apm.metric.render-time
+d19490ef-6c3d-4e05-b139-efb4760114bc:
+  id: d19490ef-6c3d-4e05-b139-efb4760114bc
+  name: Interaction Frame Rate
+  type: metric
+  layer: apm
+  documentation: Frames per second during pan/zoom/drag operations
+  properties:
+    x-measures:
+      - application.component.graph-view
+      - application.service.layout-engine
+    __elementId__: apm.metric.interaction-fps
+b86c0185-2af4-43d9-858b-a1669662b4ba:
+  id: b86c0185-2af4-43d9-858b-a1669662b4ba
+  name: Filter Response Time
+  type: metric
+  layer: apm
+  documentation: Time to apply filters and update visualization
+  properties:
+    x-measures:
+      - application.component.motivation-filter-panel
+      - application.component.c4-filter-panel
+    __elementId__: apm.metric.filter-latency
+53febb15-5d20-4c97-8f5b-560b57cbc26e:
+  id: 53febb15-5d20-4c97-8f5b-560b57cbc26e
+  name: Initialization Time
+  type: metric
+  layer: apm
+  documentation: Time from embedded viewer load to interactive state
+  properties:
+    x-measures:
+      - application.component.viewer-app
+      - application.component.graph-view
+      - application.service.layout-engine
+      - application.service.data-loader
+    __elementId__: apm.metric.initialization-time
+f459066f-22ae-4c81-ba44-89a2ed00c069:
+  id: f459066f-22ae-4c81-ba44-89a2ed00c069
+  name: Layout Calculation Time
+  type: metric
+  layer: apm
+  documentation: Time taken to calculate node positions using layout algorithms
+  properties:
+    x-measures:
+      - application.service.layout-engine
+      - application.service.dagre-layout-engine
+      - application.service.d3-force-layout-engine
+      - application.service.elk-layout-engine
+    instrumentsServices:
+      - application.service.dagre-layout-engine
+      - application.service.d3-force-layout-engine
+      - application.service.elk-layout-engine
+      - application.service.graphviz-layout-engine
+    __elementId__: apm.metric.layout-calculation-time
+b1c40fa9-2d43-4c63-b68e-bd659999e1e1:
+  id: b1c40fa9-2d43-4c63-b68e-bd659999e1e1
+  name: Node Render Count
+  type: metric
+  layer: apm
+  documentation: Number of nodes rendered per frame for performance monitoring
+  properties:
+    x-measures:
+      - application.component.graph-view
+    __elementId__: apm.metric.node-render-count
+fc9e32c9-84cc-4b51-a8c8-35757d22110a:
+  id: fc9e32c9-84cc-4b51-a8c8-35757d22110a
+  name: Edge Render Count
+  type: metric
+  layer: apm
+  documentation: Number of edges rendered per frame for performance monitoring
+  properties:
+    x-measures:
+      - application.component.graph-view
+    __elementId__: apm.metric.edge-render-count
+7b2524af-4cc0-4a02-b878-c792173c1b21:
+  id: 7b2524af-4cc0-4a02-b878-c792173c1b21
+  name: Memory Usage
+  type: metric
+  layer: apm
+  documentation: Browser memory consumption during graph visualization
+  properties:
+    x-measures:
+      - application.component.graph-view
+      - application.service.model-store
+    __elementId__: apm.metric.memory-usage
+7cf152b0-cd3b-4865-9f21-491e67cd4593:
+  id: 7cf152b0-cd3b-4865-9f21-491e67cd4593
+  name: WebSocket Latency
+  type: metric
+  layer: apm
+  documentation: Round-trip time for WebSocket messages between client and DR CLI server
+  properties:
+    x-measures:
+      - application.service.connection-store
+    instrumentsServices:
+      - application.service.websocket-client
+    __elementId__: apm.metric.websocket-latency
+148f9117-dbe0-4023-9732-ad4110123bd7:
+  id: 148f9117-dbe0-4023-9732-ad4110123bd7
+  name: Annotation Load Time
+  type: metric
+  layer: apm
+  documentation: Time to load and render annotations for selected element
+  properties:
+    x-measures:
+      - application.service.annotation-store
+    instrumentsServices:
+      - application.service.annotation-store
+    __elementId__: apm.metric.annotation-load-time
+4c08f0cd-88ea-4135-b46c-8f6b18d779cf:
+  id: 4c08f0cd-88ea-4135-b46c-8f6b18d779cf
+  name: Changeset Load Time
+  type: metric
+  layer: apm
+  documentation: Time to load changeset data from server
+  properties:
+    x-measures:
+      - application.service.changeset-store
+    instrumentsServices:
+      - application.service.changeset-store
+    __elementId__: apm.metric.changeset-load-time
+ca35ed6f-f814-491c-8fd0-93d2b0a58ae0:
+  id: ca35ed6f-f814-491c-8fd0-93d2b0a58ae0
+  name: Model Parse Time
+  type: metric
+  layer: apm
+  documentation: Time to parse YAML/JSON model files into memory structures
+  properties:
+    x-measures:
+      - application.service.yaml-parser
+      - application.service.json-schema-parser
+    instrumentsServices:
+      - application.service.yaml-parser
+      - application.service.json-schema-parser
+    __elementId__: apm.metric.model-parse-time
+5f7087d7-d3d2-4596-8f6a-cf1fc4455b36:
+  id: 5f7087d7-d3d2-4596-8f6a-cf1fc4455b36
+  name: Validation Time
+  type: metric
+  layer: apm
+  documentation: Time to validate model structure and cross-layer references
+  properties:
+    x-measures:
+      - application.service.graph-element-validator
+      - application.service.cross-layer-reference-resolver
+    __elementId__: apm.metric.validation-time
+3bf04ff7-5077-4122-adfa-4f3e6853cc7d:
+  id: 3bf04ff7-5077-4122-adfa-4f3e6853cc7d
+  name: Export Generation Time
+  type: metric
+  layer: apm
+  documentation: Time to generate export files (PNG, SVG, JSON)
+  properties:
+    x-measures:
+      - application.service.business-export-service
+      - application.service.motivation-export-service
+      - application.service.c4-export-service
+    __elementId__: apm.metric.export-generation-time
+4354ca7d-e6db-451e-932b-16a0f951ccc7:
+  id: 4354ca7d-e6db-451e-932b-16a0f951ccc7
+  name: Screenshot Capture Time
+  type: metric
+  layer: apm
+  documentation: Time to capture screenshot for comparison and regression testing
+  properties:
+    x-measures:
+      - application.service.screenshot-service
+    __elementId__: apm.metric.screenshot-capture-time
+203adcd4-21ab-42b4-8299-434ab220fd80:
+  id: 203adcd4-21ab-42b4-8299-434ab220fd80
+  name: Similarity Calculation Time
+  type: metric
+  layer: apm
+  documentation: Time to calculate SSIM and perceptual hash for screenshot comparison
+  properties:
+    x-measures:
+      - application.service.image-similarity-service
+    __elementId__: apm.metric.similarity-calculation-time
+4f70c85c-2042-4b1c-aaa2-f604fa0f6c95:
+  id: 4f70c85c-2042-4b1c-aaa2-f604fa0f6c95
+  name: Quality Score Calculation Time
+  type: metric
+  layer: apm
+  documentation: Time to calculate composite quality score for layout
+  properties:
+    x-measures:
+      - application.service.quality-score-service
+    __elementId__: apm.metric.quality-score-calculation-time
+d98fe68b-21c6-4bdc-8bb7-7e39d69d5ab4:
+  id: d98fe68b-21c6-4bdc-8bb7-7e39d69d5ab4
+  name: Metrics History Size
+  type: metric
+  layer: apm
+  documentation: Number of historical metric entries stored for regression analysis
+  properties:
+    x-measures:
+      - application.service.metrics-history-service
+    __elementId__: apm.metric.metrics-history-size
+edd2e46e-ea8c-449f-9d81-52626c4f7634:
+  id: edd2e46e-ea8c-449f-9d81-52626c4f7634
+  name: Embedding Success Rate
+  type: metric
+  layer: apm
+  documentation: Percentage of successful embedded viewer loads
+  properties:
+    x-measures:
+      - application.component.viewer-app
+      - application.service.data-loader
+    __elementId__: apm.metric.embedding-success-rate
+04314b31-6d1b-459c-8ed6-b1484b9457be:
+  id: 04314b31-6d1b-459c-8ed6-b1484b9457be
+  name: WebSocket Reconnections
+  type: metric
+  layer: apm
+  documentation: Number of WebSocket reconnection attempts and success rate
+  properties:
+    x-measures:
+      - application.service.connection-store
+    __elementId__: apm.metric.websocket-reconnections
+a9935aa6-d0ec-4bea-9528-bb72de00bfe3:
+  id: a9935aa6-d0ec-4bea-9528-bb72de00bfe3
+  name: Layout Engine Errors
+  type: metric
+  layer: apm
+  documentation: Count and types of layout calculation failures
+  properties:
+    x-measures:
+      - application.service.layout-engine
+      - application.service.dagre-layout-engine
+      - application.service.d3-force-layout-engine
+      - application.service.elk-layout-engine
+    __elementId__: apm.metric.layout-engine-errors
+639e7029-1465-4034-ba5f-1482d4f240fe:
+  id: 639e7029-1465-4034-ba5f-1482d4f240fe
+  name: Parsing Errors
+  type: metric
+  layer: apm
+  documentation: Count of model parsing failures by type (YAML, JSON Schema, C4)
+  properties:
+    x-measures:
+      - application.service.yaml-parser
+      - application.service.json-schema-parser
+      - application.service.c4-parser
+    __elementId__: apm.metric.parsing-errors
+755321d8-d434-430e-b99a-52d5ea306881:
+  id: 755321d8-d434-430e-b99a-52d5ea306881
+  name: WebSocket Errors
+  type: metric
+  layer: apm
+  documentation: Count of WebSocket connection and message delivery failures
+  properties:
+    x-measures:
+      - application.service.connection-store
+    __elementId__: apm.metric.websocket-errors
+c5d743c9-4fb3-438c-8a83-e65723d3c1c4:
+  id: c5d743c9-4fb3-438c-8a83-e65723d3c1c4
+  name: Validation Errors
+  type: metric
+  layer: apm
+  documentation: Count of model validation errors by layer and type
+  properties:
+    x-measures:
+      - application.service.graph-element-validator
+      - application.service.cross-layer-reference-resolver
+    __elementId__: apm.metric.validation-errors
+39f35fe0-6335-4209-bc9a-59838fa66bda:
+  id: 39f35fe0-6335-4209-bc9a-59838fa66bda
+  name: Export Errors
+  type: metric
+  layer: apm
+  documentation: Count of export generation failures by format (PNG, SVG, JSON)
+  properties:
+    x-measures:
+      - application.service.business-export-service
+      - application.service.motivation-export-service
+      - application.service.c4-export-service
+    __elementId__: apm.metric.export-errors
+091f2259-5d2a-4180-a86a-ac50df54bd92:
+  id: 091f2259-5d2a-4180-a86a-ac50df54bd92
+  name: Console Logging
+  type: metric
+  layer: apm
+  documentation: Browser console log capture and categorization (error, warn, info)
+  properties:
+    x-measures:
+      - application.component.viewer-app
+    __elementId__: apm.metric.console-logging
+54ea0dbe-1dbc-4f9a-812d-e5ed7c0bc2fe:
+  id: 54ea0dbe-1dbc-4f9a-812d-e5ed7c0bc2fe
+  name: Error Boundary
+  type: metric
+  layer: apm
+  documentation: React error boundary catches and component crash reporting
+  properties:
+    x-measures:
+      - application.component.viewer-app
+      - application.component.graph-view
+    __elementId__: apm.metric.error-boundary
+d46e6502-67c2-4cd4-bf27-763c47224abf:
+  id: d46e6502-67c2-4cd4-bf27-763c47224abf
+  name: Performance Tracing
+  type: metric
+  layer: apm
+  documentation: React Profiler API traces for component render performance
+  properties:
+    x-measures:
+      - application.component.graph-view
+      - application.component.motivation-graph-view
+      - application.component.c4-graph-view
+    __elementId__: apm.metric.performance-tracing

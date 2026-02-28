@@ -1,5 +1,8 @@
-all-tests-pass:
-  id: testing.coverage-requirement.all-tests-pass
+95412ff5-575c-417e-947d-edce1758b038:
+  id: 95412ff5-575c-417e-947d-edce1758b038
   name: All Tests Pass
   type: coverage-requirement
+  layer: testing
   documentation: All tests must pass in CI
+  properties:
+    __elementId__: testing.coverage-requirement.all-tests-pass

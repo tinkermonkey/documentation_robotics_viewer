@@ -1,0 +1,93 @@
+20f3aa02-ff32-4192-a9c9-b4395fc0eee2:
+  id: 20f3aa02-ff32-4192-a9c9-b4395fc0eee2
+  name: Vite
+  type: tool
+  layer: technology
+  documentation: Build Tool
+  properties:
+    version: 7.2.4
+    supportsServices:
+      - application.component.viewer-app
+    __elementId__: technology.tool.vite
+a5b6e283-4063-43b6-8bb6-ffc776db72b7:
+  id: a5b6e283-4063-43b6-8bb6-ffc776db72b7
+  name: Playwright
+  type: tool
+  layer: technology
+  documentation: E2E Testing
+  properties:
+    version: 1.57.0
+    __elementId__: technology.tool.playwright
+1e0ed2fc-0d00-48da-9482-2e914a770978:
+  id: 1e0ed2fc-0d00-48da-9482-2e914a770978
+  name: Docker
+  type: tool
+  layer: technology
+  documentation: Containerization platform for packaging and deploying applications
+  properties:
+    x-supports:
+      - technology.runtime.nodejs
+      - technology.runtime.python
+    __elementId__: technology.tool.docker
+4de61d5f-1261-4596-9334-569d156dfa7b:
+  id: 4de61d5f-1261-4596-9334-569d156dfa7b
+  name: Git
+  type: tool
+  layer: technology
+  documentation: Distributed version control system
+  properties:
+    x-supports:
+      - technology.tool.github
+    __elementId__: technology.tool.git
+0d0bbd39-2bf9-4753-91c5-92a3ee039ceb:
+  id: 0d0bbd39-2bf9-4753-91c5-92a3ee039ceb
+  name: GitHub
+  type: tool
+  layer: technology
+  documentation: Git repository hosting and collaboration platform
+  properties:
+    x-supports:
+      - application.service.git-hub-service
+    __elementId__: technology.tool.github
+57ac108b-8052-4572-abab-7b06f9606dad:
+  id: 57ac108b-8052-4572-abab-7b06f9606dad
+  name: NPM
+  type: tool
+  layer: technology
+  documentation: Package manager for JavaScript and Node.js
+  properties:
+    version: 10.x
+    x-supports:
+      - technology.runtime.nodejs
+    __elementId__: technology.tool.npm
+1ad42782-9a48-42de-a30f-3195a646cd8e:
+  id: 1ad42782-9a48-42de-a30f-3195a646cd8e
+  name: ESLint
+  type: tool
+  layer: technology
+  documentation: Pluggable JavaScript linter for code quality
+  properties:
+    package: eslint
+    version: 9.x
+    __elementId__: technology.tool.eslint
+8e3c3dcc-156f-4f80-95c4-d84d12064e1b:
+  id: 8e3c3dcc-156f-4f80-95c4-d84d12064e1b
+  name: Prettier
+  type: tool
+  layer: technology
+  documentation: Opinionated code formatter for consistent code style
+  properties:
+    package: prettier
+    version: 3.x
+    __elementId__: technology.tool.prettier
+2b86cceb-461f-4be6-8157-1fdd43d7d9dc:
+  id: 2b86cceb-461f-4be6-8157-1fdd43d7d9dc
+  name: Storybook
+  type: tool
+  layer: technology
+  documentation: Component development and testing environment for building and
+    showcasing stories
+  properties:
+    package: storybook
+    version: 8.x
+    __elementId__: technology.tool.storybook

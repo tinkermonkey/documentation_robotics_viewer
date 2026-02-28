@@ -1,7 +1,8 @@
-improved-architecture-understanding:
-  id: motivation.outcome.improved-architecture-understanding
+9e5f7f63-85a9-4d68-9a24-19a9e9858a46:
+  id: 9e5f7f63-85a9-4d68-9a24-19a9e9858a46
   name: Improved Architecture Understanding
   type: outcome
+  layer: motivation
   documentation: Teams gain clear understanding of system architecture through
     interactive visualizations, reducing onboarding time and architectural drift
   properties:
@@ -9,10 +10,12 @@ improved-architecture-understanding:
       metric: Onboarding time reduction
       target: 40% faster architecture comprehension
       timeframe: 6 months post-deployment
-increased-documentation-adoption:
-  id: motivation.outcome.increased-documentation-adoption
+    __elementId__: motivation.outcome.improved-architecture-understanding
+3d4d126e-58c1-49d4-b641-2858331dd9d1:
+  id: 3d4d126e-58c1-49d4-b641-2858331dd9d1
   name: Increased Documentation Adoption
   type: outcome
+  layer: motivation
   documentation: Architecture documentation becomes living, interactive resource
     that teams actively use and maintain
   properties:
@@ -20,10 +23,12 @@ increased-documentation-adoption:
       metric: Documentation usage frequency
       target: 3x increase in documentation views
       timeframe: 3 months post-deployment
-reduced-architectural-debt:
-  id: motivation.outcome.reduced-architectural-debt
+    __elementId__: motivation.outcome.increased-documentation-adoption
+f62fa03d-f52e-4362-95d9-2c370e9c9d83:
+  id: f62fa03d-f52e-4362-95d9-2c370e9c9d83
   name: Reduced Architectural Debt
   type: outcome
+  layer: motivation
   documentation: Visual traceability enables teams to identify and resolve
     architectural inconsistencies before they become technical debt
   properties:
@@ -31,10 +36,12 @@ reduced-architectural-debt:
       metric: Architecture violation count
       target: 50% reduction in cross-layer violations
       timeframe: 12 months post-deployment
-faster-impact-analysis:
-  id: motivation.outcome.faster-impact-analysis
+    __elementId__: motivation.outcome.reduced-architectural-debt
+af865dfa-c650-4bcd-b36d-cd5fbef19cda:
+  id: af865dfa-c650-4bcd-b36d-cd5fbef19cda
   name: Faster Impact Analysis
   type: outcome
+  layer: motivation
   documentation: Automated cross-layer traceability enables rapid assessment of
     change impact across architectural layers
   properties:
@@ -42,10 +49,12 @@ faster-impact-analysis:
       metric: Impact analysis time
       target: From hours to minutes
       timeframe: Immediate
-standardized-architecture-documentation:
-  id: motivation.outcome.standardized-architecture-documentation
+    __elementId__: motivation.outcome.faster-impact-analysis
+3492f57a-86ef-4afc-ade0-ef18487bc6ef:
+  id: 3492f57a-86ef-4afc-ade0-ef18487bc6ef
   name: Standardized Architecture Documentation
   type: outcome
+  layer: motivation
   documentation: Organization-wide adoption of Documentation Robotics format
     creates consistent, machine-readable architecture documentation
   properties:
@@ -53,10 +62,12 @@ standardized-architecture-documentation:
       metric: Documentation format consistency
       target: 80% of projects using DR format
       timeframe: 18 months post-deployment
-enhanced-collaboration:
-  id: motivation.outcome.enhanced-collaboration
+    __elementId__: motivation.outcome.standardized-architecture-documentation
+9f257a22-1c4d-4757-acd9-d3fbb21bc4f3:
+  id: 9f257a22-1c4d-4757-acd9-d3fbb21bc4f3
   name: Enhanced Cross-Team Collaboration
   type: outcome
+  layer: motivation
   documentation: Shared visual language enables better communication between
     architects, developers, and stakeholders
   properties:
@@ -64,3 +75,4 @@ enhanced-collaboration:
       metric: Cross-team alignment score
       target: 30% improvement in architecture alignment
       timeframe: 9 months post-deployment
+    __elementId__: motivation.outcome.enhanced-collaboration

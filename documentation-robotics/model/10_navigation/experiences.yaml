@@ -1,97 +1,8 @@
-root:
-  id: navigation.route.root
-  name: Root Route
-  type: experience
-  documentation: Root layout route providing EmbeddedLayout wrapper for all child routes
-  properties:
-    displaysComponents:
-      - ux.component.shared-layout
-model-view:
-  id: navigation.route.model-view
-  name: Model View Route
-  type: experience
-  documentation: Parametric route for model graph and JSON views (/model/:view)
-  properties:
-    x-renders:
-      - ux.view.model-graph-screen
-    x-loads:
-      - application.component.graph-view
-    displaysComponents:
-      - ux.component.graph-viewer
-      - ux.component.model-layers-sidebar
-spec-view:
-  id: navigation.route.spec-view
-  name: Spec View Route
-  type: experience
-  documentation: Parametric route for spec graph and JSON views (/spec/:view)
-  properties:
-    x-renders:
-      - ux.view.spec-view
-    x-loads:
-      - application.component.viewer-app
-motivation:
-  id: navigation.route.motivation
-  name: Motivation Route
-  type: experience
-  documentation: Motivation layer visualization route (/motivation)
-  properties:
-    x-renders:
-      - ux.view.motivation-screen
-    x-loads:
-      - application.component.motivation-graph-view
-architecture:
-  id: navigation.route.architecture
-  name: Architecture (C4) Route
-  type: experience
-  documentation: C4 architecture model visualization route (/architecture)
-  properties:
-    x-renders:
-      - ux.view.model-graph-screen
-    x-loads:
-      - application.component.c4-graph-view
-changesets-view:
-  id: navigation.route.changesets-view
-  name: Changesets View Route
-  type: experience
-  documentation: Parametric route for changeset graph and list views (/changesets/:view)
-model-refine:
-  id: navigation.route.model-refine
-  name: Model Refine Route
-  type: experience
-  documentation: Graph refinement view for model visualization with layout
-    parameter tuning and quality metrics
-  properties:
-    path: /model/refine
-    x-renders:
-      - ux.view.graph-refinement
-    x-loads:
-      - application.component.graph-view
-spec-refine:
-  id: navigation.route.spec-refine
-  name: Spec Refine Route
-  type: experience
-  documentation: Graph refinement view for spec visualization with layout
-    parameter tuning and quality metrics
-  properties:
-    path: /spec/refine
-    x-renders:
-      - ux.view.spec-graph-screen
-    x-loads:
-      - application.component.graph-view
-auth:
-  id: navigation.route.auth
-  name: Auth Route
-  type: experience
-  documentation: Magic link authentication handler route for DR CLI token
-    extraction and storage
-  properties:
-    path: /
-    handles: token-extraction-and-storage
-    redirects-to: requested-destination
-changeset-route:
-  id: navigation.experience.changeset-route
+f8135ddb-2045-4679-bff2-3190f6d4ecad:
+  id: f8135ddb-2045-4679-bff2-3190f6d4ecad
   name: Changeset Route
   type: experience
+  layer: navigation
   documentation: TanStack Router route component for changeset list and graph
     views with WebSocket real-time updates
   properties:
@@ -101,10 +12,12 @@ changeset-route:
         locations:
           - file: src/apps/embedded/routes/ChangesetRoute.tsx
             symbol: ChangesetRoute
-model-route:
-  id: navigation.experience.model-route
+    __elementId__: navigation.experience.changeset-route
+7cc73314-d8c0-4c77-9c95-de88ca9daa08:
+  id: 7cc73314-d8c0-4c77-9c95-de88ca9daa08
   name: Model Route
   type: experience
+  layer: navigation
   documentation: TanStack Router route component for model visualization with dual
     graph/JSON views and layer filtering
   properties:
@@ -114,10 +27,12 @@ model-route:
         locations:
           - file: src/apps/embedded/routes/ModelRoute.tsx
             symbol: ModelRoute
-spec-route:
-  id: navigation.experience.spec-route
+    __elementId__: navigation.experience.model-route
+1d01ca40-9e36-4152-affd-070703a24f4f:
+  id: 1d01ca40-9e36-4152-affd-070703a24f4f
   name: Spec Route
   type: experience
+  layer: navigation
   documentation: TanStack Router route component for specification viewer with
     graph, JSON, and refinement views
   properties:
@@ -127,10 +42,12 @@ spec-route:
         locations:
           - file: src/apps/embedded/routes/SpecRoute.tsx
             symbol: SpecRoute
-auth-route:
-  id: navigation.experience.auth-route
+    __elementId__: navigation.experience.spec-route
+249ddd27-9264-4daa-8c04-672ff4b84057:
+  id: 249ddd27-9264-4daa-8c04-672ff4b84057
   name: Auth Route
   type: experience
+  layer: navigation
   documentation: TanStack Router route component for magic link token
     authentication and URL cleanup
   properties:
@@ -140,3 +57,4 @@ auth-route:
         locations:
           - file: src/apps/embedded/routes/AuthRoute.tsx
             symbol: AuthRoute
+    __elementId__: navigation.experience.auth-route

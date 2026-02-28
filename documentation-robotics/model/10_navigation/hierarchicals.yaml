@@ -1,5 +1,0 @@
-generic-nav:
-  id: navigation.breadcrumb.generic-nav
-  name: Generic Breadcrumb Navigation
-  type: hierarchical
-  documentation: General-purpose breadcrumb for hierarchical navigation

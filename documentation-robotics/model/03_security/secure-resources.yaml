@@ -1,0 +1,35 @@
+169d3d3a-caae-4010-ac64-a6baa95aacbd:
+  id: 169d3d3a-caae-4010-ac64-a6baa95aacbd
+  name: API Endpoints
+  type: secure-resource
+  layer: security
+  documentation: REST API endpoints including model retrieval, spec access, health
+    checks, and changeset management. Endpoints support token-based
+    authentication for authenticated access to DR CLI servers.
+  properties:
+    protectsServices:
+      - api.interface.reference-api
+    __elementId__: security.secure-resource.api-endpoints
+bffbf286-9c86-481e-9254-577dd2020223:
+  id: bffbf286-9c86-481e-9254-577dd2020223
+  name: Local File System
+  type: secure-resource
+  layer: security
+  documentation: Local file system access for DR model files. Includes the model
+    directory containing manifest.yaml, layer directories, and all element YAML
+    files. Access is scoped to the model directory only.
+  properties:
+    protectsServices:
+      - application.service.local-file-loader
+      - application.service.data-loader
+    __elementId__: security.secure-resource.file-system
+a58261ad-5cb5-41ad-972f-19d828e5b6ae:
+  id: a58261ad-5cb5-41ad-972f-19d828e5b6ae
+  name: WebSocket Connection
+  type: secure-resource
+  layer: security
+  documentation: WebSocket connection for real-time model updates and
+    collaboration. Used for annotation synchronization, model change
+    notifications, and multi-user awareness features.
+  properties:
+    __elementId__: security.secure-resource.websocket

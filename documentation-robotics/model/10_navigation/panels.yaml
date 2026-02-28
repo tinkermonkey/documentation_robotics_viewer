@@ -1,72 +1,90 @@
-schema-info-panel:
-  id: navigation.panel.schema-info-panel
+f85f703e-0ba6-43c7-ac14-d31f938849f2:
+  id: f85f703e-0ba6-43c7-ac14-d31f938849f2
   name: Schema Info Panel
   type: panel
+  layer: navigation
   documentation: Panel displaying JSON schema information and properties
   properties:
     x-rendered-by:
       - ux.component.schema-info-panel
-coverage-summary-panel:
-  id: navigation.panel.coverage-summary-panel
+    __elementId__: navigation.panel.schema-info-panel
+bb4097f2-b82c-46ac-8d93-5b04a68e16b5:
+  id: bb4097f2-b82c-46ac-8d93-5b04a68e16b5
   name: Coverage Summary Panel
   type: panel
+  layer: navigation
   documentation: Panel displaying model coverage metrics across layers
   properties:
     x-rendered-by:
       - ux.component.coverage-summary-panel
-highlighted-path-panel:
-  id: navigation.panel.highlighted-path-panel
+    __elementId__: navigation.panel.coverage-summary-panel
+da4c9f61-6be4-4554-bae0-491b973ebb57:
+  id: da4c9f61-6be4-4554-bae0-491b973ebb57
   name: Highlighted Path Panel
   type: panel
+  layer: navigation
   documentation: Panel showing highlighted traceability paths between elements
   properties:
     x-rendered-by:
       - ux.component.highlighted-path-panel
-annotation-panel:
-  id: navigation.panel.annotation-panel
+    __elementId__: navigation.panel.highlighted-path-panel
+9e4e1957-a03c-4d02-a6ef-618568d86134:
+  id: 9e4e1957-a03c-4d02-a6ef-618568d86134
   name: Annotation Panel
   type: panel
+  layer: navigation
   documentation: Panel for creating and managing annotations on model elements
   properties:
     x-rendered-by:
       - ux.component.annotation-panel
-node-details-panel:
-  id: navigation.panel.node-details-panel
+    __elementId__: navigation.panel.annotation-panel
+ff4a3c8b-69fc-4c3f-bb17-b36a0b89e367:
+  id: ff4a3c8b-69fc-4c3f-bb17-b36a0b89e367
   name: Node Details Panel
   type: panel
+  layer: navigation
   documentation: Panel showing detailed information for selected graph nodes
   properties:
     x-rendered-by:
       - ux.component.node-details-panel
-minimap:
-  id: navigation.panel.minimap
+    __elementId__: navigation.panel.node-details-panel
+2de3a647-f315-48a1-82bd-a9ccadff1710:
+  id: 2de3a647-f315-48a1-82bd-a9ccadff1710
   name: MiniMap
   type: panel
+  layer: navigation
   documentation: Miniature overview map for graph navigation and viewport positioning
   properties:
     x-rendered-by:
       - ux.component.minimap
-connection-status:
-  id: navigation.panel.connection-status
+    __elementId__: navigation.panel.minimap
+c3233938-098d-44d7-b6e5-c228bd1b903a:
+  id: c3233938-098d-44d7-b6e5-c228bd1b903a
   name: Connection Status
   type: panel
+  layer: navigation
   documentation: WebSocket connection status indicator with reconnection controls
   properties:
     x-rendered-by:
       - ux.component.connection-status
-graph-statistics-panel:
-  id: navigation.panel.graph-statistics-panel
+    __elementId__: navigation.panel.connection-status
+eee1f209-53b1-41ff-a354-a21e364b1b55:
+  id: eee1f209-53b1-41ff-a354-a21e364b1b55
   name: Graph Statistics Panel
   type: panel
+  layer: navigation
   documentation: Panel displaying graph metrics and element counts
   properties:
     x-rendered-by:
       - ux.component.graph-statistics-panel
-layout-preferences-panel:
-  id: navigation.panel.layout-preferences-panel
+    __elementId__: navigation.panel.graph-statistics-panel
+e09f8325-71db-45e9-8362-9ca1d26ed0f5:
+  id: e09f8325-71db-45e9-8362-9ca1d26ed0f5
   name: Layout Preferences Panel
   type: panel
+  layer: navigation
   documentation: Panel for configuring graph layout algorithm preferences
   properties:
     x-rendered-by:
       - ux.component.layout-preferences-panel
+    __elementId__: navigation.panel.layout-preferences-panel

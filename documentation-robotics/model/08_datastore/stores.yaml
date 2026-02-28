@@ -1,7 +1,22 @@
-model-store:
-  id: datastore.store.model-store
+499c8037-41d0-48d7-915f-f74657b22ebf:
+  id: 499c8037-41d0-48d7-915f-f74657b22ebf
+  name: Local Filesystem
+  type: store
+  layer: datastore
+  documentation: Storage for model files (YAML/JSON)
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/localFileLoader.ts
+            symbol: loadLocalFile
+    __elementId__: datastore.store.local-fs
+c2009591-63c1-44a1-9c22-f4655b6704ba:
+  id: c2009591-63c1-44a1-9c22-f4655b6704ba
   name: Model Store
   type: store
+  layer: datastore
   documentation: Zustand store managing loaded model data with MetaModel, layers,
     and elements state
   properties:
@@ -18,10 +33,12 @@ model-store:
         locations:
           - file: src/core/stores/modelStore.ts
             symbol: modelStore
-element-store:
-  id: datastore.store.element-store
+    __elementId__: datastore.store.model-store
+c1f7ac1a-7b49-4564-b92e-a174f1e756c7:
+  id: c1f7ac1a-7b49-4564-b92e-a174f1e756c7
   name: Element Store
   type: store
+  layer: datastore
   documentation: Singleton element cache for temporary model element storage
     (required for tldraw JSON serialization compatibility)
   properties:
@@ -36,10 +53,12 @@ element-store:
         locations:
           - file: src/core/stores/elementStore.ts
             symbol: elementStore
-layer-store:
-  id: datastore.store.layer-store
+    __elementId__: datastore.store.element-store
+bda32c53-c69e-4092-ab6d-20c9da6b9f0a:
+  id: bda32c53-c69e-4092-ab6d-20c9da6b9f0a
   name: Layer Store
   type: store
+  layer: datastore
   documentation: Zustand store managing layer metadata and visibility state
   properties:
     persistence: in-memory
@@ -53,10 +72,12 @@ layer-store:
         locations:
           - file: src/core/stores/layerStore.ts
             symbol: layerStore
-layout-preferences-store:
-  id: datastore.store.layout-preferences-store
+    __elementId__: datastore.store.layer-store
+da22e8c3-b9d4-401a-bddc-b1e5a7086d5b:
+  id: da22e8c3-b9d4-401a-bddc-b1e5a7086d5b
   name: Layout Preferences Store
   type: store
+  layer: datastore
   documentation: Zustand store managing graph layout algorithm preferences and parameters
   properties:
     persistence: in-memory
@@ -70,10 +91,12 @@ layout-preferences-store:
         locations:
           - file: src/core/stores/layoutPreferencesStore.ts
             symbol: layoutPreferencesStore
-business-layer-store:
-  id: datastore.store.business-layer-store
+    __elementId__: datastore.store.layout-preferences-store
+f71a1bc2-0d3e-4915-8d2c-0134f142cfe5:
+  id: f71a1bc2-0d3e-4915-8d2c-0134f142cfe5
   name: Business Layer Store
   type: store
+  layer: datastore
   documentation: Zustand store managing business layer specific state including
     service and capability data
   properties:
@@ -90,10 +113,12 @@ business-layer-store:
         locations:
           - file: src/stores/businessLayerStore.ts
             symbol: businessLayerStore
-auth-store:
-  id: datastore.store.auth-store
+    __elementId__: datastore.store.business-layer-store
+03900c50-d33b-4a2d-9cde-b20f4afab5cd:
+  id: 03900c50-d33b-4a2d-9cde-b20f4afab5cd
   name: Auth Store
   type: store
+  layer: datastore
   documentation: Zustand store managing authentication state for DR CLI
     integration and magic link token handling
   properties:
@@ -108,10 +133,12 @@ auth-store:
         locations:
           - file: src/apps/embedded/stores/authStore.ts
             symbol: authStore
-connection-store:
-  id: datastore.store.connection-store
+    __elementId__: datastore.store.auth-store
+35bfba09-74ec-4226-bd72-d9a776af3901:
+  id: 35bfba09-74ec-4226-bd72-d9a776af3901
   name: Connection Store
   type: store
+  layer: datastore
   documentation: Zustand store managing WebSocket connection state, status, and
     reconnection logic
   properties:
@@ -126,10 +153,12 @@ connection-store:
         locations:
           - file: src/apps/embedded/stores/connectionStore.ts
             symbol: connectionStore
-changeset-store:
-  id: datastore.store.changeset-store
+    __elementId__: datastore.store.connection-store
+03241e80-ab28-4856-a119-5362417bfc46:
+  id: 03241e80-ab28-4856-a119-5362417bfc46
   name: Changeset Store
   type: store
+  layer: datastore
   documentation: Zustand store managing changeset list, active changeset, and
     changeset operations
   properties:
@@ -146,10 +175,12 @@ changeset-store:
         locations:
           - file: src/apps/embedded/stores/changesetStore.ts
             symbol: changesetStore
-annotation-store:
-  id: datastore.store.annotation-store
+    __elementId__: datastore.store.changeset-store
+ef28807e-4d93-453a-a6b0-a2635c22f9d1:
+  id: ef28807e-4d93-453a-a6b0-a2635c22f9d1
   name: Annotation Store
   type: store
+  layer: datastore
   documentation: Zustand store managing user annotations on model elements with
     optimistic updates and WebSocket synchronization
   properties:
@@ -164,10 +195,12 @@ annotation-store:
         locations:
           - file: src/apps/embedded/stores/annotationStore.ts
             symbol: annotationStore
-view-preference-store:
-  id: datastore.store.view-preference-store
+    __elementId__: datastore.store.annotation-store
+b39eb628-4dcd-4994-a8e8-6675f7802973:
+  id: b39eb628-4dcd-4994-a8e8-6675f7802973
   name: View Preference Store
   type: store
+  layer: datastore
   documentation: Zustand store managing user view preferences including active
     view, sidebar visibility, and filter state
   properties:
@@ -182,3 +215,4 @@ view-preference-store:
         locations:
           - file: src/apps/embedded/stores/viewPreferenceStore.ts
             symbol: viewPreferenceStore
+    __elementId__: datastore.store.view-preference-store

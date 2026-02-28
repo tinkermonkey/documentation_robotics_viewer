@@ -1,6 +1,0 @@
-spec-json-screen:
-  id: ux.view.spec-json-screen
-  name: Spec JSON Screen
-  type: detail
-  documentation: Structured JSON view of DR specification with syntax highlighting
-    and schema navigation

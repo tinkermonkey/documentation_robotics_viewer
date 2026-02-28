@@ -1,0 +1,33 @@
+a074e8aa-7525-4839-829d-344f1c699ecb:
+  id: a074e8aa-7525-4839-829d-344f1c699ecb
+  name: Node.js
+  type: runtime
+  layer: technology
+  documentation: JavaScript runtime environment for server-side and build tools
+  properties:
+    version: 22.x
+    x-supports:
+      - technology.tool.vite
+      - technology.framework.express
+    __elementId__: technology.runtime.nodejs
+269d03aa-2e92-45f7-a476-0e6859be05f1:
+  id: 269d03aa-2e92-45f7-a476-0e6859be05f1
+  name: Python
+  type: runtime
+  layer: technology
+  documentation: Python runtime for DR CLI backend and FastAPI server
+  properties:
+    version: 3.12.x
+    x-supports:
+      - technology.framework.fastapi
+      - technology.library.uvicorn
+    __elementId__: technology.runtime.python
+b76feeb7-6da3-4b3f-8dd3-15fa2322112a:
+  id: b76feeb7-6da3-4b3f-8dd3-15fa2322112a
+  name: Bun
+  type: runtime
+  layer: technology
+  documentation: Fast JavaScript runtime and package manager (alternative to Node.js)
+  properties:
+    version: 1.x
+    __elementId__: technology.runtime.bun

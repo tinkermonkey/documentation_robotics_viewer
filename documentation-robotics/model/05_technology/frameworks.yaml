@@ -1,0 +1,43 @@
+2956efdf-c0f4-4815-92a7-95ec1863e579:
+  id: 2956efdf-c0f4-4815-92a7-95ec1863e579
+  name: React
+  type: framework
+  layer: technology
+  documentation: UI Library
+  properties:
+    version: 19.2.0
+    supportsServices:
+      - application.component.viewer-app
+      - application.component.graph-view
+      - application.component.c4-graph-view
+      - application.component.motivation-graph-view
+    __elementId__: technology.framework.react
+bbc257bb-41de-4222-aa1a-30375727b939:
+  id: bbc257bb-41de-4222-aa1a-30375727b939
+  name: FastAPI
+  type: framework
+  layer: technology
+  documentation: Modern, fast (high-performance), web framework for building APIs with Python
+  properties:
+    language: python
+    __elementId__: technology.framework.fastapi
+2d3d5c2e-5466-4925-b835-4dd983bcf5e0:
+  id: 2d3d5c2e-5466-4925-b835-4dd983bcf5e0
+  name: Express
+  type: framework
+  layer: technology
+  documentation: Web application framework for Node.js
+  properties:
+    package: express
+    version: 5.1.0
+    __elementId__: technology.framework.express
+a2b34a0c-0636-4d76-a38f-baa7cf41731a:
+  id: a2b34a0c-0636-4d76-a38f-baa7cf41731a
+  name: Tailwind CSS
+  type: framework
+  layer: technology
+  documentation: Utility-first CSS framework
+  properties:
+    package: tailwindcss
+    version: 4.1.6
+    __elementId__: technology.framework.tailwindcss

@@ -1,204 +1,302 @@
-graph-pan-zoom:
-  id: ux.interaction.graph-pan-zoom
+20eefc67-33fd-41f0-b71e-09e0bee71d40:
+  id: 20eefc67-33fd-41f0-b71e-09e0bee71d40
   name: Graph Pan and Zoom
   type: interaction
+  layer: ux
   documentation: User can pan by dragging canvas and zoom using mouse wheel or pinch gestures
   properties:
     x-handled-by:
       - application.component.graph-view
       - ux.component.space-mouse-handler
-graph-node-select:
-  id: ux.interaction.graph-node-select
+    __elementId__: ux.interaction.graph-pan-zoom
+0271edf4-a075-422b-a124-0cb6c43e952e:
+  id: 0271edf4-a075-422b-a124-0cb6c43e952e
   name: Graph Node Selection
   type: interaction
+  layer: ux
   documentation: Click on graph node to select and display details in sidebar panels
   properties:
     x-handled-by:
       - application.component.graph-view
       - application.component.inspector-panel
-graph-fit-view:
-  id: ux.interaction.graph-fit-view
+    __elementId__: ux.interaction.graph-node-select
+4f58e414-9155-4428-8a53-49cb1436a592:
+  id: 4f58e414-9155-4428-8a53-49cb1436a592
   name: Fit Graph to View
   type: interaction
+  layer: ux
   documentation: Automatically adjust zoom and pan to fit all visible nodes in viewport
-graph-minimap-toggle:
-  id: ux.interaction.graph-minimap-toggle
+  properties:
+    __elementId__: ux.interaction.graph-fit-view
+7b590604-7dfb-47e6-9774-d8be29c006ad:
+  id: 7b590604-7dfb-47e6-9774-d8be29c006ad
   name: Toggle Minimap
   type: interaction
+  layer: ux
   documentation: Show or hide minimap overview of graph
-layer-filter-toggle:
-  id: ux.interaction.layer-filter-toggle
+  properties:
+    __elementId__: ux.interaction.graph-minimap-toggle
+83d40f13-a2bf-4c08-971d-20379fbace37:
+  id: 83d40f13-a2bf-4c08-971d-20379fbace37
   name: Layer Filter Toggle
   type: interaction
+  layer: ux
   documentation: Toggle visibility of specific architecture layer in model graph
   properties:
     x-handled-by:
       - application.component.motivation-filter-panel
-container-type-filter:
-  id: ux.interaction.container-type-filter
+    __elementId__: ux.interaction.layer-filter-toggle
+3642f113-95f6-404c-a182-7576362111fb:
+  id: 3642f113-95f6-404c-a182-7576362111fb
   name: Container Type Filter
   type: interaction
+  layer: ux
   documentation: Toggle visibility of specific C4 container type (web, api, database, etc.)
   properties:
     x-handled-by:
       - application.component.c4-filter-panel
-technology-filter:
-  id: ux.interaction.technology-filter
+    __elementId__: ux.interaction.container-type-filter
+440fa52b-bf14-4bb0-93d2-2e8db61d6616:
+  id: 440fa52b-bf14-4bb0-93d2-2e8db61d6616
   name: Technology Stack Filter
   type: interaction
+  layer: ux
   documentation: Toggle visibility of containers using specific technology
-element-type-filter:
-  id: ux.interaction.element-type-filter
+  properties:
+    __elementId__: ux.interaction.technology-filter
+935d0303-c4c5-4fe6-9ad1-9f2bfe432041:
+  id: 935d0303-c4c5-4fe6-9ad1-9f2bfe432041
   name: Element Type Filter (Motivation)
   type: interaction
+  layer: ux
   documentation: Toggle visibility of motivation element types (goal, requirement,
     principle, etc.)
   properties:
     x-handled-by:
       - application.component.motivation-filter-panel
-relationship-type-filter:
-  id: ux.interaction.relationship-type-filter
+    __elementId__: ux.interaction.element-type-filter
+13b2d9f1-7f30-47e8-94d5-67fa1e0fbc98:
+  id: 13b2d9f1-7f30-47e8-94d5-67fa1e0fbc98
   name: Relationship Type Filter
   type: interaction
+  layer: ux
   documentation: Toggle visibility of specific relationship types in motivation graph
-filter-clear-all:
-  id: ux.interaction.filter-clear-all
+  properties:
+    __elementId__: ux.interaction.relationship-type-filter
+2c6a728c-43b3-437a-be27-7750ae8c74ba:
+  id: 2c6a728c-43b3-437a-be27-7750ae8c74ba
   name: Clear All Filters
   type: interaction
+  layer: ux
   documentation: Reset all active filters to show all elements
-view-switch-graph-json:
-  id: ux.interaction.view-switch-graph-json
+  properties:
+    __elementId__: ux.interaction.filter-clear-all
+a884f268-930a-45ca-9dd2-06501c6af6cc:
+  id: a884f268-930a-45ca-9dd2-06501c6af6cc
   name: Switch Between Graph and JSON Views
   type: interaction
+  layer: ux
   documentation: Toggle between interactive graph visualization and structured JSON view
   properties:
     x-handled-by:
       - application.component.viewer-app
-view-switch-graph-list:
-  id: ux.interaction.view-switch-graph-list
+    __elementId__: ux.interaction.view-switch-graph-json
+ac2054ab-fe5b-4351-8732-ea07b7e47284:
+  id: ac2054ab-fe5b-4351-8732-ea07b7e47284
   name: Switch Between Graph and List Views (Changesets)
   type: interaction
+  layer: ux
   documentation: Toggle between graph visualization and detailed list view of changeset
-main-tab-navigation:
-  id: ux.interaction.main-tab-navigation
+  properties:
+    __elementId__: ux.interaction.view-switch-graph-list
+38c8c3fe-b6f1-4635-b640-d9c898d21563:
+  id: 38c8c3fe-b6f1-4635-b640-d9c898d21563
   name: Main Tab Navigation
   type: interaction
+  layer: ux
   documentation: Navigate between main application sections (Spec, Model,
     Motivation, Architecture, Changesets)
-layout-algorithm-change:
-  id: ux.interaction.layout-algorithm-change
+  properties:
+    __elementId__: ux.interaction.main-tab-navigation
+184b3f79-0341-4948-b1f4-6d69d217ac3d:
+  id: 184b3f79-0341-4948-b1f4-6d69d217ac3d
   name: Change Layout Algorithm
   type: interaction
+  layer: ux
   documentation: Switch between graph layout algorithms (hierarchical,
     force-directed, radial, circular, tree)
   properties:
     x-handled-by:
       - application.service.layout-engine
-c4-drill-down:
-  id: ux.interaction.c4-drill-down
+    __elementId__: ux.interaction.layout-algorithm-change
+a95ed78a-e952-46b5-b2ce-27c4edc727a6:
+  id: a95ed78a-e952-46b5-b2ce-27c4edc727a6
   name: Drill Down to Container/Component
   type: interaction
+  layer: ux
   documentation: Navigate from system level to container level, or container to
     component level
-c4-breadcrumb-navigate:
-  id: ux.interaction.c4-breadcrumb-navigate
+  properties:
+    __elementId__: ux.interaction.c4-drill-down
+528c113d-8112-4009-af75-ce497692c45d:
+  id: 528c113d-8112-4009-af75-ce497692c45d
   name: C4 Breadcrumb Navigation
   type: interaction
+  layer: ux
   documentation: Navigate up hierarchy using breadcrumb links (Component → Container → System)
-c4-view-level-change:
-  id: ux.interaction.c4-view-level-change
+  properties:
+    __elementId__: ux.interaction.c4-breadcrumb-navigate
+947cbe8a-5d81-45c6-86ab-4d9a44f2fd2d:
+  id: 947cbe8a-5d81-45c6-86ab-4d9a44f2fd2d
   name: C4 View Level Change
   type: interaction
+  layer: ux
   documentation: Jump to specific C4 view level using control panel buttons
-trace-upstream:
-  id: ux.interaction.trace-upstream
+  properties:
+    __elementId__: ux.interaction.c4-view-level-change
+e8a55788-ffd3-4b9c-ae20-cf9d167483a6:
+  id: e8a55788-ffd3-4b9c-ae20-cf9d167483a6
   name: Trace Upstream Dependencies
   type: interaction
+  layer: ux
   documentation: Highlight all upstream dependencies of selected element
     (influences, requirements)
-trace-downstream:
-  id: ux.interaction.trace-downstream
+  properties:
+    __elementId__: ux.interaction.trace-upstream
+bd386064-d61a-4269-89c0-41f0f7ca73b9:
+  id: bd386064-d61a-4269-89c0-41f0f7ca73b9
   name: Trace Downstream Impacts
   type: interaction
+  layer: ux
   documentation: Highlight all downstream impacts of selected element
     (realizations, implementations)
-trace-clear:
-  id: ux.interaction.trace-clear
+  properties:
+    __elementId__: ux.interaction.trace-downstream
+dcf1edfa-fcc3-4460-b250-22eb6b105f2d:
+  id: dcf1edfa-fcc3-4460-b250-22eb6b105f2d
   name: Clear Path Highlighting
   type: interaction
+  layer: ux
   documentation: Remove all path highlighting and return to normal view
-focus-on-element:
-  id: ux.interaction.focus-on-element
+  properties:
+    __elementId__: ux.interaction.trace-clear
+deb112c3-4fba-4365-9c93-fd32fcac1728:
+  id: deb112c3-4fba-4365-9c93-fd32fcac1728
   name: Focus on Element (Direct Relationships)
   type: interaction
+  layer: ux
   documentation: Highlight selected element and its direct relationships only
-show-network:
-  id: ux.interaction.show-network
+  properties:
+    __elementId__: ux.interaction.focus-on-element
+38fe2277-fe62-47dc-9ca7-6a0b65b9d61f:
+  id: 38fe2277-fe62-47dc-9ca7-6a0b65b9d61f
   name: Show Network (Radial Layout)
   type: interaction
+  layer: ux
   documentation: Display radial network view centered on selected element
-focus-mode-toggle:
-  id: ux.interaction.focus-mode-toggle
+  properties:
+    __elementId__: ux.interaction.show-network
+86c60236-d689-404a-9da6-3aa80dd76628:
+  id: 86c60236-d689-404a-9da6-3aa80dd76628
   name: Toggle Focus Mode
   type: interaction
+  layer: ux
   documentation: Enable/disable focus mode to dim non-highlighted elements
-export-png:
-  id: ux.interaction.export-png
+  properties:
+    __elementId__: ux.interaction.focus-mode-toggle
+e10a6a2c-957f-4241-a891-49a96eb2beaa:
+  id: e10a6a2c-957f-4241-a891-49a96eb2beaa
   name: Export Graph as PNG
   type: interaction
+  layer: ux
   documentation: Export current graph view as PNG image using html-to-image library
-export-svg:
-  id: ux.interaction.export-svg
+  properties:
+    __elementId__: ux.interaction.export-png
+07bff0a3-33ee-41bd-97fe-8bcb9c99587f:
+  id: 07bff0a3-33ee-41bd-97fe-8bcb9c99587f
   name: Export Graph as SVG
   type: interaction
+  layer: ux
   documentation: Export current graph view as SVG vector image
-export-json:
-  id: ux.interaction.export-json
+  properties:
+    __elementId__: ux.interaction.export-svg
+a5720d6d-fa05-4c19-ade2-c351eff1a8c4:
+  id: a5720d6d-fa05-4c19-ade2-c351eff1a8c4
   name: Export Graph Data as JSON
   type: interaction
+  layer: ux
   documentation: Export graph structure (nodes and edges) as JSON data
-export-traceability-report:
-  id: ux.interaction.export-traceability-report
+  properties:
+    __elementId__: ux.interaction.export-json
+75f116da-0d11-490d-bfc2-f55258d59467:
+  id: 75f116da-0d11-490d-bfc2-f55258d59467
   name: Export Traceability Report
   type: interaction
+  layer: ux
   documentation: Export comprehensive traceability report showing all element relationships
-json-expand-collapse:
-  id: ux.interaction.json-expand-collapse
+  properties:
+    __elementId__: ux.interaction.export-traceability-report
+d015717d-0670-47f1-8bb0-5434e9eb7c64:
+  id: d015717d-0670-47f1-8bb0-5434e9eb7c64
   name: Expand/Collapse JSON Sections
   type: interaction
+  layer: ux
   documentation: Toggle expansion state of JSON object/array sections
-json-path-navigate:
-  id: ux.interaction.json-path-navigate
+  properties:
+    __elementId__: ux.interaction.json-expand-collapse
+9152b3ff-4f1a-491b-94e0-5dd28b7a1164:
+  id: 9152b3ff-4f1a-491b-94e0-5dd28b7a1164
   name: Navigate to JSON Path
   type: interaction
+  layer: ux
   documentation: Jump to specific path in JSON tree and highlight for 3 seconds
-changeset-select:
-  id: ux.interaction.changeset-select
+  properties:
+    __elementId__: ux.interaction.json-path-navigate
+75efeaa3-516a-49ec-aa1e-f6b50d6de9ad:
+  id: 75efeaa3-516a-49ec-aa1e-f6b50d6de9ad
   name: Select Changeset
   type: interaction
+  layer: ux
   documentation: Select changeset from list to view its contents
-annotation-create:
-  id: ux.interaction.annotation-create
+  properties:
+    __elementId__: ux.interaction.changeset-select
+d88bbb53-be1d-42f5-8a68-332194aea129:
+  id: d88bbb53-be1d-42f5-8a68-332194aea129
   name: Create Annotation
   type: interaction
+  layer: ux
   documentation: Add new annotation to current view or selected element
-schema-select:
-  id: ux.interaction.schema-select
+  properties:
+    __elementId__: ux.interaction.annotation-create
+c99d4434-425f-4917-a51d-522fb8739f7e:
+  id: c99d4434-425f-4917-a51d-522fb8739f7e
   name: Select Schema
   type: interaction
+  layer: ux
   documentation: Select schema from sidebar to view its definition
-inspector-close:
-  id: ux.interaction.inspector-close
+  properties:
+    __elementId__: ux.interaction.schema-select
+a0efbfa4-0cb6-4ebd-a1cc-e6d125e68e63:
+  id: a0efbfa4-0cb6-4ebd-a1cc-e6d125e68e63
   name: Close Inspector Panel
   type: interaction
+  layer: ux
   documentation: Close element inspector panel
-context-menu-open:
-  id: ux.interaction.context-menu-open
+  properties:
+    __elementId__: ux.interaction.inspector-close
+f21374ad-0af9-420e-bd04-f42433832e95:
+  id: f21374ad-0af9-420e-bd04-f42433832e95
   name: Open Context Menu
   type: interaction
+  layer: ux
   documentation: Right-click on graph node to open context menu with actions
-websocket-reconnect:
-  id: ux.interaction.websocket-reconnect
+  properties:
+    __elementId__: ux.interaction.context-menu-open
+e1707d09-d81c-4c8c-8bf1-26b9d7f9bda0:
+  id: e1707d09-d81c-4c8c-8bf1-26b9d7f9bda0
   name: WebSocket Reconnection
   type: interaction
+  layer: ux
   documentation: Automatic reconnection when WebSocket connection drops
+  properties:
+    __elementId__: ux.interaction.websocket-reconnect
