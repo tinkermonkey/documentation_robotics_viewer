@@ -135,19 +135,18 @@ RUN node --version && npm --version && npx playwright --version
 ```bash
 npm run client:generate    # OpenAPI → TypeScript types
 npm run client:check-version  # Verify API version compatibility
-vite build --config vite.config.embedded.ts  # Bundle React app
-npm run package:embedded   # Create Python distribution bundle
+vite build --config vite.config.embedded.ts  # Bundle React app directly to dr-viewer-bundle/
 ```
 
 **Vite Configuration (`vite.config.embedded.ts:14-31`):**
 ```typescript
 build: {
-  outDir: 'dist/embedded',
+  outDir: 'dist/embedded/dr-viewer-bundle',  // Builds directly to final location
   sourcemap: false,  // Smaller bundle
   minify: 'esbuild',  // Fast minification
   target: 'es2015',   // Modern browsers
   rollupOptions: {
-    input: { main: 'public/index-embedded.html' },
+    input: { main: 'index.html' },  // Root-level HTML entry point
     output: {
       manualChunks: {
         vendor: ['react', 'react-dom', 'zustand'],  // Better caching
@@ -159,27 +158,22 @@ build: {
 }
 ```
 
-**Python Packaging (`scripts/package-embedded.cjs`):**
-1. Copy `dist/embedded/` → `dist/embedded/dr-viewer-bundle/`
-2. Generate `manifest.json` with SHA256 file hashes
-3. Create integration README with Python/FastAPI examples
-4. Output bundle size metrics (total size, gzip estimate)
-
 **Output Structure:**
 ```
 dist/embedded/dr-viewer-bundle/
-├── index.html           # Entry point
-├── manifest.json        # File hashes + metadata
-├── README.md            # Python integration guide
-└── assets/
-    ├── *.js             # Bundled JavaScript (vendor, reactflow chunks)
-    └── *.css            # Tailwind CSS v4 compiled styles
+├── index.html           # Entry point (processed by Vite)
+├── assets/
+│   ├── *.js             # Bundled JavaScript (vendor, reactflow chunks)
+│   └── *.css            # Tailwind CSS v4 compiled styles
+└── workers/
+    ├── crossLayerWorker.js
+    └── layoutWorker.js
 ```
 
 **File Locations:**
-- Vite config: `/home/austinsand/workspace/orchestrator/documentation_robotics_viewer/vite.config.embedded.ts`
-- Package script: `/home/austinsand/workspace/orchestrator/documentation_robotics_viewer/scripts/package-embedded.cjs`
-- Package.json: `/home/austinsand/workspace/orchestrator/documentation_robotics_viewer/package.json`
+- Vite config: `vite.config.embedded.ts`
+- HTML entry: `index.html` (project root)
+- Package.json: `package.json`
 
 ### Pre-Commit Hooks (Husky)
 

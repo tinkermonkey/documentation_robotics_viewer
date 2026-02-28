@@ -8,8 +8,7 @@
   "scripts": {
     "dev": "vite --config vite.config.embedded.ts --port 3001 --host",
     "dev:embedded": "vite --config vite.config.embedded.ts --port 3001 --host",
-    "build": "npm run client:generate && npm run client:check-version && vite build --config vite.config.embedded.ts && npm run package:embedded",
-    "package:embedded": "node scripts/package-embedded.cjs",
+    "build": "npm run client:generate && npm run client:check-version && rm -rf dist/embedded && vite build --config vite.config.embedded.ts",
     "preview": "vite preview --config vite.config.embedded.ts",
     "start": "bash scripts/start-servers.sh",
     "verify": "bash scripts/verify-setup.sh",

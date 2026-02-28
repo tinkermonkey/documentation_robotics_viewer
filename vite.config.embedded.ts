@@ -12,13 +12,13 @@ export default defineConfig({
   root: '.',
   publicDir: 'public',
   build: {
-    outDir: 'dist/embedded',
+    outDir: 'dist/embedded/dr-viewer-bundle',
     sourcemap: false, // Disable sourcemaps for smaller bundle
     minify: 'esbuild', // Use esbuild for fast minification
     target: 'es2015', // Target modern browsers
     rollupOptions: {
       input: {
-        main: path.resolve(__dirname, 'public/index-embedded.html')
+        main: path.resolve(__dirname, 'index.html')
       },
       output: {
         manualChunks: {
