@@ -8,7 +8,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export type SpecViewType = 'details' | 'graph';
-export type ModelViewType = 'graph' | 'json';
+export type ModelViewType = 'graph' | 'details';
 export type ChangesetViewType = 'graph' | 'list';
 
 interface ViewPreferenceState {
@@ -27,13 +27,13 @@ const isValidSpecView = (view: unknown): view is SpecViewType =>
   typeof view === 'string' && ['details', 'graph'].includes(view);
 
 const isValidModelView = (view: unknown): view is ModelViewType =>
-  typeof view === 'string' && ['graph', 'json'].includes(view);
+  typeof view === 'string' && ['graph', 'details'].includes(view);
 
 const isValidChangesetView = (view: unknown): view is ChangesetViewType =>
   typeof view === 'string' && ['graph', 'list'].includes(view);
 
 const initialState = {
-  specView: 'details' as SpecViewType,
+  specView: 'graph' as SpecViewType,
   modelView: 'graph' as ModelViewType,
   changesetView: 'graph' as ChangesetViewType,
 };
@@ -73,7 +73,7 @@ export const useViewPreferenceStore = create<ViewPreferenceState>()(
     }),
     {
       name: 'dr-viewer-preferences',
-      version: 5, // Incremented: spec view extended to 'details' | 'graph'
+      version: 6, // Incremented: spec default changed to 'graph'; model 'json' renamed to 'details'
     }
   )
 );

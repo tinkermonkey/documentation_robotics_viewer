@@ -72,7 +72,7 @@ export default function ModelRoute() {
   const [selectedLayerId, setSelectedLayerId] = useState<string | null>(search?.layer || null);
   const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const activeView = view === 'json' ? 'json' : 'graph';
+  const activeView = view === 'details' ? 'details' : 'graph';
 
   // Cleanup highlight timeout on unmount
   useEffect(() => {

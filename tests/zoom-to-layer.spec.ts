@@ -124,7 +124,7 @@ test.describe('Zoom-to-Layer Interactions', () => {
   });
 
   test('clicking schema in Spec sidebar zooms graph', async ({ page }) => {
-    // Navigate to Spec view (automatically goes to /spec/details)
+    // Navigate to Spec view (automatically goes to /spec/graph)
     await page.click('[data-testid="main-tab-spec"]');
     await page.waitForSelector('.react-flow', { timeout: 10000 });
     await page.waitForLoadState('networkidle');

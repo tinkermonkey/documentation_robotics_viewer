@@ -44,7 +44,7 @@ const modelViewRoute = createRoute({
 const specRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/spec',
-  component: () => <Navigate to="/spec/$view" params={{ view: 'details' }} />,
+  component: () => <Navigate to="/spec/$view" params={{ view: 'graph' }} />,
 });
 
 const specViewRoute = createRoute({

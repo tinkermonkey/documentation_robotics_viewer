@@ -56,13 +56,19 @@ export class SpecGraphBuilder {
     const elementMap = new Map<string, ModelElement>();
     for (const key of keys) {
       const def = elementTypes[key];
+      // Extract attribute properties (stored under properties.attributes.properties in DR spec format)
+      const attrDef = def?.properties?.attributes;
+      const attributeProps = attrDef?.properties as Record<string, SchemaDefinition> | undefined;
       const element: ModelElement = {
         id: uuidv4(),
         type: 'json-schema-element',
         name: (typeof def?.title === 'string' ? def.title : null) ?? key,
         description: typeof def?.description === 'string' ? def.description : undefined,
         layerId: selectedSchemaId,
-        properties: { schemaKey: key, ...(def as Record<string, unknown>) },
+        properties: {
+          _schemaKey: key,
+          ...(attributeProps || {}),
+        },
         visual: {
           position: { x: 0, y: 0 },
           size: { width: 240, height: 120 },
@@ -81,36 +87,38 @@ export class SpecGraphBuilder {
       const properties = def?.properties;
       if (!properties || typeof properties !== 'object') continue;
 
+      // Helper to add a relationship edge from a $ref-bearing schema
+      const addRef = (ref: string, label: string) => {
+        const targetKey = resolveRefKey(ref);
+        const targetElement = elementMap.get(targetKey);
+        if (targetElement) {
+          relationships.push({
+            id: uuidv4(),
+            type: 'reference',
+            sourceId: sourceElement.id,
+            targetId: targetElement.id,
+            properties: { label },
+          });
+        }
+      };
+
+      // Scan top-level properties for $ref (legacy flat-key format)
       for (const [propName, propDef] of Object.entries(properties)) {
         const prop = propDef as SchemaDefinition;
-
-        // Direct $ref
-        if (typeof prop.$ref === 'string') {
-          const targetKey = resolveRefKey(prop.$ref);
-          const targetElement = elementMap.get(targetKey);
-          if (targetElement) {
-            relationships.push({
-              id: uuidv4(),
-              type: 'reference',
-              sourceId: sourceElement.id,
-              targetId: targetElement.id,
-              properties: { label: propName },
-            });
-          }
-        }
-
-        // Array items $ref
+        if (typeof prop.$ref === 'string') addRef(prop.$ref, propName);
         if (prop.items && typeof (prop.items as SchemaDefinition).$ref === 'string') {
-          const targetKey = resolveRefKey((prop.items as SchemaDefinition).$ref as string);
-          const targetElement = elementMap.get(targetKey);
-          if (targetElement) {
-            relationships.push({
-              id: uuidv4(),
-              type: 'reference',
-              sourceId: sourceElement.id,
-              targetId: targetElement.id,
-              properties: { label: propName },
-            });
+          addRef((prop.items as SchemaDefinition).$ref as string, propName);
+        }
+      }
+
+      // Scan properties.relationships.properties for $ref (DR spec v0.8.1 format)
+      const relProps = properties.relationships?.properties;
+      if (relProps && typeof relProps === 'object') {
+        for (const [relName, relDef] of Object.entries(relProps)) {
+          const rel = relDef as SchemaDefinition;
+          if (typeof rel.$ref === 'string') addRef(rel.$ref, relName);
+          if (rel.items && typeof (rel.items as SchemaDefinition).$ref === 'string') {
+            addRef((rel.items as SchemaDefinition).$ref as string, relName);
           }
         }
       }
