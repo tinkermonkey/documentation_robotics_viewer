@@ -51,10 +51,12 @@ function createModelElement(
   stroke = '#000000',
   properties: Record<string, unknown> = {}
 ): ModelElement {
+  const specNodeId = ELEMENT_TYPE_TO_SPEC_NODE_ID[type] ?? `${layerId}.${type}`;
   return {
     id,
     type,
-    specNodeId: ELEMENT_TYPE_TO_SPEC_NODE_ID[type] ?? `${layerId}.${type}`,
+    specNodeId,
+    elementId: `${specNodeId}.${id}`,
     name,
     layerId,
     description: `Mock ${type} element for testing`,

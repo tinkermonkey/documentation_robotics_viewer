@@ -52,10 +52,12 @@ function createElement(
   type: string,
   properties: Record<string, unknown> = {}
 ): ModelElement {
+  const specNodeId = TYPE_TO_SPEC_NODE_ID[type] ?? `unknown.${type.toLowerCase()}`;
   return {
     id,
     type,
-    specNodeId: TYPE_TO_SPEC_NODE_ID[type] ?? `unknown.${type.toLowerCase()}`,
+    specNodeId,
+    elementId: `${specNodeId}.${id}`,
     name: `Test ${id}`,
     layerId: 'test-layer',
     properties,
@@ -111,7 +113,6 @@ function createTestModel(layers: Record<string, ModelElement[]>): MetaModel {
   return {
     id: 'test-model',
     name: 'Test Model',
-    version: '1.0.0',
     description: 'Integration test model',
     layers: layerMap,
     references: [],
