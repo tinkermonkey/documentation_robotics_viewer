@@ -8,7 +8,7 @@
 
 import { memo } from 'react';
 import SpecViewer from '../../apps/embedded/components/SpecViewer';
-import SpecSchemasSidebar from '../../apps/embedded/components/SpecSchemasSidebar';
+import LayerBrowserSidebar from '../../apps/embedded/components/LayerBrowserSidebar';
 import AnnotationPanel from '../../apps/embedded/components/AnnotationPanel';
 import SchemaInfoPanel from '../../apps/embedded/components/SchemaInfoPanel';
 import SharedLayout from '../../apps/embedded/components/SharedLayout';
@@ -24,7 +24,7 @@ export interface SpecRouteCompositionProps {
   selectedSchemaId: string | null;
   /** Whether to show right sidebar (default: true) */
   showRightSidebar?: boolean;
-  /** Callback when user selects a schema in the left sidebar */
+  /** Callback when user selects a layer in the left sidebar */
   onSelectSchema?: (schemaId: string | null) => void;
 }
 
@@ -49,10 +49,10 @@ export const SpecRouteComposition = memo<SpecRouteCompositionProps>(({
       showLeftSidebar={true}
       showRightSidebar={showRightSidebar}
       leftSidebarContent={
-        <SpecSchemasSidebar
+        <LayerBrowserSidebar
           specData={specData}
-          selectedSchemaId={selectedSchemaId}
-          onSelectSchema={onSelectSchema}
+          selectedId={selectedSchemaId}
+          onSelectLayer={onSelectSchema}
         />
       }
       rightSidebarContent={

@@ -5,7 +5,7 @@ import GraphViewer from '../../../core/components/GraphViewer';
 import ModelJSONViewer from '../components/ModelJSONViewer';
 import AnnotationPanel from '../components/AnnotationPanel';
 import SchemaInfoPanel from '../components/SchemaInfoPanel';
-import ModelLayersSidebar from '../components/ModelLayersSidebar';
+import LayerBrowserSidebar from '../components/LayerBrowserSidebar';
 import LayerTypesLegend from '../components/LayerTypesLegend';
 import NodeDetailsPanel from '../components/NodeDetailsPanel';
 import GraphStatisticsPanel from '../components/GraphStatisticsPanel';
@@ -179,9 +179,11 @@ export default function ModelRoute() {
       showLeftSidebar={true}
       showRightSidebar={true}
       leftSidebarContent={
-        <ModelLayersSidebar
-          selectedLayerId={selectedLayerId}
+        <LayerBrowserSidebar
+          specData={specData}
+          selectedId={selectedLayerId}
           onSelectLayer={handleLayerSelect}
+          getCount={(id) => model?.layers[id]?.elements?.length ?? 0}
         />
       }
       rightSidebarContent={

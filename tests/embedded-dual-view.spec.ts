@@ -164,7 +164,7 @@ test.describe('Embedded App - Dual View URL Routing', () => {
       await page.waitForSelector('[data-testid="spec-viewer"]', { timeout: 10000 });
 
       // Select a schema from the sidebar
-      const firstSchemaButton = page.locator('[data-testid^="schema-item-"]').first();
+      const firstSchemaButton = page.locator('[data-testid^="layer-item-"]').first();
       if (await firstSchemaButton.isVisible()) {
         await firstSchemaButton.click();
         await page.waitForLoadState('networkidle');

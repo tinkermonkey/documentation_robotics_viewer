@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import SpecViewer from '../components/SpecViewer';
 import SpecGraphView from '../components/SpecGraphView';
-import SpecSchemasSidebar from '../components/SpecSchemasSidebar';
+import LayerBrowserSidebar from '../components/LayerBrowserSidebar';
 import AnnotationPanel from '../components/AnnotationPanel';
 import SchemaInfoPanel from '../components/SchemaInfoPanel';
 import SharedLayout from '../components/SharedLayout';
@@ -79,10 +79,16 @@ export default function SpecRoute() {
       showLeftSidebar={true}
       showRightSidebar={true}
       leftSidebarContent={
-        <SpecSchemasSidebar
+        <LayerBrowserSidebar
           specData={specData}
-          selectedSchemaId={selectedSchemaId}
-          onSelectSchema={setSelectedSchemaId}
+          selectedId={selectedSchemaId}
+          onSelectLayer={setSelectedSchemaId}
+          getCount={(id) => {
+            const schema = specData?.schemas[id];
+            if (!schema) return 0;
+            const nodeSchemas = schema.nodeSchemas as Record<string, unknown> | undefined;
+            return nodeSchemas ? Object.keys(nodeSchemas).length : 0;
+          }}
         />
       }
       rightSidebarContent={

@@ -131,7 +131,7 @@ test.describe('Zoom-to-Layer Interactions', () => {
 
     // Find a schema item in the left sidebar
     const leftSidebar = page.locator('[data-testid="left-sidebar"]');
-    const schemaItems = leftSidebar.locator('[data-testid^="schema-item-"]');
+    const schemaItems = leftSidebar.locator('[data-testid^="layer-item-"]');
 
     const schemaCount = await schemaItems.count();
     if (schemaCount > 0) {
