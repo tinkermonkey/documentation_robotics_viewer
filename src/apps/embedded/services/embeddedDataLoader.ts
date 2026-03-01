@@ -325,15 +325,29 @@ interface ApiModelResponse {
  * and cross-layer links → model.references.
  */
 function adaptApiModel(data: ApiModelResponse): MetaModel {
+  if (!Array.isArray(data?.nodes) || !Array.isArray(data?.links)) {
+    throw new Error(
+      'The model API returned an unexpected response format. ' +
+      `Expected { nodes: [], links: [] } but got nodes=${JSON.stringify(data?.nodes === undefined ? 'missing' : typeof data.nodes)}, ` +
+      `links=${JSON.stringify(data?.links === undefined ? 'missing' : typeof data.links)}. ` +
+      'Please check that the DR CLI server is running a compatible version.'
+    );
+  }
+
   // Build a lookup from node id → layer_id for reference resolution
   const nodeLayerMap = new Map<string, string>();
   for (const node of data.nodes) {
+    if (!node.id || !node.layer_id) {
+      console.warn('[adaptApiModel] Node missing required id or layer_id — skipping', { nodeId: node.id, layerId: node.layer_id, name: node.name });
+      continue;
+    }
     nodeLayerMap.set(node.id, node.layer_id);
   }
 
   // Group nodes by layer
   const layerNodes = new Map<string, ApiNode[]>();
   for (const node of data.nodes) {
+    if (!node.id || !node.layer_id) continue; // already warned above
     const group = layerNodes.get(node.layer_id) ?? [];
     group.push(node);
     layerNodes.set(node.layer_id, group);
@@ -371,6 +385,10 @@ function adaptApiModel(data: ApiModelResponse): MetaModel {
     const relationships: Relationship[] = intraLayerLinks
       .filter((link) => {
         const srcLayer = nodeLayerMap.get(link.source);
+        if (srcLayer === undefined) {
+          console.warn('[adaptApiModel] Intra-layer link references unknown source node — skipping', { linkId: link.id, source: link.source });
+          return false;
+        }
         return srcLayer === layerId;
       })
       .map((link) => ({
@@ -403,17 +421,20 @@ function adaptApiModel(data: ApiModelResponse): MetaModel {
     },
   }));
 
+  const computedLayerCount = Object.keys(layers).length;
+  const computedElementCount = data.nodes.filter((n) => n.id && n.layer_id).length;
   const metadata: ModelMetadata | undefined = data.metadata
     ? {
-        loadedAt: new Date().toISOString(),
-        layerCount: layers ? Object.keys(layers).length : 0,
-        elementCount: data.nodes.length,
         ...(data.metadata as ModelMetadata),
+        // Computed values always win over server-provided values for correctness
+        loadedAt: new Date().toISOString(),
+        layerCount: computedLayerCount,
+        elementCount: computedElementCount,
       }
     : {
         loadedAt: new Date().toISOString(),
-        layerCount: Object.keys(layers).length,
-        elementCount: data.nodes.length,
+        layerCount: computedLayerCount,
+        elementCount: computedElementCount,
       };
 
   return {

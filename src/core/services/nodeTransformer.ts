@@ -359,7 +359,8 @@ export class NodeTransformer {
    * Uses specNodeId when available; falls back to type mapping for legacy elements.
    */
   private extractNodeData(element: ModelElement, _nodeType: string, layerId: string): UnifiedNodeData {
-    const specNodeId = element.specNodeId ?? nodeConfigLoader.mapElementType(element.type) ?? element.type;
+    // getNodeTypeForElement already validated that one of these resolves — no third fallback needed
+    const specNodeId = element.specNodeId ?? nodeConfigLoader.mapElementType(element.type) ?? element.type as NodeType;
 
     return {
       nodeType: specNodeId as NodeType,
@@ -563,8 +564,10 @@ export class NodeTransformer {
           };
         }
 
-        // Map element type to NodeType via config
-        const mappedType = nodeConfigLoader.mapElementType(element.type);
+        // Resolve NodeType: prefer specNodeId (new API path), fall back to typeMap
+        const mappedType = element.specNodeId
+          ? (element.specNodeId as NodeType)
+          : nodeConfigLoader.mapElementType(element.type);
 
         if (!mappedType) {
           // Warning already logged by nodeConfigLoader.mapElementType()
