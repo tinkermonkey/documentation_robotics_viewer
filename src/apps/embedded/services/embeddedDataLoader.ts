@@ -547,18 +547,6 @@ export class EmbeddedDataLoader {
   }
 
   /**
-   * Load a specific element by ID
-   * Generic type parameter allows callers to specify expected return type
-   */
-  async loadElement<T = unknown>(elementId: string): Promise<T> {
-    const data = await this.fetchJson<T>(
-      `${API_BASE}/elements/${encodeURIComponent(elementId)}`,
-      `load element ${elementId}`
-    );
-    return data;
-  }
-
-  /**
    * Load the current model from the DR CLI server's structured nodes/links API
    */
   async loadModel(): Promise<MetaModel> {

@@ -137,29 +137,6 @@ export class ApiClient {
     return response.json();
   }
 
-  async getapielementsid(id: string): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/elements/${encodeURIComponent(id)}`;
-    const url = `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'GET',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`GET /api/elements/:id failed: ${response.status} ${errorText}`);
-    }
-
-    return response.json();
-  }
-
   async getapispec(): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
     const pathStr = `/api/spec`;
@@ -487,18 +464,6 @@ const apiClient = getApiClient();
     return useQuery({
       queryKey: ['getapilayerslayerName', layerName],
       queryFn: () => apiClient.getapilayerslayerName(layerName),
-      ...options
-    });
-  }
-
-  /**
-   * React Query hook for getapielementsid
-   * Auto-manages caching and invalidation
-   */
-  export function useGetapielementsid(id: string, options?: QueryOptions) {
-    return useQuery({
-      queryKey: ['getapielementsid', id],
-      queryFn: () => apiClient.getapielementsid(id),
       ...options
     });
   }
