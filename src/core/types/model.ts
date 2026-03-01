@@ -35,6 +35,9 @@ export interface ModelElement {
   type: string;
   /** Spec node identifier from API (e.g. 'motivation.goal'). Used directly as NodeType key. */
   specNodeId?: string;
+  /** Stable semantic identity in 3-segment dot notation (e.g. 'motivation.goal.my-goal').
+   *  Present when the element has a stable semantic ID. Use this (not id) for annotation lookup. */
+  elementId?: string;
   name: string;
   description?: string;
   layerId: string;

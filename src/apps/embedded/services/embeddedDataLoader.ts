@@ -297,6 +297,10 @@ interface ApiNode {
   name: string;
   description?: string;
   attributes?: Record<string, unknown>;
+  /** Stable 3-segment dot ID for annotation lookup. Accept both camelCase and snake_case
+   *  until the updated spec arrives (team confirmed field name is elementId). */
+  elementId?: string;
+  element_id?: string;
 }
 
 interface ApiLink {
@@ -371,6 +375,7 @@ function adaptApiModel(data: ApiModelResponse): MetaModel {
       id: node.id,
       type: node.type,
       specNodeId: node.spec_node_id,
+      elementId: node.elementId ?? node.element_id,
       name: node.name,
       description: node.description,
       layerId: node.layer_id,
