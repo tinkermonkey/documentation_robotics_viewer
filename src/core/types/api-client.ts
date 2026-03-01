@@ -77,8 +77,10 @@ export interface paths {
                         "application/json": {
                             /** @description All architecture elements across all layers */
                             nodes: {
-                                /** @description Element ID (UUID or semantic dot-ID) */
+                                /** @description Element ID (UUID for spec-node aligned elements) */
                                 id: string;
+                                /** @description Stable semantic ID in layer.type.name format (e.g. motivation.goal.my-goal). Present only on legacy-format elements. Use this field — not id — when calling the annotation API. Elements without this field (pure spec-node format) do not yet support annotation creation. */
+                                elementId?: string;
                                 /** @description Spec node type ID (e.g. motivation.goal) */
                                 spec_node_id: string;
                                 /** @description Element type (e.g. goal, endpoint) */
@@ -93,32 +95,30 @@ export interface paths {
                                 attributes?: {
                                     [key: string]: unknown;
                                 };
-                                /** @description Associated annotations */
-                                annotations?: {
-                                    /** @description Annotation ID */
-                                    id: string;
-                                    /** @description Target element ID */
-                                    elementId: string;
-                                    /** @description Author name */
-                                    author: string;
-                                    /** @description Annotation content */
-                                    content: string;
-                                    /** @description Creation timestamp */
-                                    createdAt: string;
-                                    /** @description Last update timestamp */
-                                    updatedAt?: string;
-                                    /** @description Annotation tags */
-                                    tags?: string[];
-                                    /** @description Resolution status */
-                                    resolved?: boolean;
-                                    /** @description Annotation replies */
-                                    replies?: {
-                                        id: string;
-                                        author: string;
-                                        content: string;
-                                        createdAt: string;
+                                /** @description Source code provenance linking this element to its implementation */
+                                source_reference?: {
+                                    /** @enum {string} */
+                                    provenance: "extracted" | "manual" | "inferred" | "generated";
+                                    locations: {
+                                        file: string;
+                                        symbol?: string;
                                     }[];
-                                }[];
+                                    repository?: {
+                                        url?: string;
+                                        commit?: string;
+                                    };
+                                };
+                                /** @description Element lifecycle metadata (timestamps, version) */
+                                metadata?: {
+                                    created_at?: string;
+                                    updated_at?: string;
+                                    created_by?: string;
+                                    version?: number;
+                                };
+                                /** @description Legacy property bag (deprecated — prefer attributes) */
+                                properties?: {
+                                    [key: string]: unknown;
+                                };
                             }[];
                             /** @description Intra-layer relationships and cross-layer references */
                             links: {

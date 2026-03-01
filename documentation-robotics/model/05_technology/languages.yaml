@@ -1,9 +1,0 @@
-3a48a7e8-82c0-423f-a0d9-c3437a279bae:
-  id: 3a48a7e8-82c0-423f-a0d9-c3437a279bae
-  name: TypeScript
-  type: language
-  layer: technology
-  documentation: Programming Language
-  properties:
-    version: 5.9.3
-    __elementId__: technology.language.typescript

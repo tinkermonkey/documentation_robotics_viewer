@@ -1,49 +1,49 @@
 version: 0.1.1
-installed_at: 2026-02-28T14:18:55.173Z
+installed_at: 2026-03-01T14:59:39.826Z
 components:
   agents:
     dr-advisor.md:
-      hash: 75de1048
+      hash: d545650a
       modified: false
     dr-architect.md:
-      hash: 479fb731
+      hash: 9ab2e38c
       modified: false
   skills:
     dr_01_motivation_layer/SKILL.md:
-      hash: 956e6a8e
+      hash: f1ac281f
       modified: false
     dr_02_business_layer/SKILL.md:
-      hash: b35fae46
+      hash: 0a7c7c8c
       modified: false
     dr_03_security_layer/SKILL.md:
-      hash: 36ccffb7
+      hash: 8c6c59fe
       modified: false
     dr_04_application_layer/SKILL.md:
-      hash: feddd1d7
+      hash: 2aa5d00b
       modified: false
     dr_05_technology_layer/SKILL.md:
-      hash: e62fd9d8
+      hash: 3a45877b
       modified: false
     dr_06_api_layer/SKILL.md:
-      hash: 4e73ab69
+      hash: 69817afe
       modified: false
     dr_07_data_model_layer/SKILL.md:
-      hash: f12a5198
+      hash: 37afbb23
       modified: false
     dr_08_dataset_layer/SKILL.md:
-      hash: 21468d3d
+      hash: 82a528b1
       modified: false
     dr_09_ux_layer/SKILL.md:
-      hash: 3843173e
+      hash: 1d9825f5
       modified: false
     dr_10_navigation_layer/SKILL.md:
-      hash: 0f5e2a66
+      hash: 446dc275
       modified: false
     dr_11_apm_layer/SKILL.md:
-      hash: 075cb381
+      hash: 01c3714e
       modified: false
     dr_12_testing_layer/SKILL.md:
-      hash: 899b60e6
+      hash: 0e7d488a
       modified: false
     dr_changeset_reviewer/SKILL.md:
       hash: 88c2ff5e
