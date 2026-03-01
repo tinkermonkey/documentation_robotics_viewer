@@ -88,7 +88,7 @@ test.describe('Example Implementation YAML Model', () => {
 
 
   test('should parse data model entities', () => {
-    const entitiesPath = path.join(exampleImplPath, '07_data_model', 'objects.yaml');
+    const entitiesPath = path.join(exampleImplPath, '07_data_model', 'entities.yaml');
     expect(fs.existsSync(entitiesPath)).toBeTruthy();
 
     const content = fs.readFileSync(entitiesPath, 'utf-8');
