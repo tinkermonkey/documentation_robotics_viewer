@@ -6,7 +6,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import { MetaModel, ModelElement, Relationship, Layer } from '../../../core/types';
-import type { SpecDataResponse, SchemaDefinition, RelationshipCatalog } from './embeddedDataLoader';
+import type { SpecDataResponse, SchemaDefinition, RelationshipCatalog, RelationshipType } from './embeddedDataLoader';
 
 // JSON Schema meta-keys to exclude when discovering element types (flat-key format)
 const SCHEMA_META_KEYS = new Set([
@@ -149,6 +149,26 @@ export class SpecGraphBuilder {
       relationships.push(...this.buildCatalogRelationships(specData.relationshipCatalog, elementMap));
     }
 
+    // Secondary: build edges from schema-level relationshipTypes — only when the global catalog produced nothing
+    if (relationships.length === 0) {
+      const schemaRelTypes = (schema as Record<string, unknown>).relationshipTypes;
+      if (Array.isArray(schemaRelTypes)) {
+        const pseudoCatalog: RelationshipCatalog = { relationshipTypes: schemaRelTypes as RelationshipType[] };
+        relationships.push(...this.buildCatalogRelationships(pseudoCatalog, elementMap));
+      }
+    }
+
+    if (relationships.length === 0) {
+      const hasCatalog = !!specData.relationshipCatalog;
+      const catalogTypes = specData.relationshipCatalog?.relationshipTypes?.length ?? 0;
+      const sampleKeys = [...elementMap.keys()].slice(0, 5).join(', ');
+      console.warn(
+        `[SpecGraphBuilder] No relationships found for schema "${selectedSchemaId}". ` +
+        `catalog=${hasCatalog}, catalogTypes=${catalogTypes}, ` +
+        `elementKeys=[${sampleKeys}${elementMap.size > 5 ? '...' : ''}]`
+      );
+    }
+
     const elements = Array.from(elementMap.values());
 
     const layer: Layer = {
@@ -180,10 +200,10 @@ export class SpecGraphBuilder {
     for (const relType of catalog.relationshipTypes ?? []) {
       const label = relType.id || relType.name || 'reference';
       for (const sourceType of relType.sourceTypes ?? []) {
-        const sourceEl = elementMap.get(sourceType);
+        const sourceEl = this.findByType(sourceType, elementMap);
         if (!sourceEl) continue;
         for (const targetType of relType.targetTypes ?? []) {
-          const targetEl = elementMap.get(targetType);
+          const targetEl = this.findByType(targetType, elementMap);
           if (!targetEl) continue;
           relationships.push({
             id: uuidv4(),
@@ -196,5 +216,26 @@ export class SpecGraphBuilder {
       }
     }
     return relationships;
+  }
+
+  private findByType(type: string, elementMap: Map<string, ModelElement>): ModelElement | undefined {
+    // 1. Exact match (fast path)
+    const exact = elementMap.get(type);
+    if (exact) return exact;
+    // 2. Strip namespace prefix: "motivation.Goal" → "Goal"
+    const dotIdx = type.lastIndexOf('.');
+    if (dotIdx !== -1) {
+      const suffix = type.slice(dotIdx + 1);
+      const bySuffix = elementMap.get(suffix);
+      if (bySuffix) return bySuffix;
+    }
+    // 3. Case-insensitive scan (last resort — catalog is small)
+    const lower = type.toLowerCase();
+    for (const [key, el] of elementMap) {
+      if (key.toLowerCase() === lower) return el;
+      const keySuffix = key.slice(key.lastIndexOf('.') + 1).toLowerCase();
+      if (keySuffix === lower) return el;
+    }
+    return undefined;
   }
 }

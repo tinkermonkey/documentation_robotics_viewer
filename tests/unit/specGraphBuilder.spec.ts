@@ -250,4 +250,79 @@ test.describe('SpecGraphBuilder.buildSpecModel()', () => {
     const layer = model!.layers['01_motivation'];
     expect(layer.relationships[0].type).toBe('MyRelName');
   });
+
+  test('fuzzy matching: catalog uses namespace-prefixed type "motivation.Goal" → matches schema key "Goal"', () => {
+    const specData: SpecDataResponse = {
+      schemas: {
+        '01_motivation': {
+          nodeSchemas: {
+            Goal: { title: 'Goal' },
+            Driver: { title: 'Driver' },
+          },
+        } as unknown as SchemaDefinition,
+      },
+      relationshipCatalog: {
+        relationshipTypes: [
+          {
+            id: 'influences',
+            sourceTypes: ['motivation.Goal'],
+            targetTypes: ['motivation.Driver'],
+          },
+        ],
+      },
+    } as SpecDataResponse;
+    const model = builder.buildSpecModel(specData, '01_motivation');
+    const layer = model!.layers['01_motivation'];
+    expect(layer.relationships.length).toBeGreaterThanOrEqual(1);
+    expect(layer.relationships[0].type).toBe('influences');
+  });
+
+  test('fuzzy matching: catalog uses uppercase type "GOAL" → matches schema key "goal" (case-insensitive)', () => {
+    const specData: SpecDataResponse = {
+      schemas: {
+        '01_motivation': {
+          nodeSchemas: {
+            goal: { title: 'Goal' },
+            driver: { title: 'Driver' },
+          },
+        } as unknown as SchemaDefinition,
+      },
+      relationshipCatalog: {
+        relationshipTypes: [
+          {
+            id: 'influences',
+            sourceTypes: ['GOAL'],
+            targetTypes: ['DRIVER'],
+          },
+        ],
+      },
+    } as SpecDataResponse;
+    const model = builder.buildSpecModel(specData, '01_motivation');
+    const layer = model!.layers['01_motivation'];
+    expect(layer.relationships.length).toBeGreaterThanOrEqual(1);
+  });
+
+  test('schema-level relationshipTypes creates edges even without global catalog', () => {
+    const specData: SpecDataResponse = {
+      schemas: {
+        '01_motivation': {
+          nodeSchemas: {
+            Goal: { title: 'Goal' },
+            Driver: { title: 'Driver' },
+          },
+          relationshipTypes: [
+            {
+              id: 'influences',
+              sourceTypes: ['Goal'],
+              targetTypes: ['Driver'],
+            },
+          ],
+        } as unknown as SchemaDefinition,
+      },
+    } as SpecDataResponse;
+    const model = builder.buildSpecModel(specData, '01_motivation');
+    const layer = model!.layers['01_motivation'];
+    expect(layer.relationships.length).toBeGreaterThanOrEqual(1);
+    expect(layer.relationships[0].type).toBe('influences');
+  });
 });
