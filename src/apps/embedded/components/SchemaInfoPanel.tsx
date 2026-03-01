@@ -24,7 +24,6 @@ export const SchemaInfoPanel: React.FC<SchemaInfoPanelProps> = ({ className = ''
   }
 
   // Extract metadata from model
-  const version = (model.metadata?.version as string | undefined) || (model.version as string | undefined) || 'Unknown';
   const lastModified = (model.metadata?.lastModified as string | undefined) || (model.metadata?.generatedDate as string | undefined) || (model.metadata?.modified as string | undefined) || 'Unknown';
   const schemaVersion = (model.metadata?.schemaVersion as string | undefined) || 'Unknown';
   const elementCount = (model.metadata?.elementCount as number | undefined) || 0;
@@ -76,16 +75,6 @@ export const SchemaInfoPanel: React.FC<SchemaInfoPanelProps> = ({ className = ''
 
       {/* Schema Details */}
       <div className="space-y-3">
-        {/* Version */}
-        <div>
-          <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-            Version
-          </div>
-          <div className="text-sm font-mono text-gray-900 dark:text-white">
-            {version}
-          </div>
-        </div>
-
         {/* Schema Version */}
         <div>
           <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">

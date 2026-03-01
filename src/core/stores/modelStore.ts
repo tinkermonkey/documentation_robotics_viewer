@@ -9,7 +9,6 @@ interface ModelStore {
   model: MetaModel | null;
   loading: boolean;
   error: string | null;
-  version: string | null;
 
   // Actions
   setModel: (model: MetaModel) => void;
@@ -31,14 +30,12 @@ export const useModelStore = create<ModelStore>((set, get) => ({
   model: null,
   loading: false,
   error: null,
-  version: null,
 
   // Actions
   setModel: (model: MetaModel) =>
     set({
       model,
       error: null,
-      version: model.version
     }),
 
   setLoading: (loading: boolean) => set({ loading }),
@@ -53,7 +50,6 @@ export const useModelStore = create<ModelStore>((set, get) => ({
     set({
       model: null,
       error: null,
-      version: null,
       loading: false
     }),
 

@@ -6,7 +6,6 @@ import { LayerType, LayerData, LayerVisualConfig } from './layers';
 export interface MetaModel {
   id?: string;
   name?: string;
-  version: string;
   description?: string;
   layers: Record<string, Layer>;
   references: Reference[];

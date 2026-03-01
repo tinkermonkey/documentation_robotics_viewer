@@ -174,7 +174,6 @@ export class SpecGraphBuilder {
     };
 
     return {
-      version: specData.version || '0.0.0',
       layers: { [selectedSchemaId]: layer },
       references: [],
       metadata: {

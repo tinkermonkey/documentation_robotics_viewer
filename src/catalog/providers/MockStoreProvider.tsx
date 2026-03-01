@@ -12,7 +12,6 @@ interface MockModelStore {
   model: MetaModel | null;
   loading: boolean;
   error: string | null;
-  version: string | null;
   setModel: (model: MetaModel) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string) => void;
@@ -27,13 +26,11 @@ export function createMockModelStore(overrides: Partial<MockModelStore> = {}) {
     model: null,
     loading: false,
     error: null,
-    version: null,
 
     setModel: (model: MetaModel) =>
       set({
         model,
         error: null,
-        version: model.version
       }),
 
     setLoading: (loading: boolean) => set({ loading }),
@@ -48,7 +45,6 @@ export function createMockModelStore(overrides: Partial<MockModelStore> = {}) {
       set({
         model: null,
         error: null,
-        version: null,
         loading: false
       }),
 

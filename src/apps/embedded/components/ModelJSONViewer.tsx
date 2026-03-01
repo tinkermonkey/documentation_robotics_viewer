@@ -120,7 +120,6 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
       }, 0);
 
       const metadataItems: MetadataItem[] = [
-        { label: 'Version', value: model.version },
         { label: 'Total Elements', value: totalElements },
         { label: 'Total Layers', value: layerNames.length },
         ...(model.metadata?.loadedAt

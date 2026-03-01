@@ -438,7 +438,6 @@ function adaptApiModel(data: ApiModelResponse): MetaModel {
       };
 
   return {
-    version: data.version || '1.0.0',
     layers,
     references,
     metadata,

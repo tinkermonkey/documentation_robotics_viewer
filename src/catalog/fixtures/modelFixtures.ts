@@ -180,7 +180,6 @@ export function createCompleteModelFixture(): MetaModel {
   return {
     id: 'complete-model',
     name: 'Complete Test Model',
-    version: '1.0.0',
     description: 'Complete fixture model with elements across multiple layers',
     layers: {
       motivation: createLayer('motivation', 'Motivation', 'Motivation Layer', motivationElements, motivationRelationships),
@@ -208,7 +207,6 @@ export function createMinimalModelFixture(): MetaModel {
   return {
     id: 'minimal-model',
     name: 'Minimal Test Model',
-    version: '1.0.0',
     description: 'Minimal fixture model for basic testing',
     layers: {
       motivation: createLayer('motivation', 'Motivation', 'Motivation Layer', [goal]),
@@ -258,7 +256,6 @@ export function createMotivationLayerModelFixture(): MetaModel {
   return {
     id: 'motivation-model',
     name: 'Motivation Layer Model',
-    version: '1.0.0',
     description: 'Model focused on Motivation layer elements',
     layers: {
       motivation: createLayer('motivation', 'Motivation', 'Motivation Layer', elements, relationships)
@@ -302,7 +299,6 @@ export function createBusinessLayerModelFixture(): MetaModel {
   return {
     id: 'business-model',
     name: 'Business Layer Model',
-    version: '1.0.0',
     description: 'Model focused on Business layer elements',
     layers: {
       business: createLayer('business', 'Business', 'Business Layer', elements, relationships)
@@ -361,7 +357,6 @@ export function createC4LayerModelFixture(): MetaModel {
   return {
     id: 'c4-model',
     name: 'C4 Architecture Model',
-    version: '1.0.0',
     description: 'Model focused on C4 architecture elements',
     layers: {
       c4: createLayer('c4', 'C4', 'C4 Architecture Layer', elements, relationships)
@@ -394,7 +389,6 @@ export function createChangesetModelFixture(): MetaModel {
   return {
     id: 'changeset-model',
     name: 'Changeset Test Model',
-    version: '1.0.0',
     description: 'Model with elements showing changeset operations',
     layers: {
       motivation: createLayer('motivation', 'Motivation', 'Motivation Layer', elements)
@@ -416,7 +410,6 @@ export function createEmptyModelFixture(): MetaModel {
   return {
     id: 'empty-model',
     name: 'Empty Test Model',
-    version: '1.0.0',
     description: 'Empty model for testing empty state UI',
     layers: {},
     references: [],
@@ -456,7 +449,6 @@ export function createLargeModelFixture(elementCount: number = 100): MetaModel {
   return {
     id: 'large-model',
     name: 'Large Test Model',
-    version: '1.0.0',
     description: `Large model with ${elementCount} elements for performance testing`,
     layers: {
       motivation: createLayer('motivation', 'Motivation', 'Motivation Layer', elements)

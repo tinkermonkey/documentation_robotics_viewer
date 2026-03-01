@@ -151,7 +151,6 @@ const mockModel: MetaModel = {
       relationships: [],
     },
   },
-  version: '1.0',
   references: [] as any,
 };
 

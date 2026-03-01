@@ -76,7 +76,6 @@ export class ChangesetGraphBuilder {
     });
 
     return {
-      version: '0.1.0',
       layers,
       references: [],
       metadata

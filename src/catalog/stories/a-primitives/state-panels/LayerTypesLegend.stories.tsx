@@ -17,7 +17,6 @@ const mockModel: MetaModel = {
     'motivation': { id: 'motivation', type: 'motivation', name: 'Motivation', elements: Array.from({ length: 5 }, (_, i) => ({ id: `m${i}`, name: `Goal ${i}`, type: 'Goal', layerId: 'motivation', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } })), relationships: [] },
     'business': { id: 'business', type: 'business', name: 'Business', elements: Array.from({ length: 8 }, (_, i) => ({ id: `b${i}`, name: `Req ${i}`, type: 'Requirement', layerId: 'business', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } })), relationships: [] },
   },
-  version: '1.0',
   references: [],
 };
 
@@ -37,7 +36,6 @@ export const ManyTypes: Story = {
       'business': { id: 'business', type: 'business', name: 'Business', elements: Array.from({ length: 8 }, (_, i) => ({ id: `b${i}`, name: `Req ${i}`, type: 'Requirement', layerId: 'business', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } })), relationships: [] },
       'application': { id: 'application', type: 'application', name: 'Application', elements: Array.from({ length: 12 }, (_, i) => ({ id: `a${i}`, name: `App ${i}`, type: 'Component', layerId: 'application', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } })), relationships: [] },
     },
-    version: '1.0',
     references: [],
   };
   return (
@@ -51,7 +49,7 @@ export const ManyTypes: Story = {
 export const Empty: Story = {
   render: () => (
     <div className="p-4 bg-white border border-gray-200 w-64">
-    <LayerTypesLegend model={{ layers: {}, version: '1.0', references: [] }} />
+    <LayerTypesLegend model={{ layers: {}, references: [] }} />
   </div>
   ),
 };

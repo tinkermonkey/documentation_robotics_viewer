@@ -27,7 +27,6 @@ const mockModelSmall: MetaModel = {
       ],
     },
   },
-  version: '1.0',
   references: [],
 };
 
@@ -91,7 +90,6 @@ const mockModelLarge: MetaModel = {
       })),
     },
   },
-  version: '1.0',
   references: [],
 };
 
@@ -114,7 +112,7 @@ export const LargeGraph: Story = {
 export const EmptyGraph: Story = {
   render: () => (
     <div className="w-80 bg-white">
-    <GraphStatisticsPanel model={{ layers: {}, version: '1.0', references: [] }} />
+    <GraphStatisticsPanel model={{ layers: {}, references: [] }} />
   </div>
   ),
 };

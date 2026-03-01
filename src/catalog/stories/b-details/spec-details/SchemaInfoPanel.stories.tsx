@@ -37,7 +37,6 @@ function SchemaInfoPanelStory({ model }: { model: MetaModel | null }) {
 export const Default: Story = {
   render: () => {
   const model: MetaModel = {
-    version: '1.0.0',
     layers: {
       motivation: {
         id: 'motivation',
@@ -78,7 +77,6 @@ export const Default: Story = {
 export const ValidModel: Story = {
   render: () => {
   const model: MetaModel = {
-    version: '2.1.0',
     layers: {
       motivation: {
         id: 'motivation',
@@ -149,7 +147,6 @@ export const ValidModel: Story = {
 export const WithValidationErrors: Story = {
   render: () => {
   const model: MetaModel = {
-    version: '1.5.0',
     layers: {
       motivation: {
         id: 'motivation',
@@ -196,7 +193,6 @@ export const LargeModel: Story = {
   const elementCount = 47;
 
   const model: MetaModel = {
-    version: '3.0.0',
     layers: {
       motivation: {
         id: 'motivation',
@@ -246,7 +242,6 @@ export const NoModel: Story = {
 export const MinimalMetadata: Story = {
   render: () => {
   const model: MetaModel = {
-    version: '1.0.0',
     layers: {
       motivation: {
         id: 'motivation',
@@ -271,7 +266,6 @@ export const MinimalMetadata: Story = {
 export const WithCustomClassName: Story = {
   render: () => {
   const model: MetaModel = {
-    version: '1.0.0',
     layers: {
       motivation: {
         id: 'motivation',
