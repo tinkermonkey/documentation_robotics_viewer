@@ -1,5 +1,5 @@
 version: 0.1.1
-installed_at: 2026-03-01T16:35:22.054Z
+installed_at: 2026-03-01T23:16:38.688Z
 components:
   reference_sheets: {}
   commands:
@@ -26,10 +26,10 @@ components:
       modified: false
   agents:
     dr-advisor.md:
-      hash: 94f8b916
+      hash: 1b23cfd7
       modified: false
     dr-architect.md:
-      hash: eedb833c
+      hash: e1d4b499
       modified: false
   skills:
     dr_01_motivation_layer/SKILL.md:
