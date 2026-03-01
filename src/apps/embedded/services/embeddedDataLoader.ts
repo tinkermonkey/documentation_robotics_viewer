@@ -313,7 +313,7 @@ interface ApiLink {
 }
 
 interface ApiModelResponse {
-  version: string;
+  version?: string;  // Not required by spec; adaptApiModel defaults to '1.0.0'
   nodes: ApiNode[];
   links: ApiLink[];
   metadata?: Record<string, unknown>;
