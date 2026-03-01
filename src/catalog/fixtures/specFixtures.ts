@@ -64,6 +64,8 @@ export function createMinimalSpecFixture(): SpecDataResponse {
   return {
     version: '1.0.0',
     type: 'json-schema',
+    description: 'Minimal DR model JSON schemas',
+    source: 'Test Fixture',
     schemas,
     schemaCount: Object.keys(schemas).length
   };
@@ -206,6 +208,8 @@ export function createCustomSpecFixture(
   return {
     version: '1.0.0',
     type: 'json-schema',
+    description: 'Filtered DR model JSON schemas',
+    source: 'Test Fixture',
     schemas,
     schemaCount: Object.keys(schemas).length
   };

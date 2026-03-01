@@ -15,6 +15,9 @@ type Story = StoryObj<typeof meta>;
 const mockSpecData: SpecDataResponse = {
   version: '1.0.0',
   type: 'mock-spec',
+  description: 'Mock spec for Storybook',
+  source: 'Test Fixture',
+  schemaCount: 1,
   schemas: {
     'business.schema.json': {
       $schema: 'http://json-schema.org/draft-07/schema#',
@@ -163,6 +166,9 @@ export const EmptySpecData: Story = {
       specData={{
         version: '1.0.0',
         type: 'empty-spec',
+        description: '',
+        source: '',
+        schemaCount: 0,
         schemas: {},
       }}
       selectedSchemaId={null}

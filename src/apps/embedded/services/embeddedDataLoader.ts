@@ -140,10 +140,10 @@ export interface SchemaDefinition {
 export interface SpecDataResponse {
   version: string;
   type: string;
-  description?: string;
-  source?: string;
+  description: string;
+  source: string;
   schemas: Record<string, SchemaDefinition>;
-  schemaCount?: number;
+  schemaCount: number;
   manifest?: SchemaManifest;
   relationshipCatalog?: RelationshipCatalog;
 }
@@ -502,6 +502,8 @@ export class EmbeddedDataLoader {
     const data = (await response.json()) as Record<string, unknown> & {
       version?: string;
       type?: string;
+      description?: string;
+      source?: string;
       schemas?: Record<string, unknown>;
       schemaCount?: number;
       schema_count?: number;
@@ -516,17 +518,13 @@ export class EmbeddedDataLoader {
     const result: SpecDataResponse = {
       version: data.version ?? '',
       type: data.type ?? '',
+      description: data.description ?? '',
+      source: data.source ?? '',
       schemas: (data.schemas ?? {}) as Record<string, SchemaDefinition>,
       schemaCount,
       relationshipCatalog
     };
 
-    if (typeof data.description === 'string') {
-      result.description = data.description;
-    }
-    if (typeof data.source === 'string') {
-      result.source = data.source;
-    }
     if (data.manifest && typeof data.manifest === 'object') {
       result.manifest = data.manifest as SchemaManifest;
     }
