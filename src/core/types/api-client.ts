@@ -75,18 +75,68 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            /** @description Model manifest metadata */
-                            manifest: {
-                                [key: string]: unknown;
-                            };
-                            /** @description All layers in the model (key-value pairs mapping layer names to layer objects) */
-                            layers: {
-                                [key: string]: {
+                            /** @description All architecture elements across all layers */
+                            nodes: {
+                                /** @description Element ID (UUID or semantic dot-ID) */
+                                id: string;
+                                /** @description Spec node type ID (e.g. motivation.goal) */
+                                spec_node_id: string;
+                                /** @description Element type (e.g. goal, endpoint) */
+                                type: string;
+                                /** @description Layer this element belongs to */
+                                layer_id: string;
+                                /** @description Element display name */
+                                name: string;
+                                /** @description Element description */
+                                description?: string;
+                                /** @description Typed attribute bag per spec-node schema */
+                                attributes?: {
                                     [key: string]: unknown;
                                 };
-                            };
-                            /** @description Total number of elements across all layers */
-                            totalElements: number;
+                                /** @description Associated annotations */
+                                annotations?: {
+                                    /** @description Annotation ID */
+                                    id: string;
+                                    /** @description Target element ID */
+                                    elementId: string;
+                                    /** @description Author name */
+                                    author: string;
+                                    /** @description Annotation content */
+                                    content: string;
+                                    /** @description Creation timestamp */
+                                    createdAt: string;
+                                    /** @description Last update timestamp */
+                                    updatedAt?: string;
+                                    /** @description Annotation tags */
+                                    tags?: string[];
+                                    /** @description Resolution status */
+                                    resolved?: boolean;
+                                    /** @description Annotation replies */
+                                    replies?: {
+                                        id: string;
+                                        author: string;
+                                        content: string;
+                                        createdAt: string;
+                                    }[];
+                                }[];
+                            }[];
+                            /** @description Intra-layer relationships and cross-layer references */
+                            links: {
+                                /** @description Stable link ID derived from source, target, and type */
+                                id: string;
+                                /** @description Source element ID */
+                                source: string;
+                                /** @description Target element ID */
+                                target: string;
+                                /** @description Relationship predicate or reference type */
+                                type: string;
+                                /** @description Layer ID for intra-layer relationships */
+                                layer_id?: string;
+                                /** @description Source layer ID for cross-layer references */
+                                source_layer_id?: string;
+                                /** @description Target layer ID for cross-layer references */
+                                target_layer_id?: string;
+                            }[];
                         };
                     };
                 };

@@ -20,7 +20,29 @@ import { NodeType } from '../../src/core/nodes/NodeType';
 import type { ModelElement, MetaModel, Layer } from '../../src/core/types';
 import { LayerType } from '../../src/core/types/layers';
 import { VerticalLayerLayout } from '../../src/core/layout/verticalLayerLayout';
-import type { ChangesetOperation } from '../../src/core/nodes';
+import type { ChangesetOperation } from '../../src/core/types/model';
+
+/** Map type strings to specNodeId values for test fixtures */
+const TYPE_TO_SPEC_NODE_ID: Record<string, string> = {
+  Stakeholder: 'motivation.stakeholder',
+  Goal: 'motivation.goal',
+  Requirement: 'motivation.requirement',
+  Driver: 'motivation.driver',
+  Outcome: 'motivation.outcome',
+  Constraint: 'motivation.constraint',
+  Assumption: 'motivation.assumption',
+  Assessment: 'motivation.assessment',
+  Process: 'business.process',
+  Capability: 'business.capability',
+  Service: 'business.service',
+  Function: 'business.function',
+  Container: 'c4.container',
+  ExternalActor: 'c4.externalActor',
+  'c4-component': 'c4.component',
+  Entity: 'data.model',
+  Interface: 'data.model',
+  Enum: 'data.model',
+};
 
 /**
  * Helper to create minimal ModelElement for testing
@@ -33,6 +55,7 @@ function createElement(
   return {
     id,
     type,
+    specNodeId: TYPE_TO_SPEC_NODE_ID[type] ?? `unknown.${type.toLowerCase()}`,
     name: `Test ${id}`,
     layerId: 'test-layer',
     properties,
@@ -583,6 +606,7 @@ test.describe('NodeTransformer Pipeline Integration', () => {
       const element: ModelElement = {
         id: 'complete-element',
         type: 'Goal',
+        specNodeId: 'motivation.goal',
         name: 'Complete Goal Element',
         layerId: 'motivation',
         properties: {
@@ -626,6 +650,7 @@ test.describe('NodeTransformer Pipeline Integration', () => {
       const elementWithoutName: ModelElement = {
         id: 'elem-2',
         type: 'Goal',
+        specNodeId: 'motivation.goal',
         name: 'elem-2',
         layerId: 'motivation',
         properties: {},
@@ -663,6 +688,7 @@ test.describe('NodeTransformer Pipeline Integration', () => {
       const element: ModelElement = {
         id: 'complete-motivation',
         type: 'Goal',
+        specNodeId: 'motivation.goal',
         name: 'Complete Goal Element',
         layerId: 'motivation',
         properties: {
@@ -685,7 +711,7 @@ test.describe('NodeTransformer Pipeline Integration', () => {
           incoming: 2,
           outgoing: 3,
         },
-      } as unknown as ModelElement;
+      };
 
       const model = createTestModel({ motivation: [element] });
       const result = await transformer.transformModel(model);
@@ -731,6 +757,7 @@ test.describe('NodeTransformer Pipeline Integration', () => {
         const element: ModelElement = {
           id: `detail-${testCase.detailLevel}`,
           type: 'Goal',
+          specNodeId: 'motivation.goal',
           name: `Goal with ${testCase.detailLevel} detail`,
           layerId: 'motivation',
           properties: { priority: 'High' },
@@ -741,7 +768,7 @@ test.describe('NodeTransformer Pipeline Integration', () => {
           },
           relationships: { incoming: [], outgoing: [] },
           detailLevel: testCase.detailLevel,
-        } as unknown as ModelElement;
+        };
 
         const model = createTestModel({ motivation: [element] });
         const result = await transformer.transformModel(model);
@@ -758,6 +785,7 @@ test.describe('NodeTransformer Pipeline Integration', () => {
         const element: ModelElement = {
           id: `changeset-${operation}`,
           type: 'Goal',
+          specNodeId: 'motivation.goal',
           name: `Goal with ${operation} operation`,
           layerId: 'motivation',
           properties: { priority: 'High' },
@@ -768,7 +796,7 @@ test.describe('NodeTransformer Pipeline Integration', () => {
           },
           relationships: { incoming: [], outgoing: [] },
           changesetOperation: operation,
-        } as unknown as ModelElement;
+        };
 
         const model = createTestModel({ motivation: [element] });
         const result = await transformer.transformModel(model);
@@ -890,7 +918,7 @@ test.describe('NodeTransformer Pipeline Integration', () => {
 
       expect(items.length).toBeGreaterThan(0);
       expect(items.some((item: any) => item.id === 'description')).toBe(true);
-      expect(items.some((item: any) => item.id === 'technologies')).toBe(true);
+      expect(items.some((item: any) => item.id === 'technology')).toBe(true);
       expect(items.some((item: any) => item.id === 'containerType')).toBe(true);
     });
 
@@ -937,7 +965,7 @@ test.describe('NodeTransformer Pipeline Integration', () => {
 
       const nodeData = findNodeData(result.nodes, 'container-tech');
       const items = nodeData.items || [];
-      const techItem = items.find((item: any) => item.id === 'technologies');
+      const techItem = items.find((item: any) => item.id === 'technology');
 
       expect(techItem).toBeDefined();
       expect(techItem?.value).toContain('Node.js');
@@ -995,6 +1023,7 @@ test.describe('NodeTransformer Pipeline Integration', () => {
   test.describe('Cross-Layer Extraction Consistency', () => {
     test('should extract consistent label from element name or ID', async () => {
       const elementWithName = createElement('elem-with-name', 'Goal');
+      elementWithName.specNodeId = 'motivation.goal';
       elementWithName.name = 'Custom Label';
 
       const model1 = createTestModel({ motivation: [elementWithName] });

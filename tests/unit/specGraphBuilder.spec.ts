@@ -302,6 +302,79 @@ test.describe('SpecGraphBuilder.buildSpecModel()', () => {
     expect(layer.relationships.length).toBeGreaterThanOrEqual(1);
   });
 
+  test('relationshipSchemas dict creates edges using source_spec_node_id and destination_spec_node_id', () => {
+    const specData: SpecDataResponse = {
+      schemas: {
+        'navigation.json': {
+          nodeSchemas: {
+            breadcrumbconfig: { title: 'BreadcrumbConfig' },
+            navigationgraph: { title: 'NavigationGraph' },
+          },
+          relationshipSchemas: {
+            'navigation.breadcrumbconfig.associated-with.navigation.navigationgraph': {
+              id: 'navigation.breadcrumbconfig.associated-with.navigation.navigationgraph',
+              source_spec_node_id: 'navigation.breadcrumbconfig',
+              destination_spec_node_id: 'navigation.navigationgraph',
+              predicate: 'associated-with',
+            },
+          },
+        } as unknown as SchemaDefinition,
+      },
+    } as SpecDataResponse;
+    const model = builder.buildSpecModel(specData, 'navigation.json');
+    const layer = model!.layers['navigation.json'];
+    expect(layer.relationships.length).toBe(1);
+    expect(layer.relationships[0].type).toBe('associated-with');
+  });
+
+  test('relationshipSchemas: namespace-prefixed source/dest ids match elementMap keys via findByType', () => {
+    const specData: SpecDataResponse = {
+      schemas: {
+        'ux.json': {
+          nodeSchemas: {
+            actioncomponent: { title: 'ActionComponent' },
+            dataconfig: { title: 'DataConfig' },
+          },
+          relationshipSchemas: {
+            'ux.actioncomponent.binds-to.ux.dataconfig': {
+              id: 'ux.actioncomponent.binds-to.ux.dataconfig',
+              source_spec_node_id: 'ux.actioncomponent',
+              destination_spec_node_id: 'ux.dataconfig',
+              predicate: 'binds-to',
+            },
+          },
+        } as unknown as SchemaDefinition,
+      },
+    } as SpecDataResponse;
+    const model = builder.buildSpecModel(specData, 'ux.json');
+    const layer = model!.layers['ux.json'];
+    expect(layer.relationships.length).toBe(1);
+    expect(layer.relationships[0].type).toBe('binds-to');
+  });
+
+  test('relationshipSchemas skips entries with missing source or destination', () => {
+    const specData: SpecDataResponse = {
+      schemas: {
+        'api.json': {
+          nodeSchemas: {
+            operation: { title: 'Operation' },
+          },
+          relationshipSchemas: {
+            'bad.rel': {
+              id: 'bad.rel',
+              // source_spec_node_id missing
+              destination_spec_node_id: 'api.operation',
+              predicate: 'uses',
+            },
+          },
+        } as unknown as SchemaDefinition,
+      },
+    } as SpecDataResponse;
+    const model = builder.buildSpecModel(specData, 'api.json');
+    const layer = model!.layers['api.json'];
+    expect(layer.relationships.length).toBe(0);
+  });
+
   test('schema-level relationshipTypes creates edges even without global catalog', () => {
     const specData: SpecDataResponse = {
       schemas: {

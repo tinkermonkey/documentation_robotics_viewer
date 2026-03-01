@@ -14,9 +14,8 @@ import { AppNode, AppEdge } from '../types/reactflow';
 import { FALLBACK_COLOR } from '../utils/layerColors';
 import { nodeConfigLoader } from '../nodes/nodeConfigLoader';
 import { NodeType } from '../nodes/NodeType';
-import type { UnifiedNodeData, ChangesetOperation } from '../nodes/components/UnifiedNode';
+import type { UnifiedNodeData } from '../nodes/components/UnifiedNode';
 import type { FieldItem } from '../nodes/components/FieldList';
-import type { RelationshipBadgeData } from '../nodes/components/RelationshipBadge';
 import { extractCrossLayerReferences, referencesToEdges } from './crossLayerLinksExtractor';
 
 /**
@@ -28,19 +27,6 @@ export interface NodeTransformResult {
   layout: LayoutResult;
 }
 
-/**
- * Optional extended properties that may be present on elements
- * These are only accessed after proper validation
- */
-interface OptionalElementProperties {
-  detailLevel?: 'minimal' | 'standard' | 'detailed';
-  changesetOperation?: ChangesetOperation;
-  relationshipBadge?: RelationshipBadgeData;
-  schemaInfo?: {
-    properties?: Record<string, unknown> | Array<Record<string, unknown>>;
-    required?: string[];
-  };
-}
 
 /**
  * Transforms a MetaModel into React Flow nodes and edges with proper layout
@@ -340,104 +326,51 @@ export class NodeTransformer {
   }
 
   /**
-   * Get node type for an element
-   * All element types must be mapped via configuration to NodeType enum.
-   * LayerContainer is a special structural node type.
+   * Get node type for an element.
+   * Uses specNodeId when available (new API path), falls back to type mapping.
    */
   private getNodeTypeForElement(element: ModelElement): string {
-    // Special case: LayerContainer remains separate for layout purposes
     if (element.type === 'LayerContainer' || element.type === 'layer-container') {
       return 'layerContainer';
     }
 
-    // All other element types MUST be mapped via nodeConfig.json
-    const mappedType = nodeConfigLoader.mapElementType(element.type);
+    if (element.specNodeId) {
+      if (!nodeConfigLoader.getStyleConfig(element.specNodeId as NodeType)) {
+        throw new Error(
+          `[NodeTransformer] No style config for specNodeId "${element.specNodeId}" on element ${element.id}`
+        );
+      }
+      return 'unified';
+    }
 
+    // Fallback: map element.type via typeMap (legacy path used by tests and changeset builder)
+    const mappedType = nodeConfigLoader.mapElementType(element.type);
     if (!mappedType) {
-      // Critical error: element type has no mapping
       throw new Error(
         `[NodeTransformer] Cannot map element type "${element.type}" to NodeType enum. ` +
         `Add a mapping in nodeConfig.json typeMap section. Element ID: ${element.id}`
       );
     }
-
-    // All mapped types use unified node for consistent rendering
     return 'unified';
   }
 
   /**
-   * Extract node data based on element type
-   * All element types are mapped to NodeType enum and use UnifiedNode
+   * Extract node data — unified for all element types.
+   * Uses specNodeId when available; falls back to type mapping for legacy elements.
    */
-  private extractNodeData(element: ModelElement, nodeType: string, layerId: string): UnifiedNodeData {
-    // All modern paths use 'unified' node type
-    if (nodeType !== 'unified') {
-      throw new Error(`[NodeTransformer] Invalid node type "${nodeType}" - expected "unified". Element type: ${element.type}`);
-    }
-
-    const mappedType = nodeConfigLoader.mapElementType(element.type);
-
-    if (!mappedType) {
-      throw new Error(`[NodeTransformer] Cannot map element type "${element.type}" to NodeType`);
-    }
-
-    // Route to appropriate extraction method based on layer prefix
-    if (mappedType.startsWith('motivation.')) {
-      return this.extractMotivationNodeData(element, mappedType as NodeType, layerId);
-    }
-
-    if (mappedType.startsWith('business.')) {
-      return this.extractBusinessNodeData(element, mappedType as NodeType, layerId);
-    }
-
-    if (mappedType.startsWith('c4.')) {
-      return this.extractC4NodeData(element, mappedType as NodeType, layerId);
-    }
-
-    if (mappedType.startsWith('data.')) {
-      return this.extractDataNodeData(element, mappedType as NodeType, layerId);
-    }
-
-    // Should not reach here if nodeConfig.json is properly configured
-    throw new Error(
-      `[NodeTransformer] No extraction method for mapped type "${mappedType}" (element type: "${element.type}")`
-    );
-  }
-
-  /**
-   * Extract unified node data for motivation layer elements
-   */
-  private extractMotivationNodeData(element: ModelElement, nodeType: NodeType, layerId: string): UnifiedNodeData {
-    const optionalProps = this.extractOptionalProperties(element);
+  private extractNodeData(element: ModelElement, _nodeType: string, layerId: string): UnifiedNodeData {
+    const specNodeId = element.specNodeId ?? nodeConfigLoader.mapElementType(element.type) ?? element.type;
 
     return {
-      nodeType,
+      nodeType: specNodeId as NodeType,
       label: element.name || element.id,
       layerId,
       elementId: element.id,
       items: this.extractFieldItems(element),
-      badges: this.extractMotivationBadges(element, nodeType),
-      detailLevel: optionalProps.detailLevel,
-      changesetOperation: optionalProps.changesetOperation,
-      relationshipBadge: optionalProps.relationshipBadge,
-    };
-  }
-
-  /**
-   * Extract unified node data for business layer elements
-   */
-  private extractBusinessNodeData(element: ModelElement, nodeType: NodeType, layerId: string): UnifiedNodeData {
-    const optionalProps = this.extractOptionalProperties(element);
-
-    return {
-      nodeType,
-      label: element.name || element.id,
-      layerId,
-      elementId: element.id,
-      items: this.extractFieldItems(element),
-      badges: this.extractBusinessBadges(element, nodeType),
-      detailLevel: optionalProps.detailLevel,
-      changesetOperation: optionalProps.changesetOperation,
+      badges: this.extractBadges(element, specNodeId),
+      detailLevel: element.detailLevel ?? 'standard',
+      changesetOperation: element.changesetOperation,
+      relationshipBadge: element.relationshipBadge,
     };
   }
 
@@ -483,43 +416,32 @@ export class NodeTransformer {
   }
 
   /**
-   * Extract badges for motivation nodes based on type and data
+   * Extract badges for an element, switching on specNodeId for type-specific logic
    */
-  private extractMotivationBadges(element: ModelElement, nodeType: NodeType): UnifiedNodeData['badges'] {
+  private extractBadges(element: ModelElement, specNodeId: string): UnifiedNodeData['badges'] {
     const badges: UnifiedNodeData['badges'] = [];
     const props: Record<string, unknown> = element.properties || {};
 
-    switch (nodeType) {
+    // ── Motivation badges ──────────────────────────────────────────────────────
+    switch (specNodeId) {
       case NodeType.MOTIVATION_STAKEHOLDER:
         if (props.stakeholderType) {
           const stakeholderType = this.validateString(props.stakeholderType);
           if (stakeholderType !== undefined) {
-            badges.push({
-              position: 'inline' as const,
-              content: stakeholderType,
-              ariaLabel: `Type: ${stakeholderType}`,
-            });
+            badges.push({ position: 'inline', content: stakeholderType, ariaLabel: `Type: ${stakeholderType}` });
           }
         }
         break;
 
       case NodeType.MOTIVATION_GOAL:
         if (props.priority) {
-          badges.push({
-            position: 'top-right' as const,
-            content: `${props.priority}`,
-            ariaLabel: `Priority: ${props.priority}`,
-          });
+          badges.push({ position: 'top-right', content: `${props.priority}`, ariaLabel: `Priority: ${props.priority}` });
         }
         break;
 
       case NodeType.MOTIVATION_REQUIREMENT:
         if (props.status) {
-          badges.push({
-            position: 'top-left' as const,
-            content: props.status === 'satisfied' ? '✓' : '○',
-            ariaLabel: `Status: ${props.status}`,
-          });
+          badges.push({ position: 'top-left', content: props.status === 'satisfied' ? '✓' : '○', ariaLabel: `Status: ${props.status}` });
         }
         break;
 
@@ -527,11 +449,7 @@ export class NodeTransformer {
         if (props.category) {
           const category = this.validateString(props.category);
           if (category !== undefined) {
-            badges.push({
-              position: 'top-right' as const,
-              content: category,
-              ariaLabel: `Category: ${category}`,
-            });
+            badges.push({ position: 'top-right', content: category, ariaLabel: `Category: ${category}` });
           }
         }
         break;
@@ -540,11 +458,7 @@ export class NodeTransformer {
         if (props.status) {
           const status = this.validateString(props.status);
           if (status !== undefined) {
-            badges.push({
-              position: 'top-right' as const,
-              content: status,
-              ariaLabel: `Status: ${status}`,
-            });
+            badges.push({ position: 'top-right', content: status, ariaLabel: `Status: ${status}` });
           }
         }
         break;
@@ -553,249 +467,64 @@ export class NodeTransformer {
         if (props.negotiability) {
           const negotiability = this.validateString(props.negotiability);
           if (negotiability !== undefined) {
-            badges.push({
-              position: 'top-right' as const,
-              content: negotiability,
-              ariaLabel: `Negotiability: ${negotiability}`,
-            });
+            badges.push({ position: 'top-right', content: negotiability, ariaLabel: `Negotiability: ${negotiability}` });
           }
         }
         break;
 
       case NodeType.MOTIVATION_ASSESSMENT:
         if (props.rating) {
-          badges.push({
-            position: 'top-right' as const,
-            content: `${props.rating}/5`,
-            ariaLabel: `Rating: ${props.rating} out of 5`,
-          });
+          badges.push({ position: 'top-right', content: `${props.rating}/5`, ariaLabel: `Rating: ${props.rating} out of 5` });
         }
         break;
     }
 
-    return badges.length > 0 ? badges : [];
-  }
+    // ── Business badges (apply to all business.* types) ────────────────────────
+    if (specNodeId.startsWith('business.')) {
+      if (props.owner) {
+        const owner = this.validateString(props.owner);
+        if (owner !== undefined) {
+          badges.push({ position: 'inline', content: owner, ariaLabel: `Owner: ${owner}` });
+        }
+      }
 
-  /**
-   * Extract badges for business nodes based on type and data
-   */
-  private extractBusinessBadges(element: ModelElement, nodeType: NodeType): UnifiedNodeData['badges'] {
-    const badges: UnifiedNodeData['badges'] = [];
-    const props: Record<string, unknown> = element.properties || {};
-
-    // Owner badge (common to all business node types)
-    if (props.owner) {
-      const owner = this.validateString(props.owner);
-      if (owner !== undefined) {
+      if (props.criticality) {
+        const criticality = String(props.criticality);
+        const criticityColorClasses: Record<string, string> = {
+          'high': 'bg-red-100 text-red-900',
+          'medium': 'bg-orange-100 text-orange-900',
+          'low': 'bg-green-100 text-green-900',
+        };
         badges.push({
-          position: 'inline' as const,
-          content: owner,
-          ariaLabel: `Owner: ${owner}`,
+          position: 'inline',
+          content: criticality,
+          className: criticityColorClasses[criticality] || 'bg-gray-100 text-gray-900',
+          ariaLabel: `Criticality: ${criticality}`,
         });
       }
-    }
 
-    // Criticality badge (color-coded, common to all business node types)
-    if (props.criticality) {
-      const criticality = String(props.criticality);
-      // Map criticality levels to static Tailwind classes that are detected at build time
-      const criticityColorClasses: Record<string, string> = {
-        'high': 'bg-red-100 text-red-900',
-        'medium': 'bg-orange-100 text-orange-900',
-        'low': 'bg-green-100 text-green-900',
-      };
-      badges.push({
-        position: 'inline' as const,
-        content: criticality,
-        className: criticityColorClasses[criticality] || 'bg-gray-100 text-gray-900',
-        ariaLabel: `Criticality: ${criticality}`,
-      });
-    }
-
-    // Domain badge (only for Function and Service nodes)
-    if ((nodeType === NodeType.BUSINESS_FUNCTION || nodeType === NodeType.BUSINESS_SERVICE) && props.domain) {
-      const domain = this.validateString(props.domain);
-      if (domain !== undefined) {
-        badges.push({
-          position: 'inline' as const,
-          content: domain,
-          ariaLabel: `Domain: ${domain}`,
-        });
+      if ((specNodeId === NodeType.BUSINESS_FUNCTION || specNodeId === NodeType.BUSINESS_SERVICE) && props.domain) {
+        const domain = this.validateString(props.domain);
+        if (domain !== undefined) {
+          badges.push({ position: 'inline', content: domain, ariaLabel: `Domain: ${domain}` });
+        }
       }
-    }
 
-    // Special handling for BusinessProcess expand/collapse
-    const subprocessCount = props.subprocessCount ? Number(props.subprocessCount) : 0;
-    if (nodeType === NodeType.BUSINESS_PROCESS && subprocessCount > 0) {
-      const expanded = this.validateBoolean(props.expanded) ?? false;
-      badges.push({
-        position: 'top-right' as const,
-        content: expanded ? '▼' : '▶',
-        className: 'cursor-pointer text-lg leading-none',
-        ariaLabel: expanded ? 'Collapse subprocesses' : 'Expand subprocesses',
-      });
+      if (specNodeId === NodeType.BUSINESS_PROCESS) {
+        const subprocessCount = props.subprocessCount ? Number(props.subprocessCount) : 0;
+        if (subprocessCount > 0) {
+          const expanded = this.validateBoolean(props.expanded) ?? false;
+          badges.push({
+            position: 'top-right',
+            content: expanded ? '▼' : '▶',
+            className: 'cursor-pointer text-lg leading-none',
+            ariaLabel: expanded ? 'Collapse subprocesses' : 'Expand subprocesses',
+          });
+        }
+      }
     }
 
     return badges;
-  }
-
-  /**
-   * Extract unified node data for C4 layer elements
-   */
-  private extractC4NodeData(element: ModelElement, nodeType: NodeType, layerId: string): UnifiedNodeData {
-    const items: FieldItem[] = [];
-    const optionalProps = this.extractOptionalProperties(element);
-
-    // Add description as first field item if present
-    const description = this.validateString(element.properties?.description) || element.description;
-    if (description) {
-      items.push({
-        id: 'description',
-        label: 'Description',
-        value: description,
-        required: false,
-      });
-    }
-
-    // Add technologies as field item if present (comma-separated)
-    if (this.isStringArray(element.properties?.technology) && element.properties.technology.length > 0) {
-      items.push({
-        id: 'technologies',
-        label: 'Technologies',
-        value: element.properties.technology.join(', '),
-        required: false,
-      });
-    }
-
-    // Add role for components
-    if (nodeType === NodeType.C4_COMPONENT) {
-      const role = this.validateString(element.properties?.role);
-      if (role !== undefined) {
-        items.push({
-          id: 'role',
-          label: 'Role',
-          value: role,
-          required: false,
-        });
-      }
-    }
-
-    // Add containerType for containers
-    if (nodeType === NodeType.C4_CONTAINER) {
-      const containerType = this.validateString(element.properties?.containerType);
-      if (containerType !== undefined) {
-        items.push({
-          id: 'containerType',
-          label: 'Type',
-          value: containerType,
-          required: false,
-        });
-      }
-    }
-
-    // Add actorType for external actors
-    if (nodeType === NodeType.C4_EXTERNAL_ACTOR) {
-      const actorType = this.validateString(element.properties?.actorType);
-      if (actorType !== undefined) {
-        items.push({
-          id: 'actorType',
-          label: 'Type',
-          value: actorType,
-          required: false,
-        });
-      }
-    }
-
-    // Add interfaces for components if present
-    if (nodeType === NodeType.C4_COMPONENT && this.isStringArray(element.properties?.interfaces) && element.properties.interfaces.length > 0) {
-      items.push({
-        id: 'interfaces',
-        label: 'Interfaces',
-        value: element.properties.interfaces.join(', '),
-        required: false,
-      });
-    }
-
-    return {
-      nodeType,
-      label: element.name || element.id,
-      layerId,
-      elementId: element.id,
-      items: items.length > 0 ? items : undefined,
-      badges: [],
-      detailLevel: optionalProps.detailLevel,
-      changesetOperation: optionalProps.changesetOperation,
-      relationshipBadge: optionalProps.relationshipBadge,
-    };
-  }
-
-  /**
-   * Create a field item from property data
-   * Handles both object and array property formats with consistent structure
-   */
-  private createFieldItemFromProperty(
-    key: string,
-    prop: Record<string, unknown>,
-    requiredFields: string[] | undefined
-  ): FieldItem {
-    const typeValue = this.validateString(prop?.type as unknown);
-    const dataTypeValue = this.validateString(prop?.dataType as unknown);
-    const propType = typeValue ?? dataTypeValue ?? 'unknown';
-    const description = prop?.description || prop?.tooltip || '';
-    const isRequired = Array.isArray(requiredFields) ? requiredFields.includes(key) : false;
-
-    return {
-      id: key,
-      label: key,
-      value: propType,
-      required: isRequired,
-      tooltip: description ? String(description) : undefined,
-    };
-  }
-
-  /**
-   * Extract unified node data for data layer elements (JSONSchema, DataModel)
-   */
-  private extractDataNodeData(element: ModelElement, nodeType: NodeType, layerId: string): UnifiedNodeData {
-    const items: FieldItem[] = [];
-    const optionalProps = this.extractOptionalProperties(element);
-
-    // Extract schema properties or model attributes as field items
-    // Handle both direct properties and schemaInfo.properties (for JSONSchema)
-    const schemaInfo = this.extractSchemaInfo(element);
-    const properties = element.properties || schemaInfo?.properties || {};
-    const requiredFields = schemaInfo?.required;
-
-    // Handle object format (key-value pairs)
-    if (this.isObjectProperties(properties)) {
-      Object.entries(properties).forEach(([key, prop]) => {
-        if (key.startsWith('_')) return; // Skip internal properties
-        if (this.isRecord(prop)) {
-          items.push(this.createFieldItemFromProperty(key, prop, requiredFields));
-        }
-      });
-    }
-
-    // Handle array format (for some schema definitions)
-    if (Array.isArray(properties)) {
-      properties.forEach((prop) => {
-        if (!this.isRecord(prop)) return;
-        const propName = this.validateString(prop.name) || this.validateString(prop.id) || 'unknown';
-        items.push(this.createFieldItemFromProperty(propName, prop, requiredFields));
-      });
-    }
-
-    return {
-      nodeType,
-      label: element.name || element.id,
-      layerId,
-      elementId: element.id,
-      items: items.length > 0 ? items : undefined,
-      badges: undefined,
-      detailLevel: optionalProps.detailLevel,
-      changesetOperation: optionalProps.changesetOperation,
-      relationshipBadge: optionalProps.relationshipBadge,
-    };
   }
 
   /**
@@ -866,23 +595,6 @@ export class NodeTransformer {
                 const headerHeight = dimensions.headerHeight || 40;
                 const itemHeight = dimensions.itemHeight || 24;
                 height = headerHeight + fieldItems * itemHeight;
-              }
-            }
-
-            // Special handling for C4 nodes with technologies and description
-            if (mappedType.startsWith('c4.')) {
-              let itemCount = 0;
-              if (element.description) itemCount++;
-              if (element.properties?.technology && Array.isArray(element.properties.technology) && element.properties.technology.length > 0) itemCount++;
-              if (mappedType === NodeType.C4_COMPONENT && element.properties?.role) itemCount++;
-              if (mappedType === NodeType.C4_CONTAINER && element.properties?.containerType) itemCount++;
-              if (mappedType === NodeType.C4_EXTERNAL_ACTOR && element.properties?.actorType) itemCount++;
-              if (mappedType === NodeType.C4_COMPONENT && element.properties?.interfaces && Array.isArray(element.properties.interfaces) && element.properties.interfaces.length > 0) itemCount++;
-
-              if (itemCount > 0) {
-                const headerHeight = dimensions.headerHeight || 40;
-                const itemHeight = dimensions.itemHeight || 24;
-                height = headerHeight + itemCount * itemHeight;
               }
             }
 
@@ -1040,82 +752,6 @@ export class NodeTransformer {
 
 
   /**
-   * Extract optional properties from an element with proper type validation
-   */
-  private extractOptionalProperties(element: ModelElement): OptionalElementProperties {
-    const props: OptionalElementProperties = {};
-    const elementData = element as unknown as Record<string, unknown>;
-
-    // Safely extract detailLevel if present
-    const detailLevel = elementData.detailLevel;
-    if (detailLevel === 'minimal' || detailLevel === 'standard' || detailLevel === 'detailed') {
-      props.detailLevel = detailLevel;
-    } else {
-      props.detailLevel = 'standard';
-    }
-
-    // Safely extract changesetOperation if present
-    const changesetOperation = elementData.changesetOperation;
-    if (changesetOperation === 'add' || changesetOperation === 'update' || changesetOperation === 'delete') {
-      props.changesetOperation = changesetOperation;
-    }
-
-    // Safely extract relationshipBadge if present and validate structure
-    const relationshipBadgeData = elementData.relationshipBadge;
-    if (this.isRelationshipBadgeData(relationshipBadgeData)) {
-      props.relationshipBadge = relationshipBadgeData;
-    }
-
-    // Safely extract schemaInfo if present
-    const schemaInfo = elementData.schemaInfo;
-    if (this.isRecord(schemaInfo)) {
-      const schemaData = schemaInfo as Record<string, unknown>;
-      const properties = schemaData.properties;
-      const required = schemaData.required;
-      props.schemaInfo = {
-        properties: (this.isRecord(properties) || Array.isArray(properties)) ? properties : undefined,
-        required: this.isStringArray(required)
-          ? required
-          : undefined,
-      };
-    }
-
-    return props;
-  }
-
-  /**
-   * Extract schemaInfo from an element
-   */
-  private extractSchemaInfo(element: ModelElement): OptionalElementProperties['schemaInfo'] | undefined {
-    const schemaInfo = (element as unknown as Record<string, unknown>).schemaInfo;
-    if (!this.isRecord(schemaInfo)) {
-      return undefined;
-    }
-
-    const properties = (schemaInfo as Record<string, unknown>).properties;
-    const required = (schemaInfo as Record<string, unknown>).required;
-
-    return {
-      properties: (this.isRecord(properties) || Array.isArray(properties)) ? properties : undefined,
-      required: this.isStringArray(required)
-        ? (required as string[])
-        : undefined,
-    };
-  }
-
-  /**
-   * Type guard for RelationshipBadgeData - validates all required fields are present and have correct types
-   */
-  private isRelationshipBadgeData(value: unknown): value is RelationshipBadgeData {
-    if (!this.isRecord(value)) return false;
-    return (
-      typeof value.count === 'number' &&
-      typeof value.incoming === 'number' &&
-      typeof value.outgoing === 'number'
-    );
-  }
-
-  /**
    * Validate that a value is a boolean, return it or undefined
    */
   private validateBoolean(value: unknown): boolean | undefined {
@@ -1129,24 +765,4 @@ export class NodeTransformer {
     return typeof value === 'string' && value.length > 0 ? value : undefined;
   }
 
-  /**
-   * Check if a value is a string array
-   */
-  private isStringArray(value: unknown): value is string[] {
-    return Array.isArray(value) && value.every(item => typeof item === 'string');
-  }
-
-  /**
-   * Check if a value is a record (plain object)
-   */
-  private isRecord(value: unknown): value is Record<string, unknown> {
-    return value !== null && typeof value === 'object' && !Array.isArray(value);
-  }
-
-  /**
-   * Check if a value is object-format properties (not array)
-   */
-  private isObjectProperties(value: unknown): value is Record<string, unknown> {
-    return this.isRecord(value);
-  }
 }

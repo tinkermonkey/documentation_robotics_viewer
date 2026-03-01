@@ -1,5 +1,20 @@
 import JSZip from 'jszip';
-import { Release } from '../types';
+
+export interface ReleaseAsset {
+  id: number;
+  name: string;
+  browser_download_url: string;
+  size: number;
+}
+
+export interface Release {
+  id: number;
+  tag_name: string;
+  name: string;
+  assets: ReleaseAsset[];
+  created_at: string;
+  published_at: string;
+}
 
 /**
  * Service for interacting with GitHub releases via backend server

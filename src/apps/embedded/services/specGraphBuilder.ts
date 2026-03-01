@@ -8,25 +8,15 @@ import { v4 as uuidv4 } from 'uuid';
 import { MetaModel, ModelElement, Relationship, Layer } from '../../../core/types';
 import type { SpecDataResponse, SchemaDefinition, RelationshipCatalog, RelationshipType } from './embeddedDataLoader';
 
-// JSON Schema meta-keys to exclude when discovering element types (flat-key format)
-const SCHEMA_META_KEYS = new Set([
-  '$schema', '$id', 'title', 'description', 'type', 'allOf', 'anyOf',
-  'oneOf', 'not', 'definitions', '$defs', 'required', 'additionalProperties',
-  'properties', 'examples', 'if', 'then', 'else'
-]);
-
-function getElementTypes(schema: SchemaDefinition): Record<string, SchemaDefinition> {
-  // CLI v0.8.1 format: element types live inside schema.nodeSchemas
+/**
+ * Returns element type definitions from the modern DR format (nodeSchemas).
+ * Returns null when the schema does not contain nodeSchemas (e.g. manifest, base schemas).
+ */
+function getElementTypes(schema: SchemaDefinition): Record<string, SchemaDefinition> | null {
   if (schema.nodeSchemas && typeof schema.nodeSchemas === 'object') {
     return schema.nodeSchemas as Record<string, SchemaDefinition>;
   }
-  // Flat-key fallback: element types are top-level keys (excluding JSON Schema meta-keys)
-  const flatEntries = Object.entries(schema).filter(
-    ([key, val]) => !SCHEMA_META_KEYS.has(key) && val !== null && typeof val === 'object'
-  );
-  if (flatEntries.length > 0) return Object.fromEntries(flatEntries) as Record<string, SchemaDefinition>;
-  // Legacy fallback: definitions/$defs format
-  return (schema.definitions || schema.$defs || {}) as Record<string, SchemaDefinition>;
+  return null;
 }
 
 /**
@@ -69,6 +59,7 @@ export class SpecGraphBuilder {
     if (!schema) return null;
 
     const elementTypes = getElementTypes(schema);
+    if (!elementTypes) return null;
     const keys = Object.keys(elementTypes);
     if (keys.length === 0) return null;
 
@@ -82,6 +73,7 @@ export class SpecGraphBuilder {
       const element: ModelElement = {
         id: uuidv4(),
         type: 'json-schema-element',
+        specNodeId: 'data.jsonSchema',
         name: (typeof def?.title === 'string' ? def.title : null) ?? key,
         description: typeof def?.description === 'string' ? def.description : undefined,
         layerId: selectedSchemaId,
@@ -122,15 +114,6 @@ export class SpecGraphBuilder {
         }
       };
 
-      // Scan top-level properties for $ref (legacy flat-key format)
-      for (const [propName, propDef] of Object.entries(properties)) {
-        const prop = propDef as SchemaDefinition;
-        if (typeof prop.$ref === 'string') addRef(prop.$ref, propName);
-        if (prop.items && typeof (prop.items as SchemaDefinition).$ref === 'string') {
-          addRef((prop.items as SchemaDefinition).$ref as string, propName);
-        }
-      }
-
       // Scan properties.relationships.properties for $ref (DR spec v0.8.1 format)
       const relProps = properties.relationships?.properties;
       if (relProps && typeof relProps === 'object') {
@@ -149,7 +132,17 @@ export class SpecGraphBuilder {
       relationships.push(...this.buildCatalogRelationships(specData.relationshipCatalog, elementMap));
     }
 
-    // Secondary: build edges from schema-level relationshipTypes — only when the global catalog produced nothing
+    // Primary alternative: build edges from schema.relationshipSchemas dict (actual DR CLI format)
+    // Each value has source_spec_node_id, destination_spec_node_id, predicate
+    const schemaRelSchemasMap = (schema as Record<string, unknown>).relationshipSchemas;
+    if (schemaRelSchemasMap && typeof schemaRelSchemasMap === 'object' && !Array.isArray(schemaRelSchemasMap)) {
+      relationships.push(...this.buildRelationshipSchemas(
+        schemaRelSchemasMap as Record<string, Record<string, unknown>>,
+        elementMap
+      ));
+    }
+
+    // Secondary: build edges from schema-level relationshipTypes — only when no primary source produced edges
     if (relationships.length === 0) {
       const schemaRelTypes = (schema as Record<string, unknown>).relationshipTypes;
       if (Array.isArray(schemaRelTypes)) {
@@ -161,10 +154,11 @@ export class SpecGraphBuilder {
     if (relationships.length === 0) {
       const hasCatalog = !!specData.relationshipCatalog;
       const catalogTypes = specData.relationshipCatalog?.relationshipTypes?.length ?? 0;
+      const relSchemasCount = schemaRelSchemasMap ? Object.keys(schemaRelSchemasMap).length : 0;
       const sampleKeys = [...elementMap.keys()].slice(0, 5).join(', ');
       console.warn(
         `[SpecGraphBuilder] No relationships found for schema "${selectedSchemaId}". ` +
-        `catalog=${hasCatalog}, catalogTypes=${catalogTypes}, ` +
+        `catalog=${hasCatalog}, catalogTypes=${catalogTypes}, relSchemas=${relSchemasCount}, ` +
         `elementKeys=[${sampleKeys}${elementMap.size > 5 ? '...' : ''}]`
       );
     }
@@ -214,6 +208,30 @@ export class SpecGraphBuilder {
           });
         }
       }
+    }
+    return relationships;
+  }
+
+  private buildRelationshipSchemas(
+    relSchemas: Record<string, Record<string, unknown>>,
+    elementMap: Map<string, ModelElement>
+  ): Relationship[] {
+    const relationships: Relationship[] = [];
+    for (const rel of Object.values(relSchemas)) {
+      const sourceType = rel.source_spec_node_id as string | undefined;
+      const targetType = rel.destination_spec_node_id as string | undefined;
+      const label = (rel.predicate as string | undefined) || 'reference';
+      if (!sourceType || !targetType) continue;
+      const sourceEl = this.findByType(sourceType, elementMap);
+      const targetEl = this.findByType(targetType, elementMap);
+      if (!sourceEl || !targetEl) continue;
+      relationships.push({
+        id: uuidv4(),
+        type: label,
+        sourceId: sourceEl.id,
+        targetId: targetEl.id,
+        properties: { label },
+      });
     }
     return relationships;
   }

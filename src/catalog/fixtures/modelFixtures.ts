@@ -22,6 +22,23 @@ function createElementVisual(position = { x: 0, y: 0 }, size = { width: 160, hei
   };
 }
 
+/** Map of known element types to specNodeId values */
+const ELEMENT_TYPE_TO_SPEC_NODE_ID: Record<string, string> = {
+  goal: 'motivation.goal',
+  stakeholder: 'motivation.stakeholder',
+  requirement: 'motivation.requirement',
+  constraint: 'motivation.constraint',
+  outcome: 'motivation.outcome',
+  principle: 'motivation.principle',
+  businessService: 'business.service',
+  businessFunction: 'business.function',
+  businessCapability: 'business.capability',
+  businessProcess: 'business.process',
+  c4Container: 'c4.container',
+  c4Component: 'c4.component',
+  c4ExternalActor: 'c4.externalActor',
+};
+
 /**
  * Helper to create a model element
  */
@@ -37,6 +54,7 @@ function createModelElement(
   return {
     id,
     type,
+    specNodeId: ELEMENT_TYPE_TO_SPEC_NODE_ID[type] ?? `${layerId}.${type}`,
     name,
     layerId,
     description: `Mock ${type} element for testing`,
@@ -386,8 +404,7 @@ export function createChangesetModelFixture(): MetaModel {
       author: 'Test Fixture',
       created: new Date().toISOString(),
       elementCount: elements.length,
-      layerCount: 1,
-      parseErrors: []
+      layerCount: 1
     }
   };
 }

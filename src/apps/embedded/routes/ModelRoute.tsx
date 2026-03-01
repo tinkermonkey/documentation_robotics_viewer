@@ -16,47 +16,6 @@ import { useAnnotationStore } from '../stores/annotationStore';
 import { embeddedDataLoader, SpecDataResponse } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
 import { LoadingState, ErrorState } from '../components/shared';
-import type { MetaModel } from '../../../core/types';
-
-/**
- * Sanitize model data to ensure all elements have required visual properties.
- * Uses immutable updates to prevent mutation of input data.
- * This prevents NaN viewBox errors when rendering graphs.
- */
-function sanitizeModel(model: MetaModel): MetaModel {
-  return {
-    ...model,
-    layers: Object.fromEntries(
-      Object.entries(model.layers).map(([layerId, layer]) => [
-        layerId,
-        {
-          ...layer,
-          elements: layer.elements?.map(element => ({
-            ...element,
-            visual: {
-              position: {
-                x: Number.isFinite(element.visual?.position?.x) ? element.visual.position.x : 0,
-                y: Number.isFinite(element.visual?.position?.y) ? element.visual.position.y : 0,
-              },
-              size: {
-                width: Number.isFinite(element.visual?.size?.width) && (element.visual?.size?.width ?? 0) > 0
-                  ? element.visual.size.width
-                  : 200,
-                height: Number.isFinite(element.visual?.size?.height) && (element.visual?.size?.height ?? 0) > 0
-                  ? element.visual.size.height
-                  : 100,
-              },
-              style: element.visual?.style || {
-                backgroundColor: '#e3f2fd',
-                borderColor: '#1976d2',
-              },
-            },
-          })) ?? [],
-        },
-      ])
-    ),
-  };
-}
 
 export default function ModelRoute() {
   const { view } = useParams({ strict: false });
@@ -117,14 +76,7 @@ export default function ModelRoute() {
   };
 
   const { data: model, loading, error, reload } = useDataLoader({
-    loadFn: async () => {
-      const modelData = await embeddedDataLoader.loadModel();
-
-      // Sanitize model data to ensure all elements have valid visual properties
-      const sanitizedModel = sanitizeModel(modelData);
-
-      return sanitizedModel;
-    },
+    loadFn: async () => embeddedDataLoader.loadModel(),
     websocketEvents: ['model.updated', 'annotation.added'],
     onSuccess: async (modelData) => {
       setModel(modelData);

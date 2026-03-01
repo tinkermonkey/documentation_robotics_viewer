@@ -21,7 +21,6 @@ import { BusinessGraph, BusinessNode } from '@/core/types/businessLayer';
 import { BusinessLayerParser } from '@/core/services/businessLayerParser';
 import { BusinessGraphBuilder } from '@/core/services/businessGraphBuilder';
 import { BusinessNodeTransformer } from '@/core/services/businessNodeTransformer';
-import { CrossLayerReferenceResolver } from '@/core/services/crossLayerReferenceResolver';
 import { HierarchicalBusinessLayout } from '@/core/layout/business/HierarchicalBusinessLayout';
 import { DEFAULT_LAYOUT_OPTIONS } from '@/core/layout/business/types';
 import { nodeTypes } from '@/core/nodes';
@@ -111,11 +110,7 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
         businessLayerData.relationships
       );
 
-      // Step 3: Resolve cross-layer references
-      const crossLayerResolver = new CrossLayerReferenceResolver();
-      graph = crossLayerResolver.resolveAllLinks(graph, model);
-
-      // Step 4: Pre-calculate dimensions
+      // Step 3: Pre-calculate dimensions
       const transformer = new BusinessNodeTransformer();
       transformer.precalculateDimensions(graph.nodes);
 

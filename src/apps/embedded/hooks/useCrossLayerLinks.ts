@@ -4,9 +4,6 @@ import { useCrossLayerStore } from '@/core/stores/crossLayerStore';
 import { useModelStore } from '@/core/stores/modelStore';
 import { extractCrossLayerReferences, referencesToEdges } from '@/core/services/crossLayerLinksExtractor';
 import { applyEdgeBundling, isBundledEdge } from '@/core/layout/edgeBundling';
-import { processCrossLayerReferencesWithWorker } from '@/core/services/workerPool';
-import { processReferences, type CrossLayerReference } from '@/core/services/crossLayerProcessor';
-import { LayerType, ReferenceType } from '@/core/types';
 
 /**
  * Hook to extract and filter cross-layer links from the model with progressive loading
@@ -78,66 +75,6 @@ export function useCrossLayerLinks(): AppEdge[] {
       return [];
     }
   }, [visible, model, targetLayerFilters, relationshipTypeFilters, setLastError]);
-
-  // Worker processing for large datasets (async, non-blocking for models with >50 references)
-  // Spawns a worker to process cross-layer references in parallel with main thread extraction
-  // Results are available for subsequent operations and improve overall performance
-  useEffect(() => {
-    if (!model || !visible) {
-      return;
-    }
-
-    // Check if dataset is large enough for worker processing
-    if (model.references && model.references.length > 50) {
-      // Prepare cross-layer references for worker
-      const crossLayerRefsForWorker = model.references
-        .filter((ref) => ref.source.layerId && ref.target.layerId && ref.source.layerId !== ref.target.layerId)
-        .map((ref) => {
-          // Safely convert string layer IDs to LayerType enum
-          const sourceLayerId = ref.source.layerId as unknown;
-          const targetLayerId = ref.target.layerId as unknown;
-
-          // Validate that layer IDs are valid LayerType values
-          if (!Object.values(LayerType).includes(sourceLayerId as LayerType)) {
-            console.warn(`Invalid source layer ID: ${sourceLayerId}`);
-            return null;
-          }
-          if (!Object.values(LayerType).includes(targetLayerId as LayerType)) {
-            console.warn(`Invalid target layer ID: ${targetLayerId}`);
-            return null;
-          }
-
-          return {
-            sourceId: ref.source.elementId || '',
-            targetId: ref.target.elementId || '',
-            sourceLayer: sourceLayerId as LayerType,
-            targetLayer: targetLayerId as LayerType,
-            relationshipType: ref.type as ReferenceType | undefined,
-            sourceElementName: ref.source.elementId,
-            targetElementName: ref.target.elementId,
-          } as CrossLayerReference;
-        })
-        .filter((ref): ref is CrossLayerReference => ref !== null);
-
-      // Process with worker for non-blocking extraction
-      // Worker runs asynchronously; can improve performance for models with >50 references
-      processCrossLayerReferencesWithWorker(
-        crossLayerRefsForWorker,
-        (refs) => processReferences(refs)
-      ).catch((error) => {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        console.error('Worker processing error:', { error: errorMessage, referenceCount: crossLayerRefsForWorker.length });
-
-        // Propagate worker processing errors to UI
-        // This ensures users are notified if background processing fails
-        setLastError({
-          message: `Failed to process cross-layer references in background: ${errorMessage}`,
-          timestamp: Date.now(),
-          type: 'extraction_error',
-        });
-      });
-    }
-  }, [model, visible, setLastError]);
 
   // Second pass: apply edge bundling to group parallel edges
   const bundled = useMemo(() => {
