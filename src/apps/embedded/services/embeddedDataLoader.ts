@@ -76,10 +76,14 @@ function getAuthHeaders(): Record<string, string> {
 
 export interface RelationshipType {
   id: string;
+  name?: string;
   predicate?: string;
   inversePredicate?: string;
   category?: string;
   description?: string;
+  sourceTypes?: string[];
+  targetTypes?: string[];
+  cardinality?: string;
 }
 
 export interface RelationshipCatalog {

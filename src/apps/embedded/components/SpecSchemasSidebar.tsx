@@ -1,5 +1,6 @@
 import React from 'react';
-import type { SpecDataResponse } from '../services/embeddedDataLoader';
+import type { SpecDataResponse, SchemaDefinition } from '../services/embeddedDataLoader';
+import { isLayerSchema, sortLayerSchemas } from '../services/specGraphBuilder';
 
 interface SpecSchemasSidebarProps {
   specData: SpecDataResponse;
@@ -29,7 +30,8 @@ const SpecSchemasSidebar: React.FC<SpecSchemasSidebarProps> = ({
   selectedSchemaId,
   onSelectSchema,
 }) => {
-  const schemaEntries = Object.entries(specData.schemas || {});
+  const allEntries = Object.entries(specData.schemas || {}) as [string, SchemaDefinition][];
+  const schemaEntries = sortLayerSchemas(allEntries.filter(([, schema]) => isLayerSchema(schema)));
 
   return (
     <div className="p-4" data-testid="spec-schemas-sidebar">

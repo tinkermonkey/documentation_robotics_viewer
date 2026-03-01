@@ -6,7 +6,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import { MetaModel, ModelElement, Relationship, Layer } from '../../../core/types';
-import type { SpecDataResponse, SchemaDefinition } from './embeddedDataLoader';
+import type { SpecDataResponse, SchemaDefinition, RelationshipCatalog } from './embeddedDataLoader';
 
 // JSON Schema meta-keys to exclude when discovering element types (flat-key format)
 const SCHEMA_META_KEYS = new Set([
@@ -35,6 +35,26 @@ function getElementTypes(schema: SchemaDefinition): Record<string, SchemaDefinit
 function resolveRefKey(ref: string): string {
   const parts = ref.split('/');
   return parts[parts.length - 1] ?? '';
+}
+
+/** Returns true if the schema is an architecture layer (not "manifest" or "base"). */
+export function isLayerSchema(schema: SchemaDefinition): boolean {
+  if (schema.nodeSchemas && typeof schema.nodeSchemas === 'object') return true;
+  const layer = schema.layer;
+  if (layer && typeof layer === 'object' && typeof (layer as Record<string, unknown>).name === 'string') return true;
+  return false;
+}
+
+/** Sorts schema entries by their numeric prefix ("01_motivation" → 1). Non-prefixed schemas sort last. */
+export function sortLayerSchemas(entries: [string, SchemaDefinition][]): [string, SchemaDefinition][] {
+  return [...entries].sort(([a], [b]) => {
+    const na = /^(\d+)_/.exec(a)?.[1] ?? null;
+    const nb = /^(\d+)_/.exec(b)?.[1] ?? null;
+    if (na === null && nb === null) return a.localeCompare(b);
+    if (na === null) return 1;
+    if (nb === null) return -1;
+    return parseInt(na, 10) - parseInt(nb, 10);
+  });
 }
 
 export class SpecGraphBuilder {
@@ -124,6 +144,11 @@ export class SpecGraphBuilder {
       }
     }
 
+    // Primary: build edges from relationship catalog (DR spec v0.8.1)
+    if (specData.relationshipCatalog) {
+      relationships.push(...this.buildCatalogRelationships(specData.relationshipCatalog, elementMap));
+    }
+
     const elements = Array.from(elementMap.values());
 
     const layer: Layer = {
@@ -145,5 +170,31 @@ export class SpecGraphBuilder {
         type: 'spec-visualization' as any,
       },
     };
+  }
+
+  private buildCatalogRelationships(
+    catalog: RelationshipCatalog,
+    elementMap: Map<string, ModelElement>
+  ): Relationship[] {
+    const relationships: Relationship[] = [];
+    for (const relType of catalog.relationshipTypes ?? []) {
+      const label = relType.id || relType.name || 'reference';
+      for (const sourceType of relType.sourceTypes ?? []) {
+        const sourceEl = elementMap.get(sourceType);
+        if (!sourceEl) continue;
+        for (const targetType of relType.targetTypes ?? []) {
+          const targetEl = elementMap.get(targetType);
+          if (!targetEl) continue;
+          relationships.push({
+            id: uuidv4(),
+            type: label,
+            sourceId: sourceEl.id,
+            targetId: targetEl.id,
+            properties: { label },
+          });
+        }
+      }
+    }
+    return relationships;
   }
 }

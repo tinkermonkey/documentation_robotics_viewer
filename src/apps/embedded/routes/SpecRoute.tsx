@@ -10,7 +10,9 @@ import { LoadingState, ErrorState } from '../components/shared';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
+import type { SchemaDefinition } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
+import { isLayerSchema, sortLayerSchemas } from '../services/specGraphBuilder';
 
 export default function SpecRoute() {
   const { view } = useParams({ strict: false });
@@ -43,11 +45,12 @@ export default function SpecRoute() {
     }
   }, [view, activeView, specView, navigate, setSpecView]);
 
-  // Auto-select first schema when data loads
+  // Auto-select first layer schema when data loads
   useEffect(() => {
     if (specData && !selectedSchemaId) {
-      const firstId = Object.keys(specData.schemas || {})[0] ?? null;
-      setSelectedSchemaId(firstId);
+      const allEntries = Object.entries(specData.schemas || {}) as [string, SchemaDefinition][];
+      const layerEntries = sortLayerSchemas(allEntries.filter(([, schema]) => isLayerSchema(schema)));
+      setSelectedSchemaId(layerEntries[0]?.[0] ?? null);
     }
   }, [specData, selectedSchemaId]);
 
