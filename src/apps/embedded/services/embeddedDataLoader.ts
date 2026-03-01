@@ -511,14 +511,12 @@ export class EmbeddedDataLoader {
       source?: string;
       schemas?: Record<string, unknown>;
       schemaCount?: number;
-      schema_count?: number;
       relationshipCatalog?: RelationshipCatalog;
-      relationship_catalog?: RelationshipCatalog;
     };
 
-    // Normalize snake_case from server to camelCase for TypeScript
-    const schemaCount = data.schemaCount ?? data.schema_count ?? (data.schemas ? Object.keys(data.schemas).length : 0);
-    const relationshipCatalog: RelationshipCatalog | undefined = data.relationshipCatalog || data.relationship_catalog;
+    // schemaCount is required by the API spec; fall back to counting schemas if absent
+    const schemaCount = data.schemaCount ?? (data.schemas ? Object.keys(data.schemas).length : 0);
+    const relationshipCatalog: RelationshipCatalog | undefined = data.relationshipCatalog;
 
     const result: SpecDataResponse = {
       version: data.version ?? '',
