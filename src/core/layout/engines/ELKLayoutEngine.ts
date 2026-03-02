@@ -80,12 +80,6 @@ export interface ELKParameters {
 
   /** Edge routing strategy (when orthogonalRouting is true) */
   edgeRouting?: ELKEdgeRouting;
-
-  /** Layout thoroughness (1–7); higher = more crossing-minimization passes */
-  thoroughness?: number;
-
-  /** Merge parallel edges sharing the same source/target into one routed path */
-  mergeEdges?: boolean;
 }
 
 /**
@@ -160,8 +154,6 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       interactive: false,
       orthogonalRouting: true,
       edgeRouting: 'ORTHOGONAL',
-      thoroughness: 7,
-      mergeEdges: true,
     };
   }
 
@@ -180,8 +172,6 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       interactive: { type: 'boolean' },
       orthogonalRouting: { type: 'boolean' },
       edgeRouting: { type: 'string', values: ['ORTHOGONAL', 'POLYLINE', 'SPLINES', 'UNDEFINED'] },
-      thoroughness: { type: 'number', min: 1, max: 7 },
-      mergeEdges: { type: 'boolean' },
     };
 
     return this.validateCommonParameters(parameters, schema);
@@ -223,12 +213,10 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
     // Add layered-specific options
     if (params.algorithm === 'layered') {
       layoutOptions['elk.layered.layering.strategy'] = params.layering || 'NETWORK_SIMPLEX';
-      // Higher thoroughness = more crossing-minimization passes (1–7)
-      layoutOptions['elk.layered.thoroughness'] = String(params.thoroughness ?? 7);
+      // Maximum crossing-minimization passes for best routing quality
+      layoutOptions['elk.layered.thoroughness'] = '7';
       // Merge parallel edges sharing the same source/target to reduce visual clutter
-      if (params.mergeEdges) {
-        layoutOptions['elk.layered.mergeEdges'] = 'true';
-      }
+      layoutOptions['elk.layered.mergeEdges'] = 'true';
     }
 
     // Add force-specific options
@@ -385,8 +373,6 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
     if (typeof parameters.orthogonalRouting === 'boolean')
       validated.orthogonalRouting = parameters.orthogonalRouting;
     if (parameters.edgeRouting) validated.edgeRouting = parameters.edgeRouting;
-    if (typeof parameters.thoroughness === 'number') validated.thoroughness = parameters.thoroughness;
-    if (typeof parameters.mergeEdges === 'boolean') validated.mergeEdges = parameters.mergeEdges;
 
     return validated;
   }
