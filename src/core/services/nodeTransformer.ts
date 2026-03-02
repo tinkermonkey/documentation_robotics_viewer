@@ -24,7 +24,17 @@ import { extractCrossLayerReferences, referencesToEdges } from './crossLayerLink
 export interface NodeTransformResult {
   nodes: AppNode[];
   edges: AppEdge[];
-  layout: LayoutResult;
+  layout?: LayoutResult;
+}
+
+/**
+ * Internal result shape returned by layoutLayersSeparately (ELK per-layer path).
+ * Distinct from LayoutResult (shapes.ts) which is the LayoutEngine output format.
+ */
+interface LayerStackResult {
+  layers: Record<string, LayerLayoutResult>;
+  totalHeight: number;
+  direction?: string;
 }
 
 
@@ -49,7 +59,7 @@ export class NodeTransformer {
     this.precalculateDimensions(model, measuredNodeSizes);
 
     // STEP 1: Calculate layout for all layers
-    let layout: any;
+    let layout: LayoutResult | LayerStackResult;
 
     // Check if layoutEngine is defined and which interface it uses
     if (!this.layoutEngine) {
@@ -214,7 +224,7 @@ export class NodeTransformer {
     // available (ELK path only; VerticalLayerLayout path has no edgeRoutingPoints).
     // layoutDirection is set by layoutLayersSeparately (ELK path) and used to align
     // React Flow source/target handles with ELK's assumed edge exit/entry sides.
-    const layoutDirection = (layout as any).direction as string | undefined;
+    const layoutDirection = 'direction' in layout ? (layout as LayerStackResult).direction : undefined;
     for (const [layerType, layer] of Object.entries(model.layers)) {
       relationshipCount += layer.relationships.length;
       const layerLayoutData = (layout.layers as Record<string, any>)[layerType];
@@ -257,7 +267,7 @@ export class NodeTransformer {
       }
     }
 
-    return { nodes, edges, layout };
+    return { nodes, edges };
   }
 
   /**
@@ -641,7 +651,7 @@ export class NodeTransformer {
   /**
    * Layout each layer separately using the selected engine, then stack vertically
    */
-  private async layoutLayersSeparately(model: MetaModel, parameters: Record<string, any>): Promise<any> {
+  private async layoutLayersSeparately(model: MetaModel, parameters: Record<string, any>): Promise<LayerStackResult> {
     const layerOrder = [
       'Motivation',
       'Business',
@@ -659,7 +669,7 @@ export class NodeTransformer {
 
     const layerSpacing = 200; // Spacing between layers
     let currentY = 0;
-    const layers: any = {};
+    const layers: Record<string, LayerLayoutResult> = {};
 
     console.log('[NodeTransformer] Starting per-layer layout for', Object.keys(model.layers).length, 'layers');
 

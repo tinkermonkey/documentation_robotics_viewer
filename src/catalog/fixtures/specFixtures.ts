@@ -216,74 +216,324 @@ export function createCustomSpecFixture(
 }
 
 /**
- * Create a SpecDataResponse for the application layer in the modern nodeSchemas format
- * used by the DR CLI /api/spec endpoint (CLI v0.8.1+).
+ * Create a SpecDataResponse for the application layer sourced directly from
+ * .dr/spec/application.json — the file the DR CLI serves via /api/spec.
  *
- * Mirrors what the CLI visualization service actually sends:
- * - Schema key "04_application" matches the layer directory prefix
- * - nodeSchemas defines the two element types (ApplicationComponent, ApplicationService)
- *   with their attribute properties drawn from the real YAML model documentation
- * - relationshipSchemas defines the allowed relationship between the two types
+ * The CLI wraps each layer spec file as an entry in the top-level `schemas`
+ * map, keyed by layer id ("application"). The schema value is the verbatim
+ * content of application.json: specVersion, layer metadata, nodeSchemas (9
+ * ArchiMate-inspired element types), and relationshipSchemas (intra-layer
+ * and cross-layer relationships).
+ *
+ * SpecGraphBuilder reads schema.nodeSchemas for nodes and
+ * schema.relationshipSchemas for edges, matching source_spec_node_id /
+ * destination_spec_node_id against element keys via suffix (e.g.
+ * "application.applicationcomponent" → "applicationcomponent").
  */
 export function createApplicationLayerSpecFixture(): SpecDataResponse {
   return {
-    version: '1.0.0',
+    version: '0.8.1',
     type: 'json-schema',
-    description: 'Application layer schema — sourced from DR CLI /api/spec endpoint',
+    description: 'Application Layer JSON Schema — sourced from DR CLI /api/spec',
     source: 'Documentation Robotics CLI',
     schemas: {
-      '04_application': {
-        title: 'Application Layer',
-        description: 'Application components and services that compose the visualization tool',
+      application: {
+        specVersion: '0.8.1',
+        layer: {
+          id: 'application',
+          number: 4,
+          name: 'Application Layer',
+          description: 'Layer 4: Application Layer',
+          inspired_by: {
+            standard: 'ArchiMate 3.2',
+            version: '3.2',
+          },
+          node_types: [
+            'application.applicationcollaboration',
+            'application.applicationcomponent',
+            'application.applicationevent',
+            'application.applicationfunction',
+            'application.applicationinteraction',
+            'application.applicationinterface',
+            'application.applicationprocess',
+            'application.applicationservice',
+            'application.dataobject',
+          ],
+        },
         nodeSchemas: {
-          ApplicationComponent: {
-            title: 'Application Component',
-            description:
-              'A coarse-grained unit of application functionality: a page, layout, or reusable UI container',
+          applicationcollaboration: {
+            $schema: 'http://json-schema.org/draft-07/schema#',
+            title: 'ApplicationCollaboration',
+            description: 'Aggregate of application components working together',
+            allOf: [{ $ref: 'urn:dr:spec:base:spec-node' }],
             properties: {
               attributes: {
                 type: 'object',
                 properties: {
+                  documentation: { type: 'string' },
+                  properties: { type: 'object', description: 'Cross-layer properties' },
+                },
+                additionalProperties: false,
+              },
+            },
+            $id: 'urn:dr:spec:node:application.applicationcollaboration',
+          },
+          applicationcomponent: {
+            $schema: 'http://json-schema.org/draft-07/schema#',
+            title: 'ApplicationComponent',
+            description: 'Modular, deployable, and replaceable part of a system',
+            allOf: [{ $ref: 'urn:dr:spec:base:spec-node' }],
+            properties: {
+              attributes: {
+                type: 'object',
+                properties: {
+                  documentation: { type: 'string' },
                   type: {
                     type: 'string',
-                    description: 'Component classification (generic, ui, container, layout)',
+                    enum: ['generic', 'external', 'internal', 'service-component'],
+                    description: 'Classification of the application component kind.',
                   },
-                  source: {
-                    type: 'object',
-                    description: 'Source code reference with file path and exported symbol name',
-                  },
+                  properties: { type: 'object', description: 'Cross-layer properties' },
                 },
+                required: ['type'],
+                additionalProperties: false,
               },
             },
+            $id: 'urn:dr:spec:node:application.applicationcomponent',
           },
-          ApplicationService: {
-            title: 'Application Service',
-            description:
-              'A service providing application-layer functionality, invoked by components or other services',
+          applicationevent: {
+            $schema: 'http://json-schema.org/draft-07/schema#',
+            title: 'ApplicationEvent',
+            description: 'A state change in an application element that triggers reactive application behavior.',
+            allOf: [{ $ref: 'urn:dr:spec:base:spec-node' }],
             properties: {
               attributes: {
                 type: 'object',
-                required: ['serviceType'],
                 properties: {
-                  serviceType: {
+                  documentation: { type: 'string' },
+                  eventType: {
                     type: 'string',
-                    enum: ['synchronous', 'asynchronous'],
-                    description: 'Service interaction pattern — synchronous (request/response) or asynchronous (event-driven)',
+                    enum: ['domain', 'integration', 'system'],
+                    description: 'Classification of the application event.',
                   },
-                  source: {
-                    type: 'object',
-                    description: 'Source code reference with file path and exported symbol name',
-                  },
+                  properties: { type: 'object', description: 'Cross-layer properties' },
                 },
+                required: ['eventType'],
+                additionalProperties: false,
               },
             },
+            $id: 'urn:dr:spec:node:application.applicationevent',
+          },
+          applicationfunction: {
+            $schema: 'http://json-schema.org/draft-07/schema#',
+            title: 'ApplicationFunction',
+            description: 'Automated behavior performed by an application component for internal purposes.',
+            allOf: [{ $ref: 'urn:dr:spec:base:spec-node' }],
+            properties: {
+              attributes: {
+                type: 'object',
+                properties: {
+                  documentation: { type: 'string' },
+                  properties: { type: 'object', description: 'Cross-layer properties' },
+                },
+                additionalProperties: false,
+              },
+            },
+            $id: 'urn:dr:spec:node:application.applicationfunction',
+          },
+          applicationinteraction: {
+            $schema: 'http://json-schema.org/draft-07/schema#',
+            title: 'ApplicationInteraction',
+            description: 'Collective application behavior performed by two or more components working in collaboration.',
+            allOf: [{ $ref: 'urn:dr:spec:base:spec-node' }],
+            properties: {
+              attributes: {
+                type: 'object',
+                properties: {
+                  documentation: { type: 'string' },
+                  pattern: {
+                    type: 'string',
+                    enum: ['request-reply', 'publish-subscribe', 'event-driven', 'fire-and-forget'],
+                    description: 'Interaction pattern used by this application collaboration.',
+                  },
+                },
+                required: ['pattern'],
+                additionalProperties: false,
+              },
+            },
+            $id: 'urn:dr:spec:node:application.applicationinteraction',
+          },
+          applicationinterface: {
+            $schema: 'http://json-schema.org/draft-07/schema#',
+            title: 'ApplicationInterface',
+            description: 'Point of access where application service is available',
+            allOf: [{ $ref: 'urn:dr:spec:base:spec-node' }],
+            properties: {
+              attributes: {
+                type: 'object',
+                properties: {
+                  documentation: { type: 'string' },
+                  protocol: {
+                    type: 'string',
+                    enum: ['HTTP', 'HTTPS', 'gRPC', 'AMQP', 'WebSocket', 'REST', 'GraphQL', 'SOAP'],
+                    description: 'Application-level communication protocol used to expose the service.',
+                  },
+                  properties: { type: 'object', description: 'Cross-layer properties' },
+                },
+                required: ['protocol'],
+                additionalProperties: false,
+              },
+            },
+            $id: 'urn:dr:spec:node:application.applicationinterface',
+          },
+          applicationprocess: {
+            $schema: 'http://json-schema.org/draft-07/schema#',
+            title: 'ApplicationProcess',
+            description: 'An ordered sequence of application behaviors to achieve a specific operational result.',
+            allOf: [{ $ref: 'urn:dr:spec:base:spec-node' }],
+            properties: {
+              attributes: {
+                type: 'object',
+                properties: {
+                  documentation: { type: 'string' },
+                  properties: { type: 'object', description: 'Cross-layer properties' },
+                },
+                additionalProperties: false,
+              },
+            },
+            $id: 'urn:dr:spec:node:application.applicationprocess',
+          },
+          applicationservice: {
+            $schema: 'http://json-schema.org/draft-07/schema#',
+            title: 'ApplicationService',
+            description: 'Service that exposes application functionality',
+            allOf: [{ $ref: 'urn:dr:spec:base:spec-node' }],
+            properties: {
+              attributes: {
+                type: 'object',
+                properties: {
+                  documentation: { type: 'string' },
+                  serviceType: {
+                    type: 'string',
+                    enum: ['synchronous', 'asynchronous', 'event-driven', 'batch'],
+                    description: 'Classification of how the service exposes its functionality.',
+                  },
+                  properties: { type: 'object', description: 'Cross-layer properties' },
+                },
+                required: ['serviceType'],
+                additionalProperties: false,
+              },
+            },
+            $id: 'urn:dr:spec:node:application.applicationservice',
+          },
+          dataobject: {
+            $schema: 'http://json-schema.org/draft-07/schema#',
+            title: 'DataObject',
+            description: 'A passive application element representing data structured for automated processing.',
+            allOf: [{ $ref: 'urn:dr:spec:base:spec-node' }],
+            properties: {
+              attributes: {
+                type: 'object',
+                properties: {
+                  documentation: { type: 'string' },
+                  properties: { type: 'object', description: 'Cross-layer properties' },
+                },
+                additionalProperties: false,
+              },
+            },
+            $id: 'urn:dr:spec:node:application.dataobject',
           },
         },
         relationshipSchemas: {
-          component_uses_service: {
-            source_spec_node_id: 'ApplicationComponent',
-            destination_spec_node_id: 'ApplicationService',
+          'application.applicationcollaboration.aggregates.application.applicationcomponent': {
+            id: 'application.applicationcollaboration.aggregates.application.applicationcomponent',
+            source_spec_node_id: 'application.applicationcollaboration',
+            destination_spec_node_id: 'application.applicationcomponent',
+            predicate: 'aggregates',
+          },
+          'application.applicationcollaboration.delivers-value.application.applicationservice': {
+            id: 'application.applicationcollaboration.delivers-value.application.applicationservice',
+            source_spec_node_id: 'application.applicationcollaboration',
+            destination_spec_node_id: 'application.applicationservice',
+            predicate: 'delivers-value',
+          },
+          'application.applicationcomponent.accesses.application.dataobject': {
+            id: 'application.applicationcomponent.accesses.application.dataobject',
+            source_spec_node_id: 'application.applicationcomponent',
+            destination_spec_node_id: 'application.dataobject',
+            predicate: 'accesses',
+          },
+          'application.applicationcomponent.composes.application.applicationfunction': {
+            id: 'application.applicationcomponent.composes.application.applicationfunction',
+            source_spec_node_id: 'application.applicationcomponent',
+            destination_spec_node_id: 'application.applicationfunction',
+            predicate: 'composes',
+          },
+          'application.applicationcomponent.provides.application.applicationinterface': {
+            id: 'application.applicationcomponent.provides.application.applicationinterface',
+            source_spec_node_id: 'application.applicationcomponent',
+            destination_spec_node_id: 'application.applicationinterface',
+            predicate: 'provides',
+          },
+          'application.applicationcomponent.realizes.application.applicationservice': {
+            id: 'application.applicationcomponent.realizes.application.applicationservice',
+            source_spec_node_id: 'application.applicationcomponent',
+            destination_spec_node_id: 'application.applicationservice',
+            predicate: 'realizes',
+          },
+          'application.applicationcomponent.uses.application.applicationcomponent': {
+            id: 'application.applicationcomponent.uses.application.applicationcomponent',
+            source_spec_node_id: 'application.applicationcomponent',
+            destination_spec_node_id: 'application.applicationcomponent',
             predicate: 'uses',
+          },
+          'application.applicationevent.triggers.application.applicationprocess': {
+            id: 'application.applicationevent.triggers.application.applicationprocess',
+            source_spec_node_id: 'application.applicationevent',
+            destination_spec_node_id: 'application.applicationprocess',
+            predicate: 'triggers',
+          },
+          'application.applicationfunction.accesses.application.dataobject': {
+            id: 'application.applicationfunction.accesses.application.dataobject',
+            source_spec_node_id: 'application.applicationfunction',
+            destination_spec_node_id: 'application.dataobject',
+            predicate: 'accesses',
+          },
+          'application.applicationfunction.realizes.application.applicationservice': {
+            id: 'application.applicationfunction.realizes.application.applicationservice',
+            source_spec_node_id: 'application.applicationfunction',
+            destination_spec_node_id: 'application.applicationservice',
+            predicate: 'realizes',
+          },
+          'application.applicationinteraction.realizes.application.applicationservice': {
+            id: 'application.applicationinteraction.realizes.application.applicationservice',
+            source_spec_node_id: 'application.applicationinteraction',
+            destination_spec_node_id: 'application.applicationservice',
+            predicate: 'realizes',
+          },
+          'application.applicationinterface.serves.application.applicationservice': {
+            id: 'application.applicationinterface.serves.application.applicationservice',
+            source_spec_node_id: 'application.applicationinterface',
+            destination_spec_node_id: 'application.applicationservice',
+            predicate: 'serves',
+          },
+          'application.applicationprocess.delivers-value.application.applicationservice': {
+            id: 'application.applicationprocess.delivers-value.application.applicationservice',
+            source_spec_node_id: 'application.applicationprocess',
+            destination_spec_node_id: 'application.applicationservice',
+            predicate: 'delivers-value',
+          },
+          'application.applicationprocess.triggers.application.applicationevent': {
+            id: 'application.applicationprocess.triggers.application.applicationevent',
+            source_spec_node_id: 'application.applicationprocess',
+            destination_spec_node_id: 'application.applicationevent',
+            predicate: 'triggers',
+          },
+          'application.applicationservice.depends-on.application.dataobject': {
+            id: 'application.applicationservice.depends-on.application.dataobject',
+            source_spec_node_id: 'application.applicationservice',
+            destination_spec_node_id: 'application.dataobject',
+            predicate: 'depends-on',
           },
         },
       },

@@ -1,13 +1,14 @@
 /**
  * NodeType Enum
  *
- * Defines all 20 node types across the architecture layers.
+ * Defines all 22 node types across the architecture layers.
  * Maps to JSON configuration for styling, dimensions, and layout.
  *
  * Layers:
  * - Motivation (10): Strategic goals, requirements, drivers, outcomes
  * - Business (4): Functions, services, capabilities, processes
  * - C4 (3): Containers, components, external actors
+ * - Application (2): Components, services
  * - Data (2): JSON schemas, data models
  * - Structural (1): Layer containers
  *

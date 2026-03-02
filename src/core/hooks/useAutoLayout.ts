@@ -70,6 +70,9 @@ export function useAutoLayout(options: UseAutoLayoutOptions): UseAutoLayoutResul
       return engine;
     }
 
+    console.warn(
+      `[useAutoLayout] Layout engine "${layoutEngine}" not found in registry and has no lazy initializer. Falling back to VerticalLayerLayout.`
+    );
     return new VerticalLayerLayout();
   }, [layoutEngine]);
 

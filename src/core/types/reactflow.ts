@@ -329,6 +329,8 @@ export interface ElbowEdgeData {
   waypoints?: Array<{ x: number; y: number }>;
   /** ELK-computed intermediate bend points; used when no user waypoints are present. */
   elkPoints?: Array<{ x: number; y: number }>;
+  /** Edge path rendering options (offset, border radius for elbow routing). */
+  pathOptions?: { offset?: number; borderRadius?: number };
   /** Style overrides (used by motivation edges, cross-layer edges) */
   color?: string;
   strokeDasharray?: string;
