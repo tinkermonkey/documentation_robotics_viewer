@@ -214,3 +214,80 @@ export function createCustomSpecFixture(
     schemaCount: Object.keys(schemas).length
   };
 }
+
+/**
+ * Create a SpecDataResponse for the application layer in the modern nodeSchemas format
+ * used by the DR CLI /api/spec endpoint (CLI v0.8.1+).
+ *
+ * Mirrors what the CLI visualization service actually sends:
+ * - Schema key "04_application" matches the layer directory prefix
+ * - nodeSchemas defines the two element types (ApplicationComponent, ApplicationService)
+ *   with their attribute properties drawn from the real YAML model documentation
+ * - relationshipSchemas defines the allowed relationship between the two types
+ */
+export function createApplicationLayerSpecFixture(): SpecDataResponse {
+  return {
+    version: '1.0.0',
+    type: 'json-schema',
+    description: 'Application layer schema — sourced from DR CLI /api/spec endpoint',
+    source: 'Documentation Robotics CLI',
+    schemas: {
+      '04_application': {
+        title: 'Application Layer',
+        description: 'Application components and services that compose the visualization tool',
+        nodeSchemas: {
+          ApplicationComponent: {
+            title: 'Application Component',
+            description:
+              'A coarse-grained unit of application functionality: a page, layout, or reusable UI container',
+            properties: {
+              attributes: {
+                type: 'object',
+                properties: {
+                  type: {
+                    type: 'string',
+                    description: 'Component classification (generic, ui, container, layout)',
+                  },
+                  source: {
+                    type: 'object',
+                    description: 'Source code reference with file path and exported symbol name',
+                  },
+                },
+              },
+            },
+          },
+          ApplicationService: {
+            title: 'Application Service',
+            description:
+              'A service providing application-layer functionality, invoked by components or other services',
+            properties: {
+              attributes: {
+                type: 'object',
+                required: ['serviceType'],
+                properties: {
+                  serviceType: {
+                    type: 'string',
+                    enum: ['synchronous', 'asynchronous'],
+                    description: 'Service interaction pattern — synchronous (request/response) or asynchronous (event-driven)',
+                  },
+                  source: {
+                    type: 'object',
+                    description: 'Source code reference with file path and exported symbol name',
+                  },
+                },
+              },
+            },
+          },
+        },
+        relationshipSchemas: {
+          component_uses_service: {
+            source_spec_node_id: 'ApplicationComponent',
+            destination_spec_node_id: 'ApplicationService',
+            predicate: 'uses',
+          },
+        },
+      },
+    },
+    schemaCount: 1,
+  };
+}
