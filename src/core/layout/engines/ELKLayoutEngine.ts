@@ -146,9 +146,9 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
     return {
       algorithm: 'layered',
       direction: 'DOWN',
-      spacing: 80,
+      spacing: 100,
       layering: 'NETWORK_SIMPLEX',
-      edgeNodeSpacing: 50,
+      edgeNodeSpacing: 60,
       edgeSpacing: 30,
       aspectRatio: 1.6,
       interactive: false,
@@ -161,7 +161,7 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
     const schema = {
       algorithm: { type: 'string', values: ['layered', 'force', 'stress', 'box'] },
       direction: { type: 'string', values: ['RIGHT', 'DOWN', 'LEFT', 'UP'] },
-      spacing: { type: 'number', min: 0, max: 500 },
+      spacing: { type: 'number', min: 0, max: 600 },
       layering: {
         type: 'string',
         values: ['NETWORK_SIMPLEX', 'LONGEST_PATH', 'INTERACTIVE', 'STRETCH_WIDTH', 'MIN_WIDTH'],
@@ -190,10 +190,18 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
     const layoutOptions: LayoutOptions = {
       'elk.algorithm': params.algorithm || 'layered',
       'elk.direction': params.direction || 'DOWN',
-      'elk.spacing.nodeNode': String(params.spacing || 50),
-      'elk.spacing.edgeNode': String(params.edgeNodeSpacing || 20),
-      'elk.spacing.edgeEdge': String(params.edgeSpacing || 10),
+      'elk.spacing.nodeNode': String(params.spacing || 100),
+      'elk.spacing.edgeNode': String(params.edgeNodeSpacing || 60),
+      'elk.spacing.edgeEdge': String(params.edgeSpacing || 30),
       'elk.aspectRatio': String(params.aspectRatio || 1.6),
+      // Lay out disconnected subgraphs independently — prevents isolated nodes from
+      // overlapping connected components (common in architecture models)
+      'elk.separateConnectedComponents': 'true',
+      // Buffer around the layout area so nodes are never flush at the canvas edge
+      'elk.padding': '[top=30, left=30, bottom=30, right=30]',
+      // Minimum gap between adjacent ports on the same node side — prevents parallel
+      // edges from converging to a single pixel when many relationships share a handle
+      'elk.spacing.portPort': '20',
     };
 
     // Orthogonal edge routing options
@@ -201,13 +209,20 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       layoutOptions['elk.edgeRouting'] = params.edgeRouting || 'ORTHOGONAL';
       // NETWORK_SIMPLEX node placement: optimizes for shorter edges, better for dense graphs
       layoutOptions['elk.layered.nodePlacement.strategy'] = 'NETWORK_SIMPLEX';
+      // Prefer straight (horizontal/vertical) edge segments — reduces visual zig-zag noise
+      layoutOptions['elk.layered.nodePlacement.favorStraightEdges'] = 'true';
       // Remove superfluous bend points produced by the routing pass
       layoutOptions['elk.layered.unnecessaryBendpoints'] = 'true';
       layoutOptions['elk.layered.spacing.edgeNodeBetweenLayers'] = String(
-        params.edgeNodeSpacing || 50
+        params.edgeNodeSpacing || 60
       );
+      // Vertical spacing between nodes on adjacent ELK algorithm layers (default is 20px,
+      // which is far too tight; match node-node spacing for consistent breathing room)
+      layoutOptions['elk.layered.spacing.nodeNodeBetweenLayers'] = String(params.spacing || 100);
       // Compact layout post-routing by shortening long edges
       layoutOptions['elk.layered.compaction.postCompaction.strategy'] = 'EDGE_LENGTH';
+      // Two-sided greedy crossing minimization — considers both sweep directions to cut more crossings
+      layoutOptions['elk.layered.crossingMinimization.greedySwitchType'] = 'TWO_SIDED';
     }
 
     // Add layered-specific options
@@ -267,9 +282,10 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
           id: node.id,
           width: w,
           height: h,
-          // FIXED_SIDE: ELK routes to/from our declared ports, whose positions match
-          // React Flow handle positions so elkPoints aligns with the rendered edge.
-          layoutOptions: { 'elk.portConstraints': 'FIXED_SIDE' },
+          // FIXED_POS: ELK uses our exact port coordinates (centered on each node side),
+          // which match React Flow handle positions exactly. This ensures ELK's startPoint/
+          // endPoint in edge sections land at the same pixel as the rendered handle.
+          layoutOptions: { 'elk.portConstraints': 'FIXED_POS' },
           ports: [
             { id: `${node.id}-top`,    x: w / 2, y: 0,     layoutOptions: { 'port.side': 'NORTH' } },
             { id: `${node.id}-bottom`, x: w / 2, y: h,     layoutOptions: { 'port.side': 'SOUTH' } },
