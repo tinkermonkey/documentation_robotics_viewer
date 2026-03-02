@@ -1,0 +1,242 @@
+93ad3086-0073-472d-9298-94610f46b695:
+  id: 93ad3086-0073-472d-9298-94610f46b695
+  name: Health Check
+  type: operation
+  layer: api
+  documentation: Check if the DR CLI server is running and healthy (no auth required)
+  properties:
+    operationId: getHealth
+    summary: Health check
+    tags: Health
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: docs/api-spec.yaml
+    __elementId__: api.operation.health-check
+02fe0a42-cd11-47d8-81d6-cdaa034facd4:
+  id: 02fe0a42-cd11-47d8-81d6-cdaa034facd4
+  name: Get Full Model
+  type: operation
+  layer: api
+  documentation: Retrieve the complete architecture model across all layers (auth required)
+  properties:
+    operationId: getApiModel
+    summary: Get full model
+    tags: Model
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: docs/api-spec.yaml
+    __elementId__: api.operation.get-full-model
+916f67bf-2095-41f7-a083-903e89972db8:
+  id: 916f67bf-2095-41f7-a083-903e89972db8
+  name: Get Layer
+  type: operation
+  layer: api
+  documentation: Retrieve a specific architecture layer by name (auth required)
+  properties:
+    operationId: getApiLayersLayerName
+    summary: Get layer
+    tags: Model
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: docs/api-spec.yaml
+    __elementId__: api.operation.get-layer
+eb63b8ba-2ac3-4b8b-90a6-fd906848cab3:
+  id: eb63b8ba-2ac3-4b8b-90a6-fd906848cab3
+  name: Get JSON Schemas
+  type: operation
+  layer: api
+  documentation: Retrieve the DR model JSON schemas/spec definition (auth required)
+  properties:
+    operationId: getApiSpec
+    summary: Get JSON schemas
+    tags: Spec
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: docs/api-spec.yaml
+    __elementId__: api.operation.get-json-schemas
+03b75acb-0915-48ee-b49d-e6eb799d99ae:
+  id: 03b75acb-0915-48ee-b49d-e6eb799d99ae
+  name: List Annotations
+  type: operation
+  layer: api
+  documentation: "List annotations with optional filters: elementId, author, tags,
+    resolved (auth required)"
+  properties:
+    operationId: getApiAnnotations
+    summary: Get annotations
+    tags: Annotations
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: docs/api-spec.yaml
+    __elementId__: api.operation.list-annotations
+47982062-c452-4fc6-b8b6-cd973092f45c:
+  id: 47982062-c452-4fc6-b8b6-cd973092f45c
+  name: Create Annotation
+  type: operation
+  layer: api
+  documentation: Create a new annotation on a model element (auth required)
+  properties:
+    operationId: postApiAnnotations
+    summary: Create annotation
+    tags: Annotations
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: docs/api-spec.yaml
+    __elementId__: api.operation.create-annotation
+46f6e977-6bfc-438a-8e86-6582ee6faebf:
+  id: 46f6e977-6bfc-438a-8e86-6582ee6faebf
+  name: Get Annotation by ID
+  type: operation
+  layer: api
+  documentation: Retrieve a specific annotation by its ID (auth required)
+  properties:
+    operationId: getApiAnnotationsAnnotationId
+    summary: Get annotation by ID
+    tags: Annotations
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: docs/api-spec.yaml
+    __elementId__: api.operation.get-annotation-by-id
+389eaa71-b481-4850-81b4-a91380284745:
+  id: 389eaa71-b481-4850-81b4-a91380284745
+  name: Update Annotation
+  type: operation
+  layer: api
+  documentation: Fully update an annotation by ID (auth required)
+  properties:
+    operationId: putApiAnnotationsAnnotationId
+    summary: Update annotation
+    tags: Annotations
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: docs/api-spec.yaml
+    __elementId__: api.operation.update-annotation
+bab6ee97-9004-4a02-9e0c-bac28ef3dcd4:
+  id: bab6ee97-9004-4a02-9e0c-bac28ef3dcd4
+  name: Patch Annotation
+  type: operation
+  layer: api
+  documentation: Partially update an annotation by ID (auth required)
+  properties:
+    operationId: patchApiAnnotationsAnnotationId
+    summary: Partially update annotation
+    tags: Annotations
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: docs/api-spec.yaml
+    __elementId__: api.operation.patch-annotation
+5b692ada-8244-404c-bad0-05c247e073cc:
+  id: 5b692ada-8244-404c-bad0-05c247e073cc
+  name: Delete Annotation
+  type: operation
+  layer: api
+  documentation: Delete an annotation by ID (auth required)
+  properties:
+    operationId: deleteApiAnnotationsAnnotationId
+    summary: Delete annotation
+    tags: Annotations
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: docs/api-spec.yaml
+    __elementId__: api.operation.delete-annotation
+a599bb4c-d120-4524-883c-ef41721e001f:
+  id: a599bb4c-d120-4524-883c-ef41721e001f
+  name: Get Annotation Replies
+  type: operation
+  layer: api
+  documentation: Retrieve all replies for a specific annotation (auth required)
+  properties:
+    operationId: getApiAnnotationsAnnotationIdReplies
+    summary: Get annotation replies
+    tags: Annotations
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: docs/api-spec.yaml
+    __elementId__: api.operation.get-annotation-replies
+c9bc3208-f3d7-4ef2-95d1-225c36a50759:
+  id: c9bc3208-f3d7-4ef2-95d1-225c36a50759
+  name: Create Annotation Reply
+  type: operation
+  layer: api
+  documentation: Create a reply to an existing annotation (auth required)
+  properties:
+    operationId: postApiAnnotationsAnnotationIdReplies
+    summary: Create annotation reply
+    tags: Annotations
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: docs/api-spec.yaml
+    __elementId__: api.operation.create-annotation-reply
+4f215007-6f66-4569-9f92-95dd207ace79:
+  id: 4f215007-6f66-4569-9f92-95dd207ace79
+  name: List Changesets
+  type: operation
+  layer: api
+  documentation: Retrieve all changesets in the model (auth required)
+  properties:
+    operationId: getApiChangesets
+    summary: Get changesets
+    tags: Changesets
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: docs/api-spec.yaml
+    __elementId__: api.operation.list-changesets
+1efe7126-26f2-4f14-9697-d6ba2ae8648a:
+  id: 1efe7126-26f2-4f14-9697-d6ba2ae8648a
+  name: Get Changeset
+  type: operation
+  layer: api
+  documentation: Retrieve a specific changeset by ID (auth required)
+  properties:
+    operationId: getApiChangesetsChangesetId
+    summary: Get changeset
+    tags: Changesets
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: docs/api-spec.yaml
+    __elementId__: api.operation.get-changeset
+8014ab43-37d3-46b4-a55f-c130335d169c:
+  id: 8014ab43-37d3-46b4-a55f-c130335d169c
+  name: WebSocket Real-Time Updates
+  type: operation
+  layer: api
+  documentation: WebSocket endpoint for real-time model/annotation/changeset push
+    notifications (JSON-RPC 2.0)
+  properties:
+    operationId: wsConnect
+    summary: WebSocket real-time updates
+    tags: WebSocket
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: src/apps/embedded/services/websocketClient.ts
+    __elementId__: api.operation.web-socket-real-time-updates

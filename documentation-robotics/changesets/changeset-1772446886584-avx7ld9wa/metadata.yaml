@@ -1,0 +1,12 @@
+id: changeset-1772446886584-avx7ld9wa
+name: wire-cross-layer-relationships
+description: Add cross-layer relationships between application services, API
+  operations, data models, data stores, and technology stack
+created: 2026-03-02T10:21:26.590Z
+modified: 2026-03-02T10:25:07.944Z
+status: committed
+baseSnapshot: sha256:e7c133b35ba70ae3249912978a46aa30ba8f1b51e4e667848f25d93ad343c345
+stats:
+  additions: 0
+  modifications: 25
+  deletions: 0

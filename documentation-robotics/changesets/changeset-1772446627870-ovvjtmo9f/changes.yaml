@@ -1,0 +1,450 @@
+- type: add
+  elementId: technology.systemsoftware.react
+  layerName: technology
+  after:
+    id: a1bd59bc-b8a7-4a88-9391-b24c2cc04d08
+    spec_node_id: technology.systemsoftware
+    type: systemsoftware
+    layer_id: technology
+    name: React
+    description: UI rendering framework — declarative component model, concurrent
+      rendering (React 19)
+    attributes: &a1
+      softwareType: framework
+      version: 19.2.0
+      packageName: react
+      role: ui-runtime
+      ecosystem: npm
+      source:
+        reference:
+          provenance: extracted
+          locations:
+            - file: package.json
+              symbol: react
+      __elementId__: technology.systemsoftware.react
+    metadata:
+      created_at: 2026-03-02T10:19:54.467Z
+      updated_at: 2026-03-02T10:19:54.467Z
+      version: 1
+    properties: *a1
+    elementId: technology.systemsoftware.react
+  timestamp: 2026-03-02T10:19:54.469Z
+  sequenceNumber: 0
+- type: add
+  elementId: technology.systemsoftware.type-script
+  layerName: technology
+  after:
+    id: a4f20c2d-5070-462b-8e75-878be4fbcbaa
+    spec_node_id: technology.systemsoftware
+    type: systemsoftware
+    layer_id: technology
+    name: TypeScript
+    description: Statically typed superset of JavaScript. Strict mode enforced
+      across all source files.
+    attributes: &a2
+      softwareType: language
+      version: 5.9.3
+      packageName: typescript
+      role: type-system
+      ecosystem: npm
+      source:
+        reference:
+          provenance: extracted
+          locations:
+            - file: package.json
+              symbol: typescript
+      __elementId__: technology.systemsoftware.type-script
+    metadata:
+      created_at: 2026-03-02T10:19:54.642Z
+      updated_at: 2026-03-02T10:19:54.642Z
+      version: 1
+    properties: *a2
+    elementId: technology.systemsoftware.type-script
+  timestamp: 2026-03-02T10:19:54.644Z
+  sequenceNumber: 1
+- type: add
+  elementId: technology.systemsoftware.vite
+  layerName: technology
+  after:
+    id: a5726d0d-8ee1-48bc-aea4-8d388b8709ad
+    spec_node_id: technology.systemsoftware
+    type: systemsoftware
+    layer_id: technology
+    name: Vite
+    description: Frontend build tool and dev server. Handles bundling, HMR, and
+      multi-config builds (embedded + Storybook).
+    attributes: &a3
+      softwareType: build-tool
+      version: 6.4.0
+      packageName: vite
+      role: build-system
+      ecosystem: npm
+      source:
+        reference:
+          provenance: extracted
+          locations:
+            - file: package.json
+              symbol: vite
+      __elementId__: technology.systemsoftware.vite
+    metadata:
+      created_at: 2026-03-02T10:19:54.817Z
+      updated_at: 2026-03-02T10:19:54.817Z
+      version: 1
+    properties: *a3
+    elementId: technology.systemsoftware.vite
+  timestamp: 2026-03-02T10:19:54.820Z
+  sequenceNumber: 2
+- type: add
+  elementId: technology.systemsoftware.react-flow
+  layerName: technology
+  after:
+    id: af742b2a-0331-4476-99c9-4818fd6caded
+    spec_node_id: technology.systemsoftware
+    type: systemsoftware
+    layer_id: technology
+    name: React Flow
+    description: Graph rendering platform. Provides the canvas, node/edge rendering,
+      minimap, controls, and interaction model for all architecture diagrams.
+    attributes: &a4
+      softwareType: framework
+      version: 12.9.3
+      packageName: "@xyflow/react"
+      role: graph-rendering-engine
+      ecosystem: npm
+      source:
+        reference:
+          provenance: extracted
+          locations:
+            - file: package.json
+              symbol: "@xyflow/react"
+      __elementId__: technology.systemsoftware.react-flow
+    metadata:
+      created_at: 2026-03-02T10:19:54.991Z
+      updated_at: 2026-03-02T10:19:54.991Z
+      version: 1
+    properties: *a4
+    elementId: technology.systemsoftware.react-flow
+  timestamp: 2026-03-02T10:19:54.993Z
+  sequenceNumber: 3
+- type: add
+  elementId: technology.systemsoftware.zustand
+  layerName: technology
+  after:
+    id: 8b15514f-8c93-4aa0-be9c-4e8ffafdb0c4
+    spec_node_id: technology.systemsoftware
+    type: systemsoftware
+    layer_id: technology
+    name: Zustand
+    description: Lightweight global state management library. All application state
+      uses Zustand stores — no Redux or React Context.
+    attributes: &a5
+      softwareType: library
+      version: 5.0.8
+      packageName: zustand
+      role: state-management
+      ecosystem: npm
+      source:
+        reference:
+          provenance: extracted
+          locations:
+            - file: package.json
+              symbol: zustand
+      __elementId__: technology.systemsoftware.zustand
+    metadata:
+      created_at: 2026-03-02T10:19:55.322Z
+      updated_at: 2026-03-02T10:19:55.322Z
+      version: 1
+    properties: *a5
+    elementId: technology.systemsoftware.zustand
+  timestamp: 2026-03-02T10:19:55.324Z
+  sequenceNumber: 4
+- type: add
+  elementId: technology.systemsoftware.tan-stack-router
+  layerName: technology
+  after:
+    id: 45204f91-7609-4a2f-abac-2375ee70967f
+    spec_node_id: technology.systemsoftware
+    type: systemsoftware
+    layer_id: technology
+    name: TanStack Router
+    description: Type-safe file-based router. Handles all client-side routing for
+      the embedded app across model, changeset, motivation, architecture, and
+      spec routes.
+    attributes: &a6
+      softwareType: library
+      version: 1.139.12
+      packageName: "@tanstack/react-router"
+      role: routing
+      ecosystem: npm
+      source:
+        reference:
+          provenance: extracted
+          locations:
+            - file: package.json
+              symbol: "@tanstack/react-router"
+      __elementId__: technology.systemsoftware.tan-stack-router
+    metadata:
+      created_at: 2026-03-02T10:19:55.499Z
+      updated_at: 2026-03-02T10:19:55.499Z
+      version: 1
+    properties: *a6
+    elementId: technology.systemsoftware.tan-stack-router
+  timestamp: 2026-03-02T10:19:55.502Z
+  sequenceNumber: 5
+- type: add
+  elementId: technology.systemsoftware.tan-stack-query
+  layerName: technology
+  after:
+    id: a4183a95-74f2-43ba-94a7-12e64fa89265
+    spec_node_id: technology.systemsoftware
+    type: systemsoftware
+    layer_id: technology
+    name: TanStack Query
+    description: Server state management and data fetching library. Used for caching
+      DR CLI server responses.
+    attributes: &a7
+      softwareType: library
+      version: 5.51.0
+      packageName: "@tanstack/react-query"
+      role: server-state
+      ecosystem: npm
+      source:
+        reference:
+          provenance: extracted
+          locations:
+            - file: package.json
+              symbol: "@tanstack/react-query"
+      __elementId__: technology.systemsoftware.tan-stack-query
+    metadata:
+      created_at: 2026-03-02T10:19:55.677Z
+      updated_at: 2026-03-02T10:19:55.677Z
+      version: 1
+    properties: *a7
+    elementId: technology.systemsoftware.tan-stack-query
+  timestamp: 2026-03-02T10:19:55.681Z
+  sequenceNumber: 6
+- type: add
+  elementId: technology.systemsoftware.flowbite-react
+  layerName: technology
+  after:
+    id: b0885a17-494c-4b77-ba14-c3a3f8b7cd0b
+    spec_node_id: technology.systemsoftware
+    type: systemsoftware
+    layer_id: technology
+    name: Flowbite React
+    description: Tailwind-based UI component library. Provides Card, Badge, Button,
+      Modal, Spinner, and other design system primitives.
+    attributes: &a8
+      softwareType: framework
+      version: 0.12.13
+      packageName: flowbite-react
+      role: design-system
+      ecosystem: npm
+      source:
+        reference:
+          provenance: extracted
+          locations:
+            - file: package.json
+              symbol: flowbite-react
+      __elementId__: technology.systemsoftware.flowbite-react
+    metadata:
+      created_at: 2026-03-02T10:19:55.853Z
+      updated_at: 2026-03-02T10:19:55.853Z
+      version: 1
+    properties: *a8
+    elementId: technology.systemsoftware.flowbite-react
+  timestamp: 2026-03-02T10:19:55.857Z
+  sequenceNumber: 7
+- type: add
+  elementId: technology.systemsoftware.tailwind-css
+  layerName: technology
+  after:
+    id: 9bc531f9-a59e-4bbf-99b6-247e4a8228e7
+    spec_node_id: technology.systemsoftware
+    type: systemsoftware
+    layer_id: technology
+    name: Tailwind CSS
+    description: Utility-first CSS framework (v4). All styling uses Tailwind
+      utilities — no CSS modules except node inline styles.
+    attributes: &a9
+      softwareType: framework
+      version: 4.1.17
+      packageName: tailwindcss
+      role: styling
+      ecosystem: npm
+      source:
+        reference:
+          provenance: extracted
+          locations:
+            - file: package.json
+              symbol: tailwindcss
+      __elementId__: technology.systemsoftware.tailwind-css
+    metadata:
+      created_at: 2026-03-02T10:19:56.036Z
+      updated_at: 2026-03-02T10:19:56.036Z
+      version: 1
+    properties: *a9
+    elementId: technology.systemsoftware.tailwind-css
+  timestamp: 2026-03-02T10:19:56.040Z
+  sequenceNumber: 8
+- type: add
+  elementId: technology.systemsoftware.playwright
+  layerName: technology
+  after:
+    id: d82d6c72-6b12-490c-a2f6-a61a1be16947
+    spec_node_id: technology.systemsoftware
+    type: systemsoftware
+    layer_id: technology
+    name: Playwright
+    description: Test runner for unit, integration, and E2E tests. Runs all 1353
+      unit tests and E2E browser tests against the DR CLI server.
+    attributes: &a10
+      softwareType: framework
+      version: 1.57.0
+      packageName: "@playwright/test"
+      role: test-runner
+      ecosystem: npm
+      source:
+        reference:
+          provenance: extracted
+          locations:
+            - file: package.json
+              symbol: "@playwright/test"
+      __elementId__: technology.systemsoftware.playwright
+    metadata:
+      created_at: 2026-03-02T10:19:56.218Z
+      updated_at: 2026-03-02T10:19:56.218Z
+      version: 1
+    properties: *a10
+    elementId: technology.systemsoftware.playwright
+  timestamp: 2026-03-02T10:19:56.222Z
+  sequenceNumber: 9
+- type: add
+  elementId: technology.systemsoftware.storybook
+  layerName: technology
+  after:
+    id: b6a30c3b-055c-4f43-b064-b5f7fb787eb0
+    spec_node_id: technology.systemsoftware
+    type: systemsoftware
+    layer_id: technology
+    name: Storybook
+    description: Component catalog and isolated UI development environment. Hosts
+      578 component stories across 97 files for visual testing and accessibility
+      validation.
+    attributes: &a11
+      softwareType: framework
+      version: 10.2.10
+      packageName: storybook
+      role: component-catalog
+      ecosystem: npm
+      source:
+        reference:
+          provenance: extracted
+          locations:
+            - file: package.json
+              symbol: storybook
+      __elementId__: technology.systemsoftware.storybook
+    metadata:
+      created_at: 2026-03-02T10:19:56.399Z
+      updated_at: 2026-03-02T10:19:56.399Z
+      version: 1
+    properties: *a11
+    elementId: technology.systemsoftware.storybook
+  timestamp: 2026-03-02T10:19:56.404Z
+  sequenceNumber: 10
+- type: add
+  elementId: technology.systemsoftware.mock-service-worker
+  layerName: technology
+  after:
+    id: 0e4382c9-2c48-41c6-af27-69f6af7543d4
+    spec_node_id: technology.systemsoftware
+    type: systemsoftware
+    layer_id: technology
+    name: Mock Service Worker
+    description: API mocking library (MSW v2). Used in unit and Storybook tests to
+      mock DR CLI REST and WebSocket endpoints.
+    attributes: &a12
+      softwareType: library
+      version: 2.6.8
+      packageName: msw
+      role: api-mocking
+      ecosystem: npm
+      source:
+        reference:
+          provenance: extracted
+          locations:
+            - file: package.json
+              symbol: msw
+      __elementId__: technology.systemsoftware.mock-service-worker
+    metadata:
+      created_at: 2026-03-02T10:19:56.583Z
+      updated_at: 2026-03-02T10:19:56.583Z
+      version: 1
+    properties: *a12
+    elementId: technology.systemsoftware.mock-service-worker
+  timestamp: 2026-03-02T10:19:56.588Z
+  sequenceNumber: 11
+- type: add
+  elementId: technology.systemsoftware.html-to-image
+  layerName: technology
+  after:
+    id: 7cf546ad-f076-43ea-adc6-529565ff4c50
+    spec_node_id: technology.systemsoftware
+    type: systemsoftware
+    layer_id: technology
+    name: html-to-image
+    description: DOM-to-image export library. Used by exportUtils to render the
+      React Flow canvas as PNG or SVG for download.
+    attributes: &a13
+      softwareType: library
+      version: 1.11.13
+      packageName: html-to-image
+      role: export-utility
+      ecosystem: npm
+      source:
+        reference:
+          provenance: extracted
+          locations:
+            - file: package.json
+              symbol: html-to-image
+      __elementId__: technology.systemsoftware.html-to-image
+    metadata:
+      created_at: 2026-03-02T10:19:56.769Z
+      updated_at: 2026-03-02T10:19:56.769Z
+      version: 1
+    properties: *a13
+    elementId: technology.systemsoftware.html-to-image
+  timestamp: 2026-03-02T10:19:56.774Z
+  sequenceNumber: 12
+- type: add
+  elementId: technology.systemsoftware.elk-layout-engine
+  layerName: technology
+  after:
+    id: 2ca652af-bcc0-4eca-8c29-c79cca3df44f
+    spec_node_id: technology.systemsoftware
+    type: systemsoftware
+    layer_id: technology
+    name: ELK Layout Engine
+    description: Eclipse Layout Kernel (elkjs) — WASM-based graph layout engine used
+      for hierarchical and layered diagram layouts.
+    attributes: &a14
+      softwareType: library
+      version: 0.11.0
+      packageName: elkjs
+      role: layout-engine
+      ecosystem: npm
+      source:
+        reference:
+          provenance: extracted
+          locations:
+            - file: package.json
+              symbol: elkjs
+      __elementId__: technology.systemsoftware.elk-layout-engine
+    metadata:
+      created_at: 2026-03-02T10:20:10.956Z
+      updated_at: 2026-03-02T10:20:10.956Z
+      version: 1
+    properties: *a14
+    elementId: technology.systemsoftware.elk-layout-engine
+  timestamp: 2026-03-02T10:20:10.961Z
+  sequenceNumber: 13

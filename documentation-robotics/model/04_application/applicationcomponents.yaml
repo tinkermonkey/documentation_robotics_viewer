@@ -1,0 +1,25 @@
+e79d05ea-daf7-436f-9e51-0a86d8605f91:
+  id: e79d05ea-daf7-436f-9e51-0a86d8605f91
+  name: Shared Layout
+  type: applicationcomponent
+  layer: application
+  documentation: "Main 3-column app layout orchestrator: left sidebar, main
+    content, right sidebar"
+  properties:
+    type: generic
+    __elementId__: application.applicationcomponent.shared-layout
+8c1709ce-648d-4775-80df-243337166cf5:
+  id: 8c1709ce-648d-4775-80df-243337166cf5
+  name: Graph Viewer
+  type: applicationcomponent
+  layer: application
+  documentation: Core React Flow graph rendering component with multiple layout engines
+  properties:
+    type: generic
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: src/core/components/GraphViewer.tsx
+            symbol: GraphViewer
+    __elementId__: application.applicationcomponent.graph-viewer

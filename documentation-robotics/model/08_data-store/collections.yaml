@@ -1,0 +1,197 @@
+71f9092e-78d1-418d-b00f-b28c81d55d59:
+  id: 71f9092e-78d1-418d-b00f-b28c81d55d59
+  name: Model Store
+  type: collection
+  layer: data-store
+  documentation: Zustand store for the MetaModel — all layers, elements, and
+    cross-layer references
+  properties:
+    collectionType: HASH
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: src/core/stores/modelStore.ts
+    __elementId__: data-store.collection.model-store
+b634f05e-7456-46c4-b787-e48f1a0d218a:
+  id: b634f05e-7456-46c4-b787-e48f1a0d218a
+  name: Layer Store
+  type: collection
+  layer: data-store
+  documentation: Zustand store for layer visibility, selection, and active layer state
+  properties:
+    collectionType: HASH
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: src/core/stores/layerStore.ts
+    __elementId__: data-store.collection.layer-store
+8bbbc79f-1fc9-466b-aaad-8e0b9fe00f3f:
+  id: 8bbbc79f-1fc9-466b-aaad-8e0b9fe00f3f
+  name: Element Store
+  type: collection
+  layer: data-store
+  documentation: Zustand store for selected, focused, and highlighted element state
+  properties:
+    collectionType: HASH
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: src/core/stores/elementStore.ts
+    __elementId__: data-store.collection.element-store
+dcd3fb7f-5476-43df-8574-8fe3326da373:
+  id: dcd3fb7f-5476-43df-8574-8fe3326da373
+  name: Cross Layer Store
+  type: collection
+  layer: data-store
+  documentation: Zustand store for cross-layer reference data and navigation state
+  properties:
+    collectionType: HASH
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: src/core/stores/crossLayerStore.ts
+    __elementId__: data-store.collection.cross-layer-store
+49132c10-1940-482d-8b8e-3e88a11cc6be:
+  id: 49132c10-1940-482d-8b8e-3e88a11cc6be
+  name: Layout Preferences Store
+  type: collection
+  layer: data-store
+  documentation: Zustand store for layout engine preferences per layer
+  properties:
+    collectionType: HASH
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: src/core/stores/layoutPreferencesStore.ts
+    __elementId__: data-store.collection.layout-preferences-store
+6054a0bf-43f9-44bb-8e7f-28a36b320860:
+  id: 6054a0bf-43f9-44bb-8e7f-28a36b320860
+  name: Field Visibility Store
+  type: collection
+  layer: data-store
+  documentation: Zustand store for graph-level and node-level field visibility toggles
+  properties:
+    collectionType: HASH
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: src/core/stores/fieldVisibilityStore.ts
+    __elementId__: data-store.collection.field-visibility-store
+7e7ac162-591e-4401-8701-843c83ea216c:
+  id: 7e7ac162-591e-4401-8701-843c83ea216c
+  name: Annotation Store
+  type: collection
+  layer: data-store
+  documentation: Zustand store for annotation data, CRUD operations, and filter state
+  properties:
+    collectionType: HASH
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: src/apps/embedded/stores/annotationStore.ts
+    __elementId__: data-store.collection.annotation-store
+b5101ef5-d194-4f49-9830-5f87bf636d76:
+  id: b5101ef5-d194-4f49-9830-5f87bf636d76
+  name: Auth Store
+  type: collection
+  layer: data-store
+  documentation: Zustand store for JWT authentication token and auth state management
+  properties:
+    collectionType: HASH
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: src/apps/embedded/stores/authStore.ts
+    __elementId__: data-store.collection.auth-store
+f1033be3-32a9-40a4-9ad6-84387c8ccd8b:
+  id: f1033be3-32a9-40a4-9ad6-84387c8ccd8b
+  name: Business Layer Store
+  type: collection
+  layer: data-store
+  documentation: Zustand store for business layer filter, view, and selection state
+  properties:
+    collectionType: HASH
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: src/apps/embedded/stores/businessLayerStore.ts
+    __elementId__: data-store.collection.business-layer-store
+591c3de7-9be4-4770-b37b-2200e73232bf:
+  id: 591c3de7-9be4-4770-b37b-2200e73232bf
+  name: Changeset Store
+  type: collection
+  layer: data-store
+  documentation: Zustand store for changeset data, active changeset, and staged changes
+  properties:
+    collectionType: HASH
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: src/apps/embedded/stores/changesetStore.ts
+    __elementId__: data-store.collection.changeset-store
+77d39540-c2bc-452f-8373-a2e243ba58e3:
+  id: 77d39540-c2bc-452f-8373-a2e243ba58e3
+  name: Chat Store
+  type: collection
+  layer: data-store
+  documentation: Zustand store for AI assistant chat session messages and state
+  properties:
+    collectionType: HASH
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: src/apps/embedded/stores/chatStore.ts
+    __elementId__: data-store.collection.chat-store
+c9ebc6c9-2d1f-4e3d-8bf3-a8a72c338987:
+  id: c9ebc6c9-2d1f-4e3d-8bf3-a8a72c338987
+  name: Connection Store
+  type: collection
+  layer: data-store
+  documentation: Zustand store for WebSocket connection status and transport mode
+  properties:
+    collectionType: HASH
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: src/apps/embedded/stores/connectionStore.ts
+    __elementId__: data-store.collection.connection-store
+86868586-5963-4053-a1d0-25a33b1853c6:
+  id: 86868586-5963-4053-a1d0-25a33b1853c6
+  name: Floating Chat Store
+  type: collection
+  layer: data-store
+  documentation: Zustand store for floating chat panel open/close and position state
+  properties:
+    collectionType: HASH
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: src/apps/embedded/stores/floatingChatStore.ts
+    __elementId__: data-store.collection.floating-chat-store
+cd11f54b-0cc1-42b8-94cd-ffcfeb30a7f8:
+  id: cd11f54b-0cc1-42b8-94cd-ffcfeb30a7f8
+  name: View Preference Store
+  type: collection
+  layer: data-store
+  documentation: "Zustand store for view mode preference: spec, model, or changeset view"
+  properties:
+    collectionType: HASH
+    source:
+      reference:
+        provenance: extracted
+        locations:
+          - file: src/apps/embedded/stores/viewPreferenceStore.ts
+    __elementId__: data-store.collection.view-preference-store
