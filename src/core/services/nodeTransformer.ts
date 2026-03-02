@@ -673,8 +673,16 @@ export class NodeTransformer {
 
     console.log('[NodeTransformer] Starting per-layer layout for', Object.keys(model.layers).length, 'layers');
 
+    // Sort the model's actual layer keys by layerOrder (case-insensitive). Keys not in
+    // layerOrder (e.g. spec-schema layers like "application") are appended at the end.
+    const orderedLayerKeys = Object.keys(model.layers).sort((a, b) => {
+      const ai = layerOrder.findIndex(lt => lt.toLowerCase() === a.toLowerCase());
+      const bi = layerOrder.findIndex(lt => lt.toLowerCase() === b.toLowerCase());
+      return (ai === -1 ? layerOrder.length : ai) - (bi === -1 ? layerOrder.length : bi);
+    });
+
     // Process each layer in order
-    for (const layerType of layerOrder) {
+    for (const layerType of orderedLayerKeys) {
       const layer = model.layers[layerType];
 
       // Skip if layer doesn't exist or has no elements
