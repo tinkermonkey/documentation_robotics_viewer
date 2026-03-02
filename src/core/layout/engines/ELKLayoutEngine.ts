@@ -222,7 +222,7 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       // Compact layout post-routing by shortening long edges
       layoutOptions['elk.layered.compaction.postCompaction.strategy'] = 'EDGE_LENGTH';
       // Two-sided greedy crossing minimization — considers both sweep directions to cut more crossings
-      layoutOptions['elk.layered.crossingMinimization.greedySwitchType'] = 'TWO_SIDED';
+      layoutOptions['elk.layered.crossingMinimization.greedySwitch.type'] = 'TWO_SIDED';
     }
 
     // Add layered-specific options
