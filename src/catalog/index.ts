@@ -109,6 +109,7 @@ export {
   createMotivationLayerModelFixture,
   createBusinessLayerModelFixture,
   createC4LayerModelFixture,
+  createApplicationLayerModelFixture,
   createChangesetModelFixture,
   createEmptyModelFixture,
   createLargeModelFixture

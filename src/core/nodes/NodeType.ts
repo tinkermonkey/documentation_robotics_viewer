@@ -37,6 +37,10 @@ export enum NodeType {
   C4_COMPONENT = 'c4.component',
   C4_EXTERNAL_ACTOR = 'c4.externalActor',
 
+  // Application layer (2)
+  APPLICATION_COMPONENT = 'application.component',
+  APPLICATION_SERVICE = 'application.service',
+
   // Data layer (2)
   DATA_JSON_SCHEMA = 'data.jsonSchema',
   DATA_MODEL = 'data.model',

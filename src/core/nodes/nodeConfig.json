@@ -74,7 +74,13 @@
     "businessProcess": "business.process",
     "c4Container": "c4.container",
     "c4Component": "c4.component",
-    "c4ExternalActor": "c4.externalActor"
+    "c4ExternalActor": "c4.externalActor",
+    "applicationcomponent": "application.component",
+    "ApplicationComponent": "application.component",
+    "application-component": "application.component",
+    "applicationservice": "application.service",
+    "ApplicationService": "application.service",
+    "application-service": "application.service"
   },
   "nodeStyles": {
     "motivation.stakeholder": {
@@ -331,6 +337,36 @@
       "dimensions": {
         "width": 160,
         "height": 120
+      }
+    },
+    "application.component": {
+      "layout": "left",
+      "icon": "🧩",
+      "typeLabel": "App Component",
+      "colors": {
+        "fill": "#eff6ff",
+        "stroke": "#2563eb",
+        "header": "#1d4ed8",
+        "handle": "#1d4ed8"
+      },
+      "dimensions": {
+        "width": 220,
+        "height": 100
+      }
+    },
+    "application.service": {
+      "layout": "left",
+      "icon": "⚡",
+      "typeLabel": "App Service",
+      "colors": {
+        "fill": "#f0fdf4",
+        "stroke": "#16a34a",
+        "header": "#15803d",
+        "handle": "#15803d"
+      },
+      "dimensions": {
+        "width": 220,
+        "height": 100
       }
     },
     "data.jsonSchema": {

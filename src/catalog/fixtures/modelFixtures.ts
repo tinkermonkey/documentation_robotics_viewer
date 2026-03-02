@@ -37,6 +37,8 @@ const ELEMENT_TYPE_TO_SPEC_NODE_ID: Record<string, string> = {
   c4Container: 'c4.container',
   c4Component: 'c4.component',
   c4ExternalActor: 'c4.externalActor',
+  applicationcomponent: 'application.component',
+  applicationservice: 'application.service',
 };
 
 /**
@@ -421,6 +423,161 @@ export function createEmptyModelFixture(): MetaModel {
       elementCount: 0,
       layerCount: 0
     }
+  };
+}
+
+/**
+ * Create a model with real Application layer data sourced from the DR model spec
+ * (documentation-robotics/model/04_application/).
+ *
+ * Elements mirror the actual applicationcomponents.yaml and applicationservices.yaml
+ * entries so that the story renders the live architecture of this viewer app.
+ */
+export function createApplicationLayerModelFixture(): MetaModel {
+  // Application Components (from applicationcomponents.yaml)
+  const sharedLayout = createModelElement(
+    'e79d05ea-daf7-436f-9e51-0a86d8605f91',
+    'applicationcomponent',
+    'Shared Layout',
+    'Application',
+    '#eff6ff', '#2563eb',
+    { documentation: 'Main 3-column app layout orchestrator: left sidebar, main content, right sidebar' }
+  );
+  const graphViewer = createModelElement(
+    '8c1709ce-648d-4775-80df-243337166cf5',
+    'applicationcomponent',
+    'Graph Viewer',
+    'Application',
+    '#eff6ff', '#2563eb',
+    { documentation: 'Core React Flow graph rendering component with multiple layout engines' }
+  );
+
+  // Application Services (from applicationservices.yaml)
+  const nodeTransformer = createModelElement(
+    '77e00f75-60f9-4cbf-b99c-2413d4937b5a',
+    'applicationservice',
+    'Node Transformer',
+    'Application',
+    '#f0fdf4', '#16a34a',
+    { serviceType: 'synchronous', documentation: 'Transforms API model elements to React Flow nodes for visualization' }
+  );
+  const embeddedDataLoader = createModelElement(
+    'a8032d89-5d78-47ca-a4d4-3803ba3ce827',
+    'applicationservice',
+    'Embedded Data Loader',
+    'Application',
+    '#f0fdf4', '#16a34a',
+    { serviceType: 'synchronous', documentation: 'Loads model data from DR CLI server via REST API with auth' }
+  );
+  const webSocketClient = createModelElement(
+    '7913d001-12dd-40a6-bf30-afd28f4a99e6',
+    'applicationservice',
+    'WebSocket Client',
+    'Application',
+    '#f0fdf4', '#16a34a',
+    { serviceType: 'asynchronous', documentation: 'WebSocket connection to DR CLI server with auto-reconnect and JWT token auth' }
+  );
+  const jsonRpcHandler = createModelElement(
+    'c42fc0cf-c21c-4b29-8637-8c8dc5ca9259',
+    'applicationservice',
+    'JSON-RPC Handler',
+    'Application',
+    '#f0fdf4', '#16a34a',
+    { serviceType: 'asynchronous', documentation: 'JSON-RPC 2.0 protocol handler over WebSocket for real-time model updates' }
+  );
+  const generatedApiClient = createModelElement(
+    '883f63e6-0ce1-457e-bd12-a26de9b90840',
+    'applicationservice',
+    'Generated API Client',
+    'Application',
+    '#f0fdf4', '#16a34a',
+    { serviceType: 'synchronous', documentation: 'Auto-generated type-safe REST API client from OpenAPI spec' }
+  );
+  const businessGraphBuilder = createModelElement(
+    'e565e43f-3f09-4424-9510-2c556b1bd3a9',
+    'applicationservice',
+    'Business Graph Builder',
+    'Application',
+    '#f0fdf4', '#16a34a',
+    { serviceType: 'synchronous', documentation: 'Builds business layer React Flow graph from model data' }
+  );
+  const businessLayerParser = createModelElement(
+    '5f8a3bf0-047a-4f2b-8c32-9cc0e36b2181',
+    'applicationservice',
+    'Business Layer Parser',
+    'Application',
+    '#f0fdf4', '#16a34a',
+    { serviceType: 'synchronous', documentation: 'Parses business layer YAML data into typed model elements' }
+  );
+  const crossLayerLinksExtractor = createModelElement(
+    'c295df70-a535-42c2-8bfc-8bcd912c86cd',
+    'applicationservice',
+    'Cross Layer Links Extractor',
+    'Application',
+    '#f0fdf4', '#16a34a',
+    { serviceType: 'synchronous', documentation: 'Extracts cross-layer reference links from model for navigation' }
+  );
+  const changesetGraphBuilder = createModelElement(
+    'ac6d792f-40e8-4c8f-9e21-cdfe6a72282f',
+    'applicationservice',
+    'Changeset Graph Builder',
+    'Application',
+    '#f0fdf4', '#16a34a',
+    { serviceType: 'synchronous', documentation: 'Builds changeset diff graph showing add/update/delete operations' }
+  );
+  const chatService = createModelElement(
+    '3fbe9446-fe5f-413c-9e67-66cd325cddb6',
+    'applicationservice',
+    'Chat Service',
+    'Application',
+    '#f0fdf4', '#16a34a',
+    { serviceType: 'asynchronous', documentation: 'AI assistant chat integration service for architecture queries' }
+  );
+  const errorTracker = createModelElement(
+    'f6c5d9d3-a3fe-49ad-beda-0c8c0a8a2197',
+    'applicationservice',
+    'Error Tracker',
+    'Application',
+    '#f0fdf4', '#16a34a',
+    { serviceType: 'synchronous', documentation: 'Structured application error tracking and logging service' }
+  );
+
+  const elements = [
+    sharedLayout, graphViewer,
+    nodeTransformer, embeddedDataLoader, webSocketClient, jsonRpcHandler,
+    generatedApiClient, businessGraphBuilder, businessLayerParser,
+    crossLayerLinksExtractor, changesetGraphBuilder, chatService, errorTracker,
+  ];
+
+  const relationships: Relationship[] = [
+    { id: 'rel-app-1', type: 'uses', sourceId: sharedLayout.id, targetId: graphViewer.id, properties: { label: 'renders' } },
+    { id: 'rel-app-2', type: 'uses', sourceId: graphViewer.id, targetId: nodeTransformer.id, properties: { label: 'transforms via' } },
+    { id: 'rel-app-3', type: 'uses', sourceId: graphViewer.id, targetId: businessGraphBuilder.id, properties: { label: 'builds via' } },
+    { id: 'rel-app-4', type: 'uses', sourceId: graphViewer.id, targetId: crossLayerLinksExtractor.id, properties: { label: 'extracts links via' } },
+    { id: 'rel-app-5', type: 'uses', sourceId: embeddedDataLoader.id, targetId: generatedApiClient.id, properties: { label: 'calls' } },
+    { id: 'rel-app-6', type: 'uses', sourceId: embeddedDataLoader.id, targetId: webSocketClient.id, properties: { label: 'subscribes via' } },
+    { id: 'rel-app-7', type: 'uses', sourceId: webSocketClient.id, targetId: jsonRpcHandler.id, properties: { label: 'dispatches to' } },
+    { id: 'rel-app-8', type: 'uses', sourceId: nodeTransformer.id, targetId: businessLayerParser.id, properties: { label: 'parses via' } },
+    { id: 'rel-app-9', type: 'uses', sourceId: businessGraphBuilder.id, targetId: businessLayerParser.id, properties: { label: 'parses via' } },
+    { id: 'rel-app-10', type: 'uses', sourceId: graphViewer.id, targetId: changesetGraphBuilder.id, properties: { label: 'diffs via' } },
+    { id: 'rel-app-11', type: 'uses', sourceId: graphViewer.id, targetId: chatService.id, properties: { label: 'integrates' } },
+    { id: 'rel-app-12', type: 'uses', sourceId: embeddedDataLoader.id, targetId: errorTracker.id, properties: { label: 'reports to' } },
+  ];
+
+  return {
+    id: 'application-layer-model',
+    name: 'Application Layer — Documentation Robotics Viewer',
+    description: 'Real application layer spec: components and services that compose this viewer',
+    layers: {
+      Application: createLayer('Application', 'Application', 'Application Layer', elements, relationships),
+    },
+    references: [],
+    metadata: {
+      author: 'DR Model (documentation-robotics/model/04_application/)',
+      created: new Date().toISOString(),
+      elementCount: elements.length,
+      layerCount: 1,
+    },
   };
 }
 
