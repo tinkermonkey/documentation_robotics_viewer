@@ -146,10 +146,10 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
     return {
       algorithm: 'layered',
       direction: 'DOWN',
-      spacing: 50,
+      spacing: 80,
       layering: 'NETWORK_SIMPLEX',
-      edgeNodeSpacing: 20,
-      edgeSpacing: 10,
+      edgeNodeSpacing: 30,
+      edgeSpacing: 15,
       aspectRatio: 1.6,
       interactive: false,
       orthogonalRouting: true,
