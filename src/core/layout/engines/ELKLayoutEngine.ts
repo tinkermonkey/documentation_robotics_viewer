@@ -215,8 +215,6 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       layoutOptions['elk.layered.layering.strategy'] = params.layering || 'NETWORK_SIMPLEX';
       // Maximum crossing-minimization passes for best routing quality
       layoutOptions['elk.layered.thoroughness'] = '7';
-      // Merge parallel edges sharing the same source/target to reduce visual clutter
-      layoutOptions['elk.layered.mergeEdges'] = 'true';
     }
 
     // Add force-specific options
@@ -250,20 +248,40 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       `(filtered out ${graph.edges.length - validEdges.length} invalid edges)`
     );
 
+    // Derive the port IDs that each edge should use based on layout direction.
+    // ELK routes from/to these ports so its startPoint/endPoint align exactly
+    // with React Flow's handle positions.
+    const dir = params.direction || 'DOWN';
+    const sourcePortSuffix = dir === 'RIGHT' ? '-right' : dir === 'LEFT' ? '-left' : dir === 'UP' ? '-top' : '-bottom';
+    const targetPortSuffix = dir === 'RIGHT' ? '-left' : dir === 'LEFT' ? '-right' : dir === 'UP' ? '-bottom' : '-top';
+
     // Create a flat graph structure (all nodes as direct children)
     // ELK can handle flat graphs without hierarchical containers
     const elkGraph: ElkNode = {
       id: 'root',
       layoutOptions,
-      children: graph.nodes.map((node) => ({
-        id: node.id,
-        width: node.width || 100, // Default width if not specified
-        height: node.height || 50, // Default height if not specified
-      })),
+      children: graph.nodes.map((node) => {
+        const w = node.width || 100;
+        const h = node.height || 50;
+        return {
+          id: node.id,
+          width: w,
+          height: h,
+          // FIXED_SIDE: ELK routes to/from our declared ports, whose positions match
+          // React Flow handle positions so elkPoints aligns with the rendered edge.
+          layoutOptions: { 'elk.portConstraints': 'FIXED_SIDE' },
+          ports: [
+            { id: `${node.id}-top`,    x: w / 2, y: 0,     layoutOptions: { 'port.side': 'NORTH' } },
+            { id: `${node.id}-bottom`, x: w / 2, y: h,     layoutOptions: { 'port.side': 'SOUTH' } },
+            { id: `${node.id}-left`,   x: 0,     y: h / 2, layoutOptions: { 'port.side': 'WEST'  } },
+            { id: `${node.id}-right`,  x: w,     y: h / 2, layoutOptions: { 'port.side': 'EAST'  } },
+          ],
+        };
+      }),
       edges: validEdges.map((edge) => ({
         id: edge.id,
-        sources: [edge.source],
-        targets: [edge.target],
+        sources: [`${edge.source}${sourcePortSuffix}`],
+        targets: [`${edge.target}${targetPortSuffix}`],
       })),
     };
 
@@ -319,15 +337,19 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
         data: edgeData,
       };
 
-      // Extract intermediate bend points from ELK routing sections.
-      // We store only the bend points (not startPoint/endPoint which are node-border
-      // artifacts) so callers can use them directly as intermediate waypoints between
-      // the React Flow source and target handle positions.
+      // Extract the full ELK-routed path: startPoint + bendPoints + endPoint.
+      // startPoint and endPoint are at the exact port positions (React Flow handle
+      // coordinates), so ElbowEdge can use this array directly without any
+      // sourceX/Y adjustment.
       if (elkEdge.sections && elkEdge.sections.length > 0) {
         const section = elkEdge.sections[0];
-        if (section.bendPoints && section.bendPoints.length > 0) {
-          edge.points = section.bendPoints.map((bp) => ({ x: bp.x, y: bp.y }));
+        const points: Array<{ x: number; y: number }> = [];
+        points.push({ x: section.startPoint.x, y: section.startPoint.y });
+        if (section.bendPoints) {
+          points.push(...section.bendPoints.map((bp) => ({ x: bp.x, y: bp.y })));
         }
+        points.push({ x: section.endPoint.x, y: section.endPoint.y });
+        edge.points = points;
       }
 
       return edge;
