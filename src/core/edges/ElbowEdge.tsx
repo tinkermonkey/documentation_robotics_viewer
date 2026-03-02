@@ -80,13 +80,23 @@ export const ElbowEdge = memo(({
     }
   }
 
-  // If user has stored custom waypoints, use them directly (skip A* re-calculation)
+  // Routing priority:
+  //   1. User-dragged waypoints (highest — manual override)
+  //   2. ELK-computed bend points (layout engine result)
+  //   3. A* obstacle-avoidance (fallback)
   let pathPoints: Point[];
   const storedWaypoints = data?.waypoints;
+  const elkPoints = data?.elkPoints;
   if (storedWaypoints && storedWaypoints.length > 0) {
     pathPoints = [
       { x: adjustedSourceX, y: adjustedSourceY },
       ...storedWaypoints,
+      { x: adjustedTargetX, y: adjustedTargetY },
+    ];
+  } else if (elkPoints && elkPoints.length > 0) {
+    pathPoints = [
+      { x: adjustedSourceX, y: adjustedSourceY },
+      ...elkPoints,
       { x: adjustedTargetX, y: adjustedTargetY },
     ];
   } else {

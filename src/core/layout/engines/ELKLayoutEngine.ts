@@ -152,8 +152,8 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       edgeSpacing: 10,
       aspectRatio: 1.6,
       interactive: false,
-      orthogonalRouting: false,
-      edgeRouting: 'UNDEFINED',
+      orthogonalRouting: true,
+      edgeRouting: 'ORTHOGONAL',
     };
   }
 
@@ -196,11 +196,13 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       'elk.aspectRatio': String(params.aspectRatio || 1.6),
     };
 
-    // Add orthogonal routing options
+    // Orthogonal edge routing options
     if (params.orthogonalRouting) {
       layoutOptions['elk.edgeRouting'] = params.edgeRouting || 'ORTHOGONAL';
-      // Additional orthogonal routing options for better quality
-      layoutOptions['elk.layered.unnecessaryBendpoints'] = 'false';
+      // Use BRANDES_KOEPF for node placement: produces compact, routing-friendly positions
+      layoutOptions['elk.layered.nodePlacement.strategy'] = 'BRANDES_KOEPF';
+      // Remove superfluous bend points produced by the routing pass
+      layoutOptions['elk.layered.unnecessaryBendpoints'] = 'true';
       layoutOptions['elk.layered.spacing.edgeNodeBetweenLayers'] = String(
         params.edgeNodeSpacing || 20
       );
@@ -270,7 +272,10 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
     const nodeDataMap = new Map(originalGraph.nodes.map((n) => [n.id, n.data]));
     const edgeDataMap = new Map(originalGraph.edges.map((e) => [e.id, e.data]));
 
-    // Convert nodes with positions from ELK
+    // Convert nodes with positions from ELK.
+    // ELK outputs top-left (x, y) coordinates; convert to center positions to match
+    // the VerticalLayerLayout convention expected by nodeTransformer (which subtracts
+    // halfWidth/halfHeight when converting to React Flow top-left positions).
     const nodes = (elkGraph.children || []).map((elkNode) => {
       const nodeData = nodeDataMap.get(elkNode.id);
 
@@ -279,11 +284,14 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
         console.warn(`Missing node data for ELK node: ${elkNode.id}`);
       }
 
+      const halfW = (elkNode.width || 0) / 2;
+      const halfH = (elkNode.height || 0) / 2;
+
       return {
         id: elkNode.id,
         position: {
-          x: elkNode.x || 0,
-          y: elkNode.y || 0,
+          x: (elkNode.x || 0) + halfW, // center X
+          y: (elkNode.y || 0) + halfH, // center Y
         },
         data: nodeData || { label: elkNode.id },
       };
@@ -305,27 +313,14 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
         data: edgeData,
       };
 
-      // Add routing points if available
+      // Extract intermediate bend points from ELK routing sections.
+      // We store only the bend points (not startPoint/endPoint which are node-border
+      // artifacts) so callers can use them directly as intermediate waypoints between
+      // the React Flow source and target handle positions.
       if (elkEdge.sections && elkEdge.sections.length > 0) {
         const section = elkEdge.sections[0];
-        const points: Array<{ x: number; y: number }> = [];
-
-        if (section.startPoint) {
-          points.push({ x: section.startPoint.x, y: section.startPoint.y });
-        }
-
-        if (section.bendPoints) {
-          section.bendPoints.forEach((bp) => {
-            points.push({ x: bp.x, y: bp.y });
-          });
-        }
-
-        if (section.endPoint) {
-          points.push({ x: section.endPoint.x, y: section.endPoint.y });
-        }
-
-        if (points.length > 0) {
-          edge.points = points;
+        if (section.bendPoints && section.bendPoints.length > 0) {
+          edge.points = section.bendPoints.map((bp) => ({ x: bp.x, y: bp.y }));
         }
       }
 

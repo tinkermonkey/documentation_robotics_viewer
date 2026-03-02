@@ -11,7 +11,7 @@ import { elementStore } from '../stores/elementStore';
 import { applyEdgeBundling, calculateOptimalThreshold } from '../layout/edgeBundling';
 import { LayoutResult, LayerLayoutResult } from '../types/shapes';
 import { AppNode, AppEdge } from '../types/reactflow';
-import { FALLBACK_COLOR } from '../utils/layerColors';
+import { FALLBACK_COLOR, getLayerColor } from '../utils/layerColors';
 import { nodeConfigLoader } from '../nodes/nodeConfigLoader';
 import { NodeType } from '../nodes/NodeType';
 import type { UnifiedNodeData } from '../nodes/components/UnifiedNode';
@@ -210,11 +210,16 @@ export class NodeTransformer {
     const edgeIdSet = new Set<string>(); // Track edge IDs to prevent duplicates
     let relationshipCount = 0;
 
-    // Create edges from layer relationships
-    for (const layer of Object.values(model.layers)) {
+    // Create edges from layer relationships, enriching with ELK routing points when
+    // available (ELK path only; VerticalLayerLayout path has no edgeRoutingPoints).
+    for (const [layerType, layer] of Object.entries(model.layers)) {
       relationshipCount += layer.relationships.length;
+      const layerLayoutData = (layout.layers as Record<string, any>)[layerType];
       for (const relationship of layer.relationships) {
-        const edge = this.createEdge(relationship, nodeMap);
+        const elkPoints = layerLayoutData?.edgeRoutingPoints?.[relationship.id] as
+          | Array<{ x: number; y: number }>
+          | undefined;
+        const edge = this.createEdge(relationship, nodeMap, elkPoints);
         if (edge) {
           this.addEdgeIfUnique(edge, edges, edgeIdSet, 'layer relationship');
         }
@@ -281,7 +286,8 @@ export class NodeTransformer {
    */
   private createEdge(
     relationship: Relationship,
-    nodeMap: Map<string, string>
+    nodeMap: Map<string, string>,
+    elkPoints?: Array<{ x: number; y: number }>
   ): AppEdge | null {
     const sourceNodeId = nodeMap.get(relationship.sourceId);
     const targetNodeId = nodeMap.get(relationship.targetId);
@@ -321,6 +327,7 @@ export class NodeTransformer {
           offset: 10, // 10px margin around nodes for routing
           borderRadius: 8, // Rounded corners for smoother paths
         },
+        ...(elkPoints && elkPoints.length > 0 && { elkPoints }),
       },
     } as AppEdge;
   }
@@ -692,10 +699,26 @@ export class NodeTransformer {
 
       console.log(`[NodeTransformer] Layer ${layerType}: ${Object.keys(positions).length} valid positions out of ${layerResult.nodes.length} nodes`);
 
+      // Extract ELK edge routing bend points keyed by relationship ID.
+      // layerToGraphInput() uses rel.id as the ELK edge ID, so we can match directly.
+      // Points are in ELK coordinate space; add currentY (the layer's Y offset in the
+      // React Flow canvas) to convert them to absolute canvas coordinates.
+      const edgeRoutingPoints: Record<string, Array<{ x: number; y: number }>> = {};
+      for (const edge of layerResult.edges) {
+        if (edge.points && edge.points.length > 0) {
+          edgeRoutingPoints[edge.id] = (edge.points as Array<{ x: number; y: number }>).map(
+            (pt) => ({ x: pt.x, y: pt.y + currentY })
+          );
+        }
+      }
+
       // Store layer layout
       layers[layerType] = {
         yOffset: currentY,
         positions,
+        edgeRoutingPoints,
+        color: getLayerColor(layerType, 'primary'),
+        name: layerType,
         bounds: {
           minX,
           maxX,
@@ -737,10 +760,11 @@ export class NodeTransformer {
       });
     }
 
-    // Add relationships as edges
+    // Add relationships as edges, keyed by relationship ID so ELK routing results
+    // can be matched back to the correct React Flow edge in layoutLayersSeparately().
     for (const rel of layer.relationships) {
       edges.push({
-        id: `${rel.sourceId}-${rel.targetId}`,
+        id: rel.id,
         source: rel.sourceId,
         target: rel.targetId,
         data: {

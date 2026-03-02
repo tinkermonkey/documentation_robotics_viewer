@@ -325,8 +325,10 @@ export type AppNode =
  * Edge data for custom edges
  */
 export interface ElbowEdgeData {
-  /** User-defined intermediate waypoints that override A* routing. */
+  /** User-defined intermediate waypoints that override ELK routing and A*. */
   waypoints?: Array<{ x: number; y: number }>;
+  /** ELK-computed intermediate bend points; used when no user waypoints are present. */
+  elkPoints?: Array<{ x: number; y: number }>;
   /** Style overrides (used by motivation edges, cross-layer edges) */
   color?: string;
   strokeDasharray?: string;

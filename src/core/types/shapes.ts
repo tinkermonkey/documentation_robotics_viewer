@@ -92,6 +92,8 @@ export interface PermissionShapeProps extends MetaModelShapeProps {
 export interface LayerLayoutResult {
   yOffset: number;
   positions: Record<string, { x: number; y: number }>;
+  /** ELK-computed intermediate bend points keyed by relationship ID */
+  edgeRoutingPoints?: Record<string, Array<{ x: number; y: number }>>;
   bounds: {
     minX: number;
     minY: number;
