@@ -13,9 +13,10 @@ import type { MetaModel } from '../../../core/types';
 export interface SpecGraphViewProps {
   specData: SpecDataResponse;
   selectedSchemaId: string | null;
+  layoutParameters?: Record<string, any>;
 }
 
-const SpecGraphView: React.FC<SpecGraphViewProps> = ({ specData, selectedSchemaId }) => {
+const SpecGraphView: React.FC<SpecGraphViewProps> = ({ specData, selectedSchemaId, layoutParameters }) => {
   const [model, setModel] = useState<MetaModel | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
@@ -89,7 +90,7 @@ const SpecGraphView: React.FC<SpecGraphViewProps> = ({ specData, selectedSchemaI
 
   return (
     <div className="relative w-full h-full">
-      <GraphViewer model={model} selectedLayerId={selectedSchemaId} />
+      <GraphViewer model={model} selectedLayerId={selectedSchemaId} layoutParameters={layoutParameters} />
     </div>
   );
 };
