@@ -4,23 +4,7 @@
  * that require complete model data
  */
 
-import type { MetaModel, Layer, ModelElement, ElementVisual, Relationship } from '../../core/types';
-
-/**
- * Helper to create element visual properties
- */
-function createElementVisual(position = { x: 0, y: 0 }, size = { width: 160, height: 80 }): ElementVisual {
-  return {
-    position,
-    size,
-    style: {
-      backgroundColor: '#ffffff',
-      borderColor: '#d1d5db',
-      borderStyle: 'solid',
-      textColor: '#000000'
-    }
-  };
-}
+import type { MetaModel, Layer, ModelElement, Relationship } from '../../core/types';
 
 /** Map of known element types to specNodeId values */
 const ELEMENT_TYPE_TO_SPEC_NODE_ID: Record<string, string> = {
@@ -62,12 +46,17 @@ function createModelElement(
     name,
     layerId,
     description: `Mock ${type} element for testing`,
-    properties: {
-      ...properties,
-      fill,
-      stroke
+    properties,
+    visual: {
+      position: { x: 0, y: 0 },
+      size: { width: 160, height: 80 },
+      style: {
+        backgroundColor: fill,
+        borderColor: stroke,
+        borderStyle: 'solid',
+        textColor: '#000000'
+      }
     },
-    visual: createElementVisual(),
     relationships: {
       incoming: [],
       outgoing: []

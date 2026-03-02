@@ -4,6 +4,7 @@ import { MetaModel } from '../types';
 import { NodeTransformer } from '../services/nodeTransformer';
 import { VerticalLayerLayout } from '../layout/verticalLayerLayout';
 import { LayoutEngine, LayoutEngineType, getEngine } from '../layout/engines';
+import { ELKLayoutEngine } from '../layout/engines/ELKLayoutEngine';
 import { AppNode, AppEdge } from '../types/reactflow';
 import { elementStore } from '../stores/elementStore';
 
@@ -37,6 +38,9 @@ export function useAutoLayout(options: UseAutoLayoutOptions): UseAutoLayoutResul
   const [isLayouting, setIsLayouting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Cache for lazily-created engines (used when global registry is empty, e.g. Storybook)
+  const engineCacheRef = useRef<{ type: string; engine: LayoutEngine } | null>(null);
+
   // Prevent concurrent layout runs within a single model version
   const isDirty = useRef(false);
   // Monotonically increasing version; incremented when model/engine changes.
@@ -47,10 +51,25 @@ export function useAutoLayout(options: UseAutoLayoutOptions): UseAutoLayoutResul
   // Model snapshot for pass 2
   const pendingModel = useRef<MetaModel | null>(null);
 
-  const buildLayoutEngine = useCallback((): VerticalLayerLayout | LayoutEngine => {
-    if (layoutEngine) {
-      return getEngine(layoutEngine) ?? new VerticalLayerLayout();
+  const buildLayoutEngine = useCallback(async (): Promise<VerticalLayerLayout | LayoutEngine> => {
+    if (!layoutEngine) return new VerticalLayerLayout();
+
+    // Use pre-registered engine from global registry (initialized in main.tsx for the embedded app)
+    const registered = getEngine(layoutEngine);
+    if (registered) return registered;
+
+    // Lazy fallback: create and cache the engine (e.g. when running in Storybook without pre-init)
+    if (engineCacheRef.current?.type === layoutEngine) {
+      return engineCacheRef.current.engine;
     }
+
+    if (layoutEngine === 'elk') {
+      const engine = new ELKLayoutEngine();
+      await engine.initialize();
+      engineCacheRef.current = { type: layoutEngine, engine };
+      return engine;
+    }
+
     return new VerticalLayerLayout();
   }, [layoutEngine]);
 
@@ -67,7 +86,7 @@ export function useAutoLayout(options: UseAutoLayoutOptions): UseAutoLayoutResul
 
       try {
         elementStore.clear();
-        const engine = buildLayoutEngine();
+        const engine = await buildLayoutEngine();
         const transformer = new NodeTransformer(engine);
         const result = await transformer.transformModel(targetModel, layoutParameters, measuredNodeSizes);
 

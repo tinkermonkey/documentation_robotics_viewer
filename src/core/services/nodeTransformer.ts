@@ -212,6 +212,9 @@ export class NodeTransformer {
 
     // Create edges from layer relationships, enriching with ELK routing points when
     // available (ELK path only; VerticalLayerLayout path has no edgeRoutingPoints).
+    // layoutDirection is set by layoutLayersSeparately (ELK path) and used to align
+    // React Flow source/target handles with ELK's assumed edge exit/entry sides.
+    const layoutDirection = (layout as any).direction as string | undefined;
     for (const [layerType, layer] of Object.entries(model.layers)) {
       relationshipCount += layer.relationships.length;
       const layerLayoutData = (layout.layers as Record<string, any>)[layerType];
@@ -219,7 +222,7 @@ export class NodeTransformer {
         const elkPoints = layerLayoutData?.edgeRoutingPoints?.[relationship.id] as
           | Array<{ x: number; y: number }>
           | undefined;
-        const edge = this.createEdge(relationship, nodeMap, elkPoints);
+        const edge = this.createEdge(relationship, nodeMap, elkPoints, layoutDirection);
         if (edge) {
           this.addEdgeIfUnique(edge, edges, edgeIdSet, 'layer relationship');
         }
@@ -283,11 +286,13 @@ export class NodeTransformer {
 
   /**
    * Create an edge from a relationship
+   * @param layoutDirection - ELK layout direction (DOWN/RIGHT/UP/LEFT); undefined for VerticalLayerLayout
    */
   private createEdge(
     relationship: Relationship,
     nodeMap: Map<string, string>,
-    elkPoints?: Array<{ x: number; y: number }>
+    elkPoints?: Array<{ x: number; y: number }>,
+    layoutDirection?: string
   ): AppEdge | null {
     const sourceNodeId = nodeMap.get(relationship.sourceId);
     const targetNodeId = nodeMap.get(relationship.targetId);
@@ -297,12 +302,23 @@ export class NodeTransformer {
       return null;
     }
 
-    // Check for field-level connection
+    // For field-level connections, use the specific field handles.
+    // For ELK layouts, use direction-aligned handles so ELK's bend points align with
+    // React Flow's actual handle positions. For VerticalLayerLayout, leave undefined
+    // so React Flow auto-selects the closest handle.
     const sourceHandle = relationship.properties?.sourceField
       ? `field-${relationship.properties.sourceField}-right`
+      : layoutDirection === 'RIGHT' ? 'right'
+      : layoutDirection === 'LEFT' ? 'left'
+      : layoutDirection === 'UP' ? 'top'
+      : layoutDirection === 'DOWN' ? 'bottom'
       : undefined;
     const targetHandle = relationship.properties?.targetField
       ? `field-${relationship.properties.targetField}-left`
+      : layoutDirection === 'RIGHT' ? 'left'
+      : layoutDirection === 'LEFT' ? 'right'
+      : layoutDirection === 'UP' ? 'bottom'
+      : layoutDirection === 'DOWN' ? 'top'
       : undefined;
 
     return {
@@ -736,6 +752,7 @@ export class NodeTransformer {
     return {
       layers,
       totalHeight: currentY - layerSpacing,
+      direction: (parameters.direction || 'DOWN') as string,
     };
   }
 
