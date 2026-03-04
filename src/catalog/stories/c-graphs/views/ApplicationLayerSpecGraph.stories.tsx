@@ -19,6 +19,12 @@ interface LayoutArgs {
   spacing: number;
   edgeNodeSpacing: number;
   edgeSpacing: number;
+  edgeRouting: 'ORTHOGONAL' | 'POLYLINE' | 'SPLINES';
+  layering: 'NETWORK_SIMPLEX' | 'LONGEST_PATH' | 'STRETCH_WIDTH' | 'MIN_WIDTH';
+  thoroughness: number;
+  aspectRatio: number;
+  portConstraints: 'FREE' | 'FIXED_POS';
+  edgeEdgeBetweenLayers: number;
 }
 import SpecGraphView from '@/apps/embedded/components/SpecGraphView';
 import { StoryProviderWrapper } from '@/catalog';
@@ -51,13 +57,46 @@ const meta = {
       control: { type: 'range', min: 5, max: 80, step: 5 },
       description: 'Edge-to-edge spacing',
     },
+    edgeRouting: {
+      control: 'select',
+      options: ['ORTHOGONAL', 'POLYLINE', 'SPLINES'],
+      description: 'Edge routing style — SPLINES draws curves that naturally diverge; ORTHOGONAL uses rectilinear paths; POLYLINE allows diagonals',
+    },
+    layering: {
+      control: 'select',
+      options: ['NETWORK_SIMPLEX', 'LONGEST_PATH', 'STRETCH_WIDTH', 'MIN_WIDTH'],
+      description: 'Node layering strategy — STRETCH_WIDTH distributes nodes more evenly, spreading edge channels',
+    },
+    thoroughness: {
+      control: { type: 'range', min: 1, max: 15, step: 1 },
+      description: 'Crossing-minimization passes — higher values reduce edge crossings at the cost of layout time',
+    },
+    aspectRatio: {
+      control: { type: 'range', min: 0.5, max: 4.0, step: 0.1 },
+      description: 'Target width/height ratio — wider values spread nodes horizontally, giving edges more distinct channels',
+    },
+    portConstraints: {
+      control: 'select',
+      options: ['FIXED_POS', 'FREE'],
+      description: 'FIXED_POS: all edges share the center handle (React Flow aligned). FREE: ELK assigns each edge a distinct perimeter position — edges naturally diverge but endpoint dots float off the handle',
+    },
+    edgeEdgeBetweenLayers: {
+      control: { type: 'range', min: 0, max: 200, step: 5 },
+      description: 'Gap between parallel edges crossing a layer boundary — widens the routing channels so edges take visually distinct paths',
+    },
   },
   args: {
     algorithm: 'layered',
     direction: 'DOWN',
-    spacing: 80,
-    edgeNodeSpacing: 50,
+    spacing: 100,
+    edgeNodeSpacing: 60,
     edgeSpacing: 30,
+    edgeRouting: 'ORTHOGONAL',
+    layering: 'NETWORK_SIMPLEX',
+    thoroughness: 7,
+    aspectRatio: 1.6,
+    portConstraints: 'FREE',
+    edgeEdgeBetweenLayers: 40,
   },
 } satisfies Meta<LayoutArgs>;
 
@@ -80,6 +119,12 @@ export const Default: Story = {
       spacing: args.spacing,
       edgeNodeSpacing: args.edgeNodeSpacing,
       edgeSpacing: args.edgeSpacing,
+      edgeRouting: args.edgeRouting,
+      layering: args.layering,
+      thoroughness: args.thoroughness,
+      aspectRatio: args.aspectRatio,
+      portConstraints: args.portConstraints,
+      edgeEdgeBetweenLayers: args.edgeEdgeBetweenLayers,
     };
     return (
       <StoryProviderWrapper spec={specData}>

@@ -48,6 +48,13 @@ export type ELKLayeringStrategy =
 export type ELKEdgeRouting = 'ORTHOGONAL' | 'POLYLINE' | 'SPLINES' | 'UNDEFINED';
 
 /**
+ * ELK port constraints — controls how edge endpoints are placed on node perimeters.
+ * FREE lets ELK spread each edge to a distinct port position; FIXED_POS pins all
+ * edges on the same side to the single center handle (React Flow handle alignment).
+ */
+export type ELKPortConstraints = 'FREE' | 'FIXED_POS';
+
+/**
  * ELK-specific layout parameters
  */
 export interface ELKParameters {
@@ -80,6 +87,20 @@ export interface ELKParameters {
 
   /** Edge routing strategy (when orthogonalRouting is true) */
   edgeRouting?: ELKEdgeRouting;
+
+  /** Crossing-minimization passes (higher = better quality, slower; range 1–15) */
+  thoroughness?: number;
+
+  /**
+   * Port placement mode.
+   * FIXED_POS (default): all edges on a side share the center handle — aligns with React Flow handles.
+   * FREE: ELK distributes each edge to a distinct perimeter position — edges naturally diverge
+   * but endpoints float away from the visible React Flow handle dots.
+   */
+  portConstraints?: ELKPortConstraints;
+
+  /** Minimum gap between parallel edges crossing a layer boundary (px) */
+  edgeEdgeBetweenLayers?: number;
 }
 
 /**
@@ -154,6 +175,9 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       interactive: false,
       orthogonalRouting: true,
       edgeRouting: 'ORTHOGONAL',
+      thoroughness: 7,
+      portConstraints: 'FREE',
+      edgeEdgeBetweenLayers: 40,
     };
   }
 
@@ -172,6 +196,9 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       interactive: { type: 'boolean' },
       orthogonalRouting: { type: 'boolean' },
       edgeRouting: { type: 'string', values: ['ORTHOGONAL', 'POLYLINE', 'SPLINES', 'UNDEFINED'] },
+      thoroughness: { type: 'number', min: 1, max: 15 },
+      portConstraints: { type: 'string', values: ['FREE', 'FIXED_POS'] },
+      edgeEdgeBetweenLayers: { type: 'number', min: 0, max: 200 },
     };
 
     return this.validateCommonParameters(parameters, schema);
@@ -223,13 +250,18 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       layoutOptions['elk.layered.compaction.postCompaction.strategy'] = 'EDGE_LENGTH';
       // Two-sided greedy crossing minimization — considers both sweep directions to cut more crossings
       layoutOptions['elk.layered.crossingMinimization.greedySwitch.type'] = 'TWO_SIDED';
+      // Minimum gap between parallel edges that cross a layer boundary — widens routing channels
+      // so edges take visually distinct paths rather than overlapping in the same channel
+      layoutOptions['elk.layered.spacing.edgeEdgeBetweenLayers'] = String(
+        params.edgeEdgeBetweenLayers ?? 40
+      );
     }
 
     // Add layered-specific options
     if (params.algorithm === 'layered') {
       layoutOptions['elk.layered.layering.strategy'] = params.layering || 'NETWORK_SIMPLEX';
-      // Maximum crossing-minimization passes for best routing quality
-      layoutOptions['elk.layered.thoroughness'] = '7';
+      // Crossing-minimization passes — tunable via thoroughness parameter
+      layoutOptions['elk.layered.thoroughness'] = String(params.thoroughness ?? 7);
     }
 
     // Add force-specific options
@@ -263,9 +295,13 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       `(filtered out ${graph.edges.length - validEdges.length} invalid edges)`
     );
 
-    // Derive the port IDs that each edge should use based on layout direction.
-    // ELK routes from/to these ports so its startPoint/endPoint align exactly
-    // with React Flow's handle positions.
+    // In FREE mode ELK assigns each edge a distinct port on the node perimeter, so edges
+    // naturally diverge. In FIXED_POS mode we pin every edge to the center handle on the
+    // relevant side, preserving React Flow handle alignment at the cost of overlap.
+    const useFreeports = params.portConstraints === 'FREE';
+
+    // Derive the port IDs that each edge should use (FIXED_POS only) based on layout direction.
+    // ELK routes from/to these ports so its startPoint/endPoint align with React Flow handles.
     const dir = params.direction || 'DOWN';
     const sourcePortSuffix = dir === 'RIGHT' ? '-right' : dir === 'LEFT' ? '-left' : dir === 'UP' ? '-top' : '-bottom';
     const targetPortSuffix = dir === 'RIGHT' ? '-left' : dir === 'LEFT' ? '-right' : dir === 'UP' ? '-bottom' : '-top';
@@ -278,13 +314,16 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       children: graph.nodes.map((node) => {
         const w = node.width || 100;
         const h = node.height || 50;
+        if (useFreeports) {
+          // FREE: ELK places each edge at a distinct position on the node perimeter —
+          // edges spread out and take naturally separate paths through routing channels.
+          return { id: node.id, width: w, height: h, layoutOptions: { 'elk.portConstraints': 'FREE' } };
+        }
+        // FIXED_POS: one center port per side, aligned with React Flow handle positions.
         return {
           id: node.id,
           width: w,
           height: h,
-          // FIXED_POS: ELK uses our exact port coordinates (centered on each node side),
-          // which match React Flow handle positions exactly. This ensures ELK's startPoint/
-          // endPoint in edge sections land at the same pixel as the rendered handle.
           layoutOptions: { 'elk.portConstraints': 'FIXED_POS' },
           ports: [
             { id: `${node.id}-top`,    x: w / 2, y: 0,     layoutOptions: { 'port.side': 'NORTH' } },
@@ -296,8 +335,8 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       }),
       edges: validEdges.map((edge) => ({
         id: edge.id,
-        sources: [`${edge.source}${sourcePortSuffix}`],
-        targets: [`${edge.target}${targetPortSuffix}`],
+        sources: [useFreeports ? edge.source : `${edge.source}${sourcePortSuffix}`],
+        targets: [useFreeports ? edge.target : `${edge.target}${targetPortSuffix}`],
       })),
     };
 
@@ -411,6 +450,10 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
     if (typeof parameters.orthogonalRouting === 'boolean')
       validated.orthogonalRouting = parameters.orthogonalRouting;
     if (parameters.edgeRouting) validated.edgeRouting = parameters.edgeRouting;
+    if (typeof parameters.thoroughness === 'number') validated.thoroughness = parameters.thoroughness;
+    if (parameters.portConstraints) validated.portConstraints = parameters.portConstraints;
+    if (typeof parameters.edgeEdgeBetweenLayers === 'number')
+      validated.edgeEdgeBetweenLayers = parameters.edgeEdgeBetweenLayers;
 
     return validated;
   }

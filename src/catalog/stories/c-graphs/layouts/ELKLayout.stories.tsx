@@ -33,10 +33,9 @@ export const Hierarchical: Story = {
             model={model}
             layoutEngine="elk"
             layoutParameters={{
-              'elk.algorithm': 'layered',
-              'elk.direction': 'DOWN',
-              'elk.spacing.nodeNode': '50',
-              'elk.layered.spacing.nodeNodeBetweenLayers': '80'
+              algorithm: 'layered',
+              direction: 'DOWN',
+              spacing: 50,
             }}
           />
         </div>
@@ -59,8 +58,8 @@ export const ForceDirected: Story = {
             model={model}
             layoutEngine="elk"
             layoutParameters={{
-              'elk.algorithm': 'force',
-              'elk.spacing.nodeNode': '60'
+              algorithm: 'force',
+              spacing: 60,
             }}
           />
         </div>
@@ -83,8 +82,8 @@ export const Stress: Story = {
             model={model}
             layoutEngine="elk"
             layoutParameters={{
-              'elk.algorithm': 'stress',
-              'elk.spacing.nodeNode': '50'
+              algorithm: 'stress',
+              spacing: 50,
             }}
           />
         </div>
@@ -107,11 +106,10 @@ export const OrthogonalRouting: Story = {
             model={model}
             layoutEngine="elk"
             layoutParameters={{
-              'elk.algorithm': 'layered',
-              'elk.direction': 'RIGHT',
-              'elk.edgeRouting': 'ORTHOGONAL',
-              'elk.spacing.nodeNode': '50',
-              'elk.layered.spacing.nodeNodeBetweenLayers': '80'
+              algorithm: 'layered',
+              direction: 'RIGHT',
+              edgeRouting: 'ORTHOGONAL',
+              spacing: 50,
             }}
           />
         </div>
