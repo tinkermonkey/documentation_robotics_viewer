@@ -8,7 +8,6 @@ export {
   createCompleteModelFixture,
   createMinimalModelFixture,
   createMotivationLayerModelFixture,
-  createBusinessLayerModelFixture,
   createC4LayerModelFixture,
   createChangesetModelFixture,
   createEmptyModelFixture,

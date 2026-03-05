@@ -264,49 +264,6 @@ export function createMotivationLayerModelFixture(): MetaModel {
 }
 
 /**
- * Create a model with Business layer elements
- * Used for testing Business layer components
- */
-export function createBusinessLayerModelFixture(): MetaModel {
-  const elements = [
-    createModelElement('service-1', 'businessService', 'Payment Service', 'business', '#10b981', '#059669', {
-      criticality: 'high'
-    }),
-    createModelElement('service-2', 'businessService', 'Customer Service', 'business', '#10b981', '#059669', {
-      criticality: 'medium'
-    }),
-    createModelElement('function-1', 'businessFunction', 'Order Processing', 'business', '#14b8a6', '#0d9488'),
-    createModelElement('capability-1', 'businessCapability', 'Customer Management', 'business', '#0891b2', '#0e7490')
-  ];
-
-  const relationships: Relationship[] = [
-    {
-      id: 'rel-1',
-      type: 'composition',
-      sourceId: 'service-1',
-      targetId: 'function-1',
-      properties: { label: 'contains' }
-    }
-  ];
-
-  return {
-    id: 'business-model',
-    name: 'Business Layer Model',
-    description: 'Model focused on Business layer elements',
-    layers: {
-      business: createLayer('business', 'Business', 'Business Layer', elements, relationships)
-    },
-    references: [],
-    metadata: {
-      author: 'Test Fixture',
-      created: new Date().toISOString(),
-      elementCount: elements.length,
-      layerCount: 1
-    }
-  };
-}
-
-/**
  * Create a model with C4 architecture elements
  * Used for testing C4 graph components
  */
@@ -482,22 +439,6 @@ export function createApplicationLayerModelFixture(): MetaModel {
     '#f0fdf4', '#16a34a',
     { serviceType: 'synchronous', documentation: 'Auto-generated type-safe REST API client from OpenAPI spec' }
   );
-  const businessGraphBuilder = createModelElement(
-    'e565e43f-3f09-4424-9510-2c556b1bd3a9',
-    'applicationservice',
-    'Business Graph Builder',
-    'Application',
-    '#f0fdf4', '#16a34a',
-    { serviceType: 'synchronous', documentation: 'Builds business layer React Flow graph from model data' }
-  );
-  const businessLayerParser = createModelElement(
-    '5f8a3bf0-047a-4f2b-8c32-9cc0e36b2181',
-    'applicationservice',
-    'Business Layer Parser',
-    'Application',
-    '#f0fdf4', '#16a34a',
-    { serviceType: 'synchronous', documentation: 'Parses business layer YAML data into typed model elements' }
-  );
   const crossLayerLinksExtractor = createModelElement(
     'c295df70-a535-42c2-8bfc-8bcd912c86cd',
     'applicationservice',
@@ -534,21 +475,18 @@ export function createApplicationLayerModelFixture(): MetaModel {
   const elements = [
     sharedLayout, graphViewer,
     nodeTransformer, embeddedDataLoader, webSocketClient, jsonRpcHandler,
-    generatedApiClient, businessGraphBuilder, businessLayerParser,
+    generatedApiClient,
     crossLayerLinksExtractor, changesetGraphBuilder, chatService, errorTracker,
   ];
 
   const relationships: Relationship[] = [
     { id: 'rel-app-1', type: 'uses', sourceId: sharedLayout.id, targetId: graphViewer.id, properties: { label: 'renders' } },
     { id: 'rel-app-2', type: 'uses', sourceId: graphViewer.id, targetId: nodeTransformer.id, properties: { label: 'transforms via' } },
-    { id: 'rel-app-3', type: 'uses', sourceId: graphViewer.id, targetId: businessGraphBuilder.id, properties: { label: 'builds via' } },
-    { id: 'rel-app-4', type: 'uses', sourceId: graphViewer.id, targetId: crossLayerLinksExtractor.id, properties: { label: 'extracts links via' } },
-    { id: 'rel-app-5', type: 'uses', sourceId: embeddedDataLoader.id, targetId: generatedApiClient.id, properties: { label: 'calls' } },
-    { id: 'rel-app-6', type: 'uses', sourceId: embeddedDataLoader.id, targetId: webSocketClient.id, properties: { label: 'subscribes via' } },
-    { id: 'rel-app-7', type: 'uses', sourceId: webSocketClient.id, targetId: jsonRpcHandler.id, properties: { label: 'dispatches to' } },
-    { id: 'rel-app-8', type: 'uses', sourceId: nodeTransformer.id, targetId: businessLayerParser.id, properties: { label: 'parses via' } },
-    { id: 'rel-app-9', type: 'uses', sourceId: businessGraphBuilder.id, targetId: businessLayerParser.id, properties: { label: 'parses via' } },
-    { id: 'rel-app-10', type: 'uses', sourceId: graphViewer.id, targetId: changesetGraphBuilder.id, properties: { label: 'diffs via' } },
+    { id: 'rel-app-3', type: 'uses', sourceId: graphViewer.id, targetId: crossLayerLinksExtractor.id, properties: { label: 'extracts links via' } },
+    { id: 'rel-app-4', type: 'uses', sourceId: embeddedDataLoader.id, targetId: generatedApiClient.id, properties: { label: 'calls' } },
+    { id: 'rel-app-5', type: 'uses', sourceId: embeddedDataLoader.id, targetId: webSocketClient.id, properties: { label: 'subscribes via' } },
+    { id: 'rel-app-6', type: 'uses', sourceId: webSocketClient.id, targetId: jsonRpcHandler.id, properties: { label: 'dispatches to' } },
+    { id: 'rel-app-7', type: 'uses', sourceId: graphViewer.id, targetId: changesetGraphBuilder.id, properties: { label: 'diffs via' } },
     { id: 'rel-app-11', type: 'uses', sourceId: graphViewer.id, targetId: chatService.id, properties: { label: 'integrates' } },
     { id: 'rel-app-12', type: 'uses', sourceId: embeddedDataLoader.id, targetId: errorTracker.id, properties: { label: 'reports to' } },
   ];

@@ -7,31 +7,13 @@
  * - StoryLoadedWrapper signals completion
  * - Zoom controls are functional
  *
- * Covers: BusinessLayerView, GraphViewer, ChangesetGraphView
+ * Covers: GraphViewer, ChangesetGraphView
  */
 
 import { test, expect } from '@playwright/test';
 import { storyUrl, setupErrorFiltering } from '../helpers/storyTestUtils';
 
 test.describe('Graph View Stories', () => {
-  test.describe('BusinessLayerView', () => {
-    test('Default: renders nodes', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('views---layouts--graph-views--businesslayerview--default'));
-      await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 });
-      const nodeCount = await page.locator('.react-flow__node').count();
-      expect(nodeCount, 'BusinessLayerView Default should render nodes').toBeGreaterThan(0);
-    });
-
-    test('Default: data-storyloaded is set', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('views---layouts--graph-views--businesslayerview--default'));
-      await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 });
-      const wrapper = page.locator('[data-testid="business-layer-default"]');
-      await expect(wrapper).toHaveAttribute('data-storyloaded', 'true');
-    });
-  });
-
   test.describe('GraphViewer', () => {
     test('MinimalGraph: renders nodes', async ({ page }) => {
       setupErrorFiltering(page);
