@@ -70,5 +70,6 @@ export {
 export {
   createMinimalSpecFixture,
   createCompleteSpecFixture,
-  createCustomSpecFixture
+  createCustomSpecFixture,
+  createLayerBrowserSpecFixture
 } from './specFixtures';

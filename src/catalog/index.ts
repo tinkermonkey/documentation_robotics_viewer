@@ -134,7 +134,8 @@ export {
   createMinimalSpecFixture,
   createCompleteSpecFixture,
   createCustomSpecFixture,
-  createApplicationLayerSpecFixture
+  createApplicationLayerSpecFixture,
+  createLayerBrowserSpecFixture
 } from './fixtures/specFixtures';
 
 // Components - Story Support

@@ -10,7 +10,8 @@ import type { UnifiedNodeData, ChangesetOperation } from '../nodes';
 
 export type { HTTPMethod };
 import { NodeDetailLevel } from '../../core/layout/semanticZoomController';
-import { CoverageStatus } from '../../apps/embedded/services/coverageAnalyzer';
+
+export type CoverageStatus = 'complete' | 'partial' | 'none';
 
 /**
  * Validation error for cross-layer edge constraints

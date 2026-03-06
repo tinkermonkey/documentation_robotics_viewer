@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 import LayerBrowserSidebar from '@/apps/embedded/components/LayerBrowserSidebar';
-import { createCompleteSpecFixture, createMinimalSpecFixture } from '@/catalog/fixtures/specFixtures';
+import { createLayerBrowserSpecFixture } from '@/catalog/fixtures/specFixtures';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / LayerBrowserSidebar',
@@ -13,8 +13,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const completeSpec = createCompleteSpecFixture();
-const minimalSpec = createMinimalSpecFixture();
+const spec = createLayerBrowserSpecFixture();
 
 export const Default: Story = {
   render: () => {
@@ -22,7 +21,7 @@ export const Default: Story = {
     return (
       <div className="w-64 bg-white border border-gray-200">
         <LayerBrowserSidebar
-          specData={completeSpec}
+          specData={spec}
           selectedId={selectedId}
           onSelectLayer={setSelectedId}
         />
@@ -33,11 +32,11 @@ export const Default: Story = {
 
 export const WithSelection: Story = {
   render: () => {
-    const [selectedId, setSelectedId] = useState<string | null>('motivation');
+    const [selectedId, setSelectedId] = useState<string | null>('01_motivation');
     return (
       <div className="w-64 bg-white border border-gray-200">
         <LayerBrowserSidebar
-          specData={completeSpec}
+          specData={spec}
           selectedId={selectedId}
           onSelectLayer={setSelectedId}
         />
@@ -50,14 +49,41 @@ export const WithCounts: Story = {
   render: () => {
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const mockCounts: Record<string, number> = {
-      motivation: 12,
-      business: 25,
-      application: 18,
+      '01_motivation': 12,
+      '02_business': 25,
+      '03_security': 8,
+      '04_application': 18,
+      '05_technology': 31,
+      '06_api': 6,
     };
     return (
       <div className="w-64 bg-white border border-gray-200">
         <LayerBrowserSidebar
-          specData={minimalSpec}
+          specData={spec}
+          selectedId={selectedId}
+          onSelectLayer={setSelectedId}
+          getCount={(id) => mockCounts[id] ?? 0}
+        />
+      </div>
+    );
+  },
+};
+
+export const WithCountsAndSelection: Story = {
+  render: () => {
+    const [selectedId, setSelectedId] = useState<string | null>('04_application');
+    const mockCounts: Record<string, number> = {
+      '01_motivation': 12,
+      '02_business': 25,
+      '03_security': 8,
+      '04_application': 18,
+      '05_technology': 31,
+      '06_api': 6,
+    };
+    return (
+      <div className="w-64 bg-white border border-gray-200">
+        <LayerBrowserSidebar
+          specData={spec}
           selectedId={selectedId}
           onSelectLayer={setSelectedId}
           getCount={(id) => mockCounts[id] ?? 0}

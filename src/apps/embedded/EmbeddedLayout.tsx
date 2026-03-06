@@ -3,8 +3,6 @@ import { Outlet, useMatches, useNavigate } from '@tanstack/react-router';
 import {
   HiDocumentText,
   HiCube,
-  HiLightBulb,
-  HiViewGrid,
   HiCollection,
   HiChatAlt2,
 } from 'react-icons/hi';
@@ -51,8 +49,6 @@ export default function EmbeddedLayout() {
   const tabs = [
     { path: '/spec', label: 'Spec', icon: HiDocumentText, defaultView: specView },
     { path: '/model', label: 'Model', icon: HiCube, defaultView: modelView },
-    { path: '/motivation', label: 'Motivation', icon: HiLightBulb, defaultView: null },
-    { path: '/architecture', label: 'Architecture', icon: HiViewGrid, defaultView: null },
     { path: '/changesets', label: 'Changesets', icon: HiCollection, defaultView: changesetView },
   ];
 
@@ -60,8 +56,7 @@ export default function EmbeddedLayout() {
 
   const handleTabChange = (index: number) => {
     const tab = tabs[index];
-    const path = tab.defaultView ? `${tab.path}/${tab.defaultView}` : tab.path;
-    navigate({ to: path });
+    navigate({ to: `${tab.path}/${tab.defaultView}` });
   };
 
   // Determine current sub-tabs based on active main tab

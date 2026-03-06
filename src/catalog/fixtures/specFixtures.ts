@@ -216,6 +216,61 @@ export function createCustomSpecFixture(
 }
 
 /**
+ * Create a SpecDataResponse with multiple layers in v0.8.1 format (layer.name + nodeSchemas).
+ * This is what LayerBrowserSidebar actually renders — isLayerSchema requires nodeSchemas or layer.name.
+ */
+export function createLayerBrowserSpecFixture(): SpecDataResponse {
+  function layerSchema(id: string, number: number, name: string, nodeSchemaEntries: Record<string, unknown>) {
+    return {
+      specVersion: '0.8.1',
+      layer: { id, number, name, description: `Layer ${number}: ${name}` },
+      nodeSchemas: nodeSchemaEntries,
+      relationshipSchemas: {},
+    };
+  }
+
+  return {
+    version: '0.8.1',
+    type: 'json-schema',
+    description: 'Multi-layer spec fixture for LayerBrowserSidebar stories',
+    source: 'Documentation Robotics CLI',
+    schemas: {
+      '01_motivation': layerSchema('motivation', 1, 'Motivation Layer', {
+        goal: { title: 'Goal', description: 'A desired strategic outcome' },
+        requirement: { title: 'Requirement', description: 'A functional or non-functional requirement' },
+        constraint: { title: 'Constraint', description: 'A limitation on the system' },
+        stakeholder: { title: 'Stakeholder', description: 'A person with interest in the system' },
+      }),
+      '02_business': layerSchema('business', 2, 'Business Layer', {
+        businessservice: { title: 'Business Service', description: 'A service provided by a business unit' },
+        businessfunction: { title: 'Business Function', description: 'A core business capability' },
+        businesscapability: { title: 'Business Capability', description: 'An organizational ability' },
+      }),
+      '03_security': layerSchema('security', 3, 'Security Layer', {
+        securitycontrol: { title: 'Security Control', description: 'A measure to mitigate risk' },
+        threat: { title: 'Threat', description: 'A potential security risk' },
+        vulnerability: { title: 'Vulnerability', description: 'A weakness that can be exploited' },
+      }),
+      '04_application': layerSchema('application', 4, 'Application Layer', {
+        applicationcomponent: { title: 'Application Component', description: 'A modular unit of application functionality' },
+        applicationservice: { title: 'Application Service', description: 'A service that exposes application functionality' },
+        dataobject: { title: 'Data Object', description: 'Data structured for automated processing' },
+      }),
+      '05_technology': layerSchema('technology', 5, 'Technology Layer', {
+        node: { title: 'Node', description: 'A computational or physical resource' },
+        artifact: { title: 'Artifact', description: 'A deployable technology element' },
+        technologyservice: { title: 'Technology Service', description: 'An infrastructure-level service' },
+      }),
+      '06_api': layerSchema('api', 6, 'API Layer', {
+        apiendpoint: { title: 'API Endpoint', description: 'A specific URL and method on an API' },
+        apiresource: { title: 'API Resource', description: 'A resource exposed by an API' },
+      }),
+    },
+    schemaCount: 6,
+  };
+}
+
+/**
  * Create a SpecDataResponse for the application layer sourced directly from
  * .dr/spec/application.json — the file the DR CLI serves via /api/spec.
  *

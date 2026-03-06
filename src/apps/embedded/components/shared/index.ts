@@ -7,7 +7,5 @@ export { FilterPanel } from './FilterPanel';
 export type { FilterItem, FilterSection, FilterPanelProps } from './FilterPanel';
 export { ExportButtonGroup } from './ExportButtonGroup';
 export type { ExportService, ExportButtonGroupProps } from './ExportButtonGroup';
-export { LayerRightSidebar } from './LayerRightSidebar';
-export type { LayerRightSidebarProps } from './LayerRightSidebar';
 export { NodeContextMenu } from './NodeContextMenu';
 export type { NodeContextMenuProps, ContextMenuAction } from './NodeContextMenu';
