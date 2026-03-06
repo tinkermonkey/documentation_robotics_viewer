@@ -15,14 +15,21 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Container is 820px wide × 280px tall.
-// Title bar = 40px, so children sit from x=60 (40 + 20 padding) onward.
-const CONTAINER_W = 820;
-const CONTAINER_H = 280;
+// Layout constants matching nodeTransformer.ts production values:
+//   titleBarWidth = 40, containerPadding = 30
+// Content starts at x = 40 + 30 = 70 from container left.
+// Four 180px nodes with 20px gaps: 4×180 + 3×20 = 780px content.
+// Container width = 40 + 30 + 780 + 30 = 880 → 900 for breathing room.
+const TITLE_BAR = 40;
+const PADDING = 30;
 const NODE_W = 180;
 const NODE_H = 80;
-const NODE_Y = (CONTAINER_H - NODE_H) / 2;  // vertically centered
-const COL_X = [60, 270, 480, 690];           // four column positions
+const NODE_GAP = 20;
+const CONTENT_START = TITLE_BAR + PADDING;           // 70
+const CONTAINER_W = TITLE_BAR + PADDING + (4 * NODE_W) + (3 * NODE_GAP) + PADDING; // 880
+const CONTAINER_H = PADDING + NODE_H + PADDING;      // 140
+const NODE_Y = PADDING;                              // 30px from top
+const COL_X = [0, 1, 2, 3].map(i => CONTENT_START + i * (NODE_W + NODE_GAP));
 
 function childNode(
   id: string,

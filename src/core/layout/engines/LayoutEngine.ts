@@ -191,13 +191,15 @@ export abstract class BaseLayoutEngine implements LayoutEngine {
     let maxY = -Infinity;
 
     for (const node of nodes) {
-      const width = node.width || 0;
-      const height = node.height || 0;
+      const halfW = (node.width || 0) / 2;
+      const halfH = (node.height || 0) / 2;
 
-      minX = Math.min(minX, node.position.x);
-      maxX = Math.max(maxX, node.position.x + width);
-      minY = Math.min(minY, node.position.y);
-      maxY = Math.max(maxY, node.position.y + height);
+      // node.position is a center coordinate (ELKLayoutEngine converts ELK's
+      // top-left to center before calling this method).
+      minX = Math.min(minX, node.position.x - halfW);
+      maxX = Math.max(maxX, node.position.x + halfW);
+      minY = Math.min(minY, node.position.y - halfH);
+      maxY = Math.max(maxY, node.position.y + halfH);
     }
 
     return {
