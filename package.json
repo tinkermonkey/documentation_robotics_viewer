@@ -69,6 +69,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
     "autoprefixer": "^10.4.22",
+    "axe-playwright": "^2.2.2",
     "flowbite": "^4.0.1",
     "http-server": "^14.1.1",
     "husky": "^9.1.7",
