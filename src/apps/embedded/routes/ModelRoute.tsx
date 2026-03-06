@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useParams, useSearch, useNavigate } from '@tanstack/react-router';
 import type { Node } from '@xyflow/react';
 import GraphViewer from '../../../core/components/GraphViewer';
-import ModelJSONViewer from '../components/ModelJSONViewer';
+import ModelDetailsViewer from '../components/ModelDetailsViewer';
 import AnnotationPanel from '../components/AnnotationPanel';
 import SchemaInfoPanel from '../components/SchemaInfoPanel';
 import LayerBrowserSidebar from '../components/LayerBrowserSidebar';
@@ -163,7 +163,7 @@ export default function ModelRoute() {
             selectedLayerId={selectedLayerId}
           />
         ) : (
-          <ModelJSONViewer
+          <ModelDetailsViewer
             model={model}
             specData={specData || undefined}
             onPathHighlight={handlePathHighlight}

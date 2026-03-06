@@ -1,5 +1,5 @@
 /**
- * ModelJSONViewer Component
+ * ModelDetailsViewer Component
  * Displays model instance data in a readable JSON format
  */
 
@@ -11,7 +11,7 @@ import MetadataGrid, { MetadataItem } from './common/MetadataGrid';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { SchemaDefinition } from '../services/embeddedDataLoader';
 
-interface ModelJSONViewerProps {
+interface ModelDetailsViewerProps {
   model: MetaModel;
   specData?: {
     schemas: Record<string, SchemaDefinition>;
@@ -20,7 +20,7 @@ interface ModelJSONViewerProps {
   selectedLayer: string | null;
 }
 
-const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
+const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
   model,
   specData,
   onPathHighlight,
@@ -344,4 +344,4 @@ const ModelJSONViewer: React.FC<ModelJSONViewerProps> = ({
   );
 };
 
-export default ModelJSONViewer;
+export default ModelDetailsViewer;
