@@ -40,7 +40,10 @@ const LayerBrowserSidebar = ({
         {layerEntries.map(([schemaId, schema]) => {
           const isSelected = selectedId === schemaId;
           const label = getSchemaLabel(schemaId, schema as Record<string, unknown>);
-          const layerColor = getLayerColor(schemaId, 'primary');
+          const schemaRecord = schema as Record<string, unknown>;
+          const layerMeta = schemaRecord.layer as Record<string, unknown> | undefined;
+          const layerColorKey = typeof layerMeta?.id === 'string' ? layerMeta.id : schemaId;
+          const layerColor = getLayerColor(layerColorKey, 'primary');
           const count = getCount?.(schemaId);
 
           return (
