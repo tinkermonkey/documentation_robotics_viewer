@@ -15,6 +15,8 @@ interface FieldListProps {
   itemHeight: number;
   strokeColor: string;
   handleColor: string;
+  /** When true, label and value each take flex:1 (equal columns). Default: false. */
+  twoColumn?: boolean;
 }
 
 /**
@@ -30,7 +32,7 @@ interface FieldListProps {
  * - Per-field layout (alternating backgrounds, flex positioning) needs precise control
  * - Text colors are data-driven and not theme-dependent
  */
-const FieldList = memo<FieldListProps>(({ items, itemHeight, strokeColor, handleColor }) => {
+const FieldList = memo<FieldListProps>(({ items, itemHeight, strokeColor, handleColor, twoColumn = false }) => {
   if (!items || items.length === 0) {
     return (
       <div
@@ -142,6 +144,7 @@ const FieldList = memo<FieldListProps>(({ items, itemHeight, strokeColor, handle
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
+                  ...(twoColumn ? { flex: 1, textAlign: 'right' } : {}),
                 }}
               >
                 {item.value}

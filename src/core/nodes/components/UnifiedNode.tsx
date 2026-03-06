@@ -22,7 +22,6 @@ import { NodeType } from '../NodeType';
 import { nodeConfigLoader } from '../nodeConfigLoader';
 import { RelationshipBadge, RelationshipBadgeData } from './RelationshipBadge';
 import FieldList, { FieldItem } from './FieldList';
-import TableFieldList from './TableFieldList';
 import BadgeRenderer from './BadgeRenderer';
 import { useShouldHideFields } from '../../stores/fieldVisibilityStore';
 import { useChangesetStyling } from '../hooks/useChangesetStyling';
@@ -211,23 +210,14 @@ function UnifiedNodeComponent({ data, id }: { data: UnifiedNodeData; id?: string
         </div>
       )}
 
-      {/* Field list - rendered when items exist and fields not hidden */}
-      {showFields && !isMinimal && layout === 'table' && (
-        <TableFieldList
-          items={items}
-          itemHeight={itemHeight}
-          strokeColor={finalStrokeColor}
-          handleColor={colors.handle || colors.stroke}
-        />
-      )}
-
-      {/* Regular field list - for centered and left layouts */}
-      {showFields && !isMinimal && layout !== 'table' && (
+      {/* Field list - twoColumn mode for table layout (data nodes) */}
+      {showFields && !isMinimal && (
         <FieldList
           items={items}
           itemHeight={itemHeight}
           strokeColor={finalStrokeColor}
           handleColor={colors.handle || colors.stroke}
+          twoColumn={layout === 'table'}
         />
       )}
     </div>

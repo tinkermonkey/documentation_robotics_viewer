@@ -1,26 +1,26 @@
 /**
- * TableFieldList Component Stories
+ * FieldList Component Stories
  *
- * Comprehensive Storybook stories for the TableFieldList component.
+ * Comprehensive Storybook stories for the FieldList component.
  * Demonstrates the table layout mode used by DATA_JSON_SCHEMA and DATA_MODEL node types.
  */
 
 import type { Meta, StoryObj } from '@storybook/react';
-import TableFieldList from '@/core/nodes/components/TableFieldList';
+import FieldList from '@/core/nodes/components/FieldList';
 import type { FieldItem } from '@/core/nodes/components/FieldList';
 import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 // ============================================================================
-// TableFieldList Stories
+// FieldList Stories
 // ============================================================================
 
 const meta = {
-  title: 'Graphs / Nodes / UnifiedNode / Components / TableFieldList',
+  title: 'Graphs / Nodes / UnifiedNode / Components / FieldList',
   decorators: [withReactFlowDecorator({ width: 400, height: 500 })],
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta<typeof TableFieldList>;
+} satisfies Meta<typeof FieldList>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -60,7 +60,7 @@ export const Default: Story = {
 
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" />
+        <FieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" twoColumn />
       </div>
     );
   },
@@ -71,7 +71,7 @@ export const EmptyState: Story = {
   render: () => {
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={[]} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" />
+        <FieldList items={[]} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" twoColumn />
       </div>
     );
   },
@@ -82,7 +82,7 @@ export const UndefinedItems: Story = {
   render: () => {
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={[] as FieldItem[]} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" />
+        <FieldList items={[] as FieldItem[]} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" twoColumn />
       </div>
     );
   },
@@ -101,7 +101,7 @@ export const ManyFields: Story = {
 
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" />
+        <FieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" twoColumn />
       </div>
     );
   },
@@ -149,7 +149,7 @@ export const ComplexTypes: Story = {
 
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" />
+        <FieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" twoColumn />
       </div>
     );
   },
@@ -178,7 +178,7 @@ export const LongContent: Story = {
 
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" />
+        <FieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" twoColumn />
       </div>
     );
   },
@@ -196,7 +196,7 @@ export const AllRequired: Story = {
 
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" />
+        <FieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" twoColumn />
       </div>
     );
   },
@@ -214,7 +214,7 @@ export const AllOptional: Story = {
 
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" />
+        <FieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" twoColumn />
       </div>
     );
   },
@@ -254,7 +254,7 @@ export const MixedTooltips: Story = {
 
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" />
+        <FieldList items={items} itemHeight={24} strokeColor="#d1d5db" handleColor="#3b82f6" twoColumn />
       </div>
     );
   },
@@ -288,7 +288,7 @@ export const CustomItemHeight: Story = {
 
     return (
       <div className="p-4 border border-gray-300 dark:border-gray-600 rounded">
-        <TableFieldList items={items} itemHeight={32} strokeColor="#d1d5db" handleColor="#3b82f6" />
+        <FieldList items={items} itemHeight={32} strokeColor="#d1d5db" handleColor="#3b82f6" twoColumn />
       </div>
     );
   },
@@ -323,7 +323,7 @@ export const DarkMode: Story = {
     return (
       <div className="dark bg-gray-900 p-4">
         <div className="p-4 border border-gray-700 rounded">
-          <TableFieldList items={items} itemHeight={24} strokeColor="#4b5563" handleColor="#60a5fa" />
+          <FieldList items={items} itemHeight={24} strokeColor="#4b5563" handleColor="#60a5fa" twoColumn />
         </div>
       </div>
     );
