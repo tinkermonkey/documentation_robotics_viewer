@@ -1,24 +1,74 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { GraphToolbar } from '@/apps/embedded/components/GraphToolbar';
 
+const noop = () => {};
+
 const meta = {
   title: 'Primitives / Toolbars / GraphToolbar',
+  parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = { render: () => (
-  <div className="w-full h-96 bg-gray-50 relative">
-    <GraphToolbar />
-  </div>
-) };
+/** Search bar only — no zoom or export */
+export const SearchOnly: Story = {
+  render: () => (
+    <GraphToolbar
+      searchQuery=""
+      onSearchChange={noop}
+      searchPlaceholder="Search nodes..."
+    />
+  ),
+};
 
-export const WithZoomControls: Story = { render: () => (
-  <div className="w-full h-96 bg-gray-50 relative">
-    <GraphToolbar />
-    <div className="absolute bottom-4 left-4 bg-white p-2 rounded shadow text-sm text-gray-600">
-      Zoom controls are typically positioned here
-    </div>
-  </div>
-) };
+/** Zoom controls only — no search or export */
+export const ZoomOnly: Story = {
+  render: () => (
+    <GraphToolbar
+      showZoomControls
+      onZoomIn={noop}
+      onZoomOut={noop}
+      onFitView={noop}
+    />
+  ),
+};
+
+/** Full toolbar: search, filters, zoom, and export */
+export const Full: Story = {
+  render: () => (
+    <GraphToolbar
+      searchQuery=""
+      onSearchChange={noop}
+      searchPlaceholder="Search architecture elements..."
+      showFilters
+      onFiltersClick={noop}
+      showZoomControls
+      onZoomIn={noop}
+      onZoomOut={noop}
+      onFitView={noop}
+      exportOptions={[
+        { label: 'Export as PNG', onClick: noop },
+        { label: 'Export as SVG', onClick: noop },
+        { label: 'Export as JSON', onClick: noop },
+      ]}
+    />
+  ),
+};
+
+/** Search pre-filled with a query value */
+export const WithActiveSearch: Story = {
+  render: () => (
+    <GraphToolbar
+      searchQuery="payment"
+      onSearchChange={noop}
+      searchPlaceholder="Search architecture elements..."
+      showFilters
+      onFiltersClick={noop}
+      showZoomControls
+      onZoomIn={noop}
+      onZoomOut={noop}
+      onFitView={noop}
+    />
+  ),
+};
