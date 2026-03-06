@@ -12,7 +12,7 @@ import { StoryProviderWrapper } from '@/catalog';
 import { createApplicationLayerModelFixture } from '@/catalog/fixtures/modelFixtures';
 
 const meta = {
-  title: 'C Graphs / Views / ApplicationLayerGraph',
+  title: 'Graphs / Views / ApplicationLayerGraph',
   parameters: { layout: 'fullscreen' },
   tags: ['skip-a11y'],
 } satisfies Meta;

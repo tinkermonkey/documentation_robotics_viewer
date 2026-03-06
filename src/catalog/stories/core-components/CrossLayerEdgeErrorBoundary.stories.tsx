@@ -10,7 +10,7 @@ import { StoryProviderWrapper } from '@/catalog';
 import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';
 
 const meta = {
-  title: 'Core Components / CrossLayerEdgeErrorBoundary',
+  title: 'Graphs / Edges / Base / CrossLayerEdgeErrorBoundary',
   parameters: {
     layout: 'centered',
   },

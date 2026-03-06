@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import SubTabNavigation, { type SubTab } from '@/apps/embedded/components/SubTabNavigation';
 
 const meta = {
-  title: 'A Primitives / Navigation / SubTabNavigation',
+  title: 'Primitives / Navigation / SubTabNavigation',
 } satisfies Meta;
 
 export default meta;

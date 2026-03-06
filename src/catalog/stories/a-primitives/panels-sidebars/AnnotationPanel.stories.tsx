@@ -7,7 +7,7 @@ import { createCompleteModelFixture, createMinimalModelFixture } from '@catalog/
 import { useEffect } from 'react';
 
 const meta = {
-  title: 'A Primitives / Panels and Sidebars / AnnotationPanel',
+  title: 'Primitives / Panels and Sidebars / AnnotationPanel',
   parameters: {
     layout: 'centered',
   },

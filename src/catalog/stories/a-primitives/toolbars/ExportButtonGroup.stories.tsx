@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { ExportButtonGroup, ExportService } from '@/apps/embedded/components/shared/ExportButtonGroup';
 
 const meta = {
-  title: 'A Primitives / Toolbars / ExportButtonGroup',
+  title: 'Primitives / Toolbars / ExportButtonGroup',
   parameters: {
     layout: 'centered',
   },

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { ChatPanel } from '@/apps/embedded/components/ChatPanel';
 
 const meta = {
-  title: 'D Chat / ChatPanel',
+  title: 'Chat / ChatPanel',
   component: ChatPanel,
   parameters: {
     layout: 'fullscreen',

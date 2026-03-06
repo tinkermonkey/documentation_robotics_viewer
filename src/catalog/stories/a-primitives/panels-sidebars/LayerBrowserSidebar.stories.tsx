@@ -4,7 +4,7 @@ import LayerBrowserSidebar from '@/apps/embedded/components/LayerBrowserSidebar'
 import { createLayerBrowserSpecFixture } from '@/catalog/fixtures/specFixtures';
 
 const meta = {
-  title: 'A Primitives / Panels and Sidebars / LayerBrowserSidebar',
+  title: 'Primitives / Panels and Sidebars / LayerBrowserSidebar',
   parameters: {
     layout: 'centered',
   },

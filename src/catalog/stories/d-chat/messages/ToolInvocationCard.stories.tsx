@@ -7,7 +7,7 @@ import { ToolInvocationCard } from '@/apps/embedded/components/chat/ToolInvocati
 import type { ToolInvocationContent } from '@/apps/embedded/types/chat';
 
 const meta = {
-  title: 'D Chat / Messages / ToolInvocationCard',
+  title: 'Chat / Messages / ToolInvocationCard',
 } satisfies Meta;
 
 export default meta;

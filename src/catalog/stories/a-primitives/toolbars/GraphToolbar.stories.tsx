@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { GraphToolbar } from '@/apps/embedded/components/GraphToolbar';
 
 const meta = {
-  title: 'A Primitives / Toolbars / GraphToolbar',
+  title: 'Primitives / Toolbars / GraphToolbar',
 } satisfies Meta;
 
 export default meta;

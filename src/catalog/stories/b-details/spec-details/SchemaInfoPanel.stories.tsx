@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import type { MetaModel } from '@/core/types';
 
 const meta = {
-  title: 'B Details / Spec Details / SchemaInfoPanel',
+  title: 'Details / Spec Details / SchemaInfoPanel',
   parameters: {
     layout: 'centered',
   },

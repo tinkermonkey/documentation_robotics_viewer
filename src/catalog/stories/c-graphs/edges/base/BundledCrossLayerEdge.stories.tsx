@@ -6,7 +6,7 @@ import { memo } from 'react';
 import { BundledCrossLayerEdge } from '@/core/edges/BundledCrossLayerEdge';
 
 const meta = {
-  title: 'C Graphs / Edges / Base / BundledCrossLayerEdge',
+  title: 'Graphs / Edges / Base / BundledCrossLayerEdge',
   parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 

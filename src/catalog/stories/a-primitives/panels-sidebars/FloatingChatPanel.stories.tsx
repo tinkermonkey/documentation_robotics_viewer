@@ -10,7 +10,7 @@ import { FloatingChatPanel } from '@/apps/embedded/components/FloatingChatPanel'
 import { useFloatingChatStore } from '@/apps/embedded/stores/floatingChatStore';
 
 const meta = {
-  title: 'A Primitives / Panels and Sidebars / FloatingChatPanel',
+  title: 'Chat / FloatingChatPanel',
   parameters: {
     layout: 'fullscreen',
   },

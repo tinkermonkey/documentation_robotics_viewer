@@ -7,7 +7,7 @@ import { ChatMessage } from '@/apps/embedded/components/chat/ChatMessage';
 import type { ChatMessage as ChatMessageType } from '@/apps/embedded/types/chat';
 
 const meta = {
-  title: 'D Chat / Messages / ChatMessage',
+  title: 'Chat / Messages / ChatMessage',
 } satisfies Meta;
 
 export default meta;

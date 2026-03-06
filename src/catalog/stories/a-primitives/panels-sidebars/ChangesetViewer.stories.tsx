@@ -4,7 +4,7 @@ import { useChangesetStore } from '@/apps/embedded/stores/changesetStore';
 import { useEffect, ReactNode } from 'react';
 
 const meta = {
-  title: 'A Primitives / Panels and Sidebars / ChangesetViewer',
+  title: 'Primitives / Panels and Sidebars / ChangesetViewer',
   parameters: {
     layout: 'centered',
   },

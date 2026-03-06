@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import AttributesTable, { AttributeRow } from '@/apps/embedded/components/common/AttributesTable';
 
 const meta = {
-  title: 'A Primitives / Data Viewers / AttributesTable',
+  title: 'Primitives / Data Viewers / AttributesTable',
 } satisfies Meta;
 
 export default meta;

@@ -13,7 +13,7 @@ import {
 } from '@/catalog/fixtures';
 
 const meta = {
-  title: 'E Compositions / Spec Compositions / SpecRouteComposition',
+  title: 'Compositions / Spec Compositions / SpecRouteComposition',
   parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 

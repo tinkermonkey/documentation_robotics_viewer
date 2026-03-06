@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { LoadingState } from '@/apps/embedded/components/shared/LoadingState';
 
 const meta = {
-  title: 'A Primitives / State Panels / LoadingState',
+  title: 'Primitives / Feedback / LoadingState',
   parameters: {
     layout: 'centered',
   },

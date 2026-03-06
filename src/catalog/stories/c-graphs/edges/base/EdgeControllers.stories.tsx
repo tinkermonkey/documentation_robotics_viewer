@@ -14,7 +14,7 @@ import { ElbowEdge } from '@/core/edges/ElbowEdge';
 import type { ElbowEdgeData } from '@/core/types/reactflow';
 
 const meta = {
-  title: 'C Graphs / Edges / Base / EdgeControllers',
+  title: 'Graphs / Edges / Base / EdgeControllers',
   parameters: {
     layout: 'fullscreen',
   },

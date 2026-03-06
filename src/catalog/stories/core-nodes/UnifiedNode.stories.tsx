@@ -19,7 +19,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 // ============================================================================
 
 const meta = {
-  title: 'Core Nodes / UnifiedNode',
+  title: 'Graphs / Nodes / UnifiedNode',
   component: UnifiedNode,
   decorators: [withReactFlowDecorator()],
   parameters: {

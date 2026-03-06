@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { ThinkingBlock } from '@/apps/embedded/components/chat/ThinkingBlock';
 
 const meta = {
-  title: 'D Chat / Messages / ThinkingBlock',
+  title: 'Chat / Messages / ThinkingBlock',
 } satisfies Meta;
 
 export default meta;

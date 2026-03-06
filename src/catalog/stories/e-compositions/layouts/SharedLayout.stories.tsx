@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import SharedLayout from '@/apps/embedded/components/SharedLayout';
 
 const meta = {
-  title: 'E Compositions / Layouts / SharedLayout',
+  title: 'Compositions / Layouts / SharedLayout',
   parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 

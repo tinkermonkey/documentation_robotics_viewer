@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { EmptyState } from '@/apps/embedded/components/shared/EmptyState';
 
 const meta = {
-  title: 'A Primitives / State Panels / EmptyState',
+  title: 'Primitives / Feedback / EmptyState',
   parameters: {
     layout: 'centered',
   },

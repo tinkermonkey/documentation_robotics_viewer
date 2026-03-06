@@ -10,7 +10,7 @@ import '@xyflow/react/dist/style.css';
 import { SpaceMouseHandler } from '@/core/components/SpaceMouseHandler';
 
 const meta = {
-  title: 'Core Components / SpaceMouseHandler',
+  title: 'Graphs / Controls / SpaceMouseHandler',
   parameters: {
     layout: 'fullscreen',
   },

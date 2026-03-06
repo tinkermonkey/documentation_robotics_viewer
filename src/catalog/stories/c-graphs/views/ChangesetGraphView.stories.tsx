@@ -5,7 +5,7 @@ import type { ChangesetOperation } from '@/core/nodes';
 import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 const meta = {
-  title: 'C Graphs / Views / ChangesetGraphView',
+  title: 'Graphs / Views / ChangesetGraphView',
   parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 

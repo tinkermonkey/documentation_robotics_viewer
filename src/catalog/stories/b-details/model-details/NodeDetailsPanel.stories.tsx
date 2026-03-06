@@ -4,7 +4,7 @@ import type { Node } from '@xyflow/react';
 import type { MetaModel } from '@/core/types';
 
 const meta = {
-  title: 'B Details / Model Details / NodeDetailsPanel',
+  title: 'Details / Model Details / NodeDetailsPanel',
   parameters: {
     layout: 'centered',
   },

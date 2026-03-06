@@ -3,7 +3,7 @@ import { ErrorBoundary } from '@/apps/embedded/components/ErrorBoundary';
 import { Component } from 'react';
 
 const meta = {
-  title: 'A Primitives / State Panels / ErrorBoundary',
+  title: 'Primitives / Feedback / ErrorBoundary',
   parameters: {
     layout: 'centered',
   },

@@ -3,7 +3,7 @@ import GraphStatisticsPanel from '@/apps/embedded/components/GraphStatisticsPane
 import type { MetaModel } from '@/core/types/model';
 
 const meta = {
-  title: 'A Primitives / State Panels / GraphStatisticsPanel',
+  title: 'Graphs / Panels / GraphStatisticsPanel',
   parameters: {
     layout: 'centered',
   },

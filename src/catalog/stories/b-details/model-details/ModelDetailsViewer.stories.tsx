@@ -3,7 +3,7 @@ import ModelDetailsViewer from '@/apps/embedded/components/ModelDetailsViewer';
 import type { MetaModel } from '@/core/types/model';
 
 const meta = {
-  title: 'B Details / Model Details / ModelDetailsViewer',
+  title: 'Details / Model Details / ModelDetailsViewer',
   parameters: {
     layout: 'centered',
   },

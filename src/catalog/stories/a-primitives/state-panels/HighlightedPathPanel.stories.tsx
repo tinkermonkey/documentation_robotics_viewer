@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import HighlightedPathPanel from '@/apps/embedded/components/HighlightedPathPanel';
 
 const meta = {
-  title: 'A Primitives / State Panels / HighlightedPathPanel',
+  title: 'Graphs / Panels / HighlightedPathPanel',
   parameters: {
     layout: 'centered',
   },

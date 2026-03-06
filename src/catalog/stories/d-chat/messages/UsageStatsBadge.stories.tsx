@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { UsageStatsBadge } from '@/apps/embedded/components/chat/UsageStatsBadge';
 
 const meta = {
-  title: 'D Chat / Messages / UsageStatsBadge',
+  title: 'Chat / Messages / UsageStatsBadge',
 } satisfies Meta;
 
 export default meta;

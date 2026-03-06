@@ -6,7 +6,7 @@ import { memo } from 'react';
 import { ElbowEdge } from '@/core/edges/ElbowEdge';
 
 const meta = {
-  title: 'C Graphs / Edges / Base / ElbowEdge',
+  title: 'Graphs / Edges / Base / ElbowEdge',
   parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 

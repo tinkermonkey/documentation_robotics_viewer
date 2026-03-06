@@ -31,7 +31,7 @@ import { StoryProviderWrapper } from '@/catalog';
 import { createApplicationLayerSpecFixture } from '@/catalog/fixtures/specFixtures';
 
 const meta = {
-  title: 'C Graphs / Views / ApplicationLayerSpecGraph',
+  title: 'Graphs / Views / ApplicationLayerSpecGraph',
   parameters: { layout: 'fullscreen' },
   tags: ['skip-a11y'],
   argTypes: {

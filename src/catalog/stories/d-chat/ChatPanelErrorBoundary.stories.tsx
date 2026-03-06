@@ -8,7 +8,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { ChatPanelErrorBoundary } from '@/apps/embedded/components/ChatPanelErrorBoundary';
 
 const meta = {
-  title: 'D Chat / ChatPanelErrorBoundary',
+  title: 'Chat / ChatPanelErrorBoundary',
   parameters: {
     layout: 'centered',
   },

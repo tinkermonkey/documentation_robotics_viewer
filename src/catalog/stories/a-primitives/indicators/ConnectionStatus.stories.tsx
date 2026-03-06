@@ -4,7 +4,7 @@ import { useConnectionStore } from '@/apps/embedded/stores/connectionStore';
 import { useEffect } from 'react';
 
 const meta = {
-  title: 'A Primitives / Indicators / ConnectionStatus',
+  title: 'Primitives / Indicators / ConnectionStatus',
 } satisfies Meta;
 
 export default meta;

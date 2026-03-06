@@ -11,7 +11,7 @@ import { StoryProviderWrapper } from '@/catalog';
 import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';
 
 const meta = {
-  title: 'C Graphs / Layouts / ELKLayout',
+  title: 'Graphs / Layouts / ELKLayout',
   parameters: { layout: 'fullscreen' },
   tags: ['skip-a11y'],
 } satisfies Meta;

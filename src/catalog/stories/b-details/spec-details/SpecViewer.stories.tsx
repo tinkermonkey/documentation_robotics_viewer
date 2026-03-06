@@ -3,7 +3,7 @@ import SpecViewer from '@/apps/embedded/components/SpecViewer';
 import type { SpecDataResponse } from '@/apps/embedded/services/embeddedDataLoader';
 
 const meta = {
-  title: 'B Details / Spec Details / SpecViewer',
+  title: 'Details / Spec Details / SpecViewer',
   parameters: {
     layout: 'centered',
   },
@@ -22,7 +22,7 @@ const mockSpecData: SpecDataResponse = {
     'business.schema.json': {
       $schema: 'http://json-schema.org/draft-07/schema#',
       $id: 'https://example.com/schemas/02-business-layer.schema.json',
-      title: 'B Details / Spec Details / SpecViewer',
+      title: 'Details / Spec Details / SpecViewer',
       description: 'Represents business services, processes, actors, and objects that define the organization\'s operational structure and capabilities.',
       type: 'object',
       definitions: {

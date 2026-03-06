@@ -15,7 +15,7 @@ import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 // ============================================================================
 
 const meta = {
-  title: 'Core Nodes / TableFieldList',
+  title: 'Graphs / Nodes / UnifiedNode / Components / TableFieldList',
   decorators: [withReactFlowDecorator({ width: 400, height: 500 })],
   parameters: {
     layout: 'fullscreen',
