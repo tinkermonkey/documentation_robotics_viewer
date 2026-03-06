@@ -80,7 +80,7 @@ This document provides a comprehensive audit of story coverage across all compon
 | MiniMap | MiniMap.tsx | ✅ Covered | c-graphs/views/MiniMap.stories.tsx | Mini graph view |
 | SchemaInfoPanel | SchemaInfoPanel.tsx | ✅ Covered | b-details/spec-details/SchemaInfoPanel.stories.tsx | Schema detail panel |
 | SpecViewer | SpecViewer.tsx | ✅ Covered | b-details/spec-details/SpecViewer.stories.tsx | Spec viewer |
-| ModelJSONViewer | ModelJSONViewer.tsx | ✅ Covered | b-details/model-details/ModelJSONViewer.stories.tsx | Model JSON view |
+| ModelDetailsViewer | ModelDetailsViewer.tsx | ✅ Covered | b-details/model-details/ModelDetailsViewer.stories.tsx | Model details view |
 | AnnotationPanel | AnnotationPanel.tsx | ✅ Covered | a-primitives/panels-sidebars/AnnotationPanel.stories.tsx | Annotation panel |
 
 **Root Level Status:** 21/27 have stories (6 missing)
