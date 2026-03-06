@@ -18,78 +18,49 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    data: createLayerContainerNodeData({
-      label: 'Business Layer',
-      layerType: 'business',
-      color: '#4caf50'
-    }),
+    data: createLayerContainerNodeData({ label: 'Business Layer', layerType: 'business' }),
     id: 'container-1',
   },
 };
 
 export const WithChildren: Story = {
   args: {
-    data: createLayerContainerNodeData({
-      label: 'Technology Layer',
-      layerType: 'technology',
-      color: '#2196f3'
-    }),
+    data: createLayerContainerNodeData({ label: 'Technology Layer', layerType: 'technology' }),
     id: 'container-2',
   },
 };
 
 export const Collapsed: Story = {
   args: {
-    data: createLayerContainerNodeData({
-      label: 'API Layer',
-      layerType: 'api',
-      color: '#ff9800'
-    }),
+    data: createLayerContainerNodeData({ label: 'API Layer', layerType: 'api' }),
     id: 'container-3',
   },
 };
 
 export const Expanded: Story = {
   args: {
-    data: createLayerContainerNodeData({
-      label: 'Data Model Layer',
-      layerType: 'dataModel',
-      color: '#9c27b0'
-    }),
+    data: createLayerContainerNodeData({ label: 'Data Model Layer', layerType: 'dataModel' }),
     id: 'container-4',
   },
 };
 
 export const MotivationLayer: Story = {
   args: {
-    data: createLayerContainerNodeData({
-      label: 'Motivation Layer',
-      layerType: 'motivation',
-      color: '#fbc02d'
-    }),
+    data: createLayerContainerNodeData({ label: 'Motivation Layer', layerType: 'motivation' }),
     id: 'container-6',
   },
 };
 
 export const ApplicationLayer: Story = {
   args: {
-    data: createLayerContainerNodeData({
-      label: 'Application Layer',
-      layerType: 'application',
-      color: '#00bcd4'
-    }),
+    data: createLayerContainerNodeData({ label: 'Application Layer', layerType: 'application' }),
     id: 'container-7',
   },
 };
 
 export const Highlighted: Story = {
   args: {
-    data: createLayerContainerNodeData({
-      label: 'Highlighted Layer',
-      layerType: 'business',
-      color: '#4caf50',
-      strokeWidth: 3
-    }),
+    data: createLayerContainerNodeData({ label: 'Business Layer', layerType: 'business', strokeWidth: 3 }),
     id: 'container-8',
   },
 };

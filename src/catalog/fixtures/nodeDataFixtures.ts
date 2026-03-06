@@ -31,6 +31,7 @@ import type {
   RelationshipBadge
 } from '../../core/types';
 import type { ChangesetOperation } from '../../core/nodes';
+import { getLayerColor } from '../../core/utils/layerColors';
 
 // DEPRECATED: FieldItem type definition kept for backward compatibility
 // The actual FieldItem interface is imported from UnifiedNode component
@@ -777,18 +778,19 @@ export interface LayerContainerNodeOptions extends BaseNodeOptions {
 }
 
 export function createLayerContainerNodeData(options: LayerContainerNodeOptions = {}): LayerContainerNodeData {
+  const layerType = options.layerType ?? 'business';
+  const derivedColor = getLayerColor(layerType, 'primary');
   const {
     label = 'Business Layer',
     elementId = `container-${Math.random().toString(36).slice(2, 11)}`,
     layerId = 'container-layer',
-    fill = '#e8f5e91f',
-    stroke = '#4caf50',
+    fill = derivedColor,
+    stroke = derivedColor,
     changesetOperation,
     opacity = 1,
     strokeWidth = 2,
     relationshipBadge,
-    layerType = 'business',
-    color = '#4caf50'
+    color = derivedColor,
   } = options;
 
   // Validate CSS color format
