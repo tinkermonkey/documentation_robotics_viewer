@@ -25,7 +25,7 @@ test.describe('Layout Preferences Store', () => {
 
     test('should return undefined for layers without default engine', async () => {
       const defaultEngines: Record<string, string> = {};
-      expect(defaultEngines['c4']).toBeUndefined();
+      expect(defaultEngines['application']).toBeUndefined();
     });
   });
 
@@ -35,9 +35,9 @@ test.describe('Layout Preferences Store', () => {
 
       const preset = {
         id: 'preset-1',
-        name: 'High Quality C4',
-        description: 'Optimized for C4 architecture diagrams',
-        diagramType: 'c4',
+        name: 'High Quality Application',
+        description: 'Optimized for application architecture diagrams',
+        diagramType: 'application',
         engineType: 'elk',
         parameters: {
           spacing: 100,
@@ -87,7 +87,7 @@ test.describe('Layout Preferences Store', () => {
           {
             id: 'preset-1',
             name: 'Test Preset',
-            diagramType: 'c4',
+            diagramType: 'motivation',
             engineType: 'elk',
             parameters: { spacing: 50 },
           },
@@ -107,7 +107,7 @@ test.describe('Layout Preferences Store', () => {
 
     test('should import and validate configuration from JSON', async () => {
       const validConfig = JSON.stringify({
-        defaultEngines: { c4: 'elk' },
+        defaultEngines: { application: 'elk' },
         presets: [
           {
             id: 'imported-preset',
@@ -131,7 +131,7 @@ test.describe('Layout Preferences Store', () => {
       }
 
       expect(success).toBe(true);
-      expect(importedConfig.defaultEngines).toEqual({ c4: 'elk' });
+      expect(importedConfig.defaultEngines).toEqual({ application: 'elk' });
       expect(importedConfig.presets).toHaveLength(1);
       expect(importedConfig.presets[0].name).toBe('Imported Preset');
     });
@@ -185,7 +185,7 @@ test.describe('Layout Preferences Store', () => {
 
       const feedback = {
         timestamp,
-        diagramType: 'c4',
+        diagramType: 'business',
         engineType: 'elk',
         parameters: { algorithm: 'layered', direction: 'TB' },
         accepted: true,
@@ -214,7 +214,7 @@ test.describe('Layout Preferences Store', () => {
 
     test('should load preferences structure from serialized data', async () => {
       const savedPreferences = {
-        defaultEngines: { c4: 'elk' },
+        defaultEngines: { application: 'elk' },
         presets: [
           {
             id: 'saved-preset',
@@ -229,7 +229,7 @@ test.describe('Layout Preferences Store', () => {
       const serialized = JSON.stringify(savedPreferences);
       const parsed = JSON.parse(serialized);
 
-      expect(parsed.defaultEngines.c4).toBe('elk');
+      expect(parsed.defaultEngines.application).toBe('elk');
       expect(parsed.presets).toHaveLength(1);
     });
   });

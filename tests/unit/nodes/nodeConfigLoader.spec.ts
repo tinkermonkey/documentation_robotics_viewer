@@ -78,15 +78,6 @@ test.describe('NodeConfigLoader', () => {
       }
     });
 
-    test('should support all C4 layer types', () => {
-      const c4Types = [NodeType.C4_CONTAINER, NodeType.C4_COMPONENT, NodeType.C4_EXTERNAL_ACTOR];
-
-      for (const nodeType of c4Types) {
-        const config = nodeConfigLoader.getStyleConfig(nodeType);
-        expect(config).toBeDefined();
-      }
-    });
-
     test('should support all data layer types', () => {
       const dataTypes = [NodeType.DATA_JSON_SCHEMA, NodeType.DATA_MODEL];
 
@@ -118,11 +109,6 @@ test.describe('NodeConfigLoader', () => {
       expect(nodeType).toBe(NodeType.MOTIVATION_STAKEHOLDER);
     });
 
-    test('should map Container to c4.container', () => {
-      const nodeType = nodeConfigLoader.mapElementType('Container');
-      expect(nodeType).toBe(NodeType.C4_CONTAINER);
-    });
-
     test('should return undefined for unmapped type', () => {
       const nodeType = nodeConfigLoader.mapElementType('UnknownType');
       expect(nodeType).toBeUndefined();
@@ -140,13 +126,6 @@ test.describe('NodeConfigLoader', () => {
       } finally {
         console.warn = originalWarn;
       }
-    });
-
-    test('should handle multiple mappings for same type', () => {
-      const mapping1 = nodeConfigLoader.mapElementType('C4Container');
-      const mapping2 = nodeConfigLoader.mapElementType('c4-container');
-      expect(mapping1).toBe(mapping2);
-      expect(mapping1).toBe(NodeType.C4_CONTAINER);
     });
 
     test('should map Entity to data.model', () => {

@@ -10,7 +10,6 @@
  * Covers:
  * - Motivation layer (10 node types)
  * - Business layer (4 node types)
- * - C4 layer (3 node types)
  * - Data layer (2 node types)
  */
 
@@ -36,9 +35,6 @@ const TYPE_TO_SPEC_NODE_ID: Record<string, string> = {
   Capability: 'business.capability',
   Service: 'business.service',
   Function: 'business.function',
-  Container: 'c4.container',
-  ExternalActor: 'c4.externalActor',
-  'c4-component': 'c4.component',
   Entity: 'data.model',
   Interface: 'data.model',
   Enum: 'data.model',
@@ -371,33 +367,6 @@ test.describe('NodeTransformer Pipeline Integration', () => {
 
       const nodeData = findNodeData(result.nodes, 'function-1');
       expect(nodeData.nodeType).toBe(NodeType.BUSINESS_FUNCTION);
-    });
-  });
-
-  test.describe('C4 Layer Transformation', () => {
-    test('should transform container element', async () => {
-      const element = createElement('container-1', 'Container', {
-        description: 'Web application container',
-      });
-
-      const model = createTestModel({ application: [element] });
-      const result = await transformer.transformModel(model);
-
-      const nodeData = findNodeData(result.nodes, 'container-1');
-      expect(nodeData.nodeType).toBe(NodeType.C4_CONTAINER);
-      expect(nodeData.label).toBe('Test container-1');
-    });
-
-    test('should transform external actor element', async () => {
-      const element = createElement('actor-1', 'ExternalActor', {
-        description: 'External user',
-      });
-
-      const model = createTestModel({ application: [element] });
-      const result = await transformer.transformModel(model);
-
-      const nodeData = findNodeData(result.nodes, 'actor-1');
-      expect(nodeData.nodeType).toBe(NodeType.C4_EXTERNAL_ACTOR);
     });
   });
 
@@ -903,79 +872,6 @@ test.describe('NodeTransformer Pipeline Integration', () => {
     });
   });
 
-  test.describe('C4 Layer - Direct Extraction Tests', () => {
-    test('should extract complete C4 container with all properties', async () => {
-      const element = createElement('container-full', 'Container', {
-        containerType: 'Web Application',
-        description: 'Main web application',
-        technology: ['React', 'TypeScript', 'Vite'],
-      });
-
-      const model = createTestModel({ application: [element] });
-      const result = await transformer.transformModel(model);
-
-      const nodeData = findNodeData(result.nodes, 'container-full');
-      const items = nodeData.items || [];
-
-      expect(items.length).toBeGreaterThan(0);
-      expect(items.some((item: any) => item.id === 'description')).toBe(true);
-      expect(items.some((item: any) => item.id === 'technology')).toBe(true);
-      expect(items.some((item: any) => item.id === 'containerType')).toBe(true);
-    });
-
-    test('should extract C4 component with role and interfaces', async () => {
-      const element = createElement('component-1', 'c4-component', {
-        description: 'Core component',
-        role: 'Service',
-        interfaces: ['AuthService', 'DataService'],
-        technology: ['TypeScript'],
-      });
-
-      const model = createTestModel({ application: [element] });
-      const result = await transformer.transformModel(model);
-
-      const nodeData = findNodeData(result.nodes, 'component-1');
-      expect(nodeData.nodeType).toBe(NodeType.C4_COMPONENT);
-      // C4 nodes can have items if they have description or technology
-      expect(nodeData).toBeDefined();
-    });
-
-    test('should extract external actor with type', async () => {
-      const element = createElement('actor-full', 'ExternalActor', {
-        actorType: 'User',
-        description: 'End user of the system',
-      });
-
-      const model = createTestModel({ application: [element] });
-      const result = await transformer.transformModel(model);
-
-      const nodeData = findNodeData(result.nodes, 'actor-full');
-      const items = nodeData.items || [];
-
-      expect(items.some((item: any) => item.id === 'actorType')).toBe(true);
-      expect(items.some((item: any) => item.id === 'description')).toBe(true);
-    });
-
-    test('should format technology arrays as comma-separated strings', async () => {
-      const element = createElement('container-tech', 'Container', {
-        technology: ['Node.js', 'Express', 'PostgreSQL', 'Redis'],
-      });
-
-      const model = createTestModel({ application: [element] });
-      const result = await transformer.transformModel(model);
-
-      const nodeData = findNodeData(result.nodes, 'container-tech');
-      const items = nodeData.items || [];
-      const techItem = items.find((item: any) => item.id === 'technology');
-
-      expect(techItem).toBeDefined();
-      expect(techItem?.value).toContain('Node.js');
-      expect(techItem?.value).toContain('Express');
-      expect(techItem?.value).toContain('PostgreSQL');
-      expect(techItem?.value).toContain('Redis');
-    });
-  });
-
   test.describe('Data Layer - Direct Extraction Tests', () => {
     test('should extract data node with properties', async () => {
       const element = createElement('entity-1', 'Entity', {
@@ -1046,7 +942,6 @@ test.describe('NodeTransformer Pipeline Integration', () => {
       const testCases = [
         { layerId: 'motivation', type: 'Goal', expectedType: NodeType.MOTIVATION_GOAL },
         { layerId: 'business', type: 'Process', expectedType: NodeType.BUSINESS_PROCESS },
-        { layerId: 'application', type: 'Container', expectedType: NodeType.C4_CONTAINER },
         { layerId: 'data_model', type: 'Entity', expectedType: NodeType.DATA_MODEL },
       ];
 

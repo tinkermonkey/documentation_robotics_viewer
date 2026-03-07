@@ -28,15 +28,6 @@
     "Capability": "business.capability",
     "json-schema-element": "data.jsonSchema",
     "layer-container": "layer.container",
-    "c4-container": "c4.container",
-    "C4Container": "c4.container",
-    "Container": "c4.container",
-    "c4-component": "c4.component",
-    "C4Component": "c4.component",
-    "c4-external-actor": "c4.externalActor",
-    "C4ExternalActor": "c4.externalActor",
-    "ExternalActor": "c4.externalActor",
-    "ExternalSystem": "c4.externalActor",
     "Stakeholder": "motivation.stakeholder",
     "motivation-stakeholder": "motivation.stakeholder",
     "Goal": "motivation.goal",
@@ -72,9 +63,6 @@
     "businessFunction": "business.function",
     "businessCapability": "business.capability",
     "businessProcess": "business.process",
-    "c4Container": "c4.container",
-    "c4Component": "c4.component",
-    "c4ExternalActor": "c4.externalActor",
     "applicationcomponent": "application.component",
     "ApplicationComponent": "application.component",
     "application-component": "application.component",
@@ -291,51 +279,6 @@
       },
       "dimensions": {
         "width": 200,
-        "height": 120
-      }
-    },
-    "c4.container": {
-      "layout": "left",
-      "icon": "📦",
-      "typeLabel": "Container",
-      "colors": {
-        "fill": "#e1f5fe",
-        "stroke": "#438dd5",
-        "header": "#1976d2",
-        "handle": "#1976d2"
-      },
-      "dimensions": {
-        "width": 280,
-        "height": 180
-      }
-    },
-    "c4.component": {
-      "layout": "left",
-      "icon": "🧩",
-      "typeLabel": "Component",
-      "colors": {
-        "fill": "#f0f9ff",
-        "stroke": "#85bbf0",
-        "header": "#1e40af",
-        "handle": "#1e40af"
-      },
-      "dimensions": {
-        "width": 240,
-        "height": 140
-      }
-    },
-    "c4.externalActor": {
-      "layout": "centered",
-      "icon": "👥",
-      "typeLabel": "External Actor",
-      "colors": {
-        "fill": "#f5f5f5",
-        "stroke": "#999999",
-        "header": "#666666",
-        "handle": "#666666"
-      },
-      "dimensions": {
-        "width": 160,
         "height": 120
       }
     },

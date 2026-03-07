@@ -10,9 +10,7 @@ import {
   isValidDiagramType,
   isValidLayoutAlgorithm,
   isValidMotivationLayout,
-  isValidC4Layout,
   isValidBusinessLayout,
-  isValidC4ViewLevel,
   isValidNodeId,
   isValidPresetName,
   isValidPresetId,
@@ -41,7 +39,6 @@ test.describe('Validation Utils', () => {
     test('should accept valid diagram types', () => {
       expect(isValidDiagramType('business')).toBe(true);
       expect(isValidDiagramType('motivation')).toBe(true);
-      expect(isValidDiagramType('c4')).toBe(true);
       expect(isValidDiagramType('technology')).toBe(true);
       expect(isValidDiagramType('security')).toBe(true);
     });
@@ -81,21 +78,6 @@ test.describe('Validation Utils', () => {
     });
   });
 
-  test.describe('isValidC4Layout', () => {
-    test('should reject invalid C4 layouts', () => {
-      expect(isValidC4Layout('invalid')).toBe(false);
-      expect(isValidC4Layout('radial')).toBe(false);
-      expect(isValidC4Layout('swimlane')).toBe(false);
-    });
-
-    test('should accept valid C4 layouts', () => {
-      expect(isValidC4Layout('hierarchical')).toBe(true);
-      expect(isValidC4Layout('force')).toBe(true);
-      expect(isValidC4Layout('orthogonal')).toBe(true);
-      expect(isValidC4Layout('manual')).toBe(true);
-    });
-  });
-
   test.describe('isValidBusinessLayout', () => {
     test('should reject invalid business layouts', () => {
       expect(isValidBusinessLayout('radial')).toBe(false);
@@ -108,20 +90,6 @@ test.describe('Validation Utils', () => {
       expect(isValidBusinessLayout('matrix')).toBe(true);
       expect(isValidBusinessLayout('force')).toBe(true);
       expect(isValidBusinessLayout('manual')).toBe(true);
-    });
-  });
-
-  test.describe('isValidC4ViewLevel', () => {
-    test('should reject invalid C4 view levels', () => {
-      expect(isValidC4ViewLevel('invalid')).toBe(false);
-      expect(isValidC4ViewLevel('system')).toBe(false);
-    });
-
-    test('should accept valid C4 view levels', () => {
-      expect(isValidC4ViewLevel('context')).toBe(true);
-      expect(isValidC4ViewLevel('container')).toBe(true);
-      expect(isValidC4ViewLevel('component')).toBe(true);
-      expect(isValidC4ViewLevel('code')).toBe(true);
     });
   });
 
@@ -304,16 +272,16 @@ test.describe('Layout Preferences Store Validation', () => {
 // ============================================================================
 
 test.describe('View Preference Store Validation', () => {
-  test('should have layout type validators for motivation and C4', () => {
+  test('should have layout type validators for motivation and business', () => {
     // Motivation layout validation
     expect(isValidMotivationLayout('force')).toBe(true);
     expect(isValidMotivationLayout('hierarchical')).toBe(true);
     expect(isValidMotivationLayout('swimlane')).toBe(false);
 
-    // C4 layout validation
-    expect(isValidC4Layout('orthogonal')).toBe(true);
-    expect(isValidC4Layout('force')).toBe(true);
-    expect(isValidC4Layout('radial')).toBe(false);
+    // Business layout validation
+    expect(isValidBusinessLayout('hierarchical')).toBe(true);
+    expect(isValidBusinessLayout('swimlane')).toBe(true);
+    expect(isValidBusinessLayout('radial')).toBe(false);
   });
 
   test('should have collection validators for Sets and Maps', () => {

@@ -18,9 +18,6 @@ const ELEMENT_TYPE_TO_SPEC_NODE_ID: Record<string, string> = {
   businessFunction: 'business.function',
   businessCapability: 'business.capability',
   businessProcess: 'business.process',
-  c4Container: 'c4.container',
-  c4Component: 'c4.component',
-  c4ExternalActor: 'c4.externalActor',
   applicationcomponent: 'application.component',
   applicationservice: 'application.service',
 };
@@ -146,30 +143,6 @@ export function createCompleteModelFixture(): MetaModel {
     }
   ];
 
-  // C4 Layer Elements
-  const container1 = createModelElement('container-1', 'c4Container', 'Web Application', 'c4', '#6366f1', '#4f46e5', {
-    containerType: 'webApp',
-    technology: ['React', 'TypeScript']
-  });
-  const component1 = createModelElement('component-1', 'c4Component', 'GraphViewer', 'c4', '#8b5cf6', '#7c3aed', {
-    role: 'Controller',
-    technology: ['React']
-  });
-  const actor1 = createModelElement('actor-1', 'c4ExternalActor', 'End User', 'c4', '#f97316', '#ea580c', {
-    actorType: 'user'
-  });
-
-  const c4Elements = [container1, component1, actor1];
-  const c4Relationships: Relationship[] = [
-    {
-      id: 'rel-c4-1',
-      type: 'composition',
-      sourceId: 'container-1',
-      targetId: 'component-1',
-      properties: { label: 'contains' }
-    }
-  ];
-
   return {
     id: 'complete-model',
     name: 'Complete Test Model',
@@ -177,14 +150,13 @@ export function createCompleteModelFixture(): MetaModel {
     layers: {
       motivation: createLayer('motivation', 'Motivation', 'Motivation Layer', motivationElements, motivationRelationships),
       business: createLayer('business', 'Business', 'Business Layer', businessElements, businessRelationships),
-      c4: createLayer('c4', 'C4', 'C4 Architecture Layer', c4Elements, c4Relationships)
     },
     references: [],
     metadata: {
       author: 'Test Fixture',
       created: new Date().toISOString(),
-      elementCount: motivationElements.length + businessElements.length + c4Elements.length,
-      layerCount: 3
+      elementCount: motivationElements.length + businessElements.length,
+      layerCount: 2
     }
   };
 }
@@ -252,64 +224,6 @@ export function createMotivationLayerModelFixture(): MetaModel {
     description: 'Model focused on Motivation layer elements',
     layers: {
       motivation: createLayer('motivation', 'Motivation', 'Motivation Layer', elements, relationships)
-    },
-    references: [],
-    metadata: {
-      author: 'Test Fixture',
-      created: new Date().toISOString(),
-      elementCount: elements.length,
-      layerCount: 1
-    }
-  };
-}
-
-/**
- * Create a model with C4 architecture elements
- * Used for testing C4 graph components
- */
-export function createC4LayerModelFixture(): MetaModel {
-  const elements = [
-    createModelElement('actor-1', 'c4ExternalActor', 'End User', 'c4', '#f97316', '#ea580c'),
-    createModelElement('container-1', 'c4Container', 'Web Application', 'c4', '#6366f1', '#4f46e5', {
-      technology: ['React', 'TypeScript']
-    }),
-    createModelElement('container-2', 'c4Container', 'API Gateway', 'c4', '#6366f1', '#4f46e5', {
-      technology: ['Node.js', 'Express']
-    }),
-    createModelElement('component-1', 'c4Component', 'GraphViewer', 'c4', '#8b5cf6', '#7c3aed'),
-    createModelElement('component-2', 'c4Component', 'Store Manager', 'c4', '#8b5cf6', '#7c3aed')
-  ];
-
-  const relationships: Relationship[] = [
-    {
-      id: 'rel-1',
-      type: 'composition',
-      sourceId: 'container-1',
-      targetId: 'component-1',
-      properties: { label: 'contains' }
-    },
-    {
-      id: 'rel-2',
-      type: 'composition',
-      sourceId: 'container-1',
-      targetId: 'component-2',
-      properties: { label: 'contains' }
-    },
-    {
-      id: 'rel-3',
-      type: 'access',
-      sourceId: 'actor-1',
-      targetId: 'container-1',
-      properties: { label: 'accesses' }
-    }
-  ];
-
-  return {
-    id: 'c4-model',
-    name: 'C4 Architecture Model',
-    description: 'Model focused on C4 architecture elements',
-    layers: {
-      c4: createLayer('c4', 'C4', 'C4 Architecture Layer', elements, relationships)
     },
     references: [],
     metadata: {

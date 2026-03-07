@@ -260,39 +260,6 @@ export interface AssessmentNodeData extends BaseNodeData {
 }
 
 /**
- * C4 Container node data
- * Represents a deployable unit (application, service, database, etc.)
- */
-export interface C4ContainerNodeData extends BaseNodeData {
-  containerType?: 'webApp' | 'mobileApp' | 'service' | 'database' | 'queue' | 'filesystem' | 'other';
-  technology?: string[]; // Technology stack (e.g., ["React", "TypeScript"])
-  description?: string;
-  changesetOperation?: ChangesetOperation;
-}
-
-/**
- * C4 Component node data
- * Represents a component within a container
- */
-export interface C4ComponentNodeData extends BaseNodeData {
-  role?: string; // Architectural role (e.g., "Controller", "Service", "Repository")
-  technology?: string[]; // Technology stack
-  description?: string;
-  interfaces?: string[]; // Exposed interfaces
-  changesetOperation?: ChangesetOperation;
-}
-
-/**
- * C4 External Actor node data
- * Represents an external system or user
- */
-export interface C4ExternalActorNodeData extends BaseNodeData {
-  actorType?: 'user' | 'system' | 'service';
-  description?: string;
-  changesetOperation?: ChangesetOperation;
-}
-
-/**
  * Union type for all custom node types
  * Includes both legacy specific node types and modern unified node type
  */
@@ -317,10 +284,7 @@ export type AppNode =
   | Node<PrincipleNodeData, 'principle'>
   | Node<AssumptionNodeData, 'assumption'>
   | Node<ValueStreamNodeData, 'valueStream'>
-  | Node<AssessmentNodeData, 'assessment'>
-  | Node<C4ContainerNodeData, 'c4Container'>
-  | Node<C4ComponentNodeData, 'c4Component'>
-  | Node<C4ExternalActorNodeData, 'c4ExternalActor'>;
+  | Node<AssessmentNodeData, 'assessment'>;
 
 /**
  * Edge data for custom edges

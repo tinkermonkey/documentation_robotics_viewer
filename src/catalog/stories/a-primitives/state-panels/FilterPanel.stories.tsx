@@ -31,11 +31,6 @@ const createLayerSection = (): FilterSection => ({
       label: 'Technology',
       count: { visible: 20, total: 25 },
     },
-    {
-      value: 'c4',
-      label: 'C4 Architecture',
-      count: { visible: 5, total: 10 },
-    },
   ],
   selectedValues: new Set(['motivation', 'business', 'technology']),
   onToggle: (value, selected) => console.log(`Toggle ${value}: ${selected}`),
@@ -128,11 +123,6 @@ export const MultipleCategories: Story = {
                 value: 'technology',
                 label: 'Technology',
                 count: { visible: 20, total: 25 },
-              },
-              {
-                value: 'c4',
-                label: 'C4 Architecture',
-                count: { visible: 5, total: 10 },
               },
             ],
             selectedValues: selectedLayers,

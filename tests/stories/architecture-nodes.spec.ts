@@ -12,7 +12,6 @@
  * - Motivation: GoalNode, StakeholderNode, AssessmentNode, AssumptionNode,
  *              ConstraintNode, DriverNode, OutcomeNode, PrincipleNode,
  *              RequirementNode, ValueStreamNode
- * - C4: ContainerNode
  * - Business: BusinessFunctionNode
  */
 
@@ -58,33 +57,6 @@ test.describe('Architecture Node Stories', () => {
       await page.goto(storyUrl('c-graphs-nodes-motivation-goalnode--changeset-add'));
       await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
       await expect(page.locator('text=New Goal')).toBeVisible();
-    });
-  });
-
-  test.describe('ContainerNode', () => {
-    test('Default: has role="article" with aria-label', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('c-graphs-nodes-c4-containernode--default'));
-      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
-      const article = page.locator('[role="article"]').first();
-      const ariaLabel = await article.getAttribute('aria-label');
-      expect(ariaLabel).toBeTruthy();
-    });
-
-    test('Default: has connection handles', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('c-graphs-nodes-c4-containernode--default'));
-      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
-      const handles = await page.locator('.react-flow__handle').count();
-      expect(handles, 'ContainerNode should have at least 4 handles').toBeGreaterThanOrEqual(4);
-    });
-
-    test('Database: renders with label', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('c-graphs-nodes-c4-containernode--database'));
-      await page.locator('[role="article"]').first().waitFor({ state: 'attached', timeout: 10000 });
-      const article = page.locator('[role="article"]').first();
-      await expect(article).toBeVisible();
     });
   });
 

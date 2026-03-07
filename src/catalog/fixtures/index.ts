@@ -8,7 +8,6 @@ export {
   createCompleteModelFixture,
   createMinimalModelFixture,
   createMotivationLayerModelFixture,
-  createC4LayerModelFixture,
   createChangesetModelFixture,
   createEmptyModelFixture,
   createLargeModelFixture
@@ -29,9 +28,6 @@ export {
   createBusinessServiceNodeData,
   createBusinessFunctionNodeData,
   createBusinessCapabilityNodeData,
-  createC4ContainerNodeData,
-  createC4ComponentNodeData,
-  createC4ExternalActorNodeData,
   createNodeFixturesWithStates,
   type BaseNodeOptions,
   type GoalNodeOptions,
@@ -47,9 +43,6 @@ export {
   type BusinessServiceNodeOptions,
   type BusinessFunctionNodeOptions,
   type BusinessCapabilityNodeOptions,
-  type C4ContainerNodeOptions,
-  type C4ComponentNodeOptions,
-  type C4ExternalActorNodeOptions
 } from './nodeDataFixtures';
 
 // Annotation Fixtures

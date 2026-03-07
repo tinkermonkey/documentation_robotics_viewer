@@ -2,9 +2,9 @@ import { test, expect } from '@playwright/test';
 import { NodeType, isValidNodeType } from '../../../src/core/nodes/NodeType';
 
 test.describe('NodeType Enum', () => {
-  test('should define all 22 node types', () => {
+  test('should define all 19 node types', () => {
     const values = Object.values(NodeType);
-    expect(values).toHaveLength(22);
+    expect(values).toHaveLength(19);
   });
 
   test('should have 10 motivation layer types', () => {
@@ -15,11 +15,6 @@ test.describe('NodeType Enum', () => {
   test('should have 4 business layer types', () => {
     const businessTypes = Object.values(NodeType).filter(v => v.startsWith('business.'));
     expect(businessTypes).toHaveLength(4);
-  });
-
-  test('should have 3 C4 layer types', () => {
-    const c4Types = Object.values(NodeType).filter(v => v.startsWith('c4.'));
-    expect(c4Types).toHaveLength(3);
   });
 
   test('should have 2 application layer types', () => {
@@ -47,10 +42,6 @@ test.describe('NodeType Enum', () => {
 
   test('should define business function', () => {
     expect(NodeType.BUSINESS_FUNCTION).toBe('business.function');
-  });
-
-  test('should define c4 container', () => {
-    expect(NodeType.C4_CONTAINER).toBe('c4.container');
   });
 
   test('should define data model', () => {

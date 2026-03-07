@@ -1,6 +1,6 @@
 /**
  * FilterPanel Component
- * Unified filter panel for all graph views (C4, Motivation, etc.)
+ * Unified filter panel for all graph views (Motivation, Business, etc.)
  * Supports multiple filter sections with checkboxes, bulk actions, and item counts
  */
 
