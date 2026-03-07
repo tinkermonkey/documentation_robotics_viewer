@@ -20,7 +20,9 @@ export default function AuthRoute() {
 
   useEffect(() => {
     const token = search?.token;
-    const hashPath = window.location.hash.slice(1) || '/model/graph';
+    // Strip any search params from the hash path (e.g. "/?token=xxx" -> "/")
+    const rawHashPath = window.location.hash.slice(1).split('?')[0];
+    const hashPath = (rawHashPath === '/' || !rawHashPath) ? '/model/graph' : rawHashPath;
 
     if (token) {
       console.log('[AuthRoute] Storing token in localStorage');
