@@ -144,7 +144,7 @@ const FieldList = memo<FieldListProps>(({ items, itemHeight, strokeColor, handle
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
-                  ...(twoColumn ? { flex: 1, textAlign: 'right' } : {}),
+                  ...(twoColumn ? { flex: 1, minWidth: 0, textAlign: 'right' } : {}),
                 }}
               >
                 {item.value}
