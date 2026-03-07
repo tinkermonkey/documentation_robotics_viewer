@@ -1,7 +1,7 @@
 /**
  * Auto-generated API Client with React Query Hooks
  * Generated from: /Users/austinsand/workspace/documentation_robotics_viewer/docs/api-spec.yaml
- * Generated at: 2026-03-07T17:20:26.802Z
+ * Generated at: 2026-03-07T18:11:44.789Z
  * API Version: 0.1.0
  *
  * IMPORTANT: This file is auto-generated. Do not edit directly.

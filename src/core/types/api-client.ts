@@ -77,10 +77,8 @@ export interface paths {
                         "application/json": {
                             /** @description All architecture elements across all layers */
                             nodes: {
-                                /** @description Element ID (UUID for spec-node aligned elements) */
+                                /** @description Element ID (UUID) */
                                 id: string;
-                                /** @description Stable semantic ID in layer.type.name format (e.g. motivation.goal.my-goal). Present only on legacy-format elements. Use this field — not id — when calling the annotation API. Elements without this field (pure spec-node format) do not yet support annotation creation. */
-                                elementId?: string;
                                 /** @description Spec node type ID (e.g. motivation.goal) */
                                 spec_node_id: string;
                                 /** @description Element type (e.g. goal, endpoint) */
