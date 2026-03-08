@@ -1,5 +1,5 @@
 version: 0.1.1
-installed_at: 2026-03-01T23:16:38.688Z
+installed_at: 2026-03-08T11:58:24.571Z
 components:
   reference_sheets: {}
   commands:
@@ -29,7 +29,7 @@ components:
       hash: 1b23cfd7
       modified: false
     dr-architect.md:
-      hash: e1d4b499
+      hash: ab73b431
       modified: false
   skills:
     dr_01_motivation_layer/SKILL.md:
@@ -48,7 +48,7 @@ components:
       hash: 3a45877b
       modified: false
     dr_06_api_layer/SKILL.md:
-      hash: 69817afe
+      hash: "84950153"
       modified: false
     dr_07_data_model_layer/SKILL.md:
       hash: 37afbb23

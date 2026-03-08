@@ -1,12 +1,12 @@
 version: 0.1.1
-installed_at: 2026-03-01T14:59:39.826Z
+installed_at: 2026-03-08T11:58:24.595Z
 components:
   agents:
     dr-advisor.md:
       hash: d545650a
       modified: false
     dr-architect.md:
-      hash: 9ab2e38c
+      hash: "61298661"
       modified: false
   skills:
     dr_01_motivation_layer/SKILL.md:
@@ -25,7 +25,7 @@ components:
       hash: 3a45877b
       modified: false
     dr_06_api_layer/SKILL.md:
-      hash: 69817afe
+      hash: "84950153"
       modified: false
     dr_07_data_model_layer/SKILL.md:
       hash: 37afbb23
