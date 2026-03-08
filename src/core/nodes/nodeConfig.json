@@ -72,13 +72,69 @@
     "businessFunction": "business.function",
     "businessCapability": "business.capability",
     "businessProcess": "business.process",
-    "c4Container": "c4.container",
-    "c4Component": "c4.component",
-    "c4ExternalActor": "c4.externalActor"
+    "applicationcomponent": "application.component",
+    "ApplicationComponent": "application.component",
+    "application-component": "application.component",
+    "applicationservice": "application.service",
+    "ApplicationService": "application.service",
+    "application-service": "application.service",
+    "systemsoftware": "technology.systemsoftware",
+    "SystemSoftware": "technology.systemsoftware",
+    "system-software": "technology.systemsoftware",
+    "operation": "api.operation",
+    "Operation": "api.operation",
+    "securityscheme": "api.securityscheme",
+    "SecurityScheme": "api.securityscheme",
+    "security-scheme": "api.securityscheme",
+    "objectschema": "data.objectschema",
+    "ObjectSchema": "data.objectschema",
+    "object-schema": "data.objectschema",
+    "collection": "datastore.collection",
+    "Collection": "datastore.collection",
+    "database": "datastore.database",
+    "Database": "datastore.database",
+    "uxapplication": "ux.uxapplication",
+    "UxApplication": "ux.uxapplication",
+    "ux-application": "ux.uxapplication",
+    "view": "ux.view",
+    "View": "ux.view",
+    "librarycomponent": "ux.librarycomponent",
+    "LibraryComponent": "ux.librarycomponent",
+    "library-component": "ux.librarycomponent",
+    "navigationgraph": "navigation.navigationgraph",
+    "NavigationGraph": "navigation.navigationgraph",
+    "navigation-graph": "navigation.navigationgraph",
+    "route": "navigation.route",
+    "Route": "navigation.route",
+    "navigationguard": "navigation.navigationguard",
+    "NavigationGuard": "navigation.navigationguard",
+    "navigation-guard": "navigation.navigationguard",
+    "navigationflow": "navigation.navigationflow",
+    "NavigationFlow": "navigation.navigationflow",
+    "navigation-flow": "navigation.navigationflow",
+    "instrumentationconfig": "apm.instrumentationconfig",
+    "InstrumentationConfig": "apm.instrumentationconfig",
+    "instrumentation-config": "apm.instrumentationconfig",
+    "logconfiguration": "apm.logconfiguration",
+    "LogConfiguration": "apm.logconfiguration",
+    "log-configuration": "apm.logconfiguration",
+    "exporterconfig": "apm.exporterconfig",
+    "ExporterConfig": "apm.exporterconfig",
+    "exporter-config": "apm.exporterconfig",
+    "testcoveragemodel": "testing.testcoveragemodel",
+    "TestCoverageModel": "testing.testcoveragemodel",
+    "testcoveragetarget": "testing.testcoveragetarget",
+    "TestCoverageTarget": "testing.testcoveragetarget",
+    "coveragerequirement": "testing.coveragerequirement",
+    "CoverageRequirement": "testing.coveragerequirement",
+    "coveragesummary": "testing.coveragesummary",
+    "CoverageSummary": "testing.coveragesummary",
+    "environmentfactor": "testing.environmentfactor",
+    "EnvironmentFactor": "testing.environmentfactor"
   },
   "nodeStyles": {
     "motivation.stakeholder": {
-      "layout": "centered",
+      "layout": "left",
       "icon": "👤",
       "typeLabel": "Stakeholder",
       "colors": {
@@ -89,11 +145,11 @@
       },
       "dimensions": {
         "width": 180,
-        "height": 120
+        "height": 100
       }
     },
     "motivation.goal": {
-      "layout": "centered",
+      "layout": "left",
       "icon": "🎯",
       "typeLabel": "Goal",
       "colors": {
@@ -104,11 +160,11 @@
       },
       "dimensions": {
         "width": 180,
-        "height": 110
+        "height": 100
       }
     },
     "motivation.requirement": {
-      "layout": "centered",
+      "layout": "left",
       "icon": "✓",
       "typeLabel": "Requirement",
       "colors": {
@@ -119,7 +175,7 @@
       },
       "dimensions": {
         "width": 180,
-        "height": 110
+        "height": 100
       }
     },
     "motivation.assessment": {
@@ -138,7 +194,7 @@
       }
     },
     "motivation.driver": {
-      "layout": "centered",
+      "layout": "left",
       "icon": "⚡",
       "typeLabel": "Driver",
       "colors": {
@@ -149,11 +205,11 @@
       },
       "dimensions": {
         "width": 180,
-        "height": 110
+        "height": 100
       }
     },
     "motivation.outcome": {
-      "layout": "centered",
+      "layout": "left",
       "icon": "🏆",
       "typeLabel": "Outcome",
       "colors": {
@@ -164,7 +220,7 @@
       },
       "dimensions": {
         "width": 180,
-        "height": 110
+        "height": 100
       }
     },
     "motivation.principle": {
@@ -183,7 +239,7 @@
       }
     },
     "motivation.constraint": {
-      "layout": "centered",
+      "layout": "left",
       "icon": "🚫",
       "typeLabel": "Constraint",
       "colors": {
@@ -194,7 +250,7 @@
       },
       "dimensions": {
         "width": 180,
-        "height": 110
+        "height": 100
       }
     },
     "motivation.valueStream": {
@@ -333,6 +389,51 @@
         "height": 120
       }
     },
+    "technology.systemsoftware": {
+      "layout": "left",
+      "icon": "🖥️",
+      "typeLabel": "System Software",
+      "colors": {
+        "fill": "#fff7ed",
+        "stroke": "#c2410c",
+        "header": "#c2410c",
+        "handle": "#c2410c"
+      },
+      "dimensions": {
+        "width": 200,
+        "height": 100
+      }
+    },
+    "api.operation": {
+      "layout": "left",
+      "icon": "↔",
+      "typeLabel": "Operation",
+      "colors": {
+        "fill": "#fff1f2",
+        "stroke": "#e11d48",
+        "header": "#e11d48",
+        "handle": "#e11d48"
+      },
+      "dimensions": {
+        "width": 220,
+        "height": 100
+      }
+    },
+    "api.securityscheme": {
+      "layout": "left",
+      "icon": "🔐",
+      "typeLabel": "Security Scheme",
+      "colors": {
+        "fill": "#fef2f2",
+        "stroke": "#dc2626",
+        "header": "#dc2626",
+        "handle": "#dc2626"
+      },
+      "dimensions": {
+        "width": 220,
+        "height": 100
+      }
+    },
     "data.jsonSchema": {
       "layout": "table",
       "icon": "📋",
@@ -365,6 +466,276 @@
         "height": 96,
         "headerHeight": 36,
         "itemHeight": 24
+      }
+    },
+    "data.objectschema": {
+      "layout": "left",
+      "icon": "{}",
+      "typeLabel": "Object Schema",
+      "colors": {
+        "fill": "#f0fdfa",
+        "stroke": "#0f766e",
+        "header": "#0d9488",
+        "handle": "#0f766e"
+      },
+      "dimensions": {
+        "width": 220,
+        "height": 100
+      }
+    },
+    "datastore.collection": {
+      "layout": "left",
+      "icon": "🗃️",
+      "typeLabel": "Collection",
+      "colors": {
+        "fill": "#faf5ff",
+        "stroke": "#7e22ce",
+        "header": "#7e22ce",
+        "handle": "#7e22ce"
+      },
+      "dimensions": {
+        "width": 200,
+        "height": 100
+      }
+    },
+    "datastore.database": {
+      "layout": "left",
+      "icon": "🗄️",
+      "typeLabel": "Database",
+      "colors": {
+        "fill": "#f5f3ff",
+        "stroke": "#6d28d9",
+        "header": "#6d28d9",
+        "handle": "#6d28d9"
+      },
+      "dimensions": {
+        "width": 200,
+        "height": 100
+      }
+    },
+    "ux.uxapplication": {
+      "layout": "left",
+      "icon": "📱",
+      "typeLabel": "UX Application",
+      "colors": {
+        "fill": "#fdf2f8",
+        "stroke": "#be185d",
+        "header": "#be185d",
+        "handle": "#be185d"
+      },
+      "dimensions": {
+        "width": 220,
+        "height": 100
+      }
+    },
+    "ux.view": {
+      "layout": "left",
+      "icon": "🖼️",
+      "typeLabel": "View",
+      "colors": {
+        "fill": "#fce7f3",
+        "stroke": "#db2777",
+        "header": "#db2777",
+        "handle": "#db2777"
+      },
+      "dimensions": {
+        "width": 200,
+        "height": 100
+      }
+    },
+    "ux.librarycomponent": {
+      "layout": "left",
+      "icon": "🧱",
+      "typeLabel": "Library Component",
+      "colors": {
+        "fill": "#fdf4ff",
+        "stroke": "#a21caf",
+        "header": "#a21caf",
+        "handle": "#a21caf"
+      },
+      "dimensions": {
+        "width": 220,
+        "height": 100
+      }
+    },
+    "navigation.navigationgraph": {
+      "layout": "left",
+      "icon": "🗺️",
+      "typeLabel": "Navigation Graph",
+      "colors": {
+        "fill": "#eef2ff",
+        "stroke": "#4338ca",
+        "header": "#4338ca",
+        "handle": "#4338ca"
+      },
+      "dimensions": {
+        "width": 220,
+        "height": 100
+      }
+    },
+    "navigation.route": {
+      "layout": "left",
+      "icon": "🔗",
+      "typeLabel": "Route",
+      "colors": {
+        "fill": "#eff6ff",
+        "stroke": "#3730a3",
+        "header": "#3730a3",
+        "handle": "#3730a3"
+      },
+      "dimensions": {
+        "width": 200,
+        "height": 100
+      }
+    },
+    "navigation.navigationguard": {
+      "layout": "left",
+      "icon": "🛡️",
+      "typeLabel": "Navigation Guard",
+      "colors": {
+        "fill": "#f5f3ff",
+        "stroke": "#5b21b6",
+        "header": "#5b21b6",
+        "handle": "#5b21b6"
+      },
+      "dimensions": {
+        "width": 220,
+        "height": 100
+      }
+    },
+    "navigation.navigationflow": {
+      "layout": "left",
+      "icon": "➡️",
+      "typeLabel": "Navigation Flow",
+      "colors": {
+        "fill": "#ede9fe",
+        "stroke": "#6d28d9",
+        "header": "#6d28d9",
+        "handle": "#6d28d9"
+      },
+      "dimensions": {
+        "width": 220,
+        "height": 100
+      }
+    },
+    "apm.instrumentationconfig": {
+      "layout": "left",
+      "icon": "📡",
+      "typeLabel": "Instrumentation",
+      "colors": {
+        "fill": "#f8fafc",
+        "stroke": "#475569",
+        "header": "#475569",
+        "handle": "#475569"
+      },
+      "dimensions": {
+        "width": 220,
+        "height": 100
+      }
+    },
+    "apm.logconfiguration": {
+      "layout": "left",
+      "icon": "📝",
+      "typeLabel": "Log Config",
+      "colors": {
+        "fill": "#f1f5f9",
+        "stroke": "#334155",
+        "header": "#334155",
+        "handle": "#334155"
+      },
+      "dimensions": {
+        "width": 200,
+        "height": 100
+      }
+    },
+    "apm.exporterconfig": {
+      "layout": "left",
+      "icon": "📤",
+      "typeLabel": "Exporter Config",
+      "colors": {
+        "fill": "#f8fafc",
+        "stroke": "#64748b",
+        "header": "#64748b",
+        "handle": "#64748b"
+      },
+      "dimensions": {
+        "width": 200,
+        "height": 100
+      }
+    },
+    "testing.testcoveragemodel": {
+      "layout": "left",
+      "icon": "🧪",
+      "typeLabel": "Coverage Model",
+      "colors": {
+        "fill": "#ecfdf5",
+        "stroke": "#059669",
+        "header": "#059669",
+        "handle": "#059669"
+      },
+      "dimensions": {
+        "width": 220,
+        "height": 100
+      }
+    },
+    "testing.testcoveragetarget": {
+      "layout": "left",
+      "icon": "🎯",
+      "typeLabel": "Coverage Target",
+      "colors": {
+        "fill": "#d1fae5",
+        "stroke": "#047857",
+        "header": "#047857",
+        "handle": "#047857"
+      },
+      "dimensions": {
+        "width": 200,
+        "height": 100
+      }
+    },
+    "testing.coveragerequirement": {
+      "layout": "left",
+      "icon": "✅",
+      "typeLabel": "Coverage Req.",
+      "colors": {
+        "fill": "#f0fdf4",
+        "stroke": "#16a34a",
+        "header": "#16a34a",
+        "handle": "#16a34a"
+      },
+      "dimensions": {
+        "width": 200,
+        "height": 100
+      }
+    },
+    "testing.coveragesummary": {
+      "layout": "left",
+      "icon": "📈",
+      "typeLabel": "Coverage Summary",
+      "colors": {
+        "fill": "#dcfce7",
+        "stroke": "#15803d",
+        "header": "#15803d",
+        "handle": "#15803d"
+      },
+      "dimensions": {
+        "width": 220,
+        "height": 100
+      }
+    },
+    "testing.environmentfactor": {
+      "layout": "left",
+      "icon": "🌐",
+      "typeLabel": "Env. Factor",
+      "colors": {
+        "fill": "#f0fdf4",
+        "stroke": "#166534",
+        "header": "#166534",
+        "handle": "#166534"
+      },
+      "dimensions": {
+        "width": 200,
+        "height": 100
       }
     },
     "layer.container": {

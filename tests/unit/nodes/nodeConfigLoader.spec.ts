@@ -40,7 +40,7 @@ test.describe('NodeConfigLoader', () => {
 
     test('should have layout property set', () => {
       const config = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_GOAL);
-      expect(config?.layout).toBe('centered');
+      expect(config?.layout).toBe('left');
     });
 
     test('should support all motivation layer types', () => {

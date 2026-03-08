@@ -1,15 +1,8 @@
 /**
  * NodeType Enum
  *
- * Defines all 20 node types across the architecture layers.
+ * Defines all node types across the architecture layers.
  * Maps to JSON configuration for styling, dimensions, and layout.
- *
- * Layers:
- * - Motivation (10): Strategic goals, requirements, drivers, outcomes
- * - Business (4): Functions, services, capabilities, processes
- * - C4 (3): Containers, components, external actors
- * - Data (2): JSON schemas, data models
- * - Structural (1): Layer containers
  *
  * Format: 'layer.type' (e.g., 'motivation.goal')
  */
@@ -37,9 +30,44 @@ export enum NodeType {
   C4_COMPONENT = 'c4.component',
   C4_EXTERNAL_ACTOR = 'c4.externalActor',
 
-  // Data layer (2)
+  // Technology layer (1)
+  TECHNOLOGY_SYSTEM_SOFTWARE = 'technology.systemsoftware',
+
+  // API layer (2)
+  API_OPERATION = 'api.operation',
+  API_SECURITY_SCHEME = 'api.securityscheme',
+
+  // Data layer (3)
   DATA_JSON_SCHEMA = 'data.jsonSchema',
   DATA_MODEL = 'data.model',
+  DATA_OBJECT_SCHEMA = 'data.objectschema',
+
+  // Data Store layer (2)
+  DATASTORE_COLLECTION = 'datastore.collection',
+  DATASTORE_DATABASE = 'datastore.database',
+
+  // UX layer (3)
+  UX_APPLICATION = 'ux.uxapplication',
+  UX_VIEW = 'ux.view',
+  UX_LIBRARY_COMPONENT = 'ux.librarycomponent',
+
+  // Navigation layer (4)
+  NAVIGATION_GRAPH = 'navigation.navigationgraph',
+  NAVIGATION_ROUTE = 'navigation.route',
+  NAVIGATION_GUARD = 'navigation.navigationguard',
+  NAVIGATION_FLOW = 'navigation.navigationflow',
+
+  // APM layer (3)
+  APM_INSTRUMENTATION_CONFIG = 'apm.instrumentationconfig',
+  APM_LOG_CONFIGURATION = 'apm.logconfiguration',
+  APM_EXPORTER_CONFIG = 'apm.exporterconfig',
+
+  // Testing layer (5)
+  TESTING_COVERAGE_MODEL = 'testing.testcoveragemodel',
+  TESTING_COVERAGE_TARGET = 'testing.testcoveragetarget',
+  TESTING_COVERAGE_REQUIREMENT = 'testing.coveragerequirement',
+  TESTING_COVERAGE_SUMMARY = 'testing.coveragesummary',
+  TESTING_ENVIRONMENT_FACTOR = 'testing.environmentfactor',
 
   // Structural (1)
   LAYER_CONTAINER = 'layer.container',

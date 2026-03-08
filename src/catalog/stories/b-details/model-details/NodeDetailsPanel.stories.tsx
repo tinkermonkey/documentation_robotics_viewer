@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import NodeDetailsPanel from '@/apps/embedded/components/NodeDetailsPanel';
 import type { Node } from '@xyflow/react';
 import type { MetaModel } from '@/core/types';
-import { LayerType, RelationshipType } from '@/core/types';
+import { ReferenceType } from '@/core/types/model';
 
 const meta = {
   title: 'B Details / Model Details / NodeDetailsPanel',
@@ -15,8 +15,14 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const mockModel: MetaModel = {
-  version: '1.0.0',
-  references: [],
+  references: [
+    {
+      id: 'ref-1',
+      type: ReferenceType.Goal,
+      source: { elementId: 'motivation.goal.increase-revenue', layerId: 'motivation' },
+      target: { elementId: 'business.service.order-management', layerId: 'business' },
+    },
+  ],
   layers: {
     motivation: {
       id: 'motivation',
@@ -28,10 +34,11 @@ const mockModel: MetaModel = {
         {
           id: 'goal-1',
           type: 'Goal',
+          elementId: 'motivation.goal.increase-revenue',
           name: 'Increase Revenue',
           layerId: 'motivation',
-          description: 'Primary business objective',
-          properties: { fill: '#a78bfa', stroke: '#7c3aed' },
+          description: 'Primary business objective to grow annual recurring revenue.',
+          properties: { priority: 'high', status: 'active', owner: 'Product Team' },
           visual: { position: { x: 0, y: 0 }, size: { width: 160, height: 80 }, style: {} },
           relationships: { incoming: ['driver-1'], outgoing: ['requirement-1', 'requirement-2'] },
         },
@@ -41,7 +48,7 @@ const mockModel: MetaModel = {
           name: 'Support 1000 concurrent users',
           layerId: 'motivation',
           description: 'Scalability requirement',
-          properties: { fill: '#60a5fa', stroke: '#3b82f6' },
+          properties: { priority: 'medium', status: 'pending' },
           visual: { position: { x: 200, y: 0 }, size: { width: 160, height: 80 }, style: {} },
           relationships: { incoming: ['goal-1'], outgoing: [] },
         },
@@ -51,7 +58,7 @@ const mockModel: MetaModel = {
           name: 'Achieve 99.9% uptime',
           layerId: 'motivation',
           description: 'Availability requirement',
-          properties: { fill: '#60a5fa', stroke: '#3b82f6' },
+          properties: { priority: 'high', status: 'active' },
           visual: { position: { x: 400, y: 0 }, size: { width: 160, height: 80 }, style: {} },
           relationships: { incoming: ['goal-1'], outgoing: [] },
         },
@@ -61,7 +68,7 @@ const mockModel: MetaModel = {
           name: 'Market Competition',
           layerId: 'motivation',
           description: 'Competitive pressure from new entrants',
-          properties: { fill: '#f87171', stroke: '#ef4444' },
+          properties: { category: 'external', owner: 'Strategy Team' },
           visual: { position: { x: 0, y: 100 }, size: { width: 160, height: 80 }, style: {} },
           relationships: { incoming: [], outgoing: ['goal-1'] },
         },
@@ -84,8 +91,8 @@ const mockModel: MetaModel = {
           type: 'BusinessService',
           name: 'Order Management Service',
           layerId: 'business',
-          description: 'Manages customer orders',
-          properties: { fill: '#34d399', stroke: '#10b981' },
+          description: 'Manages customer orders end-to-end.',
+          properties: { status: 'active', owner: 'Commerce Team' },
           visual: { position: { x: 0, y: 200 }, size: { width: 160, height: 80 }, style: {} },
           relationships: { incoming: [], outgoing: [] },
         },
@@ -104,12 +111,13 @@ export const NoNodeSelected: Story = {
 export const GoalNodeSelected: Story = {
   render: () => {
     const selectedNode: Node = {
-      id: 'goal-1',
+      id: 'node-goal-1',
       position: { x: 0, y: 0 },
       data: {
+        nodeType: 'motivation.goal',
+        elementId: 'goal-1',
+        layerId: 'motivation',
         label: 'Increase Revenue',
-        type: 'Goal',
-        stroke: '#7c3aed',
       },
     };
 
@@ -120,12 +128,13 @@ export const GoalNodeSelected: Story = {
 export const RequirementNodeSelected: Story = {
   render: () => {
     const selectedNode: Node = {
-      id: 'requirement-1',
+      id: 'node-requirement-1',
       position: { x: 200, y: 50 },
       data: {
+        nodeType: 'motivation.requirement',
+        elementId: 'requirement-1',
+        layerId: 'motivation',
         label: 'Support 1000 concurrent users',
-        type: 'Requirement',
-        stroke: '#3b82f6',
       },
     };
 
@@ -136,12 +145,13 @@ export const RequirementNodeSelected: Story = {
 export const DriverNodeSelected: Story = {
   render: () => {
     const selectedNode: Node = {
-      id: 'driver-1',
+      id: 'node-driver-1',
       position: { x: 0, y: 100 },
       data: {
+        nodeType: 'motivation.driver',
+        elementId: 'driver-1',
+        layerId: 'motivation',
         label: 'Market Competition',
-        type: 'Driver',
-        stroke: '#ef4444',
       },
     };
 
@@ -152,12 +162,13 @@ export const DriverNodeSelected: Story = {
 export const BusinessServiceNodeSelected: Story = {
   render: () => {
     const selectedNode: Node = {
-      id: 'service-1',
+      id: 'node-service-1',
       position: { x: 0, y: 200 },
       data: {
+        nodeType: 'business.service',
+        elementId: 'service-1',
+        layerId: 'business',
         label: 'Order Management Service',
-        type: 'BusinessService',
-        stroke: '#10b981',
       },
     };
 
@@ -181,7 +192,7 @@ export const NodeWithManyConnections: Story = {
               name: 'Reduce Cost',
               layerId: 'motivation',
               description: 'Another goal',
-              properties: { fill: '#a78bfa', stroke: '#7c3aed' },
+              properties: { priority: 'low', status: 'draft' },
               visual: { position: { x: 600, y: 0 }, size: { width: 160, height: 80 }, style: {} },
               relationships: { incoming: [], outgoing: [] },
             },
@@ -197,12 +208,13 @@ export const NodeWithManyConnections: Story = {
     };
 
     const selectedNode: Node = {
-      id: 'goal-1',
+      id: 'node-goal-1',
       position: { x: 0, y: 0 },
       data: {
+        nodeType: 'motivation.goal',
+        elementId: 'goal-1',
+        layerId: 'motivation',
         label: 'Increase Revenue',
-        type: 'Goal',
-        stroke: '#7c3aed',
       },
     };
 
@@ -212,28 +224,54 @@ export const NodeWithManyConnections: Story = {
 
 export const NodeWithLongName: Story = {
   render: () => {
-    const selectedNode: Node = {
-      id: 'goal-1',
-      position: { x: 0, y: 0 },
-      data: {
-        label: 'Enable Real-Time Analytics and Dashboarding Across All Customer Touchpoints with Sub-Second Latency',
-        type: 'Goal',
-        stroke: '#7c3aed',
+    const modelWithLongName: MetaModel = {
+      ...mockModel,
+      layers: {
+        ...mockModel.layers,
+        motivation: {
+          ...mockModel.layers.motivation,
+          elements: [
+            {
+              id: 'goal-long',
+              type: 'Goal',
+              name: 'Enable Real-Time Analytics and Dashboarding Across All Customer Touchpoints with Sub-Second Latency',
+              layerId: 'motivation',
+              description: 'Ambitious analytics goal.',
+              properties: { priority: 'high', status: 'active' },
+              visual: { position: { x: 0, y: 0 }, size: { width: 160, height: 80 }, style: {} },
+              relationships: { incoming: [], outgoing: [] },
+            },
+          ],
+          relationships: [],
+        },
       },
     };
 
-    return <NodeDetailsPanel selectedNode={selectedNode} model={mockModel} />;
+    const selectedNode: Node = {
+      id: 'node-goal-long',
+      position: { x: 0, y: 0 },
+      data: {
+        nodeType: 'motivation.goal',
+        elementId: 'goal-long',
+        layerId: 'motivation',
+        label: 'Enable Real-Time Analytics...',
+      },
+    };
+
+    return <NodeDetailsPanel selectedNode={selectedNode} model={modelWithLongName} />;
   },
 };
 
 export const NodeWithoutLabel: Story = {
   render: () => {
     const selectedNode: Node = {
-      id: 'orphan-node-123',
+      id: 'node-orphan-123',
       position: { x: 100, y: 100 },
       data: {
-        type: 'Unknown',
-        stroke: '#999999',
+        nodeType: 'motivation.goal',
+        elementId: 'orphan-123',
+        layerId: 'motivation',
+        label: 'Orphan Node',
       },
     };
 
@@ -241,19 +279,44 @@ export const NodeWithoutLabel: Story = {
   },
 };
 
-export const NodeWithNegativePosition: Story = {
+export const ChangesetAddNode: Story = {
   render: () => {
-    const selectedNode: Node = {
-      id: 'goal-1',
-      position: { x: -450, y: -250 },
-      data: {
-        label: 'Increase Revenue',
-        type: 'Goal',
-        stroke: '#7c3aed',
+    const modelWithChangeset: MetaModel = {
+      ...mockModel,
+      layers: {
+        ...mockModel.layers,
+        motivation: {
+          ...mockModel.layers.motivation,
+          elements: [
+            {
+              id: 'goal-new',
+              type: 'Goal',
+              name: 'New Strategic Goal',
+              layerId: 'motivation',
+              description: 'Newly added goal in changeset.',
+              changesetOperation: 'add',
+              properties: { priority: 'high', status: 'draft', owner: 'Strategy Team' },
+              visual: { position: { x: 0, y: 0 }, size: { width: 160, height: 80 }, style: {} },
+              relationships: { incoming: [], outgoing: [] },
+            },
+          ],
+          relationships: [],
+        },
       },
     };
 
-    return <NodeDetailsPanel selectedNode={selectedNode} model={mockModel} />;
+    const selectedNode: Node = {
+      id: 'node-goal-new',
+      position: { x: 0, y: 0 },
+      data: {
+        nodeType: 'motivation.goal',
+        elementId: 'goal-new',
+        layerId: 'motivation',
+        label: 'New Strategic Goal',
+      },
+    };
+
+    return <NodeDetailsPanel selectedNode={selectedNode} model={modelWithChangeset} />;
   },
 };
 
@@ -266,12 +329,13 @@ export const EmptyModel: Story = {
     };
 
     const selectedNode: Node = {
-      id: 'goal-1',
+      id: 'node-goal-1',
       position: { x: 0, y: 0 },
       data: {
+        nodeType: 'motivation.goal',
+        elementId: 'goal-1',
+        layerId: 'motivation',
         label: 'Goal Without Model Context',
-        type: 'Goal',
-        stroke: '#7c3aed',
       },
     };
 
@@ -282,12 +346,13 @@ export const EmptyModel: Story = {
 export const DarkModePreview: Story = {
   render: () => {
     const selectedNode: Node = {
-      id: 'goal-1',
+      id: 'node-goal-1',
       position: { x: 123, y: 456 },
       data: {
+        nodeType: 'motivation.goal',
+        elementId: 'goal-1',
+        layerId: 'motivation',
         label: 'Increase Revenue',
-        type: 'Goal',
-        stroke: '#7c3aed',
       },
     };
 

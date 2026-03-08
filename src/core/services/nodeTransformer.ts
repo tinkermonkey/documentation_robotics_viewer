@@ -495,11 +495,10 @@ export class NodeTransformer {
       return undefined;
     }
 
-    const items: FieldItem[] = [];
-
-    // Map common motivation node properties to field items
+    // Map common property keys to display labels
     const propertyMap: Record<string, string> = {
       description: 'Description',
+      documentation: 'Description',
       priority: 'Priority',
       status: 'Status',
       category: 'Category',
@@ -512,15 +511,17 @@ export class NodeTransformer {
       criticality: 'Criticality',
     };
 
+    const items: FieldItem[] = [];
     for (const [key, value] of Object.entries(element.properties)) {
-      if (value === null || value === undefined) continue;
       if (key.startsWith('_')) continue; // Skip internal properties
+      if (value === null || value === undefined) continue; // Skip empty values
 
       const label = propertyMap[key] || this.formatFieldLabel(key);
+      const displayValue = Array.isArray(value) ? value.join(', ') : String(value);
       items.push({
         id: key,
         label,
-        value: String(value),
+        value: displayValue,
         required: false,
       });
     }

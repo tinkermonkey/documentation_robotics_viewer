@@ -2,11 +2,6 @@ import { test, expect } from '@playwright/test';
 import { NodeType, isValidNodeType } from '../../../src/core/nodes/NodeType';
 
 test.describe('NodeType Enum', () => {
-  test('should define all 20 node types', () => {
-    const values = Object.values(NodeType);
-    expect(values).toHaveLength(20);
-  });
-
   test('should have 10 motivation layer types', () => {
     const motivationTypes = Object.values(NodeType).filter(v => v.startsWith('motivation.'));
     expect(motivationTypes).toHaveLength(10);
@@ -22,9 +17,44 @@ test.describe('NodeType Enum', () => {
     expect(c4Types).toHaveLength(3);
   });
 
-  test('should have 2 data layer types', () => {
+  test('should have 1 technology layer type', () => {
+    const techTypes = Object.values(NodeType).filter(v => v.startsWith('technology.'));
+    expect(techTypes).toHaveLength(1);
+  });
+
+  test('should have 2 api layer types', () => {
+    const apiTypes = Object.values(NodeType).filter(v => v.startsWith('api.'));
+    expect(apiTypes).toHaveLength(2);
+  });
+
+  test('should have 3 data layer types', () => {
     const dataTypes = Object.values(NodeType).filter(v => v.startsWith('data.'));
-    expect(dataTypes).toHaveLength(2);
+    expect(dataTypes).toHaveLength(3);
+  });
+
+  test('should have 2 datastore layer types', () => {
+    const datastoreTypes = Object.values(NodeType).filter(v => v.startsWith('datastore.'));
+    expect(datastoreTypes).toHaveLength(2);
+  });
+
+  test('should have 3 ux layer types', () => {
+    const uxTypes = Object.values(NodeType).filter(v => v.startsWith('ux.'));
+    expect(uxTypes).toHaveLength(3);
+  });
+
+  test('should have 4 navigation layer types', () => {
+    const navTypes = Object.values(NodeType).filter(v => v.startsWith('navigation.'));
+    expect(navTypes).toHaveLength(4);
+  });
+
+  test('should have 3 apm layer types', () => {
+    const apmTypes = Object.values(NodeType).filter(v => v.startsWith('apm.'));
+    expect(apmTypes).toHaveLength(3);
+  });
+
+  test('should have 5 testing layer types', () => {
+    const testingTypes = Object.values(NodeType).filter(v => v.startsWith('testing.'));
+    expect(testingTypes).toHaveLength(5);
   });
 
   test('should have 1 structural layer type', () => {
