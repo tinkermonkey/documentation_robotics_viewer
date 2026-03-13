@@ -1,13 +1,12 @@
 version: 0.1.0
 schema: documentation-robotics-v1
-cli_version: 0.1.1
-spec_version: 0.8.1
-created: 2026-03-01T23:19:24.665Z
-updated: 2026-03-02T10:25:07.952Z
+cli_version: 0.1.2
+spec_version: 0.8.2
+created: 2026-03-13T20:54:06.358Z
+updated: 2026-03-13T21:09:32.772Z
 project:
   name: documentation-robotics-viewer
-  description: React-based visualization tool for multi-layer architecture
-    documentation models
+  description: ""
   version: 0.1.0
 documentation: .dr/README.md
 layers:
@@ -16,95 +15,60 @@ layers:
     name: Motivation
     path: documentation-robotics/model/01_motivation/
     enabled: true
-    elements: {}
   business:
     order: 2
     name: Business
     path: documentation-robotics/model/02_business/
     enabled: true
-    elements: {}
   security:
     order: 3
     name: Security
     path: documentation-robotics/model/03_security/
     enabled: true
-    elements: {}
   application:
     order: 4
     name: Application
     path: documentation-robotics/model/04_application/
     enabled: true
-    elements:
-      applicationcomponent: 2
-      applicationservice: 18
+    elements: {}
   technology:
     order: 5
     name: Technology
     path: documentation-robotics/model/05_technology/
     enabled: true
-    elements:
-      systemsoftware: 14
+    elements: {}
   api:
     order: 6
     name: Api
     path: documentation-robotics/model/06_api/
     enabled: true
-    elements:
-      operation: 15
-      securityscheme: 1
   data-model:
     order: 7
     name: Data model
     path: documentation-robotics/model/07_data-model/
     enabled: true
-    elements:
-      objectschema: 13
   data-store:
     order: 8
     name: Data store
     path: documentation-robotics/model/08_data-store/
     enabled: true
-    elements:
-      collection: 14
-      database: 2
   ux:
     order: 9
     name: Ux
     path: documentation-robotics/model/09_ux/
     enabled: true
-    elements: {}
   navigation:
     order: 10
     name: Navigation
     path: documentation-robotics/model/10_navigation/
     enabled: true
-    elements: {}
   apm:
     order: 11
     name: Apm
     path: documentation-robotics/model/11_apm/
     enabled: true
-    elements: {}
   testing:
     order: 12
     name: Testing
     path: documentation-robotics/model/12_testing/
     enabled: true
-    elements: {}
-statistics:
-  total_elements: 79
-  total_relationships: 0
-  completeness: 0
-  last_validation: null
-  validation_status: not_validated
-cross_references:
-  total: 0
-  by_type: {}
-upgrade_history: []
-changeset_history:
-  - name: wire-cross-layer-relationships
-    applied_at: 2026-03-02T10:25:07.949Z
-    action: applied
-  - name: wire-cross-layer-relationships
-    applied_at: 2026-03-02T10:25:07.951Z
-    action: applied
