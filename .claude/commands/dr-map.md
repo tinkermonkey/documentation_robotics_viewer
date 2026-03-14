@@ -25,7 +25,7 @@ Analyze an existing codebase and automatically generate a Documentation Robotics
 ## Usage
 
 ```
-/dr-ingest <path> [--layers <layers>] [--tech <technology>]
+/dr-map <path> [--layers <layers>] [--tech <technology>]
 ```
 
 ## Instructions for Claude Code
@@ -122,7 +122,7 @@ What would you like to do?
   [a] Add a missing element (describe it and I'll create it)
   [s] Skip to a specific layer
   [r] Re-extract this layer with different parameters
-  [q] Finish here (model saved, resume later with /dr-ingest)
+  [q] Finish here (model saved, resume later with /dr-map)
 ```
 
 **After completing all layers:**
@@ -160,9 +160,9 @@ Next steps:
 **Examples:**
 
 ```
-/dr-ingest ./src
-/dr-ingest ./src/api --layers application,api
-/dr-ingest ./backend --tech "Python FastAPI PostgreSQL"
+/dr-map ./src
+/dr-map ./src/api --layers application,api
+/dr-map ./backend --tech "Python FastAPI PostgreSQL"
 ```
 
 If user didn't specify layers or tech, ask:
@@ -617,7 +617,7 @@ Please review and adjust if needed.
 Error: Directory ./src not found
 
 Please check the path and try again:
-/dr-ingest <correct-path>
+/dr-map <correct-path>
 ```
 
 ### Error: No code files found
@@ -654,7 +654,7 @@ Options:
 ### Example 1: Simple Extraction
 
 ```
-User: /dr-ingest ./src/api
+User: /dr-map ./src/api
 
 You:
 Scanning ./src/api...
@@ -684,7 +684,7 @@ Next: Review documentation-robotics/model/04_application/ and documentation-robo
 ### Example 2: With Technology Hints
 
 ```
-User: /dr-ingest ./backend --tech "Python FastAPI PostgreSQL"
+User: /dr-map ./backend --tech "Python FastAPI PostgreSQL"
 
 You:
 Analyzing Python FastAPI application...
@@ -710,7 +710,7 @@ Created full model with:
 ### Example 3: Incremental Extraction
 
 ```
-User: /dr-ingest ./src --layers api
+User: /dr-map ./src --layers api
 
 You:
 Extracting API layer only...
@@ -726,7 +726,7 @@ Creating elements:
 ✓ Complete! Created 45 API operations.
 
 Next steps:
-- Extract application layer: /dr-ingest ./src --layers application
+- Extract application layer: /dr-map ./src --layers application
 - Link to business: /dr-model Add business services
 ```
 

@@ -213,7 +213,7 @@ For details: `documentation/ACCESSIBILITY.md`
 - `/dr-validate` - Validate DR model schema and references
 - `/dr-changeset <request>` - Manage isolated architecture changes
 - `/dr-init [name]` - Initialize new DR architecture model
-- `/dr-ingest <path>` - Generate DR model from existing codebase
+- `/dr-map <path>` - Generate DR model from existing codebase
 
 ## Documentation: DR CLI Integration
 
