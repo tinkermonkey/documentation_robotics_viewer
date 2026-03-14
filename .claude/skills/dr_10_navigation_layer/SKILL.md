@@ -3,13 +3,13 @@ name: LAYER_10_NAVIGATION
 description: Expert knowledge for Navigation Layer modeling in Documentation Robotics
 triggers:
   ["navigation", "routing", "route", "flow", "navigation guard", "redirect", "navigation flow"]
-version: 0.8.1
+version: 0.8.2
 ---
 
 # Navigation Layer Skill
 
 **Layer Number:** 10
-**Specification:** Metadata Model Spec v0.8.1
+**Specification:** Metadata Model Spec v0.8.2
 **Purpose:** Defines multi-modal navigation flows, routes, guards, and transitions between views.
 
 ---
@@ -98,22 +98,22 @@ Activate when the user:
 
 ```bash
 # Add route
-dr add navigation route --name "User Profile Route" --property path=/profile/:id
+dr add navigation route "User Profile Route" --description "User profile page route"
 
 # Add navigation guard
-dr add navigation navigation-guard --name "Auth Guard"
+dr add navigation navigation-guard "Auth Guard"
 
 # Add navigation flow
-dr add navigation navigation-flow --name "Checkout Flow"
+dr add navigation navigation-flow "Checkout Flow"
 
 # List routes
-dr list navigation route
+dr list navigation --type route
 
 # Validate navigation layer
-dr validate --layer navigation
+dr validate --layers navigation
 
 # Export navigation map
-dr export --layer navigation --format mermaid
+dr export plantuml --layers navigation
 ```
 
 ---

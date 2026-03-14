@@ -12,13 +12,13 @@ triggers:
     "validation",
     "data type",
   ]
-version: 0.8.1
+version: 0.8.2
 ---
 
 # Data Model Layer Skill
 
 **Layer Number:** 07
-**Specification:** Metadata Model Spec v0.8.1
+**Specification:** Metadata Model Spec v0.8.2
 **Purpose:** Defines logical data structures using JSON Schema Draft 7, specifying entities, properties, validation rules, and data governance.
 
 ---
@@ -106,16 +106,16 @@ Activate when the user:
 
 ```bash
 # Add object schema
-dr add data_model object-schema --name "User" --property type=object
+dr add data-model objectschema "User" --description "User object schema"
 
 # List data models
-dr list data_model object-schema
+dr list data-model --type objectschema
 
 # Validate data model layer
-dr validate --layer data_model
+dr validate --layers data-model
 
 # Export as JSON Schema
-dr export --layer data_model --format json-schema
+dr export jsonschema --layers data-model
 ```
 
 ---
