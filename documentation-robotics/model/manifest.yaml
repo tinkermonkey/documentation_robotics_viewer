@@ -1,9 +1,9 @@
 version: 0.1.0
 schema: documentation-robotics-v1
-cli_version: 0.1.2
-spec_version: 0.8.2
+cli_version: 0.1.3
+spec_version: 0.8.3
 created: 2026-03-13T20:54:06.358Z
-updated: 2026-03-13T21:09:32.772Z
+updated: 2026-03-15T10:44:31.166Z
 project:
   name: documentation-robotics-viewer
   description: ""
@@ -30,13 +30,11 @@ layers:
     name: Application
     path: documentation-robotics/model/04_application/
     enabled: true
-    elements: {}
   technology:
     order: 5
     name: Technology
     path: documentation-robotics/model/05_technology/
     enabled: true
-    elements: {}
   api:
     order: 6
     name: Api
