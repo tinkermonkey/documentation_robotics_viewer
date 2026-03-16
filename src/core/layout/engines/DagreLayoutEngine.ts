@@ -110,11 +110,12 @@ export class DagreLayoutEngine extends BaseLayoutEngine {
     dagre.layout(g);
 
     // Convert to LayoutResult format
+    const missingNodes: string[] = [];
     const nodes = graph.nodes.map((inputNode) => {
       const dagreNode = g.node(inputNode.id);
 
       if (!dagreNode) {
-        console.warn(`[DagreLayoutEngine] Node ${inputNode.id} not found in dagre output`);
+        missingNodes.push(inputNode.id);
         return {
           id: inputNode.id,
           position: { x: 0, y: 0 },
@@ -132,6 +133,17 @@ export class DagreLayoutEngine extends BaseLayoutEngine {
         data: inputNode.data,
       };
     });
+
+    // Throw error if any nodes are missing from dagre output
+    if (missingNodes.length > 0) {
+      const missingList = missingNodes.join(', ');
+      const message =
+        `[DagreLayoutEngine] ${missingNodes.length} node(s) not found in layout output: ${missingList}. ` +
+        'This typically indicates disconnected nodes, invalid node dimensions, or a graph structure issue. ' +
+        'Check that all nodes have valid width/height dimensions and are properly connected.';
+      console.error(message);
+      throw new Error(message);
+    }
 
     const edges = graph.edges.map((edge) => ({
       id: edge.id,
