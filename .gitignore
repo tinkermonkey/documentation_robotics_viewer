@@ -22,11 +22,12 @@ lerna-debug.log*
 test-output.log
 test-output.txt
 storybook-test-output.txt
+storybook-test-results.txt
 debug-storybook.log
 
 # Debug artifacts (shell script output)
-/TEST_RESULT=
-/kill
+/RESULT=
+/exit
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
