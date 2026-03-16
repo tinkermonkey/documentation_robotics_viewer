@@ -6,7 +6,7 @@ export { HierarchicalBusinessLayout } from './HierarchicalBusinessLayout';
 export { SwimlaneBusinessLayout } from './SwimlaneBusinessLayout';
 export { MatrixBusinessLayout } from './MatrixBusinessLayout';
 export { ForceDirectedBusinessLayout } from './ForceDirectedBusinessLayout';
-export type { BusinessLayoutEngine, LayoutOptions, LayoutResult } from './types';
+export type { BusinessLayoutEngine, LayoutOptions, BusinessLayoutAlgorithm, BusinessLayoutResult } from './types';
 export { DEFAULT_LAYOUT_OPTIONS } from './types';
 export type { SwimlaneGroupBy, SwimlaneOrientation, SwimlaneLayoutOptions } from './SwimlaneBusinessLayout';
 
@@ -14,13 +14,13 @@ import { HierarchicalBusinessLayout } from './HierarchicalBusinessLayout';
 import { SwimlaneBusinessLayout } from './SwimlaneBusinessLayout';
 import { MatrixBusinessLayout } from './MatrixBusinessLayout';
 import { ForceDirectedBusinessLayout } from './ForceDirectedBusinessLayout';
-import { BusinessLayoutEngine } from './types';
+import { BusinessLayoutEngine, BusinessLayoutAlgorithm } from './types';
 
 /**
  * Layout factory function to get the correct layout engine based on algorithm selection
  */
 export function getLayoutEngine(
-  algorithm: 'hierarchical' | 'swimlane' | 'matrix' | 'force' | 'manual'
+  algorithm: BusinessLayoutAlgorithm
 ): BusinessLayoutEngine {
   switch (algorithm) {
     case 'hierarchical':

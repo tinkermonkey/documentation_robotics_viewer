@@ -9,11 +9,12 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { BusinessFilters } from '@/core/hooks/useBusinessFilters';
 import { BusinessNodeType } from '@/core/types/businessLayer';
+import { BusinessLayoutAlgorithm } from '@/core/layout/business';
 
 /**
- * Layout algorithm types
+ * Alias for business layout algorithm type (re-exported for app-specific usage)
  */
-export type BusinessLayoutType = 'hierarchical' | 'swimlane' | 'matrix' | 'force' | 'manual';
+export type BusinessLayoutType = BusinessLayoutAlgorithm;
 
 /**
  * Focus mode types
@@ -88,8 +89,16 @@ const initialState = {
 /**
  * Validation utilities for business layer store
  */
-const isValidBusinessLayout = (layout: unknown): layout is BusinessLayoutType => {
-  return typeof layout === 'string' && ['hierarchical', 'swimlane', 'matrix', 'force', 'manual'].includes(layout);
+const VALID_LAYOUTS: readonly BusinessLayoutAlgorithm[] = [
+  'hierarchical',
+  'swimlane',
+  'matrix',
+  'force',
+  'manual',
+];
+
+const isValidBusinessLayout = (layout: unknown): layout is BusinessLayoutAlgorithm => {
+  return typeof layout === 'string' && VALID_LAYOUTS.includes(layout as BusinessLayoutAlgorithm);
 };
 
 const isValidFocusMode = (mode: unknown): mode is FocusMode => {

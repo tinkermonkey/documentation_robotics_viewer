@@ -9,7 +9,7 @@ import { LayoutEngine } from '../layout/engines';
 import { MarkerType, Edge } from '@xyflow/react';
 import { elementStore } from '../stores/elementStore';
 import { applyEdgeBundling, calculateOptimalThreshold } from '../layout/edgeBundling';
-import { LayoutResult, LayerLayoutResult } from '../types/shapes';
+import { VerticalLayerLayoutResult, LayerLayoutResult } from '../types/shapes';
 import { AppNode, AppEdge } from '../types/reactflow';
 import { FALLBACK_COLOR } from '../utils/layerColors';
 import { nodeConfigLoader } from '../nodes/nodeConfigLoader';
@@ -26,7 +26,7 @@ import { LibavoidRouter, type LibavoidNodeInput, type LibavoidEdgeInput } from '
 export interface NodeTransformResult {
   nodes: AppNode[];
   edges: AppEdge[];
-  layout: LayoutResult;
+  layout: VerticalLayerLayoutResult;
 }
 
 /**

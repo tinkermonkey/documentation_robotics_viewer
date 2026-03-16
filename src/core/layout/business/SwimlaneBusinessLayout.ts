@@ -8,7 +8,7 @@
 import dagre from 'dagre';
 import { Node, Edge, MarkerType } from '@xyflow/react';
 import { BusinessGraph, BusinessNode } from '../../types/businessLayer';
-import { BusinessLayoutEngine, LayoutOptions, LayoutResult } from './types';
+import { BusinessLayoutEngine, LayoutOptions, BusinessLayoutResult } from './types';
 import { BusinessNodeTransformer } from '../../services/businessNodeTransformer';
 import { BaseNodeData } from '../../types/reactflow';
 
@@ -60,7 +60,7 @@ export class SwimlaneBusinessLayout implements BusinessLayoutEngine {
   /**
    * Calculate swimlane layout
    */
-  calculate(graph: BusinessGraph, options: LayoutOptions): LayoutResult {
+  calculate(graph: BusinessGraph, options: LayoutOptions): BusinessLayoutResult {
     const startTime = performance.now();
 
     const swimlaneOptions = options as SwimlaneLayoutOptions;

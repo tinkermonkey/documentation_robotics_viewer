@@ -18,7 +18,7 @@ export interface MetaModel {
  */
 export interface Layer {
   id: string;
-  type: LayerType | string;
+  type: LayerType;
   name: string;
   description?: string;
   order?: number;
@@ -113,7 +113,7 @@ export interface ElementReferences {
  */
 export interface Relationship {
   id: string;
-  type: RelationshipType | string;
+  type: RelationshipType;
   sourceId: string;
   targetId: string;
   properties?: Record<string, unknown>;

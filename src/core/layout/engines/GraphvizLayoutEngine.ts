@@ -18,7 +18,7 @@ type GraphvizInstance = Awaited<ReturnType<typeof Graphviz.load>>;
 import {
   BaseLayoutEngine,
   LayoutGraphInput,
-  LayoutResult,
+  EngineLayoutResult,
   ParameterValidation,
   EngineCapabilities,
 } from './LayoutEngine';
@@ -112,7 +112,7 @@ export class GraphvizLayoutEngine extends BaseLayoutEngine {
   async calculateLayout(
     graph: LayoutGraphInput,
     parameters: Record<string, any> = {}
-  ): Promise<LayoutResult> {
+  ): Promise<EngineLayoutResult> {
     if (!this.graphvizInstance) {
       throw new Error('Graphviz engine not initialized. Call initialize() first.');
     }

@@ -105,9 +105,9 @@ export interface LayerLayoutResult {
 }
 
 /**
- * Complete layout result
+ * Complete vertical layer layout result (legacy layout engine format)
  */
-export interface LayoutResult {
+export interface VerticalLayerLayoutResult {
   layers: Record<string, LayerLayoutResult>;
   totalHeight: number;
   totalWidth: number;

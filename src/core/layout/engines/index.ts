@@ -10,7 +10,7 @@ export type {
   LayoutEngineType,
   EngineCapabilities,
   LayoutGraphInput,
-  LayoutResult,
+  EngineLayoutResult,
   ParameterValidation,
 } from './LayoutEngine';
 

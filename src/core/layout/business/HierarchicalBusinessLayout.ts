@@ -8,7 +8,7 @@
 import dagre from 'dagre';
 import { Node, Edge, MarkerType } from '@xyflow/react';
 import { BusinessGraph, BusinessNode, BusinessEdge } from '../../types/businessLayer';
-import { BusinessLayoutEngine, LayoutOptions, LayoutResult } from './types';
+import { BusinessLayoutEngine, LayoutOptions, BusinessLayoutResult } from './types';
 import { BusinessNodeTransformer } from '../../services/businessNodeTransformer';
 import { BaseNodeData } from '../../types/reactflow';
 
@@ -34,7 +34,7 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
    * Calculate hierarchical layout using dagre
    * Uses Web Worker for large graphs (>100 nodes)
    */
-  async calculate(graph: BusinessGraph, options: LayoutOptions): Promise<LayoutResult> {
+  async calculate(graph: BusinessGraph, options: LayoutOptions): Promise<BusinessLayoutResult> {
     const startTime = performance.now();
     const nodeCount = graph.nodes.size;
 
@@ -54,7 +54,7 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
     graph: BusinessGraph,
     options: LayoutOptions,
     startTime: number
-  ): Promise<LayoutResult> {
+  ): Promise<BusinessLayoutResult> {
     return new Promise((resolve, reject) => {
       const worker = new Worker('/workers/layoutWorker.js');
 
@@ -124,7 +124,7 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
     graph: BusinessGraph,
     options: LayoutOptions,
     startTime: number
-  ): LayoutResult {
+  ): BusinessLayoutResult {
     // Create dagre graph
     const dagreGraph = this.convertToDAG(graph, options);
 
@@ -191,7 +191,7 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
   private convertToReactFlow(
     dagreGraph: dagre.graphlib.Graph,
     businessGraph: BusinessGraph
-  ): LayoutResult {
+  ): BusinessLayoutResult {
     const nodes: Node[] = [];
 
     let minX = Infinity;
@@ -336,7 +336,7 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
     businessGraph: BusinessGraph,
     positions: Record<string, { x: number; y: number }>,
     bounds: { width: number; height: number; minX: number; maxX: number; minY: number; maxY: number }
-  ): LayoutResult {
+  ): BusinessLayoutResult {
     const nodes: Node[] = [];
 
     // Convert nodes with positions from worker

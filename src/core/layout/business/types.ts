@@ -8,11 +8,16 @@ import { Node, Edge } from '@xyflow/react';
 import { BusinessGraph } from '../../types/businessLayer';
 
 /**
+ * Business layout algorithm types
+ */
+export type BusinessLayoutAlgorithm = 'hierarchical' | 'swimlane' | 'matrix' | 'force' | 'manual';
+
+/**
  * Layout algorithm options
  */
 export interface LayoutOptions {
   /** Layout algorithm to use */
-  algorithm: 'hierarchical' | 'swimlane' | 'matrix' | 'force' | 'manual';
+  algorithm: BusinessLayoutAlgorithm;
 
   /** Direction for hierarchical layout */
   direction?: 'TB' | 'LR' | 'BT' | 'RL';
@@ -35,9 +40,9 @@ export interface LayoutOptions {
 }
 
 /**
- * Result of layout calculation
+ * Result of business layout calculation
  */
-export interface LayoutResult {
+export interface BusinessLayoutResult {
   /** React Flow nodes with calculated positions */
   nodes: Node[];
 
@@ -77,7 +82,7 @@ export interface BusinessLayoutEngine {
    * @param options - Layout configuration options
    * @returns Layout result with positioned nodes and edges (may be async for large graphs)
    */
-  calculate(graph: BusinessGraph, options: LayoutOptions): LayoutResult | Promise<LayoutResult>;
+  calculate(graph: BusinessGraph, options: LayoutOptions): BusinessLayoutResult | Promise<BusinessLayoutResult>;
 
   /**
    * Get the name of this layout engine

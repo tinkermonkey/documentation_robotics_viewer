@@ -5,7 +5,7 @@
 
 import dagre from 'dagre';
 import { Layer, LayerType } from '../types';
-import { LayoutResult } from '../types/shapes';
+import { VerticalLayerLayoutResult } from '../types/shapes';
 import { getLayerColor } from '../utils/layerColors';
 
 /**
@@ -42,8 +42,8 @@ export class VerticalLayerLayout {
  * @param layers - Record of layers keyed by LayerType
  * @returns Complete layout result with positions and metadata
  */
-layout(layers: Record<string, Layer>): LayoutResult {
-  const result: LayoutResult = {
+layout(layers: Record<string, Layer>): VerticalLayerLayoutResult {
+  const result: VerticalLayerLayoutResult = {
     layers: {},
     totalHeight: 0,
     totalWidth: 0

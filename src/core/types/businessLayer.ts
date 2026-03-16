@@ -62,20 +62,23 @@ export interface BusinessNode {
  * - source/target: Used when converting to/from React Flow edges
  * - sourceId/targetId: Used by BaseEdge interface for generic components
  *
- * Both pairs reference the same node IDs. Choose whichever is appropriate
- * for your use case:
+ * Both pairs reference the same node IDs. This invariant is enforced at
+ * construction time in BusinessGraphBuilder.buildEdges() and should never
+ * be violated. Use the createBusinessEdge() helper function for safe creation.
+ *
+ * Choose whichever field is appropriate for your use case:
  * - Use source/target when working with React Flow or business layer logic
  * - Use sourceId/targetId when using generic base components (BaseInspectorPanel, etc.)
  * - Both are available and reference the same values
  *
  * @example
- * // Creating an edge
+ * // Creating an edge (prefer createBusinessEdge() for type safety)
  * const edge: BusinessEdge = {
  *   id: 'edge-1',
  *   source: 'process-1',      // Business layer node ID
- *   sourceId: 'process-1',    // Same ID (BaseEdge compatibility)
+ *   sourceId: 'process-1',    // Must equal source
  *   target: 'process-2',      // Business layer node ID
- *   targetId: 'process-2',    // Same ID (BaseEdge compatibility)
+ *   targetId: 'process-2',    // Must equal target
  *   type: 'flows_to',
  * };
  */
@@ -87,12 +90,45 @@ export interface BusinessEdge {
   target: string;
 
   // BaseEdge compatibility (required by generic base components)
+  // Invariant: sourceId === source and targetId === target
   sourceId: string;
   targetId: string;
 
   type: BusinessEdgeType;
   label?: string;
   properties?: Record<string, unknown>;
+}
+
+/**
+ * Create a BusinessEdge with enforced source/sourceId and target/targetId invariant.
+ * This helper ensures both naming conventions are kept in sync.
+ *
+ * @param id - Edge ID
+ * @param source - Source node ID (used for both source and sourceId)
+ * @param target - Target node ID (used for both target and targetId)
+ * @param type - Business edge type
+ * @param label - Optional edge label
+ * @param properties - Optional edge properties
+ * @returns BusinessEdge with invariant enforced
+ */
+export function createBusinessEdge(
+  id: string,
+  source: string,
+  target: string,
+  type: BusinessEdgeType,
+  label?: string,
+  properties?: Record<string, unknown>
+): BusinessEdge {
+  return {
+    id,
+    source,
+    sourceId: source,
+    target,
+    targetId: target,
+    type,
+    label,
+    properties,
+  };
 }
 
 /**

@@ -17,7 +17,7 @@ import type { ElkNode, ElkExtendedEdge, LayoutOptions } from 'elkjs/lib/elk.bund
 import {
   BaseLayoutEngine,
   LayoutGraphInput,
-  LayoutResult,
+  EngineLayoutResult,
   ParameterValidation,
   EngineCapabilities,
 } from './LayoutEngine';
@@ -109,7 +109,7 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
   async calculateLayout(
     graph: LayoutGraphInput,
     parameters: Record<string, any> = {}
-  ): Promise<LayoutResult> {
+  ): Promise<EngineLayoutResult> {
     if (!this.elk) {
       throw new Error('ELK engine not initialized. Call initialize() first.');
     }

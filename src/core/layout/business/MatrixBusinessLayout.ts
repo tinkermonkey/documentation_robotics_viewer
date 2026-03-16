@@ -8,7 +8,7 @@
 import { forceSimulation, forceLink, forceManyBody, forceCollide, forceCenter } from 'd3-force';
 import { Node, Edge, MarkerType } from '@xyflow/react';
 import { BusinessGraph, BusinessNode } from '../../types/businessLayer';
-import { BusinessLayoutEngine, LayoutOptions, LayoutResult } from './types';
+import { BusinessLayoutEngine, LayoutOptions, BusinessLayoutResult } from './types';
 import { BusinessNodeTransformer } from '../../services/businessNodeTransformer';
 import { BaseNodeData } from '../../types/reactflow';
 
@@ -62,7 +62,7 @@ export class MatrixBusinessLayout implements BusinessLayoutEngine {
   /**
    * Calculate matrix layout
    */
-  calculate(graph: BusinessGraph, _options: LayoutOptions): LayoutResult {
+  calculate(graph: BusinessGraph, _options: LayoutOptions): BusinessLayoutResult {
     const startTime = performance.now();
 
     // Extract unique domains

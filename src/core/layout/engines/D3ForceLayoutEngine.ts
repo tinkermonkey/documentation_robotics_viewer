@@ -8,7 +8,7 @@
 import {
   BaseLayoutEngine,
   LayoutGraphInput,
-  LayoutResult,
+  EngineLayoutResult,
   ParameterValidation,
   EngineCapabilities,
 } from './LayoutEngine';
@@ -69,7 +69,7 @@ export class D3ForceLayoutEngine extends BaseLayoutEngine {
   async calculateLayout(
     graph: LayoutGraphInput,
     parameters: Record<string, any> = {}
-  ): Promise<LayoutResult> {
+  ): Promise<EngineLayoutResult> {
     const startTime = performance.now();
 
     // Validate and normalize parameters

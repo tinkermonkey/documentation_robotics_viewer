@@ -13,6 +13,12 @@ export type { HTTPMethod };
 import { NodeDetailLevel } from '../../core/layout/semanticZoomController';
 
 /**
+ * Changeset operation types
+ * Indicates whether a node/edge was added, updated, or deleted in a changeset
+ */
+export type ChangesetOperation = 'add' | 'update' | 'delete';
+
+/**
  * Validation error for cross-layer edge constraints
  * Thrown when a cross-layer edge fails validation (e.g., same source and target layer)
  */
@@ -178,7 +184,7 @@ export interface LayerContainerNodeData extends BaseNodeData {
 export interface StakeholderNodeData extends BaseNodeData {
   stakeholderType?: string; // e.g., "internal", "external", "customer"
   interests?: string[];
-  changesetOperation?: 'add' | 'update' | 'delete';
+  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -187,7 +193,7 @@ export interface StakeholderNodeData extends BaseNodeData {
 export interface GoalNodeData extends BaseNodeData {
   priority?: 'high' | 'medium' | 'low';
   status?: string;
-  changesetOperation?: 'add' | 'update' | 'delete';
+  changesetOperation?: ChangesetOperation;
   coverageIndicator?: CoverageIndicator;
 }
 
@@ -198,7 +204,7 @@ export interface RequirementNodeData extends BaseNodeData {
   requirementType?: string;
   priority?: 'high' | 'medium' | 'low';
   status?: string;
-  changesetOperation?: 'add' | 'update' | 'delete';
+  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -206,7 +212,7 @@ export interface RequirementNodeData extends BaseNodeData {
  */
 export interface ConstraintNodeData extends BaseNodeData {
   negotiability?: 'fixed' | 'negotiable';
-  changesetOperation?: 'add' | 'update' | 'delete';
+  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -214,7 +220,7 @@ export interface ConstraintNodeData extends BaseNodeData {
  */
 export interface DriverNodeData extends BaseNodeData {
   category?: 'business' | 'technical' | 'regulatory' | 'market';
-  changesetOperation?: 'add' | 'update' | 'delete';
+  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -222,7 +228,7 @@ export interface DriverNodeData extends BaseNodeData {
  */
 export interface OutcomeNodeData extends BaseNodeData {
   achievementStatus?: 'planned' | 'in-progress' | 'achieved' | 'at-risk';
-  changesetOperation?: 'add' | 'update' | 'delete';
+  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -230,7 +236,7 @@ export interface OutcomeNodeData extends BaseNodeData {
  */
 export interface PrincipleNodeData extends BaseNodeData {
   scope?: 'enterprise' | 'domain' | 'application';
-  changesetOperation?: 'add' | 'update' | 'delete';
+  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -238,7 +244,7 @@ export interface PrincipleNodeData extends BaseNodeData {
  */
 export interface AssumptionNodeData extends BaseNodeData {
   validationStatus?: 'validated' | 'unvalidated' | 'invalidated';
-  changesetOperation?: 'add' | 'update' | 'delete';
+  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -246,7 +252,7 @@ export interface AssumptionNodeData extends BaseNodeData {
  */
 export interface ValueStreamNodeData extends BaseNodeData {
   stageCount?: number;
-  changesetOperation?: 'add' | 'update' | 'delete';
+  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -254,7 +260,7 @@ export interface ValueStreamNodeData extends BaseNodeData {
  */
 export interface AssessmentNodeData extends BaseNodeData {
   rating?: number; // 0-5
-  changesetOperation?: 'add' | 'update' | 'delete';
+  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -265,7 +271,7 @@ export interface C4ContainerNodeData extends BaseNodeData {
   containerType?: 'webApp' | 'mobileApp' | 'service' | 'database' | 'queue' | 'filesystem' | 'other';
   technology?: string[]; // Technology stack (e.g., ["React", "TypeScript"])
   description?: string;
-  changesetOperation?: 'add' | 'update' | 'delete';
+  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -277,7 +283,7 @@ export interface C4ComponentNodeData extends BaseNodeData {
   technology?: string[]; // Technology stack
   description?: string;
   interfaces?: string[]; // Exposed interfaces
-  changesetOperation?: 'add' | 'update' | 'delete';
+  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -287,7 +293,7 @@ export interface C4ComponentNodeData extends BaseNodeData {
 export interface C4ExternalActorNodeData extends BaseNodeData {
   actorType?: 'user' | 'system' | 'service';
   description?: string;
-  changesetOperation?: 'add' | 'update' | 'delete';
+  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -334,12 +340,16 @@ export interface ElbowEdgeData {
   /** Cross-layer navigation (all optional; absence = non-navigable edge) */
   sourceLayer?: LayerType;
   targetLayer?: LayerType;
-  relationshipType?: ReferenceType | string;
+  relationshipType?: ReferenceType;
+  /** Optional source port identifier (e.g., "top", "bottom", "left", "right", or "field-{fieldId}") */
+  sourcePort?: string;
+  /** Optional target port identifier (e.g., "top", "bottom", "left", "right", or "field-{fieldId}") */
+  targetPort?: string;
   sourceElementName?: string;
   targetElementName?: string;
   description?: string;
   tags?: string[];
-  changesetOperation?: 'add' | 'update' | 'delete';
+  changesetOperation?: ChangesetOperation;
   [key: string]: unknown;
 }
 
@@ -368,7 +378,7 @@ export function createCrossLayerEdgeData(
     label?: string;
     description?: string;
     tags?: string[];
-    changesetOperation?: 'add' | 'update' | 'delete';
+    changesetOperation?: ChangesetOperation;
   }
 ): ElbowEdgeData {
   if (sourceLayer === targetLayer) {

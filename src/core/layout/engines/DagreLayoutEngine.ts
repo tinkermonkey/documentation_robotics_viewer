@@ -9,7 +9,7 @@ import dagre from 'dagre';
 import {
   BaseLayoutEngine,
   LayoutGraphInput,
-  LayoutResult,
+  EngineLayoutResult,
   ParameterValidation,
   EngineCapabilities,
 } from './LayoutEngine';
@@ -67,7 +67,7 @@ export class DagreLayoutEngine extends BaseLayoutEngine {
   async calculateLayout(
     graph: LayoutGraphInput,
     parameters: Record<string, any> = {}
-  ): Promise<LayoutResult> {
+  ): Promise<EngineLayoutResult> {
     const startTime = performance.now();
 
     // Validate and normalize parameters

@@ -50,8 +50,9 @@ export interface LayoutGraphInput {
 
 /**
  * Common layout result format (React Flow compatible)
+ * Used by low-level layout engines (Dagre, ELK, D3-Force, Graphviz)
  */
-export interface LayoutResult {
+export interface EngineLayoutResult {
   /** Positioned nodes */
   nodes: Array<{
     id: string;
@@ -131,7 +132,7 @@ export interface LayoutEngine {
   calculateLayout(
     graph: LayoutGraphInput,
     parameters: Record<string, any>
-  ): Promise<LayoutResult>;
+  ): Promise<EngineLayoutResult>;
 
   /**
    * Get default parameters for this engine
@@ -171,7 +172,7 @@ export abstract class BaseLayoutEngine implements LayoutEngine {
   abstract calculateLayout(
     graph: LayoutGraphInput,
     parameters: Record<string, any>
-  ): Promise<LayoutResult>;
+  ): Promise<EngineLayoutResult>;
 
   abstract getParameters(): Record<string, any>;
 
@@ -186,7 +187,7 @@ export abstract class BaseLayoutEngine implements LayoutEngine {
    */
   protected calculateBounds(
     nodes: Array<{ id: string; position: { x: number; y: number }; width?: number; height?: number }>
-  ): LayoutResult['bounds'] {
+  ): EngineLayoutResult['bounds'] {
     let minX = Infinity;
     let maxX = -Infinity;
     let minY = Infinity;
