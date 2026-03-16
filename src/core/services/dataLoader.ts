@@ -163,8 +163,14 @@ export class DataLoader {
     // Check first schema for JSON Schema indicators
     const firstSchema = Object.values(schemas)[0] as any;
 
+    // Return early if no schemas found
+    if (!firstSchema) {
+      console.warn('Empty schemas object provided. Defaulting to schema definitions.');
+      return 'schema-definition';
+    }
+
     // JSON Schema has $schema and definitions
-    if (firstSchema?.$schema?.includes('json-schema.org') || 'definitions' in firstSchema) {
+    if (firstSchema.$schema?.includes('json-schema.org') || 'definitions' in firstSchema) {
       console.log('Detected JSON Schema definitions');
       return 'schema-definition';
     }
