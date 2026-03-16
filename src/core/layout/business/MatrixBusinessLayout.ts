@@ -9,12 +9,6 @@ import { forceSimulation, forceLink, forceManyBody, forceCollide, forceCenter } 
 import { Node, Edge, MarkerType } from '@xyflow/react';
 import { BusinessGraph, BusinessNode } from '../../types/businessLayer';
 import { BusinessLayoutEngine, LayoutOptions, LayoutResult } from './types';
-import {
-  BusinessProcessNodeData,
-  BusinessFunctionNodeData,
-  BusinessServiceNodeData,
-  BusinessCapabilityNodeData,
-} from '../../types/reactflow';
 import { BusinessNodeTransformer } from '../../services/businessNodeTransformer';
 
 /**
@@ -387,14 +381,9 @@ export class MatrixBusinessLayout implements BusinessLayoutEngine {
 
   /**
    * Extract node data for React Flow using BusinessNodeTransformer
+   * Returns BaseNodeData from the transformer which includes nodeType
    */
-  private extractNodeData(
-    node: BusinessNode
-  ):
-    | BusinessProcessNodeData
-    | BusinessFunctionNodeData
-    | BusinessServiceNodeData
-    | BusinessCapabilityNodeData {
+  private extractNodeData(node: BusinessNode): Record<string, unknown> {
     return this.transformer.extractNodeData(node);
   }
 }

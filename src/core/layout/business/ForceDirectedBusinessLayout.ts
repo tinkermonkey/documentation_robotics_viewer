@@ -9,12 +9,6 @@ import { forceSimulation, forceLink, forceManyBody, forceCollide, forceCenter } 
 import { Node, Edge, MarkerType } from '@xyflow/react';
 import { BusinessGraph, BusinessNode } from '../../types/businessLayer';
 import { BusinessLayoutEngine, LayoutOptions, LayoutResult } from './types';
-import {
-  BusinessProcessNodeData,
-  BusinessFunctionNodeData,
-  BusinessServiceNodeData,
-  BusinessCapabilityNodeData,
-} from '../../types/reactflow';
 import { BusinessNodeTransformer } from '../../services/businessNodeTransformer';
 
 /**
@@ -146,6 +140,13 @@ export class ForceDirectedBusinessLayout implements BusinessLayoutEngine {
 
   /**
    * Get collision radius for a node
+   *
+   * NOTE: The fallback dimensions `{ width: 200, height: 100 }` differ from
+   * BusinessNodeTransformer's fallback of `{ width: 180, height: 100 }`.
+   * In practice, dimensions are pre-calculated by precalculateDimensions()
+   * called before force simulation, so this fallback should never be used.
+   * The fallback is retained for safety in edge cases where precalculation
+   * is skipped, but callers should ensure precalculateDimensions() is always invoked.
    */
   private getCollisionRadius(node: any): number {
     const dimensions = node.businessNode.dimensions || { width: 200, height: 100 };
@@ -292,14 +293,9 @@ export class ForceDirectedBusinessLayout implements BusinessLayoutEngine {
 
   /**
    * Extract node data for React Flow using BusinessNodeTransformer
+   * Returns BaseNodeData from the transformer which includes nodeType
    */
-  private extractNodeData(
-    node: BusinessNode
-  ):
-    | BusinessProcessNodeData
-    | BusinessFunctionNodeData
-    | BusinessServiceNodeData
-    | BusinessCapabilityNodeData {
+  private extractNodeData(node: BusinessNode): Record<string, unknown> {
     return this.transformer.extractNodeData(node);
   }
 }

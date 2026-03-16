@@ -91,7 +91,18 @@ export class BusinessNodeTransformer {
    * is handled by nodeConfig.json and UnifiedNode component.
    */
   extractNodeData(node: BusinessNode): BaseNodeData {
+    // Map business node type to NodeType enum for config lookup
+    const typeToConfig: Record<string, NodeType> = {
+      process: NodeType.BUSINESS_PROCESS,
+      function: NodeType.BUSINESS_FUNCTION,
+      service: NodeType.BUSINESS_SERVICE,
+      capability: NodeType.BUSINESS_CAPABILITY,
+    };
+
+    const nodeType = typeToConfig[node.type] || NodeType.BUSINESS_PROCESS;
+
     return {
+      nodeType,
       label: node.name,
       elementId: node.id,
       layerId: 'business',

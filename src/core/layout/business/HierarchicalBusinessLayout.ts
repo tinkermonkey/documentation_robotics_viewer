@@ -309,14 +309,9 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
 
   /**
    * Extract node data for React Flow using BusinessNodeTransformer
+   * Returns BaseNodeData from the transformer which includes nodeType
    */
-  private extractNodeData(
-    node: BusinessNode
-  ):
-    | BusinessProcessNodeData
-    | BusinessFunctionNodeData
-    | BusinessServiceNodeData
-    | BusinessCapabilityNodeData {
+  private extractNodeData(node: BusinessNode): Record<string, unknown> {
     return this.transformer.extractNodeData(node);
   }
 
