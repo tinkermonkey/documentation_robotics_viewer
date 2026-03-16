@@ -171,7 +171,7 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       aspectRatio: { type: 'number', min: 0.1, max: 10 },
       interactive: { type: 'boolean' },
       orthogonalRouting: { type: 'boolean' },
-      edgeRouting: { type: 'string', values: ['NONE', 'ORTHOGONAL', 'POLYLINE', 'SPLINES', 'UNDEFINED'] },
+      edgeRouting: { type: 'string', values: ['ORTHOGONAL', 'POLYLINE', 'SPLINES', 'UNDEFINED'] },
     };
 
     return this.validateCommonParameters(parameters, schema);
