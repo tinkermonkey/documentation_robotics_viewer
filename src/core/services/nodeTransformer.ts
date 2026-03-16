@@ -1023,22 +1023,30 @@ export class NodeTransformer {
 
       console.log(`[NodeTransformer] Layer ${layerType}: ${Object.keys(positions).length} valid positions out of ${layerResult.nodes.length} nodes`);
 
+      // Handle empty or all-invalid layers: use default bounds to prevent Infinity cascade
+      const width = isFinite(maxX - minX) ? maxX - minX : 400;
+      const height = isFinite(maxY - minY) ? maxY - minY : 300;
+      const finalMinX = isFinite(minX) ? minX : 0;
+      const finalMaxX = isFinite(maxX) ? maxX : 400;
+      const finalMinY = isFinite(minY) ? minY : 0;
+      const finalMaxY = isFinite(maxY) ? maxY : 300;
+
       // Store layer layout
       layers[layerType] = {
         yOffset: currentY,
         positions,
         bounds: {
-          minX,
-          maxX,
-          minY,
-          maxY,
-          width: maxX - minX,
-          height: maxY - minY,
+          minX: finalMinX,
+          maxX: finalMaxX,
+          minY: finalMinY,
+          maxY: finalMaxY,
+          width,
+          height,
         },
       };
 
       // Update Y offset for next layer
-      currentY += (maxY - minY) + layerSpacing;
+      currentY += height + layerSpacing;
     }
 
     return {
@@ -1071,7 +1079,7 @@ export class NodeTransformer {
     // Add relationships as edges
     for (const rel of layer.relationships) {
       edges.push({
-        id: `${rel.sourceId}-${rel.targetId}`,
+        id: `edge-${rel.id}`,
         source: rel.sourceId,
         target: rel.targetId,
         data: {
