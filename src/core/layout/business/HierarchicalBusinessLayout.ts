@@ -56,7 +56,9 @@ export class HierarchicalBusinessLayout implements BusinessLayoutEngine {
     startTime: number
   ): Promise<BusinessLayoutResult> {
     return new Promise((resolve, reject) => {
-      const worker = new Worker('/workers/layoutWorker.js');
+      const worker = new Worker(new URL('/workers/layoutWorker.js', import.meta.url), {
+        type: 'module',
+      });
 
       // Prepare data for worker (serialize BusinessGraph)
       const workerData = {

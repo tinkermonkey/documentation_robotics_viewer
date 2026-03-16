@@ -49,9 +49,15 @@ export async function processCrossLayerReferencesWithWorker(
     return fallbackProcessor(references);
   }
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     let worker: Worker | null = null;
     let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
+
+    const cleanupAndFallback = () => {
+      if (timeoutHandle) clearTimeout(timeoutHandle);
+      if (worker) worker.terminate();
+      resolve(fallbackProcessor(references));
+    };
 
     try {
       // Create worker instance
@@ -62,12 +68,8 @@ export async function processCrossLayerReferencesWithWorker(
 
       // Set 30 second timeout for worker response
       timeoutHandle = setTimeout(() => {
-        if (worker) {
-          worker.terminate();
-          worker = null;
-        }
         console.error('[workerPool] Worker timeout after 30s');
-        reject(new Error('[workerPool] Worker processing timeout after 30s'));
+        cleanupAndFallback();
       }, 30000);
 
       // Handle worker response
@@ -80,23 +82,17 @@ export async function processCrossLayerReferencesWithWorker(
 
       // Handle worker errors
       worker.onerror = (error) => {
-        if (timeoutHandle) clearTimeout(timeoutHandle);
-        if (worker) worker.terminate();
-
         const errorMsg = error instanceof ErrorEvent ? error.message : String(error);
         console.error('[workerPool] Worker error:', errorMsg);
-        reject(new Error(`[workerPool] Worker processing failed: ${errorMsg}`));
+        cleanupAndFallback();
       };
 
       // Send data to worker
       worker.postMessage({ references } as CrossLayerWorkerInput);
     } catch (error) {
-      if (timeoutHandle) clearTimeout(timeoutHandle);
-      if (worker) worker.terminate();
-
       const errorMsg = error instanceof Error ? error.message : String(error);
-      console.error('[workerPool] Failed to spawn worker:', error);
-      reject(new Error(`[workerPool] Failed to spawn worker: ${errorMsg}`));
+      console.error('[workerPool] Failed to spawn worker:', errorMsg);
+      cleanupAndFallback();
     }
   });
 }
