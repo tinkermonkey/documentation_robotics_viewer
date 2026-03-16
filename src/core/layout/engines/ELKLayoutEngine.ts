@@ -332,23 +332,36 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
 
   /**
    * Strip port suffix from port ID to recover original node ID
-   * Handles node IDs that contain hyphens by parsing from the right.
+   * Handles node IDs that contain hyphens by validating against known node IDs.
    * Port IDs follow the pattern: "{nodeId}-{side}"
    * where side is one of: top, bottom, left, right
    * Example: "node-service.validate-order-bottom" -> "node-service.validate-order"
+   *
+   * @param portId The port ID to strip
+   * @param nodeIds Set of valid original node IDs to validate against
+   * @returns The original node ID
    */
-  private stripPortSuffix(portId: string | undefined): string {
+  private stripPortSuffix(portId: string | undefined, nodeIds: Set<string>): string {
     if (!portId) return '';
+
+    // First try without stripping anything
+    if (nodeIds.has(portId)) {
+      return portId;
+    }
 
     const parts = portId.split('-');
     const lastPart = parts[parts.length - 1]?.toLowerCase();
 
-    // If the last segment is a valid port side, remove it
+    // If the last segment is a valid port side, try removing it
     if (lastPart === 'top' || lastPart === 'bottom' || lastPart === 'left' || lastPart === 'right') {
-      return parts.slice(0, -1).join('-');
+      const strippedId = parts.slice(0, -1).join('-');
+      // Only return the stripped ID if it matches a known node ID
+      if (nodeIds.has(strippedId)) {
+        return strippedId;
+      }
     }
 
-    // If no port suffix found, return the entire ID
+    // If no valid strip found, return the entire ID (likely a malformed port ID)
     return portId;
   }
 
@@ -356,9 +369,10 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
    * Convert ELK graph result back to React Flow format
    */
   private convertFromELKGraph(elkGraph: ElkNode, originalGraph: LayoutGraphInput): EngineLayoutResult {
-    // Create a map of original node data
+    // Create a map of original node data and a set of node IDs for port suffix validation
     const nodeDataMap = new Map(originalGraph.nodes.map((n) => [n.id, n.data]));
     const edgeDataMap = new Map(originalGraph.edges.map((e) => [e.id, e.data]));
+    const nodeIds = new Set(originalGraph.nodes.map((n) => n.id));
 
     // Convert nodes with positions from ELK
     const nodes = (elkGraph.children || []).map((elkNode) => {
@@ -394,8 +408,8 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
 
       // Strip port suffix to get node IDs
       // Handles node IDs with hyphens: "node-service.validate-order-bottom" -> "node-service.validate-order"
-      const source = this.stripPortSuffix(sourcePortId);
-      const target = this.stripPortSuffix(targetPortId);
+      const source = this.stripPortSuffix(sourcePortId, nodeIds);
+      const target = this.stripPortSuffix(targetPortId, nodeIds);
 
       // Derive port sides from port IDs
       const sourceSide = this.derivePortSide(sourcePortId);
