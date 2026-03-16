@@ -10,6 +10,7 @@ import { Node, Edge, MarkerType } from '@xyflow/react';
 import { BusinessGraph, BusinessNode } from '../../types/businessLayer';
 import { BusinessLayoutEngine, LayoutOptions, LayoutResult } from './types';
 import { BusinessNodeTransformer } from '../../services/businessNodeTransformer';
+import { BaseNodeData } from '../../types/reactflow';
 
 /**
  * D3 Force Node (for internal force simulation)
@@ -295,7 +296,7 @@ export class ForceDirectedBusinessLayout implements BusinessLayoutEngine {
    * Extract node data for React Flow using BusinessNodeTransformer
    * Returns BaseNodeData from the transformer which includes nodeType
    */
-  private extractNodeData(node: BusinessNode): Record<string, unknown> {
+  private extractNodeData(node: BusinessNode): BaseNodeData {
     return this.transformer.extractNodeData(node);
   }
 }

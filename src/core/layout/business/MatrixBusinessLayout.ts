@@ -10,6 +10,7 @@ import { Node, Edge, MarkerType } from '@xyflow/react';
 import { BusinessGraph, BusinessNode } from '../../types/businessLayer';
 import { BusinessLayoutEngine, LayoutOptions, LayoutResult } from './types';
 import { BusinessNodeTransformer } from '../../services/businessNodeTransformer';
+import { BaseNodeData } from '../../types/reactflow';
 
 /**
  * Constants for matrix cell dimensions
@@ -383,7 +384,7 @@ export class MatrixBusinessLayout implements BusinessLayoutEngine {
    * Extract node data for React Flow using BusinessNodeTransformer
    * Returns BaseNodeData from the transformer which includes nodeType
    */
-  private extractNodeData(node: BusinessNode): Record<string, unknown> {
+  private extractNodeData(node: BusinessNode): BaseNodeData {
     return this.transformer.extractNodeData(node);
   }
 }

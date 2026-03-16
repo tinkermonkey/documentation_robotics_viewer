@@ -21,6 +21,17 @@ import { NodeType } from '../nodes/NodeType';
  */
 export class BusinessNodeTransformer {
   /**
+   * Maps business node type strings to NodeType enum values for config lookup.
+   * Used by both getNodeDimensions() and extractNodeData() to ensure consistency.
+   */
+  private static readonly TYPE_TO_CONFIG: Record<string, NodeType> = {
+    process: NodeType.BUSINESS_PROCESS,
+    function: NodeType.BUSINESS_FUNCTION,
+    service: NodeType.BUSINESS_SERVICE,
+    capability: NodeType.BUSINESS_CAPABILITY,
+  };
+
+  /**
    * Pre-calculate dimensions for all nodes in a graph
    * CRITICAL: These dimensions MUST match the actual rendered component sizes
    */
@@ -37,15 +48,7 @@ export class BusinessNodeTransformer {
    * logging a warning to help identify configuration issues.
    */
   getNodeDimensions(node: BusinessNode): { width: number; height: number } {
-    // Map business node types to configuration keys
-    const typeToConfig: Record<string, NodeType> = {
-      process: NodeType.BUSINESS_PROCESS,
-      function: NodeType.BUSINESS_FUNCTION,
-      service: NodeType.BUSINESS_SERVICE,
-      capability: NodeType.BUSINESS_CAPABILITY,
-    };
-
-    const configKey = typeToConfig[node.type];
+    const configKey = BusinessNodeTransformer.TYPE_TO_CONFIG[node.type];
     if (configKey) {
       const styleConfig = nodeConfigLoader.getStyleConfig(configKey);
       if (styleConfig?.dimensions) {
@@ -91,15 +94,7 @@ export class BusinessNodeTransformer {
    * is handled by nodeConfig.json and UnifiedNode component.
    */
   extractNodeData(node: BusinessNode): BaseNodeData {
-    // Map business node type to NodeType enum for config lookup
-    const typeToConfig: Record<string, NodeType> = {
-      process: NodeType.BUSINESS_PROCESS,
-      function: NodeType.BUSINESS_FUNCTION,
-      service: NodeType.BUSINESS_SERVICE,
-      capability: NodeType.BUSINESS_CAPABILITY,
-    };
-
-    const nodeType = typeToConfig[node.type] || NodeType.BUSINESS_PROCESS;
+    const nodeType = BusinessNodeTransformer.TYPE_TO_CONFIG[node.type] || NodeType.BUSINESS_PROCESS;
 
     return {
       nodeType,
