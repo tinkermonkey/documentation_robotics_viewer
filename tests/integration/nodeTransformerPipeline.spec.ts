@@ -1072,9 +1072,11 @@ test.describe('NodeTransformer Pipeline Integration', () => {
 
       const result = await transformer.transformModel(model);
 
-      // Extract edge IDs connecting source to target
+      // Extract edges connecting source to target (with node- prefix)
+      const sourceNodeId = `node-source-elem`;
+      const targetNodeId = `node-target-elem`;
       const edgesSourceToTarget = result.edges.filter(
-        (e: any) => e.source === 'source-elem' && e.target === 'target-elem'
+        (e: any) => e.source === sourceNodeId && e.target === targetNodeId
       );
 
       // All edges should be present (no collisions)
@@ -1085,7 +1087,7 @@ test.describe('NodeTransformer Pipeline Integration', () => {
       const uniqueEdgeIds = new Set(edgeIds);
       expect(uniqueEdgeIds.size).toBe(3);
 
-      // Edge IDs should use the relationship ID, not the source-target pair
+      // Edge IDs should use the relationship ID with edge- prefix
       expect(edgeIds).toContain('edge-rel-1');
       expect(edgeIds).toContain('edge-rel-2');
       expect(edgeIds).toContain('edge-rel-3');
@@ -1122,10 +1124,10 @@ test.describe('NodeTransformer Pipeline Integration', () => {
 
       expect(edge1).toBeDefined();
       expect(edge2).toBeDefined();
-      expect(edge1?.source).toBe('elem-1');
-      expect(edge1?.target).toBe('elem-2');
-      expect(edge2?.source).toBe('elem-1');
-      expect(edge2?.target).toBe('elem-2');
+      expect(edge1?.source).toBe('node-elem-1');
+      expect(edge1?.target).toBe('node-elem-2');
+      expect(edge2?.source).toBe('node-elem-1');
+      expect(edge2?.target).toBe('node-elem-2');
       expect(edge1?.id).not.toBe(edge2?.id);
     });
   });
