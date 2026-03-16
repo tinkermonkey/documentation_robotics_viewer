@@ -45,7 +45,7 @@ export type ELKLayeringStrategy =
 /**
  * ELK edge routing strategy
  */
-export type ELKEdgeRouting = 'ORTHOGONAL' | 'POLYLINE' | 'SPLINES' | 'UNDEFINED';
+export type ELKEdgeRouting = 'NONE' | 'ORTHOGONAL' | 'POLYLINE' | 'SPLINES' | 'UNDEFINED';
 
 /**
  * ELK-specific layout parameters
@@ -171,7 +171,7 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       aspectRatio: { type: 'number', min: 0.1, max: 10 },
       interactive: { type: 'boolean' },
       orthogonalRouting: { type: 'boolean' },
-      edgeRouting: { type: 'string', values: ['ORTHOGONAL', 'POLYLINE', 'SPLINES', 'UNDEFINED'] },
+      edgeRouting: { type: 'string', values: ['NONE', 'ORTHOGONAL', 'POLYLINE', 'SPLINES', 'UNDEFINED'] },
     };
 
     return this.validateCommonParameters(parameters, schema);
@@ -217,8 +217,8 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       'elk.spacing.edgeNode': String(params.edgeNodeSpacing || 25),  // Default: 25 per spec
       'elk.spacing.edgeEdge': String(params.edgeSpacing || 15),      // Default: 15 per spec
       'elk.aspectRatio': String(params.aspectRatio || 1.6),
-      // Disable ELK internal edge routing to allow Libavoid pass to take over
-      'elk.edgeRouting': 'NONE',
+      // Use UNDEFINED routing to allow ELK to provide fallback routing if Libavoid WASM fails
+      'elk.edgeRouting': 'UNDEFINED',
       // Increase spacing values to reserve channel space for Libavoid routes
       'elk.spacing.edgeNodeBetweenLayers': '35',
     };
@@ -339,10 +339,10 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
    *
    * @param portId The port ID to strip
    * @param nodeIds Set of valid original node IDs to validate against
-   * @returns The original node ID
+   * @returns The original node ID, or undefined if portId is undefined
    */
-  private stripPortSuffix(portId: string | undefined, nodeIds: Set<string>): string {
-    if (!portId) return '';
+  private stripPortSuffix(portId: string | undefined, nodeIds: Set<string>): string | undefined {
+    if (!portId) return undefined;
 
     // First try without stripping anything
     if (nodeIds.has(portId)) {
@@ -394,62 +394,73 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
     });
 
     // Convert edges (preserve original edge data, add routing points if available)
-    const edges = (elkGraph.edges || []).map((elkEdge) => {
-      const edgeData = edgeDataMap.get(elkEdge.id);
+    const edges = (elkGraph.edges || [])
+      .map((elkEdge) => {
+        const edgeData = edgeDataMap.get(elkEdge.id);
 
-      // Warn if edge data is missing
-      if (!edgeData) {
-        console.warn(`Missing edge data for ELK edge: ${elkEdge.id}`);
-      }
-
-      // Extract port IDs from ELK edge (format: "{nodeId}-{side}")
-      const sourcePortId = (elkEdge as ElkExtendedEdge).sources?.[0];
-      const targetPortId = (elkEdge as ElkExtendedEdge).targets?.[0];
-
-      // Strip port suffix to get node IDs
-      // Handles node IDs with hyphens: "node-service.validate-order-bottom" -> "node-service.validate-order"
-      const source = this.stripPortSuffix(sourcePortId, nodeIds);
-      const target = this.stripPortSuffix(targetPortId, nodeIds);
-
-      // Derive port sides from port IDs
-      const sourceSide = this.derivePortSide(sourcePortId);
-      const targetSide = this.derivePortSide(targetPortId);
-
-      const edge: EngineLayoutResult['edges'][0] = {
-        id: elkEdge.id,
-        source,
-        target,
-        sourceSide,
-        targetSide,
-        data: edgeData,
-      };
-
-      // Add routing points if available
-      if (elkEdge.sections && elkEdge.sections.length > 0) {
-        const section = elkEdge.sections[0];
-        const points: Array<{ x: number; y: number }> = [];
-
-        if (section.startPoint) {
-          points.push({ x: section.startPoint.x, y: section.startPoint.y });
+        // Warn if edge data is missing
+        if (!edgeData) {
+          console.warn(`Missing edge data for ELK edge: ${elkEdge.id}`);
         }
 
-        if (section.bendPoints) {
-          section.bendPoints.forEach((bp) => {
-            points.push({ x: bp.x, y: bp.y });
-          });
+        // Extract port IDs from ELK edge (format: "{nodeId}-{side}")
+        const sourcePortId = (elkEdge as ElkExtendedEdge).sources?.[0];
+        const targetPortId = (elkEdge as ElkExtendedEdge).targets?.[0];
+
+        // Strip port suffix to get node IDs
+        // Handles node IDs with hyphens: "node-service.validate-order-bottom" -> "node-service.validate-order"
+        const source = this.stripPortSuffix(sourcePortId, nodeIds);
+        const target = this.stripPortSuffix(targetPortId, nodeIds);
+
+        // Skip edges with undefined source or target to avoid creating phantom edges
+        if (!source || !target) {
+          console.warn(
+            `[ELKLayoutEngine] Skipping edge ${elkEdge.id}: ` +
+            `source=${source}, target=${target} (undefined port IDs)`
+          );
+          return null;
         }
 
-        if (section.endPoint) {
-          points.push({ x: section.endPoint.x, y: section.endPoint.y });
+        // Derive port sides from port IDs
+        const sourceSide = this.derivePortSide(sourcePortId);
+        const targetSide = this.derivePortSide(targetPortId);
+
+        const edge: EngineLayoutResult['edges'][0] = {
+          id: elkEdge.id,
+          source,
+          target,
+          sourceSide,
+          targetSide,
+          data: edgeData,
+        };
+
+        // Add routing points if available
+        if (elkEdge.sections && elkEdge.sections.length > 0) {
+          const section = elkEdge.sections[0];
+          const points: Array<{ x: number; y: number }> = [];
+
+          if (section.startPoint) {
+            points.push({ x: section.startPoint.x, y: section.startPoint.y });
+          }
+
+          if (section.bendPoints) {
+            section.bendPoints.forEach((bp) => {
+              points.push({ x: bp.x, y: bp.y });
+            });
+          }
+
+          if (section.endPoint) {
+            points.push({ x: section.endPoint.x, y: section.endPoint.y });
+          }
+
+          if (points.length > 0) {
+            edge.points = points;
+          }
         }
 
-        if (points.length > 0) {
-          edge.points = points;
-        }
-      }
-
-      return edge;
-    });
+        return edge;
+      })
+      .filter((edge) => edge !== null) as EngineLayoutResult['edges'];
 
     // Calculate bounds
     const nodesWithDimensions = nodes.map((node) => {
