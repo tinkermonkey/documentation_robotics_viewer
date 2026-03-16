@@ -20,6 +20,7 @@ import { storyUrl, setupErrorFiltering } from '../helpers/storyTestUtils';
 
 test.describe('Accessibility - Graph Views', () => {
   const graphStories = [
+    { key: 'views---layouts--graph-views--businesslayerview--default', name: 'BusinessLayerView Default' },
     { key: 'views---layouts--graph-views--graphviewer--complete-model', name: 'GraphViewer CompleteModel' },
   ];
 

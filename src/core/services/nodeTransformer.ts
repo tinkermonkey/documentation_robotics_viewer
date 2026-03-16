@@ -11,12 +11,14 @@ import { elementStore } from '../stores/elementStore';
 import { applyEdgeBundling, calculateOptimalThreshold } from '../layout/edgeBundling';
 import { LayoutResult, LayerLayoutResult } from '../types/shapes';
 import { AppNode, AppEdge } from '../types/reactflow';
-import { FALLBACK_COLOR, getLayerColor } from '../utils/layerColors';
+import { FALLBACK_COLOR } from '../utils/layerColors';
 import { nodeConfigLoader } from '../nodes/nodeConfigLoader';
 import { NodeType } from '../nodes/NodeType';
 import type { UnifiedNodeData } from '../nodes/components/UnifiedNode';
 import type { FieldItem } from '../nodes/components/FieldList';
+import type { RelationshipBadgeData } from '../nodes/components/RelationshipBadge';
 import { extractCrossLayerReferences, referencesToEdges } from './crossLayerLinksExtractor';
+import { LibavoidRouter, type LibavoidNodeInput, type LibavoidEdgeInput } from './libavoidRouter';
 
 /**
  * Result of transforming a model
@@ -24,19 +26,22 @@ import { extractCrossLayerReferences, referencesToEdges } from './crossLayerLink
 export interface NodeTransformResult {
   nodes: AppNode[];
   edges: AppEdge[];
-  layout?: LayoutResult;
+  layout: LayoutResult;
 }
 
 /**
- * Internal result shape returned by layoutLayersSeparately (ELK per-layer path).
- * Distinct from LayoutResult (shapes.ts) which is the LayoutEngine output format.
+ * Optional extended properties that may be present on elements
+ * These are only accessed after proper validation
  */
-interface LayerStackResult {
-  layers: Record<string, LayerLayoutResult>;
-  totalHeight: number;
-  direction?: string;
+interface OptionalElementProperties {
+  detailLevel?: 'minimal' | 'standard' | 'detailed';
+  changesetOperation?: 'add' | 'update' | 'delete';
+  relationshipBadge?: RelationshipBadgeData;
+  schemaInfo?: {
+    properties?: Record<string, unknown> | Array<Record<string, unknown>>;
+    required?: string[];
+  };
 }
-
 
 /**
  * Transforms a MetaModel into React Flow nodes and edges with proper layout
@@ -48,18 +53,21 @@ export class NodeTransformer {
    * Transform a complete model into React Flow nodes and edges
    * @param model - The meta-model to transform
    * @param layoutParameters - Optional parameters for the layout engine
+   * @param measuredNodeSizes - Node sizes measured by React Flow (Pass 2)
+   * @param libavoidRouter - LibavoidRouter instance for edge routing (only used in Pass 2)
    * @returns Transform result with nodes, edges, and layout
    */
   async transformModel(
     model: MetaModel,
     layoutParameters?: Record<string, any>,
-    measuredNodeSizes?: Map<string, { width: number; height: number }>
+    measuredNodeSizes?: Map<string, { width: number; height: number }>,
+    libavoidRouter?: LibavoidRouter | null
   ): Promise<NodeTransformResult> {
     // STEP 0: Pre-calculate dimensions for dynamic shapes (override with DOM-measured sizes if provided)
     this.precalculateDimensions(model, measuredNodeSizes);
 
     // STEP 1: Calculate layout for all layers
-    let layout: LayoutResult | LayerStackResult;
+    let layout: any;
 
     // Check if layoutEngine is defined and which interface it uses
     if (!this.layoutEngine) {
@@ -217,25 +225,14 @@ export class NodeTransformer {
 
     // STEP 3: Create edges array
     const edges: AppEdge[] = [];
-    const edgeIdSet = new Set<string>(); // Track edge IDs to prevent duplicates
     let relationshipCount = 0;
 
-    // Create edges from layer relationships, enriching with ELK routing points when
-    // available (ELK path only; VerticalLayerLayout path has no edgeRoutingPoints).
-    // layoutDirection is set by layoutLayersSeparately (ELK path) and used to align
-    // React Flow source/target handles with ELK's assumed edge exit/entry sides.
-    const layoutDirection = 'direction' in layout ? (layout as LayerStackResult).direction : undefined;
-    for (const [layerType, layer] of Object.entries(model.layers)) {
+    // Create edges from layer relationships
+    for (const layer of Object.values(model.layers)) {
       relationshipCount += layer.relationships.length;
-      const layerLayoutData = (layout.layers as Record<string, any>)[layerType];
       for (const relationship of layer.relationships) {
-        const elkPoints = layerLayoutData?.edgeRoutingPoints?.[relationship.id] as
-          | Array<{ x: number; y: number }>
-          | undefined;
-        const edge = this.createEdge(relationship, nodeMap, elkPoints, layoutDirection);
-        if (edge) {
-          this.addEdgeIfUnique(edge, edges, edgeIdSet, 'layer relationship');
-        }
+        const edge = this.createEdge(relationship, nodeMap);
+        if (edge) edges.push(edge);
       }
     }
     console.log(`[NodeTransformer] Processed ${relationshipCount} relationships`);
@@ -247,13 +244,85 @@ export class NodeTransformer {
     // Apply edge bundling to reduce visual clutter in dense cross-layer graphs
     const threshold = calculateOptimalThreshold(nodes.length, crossLayerEdges.length);
     const { bundledEdges } = applyEdgeBundling(crossLayerEdges as Edge[], { threshold });
-
-    // Add bundled edges while checking for duplicates
-    for (const edge of bundledEdges as AppEdge[]) {
-      this.addEdgeIfUnique(edge, edges, edgeIdSet, 'bundled cross-layer reference');
-    }
+    edges.push(...(bundledEdges as AppEdge[]));
 
     console.log(`[NodeTransformer] Created ${nodes.length} nodes and ${edges.length} edges`);
+
+    // STEP 3.5: Run Libavoid routing (only in Pass 2 when measuredNodeSizes is available and router is provided)
+    let routedEdges = edges;
+    if (measuredNodeSizes && libavoidRouter && libavoidRouter.isInitialized()) {
+      try {
+        // Build input for LibavoidRouter using React Flow node positions
+        const libavoidNodes: LibavoidNodeInput[] = nodes
+          .filter(n => n.type !== 'layerContainer') // Exclude layer containers
+          .map(n => ({
+            id: n.id,
+            position: n.position,
+            width: n.width ?? 200,
+            height: n.height ?? 60,
+          }));
+
+        // Build edge inputs with inferred port side information
+        const libavoidEdges: LibavoidEdgeInput[] = [];
+
+        for (const edge of edges) {
+          // Infer port sides from handle IDs and positions
+          // sourceHandle/targetHandle format: "field-{fieldId}-right" or undefined
+          let sourceSide: 'top' | 'bottom' | 'left' | 'right' = 'bottom';
+          let targetSide: 'top' | 'bottom' | 'left' | 'right' = 'top';
+
+          // If there's a sourceHandle, extract side from it (e.g., "field-xxx-right" -> "right")
+          if (edge.sourceHandle) {
+            const handleParts = edge.sourceHandle.split('-');
+            const lastPart = handleParts[handleParts.length - 1];
+            if (lastPart === 'left' || lastPart === 'right' || lastPart === 'top' || lastPart === 'bottom') {
+              sourceSide = lastPart as 'top' | 'bottom' | 'left' | 'right';
+            }
+          }
+
+          // If there's a targetHandle, extract side from it
+          if (edge.targetHandle) {
+            const handleParts = edge.targetHandle.split('-');
+            const lastPart = handleParts[handleParts.length - 1];
+            if (lastPart === 'left' || lastPart === 'right' || lastPart === 'top' || lastPart === 'bottom') {
+              targetSide = lastPart as 'top' | 'bottom' | 'left' | 'right';
+            }
+          }
+
+          libavoidEdges.push({
+            id: edge.id,
+            source: edge.source,
+            target: edge.target,
+            sourceSide,
+            targetSide,
+          });
+        }
+
+        console.log(`[NodeTransformer] Running Libavoid routing for ${libavoidEdges.length} edges with ${libavoidNodes.length} nodes`);
+        const routingResult = await libavoidRouter.routeEdges({
+          nodes: libavoidNodes,
+          edges: libavoidEdges,
+        });
+
+        // Merge waypoints into React Flow edges
+        routedEdges = edges.map(edge => ({
+          ...edge,
+          data: {
+            ...edge.data,
+            waypoints: routingResult.edgeWaypoints.get(edge.id) ?? edge.data?.waypoints,
+          },
+        })) as AppEdge[];
+
+        const edgesWithWaypoints = routedEdges.filter(e => {
+          const waypoints = (e.data as any)?.waypoints;
+          return waypoints && Array.isArray(waypoints) && waypoints.length > 0;
+        }).length;
+        console.log(`[NodeTransformer] Libavoid routing complete: ${edgesWithWaypoints} of ${routedEdges.length} edges have waypoints`);
+      } catch (err) {
+        console.error('[NodeTransformer] Libavoid routing failed, using A* fallback:', err);
+        // Continue with edges as-is; ElbowEdge will use A* fallback
+      }
+    }
 
     // STEP 4: Dev-mode validation - warn about missing elements
     if (typeof window !== 'undefined' && (window as any).__DEV__ !== false) {
@@ -267,42 +336,15 @@ export class NodeTransformer {
       }
     }
 
-    return { nodes, edges };
-  }
-
-  /**
-   * Add an edge to the edges array if it hasn't been seen before
-   * Uses edgeIdSet to track duplicates and logs warnings for skipped edges
-   * @param edge - The edge to potentially add
-   * @param edges - The edges array to add to
-   * @param edgeIdSet - Set tracking edge IDs that have been added
-   * @param source - Description of where the edge came from (for logging)
-   */
-  private addEdgeIfUnique(
-    edge: AppEdge,
-    edges: AppEdge[],
-    edgeIdSet: Set<string>,
-    source: string
-  ): void {
-    if (!edgeIdSet.has(edge.id)) {
-      edges.push(edge);
-      edgeIdSet.add(edge.id);
-    } else {
-      console.warn(
-        `[NodeTransformer] Skipped duplicate edge ID: ${edge.id} (source: ${source})`
-      );
-    }
+    return { nodes, edges: routedEdges, layout };
   }
 
   /**
    * Create an edge from a relationship
-   * @param layoutDirection - ELK layout direction (DOWN/RIGHT/UP/LEFT); undefined for VerticalLayerLayout
    */
   private createEdge(
     relationship: Relationship,
-    nodeMap: Map<string, string>,
-    elkPoints?: Array<{ x: number; y: number }>,
-    layoutDirection?: string
+    nodeMap: Map<string, string>
   ): AppEdge | null {
     const sourceNodeId = nodeMap.get(relationship.sourceId);
     const targetNodeId = nodeMap.get(relationship.targetId);
@@ -312,23 +354,12 @@ export class NodeTransformer {
       return null;
     }
 
-    // For field-level connections, use the specific field handles.
-    // For ELK layouts, use direction-aligned handles so ELK's bend points align with
-    // React Flow's actual handle positions. For VerticalLayerLayout, leave undefined
-    // so React Flow auto-selects the closest handle.
+    // Check for field-level connection
     const sourceHandle = relationship.properties?.sourceField
       ? `field-${relationship.properties.sourceField}-right`
-      : layoutDirection === 'RIGHT' ? 'right'
-      : layoutDirection === 'LEFT' ? 'left'
-      : layoutDirection === 'UP' ? 'top'
-      : layoutDirection === 'DOWN' ? 'bottom'
       : undefined;
     const targetHandle = relationship.properties?.targetField
       ? `field-${relationship.properties.targetField}-left`
-      : layoutDirection === 'RIGHT' ? 'left'
-      : layoutDirection === 'LEFT' ? 'right'
-      : layoutDirection === 'UP' ? 'bottom'
-      : layoutDirection === 'DOWN' ? 'top'
       : undefined;
 
     return {
@@ -348,63 +379,109 @@ export class NodeTransformer {
         height: 20,
         color: FALLBACK_COLOR,
       },
-      data: {
-        pathOptions: {
-          offset: 10, // 10px margin around nodes for routing
-          borderRadius: 8, // Rounded corners for smoother paths
-        },
-        ...(elkPoints && elkPoints.length > 0 && { elkPoints }),
-      },
+      data: {},
     } as AppEdge;
   }
 
   /**
-   * Get node type for an element.
-   * Uses specNodeId when available (new API path), falls back to type mapping.
+   * Get node type for an element
+   * All element types must be mapped via configuration to NodeType enum.
+   * LayerContainer is a special structural node type.
    */
   private getNodeTypeForElement(element: ModelElement): string {
+    // Special case: LayerContainer remains separate for layout purposes
     if (element.type === 'LayerContainer' || element.type === 'layer-container') {
       return 'layerContainer';
     }
 
-    if (element.specNodeId) {
-      if (!nodeConfigLoader.getStyleConfig(element.specNodeId as NodeType)) {
-        throw new Error(
-          `[NodeTransformer] No style config for specNodeId "${element.specNodeId}" on element ${element.id}`
-        );
-      }
-      return 'unified';
-    }
-
-    // Fallback: map element.type via typeMap (legacy path used by tests and changeset builder)
+    // All other element types MUST be mapped via nodeConfig.json
     const mappedType = nodeConfigLoader.mapElementType(element.type);
+
     if (!mappedType) {
+      // Critical error: element type has no mapping
       throw new Error(
         `[NodeTransformer] Cannot map element type "${element.type}" to NodeType enum. ` +
         `Add a mapping in nodeConfig.json typeMap section. Element ID: ${element.id}`
       );
     }
+
+    // All mapped types use unified node for consistent rendering
     return 'unified';
   }
 
   /**
-   * Extract node data — unified for all element types.
-   * Uses specNodeId when available; falls back to type mapping for legacy elements.
+   * Extract node data based on element type
+   * All element types are mapped to NodeType enum and use UnifiedNode
    */
-  private extractNodeData(element: ModelElement, _nodeType: string, layerId: string): UnifiedNodeData {
-    // getNodeTypeForElement already validated that one of these resolves — no third fallback needed
-    const specNodeId = element.specNodeId ?? nodeConfigLoader.mapElementType(element.type) ?? element.type as NodeType;
+  private extractNodeData(element: ModelElement, nodeType: string, layerId: string): UnifiedNodeData {
+    // All modern paths use 'unified' node type
+    if (nodeType !== 'unified') {
+      throw new Error(`[NodeTransformer] Invalid node type "${nodeType}" - expected "unified". Element type: ${element.type}`);
+    }
+
+    const mappedType = nodeConfigLoader.mapElementType(element.type);
+
+    if (!mappedType) {
+      throw new Error(`[NodeTransformer] Cannot map element type "${element.type}" to NodeType`);
+    }
+
+    // Route to appropriate extraction method based on layer prefix
+    if (mappedType.startsWith('motivation.')) {
+      return this.extractMotivationNodeData(element, mappedType as NodeType, layerId);
+    }
+
+    if (mappedType.startsWith('business.')) {
+      return this.extractBusinessNodeData(element, mappedType as NodeType, layerId);
+    }
+
+    if (mappedType.startsWith('c4.')) {
+      return this.extractC4NodeData(element, mappedType as NodeType, layerId);
+    }
+
+    if (mappedType.startsWith('data.')) {
+      return this.extractDataNodeData(element, mappedType as NodeType, layerId);
+    }
+
+    // Should not reach here if nodeConfig.json is properly configured
+    throw new Error(
+      `[NodeTransformer] No extraction method for mapped type "${mappedType}" (element type: "${element.type}")`
+    );
+  }
+
+  /**
+   * Extract unified node data for motivation layer elements
+   */
+  private extractMotivationNodeData(element: ModelElement, nodeType: NodeType, layerId: string): UnifiedNodeData {
+    const optionalProps = this.extractOptionalProperties(element);
 
     return {
-      nodeType: specNodeId as NodeType,
+      nodeType,
       label: element.name || element.id,
       layerId,
       elementId: element.id,
       items: this.extractFieldItems(element),
-      badges: this.extractBadges(element, specNodeId),
-      detailLevel: element.detailLevel ?? 'standard',
-      changesetOperation: element.changesetOperation,
-      relationshipBadge: element.relationshipBadge,
+      badges: this.extractMotivationBadges(element, nodeType),
+      detailLevel: optionalProps.detailLevel,
+      changesetOperation: optionalProps.changesetOperation,
+      relationshipBadge: optionalProps.relationshipBadge,
+    };
+  }
+
+  /**
+   * Extract unified node data for business layer elements
+   */
+  private extractBusinessNodeData(element: ModelElement, nodeType: NodeType, layerId: string): UnifiedNodeData {
+    const optionalProps = this.extractOptionalProperties(element);
+
+    return {
+      nodeType,
+      label: element.name || element.id,
+      layerId,
+      elementId: element.id,
+      items: this.extractFieldItems(element),
+      badges: this.extractBusinessBadges(element, nodeType),
+      detailLevel: optionalProps.detailLevel,
+      changesetOperation: optionalProps.changesetOperation,
     };
   }
 
@@ -450,32 +527,43 @@ export class NodeTransformer {
   }
 
   /**
-   * Extract badges for an element, switching on specNodeId for type-specific logic
+   * Extract badges for motivation nodes based on type and data
    */
-  private extractBadges(element: ModelElement, specNodeId: string): UnifiedNodeData['badges'] {
+  private extractMotivationBadges(element: ModelElement, nodeType: NodeType): UnifiedNodeData['badges'] {
     const badges: UnifiedNodeData['badges'] = [];
     const props: Record<string, unknown> = element.properties || {};
 
-    // ── Motivation badges ──────────────────────────────────────────────────────
-    switch (specNodeId) {
+    switch (nodeType) {
       case NodeType.MOTIVATION_STAKEHOLDER:
         if (props.stakeholderType) {
           const stakeholderType = this.validateString(props.stakeholderType);
           if (stakeholderType !== undefined) {
-            badges.push({ position: 'inline', content: stakeholderType, ariaLabel: `Type: ${stakeholderType}` });
+            badges.push({
+              position: 'inline' as const,
+              content: stakeholderType,
+              ariaLabel: `Type: ${stakeholderType}`,
+            });
           }
         }
         break;
 
       case NodeType.MOTIVATION_GOAL:
         if (props.priority) {
-          badges.push({ position: 'top-right', content: `${props.priority}`, ariaLabel: `Priority: ${props.priority}` });
+          badges.push({
+            position: 'top-right' as const,
+            content: `${props.priority}`,
+            ariaLabel: `Priority: ${props.priority}`,
+          });
         }
         break;
 
       case NodeType.MOTIVATION_REQUIREMENT:
         if (props.status) {
-          badges.push({ position: 'top-left', content: props.status === 'satisfied' ? '✓' : '○', ariaLabel: `Status: ${props.status}` });
+          badges.push({
+            position: 'top-left' as const,
+            content: props.status === 'satisfied' ? '✓' : '○',
+            ariaLabel: `Status: ${props.status}`,
+          });
         }
         break;
 
@@ -483,7 +571,11 @@ export class NodeTransformer {
         if (props.category) {
           const category = this.validateString(props.category);
           if (category !== undefined) {
-            badges.push({ position: 'top-right', content: category, ariaLabel: `Category: ${category}` });
+            badges.push({
+              position: 'top-right' as const,
+              content: category,
+              ariaLabel: `Category: ${category}`,
+            });
           }
         }
         break;
@@ -492,7 +584,11 @@ export class NodeTransformer {
         if (props.status) {
           const status = this.validateString(props.status);
           if (status !== undefined) {
-            badges.push({ position: 'top-right', content: status, ariaLabel: `Status: ${status}` });
+            badges.push({
+              position: 'top-right' as const,
+              content: status,
+              ariaLabel: `Status: ${status}`,
+            });
           }
         }
         break;
@@ -501,64 +597,249 @@ export class NodeTransformer {
         if (props.negotiability) {
           const negotiability = this.validateString(props.negotiability);
           if (negotiability !== undefined) {
-            badges.push({ position: 'top-right', content: negotiability, ariaLabel: `Negotiability: ${negotiability}` });
+            badges.push({
+              position: 'top-right' as const,
+              content: negotiability,
+              ariaLabel: `Negotiability: ${negotiability}`,
+            });
           }
         }
         break;
 
       case NodeType.MOTIVATION_ASSESSMENT:
         if (props.rating) {
-          badges.push({ position: 'top-right', content: `${props.rating}/5`, ariaLabel: `Rating: ${props.rating} out of 5` });
+          badges.push({
+            position: 'top-right' as const,
+            content: `${props.rating}/5`,
+            ariaLabel: `Rating: ${props.rating} out of 5`,
+          });
         }
         break;
     }
 
-    // ── Business badges (apply to all business.* types) ────────────────────────
-    if (specNodeId.startsWith('business.')) {
-      if (props.owner) {
-        const owner = this.validateString(props.owner);
-        if (owner !== undefined) {
-          badges.push({ position: 'inline', content: owner, ariaLabel: `Owner: ${owner}` });
-        }
-      }
+    return badges.length > 0 ? badges : [];
+  }
 
-      if (props.criticality) {
-        const criticality = String(props.criticality);
-        const criticityColorClasses: Record<string, string> = {
-          'high': 'bg-red-100 text-red-900',
-          'medium': 'bg-orange-100 text-orange-900',
-          'low': 'bg-green-100 text-green-900',
-        };
+  /**
+   * Extract badges for business nodes based on type and data
+   */
+  private extractBusinessBadges(element: ModelElement, nodeType: NodeType): UnifiedNodeData['badges'] {
+    const badges: UnifiedNodeData['badges'] = [];
+    const props: Record<string, unknown> = element.properties || {};
+
+    // Owner badge (common to all business node types)
+    if (props.owner) {
+      const owner = this.validateString(props.owner);
+      if (owner !== undefined) {
         badges.push({
-          position: 'inline',
-          content: criticality,
-          className: criticityColorClasses[criticality] || 'bg-gray-100 text-gray-900',
-          ariaLabel: `Criticality: ${criticality}`,
+          position: 'inline' as const,
+          content: owner,
+          ariaLabel: `Owner: ${owner}`,
         });
-      }
-
-      if ((specNodeId === NodeType.BUSINESS_FUNCTION || specNodeId === NodeType.BUSINESS_SERVICE) && props.domain) {
-        const domain = this.validateString(props.domain);
-        if (domain !== undefined) {
-          badges.push({ position: 'inline', content: domain, ariaLabel: `Domain: ${domain}` });
-        }
-      }
-
-      if (specNodeId === NodeType.BUSINESS_PROCESS) {
-        const subprocessCount = props.subprocessCount ? Number(props.subprocessCount) : 0;
-        if (subprocessCount > 0) {
-          const expanded = this.validateBoolean(props.expanded) ?? false;
-          badges.push({
-            position: 'top-right',
-            content: expanded ? '▼' : '▶',
-            className: 'cursor-pointer text-lg leading-none',
-            ariaLabel: expanded ? 'Collapse subprocesses' : 'Expand subprocesses',
-          });
-        }
       }
     }
 
+    // Criticality badge (color-coded, common to all business node types)
+    if (props.criticality) {
+      const criticality = String(props.criticality);
+      // Map criticality levels to static Tailwind classes that are detected at build time
+      const criticityColorClasses: Record<string, string> = {
+        'high': 'bg-red-100 text-red-900',
+        'medium': 'bg-orange-100 text-orange-900',
+        'low': 'bg-green-100 text-green-900',
+      };
+      badges.push({
+        position: 'inline' as const,
+        content: criticality,
+        className: criticityColorClasses[criticality] || 'bg-gray-100 text-gray-900',
+        ariaLabel: `Criticality: ${criticality}`,
+      });
+    }
+
+    // Domain badge (only for Function and Service nodes)
+    if ((nodeType === NodeType.BUSINESS_FUNCTION || nodeType === NodeType.BUSINESS_SERVICE) && props.domain) {
+      const domain = this.validateString(props.domain);
+      if (domain !== undefined) {
+        badges.push({
+          position: 'inline' as const,
+          content: domain,
+          ariaLabel: `Domain: ${domain}`,
+        });
+      }
+    }
+
+    // Special handling for BusinessProcess expand/collapse
+    const subprocessCount = props.subprocessCount ? Number(props.subprocessCount) : 0;
+    if (nodeType === NodeType.BUSINESS_PROCESS && subprocessCount > 0) {
+      const expanded = this.validateBoolean(props.expanded) ?? false;
+      badges.push({
+        position: 'top-right' as const,
+        content: expanded ? '▼' : '▶',
+        className: 'cursor-pointer text-lg leading-none',
+        ariaLabel: expanded ? 'Collapse subprocesses' : 'Expand subprocesses',
+      });
+    }
+
     return badges;
+  }
+
+  /**
+   * Extract unified node data for C4 layer elements
+   */
+  private extractC4NodeData(element: ModelElement, nodeType: NodeType, layerId: string): UnifiedNodeData {
+    const items: FieldItem[] = [];
+    const optionalProps = this.extractOptionalProperties(element);
+
+    // Add description as first field item if present
+    const description = this.validateString(element.properties?.description) || element.description;
+    if (description) {
+      items.push({
+        id: 'description',
+        label: 'Description',
+        value: description,
+        required: false,
+      });
+    }
+
+    // Add technologies as field item if present (comma-separated)
+    if (this.isStringArray(element.properties?.technology) && element.properties.technology.length > 0) {
+      items.push({
+        id: 'technologies',
+        label: 'Technologies',
+        value: element.properties.technology.join(', '),
+        required: false,
+      });
+    }
+
+    // Add role for components
+    if (nodeType === NodeType.C4_COMPONENT) {
+      const role = this.validateString(element.properties?.role);
+      if (role !== undefined) {
+        items.push({
+          id: 'role',
+          label: 'Role',
+          value: role,
+          required: false,
+        });
+      }
+    }
+
+    // Add containerType for containers
+    if (nodeType === NodeType.C4_CONTAINER) {
+      const containerType = this.validateString(element.properties?.containerType);
+      if (containerType !== undefined) {
+        items.push({
+          id: 'containerType',
+          label: 'Type',
+          value: containerType,
+          required: false,
+        });
+      }
+    }
+
+    // Add actorType for external actors
+    if (nodeType === NodeType.C4_EXTERNAL_ACTOR) {
+      const actorType = this.validateString(element.properties?.actorType);
+      if (actorType !== undefined) {
+        items.push({
+          id: 'actorType',
+          label: 'Type',
+          value: actorType,
+          required: false,
+        });
+      }
+    }
+
+    // Add interfaces for components if present
+    if (nodeType === NodeType.C4_COMPONENT && this.isStringArray(element.properties?.interfaces) && element.properties.interfaces.length > 0) {
+      items.push({
+        id: 'interfaces',
+        label: 'Interfaces',
+        value: element.properties.interfaces.join(', '),
+        required: false,
+      });
+    }
+
+    return {
+      nodeType,
+      label: element.name || element.id,
+      layerId,
+      elementId: element.id,
+      items: items.length > 0 ? items : undefined,
+      badges: [],
+      detailLevel: optionalProps.detailLevel,
+      changesetOperation: optionalProps.changesetOperation,
+      relationshipBadge: optionalProps.relationshipBadge,
+    };
+  }
+
+  /**
+   * Create a field item from property data
+   * Handles both object and array property formats with consistent structure
+   */
+  private createFieldItemFromProperty(
+    key: string,
+    prop: Record<string, unknown>,
+    requiredFields: string[] | undefined
+  ): FieldItem {
+    const typeValue = this.validateString(prop?.type as unknown);
+    const dataTypeValue = this.validateString(prop?.dataType as unknown);
+    const propType = typeValue ?? dataTypeValue ?? 'unknown';
+    const description = prop?.description || prop?.tooltip || '';
+    const isRequired = Array.isArray(requiredFields) ? requiredFields.includes(key) : false;
+
+    return {
+      id: key,
+      label: key,
+      value: propType,
+      required: isRequired,
+      tooltip: description ? String(description) : undefined,
+    };
+  }
+
+  /**
+   * Extract unified node data for data layer elements (JSONSchema, DataModel)
+   */
+  private extractDataNodeData(element: ModelElement, nodeType: NodeType, layerId: string): UnifiedNodeData {
+    const items: FieldItem[] = [];
+    const optionalProps = this.extractOptionalProperties(element);
+
+    // Extract schema properties or model attributes as field items
+    // Handle both direct properties and schemaInfo.properties (for JSONSchema)
+    const schemaInfo = this.extractSchemaInfo(element);
+    const properties = element.properties || schemaInfo?.properties || {};
+    const requiredFields = schemaInfo?.required;
+
+    // Handle object format (key-value pairs)
+    if (this.isObjectProperties(properties)) {
+      Object.entries(properties).forEach(([key, prop]) => {
+        if (key.startsWith('_')) return; // Skip internal properties
+        if (this.isRecord(prop)) {
+          items.push(this.createFieldItemFromProperty(key, prop, requiredFields));
+        }
+      });
+    }
+
+    // Handle array format (for some schema definitions)
+    if (Array.isArray(properties)) {
+      properties.forEach((prop) => {
+        if (!this.isRecord(prop)) return;
+        const propName = this.validateString(prop.name) || this.validateString(prop.id) || 'unknown';
+        items.push(this.createFieldItemFromProperty(propName, prop, requiredFields));
+      });
+    }
+
+    return {
+      nodeType,
+      label: element.name || element.id,
+      layerId,
+      elementId: element.id,
+      items: items.length > 0 ? items : undefined,
+      badges: undefined,
+      detailLevel: optionalProps.detailLevel,
+      changesetOperation: optionalProps.changesetOperation,
+      relationshipBadge: optionalProps.relationshipBadge,
+    };
   }
 
   /**
@@ -597,10 +878,8 @@ export class NodeTransformer {
           };
         }
 
-        // Resolve NodeType: prefer specNodeId (new API path), fall back to typeMap
-        const mappedType = element.specNodeId
-          ? (element.specNodeId as NodeType)
-          : nodeConfigLoader.mapElementType(element.type);
+        // Map element type to NodeType via config
+        const mappedType = nodeConfigLoader.mapElementType(element.type);
 
         if (!mappedType) {
           // Warning already logged by nodeConfigLoader.mapElementType()
@@ -634,6 +913,23 @@ export class NodeTransformer {
               }
             }
 
+            // Special handling for C4 nodes with technologies and description
+            if (mappedType.startsWith('c4.')) {
+              let itemCount = 0;
+              if (element.description) itemCount++;
+              if (element.properties?.technology && Array.isArray(element.properties.technology) && element.properties.technology.length > 0) itemCount++;
+              if (mappedType === NodeType.C4_COMPONENT && element.properties?.role) itemCount++;
+              if (mappedType === NodeType.C4_CONTAINER && element.properties?.containerType) itemCount++;
+              if (mappedType === NodeType.C4_EXTERNAL_ACTOR && element.properties?.actorType) itemCount++;
+              if (mappedType === NodeType.C4_COMPONENT && element.properties?.interfaces && Array.isArray(element.properties.interfaces) && element.properties.interfaces.length > 0) itemCount++;
+
+              if (itemCount > 0) {
+                const headerHeight = dimensions.headerHeight || 40;
+                const itemHeight = dimensions.itemHeight || 24;
+                height = headerHeight + itemCount * itemHeight;
+              }
+            }
+
             element.visual.size = { width, height };
           }
         }
@@ -651,7 +947,7 @@ export class NodeTransformer {
   /**
    * Layout each layer separately using the selected engine, then stack vertically
    */
-  private async layoutLayersSeparately(model: MetaModel, parameters: Record<string, any>): Promise<LayerStackResult> {
+  private async layoutLayersSeparately(model: MetaModel, parameters: Record<string, any>): Promise<any> {
     const layerOrder = [
       'Motivation',
       'Business',
@@ -669,20 +965,12 @@ export class NodeTransformer {
 
     const layerSpacing = 200; // Spacing between layers
     let currentY = 0;
-    const layers: Record<string, LayerLayoutResult> = {};
+    const layers: any = {};
 
     console.log('[NodeTransformer] Starting per-layer layout for', Object.keys(model.layers).length, 'layers');
 
-    // Sort the model's actual layer keys by layerOrder (case-insensitive). Keys not in
-    // layerOrder (e.g. spec-schema layers like "application") are appended at the end.
-    const orderedLayerKeys = Object.keys(model.layers).sort((a, b) => {
-      const ai = layerOrder.findIndex(lt => lt.toLowerCase() === a.toLowerCase());
-      const bi = layerOrder.findIndex(lt => lt.toLowerCase() === b.toLowerCase());
-      return (ai === -1 ? layerOrder.length : ai) - (bi === -1 ? layerOrder.length : bi);
-    });
-
     // Process each layer in order
-    for (const layerType of orderedLayerKeys) {
+    for (const layerType of layerOrder) {
       const layer = model.layers[layerType];
 
       // Skip if layer doesn't exist or has no elements
@@ -733,26 +1021,10 @@ export class NodeTransformer {
 
       console.log(`[NodeTransformer] Layer ${layerType}: ${Object.keys(positions).length} valid positions out of ${layerResult.nodes.length} nodes`);
 
-      // Extract ELK edge routing bend points keyed by relationship ID.
-      // layerToGraphInput() uses rel.id as the ELK edge ID, so we can match directly.
-      // Points are in ELK coordinate space; add currentY (the layer's Y offset in the
-      // React Flow canvas) to convert them to absolute canvas coordinates.
-      const edgeRoutingPoints: Record<string, Array<{ x: number; y: number }>> = {};
-      for (const edge of layerResult.edges) {
-        if (edge.points && edge.points.length > 0) {
-          edgeRoutingPoints[edge.id] = (edge.points as Array<{ x: number; y: number }>).map(
-            (pt) => ({ x: pt.x, y: pt.y + currentY })
-          );
-        }
-      }
-
       // Store layer layout
       layers[layerType] = {
         yOffset: currentY,
         positions,
-        edgeRoutingPoints,
-        color: getLayerColor(layerType, 'primary'),
-        name: layerType,
         bounds: {
           minX,
           maxX,
@@ -770,7 +1042,6 @@ export class NodeTransformer {
     return {
       layers,
       totalHeight: currentY - layerSpacing,
-      direction: (parameters.direction || 'DOWN') as string,
     };
   }
 
@@ -795,11 +1066,10 @@ export class NodeTransformer {
       });
     }
 
-    // Add relationships as edges, keyed by relationship ID so ELK routing results
-    // can be matched back to the correct React Flow edge in layoutLayersSeparately().
+    // Add relationships as edges
     for (const rel of layer.relationships) {
       edges.push({
-        id: rel.id,
+        id: `${rel.sourceId}-${rel.targetId}`,
         source: rel.sourceId,
         target: rel.targetId,
         data: {
@@ -812,6 +1082,82 @@ export class NodeTransformer {
     return { nodes, edges };
   }
 
+
+  /**
+   * Extract optional properties from an element with proper type validation
+   */
+  private extractOptionalProperties(element: ModelElement): OptionalElementProperties {
+    const props: OptionalElementProperties = {};
+    const elementData = element as unknown as Record<string, unknown>;
+
+    // Safely extract detailLevel if present
+    const detailLevel = elementData.detailLevel;
+    if (detailLevel === 'minimal' || detailLevel === 'standard' || detailLevel === 'detailed') {
+      props.detailLevel = detailLevel;
+    } else {
+      props.detailLevel = 'standard';
+    }
+
+    // Safely extract changesetOperation if present
+    const changesetOperation = elementData.changesetOperation;
+    if (changesetOperation === 'add' || changesetOperation === 'update' || changesetOperation === 'delete') {
+      props.changesetOperation = changesetOperation;
+    }
+
+    // Safely extract relationshipBadge if present and validate structure
+    const relationshipBadgeData = elementData.relationshipBadge;
+    if (this.isRelationshipBadgeData(relationshipBadgeData)) {
+      props.relationshipBadge = relationshipBadgeData;
+    }
+
+    // Safely extract schemaInfo if present
+    const schemaInfo = elementData.schemaInfo;
+    if (this.isRecord(schemaInfo)) {
+      const schemaData = schemaInfo as Record<string, unknown>;
+      const properties = schemaData.properties;
+      const required = schemaData.required;
+      props.schemaInfo = {
+        properties: (this.isRecord(properties) || Array.isArray(properties)) ? properties : undefined,
+        required: this.isStringArray(required)
+          ? required
+          : undefined,
+      };
+    }
+
+    return props;
+  }
+
+  /**
+   * Extract schemaInfo from an element
+   */
+  private extractSchemaInfo(element: ModelElement): OptionalElementProperties['schemaInfo'] | undefined {
+    const schemaInfo = (element as unknown as Record<string, unknown>).schemaInfo;
+    if (!this.isRecord(schemaInfo)) {
+      return undefined;
+    }
+
+    const properties = (schemaInfo as Record<string, unknown>).properties;
+    const required = (schemaInfo as Record<string, unknown>).required;
+
+    return {
+      properties: (this.isRecord(properties) || Array.isArray(properties)) ? properties : undefined,
+      required: this.isStringArray(required)
+        ? (required as string[])
+        : undefined,
+    };
+  }
+
+  /**
+   * Type guard for RelationshipBadgeData - validates all required fields are present and have correct types
+   */
+  private isRelationshipBadgeData(value: unknown): value is RelationshipBadgeData {
+    if (!this.isRecord(value)) return false;
+    return (
+      typeof value.count === 'number' &&
+      typeof value.incoming === 'number' &&
+      typeof value.outgoing === 'number'
+    );
+  }
 
   /**
    * Validate that a value is a boolean, return it or undefined
@@ -827,4 +1173,24 @@ export class NodeTransformer {
     return typeof value === 'string' && value.length > 0 ? value : undefined;
   }
 
+  /**
+   * Check if a value is a string array
+   */
+  private isStringArray(value: unknown): value is string[] {
+    return Array.isArray(value) && value.every(item => typeof item === 'string');
+  }
+
+  /**
+   * Check if a value is a record (plain object)
+   */
+  private isRecord(value: unknown): value is Record<string, unknown> {
+    return value !== null && typeof value === 'object' && !Array.isArray(value);
+  }
+
+  /**
+   * Check if a value is object-format properties (not array)
+   */
+  private isObjectProperties(value: unknown): value is Record<string, unknown> {
+    return this.isRecord(value);
+  }
 }

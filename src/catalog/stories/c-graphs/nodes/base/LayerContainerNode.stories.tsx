@@ -1,119 +1,127 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ReactFlowProvider, ReactFlow } from '@xyflow/react';
-import type { Node } from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
-import { nodeTypes } from '@/core/nodes';
-import { NodeType } from '@/core/nodes/NodeType';
-import type { UnifiedNodeData } from '@/core/nodes/components/UnifiedNode';
+import { LayerContainerNode } from '@/core/nodes/LayerContainerNode';
 import { createLayerContainerNodeData } from '@catalog/fixtures/nodeDataFixtures';
+import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
 
 const meta = {
-  title: 'Graphs / Nodes / Base / LayerContainerNode',
-  parameters: { layout: 'fullscreen' },
+  title: 'C Graphs / Nodes / Base / LayerContainerNode',
+  decorators: [withReactFlowDecorator({ width: 400, height: 300 })],
+  parameters: {
+    layout: 'fullscreen',
+  },
 } satisfies Meta;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Layout constants matching nodeTransformer.ts production values:
-//   titleBarWidth = 40, containerPadding = 30
-// Content starts at x = 40 + 30 = 70 from container left.
-// Four 180px nodes with 20px gaps: 4×180 + 3×20 = 780px content.
-// Container width = 40 + 30 + 780 + 30 = 880 → 900 for breathing room.
-const TITLE_BAR = 40;
-const PADDING = 30;
-const NODE_W = 180;
-const NODE_H = 80;
-const NODE_GAP = 20;
-const CONTENT_START = TITLE_BAR + PADDING;           // 70
-const CONTAINER_W = TITLE_BAR + PADDING + (4 * NODE_W) + (3 * NODE_GAP) + PADDING; // 880
-const CONTAINER_H = PADDING + NODE_H + PADDING;      // 140
-const NODE_Y = PADDING;                              // 30px from top
-const COL_X = [0, 1, 2, 3].map(i => CONTENT_START + i * (NODE_W + NODE_GAP));
+export const Default: Story = {
+  render: () => {
+    const data = createLayerContainerNodeData({
+      label: 'Business Layer',
+      layerType: 'business',
+      color: '#4caf50'
+    });
+    return <LayerContainerNode data={data} id="container-1" />;
+  },
+};
 
-function childNode(
-  id: string,
-  nodeType: NodeType,
-  label: string,
-  layerId: string,
-  col: number,
-): Node {
-  return {
-    id,
-    type: 'unified',
-    position: { x: COL_X[col], y: NODE_Y },
-    width: NODE_W,
-    height: NODE_H,
-    data: { nodeType, label, layerId, elementId: id } as UnifiedNodeData,
-  };
-}
-
-function containerNode(id: string, layerType: string, label: string): Node {
-  return {
-    id,
-    type: 'layerContainer',
-    position: { x: 0, y: 0 },
-    width: CONTAINER_W,
-    height: CONTAINER_H,
-    style: { zIndex: -1 },
-    selectable: false,
-    draggable: false,
-    data: createLayerContainerNodeData({ label, layerType }),
-  };
-}
-
-function Graph({ nodes }: { nodes: Node[] }) {
-  return (
-    <ReactFlowProvider>
-      <div style={{ width: '100%', height: '100vh' }}>
-        <ReactFlow
-          nodes={nodes}
-          edges={[]}
-          nodeTypes={nodeTypes}
-          fitView
-          fitViewOptions={{ padding: 0.15 }}
-          panOnDrag={false}
-          zoomOnScroll={false}
-          nodesDraggable={false}
-          minZoom={0.2}
-        />
+export const WithChildren: Story = {
+  render: () => {
+    const data = createLayerContainerNodeData({
+      label: 'Technology Layer',
+      layerType: 'technology',
+      color: '#2196f3'
+    });
+    return (
+      <div style={{ position: 'relative', width: '600px', height: '400px' }}>
+        <LayerContainerNode data={data} id="container-2" />
+        <div
+          style={{
+            position: 'absolute',
+            top: '80px',
+            left: '80px',
+            width: '100px',
+            height: '80px',
+            background: '#fff',
+            border: '2px solid #ccc',
+            borderRadius: '4px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '12px'
+          }}
+        >
+          Child Node
+        </div>
       </div>
-    </ReactFlowProvider>
-  );
-}
+    );
+  },
+};
 
-export const BusinessLayer: Story = {
-  render: () => (
-    <Graph nodes={[
-      containerNode('c', 'business', 'Business'),
-      childNode('n1', NodeType.BUSINESS_SERVICE,    'Payment Service',    'business', 0),
-      childNode('n2', NodeType.BUSINESS_FUNCTION,   'Order Processing',   'business', 1),
-      childNode('n3', NodeType.BUSINESS_CAPABILITY, 'Customer Onboarding','business', 2),
-      childNode('n4', NodeType.BUSINESS_PROCESS,    'Fulfilment Process', 'business', 3),
-    ]} />
-  ),
+export const Collapsed: Story = {
+  render: () => {
+    const data = createLayerContainerNodeData({
+      label: 'API Layer',
+      layerType: 'api',
+      color: '#ff9800'
+    });
+    return <LayerContainerNode data={data} id="container-3" />;
+  },
+};
+
+export const Expanded: Story = {
+  render: () => {
+    const data = createLayerContainerNodeData({
+      label: 'Data Model Layer',
+      layerType: 'dataModel',
+      color: '#9c27b0'
+    });
+    return <LayerContainerNode data={data} id="container-4" />;
+  },
+};
+
+export const ChangesetAdd: Story = {
+  render: () => {
+    const data = createLayerContainerNodeData({
+      label: 'New Security Layer',
+      layerType: 'security',
+      color: '#f44336',
+      changesetOperation: 'add'
+    });
+    return <LayerContainerNode data={data} id="container-5" />;
+  },
 };
 
 export const MotivationLayer: Story = {
-  render: () => (
-    <Graph nodes={[
-      containerNode('c', 'motivation', 'Motivation'),
-      childNode('n1', NodeType.MOTIVATION_GOAL,        'Increase Revenue',   'motivation', 0),
-      childNode('n2', NodeType.MOTIVATION_STAKEHOLDER, 'Product Owner',      'motivation', 1),
-      childNode('n3', NodeType.MOTIVATION_REQUIREMENT, 'Support Payments',   'motivation', 2),
-      childNode('n4', NodeType.MOTIVATION_CONSTRAINT,  'GDPR Compliance',    'motivation', 3),
-    ]} />
-  ),
+  render: () => {
+    const data = createLayerContainerNodeData({
+      label: 'Motivation Layer',
+      layerType: 'motivation',
+      color: '#fbc02d'
+    });
+    return <LayerContainerNode data={data} id="container-6" />;
+  },
 };
 
 export const ApplicationLayer: Story = {
-  render: () => (
-    <Graph nodes={[
-      containerNode('c', 'application', 'Application'),
-      childNode('n1', NodeType.APPLICATION_COMPONENT, 'Graph Viewer',      'application', 0),
-      childNode('n2', NodeType.APPLICATION_SERVICE,   'Node Transformer',  'application', 1),
-      childNode('n3', NodeType.APPLICATION_SERVICE,   'Data Loader',       'application', 2),
-      childNode('n4', NodeType.APPLICATION_COMPONENT, 'Shared Layout',     'application', 3),
-    ]} />
-  ),
+  render: () => {
+    const data = createLayerContainerNodeData({
+      label: 'Application Layer',
+      layerType: 'application',
+      color: '#00bcd4'
+    });
+    return <LayerContainerNode data={data} id="container-7" />;
+  },
+};
+
+export const Highlighted: Story = {
+  render: () => {
+    const data = createLayerContainerNodeData({
+      label: 'Highlighted Layer',
+      layerType: 'business',
+      color: '#4caf50',
+      strokeWidth: 3
+    });
+    return <LayerContainerNode data={data} id="container-8" />;
+  },
 };

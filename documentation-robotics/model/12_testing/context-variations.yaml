@@ -1,0 +1,10 @@
+standalone-mode:
+  id: testing.context-variation.standalone-mode
+  name: Standalone Mode
+  type: context-variation
+  documentation: Standard standalone viewer application
+embedded-mode:
+  id: testing.context-variation.embedded-mode
+  name: Embedded Mode
+  type: context-variation
+  documentation: Viewer embedded in another application via iframe or web component

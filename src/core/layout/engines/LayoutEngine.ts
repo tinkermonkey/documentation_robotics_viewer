@@ -1,14 +1,14 @@
 /**
  * Layout Engine Abstraction Layer
  *
- * Defines the common interface for all layout engines.
+ * Defines the common interface for all layout engines (dagre, d3-force, ELK, Graphviz).
  * Supports runtime switching between engines and provides consistent parameter handling.
  */
 
 /**
  * Layout engine type enumeration
  */
-export type LayoutEngineType = 'elk' | 'custom';
+export type LayoutEngineType = 'dagre' | 'd3-force' | 'elk' | 'graphviz' | 'custom';
 
 /**
  * Engine capabilities for different layout algorithm types
@@ -68,6 +68,8 @@ export interface LayoutResult {
     source: string;
     target: string;
     points?: Array<{ x: number; y: number }>;
+    sourceSide?: 'top' | 'bottom' | 'left' | 'right';
+    targetSide?: 'top' | 'bottom' | 'left' | 'right';
     data?: Record<string, any>;
   }>;
 
@@ -191,15 +193,13 @@ export abstract class BaseLayoutEngine implements LayoutEngine {
     let maxY = -Infinity;
 
     for (const node of nodes) {
-      const halfW = (node.width || 0) / 2;
-      const halfH = (node.height || 0) / 2;
+      const width = node.width || 0;
+      const height = node.height || 0;
 
-      // node.position is a center coordinate (ELKLayoutEngine converts ELK's
-      // top-left to center before calling this method).
-      minX = Math.min(minX, node.position.x - halfW);
-      maxX = Math.max(maxX, node.position.x + halfW);
-      minY = Math.min(minY, node.position.y - halfH);
-      maxY = Math.max(maxY, node.position.y + halfH);
+      minX = Math.min(minX, node.position.x);
+      maxX = Math.max(maxX, node.position.x + width);
+      minY = Math.min(minY, node.position.y);
+      maxY = Math.max(maxY, node.position.y + height);
     }
 
     return {

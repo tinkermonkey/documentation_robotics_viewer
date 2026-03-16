@@ -15,13 +15,24 @@ FROM clauditoreum-orchestrator:latest
 USER root
 
 # ============================================================================
-# Stage 2: Git Configuration for CI Environment
+# Stage 2: System Dependencies for CI Environment
 # ============================================================================
-# IMPORTANT: /home/orchestrator/.gitconfig is a RUNTIME BIND MOUNT injected by
-# the orchestrator. Do NOT create, touch, or modify ~/.gitconfig in this Dockerfile.
-# All git config must use --system (writes to /etc/gitconfig) to avoid conflicts.
-# The base image already has user identity and safe.directory configured in /etc/gitconfig.
-# We add network timeout and CI-specific settings to the system config.
+# Install dbus (provides dbus-launch) required by GitHub CLI authentication
+# Without dbus-launch, `gh auth` and related commands fail in headless containers
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends dbus dbus-x11 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set DBUS_SESSION_BUS_ADDRESS to allow gh CLI to work without a running dbus session
+# In CI/container environments, authentication should use GITHUB_TOKEN env var
+ENV DBUS_SESSION_BUS_ADDRESS=disabled:
+
+# ============================================================================
+# Stage 3: Git Configuration for CI Environment
+# ============================================================================
+# The base image already has user identity and safe.directory configured in /etc/gitconfig
+# We add network timeout and CI-specific settings to the system config
 
 RUN git config --system credential.helper 'cache --timeout=3600' && \
     git config --system http.postBuffer 524288000 && \
@@ -36,7 +47,7 @@ ENV GIT_TERMINAL_PROMPT=0
 ENV GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=30"
 
 # ============================================================================
-# Stage 3: Pre-install Dependencies (OPTIONAL but RECOMMENDED)
+# Stage 4: Pre-install Dependencies (OPTIONAL but RECOMMENDED)
 # ============================================================================
 # Pre-installing dependencies speeds up agent startup time because the agent
 # doesn't have to install them every time it runs.
@@ -63,24 +74,25 @@ RUN npx playwright install --with-deps chromium && \
     chown -R orchestrator:orchestrator /opt/ms-playwright
 
 # ============================================================================
-# Stage 4: Ownership and Permissions
+# Stage 5: Ownership and Permissions
 # ============================================================================
 # Change ownership ONLY of what was installed, NOT source code
 # Source code ownership is handled by the mount
 RUN chown -R orchestrator:orchestrator /workspace/documentation_robotics_viewer/node_modules
 
 # ============================================================================
-# Stage 5: Switch to Runtime User
+# Stage 6: Switch to Runtime User
 # ============================================================================
 USER orchestrator
 
 # ============================================================================
-# Stage 6: Verification (MANDATORY)
+# Stage 7: Verification (MANDATORY)
 # ============================================================================
 # Verify all critical CLIs are present (from base image)
 RUN claude --version && \
     git --version && \
-    gh --version
+    gh --version && \
+    which dbus-launch
 
 # Verify project-specific tools (Node.js)
 RUN node --version && npm --version

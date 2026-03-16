@@ -27,7 +27,7 @@ test.describe('Example Implementation YAML Model', () => {
     expect(manifest.version).toBe('0.1.0');
     expect(manifest.schema).toBe('documentation-robotics-v1');
     expect(manifest.project).toBeDefined();
-    expect(manifest.project.name).toBe('documentation-robotics-viewer');
+    expect(manifest.project.name).toBe('documentation_robotics_viewer');
     expect(manifest.layers).toBeDefined();
   });
 
@@ -44,8 +44,8 @@ test.describe('Example Implementation YAML Model', () => {
       '04_application',
       '05_technology',
       '06_api',
-      '07_data-model',
-      '08_data-store',
+      '07_data_model',
+      '08_datastore',
       '09_ux',
       '10_navigation',
     ];
@@ -88,7 +88,7 @@ test.describe('Example Implementation YAML Model', () => {
 
 
   test('should parse data model entities', () => {
-    const entitiesPath = path.join(exampleImplPath, '07_data-model', 'objectschemas.yaml');
+    const entitiesPath = path.join(exampleImplPath, '07_data_model', 'objects.yaml');
     expect(fs.existsSync(entitiesPath)).toBeTruthy();
 
     const content = fs.readFileSync(entitiesPath, 'utf-8');
@@ -98,5 +98,21 @@ test.describe('Example Implementation YAML Model', () => {
     expect(Object.keys(entities).length).toBeGreaterThan(0);
   });
 
+  test('should have projection-rules.yaml', () => {
+    const projectionRulesPath = path.join(
+      exampleImplPath,
+      '..',
+      'projection-rules.yaml'
+    );
+    expect(fs.existsSync(projectionRulesPath)).toBeTruthy();
+
+    const content = fs.readFileSync(projectionRulesPath, 'utf-8');
+    const rules = yaml.load(content) as any;
+
+    expect(rules.version).toBe('0.1.0');
+    expect(rules.projections).toBeDefined();
+    expect(Array.isArray(rules.projections)).toBeTruthy();
+    expect(rules.projections.length).toBeGreaterThan(0);
+  });
 });
 

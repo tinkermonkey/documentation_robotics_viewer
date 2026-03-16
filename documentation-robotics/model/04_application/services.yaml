@@ -1,0 +1,1083 @@
+graph-builder:
+  id: application.service.graph-builder
+  name: Graph Builder
+  type: service
+  documentation: Transforms model data into graph nodes and edges
+  properties:
+    x-realizes:
+      - business.service.architecture-visualization
+    x-uses:
+      - technology.library.react-flow
+      - application.service.node-transformer
+      - application.service.layout-engine
+    x-accesses:
+      - data_model.entity.model-element
+      - data_model.entity.relationship
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/businessGraphBuilder.ts
+            symbol: buildGraph
+    x-monitored-by:
+      - apm.metric.model-parse-time
+      - apm.metric.validation-time
+layout-engine:
+  id: application.service.layout-engine
+  name: Layout Engine
+  type: service
+  documentation: Calculates node positions
+  properties:
+    x-realizes:
+      - business.service.architecture-visualization
+    x-uses:
+      - technology.library.d3-force
+      - technology.library.dagre
+      - technology.library.elkjs
+    x-monitored-by:
+      - apm.metric.layout-calculation-time
+      - apm.metric.layout-engine-errors
+      - apm.metric.performance-tracing
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/layerLayoutConfig.ts
+            symbol: getLayerLayoutConfig
+node-transformer:
+  id: application.service.node-transformer
+  name: Node Transformer
+  type: service
+  documentation: Converts model elements to React Flow nodes
+  properties:
+    x-realizes:
+      - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/nodeTransformer.ts
+            symbol: transformElement
+    x-monitored-by:
+      - apm.metric.render-time
+business-export-service:
+  id: application.service.business-export-service
+  name: Business Export Service
+  type: service
+  documentation: Exports business layer graphs as PNG, SVG, and JSON with
+    traceability reports and impact analysis
+  properties:
+    x-realizes:
+      - business.service.documentation-export
+    x-uses:
+      - technology.library.html-to-image
+      - technology.library.jszip
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/businessExportService.ts
+            symbol: exportBusinessLayer
+    x-monitored-by:
+      - apm.metric.export-generation-time
+      - apm.metric.export-errors
+motivation-export-service:
+  id: application.service.motivation-export-service
+  name: Motivation Export Service
+  type: service
+  documentation: Exports motivation layer graphs (goals, drivers, stakeholders) as
+    PNG, SVG, JSON with traceability reports
+  properties:
+    x-realizes:
+      - business.service.documentation-export
+    x-uses:
+      - technology.library.html-to-image
+      - technology.library.jszip
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/motivationExportService.ts
+            symbol: exportMotivationLayer
+    x-monitored-by:
+      - apm.metric.export-generation-time
+      - apm.metric.export-errors
+c4-export-service:
+  id: application.service.c4-export-service
+  name: C4 Export Service
+  type: service
+  documentation: Exports C4 architecture diagrams as PNG, SVG with scenario
+    presets and focus context
+  properties:
+    x-realizes:
+      - business.service.documentation-export
+    x-uses:
+      - technology.library.html-to-image
+      - technology.library.jszip
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/c4ExportService.ts
+            symbol: exportC4View
+    x-monitored-by:
+      - apm.metric.export-generation-time
+      - apm.metric.export-errors
+business-graph-builder:
+  id: application.service.business-graph-builder
+  name: Business Graph Builder
+  type: service
+  documentation: Constructs business layer graph from parsed elements with
+    cross-layer links and indices
+  properties:
+    x-accesses:
+      - data_model.object-schema.business-graph
+      - data_model.object-schema.business-node
+      - data_model.object-schema.business-edge
+      - data_model.object-schema.cross-layer-link
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/businessGraphBuilder.ts
+            symbol: buildBusinessGraph
+    x-tested-by:
+      - testing.test-suite.business-graph-builder-unit
+business-layer-parser:
+  id: application.service.business-layer-parser
+  name: Business Layer Parser
+  type: service
+  documentation: Parses business layer YAML files into business elements
+    (processes, functions, services, capabilities)
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/businessLayerParser.ts
+            symbol: parseBusinessLayer
+    x-tested-by:
+      - testing.test-suite.business-layer-parser-unit
+      - testing.test-suite.business-layer-integration
+yaml-parser:
+  id: application.service.yaml-parser
+  name: YAML Parser
+  type: service
+  documentation: Parses YAML instance models with manifest orchestration and
+    dot-notation ID resolution
+  properties:
+    x-realizes:
+      - business.service.model-data-management
+    x-uses:
+      - technology.library.js-yaml
+      - technology.language.typescript
+    x-accesses:
+      - data_model.entity.meta-model
+      - data_model.entity.layer
+      - data_model.entity.model-element
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/yamlParser.ts
+            symbol: parseYAMLModel
+    x-monitored-by:
+      - apm.metric.model-parse-time
+      - apm.metric.parsing-errors
+      - apm.metric.validation-errors
+json-schema-parser:
+  id: application.service.json-schema-parser
+  name: JSON Schema Parser
+  type: service
+  documentation: Parses JSON Schema definitions into model elements with auto-generated UUIDs
+  properties:
+    x-realizes:
+      - business.service.model-data-management
+    x-uses:
+      - technology.language.typescript
+    x-accesses:
+      - data_model.entity.meta-model
+      - data_model.entity.layer
+      - data_model.entity.model-element
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/jsonSchemaParser.ts
+            symbol: parseJSONSchema
+    x-monitored-by:
+      - apm.metric.model-parse-time
+      - apm.metric.parsing-errors
+c4-parser:
+  id: application.service.c4-parser
+  name: C4 Parser
+  type: service
+  documentation: Parses C4 architecture model elements (containers, components,
+    external actors)
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/c4Parser.ts
+            symbol: parseC4Model
+    x-monitored-by:
+      - apm.metric.model-parse-time
+      - apm.metric.parsing-errors
+    x-tested-by:
+      - testing.test-suite.c4-parser-unit
+      - testing.test-suite.c4-parser-integration
+cross-layer-reference-resolver:
+  id: application.service.cross-layer-reference-resolver
+  name: Cross-Layer Reference Resolver
+  type: service
+  documentation: Resolves references between layers and validates traceability links
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/crossLayerReferenceResolver.ts
+            symbol: resolveCrossLayerReferences
+    x-tested-by:
+      - testing.test-suite.cross-layer-reference-resolver-unit
+data-loader:
+  id: application.service.data-loader
+  name: Data Loader
+  type: service
+  documentation: Orchestrates model loading from JSON Schema, YAML instances, or demo data
+  properties:
+    x-monitored-by:
+      - apm.metric.model-parse-time
+      - apm.metric.parsing-errors
+      - apm.metric.initialization-time
+    x-uses:
+      - application.service.yaml-parser
+      - application.service.json-schema-parser
+      - application.service.model-store
+    x-accesses:
+      - data_model.entity.meta-model
+      - data_model.entity.layer
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/dataLoader.ts
+            symbol: loadModel
+    x-exposes:
+      - api.operation.get-model
+git-hub-service:
+  id: application.service.git-hub-service
+  name: GitHub Service
+  type: service
+  documentation: Fetches models and releases from GitHub repositories via backend proxy
+  properties:
+    x-realizes:
+      - business.service.external-model-integration
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/githubService.ts
+            symbol: GitHubService
+impact-analysis-service:
+  id: application.service.impact-analysis-service
+  name: Impact Analysis Service
+  type: service
+  documentation: Analyzes downstream impact of changes across process dependencies
+  properties:
+    x-realizes:
+      - business.service.architecture-analysis
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/impactAnalysisService.ts
+            symbol: analyzeImpact
+    x-monitored-by:
+      - apm.metric.similarity-calculation-time
+    x-tested-by:
+      - testing.test-suite.impact-analysis-service-unit
+motivation-graph-builder:
+  id: application.service.motivation-graph-builder
+  name: Motivation Graph Builder
+  type: service
+  documentation: Constructs motivation layer graph from goals, drivers,
+    stakeholders, and requirements
+  properties:
+    x-accesses:
+      - data_model.object-schema.motivation-graph
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/motivationGraphBuilder.ts
+            symbol: buildMotivationGraph
+    x-tested-by:
+      - testing.test-suite.motivation-graph-builder-unit
+motivation-graph-transformer:
+  id: application.service.motivation-graph-transformer
+  name: Motivation Graph Transformer
+  type: service
+  documentation: Transforms motivation graph into ReactFlow nodes and edges with filtering
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/motivationGraphTransformer.ts
+            symbol: transformMotivationGraph
+    x-tested-by:
+      - testing.test-suite.motivation-graph-transformer-unit
+c4-view-transformer:
+  id: application.service.c4-view-transformer
+  name: C4 View Transformer
+  type: service
+  documentation: Transforms C4 model into hierarchical ReactFlow visualization
+    with focus context
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/c4ViewTransformer.ts
+            symbol: transformC4View
+    x-tested-by:
+      - testing.test-suite.c4-view-transformer-unit
+      - testing.test-suite.c4-parser-integration
+reference-diagram-service:
+  id: application.service.reference-diagram-service
+  name: Reference Diagram Service
+  type: service
+  documentation: Generates reference diagrams for testing and visual regression analysis
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/reference/referenceDiagramService.ts
+            symbol: ReferenceDiagramService
+    x-tested-by:
+      - testing.test-suite.reference-diagram-service-unit
+      - testing.test-suite.reference-diagram-integration
+graph-readability-service:
+  id: application.service.graph-readability-service
+  name: Graph Readability Service
+  type: service
+  documentation: Calculates graph readability metrics (overlap, spacing, aspect ratio)
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/metrics/graphReadabilityService.ts
+            symbol: calculateReadability
+    x-tested-by:
+      - testing.test-suite.graph-readability-unit
+      - testing.test-suite.graph-readability-integration
+image-similarity-service:
+  id: application.service.image-similarity-service
+  name: Image Similarity Service
+  type: service
+  documentation: Compares screenshots using SSIM and perceptual hash algorithms
+  properties:
+    x-monitored-by:
+      - apm.metric.similarity-calculation-time
+      - apm.metric.embedding-success-rate
+    x-tested-by:
+      - testing.test-suite.image-similarity-unit
+      - testing.test-suite.visual-similarity-integration
+screenshot-service:
+  id: application.service.screenshot-service
+  name: Screenshot Service
+  type: service
+  documentation: Captures screenshots of graph visualizations for comparison
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/comparison/screenshotService.ts
+            symbol: captureScreenshot
+    x-monitored-by:
+      - apm.metric.screenshot-capture-time
+    x-tested-by:
+      - testing.test-suite.visual-comparison-tools-unit
+      - testing.test-suite.visual-similarity-integration
+quality-score-service:
+  id: application.service.quality-score-service
+  name: Quality Score Service
+  type: service
+  documentation: Calculates composite quality scores for graph layouts
+  properties:
+    x-monitored-by:
+      - apm.metric.quality-score-calculation-time
+    x-tested-by:
+      - testing.test-suite.extended-quality-metrics-unit
+      - testing.test-suite.quality-regression-integration
+heatmap-service:
+  id: application.service.heatmap-service
+  name: Heatmap Service
+  type: service
+  documentation: Generates visual heatmaps highlighting differences between screenshots
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/comparison/heatmapService.ts
+            symbol: generateHeatmap
+metrics-history-service:
+  id: application.service.metrics-history-service
+  name: Metrics History Service
+  type: service
+  documentation: Tracks and stores historical metrics for regression analysis
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/metrics/metricsHistoryService.ts
+            symbol: MetricsHistoryService
+    x-tested-by:
+      - testing.test-suite.quality-regression-integration
+feedback-to-parameter-service:
+  id: application.service.feedback-to-parameter-service
+  name: Feedback to Parameter Service
+  type: service
+  documentation: Converts user feedback into layout parameter adjustments for refinement
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/refinement/feedbackToParameterService.ts
+            symbol: convertFeedbackToParameters
+    x-tested-by:
+      - testing.test-suite.feedback-to-parameter-unit
+local-file-loader:
+  id: application.service.local-file-loader
+  name: Local File Loader
+  type: service
+  documentation: Loads models from local file uploads (ZIP archives)
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/localFileLoader.ts
+            symbol: loadLocalFile
+business-node-transformer:
+  id: application.service.business-node-transformer
+  name: Business Node Transformer
+  type: service
+  documentation: Transforms business layer elements into custom React Flow nodes
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/businessNodeTransformer.ts
+            symbol: transformBusinessNode
+cross-layer-reference-extractor:
+  id: application.service.cross-layer-reference-extractor
+  name: Cross Layer Reference Extractor
+  type: service
+  documentation: Extracts cross-layer references from parsed model elements
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/crossLayerReferenceExtractor.ts
+            symbol: extractCrossLayerReferences
+demo-data-service:
+  id: application.service.demo-data-service
+  name: Demo Data Service
+  type: service
+  documentation: Provides sample architecture data for testing and demos
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/embeddedDataLoader.ts
+            symbol: loadDemoData
+spec-parser-service:
+  id: application.service.spec-parser-service
+  name: Spec Parser Service
+  type: service
+  documentation: Parses specification documents and extracts metadata
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/specParser.ts
+            symbol: parseSpec
+    x-monitored-by:
+      - apm.metric.validation-time
+      - apm.metric.validation-errors
+model-store:
+  id: application.service.model-store
+  name: Model Store
+  type: service
+  documentation: Central Zustand store managing loaded model data with selectors
+    for layers and elements
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.entity.meta-model
+      - data_model.entity.layer
+      - data_model.entity.model-element
+      - data_model.object-schema.model-store-state
+    x-realizes:
+      - business.service.model-data-management
+    x-persists-to:
+      - datastore.store.model-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/stores/modelStore.ts
+            symbol: modelStore
+    x-monitored-by:
+      - apm.metric.memory-usage
+      - apm.metric.initialization-time
+      - apm.metric.model-parse-time
+annotation-store:
+  id: application.service.annotation-store
+  name: Annotation Store
+  type: service
+  documentation: Zustand store managing annotation state with optimistic updates
+    and WebSocket synchronization
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.object-schema.annotation
+      - data_model.object-schema.annotation-store-state
+    x-persists-to:
+      - datastore.store.annotation-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/stores/annotationStore.ts
+            symbol: annotationStore
+    x-monitored-by:
+      - apm.metric.annotation-load-time
+      - apm.metric.websocket-latency
+    x-exposes:
+      - api.operation.get-annotations
+      - api.operation.create-annotation
+      - api.operation.update-annotation
+      - api.operation.delete-annotation
+changeset-store:
+  id: application.service.changeset-store
+  name: Changeset Store
+  type: service
+  documentation: Zustand store managing changeset selection and loading state
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.object-schema.changeset-summary
+      - data_model.object-schema.changeset-details
+      - data_model.object-schema.changeset-store-state
+    x-realizes:
+      - business.service.model-data-management
+    x-persists-to:
+      - datastore.store.changeset-store
+      - datastore.store.local-fs
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/stores/changesetStore.ts
+            symbol: changesetStore
+    x-monitored-by:
+      - apm.metric.changeset-load-time
+    x-exposes:
+      - api.operation.list-changesets
+      - api.operation.get-changeset
+      - api.operation.create-changeset
+      - api.operation.apply-changeset
+auth-store:
+  id: application.service.auth-store
+  name: Auth Store
+  type: service
+  documentation: Zustand store managing authentication token from DR CLI magic
+    links with localStorage persistence
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.object-schema.auth-state
+    x-persists-to:
+      - datastore.store.auth-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/stores/authStore.ts
+            symbol: authStore
+connection-store:
+  id: application.service.connection-store
+  name: Connection Store
+  type: service
+  documentation: Zustand store tracking WebSocket connection state and reconnection attempts
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.object-schema.connection-state
+    x-persists-to:
+      - datastore.store.connection-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/stores/connectionStore.ts
+            symbol: connectionStore
+    x-monitored-by:
+      - apm.metric.websocket-latency
+      - apm.metric.websocket-reconnections
+      - apm.metric.websocket-errors
+view-preference-store:
+  id: application.service.view-preference-store
+  name: View Preference Store
+  type: service
+  documentation: Zustand store managing user view mode preferences
+    (graph/JSON/list) with localStorage persistence
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.object-schema.view-preferences
+      - data_model.object-schema.filter-state
+      - data_model.object-schema.view-preferences-state
+    x-persists-to:
+      - datastore.store.view-preference-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/stores/viewPreferenceStore.ts
+            symbol: viewPreferenceStore
+layer-store:
+  id: application.service.layer-store
+  name: Layer Store
+  type: service
+  documentation: Zustand store managing layer visibility, opacity, locking, and focus state
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.entity.layer
+      - data_model.object-schema.layer-store-state
+    x-persists-to:
+      - datastore.store.layer-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/stores/layerStore.ts
+            symbol: layerStore
+element-store:
+  id: application.service.element-store
+  name: Element Store
+  type: service
+  documentation: Temporary in-memory store for model elements (workaround for
+    tldraw JSON serialization)
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.entity.model-element
+      - data_model.object-schema.element-store-state
+    x-persists-to:
+      - datastore.store.element-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/stores/elementStore.ts
+            symbol: elementStore
+layout-preferences-store:
+  id: application.service.layout-preferences-store
+  name: Layout Preferences Store
+  type: service
+  documentation: Zustand store managing layout engine preferences, custom presets,
+    and refinement session state with localStorage
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.object-schema.layout-preset
+      - data_model.object-schema.layout-options
+      - data_model.object-schema.layout-preferences-state
+    x-persists-to:
+      - datastore.store.layout-preferences-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/stores/layoutPreferencesStore.ts
+            symbol: layoutPreferencesStore
+    x-tested-by:
+      - testing.test-suite.layout-preferences-unit
+      - testing.test-suite.preference-persistence-integration
+    x-monitored-by:
+      - apm.metric.layout-calculation-time
+      - apm.metric.performance-tracing
+business-layer-store:
+  id: application.service.business-layer-store
+  name: Business Layer Store
+  type: service
+  documentation: Zustand store managing business layer visualization preferences
+    (filters, layout, focus modes) with localStorage
+  properties:
+    x-uses:
+      - technology.library.zustand
+    x-accesses:
+      - data_model.object-schema.business-layer-store-state
+    x-persists-to:
+      - datastore.store.business-layer-store
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/stores/businessLayerStore.ts
+            symbol: businessLayerStore
+dagre-layout-engine:
+  id: application.service.dagre-layout-engine
+  name: Dagre Layout Engine
+  type: service
+  documentation: Hierarchical layout engine using Dagre algorithm for directed acyclic graphs
+  properties:
+    x-uses:
+      - technology.library.dagre
+    x-realizes:
+      - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/layerLayoutConfig.ts
+            symbol: dagreLayout
+    x-monitored-by:
+      - apm.metric.layout-calculation-time
+      - apm.metric.performance-tracing
+    x-tested-by:
+      - testing.test-suite.third-party-engines-unit
+      - testing.test-suite.layout-engine-workflow-integration
+d3-force-layout-engine:
+  id: application.service.d3-force-layout-engine
+  name: D3 Force Layout Engine
+  type: service
+  documentation: Force-directed layout engine using D3 force simulation for
+    organic, physics-based layouts
+  properties:
+    x-uses:
+      - technology.library.d3-force
+    x-realizes:
+      - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/layerLayoutConfig.ts
+            symbol: d3ForceLayout
+    x-monitored-by:
+      - apm.metric.layout-calculation-time
+      - apm.metric.performance-tracing
+elk-layout-engine:
+  id: application.service.elk-layout-engine
+  name: ELK Layout Engine
+  type: service
+  documentation: Eclipse Layout Kernel engine supporting multiple layout
+    algorithms (Layered, Force, Box, etc.)
+  properties:
+    x-uses:
+      - technology.library.elkjs
+    x-realizes:
+      - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/layerLayoutConfig.ts
+            symbol: elkLayout
+    x-monitored-by:
+      - apm.metric.layout-calculation-time
+      - apm.metric.performance-tracing
+    x-tested-by:
+      - testing.test-suite.third-party-engines-unit
+graphviz-layout-engine:
+  id: application.service.graphviz-layout-engine
+  name: Graphviz Layout Engine
+  type: service
+  documentation: Graphviz DOT layout engine for hierarchical graph layouts
+  properties:
+    x-uses:
+      - technology.library.graphviz
+    x-realizes:
+      - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/layerLayoutConfig.ts
+            symbol: graphvizLayout
+    x-tested-by:
+      - testing.test-suite.third-party-engines-unit
+layout-engine-registry:
+  id: application.service.layout-engine-registry
+  name: Layout Engine Registry
+  type: service
+  documentation: Registry and factory for layout engines with algorithm selection
+    and configuration
+  properties:
+    x-realizes:
+      - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/layerLayoutConfig.ts
+            symbol: LayoutEngineRegistry
+    x-tested-by:
+      - testing.test-suite.layout-engine-interface-unit
+      - testing.test-suite.layout-engine-workflow-integration
+semantic-zoom-controller:
+  id: application.service.semantic-zoom-controller
+  name: Semantic Zoom Controller
+  type: service
+  documentation: Controls semantic zoom levels and detail adaptation based on viewport scale
+  properties:
+    x-realizes:
+      - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/layerLayoutConfig.ts
+            symbol: semanticZoomController
+refinement-loop-service:
+  id: application.service.refinement-loop-service
+  name: Refinement Loop Service
+  type: service
+  documentation: Orchestrates iterative layout optimization with quality scoring,
+    early stopping, and iteration history
+  properties:
+    x-realizes:
+      - business.service.quality-assurance
+    x-uses:
+      - application.service.layout-parameters-service
+      - application.service.optimization-strategies-service
+      - application.service.quality-score-service
+      - application.service.screenshot-service
+    x-tested-by:
+      - testing.test-suite.refinement-loop-unit
+layout-parameters-service:
+  id: application.service.layout-parameters-service
+  name: Layout Parameters Service
+  type: service
+  documentation: Manages layout parameter definitions, ranges, validation, and
+    random generation for refinement
+  properties:
+    x-realizes:
+      - business.service.quality-assurance
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/refinement/layoutParameters.ts
+            symbol: LayoutParameters
+optimization-strategies-service:
+  id: application.service.optimization-strategies-service
+  name: Optimization Strategies Service
+  type: service
+  documentation: Implements optimization strategies (grid search, random search,
+    hill climbing) for layout refinement
+  properties:
+    x-realizes:
+      - business.service.quality-assurance
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/refinement/optimizationStrategies.ts
+            symbol: OptimizationStrategies
+force-directed-business-layout:
+  id: application.service.force-directed-business-layout
+  name: Force Directed Business Layout
+  type: service
+  documentation: Force-directed layout specialized for business layer with
+    service/capability clustering
+  properties:
+    x-uses:
+      - technology.library.d3-force
+    x-realizes:
+      - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/businessGraphBuilder.ts
+            symbol: forceDirectedLayout
+    x-tested-by:
+      - testing.test-suite.force-directed-business-layout-unit
+hierarchical-business-layout:
+  id: application.service.hierarchical-business-layout
+  name: Hierarchical Business Layout
+  type: service
+  documentation: Hierarchical layout for business processes with swimlane organization
+  properties:
+    x-uses:
+      - technology.library.dagre
+    x-realizes:
+      - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/businessGraphBuilder.ts
+            symbol: hierarchicalLayout
+    x-tested-by:
+      - testing.test-suite.hierarchical-business-layout-unit
+matrix-business-layout:
+  id: application.service.matrix-business-layout
+  name: Matrix Business Layout
+  type: service
+  documentation: Matrix layout for business capability maps with grid-based positioning
+  properties:
+    x-realizes:
+      - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/businessGraphBuilder.ts
+            symbol: matrixLayout
+    x-tested-by:
+      - testing.test-suite.matrix-business-layout-unit
+swimlane-business-layout:
+  id: application.service.swimlane-business-layout
+  name: Swimlane Business Layout
+  type: service
+  documentation: Swimlane layout for business processes with role-based lanes
+  properties:
+    x-realizes:
+      - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/businessGraphBuilder.ts
+            symbol: swimlaneLayout
+    x-tested-by:
+      - testing.test-suite.swimlane-business-layout-unit
+edge-bundling-service:
+  id: application.service.edge-bundling-service
+  name: Edge Bundling Service
+  type: service
+  documentation: Edge bundling algorithm to reduce visual clutter by grouping related edges
+  properties:
+    x-uses:
+      - technology.library.d3-force
+    x-realizes:
+      - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/layout/edgeBundling.ts
+            symbol: EdgeBundle
+    x-tested-by:
+      - testing.test-suite.orthogonal-routing-unit
+graph-element-validator:
+  id: application.service.graph-element-validator
+  name: Graph Element Validator
+  type: service
+  documentation: Validates graph structure, node/edge data, and cross-layer references
+  properties:
+    x-realizes:
+      - business.service.quality-assurance
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/services/validation/graphElementValidator.ts
+            symbol: validateGraphElement
+    x-tested-by:
+      - testing.test-suite.graph-element-validator-unit
+pathfinding-service:
+  id: application.service.pathfinding-service
+  name: Pathfinding Service
+  type: service
+  documentation: Pathfinding algorithms for edge routing and obstacle avoidance
+  properties:
+    x-realizes:
+      - business.service.architecture-visualization
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/edges/pathfinding.ts
+            symbol: lineIntersectsRect
+websocket-client:
+  id: application.service.websocket-client
+  name: WebSocket Client
+  type: service
+  documentation: Real-time bidirectional communication client for model updates,
+    annotation sync, and changeset notifications
+  properties:
+    protocol: WebSocket
+    events:
+      - model.updated
+      - annotation.added
+      - changeset.created
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/websocketClient.ts
+coverage-analyzer:
+  id: application.service.coverage-analyzer
+  name: Coverage Analyzer
+  type: service
+  documentation: Analyzes test coverage and architecture coverage metrics for
+    quality assessment
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/coverageAnalyzer.ts
+changeset-graph-builder:
+  id: application.service.changeset-graph-builder
+  name: Changeset Graph Builder
+  type: service
+  documentation: Builds graph visualizations for changesets showing added,
+    modified, and deleted elements
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/changesetGraphBuilder.ts
+embedded-data-loader:
+  id: application.service.embedded-data-loader
+  name: Embedded Data Loader
+  type: service
+  documentation: Loads model data, annotations, changesets, and specifications for
+    embedded viewer with token-based authentication
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/services/embeddedDataLoader.ts

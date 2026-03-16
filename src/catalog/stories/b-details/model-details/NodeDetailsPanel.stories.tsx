@@ -4,7 +4,7 @@ import type { Node } from '@xyflow/react';
 import type { MetaModel } from '@/core/types';
 
 const meta = {
-  title: 'Details / Model Details / NodeDetailsPanel',
+  title: 'B Details / Model Details / NodeDetailsPanel',
   parameters: {
     layout: 'centered',
   },
@@ -14,6 +14,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const mockModel: MetaModel = {
+  version: '1.0.0',
   references: [],
   layers: {
     motivation: {
@@ -258,6 +259,7 @@ export const NodeWithNegativePosition: Story = {
 export const EmptyModel: Story = {
   render: () => {
     const emptyModel: MetaModel = {
+      version: '1.0.0',
       layers: {},
       references: [],
     };

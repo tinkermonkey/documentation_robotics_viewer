@@ -84,7 +84,7 @@ function BadgeRendererComponent({ badges, position }: BadgeRendererProps): React
   );
 }
 
-const BadgeRenderer: React.FC<BadgeRendererProps> = memo(BadgeRendererComponent);
+const BadgeRenderer = memo(BadgeRendererComponent);
 BadgeRenderer.displayName = 'BadgeRenderer';
 
 export default BadgeRenderer;

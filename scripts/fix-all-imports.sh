@@ -51,7 +51,7 @@ fix_file() {
     sed -i '' "s|from '\./MotivationContextMenu'|from '@/apps/embedded/components/MotivationContextMenu'|g" "$file"
     sed -i '' "s|from '\./SpecViewer'|from '@/apps/embedded/components/SpecViewer'|g" "$file"
     sed -i '' "s|from '\./SchemaInfoPanel'|from '@/apps/embedded/components/SchemaInfoPanel'|g" "$file"
-    sed -i '' "s|from '\./ModelDetailsViewer'|from '@/apps/embedded/components/ModelDetailsViewer'|g" "$file"
+    sed -i '' "s|from '\./ModelJSONViewer'|from '@/apps/embedded/components/ModelJSONViewer'|g" "$file"
     sed -i '' "s|from '\./NodeDetailsPanel'|from '@/apps/embedded/components/NodeDetailsPanel'|g" "$file"
     sed -i '' "s|from '\./MotivationGraphView'|from '@/apps/embedded/components/MotivationGraphView'|g" "$file"
     sed -i '' "s|from '\./C4GraphView'|from '@/apps/embedded/components/C4GraphView'|g" "$file"

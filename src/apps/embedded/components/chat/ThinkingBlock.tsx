@@ -8,7 +8,7 @@ export interface ThinkingBlockProps {
   defaultExpanded?: boolean;
 }
 
-export const ThinkingBlock: React.FC<ThinkingBlockProps> = memo(
+export const ThinkingBlock = memo(
   ({
     content,
     durationMs,

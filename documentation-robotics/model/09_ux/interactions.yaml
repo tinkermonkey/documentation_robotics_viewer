@@ -1,0 +1,204 @@
+graph-pan-zoom:
+  id: ux.interaction.graph-pan-zoom
+  name: Graph Pan and Zoom
+  type: interaction
+  documentation: User can pan by dragging canvas and zoom using mouse wheel or pinch gestures
+  properties:
+    x-handled-by:
+      - application.component.graph-view
+      - ux.component.space-mouse-handler
+graph-node-select:
+  id: ux.interaction.graph-node-select
+  name: Graph Node Selection
+  type: interaction
+  documentation: Click on graph node to select and display details in sidebar panels
+  properties:
+    x-handled-by:
+      - application.component.graph-view
+      - application.component.inspector-panel
+graph-fit-view:
+  id: ux.interaction.graph-fit-view
+  name: Fit Graph to View
+  type: interaction
+  documentation: Automatically adjust zoom and pan to fit all visible nodes in viewport
+graph-minimap-toggle:
+  id: ux.interaction.graph-minimap-toggle
+  name: Toggle Minimap
+  type: interaction
+  documentation: Show or hide minimap overview of graph
+layer-filter-toggle:
+  id: ux.interaction.layer-filter-toggle
+  name: Layer Filter Toggle
+  type: interaction
+  documentation: Toggle visibility of specific architecture layer in model graph
+  properties:
+    x-handled-by:
+      - application.component.motivation-filter-panel
+container-type-filter:
+  id: ux.interaction.container-type-filter
+  name: Container Type Filter
+  type: interaction
+  documentation: Toggle visibility of specific C4 container type (web, api, database, etc.)
+  properties:
+    x-handled-by:
+      - application.component.c4-filter-panel
+technology-filter:
+  id: ux.interaction.technology-filter
+  name: Technology Stack Filter
+  type: interaction
+  documentation: Toggle visibility of containers using specific technology
+element-type-filter:
+  id: ux.interaction.element-type-filter
+  name: Element Type Filter (Motivation)
+  type: interaction
+  documentation: Toggle visibility of motivation element types (goal, requirement,
+    principle, etc.)
+  properties:
+    x-handled-by:
+      - application.component.motivation-filter-panel
+relationship-type-filter:
+  id: ux.interaction.relationship-type-filter
+  name: Relationship Type Filter
+  type: interaction
+  documentation: Toggle visibility of specific relationship types in motivation graph
+filter-clear-all:
+  id: ux.interaction.filter-clear-all
+  name: Clear All Filters
+  type: interaction
+  documentation: Reset all active filters to show all elements
+view-switch-graph-json:
+  id: ux.interaction.view-switch-graph-json
+  name: Switch Between Graph and JSON Views
+  type: interaction
+  documentation: Toggle between interactive graph visualization and structured JSON view
+  properties:
+    x-handled-by:
+      - application.component.viewer-app
+view-switch-graph-list:
+  id: ux.interaction.view-switch-graph-list
+  name: Switch Between Graph and List Views (Changesets)
+  type: interaction
+  documentation: Toggle between graph visualization and detailed list view of changeset
+main-tab-navigation:
+  id: ux.interaction.main-tab-navigation
+  name: Main Tab Navigation
+  type: interaction
+  documentation: Navigate between main application sections (Spec, Model,
+    Motivation, Architecture, Changesets)
+layout-algorithm-change:
+  id: ux.interaction.layout-algorithm-change
+  name: Change Layout Algorithm
+  type: interaction
+  documentation: Switch between graph layout algorithms (hierarchical,
+    force-directed, radial, circular, tree)
+  properties:
+    x-handled-by:
+      - application.service.layout-engine
+c4-drill-down:
+  id: ux.interaction.c4-drill-down
+  name: Drill Down to Container/Component
+  type: interaction
+  documentation: Navigate from system level to container level, or container to
+    component level
+c4-breadcrumb-navigate:
+  id: ux.interaction.c4-breadcrumb-navigate
+  name: C4 Breadcrumb Navigation
+  type: interaction
+  documentation: Navigate up hierarchy using breadcrumb links (Component → Container → System)
+c4-view-level-change:
+  id: ux.interaction.c4-view-level-change
+  name: C4 View Level Change
+  type: interaction
+  documentation: Jump to specific C4 view level using control panel buttons
+trace-upstream:
+  id: ux.interaction.trace-upstream
+  name: Trace Upstream Dependencies
+  type: interaction
+  documentation: Highlight all upstream dependencies of selected element
+    (influences, requirements)
+trace-downstream:
+  id: ux.interaction.trace-downstream
+  name: Trace Downstream Impacts
+  type: interaction
+  documentation: Highlight all downstream impacts of selected element
+    (realizations, implementations)
+trace-clear:
+  id: ux.interaction.trace-clear
+  name: Clear Path Highlighting
+  type: interaction
+  documentation: Remove all path highlighting and return to normal view
+focus-on-element:
+  id: ux.interaction.focus-on-element
+  name: Focus on Element (Direct Relationships)
+  type: interaction
+  documentation: Highlight selected element and its direct relationships only
+show-network:
+  id: ux.interaction.show-network
+  name: Show Network (Radial Layout)
+  type: interaction
+  documentation: Display radial network view centered on selected element
+focus-mode-toggle:
+  id: ux.interaction.focus-mode-toggle
+  name: Toggle Focus Mode
+  type: interaction
+  documentation: Enable/disable focus mode to dim non-highlighted elements
+export-png:
+  id: ux.interaction.export-png
+  name: Export Graph as PNG
+  type: interaction
+  documentation: Export current graph view as PNG image using html-to-image library
+export-svg:
+  id: ux.interaction.export-svg
+  name: Export Graph as SVG
+  type: interaction
+  documentation: Export current graph view as SVG vector image
+export-json:
+  id: ux.interaction.export-json
+  name: Export Graph Data as JSON
+  type: interaction
+  documentation: Export graph structure (nodes and edges) as JSON data
+export-traceability-report:
+  id: ux.interaction.export-traceability-report
+  name: Export Traceability Report
+  type: interaction
+  documentation: Export comprehensive traceability report showing all element relationships
+json-expand-collapse:
+  id: ux.interaction.json-expand-collapse
+  name: Expand/Collapse JSON Sections
+  type: interaction
+  documentation: Toggle expansion state of JSON object/array sections
+json-path-navigate:
+  id: ux.interaction.json-path-navigate
+  name: Navigate to JSON Path
+  type: interaction
+  documentation: Jump to specific path in JSON tree and highlight for 3 seconds
+changeset-select:
+  id: ux.interaction.changeset-select
+  name: Select Changeset
+  type: interaction
+  documentation: Select changeset from list to view its contents
+annotation-create:
+  id: ux.interaction.annotation-create
+  name: Create Annotation
+  type: interaction
+  documentation: Add new annotation to current view or selected element
+schema-select:
+  id: ux.interaction.schema-select
+  name: Select Schema
+  type: interaction
+  documentation: Select schema from sidebar to view its definition
+inspector-close:
+  id: ux.interaction.inspector-close
+  name: Close Inspector Panel
+  type: interaction
+  documentation: Close element inspector panel
+context-menu-open:
+  id: ux.interaction.context-menu-open
+  name: Open Context Menu
+  type: interaction
+  documentation: Right-click on graph node to open context menu with actions
+websocket-reconnect:
+  id: ux.interaction.websocket-reconnect
+  name: WebSocket Reconnection
+  type: interaction
+  documentation: Automatic reconnection when WebSocket connection drops

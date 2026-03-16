@@ -3,7 +3,7 @@ import { useState } from 'react';
 import ExpandableSection from '@/apps/embedded/components/common/ExpandableSection';
 
 const meta = {
-  title: 'Primitives / Widgets / ExpandableSection',
+  title: 'A Primitives / State Panels / ExpandableSection',
   parameters: {
     layout: 'centered',
   },

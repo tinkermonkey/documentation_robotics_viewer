@@ -4,7 +4,7 @@
  * Matches Figma design with search bar and action buttons
  */
 
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { Button, TextInput, Dropdown, DropdownItem } from 'flowbite-react';
 import {
   HiSearch,
@@ -44,7 +44,7 @@ export interface GraphToolbarProps {
   }[];
 }
 
-export const GraphToolbar: React.FC<GraphToolbarProps> = memo(
+export const GraphToolbar = memo(
   ({
     searchQuery = '',
     onSearchChange,

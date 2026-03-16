@@ -25,9 +25,10 @@ export function extractCrossLayerReferences(
 ): Reference[] {
   if (!visible || !model?.references) return [];
 
-  // All entries in model.references are cross-layer (adapter pre-separates intra/cross)
+  // Extract cross-layer references from model.references
+  // Filter out references within the same layer
   let crossLayerRefs = model.references.filter(
-    (ref) => ref.source.layerId && ref.target.layerId
+    (ref) => ref.source.layerId && ref.target.layerId && ref.source.layerId !== ref.target.layerId
   );
 
   // Apply target layer filters

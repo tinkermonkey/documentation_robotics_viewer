@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { OperationLegend } from '@/apps/embedded/components/OperationLegend';
 
 const meta = {
-  title: 'Graphs / Panels / OperationLegend',
+  title: 'A Primitives / State Panels / OperationLegend',
   parameters: {
     layout: 'centered',
   },

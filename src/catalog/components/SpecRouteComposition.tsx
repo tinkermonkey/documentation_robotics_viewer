@@ -8,7 +8,6 @@
 
 import { memo } from 'react';
 import SpecViewer from '../../apps/embedded/components/SpecViewer';
-import LayerBrowserSidebar from '../../apps/embedded/components/LayerBrowserSidebar';
 import AnnotationPanel from '../../apps/embedded/components/AnnotationPanel';
 import SchemaInfoPanel from '../../apps/embedded/components/SchemaInfoPanel';
 import SharedLayout from '../../apps/embedded/components/SharedLayout';
@@ -20,12 +19,12 @@ import type { SpecDataResponse } from '../../apps/embedded/services/embeddedData
 export interface SpecRouteCompositionProps {
   /** The spec data to display */
   specData: SpecDataResponse;
+  /** Active view mode (graph view is removed; both modes render SpecViewer) */
+  activeView?: 'graph' | 'json';
   /** Currently selected schema ID (null for none) */
   selectedSchemaId: string | null;
   /** Whether to show right sidebar (default: true) */
   showRightSidebar?: boolean;
-  /** Callback when user selects a layer in the left sidebar */
-  onSelectSchema?: (schemaId: string | null) => void;
 }
 
 /**
@@ -35,26 +34,20 @@ export interface SpecRouteCompositionProps {
  * @example
  * <SpecRouteComposition
  *   specData={createCompleteSpecFixture()}
+ *   activeView="graph"
  *   selectedSchemaId={null}
+ *   onViewChange={(view) => console.log('View:', view)}
  * />
  */
 export const SpecRouteComposition = memo<SpecRouteCompositionProps>(({
   specData,
   selectedSchemaId,
-  showRightSidebar = true,
-  onSelectSchema = () => {}
+  showRightSidebar = true
 }) => {
   return (
     <SharedLayout
-      showLeftSidebar={true}
+      showLeftSidebar={false}
       showRightSidebar={showRightSidebar}
-      leftSidebarContent={
-        <LayerBrowserSidebar
-          specData={specData}
-          selectedId={selectedSchemaId}
-          onSelectLayer={onSelectSchema}
-        />
-      }
       rightSidebarContent={
         <>
           <AnnotationPanel />

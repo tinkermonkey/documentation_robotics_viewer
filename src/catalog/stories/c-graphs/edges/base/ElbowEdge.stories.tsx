@@ -6,7 +6,7 @@ import { memo } from 'react';
 import { ElbowEdge } from '@/core/edges/ElbowEdge';
 
 const meta = {
-  title: 'Graphs / Edges / Base / ElbowEdge',
+  title: 'C Graphs / Edges / Base / ElbowEdge',
   parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
@@ -15,7 +15,7 @@ type Story = StoryObj<typeof meta>;
 
 // Story-local node with top as a source handle and bottom as a target handle,
 // matching the direction of the edge being demonstrated.
-const DemoNode: React.FC<{ data: { label: string } }> = memo(({ data }: { data: { label: string } }) => (
+const DemoNode = memo(({ data }: { data: { label: string } }) => (
   <div
     style={{
       width: 180,

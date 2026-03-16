@@ -24,11 +24,6 @@ import type {
   RelationshipBadgeData,
   RelationshipBadgeProps,
 } from './components';
-import {
-  useChangesetStyling,
-  useNodeHandles,
-} from './hooks';
-import type { HandleConfig, ChangesetStyling } from './hooks';
 
 // Export all node components
 export {
@@ -42,9 +37,6 @@ export {
   NodeType,
   isValidNodeType,
   nodeConfigLoader,
-  // Node hooks
-  useChangesetStyling,
-  useNodeHandles,
 };
 
 // Export types for configuration and unified node
@@ -61,8 +53,6 @@ export type {
   FieldItem,
   RelationshipBadgeData,
   RelationshipBadgeProps,
-  HandleConfig,
-  ChangesetStyling,
 };
 
 // Node types object for React Flow

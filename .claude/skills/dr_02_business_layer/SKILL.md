@@ -12,13 +12,13 @@ triggers:
     "business layer",
     "archimate business",
   ]
-version: 0.8.3
+version: 0.7.0
 ---
 
 # Business Layer Skill
 
 **Layer Number:** 02
-**Specification:** Metadata Model Spec v0.8.3
+**Specification:** Metadata Model Spec v0.7.0
 **Purpose:** Represents business services, processes, actors, and objects that define the organization's operational structure and capabilities.
 
 ---
@@ -37,9 +37,6 @@ This layer uses **ArchiMate 3.2 Business Layer** standard without custom extensi
 ---
 
 ## Entity Types
-
-> **CLI Introspection:** Run `dr schema types business` for the authoritative, always-current list of node types.
-> Run `dr schema node <type-id>` for full attribute details on any type.
 
 | Entity Type               | Description                                          | Key Attributes                                                        |
 | ------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------- |
@@ -279,11 +276,12 @@ dr add business role "Account Manager" \
 ```bash
 # Core business service
 dr add business service "Order Management Service" \
+  --properties sla-availability=99.9%,sla-response-time=500ms \
   --description "Manages customer order lifecycle"
 
 # Link to motivation layer
-dr relationship add business.service.order-management-service \
-  motivation.goal.improve-order-efficiency --predicate supports
+dr relationship add "business/service/order-management" \
+  supports "motivation/goal/improve-order-efficiency"
 ```
 
 ### Step 3: Model Business Processes
@@ -291,6 +289,7 @@ dr relationship add business.service.order-management-service \
 ```bash
 # Main process
 dr add business process "Order Fulfillment Process" \
+  --properties bpmn-file=processes/order-fulfillment.bpmn \
   --description "End-to-end order fulfillment from creation to delivery"
 
 # Sub-processes
@@ -301,15 +300,15 @@ dr add business process "Pack Order Process" \
   --description "Pack picked items for shipment"
 
 # Composition relationships
-dr relationship add business.process.order-fulfillment-process \
-  business.process.pick-items-process --predicate composes
+dr relationship add "business/process/order-fulfillment" \
+  composes "business/process/pick-items"
 
-dr relationship add business.process.order-fulfillment-process \
-  business.process.pack-order-process --predicate composes
+dr relationship add "business/process/order-fulfillment" \
+  composes "business/process/pack-order"
 
 # Process flows
-dr relationship add business.process.pick-items-process \
-  business.process.pack-order-process --predicate flows-to
+dr relationship add "business/process/pick-items" \
+  flows-to "business/process/pack-order"
 ```
 
 ### Step 4: Define Business Objects
@@ -326,8 +325,8 @@ dr add business object "Product" \
   --description "Item available for purchase"
 
 # Process access to objects
-dr relationship add business.process.order-fulfillment-process \
-  business.object.order --predicate accesses
+dr relationship add "business/process/order-fulfillment" \
+  accesses "business/object/order"
 ```
 
 ### Step 5: Model Business Events
@@ -335,37 +334,39 @@ dr relationship add business.process.order-fulfillment-process \
 ```bash
 # Events that trigger processes
 dr add business event "Order Received" \
+  --properties type=state-change,topic=orders.received \
   --description "New order submitted by customer"
 
 dr add business event "Payment Confirmed" \
+  --properties type=state-change,topic=payments.confirmed \
   --description "Payment successfully processed"
 
 # Event triggering
-dr relationship add business.event.order-received \
-  business.process.order-fulfillment-process --predicate triggers
+dr relationship add "business/event/order-received" \
+  triggers "business/process/order-fulfillment"
 ```
 
 ### Step 6: Establish Cross-Layer Relationships
 
 ```bash
 # Link to application layer
-dr relationship add business.service.order-management-service \
-  application.service.order-api --predicate realized-by
+dr relationship add "business/service/order-management" \
+  realized-by "application/service/order-api"
 
 # Link to motivation layer
-dr relationship add business.service.order-management-service \
-  motivation.value.customer-satisfaction --predicate delivers
+dr relationship add "business/service/order-management" \
+  delivers "motivation/value/customer-satisfaction"
 
 # Link to data layer
-dr relationship add business.object.order \
-  data-model.objectschema.order --predicate defined-by
+dr relationship add "business/object/order" \
+  defined-by "data-model/schema/order.schema.json"
 ```
 
 ### Step 7: Validate
 
 ```bash
-dr validate --layers business
-dr validate --relationships
+dr validate --layer business
+dr validate --validate-relationships
 ```
 
 ---
@@ -422,6 +423,7 @@ When business processes reference BPMN diagrams:
 
 ```bash
 dr add business process "Loan Approval Process" \
+  --properties bpmn-file=processes/loan-approval.bpmn,bpmn-version=2.0 \
   --description "End-to-end loan application review and approval"
 ```
 
@@ -461,7 +463,7 @@ These SLAs flow down to:
 ## ArchiMate Export
 
 ```bash
-dr export archimate --layers business --output business.archimate
+dr export archimate --layer business --output business.archimate
 ```
 
 **Supported ArchiMate Elements:**
@@ -505,10 +507,10 @@ dr export archimate --layers business --output business.archimate
 ```bash
 dr add business actor <name>
 dr add business role <name>
-dr add business service <name> --description <description>
-dr add business process <name> --description <description>
+dr add business service <name> --properties sla-availability=<value>
+dr add business process <name> --properties bpmn-file=<path>
 dr add business object <name>
-dr add business event <name> --description <description>
+dr add business event <name> --properties type=<type>,topic=<topic>
 dr add business function <name>
 dr add business collaboration <name>
 ```
@@ -516,19 +518,19 @@ dr add business collaboration <name>
 **Relationship Commands:**
 
 ```bash
-dr relationship add <source> <target> --predicate realizes
-dr relationship add <source> <target> --predicate composes
-dr relationship add <source> <target> --predicate assigned-to
-dr relationship add <source> <target> --predicate triggers
-dr relationship add <source> <target> --predicate flows-to
-dr relationship add <source> <target> --predicate accesses
-dr relationship add <source> <target> --predicate serves
+dr relationship add <source> realizes <target>
+dr relationship add <source> composes <target>
+dr relationship add <source> assigned-to <target>
+dr relationship add <source> triggers <target>
+dr relationship add <source> flows-to <target>
+dr relationship add <source> accesses <target>
+dr relationship add <source> serves <target>
 ```
 
 **Cross-Layer Relationship Commands:**
 
 ```bash
-dr relationship add <business-service> <motivation-goal> --predicate supports
-dr relationship add <business-service> <application-service> --predicate realized-by
-dr relationship add <business-object> <data-schema> --predicate defined-by
+dr relationship add <business-service> supports <motivation-goal>
+dr relationship add <business-service> realized-by <application-service>
+dr relationship add <business-object> defined-by <data-schema>
 ```

@@ -63,10 +63,8 @@ Maps NodeType enum values to complete styling configuration.
 
 **TypeScript Interface:**
 ```typescript
-type NodeLayoutMode = 'centered' | 'left' | 'table';
-
 interface NodeStyleConfig {
-  layout: NodeLayoutMode;
+  layout: 'centered' | 'left' | 'table';
   icon: string;
   typeLabel: string;
   colors: {

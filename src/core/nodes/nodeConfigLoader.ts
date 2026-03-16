@@ -1,6 +1,5 @@
 import nodeConfigData from './nodeConfig.json' with { type: 'json' };
 import type { NodeConfig, NodeStyleConfig } from './nodeConfig.types';
-import type { ChangesetOperation } from './components/UnifiedNode';
 import { NodeType } from './NodeType';
 
 /**
@@ -195,7 +194,7 @@ class NodeConfigLoader {
    * @param operation - The changeset operation type ('add', 'update', or 'delete')
    * @returns Color configuration for the operation
    */
-  getChangesetColors(operation: ChangesetOperation) {
+  getChangesetColors(operation: 'add' | 'update' | 'delete') {
     return this.config.changesetColors[operation];
   }
 

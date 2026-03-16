@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import MetadataGrid from '@/apps/embedded/components/common/MetadataGrid';
 
 const meta = {
-  title: 'Primitives / Data Viewers / MetadataGrid',
+  title: 'A Primitives / Data Viewers / MetadataGrid',
 } satisfies Meta;
 
 export default meta;

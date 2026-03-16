@@ -1,0 +1,16 @@
+operation-legend:
+  id: navigation.legend.operation-legend
+  name: Operation Legend
+  type: legend
+  documentation: Legend showing API operation HTTP methods and color coding
+  properties:
+    x-rendered-by:
+      - ux.component.operation-legend
+layer-types-legend:
+  id: navigation.legend.layer-types-legend
+  name: Layer Types Legend
+  type: legend
+  documentation: Legend displaying element types and visual styling for each layer
+  properties:
+    x-rendered-by:
+      - ux.component.layer-types-legend

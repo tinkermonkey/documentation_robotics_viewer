@@ -1,0 +1,386 @@
+annotation:
+  id: data_model.object-schema.annotation
+  name: Annotation
+  type: object-schema
+  documentation: User annotation on model elements with author, content, creation
+    time, and resolution status
+  properties:
+    x-persisted-in:
+      - datastore.browser-storage.indexeddb
+changeset-summary:
+  id: data_model.object-schema.changeset-summary
+  name: Changeset Summary
+  type: object-schema
+  documentation: Changeset list item with name, status, type, timestamps, and element counts
+  properties:
+    x-persisted-in:
+      - datastore.browser-storage.local-storage
+changeset-details:
+  id: data_model.object-schema.changeset-details
+  name: Changeset Details
+  type: object-schema
+  documentation: Full changeset data including metadata and array of change operations
+  properties:
+    x-persisted-in:
+      - datastore.browser-storage.local-storage
+changeset-change:
+  id: data_model.object-schema.changeset-change
+  name: Changeset Change
+  type: object-schema
+  documentation: Individual change record with operation type, element ID, and
+    before/after state
+  properties:
+    x-persisted-in:
+      - datastore.browser-storage.local-storage
+connection-state:
+  id: data_model.object-schema.connection-state
+  name: Connection State
+  type: object-schema
+  documentation: WebSocket connection state tracking connection status,
+    reconnection attempts, and error history
+  properties:
+    x-persisted-in:
+      - datastore.browser-storage.session-storage
+    storedIn:
+      - datastore.store.connection-store
+view-preferences:
+  id: data_model.object-schema.view-preferences
+  name: View Preferences
+  type: object-schema
+  documentation: User view mode preferences including spec view, model view,
+    changeset view, motivation preferences, and C4 preferences
+  properties:
+    x-persisted-in:
+      - datastore.browser-storage.local-storage
+layout-preset:
+  id: data_model.object-schema.layout-preset
+  name: Layout Preset
+  type: object-schema
+  documentation: Custom layout parameter preset with diagram type, engine type,
+    and parameter configuration
+  properties:
+    x-persisted-in:
+      - datastore.browser-storage.local-storage
+link-type:
+  id: data_model.object-schema.link-type
+  name: Link Type
+  type: object-schema
+  documentation: Cross-layer link type definition with source/target layers,
+    cardinality, format, and validation rules
+  properties:
+    x-persisted-in:
+      - datastore.store.local-fs
+model-store-state:
+  id: data_model.object-schema.model-store-state
+  name: Model Store State
+  type: object-schema
+  documentation: Zustand state shape for model store including MetaModel, loading
+    flag, error state, and version
+  properties:
+    x-persisted-in:
+      - datastore.store.model-store
+    storedIn:
+      - datastore.store.model-store
+element-store-state:
+  id: data_model.object-schema.element-store-state
+  name: Element Store State
+  type: object-schema
+  documentation: Singleton Map<string, ModelElement> for temporary element storage
+  properties:
+    x-persisted-in:
+      - datastore.store.element-store
+    storedIn:
+      - datastore.store.element-store
+layer-store-state:
+  id: data_model.object-schema.layer-store-state
+  name: Layer Store State
+  type: object-schema
+  documentation: Zustand state shape for layer visibility, opacity, locking, and focus state
+  properties:
+    x-persisted-in:
+      - datastore.store.layer-store
+    storedIn:
+      - datastore.store.layer-store
+layout-preferences-state:
+  id: data_model.object-schema.layout-preferences-state
+  name: Layout Preferences State
+  type: object-schema
+  documentation: Zustand state shape for layout engine preferences, custom
+    presets, and refinement session state
+  properties:
+    x-persisted-in:
+      - datastore.store.layout-preferences-store
+    storedIn:
+      - datastore.store.layout-preferences-store
+business-layer-store-state:
+  id: data_model.object-schema.business-layer-store-state
+  name: Business Layer Store State
+  type: object-schema
+  documentation: Zustand state shape for business layer filters, layout mode, and focus state
+  properties:
+    x-persisted-in:
+      - datastore.store.business-layer-store
+    storedIn:
+      - datastore.store.business-layer-store
+auth-state:
+  id: data_model.object-schema.auth-state
+  name: Auth State
+  type: object-schema
+  documentation: Authentication state including token, user info, and login status
+  properties:
+    x-persisted-in:
+      - datastore.store.auth-store
+    storedIn:
+      - datastore.store.auth-store
+annotation-store-state:
+  id: data_model.object-schema.annotation-store-state
+  name: Annotation Store State
+  type: object-schema
+  documentation: Zustand state shape for annotations array, selected/highlighted
+    element IDs, loading and error state
+  properties:
+    x-persisted-in:
+      - datastore.store.annotation-store
+    storedIn:
+      - datastore.store.annotation-store
+changeset-store-state:
+  id: data_model.object-schema.changeset-store-state
+  name: Changeset Store State
+  type: object-schema
+  documentation: Zustand state shape for changeset list, active changeset, loading
+    and error state
+  properties:
+    x-persisted-in:
+      - datastore.store.changeset-store
+    storedIn:
+      - datastore.store.changeset-store
+view-preferences-state:
+  id: data_model.object-schema.view-preferences-state
+  name: View Preferences State
+  type: object-schema
+  documentation: Zustand state shape for active view mode, sidebar visibility, and
+    filter state
+  properties:
+    x-persisted-in:
+      - datastore.store.view-preference-store
+    storedIn:
+      - datastore.store.view-preference-store
+node-transform-result:
+  id: data_model.object-schema.node-transform-result
+  name: Node Transform Result
+  type: object-schema
+  documentation: Result of node transformation including React Flow nodes array and metadata
+layout-result:
+  id: data_model.object-schema.layout-result
+  name: Layout Result
+  type: object-schema
+  documentation: Layout calculation output including positioned nodes, edges, and
+    quality metrics
+layer-layout-result:
+  id: data_model.object-schema.layer-layout-result
+  name: Layer Layout Result
+  type: object-schema
+  documentation: Per-layer layout result with layer-specific positioning and grouping
+app-node:
+  id: data_model.object-schema.app-node
+  name: App Node
+  type: object-schema
+  documentation: React Flow node type with position, data, type, and visual properties
+app-edge:
+  id: data_model.object-schema.app-edge
+  name: App Edge
+  type: object-schema
+  documentation: React Flow edge type with source, target, type, and visual properties
+business-service-node-data:
+  id: data_model.object-schema.business-service-node-data
+  name: Business Service Node Data
+  type: object-schema
+  documentation: Node data for business service nodes with label, description, and
+    cross-layer links
+business-function-node-data:
+  id: data_model.object-schema.business-function-node-data
+  name: Business Function Node Data
+  type: object-schema
+  documentation: Node data for business function nodes with label, process links,
+    and capability relationships
+business-capability-node-data:
+  id: data_model.object-schema.business-capability-node-data
+  name: Business Capability Node Data
+  type: object-schema
+  documentation: Node data for business capability nodes with hierarchy and
+    service relationships
+goal-node-data:
+  id: data_model.object-schema.goal-node-data
+  name: Goal Node Data
+  type: object-schema
+  documentation: Node data for motivation goal nodes with label, stakeholders, and
+    downstream requirements
+requirement-node-data:
+  id: data_model.object-schema.requirement-node-data
+  name: Requirement Node Data
+  type: object-schema
+  documentation: Node data for motivation requirement nodes with label,
+    constraints, and upstream goals
+principle-node-data:
+  id: data_model.object-schema.principle-node-data
+  name: Principle Node Data
+  type: object-schema
+  documentation: Node data for motivation principle nodes with label and
+    governance relationships
+constraint-node-data:
+  id: data_model.object-schema.constraint-node-data
+  name: Constraint Node Data
+  type: object-schema
+  documentation: Node data for motivation constraint nodes with label and
+    restriction relationships
+container-node-data:
+  id: data_model.object-schema.container-node-data
+  name: Container Node Data
+  type: object-schema
+  documentation: Node data for C4 container nodes with technology stack and
+    component relationships
+component-node-data:
+  id: data_model.object-schema.component-node-data
+  name: Component Node Data
+  type: object-schema
+  documentation: Node data for C4 component nodes with responsibilities and API endpoints
+external-actor-node-data:
+  id: data_model.object-schema.external-actor-node-data
+  name: External Actor Node Data
+  type: object-schema
+  documentation: Node data for C4 external actor nodes with interaction relationships
+json-schema-node-data:
+  id: data_model.object-schema.json-schema-node-data
+  name: JSON Schema Node Data
+  type: object-schema
+  documentation: Node data for data model schema nodes with properties and relationships
+websocket-message:
+  id: data_model.object-schema.websocket-message
+  name: WebSocket Message
+  type: object-schema
+  documentation: WebSocket message envelope with event type, payload, timestamp, and client ID
+health-status:
+  id: data_model.object-schema.health-status
+  name: Health Status
+  type: object-schema
+  documentation: API health check response with server status and version information
+spec-collection:
+  id: data_model.object-schema.spec-collection
+  name: Spec Collection
+  type: object-schema
+  documentation: JSON Schema collection with version, schemas map, and relationship catalog
+model-response:
+  id: data_model.object-schema.model-response
+  name: Model Response
+  type: object-schema
+  documentation: Complete architecture model response with metadata, layers,
+    elements, relationships, and cross-layer references
+github-release:
+  id: data_model.object-schema.github-release
+  name: GitHub Release
+  type: object-schema
+  documentation: GitHub release object with tag name, version, assets array, and download URLs
+annotation-list:
+  id: data_model.object-schema.annotation-list
+  name: Annotation List
+  type: object-schema
+  documentation: Array of annotations with optional element ID filtering
+changeset-list:
+  id: data_model.object-schema.changeset-list
+  name: Changeset List
+  type: object-schema
+  documentation: Array of changeset summaries with registry metadata and version
+subscribe-message:
+  id: data_model.object-schema.subscribe-message
+  name: Subscribe Message
+  type: object-schema
+  documentation: WebSocket subscribe command message with topics array
+ping-message:
+  id: data_model.object-schema.ping-message
+  name: Ping Message
+  type: object-schema
+  documentation: WebSocket ping/keepalive message
+pong-message:
+  id: data_model.object-schema.pong-message
+  name: Pong Message
+  type: object-schema
+  documentation: WebSocket pong response message
+model-updated-event:
+  id: data_model.object-schema.model-updated-event
+  name: Model Updated Event
+  type: object-schema
+  documentation: WebSocket event broadcast when model is updated
+changeset-created-event:
+  id: data_model.object-schema.changeset-created-event
+  name: Changeset Created Event
+  type: object-schema
+  documentation: WebSocket event broadcast when changeset is created
+annotation-added-event:
+  id: data_model.object-schema.annotation-added-event
+  name: Annotation Added Event
+  type: object-schema
+  documentation: WebSocket event broadcast when annotation is added
+subscribed-event:
+  id: data_model.object-schema.subscribed-event
+  name: Subscribed Event
+  type: object-schema
+  documentation: WebSocket event confirming subscription to topics
+github-release-list:
+  id: data_model.object-schema.github-release-list
+  name: GitHub Release List Response
+  type: object-schema
+  documentation: List of GitHub releases with pagination metadata
+health-check-response:
+  id: data_model.object-schema.health-check-response
+  name: Health Check Response
+  type: object-schema
+  documentation: Health check endpoint response with status and version
+error-response:
+  id: data_model.object-schema.error-response
+  name: Error Response
+  type: object-schema
+  documentation: Standard API error response with error message and optional details
+path-tracing-state:
+  id: data_model.object-schema.path-tracing-state
+  name: Path Tracing State
+  type: object-schema
+  documentation: State for graph path tracing with mode, selected nodes, and
+    highlighted elements
+c4-path-tracing-state:
+  id: data_model.object-schema.c4-path-tracing-state
+  name: C4 Path Tracing State
+  type: object-schema
+  documentation: Path tracing state specific to C4 architecture views
+c4-view-preferences:
+  id: data_model.object-schema.c4-view-preferences
+  name: C4 View Preferences
+  type: object-schema
+  documentation: User preferences for C4 architecture view including view level,
+    layout, filters, and path tracing
+motivation-view-preferences:
+  id: data_model.object-schema.motivation-view-preferences
+  name: Motivation View Preferences
+  type: object-schema
+  documentation: User preferences for motivation layer visualization including
+    layout, visible types, and relationships
+business-view-preferences:
+  id: data_model.object-schema.business-view-preferences
+  name: Business View Preferences
+  type: object-schema
+  documentation: User preferences for business layer visualization including
+    layout, visible types, and grouping
+spec-view-type:
+  id: data_model.object-schema.spec-view-type
+  name: Spec View Type
+  type: object-schema
+  documentation: View type enumeration for specification views (graph or JSON)
+model-view-type:
+  id: data_model.object-schema.model-view-type
+  name: Model View Type
+  type: object-schema
+  documentation: View type enumeration for model views (graph or JSON)
+changeset-view-type:
+  id: data_model.object-schema.changeset-view-type
+  name: Changeset View Type
+  type: object-schema
+  documentation: View type enumeration for changeset views (graph or list)

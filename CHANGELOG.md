@@ -5,51 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.3.0] - 2026-03-07
-
-### Changed — Major Refactor & Simplification
-
-This release is a large-scale simplification of the codebase. The primary goal was to reduce
-the surface area of custom node and edge components, eliminate dead code from earlier design
-iterations, and establish a single unified rendering path for all graph elements.
-
-#### Edge consolidation
-- Deleted five motivation-layer edge components (`InfluenceEdge`, `ConstrainsEdge`, `ConflictsEdge`,
-  `RealizesEdge`, `RefinesEdge`). Edge appearance is now controlled entirely through `ElbowEdgeData`
-  fields (`color`, `strokeDasharray`) set by the graph transformer — no bespoke components needed.
-- Merged `CrossLayerEdge` into `ElbowEdge`. Cross-layer navigation, tooltip, and focus behaviour
-  are now gated on `data.targetLayer` presence inside the single edge component. `ElbowEdgeData`
-  was extended with all cross-layer fields and an index signature.
-
-#### Node consolidation — `BaseLayerNode` factory
-- Introduced `src/core/nodes/BaseLayerNode.tsx` with a `createLayerNode<TData>(config)` factory.
-- Refactored all thirteen motivation, business, and C4 specialist node components into thin config
-  providers that delegate rendering entirely to the factory. No duplicated layout or styling logic.
-
-#### Layer-specific view & service deletion
-- Deleted dedicated graph views: `MotivationGraphView`, `C4GraphView`, `SpecGraphView`.
-- Deleted dedicated control and inspector panels: `MotivationControlPanel`,
-  `MotivationInspectorPanel`, `C4ControlPanel`, `C4InspectorPanel`.
-- Deleted graph builders and transformers: `motivationGraphBuilder`, `motivationGraphTransformer`,
-  `c4Parser`, `c4ViewTransformer`, and their associated export services.
-- Deleted layer-specific graph type files (`motivationGraph.ts`, `c4Graph.ts`) and utilities
-  (`graphFilterUtils.ts`, `containerTypeIcons.tsx`).
-- All routes now use the shared `<GraphViewer model={model} />` component directly.
-
-#### Store & utility pruning
-- `viewPreferenceStore`: stripped to three views (`specView`, `modelView`, `changesetView`);
-  schema version bumped to 3.
-- `coverageAnalyzer.ts`: reduced to `getCoverageIcon`, `getCoverageColor`, and `CoverageStatus`.
-  Removed all layer-specific coverage helpers.
-- `semanticZoomController.ts`: removed `MotivationElementType` dependency,
-  `getVisibleElementTypes`, and `filterElementsByImportance`.
-- Deleted `motivationLayouts.ts` and `CoverageSummaryPanel.tsx` (no remaining callers).
-
-### Fixed
-- Fixed `AuthRoute` redirect loop when the CLI opens the viewer with the token inside the URL
-  hash (`#/?token=xxx`). The redirect destination was incorrectly set to `/?token=xxx` instead
-  of `/model/graph`, leaving the app stuck on "Authenticating…" indefinitely.
-
 ## [0.2.3] - 2025-12-20
 
 ### Added

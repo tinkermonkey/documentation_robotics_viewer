@@ -1,7 +1,6 @@
 /**
  * Unit tests for loadSpec normalization
- * The API spec defines schemaCount (camelCase) as a required field.
- * These tests verify the normalization logic matches the API contract.
+ * Tests snake_case to camelCase conversion for schema properties
  */
 
 import { test, expect } from '@playwright/test';
@@ -10,18 +9,35 @@ test.describe('EmbeddedDataLoader.loadSpec() Normalization Logic', () => {
   // Test the normalization logic that happens in loadSpec
   // These tests simulate the server response normalization without needing fetch
 
-  test('should use schemaCount from server response', () => {
+  test('should normalize snake_case to camelCase for schema_count', () => {
     const data = {
       version: '1.0',
       type: 'spec',
-      schemaCount: 42,
+      schema_count: 42,
       schemas: {}
     } as any;
 
-    // schemaCount is required by the API spec; fall back to counting schemas if absent
-    const schemaCount = data.schemaCount ?? (Object.keys(data.schemas || {}).length);
+    // Simulates the normalization logic in loadSpec
+    const schemaCount = data.schemaCount ?? data.schema_count ??
+      (Object.keys(data.schemas || {}).length);
 
     expect(schemaCount).toBe(42);
+  });
+
+  test('should prefer camelCase schemaCount over snake_case schema_count', () => {
+    const data = {
+      version: '1.0',
+      type: 'spec',
+      schemaCount: 50,
+      schema_count: 42,
+      schemas: {}
+    } as any;
+
+    // Normalization prefers camelCase
+    const schemaCount = data.schemaCount ?? data.schema_count ??
+      (Object.keys(data.schemas || {}).length);
+
+    expect(schemaCount).toBe(50);
   });
 
   test('should handle missing schemaCount and fall back to schemas length', () => {
@@ -35,12 +51,13 @@ test.describe('EmbeddedDataLoader.loadSpec() Normalization Logic', () => {
       }
     } as any;
 
-    const schemaCount = data.schemaCount ?? (Object.keys(data.schemas || {}).length);
+    const schemaCount = data.schemaCount ?? data.schema_count ??
+      (Object.keys(data.schemas || {}).length);
 
     expect(schemaCount).toBe(3);
   });
 
-  test('should read relationshipCatalog from server response', () => {
+  test('should normalize relationship_catalog to relationshipCatalog', () => {
     const mockCatalog = {
       version: '1.0',
       relationshipTypes: [{ id: 'test' }]
@@ -49,11 +66,12 @@ test.describe('EmbeddedDataLoader.loadSpec() Normalization Logic', () => {
     const data = {
       version: '1.0',
       type: 'spec',
-      relationshipCatalog: mockCatalog,
+      relationship_catalog: mockCatalog,
       schemas: {}
     } as any;
 
-    const relationshipCatalog = data.relationshipCatalog;
+    // Normalization from snake_case
+    const relationshipCatalog = data.relationshipCatalog || data.relationship_catalog;
 
     expect(relationshipCatalog?.relationshipTypes?.length).toBe(1);
   });
@@ -81,7 +99,8 @@ test.describe('EmbeddedDataLoader.loadSpec() Normalization Logic', () => {
       schemas: {}
     } as any;
 
-    const schemaCount = data.schemaCount ?? (Object.keys(data.schemas || {}).length);
+    const schemaCount = data.schemaCount ?? data.schema_count ??
+      (Object.keys(data.schemas || {}).length);
 
     expect(schemaCount).toBe(0);
   });
@@ -97,5 +116,23 @@ test.describe('EmbeddedDataLoader.loadSpec() Normalization Logic', () => {
 
     expect(data.description).toBe('Test spec');
     expect(data.source).toBe('test-source');
+  });
+
+  test('should handle response with both snake_case and camelCase together', () => {
+    const data = {
+      version: '1.0',
+      type: 'spec',
+      schema_count: 5,
+      schemaCount: 10,  // camelCase should win
+      relationship_catalog: { version: '1.0' },
+      relationshipCatalog: { version: '2.0' },  // camelCase should win
+      schemas: {}
+    } as any;
+
+    const schemaCount = data.schemaCount ?? data.schema_count;
+    const relationshipCatalog = data.relationshipCatalog || data.relationship_catalog;
+
+    expect(schemaCount).toBe(10);
+    expect(relationshipCatalog.version).toBe('2.0');
   });
 });

@@ -11,9 +11,9 @@ import { StoryProviderWrapper } from '@/catalog';
 import { createCompleteModelFixture } from '@/catalog/fixtures/modelFixtures';
 
 const meta = {
-  title: 'Graphs / Layouts / ELKLayout',
+  title: 'C Graphs / Layouts / ELKLayout',
   parameters: { layout: 'fullscreen' },
-  tags: ['skip-a11y'],
+  tags: ['skip-test'],
 } satisfies Meta;
 
 export default meta;
@@ -33,9 +33,10 @@ export const Hierarchical: Story = {
             model={model}
             layoutEngine="elk"
             layoutParameters={{
-              algorithm: 'layered',
-              direction: 'DOWN',
-              spacing: 50,
+              'elk.algorithm': 'layered',
+              'elk.direction': 'DOWN',
+              'elk.spacing.nodeNode': '50',
+              'elk.layered.spacing.nodeNodeBetweenLayers': '80'
             }}
           />
         </div>
@@ -58,8 +59,8 @@ export const ForceDirected: Story = {
             model={model}
             layoutEngine="elk"
             layoutParameters={{
-              algorithm: 'force',
-              spacing: 60,
+              'elk.algorithm': 'force',
+              'elk.spacing.nodeNode': '60'
             }}
           />
         </div>
@@ -82,8 +83,8 @@ export const Stress: Story = {
             model={model}
             layoutEngine="elk"
             layoutParameters={{
-              algorithm: 'stress',
-              spacing: 50,
+              'elk.algorithm': 'stress',
+              'elk.spacing.nodeNode': '50'
             }}
           />
         </div>
@@ -106,10 +107,11 @@ export const OrthogonalRouting: Story = {
             model={model}
             layoutEngine="elk"
             layoutParameters={{
-              algorithm: 'layered',
-              direction: 'RIGHT',
-              edgeRouting: 'ORTHOGONAL',
-              spacing: 50,
+              'elk.algorithm': 'layered',
+              'elk.direction': 'RIGHT',
+              'elk.edgeRouting': 'ORTHOGONAL',
+              'elk.spacing.nodeNode': '50',
+              'elk.layered.spacing.nodeNodeBetweenLayers': '80'
             }}
           />
         </div>

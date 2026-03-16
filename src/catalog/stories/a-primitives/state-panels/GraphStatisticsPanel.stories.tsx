@@ -3,7 +3,7 @@ import GraphStatisticsPanel from '@/apps/embedded/components/GraphStatisticsPane
 import type { MetaModel } from '@/core/types/model';
 
 const meta = {
-  title: 'Graphs / Panels / GraphStatisticsPanel',
+  title: 'A Primitives / State Panels / GraphStatisticsPanel',
   parameters: {
     layout: 'centered',
   },
@@ -27,6 +27,7 @@ const mockModelSmall: MetaModel = {
       ],
     },
   },
+  version: '1.0',
   references: [],
 };
 
@@ -90,6 +91,7 @@ const mockModelLarge: MetaModel = {
       })),
     },
   },
+  version: '1.0',
   references: [],
 };
 
@@ -112,7 +114,7 @@ export const LargeGraph: Story = {
 export const EmptyGraph: Story = {
   render: () => (
     <div className="w-80 bg-white">
-    <GraphStatisticsPanel model={{ layers: {}, references: [] }} />
+    <GraphStatisticsPanel model={{ layers: {}, version: '1.0', references: [] }} />
   </div>
   ),
 };

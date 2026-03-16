@@ -12,13 +12,13 @@ export default defineConfig({
   root: '.',
   publicDir: 'public',
   build: {
-    outDir: 'dist/embedded/dr-viewer-bundle',
+    outDir: 'dist/embedded',
     sourcemap: false, // Disable sourcemaps for smaller bundle
     minify: 'esbuild', // Use esbuild for fast minification
     target: 'es2015', // Target modern browsers
     rollupOptions: {
       input: {
-        main: path.resolve(__dirname, 'index.html')
+        main: path.resolve(__dirname, 'public/index-embedded.html')
       },
       output: {
         manualChunks: {
@@ -47,9 +47,10 @@ export default defineConfig({
     dedupe: ['react', 'react-dom', 'react/jsx-runtime']
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', '@xyflow/react'],
+    include: ['react', 'react-dom', '@xyflow/react', 'libavoid-js'],
     force: process.env.CI ? false : true
   },
+  assetsInclude: ['**/*.wasm'],
   server: {
     port: 3001,
     strictPort: true,

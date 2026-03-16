@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { Card, Button, Alert } from 'flowbite-react';
 import { HiExclamation, HiRefresh } from 'react-icons/hi';
 
@@ -9,7 +9,7 @@ interface ErrorStateProps {
   onRetry?: () => void;
 }
 
-export const ErrorState: React.FC<ErrorStateProps> = memo(
+export const ErrorState = memo(
   ({ title = 'Error', message, variant = 'page', onRetry }: ErrorStateProps) => {
     if (variant === 'inline') {
       return (

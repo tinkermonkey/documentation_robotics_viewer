@@ -78,10 +78,11 @@ You should:
 
 4. Get confirmation (or proceed if obvious)
 5. Execute:
-   dr add business service "Payment Processing" \
-     --description "Handles credit card transactions"
+   dr add business service --name "Payment Processing" \
+     --description "Handles credit card transactions\" \
+     --property criticality=high
 6. Validate:
-   dr validate --layers business
+   dr validate --layer business
 7. Suggest next steps:
    "✓ Payment service created: business.service.payment-processing
 
@@ -114,8 +115,9 @@ You should:
 1. Check goal exists:
    dr search "customer satisfaction" --layer motivation
 2. If found (e.g., motivation.goal.customer-satisfaction):
-   dr add business service "Order Management" \
-     --description "Manages customer orders lifecycle"
+   dr add business service --name "Order Management" \
+     --description "Manages customer orders lifecycle" \
+     --property supports-goals=motivation.goal.customer-satisfaction
 3. If not found, ask:
    "I couldn't find a 'customer satisfaction' goal. Would you like me to:
    1. Create the goal first
@@ -134,8 +136,9 @@ You should:
 **Your process:**
 
 1. Verify source element exists
-2. Create the target-layer element referencing the source
-3. Validate cross-layer references
+2. Check projection rules
+3. Use `dr project` or manual creation
+4. Validate cross-layer references
 
 **Example:**
 
@@ -145,8 +148,8 @@ User: /dr-model Create application service for payment processing
 You should:
 1. Find business service:
    dr search "payment" --layer business
-2. If found, create application service:
-   dr add application service "Payment Processing"
+2. If found, project:
+   dr project business.service.payment-processing --to application
 3. Verify creation:
    dr show application.service.payment-processing
 4. Suggest:
@@ -181,13 +184,15 @@ You should:
 1. Find payment service:
    dr show application.service.payment-processing
 2. Create security policy:
-   dr add security policy "PCI-DSS Compliance" \
-     --description "Payment Card Industry Data Security Standard"
+   dr add security policy --name "PCI-DSS Compliance" \
+     --description "Payment Card Industry Data Security Standard" \
+     --property type=compliance \
+     --property applies_to=application.service.payment-processing
 3. Update service to reference policy:
    dr update application.service.payment-processing \
-     --attributes '{"securedBy":"security.policy.pci-dss-compliance"}'
+     --property securedBy=security.policy.pci-dss-compliance
 4. Validate:
-   dr validate --layers security
+   dr validate --layer security
 ```
 
 #### 5. Add Monitoring
@@ -213,13 +218,18 @@ You should:
 1. Find element:
    dr show application.service.payment-api
 2. Create availability metric:
-   dr add apm metric "payment-api-availability" \
+   dr add apm metric --name "payment-api-availability" \
      --description "Payment API availability SLI" \
-     --attributes '{"type":"availability","instruments":"application.service.payment-api","threshold":"99.9%"}'
+     --property type=availability \
+     --property instruments=application.service.payment-api \
+     --property threshold=99.9%
 3. Create latency metric:
-   dr add apm metric "payment-api-latency" \
+   dr add apm metric --name "payment-api-latency" \
      --description "Payment API P95 latency" \
-     --attributes '{"type":"latency","aggregation":"p95","instruments":"application.service.payment-api","threshold":"200ms"}'
+     --property type=latency \
+     --property aggregation=p95 \
+     --property instruments=application.service.payment-api \
+     --property threshold=200ms
 4. Validate and report
 ```
 
@@ -245,7 +255,7 @@ User: /dr-model Show me all critical services
 
 You should:
 1. Search:
-   dr search "critical" --json
+   dr search --property criticality=critical --output json
 2. Parse and display:
    "Found 3 critical services:
 
@@ -287,7 +297,7 @@ You should:
    dr search "payment" --layer business --type service
 2. Update:
    dr update business.service.payment-processing \
-     --attributes '{"criticality":"critical"}'
+     --property criticality=critical
 3. Check implications:
    "✓ Updated business.service.payment-processing to critical
 
@@ -418,8 +428,10 @@ You: I'll create a checkout service linked to the conversion goal.
      ✓ Found: motivation.goal.improve-conversion
 
      Creating service:
-     dr add business service "Checkout Service" \
-       --description "Handles customer checkout process"
+     dr add business service --name "Checkout Service" \
+       --description "Handles customer checkout process" \
+       --property supports-goals=motivation.goal.improve-conversion \
+       --property criticality=high
 
      ✓ Created: business.service.checkout
      ✓ Linked to goal
@@ -433,7 +445,7 @@ User: /dr-model Show me services without security policies
 
 You: Searching for unsecured services...
 
-     dr list application --type service --json
+     dr search --layer application --type service --output json
 
      (analyzing results...)
 
@@ -447,7 +459,7 @@ You: Searching for unsecured services...
 ## Related Commands
 
 - `/dr-init` - Initialize a new model
-- `/dr-map` - Extract model from code
+- `/dr-ingest` - Extract model from code
 - `/dr-project` - Automated cross-layer projection
 - `/dr-validate` - Validate model and check for issues
 - `dr --help` - View all DR CLI commands

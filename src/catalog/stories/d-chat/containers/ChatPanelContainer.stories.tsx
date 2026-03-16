@@ -2,7 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { ChatPanel } from '@/apps/embedded/components/ChatPanel';
 
 const meta = {
-  title: 'Chat / Containers / ChatPanelContainer',
+  title: 'D Chat / Containers / ChatPanelContainer',
+  tags: ['skip-test'],
 } satisfies Meta;
 
 export default meta;

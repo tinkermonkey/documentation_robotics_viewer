@@ -43,99 +43,86 @@ export const ElbowEdge = memo(({
   const nodes = useNodes();
   const edges = useEdges();
 
-  // Routing priority:
-  //   1. ELK-computed full path (start + bends + end) — use directly, no React Flow adjustments.
-  //      ELK's startPoint/endPoint are at the exact port positions (React Flow handle coordinates)
-  //      so the path already connects the correct attachment points.
-  //   2. User-dragged waypoints — splice manual waypoints between fan-out attachment points.
-  //   3. A* obstacle-avoidance with fan-out (fallback when ELK routing unavailable).
+  let adjustedSourceX = sourceX;
+  let adjustedSourceY = sourceY;
+  let adjustedTargetX = targetX;
+  let adjustedTargetY = targetY;
+
+  const spacing = 10;
+
+  if (!sourceHandleId) {
+    const sourceEdges = edges.filter(
+      (e) => e.source === source && !e.sourceHandle
+    ).sort((a, b) => a.id.localeCompare(b.id));
+    const index = sourceEdges.findIndex((e) => e.id === id);
+    if (index !== -1 && sourceEdges.length > 1) {
+      const offset = (index - (sourceEdges.length - 1) / 2) * spacing;
+      if (sourcePosition === 'top' || sourcePosition === 'bottom') {
+        adjustedSourceX += offset;
+      } else {
+        adjustedSourceY += offset;
+      }
+    }
+  }
+
+  if (!targetHandleId) {
+    const targetEdges = edges.filter(
+      (e) => e.target === target && !e.targetHandle
+    ).sort((a, b) => a.id.localeCompare(b.id));
+    const index = targetEdges.findIndex((e) => e.id === id);
+    if (index !== -1 && targetEdges.length > 1) {
+      const offset = (index - (targetEdges.length - 1) / 2) * spacing;
+      if (targetPosition === 'top' || targetPosition === 'bottom') {
+        adjustedTargetX += offset;
+      } else {
+        adjustedTargetY += offset;
+      }
+    }
+  }
+
+  // If user has stored custom waypoints, use them directly (skip A* re-calculation)
   let pathPoints: Point[];
   const storedWaypoints = data?.waypoints;
-  const elkPoints = data?.elkPoints;
-
-  if (elkPoints && elkPoints.length >= 2) {
-    // ELK provides the complete path — use it directly without any React Flow position adjustment.
-    pathPoints = elkPoints;
+  if (storedWaypoints && storedWaypoints.length > 0) {
+    pathPoints = [
+      { x: adjustedSourceX, y: adjustedSourceY },
+      ...storedWaypoints,
+      { x: adjustedTargetX, y: adjustedTargetY },
+    ];
   } else {
-    // Fan-out: spread attachment points when multiple edges share the same handle.
-    // Only needed for the A* fallback and manually-dragged waypoints.
-    let adjustedSourceX = sourceX;
-    let adjustedSourceY = sourceY;
-    let adjustedTargetX = targetX;
-    let adjustedTargetY = targetY;
-    const spacing = 10;
+    const obstacles: Rectangle[] = nodes
+      .filter((node) =>
+        node.id !== source &&
+        node.id !== target &&
+        node.type !== 'layerContainer'
+      )
+      .map((node) => ({
+        x: node.position.x,
+        y: node.position.y,
+        width: node.measured?.width ?? node.width ?? 200,
+        height: node.measured?.height ?? node.height ?? 100,
+      }));
 
-    if (!sourceHandleId) {
-      const sourceEdges = edges.filter(
-        (e) => e.source === source && !e.sourceHandle
-      ).sort((a, b) => a.id.localeCompare(b.id));
-      const index = sourceEdges.findIndex((e) => e.id === id);
-      if (index !== -1 && sourceEdges.length > 1) {
-        const offset = (index - (sourceEdges.length - 1) / 2) * spacing;
-        if (sourcePosition === 'top' || sourcePosition === 'bottom') {
-          adjustedSourceX += offset;
-        } else {
-          adjustedSourceY += offset;
-        }
-      }
-    }
+    const sourceNode = nodes.find((n) => n.id === source);
+    const targetNode = nodes.find((n) => n.id === target);
+    const sourceRect: Rectangle | undefined = sourceNode
+      ? { x: sourceNode.position.x, y: sourceNode.position.y, width: sourceNode.measured?.width ?? sourceNode.width ?? 200, height: sourceNode.measured?.height ?? sourceNode.height ?? 100 }
+      : undefined;
+    const targetRect: Rectangle | undefined = targetNode
+      ? { x: targetNode.position.x, y: targetNode.position.y, width: targetNode.measured?.width ?? targetNode.width ?? 200, height: targetNode.measured?.height ?? targetNode.height ?? 100 }
+      : undefined;
 
-    if (!targetHandleId) {
-      const targetEdges = edges.filter(
-        (e) => e.target === target && !e.targetHandle
-      ).sort((a, b) => a.id.localeCompare(b.id));
-      const index = targetEdges.findIndex((e) => e.id === id);
-      if (index !== -1 && targetEdges.length > 1) {
-        const offset = (index - (targetEdges.length - 1) / 2) * spacing;
-        if (targetPosition === 'top' || targetPosition === 'bottom') {
-          adjustedTargetX += offset;
-        } else {
-          adjustedTargetY += offset;
-        }
-      }
-    }
-
-    if (storedWaypoints && storedWaypoints.length > 0) {
-      pathPoints = [
-        { x: adjustedSourceX, y: adjustedSourceY },
-        ...storedWaypoints,
-        { x: adjustedTargetX, y: adjustedTargetY },
-      ];
-    } else {
-      const obstacles: Rectangle[] = nodes
-        .filter((node) =>
-          node.id !== source &&
-          node.id !== target &&
-          node.type !== 'layerContainer'
-        )
-        .map((node) => ({
-          x: node.position.x,
-          y: node.position.y,
-          width: node.measured?.width ?? node.width ?? 200,
-          height: node.measured?.height ?? node.height ?? 100,
-        }));
-
-      const sourceNode = nodes.find((n) => n.id === source);
-      const targetNode = nodes.find((n) => n.id === target);
-      const sourceRect: Rectangle | undefined = sourceNode
-        ? { x: sourceNode.position.x, y: sourceNode.position.y, width: sourceNode.measured?.width ?? sourceNode.width ?? 200, height: sourceNode.measured?.height ?? sourceNode.height ?? 100 }
-        : undefined;
-      const targetRect: Rectangle | undefined = targetNode
-        ? { x: targetNode.position.x, y: targetNode.position.y, width: targetNode.measured?.width ?? targetNode.width ?? 200, height: targetNode.measured?.height ?? targetNode.height ?? 100 }
-        : undefined;
-
-      pathPoints = getControlPoints({
-        sourceX: adjustedSourceX,
-        sourceY: adjustedSourceY,
-        targetX: adjustedTargetX,
-        targetY: adjustedTargetY,
-        sourcePosition: sourcePosition as string,
-        targetPosition: targetPosition as string,
-        obstacles,
-        sourceRect,
-        targetRect,
-      });
-    }
+    pathPoints = getControlPoints({
+      sourceX: adjustedSourceX,
+      sourceY: adjustedSourceY,
+      targetX: adjustedTargetX,
+      targetY: adjustedTargetY,
+      sourcePosition: sourcePosition as string,
+      targetPosition: targetPosition as string,
+      obstacles,
+      sourceRect,
+      targetRect,
+    });
   }
 
   const path = pointsToSVGPath(pathPoints);

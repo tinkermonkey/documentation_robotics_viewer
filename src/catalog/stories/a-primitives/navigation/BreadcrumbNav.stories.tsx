@@ -3,7 +3,7 @@ import { BreadcrumbNav, type BreadcrumbSegment } from '@/apps/embedded/component
 import { HiOutlineCubeTransparent, HiOutlineRectangleStack } from 'react-icons/hi2';
 
 const meta = {
-  title: 'Primitives / Navigation / BreadcrumbNav',
+  title: 'A Primitives / Navigation / BreadcrumbNav',
 } satisfies Meta;
 
 export default meta;

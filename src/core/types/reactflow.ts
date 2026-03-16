@@ -6,12 +6,11 @@ import {
   HTTPMethod
 } from './shapes';
 import { LayerType } from './layers';
-import type { UnifiedNodeData, ChangesetOperation } from '../nodes';
+import type { UnifiedNodeData } from '../nodes';
+import { CoverageStatus } from './businessLayer';
 
 export type { HTTPMethod };
 import { NodeDetailLevel } from '../../core/layout/semanticZoomController';
-
-export type CoverageStatus = 'complete' | 'partial' | 'none';
 
 /**
  * Validation error for cross-layer edge constraints
@@ -171,7 +170,6 @@ export interface PermissionNodeData extends BaseNodeData {
 export interface LayerContainerNodeData extends BaseNodeData {
   layerType: string;
   color: string;
-  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -180,7 +178,7 @@ export interface LayerContainerNodeData extends BaseNodeData {
 export interface StakeholderNodeData extends BaseNodeData {
   stakeholderType?: string; // e.g., "internal", "external", "customer"
   interests?: string[];
-  changesetOperation?: ChangesetOperation;
+  changesetOperation?: 'add' | 'update' | 'delete';
 }
 
 /**
@@ -189,7 +187,7 @@ export interface StakeholderNodeData extends BaseNodeData {
 export interface GoalNodeData extends BaseNodeData {
   priority?: 'high' | 'medium' | 'low';
   status?: string;
-  changesetOperation?: ChangesetOperation;
+  changesetOperation?: 'add' | 'update' | 'delete';
   coverageIndicator?: CoverageIndicator;
 }
 
@@ -200,7 +198,7 @@ export interface RequirementNodeData extends BaseNodeData {
   requirementType?: string;
   priority?: 'high' | 'medium' | 'low';
   status?: string;
-  changesetOperation?: ChangesetOperation;
+  changesetOperation?: 'add' | 'update' | 'delete';
 }
 
 /**
@@ -208,7 +206,7 @@ export interface RequirementNodeData extends BaseNodeData {
  */
 export interface ConstraintNodeData extends BaseNodeData {
   negotiability?: 'fixed' | 'negotiable';
-  changesetOperation?: ChangesetOperation;
+  changesetOperation?: 'add' | 'update' | 'delete';
 }
 
 /**
@@ -216,7 +214,7 @@ export interface ConstraintNodeData extends BaseNodeData {
  */
 export interface DriverNodeData extends BaseNodeData {
   category?: 'business' | 'technical' | 'regulatory' | 'market';
-  changesetOperation?: ChangesetOperation;
+  changesetOperation?: 'add' | 'update' | 'delete';
 }
 
 /**
@@ -224,7 +222,7 @@ export interface DriverNodeData extends BaseNodeData {
  */
 export interface OutcomeNodeData extends BaseNodeData {
   achievementStatus?: 'planned' | 'in-progress' | 'achieved' | 'at-risk';
-  changesetOperation?: ChangesetOperation;
+  changesetOperation?: 'add' | 'update' | 'delete';
 }
 
 /**
@@ -232,7 +230,7 @@ export interface OutcomeNodeData extends BaseNodeData {
  */
 export interface PrincipleNodeData extends BaseNodeData {
   scope?: 'enterprise' | 'domain' | 'application';
-  changesetOperation?: ChangesetOperation;
+  changesetOperation?: 'add' | 'update' | 'delete';
 }
 
 /**
@@ -240,7 +238,7 @@ export interface PrincipleNodeData extends BaseNodeData {
  */
 export interface AssumptionNodeData extends BaseNodeData {
   validationStatus?: 'validated' | 'unvalidated' | 'invalidated';
-  changesetOperation?: ChangesetOperation;
+  changesetOperation?: 'add' | 'update' | 'delete';
 }
 
 /**
@@ -248,7 +246,7 @@ export interface AssumptionNodeData extends BaseNodeData {
  */
 export interface ValueStreamNodeData extends BaseNodeData {
   stageCount?: number;
-  changesetOperation?: ChangesetOperation;
+  changesetOperation?: 'add' | 'update' | 'delete';
 }
 
 /**
@@ -256,7 +254,40 @@ export interface ValueStreamNodeData extends BaseNodeData {
  */
 export interface AssessmentNodeData extends BaseNodeData {
   rating?: number; // 0-5
-  changesetOperation?: ChangesetOperation;
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
+ * C4 Container node data
+ * Represents a deployable unit (application, service, database, etc.)
+ */
+export interface C4ContainerNodeData extends BaseNodeData {
+  containerType?: 'webApp' | 'mobileApp' | 'service' | 'database' | 'queue' | 'filesystem' | 'other';
+  technology?: string[]; // Technology stack (e.g., ["React", "TypeScript"])
+  description?: string;
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
+ * C4 Component node data
+ * Represents a component within a container
+ */
+export interface C4ComponentNodeData extends BaseNodeData {
+  role?: string; // Architectural role (e.g., "Controller", "Service", "Repository")
+  technology?: string[]; // Technology stack
+  description?: string;
+  interfaces?: string[]; // Exposed interfaces
+  changesetOperation?: 'add' | 'update' | 'delete';
+}
+
+/**
+ * C4 External Actor node data
+ * Represents an external system or user
+ */
+export interface C4ExternalActorNodeData extends BaseNodeData {
+  actorType?: 'user' | 'system' | 'service';
+  description?: string;
+  changesetOperation?: 'add' | 'update' | 'delete';
 }
 
 /**
@@ -284,18 +315,17 @@ export type AppNode =
   | Node<PrincipleNodeData, 'principle'>
   | Node<AssumptionNodeData, 'assumption'>
   | Node<ValueStreamNodeData, 'valueStream'>
-  | Node<AssessmentNodeData, 'assessment'>;
+  | Node<AssessmentNodeData, 'assessment'>
+  | Node<C4ContainerNodeData, 'c4Container'>
+  | Node<C4ComponentNodeData, 'c4Component'>
+  | Node<C4ExternalActorNodeData, 'c4ExternalActor'>;
 
 /**
  * Edge data for custom edges
  */
 export interface ElbowEdgeData {
-  /** User-defined intermediate waypoints that override ELK routing and A*. */
+  /** User-defined intermediate waypoints that override A* routing. */
   waypoints?: Array<{ x: number; y: number }>;
-  /** ELK-computed intermediate bend points; used when no user waypoints are present. */
-  elkPoints?: Array<{ x: number; y: number }>;
-  /** Edge path rendering options (offset, border radius for elbow routing). */
-  pathOptions?: { offset?: number; borderRadius?: number };
   /** Style overrides (used by motivation edges, cross-layer edges) */
   color?: string;
   strokeDasharray?: string;
@@ -309,7 +339,7 @@ export interface ElbowEdgeData {
   targetElementName?: string;
   description?: string;
   tags?: string[];
-  changesetOperation?: ChangesetOperation;
+  changesetOperation?: 'add' | 'update' | 'delete';
   [key: string]: unknown;
 }
 
@@ -338,7 +368,7 @@ export function createCrossLayerEdgeData(
     label?: string;
     description?: string;
     tags?: string[];
-    changesetOperation?: ChangesetOperation;
+    changesetOperation?: 'add' | 'update' | 'delete';
   }
 ): ElbowEdgeData {
   if (sourceLayer === targetLayer) {
