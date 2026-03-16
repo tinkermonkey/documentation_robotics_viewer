@@ -4,7 +4,6 @@ import { isExpectedConsoleError, isKnownRenderingBug } from '../tests/stories/st
 
 /**
  * Check if error is a Storybook test-runner initialization issue
- * MARKER: Updated to use function instead of class to avoid TDZ error
  */
 function isStorybookTestRunnerError(error: unknown): boolean {
   if (error instanceof Error) {
