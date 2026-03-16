@@ -145,6 +145,8 @@ export class LibavoidRouter {
       console.log('[LibavoidRouter] Initialized with Libavoid WASM module');
     } catch (error) {
       console.error('[LibavoidRouter] Failed to initialize WASM module:', error);
+      // Clear the pending promise so retry attempts can succeed
+      this.initializePromise = null;
       throw new Error(
         `Failed to initialize Libavoid WASM module: ${error instanceof Error ? error.message : String(error)}`
       );
@@ -173,8 +175,9 @@ export class LibavoidRouter {
    * 9. Destroy all Libavoid objects to prevent memory leaks
    *
    * @param input Positioned nodes and edges to route
-   * @returns Map of edge IDs to waypoint arrays (intermediate points only)
-   * @throws Error if initialization failed and no fallback available
+   * @returns Map of edge IDs to waypoint arrays (intermediate points only).
+   *          If router is not initialized or any routing error occurs, returns an empty map
+   *          to trigger A* edge routing fallback. Errors are logged to console.error.
    */
   async routeEdges(input: LibavoidRoutingInput): Promise<LibavoidRoutingResult> {
     if (!this.isInitialized() || !this.module) {
@@ -514,6 +517,7 @@ export class LibavoidRouter {
   dispose(): void {
     this.module = null;
     this.initialized = false;
+    this.initializePromise = null;
   }
 }
 
