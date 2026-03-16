@@ -102,6 +102,9 @@ export class YAMLParser {
     files: Record<string, string>,
     layerId: string
   ): Layer {
+    // Clear dot-notation lookup to prevent mappings from previous parses from persisting
+    this.dotNotationLookup.clear();
+
     const layerType = LAYER_TYPE_MAP[layerId] || layerId;
     const elements: ModelElement[] = [];
     const relationships: Relationship[] = [];
@@ -161,7 +164,6 @@ export class YAMLParser {
               }
 
               this.dotNotationLookup.set(fullDotNotation, modelElement.id);
-              console.log(`Mapped "${fullDotNotation}" -> ${modelElement.id}`);
             }
           } catch (error) {
             const message = error instanceof Error ? error.message : String(error);
