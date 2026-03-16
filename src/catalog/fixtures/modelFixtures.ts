@@ -168,7 +168,7 @@ export function createCompleteModelFixture(): MetaModel {
     layers: {
       motivation: createLayer('motivation', LayerType.Motivation, 'Motivation Layer', motivationElements, motivationRelationships),
       business: createLayer('business', LayerType.Business, 'Business Layer', businessElements, businessRelationships),
-      c4: createLayer('c4', LayerType.Motivation, 'C4 Architecture Layer', c4Elements, c4Relationships)
+      c4: createLayer('c4', LayerType.Application, 'C4 Architecture Layer', c4Elements, c4Relationships)
     },
     references: [],
     metadata: {
@@ -347,7 +347,7 @@ export function createC4LayerModelFixture(): MetaModel {
     version: '1.0.0',
     description: 'Model focused on C4 architecture elements',
     layers: {
-      c4: createLayer('c4', LayerType.Motivation, 'C4 Architecture Layer', elements, relationships)
+      c4: createLayer('c4', LayerType.Application, 'C4 Architecture Layer', elements, relationships)
     },
     references: [],
     metadata: {

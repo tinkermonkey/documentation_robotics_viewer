@@ -31,6 +31,7 @@ import type {
   CoverageIndicator,
   RelationshipBadge
 } from '../../core/types';
+import type { ChangesetOperation } from '../../core/types/reactflow';
 
 // DEPRECATED: FieldItem type definition kept for backward compatibility
 // The actual FieldItem interface is imported from UnifiedNode component
@@ -109,7 +110,7 @@ export interface BaseNodeOptions {
   layerId?: string;
   fill?: string;
   stroke?: string;
-  changesetOperation?: 'add' | 'update' | 'delete';
+  changesetOperation?: ChangesetOperation;
   opacity?: number;
   strokeWidth?: number;
   relationshipBadge?: RelationshipBadge;

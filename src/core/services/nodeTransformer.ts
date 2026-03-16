@@ -10,7 +10,7 @@ import { MarkerType, Edge } from '@xyflow/react';
 import { elementStore } from '../stores/elementStore';
 import { applyEdgeBundling, calculateOptimalThreshold } from '../layout/edgeBundling';
 import { VerticalLayerLayoutResult, LayerLayoutResult } from '../types/shapes';
-import { AppNode, AppEdge } from '../types/reactflow';
+import { AppNode, AppEdge, ChangesetOperation } from '../types/reactflow';
 import { FALLBACK_COLOR } from '../utils/layerColors';
 import { nodeConfigLoader } from '../nodes/nodeConfigLoader';
 import { NodeType } from '../nodes/NodeType';
@@ -35,7 +35,7 @@ export interface NodeTransformResult {
  */
 interface OptionalElementProperties {
   detailLevel?: 'minimal' | 'standard' | 'detailed';
-  changesetOperation?: 'add' | 'update' | 'delete';
+  changesetOperation?: ChangesetOperation;
   relationshipBadge?: RelationshipBadgeData;
   schemaInfo?: {
     properties?: Record<string, unknown> | Array<Record<string, unknown>>;

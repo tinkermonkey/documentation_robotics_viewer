@@ -6,6 +6,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import { MetaModel, ModelElement, Relationship, Layer, RelationshipType } from '../../../core/types';
+import type { ChangesetOperation } from '../../../core/types/reactflow';
 import type { ChangesetDetails, ChangesetChange } from './embeddedDataLoader';
 
 export type { ChangesetDetails, ChangesetChange };
@@ -288,7 +289,7 @@ export class ChangesetGraphBuilder {
   /**
    * Get operation color for legend
    */
-  static getOperationColor(operation: 'add' | 'update' | 'delete'): {
+  static getOperationColor(operation: ChangesetOperation): {
     border: string;
     background: string;
     text: string;

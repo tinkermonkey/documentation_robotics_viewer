@@ -63,8 +63,7 @@ export interface BusinessNode {
  * - sourceId/targetId: Used by BaseEdge interface for generic components
  *
  * Both pairs reference the same node IDs. This invariant is enforced at
- * construction time in BusinessGraphBuilder.buildEdges() and should never
- * be violated. Use the createBusinessEdge() helper function for safe creation.
+ * construction time in BusinessGraphBuilder.buildEdges().
  *
  * Choose whichever field is appropriate for your use case:
  * - Use source/target when working with React Flow or business layer logic
@@ -72,7 +71,7 @@ export interface BusinessNode {
  * - Both are available and reference the same values
  *
  * @example
- * // Creating an edge (prefer createBusinessEdge() for type safety)
+ * // Creating an edge
  * const edge: BusinessEdge = {
  *   id: 'edge-1',
  *   source: 'process-1',      // Business layer node ID

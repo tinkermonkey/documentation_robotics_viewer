@@ -1,6 +1,7 @@
 import nodeConfigData from './nodeConfig.json' with { type: 'json' };
 import type { NodeConfig, NodeStyleConfig } from './nodeConfig.types';
 import { NodeType } from './NodeType';
+import type { ChangesetOperation } from '../types/reactflow';
 
 /**
  * NodeConfigLoader
@@ -191,10 +192,10 @@ class NodeConfigLoader {
 
   /**
    * Get changeset operation colors
-   * @param operation - The changeset operation type ('add', 'update', or 'delete')
+   * @param operation - The changeset operation type
    * @returns Color configuration for the operation
    */
-  getChangesetColors(operation: 'add' | 'update' | 'delete') {
+  getChangesetColors(operation: ChangesetOperation) {
     return this.config.changesetColors[operation];
   }
 
