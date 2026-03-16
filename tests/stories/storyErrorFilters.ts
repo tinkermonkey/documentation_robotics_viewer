@@ -1,7 +1,7 @@
 /**
  * Story Test Error Filter Patterns
  *
- * Three-tier error classification for story tests:
+ * Two-tier error classification for story tests:
  *
  * 1. **Expected errors** (`isExpectedConsoleError`) — Truly expected in isolated story
  *    environments (no backend, dev mode). These are silently filtered.
@@ -51,11 +51,6 @@ export function isExpectedConsoleError(text: string): boolean {
 
   // Failed resource loads - expected when test backend ports unavailable
   if (/Failed to load resource.*localhost:(3002|8080)/.test(text)) return true;
-
-  // 404 errors from localhost test environment - expected when resources not available in Storybook
-  // This can occur with dynamic content loading, missing fixtures, or isolated test setup
-  // Only filter 404 errors from localhost dev servers (not production URLs)
-  if (/Failed to load resource.*localhost:(3002|8080).*404/.test(text)) return true;
 
   // WASM streaming compile failures - expected when WASM modules not fully loaded in test environment
   // This occurs during concurrent layout engine initialization in Storybook

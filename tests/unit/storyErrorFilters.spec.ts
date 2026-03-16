@@ -1,7 +1,7 @@
 /**
  * Unit Tests for Story Error Filtering
  *
- * Tests the three-tier error classification:
+ * Tests the two-tier error classification:
  * 1. isExpectedConsoleError() - Truly expected errors (silently filtered)
  * 2. isKnownRenderingBug() - Known rendering bugs (soft-fail/warn)
  *
@@ -206,8 +206,9 @@ test.describe('Story Error Filtering', () => {
         expect(isExpectedConsoleError('Failed to load resource: localhost:8080/api/model')).toBe(true);
       });
 
-      test('should match 404 errors from localhost test servers', () => {
-        // 404 errors from localhost dev servers are expected in Storybook
+      test('should match 404 errors from localhost test servers via general failed resource filter', () => {
+        // 404 errors from localhost dev servers are caught by the general "Failed to load resource"
+        // filter on localhost:(3002|8080), not by a specific 404 pattern
         expect(isExpectedConsoleError('Failed to load resource: localhost:3002/api/model 404')).toBe(true);
         expect(isExpectedConsoleError('Failed to load resource: localhost:8080/bundle.js 404')).toBe(true);
       });
