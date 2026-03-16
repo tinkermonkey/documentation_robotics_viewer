@@ -96,9 +96,10 @@ export const NodeContextMenu: React.FC<NodeContextMenuProps> = ({
       style={getMenuStyle()}
       role="menu"
       aria-label={nodeLabel ? `Actions for ${nodeLabel}` : 'Node actions menu'}
+      data-testid="node-context-menu"
     >
       {nodeLabel && (
-        <div className="px-3 py-2 bg-gray-100 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600">
+        <div className="px-3 py-2 bg-gray-100 dark:bg-gray-700 border-b border-gray-300 dark:border-gray-600" data-testid="context-menu-header">
           <span className="text-sm font-semibold text-gray-900 dark:text-white block whitespace-nowrap overflow-hidden text-ellipsis max-w-[180px]">
             {nodeLabel}
           </span>
@@ -109,7 +110,7 @@ export const NodeContextMenu: React.FC<NodeContextMenuProps> = ({
         {actions.map((action, index) => (
           <React.Fragment key={index}>
             {action.separator && (
-              <div className="h-px bg-gray-300 dark:bg-gray-600 my-1" role="separator" />
+              <div className="h-px bg-gray-300 dark:bg-gray-600 my-1" role="separator" data-testid="context-menu-separator" />
             )}
             <button
               className="w-full flex items-center gap-2.5 px-3 py-2 bg-transparent border-0 cursor-pointer text-sm text-gray-900 dark:text-white text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 dark:active:bg-gray-600"
@@ -118,6 +119,7 @@ export const NodeContextMenu: React.FC<NodeContextMenuProps> = ({
                 onClose();
               }}
               role="menuitem"
+              data-testid={`context-menu-action-${index}`}
             >
               {action.icon && (
                 <span className="text-sm w-4 h-4 inline-flex items-center justify-center">

@@ -415,8 +415,8 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
 
   if (error) {
     return (
-      <div className="w-full h-screen flex items-center justify-center font-sans">
-        <div className="p-6 bg-red-50 border-2 border-red-800 rounded-lg max-w-xl">
+      <div className="w-full h-screen flex items-center justify-center font-sans" data-testid="business-layer-view-error">
+        <div className="p-6 bg-red-50 border-2 border-red-800 rounded-lg max-w-xl" data-testid="error-message-container">
           <h2 className="m-0 mb-3 text-red-800 font-bold">Error</h2>
           <p className="m-0 text-gray-700">{error}</p>
         </div>
@@ -426,8 +426,8 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
 
   if (loading) {
     return (
-      <div className="w-full h-screen flex items-center justify-center font-sans">
-        <div className="p-6 bg-blue-50 border-2 border-blue-700 rounded-lg">
+      <div className="w-full h-screen flex items-center justify-center font-sans" data-testid="business-layer-view-loading">
+        <div className="p-6 bg-blue-50 border-2 border-blue-700 rounded-lg" data-testid="loading-message-container">
           <p className="m-0 text-blue-700 font-semibold">
             Loading business layer...
           </p>
@@ -437,7 +437,7 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
   }
 
   return (
-    <div className="w-full h-screen flex flex-col">
+    <div className="w-full h-screen flex flex-col" data-testid="business-layer-view-root">
       {/* Controls Panel */}
       <BusinessLayerControls
         businessGraph={businessGraph}
@@ -448,7 +448,7 @@ export const BusinessLayerView: React.FC<BusinessLayerViewProps> = ({ model }) =
       />
 
       {/* Graph Visualization */}
-      <div ref={reactFlowWrapperRef} className="flex-1 relative">
+      <div ref={reactFlowWrapperRef} className="flex-1 relative" data-testid="business-layer-view-reactflow-wrapper">
         <ReactFlow
           nodes={styledNodes}
           edges={styledEdges}
