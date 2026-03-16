@@ -1,7 +1,7 @@
 /**
  * Auto-generated API Client with React Query Hooks
  * Generated from: /workspace/docs/api-spec.yaml
- * Generated at: 2026-03-16T14:10:34.829Z
+ * Generated at: 2026-03-16T14:15:08.447Z
  * API Version: 0.1.0
  *
  * IMPORTANT: This file is auto-generated. Do not edit directly.
@@ -306,7 +306,6 @@ export class ApiClient {
       throw new Error(`DELETE /api/annotations/:annotationId failed: ${response.status} ${errorText}`);
     }
 
-    
     if (response.status === 204) {
       return undefined;
     }

@@ -128,8 +128,7 @@ function generateFetchMethod(endpoint) {
   // For DELETE requests that return 204 No Content, don't parse JSON
   const isDelete = method.toUpperCase() === 'DELETE';
   const responseHandling = isDelete
-    ? `
-    if (response.status === 204) {
+    ? `if (response.status === 204) {
       return undefined;
     }
     return response.json();`
@@ -166,7 +165,7 @@ function generateFetchMethod(endpoint) {
  * Determine which query keys should be invalidated for a mutation
  * @param operationId The operation ID (e.g., 'postapiannotations')
  * @param pathParams Path parameters
- * @returns Object with invalidation code snippets
+ * @returns Array of invalidation code snippets
  */
 function getInvalidationQueries(operationId, pathParams) {
   // Map operation IDs to their related query keys
@@ -194,7 +193,11 @@ function getInvalidationQueries(operationId, pathParams) {
     }
   }
 
-  // If no specific invalidations found, return empty (this shouldn't happen with proper operation IDs)
+  // If no specific invalidations found, emit a build-time warning
+  if (invalidations.length === 0) {
+    console.warn(`⚠️  No invalidation mapping found for operation: ${operationId}. Add explicit mapping to getInvalidationQueries().`);
+  }
+
   return invalidations;
 }
 
@@ -237,7 +240,8 @@ function generateReactQueryHook(endpoint) {
     const invalidationQueries = getInvalidationQueries(operationId, pathParams);
     const invalidationCode = invalidationQueries.length > 0
       ? invalidationQueries.map(q => `        queryClient.invalidateQueries(${q});`).join('\n')
-      : `        queryClient.invalidateQueries({ queryKey: ['${operationId}'] });`;
+      : `        console.warn('[WARNING] Unmapped cache invalidation for ${operationId}. Add to getInvalidationQueries().');
+        queryClient.invalidateQueries({ queryKey: ['${operationId}'] });`;
 
     if (hasBody) {
       return `
