@@ -1035,4 +1035,192 @@ test.describe('NodeTransformer Pipeline Integration', () => {
       }
     });
   });
+
+  test.describe('Edge ID Uniqueness Fix (Issue #404)', () => {
+    test('should generate unique edge IDs for multiple relationships between same source and target', async () => {
+      const source = createElement('source-elem', 'Goal', { priority: 'High' });
+      const target = createElement('target-elem', 'Goal', { priority: 'Low' });
+
+      const model = createTestModel({ motivation: [source, target] });
+
+      // Add multiple relationships between the same source and target
+      // These would previously have collided with edge IDs: "source-elem-target-elem"
+      model.layers.motivation.relationships = [
+        {
+          id: 'rel-1',
+          sourceId: 'source-elem',
+          targetId: 'target-elem',
+          type: 'influences',
+          properties: {},
+        } as any,
+        {
+          id: 'rel-2',
+          sourceId: 'source-elem',
+          targetId: 'target-elem',
+          type: 'contradicts',
+          properties: {},
+        } as any,
+        {
+          id: 'rel-3',
+          sourceId: 'source-elem',
+          targetId: 'target-elem',
+          type: 'depends-on',
+          properties: {},
+        } as any,
+      ];
+
+      const result = await transformer.transformModel(model);
+
+      // Extract edge IDs
+      const edgeIds = result.edges.map((e: any) => e.id);
+
+      // All edges should be present (no collisions)
+      expect(edgeIds).toHaveLength(3);
+
+      // Each edge ID should be unique
+      const uniqueEdgeIds = new Set(edgeIds);
+      expect(uniqueEdgeIds.size).toBe(3);
+
+      // Edge IDs should use the relationship ID, not the source-target pair
+      expect(edgeIds).toContain('edge-rel-1');
+      expect(edgeIds).toContain('edge-rel-2');
+      expect(edgeIds).toContain('edge-rel-3');
+    });
+
+    test('should maintain edge correctness with unique IDs', async () => {
+      const elem1 = createElement('elem-1', 'Goal');
+      const elem2 = createElement('elem-2', 'Goal');
+      const elem3 = createElement('elem-3', 'Goal');
+
+      const model = createTestModel({ motivation: [elem1, elem2, elem3] });
+
+      model.layers.motivation.relationships = [
+        {
+          id: 'rel-a',
+          sourceId: 'elem-1',
+          targetId: 'elem-2',
+          type: 'connects',
+          properties: {},
+        } as any,
+        {
+          id: 'rel-b',
+          sourceId: 'elem-1',
+          targetId: 'elem-3',
+          type: 'connects',
+          properties: {},
+        } as any,
+      ];
+
+      const result = await transformer.transformModel(model);
+
+      const edgesFrom1 = result.edges.filter((e: any) => e.source === 'elem-1');
+      expect(edgesFrom1).toHaveLength(2);
+
+      // Verify each edge has correct source/target and unique ID
+      const edge1 = edgesFrom1.find((e: any) => e.target === 'elem-2');
+      const edge2 = edgesFrom1.find((e: any) => e.target === 'elem-3');
+
+      expect(edge1?.id).toBe('edge-rel-a');
+      expect(edge2?.id).toBe('edge-rel-b');
+      expect(edge1?.id).not.toBe(edge2?.id);
+    });
+  });
+
+  test.describe('Empty/Invalid Layer Bounds Fix (Issue #404)', () => {
+    test('should handle layers with all invalid node positions without producing Infinity values', async () => {
+      // Create a layer where all nodes will fail position validation
+      // This happens when layout engine returns null/undefined positions
+      const invalidNodes = [
+        createElement('invalid-1', 'Goal'),
+        createElement('invalid-2', 'Goal'),
+        createElement('invalid-3', 'Goal'),
+      ];
+
+      const model = createTestModel({ motivation: invalidNodes });
+
+      // Mock the layout engine to return invalid positions (null)
+      const mockLayoutEngine = {
+        layout: async () => ({
+          nodes: invalidNodes.map((node) => ({
+            id: `node-${node.id}`,
+            position: null, // Invalid position
+            width: 200,
+            height: 100,
+          })),
+        }),
+      };
+
+      const transformerWithMock = new NodeTransformer(mockLayoutEngine as any);
+      const result = await transformerWithMock.transformModel(model);
+
+      // Verify no Infinity values in the result
+      result.nodes.forEach((node: any) => {
+        expect(Number.isFinite(node.position.x)).toBe(true);
+        expect(Number.isFinite(node.position.y)).toBe(true);
+      });
+    });
+
+    test('should provide sensible default bounds when all nodes in layer are invalid', async () => {
+      const elements = [
+        createElement('elem-invalid-1', 'Goal'),
+        createElement('elem-invalid-2', 'Goal'),
+      ];
+
+      const model = createTestModel({ motivation: elements });
+
+      // Create a custom layout engine that returns invalid dimensions
+      const badLayoutEngine = {
+        layout: async () => {
+          return {
+            nodes: elements.map((el) => ({
+              id: `node-${el.id}`,
+              position: { x: 0, y: 0 },
+              width: NaN, // Invalid dimensions
+              height: NaN,
+            })),
+          };
+        },
+      };
+
+      const transformerBad = new NodeTransformer(badLayoutEngine as any);
+      const result = await transformerBad.transformModel(model);
+
+      // All nodes should have finite positions despite invalid inputs
+      result.nodes.forEach((node: any) => {
+        expect(Number.isFinite(node.position.x)).toBe(true);
+        expect(Number.isFinite(node.position.y)).toBe(true);
+        expect(node.width).toBeGreaterThan(0);
+        expect(node.height).toBeGreaterThan(0);
+      });
+    });
+
+    test('should not cascade Infinity to subsequent layers', async () => {
+      // Create a multi-layer model
+      const motivationElem = createElement('motivation-elem', 'Goal');
+      const businessElem = createElement('business-elem', 'Process');
+      const dataElem = createElement('data-elem', 'Entity');
+
+      const model = createTestModel({
+        motivation: [motivationElem],
+        business: [businessElem],
+        data_model: [dataElem],
+      });
+
+      const result = await transformer.transformModel(model);
+
+      // Verify all nodes across all layers have finite positions
+      result.nodes.forEach((node: any) => {
+        expect(Number.isFinite(node.position.x)).toBe(true, `Node ${node.id} has non-finite x`);
+        expect(Number.isFinite(node.position.y)).toBe(true, `Node ${node.id} has non-finite y`);
+      });
+
+      // Verify nodes from different layers have different Y positions (proper spacing)
+      const motivationNode = result.nodes.find((n: any) => n.id === 'node-motivation-elem');
+      const businessNode = result.nodes.find((n: any) => n.id === 'node-business-elem');
+      const dataNode = result.nodes.find((n: any) => n.id === 'node-data-elem');
+
+      expect(motivationNode?.position.y).toBeLessThan(businessNode?.position.y || Infinity);
+      expect(businessNode?.position.y).toBeLessThan(dataNode?.position.y || Infinity);
+    });
+  });
 });
