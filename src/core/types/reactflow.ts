@@ -64,6 +64,9 @@ export interface BaseNodeData {
   detailLevel?: NodeDetailLevel;
   relationshipBadge?: RelationshipBadge;
 
+  // Changeset tracking
+  changesetOperation?: ChangesetOperation;
+
   // Index signature for React Flow compatibility
   [key: string]: unknown;
 }
@@ -184,7 +187,6 @@ export interface LayerContainerNodeData extends BaseNodeData {
 export interface StakeholderNodeData extends BaseNodeData {
   stakeholderType?: string; // e.g., "internal", "external", "customer"
   interests?: string[];
-  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -193,7 +195,6 @@ export interface StakeholderNodeData extends BaseNodeData {
 export interface GoalNodeData extends BaseNodeData {
   priority?: 'high' | 'medium' | 'low';
   status?: string;
-  changesetOperation?: ChangesetOperation;
   coverageIndicator?: CoverageIndicator;
 }
 
@@ -204,7 +205,6 @@ export interface RequirementNodeData extends BaseNodeData {
   requirementType?: string;
   priority?: 'high' | 'medium' | 'low';
   status?: string;
-  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -212,7 +212,6 @@ export interface RequirementNodeData extends BaseNodeData {
  */
 export interface ConstraintNodeData extends BaseNodeData {
   negotiability?: 'fixed' | 'negotiable';
-  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -220,7 +219,6 @@ export interface ConstraintNodeData extends BaseNodeData {
  */
 export interface DriverNodeData extends BaseNodeData {
   category?: 'business' | 'technical' | 'regulatory' | 'market';
-  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -228,7 +226,6 @@ export interface DriverNodeData extends BaseNodeData {
  */
 export interface OutcomeNodeData extends BaseNodeData {
   achievementStatus?: 'planned' | 'in-progress' | 'achieved' | 'at-risk';
-  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -236,7 +233,6 @@ export interface OutcomeNodeData extends BaseNodeData {
  */
 export interface PrincipleNodeData extends BaseNodeData {
   scope?: 'enterprise' | 'domain' | 'application';
-  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -244,7 +240,6 @@ export interface PrincipleNodeData extends BaseNodeData {
  */
 export interface AssumptionNodeData extends BaseNodeData {
   validationStatus?: 'validated' | 'unvalidated' | 'invalidated';
-  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -252,7 +247,6 @@ export interface AssumptionNodeData extends BaseNodeData {
  */
 export interface ValueStreamNodeData extends BaseNodeData {
   stageCount?: number;
-  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -260,7 +254,6 @@ export interface ValueStreamNodeData extends BaseNodeData {
  */
 export interface AssessmentNodeData extends BaseNodeData {
   rating?: number; // 0-5
-  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -271,7 +264,6 @@ export interface C4ContainerNodeData extends BaseNodeData {
   containerType?: 'webApp' | 'mobileApp' | 'service' | 'database' | 'queue' | 'filesystem' | 'other';
   technology?: string[]; // Technology stack (e.g., ["React", "TypeScript"])
   description?: string;
-  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -283,7 +275,6 @@ export interface C4ComponentNodeData extends BaseNodeData {
   technology?: string[]; // Technology stack
   description?: string;
   interfaces?: string[]; // Exposed interfaces
-  changesetOperation?: ChangesetOperation;
 }
 
 /**
@@ -293,7 +284,6 @@ export interface C4ComponentNodeData extends BaseNodeData {
 export interface C4ExternalActorNodeData extends BaseNodeData {
   actorType?: 'user' | 'system' | 'service';
   description?: string;
-  changesetOperation?: ChangesetOperation;
 }
 
 /**
