@@ -242,9 +242,10 @@ export class BusinessGraphBuilder {
 
     for (const element of elements) {
       try {
+        const inferredType = this.inferNodeType(element.type);
         const node: BusinessNode = {
           id: element.id,
-          type: this.inferNodeType(element.type),
+          type: inferredType,
           name: element.name,
           description: element.description,
           properties: element.properties,
@@ -252,7 +253,7 @@ export class BusinessGraphBuilder {
           hierarchyLevel: 0, // Will be calculated in resolveHierarchy
           parentId: undefined,
           childIds: [],
-          dimensions: this.calculateDimensions(element),
+          dimensions: this.calculateDimensions(element, inferredType),
         };
 
         nodes.set(node.id, node);
@@ -405,11 +406,11 @@ export class BusinessGraphBuilder {
    * across all modules. This ensures all layouts use the same fallback dimensions
    * from nodeConfig.json.
    */
-  private calculateDimensions(element: BusinessElement): { width: number; height: number } {
+  private calculateDimensions(element: BusinessElement, inferredType: BusinessNodeType): { width: number; height: number } {
     // Create a temporary BusinessNode to get dimensions from transformer
     const tempNode: BusinessNode = {
       id: element.id,
-      type: this.inferNodeType(element.type) as any,
+      type: inferredType,
       name: element.name,
       description: element.description,
       properties: element.properties,
