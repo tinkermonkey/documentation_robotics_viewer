@@ -7,13 +7,10 @@ import { test, expect } from '@playwright/test';
 import { DataLoader } from '../../../../src/core/services/dataLoader';
 
 test.describe('DataLoader.detectSchemaType()', () => {
-  const dataLoader = new DataLoader();
+  // Pass mocked dependencies since detectSchemaType doesn't use them
+  const dataLoader = new DataLoader({} as any, {} as any, {} as any);
 
-  /**
-   * Helper to access private detectSchemaType method via reflection.
-   * Used consistently throughout tests to avoid repeated `as any` casts.
-   * Binds `this` context to preserve instance method access.
-   */
+  // Helper to access private detectSchemaType method via reflection
   const getDetectSchemaTypeFunction = () => {
     const method = ((dataLoader as unknown) as Record<string, unknown>)
       .detectSchemaType as (schemas: Record<string, unknown>) => string;
