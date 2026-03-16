@@ -12,6 +12,7 @@
  */
 
 import { AvoidLib } from 'libavoid-js';
+import { calculateLabelAwareNudgingDistance } from '../utils/labelSpacingUtils';
 
 type LibavoidInstance = ReturnType<typeof AvoidLib.getInstance>;
 
@@ -38,6 +39,8 @@ export interface LibavoidEdgeInput {
   sourcePinOffset?: number;
   /** Optional target pin offset for field-level handles: y-proportion on target side (0 to 1) */
   targetPinOffset?: number;
+  /** Optional label text for label-aware spacing calculation (FR-10) */
+  label?: string;
 }
 
 /**
@@ -138,13 +141,14 @@ export class LibavoidRouter {
    *
    * Algorithm:
    * 1. Create a Router with OrthogonalRouting mode
-   * 2. Set routing penalties for overlap/crossing minimization
-   * 3. Register each node as a ShapeRef obstacle
-   * 4. Create exclusive ShapeConnectionPins for each edge endpoint
-   * 5. Process routing transaction
-   * 6. Extract waypoints from ConnRef displayRoute()
-   * 7. Strip first/last points (ElbowEdge adds them from handle positions)
-   * 8. Destroy all Libavoid objects to prevent memory leaks
+   * 2. Calculate label-aware nudging distance based on actual label widths (FR-10)
+   * 3. Set routing penalties for overlap/crossing minimization
+   * 4. Register each node as a ShapeRef obstacle
+   * 5. Create exclusive ShapeConnectionPins for each edge endpoint
+   * 6. Process routing transaction
+   * 7. Extract waypoints from ConnRef displayRoute()
+   * 8. Strip first/last points (ElbowEdge adds them from handle positions)
+   * 9. Destroy all Libavoid objects to prevent memory leaks
    *
    * @param input Positioned nodes and edges to route
    * @returns Map of edge IDs to waypoint arrays (intermediate points only)
@@ -162,6 +166,21 @@ export class LibavoidRouter {
       // Create router with OrthogonalRouting mode (value: 2)
       const router = new this.module.Router(2);
 
+      // Calculate label-aware nudging distance based on actual edge labels (FR-10)
+      // This ensures labels on parallel edges don't visually collide
+      const labelTexts = input.edges
+        .filter((e): e is LibavoidEdgeInput & { label: string } => !!e.label)
+        .map((e) => e.label);
+
+      const idealNudgingDistance = labelTexts.length > 0
+        ? calculateLabelAwareNudgingDistance(labelTexts)
+        : 15; // Default if no labels
+
+      console.log(
+        `[LibavoidRouter] Using label-aware nudging distance: ${idealNudgingDistance}px` +
+        (labelTexts.length > 0 ? ` (based on ${labelTexts.length} edge labels)` : ' (default)')
+      );
+
       // Set routing penalties to minimize overlap and crossings
       router.setRoutingParameter(this.module.RoutingParameter.segmentPenalty, 50);
       router.setRoutingParameter(this.module.RoutingParameter.crossingPenalty, 200);
@@ -175,7 +194,7 @@ export class LibavoidRouter {
       );
       router.setRoutingParameter(
         this.module.RoutingParameter.idealNudgingDistance,
-        15
+        idealNudgingDistance
       );
 
       // Register nodes as obstacles with ShapeRef

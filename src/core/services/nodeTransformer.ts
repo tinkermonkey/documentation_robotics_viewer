@@ -295,6 +295,8 @@ export class NodeTransformer {
             target: edge.target,
             sourceSide,
             targetSide,
+            // Include label for label-aware spacing calculation (FR-10)
+            label: edge.label ? String(edge.label) : undefined,
           });
         }
 
