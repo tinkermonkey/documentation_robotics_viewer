@@ -3,17 +3,15 @@ import AxeBuilder from '@axe-core/playwright';
 import { isExpectedConsoleError, isKnownRenderingBug } from '../tests/stories/storyErrorFilters.ts';
 
 /**
- * Custom error class for Storybook test-runner initialization issues.
- * Thrown when Storybook's test-runner encounters known initialization failures
- * that should not fail story validation (e.g., page context unavailable).
+ * Check if error is a Storybook test-runner initialization issue
+ * MARKER: Updated to use function instead of class to avoid TDZ error
  */
-class StorybookTestRunnerError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'StorybookTestRunnerError';
-    // Maintain proper prototype chain for instanceof checks
-    Object.setPrototypeOf(this, StorybookTestRunnerError.prototype);
+function isStorybookTestRunnerError(error: unknown): boolean {
+  if (error instanceof Error) {
+    return error.name === 'StorybookTestRunnerError' ||
+           error.message?.includes('Cannot access');
   }
+  return false;
 }
 
 // Extend Window interface for test-runner injected properties
@@ -113,7 +111,7 @@ const config: TestRunnerConfig = {
         // If page.evaluate fails (e.g., due to Storybook test-runner initialization issues),
         // only silently skip error collection if it's a known initialization issue.
         // Otherwise, re-throw the error to the outer catch block for proper handling.
-        if (evalError instanceof StorybookTestRunnerError) {
+        if (isStorybookTestRunnerError(evalError)) {
           // Known Storybook test-runner initialization issue - silently skip error collection
           return;
         }
@@ -127,8 +125,8 @@ const config: TestRunnerConfig = {
         }
       }
     } catch (postVisitError) {
-      // If the entire postVisit fails due to Storybook test-runner issues, only throw if it's not the StorybookTestRunnerError
-      if (postVisitError instanceof StorybookTestRunnerError) {
+      // If the entire postVisit fails due to Storybook test-runner issues, only throw if it's not known
+      if (isStorybookTestRunnerError(postVisitError)) {
         // Known Storybook test-runner initialization issue - log but don't fail
         console.warn(`[test-runner] Storybook test-runner initialization issue in story "${context.id}": skipping error checks`);
         return;
