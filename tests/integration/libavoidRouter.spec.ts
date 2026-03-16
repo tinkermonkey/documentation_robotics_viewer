@@ -12,11 +12,22 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { LibavoidRouter } from '../../src/core/services/libavoidRouter';
+import { LibavoidRouter, libavoidRouter } from '../../src/core/services/libavoidRouter';
 
 test.describe('LibavoidRouter - Comprehensive Routing Tests', () => {
   test.beforeEach(() => {
     LibavoidRouter.resetInstance();
+  });
+
+  test('should provide singleton instance', () => {
+    const router1 = LibavoidRouter.getInstance();
+    const router2 = LibavoidRouter.getInstance();
+    expect(router1).toBe(router2);
+  });
+
+  test('should start uninitialized', () => {
+    const router = LibavoidRouter.getInstance();
+    expect(router.isInitialized()).toBe(false);
   });
 
   test('should initialize WASM module successfully', async () => {
@@ -445,5 +456,13 @@ test.describe('LibavoidRouter - Comprehensive Routing Tests', () => {
         expect(isFinite(point.y)).toBe(true);
       }
     }
+  });
+
+  test('should provide singleton instance via export', async () => {
+    await libavoidRouter.initialize();
+
+    expect(libavoidRouter.isInitialized()).toBe(true);
+
+    libavoidRouter.dispose();
   });
 });
