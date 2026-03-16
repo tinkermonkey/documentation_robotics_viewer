@@ -76,17 +76,28 @@ export class SpecParser {
       return [];
     }
 
-    return relationships.map((rel, index) => {
-      const r = rel as Record<string, unknown>;
+    return relationships
+      .map((rel, index) => {
+        const r = rel as Record<string, unknown>;
 
-      return {
-        id: (r.id as string) || `rel-${index}`,
-        type: ((r.type as string) || 'reference') as RelationshipType,
-        sourceId: (r.source as string) || (r.sourceId as string) || '',
-        targetId: (r.target as string) || (r.targetId as string) || '',
-        properties: (r.properties as Record<string, unknown>) || {}
-      };
-    });
+        return {
+          id: (r.id as string) || `rel-${index}`,
+          type: ((r.type as string) || 'reference') as RelationshipType,
+          sourceId: (r.source as string) || (r.sourceId as string) || '',
+          targetId: (r.target as string) || (r.targetId as string) || '',
+          properties: (r.properties as Record<string, unknown>) || {}
+        };
+      })
+      .filter((rel) => {
+        // Filter out phantom relationships with empty IDs
+        if (!rel.sourceId || !rel.targetId) {
+          console.warn(
+            `Skipping relationship with missing IDs: sourceId="${rel.sourceId}" targetId="${rel.targetId}"`
+          );
+          return false;
+        }
+        return true;
+      });
   }
 
   /**
@@ -182,6 +193,10 @@ export class SpecParser {
 
     // Validate relationships reference existing elements
     layer.relationships?.forEach((rel) => {
+      // Skip validation for relationships with empty IDs (already filtered during parsing)
+      if (!rel.sourceId || !rel.targetId) {
+        return;
+      }
       if (!elementIds.has(rel.sourceId)) {
         errors.push(`Relationship references non-existent source: ${rel.sourceId}`);
       }
