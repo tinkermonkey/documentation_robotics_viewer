@@ -12,9 +12,10 @@
  * 2. Waypoint coordinate space (displayRoute() returns canvas-space points)
  * 3. Visual edge routing alignment
  *
- * Note: ELK coordinate transformation tests moved to nodeTransformer tests
- * (production code location), field-level handle Y-proportion tests moved to
- * LibavoidRouter tests with actual libavoid routing verification.
+ * Note: Test sections validating only test-local helper functions were removed:
+ * - Coordinate space transformation logic (getCenterToTopLeft helper validation)
+ * - Field-level handle Y-proportions (local calculation verification)
+ * These sections did not validate production code behavior.
  */
 
 import { test, expect } from '@playwright/test';
@@ -283,7 +284,6 @@ test.describe('Coordinate System Validation', () => {
       }
     });
   });
-
 
   test.describe('Visual Edge Routing Alignment', () => {
     test('should route edges without gaps at node attachment points', async () => {
