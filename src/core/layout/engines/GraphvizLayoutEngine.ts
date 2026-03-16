@@ -242,7 +242,7 @@ export class GraphvizLayoutEngine extends BaseLayoutEngine {
   /**
    * Parse Graphviz SVG output and convert back to React Flow format
    */
-  private parseGraphvizSVG(svgOutput: string, originalGraph: LayoutGraphInput): LayoutResult {
+  private parseGraphvizSVG(svgOutput: string, originalGraph: LayoutGraphInput): EngineLayoutResult {
     // Create maps of original data
     const nodeDataMap = new Map(originalGraph.nodes.map((n) => [n.id, n.data]));
     const nodeDimensionsMap = new Map(

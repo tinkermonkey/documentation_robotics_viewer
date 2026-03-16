@@ -9,7 +9,7 @@ import * as path from 'path';
 import * as yaml from 'js-yaml';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { MetaModel, Layer, ModelElement, Relationship, LayerType } from '../../src/core/types';
+import { MetaModel, Layer, ModelElement, Relationship, LayerType, RelationshipType } from '../../src/core/types';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -215,7 +215,7 @@ function extractRelationshipsFromElement(element: ModelElement, data: any): Rela
       for (const target of data.business['realizes-services']) {
         relationships.push({
           id: `${element.id}-realizes-${target}`,
-          type: 'realizes',
+          type: RelationshipType.Realization,
           sourceId: element.id,
           targetId: target,
         });
@@ -229,7 +229,7 @@ function extractRelationshipsFromElement(element: ModelElement, data: any): Rela
       for (const target of data.datastore.accesses) {
         relationships.push({
           id: `${element.id}-accesses-${target}`,
-          type: 'access',
+          type: RelationshipType.Access,
           sourceId: element.id,
           targetId: `datastore.database.${target}`, // Construct full ID
         });

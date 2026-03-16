@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { BaseInspectorPanel } from '@/core/components/base/BaseInspectorPanel';
 import type { BaseGraph, BaseNode, BaseEdge } from '@/core/components/base/types';
 import { ArrowUp, ArrowDown, Eye } from 'lucide-react';
+import { RelationshipType } from '@/core/types';
 
 const meta = {
   title: 'A Primitives / Panels and Sidebars / BaseInspectorPanel',
@@ -103,14 +104,14 @@ function createDemoGraph(): DemoGraph {
       id: 'edge-2',
       sourceId: 'node-2',
       targetId: 'node-3',
-      type: 'realizes',
+      type: RelationshipType.Realization,
       weight: 0.9,
     },
     {
       id: 'edge-3',
       sourceId: 'node-4',
       targetId: 'node-3',
-      type: 'requires',
+      type: RelationshipType.Serving,
       weight: 0.7,
     },
     {

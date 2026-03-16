@@ -3,6 +3,7 @@ import { SchemaInfoPanel } from '@/apps/embedded/components/SchemaInfoPanel';
 import { useModelStore } from '@/core/stores/modelStore';
 import { useEffect } from 'react';
 import type { MetaModel } from '@/core/types';
+import { LayerType } from '@/core/types';
 
 const meta = {
   title: 'B Details / Spec Details / SchemaInfoPanel',
@@ -41,7 +42,7 @@ export const Default: Story = {
     layers: {
       motivation: {
         id: 'motivation',
-        type: 'Motivation',
+        type: LayerType.Motivation,
         name: 'Motivation Layer',
         description: 'Stakeholders, drivers, and goals',
         order: 1,
@@ -82,7 +83,7 @@ export const ValidModel: Story = {
     layers: {
       motivation: {
         id: 'motivation',
-        type: 'Motivation',
+        type: LayerType.Motivation,
         name: 'Motivation Layer',
         description: 'Stakeholders, drivers, and goals',
         order: 1,
@@ -112,7 +113,7 @@ export const ValidModel: Story = {
       },
       business: {
         id: 'business',
-        type: 'Business',
+        type: LayerType.Business,
         name: 'Business Layer',
         description: 'Services and processes',
         order: 2,
@@ -153,7 +154,7 @@ export const WithValidationErrors: Story = {
     layers: {
       motivation: {
         id: 'motivation',
-        type: 'Motivation',
+        type: LayerType.Motivation,
         name: 'Motivation Layer',
         description: 'Stakeholders, drivers, and goals',
         order: 1,
@@ -200,7 +201,7 @@ export const LargeModel: Story = {
     layers: {
       motivation: {
         id: 'motivation',
-        type: 'Motivation',
+        type: LayerType.Motivation,
         name: 'Motivation Layer',
         description: 'Stakeholders, drivers, and goals',
         order: 1,
@@ -250,7 +251,7 @@ export const MinimalMetadata: Story = {
     layers: {
       motivation: {
         id: 'motivation',
-        type: 'Motivation',
+        type: LayerType.Motivation,
         name: 'Motivation Layer',
         description: 'Stakeholders, drivers, and goals',
         order: 1,
@@ -275,7 +276,7 @@ export const WithCustomClassName: Story = {
     layers: {
       motivation: {
         id: 'motivation',
-        type: 'Motivation',
+        type: LayerType.Motivation,
         name: 'Motivation Layer',
         description: 'Stakeholders, drivers, and goals',
         order: 1,

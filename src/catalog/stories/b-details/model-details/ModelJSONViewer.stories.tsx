@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import ModelJSONViewer from '@/apps/embedded/components/ModelJSONViewer';
 import type { MetaModel } from '@/core/types/model';
+import { LayerType, RelationshipType } from '@/core/types';
 
 const meta = {
   title: 'B Details / Model Details / ModelJSONViewer',
@@ -16,7 +17,7 @@ const mockModel: MetaModel = {
   layers: {
     'motivation-layer': {
       id: 'motivation-layer',
-      type: 'motivation',
+      type: LayerType.Motivation,
       name: 'Motivation Layer',
       description: 'Captures stakeholder concerns, goals, requirements, and constraints that drive architectural decisions',
       elements: [
@@ -119,12 +120,12 @@ const mockModel: MetaModel = {
         },
       ],
       relationships: [
-        { id: 'r1', sourceId: 'motivation.goal.visualize-architecture', targetId: 'motivation.requirement.interactive-graphs', type: 'realizes' },
+        { id: 'r1', sourceId: 'motivation.goal.visualize-architecture', targetId: 'motivation.requirement.interactive-graphs', type: RelationshipType.Realization },
       ],
     },
     'business-layer': {
       id: 'business-layer',
-      type: 'business',
+      type: LayerType.Business,
       name: 'Business Layer',
       description: 'Defines business services, processes, and capabilities',
       elements: [

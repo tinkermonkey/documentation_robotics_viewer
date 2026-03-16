@@ -100,38 +100,6 @@ export interface BusinessEdge {
 }
 
 /**
- * Create a BusinessEdge with enforced source/sourceId and target/targetId invariant.
- * This helper ensures both naming conventions are kept in sync.
- *
- * @param id - Edge ID
- * @param source - Source node ID (used for both source and sourceId)
- * @param target - Target node ID (used for both target and targetId)
- * @param type - Business edge type
- * @param label - Optional edge label
- * @param properties - Optional edge properties
- * @returns BusinessEdge with invariant enforced
- */
-export function createBusinessEdge(
-  id: string,
-  source: string,
-  target: string,
-  type: BusinessEdgeType,
-  label?: string,
-  properties?: Record<string, unknown>
-): BusinessEdge {
-  return {
-    id,
-    source,
-    sourceId: source,
-    target,
-    targetId: target,
-    type,
-    label,
-    properties,
-  };
-}
-
-/**
  * Cross-layer link information
  */
 export interface CrossLayerLink {

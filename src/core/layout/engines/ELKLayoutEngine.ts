@@ -355,7 +355,7 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
   /**
    * Convert ELK graph result back to React Flow format
    */
-  private convertFromELKGraph(elkGraph: ElkNode, originalGraph: LayoutGraphInput): LayoutResult {
+  private convertFromELKGraph(elkGraph: ElkNode, originalGraph: LayoutGraphInput): EngineLayoutResult {
     // Create a map of original node data
     const nodeDataMap = new Map(originalGraph.nodes.map((n) => [n.id, n.data]));
     const edgeDataMap = new Map(originalGraph.edges.map((e) => [e.id, e.data]));
@@ -401,7 +401,7 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       const sourceSide = this.derivePortSide(sourcePortId);
       const targetSide = this.derivePortSide(targetPortId);
 
-      const edge: LayoutResult['edges'][0] = {
+      const edge: EngineLayoutResult['edges'][0] = {
         id: elkEdge.id,
         source,
         target,

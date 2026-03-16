@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import NodeDetailsPanel from '@/apps/embedded/components/NodeDetailsPanel';
 import type { Node } from '@xyflow/react';
 import type { MetaModel } from '@/core/types';
+import { LayerType, RelationshipType } from '@/core/types';
 
 const meta = {
   title: 'B Details / Model Details / NodeDetailsPanel',
@@ -19,7 +20,7 @@ const mockModel: MetaModel = {
   layers: {
     motivation: {
       id: 'motivation',
-      type: 'Motivation',
+      type: LayerType.Motivation,
       name: 'Motivation Layer',
       description: 'Stakeholders, drivers, and goals',
       order: 1,
@@ -73,7 +74,7 @@ const mockModel: MetaModel = {
     },
     business: {
       id: 'business',
-      type: 'Business',
+      type: LayerType.Business,
       name: 'Business Layer',
       description: 'Services and processes',
       order: 2,

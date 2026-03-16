@@ -4,7 +4,7 @@
 
 import { test, expect } from '@playwright/test';
 import { BusinessLayerParser } from '../../src/core/services/businessLayerParser';
-import { MetaModel, ModelElement, Relationship, Layer } from '../../src/core/types';
+import { MetaModel, ModelElement, Relationship, Layer, RelationshipType } from '../../src/core/types';
 
 test.describe('BusinessLayerParser', () => {
   let parser: BusinessLayerParser;
@@ -203,7 +203,7 @@ test.describe('BusinessLayerParser', () => {
           relationships: [
             {
               id: 'rel-1',
-              type: 'realizes',
+              type: RelationshipType.Realization,
               sourceId: 'e1',
               targetId: 'non-existent',
             },

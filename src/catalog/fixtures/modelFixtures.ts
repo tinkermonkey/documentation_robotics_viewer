@@ -5,6 +5,7 @@
  */
 
 import type { MetaModel, Layer, ModelElement, ElementVisual, Relationship } from '../../core/types';
+import { LayerType, RelationshipType } from '../../core/types';
 
 /**
  * Helper to create element visual properties
@@ -58,7 +59,7 @@ function createModelElement(
  */
 function createLayer(
   id: string,
-  type: string,
+  type: LayerType,
   name: string,
   elements: ModelElement[] = [],
   relationships: Relationship[] = []
@@ -100,14 +101,14 @@ export function createCompleteModelFixture(): MetaModel {
   const motivationRelationships: Relationship[] = [
     {
       id: 'rel-1',
-      type: 'influence',
+      type: RelationshipType.Influence,
       sourceId: 'stakeholder-1',
       targetId: 'goal-1',
       properties: { label: 'influences' }
     },
     {
       id: 'rel-2',
-      type: 'realizes',
+      type: RelationshipType.Realization,
       sourceId: 'goal-1',
       targetId: 'requirement-1',
       properties: { label: 'realizes' }
@@ -128,7 +129,7 @@ export function createCompleteModelFixture(): MetaModel {
   const businessRelationships: Relationship[] = [
     {
       id: 'rel-3',
-      type: 'composition',
+      type: RelationshipType.Composition,
       sourceId: 'service-1',
       targetId: 'function-1',
       properties: { label: 'contains' }
@@ -152,7 +153,7 @@ export function createCompleteModelFixture(): MetaModel {
   const c4Relationships: Relationship[] = [
     {
       id: 'rel-4',
-      type: 'composition',
+      type: RelationshipType.Composition,
       sourceId: 'container-1',
       targetId: 'component-1',
       properties: { label: 'contains' }
@@ -165,9 +166,9 @@ export function createCompleteModelFixture(): MetaModel {
     version: '1.0.0',
     description: 'Complete fixture model with elements across multiple layers',
     layers: {
-      motivation: createLayer('motivation', 'Motivation', 'Motivation Layer', motivationElements, motivationRelationships),
-      business: createLayer('business', 'Business', 'Business Layer', businessElements, businessRelationships),
-      c4: createLayer('c4', 'C4', 'C4 Architecture Layer', c4Elements, c4Relationships)
+      motivation: createLayer('motivation', LayerType.Motivation, 'Motivation Layer', motivationElements, motivationRelationships),
+      business: createLayer('business', LayerType.Business, 'Business Layer', businessElements, businessRelationships),
+      c4: createLayer('c4', LayerType.Motivation, 'C4 Architecture Layer', c4Elements, c4Relationships)
     },
     references: [],
     metadata: {
@@ -193,8 +194,8 @@ export function createMinimalModelFixture(): MetaModel {
     version: '1.0.0',
     description: 'Minimal fixture model for basic testing',
     layers: {
-      motivation: createLayer('motivation', 'Motivation', 'Motivation Layer', [goal]),
-      business: createLayer('business', 'Business', 'Business Layer', [service])
+      motivation: createLayer('motivation', LayerType.Motivation, 'Motivation Layer', [goal]),
+      business: createLayer('business', LayerType.Business, 'Business Layer', [service])
     },
     references: [],
     metadata: {
@@ -223,14 +224,14 @@ export function createMotivationLayerModelFixture(): MetaModel {
   const relationships: Relationship[] = [
     {
       id: 'rel-1',
-      type: 'influence',
+      type: RelationshipType.Influence,
       sourceId: 'stakeholder-1',
       targetId: 'goal-1',
       properties: { label: 'influences' }
     },
     {
       id: 'rel-2',
-      type: 'realizes',
+      type: RelationshipType.Realization,
       sourceId: 'goal-1',
       targetId: 'requirement-1',
       properties: { label: 'realizes' }
@@ -243,7 +244,7 @@ export function createMotivationLayerModelFixture(): MetaModel {
     version: '1.0.0',
     description: 'Model focused on Motivation layer elements',
     layers: {
-      motivation: createLayer('motivation', 'Motivation', 'Motivation Layer', elements, relationships)
+      motivation: createLayer('motivation', LayerType.Motivation, 'Motivation Layer', elements, relationships)
     },
     references: [],
     metadata: {
@@ -274,7 +275,7 @@ export function createBusinessLayerModelFixture(): MetaModel {
   const relationships: Relationship[] = [
     {
       id: 'rel-1',
-      type: 'composition',
+      type: RelationshipType.Composition,
       sourceId: 'service-1',
       targetId: 'function-1',
       properties: { label: 'contains' }
@@ -287,7 +288,7 @@ export function createBusinessLayerModelFixture(): MetaModel {
     version: '1.0.0',
     description: 'Model focused on Business layer elements',
     layers: {
-      business: createLayer('business', 'Business', 'Business Layer', elements, relationships)
+      business: createLayer('business', LayerType.Business, 'Business Layer', elements, relationships)
     },
     references: [],
     metadata: {
@@ -319,21 +320,21 @@ export function createC4LayerModelFixture(): MetaModel {
   const relationships: Relationship[] = [
     {
       id: 'rel-1',
-      type: 'composition',
+      type: RelationshipType.Composition,
       sourceId: 'container-1',
       targetId: 'component-1',
       properties: { label: 'contains' }
     },
     {
       id: 'rel-2',
-      type: 'composition',
+      type: RelationshipType.Composition,
       sourceId: 'container-1',
       targetId: 'component-2',
       properties: { label: 'contains' }
     },
     {
       id: 'rel-3',
-      type: 'access',
+      type: RelationshipType.Access,
       sourceId: 'actor-1',
       targetId: 'container-1',
       properties: { label: 'accesses' }
@@ -346,7 +347,7 @@ export function createC4LayerModelFixture(): MetaModel {
     version: '1.0.0',
     description: 'Model focused on C4 architecture elements',
     layers: {
-      c4: createLayer('c4', 'C4', 'C4 Architecture Layer', elements, relationships)
+      c4: createLayer('c4', LayerType.Motivation, 'C4 Architecture Layer', elements, relationships)
     },
     references: [],
     metadata: {

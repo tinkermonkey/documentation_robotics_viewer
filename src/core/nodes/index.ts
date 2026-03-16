@@ -19,10 +19,10 @@ import type {
   UnifiedNodeData,
   NodeBadge,
   DetailLevel,
-  ChangesetOperation,
   FieldItem,
   RelationshipBadgeData,
   RelationshipBadgeProps,
+  ChangesetOperation,
 } from './components';
 
 // Export all node components

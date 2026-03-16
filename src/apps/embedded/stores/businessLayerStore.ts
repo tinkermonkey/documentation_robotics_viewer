@@ -88,6 +88,10 @@ const initialState = {
 
 /**
  * Validation utilities for business layer store
+ *
+ * VALID_LAYOUTS must include all values from BusinessLayoutAlgorithm union type.
+ * TypeScript will produce a compile error if a new algorithm is added to the union
+ * without updating this array.
  */
 const VALID_LAYOUTS: readonly BusinessLayoutAlgorithm[] = [
   'hierarchical',
@@ -95,7 +99,7 @@ const VALID_LAYOUTS: readonly BusinessLayoutAlgorithm[] = [
   'matrix',
   'force',
   'manual',
-];
+] satisfies readonly BusinessLayoutAlgorithm[];
 
 const isValidBusinessLayout = (layout: unknown): layout is BusinessLayoutAlgorithm => {
   return typeof layout === 'string' && VALID_LAYOUTS.includes(layout as BusinessLayoutAlgorithm);

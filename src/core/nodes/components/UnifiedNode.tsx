@@ -25,6 +25,7 @@ import FieldList, { FieldItem } from './FieldList';
 import TableFieldList from './TableFieldList';
 import BadgeRenderer from './BadgeRenderer';
 import { useShouldHideFields } from '../../stores/fieldVisibilityStore';
+import { ChangesetOperation } from '../../types/reactflow';
 
 export interface NodeBadge {
   position: 'top-left' | 'top-right' | 'inline';
@@ -34,7 +35,6 @@ export interface NodeBadge {
 }
 
 export type DetailLevel = 'minimal' | 'standard' | 'detailed';
-export type ChangesetOperation = 'add' | 'update' | 'delete';
 
 export interface UnifiedNodeData {
   nodeType: NodeType;

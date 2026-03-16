@@ -8,7 +8,7 @@ export class SpecParser {
   /**
    * Parse a JSON spec into a Layer
    */
-  parse(jsonSpec: unknown, layerType: LayerType | string): Layer {
+  parse(jsonSpec: unknown, layerType: LayerType): Layer {
     // Validate input
     if (!jsonSpec || typeof jsonSpec !== 'object') {
       throw new Error('Invalid JSON spec: must be an object');
