@@ -1,5 +1,5 @@
 version: 0.1.3
-installed_at: 2026-03-15T10:44:31.231Z
+installed_at: 2026-03-16T00:49:40.379Z
 components:
   reference_sheets: {}
   commands:
@@ -19,7 +19,7 @@ components:
       hash: 9486419a
       modified: false
     dr-relate.md:
-      hash: 6fe9036a
+      hash: 4851948a
       modified: false
     dr-sync.md:
       hash: 64b46e9c
