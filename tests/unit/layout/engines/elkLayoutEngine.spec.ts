@@ -4,7 +4,7 @@
  * Tests cover:
  * - Port ID suffix stripping for node IDs with hyphens and dots
  * - sourceSide/targetSide population from port IDs for all directions (DOWN, UP, LEFT, RIGHT)
- * - Edge routing disabled (set to NONE) for Libavoid pass
+ * - Edge routing set to UNDEFINED for Libavoid fallback
  * - Complex graphs with 4+ nodes and multiple edges
  * - Node positioning and bounds calculation
  * - Edge data preservation through layout

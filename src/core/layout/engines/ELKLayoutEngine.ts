@@ -45,7 +45,7 @@ export type ELKLayeringStrategy =
 /**
  * ELK edge routing strategy
  */
-export type ELKEdgeRouting = 'NONE' | 'ORTHOGONAL' | 'POLYLINE' | 'SPLINES' | 'UNDEFINED';
+export type ELKEdgeRouting = 'ORTHOGONAL' | 'POLYLINE' | 'SPLINES' | 'UNDEFINED';
 
 /**
  * ELK-specific layout parameters
@@ -224,10 +224,11 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
     };
 
     // Add orthogonal routing options
-    // NOTE: When orthogonalRouting is enabled, this overrides the default NONE routing.
+    // NOTE: When orthogonalRouting is enabled, this overrides the default UNDEFINED routing.
     // This allows ELK to handle routing internally. When orthogonalRouting is disabled
-    // (the default), ELK uses NONE routing and the subsequent Libavoid pass takes full control.
+    // (the default), ELK uses UNDEFINED routing as a fallback if Libavoid WASM fails to load.
     if (params.orthogonalRouting) {
+      // edgeRouting parameter is only used when orthogonalRouting is true
       layoutOptions['elk.edgeRouting'] = params.edgeRouting || 'ORTHOGONAL';
       // Additional orthogonal routing options for better quality
       layoutOptions['elk.layered.unnecessaryBendpoints'] = 'false';

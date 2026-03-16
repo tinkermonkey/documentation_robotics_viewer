@@ -1,0 +1,231 @@
+
+You are the Senior Software Engineer revising your work based on feedback.
+
+I implement clean, well thought out code with proper error handling and maintainable architecture.
+
+## Review Cycle - Revision 1 of 5
+
+The Code Reviewer has reviewed your work and identified issues to address.
+
+**Your Task**: REVISE your previous output to address the feedback. Don't start from scratch.
+
+After 5 iterations, unresolved work escalates for human review.
+
+## Original Context
+**Title**: [PR Feedback] ELK Layout Engine
+**Description**: Based on consolidated PR review, address the following in **ELK Layout Engine**:
+
+- **`stripPortSuffix` Returns Empty String for Undefined Port IDs**: When `portId` is `undefined`, `stripPortSuffix()` returns `''` at `/workspace/src/core/layout/engines/ELKLayoutEngine.ts:345`. This empty string is then used as `source` or `target` at lines 411-412, creating phantom edges referencing a non-existent node with ID `''`. Should return `undefined` or the edge should be skipped.
+- **`ELKEdgeRouting` Type Missing `'NONE'` Value**: The type at `/workspace/src/core/layout/engines/ELKLayoutEngine.ts:48` defines `'ORTHOGONAL' | 'POLYLINE' | 'SPLINES' | 'UNDEFINED'` but the default is set to `'NONE'` at line 221. Users of `ELKParameters.edgeRouting` cannot set `'NONE'` via the typed API despite it being the runtime default.
+- **`edgeRouting: 'NONE'` Removes ELK Fallback Routing**: Setting `'NONE'` at line 221 means ELK never populates `edge.sections`. If Libavoid WASM fails to load, edges get no routing from either system and fall back to per-render A* pathfinding in `ElbowEdge` — the exact performance bottleneck this PR replaces. Previously ELK provided a middle-ground fallback. `/workspace/src/core/layout/engines/ELKLayoutEngine.ts:221`
+
+---
+_Created by PR Review Stage - Consolidation Phase_
+
+---
+
+## Concurrent Fix Issues (Same Review Cycle)
+
+The following issues are being fixed simultaneously in this review cycle. Check these issues for any files they modify before making your own changes to avoid introducing conflicts:
+
+- #435: [PR Feedback] Repository Hygiene
+- #437: [PR Feedback] Storybook Error Filters
+- #438: [PR Feedback] specParser Service
+- #439: [PR Feedback] Test Assertions
+- #440: [PR Feedback] Dagre Layout Engine
+- #441: [PR Feedback] BaseLayoutEngine
+- #442: [PR Feedback] Engine Initialization
+- #443: [PR Feedback] WorkerPool
+- #444: [PR Feedback] Label Spacing Utils
+- #445: [PR Feedback] LibavoidRouter Service
+
+## Your Previous Output (to be revised)
+## Previous Work and Feedback
+
+
+The following is a complete history of agent outputs and user feedback for this issue:
+
+
+
+### Output from Senior Software Engineer
+
+# Implementation
+
+---
+
+I'll start by reading the issue details and understanding the current implementation of the ELK Layout Engine. Let me create a todo list to track this work.Now let me read the ELKLayoutEngine.ts file:Now let me update the todo:Now I'll address the three issues:
+
+**Issue 1: Fix `stripPortSuffix` to return `undefined` instead of empty string**
+
+The problem is at line 345 - when `portId` is `undefined`, it returns `''` which causes phantom edges. This should return `undefined`:Now I need to update the return type to match and also handle the undefined case when assigning to `source` and `target`:Now let me update the todo and address Issue 2:**Issue 2: Add 'NONE' to ELKEdgeRouting type**
+
+The type at line 48 is missing 'NONE' even though it's used as the default:Now update the validation schema to include 'NONE':Now update the todo and address Issue 3:**Issue 3: Change `edgeRouting` default from 'NONE' to a proper fallback value**
+
+The issue states that setting `edgeRouting: 'NONE'` at line 221 removes ELK's fallback routing. When Libavoid WASM fails, edges get no routing from either system. Previously ELK provided a middle-ground fallback. We should change the default to `'UNDEFINED'` which allows ELK to provide fallback routing:Now update the todo and run tests:Now let me run the tests to verify the changes don't introduce regressions:Let me wait for the full test run to complete:Excellent! All tests pass. Let me verify the specific ELK-related tests passed by checking if there are any ELK tests in the suite:Let me verify that the ELK test passes with our changes:Perfect! All ELK tests pass. Let me now verify my changes one more time and mark the final todo:Let me verify the stripPortSuffix fix:Now let me verify the edge filtering logic:And verify the edgeRouting default:Perfect! All changes are in place. Let me now mark the final todo as completed and create a commit summary:Perfect! Now let me create a commit with these changes:Perfect! Let me verify the commit was created successfully:Excellent! Let me provide a summary of the changes made:
+
+## Summary
+
+I've successfully resolved all three issues in the ELK Layout Engine as outlined in the PR feedback:
+
+### Changes Made
+
+**1. Fixed `stripPortSuffix` Returns Empty String for Undefined Port IDs**
+- Changed return type from `string` to `string | undefined`
+- Returns `undefined` when `portId` is `undefined` instead of empty string
+- Added edge filtering logic to skip edges with undefined source/target nodes
+- This prevents phantom edges from being created with empty string node IDs
+- **File**: `src/core/layout/engines/ELKLayoutEngine.ts:344-345` and `396-457`
+
+**2. Added Missing `'NONE'` Value to ELKEdgeRouting Type**
+- Updated `ELKEdgeRouting` type definition to include `'NONE'`
+- Updated validation schema to accept `'NONE'` as a valid value
+- Users can now properly set `edgeRouting: 'NONE'` through the typed API
+- **File**: `src/core/layout/engines/ELKLayoutEngine.ts:48` and `174`
+
+**3. Changed `edgeRouting` Default to Enable ELK Fallback Routing**
+- Changed default from `'NONE'` to `'UNDEFINED'`
+- Allows ELK to provide fallback routing when Libavoid WASM fails
+- Prevents performance bottleneck from per-render A* pathfinding in `ElbowEdge`
+- Maintains middle-ground fallback between Libavoid and ELK
+- **File**: `src/core/layout/engines/ELKLayoutEngine.ts:221`
+
+### Testing
+
+- All 1365 tests pass (9.3s)
+- All 11 ELK-specific tests pass (2.8s)
+- No regressions introduced
+
+The commit has been created and is ready for review.
+
+---
+_Generated by Orchestrator Bot 🤖_
+_Processed by the senior_software_engineer agent_
+
+
+**User Feedback (@tinkermonkey)**:
+
+# Implementation
+
+---
+
+I'll start by reading the issue details and understanding the current implementation of the ELK Layout Engine. Let me create a todo list to track this work.Now let me read the ELKLayoutEngine.ts file:Now let me update the todo:Now I'll address the three issues:
+
+**Issue 1: Fix `stripPortSuffix` to return `undefined` instead of empty string**
+
+The problem is at line 345 - when `portId` is `undefined`, it returns `''` which causes phantom edges. This should return `undefined`:Now I need to update the return type to match and also handle the undefined case when assigning to `source` and `target`:Now let me update the todo and address Issue 2:**Issue 2: Add 'NONE' to ELKEdgeRouting type**
+
+The type at line 48 is missing 'NONE' even though it's used as the default:Now update the validation schema to include 'NONE':Now update the todo and address Issue 3:**Issue 3: Change `edgeRouting` default from 'NONE' to a proper fallback value**
+
+The issue states that setting `edgeRouting: 'NONE'` at line 221 removes ELK's fallback routing. When Libavoid WASM fails, edges get no routing from either system. Previously ELK provided a middle-ground fallback. We should change the default to `'UNDEFINED'` which allows ELK to provide fallback routing:Now update the todo and run tests:Now let me run the tests to verify the changes don't introduce regressions:Let me wait for the full test run to complete:Excellent! All tests pass. Let me verify the specific ELK-related tests passed by checking if there are any ELK tests in the suite:Let me verify that the ELK test passes with our changes:Perfect! All ELK tests pass. Let me now verify my changes one more time and mark the final todo:Let me verify the stripPortSuffix fix:Now let me verify the edge filtering logic:And verify the edgeRouting default:Perfect! All changes are in place. Let me now mark the final todo as completed and create a commit summary:Perfect! Now let me create a commit with these changes:Perfect! Let me verify the commit was created successfully:Excellent! Let me provide a summary of the changes made:
+
+## Summary
+
+I've successfully resolved all three issues in the ELK Layout Engine as outlined in the PR feedback:
+
+### Changes Made
+
+**1. Fixed `stripPortSuffix` Returns Empty String for Undefined Port IDs**
+- Changed return type from `string` to `string | undefined`
+- Returns `undefined` when `portId` is `undefined` instead of empty string
+- Added edge filtering logic to skip edges with undefined source/target nodes
+- This prevents phantom edges from being created with empty string node IDs
+- **File**: `src/core/layout/engines/ELKLayoutEngine.ts:344-345` and `396-457`
+
+**2. Added Missing `'NONE'` Value to ELKEdgeRouting Type**
+- Updated `ELKEdgeRouting` type definition to include `'NONE'`
+- Updated validation schema to accept `'NONE'` as a valid value
+- Users can now properly set `edgeRouting: 'NONE'` through the typed API
+- **File**: `src/core/layout/engines/ELKLayoutEngine.ts:48` and `174`
+
+**3. Changed `edgeRouting` Default to Enable ELK Fallback Routing**
+- Changed default from `'NONE'` to `'UNDEFINED'`
+- Allows ELK to provide fallback routing when Libavoid WASM fails
+- Prevents performance bottleneck from per-render A* pathfinding in `ElbowEdge`
+- Maintains middle-ground fallback between Libavoid and ELK
+- **File**: `src/core/layout/engines/ELKLayoutEngine.ts:221`
+
+### Testing
+
+- All 1365 tests pass (9.3s)
+- All 11 ELK-specific tests pass (2.8s)
+- No regressions introduced
+
+The commit has been created and is ready for review.
+
+---
+_Generated by Orchestrator Bot 🤖_
+_Processed by the senior_software_engineer agent_
+
+## Feedback to Address
+
+
+I'll start by examining the actual diff and consulting the relevant project expert agents.Now let me consult the relevant specialist agents and check the related test files.Let me check for existing tests and verify the type definition split mentioned by the architect.Now I have all the information needed for the review. Let me also verify one more detail — the stale comment on line 227.Now I have all the data. Here is my review:
+
+### Status
+**CHANGES NEEDED**
+
+### Issues Found
+
+#### Critical (Must Fix)
+None
+
+#### High Priority (Should Fix)
+
+- **Stale comment references 'NONE' instead of 'UNDEFINED'** (`ELKLayoutEngine.ts:227-229`): The comment block at lines 227-229 still says "overrides the default NONE routing" and "ELK uses NONE routing", but the default was changed to `'UNDEFINED'` at line 221. This is directly misleading — someone reading this comment will believe the default is `NONE` when it is actually `UNDEFINED`, which have different ELK semantics. Update the comment to reference `UNDEFINED` and explain the fallback behavior correctly.
+
+- **`ELKEdgeRouting` type diverges from `layoutParameters.ts`** (`ELKLayoutEngine.ts:48` vs `src/core/types/layoutParameters.ts:76`): The engine-local type now includes `'NONE'` in its union, but the canonical type in `layoutParameters.ts` (line 76) does not. This means callers using the `layoutParameters.ts` type cannot pass `'NONE'` without a type error, while the engine's own validation (line 174) accepts it. Either add `'NONE'` to `layoutParameters.ts` as well, or remove it from the engine-local type — the two definitions must stay in sync.
+
+- **Test file header comment is stale** (`tests/unit/layout/engines/elkLayoutEngine.spec.ts:7`): Line 7 says "Edge routing disabled (set to NONE) for Libavoid pass" which describes the old behavior. The new behavior is `UNDEFINED`. This should be updated to match the implementation change.
+
+- **`edgeRouting` parameter is silently ignored when `orthogonalRouting` is false** (`ELKLayoutEngine.ts:221`): The `elk.edgeRouting` value is hardcoded to `'UNDEFINED'` at line 221 regardless of what the user passes in `params.edgeRouting`. It is only respected when `orthogonalRouting` is `true` (line 231). Users can set `edgeRouting: 'POLYLINE'` and it will be silently discarded. Either use `params.edgeRouting || 'UNDEFINED'` at line 221, or add a clear comment explaining why the parameter is intentionally ignored in this path.
+
+#### Advisory (Out of Scope / FYI)
+
+- **Type assertion on `.filter()` result** (`ELKLayoutEngine.ts:463`): The `as EngineLayoutResult['edges']` assertion works but could use a type predicate (`.filter((edge): edge is EngineLayoutResult['edges'][0] => edge !== null)`) for better type narrowing. The guardian agent noted `businessExportService.ts:358` uses this pattern. This is a minor consistency improvement and doesn't need to block this PR.
+
+- **No unit test for `stripPortSuffix` returning `undefined`**: The existing tests cover edges with invalid node references (line 248), but there's no explicit test that verifies `stripPortSuffix` returns `undefined` for an `undefined` input and that such edges are correctly filtered from the output. The existing test at line 248 exercises a related path (invalid target node) but doesn't specifically test the `undefined` port ID scenario. Consider adding a targeted test in a follow-up.
+
+- **Three-tier fallback chain is undocumented**: The edge routing fallback chain (Libavoid WASM → ELK UNDEFINED routing → A* pathfinding in ElbowEdge) spans multiple modules and is not documented in any single location. This is a pre-existing architectural concern, not introduced by this PR.
+
+### Summary
+
+The three originally reported issues are addressed correctly: `stripPortSuffix` now returns `undefined` instead of empty string, phantom edges are filtered out, `'NONE'` is added to the type, and the default is changed from `'NONE'` to `'UNDEFINED'`. The core logic changes are sound.
+
+However, the comment at lines 227-229 was not updated to reflect the `NONE` → `UNDEFINED` change, creating a direct contradiction with the code 6 lines above it. The `ELKEdgeRouting` type also diverges between the engine-local definition and the canonical one in `layoutParameters.ts`, which will cause type mismatches for callers. The silently-ignored `edgeRouting` parameter when `orthogonalRouting` is false is a usability issue that should at minimum be documented. These are all straightforward fixes within the scope of this PR.
+
+## Revision Guidelines
+
+**CRITICAL - How to Revise**:
+1. **Read feedback systematically**: List each distinct issue raised
+2. **Address EVERY feedback point**: Don't leave any issues unresolved
+3. **Make TARGETED changes**: Modify only what was criticized
+4. **Keep working content**: Don't rewrite sections that weren't criticized
+5. **Stay focused**: Don't add new content unless specifically requested
+
+**Required Output Structure**:
+
+**MUST START WITH**:
+```
+## Revision Notes
+- ✅ [Issue 1 Title]: [Brief description of what you changed]
+- ✅ [Issue 2 Title]: [Brief description of what you changed]
+- ✅ [Issue 3 Title]: [Brief description of what you changed]
+...
+```
+
+This checklist is **CRITICAL** - it helps the reviewer see you addressed each point.
+
+**Then provide your COMPLETE, REVISED document**:
+- All sections: Implementation
+- Full content (not just changes)
+- DO NOT include project name, feature name, or date headers (already in discussion)
+
+**Important Don'ts**:
+- ❌ Start from scratch (this is a REVISION, not complete rewrite)
+- ❌ Skip any feedback point without addressing it
+- ❌ Remove content that wasn't criticized
+- ❌ Add new sections unless specifically requested
+- ❌ Make changes to sections that weren't mentioned in feedback
+- ❌ Ignore subtle feedback ("clarify X" means "add more detail about X")
+
+**Format**: Markdown text for GitHub posting.
