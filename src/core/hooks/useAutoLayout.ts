@@ -68,7 +68,7 @@ export function useAutoLayout(options: UseAutoLayoutOptions): UseAutoLayoutResul
         console.log('[useAutoLayout] LibavoidRouter initialized');
       }
     }).catch((err) => {
-      console.warn('[useAutoLayout] Failed to initialize LibavoidRouter:', err);
+      console.error('[useAutoLayout] Failed to initialize LibavoidRouter; edge routing will use A* fallback:', err);
       // Continue with layout even if Libavoid initialization fails; fallback to A*
       if (!cancelled) {
         libavoidRouter.current = null;

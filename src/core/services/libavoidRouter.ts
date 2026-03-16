@@ -80,6 +80,7 @@ export class LibavoidRouter {
   private static instance: LibavoidRouter | null = null;
   private module: LibavoidInstance | null = null;
   private initialized = false;
+  private initializePromise: Promise<void> | null = null;
 
   /**
    * Private constructor to enforce singleton pattern.
@@ -102,18 +103,39 @@ export class LibavoidRouter {
    * Clears the instance so the next getInstance() call creates a fresh one.
    */
   static resetInstance(): void {
+    const instance = LibavoidRouter.instance;
+    if (instance) {
+      instance.dispose();
+    }
     LibavoidRouter.instance = null;
   }
 
   /**
    * Initialize the Libavoid WASM module
    * Must be called before routing operations
+   *
+   * Concurrent calls to initialize() are safe; only one WASM load occurs.
+   * Subsequent calls return the same Promise or void immediately if already initialized.
    */
   async initialize(): Promise<void> {
     if (this.initialized) {
       return;
     }
 
+    // If initialization is already in progress, return the pending Promise
+    if (this.initializePromise) {
+      return this.initializePromise;
+    }
+
+    // Store the pending Promise to prevent concurrent initialization attempts
+    this.initializePromise = this.performInitialization();
+    return this.initializePromise;
+  }
+
+  /**
+   * Perform the actual WASM module initialization
+   */
+  private async performInitialization(): Promise<void> {
     try {
       // Load the WASM module and initialize it
       // The AvoidLib object will locate the .wasm file in the public directory
@@ -152,11 +174,13 @@ export class LibavoidRouter {
    *
    * @param input Positioned nodes and edges to route
    * @returns Map of edge IDs to waypoint arrays (intermediate points only)
+   * @throws Error if initialization failed and no fallback available
    */
   async routeEdges(input: LibavoidRoutingInput): Promise<LibavoidRoutingResult> {
     if (!this.isInitialized() || !this.module) {
-      // Return empty map to trigger A* fallback
-      console.warn('[LibavoidRouter] Router not initialized, returning empty waypoints');
+      const error = 'LibavoidRouter not initialized; falling back to A* edge routing';
+      console.error(`[LibavoidRouter] ${error}`);
+      // Return empty map to trigger A* fallback, but error is now in console.error
       return { edgeWaypoints: new Map() };
     }
 
@@ -346,7 +370,7 @@ export class LibavoidRouter {
           edgeWaypoints.set(edgeId, intermediateWaypoints);
         } catch (error) {
           // If routing fails for a specific edge, use empty waypoints for A* fallback
-          console.warn(
+          console.error(
             `[LibavoidRouter] Failed to extract route for edge ${edgeId}:`,
             error
           );
@@ -372,7 +396,7 @@ export class LibavoidRouter {
       return { edgeWaypoints };
     } catch (error) {
       // On any error, return empty waypoints to trigger A* fallback
-      console.error('[LibavoidRouter] Routing failed, using A* fallback:', error);
+      console.error('[LibavoidRouter] Routing failed, falling back to A* edge routing:', error);
       return { edgeWaypoints: new Map() };
     }
   }
