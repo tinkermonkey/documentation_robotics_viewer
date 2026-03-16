@@ -206,9 +206,17 @@ test.describe('Story Error Filtering', () => {
         expect(isExpectedConsoleError('Failed to load resource: localhost:8080/api/model')).toBe(true);
       });
 
-      test('should match 404 errors from Storybook test environment', () => {
-        // 404 errors are expected in Storybook when resources are not available
-        expect(isExpectedConsoleError('Failed to load resource: the server responded with a status of 404')).toBe(true);
+      test('should match 404 errors from localhost test servers', () => {
+        // 404 errors from localhost dev servers are expected in Storybook
+        expect(isExpectedConsoleError('Failed to load resource: localhost:3002/api/model 404')).toBe(true);
+        expect(isExpectedConsoleError('Failed to load resource: localhost:8080/bundle.js 404')).toBe(true);
+      });
+
+      test('should NOT match 404 errors without localhost context', () => {
+        // Generic 404 errors without localhost/port context should not be filtered
+        // This ensures we catch real production issues while allowing test env issues through
+        expect(isExpectedConsoleError('Failed to load resource: the server responded with a status of 404')).toBe(false);
+        expect(isExpectedConsoleError('Failed to load resource: https://api.example.com/data 404')).toBe(false);
       });
 
       test('should NOT match other network errors without context', () => {

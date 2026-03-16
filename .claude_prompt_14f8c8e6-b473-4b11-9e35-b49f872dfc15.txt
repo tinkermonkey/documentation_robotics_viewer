@@ -1,0 +1,35 @@
+
+You are a Senior Software Engineer.
+
+I implement clean, well thought out code with proper error handling and maintainable architecture.
+
+**Issue Title**: [PR Feedback] Storybook Error Filters
+
+**Description**:
+Based on consolidated PR review, address the following in **Storybook Error Filters**:
+
+- **`isCriticalBug` Dead Code Contradicts `isKnownRenderingBug` Suppression**: At `/workspace/tests/stories/storyErrorFilters.ts:137`, duplicate-key edge errors are added to `isKnownRenderingBug` (suppressing them in CI), while line 159 classifies the same pattern as `isCriticalBug` with comment "CRITICAL: This is a real bug that must be fixed." The `isCriticalBug` function is exported but never imported or called anywhere — it is dead code. The very bug class this PR (Issue #404) addresses is being suppressed rather than caught.
+- **Overly Broad 404 Error Filter**: At `/workspace/tests/stories/storyErrorFilters.ts:57`, the filter `/Failed to load resource: the server responded with a status of 404/` matches ALL 404 errors from any server. Existing patterns at line 53 correctly scope to `localhost:(3002|8080)`. This contradicts the file's own documented principle of using specific regex patterns.
+
+---
+_Created by PR Review Stage - Consolidation Phase_
+
+---
+
+## Concurrent Fix Issues (Same Review Cycle)
+
+The following issues are being fixed simultaneously in this review cycle. Check these issues for any files they modify before making your own changes to avoid introducing conflicts:
+
+- #435: [PR Feedback] Repository Hygiene
+- #436: [PR Feedback] ELK Layout Engine
+- #438: [PR Feedback] specParser Service
+- #439: [PR Feedback] Test Assertions
+- #440: [PR Feedback] Dagre Layout Engine
+- #441: [PR Feedback] BaseLayoutEngine
+- #442: [PR Feedback] Engine Initialization
+- #443: [PR Feedback] WorkerPool
+- #444: [PR Feedback] Label Spacing Utils
+- #445: [PR Feedback] LibavoidRouter Service
+
+
+
