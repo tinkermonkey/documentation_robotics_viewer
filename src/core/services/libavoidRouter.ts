@@ -39,7 +39,7 @@ export interface LibavoidEdgeInput {
   sourcePinOffset?: number;
   /** Optional target pin offset for field-level handles: y-proportion on target side (0 to 1) */
   targetPinOffset?: number;
-  /** Optional label text for label-aware spacing calculation (FR-10) */
+  /** Optional label text for dynamic spacing based on actual label widths */
   label?: string;
 }
 
@@ -166,7 +166,7 @@ export class LibavoidRouter {
       // Create router with OrthogonalRouting mode (value: 2)
       const router = new this.module.Router(2);
 
-      // Calculate label-aware nudging distance based on actual edge labels (FR-10)
+      // Calculate label-aware nudging distance based on actual edge labels
       // This ensures labels on parallel edges don't visually collide
       const labelTexts = input.edges
         .filter((e): e is LibavoidEdgeInput & { label: string } => !!e.label)
@@ -175,11 +175,6 @@ export class LibavoidRouter {
       const idealNudgingDistance = labelTexts.length > 0
         ? calculateLabelAwareNudgingDistance(labelTexts)
         : 15; // Default if no labels
-
-      console.log(
-        `[LibavoidRouter] Using label-aware nudging distance: ${idealNudgingDistance}px` +
-        (labelTexts.length > 0 ? ` (based on ${labelTexts.length} edge labels)` : ' (default)')
-      );
 
       // Set routing penalties to minimize overlap and crossings
       router.setRoutingParameter(this.module.RoutingParameter.segmentPenalty, 50);
