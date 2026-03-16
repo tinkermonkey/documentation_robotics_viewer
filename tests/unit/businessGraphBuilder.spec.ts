@@ -373,6 +373,93 @@ test.describe('BusinessGraphBuilder', () => {
       );
     });
   });
+
+  test.describe('unrecognized type handling', () => {
+    test('should warn on unrecognized node types and default to function', () => {
+      const elements: BusinessElement[] = [
+        createTestElement('e1', 'customType', 'Custom Element'),
+        createTestElement('e2', 'unknownNodeType', 'Unknown Element'),
+      ];
+
+      const graph = builder.buildGraph(elements, []);
+
+      const warnings = builder.getWarnings();
+      expect(warnings.some((w) => w.includes('customType'))).toBe(true);
+      expect(warnings.some((w) => w.includes('unknownNodeType'))).toBe(true);
+
+      // Both should default to 'function'
+      expect(graph.nodes.get('e1')?.type).toBe('function');
+      expect(graph.nodes.get('e2')?.type).toBe('function');
+    });
+
+    test('should warn on unrecognized edge types and default to serves', () => {
+      const elements: BusinessElement[] = [
+        createTestElement('e1', 'function', 'Function 1'),
+        createTestElement('e2', 'function', 'Function 2'),
+      ];
+
+      const relationships: BusinessRelationship[] = [
+        createTestRelationship('r1', 'e1', 'e2', 'customRelation'),
+        createTestRelationship('r2', 'e1', 'e2', 'unknownType'),
+      ];
+
+      const graph = builder.buildGraph(elements, relationships);
+
+      const warnings = builder.getWarnings();
+      expect(warnings.some((w) => w.includes('customRelation'))).toBe(true);
+      expect(warnings.some((w) => w.includes('unknownType'))).toBe(true);
+
+      // Both should default to 'serves'
+      expect(graph.edges.get('r1')?.type).toBe('serves');
+      expect(graph.edges.get('r2')?.type).toBe('serves');
+    });
+
+    test('should include original type name in warning messages', () => {
+      const elements: BusinessElement[] = [
+        createTestElement('e1', 'InvalidType', 'Element'),
+      ];
+
+      builder.buildGraph(elements, []);
+      const warnings = builder.getWarnings();
+
+      expect(warnings.some((w) => w.includes('InvalidType'))).toBe(true);
+      expect(warnings.some((w) => w.includes('defaulting to'))).toBe(true);
+    });
+
+    test('should not warn on recognized node types', () => {
+      const elements: BusinessElement[] = [
+        createTestElement('e1', 'function', 'Function'),
+        createTestElement('e2', 'Process', 'Process'),
+        createTestElement('e3', 'SERVICE', 'Service'),
+        createTestElement('e4', 'capability', 'Capability'),
+      ];
+
+      builder.buildGraph(elements, []);
+      const warnings = builder.getWarnings();
+
+      const typeWarnings = warnings.filter((w) => w.includes('Unrecognized'));
+      expect(typeWarnings.length).toBe(0);
+    });
+
+    test('should not warn on recognized edge types', () => {
+      const elements: BusinessElement[] = [
+        createTestElement('e1', 'function', 'Function 1'),
+        createTestElement('e2', 'function', 'Function 2'),
+      ];
+
+      const relationships: BusinessRelationship[] = [
+        createTestRelationship('r1', 'e1', 'e2', 'realizes'),
+        createTestRelationship('r2', 'e1', 'e2', 'depends_on'),
+        createTestRelationship('r3', 'e1', 'e2', 'composes'),
+      ];
+
+      builder.buildGraph(elements, relationships);
+      const warnings = builder.getWarnings();
+
+      const typeWarnings = warnings.filter((w) => w.includes('Unrecognized'));
+      expect(typeWarnings.length).toBe(0);
+    });
+  });
 });
 
 // Helper functions

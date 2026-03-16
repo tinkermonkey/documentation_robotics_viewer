@@ -323,7 +323,8 @@ export class BusinessGraphBuilder {
     if (normalized.includes('service')) return 'service';
     if (normalized.includes('capability')) return 'capability';
 
-    // Default to 'function' for unknown types
+    // Log warning for unrecognized type before defaulting
+    this.warnings.push(`Unrecognized node type "${type}" defaulting to "function"`);
     return 'function';
   }
 
@@ -343,7 +344,11 @@ export class BusinessGraphBuilder {
       aggregates: 'aggregates',
     };
 
-    return typeMap[normalized] || 'serves';
+    const inferredType = typeMap[normalized];
+    if (!inferredType) {
+      this.warnings.push(`Unrecognized edge type "${type}" defaulting to "serves"`);
+    }
+    return inferredType || 'serves';
   }
 
   /**
