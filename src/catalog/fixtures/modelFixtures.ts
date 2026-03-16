@@ -380,7 +380,7 @@ export function createChangesetModelFixture(): MetaModel {
     version: '1.0.0',
     description: 'Model with elements showing changeset operations',
     layers: {
-      motivation: createLayer('motivation', 'Motivation', 'Motivation Layer', elements)
+      motivation: createLayer('motivation', LayerType.Motivation, 'Motivation Layer', elements)
     },
     references: [],
     metadata: {
@@ -443,7 +443,7 @@ export function createLargeModelFixture(elementCount: number = 100): MetaModel {
     version: '1.0.0',
     description: `Large model with ${elementCount} elements for performance testing`,
     layers: {
-      motivation: createLayer('motivation', 'Motivation', 'Motivation Layer', elements)
+      motivation: createLayer('motivation', LayerType.Motivation, 'Motivation Layer', elements)
     },
     references: [],
     metadata: {

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import LayerTypesLegend from '@/apps/embedded/components/LayerTypesLegend';
-import type { MetaModel } from '@/core/types/model';
+import type { MetaModel } from '@/core/types';
+import { LayerType } from '@/core/types';
 
 const meta = {
   title: 'A Primitives / State Panels / LayerTypesLegend',
@@ -14,8 +15,8 @@ type Story = StoryObj<typeof meta>;
 
 const mockModel: MetaModel = {
   layers: {
-    'motivation': { id: 'motivation', type: 'motivation', name: 'Motivation', elements: Array.from({ length: 5 }, (_, i) => ({ id: `m${i}`, name: `Goal ${i}`, type: 'Goal', layerId: 'motivation', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } })), relationships: [] },
-    'business': { id: 'business', type: 'business', name: 'Business', elements: Array.from({ length: 8 }, (_, i) => ({ id: `b${i}`, name: `Req ${i}`, type: 'Requirement', layerId: 'business', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } })), relationships: [] },
+    'motivation': { id: 'motivation', type: LayerType.Motivation, name: 'Motivation', elements: Array.from({ length: 5 }, (_, i) => ({ id: `m${i}`, name: `Goal ${i}`, type: 'Goal', layerId: 'motivation', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } })), relationships: [] },
+    'business': { id: 'business', type: LayerType.Business, name: 'Business', elements: Array.from({ length: 8 }, (_, i) => ({ id: `b${i}`, name: `Req ${i}`, type: 'Requirement', layerId: 'business', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } })), relationships: [] },
   },
   version: '1.0',
   references: [],
@@ -33,9 +34,9 @@ export const ManyTypes: Story = {
   render: () => {
   const largeModel: MetaModel = {
     layers: {
-      'motivation': { id: 'motivation', type: 'motivation', name: 'Motivation', elements: Array.from({ length: 5 }, (_, i) => ({ id: `m${i}`, name: `Goal ${i}`, type: 'Goal', layerId: 'motivation', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } })), relationships: [] },
-      'business': { id: 'business', type: 'business', name: 'Business', elements: Array.from({ length: 8 }, (_, i) => ({ id: `b${i}`, name: `Req ${i}`, type: 'Requirement', layerId: 'business', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } })), relationships: [] },
-      'application': { id: 'application', type: 'application', name: 'Application', elements: Array.from({ length: 12 }, (_, i) => ({ id: `a${i}`, name: `App ${i}`, type: 'Component', layerId: 'application', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } })), relationships: [] },
+      'motivation': { id: 'motivation', type: LayerType.Motivation, name: 'Motivation', elements: Array.from({ length: 5 }, (_, i) => ({ id: `m${i}`, name: `Goal ${i}`, type: 'Goal', layerId: 'motivation', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } })), relationships: [] },
+      'business': { id: 'business', type: LayerType.Business, name: 'Business', elements: Array.from({ length: 8 }, (_, i) => ({ id: `b${i}`, name: `Req ${i}`, type: 'Requirement', layerId: 'business', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } })), relationships: [] },
+      'application': { id: 'application', type: LayerType.Application, name: 'Application', elements: Array.from({ length: 12 }, (_, i) => ({ id: `a${i}`, name: `App ${i}`, type: 'Component', layerId: 'application', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } })), relationships: [] },
     },
     version: '1.0',
     references: [],

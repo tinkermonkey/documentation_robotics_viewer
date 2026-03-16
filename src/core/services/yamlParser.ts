@@ -16,7 +16,7 @@ import {
   OpenAPIOperation,
   JSONSchemaDefinition,
 } from '../types/yaml';
-import { ModelElement, Layer, Relationship, ReferenceType } from '../types/model';
+import { ModelElement, Layer, Relationship, RelationshipType } from '../types/model';
 import { LayerType } from '../types/layers';
 import { getLayerColor } from '../utils/layerColors';
 
@@ -426,32 +426,32 @@ export class YAMLParser {
   }
 
   /**
-   * Map YAML relationship type to internal ReferenceType
+   * Map YAML relationship type to internal RelationshipType
    */
-  private mapRelationshipType(yamlType: string): ReferenceType {
-    const typeMap: Record<string, ReferenceType> = {
+  private mapRelationshipType(yamlType: string): RelationshipType {
+    const typeMap: Record<string, RelationshipType> = {
       // ArchiMate-style relationships mapped to available types
-      realizes: ReferenceType.BusinessService,
-      serves: ReferenceType.BusinessService,
-      accesses: ReferenceType.SchemaReference,
-      uses: ReferenceType.APIOperation,
-      composes: ReferenceType.Custom,
-      flows_to: ReferenceType.NavigationRoute,
-      assigned_to: ReferenceType.Custom,
-      aggregates: ReferenceType.Custom,
-      specializes: ReferenceType.Custom,
+      realizes: RelationshipType.Realization,
+      serves: RelationshipType.Serving,
+      accesses: RelationshipType.Access,
+      uses: RelationshipType.Access,
+      composes: RelationshipType.Composition,
+      flows_to: RelationshipType.Flow,
+      assigned_to: RelationshipType.Assignment,
+      aggregates: RelationshipType.Aggregation,
+      specializes: RelationshipType.Reference,
 
       // Motivation layer
-      supports_goals: ReferenceType.Goal,
-      fulfills_requirements: ReferenceType.Requirement,
-      constrained_by: ReferenceType.Constraint,
+      supports_goals: RelationshipType.Influence,
+      fulfills_requirements: RelationshipType.Reference,
+      constrained_by: RelationshipType.Reference,
 
       // Security
-      secured_by: ReferenceType.SecurityResource,
-      requires_permissions: ReferenceType.SecurityPermission,
+      secured_by: RelationshipType.Access,
+      requires_permissions: RelationshipType.Access,
     };
 
-    return typeMap[yamlType] || ReferenceType.Custom;
+    return typeMap[yamlType] || RelationshipType.Reference;
   }
 
   /**

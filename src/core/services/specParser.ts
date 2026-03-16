@@ -1,4 +1,4 @@
-import { Layer, ModelElement, Relationship, LayerType } from '../types';
+import { Layer, ModelElement, Relationship, LayerType, RelationshipType } from '../types';
 import { getLayerColor } from '../utils/layerColors';
 
 /**
@@ -81,7 +81,7 @@ export class SpecParser {
 
       return {
         id: (r.id as string) || `rel-${index}`,
-        type: (r.type as string) || 'reference',
+        type: ((r.type as string) || 'reference') as RelationshipType,
         sourceId: (r.source as string) || (r.sourceId as string) || '',
         targetId: (r.target as string) || (r.targetId as string) || '',
         properties: (r.properties as Record<string, unknown>) || {}

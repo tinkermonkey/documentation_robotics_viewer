@@ -6,12 +6,35 @@ import {
   SchemaReference
 } from '../types/jsonSchema';
 import { Relationship, RelationshipType, ExtractedReference, ReferenceType } from '../types/model';
+import { LayerType } from '../types/layers';
 
 /**
  * Parser for JSON Schema definition files
  * Transforms schema definitions into visual model elements
  */
 export class JSONSchemaParser {
+  /**
+   * Map layer names to LayerType enum values
+   */
+  private getLayerTypeFromName(layerName: string): LayerType {
+    const mapping: Record<string, LayerType> = {
+      'motivation': LayerType.Motivation,
+      'business': LayerType.Business,
+      'security': LayerType.Security,
+      'application': LayerType.Application,
+      'technology': LayerType.Technology,
+      'api': LayerType.Api,
+      'datamodel': LayerType.DataModel,
+      'data-model': LayerType.DataModel,
+      'datastore': LayerType.Datastore,
+      'ux': LayerType.Ux,
+      'navigation': LayerType.Navigation,
+      'apm': LayerType.ApmObservability,
+      'json-schema': LayerType.DataModel, // Default JSON schemas to DataModel layer
+    };
+    return mapping[layerName.toLowerCase()] || LayerType.DataModel;
+  }
+
   /**
    * Parse a JSON Schema file into a layer with elements
    * @param layerName - Layer name from filename (e.g., "Business", "DataModel")
@@ -45,7 +68,7 @@ export class JSONSchemaParser {
 
     const layer: JSONSchemaLayer = {
       id: uuidv4(),
-      type: 'json-schema',
+      type: this.getLayerTypeFromName(layerName),
       name: layerName,
       elements,
       relationships,

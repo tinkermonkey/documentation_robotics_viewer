@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import ModelLayersSidebar from '@/apps/embedded/components/ModelLayersSidebar';
 import { useModelStore } from '@/core/stores/modelStore';
-import type { MetaModel } from '@/core/types/model';
+import type { MetaModel } from '@/core/types';
+import { LayerType } from '@/core/types';
 import { useEffect, ReactNode } from 'react';
 
 const meta = {
@@ -36,7 +37,7 @@ const mockModel: MetaModel = {
   layers: {
     'motivation': {
       id: 'motivation',
-      type: 'motivation',
+      type: LayerType.Motivation,
       name: 'Motivation',
       order: 1,
       elements: Array.from({ length: 12 }, (_, i) => ({ id: `m${i}`, type: 'Goal', name: `Goal ${i}`, layerId: 'motivation', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } })),
@@ -44,7 +45,7 @@ const mockModel: MetaModel = {
     },
     'business': {
       id: 'business',
-      type: 'business',
+      type: LayerType.Business,
       name: 'Business',
       order: 2,
       elements: Array.from({ length: 25 }, (_, i) => ({ id: `b${i}`, type: 'BusinessProcess', name: `Process ${i}`, layerId: 'business', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } })),
@@ -52,7 +53,7 @@ const mockModel: MetaModel = {
     },
     'application': {
       id: 'application',
-      type: 'application',
+      type: LayerType.Application,
       name: 'Application',
       order: 3,
       elements: Array.from({ length: 18 }, (_, i) => ({ id: `a${i}`, type: 'ApplicationComponent', name: `Component ${i}`, layerId: 'application', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } })),
@@ -60,7 +61,7 @@ const mockModel: MetaModel = {
     },
     'technology': {
       id: 'technology',
-      type: 'technology',
+      type: LayerType.Technology,
       name: 'Technology',
       order: 4,
       elements: Array.from({ length: 30 }, (_, i) => ({ id: `t${i}`, type: 'Node', name: `Node ${i}`, layerId: 'technology', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } })),

@@ -8,7 +8,7 @@
  * that can drift from the actual API contract.
  */
 
-import { MetaModel, Layer, Reference, Relationship, ModelElement, ModelMetadata, LayerData, ElementVisual } from '../../../core/types';
+import { MetaModel, Layer, Reference, Relationship, ModelElement, ModelMetadata, LayerData, ElementVisual, LayerType } from '../../../core/types';
 import { Annotation, AnnotationCreate, AnnotationUpdate } from '../types/annotations';
 import { logError } from './errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
@@ -472,7 +472,7 @@ export class EmbeddedDataLoader {
       const layerObj = layer as Record<string, unknown>;
       const normalizedLayer: Layer = {
         id: typeof layerObj.id === 'string' ? layerObj.id : layerId,
-        type: typeof layerObj.type === 'string' ? layerObj.type : 'unknown',
+        type: (typeof layerObj.type === 'string' ? layerObj.type : LayerType.Application) as LayerType,
         name: typeof layerObj.name === 'string' ? layerObj.name : layerId,
         elements: this.normalizeElements(layerObj.elements),
         relationships: Array.isArray(layerObj.relationships) ? (layerObj.relationships as Relationship[]) : []
