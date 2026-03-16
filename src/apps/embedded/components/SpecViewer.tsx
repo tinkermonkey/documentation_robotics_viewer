@@ -71,9 +71,9 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
           <MetadataGrid items={schemaMetadata} columns={3} />
 
           <div className="mt-6">
-            <h4 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
               Element Definitions
-            </h4>
+            </h3>
             <div className="space-y-2">
               {defNames.map(defName => {
                 const definition = definitions[defName]

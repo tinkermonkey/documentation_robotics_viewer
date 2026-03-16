@@ -47,6 +47,7 @@ const SharedLayout: React.FC<SharedLayoutProps> = ({
           <aside
             className="w-64 flex-shrink-0 border-r border-gray-200 dark:border-gray-700 overflow-y-auto bg-white dark:bg-gray-900 transition-all duration-300 ease-in-out"
             data-testid="left-sidebar"
+            aria-label="Navigation panel"
           >
             {leftSidebarContent}
           </aside>
@@ -62,6 +63,7 @@ const SharedLayout: React.FC<SharedLayoutProps> = ({
           <aside
             className="w-80 flex-shrink-0 border-l border-gray-200 dark:border-gray-700 overflow-y-auto bg-gray-50 dark:bg-gray-900 transition-all duration-300 ease-in-out"
             data-testid="right-sidebar"
+            aria-label="Details panel"
           >
             {rightSidebarContent}
           </aside>
