@@ -1,17 +1,6 @@
 import type { TestRunnerConfig } from '@storybook/test-runner';
-import { injectAxe, checkA11y, configureAxe } from 'axe-playwright';
+import AxeBuilder from '@axe-core/playwright';
 import { isExpectedConsoleError, isKnownRenderingBug } from '../tests/stories/storyErrorFilters.ts';
-
-interface AxeViolation {
-  id: string;
-  impact: 'critical' | 'serious' | 'moderate' | 'minor';
-  description: string;
-  nodes: Array<{ html: string }>;
-}
-
-interface AxeResults {
-  violations: AxeViolation[];
-}
 
 /**
  * Custom error class for Storybook test-runner initialization issues.
@@ -32,21 +21,16 @@ declare global {
   interface Window {
     __errorMessages__: string[];
     __pageErrors__: string[];
-    __axeInjected__: boolean;
-    __axeConfigured__: boolean;
     __STORYBOOK_MOCK_WEBSOCKET__?: boolean;
   }
 }
 
 const config: TestRunnerConfig = {
   async preVisit(page) {
-    // Initialize error collection arrays and axe state on the page context
+    // Initialize error collection arrays on the page context
     await page.evaluate(() => {
       window.__errorMessages__ = [];
       window.__pageErrors__ = [];
-      window.__axeInjected__ = false;
-      window.__axeConfigured__ = false;
-      window.__axeRunning__ = false;
     });
 
     // Register console error listener - push errors to page's __errorMessages__
@@ -74,113 +58,45 @@ const config: TestRunnerConfig = {
         console.warn(`[test-runner] Failed to record page error: ${errorMsg}`);
       });
     });
-
-    // Inject axe-core for accessibility testing with proper sequencing
-    try {
-      await injectAxe(page);
-      // Mark injection as successful so we know axe is available
-      await page.evaluate(() => {
-        window.__axeInjected__ = true;
-      });
-    } catch (err) {
-      throw new Error(`Failed to inject axe-core: ${err instanceof Error ? err.message : String(err)}. Accessibility testing cannot proceed without axe-core.`);
-    }
   },
 
   async postVisit(page, context) {
     try {
-      // Check that axe was successfully injected before proceeding
-      let axeInjected = false;
+      // Run accessibility checks using @axe-core/playwright AxeBuilder
+      // AxeBuilder handles axe-core injection automatically during analyze()
+      // Disable color-contrast for architecture visualization (complex color schemes)
       try {
-        axeInjected = await page.evaluate(() => window.__axeInjected__);
-      } catch (evalError) {
-        // If page.evaluate fails due to Storybook initialization issues, continue with a11y check anyway
-        const errMsg = evalError instanceof Error ? evalError.message : String(evalError);
-        if (!(evalError instanceof StorybookTestRunnerError)) {
-          console.warn(`[test-runner] Failed to check axe injection status: ${errMsg}`);
-        }
-        // Assume axe was injected and proceed
-        axeInjected = true;
-      }
-      if (!axeInjected) {
-        throw new Error(`Skipping accessibility checks for story "${context.id}": axe-core injection failed in preVisit.`);
-      }
+        const results = await new AxeBuilder({ page })
+          .include('#storybook-root')
+          .disableRules(['color-contrast'])
+          .analyze();
 
-      // Configure axe-core rules for architecture visualization context
-      try {
-        await configureAxe(page, {
-          rules: [
-            {
-              id: 'color-contrast',
-              enabled: false, // Disabled for architecture visualization (complex color schemes)
-            },
-            {
-              id: 'aria-allowed-attr',
-              enabled: true,
-            },
-            {
-              id: 'aria-required-children',
-              enabled: true,
-            },
-            {
-              id: 'label',
-              enabled: true,
-            },
-            {
-              id: 'image-alt',
-              enabled: true,
-            },
-          ],
-        });
-        // Mark configuration as successful
-        await page.evaluate(() => {
-          window.__axeConfigured__ = true;
-        });
-      } catch (err) {
-        throw new Error(`Failed to configure axe-core for story "${context.id}": ${err instanceof Error ? err.message : String(err)}. Accessibility testing cannot proceed with inconsistent configuration.`);
-      }
+        // Filter to only critical and serious violations
+        const violations = results.violations.filter(
+          (v) => v.impact === 'critical' || v.impact === 'serious'
+        );
 
-      // Check that axe was successfully configured before running checks
-      let axeConfigured = false;
-      try {
-        axeConfigured = await page.evaluate(() => window.__axeConfigured__);
-      } catch (evalError) {
-        // If page.evaluate fails, continue anyway
-        const errMsg = evalError instanceof Error ? evalError.message : String(evalError);
-        if (!(evalError instanceof StorybookTestRunnerError)) {
-          console.warn(`[test-runner] Failed to check axe configuration status: ${errMsg}`);
-        }
-        // Assume axe was configured and proceed
-        axeConfigured = true;
-      }
-      if (!axeConfigured) {
-        throw new Error(`Skipping accessibility checks for story "${context.id}": axe-core configuration failed.`);
-      }
-
-      // Run accessibility checks with proper axe sequencing
-      // checkA11y properly awaits and sequences axe runs - no concurrent execution
-      // Filter to only check critical and serious violations using includedImpacts option
-      try {
-        await checkA11y(page, '#storybook-root', {
-          includedImpacts: ['critical', 'serious'],
-          detailedReport: true,
-          detailedReportOptions: { html: true },
-        });
-      } catch (error) {
-        // checkA11y throws if violations are found - should only be critical/serious
-        const errorMsg = error instanceof Error ? error.message : String(error);
-
-        // Check if this is an axe-core violation error (contains violation details)
-        if (errorMsg.startsWith('Accessibility') || errorMsg.includes('violation')) {
-          // With includedImpacts filtering, any violations here are critical or serious
-          // Re-throw as-is to fail the test
-          throw error;
-        } else {
-          // Error from checkA11y but not a violation report - this is a real error
+        if (violations.length > 0) {
+          const violationDetails = violations
+            .map((v) => {
+              const nodes = v.nodes.map((n) => n.html).join('\n  ');
+              return `- ${v.id} (${v.impact}): ${v.description}\n  ${nodes}`;
+            })
+            .join('\n');
           throw new Error(
-            `Accessibility check failed for story "${context.id}": ${errorMsg}`
+            `Accessibility violations found in story "${context.id}":\n${violationDetails}`
           );
         }
+      } catch (error) {
+        // Re-throw accessibility violation errors
+        const errorMsg = error instanceof Error ? error.message : String(error);
+        if (errorMsg.includes('Accessibility violations') || errorMsg.includes('violation')) {
+          throw error;
+        }
+        // Non-violation errors from AxeBuilder (e.g., page context issues)
+        throw new Error(
+          `Accessibility check failed for story "${context.id}": ${errorMsg}`
+        );
       }
 
       // Check for collected console and page errors after all tests

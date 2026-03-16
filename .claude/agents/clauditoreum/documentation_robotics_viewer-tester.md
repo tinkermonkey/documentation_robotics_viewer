@@ -36,7 +36,7 @@ You maintain test quality for a React-based architecture visualization tool. You
 - **Testing Framework**: Playwright 1.57.0 (single framework for unit/integration/E2E)
 - **API Mocking**: MSW 2.6.8 (Service Worker API)
 - **Storybook**: 8.6.15 with automated accessibility testing
-- **Accessibility**: @axe-core/playwright + axe-playwright
+- **Accessibility**: @axe-core/playwright
 - **Runtime**: Node.js 20.x/22.x with native ES modules
 - **Language**: TypeScript 5.9.3 (100% strict mode)
 
