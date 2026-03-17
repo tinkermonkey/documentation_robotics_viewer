@@ -110,17 +110,13 @@ export class DagreLayoutEngine extends BaseLayoutEngine {
     dagre.layout(g);
 
     // Convert to LayoutResult format with graceful degradation for missing nodes
-    const missingNodes: string[] = [];
+    const disconnectedNodeIds: string[] = [];
     const nodes = graph.nodes.map((inputNode) => {
       const dagreNode = g.node(inputNode.id);
 
       if (!dagreNode) {
-        missingNodes.push(inputNode.id);
+        disconnectedNodeIds.push(inputNode.id);
         // Gracefully degrade for disconnected nodes by positioning at origin
-        console.warn(
-          `[DagreLayoutEngine] Node ${inputNode.id} not found in layout output. ` +
-            'Disconnected nodes are positioned at (0, 0). This is normal for isolated elements in architecture models.'
-        );
         return {
           id: inputNode.id,
           position: { x: 0, y: 0 },
@@ -138,6 +134,14 @@ export class DagreLayoutEngine extends BaseLayoutEngine {
         data: inputNode.data,
       };
     });
+
+    // Log summary of disconnected nodes if any
+    if (disconnectedNodeIds.length > 0) {
+      console.warn(
+        `[DagreLayoutEngine] ${disconnectedNodeIds.length} disconnected node(s) positioned at (0, 0): ` +
+          `${disconnectedNodeIds.join(', ')}. This is normal for isolated elements in architecture models.`
+      );
+    }
 
     const edges = graph.edges.map((edge) => ({
       id: edge.id,

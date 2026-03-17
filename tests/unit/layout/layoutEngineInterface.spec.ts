@@ -253,6 +253,7 @@ test.describe('Layout Engine Interface', () => {
   });
 
   test('should gracefully handle disconnected nodes', async () => {
+    const dagre = await import('dagre');
     const { DagreLayoutEngine } = await import(
       '../../../src/core/layout/engines/DagreLayoutEngine'
     );
@@ -263,6 +264,7 @@ test.describe('Layout Engine Interface', () => {
       nodes: [
         { id: 'node-1', width: 100, height: 50, data: { label: 'Node 1' } },
         { id: 'node-2', width: 100, height: 50, data: { label: 'Node 2' } },
+        { id: 'node-3', width: 100, height: 50, data: { label: 'Disconnected Node' } },
       ],
       edges: [{ id: 'edge-1', source: 'node-1', target: 'node-2' }],
     };
@@ -273,15 +275,31 @@ test.describe('Layout Engine Interface', () => {
 
     await engine.initialize();
 
-    // The happy path - valid graph should not throw
-    const result = await engine.calculateLayout(graphInput, { rankdir: 'TB' });
-    expect(result.nodes.length).toBe(2);
-    expect(result.nodes.every((n) => !(n.position.x === 0 && n.position.y === 0 && n.id.startsWith('node')))).toBe(
-      true
-    );
+    // Mock dagre.layout to simulate a disconnected node (not reachable from main graph)
+    const originalLayout = dagre.default.layout;
+    dagre.default.layout = function (g: any) {
+      // Call the original layout
+      originalLayout.call(this, g);
+      // Simulate dagre not computing position for node-3 by removing it
+      g._nodes.delete('node-3');
+    };
 
-    // Note: In normal operation, all valid nodes are included in dagre output.
-    // Disconnected nodes (not reachable from the main graph) are handled gracefully,
-    // with a warning logged and position set to (0,0).
+    const result = await engine.calculateLayout(graphInput, { rankdir: 'TB' });
+
+    // Restore original layout
+    dagre.default.layout = originalLayout;
+
+    // Verify result has all 3 nodes
+    expect(result.nodes.length).toBe(3);
+
+    // Verify connected nodes have computed positions (not at origin)
+    const node1 = result.nodes.find((n) => n.id === 'node-1');
+    const node2 = result.nodes.find((n) => n.id === 'node-2');
+    expect(node1?.position).not.toEqual({ x: 0, y: 0 });
+    expect(node2?.position).not.toEqual({ x: 0, y: 0 });
+
+    // Verify disconnected node gracefully degrades to (0, 0)
+    const node3 = result.nodes.find((n) => n.id === 'node-3');
+    expect(node3?.position).toEqual({ x: 0, y: 0 });
   });
 });
