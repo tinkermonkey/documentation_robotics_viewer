@@ -52,7 +52,7 @@ interface LibavoidConnRef {
   displayRoute(): LibavoidPolyLine;
 }
 
-interface LibavoidRouter {
+interface LibavoidWasmRouter {
   setRoutingParameter(parameter: number, value: number): void;
   setRoutingOption(option: number, value: boolean): void;
   processTransaction(): void;
@@ -311,7 +311,7 @@ export class LibavoidRouter {
         if (!shapeRef) continue;
 
         // Map side to classId and ConnDir
-        const sideConfig = this.getSideConfig(side as any);
+        const sideConfig = this.getSideConfig(side as 'top' | 'bottom' | 'left' | 'right');
         const classId = sideConfig.classId;
         const connDir = sideConfig.connDir;
 
@@ -482,7 +482,7 @@ export class LibavoidRouter {
    * if a single step fails.
    */
   private cleanupLibavoidObjects(
-    router: LibavoidRouter,
+    router: LibavoidWasmRouter,
     shapeMap: Map<string, LibavoidShapeRef>,
     pinMap: Map<string, LibavoidShapeConnectionPin>,
     connRefMap: Map<string, LibavoidConnRef>,

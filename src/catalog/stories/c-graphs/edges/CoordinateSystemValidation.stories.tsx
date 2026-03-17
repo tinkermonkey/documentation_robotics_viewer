@@ -343,8 +343,8 @@ export const PanZoomAlignment: Story = {
  * - Field 1: centerY = 72px → yProportion = 0.667
  * - Field 2: centerY = 96px → yProportion = 0.889
  *
- * Three edges connect from each field's Y offset to demonstrate the
- * sourcePinOffset/targetPinOffset mechanism for field-level routing.
+ * Three edges connect from each field's Y offset to demonstrate field-level
+ * connection point placement with Libavoid routing.
  */
 export const FieldHandleDistribution: Story = {
   render: () => {
@@ -356,7 +356,7 @@ export const FieldHandleDistribution: Story = {
     ];
 
     // Three edges connecting from each field in source to target
-    // sourcePinOffset values position the edge at each field's Y-proportion
+    // Field-level Y-proportions position the edge at each field's connection point
     const edges = [
       {
         id: 'e0',
