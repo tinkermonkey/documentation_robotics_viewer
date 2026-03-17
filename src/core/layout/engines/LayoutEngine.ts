@@ -184,10 +184,25 @@ export abstract class BaseLayoutEngine implements LayoutEngine {
 
   /**
    * Helper to calculate bounds from positioned nodes
+   *
+   * Returns zero bounds for empty node arrays to prevent Infinity propagation
+   * into fitView calculations and other downstream consumers.
    */
   protected calculateBounds(
     nodes: Array<{ id: string; position: { x: number; y: number }; width?: number; height?: number }>
   ): EngineLayoutResult['bounds'] {
+    // Handle empty node array: return zero bounds instead of Infinity
+    if (nodes.length === 0) {
+      return {
+        width: 0,
+        height: 0,
+        minX: 0,
+        maxX: 0,
+        minY: 0,
+        maxY: 0,
+      };
+    }
+
     let minX = Infinity;
     let maxX = -Infinity;
     let minY = Infinity;

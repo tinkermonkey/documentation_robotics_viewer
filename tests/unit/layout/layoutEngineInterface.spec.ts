@@ -302,4 +302,41 @@ test.describe('Layout Engine Interface', () => {
     const node3 = result.nodes.find((n) => n.id === 'node-3');
     expect(node3?.position).toEqual({ x: 0, y: 0 });
   });
+
+  test('should handle empty node arrays gracefully', async () => {
+    const { DagreLayoutEngine } = await import(
+      '../../../src/core/layout/engines/DagreLayoutEngine'
+    );
+
+    const engine = new DagreLayoutEngine();
+
+    // Create graph with no nodes
+    const graphInput = {
+      nodes: [],
+      edges: [],
+    };
+
+    await engine.initialize();
+    const result = await engine.calculateLayout(graphInput, { rankdir: 'TB' });
+
+    // Verify empty result
+    expect(result.nodes.length).toBe(0);
+    expect(result.edges.length).toBe(0);
+
+    // Verify bounds are zero, not Infinity (critical for fitView calculations)
+    expect(result.bounds.width).toBe(0);
+    expect(result.bounds.height).toBe(0);
+    expect(result.bounds.minX).toBe(0);
+    expect(result.bounds.maxX).toBe(0);
+    expect(result.bounds.minY).toBe(0);
+    expect(result.bounds.maxY).toBe(0);
+
+    // Verify no Infinity values leaked through
+    expect(Number.isFinite(result.bounds.width)).toBe(true);
+    expect(Number.isFinite(result.bounds.height)).toBe(true);
+    expect(Number.isFinite(result.bounds.minX)).toBe(true);
+    expect(Number.isFinite(result.bounds.maxX)).toBe(true);
+    expect(Number.isFinite(result.bounds.minY)).toBe(true);
+    expect(Number.isFinite(result.bounds.maxY)).toBe(true);
+  });
 });
