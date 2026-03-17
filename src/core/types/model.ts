@@ -6,6 +6,7 @@ import { LayerType, LayerData, LayerVisualConfig } from './layers';
 export interface MetaModel {
   id?: string;
   name?: string;
+  version: string;
   description?: string;
   layers: Record<string, Layer>;
   references: Reference[];
@@ -17,7 +18,7 @@ export interface MetaModel {
  */
 export interface Layer {
   id: string;
-  type: LayerType | string;
+  type: LayerType;
   name: string;
   description?: string;
   order?: number;
@@ -33,11 +34,6 @@ export interface Layer {
 export interface ModelElement {
   id: string;
   type: string;
-  /** Spec node identifier from API (e.g. 'motivation.goal'). Used directly as NodeType key. */
-  specNodeId?: string;
-  /** Stable semantic identity in 3-segment dot notation (e.g. 'motivation.goal.my-goal').
-   *  Present when the element has a stable semantic ID. Use this (not id) for annotation lookup. */
-  elementId?: string;
   name: string;
   description?: string;
   layerId: string;
@@ -47,9 +43,7 @@ export interface ModelElement {
     incoming: string[];
     outgoing: string[];
   };
-  detailLevel?: 'minimal' | 'standard' | 'detailed';
-  changesetOperation?: 'add' | 'update' | 'delete';
-  relationshipBadge?: { count: number; incoming: number; outgoing: number };
+  references?: ElementReferences;
 }
 
 /**
@@ -105,11 +99,21 @@ export interface LayoutHints {
 }
 
 /**
+ * External references for an element
+ */
+export interface ElementReferences {
+  archimateRef?: string;
+  specFile?: string;
+  schemaRef?: string;
+  apiOperationId?: string;
+}
+
+/**
  * Relationship between elements
  */
 export interface Relationship {
   id: string;
-  type: RelationshipType | string;
+  type: RelationshipType;
   sourceId: string;
   targetId: string;
   properties?: Record<string, unknown>;
@@ -232,6 +236,60 @@ export enum ReferenceType {
 }
 
 /**
+ * Extracted cross-layer reference metadata
+ * Used during parsing to capture reference information before resolution
+ */
+export interface ExtractedReference {
+  /** The property name containing the reference */
+  propertyName: string;
+
+  /** The reference type */
+  referenceType: ReferenceType;
+
+  /** Single UUID reference */
+  targetId?: string;
+
+  /** Multiple UUID references */
+  targetIds?: string[];
+
+  /** String identifier reference (like operationId, route) */
+  targetIdentifier?: string;
+
+  /** Path to target definition */
+  targetPath?: string;
+
+  /** Source element ID */
+  sourceElementId?: string;
+
+  /** Source layer ID */
+  sourceLayerId?: string;
+
+  /** Additional metadata */
+  metadata?: Record<string, unknown>;
+}
+
+/**
+ * Cross-layer reference metadata for tracking
+ * Used to track all references discovered in a model
+ */
+export interface CrossLayerReferenceMetadata {
+  /** Total references found */
+  totalReferences: number;
+
+  /** References by type */
+  referencesByType: Record<string, number>;
+
+  /** References by source layer */
+  referencesBySourceLayer: Record<string, number>;
+
+  /** Unresolved references (targets not found) */
+  unresolvedReferences: ExtractedReference[];
+
+  /** Successfully resolved references */
+  resolvedReferences: Reference[];
+}
+
+/**
  * Model metadata
  */
 export interface ModelMetadata {
@@ -243,5 +301,37 @@ export interface ModelMetadata {
   layerCount?: number;
   elementCount?: number;
   type?: string;
+  parseErrors?: string[];
+  crossLayerReferences?: CrossLayerReferenceMetadata;
   [key: string]: unknown;
+}
+
+/**
+ * Data source types
+ */
+export type DataSource =
+  | { type: 'github'; version?: string }
+  | { type: 'local'; files: FileList }
+  | { type: 'url'; url: string };
+
+/**
+ * GitHub release info
+ */
+export interface Release {
+  id: number;
+  tag_name: string;
+  name: string;
+  assets: ReleaseAsset[];
+  created_at: string;
+  published_at: string;
+}
+
+/**
+ * GitHub release asset
+ */
+export interface ReleaseAsset {
+  id: number;
+  name: string;
+  browser_download_url: string;
+  size: number;
 }

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { Breadcrumb, BreadcrumbItem, Badge, Button } from 'flowbite-react';
 import { HiHome, HiX } from 'react-icons/hi';
 
@@ -18,7 +18,7 @@ interface BreadcrumbNavProps {
   showLevelBadge?: boolean;
 }
 
-export const BreadcrumbNav: React.FC<BreadcrumbNavProps> = memo(
+export const BreadcrumbNav = memo(
   ({
     segments,
     currentLevel,

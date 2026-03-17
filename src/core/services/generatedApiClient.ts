@@ -1,7 +1,7 @@
 /**
  * Auto-generated API Client with React Query Hooks
- * Generated from: /Users/austinsand/workspace/documentation_robotics_viewer/docs/api-spec.yaml
- * Generated at: 2026-03-07T18:11:44.789Z
+ * Generated from: /workspace/docs/api-spec.yaml
+ * Generated at: 2026-03-17T04:57:33.447Z
  * API Version: 0.1.0
  *
  * IMPORTANT: This file is auto-generated. Do not edit directly.
@@ -306,6 +306,9 @@ export class ApiClient {
       throw new Error(`DELETE /api/annotations/:annotationId failed: ${response.status} ${errorText}`);
     }
 
+    if (response.status === 204) {
+      return undefined;
+    }
     return response.json();
   }
 
@@ -501,7 +504,7 @@ const apiClient = getApiClient();
     return useMutation({
       mutationFn: (data: unknown) => apiClient.postapiannotations(data),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['data'] });
+        queryClient.invalidateQueries({ queryKey: ['getapiannotations'] });
       },
       ...options
     } as any);
@@ -528,7 +531,8 @@ const apiClient = getApiClient();
     return useMutation({
       mutationFn: (data: unknown) => apiClient.putapiannotationsannotationId(annotationId, data),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['data'] });
+        queryClient.invalidateQueries({ queryKey: ['getapiannotationsannotationId', annotationId] });
+        queryClient.invalidateQueries({ queryKey: ['getapiannotations'] });
       },
       ...options
     } as any);
@@ -543,7 +547,8 @@ const apiClient = getApiClient();
     return useMutation({
       mutationFn: (data: unknown) => apiClient.patchapiannotationsannotationId(annotationId, data),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['data'] });
+        queryClient.invalidateQueries({ queryKey: ['getapiannotationsannotationId', annotationId] });
+        queryClient.invalidateQueries({ queryKey: ['getapiannotations'] });
       },
       ...options
     } as any);
@@ -558,7 +563,8 @@ const apiClient = getApiClient();
     return useMutation({
       mutationFn: () => apiClient.deleteapiannotationsannotationId(annotationId),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['data'] });
+        queryClient.invalidateQueries({ queryKey: ['getapiannotationsannotationId', annotationId] });
+        queryClient.invalidateQueries({ queryKey: ['getapiannotations'] });
       },
       ...options
     } as any);
@@ -585,7 +591,7 @@ const apiClient = getApiClient();
     return useMutation({
       mutationFn: (data: unknown) => apiClient.postapiannotationsannotationIdreplies(annotationId, data),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['data'] });
+        queryClient.invalidateQueries({ queryKey: ['getapiannotationsannotationIdreplies', annotationId] });
       },
       ...options
     } as any);

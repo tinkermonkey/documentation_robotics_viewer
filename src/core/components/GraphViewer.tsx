@@ -29,7 +29,6 @@ import { MiniMap } from '../../apps/embedded/components/MiniMap';
 import { Panel } from '@xyflow/react';
 import { getLayerColor } from '../utils/layerColors';
 import { LayoutEngineType } from '../layout/engines';
-
 import { CrossLayerEdgeErrorBoundary } from './CrossLayerEdgeErrorBoundary';
 import { useAutoLayout } from '../hooks/useAutoLayout';
 
@@ -93,7 +92,7 @@ const ViewportCullingLayer: React.FC<{
  * GraphViewerInner Component
  * Inner component that has access to React Flow instance via useReactFlow hook
  */
-const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, selectedLayerId, layoutEngine = 'elk', layoutParameters, onNodesEdgesChange }) => {
+const GraphViewerInner: React.FC<GraphViewerProps> = ({ model, onNodeClick, selectedLayerId, layoutEngine, layoutParameters, onNodesEdgesChange }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
   const [edges, , onEdgesChange] = useEdgesState<AppEdge>([]);
   const [culledEdges, setCulledEdges] = useState<AppEdge[]>([]);

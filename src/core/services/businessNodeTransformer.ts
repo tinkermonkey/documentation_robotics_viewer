@@ -1,0 +1,154 @@
+/**
+ * Business Node Transformer
+ *
+ * Transforms BusinessGraph nodes to React Flow node data.
+ * Pre-calculates dimensions and extracts metadata for visualization.
+ *
+ * NOTE: Business layer nodes are now migrated to use UnifiedNode component.
+ * This transformer provides dimension lookups and metadata extraction
+ * for business nodes to support the unified node rendering pipeline.
+ */
+
+import { BusinessNode } from '../types/businessLayer';
+import {
+  BaseNodeData,
+} from '../types/reactflow';
+import { nodeConfigLoader } from '../nodes/nodeConfigLoader';
+import { NodeType } from '../nodes/NodeType';
+
+/**
+ * BusinessNodeTransformer - Transforms business nodes to React Flow format
+ */
+export class BusinessNodeTransformer {
+  /**
+   * Maps business node type strings to NodeType enum values for config lookup.
+   * Used by both getNodeDimensions() and extractNodeData() to ensure consistency.
+   */
+  private static readonly TYPE_TO_CONFIG: Record<string, NodeType> = {
+    process: NodeType.BUSINESS_PROCESS,
+    function: NodeType.BUSINESS_FUNCTION,
+    service: NodeType.BUSINESS_SERVICE,
+    capability: NodeType.BUSINESS_CAPABILITY,
+  };
+
+  /**
+   * Pre-calculate dimensions for all nodes in a graph
+   * CRITICAL: These dimensions MUST match the actual rendered component sizes
+   */
+  precalculateDimensions(nodes: Map<string, BusinessNode>): void {
+    for (const node of nodes.values()) {
+      node.dimensions = this.getNodeDimensions(node);
+    }
+  }
+
+  /**
+   * Get node dimensions based on type
+   * Uses nodeConfigLoader to get dimensions from configuration.
+   * Falls back to default dimensions if configuration is missing,
+   * logging a warning to help identify configuration issues.
+   */
+  getNodeDimensions(node: BusinessNode): { width: number; height: number } {
+    const configKey = BusinessNodeTransformer.TYPE_TO_CONFIG[node.type];
+    if (configKey) {
+      const styleConfig = nodeConfigLoader.getStyleConfig(configKey);
+      if (styleConfig?.dimensions) {
+        return {
+          width: styleConfig.dimensions.width,
+          height: styleConfig.dimensions.height,
+        };
+      }
+    }
+
+    // Fallback: Log warning when config is not available
+    // This indicates either an unknown node type or a configuration issue
+    const reason =
+      configKey && !nodeConfigLoader.getStyleConfig(configKey)
+        ? `missing configuration for NodeType "${configKey}"`
+        : `unknown node type "${node.type}"`;
+
+    console.warn(
+      `[BusinessNodeTransformer] Using fallback dimensions for node "${node.id}" (${reason}). ` +
+      `Node may render with unexpected size. ` +
+      `Verify node.type is mapped in typeToConfig and nodeConfig.json has corresponding style configuration.`
+    );
+
+    return { width: 180, height: 100 };
+  }
+
+  /**
+   * Get node type string for React Flow
+   * Post-migration: All business nodes now render as 'unified' type.
+   * This method is retained for backward compatibility with the BusinessNodeTransformer API
+   * and to maintain consistency with other layer transformers.
+   */
+  getNodeType(): string {
+    // All business nodes now render as 'unified' type
+    return 'unified';
+  }
+
+  /**
+   * Extract node data for React Flow
+   *
+   * All business nodes now render as 'unified' type. This method returns
+   * base node data compatible with UnifiedNodeData. Type-specific rendering
+   * is handled by nodeConfig.json and UnifiedNode component.
+   */
+  extractNodeData(node: BusinessNode): BaseNodeData {
+    const nodeType = BusinessNodeTransformer.TYPE_TO_CONFIG[node.type] || NodeType.BUSINESS_PROCESS;
+
+    return {
+      nodeType,
+      label: node.name,
+      elementId: node.id,
+      layerId: 'business',
+      fill: this.getFillColor(node),
+      stroke: this.getStrokeColor(node),
+      owner: node.metadata.owner,
+      criticality: node.metadata.criticality,
+      lifecycle: node.metadata.lifecycle,
+      domain: node.metadata.domain,
+    };
+  }
+
+  /**
+   * Get fill color based on node type and lifecycle
+   */
+  getFillColor(node: BusinessNode): string {
+    // Base colors by type
+    const baseColors: Record<string, string> = {
+      process: '#FFF3E0', // Light orange
+      function: '#E3F2FD', // Light blue
+      service: '#F3E5F5', // Light purple
+      capability: '#E8F5E9', // Light green
+    };
+
+    let color = baseColors[node.type] || '#F5F5F5';
+
+    // Dim color for deprecated lifecycle
+    if (node.metadata.lifecycle === 'deprecated') {
+      color = '#EEEEEE';
+    }
+
+    return color;
+  }
+
+  /**
+   * Get stroke color based on node type and criticality
+   */
+  getStrokeColor(node: BusinessNode): string {
+    // High criticality gets red stroke
+    if (node.metadata.criticality === 'high') {
+      return '#D32F2F';
+    }
+
+    // Base colors by type
+    const baseColors: Record<string, string> = {
+      process: '#E65100', // Dark orange
+      function: '#1565C0', // Dark blue
+      service: '#6A1B9A', // Dark purple
+      capability: '#2E7D32', // Dark green
+    };
+
+    return baseColors[node.type] || '#424242';
+  }
+}

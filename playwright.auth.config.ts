@@ -30,7 +30,7 @@ process.env.GIT_CONFIG_SYSTEM ??= '/dev/null';
 export default defineConfig({
   testDir: './tests',
   testMatch: [
-    'embedded-auth-race-condition.spec.ts',
+    'e2e/auth-token-persistence.spec.ts',
   ],
   fullyParallel: false,
   forbidOnly: !!process.env.CI,

@@ -1,0 +1,21 @@
+c4-nav:
+  id: navigation.breadcrumb.c4-nav
+  name: C4 Breadcrumb Navigation
+  type: breadcrumb
+  documentation: Hierarchical breadcrumb for C4 architecture view showing System >
+    Container > Component levels
+  properties:
+    x-rendered-by:
+      - ux.component.c4-breadcrumb-nav
+    usedByComponents:
+      - ux.component.c4-breadcrumb-nav
+motivation-nav:
+  id: navigation.breadcrumb.motivation-nav
+  name: Motivation Breadcrumb Navigation
+  type: breadcrumb
+  documentation: Breadcrumb navigation for motivation layer with element type context
+  properties:
+    x-rendered-by:
+      - ux.component.motivation-breadcrumb
+    usedByComponents:
+      - ux.component.motivation-breadcrumb

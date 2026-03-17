@@ -60,7 +60,7 @@ When the user runs this command, interpret their intent and execute the appropri
 
 ```bash
 # Check if changeset is active
-dr changeset status  # Show active changeset
+dr changeset list --status staged | head -1  # Show active changeset
 
 # Or list all changesets to see which is in use
 dr changeset list
@@ -96,10 +96,11 @@ dr changeset list
 
 **ALWAYS before applying:**
 
-1. Show preview: `dr changeset preview`
+1. Show preview: `dr changeset status --verbose`
 2. Run validation: `dr validate`
 3. Get explicit confirmation
-4. Commit staged changes: `dr changeset commit`
+4. Apply with preview: `dr changeset apply --preview` (first)
+5. Then apply for real: `dr changeset apply --yes`
 
 ### Supported Operations
 
@@ -116,7 +117,7 @@ dr changeset list
 
 ```bash
 # 1. Check for existing changesets
-EXISTING=$(dr changeset list)
+EXISTING=$(dr changeset list --status staged)
 
 # 2. If changesets exist, inform user and ask
 if [ -n "$EXISTING" ]; then
@@ -143,7 +144,7 @@ You should:
 1. Check for active changeset
 2. Inform: "I'll create a new changeset for the authentication system work"
 3. Execute:
-   dr changeset create "auth-system" \
+   dr changeset create "auth-system" --type feature \
      --description "New authentication and authorization system"
 4. Confirm:
    "✓ Created changeset: feature-auth-system-2024-01-15-001
@@ -166,11 +167,11 @@ You should:
 # 1. List all changesets
 dr changeset list
 
-# 2. Show active changeset status
-dr changeset status
+# 2. Show details for a specific changeset
+dr changeset show <changeset-id>
 
-# 3. Preview staged changes merged with model
-dr changeset preview
+# 3. Preview staged changes
+dr changeset preview <changeset-id>
 ```
 
 **Example:**
@@ -181,7 +182,7 @@ User: /dr-changeset What changes have I made?
 You should:
 1. Check active changeset
 2. Show detailed status:
-   dr changeset status
+   dr changeset status --verbose
 3. Display output clearly:
    "Current changeset: feature-auth-system-2024-01-15-001
 
@@ -212,8 +213,11 @@ You should:
 # Compare current changeset with main
 dr changeset diff
 
-# Diff for a specific layer only
-dr changeset diff --layer <layer-name>
+# Compare two specific changesets
+dr changeset diff changeset-a-id changeset-b-id
+
+# Get JSON for programmatic analysis
+dr changeset diff --json
 ```
 
 **Example:**
@@ -255,9 +259,11 @@ You should:
 # 1. List available changesets
 dr changeset list
 
-# 2. Deactivate current changeset, then activate the target
-dr changeset deactivate
-dr changeset activate <changeset-id>
+# 2. Switch to specific changeset
+dr changeset switch changeset-id
+
+# 3. Return to main model
+dr changeset clear --yes
 ```
 
 **Example:**
@@ -269,8 +275,8 @@ You should:
 1. List changesets:
    dr changeset list
 2. Find matching changeset (fuzzy match on name)
-3. Activate:
-   dr changeset activate feature-payment-feature-2024-01-10-002
+3. Switch:
+   dr changeset switch feature-payment-feature-2024-01-10-002
 4. Confirm:
    "✓ Switched to: feature-payment-feature
 
@@ -293,15 +299,24 @@ You should:
 
 ```bash
 # 1. Show preview FIRST
-echo "Preview of staged changes:"
-dr changeset preview
+echo "Preview of changes to be applied:"
+dr changeset apply --preview
 
 # 2. Validate
 echo "\nRunning validation..."
 dr validate
 
-# 3. Commit staged changes to model
-dr changeset commit
+# 3. Get explicit confirmation
+echo "\nReady to apply? This will:"
+echo "- Merge all changes to main model"
+echo "- Mark changeset as 'applied'"
+echo "- Clear active changeset"
+read -p "Proceed? (yes/no): " confirm
+
+# 4. Apply if confirmed
+if [ "$confirm" = "yes" ]; then
+  dr changeset apply --yes
+fi
 ```
 
 **Example:**
@@ -332,8 +347,8 @@ You should:
    "Ready to apply to main model?
    Type 'yes' to confirm, anything else to cancel: "
 
-5. Commit:
-   dr changeset commit
+5. Apply:
+   dr changeset apply --yes
 
 6. Confirm success:
    "✓ Applied 3 changes to main model
@@ -383,8 +398,8 @@ You should:
 # 1. List all changesets to see their status
 dr changeset list
 
-# 2. Show staged changes before deletion
-dr changeset staged
+# 2. Show changeset details before deletion
+dr changeset show changeset-id
 
 # 3. Confirm deletion
 echo "This will PERMANENTLY delete the changeset."
@@ -463,9 +478,9 @@ When users are working with changesets, all modeling commands automatically work
 
 ```bash
 # These automatically work in active changeset:
-dr add business service "New Service"
-dr update business.service.existing --attributes '{"status":"updated"}'
-dr delete business.service.old --force
+dr add business service --name "New Service"
+dr update business.service.existing --property status=updated
+dr delete business.service.old
 
 # No special syntax needed - changeset is transparent
 ```
@@ -508,7 +523,7 @@ dr delete business.service.old --force
 
 1. **Always check for active changeset** at session start
 2. **Create descriptive names:** "feature-auth-system" not "test1"
-3. **Review before committing:** Run `dr changeset preview`
+3. **Review before applying:** Use `--preview` flag
 4. **Validate before applying:** Run `dr validate`
 5. **Keep focused:** One feature per changeset
 6. **Clean up:** Delete or abandon when done
@@ -519,20 +534,18 @@ dr delete business.service.old --force
 ```bash
 # Status and viewing
 dr changeset list                    # List all changesets
-dr changeset status                  # Show active changeset
-dr changeset staged                  # List staged changes in active changeset
-dr changeset preview                 # Preview staged changes merged with model
+dr changeset show <id>               # View specific changeset details
+dr changeset preview <id>            # Preview staged changes merged with model
 
 # Lifecycle
 dr changeset create "name"           # Create new changeset
-dr changeset activate <name>         # Activate a changeset (auto-stages changes)
-dr changeset deactivate              # Deactivate the active changeset
-dr changeset commit                  # Commit staged changes to model
-dr changeset discard                 # Abandon all staged changes
+dr changeset stage <id> add ...      # Stage changes to add/modify/delete
+dr changeset commit <id>             # Commit staged changes to model
+dr changeset discard <id>            # Abandon staged changes
 
 # Export and import
-dr changeset export <id>             # Export changeset to portable file
-dr changeset import <file>           # Import changeset from file
+dr changeset export <id> --format yaml  # Export for sharing
+dr changeset import --format yaml --input file.yaml  # Import changeset
 
 # Cleanup (DESTRUCTIVE)
 dr changeset delete <id>             # Permanent deletion (with prompt)

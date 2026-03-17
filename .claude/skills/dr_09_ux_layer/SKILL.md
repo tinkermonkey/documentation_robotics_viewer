@@ -13,13 +13,13 @@ triggers:
     "user experience",
     "state machine",
   ]
-version: 0.8.3
+version: 0.7.0
 ---
 
 # UX Layer Skill
 
 **Layer Number:** 09
-**Specification:** Metadata Model Spec v0.8.3
+**Specification:** Metadata Model Spec v0.7.0
 **Purpose:** Defines user experience using Three-Tier Architecture, specifying views, components, state machines, and interactions.
 
 ---
@@ -46,9 +46,6 @@ This layer uses **Three-Tier Architecture** (v0.5.0+):
 ---
 
 ## Entity Types
-
-> **CLI Introspection:** Run `dr schema types ux` for the authoritative, always-current list of node types.
-> Run `dr schema node <type-id>` for full attribute details on any type.
 
 ### Three-Tier Architecture (26 entities)
 
@@ -123,19 +120,19 @@ Activate when the user:
 
 ```bash
 # Add view
-dr add ux view "User Profile" --description "User profile page"
+dr add ux view --name "User Profile" --property route=/profile
 
 # Add component instance
-dr add ux component-instance "Profile Form"
+dr add ux component-instance --name "Profile Form"
 
 # List views
-dr list ux --type view
+dr list ux view
 
 # Validate UX layer
-dr validate --layers ux
+dr validate --layer ux
 
 # Export UX documentation
-dr export markdown --layers ux
+dr export --layer ux --format markdown
 ```
 
 ---

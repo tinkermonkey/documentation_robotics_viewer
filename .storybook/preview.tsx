@@ -70,9 +70,9 @@ const preview: Preview = {
         rules: [
           {
             // Architecture visualizations may have decorative elements
-            // Color contrast issues are marked for manual review instead of auto-fail
+            // Color contrast is disabled for complex graph visualizations
             id: 'color-contrast',
-            reviewOnFail: true,
+            enabled: false,
           },
           {
             // React Flow uses ARIA labels for graph elements

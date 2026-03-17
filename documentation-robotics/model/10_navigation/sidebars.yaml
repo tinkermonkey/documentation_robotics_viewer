@@ -1,0 +1,24 @@
+c4-right-sidebar:
+  id: navigation.sidebar.c4-right-sidebar
+  name: C4 Right Sidebar
+  type: sidebar
+  documentation: Right sidebar for C4 architecture view with inspector and annotations
+  properties:
+    x-rendered-by:
+      - ux.component.c4-right-sidebar
+model-layers-sidebar:
+  id: navigation.sidebar.model-layers-sidebar
+  name: Model Layers Sidebar
+  type: sidebar
+  documentation: Sidebar for selecting and filtering model layers
+  properties:
+    x-rendered-by:
+      - ux.component.model-layers-sidebar
+motivation-right-sidebar:
+  id: navigation.sidebar.motivation-right-sidebar
+  name: Motivation Right Sidebar
+  type: sidebar
+  documentation: Right sidebar for motivation view with details and annotations
+  properties:
+    x-rendered-by:
+      - ux.component.motivation-right-sidebar

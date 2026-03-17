@@ -12,13 +12,13 @@ triggers:
     "validation",
     "data type",
   ]
-version: 0.8.3
+version: 0.7.0
 ---
 
 # Data Model Layer Skill
 
 **Layer Number:** 07
-**Specification:** Metadata Model Spec v0.8.3
+**Specification:** Metadata Model Spec v0.7.0
 **Purpose:** Defines logical data structures using JSON Schema Draft 7, specifying entities, properties, validation rules, and data governance.
 
 ---
@@ -40,9 +40,6 @@ This layer uses **JSON Schema Draft 7** (industry standard) with custom extensio
 ---
 
 ## Entity Types
-
-> **CLI Introspection:** Run `dr schema types data-model` for the authoritative, always-current list of node types.
-> Run `dr schema node <type-id>` for full attribute details on any type.
 
 ### Core JSON Schema Entities (17 entities)
 
@@ -78,7 +75,7 @@ Activate when the user:
 **Outgoing (Data Model → Other Layers):**
 
 - `x-business-object-ref` → Business Layer (what business concept does this represent?)
-- `x-database` → Data Store Layer (how is this stored physically?)
+- `x-database` → Datastore Layer (how is this stored physically?)
 - `x-data-governance` → Security Layer (classification, PII, retention)
 - `x-apm-data-quality-metrics` → APM Layer (data quality monitoring)
 
@@ -106,16 +103,16 @@ Activate when the user:
 
 ```bash
 # Add object schema
-dr add data-model objectschema "User" --description "User object schema"
+dr add data_model object-schema --name "User" --property type=object
 
 # List data models
-dr list data-model --type objectschema
+dr list data_model object-schema
 
 # Validate data model layer
-dr validate --layers data-model
+dr validate --layer data_model
 
 # Export as JSON Schema
-dr export jsonschema --layers data-model
+dr export --layer data_model --format json-schema
 ```
 
 ---

@@ -5,9 +5,9 @@
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import { MetaModel, ModelElement, Relationship, Layer } from '../../../core/types';
+import { MetaModel, ModelElement, Relationship, Layer, RelationshipType } from '../../../core/types';
+import type { ChangesetOperation } from '../../../core/types/reactflow';
 import type { ChangesetDetails, ChangesetChange } from './embeddedDataLoader';
-import type { ChangesetOperation } from '../../../core/nodes';
 
 export type { ChangesetDetails, ChangesetChange };
 
@@ -76,6 +76,7 @@ export class ChangesetGraphBuilder {
     });
 
     return {
+      version: '0.1.0',
       layers,
       references: [],
       metadata
@@ -198,7 +199,7 @@ export class ChangesetGraphBuilder {
       if (elementIdSet.has(refId)) {
         relationships.push({
           id: uuidv4(),
-          type: 'reference',
+          type: RelationshipType.Reference,
           sourceId: element.id,
           targetId: refId,
           properties: {

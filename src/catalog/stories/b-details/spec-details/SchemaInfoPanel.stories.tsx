@@ -3,9 +3,10 @@ import { SchemaInfoPanel } from '@/apps/embedded/components/SchemaInfoPanel';
 import { useModelStore } from '@/core/stores/modelStore';
 import { useEffect } from 'react';
 import type { MetaModel } from '@/core/types';
+import { LayerType } from '@/core/types';
 
 const meta = {
-  title: 'Details / Spec Details / SchemaInfoPanel',
+  title: 'B Details / Spec Details / SchemaInfoPanel',
   parameters: {
     layout: 'centered',
   },
@@ -37,10 +38,11 @@ function SchemaInfoPanelStory({ model }: { model: MetaModel | null }) {
 export const Default: Story = {
   render: () => {
   const model: MetaModel = {
+    version: '1.0.0',
     layers: {
       motivation: {
         id: 'motivation',
-        type: 'Motivation',
+        type: LayerType.Motivation,
         name: 'Motivation Layer',
         description: 'Stakeholders, drivers, and goals',
         order: 1,
@@ -77,10 +79,11 @@ export const Default: Story = {
 export const ValidModel: Story = {
   render: () => {
   const model: MetaModel = {
+    version: '2.1.0',
     layers: {
       motivation: {
         id: 'motivation',
-        type: 'Motivation',
+        type: LayerType.Motivation,
         name: 'Motivation Layer',
         description: 'Stakeholders, drivers, and goals',
         order: 1,
@@ -110,7 +113,7 @@ export const ValidModel: Story = {
       },
       business: {
         id: 'business',
-        type: 'Business',
+        type: LayerType.Business,
         name: 'Business Layer',
         description: 'Services and processes',
         order: 2,
@@ -147,10 +150,11 @@ export const ValidModel: Story = {
 export const WithValidationErrors: Story = {
   render: () => {
   const model: MetaModel = {
+    version: '1.5.0',
     layers: {
       motivation: {
         id: 'motivation',
-        type: 'Motivation',
+        type: LayerType.Motivation,
         name: 'Motivation Layer',
         description: 'Stakeholders, drivers, and goals',
         order: 1,
@@ -193,10 +197,11 @@ export const LargeModel: Story = {
   const elementCount = 47;
 
   const model: MetaModel = {
+    version: '3.0.0',
     layers: {
       motivation: {
         id: 'motivation',
-        type: 'Motivation',
+        type: LayerType.Motivation,
         name: 'Motivation Layer',
         description: 'Stakeholders, drivers, and goals',
         order: 1,
@@ -242,10 +247,11 @@ export const NoModel: Story = {
 export const MinimalMetadata: Story = {
   render: () => {
   const model: MetaModel = {
+    version: '1.0.0',
     layers: {
       motivation: {
         id: 'motivation',
-        type: 'Motivation',
+        type: LayerType.Motivation,
         name: 'Motivation Layer',
         description: 'Stakeholders, drivers, and goals',
         order: 1,
@@ -266,10 +272,11 @@ export const MinimalMetadata: Story = {
 export const WithCustomClassName: Story = {
   render: () => {
   const model: MetaModel = {
+    version: '1.0.0',
     layers: {
       motivation: {
         id: 'motivation',
-        type: 'Motivation',
+        type: LayerType.Motivation,
         name: 'Motivation Layer',
         description: 'Stakeholders, drivers, and goals',
         order: 1,

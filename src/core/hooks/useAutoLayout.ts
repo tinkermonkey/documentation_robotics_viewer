@@ -4,9 +4,9 @@ import { MetaModel } from '../types';
 import { NodeTransformer } from '../services/nodeTransformer';
 import { VerticalLayerLayout } from '../layout/verticalLayerLayout';
 import { LayoutEngine, LayoutEngineType, getEngine } from '../layout/engines';
-import { ELKLayoutEngine } from '../layout/engines/ELKLayoutEngine';
 import { AppNode, AppEdge } from '../types/reactflow';
 import { elementStore } from '../stores/elementStore';
+import { LibavoidRouter } from '../services/libavoidRouter';
 
 interface UseAutoLayoutOptions {
   model: MetaModel | null;
@@ -38,9 +38,6 @@ export function useAutoLayout(options: UseAutoLayoutOptions): UseAutoLayoutResul
   const [isLayouting, setIsLayouting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Cache for lazily-created engines (used when global registry is empty, e.g. Storybook)
-  const engineCacheRef = useRef<{ type: string; engine: LayoutEngine } | null>(null);
-
   // Prevent concurrent layout runs within a single model version
   const isDirty = useRef(false);
   // Monotonically increasing version; incremented when model/engine changes.
@@ -50,31 +47,39 @@ export function useAutoLayout(options: UseAutoLayoutOptions): UseAutoLayoutResul
   const awaitingMeasurements = useRef(false);
   // Model snapshot for pass 2
   const pendingModel = useRef<MetaModel | null>(null);
+  // LibavoidRouter instance for edge routing (initialized once on mount)
+  const libavoidRouter = useRef<LibavoidRouter | null>(null);
 
-  const buildLayoutEngine = useCallback(async (): Promise<VerticalLayerLayout | LayoutEngine> => {
-    if (!layoutEngine) return new VerticalLayerLayout();
-
-    // Use pre-registered engine from global registry (initialized in main.tsx for the embedded app)
-    const registered = getEngine(layoutEngine);
-    if (registered) return registered;
-
-    // Lazy fallback: create and cache the engine (e.g. when running in Storybook without pre-init)
-    if (engineCacheRef.current?.type === layoutEngine) {
-      return engineCacheRef.current.engine;
+  const buildLayoutEngine = useCallback((): VerticalLayerLayout | LayoutEngine => {
+    if (layoutEngine) {
+      return getEngine(layoutEngine) ?? new VerticalLayerLayout();
     }
-
-    if (layoutEngine === 'elk') {
-      const engine = new ELKLayoutEngine();
-      await engine.initialize();
-      engineCacheRef.current = { type: layoutEngine, engine };
-      return engine;
-    }
-
-    console.warn(
-      `[useAutoLayout] Layout engine "${layoutEngine}" not found in registry and has no lazy initializer. Falling back to VerticalLayerLayout.`
-    );
     return new VerticalLayerLayout();
   }, [layoutEngine]);
+
+  // Initialize LibavoidRouter once on mount, dispose on unmount
+  useEffect(() => {
+    let cancelled = false;
+    const router = LibavoidRouter.getInstance();
+
+    router.initialize().then(() => {
+      if (!cancelled) {
+        libavoidRouter.current = router;
+        console.log('[useAutoLayout] LibavoidRouter initialized');
+      }
+    }).catch((err) => {
+      console.error('[useAutoLayout] Failed to initialize LibavoidRouter; edge routing will use A* fallback:', err);
+      // Continue with layout even if Libavoid initialization fails; fallback to A*
+      if (!cancelled) {
+        libavoidRouter.current = null;
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      libavoidRouter.current = null;
+    };
+  }, []);
 
   const runLayout = useCallback(
     async (
@@ -89,9 +94,10 @@ export function useAutoLayout(options: UseAutoLayoutOptions): UseAutoLayoutResul
 
       try {
         elementStore.clear();
-        const engine = await buildLayoutEngine();
+        const engine = buildLayoutEngine();
         const transformer = new NodeTransformer(engine);
-        const result = await transformer.transformModel(targetModel, layoutParameters, measuredNodeSizes);
+        // Pass LibavoidRouter only during Pass 2 (when measuredNodeSizes is available)
+        const result = await transformer.transformModel(targetModel, layoutParameters, measuredNodeSizes, measuredNodeSizes ? libavoidRouter.current : null);
 
         // Discard results if a newer layout was requested while this one was running
         if (version !== undefined && version !== layoutVersion.current) return;

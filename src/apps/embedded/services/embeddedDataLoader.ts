@@ -8,7 +8,7 @@
  * that can drift from the actual API contract.
  */
 
-import { MetaModel, Layer, Reference, Relationship, ModelElement, ModelMetadata } from '../../../core/types';
+import { MetaModel, Layer, Reference, Relationship, ModelElement, ModelMetadata, LayerData, ElementVisual, LayerType } from '../../../core/types';
 import { Annotation, AnnotationCreate, AnnotationUpdate } from '../types/annotations';
 import { logError } from './errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
@@ -76,14 +76,10 @@ function getAuthHeaders(): Record<string, string> {
 
 export interface RelationshipType {
   id: string;
-  name?: string;
   predicate?: string;
   inversePredicate?: string;
   category?: string;
   description?: string;
-  sourceTypes?: string[];
-  targetTypes?: string[];
-  cardinality?: string;
 }
 
 export interface RelationshipCatalog {
@@ -140,10 +136,10 @@ export interface SchemaDefinition {
 export interface SpecDataResponse {
   version: string;
   type: string;
-  description: string;
-  source: string;
+  description?: string;
+  source?: string;
   schemas: Record<string, SchemaDefinition>;
-  schemaCount: number;
+  schemaCount?: number;
   manifest?: SchemaManifest;
   relationshipCatalog?: RelationshipCatalog;
 }
@@ -287,168 +283,6 @@ export interface ChangesetDetails {
   };
 }
 
-// ─── API response types (scoped to this file) ─────────────────────────────────
-
-interface ApiNode {
-  id: string;
-  spec_node_id: string;
-  type: string;
-  layer_id: string;
-  name: string;
-  description?: string;
-  attributes?: Record<string, unknown>;
-  /** Stable 3-segment dot ID for annotation lookup. Accept both camelCase and snake_case
-   *  until the updated spec arrives (team confirmed field name is elementId). */
-  elementId?: string;
-  element_id?: string;
-}
-
-interface ApiLink {
-  id: string;
-  source: string;
-  target: string;
-  type: string;
-  /** Present for intra-layer links */
-  layer_id?: string;
-  /** Present for cross-layer links */
-  source_layer_id?: string;
-  /** Present for cross-layer links */
-  target_layer_id?: string;
-}
-
-interface ApiModelResponse {
-  version?: string;  // Not required by spec; adaptApiModel defaults to '1.0.0'
-  nodes: ApiNode[];
-  links: ApiLink[];
-  metadata?: Record<string, unknown>;
-}
-
-/**
- * Adapt the new structured API response to the internal MetaModel format.
- * Groups nodes by layer, routes intra-layer links → layer.relationships,
- * and cross-layer links → model.references.
- */
-function adaptApiModel(data: ApiModelResponse): MetaModel {
-  if (!Array.isArray(data?.nodes) || !Array.isArray(data?.links)) {
-    throw new Error(
-      'The model API returned an unexpected response format. ' +
-      `Expected { nodes: [], links: [] } but got nodes=${JSON.stringify(data?.nodes === undefined ? 'missing' : typeof data.nodes)}, ` +
-      `links=${JSON.stringify(data?.links === undefined ? 'missing' : typeof data.links)}. ` +
-      'Please check that the DR CLI server is running a compatible version.'
-    );
-  }
-
-  // Build a lookup from node id → layer_id for reference resolution
-  const nodeLayerMap = new Map<string, string>();
-  for (const node of data.nodes) {
-    if (!node.id || !node.layer_id) {
-      console.warn('[adaptApiModel] Node missing required id or layer_id — skipping', { nodeId: node.id, layerId: node.layer_id, name: node.name });
-      continue;
-    }
-    nodeLayerMap.set(node.id, node.layer_id);
-  }
-
-  // Group nodes by layer
-  const layerNodes = new Map<string, ApiNode[]>();
-  for (const node of data.nodes) {
-    if (!node.id || !node.layer_id) continue; // already warned above
-    const group = layerNodes.get(node.layer_id) ?? [];
-    group.push(node);
-    layerNodes.set(node.layer_id, group);
-  }
-
-  // Separate intra-layer vs cross-layer links
-  const intraLayerLinks: ApiLink[] = [];
-  const crossLayerLinks: ApiLink[] = [];
-  for (const link of data.links) {
-    if (link.source_layer_id && link.target_layer_id) {
-      crossLayerLinks.push(link);
-    } else {
-      intraLayerLinks.push(link);
-    }
-  }
-
-  // Build layers map
-  const layers: Record<string, Layer> = {};
-  for (const [layerId, nodes] of layerNodes) {
-    const elements: ModelElement[] = nodes.map((node) => ({
-      id: node.id,
-      type: node.type,
-      specNodeId: node.spec_node_id,
-      elementId: node.elementId ?? node.element_id,
-      name: node.name,
-      description: node.description,
-      layerId: node.layer_id,
-      properties: node.attributes ?? {},
-      visual: {
-        position: { x: 0, y: 0 },
-        size: { width: 200, height: 100 },
-        style: {},
-      },
-    }));
-
-    const relationships: Relationship[] = intraLayerLinks
-      .filter((link) => {
-        const srcLayer = nodeLayerMap.get(link.source);
-        if (srcLayer === undefined) {
-          console.warn('[adaptApiModel] Intra-layer link references unknown source node — skipping', { linkId: link.id, source: link.source });
-          return false;
-        }
-        return srcLayer === layerId;
-      })
-      .map((link) => ({
-        id: link.id,
-        type: link.type,
-        sourceId: link.source,
-        targetId: link.target,
-      }));
-
-    layers[layerId] = {
-      id: layerId,
-      type: layerId,
-      name: layerId,
-      elements,
-      relationships,
-    };
-  }
-
-  // Build cross-layer references
-  const references: Reference[] = crossLayerLinks.map((link) => ({
-    id: link.id,
-    type: link.type as import('../../../core/types/model').ReferenceType,
-    source: {
-      elementId: link.source,
-      layerId: link.source_layer_id,
-    },
-    target: {
-      elementId: link.target,
-      layerId: link.target_layer_id,
-    },
-  }));
-
-  const computedLayerCount = Object.keys(layers).length;
-  const computedElementCount = data.nodes.filter((n) => n.id && n.layer_id).length;
-  const metadata: ModelMetadata | undefined = data.metadata
-    ? {
-        ...(data.metadata as ModelMetadata),
-        // Computed values always win over server-provided values for correctness
-        loadedAt: new Date().toISOString(),
-        layerCount: computedLayerCount,
-        elementCount: computedElementCount,
-      }
-    : {
-        loadedAt: new Date().toISOString(),
-        layerCount: computedLayerCount,
-        elementCount: computedElementCount,
-      };
-
-  return {
-    layers,
-    references,
-    metadata,
-  };
-}
-
 export class EmbeddedDataLoader {
   /**
    * Generic fetch helper that combines common pattern: fetch -> ensureOk -> json -> log
@@ -507,27 +341,31 @@ export class EmbeddedDataLoader {
     const data = (await response.json()) as Record<string, unknown> & {
       version?: string;
       type?: string;
-      description?: string;
-      source?: string;
       schemas?: Record<string, unknown>;
       schemaCount?: number;
+      schema_count?: number;
       relationshipCatalog?: RelationshipCatalog;
+      relationship_catalog?: RelationshipCatalog;
     };
 
-    // schemaCount is required by the API spec; fall back to counting schemas if absent
-    const schemaCount = data.schemaCount ?? (data.schemas ? Object.keys(data.schemas).length : 0);
-    const relationshipCatalog: RelationshipCatalog | undefined = data.relationshipCatalog;
+    // Normalize snake_case from server to camelCase for TypeScript
+    const schemaCount = data.schemaCount ?? data.schema_count ?? (data.schemas ? Object.keys(data.schemas).length : 0);
+    const relationshipCatalog: RelationshipCatalog | undefined = data.relationshipCatalog || data.relationship_catalog;
 
     const result: SpecDataResponse = {
       version: data.version ?? '',
       type: data.type ?? '',
-      description: data.description ?? '',
-      source: data.source ?? '',
       schemas: (data.schemas ?? {}) as Record<string, SchemaDefinition>,
       schemaCount,
       relationshipCatalog
     };
 
+    if (typeof data.description === 'string') {
+      result.description = data.description;
+    }
+    if (typeof data.source === 'string') {
+      result.source = data.source;
+    }
     if (data.manifest && typeof data.manifest === 'object') {
       result.manifest = data.manifest as SchemaManifest;
     }
@@ -547,11 +385,258 @@ export class EmbeddedDataLoader {
   }
 
   /**
-   * Load the current model from the DR CLI server's structured nodes/links API
+   * Load a specific element by ID
+   * Generic type parameter allows callers to specify expected return type
+   */
+  async loadElement<T = unknown>(elementId: string): Promise<T> {
+    const data = await this.fetchJson<T>(
+      `${API_BASE}/elements/${encodeURIComponent(elementId)}`,
+      `load element ${elementId}`
+    );
+    return data;
+  }
+
+  /**
+   * Load the current model (YAML instance format)
    */
   async loadModel(): Promise<MetaModel> {
-    const data = await this.fetchJson<ApiModelResponse>(`${API_BASE}/model`, 'load model');
-    return adaptApiModel(data);
+    const data = await this.fetchJson<Record<string, unknown> & {
+      version?: string;
+      metadata?: Record<string, unknown>;
+      layers?: Record<string, unknown>;
+    }>(
+      `${API_BASE}/model`,
+      'load model'
+    );
+
+    // Extract statistics from metadata with proper type safety
+    const extractStatistics = (metadata: unknown): { totalLayers?: number; totalElements?: number } => {
+      if (typeof metadata !== 'object' || metadata === null) {
+        return {};
+      }
+      const metadataObj = metadata as Record<string, unknown>;
+      const statistics = metadataObj.statistics;
+      if (typeof statistics !== 'object' || statistics === null) {
+        return {};
+      }
+      const statsObj = statistics as Record<string, unknown>;
+      return {
+        totalLayers: typeof statsObj.total_layers === 'number' ? statsObj.total_layers : undefined,
+        totalElements: typeof statsObj.total_elements === 'number' ? statsObj.total_elements : undefined
+      };
+    };
+
+    // Extract statistics (for potential future use or telemetry)
+    extractStatistics(data.metadata);
+
+    // Normalize model data: ensure all elements have required visual properties
+    const normalized = this.normalizeModel(data);
+    return normalized;
+  }
+
+  /**
+   * Normalize model data to ensure all required properties are present
+   */
+  private normalizeModel(data: unknown): MetaModel {
+    if (typeof data !== 'object' || data === null) {
+      throw new Error('Invalid model data: expected object');
+    }
+    const modelData = data as Record<string, unknown>;
+    const normalized: MetaModel = {
+      version: typeof modelData.version === 'string' ? modelData.version : '1.0.0',
+      layers: {},
+      references: Array.isArray(modelData.references) ? (modelData.references as Reference[]) : []
+    };
+
+    // Preserve optional metadata from original data
+    if (typeof modelData.id === 'string') normalized.id = modelData.id;
+    if (typeof modelData.name === 'string') normalized.name = modelData.name;
+    if (typeof modelData.description === 'string') normalized.description = modelData.description;
+    if (typeof modelData.metadata === 'object' && modelData.metadata !== null) {
+      normalized.metadata = modelData.metadata as ModelMetadata;
+    }
+
+    for (const [layerId, layer] of Object.entries(modelData.layers || {})) {
+      if (typeof layer !== 'object' || layer === null) {
+        logError(
+          ERROR_IDS.DATA_NORMALIZATION_FAILED,
+          'Invalid layer object encountered - skipping layer',
+          {
+            layerId,
+            layerType: typeof layer,
+            context: 'normalizeModel layer validation'
+          }
+        );
+        continue;
+      }
+      const layerObj = layer as Record<string, unknown>;
+      const normalizedLayer: Layer = {
+        id: typeof layerObj.id === 'string' ? layerObj.id : layerId,
+        type: (typeof layerObj.type === 'string' ? layerObj.type : LayerType.Application) as LayerType,
+        name: typeof layerObj.name === 'string' ? layerObj.name : layerId,
+        elements: this.normalizeElements(layerObj.elements),
+        relationships: Array.isArray(layerObj.relationships) ? (layerObj.relationships as Relationship[]) : []
+      };
+
+      // Preserve optional layer properties
+      if (typeof layerObj.description === 'string') normalizedLayer.description = layerObj.description;
+      if (typeof layerObj.order === 'number') normalizedLayer.order = layerObj.order;
+      if (typeof layerObj.data === 'object' && layerObj.data !== null) {
+        normalizedLayer.data = layerObj.data as LayerData;
+      }
+
+      normalized.layers[layerId] = normalizedLayer;
+    }
+
+    return normalized;
+  }
+
+  /**
+   * Normalize elements array with default visual properties
+   * This function filters out invalid elements and applies sensible defaults to handle
+   * malformed data from the server without throwing. Warnings are logged to help identify
+   * data corruption issues without blocking the UI.
+   *
+   * Filtering behavior:
+   * - Non-object elements (null, primitives) are skipped silently as type-invalid
+   * - All remaining elements are coerced to string defaults if properties are missing
+   *
+   * This approach prevents data corruption from rendering broken UI while maintaining
+   * visibility into problems via console logs.
+   */
+  private normalizeElements(elements: unknown): ModelElement[] {
+    if (!Array.isArray(elements)) {
+      logError(
+        ERROR_IDS.DATA_NORMALIZATION_FAILED,
+        'Expected elements array but received non-array - possible server data corruption',
+        {
+          elementType: typeof elements,
+          context: 'normalizeElements non-array check'
+        }
+      );
+      return [];
+    }
+
+    return elements
+      .filter((element: unknown): element is Record<string, unknown> => {
+        // Skip non-object elements (null, numbers, strings, etc.)
+        // Valid elements must be objects to have required properties
+        if (typeof element !== 'object' || element === null) {
+          logError(
+            ERROR_IDS.DATA_NORMALIZATION_FAILED,
+            'Skipping non-object element in normalizeElements - possible server data corruption',
+            {
+              elementType: typeof element,
+              element,
+              context: 'normalizeElements filter'
+            }
+          );
+          return false;
+        }
+        return true;
+      })
+      .map((elementObj: Record<string, unknown>) => {
+        return {
+          id: typeof elementObj.id === 'string' ? elementObj.id : '',
+          type: typeof elementObj.type === 'string' ? elementObj.type : '',
+          name: typeof elementObj.name === 'string' ? elementObj.name : '',
+          layerId: typeof elementObj.layerId === 'string' ? elementObj.layerId : '',
+          properties: typeof elementObj.properties === 'object' && elementObj.properties !== null ? (elementObj.properties as Record<string, unknown>) : {},
+          visual: this.normalizeVisual(elementObj.visual)
+        } as ModelElement;
+      });
+  }
+
+  /**
+   * Normalize element visual properties with defaults
+   */
+  private normalizeVisual(visual: unknown): ElementVisual {
+    // Return default visual if input is invalid
+    const defaultVisual: ElementVisual = {
+      position: { x: 0, y: 0 },
+      size: { width: 200, height: 100 },
+      style: { backgroundColor: '#e3f2fd', borderColor: '#1976d2' }
+    };
+
+    if (typeof visual !== 'object' || visual === null) {
+      if (visual !== undefined) {
+        logError(
+          ERROR_IDS.DATA_NORMALIZATION_FAILED,
+          'Invalid visual data structure - using default visual values',
+          {
+            visualType: typeof visual,
+            visual,
+            context: 'normalizeVisual - null/invalid input'
+          }
+        );
+      }
+      return defaultVisual;
+    }
+
+    const visualObj = visual as Record<string, unknown>;
+
+    // Ensure position is valid
+    let position = defaultVisual.position;
+    if (typeof visualObj.position === 'object' && visualObj.position !== null) {
+      const pos = visualObj.position as Record<string, unknown>;
+      if (typeof pos.x === 'number' && typeof pos.y === 'number') {
+        position = { x: pos.x, y: pos.y };
+      } else {
+        logError(
+          ERROR_IDS.DATA_NORMALIZATION_FAILED,
+          'Invalid position data in visual properties - using default position',
+          {
+            position: visualObj.position,
+            context: 'normalizeVisual - position'
+          }
+        );
+      }
+    }
+
+    // Ensure size is valid
+    let size = defaultVisual.size;
+    if (typeof visualObj.size === 'object' && visualObj.size !== null) {
+      const sz = visualObj.size as Record<string, unknown>;
+      if (typeof sz.width === 'number' && typeof sz.height === 'number') {
+        size = { width: sz.width, height: sz.height };
+      } else {
+        logError(
+          ERROR_IDS.DATA_NORMALIZATION_FAILED,
+          'Invalid size data in visual properties - using default size',
+          {
+            size: visualObj.size,
+            context: 'normalizeVisual - size'
+          }
+        );
+      }
+    }
+
+    // Ensure style is valid (at minimum an empty object)
+    let style = defaultVisual.style;
+    if (typeof visualObj.style === 'object' && visualObj.style !== null) {
+      const st = visualObj.style as Record<string, unknown>;
+      style = {
+        backgroundColor: typeof st.backgroundColor === 'string' ? st.backgroundColor : style.backgroundColor,
+        borderColor: typeof st.borderColor === 'string' ? st.borderColor : style.borderColor,
+        borderStyle: typeof st.borderStyle === 'string' ? st.borderStyle : undefined,
+        textColor: typeof st.textColor === 'string' ? st.textColor : undefined,
+        icon: typeof st.icon === 'string' ? st.icon : undefined,
+        shape: typeof st.shape === 'string' ? st.shape as import('../../../core/types/model').ShapeType : undefined
+      };
+    }
+
+    // Include layoutHints if present
+    let layoutHints: ElementVisual['layoutHints'];
+    if (typeof visualObj.layoutHints === 'object' && visualObj.layoutHints !== null) {
+      layoutHints = visualObj.layoutHints as ElementVisual['layoutHints'];
+    }
+
+    return {
+      position,
+      size,
+      style,
+      ...(layoutHints && { layoutHints })
+    };
   }
 
   /**

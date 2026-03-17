@@ -303,7 +303,7 @@ const validatePresetName = (name: string): { valid: boolean; error?: string } =>
 
 const validateDiagramType = (diagramType: unknown): diagramType is DiagramType => {
   // Valid diagram types from the enum
-  const validTypes = ['motivation', 'business', 'application', 'technology', 'data-model'];
+  const validTypes = ['motivation', 'business', 'application', 'technology', 'c4', 'data-model'];
   return typeof diagramType === 'string' && validTypes.includes(diagramType);
 };
 

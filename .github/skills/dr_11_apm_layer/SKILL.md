@@ -13,13 +13,13 @@ triggers:
     "OpenTelemetry",
     "telemetry",
   ]
-version: 0.8.1
+version: 0.7.0
 ---
 
 # APM Layer Skill
 
 **Layer Number:** 11
-**Specification:** Metadata Model Spec v0.8.1
+**Specification:** Metadata Model Spec v0.7.0
 **Purpose:** Defines observability using OpenTelemetry 1.0+, specifying traces, metrics, logs, and instrumentation.
 
 ---
@@ -42,9 +42,6 @@ This layer uses **OpenTelemetry 1.0+** (industry standard for observability).
 ---
 
 ## Entity Types
-
-> **CLI Introspection:** Run `dr schema types apm` for the authoritative, always-current list of node types.
-> Run `dr schema node <type-id>` for full attribute details on any type.
 
 ### Core APM Entities (14 entities)
 
@@ -92,7 +89,7 @@ Activate when the user:
 - API Layer → APM (operations set SLA targets)
 - Business Layer → APM (processes reference business metrics)
 - Data Model Layer → APM (data quality metrics)
-- Data Store Layer → APM (query performance metrics)
+- Datastore Layer → APM (query performance metrics)
 
 ---
 

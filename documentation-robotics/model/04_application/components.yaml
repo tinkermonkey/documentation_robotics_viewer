@@ -1,0 +1,319 @@
+viewer-app:
+  id: application.component.viewer-app
+  name: Viewer App
+  type: component
+  documentation: Main application container
+  properties:
+    x-uses:
+      - technology.framework.react
+      - technology.library.flowbite-react
+      - technology.framework.tailwindcss
+      - technology.library.tanstack-router
+    x-monitored-by:
+      - apm.metric.initialization-time
+      - apm.metric.embedding-success-rate
+      - apm.metric.error-boundary
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/main.tsx
+            symbol: App
+    x-tested-by:
+      - testing.test-suite.embedded-app
+      - testing.test-suite.overview-panel-styling
+      - testing.test-suite.sidebar-consolidation
+graph-view:
+  id: application.component.graph-view
+  name: Graph View
+  type: component
+  documentation: Core graph rendering component
+  properties:
+    x-uses:
+      - technology.framework.react
+      - technology.library.flowbite-react
+      - technology.framework.tailwindcss
+      - technology.library.react-flow
+      - ux.component.space-mouse-handler
+    x-monitored-by:
+      - apm.metric.render-time
+      - apm.metric.interaction-fps
+      - apm.metric.memory-usage
+      - apm.metric.node-render-count
+      - apm.metric.edge-render-count
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/components/GraphViewer.tsx
+            symbol: GraphViewer
+    x-tested-by:
+      - testing.test-suite.embedded-graph-rendering
+      - testing.test-suite.zoom-to-layer
+      - testing.test-suite.graph-readability-integration
+    x-ui-component: ux.component.graph-viewer
+inspector-panel:
+  id: application.component.inspector-panel
+  name: Inspector Panel
+  type: component
+  documentation: Side panel for element details
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/MiniMap.tsx
+            symbol: MiniMap
+    x-ui-component: ux.component.inspector-panel
+motivation-graph-view:
+  id: application.component.motivation-graph-view
+  name: Motivation Graph View
+  type: component
+  documentation: Displays motivation layer graph with filtering, export, and
+    traceability features
+  properties:
+    x-uses:
+      - technology.framework.react
+      - technology.library.flowbite-react
+      - technology.framework.tailwindcss
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/MotivationGraphView.tsx
+            symbol: MotivationGraphView
+    x-monitored-by:
+      - apm.metric.render-time
+      - apm.metric.filter-latency
+    x-tested-by:
+      - testing.test-suite.embedded-motivation-view
+    x-ui-component: ux.component.motivation-graph-view
+business-layer-view:
+  id: application.component.business-layer-view
+  name: Business Layer View
+  type: component
+  documentation: Displays business layer graph with processes, functions,
+    services, and capabilities
+  properties:
+    x-uses:
+      - technology.framework.react
+      - technology.library.flowbite-react
+      - technology.framework.tailwindcss
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/core/components/businessLayer/BusinessLayerView.tsx
+            symbol: BusinessLayerView
+    x-monitored-by:
+      - apm.metric.render-time
+      - apm.metric.filter-latency
+    x-tested-by:
+      - testing.test-suite.business-layer-integration
+c4-graph-view:
+  id: application.component.c4-graph-view
+  name: C4 Graph View
+  type: component
+  documentation: Displays C4 architecture view with containers, components, and focus modes
+  properties:
+    x-uses:
+      - technology.framework.react
+      - technology.library.flowbite-react
+      - technology.framework.tailwindcss
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/C4GraphView.tsx
+            symbol: C4GraphView
+    x-monitored-by:
+      - apm.metric.render-time
+      - apm.metric.filter-latency
+    x-tested-by:
+      - testing.test-suite.c4-architecture-view
+      - testing.test-suite.c4-accessibility
+    x-ui-component: ux.component.c4-graph-view
+changeset-graph-view:
+  id: application.component.changeset-graph-view
+  name: Changeset Graph View
+  type: component
+  documentation: Visualizes changesets showing added, modified, and deleted elements
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/ChangesetGraphView.tsx
+            symbol: ChangesetGraphView
+    x-ui-component: ux.component.changeset-graph-view
+motivation-filter-panel:
+  id: application.component.motivation-filter-panel
+  name: Motivation Filter Panel
+  type: component
+  documentation: Filter controls for motivation layer (element types, traceability mode)
+  properties:
+    x-monitored-by:
+      - apm.metric.filter-latency
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/MotivationFilterPanel.tsx
+            symbol: MotivationFilterPanel
+c4-filter-panel:
+  id: application.component.c4-filter-panel
+  name: C4 Filter Panel
+  type: component
+  documentation: Filter controls for C4 view (scenario presets, detail levels, focus context)
+  properties:
+    x-monitored-by:
+      - apm.metric.filter-latency
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/C4FilterPanel.tsx
+            symbol: C4FilterPanel
+error-boundary:
+  id: application.component.error-boundary
+  name: Error Boundary
+  type: component
+  documentation: React error boundary for graceful error handling and user feedback
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/shared/ErrorState.tsx
+            symbol: ErrorState
+    x-monitored-by:
+      - apm.metric.error-boundary
+view-tab-switcher:
+  id: application.component.view-tab-switcher
+  name: View Tab Switcher
+  type: component
+  documentation: Tab navigation for switching between model, architecture,
+    motivation, and spec views
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/shared/BreadcrumbNav.tsx
+            symbol: BreadcrumbNav
+    x-tested-by:
+      - testing.test-suite.embedded-dual-view
+motivation-breadcrumb:
+  id: application.component.motivation-breadcrumb
+  name: Motivation Breadcrumb
+  type: component
+  documentation: Breadcrumb navigation showing current filter state and traceability mode
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/MotivationControlPanel.tsx
+            symbol: MotivationControlPanel
+mode-selector:
+  id: application.component.mode-selector
+  name: Mode Selector
+  type: component
+  documentation: UI control for selecting visualization modes and layouts
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/C4ControlPanel.tsx
+            symbol: C4ControlPanel
+layer-panel:
+  id: application.component.layer-panel
+  name: Layer Panel
+  type: component
+  documentation: Side panel showing layer hierarchy and element counts
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/ModelLayersSidebar.tsx
+            symbol: ModelLayersSidebar
+    x-tested-by:
+      - testing.test-suite.layer-colors
+    x-ui-component: ux.component.layer-panel
+spec-viewer:
+  id: application.component.spec-viewer
+  name: Spec Viewer
+  type: component
+  documentation: Displays JSON Schema specifications in formatted view
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/SpecViewer.tsx
+            symbol: SpecViewer
+model-json-viewer:
+  id: application.component.model-json-viewer
+  name: Model JSON Viewer
+  type: component
+  documentation: Displays raw model JSON in formatted tree view
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/ModelJSONViewer.tsx
+            symbol: ModelJSONViewer
+changeset-viewer:
+  id: application.component.changeset-viewer
+  name: Changeset Viewer
+  type: component
+  documentation: Displays changeset details with element diff view
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/ChangesetViewer.tsx
+            symbol: ChangesetViewer
+connection-status:
+  id: application.component.connection-status
+  name: Connection Status
+  type: component
+  documentation: Real-time WebSocket connection status indicator
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/ConnectionStatus.tsx
+            symbol: ConnectionStatus
+    x-monitored-by:
+      - apm.metric.websocket-reconnections
+      - apm.metric.websocket-errors
+changeset-list:
+  id: application.component.changeset-list
+  name: Changeset List
+  type: component
+  documentation: Lists all available changesets with metadata
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/ChangesetList.tsx
+            symbol: ChangesetList
+annotation-panel:
+  id: application.component.annotation-panel
+  name: Annotation Panel
+  type: component
+  documentation: User annotations and comments on model elements
+  properties:
+    source:
+      reference:
+        provenance: manual
+        locations:
+          - file: src/apps/embedded/components/AnnotationPanel.tsx
+            symbol: AnnotationPanel

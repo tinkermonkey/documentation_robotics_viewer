@@ -14,13 +14,13 @@ triggers:
     "motivation",
     "archimate motivation",
   ]
-version: 0.8.3
+version: 0.7.0
 ---
 
 # Motivation Layer Skill
 
 **Layer Number:** 01
-**Specification:** Metadata Model Spec v0.8.3
+**Specification:** Metadata Model Spec v0.7.0
 **Purpose:** Captures stakeholder concerns, goals, requirements, and constraints that drive architectural decisions using ArchiMate motivation elements.
 
 ---
@@ -39,9 +39,6 @@ This layer uses **ArchiMate 3.2 Motivation Layer** standard without custom exten
 ---
 
 ## Entity Types
-
-> **CLI Introspection:** Run `dr schema types motivation` for the authoritative, always-current list of node types.
-> Run `dr schema node <type-id>` for full attribute details on any type.
 
 | Entity Type     | Description                                                     | Key Attributes                                                                     |
 | --------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
@@ -212,12 +209,15 @@ Start by documenting **WHO cares** about the system:
 ```bash
 # Add key stakeholders
 dr add motivation stakeholder "End Users" \
+  --properties type=external \
   --description "Customers using the platform"
 
 dr add motivation stakeholder "Product Manager" \
+  --properties type=internal \
   --description "Defines product vision and priorities"
 
 dr add motivation stakeholder "Compliance Team" \
+  --properties type=internal \
   --description "Ensures regulatory compliance"
 ```
 
@@ -228,13 +228,16 @@ Identify **WHAT is pushing** the organization:
 ```bash
 # Market driver
 dr add motivation driver "Cloud Migration Pressure" \
+  --properties category=market \
   --description "Industry shift to cloud-native architectures"
 
 # SWOT assessment
 dr add motivation assessment "Legacy System Debt" \
+  --properties assessmentType=weakness \
   --description "Monolithic architecture limits agility"
 
 dr add motivation assessment "Strong Engineering Team" \
+  --properties assessmentType=strength \
   --description "Experienced team with cloud expertise"
 ```
 
@@ -245,10 +248,12 @@ Articulate **WHAT we want to achieve**:
 ```bash
 # Strategic goal
 dr add motivation goal "Modernize Architecture" \
+  --properties priority=critical,measurable=true,target-date=2024-12-31 \
   --description "Migrate to microservices architecture"
 
 # Value delivered
 dr add motivation value "Operational Efficiency" \
+  --properties type=operational \
   --description "Reduced deployment time and increased reliability"
 ```
 
@@ -259,14 +264,17 @@ Define **HOW we will operate**:
 ```bash
 # Functional requirement
 dr add motivation requirement "API Authentication" \
+  --properties type=functional \
   --description "All API endpoints must authenticate users"
 
 # Guiding principle
 dr add motivation principle "API-First Design" \
+  --properties category=application \
   --description "All services expose RESTful APIs with OpenAPI specs"
 
 # Hard constraint
 dr add motivation constraint "AWS-Only Infrastructure" \
+  --properties type=technology \
   --description "All services must deploy to AWS (no multi-cloud)"
 ```
 
@@ -276,31 +284,31 @@ Connect motivation elements using predicates:
 
 ```bash
 # Driver influences Goal
-dr relationship add motivation.driver.cloud-migration-pressure \
-  motivation.goal.modernize-architecture --predicate influences
+dr relationship add "motivation/driver/cloud-migration-pressure" \
+  influences "motivation/goal/modernize-architecture"
 
 # Goal realizes Value
-dr relationship add motivation.goal.modernize-architecture \
-  motivation.value.operational-efficiency --predicate realizes
+dr relationship add "motivation/goal/modernize-architecture" \
+  realizes "motivation/value/operational-efficiency"
 
 # Principle influences Requirement
-dr relationship add motivation.principle.api-first-design \
-  motivation.requirement.api-authentication --predicate influences
+dr relationship add "motivation/principle/api-first-design" \
+  influences "motivation/requirement/api-authentication"
 
 # Stakeholder influences Goal
-dr relationship add motivation.stakeholder.product-manager \
-  motivation.goal.modernize-architecture --predicate influences
+dr relationship add "motivation/stakeholder/product-manager" \
+  influences "motivation/goal/modernize-architecture"
 
 # Assessment influences Goal
-dr relationship add motivation.assessment.legacy-system-debt \
-  motivation.goal.modernize-architecture --predicate influences
+dr relationship add "motivation/assessment/legacy-system-debt" \
+  influences "motivation/goal/modernize-architecture"
 ```
 
 ### Step 6: Validate
 
 ```bash
-dr validate --layers motivation
-dr validate --relationships
+dr validate --layer motivation
+dr validate --validate-relationships
 ```
 
 ---
@@ -399,7 +407,7 @@ Stakeholder: "CEO"
 When exporting to ArchiMate format:
 
 ```bash
-dr export archimate --layers motivation --output motivation.archimate
+dr export archimate --layer motivation --output motivation.archimate
 ```
 
 **Supported ArchiMate Elements:**
@@ -454,27 +462,27 @@ Common validation issues:
 **Add Commands:**
 
 ```bash
-dr add motivation stakeholder <name> --description <description>
-dr add motivation driver <name> --description <description>
-dr add motivation goal <name> --description <description>
-dr add motivation requirement <name> --description <description>
-dr add motivation principle <name> --description <description>
-dr add motivation constraint <name> --description <description>
+dr add motivation stakeholder <name> --properties type=<type>
+dr add motivation driver <name> --properties category=<category>
+dr add motivation goal <name> --properties priority=<priority>
+dr add motivation requirement <name> --properties type=<type>
+dr add motivation principle <name> --properties category=<category>
+dr add motivation constraint <name> --properties type=<type>
 ```
 
 **Relationship Commands:**
 
 ```bash
-dr relationship add <source-id> <target-id> --predicate influences
-dr relationship add <source-id> <target-id> --predicate aggregates
-dr relationship add <source-id> <target-id> --predicate realizes
-dr relationship add <source-id> <target-id> --predicate specializes
+dr relationship add <source-id> influences <target-id>
+dr relationship add <source-id> aggregates <target-id>
+dr relationship add <source-id> realizes <target-id>
+dr relationship add <source-id> specializes <target-id>
 ```
 
 **Query Commands:**
 
 ```bash
-dr list motivation --type goal
-dr search "" --layer motivation
+dr search --layer motivation --type goal
+dr search --layer motivation --property priority=critical
 dr relationship list <element-id> --direction outgoing
 ```

@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { ChatInput } from '@/apps/embedded/components/chat/ChatInput';
 
 const meta = {
-  title: 'Chat / Messages / ChatInput',
+  title: 'D Chat / Messages / ChatInput',
 } satisfies Meta;
 
 export default meta;

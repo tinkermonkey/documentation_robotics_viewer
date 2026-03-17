@@ -152,6 +152,135 @@ test.describe('CrossLayer Components Integration', () => {
     });
   });
 
+  test.describe('CrossLayerBreadcrumb - Store Integration', () => {
+    test('should push navigation step', () => {
+      const store = useCrossLayerStore.getState();
+      const step = {
+        layerId: LayerType.Business,
+        elementId: 'service-1',
+        elementName: 'Test Service',
+        timestamp: Date.now(),
+      };
+
+      store.pushNavigation(step);
+      expect(useCrossLayerStore.getState().navigationHistory.length).toBe(1);
+      expect(useCrossLayerStore.getState().navigationHistory[0]).toEqual(step);
+    });
+
+    test('should maintain navigation history in reverse order (most recent first)', () => {
+      const store = useCrossLayerStore.getState();
+      const step1 = {
+        layerId: LayerType.Motivation,
+        elementId: 'goal-1',
+        elementName: 'Test Goal',
+        timestamp: Date.now() - 1000,
+      };
+
+      const step2 = {
+        layerId: LayerType.Business,
+        elementId: 'service-1',
+        elementName: 'Test Service',
+        timestamp: Date.now(),
+      };
+
+      store.pushNavigation(step1);
+      store.pushNavigation(step2);
+
+      const history = useCrossLayerStore.getState().navigationHistory;
+      expect(history[0]).toEqual(step2); // Most recent first
+      expect(history[1]).toEqual(step1);
+    });
+
+    test('should limit navigation history to MAX_NAVIGATION_HISTORY (5)', () => {
+      const store = useCrossLayerStore.getState();
+
+      for (let i = 0; i < 10; i++) {
+        store.pushNavigation({
+          layerId: LayerType.Business,
+          elementId: `element-${i}`,
+          elementName: `Element ${i}`,
+          timestamp: Date.now() - i * 1000,
+        });
+      }
+
+      // Should only keep the last 5 items
+      expect(useCrossLayerStore.getState().navigationHistory.length).toBe(5);
+      // Most recent item should be at index 0
+      expect(useCrossLayerStore.getState().navigationHistory[0].elementId).toBe('element-9');
+    });
+
+    test('should pop navigation step', () => {
+      const store = useCrossLayerStore.getState();
+      const step = {
+        layerId: LayerType.Business,
+        elementId: 'service-1',
+        elementName: 'Test Service',
+        timestamp: Date.now(),
+      };
+
+      store.pushNavigation(step);
+      expect(useCrossLayerStore.getState().navigationHistory.length).toBe(1);
+
+      const popped = store.popNavigation();
+      expect(popped).toEqual(step);
+      expect(useCrossLayerStore.getState().navigationHistory.length).toBe(0);
+    });
+
+    test('should return undefined when popping from empty history', () => {
+      const store = useCrossLayerStore.getState();
+
+      const popped = store.popNavigation();
+      expect(popped).toBeUndefined();
+    });
+
+    test('should clear navigation history', () => {
+      const store = useCrossLayerStore.getState();
+
+      store.pushNavigation({
+        layerId: LayerType.Business,
+        elementId: 'service-1',
+        elementName: 'Test Service',
+        timestamp: Date.now(),
+      });
+
+      expect(useCrossLayerStore.getState().navigationHistory.length).toBe(1);
+
+      store.clearNavigationHistory();
+      expect(useCrossLayerStore.getState().navigationHistory.length).toBe(0);
+    });
+
+    test('should handle multiple navigations correctly', () => {
+      const store = useCrossLayerStore.getState();
+      const steps = [
+        {
+          layerId: LayerType.Motivation,
+          elementId: 'goal-1',
+          elementName: 'Test Goal',
+          timestamp: Date.now() - 2000,
+        },
+        {
+          layerId: LayerType.Business,
+          elementId: 'service-1',
+          elementName: 'Test Service',
+          timestamp: Date.now() - 1000,
+        },
+        {
+          layerId: LayerType.Application,
+          elementId: 'component-1',
+          elementName: 'Test Component',
+          timestamp: Date.now(),
+        },
+      ];
+
+      steps.forEach((step) => store.pushNavigation(step));
+
+      const history = useCrossLayerStore.getState().navigationHistory;
+      expect(history.length).toBe(3);
+      expect(history[0]).toEqual(steps[2]); // Most recent
+      expect(history[2]).toEqual(steps[0]); // Oldest
+    });
+  });
+
   test.describe('Store state isolation', () => {
     test('should not affect other store states when updating', () => {
       const store = useCrossLayerStore.getState();

@@ -13,7 +13,7 @@ import {
 } from '@/catalog/fixtures';
 
 const meta = {
-  title: 'Compositions / Spec Compositions / SpecRouteComposition',
+  title: 'E Compositions / Spec Compositions / SpecRouteComposition',
   parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
@@ -21,18 +21,19 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * Details View - Default
- * Full spec route composition showing schema definitions
+ * Graph View - Default
+ * Full spec route composition with graph view showing schema relationships
  */
-export const DetailsView: Story = { render: () => (
+export const GraphView: Story = { render: () => (
   <StoryProviderWrapper
     spec={createCompleteSpecFixture()}
     annotations={createAnnotationListFixture(3)}
-    initialParams={{ view: 'details' }}
+    initialParams={{ view: 'graph' }}
   >
     <div className="h-screen w-screen">
       <SpecRouteComposition
         specData={createCompleteSpecFixture()}
+        activeView="graph"
         selectedSchemaId={null}
         showRightSidebar={true}
       />
@@ -41,17 +42,39 @@ export const DetailsView: Story = { render: () => (
 ) };
 
 /**
- * Minimal Spec
+ * JSON View - Default
+ * Full spec route composition with JSON viewer showing schema definitions
+ */
+export const JSONView: Story = { render: () => (
+  <StoryProviderWrapper
+    spec={createCompleteSpecFixture()}
+    annotations={createAnnotationListFixture(5)}
+    initialParams={{ view: 'json' }}
+  >
+    <div className="h-screen w-screen">
+      <SpecRouteComposition
+        specData={createCompleteSpecFixture()}
+        activeView="json"
+        selectedSchemaId={null}
+        showRightSidebar={true}
+      />
+    </div>
+  </StoryProviderWrapper>
+) };
+
+/**
+ * Minimal Spec - Graph View
  * Shows minimal spec with only 5 basic schemas
  */
 export const MinimalSpec: Story = { render: () => (
   <StoryProviderWrapper
     spec={createMinimalSpecFixture()}
-    initialParams={{ view: 'details' }}
+    initialParams={{ view: 'graph' }}
   >
     <div className="h-screen w-screen">
       <SpecRouteComposition
         specData={createMinimalSpecFixture()}
+        activeView="graph"
         selectedSchemaId={null}
         showRightSidebar={true}
       />
@@ -66,11 +89,12 @@ export const MinimalSpec: Story = { render: () => (
 export const CompactNoSidebar: Story = { render: () => (
   <StoryProviderWrapper
     spec={createCompleteSpecFixture()}
-    initialParams={{ view: 'details' }}
+    initialParams={{ view: 'graph' }}
   >
     <div className="h-screen w-screen">
       <SpecRouteComposition
         specData={createCompleteSpecFixture()}
+        activeView="graph"
         selectedSchemaId={null}
         showRightSidebar={false}
       />
@@ -86,12 +110,13 @@ export const WithSelectedSchema: Story = { render: () => (
   <StoryProviderWrapper
     spec={createCompleteSpecFixture()}
     annotations={createAnnotationListFixture(2)}
-    initialParams={{ view: 'details' }}
+    initialParams={{ view: 'graph' }}
   >
     <div className="h-screen w-screen">
       <SpecRouteComposition
         specData={createCompleteSpecFixture()}
-        selectedSchemaId="motivation"
+        activeView="graph"
+        selectedSchemaId="goal"
         showRightSidebar={true}
       />
     </div>

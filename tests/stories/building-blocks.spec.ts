@@ -17,7 +17,7 @@ test.describe('Building Blocks Stories', () => {
   test.describe('ExpandableSection', () => {
     test('Expanded: shows content', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('building-blocks--data-display--expandablesection--expanded'));
+      await page.goto(storyUrl('a-primitives-panels-sidebars-expandablesection--expanded'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.waitForSelector('text=/[Cc]ontent|[Ss]ection|[Dd]isplay|[Tt]ext/', { timeout: 5000 });
       const bodyText = await page.locator('body').innerText();
@@ -26,7 +26,7 @@ test.describe('Building Blocks Stories', () => {
 
     test('Collapsed: header is visible', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('building-blocks--data-display--expandablesection--collapsed'));
+      await page.goto(storyUrl('a-primitives-panels-sidebars-expandablesection--default'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.waitForSelector('button, [role="button"], h1, h2, h3, h4', { timeout: 5000 });
       // At minimum, the section header should be visible
@@ -36,7 +36,7 @@ test.describe('Building Blocks Stories', () => {
 
     test('Expanded: clicking header toggles content', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('building-blocks--data-display--expandablesection--expanded'));
+      await page.goto(storyUrl('a-primitives-panels-sidebars-expandablesection--expanded'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.waitForSelector('button, [role="button"]', { timeout: 5000 });
       // Find clickable header element (button or div with cursor pointer)
@@ -56,7 +56,7 @@ test.describe('Building Blocks Stories', () => {
   test.describe('BreadcrumbNav', () => {
     test('Default: renders breadcrumb items', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('building-blocks--navigation--breadcrumbnav--default'));
+      await page.goto(storyUrl('a-primitives-navigation-breadcrumbnav--default'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.waitForSelector('a, [role="button"], nav', { timeout: 5000 });
       const bodyText = await page.locator('body').innerText();
@@ -65,7 +65,7 @@ test.describe('Building Blocks Stories', () => {
 
     test('MultiLevel: renders multiple items', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('building-blocks--navigation--breadcrumbnav--multi-level'));
+      await page.goto(storyUrl('a-primitives-navigation-breadcrumbnav--withmanyitems'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.waitForSelector('a, li', { timeout: 5000 });
       const bodyText = await page.locator('body').innerText();
@@ -74,7 +74,7 @@ test.describe('Building Blocks Stories', () => {
 
     test('Empty: handles empty state', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('building-blocks--navigation--breadcrumbnav--empty'));
+      await page.goto(storyUrl('a-primitives-navigation-breadcrumbnav--empty'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       // Page should load without crashing, wait for body to settle
       await page.waitForLoadState('networkidle');
@@ -87,7 +87,7 @@ test.describe('Building Blocks Stories', () => {
   test.describe('GraphToolbar', () => {
     test('Default: renders toolbar buttons', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('building-blocks--actions--graphtoolbar--default'));
+      await page.goto(storyUrl('a-primitives-toolbars-graphtoolbar--default'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.waitForSelector('button', { timeout: 5000 });
       const buttons = await page.locator('button').count();
@@ -98,7 +98,7 @@ test.describe('Building Blocks Stories', () => {
   test.describe('ExportButtonGroup', () => {
     test('Default: renders export buttons', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('building-blocks--actions--exportbuttongroup--default'));
+      await page.goto(storyUrl('a-primitives-toolbars-graphtoolbar--default'));
       await page.locator('body').waitFor({ state: 'attached', timeout: 5000 });
       await page.waitForSelector('button', { timeout: 5000 });
       const buttons = await page.locator('button').count();

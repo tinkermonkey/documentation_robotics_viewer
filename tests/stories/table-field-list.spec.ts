@@ -19,7 +19,7 @@ test.describe('TableFieldList Component Stories', () => {
   test.describe('Default story', () => {
     test('renders field list container', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--default'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--default'));
 
       const fieldList = page.locator('[role="list"]').first();
       await fieldList.waitFor({ state: 'attached', timeout: 5000 });
@@ -28,7 +28,7 @@ test.describe('TableFieldList Component Stories', () => {
 
     test('renders all field items', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--default'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--default'));
 
       const items = page.locator('[role="listitem"]');
       const count = await items.count();
@@ -37,7 +37,7 @@ test.describe('TableFieldList Component Stories', () => {
 
     test('displays field labels', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--default'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--default'));
 
       await expect(page.locator('text=userId')).toBeVisible();
       await expect(page.locator('text=email')).toBeVisible();
@@ -47,7 +47,7 @@ test.describe('TableFieldList Component Stories', () => {
 
     test('displays field values', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--default'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--default'));
 
       await expect(page.locator('text=string')).toBeVisible();
       await expect(page.locator('text=ISO8601')).toBeVisible();
@@ -55,7 +55,7 @@ test.describe('TableFieldList Component Stories', () => {
 
     test('shows required indicator for required fields', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--default'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--default'));
 
       // Required fields should have a bullet indicator (•)
       const requiredIndicators = page.locator('text=•');
@@ -67,7 +67,7 @@ test.describe('TableFieldList Component Stories', () => {
   test.describe('EmptyState story', () => {
     test('renders empty state message', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--empty-state'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--empty-state'));
 
       const emptyState = page.locator('text=/No fields|empty/i');
       await expect(emptyState.first()).toBeVisible();
@@ -75,7 +75,7 @@ test.describe('TableFieldList Component Stories', () => {
 
     test('does not render field list when empty', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--empty-state'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--empty-state'));
 
       const items = page.locator('[role="listitem"]');
       const count = await items.count();
@@ -86,7 +86,7 @@ test.describe('TableFieldList Component Stories', () => {
   test.describe('UndefinedItems story', () => {
     test('handles undefined items gracefully', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--undefined-items'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--undefined-items'));
 
       // Should not crash, should show empty or fallback message
       const container = page.locator('div').first();
@@ -97,7 +97,7 @@ test.describe('TableFieldList Component Stories', () => {
   test.describe('ManyFields story', () => {
     test('renders all 20 fields', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--many-fields'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--many-fields'));
 
       const items = page.locator('[role="listitem"]');
       const count = await items.count();
@@ -106,7 +106,7 @@ test.describe('TableFieldList Component Stories', () => {
 
     test('displays numbered fields correctly', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--many-fields'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--many-fields'));
 
       // Check that field names are sequential
       await expect(page.locator('text=field_0')).toBeVisible();
@@ -118,7 +118,7 @@ test.describe('TableFieldList Component Stories', () => {
   test.describe('ComplexTypes story', () => {
     test('renders complex type annotations', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--complex-types'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--complex-types'));
 
       // Check that complex types are displayed
       await expect(page.locator('text=object<string, unknown>')).toBeVisible();
@@ -128,7 +128,7 @@ test.describe('TableFieldList Component Stories', () => {
 
     test('displays UUID type value', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--complex-types'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--complex-types'));
 
       await expect(page.locator('text=UUID')).toBeVisible();
     });
@@ -137,7 +137,7 @@ test.describe('TableFieldList Component Stories', () => {
   test.describe('LongContent story', () => {
     test('renders long field names without breaking', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--long-content'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--long-content'));
 
       const longName = page.locator('text=veryLongFieldNameThatExceedsNormalLength');
       await expect(longName).toBeVisible();
@@ -145,7 +145,7 @@ test.describe('TableFieldList Component Stories', () => {
 
     test('renders long type values', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--long-content'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--long-content'));
 
       const complexType = page.locator('text=Map<string, Promise<Record<string, unknown>>');
       await expect(complexType).toBeVisible();
@@ -155,7 +155,7 @@ test.describe('TableFieldList Component Stories', () => {
   test.describe('AllRequired story', () => {
     test('renders 4 required fields', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--all-required'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--all-required'));
 
       const items = page.locator('[role="listitem"]');
       const count = await items.count();
@@ -171,7 +171,7 @@ test.describe('TableFieldList Component Stories', () => {
   test.describe('AllOptional story', () => {
     test('renders 4 optional fields', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--all-optional'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--all-optional'));
 
       const items = page.locator('[role="listitem"]');
       const count = await items.count();
@@ -180,7 +180,7 @@ test.describe('TableFieldList Component Stories', () => {
 
     test('does not show required indicator for optional fields', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--all-optional'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--all-optional'));
 
       const requiredIndicators = page.locator('text=•');
       const count = await requiredIndicators.count();
@@ -192,7 +192,7 @@ test.describe('TableFieldList Component Stories', () => {
   test.describe('MixedTooltips story', () => {
     test('renders fields with and without tooltips', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--mixed-tooltips'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--mixed-tooltips'));
 
       const items = page.locator('[role="listitem"]');
       const count = await items.count();
@@ -207,7 +207,7 @@ test.describe('TableFieldList Component Stories', () => {
   test.describe('CustomItemHeight story', () => {
     test('renders with custom item height', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--custom-item-height'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--custom-item-height'));
 
       const items = page.locator('[role="listitem"]');
       const count = await items.count();
@@ -221,7 +221,7 @@ test.describe('TableFieldList Component Stories', () => {
   test.describe('DarkMode story', () => {
     test('renders with dark mode styling', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('graphs-nodes-unifiednode-components-fieldlist-table-mode--dark-mode'));
+      await page.goto(storyUrl('core-nodes-tablefieldlist--dark-mode'));
 
       const items = page.locator('[role="listitem"]');
       const count = await items.count();

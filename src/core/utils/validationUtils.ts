@@ -17,6 +17,7 @@ import type { DiagramType } from '../types/diagram';
 const VALID_DIAGRAM_TYPES: DiagramType[] = [
   'business',
   'motivation',
+  'c4',
   'technology',
   'security',
 ];
@@ -42,9 +43,19 @@ const VALID_LAYOUT_ALGORITHMS = [
 const VALID_MOTIVATION_LAYOUTS = ['force', 'hierarchical', 'radial', 'manual'] as const;
 
 /**
+ * C4 layout types
+ */
+const VALID_C4_LAYOUTS = ['hierarchical', 'force', 'orthogonal', 'manual'] as const;
+
+/**
  * Business layout types
  */
 const VALID_BUSINESS_LAYOUTS = ['hierarchical', 'swimlane', 'matrix', 'force', 'manual'] as const;
+
+/**
+ * C4 view levels
+ */
+const VALID_C4_VIEW_LEVELS = ['context', 'container', 'component', 'code'] as const;
 
 /**
  * View types for spec, model, and changeset views
@@ -57,6 +68,7 @@ const VALID_CHANGESET_VIEWS = ['graph', 'list'] as const;
  * Path tracing modes
  */
 const VALID_PATH_TRACING_MODES = ['none', 'upstream', 'downstream', 'bidirectional'] as const;
+const VALID_C4_PATH_TRACING_MODES = ['none', 'upstream', 'downstream'] as const;
 
 /**
  * Focus modes
@@ -89,10 +101,24 @@ export function isValidMotivationLayout(value: unknown): value is typeof VALID_M
 }
 
 /**
+ * Check if value is a valid C4 layout
+ */
+export function isValidC4Layout(value: unknown): value is typeof VALID_C4_LAYOUTS[number] {
+  return typeof value === 'string' && VALID_C4_LAYOUTS.includes(value as any);
+}
+
+/**
  * Check if value is a valid business layout
  */
 export function isValidBusinessLayout(value: unknown): value is typeof VALID_BUSINESS_LAYOUTS[number] {
   return typeof value === 'string' && VALID_BUSINESS_LAYOUTS.includes(value as any);
+}
+
+/**
+ * Check if value is a valid C4 view level
+ */
+export function isValidC4ViewLevel(value: unknown): value is typeof VALID_C4_VIEW_LEVELS[number] {
+  return typeof value === 'string' && VALID_C4_VIEW_LEVELS.includes(value as any);
 }
 
 /**
@@ -121,6 +147,13 @@ export function isValidChangesetView(value: unknown): value is typeof VALID_CHAN
  */
 export function isValidPathTracingMode(value: unknown): value is typeof VALID_PATH_TRACING_MODES[number] {
   return typeof value === 'string' && VALID_PATH_TRACING_MODES.includes(value as any);
+}
+
+/**
+ * Check if value is a valid C4 path tracing mode
+ */
+export function isValidC4PathTracingMode(value: unknown): value is typeof VALID_C4_PATH_TRACING_MODES[number] {
+  return typeof value === 'string' && VALID_C4_PATH_TRACING_MODES.includes(value as any);
 }
 
 /**

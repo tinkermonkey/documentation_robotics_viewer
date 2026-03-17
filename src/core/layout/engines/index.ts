@@ -10,7 +10,7 @@ export type {
   LayoutEngineType,
   EngineCapabilities,
   LayoutGraphInput,
-  LayoutResult,
+  EngineLayoutResult,
   ParameterValidation,
 } from './LayoutEngine';
 
@@ -26,26 +26,95 @@ export {
 } from './LayoutEngineRegistry';
 
 // Concrete engine implementations
+export { DagreLayoutEngine } from './DagreLayoutEngine';
+export type { DagreParameters } from './DagreLayoutEngine';
+
+export { D3ForceLayoutEngine } from './D3ForceLayoutEngine';
+export type { D3ForceParameters } from './D3ForceLayoutEngine';
+
 export { ELKLayoutEngine } from './ELKLayoutEngine';
 export type { ELKParameters, ELKAlgorithm, ELKDirection, ELKLayeringStrategy } from './ELKLayoutEngine';
+
+export { GraphvizLayoutEngine } from './GraphvizLayoutEngine';
+export type {
+  GraphvizParameters,
+  GraphvizAlgorithm,
+  GraphvizRankDir,
+  GraphvizSplines,
+} from './GraphvizLayoutEngine';
 
 // Utility functions
 
 /**
  * Initialize and register default layout engines
+ *
+ * Each engine is initialized with error isolation. If one engine fails to initialize,
+ * the others will continue to be registered. A failure summary is logged at the end.
  */
 export async function initializeDefaultEngines(): Promise<void> {
   const { getGlobalRegistry } = await import('./LayoutEngineRegistry');
+  const { DagreLayoutEngine } = await import('./DagreLayoutEngine');
+  const { D3ForceLayoutEngine } = await import('./D3ForceLayoutEngine');
   const { ELKLayoutEngine } = await import('./ELKLayoutEngine');
+  const { GraphvizLayoutEngine } = await import('./GraphvizLayoutEngine');
 
   const registry = getGlobalRegistry();
+  const failedEngines: string[] = [];
 
-  // Register ELK engine
-  const elkEngine = new ELKLayoutEngine();
-  await elkEngine.initialize();
-  registry.register('elk', elkEngine, ['eclipse-layout-kernel', 'layered']);
+  // Helper function to handle engine initialization errors
+  function handleEngineError(engineName: string, error: unknown): void {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error(`[Layout Engines] Failed to initialize ${engineName} engine:`, errorMessage);
+    failedEngines.push(engineName);
+  }
 
-  console.log('[Layout Engines] ELK engine initialized and registered');
+  // Initialize Dagre engine with error isolation
+  try {
+    const dagreEngine = new DagreLayoutEngine();
+    await dagreEngine.initialize();
+    registry.register('dagre', dagreEngine, ['hierarchical', 'tree']);
+  } catch (error) {
+    handleEngineError('dagre', error);
+  }
+
+  // Initialize D3-Force engine with error isolation
+  try {
+    const d3ForceEngine = new D3ForceLayoutEngine();
+    await d3ForceEngine.initialize();
+    registry.register('d3-force', d3ForceEngine, ['force', 'force-directed']);
+  } catch (error) {
+    handleEngineError('d3-force', error);
+  }
+
+  // Initialize ELK engine with error isolation
+  try {
+    const elkEngine = new ELKLayoutEngine();
+    await elkEngine.initialize();
+    registry.register('elk', elkEngine, ['eclipse-layout-kernel', 'layered']);
+  } catch (error) {
+    handleEngineError('elk', error);
+  }
+
+  // Initialize Graphviz engine with error isolation
+  try {
+    const graphvizEngine = new GraphvizLayoutEngine();
+    await graphvizEngine.initialize();
+    registry.register('graphviz', graphvizEngine, ['dot', 'neato']);
+  } catch (error) {
+    handleEngineError('graphviz', error);
+  }
+
+  // Log summary
+  const registeredEngines = registry.getTypes();
+  if (failedEngines.length === 0) {
+    console.log(`[Layout Engines] All engines initialized and registered (${registeredEngines.join(', ')})`);
+  } else {
+    console.warn(
+      `[Layout Engines] Engine initialization completed with ${failedEngines.length} failure(s). ` +
+      `Registered: ${registeredEngines.length > 0 ? registeredEngines.join(', ') : 'none'}. ` +
+      `Failed: ${failedEngines.join(', ')}`
+    );
+  }
 }
 
 /**

@@ -2,9 +2,10 @@ import type { Meta, StoryObj } from '@storybook/react';
 import NodeDetailsPanel from '@/apps/embedded/components/NodeDetailsPanel';
 import type { Node } from '@xyflow/react';
 import type { MetaModel } from '@/core/types';
+import { LayerType, RelationshipType } from '@/core/types';
 
 const meta = {
-  title: 'Details / Model Details / NodeDetailsPanel',
+  title: 'B Details / Model Details / NodeDetailsPanel',
   parameters: {
     layout: 'centered',
   },
@@ -14,11 +15,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const mockModel: MetaModel = {
+  version: '1.0.0',
   references: [],
   layers: {
     motivation: {
       id: 'motivation',
-      type: 'Motivation',
+      type: LayerType.Motivation,
       name: 'Motivation Layer',
       description: 'Stakeholders, drivers, and goals',
       order: 1,
@@ -65,14 +67,14 @@ const mockModel: MetaModel = {
         },
       ],
       relationships: [
-        { id: 'rel-1', sourceId: 'driver-1', targetId: 'goal-1', type: 'drives' },
-        { id: 'rel-2', sourceId: 'goal-1', targetId: 'requirement-1', type: 'requires' },
-        { id: 'rel-3', sourceId: 'goal-1', targetId: 'requirement-2', type: 'requires' },
+        { id: 'rel-1', sourceId: 'driver-1', targetId: 'goal-1', type: RelationshipType.Influence },
+        { id: 'rel-2', sourceId: 'goal-1', targetId: 'requirement-1', type: RelationshipType.Reference },
+        { id: 'rel-3', sourceId: 'goal-1', targetId: 'requirement-2', type: RelationshipType.Reference },
       ],
     },
     business: {
       id: 'business',
-      type: 'Business',
+      type: LayerType.Business,
       name: 'Business Layer',
       description: 'Services and processes',
       order: 2,
@@ -186,9 +188,9 @@ export const NodeWithManyConnections: Story = {
           ],
           relationships: [
             ...mockModel.layers.motivation.relationships,
-            { id: 'rel-4', sourceId: 'driver-1', targetId: 'goal-2', type: 'drives' },
-            { id: 'rel-5', sourceId: 'goal-2', targetId: 'requirement-2', type: 'requires' },
-            { id: 'rel-6', sourceId: 'goal-1', targetId: 'goal-2', type: 'relates-to' },
+            { id: 'rel-4', sourceId: 'driver-1', targetId: 'goal-2', type: RelationshipType.Influence },
+            { id: 'rel-5', sourceId: 'goal-2', targetId: 'requirement-2', type: RelationshipType.Reference },
+            { id: 'rel-6', sourceId: 'goal-1', targetId: 'goal-2', type: RelationshipType.Reference },
           ],
         },
       },
@@ -258,6 +260,7 @@ export const NodeWithNegativePosition: Story = {
 export const EmptyModel: Story = {
   render: () => {
     const emptyModel: MetaModel = {
+      version: '1.0.0',
       layers: {},
       references: [],
     };

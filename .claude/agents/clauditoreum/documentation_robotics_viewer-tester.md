@@ -36,7 +36,7 @@ You maintain test quality for a React-based architecture visualization tool. You
 - **Testing Framework**: Playwright 1.57.0 (single framework for unit/integration/E2E)
 - **API Mocking**: MSW 2.6.8 (Service Worker API)
 - **Storybook**: 8.6.15 with automated accessibility testing
-- **Accessibility**: @axe-core/playwright + axe-playwright
+- **Accessibility**: @axe-core/playwright
 - **Runtime**: Node.js 20.x/22.x with native ES modules
 - **Language**: TypeScript 5.9.3 (100% strict mode)
 
@@ -518,16 +518,15 @@ tests/fixtures/
 **Example Story:**
 
 ```typescript
-// src/catalog/stories/core-nodes/UnifiedNode.stories.tsx
+// src/catalog/stories/c-graphs/nodes/motivation/GoalNode.stories.tsx
 import type { Meta, StoryObj } from '@storybook/react';
-import { NodeType } from '@/core/nodes/NodeType';
-import UnifiedNode from '@/core/nodes/components/UnifiedNode';
-import { withReactFlowDecorator } from '@catalog/decorators/ReactFlowDecorator';
+import { GoalNode } from '../../../../../core/nodes/motivation/GoalNode';
+import { withReactFlowDecorator } from '@catalog/decorators/';
 
 const meta = {
-  title: 'Core Nodes / UnifiedNode',
-  component: UnifiedNode,
-  decorators: [withReactFlowDecorator()],
+  title: 'C/Graphs/Nodes/Motivation/GoalNode',
+  component: GoalNode,
+  decorators: [withReactFlowDecorator],
 } satisfies Meta<typeof GoalNode>;
 
 export default meta;

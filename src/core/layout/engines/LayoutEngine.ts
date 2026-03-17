@@ -1,14 +1,14 @@
 /**
  * Layout Engine Abstraction Layer
  *
- * Defines the common interface for all layout engines.
+ * Defines the common interface for all layout engines (dagre, d3-force, ELK, Graphviz).
  * Supports runtime switching between engines and provides consistent parameter handling.
  */
 
 /**
  * Layout engine type enumeration
  */
-export type LayoutEngineType = 'elk' | 'custom';
+export type LayoutEngineType = 'dagre' | 'd3-force' | 'elk' | 'graphviz' | 'custom';
 
 /**
  * Engine capabilities for different layout algorithm types
@@ -50,8 +50,9 @@ export interface LayoutGraphInput {
 
 /**
  * Common layout result format (React Flow compatible)
+ * Used by low-level layout engines (Dagre, ELK, D3-Force, Graphviz)
  */
-export interface LayoutResult {
+export interface EngineLayoutResult {
   /** Positioned nodes */
   nodes: Array<{
     id: string;
@@ -68,6 +69,8 @@ export interface LayoutResult {
     source: string;
     target: string;
     points?: Array<{ x: number; y: number }>;
+    sourceSide?: 'top' | 'bottom' | 'left' | 'right';
+    targetSide?: 'top' | 'bottom' | 'left' | 'right';
     data?: Record<string, any>;
   }>;
 
@@ -129,7 +132,7 @@ export interface LayoutEngine {
   calculateLayout(
     graph: LayoutGraphInput,
     parameters: Record<string, any>
-  ): Promise<LayoutResult>;
+  ): Promise<EngineLayoutResult>;
 
   /**
    * Get default parameters for this engine
@@ -169,7 +172,7 @@ export abstract class BaseLayoutEngine implements LayoutEngine {
   abstract calculateLayout(
     graph: LayoutGraphInput,
     parameters: Record<string, any>
-  ): Promise<LayoutResult>;
+  ): Promise<EngineLayoutResult>;
 
   abstract getParameters(): Record<string, any>;
 
@@ -181,25 +184,38 @@ export abstract class BaseLayoutEngine implements LayoutEngine {
 
   /**
    * Helper to calculate bounds from positioned nodes
+   *
+   * Returns zero bounds for empty node arrays to prevent Infinity propagation
+   * into fitView calculations and other downstream consumers.
    */
   protected calculateBounds(
     nodes: Array<{ id: string; position: { x: number; y: number }; width?: number; height?: number }>
-  ): LayoutResult['bounds'] {
+  ): EngineLayoutResult['bounds'] {
+    // Handle empty node array: return zero bounds instead of Infinity
+    if (nodes.length === 0) {
+      return {
+        width: 0,
+        height: 0,
+        minX: 0,
+        maxX: 0,
+        minY: 0,
+        maxY: 0,
+      };
+    }
+
     let minX = Infinity;
     let maxX = -Infinity;
     let minY = Infinity;
     let maxY = -Infinity;
 
     for (const node of nodes) {
-      const halfW = (node.width || 0) / 2;
-      const halfH = (node.height || 0) / 2;
+      const width = node.width || 0;
+      const height = node.height || 0;
 
-      // node.position is a center coordinate (ELKLayoutEngine converts ELK's
-      // top-left to center before calling this method).
-      minX = Math.min(minX, node.position.x - halfW);
-      maxX = Math.max(maxX, node.position.x + halfW);
-      minY = Math.min(minY, node.position.y - halfH);
-      maxY = Math.max(maxY, node.position.y + halfH);
+      minX = Math.min(minX, node.position.x);
+      maxX = Math.max(maxX, node.position.x + width);
+      minY = Math.min(minY, node.position.y);
+      maxY = Math.max(maxY, node.position.y + height);
     }
 
     return {

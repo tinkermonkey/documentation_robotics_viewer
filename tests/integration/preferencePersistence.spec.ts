@@ -51,6 +51,7 @@ test.describe('Preference Persistence', () => {
       defaultEngines: {
         motivation: 'elk',
         business: 'graphviz',
+        c4: 'dagre',
         application: 'elk',
       },
       version: '1.0.0',
@@ -68,6 +69,7 @@ test.describe('Preference Persistence', () => {
     // Verify preferences persisted
     expect(session2Preferences.defaultEngines.motivation).toBe('elk');
     expect(session2Preferences.defaultEngines.business).toBe('graphviz');
+    expect(session2Preferences.defaultEngines.c4).toBe('dagre');
     expect(session2Preferences.defaultEngines.application).toBe('elk');
   });
 
@@ -76,9 +78,9 @@ test.describe('Preference Persistence', () => {
     const session1Presets = [
       {
         id: 'preset-high-quality',
-        name: 'High Quality Application',
-        description: 'Optimized for large application diagrams',
-        diagramType: 'application',
+        name: 'High Quality C4',
+        description: 'Optimized for large C4 diagrams',
+        diagramType: 'c4',
         engineType: 'elk',
         parameters: {
           algorithm: 'layered',
@@ -112,7 +114,7 @@ test.describe('Preference Persistence', () => {
     const session2Presets = JSON.parse(storedPresets!);
 
     expect(session2Presets.length).toBe(2);
-    expect(session2Presets[0].name).toBe('High Quality Application');
+    expect(session2Presets[0].name).toBe('High Quality C4');
     expect(session2Presets[1].name).toBe('Compact Layout');
 
     // Verify parameters intact
@@ -144,6 +146,7 @@ test.describe('Preference Persistence', () => {
       defaultEngines: {
         ...loaded.defaultEngines,
         // Add defaults for new layers
+        c4: loaded.defaultEngines.c4 || 'elk',
         application: loaded.defaultEngines.application || 'elk',
         technology: loaded.defaultEngines.technology || 'dagre',
       },
@@ -158,6 +161,7 @@ test.describe('Preference Persistence', () => {
     const migratedPreferences = JSON.parse(migratedData!);
 
     expect(migratedPreferences.version).toBe('1.0.0');
+    expect(migratedPreferences.defaultEngines.c4).toBe('elk');
     expect(migratedPreferences.defaultEngines.application).toBe('elk');
     expect(migratedPreferences.defaultEngines.technology).toBe('dagre');
 
@@ -174,6 +178,7 @@ test.describe('Preference Persistence', () => {
       defaultEngines: {
         motivation: 'elk',
         business: 'graphviz',
+        c4: 'elk',
         security: 'dagre',
         application: 'elk',
         technology: 'dagre',
@@ -208,7 +213,7 @@ test.describe('Preference Persistence', () => {
 
     // Verify complete configuration imported
     expect(imported.version).toBe('1.0.0');
-    expect(Object.keys(imported.defaultEngines).length).toBe(11); // All layers
+    expect(Object.keys(imported.defaultEngines).length).toBe(12); // All layers
     expect(imported.presets.length).toBe(1);
 
     // Apply imported configuration

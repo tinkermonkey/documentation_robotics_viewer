@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { RelationshipBadge } from '@/core/nodes/components/RelationshipBadge';
 
 const meta = {
-  title: 'Primitives / Indicators / RelationshipBadge',
+  title: 'A Primitives / Indicators / RelationshipBadge',
 } satisfies Meta;
 
 export default meta;

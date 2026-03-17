@@ -3,7 +3,7 @@ import SpecViewer from '@/apps/embedded/components/SpecViewer';
 import type { SpecDataResponse } from '@/apps/embedded/services/embeddedDataLoader';
 
 const meta = {
-  title: 'Details / Spec Details / SpecViewer',
+  title: 'B Details / Spec Details / SpecViewer',
   parameters: {
     layout: 'centered',
   },
@@ -15,14 +15,11 @@ type Story = StoryObj<typeof meta>;
 const mockSpecData: SpecDataResponse = {
   version: '1.0.0',
   type: 'mock-spec',
-  description: 'Mock spec for Storybook',
-  source: 'Test Fixture',
-  schemaCount: 1,
   schemas: {
     'business.schema.json': {
       $schema: 'http://json-schema.org/draft-07/schema#',
       $id: 'https://example.com/schemas/02-business-layer.schema.json',
-      title: 'Details / Spec Details / SpecViewer',
+      title: 'B Details / Spec Details / SpecViewer',
       description: 'Represents business services, processes, actors, and objects that define the organization\'s operational structure and capabilities.',
       type: 'object',
       definitions: {
@@ -166,9 +163,6 @@ export const EmptySpecData: Story = {
       specData={{
         version: '1.0.0',
         type: 'empty-spec',
-        description: '',
-        source: '',
-        schemaCount: 0,
         schemas: {},
       }}
       selectedSchemaId={null}

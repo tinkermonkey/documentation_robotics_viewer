@@ -4,8 +4,9 @@
  * Supports all changeset operations (add/update/delete) and visual states
  *
  * NOTE: createBaseFieldListNodeConfig is deprecated and kept for backward compatibility.
- * BaseFieldListNode has been migrated to UnifiedNode. See consolidated stories in:
- * - src/catalog/stories/core-nodes/UnifiedNode.stories.tsx
+ * BaseFieldListNode has been migrated to UnifiedNode. See:
+ * - src/catalog/stories/c-graphs/nodes/base/JSONSchemaNode.stories.tsx
+ * - src/catalog/stories/c-graphs/nodes/base/DataModelNode.stories.tsx
  */
 
 import type {
@@ -22,13 +23,15 @@ import type {
   BusinessServiceNodeData,
   BusinessFunctionNodeData,
   BusinessCapabilityNodeData,
+  C4ContainerNodeData,
+  C4ComponentNodeData,
+  C4ExternalActorNodeData,
   BusinessProcessNodeData,
   LayerContainerNodeData,
   CoverageIndicator,
   RelationshipBadge
 } from '../../core/types';
-import type { ChangesetOperation } from '../../core/nodes';
-import { getLayerColor } from '../../core/utils/layerColors';
+import type { ChangesetOperation } from '../../core/types/reactflow';
 
 // DEPRECATED: FieldItem type definition kept for backward compatibility
 // The actual FieldItem interface is imported from UnifiedNode component
@@ -580,6 +583,124 @@ export function createBusinessCapabilityNodeData(options: BusinessCapabilityNode
 }
 
 /**
+ * C4 Layer Node Fixtures (3 nodes)
+ */
+
+export interface C4ContainerNodeOptions extends BaseNodeOptions {
+  containerType?: 'webApp' | 'mobileApp' | 'service' | 'database' | 'queue' | 'filesystem' | 'other';
+  technology?: string[];
+  description?: string;
+}
+
+export function createC4ContainerNodeData(options: C4ContainerNodeOptions = {}): C4ContainerNodeData {
+  const {
+    label = 'Web Application',
+    elementId = `container-${Math.random().toString(36).slice(2, 11)}`,
+    layerId = 'c4-layer',
+    fill = '#6366f1',
+    stroke = '#4f46e5',
+    changesetOperation,
+    opacity = 1,
+    strokeWidth = 2,
+    relationshipBadge,
+    containerType = 'webApp',
+    technology = ['React', 'TypeScript', 'Vite'],
+    description = 'Provides user interface for the system'
+  } = options;
+
+  return {
+    label,
+    elementId,
+    layerId,
+    fill,
+    stroke,
+    containerType,
+    technology,
+    description,
+    changesetOperation,
+    opacity,
+    strokeWidth,
+    relationshipBadge
+  };
+}
+
+export interface C4ComponentNodeOptions extends BaseNodeOptions {
+  role?: string;
+  technology?: string[];
+  description?: string;
+  interfaces?: string[];
+}
+
+export function createC4ComponentNodeData(options: C4ComponentNodeOptions = {}): C4ComponentNodeData {
+  const {
+    label = 'GraphViewer Component',
+    elementId = `component-${Math.random().toString(36).slice(2, 11)}`,
+    layerId = 'c4-layer',
+    fill = '#8b5cf6',
+    stroke = '#7c3aed',
+    changesetOperation,
+    opacity = 1,
+    strokeWidth = 2,
+    relationshipBadge,
+    role = 'Controller',
+    technology = ['React', '@xyflow/react'],
+    description = 'Renders architecture diagrams',
+    interfaces = ['IGraphRenderer', 'INodeTransformer']
+  } = options;
+
+  return {
+    label,
+    elementId,
+    layerId,
+    fill,
+    stroke,
+    role,
+    technology,
+    description,
+    interfaces,
+    changesetOperation,
+    opacity,
+    strokeWidth,
+    relationshipBadge
+  };
+}
+
+export interface C4ExternalActorNodeOptions extends BaseNodeOptions {
+  actorType?: 'user' | 'system' | 'service';
+  description?: string;
+}
+
+export function createC4ExternalActorNodeData(options: C4ExternalActorNodeOptions = {}): C4ExternalActorNodeData {
+  const {
+    label = 'End User',
+    elementId = `actor-${Math.random().toString(36).slice(2, 11)}`,
+    layerId = 'c4-layer',
+    fill = '#f97316',
+    stroke = '#ea580c',
+    changesetOperation,
+    opacity = 1,
+    strokeWidth = 2,
+    relationshipBadge,
+    actorType = 'user',
+    description = 'A person using the system'
+  } = options;
+
+  return {
+    label,
+    elementId,
+    layerId,
+    fill,
+    stroke,
+    actorType,
+    description,
+    changesetOperation,
+    opacity,
+    strokeWidth,
+    relationshipBadge
+  };
+}
+
+/**
  * Business Process Node Fixture
  */
 export interface BusinessProcessNodeOptions extends BaseNodeOptions {
@@ -657,19 +778,18 @@ export interface LayerContainerNodeOptions extends BaseNodeOptions {
 }
 
 export function createLayerContainerNodeData(options: LayerContainerNodeOptions = {}): LayerContainerNodeData {
-  const layerType = options.layerType ?? 'business';
-  const derivedColor = getLayerColor(layerType, 'primary');
   const {
     label = 'Business Layer',
     elementId = `container-${Math.random().toString(36).slice(2, 11)}`,
     layerId = 'container-layer',
-    fill = derivedColor,
-    stroke = derivedColor,
+    fill = '#e8f5e91f',
+    stroke = '#4caf50',
     changesetOperation,
     opacity = 1,
     strokeWidth = 2,
     relationshipBadge,
-    color = derivedColor,
+    layerType = 'business',
+    color = '#4caf50'
   } = options;
 
   // Validate CSS color format
@@ -805,6 +925,9 @@ const nodeFactories = {
   businessService: createBusinessServiceNodeData,
   businessFunction: createBusinessFunctionNodeData,
   businessCapability: createBusinessCapabilityNodeData,
+  c4Container: createC4ContainerNodeData,
+  c4Component: createC4ComponentNodeData,
+  c4ExternalActor: createC4ExternalActorNodeData,
   businessProcess: createBusinessProcessNodeData,
   layerContainer: createLayerContainerNodeData
 };

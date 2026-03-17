@@ -17,15 +17,15 @@
  */
 
 import React, { memo } from 'react';
-import { Handle } from '@xyflow/react';
+import { Handle, Position } from '@xyflow/react';
 import { NodeType } from '../NodeType';
 import { nodeConfigLoader } from '../nodeConfigLoader';
 import { RelationshipBadge, RelationshipBadgeData } from './RelationshipBadge';
 import FieldList, { FieldItem } from './FieldList';
+import TableFieldList from './TableFieldList';
 import BadgeRenderer from './BadgeRenderer';
 import { useShouldHideFields } from '../../stores/fieldVisibilityStore';
-import { useChangesetStyling } from '../hooks/useChangesetStyling';
-import { useNodeHandles } from '../hooks/useNodeHandles';
+import { ChangesetOperation } from '../../types/reactflow';
 
 export interface NodeBadge {
   position: 'top-left' | 'top-right' | 'inline';
@@ -35,7 +35,6 @@ export interface NodeBadge {
 }
 
 export type DetailLevel = 'minimal' | 'standard' | 'detailed';
-export type ChangesetOperation = 'add' | 'update' | 'delete';
 
 export interface UnifiedNodeData {
   nodeType: NodeType;
@@ -109,11 +108,19 @@ function UnifiedNodeComponent({ data, id }: { data: UnifiedNodeData; id?: string
     : dimensions.height;
 
   // Apply changeset styling overrides
-  const changesetStyling = useChangesetStyling(changesetOperation);
+  const changesetColors = changesetOperation
+    ? nodeConfigLoader.getChangesetColors(changesetOperation)
+    : null;
 
-  const finalFillColor = changesetStyling?.fill ?? colors.fill;
-  const finalStrokeColor = changesetStyling?.stroke ?? colors.stroke;
-  const finalOpacity = changesetStyling?.opacity ?? 1;
+  let finalFillColor = colors.fill;
+  let finalStrokeColor = colors.stroke;
+  let finalOpacity = 1;
+
+  if (changesetColors) {
+    finalFillColor = changesetColors.bg;
+    finalStrokeColor = changesetColors.border;
+    finalOpacity = changesetColors.opacity || 1;
+  }
 
   // Build inline styles
   const nodeStyle: React.CSSProperties = {
@@ -144,15 +151,14 @@ function UnifiedNodeComponent({ data, id }: { data: UnifiedNodeData; id?: string
     gap: 8,
   };
 
+
   // Semantic zoom: hide content at minimal level
   const isMinimal = detailLevel === 'minimal';
 
-  // Compute handle configurations based on layout
-  const handleConfigs = useNodeHandles({
-    layout,
-    handleColor: colors.handle || colors.stroke,
-    headerHeight,
-  });
+  // Determine handle positions based on layout
+  const isLeftLayout = layout === 'left';
+  const handleTopValue = isLeftLayout ? headerHeight / 2 : '50%';
+  const handleBottomValue = isLeftLayout ? headerHeight / 2 : '50%';
 
   return (
     <div
@@ -167,15 +173,48 @@ function UnifiedNodeComponent({ data, id }: { data: UnifiedNodeData; id?: string
       )}
 
       {/* Component-level handles - always present */}
-      {handleConfigs.map((config) => (
-        <Handle
-          key={config.id}
-          type={config.type}
-          position={config.position}
-          id={config.id}
-          style={config.style}
-        />
-      ))}
+      <Handle
+        type="target"
+        position={Position.Top}
+        id="top"
+        style={{
+          background: colors.handle || colors.stroke,
+          width: 8,
+          height: 8,
+        }}
+      />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        id="bottom"
+        style={{
+          background: colors.handle || colors.stroke,
+          width: 8,
+          height: 8,
+        }}
+      />
+      <Handle
+        type="target"
+        position={Position.Left}
+        id="left"
+        style={{
+          top: handleTopValue,
+          background: colors.handle || colors.stroke,
+          width: 8,
+          height: 8,
+        }}
+      />
+      <Handle
+        type="source"
+        position={Position.Right}
+        id="right"
+        style={{
+          top: handleBottomValue,
+          background: colors.handle || colors.stroke,
+          width: 8,
+          height: 8,
+        }}
+      />
 
       {/* Top-left badges */}
       <BadgeRenderer badges={badges} position="top-left" />
@@ -210,21 +249,30 @@ function UnifiedNodeComponent({ data, id }: { data: UnifiedNodeData; id?: string
         </div>
       )}
 
-      {/* Field list - twoColumn mode for table layout (data nodes) */}
-      {showFields && !isMinimal && (
+      {/* Field list - rendered when items exist and fields not hidden */}
+      {showFields && !isMinimal && layout === 'table' && (
+        <TableFieldList
+          items={items}
+          itemHeight={itemHeight}
+          strokeColor={finalStrokeColor}
+          handleColor={colors.handle || colors.stroke}
+        />
+      )}
+
+      {/* Regular field list - for centered and left layouts */}
+      {showFields && !isMinimal && layout !== 'table' && (
         <FieldList
           items={items}
           itemHeight={itemHeight}
           strokeColor={finalStrokeColor}
           handleColor={colors.handle || colors.stroke}
-          twoColumn={layout === 'table'}
         />
       )}
     </div>
   );
 }
 
-const UnifiedNode: React.FC<{ data: UnifiedNodeData; id?: string }> = memo(UnifiedNodeComponent);
+const UnifiedNode = memo(UnifiedNodeComponent);
 UnifiedNode.displayName = 'UnifiedNode';
 
 export default UnifiedNode;

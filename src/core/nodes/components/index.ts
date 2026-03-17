@@ -5,7 +5,8 @@
  */
 
 export { default as UnifiedNode } from './UnifiedNode';
-export type { UnifiedNodeData, NodeBadge, DetailLevel, ChangesetOperation } from './UnifiedNode';
+export type { UnifiedNodeData, NodeBadge, DetailLevel } from './UnifiedNode';
+export type { ChangesetOperation } from '../../types/reactflow';
 
 export { default as FieldList } from './FieldList';
 export type { FieldItem } from './FieldList';

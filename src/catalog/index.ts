@@ -79,6 +79,9 @@ export {
   createBusinessServiceNodeData,
   createBusinessFunctionNodeData,
   createBusinessCapabilityNodeData,
+  createC4ContainerNodeData,
+  createC4ComponentNodeData,
+  createC4ExternalActorNodeData,
   createNodeFixturesWithStates,
   type BaseNodeOptions,
   type GoalNodeOptions,
@@ -94,6 +97,9 @@ export {
   type BusinessServiceNodeOptions,
   type BusinessFunctionNodeOptions,
   type BusinessCapabilityNodeOptions,
+  type C4ContainerNodeOptions,
+  type C4ComponentNodeOptions,
+  type C4ExternalActorNodeOptions
 } from './fixtures/nodeDataFixtures';
 
 // Fixtures - Model Data
@@ -101,7 +107,8 @@ export {
   createCompleteModelFixture,
   createMinimalModelFixture,
   createMotivationLayerModelFixture,
-  createApplicationLayerModelFixture,
+  createBusinessLayerModelFixture,
+  createC4LayerModelFixture,
   createChangesetModelFixture,
   createEmptyModelFixture,
   createLargeModelFixture
@@ -126,9 +133,7 @@ export {
 export {
   createMinimalSpecFixture,
   createCompleteSpecFixture,
-  createCustomSpecFixture,
-  createApplicationLayerSpecFixture,
-  createLayerBrowserSpecFixture
+  createCustomSpecFixture
 } from './fixtures/specFixtures';
 
 // Components - Story Support

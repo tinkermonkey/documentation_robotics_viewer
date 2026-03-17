@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { ErrorState } from '@/apps/embedded/components/shared/ErrorState';
 
 const meta = {
-  title: 'Primitives / Feedback / ErrorState',
+  title: 'A Primitives / State Panels / ErrorState',
   parameters: {
     layout: 'centered',
   },

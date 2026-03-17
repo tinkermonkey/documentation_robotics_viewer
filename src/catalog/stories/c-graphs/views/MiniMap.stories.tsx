@@ -10,7 +10,7 @@ import '@xyflow/react/dist/style.css';
  * MotivationGraphView.tsx, BusinessLayerView.tsx, and C4GraphView.tsx.
  */
 const meta = {
-  title: 'Graphs / Views / MiniMap',
+  title: 'C Graphs / Views / MiniMap',
   parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 

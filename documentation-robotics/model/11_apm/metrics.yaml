@@ -1,0 +1,9 @@
+render-time:
+  id: apm.metric.render-time
+  name: Graph Render Time
+  type: metric
+  documentation: Time taken to layout and render the graph
+  properties:
+    instrumentsServices:
+      - application.service.graph-builder
+      - application.service.layout-engine

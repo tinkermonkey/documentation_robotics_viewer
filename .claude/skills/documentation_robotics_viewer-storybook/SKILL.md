@@ -124,11 +124,12 @@ Creates production-ready static files in `storybook-static/` directory.
 
 Sample output structure:
 ```
-src/catalog/stories/
-├── core-nodes/
-│   ├── UnifiedNode.stories.tsx  (consolidated node variants: default, changeset, detail levels)
-│   ├── FieldList.stories.tsx
-│   └── LayerContainerNode.stories.tsx
+src/catalog/components/
+├── nodes/
+│   ├── GoalNode.stories.tsx
+│   ├── StakeholderNode.stories.tsx
+│   ├── BusinessFunctionNode.stories.tsx
+│   └── ... (15+ node types)
 ├── edges/
 │   ├── ElbowEdge.stories.tsx
 │   └── SmartEdge.stories.tsx

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { FilterPanel, type FilterSection } from '@/apps/embedded/components/shared/FilterPanel';
 
 const meta = {
-  title: 'Graphs / Panels / FilterPanel',
+  title: 'A Primitives / State Panels / FilterPanel',
   parameters: {
     layout: 'centered',
   },
@@ -14,7 +14,7 @@ type Story = StoryObj<typeof meta>;
 
 const createLayerSection = (): FilterSection => ({
   id: 'layers',
-  title: 'Graphs / Panels / FilterPanel',
+  title: 'A Primitives / State Panels / FilterPanel',
   items: [
     {
       value: 'motivation',
@@ -31,6 +31,11 @@ const createLayerSection = (): FilterSection => ({
       label: 'Technology',
       count: { visible: 20, total: 25 },
     },
+    {
+      value: 'c4',
+      label: 'C4 Architecture',
+      count: { visible: 5, total: 10 },
+    },
   ],
   selectedValues: new Set(['motivation', 'business', 'technology']),
   onToggle: (value, selected) => console.log(`Toggle ${value}: ${selected}`),
@@ -38,7 +43,7 @@ const createLayerSection = (): FilterSection => ({
 
 const createElementTypeSection = (): FilterSection => ({
   id: 'elementTypes',
-  title: 'Graphs / Panels / FilterPanel',
+  title: 'A Primitives / State Panels / FilterPanel',
   items: [
     {
       value: 'goal',
@@ -72,7 +77,7 @@ export const EmptyFilters: Story = {
       sections={[
         {
           id: 'layers',
-          title: 'Graphs / Panels / FilterPanel',
+          title: 'A Primitives / State Panels / FilterPanel',
           items: [],
           selectedValues: new Set<string>(),
           onToggle: () => {},
@@ -107,7 +112,7 @@ export const MultipleCategories: Story = {
         sections={[
           {
             id: 'layers',
-            title: 'Graphs / Panels / FilterPanel',
+            title: 'A Primitives / State Panels / FilterPanel',
             items: [
               {
                 value: 'motivation',
@@ -124,6 +129,11 @@ export const MultipleCategories: Story = {
                 label: 'Technology',
                 count: { visible: 20, total: 25 },
               },
+              {
+                value: 'c4',
+                label: 'C4 Architecture',
+                count: { visible: 5, total: 10 },
+              },
             ],
             selectedValues: selectedLayers,
             onToggle: (value, selected) => {
@@ -135,7 +145,7 @@ export const MultipleCategories: Story = {
           },
           {
             id: 'elementTypes',
-            title: 'Graphs / Panels / FilterPanel',
+            title: 'A Primitives / State Panels / FilterPanel',
             items: [
               {
                 value: 'goal',
@@ -198,7 +208,7 @@ export const DarkModeEmpty: Story = {
         sections={[
           {
             id: 'layers',
-            title: 'Graphs / Panels / FilterPanel',
+            title: 'A Primitives / State Panels / FilterPanel',
             items: [],
             selectedValues: new Set<string>(),
             onToggle: () => {},

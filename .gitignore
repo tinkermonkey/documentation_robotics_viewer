@@ -9,11 +9,8 @@ storybook-static/
 # Claude Code review cycle files
 .claude_prompt_review_cycle*.txt
 
-# Build artifacts
-dist/embedded/
-
-# API version cache (local build artifact, regenerated on each run)
-.api-version-cache.json
+# Build artifacts (keep dist/ but ignore the bundled package)
+dist/embedded/dr-viewer-bundle/
 
 # Logs
 logs
@@ -23,6 +20,15 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 test-output.log
+test-output.txt
+storybook-test-output.txt
+storybook-test-results.txt
+debug-storybook.log
+
+# Debug artifacts (shell script output)
+/RESULT=
+/exit
+/kill
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json

@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import type { ChangesetSummary } from '@/apps/embedded/services/embeddedDataLoader';
 
 const meta = {
-  title: 'Primitives / Data Viewers / ChangesetList',
+  title: 'A Primitives / Data Viewers / ChangesetList',
 } satisfies Meta;
 
 export default meta;

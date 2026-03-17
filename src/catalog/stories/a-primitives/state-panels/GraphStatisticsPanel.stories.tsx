@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import GraphStatisticsPanel from '@/apps/embedded/components/GraphStatisticsPanel';
-import type { MetaModel } from '@/core/types/model';
+import type { MetaModel } from '@/core/types';
+import { LayerType, RelationshipType } from '@/core/types';
 
 const meta = {
-  title: 'Graphs / Panels / GraphStatisticsPanel',
+  title: 'A Primitives / State Panels / GraphStatisticsPanel',
   parameters: {
     layout: 'centered',
   },
@@ -16,17 +17,18 @@ const mockModelSmall: MetaModel = {
   layers: {
     'motivation-layer': {
       id: 'motivation-layer',
-      type: 'motivation',
+      type: LayerType.Motivation,
       name: 'Motivation',
       elements: [
         { id: '1', type: 'Goal', name: 'Goal 1', layerId: 'motivation-layer', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } },
         { id: '2', type: 'Goal', name: 'Goal 2', layerId: 'motivation-layer', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } },
       ],
       relationships: [
-        { id: 'r1', sourceId: '1', targetId: '2', type: 'influences' },
+        { id: 'r1', sourceId: '1', targetId: '2', type: RelationshipType.Influence },
       ],
     },
   },
+  version: '1.0',
   references: [],
 };
 
@@ -34,7 +36,7 @@ const mockModelLarge: MetaModel = {
   layers: {
     'motivation-layer': {
       id: 'motivation-layer',
-      type: 'motivation',
+      type: LayerType.Motivation,
       name: 'Motivation',
       elements: Array.from({ length: 25 }, (_, i) => ({
         id: `goal-${i}`,
@@ -48,12 +50,12 @@ const mockModelLarge: MetaModel = {
         id: `r-${i}`,
         sourceId: `goal-${i % 25}`,
         targetId: `goal-${(i + 1) % 25}`,
-        type: 'influences',
+        type: RelationshipType.Influence,
       })),
     },
     'business-layer': {
       id: 'business-layer',
-      type: 'business',
+      type: LayerType.Business,
       name: 'Business',
       elements: Array.from({ length: 30 }, (_, i) => ({
         id: `process-${i}`,
@@ -67,12 +69,12 @@ const mockModelLarge: MetaModel = {
         id: `rb-${i}`,
         sourceId: `process-${i % 30}`,
         targetId: `process-${(i + 1) % 30}`,
-        type: 'flow',
+        type: RelationshipType.Flow,
       })),
     },
     'application-layer': {
       id: 'application-layer',
-      type: 'application',
+      type: LayerType.Application,
       name: 'Application',
       elements: Array.from({ length: 20 }, (_, i) => ({
         id: `app-${i}`,
@@ -86,10 +88,11 @@ const mockModelLarge: MetaModel = {
         id: `ra-${i}`,
         sourceId: `app-${i % 20}`,
         targetId: `app-${(i + 1) % 20}`,
-        type: 'serves',
+        type: RelationshipType.Serving,
       })),
     },
   },
+  version: '1.0',
   references: [],
 };
 
@@ -112,7 +115,7 @@ export const LargeGraph: Story = {
 export const EmptyGraph: Story = {
   render: () => (
     <div className="w-80 bg-white">
-    <GraphStatisticsPanel model={{ layers: {}, references: [] }} />
+    <GraphStatisticsPanel model={{ layers: {}, version: '1.0', references: [] }} />
   </div>
   ),
 };

@@ -3,13 +3,13 @@ name: LAYER_10_NAVIGATION
 description: Expert knowledge for Navigation Layer modeling in Documentation Robotics
 triggers:
   ["navigation", "routing", "route", "flow", "navigation guard", "redirect", "navigation flow"]
-version: 0.8.3
+version: 0.7.0
 ---
 
 # Navigation Layer Skill
 
 **Layer Number:** 10
-**Specification:** Metadata Model Spec v0.8.3
+**Specification:** Metadata Model Spec v0.7.0
 **Purpose:** Defines multi-modal navigation flows, routes, guards, and transitions between views.
 
 ---
@@ -33,9 +33,6 @@ This layer uses **Multi-Modal Navigation** supporting web, mobile, voice, and ot
 ---
 
 ## Entity Types
-
-> **CLI Introspection:** Run `dr schema types navigation` for the authoritative, always-current list of node types.
-> Run `dr schema node <type-id>` for full attribute details on any type.
 
 ### Core Navigation Entities (10 entities)
 
@@ -98,22 +95,22 @@ Activate when the user:
 
 ```bash
 # Add route
-dr add navigation route "User Profile Route" --description "User profile page route"
+dr add navigation route --name "User Profile Route" --property path=/profile/:id
 
 # Add navigation guard
-dr add navigation navigation-guard "Auth Guard"
+dr add navigation navigation-guard --name "Auth Guard"
 
 # Add navigation flow
-dr add navigation navigation-flow "Checkout Flow"
+dr add navigation navigation-flow --name "Checkout Flow"
 
 # List routes
-dr list navigation --type route
+dr list navigation route
 
 # Validate navigation layer
-dr validate --layers navigation
+dr validate --layer navigation
 
 # Export navigation map
-dr export plantuml --layers navigation
+dr export --layer navigation --format mermaid
 ```
 
 ---

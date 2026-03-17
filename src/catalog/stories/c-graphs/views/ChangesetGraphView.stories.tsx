@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import ChangesetGraphView from '@/apps/embedded/components/ChangesetGraphView';
 import type { ChangesetDetails, ChangesetChange } from '@/apps/embedded/services/embeddedDataLoader';
-import type { ChangesetOperation } from '@/core/nodes';
 import { StoryLoadedWrapper } from '@catalog/components/StoryLoadedWrapper';
 
 const meta = {
-  title: 'Graphs / Views / ChangesetGraphView',
+  title: 'C Graphs / Views / ChangesetGraphView',
   parameters: { layout: 'fullscreen' },
 } satisfies Meta;
 
@@ -134,7 +133,7 @@ export const ManyChanges: Story = {
       changes: {
         version: '1.0',
         changes: Array.from({ length: 20 }, (_, i): ChangesetChange => {
-          const operation = ['add', 'update', 'delete'][i % 3] as ChangesetOperation;
+          const operation = ['add', 'update', 'delete'][i % 3] as 'add' | 'update' | 'delete';
           const base = {
             timestamp: new Date().toISOString(),
             operation,

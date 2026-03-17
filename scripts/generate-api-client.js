@@ -125,6 +125,15 @@ function generateFetchMethod(endpoint) {
     queryCode = `const url = \`\${baseUrl}\${pathStr}\`;`;
   }
 
+  // For DELETE requests that return 204 No Content, don't parse JSON
+  const isDelete = method.toUpperCase() === 'DELETE';
+  const responseHandling = isDelete
+    ? `if (response.status === 204) {
+      return undefined;
+    }
+    return response.json();`
+    : `return response.json();`;
+
   let methodCode = `
   ${funcSignature} {
     const baseUrl = this.getBaseUrl();
@@ -146,10 +155,50 @@ function generateFetchMethod(endpoint) {
       throw new Error(\`${method.toUpperCase()} ${path} failed: \${response.status} \${errorText}\`);
     }
 
-    return response.json();
+    ${responseHandling}
   }`;
 
   return methodCode;
+}
+
+/**
+ * Determine which query keys should be invalidated for a mutation
+ * @param operationId The operation ID (e.g., 'postapiannotations')
+ * @param pathParams Path parameters
+ * @returns Array of invalidation code snippets
+ */
+function getInvalidationQueries(operationId, pathParams) {
+  // Map operation IDs to their related query keys
+  // This handles the relationship between mutations and queries
+
+  const invalidations = [];
+
+  // Handle annotation-related operations
+  if (operationId.includes('annotation')) {
+    if (operationId.includes('postapiannotations') && !operationId.includes('replies')) {
+      // POST /api/annotations → invalidate getapiannotations list
+      invalidations.push(`{ queryKey: ['getapiannotations'] }`);
+    } else if (operationId.includes('putapiannotationsannotationId') ||
+               operationId.includes('patchapiannotationsannotationId')) {
+      // PUT/PATCH /api/annotations/:annotationId → invalidate both the specific annotation and the list
+      invalidations.push(`{ queryKey: ['getapiannotationsannotationId', annotationId] }`);
+      invalidations.push(`{ queryKey: ['getapiannotations'] }`);
+    } else if (operationId.includes('deleteapiannotationsannotationId')) {
+      // DELETE /api/annotations/:annotationId → invalidate both the specific annotation and the list
+      invalidations.push(`{ queryKey: ['getapiannotationsannotationId', annotationId] }`);
+      invalidations.push(`{ queryKey: ['getapiannotations'] }`);
+    } else if (operationId.includes('postapiannotationsannotationIdreplies')) {
+      // POST /api/annotations/:annotationId/replies → invalidate replies for this annotation
+      invalidations.push(`{ queryKey: ['getapiannotationsannotationIdreplies', annotationId] }`);
+    }
+  }
+
+  // If no specific invalidations found, emit a build-time warning
+  if (invalidations.length === 0) {
+    console.warn(`⚠️  No invalidation mapping found for operation: ${operationId}. Add explicit mapping to getInvalidationQueries().`);
+  }
+
+  return invalidations;
 }
 
 /**
@@ -187,6 +236,13 @@ function generateReactQueryHook(endpoint) {
     const hasBody = endpoint.requestBody;
     const paramStr = pathParamStr ? `${pathParamStr}, options?: MutationOptions` : 'options?: MutationOptions';
 
+    // Get the correct invalidation queries
+    const invalidationQueries = getInvalidationQueries(operationId, pathParams);
+    const invalidationCode = invalidationQueries.length > 0
+      ? invalidationQueries.map(q => `        queryClient.invalidateQueries(${q});`).join('\n')
+      : `        console.warn('[WARNING] Unmapped cache invalidation for ${operationId}. Add to getInvalidationQueries().');
+        queryClient.invalidateQueries({ queryKey: ['${operationId}'] });`;
+
     if (hasBody) {
       return `
   /**
@@ -198,7 +254,7 @@ function generateReactQueryHook(endpoint) {
     return useMutation({
       mutationFn: (data: unknown) => ${pathParamCall ? `apiClient.${operationId}(${pathParamCall}, data)` : `apiClient.${operationId}(data)`},
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['data'] });
+${invalidationCode}
       },
       ...options
     } as any);
@@ -215,7 +271,7 @@ function generateReactQueryHook(endpoint) {
     return useMutation({
       mutationFn: () => ${pathParamCall ? `apiClient.${operationId}(${pathParamCall})` : `apiClient.${operationId}()`},
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['data'] });
+${invalidationCode}
       },
       ...options
     } as any);

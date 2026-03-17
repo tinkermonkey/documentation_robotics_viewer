@@ -2,8 +2,8 @@ import { create } from 'zustand';
 import type { ReactNode } from 'react';
 import { useMemo, createContext, useContext } from 'react';
 import type { MetaModel, Layer, ModelElement } from '../../core/types';
+import type { ChangesetOperation } from '../../core/types/reactflow';
 import type { Annotation } from '../../apps/embedded/types/annotations';
-import type { ChangesetOperation } from '../../core/nodes';
 
 /**
  * Mock Model Store
@@ -12,6 +12,7 @@ interface MockModelStore {
   model: MetaModel | null;
   loading: boolean;
   error: string | null;
+  version: string | null;
   setModel: (model: MetaModel) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string) => void;
@@ -26,11 +27,13 @@ export function createMockModelStore(overrides: Partial<MockModelStore> = {}) {
     model: null,
     loading: false,
     error: null,
+    version: null,
 
     setModel: (model: MetaModel) =>
       set({
         model,
         error: null,
+        version: model.version
       }),
 
     setLoading: (loading: boolean) => set({ loading }),
@@ -45,6 +48,7 @@ export function createMockModelStore(overrides: Partial<MockModelStore> = {}) {
       set({
         model: null,
         error: null,
+        version: null,
         loading: false
       }),
 

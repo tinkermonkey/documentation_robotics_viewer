@@ -17,7 +17,7 @@ import type { ElkNode, ElkExtendedEdge, LayoutOptions } from 'elkjs/lib/elk.bund
 import {
   BaseLayoutEngine,
   LayoutGraphInput,
-  LayoutResult,
+  EngineLayoutResult,
   ParameterValidation,
   EngineCapabilities,
 } from './LayoutEngine';
@@ -46,13 +46,6 @@ export type ELKLayeringStrategy =
  * ELK edge routing strategy
  */
 export type ELKEdgeRouting = 'ORTHOGONAL' | 'POLYLINE' | 'SPLINES' | 'UNDEFINED';
-
-/**
- * ELK port constraints — controls how edge endpoints are placed on node perimeters.
- * FREE lets ELK spread each edge to a distinct port position; FIXED_POS pins all
- * edges on the same side to the single center handle (React Flow handle alignment).
- */
-export type ELKPortConstraints = 'FREE' | 'FIXED_POS';
 
 /**
  * ELK-specific layout parameters
@@ -87,20 +80,6 @@ export interface ELKParameters {
 
   /** Edge routing strategy (when orthogonalRouting is true) */
   edgeRouting?: ELKEdgeRouting;
-
-  /** Crossing-minimization passes (higher = better quality, slower; range 1–15) */
-  thoroughness?: number;
-
-  /**
-   * Port placement mode.
-   * FIXED_POS (default): all edges on a side share the center handle — aligns with React Flow handles.
-   * FREE: ELK distributes each edge to a distinct perimeter position — edges naturally diverge
-   * but endpoints float away from the visible React Flow handle dots.
-   */
-  portConstraints?: ELKPortConstraints;
-
-  /** Minimum gap between parallel edges crossing a layer boundary (px) */
-  edgeEdgeBetweenLayers?: number;
 }
 
 /**
@@ -130,7 +109,7 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
   async calculateLayout(
     graph: LayoutGraphInput,
     parameters: Record<string, any> = {}
-  ): Promise<LayoutResult> {
+  ): Promise<EngineLayoutResult> {
     if (!this.elk) {
       throw new Error('ELK engine not initialized. Call initialize() first.');
     }
@@ -167,17 +146,14 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
     return {
       algorithm: 'layered',
       direction: 'DOWN',
-      spacing: 100,
+      spacing: 50,
       layering: 'NETWORK_SIMPLEX',
-      edgeNodeSpacing: 60,
-      edgeSpacing: 30,
+      edgeNodeSpacing: 25,    // Increased to reserve channel space for Libavoid routing
+      edgeSpacing: 15,        // Increased to reserve channel space for Libavoid routing
       aspectRatio: 1.6,
       interactive: false,
-      orthogonalRouting: true,
-      edgeRouting: 'ORTHOGONAL',
-      thoroughness: 7,
-      portConstraints: 'FREE',
-      edgeEdgeBetweenLayers: 40,
+      orthogonalRouting: false,
+      edgeRouting: 'UNDEFINED',
     };
   }
 
@@ -185,7 +161,7 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
     const schema = {
       algorithm: { type: 'string', values: ['layered', 'force', 'stress', 'box'] },
       direction: { type: 'string', values: ['RIGHT', 'DOWN', 'LEFT', 'UP'] },
-      spacing: { type: 'number', min: 0, max: 600 },
+      spacing: { type: 'number', min: 0, max: 500 },
       layering: {
         type: 'string',
         values: ['NETWORK_SIMPLEX', 'LONGEST_PATH', 'INTERACTIVE', 'STRETCH_WIDTH', 'MIN_WIDTH'],
@@ -196,9 +172,6 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       interactive: { type: 'boolean' },
       orthogonalRouting: { type: 'boolean' },
       edgeRouting: { type: 'string', values: ['ORTHOGONAL', 'POLYLINE', 'SPLINES', 'UNDEFINED'] },
-      thoroughness: { type: 'number', min: 1, max: 15 },
-      portConstraints: { type: 'string', values: ['FREE', 'FIXED_POS'] },
-      edgeEdgeBetweenLayers: { type: 'number', min: 0, max: 200 },
     };
 
     return this.validateCommonParameters(parameters, schema);
@@ -211,57 +184,64 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
   }
 
   /**
+   * Derive preferred port side from edge direction
+   * Based on hierarchy direction, determines which port side to use
+   */
+  private getPreferredPortSide(
+    direction: ELKDirection
+  ): { source: 'top' | 'bottom' | 'left' | 'right'; target: 'top' | 'bottom' | 'left' | 'right' } {
+    // In hierarchical layouts, data flows in the direction specified
+    // Source uses the side facing the target, target uses the opposite side
+    switch (direction) {
+      case 'DOWN':
+        return { source: 'bottom', target: 'top' };
+      case 'UP':
+        return { source: 'top', target: 'bottom' };
+      case 'RIGHT':
+        return { source: 'right', target: 'left' };
+      case 'LEFT':
+        return { source: 'left', target: 'right' };
+      default:
+        return { source: 'bottom', target: 'top' };
+    }
+  }
+
+  /**
    * Convert React Flow graph to ELK graph format
    */
   private convertToELKGraph(graph: LayoutGraphInput, params: ELKParameters): ElkNode {
     const layoutOptions: LayoutOptions = {
       'elk.algorithm': params.algorithm || 'layered',
       'elk.direction': params.direction || 'DOWN',
-      'elk.spacing.nodeNode': String(params.spacing || 100),
-      'elk.spacing.edgeNode': String(params.edgeNodeSpacing || 60),
-      'elk.spacing.edgeEdge': String(params.edgeSpacing || 30),
+      'elk.spacing.nodeNode': String(params.spacing || 50),
+      'elk.spacing.edgeNode': String(params.edgeNodeSpacing || 25),  // Default: 25 per spec
+      'elk.spacing.edgeEdge': String(params.edgeSpacing || 15),      // Default: 15 per spec
       'elk.aspectRatio': String(params.aspectRatio || 1.6),
-      // Lay out disconnected subgraphs independently — prevents isolated nodes from
-      // overlapping connected components (common in architecture models)
-      'elk.separateConnectedComponents': 'true',
-      // Buffer around the layout area so nodes are never flush at the canvas edge
-      'elk.padding': '[top=30, left=30, bottom=30, right=30]',
-      // Minimum gap between adjacent ports on the same node side — prevents parallel
-      // edges from converging to a single pixel when many relationships share a handle
-      'elk.spacing.portPort': '20',
+      // Use UNDEFINED routing to allow ELK to provide fallback routing if Libavoid WASM fails
+      'elk.edgeRouting': 'UNDEFINED',
+      // Increase spacing values to reserve channel space for Libavoid routes
+      'elk.spacing.edgeNodeBetweenLayers': '35',
     };
 
-    // Orthogonal edge routing options
+    // Add orthogonal routing options
+    // NOTE: When orthogonalRouting is enabled, this overrides the default UNDEFINED routing.
+    // This allows ELK to handle routing internally. When orthogonalRouting is disabled
+    // (the default), ELK uses UNDEFINED routing as a fallback if Libavoid WASM fails to load.
     if (params.orthogonalRouting) {
+      // edgeRouting parameter is only used when orthogonalRouting is true
       layoutOptions['elk.edgeRouting'] = params.edgeRouting || 'ORTHOGONAL';
-      // NETWORK_SIMPLEX node placement: optimizes for shorter edges, better for dense graphs
-      layoutOptions['elk.layered.nodePlacement.strategy'] = 'NETWORK_SIMPLEX';
-      // Prefer straight (horizontal/vertical) edge segments — reduces visual zig-zag noise
-      layoutOptions['elk.layered.nodePlacement.favorStraightEdges'] = 'true';
-      // Remove superfluous bend points produced by the routing pass
-      layoutOptions['elk.layered.unnecessaryBendpoints'] = 'true';
+      // Additional orthogonal routing options for better quality
+      layoutOptions['elk.layered.unnecessaryBendpoints'] = 'false';
       layoutOptions['elk.layered.spacing.edgeNodeBetweenLayers'] = String(
-        params.edgeNodeSpacing || 60
-      );
-      // Vertical spacing between nodes on adjacent ELK algorithm layers (default is 20px,
-      // which is far too tight; match node-node spacing for consistent breathing room)
-      layoutOptions['elk.layered.spacing.nodeNodeBetweenLayers'] = String(params.spacing || 100);
-      // Compact layout post-routing by shortening long edges
-      layoutOptions['elk.layered.compaction.postCompaction.strategy'] = 'EDGE_LENGTH';
-      // Two-sided greedy crossing minimization — considers both sweep directions to cut more crossings
-      layoutOptions['elk.layered.crossingMinimization.greedySwitch.type'] = 'TWO_SIDED';
-      // Minimum gap between parallel edges that cross a layer boundary — widens routing channels
-      // so edges take visually distinct paths rather than overlapping in the same channel
-      layoutOptions['elk.layered.spacing.edgeEdgeBetweenLayers'] = String(
-        params.edgeEdgeBetweenLayers ?? 40
+        params.edgeNodeSpacing || 20
       );
     }
 
     // Add layered-specific options
     if (params.algorithm === 'layered') {
       layoutOptions['elk.layered.layering.strategy'] = params.layering || 'NETWORK_SIMPLEX';
-      // Crossing-minimization passes — tunable via thoroughness parameter
-      layoutOptions['elk.layered.thoroughness'] = String(params.thoroughness ?? 7);
+      layoutOptions['elk.layered.crossingMinimization.strategy'] = 'LAYER_SWEEP';
+      layoutOptions['elk.layered.nodePlacement.strategy'] = 'NETWORK_SIMPLEX';
     }
 
     // Add force-specific options
@@ -295,48 +275,36 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
       `(filtered out ${graph.edges.length - validEdges.length} invalid edges)`
     );
 
-    // In FREE mode ELK assigns each edge a distinct port on the node perimeter, so edges
-    // naturally diverge. In FIXED_POS mode we pin every edge to the center handle on the
-    // relevant side, preserving React Flow handle alignment at the cost of overlap.
-    const useFreeports = params.portConstraints === 'FREE';
-
-    // Derive the port IDs that each edge should use (FIXED_POS only) based on layout direction.
-    // ELK routes from/to these ports so its startPoint/endPoint align with React Flow handles.
-    const dir = params.direction || 'DOWN';
-    const sourcePortSuffix = dir === 'RIGHT' ? '-right' : dir === 'LEFT' ? '-left' : dir === 'UP' ? '-top' : '-bottom';
-    const targetPortSuffix = dir === 'RIGHT' ? '-left' : dir === 'LEFT' ? '-right' : dir === 'UP' ? '-bottom' : '-top';
+    // Get preferred port sides based on direction
+    const portSidePreference = this.getPreferredPortSide(params.direction || 'DOWN');
 
     // Create a flat graph structure (all nodes as direct children)
     // ELK can handle flat graphs without hierarchical containers
     const elkGraph: ElkNode = {
       id: 'root',
       layoutOptions,
-      children: graph.nodes.map((node) => {
-        const w = node.width || 100;
-        const h = node.height || 50;
-        if (useFreeports) {
-          // FREE: ELK places each edge at a distinct position on the node perimeter —
-          // edges spread out and take naturally separate paths through routing channels.
-          return { id: node.id, width: w, height: h, layoutOptions: { 'elk.portConstraints': 'FREE' } };
-        }
-        // FIXED_POS: one center port per side, aligned with React Flow handle positions.
-        return {
-          id: node.id,
-          width: w,
-          height: h,
-          layoutOptions: { 'elk.portConstraints': 'FIXED_POS' },
-          ports: [
-            { id: `${node.id}-top`,    x: w / 2, y: 0,     layoutOptions: { 'port.side': 'NORTH' } },
-            { id: `${node.id}-bottom`, x: w / 2, y: h,     layoutOptions: { 'port.side': 'SOUTH' } },
-            { id: `${node.id}-left`,   x: 0,     y: h / 2, layoutOptions: { 'port.side': 'WEST'  } },
-            { id: `${node.id}-right`,  x: w,     y: h / 2, layoutOptions: { 'port.side': 'EAST'  } },
-          ],
-        };
-      }),
+      children: graph.nodes.map((node) => ({
+        id: node.id,
+        width: node.width || 100, // Default width if not specified
+        height: node.height || 50, // Default height if not specified
+        // Declare four ports for this node: top, bottom, left, right
+        ports: [
+          { id: `${node.id}-top`, layoutOptions: { 'port.side': 'NORTH' } },
+          { id: `${node.id}-bottom`, layoutOptions: { 'port.side': 'SOUTH' } },
+          { id: `${node.id}-left`, layoutOptions: { 'port.side': 'WEST' } },
+          { id: `${node.id}-right`, layoutOptions: { 'port.side': 'EAST' } },
+        ],
+        layoutOptions: {
+          // Set port constraints to FIXED_SIDE so ELK assigns which side each edge uses
+          // but does not fix the exact position
+          'elk.portConstraints': 'FIXED_SIDE',
+        },
+      })),
       edges: validEdges.map((edge) => ({
         id: edge.id,
-        sources: [useFreeports ? edge.source : `${edge.source}${sourcePortSuffix}`],
-        targets: [useFreeports ? edge.target : `${edge.target}${targetPortSuffix}`],
+        // Reference port IDs in sources and targets
+        sources: [`${edge.source}-${portSidePreference.source}`],
+        targets: [`${edge.target}-${portSidePreference.target}`],
       })),
     };
 
@@ -344,17 +312,70 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
   }
 
   /**
+   * Parse port side from port ID string
+   * Port IDs follow the pattern: "{nodeId}-{side}"
+   * where side is one of: top, bottom, left, right
+   */
+  private derivePortSide(
+    portId: string | undefined
+  ): 'top' | 'bottom' | 'left' | 'right' | undefined {
+    if (!portId) return undefined;
+
+    const parts = portId.split('-');
+    const lastPart = parts[parts.length - 1]?.toLowerCase();
+
+    if (lastPart === 'top' || lastPart === 'bottom' || lastPart === 'left' || lastPart === 'right') {
+      return lastPart as 'top' | 'bottom' | 'left' | 'right';
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Strip port suffix from port ID to recover original node ID
+   * Handles node IDs that contain hyphens by validating against known node IDs.
+   * Port IDs follow the pattern: "{nodeId}-{side}"
+   * where side is one of: top, bottom, left, right
+   * Example: "node-service.validate-order-bottom" -> "node-service.validate-order"
+   *
+   * @param portId The port ID to strip
+   * @param nodeIds Set of valid original node IDs to validate against
+   * @returns The original node ID, or undefined if portId is undefined
+   */
+  private stripPortSuffix(portId: string | undefined, nodeIds: Set<string>): string | undefined {
+    if (!portId) return undefined;
+
+    // First try without stripping anything
+    if (nodeIds.has(portId)) {
+      return portId;
+    }
+
+    const parts = portId.split('-');
+    const lastPart = parts[parts.length - 1]?.toLowerCase();
+
+    // If the last segment is a valid port side, try removing it
+    if (lastPart === 'top' || lastPart === 'bottom' || lastPart === 'left' || lastPart === 'right') {
+      const strippedId = parts.slice(0, -1).join('-');
+      // Only return the stripped ID if it matches a known node ID
+      if (nodeIds.has(strippedId)) {
+        return strippedId;
+      }
+    }
+
+    // If no valid strip found, return the entire ID (likely a malformed port ID)
+    return portId;
+  }
+
+  /**
    * Convert ELK graph result back to React Flow format
    */
-  private convertFromELKGraph(elkGraph: ElkNode, originalGraph: LayoutGraphInput): LayoutResult {
-    // Create a map of original node data
+  private convertFromELKGraph(elkGraph: ElkNode, originalGraph: LayoutGraphInput): EngineLayoutResult {
+    // Create a map of original node data and a set of node IDs for port suffix validation
     const nodeDataMap = new Map(originalGraph.nodes.map((n) => [n.id, n.data]));
     const edgeDataMap = new Map(originalGraph.edges.map((e) => [e.id, e.data]));
+    const nodeIds = new Set(originalGraph.nodes.map((n) => n.id));
 
-    // Convert nodes with positions from ELK.
-    // ELK outputs top-left (x, y) coordinates; convert to center positions to match
-    // the VerticalLayerLayout convention expected by nodeTransformer (which subtracts
-    // halfWidth/halfHeight when converting to React Flow top-left positions).
+    // Convert nodes with positions from ELK
     const nodes = (elkGraph.children || []).map((elkNode) => {
       const nodeData = nodeDataMap.get(elkNode.id);
 
@@ -363,52 +384,84 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
         console.warn(`Missing node data for ELK node: ${elkNode.id}`);
       }
 
-      const halfW = (elkNode.width || 0) / 2;
-      const halfH = (elkNode.height || 0) / 2;
-
       return {
         id: elkNode.id,
         position: {
-          x: (elkNode.x || 0) + halfW, // center X
-          y: (elkNode.y || 0) + halfH, // center Y
+          x: elkNode.x || 0,
+          y: elkNode.y || 0,
         },
         data: nodeData || { label: elkNode.id },
       };
     });
 
     // Convert edges (preserve original edge data, add routing points if available)
-    const edges = (elkGraph.edges || []).map((elkEdge) => {
-      const edgeData = edgeDataMap.get(elkEdge.id);
+    const edges = (elkGraph.edges || [])
+      .map((elkEdge) => {
+        const edgeData = edgeDataMap.get(elkEdge.id);
 
-      // Warn if edge data is missing
-      if (!edgeData) {
-        console.warn(`Missing edge data for ELK edge: ${elkEdge.id}`);
-      }
-
-      const edge: LayoutResult['edges'][0] = {
-        id: elkEdge.id,
-        source: (elkEdge as ElkExtendedEdge).sources?.[0] || '',
-        target: (elkEdge as ElkExtendedEdge).targets?.[0] || '',
-        data: edgeData,
-      };
-
-      // Extract the full ELK-routed path: startPoint + bendPoints + endPoint.
-      // startPoint and endPoint are at the exact port positions (React Flow handle
-      // coordinates), so ElbowEdge can use this array directly without any
-      // sourceX/Y adjustment.
-      if (elkEdge.sections && elkEdge.sections.length > 0) {
-        const section = elkEdge.sections[0];
-        const points: Array<{ x: number; y: number }> = [];
-        points.push({ x: section.startPoint.x, y: section.startPoint.y });
-        if (section.bendPoints) {
-          points.push(...section.bendPoints.map((bp) => ({ x: bp.x, y: bp.y })));
+        // Warn if edge data is missing
+        if (!edgeData) {
+          console.warn(`Missing edge data for ELK edge: ${elkEdge.id}`);
         }
-        points.push({ x: section.endPoint.x, y: section.endPoint.y });
-        edge.points = points;
-      }
 
-      return edge;
-    });
+        // Extract port IDs from ELK edge (format: "{nodeId}-{side}")
+        const sourcePortId = (elkEdge as ElkExtendedEdge).sources?.[0];
+        const targetPortId = (elkEdge as ElkExtendedEdge).targets?.[0];
+
+        // Strip port suffix to get node IDs
+        // Handles node IDs with hyphens: "node-service.validate-order-bottom" -> "node-service.validate-order"
+        const source = this.stripPortSuffix(sourcePortId, nodeIds);
+        const target = this.stripPortSuffix(targetPortId, nodeIds);
+
+        // Skip edges with undefined source or target to avoid creating phantom edges
+        if (!source || !target) {
+          console.warn(
+            `[ELKLayoutEngine] Skipping edge ${elkEdge.id}: ` +
+            `source=${source}, target=${target} (undefined port IDs)`
+          );
+          return null;
+        }
+
+        // Derive port sides from port IDs
+        const sourceSide = this.derivePortSide(sourcePortId);
+        const targetSide = this.derivePortSide(targetPortId);
+
+        const edge: EngineLayoutResult['edges'][0] = {
+          id: elkEdge.id,
+          source,
+          target,
+          sourceSide,
+          targetSide,
+          data: edgeData,
+        };
+
+        // Add routing points if available
+        if (elkEdge.sections && elkEdge.sections.length > 0) {
+          const section = elkEdge.sections[0];
+          const points: Array<{ x: number; y: number }> = [];
+
+          if (section.startPoint) {
+            points.push({ x: section.startPoint.x, y: section.startPoint.y });
+          }
+
+          if (section.bendPoints) {
+            section.bendPoints.forEach((bp) => {
+              points.push({ x: bp.x, y: bp.y });
+            });
+          }
+
+          if (section.endPoint) {
+            points.push({ x: section.endPoint.x, y: section.endPoint.y });
+          }
+
+          if (points.length > 0) {
+            edge.points = points;
+          }
+        }
+
+        return edge;
+      })
+      .filter((edge) => edge !== null) as EngineLayoutResult['edges'];
 
     // Calculate bounds
     const nodesWithDimensions = nodes.map((node) => {
@@ -450,10 +503,6 @@ export class ELKLayoutEngine extends BaseLayoutEngine {
     if (typeof parameters.orthogonalRouting === 'boolean')
       validated.orthogonalRouting = parameters.orthogonalRouting;
     if (parameters.edgeRouting) validated.edgeRouting = parameters.edgeRouting;
-    if (typeof parameters.thoroughness === 'number') validated.thoroughness = parameters.thoroughness;
-    if (parameters.portConstraints) validated.portConstraints = parameters.portConstraints;
-    if (typeof parameters.edgeEdgeBetweenLayers === 'number')
-      validated.edgeEdgeBetweenLayers = parameters.edgeEdgeBetweenLayers;
 
     return validated;
   }

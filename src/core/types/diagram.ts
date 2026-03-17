@@ -20,6 +20,7 @@ export type DiagramType =
   | 'ux'
   | 'navigation'
   | 'apm'
+  | 'c4'
   | 'spec-viewer';
 
 /**

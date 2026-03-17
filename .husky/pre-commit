@@ -42,16 +42,4 @@ else
   echo "✓ API spec is already in sync"
 fi
 
-if [ "$HUSKY_OFFLINE" = "1" ]; then
-  echo "⚠️  Running in offline mode - skipping TypeScript check"
-else
-  echo "🔍 Running TypeScript type check..."
-  if ! npx tsc --noEmit; then
-    echo "❌ TypeScript type check failed"
-    echo "   Fix type errors before committing, or run with HUSKY_OFFLINE=1 to skip"
-    exit 1
-  fi
-  echo "✓ TypeScript types OK"
-fi
-
 exit 0

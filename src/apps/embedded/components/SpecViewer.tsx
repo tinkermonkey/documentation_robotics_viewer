@@ -14,27 +14,6 @@ interface SpecViewerProps {
   selectedSchemaId: string | null
 }
 
-// JSON Schema meta-keys to exclude when iterating element types
-const SCHEMA_META_KEYS = new Set([
-  '$schema', '$id', 'title', 'description', 'type', 'allOf', 'anyOf',
-  'oneOf', 'not', 'definitions', '$defs', 'required', 'additionalProperties',
-  'properties', 'examples', 'if', 'then', 'else'
-]);
-
-function getElementTypes(schema: SchemaDefinition): Record<string, SchemaDefinition> {
-  // CLI v0.8.1 format: element types live inside schema.nodeSchemas
-  if (schema.nodeSchemas && typeof schema.nodeSchemas === 'object') {
-    return schema.nodeSchemas as Record<string, SchemaDefinition>;
-  }
-  // Flat-key fallback: element types are top-level keys (excluding JSON Schema meta-keys)
-  const flatEntries = Object.entries(schema).filter(
-    ([key, val]) => !SCHEMA_META_KEYS.has(key) && val !== null && typeof val === 'object'
-  );
-  if (flatEntries.length > 0) return Object.fromEntries(flatEntries) as Record<string, SchemaDefinition>;
-  // Legacy fallback: definitions/$defs format
-  return (schema.definitions || schema.$defs || {}) as Record<string, SchemaDefinition>;
-}
-
 const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) => {
 
   if (!specData) {
@@ -74,11 +53,11 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
       )
     }
 
-    const elementTypes = getElementTypes(schema)
-    const elementNames = Object.keys(elementTypes)
+    const definitions = (schema.definitions || {}) as Record<string, SchemaDefinition>
+    const defNames = Object.keys(definitions)
 
     const schemaMetadata: MetadataItem[] = [
-      { label: 'Element Types', value: elementNames.length }
+      { label: 'Element Types', value: defNames.length }
     ]
 
     return (
@@ -86,38 +65,24 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
         {/* Schema Header */}
         <section className="mb-8" data-testid="schema-definitions-section">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            {typeof schema.title === 'string'
-              ? schema.title
-              : typeof (schema.layer as Record<string, unknown> | undefined)?.name === 'string'
-                ? (schema.layer as Record<string, unknown>).name as string
-                : selectedSchemaId}
+            {typeof schema.title === 'string' ? schema.title : selectedSchemaId}
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
-            {typeof schema.description === 'string'
-              ? schema.description
-              : typeof (schema.layer as Record<string, unknown> | undefined)?.description === 'string'
-                ? (schema.layer as Record<string, unknown>).description as string
-                : ''}
-          </p>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">{typeof schema.description === 'string' ? schema.description : ''}</p>
           <MetadataGrid items={schemaMetadata} columns={3} />
 
           <div className="mt-6">
-            <h4 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
               Element Definitions
-            </h4>
+            </h3>
             <div className="space-y-2">
-              {elementNames.map(elementName => {
-                const definition = elementTypes[elementName]
-                const displayName = typeof definition.title === 'string' && definition.title ? definition.title : elementName
-                // Spec v0.8.1 stores type-specific fields under properties.attributes.properties
-                const attributeProps = (definition.properties?.attributes as SchemaDefinition | undefined)?.properties
-                const attributeRequired = (definition.properties?.attributes as SchemaDefinition | undefined)?.required as string[] | undefined
+              {defNames.map(defName => {
+                const definition = definitions[defName]
 
                 return (
                   <ExpandableSection
-                    key={elementName}
-                    title={displayName}
-                    badge="object"
+                    key={defName}
+                    title={defName}
+                    badge={typeof definition.type === 'string' ? definition.type : Array.isArray(definition.type) ? definition.type.join(', ') : 'object'}
                   >
                     {typeof definition.description === 'string' && definition.description && (
                       <p className="text-gray-700 dark:text-gray-300 mb-4">
@@ -125,13 +90,13 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
                       </p>
                     )}
 
-                    {attributeProps && Object.keys(attributeProps).length > 0 && (
+                    {definition.properties && (
                       <div>
                         <h5 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                          Attributes:
+                          Properties:
                         </h5>
                         <ul className="space-y-2 ml-4">
-                          {Object.entries(attributeProps).map(([propName, propSchema]) => {
+                          {Object.entries(definition.properties || {}).map(([propName, propSchema]) => {
                             const prop = propSchema as SchemaDefinition
                             return (
                               <li key={propName} className="text-sm">
@@ -143,7 +108,7 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
                                     {typeof prop.type === 'string' ? prop.type : Array.isArray(prop.type) ? prop.type.join(', ') : 'object'}
                                     {typeof prop.format === 'string' && prop.format && ` (${prop.format})`}
                                   </span>
-                                  {attributeRequired?.includes(propName) && (
+                                  {(definition.required as string[] | undefined)?.includes(propName) && (
                                     <Badge color="failure" size="xs">required</Badge>
                                   )}
                                   {typeof prop.description === 'string' && prop.description && (

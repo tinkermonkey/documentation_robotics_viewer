@@ -4,7 +4,7 @@
  * Displays a miniature version of the graph for quick navigation
  */
 
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { MiniMap as ReactFlowMiniMap } from '@xyflow/react';
 
 export interface MiniMapProps {
@@ -25,7 +25,7 @@ export interface MiniMapProps {
 }
 
 
-export const MiniMap: React.FC<MiniMapProps> = memo(
+export const MiniMap = memo(
   ({
     nodeColor,
     nodeStrokeColor = '#fff',

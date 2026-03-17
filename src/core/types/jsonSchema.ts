@@ -67,7 +67,6 @@ export interface SchemaReference {
  * Parsed JSON Schema layer
  */
 export interface JSONSchemaLayer extends Layer {
-  type: 'json-schema';
   schemaMetadata: {
     schemaId: string;           // $id from schema file
     version: string;            // Schema draft version
