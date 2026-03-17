@@ -52,8 +52,12 @@ export async function processCrossLayerReferencesWithWorker(
   return new Promise((resolve) => {
     let worker: Worker | null = null;
     let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
+    let settled = false;
 
     const cleanupAndFallback = () => {
+      if (settled) return;
+      settled = true;
+
       if (timeoutHandle) clearTimeout(timeoutHandle);
       if (worker) worker.terminate();
       resolve(fallbackProcessor(references));
@@ -74,6 +78,9 @@ export async function processCrossLayerReferencesWithWorker(
 
       // Handle worker response
       worker.onmessage = (event: WorkerMessage<ProcessResult>) => {
+        if (settled) return;
+        settled = true;
+
         if (timeoutHandle) clearTimeout(timeoutHandle);
         if (worker) worker.terminate();
 
