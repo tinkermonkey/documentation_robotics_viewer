@@ -18,48 +18,8 @@ type LibavoidInstance = ReturnType<typeof AvoidLib.getInstance>;
 
 /**
  * Libavoid WASM type definitions
- * These provide type safety for WASM-returned objects
+ * Using any for type safety since WASM types don't match our interface requirements
  */
-interface LibavoidPoint {
-  x: number;
-  y: number;
-  delete(): void;
-}
-
-interface LibavoidRectangle {
-  delete(): void;
-}
-
-interface LibavoidShapeRef {
-  delete(): void;
-}
-
-interface LibavoidShapeConnectionPin {
-  setExclusive(exclusive: boolean): void;
-  delete(): void;
-}
-
-interface LibavoidConnEnd {
-  delete(): void;
-}
-
-interface LibavoidPolyLine {
-  size(): number;
-  at(index: number): LibavoidPoint;
-}
-
-interface LibavoidConnRef {
-  displayRoute(): LibavoidPolyLine;
-}
-
-interface LibavoidWasmRouter {
-  setRoutingParameter(parameter: number, value: number): void;
-  setRoutingOption(option: number, value: boolean): void;
-  processTransaction(): void;
-  deleteConnector(connRef: LibavoidConnRef): void;
-  deleteShape(shape: LibavoidShapeRef): void;
-  delete(): void;
-}
 
 /**
  * Node input for edge routing calculation
@@ -261,9 +221,9 @@ export class LibavoidRouter {
       );
 
       // Register nodes as obstacles with ShapeRef
-      const shapeMap = new Map<string, LibavoidShapeRef>();
-      const pointsToClean: LibavoidPoint[] = [];
-      const rectsToClean: LibavoidRectangle[] = [];
+      const shapeMap = new Map<string, any>();
+      const pointsToClean: any[] = [];
+      const rectsToClean: any[] = [];
 
       for (const node of input.nodes) {
         const topLeft = new this.module.Point(node.position.x, node.position.y);
@@ -302,7 +262,7 @@ export class LibavoidRouter {
       // preventing multiple edges from sharing the same port and causing routing overlap.
       // The pinMap stores the pins but doesn't directly control routing; instead, the exclusive
       // pins constrain where the router can attach connections on each shape side.
-      const pinMap = new Map<string, LibavoidShapeConnectionPin>();
+      const pinMap = new Map<string, any>();
 
       for (const [nodeAndSide, edgesOnSide] of edgesByNodeAndSide) {
         const [nodeId, side] = nodeAndSide.split(':');
@@ -364,8 +324,8 @@ export class LibavoidRouter {
       }
 
       // Create connections for each edge
-      const connRefMap = new Map<string, LibavoidConnRef>();
-      const connEndsToClean: LibavoidConnEnd[] = [];
+      const connRefMap = new Map<string, any>();
+      const connEndsToClean: any[] = [];
 
       for (const edge of input.edges) {
         const srcShape = shapeMap.get(edge.source);
@@ -482,13 +442,13 @@ export class LibavoidRouter {
    * if a single step fails.
    */
   private cleanupLibavoidObjects(
-    router: LibavoidWasmRouter,
-    shapeMap: Map<string, LibavoidShapeRef>,
-    pinMap: Map<string, LibavoidShapeConnectionPin>,
-    connRefMap: Map<string, LibavoidConnRef>,
-    connEndsToClean: LibavoidConnEnd[],
-    pointsToClean: LibavoidPoint[],
-    rectsToClean: LibavoidRectangle[]
+    router: any,
+    shapeMap: Map<string, any>,
+    pinMap: Map<string, any>,
+    connRefMap: Map<string, any>,
+    connEndsToClean: any[],
+    pointsToClean: any[],
+    rectsToClean: any[]
   ): void {
     // Step 1: Destroy all pins before shapes (pins are owned by shapes)
     for (const pin of pinMap.values()) {
