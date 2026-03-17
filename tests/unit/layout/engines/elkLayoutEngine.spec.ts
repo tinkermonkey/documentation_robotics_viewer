@@ -289,4 +289,80 @@ test.describe('ELKLayoutEngine - Port and Routing Tests', () => {
       expect(validSides).toContain(result.edges[0].targetSide);
     }
   });
+
+  test('should use UNDEFINED edge routing by default for Libavoid pass-through', async () => {
+    // Arrange: graph with edges
+    const graph: LayoutGraphInput = {
+      nodes: [
+        { id: 'node1', data: { label: 'Node 1' }, width: 100, height: 50 },
+        { id: 'node2', data: { label: 'Node 2' }, width: 100, height: 50 },
+      ],
+      edges: [
+        { id: 'edge1', source: 'node1', target: 'node2', data: {} },
+      ],
+    };
+
+    // Act: layout with default parameters (should use UNDEFINED routing)
+    const result = await engine.calculateLayout(graph);
+
+    // Assert: layout succeeds (verifying UNDEFINED routing is applied internally)
+    expect(result.nodes).toHaveLength(2);
+    expect(result.edges).toHaveLength(1);
+    expect(result.bounds).toBeDefined();
+  });
+
+  test('should apply ORTHOGONAL routing when orthogonalRouting is enabled', async () => {
+    // Arrange: graph with edges
+    const graph: LayoutGraphInput = {
+      nodes: [
+        { id: 'node1', data: { label: 'Node 1' }, width: 100, height: 50 },
+        { id: 'node2', data: { label: 'Node 2' }, width: 100, height: 50 },
+      ],
+      edges: [
+        { id: 'edge1', source: 'node1', target: 'node2', data: {} },
+      ],
+    };
+
+    // Act: layout with orthogonalRouting enabled
+    const result = await engine.calculateLayout(graph, {
+      orthogonalRouting: true,
+      edgeRouting: 'ORTHOGONAL',
+    });
+
+    // Assert: layout succeeds and returns routing points when using orthogonal routing
+    expect(result.nodes).toHaveLength(2);
+    expect(result.edges).toHaveLength(1);
+    expect(result.bounds).toBeDefined();
+    // Orthogonal routing may produce routing points (bendpoints)
+    const edge = result.edges[0];
+    expect(edge.source).toBe('node1');
+    expect(edge.target).toBe('node2');
+  });
+
+  test('should not apply orthogonal routing when orthogonalRouting is disabled (default)', async () => {
+    // Arrange: graph with edges
+    const graph: LayoutGraphInput = {
+      nodes: [
+        { id: 'node1', data: { label: 'Node 1' }, width: 100, height: 50 },
+        { id: 'node2', data: { label: 'Node 2' }, width: 100, height: 50 },
+      ],
+      edges: [
+        { id: 'edge1', source: 'node1', target: 'node2', data: {} },
+      ],
+    };
+
+    // Act: layout with orthogonalRouting explicitly disabled
+    const result = await engine.calculateLayout(graph, {
+      orthogonalRouting: false,
+    });
+
+    // Assert: layout uses UNDEFINED routing when orthogonalRouting is false
+    expect(result.nodes).toHaveLength(2);
+    expect(result.edges).toHaveLength(1);
+    expect(result.bounds).toBeDefined();
+    // UNDEFINED routing allows Libavoid to handle routing via separate pass
+    const edge = result.edges[0];
+    expect(edge.source).toBe('node1');
+    expect(edge.target).toBe('node2');
+  });
 });

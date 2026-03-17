@@ -139,17 +139,17 @@ test.describe('Coordinate System Validation', () => {
       // Assert: Verify routing completed
       const waypoints = result.edgeWaypoints.get('edge1');
       expect(waypoints).toBeDefined();
+      expect(Array.isArray(waypoints)).toBe(true);
 
       // Verify waypoints stay within expected bounds (canvas coordinate space)
-      if (waypoints && waypoints.length > 0) {
-        for (const point of waypoints) {
-          // Points should be between nodes vertically
-          expect(point.y).toBeGreaterThanOrEqual(node1BottomY); // After node1 bottom
-          expect(point.y).toBeLessThanOrEqual(node2TopY); // Before node2 top
-          // Points should be within node horizontal bounds (with tolerance for routing)
-          expect(point.x).toBeGreaterThanOrEqual(expectedXRange.min - 10);
-          expect(point.x).toBeLessThanOrEqual(expectedXRange.max + 10);
-        }
+      // Note: Empty waypoint arrays are valid for straight-line routes
+      for (const point of waypoints || []) {
+        // Points should be between nodes vertically
+        expect(point.y).toBeGreaterThanOrEqual(node1BottomY); // After node1 bottom
+        expect(point.y).toBeLessThanOrEqual(node2TopY); // Before node2 top
+        // Points should be within node horizontal bounds (with tolerance for routing)
+        expect(point.x).toBeGreaterThanOrEqual(expectedXRange.min - 10);
+        expect(point.x).toBeLessThanOrEqual(expectedXRange.max + 10);
       }
     });
 
@@ -192,22 +192,22 @@ test.describe('Coordinate System Validation', () => {
       // Assert: Verify routing completed and uses canvas coordinate space
       const waypoints = result.edgeWaypoints.get('edge1');
       expect(waypoints).toBeDefined();
+      expect(Array.isArray(waypoints)).toBe(true);
 
       // All waypoints should be in same coordinate space (canvas space)
       // No transform needed between nodes and waypoints
-      if (waypoints && waypoints.length > 0) {
-        for (const point of waypoints) {
-          // Verify numeric types
-          expect(typeof point.x).toBe('number');
-          expect(typeof point.y).toBe('number');
-          expect(isFinite(point.x)).toBe(true);
-          expect(isFinite(point.y)).toBe(true);
-          // Verify waypoints stay within canvas bounds
-          expect(point.x).toBeGreaterThanOrEqual(canvasBounds.minX);
-          expect(point.x).toBeLessThanOrEqual(canvasBounds.maxX);
-          expect(point.y).toBeGreaterThanOrEqual(canvasBounds.minY);
-          expect(point.y).toBeLessThanOrEqual(canvasBounds.maxY);
-        }
+      // Note: Empty waypoint arrays are valid for straight-line routes
+      for (const point of waypoints || []) {
+        // Verify numeric types
+        expect(typeof point.x).toBe('number');
+        expect(typeof point.y).toBe('number');
+        expect(isFinite(point.x)).toBe(true);
+        expect(isFinite(point.y)).toBe(true);
+        // Verify waypoints stay within canvas bounds
+        expect(point.x).toBeGreaterThanOrEqual(canvasBounds.minX);
+        expect(point.x).toBeLessThanOrEqual(canvasBounds.maxX);
+        expect(point.y).toBeGreaterThanOrEqual(canvasBounds.minY);
+        expect(point.y).toBeLessThanOrEqual(canvasBounds.maxY);
       }
     });
   });

@@ -133,15 +133,16 @@ test.describe('LibavoidRouter - Comprehensive Routing Tests', () => {
     const result = await router.routeEdges(input);
     const waypoints = result.edgeWaypoints.get('edge1');
 
-    // Waypoints should exist (may be empty if straight line, but if present should be intermediate only)
+    // Waypoints should be an array (may be empty for straight-line routes)
     expect(waypoints).toBeDefined();
-    if (waypoints && waypoints.length > 0) {
-      // Waypoints should not include the source/target endpoints
-      // (those are added by ElbowEdge from React Flow handle positions)
-      for (const point of waypoints) {
-        expect(typeof point.x).toBe('number');
-        expect(typeof point.y).toBe('number');
-      }
+    expect(Array.isArray(waypoints)).toBe(true);
+
+    // Verify waypoint structure regardless of length
+    // Waypoints should not include the source/target endpoints
+    // (those are added by ElbowEdge from React Flow handle positions)
+    for (const point of waypoints || []) {
+      expect(typeof point.x).toBe('number');
+      expect(typeof point.y).toBe('number');
     }
   });
 
@@ -201,13 +202,13 @@ test.describe('LibavoidRouter - Comprehensive Routing Tests', () => {
       // Waypoints should be arrays of points
       const waypoints = result.edgeWaypoints.get(edgeId);
       expect(Array.isArray(waypoints)).toBe(true);
-      if (waypoints && waypoints.length > 0) {
-        for (const point of waypoints) {
-          expect(typeof point.x).toBe('number');
-          expect(typeof point.y).toBe('number');
-          expect(isFinite(point.x)).toBe(true);
-          expect(isFinite(point.y)).toBe(true);
-        }
+
+      // Verify all waypoint values have proper numeric types
+      for (const point of waypoints || []) {
+        expect(typeof point.x).toBe('number');
+        expect(typeof point.y).toBe('number');
+        expect(isFinite(point.x)).toBe(true);
+        expect(isFinite(point.y)).toBe(true);
       }
     }
   });
@@ -448,13 +449,14 @@ test.describe('LibavoidRouter - Comprehensive Routing Tests', () => {
     const result = await router.routeEdges(input);
     const waypoints = result.edgeWaypoints.get('edge-float');
 
-    if (waypoints && waypoints.length > 0) {
-      for (const point of waypoints) {
-        expect(typeof point.x).toBe('number');
-        expect(typeof point.y).toBe('number');
-        expect(isFinite(point.x)).toBe(true);
-        expect(isFinite(point.y)).toBe(true);
-      }
+    expect(Array.isArray(waypoints)).toBe(true);
+
+    // Verify waypoint numeric precision regardless of waypoint count
+    for (const point of waypoints || []) {
+      expect(typeof point.x).toBe('number');
+      expect(typeof point.y).toBe('number');
+      expect(isFinite(point.x)).toBe(true);
+      expect(isFinite(point.y)).toBe(true);
     }
   });
 
