@@ -1,1 +1,2 @@
 /bin/bash: line 1: SERVER_PID=: command not found
+/bin/bash: line 1: SERVE_PID=: command not found
