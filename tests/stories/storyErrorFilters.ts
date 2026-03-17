@@ -50,7 +50,8 @@ export function isExpectedConsoleError(text: string): boolean {
   if (/\[ModelRoute\] Error loading model/.test(text)) return true;
 
   // Failed resource loads - expected when test backend ports unavailable or resources don't exist in test environment
-  if (/Failed to load resource/.test(text) && /status of 404/.test(text)) return true;
+  // Only filter from localhost dev ports (3002 = DataLoader, 8080 = DR CLI) to avoid hiding production errors
+  if (/Failed to load resource.*localhost:(3002|8080)/.test(text)) return true;
 
   // WASM streaming compile failures - expected when WASM modules not fully loaded in test environment
   // This occurs during concurrent layout engine initialization in Storybook
