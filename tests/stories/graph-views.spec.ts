@@ -7,7 +7,7 @@
  * - StoryLoadedWrapper signals completion
  * - Zoom controls are functional
  *
- * Covers: BusinessLayerView, GraphViewer, ChangesetGraphView
+ * Covers: BusinessLayerView, ChangesetGraphView
  */
 
 import { test, expect } from '@playwright/test';
@@ -17,7 +17,7 @@ test.describe('Graph View Stories', () => {
   test.describe('BusinessLayerView', () => {
     test('Default: renders nodes', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('views---layouts--graph-views--businesslayerview--default'));
+      await page.goto(storyUrl('c-graphs-views-businesslayerview--default'));
       await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 });
       const nodeCount = await page.locator('.react-flow__node').count();
       expect(nodeCount, 'BusinessLayerView Default should render nodes').toBeGreaterThan(0);
@@ -25,43 +25,45 @@ test.describe('Graph View Stories', () => {
 
     test('Default: data-storyloaded is set', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('views---layouts--graph-views--businesslayerview--default'));
+      await page.goto(storyUrl('c-graphs-views-businesslayerview--default'));
       await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 });
       const wrapper = page.locator('[data-testid="business-layer-default"]');
       await expect(wrapper).toHaveAttribute('data-storyloaded', 'true');
     });
   });
 
-  test.describe('GraphViewer', () => {
+  test.describe('BusinessLayerView MinimalGraph', () => {
     test('MinimalGraph: renders nodes', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('views---layouts--graph-views--graphviewer--minimal-graph'));
+      await page.goto(storyUrl('c-graphs-views-businesslayerview--minimalgraph'));
       await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 });
       const nodeCount = await page.locator('.react-flow__node').count();
-      expect(nodeCount, 'GraphViewer MinimalGraph should render nodes').toBeGreaterThan(0);
+      expect(nodeCount, 'BusinessLayerView MinimalGraph should render nodes').toBeGreaterThan(0);
     });
+  });
 
-    test('CompleteModel: renders nodes', async ({ page }) => {
+  test.describe('BusinessLayerView LargeGraph', () => {
+    test('LargeGraph: renders nodes', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('views---layouts--graph-views--graphviewer--complete-model'));
+      await page.goto(storyUrl('c-graphs-views-businesslayerview--largegraph'));
       await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 });
       const nodeCount = await page.locator('.react-flow__node').count();
-      expect(nodeCount, 'GraphViewer CompleteModel should render nodes').toBeGreaterThan(0);
+      expect(nodeCount, 'BusinessLayerView LargeGraph should render nodes').toBeGreaterThan(0);
     });
 
-    test('CompleteModel: renders edges', async ({ page }) => {
+    test('LargeGraph: renders edges', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('views---layouts--graph-views--graphviewer--complete-model'));
+      await page.goto(storyUrl('c-graphs-views-businesslayerview--largegraph'));
       await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 });
       const edgeCount = await page.locator('.react-flow__edge').count();
-      expect(edgeCount, 'GraphViewer CompleteModel should render edges').toBeGreaterThan(0);
+      expect(edgeCount, 'BusinessLayerView LargeGraph should render edges').toBeGreaterThan(0);
     });
   });
 
   test.describe('ChangesetGraphView', () => {
     test('ActiveChangeset: renders nodes', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('views---layouts--graph-views--changesetgraphview--active-changeset'));
+      await page.goto(storyUrl('c-graphs-views-changesetgraphview--activechangeset'));
       await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 });
       const nodeCount = await page.locator('.react-flow__node').count();
       expect(nodeCount, 'ChangesetGraphView ActiveChangeset should render nodes').toBeGreaterThan(0);
@@ -69,7 +71,7 @@ test.describe('Graph View Stories', () => {
 
     test('ManyChanges: renders multiple nodes', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('views---layouts--graph-views--changesetgraphview--many-changes'));
+      await page.goto(storyUrl('c-graphs-views-changesetgraphview--manychanges'));
       await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 });
       const nodeCount = await page.locator('.react-flow__node').count();
       expect(nodeCount, 'ManyChanges should render multiple nodes').toBeGreaterThan(1);
@@ -77,9 +79,9 @@ test.describe('Graph View Stories', () => {
   });
 
   test.describe('Zoom Controls', () => {
-    test('GraphViewer: fit view button is functional', async ({ page }) => {
+    test('BusinessLayerView: fit view button is functional', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('views---layouts--graph-views--graphviewer--complete-model'));
+      await page.goto(storyUrl('c-graphs-views-businesslayerview--largegraph'));
       await page.locator('[data-storyloaded="true"]').waitFor({ state: 'attached', timeout: 15000 });
       const fitViewButton = page.locator('.react-flow__controls-fitview');
       if (await fitViewButton.count() > 0) {

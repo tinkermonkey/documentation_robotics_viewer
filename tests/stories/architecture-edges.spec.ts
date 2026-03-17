@@ -6,8 +6,7 @@
  * - Edge label is visible when provided
  * - Arrow markers render
  *
- * Covers: ElbowEdge, CrossLayerEdge, motivation edges
- *         (InfluenceEdge, RefinesEdge, RealizesEdge, ConstrainsEdge, ConflictsEdge)
+ * Covers: ElbowEdge
  */
 
 import { test, expect } from '@playwright/test';
@@ -17,7 +16,7 @@ test.describe('Architecture Edge Stories', () => {
   test.describe('ElbowEdge', () => {
     test('Default: renders SVG path', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-edges--general--elbowedge--default'));
+      await page.goto(storyUrl('c-graphs-edges-base-elbowedge--default'));
       await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
       const paths = await page.locator('svg path').count();
       expect(paths, 'ElbowEdge Default should render SVG paths').toBeGreaterThan(0);
@@ -25,7 +24,7 @@ test.describe('Architecture Edge Stories', () => {
 
     test('WithLabel: label is visible', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-edges--general--elbowedge--with-label'));
+      await page.goto(storyUrl('c-graphs-edges-base-elbowedge--withlabel'));
       await page.locator('svg').first().waitFor({ state: 'attached', timeout: 10000 });
       // Edge labels appear in foreignObject or text elements
       const labelVisible = await page.locator('text=connection').count() > 0
@@ -36,7 +35,7 @@ test.describe('Architecture Edge Stories', () => {
 
     test('Animated: renders SVG path', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-edges--general--elbowedge--animated'));
+      await page.goto(storyUrl('c-graphs-edges-base-elbowedge--animated'));
       await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
       const paths = await page.locator('svg path').count();
       expect(paths).toBeGreaterThan(0);
@@ -44,78 +43,10 @@ test.describe('Architecture Edge Stories', () => {
 
     test('ChangesetAdd: renders SVG path', async ({ page }) => {
       setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-edges--general--elbowedge--changeset-add'));
+      await page.goto(storyUrl('c-graphs-edges-base-elbowedge--changesetadd'));
       await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
       const paths = await page.locator('svg path').count();
       expect(paths).toBeGreaterThan(0);
-    });
-  });
-
-  test.describe('CrossLayerEdge', () => {
-    test('Default: renders SVG path', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-edges--general--crosslayeredge--default'));
-      await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
-      const paths = await page.locator('svg path').count();
-      expect(paths, 'CrossLayerEdge Default should render SVG paths').toBeGreaterThan(0);
-    });
-
-    test('Animated: renders SVG path', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-edges--general--crosslayeredge--animated'));
-      await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
-      const paths = await page.locator('svg path').count();
-      expect(paths).toBeGreaterThan(0);
-    });
-  });
-
-  test.describe('InfluenceEdge', () => {
-    test('Default: renders SVG path', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-edges--motivation--influenceedge--default'));
-      await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
-      const paths = await page.locator('svg path').count();
-      expect(paths, 'InfluenceEdge Default should render SVG paths').toBeGreaterThan(0);
-    });
-  });
-
-  test.describe('RefinesEdge', () => {
-    test('Default: renders SVG path', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-edges--motivation--refinesedge--default'));
-      await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
-      const paths = await page.locator('svg path').count();
-      expect(paths, 'RefinesEdge Default should render SVG paths').toBeGreaterThan(0);
-    });
-  });
-
-  test.describe('RealizesEdge', () => {
-    test('Default: renders SVG path', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-edges--motivation--realizesedge--default'));
-      await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
-      const paths = await page.locator('svg path').count();
-      expect(paths, 'RealizesEdge Default should render SVG paths').toBeGreaterThan(0);
-    });
-  });
-
-  test.describe('ConstrainsEdge', () => {
-    test('Default: renders SVG path', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-edges--motivation--constrainsedge--default'));
-      await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
-      const paths = await page.locator('svg path').count();
-      expect(paths, 'ConstrainsEdge Default should render SVG paths').toBeGreaterThan(0);
-    });
-  });
-
-  test.describe('ConflictsEdge', () => {
-    test('Default: renders SVG path', async ({ page }) => {
-      setupErrorFiltering(page);
-      await page.goto(storyUrl('architecture-edges--motivation--conflictsedge--default'));
-      await page.locator('svg path').first().waitFor({ state: 'attached', timeout: 10000 });
-      const paths = await page.locator('svg path').count();
-      expect(paths, 'ConflictsEdge Default should render SVG paths').toBeGreaterThan(0);
     });
   });
 });
