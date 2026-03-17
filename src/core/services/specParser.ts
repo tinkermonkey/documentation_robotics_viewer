@@ -82,7 +82,7 @@ export class SpecParser {
 
         return {
           id: (r.id as string) || `rel-${index}`,
-          type: ((r.type as string) || 'reference') as RelationshipType,
+          type: this.mapRelationshipType((r.type as string) || 'reference'),
           sourceId: (r.source as string) || (r.sourceId as string) || '',
           targetId: (r.target as string) || (r.targetId as string) || '',
           properties: (r.properties as Record<string, unknown>) || {}
@@ -98,6 +98,31 @@ export class SpecParser {
         }
         return true;
       });
+  }
+
+  /**
+   * Map relationship type string to RelationshipType enum
+   * Validates input and provides safe fallback
+   */
+  private mapRelationshipType(typeString: string): RelationshipType {
+    const validTypes: Record<string, RelationshipType> = {
+      'composition': RelationshipType.Composition,
+      'aggregation': RelationshipType.Aggregation,
+      'assignment': RelationshipType.Assignment,
+      'realization': RelationshipType.Realization,
+      'serving': RelationshipType.Serving,
+      'access': RelationshipType.Access,
+      'influence': RelationshipType.Influence,
+      'triggering': RelationshipType.Triggering,
+      'flow': RelationshipType.Flow,
+      'reference': RelationshipType.Reference,
+      'navigation': RelationshipType.Navigation,
+      'security-control': RelationshipType.SecurityControl,
+      'data-flow': RelationshipType.DataFlow,
+      'state-transition': RelationshipType.StateTransition
+    };
+
+    return validTypes[typeString] || RelationshipType.Reference;
   }
 
   /**
