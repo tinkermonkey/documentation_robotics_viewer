@@ -281,7 +281,7 @@ test.describe('Layout Engine Interface', () => {
       // Call the original layout
       originalLayout.call(this, g);
       // Simulate dagre not computing position for node-3 by removing it
-      g._nodes.delete('node-3');
+      delete g._nodes['node-3'];
     };
 
     const result = await engine.calculateLayout(graphInput, { rankdir: 'TB' });
