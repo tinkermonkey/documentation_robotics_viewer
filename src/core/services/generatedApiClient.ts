@@ -1,7 +1,7 @@
 /**
  * Auto-generated API Client with React Query Hooks
  * Generated from: /workspace/docs/api-spec.yaml
- * Generated at: 2026-03-16T18:37:04.735Z
+ * Generated at: 2026-03-17T02:08:26.559Z
  * API Version: 0.1.0
  *
  * IMPORTANT: This file is auto-generated. Do not edit directly.

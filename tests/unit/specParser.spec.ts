@@ -7,7 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import { SpecParser } from '../../src/core/services/specParser';
-import { LayerType } from '../../src/core/types';
+import { LayerType, RelationshipType } from '../../src/core/types';
 
 test.describe('SpecParser', () => {
   let parser: SpecParser;
@@ -56,6 +56,129 @@ test.describe('SpecParser', () => {
 
       expect(layer.elements.length).toBe(0);
       expect(layer.relationships.length).toBe(0);
+    });
+  });
+
+  test.describe('mapRelationshipType()', () => {
+    test('should map valid composition type to RelationshipType.Composition', () => {
+      const spec = {
+        elements: [
+          { id: 'el-1', name: 'Element 1' },
+          { id: 'el-2', name: 'Element 2' },
+        ],
+        relationships: [
+          { id: 'rel-1', source: 'el-1', target: 'el-2', type: 'composition' },
+        ],
+      };
+
+      const layer = parser.parse(spec, LayerType.Application);
+
+      expect(layer.relationships.length).toBe(1);
+      expect(layer.relationships[0].type).toBe(RelationshipType.Composition);
+    });
+
+    test('should map all valid relationship type strings to correct enum values', () => {
+      const typeTests = [
+        { input: 'composition', expected: RelationshipType.Composition },
+        { input: 'aggregation', expected: RelationshipType.Aggregation },
+        { input: 'assignment', expected: RelationshipType.Assignment },
+        { input: 'realization', expected: RelationshipType.Realization },
+        { input: 'serving', expected: RelationshipType.Serving },
+        { input: 'access', expected: RelationshipType.Access },
+        { input: 'influence', expected: RelationshipType.Influence },
+        { input: 'triggering', expected: RelationshipType.Triggering },
+        { input: 'flow', expected: RelationshipType.Flow },
+        { input: 'reference', expected: RelationshipType.Reference },
+        { input: 'navigation', expected: RelationshipType.Navigation },
+        { input: 'security-control', expected: RelationshipType.SecurityControl },
+        { input: 'data-flow', expected: RelationshipType.DataFlow },
+        { input: 'state-transition', expected: RelationshipType.StateTransition },
+      ];
+
+      typeTests.forEach(({ input, expected }) => {
+        const spec = {
+          elements: [
+            { id: 'el-1', name: 'Element 1' },
+            { id: 'el-2', name: 'Element 2' },
+          ],
+          relationships: [
+            { id: 'rel-1', source: 'el-1', target: 'el-2', type: input },
+          ],
+        };
+
+        const layer = parser.parse(spec, LayerType.Application);
+
+        expect(layer.relationships[0].type).toBe(expected, `Type "${input}" should map to ${expected}`);
+      });
+    });
+
+    test('should map invalid type string to RelationshipType.Reference', () => {
+      const spec = {
+        elements: [
+          { id: 'el-1', name: 'Element 1' },
+          { id: 'el-2', name: 'Element 2' },
+        ],
+        relationships: [
+          { id: 'rel-1', source: 'el-1', target: 'el-2', type: 'invalid-type' },
+        ],
+      };
+
+      const layer = parser.parse(spec, LayerType.Application);
+
+      expect(layer.relationships.length).toBe(1);
+      expect(layer.relationships[0].type).toBe(RelationshipType.Reference);
+    });
+
+    test('should map typo type string to RelationshipType.Reference', () => {
+      const spec = {
+        elements: [
+          { id: 'el-1', name: 'Element 1' },
+          { id: 'el-2', name: 'Element 2' },
+        ],
+        relationships: [
+          // 'compsoition' is a typo for 'composition'
+          { id: 'rel-1', source: 'el-1', target: 'el-2', type: 'compsoition' },
+        ],
+      };
+
+      const layer = parser.parse(spec, LayerType.Application);
+
+      expect(layer.relationships.length).toBe(1);
+      expect(layer.relationships[0].type).toBe(RelationshipType.Reference);
+    });
+
+    test('should use reference fallback when type is undefined', () => {
+      const spec = {
+        elements: [
+          { id: 'el-1', name: 'Element 1' },
+          { id: 'el-2', name: 'Element 2' },
+        ],
+        relationships: [
+          { id: 'rel-1', source: 'el-1', target: 'el-2' },
+        ],
+      };
+
+      const layer = parser.parse(spec, LayerType.Application);
+
+      expect(layer.relationships.length).toBe(1);
+      expect(layer.relationships[0].type).toBe(RelationshipType.Reference);
+    });
+
+    test('should handle empty string type as Reference', () => {
+      const spec = {
+        elements: [
+          { id: 'el-1', name: 'Element 1' },
+          { id: 'el-2', name: 'Element 2' },
+        ],
+        relationships: [
+          { id: 'rel-1', source: 'el-1', target: 'el-2', type: '' },
+        ],
+      };
+
+      const layer = parser.parse(spec, LayerType.Application);
+
+      expect(layer.relationships.length).toBe(1);
+      expect(layer.relationships[0].type).toBe(RelationshipType.Reference);
     });
   });
 

@@ -2,6 +2,27 @@ import { Layer, ModelElement, Relationship, LayerType, RelationshipType } from '
 import { getLayerColor } from '../utils/layerColors';
 
 /**
+ * Mapping of relationship type strings to RelationshipType enum values.
+ * Defined at module level to avoid object recreation on each method call.
+ */
+const RELATIONSHIP_TYPE_MAP: Record<string, RelationshipType> = {
+  'composition': RelationshipType.Composition,
+  'aggregation': RelationshipType.Aggregation,
+  'assignment': RelationshipType.Assignment,
+  'realization': RelationshipType.Realization,
+  'serving': RelationshipType.Serving,
+  'access': RelationshipType.Access,
+  'influence': RelationshipType.Influence,
+  'triggering': RelationshipType.Triggering,
+  'flow': RelationshipType.Flow,
+  'reference': RelationshipType.Reference,
+  'navigation': RelationshipType.Navigation,
+  'security-control': RelationshipType.SecurityControl,
+  'data-flow': RelationshipType.DataFlow,
+  'state-transition': RelationshipType.StateTransition
+};
+
+/**
  * Service for parsing JSON spec files into internal model format
  */
 export class SpecParser {
@@ -102,27 +123,10 @@ export class SpecParser {
 
   /**
    * Map relationship type string to RelationshipType enum
-   * Validates input and provides safe fallback
+   * Validates input and provides safe fallback to Reference
    */
   private mapRelationshipType(typeString: string): RelationshipType {
-    const validTypes: Record<string, RelationshipType> = {
-      'composition': RelationshipType.Composition,
-      'aggregation': RelationshipType.Aggregation,
-      'assignment': RelationshipType.Assignment,
-      'realization': RelationshipType.Realization,
-      'serving': RelationshipType.Serving,
-      'access': RelationshipType.Access,
-      'influence': RelationshipType.Influence,
-      'triggering': RelationshipType.Triggering,
-      'flow': RelationshipType.Flow,
-      'reference': RelationshipType.Reference,
-      'navigation': RelationshipType.Navigation,
-      'security-control': RelationshipType.SecurityControl,
-      'data-flow': RelationshipType.DataFlow,
-      'state-transition': RelationshipType.StateTransition
-    };
-
-    return validTypes[typeString] || RelationshipType.Reference;
+    return RELATIONSHIP_TYPE_MAP[typeString] || RelationshipType.Reference;
   }
 
   /**
