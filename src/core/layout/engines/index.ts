@@ -47,6 +47,9 @@ export type {
 
 /**
  * Initialize and register default layout engines
+ *
+ * Each engine is initialized with error isolation. If one engine fails to initialize,
+ * the others will continue to be registered. A failure summary is logged at the end.
  */
 export async function initializeDefaultEngines(): Promise<void> {
   const { getGlobalRegistry } = await import('./LayoutEngineRegistry');
@@ -56,28 +59,63 @@ export async function initializeDefaultEngines(): Promise<void> {
   const { GraphvizLayoutEngine } = await import('./GraphvizLayoutEngine');
 
   const registry = getGlobalRegistry();
+  const failedEngines: Array<{ name: string; error: Error }> = [];
 
-  // Register dagre engine
-  const dagreEngine = new DagreLayoutEngine();
-  await dagreEngine.initialize();
-  registry.register('dagre', dagreEngine, ['hierarchical', 'tree']);
+  // Initialize Dagre engine with error isolation
+  try {
+    const dagreEngine = new DagreLayoutEngine();
+    await dagreEngine.initialize();
+    registry.register('dagre', dagreEngine, ['hierarchical', 'tree']);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('[Layout Engines] Failed to initialize dagre engine:', errorMessage);
+    failedEngines.push({ name: 'dagre', error: error instanceof Error ? error : new Error(String(error)) });
+  }
 
-  // Register d3-force engine
-  const d3ForceEngine = new D3ForceLayoutEngine();
-  await d3ForceEngine.initialize();
-  registry.register('d3-force', d3ForceEngine, ['force', 'force-directed']);
+  // Initialize D3-Force engine with error isolation
+  try {
+    const d3ForceEngine = new D3ForceLayoutEngine();
+    await d3ForceEngine.initialize();
+    registry.register('d3-force', d3ForceEngine, ['force', 'force-directed']);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('[Layout Engines] Failed to initialize d3-force engine:', errorMessage);
+    failedEngines.push({ name: 'd3-force', error: error instanceof Error ? error : new Error(String(error)) });
+  }
 
-  // Register ELK engine
-  const elkEngine = new ELKLayoutEngine();
-  await elkEngine.initialize();
-  registry.register('elk', elkEngine, ['eclipse-layout-kernel', 'layered']);
+  // Initialize ELK engine with error isolation
+  try {
+    const elkEngine = new ELKLayoutEngine();
+    await elkEngine.initialize();
+    registry.register('elk', elkEngine, ['eclipse-layout-kernel', 'layered']);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('[Layout Engines] Failed to initialize elk engine:', errorMessage);
+    failedEngines.push({ name: 'elk', error: error instanceof Error ? error : new Error(String(error)) });
+  }
 
-  // Register Graphviz engine
-  const graphvizEngine = new GraphvizLayoutEngine();
-  await graphvizEngine.initialize();
-  registry.register('graphviz', graphvizEngine, ['dot', 'neato']);
+  // Initialize Graphviz engine with error isolation
+  try {
+    const graphvizEngine = new GraphvizLayoutEngine();
+    await graphvizEngine.initialize();
+    registry.register('graphviz', graphvizEngine, ['dot', 'neato']);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('[Layout Engines] Failed to initialize graphviz engine:', errorMessage);
+    failedEngines.push({ name: 'graphviz', error: error instanceof Error ? error : new Error(String(error)) });
+  }
 
-  console.log('[Layout Engines] All engines initialized and registered (dagre, d3-force, elk, graphviz)');
+  // Log summary
+  const registeredEngines = registry.getTypes();
+  if (failedEngines.length === 0) {
+    console.log(`[Layout Engines] All engines initialized and registered (${registeredEngines.join(', ')})`);
+  } else {
+    console.warn(
+      `[Layout Engines] Engine initialization completed with ${failedEngines.length} failure(s). ` +
+      `Registered: ${registeredEngines.length > 0 ? registeredEngines.join(', ') : 'none'}. ` +
+      `Failed: ${failedEngines.map((e) => e.name).join(', ')}`
+    );
+  }
 }
 
 /**
