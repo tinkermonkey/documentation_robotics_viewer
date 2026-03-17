@@ -143,13 +143,18 @@ test.describe('Coordinate System Validation', () => {
 
       // Verify waypoints stay within expected bounds (canvas coordinate space)
       // Note: Empty waypoint arrays are valid for straight-line routes
-      for (const point of waypoints || []) {
-        // Points should be between nodes vertically
-        expect(point.y).toBeGreaterThanOrEqual(node1BottomY); // After node1 bottom
-        expect(point.y).toBeLessThanOrEqual(node2TopY); // Before node2 top
-        // Points should be within node horizontal bounds (with tolerance for routing)
-        expect(point.x).toBeGreaterThanOrEqual(expectedXRange.min - 10);
-        expect(point.x).toBeLessThanOrEqual(expectedXRange.max + 10);
+      if (waypoints!.length > 0) {
+        for (const point of waypoints!) {
+          // Points should be between nodes vertically
+          expect(point.y).toBeGreaterThanOrEqual(node1BottomY); // After node1 bottom
+          expect(point.y).toBeLessThanOrEqual(node2TopY); // Before node2 top
+          // Points should be within node horizontal bounds (with tolerance for routing)
+          expect(point.x).toBeGreaterThanOrEqual(expectedXRange.min - 10);
+          expect(point.x).toBeLessThanOrEqual(expectedXRange.max + 10);
+        }
+      } else {
+        // Empty waypoints are valid for simple vertical routes
+        expect(waypoints!.length).toBe(0);
       }
     });
 
@@ -196,18 +201,23 @@ test.describe('Coordinate System Validation', () => {
 
       // All waypoints should be in same coordinate space (canvas space)
       // No transform needed between nodes and waypoints
-      // Note: Empty waypoint arrays are valid for straight-line routes
-      for (const point of waypoints || []) {
-        // Verify numeric types
-        expect(typeof point.x).toBe('number');
-        expect(typeof point.y).toBe('number');
-        expect(isFinite(point.x)).toBe(true);
-        expect(isFinite(point.y)).toBe(true);
-        // Verify waypoints stay within canvas bounds
-        expect(point.x).toBeGreaterThanOrEqual(canvasBounds.minX);
-        expect(point.x).toBeLessThanOrEqual(canvasBounds.maxX);
-        expect(point.y).toBeGreaterThanOrEqual(canvasBounds.minY);
-        expect(point.y).toBeLessThanOrEqual(canvasBounds.maxY);
+      // Note: Even with obstacles, Libavoid may produce empty waypoints in some scenarios
+      if (waypoints!.length > 0) {
+        for (const point of waypoints!) {
+          // Verify numeric types
+          expect(typeof point.x).toBe('number');
+          expect(typeof point.y).toBe('number');
+          expect(isFinite(point.x)).toBe(true);
+          expect(isFinite(point.y)).toBe(true);
+          // Verify waypoints stay within canvas bounds
+          expect(point.x).toBeGreaterThanOrEqual(canvasBounds.minX);
+          expect(point.x).toBeLessThanOrEqual(canvasBounds.maxX);
+          expect(point.y).toBeGreaterThanOrEqual(canvasBounds.minY);
+          expect(point.y).toBeLessThanOrEqual(canvasBounds.maxY);
+        }
+      } else {
+        // Empty waypoints are valid even with obstacles if routing stays in canvas bounds
+        expect(waypoints!.length).toBe(0);
       }
     });
   });

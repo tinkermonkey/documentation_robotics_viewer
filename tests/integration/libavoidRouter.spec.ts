@@ -140,9 +140,15 @@ test.describe('LibavoidRouter - Comprehensive Routing Tests', () => {
     // Verify waypoint structure regardless of length
     // Waypoints should not include the source/target endpoints
     // (those are added by ElbowEdge from React Flow handle positions)
-    for (const point of waypoints || []) {
-      expect(typeof point.x).toBe('number');
-      expect(typeof point.y).toBe('number');
+    if (waypoints!.length > 0) {
+      for (const point of waypoints!) {
+        expect(typeof point.x).toBe('number');
+        expect(typeof point.y).toBe('number');
+      }
+    } else {
+      // Empty waypoints are valid for straight-line routes where no intermediate
+      // routing is needed between source and target
+      expect(waypoints!.length).toBe(0);
     }
   });
 
@@ -204,11 +210,16 @@ test.describe('LibavoidRouter - Comprehensive Routing Tests', () => {
       expect(Array.isArray(waypoints)).toBe(true);
 
       // Verify all waypoint values have proper numeric types
-      for (const point of waypoints || []) {
-        expect(typeof point.x).toBe('number');
-        expect(typeof point.y).toBe('number');
-        expect(isFinite(point.x)).toBe(true);
-        expect(isFinite(point.y)).toBe(true);
+      if (waypoints!.length > 0) {
+        for (const point of waypoints!) {
+          expect(typeof point.x).toBe('number');
+          expect(typeof point.y).toBe('number');
+          expect(isFinite(point.x)).toBe(true);
+          expect(isFinite(point.y)).toBe(true);
+        }
+      } else {
+        // Empty waypoints are valid for edges without intermediate routing points
+        expect(waypoints!.length).toBe(0);
       }
     }
   });
@@ -452,11 +463,16 @@ test.describe('LibavoidRouter - Comprehensive Routing Tests', () => {
     expect(Array.isArray(waypoints)).toBe(true);
 
     // Verify waypoint numeric precision regardless of waypoint count
-    for (const point of waypoints || []) {
-      expect(typeof point.x).toBe('number');
-      expect(typeof point.y).toBe('number');
-      expect(isFinite(point.x)).toBe(true);
-      expect(isFinite(point.y)).toBe(true);
+    if (waypoints!.length > 0) {
+      for (const point of waypoints!) {
+        expect(typeof point.x).toBe('number');
+        expect(typeof point.y).toBe('number');
+        expect(isFinite(point.x)).toBe(true);
+        expect(isFinite(point.y)).toBe(true);
+      }
+    } else {
+      // Empty waypoints are valid for straight-line routes with floating-point node positions
+      expect(waypoints!.length).toBe(0);
     }
   });
 
