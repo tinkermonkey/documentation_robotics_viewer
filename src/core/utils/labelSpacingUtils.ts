@@ -161,8 +161,9 @@ export function calculateLabelAwareNudgingDistance(
     return 15;
   }
 
-  // Calculate nudging distance: ensure separation of at least label width + padding
-  // Minimum is 15px (default), maximum is 50px to avoid excessive spacing
+  // Calculate nudging distance based on label width and padding.
+  // Dividing by 4 scales the spacing to a reasonable visual separation without
+  // creating excessive gaps. Range is clamped between 15px and 50px.
   const calculatedDistance = Math.max(15, Math.min(50, Math.ceil((maxLabelWidth + basePadding) / 4)));
 
   return calculatedDistance;
