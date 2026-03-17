@@ -17,6 +17,51 @@ import { calculateLabelAwareNudgingDistance } from '../utils/labelSpacingUtils';
 type LibavoidInstance = ReturnType<typeof AvoidLib.getInstance>;
 
 /**
+ * Libavoid WASM type definitions
+ * These provide type safety for WASM-returned objects
+ */
+interface LibavoidPoint {
+  x: number;
+  y: number;
+  delete(): void;
+}
+
+interface LibavoidRectangle {
+  delete(): void;
+}
+
+interface LibavoidShapeRef {
+  delete(): void;
+}
+
+interface LibavoidShapeConnectionPin {
+  setExclusive(exclusive: boolean): void;
+  delete(): void;
+}
+
+interface LibavoidConnEnd {
+  delete(): void;
+}
+
+interface LibavoidPolyLine {
+  size(): number;
+  at(index: number): LibavoidPoint;
+}
+
+interface LibavoidConnRef {
+  displayRoute(): LibavoidPolyLine;
+}
+
+interface LibavoidRouter {
+  setRoutingParameter(parameter: number, value: number): void;
+  setRoutingOption(option: number, value: boolean): void;
+  processTransaction(): void;
+  deleteConnector(connRef: LibavoidConnRef): void;
+  deleteShape(shape: LibavoidShapeRef): void;
+  delete(): void;
+}
+
+/**
  * Node input for edge routing calculation
  */
 export interface LibavoidNodeInput {
@@ -35,10 +80,6 @@ export interface LibavoidEdgeInput {
   target: string;
   sourceSide?: 'top' | 'bottom' | 'left' | 'right';
   targetSide?: 'top' | 'bottom' | 'left' | 'right';
-  /** Optional source pin offset for field-level handles: y-proportion on source side (0 to 1) */
-  sourcePinOffset?: number;
-  /** Optional target pin offset for field-level handles: y-proportion on target side (0 to 1) */
-  targetPinOffset?: number;
   /** Optional label text for dynamic spacing based on actual label widths */
   label?: string;
 }
@@ -220,9 +261,9 @@ export class LibavoidRouter {
       );
 
       // Register nodes as obstacles with ShapeRef
-      const shapeMap = new Map<string, any>();
-      const pointsToClean: any[] = [];
-      const rectsToClean: any[] = [];
+      const shapeMap = new Map<string, LibavoidShapeRef>();
+      const pointsToClean: LibavoidPoint[] = [];
+      const rectsToClean: LibavoidRectangle[] = [];
 
       for (const node of input.nodes) {
         const topLeft = new this.module.Point(node.position.x, node.position.y);
@@ -240,7 +281,7 @@ export class LibavoidRouter {
       }
 
       // Group edges by (nodeId, side) to distribute pins evenly
-      const edgesByNodeAndSide = new Map<string, typeof input.edges>();
+      const edgesByNodeAndSide = new Map<string, LibavoidEdgeInput[]>();
       for (const edge of input.edges) {
         const srcKey = `${edge.source}:${edge.sourceSide || 'bottom'}`;
         const tgtKey = `${edge.target}:${edge.targetSide || 'top'}`;
@@ -261,7 +302,7 @@ export class LibavoidRouter {
       // preventing multiple edges from sharing the same port and causing routing overlap.
       // The pinMap stores the pins but doesn't directly control routing; instead, the exclusive
       // pins constrain where the router can attach connections on each shape side.
-      const pinMap = new Map<string, any>();
+      const pinMap = new Map<string, LibavoidShapeConnectionPin>();
 
       for (const [nodeAndSide, edgesOnSide] of edgesByNodeAndSide) {
         const [nodeId, side] = nodeAndSide.split(':');
@@ -312,7 +353,7 @@ export class LibavoidRouter {
             yProportion,
             true, // proportional
             0,
-            connDir as any
+            connDir as unknown as number
           );
           pin.setExclusive(true);
 
@@ -323,8 +364,8 @@ export class LibavoidRouter {
       }
 
       // Create connections for each edge
-      const connRefMap = new Map<string, any>();
-      const connEndsToClean: any[] = [];
+      const connRefMap = new Map<string, LibavoidConnRef>();
+      const connEndsToClean: LibavoidConnEnd[] = [];
 
       for (const edge of input.edges) {
         const srcShape = shapeMap.get(edge.source);
@@ -441,13 +482,13 @@ export class LibavoidRouter {
    * if a single step fails.
    */
   private cleanupLibavoidObjects(
-    router: any,
-    shapeMap: Map<string, any>,
-    pinMap: Map<string, any>,
-    connRefMap: Map<string, any>,
-    connEndsToClean: any[],
-    pointsToClean: any[],
-    rectsToClean: any[]
+    router: LibavoidRouter,
+    shapeMap: Map<string, LibavoidShapeRef>,
+    pinMap: Map<string, LibavoidShapeConnectionPin>,
+    connRefMap: Map<string, LibavoidConnRef>,
+    connEndsToClean: LibavoidConnEnd[],
+    pointsToClean: LibavoidPoint[],
+    rectsToClean: LibavoidRectangle[]
   ): void {
     // Step 1: Destroy all pins before shapes (pins are owned by shapes)
     for (const pin of pinMap.values()) {
