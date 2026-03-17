@@ -5,6 +5,7 @@ storybook-static/
 **/.venv/
 .dr/
 .flowbite-react/
+.api-version-cache.json
 
 # Claude Code review cycle files
 .claude_prompt_review_cycle*.txt
