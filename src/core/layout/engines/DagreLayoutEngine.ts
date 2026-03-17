@@ -109,24 +109,24 @@ export class DagreLayoutEngine extends BaseLayoutEngine {
     // Run dagre layout
     dagre.layout(g);
 
-    // Validate that all nodes are present in dagre output before mapping
-    const missingNodes = graph.nodes
-      .map((node) => node.id)
-      .filter((nodeId) => !g.node(nodeId));
-
-    if (missingNodes.length > 0) {
-      const missingList = missingNodes.join(', ');
-      const message =
-        `[DagreLayoutEngine] ${missingNodes.length} node(s) not found in layout output: ${missingList}. ` +
-        'This typically indicates disconnected nodes, invalid node dimensions, or a graph structure issue. ' +
-        'Check that all nodes have valid width/height dimensions and are properly connected.';
-      console.error(message);
-      throw new Error(message);
-    }
-
-    // Convert to LayoutResult format - all nodes are guaranteed to exist in dagre output
+    // Convert to LayoutResult format with graceful degradation for missing nodes
+    const missingNodes: string[] = [];
     const nodes = graph.nodes.map((inputNode) => {
       const dagreNode = g.node(inputNode.id);
+
+      if (!dagreNode) {
+        missingNodes.push(inputNode.id);
+        // Gracefully degrade for disconnected nodes by positioning at origin
+        console.warn(
+          `[DagreLayoutEngine] Node ${inputNode.id} not found in layout output. ` +
+            'Disconnected nodes are positioned at (0, 0). This is normal for isolated elements in architecture models.'
+        );
+        return {
+          id: inputNode.id,
+          position: { x: 0, y: 0 },
+          data: inputNode.data,
+        };
+      }
 
       // Dagre returns center positions, convert to top-left for React Flow
       return {

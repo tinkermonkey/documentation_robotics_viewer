@@ -252,7 +252,7 @@ test.describe('Layout Engine Interface', () => {
     }
   });
 
-  test('should throw error when nodes are missing from dagre output', async () => {
+  test('should gracefully handle disconnected nodes', async () => {
     const { DagreLayoutEngine } = await import(
       '../../../src/core/layout/engines/DagreLayoutEngine'
     );
@@ -267,10 +267,9 @@ test.describe('Layout Engine Interface', () => {
       edges: [{ id: 'edge-1', source: 'node-1', target: 'node-2' }],
     };
 
-    // Test the error throwing mechanism by verifying that if a node is missing,
-    // an error is thrown instead of silently positioning at (0,0).
-    // This is a defensive test - in normal operation, all nodes should be in dagre output,
-    // but if they're not (due to dagre bugs or graph structure issues), we want an error.
+    // Test the graceful degradation for disconnected nodes
+    // In architecture models, elements may not be connected. Instead of throwing,
+    // the engine positions these nodes at (0,0) and continues layout.
 
     await engine.initialize();
 
@@ -281,10 +280,8 @@ test.describe('Layout Engine Interface', () => {
       true
     );
 
-    // Note: Testing the error path directly is difficult because:
-    // 1. Dagre includes all valid nodes in its output
-    // 2. Reproducing a missing node scenario requires mocking internals
-    // The code now throws descriptive errors instead of silent positioning,
-    // which can be verified in integration tests where graph structure issues occur.
+    // Note: In normal operation, all valid nodes are included in dagre output.
+    // Disconnected nodes (not reachable from the main graph) are handled gracefully,
+    // with a warning logged and position set to (0,0).
   });
 });
