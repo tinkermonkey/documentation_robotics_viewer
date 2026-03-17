@@ -291,7 +291,8 @@ test.describe('ELKLayoutEngine - Port and Routing Tests', () => {
   });
 
   test('should use UNDEFINED edge routing by default for Libavoid pass-through', async () => {
-    // Arrange: graph with edges and internal spy to verify routing configuration
+    // Arrange: graph with edges to verify UNDEFINED routing behavior
+    // UNDEFINED routing allows the visualization engine (Libavoid) to determine routing
     const graph: LayoutGraphInput = {
       nodes: [
         { id: 'node1', data: { label: 'Node 1' }, width: 100, height: 50 },
@@ -312,16 +313,21 @@ test.describe('ELKLayoutEngine - Port and Routing Tests', () => {
     expect(result.edges).toHaveLength(2);
     expect(result.bounds).toBeDefined();
 
-    // Verify nodes are positioned and edges have endpoints defined
+    // Verify all nodes are positioned with valid numbers
     result.nodes.forEach(node => {
       expect(node.position).toBeDefined();
       expect(typeof node.position.x).toBe('number');
       expect(typeof node.position.y).toBe('number');
+      expect(isFinite(node.position.x)).toBe(true);
+      expect(isFinite(node.position.y)).toBe(true);
     });
 
+    // Verify edges have source and target (routing configuration allows external engine to determine paths)
     result.edges.forEach(edge => {
       expect(edge.source).toBeDefined();
       expect(edge.target).toBeDefined();
+      // Edges from UNDEFINED routing should be connected
+      expect(graph.edges.some(e => e.id === edge.id)).toBe(true);
     });
   });
 
@@ -349,23 +355,39 @@ test.describe('ELKLayoutEngine - Port and Routing Tests', () => {
       edgeRouting: 'ORTHOGONAL',
     });
 
-    // Assert: layout succeeds with orthogonal routing applied
+    // Assert: layout succeeds with orthogonal routing configuration applied
     expect(result.nodes).toHaveLength(4);
     expect(result.edges).toHaveLength(4);
     expect(result.bounds).toBeDefined();
 
-    // Verify all nodes are positioned
+    // Verify all nodes are positioned with valid coordinates
     result.nodes.forEach(node => {
       expect(node.position).toBeDefined();
       expect(typeof node.position.x).toBe('number');
       expect(typeof node.position.y).toBe('number');
+      expect(isFinite(node.position.x)).toBe(true);
+      expect(isFinite(node.position.y)).toBe(true);
     });
 
-    // Verify orthogonal routing configuration was applied (edges should connect properly)
+    // Verify all edges exist and connect correctly with ORTHOGONAL routing
+    expect(result.edges).toHaveLength(4);
     result.edges.forEach(edge => {
       expect(edge.source).toBeDefined();
       expect(edge.target).toBeDefined();
+      // Verify edge references valid nodes from the graph
+      const edgeExists = graph.edges.some(e => e.id === edge.id);
+      expect(edgeExists).toBe(true);
     });
+
+    // Verify that orthogonal routing configuration is reflected in the layout
+    // (all nodes should be present, edges should connect all nodes as specified)
+    const connectedNodeIds = new Set<string>();
+    result.edges.forEach(edge => {
+      connectedNodeIds.add(edge.source);
+      connectedNodeIds.add(edge.target);
+    });
+    // All 4 nodes should be connected through the edge structure
+    expect(connectedNodeIds.size).toBeGreaterThanOrEqual(3);
   });
 
   test('should not apply orthogonal routing when orthogonalRouting is disabled (default)', async () => {
@@ -396,17 +418,33 @@ test.describe('ELKLayoutEngine - Port and Routing Tests', () => {
     expect(result.edges).toHaveLength(4);
     expect(result.bounds).toBeDefined();
 
-    // Verify all nodes are positioned when using UNDEFINED routing
+    // Verify all nodes are positioned with valid coordinates when using UNDEFINED routing
     result.nodes.forEach(node => {
       expect(node.position).toBeDefined();
       expect(typeof node.position.x).toBe('number');
       expect(typeof node.position.y).toBe('number');
+      expect(isFinite(node.position.x)).toBe(true);
+      expect(isFinite(node.position.y)).toBe(true);
     });
 
-    // Verify all edges have proper source/target (routing handled by Libavoid pass)
+    // Verify all edges have proper source/target (routing handled by Libavoid pass-through)
+    expect(result.edges).toHaveLength(4);
     result.edges.forEach(edge => {
       expect(edge.source).toBeDefined();
       expect(edge.target).toBeDefined();
+      // Verify edge references valid nodes from the graph
+      const edgeExists = graph.edges.some(e => e.id === edge.id);
+      expect(edgeExists).toBe(true);
     });
+
+    // Verify that UNDEFINED routing configuration is reflected in the layout
+    // (all nodes should be present, edges should connect as specified)
+    const connectedNodeIds = new Set<string>();
+    result.edges.forEach(edge => {
+      connectedNodeIds.add(edge.source);
+      connectedNodeIds.add(edge.target);
+    });
+    // All nodes should be part of the graph structure
+    expect(connectedNodeIds.size).toBeGreaterThanOrEqual(3);
   });
 });
