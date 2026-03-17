@@ -59,7 +59,14 @@ export async function initializeDefaultEngines(): Promise<void> {
   const { GraphvizLayoutEngine } = await import('./GraphvizLayoutEngine');
 
   const registry = getGlobalRegistry();
-  const failedEngines: Array<{ name: string; error: Error }> = [];
+  const failedEngines: string[] = [];
+
+  // Helper function to handle engine initialization errors
+  function handleEngineError(engineName: string, error: unknown): void {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error(`[Layout Engines] Failed to initialize ${engineName} engine:`, errorMessage);
+    failedEngines.push(engineName);
+  }
 
   // Initialize Dagre engine with error isolation
   try {
@@ -67,9 +74,7 @@ export async function initializeDefaultEngines(): Promise<void> {
     await dagreEngine.initialize();
     registry.register('dagre', dagreEngine, ['hierarchical', 'tree']);
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('[Layout Engines] Failed to initialize dagre engine:', errorMessage);
-    failedEngines.push({ name: 'dagre', error: error instanceof Error ? error : new Error(String(error)) });
+    handleEngineError('dagre', error);
   }
 
   // Initialize D3-Force engine with error isolation
@@ -78,9 +83,7 @@ export async function initializeDefaultEngines(): Promise<void> {
     await d3ForceEngine.initialize();
     registry.register('d3-force', d3ForceEngine, ['force', 'force-directed']);
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('[Layout Engines] Failed to initialize d3-force engine:', errorMessage);
-    failedEngines.push({ name: 'd3-force', error: error instanceof Error ? error : new Error(String(error)) });
+    handleEngineError('d3-force', error);
   }
 
   // Initialize ELK engine with error isolation
@@ -89,9 +92,7 @@ export async function initializeDefaultEngines(): Promise<void> {
     await elkEngine.initialize();
     registry.register('elk', elkEngine, ['eclipse-layout-kernel', 'layered']);
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('[Layout Engines] Failed to initialize elk engine:', errorMessage);
-    failedEngines.push({ name: 'elk', error: error instanceof Error ? error : new Error(String(error)) });
+    handleEngineError('elk', error);
   }
 
   // Initialize Graphviz engine with error isolation
@@ -100,9 +101,7 @@ export async function initializeDefaultEngines(): Promise<void> {
     await graphvizEngine.initialize();
     registry.register('graphviz', graphvizEngine, ['dot', 'neato']);
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('[Layout Engines] Failed to initialize graphviz engine:', errorMessage);
-    failedEngines.push({ name: 'graphviz', error: error instanceof Error ? error : new Error(String(error)) });
+    handleEngineError('graphviz', error);
   }
 
   // Log summary
@@ -113,7 +112,7 @@ export async function initializeDefaultEngines(): Promise<void> {
     console.warn(
       `[Layout Engines] Engine initialization completed with ${failedEngines.length} failure(s). ` +
       `Registered: ${registeredEngines.length > 0 ? registeredEngines.join(', ') : 'none'}. ` +
-      `Failed: ${failedEngines.map((e) => e.name).join(', ')}`
+      `Failed: ${failedEngines.join(', ')}`
     );
   }
 }
