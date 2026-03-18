@@ -138,9 +138,24 @@ export class LibavoidRouter {
    */
   private async performInitialization(): Promise<void> {
     try {
-      // Load the WASM module and initialize it
-      // The AvoidLib object will locate the .wasm file in the public directory
-      await AvoidLib.load();
+      // Fetch the WASM binary from the public directory and re-wrap it with
+      // the correct 'application/wasm' MIME type before passing to AvoidLib.
+      // This bypasses two issues:
+      // 1. libavoid-js derives the WASM path from import.meta.url which after
+      //    bundling points to the JS chunk, not the WASM file.
+      // 2. Some static file servers (e.g. Python's FastAPI default) serve .wasm
+      //    as application/octet-stream, which breaks WebAssembly streaming.
+      const response = await fetch('/libavoid.wasm');
+      if (!response.ok) {
+        throw new Error(`Failed to fetch WASM binary: ${response.status} ${response.url}`);
+      }
+      const wasmBuffer = await response.arrayBuffer();
+      const blobUrl = URL.createObjectURL(new Blob([wasmBuffer], { type: 'application/wasm' }));
+      try {
+        await AvoidLib.load(blobUrl);
+      } finally {
+        URL.revokeObjectURL(blobUrl);
+      }
       this.module = AvoidLib.getInstance();
       this.initialized = true;
       console.log('[LibavoidRouter] Initialized with Libavoid WASM module');

@@ -79,7 +79,7 @@ update_title "src/catalog/stories/01-primitives/interactions/SpaceMouseHandler.s
 # 02 Details
 update_title "src/catalog/stories/02-details/spec-details/SpecViewer.stories.tsx" "02 Details / Spec Details / SpecViewer"
 update_title "src/catalog/stories/02-details/spec-details/SchemaInfoPanel.stories.tsx" "02 Details / Spec Details / SchemaInfoPanel"
-update_title "src/catalog/stories/02-details/model-details/ModelJSONViewer.stories.tsx" "02 Details / Model Details / ModelJSONViewer"
+update_title "src/catalog/stories/02-details/model-details/ModelDetailsViewer.stories.tsx" "02 Details / Model Details / ModelDetailsViewer"
 update_title "src/catalog/stories/02-details/model-details/NodeDetailsPanel.stories.tsx" "02 Details / Model Details / NodeDetailsPanel"
 
 # 03 Graphs - Nodes

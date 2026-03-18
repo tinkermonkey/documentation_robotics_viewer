@@ -264,8 +264,8 @@ model-json-viewer:
       reference:
         provenance: manual
         locations:
-          - file: src/apps/embedded/components/ModelJSONViewer.tsx
-            symbol: ModelJSONViewer
+          - file: src/apps/embedded/components/ModelDetailsViewer.tsx
+            symbol: ModelDetailsViewer
 changeset-viewer:
   id: application.component.changeset-viewer
   name: Changeset Viewer

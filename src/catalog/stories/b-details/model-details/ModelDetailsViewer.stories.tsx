@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import ModelJSONViewer from '@/apps/embedded/components/ModelJSONViewer';
+import ModelDetailsViewer from '@/apps/embedded/components/ModelDetailsViewer';
 import type { MetaModel } from '@/core/types/model';
 import { LayerType, RelationshipType } from '@/core/types';
 
 const meta = {
-  title: 'B Details / Model Details / ModelJSONViewer',
+  title: 'B Details / Model Details / ModelDetailsViewer',
   parameters: {
     layout: 'centered',
   },
@@ -240,7 +240,7 @@ const mockSpecData = {
 export const Default: Story = {
   render: () => (
     <div className="w-full max-w-4xl p-4 bg-gray-50">
-      <ModelJSONViewer
+      <ModelDetailsViewer
         model={mockModel}
         selectedLayer={null}
         specData={mockSpecData}
@@ -252,7 +252,7 @@ export const Default: Story = {
 export const WithSelectedLayer: Story = {
   render: () => (
     <div className="w-full max-w-4xl p-4 bg-gray-50">
-      <ModelJSONViewer
+      <ModelDetailsViewer
         model={mockModel}
         selectedLayer="motivation-layer"
         specData={mockSpecData}
@@ -264,7 +264,7 @@ export const WithSelectedLayer: Story = {
 export const WithBusinessLayer: Story = {
   render: () => (
     <div className="w-full max-w-4xl p-4 bg-gray-50">
-      <ModelJSONViewer
+      <ModelDetailsViewer
         model={mockModel}
         selectedLayer="business-layer"
         specData={mockSpecData}
@@ -276,7 +276,7 @@ export const WithBusinessLayer: Story = {
 export const WithPathHighlight: Story = {
   render: () => (
     <div className="w-full max-w-4xl p-4 bg-gray-50">
-      <ModelJSONViewer
+      <ModelDetailsViewer
         model={mockModel}
         selectedLayer="motivation-layer"
         specData={mockSpecData}

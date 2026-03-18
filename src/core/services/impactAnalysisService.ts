@@ -1,16 +1,12 @@
-/**
- * Impact Analysis Service (Stub)
- * 
- * Minimal stub to satisfy businessExportService imports.
- * Only used by business layer export functionality.
- */
-
-import type { BusinessGraph } from '../types/businessLayer';
-
-// Minimal type to avoid full React Flow import
+// Minimal types to avoid React Flow and business layer imports
 interface Node {
   id: string;
   [key: string]: any;
+}
+
+interface BusinessGraph {
+  nodes: Node[];
+  edges: Array<{ id: string; source: string; target: string }>;
 }
 
 export interface ImpactPath {

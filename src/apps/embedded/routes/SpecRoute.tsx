@@ -1,12 +1,14 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import SpecViewer from '../components/SpecViewer';
 import AnnotationPanel from '../components/AnnotationPanel';
 import SchemaInfoPanel from '../components/SchemaInfoPanel';
+import ModelLayersSidebar from '../components/ModelLayersSidebar';
 import SharedLayout from '../components/SharedLayout';
 import { LoadingState, ErrorState } from '../components/shared';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
+import { useModelStore } from '../../../core/stores/modelStore';
 import { embeddedDataLoader } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
 
@@ -15,19 +17,49 @@ export default function SpecRoute() {
   const navigate = useNavigate();
   const annotationStore = useAnnotationStore();
   const { specView, setSpecView } = useViewPreferenceStore();
+  const { setModel } = useModelStore();
+  const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
 
-  // Load spec data
+  // Load both spec and model (model populates ModelLayersSidebar via modelStore)
   const { data: specData, loading, error, reload } = useDataLoader({
     loadFn: async () => {
-      const spec = await embeddedDataLoader.loadSpec();
+      const [spec, model] = await Promise.all([
+        embeddedDataLoader.loadSpec(),
+        embeddedDataLoader.loadModel(),
+      ]);
+      setModel(model);
       return spec;
     },
-    websocketEvents: ['model.updated'],
+    websocketEvents: ['model', 'model.updated'],
     onSuccess: async () => {
       const annotations = await embeddedDataLoader.loadAnnotations();
       annotationStore.setAnnotations(annotations);
     },
   });
+
+  // Build maps from layer id → schema key and layer id → node type count
+  const { layerIdToSchemaKey, layerCounts } = useMemo(() => {
+    if (!specData) return { layerIdToSchemaKey: {}, layerCounts: {} };
+    const layerIdToSchemaKey: Record<string, string> = {};
+    const layerCounts: Record<string, number> = {};
+    for (const [schemaKey, schema] of Object.entries(specData.schemas)) {
+      const layerObj = schema.layer as { id?: string } | undefined;
+      const nodeSchemas = schema.nodeSchemas as Record<string, unknown> | undefined;
+      if (layerObj?.id) {
+        layerIdToSchemaKey[layerObj.id] = schemaKey;
+        layerCounts[layerObj.id] = nodeSchemas ? Object.keys(nodeSchemas).length : 0;
+      }
+    }
+    return { layerIdToSchemaKey, layerCounts };
+  }, [specData]);
+
+  // Default to first layer when data loads
+  useEffect(() => {
+    if (specData && !selectedLayerId) {
+      const firstLayerId = Object.keys(layerIdToSchemaKey)[0];
+      if (firstLayerId) setSelectedLayerId(firstLayerId);
+    }
+  }, [specData, layerIdToSchemaKey, selectedLayerId]);
 
   const activeView = view === 'json' ? 'json' : 'graph';
 
@@ -60,10 +92,20 @@ export default function SpecRoute() {
     );
   }
 
+  const selectedSchemaId = selectedLayerId ? layerIdToSchemaKey[selectedLayerId] ?? null : null;
+  const selectedSchema = selectedSchemaId ? specData.schemas[selectedSchemaId] : undefined;
+
   return (
     <SharedLayout
-      showLeftSidebar={false}
+      showLeftSidebar={true}
       showRightSidebar={true}
+      leftSidebarContent={
+        <ModelLayersSidebar
+          selectedLayerId={selectedLayerId}
+          onSelectLayer={setSelectedLayerId}
+          layerCounts={layerCounts}
+        />
+      }
       rightSidebarContent={
         <>
           <AnnotationPanel />
@@ -71,7 +113,21 @@ export default function SpecRoute() {
         </>
       }
     >
-      <SpecViewer specData={specData} selectedSchemaId={null} />
+      {activeView === 'graph' ? (
+        <SpecViewer specData={specData} selectedSchemaId={selectedSchemaId} />
+      ) : (
+        <div className="h-full overflow-auto p-6">
+          {selectedSchema ? (
+            <pre className="text-xs text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 overflow-auto">
+              {JSON.stringify(selectedSchema, null, 2)}
+            </pre>
+          ) : (
+            <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
+              <p>Select a layer to view its schema</p>
+            </div>
+          )}
+        </div>
+      )}
     </SharedLayout>
   );
 }

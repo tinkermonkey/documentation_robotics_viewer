@@ -78,15 +78,6 @@ test.describe('NodeConfigLoader', () => {
       }
     });
 
-    test('should support all C4 layer types', () => {
-      const c4Types = [NodeType.C4_CONTAINER, NodeType.C4_COMPONENT, NodeType.C4_EXTERNAL_ACTOR];
-
-      for (const nodeType of c4Types) {
-        const config = nodeConfigLoader.getStyleConfig(nodeType);
-        expect(config).toBeDefined();
-      }
-    });
-
     test('should support all data layer types', () => {
       const dataTypes = [NodeType.DATA_JSON_SCHEMA, NodeType.DATA_MODEL];
 

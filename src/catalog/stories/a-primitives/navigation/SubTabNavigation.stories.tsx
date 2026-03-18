@@ -11,7 +11,7 @@ type Story = StoryObj;
 export const Default: Story = { render: () => {
   const tabs: SubTab[] = [
     { id: 'graph', label: 'Graph', path: '/view/graph' },
-    { id: 'json', label: 'JSON', path: '/view/json' },
+    { id: 'details', label: 'Details', path: '/view/details' },
   ];
 
   return <SubTabNavigation tabs={tabs} activePath="/view/graph" />;
@@ -41,7 +41,7 @@ export const FiveTabs: Story = { render: () => {
 export const FirstTabActive: Story = { render: () => {
   const tabs: SubTab[] = [
     { id: 'graph', label: 'Graph', path: '/view/graph' },
-    { id: 'json', label: 'JSON', path: '/view/json' },
+    { id: 'details', label: 'Details', path: '/view/details' },
     { id: 'diff', label: 'Diff', path: '/view/diff' },
   ];
 
@@ -51,7 +51,7 @@ export const FirstTabActive: Story = { render: () => {
 export const LastTabActive: Story = { render: () => {
   const tabs: SubTab[] = [
     { id: 'graph', label: 'Graph', path: '/view/graph' },
-    { id: 'json', label: 'JSON', path: '/view/json' },
+    { id: 'details', label: 'Details', path: '/view/details' },
     { id: 'diff', label: 'Diff', path: '/view/diff' },
   ];
 
@@ -70,7 +70,7 @@ export const NoTabs: Story = { render: () => {
 export const PathNotExactMatch: Story = { render: () => {
   const tabs: SubTab[] = [
     { id: 'graph', label: 'Graph', path: '/model/graph' },
-    { id: 'json', label: 'JSON', path: '/model/json' },
+    { id: 'details', label: 'Details', path: '/model/details' },
   ];
 
   return (

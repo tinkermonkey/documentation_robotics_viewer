@@ -29,19 +29,8 @@ export {
 export { DagreLayoutEngine } from './DagreLayoutEngine';
 export type { DagreParameters } from './DagreLayoutEngine';
 
-export { D3ForceLayoutEngine } from './D3ForceLayoutEngine';
-export type { D3ForceParameters } from './D3ForceLayoutEngine';
-
 export { ELKLayoutEngine } from './ELKLayoutEngine';
 export type { ELKParameters, ELKAlgorithm, ELKDirection, ELKLayeringStrategy } from './ELKLayoutEngine';
-
-export { GraphvizLayoutEngine } from './GraphvizLayoutEngine';
-export type {
-  GraphvizParameters,
-  GraphvizAlgorithm,
-  GraphvizRankDir,
-  GraphvizSplines,
-} from './GraphvizLayoutEngine';
 
 // Utility functions
 
@@ -54,9 +43,7 @@ export type {
 export async function initializeDefaultEngines(): Promise<void> {
   const { getGlobalRegistry } = await import('./LayoutEngineRegistry');
   const { DagreLayoutEngine } = await import('./DagreLayoutEngine');
-  const { D3ForceLayoutEngine } = await import('./D3ForceLayoutEngine');
   const { ELKLayoutEngine } = await import('./ELKLayoutEngine');
-  const { GraphvizLayoutEngine } = await import('./GraphvizLayoutEngine');
 
   const registry = getGlobalRegistry();
   const failedEngines: string[] = [];
@@ -77,15 +64,6 @@ export async function initializeDefaultEngines(): Promise<void> {
     handleEngineError('dagre', error);
   }
 
-  // Initialize D3-Force engine with error isolation
-  try {
-    const d3ForceEngine = new D3ForceLayoutEngine();
-    await d3ForceEngine.initialize();
-    registry.register('d3-force', d3ForceEngine, ['force', 'force-directed']);
-  } catch (error) {
-    handleEngineError('d3-force', error);
-  }
-
   // Initialize ELK engine with error isolation
   try {
     const elkEngine = new ELKLayoutEngine();
@@ -93,15 +71,6 @@ export async function initializeDefaultEngines(): Promise<void> {
     registry.register('elk', elkEngine, ['eclipse-layout-kernel', 'layered']);
   } catch (error) {
     handleEngineError('elk', error);
-  }
-
-  // Initialize Graphviz engine with error isolation
-  try {
-    const graphvizEngine = new GraphvizLayoutEngine();
-    await graphvizEngine.initialize();
-    registry.register('graphviz', graphvizEngine, ['dot', 'neato']);
-  } catch (error) {
-    handleEngineError('graphviz', error);
   }
 
   // Log summary

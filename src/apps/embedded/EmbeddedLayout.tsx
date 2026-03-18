@@ -1,10 +1,8 @@
-import { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Outlet, useMatches, useNavigate } from '@tanstack/react-router';
 import {
   HiDocumentText,
   HiCube,
-  HiLightBulb,
-  HiViewGrid,
   HiCollection,
   HiChatAlt2,
 } from 'react-icons/hi';
@@ -22,13 +20,13 @@ const routeMetadata: Record<string, { subTabs?: SubTab[] }> = {
   '/spec': {
     subTabs: [
       { id: 'graph', label: 'Graph', path: '/spec/graph' },
-      { id: 'json', label: 'JSON', path: '/spec/json' }
+      { id: 'details', label: 'Details', path: '/spec/details' }
     ]
   },
   '/model': {
     subTabs: [
       { id: 'graph', label: 'Graph', path: '/model/graph' },
-      { id: 'json', label: 'JSON', path: '/model/json' }
+      { id: 'details', label: 'Details', path: '/model/details' }
     ]
   },
   '/changesets': {
@@ -48,11 +46,9 @@ export default function EmbeddedLayout() {
 
   // Determine active tab index from current route
   const currentPath = matches[matches.length - 1]?.pathname || '';
-  const tabs = [
+  const tabs: Array<{ path: string; label: string; icon: React.ElementType; defaultView: string | null }> = [
     { path: '/spec', label: 'Spec', icon: HiDocumentText, defaultView: specView },
     { path: '/model', label: 'Model', icon: HiCube, defaultView: modelView },
-    { path: '/motivation', label: 'Motivation', icon: HiLightBulb, defaultView: null },
-    { path: '/architecture', label: 'Architecture', icon: HiViewGrid, defaultView: null },
     { path: '/changesets', label: 'Changesets', icon: HiCollection, defaultView: changesetView },
   ];
 

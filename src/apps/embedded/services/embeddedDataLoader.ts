@@ -456,6 +456,67 @@ export class EmbeddedDataLoader {
       normalized.metadata = modelData.metadata as ModelMetadata;
     }
 
+    // Handle flat graph format from DR CLI: { nodes: [...], links: [...] }
+    if (Array.isArray(modelData.nodes) && !Array.isArray(modelData.layers)) {
+      const LAYER_TYPE_MAP: Record<string, LayerType> = {
+        motivation: LayerType.Motivation,
+        business: LayerType.Business,
+        security: LayerType.Security,
+        application: LayerType.Application,
+        technology: LayerType.Technology,
+        api: LayerType.Api,
+        data_model: LayerType.DataModel,
+        datastore: LayerType.Datastore,
+        ux: LayerType.Ux,
+        navigation: LayerType.Navigation,
+        apm: LayerType.ApmObservability,
+        testing: LayerType.Application, // fallback
+      };
+
+      const defaultVisual: ElementVisual = {
+        position: { x: 0, y: 0 },
+        size: { width: 200, height: 100 },
+        style: {}
+      };
+
+      for (const rawNode of (modelData.nodes as Record<string, unknown>[])) {
+        const layerId = typeof rawNode.layer_id === 'string' ? rawNode.layer_id : 'unknown';
+        if (!normalized.layers[layerId]) {
+          const layerName = layerId.charAt(0).toUpperCase() + layerId.slice(1).replace(/_/g, ' ') + ' Layer';
+          normalized.layers[layerId] = {
+            id: layerId,
+            type: LAYER_TYPE_MAP[layerId] ?? LayerType.Application,
+            name: layerName,
+            elements: [],
+            relationships: []
+          };
+        }
+        normalized.layers[layerId].elements.push({
+          id: typeof rawNode.id === 'string' ? rawNode.id : String(rawNode.id),
+          elementId: typeof rawNode.spec_node_id === 'string' ? rawNode.spec_node_id : undefined,
+          type: typeof rawNode.type === 'string' ? rawNode.type : '',
+          name: typeof rawNode.name === 'string' ? rawNode.name : '',
+          layerId,
+          properties: {},
+          visual: defaultVisual
+        });
+      }
+
+      for (const rawLink of (modelData.links as Record<string, unknown>[] ?? [])) {
+        const layerId = typeof rawLink.layer_id === 'string' ? rawLink.layer_id : 'unknown';
+        if (normalized.layers[layerId]) {
+          normalized.layers[layerId].relationships!.push({
+            id: typeof rawLink.id === 'string' ? rawLink.id : String(rawLink.id),
+            sourceId: typeof rawLink.source === 'string' ? rawLink.source : '',
+            targetId: typeof rawLink.target === 'string' ? rawLink.target : '',
+            type: (typeof rawLink.type === 'string' ? rawLink.type : 'reference') as Relationship['type']
+          });
+        }
+      }
+
+      return normalized;
+    }
+
     for (const [layerId, layer] of Object.entries(modelData.layers || {})) {
       if (typeof layer !== 'object' || layer === null) {
         logError(

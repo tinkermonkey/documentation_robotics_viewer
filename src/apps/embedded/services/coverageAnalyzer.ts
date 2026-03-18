@@ -4,10 +4,7 @@
  * Provides coverage status helpers used by GoalNode badge rendering.
  */
 
-import { CoverageStatus } from '@/core/types/businessLayer';
-
-// Re-export for backward compatibility
-export type { CoverageStatus };
+export type CoverageStatus = 'complete' | 'partial' | 'none';
 
 /**
  * Coverage Analyzer - provides icon and color helpers for CoverageStatus

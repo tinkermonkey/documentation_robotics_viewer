@@ -6,12 +6,10 @@
 import type { EdgeTypes } from '@xyflow/react';
 
 import { ElbowEdge } from './ElbowEdge';
-import { BundledCrossLayerEdge } from './BundledCrossLayerEdge';
 
 // Export edge components
 export {
   ElbowEdge,
-  BundledCrossLayerEdge,
 };
 
 // Edge types object for React Flow
@@ -21,7 +19,6 @@ export {
 // Cast as EdgeTypes to satisfy React Flow's strict type requirements
 export const edgeTypes = {
   elbow: ElbowEdge,
-  bundledCrossLayer: BundledCrossLayerEdge,
 } as EdgeTypes;
 
 // Export pathfinding utilities

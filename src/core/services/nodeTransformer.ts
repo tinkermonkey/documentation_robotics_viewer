@@ -6,9 +6,8 @@
 import { MetaModel, Relationship, ModelElement } from '../types';
 import { VerticalLayerLayout } from '../layout/verticalLayerLayout';
 import { LayoutEngine } from '../layout/engines';
-import { MarkerType, Edge } from '@xyflow/react';
+import { MarkerType } from '@xyflow/react';
 import { elementStore } from '../stores/elementStore';
-import { applyEdgeBundling, calculateOptimalThreshold } from '../layout/edgeBundling';
 import { VerticalLayerLayoutResult, LayerLayoutResult } from '../types/shapes';
 import { AppNode, AppEdge, ChangesetOperation } from '../types/reactflow';
 import { FALLBACK_COLOR } from '../utils/layerColors';
@@ -205,8 +204,9 @@ export class NodeTransformer {
         const nodeId = `node-${element.id}`;
         nodeMap.set(element.id, nodeId);
 
-        // Determine node type
+        // Determine node type — null means unmapped type, skip silently
         const nodeType = this.getNodeTypeForElement(element);
+        if (nodeType === null) continue;
 
         // Create node with type-specific data
         const node: AppNode = {
@@ -241,10 +241,7 @@ export class NodeTransformer {
     const crossLayerReferences = extractCrossLayerReferences(model, true, new Set(), new Set());
     const crossLayerEdges = referencesToEdges(crossLayerReferences, model, (elementId) => nodeMap.get(elementId));
 
-    // Apply edge bundling to reduce visual clutter in dense cross-layer graphs
-    const threshold = calculateOptimalThreshold(nodes.length, crossLayerEdges.length);
-    const { bundledEdges } = applyEdgeBundling(crossLayerEdges as Edge[], { threshold });
-    edges.push(...(bundledEdges as AppEdge[]));
+    edges.push(...(crossLayerEdges as AppEdge[]));
 
     console.log(`[NodeTransformer] Created ${nodes.length} nodes and ${edges.length} edges`);
 
@@ -390,7 +387,7 @@ export class NodeTransformer {
    * All element types must be mapped via configuration to NodeType enum.
    * LayerContainer is a special structural node type.
    */
-  private getNodeTypeForElement(element: ModelElement): string {
+  private getNodeTypeForElement(element: ModelElement): string | null {
     // Special case: LayerContainer remains separate for layout purposes
     if (element.type === 'LayerContainer' || element.type === 'layer-container') {
       return 'layerContainer';
@@ -400,11 +397,11 @@ export class NodeTransformer {
     const mappedType = nodeConfigLoader.mapElementType(element.type);
 
     if (!mappedType) {
-      // Critical error: element type has no mapping
-      throw new Error(
+      console.warn(
         `[NodeTransformer] Cannot map element type "${element.type}" to NodeType enum. ` +
         `Add a mapping in nodeConfig.json typeMap section. Element ID: ${element.id}`
       );
+      return null;
     }
 
     // All mapped types use unified node for consistent rendering
@@ -444,10 +441,8 @@ export class NodeTransformer {
       return this.extractDataNodeData(element, mappedType as NodeType, layerId);
     }
 
-    // Should not reach here if nodeConfig.json is properly configured
-    throw new Error(
-      `[NodeTransformer] No extraction method for mapped type "${mappedType}" (element type: "${element.type}")`
-    );
+    // Generic fallback for all other layer prefixes (technology, api, datastore, ux, navigation, apm, testing, security)
+    return this.extractGenericNodeData(element, mappedType as NodeType, layerId);
   }
 
   /**
@@ -714,55 +709,6 @@ export class NodeTransformer {
       });
     }
 
-    // Add role for components
-    if (nodeType === NodeType.C4_COMPONENT) {
-      const role = this.validateString(element.properties?.role);
-      if (role !== undefined) {
-        items.push({
-          id: 'role',
-          label: 'Role',
-          value: role,
-          required: false,
-        });
-      }
-    }
-
-    // Add containerType for containers
-    if (nodeType === NodeType.C4_CONTAINER) {
-      const containerType = this.validateString(element.properties?.containerType);
-      if (containerType !== undefined) {
-        items.push({
-          id: 'containerType',
-          label: 'Type',
-          value: containerType,
-          required: false,
-        });
-      }
-    }
-
-    // Add actorType for external actors
-    if (nodeType === NodeType.C4_EXTERNAL_ACTOR) {
-      const actorType = this.validateString(element.properties?.actorType);
-      if (actorType !== undefined) {
-        items.push({
-          id: 'actorType',
-          label: 'Type',
-          value: actorType,
-          required: false,
-        });
-      }
-    }
-
-    // Add interfaces for components if present
-    if (nodeType === NodeType.C4_COMPONENT && this.isStringArray(element.properties?.interfaces) && element.properties.interfaces.length > 0) {
-      items.push({
-        id: 'interfaces',
-        label: 'Interfaces',
-        value: element.properties.interfaces.join(', '),
-        required: false,
-      });
-    }
-
     return {
       nodeType,
       label: element.name || element.id,
@@ -846,6 +792,26 @@ export class NodeTransformer {
   }
 
   /**
+   * Generic extraction for layer types without specific extraction methods
+   * (technology, api, datastore, ux, navigation, apm, testing, security)
+   */
+  private extractGenericNodeData(element: ModelElement, nodeType: NodeType, layerId: string): UnifiedNodeData {
+    const optionalProps = this.extractOptionalProperties(element);
+
+    return {
+      nodeType,
+      label: element.name || element.id,
+      layerId,
+      elementId: element.id,
+      items: this.extractFieldItems(element),
+      badges: undefined,
+      detailLevel: optionalProps.detailLevel,
+      changesetOperation: optionalProps.changesetOperation,
+      relationshipBadge: optionalProps.relationshipBadge,
+    };
+  }
+
+  /**
    * Format field labels (camelCase → Title Case)
    */
   private formatFieldLabel(key: string): string {
@@ -916,22 +882,6 @@ export class NodeTransformer {
               }
             }
 
-            // Special handling for C4 nodes with technologies and description
-            if (mappedType.startsWith('c4.')) {
-              let itemCount = 0;
-              if (element.description) itemCount++;
-              if (element.properties?.technology && Array.isArray(element.properties.technology) && element.properties.technology.length > 0) itemCount++;
-              if (mappedType === NodeType.C4_COMPONENT && element.properties?.role) itemCount++;
-              if (mappedType === NodeType.C4_CONTAINER && element.properties?.containerType) itemCount++;
-              if (mappedType === NodeType.C4_EXTERNAL_ACTOR && element.properties?.actorType) itemCount++;
-              if (mappedType === NodeType.C4_COMPONENT && element.properties?.interfaces && Array.isArray(element.properties.interfaces) && element.properties.interfaces.length > 0) itemCount++;
-
-              if (itemCount > 0) {
-                const headerHeight = dimensions.headerHeight || 40;
-                const itemHeight = dimensions.itemHeight || 24;
-                height = headerHeight + itemCount * itemHeight;
-              }
-            }
 
             element.visual.size = { width, height };
           }

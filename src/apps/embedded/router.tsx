@@ -3,8 +3,6 @@ import { createHashHistory } from '@tanstack/history';
 import EmbeddedLayout from './EmbeddedLayout';
 import ModelRoute from './routes/ModelRoute';
 import SpecRoute from './routes/SpecRoute';
-import MotivationRoute from './routes/MotivationRoute';
-import ArchitectureRoute from './routes/ArchitectureRoute';
 import ChangesetRoute from './routes/ChangesetRoute';
 import AuthRoute from './routes/AuthRoute';
 
@@ -53,30 +51,6 @@ const specViewRoute = createRoute({
   component: SpecRoute,
 });
 
-const motivationRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/motivation',
-  validateSearch: (search: any): { selectedElement?: string; skipAnimation?: boolean } => {
-    return {
-      selectedElement: typeof search.selectedElement === 'string' ? search.selectedElement : undefined,
-      skipAnimation: typeof search.skipAnimation === 'boolean' ? search.skipAnimation : false,
-    };
-  },
-  component: MotivationRoute,
-});
-
-const architectureRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/architecture',
-  validateSearch: (search: any): { selectedElement?: string; skipAnimation?: boolean } => {
-    return {
-      selectedElement: typeof search.selectedElement === 'string' ? search.selectedElement : undefined,
-      skipAnimation: typeof search.skipAnimation === 'boolean' ? search.skipAnimation : false,
-    };
-  },
-  component: ArchitectureRoute,
-});
-
 const changesetsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/changesets',
@@ -95,8 +69,6 @@ const routeTree = rootRoute.addChildren([
   modelViewRoute,
   specRoute,
   specViewRoute,
-  motivationRoute,
-  architectureRoute,
   changesetsRoute,
   changesetsViewRoute,
 ]);

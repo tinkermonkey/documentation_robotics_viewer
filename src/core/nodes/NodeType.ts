@@ -25,11 +25,6 @@ export enum NodeType {
   BUSINESS_CAPABILITY = 'business.capability',
   BUSINESS_PROCESS = 'business.process',
 
-  // C4 layer (3)
-  C4_CONTAINER = 'c4.container',
-  C4_COMPONENT = 'c4.component',
-  C4_EXTERNAL_ACTOR = 'c4.externalActor',
-
   // Technology layer (1)
   TECHNOLOGY_SYSTEM_SOFTWARE = 'technology.systemsoftware',
 

@@ -108,6 +108,13 @@ function packageEmbedded() {
   const bundleAssetsDir = path.join(BUNDLE_DIR, 'assets');
   copyDirectory(ASSETS_DIR, bundleAssetsDir);
 
+  // Copy WASM to bundle root so it's served at /libavoid.wasm
+  log('2b. Copying libavoid.wasm...', colors.blue);
+  const wasmSource = path.join(DIST_DIR, 'libavoid.wasm');
+  if (fs.existsSync(wasmSource)) {
+    fs.copyFileSync(wasmSource, path.join(BUNDLE_DIR, 'libavoid.wasm'));
+  }
+
   // Copy HTML
   log('3. Copying HTML...', colors.blue);
   const htmlSource = path.join(PUBLIC_DIR, 'index-embedded.html');

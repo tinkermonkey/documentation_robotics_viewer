@@ -79,7 +79,7 @@ motivation-graph-view:
       - application.component.motivation-graph-view
 model-json-viewer:
   id: ux.component.model-json-viewer
-  name: ModelJSONViewer
+  name: ModelDetailsViewer
   type: custom
   documentation: Interactive JSON viewer with syntax highlighting, collapsible
     sections, path navigation, and schema info integration
@@ -88,8 +88,8 @@ model-json-viewer:
       reference:
         provenance: manual
         locations:
-          - file: src/apps/embedded/components/ModelJSONViewer.tsx
-            symbol: ModelJSONViewer
+          - file: src/apps/embedded/components/ModelDetailsViewer.tsx
+            symbol: ModelDetailsViewer
     implementsComponent:
       - application.component.model-json-viewer
 spec-viewer:
