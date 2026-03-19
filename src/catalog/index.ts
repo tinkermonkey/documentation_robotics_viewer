@@ -136,6 +136,11 @@ export {
   createCustomSpecFixture
 } from './fixtures/specFixtures';
 
+export {
+  createRealMotivationLayerModel,
+  createRealBusinessLayerModel
+} from './fixtures/realLayerFixtures';
+
 // Components - Story Support
 export {
   StoryLoadedWrapper,

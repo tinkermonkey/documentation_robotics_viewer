@@ -27,7 +27,6 @@ export type DiagramType =
  * Supported layout algorithm types
  */
 export type LayoutType =
-  | 'force-directed'
   | 'hierarchical'
   | 'radial'
   | 'swimlane'

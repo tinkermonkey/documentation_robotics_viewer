@@ -7,19 +7,19 @@
  */
 
 import type { DiagramType } from '@/core/types/diagram';
-import type { ELKLayoutParameters, GraphvizLayoutParameters } from '@/core/types/layoutParameters';
-import { DEFAULT_ELK_PARAMETERS, DEFAULT_GRAPHVIZ_PARAMETERS } from '@/core/types/layoutParameters';
+import type { ELKLayoutParameters } from '@/core/types/layoutParameters';
+import { DEFAULT_ELK_PARAMETERS } from '@/core/types/layoutParameters';
 
 /**
  * Layout engine recommendation for a layer
  */
 export interface LayerLayoutConfig {
   /** Recommended primary engine */
-  primaryEngine: 'elk' | 'graphviz' | 'dagre' | 'd3-force';
+  primaryEngine: 'elk' | 'dagre';
   /** Alternative engines that work well for this layer */
   alternativeEngines: string[];
   /** Optimized parameters for the primary engine */
-  parameters: ELKLayoutParameters | GraphvizLayoutParameters | Record<string, unknown>;
+  parameters: ELKLayoutParameters | Record<string, unknown>;
   /** Layout characteristics for this layer */
   characteristics: {
     direction: 'horizontal' | 'vertical' | 'radial' | 'matrix';
@@ -37,7 +37,7 @@ export function getLayerLayoutConfig(layerType: DiagramType): LayerLayoutConfig 
     case 'motivation':
       return {
         primaryEngine: 'elk',
-        alternativeEngines: ['d3-force', 'graphviz'],
+        alternativeEngines: ['dagre'],
         parameters: {
           ...DEFAULT_ELK_PARAMETERS,
           algorithm: 'layered',
@@ -61,7 +61,7 @@ export function getLayerLayoutConfig(layerType: DiagramType): LayerLayoutConfig 
     case 'business':
       return {
         primaryEngine: 'elk',
-        alternativeEngines: ['graphviz', 'dagre'],
+        alternativeEngines: ['dagre'],
         parameters: {
           ...DEFAULT_ELK_PARAMETERS,
           algorithm: 'layered',
@@ -85,7 +85,7 @@ export function getLayerLayoutConfig(layerType: DiagramType): LayerLayoutConfig 
     case 'c4':
       return {
         primaryEngine: 'elk',
-        alternativeEngines: ['graphviz', 'dagre'],
+        alternativeEngines: ['dagre'],
         parameters: {
           ...DEFAULT_ELK_PARAMETERS,
           algorithm: 'layered',
@@ -109,7 +109,7 @@ export function getLayerLayoutConfig(layerType: DiagramType): LayerLayoutConfig 
     case 'security':
       return {
         primaryEngine: 'elk',
-        alternativeEngines: ['graphviz'],
+        alternativeEngines: ['dagre'],
         parameters: {
           ...DEFAULT_ELK_PARAMETERS,
           algorithm: 'layered',
@@ -157,7 +157,7 @@ export function getLayerLayoutConfig(layerType: DiagramType): LayerLayoutConfig 
     case 'technology':
       return {
         primaryEngine: 'elk',
-        alternativeEngines: ['graphviz'],
+        alternativeEngines: ['dagre'],
         parameters: {
           ...DEFAULT_ELK_PARAMETERS,
           algorithm: 'layered',
@@ -181,7 +181,7 @@ export function getLayerLayoutConfig(layerType: DiagramType): LayerLayoutConfig 
     case 'api':
       return {
         primaryEngine: 'elk',
-        alternativeEngines: ['graphviz'],
+        alternativeEngines: ['dagre'],
         parameters: {
           ...DEFAULT_ELK_PARAMETERS,
           algorithm: 'layered',
@@ -204,16 +204,19 @@ export function getLayerLayoutConfig(layerType: DiagramType): LayerLayoutConfig 
 
     case 'datamodel':
       return {
-        primaryEngine: 'graphviz',
-        alternativeEngines: ['elk'],
+        primaryEngine: 'elk',
+        alternativeEngines: ['dagre'],
         parameters: {
-          ...DEFAULT_GRAPHVIZ_PARAMETERS,
-          algorithm: 'dot',
-          rankdir: 'TB',
-          nodesep: 0.6,
-          ranksep: 1.2,
-          splines: 'spline',
-          margin: 0.2,
+          ...DEFAULT_ELK_PARAMETERS,
+          algorithm: 'layered',
+          direction: 'DOWN',
+          spacing: 80,
+          layering: 'NETWORK_SIMPLEX',
+          edgeNodeSpacing: 40,
+          edgeSpacing: 25,
+          aspectRatio: 1.3,
+          orthogonalRouting: false,
+          edgeRouting: 'POLYLINE',
         },
         characteristics: {
           direction: 'vertical',
@@ -226,7 +229,7 @@ export function getLayerLayoutConfig(layerType: DiagramType): LayerLayoutConfig 
     case 'datastore':
       return {
         primaryEngine: 'elk',
-        alternativeEngines: ['graphviz'],
+        alternativeEngines: ['dagre'],
         parameters: {
           ...DEFAULT_ELK_PARAMETERS,
           algorithm: 'layered',
@@ -274,7 +277,7 @@ export function getLayerLayoutConfig(layerType: DiagramType): LayerLayoutConfig 
     case 'navigation':
       return {
         primaryEngine: 'elk',
-        alternativeEngines: ['graphviz'],
+        alternativeEngines: ['dagre'],
         parameters: {
           ...DEFAULT_ELK_PARAMETERS,
           algorithm: 'layered',
@@ -298,7 +301,7 @@ export function getLayerLayoutConfig(layerType: DiagramType): LayerLayoutConfig 
     case 'apm':
       return {
         primaryEngine: 'elk',
-        alternativeEngines: ['d3-force', 'graphviz'],
+        alternativeEngines: ['dagre'],
         parameters: {
           ...DEFAULT_ELK_PARAMETERS,
           algorithm: 'layered',
@@ -347,7 +350,7 @@ export function getLayerLayoutConfig(layerType: DiagramType): LayerLayoutConfig 
       // Default to ELK layered for unknown layer types
       return {
         primaryEngine: 'elk',
-        alternativeEngines: ['graphviz', 'dagre'],
+        alternativeEngines: ['dagre'],
         parameters: DEFAULT_ELK_PARAMETERS,
         characteristics: {
           direction: 'vertical',
@@ -371,7 +374,7 @@ export function getRecommendedEngine(layerType: DiagramType): string {
  */
 export function getOptimizedParameters(
   layerType: DiagramType
-): ELKLayoutParameters | GraphvizLayoutParameters | Record<string, unknown> {
+): ELKLayoutParameters | Record<string, unknown> {
   return getLayerLayoutConfig(layerType).parameters;
 }
 
