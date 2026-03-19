@@ -1,7 +1,0 @@
-allow-local-access:
-  id: security.policy-rule.allow-local-access
-  name: Allow Local Access
-  type: policy-rule
-  documentation: Allows all operations when running in local development mode.
-    This is the default rule for desktop/browser usage where no authentication
-    is configured.

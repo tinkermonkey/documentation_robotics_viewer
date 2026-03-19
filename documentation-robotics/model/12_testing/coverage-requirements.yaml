@@ -1,5 +1,0 @@
-all-tests-pass:
-  id: testing.coverage-requirement.all-tests-pass
-  name: All Tests Pass
-  type: coverage-requirement
-  documentation: All tests must pass in CI

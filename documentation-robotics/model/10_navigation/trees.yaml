@@ -1,5 +1,0 @@
-schema-selection:
-  id: navigation.menu.schema-selection
-  name: Schema Selection Menu
-  type: tree
-  documentation: Schema navigation menu in Spec view sidebar
