@@ -1,73 +1,79 @@
-version: 0.1.0
-installed_at: 2026-02-07T18:34:30.395Z
+version: 0.1.3
+installed_at: 2026-03-19T21:17:30.462Z
 components:
-  reference_sheets:
-    dr-layer-reference.md:
-      hash: fe2736bb
-      modified: false
+  reference_sheets: {}
   commands:
     dr-changeset.md:
-      hash: f2c13ab8
+      hash: 50062aa8
       modified: false
-    dr-ingest.md:
-      hash: 41b339ed
+    dr-design.md:
+      hash: b90dc1ca
       modified: false
     dr-init.md:
-      hash: 0c2e49e0
+      hash: c1a83b3d
+      modified: false
+    dr-map.md:
+      hash: 9fc51063
       modified: false
     dr-model.md:
-      hash: bc3cfdee
+      hash: 9486419a
       modified: false
-    dr-source-tracking.md:
-      hash: ada36f9d
+    dr-relate.md:
+      hash: 4851948a
+      modified: false
+    dr-sync.md:
+      hash: 64b46e9c
       modified: false
     dr-validate.md:
-      hash: daee36c0
+      hash: 5ba57f08
       modified: false
   agents:
     dr-advisor.md:
-      hash: f88d9f24
+      hash: bdb9799f
       modified: false
     dr-architect.md:
-      hash: 8ee1a7b1
+      hash: 013ec8e8
       modified: false
   skills:
     dr_01_motivation_layer/SKILL.md:
-      hash: 956e6a8e
+      hash: cea4b100
       modified: false
     dr_02_business_layer/SKILL.md:
-      hash: b35fae46
+      hash: b3f48205
       modified: false
     dr_03_security_layer/SKILL.md:
-      hash: 36ccffb7
+      hash: 5e7e87fb
       modified: false
     dr_04_application_layer/SKILL.md:
-      hash: feddd1d7
+      hash: 4dc9cb92
       modified: false
     dr_05_technology_layer/SKILL.md:
-      hash: e62fd9d8
+      hash: 374804c4
       modified: false
     dr_06_api_layer/SKILL.md:
-      hash: 4e73ab69
+      hash: 90a50138
       modified: false
     dr_07_data_model_layer/SKILL.md:
-      hash: 5488b7ba
+      hash: 6c86943e
       modified: false
     dr_08_dataset_layer/SKILL.md:
-      hash: fb2784ab
+      hash: 329b2e0f
       modified: false
     dr_09_ux_layer/SKILL.md:
-      hash: 3843173e
+      hash: 18d983aa
       modified: false
     dr_10_navigation_layer/SKILL.md:
-      hash: 0f5e2a66
+      hash: 71e2a1e7
       modified: false
     dr_11_apm_layer/SKILL.md:
-      hash: d3f956a9
+      hash: e448ebf7
       modified: false
     dr_12_testing_layer/SKILL.md:
-      hash: 899b60e6
+      hash: 24ddd6c1
       modified: false
     dr_changeset_reviewer/SKILL.md:
       hash: 88c2ff5e
+      modified: false
+    dr_engineering_guide/SKILL.md:
+      hash: e16d5f8e
       modified: false

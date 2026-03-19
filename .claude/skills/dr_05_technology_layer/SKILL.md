@@ -15,14 +15,47 @@ triggers:
     "terraform",
     "archimate technology",
   ]
-version: 0.7.0
+version: 0.8.3
 ---
 
 # Technology Layer Skill
 
 **Layer Number:** 05
-**Specification:** Metadata Model Spec v0.7.0
+**Specification:** Metadata Model Spec v0.8.3
 **Purpose:** Describes the technology infrastructure including hardware, software, networks, and facilities that support applications.
+
+---
+
+## CRITICAL: Valid Element Types
+
+> ⚠️ Only 13 spec-defined types may be used in the technology layer.
+
+**VALID types** (use exactly these strings in `type:` fields and element IDs):
+
+```
+artifact | communicationnetwork | device | node | path | systemsoftware |
+technologycollaboration | technologyevent | technologyfunction |
+technologyinteraction | technologyinterface | technologyprocess | technologyservice
+```
+
+**INVALID types** — these do NOT exist in the spec:
+
+```
+stack | framework | library | tool | runtime | cicd | deployment | protocol | worker
+```
+
+Element IDs MUST follow: `technology.{valid-spec-type}.{kebab-name}`
+
+```
+✅ technology.systemsoftware.react
+✅ technology.artifact.react-flow
+✅ technology.technologyprocess.github-actions
+✅ technology.technologyservice.github-pages
+❌ technology.framework.react          (invalid — 'framework' is not a spec type)
+❌ technology.library.react-flow       (invalid — 'library' is not a spec type)
+❌ technology.cicd.github-actions      (invalid)
+❌ technology.stack.react              (invalid — 'stack' does not exist)
+```
 
 ---
 
@@ -42,6 +75,9 @@ This layer uses **ArchiMate 3.2 Technology Layer** standard with optional proper
 
 ## Entity Types
 
+> **CLI Introspection:** Run `dr schema types technology` for the authoritative, always-current list of node types.
+> Run `dr schema node <type-id>` for full attribute details on any type.
+
 | Entity Type                 | Description                                             | Key Attributes                                                                               |
 | --------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | **Node**                    | Computational or physical resource that hosts artifacts | Types: server, container, vm, kubernetes-cluster, serverless-function, database-cluster      |
@@ -57,6 +93,145 @@ This layer uses **ArchiMate 3.2 Technology Layer** standard with optional proper
 | **TechnologyEvent**         | Technology state change                                 | Types: startup, shutdown, failure, scaling, maintenance, alert                               |
 | **TechnologyService**       | Externally visible unit of technology functionality     | Types: infrastructure, platform, storage, compute, network, database, messaging              |
 | **Artifact**                | Physical piece of data used or produced                 | Types: database, file, configuration, binary, log, backup, docker-image, helm-chart          |
+
+---
+
+## Technology Classification Guide
+
+Given what you see in the codebase, which spec type does it become?
+
+| What You See in the Codebase | Spec Type | Required Attribute | Example ID |
+|---|---|---|---|
+| npm library (`react-flow`, `zustand`, `dagre`) | `artifact` | `artifactType: library` | `technology.artifact.react-flow` |
+| JavaScript/CSS framework (`react`, `tailwindcss`) | `systemsoftware` | `softwareType: middleware` | `technology.systemsoftware.react` |
+| Language runtime (`node.js`, `python`, `bun`) | `systemsoftware` | `softwareType: middleware` | `technology.systemsoftware.nodejs` |
+| Container runtime (`docker`) | `systemsoftware` | `softwareType: container-runtime` | `technology.systemsoftware.docker` |
+| Build tool / compiler (`vite`, `tsc`, `eslint`) | `technologyprocess` | — | `technology.technologyprocess.vite` |
+| CI/CD pipeline or workflow | `technologyprocess` | — | `technology.technologyprocess.github-actions` |
+| Hosted platform service (GitHub Pages, npm registry) | `technologyservice` | `serviceType: compute` or `storage` | `technology.technologyservice.github-pages` |
+| Browser JavaScript runtime environment | `node` | `nodeType: container` | `technology.node.browser-runtime` |
+| Development server | `node` | `nodeType: virtual-machine` | `technology.node.dev-server` |
+| Backend server | `node` | `nodeType: virtual-machine` | `technology.node.dr-cli-server` |
+| Build output / distributable / npm package | `artifact` | `artifactType: archive` or `library` | `technology.artifact.dist-embedded` |
+| Network protocol / communication channel | `communicationnetwork` | `networkType: internet` or `lan` | `technology.communicationnetwork.websocket-channel` |
+| HTTP/WebSocket port or endpoint (access point) | `technologyinterface` | `protocol: http/https/websocket` | `technology.technologyinterface.vite-dev-http` |
+| Infrastructure function (HMR, caching, bundling) | `technologyfunction` | — | `technology.technologyfunction.hot-module-reload` |
+| Off-thread Web Worker | `technologyfunction` | — | `technology.technologyfunction.off-thread-layout` |
+| Group of nodes/services working together | `technologycollaboration` | — | `technology.technologycollaboration.ci-cd-suite` |
+
+---
+
+## Frontend / SPA Codebase Detection Patterns
+
+These patterns cover the actual structure of browser-based React/TypeScript SPAs. Always map to valid spec types using the Classification Guide above.
+
+### Pattern: package.json dependencies
+
+```json
+{
+  "dependencies": {
+    "@xyflow/react": "12.9.3",
+    "zustand": "5.0.8",
+    "react": "19.2.0"
+  },
+  "devDependencies": {
+    "vite": "7.2.4",
+    "typescript": "5.9.3",
+    "eslint": "9.x"
+  }
+}
+```
+
+→ Each runtime library dependency → `technology.artifact.{name}` (artifactType: library)
+→ `react` → `technology.systemsoftware.react` (softwareType: middleware)
+→ `vite` → `technology.technologyprocess.vite` (build tool)
+→ `typescript` → `technology.systemsoftware.typescript` (softwareType: middleware — compiler)
+→ `eslint` → `technology.technologyprocess.eslint` (linting process)
+
+### Pattern: GitHub Actions CI/CD workflow
+
+```yaml
+name: CI
+on: [push, pull_request]
+jobs:
+  build: ...
+  test: ...
+  deploy: ...
+```
+
+→ `technology.technologyprocess.github-actions` (top-level workflow)
+→ Each job: `technology.technologyprocess.build-pipeline`, `technology.technologyprocess.deploy-pipeline`
+→ NOT `technology.cicd.github-actions` — use `technologyprocess`
+
+### Pattern: Static site hosting (GitHub Pages, Netlify, Vercel)
+
+```yaml
+# .github/workflows/deploy.yml
+- name: Deploy to GitHub Pages
+  uses: actions/deploy-pages@v2
+```
+
+→ `technology.technologyservice.github-pages` (serviceType: compute)
+→ NOT `technology.stack.github-pages` or `technology.deployment.github-pages`
+
+### Pattern: Vite dev server
+
+```typescript
+// vite.config.ts
+export default defineConfig({
+  server: { port: 3001 },
+  build: { outDir: 'dist' }
+})
+```
+
+→ `technology.node.dev-server` (nodeType: virtual-machine, port: 3001)
+→ `technology.technologyinterface.vite-dev-http` (protocol: http, port: 3001)
+→ `technology.artifact.dist-standalone` (artifactType: archive) — build output
+
+### Pattern: Web Worker
+
+```javascript
+// public/workers/layoutWorker.js
+self.onmessage = function(e) {
+  const result = runDagreLayout(e.data);
+  self.postMessage(result);
+};
+```
+
+→ `technology.technologyfunction.off-thread-layout`
+→ NOT a separate `worker` type — use `technologyfunction`
+
+### Pattern: Browser runtime
+
+The browser that runs a React SPA is the primary Node (host):
+
+→ `technology.node.browser-runtime` (nodeType: container)
+→ It "hosts" `application.applicationcomponent.viewer-app`
+
+---
+
+## Coverage Completeness Checklist
+
+Before declaring technology layer extraction complete, verify each type was considered:
+
+```
+□ systemsoftware — runtimes (Node.js), frameworks (React), compilers (TypeScript), Docker
+□ artifact — ALL npm library dependencies, build outputs (dist/), docker images, npm package
+□ node — browser runtime, dev server, backend server, CI runner
+□ technologyprocess — every CI/CD pipeline, build step, automation tool (Vite, ESLint, GitHub Actions)
+□ technologyservice — hosted services: GitHub Pages, npm registry, Docker Hub, CDN
+□ technologyinterface — dev server port, WebSocket endpoint, REST API endpoint
+□ technologyfunction — Web Workers, HMR, caching, bundling algorithms
+□ communicationnetwork — internet connection, WebSocket channel, browser network context
+□ technologycollaboration — groups: CI/CD suite, deployment pipeline (multiple nodes working together)
+□ artifact (configs) — configuration files as artifacts (vite.config.ts, tsconfig.json)
+
+Types less likely to apply to a frontend SPA (still worth considering):
+  - device: physical hardware (almost never for pure frontend)
+  - path: explicit network paths (rare)
+  - technologyevent: deployment events, build failures, alerts
+  - technologyinteraction: collective behavior across nodes (e.g., CDN + origin server)
+```
 
 ---
 
@@ -340,22 +515,18 @@ server {
 ```bash
 # Kubernetes cluster
 dr add technology node "k8s-cluster-prod" \
-  --properties type=kubernetes-cluster,provider=aws,region=us-east-1,version=1.28 \
   --description "Production Kubernetes cluster"
 
 # Virtual machines
 dr add technology node "web-server-01" \
-  --properties type=vm,provider=aws,instance-type=t3.large,az=us-east-1a \
   --description "Web application server VM"
 
 # Serverless function
 dr add technology node "order-processor-lambda" \
-  --properties type=serverless-function,provider=aws,runtime=node.11,memory=512 \
   --description "Lambda function for order processing"
 
 # Database cluster
 dr add technology node "postgres-cluster" \
-  --properties type=database-cluster,provider=aws,instance-class=db.r5.xlarge \
   --description "PostgreSQL RDS cluster"
 ```
 
@@ -364,22 +535,18 @@ dr add technology node "postgres-cluster" \
 ```bash
 # Database system
 dr add technology system-software "postgresql-14" \
-  --properties type=database,version=14.7,license=open-source \
   --description "PostgreSQL relational database"
 
 # Container runtime
 dr add technology system-software "docker" \
-  --properties type=container-runtime,version=24.0.5 \
   --description "Docker container runtime"
 
 # Web server
 dr add technology system-software "nginx" \
-  --properties type=web-server,version=1.24.0,subtype=load-balancer \
   --description "NGINX web server and load balancer"
 
 # Message broker
 dr add technology system-software "rabbitmq" \
-  --properties type=message-broker,version=3.12.0,protocol=AMQP \
   --description "RabbitMQ message broker"
 ```
 
@@ -388,22 +555,19 @@ dr add technology system-software "rabbitmq" \
 ```bash
 # Infrastructure service
 dr add technology service "kubernetes-orchestration" \
-  --properties type=platform,sla-availability=99.95% \
   --description "Container orchestration platform"
 
 # Database service
 dr add technology service "postgres-database" \
-  --properties type=database,sla-availability=99.9%,sla-latency=10ms \
   --description "PostgreSQL database service"
 
 # Storage service
 dr add technology service "s3-object-storage" \
-  --properties type=storage,provider=aws,storage-class=standard \
   --description "S3 object storage for files and backups"
 
 # Link software to service
-dr relationship add "technology/system-software/postgresql-14" \
-  realizes "technology/service/postgres-database"
+dr relationship add technology.systemsoftware.postgresql-14 \
+  technology.technologyservice.postgres-database --predicate realizes
 ```
 
 ### Step 4: Define Communication Networks
@@ -411,17 +575,14 @@ dr relationship add "technology/system-software/postgresql-14" \
 ```bash
 # VPC network
 dr add technology network "production-vpc" \
-  --properties type=lan,provider=aws,cidr=10.0.0.0/16,region=us-east-1 \
   --description "Production VPC network"
 
 # Subnet
 dr add technology network "private-subnet-1a" \
-  --properties type=lan,cidr=10.0.1.0/24,az=us-east-1a,visibility=private \
   --description "Private subnet in AZ 1a"
 
 # VPN
 dr add technology network "site-to-site-vpn" \
-  --properties type=vpn,encryption=ipsec,bandwidth=1gbps \
   --description "Site-to-site VPN to on-premise datacenter"
 ```
 
@@ -430,27 +591,23 @@ dr add technology network "site-to-site-vpn" \
 ```bash
 # Database artifact
 dr add technology artifact "customer-database" \
-  --properties type=database,size=500GB,encryption=aes-256,classification=confidential \
   --description "Customer data database"
 
 # Docker image
 dr add technology artifact "user-service-image" \
-  --properties type=docker-image,registry=ecr.aws,tag=v1.2.3 \
   --description "User service Docker image"
 
 # Configuration file
 dr add technology artifact "app-config" \
-  --properties type=configuration,format=yaml,version-controlled=true \
   --description "Application configuration file"
 
 # Log files
 dr add technology artifact "application-logs" \
-  --properties type=log,retention-period=90d,compression=gzip \
   --description "Application log files"
 
 # Link artifact to node
-dr relationship add "technology/node/postgres-cluster" \
-  stores "technology/artifact/customer-database"
+dr relationship add technology.node.postgres-cluster \
+  technology.artifact.customer-database --predicate stores
 ```
 
 ### Step 6: Model Infrastructure as Code
@@ -458,17 +615,14 @@ dr relationship add "technology/node/postgres-cluster" \
 ```bash
 # Terraform process
 dr add technology process "provision-infrastructure" \
-  --properties pattern=infrastructure-as-code,automation=terraform,repo=github.com/org/infra \
   --description "Terraform infrastructure provisioning"
 
 # Ansible process
 dr add technology process "configure-servers" \
-  --properties pattern=configuration-management,automation=ansible,playbook=server-config.yml \
   --description "Ansible server configuration"
 
 # Kubernetes deployment process
 dr add technology process "deploy-to-k8s" \
-  --properties pattern=continuous-deployment,automation=kubectl,manifest=k8s/deploy.yaml \
   --description "Deploy application to Kubernetes"
 ```
 
@@ -477,48 +631,45 @@ dr add technology process "deploy-to-k8s" \
 ```bash
 # Load balancing
 dr add technology function "load-balancing" \
-  --properties strategy=least-conn,health-check-interval=10s \
   --description "Distribute traffic across backend servers"
 
 # Auto-scaling
 dr add technology function "auto-scaling" \
-  --properties min-replicas=2,max-replicas=10,cpu-threshold=70% \
   --description "Automatically scale based on CPU utilization"
 
 # Backup
 dr add technology function "database-backup" \
-  --properties frequency=daily,retention=30d,type=incremental \
   --description "Automated database backup"
 
 # Assign function to node
-dr relationship add "technology/node/k8s-cluster-prod" \
-  assigned-to "technology/function/auto-scaling"
+dr relationship add technology.node.k8s-cluster-prod \
+  technology.technologyfunction.auto-scaling --predicate assigned-to
 ```
 
 ### Step 8: Cross-Layer Integration
 
 ```bash
 # Link to application layer
-dr relationship add "technology/node/k8s-cluster-prod" \
-  hosts "application/component/user-service"
+dr relationship add technology.node.k8s-cluster-prod \
+  application.applicationcomponent.user-service --predicate hosts
 
 # Link to motivation layer
-dr relationship add "technology/service/kubernetes-orchestration" \
-  supports "motivation/goal/improve-deployment-frequency"
+dr relationship add technology.technologyservice.kubernetes-orchestration \
+  motivation.goal.improve-deployment-frequency --predicate supports
 
-dr relationship add "technology/node/k8s-cluster-prod" \
-  governed-by "motivation/principle/cloud-native-architecture"
+dr relationship add technology.node.k8s-cluster-prod \
+  motivation.principle.cloud-native-architecture --predicate governed-by
 
 # Link to APM layer
-dr relationship add "technology/service/postgres-database" \
-  monitored-by "apm/metric/database-query-latency"
+dr relationship add technology.technologyservice.postgres-database \
+  apm.metric.database-query-latency --predicate monitored-by
 ```
 
 ### Step 9: Validate
 
 ```bash
-dr validate --layer technology
-dr validate --validate-relationships
+dr validate --layers technology
+dr validate --relationships
 ```
 
 ---
@@ -628,30 +779,30 @@ technology-node:
 **Add Commands:**
 
 ```bash
-dr add technology node <name> --properties type=<type>,provider=<provider>
-dr add technology system-software <name> --properties type=<type>,version=<version>
-dr add technology service <name> --properties type=<type>,sla-availability=<value>
-dr add technology network <name> --properties type=<type>,cidr=<cidr>
-dr add technology artifact <name> --properties type=<type>,encryption=<encryption>
-dr add technology function <name> --properties strategy=<strategy>
-dr add technology process <name> --properties automation=<tool>
+dr add technology node <name>
+dr add technology system-software <name>
+dr add technology service <name>
+dr add technology network <name>
+dr add technology artifact <name>
+dr add technology function <name>
+dr add technology process <name>
 ```
 
 **Relationship Commands:**
 
 ```bash
-dr relationship add <node> hosts <application-component>
-dr relationship add <system-software> realizes <service>
-dr relationship add <node> assigned-to <function>
-dr relationship add <node> stores <artifact>
-dr relationship add <network> connects <node>
+dr relationship add <node> <application-component> --predicate hosts
+dr relationship add <system-software> <service> --predicate realizes
+dr relationship add <node> <function> --predicate assigned-to
+dr relationship add <node> <artifact> --predicate stores
+dr relationship add <network> <node> --predicate connects
 ```
 
 **Cross-Layer Commands:**
 
 ```bash
-dr relationship add technology/<node> hosts application/<component>
-dr relationship add technology/<service> supports motivation/<goal>
-dr relationship add technology/<node> governed-by motivation/<principle>
-dr relationship add technology/<service> monitored-by apm/<metric>
+dr relationship add <technology-node> <application-component> --predicate hosts
+dr relationship add <technology-service> <motivation-goal> --predicate supports
+dr relationship add <technology-node> <motivation-principle> --predicate governed-by
+dr relationship add <technology-service> <apm-metric> --predicate monitored-by
 ```

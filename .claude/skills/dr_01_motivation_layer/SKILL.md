@@ -14,13 +14,13 @@ triggers:
     "motivation",
     "archimate motivation",
   ]
-version: 0.7.0
+version: 0.8.3
 ---
 
 # Motivation Layer Skill
 
 **Layer Number:** 01
-**Specification:** Metadata Model Spec v0.7.0
+**Specification:** Metadata Model Spec v0.8.3
 **Purpose:** Captures stakeholder concerns, goals, requirements, and constraints that drive architectural decisions using ArchiMate motivation elements.
 
 ---
@@ -40,6 +40,9 @@ This layer uses **ArchiMate 3.2 Motivation Layer** standard without custom exten
 
 ## Entity Types
 
+> **CLI Introspection:** Run `dr schema types motivation` for the authoritative, always-current list of node types.
+> Run `dr schema node <type-id>` for full attribute details on any type.
+
 | Entity Type     | Description                                                     | Key Attributes                                                                     |
 | --------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
 | **Stakeholder** | Individual, team, or organization with interest in the outcome  | Types: internal, external, customer, partner, regulator                            |
@@ -52,6 +55,55 @@ This layer uses **ArchiMate 3.2 Motivation Layer** standard without custom exten
 | **Constraint**  | Restriction on the way in which a system is realized            | Types: budget, time, technology, regulatory, organizational, resource              |
 | **Meaning**     | Knowledge or expertise present in a representation              | Used to describe semantics and interpretations                                     |
 | **Value**       | Relative worth, utility, or importance of something             | Types: financial, customer, operational, strategic, social                         |
+
+---
+
+## Type Decision Tree
+
+Use this decision tree **before assigning a type** to any motivation concept.
+
+```
+IS this an individual, team, or organization with an interest in the system or its outcomes?
+  → motivation.stakeholder
+
+IS this an external or internal condition (market, regulatory, technology, competitive, operational,
+strategic) that motivates the organization to change or act?
+  → motivation.driver
+
+IS this the result of analyzing the current state — a strength, weakness, opportunity, threat, risk,
+or gap identified through assessment (e.g., SWOT)?
+  → motivation.assessment
+
+IS this a high-level statement of intent, direction, or desired end state the organization wants to achieve?
+  → motivation.goal
+
+IS this a specific, verifiable statement of need that must be realized (functional, non-functional,
+compliance, business, technical, or user need)?
+  → motivation.requirement
+
+IS this a normative rule or guideline that all systems in this context must follow
+(business, data, application, technology, security, integration)?
+  → motivation.principle
+
+IS this a hard restriction on HOW the system can be realized — a limit the system cannot exceed
+(budget, time, technology, regulatory, organizational, resource)?
+  → motivation.constraint
+
+IS this an end result that has been or is being achieved — tracked against a goal?
+  → motivation.outcome
+
+IS this the relative worth, utility, or importance that the system or feature delivers?
+  → motivation.value
+
+IS this a semantic definition, interpretation, or piece of knowledge attached to another element?
+  → motivation.meaning
+```
+
+**Key distinctions:**
+- **Goal vs Requirement**: A Goal is aspirational ("improve performance"); a Requirement is a verifiable must ("API must respond in <200ms")
+- **Requirement vs Constraint**: A Requirement says WHAT must be done; a Constraint says HOW it is bounded ("must use OAuth 2.0" limits the solution space)
+- **Driver vs Assessment**: A Driver is an ongoing force motivating action; an Assessment is a point-in-time finding about the current state
+- **Outcome vs Goal**: A Goal is what you intend to achieve; an Outcome is what has been (or is being) achieved
 
 ---
 
@@ -200,6 +252,26 @@ TARGET_UPTIME_SLA = 0.9999
 
 ---
 
+## Coverage Completeness Checklist
+
+Before declaring motivation layer extraction complete, verify each type was considered:
+
+- [ ] **stakeholder** — All individuals, teams, and organizations with interests in the system are documented
+- [ ] **driver** — External and internal forces motivating architectural decisions are captured
+- [ ] **assessment** — SWOT-style findings (strengths, weaknesses, opportunities, threats, risks, gaps) are recorded
+- [ ] **goal** — High-level intentions and desired end states are defined with priority
+- [ ] **requirement** — Specific needs that must be realized are documented (functional, non-functional, compliance, etc.)
+- [ ] **principle** — Normative guidelines governing all system implementations are listed
+- [ ] **constraint** — Hard limits and restrictions on system realization are documented
+- [ ] **outcome** — Achieved or tracked results linked to goals are recorded
+- [ ] **value** — The worth and utility delivered by the system or feature is articulated
+- [ ] **meaning** — Semantic definitions or knowledge interpretations are captured where elements need clarification
+
+If any type has ZERO elements, explicitly decide:
+  "This type doesn't apply to this codebase" with reasoning.
+
+---
+
 ## Modeling Workflow
 
 ### Step 1: Identify Stakeholders
@@ -209,15 +281,12 @@ Start by documenting **WHO cares** about the system:
 ```bash
 # Add key stakeholders
 dr add motivation stakeholder "End Users" \
-  --properties type=external \
   --description "Customers using the platform"
 
 dr add motivation stakeholder "Product Manager" \
-  --properties type=internal \
   --description "Defines product vision and priorities"
 
 dr add motivation stakeholder "Compliance Team" \
-  --properties type=internal \
   --description "Ensures regulatory compliance"
 ```
 
@@ -228,16 +297,13 @@ Identify **WHAT is pushing** the organization:
 ```bash
 # Market driver
 dr add motivation driver "Cloud Migration Pressure" \
-  --properties category=market \
   --description "Industry shift to cloud-native architectures"
 
 # SWOT assessment
 dr add motivation assessment "Legacy System Debt" \
-  --properties assessmentType=weakness \
   --description "Monolithic architecture limits agility"
 
 dr add motivation assessment "Strong Engineering Team" \
-  --properties assessmentType=strength \
   --description "Experienced team with cloud expertise"
 ```
 
@@ -248,12 +314,10 @@ Articulate **WHAT we want to achieve**:
 ```bash
 # Strategic goal
 dr add motivation goal "Modernize Architecture" \
-  --properties priority=critical,measurable=true,target-date=2024-12-31 \
   --description "Migrate to microservices architecture"
 
 # Value delivered
 dr add motivation value "Operational Efficiency" \
-  --properties type=operational \
   --description "Reduced deployment time and increased reliability"
 ```
 
@@ -264,17 +328,14 @@ Define **HOW we will operate**:
 ```bash
 # Functional requirement
 dr add motivation requirement "API Authentication" \
-  --properties type=functional \
   --description "All API endpoints must authenticate users"
 
 # Guiding principle
 dr add motivation principle "API-First Design" \
-  --properties category=application \
   --description "All services expose RESTful APIs with OpenAPI specs"
 
 # Hard constraint
 dr add motivation constraint "AWS-Only Infrastructure" \
-  --properties type=technology \
   --description "All services must deploy to AWS (no multi-cloud)"
 ```
 
@@ -284,31 +345,31 @@ Connect motivation elements using predicates:
 
 ```bash
 # Driver influences Goal
-dr relationship add "motivation/driver/cloud-migration-pressure" \
-  influences "motivation/goal/modernize-architecture"
+dr relationship add motivation.driver.cloud-migration-pressure \
+  motivation.goal.modernize-architecture --predicate influences
 
 # Goal realizes Value
-dr relationship add "motivation/goal/modernize-architecture" \
-  realizes "motivation/value/operational-efficiency"
+dr relationship add motivation.goal.modernize-architecture \
+  motivation.value.operational-efficiency --predicate realizes
 
 # Principle influences Requirement
-dr relationship add "motivation/principle/api-first-design" \
-  influences "motivation/requirement/api-authentication"
+dr relationship add motivation.principle.api-first-design \
+  motivation.requirement.api-authentication --predicate influences
 
 # Stakeholder influences Goal
-dr relationship add "motivation/stakeholder/product-manager" \
-  influences "motivation/goal/modernize-architecture"
+dr relationship add motivation.stakeholder.product-manager \
+  motivation.goal.modernize-architecture --predicate influences
 
 # Assessment influences Goal
-dr relationship add "motivation/assessment/legacy-system-debt" \
-  influences "motivation/goal/modernize-architecture"
+dr relationship add motivation.assessment.legacy-system-debt \
+  motivation.goal.modernize-architecture --predicate influences
 ```
 
 ### Step 6: Validate
 
 ```bash
-dr validate --layer motivation
-dr validate --validate-relationships
+dr validate --layers motivation
+dr validate --relationships
 ```
 
 ---
@@ -407,7 +468,7 @@ Stakeholder: "CEO"
 When exporting to ArchiMate format:
 
 ```bash
-dr export archimate --layer motivation --output motivation.archimate
+dr export archimate --layers motivation --output motivation.archimate
 ```
 
 **Supported ArchiMate Elements:**
@@ -462,27 +523,27 @@ Common validation issues:
 **Add Commands:**
 
 ```bash
-dr add motivation stakeholder <name> --properties type=<type>
-dr add motivation driver <name> --properties category=<category>
-dr add motivation goal <name> --properties priority=<priority>
-dr add motivation requirement <name> --properties type=<type>
-dr add motivation principle <name> --properties category=<category>
-dr add motivation constraint <name> --properties type=<type>
+dr add motivation stakeholder <name> --description <description>
+dr add motivation driver <name> --description <description>
+dr add motivation goal <name> --description <description>
+dr add motivation requirement <name> --description <description>
+dr add motivation principle <name> --description <description>
+dr add motivation constraint <name> --description <description>
 ```
 
 **Relationship Commands:**
 
 ```bash
-dr relationship add <source-id> influences <target-id>
-dr relationship add <source-id> aggregates <target-id>
-dr relationship add <source-id> realizes <target-id>
-dr relationship add <source-id> specializes <target-id>
+dr relationship add <source-id> <target-id> --predicate influences
+dr relationship add <source-id> <target-id> --predicate aggregates
+dr relationship add <source-id> <target-id> --predicate realizes
+dr relationship add <source-id> <target-id> --predicate specializes
 ```
 
 **Query Commands:**
 
 ```bash
-dr search --layer motivation --type goal
-dr search --layer motivation --property priority=critical
+dr list motivation --type goal
+dr search "" --layer motivation
 dr relationship list <element-id> --direction outgoing
 ```

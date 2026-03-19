@@ -78,11 +78,11 @@ Examples:
 # Basic initialization
 dr init --name "My Project"
 
-# With examples
-dr init --name "My Project" --with-examples
+# With description
+dr init --name "My Project" --description "12-layer federated architecture model"
 
-# Minimal structure
-dr init --name "My Project" --template minimal
+# With author
+dr init --name "My Project" --author "Team A"
 ```
 
 ### Step 4: Verify Initialization
@@ -145,7 +145,7 @@ Next steps:
    /dr-model Add a payment service to the business layer
 
 4. Extract from existing code:
-   /dr-ingest ./src --layers business,application,api
+   /dr-map ./src --layers business,application,api
 
 5. Learn more:
    - Run: dr --help
@@ -246,6 +246,6 @@ cd cli && npm install && npm run build && npm install -g .
 ## Related Commands
 
 - `/dr-model` - Add elements using natural language
-- `/dr-ingest` - Extract model from existing codebase
+- `/dr-map` - Extract model from existing codebase
 - `/dr-validate` - Validate the model
 - `dr --help` - View all available commands

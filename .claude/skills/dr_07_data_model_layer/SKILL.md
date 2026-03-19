@@ -12,13 +12,13 @@ triggers:
     "validation",
     "data type",
   ]
-version: 0.7.0
+version: 0.8.3
 ---
 
 # Data Model Layer Skill
 
 **Layer Number:** 07
-**Specification:** Metadata Model Spec v0.7.0
+**Specification:** Metadata Model Spec v0.8.3
 **Purpose:** Defines logical data structures using JSON Schema Draft 7, specifying entities, properties, validation rules, and data governance.
 
 ---
@@ -41,7 +41,10 @@ This layer uses **JSON Schema Draft 7** (industry standard) with custom extensio
 
 ## Entity Types
 
-### Core JSON Schema Entities (17 entities)
+> **CLI Introspection:** Run `dr schema types data-model` for the authoritative, always-current list of node types.
+> Run `dr schema node <type-id>` for full attribute details on any type.
+
+### Core JSON Schema Entities (9 types)
 
 | Entity Type           | Description                                        |
 | --------------------- | -------------------------------------------------- |
@@ -51,10 +54,43 @@ This layer uses **JSON Schema Draft 7** (industry standard) with custom extensio
 | **StringSchema**      | String validation (length, pattern, format)        |
 | **NumericSchema**     | Number/integer validation (min, max, multipleOf)   |
 | **SchemaComposition** | Combines schemas (allOf, anyOf, oneOf, not)        |
+| **SchemaDefinition**  | Named reusable type for shared use in `definitions` blocks      |
 | **SchemaProperty**    | Individual property definition                     |
 | **Reference**         | $ref to other schemas                              |
-| **DataGovernance**    | Governance annotations (classification, retention) |
-| **DatabaseMapping**   | Maps to physical database (x-database extension)   |
+
+> **Note:** Data governance (`x-data-governance`) and database mapping (`x-database`) are
+> cross-layer extension **attributes**, not node types. Set them directly on the schema element
+> they describe — on an `objectschema` for table-level mapping, or on a `schemaproperty` for
+> field-level governance (e.g., marking an individual `email` property as PII).
+
+---
+
+## Type Decision Tree
+
+Use this decision tree **before assigning a type** to any code pattern.
+
+- Is this a **root JSON Schema document** with `$schema`, `$id`, and `type` fields at the top level? → `data-model.jsonschema`
+- Is this primarily a **schema combinator** using `allOf`, `anyOf`, `oneOf`, or `not` (even if it also has `properties`)? → `data-model.schemacomposition`
+- Is this a **reusable named type** declared in a `definitions` block (has `title` and `type`)? → `data-model.schemadefinition`
+- Is this an **object structure** with `type: object` and `properties`? → `data-model.objectschema`
+- Is this an **array definition** with `items`, `minItems`, `maxItems`, `uniqueItems`, or `contains`? → `data-model.arrayschema`
+- Is this a **string validation rule** with `minLength`, `maxLength`, `pattern`, or `format`? → `data-model.stringschema`
+- Is this a **number/integer validation rule** with `minimum`, `maximum`, `exclusiveMinimum`, `exclusiveMaximum`, or `multipleOf`? → `data-model.numericschema`
+- Is this a **standalone `$ref` pointer** with no additional constraints? → `data-model.reference`
+- Is this an **inline field declaration** within an `objectschema`, carrying its own constraints (`title`, `description`, `readOnly`, `default`, `const`, etc.) alongside or instead of a `$ref`? → `data-model.schemaproperty`
+
+---
+
+## Common Misclassifications
+
+| Misclassification | Correct Classification | Why |
+| --- | --- | --- |
+| Modeling `x-data-governance` or `x-database` as their own elements | Set as extension attributes on the relevant schema element (`objectschema` or `schemaproperty`) | These are cross-layer extension attributes, not spec node types |
+| Using `objectschema` for a reusable definition in a `definitions` block | `schemadefinition` | `definitions` entries are named, reusable definitions; `objectschema` is for structural instances |
+| Using `schemadefinition` for a top-level schema document | `jsonschema` | A root document with `$schema` and `$id` is `jsonschema`, not a definition |
+| Using `schemaproperty` for a standalone string/numeric/array type | `stringschema` / `numericschema` / `arrayschema` | Use the specific schema type when the constraint set is rich enough to stand alone; use `schemaproperty` only for inline field declarations within an `objectschema` |
+| Using `objectschema` for a schema that uses `allOf` to extend another | `schemacomposition` | When the primary purpose is combining or extending schemas, classify as `schemacomposition` — even if the schema also declares `properties` |
+| Using `schemaproperty` for a bare `$ref` with no other constraints | `reference` | A standalone `$ref` with nothing else is a `reference`; use `schemaproperty` only when the field also carries its own constraints (`title`, `description`, `readOnly`, `default`, etc.) |
 
 ---
 
@@ -75,7 +111,7 @@ Activate when the user:
 **Outgoing (Data Model → Other Layers):**
 
 - `x-business-object-ref` → Business Layer (what business concept does this represent?)
-- `x-database` → Datastore Layer (how is this stored physically?)
+- `x-database` → Data Store Layer (how is this stored physically?)
 - `x-data-governance` → Security Layer (classification, PII, retention)
 - `x-apm-data-quality-metrics` → APM Layer (data quality monitoring)
 
@@ -87,32 +123,20 @@ Activate when the user:
 
 ---
 
-## Validation Best Practices
-
-1. **Required fields** - Use `required` array for mandatory properties
-2. **Type validation** - Always specify `type` (object, array, string, number, etc.)
-3. **Format validation** - Use `format` for email, uuid, date-time, uri, etc.
-4. **Range validation** - Use min/max for numbers, minLength/maxLength for strings
-5. **Pattern validation** - Use `pattern` for regex validation (e.g., phone numbers)
-6. **Data governance** - Always add `x-data-governance` for sensitive data
-7. **Reusability** - Use `$ref` to reference shared schemas
-
----
-
 ## Common Commands
 
 ```bash
 # Add object schema
-dr add data_model object-schema --name "User" --property type=object
+dr add data-model objectschema "User" --description "User object schema"
 
 # List data models
-dr list data_model object-schema
+dr list data-model --type objectschema
 
 # Validate data model layer
-dr validate --layer data_model
+dr validate --layers data-model
 
 # Export as JSON Schema
-dr export --layer data_model --format json-schema
+dr export jsonschema --layers data-model
 ```
 
 ---
@@ -120,9 +144,9 @@ dr export --layer data_model --format json-schema
 ## Example: User Schema
 
 ```yaml
-id: data_model.object-schema.user
+id: data-model.objectschema.user
 name: "User Schema"
-type: object-schema
+type: objectschema
 properties:
   type: object
   required: [id, email, username]
@@ -159,10 +183,28 @@ properties:
 
 ---
 
-## Pitfalls to Avoid
+## Coverage Completeness Checklist
 
-- ❌ Missing `type` field (validation will fail)
-- ❌ Not marking PII/sensitive data with governance
-- ❌ Overly complex schemas (break into smaller reusable schemas)
-- ❌ Not using `$ref` for shared definitions
-- ❌ Missing cross-layer links to business and database layers
+Before declaring data-model layer extraction complete, verify each type was considered:
+
+- [ ] **arrayschema** — Array definitions with item constraints (e.g., list of strings, paginated results)
+- [ ] **jsonschema** — Root schema documents (top-level `$schema` + `$id` declarations)
+- [ ] **numericschema** — Numeric validation rules (prices, counts, scores with min/max/multipleOf)
+- [ ] **objectschema** — Object structures with named properties (entities, payloads, records)
+- [ ] **reference** — `$ref` pointers to shared or external schemas
+- [ ] **schemacomposition** — Combinators (`allOf` for inheritance, `anyOf`/`oneOf` for polymorphism)
+- [ ] **schemadefinition** — Reusable named definitions in `definitions` blocks
+- [ ] **schemaproperty** — Individual field definitions within object schemas
+- [ ] **stringschema** — String validation rules (lengths, patterns, formats like email/uuid/date-time)
+
+If any type has ZERO elements, explicitly decide: "This type doesn't apply to this codebase" with reasoning.
+
+---
+
+## Modeling Best Practices
+
+- Always specify `type` on schema elements — validation fails without it
+- Break complex schemas into reusable `schemadefinition` entries and reference them via `$ref`
+- Mark PII and sensitive fields with `x-data-governance` on the relevant `schemaproperty` or `objectschema`
+- Add `x-business-object-ref` to link to the Business Layer and `x-database` to link to the Data Store Layer
+- Use `format` for semantic string types (`email`, `uuid`, `date-time`, `uri`) rather than custom `pattern` where a standard format exists

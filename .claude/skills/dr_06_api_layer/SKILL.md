@@ -13,13 +13,13 @@ triggers:
     "request",
     "response",
   ]
-version: 0.7.0
+version: 0.8.3
 ---
 
 # API Layer Skill
 
 **Layer Number:** 06
-**Specification:** Metadata Model Spec v0.7.0
+**Specification:** Metadata Model Spec v0.8.3
 **Purpose:** Defines REST API contracts using OpenAPI 3.0, specifying endpoints, operations, request/response schemas, and security requirements.
 
 ---
@@ -41,6 +41,9 @@ This layer uses **OpenAPI 3.0.3** (de facto industry standard) with custom exten
 ---
 
 ## Entity Types
+
+> **CLI Introspection:** Run `dr schema types api` for the authoritative, always-current list of node types.
+> Run `dr schema node <type-id>` for full attribute details on any type.
 
 ### Core OpenAPI Entities (13 entities)
 
@@ -81,9 +84,61 @@ This layer uses **OpenAPI 3.0.3** (de facto industry standard) with custom exten
 | Entity Type         | Description                              |
 | ------------------- | ---------------------------------------- |
 | **OAuthFlows**      | Configuration for OAuth 2.0 flows        |
-| **Condition**       | Logical expression for policy evaluation |
-| **RetentionPolicy** | Data retention policies                  |
-| **ValidationRule**  | Data validation constraints              |
+| **OAuthFlow**       | Single OAuth 2.0 flow definition (authorizationCode, implicit, password, clientCredentials) |
+| **RateLimit**       | Rate limiting policy for an operation (requests per window, key strategy, action on breach) |
+
+---
+
+## Type Decision Tree
+
+For each construct encountered, ask "what is this?" and assign the first matching type.
+
+```
+Root OpenAPI specification file/object?                            → api.openapidocument
+API-level metadata (title, description, version)?                  → api.info
+Contact information for the API owner?                             → api.contact
+Legal license declaration?                                         → api.license
+Server/host where the API is available (URL)?                      → api.server
+Variable placeholder in a server URL template (e.g., {version})?  → api.servervariable
+Container of all URL paths (the `paths:` block)?                   → api.paths
+A specific URL path with its available HTTP methods?               → api.pathitem
+A single HTTP method on a path (GET, POST, PUT, DELETE, PATCH)?    → api.operation
+A parameter — query, path, header, or cookie?                      → api.parameter
+  ↳ NOTE: request bodies are NOT parameters → use api.requestbody
+Request payload/body for an operation?                             → api.requestbody
+Container of all possible responses for an operation?              → api.responses
+  ↳ NOTE: not a single response — use api.response for each status code
+A single response for a specific HTTP status code?                 → api.response
+Media type + schema pair (e.g., application/json with schema)?     → api.mediatype
+Data structure / schema definition (JSON Schema subset)?           → api.schema
+HTTP header for a request or response?                             → api.header
+Grouping label used to organize operations?                        → api.tag
+Reference to external documentation (URL)?                         → api.externaldocumentation
+Container for reusable definitions (schemas, responses, params)?   → api.components
+Security mechanism definition (apiKey, http, oauth2)?              → api.securityscheme
+Container of all OAuth 2.0 flow types for a security scheme?       → api.oauthflows
+  ↳ NOTE: the individual flows inside are NOT api.oauthflows
+A single OAuth 2.0 flow (authorizationCode, implicit, etc.)?       → api.oauthflow
+HATEOAS link from a response to a subsequent operation?            → api.link
+Webhook / callback URL pattern triggered by an operation?          → api.callback
+Sample value for documentation or testing?                         → api.example
+Serialization details for multipart form content?                  → api.encoding
+Rate limiting policy (requests per window, key strategy)?          → api.ratelimit
+```
+
+---
+
+## Common Misclassifications
+
+| Misclassification | Correct Classification | Why |
+|---|---|---|
+| Using `api.response.*` for the set of all responses | `api.responses.*` is the container; `api.response.*` is a single status code response | `responses` is the plural container; `response` is one entry within it |
+| Using `api.oauthflows.*` for a single flow | `api.oauthflow.*` — each flow variant (authorizationCode, implicit, etc.) is its own node | `oauthflows` is the multi-flow container; `oauthflow` is one flow definition |
+| Modeling schemas inline as `api.mediatype.*` | Schemas are `api.schema.*`; `mediatype` just pairs a content type with a schema reference | MediaType is the content-type envelope; Schema is the data structure inside it |
+| Using `api.parameter.*` for the request body | Request bodies are `api.requestbody.*`; parameters are query/path/header/cookie values only | The OpenAPI spec distinguishes body from parameters explicitly |
+| Using `api.schema.*` for an entire API endpoint | Endpoints are `api.pathitem.*` + `api.operation.*`; schemas are data type definitions only | Schema ≠ endpoint |
+| Putting rate limit config as a property on `api.operation.*` | `api.ratelimit.*` is a dedicated node type for rate limiting policies | Model rate limits as first-class nodes so they can be referenced and reasoned about independently |
+| Using `api.components.*` to represent every reusable object | `api.components.*` is the container; individual reusables (schemas, parameters, etc.) are their own typed nodes composed under it | Components is a structural container, not a substitute for specific types |
 
 ---
 
@@ -122,6 +177,7 @@ This layer uses **OpenAPI 3.0.3** (de facto industry standard) with custom exten
 | Info            | composes  | Contact        | API owner contact                |
 | Info            | composes  | License        | API license                      |
 | SecurityScheme  | composes  | OAuthFlows     | OAuth2 configuration             |
+| OAuthFlows      | composes  | OAuthFlow      | Individual OAuth2 flow definition |
 
 ### Aggregation Relationships (Part can exist independently)
 
@@ -177,24 +233,32 @@ This layer uses **OpenAPI 3.0.3** (de facto industry standard) with custom exten
 
 OpenAPI specification includes **custom extensions** (x-\* properties) for cross-layer traceability:
 
-| Target Layer              | Extension Property              | Example                                             |
-| ------------------------- | ------------------------------- | --------------------------------------------------- |
-| **Layer 1 (Motivation)**  | `x-supports-goals`              | Operation supports business goals                   |
-| **Layer 1 (Motivation)**  | `x-fulfills-requirements`       | Operation fulfills functional requirements          |
-| **Layer 1 (Motivation)**  | `x-governed-by-principles`      | Operation follows architectural principles          |
-| **Layer 1 (Motivation)**  | `x-constrained-by`              | Operation subject to constraints (GDPR, HIPAA, SOX) |
-| **Layer 2 (Business)**    | `x-business-service-ref`        | Operation realizes business service                 |
-| **Layer 2 (Business)**    | `x-business-interface-ref`      | Operation exposed via business interface            |
-| **Layer 4 (Application)** | `x-archimate-ref`               | OpenAPI document realizes ApplicationService        |
-| **Layer 7 (Data Model)**  | `schema.$ref`                   | Schema references JSON Schema definition            |
-| **Layer 3 (Security)**    | `x-security-resource`           | Operation protected by SecureResource               |
-| **Layer 3 (Security)**    | `x-required-permissions`        | Operation requires specific permissions             |
-| **Layer 3 (Security)**    | `x-rate-limit`                  | Rate limiting configuration                         |
-| **Layer 11 (APM)**        | `x-apm-business-metrics`        | Operation tracked by business metrics               |
-| **Layer 11 (APM)**        | `x-apm-sla-target-latency`      | Expected response time (e.g., "100ms")              |
-| **Layer 11 (APM)**        | `x-apm-sla-target-availability` | Expected availability (e.g., "99.9%")               |
-| **Layer 11 (APM)**        | `x-apm-trace`                   | Distributed tracing enabled                         |
-| **Layer 11 (APM)**        | `x-apm-criticality`             | Business criticality (critical, high, medium, low)  |
+Cross-layer links to Business and Application layers use `dr relationship add`:
+
+```bash
+dr relationship add api.<type>.<name> business.<type>.<name> --predicate realizes
+dr relationship add api.<type>.<name> application.<type>.<name> --predicate realizes
+```
+
+Use `dr catalog types` to list all valid predicates.
+
+OpenAPI **x-\* properties** (set via `--properties`) are used for same-element metadata:
+
+| Target Layer             | Extension Property              | Example                                             |
+| ------------------------ | ------------------------------- | --------------------------------------------------- |
+| **Layer 1 (Motivation)** | `x-supports-goals`              | Operation supports business goals                   |
+| **Layer 1 (Motivation)** | `x-fulfills-requirements`       | Operation fulfills functional requirements          |
+| **Layer 1 (Motivation)** | `x-governed-by-principles`      | Operation follows architectural principles          |
+| **Layer 1 (Motivation)** | `x-constrained-by`              | Operation subject to constraints (GDPR, HIPAA, SOX) |
+| **Layer 7 (Data Model)** | `schema.$ref`                   | Schema references JSON Schema definition            |
+| **Layer 3 (Security)**   | `x-security-resource`           | Operation protected by SecureResource               |
+| **Layer 3 (Security)**   | `x-required-permissions`        | Operation requires specific permissions             |
+| **Layer 3 (Security)**   | `x-rate-limit`                  | Rate limiting configuration                         |
+| **Layer 11 (APM)**       | `x-apm-business-metrics`        | Operation tracked by business metrics               |
+| **Layer 11 (APM)**       | `x-apm-sla-target-latency`      | Expected response time (e.g., "100ms")              |
+| **Layer 11 (APM)**       | `x-apm-sla-target-availability` | Expected availability (e.g., "99.9%")               |
+| **Layer 11 (APM)**       | `x-apm-trace`                   | Distributed tracing enabled                         |
+| **Layer 11 (APM)**       | `x-apm-criticality`             | Business criticality (critical, high, medium, low)  |
 
 ### Incoming References (Lower Layers → API)
 
@@ -237,7 +301,6 @@ class UserResponse(BaseModel):  # Schema (Response)
 )
 async def create_user(user: UserCreateRequest) -> UserResponse:  # RequestBody + Response
     """
-    x-business-service-ref: business/service/user-management
     x-apm-sla-target-latency: 200ms
     x-required-permissions: users.write
     """
@@ -285,7 +348,6 @@ const router = express.Router();
  *               $ref: '#/components/schemas/Order'
  *       404:
  *         description: Order not found
- *     x-business-service-ref: business/service/order-management
  *     x-apm-sla-target-latency: 100ms
  *     x-apm-criticality: high
  */
@@ -301,7 +363,7 @@ router.get("/api/orders/:orderId", param("orderId").isUUID(), async (req, res) =
 - Parameter: "orderId" (in: path, type: string, format: uuid)
 - Response: 200 with schema reference
 - Response: 404 error response
-- Custom extensions: x-business-service-ref, x-apm-sla-target-latency, x-apm-criticality
+- Custom extensions: x-apm-sla-target-latency, x-apm-criticality
 
 ### Pattern 3: Spring Boot Java
 
@@ -402,7 +464,6 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
-      x-business-service-ref: business/service/payment-processing
       x-apm-sla-target-latency: 500ms
       x-apm-sla-target-availability: 99.99%
       x-apm-criticality: critical
@@ -483,18 +544,16 @@ components:
 
 ```bash
 # Create the API specification document
-dr add api document "payment-api" \
-  --properties version=3.0.3,title="Payment Processing API",api-version=2.1.0 \
+dr add api openapidocument "payment-api" \
   --description "API for processing customer payments"
 
 # Add API metadata
 dr add api info "payment-api-info" \
-  --properties title="Payment Processing API",version=2.1.0,contact-email=api@example.com \
   --description "API metadata and contact information"
 
 # Link to motivation layer
-dr relationship add "api/document/payment-api" \
-  governed-by "motivation/principle/api-first-design"
+dr relationship add api.openapidocument.payment-api \
+  motivation.principle.api-first-design --predicate governed-by
 ```
 
 ### Step 2: Define Servers
@@ -502,12 +561,10 @@ dr relationship add "api/document/payment-api" \
 ```bash
 # Production server
 dr add api server "production-server" \
-  --properties url=https://api.example.com/v2,description="Production server" \
   --description "Production API server"
 
 # Staging server
 dr add api server "staging-server" \
-  --properties url=https://staging-api.example.com/v2,description="Staging server" \
   --description "Staging API server"
 ```
 
@@ -515,13 +572,11 @@ dr add api server "staging-server" \
 
 ```bash
 # OAuth2 security
-dr add api security-scheme "oauth2-auth" \
-  --properties type=oauth2,flow=authorizationCode,authorization-url=https://auth.example.com/oauth/authorize,token-url=https://auth.example.com/oauth/token \
+dr add api securityscheme "oauth2-auth" \
   --description "OAuth2 authorization code flow"
 
 # API Key security
-dr add api security-scheme "api-key-auth" \
-  --properties type=apiKey,in=header,name=X-API-Key \
+dr add api securityscheme "api-key-auth" \
   --description "API key authentication"
 ```
 
@@ -530,17 +585,15 @@ dr add api security-scheme "api-key-auth" \
 ```bash
 # Request schema
 dr add api schema "payment-request" \
-  --properties type=object,required=amount:currency:payment_method \
   --description "Payment request payload"
 
 # Response schema
 dr add api schema "payment-response" \
-  --properties type=object \
   --description "Payment processing response"
 
 # Link to data model layer
-dr relationship add "api/schema/payment-request" \
-  references "data-model/schema/payment-request"
+dr relationship add api.schema.payment-request \
+  data-model.schema.payment-request --predicate references
 ```
 
 ### Step 5: Define Operations (Core Entities)
@@ -548,16 +601,16 @@ dr relationship add "api/schema/payment-request" \
 ```bash
 # POST operation
 dr add api operation "process-payment" \
-  --properties path=/payments,method=POST,operation-id=processPayment \
   --description "Processes a payment transaction"
 
-# Add custom extensions for cross-layer traceability
+# Add APM and security extensions
 dr add api operation "process-payment" \
-  --properties x-business-service-ref=business/service/payment-processing,x-apm-sla-target-latency=500ms,x-apm-sla-target-availability=99.99%,x-apm-criticality=critical,x-required-permissions=payments.write
+
+# Link to business layer via relationship
+dr relationship add api.operation.process-payment business.service.payment-processing --predicate realizes
 
 # GET operation
 dr add api operation "get-payment" \
-  --properties path=/payments/{paymentId},method=GET,operation-id=getPayment \
   --description "Retrieves payment details by ID"
 ```
 
@@ -566,39 +619,35 @@ dr add api operation "get-payment" \
 ```bash
 # Path parameter
 dr add api parameter "payment-id-param" \
-  --properties name=paymentId,in=path,required=true,type=string,format=uuid \
   --description "Payment transaction ID"
 
 # Query parameter
 dr add api parameter "status-filter" \
-  --properties name=status,in=query,required=false,type=string,enum=pending:completed:failed \
   --description "Filter payments by status"
 
 # Link parameter to operation
-dr relationship add "api/operation/get-payment" \
-  has-parameter "api/parameter/payment-id-param"
+dr relationship add api.operation.get-payment \
+  api.parameter.payment-id-param --predicate has-parameter
 ```
 
 ### Step 7: Define Request/Response Bodies
 
 ```bash
 # Request body
-dr add api request-body "payment-request-body" \
-  --properties required=true,content-type=application/json \
+dr add api requestbody "payment-request-body" \
   --description "Payment request payload"
 
 # Link request body to schema
-dr relationship add "api/request-body/payment-request-body" \
-  uses-schema "api/schema/payment-request"
+dr relationship add api.requestbody.payment-request-body \
+  api.schema.payment-request --predicate uses-schema
 
 # Response
 dr add api response "payment-success-response" \
-  --properties status-code=201,description="Payment processed successfully" \
   --description "Successful payment response"
 
 # Link response to schema
-dr relationship add "api/response/payment-success-response" \
-  uses-schema "api/schema/payment-response"
+dr relationship add api.response.payment-success-response \
+  api.schema.payment-response --predicate uses-schema
 ```
 
 ### Step 8: Define Tags for Organization
@@ -606,47 +655,45 @@ dr relationship add "api/response/payment-success-response" \
 ```bash
 # Add tags
 dr add api tag "payments" \
-  --properties name=Payments \
   --description "Payment processing operations"
 
 dr add api tag "refunds" \
-  --properties name=Refunds \
   --description "Refund operations"
 
 # Tag operations
-dr relationship add "api/operation/process-payment" \
-  tagged-with "api/tag/payments"
+dr relationship add api.operation.process-payment \
+  api.tag.payments --predicate tagged-with
 ```
 
 ### Step 9: Cross-Layer Integration
 
 ```bash
 # Link to business layer
-dr relationship add "api/operation/process-payment" \
-  realizes "business/service/payment-processing"
+dr relationship add api.operation.process-payment \
+  business.service.payment-processing --predicate realizes
 
 # Link to application layer
-dr relationship add "api/document/payment-api" \
-  realizes "application/service/payment-api"
+dr relationship add api.openapidocument.payment-api \
+  application.service.payment-api --predicate realizes
 
 # Link to security layer
-dr relationship add "api/operation/process-payment" \
-  protected-by "security/secure-resource/payment-api"
+dr relationship add api.operation.process-payment \
+  security.secure-resource.payment-api --predicate protected-by
 
 # Link to motivation layer
-dr relationship add "api/operation/process-payment" \
-  supports "motivation/goal/reduce-checkout-time"
+dr relationship add api.operation.process-payment \
+  motivation.goal.reduce-checkout-time --predicate supports
 
 # Link to APM layer
-dr relationship add "api/operation/process-payment" \
-  tracked-by "apm/metric/payment-processing-latency"
+dr relationship add api.operation.process-payment \
+  apm.metric.payment-processing-latency --predicate tracked-by
 ```
 
 ### Step 10: Validate and Export
 
 ```bash
 # Validate API layer
-dr validate --layer api
+dr validate --layers api
 
 # Export to OpenAPI YAML
 dr export openapi --output payment-api.yaml
@@ -693,7 +740,7 @@ x-apm-criticality: "low"
 4. **Define Reusable Components** - Schemas, responses, parameters in Components section
 5. **Document Examples** - Include request/response examples for testing and documentation
 6. **Security at Operation Level** - Different operations can have different security requirements
-7. **Link to Business Services** - Use x-business-service-ref for traceability
+7. **Link to Business Services** - Use `dr relationship add` to link API operations to business services for traceability
 8. **Define SLA Targets** - Use x-apm-sla-target-\* for monitoring
 9. **Version APIs Properly** - Use semantic versioning (major.minor.patch)
 10. **Generate from Code** - Use FastAPI, NestJS decorators, or Springdoc to auto-generate OpenAPI specs
@@ -731,16 +778,16 @@ x-apm-criticality: "low"
 
 ## Validation Tips
 
-| Issue                | Cause                                  | Fix                                            |
-| -------------------- | -------------------------------------- | ---------------------------------------------- |
-| Missing Operations   | Paths defined but no operations        | Add HTTP methods (GET, POST, etc.)             |
-| Unlinked Schemas     | Schemas not referenced by operations   | Link schemas to request/response bodies        |
-| Missing Security     | Operations lack security requirements  | Add securitySchemes and apply to operations    |
-| No Cross-Layer Links | API not linked to business/application | Add x-business-service-ref and x-archimate-ref |
-| Missing SLA Targets  | Operations lack performance targets    | Add x-apm-sla-target-\* extensions             |
-| Untagged Operations  | Operations not organized by tags       | Add tags for grouping                          |
-| No Examples          | Schemas lack examples                  | Add example values for documentation           |
-| Invalid OpenAPI      | Spec doesn't validate                  | Use Spectral or openapi-validator              |
+| Issue                | Cause                                  | Fix                                                                           |
+| -------------------- | -------------------------------------- | ----------------------------------------------------------------------------- |
+| Missing Operations   | Paths defined but no operations        | Add HTTP methods (GET, POST, etc.)                                            |
+| Unlinked Schemas     | Schemas not referenced by operations   | Link schemas to request/response bodies                                       |
+| Missing Security     | Operations lack security requirements  | Add securitySchemes and apply to operations                                   |
+| No Cross-Layer Links | API not linked to business/application | Run `dr relationship add <api-element> <target-element> --predicate realizes` |
+| Missing SLA Targets  | Operations lack performance targets    | Add x-apm-sla-target-\* extensions                                            |
+| Untagged Operations  | Operations not organized by tags       | Add tags for grouping                                                         |
+| No Examples          | Schemas lack examples                  | Add example values for documentation                                          |
+| Invalid OpenAPI      | Spec doesn't validate                  | Use Spectral or openapi-validator                                             |
 
 ---
 
@@ -749,44 +796,44 @@ x-apm-criticality: "low"
 **Add Commands:**
 
 ```bash
-dr add api document <name> --properties version=3.0.3,title=<title>
-dr add api operation <name> --properties path=<path>,method=<method>
-dr add api schema <name> --properties type=<type>
-dr add api parameter <name> --properties name=<name>,in=<location>
-dr add api security-scheme <name> --properties type=<type>
-dr add api tag <name> --properties name=<display-name>
+dr add api openapidocument <name>
+dr add api operation <name>
+dr add api schema <name>
+dr add api parameter <name>
+dr add api securityscheme <name>
+dr add api tag <name>
 ```
 
 **Relationship Commands:**
 
 ```bash
-dr relationship add <operation> uses-schema <schema>
-dr relationship add <operation> has-parameter <parameter>
-dr relationship add <operation> tagged-with <tag>
-dr relationship add <schema> references <schema>
+dr relationship add <operation> <schema> --predicate uses-schema
+dr relationship add <operation> <parameter> --predicate has-parameter
+dr relationship add <operation> <tag> --predicate tagged-with
+dr relationship add <schema> <schema> --predicate references
 ```
 
 **Cross-Layer Commands:**
 
 ```bash
-dr relationship add api/<operation> realizes business/<service>
-dr relationship add api/<document> realizes application/<service>
-dr relationship add api/<schema> references data-model/<schema>
-dr relationship add api/<operation> protected-by security/<resource>
-dr relationship add api/<operation> supports motivation/<goal>
+dr relationship add <api-operation> <business-service> --predicate realizes
+dr relationship add <api-openapidocument> <application-service> --predicate realizes
+dr relationship add <api-schema> <data-model-schema> --predicate references
+dr relationship add <api-operation> <security-resource> --predicate protected-by
+dr relationship add <api-operation> <motivation-goal> --predicate supports
 ```
 
 **Export Commands:**
 
 ```bash
 dr export openapi --output api-spec.yaml
-dr export openapi --layer api --format json --output api-spec.json
+dr export openapi --layers api --output api-spec.json
 ```
 
 **Validation Commands:**
 
 ```bash
-dr validate --layer api
+dr validate --layers api
 spectral lint api-spec.yaml
 swagger-cli validate api-spec.yaml
 ```
@@ -804,12 +851,9 @@ x-fulfills-requirements: [motivation/requirement/id1]
 x-governed-by-principles: [motivation/principle/id1]
 x-constrained-by: [motivation/constraint/id1]
 
-# Business Layer Links
-x-business-service-ref: business/service/id
-x-business-interface-ref: business/interface/id
-
-# Application Layer Links
-x-archimate-ref: application/service/id
+# Business and Application Layer Links — use dr relationship add (not x-* properties)
+# dr relationship add api.<type>.<name> business.<type>.<name> --predicate realizes
+# dr relationship add api.<type>.<name> application.<type>.<name> --predicate realizes
 
 # Security Layer Links
 x-security-resource: security/secure-resource/id
@@ -827,6 +871,43 @@ x-apm-criticality: "high" # critical, high, medium, low
 ```
 
 These extensions enable full traceability from API operations to business goals, requirements, security controls, and monitoring metrics.
+
+---
+
+## Coverage Completeness Checklist
+
+Before declaring API layer extraction complete, verify each type was considered:
+
+- [ ] **api.openapidocument** — Root OpenAPI specification document
+- [ ] **api.info** — API metadata (title, version, description)
+- [ ] **api.contact** — Contact information for the API owner
+- [ ] **api.license** — Legal license for the API
+- [ ] **api.server** — Server URLs where the API is available
+- [ ] **api.servervariable** — Variable placeholders in server URL templates
+- [ ] **api.paths** — Container of all API endpoint paths
+- [ ] **api.pathitem** — Operations available on a specific URL path
+- [ ] **api.operation** — Individual HTTP operations (GET, POST, PUT, DELETE, PATCH) — CENTRAL ENTITY
+- [ ] **api.parameter** — Query, path, header, or cookie parameters
+- [ ] **api.requestbody** — Request payload for an operation
+- [ ] **api.responses** — Container of all possible responses for an operation
+- [ ] **api.response** — Single response definition for a specific HTTP status code
+- [ ] **api.mediatype** — Media type + schema pair for request/response bodies
+- [ ] **api.schema** — Data type definitions (JSON Schema subset)
+- [ ] **api.header** — HTTP header parameters
+- [ ] **api.tag** — Grouping labels for organizing operations
+- [ ] **api.externaldocumentation** — References to external documentation
+- [ ] **api.components** — Container for reusable API component definitions
+- [ ] **api.securityscheme** — Security mechanism definitions (apiKey, http, oauth2, openIdConnect)
+- [ ] **api.oauthflows** — OAuth 2.0 flows configuration container
+- [ ] **api.oauthflow** — Single OAuth 2.0 flow (authorizationCode, implicit, password, clientCredentials)
+- [ ] **api.link** — HATEOAS links from responses to subsequent operations
+- [ ] **api.callback** — Webhook / callback URL patterns
+- [ ] **api.example** — Sample values for documentation and testing
+- [ ] **api.encoding** — Serialization details for multipart content
+- [ ] **api.ratelimit** — Rate limiting policies (requests per window, key strategy)
+
+If any type has ZERO elements, explicitly decide:
+  "This type doesn't apply to this codebase" with reasoning.
 
 ---
 

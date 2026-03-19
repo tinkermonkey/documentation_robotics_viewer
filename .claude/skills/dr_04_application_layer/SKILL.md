@@ -11,13 +11,13 @@ triggers:
     "microservice",
     "archimate application",
   ]
-version: 0.7.0
+version: 0.8.3
 ---
 
 # Application Layer Skill
 
 **Layer Number:** 04
-**Specification:** Metadata Model Spec v0.7.0
+**Specification:** Metadata Model Spec v0.8.3
 **Purpose:** Describes application services, components, and interfaces that support business processes and bridge requirements with technical implementation.
 
 ---
@@ -38,9 +38,12 @@ This layer uses **ArchiMate 3.2 Application Layer** standard with optional prope
 
 ## Entity Types
 
+> **CLI Introspection:** Run `dr schema types application` for the authoritative, always-current list of node types.
+> Run `dr schema node <type-id>` for full attribute details on any type.
+
 | Entity Type                  | Description                                            | Key Attributes                                                                   |
 | ---------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| **ApplicationComponent**     | Modular, deployable, replaceable part of a system      | Types: frontend, backend, mobile, desktop, service, library, batch, worker       |
+| **ApplicationComponent**     | Modular, deployable, replaceable part of a system      | Types: generic, external, internal, service-component                            |
 | **ApplicationCollaboration** | Aggregate of application components working together   | Example: Microservices ecosystem, service mesh                                   |
 | **ApplicationInterface**     | Point of access where application service is available | Protocols: REST, GraphQL, SOAP, gRPC, WebSocket, Message Queue, Event Bus        |
 | **ApplicationFunction**      | Automated behavior performed by application component  | Examples: Authentication, Data Validation, Caching, Logging                      |
@@ -49,6 +52,66 @@ This layer uses **ArchiMate 3.2 Application Layer** standard with optional prope
 | **ApplicationEvent**         | Application state change notification                  | Types: domain-event, integration-event, system-event, audit-event                |
 | **ApplicationService**       | Service that exposes application functionality         | Types: synchronous, asynchronous, batch, streaming, webhook                      |
 | **DataObject**               | Data structured for automated processing               | Includes schema reference, PII marking, retention policies                       |
+
+---
+
+## Type Decision Tree
+
+Use this decision tree **before assigning a type** to any code pattern. Follow the first matching branch.
+
+```
+IS this a deployed, executable unit (container, microservice, SPA app shell, module)?
+  → ApplicationComponent (type: generic/internal/external)
+
+IS this a React component, UI widget, or view?
+  → ApplicationComponent (type: generic) — link to ux.component.* for UI detail
+
+IS this a Zustand store, Redux slice, or other state container?
+  → ApplicationComponent (type: generic, subtype: state-container)
+  NOT ApplicationService — stores are not services in the ArchiMate sense
+
+IS this a class/function that provides a capability to other parts of the system
+  (business logic, data transformation, orchestration)?
+  → ApplicationService (serviceType: synchronous/asynchronous/event-driven/batch)
+
+IS this a URL, port, protocol interface, or access point
+  (REST endpoint group, WebSocket endpoint, message queue, postMessage bridge)?
+  → ApplicationInterface (protocol: REST/WebSocket/AMQP/HTTP)
+
+IS this a stateless, single-purpose algorithm or behavior
+  (parse, validate, transform, export, calculate, layout)?
+  → ApplicationFunction (NOT ApplicationService)
+
+IS this a multi-step workflow, pipeline, or saga
+  (load → parse → validate → render)?
+  → ApplicationProcess
+
+IS this a state change notification or domain event
+  (model.updated, annotation.added)?
+  → ApplicationEvent (eventType: domain/integration/system)
+
+IS this a data structure, DTO, or typed payload
+  (ModelData, Annotation, Changeset)?
+  → DataObject
+
+IS this a collection of components that together form a subsystem
+  (all layout engines, all Zustand stores)?
+  → ApplicationCollaboration
+```
+
+---
+
+## Common Misclassifications
+
+Explicit DO NOT rules with rationale:
+
+| Misclassification | Correct Classification | Why |
+|---|---|---|
+| Zustand store as `ApplicationService` | `ApplicationComponent` (type: generic, subtype: state-container) | Stores are not services — they don't expose a business capability |
+| WebSocket client as `ApplicationService` | `ApplicationInterface` (protocol: WebSocket) | A WebSocket connection is an interface/access point, not a service |
+| Layout algorithm as `ApplicationService` | `ApplicationFunction` | Stateless algorithm = function, not a service with a contract |
+| Export function as `ApplicationService` | `ApplicationFunction` if purely internal; `ApplicationService` only if it exposes an output contract | If purely internal algorithm: function. If it has an external contract (API, file): service |
+| React UI component as `ApplicationService` | `ApplicationComponent` (type: generic) with UX cross-reference | UI components are components; link to UX layer for rendering details |
 
 ---
 
@@ -309,21 +372,17 @@ class OrderEventConsumer:
 ```bash
 # Frontend component
 dr add application component "web-app" \
-  --properties type=frontend,technology=react,repository=github.com/org/web-app \
   --description "Customer-facing web application"
 
 # Backend microservices
 dr add application component "user-service" \
-  --properties type=backend,subtype=microservice,language=python \
   --description "User management microservice"
 
 dr add application component "order-service" \
-  --properties type=backend,subtype=microservice,language=typescript \
   --description "Order processing microservice"
 
 # Worker component
 dr add application component "email-worker" \
-  --properties type=worker,runtime=nodejs \
   --description "Background worker for email notifications"
 ```
 
@@ -332,17 +391,15 @@ dr add application component "email-worker" \
 ```bash
 # Synchronous service
 dr add application service "user-management-api" \
-  --properties type=synchronous,protocol=REST,openapi-spec=specs/user-api.yaml \
   --description "User management REST API"
 
 # Asynchronous service
 dr add application service "notification-service" \
-  --properties type=asynchronous,pattern=publish-subscribe \
   --description "Asynchronous notification delivery"
 
 # Link component to service
-dr relationship add "application/component/user-service" \
-  realizes "application/service/user-management-api"
+dr relationship add application.applicationcomponent.user-service \
+  application.applicationservice.user-management-api --predicate realizes
 ```
 
 ### Step 3: Model Application Interfaces
@@ -350,22 +407,19 @@ dr relationship add "application/component/user-service" \
 ```bash
 # REST API interface
 dr add application interface "user-api-rest" \
-  --properties protocol=REST,base-url=/api/v1/users,authentication=JWT \
   --description "REST interface for user service"
 
 # gRPC interface
 dr add application interface "order-grpc" \
-  --properties protocol=gRPC,port=50051 \
   --description "gRPC interface for order service"
 
 # Message queue interface
 dr add application interface "event-bus" \
-  --properties protocol=AMQP,broker=rabbitmq \
   --description "Event bus for async communication"
 
 # Link service to interface
-dr relationship add "application/service/user-management-api" \
-  realizes "application/interface/user-api-rest"
+dr relationship add application.applicationservice.user-management-api \
+  application.applicationinterface.user-api-rest --predicate realizes
 ```
 
 ### Step 4: Define Application Functions
@@ -373,20 +427,17 @@ dr relationship add "application/service/user-management-api" \
 ```bash
 # Core functions
 dr add application function "authentication" \
-  --properties type=security \
   --description "Validates user credentials and issues tokens"
 
 dr add application function "data-validation" \
-  --properties type=business-logic \
   --description "Validates input data against business rules"
 
 dr add application function "caching" \
-  --properties type=performance,strategy=redis \
   --description "Caches frequently accessed data"
 
 # Assign function to component
-dr relationship add "application/component/user-service" \
-  assigned-to "application/function/authentication"
+dr relationship add application.applicationcomponent.user-service \
+  application.applicationfunction.authentication --predicate assigned-to
 ```
 
 ### Step 5: Model Application Events
@@ -394,19 +445,17 @@ dr relationship add "application/component/user-service" \
 ```bash
 # Domain events
 dr add application event "order-created" \
-  --properties type=domain-event,topic=orders.created,schema=schemas/order-created.json \
   --description "Published when new order is created"
 
 dr add application event "payment-processed" \
-  --properties type=domain-event,topic=payments.processed,schema=schemas/payment-processed.json \
   --description "Published when payment completes"
 
 # Event triggering
-dr relationship add "application/event/order-created" \
-  triggers "application/component/inventory-service"
+dr relationship add application.applicationevent.order-created \
+  application.applicationcomponent.inventory-service --predicate triggers
 
-dr relationship add "application/event/order-created" \
-  triggers "application/component/email-worker"
+dr relationship add application.applicationevent.order-created \
+  application.applicationcomponent.email-worker --predicate triggers
 ```
 
 ### Step 6: Define Data Objects
@@ -414,19 +463,17 @@ dr relationship add "application/event/order-created" \
 ```bash
 # Core data objects
 dr add application data-object "user" \
-  --properties schema-ref=schemas/user.schema.json,pii=true,retention-period=7y \
   --description "User account information"
 
 dr add application data-object "order" \
-  --properties schema-ref=schemas/order.schema.json,pii=false,retention-period=10y \
   --description "Customer order data"
 
 # Service access to data
-dr relationship add "application/service/user-management-api" \
-  accesses "application/data-object/user"
+dr relationship add application.applicationservice.user-management-api \
+  application.dataobject.user --predicate accesses
 
-dr relationship add "application/service/order-api" \
-  accesses "application/data-object/order"
+dr relationship add application.applicationservice.order-api \
+  application.dataobject.order --predicate accesses
 ```
 
 ### Step 7: Model Application Processes (Orchestration)
@@ -434,7 +481,6 @@ dr relationship add "application/service/order-api" \
 ```bash
 # Saga workflow
 dr add application process "order-fulfillment-saga" \
-  --properties pattern=saga,orchestration-engine=temporal,compensation=true \
   --description "End-to-end order fulfillment orchestration"
 
 # Sub-processes
@@ -448,56 +494,56 @@ dr add application process "ship-order" \
   --description "Initiate shipping workflow"
 
 # Process composition
-dr relationship add "application/process/order-fulfillment-saga" \
-  composes "application/process/reserve-inventory"
+dr relationship add application.applicationprocess.order-fulfillment-saga \
+  application.applicationprocess.reserve-inventory --predicate composes
 
-dr relationship add "application/process/order-fulfillment-saga" \
-  composes "application/process/process-payment"
+dr relationship add application.applicationprocess.order-fulfillment-saga \
+  application.applicationprocess.process-payment --predicate composes
 
-dr relationship add "application/process/order-fulfillment-saga" \
-  composes "application/process/ship-order"
+dr relationship add application.applicationprocess.order-fulfillment-saga \
+  application.applicationprocess.ship-order --predicate composes
 
 # Process flows
-dr relationship add "application/process/reserve-inventory" \
-  flows-to "application/process/process-payment"
+dr relationship add application.applicationprocess.reserve-inventory \
+  application.applicationprocess.process-payment --predicate flows-to
 
-dr relationship add "application/process/process-payment" \
-  flows-to "application/process/ship-order"
+dr relationship add application.applicationprocess.process-payment \
+  application.applicationprocess.ship-order --predicate flows-to
 ```
 
 ### Step 8: Cross-Layer Integration
 
 ```bash
 # Link to business layer
-dr relationship add "application/service/order-api" \
-  realizes "business/service/order-management"
+dr relationship add application.applicationservice.order-api \
+  business.service.order-management --predicate realizes
 
 # Link to motivation layer
-dr relationship add "application/service/user-management-api" \
-  supports "motivation/goal/improve-user-experience"
+dr relationship add application.applicationservice.user-management-api \
+  motivation.goal.improve-user-experience --predicate supports
 
 # Link to technology layer
-dr relationship add "application/component/user-service" \
-  deployed-on "technology/node/k8s-cluster-prod"
+dr relationship add application.applicationcomponent.user-service \
+  technology.node.k8s-cluster-prod --predicate deployed-on
 
 # Link to API layer
-dr relationship add "application/service/user-management-api" \
-  defined-by "api/openapi-document/user-api"
+dr relationship add application.applicationservice.user-management-api \
+  api.openapi-document.user-api --predicate defined-by
 
 # Link to data model layer
-dr relationship add "application/data-object/user" \
-  defined-by "data-model/schema/user"
+dr relationship add application.dataobject.user \
+  data-model.schema.user --predicate defined-by
 
 # Link to APM layer
-dr relationship add "application/service/order-api" \
-  tracked-by "apm/metric/order-processing-latency"
+dr relationship add application.applicationservice.order-api \
+  apm.metric.order-processing-latency --predicate tracked-by
 ```
 
 ### Step 9: Validate
 
 ```bash
-dr validate --layer application
-dr validate --validate-relationships
+dr validate --layers application
+dr validate --relationships
 ```
 
 ---
@@ -573,6 +619,115 @@ ApplicationInterface: "API Gateway"
 
 ---
 
+## React / SPA Codebase Detection Patterns
+
+These patterns cover the actual structure of React/TypeScript single-page applications. Apply the Type Decision Tree to each pattern.
+
+### Pattern: React Component
+
+```tsx
+// src/core/components/GraphViewer.tsx
+export function GraphViewer({ nodes, edges }: GraphViewerProps) {
+  return <ReactFlow nodes={nodes} edges={edges} />;
+}
+```
+
+→ `ApplicationComponent` (type: generic)
+→ Cross-reference: `x-uses: [technology.systemsoftware.react, technology.artifact.react-flow]`
+→ Also add `ux.component.graph-viewer` in the UX layer for rendering detail
+
+### Pattern: Zustand Store
+
+```typescript
+// src/core/stores/modelStore.ts
+export const useModelStore = create<ModelStoreState>((set) => ({
+  layers: {}, elements: {},
+  loadModel: (data) => set({ ... })
+}));
+```
+
+→ `ApplicationComponent` (type: generic, subtype: state-container)
+→ NOT `ApplicationService` — stores don't expose a business capability
+
+### Pattern: Stateless Service / Utility (parser, transformer)
+
+```typescript
+// src/core/services/yamlParser.ts
+export function parseYAMLModel(yaml: string): ModelData { ... }
+```
+
+→ `ApplicationService` (serviceType: synchronous) if it orchestrates other services
+→ OR `ApplicationFunction` if it is a purely stateless computation with no external contract
+
+### Pattern: WebSocket Client
+
+```typescript
+// src/apps/embedded/services/websocketClient.ts
+const ws = new WebSocket('ws://localhost:3000/ws');
+ws.on('model.updated', handler);
+```
+
+→ `ApplicationInterface` (protocol: WebSocket) — the ws connection is the interface
+→ `ApplicationEvent` for each event type: `model.updated`, `annotation.added`, `changeset.created`
+
+### Pattern: Layout Engine (algorithm)
+
+```typescript
+// src/core/services/layerLayoutConfig.ts
+function dagreLayout(nodes: Node[], edges: Edge[]): PositionedGraph { ... }
+```
+
+→ `ApplicationFunction` — pure algorithm, no external contract
+→ NOT `ApplicationService`
+
+### Pattern: Multi-step Loading Pipeline
+
+```typescript
+// src/core/services/dataLoader.ts
+async function loadModel(source: DataSource): Promise<void> {
+  const raw = await fetch(source.url);
+  const parsed = parseYAMLModel(raw);
+  const validated = validateSchema(parsed);
+  const transformed = transformToReactFlow(validated);
+  modelStore.setModel(transformed);
+}
+```
+
+→ `ApplicationProcess` (orchestration pipeline: fetch → parse → validate → transform → store)
+
+### Pattern: Data Transfer Object / Interface
+
+```typescript
+// src/core/types/model.ts
+export interface ModelData { layers: Layer[]; elements: Element[]; }
+export interface Annotation { id: string; elementId: string; content: string; }
+```
+
+→ `DataObject` for each significant data structure (`ModelData`, `Annotation`, `Changeset`, etc.)
+
+---
+
+## Coverage Completeness Checklist
+
+Before declaring application layer extraction complete, verify ALL 9 entity types have been considered:
+
+```
+□ ApplicationComponent — deployable units, UI components, state containers (Zustand stores)
+□ ApplicationService — capabilities with a business contract (data loader, parser service)
+□ ApplicationInterface — access points: WebSocket endpoint, REST interface, postMessage bridge
+□ ApplicationFunction — stateless algorithms: parse, validate, transform, export, layout
+□ ApplicationProcess — multi-step pipelines: loading pipeline, export pipeline
+□ ApplicationEvent — state change notifications: model.updated, annotation.added, user events
+□ DataObject — key data structures: ModelData, Annotation, Changeset, GraphNode, LayoutPreset
+□ ApplicationCollaboration — component groupings: layout engine suite, state management layer
+□ ApplicationInteraction — collective behaviors across multiple components (if applicable)
+
+If any type has ZERO elements, explicitly decide:
+  "This type doesn't apply to this codebase" with reasoning.
+```
+
+---
+
 ## Framework-Specific Patterns
 
 ### FastAPI / Flask (Python)
@@ -636,32 +791,32 @@ public class ProductController {
 **Add Commands:**
 
 ```bash
-dr add application component <name> --properties type=<type>
-dr add application service <name> --properties type=<type>,protocol=<protocol>
-dr add application interface <name> --properties protocol=<protocol>
-dr add application function <name> --properties type=<type>
-dr add application event <name> --properties type=<type>,topic=<topic>
-dr add application data-object <name> --properties schema-ref=<path>,pii=<bool>
-dr add application process <name> --properties pattern=<pattern>
+dr add application component <name>
+dr add application service <name>
+dr add application interface <name>
+dr add application function <name>
+dr add application event <name>
+dr add application data-object <name>
+dr add application process <name>
 ```
 
 **Relationship Commands:**
 
 ```bash
-dr relationship add <component> realizes <service>
-dr relationship add <service> realizes <interface>
-dr relationship add <component> assigned-to <function>
-dr relationship add <event> triggers <component>
-dr relationship add <service> accesses <data-object>
-dr relationship add <process> composes <sub-process>
-dr relationship add <process-a> flows-to <process-b>
+dr relationship add <component> <service> --predicate realizes
+dr relationship add <service> <interface> --predicate realizes
+dr relationship add <component> <function> --predicate assigned-to
+dr relationship add <event> <component> --predicate triggers
+dr relationship add <service> <data-object> --predicate accesses
+dr relationship add <process> <sub-process> --predicate composes
+dr relationship add <process-a> <process-b> --predicate flows-to
 ```
 
 **Cross-Layer Commands:**
 
 ```bash
-dr relationship add application/<service> realizes business/<service>
-dr relationship add application/<component> deployed-on technology/<node>
-dr relationship add application/<service> defined-by api/<openapi-doc>
-dr relationship add application/<data-object> defined-by data-model/<schema>
+dr relationship add application.<service> business.<service> --predicate realizes
+dr relationship add application.<component> technology.<node> --predicate deployed-on
+dr relationship add application.<service> api.<openapi-doc> --predicate defined-by
+dr relationship add application.<data-object> data-model.<schema> --predicate defined-by
 ```
