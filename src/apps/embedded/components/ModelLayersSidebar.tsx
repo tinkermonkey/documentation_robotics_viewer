@@ -11,11 +11,14 @@ import { getLayerColor } from '../../../core/utils/layerColors';
 interface ModelLayersSidebarProps {
   selectedLayerId?: string | null;
   onSelectLayer?: (layerId: string | null) => void;
+  /** Optional count overrides keyed by layer id — when provided, replaces model element counts */
+  layerCounts?: Record<string, number>;
 }
 
 const ModelLayersSidebar: React.FC<ModelLayersSidebarProps> = ({
   selectedLayerId = null,
-  onSelectLayer = () => {}
+  onSelectLayer = () => {},
+  layerCounts
 }) => {
   const { model } = useModelStore();
 
@@ -25,14 +28,14 @@ const ModelLayersSidebar: React.FC<ModelLayersSidebarProps> = ({
 
     return Object.entries(model.layers)
       .map(([layerKey, layer]) => ({
-        id: layerKey,  // Use the layer key from Object.entries
+        id: layerKey,
         name: layer.name || layerKey,
         type: layer.type || layerKey,
-        count: layer.elements?.length || 0,
+        count: layerCounts ? (layerCounts[layerKey] ?? 0) : (layer.elements?.length || 0),
         order: layer.order || 999
       }))
       .sort((a, b) => a.order - b.order);
-  }, [model]);
+  }, [model, layerCounts]);
 
   if (!model) {
     return null;

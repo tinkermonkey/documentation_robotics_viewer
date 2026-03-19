@@ -28,15 +28,6 @@
     "Capability": "business.capability",
     "json-schema-element": "data.jsonSchema",
     "layer-container": "layer.container",
-    "c4-container": "c4.container",
-    "C4Container": "c4.container",
-    "Container": "c4.container",
-    "c4-component": "c4.component",
-    "C4Component": "c4.component",
-    "c4-external-actor": "c4.externalActor",
-    "C4ExternalActor": "c4.externalActor",
-    "ExternalActor": "c4.externalActor",
-    "ExternalSystem": "c4.externalActor",
     "Stakeholder": "motivation.stakeholder",
     "motivation-stakeholder": "motivation.stakeholder",
     "Goal": "motivation.goal",
@@ -130,7 +121,52 @@
     "coveragesummary": "testing.coveragesummary",
     "CoverageSummary": "testing.coveragesummary",
     "environmentfactor": "testing.environmentfactor",
-    "EnvironmentFactor": "testing.environmentfactor"
+    "EnvironmentFactor": "testing.environmentfactor",
+
+    "customer": "motivation.stakeholder",
+    "internal": "motivation.stakeholder",
+    "capabilitie": "business.capability",
+    "capability": "business.capability",
+    "policy-rule": "business.function",
+    "role": "business.function",
+    "security-policie": "business.function",
+    "resource-operation": "business.function",
+    "file": "technology.systemsoftware",
+    "detective": "business.function",
+    "preventive": "business.function",
+    "threat": "business.function",
+    "api": "api.operation",
+    "interface": "api.operation",
+    "stack": "technology.systemsoftware",
+    "worker": "technology.systemsoftware",
+    "object": "data.model",
+    "filesystem": "datastore.database",
+    "browser-storage": "datastore.database",
+    "store": "datastore.database",
+    "custom": "ux.librarycomponent",
+    "dashboard": "ux.uxapplication",
+    "detail": "ux.view",
+    "interaction": "ux.librarycomponent",
+    "list": "ux.librarycomponent",
+    "legend": "navigation.navigationgraph",
+    "checklist": "navigation.navigationgraph",
+    "redirect": "navigation.route",
+    "context-menu": "navigation.navigationgraph",
+    "experience": "navigation.navigationgraph",
+    "hierarchical": "navigation.navigationgraph",
+    "panel": "navigation.navigationgraph",
+    "horizontal-tabs": "navigation.navigationgraph",
+    "tree": "navigation.navigationgraph",
+    "sidebar": "navigation.navigationgraph",
+    "breadcrumb": "navigation.navigationgraph",
+    "metric": "apm.instrumentationconfig",
+    "reliability": "apm.instrumentationconfig",
+    "performance": "apm.instrumentationconfig",
+    "coverage-requirement": "testing.coveragerequirement",
+    "context-variation": "testing.testcoveragemodel",
+    "test-case-sketche": "testing.testcoveragemodel",
+    "coverage-target": "testing.testcoveragetarget",
+    "test-suite": "testing.testcoveragemodel"
   },
   "nodeStyles": {
     "motivation.stakeholder": {
@@ -341,51 +377,6 @@
       },
       "dimensions": {
         "width": 200,
-        "height": 120
-      }
-    },
-    "c4.container": {
-      "layout": "left",
-      "icon": "📦",
-      "typeLabel": "Container",
-      "colors": {
-        "fill": "#e1f5fe",
-        "stroke": "#438dd5",
-        "header": "#1976d2",
-        "handle": "#1976d2"
-      },
-      "dimensions": {
-        "width": 280,
-        "height": 180
-      }
-    },
-    "c4.component": {
-      "layout": "left",
-      "icon": "🧩",
-      "typeLabel": "Component",
-      "colors": {
-        "fill": "#f0f9ff",
-        "stroke": "#85bbf0",
-        "header": "#1e40af",
-        "handle": "#1e40af"
-      },
-      "dimensions": {
-        "width": 240,
-        "height": 140
-      }
-    },
-    "c4.externalActor": {
-      "layout": "centered",
-      "icon": "👥",
-      "typeLabel": "External Actor",
-      "colors": {
-        "fill": "#f5f5f5",
-        "stroke": "#999999",
-        "header": "#666666",
-        "handle": "#666666"
-      },
-      "dimensions": {
-        "width": 160,
         "height": 120
       }
     },

@@ -12,11 +12,6 @@ test.describe('NodeType Enum', () => {
     expect(businessTypes).toHaveLength(4);
   });
 
-  test('should have 3 C4 layer types', () => {
-    const c4Types = Object.values(NodeType).filter(v => v.startsWith('c4.'));
-    expect(c4Types).toHaveLength(3);
-  });
-
   test('should have 1 technology layer type', () => {
     const techTypes = Object.values(NodeType).filter(v => v.startsWith('technology.'));
     expect(techTypes).toHaveLength(1);
@@ -72,10 +67,6 @@ test.describe('NodeType Enum', () => {
 
   test('should define business function', () => {
     expect(NodeType.BUSINESS_FUNCTION).toBe('business.function');
-  });
-
-  test('should define c4 container', () => {
-    expect(NodeType.C4_CONTAINER).toBe('c4.container');
   });
 
   test('should define data model', () => {

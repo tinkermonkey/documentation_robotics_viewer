@@ -59,7 +59,7 @@ src/
 
 All routes use `SharedLayout` with 3-column pattern:
 - **Left Sidebar** (collapsible): Layers, filters, navigation
-- **Main Content**: Graph/JSON/List views with ViewToggle
+- **Main Content**: Graph/Details views with ViewToggle
 - **Right Sidebar** (collapsible): `GraphViewSidebar` with filterPanel, controlPanel, inspectorContent, annotationPanel props
 
 Section order: Inspector (if visible), Filters, Controls, Annotations (if provided).
@@ -112,7 +112,7 @@ tests/
 
 ## Node Component Architecture
 
-All graph nodes use the unified `UnifiedNode` component driven by JSON configuration.
+All graph nodes use the unified `UnifiedNode` component driven by configuration.
 
 **Node Configuration:**
 - `NodeType` enum defines 20 node types across 10 architectural layers

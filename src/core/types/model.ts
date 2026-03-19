@@ -33,6 +33,7 @@ export interface Layer {
  */
 export interface ModelElement {
   id: string;
+  elementId?: string;
   type: string;
   name: string;
   description?: string;

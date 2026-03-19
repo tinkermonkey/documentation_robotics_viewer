@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useParams, useSearch, useNavigate } from '@tanstack/react-router';
 import type { Node } from '@xyflow/react';
 import GraphViewer from '../../../core/components/GraphViewer';
-import ModelJSONViewer from '../components/ModelJSONViewer';
+import ModelDetailsViewer from '../components/ModelDetailsViewer';
 import AnnotationPanel from '../components/AnnotationPanel';
 import SchemaInfoPanel from '../components/SchemaInfoPanel';
 import ModelLayersSidebar from '../components/ModelLayersSidebar';
@@ -99,7 +99,7 @@ export default function ModelRoute() {
     setSelectedNode(node);
   };
 
-  // Handle path highlight in JSON view (auto-clear after 3 seconds)
+  // Handle path highlight in Details view (auto-clear after 3 seconds)
   const handlePathHighlight = (path: string | null) => {
     // Clear any existing timeout
     if (highlightTimeoutRef.current) {
@@ -125,7 +125,7 @@ export default function ModelRoute() {
 
       return sanitizedModel;
     },
-    websocketEvents: ['model.updated', 'annotation.added'],
+    websocketEvents: ['model', 'model.updated', 'annotation.added'],
     onSuccess: async (modelData) => {
       setModel(modelData);
 
@@ -209,7 +209,7 @@ export default function ModelRoute() {
             selectedLayerId={selectedLayerId}
           />
         ) : (
-          <ModelJSONViewer
+          <ModelDetailsViewer
             model={model}
             specData={specData || undefined}
             onPathHighlight={handlePathHighlight}

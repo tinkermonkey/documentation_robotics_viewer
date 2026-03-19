@@ -149,7 +149,7 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
     : [];
 
   // Changeset badge
-  const changesetOp = element.changesetOperation ?? nodeData?.changesetOperation;
+  const changesetOp = nodeData?.changesetOperation;
 
   const layerName = layer?.name ?? resolvedLayerId;
   const typeLabel = styleConfig?.typeLabel ?? element.type;

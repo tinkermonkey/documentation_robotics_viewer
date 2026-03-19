@@ -3,7 +3,6 @@ import { AppEdge } from '@/core/types/reactflow';
 import { useCrossLayerStore } from '@/core/stores/crossLayerStore';
 import { useModelStore } from '@/core/stores/modelStore';
 import { extractCrossLayerReferences, referencesToEdges } from '@/core/services/crossLayerLinksExtractor';
-import { applyEdgeBundling, isBundledEdge } from '@/core/layout/edgeBundling';
 import { processCrossLayerReferencesWithWorker } from '@/core/services/workerPool';
 import { processReferences, type CrossLayerReference } from '@/core/services/crossLayerProcessor';
 import { LayerType, ReferenceType } from '@/core/types';
@@ -160,60 +159,25 @@ export function useCrossLayerLinks(): AppEdge[] {
     }
   }, [model, visible, setLastError]);
 
-  // Second pass: apply edge bundling to group parallel edges
-  const bundled = useMemo(() => {
-    try {
-      // Apply edge bundling (bundles 3+ parallel edges between same source-target node pair)
-      // Threshold set to Infinity disables total-edge-count gating (always attempt bundling)
-      const result = applyEdgeBundling(filtered, { threshold: Infinity });
-
-      // Enhance bundled edges with the original edge list for expansion
-      return result.bundledEdges.map((edge) => {
-        if (isBundledEdge(edge)) {
-          const bundledEdgeIds = edge.data.bundledEdgeIds ?? [];
-          const originalEdges = filtered.filter((e) => bundledEdgeIds.includes(e.id));
-          return {
-            ...edge,
-            type: 'bundledCrossLayer',
-            data: {
-              ...edge.data,
-              originalEdges,
-            },
-          };
-        }
-        return edge;
-      }) as AppEdge[];
-    } catch (error) {
-      // Log bundling error
-      console.error('Failed to apply edge bundling:', {
-        error: error instanceof Error ? error.message : String(error),
-        edgeCount: filtered.length,
-      });
-
-      // Return unbundled edges as fallback
-      return filtered;
-    }
-  }, [filtered]);
-
   // Progressive loading: limit initial render to 200 edges (FR-16)
   const displayedEdges = useMemo(() => {
-    return bundled.slice(0, loadedEdgeCount);
-  }, [bundled, loadedEdgeCount]);
+    return filtered.slice(0, loadedEdgeCount);
+  }, [filtered, loadedEdgeCount]);
 
   // Load more edges on demand
   const loadMoreEdges = useCallback(() => {
-    setLoadedEdgeCount((prev) => Math.min(prev + 100, bundled.length));
-  }, [bundled.length]);
+    setLoadedEdgeCount((prev) => Math.min(prev + 100, filtered.length));
+  }, [filtered.length]);
 
   // Expose load more through store for UI access
   // Must be in useEffect to avoid store mutation during render phase
   useEffect(() => {
     useCrossLayerStore.setState({
       loadMoreEdges,
-      hasMoreEdges: displayedEdges.length < bundled.length,
-      totalEdgeCount: bundled.length,
+      hasMoreEdges: displayedEdges.length < filtered.length,
+      totalEdgeCount: filtered.length,
     });
-  }, [loadMoreEdges, displayedEdges.length, bundled.length]);
+  }, [loadMoreEdges, displayedEdges.length, filtered.length]);
 
   return displayedEdges;
 }

@@ -1,6 +1,6 @@
 /**
  * SpecViewer Component
- * Displays JSON Schema files in a readable format
+ * Displays Spec Schema files in a readable format
  */
 
 import React from 'react'
@@ -53,8 +53,14 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
       )
     }
 
-    const definitions = (schema.definitions || {}) as Record<string, SchemaDefinition>
+    // Support both DR CLI format (nodeSchemas + layer) and standard Spec Schema (definitions)
+    const layer = schema.layer as { name?: string; description?: string } | undefined
+    const nodeSchemas = schema.nodeSchemas as Record<string, SchemaDefinition> | undefined
+    const definitions = nodeSchemas || (schema.definitions as Record<string, SchemaDefinition> | undefined) || {}
     const defNames = Object.keys(definitions)
+
+    const displayTitle = layer?.name || (typeof schema.title === 'string' ? schema.title : null) || selectedSchemaId
+    const displayDescription = layer?.description || (typeof schema.description === 'string' ? schema.description : '')
 
     const schemaMetadata: MetadataItem[] = [
       { label: 'Element Types', value: defNames.length }
@@ -65,9 +71,9 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
         {/* Schema Header */}
         <section className="mb-8" data-testid="schema-definitions-section">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            {typeof schema.title === 'string' ? schema.title : selectedSchemaId}
+            {displayTitle}
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">{typeof schema.description === 'string' ? schema.description : ''}</p>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">{displayDescription}</p>
           <MetadataGrid items={schemaMetadata} columns={3} />
 
           <div className="mt-6">
@@ -77,12 +83,17 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
             <div className="space-y-2">
               {defNames.map(defName => {
                 const definition = definitions[defName]
+                // For DR CLI nodeSchemas, the user-visible attributes are under properties.attributes.properties
+                const attrProperties = (definition.properties?.attributes as SchemaDefinition | undefined)?.properties
+                const visibleProperties = attrProperties || definition.properties
+                const requiredAttrs = (definition.properties?.attributes as SchemaDefinition | undefined)?.required as string[] | undefined
+                  || definition.required
 
                 return (
                   <ExpandableSection
                     key={defName}
-                    title={defName}
-                    badge={typeof definition.type === 'string' ? definition.type : Array.isArray(definition.type) ? definition.type.join(', ') : 'object'}
+                    title={typeof definition.title === 'string' ? definition.title : defName}
+                    badge={typeof definition.type === 'string' ? definition.type : 'object'}
                   >
                     {typeof definition.description === 'string' && definition.description && (
                       <p className="text-gray-700 dark:text-gray-300 mb-4">
@@ -90,13 +101,13 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
                       </p>
                     )}
 
-                    {definition.properties && (
+                    {visibleProperties && Object.keys(visibleProperties).length > 0 && (
                       <div>
                         <h5 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
                           Properties:
                         </h5>
                         <ul className="space-y-2 ml-4">
-                          {Object.entries(definition.properties || {}).map(([propName, propSchema]) => {
+                          {Object.entries(visibleProperties).map(([propName, propSchema]) => {
                             const prop = propSchema as SchemaDefinition
                             return (
                               <li key={propName} className="text-sm">
@@ -108,7 +119,7 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
                                     {typeof prop.type === 'string' ? prop.type : Array.isArray(prop.type) ? prop.type.join(', ') : 'object'}
                                     {typeof prop.format === 'string' && prop.format && ` (${prop.format})`}
                                   </span>
-                                  {(definition.required as string[] | undefined)?.includes(propName) && (
+                                  {requiredAttrs?.includes(propName) && (
                                     <Badge color="failure" size="xs">required</Badge>
                                   )}
                                   {typeof prop.description === 'string' && prop.description && (

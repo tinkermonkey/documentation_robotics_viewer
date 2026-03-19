@@ -7,10 +7,10 @@ import {
 } from './shapes';
 import { LayerType } from './layers';
 import type { UnifiedNodeData } from '../nodes';
-import { CoverageStatus } from './businessLayer';
-
 export type { HTTPMethod };
-import { NodeDetailLevel } from '../../core/layout/semanticZoomController';
+
+type CoverageStatus = 'complete' | 'partial' | 'none';
+type NodeDetailLevel = 'minimal' | 'standard' | 'detailed';
 
 /**
  * Changeset operation types

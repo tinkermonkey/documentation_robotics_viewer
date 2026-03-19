@@ -75,7 +75,7 @@ git mv src/apps/embedded/components/SchemaInfoPanel.stories.tsx src/catalog/stor
 
 # 02 Details - Model Details (2)
 echo "Moving model details..."
-git mv src/apps/embedded/components/ModelJSONViewer.stories.tsx src/catalog/stories/02-details/model-details/
+git mv src/apps/embedded/components/ModelDetailsViewer.stories.tsx src/catalog/stories/02-details/model-details/
 git mv src/apps/embedded/components/NodeDetailsPanel.stories.tsx src/catalog/stories/02-details/model-details/
 
 # 03 Graphs - Nodes - Base (3)

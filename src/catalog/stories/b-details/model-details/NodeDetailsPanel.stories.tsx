@@ -2,7 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react';
 import NodeDetailsPanel from '@/apps/embedded/components/NodeDetailsPanel';
 import type { Node } from '@xyflow/react';
 import type { MetaModel } from '@/core/types';
-import { ReferenceType } from '@/core/types/model';
+import { LayerType } from '@/core/types/layers';
+import { RelationshipType, ReferenceType } from '@/core/types/model';
 
 const meta = {
   title: 'B Details / Model Details / NodeDetailsPanel',
@@ -15,6 +16,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const mockModel: MetaModel = {
+  version: '1.0.0',
   references: [
     {
       id: 'ref-1',
@@ -294,7 +296,6 @@ export const ChangesetAddNode: Story = {
               name: 'New Strategic Goal',
               layerId: 'motivation',
               description: 'Newly added goal in changeset.',
-              changesetOperation: 'add',
               properties: { priority: 'high', status: 'draft', owner: 'Strategy Team' },
               visual: { position: { x: 0, y: 0 }, size: { width: 160, height: 80 }, style: {} },
               relationships: { incoming: [], outgoing: [] },
