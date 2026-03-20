@@ -1,0 +1,38 @@
+security.actor.dr-cli-server:
+  id: be1a9af7-2e28-4cdd-ae7e-2383e903db67
+  path: security.actor.dr-cli-server
+  spec_node_id: security.actor
+  type: actor
+  layer_id: security
+  name: DR CLI Server
+  description: External DR CLI server that issues authentication tokens and serves
+    model data
+  attributes:
+    type: system
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/stores/authStore.ts
+  metadata:
+    created_at: 2026-03-20T13:39:31.109Z
+    updated_at: 2026-03-20T13:39:31.109Z
+    version: 1
+security.actor.developer:
+  id: bbbaed33-7f4b-4839-ace6-cb14743b874d
+  path: security.actor.developer
+  spec_node_id: security.actor
+  type: actor
+  layer_id: security
+  name: Developer
+  description: Human user who authenticates via magic link to view and annotate
+    architecture models
+  attributes:
+    type: human
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: README.md
+  metadata:
+    created_at: 2026-03-20T13:39:31.432Z
+    updated_at: 2026-03-20T13:39:31.432Z
+    version: 1

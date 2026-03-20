@@ -1,0 +1,64 @@
+apm.alert.web-socket-disconnect-alert:
+  id: 758a1c95-870f-4667-b49d-6d6a1724fcd0
+  path: apm.alert.web-socket-disconnect-alert
+  spec_node_id: apm.alert
+  type: alert
+  layer_id: apm
+  name: WebSocket Disconnect Alert
+  description: Warning alert triggered when the DR CLI WebSocket connection drops
+    and falls back to REST-only polling mode; indicates the real-time model
+    update channel is unavailable.
+  attributes:
+    severity: warning
+    condition: connectionStore.status === 'rest-mode'
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/stores/connectionStore.ts
+  metadata:
+    created_at: 2026-03-20T13:31:58.975Z
+    updated_at: 2026-03-20T13:31:58.975Z
+    version: 1
+apm.alert.storybook-story-render-error-alert:
+  id: a36978b5-1607-4ee9-8f4b-64ee42ea74dc
+  path: apm.alert.storybook-story-render-error-alert
+  spec_node_id: apm.alert
+  type: alert
+  layer_id: apm
+  name: Storybook Story Render Error Alert
+  description: Warning alert triggered when a Storybook story renders with console
+    errors not in the approved filter list; detected by the test-runner
+    storyErrorFilters.ts during CI story validation.
+  attributes:
+    severity: warning
+    condition: story console error not in storyErrorFilters allowlist
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/stories/storyErrorFilters.ts
+        symbol: storyErrorFilters
+  metadata:
+    created_at: 2026-03-20T13:32:04.297Z
+    updated_at: 2026-03-20T13:32:04.297Z
+    version: 1
+apm.alert.playwright-test-failure-alert:
+  id: bc1b7107-c90f-466c-b28e-63f8eb7c232b
+  path: apm.alert.playwright-test-failure-alert
+  spec_node_id: apm.alert
+  type: alert
+  layer_id: apm
+  name: Playwright Test Failure Alert
+  description: Critical alert triggered when any Playwright test suite exits with
+    failures; covers unit, integration, E2E, and auth test configs; indicates
+    regression in core functionality.
+  attributes:
+    severity: critical
+    condition: playwright test exit code not equals 0
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: playwright.config.ts
+  metadata:
+    created_at: 2026-03-20T13:32:13.589Z
+    updated_at: 2026-03-20T13:32:13.589Z
+    version: 1

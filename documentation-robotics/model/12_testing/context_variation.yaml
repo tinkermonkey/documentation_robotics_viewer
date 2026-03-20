@@ -1,0 +1,60 @@
+testing.contextvariation.functional-unit-test-context:
+  id: ed8bf838-d99b-463c-b74b-5f814f2c5ef9
+  path: testing.contextvariation.functional-unit-test-context
+  spec_node_id: testing.contextvariation
+  type: contextvariation
+  layer_id: testing
+  name: Functional Unit Test Context
+  description: Standard functional test context for unit and integration tests;
+    runs in Playwright's browser environment (Chromium) against mock data via
+    MSW; fastest feedback loop.
+  attributes:
+    contextType: functional
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: playwright.config.ts
+  metadata:
+    created_at: 2026-03-20T13:32:59.133Z
+    updated_at: 2026-03-20T13:32:59.133Z
+    version: 1
+testing.contextvariation.regression-e2e-test-context:
+  id: 2b6c1730-0f34-4c46-a398-c5d3cb016349
+  path: testing.contextvariation.regression-e2e-test-context
+  spec_node_id: testing.contextvariation
+  type: contextvariation
+  layer_id: testing
+  name: Regression E2E Test Context
+  description: Regression test context for full E2E and auth tests; runs against a
+    live Vite dev server and DR CLI server; catches integration regressions
+    between the viewer and the CLI server API.
+  attributes:
+    contextType: regression
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: playwright.e2e.config.ts
+  metadata:
+    created_at: 2026-03-20T13:33:02.506Z
+    updated_at: 2026-03-20T13:33:02.506Z
+    version: 1
+testing.contextvariation.smoke-story-test-context:
+  id: 041449fd-be70-44b3-8099-a528def6f5c8
+  path: testing.contextvariation.smoke-story-test-context
+  spec_node_id: testing.contextvariation
+  type: contextvariation
+  layer_id: testing
+  name: Smoke Story Test Context
+  description: Smoke test context for Storybook story validation; runs
+    test-storybook against the built or dev Storybook server on port 61001;
+    quick visual regression smoke check.
+  attributes:
+    contextType: smoke
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/stories/architecture-nodes.spec.ts
+  metadata:
+    created_at: 2026-03-20T13:33:06.164Z
+    updated_at: 2026-03-20T13:33:06.164Z
+    version: 1

@@ -1,0 +1,229 @@
+ux.librarycomponent.graph-toolbar:
+  id: 4254a39c-1857-43d8-b1c1-fe175095b969
+  path: ux.librarycomponent.graph-toolbar
+  spec_node_id: ux.librarycomponent
+  type: librarycomponent
+  layer_id: ux
+  name: Graph Toolbar
+  description: Top toolbar overlay on the React Flow canvas; provides layout
+    algorithm selector, zoom controls, export button group, minimap toggle, and
+    field visibility toggle.
+  attributes:
+    type: navigation
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/GraphToolbar.tsx
+        symbol: GraphToolbar
+  metadata:
+    created_at: 2026-03-20T13:24:02.137Z
+    updated_at: 2026-03-20T13:24:02.137Z
+    version: 1
+ux.librarycomponent.connection-status-indicator:
+  id: 93c569ce-fcbe-4a2e-912a-c1bbe987bf7d
+  path: ux.librarycomponent.connection-status-indicator
+  spec_node_id: ux.librarycomponent
+  type: librarycomponent
+  layer_id: ux
+  name: Connection Status Indicator
+  description: Badge component showing live DR CLI WebSocket connection state
+    (connected/reconnecting/disconnected/rest-mode) in the top bar; links to the
+    auth route on failure.
+  attributes:
+    type: feedback
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/ConnectionStatus.tsx
+        symbol: ConnectionStatus
+  metadata:
+    created_at: 2026-03-20T13:24:05.742Z
+    updated_at: 2026-03-20T13:24:05.742Z
+    version: 1
+ux.librarycomponent.cross-layer-filter-panel:
+  id: a7151eea-8284-4812-87d8-9ab6d0184a37
+  path: ux.librarycomponent.cross-layer-filter-panel
+  spec_node_id: ux.librarycomponent
+  type: librarycomponent
+  layer_id: ux
+  name: Cross-Layer Filter Panel
+  description: Filter control panel for selecting which cross-layer reference
+    types to display as edges in the graph; grouped by relationship category
+    with toggle switches.
+  attributes:
+    type: layout
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/CrossLayerFilterPanel.tsx
+        symbol: CrossLayerFilterPanel
+  metadata:
+    created_at: 2026-03-20T13:24:10.087Z
+    updated_at: 2026-03-20T13:24:10.087Z
+    version: 1
+ux.librarycomponent.layout-preferences-panel:
+  id: 9838805d-6758-43b9-983c-5d7726d6c7a9
+  path: ux.librarycomponent.layout-preferences-panel
+  spec_node_id: ux.librarycomponent
+  type: librarycomponent
+  layer_id: ux
+  name: Layout Preferences Panel
+  description: Control panel for selecting the active graph layout algorithm
+    (Dagre/ELK/D3-Force/Graphviz) and configuring layout-specific parameters
+    (direction, spacing, algorithm variant).
+  attributes:
+    type: layout
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/LayoutPreferencesPanel.tsx
+        symbol: LayoutPreferencesPanel
+  metadata:
+    created_at: 2026-03-20T13:24:13.768Z
+    updated_at: 2026-03-20T13:24:13.769Z
+    version: 1
+ux.librarycomponent.model-details-viewer:
+  id: a858bd05-a1cd-4a7d-ae12-191370d6e66f
+  path: ux.librarycomponent.model-details-viewer
+  spec_node_id: ux.librarycomponent
+  type: librarycomponent
+  layer_id: ux
+  name: Model Details Viewer
+  description: Tabular display component listing all visible model elements with
+    type, layer, and property columns; supports sorting and row selection for
+    element inspection.
+  attributes:
+    type: table
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/ModelDetailsViewer.tsx
+        symbol: ModelDetailsViewer
+  metadata:
+    created_at: 2026-03-20T13:24:17.285Z
+    updated_at: 2026-03-20T13:24:17.286Z
+    version: 1
+ux.librarycomponent.spec-viewer:
+  id: e3e7278c-3ef4-4e6f-9b8c-0b898ee5a513
+  path: ux.librarycomponent.spec-viewer
+  spec_node_id: ux.librarycomponent
+  type: librarycomponent
+  layer_id: ux
+  name: Spec Viewer
+  description: JSON Schema specification display component; renders schema type
+    trees, property listings, required field indicators, and $ref resolution for
+    the DR CLI spec schemas.
+  attributes:
+    type: display
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/SpecViewer.tsx
+        symbol: SpecViewer
+  metadata:
+    created_at: 2026-03-20T13:24:20.813Z
+    updated_at: 2026-03-20T13:24:20.813Z
+    version: 1
+ux.librarycomponent.changeset-list:
+  id: 770433db-c1a5-4260-b126-fc5ef792954f
+  path: ux.librarycomponent.changeset-list
+  spec_node_id: ux.librarycomponent
+  type: librarycomponent
+  layer_id: ux
+  name: Changeset List
+  description: Scrollable list component showing all available changesets with
+    status badges (active/applied/abandoned), change counts, and creation
+    timestamps.
+  attributes:
+    type: table
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/ChangesetList.tsx
+        symbol: ChangesetList
+  metadata:
+    created_at: 2026-03-20T13:24:24.057Z
+    updated_at: 2026-03-20T13:24:24.057Z
+    version: 1
+ux.librarycomponent.mini-map:
+  id: 5934fb35-fb37-4295-bcc6-4018f466be6c
+  path: ux.librarycomponent.mini-map
+  spec_node_id: ux.librarycomponent
+  type: librarycomponent
+  layer_id: ux
+  name: Mini Map
+  description: React Flow MiniMap component providing a zoomed-out overview of the
+    full graph canvas with a viewport indicator rectangle for navigation
+    awareness.
+  attributes:
+    type: navigation
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/MiniMap.tsx
+        symbol: MiniMap
+  metadata:
+    created_at: 2026-03-20T13:24:30.715Z
+    updated_at: 2026-03-20T13:24:30.715Z
+    version: 1
+ux.librarycomponent.graph-statistics-panel:
+  id: 63c6e483-3aee-44b6-ba93-6de0c7b6610c
+  path: ux.librarycomponent.graph-statistics-panel
+  spec_node_id: ux.librarycomponent
+  type: librarycomponent
+  layer_id: ux
+  name: Graph Statistics Panel
+  description: Summary panel showing element counts by layer, relationship counts,
+    cross-layer reference statistics, and model completeness indicators.
+  attributes:
+    type: display
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/GraphStatisticsPanel.tsx
+        symbol: GraphStatisticsPanel
+  metadata:
+    created_at: 2026-03-20T13:24:36.923Z
+    updated_at: 2026-03-20T13:24:36.924Z
+    version: 1
+ux.librarycomponent.export-button-group:
+  id: 55def708-9003-4aa6-8751-37ce74d5a36a
+  path: ux.librarycomponent.export-button-group
+  spec_node_id: ux.librarycomponent
+  type: librarycomponent
+  layer_id: ux
+  name: Export Button Group
+  description: Button group for exporting the current graph view as PNG or SVG,
+    and downloading the full model as a ZIP archive.
+  attributes:
+    type: input
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/shared/ExportButtonGroup.tsx
+        symbol: ExportButtonGroup
+  metadata:
+    created_at: 2026-03-20T13:24:40.073Z
+    updated_at: 2026-03-20T13:24:40.073Z
+    version: 1
+ux.librarycomponent.sub-tab-navigation:
+  id: ccb3cd72-0a2b-4f00-b3ec-d8e8147c8dab
+  path: ux.librarycomponent.sub-tab-navigation
+  spec_node_id: ux.librarycomponent
+  type: librarycomponent
+  layer_id: ux
+  name: Sub-Tab Navigation
+  description: Secondary tab bar shown within each main section (graph/details for
+    model and spec; graph/list for changesets); triggers route changes to
+    sub-view paths.
+  attributes:
+    type: navigation
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/SubTabNavigation.tsx
+        symbol: SubTabNavigation
+  metadata:
+    created_at: 2026-03-20T13:24:44.134Z
+    updated_at: 2026-03-20T13:24:44.134Z
+    version: 1

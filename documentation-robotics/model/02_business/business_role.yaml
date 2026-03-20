@@ -1,0 +1,34 @@
+business.businessrole.architecture-reviewer:
+  id: fb417c37-45b0-460f-80bb-4782d6c1a11a
+  path: business.businessrole.architecture-reviewer
+  spec_node_id: business.businessrole
+  type: businessrole
+  layer_id: business
+  name: Architecture Reviewer
+  description: Team member who uses the viewer to review, annotate, and discuss
+    architecture models and changesets
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: README.md
+  metadata:
+    created_at: 2026-03-20T13:40:46.144Z
+    updated_at: 2026-03-20T13:40:46.144Z
+    version: 1
+business.businessrole.model-author:
+  id: ed8f5b8f-54e4-498c-a8d9-ebe4ee430b6a
+  path: business.businessrole.model-author
+  spec_node_id: business.businessrole
+  type: businessrole
+  layer_id: business
+  name: Model Author
+  description: Architect who creates and updates the DR model via DR CLI; views
+    results in the viewer
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: README.md
+  metadata:
+    created_at: 2026-03-20T13:40:46.462Z
+    updated_at: 2026-03-20T13:40:46.462Z
+    version: 1

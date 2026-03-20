@@ -1,0 +1,232 @@
+application.applicationfunction.model-store:
+  id: 3b08f432-72aa-4df6-978c-d76d3312f72b
+  path: application.applicationfunction.model-store
+  spec_node_id: application.applicationfunction
+  type: applicationfunction
+  layer_id: application
+  name: Model Store
+  description: Global Zustand store holding the parsed architecture model, loading
+    state, and error state
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/stores/modelStore.ts
+        symbol: modelStore
+  metadata:
+    created_at: 2026-03-20T12:56:38.341Z
+    updated_at: 2026-03-20T12:56:38.341Z
+    version: 1
+application.applicationfunction.layer-store:
+  id: d7373609-3530-467c-aa03-4a64956cd7ee
+  path: application.applicationfunction.layer-store
+  spec_node_id: application.applicationfunction
+  type: applicationfunction
+  layer_id: application
+  name: Layer Store
+  description: Zustand store managing active layer selection and layer visibility filters
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/stores/layerStore.ts
+        symbol: layerStore
+  metadata:
+    created_at: 2026-03-20T12:56:39.090Z
+    updated_at: 2026-03-20T12:56:39.090Z
+    version: 1
+application.applicationfunction.element-store:
+  id: 25361e14-6a34-4c96-bad3-a439ac3ca028
+  path: application.applicationfunction.element-store
+  spec_node_id: application.applicationfunction
+  type: applicationfunction
+  layer_id: application
+  name: Element Store
+  description: Zustand store tracking selected element, highlighted paths, and
+    focus mode state
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/stores/elementStore.ts
+        symbol: elementStore
+  metadata:
+    created_at: 2026-03-20T12:56:50.218Z
+    updated_at: 2026-03-20T12:56:50.218Z
+    version: 1
+application.applicationfunction.cross-layer-store:
+  id: 5a3e7022-c367-491a-9d03-05dc8e77ae90
+  path: application.applicationfunction.cross-layer-store
+  spec_node_id: application.applicationfunction
+  type: applicationfunction
+  layer_id: application
+  name: Cross-Layer Store
+  description: Zustand store holding resolved cross-layer references and edge data
+    for the graph
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/stores/crossLayerStore.ts
+        symbol: crossLayerStore
+  metadata:
+    created_at: 2026-03-20T12:56:51.374Z
+    updated_at: 2026-03-20T12:56:51.374Z
+    version: 1
+application.applicationfunction.field-visibility-store:
+  id: 338348fe-1d40-47c8-b51f-6406b5c39a16
+  path: application.applicationfunction.field-visibility-store
+  spec_node_id: application.applicationfunction
+  type: applicationfunction
+  layer_id: application
+  name: Field Visibility Store
+  description: Zustand store managing graph-level and node-level field visibility toggles
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/stores/fieldVisibilityStore.ts
+        symbol: fieldVisibilityStore
+  metadata:
+    created_at: 2026-03-20T12:56:54.403Z
+    updated_at: 2026-03-20T12:56:54.404Z
+    version: 1
+application.applicationfunction.layout-preferences-store:
+  id: 0e4482bf-a64f-460d-98d7-b83c0d4dd6d8
+  path: application.applicationfunction.layout-preferences-store
+  spec_node_id: application.applicationfunction
+  type: applicationfunction
+  layer_id: application
+  name: Layout Preferences Store
+  description: Zustand store persisting user layout algorithm preferences and
+    layout configuration options
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/stores/layoutPreferencesStore.ts
+        symbol: layoutPreferencesStore
+  metadata:
+    created_at: 2026-03-20T12:56:55.487Z
+    updated_at: 2026-03-20T12:56:55.487Z
+    version: 1
+application.applicationfunction.auth-store:
+  id: 5f23d5e0-b6f6-46ed-be70-1b9869b7bf30
+  path: application.applicationfunction.auth-store
+  spec_node_id: application.applicationfunction
+  type: applicationfunction
+  layer_id: application
+  name: Auth Store
+  description: Zustand store managing the DR CLI auth token, authentication state,
+    and magic-link token extraction
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/stores/authStore.ts
+        symbol: authStore
+  metadata:
+    created_at: 2026-03-20T12:56:59.895Z
+    updated_at: 2026-03-20T12:56:59.896Z
+    version: 1
+application.applicationfunction.connection-store:
+  id: 85f71f77-d9b8-419f-9a8b-3e21d2085b39
+  path: application.applicationfunction.connection-store
+  spec_node_id: application.applicationfunction
+  type: applicationfunction
+  layer_id: application
+  name: Connection Store
+  description: Zustand store tracking WebSocket connection state
+    (connected/disconnected/reconnecting) to the DR CLI server
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/stores/connectionStore.ts
+        symbol: connectionStore
+  metadata:
+    created_at: 2026-03-20T12:57:01.024Z
+    updated_at: 2026-03-20T12:57:01.025Z
+    version: 1
+application.applicationfunction.changeset-store:
+  id: f1edef84-1298-486c-b347-f47c3b0f9712
+  path: application.applicationfunction.changeset-store
+  spec_node_id: application.applicationfunction
+  type: applicationfunction
+  layer_id: application
+  name: Changeset Store
+  description: Zustand store managing the active changeset list, selected
+    changeset, and changeset diff state
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/stores/changesetStore.ts
+        symbol: changesetStore
+  metadata:
+    created_at: 2026-03-20T12:57:06.131Z
+    updated_at: 2026-03-20T12:57:06.131Z
+    version: 1
+application.applicationfunction.annotation-store:
+  id: 71f9eb72-20e1-4ae6-be30-425c11e59edb
+  path: application.applicationfunction.annotation-store
+  spec_node_id: application.applicationfunction
+  type: applicationfunction
+  layer_id: application
+  name: Annotation Store
+  description: Zustand store managing user annotations on model elements; syncs
+    with DR CLI server via REST API
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/stores/annotationStore.ts
+        symbol: annotationStore
+  metadata:
+    created_at: 2026-03-20T12:57:07.014Z
+    updated_at: 2026-03-20T12:57:07.014Z
+    version: 1
+application.applicationfunction.chat-store:
+  id: 725b34cd-3815-4e25-b496-bd6de3be2735
+  path: application.applicationfunction.chat-store
+  spec_node_id: application.applicationfunction
+  type: applicationfunction
+  layer_id: application
+  name: Chat Store
+  description: Zustand store managing chat conversation history, streaming state,
+    and active tool invocations for the AI assistant
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/stores/chatStore.ts
+        symbol: chatStore
+  metadata:
+    created_at: 2026-03-20T12:57:10.392Z
+    updated_at: 2026-03-20T12:57:10.392Z
+    version: 1
+application.applicationfunction.view-preference-store:
+  id: d5560ddd-c79f-41b1-8da3-29331f03aaac
+  path: application.applicationfunction.view-preference-store
+  spec_node_id: application.applicationfunction
+  type: applicationfunction
+  layer_id: application
+  name: View Preference Store
+  description: Zustand store persisting view mode preferences (graph vs. details,
+    sidebar visibility, zoom level)
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/stores/viewPreferenceStore.ts
+        symbol: viewPreferenceStore
+  metadata:
+    created_at: 2026-03-20T12:57:11.534Z
+    updated_at: 2026-03-20T12:57:11.534Z
+    version: 1
+application.applicationfunction.floating-chat-store:
+  id: f4932add-5411-457e-b822-9655133f380e
+  path: application.applicationfunction.floating-chat-store
+  spec_node_id: application.applicationfunction
+  type: applicationfunction
+  layer_id: application
+  name: Floating Chat Store
+  description: Zustand store managing the floating chat panel open/close state and
+    panel position
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/stores/floatingChatStore.ts
+        symbol: floatingChatStore
+  metadata:
+    created_at: 2026-03-20T12:57:16.169Z
+    updated_at: 2026-03-20T12:57:16.169Z
+    version: 1

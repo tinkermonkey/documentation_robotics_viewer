@@ -1,0 +1,112 @@
+ux.librarysubview.empty-state:
+  id: 00908344-5892-4132-a782-946d03899c40
+  path: ux.librarysubview.empty-state
+  spec_node_id: ux.librarysubview
+  type: librarysubview
+  layer_id: ux
+  name: Empty State
+  description: Standardized empty content placeholder with icon, heading, and
+    optional action button; used across model, spec, and changeset views when no
+    data is available.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/shared/EmptyState.tsx
+        symbol: EmptyState
+  metadata:
+    created_at: 2026-03-20T13:24:47.702Z
+    updated_at: 2026-03-20T13:24:47.702Z
+    version: 1
+ux.librarysubview.error-state:
+  id: 839b7059-9515-43c3-8616-de58fe276187
+  path: ux.librarysubview.error-state
+  spec_node_id: ux.librarysubview
+  type: librarysubview
+  layer_id: ux
+  name: Error State
+  description: Standardized error display fragment with error message, icon, and
+    retry action; used by ErrorBoundary components and failed data load states.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/shared/ErrorState.tsx
+        symbol: ErrorState
+  metadata:
+    created_at: 2026-03-20T13:24:51.432Z
+    updated_at: 2026-03-20T13:24:51.432Z
+    version: 1
+ux.librarysubview.loading-state:
+  id: c9244359-d2c6-41ba-a9a3-06fb14228348
+  path: ux.librarysubview.loading-state
+  spec_node_id: ux.librarysubview
+  type: librarysubview
+  layer_id: ux
+  name: Loading State
+  description: Standardized loading spinner fragment with optional message; shown
+    during data fetch, layout computation, and WebSocket reconnection.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/shared/LoadingState.tsx
+        symbol: LoadingState
+  metadata:
+    created_at: 2026-03-20T13:24:54.279Z
+    updated_at: 2026-03-20T13:24:54.279Z
+    version: 1
+ux.librarysubview.breadcrumb-navigation:
+  id: 52900c1f-1b12-4d1f-a795-eda10d8bc6aa
+  path: ux.librarysubview.breadcrumb-navigation
+  spec_node_id: ux.librarysubview
+  type: librarysubview
+  layer_id: ux
+  name: Breadcrumb Navigation
+  description: Cross-layer navigation breadcrumb showing the path from the
+    currently selected element back through its cross-layer reference chain;
+    enables hierarchical model traversal.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/CrossLayerBreadcrumb.tsx
+        symbol: CrossLayerBreadcrumb
+  metadata:
+    created_at: 2026-03-20T13:24:58.816Z
+    updated_at: 2026-03-20T13:24:58.816Z
+    version: 1
+ux.librarysubview.node-context-menu:
+  id: 13207174-7d1a-4fdd-bbfb-5c76ebd5596d
+  path: ux.librarysubview.node-context-menu
+  spec_node_id: ux.librarysubview
+  type: librarysubview
+  layer_id: ux
+  name: Node Context Menu
+  description: "Right-click context menu for graph nodes; offers actions: focus
+    element, copy element ID, view details, and expand/collapse cross-layer
+    references."
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/shared/NodeContextMenu.tsx
+        symbol: NodeContextMenu
+  metadata:
+    created_at: 2026-03-20T13:25:02.739Z
+    updated_at: 2026-03-20T13:25:02.739Z
+    version: 1
+ux.librarysubview.highlighted-path-panel:
+  id: d1ddf2a7-c62b-4515-bd95-4b6372de947c
+  path: ux.librarysubview.highlighted-path-panel
+  spec_node_id: ux.librarysubview
+  type: librarysubview
+  layer_id: ux
+  name: Highlighted Path Panel
+  description: Overlay panel showing the dependency path between two selected
+    nodes; lists the intermediate nodes and relationship types along the
+    shortest cross-layer path.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/HighlightedPathPanel.tsx
+        symbol: HighlightedPathPanel
+  metadata:
+    created_at: 2026-03-20T13:25:06.235Z
+    updated_at: 2026-03-20T13:25:06.236Z
+    version: 1

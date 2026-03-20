@@ -1,0 +1,21 @@
+navigation.breadcrumbconfig.cross-layer-breadcrumb:
+  id: 875f1a42-2e51-4c2c-808a-7a4463c6a897
+  path: navigation.breadcrumbconfig.cross-layer-breadcrumb
+  spec_node_id: navigation.breadcrumbconfig
+  type: breadcrumbconfig
+  layer_id: navigation
+  name: Cross-Layer Breadcrumb
+  description: Breadcrumb configuration for cross-layer element navigation; labels
+    show element name + layer prefix (e.g., application / Graph Viewer); enables
+    back-navigation through reference chains.
+  attributes:
+    label: Cross-Layer Navigation
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/CrossLayerBreadcrumb.tsx
+        symbol: CrossLayerBreadcrumb
+  metadata:
+    created_at: 2026-03-20T13:26:39.160Z
+    updated_at: 2026-03-20T13:26:39.160Z
+    version: 1

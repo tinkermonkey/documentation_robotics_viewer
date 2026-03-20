@@ -1,0 +1,19 @@
+security.securitymodel.documentation-robotics-viewer-security-model:
+  id: b9fa954e-e3af-47bf-abd2-869306f3ff77
+  path: security.securitymodel.documentation-robotics-viewer-security-model
+  spec_node_id: security.securitymodel
+  type: securitymodel
+  layer_id: security
+  name: Documentation Robotics Viewer Security Model
+  description: Security model for the documentation_robotics_viewer browser application
+  attributes:
+    version: "1.0"
+    application: documentation_robotics_viewer
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: README.md
+  metadata:
+    created_at: 2026-03-20T13:38:49.889Z
+    updated_at: 2026-03-20T13:38:49.889Z
+    version: 1

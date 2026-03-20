@@ -1,0 +1,86 @@
+apm.metricinstrument.web-socket-connection-state-gauge:
+  id: 430cdd17-5a41-45c0-b393-fac66e6e250b
+  path: apm.metricinstrument.web-socket-connection-state-gauge
+  spec_node_id: apm.metricinstrument
+  type: metricinstrument
+  layer_id: apm
+  name: WebSocket Connection State Gauge
+  description: Gauge instrument tracking the current DR CLI WebSocket connection
+    state (1=connected, 0=disconnected); sourced from connectionStore connection
+    status transitions; enables alerting on connection loss.
+  attributes:
+    type: Gauge
+    unit: state
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/stores/connectionStore.ts
+        symbol: connectionStore
+  metadata:
+    created_at: 2026-03-20T13:31:41.379Z
+    updated_at: 2026-03-20T13:31:41.379Z
+    version: 1
+apm.metricinstrument.web-socket-reconnection-attempt-counter:
+  id: dc82a912-c252-4aaa-b268-504da18d8f55
+  path: apm.metricinstrument.web-socket-reconnection-attempt-counter
+  spec_node_id: apm.metricinstrument
+  type: metricinstrument
+  layer_id: apm
+  name: WebSocket Reconnection Attempt Counter
+  description: Counter tracking cumulative WebSocket reconnection attempts;
+    incremented by the websocketClient reconnect loop; measures connection
+    stability over a session.
+  attributes:
+    type: Counter
+    unit: attempts
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/services/websocketClient.ts
+        symbol: websocketClient
+  metadata:
+    created_at: 2026-03-20T13:31:45.904Z
+    updated_at: 2026-03-20T13:31:45.904Z
+    version: 1
+apm.metricinstrument.chat-api-token-usage-counter:
+  id: 650bbbda-03ac-43f8-925d-bf5ba8b288a1
+  path: apm.metricinstrument.chat-api-token-usage-counter
+  spec_node_id: apm.metricinstrument
+  type: metricinstrument
+  layer_id: apm
+  name: Chat API Token Usage Counter
+  description: Counter accumulating Anthropic API token consumption (input +
+    output tokens) across chat messages in a session; displayed in the
+    UsageStatsBadge component with cost in USD.
+  attributes:
+    type: Counter
+    unit: tokens
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/chat/UsageStatsBadge.tsx
+        symbol: UsageStatsBadge
+  metadata:
+    created_at: 2026-03-20T13:31:50.854Z
+    updated_at: 2026-03-20T13:31:50.854Z
+    version: 1
+apm.metricinstrument.graph-node-render-histogram:
+  id: cf3ad64e-b251-4a6b-87b8-48d4419c92a3
+  path: apm.metricinstrument.graph-node-render-histogram
+  spec_node_id: apm.metricinstrument
+  type: metricinstrument
+  layer_id: apm
+  name: Graph Node Render Histogram
+  description: Histogram tracking React Flow node render counts per graph view;
+    useful for detecting layout performance degradation as model size grows.
+  attributes:
+    type: Histogram
+    unit: nodes
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/core/components/GraphViewer.tsx
+  metadata:
+    created_at: 2026-03-20T13:31:54.574Z
+    updated_at: 2026-03-20T13:31:54.574Z
+    version: 1

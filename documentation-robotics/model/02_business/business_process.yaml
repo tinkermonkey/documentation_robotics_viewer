@@ -1,0 +1,68 @@
+business.businessprocess.model-loading-and-rendering:
+  id: a138ca69-d437-4841-b96f-5fb5dd703380
+  path: business.businessprocess.model-loading-and-rendering
+  spec_node_id: business.businessprocess
+  type: businessprocess
+  layer_id: business
+  name: Model Loading and Rendering
+  description: Process of loading YAML model data from DR CLI REST API,
+    transforming to React Flow nodes, and rendering interactive graph
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/core/services/dataLoader.ts
+  metadata:
+    created_at: 2026-03-20T13:40:34.707Z
+    updated_at: 2026-03-20T13:40:34.707Z
+    version: 1
+business.businessprocess.real-time-model-synchronization:
+  id: 83c81f34-4376-4ff9-8fb4-98f3ecbc6d68
+  path: business.businessprocess.real-time-model-synchronization
+  spec_node_id: business.businessprocess
+  type: businessprocess
+  layer_id: business
+  name: Real-time Model Synchronization
+  description: Continuous synchronization of model state via WebSocket JSON-RPC
+    connection to DR CLI server
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/stores/connectionStore.ts
+  metadata:
+    created_at: 2026-03-20T13:40:35.058Z
+    updated_at: 2026-03-20T13:40:35.058Z
+    version: 1
+business.businessprocess.changeset-review-flow:
+  id: c4ba5c59-3f4e-49a9-9915-a48049ddb68e
+  path: business.businessprocess.changeset-review-flow
+  spec_node_id: business.businessprocess
+  type: businessprocess
+  layer_id: business
+  name: Changeset Review Flow
+  description: Process of fetching proposed changesets, visualizing diffs, and
+    presenting them for review
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/stores/changesetStore.ts
+  metadata:
+    created_at: 2026-03-20T13:40:35.392Z
+    updated_at: 2026-03-20T13:40:35.392Z
+    version: 1
+business.businessprocess.authentication-flow:
+  id: c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6
+  path: business.businessprocess.authentication-flow
+  spec_node_id: business.businessprocess
+  type: businessprocess
+  layer_id: business
+  name: Authentication Flow
+  description: Magic-link token receipt, storage, and injection into all
+    subsequent API requests
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/stores/authStore.ts
+  metadata:
+    created_at: 2026-03-20T13:40:35.731Z
+    updated_at: 2026-03-20T13:40:35.731Z
+    version: 1

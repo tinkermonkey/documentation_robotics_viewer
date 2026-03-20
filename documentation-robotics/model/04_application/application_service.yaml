@@ -1,0 +1,481 @@
+application.applicationservice.data-loader:
+  id: a5342d6f-daf4-4a6e-a98b-7fada2561798
+  path: application.applicationservice.data-loader
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Data Loader
+  description: Orchestrates model and spec data loading from the DR CLI REST API;
+    coordinates YAML parsing, schema parsing, and cross-layer reference
+    extraction
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/dataLoader.ts
+        symbol: dataLoader
+  metadata:
+    created_at: 2026-03-20T12:55:04.873Z
+    updated_at: 2026-03-20T12:55:04.873Z
+    version: 1
+application.applicationservice.node-transformer:
+  id: fd2f4ab4-7477-4ec5-aac4-37aa1d78af4c
+  path: application.applicationservice.node-transformer
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Node Transformer
+  description: Transforms raw YAML model elements into React Flow node data
+    (UnifiedNodeData) with position, styling, and handle assignments
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/nodeTransformer.ts
+        symbol: nodeTransformer
+  metadata:
+    created_at: 2026-03-20T12:55:06.374Z
+    updated_at: 2026-03-20T12:55:06.374Z
+    version: 1
+application.applicationservice.yaml-parser:
+  id: 63c97821-401c-40cd-a076-ef84e06f5442
+  path: application.applicationservice.yaml-parser
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: YAML Parser
+  description: Parses YAML model files into typed JavaScript objects; used by
+    DataLoader for all layer files
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/yamlParser.ts
+        symbol: yamlParser
+  metadata:
+    created_at: 2026-03-20T12:55:11.234Z
+    updated_at: 2026-03-20T12:55:11.234Z
+    version: 1
+application.applicationservice.json-schema-parser:
+  id: 16fa387e-b1fd-4daf-9811-c3a0b4fd3d05
+  path: application.applicationservice.json-schema-parser
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: JSON Schema Parser
+  description: Parses JSON Schema spec files from the DR CLI; used to power the
+    Spec viewer and field-level type information
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/jsonSchemaParser.ts
+        symbol: jsonSchemaParser
+  metadata:
+    created_at: 2026-03-20T12:55:12.817Z
+    updated_at: 2026-03-20T12:55:12.817Z
+    version: 1
+application.applicationservice.cross-layer-reference-extractor:
+  id: 80e6c89f-70ba-4183-909f-0457abdf9fa7
+  path: application.applicationservice.cross-layer-reference-extractor
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Cross-Layer Reference Extractor
+  description: Extracts cross-layer reference declarations from YAML element
+    attributes across all layers
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/crossLayerReferenceExtractor.ts
+        symbol: crossLayerReferenceExtractor
+  metadata:
+    created_at: 2026-03-20T12:55:22.309Z
+    updated_at: 2026-03-20T12:55:22.309Z
+    version: 1
+application.applicationservice.cross-layer-processor:
+  id: c14b2ee0-b273-46a7-ac95-d96e45d5993d
+  path: application.applicationservice.cross-layer-processor
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Cross-Layer Processor
+  description: Resolves and validates cross-layer references; builds the edge list
+    connecting nodes across different architecture layers
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/crossLayerProcessor.ts
+        symbol: crossLayerProcessor
+  metadata:
+    created_at: 2026-03-20T12:55:23.506Z
+    updated_at: 2026-03-20T12:55:23.506Z
+    version: 1
+application.applicationservice.cross-layer-links-extractor:
+  id: 3ba73a74-428b-41e5-8d98-992e18be7442
+  path: application.applicationservice.cross-layer-links-extractor
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Cross-Layer Links Extractor
+  description: Extracts implicit link relationships between layers from element
+    attribute patterns
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/crossLayerLinksExtractor.ts
+        symbol: crossLayerLinksExtractor
+  metadata:
+    created_at: 2026-03-20T12:55:31.207Z
+    updated_at: 2026-03-20T12:55:31.207Z
+    version: 1
+application.applicationservice.spec-parser:
+  id: b4784daf-706d-4f78-b522-165057df8110
+  path: application.applicationservice.spec-parser
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Spec Parser
+  description: Parses the DR CLI spec manifest and layer spec schemas into
+    structured TypeScript objects
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/specParser.ts
+        symbol: specParser
+  metadata:
+    created_at: 2026-03-20T12:55:32.357Z
+    updated_at: 2026-03-20T12:55:32.357Z
+    version: 1
+application.applicationservice.generated-api-client:
+  id: a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8
+  path: application.applicationservice.generated-api-client
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Generated API Client
+  description: Auto-generated TypeScript HTTP client from the OpenAPI spec;
+    provides typed methods for all DR CLI REST endpoints
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/generatedApiClient.ts
+        symbol: generatedApiClient
+  metadata:
+    created_at: 2026-03-20T12:55:36.541Z
+    updated_at: 2026-03-20T12:55:36.542Z
+    version: 1
+application.applicationservice.impact-analysis-service:
+  id: 6cf4af7e-2967-4667-ae54-ebee68497fc6
+  path: application.applicationservice.impact-analysis-service
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Impact Analysis Service
+  description: Analyzes change impact by traversing cross-layer relationships to
+    identify transitively affected elements
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/impactAnalysisService.ts
+        symbol: impactAnalysisService
+  metadata:
+    created_at: 2026-03-20T12:55:38.613Z
+    updated_at: 2026-03-20T12:55:38.614Z
+    version: 1
+application.applicationservice.export-utils:
+  id: e1566415-74cb-4bc8-837e-9872ef8d6047
+  path: application.applicationservice.export-utils
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Export Utils
+  description: Handles PNG/SVG export of graph views and ZIP archive bundling of model data
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/exportUtils.ts
+        symbol: exportUtils
+  metadata:
+    created_at: 2026-03-20T12:55:44.421Z
+    updated_at: 2026-03-20T12:55:44.421Z
+    version: 1
+application.applicationservice.local-file-loader:
+  id: b694cd37-bb86-4e7e-85fd-d56cd9e72cd0
+  path: application.applicationservice.local-file-loader
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Local File Loader
+  description: Loads model YAML files from local filesystem during development
+    (fallback when DR CLI server not available)
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/localFileLoader.ts
+        symbol: localFileLoader
+  metadata:
+    created_at: 2026-03-20T12:55:45.746Z
+    updated_at: 2026-03-20T12:55:45.746Z
+    version: 1
+application.applicationservice.libavoid-router:
+  id: b0a1d86a-4a9d-408a-ab38-33f1e340916a
+  path: application.applicationservice.libavoid-router
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Libavoid Router
+  description: Computes obstacle-avoiding edge routes using the libavoid-js WASM
+    library for complex graph layouts
+  attributes:
+    serviceType: asynchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/libavoidRouter.ts
+        symbol: libavoidRouter
+  metadata:
+    created_at: 2026-03-20T12:55:51.765Z
+    updated_at: 2026-03-20T12:55:51.765Z
+    version: 1
+application.applicationservice.worker-pool:
+  id: 199b9d07-72c8-4e8a-81e4-58c9e587e78f
+  path: application.applicationservice.worker-pool
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Worker Pool
+  description: Manages a pool of Web Workers for parallelizing CPU-intensive
+    layout and data-processing tasks
+  attributes:
+    serviceType: asynchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/workerPool.ts
+        symbol: workerPool
+  metadata:
+    created_at: 2026-03-20T12:55:52.822Z
+    updated_at: 2026-03-20T12:55:52.823Z
+    version: 1
+application.applicationservice.git-hub-service:
+  id: 105e4ed5-f5fe-4c0c-b048-5acc0193579e
+  path: application.applicationservice.git-hub-service
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: GitHub Service
+  description: Fetches model YAML files directly from GitHub repository URLs as an
+    alternative data source
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/githubService.ts
+        symbol: githubService
+  metadata:
+    created_at: 2026-03-20T12:55:59.021Z
+    updated_at: 2026-03-20T12:55:59.021Z
+    version: 1
+application.applicationservice.exception-classifier:
+  id: 41f01291-171d-47a9-9d25-ab0a60b1938f
+  path: application.applicationservice.exception-classifier
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Exception Classifier
+  description: Classifies runtime exceptions into categories for structured error
+    reporting and Storybook story error filtering
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/exceptionClassifier.ts
+        symbol: exceptionClassifier
+  metadata:
+    created_at: 2026-03-20T12:56:00.213Z
+    updated_at: 2026-03-20T12:56:00.213Z
+    version: 1
+application.applicationservice.chat-service:
+  id: a920ab1c-c481-46b6-bdb4-4050501adeac
+  path: application.applicationservice.chat-service
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Chat Service
+  description: Interfaces with the Claude AI API to provide architectural
+    assistant chat functionality; manages message streaming and tool invocations
+  attributes:
+    serviceType: asynchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/services/chatService.ts
+        symbol: chatService
+  metadata:
+    created_at: 2026-03-20T12:56:04.291Z
+    updated_at: 2026-03-20T12:56:04.291Z
+    version: 1
+application.applicationservice.web-socket-client:
+  id: b7775f1a-2418-4c7a-84aa-997efd658a97
+  path: application.applicationservice.web-socket-client
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: WebSocket Client
+  description: Manages the persistent WebSocket connection to the DR CLI server;
+    handles reconnection, topic subscriptions, and JSON-RPC message dispatch
+  attributes:
+    serviceType: event-driven
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/services/websocketClient.ts
+        symbol: websocketClient
+  metadata:
+    created_at: 2026-03-20T12:56:05.522Z
+    updated_at: 2026-03-20T12:56:05.522Z
+    version: 1
+application.applicationservice.json-rpc-handler:
+  id: fbd68c51-36fa-48ef-b381-5599d2678a90
+  path: application.applicationservice.json-rpc-handler
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: JSON-RPC Handler
+  description: Processes incoming JSON-RPC 2.0 messages from the WebSocket
+    connection; routes model/changeset/annotation update events to the
+    appropriate stores
+  attributes:
+    serviceType: event-driven
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/services/jsonRpcHandler.ts
+        symbol: jsonRpcHandler
+  metadata:
+    created_at: 2026-03-20T12:56:09.063Z
+    updated_at: 2026-03-20T12:56:09.063Z
+    version: 1
+application.applicationservice.changeset-graph-builder:
+  id: 29f33e20-2acf-46e3-9f18-02ebd34fc734
+  path: application.applicationservice.changeset-graph-builder
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Changeset Graph Builder
+  description: Transforms changeset diff data into React Flow graph nodes and
+    edges for visual changeset review
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/services/changesetGraphBuilder.ts
+        symbol: changesetGraphBuilder
+  metadata:
+    created_at: 2026-03-20T12:56:10.469Z
+    updated_at: 2026-03-20T12:56:10.469Z
+    version: 1
+application.applicationservice.embedded-data-loader:
+  id: 13b1a5ff-1cea-4ca0-b557-81f4629f2736
+  path: application.applicationservice.embedded-data-loader
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Embedded Data Loader
+  description: Coordinates data loading for the embedded app; selects between DR
+    CLI server, GitHub, or local file sources based on connection state
+  attributes:
+    serviceType: asynchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/services/embeddedDataLoader.ts
+        symbol: embeddedDataLoader
+  metadata:
+    created_at: 2026-03-20T12:56:15.772Z
+    updated_at: 2026-03-20T12:56:15.772Z
+    version: 1
+application.applicationservice.coverage-analyzer:
+  id: 10be5498-0941-4637-8734-ebf6eeca55ec
+  path: application.applicationservice.coverage-analyzer
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Coverage Analyzer
+  description: Analyzes model completeness by comparing element counts and
+    relationship coverage against expected patterns
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/services/coverageAnalyzer.ts
+        symbol: coverageAnalyzer
+  metadata:
+    created_at: 2026-03-20T12:56:16.981Z
+    updated_at: 2026-03-20T12:56:16.981Z
+    version: 1
+application.applicationservice.error-tracker:
+  id: 9e5ef4a3-c7cb-48bd-a7c4-f1b9de5506ad
+  path: application.applicationservice.error-tracker
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Error Tracker
+  description: Captures and categorizes runtime errors with context for display in
+    the UI and structured logging
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/services/errorTracker.ts
+        symbol: errorTracker
+  metadata:
+    created_at: 2026-03-20T12:56:20.092Z
+    updated_at: 2026-03-20T12:56:20.092Z
+    version: 1
+application.applicationservice.chat-validation:
+  id: f13381af-57e0-4205-8e4a-4c7da5319f82
+  path: application.applicationservice.chat-validation
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Chat Validation
+  description: Validates chat message content and enforces conversation
+    constraints before submission
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/services/chatValidation.ts
+        symbol: chatValidation
+  metadata:
+    created_at: 2026-03-20T12:56:21.148Z
+    updated_at: 2026-03-20T12:56:21.149Z
+    version: 1

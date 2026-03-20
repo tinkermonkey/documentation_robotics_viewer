@@ -1,0 +1,86 @@
+business.businessservice.architecture-model-visualization:
+  id: 35295e18-08a8-4ca0-ada3-40a017cb4318
+  path: business.businessservice.architecture-model-visualization
+  spec_node_id: business.businessservice
+  type: businessservice
+  layer_id: business
+  name: Architecture Model Visualization
+  description: Interactive multi-layer graph visualization of architecture models
+    loaded from DR CLI YAML
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: README.md
+  metadata:
+    created_at: 2026-03-20T13:40:22.732Z
+    updated_at: 2026-03-20T13:40:22.732Z
+    version: 1
+business.businessservice.changeset-review:
+  id: 03823476-93f8-4ab4-8c51-cd93bf459ff0
+  path: business.businessservice.changeset-review
+  spec_node_id: business.businessservice
+  type: businessservice
+  layer_id: business
+  name: Changeset Review
+  description: Visual diff review of proposed architecture changes via DR CLI changesets
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/router.tsx
+        symbol: changesetsViewRoute
+  metadata:
+    created_at: 2026-03-20T13:40:23.062Z
+    updated_at: 2026-03-20T13:40:23.062Z
+    version: 1
+business.businessservice.schema-exploration:
+  id: 5308e41f-71c9-4ca6-8dfc-11d8b0483ce8
+  path: business.businessservice.schema-exploration
+  spec_node_id: business.businessservice
+  type: businessservice
+  layer_id: business
+  name: Schema Exploration
+  description: Browse and inspect layer specification schemas to understand the
+    architecture meta-model
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/router.tsx
+        symbol: specViewRoute
+  metadata:
+    created_at: 2026-03-20T13:40:23.409Z
+    updated_at: 2026-03-20T13:40:23.409Z
+    version: 1
+business.businessservice.ai-assisted-architecture-chat:
+  id: e642ad79-62ea-47a4-ae04-d512d0ef7881
+  path: business.businessservice.ai-assisted-architecture-chat
+  spec_node_id: business.businessservice
+  type: businessservice
+  layer_id: business
+  name: AI-Assisted Architecture Chat
+  description: Conversational interface to query and explore the architecture
+    model via DR CLI AI assistant
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/chat
+  metadata:
+    created_at: 2026-03-20T13:40:27.965Z
+    updated_at: 2026-03-20T13:40:27.965Z
+    version: 1
+business.businessservice.model-annotation:
+  id: af8620f0-9b01-41f2-992c-b90355d2e92c
+  path: business.businessservice.model-annotation
+  spec_node_id: business.businessservice
+  type: businessservice
+  layer_id: business
+  name: Model Annotation
+  description: Collaborative annotation of architecture model elements with
+    comments and markup
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/stores/annotationStore.ts
+  metadata:
+    created_at: 2026-03-20T13:40:28.290Z
+    updated_at: 2026-03-20T13:40:28.290Z
+    version: 1

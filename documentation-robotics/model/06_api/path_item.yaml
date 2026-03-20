@@ -1,0 +1,153 @@
+api.pathitem.health-path:
+  id: f0b418f2-f159-4814-9104-09adff3d8701
+  path: api.pathitem.health-path
+  spec_node_id: api.pathitem
+  type: pathitem
+  layer_id: api
+  name: Health Path
+  description: Path /health — no authentication required
+  attributes:
+    summary: /health endpoint
+    description: Server health check; no auth required
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:58:36.885Z
+    updated_at: 2026-03-20T12:58:36.886Z
+    version: 1
+api.pathitem.spec-path:
+  id: 95d909ce-e678-4f5d-a6d5-d803cc0be997
+  path: api.pathitem.spec-path
+  spec_node_id: api.pathitem
+  type: pathitem
+  layer_id: api
+  name: Spec Path
+  description: Path /api/spec — returns all JSON Schema specification files
+  attributes:
+    summary: /api/spec endpoint
+    description: Retrieve all DR spec JSON Schema files
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:58:37.977Z
+    updated_at: 2026-03-20T12:58:37.977Z
+    version: 1
+api.pathitem.model-path:
+  id: 4de679b4-b0e1-4bf3-bb83-8426090bc170
+  path: api.pathitem.model-path
+  spec_node_id: api.pathitem
+  type: pathitem
+  layer_id: api
+  name: Model Path
+  description: Path /api/model — returns the full architecture model
+  attributes:
+    summary: /api/model endpoint
+    description: Retrieve full architecture model
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:58:41.078Z
+    updated_at: 2026-03-20T12:58:41.078Z
+    version: 1
+api.pathitem.changesets-path:
+  id: 2d6aeca0-ebfa-4a25-a05e-0f21c8bd65a8
+  path: api.pathitem.changesets-path
+  spec_node_id: api.pathitem
+  type: pathitem
+  layer_id: api
+  name: Changesets Path
+  description: Path /api/changesets — lists all available changesets
+  attributes:
+    summary: /api/changesets endpoint
+    description: List all changesets
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:58:41.884Z
+    updated_at: 2026-03-20T12:58:41.884Z
+    version: 1
+api.pathitem.changeset-detail-path:
+  id: 030d4a41-1a02-4359-b7d3-0e6d7d1d170b
+  path: api.pathitem.changeset-detail-path
+  spec_node_id: api.pathitem
+  type: pathitem
+  layer_id: api
+  name: Changeset Detail Path
+  description: Path /api/changesets/{changesetId} — retrieves a specific changeset by ID
+  attributes:
+    summary: /api/changesets/{changesetId} endpoint
+    description: Get changeset detail by ID
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:58:45.194Z
+    updated_at: 2026-03-20T12:58:45.194Z
+    version: 1
+api.pathitem.annotations-path:
+  id: 41f1a60f-cee3-46df-a562-7024e1954015
+  path: api.pathitem.annotations-path
+  spec_node_id: api.pathitem
+  type: pathitem
+  layer_id: api
+  name: Annotations Path
+  description: Path /api/annotations — list and create annotations
+  attributes:
+    summary: /api/annotations endpoint
+    description: List and create annotations
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:58:45.803Z
+    updated_at: 2026-03-20T12:58:45.803Z
+    version: 1
+api.pathitem.annotation-detail-path:
+  id: 00c8c17e-daaf-4e81-a866-a219885d82b5
+  path: api.pathitem.annotation-detail-path
+  spec_node_id: api.pathitem
+  type: pathitem
+  layer_id: api
+  name: Annotation Detail Path
+  description: Path /api/annotations/{annotationId} — update and delete a specific
+    annotation
+  attributes:
+    summary: /api/annotations/{annotationId} endpoint
+    description: Update or delete annotation by ID
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:58:49.564Z
+    updated_at: 2026-03-20T12:58:49.564Z
+    version: 1
+api.pathitem.web-socket-path:
+  id: 8448846a-26b3-4dec-99b2-ce2dc89094c4
+  path: api.pathitem.web-socket-path
+  spec_node_id: api.pathitem
+  type: pathitem
+  layer_id: api
+  name: WebSocket Path
+  description: Path /ws — WebSocket upgrade endpoint for real-time event subscriptions
+  attributes:
+    summary: /ws endpoint
+    description: WebSocket upgrade for real-time model/changeset/annotation events
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:58:50.807Z
+    updated_at: 2026-03-20T12:58:50.807Z
+    version: 1

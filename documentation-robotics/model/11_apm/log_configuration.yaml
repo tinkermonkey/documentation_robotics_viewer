@@ -1,0 +1,22 @@
+apm.logconfiguration.browser-console-error-log-configuration:
+  id: e0620bce-d90e-4052-93b4-0b877a235445
+  path: apm.logconfiguration.browser-console-error-log-configuration
+  spec_node_id: apm.logconfiguration
+  type: logconfiguration
+  layer_id: apm
+  name: Browser Console Error Log Configuration
+  description: Log configuration for browser console error capture; the
+    errorTracker service writes structured error records with classification
+    category, stack trace, and context; minimum severity ERROR.
+  attributes:
+    serviceName: documentation-robotics-viewer
+    minimumSeverity: ERROR
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/services/errorTracker.ts
+        symbol: errorTracker
+  metadata:
+    created_at: 2026-03-20T13:32:17.866Z
+    updated_at: 2026-03-20T13:32:17.866Z
+    version: 1

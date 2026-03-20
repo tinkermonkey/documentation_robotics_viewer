@@ -3,9 +3,10 @@ schema: documentation-robotics-v1
 cli_version: 0.1.3
 spec_version: 0.8.3
 created: 2026-03-19T22:01:43.778Z
-updated: 2026-03-19T22:01:43.779Z
+updated: 2026-03-20T16:54:11.043Z
 project:
   name: Documentation Robotics Viewer
+  description: ""
   version: 0.1.0
 documentation: .dr/README.md
 layers:
@@ -14,58 +15,137 @@ layers:
     name: Motivation
     path: documentation-robotics/model/01_motivation/
     enabled: true
+    elements:
+      constraint: 3
+      driver: 2
+      goal: 4
+      principle: 4
+      requirement: 4
+      stakeholder: 3
   business:
     order: 2
     name: Business
     path: documentation-robotics/model/02_business/
     enabled: true
+    elements:
+      businessfunction: 3
+      businessobject: 3
+      businessprocess: 4
+      businessrole: 2
+      businessservice: 5
   security:
     order: 3
     name: Security
     path: documentation-robotics/model/03_security/
     enabled: true
+    elements:
+      actor: 2
+      authenticationconfig: 1
+      dataclassification: 1
+      permission: 2
+      role: 1
+      secureresource: 2
+      securitymodel: 1
+      securitypolicy: 1
+      threat: 1
   application:
     order: 4
     name: Application
     path: documentation-robotics/model/04_application/
     enabled: true
+    elements:
+      applicationcomponent: 4
+      applicationfunction: 13
+      applicationinterface: 2
+      applicationprocess: 4
+      applicationservice: 24
   technology:
     order: 5
     name: Technology
     path: documentation-robotics/model/05_technology/
     enabled: true
+    elements:
+      artifact: 4
+      node: 2
+      path: 2
+      systemsoftware: 16
+      technologyinterface: 2
+      technologyprocess: 3
+      technologyservice: 2
   api:
     order: 6
     name: Api
     path: documentation-robotics/model/06_api/
     enabled: true
+    elements:
+      info: 1
+      openapidocument: 1
+      operation: 10
+      pathitem: 8
+      securityscheme: 2
   data-model:
     order: 7
     name: Data model
     path: documentation-robotics/model/07_data-model/
     enabled: true
+    elements:
+      objectschema: 24
+      schemadefinition: 3
   data-store:
     order: 8
     name: Data store
     path: documentation-robotics/model/08_data-store/
     enabled: true
+    elements:
+      collection: 7
+      database: 2
   ux:
     order: 9
     name: Ux
     path: documentation-robotics/model/09_ux/
     enabled: true
+    elements:
+      librarycomponent: 11
+      librarysubview: 6
+      statepattern: 2
+      subview: 10
+      uxapplication: 1
+      uxspec: 4
+      view: 7
   navigation:
     order: 10
     name: Navigation
     path: documentation-robotics/model/10_navigation/
     enabled: true
+    elements:
+      breadcrumbconfig: 1
+      flowstep: 2
+      navigationflow: 1
+      navigationgraph: 1
+      navigationguard: 1
+      navigationtransition: 4
+      route: 7
   apm:
     order: 11
     name: Apm
     path: documentation-robotics/model/11_apm/
     enabled: true
+    elements:
+      alert: 3
+      instrumentationconfig: 1
+      instrumentationscope: 1
+      logconfiguration: 1
+      metricinstrument: 4
+      resource: 1
   testing:
     order: 12
     name: Testing
     path: documentation-robotics/model/12_testing/
     enabled: true
+    elements:
+      contextvariation: 3
+      coveragegap: 2
+      coveragerequirement: 3
+      coveragesummary: 1
+      testcoveragemodel: 1
+      testcoveragetarget: 7

@@ -1,0 +1,204 @@
+api.operation.health-check:
+  id: ea592d05-3a1a-4b06-8591-24f53f6cf98c
+  path: api.operation.health-check
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: Health Check
+  description: No auth required; returns server status and version
+  attributes:
+    operationId: getHealth
+    summary: Check server health and version
+    tags: Health
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:57:38.001Z
+    updated_at: 2026-03-20T12:57:38.001Z
+    version: 1
+api.operation.get-schema-specifications:
+  id: dc2da0b6-3de0-44d1-840f-5d49cc976cd9
+  path: api.operation.get-schema-specifications
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: Get Schema Specifications
+  description: Returns all JSON Schema files from .dr/schemas/ including layer
+    schemas, relationship catalog, and link registry
+  attributes:
+    operationId: getSpec
+    summary: Get all JSON Schema specification files
+    tags: Schema
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:57:39.761Z
+    updated_at: 2026-03-20T12:57:39.761Z
+    version: 1
+api.operation.get-architecture-model:
+  id: dfc6509e-98f5-479a-bfe9-14bfddbb838a
+  path: api.operation.get-architecture-model
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: Get Architecture Model
+  description: Returns full architecture model from documentation-robotics/model/
+    including all layers, elements, relationships, and cross-layer references
+  attributes:
+    operationId: getModel
+    summary: Get full architecture model
+    tags: Model
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:57:42.953Z
+    updated_at: 2026-03-20T12:57:42.954Z
+    version: 1
+api.operation.list-changesets:
+  id: f952fcc0-7c42-4586-a306-a5f2f94a3068
+  path: api.operation.list-changesets
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: List Changesets
+  description: Returns registry of all available changesets with summaries
+  attributes:
+    operationId: listChangesets
+    summary: List all changesets
+    tags: Changesets
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:57:43.877Z
+    updated_at: 2026-03-20T12:57:43.878Z
+    version: 1
+api.operation.get-changeset-details:
+  id: e067f83f-1f31-44d7-a5d0-86059f8beb9f
+  path: api.operation.get-changeset-details
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: Get Changeset Details
+  description: Returns detailed changeset including all element changes with
+    before/after states
+  attributes:
+    operationId: getChangeset
+    summary: Get changeset by ID
+    tags: Changesets
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:57:46.588Z
+    updated_at: 2026-03-20T12:57:46.588Z
+    version: 1
+api.operation.get-annotations:
+  id: ff16c609-618e-4dd9-b477-12e17c000df8
+  path: api.operation.get-annotations
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: Get Annotations
+  description: Returns annotations optionally filtered by elementId query param
+  attributes:
+    operationId: getAnnotations
+    summary: Get annotations with optional elementId filter
+    tags: Annotations
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:57:49.814Z
+    updated_at: 2026-03-20T12:57:49.814Z
+    version: 1
+api.operation.create-annotation:
+  id: 8630981b-236c-47ed-b99b-e977c56bdc63
+  path: api.operation.create-annotation
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: Create Annotation
+  description: Creates a new annotation on a model element
+  attributes:
+    operationId: createAnnotation
+    summary: Create a new annotation
+    tags: Annotations
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:57:50.656Z
+    updated_at: 2026-03-20T12:57:50.656Z
+    version: 1
+api.operation.update-annotation:
+  id: 3dee662b-7dc2-4fcc-8677-15a2ba06136e
+  path: api.operation.update-annotation
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: Update Annotation
+  description: Updates content or tags of an existing annotation
+  attributes:
+    operationId: updateAnnotation
+    summary: Update an existing annotation
+    tags: Annotations
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:57:54.837Z
+    updated_at: 2026-03-20T12:57:54.837Z
+    version: 1
+api.operation.delete-annotation:
+  id: 406200e9-ef8b-46c9-a1fe-1ff06d6d5602
+  path: api.operation.delete-annotation
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: Delete Annotation
+  description: Deletes an existing annotation
+  attributes:
+    operationId: deleteAnnotation
+    summary: Delete an annotation
+    tags: Annotations
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:57:55.598Z
+    updated_at: 2026-03-20T12:57:55.598Z
+    version: 1
+api.operation.web-socket-real-time-updates:
+  id: b66b613e-27b6-4d90-909f-3aa81570de15
+  path: api.operation.web-socket-real-time-updates
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: WebSocket Real-time Updates
+  description: Persistent WebSocket connection for subscribing to
+    model/changeset/annotation real-time events via JSON message protocol
+  attributes:
+    operationId: connectWebSocket
+    summary: Connect to real-time update stream
+    tags: WebSocket
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:57:58.551Z
+    updated_at: 2026-03-20T12:57:58.551Z
+    version: 1

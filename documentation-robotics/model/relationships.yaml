@@ -1,0 +1,3136 @@
+# Intra-layer relationships
+# Format: source_id -> predicate -> target_id
+# Last updated: 2026-03-20T16:54:11.013Z
+
+- source: motivation.stakeholder.architecture-team
+  target: motivation.goal.visualize-multi-layer-architecture-models
+  predicate: influence
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: motivation.stakeholder.development-team
+  target: motivation.goal.enable-real-time-collaboration
+  predicate: influence
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: motivation.stakeholder.dr-cli-server
+  target: motivation.driver.architecture-documentation-complexity
+  predicate: associated-with
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: motivation.driver.architecture-documentation-complexity
+  target: motivation.goal.visualize-multi-layer-architecture-models
+  predicate: influence
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: motivation.driver.team-distributed-review-needs
+  target: motivation.goal.enable-real-time-collaboration
+  predicate: influence
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: motivation.driver.team-distributed-review-needs
+  target: motivation.goal.accelerate-architecture-documentation
+  predicate: influence
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: motivation.requirement.wcag-21-aa-compliance
+  target: motivation.goal.ensure-accessible-architecture-views
+  predicate: realizes
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: motivation.requirement.dr-cli-server-integration
+  target: motivation.goal.visualize-multi-layer-architecture-models
+  predicate: realizes
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: motivation.requirement.multi-layout-engine-support
+  target: motivation.goal.visualize-multi-layer-architecture-models
+  predicate: realizes
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: motivation.requirement.embedded-deployment-mode
+  target: motivation.goal.accelerate-architecture-documentation
+  predicate: realizes
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: motivation.constraint.browser-only-deployment
+  target: motivation.requirement.embedded-deployment-mode
+  predicate: influence
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: motivation.constraint.dr-cli-server-dependency
+  target: motivation.requirement.dr-cli-server-integration
+  predicate: influence
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: motivation.constraint.type-script-strict-mode
+  target: motivation.requirement.wcag-21-aa-compliance
+  predicate: influence
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: motivation.constraint.browser-only-deployment
+  target: motivation.requirement.multi-layout-engine-support
+  predicate: constrains
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: motivation.constraint.type-script-strict-mode
+  target: motivation.requirement.dr-cli-server-integration
+  predicate: constrains
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: motivation.principle.core-app-architectural-separation
+  target: motivation.goal.visualize-multi-layer-architecture-models
+  predicate: influence
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: motivation.principle.zustand-only-state-management
+  target: motivation.requirement.dr-cli-server-integration
+  predicate: influence
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: motivation.principle.configuration-driven-node-rendering
+  target: motivation.goal.visualize-multi-layer-architecture-models
+  predicate: influence
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: motivation.principle.core-app-architectural-separation
+  target: motivation.goal.accelerate-architecture-documentation
+  predicate: realizes
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: motivation.principle.read-first-always
+  target: motivation.goal.accelerate-architecture-documentation
+  predicate: realizes
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: motivation.stakeholder.architecture-team
+  target: motivation.requirement.dr-cli-server-integration
+  predicate: associated-with
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: motivation.stakeholder.development-team
+  target: motivation.requirement.wcag-21-aa-compliance
+  predicate: associated-with
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: motivation.stakeholder.dr-cli-server
+  target: motivation.constraint.dr-cli-server-dependency
+  predicate: associated-with
+  layer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessprocess.model-loading-and-rendering
+  target: business.businessservice.architecture-model-visualization
+  predicate: realizes
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessprocess.real-time-model-synchronization
+  target: business.businessservice.architecture-model-visualization
+  predicate: realizes
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessprocess.changeset-review-flow
+  target: business.businessservice.changeset-review
+  predicate: realizes
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessprocess.authentication-flow
+  target: business.businessservice.ai-assisted-architecture-chat
+  predicate: realizes
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: low
+- source: business.businessprocess.authentication-flow
+  target: business.businessprocess.model-loading-and-rendering
+  predicate: flows-to
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessprocess.model-loading-and-rendering
+  target: business.businessprocess.real-time-model-synchronization
+  predicate: flows-to
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessprocess.model-loading-and-rendering
+  target: business.businessprocess.changeset-review-flow
+  predicate: flows-to
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: business.businessfunction.graph-layout-computation
+  target: business.businessservice.architecture-model-visualization
+  predicate: realizes
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessfunction.cross-layer-reference-resolution
+  target: business.businessservice.architecture-model-visualization
+  predicate: realizes
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessfunction.yaml-model-parsing
+  target: business.businessservice.architecture-model-visualization
+  predicate: realizes
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessfunction.yaml-model-parsing
+  target: business.businessprocess.model-loading-and-rendering
+  predicate: flows-to
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessfunction.graph-layout-computation
+  target: business.businessprocess.model-loading-and-rendering
+  predicate: flows-to
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessfunction.cross-layer-reference-resolution
+  target: business.businessprocess.model-loading-and-rendering
+  predicate: flows-to
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessfunction.yaml-model-parsing
+  target: business.businessobject.architecture-model
+  predicate: accesses
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessfunction.cross-layer-reference-resolution
+  target: business.businessobject.architecture-model
+  predicate: accesses
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessfunction.graph-layout-computation
+  target: business.businessobject.architecture-model
+  predicate: accesses
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessprocess.changeset-review-flow
+  target: business.businessobject.changeset
+  predicate: accesses
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessprocess.changeset-review-flow
+  target: business.businessobject.architecture-model
+  predicate: accesses
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessprocess.model-loading-and-rendering
+  target: business.businessobject.architecture-model
+  predicate: accesses
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessservice.architecture-model-visualization
+  target: business.businessobject.architecture-model
+  predicate: delivers
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessservice.changeset-review
+  target: business.businessobject.changeset
+  predicate: delivers
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessservice.model-annotation
+  target: business.businessobject.annotation
+  predicate: delivers
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessrole.architecture-reviewer
+  target: business.businessprocess.changeset-review-flow
+  predicate: performs
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessrole.model-author
+  target: business.businessprocess.model-loading-and-rendering
+  predicate: performs
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: security.securitymodel.documentation-robotics-viewer-security-model
+  target: security.actor.developer
+  predicate: aggregates
+  layer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: security.securitymodel.documentation-robotics-viewer-security-model
+  target: security.permission.read-model-data
+  predicate: aggregates
+  layer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: security.securitymodel.documentation-robotics-viewer-security-model
+  target: security.secureresource.model-rest-api
+  predicate: aggregates
+  layer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: security.securitymodel.documentation-robotics-viewer-security-model
+  target: security.securitypolicy.bearer-token-policy
+  predicate: composes
+  layer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: security.securitymodel.documentation-robotics-viewer-security-model
+  target: security.dataclassification.architecture-model-data
+  predicate: governs
+  layer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: security.actor.developer
+  target: security.role.authenticated-viewer
+  predicate: assigned-to
+  layer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: security.actor.developer
+  target: security.authenticationconfig.bearer-token-authentication
+  predicate: governed-by
+  layer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: security.actor.developer
+  target: security.secureresource.model-rest-api
+  predicate: accesses
+  layer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: security.authenticationconfig.bearer-token-authentication
+  target: security.secureresource.model-rest-api
+  predicate: protects
+  layer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: security.authenticationconfig.bearer-token-authentication
+  target: security.securitypolicy.bearer-token-policy
+  predicate: constrained-by
+  layer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: security.role.authenticated-viewer
+  target: security.permission.read-model-data
+  predicate: authorizes
+  layer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: security.role.authenticated-viewer
+  target: security.permission.write-annotations
+  predicate: authorizes
+  layer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: security.role.authenticated-viewer
+  target: security.secureresource.model-rest-api
+  predicate: accesses
+  layer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: security.securitypolicy.bearer-token-policy
+  target: security.secureresource.model-rest-api
+  predicate: governs
+  layer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: security.threat.unauthenticated-model-access
+  target: security.secureresource.model-rest-api
+  predicate: targets
+  layer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: security.threat.unauthenticated-model-access
+  target: security.securitypolicy.bearer-token-policy
+  predicate: influence
+  layer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: security.dataclassification.architecture-model-data
+  target: security.secureresource.model-rest-api
+  predicate: governs
+  layer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: security.dataclassification.architecture-model-data
+  target: security.securitypolicy.bearer-token-policy
+  predicate: supports
+  layer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationcomponent.graph-viewer
+  target: application.applicationservice.node-transformer
+  predicate: realizes
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationcomponent.layout-engine-registry
+  target: application.applicationservice.data-loader
+  predicate: realizes
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationcomponent.dagre-layout-engine
+  target: application.applicationservice.worker-pool
+  predicate: realizes
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: application.applicationcomponent.elk-layout-engine
+  target: application.applicationservice.worker-pool
+  predicate: realizes
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: application.applicationcomponent.graph-viewer
+  target: application.applicationcomponent.layout-engine-registry
+  predicate: uses
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationcomponent.layout-engine-registry
+  target: application.applicationcomponent.dagre-layout-engine
+  predicate: uses
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationfunction.cross-layer-store
+  target: application.applicationfunction.model-store
+  predicate: depends-on
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationfunction.element-store
+  target: application.applicationfunction.model-store
+  predicate: depends-on
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationfunction.layer-store
+  target: application.applicationfunction.model-store
+  predicate: depends-on
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationfunction.changeset-store
+  target: application.applicationfunction.connection-store
+  predicate: depends-on
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationfunction.annotation-store
+  target: application.applicationfunction.auth-store
+  predicate: depends-on
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationfunction.chat-store
+  target: application.applicationfunction.connection-store
+  predicate: depends-on
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: application.applicationfunction.floating-chat-store
+  target: application.applicationfunction.chat-store
+  predicate: depends-on
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationfunction.model-store
+  target: application.applicationservice.data-loader
+  predicate: delivers-value
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationfunction.auth-store
+  target: application.applicationservice.generated-api-client
+  predicate: delivers-value
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationfunction.connection-store
+  target: application.applicationservice.web-socket-client
+  predicate: delivers-value
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationservice.data-loader
+  target: business.businessprocess.model-loading-and-rendering
+  predicate: serves
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationservice.node-transformer
+  target: business.businessprocess.model-loading-and-rendering
+  predicate: serves
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationservice.web-socket-client
+  target: business.businessprocess.real-time-model-synchronization
+  predicate: serves
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationservice.json-rpc-handler
+  target: business.businessprocess.real-time-model-synchronization
+  predicate: serves
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationservice.changeset-graph-builder
+  target: business.businessprocess.changeset-review-flow
+  predicate: serves
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationservice.embedded-data-loader
+  target: business.businessprocess.model-loading-and-rendering
+  predicate: serves
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationprocess.auth-route
+  target: application.applicationprocess.model-route
+  predicate: flows-to
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationprocess.model-route
+  target: application.applicationprocess.changeset-route
+  predicate: flows-to
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: application.applicationprocess.model-route
+  target: application.applicationfunction.model-store
+  predicate: depends-on
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationprocess.changeset-route
+  target: application.applicationfunction.changeset-store
+  predicate: depends-on
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationprocess.auth-route
+  target: application.applicationfunction.auth-store
+  predicate: depends-on
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationinterface.dr-cli-rest-interface
+  target: application.applicationservice.generated-api-client
+  predicate: depends-on
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationinterface.dr-cli-web-socket-interface
+  target: application.applicationservice.web-socket-client
+  predicate: depends-on
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationinterface.dr-cli-rest-interface
+  target: application.applicationservice.data-loader
+  predicate: serves
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: application.applicationinterface.dr-cli-web-socket-interface
+  target: application.applicationservice.json-rpc-handler
+  predicate: serves
+  layer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.systemsoftware.react-19
+  target: technology.systemsoftware.nodejs
+  predicate: depends-on
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.systemsoftware.vite-6
+  target: technology.systemsoftware.nodejs
+  predicate: depends-on
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.systemsoftware.type-script-59
+  target: technology.systemsoftware.nodejs
+  predicate: depends-on
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.systemsoftware.react-flow
+  target: technology.systemsoftware.react-19
+  predicate: depends-on
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.systemsoftware.flowbite-react
+  target: technology.systemsoftware.react-19
+  predicate: depends-on
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.systemsoftware.dagre
+  target: technology.systemsoftware.react-flow
+  predicate: depends-on
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.systemsoftware.elkjs
+  target: technology.systemsoftware.react-flow
+  predicate: depends-on
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.systemsoftware.d3-force
+  target: technology.systemsoftware.react-flow
+  predicate: depends-on
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.systemsoftware.graphviz-wasm
+  target: technology.systemsoftware.react-flow
+  predicate: depends-on
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.systemsoftware.tan-stack-router
+  target: technology.systemsoftware.react-19
+  predicate: depends-on
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.systemsoftware.zustand-5
+  target: technology.systemsoftware.react-19
+  predicate: depends-on
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.systemsoftware.playwright
+  target: technology.systemsoftware.nodejs
+  predicate: depends-on
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.systemsoftware.storybook-10
+  target: technology.systemsoftware.react-19
+  predicate: depends-on
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.artifact.embedded-app-bundle
+  target: technology.systemsoftware.vite-6
+  predicate: associated-with
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.artifact.open-api-specification
+  target: technology.systemsoftware.expressjs-5
+  predicate: associated-with
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: technology.artifact.storybook-catalog-build
+  target: technology.systemsoftware.storybook-10
+  predicate: associated-with
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.artifact.docker-agent-image
+  target: technology.systemsoftware.nodejs
+  predicate: associated-with
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: technology.artifact.open-api-specification
+  target: technology.technologyprocess.open-api-type-generation
+  predicate: flows-to
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.artifact.embedded-app-bundle
+  target: technology.technologyprocess.vite-build-pipeline
+  predicate: flows-to
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.technologyservice.dr-cli-rest-server
+  target: technology.technologyinterface.rest-https-interface
+  predicate: provides
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.technologyservice.web-socket-model-service
+  target: technology.technologyinterface.web-socket-interface
+  predicate: provides
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: technology.technologyservice.dr-cli-rest-server
+  target: technology.technologyprocess.vite-build-pipeline
+  predicate: aggregates
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: low
+- source: technology.technologyservice.dr-cli-rest-server
+  target: technology.node.vite-dev-server
+  predicate: depends-on
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: technology.technologyservice.web-socket-model-service
+  target: technology.node.vite-dev-server
+  predicate: depends-on
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: technology.technologyprocess.vite-build-pipeline
+  target: technology.technologyinterface.rest-https-interface
+  predicate: uses
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: technology.systemsoftware.react-19
+  target: technology.path.app-to-dr-cli-https-path
+  predicate: uses
+  layer: technology
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: api.pathitem.health-path
+  target: api.operation.health-check
+  predicate: composes
+  layer: api
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: api.pathitem.spec-path
+  target: api.operation.get-schema-specifications
+  predicate: composes
+  layer: api
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: api.pathitem.model-path
+  target: api.operation.get-architecture-model
+  predicate: composes
+  layer: api
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: api.pathitem.changesets-path
+  target: api.operation.list-changesets
+  predicate: composes
+  layer: api
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: api.pathitem.changeset-detail-path
+  target: api.operation.get-changeset-details
+  predicate: composes
+  layer: api
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: api.pathitem.annotations-path
+  target: api.operation.get-annotations
+  predicate: composes
+  layer: api
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: api.pathitem.annotation-detail-path
+  target: api.operation.update-annotation
+  predicate: composes
+  layer: api
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: api.pathitem.web-socket-path
+  target: api.operation.web-socket-real-time-updates
+  predicate: composes
+  layer: api
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: api.operation.get-architecture-model
+  target: api.securityscheme.bearer-auth-scheme
+  predicate: uses
+  layer: api
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: api.operation.list-changesets
+  target: api.securityscheme.bearer-auth-scheme
+  predicate: uses
+  layer: api
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: api.operation.get-annotations
+  target: api.securityscheme.bearer-auth-scheme
+  predicate: uses
+  layer: api
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: api.operation.create-annotation
+  target: api.securityscheme.bearer-auth-scheme
+  predicate: uses
+  layer: api
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: api.operation.web-socket-real-time-updates
+  target: api.securityscheme.query-auth-scheme
+  predicate: uses
+  layer: api
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: api.securityscheme.bearer-auth-scheme
+  target: security.securitypolicy.bearer-token-policy
+  predicate: implements
+  layer: api
+  targetLayer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: api.securityscheme.query-auth-scheme
+  target: security.securitypolicy.bearer-token-policy
+  predicate: implements
+  layer: api
+  targetLayer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-model.objectschema.yamlelement
+  target: data-model.objectschema.model-element
+  predicate: extends
+  layer: data-model
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-model.objectschema.yamllayer-data
+  target: data-model.objectschema.layer
+  predicate: extends
+  layer: data-model
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-model.objectschema.yamlmodel-data
+  target: data-model.objectschema.meta-model
+  predicate: extends
+  layer: data-model
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-model.objectschema.data-model-node-data
+  target: data-model.objectschema.base-node-data
+  predicate: extends
+  layer: data-model
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-model.objectschema.tool-invocation-content
+  target: data-model.objectschema.chat-message
+  predicate: extends
+  layer: data-model
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-model.objectschema.annotation-create
+  target: data-model.objectschema.annotation
+  predicate: extends
+  layer: data-model
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-model.objectschema.meta-model
+  target: data-model.objectschema.layer
+  predicate: extends
+  layer: data-model
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: data-model.objectschema.model-element
+  target: data-model.objectschema.relationship
+  predicate: extends
+  layer: data-model
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: data-model.objectschema.yamlmanifest
+  target: data-model.objectschema.yamllayer-data
+  predicate: extends
+  layer: data-model
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: data-model.objectschema.yamlrelationships
+  target: data-model.objectschema.yamlelement
+  predicate: extends
+  layer: data-model
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: data-model.objectschema.chat-conversation
+  target: data-model.objectschema.chat-message
+  predicate: extends
+  layer: data-model
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-model.objectschema.web-socket-message
+  target: data-model.objectschema.json-rpc-request
+  predicate: extends
+  layer: data-model
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-model.objectschema.web-socket-event-map
+  target: data-model.objectschema.web-socket-message
+  predicate: extends
+  layer: data-model
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-store.database.dr-model-yaml-store
+  target: data-store.collection.model-manifest
+  predicate: composes
+  layer: data-store
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-store.database.dr-model-yaml-store
+  target: data-store.collection.layer-yaml-files
+  predicate: composes
+  layer: data-store
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-store.database.dr-model-yaml-store
+  target: data-store.collection.changeset-files
+  predicate: composes
+  layer: data-store
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-store.database.browser-local-storage
+  target: data-store.collection.auth-token-entry
+  predicate: composes
+  layer: data-store
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-store.database.browser-local-storage
+  target: data-store.collection.layout-preferences-entry
+  predicate: composes
+  layer: data-store
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-store.database.browser-local-storage
+  target: data-store.collection.view-preferences-entry
+  predicate: composes
+  layer: data-store
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-store.database.browser-local-storage
+  target: data-store.collection.floating-chat-state-entry
+  predicate: composes
+  layer: data-store
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-store.collection.model-manifest
+  target: application.applicationcomponent.graph-viewer
+  predicate: serves
+  layer: data-store
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-store.collection.layer-yaml-files
+  target: application.applicationcomponent.graph-viewer
+  predicate: serves
+  layer: data-store
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-store.collection.auth-token-entry
+  target: application.applicationcomponent.graph-viewer
+  predicate: serves
+  layer: data-store
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-store.collection.model-manifest
+  target: business.businessobject.architecture-model
+  predicate: realizes
+  layer: data-store
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: data-store.collection.changeset-files
+  target: business.businessobject.changeset
+  predicate: realizes
+  layer: data-store
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: ux.view.model-graph-view
+  target: ux.subview.graph-view-sidebar
+  predicate: aggregates
+  layer: ux
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: ux.view.changeset-graph-view
+  target: ux.subview.changeset-viewer
+  predicate: aggregates
+  layer: ux
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: ux.view.model-details-view
+  target: ux.subview.annotation-panel
+  predicate: aggregates
+  layer: ux
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: ux.view.model-graph-view
+  target: ux.subview.cross-layer-panel
+  predicate: composes
+  layer: ux
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: ux.librarycomponent.graph-toolbar
+  target: ux.librarycomponent.export-button-group
+  predicate: renders
+  layer: ux
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: ux.librarycomponent.connection-status-indicator
+  target: ux.statepattern.data-loading-pattern
+  predicate: uses
+  layer: ux
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: ux.librarycomponent.model-details-viewer
+  target: ux.statepattern.data-loading-pattern
+  predicate: uses
+  layer: ux
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: ux.view.model-graph-view
+  target: business.businessprocess.model-loading-and-rendering
+  predicate: realizes
+  layer: ux
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: ux.view.changeset-list-view
+  target: business.businessprocess.changeset-review-flow
+  predicate: realizes
+  layer: ux
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: ux.view.auth-view
+  target: business.businessprocess.authentication-flow
+  predicate: realizes
+  layer: ux
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: navigation.route.model-view-route
+  target: ux.view.model-graph-view
+  predicate: maps-to
+  layer: navigation
+  targetLayer: ux
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: navigation.route.spec-view-route
+  target: ux.view.spec-graph-view
+  predicate: maps-to
+  layer: navigation
+  targetLayer: ux
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: navigation.route.changesets-view-route
+  target: ux.view.changeset-list-view
+  predicate: maps-to
+  layer: navigation
+  targetLayer: ux
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: navigation.route.index-route
+  target: navigation.route.model-redirect-route
+  predicate: navigates-to
+  layer: navigation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: navigation.route.model-redirect-route
+  target: navigation.route.model-view-route
+  predicate: navigates-to
+  layer: navigation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: navigation.route.spec-redirect-route
+  target: navigation.route.spec-view-route
+  predicate: navigates-to
+  layer: navigation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: navigation.route.changesets-redirect-route
+  target: navigation.route.changesets-view-route
+  predicate: navigates-to
+  layer: navigation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: navigation.navigationguard.authentication-guard
+  target: navigation.route.model-view-route
+  predicate: protects
+  layer: navigation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: navigation.navigationguard.authentication-guard
+  target: security.role.authenticated-viewer
+  predicate: requires
+  layer: navigation
+  targetLayer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: navigation.navigationguard.authentication-guard
+  target: security.securitypolicy.bearer-token-policy
+  predicate: implements
+  layer: navigation
+  targetLayer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: navigation.navigationtransition.auth-redirect-transition
+  target: navigation.route.model-view-route
+  predicate: flows-to
+  layer: navigation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: navigation.navigationtransition.tab-navigation-transition
+  target: navigation.route.spec-view-route
+  predicate: flows-to
+  layer: navigation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: navigation.navigationtransition.auth-redirect-transition
+  target: navigation.navigationguard.authentication-guard
+  predicate: requires
+  layer: navigation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: navigation.navigationgraph.embedded-app-navigation-graph
+  target: navigation.route.model-view-route
+  predicate: aggregates
+  layer: navigation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: navigation.navigationflow.authentication-to-model-flow
+  target: navigation.flowstep.token-extraction-step
+  predicate: aggregates
+  layer: navigation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: navigation.navigationflow.authentication-to-model-flow
+  target: navigation.navigationtransition.auth-redirect-transition
+  predicate: flows-to
+  layer: navigation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: navigation.navigationflow.authentication-to-model-flow
+  target: application.applicationprocess.auth-route
+  predicate: realizes
+  layer: navigation
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: navigation.navigationflow.authentication-to-model-flow
+  target: navigation.navigationguard.authentication-guard
+  predicate: requires
+  layer: navigation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: navigation.flowstep.token-extraction-step
+  target: navigation.route.model-view-route
+  predicate: navigates-to
+  layer: navigation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: navigation.flowstep.post-auth-model-entry-step
+  target: navigation.route.model-view-route
+  predicate: navigates-to
+  layer: navigation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: apm.alert.web-socket-disconnect-alert
+  target: apm.metricinstrument.web-socket-connection-state-gauge
+  predicate: monitors
+  layer: apm
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: apm.alert.storybook-story-render-error-alert
+  target: apm.metricinstrument.graph-node-render-histogram
+  predicate: monitors
+  layer: apm
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: apm.alert.playwright-test-failure-alert
+  target: apm.metricinstrument.graph-node-render-histogram
+  predicate: monitors
+  layer: apm
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: apm.metricinstrument.web-socket-connection-state-gauge
+  target: apm.instrumentationscope.error-tracker-instrumentation-scope
+  predicate: depends-on
+  layer: apm
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: apm.metricinstrument.web-socket-reconnection-attempt-counter
+  target: apm.instrumentationscope.error-tracker-instrumentation-scope
+  predicate: depends-on
+  layer: apm
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: apm.metricinstrument.graph-node-render-histogram
+  target: apm.instrumentationscope.error-tracker-instrumentation-scope
+  predicate: depends-on
+  layer: apm
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: apm.metricinstrument.chat-api-token-usage-counter
+  target: apm.instrumentationscope.error-tracker-instrumentation-scope
+  predicate: depends-on
+  layer: apm
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: apm.instrumentationconfig.browser-error-instrumentation
+  target: application.applicationcomponent.graph-viewer
+  predicate: monitors
+  layer: apm
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: apm.instrumentationconfig.browser-error-instrumentation
+  target: apm.instrumentationscope.error-tracker-instrumentation-scope
+  predicate: serves
+  layer: apm
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: apm.metricinstrument.web-socket-reconnection-attempt-counter
+  target: application.applicationservice.web-socket-client
+  predicate: monitors
+  layer: apm
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: apm.metricinstrument.chat-api-token-usage-counter
+  target: application.applicationservice.chat-service
+  predicate: monitors
+  layer: apm
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: apm.metricinstrument.graph-node-render-histogram
+  target: application.applicationcomponent.graph-viewer
+  predicate: monitors
+  layer: apm
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: testing.testcoveragemodel.viewer-test-coverage-model
+  target: testing.coveragesummary.overall-test-coverage-summary
+  predicate: composes
+  layer: testing
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: testing.testcoveragemodel.viewer-test-coverage-model
+  target: testing.contextvariation.functional-unit-test-context
+  predicate: aggregates
+  layer: testing
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: testing.testcoveragetarget.service-and-store-unit-test-coverage
+  target: application.applicationservice.data-loader
+  predicate: covers
+  layer: testing
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: testing.testcoveragetarget.embedded-app-e2e-test-coverage
+  target: application.applicationcomponent.graph-viewer
+  predicate: tests
+  layer: testing
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: testing.testcoveragetarget.auth-flow-e2e-test-coverage
+  target: application.applicationcomponent.graph-viewer
+  predicate: tests
+  layer: testing
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+- source: testing.testcoveragetarget.web-socket-recovery-test-coverage
+  target: application.applicationservice.web-socket-client
+  predicate: covers
+  layer: testing
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: testing.testcoveragetarget.storybook-story-render-test-coverage
+  target: ux.view.model-graph-view
+  predicate: covers
+  layer: testing
+  targetLayer: ux
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: testing.testcoveragetarget.wcag-21-accessibility-test-coverage
+  target: ux.view.model-graph-view
+  predicate: covers
+  layer: testing
+  targetLayer: ux
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: testing.coveragerequirement.each-choice-story-coverage-requirement
+  target: testing.testcoveragetarget.storybook-story-render-test-coverage
+  predicate: composes
+  layer: testing
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: testing.coveragerequirement.all-partitions-unit-test-requirement
+  target: testing.testcoveragetarget.service-and-store-unit-test-coverage
+  predicate: composes
+  layer: testing
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: testing.coveragerequirement.boundary-values-auth-test-requirement
+  target: testing.testcoveragetarget.auth-flow-e2e-test-coverage
+  predicate: composes
+  layer: testing
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: testing.coveragerequirement.boundary-values-auth-test-requirement
+  target: navigation.navigationguard.authentication-guard
+  predicate: covers
+  layer: testing
+  targetLayer: navigation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: testing.coveragegap.code-line-coverage-gap
+  target: testing.testcoveragetarget.service-and-store-unit-test-coverage
+  predicate: references
+  layer: testing
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: testing.coveragegap.load-test-coverage-gap
+  target: testing.testcoveragetarget.embedded-app-e2e-test-coverage
+  predicate: references
+  layer: testing
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: testing.coveragegap.code-line-coverage-gap
+  target: testing.coveragerequirement.all-partitions-unit-test-requirement
+  predicate: triggers
+  layer: testing
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+- source: business.businessservice.schema-exploration
+  target: motivation.goal.visualize-multi-layer-architecture-models
+  predicate: realizes
+  layer: business
+  targetLayer: motivation
+  category: structural
+- source: security.actor.dr-cli-server
+  target: security.authenticationconfig.bearer-token-authentication
+  predicate: governed-by
+  layer: security
+  category: structural
+- source: security.secureresource.web-socket-json-rpc-channel
+  target: business.businessobject.architecture-model
+  predicate: references
+  layer: security
+  targetLayer: business
+  category: structural
+- source: application.applicationfunction.field-visibility-store
+  target: application.applicationfunction.element-store
+  predicate: depends-on
+  layer: application
+  category: structural
+- source: application.applicationfunction.layout-preferences-store
+  target: application.applicationfunction.model-store
+  predicate: depends-on
+  layer: application
+  category: structural
+- source: application.applicationfunction.view-preference-store
+  target: application.applicationfunction.element-store
+  predicate: depends-on
+  layer: application
+  category: structural
+- source: application.applicationservice.yaml-parser
+  target: business.businessservice.architecture-model-visualization
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+- source: application.applicationservice.json-schema-parser
+  target: business.businessservice.architecture-model-visualization
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+- source: application.applicationservice.cross-layer-reference-extractor
+  target: business.businessservice.architecture-model-visualization
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+- source: application.applicationservice.cross-layer-processor
+  target: business.businessservice.architecture-model-visualization
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+- source: application.applicationservice.cross-layer-links-extractor
+  target: business.businessservice.architecture-model-visualization
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+- source: application.applicationservice.spec-parser
+  target: business.businessservice.schema-exploration
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+- source: application.applicationservice.impact-analysis-service
+  target: business.businessservice.changeset-review
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+- source: application.applicationservice.export-utils
+  target: business.businessservice.architecture-model-visualization
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+- source: application.applicationservice.local-file-loader
+  target: business.businessservice.architecture-model-visualization
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+- source: application.applicationservice.libavoid-router
+  target: business.businessservice.architecture-model-visualization
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+- source: application.applicationservice.git-hub-service
+  target: business.businessservice.model-annotation
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+- source: application.applicationservice.exception-classifier
+  target: business.businessprocess.model-loading-and-rendering
+  predicate: serves
+  layer: application
+  targetLayer: business
+  category: structural
+- source: application.applicationservice.coverage-analyzer
+  target: business.businessprocess.model-loading-and-rendering
+  predicate: serves
+  layer: application
+  targetLayer: business
+  category: structural
+- source: application.applicationservice.error-tracker
+  target: business.businessprocess.model-loading-and-rendering
+  predicate: serves
+  layer: application
+  targetLayer: business
+  category: structural
+- source: application.applicationservice.chat-validation
+  target: business.businessservice.ai-assisted-architecture-chat
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+- source: application.applicationprocess.spec-route
+  target: business.businessprocess.model-loading-and-rendering
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+- source: api.operation.delete-annotation
+  target: business.businessprocess.changeset-review-flow
+  predicate: realizes
+  layer: api
+  targetLayer: business
+  category: structural
+- source: navigation.navigationtransition.sub-view-switch-transition
+  target: navigation.route.model-view-route
+  predicate: navigates-to
+  layer: navigation
+  category: structural
+- source: navigation.navigationtransition.layer-deep-link-transition
+  target: navigation.route.model-view-route
+  predicate: navigates-to
+  layer: navigation
+  category: structural
+- source: navigation.breadcrumbconfig.cross-layer-breadcrumb
+  target: navigation.route.model-view-route
+  predicate: references
+  layer: navigation
+  category: structural
+- source: technology.systemsoftware.tailwind-css-v4
+  target: application.applicationcomponent.graph-viewer
+  predicate: serves
+  layer: technology
+  targetLayer: application
+  category: structural
+- source: technology.node.docker-agent-container
+  target: technology.systemsoftware.playwright
+  predicate: composes
+  layer: technology
+  category: structural
+- source: technology.path.app-to-dr-cli-web-socket-path
+  target: technology.node.docker-agent-container
+  predicate: serves
+  layer: technology
+  category: structural
+- source: technology.technologyprocess.playwright-test-execution
+  target: technology.path.app-to-dr-cli-web-socket-path
+  predicate: uses
+  layer: technology
+  category: structural
+- source: apm.resource.embedded-app-resource
+  target: apm.metricinstrument.web-socket-connection-state-gauge
+  predicate: aggregates
+  layer: apm
+  category: structural
+- source: apm.logconfiguration.browser-console-error-log-configuration
+  target: business.businessservice.architecture-model-visualization
+  predicate: monitors
+  layer: apm
+  targetLayer: business
+  category: structural
+- source: testing.contextvariation.regression-e2e-test-context
+  target: testing.testcoveragetarget.embedded-app-e2e-test-coverage
+  predicate: serves
+  layer: testing
+  category: structural
+- source: testing.contextvariation.smoke-story-test-context
+  target: testing.testcoveragetarget.storybook-story-render-test-coverage
+  predicate: serves
+  layer: testing
+  category: structural
+- source: testing.testcoveragetarget.cross-component-integration-test-coverage
+  target: application.applicationservice.cross-layer-reference-extractor
+  predicate: covers
+  layer: testing
+  targetLayer: application
+  category: structural
+- source: data-model.objectschema.data-model-field
+  target: business.businessobject.architecture-model
+  predicate: realizes
+  layer: data-model
+  targetLayer: business
+  category: structural
+- source: data-model.objectschema.extracted-reference
+  target: business.businessobject.architecture-model
+  predicate: realizes
+  layer: data-model
+  targetLayer: business
+  category: structural
+- source: data-model.objectschema.model-metadata
+  target: business.businessobject.architecture-model
+  predicate: realizes
+  layer: data-model
+  targetLayer: business
+  category: structural
+- source: data-model.objectschema.projection-rule
+  target: business.businessobject.architecture-model
+  predicate: realizes
+  layer: data-model
+  targetLayer: business
+  category: structural
+- source: data-model.objectschema.reference
+  target: business.businessobject.architecture-model
+  predicate: realizes
+  layer: data-model
+  targetLayer: business
+  category: structural
+- source: data-model.schemadefinition.element-id
+  target: motivation.constraint.type-script-strict-mode
+  predicate: satisfies
+  layer: data-model
+  targetLayer: motivation
+  category: structural
+- source: data-model.schemadefinition.annotation-id
+  target: motivation.constraint.type-script-strict-mode
+  predicate: satisfies
+  layer: data-model
+  targetLayer: motivation
+  category: structural
+- source: data-model.schemadefinition.changeset-id
+  target: motivation.constraint.type-script-strict-mode
+  predicate: satisfies
+  layer: data-model
+  targetLayer: motivation
+  category: structural
+- source: ux.librarycomponent.changeset-list
+  target: motivation.requirement.dr-cli-server-integration
+  predicate: satisfies
+  layer: ux
+  targetLayer: motivation
+  category: structural
+- source: ux.librarycomponent.cross-layer-filter-panel
+  target: motivation.requirement.multi-layout-engine-support
+  predicate: satisfies
+  layer: ux
+  targetLayer: motivation
+  category: structural
+- source: ux.librarycomponent.graph-statistics-panel
+  target: motivation.requirement.embedded-deployment-mode
+  predicate: satisfies
+  layer: ux
+  targetLayer: motivation
+  category: structural
+- source: ux.librarycomponent.layout-preferences-panel
+  target: motivation.requirement.multi-layout-engine-support
+  predicate: satisfies
+  layer: ux
+  targetLayer: motivation
+  category: structural
+- source: ux.librarycomponent.mini-map
+  target: motivation.requirement.embedded-deployment-mode
+  predicate: satisfies
+  layer: ux
+  targetLayer: motivation
+  category: structural
+- source: ux.librarycomponent.spec-viewer
+  target: motivation.requirement.dr-cli-server-integration
+  predicate: satisfies
+  layer: ux
+  targetLayer: motivation
+  category: structural
+- source: ux.librarycomponent.sub-tab-navigation
+  target: motivation.requirement.embedded-deployment-mode
+  predicate: satisfies
+  layer: ux
+  targetLayer: motivation
+  category: structural
+- source: ux.uxspec.model-visualization-spec
+  target: motivation.requirement.multi-layout-engine-support
+  predicate: satisfies
+  layer: ux
+  targetLayer: motivation
+  category: structural
+- source: ux.uxspec.schema-spec-browser-spec
+  target: motivation.requirement.dr-cli-server-integration
+  predicate: satisfies
+  layer: ux
+  targetLayer: motivation
+  category: structural
+- source: ux.uxspec.changeset-review-spec
+  target: motivation.requirement.embedded-deployment-mode
+  predicate: satisfies
+  layer: ux
+  targetLayer: motivation
+  category: structural
+- source: ux.uxspec.authentication-spec
+  target: motivation.requirement.dr-cli-server-integration
+  predicate: satisfies
+  layer: ux
+  targetLayer: motivation
+  category: structural
+- source: ux.uxapplication.embedded-architecture-viewer
+  target: ux.uxspec.model-visualization-spec
+  predicate: aggregates
+  layer: ux
+  category: structural
+- source: ux.statepattern.authentication-flow-pattern
+  target: ux.statepattern.data-loading-pattern
+  predicate: specializes
+  layer: ux
+  category: structural
+- source: ux.subview.embedded-layout
+  target: business.businessprocess.model-loading-and-rendering
+  predicate: realizes
+  layer: ux
+  targetLayer: business
+  category: structural
+- source: ux.subview.shared-layout
+  target: business.businessprocess.model-loading-and-rendering
+  predicate: realizes
+  layer: ux
+  targetLayer: business
+  category: structural
+- source: ux.subview.model-layers-sidebar
+  target: business.businessprocess.model-loading-and-rendering
+  predicate: realizes
+  layer: ux
+  targetLayer: business
+  category: structural
+- source: ux.subview.node-details-panel
+  target: business.businessprocess.model-loading-and-rendering
+  predicate: realizes
+  layer: ux
+  targetLayer: business
+  category: structural
+- source: ux.subview.chat-panel
+  target: business.businessprocess.real-time-model-synchronization
+  predicate: realizes
+  layer: ux
+  targetLayer: business
+  category: structural
+- source: ux.subview.floating-chat-panel
+  target: business.businessprocess.real-time-model-synchronization
+  predicate: realizes
+  layer: ux
+  targetLayer: business
+  category: structural
+- source: ux.view.spec-details-view
+  target: business.businessprocess.model-loading-and-rendering
+  predicate: realizes
+  layer: ux
+  targetLayer: business
+  category: structural
+- source: ux.subview.embedded-layout
+  target: ux.librarysubview.empty-state
+  predicate: uses
+  layer: ux
+  category: structural
+- source: ux.subview.shared-layout
+  target: ux.librarysubview.loading-state
+  predicate: uses
+  layer: ux
+  category: structural
+- source: ux.subview.node-details-panel
+  target: ux.librarysubview.error-state
+  predicate: uses
+  layer: ux
+  category: structural
+- source: ux.subview.model-layers-sidebar
+  target: ux.librarysubview.breadcrumb-navigation
+  predicate: uses
+  layer: ux
+  category: structural
+- source: ux.subview.chat-panel
+  target: ux.librarysubview.node-context-menu
+  predicate: uses
+  layer: ux
+  category: structural
+- source: ux.subview.floating-chat-panel
+  target: ux.librarysubview.highlighted-path-panel
+  predicate: uses
+  layer: ux
+  category: structural
+- source: a5342d6f-daf4-4a6e-a98b-7fada2561798
+  target: 35295e18-08a8-4ca0-ada3-40a017cb4318
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: fd2f4ab4-7477-4ec5-aac4-37aa1d78af4c
+  target: 35295e18-08a8-4ca0-ada3-40a017cb4318
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 63c97821-401c-40cd-a076-ef84e06f5442
+  target: 35295e18-08a8-4ca0-ada3-40a017cb4318
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 80e6c89f-70ba-4183-909f-0457abdf9fa7
+  target: 35295e18-08a8-4ca0-ada3-40a017cb4318
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 29f33e20-2acf-46e3-9f18-02ebd34fc734
+  target: 03823476-93f8-4ab4-8c51-cd93bf459ff0
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: b4784daf-706d-4f78-b522-165057df8110
+  target: 5308e41f-71c9-4ca6-8dfc-11d8b0483ce8
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 16fa387e-b1fd-4daf-9811-c3a0b4fd3d05
+  target: 5308e41f-71c9-4ca6-8dfc-11d8b0483ce8
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: a920ab1c-c481-46b6-bdb4-4050501adeac
+  target: e642ad79-62ea-47a4-ae04-d512d0ef7881
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8
+  target: 35295e18-08a8-4ca0-ada3-40a017cb4318
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: b7775f1a-2418-4c7a-84aa-997efd658a97
+  target: 35295e18-08a8-4ca0-ada3-40a017cb4318
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: b7775f1a-2418-4c7a-84aa-997efd658a97
+  target: a47870bf-898b-425f-9f73-92663193355a
+  predicate: requires
+  layer: application
+  targetLayer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8
+  target: a47870bf-898b-425f-9f73-92663193355a
+  predicate: requires
+  layer: application
+  targetLayer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: a5342d6f-daf4-4a6e-a98b-7fada2561798
+  target: a138ca69-d437-4841-b96f-5fb5dd703380
+  predicate: serves
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: b7775f1a-2418-4c7a-84aa-997efd658a97
+  target: 83c81f34-4376-4ff9-8fb4-98f3ecbc6d68
+  predicate: serves
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: fbd68c51-36fa-48ef-b381-5599d2678a90
+  target: 83c81f34-4376-4ff9-8fb4-98f3ecbc6d68
+  predicate: serves
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: a920ab1c-c481-46b6-bdb4-4050501adeac
+  target: c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6
+  predicate: serves
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: 4d7f0994-8c0d-4148-9eba-a3479a1f8947
+  target: a138ca69-d437-4841-b96f-5fb5dd703380
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 3e532c87-b3b7-4473-bd47-81bfd5de6507
+  target: c4ba5c59-3f4e-49a9-9915-a48049ddb68e
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 6b2f9b1a-bd90-4b1e-9ee2-bed4cbb73a04
+  target: c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 6f75bbfc-c13c-4c87-83e5-32f134902391
+  target: 35295e18-08a8-4ca0-ada3-40a017cb4318
+  predicate: realizes
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: a5342d6f-daf4-4a6e-a98b-7fada2561798
+  target: 9fe1281a-2547-416f-872f-38e1b066db15
+  predicate: satisfies
+  layer: application
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: 13b1a5ff-1cea-4ca0-b557-81f4629f2736
+  target: 6ffaff00-8bf8-4580-98ff-8d2a612a9021
+  predicate: satisfies
+  layer: application
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 283a8b3d-01cb-4964-b4d0-f04e2df1f2bd
+  target: 1723e358-12bc-460d-ae1d-6d9420128c6a
+  predicate: satisfies
+  layer: application
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 6f75bbfc-c13c-4c87-83e5-32f134902391
+  target: f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d
+  predicate: constrained-by
+  layer: application
+  targetLayer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: dfc6509e-98f5-479a-bfe9-14bfddbb838a
+  target: a5342d6f-daf4-4a6e-a98b-7fada2561798
+  predicate: references
+  layer: api
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: dc2da0b6-3de0-44d1-840f-5d49cc976cd9
+  target: b4784daf-706d-4f78-b522-165057df8110
+  predicate: references
+  layer: api
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: f952fcc0-7c42-4586-a306-a5f2f94a3068
+  target: 29f33e20-2acf-46e3-9f18-02ebd34fc734
+  predicate: references
+  layer: api
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: e067f83f-1f31-44d7-a5d0-86059f8beb9f
+  target: 29f33e20-2acf-46e3-9f18-02ebd34fc734
+  predicate: references
+  layer: api
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: ff16c609-618e-4dd9-b477-12e17c000df8
+  target: a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8
+  predicate: references
+  layer: api
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 8630981b-236c-47ed-b99b-e977c56bdc63
+  target: a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8
+  predicate: references
+  layer: api
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 3dee662b-7dc2-4fcc-8677-15a2ba06136e
+  target: a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8
+  predicate: references
+  layer: api
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 406200e9-ef8b-46c9-a1fe-1ff06d6d5602
+  target: a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8
+  predicate: references
+  layer: api
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: b66b613e-27b6-4d90-909f-3aa81570de15
+  target: b7775f1a-2418-4c7a-84aa-997efd658a97
+  predicate: references
+  layer: api
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 8630981b-236c-47ed-b99b-e977c56bdc63
+  target: f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d
+  predicate: requires
+  layer: api
+  targetLayer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 3dee662b-7dc2-4fcc-8677-15a2ba06136e
+  target: f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d
+  predicate: requires
+  layer: api
+  targetLayer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 406200e9-ef8b-46c9-a1fe-1ff06d6d5602
+  target: f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d
+  predicate: requires
+  layer: api
+  targetLayer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: dfc6509e-98f5-479a-bfe9-14bfddbb838a
+  target: f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d
+  predicate: requires
+  layer: api
+  targetLayer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 35295e18-08a8-4ca0-ada3-40a017cb4318
+  target: 462e2931-4c7c-4051-a9ac-8817c270d650
+  predicate: realizes
+  layer: business
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 03823476-93f8-4ab4-8c51-cd93bf459ff0
+  target: 59d25358-33d1-4c2d-b8fb-2a03ab216ae6
+  predicate: realizes
+  layer: business
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: e642ad79-62ea-47a4-ae04-d512d0ef7881
+  target: 731285cc-dc15-4c64-a342-a933ce00bd61
+  predicate: realizes
+  layer: business
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: 5308e41f-71c9-4ca6-8dfc-11d8b0483ce8
+  target: 59d25358-33d1-4c2d-b8fb-2a03ab216ae6
+  predicate: realizes
+  layer: business
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: 35295e18-08a8-4ca0-ada3-40a017cb4318
+  target: e748118c-b989-43fe-b0d2-9121e931fcd2
+  predicate: satisfies
+  layer: business
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: a138ca69-d437-4841-b96f-5fb5dd703380
+  target: 462e2931-4c7c-4051-a9ac-8817c270d650
+  predicate: realizes
+  layer: business
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 83c81f34-4376-4ff9-8fb4-98f3ecbc6d68
+  target: 731285cc-dc15-4c64-a342-a933ce00bd61
+  predicate: realizes
+  layer: business
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: c4ba5c59-3f4e-49a9-9915-a48049ddb68e
+  target: 59d25358-33d1-4c2d-b8fb-2a03ab216ae6
+  predicate: realizes
+  layer: business
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: 83c81f34-4376-4ff9-8fb4-98f3ecbc6d68
+  target: e748118c-b989-43fe-b0d2-9121e931fcd2
+  predicate: satisfies
+  layer: business
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 7c85d8fc-3635-45fa-a83c-36f184763cab
+  target: 59d25358-33d1-4c2d-b8fb-2a03ab216ae6
+  predicate: realizes
+  layer: business
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: dc0fb8df-f1e4-46a0-84bc-febf4e3f6080
+  target: 462e2931-4c7c-4051-a9ac-8817c270d650
+  predicate: realizes
+  layer: business
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: 8b70a28c-08e2-414c-b641-95335ac2a463
+  target: 462e2931-4c7c-4051-a9ac-8817c270d650
+  predicate: realizes
+  layer: business
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: cfe8d725-4f64-4eae-b2fa-825e4a774a3a
+  target: ffa6bf4a-5281-402f-90d8-a895173fc4ba
+  predicate: realizes
+  layer: data-model
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 582fd707-9e0d-4a98-9b47-b3cda7b26c3d
+  target: ea84399d-45dc-4fef-a5a1-759c9b5b5870
+  predicate: realizes
+  layer: data-model
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 57b0c4b1-46b4-49bc-993d-bf7b6cecf206
+  target: ffa6bf4a-5281-402f-90d8-a895173fc4ba
+  predicate: realizes
+  layer: data-model
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: cfe8d725-4f64-4eae-b2fa-825e4a774a3a
+  target: 8b70a28c-08e2-414c-b641-95335ac2a463
+  predicate: references
+  layer: data-model
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: 0e1d8c49-81ae-41e3-9453-1e989bbffb26
+  target: 7c85d8fc-3635-45fa-a83c-36f184763cab
+  predicate: references
+  layer: data-model
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 3ce0eb35-ba57-4f87-8b0b-ba127cac026a
+  target: 7c85d8fc-3635-45fa-a83c-36f184763cab
+  predicate: references
+  layer: data-model
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 389d0672-e5c3-4d4e-acc9-227e8f5521f7
+  target: c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6
+  predicate: references
+  layer: data-model
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: de956804-eabb-4548-8389-73cb6c63ef2f
+  target: 6ffaff00-8bf8-4580-98ff-8d2a612a9021
+  predicate: constrained-by
+  layer: testing
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: de956804-eabb-4548-8389-73cb6c63ef2f
+  target: 9fe1281a-2547-416f-872f-38e1b066db15
+  predicate: constrained-by
+  layer: testing
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: de956804-eabb-4548-8389-73cb6c63ef2f
+  target: 9df37bbd-8ffd-4d80-899f-9437aa03282a
+  predicate: fulfills-requirements
+  layer: testing
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: de956804-eabb-4548-8389-73cb6c63ef2f
+  target: e748118c-b989-43fe-b0d2-9121e931fcd2
+  predicate: fulfills-requirements
+  layer: testing
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: de956804-eabb-4548-8389-73cb6c63ef2f
+  target: b3d7f834-dc3f-49fd-8044-8b6aca045dbe
+  predicate: governed-by-principles
+  layer: testing
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: de956804-eabb-4548-8389-73cb6c63ef2f
+  target: 53fad2bb-e97d-44a2-83cf-61201e992163
+  predicate: governed-by-principles
+  layer: testing
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: de956804-eabb-4548-8389-73cb6c63ef2f
+  target: 462e2931-4c7c-4051-a9ac-8817c270d650
+  predicate: supports-goals
+  layer: testing
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: de956804-eabb-4548-8389-73cb6c63ef2f
+  target: ef84b64d-883c-4471-9b56-a58574bac2b9
+  predicate: supports-goals
+  layer: testing
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: cee7be5d-f0f9-4291-a2ae-cf5011a61c2f
+  target: 9df37bbd-8ffd-4d80-899f-9437aa03282a
+  predicate: fulfills-requirements
+  layer: testing
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: 52cfa9de-541d-44a0-9c21-34539c2e616c
+  target: e748118c-b989-43fe-b0d2-9121e931fcd2
+  predicate: fulfills-requirements
+  layer: testing
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 37a7eff0-e17f-40f8-ac76-ea230513fc63
+  target: 9df37bbd-8ffd-4d80-899f-9437aa03282a
+  predicate: fulfills-requirements
+  layer: testing
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 4e86c557-9c8e-435f-a770-651c0e238306
+  target: 462e2931-4c7c-4051-a9ac-8817c270d650
+  predicate: supports-goals
+  layer: testing
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 37a7eff0-e17f-40f8-ac76-ea230513fc63
+  target: ef84b64d-883c-4471-9b56-a58574bac2b9
+  predicate: supports-goals
+  layer: testing
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 52cfa9de-541d-44a0-9c21-34539c2e616c
+  target: 731285cc-dc15-4c64-a342-a933ce00bd61
+  predicate: supports-goals
+  layer: testing
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: 29043f3a-16fd-4cb7-af1c-660b3aaa63c6
+  target: ef84b64d-883c-4471-9b56-a58574bac2b9
+  predicate: supports-goals
+  layer: testing
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: dfc6509e-98f5-479a-bfe9-14bfddbb838a
+  target: 3b08f432-72aa-4df6-978c-d76d3312f72b
+  predicate: realizes
+  layer: api
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: f952fcc0-7c42-4586-a306-a5f2f94a3068
+  target: f1edef84-1298-486c-b347-f47c3b0f9712
+  predicate: realizes
+  layer: api
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: ff16c609-618e-4dd9-b477-12e17c000df8
+  target: 71f9eb72-20e1-4ae6-be30-425c11e59edb
+  predicate: realizes
+  layer: api
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 8630981b-236c-47ed-b99b-e977c56bdc63
+  target: 71f9eb72-20e1-4ae6-be30-425c11e59edb
+  predicate: realizes
+  layer: api
+  targetLayer: application
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: b66b613e-27b6-4d90-909f-3aa81570de15
+  target: fc86a033-81bd-4933-abb8-b24076577123
+  predicate: satisfies
+  layer: api
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: dfc6509e-98f5-479a-bfe9-14bfddbb838a
+  target: fc86a033-81bd-4933-abb8-b24076577123
+  predicate: satisfies
+  layer: api
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: dc2da0b6-3de0-44d1-840f-5d49cc976cd9
+  target: e748118c-b989-43fe-b0d2-9121e931fcd2
+  predicate: satisfies
+  layer: api
+  targetLayer: motivation
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 801c2caa-ec19-4175-bec8-970067823754
+  target: 0fa2ddb9-02df-426f-9c9c-89b857b9dc78
+  predicate: satisfies
+  layer: data-model
+  targetLayer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: a0080aee-7e84-4c2c-8d76-0cd604bfd7f5
+  target: ea84399d-45dc-4fef-a5a1-759c9b5b5870
+  predicate: realizes
+  layer: data-model
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: a5342d6f-daf4-4a6e-a98b-7fada2561798
+  target: ffa6bf4a-5281-402f-90d8-a895173fc4ba
+  predicate: accesses
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 29f33e20-2acf-46e3-9f18-02ebd34fc734
+  target: 99380a26-1064-4515-9d15-fec7620549cd
+  predicate: accesses
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8
+  target: ea84399d-45dc-4fef-a5a1-759c9b5b5870
+  predicate: accesses
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 6f75bbfc-c13c-4c87-83e5-32f134902391
+  target: e15b6b69-cc67-4ab9-a3f9-566de56b4804
+  predicate: mitigates
+  layer: application
+  targetLayer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: medium
+    basis: domain-pattern
+- source: 6f75bbfc-c13c-4c87-83e5-32f134902391
+  target: 76929fbe-36ea-4c4f-80d5-eb054598571b
+  predicate: accesses
+  layer: application
+  targetLayer: security
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: dfc6509e-98f5-479a-bfe9-14bfddbb838a
+  target: fb417c37-45b0-460f-80bb-4782d6c1a11a
+  predicate: serves
+  layer: api
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 8630981b-236c-47ed-b99b-e977c56bdc63
+  target: ed8f5b8f-54e4-498c-a8d9-ebe4ee430b6a
+  predicate: serves
+  layer: api
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 3dee662b-7dc2-4fcc-8677-15a2ba06136e
+  target: ed8f5b8f-54e4-498c-a8d9-ebe4ee430b6a
+  predicate: serves
+  layer: api
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 406200e9-ef8b-46c9-a1fe-1ff06d6d5602
+  target: ed8f5b8f-54e4-498c-a8d9-ebe4ee430b6a
+  predicate: serves
+  layer: api
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 6f75bbfc-c13c-4c87-83e5-32f134902391
+  target: fb417c37-45b0-460f-80bb-4782d6c1a11a
+  predicate: serves
+  layer: application
+  targetLayer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 35295e18-08a8-4ca0-ada3-40a017cb4318
+  target: ffa6bf4a-5281-402f-90d8-a895173fc4ba
+  predicate: delivers
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: af8620f0-9b01-41f2-992c-b90355d2e92c
+  target: ea84399d-45dc-4fef-a5a1-759c9b5b5870
+  predicate: delivers
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 03823476-93f8-4ab4-8c51-cd93bf459ff0
+  target: 99380a26-1064-4515-9d15-fec7620549cd
+  predicate: delivers
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 7c85d8fc-3635-45fa-a83c-36f184763cab
+  target: ffa6bf4a-5281-402f-90d8-a895173fc4ba
+  predicate: accesses
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: 8b70a28c-08e2-414c-b641-95335ac2a463
+  target: ffa6bf4a-5281-402f-90d8-a895173fc4ba
+  predicate: accesses
+  layer: business
+  category: structural
+  properties:
+    source_provenance: inferred
+    confidence: high
+    basis: domain-pattern
+- source: api.info.dr-cli-visualization-server-api
+  target: api.openapidocument.dr-cli-visualization-server-open-api-document
+  predicate: associated-with
+  layer: api
+  category: structural
+  properties:
+    source_provenance: extracted
+    confidence: high
+    basis: shared source file

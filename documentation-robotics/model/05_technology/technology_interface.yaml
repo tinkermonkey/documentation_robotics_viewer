@@ -1,0 +1,30 @@
+technology.technologyinterface.rest-https-interface:
+  id: bb6cc6c2-cb33-4bf5-a757-2d4f1b6a425a
+  path: technology.technologyinterface.rest-https-interface
+  spec_node_id: technology.technologyinterface
+  type: technologyinterface
+  layer_id: technology
+  name: REST HTTPS Interface
+  description: HTTPS interface point exposing DR CLI REST API endpoints to the
+    browser application; typed against the generated OpenAPI client
+  attributes:
+    protocol: https
+  metadata:
+    created_at: 2026-03-20T12:38:10.860Z
+    updated_at: 2026-03-20T12:38:10.860Z
+    version: 1
+technology.technologyinterface.web-socket-interface:
+  id: efbf1dbb-a8e5-4fa0-9d74-9952ad12a7cc
+  path: technology.technologyinterface.web-socket-interface
+  spec_node_id: technology.technologyinterface
+  type: technologyinterface
+  layer_id: technology
+  name: WebSocket Interface
+  description: WebSocket interface providing full-duplex communication channel for
+    real-time JSON-RPC 2.0 model update notifications
+  attributes:
+    protocol: websocket
+  metadata:
+    created_at: 2026-03-20T12:38:11.130Z
+    updated_at: 2026-03-20T12:38:11.130Z
+    version: 1

@@ -1,0 +1,145 @@
+navigation.route.index-route:
+  id: bd3c9cfa-aae2-4f1d-bffd-3d044955518e
+  path: navigation.route.index-route
+  spec_node_id: navigation.route
+  type: route
+  layer_id: navigation
+  name: Index Route
+  description: Landing route at path /#/; accepts optional ?token= search
+    parameter; renders AuthRoute component that extracts the magic link token
+    and redirects to the model view.
+  attributes:
+    type: public
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/router.tsx
+        symbol: indexRoute
+  metadata:
+    created_at: 2026-03-20T13:25:26.094Z
+    updated_at: 2026-03-20T13:25:26.094Z
+    version: 1
+navigation.route.model-redirect-route:
+  id: 810a02b2-ef85-4249-a4e4-f3636bd43364
+  path: navigation.route.model-redirect-route
+  spec_node_id: navigation.route
+  type: route
+  layer_id: navigation
+  name: Model Redirect Route
+  description: Redirect route at /#/model; immediately navigates to /#/model/graph
+    as the default model view; provides a stable short URL for the model
+    section.
+  attributes:
+    type: redirect
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/router.tsx
+        symbol: modelRoute
+  metadata:
+    created_at: 2026-03-20T13:25:29.467Z
+    updated_at: 2026-03-20T13:25:29.467Z
+    version: 1
+navigation.route.model-view-route:
+  id: 5f3aebc8-90d2-4e51-b12f-ef1ded0e6ea4
+  path: navigation.route.model-view-route
+  spec_node_id: navigation.route
+  type: route
+  layer_id: navigation
+  name: Model View Route
+  description: Parameterized model view route at /#/model/:view (graph or
+    details); accepts optional ?layer= search param for direct layer selection;
+    protected — requires valid auth token.
+  attributes:
+    type: protected
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/router.tsx
+        symbol: modelViewRoute
+  metadata:
+    created_at: 2026-03-20T13:25:33.009Z
+    updated_at: 2026-03-20T13:25:33.009Z
+    version: 1
+navigation.route.spec-redirect-route:
+  id: 4386739b-8388-4f0e-999f-63853381d581
+  path: navigation.route.spec-redirect-route
+  spec_node_id: navigation.route
+  type: route
+  layer_id: navigation
+  name: Spec Redirect Route
+  description: Redirect route at /#/spec; immediately navigates to /#/spec/graph
+    as the default spec view.
+  attributes:
+    type: redirect
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/router.tsx
+        symbol: specRoute
+  metadata:
+    created_at: 2026-03-20T13:25:36.830Z
+    updated_at: 2026-03-20T13:25:36.830Z
+    version: 1
+navigation.route.spec-view-route:
+  id: 7d8d9f1e-2700-4605-9d4f-7a164c932d2a
+  path: navigation.route.spec-view-route
+  spec_node_id: navigation.route
+  type: route
+  layer_id: navigation
+  name: Spec View Route
+  description: Parameterized spec browser route at /#/spec/:view (graph or
+    details); renders SpecRoute component with JSON Schema visualization;
+    protected — requires valid auth token.
+  attributes:
+    type: protected
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/router.tsx
+        symbol: specViewRoute
+  metadata:
+    created_at: 2026-03-20T13:25:40.276Z
+    updated_at: 2026-03-20T13:25:40.276Z
+    version: 1
+navigation.route.changesets-redirect-route:
+  id: 8c3e06d0-698c-4806-902f-84fdc7ff3441
+  path: navigation.route.changesets-redirect-route
+  spec_node_id: navigation.route
+  type: route
+  layer_id: navigation
+  name: Changesets Redirect Route
+  description: Redirect route at /#/changesets; immediately navigates to
+    /#/changesets/graph.
+  attributes:
+    type: redirect
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/router.tsx
+        symbol: changesetsRoute
+  metadata:
+    created_at: 2026-03-20T13:25:43.164Z
+    updated_at: 2026-03-20T13:25:43.165Z
+    version: 1
+navigation.route.changesets-view-route:
+  id: bd3ca5df-20eb-4c66-ad99-fb2abf4067f3
+  path: navigation.route.changesets-view-route
+  spec_node_id: navigation.route
+  type: route
+  layer_id: navigation
+  name: Changesets View Route
+  description: Parameterized changesets route at /#/changesets/:view (graph or
+    list); renders ChangesetRoute component; protected — requires valid auth
+    token.
+  attributes:
+    type: protected
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/router.tsx
+        symbol: changesetsViewRoute
+  metadata:
+    created_at: 2026-03-20T13:25:46.394Z
+    updated_at: 2026-03-20T13:25:46.394Z
+    version: 1

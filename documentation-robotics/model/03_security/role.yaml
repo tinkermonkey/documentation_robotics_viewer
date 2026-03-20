@@ -1,0 +1,21 @@
+security.role.authenticated-viewer:
+  id: 328e23a8-be1d-492a-82cd-490ee1da341d
+  path: security.role.authenticated-viewer
+  spec_node_id: security.role
+  type: role
+  layer_id: security
+  name: Authenticated Viewer
+  description: Role granted to users who possess a valid bearer token; can read
+    model data and write annotations
+  attributes:
+    displayName: Authenticated Viewer
+    level: 1
+    inheritsFrom: ""
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/stores/authStore.ts
+  metadata:
+    created_at: 2026-03-20T13:39:42.458Z
+    updated_at: 2026-03-20T13:39:42.458Z
+    version: 1

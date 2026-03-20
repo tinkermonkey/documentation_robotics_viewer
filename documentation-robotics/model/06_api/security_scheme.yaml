@@ -1,0 +1,41 @@
+api.securityscheme.bearer-auth-scheme:
+  id: 17cad0a2-0c61-41e3-b535-51c542bb37dd
+  path: api.securityscheme.bearer-auth-scheme
+  spec_node_id: api.securityscheme
+  type: securityscheme
+  layer_id: api
+  name: Bearer Auth Scheme
+  description: Token in Authorization header; used for REST API endpoints
+    requiring authentication
+  attributes:
+    type: http
+    scheme: bearer
+    bearerFormat: token
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:58:03.670Z
+    updated_at: 2026-03-20T12:58:03.670Z
+    version: 1
+api.securityscheme.query-auth-scheme:
+  id: b14886c7-ce3d-4ac3-b792-8e5a0f8e560c
+  path: api.securityscheme.query-auth-scheme
+  spec_node_id: api.securityscheme
+  type: securityscheme
+  layer_id: api
+  name: Query Auth Scheme
+  description: Token as ?token= query param; used for WebSocket connection
+    authentication where Authorization headers cannot be set
+  attributes:
+    type: apiKey
+    in: query
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:58:33.108Z
+    updated_at: 2026-03-20T12:58:33.108Z
+    version: 1

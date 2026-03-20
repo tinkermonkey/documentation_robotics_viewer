@@ -1,0 +1,35 @@
+security.secureresource.model-rest-api:
+  id: 76929fbe-36ea-4c4f-80d5-eb054598571b
+  path: security.secureresource.model-rest-api
+  spec_node_id: security.secureresource
+  type: secureresource
+  layer_id: security
+  name: Model REST API
+  description: DR CLI REST API endpoints (/api/v1/model, /api/v1/elements, etc.)
+    protected by bearer token
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/utils/fetchInterceptor.ts
+  metadata:
+    created_at: 2026-03-20T13:39:55.201Z
+    updated_at: 2026-03-20T13:39:55.201Z
+    version: 1
+security.secureresource.web-socket-json-rpc-channel:
+  id: eb053823-b36c-4229-87eb-a3c8b66a82b8
+  path: security.secureresource.web-socket-json-rpc-channel
+  spec_node_id: security.secureresource
+  type: secureresource
+  layer_id: security
+  name: WebSocket JSON-RPC Channel
+  description: WebSocket connection to DR CLI server protected by ?token= query
+    parameter (custom headers not supported in WebSocket)
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/stores/authStore.ts
+        symbol: getAuthQueryParams
+  metadata:
+    created_at: 2026-03-20T13:39:55.532Z
+    updated_at: 2026-03-20T13:39:55.532Z
+    version: 1

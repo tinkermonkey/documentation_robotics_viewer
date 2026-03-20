@@ -1,0 +1,23 @@
+security.authenticationconfig.bearer-token-authentication:
+  id: a47870bf-898b-425f-9f73-92663193355a
+  path: security.authenticationconfig.bearer-token-authentication
+  spec_node_id: security.authenticationconfig
+  type: authenticationconfig
+  layer_id: security
+  name: Bearer Token Authentication
+  description: "Magic-link bearer token auth: token arrives via ?token= URL param,
+    stored in localStorage under dr_auth_token, injected as Authorization:
+    Bearer on all REST requests. Provider modeled as local (custom magic-link
+    implementation)."
+  attributes:
+    provider: local
+    sessionTimeout: 0
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/stores/authStore.ts
+        symbol: authStore
+  metadata:
+    created_at: 2026-03-20T13:39:27.008Z
+    updated_at: 2026-03-20T13:39:27.008Z
+    version: 1

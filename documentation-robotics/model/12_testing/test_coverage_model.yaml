@@ -1,0 +1,21 @@
+testing.testcoveragemodel.viewer-test-coverage-model:
+  id: de956804-eabb-4548-8389-73cb6c63ef2f
+  path: testing.testcoveragemodel.viewer-test-coverage-model
+  spec_node_id: testing.testcoveragemodel
+  type: testcoveragemodel
+  layer_id: testing
+  name: Viewer Test Coverage Model
+  description: Root IEEE 829-style test coverage model for the
+    documentation_robotics_viewer application; spans unit, integration, E2E,
+    Storybook story, and accessibility test types run via Playwright.
+  attributes:
+    version: "1.0"
+    application: documentation-robotics-viewer
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: playwright.config.ts
+  metadata:
+    created_at: 2026-03-20T13:32:22.735Z
+    updated_at: 2026-03-20T13:32:22.735Z
+    version: 1

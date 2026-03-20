@@ -1,0 +1,19 @@
+api.info.dr-cli-visualization-server-api:
+  id: 861a01e2-34ab-4ef8-af6a-1099bd82475d
+  path: api.info.dr-cli-visualization-server-api
+  spec_node_id: api.info
+  type: info
+  layer_id: api
+  name: DR CLI Visualization Server API
+  description: OpenAPI document info for the Documentation Robotics Visualization Server API
+  attributes:
+    title: Documentation Robotics Visualization Server API
+    version: 0.2.3
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:58:02.389Z
+    updated_at: 2026-03-20T12:58:02.389Z
+    version: 1

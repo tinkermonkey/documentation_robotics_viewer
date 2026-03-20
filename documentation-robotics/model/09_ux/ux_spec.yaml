@@ -1,0 +1,84 @@
+ux.uxspec.model-visualization-spec:
+  id: 798c5adb-f6f5-4518-b17d-00b21b77817e
+  path: ux.uxspec.model-visualization-spec
+  spec_node_id: ux.uxspec
+  type: uxspec
+  layer_id: ux
+  name: Model Visualization Spec
+  description: UX specification for the architecture model visualization area;
+    covers graph and table detail views, layer filtering, cross-layer
+    relationship exploration, and element selection interactions.
+  attributes:
+    experience: visual
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/ModelRoute.tsx
+        symbol: ModelRoute
+  metadata:
+    created_at: 2026-03-20T13:22:34.825Z
+    updated_at: 2026-03-20T13:22:34.825Z
+    version: 1
+ux.uxspec.schema-spec-browser-spec:
+  id: e957b595-192f-4315-88e4-0306078c2bc7
+  path: ux.uxspec.schema-spec-browser-spec
+  spec_node_id: ux.uxspec
+  type: uxspec
+  layer_id: ux
+  name: Schema Spec Browser Spec
+  description: UX specification for the DR CLI JSON Schema specification browser;
+    allows users to inspect layer schemas, relationship catalogs, and link
+    registry in graph and detail views.
+  attributes:
+    experience: visual
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/SpecRoute.tsx
+        symbol: SpecRoute
+  metadata:
+    created_at: 2026-03-20T13:22:39.046Z
+    updated_at: 2026-03-20T13:22:39.046Z
+    version: 1
+ux.uxspec.changeset-review-spec:
+  id: 9b532e45-f5e9-488c-8676-e2c19d640a49
+  path: ux.uxspec.changeset-review-spec
+  spec_node_id: ux.uxspec
+  type: uxspec
+  layer_id: ux
+  name: Changeset Review Spec
+  description: UX specification for reviewing architecture model changesets;
+    supports graph-based diff visualization and list view of all
+    staged/applied/abandoned changesets.
+  attributes:
+    experience: visual
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/ChangesetRoute.tsx
+        symbol: ChangesetRoute
+  metadata:
+    created_at: 2026-03-20T13:22:45.061Z
+    updated_at: 2026-03-20T13:22:45.061Z
+    version: 1
+ux.uxspec.authentication-spec:
+  id: 9f80cdb4-4e5f-480f-b8e5-255ed97bf829
+  path: ux.uxspec.authentication-spec
+  spec_node_id: ux.uxspec
+  type: uxspec
+  layer_id: ux
+  name: Authentication Spec
+  description: UX specification for token-based authentication flow; extracts
+    bearer token from magic link URL query parameter and redirects to the model
+    view on success.
+  attributes:
+    experience: visual
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/AuthRoute.tsx
+        symbol: AuthRoute
+  metadata:
+    created_at: 2026-03-20T13:22:49.389Z
+    updated_at: 2026-03-20T13:22:49.389Z
+    version: 1

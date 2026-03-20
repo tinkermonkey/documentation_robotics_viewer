@@ -1,0 +1,152 @@
+testing.testcoveragetarget.service-and-store-unit-test-coverage:
+  id: cee7be5d-f0f9-4291-a2ae-cf5011a61c2f
+  path: testing.testcoveragetarget.service-and-store-unit-test-coverage
+  spec_node_id: testing.testcoveragetarget
+  type: testcoveragetarget
+  layer_id: testing
+  name: Service and Store Unit Test Coverage
+  description: Coverage target for unit testing of all core services (dataLoader,
+    nodeTransformer, yamlParser, crossLayerProcessor, etc.) and Zustand stores;
+    ~40 spec files under tests/unit/; 1170 total tests via playwright.config.ts.
+  attributes:
+    targetType: ui-component
+    priority: high
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/
+  metadata:
+    created_at: 2026-03-20T13:32:27.397Z
+    updated_at: 2026-03-20T13:32:27.397Z
+    version: 1
+testing.testcoveragetarget.cross-component-integration-test-coverage:
+  id: 74572f0c-61cd-489a-82ff-a84265d69aae
+  path: testing.testcoveragetarget.cross-component-integration-test-coverage
+  spec_node_id: testing.testcoveragetarget
+  type: testcoveragetarget
+  layer_id: testing
+  name: Cross-Component Integration Test Coverage
+  description: "Coverage target for integration tests verifying cross-component
+    data flows: node transformer pipeline, cross-layer worker integration,
+    libavoid routing, chat service, and preference persistence; 7 files under
+    tests/integration/."
+  attributes:
+    targetType: integration-flow
+    priority: high
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/integration/
+  metadata:
+    created_at: 2026-03-20T13:32:32.478Z
+    updated_at: 2026-03-20T13:32:32.478Z
+    version: 1
+testing.testcoveragetarget.embedded-app-e2e-test-coverage:
+  id: 4e86c557-9c8e-435f-a770-651c0e238306
+  path: testing.testcoveragetarget.embedded-app-e2e-test-coverage
+  spec_node_id: testing.testcoveragetarget
+  type: testcoveragetarget
+  layer_id: testing
+  name: Embedded App E2E Test Coverage
+  description: "Coverage target for E2E tests of the full embedded application:
+    app rendering, auth flow, graph rendering, dual-view, websocket recovery,
+    zoom-to-layer, and sidebar consolidation; run via playwright.e2e.config.ts
+    with a live DR CLI server."
+  attributes:
+    targetType: business-workflow
+    priority: critical
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: playwright.e2e.config.ts
+  metadata:
+    created_at: 2026-03-20T13:32:37.752Z
+    updated_at: 2026-03-20T13:32:37.752Z
+    version: 1
+testing.testcoveragetarget.auth-flow-e2e-test-coverage:
+  id: 52cfa9de-541d-44a0-9c21-34539c2e616c
+  path: testing.testcoveragetarget.auth-flow-e2e-test-coverage
+  spec_node_id: testing.testcoveragetarget
+  type: testcoveragetarget
+  layer_id: testing
+  name: Auth Flow E2E Test Coverage
+  description: Coverage target for bearer token authentication tests including
+    race conditions, magic link token extraction, and localStorage persistence;
+    dedicated playwright.auth.config.ts; covers
+    embedded-auth-race-condition.spec.ts.
+  attributes:
+    targetType: business-workflow
+    priority: critical
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: playwright.auth.config.ts
+  metadata:
+    created_at: 2026-03-20T13:32:41.058Z
+    updated_at: 2026-03-20T13:32:41.058Z
+    version: 1
+testing.testcoveragetarget.storybook-story-render-test-coverage:
+  id: 29043f3a-16fd-4cb7-af1c-660b3aaa63c6
+  path: testing.testcoveragetarget.storybook-story-render-test-coverage
+  spec_node_id: testing.testcoveragetarget
+  type: testcoveragetarget
+  layer_id: testing
+  name: Storybook Story Render Test Coverage
+  description: Coverage target for Storybook component story validation; 578
+    stories across 97 story files tested via test-storybook runner; validates
+    all node types, layout engines, panels, graph views, and chat components
+    render without errors.
+  attributes:
+    targetType: ui-component
+    priority: high
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: .storybook/main.cjs
+  metadata:
+    created_at: 2026-03-20T13:32:46.533Z
+    updated_at: 2026-03-20T13:32:46.533Z
+    version: 1
+testing.testcoveragetarget.wcag-21-accessibility-test-coverage:
+  id: 37a7eff0-e17f-40f8-ac76-ea230513fc63
+  path: testing.testcoveragetarget.wcag-21-accessibility-test-coverage
+  spec_node_id: testing.testcoveragetarget
+  type: testcoveragetarget
+  layer_id: testing
+  name: WCAG 2.1 Accessibility Test Coverage
+  description: Coverage target for WCAG 2.1 Level AA accessibility compliance;
+    axe-core automated tests via @axe-core/playwright run against all Storybook
+    stories; dedicated tests/stories/accessibility.spec.ts; covers all
+    interactive components.
+  attributes:
+    targetType: ui-component
+    priority: high
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/stories/accessibility.spec.ts
+  metadata:
+    created_at: 2026-03-20T13:32:50.209Z
+    updated_at: 2026-03-20T13:32:50.209Z
+    version: 1
+testing.testcoveragetarget.web-socket-recovery-test-coverage:
+  id: bfedfe9d-5e0f-4587-ac89-90632d45e39f
+  path: testing.testcoveragetarget.web-socket-recovery-test-coverage
+  spec_node_id: testing.testcoveragetarget
+  type: testcoveragetarget
+  layer_id: testing
+  name: WebSocket Recovery Test Coverage
+  description: Coverage target for WebSocket connection failure, reconnection, and
+    REST fallback mode scenarios; tests/websocket-recovery.spec.ts; ensures
+    graceful degradation when DR CLI server is unavailable.
+  attributes:
+    targetType: integration-flow
+    priority: high
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/websocket-recovery.spec.ts
+  metadata:
+    created_at: 2026-03-20T13:32:54.674Z
+    updated_at: 2026-03-20T13:32:54.674Z
+    version: 1

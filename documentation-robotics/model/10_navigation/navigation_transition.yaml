@@ -1,0 +1,90 @@
+navigation.navigationtransition.tab-navigation-transition:
+  id: 6194b2d5-7baf-49ca-b7c3-8e96b5405e06
+  path: navigation.navigationtransition.tab-navigation-transition
+  spec_node_id: navigation.navigationtransition
+  type: navigationtransition
+  layer_id: navigation
+  name: Tab Navigation Transition
+  description: User-triggered tab switch between main sections (Spec, Model,
+    Changesets); fires when the user clicks a top-level tab in EmbeddedLayout;
+    persists last-used sub-view.
+  attributes:
+    from: any-route
+    to: section-root
+    trigger: user-click
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/EmbeddedLayout.tsx
+        symbol: handleTabChange
+  metadata:
+    created_at: 2026-03-20T13:26:14.912Z
+    updated_at: 2026-03-20T13:26:14.912Z
+    version: 1
+navigation.navigationtransition.sub-view-switch-transition:
+  id: fff16ec4-f818-4983-b7d2-c080b1951ce0
+  path: navigation.navigationtransition.sub-view-switch-transition
+  spec_node_id: navigation.navigationtransition
+  type: navigationtransition
+  layer_id: navigation
+  name: Sub-View Switch Transition
+  description: User-triggered switch between graph and details (or graph and list)
+    sub-views within a section; fires when the user clicks a sub-tab; updates
+    the :view route parameter.
+  attributes:
+    from: section-view
+    to: section-view
+    trigger: user-click
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/SubTabNavigation.tsx
+        symbol: SubTabNavigation
+  metadata:
+    created_at: 2026-03-20T13:26:20.613Z
+    updated_at: 2026-03-20T13:26:20.613Z
+    version: 1
+navigation.navigationtransition.layer-deep-link-transition:
+  id: ff98ecbb-8bc5-4687-bcea-8d208c56496c
+  path: navigation.navigationtransition.layer-deep-link-transition
+  spec_node_id: navigation.navigationtransition
+  type: navigationtransition
+  layer_id: navigation
+  name: Layer Deep-Link Transition
+  description: Programmatic navigation to a specific layer in the model graph by
+    setting the ?layer= search parameter; triggered by cross-layer panel element
+    clicks and breadcrumb navigation.
+  attributes:
+    from: model-graph-view
+    to: model-graph-view
+    trigger: programmatic
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/components/CrossLayerPanel.tsx
+  metadata:
+    created_at: 2026-03-20T13:26:31.679Z
+    updated_at: 2026-03-20T13:26:31.679Z
+    version: 1
+navigation.navigationtransition.auth-redirect-transition:
+  id: 6a0364fb-3985-40d8-8921-d1634df686f2
+  path: navigation.navigationtransition.auth-redirect-transition
+  spec_node_id: navigation.navigationtransition
+  type: navigationtransition
+  layer_id: navigation
+  name: Auth Redirect Transition
+  description: Programmatic redirect from the index route to the model graph view
+    after successful token extraction; triggered by the AuthRoute on token
+    validation success.
+  attributes:
+    from: index-route
+    to: model-view-route
+    trigger: redirect
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/AuthRoute.tsx
+  metadata:
+    created_at: 2026-03-20T13:26:35.262Z
+    updated_at: 2026-03-20T13:26:35.262Z
+    version: 1

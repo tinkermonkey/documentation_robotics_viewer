@@ -1,0 +1,72 @@
+application.applicationprocess.model-route:
+  id: 4d7f0994-8c0d-4148-9eba-a3479a1f8947
+  path: application.applicationprocess.model-route
+  spec_node_id: application.applicationprocess
+  type: applicationprocess
+  layer_id: application
+  name: Model Route
+  description: TanStack Router route that renders the main architecture model
+    graph visualization with layer selection and cross-layer navigation
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/ModelRoute.tsx
+        symbol: ModelRoute
+  metadata:
+    created_at: 2026-03-20T12:57:21.893Z
+    updated_at: 2026-03-20T12:57:21.893Z
+    version: 1
+application.applicationprocess.changeset-route:
+  id: 3e532c87-b3b7-4473-bd47-81bfd5de6507
+  path: application.applicationprocess.changeset-route
+  spec_node_id: application.applicationprocess
+  type: applicationprocess
+  layer_id: application
+  name: Changeset Route
+  description: TanStack Router route displaying changeset history, diff views, and
+    changeset graph visualization
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/ChangesetRoute.tsx
+        symbol: ChangesetRoute
+  metadata:
+    created_at: 2026-03-20T12:57:22.558Z
+    updated_at: 2026-03-20T12:57:22.558Z
+    version: 1
+application.applicationprocess.spec-route:
+  id: 3c70cd39-22ee-44c8-b0f3-7ba743733232
+  path: application.applicationprocess.spec-route
+  spec_node_id: application.applicationprocess
+  type: applicationprocess
+  layer_id: application
+  name: Spec Route
+  description: TanStack Router route rendering the JSON Schema spec browser with
+    layer schema navigation
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/SpecRoute.tsx
+        symbol: SpecRoute
+  metadata:
+    created_at: 2026-03-20T12:57:26.558Z
+    updated_at: 2026-03-20T12:57:26.558Z
+    version: 1
+application.applicationprocess.auth-route:
+  id: 6b2f9b1a-bd90-4b1e-9ee2-bed4cbb73a04
+  path: application.applicationprocess.auth-route
+  spec_node_id: application.applicationprocess
+  type: applicationprocess
+  layer_id: application
+  name: Auth Route
+  description: TanStack Router route handling token-based authentication via magic
+    link; extracts token from URL query params
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/AuthRoute.tsx
+        symbol: AuthRoute
+  metadata:
+    created_at: 2026-03-20T12:57:27.016Z
+    updated_at: 2026-03-20T12:57:27.016Z
+    version: 1

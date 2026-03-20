@@ -1,0 +1,80 @@
+application.applicationcomponent.graph-viewer:
+  id: 6f75bbfc-c13c-4c87-83e5-32f134902391
+  path: application.applicationcomponent.graph-viewer
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Graph Viewer
+  description: The primary React Flow canvas component; renders all architecture
+    nodes and edges with pan/zoom, minimap, and SpaceMouse support
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/components/GraphViewer.tsx
+        symbol: GraphViewer
+  metadata:
+    created_at: 2026-03-20T12:56:27.158Z
+    updated_at: 2026-03-20T12:56:27.158Z
+    version: 1
+application.applicationcomponent.dagre-layout-engine:
+  id: 8cc80706-cf3f-46c1-ba84-cf89c9c95900
+  path: application.applicationcomponent.dagre-layout-engine
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Dagre Layout Engine
+  description: Adapts the Dagre hierarchical layout algorithm to the React Flow
+    node/edge format; implements the LayoutEngine interface
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/layout/engines/DagreLayoutEngine.ts
+        symbol: DagreLayoutEngine
+  metadata:
+    created_at: 2026-03-20T12:56:28.910Z
+    updated_at: 2026-03-20T12:56:28.910Z
+    version: 1
+application.applicationcomponent.elk-layout-engine:
+  id: ebe326f9-f69f-49b2-9e05-e0275f1a40b4
+  path: application.applicationcomponent.elk-layout-engine
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: ELK Layout Engine
+  description: Adapts the Eclipse Layout Kernel (ELK) to React Flow; supports
+    layered, force, stress, and tree algorithms
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/layout/engines/ELKLayoutEngine.ts
+        symbol: ELKLayoutEngine
+  metadata:
+    created_at: 2026-03-20T12:56:32.490Z
+    updated_at: 2026-03-20T12:56:32.490Z
+    version: 1
+application.applicationcomponent.layout-engine-registry:
+  id: 283a8b3d-01cb-4964-b4d0-f04e2df1f2bd
+  path: application.applicationcomponent.layout-engine-registry
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Layout Engine Registry
+  description: Central registry that resolves layout algorithm by name and
+    orchestrates layout computation across engines
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/layout/engines/LayoutEngineRegistry.ts
+        symbol: LayoutEngineRegistry
+  metadata:
+    created_at: 2026-03-20T12:56:33.537Z
+    updated_at: 2026-03-20T12:56:33.537Z
+    version: 1

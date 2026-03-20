@@ -1,0 +1,80 @@
+motivation.requirement.wcag-21-aa-compliance:
+  id: 9df37bbd-8ffd-4d80-899f-9437aa03282a
+  path: motivation.requirement.wcag-21-aa-compliance
+  spec_node_id: motivation.requirement
+  type: requirement
+  layer_id: motivation
+  name: WCAG 2.1 AA Compliance
+  description: All interactive components must pass axe-core automated
+    accessibility testing and meet WCAG 2.1 Level AA criteria
+  attributes:
+    requirementType: quality
+    priority: high
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: documentation/ACCESSIBILITY.md
+  metadata:
+    created_at: 2026-03-20T13:41:28.155Z
+    updated_at: 2026-03-20T13:41:28.156Z
+    version: 1
+motivation.requirement.dr-cli-server-integration:
+  id: e748118c-b989-43fe-b0d2-9121e931fcd2
+  path: motivation.requirement.dr-cli-server-integration
+  spec_node_id: motivation.requirement
+  type: requirement
+  layer_id: motivation
+  name: DR CLI Server Integration
+  description: Viewer must connect to DR CLI REST API and WebSocket JSON-RPC
+    endpoint to load and sync model data
+  attributes:
+    requirementType: functional
+    priority: critical
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: README.md
+  metadata:
+    created_at: 2026-03-20T13:41:28.485Z
+    updated_at: 2026-03-20T13:41:28.485Z
+    version: 1
+motivation.requirement.multi-layout-engine-support:
+  id: 1723e358-12bc-460d-ae1d-6d9420128c6a
+  path: motivation.requirement.multi-layout-engine-support
+  spec_node_id: motivation.requirement
+  type: requirement
+  layer_id: motivation
+  name: Multi-Layout Engine Support
+  description: Graph rendering must support at least 4 layout algorithms (Dagre,
+    ELK, D3-Force, Graphviz) selectable at runtime
+  attributes:
+    requirementType: functional
+    priority: medium
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/core/layout/engines
+  metadata:
+    created_at: 2026-03-20T13:41:28.813Z
+    updated_at: 2026-03-20T13:41:28.814Z
+    version: 1
+motivation.requirement.embedded-deployment-mode:
+  id: f2fba671-b7c1-4741-827a-af29130995d5
+  path: motivation.requirement.embedded-deployment-mode
+  spec_node_id: motivation.requirement
+  type: requirement
+  layer_id: motivation
+  name: Embedded Deployment Mode
+  description: Viewer must support deployment as an embedded iframe within the DR
+    CLI local web interface using hash-based routing
+  attributes:
+    requirementType: functional
+    priority: high
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/router.tsx
+  metadata:
+    created_at: 2026-03-20T13:41:29.146Z
+    updated_at: 2026-03-20T13:41:29.146Z
+    version: 1

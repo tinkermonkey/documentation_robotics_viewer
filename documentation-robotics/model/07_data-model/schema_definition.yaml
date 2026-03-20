@@ -1,0 +1,64 @@
+data-model.schemadefinition.element-id:
+  id: 801c2caa-ec19-4175-bec8-970067823754
+  path: data-model.schemadefinition.element-id
+  spec_node_id: data-model.schemadefinition
+  type: schemadefinition
+  layer_id: data-model
+  name: ElementId
+  description: "Branded string type for architecture element IDs (dot-notation
+    format: layer.type.name); prevents accidental mixing with AnnotationId or
+    ChangesetId at compile time."
+  attributes:
+    title: ElementId
+    type: string
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/types/brands.ts
+        symbol: ElementId
+  metadata:
+    created_at: 2026-03-20T13:06:27.046Z
+    updated_at: 2026-03-20T13:06:27.047Z
+    version: 1
+data-model.schemadefinition.annotation-id:
+  id: a0080aee-7e84-4c2c-8d76-0cd604bfd7f5
+  path: data-model.schemadefinition.annotation-id
+  spec_node_id: data-model.schemadefinition
+  type: schemadefinition
+  layer_id: data-model
+  name: AnnotationId
+  description: Branded string type for annotation IDs; cannot be assigned from
+    ElementId or ChangesetId at compile time.
+  attributes:
+    title: AnnotationId
+    type: string
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/types/brands.ts
+        symbol: AnnotationId
+  metadata:
+    created_at: 2026-03-20T13:06:31.584Z
+    updated_at: 2026-03-20T13:06:31.584Z
+    version: 1
+data-model.schemadefinition.changeset-id:
+  id: 142f8bb0-3002-42fe-8ee5-42e64045e53b
+  path: data-model.schemadefinition.changeset-id
+  spec_node_id: data-model.schemadefinition
+  type: schemadefinition
+  layer_id: data-model
+  name: ChangesetId
+  description: Branded string type for changeset IDs; cannot be assigned from
+    ElementId or AnnotationId at compile time.
+  attributes:
+    title: ChangesetId
+    type: string
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/types/brands.ts
+        symbol: ChangesetId
+  metadata:
+    created_at: 2026-03-20T13:06:36.469Z
+    updated_at: 2026-03-20T13:06:36.470Z
+    version: 1

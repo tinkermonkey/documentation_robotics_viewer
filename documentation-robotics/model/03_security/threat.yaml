@@ -1,0 +1,17 @@
+security.threat.unauthenticated-model-access:
+  id: e15b6b69-cc67-4ab9-a3f9-566de56b4804
+  path: security.threat.unauthenticated-model-access
+  spec_node_id: security.threat
+  type: threat
+  layer_id: security
+  name: Unauthenticated Model Access
+  description: Risk that an unauthenticated user accesses model data if bearer
+    token is absent or invalid
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/utils/fetchInterceptor.ts
+  metadata:
+    created_at: 2026-03-20T13:40:10.319Z
+    updated_at: 2026-03-20T13:40:10.319Z
+    version: 1

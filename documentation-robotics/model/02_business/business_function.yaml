@@ -1,0 +1,51 @@
+business.businessfunction.graph-layout-computation:
+  id: dc0fb8df-f1e4-46a0-84bc-febf4e3f6080
+  path: business.businessfunction.graph-layout-computation
+  spec_node_id: business.businessfunction
+  type: businessfunction
+  layer_id: business
+  name: Graph Layout Computation
+  description: Automated positioning of architecture elements using configurable
+    layout engines (Dagre, ELK, D3-Force, Graphviz)
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/core/layout/engines
+  metadata:
+    created_at: 2026-03-20T13:40:41.184Z
+    updated_at: 2026-03-20T13:40:41.184Z
+    version: 1
+business.businessfunction.cross-layer-reference-resolution:
+  id: 8b70a28c-08e2-414c-b641-95335ac2a463
+  path: business.businessfunction.cross-layer-reference-resolution
+  spec_node_id: business.businessfunction
+  type: businessfunction
+  layer_id: business
+  name: Cross-Layer Reference Resolution
+  description: Extraction and resolution of cross-layer references between model
+    elements across all 12 architecture layers
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/crossLayerReferenceExtractor.ts
+  metadata:
+    created_at: 2026-03-20T13:40:41.532Z
+    updated_at: 2026-03-20T13:40:41.532Z
+    version: 1
+business.businessfunction.yaml-model-parsing:
+  id: 7c85d8fc-3635-45fa-a83c-36f184763cab
+  path: business.businessfunction.yaml-model-parsing
+  spec_node_id: business.businessfunction
+  type: businessfunction
+  layer_id: business
+  name: YAML Model Parsing
+  description: Parsing and validation of DR CLI YAML model files into typed
+    TypeScript model objects
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/yamlParser.ts
+  metadata:
+    created_at: 2026-03-20T13:40:41.859Z
+    updated_at: 2026-03-20T13:40:41.860Z
+    version: 1

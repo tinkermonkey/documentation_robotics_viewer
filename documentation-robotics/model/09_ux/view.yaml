@@ -1,0 +1,146 @@
+ux.view.auth-view:
+  id: d840fbc5-353c-4bae-8188-5f33bbaf2dd9
+  path: ux.view.auth-view
+  spec_node_id: ux.view
+  type: view
+  layer_id: ux
+  name: Auth View
+  description: Landing view at route /#/; extracts the DR CLI bearer token from
+    the ?token= URL query parameter, persists it to localStorage, and redirects
+    to the model view.
+  attributes:
+    type: embedded
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/AuthRoute.tsx
+        symbol: AuthRoute
+  metadata:
+    created_at: 2026-03-20T13:22:53.827Z
+    updated_at: 2026-03-20T13:22:53.827Z
+    version: 1
+ux.view.model-graph-view:
+  id: 8197e6bc-470f-45f7-b514-48327c1d2e2a
+  path: ux.view.model-graph-view
+  spec_node_id: ux.view
+  type: view
+  layer_id: ux
+  name: Model Graph View
+  description: Primary architecture model view at /#/model/graph; renders the
+    interactive React Flow graph canvas with layer swimlanes, cross-layer edges,
+    semantic zoom, and element focus mode.
+  attributes:
+    type: page
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/ModelRoute.tsx
+        symbol: ModelRoute
+  metadata:
+    created_at: 2026-03-20T13:22:57.735Z
+    updated_at: 2026-03-20T13:22:57.735Z
+    version: 1
+ux.view.model-details-view:
+  id: 6b2bcec1-6f32-4758-ad49-c12aa0bc3e62
+  path: ux.view.model-details-view
+  spec_node_id: ux.view
+  type: view
+  layer_id: ux
+  name: Model Details View
+  description: Tabular model element detail view at /#/model/details; presents
+    element properties, relationships, and cross-layer references in an
+    accessible table format.
+  attributes:
+    type: page
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/ModelRoute.tsx
+        symbol: ModelRoute
+  metadata:
+    created_at: 2026-03-20T13:23:01.512Z
+    updated_at: 2026-03-20T13:23:01.513Z
+    version: 1
+ux.view.spec-graph-view:
+  id: 7801f5b2-6cb4-48a5-aa5f-c6717ab35c90
+  path: ux.view.spec-graph-view
+  spec_node_id: ux.view
+  type: view
+  layer_id: ux
+  name: Spec Graph View
+  description: Schema specification graph view at /#/spec/graph; visualizes the
+    JSON Schema definitions from the DR CLI spec as a navigable graph of schema
+    nodes.
+  attributes:
+    type: page
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/SpecRoute.tsx
+        symbol: SpecRoute
+  metadata:
+    created_at: 2026-03-20T13:23:05.216Z
+    updated_at: 2026-03-20T13:23:05.217Z
+    version: 1
+ux.view.spec-details-view:
+  id: 615a9302-2678-4a84-8ac6-87601dc65b8f
+  path: ux.view.spec-details-view
+  spec_node_id: ux.view
+  type: view
+  layer_id: ux
+  name: Spec Details View
+  description: Schema specification detail view at /#/spec/details; shows full
+    JSON Schema property listings and type information in a structured panel.
+  attributes:
+    type: page
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/SpecRoute.tsx
+        symbol: SpecRoute
+  metadata:
+    created_at: 2026-03-20T13:23:10.467Z
+    updated_at: 2026-03-20T13:23:10.467Z
+    version: 1
+ux.view.changeset-graph-view:
+  id: 5f281e23-91aa-41b8-a7ea-a4f6fa6ce36e
+  path: ux.view.changeset-graph-view
+  spec_node_id: ux.view
+  type: view
+  layer_id: ux
+  name: Changeset Graph View
+  description: Changeset diff visualization view at /#/changesets/graph; renders
+    added/updated/deleted model elements as a color-coded React Flow graph using
+    changesetGraphBuilder.
+  attributes:
+    type: page
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/ChangesetRoute.tsx
+        symbol: ChangesetRoute
+  metadata:
+    created_at: 2026-03-20T13:23:13.542Z
+    updated_at: 2026-03-20T13:23:13.542Z
+    version: 1
+ux.view.changeset-list-view:
+  id: a79e7633-297d-451d-bce4-43fe559c5484
+  path: ux.view.changeset-list-view
+  spec_node_id: ux.view
+  type: view
+  layer_id: ux
+  name: Changeset List View
+  description: Changeset history list view at /#/changesets/list; shows all
+    changesets with status badges, timestamps, and element change counts; allows
+    selecting a changeset to inspect.
+  attributes:
+    type: page
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/ChangesetRoute.tsx
+        symbol: ChangesetRoute
+  metadata:
+    created_at: 2026-03-20T13:23:17.645Z
+    updated_at: 2026-03-20T13:23:17.645Z
+    version: 1

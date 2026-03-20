@@ -1,0 +1,32 @@
+technology.technologyservice.dr-cli-rest-server:
+  id: 755c05d2-05ef-4e03-bfe0-853a693ac297
+  path: technology.technologyservice.dr-cli-rest-server
+  spec_node_id: technology.technologyservice
+  type: technologyservice
+  layer_id: technology
+  name: DR CLI REST Server
+  description: HTTP compute service exposing the DR model management REST API; the
+    embedded app connects to this service to read/write architecture model
+    elements
+  attributes:
+    serviceType: compute
+  metadata:
+    created_at: 2026-03-20T12:38:05.477Z
+    updated_at: 2026-03-20T12:38:05.478Z
+    version: 1
+technology.technologyservice.web-socket-model-service:
+  id: 9d54c558-2395-41d9-91d4-02cb8503be1d
+  path: technology.technologyservice.web-socket-model-service
+  spec_node_id: technology.technologyservice
+  type: technologyservice
+  layer_id: technology
+  name: WebSocket Model Service
+  description: Persistent WebSocket messaging service on the DR CLI server;
+    delivers real-time model change events to connected browser clients via
+    JSON-RPC 2.0
+  attributes:
+    serviceType: messaging
+  metadata:
+    created_at: 2026-03-20T12:38:05.754Z
+    updated_at: 2026-03-20T12:38:05.754Z
+    version: 1

@@ -1,0 +1,42 @@
+testing.coveragegap.code-line-coverage-gap:
+  id: 807fbdab-092d-4f1f-a199-ecc05207920d
+  path: testing.coveragegap.code-line-coverage-gap
+  spec_node_id: testing.coveragegap
+  type: coveragegap
+  layer_id: testing
+  name: Code Line Coverage Gap
+  description: No code line/branch coverage instrumentation (Istanbul/c8/V8) is
+    configured; test pass/fail is tracked but percentage line coverage is
+    unknown; impacts confidence in dead-code identification.
+  attributes:
+    severity: medium
+    affectedRequirements: all-partitions-unit-test-requirement
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: playwright.config.ts
+  metadata:
+    created_at: 2026-03-20T13:33:36.271Z
+    updated_at: 2026-03-20T13:33:36.271Z
+    version: 1
+testing.coveragegap.load-test-coverage-gap:
+  id: 1abfd63b-5111-4a81-bd58-dfec0b9d194e
+  path: testing.coveragegap.load-test-coverage-gap
+  spec_node_id: testing.coveragegap
+  type: coveragegap
+  layer_id: testing
+  name: Load Test Coverage Gap
+  description: No load or performance tests exist for graph rendering with large
+    models (100+ nodes); layout engine performance under stress is untested;
+    risk area given 4 layout engines with different complexity profiles.
+  attributes:
+    severity: low
+    affectedRequirements: embedded-app-e2e-test-coverage
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: tests/README.md
+  metadata:
+    created_at: 2026-03-20T13:33:41.027Z
+    updated_at: 2026-03-20T13:33:41.027Z
+    version: 1

@@ -1,0 +1,45 @@
+data-store.database.dr-model-yaml-store:
+  id: dfda6ac9-166c-40c1-a2b1-35628e99c092
+  path: data-store.database.dr-model-yaml-store
+  spec_node_id: data-store.database
+  type: database
+  layer_id: data-store
+  name: DR Model YAML Store
+  description: File-based document store holding the architecture model as YAML
+    files under documentation-robotics/model/; organized into per-layer
+    subdirectories with a root manifest.yaml. Read by dataLoader via DR CLI REST
+    API (GET /api/model).
+  attributes:
+    engine: yaml-files
+    paradigm: DOCUMENT
+    deploymentModel: EMBEDDED
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: documentation-robotics/model/manifest.yaml
+  metadata:
+    created_at: 2026-03-20T13:06:41.918Z
+    updated_at: 2026-03-20T13:06:41.918Z
+    version: 1
+data-store.database.browser-local-storage:
+  id: d8367ece-3f08-44c9-aa56-5d87f06dbab4
+  path: data-store.database.browser-local-storage
+  spec_node_id: data-store.database
+  type: database
+  layer_id: data-store
+  name: Browser localStorage
+  description: Browser Web Storage API used for client-side persistence of auth
+    tokens, layout preferences, view state, and floating chat position; survives
+    page reloads but not browser profile deletion.
+  attributes:
+    engine: browser-localstorage
+    paradigm: KEY_VALUE
+    deploymentModel: EMBEDDED
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/stores/authStore.ts
+  metadata:
+    created_at: 2026-03-20T13:06:45.592Z
+    updated_at: 2026-03-20T13:06:45.592Z
+    version: 1

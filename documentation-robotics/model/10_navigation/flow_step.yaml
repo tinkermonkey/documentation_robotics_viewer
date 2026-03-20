@@ -1,0 +1,41 @@
+navigation.flowstep.token-extraction-step:
+  id: 5124a95d-6e9e-4d62-a725-f306ac7498f0
+  path: navigation.flowstep.token-extraction-step
+  spec_node_id: navigation.flowstep
+  type: flowstep
+  layer_id: navigation
+  name: Token Extraction Step
+  description: First step in the auth flow; renders on the index route, reads
+    ?token= from URL, stores token, then triggers programmatic redirect.
+  attributes:
+    sequence: 1
+    route: index-route
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/AuthRoute.tsx
+        symbol: AuthRoute
+  metadata:
+    created_at: 2026-03-20T13:26:01.263Z
+    updated_at: 2026-03-20T13:26:01.263Z
+    version: 1
+navigation.flowstep.post-auth-model-entry-step:
+  id: 9bfba63a-1d09-40db-ba13-ac469fded305
+  path: navigation.flowstep.post-auth-model-entry-step
+  spec_node_id: navigation.flowstep
+  type: flowstep
+  layer_id: navigation
+  name: Post-Auth Model Entry Step
+  description: Second step in the auth flow; the destination after successful
+    token extraction; navigates to /model/graph with optional layer query param.
+  attributes:
+    sequence: 2
+    route: model-view-route
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/router.tsx
+  metadata:
+    created_at: 2026-03-20T13:26:10.561Z
+    updated_at: 2026-03-20T13:26:10.561Z
+    version: 1

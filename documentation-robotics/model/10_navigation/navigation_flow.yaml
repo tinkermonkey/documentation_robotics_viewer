@@ -1,0 +1,18 @@
+navigation.navigationflow.authentication-to-model-flow:
+  id: 224c1c80-4e61-4450-b8b2-dfca369b0bf5
+  path: navigation.navigationflow.authentication-to-model-flow
+  spec_node_id: navigation.navigationflow
+  type: navigationflow
+  layer_id: navigation
+  name: Authentication to Model Flow
+  description: "Two-step navigation flow for first-time access: step 1 lands on
+    the index route to extract the magic link token; step 2 navigates
+    programmatically to the model graph view after token validation."
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/routes/AuthRoute.tsx
+  metadata:
+    created_at: 2026-03-20T13:25:56.005Z
+    updated_at: 2026-03-20T13:25:56.005Z
+    version: 1

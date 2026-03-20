@@ -1,0 +1,189 @@
+ux.subview.embedded-layout:
+  id: 4be33a53-f2f0-4f33-aaaf-fc7b11b4e47a
+  path: ux.subview.embedded-layout
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: Embedded Layout
+  description: Root application shell wrapping all routes; provides the top-level
+    tab bar (Spec/Model/Changesets), sub-tab navigation, connection status
+    indicator, and floating chat button.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/EmbeddedLayout.tsx
+        symbol: EmbeddedLayout
+  metadata:
+    created_at: 2026-03-20T13:23:21.279Z
+    updated_at: 2026-03-20T13:23:21.279Z
+    version: 1
+ux.subview.shared-layout:
+  id: aeba5a9f-cf26-4ccf-8d12-35bcc03deb50
+  path: ux.subview.shared-layout
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: Shared Layout
+  description: 3-column layout shell used by all route views; composes optional
+    left sidebar, main content area, and optional right sidebar; handles
+    collapsed states.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/SharedLayout.tsx
+        symbol: SharedLayout
+  metadata:
+    created_at: 2026-03-20T13:23:24.622Z
+    updated_at: 2026-03-20T13:23:24.622Z
+    version: 1
+ux.subview.graph-view-sidebar:
+  id: 6f676fa4-28f7-4d4a-9dff-34971d3974ac
+  path: ux.subview.graph-view-sidebar
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: Graph View Sidebar
+  description: Right-side sidebar panel composing filter panel, control panel,
+    inspector panel, and optional annotation panel in a fixed render order;
+    collapsible.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/components/base/GraphViewSidebar.tsx
+        symbol: GraphViewSidebar
+  metadata:
+    created_at: 2026-03-20T13:23:27.838Z
+    updated_at: 2026-03-20T13:23:27.838Z
+    version: 1
+ux.subview.model-layers-sidebar:
+  id: 7cf1fe91-ae8a-46f8-920f-f719cb8f5e17
+  path: ux.subview.model-layers-sidebar
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: Model Layers Sidebar
+  description: Left sidebar listing all architecture layers with visibility
+    toggles, element counts, and active layer selection; drives layer filtering
+    in the graph viewer.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/ModelLayersSidebar.tsx
+        symbol: ModelLayersSidebar
+  metadata:
+    created_at: 2026-03-20T13:23:33.758Z
+    updated_at: 2026-03-20T13:23:33.758Z
+    version: 1
+ux.subview.node-details-panel:
+  id: 9365a4f1-2d2a-449d-8083-c04e032babd2
+  path: ux.subview.node-details-panel
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: Node Details Panel
+  description: Inspector panel showing full properties, attributes, relationships,
+    and cross-layer references for the currently selected graph node.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/NodeDetailsPanel.tsx
+        symbol: NodeDetailsPanel
+  metadata:
+    created_at: 2026-03-20T13:23:37.391Z
+    updated_at: 2026-03-20T13:23:37.391Z
+    version: 1
+ux.subview.chat-panel:
+  id: 393bb467-82e7-4349-9874-ba8df3933b60
+  path: ux.subview.chat-panel
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: Chat Panel
+  description: Docked AI assistant chat panel showing conversation history with
+    multi-part messages (text, thinking blocks, tool invocations, usage stats);
+    includes streaming input.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/ChatPanel.tsx
+        symbol: ChatPanel
+  metadata:
+    created_at: 2026-03-20T13:23:40.826Z
+    updated_at: 2026-03-20T13:23:40.826Z
+    version: 1
+ux.subview.floating-chat-panel:
+  id: 2874d9f3-146c-4640-9faa-93b44e1c12d9
+  path: ux.subview.floating-chat-panel
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: Floating Chat Panel
+  description: Overlay floating chat panel accessible from the chat button in the
+    top bar; can be opened without leaving the current view; persists position
+    to localStorage.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/FloatingChatPanel.tsx
+        symbol: FloatingChatPanel
+  metadata:
+    created_at: 2026-03-20T13:23:43.983Z
+    updated_at: 2026-03-20T13:23:43.983Z
+    version: 1
+ux.subview.annotation-panel:
+  id: 6cf2f8d9-1465-4308-a675-05dc6616af40
+  path: ux.subview.annotation-panel
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: Annotation Panel
+  description: Panel for viewing and creating user annotations on selected model
+    elements; shows threaded comment list with resolve/unresolve actions; syncs
+    with DR CLI annotation API.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/AnnotationPanel.tsx
+        symbol: AnnotationPanel
+  metadata:
+    created_at: 2026-03-20T13:23:47.423Z
+    updated_at: 2026-03-20T13:23:47.423Z
+    version: 1
+ux.subview.cross-layer-panel:
+  id: fbd9cd6c-3d85-48d5-92be-d2204d562d01
+  path: ux.subview.cross-layer-panel
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: Cross-Layer Panel
+  description: Side panel visualizing cross-layer reference connections for a
+    selected element; shows inbound and outbound references grouped by target
+    layer with navigation links.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/CrossLayerPanel.tsx
+        symbol: CrossLayerPanel
+  metadata:
+    created_at: 2026-03-20T13:23:53.256Z
+    updated_at: 2026-03-20T13:23:53.256Z
+    version: 1
+ux.subview.changeset-viewer:
+  id: 2906fe4d-2911-447e-86b9-f2c816f88b53
+  path: ux.subview.changeset-viewer
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: Changeset Viewer
+  description: Detail panel for a selected changeset; shows metadata (status,
+    timestamps, change counts) and the list of individual element
+    add/update/delete operations.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/components/ChangesetViewer.tsx
+        symbol: ChangesetViewer
+  metadata:
+    created_at: 2026-03-20T13:23:58.270Z
+    updated_at: 2026-03-20T13:23:58.270Z
+    version: 1

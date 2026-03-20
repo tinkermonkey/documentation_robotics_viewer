@@ -1,0 +1,57 @@
+motivation.stakeholder.development-team:
+  id: e7b0e422-b8fa-416b-89b0-cd724465ff98
+  path: motivation.stakeholder.development-team
+  spec_node_id: motivation.stakeholder
+  type: stakeholder
+  layer_id: motivation
+  name: Development Team
+  description: Internal engineering team that builds and maintains the
+    documentation_robotics_viewer
+  attributes:
+    type: internal
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: README.md
+  metadata:
+    created_at: 2026-03-20T13:41:08.993Z
+    updated_at: 2026-03-20T13:41:08.993Z
+    version: 1
+motivation.stakeholder.architecture-team:
+  id: 968a75fa-b864-4cf7-a42a-ae1bd34b5d03
+  path: motivation.stakeholder.architecture-team
+  spec_node_id: motivation.stakeholder
+  type: stakeholder
+  layer_id: motivation
+  name: Architecture Team
+  description: Architects who create DR models and use the viewer to communicate
+    architecture decisions
+  attributes:
+    type: internal
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: README.md
+  metadata:
+    created_at: 2026-03-20T13:41:09.339Z
+    updated_at: 2026-03-20T13:41:09.339Z
+    version: 1
+motivation.stakeholder.dr-cli-server:
+  id: 28c9c407-63c2-4a46-8196-9257cbcafa28
+  path: motivation.stakeholder.dr-cli-server
+  spec_node_id: motivation.stakeholder
+  type: stakeholder
+  layer_id: motivation
+  name: DR CLI Server
+  description: "System dependency: DR CLI server that must be running to serve
+    model data to the viewer"
+  attributes:
+    type: external
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: README.md
+  metadata:
+    created_at: 2026-03-20T13:41:09.682Z
+    updated_at: 2026-03-20T13:41:09.683Z
+    version: 1

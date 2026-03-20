@@ -1,0 +1,246 @@
+technology.systemsoftware.nodejs:
+  id: 05ec48e0-8d2b-42df-9dd5-bbefa13dc5ef
+  path: technology.systemsoftware.nodejs
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: Node.js
+  description: JavaScript runtime environment powering the build toolchain, dev
+    server, and test execution pipeline
+  attributes:
+    softwareType: middleware
+  metadata:
+    created_at: 2026-03-20T12:37:00.566Z
+    updated_at: 2026-03-20T12:37:00.566Z
+    version: 1
+technology.systemsoftware.vite-6:
+  id: 89846523-4138-4486-8ed2-c11540d0eba9
+  path: technology.systemsoftware.vite-6
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: Vite 6
+  description: Next-generation build toolchain and HMR dev server for the React
+    application; handles TypeScript compilation, bundling, and WASM file copying
+  attributes:
+    softwareType: middleware
+  metadata:
+    created_at: 2026-03-20T12:37:00.807Z
+    updated_at: 2026-03-20T12:37:00.807Z
+    version: 1
+technology.systemsoftware.type-script-59:
+  id: 80cb8805-5803-4713-9330-8d6afd9d7261
+  path: technology.systemsoftware.type-script-59
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: TypeScript 5.9
+  description: Statically-typed JavaScript superset providing compile-time type
+    safety across all source files, strict mode enabled
+  attributes:
+    softwareType: middleware
+  metadata:
+    created_at: 2026-03-20T12:37:01.051Z
+    updated_at: 2026-03-20T12:37:01.051Z
+    version: 1
+technology.systemsoftware.react-19:
+  id: 7c5dc636-5f00-45be-a8dd-40e684fb714c
+  path: technology.systemsoftware.react-19
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: React 19
+  description: Core UI rendering framework; component-based architecture with
+    concurrent rendering, used via Vite plugin for JSX transformation
+  attributes:
+    softwareType: middleware
+  metadata:
+    created_at: 2026-03-20T12:37:07.331Z
+    updated_at: 2026-03-20T12:37:07.332Z
+    version: 1
+technology.systemsoftware.react-flow:
+  id: 00591402-8782-4add-aabf-93d9eabc2507
+  path: technology.systemsoftware.react-flow
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: React Flow
+  description: "@xyflow/react 12.9 — interactive graph visualization library
+    powering the multi-layer architecture diagrams with custom node and edge
+    types"
+  attributes:
+    softwareType: middleware
+  metadata:
+    created_at: 2026-03-20T12:37:07.582Z
+    updated_at: 2026-03-20T12:37:07.582Z
+    version: 1
+technology.systemsoftware.dagre:
+  id: 1d35c9df-81b2-4cba-a0fb-d9f07e05be40
+  path: technology.systemsoftware.dagre
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: Dagre
+  description: Hierarchical directed-graph layout engine; primary layout algorithm
+    for structured architecture diagrams with ranked node positioning
+  attributes:
+    softwareType: middleware
+  metadata:
+    created_at: 2026-03-20T12:37:07.830Z
+    updated_at: 2026-03-20T12:37:07.830Z
+    version: 1
+technology.systemsoftware.elkjs:
+  id: fbff4595-0741-48cc-ac12-7468bea13742
+  path: technology.systemsoftware.elkjs
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: ELK.js
+  description: Eclipse Layout Kernel JavaScript port (elkjs 0.11); advanced graph
+    layout supporting layered, force, stress, and tree algorithms for complex
+    diagrams
+  attributes:
+    softwareType: middleware
+  metadata:
+    created_at: 2026-03-20T12:37:15.338Z
+    updated_at: 2026-03-20T12:37:15.338Z
+    version: 1
+technology.systemsoftware.d3-force:
+  id: 77b14339-ac05-4b50-b2a2-41786f7be73a
+  path: technology.systemsoftware.d3-force
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: D3 Force
+  description: d3-force 3.0 — physics-based force simulation for organic graph
+    layouts; used for non-hierarchical relationship visualizations
+  attributes:
+    softwareType: middleware
+  metadata:
+    created_at: 2026-03-20T12:37:15.582Z
+    updated_at: 2026-03-20T12:37:15.582Z
+    version: 1
+technology.systemsoftware.graphviz-wasm:
+  id: 781067f7-ef13-414e-bde4-8921a7fe768c
+  path: technology.systemsoftware.graphviz-wasm
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: Graphviz WASM
+  description: "@hpcc-js/wasm 2.30 — Graphviz compiled to WebAssembly; enables
+    server-side-grade Graphviz layout algorithms (dot, neato, fdp) in the
+    browser"
+  attributes:
+    softwareType: middleware
+  metadata:
+    created_at: 2026-03-20T12:37:15.835Z
+    updated_at: 2026-03-20T12:37:15.835Z
+    version: 1
+technology.systemsoftware.zustand-5:
+  id: d2fb0d48-0e8a-4245-a83a-736863f56b96
+  path: technology.systemsoftware.zustand-5
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: Zustand 5
+  description: Lightweight Zustand state management library; provides multiple
+    isolated stores (modelStore, layerStore, elementStore, crossLayerStore,
+    etc.) with no Redux/Context coupling
+  attributes:
+    softwareType: middleware
+  metadata:
+    created_at: 2026-03-20T12:37:23.261Z
+    updated_at: 2026-03-20T12:37:23.261Z
+    version: 1
+technology.systemsoftware.tan-stack-router:
+  id: 9c2aa58f-ef89-45ed-a778-8d7aed22b8fa
+  path: technology.systemsoftware.tan-stack-router
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: TanStack Router
+  description: "@tanstack/react-router 1.139 — fully type-safe file-based
+    client-side router; powers the embedded app route hierarchy"
+  attributes:
+    softwareType: middleware
+  metadata:
+    created_at: 2026-03-20T12:37:23.514Z
+    updated_at: 2026-03-20T12:37:23.514Z
+    version: 1
+technology.systemsoftware.tailwind-css-v4:
+  id: b26ad8f3-48c2-4707-84bf-163868337b58
+  path: technology.systemsoftware.tailwind-css-v4
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: Tailwind CSS v4
+  description: Utility-first CSS framework v4 with PostCSS pipeline; all styling
+    via utility classes, dark mode variants required on all components
+  attributes:
+    softwareType: middleware
+  metadata:
+    created_at: 2026-03-20T12:37:23.765Z
+    updated_at: 2026-03-20T12:37:23.765Z
+    version: 1
+technology.systemsoftware.flowbite-react:
+  id: 72a2b392-6820-4f11-a82d-8c24ff21a2e8
+  path: technology.systemsoftware.flowbite-react
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: Flowbite React
+  description: Tailwind-based React component library (flowbite-react 0.12,
+    flowbite 4.0); provides Card, Badge, Button, Modal and other UI primitives
+  attributes:
+    softwareType: middleware
+  metadata:
+    created_at: 2026-03-20T12:37:29.876Z
+    updated_at: 2026-03-20T12:37:29.876Z
+    version: 1
+technology.systemsoftware.playwright:
+  id: 72551121-e5cb-4e72-a417-e83537c03445
+  path: technology.systemsoftware.playwright
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: Playwright
+  description: "@playwright/test 1.57 — end-to-end browser automation framework;
+    runs 1170 unit/integration tests and E2E suite with axe-core accessibility
+    validation"
+  attributes:
+    softwareType: middleware
+  metadata:
+    created_at: 2026-03-20T12:37:30.128Z
+    updated_at: 2026-03-20T12:37:30.129Z
+    version: 1
+technology.systemsoftware.storybook-10:
+  id: 48f8398d-331d-4cce-9f1e-8d58cad0cc10
+  path: technology.systemsoftware.storybook-10
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: Storybook 10
+  description: Component development and testing catalog (storybook 10.2); hosts
+    578 stories across 97 files with CSF3 format; includes a11y addon and test
+    runner
+  attributes:
+    softwareType: middleware
+  metadata:
+    created_at: 2026-03-20T12:37:30.378Z
+    updated_at: 2026-03-20T12:37:30.378Z
+    version: 1
+technology.systemsoftware.expressjs-5:
+  id: 32c320b9-2485-4241-bbe2-29a8f0e9362d
+  path: technology.systemsoftware.expressjs-5
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: Express.js 5
+  description: Node.js HTTP server framework (express 5.1); used for the DR CLI
+    integration server and authentication test server
+  attributes:
+    softwareType: middleware
+  metadata:
+    created_at: 2026-03-20T12:37:33.984Z
+    updated_at: 2026-03-20T12:37:33.984Z
+    version: 1

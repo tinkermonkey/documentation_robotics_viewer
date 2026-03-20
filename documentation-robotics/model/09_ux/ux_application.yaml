@@ -1,0 +1,21 @@
+ux.uxapplication.embedded-architecture-viewer:
+  id: e346087f-72f5-4d98-993f-a830357b81e2
+  path: ux.uxapplication.embedded-architecture-viewer
+  spec_node_id: ux.uxapplication
+  type: uxapplication
+  layer_id: ux
+  name: Embedded Architecture Viewer
+  description: Single-page web application (hash-based SPA) for visualizing
+    multi-layer architecture documentation models; embeds in an iframe and
+    connects to the DR CLI visualization server.
+  attributes:
+    channel: web
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/main.tsx
+        symbol: EmbeddedApp
+  metadata:
+    created_at: 2026-03-20T13:22:20.438Z
+    updated_at: 2026-03-20T13:22:20.438Z
+    version: 1

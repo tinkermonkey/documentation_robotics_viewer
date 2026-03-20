@@ -1,0 +1,21 @@
+apm.resource.embedded-app-resource:
+  id: bd62bfe5-a0be-42e1-abb4-6e95236fec06
+  path: apm.resource.embedded-app-resource
+  spec_node_id: apm.resource
+  type: resource
+  layer_id: apm
+  name: Embedded App Resource
+  description: OpenTelemetry-style resource identity for the browser-based
+    embedded architecture viewer; identifies the frontend service unit producing
+    all observability signals.
+  attributes:
+    droppedAttributesCount: "0"
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/main.tsx
+        symbol: EmbeddedApp
+  metadata:
+    created_at: 2026-03-20T13:31:24.895Z
+    updated_at: 2026-03-20T13:31:24.895Z
+    version: 1

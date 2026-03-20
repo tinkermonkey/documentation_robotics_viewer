@@ -1,0 +1,452 @@
+data-model.objectschema.meta-model:
+  id: cfe8d725-4f64-4eae-b2fa-825e4a774a3a
+  path: data-model.objectschema.meta-model
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: MetaModel
+  description: Root container for the loaded architecture model; holds all layers,
+    cross-layer references, and metadata. Loaded from DR CLI REST API response
+    and stored in modelStore.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/model.ts
+        symbol: MetaModel
+  metadata:
+    created_at: 2026-03-20T13:04:49.859Z
+    updated_at: 2026-03-20T13:04:49.859Z
+    version: 1
+data-model.objectschema.layer:
+  id: 877bd4ac-df45-4b0a-9a37-ea524c7f87d1
+  path: data-model.objectschema.layer
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: Layer
+  description: Individual architecture layer within the MetaModel; contains a flat
+    list of elements, intra-layer relationships, and visual configuration.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/model.ts
+        symbol: Layer
+  metadata:
+    created_at: 2026-03-20T13:04:54.447Z
+    updated_at: 2026-03-20T13:04:54.448Z
+    version: 1
+data-model.objectschema.model-element:
+  id: 0824d14d-9cd2-4729-9827-73ef19991ac2
+  path: data-model.objectschema.model-element
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: ModelElement
+  description: Base element interface for all architecture layer elements; holds
+    the element ID (dot-notation), type, name, properties, visual positioning,
+    and intra-layer relationship references.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/model.ts
+        symbol: ModelElement
+  metadata:
+    created_at: 2026-03-20T13:04:57.612Z
+    updated_at: 2026-03-20T13:04:57.612Z
+    version: 1
+data-model.objectschema.relationship:
+  id: 93dc7494-0f4c-431e-9387-52d03c2e9ea6
+  path: data-model.objectschema.relationship
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: Relationship
+  description: Typed relationship between two elements within the same layer;
+    supports 15 ArchiMate and custom relationship types (composition,
+    aggregation, realization, serving, access, data-flow, etc.).
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/model.ts
+        symbol: Relationship
+  metadata:
+    created_at: 2026-03-20T13:05:00.615Z
+    updated_at: 2026-03-20T13:05:00.616Z
+    version: 1
+data-model.objectschema.reference:
+  id: a738a489-c1d5-4671-bf27-2782e7590630
+  path: data-model.objectschema.reference
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: Reference
+  description: Cross-layer reference connecting an element in one architecture
+    layer to an element in another; carries source/target layer IDs, element
+    IDs, and validation status.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/model.ts
+        symbol: Reference
+  metadata:
+    created_at: 2026-03-20T13:05:06.587Z
+    updated_at: 2026-03-20T13:05:06.587Z
+    version: 1
+data-model.objectschema.model-metadata:
+  id: 2be6a14c-163a-4d4a-95ff-ee513accc0ca
+  path: data-model.objectschema.model-metadata
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: ModelMetadata
+  description: Metadata bag attached to the MetaModel root; includes author,
+    timestamps, parse errors, element/layer counts, and cross-layer reference
+    statistics.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/model.ts
+        symbol: ModelMetadata
+  metadata:
+    created_at: 2026-03-20T13:05:10.551Z
+    updated_at: 2026-03-20T13:05:10.551Z
+    version: 1
+data-model.objectschema.extracted-reference:
+  id: b21be747-4721-4459-82c9-46e56426ddad
+  path: data-model.objectschema.extracted-reference
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: ExtractedReference
+  description: Raw reference metadata captured during YAML parsing before
+    cross-layer resolution; stores property name, reference type, and target
+    identifier or UUID.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/model.ts
+        symbol: ExtractedReference
+  metadata:
+    created_at: 2026-03-20T13:05:13.617Z
+    updated_at: 2026-03-20T13:05:13.618Z
+    version: 1
+data-model.objectschema.yamlmanifest:
+  id: aa0e872d-55e1-444d-8a51-4ccb5337e5f7
+  path: data-model.objectschema.yamlmanifest
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: YAMLManifest
+  description: TypeScript representation of the on-disk manifest.yaml file; tracks
+    model version, project info, per-layer file paths and schema references, and
+    aggregate statistics.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/yaml.ts
+        symbol: YAMLManifest
+  metadata:
+    created_at: 2026-03-20T13:05:21.995Z
+    updated_at: 2026-03-20T13:05:21.996Z
+    version: 1
+data-model.objectschema.yamlelement:
+  id: 0e1d8c49-81ae-41e3-9453-1e989bbffb26
+  path: data-model.objectschema.yamlelement
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: YAMLElement
+  description: Structure of a single model element as stored in a YAML file;
+    includes id, name, description, optional API properties (method, path),
+    inline relationships, and arbitrary custom properties.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/yaml.ts
+        symbol: YAMLElement
+  metadata:
+    created_at: 2026-03-20T13:05:26.154Z
+    updated_at: 2026-03-20T13:05:26.154Z
+    version: 1
+data-model.objectschema.yamllayer-data:
+  id: 3ce0eb35-ba57-4f87-8b0b-ba127cac026a
+  path: data-model.objectschema.yamllayer-data
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: YAMLLayerData
+  description: Aggregated layer data assembled from multiple YAML files for a
+    single layer; maps element names to YAMLElement objects with source file
+    tracking.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/yaml.ts
+        symbol: YAMLLayerData
+  metadata:
+    created_at: 2026-03-20T13:05:29.213Z
+    updated_at: 2026-03-20T13:05:29.213Z
+    version: 1
+data-model.objectschema.yamlmodel-data:
+  id: 2ff9b5ff-34f5-4014-94a9-66f6305e8378
+  path: data-model.objectschema.yamlmodel-data
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: YAMLModelData
+  description: Complete parsed model result from YAML loading; combines the
+    manifest, all layer data, optional projection rules, and accumulated parser
+    warnings.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/yaml.ts
+        symbol: YAMLModelData
+  metadata:
+    created_at: 2026-03-20T13:05:33.297Z
+    updated_at: 2026-03-20T13:05:33.297Z
+    version: 1
+data-model.objectschema.yamlrelationships:
+  id: 57b0c4b1-46b4-49bc-993d-bf7b6cecf206
+  path: data-model.objectschema.yamlrelationships
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: YAMLRelationships
+  description: Nested relationship declarations within a YAML element; groups
+    cross-layer references by semantic type (realizes, serves, accesses, uses,
+    secured_by, supports_goals, etc.).
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/yaml.ts
+        symbol: YAMLRelationships
+  metadata:
+    created_at: 2026-03-20T13:05:37.378Z
+    updated_at: 2026-03-20T13:05:37.378Z
+    version: 1
+data-model.objectschema.projection-rule:
+  id: 4fd0d9b4-b248-4d2b-8622-4d12442742c5
+  path: data-model.objectschema.projection-rule
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: ProjectionRule
+  description: Rule definition in projection-rules.yaml describing how to
+    auto-generate elements in one layer from elements in another (e.g.,
+    business.service -> application.service).
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/yaml.ts
+        symbol: ProjectionRule
+  metadata:
+    created_at: 2026-03-20T13:05:40.140Z
+    updated_at: 2026-03-20T13:05:40.140Z
+    version: 1
+data-model.objectschema.chat-message:
+  id: 389d0672-e5c3-4d4e-acc9-227e8f5521f7
+  path: data-model.objectschema.chat-message
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: ChatMessage
+  description: Multi-part chat conversation message; contains a role
+    (user/assistant/system), ordered content parts (text, tool invocations,
+    thinking, usage, errors), and streaming state.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/types/chat.ts
+        symbol: ChatMessage
+  metadata:
+    created_at: 2026-03-20T13:05:44.278Z
+    updated_at: 2026-03-20T13:05:44.279Z
+    version: 1
+data-model.objectschema.tool-invocation-content:
+  id: 8462ba91-5498-416f-8e19-933a87daa71e
+  path: data-model.objectschema.tool-invocation-content
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: ToolInvocationContent
+  description: Chat content part representing an AI tool invocation; tracks tool
+    name, typed input parameters, and execution status
+    (executing/completed/failed) with result or error.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/types/chat.ts
+        symbol: ToolInvocationContent
+  metadata:
+    created_at: 2026-03-20T13:05:50.647Z
+    updated_at: 2026-03-20T13:05:50.647Z
+    version: 1
+data-model.objectschema.json-rpc-request:
+  id: 641a8ece-06ae-414b-95a9-f780ee07f42e
+  path: data-model.objectschema.json-rpc-request
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: JsonRpcRequest
+  description: JSON-RPC 2.0 request envelope used for all chat WebSocket messages;
+    carries jsonrpc version string, method name, typed params, and request ID
+    for correlation.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/types/chat.ts
+        symbol: JsonRpcRequest
+  metadata:
+    created_at: 2026-03-20T13:05:53.638Z
+    updated_at: 2026-03-20T13:05:53.639Z
+    version: 1
+data-model.objectschema.chat-conversation:
+  id: 4c18e8f3-84bd-4450-989a-fec243bad02e
+  path: data-model.objectschema.chat-conversation
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: ChatConversation
+  description: Chat conversation grouping metadata; holds conversation ID, title,
+    creation/update timestamps, and message count.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/types/chat.ts
+        symbol: ChatConversation
+  metadata:
+    created_at: 2026-03-20T13:05:56.476Z
+    updated_at: 2026-03-20T13:05:56.476Z
+    version: 1
+data-model.objectschema.annotation:
+  id: 582fd707-9e0d-4a98-9b47-b3cda7b26c3d
+  path: data-model.objectschema.annotation
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: Annotation
+  description: User annotation attached to a specific architecture model element;
+    includes author, markdown content, resolution state, and an optional thread
+    of replies.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/types/annotations.ts
+        symbol: Annotation
+  metadata:
+    created_at: 2026-03-20T13:05:59.382Z
+    updated_at: 2026-03-20T13:05:59.382Z
+    version: 1
+data-model.objectschema.annotation-create:
+  id: 7558cb2e-6a40-432a-a168-1c19b137628a
+  path: data-model.objectschema.annotation-create
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: AnnotationCreate
+  description: Request payload for creating a new annotation; requires target
+    elementId and content text.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/types/annotations.ts
+        symbol: AnnotationCreate
+  metadata:
+    created_at: 2026-03-20T13:06:03.053Z
+    updated_at: 2026-03-20T13:06:03.053Z
+    version: 1
+data-model.objectschema.web-socket-message:
+  id: 0c8c0e7b-3589-4b9b-8236-b57ab580473a
+  path: data-model.objectschema.web-socket-message
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: WebSocketMessage
+  description: Base WebSocket protocol message with discriminating type string;
+    all real-time server messages extend this interface.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/types/websocket.ts
+        symbol: WebSocketMessage
+  metadata:
+    created_at: 2026-03-20T13:06:05.994Z
+    updated_at: 2026-03-20T13:06:05.994Z
+    version: 1
+data-model.objectschema.web-socket-event-map:
+  id: 9fe72d3a-d6e4-4875-9a40-b5f3ee577890
+  path: data-model.objectschema.web-socket-event-map
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: WebSocketEventMap
+  description: "Typed event map for all WebSocket client events: connect,
+    disconnect, message, error, close, reconnecting, rest-mode,
+    max-reconnect-attempts."
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/types/websocket.ts
+        symbol: WebSocketEventMap
+  metadata:
+    created_at: 2026-03-20T13:06:09.333Z
+    updated_at: 2026-03-20T13:06:09.333Z
+    version: 1
+data-model.objectschema.base-node-data:
+  id: f1c6a084-4381-41d7-9e05-364798c90519
+  path: data-model.objectschema.base-node-data
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: BaseNodeData
+  description: React Flow node data shared by all 20 custom node types; carries
+    label, elementId, layerId, fill/stroke colors, optional modelElement
+    reference, semantic zoom detail level, changeset operation, and relationship
+    badge.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/reactflow.ts
+        symbol: BaseNodeData
+  metadata:
+    created_at: 2026-03-20T13:06:14.364Z
+    updated_at: 2026-03-20T13:06:14.364Z
+    version: 1
+data-model.objectschema.data-model-field:
+  id: ab5cc8c5-7e6f-4329-816a-ae701c7cc3fa
+  path: data-model.objectschema.data-model-field
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: DataModelField
+  description: Field definition for data model table nodes displayed in the graph;
+    holds field id, name, type string, required flag, and optional description.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/shapes.ts
+        symbol: DataModelField
+  metadata:
+    created_at: 2026-03-20T13:06:17.622Z
+    updated_at: 2026-03-20T13:06:17.622Z
+    version: 1
+data-model.objectschema.data-model-node-data:
+  id: c6c12444-8901-47a3-988f-882eb5785688
+  path: data-model.objectschema.data-model-node-data
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: DataModelNodeData
+  description: Specialized React Flow node data for data model elements; extends
+    BaseNodeData with an ordered list of DataModelField entries and a
+    componentType discriminator (entity/interface/enum).
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/reactflow.ts
+        symbol: DataModelNodeData
+  metadata:
+    created_at: 2026-03-20T13:06:22.204Z
+    updated_at: 2026-03-20T13:06:22.204Z
+    version: 1

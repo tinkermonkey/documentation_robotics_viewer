@@ -1,0 +1,38 @@
+motivation.driver.architecture-documentation-complexity:
+  id: 6f45c7e4-8805-476e-bbd1-c10d49d1db0f
+  path: motivation.driver.architecture-documentation-complexity
+  spec_node_id: motivation.driver
+  type: driver
+  layer_id: motivation
+  name: Architecture Documentation Complexity
+  description: 12-layer architecture model spanning motivation through testing is
+    too complex to communicate via static diagrams; interactive tooling needed
+  attributes:
+    category: operational
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: README.md
+  metadata:
+    created_at: 2026-03-20T13:41:34.661Z
+    updated_at: 2026-03-20T13:41:34.661Z
+    version: 1
+motivation.driver.team-distributed-review-needs:
+  id: 25525f73-f108-4170-9a2b-eada0cec6051
+  path: motivation.driver.team-distributed-review-needs
+  spec_node_id: motivation.driver
+  type: driver
+  layer_id: motivation
+  name: Team Distributed Review Needs
+  description: Architecture review must support asynchronous collaboration;
+    annotations and real-time sync reduce review cycle time
+  attributes:
+    category: operational
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: README.md
+  metadata:
+    created_at: 2026-03-20T13:41:35.007Z
+    updated_at: 2026-03-20T13:41:35.007Z
+    version: 1

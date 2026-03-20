@@ -1,0 +1,21 @@
+navigation.navigationguard.authentication-guard:
+  id: ea6ef76c-6917-495e-a224-405541d9c295
+  path: navigation.navigationguard.authentication-guard
+  spec_node_id: navigation.navigationguard
+  type: navigationguard
+  layer_id: navigation
+  name: Authentication Guard
+  description: Auth guard that intercepts navigation to protected routes (model,
+    spec, changesets); checks authStore for a valid bearer token; redirects to
+    /#/ index route if token is absent.
+  attributes:
+    type: auth
+    order: 1
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/stores/authStore.ts
+  metadata:
+    created_at: 2026-03-20T13:25:52.291Z
+    updated_at: 2026-03-20T13:25:52.291Z
+    version: 1

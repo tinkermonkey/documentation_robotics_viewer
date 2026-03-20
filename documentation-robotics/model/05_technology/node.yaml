@@ -1,0 +1,39 @@
+technology.node.docker-agent-container:
+  id: e53754a2-6877-4e65-a238-568ea7ab7f92
+  path: technology.node.docker-agent-container
+  spec_node_id: technology.node
+  type: node
+  layer_id: technology
+  name: Docker Agent Container
+  description: Container runtime node for the Claude Code agent process; defined
+    by Dockerfile.agent, provides isolated execution environment for DR CLI beta
+    test runs
+  attributes:
+    nodeType: container
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: Dockerfile.agent
+  metadata:
+    created_at: 2026-03-20T12:37:51.109Z
+    updated_at: 2026-03-20T12:37:51.109Z
+    version: 1
+technology.node.vite-dev-server:
+  id: dce99b19-09af-41db-916c-64ff61e4d22f
+  path: technology.node.vite-dev-server
+  spec_node_id: technology.node
+  type: node
+  layer_id: technology
+  name: Vite Dev Server
+  description: Development HTTP server node running on port 3001; spawned by Vite
+    with HMR, hosts the embedded app during local development and E2E testing
+  attributes:
+    nodeType: container
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: vite.config.embedded.ts
+  metadata:
+    created_at: 2026-03-20T12:37:51.369Z
+    updated_at: 2026-03-20T12:37:51.369Z
+    version: 1

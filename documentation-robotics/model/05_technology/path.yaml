@@ -1,0 +1,32 @@
+technology.path.app-to-dr-cli-https-path:
+  id: 3f9b73e6-3457-4671-a83a-67ec4846df95
+  path: technology.path.app-to-dr-cli-https-path
+  spec_node_id: technology.path
+  type: path
+  layer_id: technology
+  name: App to DR CLI HTTPS Path
+  description: HTTPS communication path from browser application to the DR CLI
+    REST server; carries JSON model management requests and responses
+  attributes:
+    pathType: point-to-point
+    protocol: https
+  metadata:
+    created_at: 2026-03-20T12:38:25.074Z
+    updated_at: 2026-03-20T12:38:25.075Z
+    version: 1
+technology.path.app-to-dr-cli-web-socket-path:
+  id: 14bf08c0-716e-4bca-b169-996fc9bb3e33
+  path: technology.path.app-to-dr-cli-web-socket-path
+  spec_node_id: technology.path
+  type: path
+  layer_id: technology
+  name: App to DR CLI WebSocket Path
+  description: Persistent WebSocket path between browser application and DR CLI
+    server; carries JSON-RPC 2.0 real-time model update messages
+  attributes:
+    pathType: bidirectional
+    protocol: websocket
+  metadata:
+    created_at: 2026-03-20T12:38:25.346Z
+    updated_at: 2026-03-20T12:38:25.346Z
+    version: 1

@@ -1,0 +1,17 @@
+api.openapidocument.dr-cli-visualization-server-open-api-document:
+  id: 5ded6624-e293-4dc7-b0e0-22c33067008f
+  path: api.openapidocument.dr-cli-visualization-server-open-api-document
+  spec_node_id: api.openapidocument
+  type: openapidocument
+  layer_id: api
+  name: DR CLI Visualization Server OpenAPI Document
+  description: Root OpenAPI 3.0 document describing the Documentation Robotics
+    Visualization Server REST and WebSocket API
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T16:54:07.127Z
+    updated_at: 2026-03-20T16:54:07.127Z
+    version: 1

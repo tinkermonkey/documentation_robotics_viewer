@@ -1,0 +1,140 @@
+data-store.collection.model-manifest:
+  id: 851847ed-8c53-44c1-b816-f33b6a3bd64e
+  path: data-store.collection.model-manifest
+  spec_node_id: data-store.collection
+  type: collection
+  layer_id: data-store
+  name: Model Manifest
+  description: Single manifest.yaml file at the model root; contains model
+    version, project info, layer registry with file paths and element counts,
+    cross-reference totals, and validation statistics.
+  attributes:
+    collectionType: COLLECTION
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: documentation-robotics/model/manifest.yaml
+  metadata:
+    created_at: 2026-03-20T13:06:52.462Z
+    updated_at: 2026-03-20T13:06:52.463Z
+    version: 1
+data-store.collection.layer-yaml-files:
+  id: b236a729-b6d6-4b8f-874d-3b1d5fed00fc
+  path: data-store.collection.layer-yaml-files
+  spec_node_id: data-store.collection
+  type: collection
+  layer_id: data-store
+  name: Layer YAML Files
+  description: Per-layer YAML files (e.g., 05_technology/systemsoftware.yaml)
+    containing element definitions keyed by element name; multiple files may
+    contribute elements to a single layer.
+  attributes:
+    collectionType: COLLECTION
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: documentation-robotics/model/manifest.yaml
+  metadata:
+    created_at: 2026-03-20T13:06:56.368Z
+    updated_at: 2026-03-20T13:06:56.368Z
+    version: 1
+data-store.collection.changeset-files:
+  id: 94ad517f-3ce4-43b3-b177-e640838912e4
+  path: data-store.collection.changeset-files
+  spec_node_id: data-store.collection
+  type: collection
+  layer_id: data-store
+  name: Changeset Files
+  description: YAML files in documentation-robotics/changesets/; each file
+    represents a named changeset with metadata, status
+    (active/applied/abandoned), and list of element changes with before/after
+    states.
+  attributes:
+    collectionType: COLLECTION
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: documentation-robotics/changesets/
+  metadata:
+    created_at: 2026-03-20T13:07:00.173Z
+    updated_at: 2026-03-20T13:07:00.173Z
+    version: 1
+data-store.collection.auth-token-entry:
+  id: 9313eb17-9890-4feb-a77e-f62d69c21dce
+  path: data-store.collection.auth-token-entry
+  spec_node_id: data-store.collection
+  type: collection
+  layer_id: data-store
+  name: Auth Token Entry
+  description: localStorage key storing the DR CLI bearer auth token extracted
+    from the magic link URL; read on startup, cleared on logout or invalid token
+    response.
+  attributes:
+    collectionType: HASH
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/stores/authStore.ts
+        symbol: STORAGE_KEY
+  metadata:
+    created_at: 2026-03-20T13:07:04.127Z
+    updated_at: 2026-03-20T13:07:04.127Z
+    version: 1
+data-store.collection.layout-preferences-entry:
+  id: bfb9f215-0fa0-4e02-903b-f1be6bbe7caf
+  path: data-store.collection.layout-preferences-entry
+  spec_node_id: data-store.collection
+  type: collection
+  layer_id: data-store
+  name: Layout Preferences Entry
+  description: localStorage key persisting the user's selected layout algorithm
+    and layout configuration options (spacing, direction, etc.) across sessions
+    via Zustand persist middleware.
+  attributes:
+    collectionType: HASH
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/stores/layoutPreferencesStore.ts
+  metadata:
+    created_at: 2026-03-20T13:07:07.711Z
+    updated_at: 2026-03-20T13:07:07.711Z
+    version: 1
+data-store.collection.view-preferences-entry:
+  id: d6b00356-168f-402e-b8de-13bba9270864
+  path: data-store.collection.view-preferences-entry
+  spec_node_id: data-store.collection
+  type: collection
+  layer_id: data-store
+  name: View Preferences Entry
+  description: localStorage key persisting view mode choices (graph vs. details,
+    sidebar collapsed state, zoom level) via Zustand persist middleware.
+  attributes:
+    collectionType: HASH
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/stores/viewPreferenceStore.ts
+  metadata:
+    created_at: 2026-03-20T13:07:11.698Z
+    updated_at: 2026-03-20T13:07:11.698Z
+    version: 1
+data-store.collection.floating-chat-state-entry:
+  id: ae38a859-9375-427a-8086-6a8ba7429800
+  path: data-store.collection.floating-chat-state-entry
+  spec_node_id: data-store.collection
+  type: collection
+  layer_id: data-store
+  name: Floating Chat State Entry
+  description: localStorage key persisting the floating chat panel's open/closed
+    state and panel position across sessions.
+  attributes:
+    collectionType: HASH
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/stores/floatingChatStore.ts
+  metadata:
+    created_at: 2026-03-20T13:07:15.525Z
+    updated_at: 2026-03-20T13:07:15.525Z
+    version: 1

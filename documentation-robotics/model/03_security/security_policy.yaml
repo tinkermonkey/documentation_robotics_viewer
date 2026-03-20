@@ -1,0 +1,22 @@
+security.securitypolicy.bearer-token-policy:
+  id: f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d
+  path: security.securitypolicy.bearer-token-policy
+  spec_node_id: security.securitypolicy
+  type: securitypolicy
+  layer_id: security
+  name: Bearer Token Policy
+  description: "All REST requests inject Authorization: Bearer header via global
+    fetch interceptor; WebSocket uses ?token= query param; token persisted in
+    localStorage"
+  attributes:
+    priority: 1
+    target: endpoint
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/utils/fetchInterceptor.ts
+        symbol: installFetchInterceptor
+  metadata:
+    created_at: 2026-03-20T13:39:50.192Z
+    updated_at: 2026-03-20T13:39:50.192Z
+    version: 1

@@ -1,0 +1,77 @@
+motivation.principle.read-first-always:
+  id: b3d7f834-dc3f-49fd-8044-8b6aca045dbe
+  path: motivation.principle.read-first-always
+  spec_node_id: motivation.principle
+  type: principle
+  layer_id: motivation
+  name: Read First, Always
+  description: Never modify code without reading it first; always understand
+    existing patterns before introducing changes
+  attributes:
+    category: operational
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: CLAUDE.md
+  metadata:
+    created_at: 2026-03-20T13:41:43.337Z
+    updated_at: 2026-03-20T13:41:43.337Z
+    version: 1
+motivation.principle.core-app-architectural-separation:
+  id: 53fad2bb-e97d-44a2-83cf-61201e992163
+  path: motivation.principle.core-app-architectural-separation
+  spec_node_id: motivation.principle
+  type: principle
+  layer_id: motivation
+  name: Core-App Architectural Separation
+  description: "Strict boundary: Core layer has no route/store dependencies; only
+    App components may use embedded stores and route context"
+  attributes:
+    category: architecture
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: CLAUDE.md
+  metadata:
+    created_at: 2026-03-20T13:41:43.693Z
+    updated_at: 2026-03-20T13:41:43.693Z
+    version: 1
+motivation.principle.zustand-only-state-management:
+  id: 848fe5f3-3e28-4b25-a60f-e5b715942676
+  path: motivation.principle.zustand-only-state-management
+  spec_node_id: motivation.principle
+  type: principle
+  layer_id: motivation
+  name: Zustand-Only State Management
+  description: All global state managed via Zustand stores; no Redux, no React
+    Context for state — Context used only for providers
+  attributes:
+    category: architecture
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: CLAUDE.md
+  metadata:
+    created_at: 2026-03-20T13:41:44.024Z
+    updated_at: 2026-03-20T13:41:44.024Z
+    version: 1
+motivation.principle.configuration-driven-node-rendering:
+  id: 511289f9-aef7-45e8-99a7-cf6b072f14f0
+  path: motivation.principle.configuration-driven-node-rendering
+  spec_node_id: motivation.principle
+  type: principle
+  layer_id: motivation
+  name: Configuration-Driven Node Rendering
+  description: All graph nodes rendered by single UnifiedNode component driven by
+    nodeConfig.json; adding node types requires only config changes, not code
+    changes
+  attributes:
+    category: architecture
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/core/nodes/nodeConfig.json
+  metadata:
+    created_at: 2026-03-20T13:41:44.360Z
+    updated_at: 2026-03-20T13:41:44.360Z
+    version: 1

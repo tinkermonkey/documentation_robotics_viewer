@@ -1,0 +1,77 @@
+technology.artifact.embedded-app-bundle:
+  id: 67216b85-1ffb-4d1a-a9b0-64495be5da9d
+  path: technology.artifact.embedded-app-bundle
+  spec_node_id: technology.artifact
+  type: artifact
+  layer_id: technology
+  name: Embedded App Bundle
+  description: Production Vite build output; bundled React application (JS/CSS)
+    packaged as an embeddable archive via package-embedded.cjs script
+  attributes:
+    artifactType: archive
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: vite.config.embedded.ts
+  metadata:
+    created_at: 2026-03-20T12:37:45.484Z
+    updated_at: 2026-03-20T12:37:45.484Z
+    version: 1
+technology.artifact.docker-agent-image:
+  id: 1106f7d7-c262-427e-9e36-86d9b0d5e0a4
+  path: technology.artifact.docker-agent-image
+  spec_node_id: technology.artifact
+  type: artifact
+  layer_id: technology
+  name: Docker Agent Image
+  description: Docker container image for the Claude Code agent runtime, defined
+    in Dockerfile.agent; used for isolated DR CLI beta testing
+  attributes:
+    artifactType: container-image
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: Dockerfile.agent
+  metadata:
+    created_at: 2026-03-20T12:37:45.751Z
+    updated_at: 2026-03-20T12:37:45.752Z
+    version: 1
+technology.artifact.open-api-specification:
+  id: c1645c61-5896-481f-bfff-2c345e831ce0
+  path: technology.artifact.open-api-specification
+  spec_node_id: technology.artifact
+  type: artifact
+  layer_id: technology
+  name: OpenAPI Specification
+  description: OpenAPI 3.0 REST API contract (openapi.yaml / docs/api-spec.yaml)
+    describing the DR CLI server endpoints; source for TypeScript client
+    generation
+  attributes:
+    artifactType: configuration
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: openapi.yaml
+  metadata:
+    created_at: 2026-03-20T12:37:46.012Z
+    updated_at: 2026-03-20T12:37:46.012Z
+    version: 1
+technology.artifact.storybook-catalog-build:
+  id: 30cd40e1-8828-4d06-8192-f2bf9072be77
+  path: technology.artifact.storybook-catalog-build
+  spec_node_id: technology.artifact
+  type: artifact
+  layer_id: technology
+  name: Storybook Catalog Build
+  description: Static Storybook build output (dist/storybook/); pre-built
+    component catalog for CI validation and a11y testing
+  attributes:
+    artifactType: archive
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: .storybook/main.cjs
+  metadata:
+    created_at: 2026-03-20T12:37:46.273Z
+    updated_at: 2026-03-20T12:37:46.273Z
+    version: 1

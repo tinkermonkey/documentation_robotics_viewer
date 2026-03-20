@@ -1,0 +1,54 @@
+technology.technologyprocess.vite-build-pipeline:
+  id: 0a73232c-35d8-4af1-8369-42d1f0dd6cfd
+  path: technology.technologyprocess.vite-build-pipeline
+  spec_node_id: technology.technologyprocess
+  type: technologyprocess
+  layer_id: technology
+  name: Vite Build Pipeline
+  description: "Automated build sequence: copy WASM assets → generate OpenAPI
+    client → check API version → Vite bundle → package embedded artifact;
+    produces the deployable app"
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: vite.config.embedded.ts
+  metadata:
+    created_at: 2026-03-20T12:38:19.828Z
+    updated_at: 2026-03-20T12:38:19.828Z
+    version: 1
+technology.technologyprocess.playwright-test-execution:
+  id: 0eadec4b-8132-4b4e-905b-4d01dc1e40c1
+  path: technology.technologyprocess.playwright-test-execution
+  spec_node_id: technology.technologyprocess
+  type: technologyprocess
+  layer_id: technology
+  name: Playwright Test Execution
+  description: Automated test pipeline running 1170 Playwright tests across unit,
+    integration, and E2E configs (playwright.config.ts,
+    playwright.e2e.config.ts, playwright.auth.config.ts)
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: playwright.config.ts
+  metadata:
+    created_at: 2026-03-20T12:38:20.090Z
+    updated_at: 2026-03-20T12:38:20.091Z
+    version: 1
+technology.technologyprocess.open-api-type-generation:
+  id: 5c579a34-a6b1-4a99-8298-f878b5e30229
+  path: technology.technologyprocess.open-api-type-generation
+  spec_node_id: technology.technologyprocess
+  type: technologyprocess
+  layer_id: technology
+  name: OpenAPI Type Generation
+  description: Code-generation process using openapi-typescript to produce
+    src/core/types/api-client.ts from the OpenAPI spec; enforces client-server
+    type contract at build time
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: scripts/generate-api-client.js
+  metadata:
+    created_at: 2026-03-20T12:38:20.368Z
+    updated_at: 2026-03-20T12:38:20.368Z
+    version: 1

@@ -1,0 +1,57 @@
+motivation.constraint.browser-only-deployment:
+  id: 6ffaff00-8bf8-4580-98ff-8d2a612a9021
+  path: motivation.constraint.browser-only-deployment
+  spec_node_id: motivation.constraint
+  type: constraint
+  layer_id: motivation
+  name: Browser-Only Deployment
+  description: Viewer is a pure browser SPA with no server-side rendering; all
+    data fetched from external DR CLI server
+  attributes:
+    constraintType: technical
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: vite.config.embedded.ts
+  metadata:
+    created_at: 2026-03-20T13:41:50.449Z
+    updated_at: 2026-03-20T13:41:50.450Z
+    version: 1
+motivation.constraint.dr-cli-server-dependency:
+  id: fc86a033-81bd-4933-abb8-b24076577123
+  path: motivation.constraint.dr-cli-server-dependency
+  spec_node_id: motivation.constraint
+  type: constraint
+  layer_id: motivation
+  name: DR CLI Server Dependency
+  description: Viewer has no standalone mode; requires a running DR CLI server at
+    localhost:8080 to load model data
+  attributes:
+    constraintType: organizational
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: README.md
+  metadata:
+    created_at: 2026-03-20T13:41:50.781Z
+    updated_at: 2026-03-20T13:41:50.781Z
+    version: 1
+motivation.constraint.type-script-strict-mode:
+  id: 9fe1281a-2547-416f-872f-38e1b066db15
+  path: motivation.constraint.type-script-strict-mode
+  spec_node_id: motivation.constraint
+  type: constraint
+  layer_id: motivation
+  name: TypeScript Strict Mode
+  description: All source files must be strongly typed TypeScript; no any types in
+    production code
+  attributes:
+    constraintType: technical
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: CLAUDE.md
+  metadata:
+    created_at: 2026-03-20T13:41:51.120Z
+    updated_at: 2026-03-20T13:41:51.120Z
+    version: 1

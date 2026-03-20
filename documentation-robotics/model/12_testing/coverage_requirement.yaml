@@ -1,0 +1,64 @@
+testing.coveragerequirement.each-choice-story-coverage-requirement:
+  id: 63897e6f-b6ae-4e4d-a124-2247e947cbbd
+  path: testing.coveragerequirement.each-choice-story-coverage-requirement
+  spec_node_id: testing.coveragerequirement
+  type: coveragerequirement
+  layer_id: testing
+  name: Each-Choice Story Coverage Requirement
+  description: Requirement that every Storybook story renders at least once
+    without console errors; each-choice criteria ensures no component story is
+    skipped; enforced by the Storybook test runner on all 578 stories.
+  attributes:
+    coverageCriteria: each-choice
+    priority: high
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/stories/storyErrorFilters.ts
+  metadata:
+    created_at: 2026-03-20T13:33:10.725Z
+    updated_at: 2026-03-20T13:33:10.726Z
+    version: 1
+testing.coveragerequirement.all-partitions-unit-test-requirement:
+  id: cf055605-ca88-4937-9d47-dcdb2b118ca7
+  path: testing.coveragerequirement.all-partitions-unit-test-requirement
+  spec_node_id: testing.coveragerequirement
+  type: coveragerequirement
+  layer_id: testing
+  name: All-Partitions Unit Test Requirement
+  description: Requirement that all public service methods and store actions have
+    at least one test covering each logical partition; all-partitions criteria
+    applied to dataLoader, nodeTransformer, crossLayerProcessor, and all store
+    methods.
+  attributes:
+    coverageCriteria: all-partitions
+    priority: high
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: tests/unit/
+  metadata:
+    created_at: 2026-03-20T13:33:14.652Z
+    updated_at: 2026-03-20T13:33:14.652Z
+    version: 1
+testing.coveragerequirement.boundary-values-auth-test-requirement:
+  id: acdb6047-f1fb-46f5-8da9-6bb46d333384
+  path: testing.coveragerequirement.boundary-values-auth-test-requirement
+  spec_node_id: testing.coveragerequirement
+  type: coveragerequirement
+  layer_id: testing
+  name: Boundary Values Auth Test Requirement
+  description: "Requirement that token extraction tests exercise boundary cases:
+    valid token, missing token, malformed token, expired token, and race
+    condition between multiple rapid navigations."
+  attributes:
+    coverageCriteria: boundary-values
+    priority: critical
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/embedded-auth-race-condition.spec.ts
+  metadata:
+    created_at: 2026-03-20T13:33:18.147Z
+    updated_at: 2026-03-20T13:33:18.147Z
+    version: 1

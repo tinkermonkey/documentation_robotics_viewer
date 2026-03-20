@@ -1,0 +1,21 @@
+apm.instrumentationscope.error-tracker-instrumentation-scope:
+  id: 76a68af2-6323-47e9-8eca-9852ea65e0db
+  path: apm.instrumentationscope.error-tracker-instrumentation-scope
+  spec_node_id: apm.instrumentationscope
+  type: instrumentationscope
+  layer_id: apm
+  name: Error Tracker Instrumentation Scope
+  description: Named instrumentation scope for the errorTracker and
+    exceptionClassifier services; groups all error/exception signals produced by
+    the frontend error handling subsystem.
+  attributes:
+    droppedAttributesCount: "0"
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/services/errorTracker.ts
+        symbol: errorTracker
+  metadata:
+    created_at: 2026-03-20T13:31:37.032Z
+    updated_at: 2026-03-20T13:31:37.033Z
+    version: 1

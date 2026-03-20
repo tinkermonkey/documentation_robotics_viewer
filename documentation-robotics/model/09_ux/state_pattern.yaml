@@ -1,0 +1,39 @@
+ux.statepattern.authentication-flow-pattern:
+  id: f98c00c5-f24b-47e6-a51a-5c0f68127997
+  path: ux.statepattern.authentication-flow-pattern
+  spec_node_id: ux.statepattern
+  type: statepattern
+  layer_id: ux
+  name: Authentication Flow Pattern
+  description: "Multi-step UX state machine for the token-based authentication
+    flow; states: unauthenticated → extracting-token → validating →
+    authenticated; handles invalid token rejection."
+  attributes:
+    category: authentication
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/routes/AuthRoute.tsx
+  metadata:
+    created_at: 2026-03-20T13:25:10.821Z
+    updated_at: 2026-03-20T13:25:10.822Z
+    version: 1
+ux.statepattern.data-loading-pattern:
+  id: 3bbe4a82-91ae-4c4e-bf95-1d26d1dfaf3d
+  path: ux.statepattern.data-loading-pattern
+  spec_node_id: ux.statepattern
+  type: statepattern
+  layer_id: ux
+  name: Data Loading Pattern
+  description: "Standard data-loading state pattern used across all views; states:
+    idle → loading → loaded/error; with optional retry action on error state."
+  attributes:
+    category: data-loading
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/services/embeddedDataLoader.ts
+  metadata:
+    created_at: 2026-03-20T13:25:14.685Z
+    updated_at: 2026-03-20T13:25:14.685Z
+    version: 1

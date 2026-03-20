@@ -1,0 +1,40 @@
+security.permission.read-model-data:
+  id: d53a014b-d64d-495b-ab4e-f0b5475037f3
+  path: security.permission.read-model-data
+  spec_node_id: security.permission
+  type: permission
+  layer_id: security
+  name: Read Model Data
+  description: Permission to read architecture model layers, elements, and relationships
+  attributes:
+    scope: read-only
+    resource: model
+    action: read
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/stores/authStore.ts
+  metadata:
+    created_at: 2026-03-20T13:40:03.886Z
+    updated_at: 2026-03-20T13:40:03.886Z
+    version: 1
+security.permission.write-annotations:
+  id: d035a74f-3ae8-4a28-9502-110fe0fd46f7
+  path: security.permission.write-annotations
+  spec_node_id: security.permission
+  type: permission
+  layer_id: security
+  name: Write Annotations
+  description: Permission to create and update annotations on model elements
+  attributes:
+    scope: write
+    resource: annotations
+    action: create
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/stores/authStore.ts
+  metadata:
+    created_at: 2026-03-20T13:40:04.230Z
+    updated_at: 2026-03-20T13:40:04.230Z
+    version: 1
