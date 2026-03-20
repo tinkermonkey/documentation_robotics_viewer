@@ -1,5 +1,5 @@
 version: 0.1.3
-installed_at: 2026-03-19T21:17:30.462Z
+installed_at: 2026-03-20T20:47:48.885Z
 components:
   reference_sheets: {}
   commands:
@@ -13,7 +13,7 @@ components:
       hash: c1a83b3d
       modified: false
     dr-map.md:
-      hash: 9fc51063
+      hash: f60c6e97
       modified: false
     dr-model.md:
       hash: 9486419a
@@ -45,13 +45,13 @@ components:
       hash: 5e7e87fb
       modified: false
     dr_04_application_layer/SKILL.md:
-      hash: 4dc9cb92
+      hash: b47fde72
       modified: false
     dr_05_technology_layer/SKILL.md:
-      hash: 374804c4
+      hash: d46e39cd
       modified: false
     dr_06_api_layer/SKILL.md:
-      hash: 90a50138
+      hash: e9b407a9
       modified: false
     dr_07_data_model_layer/SKILL.md:
       hash: 6c86943e
@@ -60,13 +60,13 @@ components:
       hash: 329b2e0f
       modified: false
     dr_09_ux_layer/SKILL.md:
-      hash: 18d983aa
+      hash: 3f28bc3c
       modified: false
     dr_10_navigation_layer/SKILL.md:
       hash: 71e2a1e7
       modified: false
     dr_11_apm_layer/SKILL.md:
-      hash: e448ebf7
+      hash: 04d7601e
       modified: false
     dr_12_testing_layer/SKILL.md:
       hash: 24ddd6c1
