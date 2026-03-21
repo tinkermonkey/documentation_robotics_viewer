@@ -30,8 +30,8 @@ function copySpecFilesPlugin() {
 
           try {
             const { readFileSync, existsSync } = require('fs');
-            if (existsSync(specPath) && specPath.endsWith('.json')) {
-              const content = readFileSync(specPath, 'utf-8');
+            if (existsSync(normalizedSpecPath) && normalizedSpecPath.endsWith('.json')) {
+              const content = readFileSync(normalizedSpecPath, 'utf-8');
               res.setHeader('Content-Type', 'application/json');
               res.end(content);
               return;
