@@ -106,8 +106,8 @@ export class YAMLParser {
     layerId: string
   ): Layer {
     // Do NOT clear dot-notation lookup - we need to accumulate mappings across all layers
-    // for cross-layer reference resolution. Clear is called at the beginning of
-    // parseYAMLInstances() instead to reset before parsing all layers.
+    // for cross-layer reference resolution. Clear is called by DataLoader.parseYAMLInstances()
+    // at the beginning of the layer parsing loop to reset before parsing all layers.
 
     const layerType = LAYER_TYPE_MAP[layerId] || layerId;
     const elements: ModelElement[] = [];

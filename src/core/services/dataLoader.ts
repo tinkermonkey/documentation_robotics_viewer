@@ -13,7 +13,8 @@ import { YAMLManifest } from '../types/yaml';
  * Uses exact filename matching to avoid matching files like "business-relationships-matrix.yaml"
  */
 function isRelationshipsYamlFile(filePath: string): boolean {
-  return filePath.endsWith('relationships.yaml') || filePath.endsWith('relationships.yml') || filePath === 'relationships.yaml' || filePath === 'relationships.yml';
+  const basename = filePath.split('/').pop() || '';
+  return basename === 'relationships.yaml' || basename === 'relationships.yml';
 }
 
 /**
@@ -436,8 +437,9 @@ export class DataLoader {
           relationshipsYamlWarnings = relParser.getWarnings();
 
           // Partition relationships: intra-layer vs cross-layer
-          // First pass: collect intra-layer relationships and build dedup set
+          // First pass: collect intra-layer relationships, cross-layer relationships, and build dedup set
           const intraLayerRelsFromYaml: Array<{ rel: any; layerId: string }> = [];
+          const crossLayerRelsFromYaml: any[] = [];
 
           for (const rel of parsedRelationships) {
             // Create a unique key for this relationship to track it for deduplication
@@ -450,8 +452,8 @@ export class DataLoader {
               // Intra-layer: defer adding to layer until after deduplication
               intraLayerRelsFromYaml.push({ rel, layerId: rel.sourceLayerId });
             } else {
-              // Cross-layer: add to references
-              allRelationships.push(rel);
+              // Cross-layer: preserve separately (will be re-added after inline deduplication)
+              crossLayerRelsFromYaml.push(rel);
             }
           }
 
@@ -474,9 +476,9 @@ export class DataLoader {
               // Add the deduplicated relationships to the rebuilt allRelationships array
               dedupedAllRelationships.push(...layer.relationships);
             }
-            // Replace allRelationships with the deduplicated version
+            // Rebuild allRelationships: deduplicated inline rels + cross-layer rels from relationships.yaml
             allRelationships.length = 0;
-            allRelationships.push(...dedupedAllRelationships);
+            allRelationships.push(...dedupedAllRelationships, ...crossLayerRelsFromYaml);
           }
 
           // Now add the intra-layer relationships from relationships.yaml (after inline deduplication)
