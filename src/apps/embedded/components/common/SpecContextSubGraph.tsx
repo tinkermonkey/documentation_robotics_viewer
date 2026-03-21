@@ -8,11 +8,9 @@ import React from 'react';
 import { ReactFlow, ReactFlowProvider, Background, useReactFlow, Controls } from '@xyflow/react';
 import type { Node, Edge } from '@xyflow/react';
 
-// Import React Flow styles - skip in test/Node.js environment where CSS cannot be parsed
+// Import React Flow styles only in browser environment
 if (typeof document !== 'undefined') {
-  import('@xyflow/react/dist/style.css').catch(() => {
-    // Silently fail if CSS cannot be loaded
-  });
+  import('@xyflow/react/dist/style.css');
 }
 
 export interface SpecContextSubGraphProps {

@@ -11,11 +11,9 @@ import type { Node, Edge } from '@xyflow/react'
 import { SpecDataResponse, SchemaDefinition } from '../services/embeddedDataLoader'
 import { Badge, Table, TableBody, TableCell, TableRow } from 'flowbite-react'
 
-// Import React Flow styles - skip in test/Node.js environment where CSS cannot be parsed
+// Import React Flow styles only in browser environment
 if (typeof document !== 'undefined') {
-  import('@xyflow/react/dist/style.css').catch(() => {
-    // Silently fail if CSS cannot be loaded
-  });
+  import('@xyflow/react/dist/style.css');
 }
 import ExpandableSection from './common/ExpandableSection'
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid'
@@ -243,6 +241,7 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
         {/* Tab Navigation */}
         <div className="flex border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900" role="tablist">
           <button
+            id="spec-viewer-details-tab"
             onClick={() => setActiveTab('details')}
             className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
               activeTab === 'details'
@@ -257,6 +256,7 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
             Details
           </button>
           <button
+            id="spec-viewer-graph-tab"
             onClick={() => setActiveTab('graph')}
             className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
               activeTab === 'graph'
