@@ -7,8 +7,15 @@ import { isExpectedConsoleError, isKnownRenderingBug } from '../tests/stories/st
  */
 function isStorybookTestRunnerError(error: unknown): boolean {
   if (error instanceof Error) {
-    return error.name === 'StorybookTestRunnerError' ||
-           error.message?.includes('Cannot access');
+    // Check for StorybookTestRunnerError by name
+    if (error.name === 'StorybookTestRunnerError') {
+      return true;
+    }
+    // Check for temporal dead zone error: ReferenceError with 'Cannot access StorybookTestRunnerError'
+    if (error.name === 'ReferenceError' &&
+        error.message?.includes('Cannot access StorybookTestRunnerError')) {
+      return true;
+    }
   }
   return false;
 }
