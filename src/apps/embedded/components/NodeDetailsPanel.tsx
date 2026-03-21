@@ -328,7 +328,7 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
           <RelationshipTable
             outbound={[
               ...outgoingRels.map(rel => ({
-                predicate: rel.type,
+                predicate: rel.predicate ?? rel.type,
                 targetId: rel.targetId,
                 targetName: resolveElementName(rel.targetId),
                 targetLayerId: resolveEl(rel.targetId)?.layerId ?? 'unknown',
@@ -346,7 +346,7 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
             ]}
             inbound={[
               ...incomingRels.map(rel => ({
-                predicate: rel.type,
+                predicate: rel.predicate ?? rel.type,
                 sourceId: rel.sourceId,
                 sourceName: resolveElementName(rel.sourceId),
                 sourceLayerId: resolveEl(rel.sourceId)?.layerId ?? 'unknown',
