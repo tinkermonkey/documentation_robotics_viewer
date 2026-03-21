@@ -135,26 +135,30 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
   }
 
   // Consolidated helper to resolve element by ID (caches to avoid repeated scans)
-  const elementCache = new Map<string, ModelElement>();
-  const resolveEl = (id: string): ModelElement | undefined => {
-    if (elementCache.has(id)) {
-      return elementCache.get(id);
-    }
-    for (const l of Object.values(model.layers)) {
-      const el = l.elements?.find(e => e.id === id);
-      if (el) {
-        elementCache.set(id, el);
-        return el;
-      }
-    }
-    return undefined;
-  };
+  const { resolveEl, resolveElementName } = useMemo(() => {
+    const elementCache = new Map<string, ModelElement>();
 
-  // Helper to resolve element name across all layers
-  const resolveElementName = (elementId: string): string => {
-    const el = resolveEl(elementId);
-    return el?.name ?? elementId;
-  };
+    const resolveEl = (id: string): ModelElement | undefined => {
+      if (elementCache.has(id)) {
+        return elementCache.get(id);
+      }
+      for (const l of Object.values(model.layers)) {
+        const el = l.elements?.find(e => e.id === id);
+        if (el) {
+          elementCache.set(id, el);
+          return el;
+        }
+      }
+      return undefined;
+    };
+
+    const resolveElementName = (elementId: string): string => {
+      const el = resolveEl(elementId);
+      return el?.name ?? elementId;
+    };
+
+    return { resolveEl, resolveElementName };
+  }, [model.layers]);
 
   // Relationship derivation - scan ALL layers
   const resolvedLayerId = element.layerId;
@@ -168,13 +172,11 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
   }
 
   // Cross-layer references
-  const crossRefs: Reference[] = element.elementId
-    ? (model.references ?? []).filter(
-        ref =>
-          ref.source.elementId === element!.elementId ||
-          ref.target.elementId === element!.elementId
-      )
-    : [];
+  const crossRefs: Reference[] = (model.references ?? []).filter(
+    ref =>
+      ref.source.elementId === element.id ||
+      ref.target.elementId === element.id
+  );
 
   // Spec schema access
   const specLayerId = element.specNodeId?.split('.')[0];
@@ -320,9 +322,9 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
                 isInterLayer: resolveEl(rel.targetId)?.layerId !== element.layerId,
               })),
               ...crossRefs
-                .filter(ref => ref.source.elementId === element!.elementId)
+                .filter(ref => ref.source.elementId === element!.id)
                 .map(ref => ({
-                  predicate: (ref as any).predicate ?? ref.type,
+                  predicate: ref.predicate ?? ref.type,
                   targetId: ref.target.elementId ?? '',
                   targetName: resolveElementName(ref.target.elementId ?? ''),
                   targetLayerId: ref.target.layerId ?? 'unknown',
@@ -338,9 +340,9 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
                 isInterLayer: resolveEl(rel.sourceId)?.layerId !== element.layerId,
               })),
               ...crossRefs
-                .filter(ref => ref.target.elementId === element!.elementId)
+                .filter(ref => ref.target.elementId === element!.id)
                 .map(ref => ({
-                  predicate: (ref as any).predicate ?? ref.type,
+                  predicate: ref.predicate ?? ref.type,
                   sourceId: ref.source.elementId ?? '',
                   sourceName: resolveElementName(ref.source.elementId ?? ''),
                   sourceLayerId: ref.source.layerId ?? 'unknown',
