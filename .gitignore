@@ -3,7 +3,6 @@ playwright-report/
 test-results/
 storybook-static/
 **/.venv/
-.dr/
 .flowbite-react/
 .api-version-cache.json
 
