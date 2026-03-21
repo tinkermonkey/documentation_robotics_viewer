@@ -4,7 +4,9 @@
  * Matches design prototype layout pattern
  */
 
-import React from 'react';
+import React, { useState } from 'react';
+import { useModelStore } from '../../../core/stores/modelStore';
+import { SpecVersionWarning } from './shared/SpecVersionWarning';
 
 export interface SharedLayoutProps {
   /** Show left sidebar (model layers, changeset list, etc.) */
@@ -35,11 +37,23 @@ const SharedLayout: React.FC<SharedLayoutProps> = ({
   bottomPanelHeight = '300px',
   children,
 }) => {
+  const { specVersionMismatch, specVersion, version } = useModelStore();
+  const [warningDismissed, setWarningDismissed] = useState(false);
+
   return (
     <div
       className="flex flex-col h-full min-h-0 overflow-hidden"
       data-testid="shared-layout"
     >
+      {/* Spec version warning banner */}
+      {specVersionMismatch && !warningDismissed && (
+        <SpecVersionWarning
+          modelVersion={version ?? '?'}
+          specVersion={specVersion ?? '?'}
+          onDismiss={() => setWarningDismissed(true)}
+        />
+      )}
+
       {/* Top: 3-column layout */}
       <div className="flex flex-1 min-h-0 overflow-hidden">
         {/* Left Sidebar */}
