@@ -18,6 +18,7 @@ import {
 } from '../types/yaml';
 import { ModelElement, Layer, Relationship, RelationshipType, SourceReference, ElementMetadata } from '../types/model';
 import { LayerType } from '../types/layers';
+import { mapPredicateToType } from './predicateTypeMapper';
 import { getLayerColor } from '../utils/layerColors';
 
 /**
@@ -30,6 +31,7 @@ const LAYER_TYPE_MAP: Record<string, LayerType> = {
   application: LayerType.Application,
   technology: LayerType.Technology,
   api: LayerType.Api,
+  'data-model': LayerType.DataModel,
   data_model: LayerType.DataModel,
   datastore: LayerType.Datastore,
   ux: LayerType.Ux,
@@ -459,29 +461,7 @@ export class YAMLParser {
    * Map YAML relationship type to internal RelationshipType
    */
   private mapRelationshipType(yamlType: string): RelationshipType {
-    const typeMap: Record<string, RelationshipType> = {
-      // ArchiMate-style relationships mapped to available types
-      realizes: RelationshipType.Realization,
-      serves: RelationshipType.Serving,
-      accesses: RelationshipType.Access,
-      uses: RelationshipType.Access,
-      composes: RelationshipType.Composition,
-      flows_to: RelationshipType.Flow,
-      assigned_to: RelationshipType.Assignment,
-      aggregates: RelationshipType.Aggregation,
-      specializes: RelationshipType.Reference,
-
-      // Motivation layer
-      supports_goals: RelationshipType.Influence,
-      fulfills_requirements: RelationshipType.Reference,
-      constrained_by: RelationshipType.Reference,
-
-      // Security
-      secured_by: RelationshipType.Access,
-      requires_permissions: RelationshipType.Access,
-    };
-
-    return typeMap[yamlType] || RelationshipType.Reference;
+    return mapPredicateToType(yamlType);
   }
 
   /**
@@ -500,21 +480,27 @@ export class YAMLParser {
     }
 
     const locations = Array.isArray(ref.locations)
-      ? (ref.locations as any[]).map(loc => ({
+      ? (ref.locations as Array<Record<string, unknown>>).map(loc => ({
           file: typeof loc.file === 'string' ? loc.file : '',
           symbol: typeof loc.symbol === 'string' ? loc.symbol : undefined,
         }))
       : [];
 
+    const repository = typeof ref.repository === 'object' && ref.repository !== null
+      ? {
+          url: typeof (ref.repository as Record<string, unknown>).url === 'string'
+            ? (ref.repository as Record<string, unknown>).url as string
+            : '',
+          commit: typeof (ref.repository as Record<string, unknown>).commit === 'string'
+            ? (ref.repository as Record<string, unknown>).commit as string
+            : '',
+        }
+      : undefined;
+
     return {
       provenance,
       locations,
-      repository: typeof ref.repository === 'object' && ref.repository !== null
-        ? {
-            url: typeof (ref.repository as any).url === 'string' ? (ref.repository as any).url : '',
-            commit: typeof (ref.repository as any).commit === 'string' ? (ref.repository as any).commit : '',
-          }
-        : undefined,
+      repository,
     };
   }
 

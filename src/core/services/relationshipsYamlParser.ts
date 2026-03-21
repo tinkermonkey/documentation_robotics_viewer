@@ -9,6 +9,7 @@
 import * as yaml from 'js-yaml';
 import { v4 as uuidv4 } from 'uuid';
 import { Relationship, RelationshipType } from '../types/model';
+import { mapPredicateToType } from './predicateTypeMapper';
 
 /**
  * Entry in the relationships.yaml file
@@ -121,7 +122,7 @@ export class RelationshipsYamlParser {
       sourceLayerId,
       targetLayerId,
       // Map predicate string to RelationshipType enum
-      type: this.mapPredicateToType(predicate),
+      type: this.mapPredicateToTypeLocal(predicate),
       properties: Object.keys(relProperties).length > 0 ? relProperties : undefined,
     };
   }
@@ -138,37 +139,8 @@ export class RelationshipsYamlParser {
   /**
    * Map predicate string to RelationshipType enum
    */
-  private mapPredicateToType(predicate: string): RelationshipType {
-    const typeMap: Record<string, RelationshipType> = {
-      // ArchiMate-style relationships
-      realizes: RelationshipType.Realization,
-      serves: RelationshipType.Serving,
-      accesses: RelationshipType.Access,
-      uses: RelationshipType.Access,
-      composes: RelationshipType.Composition,
-      flows_to: RelationshipType.Flow,
-      flow: RelationshipType.Flow,
-      assigned_to: RelationshipType.Assignment,
-      aggregates: RelationshipType.Aggregation,
-      specializes: RelationshipType.Reference,
-
-      // Motivation layer
-      supports_goals: RelationshipType.Influence,
-      influence: RelationshipType.Influence,
-      fulfills_requirements: RelationshipType.Reference,
-      constrained_by: RelationshipType.Reference,
-
-      // Security
-      secured_by: RelationshipType.Access,
-      requires_permissions: RelationshipType.Access,
-
-      // General relationships
-      reference: RelationshipType.Reference,
-      dependency: RelationshipType.Reference,
-      relationship: RelationshipType.Reference,
-    };
-
-    return typeMap[predicate] || RelationshipType.Reference;
+  private mapPredicateToTypeLocal(predicate: string): RelationshipType {
+    return mapPredicateToType(predicate);
   }
 
   /**
