@@ -27,6 +27,7 @@ debug-storybook.log
 
 # Debug artifacts (shell script output)
 /RESULT=
+/TEST_EXIT=
 /exit
 /kill
 
