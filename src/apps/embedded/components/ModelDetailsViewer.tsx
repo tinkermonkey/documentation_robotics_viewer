@@ -4,7 +4,7 @@
  */
 
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { MetaModel, ModelElement, Relationship, Reference } from '../../../core/types';
+import { MetaModel, ModelElement, Relationship, Reference, SpecLayerData } from '../../../core/types';
 import { Badge, Accordion, AccordionPanel, AccordionTitle, AccordionContent } from 'flowbite-react';
 import AttributesTable, { AttributeRow } from './common/AttributesTable';
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid';
@@ -46,7 +46,7 @@ interface ElementCardProps {
       isInterLayer: boolean;
     }>;
   };
-  specSchemas?: Record<string, any>;
+  specSchemas?: Record<string, SpecLayerData>;
 }
 
 const ElementCard: React.FC<ElementCardProps> = ({
@@ -64,17 +64,26 @@ const ElementCard: React.FC<ElementCardProps> = ({
     [element, layerKey, selectedLayer, buildRelationshipsForElement]
   );
 
-  // Extract spec schema for this element
-  const specLayerId = element.specNodeId?.split('.')[0];
-  const specType = element.specNodeId?.split('.')[1];
-  const nodeSchema = specLayerId && specType && specSchemas?.[specLayerId]
-    ? specSchemas[specLayerId].nodeSchemas?.[specType]
-    : undefined;
-  const relSchemas = specLayerId && specSchemas?.[specLayerId]
-    ? specSchemas[specLayerId].relationshipSchemas?.filter(
-        (r: any) => r.sourceSpecNodeId === element.specNodeId || r.destinationSpecNodeId === element.specNodeId
-      )
-    : undefined;
+  // Memoize spec schema extraction for this element
+  const { specLayerId, specType, nodeSchema, relSchemas } = useMemo(() => {
+    const layerId = element.specNodeId?.split('.')[0];
+    const type = element.specNodeId?.split('.')[1];
+    const schema = layerId && type && specSchemas?.[layerId]
+      ? specSchemas[layerId].nodeSchemas?.[type]
+      : undefined;
+    const relSchemaList = layerId && specSchemas?.[layerId]
+      ? specSchemas[layerId].relationshipSchemas?.filter(
+          (r) => r.sourceSpecNodeId === element.specNodeId || r.destinationSpecNodeId === element.specNodeId
+        )
+      : undefined;
+
+    return {
+      specLayerId: layerId,
+      specType: type,
+      nodeSchema: schema,
+      relSchemas: relSchemaList
+    };
+  }, [element.specNodeId, specSchemas]);
 
   return (
     <Accordion key={element.id} collapseAll>
@@ -159,7 +168,7 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
   selectedLayer
 }) => {
   const { highlightedElementId } = useAnnotationStore();
-  const { specSchemas } = useModelStore();
+  const specSchemas = useModelStore((state) => state.specSchemas);
 
   // Watch for highlighted elements and compute their JSON path
   useEffect(() => {
