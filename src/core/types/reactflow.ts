@@ -1,5 +1,5 @@
 import { Node, Edge } from '@xyflow/react';
-import { ModelElement, ReferenceType } from './model';
+import { ModelElement, ReferenceType, SourceReference, PredicateDefinition } from './model';
 import {
   DataModelField,
   DataModelComponentType,
@@ -66,6 +66,11 @@ export interface BaseNodeData {
 
   // Changeset tracking
   changesetOperation?: ChangesetOperation;
+
+  // v0.8.3 spec fields
+  sourceReference?: SourceReference;
+  specNodeId?: string;
+  attributes?: Record<string, unknown>;
 
   // Index signature for React Flow compatibility
   [key: string]: unknown;
@@ -340,6 +345,9 @@ export interface ElbowEdgeData {
   description?: string;
   tags?: string[];
   changesetOperation?: ChangesetOperation;
+  // v0.8.3 spec fields
+  predicate?: string;
+  predicateDefinition?: PredicateDefinition;
   [key: string]: unknown;
 }
 

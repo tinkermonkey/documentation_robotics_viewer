@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { MetaModel, ModelElement, Layer } from '../types';
+import { MetaModel, ModelElement, Layer, PredicateDefinition, SpecLayerData } from '../types';
 
 /**
  * Model store interface
@@ -10,12 +10,19 @@ interface ModelStore {
   loading: boolean;
   error: string | null;
   version: string | null;
+  predicateCatalog: Map<string, PredicateDefinition>;
+  specSchemas: Record<string, SpecLayerData>;
+  specVersion: string | null;
+  specVersionMismatch: boolean;
 
   // Actions
   setModel: (model: MetaModel) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string) => void;
   clearModel: () => void;
+  setPredicateCatalog: (catalog: Map<string, PredicateDefinition>) => void;
+  setSpecSchemas: (schemas: Record<string, SpecLayerData>) => void;
+  setSpecVersion: (specVersion: string, modelVersion: string) => void;
 
   // Selectors
   getLayer: (layerType: string) => Layer | undefined;
@@ -32,6 +39,10 @@ export const useModelStore = create<ModelStore>((set, get) => ({
   loading: false,
   error: null,
   version: null,
+  predicateCatalog: new Map(),
+  specSchemas: {},
+  specVersion: null,
+  specVersionMismatch: false,
 
   // Actions
   setModel: (model: MetaModel) =>
@@ -54,7 +65,23 @@ export const useModelStore = create<ModelStore>((set, get) => ({
       model: null,
       error: null,
       version: null,
-      loading: false
+      loading: false,
+      predicateCatalog: new Map(),
+      specSchemas: {},
+      specVersion: null,
+      specVersionMismatch: false
+    }),
+
+  setPredicateCatalog: (catalog: Map<string, PredicateDefinition>) =>
+    set({ predicateCatalog: catalog }),
+
+  setSpecSchemas: (schemas: Record<string, SpecLayerData>) =>
+    set({ specSchemas: schemas }),
+
+  setSpecVersion: (specVersion: string, modelVersion: string) =>
+    set({
+      specVersion,
+      specVersionMismatch: specVersion !== modelVersion
     }),
 
   // Selectors

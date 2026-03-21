@@ -77,7 +77,7 @@ test.describe('normalizeLayerKey', () => {
   });
 
   test.describe('all layer types', () => {
-    test('should handle all 12 layer types', () => {
+    test('should handle all 13 layer types', () => {
       const allLayers = [
         'Motivation',
         'Business',
@@ -90,6 +90,7 @@ test.describe('normalizeLayerKey', () => {
         'Ux',
         'Navigation',
         'ApmObservability',
+        'Testing',
         'FederatedArchitecture'
       ];
 
@@ -128,6 +129,7 @@ test.describe('getLayerColor', () => {
       expect(getLayerColor(LayerType.Ux, 'primary')).toBe('#14b8a6');
       expect(getLayerColor(LayerType.Navigation, 'primary')).toBe('#06b6d4');
       expect(getLayerColor(LayerType.ApmObservability, 'primary')).toBe('#84cc16');
+      expect(getLayerColor(LayerType.Testing, 'primary')).toBe('#a78bfa');
       expect(getLayerColor(LayerType.FederatedArchitecture, 'primary')).toBe('#6366f1');
     });
   });
@@ -220,8 +222,8 @@ test.describe('FALLBACK_COLOR constant', () => {
 });
 
 test.describe('LAYER_COLORS completeness', () => {
-  test('should have exactly 12 layer types', () => {
-    expect(Object.keys(LAYER_COLORS).length).toBe(12);
+  test('should have exactly 13 layer types', () => {
+    expect(Object.keys(LAYER_COLORS).length).toBe(13);
   });
 
   test('should cover all LayerType enum values', () => {

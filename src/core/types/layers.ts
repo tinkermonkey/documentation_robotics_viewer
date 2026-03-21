@@ -14,6 +14,7 @@ export enum LayerType {
   Ux = 'Ux',
   Navigation = 'Navigation',
   ApmObservability = 'ApmObservability',
+  Testing = 'Testing',
   FederatedArchitecture = 'FederatedArchitecture'
 }
 
