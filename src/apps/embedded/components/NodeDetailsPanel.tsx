@@ -8,7 +8,7 @@ import React from 'react';
 import { Info } from 'lucide-react';
 import { Badge } from 'flowbite-react';
 import type { Node } from '@xyflow/react';
-import type { MetaModel, ModelElement, Relationship, Reference, SourceReference } from '../../../core/types/model';
+import type { MetaModel, ModelElement, Relationship, Reference } from '../../../core/types/model';
 import type { UnifiedNodeData } from '@/core/nodes';
 import { nodeConfigLoader } from '@/core/nodes';
 import { useModelStore } from '@/core/stores/modelStore';
@@ -72,6 +72,9 @@ function formatPropertyValue(value: unknown): string {
 const DIVIDER = 'border-t border-gray-200 dark:border-gray-700 pt-3 mt-3';
 
 const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model }) => {
+  // Get store data - must be called before any conditional returns (Rules of Hooks)
+  const { specSchemas } = useModelStore();
+
   if (!selectedNode) {
     return (
       <div data-testid="node-details-panel-empty" className="p-4 text-center text-gray-500 text-sm border-b border-gray-200 dark:border-gray-700">
@@ -128,16 +131,26 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
     );
   }
 
-  // Get store data
-  const { specSchemas } = useModelStore();
+  // Consolidated helper to resolve element by ID (caches to avoid repeated scans)
+  const elementCache = new Map<string, ModelElement>();
+  const resolveEl = (id: string): ModelElement | undefined => {
+    if (elementCache.has(id)) {
+      return elementCache.get(id);
+    }
+    for (const l of Object.values(model.layers)) {
+      const el = l.elements?.find(e => e.id === id);
+      if (el) {
+        elementCache.set(id, el);
+        return el;
+      }
+    }
+    return undefined;
+  };
 
   // Helper to resolve element name across all layers
   const resolveElementName = (elementId: string): string => {
-    for (const l of Object.values(model.layers)) {
-      const el = l.elements?.find(e => e.id === elementId);
-      if (el) return el.name;
-    }
-    return elementId;
+    const el = resolveEl(elementId);
+    return el?.name ?? elementId;
   };
 
   // Relationship derivation - scan ALL layers
@@ -160,15 +173,6 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
       )
     : [];
 
-  // Helper to resolve element for same-layer relationships
-  const resolveEl = (id: string): ModelElement | undefined => {
-    for (const l of Object.values(model.layers)) {
-      const el = l.elements?.find(e => e.id === id);
-      if (el) return el;
-    }
-    return undefined;
-  };
-
   // Spec schema access
   const specLayerId = element.specNodeId?.split('.')[0];
   const specType = element.specNodeId?.split('.')[1];
@@ -182,7 +186,7 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
     : undefined;
 
   // Attributes section - from element.attributes
-  const attributesList = element.attributes
+  const attributesList: Array<[string, unknown]> = element.attributes
     ? Object.entries(element.attributes).filter(([, v]) => v != null)
     : [];
 
@@ -228,25 +232,28 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
       )}
 
       {/* Attributes */}
-      {attributesList.length > 0 && (
+      {attributesList.length > 0 ? (
         <div data-testid="node-details-attributes" className={DIVIDER}>
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Attributes</p>
           <table className="w-full text-xs">
             <tbody>
-              {attributesList.map(([key, value]) => (
-                <tr key={key}>
-                  <td className="pr-2 py-0.5 text-gray-500 dark:text-gray-400 align-top whitespace-nowrap">
-                    {PROPERTY_LABELS[key] ?? toTitleCase(key)}
-                  </td>
-                  <td className="py-0.5 text-gray-800 dark:text-gray-200 break-words">
-                    {formatPropertyValue(value)}
-                  </td>
-                </tr>
-              ))}
+              {attributesList.map(([key, value]: [string, unknown]) => {
+                const displayValue = formatPropertyValue(value);
+                return (
+                  <tr key={key}>
+                    <td className="pr-2 py-0.5 text-gray-500 dark:text-gray-400 align-top whitespace-nowrap">
+                      {PROPERTY_LABELS[key] ?? toTitleCase(key)}
+                    </td>
+                    <td className="py-0.5 text-gray-800 dark:text-gray-200 break-words">
+                      {displayValue}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
-      )}
+      ) : null}
 
       {/* Properties */}
       {semanticProps.length > 0 && (
@@ -282,23 +289,45 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
       )}
 
       {/* Relationships */}
-      {(incomingRels.length > 0 || outgoingRels.length > 0) && (
+      {(incomingRels.length > 0 || outgoingRels.length > 0 || crossRefs.length > 0) && (
         <div data-testid="node-details-relationships" className={DIVIDER}>
           <RelationshipTable
-            outbound={outgoingRels.map(rel => ({
-              predicate: rel.type,
-              targetId: rel.targetId,
-              targetName: resolveElementName(rel.targetId),
-              targetLayerId: resolveEl(rel.targetId)?.layerId ?? 'unknown',
-              isInterLayer: resolveEl(rel.targetId)?.layerId !== element.layerId,
-            }))}
-            inbound={incomingRels.map(rel => ({
-              predicate: rel.type,
-              sourceId: rel.sourceId,
-              sourceName: resolveElementName(rel.sourceId),
-              sourceLayerId: resolveEl(rel.sourceId)?.layerId ?? 'unknown',
-              isInterLayer: resolveEl(rel.sourceId)?.layerId !== element.layerId,
-            }))}
+            outbound={[
+              ...outgoingRels.map(rel => ({
+                predicate: rel.type,
+                targetId: rel.targetId,
+                targetName: resolveElementName(rel.targetId),
+                targetLayerId: resolveEl(rel.targetId)?.layerId ?? 'unknown',
+                isInterLayer: resolveEl(rel.targetId)?.layerId !== element.layerId,
+              })),
+              ...crossRefs
+                .filter(ref => ref.source.elementId === element!.elementId)
+                .map(ref => ({
+                  predicate: (ref as any).predicate ?? ref.type,
+                  targetId: ref.target.elementId ?? '',
+                  targetName: resolveElementName(ref.target.elementId ?? ''),
+                  targetLayerId: ref.target.layerId ?? 'unknown',
+                  isInterLayer: true,
+                })),
+            ]}
+            inbound={[
+              ...incomingRels.map(rel => ({
+                predicate: rel.type,
+                sourceId: rel.sourceId,
+                sourceName: resolveElementName(rel.sourceId),
+                sourceLayerId: resolveEl(rel.sourceId)?.layerId ?? 'unknown',
+                isInterLayer: resolveEl(rel.sourceId)?.layerId !== element.layerId,
+              })),
+              ...crossRefs
+                .filter(ref => ref.target.elementId === element!.elementId)
+                .map(ref => ({
+                  predicate: (ref as any).predicate ?? ref.type,
+                  sourceId: ref.source.elementId ?? '',
+                  sourceName: resolveElementName(ref.source.elementId ?? ''),
+                  sourceLayerId: ref.source.layerId ?? 'unknown',
+                  isInterLayer: true,
+                })),
+            ]}
           />
         </div>
       )}
