@@ -8,9 +8,13 @@ import React from 'react';
 import { Info } from 'lucide-react';
 import { Badge } from 'flowbite-react';
 import type { Node } from '@xyflow/react';
-import type { MetaModel, ModelElement, Relationship, Reference } from '../../../core/types/model';
+import type { MetaModel, ModelElement, Relationship, Reference, SourceReference } from '../../../core/types/model';
 import type { UnifiedNodeData } from '@/core/nodes';
 import { nodeConfigLoader } from '@/core/nodes';
+import { useModelStore } from '@/core/stores/modelStore';
+import SpecDefinitionCard from './common/SpecDefinitionCard';
+import SourceReferenceList from './common/SourceReferenceList';
+import RelationshipTable from './common/RelationshipTable';
 
 export interface NodeDetailsPanelProps {
   selectedNode: Node | null;
@@ -124,20 +128,28 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
     );
   }
 
-  // Relationship derivation
+  // Get store data
+  const { specSchemas } = useModelStore();
+
+  // Helper to resolve element name across all layers
+  const resolveElementName = (elementId: string): string => {
+    for (const l of Object.values(model.layers)) {
+      const el = l.elements?.find(e => e.id === elementId);
+      if (el) return el.name;
+    }
+    return elementId;
+  };
+
+  // Relationship derivation - scan ALL layers
   const resolvedLayerId = element.layerId;
   const layer = model.layers[resolvedLayerId];
-  const allRels: Relationship[] = layer?.relationships ?? [];
-  const incomingRels = allRels.filter(r => r.targetId === element!.id);
-  const outgoingRels = allRels.filter(r => r.sourceId === element!.id);
+  const incomingRels: Relationship[] = [];
+  const outgoingRels: Relationship[] = [];
 
-  const resolveEl = (id: string): ModelElement | undefined =>
-    layer?.elements?.find(e => e.id === id);
-
-  // Semantic properties (skip visual keys and private keys)
-  const semanticProps = Object.entries(element.properties ?? {}).filter(
-    ([k, v]) => !k.startsWith('_') && !VISUAL_KEYS.has(k) && v != null
-  );
+  for (const l of Object.values(model.layers)) {
+    incomingRels.push(...(l.relationships ?? []).filter(r => r.targetId === element!.id));
+    outgoingRels.push(...(l.relationships ?? []).filter(r => r.sourceId === element!.id));
+  }
 
   // Cross-layer references
   const crossRefs: Reference[] = element.elementId
@@ -147,6 +159,38 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
           ref.target.elementId === element!.elementId
       )
     : [];
+
+  // Helper to resolve element for same-layer relationships
+  const resolveEl = (id: string): ModelElement | undefined => {
+    for (const l of Object.values(model.layers)) {
+      const el = l.elements?.find(e => e.id === id);
+      if (el) return el;
+    }
+    return undefined;
+  };
+
+  // Spec schema access
+  const specLayerId = element.specNodeId?.split('.')[0];
+  const specType = element.specNodeId?.split('.')[1];
+  const nodeSchema = specLayerId && specType && specSchemas[specLayerId]
+    ? specSchemas[specLayerId].nodeSchemas?.[specType]
+    : undefined;
+  const relSchemas = specLayerId && specSchemas[specLayerId]
+    ? specSchemas[specLayerId].relationshipSchemas?.filter(
+        r => r.sourceSpecNodeId === element.specNodeId || r.destinationSpecNodeId === element.specNodeId
+      )
+    : undefined;
+
+  // Attributes section - from element.attributes
+  const attributesList = element.attributes
+    ? Object.entries(element.attributes).filter(([, v]) => v != null)
+    : [];
+
+  // Semantic properties (skip visual keys and private keys, and also skip attributes already shown)
+  const attributeKeys = new Set(Object.keys(element.attributes ?? {}));
+  const semanticProps = Object.entries(element.properties ?? {}).filter(
+    ([k, v]) => !k.startsWith('_') && !VISUAL_KEYS.has(k) && !attributeKeys.has(k) && v != null
+  );
 
   // Changeset badge
   const changesetOp = nodeData?.changesetOperation;
@@ -183,6 +227,27 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
         </div>
       )}
 
+      {/* Attributes */}
+      {attributesList.length > 0 && (
+        <div data-testid="node-details-attributes" className={DIVIDER}>
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Attributes</p>
+          <table className="w-full text-xs">
+            <tbody>
+              {attributesList.map(([key, value]) => (
+                <tr key={key}>
+                  <td className="pr-2 py-0.5 text-gray-500 dark:text-gray-400 align-top whitespace-nowrap">
+                    {PROPERTY_LABELS[key] ?? toTitleCase(key)}
+                  </td>
+                  <td className="py-0.5 text-gray-800 dark:text-gray-200 break-words">
+                    {formatPropertyValue(value)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
       {/* Properties */}
       {semanticProps.length > 0 && (
         <div data-testid="node-details-properties" className={DIVIDER}>
@@ -204,67 +269,45 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
         </div>
       )}
 
-      {/* Incoming Relationships */}
-      {incomingRels.length > 0 && (
-        <div data-testid="node-details-incoming-rels" className={DIVIDER}>
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-            Incoming Relationships ({incomingRels.length})
-          </p>
-          <ul className="space-y-0.5">
-            {incomingRels.map(rel => {
-              const connected = resolveEl(rel.sourceId);
-              return (
-                <li key={rel.id} className="text-xs text-gray-700 dark:text-gray-300">
-                  ← {connected?.name ?? rel.sourceId}
-                  {connected?.type && <span className="text-gray-400"> [{connected.type}]</span>}
-                  {' '}<span className="text-gray-400">— {rel.type}</span>
-                </li>
-              );
-            })}
-          </ul>
+      {/* Spec Definition */}
+      {nodeSchema && specLayerId && specType && (
+        <div data-testid="node-details-spec-definition" className={DIVIDER}>
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Spec Definition</p>
+          <SpecDefinitionCard
+            specNodeId={element.specNodeId!}
+            nodeSchema={nodeSchema}
+            relationshipSchemas={relSchemas}
+          />
         </div>
       )}
 
-      {/* Outgoing Relationships */}
-      {outgoingRels.length > 0 && (
-        <div data-testid="node-details-outgoing-rels" className={DIVIDER}>
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-            Outgoing Relationships ({outgoingRels.length})
-          </p>
-          <ul className="space-y-0.5">
-            {outgoingRels.map(rel => {
-              const connected = resolveEl(rel.targetId);
-              return (
-                <li key={rel.id} className="text-xs text-gray-700 dark:text-gray-300">
-                  → {connected?.name ?? rel.targetId}
-                  {connected?.type && <span className="text-gray-400"> [{connected.type}]</span>}
-                  {' '}<span className="text-gray-400">— {rel.type}</span>
-                </li>
-              );
-            })}
-          </ul>
+      {/* Relationships */}
+      {(incomingRels.length > 0 || outgoingRels.length > 0) && (
+        <div data-testid="node-details-relationships" className={DIVIDER}>
+          <RelationshipTable
+            outbound={outgoingRels.map(rel => ({
+              predicate: rel.type,
+              targetId: rel.targetId,
+              targetName: resolveElementName(rel.targetId),
+              targetLayerId: resolveEl(rel.targetId)?.layerId ?? 'unknown',
+              isInterLayer: resolveEl(rel.targetId)?.layerId !== element.layerId,
+            }))}
+            inbound={incomingRels.map(rel => ({
+              predicate: rel.type,
+              sourceId: rel.sourceId,
+              sourceName: resolveElementName(rel.sourceId),
+              sourceLayerId: resolveEl(rel.sourceId)?.layerId ?? 'unknown',
+              isInterLayer: resolveEl(rel.sourceId)?.layerId !== element.layerId,
+            }))}
+          />
         </div>
       )}
 
-      {/* Cross-Layer References */}
-      {crossRefs.length > 0 && (
-        <div data-testid="node-details-cross-refs" className={DIVIDER}>
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-            Cross-Layer References ({crossRefs.length})
-          </p>
-          <ul className="space-y-0.5">
-            {crossRefs.map(ref => {
-              const isSource = ref.source.elementId === element!.elementId;
-              const other = isSource ? ref.target : ref.source;
-              return (
-                <li key={ref.id} className="text-xs text-gray-700 dark:text-gray-300">
-                  {isSource ? '→' : '←'}{' '}
-                  <span className="font-mono">{other.elementId ?? other.layerId ?? '?'}</span>
-                  {' '}<span className="text-gray-400">— {ref.type}</span>
-                </li>
-              );
-            })}
-          </ul>
+      {/* Source References */}
+      {element.sourceReference && (
+        <div data-testid="node-details-source-references" className={DIVIDER}>
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Source References</p>
+          <SourceReferenceList references={[element.sourceReference]} />
         </div>
       )}
 
