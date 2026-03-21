@@ -138,23 +138,29 @@ export class LibavoidRouter {
    */
   private async performInitialization(): Promise<void> {
     try {
-      // Fetch the WASM binary from the public directory and re-wrap it with
-      // the correct 'application/wasm' MIME type before passing to AvoidLib.
-      // This bypasses two issues:
+      // In Node.js (Playwright test runner), AvoidLib.load() without arguments
+      // uses import.meta.url to locate the WASM file from node_modules.
+      // In the browser, we fetch from /libavoid.wasm in the public directory
+      // and re-wrap with correct MIME type to bypass two issues:
       // 1. libavoid-js derives the WASM path from import.meta.url which after
       //    bundling points to the JS chunk, not the WASM file.
-      // 2. Some static file servers (e.g. Python's FastAPI default) serve .wasm
-      //    as application/octet-stream, which breaks WebAssembly streaming.
-      const response = await fetch('/libavoid.wasm');
-      if (!response.ok) {
-        throw new Error(`Failed to fetch WASM binary: ${response.status} ${response.url}`);
-      }
-      const wasmBuffer = await response.arrayBuffer();
-      const blobUrl = URL.createObjectURL(new Blob([wasmBuffer], { type: 'application/wasm' }));
-      try {
-        await AvoidLib.load(blobUrl);
-      } finally {
-        URL.revokeObjectURL(blobUrl);
+      // 2. Some static file servers serve .wasm as application/octet-stream,
+      //    which breaks WebAssembly streaming.
+      const isNode = typeof process !== 'undefined' && process.versions?.node;
+      if (isNode) {
+        await AvoidLib.load();
+      } else {
+        const response = await fetch('/libavoid.wasm');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch WASM binary: ${response.status} ${response.url}`);
+        }
+        const wasmBuffer = await response.arrayBuffer();
+        const blobUrl = URL.createObjectURL(new Blob([wasmBuffer], { type: 'application/wasm' }));
+        try {
+          await AvoidLib.load(blobUrl);
+        } finally {
+          URL.revokeObjectURL(blobUrl);
+        }
       }
       this.module = AvoidLib.getInstance();
       this.initialized = true;
