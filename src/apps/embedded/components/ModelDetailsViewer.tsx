@@ -3,7 +3,7 @@
  * Displays model instance data in a readable JSON format
  */
 
-import React, { useEffect, useMemo, ReactNode } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { MetaModel, ModelElement, Relationship, Reference } from '../../../core/types';
 import { Badge, Accordion, AccordionPanel, AccordionTitle, AccordionContent } from 'flowbite-react';
 import AttributesTable, { AttributeRow } from './common/AttributesTable';
@@ -28,8 +28,6 @@ interface ElementCardProps {
   attributes: AttributeRow[];
   layerKey: string;
   selectedLayer: string;
-  model: MetaModel;
-  findElementById: (elementId: string) => { element: ModelElement; layerId: string } | null;
   buildRelationshipsForElement: (element: ModelElement, selectedLayerKey: string) => {
     outbound: Array<{
       predicate: string;
@@ -54,8 +52,6 @@ const ElementCard: React.FC<ElementCardProps> = ({
   attributes,
   layerKey,
   selectedLayer,
-  model,
-  findElementById,
   buildRelationshipsForElement
 }) => {
   // Memoize relationships at component level (correct hook usage)
@@ -515,8 +511,6 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
                               attributes={attributes}
                               layerKey={layerKey || selectedLayer}
                               selectedLayer={selectedLayer}
-                              model={model}
-                              findElementById={findElementById}
                               buildRelationshipsForElement={buildRelationshipsForElement}
                             />
                           );

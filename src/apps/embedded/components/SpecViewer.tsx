@@ -163,11 +163,10 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
     const displayTitle = layer?.name || (typeof schema.title === 'string' ? schema.title : null) || selectedSchemaId
     const displayDescription = layer?.description || (typeof schema.description === 'string' ? schema.description : '')
 
-    // Get layer ID from schema.layer.id or find it from specSchemas
+    // Get layer ID from schema.layer.id or find it from specSchemas by name
     const layerId = layer?.id || Object.keys(specSchemas).find(schemaKey => {
       const schemaData = specSchemas[schemaKey];
-      return schemaData?.layer?.name?.toLowerCase() === layer?.name?.toLowerCase() ||
-             schemaData?.layer?.id?.toLowerCase() === layer?.id?.toLowerCase();
+      return schemaData?.layer?.name?.toLowerCase() === layer?.name?.toLowerCase();
     });
 
     const schemaMetadata: MetadataItem[] = [
