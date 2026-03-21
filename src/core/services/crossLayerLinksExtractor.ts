@@ -127,7 +127,10 @@ export function referenceToEdge(
       color: FALLBACK_COLOR,
     },
     style: { strokeDasharray: '5,5' }, // Dashed line for cross-layer references
-    data: edgeData,
+    data: {
+      ...edgeData,
+      predicate: reference.predicate,
+    },
   } as AppEdge;
 }
 

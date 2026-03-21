@@ -26,6 +26,7 @@ import TableFieldList from './TableFieldList';
 import BadgeRenderer from './BadgeRenderer';
 import { useShouldHideFields } from '../../stores/fieldVisibilityStore';
 import { ChangesetOperation } from '../../types/reactflow';
+import type { SourceReference, ElementMetadata } from '../../types/model';
 
 export interface NodeBadge {
   position: 'top-left' | 'top-right' | 'inline';
@@ -49,10 +50,10 @@ export interface UnifiedNodeData {
   relationshipBadge?: RelationshipBadgeData;
 
   // v0.8.3 spec fields for model attribute display and provenance tracking
-  sourceReference?: unknown; // SourceReference type from core/types/model
+  sourceReference?: SourceReference;
   specNodeId?: string;
   attributes?: Record<string, unknown>;
-  metadata?: unknown; // ElementMetadata type from core/types/model
+  metadata?: ElementMetadata;
 
   // React Flow requires Node data to extend Record<string, unknown>.
   // This index signature allows arbitrary properties to be passed through

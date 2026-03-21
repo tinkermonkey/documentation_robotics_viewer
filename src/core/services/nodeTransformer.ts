@@ -365,12 +365,7 @@ export class NodeTransformer {
     const edgeLabel = relationship.predicate || relationship.type;
 
     // Determine arrow style based on directionality from predicateDefinition
-    let markerType = MarkerType.ArrowClosed; // Default: directed arrow
-    if (relationship.predicateDefinition?.semantics?.directionality === 'bidirectional') {
-      // For bidirectional relationships, we could use a different marker
-      // For now, keep ArrowClosed but this can be extended
-      markerType = MarkerType.ArrowClosed;
-    }
+    const isBidirectional = relationship.predicateDefinition?.semantics?.directionality === 'bidirectional';
 
     return {
       id: `edge-${relationship.id}`,
@@ -383,8 +378,11 @@ export class NodeTransformer {
       label: edgeLabel, // Use predicate string instead of enum
       labelStyle: { fill: '#555', fontWeight: 500, fontSize: 12 },
       labelBgStyle: { fill: '#fff', fillOpacity: 0.8, rx: 4, ry: 4 },
+      ...(isBidirectional && {
+        markerStart: { type: MarkerType.ArrowClosed, width: 20, height: 20, color: FALLBACK_COLOR },
+      }),
       markerEnd: {
-        type: markerType,
+        type: MarkerType.ArrowClosed,
         width: 20,
         height: 20,
         color: FALLBACK_COLOR,
