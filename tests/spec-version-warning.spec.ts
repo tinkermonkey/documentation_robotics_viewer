@@ -1,5 +1,5 @@
 /**
- * E2E Tests for Phase 10: Spec Version Mismatch Warning and Example Model Validation
+ * E2E Tests for Spec Version Mismatch Warning and Example Model Validation
  *
  * Prerequisites:
  * 1. DR CLI server running with example model:
@@ -22,7 +22,7 @@ test.setTimeout(30000);
 // Skip tests if not running in E2E mode (indicated by specific env or condition)
 const isE2EMode = process.env.E2E_MODE === 'true' || process.env.npm_lifecycle_event === 'test:e2e';
 
-test.describe('Phase 10 - Spec Version Mismatch Warning', () => {
+test.describe('Spec Version Mismatch Warning', () => {
   test.skip(!isE2EMode, 'Skipped: Run with npm run test:e2e when DR CLI server is active');
 
   test.beforeEach(async ({ page }) => {

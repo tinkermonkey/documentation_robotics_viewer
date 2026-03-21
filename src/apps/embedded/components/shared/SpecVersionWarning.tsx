@@ -3,8 +3,6 @@
  * Displays a dismissible warning banner when spec version mismatches occur
  */
 
-import React, { useState } from 'react';
-
 export interface SpecVersionWarningProps {
   /** The model's declared spec version */
   modelVersion: string;
@@ -19,17 +17,6 @@ export function SpecVersionWarning({
   specVersion,
   onDismiss,
 }: SpecVersionWarningProps) {
-  const [isVisible, setIsVisible] = useState(true);
-
-  const handleDismiss = () => {
-    setIsVisible(false);
-    onDismiss();
-  };
-
-  if (!isVisible) {
-    return null;
-  }
-
   return (
     <div
       role="alert"
@@ -43,7 +30,7 @@ export function SpecVersionWarning({
         Some data may not be correctly interpreted.
       </span>
       <button
-        onClick={handleDismiss}
+        onClick={onDismiss}
         aria-label="Dismiss spec version warning"
         className="text-yellow-600 hover:text-yellow-900 dark:text-yellow-400 dark:hover:text-yellow-300 flex-shrink-0 text-xl leading-none"
       >

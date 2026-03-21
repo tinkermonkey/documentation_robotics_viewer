@@ -21,22 +21,6 @@ export const VersionMismatch: Story = {
   },
 };
 
-export const VersionMatch: Story = {
-  render: (args) => (
-    <div className="bg-gray-100 p-4">
-      <p className="text-sm text-gray-600 mb-4">
-        When versions match, the warning should not be shown (check SharedLayout for conditional rendering)
-      </p>
-      <SpecVersionWarning {...args} />
-    </div>
-  ),
-  args: {
-    modelVersion: '0.8.3',
-    specVersion: '0.8.3',
-    onDismiss: () => console.log('Warning dismissed'),
-  },
-};
-
 export const DarkMode: Story = {
   args: {
     modelVersion: '0.8.0',
