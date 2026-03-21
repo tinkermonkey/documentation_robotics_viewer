@@ -73,7 +73,7 @@ export const useModelStore = create<ModelStore>((set, get) => ({
     }),
 
   setPredicateCatalog: (catalog: Map<string, PredicateDefinition>) =>
-    set({ predicateCatalog: catalog }),
+    set({ predicateCatalog: new Map(catalog) }),
 
   setSpecSchemas: (schemas: Record<string, SpecLayerData>) =>
     set({ specSchemas: schemas }),

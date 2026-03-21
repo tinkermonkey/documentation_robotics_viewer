@@ -122,7 +122,7 @@ export const LAYER_COLORS: Record<LayerType, LayerColorConfig> = {
     text: '#000000'
   },
   [LayerType.Testing]: {
-    primary: '#a78bfa',   // Amber/Amber-400
+    primary: '#a78bfa',   // Violet-400
     light: '#faf5ff',
     dark: '#7c3aed',
     text: '#ffffff'
