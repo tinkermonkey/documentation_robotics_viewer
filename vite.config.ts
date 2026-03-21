@@ -7,11 +7,43 @@ import { copyFileSync, mkdirSync, readdirSync } from 'fs';
 /**
  * Custom Vite plugin to copy .dr/spec files
  * - For production: copies to dist/.dr/spec/
- * - For development: serves from source .dr/spec/ directory via fetch
+ * - For development: serves from source .dr/spec/ directory via middleware
  */
 function copySpecFilesPlugin() {
   return {
     name: 'copy-spec-files',
+    configureServer(server: any) {
+      // Add middleware to serve .dr/spec files in development
+      return () => {
+        server.middlewares.use('/.dr/spec', (req: any, res: any, next: any) => {
+          const specPath = path.resolve(__dirname, '.dr/spec', req.url || '');
+
+          // Security: ensure the path is within .dr/spec
+          const normalizedSpecPath = path.normalize(specPath);
+          const expectedDirPath = path.normalize(path.resolve(__dirname, '.dr/spec'));
+
+          if (!normalizedSpecPath.startsWith(expectedDirPath)) {
+            res.statusCode = 403;
+            res.end('Forbidden');
+            return;
+          }
+
+          try {
+            const { readFileSync, existsSync } = require('fs');
+            if (existsSync(specPath) && specPath.endsWith('.json')) {
+              const content = readFileSync(specPath, 'utf-8');
+              res.setHeader('Content-Type', 'application/json');
+              res.end(content);
+              return;
+            }
+          } catch (error) {
+            console.warn(`Error serving spec file ${req.url}:`, error);
+          }
+
+          next();
+        });
+      };
+    },
     writeBundle() {
       try {
         const specSrcDir = path.resolve(__dirname, '.dr/spec');

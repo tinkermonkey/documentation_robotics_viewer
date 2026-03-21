@@ -23,6 +23,7 @@ import type { MetaModel } from '../../../core/types';
 /**
  * Load spec schemas from .dr/spec/ directory
  * These are static assets bundled with the app
+ * Returns spec files including manifest.json for version validation
  */
 async function loadSpecSchemaFiles(): Promise<Record<string, unknown>> {
   const specFiles: Record<string, unknown> = {};
@@ -30,6 +31,16 @@ async function loadSpecSchemaFiles(): Promise<Record<string, unknown>> {
     'motivation', 'business', 'security', 'application', 'technology',
     'api', 'data-model', 'data-store', 'ux', 'navigation', 'apm', 'testing'
   ];
+
+  // Load manifest.json for spec version validation
+  try {
+    const manifestResponse = await fetch('/.dr/spec/manifest.json');
+    if (manifestResponse.ok) {
+      specFiles['manifest.json'] = await manifestResponse.json();
+    }
+  } catch (error) {
+    console.warn('Failed to load manifest.json:', error);
+  }
 
   // Load base.json for predicate catalog
   try {
@@ -203,10 +214,18 @@ export default function ModelRoute() {
         const schemas = loadSpecSchemas(specFiles);
         useModelStore.getState().setSpecSchemas(schemas);
 
-        // Validate and set spec version if present in model metadata
-        if (modelData.metadata?.specVersion) {
-          const specVersion = modelData.metadata.specVersion as string;
-          useModelStore.getState().setSpecVersion(specVersion, specVersion);
+        // Validate spec version: compare model's spec_version against loaded spec's specVersion
+        const modelSpecVersion = modelData.metadata?.specVersion as string | undefined;
+        const loadedSpecManifest = specFiles['manifest.json'] as any;
+        const loadedSpecVersion = loadedSpecManifest?.specVersion as string | undefined;
+
+        // Set spec version with both model version and loaded spec version for comparison
+        // setSpecVersion(modelVersion, specVersion) sets specVersionMismatch = (modelVersion !== specVersion)
+        if (modelSpecVersion || loadedSpecVersion) {
+          useModelStore.getState().setSpecVersion(
+            modelSpecVersion || 'unknown',
+            loadedSpecVersion || 'unknown'
+          );
         }
       } catch (err) {
         console.warn('Failed to load spec schemas:', err);

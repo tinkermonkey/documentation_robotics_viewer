@@ -1,4 +1,4 @@
-import { MetaModel, LayerType, Reference, ReferenceType } from '../types';
+import { MetaModel, LayerType, Reference } from '../types';
 import { GitHubService } from './githubService';
 import { LocalFileLoader } from './localFileLoader';
 import { SpecParser } from './specParser';
@@ -411,6 +411,7 @@ export class DataLoader {
     // Load and parse relationships.yaml if present
     const relationshipsYamlKey = Object.keys(schemas).find(k => k.includes('relationships'));
     let relationshipsYamlWarnings: string[] = [];
+    const relationshipsYamlSet = new Set<string>(); // Track relationships from YAML for deduplication
     if (relationshipsYamlKey) {
       const relationshipsYamlContent = schemas[relationshipsYamlKey];
       if (typeof relationshipsYamlContent === 'string') {
@@ -424,6 +425,10 @@ export class DataLoader {
 
           // Partition relationships: intra-layer vs cross-layer
           for (const rel of parsedRelationships) {
+            // Create a unique key for this relationship to track it for deduplication
+            const relKey = `${rel.sourceId}→${rel.targetId}`;
+            relationshipsYamlSet.add(relKey);
+
             if (rel.sourceLayerId === rel.targetLayerId && rel.sourceLayerId) {
               // Intra-layer: add to layer.relationships
               // Find the layer by its type
@@ -449,6 +454,22 @@ export class DataLoader {
           const errorMsg = `Failed to parse relationships.yaml: ${error instanceof Error ? error.message : 'Unknown error'}`;
           console.error(errorMsg);
           parseErrors.push(errorMsg);
+        }
+      }
+    }
+
+    // Deduplication: remove inline relationships that appear in relationships.yaml
+    // Prefer the relationships.yaml entries as they contain more metadata
+    if (relationshipsYamlSet.size > 0) {
+      for (const layer of Object.values(layers)) {
+        const originalCount = layer.relationships.length;
+        layer.relationships = layer.relationships.filter((rel: any) => {
+          const relKey = `${rel.sourceId}→${rel.targetId}`;
+          return !relationshipsYamlSet.has(relKey);
+        });
+        const removedCount = originalCount - layer.relationships.length;
+        if (removedCount > 0) {
+          console.log(`Removed ${removedCount} duplicate inline relationships from layer ${layer.id} (preferred relationships.yaml entries)`);
         }
       }
     }
@@ -511,8 +532,8 @@ export class DataLoader {
 
     // Group files by layer based on path matching
     for (const [filePath, content] of Object.entries(schemas)) {
-      // Skip manifest and projection rules
-      if (filePath === manifestKey || filePath.includes('projection-rules')) {
+      // Skip manifest, projection rules, and relationships
+      if (filePath === manifestKey || filePath.includes('projection-rules') || filePath.includes('relationships')) {
         continue;
       }
 
