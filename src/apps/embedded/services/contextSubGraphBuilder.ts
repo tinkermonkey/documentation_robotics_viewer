@@ -4,11 +4,12 @@
  * using a radial layout algorithm for positioning
  */
 
-import { MetaModel, ModelElement, Relationship, Reference, PredicateDefinition } from '../../../core/types/model';
-import { AppNode, AppEdge } from '../../../core/types/reactflow';
-import { NodeType } from '../../../core/nodes/NodeType';
-import { nodeConfigLoader } from '../../../core/nodes/nodeConfigLoader';
-import { getLayerColor, FALLBACK_COLOR } from '../../../core/utils/layerColors';
+import { MetaModel, ModelElement, Relationship, Reference, PredicateDefinition } from '@/core/types/model';
+import { AppNode, AppEdge } from '@/core/types/reactflow';
+import { NodeType } from '@/core/nodes/NodeType';
+import { nodeConfigLoader } from '@/core/nodes/nodeConfigLoader';
+import type { UnifiedNodeData } from '@/core/nodes';
+import { getLayerColor, FALLBACK_COLOR } from '@/core/utils/layerColors';
 
 /**
  * Context sub-graph containing the focal node and its 1-hop neighbors
@@ -124,21 +125,21 @@ function getNodeTypeForElement(element: ModelElement): NodeType | null {
 function extractNodeData(
   element: ModelElement,
   nodeType: NodeType | null
-): Record<string, unknown> {
+): UnifiedNodeData {
   if (!nodeType) {
     throw new Error(`Cannot determine node type for element: ${element.id} (type: ${element.type})`);
   }
 
   const layerColor = getLayerColor(element.layerId, 'primary') || FALLBACK_COLOR;
 
-  const data: Record<string, unknown> = {
+  const data: UnifiedNodeData = {
     label: element.name,
     elementId: element.id,
     layerId: element.layerId,
+    nodeType,
+    detailLevel: 'minimal' as const,
     fill: layerColor,
     stroke: layerColor,
-    detailLevel: 'minimal' as const,
-    nodeType,
     modelElement: element,
   };
 
@@ -163,8 +164,6 @@ export function buildContextSubGraph(
   const nodes: AppNode[] = [];
   const edges: AppEdge[] = [];
   const processedNodes = new Set<string>();
-  const nodePositions: PositionMap = {};
-  const neighborIds: string[] = [];
 
   // Collect all neighbors (1-hop away)
   const neighborSet = new Set<string>();
@@ -208,7 +207,6 @@ export function buildContextSubGraph(
     const element = findElement(nodeId, model);
     if (!element) continue;
 
-    const layer = model.layers[element.layerId];
     const isFocal = nodeId === focalElementId;
     const position = positions[nodeId] || { x: 0, y: 0 };
 
@@ -230,7 +228,7 @@ export function buildContextSubGraph(
       id: nodeId,
       data: nodeData,
       position,
-      type: 'default',
+      type: 'unified',
       width: dimensions.width,
       height: dimensions.height,
       draggable: false,
@@ -252,10 +250,8 @@ export function buildContextSubGraph(
 
     // Only create edge if both source and target are in our graph
     if (processedNodes.has(sourceId) && processedNodes.has(targetId)) {
-      const isSelfLoop = sourceId === targetId;
-      const edgeId = isSelfLoop
-        ? `edge-${sourceId}-self-${Math.random()}`
-        : `edge-${sourceId}-${targetId}`;
+      // Use relationship ID for deterministic, unique edge IDs
+      const edgeId = `edge-rel-${rel.id}`;
 
       // Get predicate label
       let label = rel.predicate || rel.type;
@@ -289,10 +285,8 @@ export function buildContextSubGraph(
 
     // Only create edge if both source and target are in our graph
     if (sourceId && targetId && processedNodes.has(sourceId) && processedNodes.has(targetId)) {
-      const isSelfLoop = sourceId === targetId;
-      const edgeId = isSelfLoop
-        ? `edge-${sourceId}-self-${Math.random()}`
-        : `edge-${sourceId}-${targetId}`;
+      // Use reference ID for deterministic, unique edge IDs
+      const edgeId = `edge-ref-${ref.id}`;
 
       // Get reference type as label
       let label = ref.predicate || ref.type;

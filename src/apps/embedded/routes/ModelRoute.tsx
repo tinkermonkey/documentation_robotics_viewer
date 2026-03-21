@@ -270,7 +270,7 @@ export default function ModelRoute() {
           <>
             <AnnotationPanel loadError={annotationsError} />
             <LayerTypesLegend model={model} />
-            <NodeDetailsPanel selectedNode={selectedNode} model={model} />
+            <NodeDetailsPanel selectedNode={selectedNode} model={model} onNodeSelect={handleNodeClick} />
             <GraphStatisticsPanel model={model} />
           </>
         ) : (

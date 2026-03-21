@@ -12,7 +12,6 @@ import type { MetaModel, ModelElement, Relationship, Reference } from '../../../
 import type { UnifiedNodeData } from '@/core/nodes';
 import { nodeConfigLoader } from '@/core/nodes';
 import { useModelStore } from '@/core/stores/modelStore';
-import { useRouter } from '@tanstack/react-router';
 import SpecDefinitionCard from './common/SpecDefinitionCard';
 import SourceReferenceList from './common/SourceReferenceList';
 import RelationshipTable from './common/RelationshipTable';
@@ -22,6 +21,7 @@ import { buildContextSubGraph } from '../services/contextSubGraphBuilder';
 export interface NodeDetailsPanelProps {
   selectedNode: Node | null;
   model: MetaModel;
+  onNodeSelect?: (elementId: string) => void;
 }
 
 function isUnifiedNodeData(data: unknown): data is UnifiedNodeData {
@@ -74,10 +74,9 @@ function formatPropertyValue(value: unknown): string {
 
 const DIVIDER = 'border-t border-gray-200 dark:border-gray-700 pt-3 mt-3';
 
-const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model }) => {
-  // Get store data and router - must be called before any conditional returns (Rules of Hooks)
+const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model, onNodeSelect }) => {
+  // Get store data - must be called before any conditional returns (Rules of Hooks)
   const { specSchemas } = useModelStore();
-  const router = useRouter();
 
   if (!selectedNode) {
     return (
@@ -218,16 +217,11 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
     }
   }, [element.id, model]);
 
-  // Handle context subgraph node click - navigate to the new node
+  // Handle context subgraph node click - invoke callback to parent
   const handleContextNodeClick = (elementId: string) => {
-    // Update URL to navigate to the new node
-    const currentRoute = router.state.location.pathname;
-    const nodeParam = `nodeId=${encodeURIComponent(elementId)}`;
-    const separator = currentRoute.includes('?') ? '&' : '?';
-    const newUrl = `${currentRoute}${separator}${nodeParam}`;
-    window.history.pushState({}, '', newUrl);
-    // Trigger a re-render by updating the router state (this will cause a navigation)
-    router.navigate({ to: currentRoute, search: { nodeId: elementId } });
+    if (onNodeSelect) {
+      onNodeSelect(elementId);
+    }
   };
 
   return (

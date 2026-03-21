@@ -46,7 +46,7 @@ function createTestNode(id: string, label: string, layerId: string, x: number, y
       nodeType: NodeType.BUSINESS_FUNCTION,
     },
     position: { x, y },
-    type: 'default',
+    type: 'unified',
     width: 140,
     height: 80,
     draggable: false,

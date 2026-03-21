@@ -4,11 +4,12 @@
  * with layer color-coded nodes, predicate edge labels, and click-to-navigate behavior
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { ReactFlow, ReactFlowProvider, Background, useReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { nodeTypes } from '@/core/nodes';
 import { edgeTypes } from '@/core/edges';
+import type { UnifiedNodeData } from '@/core/nodes';
 import type { AppNode, AppEdge } from '@/core/types/reactflow';
 
 export interface NodeContextSubGraphProps {
@@ -22,7 +23,7 @@ export interface NodeContextSubGraphProps {
  * Internal component that uses React Flow hooks
  * Must be rendered inside ReactFlowProvider
  */
-const SubGraphContent: React.FC<Omit<NodeContextSubGraphProps, 'focalElementId'> & { focalElementId: string }> = ({
+const SubGraphContent: React.FC<NodeContextSubGraphProps> = ({
   focalElementId,
   nodes,
   edges,
@@ -47,7 +48,7 @@ const SubGraphContent: React.FC<Omit<NodeContextSubGraphProps, 'focalElementId'>
       nodesConnectable={false}
       elementsSelectable={true}
       onNodeClick={(_, node) => {
-        const elementId = (node.data as any).elementId;
+        const elementId = (node.data as UnifiedNodeData).elementId;
         if (elementId && elementId !== focalElementId) {
           onNodeClick(elementId);
         }
@@ -75,6 +76,8 @@ export const NodeContextSubGraph: React.FC<NodeContextSubGraphProps> = ({
   return (
     <div
       data-testid="node-context-subgraph"
+      role="region"
+      aria-label="Context graph showing connected elements"
       className="h-64 w-full rounded border border-gray-200 dark:border-gray-700 overflow-hidden"
     >
       <ReactFlowProvider>
