@@ -7,7 +7,6 @@
 
 import React, { useMemo } from 'react'
 import { ReactFlow, ReactFlowProvider, Background, Controls, MiniMap } from '@xyflow/react'
-import type { Node, Edge } from '@xyflow/react'
 import { SpecDataResponse, SchemaDefinition } from '../services/embeddedDataLoader'
 import { Badge, Table, TableBody, TableCell, TableRow } from 'flowbite-react'
 
@@ -124,9 +123,9 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
 
     return (
       <section className="mt-8 border-t border-gray-200 dark:border-gray-700 pt-8" data-testid="relationship-schemas-section">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
           Valid Relationships
-        </h3>
+        </h2>
 
         <div className="space-y-4">
           {Object.entries(relsBySourceType).map(([sourceNodeId, rels]) => {
@@ -323,9 +322,9 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
 
                     {visibleProperties && Object.keys(visibleProperties).length > 0 && (
                       <div>
-                        <h5 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                        <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
                           Properties:
-                        </h5>
+                        </h4>
                         <ul className="space-y-2 ml-4">
                           {Object.entries(visibleProperties).map(([propName, propSchema]) => {
                             const prop = propSchema as SchemaDefinition
