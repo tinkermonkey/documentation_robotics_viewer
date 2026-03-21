@@ -4,9 +4,9 @@ A React-based graph visualization tool for the documentation robotics meta-model
 
 ## Features
 
-- **Multi-Layer Architecture Visualization**: View architectural models across 10 layers (Motivation, Business, Security, Application, Technology, API, DataModel, UX, Navigation, APM)
+- **Multi-Layer Architecture Visualization**: View architectural models across 12 layers (Motivation, Business, Security, Application, Technology, API, DataModel, DataStore, UX, Navigation, APM, Testing)
 - **Interactive Graph**: Powered by React Flow, allowing pan, zoom
-- **Automatic Layout**: Uses dagre.js to automatically arrange nodes in a hierarchical layout
+- **Automatic Layout**: Uses dagre.js and ELK to automatically arrange nodes in a hierarchical layout
 - **YAML & JSON Support**: Load models from YAML instance files or JSON schemas
 - **Embedded Mode**: Standalone viewer component for integration
 - **DR CLI Integration**: Works with the Documentation Robotics CLI server
@@ -17,23 +17,31 @@ A React-based graph visualization tool for the documentation robotics meta-model
 ├── src/
 │   ├── apps/
 │   │   └── embedded/              # Embedded viewer application
-│   │       ├── EmbeddedApp.tsx    # Main embedded app component
-│   │       └── services/          # WebSocket client, data loader
+│   │       ├── components/        # App-specific components
+│   │       ├── routes/            # TanStack Router route components
+│   │       ├── services/          # WebSocket client, data loader
+│   │       └── stores/            # App-specific Zustand stores
+│   ├── catalog/                   # Storybook catalog (stories, fixtures, providers)
 │   ├── core/
-│   │   ├── components/            # Shared React components
-│   │   ├── services/              # Core services (graph transformer, YAML parser)
+│   │   ├── components/            # Shared React components (GraphViewer, base UI)
+│   │   ├── edges/                 # Custom React Flow edge types
+│   │   ├── layout/                # Layout engines (Dagre, ELK)
+│   │   ├── nodes/                 # Custom React Flow nodes (UnifiedNode, config)
+│   │   ├── services/              # Core services (nodeTransformer, dataLoader, yamlParser)
 │   │   ├── stores/                # Zustand state stores
 │   │   └── types/                 # TypeScript type definitions
-│   └── main.tsx                   # Application entry points
-├── example-implementation/        # Sample (self-reflective) model
-│   ├── manifest.yaml              # Model orchestration file
-│   └── model/                     # YAML layer files
+│   └── theme/                     # Tailwind CSS theming
+├── documentation-robotics/        # Self-reflective architecture model
+│   └── model/                     # YAML layer files (12 layers)
 ├── tests/                         # Playwright test suites
-│   ├── e2e/                       # E2E test helpers
 │   ├── integration/               # Integration tests
-│   └── unit/                      # Unit tests
-├── documentation/                 # Project documentation
-├── vite.config.ts                 # Vite configurations
+│   ├── unit/                      # Unit tests
+│   ├── stories/                   # Story validation
+│   ├── helpers/                   # Test utilities
+│   └── fixtures/                  # Test data
+├── docs/                          # API specifications
+├── vite.config.ts                 # Vite configuration
+├── vite.config.embedded.ts        # Embedded build configuration
 ├── playwright.config.ts           # Default test config
 ├── playwright.e2e.config.ts       # E2E test config (with servers)
 └── package.json                   # Dependencies and scripts
@@ -79,7 +87,7 @@ Open [http://localhost:3001](http://localhost:3001) to view the application.
 ### Running Tests
 
 ```bash
-# All tests (unit + integration)
+# All tests (unit + integration, 1197 tests)
 npm test
 
 # E2E tests (requires DR CLI server running)
@@ -102,7 +110,7 @@ The project includes a Storybook-based component catalog for developing and test
 # Start the component catalog (port 61001)
 npm run storybook:dev
 
-# Run all 578 story tests
+# Run story tests
 npm run test:storybook
 
 # Generate accessibility report
@@ -114,7 +122,6 @@ Open [http://localhost:61001](http://localhost:61001) to browse component storie
 **Key Features:**
 - **Isolated Testing**: Each story runs independently without global state pollution
 - **Fast Iteration**: 40% faster startup than embedded app (2-3s vs 3-5s)
-- **Automated Discovery**: 578 stories (510 components + 68 autodocs) are discoverable and testable in isolation
 - **Accessibility Testing**: Built-in a11y validation via Storybook addon
 
 ### Building for Production
@@ -170,8 +177,6 @@ Model File Changed (e.g., functions.yaml)
    Zero page refresh required
 ```
 
-For comprehensive API documentation and WebSocket protocol details, see [DR CLI Integration Guide](documentation/DR_CLI_INTEGRATION_GUIDE.md).
-
 ## Model Format
 
 The viewer supports two model formats:
@@ -189,12 +194,10 @@ layers:
     enabled: true
 ```
 
-See [YAML_MODELS.md](documentation/YAML_MODELS.md) for complete specification.
-
 ### 2. JSON Schema Models (v0.1.1)
 Single JSON file per layer with schema definitions and element instances.
 
-See existing layer files in `example-implementation/model/` for examples.
+See existing layer files in `documentation-robotics/model/` for examples.
 
 ## System Architecture
 
@@ -202,7 +205,7 @@ See existing layer files in `example-implementation/model/` for examples.
 ┌──────────────────────────────────────────────────────────────┐
 │                    Dr Viewer (React 19)                      │
 │  • Multi-layer graph visualization                           │
-│  • 10 layer types (Motivation, Business, Tech, etc.)        │
+│  • 12 layer types (Motivation, Business, Tech, etc.)        │
 │  • Interactive pan/zoom with React Flow                      │
 │  • Real-time model updates via WebSocket                     │
 └────────────────────┬─────────────────────────────────────────┘
@@ -232,18 +235,16 @@ See existing layer files in `example-implementation/model/` for examples.
 **Key Features:**
 - **Stateless Frontend** - No local state persistence between sessions
 - **Live Updates** - Changes to model files appear instantly on screen
-- **Layered Architecture** - 10 distinct architecture layers
+- **Layered Architecture** - 12 distinct architecture layers
 - **Extensible** - Custom node types and layout algorithms
 - **Accessible** - WCAG 2.1 AA compliance throughout
-
-See [Architecture Overview](documentation/architecture-overview.md) for detailed system design.
 
 ## Technologies Used
 
 ### Frontend
 - **React 19** - UI framework
 - **TypeScript** - Type safety and strict checking
-- **Vite** - Fast build tool and dev server
+- **Vite 6** - Fast build tool and dev server
 - **@xyflow/react** - Interactive graph visualization (v12.9+)
 - **dagre.js** - Graph layout algorithm
 - **Zustand 5** - State management (stores)
@@ -258,30 +259,12 @@ See [Architecture Overview](documentation/architecture-overview.md) for detailed
 
 ### Testing
 - **Playwright 1.57** - E2E testing framework
-- **Vitest** - Unit testing
 - **Storybook** - Component catalog and isolation
-
-## Documentation
-
-### Getting Started
-- **[Getting Started](#getting-started)** - Quick setup instructions
-- **[CI/CD Setup](#cicd-setup)** - Configure automated E2E tests with DR CLI in CI environments
-- **[DR CLI Integration Guide](documentation/DR_CLI_INTEGRATION_GUIDE.md)** - Comprehensive API, WebSocket, and architecture documentation
-- **[DR CLI Troubleshooting](documentation/DR_CLI_TROUBLESHOOTING.md)** - Quick reference for common issues and solutions
-
-### Technical Guides
-- **[API Client Generation](documentation/API_CLIENT_GENERATION.md)** - Full API client generation with React Query hooks and versioning strategy
-- **[YAML Models Guide](documentation/YAML_MODELS.md)** - YAML model format specification
-- **[Testing Guide](tests/README.md)** - Test setup and execution
-- **[Testing Strategy](documentation/claude_thoughts/TESTING_STRATEGY.md)** - Testing approach and patterns
-- **[Architecture Overview](documentation/architecture-overview.md)** - System design and components
-- **[WebSocket Implementation](documentation/WEBSOCKET_JSONRPC_IMPLEMENTATION.md)** - WebSocket JSON-RPC protocol details
-- **[Accessibility](documentation/ACCESSIBILITY.md)** - WCAG 2.1 AA compliance guidelines
 
 ## Project Status
 
-**Version**: 0.1.0
-**Test Coverage**: 91% (20/22 tests passing)
+**Version**: 0.2.3
+**Tests**: 1197 (unit + integration + E2E)
 
 ## Quick Reference
 
@@ -385,7 +368,7 @@ jobs:
         run: dr --version
 
       - name: Start DR CLI server
-        run: dr visualize ./example-implementation/ &
+        run: dr visualize ./documentation-robotics/ &
 
       - name: Wait for server to be ready
         run: |
@@ -423,7 +406,7 @@ e2e_tests:
     - npm install
     - npx playwright install --with-deps
     - npm install -g @tinkermonkey/dr-cli@latest
-    - dr visualize ./example-implementation/ &
+    - dr visualize ./documentation-robotics/ &
     - sleep 5  # Wait for server to start
   script:
     - npm run test:e2e
@@ -451,7 +434,7 @@ jobs:
           command: npm install -g @tinkermonkey/dr-cli@latest
       - run:
           name: Start DR CLI server
-          command: dr visualize ./example-implementation/ &
+          command: dr visualize ./documentation-robotics/ &
       - run:
           name: Wait for server
           command: |
@@ -506,7 +489,7 @@ If E2E tests fail in CI but pass locally:
 
 2. **Check server startup logs**:
    ```bash
-   dr visualize ./example-implementation/ --verbose
+   dr visualize ./documentation-robotics/ --verbose
    ```
 
 3. **Confirm network connectivity**:
@@ -525,8 +508,6 @@ If E2E tests fail in CI but pass locally:
    ls -la test-results/
    cat test-results/*/results.json
    ```
-
-For more advanced CI setup and troubleshooting, see [DR CLI Integration Guide - Troubleshooting](documentation/DR_CLI_INTEGRATION_GUIDE.md#troubleshooting).
 
 ### Troubleshooting
 
@@ -593,7 +574,7 @@ dr visualize --port 3001 ./my-model
 
 ```bash
 # 1. Ensure DR CLI server is running in separate terminal
-dr visualize ./example-implementation/
+dr visualize ./documentation-robotics/
 
 # 2. Verify server is healthy
 curl http://localhost:8080/health
@@ -605,11 +586,10 @@ npm run test:e2e -- --verbose
 ls -la test-results/
 ```
 
-For detailed troubleshooting, see [DR CLI Integration Guide - Troubleshooting](documentation/DR_CLI_INTEGRATION_GUIDE.md#troubleshooting).
-
 ### Key URLs
 - **Embedded Viewer**: http://localhost:3001
 - **DR CLI Server**: http://localhost:8080
+- **Storybook**: http://localhost:61001
 
 ## License
 
