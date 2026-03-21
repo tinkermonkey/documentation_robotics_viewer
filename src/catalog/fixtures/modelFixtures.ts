@@ -5,7 +5,7 @@
  */
 
 import type { MetaModel, Layer, ModelElement, ElementVisual, Relationship, SourceReference, ElementMetadata } from '../../core/types';
-import { LayerType, RelationshipType } from '../../core/types';
+import { LayerType } from '../../core/types';
 
 /**
  * Helper to create element visual properties

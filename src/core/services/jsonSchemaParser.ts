@@ -5,7 +5,7 @@ import {
   SchemaProperty,
   SchemaReference
 } from '../types/jsonSchema';
-import { Relationship, RelationshipType, ExtractedReference, ReferenceType } from '../types/model';
+import { Relationship, ExtractedReference, ReferenceType } from '../types/model';
 import { LayerType } from '../types/layers';
 
 /**

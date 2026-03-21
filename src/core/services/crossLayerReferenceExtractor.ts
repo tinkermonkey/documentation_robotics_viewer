@@ -250,10 +250,10 @@ export class CrossLayerReferenceExtractor {
         } else {
           // Fallback to common identifier properties when no catalog available
           identifiers.push(
-            element.properties.operationId,
-            element.properties.route,
-            element.properties.resourceRef,
-            element.properties.name,
+            element.properties.operationId as string | undefined,
+            element.properties.route as string | undefined,
+            element.properties.resourceRef as string | undefined,
+            element.properties.name as string | undefined,
             element.name
           );
         }

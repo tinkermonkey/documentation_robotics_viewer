@@ -2,7 +2,8 @@ import { Layer, ModelElement, Relationship, LayerType, RelationshipType } from '
 import { getLayerColor } from '../utils/layerColors';
 
 /**
- * Mapping of relationship type strings (catalog-driven values).
+ * Validation whitelist for recognized relationship type strings.
+ * Maps each valid type to itself. Unknown types fall back to 'reference'.
  * Defined at module level to avoid object recreation on each method call.
  */
 const RELATIONSHIP_TYPE_MAP: Record<string, RelationshipType> = {

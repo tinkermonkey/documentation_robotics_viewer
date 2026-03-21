@@ -3,7 +3,7 @@ import NodeDetailsPanel from '@/apps/embedded/components/NodeDetailsPanel';
 import type { Node } from '@xyflow/react';
 import type { MetaModel, SourceReference, SpecLayerData } from '@/core/types';
 import { LayerType } from '@/core/types/layers';
-import { RelationshipType, ReferenceType } from '@/core/types/model';
+import { ReferenceType } from '@/core/types/model';
 import { useModelStore } from '@/core/stores/modelStore';
 
 const meta = {
@@ -77,9 +77,9 @@ const mockModel: MetaModel = {
         },
       ],
       relationships: [
-        { id: 'rel-1', sourceId: 'driver-1', targetId: 'goal-1', type: RelationshipType.Influence },
-        { id: 'rel-2', sourceId: 'goal-1', targetId: 'requirement-1', type: RelationshipType.Reference },
-        { id: 'rel-3', sourceId: 'goal-1', targetId: 'requirement-2', type: RelationshipType.Reference },
+        { id: 'rel-1', sourceId: 'driver-1', targetId: 'goal-1', type: 'influence' },
+        { id: 'rel-2', sourceId: 'goal-1', targetId: 'requirement-1', type: 'reference' },
+        { id: 'rel-3', sourceId: 'goal-1', targetId: 'requirement-2', type: 'reference' },
       ],
     },
     business: {
@@ -202,9 +202,9 @@ export const NodeWithManyConnections: Story = {
           ],
           relationships: [
             ...mockModel.layers.motivation.relationships,
-            { id: 'rel-4', sourceId: 'driver-1', targetId: 'goal-2', type: RelationshipType.Influence },
-            { id: 'rel-5', sourceId: 'goal-2', targetId: 'requirement-2', type: RelationshipType.Reference },
-            { id: 'rel-6', sourceId: 'goal-1', targetId: 'goal-2', type: RelationshipType.Reference },
+            { id: 'rel-4', sourceId: 'driver-1', targetId: 'goal-2', type: 'influence' },
+            { id: 'rel-5', sourceId: 'goal-2', targetId: 'requirement-2', type: 'reference' },
+            { id: 'rel-6', sourceId: 'goal-1', targetId: 'goal-2', type: 'reference' },
           ],
         },
       },
@@ -476,9 +476,9 @@ export const WithAttributesAndSourceReferences: Story = {
             },
           ],
           relationships: [
-            { id: 'rel-1', sourceId: 'driver-1', targetId: 'goal-1', type: RelationshipType.Influence },
-            { id: 'rel-2', sourceId: 'goal-1', targetId: 'requirement-1', type: RelationshipType.Reference },
-            { id: 'rel-3', sourceId: 'goal-1', targetId: 'requirement-2', type: RelationshipType.Reference },
+            { id: 'rel-1', sourceId: 'driver-1', targetId: 'goal-1', type: 'influence' },
+            { id: 'rel-2', sourceId: 'goal-1', targetId: 'requirement-1', type: 'reference' },
+            { id: 'rel-3', sourceId: 'goal-1', targetId: 'requirement-2', type: 'reference' },
           ],
         },
         business: {

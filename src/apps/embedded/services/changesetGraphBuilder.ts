@@ -5,7 +5,7 @@
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import { MetaModel, ModelElement, Relationship, Layer, RelationshipType } from '../../../core/types';
+import { MetaModel, ModelElement, Relationship, Layer } from '../../../core/types';
 import type { ChangesetOperation } from '../../../core/types/reactflow';
 import type { ChangesetDetails, ChangesetChange } from './embeddedDataLoader';
 
