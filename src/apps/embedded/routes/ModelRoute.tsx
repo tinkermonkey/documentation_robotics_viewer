@@ -18,54 +18,9 @@ import { useDataLoader } from '../hooks/useDataLoader';
 import { LoadingState, ErrorState } from '../components/shared';
 import { loadPredicateCatalog } from '../../../core/services/predicateCatalogLoader';
 import { loadSpecSchemas } from '../../../core/services/specSchemaLoader';
+import { loadSpecSchemaFiles } from '../../../core/services/specSchemaFileLoader';
 import type { MetaModel } from '../../../core/types';
 
-/**
- * Load spec schemas from .dr/spec/ directory
- * These are static assets bundled with the app
- * Returns spec files including manifest.json for version validation
- */
-async function loadSpecSchemaFiles(): Promise<Record<string, unknown>> {
-  const specFiles: Record<string, unknown> = {};
-  const layerNames = [
-    'motivation', 'business', 'security', 'application', 'technology',
-    'api', 'data-model', 'data-store', 'ux', 'navigation', 'apm', 'testing'
-  ];
-
-  // Load manifest.json for spec version validation
-  try {
-    const manifestResponse = await fetch('/.dr/spec/manifest.json');
-    if (manifestResponse.ok) {
-      specFiles['manifest.json'] = await manifestResponse.json();
-    }
-  } catch (error) {
-    console.warn('Failed to load manifest.json:', error);
-  }
-
-  // Load base.json for predicate catalog
-  try {
-    const baseResponse = await fetch('/.dr/spec/base.json');
-    if (baseResponse.ok) {
-      specFiles['base.json'] = await baseResponse.json();
-    }
-  } catch (error) {
-    console.warn('Failed to load base.json:', error);
-  }
-
-  // Load layer-specific spec schemas
-  for (const layerName of layerNames) {
-    try {
-      const response = await fetch(`/.dr/spec/${layerName}.json`);
-      if (response.ok) {
-        specFiles[`${layerName}.json`] = await response.json();
-      }
-    } catch (error) {
-      console.warn(`Failed to load ${layerName}.json:`, error);
-    }
-  }
-
-  return specFiles;
-}
 
 /**
  * Sanitize model data to ensure all elements have required visual properties.
