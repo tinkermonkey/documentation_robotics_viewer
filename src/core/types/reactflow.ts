@@ -1,5 +1,5 @@
 import { Node, Edge } from '@xyflow/react';
-import { ModelElement, ReferenceType, SourceReference, PredicateDefinition } from './model';
+import { ModelElement, ReferenceType, SourceReference, PredicateDefinition, ElementMetadata } from './model';
 import {
   DataModelField,
   DataModelComponentType,
@@ -71,6 +71,7 @@ export interface BaseNodeData {
   sourceReferences?: SourceReference[];
   specNodeId?: string;
   attributes?: Record<string, unknown>;
+  metadata?: ElementMetadata;
 
   // Index signature for React Flow compatibility
   [key: string]: unknown;
