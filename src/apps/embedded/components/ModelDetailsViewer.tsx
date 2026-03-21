@@ -11,6 +11,7 @@ import MetadataGrid, { MetadataItem } from './common/MetadataGrid';
 import RelationshipTable from './common/RelationshipTable';
 import SourceReferenceList from './common/SourceReferenceList';
 import SpecDefinitionCard from './common/SpecDefinitionCard';
+import SpecNodeInstanceCard from './common/SpecNodeInstanceCard';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { useModelStore } from '../../../core/stores/modelStore';
 import { SchemaDefinition } from '../services/embeddedDataLoader';
@@ -106,6 +107,19 @@ const ElementCard: React.FC<ElementCardProps> = ({
             )}
 
             <AttributesTable attributes={attributes} title="Attributes" />
+
+            {/* Spec Node Instance section */}
+            {nodeSchema && element.specNodeId ? (
+              <div
+                className="pt-2 border-t border-gray-200 dark:border-gray-700"
+                data-testid="element-spec-node-instance-section"
+              >
+                <SpecNodeInstanceCard
+                  specNodeId={element.specNodeId}
+                  nodeSchema={nodeSchema}
+                />
+              </div>
+            ) : null}
 
             {/* Spec Definition section */}
             {nodeSchema && element.specNodeId && specLayerId && specType ? (
