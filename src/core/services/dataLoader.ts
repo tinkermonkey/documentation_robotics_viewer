@@ -424,28 +424,51 @@ export class DataLoader {
           relationshipsYamlWarnings = relParser.getWarnings();
 
           // Partition relationships: intra-layer vs cross-layer
+          // First pass: collect intra-layer relationships and build dedup set
+          const intraLayerRelsFromYaml: Array<{ rel: any; layerId: string }> = [];
+
           for (const rel of parsedRelationships) {
             // Create a unique key for this relationship to track it for deduplication
             const relKey = `${rel.sourceId}→${rel.targetId}`;
             relationshipsYamlSet.add(relKey);
 
             if (rel.sourceLayerId === rel.targetLayerId && rel.sourceLayerId) {
-              // Intra-layer: add to layer.relationships
-              // Find the layer by its type
-              let found = false;
-              for (const layer of Object.values(layers)) {
-                if (layer.id === rel.sourceLayerId || layer.type === rel.sourceLayerId) {
-                  layer.relationships.push(rel);
-                  found = true;
-                  break;
-                }
-              }
-              if (!found) {
-                console.warn(`Could not find layer for intra-layer relationship: ${rel.sourceLayerId}`);
-              }
+              // Intra-layer: defer adding to layer until after deduplication
+              intraLayerRelsFromYaml.push({ rel, layerId: rel.sourceLayerId });
             } else {
               // Cross-layer: add to references
               allRelationships.push(rel);
+            }
+          }
+
+          // Deduplication: remove inline relationships that appear in relationships.yaml
+          // Prefer the relationships.yaml entries as they contain more metadata
+          if (relationshipsYamlSet.size > 0) {
+            for (const layer of Object.values(layers)) {
+              const originalCount = layer.relationships.length;
+              layer.relationships = layer.relationships.filter((rel: any) => {
+                const relKey = `${rel.sourceId}→${rel.targetId}`;
+                return !relationshipsYamlSet.has(relKey);
+              });
+              const removedCount = originalCount - layer.relationships.length;
+              if (removedCount > 0) {
+                console.log(`Removed ${removedCount} duplicate inline relationships from layer ${layer.id} (preferred relationships.yaml entries)`);
+              }
+            }
+          }
+
+          // Now add the intra-layer relationships from relationships.yaml (after inline deduplication)
+          for (const { rel, layerId } of intraLayerRelsFromYaml) {
+            let found = false;
+            for (const layer of Object.values(layers)) {
+              if (layer.id === layerId || layer.type === layerId) {
+                layer.relationships.push(rel);
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              console.warn(`Could not find layer for intra-layer relationship: ${layerId}`);
             }
           }
 
@@ -454,22 +477,6 @@ export class DataLoader {
           const errorMsg = `Failed to parse relationships.yaml: ${error instanceof Error ? error.message : 'Unknown error'}`;
           console.error(errorMsg);
           parseErrors.push(errorMsg);
-        }
-      }
-    }
-
-    // Deduplication: remove inline relationships that appear in relationships.yaml
-    // Prefer the relationships.yaml entries as they contain more metadata
-    if (relationshipsYamlSet.size > 0) {
-      for (const layer of Object.values(layers)) {
-        const originalCount = layer.relationships.length;
-        layer.relationships = layer.relationships.filter((rel: any) => {
-          const relKey = `${rel.sourceId}→${rel.targetId}`;
-          return !relationshipsYamlSet.has(relKey);
-        });
-        const removedCount = originalCount - layer.relationships.length;
-        if (removedCount > 0) {
-          console.log(`Removed ${removedCount} duplicate inline relationships from layer ${layer.id} (preferred relationships.yaml entries)`);
         }
       }
     }
