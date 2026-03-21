@@ -105,8 +105,9 @@ export class YAMLParser {
     files: Record<string, string>,
     layerId: string
   ): Layer {
-    // Clear dot-notation lookup to prevent mappings from previous parses from persisting
-    this.dotNotationLookup.clear();
+    // Do NOT clear dot-notation lookup - we need to accumulate mappings across all layers
+    // for cross-layer reference resolution. Clear is called at the beginning of
+    // parseYAMLInstances() instead to reset before parsing all layers.
 
     const layerType = LAYER_TYPE_MAP[layerId] || layerId;
     const elements: ModelElement[] = [];
@@ -621,6 +622,14 @@ export class YAMLParser {
    */
   getDotNotationLookup(): Map<string, string> {
     return this.dotNotationLookup;
+  }
+
+  /**
+   * Clear dot-notation to UUID lookup map
+   * Called at the start of parsing all layers to reset the lookup
+   */
+  clearDotNotationLookup(): void {
+    this.dotNotationLookup.clear();
   }
 
 }

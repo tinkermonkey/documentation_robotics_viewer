@@ -9,6 +9,14 @@ import { RelationshipsYamlParser } from './relationshipsYamlParser';
 import { YAMLManifest } from '../types/yaml';
 
 /**
+ * Helper function to check if a file path refers to the relationships.yaml file
+ * Uses exact filename matching to avoid matching files like "business-relationships-matrix.yaml"
+ */
+function isRelationshipsYamlFile(filePath: string): boolean {
+  return filePath.endsWith('relationships.yaml') || filePath.endsWith('relationships.yml') || filePath === 'relationships.yaml' || filePath === 'relationships.yml';
+}
+
+/**
  * Helper function to load a model from a local path (for testing)
  * This is primarily for use in Node.js test environments (Playwright, Jest, etc.)
  */
@@ -373,6 +381,10 @@ export class DataLoader {
     // Group files by layer based on manifest paths
     const layerFiles = this.groupFilesByLayer(schemas, manifest, manifestKey);
 
+    // Clear dot-notation lookup before parsing all layers
+    // This ensures the lookup is fresh and will accumulate mappings across all layers
+    this.yamlParser.clearDotNotationLookup();
+
     // Parse each enabled layer
     const layers: Record<string, any> = {};
     const allRelationships: any[] = [];
@@ -409,7 +421,7 @@ export class DataLoader {
     this.resolveDotNotationReferences(allRelationships, this.yamlParser.getDotNotationLookup());
 
     // Load and parse relationships.yaml if present
-    const relationshipsYamlKey = Object.keys(schemas).find(k => k.includes('relationships'));
+    const relationshipsYamlKey = Object.keys(schemas).find(isRelationshipsYamlFile);
     let relationshipsYamlWarnings: string[] = [];
     const relationshipsYamlSet = new Set<string>(); // Track relationships from YAML for deduplication
     if (relationshipsYamlKey) {
@@ -429,7 +441,9 @@ export class DataLoader {
 
           for (const rel of parsedRelationships) {
             // Create a unique key for this relationship to track it for deduplication
-            const relKey = `${rel.sourceId}→${rel.targetId}`;
+            // Include the predicate (or type) so that multiple relationships between the same
+            // two elements with different predicates are preserved (e.g., A "serves" B and A "flows_to" B)
+            const relKey = `${rel.sourceId}→${rel.targetId}→${rel.predicate || rel.type}`;
             relationshipsYamlSet.add(relKey);
 
             if (rel.sourceLayerId === rel.targetLayerId && rel.sourceLayerId) {
@@ -444,17 +458,25 @@ export class DataLoader {
           // Deduplication: remove inline relationships that appear in relationships.yaml
           // Prefer the relationships.yaml entries as they contain more metadata
           if (relationshipsYamlSet.size > 0) {
+            const dedupedAllRelationships: any[] = [];
             for (const layer of Object.values(layers)) {
               const originalCount = layer.relationships.length;
               layer.relationships = layer.relationships.filter((rel: any) => {
-                const relKey = `${rel.sourceId}→${rel.targetId}`;
+                // Include the predicate (or type) in the dedup key to allow multiple
+                // relationships between the same two elements with different predicates
+                const relKey = `${rel.sourceId}→${rel.targetId}→${rel.predicate || rel.type}`;
                 return !relationshipsYamlSet.has(relKey);
               });
               const removedCount = originalCount - layer.relationships.length;
               if (removedCount > 0) {
                 console.log(`Removed ${removedCount} duplicate inline relationships from layer ${layer.id} (preferred relationships.yaml entries)`);
               }
+              // Add the deduplicated relationships to the rebuilt allRelationships array
+              dedupedAllRelationships.push(...layer.relationships);
             }
+            // Replace allRelationships with the deduplicated version
+            allRelationships.length = 0;
+            allRelationships.push(...dedupedAllRelationships);
           }
 
           // Now add the intra-layer relationships from relationships.yaml (after inline deduplication)
@@ -540,7 +562,7 @@ export class DataLoader {
     // Group files by layer based on path matching
     for (const [filePath, content] of Object.entries(schemas)) {
       // Skip manifest, projection rules, and relationships
-      if (filePath === manifestKey || filePath.includes('projection-rules') || filePath.includes('relationships')) {
+      if (filePath === manifestKey || filePath.includes('projection-rules') || isRelationshipsYamlFile(filePath)) {
         continue;
       }
 
