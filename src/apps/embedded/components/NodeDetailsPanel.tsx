@@ -111,16 +111,16 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
     return (
       <div data-testid="node-details-panel-degraded" className="p-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-2 mb-1">
-          {styleConfig?.icon && (
+          {styleConfig?.icon ? (
             <span className="text-base" aria-hidden="true">{styleConfig.icon}</span>
-          )}
+          ) : null}
           <p data-testid="node-details-name" className="text-sm font-semibold text-gray-900 dark:text-white break-words">
             {displayLabel}
           </p>
         </div>
-        {styleConfig?.typeLabel && (
+        {styleConfig?.typeLabel ? (
           <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">{styleConfig.typeLabel}</p>
-        )}
+        ) : null}
         <p className="text-xs text-gray-400 dark:text-gray-500 italic">No model element found</p>
         <div className={DIVIDER}>
           <p data-testid="node-details-element-id" className="font-mono text-xs text-gray-400 dark:text-gray-500 break-all">
@@ -186,9 +186,11 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
     : undefined;
 
   // Attributes section - from element.attributes
-  const attributesList: Array<[string, unknown]> = element.attributes
-    ? Object.entries(element.attributes).filter(([, v]) => v != null)
-    : [];
+  const attributesList: Array<[string, string]> = (element.attributes
+    ? Object.entries(element.attributes)
+        .filter(([, v]) => v != null)
+        .map(([k, v]) => [k, formatPropertyValue(v)] as const)
+    : []) as Array<[string, string]>;
 
   // Semantic properties (skip visual keys and private keys, and also skip attributes already shown)
   const attributeKeys = new Set(Object.keys(element.attributes ?? {}));
@@ -206,30 +208,30 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
     <div data-testid="node-details-panel" className="p-4 border-b border-gray-200 dark:border-gray-700">
       {/* Header */}
       <div className="flex items-start gap-2 mb-1">
-        {styleConfig?.icon && (
+        {styleConfig?.icon ? (
           <span className="text-base flex-shrink-0 mt-0.5" aria-hidden="true">{styleConfig.icon}</span>
-        )}
+        ) : null}
         <p data-testid="node-details-name" className="text-sm font-semibold text-gray-900 dark:text-white break-words">
           {element.name}
         </p>
       </div>
       <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-        {typeLabel} · {layerName}
+        {typeLabel ?? 'Unknown'} · {layerName}
       </p>
-      {changesetOp && (
+      {changesetOp ? (
         <div className="mb-2">
           {changesetOp === 'add' && <Badge color="success" className="w-fit">ADD</Badge>}
           {changesetOp === 'update' && <Badge color="warning" className="w-fit">UPDATE</Badge>}
           {changesetOp === 'delete' && <Badge color="failure" className="w-fit">DELETE</Badge>}
         </div>
-      )}
+      ) : null}
 
       {/* Description */}
-      {element.description && (
+      {element.description ? (
         <div data-testid="node-details-description" className={DIVIDER}>
           <p className="text-sm text-gray-700 dark:text-gray-300">{element.description}</p>
         </div>
-      )}
+      ) : null}
 
       {/* Attributes */}
       {attributesList.length > 0 ? (
@@ -237,19 +239,16 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Attributes</p>
           <table className="w-full text-xs">
             <tbody>
-              {attributesList.map(([key, value]: [string, unknown]) => {
-                const displayValue = formatPropertyValue(value);
-                return (
-                  <tr key={key}>
-                    <td className="pr-2 py-0.5 text-gray-500 dark:text-gray-400 align-top whitespace-nowrap">
-                      {PROPERTY_LABELS[key] ?? toTitleCase(key)}
-                    </td>
-                    <td className="py-0.5 text-gray-800 dark:text-gray-200 break-words">
-                      {displayValue}
-                    </td>
-                  </tr>
-                );
-              })}
+              {attributesList.map(([key, displayValue]) => (
+                <tr key={key}>
+                  <td className="pr-2 py-0.5 text-gray-500 dark:text-gray-400 align-top whitespace-nowrap">
+                    {PROPERTY_LABELS[key] ?? toTitleCase(key)}
+                  </td>
+                  <td className="py-0.5 text-gray-800 dark:text-gray-200 break-words">
+                    {displayValue}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
