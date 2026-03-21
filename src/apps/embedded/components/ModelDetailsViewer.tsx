@@ -3,7 +3,7 @@
  * Displays model instance data in a readable JSON format
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, ReactNode } from 'react';
 import { MetaModel, ModelElement, Relationship, Reference } from '../../../core/types';
 import { Badge, Accordion, AccordionPanel, AccordionTitle, AccordionContent } from 'flowbite-react';
 import AttributesTable, { AttributeRow } from './common/AttributesTable';
@@ -21,6 +21,107 @@ interface ModelDetailsViewerProps {
   onPathHighlight?: (path: string | null) => void;
   selectedLayer: string | null;
 }
+
+interface ElementCardProps {
+  element: ModelElement;
+  documentationString?: string;
+  attributes: AttributeRow[];
+  layerKey: string;
+  selectedLayer: string;
+  model: MetaModel;
+  findElementById: (elementId: string) => { element: ModelElement; layerId: string } | null;
+  buildRelationshipsForElement: (element: ModelElement, selectedLayerKey: string) => {
+    outbound: Array<{
+      predicate: string;
+      targetId: string;
+      targetName: string;
+      targetLayerId: string;
+      isInterLayer: boolean;
+    }>;
+    inbound: Array<{
+      predicate: string;
+      sourceId: string;
+      sourceName: string;
+      sourceLayerId: string;
+      isInterLayer: boolean;
+    }>;
+  };
+}
+
+const ElementCard: React.FC<ElementCardProps> = ({
+  element,
+  documentationString,
+  attributes,
+  layerKey,
+  selectedLayer,
+  model,
+  findElementById,
+  buildRelationshipsForElement
+}) => {
+  // Memoize relationships at component level (correct hook usage)
+  const { outbound, inbound } = useMemo(
+    () => buildRelationshipsForElement(element, layerKey || selectedLayer),
+    [element, layerKey, selectedLayer, buildRelationshipsForElement]
+  );
+
+  return (
+    <Accordion key={element.id} collapseAll>
+      <AccordionPanel>
+        <AccordionTitle className="text-sm">
+          {element.name || element.id}
+        </AccordionTitle>
+        <AccordionContent className="bg-white dark:bg-gray-900">
+          <div className="space-y-4">
+            {/* Documentation section - prominently displayed */}
+            {documentationString && (
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <h6 className="text-xs font-semibold text-blue-900 dark:text-blue-300 mb-1 uppercase tracking-wide">
+                  Documentation
+                </h6>
+                <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
+                  {documentationString}
+                </p>
+              </div>
+            )}
+
+            <AttributesTable attributes={attributes} title="Attributes" />
+
+            {/* Relationships section */}
+            {(outbound.length > 0 || inbound.length > 0) && (
+              <div
+                className="pt-2 border-t border-gray-200 dark:border-gray-700"
+                data-testid="element-relationships-section"
+              >
+                <h6 className="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
+                  Relationships
+                </h6>
+                <RelationshipTable
+                  outbound={outbound}
+                  inbound={inbound}
+                />
+              </div>
+            )}
+
+            {/* Source References section */}
+            {element.sourceReference && (
+              <div
+                className="pt-2 border-t border-gray-200 dark:border-gray-700"
+                data-testid="element-source-references-section"
+              >
+                <h6 className="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
+                  Source References
+                </h6>
+                <SourceReferenceList
+                  references={[element.sourceReference]}
+                />
+              </div>
+            )}
+          </div>
+        </AccordionContent>
+      </AccordionPanel>
+    </Accordion>
+  );
+};
 
 const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
   model,
@@ -143,45 +244,45 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
       isInterLayer: boolean;
     }> = [];
 
-    // Collect outbound relationships from current layer
-    const layer = layers[selectedLayerKey];
-    if (layer?.relationships) {
-      const outboundRels = layer.relationships.filter(
-        (r: Relationship) => r.sourceId === element.id
-      );
+    // Collect outbound and inbound relationships from ALL layers
+    for (const [, layer] of Object.entries(layers)) {
+      if (layer?.relationships) {
+        // Outbound relationships
+        const outboundRels = layer.relationships.filter(
+          (r: Relationship) => r.sourceId === element.id
+        );
 
-      outboundRels.forEach((rel: Relationship) => {
-        const targetElement = layer.elements?.find((el: ModelElement) => el.id === rel.targetId);
-        if (targetElement) {
-          outbound.push({
-            predicate: rel.predicate || rel.type,
-            targetId: rel.targetId,
-            targetName: targetElement.name || targetElement.id,
-            targetLayerId: layer.id,
-            isInterLayer: false
-          });
-        }
-      });
-    }
+        outboundRels.forEach((rel: Relationship) => {
+          const targetElement = layer.elements?.find((el: ModelElement) => el.id === rel.targetId);
+          if (targetElement) {
+            outbound.push({
+              predicate: rel.predicate || rel.type,
+              targetId: rel.targetId,
+              targetName: targetElement.name || targetElement.id,
+              targetLayerId: layer.id,
+              isInterLayer: layer.id !== selectedLayerKey
+            });
+          }
+        });
 
-    // Collect inbound relationships from current layer
-    if (layer?.relationships) {
-      const inboundRels = layer.relationships.filter(
-        (r: Relationship) => r.targetId === element.id
-      );
+        // Inbound relationships
+        const inboundRels = layer.relationships.filter(
+          (r: Relationship) => r.targetId === element.id
+        );
 
-      inboundRels.forEach((rel: Relationship) => {
-        const sourceElement = layer.elements?.find((el: ModelElement) => el.id === rel.sourceId);
-        if (sourceElement) {
-          inbound.push({
-            predicate: rel.predicate || rel.type,
-            sourceId: rel.sourceId,
-            sourceName: sourceElement.name || sourceElement.id,
-            sourceLayerId: layer.id,
-            isInterLayer: false
-          });
-        }
-      });
+        inboundRels.forEach((rel: Relationship) => {
+          const sourceElement = layer.elements?.find((el: ModelElement) => el.id === rel.sourceId);
+          if (sourceElement) {
+            inbound.push({
+              predicate: rel.predicate || rel.type,
+              sourceId: rel.sourceId,
+              sourceName: sourceElement.name || sourceElement.id,
+              sourceLayerId: layer.id,
+              isInterLayer: layer.id !== selectedLayerKey
+            });
+          }
+        });
+      }
     }
 
     // Collect cross-layer references
@@ -406,62 +507,18 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
                             });
                           });
 
-                          // Build relationships and source references
-                          const { outbound, inbound } = useMemo(
-                            () => buildRelationshipsForElement(element, layerKey || selectedLayer),
-                            [element, layerKey, selectedLayer]
-                          );
-
                           return (
-                            <Accordion key={element.id} collapseAll>
-                              <AccordionPanel>
-                                <AccordionTitle className="text-sm">
-                                  {element.name || element.id}
-                                </AccordionTitle>
-                                <AccordionContent className="bg-white dark:bg-gray-900">
-                                  <div className="space-y-4">
-                                    {/* Documentation section - prominently displayed */}
-                                    {documentationString && (
-                                      <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                                        <h6 className="text-xs font-semibold text-blue-900 dark:text-blue-300 mb-1 uppercase tracking-wide">
-                                          Documentation
-                                        </h6>
-                                        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
-                                          {documentationString}
-                                        </p>
-                                      </div>
-                                    )}
-
-                                    <AttributesTable attributes={attributes} title="Attributes" />
-
-                                    {/* Relationships section */}
-                                    {(outbound.length > 0 || inbound.length > 0) && (
-                                      <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-                                        <h6 className="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
-                                          Relationships
-                                        </h6>
-                                        <RelationshipTable
-                                          outbound={outbound}
-                                          inbound={inbound}
-                                        />
-                                      </div>
-                                    )}
-
-                                    {/* Source References section */}
-                                    {element.sourceReference && (
-                                      <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
-                                        <h6 className="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
-                                          Source References
-                                        </h6>
-                                        <SourceReferenceList
-                                          references={[element.sourceReference]}
-                                        />
-                                      </div>
-                                    )}
-                                  </div>
-                                </AccordionContent>
-                              </AccordionPanel>
-                            </Accordion>
+                            <ElementCard
+                              key={element.id}
+                              element={element}
+                              documentationString={documentationString}
+                              attributes={attributes}
+                              layerKey={layerKey || selectedLayer}
+                              selectedLayer={selectedLayer}
+                              model={model}
+                              findElementById={findElementById}
+                              buildRelationshipsForElement={buildRelationshipsForElement}
+                            />
                           );
                         })}
                       </div>
