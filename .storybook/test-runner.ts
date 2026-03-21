@@ -72,13 +72,16 @@ const config: TestRunnerConfig = {
       try {
         const results = await new AxeBuilder({ page })
           .include('#storybook-root')
-          .disableRules(['color-contrast'])
+          .disableRules([
+            'color-contrast',
+            'region',
+            'landmark-no-duplicate-main',
+            'landmark-main-is-top-level'
+          ])
           .analyze();
 
-        // Filter to only critical and serious violations
-        const violations = results.violations.filter(
-          (v) => v.impact === 'critical' || v.impact === 'serious'
-        );
+        // Report all violations (critical, serious, moderate, minor)
+        const violations = results.violations;
 
         if (violations.length > 0) {
           const violationDetails = violations
