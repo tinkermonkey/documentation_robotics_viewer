@@ -16,7 +16,7 @@ import {
   OpenAPIOperation,
   JSONSchemaDefinition,
 } from '../types/yaml';
-import { ModelElement, Layer, Relationship, RelationshipType } from '../types/model';
+import { ModelElement, Layer, Relationship, RelationshipType, SourceReference, ElementMetadata } from '../types/model';
 import { LayerType } from '../types/layers';
 import { getLayerColor } from '../utils/layerColors';
 
@@ -35,6 +35,7 @@ const LAYER_TYPE_MAP: Record<string, LayerType> = {
   ux: LayerType.Ux,
   navigation: LayerType.Navigation,
   apm: LayerType.ApmObservability,
+  testing: LayerType.Testing,
 };
 
 /**
@@ -214,7 +215,9 @@ export class YAMLParser {
       'name', 'id', 'description', 'method', 'path', 'openapi', '$schema', 'schemas', 'relationships',
       'type', 'category', 'priority', 'stakeholders',
       // Motivation layer metadata
-      'kpis', 'concerns', 'role', 'timeframe', 'scope', 'impact', 'influence_level'
+      'kpis', 'concerns', 'role', 'timeframe', 'scope', 'impact', 'influence_level',
+      // v0.8.3 spec fields
+      'spec_node_id', 'layer_id', 'attributes', 'source_reference', 'metadata'
     ];
 
     // Detect relationship properties (arrays of strings) and collect them
@@ -248,6 +251,12 @@ export class YAMLParser {
       $schema: element.$schema as string | undefined,
       schemas: element.schemas as Record<string, unknown> | undefined,
       relationships: Object.keys(mergedRelationships).length > 0 ? mergedRelationships : undefined,
+      // v0.8.3 spec fields
+      spec_node_id: element.spec_node_id as string | undefined,
+      layer_id: element.layer_id as string | undefined,
+      attributes: element.attributes as Record<string, unknown> | undefined,
+      source_reference: element.source_reference,
+      metadata: element.metadata,
       ...additionalProps,
     };
   }
@@ -307,6 +316,12 @@ export class YAMLParser {
       '$schema',
       'schemas',
       'relationships',
+      // v0.8.3 spec fields
+      'spec_node_id',
+      'layer_id',
+      'attributes',
+      'source_reference',
+      'metadata',
     ]);
 
     for (const [key, value] of Object.entries(yamlElement)) {
@@ -315,12 +330,25 @@ export class YAMLParser {
       }
     }
 
+    // Parse v0.8.3 spec fields
+    const sourceRef = yamlElement.source_reference
+      ? this.parseSourceReference(yamlElement.source_reference)
+      : undefined;
+    const metadata = yamlElement.metadata
+      ? this.parseElementMetadata(yamlElement.metadata)
+      : undefined;
+
     return {
       id: uuid,
       type: elementType,
       name: yamlElement.name,
       description: yamlElement.description,
       layerId: layerType, // Use mapped LayerType (e.g., "Motivation") not raw layerId (e.g., "motivation")
+      path: yamlElement.id, // Preserve dot-notation path
+      specNodeId: yamlElement.spec_node_id,
+      attributes: yamlElement.attributes,
+      sourceReference: sourceRef,
+      metadata,
       properties,
       visual: {
         position: { x: 0, y: 0 }, // Will be set by layout algorithm
@@ -454,6 +482,61 @@ export class YAMLParser {
     };
 
     return typeMap[yamlType] || RelationshipType.Reference;
+  }
+
+  /**
+   * Parse source reference from YAML data
+   */
+  private parseSourceReference(data: unknown): SourceReference | undefined {
+    if (!data || typeof data !== 'object') {
+      return undefined;
+    }
+
+    const ref = data as Record<string, unknown>;
+    const provenance = ref.provenance as 'extracted' | 'manual' | 'inferred' | 'generated' | undefined;
+
+    if (!provenance) {
+      return undefined;
+    }
+
+    const locations = Array.isArray(ref.locations)
+      ? (ref.locations as any[]).map(loc => ({
+          file: typeof loc.file === 'string' ? loc.file : '',
+          symbol: typeof loc.symbol === 'string' ? loc.symbol : undefined,
+        }))
+      : [];
+
+    return {
+      provenance,
+      locations,
+      repository: typeof ref.repository === 'object' && ref.repository !== null
+        ? {
+            url: typeof (ref.repository as any).url === 'string' ? (ref.repository as any).url : '',
+            commit: typeof (ref.repository as any).commit === 'string' ? (ref.repository as any).commit : '',
+          }
+        : undefined,
+    };
+  }
+
+  /**
+   * Parse element metadata from YAML data
+   */
+  private parseElementMetadata(data: unknown): ElementMetadata | undefined {
+    if (!data || typeof data !== 'object') {
+      return undefined;
+    }
+
+    const meta = data as Record<string, unknown>;
+
+    return {
+      createdAt: typeof meta.createdAt === 'string' ? meta.createdAt :
+                 typeof meta.created_at === 'string' ? meta.created_at : undefined,
+      updatedAt: typeof meta.updatedAt === 'string' ? meta.updatedAt :
+                 typeof meta.updated_at === 'string' ? meta.updated_at : undefined,
+      createdBy: typeof meta.createdBy === 'string' ? meta.createdBy :
+                 typeof meta.created_by === 'string' ? meta.created_by : undefined,
+      version: typeof meta.version === 'number' ? meta.version : undefined,
+    };
   }
 
   /**
