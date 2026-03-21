@@ -47,6 +47,13 @@ export interface UnifiedNodeData {
   detailLevel?: DetailLevel;
   changesetOperation?: ChangesetOperation;
   relationshipBadge?: RelationshipBadgeData;
+
+  // v0.8.3 spec fields for model attribute display and provenance tracking
+  sourceReference?: unknown; // SourceReference type from core/types/model
+  specNodeId?: string;
+  attributes?: Record<string, unknown>;
+  metadata?: unknown; // ElementMetadata type from core/types/model
+
   // React Flow requires Node data to extend Record<string, unknown>.
   // This index signature allows arbitrary properties to be passed through
   // without type errors, which is necessary for framework compatibility
