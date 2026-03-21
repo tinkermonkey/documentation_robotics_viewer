@@ -102,8 +102,8 @@ export function loadSpecSchemas(
     }
 
     // Extract and parse relationship schemas
-    const relationshipSchemasObj = file.relationshipSchemas ||
-      {} as Record<string, unknown>;
+    const relationshipSchemasObj = (file.relationshipSchemas ||
+      {}) as Record<string, unknown>;
     if (typeof relationshipSchemasObj !== 'object') {
       console.warn(
         `loadSpecSchemas: Invalid relationshipSchemas in '${filename}', expected object`

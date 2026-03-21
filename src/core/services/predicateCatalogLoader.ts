@@ -42,7 +42,6 @@ export interface PredicateCatalog {
  *
  * @param baseJson - Parsed base.json file as an unknown object
  * @returns PredicateCatalog with indexed forward and inverse lookups
- * @throws Error if input is invalid or missing required predicate fields
  */
 export function loadPredicateCatalog(baseJson: unknown): PredicateCatalog {
   const catalog: PredicateCatalog = {
@@ -109,10 +108,10 @@ export function loadPredicateCatalog(baseJson: unknown): PredicateCatalog {
 
     // Build PredicateDefinition object
     const predicateDefinition: PredicateDefinition = {
-      predicate: predicate as string,
-      inverse: inverse as string,
-      category: category as string,
-      description: description as string,
+      predicate,
+      inverse,
+      category,
+      description,
       archimateAlignment: def.archimate_alignment
         ? (def.archimate_alignment as string)
         : undefined,
