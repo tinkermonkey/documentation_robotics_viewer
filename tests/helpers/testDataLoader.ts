@@ -242,7 +242,7 @@ function extractRelationshipsFromElement(element: ModelElement, data: any): Rela
       for (const target of data.business['realizes-services']) {
         relationships.push({
           id: `${element.id}-realizes-${target}`,
-          type: RelationshipType.Realization,
+          type: 'realization',
           sourceId: element.id,
           targetId: target,
         });
@@ -256,7 +256,7 @@ function extractRelationshipsFromElement(element: ModelElement, data: any): Rela
       for (const target of data.datastore.accesses) {
         relationships.push({
           id: `${element.id}-accesses-${target}`,
-          type: RelationshipType.Access,
+          type: 'access',
           sourceId: element.id,
           targetId: `datastore.database.${target}`, // Construct full ID
         });

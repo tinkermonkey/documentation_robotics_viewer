@@ -8,16 +8,30 @@ import {
   ModelElement,
   CrossLayerReferenceMetadata
 } from '../types/model';
+import { PredicateCatalog } from './predicateCatalogLoader';
 
 /**
  * Service for extracting and resolving cross-layer references
  * Handles all patterns of cross-layer links including:
  * - UUID references (x-archimate-ref, x-business-object-ref, etc.)
  * - Array references (x-supports-goals, x-fulfills-requirements, etc.)
- * - String identifier references (operationId, route, etc.)
+ * - String identifier references discovered via predicate catalog fieldPaths
  * - Nested references (security.resourceRef, api.operationId, etc.)
+ *
+ * Field discovery is catalog-driven: predicates define which fields should be scanned for references
+ * via the fieldPaths property in the predicate definition.
  */
 export class CrossLayerReferenceExtractor {
+  private predicateCatalog: PredicateCatalog | null = null;
+
+  /**
+   * Set the predicate catalog for catalog-driven field discovery
+   * @param catalog - The loaded predicate catalog
+   */
+  setPredicateCatalog(catalog: PredicateCatalog): void {
+    this.predicateCatalog = catalog;
+  }
+
   /**
    * Resolve extracted references to create Reference objects
    * @param extractedRefs - Array of extracted references from schema parsing
@@ -200,31 +214,58 @@ export class CrossLayerReferenceExtractor {
 
   /**
    * Build a lookup map of elements by their identifiers
-   * (operationId, route, name, etc.)
+   * Catalog-driven: uses fieldPaths from predicate definitions to discover which properties to index
+   * Falls back to common identifiers if catalog is not available
    */
   private buildIdentifierLookup(
     layers: Record<string, Layer>
   ): Map<string, { element: ModelElement; layerId: string }> {
     const lookup = new Map<string, { element: ModelElement; layerId: string }>();
 
+    // Build set of field paths to index from catalog
+    const catalogFieldPaths = new Set<string>();
+    if (this.predicateCatalog) {
+      for (const def of this.predicateCatalog.byPredicate.values()) {
+        if (def.fieldPaths) {
+          for (const path of def.fieldPaths) {
+            catalogFieldPaths.add(path);
+          }
+        }
+      }
+    }
+
     for (const [layerId, layer] of Object.entries(layers)) {
       for (const element of layer.elements) {
-        // Index by common identifier properties
-        const identifiers = [
-          element.properties.operationId,
-          element.properties.route,
-          element.properties.resourceRef,
-          element.properties.name,
-          element.name
-        ];
+        // Collect identifiers from catalog field paths and fallback identifiers
+        const identifiers: (string | undefined)[] = [];
 
+        if (catalogFieldPaths.size > 0) {
+          // Use catalog-driven field discovery
+          for (const fieldPath of catalogFieldPaths) {
+            const value = this.getNestedProperty(element.properties, fieldPath);
+            if (value) {
+              identifiers.push(value);
+            }
+          }
+        } else {
+          // Fallback to common identifier properties when no catalog available
+          identifiers.push(
+            element.properties.operationId,
+            element.properties.route,
+            element.properties.resourceRef,
+            element.properties.name,
+            element.name
+          );
+        }
+
+        // Index each identifier
         for (const identifier of identifiers) {
           if (identifier && typeof identifier === 'string') {
             lookup.set(identifier, { element, layerId });
           }
         }
 
-        // Index by definition key for schema elements
+        // Always index by definition key for schema elements
         if (element.properties.definitionKey && typeof element.properties.definitionKey === 'string') {
           lookup.set(element.properties.definitionKey, { element, layerId });
         }
@@ -232,6 +273,27 @@ export class CrossLayerReferenceExtractor {
     }
 
     return lookup;
+  }
+
+  /**
+   * Get a nested property from an object using dot notation path
+   * @param obj - Object to traverse
+   * @param path - Dot-notation path (e.g., "api.operationId", "security.resourceRef")
+   * @returns Property value if found, undefined otherwise
+   */
+  private getNestedProperty(obj: Record<string, unknown>, path: string): string | undefined {
+    const parts = path.split('.');
+    let current: unknown = obj;
+
+    for (const part of parts) {
+      if (current && typeof current === 'object') {
+        current = (current as Record<string, unknown>)[part];
+      } else {
+        return undefined;
+      }
+    }
+
+    return typeof current === 'string' ? current : undefined;
   }
 
   /**

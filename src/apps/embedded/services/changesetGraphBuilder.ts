@@ -199,7 +199,7 @@ export class ChangesetGraphBuilder {
       if (elementIdSet.has(refId)) {
         relationships.push({
           id: uuidv4(),
-          type: RelationshipType.Reference,
+          type: 'reference',
           sourceId: element.id,
           targetId: refId,
           properties: {

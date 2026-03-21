@@ -19,10 +19,10 @@ export interface PredicateCatalog {
 }
 
 /**
- * Load and index the predicate catalog from base.json
+ * Load and index the predicate catalog from relationship-catalog.json
  *
- * The base.json file contains a `predicates` object at the root level where each key is a
- * predicate name and the value contains the predicate definition including its inverse.
+ * The relationship-catalog.json file contains a `predicates` object at the root level where each key is a
+ * predicate name and the value contains the predicate definition with semantic metadata and field paths.
  *
  * Example structure:
  * ```json
@@ -33,37 +33,38 @@ export interface PredicateCatalog {
  *       "inverse": "supported-by",
  *       "category": "motivation",
  *       "description": "Element contributes to achieving or enabling another element",
- *       "archimate_alignment": "Influence",
- *       "semantics": { ... }
+ *       "archimateAlignment": "Influence",
+ *       "semantics": { ... },
+ *       "fieldPaths": ["supports", "x-supports"]
  *     }
  *   }
  * }
  * ```
  *
- * @param baseJson - Parsed base.json file as an unknown object
- * @returns PredicateCatalog with indexed forward and inverse lookups
+ * @param catalogJson - Parsed relationship-catalog.json file as an unknown object
+ * @returns PredicateCatalog with indexed forward and inverse lookups, including field path mappings
  */
-export function loadPredicateCatalog(baseJson: unknown): PredicateCatalog {
+export function loadPredicateCatalog(catalogJson: unknown): PredicateCatalog {
   const catalog: PredicateCatalog = {
     byPredicate: new Map(),
     byInverse: new Map(),
   };
 
   // Validate input
-  if (!baseJson || typeof baseJson !== 'object') {
+  if (!catalogJson || typeof catalogJson !== 'object') {
     console.warn('loadPredicateCatalog: Invalid input, not an object');
     return catalog;
   }
 
-  const json = baseJson as Record<string, unknown>;
+  const json = catalogJson as Record<string, unknown>;
 
-  // Get predicates section from base.json
-  // The base.json file has predicates at the root level
+  // Get predicates section from relationship-catalog.json
+  // The file has predicates at the root level
   const predicates = json.predicates as Record<string, unknown>;
 
   if (!predicates || typeof predicates !== 'object') {
     console.warn(
-      'loadPredicateCatalog: No predicates section found in base.json'
+      'loadPredicateCatalog: No predicates section found in relationship-catalog.json'
     );
     return catalog;
   }
@@ -106,14 +107,17 @@ export function loadPredicateCatalog(baseJson: unknown): PredicateCatalog {
       continue;
     }
 
+    // Extract fieldPaths for dynamic discovery (optional)
+    const fieldPaths = def.fieldPaths as string[] | undefined;
+
     // Build PredicateDefinition object
     const predicateDefinition: PredicateDefinition = {
       predicate,
       inverse,
       category,
       description,
-      archimateAlignment: def.archimate_alignment
-        ? (def.archimate_alignment as string)
+      archimateAlignment: def.archimateAlignment
+        ? (def.archimateAlignment as string | null)
         : undefined,
       semantics: {
         directionality: semantics.directionality as
@@ -123,9 +127,10 @@ export function loadPredicateCatalog(baseJson: unknown): PredicateCatalog {
         symmetry: semantics.symmetry as boolean,
         reflexivity: semantics.reflexivity as boolean,
       },
-      defaultStrength: def.default_strength
-        ? (def.default_strength as string)
+      defaultStrength: def.defaultStrength
+        ? (def.defaultStrength as string)
         : undefined,
+      fieldPaths: fieldPaths && Array.isArray(fieldPaths) ? fieldPaths : undefined,
     };
 
     // Add to forward index

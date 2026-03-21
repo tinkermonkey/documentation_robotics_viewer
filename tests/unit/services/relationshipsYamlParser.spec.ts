@@ -146,12 +146,12 @@ predicate: influence
 
       const relationships = parser.parse(yamlContent, dotNotationLookup);
 
-      expect(relationships[0].type).toBe(RelationshipType.Influence);
-      expect(relationships[1].type).toBe(RelationshipType.Access);
-      expect(relationships[2].type).toBe(RelationshipType.Serving);
+      expect(relationships[0].type).toBe('influence');
+      expect(relationships[1].type).toBe('access');
+      expect(relationships[2].type).toBe('serving');
     });
 
-    test('should default unknown predicates to RelationshipType.Reference', () => {
+    test('should default unknown predicates to reference string', () => {
       const yamlContent = `
 - source: motivation.stakeholder.architecture-team
   target: motivation.goal.visualize-multi-layer-architecture-models
@@ -161,7 +161,7 @@ predicate: influence
       const relationships = parser.parse(yamlContent, dotNotationLookup);
 
       expect(relationships).toHaveLength(1);
-      expect(relationships[0].type).toBe(RelationshipType.Reference);
+      expect(relationships[0].type).toBe('reference');
     });
   });
 

@@ -48,9 +48,11 @@ export interface PredicateDefinition {
   inverse: string;
   category: string;
   description: string;
-  archimateAlignment?: string;
+  archimateAlignment?: string | null;
   semantics: PredicateSemantics;
   defaultStrength?: string;
+  /** Field paths for dynamic relationship discovery across layer schema */
+  fieldPaths?: string[];
 }
 
 /**
@@ -224,27 +226,10 @@ export interface Relationship {
 }
 
 /**
- * Relationship types (ArchiMate + custom)
+ * Relationship types (predicate-based string type)
+ * Catalog-driven values sourced from the predicate catalog
  */
-export enum RelationshipType {
-  // ArchiMate relationships
-  Composition = 'composition',
-  Aggregation = 'aggregation',
-  Assignment = 'assignment',
-  Realization = 'realization',
-  Serving = 'serving',
-  Access = 'access',
-  Influence = 'influence',
-  Triggering = 'triggering',
-  Flow = 'flow',
-
-  // Custom relationships
-  Reference = 'reference',
-  Navigation = 'navigation',
-  SecurityControl = 'security-control',
-  DataFlow = 'data-flow',
-  StateTransition = 'state-transition'
-}
+export type RelationshipType = string;
 
 /**
  * Visual properties of a relationship

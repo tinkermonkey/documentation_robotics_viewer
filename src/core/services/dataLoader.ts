@@ -380,13 +380,25 @@ export class DataLoader {
       }
     }
 
-    // Load predicate catalog from base.json if present
-    const baseJsonKey = Object.keys(schemas).find(k => k === 'base.json');
-    if (baseJsonKey) {
-      const baseJson = schemas[baseJsonKey];
-      const catalog = loadPredicateCatalog(baseJson);
-      this.yamlParser.setPredicateCatalog(catalog);
-      console.log(`Loaded predicate catalog with ${catalog.byPredicate.size} predicates`);
+    // Load predicate catalog from relationship-catalog.json if present
+    let predicateCatalog;
+    const relationshipCatalogKey = Object.keys(schemas).find(k => k === 'relationship-catalog.json');
+    if (relationshipCatalogKey) {
+      const catalogJson = schemas[relationshipCatalogKey];
+      predicateCatalog = loadPredicateCatalog(catalogJson);
+      this.yamlParser.setPredicateCatalog(predicateCatalog);
+      this.referenceExtractor.setPredicateCatalog(predicateCatalog);
+      console.log(`Loaded predicate catalog with ${predicateCatalog.byPredicate.size} predicates from relationship-catalog.json`);
+    } else {
+      // Fallback: try to load from base.json for backward compatibility
+      const baseJsonKey = Object.keys(schemas).find(k => k === 'base.json');
+      if (baseJsonKey) {
+        const baseJson = schemas[baseJsonKey];
+        predicateCatalog = loadPredicateCatalog(baseJson);
+        this.yamlParser.setPredicateCatalog(predicateCatalog);
+        this.referenceExtractor.setPredicateCatalog(predicateCatalog);
+        console.log(`Loaded predicate catalog with ${predicateCatalog.byPredicate.size} predicates from base.json (fallback)`);
+      }
     }
 
     // Group files by layer based on manifest paths

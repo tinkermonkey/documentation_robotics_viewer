@@ -85,7 +85,7 @@ test.describe('buildContextSubGraph', () => {
 
     const relationship: Relationship = {
       id: 'rel-1',
-      type: RelationshipType.Serving,
+      type: 'serving',
       sourceId: 'elem-1',
       targetId: 'elem-2',
     };
@@ -111,14 +111,14 @@ test.describe('buildContextSubGraph', () => {
     // elem2 -> elem1 -> elem3
     const rel1: Relationship = {
       id: 'rel-1',
-      type: RelationshipType.Serving,
+      type: 'serving',
       sourceId: 'elem-2',
       targetId: 'elem-1',
     };
 
     const rel2: Relationship = {
       id: 'rel-2',
-      type: RelationshipType.Serving,
+      type: 'serving',
       sourceId: 'elem-1',
       targetId: 'elem-3',
     };
@@ -171,7 +171,7 @@ test.describe('buildContextSubGraph', () => {
 
     const relationship: Relationship = {
       id: 'rel-1',
-      type: RelationshipType.Serving,
+      type: 'serving',
       sourceId: 'elem-1',
       targetId: 'elem-2',
     };
@@ -194,14 +194,14 @@ test.describe('buildContextSubGraph', () => {
 
     const rel1: Relationship = {
       id: 'rel-1',
-      type: RelationshipType.Serving,
+      type: 'serving',
       sourceId: 'elem-1',
       targetId: 'elem-2',
     };
 
     const rel2: Relationship = {
       id: 'rel-2',
-      type: RelationshipType.Serving,
+      type: 'serving',
       sourceId: 'elem-1',
       targetId: 'elem-3',
     };
@@ -232,14 +232,14 @@ test.describe('buildContextSubGraph', () => {
     // Create two relationships: forward and backward (simulating bidirectional)
     const rel1: Relationship = {
       id: 'rel-1',
-      type: RelationshipType.Serving,
+      type: 'serving',
       sourceId: 'elem-1',
       targetId: 'elem-2',
     };
 
     const rel2: Relationship = {
       id: 'rel-2',
-      type: RelationshipType.Serving,
+      type: 'serving',
       sourceId: 'elem-2',
       targetId: 'elem-1',
     };
@@ -261,7 +261,7 @@ test.describe('buildContextSubGraph', () => {
     // Create relationship to non-existent element
     const relationship: Relationship = {
       id: 'rel-1',
-      type: RelationshipType.Serving,
+      type: 'serving',
       sourceId: 'elem-1',
       targetId: 'missing-elem',
     };
@@ -284,7 +284,7 @@ test.describe('buildContextSubGraph', () => {
 
     const relationship: Relationship = {
       id: 'rel-1',
-      type: RelationshipType.Serving,
+      type: 'serving',
       sourceId: 'elem-1',
       targetId: 'elem-2',
     };
@@ -311,7 +311,7 @@ test.describe('buildContextSubGraph', () => {
 
     const relationship: Relationship = {
       id: 'rel-1',
-      type: RelationshipType.Serving,
+      type: 'serving',
       sourceId: 'elem-1',
       targetId: 'elem-2',
       predicate: 'serves',

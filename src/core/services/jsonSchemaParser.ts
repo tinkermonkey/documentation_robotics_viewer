@@ -324,7 +324,7 @@ export class JSONSchemaParser {
 
             const relationship: Relationship = {
               id: uuidv4(),
-              type: RelationshipType.Reference,
+              type: 'reference',
               sourceId: element.id,
               targetId: targetElement.id,
               properties: {

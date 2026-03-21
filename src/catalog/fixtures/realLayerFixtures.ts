@@ -373,15 +373,15 @@ export function createRealMotivationLayerModel(): MetaModel {
 
   // Intra-layer relationships from documentation-robotics/model/relationships.yaml
   const relationships: Relationship[] = [
-    rel('mrel-1', RelationshipType.Influence, 'motivation.principle.performance-first', 'motivation.goal.visualize-architecture'),
-    rel('mrel-2', RelationshipType.Influence, 'motivation.principle.user-centric-design', 'motivation.requirement.interactive-graphs'),
-    rel('mrel-3', RelationshipType.Influence, 'motivation.principle.accessibility-by-default', 'motivation.constraint.accessibility-requirements'),
-    rel('mrel-4', RelationshipType.Influence, 'motivation.principle.progressive-enhancement', 'motivation.requirement.embedded-mode'),
-    rel('mrel-5', RelationshipType.Influence, 'motivation.constraint.performance-targets', 'motivation.principle.performance-first'),
-    rel('mrel-6', RelationshipType.Influence, 'motivation.constraint.accessibility-requirements', 'motivation.principle.accessibility-by-default'),
-    rel('mrel-7', RelationshipType.Aggregation, 'motivation.goal.visualize-architecture', 'motivation.requirement.interactive-graphs'),
-    rel('mrel-8', RelationshipType.Aggregation, 'motivation.goal.visualize-architecture', 'motivation.requirement.embedded-mode'),
-    rel('mrel-9', RelationshipType.Influence, 'motivation.constraint.technology-stack', 'motivation.goal.visualize-architecture'),
+    rel('mrel-1', 'influence', 'motivation.principle.performance-first', 'motivation.goal.visualize-architecture'),
+    rel('mrel-2', 'influence', 'motivation.principle.user-centric-design', 'motivation.requirement.interactive-graphs'),
+    rel('mrel-3', 'influence', 'motivation.principle.accessibility-by-default', 'motivation.constraint.accessibility-requirements'),
+    rel('mrel-4', 'influence', 'motivation.principle.progressive-enhancement', 'motivation.requirement.embedded-mode'),
+    rel('mrel-5', 'influence', 'motivation.constraint.performance-targets', 'motivation.principle.performance-first'),
+    rel('mrel-6', 'influence', 'motivation.constraint.accessibility-requirements', 'motivation.principle.accessibility-by-default'),
+    rel('mrel-7', 'aggregation', 'motivation.goal.visualize-architecture', 'motivation.requirement.interactive-graphs'),
+    rel('mrel-8', 'aggregation', 'motivation.goal.visualize-architecture', 'motivation.requirement.embedded-mode'),
+    rel('mrel-9', 'influence', 'motivation.constraint.technology-stack', 'motivation.goal.visualize-architecture'),
   ];
 
   const layer: Layer = {
@@ -533,16 +533,16 @@ export function createRealBusinessLayerModel(): MetaModel {
 
   // Service → Capability realization relationships (from x-realized-by in services.yaml)
   const relationships: Relationship[] = [
-    rel('brel-1', RelationshipType.Realization, 'business.service.architecture-visualization', 'business.capability.visualization'),
-    rel('brel-2', RelationshipType.Realization, 'business.service.architecture-analysis', 'business.capability.documentation'),
-    rel('brel-3', RelationshipType.Realization, 'business.service.documentation-export', 'business.capability.export'),
-    rel('brel-4', RelationshipType.Realization, 'business.service.model-data-management', 'business.capability.model-authoring'),
-    rel('brel-5', RelationshipType.Realization, 'business.service.external-model-integration', 'business.capability.collaboration'),
-    rel('brel-6', RelationshipType.Realization, 'business.service.model-data-management', 'business.capability.version-control'),
-    rel('brel-7', RelationshipType.Realization, 'business.service.architecture-analysis', 'business.capability.search-discovery'),
-    rel('brel-8', RelationshipType.Realization, 'business.service.documentation-export', 'business.capability.reporting'),
-    rel('brel-9', RelationshipType.Realization, 'business.service.external-model-integration', 'business.capability.integration'),
-    rel('brel-10', RelationshipType.Realization, 'business.service.quality-assurance', 'business.capability.administration'),
+    rel('brel-1', 'realization', 'business.service.architecture-visualization', 'business.capability.visualization'),
+    rel('brel-2', 'realization', 'business.service.architecture-analysis', 'business.capability.documentation'),
+    rel('brel-3', 'realization', 'business.service.documentation-export', 'business.capability.export'),
+    rel('brel-4', 'realization', 'business.service.model-data-management', 'business.capability.model-authoring'),
+    rel('brel-5', 'realization', 'business.service.external-model-integration', 'business.capability.collaboration'),
+    rel('brel-6', 'realization', 'business.service.model-data-management', 'business.capability.version-control'),
+    rel('brel-7', 'realization', 'business.service.architecture-analysis', 'business.capability.search-discovery'),
+    rel('brel-8', 'realization', 'business.service.documentation-export', 'business.capability.reporting'),
+    rel('brel-9', 'realization', 'business.service.external-model-integration', 'business.capability.integration'),
+    rel('brel-10', 'realization', 'business.service.quality-assurance', 'business.capability.administration'),
   ];
 
   const layer: Layer = {

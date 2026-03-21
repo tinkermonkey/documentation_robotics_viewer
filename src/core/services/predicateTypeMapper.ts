@@ -1,48 +1,48 @@
 /**
  * Predicate to RelationshipType Mapper Utility
  *
- * Provides a single source of truth for mapping predicate strings to RelationshipType enums.
+ * Provides a single source of truth for mapping predicate strings to relationship type strings.
  * Used by both yamlParser and relationshipsYamlParser to ensure consistency across the codebase.
  */
 
 import { RelationshipType } from '../types/model';
 
 /**
- * Maps predicate strings to RelationshipType enum values
- * Unrecognized predicates default to RelationshipType.Reference
+ * Maps predicate strings to RelationshipType string values
+ * Unrecognized predicates default to 'reference'
  *
  * @param predicate - The predicate string from YAML (e.g., 'influence', 'flow', 'serves')
- * @returns The corresponding RelationshipType enum value
+ * @returns The corresponding relationship type string value
  */
 export function mapPredicateToType(predicate: string): RelationshipType {
-  const typeMap: Record<string, RelationshipType> = {
+  const typeMap: Record<string, string> = {
     // ArchiMate-style relationships
-    realizes: RelationshipType.Realization,
-    serves: RelationshipType.Serving,
-    accesses: RelationshipType.Access,
-    uses: RelationshipType.Access,
-    composes: RelationshipType.Composition,
-    flows_to: RelationshipType.Flow,
-    flow: RelationshipType.Flow,
-    assigned_to: RelationshipType.Assignment,
-    aggregates: RelationshipType.Aggregation,
-    specializes: RelationshipType.Reference,
+    realizes: 'realization',
+    serves: 'serving',
+    accesses: 'access',
+    uses: 'access',
+    composes: 'composition',
+    flows_to: 'flow',
+    flow: 'flow',
+    assigned_to: 'assignment',
+    aggregates: 'aggregation',
+    specializes: 'reference',
 
     // Motivation layer
-    supports_goals: RelationshipType.Influence,
-    influence: RelationshipType.Influence,
-    fulfills_requirements: RelationshipType.Reference,
-    constrained_by: RelationshipType.Reference,
+    supports_goals: 'influence',
+    influence: 'influence',
+    fulfills_requirements: 'reference',
+    constrained_by: 'reference',
 
     // Security
-    secured_by: RelationshipType.Access,
-    requires_permissions: RelationshipType.Access,
+    secured_by: 'access',
+    requires_permissions: 'access',
 
     // General relationships
-    reference: RelationshipType.Reference,
-    dependency: RelationshipType.Reference,
-    relationship: RelationshipType.Reference,
+    reference: 'reference',
+    dependency: 'reference',
+    relationship: 'reference',
   };
 
-  return typeMap[predicate] || RelationshipType.Reference;
+  return typeMap[predicate] || 'reference';
 }

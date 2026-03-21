@@ -60,7 +60,7 @@ test.describe('SpecParser', () => {
   });
 
   test.describe('mapRelationshipType()', () => {
-    test('should map valid composition type to RelationshipType.Composition', () => {
+    test('should map valid composition type to composition string', () => {
       const spec = {
         elements: [
           { id: 'el-1', name: 'Element 1' },
@@ -74,25 +74,25 @@ test.describe('SpecParser', () => {
       const layer = parser.parse(spec, LayerType.Application);
 
       expect(layer.relationships.length).toBe(1);
-      expect(layer.relationships[0].type).toBe(RelationshipType.Composition);
+      expect(layer.relationships[0].type).toBe('composition');
     });
 
-    test('should map all valid relationship type strings to correct enum values', () => {
+    test('should map all valid relationship type strings correctly', () => {
       const typeTests = [
-        { input: 'composition', expected: RelationshipType.Composition },
-        { input: 'aggregation', expected: RelationshipType.Aggregation },
-        { input: 'assignment', expected: RelationshipType.Assignment },
-        { input: 'realization', expected: RelationshipType.Realization },
-        { input: 'serving', expected: RelationshipType.Serving },
-        { input: 'access', expected: RelationshipType.Access },
-        { input: 'influence', expected: RelationshipType.Influence },
-        { input: 'triggering', expected: RelationshipType.Triggering },
-        { input: 'flow', expected: RelationshipType.Flow },
-        { input: 'reference', expected: RelationshipType.Reference },
-        { input: 'navigation', expected: RelationshipType.Navigation },
-        { input: 'security-control', expected: RelationshipType.SecurityControl },
-        { input: 'data-flow', expected: RelationshipType.DataFlow },
-        { input: 'state-transition', expected: RelationshipType.StateTransition },
+        { input: 'composition', expected: 'composition' },
+        { input: 'aggregation', expected: 'aggregation' },
+        { input: 'assignment', expected: 'assignment' },
+        { input: 'realization', expected: 'realization' },
+        { input: 'serving', expected: 'serving' },
+        { input: 'access', expected: 'access' },
+        { input: 'influence', expected: 'influence' },
+        { input: 'triggering', expected: 'triggering' },
+        { input: 'flow', expected: 'flow' },
+        { input: 'reference', expected: 'reference' },
+        { input: 'navigation', expected: 'navigation' },
+        { input: 'security-control', expected: 'security-control' },
+        { input: 'data-flow', expected: 'data-flow' },
+        { input: 'state-transition', expected: 'state-transition' },
       ];
 
       typeTests.forEach(({ input, expected }) => {
@@ -112,7 +112,7 @@ test.describe('SpecParser', () => {
       });
     });
 
-    test('should map invalid type string to RelationshipType.Reference', () => {
+    test('should map invalid type string to reference string', () => {
       const spec = {
         elements: [
           { id: 'el-1', name: 'Element 1' },
@@ -126,10 +126,10 @@ test.describe('SpecParser', () => {
       const layer = parser.parse(spec, LayerType.Application);
 
       expect(layer.relationships.length).toBe(1);
-      expect(layer.relationships[0].type).toBe(RelationshipType.Reference);
+      expect(layer.relationships[0].type).toBe('reference');
     });
 
-    test('should map typo type string to RelationshipType.Reference', () => {
+    test('should map typo type string to reference string', () => {
       const spec = {
         elements: [
           { id: 'el-1', name: 'Element 1' },
@@ -144,7 +144,7 @@ test.describe('SpecParser', () => {
       const layer = parser.parse(spec, LayerType.Application);
 
       expect(layer.relationships.length).toBe(1);
-      expect(layer.relationships[0].type).toBe(RelationshipType.Reference);
+      expect(layer.relationships[0].type).toBe('reference');
     });
 
     test('should use reference fallback when type is undefined', () => {
@@ -161,10 +161,10 @@ test.describe('SpecParser', () => {
       const layer = parser.parse(spec, LayerType.Application);
 
       expect(layer.relationships.length).toBe(1);
-      expect(layer.relationships[0].type).toBe(RelationshipType.Reference);
+      expect(layer.relationships[0].type).toBe('reference');
     });
 
-    test('should handle empty string type as Reference', () => {
+    test('should handle empty string type as reference', () => {
       const spec = {
         elements: [
           { id: 'el-1', name: 'Element 1' },
@@ -178,7 +178,7 @@ test.describe('SpecParser', () => {
       const layer = parser.parse(spec, LayerType.Application);
 
       expect(layer.relationships.length).toBe(1);
-      expect(layer.relationships[0].type).toBe(RelationshipType.Reference);
+      expect(layer.relationships[0].type).toBe('reference');
     });
   });
 
