@@ -8,7 +8,7 @@ import React from 'react';
 import { ReactFlow, ReactFlowProvider, Background, useReactFlow, Controls } from '@xyflow/react';
 import type { Node, Edge } from '@xyflow/react';
 
-// Import React Flow styles only in browser environment
+// CSS import: dynamic load only in browser (Node.js test environments can't parse CSS syntax)
 if (typeof document !== 'undefined') {
   import('@xyflow/react/dist/style.css');
 }

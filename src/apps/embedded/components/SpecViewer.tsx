@@ -11,10 +11,11 @@ import type { Node, Edge } from '@xyflow/react'
 import { SpecDataResponse, SchemaDefinition } from '../services/embeddedDataLoader'
 import { Badge, Table, TableBody, TableCell, TableRow } from 'flowbite-react'
 
-// Import React Flow styles only in browser environment
+// CSS import: dynamic load only in browser (Node.js test environments can't parse CSS syntax)
 if (typeof document !== 'undefined') {
   import('@xyflow/react/dist/style.css');
 }
+
 import ExpandableSection from './common/ExpandableSection'
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid'
 import { useModelStore } from '../../../core/stores/modelStore'
