@@ -9,17 +9,19 @@ import React, { useMemo } from 'react'
 import { ReactFlow, ReactFlowProvider, Background, Controls, MiniMap } from '@xyflow/react'
 import type { Node, Edge } from '@xyflow/react'
 import { SpecDataResponse, SchemaDefinition } from '../services/embeddedDataLoader'
-
-// Import React Flow styles only in browser environment
-if (typeof window !== 'undefined') {
-  require('@xyflow/react/dist/style.css');
-}
 import { Badge, Table, TableBody, TableCell, TableRow } from 'flowbite-react'
+
+// Import React Flow styles - skip in test/Node.js environment where CSS cannot be parsed
+if (typeof document !== 'undefined') {
+  import('@xyflow/react/dist/style.css').catch(() => {
+    // Silently fail if CSS cannot be loaded
+  });
+}
 import ExpandableSection from './common/ExpandableSection'
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid'
 import { useModelStore } from '../../../core/stores/modelStore'
 import { SpecContextSubGraph } from './common/SpecContextSubGraph'
-import { buildSpecContextSubGraph } from '../services/specContextSubGraphBuilder'
+import { buildSpecContextSubGraph, buildSpecLayerGraph } from '../services/specContextSubGraphBuilder'
 
 interface SpecViewerProps {
   specData: SpecDataResponse
@@ -30,6 +32,38 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
   const { specSchemas } = useModelStore();
   const [selectedSpecNodeId, setSelectedSpecNodeId] = React.useState<string | null>(null);
   const [activeTab, setActiveTab] = React.useState<'details' | 'graph'>('details');
+
+  const schemas = specData?.schemas || {};
+
+  // Compute graph data at top level (not in renderMergedView to comply with Rules of Hooks)
+  const graphData = useMemo(() => {
+    if (!selectedSchemaId || !schemas[selectedSchemaId]) {
+      return { nodes: [], edges: [] };
+    }
+
+    const schema = schemas[selectedSchemaId];
+    const layer = schema.layer as { id?: string; name?: string; description?: string } | undefined;
+    const nodeSchemas = schema.nodeSchemas as Record<string, any> | undefined;
+
+    // Get layer ID from schema.layer.id or find it from specSchemas by name
+    const layerId = layer?.id || Object.keys(specSchemas).find(schemaKey => {
+      const schemaData = specSchemas[schemaKey];
+      return schemaData?.layer?.name?.toLowerCase() === layer?.name?.toLowerCase();
+    });
+
+    try {
+      if (!layerId) return { nodes: [], edges: [] };
+      if (!nodeSchemas) return { nodes: [], edges: [] };
+      return buildSpecLayerGraph(
+        layerId,
+        nodeSchemas,
+        specSchemas[layerId]?.relationshipSchemas ?? []
+      );
+    } catch (error) {
+      console.warn('[SpecViewer] Failed to build spec layer graph:', error);
+      return { nodes: [], edges: [] };
+    }
+  }, [selectedSchemaId, schemas, specSchemas]);
 
   if (!specData) {
     return (
@@ -46,96 +80,6 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
       </div>
     )
   }
-
-  const schemas = specData.schemas || {}
-
-  // Build graph nodes and edges for all spec node types in a layer
-  const buildSpecLayerGraph = (layerId: string, nodeSchemas: Record<string, any>, relationshipSchemas: any[]) => {
-    const nodeTypeNames = Object.keys(nodeSchemas);
-    const nodes: Node[] = [];
-    const edges: Edge[] = [];
-    const processedNodes = new Set<string>();
-
-    // Calculate grid layout for nodes
-    const cols = Math.ceil(Math.sqrt(nodeTypeNames.length));
-    const nodeWidth = 140;
-    const nodeHeight = 80;
-    const spacingX = nodeWidth + 40;
-    const spacingY = nodeHeight + 60;
-
-    // Create nodes for each spec node type
-    nodeTypeNames.forEach((nodeType, index) => {
-      const specNodeId = `${layerId}.${nodeType}`;
-      const col = index % cols;
-      const row = Math.floor(index / cols);
-
-      const node: Node = {
-        id: specNodeId,
-        data: {
-          label: nodeType,
-          specNodeId,
-        },
-        position: {
-          x: col * spacingX,
-          y: row * spacingY,
-        },
-        type: 'default',
-        width: nodeWidth,
-        height: nodeHeight,
-        draggable: false,
-        selectable: true,
-        style: {
-          background: '#f3f4f6',
-          border: '1px solid #d1d5db',
-          borderRadius: '8px',
-          padding: '8px',
-          fontSize: '12px',
-          fontWeight: '500',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          textAlign: 'center',
-          cursor: 'pointer',
-        },
-      };
-
-      nodes.push(node);
-      processedNodes.add(specNodeId);
-    });
-
-    // Create edges for relationships
-    const edgeSet = new Set<string>();
-    relationshipSchemas.forEach((rel) => {
-      const sourceId = rel.sourceSpecNodeId;
-      const targetId = rel.destinationSpecNodeId;
-
-      // Only create edge if both source and target are in our graph
-      if (processedNodes.has(sourceId) && processedNodes.has(targetId)) {
-        // Use relationship ID for deterministic, unique edge IDs
-        const edgeId = `spec-layer-edge-${rel.id}`;
-
-        // Avoid duplicate edges
-        if (!edgeSet.has(edgeId)) {
-          const edge: Edge = {
-            id: edgeId,
-            source: sourceId,
-            target: targetId,
-            label: rel.predicate,
-            animated: false,
-            style: {
-              stroke: '#9ca3af',
-              strokeWidth: 1.5,
-            },
-          };
-
-          edges.push(edge);
-          edgeSet.add(edgeId);
-        }
-      }
-    });
-
-    return { nodes, edges };
-  };
 
   // Render spec context sub-graph for a selected spec node
   const renderSpecContextSubGraph = (specNodeId: string, relationshipSchemas: any[]) => {
@@ -294,27 +238,10 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
       { label: 'Element Types', value: defNames.length }
     ]
 
-    // Build spec layer graph
-    const graphData = useMemo(() => {
-      try {
-        if (!layerId) return { nodes: [], edges: [] };
-        const nodeSchemas = schema.nodeSchemas as Record<string, SchemaDefinition> | undefined;
-        if (!nodeSchemas) return { nodes: [], edges: [] };
-        return buildSpecLayerGraph(
-          layerId,
-          nodeSchemas,
-          specSchemas[layerId]?.relationshipSchemas ?? []
-        );
-      } catch (error) {
-        console.warn('[SpecViewer] Failed to build spec layer graph:', error);
-        return { nodes: [], edges: [] };
-      }
-    }, [layerId, schema, specSchemas]);
-
     return (
       <div className="h-full flex flex-col bg-white dark:bg-gray-900 overflow-hidden">
         {/* Tab Navigation */}
-        <div className="flex border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        <div className="flex border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900" role="tablist">
           <button
             onClick={() => setActiveTab('details')}
             className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
@@ -322,6 +249,9 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
                 ? 'text-gray-900 dark:text-white border-blue-500'
                 : 'text-gray-700 dark:text-gray-300 border-transparent hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-600'
             }`}
+            role="tab"
+            aria-selected={activeTab === 'details'}
+            aria-controls="spec-viewer-details-view"
             data-testid="spec-viewer-details-tab"
           >
             Details
@@ -333,6 +263,9 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
                 ? 'text-gray-900 dark:text-white border-blue-500'
                 : 'text-gray-700 dark:text-gray-300 border-transparent hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-600'
             }`}
+            role="tab"
+            aria-selected={activeTab === 'graph'}
+            aria-controls="spec-viewer-graph-view"
             data-testid="spec-viewer-graph-tab"
           >
             Graph
@@ -342,7 +275,13 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
         {/* Content Area */}
         <div className="flex-1 overflow-hidden">
           {/* Details View */}
-          <div className={`h-full overflow-y-auto p-6 ${activeTab === 'details' ? '' : 'hidden'}`} data-testid="spec-viewer-details-view">
+          <div
+            id="spec-viewer-details-view"
+            className={`h-full overflow-y-auto p-6 ${activeTab === 'details' ? '' : 'hidden'}`}
+            role="tabpanel"
+            aria-labelledby="spec-viewer-details-tab"
+            data-testid="spec-viewer-details-view"
+          >
             {/* Schema Header */}
             <section className="mb-8" data-testid="schema-definitions-section">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
@@ -436,14 +375,18 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
           </div>
 
           {/* Graph View */}
-          <div className={`h-full w-full overflow-hidden ${activeTab === 'graph' ? '' : 'hidden'}`} data-testid="spec-viewer-graph-view">
+          <div
+            id="spec-viewer-graph-view"
+            className={`h-full w-full overflow-hidden ${activeTab === 'graph' ? '' : 'hidden'}`}
+            role="tabpanel"
+            aria-labelledby="spec-viewer-graph-tab"
+            data-testid="spec-viewer-graph-view"
+          >
             {graphData.nodes.length > 0 ? (
               <ReactFlowProvider>
                 <ReactFlow
                   nodes={graphData.nodes}
                   edges={graphData.edges}
-                  nodeTypes={{}}
-                  edgeTypes={{}}
                   nodesDraggable={false}
                   nodesConnectable={false}
                   elementsSelectable={true}
