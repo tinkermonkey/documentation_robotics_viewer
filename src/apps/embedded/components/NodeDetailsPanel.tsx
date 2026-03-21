@@ -4,7 +4,7 @@
  * Used in Graph view right sidebar (conditionally rendered when node is selected).
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Info } from 'lucide-react';
 import { Badge } from 'flowbite-react';
 import type { Node } from '@xyflow/react';
@@ -12,9 +12,12 @@ import type { MetaModel, ModelElement, Relationship, Reference } from '../../../
 import type { UnifiedNodeData } from '@/core/nodes';
 import { nodeConfigLoader } from '@/core/nodes';
 import { useModelStore } from '@/core/stores/modelStore';
+import { useRouter } from '@tanstack/react-router';
 import SpecDefinitionCard from './common/SpecDefinitionCard';
 import SourceReferenceList from './common/SourceReferenceList';
 import RelationshipTable from './common/RelationshipTable';
+import { NodeContextSubGraph } from './common/NodeContextSubGraph';
+import { buildContextSubGraph } from '../services/contextSubGraphBuilder';
 
 export interface NodeDetailsPanelProps {
   selectedNode: Node | null;
@@ -72,8 +75,9 @@ function formatPropertyValue(value: unknown): string {
 const DIVIDER = 'border-t border-gray-200 dark:border-gray-700 pt-3 mt-3';
 
 const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model }) => {
-  // Get store data - must be called before any conditional returns (Rules of Hooks)
+  // Get store data and router - must be called before any conditional returns (Rules of Hooks)
   const { specSchemas } = useModelStore();
+  const router = useRouter();
 
   if (!selectedNode) {
     return (
@@ -204,6 +208,28 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
   const layerName = layer?.name ?? resolvedLayerId;
   const typeLabel = styleConfig?.typeLabel ?? element.type;
 
+  // Build context subgraph (1-hop neighborhood)
+  const contextSubGraph = useMemo(() => {
+    try {
+      return buildContextSubGraph(element.id, model);
+    } catch (error) {
+      console.warn('[NodeDetailsPanel] Failed to build context subgraph:', error);
+      return null;
+    }
+  }, [element.id, model]);
+
+  // Handle context subgraph node click - navigate to the new node
+  const handleContextNodeClick = (elementId: string) => {
+    // Update URL to navigate to the new node
+    const currentRoute = router.state.location.pathname;
+    const nodeParam = `nodeId=${encodeURIComponent(elementId)}`;
+    const separator = currentRoute.includes('?') ? '&' : '?';
+    const newUrl = `${currentRoute}${separator}${nodeParam}`;
+    window.history.pushState({}, '', newUrl);
+    // Trigger a re-render by updating the router state (this will cause a navigation)
+    router.navigate({ to: currentRoute, search: { nodeId: elementId } });
+  };
+
   return (
     <div data-testid="node-details-panel" className="p-4 border-b border-gray-200 dark:border-gray-700">
       {/* Header */}
@@ -327,6 +353,19 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
                   isInterLayer: true,
                 })),
             ]}
+          />
+        </div>
+      ) : null}
+
+      {/* Context Sub-Graph */}
+      {contextSubGraph && contextSubGraph.nodes.length > 0 ? (
+        <div data-testid="node-details-context-subgraph" className={DIVIDER}>
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Context</p>
+          <NodeContextSubGraph
+            focalElementId={element.id}
+            nodes={contextSubGraph.nodes}
+            edges={contextSubGraph.edges}
+            onNodeClick={handleContextNodeClick}
           />
         </div>
       ) : null}
