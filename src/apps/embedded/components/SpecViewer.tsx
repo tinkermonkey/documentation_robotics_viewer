@@ -5,9 +5,10 @@
 
 import React from 'react'
 import { SpecDataResponse, SchemaDefinition } from '../services/embeddedDataLoader'
-import { Badge } from 'flowbite-react'
+import { Badge, Table, TableBody, TableCell, TableRow } from 'flowbite-react'
 import ExpandableSection from './common/ExpandableSection'
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid'
+import { useModelStore } from '../../../core/stores/modelStore'
 
 interface SpecViewerProps {
   specData: SpecDataResponse
@@ -15,6 +16,7 @@ interface SpecViewerProps {
 }
 
 const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) => {
+  const { specSchemas } = useModelStore();
 
   if (!specData) {
     return (
@@ -139,6 +141,112 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) =
               })}
             </div>
           </div>
+
+          {/* Relationship Schemas Section */}
+          {(() => {
+            // Extract layer ID from selectedSchemaId
+            // Schema IDs typically follow pattern like "motivationSchema.json" -> "motivation"
+            const layerIdFromSchema = Object.keys(specSchemas).find(schemaKey => {
+              const schemaData = specSchemas[schemaKey];
+              return schemaData?.layer?.name?.toLowerCase().includes(
+                selectedSchemaId.replace('schema.json', '').replace(/Schema$/, '').toLowerCase()
+              ) || schemaData?.layer?.id?.toLowerCase().includes(
+                selectedSchemaId.replace('schema.json', '').replace(/Schema$/, '').toLowerCase()
+              );
+            });
+
+            const specSchemaData = layerIdFromSchema ? specSchemas[layerIdFromSchema] : null;
+            const relationshipSchemas = specSchemaData?.relationshipSchemas ?? [];
+
+            // Group relationships by sourceSpecNodeId
+            const relsBySourceType = relationshipSchemas.reduce(
+              (acc: Record<string, typeof relationshipSchemas>, rel) => {
+                const sourceKey = rel.sourceSpecNodeId;
+                if (!acc[sourceKey]) {
+                  acc[sourceKey] = [];
+                }
+                acc[sourceKey].push(rel);
+                return acc;
+              },
+              {}
+            );
+
+            return relationshipSchemas.length > 0 ? (
+              <section className="mt-8 border-t border-gray-200 dark:border-gray-700 pt-8" data-testid="relationship-schemas-section">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                  Valid Relationships
+                </h3>
+
+                <div className="space-y-4">
+                  {Object.entries(relsBySourceType).map(([sourceNodeId, rels]) => {
+                    // Extract just the node type name from the full ID (e.g., "motivation.Goal" -> "Goal")
+                    const nodeTypeName = sourceNodeId.includes('.')
+                      ? sourceNodeId.split('.').pop()
+                      : sourceNodeId;
+
+                    return (
+                      <div
+                        key={sourceNodeId}
+                        className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden"
+                        data-testid={`relationship-schemas-${sourceNodeId}`}
+                      >
+                        <div className="px-4 py-3 bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
+                          <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
+                            {nodeTypeName}
+                          </h4>
+                        </div>
+
+                        <Table className="text-sm">
+                          <TableBody className="divide-y divide-gray-200 dark:divide-gray-700">
+                            {rels.map((rel) => {
+                              // Extract destination node type name
+                              const destNodeTypeName = rel.destinationSpecNodeId.includes('.')
+                                ? rel.destinationSpecNodeId.split('.').pop()
+                                : rel.destinationSpecNodeId;
+
+                              return (
+                                <TableRow
+                                  key={rel.id}
+                                  className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                                  data-testid={`relationship-row-${rel.id}`}
+                                >
+                                  <TableCell className="px-4 py-3 text-gray-900 dark:text-white font-medium">
+                                    {rel.predicate}
+                                  </TableCell>
+                                  <TableCell className="px-4 py-3 text-gray-600 dark:text-gray-400">
+                                    {destNodeTypeName}
+                                  </TableCell>
+                                  <TableCell className="px-4 py-3">
+                                    <Badge color="gray" size="sm">
+                                      {rel.cardinality}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell className="px-4 py-3">
+                                    {rel.strength && (
+                                      <Badge color="info" size="sm">
+                                        {rel.strength}
+                                      </Badge>
+                                    )}
+                                  </TableCell>
+                                  {rel.required && (
+                                    <TableCell className="px-4 py-3 text-center">
+                                      <Badge color="failure" size="sm">
+                                        Required
+                                      </Badge>
+                                    </TableCell>
+                                  )}
+                                </TableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            ) : null;
+          })()}
         </section>
       </div>
     )

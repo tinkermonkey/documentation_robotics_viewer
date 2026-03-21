@@ -3,11 +3,13 @@
  * Displays model instance data in a readable JSON format
  */
 
-import React, { useEffect } from 'react';
-import { MetaModel, ModelElement } from '../../../core/types';
+import React, { useEffect, useMemo } from 'react';
+import { MetaModel, ModelElement, Relationship, Reference } from '../../../core/types';
 import { Badge, Accordion, AccordionPanel, AccordionTitle, AccordionContent } from 'flowbite-react';
 import AttributesTable, { AttributeRow } from './common/AttributesTable';
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid';
+import RelationshipTable from './common/RelationshipTable';
+import SourceReferenceList from './common/SourceReferenceList';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { SchemaDefinition } from '../services/embeddedDataLoader';
 
@@ -110,6 +112,111 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
     if (!layerSchemaKey) return null;
 
     return specData.schemas[layerSchemaKey]?.description;
+  };
+
+  // Helper to find element by ID across all layers
+  const findElementById = (elementId: string) => {
+    for (const layer of Object.values(layers)) {
+      const element = layer.elements?.find((el: ModelElement) => el.id === elementId);
+      if (element) {
+        return { element, layerId: layer.id };
+      }
+    }
+    return null;
+  };
+
+  // Helper to build relationships for an element
+  const buildRelationshipsForElement = (element: ModelElement, selectedLayerKey: string) => {
+    const outbound: Array<{
+      predicate: string;
+      targetId: string;
+      targetName: string;
+      targetLayerId: string;
+      isInterLayer: boolean;
+    }> = [];
+
+    const inbound: Array<{
+      predicate: string;
+      sourceId: string;
+      sourceName: string;
+      sourceLayerId: string;
+      isInterLayer: boolean;
+    }> = [];
+
+    // Collect outbound relationships from current layer
+    const layer = layers[selectedLayerKey];
+    if (layer?.relationships) {
+      const outboundRels = layer.relationships.filter(
+        (r: Relationship) => r.sourceId === element.id
+      );
+
+      outboundRels.forEach((rel: Relationship) => {
+        const targetElement = layer.elements?.find((el: ModelElement) => el.id === rel.targetId);
+        if (targetElement) {
+          outbound.push({
+            predicate: rel.predicate || rel.type,
+            targetId: rel.targetId,
+            targetName: targetElement.name || targetElement.id,
+            targetLayerId: layer.id,
+            isInterLayer: false
+          });
+        }
+      });
+    }
+
+    // Collect inbound relationships from current layer
+    if (layer?.relationships) {
+      const inboundRels = layer.relationships.filter(
+        (r: Relationship) => r.targetId === element.id
+      );
+
+      inboundRels.forEach((rel: Relationship) => {
+        const sourceElement = layer.elements?.find((el: ModelElement) => el.id === rel.sourceId);
+        if (sourceElement) {
+          inbound.push({
+            predicate: rel.predicate || rel.type,
+            sourceId: rel.sourceId,
+            sourceName: sourceElement.name || sourceElement.id,
+            sourceLayerId: layer.id,
+            isInterLayer: false
+          });
+        }
+      });
+    }
+
+    // Collect cross-layer references
+    model.references?.forEach((ref: Reference) => {
+      const isSourceRef = ref.source.elementId === element.id && ref.source.layerId === selectedLayerKey;
+      const isTargetRef = ref.target.elementId === element.id && ref.target.layerId === selectedLayerKey;
+
+      if (isSourceRef && ref.target.elementId && ref.target.layerId) {
+        const targetResult = findElementById(ref.target.elementId);
+        if (targetResult) {
+          outbound.push({
+            predicate: ref.predicate || ref.type,
+            targetId: ref.target.elementId,
+            targetName: targetResult.element.name || targetResult.element.id,
+            targetLayerId: ref.target.layerId,
+            isInterLayer: true
+          });
+        }
+      }
+
+      if (isTargetRef && ref.source.elementId && ref.source.layerId) {
+        const sourceResult = findElementById(ref.source.elementId);
+        if (sourceResult) {
+          inbound.push({
+            predicate: ref.predicate || ref.type,
+            sourceId: ref.source.elementId,
+            sourceName: sourceResult.element.name || sourceResult.element.id,
+            sourceLayerId: ref.source.layerId,
+            isInterLayer: true
+          });
+        }
+      }
+    });
+
+    return { outbound, inbound };
   };
 
   const renderLayerDetails = () => {
@@ -288,7 +395,7 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
                           const elementAsRecord = element as unknown as Record<string, unknown>;
                           const elementEntries = Object.entries(elementAsRecord)
                             .filter(([key]) =>
-                              !['id', 'name', 'type', 'description', 'properties', 'visual', 'layerId'].includes(key)
+                              !['id', 'name', 'type', 'description', 'properties', 'visual', 'layerId', 'sourceReference'].includes(key)
                             );
 
                           elementEntries.forEach(([key, value]) => {
@@ -298,6 +405,12 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
                               isObject: typeof value === 'object' && value !== null
                             });
                           });
+
+                          // Build relationships and source references
+                          const { outbound, inbound } = useMemo(
+                            () => buildRelationshipsForElement(element, layerKey || selectedLayer),
+                            [element, layerKey, selectedLayer]
+                          );
 
                           return (
                             <Accordion key={element.id} collapseAll>
@@ -320,6 +433,31 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
                                     )}
 
                                     <AttributesTable attributes={attributes} title="Attributes" />
+
+                                    {/* Relationships section */}
+                                    {(outbound.length > 0 || inbound.length > 0) && (
+                                      <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                                        <h6 className="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
+                                          Relationships
+                                        </h6>
+                                        <RelationshipTable
+                                          outbound={outbound}
+                                          inbound={inbound}
+                                        />
+                                      </div>
+                                    )}
+
+                                    {/* Source References section */}
+                                    {element.sourceReference && (
+                                      <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                                        <h6 className="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
+                                          Source References
+                                        </h6>
+                                        <SourceReferenceList
+                                          references={[element.sourceReference]}
+                                        />
+                                      </div>
+                                    )}
                                   </div>
                                 </AccordionContent>
                               </AccordionPanel>
