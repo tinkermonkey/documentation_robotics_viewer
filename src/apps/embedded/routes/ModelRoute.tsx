@@ -239,8 +239,8 @@ export default function ModelRoute() {
         const loadedSpecManifest = specFiles['manifest.json'] as any;
         const loadedSpecVersion = loadedSpecManifest?.specVersion as string | undefined;
 
-        // Set spec version with both model version and loaded spec version for comparison
-        // setSpecVersion(modelVersion, specVersion) sets specVersionMismatch = (modelVersion !== specVersion)
+        // Set spec version with both model spec version and loaded spec version for comparison
+        // setSpecVersion(modelSpecVersion, loadedSpecVersion) sets specVersionMismatch = (modelSpecVersion !== loadedSpecVersion)
         if (modelSpecVersion || loadedSpecVersion) {
           useModelStore.getState().setSpecVersion(
             modelSpecVersion || 'unknown',

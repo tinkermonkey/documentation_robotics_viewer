@@ -37,7 +37,7 @@ const SharedLayout: React.FC<SharedLayoutProps> = ({
   bottomPanelHeight = '300px',
   children,
 }) => {
-  const { specVersionMismatch, specVersion, version } = useModelStore();
+  const { specVersionMismatch, modelSpecVersion, loadedSpecVersion } = useModelStore();
   const [warningDismissed, setWarningDismissed] = useState(false);
 
   return (
@@ -48,8 +48,8 @@ const SharedLayout: React.FC<SharedLayoutProps> = ({
       {/* Spec version warning banner */}
       {specVersionMismatch && !warningDismissed && (
         <SpecVersionWarning
-          modelVersion={version ?? '?'}
-          specVersion={specVersion ?? '?'}
+          modelVersion={modelSpecVersion ?? '?'}
+          specVersion={loadedSpecVersion ?? '?'}
           onDismiss={() => setWarningDismissed(true)}
         />
       )}

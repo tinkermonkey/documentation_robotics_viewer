@@ -12,7 +12,8 @@ interface ModelStore {
   version: string | null;
   predicateCatalog: Map<string, PredicateDefinition>;
   specSchemas: Record<string, SpecLayerData>;
-  specVersion: string | null;
+  modelSpecVersion: string | null;
+  loadedSpecVersion: string | null;
   specVersionMismatch: boolean;
 
   // Actions
@@ -22,7 +23,7 @@ interface ModelStore {
   clearModel: () => void;
   setPredicateCatalog: (catalog: Map<string, PredicateDefinition>) => void;
   setSpecSchemas: (schemas: Record<string, SpecLayerData>) => void;
-  setSpecVersion: (specVersion: string, modelVersion: string) => void;
+  setSpecVersion: (modelSpecVersion: string, loadedSpecVersion: string) => void;
 
   // Selectors
   getLayer: (layerType: string) => Layer | undefined;
@@ -41,7 +42,8 @@ export const useModelStore = create<ModelStore>((set, get) => ({
   version: null,
   predicateCatalog: new Map(),
   specSchemas: {},
-  specVersion: null,
+  modelSpecVersion: null,
+  loadedSpecVersion: null,
   specVersionMismatch: false,
 
   // Actions
@@ -68,7 +70,8 @@ export const useModelStore = create<ModelStore>((set, get) => ({
       loading: false,
       predicateCatalog: new Map(),
       specSchemas: {},
-      specVersion: null,
+      modelSpecVersion: null,
+      loadedSpecVersion: null,
       specVersionMismatch: false
     }),
 
@@ -78,10 +81,11 @@ export const useModelStore = create<ModelStore>((set, get) => ({
   setSpecSchemas: (schemas: Record<string, SpecLayerData>) =>
     set({ specSchemas: schemas }),
 
-  setSpecVersion: (specVersion: string, modelVersion: string) =>
+  setSpecVersion: (modelSpecVersion: string, loadedSpecVersion: string) =>
     set({
-      specVersion,
-      specVersionMismatch: specVersion !== modelVersion
+      modelSpecVersion,
+      loadedSpecVersion,
+      specVersionMismatch: modelSpecVersion !== loadedSpecVersion
     }),
 
   // Selectors
