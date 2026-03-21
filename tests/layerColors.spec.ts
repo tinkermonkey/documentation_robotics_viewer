@@ -204,9 +204,10 @@ test.describe('getLayerColor', () => {
     });
 
     test('should use black text for light backgrounds', () => {
-      // API and APM have lighter backgrounds and should use black text
+      // API, APM, and Testing have lighter backgrounds and should use black text
       expect(getLayerColor(LayerType.Api, 'text')).toBe('#000000');
       expect(getLayerColor(LayerType.ApmObservability, 'text')).toBe('#000000');
+      expect(getLayerColor(LayerType.Testing, 'text')).toBe('#000000');
     });
   });
 });

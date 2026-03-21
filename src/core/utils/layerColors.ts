@@ -51,7 +51,7 @@ export interface LayerColorConfig {
  * - UX #14b8a6: 3.2:1 ✓
  * - Navigation #06b6d4: 3.2:1 ✓
  * - APM #84cc16: 6.1:1 ✓ (lime on white)
- * - Testing #a78bfa: 8.5:1 ✓ (with dark text on light background)
+ * - Testing #a78bfa: 7.7:1 ✓ (with dark text on light background)
  * - FederatedArch #6366f1: 3.0:1 ✓
  */
 export const LAYER_COLORS: Record<LayerType, LayerColorConfig> = {
