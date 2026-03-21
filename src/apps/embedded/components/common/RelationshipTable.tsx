@@ -5,7 +5,7 @@
  */
 
 import React, { useMemo } from 'react';
-import { Badge, Table, TableBody, TableCell, TableRow } from 'flowbite-react';
+import { Badge } from 'flowbite-react';
 import { ArrowRight, ArrowLeft, LucideIcon } from 'lucide-react';
 import { getLayerColor } from '@/core/utils/layerColors';
 
@@ -99,13 +99,22 @@ const RelationshipSection: React.FC<RelationshipSectionProps> = ({
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-sm border-collapse">
+              <table
+                className="w-full text-sm border-collapse"
+                aria-label={`${group.predicate} relationships`}
+              >
                 <thead className="bg-gray-100 dark:bg-gray-700">
                   <tr>
-                    <th className="px-3 py-2 text-left font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-600">
+                    <th
+                      scope="col"
+                      className="px-3 py-2 text-left font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-600"
+                    >
                       Name
                     </th>
-                    <th className="px-3 py-2 text-right font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-600">
+                    <th
+                      scope="col"
+                      className="px-3 py-2 text-right font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-600"
+                    >
                       Layer & Type
                     </th>
                   </tr>

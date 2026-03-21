@@ -219,22 +219,23 @@ export function createMinimalModelFixture(): MetaModel {
 
 /**
  * Helper to create a model element with all v0.8.3+ fields populated
+ * @param id Element ID
+ * @param overrides Partial ModelElement fields to override defaults
+ * @returns ModelElement with v0.8.3+ fields (sourceReference, specNodeId, attributes, metadata, path)
  */
 export function createCompleteModelElement(
   id: string,
-  type: string,
-  name: string,
-  layerId: string,
-  sourceReference?: SourceReference,
-  specNodeId?: string,
-  attributes?: Record<string, unknown>,
-  metadata?: ElementMetadata
+  overrides?: Partial<ModelElement>
 ): ModelElement {
+  const type = overrides?.type ?? 'element';
+  const name = overrides?.name ?? 'Test Element';
+  const layerId = overrides?.layerId ?? 'application';
+
   return createModelElement(id, type, name, layerId, '#ffffff', '#000000', {}, {
-    sourceReference,
-    specNodeId,
-    attributes,
-    metadata
+    sourceReference: overrides?.sourceReference,
+    specNodeId: overrides?.specNodeId,
+    attributes: overrides?.attributes,
+    metadata: overrides?.metadata
   });
 }
 

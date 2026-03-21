@@ -41,6 +41,7 @@ export async function loadExampleImplementation(): Promise<MetaModel> {
     ux: LayerType.Ux,
     navigation: LayerType.Navigation,
     apm: LayerType.ApmObservability,
+    testing: LayerType.Testing,
   };
 
   // Load each layer
@@ -113,6 +114,7 @@ export async function loadExampleImplementation(): Promise<MetaModel> {
 
 /**
  * Parse a YAML element into ModelElement
+ * Supports v0.8.3+ fields: sourceReference, specNodeId, attributes, metadata, path
  */
 function parseYAMLElement(key: string, data: any, layerId: string): ModelElement | null {
   if (!data.id) {
@@ -123,12 +125,22 @@ function parseYAMLElement(key: string, data: any, layerId: string): ModelElement
   const idParts = data.id.split('.');
   const elementType = idParts.length >= 2 ? idParts[1] : 'unknown';
 
+  // Construct path from layerId and key (e.g., "application.service.name")
+  const path = `${layerId}.${elementType}.${key}`;
+
+  // Extract v0.8.3+ fields if present in YAML
+  const sourceReference = data.sourceReference as any;
+  const specNodeId = data.specNodeId as string | undefined;
+  const attributes = data.attributes as Record<string, unknown> | undefined;
+  const metadata = data.metadata as any;
+
   return {
     id: data.id,
     type: elementType,
     name: data.name || key,
     description: data.description || '',
     layerId,
+    path,
     properties: {
       ...data,
       // Remove redundant fields
@@ -136,6 +148,10 @@ function parseYAMLElement(key: string, data: any, layerId: string): ModelElement
       name: undefined,
       description: undefined,
       relationships: undefined,
+      sourceReference: undefined,
+      specNodeId: undefined,
+      attributes: undefined,
+      metadata: undefined,
     },
     visual: {
       position: { x: 0, y: 0 },
@@ -146,6 +162,10 @@ function parseYAMLElement(key: string, data: any, layerId: string): ModelElement
       incoming: [],
       outgoing: [],
     },
+    sourceReference,
+    specNodeId,
+    attributes,
+    metadata,
   };
 }
 
