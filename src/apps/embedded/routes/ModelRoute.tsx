@@ -148,6 +148,26 @@ export default function ModelRoute() {
     setSelectedNode(node);
   };
 
+  // Handle node selection from details panel (by elementId)
+  const handleNodeSelect = (elementId: string) => {
+    if (!model) return;
+
+    // Find the node with matching elementId in any layer
+    for (const layer of Object.values(model.layers)) {
+      const element = layer.elements?.find(e => e.id === elementId);
+      if (element) {
+        // Create a minimal Node object for consistency
+        const node: Node = {
+          id: elementId,
+          position: { x: 0, y: 0 },
+          data: { elementId, layerId: element.layerId }
+        };
+        setSelectedNode(node);
+        return;
+      }
+    }
+  };
+
   // Handle path highlight in Details view (auto-clear after 3 seconds)
   const handlePathHighlight = (path: string | null) => {
     // Clear any existing timeout
@@ -270,7 +290,7 @@ export default function ModelRoute() {
           <>
             <AnnotationPanel loadError={annotationsError} />
             <LayerTypesLegend model={model} />
-            <NodeDetailsPanel selectedNode={selectedNode} model={model} onNodeSelect={handleNodeClick} />
+            <NodeDetailsPanel selectedNode={selectedNode} model={model} onNodeSelect={handleNodeSelect} />
             <GraphStatisticsPanel model={model} />
           </>
         ) : (
