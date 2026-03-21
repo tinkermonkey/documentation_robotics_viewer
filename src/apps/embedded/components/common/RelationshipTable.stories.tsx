@@ -68,6 +68,10 @@ const sampleInbound = [
 ];
 
 export const WithBothDirections: Story = {
+  args: {
+    outbound: sampleOutbound,
+    inbound: sampleInbound,
+  },
   render: () => (
     <div className="w-full max-w-2xl p-4">
       <RelationshipTable
@@ -79,6 +83,10 @@ export const WithBothDirections: Story = {
 };
 
 export const OnlyOutbound: Story = {
+  args: {
+    outbound: sampleOutbound,
+    inbound: [],
+  },
   render: () => (
     <div className="w-full max-w-2xl p-4">
       <RelationshipTable
@@ -90,6 +98,10 @@ export const OnlyOutbound: Story = {
 };
 
 export const OnlyInbound: Story = {
+  args: {
+    outbound: [],
+    inbound: sampleInbound,
+  },
   render: () => (
     <div className="w-full max-w-2xl p-4">
       <RelationshipTable
@@ -101,6 +113,10 @@ export const OnlyInbound: Story = {
 };
 
 export const Empty: Story = {
+  args: {
+    outbound: [],
+    inbound: [],
+  },
   render: () => (
     <div className="w-full max-w-2xl p-4">
       <RelationshipTable
@@ -112,6 +128,10 @@ export const Empty: Story = {
 };
 
 export const WithBothDirectionsDarkMode: Story = {
+  args: {
+    outbound: sampleOutbound,
+    inbound: sampleInbound,
+  },
   render: () => (
     <div className="dark w-full max-w-2xl p-4 bg-gray-900 rounded">
       <RelationshipTable
@@ -126,6 +146,18 @@ export const WithBothDirectionsDarkMode: Story = {
 };
 
 export const SingleRelationship: Story = {
+  args: {
+    outbound: [
+      {
+        predicate: 'implements',
+        targetId: 'elem-001',
+        targetName: 'Simple Service',
+        targetLayerId: 'Business',
+        isInterLayer: true,
+      },
+    ],
+    inbound: [],
+  },
   render: () => (
     <div className="w-full max-w-2xl p-4">
       <RelationshipTable

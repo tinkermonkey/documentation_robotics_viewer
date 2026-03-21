@@ -78,6 +78,9 @@ const multipleLocations: SourceReference[] = [
 ];
 
 export const WithRepositoryLinks: Story = {
+  args: {
+    references: sampleReferences,
+  },
   render: () => (
     <div className="w-96 p-4">
       <SourceReferenceList references={sampleReferences} />
@@ -86,6 +89,9 @@ export const WithRepositoryLinks: Story = {
 };
 
 export const WithoutRepositoryLinks: Story = {
+  args: {
+    references: sampleReferencesWithoutRepository,
+  },
   render: () => (
     <div className="w-96 p-4">
       <SourceReferenceList references={sampleReferencesWithoutRepository} />
@@ -94,6 +100,9 @@ export const WithoutRepositoryLinks: Story = {
 };
 
 export const MultipleLocations: Story = {
+  args: {
+    references: multipleLocations,
+  },
   render: () => (
     <div className="w-96 p-4">
       <SourceReferenceList references={multipleLocations} />
@@ -102,6 +111,9 @@ export const MultipleLocations: Story = {
 };
 
 export const Empty: Story = {
+  args: {
+    references: [],
+  },
   render: () => (
     <div className="w-96 p-4">
       <SourceReferenceList references={[]} />
@@ -110,6 +122,9 @@ export const Empty: Story = {
 };
 
 export const WithRepositoryLinksDarkMode: Story = {
+  args: {
+    references: sampleReferences,
+  },
   render: () => (
     <div className="dark w-96 p-4 bg-gray-900 rounded">
       <SourceReferenceList references={sampleReferences} />
@@ -121,6 +136,9 @@ export const WithRepositoryLinksDarkMode: Story = {
 };
 
 export const EmptyDarkMode: Story = {
+  args: {
+    references: [],
+  },
   render: () => (
     <div className="dark w-96 p-4 bg-gray-900 rounded">
       <SourceReferenceList references={[]} />

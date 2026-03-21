@@ -37,6 +37,9 @@ export const Generated: Story = {
 };
 
 export const AllVariants: Story = {
+  args: {
+    provenance: 'extracted',
+  },
   render: () => (
     <div className="flex gap-3">
       <ProvenanceBadge provenance="extracted" />
@@ -48,6 +51,9 @@ export const AllVariants: Story = {
 };
 
 export const AllVariantsDarkMode: Story = {
+  args: {
+    provenance: 'extracted',
+  },
   render: () => (
     <div className="dark w-full bg-gray-900 p-8">
       <div className="flex gap-3">
