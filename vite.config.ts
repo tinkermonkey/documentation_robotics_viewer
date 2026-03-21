@@ -2,9 +2,46 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import flowbiteReact from 'flowbite-react/plugin/vite';
 import path from 'path';
+import { copyFileSync, mkdirSync, readdirSync } from 'fs';
+
+/**
+ * Custom Vite plugin to copy .dr/spec files
+ * - For production: copies to dist/.dr/spec/
+ * - For development: serves from source .dr/spec/ directory via fetch
+ */
+function copySpecFilesPlugin() {
+  return {
+    name: 'copy-spec-files',
+    writeBundle() {
+      try {
+        const specSrcDir = path.resolve(__dirname, '.dr/spec');
+        const specDestDir = path.resolve(__dirname, 'dist/.dr/spec');
+
+        // Create destination directory if it doesn't exist
+        mkdirSync(specDestDir, { recursive: true });
+
+        // Copy all .json files from .dr/spec to dist/.dr/spec
+        const files = readdirSync(specSrcDir);
+        const copiedFiles = [];
+        for (const file of files) {
+          if (file.endsWith('.json')) {
+            const src = path.join(specSrcDir, file);
+            const dest = path.join(specDestDir, file);
+            copyFileSync(src, dest);
+            copiedFiles.push(file);
+          }
+        }
+
+        console.log(`Copied ${copiedFiles.length} spec files to dist/.dr/spec/`);
+      } catch (error) {
+        console.warn('Failed to copy spec files:', error);
+      }
+    }
+  };
+}
 
 export default defineConfig({
-  plugins: [react(), flowbiteReact()],
+  plugins: [react(), flowbiteReact(), copySpecFilesPlugin()],
   resolve: {
     alias: {
       // Redirect the flowbite-react Tailwind CSS plugin import to the actual CSS file.

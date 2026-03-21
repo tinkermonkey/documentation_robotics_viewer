@@ -281,6 +281,8 @@ export interface Reference {
   target: ReferenceEndpoint;
   isValid?: boolean;
   validationError?: string;
+  // v0.8.3 spec fields
+  predicate?: string;
 }
 
 /**

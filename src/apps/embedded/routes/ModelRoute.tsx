@@ -16,7 +16,45 @@ import { useAnnotationStore } from '../stores/annotationStore';
 import { embeddedDataLoader, SpecDataResponse } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
 import { LoadingState, ErrorState } from '../components/shared';
+import { loadPredicateCatalog } from '../../../core/services/predicateCatalogLoader';
+import { loadSpecSchemas } from '../../../core/services/specSchemaLoader';
 import type { MetaModel } from '../../../core/types';
+
+/**
+ * Load spec schemas from .dr/spec/ directory
+ * These are static assets bundled with the app
+ */
+async function loadSpecSchemaFiles(): Promise<Record<string, unknown>> {
+  const specFiles: Record<string, unknown> = {};
+  const layerNames = [
+    'motivation', 'business', 'security', 'application', 'technology',
+    'api', 'data-model', 'data-store', 'ux', 'navigation', 'apm', 'testing'
+  ];
+
+  // Load base.json for predicate catalog
+  try {
+    const baseResponse = await fetch('/.dr/spec/base.json');
+    if (baseResponse.ok) {
+      specFiles['base.json'] = await baseResponse.json();
+    }
+  } catch (error) {
+    console.warn('Failed to load base.json:', error);
+  }
+
+  // Load layer-specific spec schemas
+  for (const layerName of layerNames) {
+    try {
+      const response = await fetch(`/.dr/spec/${layerName}.json`);
+      if (response.ok) {
+        specFiles[`${layerName}.json`] = await response.json();
+      }
+    } catch (error) {
+      console.warn(`Failed to load ${layerName}.json:`, error);
+    }
+  }
+
+  return specFiles;
+}
 
 /**
  * Sanitize model data to ensure all elements have required visual properties.
@@ -149,6 +187,30 @@ export default function ModelRoute() {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to load schema information';
         setSpecDataError(errorMessage);
+      }
+
+      // Load spec schemas and predicate catalog from static assets
+      try {
+        const specFiles = await loadSpecSchemaFiles();
+
+        // Load and populate predicate catalog from base.json
+        if (specFiles['base.json']) {
+          const catalog = loadPredicateCatalog(specFiles['base.json']);
+          useModelStore.getState().setPredicateCatalog(catalog.byPredicate);
+        }
+
+        // Load and populate spec schemas
+        const schemas = loadSpecSchemas(specFiles);
+        useModelStore.getState().setSpecSchemas(schemas);
+
+        // Validate and set spec version if present in model metadata
+        if (modelData.metadata?.specVersion) {
+          const specVersion = modelData.metadata.specVersion as string;
+          useModelStore.getState().setSpecVersion(specVersion, specVersion);
+        }
+      } catch (err) {
+        console.warn('Failed to load spec schemas:', err);
+        // Continue even if spec schema loading fails - it's supplementary data
       }
     },
   });

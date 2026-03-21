@@ -1,10 +1,11 @@
-import { MetaModel, LayerType, Reference } from '../types';
+import { MetaModel, LayerType, Reference, ReferenceType } from '../types';
 import { GitHubService } from './githubService';
 import { LocalFileLoader } from './localFileLoader';
 import { SpecParser } from './specParser';
 import { JSONSchemaParser } from './jsonSchemaParser';
 import { CrossLayerReferenceExtractor } from './crossLayerReferenceExtractor';
 import { YAMLParser } from './yamlParser';
+import { RelationshipsYamlParser } from './relationshipsYamlParser';
 import { YAMLManifest } from '../types/yaml';
 
 /**
@@ -407,11 +408,59 @@ export class DataLoader {
     // Resolve dot-notation references to UUIDs
     this.resolveDotNotationReferences(allRelationships, this.yamlParser.getDotNotationLookup());
 
+    // Load and parse relationships.yaml if present
+    const relationshipsYamlKey = Object.keys(schemas).find(k => k.includes('relationships'));
+    let relationshipsYamlWarnings: string[] = [];
+    if (relationshipsYamlKey) {
+      const relationshipsYamlContent = schemas[relationshipsYamlKey];
+      if (typeof relationshipsYamlContent === 'string') {
+        try {
+          const relParser = new RelationshipsYamlParser();
+          const parsedRelationships = relParser.parse(
+            relationshipsYamlContent,
+            this.yamlParser.getDotNotationLookup()
+          );
+          relationshipsYamlWarnings = relParser.getWarnings();
+
+          // Partition relationships: intra-layer vs cross-layer
+          for (const rel of parsedRelationships) {
+            if (rel.sourceLayerId === rel.targetLayerId && rel.sourceLayerId) {
+              // Intra-layer: add to layer.relationships
+              // Find the layer by its type
+              let found = false;
+              for (const layer of Object.values(layers)) {
+                if (layer.id === rel.sourceLayerId || layer.type === rel.sourceLayerId) {
+                  layer.relationships.push(rel);
+                  found = true;
+                  break;
+                }
+              }
+              if (!found) {
+                console.warn(`Could not find layer for intra-layer relationship: ${rel.sourceLayerId}`);
+              }
+            } else {
+              // Cross-layer: add to references
+              allRelationships.push(rel);
+            }
+          }
+
+          console.log(`Loaded ${parsedRelationships.length} relationships from relationships.yaml`);
+        } catch (error) {
+          const errorMsg = `Failed to parse relationships.yaml: ${error instanceof Error ? error.message : 'Unknown error'}`;
+          console.error(errorMsg);
+          parseErrors.push(errorMsg);
+        }
+      }
+    }
+
     // Build cross-layer references
     const references = this.buildYAMLReferences(Object.values(layers), allRelationships);
 
     // Get warnings from parser
     const warnings = this.yamlParser.getWarnings();
+    if (relationshipsYamlWarnings.length > 0) {
+      warnings.push(...relationshipsYamlWarnings);
+    }
     if (warnings.length > 0) {
       console.warn(`YAML parsing warnings (${warnings.length}):`);
       warnings.forEach(w => console.warn(`  - ${w}`));
@@ -438,6 +487,7 @@ export class DataLoader {
         type: 'yaml-instances',
         yamlVersion: manifest.version,
         manifestStatistics: manifest.statistics,
+        specVersion: manifest.spec_version,
         warnings: warnings.length > 0 ? warnings : undefined,
         parseErrors: parseErrors.length > 0 ? parseErrors : undefined,
       }
@@ -549,6 +599,7 @@ export class DataLoader {
           elementId: rel.targetId,
           layerId: targetLayer,
         },
+        predicate: rel.predicate,
       });
     }
 
