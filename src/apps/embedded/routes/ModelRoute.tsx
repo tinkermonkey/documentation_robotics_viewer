@@ -21,7 +21,6 @@ import { loadSpecSchemas } from '../../../core/services/specSchemaLoader';
 import { loadSpecSchemaFiles } from '../../../core/services/specSchemaFileLoader';
 import type { MetaModel } from '../../../core/types';
 
-
 /**
  * Sanitize model data to ensure all elements have required visual properties.
  * Uses immutable updates to prevent mutation of input data.

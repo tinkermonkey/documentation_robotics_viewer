@@ -1,34 +1,7 @@
-/**
- * Spec Schema File Loader
- *
- * Stateless service for loading spec schema files from .dr/spec/ directory.
- * These are static assets bundled with the app.
- *
- * Key features:
- * - Parallel fetching of spec files using Promise.all()
- * - Centralized layer name mapping (removes hardcoded lists)
- * - Graceful error handling for missing files
- * - Returns manifest.json and base.json for version validation and predicate catalog
- */
-
 import { getSpecLayerNames } from '../types/layers';
 
 /**
- * Load spec schemas from .dr/spec/ directory in parallel.
- * Returns spec files including manifest.json for version validation.
- *
- * @returns Record mapping filename to parsed JSON object
- * @example
- * ```typescript
- * const specFiles = await loadSpecSchemaFiles();
- * // {
- * //   'manifest.json': {...},
- * //   'base.json': {...},
- * //   'motivation.json': {...},
- * //   'business.json': {...},
- * //   ...
- * // }
- * ```
+ * Load spec schemas from .dr/spec/ directory in parallel, including manifest.json and base.json.
  */
 export async function loadSpecSchemaFiles(): Promise<Record<string, unknown>> {
   const specFiles: Record<string, unknown> = {};

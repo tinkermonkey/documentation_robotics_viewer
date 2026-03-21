@@ -49,8 +49,9 @@ export interface LayerData {
  * Mapping of LayerType enum values to spec file names (.dr/spec/*.json)
  * These are the kebab-case file names used to fetch spec schemas.
  * The order matches the layer numbering in the spec.
+ * Note: FederatedArchitecture is excluded as no corresponding spec file exists.
  */
-export const SPEC_LAYER_NAMES: Record<LayerType, string> = {
+export const SPEC_LAYER_NAMES: Record<Exclude<LayerType, typeof LayerType.FederatedArchitecture>, string> = {
   [LayerType.Motivation]: 'motivation',
   [LayerType.Business]: 'business',
   [LayerType.Security]: 'security',
@@ -63,7 +64,6 @@ export const SPEC_LAYER_NAMES: Record<LayerType, string> = {
   [LayerType.Navigation]: 'navigation',
   [LayerType.ApmObservability]: 'apm',
   [LayerType.Testing]: 'testing',
-  [LayerType.FederatedArchitecture]: 'federated-architecture',
 };
 
 /**
