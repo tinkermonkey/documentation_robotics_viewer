@@ -16,10 +16,11 @@ import {
   OpenAPIOperation,
   JSONSchemaDefinition,
 } from '../types/yaml';
-import { ModelElement, Layer, Relationship, RelationshipType, SourceReference, ElementMetadata } from '../types/model';
+import { ModelElement, Layer, Relationship, RelationshipType, SourceReference, ElementMetadata, PredicateDefinition } from '../types/model';
 import { LayerType } from '../types/layers';
 import { mapPredicateToType } from './predicateTypeMapper';
 import { getLayerColor } from '../utils/layerColors';
+import type { PredicateCatalog } from './predicateCatalogLoader';
 
 /**
  * Maps YAML layer IDs to internal LayerType
@@ -46,6 +47,15 @@ const LAYER_TYPE_MAP: Record<string, LayerType> = {
 export class YAMLParser {
   private warnings: string[] = [];
   private dotNotationLookup: Map<string, string> = new Map(); // dot-notation ID -> UUID
+  private predicateCatalog: PredicateCatalog | null = null;
+
+  /**
+   * Set the predicate catalog for dynamic field discovery
+   * Used to identify relationship fields based on catalog predicates instead of hardcoded lists
+   */
+  setPredicateCatalog(catalog: PredicateCatalog): void {
+    this.predicateCatalog = catalog;
+  }
 
   /**
    * Parse manifest.yaml content
@@ -214,28 +224,40 @@ export class YAMLParser {
     const id = (element.id as string) || this.generateDotNotationId(key);
 
     // Known non-relationship fields (metadata that should not be treated as relationships)
-    const knownFields = [
+    const knownFields = new Set([
       'name', 'id', 'description', 'method', 'path', 'openapi', '$schema', 'schemas', 'relationships',
       'type', 'category', 'priority', 'stakeholders',
       // Motivation layer metadata
       'kpis', 'concerns', 'role', 'timeframe', 'scope', 'impact', 'influence_level',
       // v0.8.3 spec fields
       'spec_node_id', 'layer_id', 'attributes', 'source_reference', 'metadata'
-    ];
+    ]);
+
+    // Build set of valid predicate names from catalog for dynamic field discovery
+    // If catalog is available, use it; otherwise fall back to heuristic (array of strings)
+    const validPredicates = this.predicateCatalog
+      ? new Set(this.predicateCatalog.byPredicate.keys())
+      : null;
 
     // Detect relationship properties (arrays of strings) and collect them
     const relationships: YAMLRelationships = {};
     const additionalProps: Record<string, unknown> = {};
 
     for (const [propKey, value] of Object.entries(element)) {
-      if (knownFields.includes(propKey)) {
+      if (knownFields.has(propKey)) {
         continue; // Skip known fields
       }
 
-      // Check if this looks like a relationship (array of strings)
-      if (Array.isArray(value) && value.length > 0 && value.every(v => typeof v === 'string')) {
+      // Check if this looks like a relationship
+      // If catalog is available, check if propKey is a valid predicate
+      // Otherwise, check if it's an array of strings (heuristic)
+      const isRelationship = validPredicates
+        ? validPredicates.has(propKey)
+        : Array.isArray(value) && value.length > 0 && value.every(v => typeof v === 'string');
+
+      if (isRelationship && Array.isArray(value)) {
         relationships[propKey] = value as string[];
-      } else {
+      } else if (!isRelationship) {
         additionalProps[propKey] = value;
       }
     }
@@ -308,7 +330,7 @@ export class YAMLParser {
     if (yamlElement.openapi) properties.openapi = yamlElement.openapi;
     if (yamlElement.schemas) properties.schemas = yamlElement.schemas;
 
-    // Copy additional custom properties (excluding known fields)
+    // Copy additional custom properties (excluding known fields and predicates)
     const knownFields = new Set([
       'name',
       'description',
@@ -327,8 +349,14 @@ export class YAMLParser {
       'metadata',
     ]);
 
+    // Build set of valid predicate names from catalog
+    const validPredicates = this.predicateCatalog
+      ? new Set(this.predicateCatalog.byPredicate.keys())
+      : new Set<string>();
+
     for (const [key, value] of Object.entries(yamlElement)) {
-      if (!knownFields.has(key)) {
+      // Skip known fields and predicate fields (which are relationships)
+      if (!knownFields.has(key) && !validPredicates.has(key)) {
         properties[key] = value;
       }
     }
@@ -441,6 +469,7 @@ export class YAMLParser {
             sourceId: elementId,
             targetId: targetRef, // Initially dot-notation, will be resolved later
             type: this.mapRelationshipType(relType),
+            predicate: relType, // Store raw predicate string for deduplication and catalog lookup
             properties: {
               isDotNotation: true, // Flag for later resolution
               originalType: relType,

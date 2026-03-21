@@ -6,6 +6,7 @@ import { JSONSchemaParser } from './jsonSchemaParser';
 import { CrossLayerReferenceExtractor } from './crossLayerReferenceExtractor';
 import { YAMLParser } from './yamlParser';
 import { RelationshipsYamlParser } from './relationshipsYamlParser';
+import { loadPredicateCatalog } from './predicateCatalogLoader';
 import { YAMLManifest } from '../types/yaml';
 
 /**
@@ -377,6 +378,15 @@ export class DataLoader {
       if (typeof projectionRulesContent === 'string') {
         this.yamlParser.parseProjectionRules(projectionRulesContent);
       }
+    }
+
+    // Load predicate catalog from base.json if present
+    const baseJsonKey = Object.keys(schemas).find(k => k === 'base.json');
+    if (baseJsonKey) {
+      const baseJson = schemas[baseJsonKey];
+      const catalog = loadPredicateCatalog(baseJson);
+      this.yamlParser.setPredicateCatalog(catalog);
+      console.log(`Loaded predicate catalog with ${catalog.byPredicate.size} predicates`);
     }
 
     // Group files by layer based on manifest paths

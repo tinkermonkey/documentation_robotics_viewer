@@ -9,11 +9,15 @@ interface ModelStore {
   model: MetaModel | null;
   loading: boolean;
   error: string | null;
+  /** Version of the loaded model content (from MetaModel.version) */
   version: string | null;
   predicateCatalog: Map<string, PredicateDefinition>;
   specSchemas: Record<string, SpecLayerData>;
+  /** Spec version declared in the model YAML/manifest (what the model says it targets) */
   modelSpecVersion: string | null;
+  /** Spec version actually loaded from the DR spec files (what's currently available) */
   loadedSpecVersion: string | null;
+  /** True if modelSpecVersion !== loadedSpecVersion, indicating a version mismatch */
   specVersionMismatch: boolean;
 
   // Actions
