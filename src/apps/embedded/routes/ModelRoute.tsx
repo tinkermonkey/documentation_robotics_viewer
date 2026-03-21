@@ -13,7 +13,7 @@ import HighlightedPathPanel from '../components/HighlightedPathPanel';
 import SharedLayout from '../components/SharedLayout';
 import { useModelStore } from '../../../core/stores/modelStore';
 import { useAnnotationStore } from '../stores/annotationStore';
-import { embeddedDataLoader, SpecDataResponse } from '../services/embeddedDataLoader';
+import { embeddedDataLoader, SpecDataResponse, SchemaManifest } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
 import { LoadingState, ErrorState } from '../components/shared';
 import { loadPredicateCatalog } from '../../../core/services/predicateCatalogLoader';
@@ -190,8 +190,8 @@ export default function ModelRoute() {
 
         // Validate spec version: compare model's spec_version against loaded spec's specVersion
         const modelSpecVersion = modelData.metadata?.specVersion as string | undefined;
-        const loadedSpecManifest = specFiles['manifest.json'] as any;
-        const loadedSpecVersion = loadedSpecManifest?.specVersion as string | undefined;
+        const loadedSpecManifest = specFiles['manifest.json'] as SchemaManifest | undefined;
+        const loadedSpecVersion = loadedSpecManifest?.specVersion;
 
         // Set spec version with both model spec version and loaded spec version for comparison
         // setSpecVersion(modelSpecVersion, loadedSpecVersion) sets specVersionMismatch = (modelSpecVersion !== loadedSpecVersion)
