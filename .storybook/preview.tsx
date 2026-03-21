@@ -91,6 +91,16 @@ const preview: Preview = {
             id: 'landmark-main-is-top-level',
             enabled: false,
           },
+          {
+            // Disable requirement for at least one main landmark since stories are isolated components
+            id: 'landmark-one-main',
+            enabled: false,
+          },
+          {
+            // Disable requirement for h1 heading since stories are isolated components, not full pages
+            id: 'page-has-heading-one',
+            enabled: false,
+          },
         ],
       },
 

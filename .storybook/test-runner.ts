@@ -76,7 +76,9 @@ const config: TestRunnerConfig = {
             'color-contrast',
             'region',
             'landmark-no-duplicate-main',
-            'landmark-main-is-top-level'
+            'landmark-main-is-top-level',
+            'landmark-one-main',
+            'page-has-heading-one'
           ])
           .analyze();
 
