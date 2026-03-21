@@ -78,6 +78,33 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
   // Get store data - must be called before any conditional returns (Rules of Hooks)
   const { specSchemas } = useModelStore();
 
+  // Consolidated helper to resolve element by ID (caches to avoid repeated scans)
+  // Must be called before any conditional returns (Rules of Hooks)
+  const { resolveEl, resolveElementName } = useMemo(() => {
+    const elementCache = new Map<string, ModelElement>();
+
+    const resolveEl = (id: string): ModelElement | undefined => {
+      if (elementCache.has(id)) {
+        return elementCache.get(id);
+      }
+      for (const l of Object.values(model.layers)) {
+        const el = l.elements?.find(e => e.id === id);
+        if (el) {
+          elementCache.set(id, el);
+          return el;
+        }
+      }
+      return undefined;
+    };
+
+    const resolveElementName = (elementId: string): string => {
+      const el = resolveEl(elementId);
+      return el?.name ?? elementId;
+    };
+
+    return { resolveEl, resolveElementName };
+  }, [model.layers]);
+
   if (!selectedNode) {
     return (
       <div data-testid="node-details-panel-empty" className="p-4 text-center text-gray-500 text-sm border-b border-gray-200 dark:border-gray-700">
@@ -133,32 +160,6 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
       </div>
     );
   }
-
-  // Consolidated helper to resolve element by ID (caches to avoid repeated scans)
-  const { resolveEl, resolveElementName } = useMemo(() => {
-    const elementCache = new Map<string, ModelElement>();
-
-    const resolveEl = (id: string): ModelElement | undefined => {
-      if (elementCache.has(id)) {
-        return elementCache.get(id);
-      }
-      for (const l of Object.values(model.layers)) {
-        const el = l.elements?.find(e => e.id === id);
-        if (el) {
-          elementCache.set(id, el);
-          return el;
-        }
-      }
-      return undefined;
-    };
-
-    const resolveElementName = (elementId: string): string => {
-      const el = resolveEl(elementId);
-      return el?.name ?? elementId;
-    };
-
-    return { resolveEl, resolveElementName };
-  }, [model.layers]);
 
   // Relationship derivation - scan ALL layers
   const resolvedLayerId = element.layerId;
