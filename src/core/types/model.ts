@@ -136,7 +136,7 @@ export interface ModelElement {
   };
   references?: ElementReferences;
   // v0.8.3 spec fields
-  sourceReference?: SourceReference;
+  sourceReferences?: SourceReference[];
   path?: string;
   specNodeId?: string;
   attributes?: Record<string, unknown>;

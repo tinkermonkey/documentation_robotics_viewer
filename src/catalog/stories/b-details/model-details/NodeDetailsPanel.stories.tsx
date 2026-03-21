@@ -440,7 +440,7 @@ export const WithAttributesAndSourceReferences: Story = {
                 timeframe: 'Q4 2025',
                 metricsKey: 'ARR',
               },
-              sourceReference: sourceRef,
+              sourceReferences: sourceRef ? [sourceRef] : undefined,
               visual: { position: { x: 0, y: 0 }, size: { width: 160, height: 80 }, style: {} },
               relationships: { incoming: ['driver-1'], outgoing: ['requirement-1', 'requirement-2'] },
             },

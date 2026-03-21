@@ -68,7 +68,7 @@ export interface BaseNodeData {
   changesetOperation?: ChangesetOperation;
 
   // v0.8.3 spec fields
-  sourceReference?: SourceReference;
+  sourceReferences?: SourceReference[];
   specNodeId?: string;
   attributes?: Record<string, unknown>;
 

@@ -105,6 +105,28 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
     return { resolveEl, resolveElementName };
   }, [model.layers]);
 
+  // Build context subgraph (1-hop neighborhood) - must be called before conditional returns (Rules of Hooks)
+  const contextSubGraph = useMemo(() => {
+    if (!selectedNode) {
+      return null;
+    }
+    const nodeData = isUnifiedNodeData(selectedNode.data) ? selectedNode.data : null;
+    const elementId = nodeData?.elementId;
+    if (!elementId) {
+      return null;
+    }
+    const el = resolveEl(elementId);
+    if (!el) {
+      return null;
+    }
+    try {
+      return buildContextSubGraph(el.id, model);
+    } catch (error) {
+      console.warn('[NodeDetailsPanel] Failed to build context subgraph:', error);
+      return null;
+    }
+  }, [selectedNode, model, resolveEl]);
+
   if (!selectedNode) {
     return (
       <div data-testid="node-details-panel-empty" className="p-4 text-center text-gray-500 text-sm border-b border-gray-200 dark:border-gray-700">
@@ -209,16 +231,6 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
 
   const layerName = layer?.name ?? resolvedLayerId;
   const typeLabel = styleConfig?.typeLabel ?? element.type;
-
-  // Build context subgraph (1-hop neighborhood)
-  const contextSubGraph = useMemo(() => {
-    try {
-      return buildContextSubGraph(element.id, model);
-    } catch (error) {
-      console.warn('[NodeDetailsPanel] Failed to build context subgraph:', error);
-      return null;
-    }
-  }, [element.id, model]);
 
   // Handle context subgraph node click - invoke callback to parent
   const handleContextNodeClick = (elementId: string) => {
@@ -368,10 +380,10 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
       ) : null}
 
       {/* Source References */}
-      {element.sourceReference ? (
+      {element.sourceReferences && element.sourceReferences.length > 0 ? (
         <div data-testid="node-details-source-references" className={DIVIDER}>
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Source References</p>
-          <SourceReferenceList references={[element.sourceReference]} />
+          <SourceReferenceList references={element.sourceReferences} />
         </div>
       ) : null}
 

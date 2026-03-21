@@ -114,7 +114,7 @@ export async function loadExampleImplementation(): Promise<MetaModel> {
 
 /**
  * Parse a YAML element into ModelElement
- * Supports v0.8.3+ fields: sourceReference, specNodeId, attributes, metadata, path
+ * Supports v0.8.3+ fields: sourceReferences, specNodeId, attributes, metadata, path
  */
 function parseYAMLElement(key: string, data: any, layerId: string): ModelElement | null {
   if (!data.id) {
@@ -129,7 +129,13 @@ function parseYAMLElement(key: string, data: any, layerId: string): ModelElement
   const path = `${layerId}.${elementType}.${key}`;
 
   // Extract v0.8.3+ fields if present in YAML
-  const sourceReference = data.sourceReference as any;
+  // sourceReferences can be a single object or an array
+  const sourceReferencesData = data.sourceReferences ?? data.sourceReference;
+  const sourceReferences = sourceReferencesData
+    ? Array.isArray(sourceReferencesData)
+      ? sourceReferencesData
+      : [sourceReferencesData]
+    : undefined;
   const specNodeId = data.specNodeId as string | undefined;
   const attributes = data.attributes as Record<string, unknown> | undefined;
   const metadata = data.metadata as any;
@@ -149,6 +155,7 @@ function parseYAMLElement(key: string, data: any, layerId: string): ModelElement
       description: undefined,
       relationships: undefined,
       sourceReference: undefined,
+      sourceReferences: undefined,
       specNodeId: undefined,
       attributes: undefined,
       metadata: undefined,
@@ -162,7 +169,7 @@ function parseYAMLElement(key: string, data: any, layerId: string): ModelElement
       incoming: [],
       outgoing: [],
     },
-    sourceReference,
+    sourceReferences,
     specNodeId,
     attributes,
     metadata,

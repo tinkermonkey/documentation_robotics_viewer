@@ -473,7 +473,7 @@ export class NodeTransformer {
       changesetOperation: optionalProps.changesetOperation,
       relationshipBadge: optionalProps.relationshipBadge,
       // v0.8.3 spec fields
-      sourceReference: element.sourceReference,
+      sourceReferences: element.sourceReferences,
       specNodeId: element.specNodeId,
       attributes: element.attributes,
       metadata: element.metadata,
@@ -496,7 +496,7 @@ export class NodeTransformer {
       detailLevel: optionalProps.detailLevel,
       changesetOperation: optionalProps.changesetOperation,
       // v0.8.3 spec fields
-      sourceReference: element.sourceReference,
+      sourceReferences: element.sourceReferences,
       specNodeId: element.specNodeId,
       attributes: element.attributes,
       metadata: element.metadata,
@@ -507,10 +507,6 @@ export class NodeTransformer {
    * Extract field items from element attributes or properties
    */
   private extractFieldItems(element: ModelElement): FieldItem[] | undefined {
-    if (!element.properties || typeof element.properties !== 'object') {
-      return undefined;
-    }
-
     // Map common property keys to display labels
     const propertyMap: Record<string, string> = {
       description: 'Description',
@@ -528,18 +524,41 @@ export class NodeTransformer {
     };
 
     const items: FieldItem[] = [];
-    for (const [key, value] of Object.entries(element.properties)) {
-      if (key.startsWith('_')) continue; // Skip internal properties
-      if (value === null || value === undefined) continue; // Skip empty values
 
-      const label = propertyMap[key] || this.formatFieldLabel(key);
-      const displayValue = Array.isArray(value) ? value.join(', ') : String(value);
-      items.push({
-        id: key,
-        label,
-        value: displayValue,
-        required: false,
-      });
+    // First, add attributes (v0.8.3 spec fields)
+    if (element.attributes && typeof element.attributes === 'object') {
+      for (const [key, value] of Object.entries(element.attributes)) {
+        if (key.startsWith('_')) continue; // Skip internal attributes
+        if (value === null || value === undefined) continue; // Skip empty values
+
+        const label = propertyMap[key] || this.formatFieldLabel(key);
+        const displayValue = Array.isArray(value) ? value.join(', ') : String(value);
+        items.push({
+          id: key,
+          label,
+          value: displayValue,
+          required: false,
+        });
+      }
+    }
+
+    // Then add properties (legacy fields)
+    if (element.properties && typeof element.properties === 'object') {
+      const attributeKeys = new Set(Object.keys(element.attributes ?? {}));
+      for (const [key, value] of Object.entries(element.properties)) {
+        if (key.startsWith('_')) continue; // Skip internal properties
+        if (value === null || value === undefined) continue; // Skip empty values
+        if (attributeKeys.has(key)) continue; // Skip if already added from attributes
+
+        const label = propertyMap[key] || this.formatFieldLabel(key);
+        const displayValue = Array.isArray(value) ? value.join(', ') : String(value);
+        items.push({
+          id: key,
+          label,
+          value: displayValue,
+          required: false,
+        });
+      }
     }
 
     return items.length > 0 ? items : undefined;
@@ -741,7 +760,7 @@ export class NodeTransformer {
       changesetOperation: optionalProps.changesetOperation,
       relationshipBadge: optionalProps.relationshipBadge,
       // v0.8.3 spec fields
-      sourceReference: element.sourceReference,
+      sourceReferences: element.sourceReferences,
       specNodeId: element.specNodeId,
       attributes: element.attributes,
       metadata: element.metadata,
@@ -815,7 +834,7 @@ export class NodeTransformer {
       changesetOperation: optionalProps.changesetOperation,
       relationshipBadge: optionalProps.relationshipBadge,
       // v0.8.3 spec fields
-      sourceReference: element.sourceReference,
+      sourceReferences: element.sourceReferences,
       specNodeId: element.specNodeId,
       attributes: element.attributes,
       metadata: element.metadata,
@@ -840,7 +859,7 @@ export class NodeTransformer {
       changesetOperation: optionalProps.changesetOperation,
       relationshipBadge: optionalProps.relationshipBadge,
       // v0.8.3 spec fields
-      sourceReference: element.sourceReference,
+      sourceReferences: element.sourceReferences,
       specNodeId: element.specNodeId,
       attributes: element.attributes,
       metadata: element.metadata,
