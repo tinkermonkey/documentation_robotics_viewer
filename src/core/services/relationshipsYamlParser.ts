@@ -80,7 +80,7 @@ export class RelationshipsYamlParser {
     entry: RelationshipsYamlEntry,
     dotNotationLookup: Map<string, string>
   ): Relationship | null {
-    const { source, target, predicate, layer, category, properties } = entry;
+    const { source, target, predicate, category, properties, layer: _layer } = entry;
 
     // Validate required fields
     if (!source || !target || !predicate) {
