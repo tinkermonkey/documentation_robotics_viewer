@@ -24,12 +24,20 @@ import { buildSpecContextSubGraph, buildSpecLayerGraph } from '../services/specC
 interface SpecViewerProps {
   specData: SpecDataResponse
   selectedSchemaId: string | null
+  onSpecNodeSelect?: (specNodeId: string | null) => void
 }
 
-const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId }) => {
+const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId, onSpecNodeSelect }) => {
   const { specSchemas } = useModelStore();
   const [selectedSpecNodeId, setSelectedSpecNodeId] = React.useState<string | null>(null);
   const [activeTab, setActiveTab] = React.useState<'details' | 'graph'>('details');
+
+  // Notify parent component when spec node selection changes
+  React.useEffect(() => {
+    if (onSpecNodeSelect) {
+      onSpecNodeSelect(selectedSpecNodeId);
+    }
+  }, [selectedSpecNodeId, onSpecNodeSelect]);
 
   const schemas = specData?.schemas || {};
 

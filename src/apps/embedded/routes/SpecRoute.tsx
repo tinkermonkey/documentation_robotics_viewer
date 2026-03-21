@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import SpecViewer from '../components/SpecViewer';
+import SpecNodeDetailsPanel from '../components/SpecNodeDetailsPanel';
 import AnnotationPanel from '../components/AnnotationPanel';
 import SchemaInfoPanel from '../components/SchemaInfoPanel';
 import ModelLayersSidebar from '../components/ModelLayersSidebar';
@@ -17,8 +18,9 @@ export default function SpecRoute() {
   const navigate = useNavigate();
   const annotationStore = useAnnotationStore();
   const { specView, setSpecView } = useViewPreferenceStore();
-  const { setModel } = useModelStore();
+  const { setModel, specSchemas } = useModelStore();
   const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
+  const [selectedSpecNodeId, setSelectedSpecNodeId] = useState<string | null>(null);
 
   // Load both spec and model (model populates ModelLayersSidebar via modelStore)
   const { data: specData, loading, error, reload } = useDataLoader({
@@ -95,6 +97,23 @@ export default function SpecRoute() {
   const selectedSchemaId = selectedLayerId ? layerIdToSchemaKey[selectedLayerId] ?? null : null;
   const selectedSchema = selectedSchemaId ? specData.schemas[selectedSchemaId] : undefined;
 
+  // Get spec node details for SpecNodeDetailsPanel
+  const specNodeDetails = useMemo(() => {
+    if (!selectedSpecNodeId) return { nodeSchema: null, relationshipSchemas: [] };
+
+    const parsed = selectedSpecNodeId.split('.');
+    if (parsed.length !== 2) return { nodeSchema: null, relationshipSchemas: [] };
+
+    const [layerId, nodeType] = parsed;
+    const specSchema = specSchemas[layerId];
+    if (!specSchema) return { nodeSchema: null, relationshipSchemas: [] };
+
+    const nodeSchema = specSchema.nodeSchemas?.[nodeType];
+    const relationshipSchemas = specSchema.relationshipSchemas ?? [];
+
+    return { nodeSchema, relationshipSchemas };
+  }, [selectedSpecNodeId, specSchemas]);
+
   return (
     <SharedLayout
       showLeftSidebar={true}
@@ -108,13 +127,23 @@ export default function SpecRoute() {
       }
       rightSidebarContent={
         <>
+          <SpecNodeDetailsPanel
+            selectedSpecNodeId={selectedSpecNodeId}
+            nodeSchema={specNodeDetails.nodeSchema}
+            relationshipSchemas={specNodeDetails.relationshipSchemas}
+            onNodeClick={setSelectedSpecNodeId}
+          />
           <AnnotationPanel />
           <SchemaInfoPanel />
         </>
       }
     >
       {activeView === 'graph' ? (
-        <SpecViewer specData={specData} selectedSchemaId={selectedSchemaId} />
+        <SpecViewer
+          specData={specData}
+          selectedSchemaId={selectedSchemaId}
+          onSpecNodeSelect={setSelectedSpecNodeId}
+        />
       ) : (
         <div className="h-full overflow-auto p-6">
           {selectedSchema ? (
