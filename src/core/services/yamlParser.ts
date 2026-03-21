@@ -365,9 +365,10 @@ export class YAMLParser {
     const sourceRefs = yamlElement.source_reference
       ? Array.isArray(yamlElement.source_reference)
         ? yamlElement.source_reference.map(ref => this.parseSourceReference(ref)).filter((ref): ref is SourceReference => ref !== undefined)
-        : this.parseSourceReference(yamlElement.source_reference)
-          ? [this.parseSourceReference(yamlElement.source_reference)]
-          : undefined
+        : (() => {
+            const parsed = this.parseSourceReference(yamlElement.source_reference);
+            return parsed ? [parsed] : undefined;
+          })()
       : undefined;
     const metadata = yamlElement.metadata
       ? this.parseElementMetadata(yamlElement.metadata)

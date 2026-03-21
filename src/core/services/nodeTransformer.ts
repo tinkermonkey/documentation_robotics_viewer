@@ -923,18 +923,28 @@ export class NodeTransformer {
             let height = dimensions.height;
 
             // Dynamic height calculation for nodes with field lists
-            if (element.properties) {
-              // Count only properties that will actually be rendered in field list
-              // (excluding null/undefined values and internal properties starting with _)
-              const fieldItems = Object.entries(element.properties)
-                .filter(([key, value]) => value !== null && value !== undefined && !key.startsWith('_'))
-                .length;
+            // Count fields from both attributes and properties (same logic as extractFieldItems)
+            let fieldCount = 0;
 
-              if (fieldItems > 0) {
-                const headerHeight = dimensions.headerHeight || 40;
-                const itemHeight = dimensions.itemHeight || 24;
-                height = headerHeight + fieldItems * itemHeight;
-              }
+            // Count attributes (v0.8.3 spec fields)
+            if (element.attributes && typeof element.attributes === 'object') {
+              fieldCount += Object.entries(element.attributes)
+                .filter(([key, value]) => !key.startsWith('_') && value !== null && value !== undefined)
+                .length;
+            }
+
+            // Count properties, excluding those already in attributes
+            if (element.properties && typeof element.properties === 'object') {
+              const attributeKeys = new Set(Object.keys(element.attributes ?? {}));
+              fieldCount += Object.entries(element.properties)
+                .filter(([key, value]) => !key.startsWith('_') && value !== null && value !== undefined && !attributeKeys.has(key))
+                .length;
+            }
+
+            if (fieldCount > 0) {
+              const headerHeight = dimensions.headerHeight || 40;
+              const itemHeight = dimensions.itemHeight || 24;
+              height = headerHeight + fieldCount * itemHeight;
             }
 
 
