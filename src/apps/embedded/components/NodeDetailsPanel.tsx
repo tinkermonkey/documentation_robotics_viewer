@@ -186,11 +186,11 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
     : undefined;
 
   // Attributes section - from element.attributes
-  const attributesList: Array<[string, string]> = (element.attributes
+  const attributesList: Array<[string, string]> = element.attributes
     ? Object.entries(element.attributes)
         .filter(([, v]) => v != null)
-        .map(([k, v]) => [k, formatPropertyValue(v)] as const)
-    : []) as Array<[string, string]>;
+        .map(([k, v]): [string, string] => [k, formatPropertyValue(v)])
+    : [];
 
   // Semantic properties (skip visual keys and private keys, and also skip attributes already shown)
   const attributeKeys = new Set(Object.keys(element.attributes ?? {}));
@@ -255,7 +255,7 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
       ) : null}
 
       {/* Properties */}
-      {semanticProps.length > 0 && (
+      {semanticProps.length > 0 ? (
         <div data-testid="node-details-properties" className={DIVIDER}>
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Properties</p>
           <table className="w-full text-xs">
@@ -273,10 +273,10 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
             </tbody>
           </table>
         </div>
-      )}
+      ) : null}
 
       {/* Spec Definition */}
-      {nodeSchema && specLayerId && specType && (
+      {nodeSchema && specLayerId && specType ? (
         <div data-testid="node-details-spec-definition" className={DIVIDER}>
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Spec Definition</p>
           <SpecDefinitionCard
@@ -285,10 +285,10 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
             relationshipSchemas={relSchemas}
           />
         </div>
-      )}
+      ) : null}
 
       {/* Relationships */}
-      {(incomingRels.length > 0 || outgoingRels.length > 0 || crossRefs.length > 0) && (
+      {(incomingRels.length > 0 || outgoingRels.length > 0 || crossRefs.length > 0) ? (
         <div data-testid="node-details-relationships" className={DIVIDER}>
           <RelationshipTable
             outbound={[
@@ -329,15 +329,15 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
             ]}
           />
         </div>
-      )}
+      ) : null}
 
       {/* Source References */}
-      {element.sourceReference && (
+      {element.sourceReference ? (
         <div data-testid="node-details-source-references" className={DIVIDER}>
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Source References</p>
           <SourceReferenceList references={[element.sourceReference]} />
         </div>
-      )}
+      ) : null}
 
       {/* Element ID */}
       <div className={DIVIDER}>
