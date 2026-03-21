@@ -3,14 +3,16 @@
  * Displays model instance data in a readable JSON format
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { MetaModel, ModelElement, Relationship, Reference } from '../../../core/types';
 import { Badge, Accordion, AccordionPanel, AccordionTitle, AccordionContent } from 'flowbite-react';
 import AttributesTable, { AttributeRow } from './common/AttributesTable';
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid';
 import RelationshipTable from './common/RelationshipTable';
 import SourceReferenceList from './common/SourceReferenceList';
+import SpecDefinitionCard from './common/SpecDefinitionCard';
 import { useAnnotationStore } from '../stores/annotationStore';
+import { useModelStore } from '../../../core/stores/modelStore';
 import { SchemaDefinition } from '../services/embeddedDataLoader';
 
 interface ModelDetailsViewerProps {
@@ -44,6 +46,7 @@ interface ElementCardProps {
       isInterLayer: boolean;
     }>;
   };
+  specSchemas?: Record<string, any>;
 }
 
 const ElementCard: React.FC<ElementCardProps> = ({
@@ -52,13 +55,26 @@ const ElementCard: React.FC<ElementCardProps> = ({
   attributes,
   layerKey,
   selectedLayer,
-  buildRelationshipsForElement
+  buildRelationshipsForElement,
+  specSchemas
 }) => {
   // Memoize relationships at component level (correct hook usage)
   const { outbound, inbound } = useMemo(
     () => buildRelationshipsForElement(element, layerKey || selectedLayer),
     [element, layerKey, selectedLayer, buildRelationshipsForElement]
   );
+
+  // Extract spec schema for this element
+  const specLayerId = element.specNodeId?.split('.')[0];
+  const specType = element.specNodeId?.split('.')[1];
+  const nodeSchema = specLayerId && specType && specSchemas?.[specLayerId]
+    ? specSchemas[specLayerId].nodeSchemas?.[specType]
+    : undefined;
+  const relSchemas = specLayerId && specSchemas?.[specLayerId]
+    ? specSchemas[specLayerId].relationshipSchemas?.filter(
+        (r: any) => r.sourceSpecNodeId === element.specNodeId || r.destinationSpecNodeId === element.specNodeId
+      )
+    : undefined;
 
   return (
     <Accordion key={element.id} collapseAll>
@@ -81,6 +97,23 @@ const ElementCard: React.FC<ElementCardProps> = ({
             )}
 
             <AttributesTable attributes={attributes} title="Attributes" />
+
+            {/* Spec Definition section */}
+            {nodeSchema && element.specNodeId && specLayerId && specType ? (
+              <div
+                className="pt-2 border-t border-gray-200 dark:border-gray-700"
+                data-testid="element-spec-definition-section"
+              >
+                <h6 className="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
+                  Spec Definition
+                </h6>
+                <SpecDefinitionCard
+                  specNodeId={element.specNodeId}
+                  nodeSchema={nodeSchema}
+                  relationshipSchemas={relSchemas}
+                />
+              </div>
+            ) : null}
 
             {/* Relationships section */}
             {(outbound.length > 0 || inbound.length > 0) && (
@@ -126,6 +159,7 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
   selectedLayer
 }) => {
   const { highlightedElementId } = useAnnotationStore();
+  const { specSchemas } = useModelStore();
 
   // Watch for highlighted elements and compute their JSON path
   useEffect(() => {
@@ -211,8 +245,8 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
     return specData.schemas[layerSchemaKey]?.description;
   };
 
-  // Helper to find element by ID across all layers
-  const findElementById = (elementId: string) => {
+  // Helper to find element by ID across all layers (defined before buildRelationshipsForElement)
+  const findElementById = useCallback((elementId: string) => {
     for (const layer of Object.values(layers)) {
       const element = layer.elements?.find((el: ModelElement) => el.id === elementId);
       if (element) {
@@ -220,10 +254,10 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
       }
     }
     return null;
-  };
+  }, [layers]);
 
-  // Helper to build relationships for an element
-  const buildRelationshipsForElement = (element: ModelElement, selectedLayerKey: string) => {
+  // Helper to build relationships for an element (memoized to stabilize reference)
+  const buildRelationshipsForElement = useCallback((element: ModelElement, selectedLayerKey: string) => {
     const outbound: Array<{
       predicate: string;
       targetId: string;
@@ -249,14 +283,15 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
         );
 
         outboundRels.forEach((rel: Relationship) => {
-          const targetElement = layer.elements?.find((el: ModelElement) => el.id === rel.targetId);
-          if (targetElement) {
+          // Search for target element across ALL layers (not just current layer)
+          const targetResult = findElementById(rel.targetId);
+          if (targetResult) {
             outbound.push({
               predicate: rel.predicate || rel.type,
               targetId: rel.targetId,
-              targetName: targetElement.name || targetElement.id,
-              targetLayerId: layer.id,
-              isInterLayer: layer.id !== selectedLayerKey
+              targetName: targetResult.element.name || targetResult.element.id,
+              targetLayerId: targetResult.layerId,
+              isInterLayer: targetResult.layerId !== selectedLayerKey
             });
           }
         });
@@ -267,14 +302,15 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
         );
 
         inboundRels.forEach((rel: Relationship) => {
-          const sourceElement = layer.elements?.find((el: ModelElement) => el.id === rel.sourceId);
-          if (sourceElement) {
+          // Search for source element across ALL layers (not just current layer)
+          const sourceResult = findElementById(rel.sourceId);
+          if (sourceResult) {
             inbound.push({
               predicate: rel.predicate || rel.type,
               sourceId: rel.sourceId,
-              sourceName: sourceElement.name || sourceElement.id,
-              sourceLayerId: layer.id,
-              isInterLayer: layer.id !== selectedLayerKey
+              sourceName: sourceResult.element.name || sourceResult.element.id,
+              sourceLayerId: sourceResult.layerId,
+              isInterLayer: sourceResult.layerId !== selectedLayerKey
             });
           }
         });
@@ -314,7 +350,7 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
     });
 
     return { outbound, inbound };
-  };
+  }, [model, layers, findElementById]);
 
   const renderLayerDetails = () => {
     if (!selectedLayer) {
@@ -512,6 +548,7 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
                               layerKey={layerKey || selectedLayer}
                               selectedLayer={selectedLayer}
                               buildRelationshipsForElement={buildRelationshipsForElement}
+                              specSchemas={specSchemas}
                             />
                           );
                         })}
