@@ -4,7 +4,7 @@
  * that require complete model data
  */
 
-import type { MetaModel, Layer, ModelElement, ElementVisual, Relationship } from '../../core/types';
+import type { MetaModel, Layer, ModelElement, ElementVisual, Relationship, SourceReference, ElementMetadata } from '../../core/types';
 import { LayerType, RelationshipType } from '../../core/types';
 
 /**
@@ -33,7 +33,13 @@ function createModelElement(
   layerId: string,
   fill = '#ffffff',
   stroke = '#000000',
-  properties: Record<string, unknown> = {}
+  properties: Record<string, unknown> = {},
+  overrides?: {
+    sourceReference?: SourceReference;
+    specNodeId?: string;
+    attributes?: Record<string, unknown>;
+    metadata?: ElementMetadata;
+  }
 ): ModelElement {
   return {
     id,
@@ -50,7 +56,11 @@ function createModelElement(
     relationships: {
       incoming: [],
       outgoing: []
-    }
+    },
+    sourceReference: overrides?.sourceReference,
+    specNodeId: overrides?.specNodeId,
+    attributes: overrides?.attributes,
+    metadata: overrides?.metadata
   };
 }
 
@@ -205,6 +215,27 @@ export function createMinimalModelFixture(): MetaModel {
       layerCount: 2
     }
   };
+}
+
+/**
+ * Helper to create a model element with all v0.8.3+ fields populated
+ */
+export function createCompleteModelElement(
+  id: string,
+  type: string,
+  name: string,
+  layerId: string,
+  sourceReference?: SourceReference,
+  specNodeId?: string,
+  attributes?: Record<string, unknown>,
+  metadata?: ElementMetadata
+): ModelElement {
+  return createModelElement(id, type, name, layerId, '#ffffff', '#000000', {}, {
+    sourceReference,
+    specNodeId,
+    attributes,
+    metadata
+  });
 }
 
 /**

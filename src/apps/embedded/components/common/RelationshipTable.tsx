@@ -98,54 +98,66 @@ const RelationshipSection: React.FC<RelationshipSectionProps> = ({
               </span>
             </div>
 
-            <Table className="text-sm">
-              <TableBody className="divide-y divide-gray-200 dark:divide-gray-700">
-                {group.items.map((item, idx) => {
-                  const layerColor = getLayerColor(item.layerId, 'primary');
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm border-collapse">
+                <thead className="bg-gray-100 dark:bg-gray-700">
+                  <tr>
+                    <th className="px-3 py-2 text-left font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-600">
+                      Name
+                    </th>
+                    <th className="px-3 py-2 text-right font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-600">
+                      Layer & Type
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  {group.items.map((item, idx) => {
+                    const layerColor = getLayerColor(item.layerId, 'primary');
 
-                  return (
-                    <TableRow
-                      key={`${item.id}-${idx}`}
-                      className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50"
-                      data-testid={`relationship-row-${item.id}`}
-                    >
-                      <TableCell className="px-3 py-2 text-gray-900 dark:text-white font-medium">
-                        {item.name}
-                      </TableCell>
-                      <TableCell className="px-3 py-2 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <span
-                            className="inline-block w-3 h-3 rounded-full"
-                            style={{ backgroundColor: layerColor }}
-                            data-testid={`layer-color-${item.layerId}`}
-                            title={`Layer: ${item.layerId}`}
-                            role="img"
-                            aria-label={`Layer: ${item.layerId}`}
-                          />
-                          {item.isInterLayer ? (
-                            <Badge
-                              color="gray"
-                              size="xs"
-                              data-testid={`interlayer-badge-${item.id}`}
-                            >
-                              Inter-Layer
-                            </Badge>
-                          ) : (
-                            <Badge
-                              color="indigo"
-                              size="xs"
-                              data-testid={`intralayer-badge-${item.id}`}
-                            >
-                              Intra-Layer
-                            </Badge>
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+                    return (
+                      <tr
+                        key={`${item.id}-${idx}`}
+                        className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                        data-testid={`relationship-row-${item.id}`}
+                      >
+                        <td className="px-3 py-2 text-gray-900 dark:text-white font-medium">
+                          {item.name}
+                        </td>
+                        <td className="px-3 py-2 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <span
+                              className="inline-block w-3 h-3 rounded-full"
+                              style={{ backgroundColor: layerColor }}
+                              data-testid={`layer-color-${item.layerId}`}
+                              title={`Layer: ${item.layerId}`}
+                              role="img"
+                              aria-label={`Layer: ${item.layerId}`}
+                            />
+                            {item.isInterLayer ? (
+                              <Badge
+                                color="gray"
+                                size="xs"
+                                data-testid={`interlayer-badge-${item.id}`}
+                              >
+                                Inter-Layer
+                              </Badge>
+                            ) : (
+                              <Badge
+                                color="indigo"
+                                size="xs"
+                                data-testid={`intralayer-badge-${item.id}`}
+                              >
+                                Intra-Layer
+                              </Badge>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         ))}
       </div>
@@ -169,9 +181,10 @@ const RelationshipTable: React.FC<RelationshipTableProps> = ({ outbound, inbound
   }
 
   return (
-    <div
+    <section
       className="space-y-6"
       data-testid="relationship-table"
+      aria-label="Element relationships"
     >
       {/* Outbound Relationships */}
       {groupedOutbound.length > 0 && (
@@ -192,7 +205,7 @@ const RelationshipTable: React.FC<RelationshipTableProps> = ({ outbound, inbound
           count={inbound.length}
         />
       )}
-    </div>
+    </section>
   );
 };
 
