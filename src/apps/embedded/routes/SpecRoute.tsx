@@ -10,8 +10,11 @@ import { LoadingState, ErrorState } from '../components/shared';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { useModelStore } from '../../../core/stores/modelStore';
-import { embeddedDataLoader } from '../services/embeddedDataLoader';
+import { embeddedDataLoader, type SchemaManifest } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
+import { loadPredicateCatalog } from '../../../core/services/predicateCatalogLoader';
+import { loadSpecSchemas } from '../../../core/services/specSchemaLoader';
+import { loadSpecSchemaFiles } from '../../../core/services/specSchemaFileLoader';
 
 export default function SpecRoute() {
   const { view } = useParams({ strict: false });
@@ -34,8 +37,44 @@ export default function SpecRoute() {
     },
     websocketEvents: ['model', 'model.updated'],
     onSuccess: async () => {
-      const annotations = await embeddedDataLoader.loadAnnotations();
-      annotationStore.setAnnotations(annotations);
+      // Load annotations with error handling
+      try {
+        const annotations = await embeddedDataLoader.loadAnnotations();
+        annotationStore.setAnnotations(annotations);
+      } catch (err) {
+        // Continue loading other data even if annotations fail
+        annotationStore.setAnnotations([]);
+      }
+
+      // Load spec schemas and predicate catalog from static assets
+      try {
+        const specFiles = await loadSpecSchemaFiles();
+
+        // Load and populate predicate catalog from base.json
+        if (specFiles['base.json']) {
+          const catalog = loadPredicateCatalog(specFiles['base.json']);
+          useModelStore.getState().setPredicateCatalog(catalog.byPredicate);
+        }
+
+        // Load and populate spec schemas
+        const schemas = loadSpecSchemas(specFiles);
+        useModelStore.getState().setSpecSchemas(schemas);
+
+        // Validate spec version: compare spec's specVersion from loaded files
+        const loadedSpecManifest = specFiles['manifest.json'] as SchemaManifest | undefined;
+        const loadedSpecVersion = loadedSpecManifest?.specVersion;
+
+        // Set spec version if available
+        if (loadedSpecVersion) {
+          useModelStore.getState().setSpecVersion(
+            loadedSpecVersion,
+            loadedSpecVersion
+          );
+        }
+      } catch (err) {
+        console.warn('Failed to load spec schemas:', err);
+        // Continue even if spec schema loading fails - it's supplementary data
+      }
     },
   });
 
