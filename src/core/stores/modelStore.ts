@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { MetaModel, ModelElement, Layer } from '../types';
+import { MetaModel, ModelElement, Layer, PredicateDefinition, SpecLayerData } from '../types';
 
 /**
  * Model store interface
@@ -9,13 +9,25 @@ interface ModelStore {
   model: MetaModel | null;
   loading: boolean;
   error: string | null;
+  /** Version of the loaded model content (from MetaModel.version) */
   version: string | null;
+  predicateCatalog: Map<string, PredicateDefinition>;
+  specSchemas: Record<string, SpecLayerData>;
+  /** Spec version declared in the model YAML/manifest (what the model says it targets) */
+  modelSpecVersion: string | null;
+  /** Spec version actually loaded from the DR spec files (what's currently available) */
+  loadedSpecVersion: string | null;
+  /** True if modelSpecVersion !== loadedSpecVersion, indicating a version mismatch */
+  specVersionMismatch: boolean;
 
   // Actions
   setModel: (model: MetaModel) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string) => void;
   clearModel: () => void;
+  setPredicateCatalog: (catalog: Map<string, PredicateDefinition>) => void;
+  setSpecSchemas: (schemas: Record<string, SpecLayerData>) => void;
+  setSpecVersion: (modelSpecVersion: string, loadedSpecVersion: string) => void;
 
   // Selectors
   getLayer: (layerType: string) => Layer | undefined;
@@ -32,6 +44,11 @@ export const useModelStore = create<ModelStore>((set, get) => ({
   loading: false,
   error: null,
   version: null,
+  predicateCatalog: new Map(),
+  specSchemas: {},
+  modelSpecVersion: null,
+  loadedSpecVersion: null,
+  specVersionMismatch: false,
 
   // Actions
   setModel: (model: MetaModel) =>
@@ -54,7 +71,25 @@ export const useModelStore = create<ModelStore>((set, get) => ({
       model: null,
       error: null,
       version: null,
-      loading: false
+      loading: false,
+      predicateCatalog: new Map(),
+      specSchemas: {},
+      modelSpecVersion: null,
+      loadedSpecVersion: null,
+      specVersionMismatch: false
+    }),
+
+  setPredicateCatalog: (catalog: Map<string, PredicateDefinition>) =>
+    set({ predicateCatalog: new Map(catalog) }),
+
+  setSpecSchemas: (schemas: Record<string, SpecLayerData>) =>
+    set({ specSchemas: schemas }),
+
+  setSpecVersion: (modelSpecVersion: string, loadedSpecVersion: string) =>
+    set({
+      modelSpecVersion,
+      loadedSpecVersion,
+      specVersionMismatch: modelSpecVersion !== loadedSpecVersion
     }),
 
   // Selectors

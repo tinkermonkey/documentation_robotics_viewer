@@ -4,8 +4,8 @@
  * that require complete model data
  */
 
-import type { MetaModel, Layer, ModelElement, ElementVisual, Relationship } from '../../core/types';
-import { LayerType, RelationshipType } from '../../core/types';
+import type { MetaModel, Layer, ModelElement, ElementVisual, Relationship, SourceReference, ElementMetadata } from '../../core/types';
+import { LayerType } from '../../core/types';
 
 /**
  * Helper to create element visual properties
@@ -33,7 +33,13 @@ function createModelElement(
   layerId: string,
   fill = '#ffffff',
   stroke = '#000000',
-  properties: Record<string, unknown> = {}
+  properties: Record<string, unknown> = {},
+  overrides?: {
+    sourceReferences?: SourceReference[];
+    specNodeId?: string;
+    attributes?: Record<string, unknown>;
+    metadata?: ElementMetadata;
+  }
 ): ModelElement {
   return {
     id,
@@ -50,7 +56,11 @@ function createModelElement(
     relationships: {
       incoming: [],
       outgoing: []
-    }
+    },
+    sourceReferences: overrides?.sourceReferences,
+    specNodeId: overrides?.specNodeId,
+    attributes: overrides?.attributes,
+    metadata: overrides?.metadata
   };
 }
 
@@ -101,14 +111,14 @@ export function createCompleteModelFixture(): MetaModel {
   const motivationRelationships: Relationship[] = [
     {
       id: 'rel-1',
-      type: RelationshipType.Influence,
+      type: 'influence',
       sourceId: 'stakeholder-1',
       targetId: 'goal-1',
       properties: { label: 'influences' }
     },
     {
       id: 'rel-2',
-      type: RelationshipType.Realization,
+      type: 'realization',
       sourceId: 'goal-1',
       targetId: 'requirement-1',
       properties: { label: 'realizes' }
@@ -129,7 +139,7 @@ export function createCompleteModelFixture(): MetaModel {
   const businessRelationships: Relationship[] = [
     {
       id: 'rel-3',
-      type: RelationshipType.Composition,
+      type: 'composition',
       sourceId: 'service-1',
       targetId: 'function-1',
       properties: { label: 'contains' }
@@ -153,7 +163,7 @@ export function createCompleteModelFixture(): MetaModel {
   const c4Relationships: Relationship[] = [
     {
       id: 'rel-4',
-      type: RelationshipType.Composition,
+      type: 'composition',
       sourceId: 'container-1',
       targetId: 'component-1',
       properties: { label: 'contains' }
@@ -208,6 +218,28 @@ export function createMinimalModelFixture(): MetaModel {
 }
 
 /**
+ * Helper to create a model element with all v0.8.3+ fields populated
+ * @param id Element ID
+ * @param overrides Partial ModelElement fields to override defaults
+ * @returns ModelElement with v0.8.3+ fields (sourceReference, specNodeId, attributes, metadata, path)
+ */
+export function createCompleteModelElement(
+  id: string,
+  overrides?: Partial<ModelElement>
+): ModelElement {
+  const type = overrides?.type ?? 'element';
+  const name = overrides?.name ?? 'Test Element';
+  const layerId = overrides?.layerId ?? 'application';
+
+  return createModelElement(id, type, name, layerId, '#ffffff', '#000000', {}, {
+    sourceReferences: overrides?.sourceReferences,
+    specNodeId: overrides?.specNodeId,
+    attributes: overrides?.attributes,
+    metadata: overrides?.metadata
+  });
+}
+
+/**
  * Create a model focused on Motivation layer only
  * Used for testing Motivation-specific components
  */
@@ -224,14 +256,14 @@ export function createMotivationLayerModelFixture(): MetaModel {
   const relationships: Relationship[] = [
     {
       id: 'rel-1',
-      type: RelationshipType.Influence,
+      type: 'influence',
       sourceId: 'stakeholder-1',
       targetId: 'goal-1',
       properties: { label: 'influences' }
     },
     {
       id: 'rel-2',
-      type: RelationshipType.Realization,
+      type: 'realization',
       sourceId: 'goal-1',
       targetId: 'requirement-1',
       properties: { label: 'realizes' }
@@ -275,7 +307,7 @@ export function createBusinessLayerModelFixture(): MetaModel {
   const relationships: Relationship[] = [
     {
       id: 'rel-1',
-      type: RelationshipType.Composition,
+      type: 'composition',
       sourceId: 'service-1',
       targetId: 'function-1',
       properties: { label: 'contains' }
@@ -320,21 +352,21 @@ export function createC4LayerModelFixture(): MetaModel {
   const relationships: Relationship[] = [
     {
       id: 'rel-1',
-      type: RelationshipType.Composition,
+      type: 'composition',
       sourceId: 'container-1',
       targetId: 'component-1',
       properties: { label: 'contains' }
     },
     {
       id: 'rel-2',
-      type: RelationshipType.Composition,
+      type: 'composition',
       sourceId: 'container-1',
       targetId: 'component-2',
       properties: { label: 'contains' }
     },
     {
       id: 'rel-3',
-      type: RelationshipType.Access,
+      type: 'access',
       sourceId: 'actor-1',
       targetId: 'container-1',
       properties: { label: 'accesses' }

@@ -24,6 +24,8 @@ export interface ExpandableSectionProps {
   onToggle?: () => void;
   /** Default expanded state for uncontrolled mode */
   defaultExpanded?: boolean;
+  /** Optional data-testid for testing */
+  'data-testid'?: string;
 }
 
 const ExpandableSection: React.FC<ExpandableSectionProps> = ({
@@ -34,7 +36,8 @@ const ExpandableSection: React.FC<ExpandableSectionProps> = ({
   className = '',
   isExpanded: controlledExpanded,
   onToggle,
-  defaultExpanded = false
+  defaultExpanded = false,
+  'data-testid': dataTestId
 }) => {
   // Internal state for uncontrolled mode
   const [internalExpanded, setInternalExpanded] = React.useState(defaultExpanded);
@@ -50,11 +53,15 @@ const ExpandableSection: React.FC<ExpandableSectionProps> = ({
     }
   };
 
+  const contentId = `expandable-content-${title.toLowerCase().replace(/\s+/g, '-')}`;
+
   return (
-    <div className={`border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden ${className}`}>
+    <div className={`border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden ${className}`} data-testid={dataTestId}>
       <button
         onClick={handleToggle}
         className="w-full px-4 py-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between cursor-pointer transition-colors"
+        aria-expanded={isExpanded}
+        aria-controls={contentId}
       >
         <div className="flex items-center gap-2">
           {isExpanded ? (
@@ -79,7 +86,7 @@ const ExpandableSection: React.FC<ExpandableSectionProps> = ({
       </button>
 
       {isExpanded && (
-        <div className="px-4 py-3 bg-white dark:bg-gray-800">
+        <div className="px-4 py-3 bg-white dark:bg-gray-800" id={contentId}>
           {children}
         </div>
       )}

@@ -51,6 +51,7 @@ export interface LayerColorConfig {
  * - UX #14b8a6: 3.2:1 ✓
  * - Navigation #06b6d4: 3.2:1 ✓
  * - APM #84cc16: 6.1:1 ✓ (lime on white)
+ * - Testing #a78bfa: 7.7:1 ✓ (with dark text on light background)
  * - FederatedArch #6366f1: 3.0:1 ✓
  */
 export const LAYER_COLORS: Record<LayerType, LayerColorConfig> = {
@@ -120,6 +121,12 @@ export const LAYER_COLORS: Record<LayerType, LayerColorConfig> = {
     dark: '#4d7c0f',
     text: '#000000'
   },
+  [LayerType.Testing]: {
+    primary: '#a78bfa',   // Violet-400
+    light: '#faf5ff',
+    dark: '#7c3aed',
+    text: '#000000'
+  },
   [LayerType.FederatedArchitecture]: {
     primary: '#6366f1',   // Indigo
     light: '#e0e7ff',
@@ -143,6 +150,7 @@ export const LAYER_DISPLAY_NAMES: Record<string, string> = {
   [LayerType.Ux]: 'UX',
   [LayerType.Navigation]: 'Navigation',
   [LayerType.ApmObservability]: 'APM',
+  [LayerType.Testing]: 'Testing',
   [LayerType.FederatedArchitecture]: 'Federated Architecture',
 
   // Legacy lowercase aliases for backward compatibility
@@ -189,6 +197,7 @@ export function normalizeLayerKey(key: string): LayerType | null {
     'navigation': LayerType.Navigation,
     'apm': LayerType.ApmObservability,
     'apmobservability': LayerType.ApmObservability,
+    'testing': LayerType.Testing,
     'federatedarchitecture': LayerType.FederatedArchitecture,
   };
 

@@ -1,6 +1,98 @@
 import { LayerType, LayerData, LayerVisualConfig } from './layers';
 
 /**
+ * Source location reference for an element or relationship
+ * Specifies a file and optional symbol where the element is defined
+ */
+export interface SourceLocation {
+  file: string;
+  symbol?: string;
+}
+
+/**
+ * Repository context for source references
+ * Provides repository URL and commit information
+ */
+export interface RepositoryContext {
+  url: string;
+  commit: string;
+}
+
+/**
+ * Source reference tracking where an element was extracted from
+ * Supports multiple provenance types and locations
+ */
+export interface SourceReference {
+  provenance: 'extracted' | 'manual' | 'inferred' | 'generated';
+  locations: SourceLocation[];
+  repository?: RepositoryContext;
+}
+
+/**
+ * Semantic properties of a predicate
+ * Describes directionality, transitivity, and other logical properties
+ */
+export interface PredicateSemantics {
+  directionality: 'unidirectional' | 'bidirectional';
+  transitivity: boolean;
+  symmetry: boolean;
+  reflexivity: boolean;
+}
+
+/**
+ * Predicate definition from the v0.8.3 predicate catalog
+ * Represents a relationship type with full semantic metadata
+ */
+export interface PredicateDefinition {
+  predicate: string;
+  inverse: string;
+  category: string;
+  description: string;
+  archimateAlignment?: string | null;
+  semantics: PredicateSemantics;
+  defaultStrength?: string;
+  /** Field paths for dynamic relationship discovery across layer schema */
+  fieldPaths?: string[];
+}
+
+/**
+ * Spec node relationship definition
+ * Describes valid relationship types between spec node types
+ */
+export interface SpecNodeRelationship {
+  id: string;
+  sourceSpecNodeId: string;
+  sourceLayer: string;
+  destinationSpecNodeId: string;
+  destinationLayer: string;
+  predicate: string;
+  cardinality: string;
+  strength: string;
+  required: boolean;
+}
+
+/**
+ * Spec layer data containing schema and relationship definitions
+ * Loaded from .dr/spec/*.json files
+ */
+export interface SpecLayerData {
+  layer: { id: string; number: number; name: string; description: string };
+  nodeSchemas: Record<string, unknown>;
+  relationshipSchemas: SpecNodeRelationship[];
+}
+
+/**
+ * Element metadata for lifecycle tracking
+ * Stores creation, modification, and versioning information
+ */
+export interface ElementMetadata {
+  createdAt?: string;
+  updatedAt?: string;
+  createdBy?: string;
+  version?: number;
+}
+
+/**
  * Root meta-model containing all layers
  */
 export interface MetaModel {
@@ -45,6 +137,12 @@ export interface ModelElement {
     outgoing: string[];
   };
   references?: ElementReferences;
+  // v0.8.3 spec fields
+  sourceReferences?: SourceReference[];
+  path?: string;
+  specNodeId?: string;
+  attributes?: Record<string, unknown>;
+  metadata?: ElementMetadata;
 }
 
 /**
@@ -119,30 +217,23 @@ export interface Relationship {
   targetId: string;
   properties?: Record<string, unknown>;
   visual?: RelationshipVisual;
+  // v0.8.3 spec fields
+  // TODO #486: Make predicate required per spec (currently optional to support legacy relationships
+  // created from JSON schema, spec parser, and other non-YAML sources without predicate strings).
+  // When making this required, update all ~30 creation sites in jsonSchemaParser, specParser,
+  // changesetGraphBuilder, embeddedDataLoader, and test fixtures to provide predicates.
+  predicate?: string;
+  predicateDefinition?: PredicateDefinition;
+  sourceLayerId?: string;
+  targetLayerId?: string;
+  specRelationshipId?: string;
 }
 
 /**
- * Relationship types (ArchiMate + custom)
+ * Relationship types (predicate-based string type)
+ * Catalog-driven values sourced from the predicate catalog
  */
-export enum RelationshipType {
-  // ArchiMate relationships
-  Composition = 'composition',
-  Aggregation = 'aggregation',
-  Assignment = 'assignment',
-  Realization = 'realization',
-  Serving = 'serving',
-  Access = 'access',
-  Influence = 'influence',
-  Triggering = 'triggering',
-  Flow = 'flow',
-
-  // Custom relationships
-  Reference = 'reference',
-  Navigation = 'navigation',
-  SecurityControl = 'security-control',
-  DataFlow = 'data-flow',
-  StateTransition = 'state-transition'
-}
+export type RelationshipType = string;
 
 /**
  * Visual properties of a relationship
@@ -179,6 +270,9 @@ export interface Reference {
   target: ReferenceEndpoint;
   isValid?: boolean;
   validationError?: string;
+  // v0.8.3 spec fields
+  predicate?: string;
+  predicateDefinition?: PredicateDefinition;
 }
 
 /**
@@ -303,6 +397,7 @@ export interface ModelMetadata {
   elementCount?: number;
   type?: string;
   parseErrors?: string[];
+  isComplete?: boolean;
   crossLayerReferences?: CrossLayerReferenceMetadata;
   [key: string]: unknown;
 }

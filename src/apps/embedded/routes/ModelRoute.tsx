@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useParams, useSearch, useNavigate } from '@tanstack/react-router';
 import type { Node } from '@xyflow/react';
+import { nodeConfigLoader } from '../../../core/nodes';
+import type { UnifiedNodeData } from '../../../core/nodes';
 import GraphViewer from '../../../core/components/GraphViewer';
 import ModelDetailsViewer from '../components/ModelDetailsViewer';
 import AnnotationPanel from '../components/AnnotationPanel';
@@ -13,9 +15,12 @@ import HighlightedPathPanel from '../components/HighlightedPathPanel';
 import SharedLayout from '../components/SharedLayout';
 import { useModelStore } from '../../../core/stores/modelStore';
 import { useAnnotationStore } from '../stores/annotationStore';
-import { embeddedDataLoader, SpecDataResponse } from '../services/embeddedDataLoader';
+import { embeddedDataLoader, SpecDataResponse, SchemaManifest } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
 import { LoadingState, ErrorState } from '../components/shared';
+import { loadPredicateCatalog } from '../../../core/services/predicateCatalogLoader';
+import { loadSpecSchemas } from '../../../core/services/specSchemaLoader';
+import { loadSpecSchemaFiles } from '../../../core/services/specSchemaFileLoader';
 import type { MetaModel } from '../../../core/types';
 
 /**
@@ -99,6 +104,40 @@ export default function ModelRoute() {
     setSelectedNode(node);
   };
 
+  // Handle node selection from details panel (by elementId)
+  const handleNodeSelect = (elementId: string) => {
+    if (!model) return;
+
+    // Find the node with matching elementId in any layer
+    for (const layer of Object.values(model.layers)) {
+      const element = layer.elements?.find(e => e.id === elementId);
+      if (element) {
+        // Map element type to NodeType for type guard compliance
+        const mappedNodeType = nodeConfigLoader.mapElementType(element.type);
+        if (!mappedNodeType) {
+          console.warn(`[ModelRoute] Cannot map element type "${element.type}" to NodeType for element ${elementId}`);
+          return;
+        }
+
+        // Create a properly typed Node with UnifiedNodeData that passes type guard
+        const nodeData: UnifiedNodeData = {
+          nodeType: mappedNodeType,
+          elementId: element.id,
+          layerId: element.layerId,
+          label: element.name,
+        };
+
+        const node: Node = {
+          id: elementId,
+          position: { x: 0, y: 0 },
+          data: nodeData,
+        };
+        setSelectedNode(node);
+        return;
+      }
+    }
+  };
+
   // Handle path highlight in Details view (auto-clear after 3 seconds)
   const handlePathHighlight = (path: string | null) => {
     // Clear any existing timeout
@@ -150,6 +189,38 @@ export default function ModelRoute() {
         const errorMessage = err instanceof Error ? err.message : 'Failed to load schema information';
         setSpecDataError(errorMessage);
       }
+
+      // Load spec schemas and predicate catalog from static assets
+      try {
+        const specFiles = await loadSpecSchemaFiles();
+
+        // Load and populate predicate catalog from base.json
+        if (specFiles['base.json']) {
+          const catalog = loadPredicateCatalog(specFiles['base.json']);
+          useModelStore.getState().setPredicateCatalog(catalog.byPredicate);
+        }
+
+        // Load and populate spec schemas
+        const schemas = loadSpecSchemas(specFiles);
+        useModelStore.getState().setSpecSchemas(schemas);
+
+        // Validate spec version: compare model's spec_version against loaded spec's specVersion
+        const modelSpecVersion = modelData.metadata?.specVersion as string | undefined;
+        const loadedSpecManifest = specFiles['manifest.json'] as SchemaManifest | undefined;
+        const loadedSpecVersion = loadedSpecManifest?.specVersion;
+
+        // Set spec version with both model spec version and loaded spec version for comparison
+        // setSpecVersion(modelSpecVersion, loadedSpecVersion) sets specVersionMismatch = (modelSpecVersion !== loadedSpecVersion)
+        if (modelSpecVersion || loadedSpecVersion) {
+          useModelStore.getState().setSpecVersion(
+            modelSpecVersion || 'unknown',
+            loadedSpecVersion || 'unknown'
+          );
+        }
+      } catch (err) {
+        console.warn('Failed to load spec schemas:', err);
+        // Continue even if spec schema loading fails - it's supplementary data
+      }
     },
   });
 
@@ -189,7 +260,7 @@ export default function ModelRoute() {
           <>
             <AnnotationPanel loadError={annotationsError} />
             <LayerTypesLegend model={model} />
-            <NodeDetailsPanel selectedNode={selectedNode} model={model} />
+            <NodeDetailsPanel selectedNode={selectedNode} model={model} onNodeSelect={handleNodeSelect} />
             <GraphStatisticsPanel model={model} />
           </>
         ) : (

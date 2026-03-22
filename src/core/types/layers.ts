@@ -14,6 +14,7 @@ export enum LayerType {
   Ux = 'Ux',
   Navigation = 'Navigation',
   ApmObservability = 'ApmObservability',
+  Testing = 'Testing',
   FederatedArchitecture = 'FederatedArchitecture'
 }
 
@@ -42,4 +43,33 @@ export interface LayerData {
   format?: string;
   version?: string;
   metadata?: Record<string, unknown>;
+}
+
+/**
+ * Mapping of LayerType enum values to spec file names (.dr/spec/*.json)
+ * These are the kebab-case file names used to fetch spec schemas.
+ * The order matches the layer numbering in the spec.
+ * Note: FederatedArchitecture is excluded as no corresponding spec file exists.
+ */
+export const SPEC_LAYER_NAMES: Record<Exclude<LayerType, typeof LayerType.FederatedArchitecture>, string> = {
+  [LayerType.Motivation]: 'motivation',
+  [LayerType.Business]: 'business',
+  [LayerType.Security]: 'security',
+  [LayerType.Application]: 'application',
+  [LayerType.Technology]: 'technology',
+  [LayerType.Api]: 'api',
+  [LayerType.DataModel]: 'data-model',
+  [LayerType.Datastore]: 'data-store',
+  [LayerType.Ux]: 'ux',
+  [LayerType.Navigation]: 'navigation',
+  [LayerType.ApmObservability]: 'apm',
+  [LayerType.Testing]: 'testing',
+};
+
+/**
+ * Get all spec layer file names in spec order
+ * @returns Array of spec file names without .json extension
+ */
+export function getSpecLayerNames(): string[] {
+  return Object.values(SPEC_LAYER_NAMES);
 }

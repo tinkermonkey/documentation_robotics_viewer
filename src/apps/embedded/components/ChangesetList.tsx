@@ -5,7 +5,7 @@
 
 import React, { useMemo } from 'react';
 import { useChangesetStore } from '../stores/changesetStore';
-import { Card, Badge } from 'flowbite-react';
+import { Badge } from 'flowbite-react';
 import { EmptyState } from './shared';
 
 interface ChangesetListProps {
@@ -55,10 +55,12 @@ const ChangesetList: React.FC<ChangesetListProps> = ({ onChangesetSelect }) => {
   };
 
   const renderChangesetItem = (changeset: typeof changesets[0]) => (
-    <Card
+    <button
       key={changeset.id}
-      className={`cursor-pointer transition-all ${selectedChangesetId === changeset.id ? 'ring-2 ring-blue-500' : ''}`}
+      className={`w-full text-left p-4 rounded-lg border border-gray-200 dark:border-gray-700 cursor-pointer transition-all hover:border-blue-500 dark:hover:border-blue-500 ${selectedChangesetId === changeset.id ? 'ring-2 ring-blue-500 border-blue-500' : ''}`}
       onClick={() => onChangesetSelect(changeset.id)}
+      aria-label={`Select changeset: ${changeset.name}`}
+      aria-pressed={selectedChangesetId === changeset.id}
     >
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
@@ -77,7 +79,7 @@ const ChangesetList: React.FC<ChangesetListProps> = ({ onChangesetSelect }) => {
       <div className="text-sm text-gray-600 dark:text-gray-400">
         {changeset.elements_count} changes
       </div>
-    </Card>
+    </button>
   );
 
   if (changesets.length === 0) {

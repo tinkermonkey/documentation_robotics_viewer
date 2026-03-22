@@ -361,6 +361,12 @@ export class NodeTransformer {
       ? `field-${relationship.properties.targetField}-left`
       : undefined;
 
+    // Use predicate string for label if available, fall back to type enum
+    const edgeLabel = relationship.predicate || relationship.type;
+
+    // Determine arrow style based on directionality from predicateDefinition
+    const isBidirectional = relationship.predicateDefinition?.semantics?.directionality === 'bidirectional';
+
     return {
       id: `edge-${relationship.id}`,
       source: sourceNodeId,
@@ -369,16 +375,21 @@ export class NodeTransformer {
       targetHandle,
       type: 'elbow', // Use custom elbow edge for better routing and spacing
       animated: false,
-      label: relationship.type, // Add predicate label
+      label: edgeLabel, // Use predicate string instead of enum
       labelStyle: { fill: '#555', fontWeight: 500, fontSize: 12 },
       labelBgStyle: { fill: '#fff', fillOpacity: 0.8, rx: 4, ry: 4 },
+      ...(isBidirectional && {
+        markerStart: { type: MarkerType.ArrowClosed, width: 20, height: 20, color: FALLBACK_COLOR },
+      }),
       markerEnd: {
         type: MarkerType.ArrowClosed,
         width: 20,
         height: 20,
         color: FALLBACK_COLOR,
       },
-      data: {},
+      data: {
+        predicateDefinition: relationship.predicateDefinition,
+      },
     } as AppEdge;
   }
 
@@ -461,6 +472,11 @@ export class NodeTransformer {
       detailLevel: optionalProps.detailLevel,
       changesetOperation: optionalProps.changesetOperation,
       relationshipBadge: optionalProps.relationshipBadge,
+      // v0.8.3 spec fields
+      sourceReferences: element.sourceReferences,
+      specNodeId: element.specNodeId,
+      attributes: element.attributes,
+      metadata: element.metadata,
     };
   }
 
@@ -479,6 +495,11 @@ export class NodeTransformer {
       badges: this.extractBusinessBadges(element, nodeType),
       detailLevel: optionalProps.detailLevel,
       changesetOperation: optionalProps.changesetOperation,
+      // v0.8.3 spec fields
+      sourceReferences: element.sourceReferences,
+      specNodeId: element.specNodeId,
+      attributes: element.attributes,
+      metadata: element.metadata,
     };
   }
 
@@ -486,10 +507,6 @@ export class NodeTransformer {
    * Extract field items from element attributes or properties
    */
   private extractFieldItems(element: ModelElement): FieldItem[] | undefined {
-    if (!element.properties || typeof element.properties !== 'object') {
-      return undefined;
-    }
-
     // Map common property keys to display labels
     const propertyMap: Record<string, string> = {
       description: 'Description',
@@ -507,18 +524,41 @@ export class NodeTransformer {
     };
 
     const items: FieldItem[] = [];
-    for (const [key, value] of Object.entries(element.properties)) {
-      if (key.startsWith('_')) continue; // Skip internal properties
-      if (value === null || value === undefined) continue; // Skip empty values
 
-      const label = propertyMap[key] || this.formatFieldLabel(key);
-      const displayValue = Array.isArray(value) ? value.join(', ') : String(value);
-      items.push({
-        id: key,
-        label,
-        value: displayValue,
-        required: false,
-      });
+    // First, add attributes (v0.8.3 spec fields)
+    if (element.attributes && typeof element.attributes === 'object') {
+      for (const [key, value] of Object.entries(element.attributes)) {
+        if (key.startsWith('_')) continue; // Skip internal attributes
+        if (value === null || value === undefined) continue; // Skip empty values
+
+        const label = propertyMap[key] || this.formatFieldLabel(key);
+        const displayValue = Array.isArray(value) ? value.join(', ') : String(value);
+        items.push({
+          id: key,
+          label,
+          value: displayValue,
+          required: false,
+        });
+      }
+    }
+
+    // Then add properties (legacy fields)
+    if (element.properties && typeof element.properties === 'object') {
+      const attributeKeys = new Set(Object.keys(element.attributes ?? {}));
+      for (const [key, value] of Object.entries(element.properties)) {
+        if (key.startsWith('_')) continue; // Skip internal properties
+        if (value === null || value === undefined) continue; // Skip empty values
+        if (attributeKeys.has(key)) continue; // Skip if already added from attributes
+
+        const label = propertyMap[key] || this.formatFieldLabel(key);
+        const displayValue = Array.isArray(value) ? value.join(', ') : String(value);
+        items.push({
+          id: key,
+          label,
+          value: displayValue,
+          required: false,
+        });
+      }
     }
 
     return items.length > 0 ? items : undefined;
@@ -719,6 +759,11 @@ export class NodeTransformer {
       detailLevel: optionalProps.detailLevel,
       changesetOperation: optionalProps.changesetOperation,
       relationshipBadge: optionalProps.relationshipBadge,
+      // v0.8.3 spec fields
+      sourceReferences: element.sourceReferences,
+      specNodeId: element.specNodeId,
+      attributes: element.attributes,
+      metadata: element.metadata,
     };
   }
 
@@ -788,6 +833,11 @@ export class NodeTransformer {
       detailLevel: optionalProps.detailLevel,
       changesetOperation: optionalProps.changesetOperation,
       relationshipBadge: optionalProps.relationshipBadge,
+      // v0.8.3 spec fields
+      sourceReferences: element.sourceReferences,
+      specNodeId: element.specNodeId,
+      attributes: element.attributes,
+      metadata: element.metadata,
     };
   }
 
@@ -808,6 +858,11 @@ export class NodeTransformer {
       detailLevel: optionalProps.detailLevel,
       changesetOperation: optionalProps.changesetOperation,
       relationshipBadge: optionalProps.relationshipBadge,
+      // v0.8.3 spec fields
+      sourceReferences: element.sourceReferences,
+      specNodeId: element.specNodeId,
+      attributes: element.attributes,
+      metadata: element.metadata,
     };
   }
 
@@ -868,18 +923,28 @@ export class NodeTransformer {
             let height = dimensions.height;
 
             // Dynamic height calculation for nodes with field lists
-            if (element.properties) {
-              // Count only properties that will actually be rendered in field list
-              // (excluding null/undefined values and internal properties starting with _)
-              const fieldItems = Object.entries(element.properties)
-                .filter(([key, value]) => value !== null && value !== undefined && !key.startsWith('_'))
-                .length;
+            // Count fields from both attributes and properties (same logic as extractFieldItems)
+            let fieldCount = 0;
 
-              if (fieldItems > 0) {
-                const headerHeight = dimensions.headerHeight || 40;
-                const itemHeight = dimensions.itemHeight || 24;
-                height = headerHeight + fieldItems * itemHeight;
-              }
+            // Count attributes (v0.8.3 spec fields)
+            if (element.attributes && typeof element.attributes === 'object') {
+              fieldCount += Object.entries(element.attributes)
+                .filter(([key, value]) => !key.startsWith('_') && value !== null && value !== undefined)
+                .length;
+            }
+
+            // Count properties, excluding those already in attributes
+            if (element.properties && typeof element.properties === 'object') {
+              const attributeKeys = new Set(Object.keys(element.attributes ?? {}));
+              fieldCount += Object.entries(element.properties)
+                .filter(([key, value]) => !key.startsWith('_') && value !== null && value !== undefined && !attributeKeys.has(key))
+                .length;
+            }
+
+            if (fieldCount > 0) {
+              const headerHeight = dimensions.headerHeight || 40;
+              const itemHeight = dimensions.itemHeight || 24;
+              height = headerHeight + fieldCount * itemHeight;
             }
 
 

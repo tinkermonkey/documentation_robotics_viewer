@@ -352,15 +352,20 @@ export const LayoutPreferencesPanel: React.FC<LayoutPreferencesPanelProps> = ({
               <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
                 Import Configuration
               </h4>
+              <label htmlFor="import-textarea" className="block text-sm font-medium mb-1 text-gray-900 dark:text-white">
+                Import Configuration
+              </label>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
                 Import layout preferences from a previously exported JSON file.
               </p>
               <textarea
+                id="import-textarea"
                 value={importText}
                 onChange={(e) => setImportText(e.target.value)}
                 placeholder="Paste exported configuration JSON here..."
                 className="w-full h-32 px-3 py-2 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono"
                 data-testid="import-textarea"
+                aria-label="Import configuration JSON"
               />
               {importError && (
                 <p className="mt-2 text-sm text-red-600 dark:text-red-400" data-testid="import-error">

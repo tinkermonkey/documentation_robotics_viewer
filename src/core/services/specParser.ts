@@ -2,24 +2,25 @@ import { Layer, ModelElement, Relationship, LayerType, RelationshipType } from '
 import { getLayerColor } from '../utils/layerColors';
 
 /**
- * Mapping of relationship type strings to RelationshipType enum values.
+ * Validation whitelist for recognized relationship type strings.
+ * Maps each valid type to itself. Unknown types fall back to 'reference'.
  * Defined at module level to avoid object recreation on each method call.
  */
 const RELATIONSHIP_TYPE_MAP: Record<string, RelationshipType> = {
-  'composition': RelationshipType.Composition,
-  'aggregation': RelationshipType.Aggregation,
-  'assignment': RelationshipType.Assignment,
-  'realization': RelationshipType.Realization,
-  'serving': RelationshipType.Serving,
-  'access': RelationshipType.Access,
-  'influence': RelationshipType.Influence,
-  'triggering': RelationshipType.Triggering,
-  'flow': RelationshipType.Flow,
-  'reference': RelationshipType.Reference,
-  'navigation': RelationshipType.Navigation,
-  'security-control': RelationshipType.SecurityControl,
-  'data-flow': RelationshipType.DataFlow,
-  'state-transition': RelationshipType.StateTransition
+  'composition': 'composition',
+  'aggregation': 'aggregation',
+  'assignment': 'assignment',
+  'realization': 'realization',
+  'serving': 'serving',
+  'access': 'access',
+  'influence': 'influence',
+  'triggering': 'triggering',
+  'flow': 'flow',
+  'reference': 'reference',
+  'navigation': 'navigation',
+  'security-control': 'security-control',
+  'data-flow': 'data-flow',
+  'state-transition': 'state-transition'
 };
 
 /**
@@ -122,11 +123,11 @@ export class SpecParser {
   }
 
   /**
-   * Map relationship type string to RelationshipType enum
-   * Validates input and provides safe fallback to Reference
+   * Map relationship type string to RelationshipType string value
+   * Validates input and provides safe fallback to 'reference'
    */
   private mapRelationshipType(typeString: string): RelationshipType {
-    return RELATIONSHIP_TYPE_MAP[typeString] || RelationshipType.Reference;
+    return RELATIONSHIP_TYPE_MAP[typeString] || 'reference';
   }
 
   /**

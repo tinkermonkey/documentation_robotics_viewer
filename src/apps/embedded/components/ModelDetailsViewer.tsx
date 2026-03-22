@@ -3,12 +3,17 @@
  * Displays model instance data in a readable JSON format
  */
 
-import React, { useEffect } from 'react';
-import { MetaModel, ModelElement } from '../../../core/types';
+import React, { useCallback, useEffect, useMemo } from 'react';
+import { MetaModel, ModelElement, Relationship, Reference, SpecLayerData } from '../../../core/types';
 import { Badge, Accordion, AccordionPanel, AccordionTitle, AccordionContent } from 'flowbite-react';
 import AttributesTable, { AttributeRow } from './common/AttributesTable';
 import MetadataGrid, { MetadataItem } from './common/MetadataGrid';
+import RelationshipTable from './common/RelationshipTable';
+import SourceReferenceList from './common/SourceReferenceList';
+import SpecDefinitionCard from './common/SpecDefinitionCard';
+import SpecNodeInstanceCard from './common/SpecNodeInstanceCard';
 import { useAnnotationStore } from '../stores/annotationStore';
+import { useModelStore } from '../../../core/stores/modelStore';
 import { SchemaDefinition } from '../services/embeddedDataLoader';
 
 interface ModelDetailsViewerProps {
@@ -20,6 +25,156 @@ interface ModelDetailsViewerProps {
   selectedLayer: string | null;
 }
 
+interface ElementCardProps {
+  element: ModelElement;
+  documentationString?: string;
+  attributes: AttributeRow[];
+  layerKey: string;
+  selectedLayer: string;
+  buildRelationshipsForElement: (element: ModelElement, selectedLayerKey: string) => {
+    outbound: Array<{
+      predicate: string;
+      targetId: string;
+      targetName: string;
+      targetLayerId: string;
+      isInterLayer: boolean;
+    }>;
+    inbound: Array<{
+      predicate: string;
+      sourceId: string;
+      sourceName: string;
+      sourceLayerId: string;
+      isInterLayer: boolean;
+    }>;
+  };
+  specSchemas?: Record<string, SpecLayerData>;
+}
+
+const ElementCard: React.FC<ElementCardProps> = ({
+  element,
+  documentationString,
+  attributes,
+  layerKey,
+  selectedLayer,
+  buildRelationshipsForElement,
+  specSchemas
+}) => {
+  // Memoize relationships at component level (correct hook usage)
+  const { outbound, inbound } = useMemo(
+    () => buildRelationshipsForElement(element, layerKey || selectedLayer),
+    [element, layerKey, selectedLayer, buildRelationshipsForElement]
+  );
+
+  // Memoize spec schema extraction for this element
+  const { specLayerId, specType, nodeSchema, relSchemas } = useMemo(() => {
+    const layerId = element.specNodeId?.split('.')[0];
+    const type = element.specNodeId?.split('.')[1];
+    const schema = layerId && type && specSchemas?.[layerId]
+      ? specSchemas[layerId].nodeSchemas?.[type]
+      : undefined;
+    const relSchemaList = layerId && specSchemas?.[layerId]
+      ? specSchemas[layerId].relationshipSchemas?.filter(
+          (r) => r.sourceSpecNodeId === element.specNodeId || r.destinationSpecNodeId === element.specNodeId
+        )
+      : undefined;
+
+    return {
+      specLayerId: layerId,
+      specType: type,
+      nodeSchema: schema,
+      relSchemas: relSchemaList
+    };
+  }, [element.specNodeId, specSchemas]);
+
+  return (
+    <Accordion key={element.id} collapseAll>
+      <AccordionPanel>
+        <AccordionTitle className="text-sm">
+          {element.name || element.id}
+        </AccordionTitle>
+        <AccordionContent className="bg-white dark:bg-gray-900">
+          <div className="space-y-4">
+            {/* Documentation section - prominently displayed */}
+            {documentationString && (
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <h6 className="text-xs font-semibold text-blue-900 dark:text-blue-300 mb-1 uppercase tracking-wide">
+                  Documentation
+                </h6>
+                <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
+                  {documentationString}
+                </p>
+              </div>
+            )}
+
+            <AttributesTable attributes={attributes} title="Attributes" />
+
+            {/* Spec Node Instance section */}
+            {nodeSchema && element.specNodeId ? (
+              <div
+                className="pt-2 border-t border-gray-200 dark:border-gray-700"
+                data-testid="element-spec-node-instance-section"
+              >
+                <SpecNodeInstanceCard
+                  specNodeId={element.specNodeId}
+                  nodeSchema={nodeSchema}
+                />
+              </div>
+            ) : null}
+
+            {/* Spec Definition section */}
+            {nodeSchema && element.specNodeId && specLayerId && specType ? (
+              <div
+                className="pt-2 border-t border-gray-200 dark:border-gray-700"
+                data-testid="element-spec-definition-section"
+              >
+                <h6 className="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
+                  Spec Definition
+                </h6>
+                <SpecDefinitionCard
+                  specNodeId={element.specNodeId}
+                  nodeSchema={nodeSchema}
+                  relationshipSchemas={relSchemas}
+                />
+              </div>
+            ) : null}
+
+            {/* Relationships section */}
+            {(outbound.length > 0 || inbound.length > 0) && (
+              <div
+                className="pt-2 border-t border-gray-200 dark:border-gray-700"
+                data-testid="element-relationships-section"
+              >
+                <h6 className="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
+                  Relationships
+                </h6>
+                <RelationshipTable
+                  outbound={outbound}
+                  inbound={inbound}
+                />
+              </div>
+            )}
+
+            {/* Source References section */}
+            {element.sourceReferences && element.sourceReferences.length > 0 && (
+              <div
+                className="pt-2 border-t border-gray-200 dark:border-gray-700"
+                data-testid="element-source-references-section"
+              >
+                <h6 className="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
+                  Source References
+                </h6>
+                <SourceReferenceList
+                  references={element.sourceReferences}
+                />
+              </div>
+            )}
+          </div>
+        </AccordionContent>
+      </AccordionPanel>
+    </Accordion>
+  );
+};
+
 const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
   model,
   specData,
@@ -27,6 +182,7 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
   selectedLayer
 }) => {
   const { highlightedElementId } = useAnnotationStore();
+  const specSchemas = useModelStore((state) => state.specSchemas);
 
   // Watch for highlighted elements and compute their JSON path
   useEffect(() => {
@@ -61,8 +217,8 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
 
   const layers = model.layers || {};
   const layerNames = Object.keys(layers).sort((a, b) => {
-    const orderA = layers[a].order || 999;
-    const orderB = layers[b].order || 999;
+    const orderA = layers[a].order ?? 999;
+    const orderB = layers[b].order ?? 999;
     return orderA - orderB;
   });
 
@@ -111,6 +267,113 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
 
     return specData.schemas[layerSchemaKey]?.description;
   };
+
+  // Helper to find element by ID across all layers (defined before buildRelationshipsForElement)
+  const findElementById = useCallback((elementId: string) => {
+    for (const layer of Object.values(layers)) {
+      const element = layer.elements?.find((el: ModelElement) => el.id === elementId);
+      if (element) {
+        return { element, layerId: layer.id };
+      }
+    }
+    return null;
+  }, [layers]);
+
+  // Helper to build relationships for an element (memoized to stabilize reference)
+  const buildRelationshipsForElement = useCallback((element: ModelElement, selectedLayerKey: string) => {
+    const outbound: Array<{
+      predicate: string;
+      targetId: string;
+      targetName: string;
+      targetLayerId: string;
+      isInterLayer: boolean;
+    }> = [];
+
+    const inbound: Array<{
+      predicate: string;
+      sourceId: string;
+      sourceName: string;
+      sourceLayerId: string;
+      isInterLayer: boolean;
+    }> = [];
+
+    // Collect outbound and inbound relationships from ALL layers
+    for (const [, layer] of Object.entries(layers)) {
+      if (layer?.relationships) {
+        // Outbound relationships
+        const outboundRels = layer.relationships.filter(
+          (r: Relationship) => r.sourceId === element.id
+        );
+
+        outboundRels.forEach((rel: Relationship) => {
+          // Search for target element across ALL layers (not just current layer)
+          const targetResult = findElementById(rel.targetId);
+          if (targetResult) {
+            outbound.push({
+              predicate: rel.predicate || rel.type,
+              targetId: rel.targetId,
+              targetName: targetResult.element.name || targetResult.element.id,
+              targetLayerId: targetResult.layerId,
+              isInterLayer: targetResult.layerId !== selectedLayerKey
+            });
+          }
+        });
+
+        // Inbound relationships
+        const inboundRels = layer.relationships.filter(
+          (r: Relationship) => r.targetId === element.id
+        );
+
+        inboundRels.forEach((rel: Relationship) => {
+          // Search for source element across ALL layers (not just current layer)
+          const sourceResult = findElementById(rel.sourceId);
+          if (sourceResult) {
+            inbound.push({
+              predicate: rel.predicate || rel.type,
+              sourceId: rel.sourceId,
+              sourceName: sourceResult.element.name || sourceResult.element.id,
+              sourceLayerId: sourceResult.layerId,
+              isInterLayer: sourceResult.layerId !== selectedLayerKey
+            });
+          }
+        });
+      }
+    }
+
+    // Collect cross-layer references
+    model.references?.forEach((ref: Reference) => {
+      const isSourceRef = ref.source.elementId === element.id && ref.source.layerId === selectedLayerKey;
+      const isTargetRef = ref.target.elementId === element.id && ref.target.layerId === selectedLayerKey;
+
+      if (isSourceRef && ref.target.elementId && ref.target.layerId) {
+        const targetResult = findElementById(ref.target.elementId);
+        if (targetResult) {
+          outbound.push({
+            predicate: ref.predicate || ref.type,
+            targetId: ref.target.elementId,
+            targetName: targetResult.element.name || targetResult.element.id,
+            targetLayerId: ref.target.layerId,
+            isInterLayer: true
+          });
+        }
+      }
+
+      if (isTargetRef && ref.source.elementId && ref.source.layerId) {
+        const sourceResult = findElementById(ref.source.elementId);
+        if (sourceResult) {
+          inbound.push({
+            predicate: ref.predicate || ref.type,
+            sourceId: ref.source.elementId,
+            sourceName: sourceResult.element.name || sourceResult.element.id,
+            sourceLayerId: ref.source.layerId,
+            isInterLayer: true
+          });
+        }
+      }
+    });
+
+    return { outbound, inbound };
+  }, [model, layers, findElementById]);
 
   const renderLayerDetails = () => {
     if (!selectedLayer) {
@@ -288,7 +551,7 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
                           const elementAsRecord = element as unknown as Record<string, unknown>;
                           const elementEntries = Object.entries(elementAsRecord)
                             .filter(([key]) =>
-                              !['id', 'name', 'type', 'description', 'properties', 'visual', 'layerId'].includes(key)
+                              !['id', 'name', 'type', 'description', 'properties', 'visual', 'layerId', 'sourceReferences'].includes(key)
                             );
 
                           elementEntries.forEach(([key, value]) => {
@@ -300,30 +563,16 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
                           });
 
                           return (
-                            <Accordion key={element.id} collapseAll>
-                              <AccordionPanel>
-                                <AccordionTitle className="text-sm">
-                                  {element.name || element.id}
-                                </AccordionTitle>
-                                <AccordionContent className="bg-white dark:bg-gray-900">
-                                  <div className="space-y-4">
-                                    {/* Documentation section - prominently displayed */}
-                                    {documentationString && (
-                                      <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                                        <h6 className="text-xs font-semibold text-blue-900 dark:text-blue-300 mb-1 uppercase tracking-wide">
-                                          Documentation
-                                        </h6>
-                                        <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
-                                          {documentationString}
-                                        </p>
-                                      </div>
-                                    )}
-
-                                    <AttributesTable attributes={attributes} title="Attributes" />
-                                  </div>
-                                </AccordionContent>
-                              </AccordionPanel>
-                            </Accordion>
+                            <ElementCard
+                              key={element.id}
+                              element={element}
+                              documentationString={documentationString}
+                              attributes={attributes}
+                              layerKey={layerKey || selectedLayer}
+                              selectedLayer={selectedLayer}
+                              buildRelationshipsForElement={buildRelationshipsForElement}
+                              specSchemas={specSchemas}
+                            />
                           );
                         })}
                       </div>

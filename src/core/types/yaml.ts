@@ -23,6 +23,9 @@ export interface YAMLManifest {
   };
   statistics?: YAMLStatistics;
   conventions?: YAMLConventions;
+  // v0.8.3 spec fields
+  cli_version?: string;
+  spec_version?: string;
 }
 
 /**
@@ -41,7 +44,7 @@ export interface YAMLLayerConfig {
   order: number;
   name: string;
   path: string;
-  schema: string;
+  schema?: string;
   enabled: boolean;
   elements: Record<string, number>; // Element type -> count mapping
 }
@@ -86,6 +89,13 @@ export interface YAMLElement {
 
   // Nested relationships (instead of separate array)
   relationships?: YAMLRelationships;
+
+  // v0.8.3 spec fields
+  spec_node_id?: string;
+  layer_id?: string;
+  attributes?: Record<string, unknown>;
+  source_reference?: unknown;
+  metadata?: unknown;
 
   // Additional custom properties
   [key: string]: unknown;

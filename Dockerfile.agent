@@ -59,11 +59,18 @@ WORKDIR /workspace/documentation_robotics_viewer
 # DO NOT copy source code - it comes from the runtime mount
 COPY package.json package-lock.json ./
 
+# Copy the WASM copy script (needed to place libavoid.wasm in public/)
+COPY scripts/copy-wasm.cjs ./scripts/
+
 # Pre-install npm dependencies
 # Note: --legacy-peer-deps needed due to vite@6.x vs @storybook/react-vite peer dep conflict
 RUN --mount=type=cache,target=/root/.npm \
     npm ci --ignore-scripts --legacy-peer-deps && \
     npm cache clean --force
+
+# Copy libavoid WASM binary from node_modules to public/ directory
+# Required for Vite dev server to serve the WASM file at /libavoid.wasm
+RUN mkdir -p public && node scripts/copy-wasm.cjs
 
 # Set Playwright to use a shared cache location accessible to orchestrator user
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/ms-playwright
@@ -96,6 +103,11 @@ RUN claude --version && \
 
 # Verify project-specific tools (Node.js)
 RUN node --version && npm --version
+
+# Verify libavoid WASM is available in both locations
+RUN test -f node_modules/libavoid-js/dist/libavoid.wasm && \
+    test -f public/libavoid.wasm && \
+    echo "libavoid WASM verified in node_modules and public/"
 
 # Verify Playwright installation
 RUN npx playwright --version

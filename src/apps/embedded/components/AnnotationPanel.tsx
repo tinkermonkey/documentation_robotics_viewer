@@ -244,16 +244,15 @@ const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) =
           if (token.type === 'mention' && token.elementId) {
             const elementName = resolveElementName(token.elementId, model);
             return (
-              <Badge
+              <button
                 key={index}
-                color="info"
-                size="sm"
-                className="inline-flex items-center mx-0.5 cursor-pointer hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
+                className="inline-flex items-center mx-0.5 px-2.5 py-0.5 rounded-full text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 cursor-pointer hover:bg-blue-700 dark:hover:bg-blue-600 hover:text-white dark:hover:text-white transition-colors"
                 title={`Click to highlight: ${token.elementId}`}
                 onClick={() => handleMentionClick(token.elementId!)}
+                aria-label={`Highlight element: ${elementName}`}
               >
                 {elementName}
-              </Badge>
+              </button>
             );
           }
           return <span key={index}>{token.content}</span>;
@@ -314,12 +313,15 @@ const AnnotationPanel: React.FC<AnnotationPanelProps> = ({ loadError = null }) =
           {replyingTo === annotation.id && (
             <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg" data-testid={`reply-form-${annotation.id}`}>
               <div className="space-y-2">
+                <label htmlFor="reply-author" className="block text-sm font-medium mb-1 text-gray-900 dark:text-white">Your name</label>
                 <input
+                  id="reply-author"
                   type="text"
                   placeholder="Your name"
                   value={replyAuthor}
                   onChange={(e) => setReplyAuthor(e.target.value)}
                   className="block w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 p-2 text-sm text-gray-900 dark:text-white focus:border-blue-500 focus:ring-blue-500"
+                  aria-label="Reply author name"
                 />
                 <Textarea
                   placeholder="Write your reply..."

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import GraphStatisticsPanel from '@/apps/embedded/components/GraphStatisticsPanel';
 import type { MetaModel } from '@/core/types';
-import { LayerType, RelationshipType } from '@/core/types';
+import { LayerType } from '@/core/types';
 
 const meta = {
   title: 'A Primitives / State Panels / GraphStatisticsPanel',
@@ -24,7 +24,7 @@ const mockModelSmall: MetaModel = {
         { id: '2', type: 'Goal', name: 'Goal 2', layerId: 'motivation-layer', properties: {}, visual: { position: { x: 0, y: 0 }, size: { width: 100, height: 50 }, style: {} } },
       ],
       relationships: [
-        { id: 'r1', sourceId: '1', targetId: '2', type: RelationshipType.Influence },
+        { id: 'r1', sourceId: '1', targetId: '2', type: 'influence' },
       ],
     },
   },
@@ -50,7 +50,7 @@ const mockModelLarge: MetaModel = {
         id: `r-${i}`,
         sourceId: `goal-${i % 25}`,
         targetId: `goal-${(i + 1) % 25}`,
-        type: RelationshipType.Influence,
+        type: 'influence',
       })),
     },
     'business-layer': {
@@ -69,7 +69,7 @@ const mockModelLarge: MetaModel = {
         id: `rb-${i}`,
         sourceId: `process-${i % 30}`,
         targetId: `process-${(i + 1) % 30}`,
-        type: RelationshipType.Flow,
+        type: 'flow',
       })),
     },
     'application-layer': {
@@ -88,7 +88,7 @@ const mockModelLarge: MetaModel = {
         id: `ra-${i}`,
         sourceId: `app-${i % 20}`,
         targetId: `app-${(i + 1) % 20}`,
-        type: RelationshipType.Serving,
+        type: 'serving',
       })),
     },
   },

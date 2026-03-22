@@ -75,34 +75,31 @@ const preview: Preview = {
             enabled: false,
           },
           {
-            // React Flow uses ARIA labels for graph elements
-            id: 'aria-allowed-attr',
-            enabled: true,
+            // Storybook stories are isolated components, not full pages
+            // Landmark rules (region, landmark-main-is-top-level, landmark-no-duplicate-main)
+            // don't apply to individual component stories
+            id: 'region',
+            enabled: false,
           },
           {
-            // Node components use role="article"
-            id: 'aria-required-children',
-            enabled: true,
+            // Disable duplicate main landmark check since stories may have nested mains
+            id: 'landmark-no-duplicate-main',
+            enabled: false,
           },
           {
-            // Handle form elements properly
-            id: 'label',
-            enabled: true,
+            // Disable main landmark containment check
+            id: 'landmark-main-is-top-level',
+            enabled: false,
           },
           {
-            // Ensure image alt text
-            id: 'image-alt',
-            enabled: true,
+            // Disable requirement for at least one main landmark since stories are isolated components
+            id: 'landmark-one-main',
+            enabled: false,
           },
           {
-            // Keyboard navigation support
-            id: 'keyboard',
-            enabled: true,
-          },
-          {
-            // Proper heading hierarchy
-            id: 'heading-order',
-            enabled: true,
+            // Disable requirement for h1 heading since stories are isolated components, not full pages
+            id: 'page-has-heading-one',
+            enabled: false,
           },
         ],
       },

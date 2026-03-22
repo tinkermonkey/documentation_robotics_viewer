@@ -1,11 +1,24 @@
-import { MetaModel, LayerType, Reference } from '../types';
+import { MetaModel, LayerType, Reference, Layer, Relationship, ModelElement, ReferenceType } from '../types';
+import { JSONSchemaLayer } from '../types/jsonSchema';
 import { GitHubService } from './githubService';
 import { LocalFileLoader } from './localFileLoader';
 import { SpecParser } from './specParser';
 import { JSONSchemaParser } from './jsonSchemaParser';
 import { CrossLayerReferenceExtractor } from './crossLayerReferenceExtractor';
 import { YAMLParser } from './yamlParser';
+import { RelationshipsYamlParser } from './relationshipsYamlParser';
+import { loadPredicateCatalog, PredicateCatalog } from './predicateCatalogLoader';
+import { normalizePredicate } from './predicateTypeMapper';
 import { YAMLManifest } from '../types/yaml';
+
+/**
+ * Helper function to check if a file path refers to the relationships.yaml file
+ * Uses exact filename matching to avoid matching files like "business-relationships-matrix.yaml"
+ */
+function isRelationshipsYamlFile(filePath: string): boolean {
+  const basename = filePath.split('/').pop() || '';
+  return basename === 'relationships.yaml' || basename === 'relationships.yml';
+}
 
 /**
  * Helper function to load a model from a local path (for testing)
@@ -75,6 +88,7 @@ export class DataLoader {
     private specParser: SpecParser
   ) {
     this.jsonSchemaParser = new JSONSchemaParser();
+    // Initialize without catalog; will be recreated with catalog during parseYAMLInstances if catalog is available
     this.yamlParser = new YAMLParser();
     this.referenceExtractor = new CrossLayerReferenceExtractor();
   }
@@ -152,7 +166,7 @@ export class DataLoader {
     // Check if any file is a manifest structure
     for (const [key, value] of Object.entries(schemas)) {
       if (key.includes('manifest') && typeof value === 'object' && value !== null) {
-        const manifest = value as any;
+        const manifest = value as Record<string, unknown>;
         if (manifest.version && manifest.layers && manifest.project) {
           console.log('Detected YAML instance model (manifest structure found)');
           return 'instance-yaml';
@@ -161,7 +175,7 @@ export class DataLoader {
     }
 
     // Check first schema for JSON Schema indicators
-    const firstSchema = Object.values(schemas)[0] as any;
+    const firstSchema = Object.values(schemas)[0] as Record<string, unknown>;
 
     // Return early if no schemas found
     if (!firstSchema) {
@@ -170,7 +184,8 @@ export class DataLoader {
     }
 
     // JSON Schema has $schema and definitions
-    if (firstSchema.$schema?.includes('json-schema.org') || 'definitions' in firstSchema) {
+    const schemaProperty = (firstSchema as Record<string, unknown>)['$schema'];
+    if ((typeof schemaProperty === 'string' && schemaProperty.includes('json-schema.org')) || 'definitions' in firstSchema) {
       console.log('Detected JSON Schema definitions');
       return 'schema-definition';
     }
@@ -200,8 +215,8 @@ export class DataLoader {
       version
     });
 
-    const layers: Record<string, any> = {};
-    const allRelationships: any[] = [];
+    const layers: Record<string, JSONSchemaLayer> = {};
+    const allRelationships: Relationship[] = [];
     const parseErrors: string[] = [];
 
     console.log(`Parsing ${Object.keys(schemas).length} schema files as definitions`);
@@ -229,13 +244,13 @@ export class DataLoader {
 
     // Extract custom references for metadata
     const extractedRefs = this.jsonSchemaParser.extractCustomCrossLayerReferences(Object.values(layers));
-    const layersMap: Record<string, any> = {};
+    const layersMap: Record<string, JSONSchemaLayer> = {};
     for (const layer of Object.values(layers)) {
       layersMap[layer.name] = layer;
     }
     const crossLayerMetadata = this.referenceExtractor.resolveReferences(extractedRefs, layersMap);
 
-    const elementCount = Object.values(layers).reduce((sum: number, layer: any) =>
+    const elementCount = Object.values(layers).reduce((sum: number, layer: JSONSchemaLayer) =>
       sum + layer.elements.length, 0);
 
     console.log('[DataLoader] Returning MetaModel:', {
@@ -263,7 +278,7 @@ export class DataLoader {
   /**
    * Build cross-layer references for schema definitions
    */
-  private buildSchemaReferences(layers: any[]): Reference[] {
+  private buildSchemaReferences(layers: JSONSchemaLayer[]): Reference[] {
     console.log('Building cross-layer references...');
 
     // Extract $ref-based references (original behavior)
@@ -275,7 +290,7 @@ export class DataLoader {
       refs.forEach((ref, index) => {
         refBasedReferences.push({
           id: `${elementId}-external-${index}`,
-          type: 'schema-reference' as any,
+          type: ReferenceType.SchemaReference,
           source: {
             elementId,
             property: ref.propertyName  // Include source field name
@@ -295,7 +310,7 @@ export class DataLoader {
 
     // Resolve extracted references
     // Build a layers map for resolution
-    const layersMap: Record<string, any> = {};
+    const layersMap: Record<string, JSONSchemaLayer> = {};
     for (const layer of layers) {
       layersMap[layer.name] = layer;
     }
@@ -369,19 +384,55 @@ export class DataLoader {
       }
     }
 
+    // Load predicate catalog from relationship-catalog.json if present
+    let predicateCatalog: PredicateCatalog | undefined;
+    const relationshipCatalogKey = Object.keys(schemas).find(k => k === 'relationship-catalog.json');
+    if (relationshipCatalogKey) {
+      const catalogJson = schemas[relationshipCatalogKey];
+      predicateCatalog = loadPredicateCatalog(catalogJson);
+      console.log(`Loaded predicate catalog with ${predicateCatalog.byPredicate.size} predicates from relationship-catalog.json`);
+    } else {
+      // Fallback: try to load from base.json for backward compatibility
+      const baseJsonKey = Object.keys(schemas).find(k => k === 'base.json');
+      if (baseJsonKey) {
+        const baseJson = schemas[baseJsonKey];
+        predicateCatalog = loadPredicateCatalog(baseJson);
+        console.log(`Loaded predicate catalog with ${predicateCatalog.byPredicate.size} predicates from base.json (fallback)`);
+      }
+    }
+
+    // Re-create parsers with the loaded catalog (if available) for proper initialization
+    // This ensures field discovery uses the catalog from the start, rather than relying on
+    // a stateful setPredicateCatalog() call that could be forgotten or reordered
+    if (predicateCatalog) {
+      // Transfer warnings from old parser to new parser to avoid losing projection-rules warnings
+      const oldWarnings = this.yamlParser.getWarnings();
+      this.yamlParser = new YAMLParser(predicateCatalog);
+      oldWarnings.forEach(warning => this.yamlParser.addWarning(warning));
+      this.referenceExtractor = new CrossLayerReferenceExtractor(predicateCatalog);
+    }
+
     // Group files by layer based on manifest paths
     const layerFiles = this.groupFilesByLayer(schemas, manifest, manifestKey);
 
+    // Clear dot-notation lookup before parsing all layers
+    // This ensures the lookup is fresh and will accumulate mappings across all layers
+    this.yamlParser.clearDotNotationLookup();
+
     // Parse each enabled layer
-    const layers: Record<string, any> = {};
-    const allRelationships: any[] = [];
+    const layers: Record<string, Layer> = {};
+    const allRelationships: Relationship[] = [];
     const parseErrors: string[] = [];
+    const enabledLayerIds: string[] = [];
+    const failedLayerIds: string[] = [];
 
     for (const [layerId, layerConfig] of Object.entries(manifest.layers)) {
       if (!layerConfig.enabled) {
         console.log(`Skipping disabled layer: ${layerId}`);
         continue;
       }
+
+      enabledLayerIds.push(layerId);
 
       const files = layerFiles[layerId] || {};
       if (Object.keys(files).length === 0) {
@@ -401,17 +452,116 @@ export class DataLoader {
         const errorMsg = `Failed to parse layer ${layerId}: ${error instanceof Error ? error.message : 'Unknown error'}`;
         console.error(errorMsg);
         parseErrors.push(errorMsg);
+        failedLayerIds.push(layerId);
       }
+    }
+
+    // Log a summary if any layers failed to parse
+    if (failedLayerIds.length > 0) {
+      console.error(`Model is incomplete: ${failedLayerIds.length} of ${enabledLayerIds.length} enabled layers failed to parse: ${failedLayerIds.join(', ')}`);
     }
 
     // Resolve dot-notation references to UUIDs
     this.resolveDotNotationReferences(allRelationships, this.yamlParser.getDotNotationLookup());
+
+    // Load and parse relationships.yaml if present
+    const relationshipsYamlKey = Object.keys(schemas).find(isRelationshipsYamlFile);
+    let relationshipsYamlWarnings: string[] = [];
+    const relationshipsYamlSet = new Set<string>(); // Track relationships from YAML for deduplication
+    if (relationshipsYamlKey) {
+      const relationshipsYamlContent = schemas[relationshipsYamlKey];
+      if (typeof relationshipsYamlContent === 'string') {
+        try {
+          const relParser = new RelationshipsYamlParser();
+          const parsedRelationships = relParser.parse(
+            relationshipsYamlContent,
+            this.yamlParser.getDotNotationLookup()
+          );
+          relationshipsYamlWarnings = relParser.getWarnings();
+
+          // Partition relationships: intra-layer vs cross-layer
+          // First pass: collect intra-layer relationships, cross-layer relationships, and build dedup set
+          const intraLayerRelsFromYaml: Array<{ rel: Relationship; layerId: string }> = [];
+          const crossLayerRelsFromYaml: Relationship[] = [];
+
+          for (const rel of parsedRelationships) {
+            // Create a unique key for this relationship to track it for deduplication
+            // Include the normalized predicate so that multiple relationships between the same
+            // two elements with different predicates are preserved (e.g., A "serves" B and A "flows_to" B)
+            // Normalize the predicate to handle underscore vs hyphen variations (supports_goals vs supports-goals)
+            const normalizedPred = normalizePredicate(rel.predicate || rel.type || '');
+            const relKey = `${rel.sourceId}→${rel.targetId}→${normalizedPred}`;
+            relationshipsYamlSet.add(relKey);
+
+            if (rel.sourceLayerId === rel.targetLayerId && rel.sourceLayerId) {
+              // Intra-layer: defer adding to layer until after deduplication
+              intraLayerRelsFromYaml.push({ rel, layerId: rel.sourceLayerId });
+            } else {
+              // Cross-layer: preserve separately (will be re-added after inline deduplication)
+              crossLayerRelsFromYaml.push(rel);
+            }
+          }
+
+          // Deduplication: remove inline relationships that appear in relationships.yaml
+          // Prefer the relationships.yaml entries as they contain more metadata
+          if (relationshipsYamlSet.size > 0) {
+            const dedupedAllRelationships: Relationship[] = [];
+            for (const layer of Object.values(layers)) {
+              const originalCount = layer.relationships.length;
+              layer.relationships = layer.relationships.filter((rel: Relationship) => {
+                // Include the normalized predicate in the dedup key to allow multiple
+                // relationships between the same two elements with different predicates
+                // Normalize the predicate to handle underscore vs hyphen variations
+                const normalizedPred = normalizePredicate(rel.predicate || rel.type || '');
+                const relKey = `${rel.sourceId}→${rel.targetId}→${normalizedPred}`;
+                return !relationshipsYamlSet.has(relKey);
+              });
+              const removedCount = originalCount - layer.relationships.length;
+              if (removedCount > 0) {
+                console.log(`Removed ${removedCount} duplicate inline relationships from layer ${layer.id} (preferred relationships.yaml entries)`);
+              }
+              // Add the deduplicated relationships to the rebuilt allRelationships array
+              dedupedAllRelationships.push(...layer.relationships);
+            }
+            // Rebuild allRelationships: deduplicated inline rels + cross-layer rels from relationships.yaml
+            allRelationships.length = 0;
+            allRelationships.push(...dedupedAllRelationships, ...crossLayerRelsFromYaml);
+          }
+
+          // Now add the intra-layer relationships from relationships.yaml (after inline deduplication)
+          for (const { rel, layerId } of intraLayerRelsFromYaml) {
+            let found = false;
+            for (const layer of Object.values(layers)) {
+              if (layer.id === layerId || layer.type === layerId) {
+                layer.relationships.push(rel);
+                // Also add to allRelationships so buildYAMLReferences() can process them
+                allRelationships.push(rel);
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              console.warn(`Could not find layer for intra-layer relationship: ${layerId}`);
+            }
+          }
+
+          console.log(`Loaded ${parsedRelationships.length} relationships from relationships.yaml`);
+        } catch (error) {
+          const errorMsg = `Failed to parse relationships.yaml: ${error instanceof Error ? error.message : 'Unknown error'}`;
+          console.error(errorMsg);
+          parseErrors.push(errorMsg);
+        }
+      }
+    }
 
     // Build cross-layer references
     const references = this.buildYAMLReferences(Object.values(layers), allRelationships);
 
     // Get warnings from parser
     const warnings = this.yamlParser.getWarnings();
+    if (relationshipsYamlWarnings.length > 0) {
+      warnings.push(...relationshipsYamlWarnings);
+    }
     if (warnings.length > 0) {
       console.warn(`YAML parsing warnings (${warnings.length}):`);
       warnings.forEach(w => console.warn(`  - ${w}`));
@@ -433,13 +583,15 @@ export class DataLoader {
       metadata: {
         loadedAt: new Date().toISOString(),
         layerCount: Object.keys(layers).length,
-        elementCount: Object.values(layers).reduce((sum: number, layer: any) =>
+        elementCount: Object.values(layers).reduce((sum: number, layer: Layer) =>
           sum + layer.elements.length, 0),
         type: 'yaml-instances',
         yamlVersion: manifest.version,
         manifestStatistics: manifest.statistics,
+        specVersion: manifest.spec_version,
         warnings: warnings.length > 0 ? warnings : undefined,
         parseErrors: parseErrors.length > 0 ? parseErrors : undefined,
+        isComplete: failedLayerIds.length === 0,
       }
     };
   }
@@ -461,8 +613,8 @@ export class DataLoader {
 
     // Group files by layer based on path matching
     for (const [filePath, content] of Object.entries(schemas)) {
-      // Skip manifest and projection rules
-      if (filePath === manifestKey || filePath.includes('projection-rules')) {
+      // Skip manifest, projection rules, and relationships
+      if (filePath === manifestKey || filePath.includes('projection-rules') || isRelationshipsYamlFile(filePath)) {
         continue;
       }
 
@@ -492,7 +644,7 @@ export class DataLoader {
    * Resolve dot-notation references to UUIDs
    */
   private resolveDotNotationReferences(
-    relationships: any[],
+    relationships: Relationship[],
     dotNotationLookup: Map<string, string>
   ): void {
     for (const relationship of relationships) {
@@ -517,7 +669,7 @@ export class DataLoader {
   /**
    * Build cross-layer references for YAML instances
    */
-  private buildYAMLReferences(layers: any[], relationships: any[]): Reference[] {
+  private buildYAMLReferences(layers: Layer[], relationships: Relationship[]): Reference[] {
     const references: Reference[] = [];
 
     // Convert relationships to references
@@ -527,12 +679,12 @@ export class DataLoader {
       let targetLayer = '';
 
       for (const layer of layers) {
-        const sourceElement = layer.elements.find((e: any) => e.id === rel.sourceId);
+        const sourceElement = layer.elements.find((e: ModelElement) => e.id === rel.sourceId);
         if (sourceElement) {
           sourceLayer = layer.id;
         }
 
-        const targetElement = layer.elements.find((e: any) => e.id === rel.targetId);
+        const targetElement = layer.elements.find((e: ModelElement) => e.id === rel.targetId);
         if (targetElement) {
           targetLayer = layer.id;
         }
@@ -540,7 +692,7 @@ export class DataLoader {
 
       references.push({
         id: rel.id,
-        type: rel.type,
+        type: ReferenceType.Custom,
         source: {
           elementId: rel.sourceId,
           layerId: sourceLayer,
@@ -549,6 +701,8 @@ export class DataLoader {
           elementId: rel.targetId,
           layerId: targetLayer,
         },
+        predicate: rel.predicate,
+        predicateDefinition: rel.predicateDefinition,
       });
     }
 

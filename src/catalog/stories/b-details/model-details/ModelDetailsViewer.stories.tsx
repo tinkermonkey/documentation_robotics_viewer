@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import ModelDetailsViewer from '@/apps/embedded/components/ModelDetailsViewer';
 import type { MetaModel } from '@/core/types/model';
-import { LayerType, RelationshipType } from '@/core/types';
+import { LayerType } from '@/core/types';
 
 const meta = {
   title: 'B Details / Model Details / ModelDetailsViewer',
@@ -120,7 +120,7 @@ const mockModel: MetaModel = {
         },
       ],
       relationships: [
-        { id: 'r1', sourceId: 'motivation.goal.visualize-architecture', targetId: 'motivation.requirement.interactive-graphs', type: RelationshipType.Realization },
+        { id: 'r1', sourceId: 'motivation.goal.visualize-architecture', targetId: 'motivation.requirement.interactive-graphs', type: 'realization' },
       ],
     },
     'business-layer': {

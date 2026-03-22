@@ -5,7 +5,7 @@ import {
   SchemaProperty,
   SchemaReference
 } from '../types/jsonSchema';
-import { Relationship, RelationshipType, ExtractedReference, ReferenceType } from '../types/model';
+import { Relationship, ExtractedReference, ReferenceType } from '../types/model';
 import { LayerType } from '../types/layers';
 
 /**
@@ -324,7 +324,7 @@ export class JSONSchemaParser {
 
             const relationship: Relationship = {
               id: uuidv4(),
-              type: RelationshipType.Reference,
+              type: 'reference',
               sourceId: element.id,
               targetId: targetElement.id,
               properties: {

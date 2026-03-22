@@ -16,9 +16,11 @@ import {
   OpenAPIOperation,
   JSONSchemaDefinition,
 } from '../types/yaml';
-import { ModelElement, Layer, Relationship, RelationshipType } from '../types/model';
+import { ModelElement, Layer, Relationship, RelationshipType, SourceReference, ElementMetadata } from '../types/model';
 import { LayerType } from '../types/layers';
+import { mapPredicateToType } from './predicateTypeMapper';
 import { getLayerColor } from '../utils/layerColors';
+import type { PredicateCatalog } from './predicateCatalogLoader';
 
 /**
  * Maps YAML layer IDs to internal LayerType
@@ -30,19 +32,75 @@ const LAYER_TYPE_MAP: Record<string, LayerType> = {
   application: LayerType.Application,
   technology: LayerType.Technology,
   api: LayerType.Api,
+  'data-model': LayerType.DataModel,
   data_model: LayerType.DataModel,
   datastore: LayerType.Datastore,
   ux: LayerType.Ux,
   navigation: LayerType.Navigation,
   apm: LayerType.ApmObservability,
+  testing: LayerType.Testing,
 };
 
 /**
  * YAMLParser - Parses YAML instance models
+ *
+ * The parser uses a predicate catalog (when provided) to determine which YAML fields
+ * should be treated as relationship properties. The catalog's fieldPaths entries
+ * (e.g., "x-supports", "x-fulfills-requirements") define field aliases for each predicate.
+ *
+ * If no catalog is provided, the parser falls back to heuristic behavior:
+ * any array-of-strings property is treated as a relationship. This allows the parser
+ * to work without a catalog but with reduced accuracy.
  */
 export class YAMLParser {
   private warnings: string[] = [];
   private dotNotationLookup: Map<string, string> = new Map(); // dot-notation ID -> UUID
+  private predicateCatalog: PredicateCatalog | null = null;
+  private validRelationshipFields: Set<string> = new Set();
+  private validPredicates: Set<string> = new Set();
+
+  /**
+   * Create a new YAML parser
+   * @param catalog - Optional predicate catalog for field discovery
+   */
+  constructor(catalog?: PredicateCatalog) {
+    this.predicateCatalog = catalog || null;
+    this.initializeValidFields();
+  }
+
+  /**
+   * Initialize the valid relationship fields and predicates sets from the catalog.
+   * Computed once in the constructor and cached to avoid redundant reconstruction.
+   */
+  private initializeValidFields(): void {
+    this.validRelationshipFields.clear();
+    this.validPredicates.clear();
+
+    if (this.predicateCatalog) {
+      for (const def of this.predicateCatalog.byPredicate.values()) {
+        // Add the predicate name itself
+        this.validPredicates.add(def.predicate);
+        this.validRelationshipFields.add(def.predicate);
+        // Add all field path aliases for this predicate
+        if (def.fieldPaths) {
+          for (const fieldPath of def.fieldPaths) {
+            this.validRelationshipFields.add(fieldPath);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Set the predicate catalog for dynamic field discovery
+   * Used to identify relationship fields based on catalog predicates instead of hardcoded lists
+   *
+   * @deprecated Use constructor parameter instead for explicit catalog dependency
+   */
+  setPredicateCatalog(catalog: PredicateCatalog): void {
+    this.predicateCatalog = catalog;
+    this.initializeValidFields();
+  }
 
   /**
    * Parse manifest.yaml content
@@ -102,8 +160,9 @@ export class YAMLParser {
     files: Record<string, string>,
     layerId: string
   ): Layer {
-    // Clear dot-notation lookup to prevent mappings from previous parses from persisting
-    this.dotNotationLookup.clear();
+    // Do NOT clear dot-notation lookup - we need to accumulate mappings across all layers
+    // for cross-layer reference resolution. Clear is called by DataLoader.parseYAMLInstances()
+    // at the beginning of the layer parsing loop to reset before parsing all layers.
 
     const layerType = LAYER_TYPE_MAP[layerId] || layerId;
     const elements: ModelElement[] = [];
@@ -210,26 +269,36 @@ export class YAMLParser {
     const id = (element.id as string) || this.generateDotNotationId(key);
 
     // Known non-relationship fields (metadata that should not be treated as relationships)
-    const knownFields = [
+    const knownFields = new Set([
       'name', 'id', 'description', 'method', 'path', 'openapi', '$schema', 'schemas', 'relationships',
       'type', 'category', 'priority', 'stakeholders',
       // Motivation layer metadata
-      'kpis', 'concerns', 'role', 'timeframe', 'scope', 'impact', 'influence_level'
-    ];
+      'kpis', 'concerns', 'role', 'timeframe', 'scope', 'impact', 'influence_level',
+      // v0.8.3 spec fields
+      'spec_node_id', 'layer_id', 'attributes', 'source_reference', 'metadata'
+    ]);
 
     // Detect relationship properties (arrays of strings) and collect them
     const relationships: YAMLRelationships = {};
     const additionalProps: Record<string, unknown> = {};
 
     for (const [propKey, value] of Object.entries(element)) {
-      if (knownFields.includes(propKey)) {
+      if (knownFields.has(propKey)) {
         continue; // Skip known fields
       }
 
-      // Check if this looks like a relationship (array of strings)
-      if (Array.isArray(value) && value.length > 0 && value.every(v => typeof v === 'string')) {
+      // Check if this looks like a relationship
+      // If catalog is available, check if propKey matches a valid relationship field
+      // (predicate name or fieldPath alias). Otherwise, check if it's an array of strings (heuristic).
+      const isRelationship = this.validRelationshipFields.size > 0
+        ? this.validRelationshipFields.has(propKey)
+        : Array.isArray(value) && value.length > 0 && value.every(v => typeof v === 'string');
+
+      if (isRelationship && Array.isArray(value)) {
+        // Store relationship using the fieldPath key as-is, not the canonical predicate name
+        // This preserves field aliases and allows for predicate resolution during relationship extraction
         relationships[propKey] = value as string[];
-      } else {
+      } else if (!isRelationship) {
         additionalProps[propKey] = value;
       }
     }
@@ -248,6 +317,12 @@ export class YAMLParser {
       $schema: element.$schema as string | undefined,
       schemas: element.schemas as Record<string, unknown> | undefined,
       relationships: Object.keys(mergedRelationships).length > 0 ? mergedRelationships : undefined,
+      // v0.8.3 spec fields
+      spec_node_id: element.spec_node_id as string | undefined,
+      layer_id: element.layer_id as string | undefined,
+      attributes: element.attributes as Record<string, unknown> | undefined,
+      source_reference: element.source_reference,
+      metadata: element.metadata,
       ...additionalProps,
     };
   }
@@ -296,7 +371,7 @@ export class YAMLParser {
     if (yamlElement.openapi) properties.openapi = yamlElement.openapi;
     if (yamlElement.schemas) properties.schemas = yamlElement.schemas;
 
-    // Copy additional custom properties (excluding known fields)
+    // Copy additional custom properties (excluding known fields and predicates)
     const knownFields = new Set([
       'name',
       'description',
@@ -307,13 +382,34 @@ export class YAMLParser {
       '$schema',
       'schemas',
       'relationships',
+      // v0.8.3 spec fields
+      'spec_node_id',
+      'layer_id',
+      'attributes',
+      'source_reference',
+      'metadata',
     ]);
 
     for (const [key, value] of Object.entries(yamlElement)) {
-      if (!knownFields.has(key)) {
+      // Skip known fields and all relationship fields (both canonical predicate names and fieldPath aliases)
+      // Use validRelationshipFields instead of only predicate names to exclude aliases like 'x-supports', 'x-fulfills-requirements'
+      if (!knownFields.has(key) && !this.validRelationshipFields.has(key)) {
         properties[key] = value;
       }
     }
+
+    // Parse v0.8.3 spec fields
+    const sourceRefs = yamlElement.source_reference
+      ? Array.isArray(yamlElement.source_reference)
+        ? yamlElement.source_reference.map(ref => this.parseSourceReference(ref)).filter((ref): ref is SourceReference => ref !== undefined)
+        : (() => {
+            const parsed = this.parseSourceReference(yamlElement.source_reference);
+            return parsed ? [parsed] : undefined;
+          })()
+      : undefined;
+    const metadata = yamlElement.metadata
+      ? this.parseElementMetadata(yamlElement.metadata)
+      : undefined;
 
     return {
       id: uuid,
@@ -321,6 +417,11 @@ export class YAMLParser {
       name: yamlElement.name,
       description: yamlElement.description,
       layerId: layerType, // Use mapped LayerType (e.g., "Motivation") not raw layerId (e.g., "motivation")
+      path: yamlElement.id, // Preserve dot-notation path
+      specNodeId: yamlElement.spec_node_id,
+      attributes: yamlElement.attributes,
+      sourceReferences: sourceRefs,
+      metadata,
       properties,
       visual: {
         position: { x: 0, y: 0 }, // Will be set by layout algorithm
@@ -379,6 +480,11 @@ export class YAMLParser {
 
   /**
    * Extract relationships from YAML element
+   *
+   * This method resolves fieldPath aliases (e.g., 'x-supports') to their canonical
+   * predicate names (e.g., 'supports') using the predicate catalog. This allows
+   * YAML elements to use convenient field aliases while maintaining consistent
+   * predicate naming in the model.
    */
   extractRelationshipsFromElement(
     yamlElement: YAMLElement,
@@ -394,9 +500,27 @@ export class YAMLParser {
     const relMap = yamlElement.relationships;
 
     // Process each relationship type
-    for (const [relType, targets] of Object.entries(relMap)) {
+    for (const [fieldKey, targets] of Object.entries(relMap)) {
       if (!Array.isArray(targets)) {
         continue;
+      }
+
+      // Resolve fieldPath key to canonical predicate name
+      // e.g., 'x-supports' -> 'supports', 'supports' -> 'supports'
+      let canonicalPredicate = fieldKey;
+      if (this.predicateCatalog) {
+        // Check if fieldKey is a direct predicate name
+        if (this.predicateCatalog.byPredicate.has(fieldKey)) {
+          canonicalPredicate = fieldKey;
+        } else {
+          // Check if fieldKey is a fieldPath alias for some predicate
+          for (const [predName, def] of this.predicateCatalog.byPredicate) {
+            if (def.fieldPaths && def.fieldPaths.includes(fieldKey)) {
+              canonicalPredicate = predName;
+              break;
+            }
+          }
+        }
       }
 
       for (const targetRef of targets) {
@@ -409,16 +533,17 @@ export class YAMLParser {
             id: uuidv4(),
             sourceId: elementId,
             targetId: targetRef, // Initially dot-notation, will be resolved later
-            type: this.mapRelationshipType(relType),
+            type: this.mapRelationshipType(canonicalPredicate),
+            predicate: canonicalPredicate, // Store canonical predicate for consistency
             properties: {
               isDotNotation: true, // Flag for later resolution
-              originalType: relType,
+              originalType: fieldKey, // Track the original field name for reference
             },
           });
         } catch (error) {
           const message = error instanceof Error ? error.message : String(error);
           this.warnings.push(
-            `Failed to create relationship ${relType} -> ${targetRef}: ${message}`
+            `Failed to create relationship ${fieldKey} -> ${targetRef}: ${message}`
           );
         }
       }
@@ -431,29 +556,68 @@ export class YAMLParser {
    * Map YAML relationship type to internal RelationshipType
    */
   private mapRelationshipType(yamlType: string): RelationshipType {
-    const typeMap: Record<string, RelationshipType> = {
-      // ArchiMate-style relationships mapped to available types
-      realizes: RelationshipType.Realization,
-      serves: RelationshipType.Serving,
-      accesses: RelationshipType.Access,
-      uses: RelationshipType.Access,
-      composes: RelationshipType.Composition,
-      flows_to: RelationshipType.Flow,
-      assigned_to: RelationshipType.Assignment,
-      aggregates: RelationshipType.Aggregation,
-      specializes: RelationshipType.Reference,
+    return mapPredicateToType(yamlType);
+  }
 
-      // Motivation layer
-      supports_goals: RelationshipType.Influence,
-      fulfills_requirements: RelationshipType.Reference,
-      constrained_by: RelationshipType.Reference,
+  /**
+   * Parse source reference from YAML data
+   */
+  private parseSourceReference(data: unknown): SourceReference | undefined {
+    if (!data || typeof data !== 'object') {
+      return undefined;
+    }
 
-      // Security
-      secured_by: RelationshipType.Access,
-      requires_permissions: RelationshipType.Access,
+    const ref = data as Record<string, unknown>;
+    const provenance = ref.provenance as 'extracted' | 'manual' | 'inferred' | 'generated' | undefined;
+
+    if (!provenance) {
+      return undefined;
+    }
+
+    const locations = Array.isArray(ref.locations)
+      ? (ref.locations as Array<Record<string, unknown>>).map(loc => ({
+          file: typeof loc.file === 'string' ? loc.file : '',
+          symbol: typeof loc.symbol === 'string' ? loc.symbol : undefined,
+        }))
+      : [];
+
+    const repository = typeof ref.repository === 'object' && ref.repository !== null
+      ? {
+          url: typeof (ref.repository as Record<string, unknown>).url === 'string'
+            ? (ref.repository as Record<string, unknown>).url as string
+            : '',
+          commit: typeof (ref.repository as Record<string, unknown>).commit === 'string'
+            ? (ref.repository as Record<string, unknown>).commit as string
+            : '',
+        }
+      : undefined;
+
+    return {
+      provenance,
+      locations,
+      repository,
     };
+  }
 
-    return typeMap[yamlType] || RelationshipType.Reference;
+  /**
+   * Parse element metadata from YAML data
+   */
+  private parseElementMetadata(data: unknown): ElementMetadata | undefined {
+    if (!data || typeof data !== 'object') {
+      return undefined;
+    }
+
+    const meta = data as Record<string, unknown>;
+
+    return {
+      createdAt: typeof meta.createdAt === 'string' ? meta.createdAt :
+                 typeof meta.created_at === 'string' ? meta.created_at : undefined,
+      updatedAt: typeof meta.updatedAt === 'string' ? meta.updatedAt :
+                 typeof meta.updated_at === 'string' ? meta.updated_at : undefined,
+      createdBy: typeof meta.createdBy === 'string' ? meta.createdBy :
+                 typeof meta.created_by === 'string' ? meta.created_by : undefined,
+      version: typeof meta.version === 'number' ? meta.version : undefined,
+    };
   }
 
   /**
@@ -541,6 +705,13 @@ export class YAMLParser {
   }
 
   /**
+   * Add a warning message
+   */
+  addWarning(warning: string): void {
+    this.warnings.push(warning);
+  }
+
+  /**
    * Clear accumulated warnings
    */
   clearWarnings(): void {
@@ -552,6 +723,14 @@ export class YAMLParser {
    */
   getDotNotationLookup(): Map<string, string> {
     return this.dotNotationLookup;
+  }
+
+  /**
+   * Clear dot-notation to UUID lookup map
+   * Called at the start of parsing all layers to reset the lookup
+   */
+  clearDotNotationLookup(): void {
+    this.dotNotationLookup.clear();
   }
 
 }

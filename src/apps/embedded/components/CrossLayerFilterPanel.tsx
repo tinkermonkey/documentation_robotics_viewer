@@ -62,6 +62,7 @@ const LAYER_LABELS: Record<LayerType, string> = {
   [LayerType.Ux]: 'UX',
   [LayerType.Navigation]: 'Navigation',
   [LayerType.ApmObservability]: 'APM/Observability',
+  [LayerType.Testing]: 'Testing',
   [LayerType.FederatedArchitecture]: 'Federated Architecture',
 };
 

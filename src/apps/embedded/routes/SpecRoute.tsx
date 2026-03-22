@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import SpecViewer from '../components/SpecViewer';
+import SpecNodeDetailsPanel, { type SpecNodeDetailsPanelProps, type NodeSchema } from '../components/SpecNodeDetailsPanel';
 import AnnotationPanel from '../components/AnnotationPanel';
 import SchemaInfoPanel from '../components/SchemaInfoPanel';
 import ModelLayersSidebar from '../components/ModelLayersSidebar';
@@ -9,16 +10,20 @@ import { LoadingState, ErrorState } from '../components/shared';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { useModelStore } from '../../../core/stores/modelStore';
-import { embeddedDataLoader } from '../services/embeddedDataLoader';
+import { embeddedDataLoader, type SchemaManifest } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
+import { loadPredicateCatalog } from '../../../core/services/predicateCatalogLoader';
+import { loadSpecSchemas } from '../../../core/services/specSchemaLoader';
+import { loadSpecSchemaFiles } from '../../../core/services/specSchemaFileLoader';
 
 export default function SpecRoute() {
   const { view } = useParams({ strict: false });
   const navigate = useNavigate();
   const annotationStore = useAnnotationStore();
   const { specView, setSpecView } = useViewPreferenceStore();
-  const { setModel } = useModelStore();
+  const { setModel, specSchemas } = useModelStore();
   const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
+  const [selectedSpecNodeId, setSelectedSpecNodeId] = useState<string | null>(null);
 
   // Load both spec and model (model populates ModelLayersSidebar via modelStore)
   const { data: specData, loading, error, reload } = useDataLoader({
@@ -32,8 +37,46 @@ export default function SpecRoute() {
     },
     websocketEvents: ['model', 'model.updated'],
     onSuccess: async () => {
-      const annotations = await embeddedDataLoader.loadAnnotations();
-      annotationStore.setAnnotations(annotations);
+      // Load annotations with error handling
+      try {
+        const annotations = await embeddedDataLoader.loadAnnotations();
+        annotationStore.setAnnotations(annotations);
+      } catch (err) {
+        // Continue loading other data even if annotations fail
+        annotationStore.setAnnotations([]);
+      }
+
+      // Load spec schemas and predicate catalog from static assets
+      try {
+        const specFiles = await loadSpecSchemaFiles();
+
+        // Load and populate predicate catalog from base.json
+        if (specFiles['base.json']) {
+          const catalog = loadPredicateCatalog(specFiles['base.json']);
+          useModelStore.getState().setPredicateCatalog(catalog.byPredicate);
+        }
+
+        // Load and populate spec schemas
+        const schemas = loadSpecSchemas(specFiles);
+        useModelStore.getState().setSpecSchemas(schemas);
+
+        // Validate spec version: compare spec's declared version against loaded manifest version
+        const specDeclaredVersion = specData?.version as string | undefined;
+        const loadedSpecManifest = specFiles['manifest.json'] as SchemaManifest | undefined;
+        const loadedSpecVersion = loadedSpecManifest?.specVersion;
+
+        // Set spec version with both spec's declared version and loaded spec version for comparison
+        // setSpecVersion(specDeclaredVersion, loadedSpecVersion) sets specVersionMismatch = (specDeclaredVersion !== loadedSpecVersion)
+        if (specDeclaredVersion || loadedSpecVersion) {
+          useModelStore.getState().setSpecVersion(
+            specDeclaredVersion || 'unknown',
+            loadedSpecVersion || 'unknown'
+          );
+        }
+      } catch (err) {
+        console.warn('Failed to load spec schemas:', err);
+        // Continue even if spec schema loading fails - it's supplementary data
+      }
     },
   });
 
@@ -95,6 +138,23 @@ export default function SpecRoute() {
   const selectedSchemaId = selectedLayerId ? layerIdToSchemaKey[selectedLayerId] ?? null : null;
   const selectedSchema = selectedSchemaId ? specData.schemas[selectedSchemaId] : undefined;
 
+  // Get spec node details for SpecNodeDetailsPanel
+  const specNodeDetails = useMemo((): Pick<SpecNodeDetailsPanelProps, 'nodeSchema' | 'relationshipSchemas'> => {
+    if (!selectedSpecNodeId) return { nodeSchema: null, relationshipSchemas: [] };
+
+    const parsed = selectedSpecNodeId.split('.');
+    if (parsed.length !== 2) return { nodeSchema: null, relationshipSchemas: [] };
+
+    const [layerId, nodeType] = parsed;
+    const specSchema = specSchemas[layerId];
+    if (!specSchema) return { nodeSchema: null, relationshipSchemas: [] };
+
+    const nodeSchema = (specSchema.nodeSchemas?.[nodeType] ?? null) as NodeSchema | null;
+    const relationshipSchemas = specSchema.relationshipSchemas ?? [];
+
+    return { nodeSchema, relationshipSchemas };
+  }, [selectedSpecNodeId, specSchemas]);
+
   return (
     <SharedLayout
       showLeftSidebar={true}
@@ -108,13 +168,23 @@ export default function SpecRoute() {
       }
       rightSidebarContent={
         <>
+          <SpecNodeDetailsPanel
+            selectedSpecNodeId={selectedSpecNodeId}
+            nodeSchema={specNodeDetails.nodeSchema}
+            relationshipSchemas={specNodeDetails.relationshipSchemas}
+            onNodeClick={setSelectedSpecNodeId}
+          />
           <AnnotationPanel />
           <SchemaInfoPanel />
         </>
       }
     >
       {activeView === 'graph' ? (
-        <SpecViewer specData={specData} selectedSchemaId={selectedSchemaId} />
+        <SpecViewer
+          specData={specData}
+          selectedSchemaId={selectedSchemaId}
+          onSpecNodeSelect={setSelectedSpecNodeId}
+        />
       ) : (
         <div className="h-full overflow-auto p-6">
           {selectedSchema ? (
