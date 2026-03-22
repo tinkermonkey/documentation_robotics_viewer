@@ -7,6 +7,7 @@
 import React from 'react';
 import { SourceReference } from '@/core/types/model';
 import ProvenanceBadge from './ProvenanceBadge';
+import { constructSafeUrl } from '@/apps/embedded/utils/urlValidator';
 
 export interface SourceReferenceListProps {
   references: SourceReference[];
@@ -40,15 +41,20 @@ const SourceReferenceList: React.FC<SourceReferenceListProps> = ({ references })
           </div>
 
           <div className="space-y-2">
-            {reference.locations.map((location, locIndex) => (
+            {reference.locations.map((location, locIndex) => {
+              const safeUrl = reference.repository?.url && reference.repository?.commit
+                ? constructSafeUrl(reference.repository.url, 'blob', reference.repository.commit, location.file)
+                : null;
+
+              return (
               <div
                 key={`location-${refIndex}-${locIndex}`}
                 className="text-sm"
                 data-testid={`source-location-${refIndex}-${locIndex}`}
               >
-                {reference.repository?.url && reference.repository?.commit ? (
+                {safeUrl ? (
                   <a
-                    href={`${reference.repository.url}/blob/${reference.repository.commit}/${location.file}`}
+                    href={safeUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-mono text-blue-600 dark:text-blue-400 hover:underline"
@@ -72,7 +78,8 @@ const SourceReferenceList: React.FC<SourceReferenceListProps> = ({ references })
                   </span>
                 )}
               </div>
-            ))}
+            );
+            })}
           </div>
         </div>
       ))}
