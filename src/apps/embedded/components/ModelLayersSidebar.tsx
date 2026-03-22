@@ -32,7 +32,7 @@ const ModelLayersSidebar: React.FC<ModelLayersSidebarProps> = ({
         name: layer.name || layerKey,
         type: layer.type || layerKey,
         count: layerCounts ? (layerCounts[layerKey] ?? 0) : (layer.elements?.length || 0),
-        order: layer.order || 999
+        order: layer.order ?? 999
       }))
       .sort((a, b) => a.order - b.order);
   }, [model, layerCounts]);
