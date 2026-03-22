@@ -218,7 +218,11 @@ export interface Relationship {
   properties?: Record<string, unknown>;
   visual?: RelationshipVisual;
   // v0.8.3 spec fields
-  predicate: string;
+  // TODO #486: Make predicate required per spec (currently optional to support legacy relationships
+  // created from JSON schema, spec parser, and other non-YAML sources without predicate strings).
+  // When making this required, update all ~30 creation sites in jsonSchemaParser, specParser,
+  // changesetGraphBuilder, embeddedDataLoader, and test fixtures to provide predicates.
+  predicate?: string;
   predicateDefinition?: PredicateDefinition;
   sourceLayerId?: string;
   targetLayerId?: string;
