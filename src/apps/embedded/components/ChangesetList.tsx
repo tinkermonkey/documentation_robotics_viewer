@@ -5,7 +5,7 @@
 
 import React, { useMemo } from 'react';
 import { useChangesetStore } from '../stores/changesetStore';
-import { Card, Badge } from 'flowbite-react';
+import { Badge } from 'flowbite-react';
 import { EmptyState } from './shared';
 
 interface ChangesetListProps {
