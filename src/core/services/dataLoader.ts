@@ -6,7 +6,7 @@ import { JSONSchemaParser } from './jsonSchemaParser';
 import { CrossLayerReferenceExtractor } from './crossLayerReferenceExtractor';
 import { YAMLParser } from './yamlParser';
 import { RelationshipsYamlParser } from './relationshipsYamlParser';
-import { loadPredicateCatalog } from './predicateCatalogLoader';
+import { loadPredicateCatalog, PredicateCatalog } from './predicateCatalogLoader';
 import { normalizePredicate } from './predicateTypeMapper';
 import { YAMLManifest } from '../types/yaml';
 
