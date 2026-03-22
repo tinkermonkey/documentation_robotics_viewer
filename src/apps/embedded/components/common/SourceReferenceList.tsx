@@ -7,7 +7,7 @@
 import React from 'react';
 import { SourceReference } from '@/core/types/model';
 import ProvenanceBadge from './ProvenanceBadge';
-import { constructSafeUrl } from '@/apps/embedded/utils/urlValidator';
+import { constructSafeUrl } from '@/core/utils/urlValidator';
 
 export interface SourceReferenceListProps {
   references: SourceReference[];
@@ -47,38 +47,38 @@ const SourceReferenceList: React.FC<SourceReferenceListProps> = ({ references })
                 : null;
 
               return (
-              <div
-                key={`location-${refIndex}-${locIndex}`}
-                className="text-sm"
-                data-testid={`source-location-${refIndex}-${locIndex}`}
-              >
-                {safeUrl ? (
-                  <a
-                    href={safeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-mono text-blue-600 dark:text-blue-400 hover:underline"
-                    data-testid={`source-link-${refIndex}-${locIndex}`}
-                  >
-                    {location.file}
-                  </a>
-                ) : (
-                  <span
-                    className="font-mono text-gray-900 dark:text-white"
-                    data-testid={`source-path-${refIndex}-${locIndex}`}
-                  >
-                    {location.file}
-                  </span>
-                )}
+                <div
+                  key={`location-${refIndex}-${locIndex}`}
+                  className="text-sm"
+                  data-testid={`source-location-${refIndex}-${locIndex}`}
+                >
+                  {safeUrl ? (
+                    <a
+                      href={safeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-mono text-blue-600 dark:text-blue-400 hover:underline"
+                      data-testid={`source-link-${refIndex}-${locIndex}`}
+                    >
+                      {location.file}
+                    </a>
+                  ) : (
+                    <span
+                      className="font-mono text-gray-900 dark:text-white"
+                      data-testid={`source-path-${refIndex}-${locIndex}`}
+                    >
+                      {location.file}
+                    </span>
+                  )}
 
-                {location.symbol && (
-                  <span className="text-gray-600 dark:text-gray-400">
-                    {' '}
-                    ({location.symbol})
-                  </span>
-                )}
-              </div>
-            );
+                  {location.symbol && (
+                    <span className="text-gray-600 dark:text-gray-400">
+                      {' '}
+                      ({location.symbol})
+                    </span>
+                  )}
+                </div>
+              );
             })}
           </div>
         </div>

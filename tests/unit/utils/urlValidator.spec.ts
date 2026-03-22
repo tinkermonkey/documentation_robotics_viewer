@@ -1,14 +1,5 @@
-/**
- * Unit Tests for URL Validator
- *
- * Tests cover:
- * - HTTP/HTTPS URL validation
- * - XSS prevention for malicious URL schemes
- * - Safe URL construction with multiple path segments
- */
-
 import { test, expect } from '@playwright/test';
-import { isValidHttpUrl, constructSafeUrl } from '@/apps/embedded/utils/urlValidator';
+import { isValidHttpUrl, constructSafeUrl } from '@/core/utils/urlValidator';
 
 test.describe('urlValidator', () => {
   test.describe('isValidHttpUrl', () => {
