@@ -217,8 +217,8 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
 
   const layers = model.layers || {};
   const layerNames = Object.keys(layers).sort((a, b) => {
-    const orderA = layers[a].order || 999;
-    const orderB = layers[b].order || 999;
+    const orderA = layers[a].order ?? 999;
+    const orderB = layers[b].order ?? 999;
     return orderA - orderB;
   });
 
