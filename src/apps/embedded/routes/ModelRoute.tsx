@@ -211,7 +211,6 @@ export default function ModelRoute() {
 
         // Set spec version with both model spec version and loaded spec version for comparison
         // setSpecVersion(modelSpecVersion, loadedSpecVersion) sets specVersionMismatch = (modelSpecVersion !== loadedSpecVersion)
-        // Note: validateSpecVersion() in DataLoader provides the validation logic for this comparison
         if (modelSpecVersion || loadedSpecVersion) {
           useModelStore.getState().setSpecVersion(
             modelSpecVersion || 'unknown',
