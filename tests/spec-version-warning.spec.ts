@@ -111,43 +111,53 @@ test.describe('Spec Version Mismatch Warning', () => {
     expect(edgeCount).toBeGreaterThan(0);
   });
 
-  test('spec version warning is accessible with proper ARIA attributes', async ({ page }) => {
-    // Create a mismatch scenario by setting different versions
-    // Note: This test verifies the component structure, actual mismatch depends on spec version
-
-    // The warning component should have proper ARIA attributes when visible
+  test('spec version warning has proper ARIA attributes when present', async ({ page }) => {
+    // This test validates the component is correctly implemented
+    // The warning component, if rendered, should have proper ARIA attributes
     const warningElement = page.locator('[data-testid="spec-version-warning"]');
 
-    // If the warning is visible, check its accessibility attributes
-    if (await warningElement.isVisible().catch(() => false)) {
-      // Check for role="alert"
+    // Verify the element exists in the DOM (even if hidden)
+    const count = await warningElement.count();
+
+    if (count > 0) {
+      // If the component is rendered, check its accessibility attributes
       const role = await warningElement.getAttribute('role');
-      expect(role).toBe('alert');
-
-      // Check for aria-live="polite"
       const ariaLive = await warningElement.getAttribute('aria-live');
-      expect(ariaLive).toBe('polite');
 
+      // These attributes must be present for accessibility compliance
+      expect(role).toBe('alert');
+      expect(ariaLive).toBe('polite');
       console.log('✓ Warning has proper ARIA attributes');
+    } else {
+      // If not rendered, the component structure should be in the DOM
+      // This test documents that the component must be accessible when used
+      console.log('ℹ Warning component not rendered in current state');
     }
   });
 
-  test('spec version warning can be dismissed by user', async ({ page }) => {
-    // Get the warning element
+  test('spec version warning dismiss button is properly implemented', async ({ page }) => {
     const warningElement = page.locator('[data-testid="spec-version-warning"]');
 
-    // If the warning is visible, test dismissal
-    if (await warningElement.isVisible().catch(() => false)) {
-      // Find the dismiss button (the × button)
+    // Check if warning element exists in DOM
+    const count = await warningElement.count();
+
+    if (count > 0) {
+      // If warning is rendered, the dismiss button should be present
       const dismissButton = warningElement.locator('button');
-      await dismissButton.click();
+      const buttonCount = await dismissButton.count();
 
-      // Wait for the warning to disappear
-      await expect(warningElement).not.toBeVisible();
+      // Verify dismiss button exists in the component
+      expect(buttonCount).toBeGreaterThan(0);
 
-      console.log('✓ Warning was successfully dismissed');
+      // If warning is visible, test that dismiss works
+      const isVisible = await warningElement.isVisible().catch(() => false);
+      if (isVisible) {
+        await dismissButton.first().click();
+        await expect(warningElement).not.toBeVisible();
+        console.log('✓ Warning was successfully dismissed');
+      }
     } else {
-      console.log('✓ Warning not present (versions matched, no dismissal needed)');
+      console.log('ℹ Warning component not in DOM (no mismatch in current state)');
     }
   });
 
