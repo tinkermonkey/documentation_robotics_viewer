@@ -112,6 +112,9 @@ export function referenceToEdge(
   // Use predicate string for label if available, fall back to type enum
   const edgeLabel = reference.predicate || reference.type;
 
+  // Determine arrow style based on directionality from predicateDefinition
+  const isBidirectional = reference.predicateDefinition?.semantics?.directionality === 'bidirectional';
+
   return {
     id: `edge-ref-${reference.source.elementId}-${reference.target.elementId}-${index}`,
     source: sourceNodeId,
@@ -120,6 +123,9 @@ export function referenceToEdge(
     label: edgeLabel, // Use predicate string instead of enum
     labelStyle: { fill: '#555', fontWeight: 500, fontSize: 12 },
     labelBgStyle: { fill: '#fff', fillOpacity: 0.8, rx: 4, ry: 4 },
+    ...(isBidirectional && {
+      markerStart: { type: MarkerType.ArrowClosed, width: 20, height: 20, color: FALLBACK_COLOR },
+    }),
     markerEnd: {
       type: MarkerType.ArrowClosed,
       width: 20,
@@ -130,6 +136,7 @@ export function referenceToEdge(
     data: {
       ...edgeData,
       predicate: reference.predicate,
+      predicateDefinition: reference.predicateDefinition,
     },
   } as AppEdge;
 }

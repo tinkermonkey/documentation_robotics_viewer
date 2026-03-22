@@ -218,7 +218,7 @@ export interface Relationship {
   properties?: Record<string, unknown>;
   visual?: RelationshipVisual;
   // v0.8.3 spec fields
-  predicate?: string;
+  predicate: string;
   predicateDefinition?: PredicateDefinition;
   sourceLayerId?: string;
   targetLayerId?: string;
@@ -268,6 +268,7 @@ export interface Reference {
   validationError?: string;
   // v0.8.3 spec fields
   predicate?: string;
+  predicateDefinition?: PredicateDefinition;
 }
 
 /**

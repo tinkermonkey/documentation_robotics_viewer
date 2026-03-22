@@ -702,6 +702,7 @@ export class DataLoader {
           layerId: targetLayer,
         },
         predicate: rel.predicate,
+        predicateDefinition: rel.predicateDefinition,
       });
     }
 
