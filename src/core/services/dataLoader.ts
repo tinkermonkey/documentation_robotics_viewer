@@ -7,6 +7,7 @@ import { CrossLayerReferenceExtractor } from './crossLayerReferenceExtractor';
 import { YAMLParser } from './yamlParser';
 import { RelationshipsYamlParser } from './relationshipsYamlParser';
 import { loadPredicateCatalog } from './predicateCatalogLoader';
+import { normalizePredicate } from './predicateTypeMapper';
 import { YAMLManifest } from '../types/yaml';
 
 /**
@@ -412,12 +413,16 @@ export class DataLoader {
     const layers: Record<string, any> = {};
     const allRelationships: any[] = [];
     const parseErrors: string[] = [];
+    const enabledLayerIds: string[] = [];
+    const failedLayerIds: string[] = [];
 
     for (const [layerId, layerConfig] of Object.entries(manifest.layers)) {
       if (!layerConfig.enabled) {
         console.log(`Skipping disabled layer: ${layerId}`);
         continue;
       }
+
+      enabledLayerIds.push(layerId);
 
       const files = layerFiles[layerId] || {};
       if (Object.keys(files).length === 0) {
@@ -437,7 +442,13 @@ export class DataLoader {
         const errorMsg = `Failed to parse layer ${layerId}: ${error instanceof Error ? error.message : 'Unknown error'}`;
         console.error(errorMsg);
         parseErrors.push(errorMsg);
+        failedLayerIds.push(layerId);
       }
+    }
+
+    // Log a summary if any layers failed to parse
+    if (failedLayerIds.length > 0) {
+      console.error(`Model is incomplete: ${failedLayerIds.length} of ${enabledLayerIds.length} enabled layers failed to parse: ${failedLayerIds.join(', ')}`);
     }
 
     // Resolve dot-notation references to UUIDs
@@ -465,9 +476,11 @@ export class DataLoader {
 
           for (const rel of parsedRelationships) {
             // Create a unique key for this relationship to track it for deduplication
-            // Include the predicate (or type) so that multiple relationships between the same
+            // Include the normalized predicate so that multiple relationships between the same
             // two elements with different predicates are preserved (e.g., A "serves" B and A "flows_to" B)
-            const relKey = `${rel.sourceId}→${rel.targetId}→${rel.predicate || rel.type}`;
+            // Normalize the predicate to handle underscore vs hyphen variations (supports_goals vs supports-goals)
+            const normalizedPred = rel.predicate ? normalizePredicate(rel.predicate) : rel.type;
+            const relKey = `${rel.sourceId}→${rel.targetId}→${normalizedPred}`;
             relationshipsYamlSet.add(relKey);
 
             if (rel.sourceLayerId === rel.targetLayerId && rel.sourceLayerId) {
@@ -486,9 +499,11 @@ export class DataLoader {
             for (const layer of Object.values(layers)) {
               const originalCount = layer.relationships.length;
               layer.relationships = layer.relationships.filter((rel: any) => {
-                // Include the predicate (or type) in the dedup key to allow multiple
+                // Include the normalized predicate in the dedup key to allow multiple
                 // relationships between the same two elements with different predicates
-                const relKey = `${rel.sourceId}→${rel.targetId}→${rel.predicate || rel.type}`;
+                // Normalize the predicate to handle underscore vs hyphen variations
+                const normalizedPred = rel.predicate ? normalizePredicate(rel.predicate) : rel.type;
+                const relKey = `${rel.sourceId}→${rel.targetId}→${normalizedPred}`;
                 return !relationshipsYamlSet.has(relKey);
               });
               const removedCount = originalCount - layer.relationships.length;
@@ -509,6 +524,8 @@ export class DataLoader {
             for (const layer of Object.values(layers)) {
               if (layer.id === layerId || layer.type === layerId) {
                 layer.relationships.push(rel);
+                // Also add to allRelationships so buildYAMLReferences() can process them
+                allRelationships.push(rel);
                 found = true;
                 break;
               }
@@ -564,6 +581,7 @@ export class DataLoader {
         specVersion: manifest.spec_version,
         warnings: warnings.length > 0 ? warnings : undefined,
         parseErrors: parseErrors.length > 0 ? parseErrors : undefined,
+        isComplete: failedLayerIds.length === 0,
       }
     };
   }

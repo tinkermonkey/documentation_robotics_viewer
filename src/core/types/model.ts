@@ -392,6 +392,7 @@ export interface ModelMetadata {
   elementCount?: number;
   type?: string;
   parseErrors?: string[];
+  isComplete?: boolean;
   crossLayerReferences?: CrossLayerReferenceMetadata;
   [key: string]: unknown;
 }

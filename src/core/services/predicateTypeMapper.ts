@@ -8,6 +8,17 @@
 import { RelationshipType } from '../types/model';
 
 /**
+ * Normalizes a predicate string for consistent comparison and deduplication
+ * Converts underscores to hyphens and lowercases for catalog alignment
+ *
+ * @param predicate - The predicate string (e.g., 'supports_goals', 'supports-goals')
+ * @returns The normalized predicate (e.g., 'supports-goals')
+ */
+export function normalizePredicate(predicate: string): string {
+  return predicate.replace(/_/g, '-').toLowerCase();
+}
+
+/**
  * Maps predicate strings to RelationshipType string values
  * Normalizes predicates by converting underscores to hyphens for catalog compatibility.
  * Unrecognized predicates default to 'reference'
@@ -17,7 +28,7 @@ import { RelationshipType } from '../types/model';
  */
 export function mapPredicateToType(predicate: string): RelationshipType {
   // Normalize predicate: convert underscores to hyphens for catalog alignment
-  const normalizedPredicate = predicate.replace(/_/g, '-').toLowerCase();
+  const normalizedPredicate = normalizePredicate(predicate);
 
   const typeMap: Record<string, string> = {
     // ArchiMate-style relationships
