@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import SpecViewer from '../components/SpecViewer';
-import SpecNodeDetailsPanel from '../components/SpecNodeDetailsPanel';
+import SpecNodeDetailsPanel, { type SpecNodeDetailsPanelProps, type NodeSchema } from '../components/SpecNodeDetailsPanel';
 import AnnotationPanel from '../components/AnnotationPanel';
 import SchemaInfoPanel from '../components/SchemaInfoPanel';
 import ModelLayersSidebar from '../components/ModelLayersSidebar';
@@ -139,7 +139,7 @@ export default function SpecRoute() {
   const selectedSchema = selectedSchemaId ? specData.schemas[selectedSchemaId] : undefined;
 
   // Get spec node details for SpecNodeDetailsPanel
-  const specNodeDetails = useMemo(() => {
+  const specNodeDetails = useMemo((): Pick<SpecNodeDetailsPanelProps, 'nodeSchema' | 'relationshipSchemas'> => {
     if (!selectedSpecNodeId) return { nodeSchema: null, relationshipSchemas: [] };
 
     const parsed = selectedSpecNodeId.split('.');
@@ -149,7 +149,7 @@ export default function SpecRoute() {
     const specSchema = specSchemas[layerId];
     if (!specSchema) return { nodeSchema: null, relationshipSchemas: [] };
 
-    const nodeSchema = specSchema.nodeSchemas?.[nodeType];
+    const nodeSchema = (specSchema.nodeSchemas?.[nodeType] ?? null) as NodeSchema | null;
     const relationshipSchemas = specSchema.relationshipSchemas ?? [];
 
     return { nodeSchema, relationshipSchemas };

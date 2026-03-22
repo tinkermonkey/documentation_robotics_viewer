@@ -12,9 +12,22 @@ import type { SpecNodeRelationship } from '../../../core/types/model';
 import { SpecContextSubGraph } from './common/SpecContextSubGraph';
 import { buildSpecContextSubGraph } from '../services/specContextSubGraphBuilder';
 
+/**
+ * JSON Schema object representing a spec node type
+ * Contains title, description, properties, and required fields
+ */
+export interface NodeSchema extends Record<string, unknown> {
+  title?: string;
+  description?: string;
+  type?: string | string[];
+  properties?: Record<string, unknown>;
+  required?: string[];
+  format?: string;
+}
+
 export interface SpecNodeDetailsPanelProps {
   selectedSpecNodeId: string | null;
-  nodeSchema: any;
+  nodeSchema: NodeSchema | null | undefined;
   relationshipSchemas: SpecNodeRelationship[];
   onNodeClick?: (specNodeId: string) => void;
 }
@@ -85,12 +98,13 @@ const SpecNodeDetailsPanel: React.FC<SpecNodeDetailsPanelProps> = ({
   const description = typeof nodeSchema.description === 'string' ? nodeSchema.description : '';
 
   // Extract properties (handle both nested and flat structures)
-  const attrProperties = (nodeSchema.properties?.attributes as any)?.properties;
+  const attributes = nodeSchema.properties?.attributes as (NodeSchema | undefined);
+  const attrProperties = attributes?.properties;
   const visibleProperties = attrProperties || nodeSchema.properties;
-  const requiredAttrs = (nodeSchema.properties?.attributes as any)?.required as string[] | undefined
-    || nodeSchema.required as string[] | undefined;
+  const requiredAttrs = (attributes?.required as string[] | undefined)
+    || (nodeSchema.required as string[] | undefined);
 
-  const propertyList: Array<[string, any]> = visibleProperties
+  const propertyList: Array<[string, unknown]> = visibleProperties
     ? Object.entries(visibleProperties)
     : [];
 
@@ -126,31 +140,34 @@ const SpecNodeDetailsPanel: React.FC<SpecNodeDetailsPanelProps> = ({
         <div data-testid="spec-node-details-properties" className={DIVIDER}>
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Properties</p>
           <div className="space-y-2">
-            {propertyList.map(([propName, propSchema]) => (
-              <div key={propName} className="text-sm">
-                <div className="flex items-start gap-2 mb-1">
-                  <code className="bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded text-xs text-gray-900 dark:text-white whitespace-nowrap">
-                    {propName}
-                  </code>
-                  {requiredAttrs?.includes(propName) && (
-                    <Badge color="failure" size="xs">required</Badge>
+            {propertyList.map(([propName, propSchema]) => {
+              const schema = propSchema as NodeSchema | undefined;
+              return (
+                <div key={propName} className="text-sm">
+                  <div className="flex items-start gap-2 mb-1">
+                    <code className="bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded text-xs text-gray-900 dark:text-white whitespace-nowrap">
+                      {propName}
+                    </code>
+                    {requiredAttrs?.includes(propName) && (
+                      <Badge color="failure" size="xs">required</Badge>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 ml-0">
+                    {typeof schema?.type === 'string'
+                      ? schema.type
+                      : Array.isArray(schema?.type)
+                      ? schema.type.join(', ')
+                      : 'object'}
+                    {typeof schema?.format === 'string' && schema.format && ` (${schema.format})`}
+                  </p>
+                  {typeof schema?.description === 'string' && schema.description && (
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                      {schema.description}
+                    </p>
                   )}
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-400 ml-0">
-                  {typeof propSchema.type === 'string'
-                    ? propSchema.type
-                    : Array.isArray(propSchema.type)
-                    ? propSchema.type.join(', ')
-                    : 'object'}
-                  {typeof propSchema.format === 'string' && propSchema.format && ` (${propSchema.format})`}
-                </p>
-                {typeof propSchema.description === 'string' && propSchema.description && (
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                    {propSchema.description}
-                  </p>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       ) : null}

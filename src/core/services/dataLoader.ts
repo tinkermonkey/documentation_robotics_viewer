@@ -1,4 +1,5 @@
-import { MetaModel, LayerType, Reference } from '../types';
+import { MetaModel, LayerType, Reference, Layer, Relationship, ModelElement, ReferenceType } from '../types';
+import { JSONSchemaLayer } from '../types/jsonSchema';
 import { GitHubService } from './githubService';
 import { LocalFileLoader } from './localFileLoader';
 import { SpecParser } from './specParser';
@@ -165,7 +166,7 @@ export class DataLoader {
     // Check if any file is a manifest structure
     for (const [key, value] of Object.entries(schemas)) {
       if (key.includes('manifest') && typeof value === 'object' && value !== null) {
-        const manifest = value as any;
+        const manifest = value as Record<string, unknown>;
         if (manifest.version && manifest.layers && manifest.project) {
           console.log('Detected YAML instance model (manifest structure found)');
           return 'instance-yaml';
@@ -174,7 +175,7 @@ export class DataLoader {
     }
 
     // Check first schema for JSON Schema indicators
-    const firstSchema = Object.values(schemas)[0] as any;
+    const firstSchema = Object.values(schemas)[0] as Record<string, unknown>;
 
     // Return early if no schemas found
     if (!firstSchema) {
@@ -183,7 +184,8 @@ export class DataLoader {
     }
 
     // JSON Schema has $schema and definitions
-    if (firstSchema.$schema?.includes('json-schema.org') || 'definitions' in firstSchema) {
+    const schemaProperty = (firstSchema as Record<string, unknown>)['$schema'];
+    if ((typeof schemaProperty === 'string' && schemaProperty.includes('json-schema.org')) || 'definitions' in firstSchema) {
       console.log('Detected JSON Schema definitions');
       return 'schema-definition';
     }
@@ -213,8 +215,8 @@ export class DataLoader {
       version
     });
 
-    const layers: Record<string, any> = {};
-    const allRelationships: any[] = [];
+    const layers: Record<string, JSONSchemaLayer> = {};
+    const allRelationships: Relationship[] = [];
     const parseErrors: string[] = [];
 
     console.log(`Parsing ${Object.keys(schemas).length} schema files as definitions`);
@@ -242,13 +244,13 @@ export class DataLoader {
 
     // Extract custom references for metadata
     const extractedRefs = this.jsonSchemaParser.extractCustomCrossLayerReferences(Object.values(layers));
-    const layersMap: Record<string, any> = {};
+    const layersMap: Record<string, JSONSchemaLayer> = {};
     for (const layer of Object.values(layers)) {
       layersMap[layer.name] = layer;
     }
     const crossLayerMetadata = this.referenceExtractor.resolveReferences(extractedRefs, layersMap);
 
-    const elementCount = Object.values(layers).reduce((sum: number, layer: any) =>
+    const elementCount = Object.values(layers).reduce((sum: number, layer: JSONSchemaLayer) =>
       sum + layer.elements.length, 0);
 
     console.log('[DataLoader] Returning MetaModel:', {
@@ -276,7 +278,7 @@ export class DataLoader {
   /**
    * Build cross-layer references for schema definitions
    */
-  private buildSchemaReferences(layers: any[]): Reference[] {
+  private buildSchemaReferences(layers: JSONSchemaLayer[]): Reference[] {
     console.log('Building cross-layer references...');
 
     // Extract $ref-based references (original behavior)
@@ -288,7 +290,7 @@ export class DataLoader {
       refs.forEach((ref, index) => {
         refBasedReferences.push({
           id: `${elementId}-external-${index}`,
-          type: 'schema-reference' as any,
+          type: ReferenceType.SchemaReference,
           source: {
             elementId,
             property: ref.propertyName  // Include source field name
@@ -308,7 +310,7 @@ export class DataLoader {
 
     // Resolve extracted references
     // Build a layers map for resolution
-    const layersMap: Record<string, any> = {};
+    const layersMap: Record<string, JSONSchemaLayer> = {};
     for (const layer of layers) {
       layersMap[layer.name] = layer;
     }
@@ -418,8 +420,8 @@ export class DataLoader {
     this.yamlParser.clearDotNotationLookup();
 
     // Parse each enabled layer
-    const layers: Record<string, any> = {};
-    const allRelationships: any[] = [];
+    const layers: Record<string, Layer> = {};
+    const allRelationships: Relationship[] = [];
     const parseErrors: string[] = [];
     const enabledLayerIds: string[] = [];
     const failedLayerIds: string[] = [];
@@ -479,8 +481,8 @@ export class DataLoader {
 
           // Partition relationships: intra-layer vs cross-layer
           // First pass: collect intra-layer relationships, cross-layer relationships, and build dedup set
-          const intraLayerRelsFromYaml: Array<{ rel: any; layerId: string }> = [];
-          const crossLayerRelsFromYaml: any[] = [];
+          const intraLayerRelsFromYaml: Array<{ rel: Relationship; layerId: string }> = [];
+          const crossLayerRelsFromYaml: Relationship[] = [];
 
           for (const rel of parsedRelationships) {
             // Create a unique key for this relationship to track it for deduplication
@@ -503,10 +505,10 @@ export class DataLoader {
           // Deduplication: remove inline relationships that appear in relationships.yaml
           // Prefer the relationships.yaml entries as they contain more metadata
           if (relationshipsYamlSet.size > 0) {
-            const dedupedAllRelationships: any[] = [];
+            const dedupedAllRelationships: Relationship[] = [];
             for (const layer of Object.values(layers)) {
               const originalCount = layer.relationships.length;
-              layer.relationships = layer.relationships.filter((rel: any) => {
+              layer.relationships = layer.relationships.filter((rel: Relationship) => {
                 // Include the normalized predicate in the dedup key to allow multiple
                 // relationships between the same two elements with different predicates
                 // Normalize the predicate to handle underscore vs hyphen variations
@@ -642,7 +644,7 @@ export class DataLoader {
    * Resolve dot-notation references to UUIDs
    */
   private resolveDotNotationReferences(
-    relationships: any[],
+    relationships: Relationship[],
     dotNotationLookup: Map<string, string>
   ): void {
     for (const relationship of relationships) {
@@ -667,7 +669,7 @@ export class DataLoader {
   /**
    * Build cross-layer references for YAML instances
    */
-  private buildYAMLReferences(layers: any[], relationships: any[]): Reference[] {
+  private buildYAMLReferences(layers: Layer[], relationships: Relationship[]): Reference[] {
     const references: Reference[] = [];
 
     // Convert relationships to references
@@ -677,12 +679,12 @@ export class DataLoader {
       let targetLayer = '';
 
       for (const layer of layers) {
-        const sourceElement = layer.elements.find((e: any) => e.id === rel.sourceId);
+        const sourceElement = layer.elements.find((e: ModelElement) => e.id === rel.sourceId);
         if (sourceElement) {
           sourceLayer = layer.id;
         }
 
-        const targetElement = layer.elements.find((e: any) => e.id === rel.targetId);
+        const targetElement = layer.elements.find((e: ModelElement) => e.id === rel.targetId);
         if (targetElement) {
           targetLayer = layer.id;
         }
@@ -690,7 +692,7 @@ export class DataLoader {
 
       references.push({
         id: rel.id,
-        type: rel.type,
+        type: ReferenceType.Custom,
         source: {
           elementId: rel.sourceId,
           layerId: sourceLayer,
