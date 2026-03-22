@@ -403,7 +403,10 @@ export class DataLoader {
     // This ensures field discovery uses the catalog from the start, rather than relying on
     // a stateful setPredicateCatalog() call that could be forgotten or reordered
     if (predicateCatalog) {
+      // Transfer warnings from old parser to new parser to avoid losing projection-rules warnings
+      const oldWarnings = this.yamlParser.getWarnings();
       this.yamlParser = new YAMLParser(predicateCatalog);
+      oldWarnings.forEach(warning => this.yamlParser.addWarning(warning));
       this.referenceExtractor = new CrossLayerReferenceExtractor(predicateCatalog);
     }
 

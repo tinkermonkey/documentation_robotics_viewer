@@ -270,6 +270,8 @@ test.describe('YAMLParser fieldPaths Support', () => {
       expect(modelElement.type).toBe('goal');
       expect(modelElement.description).toBe('A system-level goal');
       // Additional properties should not include the relationship fields
+      expect(modelElement.properties).not.toHaveProperty('x-fulfills-requirements');
+      expect(modelElement.properties).not.toHaveProperty('x-supports');
     });
 
     test('should extract relationships with resolved predicate names', () => {

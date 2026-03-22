@@ -56,6 +56,8 @@ export class YAMLParser {
   private warnings: string[] = [];
   private dotNotationLookup: Map<string, string> = new Map(); // dot-notation ID -> UUID
   private predicateCatalog: PredicateCatalog | null = null;
+  private validRelationshipFields: Set<string> = new Set();
+  private validPredicates: Set<string> = new Set();
 
   /**
    * Create a new YAML parser
@@ -63,6 +65,30 @@ export class YAMLParser {
    */
   constructor(catalog?: PredicateCatalog) {
     this.predicateCatalog = catalog || null;
+    this.initializeValidFields();
+  }
+
+  /**
+   * Initialize the valid relationship fields and predicates sets from the catalog.
+   * Computed once in the constructor and cached to avoid redundant reconstruction.
+   */
+  private initializeValidFields(): void {
+    this.validRelationshipFields.clear();
+    this.validPredicates.clear();
+
+    if (this.predicateCatalog) {
+      for (const def of this.predicateCatalog.byPredicate.values()) {
+        // Add the predicate name itself
+        this.validPredicates.add(def.predicate);
+        this.validRelationshipFields.add(def.predicate);
+        // Add all field path aliases for this predicate
+        if (def.fieldPaths) {
+          for (const fieldPath of def.fieldPaths) {
+            this.validRelationshipFields.add(fieldPath);
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -73,6 +99,7 @@ export class YAMLParser {
    */
   setPredicateCatalog(catalog: PredicateCatalog): void {
     this.predicateCatalog = catalog;
+    this.initializeValidFields();
   }
 
   /**
@@ -251,22 +278,6 @@ export class YAMLParser {
       'spec_node_id', 'layer_id', 'attributes', 'source_reference', 'metadata'
     ]);
 
-    // Build set of valid predicate field names from catalog (includes both predicate names and fieldPaths aliases)
-    // e.g., 'supports', 'x-supports' both map to the 'supports' predicate
-    const validRelationshipFields = new Set<string>();
-    if (this.predicateCatalog) {
-      for (const def of this.predicateCatalog.byPredicate.values()) {
-        // Add the predicate name itself
-        validRelationshipFields.add(def.predicate);
-        // Add all field path aliases for this predicate
-        if (def.fieldPaths) {
-          for (const fieldPath of def.fieldPaths) {
-            validRelationshipFields.add(fieldPath);
-          }
-        }
-      }
-    }
-
     // Detect relationship properties (arrays of strings) and collect them
     const relationships: YAMLRelationships = {};
     const additionalProps: Record<string, unknown> = {};
@@ -279,8 +290,8 @@ export class YAMLParser {
       // Check if this looks like a relationship
       // If catalog is available, check if propKey matches a valid relationship field
       // (predicate name or fieldPath alias). Otherwise, check if it's an array of strings (heuristic).
-      const isRelationship = validRelationshipFields.size > 0
-        ? validRelationshipFields.has(propKey)
+      const isRelationship = this.validRelationshipFields.size > 0
+        ? this.validRelationshipFields.has(propKey)
         : Array.isArray(value) && value.length > 0 && value.every(v => typeof v === 'string');
 
       if (isRelationship && Array.isArray(value)) {
@@ -379,14 +390,10 @@ export class YAMLParser {
       'metadata',
     ]);
 
-    // Build set of valid predicate names from catalog
-    const validPredicates = this.predicateCatalog
-      ? new Set(this.predicateCatalog.byPredicate.keys())
-      : new Set<string>();
-
     for (const [key, value] of Object.entries(yamlElement)) {
-      // Skip known fields and predicate fields (which are relationships)
-      if (!knownFields.has(key) && !validPredicates.has(key)) {
+      // Skip known fields and all relationship fields (both canonical predicate names and fieldPath aliases)
+      // Use validRelationshipFields instead of only predicate names to exclude aliases like 'x-supports', 'x-fulfills-requirements'
+      if (!knownFields.has(key) && !this.validRelationshipFields.has(key)) {
         properties[key] = value;
       }
     }
