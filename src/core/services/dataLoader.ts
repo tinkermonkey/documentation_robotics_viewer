@@ -862,6 +862,37 @@ export class DataLoader {
   }
 
   /**
+   * Validate spec version: compare manifest's spec_version against the loaded spec's specVersion
+   *
+   * This method centralizes spec version validation by comparing the version declared
+   * in the model's manifest against the actual spec version currently available.
+   *
+   * @param modelSpecVersion - Spec version from model manifest (manifest.spec_version)
+   * @param loadedSpecVersion - Spec version from loaded specification files
+   * @returns Object with comparison results including mismatch flag
+   */
+  validateSpecVersion(
+    modelSpecVersion: string | undefined,
+    loadedSpecVersion: string | undefined
+  ): { modelVersion: string; specVersion: string; mismatch: boolean } {
+    const model = modelSpecVersion || 'unknown';
+    const spec = loadedSpecVersion || 'unknown';
+    const mismatch = model !== spec;
+
+    console.log('[DataLoader] Spec version validation:', {
+      modelVersion: model,
+      specVersion: spec,
+      mismatch
+    });
+
+    return {
+      modelVersion: model,
+      specVersion: spec,
+      mismatch
+    };
+  }
+
+  /**
    * Validate model completeness
    */
   validateModel(model: MetaModel): { valid: boolean; warnings: string[]; errors: string[] } {
