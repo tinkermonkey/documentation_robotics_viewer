@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useParams, useSearch, useNavigate } from '@tanstack/react-router';
 import type { Node } from '@xyflow/react';
+import { nodeConfigLoader } from '../../../core/nodes';
+import type { UnifiedNodeData } from '../../../core/nodes';
 import GraphViewer from '../../../core/components/GraphViewer';
 import ModelDetailsViewer from '../components/ModelDetailsViewer';
 import AnnotationPanel from '../components/AnnotationPanel';
@@ -110,11 +112,25 @@ export default function ModelRoute() {
     for (const layer of Object.values(model.layers)) {
       const element = layer.elements?.find(e => e.id === elementId);
       if (element) {
-        // Create a minimal Node object for consistency
+        // Map element type to NodeType for type guard compliance
+        const mappedNodeType = nodeConfigLoader.mapElementType(element.type);
+        if (!mappedNodeType) {
+          console.warn(`[ModelRoute] Cannot map element type "${element.type}" to NodeType for element ${elementId}`);
+          return;
+        }
+
+        // Create a properly typed Node with UnifiedNodeData that passes type guard
+        const nodeData: UnifiedNodeData = {
+          nodeType: mappedNodeType,
+          elementId: element.id,
+          layerId: element.layerId,
+          label: element.name,
+        };
+
         const node: Node = {
           id: elementId,
           position: { x: 0, y: 0 },
-          data: { elementId, layerId: element.layerId }
+          data: nodeData,
         };
         setSelectedNode(node);
         return;
