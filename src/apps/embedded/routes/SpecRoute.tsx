@@ -60,15 +60,17 @@ export default function SpecRoute() {
         const schemas = loadSpecSchemas(specFiles);
         useModelStore.getState().setSpecSchemas(schemas);
 
-        // Validate spec version: compare spec's specVersion from loaded files
+        // Validate spec version: compare spec's declared version against loaded manifest version
+        const specDeclaredVersion = specData?.version as string | undefined;
         const loadedSpecManifest = specFiles['manifest.json'] as SchemaManifest | undefined;
         const loadedSpecVersion = loadedSpecManifest?.specVersion;
 
-        // Set spec version if available
-        if (loadedSpecVersion) {
+        // Set spec version with both spec's declared version and loaded spec version for comparison
+        // setSpecVersion(specDeclaredVersion, loadedSpecVersion) sets specVersionMismatch = (specDeclaredVersion !== loadedSpecVersion)
+        if (specDeclaredVersion || loadedSpecVersion) {
           useModelStore.getState().setSpecVersion(
-            loadedSpecVersion,
-            loadedSpecVersion
+            specDeclaredVersion || 'unknown',
+            loadedSpecVersion || 'unknown'
           );
         }
       } catch (err) {
