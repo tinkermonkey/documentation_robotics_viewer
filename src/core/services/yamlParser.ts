@@ -705,6 +705,13 @@ export class YAMLParser {
   }
 
   /**
+   * Add a warning message
+   */
+  addWarning(warning: string): void {
+    this.warnings.push(warning);
+  }
+
+  /**
    * Clear accumulated warnings
    */
   clearWarnings(): void {
