@@ -101,8 +101,7 @@ const SpecNodeDetailsPanel: React.FC<SpecNodeDetailsPanelProps> = ({
   const attributes = nodeSchema.properties?.attributes as (NodeSchema | undefined);
   const attrProperties = attributes?.properties;
   const visibleProperties = attrProperties || nodeSchema.properties;
-  const requiredAttrs = (attributes?.required as string[] | undefined)
-    || (nodeSchema.required as string[] | undefined);
+  const requiredAttrs = attributes?.required || nodeSchema.required;
 
   const propertyList: Array<[string, unknown]> = visibleProperties
     ? Object.entries(visibleProperties)

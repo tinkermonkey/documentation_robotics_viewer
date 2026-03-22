@@ -583,7 +583,7 @@ export class DataLoader {
       metadata: {
         loadedAt: new Date().toISOString(),
         layerCount: Object.keys(layers).length,
-        elementCount: Object.values(layers).reduce((sum: number, layer: any) =>
+        elementCount: Object.values(layers).reduce((sum: number, layer: Layer) =>
           sum + layer.elements.length, 0),
         type: 'yaml-instances',
         yamlVersion: manifest.version,
