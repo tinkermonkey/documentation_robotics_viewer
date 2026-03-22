@@ -479,7 +479,7 @@ export class DataLoader {
             // Include the normalized predicate so that multiple relationships between the same
             // two elements with different predicates are preserved (e.g., A "serves" B and A "flows_to" B)
             // Normalize the predicate to handle underscore vs hyphen variations (supports_goals vs supports-goals)
-            const normalizedPred = rel.predicate ? normalizePredicate(rel.predicate) : rel.type;
+            const normalizedPred = normalizePredicate(rel.predicate || rel.type || '');
             const relKey = `${rel.sourceId}→${rel.targetId}→${normalizedPred}`;
             relationshipsYamlSet.add(relKey);
 
@@ -502,7 +502,7 @@ export class DataLoader {
                 // Include the normalized predicate in the dedup key to allow multiple
                 // relationships between the same two elements with different predicates
                 // Normalize the predicate to handle underscore vs hyphen variations
-                const normalizedPred = rel.predicate ? normalizePredicate(rel.predicate) : rel.type;
+                const normalizedPred = normalizePredicate(rel.predicate || rel.type || '');
                 const relKey = `${rel.sourceId}→${rel.targetId}→${normalizedPred}`;
                 return !relationshipsYamlSet.has(relKey);
               });
