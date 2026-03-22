@@ -65,13 +65,18 @@ export const GraphToolbar = memo(
         {/* Search */}
         {onSearchChange && (
           <div className="flex-1 max-w-md">
+            <label htmlFor="graph-search" className="sr-only">
+              Search graph
+            </label>
             <TextInput
+              id="graph-search"
               icon={HiSearch}
               placeholder={searchPlaceholder}
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               sizing="md"
               data-testid="graph-search"
+              aria-label="Search graph"
             />
           </div>
         )}

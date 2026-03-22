@@ -5,7 +5,7 @@
  */
 
 import React, { useMemo } from 'react';
-import { Badge, Table, TableBody, TableCell, TableRow } from 'flowbite-react';
+import { Badge } from 'flowbite-react';
 import type { SpecNodeRelationship } from '@/core/types/model';
 import ExpandableSection from './ExpandableSection';
 
@@ -99,30 +99,43 @@ const SpecDefinitionCard: React.FC<SpecDefinitionCardProps> = ({
           defaultExpanded={true}
           data-testid="spec-properties-section"
         >
-          <Table className="text-sm">
-            <TableBody className="divide-y divide-gray-200 dark:divide-gray-700">
+          <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead className="text-xs font-bold text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700">
+              <tr>
+                <th scope="col" className="px-3 py-2 w-1/4">
+                  Property
+                </th>
+                <th scope="col" className="px-3 py-2 w-1/6">
+                  Type
+                </th>
+                <th scope="col" className="px-3 py-2 flex-1">
+                  Details
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {properties.map((prop, idx) => (
-                <TableRow
+                <tr
                   key={`prop-${idx}`}
-                  className="bg-white dark:bg-gray-800"
+                  className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
                   data-testid={`spec-property-${prop.name}`}
                 >
-                  <TableCell className="px-3 py-2 font-medium text-gray-900 dark:text-white w-1/4">
+                  <td className="px-3 py-2 font-medium text-gray-900 dark:text-white w-1/4">
                     {prop.name}
                     {prop.required && (
-                      <span className="text-red-600 dark:text-red-400 ml-1">*</span>
+                      <span className="text-red-600 dark:text-red-400 ml-1" aria-label="required">*</span>
                     )}
-                  </TableCell>
-                  <TableCell className="px-3 py-2 text-gray-600 dark:text-gray-400 w-1/6">
+                  </td>
+                  <td className="px-3 py-2 text-gray-600 dark:text-gray-400 w-1/6">
                     {prop.type ? (
                       <code className="bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-xs">
                         {prop.type}
                       </code>
                     ) : (
-                      <span className="text-gray-400 dark:text-gray-500">—</span>
+                      <span className="text-gray-400 dark:text-gray-500" aria-label="not specified">—</span>
                     )}
-                  </TableCell>
-                  <TableCell className="px-3 py-2 text-gray-700 dark:text-gray-300 flex-1">
+                  </td>
+                  <td className="px-3 py-2 text-gray-700 dark:text-gray-300 flex-1">
                     <div className="space-y-1">
                       {prop.description && (
                         <p className="text-xs text-gray-600 dark:text-gray-400">
@@ -144,11 +157,11 @@ const SpecDefinitionCard: React.FC<SpecDefinitionCardProps> = ({
                         </div>
                       )}
                     </div>
-                  </TableCell>
-                </TableRow>
+                  </td>
+                </tr>
               ))}
-            </TableBody>
-          </Table>
+            </tbody>
+          </table>
         </ExpandableSection>
       )}
 

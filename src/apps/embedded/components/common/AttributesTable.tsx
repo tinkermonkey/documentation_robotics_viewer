@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import { Table, TableBody, TableCell, TableRow } from 'flowbite-react';
 
 export interface AttributeRow {
   name: string;
@@ -50,18 +49,28 @@ const AttributesTable: React.FC<AttributesTableProps> = ({
           {title}
         </h4>
       )}
-      <div className="overflow-x-auto" tabIndex={0}>
-        <Table>
-          <TableBody className="divide-y">
+      <div className="overflow-x-auto" role="region" aria-label={title} tabIndex={0}>
+        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+          <thead className="text-xs font-bold text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700">
+            <tr>
+              <th scope="col" className="px-6 py-3 whitespace-nowrap w-1/3">
+                Name
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Value
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
             {attributes.map((attr, index) => (
-              <TableRow
+              <tr
                 key={`${attr.name}-${index}`}
-                className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
               >
-                <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white w-1/3">
+                <td className="px-6 py-3 whitespace-nowrap font-medium text-gray-900 dark:text-white w-1/3">
                   {attr.name}
-                </TableCell>
-                <TableCell className="text-gray-700 dark:text-gray-300">
+                </td>
+                <td className="px-6 py-3 text-gray-700 dark:text-gray-300">
                   {attr.isObject ? (
                     <pre className="text-xs overflow-x-auto p-2 bg-gray-50 dark:bg-gray-900 rounded">
                       {formatValue(attr)}
@@ -71,11 +80,11 @@ const AttributesTable: React.FC<AttributesTableProps> = ({
                       {formatValue(attr)}
                     </span>
                   )}
-                </TableCell>
-              </TableRow>
+                </td>
+              </tr>
             ))}
-          </TableBody>
-        </Table>
+          </tbody>
+        </table>
       </div>
     </div>
   );
