@@ -87,6 +87,7 @@ export class DataLoader {
     private specParser: SpecParser
   ) {
     this.jsonSchemaParser = new JSONSchemaParser();
+    // Initialize without catalog; will be recreated with catalog during parseYAMLInstances if catalog is available
     this.yamlParser = new YAMLParser();
     this.referenceExtractor = new CrossLayerReferenceExtractor();
   }
@@ -382,13 +383,11 @@ export class DataLoader {
     }
 
     // Load predicate catalog from relationship-catalog.json if present
-    let predicateCatalog;
+    let predicateCatalog: PredicateCatalog | undefined;
     const relationshipCatalogKey = Object.keys(schemas).find(k => k === 'relationship-catalog.json');
     if (relationshipCatalogKey) {
       const catalogJson = schemas[relationshipCatalogKey];
       predicateCatalog = loadPredicateCatalog(catalogJson);
-      this.yamlParser.setPredicateCatalog(predicateCatalog);
-      this.referenceExtractor.setPredicateCatalog(predicateCatalog);
       console.log(`Loaded predicate catalog with ${predicateCatalog.byPredicate.size} predicates from relationship-catalog.json`);
     } else {
       // Fallback: try to load from base.json for backward compatibility
@@ -396,10 +395,16 @@ export class DataLoader {
       if (baseJsonKey) {
         const baseJson = schemas[baseJsonKey];
         predicateCatalog = loadPredicateCatalog(baseJson);
-        this.yamlParser.setPredicateCatalog(predicateCatalog);
-        this.referenceExtractor.setPredicateCatalog(predicateCatalog);
         console.log(`Loaded predicate catalog with ${predicateCatalog.byPredicate.size} predicates from base.json (fallback)`);
       }
+    }
+
+    // Re-create parsers with the loaded catalog (if available) for proper initialization
+    // This ensures field discovery uses the catalog from the start, rather than relying on
+    // a stateful setPredicateCatalog() call that could be forgotten or reordered
+    if (predicateCatalog) {
+      this.yamlParser = new YAMLParser(predicateCatalog);
+      this.referenceExtractor = new CrossLayerReferenceExtractor(predicateCatalog);
     }
 
     // Group files by layer based on manifest paths

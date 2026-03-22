@@ -43,6 +43,14 @@ const LAYER_TYPE_MAP: Record<string, LayerType> = {
 
 /**
  * YAMLParser - Parses YAML instance models
+ *
+ * The parser uses a predicate catalog (when provided) to determine which YAML fields
+ * should be treated as relationship properties. The catalog's fieldPaths entries
+ * (e.g., "x-supports", "x-fulfills-requirements") define field aliases for each predicate.
+ *
+ * If no catalog is provided, the parser falls back to heuristic behavior:
+ * any array-of-strings property is treated as a relationship. This allows the parser
+ * to work without a catalog but with reduced accuracy.
  */
 export class YAMLParser {
   private warnings: string[] = [];
@@ -50,8 +58,18 @@ export class YAMLParser {
   private predicateCatalog: PredicateCatalog | null = null;
 
   /**
+   * Create a new YAML parser
+   * @param catalog - Optional predicate catalog for field discovery
+   */
+  constructor(catalog?: PredicateCatalog) {
+    this.predicateCatalog = catalog || null;
+  }
+
+  /**
    * Set the predicate catalog for dynamic field discovery
    * Used to identify relationship fields based on catalog predicates instead of hardcoded lists
+   *
+   * @deprecated Use constructor parameter instead for explicit catalog dependency
    */
   setPredicateCatalog(catalog: PredicateCatalog): void {
     this.predicateCatalog = catalog;
@@ -233,11 +251,21 @@ export class YAMLParser {
       'spec_node_id', 'layer_id', 'attributes', 'source_reference', 'metadata'
     ]);
 
-    // Build set of valid predicate names from catalog for dynamic field discovery
-    // If catalog is available, use it; otherwise fall back to heuristic (array of strings)
-    const validPredicates = this.predicateCatalog
-      ? new Set(this.predicateCatalog.byPredicate.keys())
-      : null;
+    // Build set of valid predicate field names from catalog (includes both predicate names and fieldPaths aliases)
+    // e.g., 'supports', 'x-supports' both map to the 'supports' predicate
+    const validRelationshipFields = new Set<string>();
+    if (this.predicateCatalog) {
+      for (const def of this.predicateCatalog.byPredicate.values()) {
+        // Add the predicate name itself
+        validRelationshipFields.add(def.predicate);
+        // Add all field path aliases for this predicate
+        if (def.fieldPaths) {
+          for (const fieldPath of def.fieldPaths) {
+            validRelationshipFields.add(fieldPath);
+          }
+        }
+      }
+    }
 
     // Detect relationship properties (arrays of strings) and collect them
     const relationships: YAMLRelationships = {};
@@ -249,13 +277,15 @@ export class YAMLParser {
       }
 
       // Check if this looks like a relationship
-      // If catalog is available, check if propKey is a valid predicate
-      // Otherwise, check if it's an array of strings (heuristic)
-      const isRelationship = validPredicates
-        ? validPredicates.has(propKey)
+      // If catalog is available, check if propKey matches a valid relationship field
+      // (predicate name or fieldPath alias). Otherwise, check if it's an array of strings (heuristic).
+      const isRelationship = validRelationshipFields.size > 0
+        ? validRelationshipFields.has(propKey)
         : Array.isArray(value) && value.length > 0 && value.every(v => typeof v === 'string');
 
       if (isRelationship && Array.isArray(value)) {
+        // Store relationship using the fieldPath key as-is, not the canonical predicate name
+        // This preserves field aliases and allows for predicate resolution during relationship extraction
         relationships[propKey] = value as string[];
       } else if (!isRelationship) {
         additionalProps[propKey] = value;
@@ -443,6 +473,11 @@ export class YAMLParser {
 
   /**
    * Extract relationships from YAML element
+   *
+   * This method resolves fieldPath aliases (e.g., 'x-supports') to their canonical
+   * predicate names (e.g., 'supports') using the predicate catalog. This allows
+   * YAML elements to use convenient field aliases while maintaining consistent
+   * predicate naming in the model.
    */
   extractRelationshipsFromElement(
     yamlElement: YAMLElement,
@@ -458,9 +493,27 @@ export class YAMLParser {
     const relMap = yamlElement.relationships;
 
     // Process each relationship type
-    for (const [relType, targets] of Object.entries(relMap)) {
+    for (const [fieldKey, targets] of Object.entries(relMap)) {
       if (!Array.isArray(targets)) {
         continue;
+      }
+
+      // Resolve fieldPath key to canonical predicate name
+      // e.g., 'x-supports' -> 'supports', 'supports' -> 'supports'
+      let canonicalPredicate = fieldKey;
+      if (this.predicateCatalog) {
+        // Check if fieldKey is a direct predicate name
+        if (this.predicateCatalog.byPredicate.has(fieldKey)) {
+          canonicalPredicate = fieldKey;
+        } else {
+          // Check if fieldKey is a fieldPath alias for some predicate
+          for (const [predName, def] of this.predicateCatalog.byPredicate) {
+            if (def.fieldPaths && def.fieldPaths.includes(fieldKey)) {
+              canonicalPredicate = predName;
+              break;
+            }
+          }
+        }
       }
 
       for (const targetRef of targets) {
@@ -473,17 +526,17 @@ export class YAMLParser {
             id: uuidv4(),
             sourceId: elementId,
             targetId: targetRef, // Initially dot-notation, will be resolved later
-            type: this.mapRelationshipType(relType),
-            predicate: relType, // Store raw predicate string for deduplication and catalog lookup
+            type: this.mapRelationshipType(canonicalPredicate),
+            predicate: canonicalPredicate, // Store canonical predicate for consistency
             properties: {
               isDotNotation: true, // Flag for later resolution
-              originalType: relType,
+              originalType: fieldKey, // Track the original field name for reference
             },
           });
         } catch (error) {
           const message = error instanceof Error ? error.message : String(error);
           this.warnings.push(
-            `Failed to create relationship ${relType} -> ${targetRef}: ${message}`
+            `Failed to create relationship ${fieldKey} -> ${targetRef}: ${message}`
           );
         }
       }

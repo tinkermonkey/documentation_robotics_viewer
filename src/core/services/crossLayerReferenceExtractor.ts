@@ -19,14 +19,26 @@ import { PredicateCatalog } from './predicateCatalogLoader';
  * - Nested references (security.resourceRef, api.operationId, etc.)
  *
  * Field discovery is catalog-driven: predicates define which fields should be scanned for references
- * via the fieldPaths property in the predicate definition.
+ * via the fieldPaths property in the predicate definition. When a catalog is provided, the extractor
+ * uses fieldPaths entries (e.g., "operationId", "route") to discover identifier fields for resolution.
+ * Without a catalog, the extractor falls back to common identifier properties.
  */
 export class CrossLayerReferenceExtractor {
   private predicateCatalog: PredicateCatalog | null = null;
 
   /**
+   * Create a new cross-layer reference extractor
+   * @param catalog - Optional predicate catalog for catalog-driven field discovery
+   */
+  constructor(catalog?: PredicateCatalog) {
+    this.predicateCatalog = catalog || null;
+  }
+
+  /**
    * Set the predicate catalog for catalog-driven field discovery
    * @param catalog - The loaded predicate catalog
+   *
+   * @deprecated Use constructor parameter instead for explicit catalog dependency
    */
   setPredicateCatalog(catalog: PredicateCatalog): void {
     this.predicateCatalog = catalog;
