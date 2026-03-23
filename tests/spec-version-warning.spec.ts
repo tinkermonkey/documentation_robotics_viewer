@@ -16,7 +16,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { waitForElement, waitForWebSocketConnection, setupEmbeddedApp } from './helpers/testUtils';
+import { setupEmbeddedApp } from './helpers/testUtils';
 
 test.setTimeout(30000);
 

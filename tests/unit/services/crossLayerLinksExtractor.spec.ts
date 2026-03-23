@@ -186,7 +186,7 @@ test.describe('CrossLayerLinksExtractor - extractCrossLayerReferences', () => {
         {
           id: 'ref-2',
           source: { layerId: LayerType.Business, elementId: 'elem-1' },
-          target: { layerId: LayerType.API, elementId: 'elem-3' },
+          target: { layerId: LayerType.Api, elementId: 'elem-3' },
           type: 'reference'
         }
       ],
@@ -212,7 +212,7 @@ test.describe('CrossLayerLinksExtractor - extractCrossLayerReferences', () => {
         {
           id: 'ref-1',
           source: { layerId: LayerType.Business, elementId: 'elem-1' },
-          target: { layerId: LayerType.API, elementId: 'elem-3' },
+          target: { layerId: LayerType.Api, elementId: 'elem-3' },
           type: 'reference'
         }
       ],
@@ -243,7 +243,7 @@ test.describe('CrossLayerLinksExtractor - extractCrossLayerReferences', () => {
         {
           id: 'ref-1',
           source: { layerId: LayerType.Business, elementId: 'elem-1' },
-          target: { layerId: LayerType.API, elementId: 'elem-3' },
+          target: { layerId: LayerType.Api, elementId: 'elem-3' },
           type: 'reference'
         },
         {
@@ -267,7 +267,7 @@ test.describe('CrossLayerLinksExtractor - extractCrossLayerReferences', () => {
     const result = extractCrossLayerReferences(
       model,
       true,
-      new Set([LayerType.API, LayerType.Technology]),
+      new Set([LayerType.Api, LayerType.Technology]),
       new Set()
     );
 
@@ -286,7 +286,7 @@ test.describe('CrossLayerLinksExtractor - extractCrossLayerReferences', () => {
         {
           id: 'ref-1',
           source: { layerId: LayerType.Business, elementId: 'elem-1' },
-          target: { layerId: LayerType.API, elementId: 'elem-3' },
+          target: { layerId: LayerType.Api, elementId: 'elem-3' },
           type: 'reference'
         },
         {
@@ -329,13 +329,13 @@ test.describe('CrossLayerLinksExtractor - extractCrossLayerReferences', () => {
         {
           id: 'ref-1',
           source: { layerId: LayerType.Business, elementId: 'elem-1' },
-          target: { layerId: LayerType.API, elementId: 'elem-3' },
+          target: { layerId: LayerType.Api, elementId: 'elem-3' },
           type: 'reference'
         },
         {
           id: 'ref-2',
           source: { layerId: LayerType.Business, elementId: 'elem-1' },
-          target: { layerId: LayerType.API, elementId: 'elem-4' },
+          target: { layerId: LayerType.Api, elementId: 'elem-4' },
           type: 'realization'
         },
         {
@@ -353,7 +353,7 @@ test.describe('CrossLayerLinksExtractor - extractCrossLayerReferences', () => {
     const result = extractCrossLayerReferences(
       model,
       true,
-      new Set([LayerType.API]),
+      new Set([LayerType.Api]),
       new Set(['reference'])
     );
 
@@ -372,7 +372,7 @@ test.describe('CrossLayerLinksExtractor - extractCrossLayerReferences', () => {
         {
           id: 'ref-1',
           source: { layerId: LayerType.Business, elementId: 'elem-1' },
-          target: { layerId: LayerType.API, elementId: 'elem-3' },
+          target: { layerId: LayerType.Api, elementId: 'elem-3' },
           type: 'reference'
         },
         {
@@ -403,7 +403,7 @@ test.describe('CrossLayerLinksExtractor - extractCrossLayerReferences', () => {
         {
           id: 'ref-1',
           source: { layerId: LayerType.Business, elementId: 'elem-1' },
-          target: { layerId: LayerType.API, elementId: 'elem-3' },
+          target: { layerId: LayerType.Api, elementId: 'elem-3' },
           type: 'reference'
         }
       ],
@@ -439,7 +439,7 @@ test.describe('CrossLayerLinksExtractor - extractCrossLayerReferences', () => {
         {
           id: 'ref-2',
           source: { layerId: LayerType.Business, elementId: 'elem-1' },
-          target: { layerId: LayerType.API, elementId: 'elem-3' },
+          target: { layerId: LayerType.Api, elementId: 'elem-3' },
           type: 'reference'
         }
       ],
@@ -482,7 +482,7 @@ test.describe('CrossLayerLinksExtractor - referencesToEdges', () => {
       {
         id: 'ref-1',
         source: { layerId: LayerType.Business, elementId: 'elem-1' },
-        target: { layerId: LayerType.API, elementId: 'elem-3' },
+        target: { layerId: LayerType.Api, elementId: 'elem-3' },
         type: 'reference',
         predicate: 'realizes'
       }
@@ -501,13 +501,13 @@ test.describe('CrossLayerLinksExtractor - referencesToEdges', () => {
       {
         id: 'ref-1',
         source: { layerId: LayerType.Business, elementId: 'elem-1' },
-        target: { layerId: LayerType.API, elementId: 'elem-3' },
+        target: { layerId: LayerType.Api, elementId: 'elem-3' },
         type: 'reference'
       },
       {
         id: 'ref-2',
         source: { layerId: LayerType.Business, elementId: 'elem-1' },
-        target: { layerId: LayerType.API } as any,
+        target: { layerId: LayerType.Api } as any,
         type: 'reference'
       }
     ];
@@ -529,7 +529,7 @@ test.describe('CrossLayerLinksExtractor - referencesToEdges', () => {
       {
         id: 'ref-1',
         source: { layerId: LayerType.Business, elementId: 'unknown-elem' },
-        target: { layerId: LayerType.API, elementId: 'elem-3' },
+        target: { layerId: LayerType.Api, elementId: 'elem-3' },
         type: 'reference'
       }
     ];
@@ -544,7 +544,7 @@ test.describe('CrossLayerLinksExtractor - referencesToEdges', () => {
       {
         id: 'ref-1',
         source: { layerId: LayerType.Business, elementId: 'elem-1' },
-        target: { layerId: LayerType.API, elementId: 'unknown-elem' },
+        target: { layerId: LayerType.Api, elementId: 'unknown-elem' },
         type: 'reference'
       }
     ];
@@ -559,7 +559,7 @@ test.describe('CrossLayerLinksExtractor - referencesToEdges', () => {
       {
         id: 'ref-1',
         source: { layerId: LayerType.Business, elementId: 'unknown-1' },
-        target: { layerId: LayerType.API, elementId: 'unknown-3' },
+        target: { layerId: LayerType.Api, elementId: 'unknown-3' },
         type: 'reference'
       }
     ];
