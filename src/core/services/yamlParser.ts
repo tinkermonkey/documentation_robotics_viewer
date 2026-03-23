@@ -57,21 +57,6 @@ function isProjectionRules(value: unknown): value is ProjectionRules {
 }
 
 /**
- * Type guard: validates that an unknown value is a RelationshipsYamlEntry
- */
-function isRelationshipsYamlEntry(value: unknown): value is Record<string, unknown> {
-  if (!value || typeof value !== 'object') {
-    return false;
-  }
-  const obj = value as Record<string, unknown>;
-  return (
-    typeof obj.source === 'string' &&
-    typeof obj.target === 'string' &&
-    typeof obj.predicate === 'string'
-  );
-}
-
-/**
  * Maps YAML layer IDs to internal LayerType
  */
 const LAYER_TYPE_MAP: Record<string, LayerType> = {
@@ -512,7 +497,7 @@ export class YAMLParser {
       return word.slice(0, -2);
     }
 
-    // Words ending in 'ves' -> 'f' or 'fe' (leaves -> leaf, lives -> life)
+    // Words ending in 'ves' -> 'f' (leaves -> leaf)
     if (word.endsWith('ves') && word.length > 3) {
       return word.slice(0, -3) + 'f';
     }
