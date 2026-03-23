@@ -217,8 +217,11 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
 
   const layers = model.layers || {};
   const layerNames = Object.keys(layers).sort((a, b) => {
-    const orderA = layers[a].order ?? 999;
-    const orderB = layers[b].order ?? 999;
+    const layerA = layers[a];
+    const layerB = layers[b];
+    // Check top-level order first, then fall back to data.metadata.order (for YAML models)
+    const orderA = layerA.order ?? layerA.data?.metadata?.order ?? 999;
+    const orderB = layerB.order ?? layerB.data?.metadata?.order ?? 999;
     return orderA - orderB;
   });
 
