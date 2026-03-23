@@ -18,6 +18,7 @@ import { useAnnotationStore } from '../stores/annotationStore';
 import { embeddedDataLoader, SpecDataResponse, SchemaManifest } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
 import { LoadingState, ErrorState } from '../components/shared';
+import { ModelParseErrorBanner } from '../components/shared/ModelParseErrorBanner';
 import { loadPredicateCatalog } from '../../../core/services/predicateCatalogLoader';
 import { loadSpecSchemas } from '../../../core/services/specSchemaLoader';
 import { loadSpecSchemaFiles } from '../../../core/services/specSchemaFileLoader';
@@ -75,6 +76,7 @@ export default function ModelRoute() {
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [highlightedPath, setHighlightedPath] = useState<string | null>(null);
   const [selectedLayerId, setSelectedLayerId] = useState<string | null>(search?.layer || null);
+  const [parseErrorsVisible, setParseErrorsVisible] = useState(true);
   const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const activeView = view === 'json' ? 'json' : 'graph';
@@ -244,6 +246,10 @@ export default function ModelRoute() {
     );
   }
 
+  // Check for parse errors (layers failed to parse)
+  const parseErrors = model.metadata?.parseErrors;
+  const hasParseErrors = parseErrors && parseErrors.length > 0;
+
   // All views use SharedLayout
   return (
     <SharedLayout
@@ -273,6 +279,12 @@ export default function ModelRoute() {
       }
     >
       <div className="flex flex-col h-full overflow-hidden">
+        {parseErrorsVisible && hasParseErrors && (
+          <ModelParseErrorBanner
+            errors={parseErrors}
+            onDismiss={() => setParseErrorsVisible(false)}
+          />
+        )}
         {activeView === 'graph' ? (
           <GraphViewer
             model={model}

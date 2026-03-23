@@ -925,11 +925,9 @@ export interface paths {
                                 [key: string]: {
                                     name: string;
                                     /** @enum {string} */
-                                    status: "active" | "applied" | "abandoned";
-                                    /** @enum {string} */
-                                    type: "feature" | "bugfix" | "exploration";
-                                    created_at: string;
-                                    elements_count: number;
+                                    status: "staged" | "committed" | "discarded";
+                                    created: string;
+                                    changes_count: number;
                                 };
                             };
                         };
@@ -974,40 +972,30 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            metadata: {
-                                id: string;
-                                name: string;
-                                description?: string;
-                                /** @enum {string} */
-                                type: "feature" | "bugfix" | "exploration";
-                                /** @enum {string} */
-                                status: "active" | "applied" | "abandoned";
-                                created_at: string;
-                                updated_at?: string;
-                                workflow?: string;
-                                summary: {
-                                    elements_added: number;
-                                    elements_updated: number;
-                                    elements_deleted: number;
-                                };
+                            id: string;
+                            name: string;
+                            description?: string;
+                            /** @enum {string} */
+                            status: "staged" | "committed" | "discarded";
+                            created: string;
+                            modified: string;
+                            baseSnapshot?: string;
+                            stats: {
+                                additions: number;
+                                modifications: number;
+                                deletions: number;
                             };
                             changes: {
-                                version: string;
-                                changes: {
-                                    timestamp: string;
-                                    /** @enum {string} */
-                                    operation: "add" | "update" | "delete";
-                                    element_id: string;
-                                    layer: string;
-                                    element_type: string;
-                                    /** @description Element data (varies by element type) */
-                                    data?: unknown;
-                                    /** @description Previous element state (for update operations) */
-                                    before?: unknown;
-                                    /** @description New element state (for update operations) */
-                                    after?: unknown;
-                                }[];
-                            };
+                                /** @enum {string} */
+                                type: "add" | "update" | "delete";
+                                elementId: string;
+                                layerName: string;
+                                timestamp?: string;
+                                /** @description Previous element state (for update/delete operations) */
+                                before?: unknown;
+                                /** @description New element state (for add/update operations) */
+                                after?: unknown;
+                            }[];
                         };
                     };
                 };

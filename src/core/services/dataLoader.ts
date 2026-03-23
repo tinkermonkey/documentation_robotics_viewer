@@ -621,7 +621,9 @@ export class DataLoader {
       // Ensure content is a string
       const fileContent = typeof content === 'string' ? content : JSON.stringify(content);
 
-      // Match file to layer based on path
+      // Match file to layer based on path using precise directory matching
+      // to avoid substring collisions (e.g., "data" matching both "data-model" and "datastore")
+      let matched = false;
       for (const [layerId, layerConfig] of Object.entries(manifest.layers)) {
         const layerPath = layerConfig.path;
 
@@ -630,10 +632,30 @@ export class DataLoader {
         const pathParts = layerPath.split('/').filter(p => p.length > 0);
         const layerDir = pathParts[pathParts.length - 1] || '';
 
-        if (filePath.includes(layerDir) || filePath.includes(layerId)) {
+        // Use path-aware matching: check if layerDir appears as a complete path segment
+        // This prevents "data" from matching "data-model" or "datastore"
+        const isPathMatch = layerDir.length > 0 && (
+          filePath.startsWith(layerDir + '/') ||
+          filePath.includes('/' + layerDir + '/') ||
+          filePath.endsWith('/' + layerDir)
+        );
+
+        const isLayerIdMatch = layerId.length > 0 && (
+          filePath.startsWith(layerId + '/') ||
+          filePath.includes('/' + layerId + '/') ||
+          filePath.endsWith('/' + layerId)
+        );
+
+        if (isPathMatch || isLayerIdMatch) {
           layerFiles[layerId][filePath] = fileContent;
+          matched = true;
           break;
         }
+      }
+
+      // Warn if file couldn't be matched to any layer
+      if (!matched) {
+        console.warn(`Could not match file to any layer: ${filePath}`);
       }
     }
 
@@ -671,42 +693,68 @@ export class DataLoader {
    */
   private buildYAMLReferences(layers: Layer[], relationships: Relationship[]): Reference[] {
     const references: Reference[] = [];
+    const unresolvedRelationships: Array<{ rel: Relationship; missingSource: boolean; missingTarget: boolean }> = [];
 
     // Convert relationships to references
     for (const rel of relationships) {
       // Find source and target layers
       let sourceLayer = '';
       let targetLayer = '';
+      let sourceFound = false;
+      let targetFound = false;
 
       for (const layer of layers) {
         const sourceElement = layer.elements.find((e: ModelElement) => e.id === rel.sourceId);
         if (sourceElement) {
           sourceLayer = layer.id;
+          sourceFound = true;
         }
 
         const targetElement = layer.elements.find((e: ModelElement) => e.id === rel.targetId);
         if (targetElement) {
           targetLayer = layer.id;
+          targetFound = true;
         }
       }
 
-      references.push({
-        id: rel.id,
-        type: ReferenceType.Custom,
-        source: {
-          elementId: rel.sourceId,
-          layerId: sourceLayer,
-        },
-        target: {
-          elementId: rel.targetId,
-          layerId: targetLayer,
-        },
-        predicate: rel.predicate,
-        predicateDefinition: rel.predicateDefinition,
+      // Only add references with both source and target resolved
+      if (sourceFound && targetFound) {
+        references.push({
+          id: rel.id,
+          type: ReferenceType.Custom,
+          source: {
+            elementId: rel.sourceId,
+            layerId: sourceLayer,
+          },
+          target: {
+            elementId: rel.targetId,
+            layerId: targetLayer,
+          },
+          predicate: rel.predicate,
+          predicateDefinition: rel.predicateDefinition,
+        });
+      } else {
+        // Track unresolved relationships for logging
+        unresolvedRelationships.push({
+          rel,
+          missingSource: !sourceFound,
+          missingTarget: !targetFound,
+        });
+      }
+    }
+
+    // Log unresolved relationships
+    if (unresolvedRelationships.length > 0) {
+      console.warn(`Filtered out ${unresolvedRelationships.length} relationships with missing source or target elements:`);
+      unresolvedRelationships.forEach(({ rel, missingSource, missingTarget }) => {
+        const issues = [];
+        if (missingSource) issues.push(`source element '${rel.sourceId}' not found`);
+        if (missingTarget) issues.push(`target element '${rel.targetId}' not found`);
+        console.warn(`  - Relationship ${rel.id}: ${issues.join(' and ')}`);
       });
     }
 
-    console.log(`Built ${references.length} YAML cross-layer references`);
+    console.log(`Built ${references.length} YAML cross-layer references (filtered ${unresolvedRelationships.length} with unresolved elements)`);
     return references;
   }
 
@@ -817,9 +865,37 @@ export class DataLoader {
 
   /**
    * Build cross-layer references
+   * Maps discovered reference types to valid ReferenceType enum values
    */
   private buildReferences(layers: Record<string, ReturnType<SpecParser['parse']>>): Reference[] {
     const references: Reference[] = [];
+
+    // Helper function to map reference type names to ReferenceType enum values
+    const mapToReferenceType = (typeKey: string): ReferenceType => {
+      // Direct enum value lookups
+      if (typeKey === 'archimate-property') return ReferenceType.ArchiMateProperty;
+      if (typeKey === 'business-object') return ReferenceType.BusinessObject;
+      if (typeKey === 'business-service') return ReferenceType.BusinessService;
+      if (typeKey === 'business-interface') return ReferenceType.BusinessInterface;
+      if (typeKey === 'api-operation') return ReferenceType.APIOperation;
+      if (typeKey === 'schema-reference') return ReferenceType.SchemaReference;
+      if (typeKey === 'ux-action') return ReferenceType.UXAction;
+      if (typeKey === 'navigation-route') return ReferenceType.NavigationRoute;
+      if (typeKey === 'security-permission') return ReferenceType.SecurityPermission;
+      if (typeKey === 'security-resource') return ReferenceType.SecurityResource;
+      if (typeKey === 'goal') return ReferenceType.Goal;
+      if (typeKey === 'requirement') return ReferenceType.Requirement;
+      if (typeKey === 'principle') return ReferenceType.Principle;
+      if (typeKey === 'constraint') return ReferenceType.Constraint;
+      if (typeKey === 'apm-trace') return ReferenceType.APMTrace;
+      if (typeKey === 'apm-performance-metrics') return ReferenceType.APMPerformanceMetrics;
+      if (typeKey === 'apm-data-quality-metrics') return ReferenceType.APMDataQualityMetrics;
+      if (typeKey === 'apm-business-metrics') return ReferenceType.APMBusinessMetrics;
+
+      // Default to Custom for unknown types instead of asserting invalid values
+      console.warn(`Unknown reference type '${typeKey}', mapping to Custom`);
+      return ReferenceType.Custom;
+    };
 
     // Find all references in element properties
     for (const [layerId, layer] of Object.entries(layers)) {
@@ -829,7 +905,7 @@ export class DataLoader {
           for (const [refType, refValue] of Object.entries(element.references)) {
             references.push({
               id: `${element.id}-${refType}`,
-              type: refType as Reference['type'],
+              type: mapToReferenceType(refType),
               source: {
                 elementId: element.id,
                 layerId: layerId
@@ -846,7 +922,7 @@ export class DataLoader {
           if (typeof value === 'string' && (key.includes('ref') || key.includes('Ref'))) {
             references.push({
               id: `${element.id}-${key}`,
-              type: 'reference' as Reference['type'],
+              type: ReferenceType.Custom,
               source: {
                 elementId: element.id,
                 layerId: layerId,
