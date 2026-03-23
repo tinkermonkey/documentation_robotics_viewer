@@ -101,6 +101,12 @@ RUN chown -R orchestrator:orchestrator /workspace/documentation_robotics_viewer/
 # ============================================================================
 USER orchestrator
 
+# Configure gh CLI to use HTTPS protocol (no SSH keys needed in CI)
+# and set git_protocol so `gh repo clone` and `gh pr checkout` work without SSH
+# Must run as orchestrator so config is stored in /home/orchestrator/.config/gh/
+RUN gh config set git_protocol https --host github.com && \
+    gh config set prompt disabled
+
 # ============================================================================
 # Stage 7: Verification (MANDATORY)
 # ============================================================================
@@ -124,6 +130,10 @@ RUN npx playwright --version
 # Verify git configuration is properly set up
 RUN git config --system --list | grep -E 'user\.(name|email)|safe\.directory|http\.postBuffer' && \
     echo "Git configuration verified successfully"
+
+# Verify gh CLI is configured for HTTPS protocol (CI-friendly)
+RUN gh config get git_protocol --host github.com | grep -q https && \
+    echo "GitHub CLI configured for HTTPS protocol"
 
 # ============================================================================
 # Default command
