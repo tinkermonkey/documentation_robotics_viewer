@@ -16,6 +16,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { waitForElement, waitForWebSocketConnection, setupEmbeddedApp } from './helpers/testUtils';
 
 test.setTimeout(30000);
 
@@ -26,26 +27,16 @@ test.describe('Spec Version Mismatch Warning', () => {
   test.skip(!isE2EMode, 'Skipped: Run with npm run test:e2e when DR CLI server is active');
 
   test.beforeEach(async ({ page }) => {
-    // Navigate to the embedded app
-    await page.goto('/');
-
-    // Wait for React to load
-    await page.waitForSelector('[data-testid="embedded-app"]', { timeout: 10000 });
-
-    // Wait for WebSocket connection
-    await page.waitForSelector('[data-connection-state="connected"]', { timeout: 10000 });
-
-    // Wait for network to stabilize
-    await page.waitForLoadState('networkidle');
+    // Use enhanced setup utility with deterministic waits
+    await setupEmbeddedApp(page, { verbose: false });
   });
 
   test('loads example model without spec version warning when versions match', async ({ page }) => {
-    // Wait for the spec version warning element to appear (or not)
-    const warningElement = page.locator('[data-testid="spec-version-warning"]');
-
-    // Give the model time to load completely
+    // Wait for network to stabilize after setup
     await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(1000);
+
+    // Check for the spec version warning element
+    const warningElement = page.locator('[data-testid="spec-version-warning"]');
 
     // The warning should not be visible if versions match
     // Using toHaveCount(0) to assert it either doesn't exist or isn't visible
@@ -118,7 +109,8 @@ test.describe('Spec Version Mismatch Warning', () => {
 
     if (await modelButton.isVisible()) {
       await modelButton.click();
-      await page.waitForTimeout(500);
+      // Wait for navigation to complete instead of hardcoding timeout
+      await page.waitForLoadState('networkidle');
     }
 
     // The warning component should be rendered in the page
@@ -143,7 +135,8 @@ test.describe('Spec Version Mismatch Warning', () => {
 
     if (await modelButton.isVisible()) {
       await modelButton.click();
-      await page.waitForTimeout(500);
+      // Wait for navigation to complete instead of hardcoding timeout
+      await page.waitForLoadState('networkidle');
     }
 
     const warningElement = page.locator('[data-testid="spec-version-warning"]');
