@@ -160,6 +160,35 @@ src/core/nodes/
 **JSON Config Schema:**
 See [NODE_CONFIG_SCHEMA.md](documentation/NODE_CONFIG_SCHEMA.md) for complete schema documentation.
 
+## Cross-Layer Reference Resolution
+
+**Service:** `src/core/services/crossLayerReferenceExtractor.ts`
+
+The cross-layer reference extractor resolves references between elements across architectural layers using multiple matching strategies:
+
+1. **UUID References**: Direct element-to-element references via `x-archimate-ref`, `x-business-object-ref`, etc.
+2. **Array References**: Multiple element references via `x-supports-goals`, `x-fulfills-requirements`, etc.
+3. **Identifier References**: References via string identifiers (`operationId`, `route`, `resourceRef`, element `name`, etc.)
+4. **Definition Key References**: Schema element references via `definitionKey`
+
+**Identifier Collision Detection:**
+
+When building the identifier lookup table, if multiple elements across different layers share the same identifier value (e.g., both have `operationId: "getUser"`), the extractor:
+
+1. **Detects the collision** and tracks all conflicting elements
+2. **Logs a console warning** with collision details (identifier, all conflicting element IDs)
+3. **Still resolves references** using the last-found candidate (but logs warning)
+
+This prevents silent data loss where references could resolve to the wrong target without any indication of the problem. Use console warnings during development/testing to identify and fix identifier collisions in your data.
+
+**Example Collision Warning:**
+```
+[CrossLayerReferenceExtractor] Detected 1 identifier collision(s) during reference resolution.
+  - Identifier "getUser" maps to multiple elements: api-get-user, app-get-user
+```
+
+**Tests:** `tests/unit/services/crossLayerReferenceExtractor.spec.ts`
+
 ## Key Files
 
 **Core Pipeline:** `nodeTransformer.ts` -> layout engines -> `GraphViewer.tsx`
