@@ -232,7 +232,7 @@ export function createCompleteModelElement(
   const layerId = overrides?.layerId ?? 'application';
 
   return createModelElement(id, type, name, layerId, '#ffffff', '#000000', {}, {
-    sourceReferences: overrides?.sourceReferences,
+    sourceReference: overrides?.sourceReference,
     specNodeId: overrides?.specNodeId,
     attributes: overrides?.attributes,
     metadata: overrides?.metadata

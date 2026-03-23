@@ -8,7 +8,7 @@
 
 import * as yaml from 'js-yaml';
 import { v4 as uuidv4 } from 'uuid';
-import { Relationship, RelationshipType } from '../types/model';
+import { Relationship, RelationshipTypeValue } from '../types/model';
 import { mapPredicateToType } from './predicateTypeMapper';
 
 /**
@@ -164,7 +164,7 @@ export class RelationshipsYamlParser {
   /**
    * Map predicate string to RelationshipType enum
    */
-  private mapPredicateToTypeLocal(predicate: string): RelationshipType {
+  private mapPredicateToTypeLocal(predicate: string): RelationshipTypeValue {
     return mapPredicateToType(predicate);
   }
 

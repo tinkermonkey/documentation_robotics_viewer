@@ -1,4 +1,4 @@
-import { Layer, ModelElement, Relationship, LayerType, RelationshipType } from '../types';
+import { Layer, ModelElement, Relationship, LayerType, RelationshipTypeValue } from '../types';
 import { getLayerColor } from '../utils/layerColors';
 
 /**
@@ -6,7 +6,7 @@ import { getLayerColor } from '../utils/layerColors';
  * Maps each valid type to itself. Unknown types fall back to 'reference'.
  * Defined at module level to avoid object recreation on each method call.
  */
-const RELATIONSHIP_TYPE_MAP: Record<string, RelationshipType> = {
+const RELATIONSHIP_TYPE_MAP: Record<string, RelationshipTypeValue> = {
   'composition': 'composition',
   'aggregation': 'aggregation',
   'assignment': 'assignment',
@@ -126,7 +126,7 @@ export class SpecParser {
    * Map relationship type string to RelationshipType string value
    * Validates input and provides safe fallback to 'reference'
    */
-  private mapRelationshipType(typeString: string): RelationshipType {
+  private mapRelationshipType(typeString: string): RelationshipTypeValue {
     return RELATIONSHIP_TYPE_MAP[typeString] || 'reference';
   }
 

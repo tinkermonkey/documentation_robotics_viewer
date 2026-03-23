@@ -16,7 +16,7 @@ import {
   OpenAPIOperation,
   JSONSchemaDefinition,
 } from '../types/yaml';
-import { ModelElement, Layer, Relationship, RelationshipType, SourceReference, ElementMetadata } from '../types/model';
+import { ModelElement, Layer, Relationship, RelationshipTypeValue, SourceReference, ElementMetadata } from '../types/model';
 import { LayerType } from '../types/layers';
 import { mapPredicateToType } from './predicateTypeMapper';
 import { getLayerColor } from '../utils/layerColors';
@@ -626,7 +626,7 @@ export class YAMLParser {
   /**
    * Map YAML relationship type to internal RelationshipType
    */
-  private mapRelationshipType(yamlType: string): RelationshipType {
+  private mapRelationshipType(yamlType: string): RelationshipTypeValue {
     return mapPredicateToType(yamlType);
   }
 

@@ -310,7 +310,7 @@ export enum RelationshipType {
 
 /**
  * Relationship type union including enum and string literal predicates
- * Catalog-driven values sourced from the predicate catalog
+ * Catalog-driven values sourced from the predicate catalog plus legacy ArchiMate types
  * Supports both enum dot-notation (RelationshipType.Supports) and string predicates
  */
 export type RelationshipTypeValue =
@@ -366,7 +366,21 @@ export type RelationshipTypeValue =
   | 'navigates-to'
   | 'associated-with'
   | 'accesses'
-  | 'influence';
+  | 'influence'
+  | 'composition'
+  | 'aggregation'
+  | 'assignment'
+  | 'realization'
+  | 'serving'
+  | 'access'
+  | 'triggering'
+  | 'flow'
+  | 'reference'
+  | 'navigation'
+  | 'security-control'
+  | 'data-flow'
+  | 'state-transition'
+  | 'relationship';
 
 /**
  * Visual properties of a relationship
