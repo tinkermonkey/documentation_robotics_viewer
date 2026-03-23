@@ -26,6 +26,8 @@ export default function SpecRoute() {
   const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
   const [selectedSpecNodeId, setSelectedSpecNodeId] = useState<string | null>(null);
   const [parseErrorsVisible, setParseErrorsVisible] = useState(true);
+  const [annotationsError, setAnnotationsError] = useState<string | null>(null);
+  const [specSchemasError, setSpecSchemasError] = useState<string | null>(null);
 
   // Load both spec and model (model populates ModelLayersSidebar via modelStore)
   const { data: specData, loading, error, reload } = useDataLoader({
@@ -38,12 +40,15 @@ export default function SpecRoute() {
       return spec;
     },
     websocketEvents: ['model', 'model.updated'],
-    onSuccess: async () => {
+    onSuccess: async (loadedSpecData) => {
       // Load annotations with error handling
       try {
         const annotations = await embeddedDataLoader.loadAnnotations();
         annotationStore.setAnnotations(annotations);
+        setAnnotationsError(null);
       } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load annotations';
+        setAnnotationsError(errorMessage);
         // Continue loading other data even if annotations fail
         annotationStore.setAnnotations([]);
       }
@@ -63,7 +68,7 @@ export default function SpecRoute() {
         useModelStore.getState().setSpecSchemas(schemas);
 
         // Validate spec version: compare spec's declared version against loaded manifest version
-        const specDeclaredVersion = specData?.version as string | undefined;
+        const specDeclaredVersion = loadedSpecData?.version as string | undefined;
         const loadedSpecManifest = specFiles['manifest.json'] as SchemaManifest | undefined;
         const loadedSpecVersion = loadedSpecManifest?.specVersion;
 
@@ -75,8 +80,10 @@ export default function SpecRoute() {
             loadedSpecVersion || 'unknown'
           );
         }
+        setSpecSchemasError(null);
       } catch (err) {
-        console.warn('Failed to load spec schemas:', err);
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load spec schemas';
+        setSpecSchemasError(errorMessage);
         // Continue even if spec schema loading fails - it's supplementary data
       }
     },
@@ -180,8 +187,8 @@ export default function SpecRoute() {
             relationshipSchemas={specNodeDetails.relationshipSchemas}
             onNodeClick={setSelectedSpecNodeId}
           />
-          <AnnotationPanel />
-          <SchemaInfoPanel />
+          <AnnotationPanel loadError={annotationsError} />
+          <SchemaInfoPanel specDataError={specSchemasError} />
         </>
       }
     >
