@@ -3,13 +3,13 @@
  * Coordinates transformation from MetaModel to React Flow nodes and edges
  */
 
-import { MetaModel, Relationship, ModelElement } from '../types';
+import { MetaModel, Relationship, ModelElement, Layer } from '../types';
 import { VerticalLayerLayout } from '../layout/verticalLayerLayout';
-import { LayoutEngine } from '../layout/engines';
+import { LayoutEngine, type EngineLayoutResult, type LayoutGraphInput } from '../layout/engines';
 import { MarkerType } from '@xyflow/react';
 import { elementStore } from '../stores/elementStore';
 import { VerticalLayerLayoutResult, LayerLayoutResult } from '../types/shapes';
-import { AppNode, AppEdge, ChangesetOperation } from '../types/reactflow';
+import { AppNode, AppEdge, ChangesetOperation, NodeTransformResult } from '../types/reactflow';
 import { FALLBACK_COLOR } from '../utils/layerColors';
 import { nodeConfigLoader } from '../nodes/nodeConfigLoader';
 import { NodeType } from '../nodes/NodeType';
@@ -18,15 +18,6 @@ import type { FieldItem } from '../nodes/components/FieldList';
 import type { RelationshipBadgeData } from '../nodes/components/RelationshipBadge';
 import { extractCrossLayerReferences, referencesToEdges } from './crossLayerLinksExtractor';
 import { LibavoidRouter, type LibavoidNodeInput, type LibavoidEdgeInput } from './libavoidRouter';
-
-/**
- * Result of transforming a model
- */
-export interface NodeTransformResult {
-  nodes: AppNode[];
-  edges: AppEdge[];
-  layout: VerticalLayerLayoutResult;
-}
 
 /**
  * Optional extended properties that may be present on elements
@@ -66,7 +57,7 @@ export class NodeTransformer {
     this.precalculateDimensions(model, measuredNodeSizes);
 
     // STEP 1: Calculate layout for all layers
-    let layout: any;
+    let layout: VerticalLayerLayoutResult;
 
     // Check if layoutEngine is defined and which interface it uses
     if (!this.layoutEngine) {
@@ -532,7 +523,14 @@ export class NodeTransformer {
         if (value === null || value === undefined) continue; // Skip empty values
 
         const label = propertyMap[key] || this.formatFieldLabel(key);
-        const displayValue = Array.isArray(value) ? value.join(', ') : String(value);
+        let displayValue: string;
+        if (Array.isArray(value)) {
+          displayValue = value.join(', ');
+        } else if (typeof value === 'object') {
+          displayValue = JSON.stringify(value);
+        } else {
+          displayValue = String(value);
+        }
         items.push({
           id: key,
           label,
@@ -551,7 +549,14 @@ export class NodeTransformer {
         if (attributeKeys.has(key)) continue; // Skip if already added from attributes
 
         const label = propertyMap[key] || this.formatFieldLabel(key);
-        const displayValue = Array.isArray(value) ? value.join(', ') : String(value);
+        let displayValue: string;
+        if (Array.isArray(value)) {
+          displayValue = value.join(', ');
+        } else if (typeof value === 'object') {
+          displayValue = JSON.stringify(value);
+        } else {
+          displayValue = String(value);
+        }
         items.push({
           id: key,
           label,
@@ -965,7 +970,7 @@ export class NodeTransformer {
   /**
    * Layout each layer separately using the selected engine, then stack vertically
    */
-  private async layoutLayersSeparately(model: MetaModel, parameters: Record<string, any>): Promise<any> {
+  private async layoutLayersSeparately(model: MetaModel, parameters: Record<string, any>): Promise<VerticalLayerLayoutResult> {
     const layerOrder = [
       'Motivation',
       'Business',
@@ -983,7 +988,7 @@ export class NodeTransformer {
 
     const layerSpacing = 200; // Spacing between layers
     let currentY = 0;
-    const layers: any = {};
+    const layers: Record<string, LayerLayoutResult> = {};
 
     console.log('[NodeTransformer] Starting per-layer layout for', Object.keys(model.layers).length, 'layers');
 
@@ -1002,7 +1007,7 @@ export class NodeTransformer {
       const layerGraph = this.layerToGraphInput(layer, layerType);
 
       // Calculate layout for this layer
-      const layerResult = await (this.layoutEngine as any).calculateLayout(layerGraph, parameters);
+      const layerResult = await (this.layoutEngine as LayoutEngine).calculateLayout(layerGraph, parameters);
 
       console.log(`[NodeTransformer] Layer ${layerType} layout: ${layerResult.nodes.length} nodes, bounds:`, layerResult.bounds);
 
@@ -1074,9 +1079,9 @@ export class NodeTransformer {
   /**
    * Convert a single layer to graph input format
    */
-  private layerToGraphInput(layer: any, layerType: string): any {
-    const nodes: any[] = [];
-    const edges: any[] = [];
+  private layerToGraphInput(layer: Layer, layerType: string): LayoutGraphInput {
+    const nodes: LayoutGraphInput['nodes'] = [];
+    const edges: LayoutGraphInput['edges'] = [];
 
     // Add all elements as nodes
     for (const element of layer.elements) {
