@@ -183,7 +183,7 @@ This prevents silent data loss where references could resolve to the wrong targe
 
 **Example Collision Warning:**
 ```
-[CrossLayerReferenceExtractor] Detected 1 identifier collision(s) during reference resolution.
+[CrossLayerReferenceExtractor] Detected 1 identifier collision(s) during reference resolution. This may cause ambiguous references. Collisions:
   - Identifier "getUser" maps to multiple elements: api-get-user, app-get-user
 ```
 

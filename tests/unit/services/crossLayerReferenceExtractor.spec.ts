@@ -4,7 +4,7 @@
  * Tests that identifier collisions across layers are:
  * 1. Detected and reported via console warnings
  * 2. Documented in collision information
- * 3. Properly resolved (using first-found or explicit selection)
+ * 3. Properly resolved (using last-found semantics)
  */
 
 import { test, expect } from '@playwright/test';
@@ -57,15 +57,17 @@ test.describe('CrossLayerReferenceExtractor - Identifier Collision Detection', (
       warnings.push(String(args[0]));
     };
 
-    const metadata = extractor.resolveReferences([], layers);
+    try {
+      const metadata = extractor.resolveReferences([], layers);
 
-    console.warn = originalWarn;
-
-    // Should warn about collision
-    expect(warnings.length).toBeGreaterThan(0);
-    expect(warnings[0]).toContain('Detected');
-    expect(warnings[0]).toContain('identifier collision');
-    expect(warnings[0]).toContain('getUser');
+      // Should warn about collision
+      expect(warnings.length).toBeGreaterThan(0);
+      expect(warnings[0]).toContain('Detected');
+      expect(warnings[0]).toContain('identifier collision');
+      expect(warnings[0]).toContain('getUser');
+    } finally {
+      console.warn = originalWarn;
+    }
   });
 
   /**
@@ -104,11 +106,13 @@ test.describe('CrossLayerReferenceExtractor - Identifier Collision Detection', (
       }
     };
 
-    extractor.resolveReferences([], layers);
+    try {
+      extractor.resolveReferences([], layers);
 
-    console.warn = originalWarn;
-
-    expect(warningCount).toBe(0);
+      expect(warningCount).toBe(0);
+    } finally {
+      console.warn = originalWarn;
+    }
   });
 
   /**
@@ -141,11 +145,13 @@ test.describe('CrossLayerReferenceExtractor - Identifier Collision Detection', (
       }
     };
 
-    extractor.resolveReferences([], layers);
+    try {
+      extractor.resolveReferences([], layers);
 
-    console.warn = originalWarn;
-
-    expect(hasCollisionWarning).toBe(true);
+      expect(hasCollisionWarning).toBe(true);
+    } finally {
+      console.warn = originalWarn;
+    }
   });
 
   /**
@@ -184,14 +190,16 @@ test.describe('CrossLayerReferenceExtractor - Identifier Collision Detection', (
       }
     };
 
-    extractor.resolveReferences([], layers);
+    try {
+      extractor.resolveReferences([], layers);
 
-    console.warn = originalWarn;
-
-    // Should mention all three elements
-    expect(collisionMessage).toContain('api-shared');
-    expect(collisionMessage).toContain('app-shared');
-    expect(collisionMessage).toContain('dm-shared');
+      // Should mention all three elements
+      expect(collisionMessage).toContain('api-shared');
+      expect(collisionMessage).toContain('app-shared');
+      expect(collisionMessage).toContain('dm-shared');
+    } finally {
+      console.warn = originalWarn;
+    }
   });
 
   /**
@@ -225,11 +233,13 @@ test.describe('CrossLayerReferenceExtractor - Identifier Collision Detection', (
       }
     };
 
-    extractor.resolveReferences([], layers);
+    try {
+      extractor.resolveReferences([], layers);
 
-    console.warn = originalWarn;
-
-    expect(hasCollisionWarning).toBe(true);
+      expect(hasCollisionWarning).toBe(true);
+    } finally {
+      console.warn = originalWarn;
+    }
   });
 
   /**
@@ -261,11 +271,13 @@ test.describe('CrossLayerReferenceExtractor - Identifier Collision Detection', (
       }
     };
 
-    extractor.resolveReferences([], layers);
+    try {
+      extractor.resolveReferences([], layers);
 
-    console.warn = originalWarn;
-
-    expect(hasCollisionWarning).toBe(true);
+      expect(hasCollisionWarning).toBe(true);
+    } finally {
+      console.warn = originalWarn;
+    }
   });
 
   /**
@@ -315,18 +327,20 @@ test.describe('CrossLayerReferenceExtractor - Identifier Collision Detection', (
       warnings.push(String(args[0]));
     };
 
-    const metadata = extractor.resolveReferences(extractedRefs, layers);
+    try {
+      const metadata = extractor.resolveReferences(extractedRefs, layers);
 
-    console.warn = originalWarn;
+      // Should have detected collision
+      expect(warnings.some(w => w.includes('collision'))).toBe(true);
 
-    // Should have detected collision
-    expect(warnings.some(w => w.includes('collision'))).toBe(true);
-
-    // Should still resolve the reference to one of the candidates
-    expect(metadata.resolvedReferences.length).toBe(1);
-    const resolved = metadata.resolvedReferences[0];
-    expect(resolved.target.elementId).toBeDefined();
-    expect(['api-op', 'app-handler']).toContain(resolved.target.elementId);
+      // Should still resolve the reference to one of the candidates
+      expect(metadata.resolvedReferences.length).toBe(1);
+      const resolved = metadata.resolvedReferences[0];
+      expect(resolved.target.elementId).toBeDefined();
+      expect(['api-op', 'app-handler']).toContain(resolved.target.elementId);
+    } finally {
+      console.warn = originalWarn;
+    }
   });
 
   /**
@@ -373,17 +387,19 @@ test.describe('CrossLayerReferenceExtractor - Identifier Collision Detection', (
       warnings.push(String(args[0]));
     };
 
-    const metadata = extractor.resolveReferences(extractedRefs, layers);
+    try {
+      const metadata = extractor.resolveReferences(extractedRefs, layers);
 
-    console.warn = originalWarn;
+      // Should have collision warning
+      expect(warnings.some(w => w.includes('collision'))).toBe(true);
 
-    // Should have collision warning
-    expect(warnings.some(w => w.includes('collision'))).toBe(true);
-
-    // Should resolve one ref but not the other
-    expect(metadata.resolvedReferences.length).toBe(1);
-    expect(metadata.unresolvedReferences.length).toBe(1);
-    expect(metadata.unresolvedReferences[0].targetIdentifier).toBe('nonExistent');
+      // Should resolve one ref but not the other
+      expect(metadata.resolvedReferences.length).toBe(1);
+      expect(metadata.unresolvedReferences.length).toBe(1);
+      expect(metadata.unresolvedReferences[0].targetIdentifier).toBe('nonExistent');
+    } finally {
+      console.warn = originalWarn;
+    }
   });
 
   /**
@@ -415,11 +431,13 @@ test.describe('CrossLayerReferenceExtractor - Identifier Collision Detection', (
       }
     };
 
-    extractor.resolveReferences([], layers);
+    try {
+      extractor.resolveReferences([], layers);
 
-    console.warn = originalWarn;
-
-    expect(hasCollisionWarning).toBe(true);
+      expect(hasCollisionWarning).toBe(true);
+    } finally {
+      console.warn = originalWarn;
+    }
   });
 
   /**
@@ -452,15 +470,17 @@ test.describe('CrossLayerReferenceExtractor - Identifier Collision Detection', (
       }
     };
 
-    extractor.resolveReferences([], layers);
+    try {
+      extractor.resolveReferences([], layers);
 
-    console.warn = originalWarn;
-
-    // Should contain key information
-    expect(warningMessage).toContain('CrossLayerReferenceExtractor');
-    expect(warningMessage).toContain('identifier collision');
-    expect(warningMessage).toContain('duplicateId');
-    expect(warningMessage).toContain('api-elem-1');
-    expect(warningMessage).toContain('biz-elem-1');
+      // Should contain key information
+      expect(warningMessage).toContain('CrossLayerReferenceExtractor');
+      expect(warningMessage).toContain('identifier collision');
+      expect(warningMessage).toContain('duplicateId');
+      expect(warningMessage).toContain('api-elem-1');
+      expect(warningMessage).toContain('biz-elem-1');
+    } finally {
+      console.warn = originalWarn;
+    }
   });
 });
