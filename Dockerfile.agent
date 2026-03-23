@@ -28,6 +28,12 @@ RUN apt-get update && \
 # In CI/container environments, authentication should use GITHUB_TOKEN env var
 ENV DBUS_SESSION_BUS_ADDRESS=disabled:
 
+# Configure gh CLI to prefer GITHUB_TOKEN env var for authentication
+# The gh CLI checks GH_TOKEN first, then GITHUB_TOKEN. Setting GH_NO_UPDATE_NOTIFIER
+# suppresses update notifications in CI environments. NO_COLOR avoids ANSI escape issues.
+ENV GH_NO_UPDATE_NOTIFIER=1
+ENV NO_COLOR=1
+
 # ============================================================================
 # Stage 3: Git Configuration for CI Environment
 # ============================================================================
