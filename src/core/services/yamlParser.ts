@@ -271,6 +271,7 @@ export class YAMLParser {
       id: layerId,
       type: layerType,
       name: layerConfig.name,
+      order: layerConfig.order,
       elements,
       relationships,
       data: {
