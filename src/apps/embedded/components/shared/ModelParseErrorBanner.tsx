@@ -1,30 +1,25 @@
 /**
  * ModelParseErrorBanner Component
  * Displays a dismissible error banner when model parsing fails or is incomplete
+ *
+ * Stateless component (fully controlled by parent) following the SpecVersionWarning pattern.
+ * Parent is responsible for managing visibility state and calling onDismiss when dismissed.
  */
-import { useState } from 'react';
 
 export interface ModelParseErrorBannerProps {
   /** Array of parse error messages */
   errors: string[];
-  /** Callback when user dismisses the banner */
-  onDismiss?: () => void;
+  /** Callback when user dismisses the banner (required) */
+  onDismiss: () => void;
 }
 
 export function ModelParseErrorBanner({
   errors,
   onDismiss,
 }: ModelParseErrorBannerProps) {
-  const [isDismissed, setIsDismissed] = useState(false);
-
-  if (isDismissed || errors.length === 0) {
+  if (errors.length === 0) {
     return null;
   }
-
-  const handleDismiss = () => {
-    setIsDismissed(true);
-    onDismiss?.();
-  };
 
   const errorCount = errors.length;
   const firstError = errors[0];
@@ -60,7 +55,7 @@ export function ModelParseErrorBanner({
         </details>
       </div>
       <button
-        onClick={handleDismiss}
+        onClick={onDismiss}
         aria-label="Dismiss model parse errors"
         className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 flex-shrink-0 text-xl leading-none"
       >
