@@ -23,6 +23,55 @@ import { getLayerColor } from '../utils/layerColors';
 import type { PredicateCatalog } from './predicateCatalogLoader';
 
 /**
+ * Type guard: validates that an unknown value is a YAMLManifest
+ */
+function isYAMLManifest(value: unknown): value is YAMLManifest {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+  const obj = value as Record<string, unknown>;
+  return (
+    typeof obj.version === 'string' &&
+    typeof obj.project === 'object' &&
+    obj.project !== null &&
+    typeof (obj.project as Record<string, unknown>).name === 'string' &&
+    typeof (obj.project as Record<string, unknown>).description === 'string' &&
+    typeof (obj.project as Record<string, unknown>).version === 'string' &&
+    typeof obj.layers === 'object' &&
+    obj.layers !== null
+  );
+}
+
+/**
+ * Type guard: validates that an unknown value is ProjectionRules
+ */
+function isProjectionRules(value: unknown): value is ProjectionRules {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+  const obj = value as Record<string, unknown>;
+  return (
+    typeof obj.version === 'string' &&
+    Array.isArray(obj.projections)
+  );
+}
+
+/**
+ * Type guard: validates that an unknown value is a RelationshipsYamlEntry
+ */
+function isRelationshipsYamlEntry(value: unknown): value is Record<string, unknown> {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+  const obj = value as Record<string, unknown>;
+  return (
+    typeof obj.source === 'string' &&
+    typeof obj.target === 'string' &&
+    typeof obj.predicate === 'string'
+  );
+}
+
+/**
  * Maps YAML layer IDs to internal LayerType
  */
 const LAYER_TYPE_MAP: Record<string, LayerType> = {
@@ -107,20 +156,17 @@ export class YAMLParser {
    */
   parseManifest(yamlContent: string): YAMLManifest {
     try {
-      const manifest = yaml.load(yamlContent) as YAMLManifest;
+      const parsed = yaml.load(yamlContent);
 
-      // Validate required fields
-      if (!manifest.version) {
-        throw new Error('Manifest missing required field: version');
-      }
-      if (!manifest.layers) {
-        throw new Error('Manifest missing required field: layers');
-      }
-      if (!manifest.project) {
-        throw new Error('Manifest missing required field: project');
+      // Validate structure before type casting
+      if (!isYAMLManifest(parsed)) {
+        throw new Error(
+          'Manifest does not match expected structure. Required fields: ' +
+          'version (string), project (object with name, description, version), layers (object)'
+        );
       }
 
-      return manifest;
+      return parsed;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to parse manifest: ${message}`);
@@ -132,14 +178,15 @@ export class YAMLParser {
    */
   parseProjectionRules(yamlContent: string): ProjectionRules | null {
     try {
-      const rules = yaml.load(yamlContent) as ProjectionRules;
+      const parsed = yaml.load(yamlContent);
 
-      if (!rules.version || !rules.projections) {
-        this.warnings.push('Projection rules malformed: missing version or projections');
+      // Validate structure before type casting
+      if (!isProjectionRules(parsed)) {
+        this.warnings.push('Projection rules malformed: missing version (string) or projections (array)');
         return null;
       }
 
-      return rules;
+      return parsed;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       this.warnings.push(`Failed to parse projection rules: ${message}`);
@@ -435,6 +482,51 @@ export class YAMLParser {
   }
 
   /**
+   * Convert plural noun to singular form
+   * Uses common English pluralization rules
+   * Examples: goals->goal, functions->function, statuses->status, business->business
+   */
+  private singularizeWord(word: string): string {
+    // Handle empty string
+    if (word.length === 0) {
+      return word;
+    }
+
+    // Words ending in 'ss', 'us', 'is' don't change (status, business, basis)
+    if (word.endsWith('ss') || word.endsWith('us') || word.endsWith('is')) {
+      return word;
+    }
+
+    // Words ending in 'ies' -> 'y' (activities -> activity)
+    if (word.endsWith('ies') && word.length > 3) {
+      return word.slice(0, -3) + 'y';
+    }
+
+    // Words ending in 'xes', 'zes', 'ches', 'shes' -> remove 'es' (boxes -> box, churches -> church)
+    if ((word.endsWith('xes') || word.endsWith('zes') || word.endsWith('ches') || word.endsWith('shes')) && word.length > 2) {
+      return word.slice(0, -2);
+    }
+
+    // Words ending in 'oes' -> 'o' (heroes -> hero)
+    if (word.endsWith('oes') && word.length > 3) {
+      return word.slice(0, -2);
+    }
+
+    // Words ending in 'ves' -> 'f' or 'fe' (leaves -> leaf, lives -> life)
+    if (word.endsWith('ves') && word.length > 3) {
+      return word.slice(0, -3) + 'f';
+    }
+
+    // Default: remove trailing 's' only if word ends in 's' (goals -> goal, functions -> function)
+    if (word.endsWith('s') && word.length > 1) {
+      return word.slice(0, -1);
+    }
+
+    // Word doesn't look plural
+    return word;
+  }
+
+  /**
    * Infer element type from YAML element and layer context
    */
   private inferElementType(yamlElement: YAMLElement, layerId: string, filePath: string): string {
@@ -464,13 +556,8 @@ export class YAMLParser {
       const fileNameWithoutExt = fileName.replace(/\.(yaml|yml)$/, '');
 
       if (fileNameWithoutExt && fileNameWithoutExt !== 'manifest' && fileNameWithoutExt !== 'projection-rules') {
-        // Convert plural to singular (simple heuristic: remove trailing 's')
-        // goals -> goal, functions -> function, services -> service
-        let elementType = fileNameWithoutExt;
-        if (elementType.endsWith('s') && elementType.length > 1) {
-          elementType = elementType.slice(0, -1);
-        }
-        return elementType;
+        // Convert plural to singular using proper English pluralization rules
+        return this.singularizeWord(fileNameWithoutExt);
       }
     }
 
