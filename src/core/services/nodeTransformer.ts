@@ -5,7 +5,7 @@
 
 import { MetaModel, Relationship, ModelElement, Layer } from '../types';
 import { VerticalLayerLayout } from '../layout/verticalLayerLayout';
-import { LayoutEngine, type EngineLayoutResult, type LayoutGraphInput } from '../layout/engines';
+import { LayoutEngine, type LayoutGraphInput } from '../layout/engines';
 import { MarkerType } from '@xyflow/react';
 import { elementStore } from '../stores/elementStore';
 import { VerticalLayerLayoutResult, LayerLayoutResult } from '../types/shapes';
@@ -326,7 +326,7 @@ export class NodeTransformer {
       }
     }
 
-    return { nodes, edges: routedEdges, layout };
+    return { nodes, edges: routedEdges };
   }
 
   /**
@@ -495,6 +495,19 @@ export class NodeTransformer {
   }
 
   /**
+   * Convert a value to a display string, handling arrays and objects gracefully
+   */
+  private toDisplayValue(value: unknown): string {
+    if (Array.isArray(value)) {
+      return value.join(', ');
+    } else if (typeof value === 'object' && value !== null) {
+      return JSON.stringify(value);
+    } else {
+      return String(value);
+    }
+  }
+
+  /**
    * Extract field items from element attributes or properties
    */
   private extractFieldItems(element: ModelElement): FieldItem[] | undefined {
@@ -523,14 +536,7 @@ export class NodeTransformer {
         if (value === null || value === undefined) continue; // Skip empty values
 
         const label = propertyMap[key] || this.formatFieldLabel(key);
-        let displayValue: string;
-        if (Array.isArray(value)) {
-          displayValue = value.join(', ');
-        } else if (typeof value === 'object') {
-          displayValue = JSON.stringify(value);
-        } else {
-          displayValue = String(value);
-        }
+        const displayValue = this.toDisplayValue(value);
         items.push({
           id: key,
           label,
@@ -549,14 +555,7 @@ export class NodeTransformer {
         if (attributeKeys.has(key)) continue; // Skip if already added from attributes
 
         const label = propertyMap[key] || this.formatFieldLabel(key);
-        let displayValue: string;
-        if (Array.isArray(value)) {
-          displayValue = value.join(', ');
-        } else if (typeof value === 'object') {
-          displayValue = JSON.stringify(value);
-        } else {
-          displayValue = String(value);
-        }
+        const displayValue = this.toDisplayValue(value);
         items.push({
           id: key,
           label,
@@ -1064,15 +1063,24 @@ export class NodeTransformer {
           width,
           height,
         },
+        color: layer.visual?.color || FALLBACK_COLOR,
+        name: layer.name,
       };
 
       // Update Y offset for next layer
       currentY += height + layerSpacing;
     }
 
+    // Calculate total width as the maximum width of any layer
+    let totalWidth = 0;
+    for (const layerResult of Object.values(layers)) {
+      totalWidth = Math.max(totalWidth, layerResult.bounds.width);
+    }
+
     return {
       layers,
       totalHeight: currentY - layerSpacing,
+      totalWidth,
     };
   }
 
