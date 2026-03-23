@@ -432,13 +432,11 @@ export class YAMLParser {
     }
 
     // Parse v0.8.3 spec fields
-    const sourceRefs = yamlElement.source_reference
+    const sourceRef = yamlElement.source_reference
       ? Array.isArray(yamlElement.source_reference)
-        ? yamlElement.source_reference.map(ref => this.parseSourceReference(ref)).filter((ref): ref is SourceReference => ref !== undefined)
-        : (() => {
-            const parsed = this.parseSourceReference(yamlElement.source_reference);
-            return parsed ? [parsed] : undefined;
-          })()
+        ? // If array, use the first element (spec requires singular, optional scalar)
+          this.parseSourceReference(yamlElement.source_reference[0])
+        : this.parseSourceReference(yamlElement.source_reference)
       : undefined;
     const metadata = yamlElement.metadata
       ? this.parseElementMetadata(yamlElement.metadata)
@@ -453,7 +451,7 @@ export class YAMLParser {
       path: yamlElement.id, // Preserve dot-notation path
       specNodeId: yamlElement.spec_node_id,
       attributes: yamlElement.attributes,
-      sourceReferences: sourceRefs,
+      sourceReference: sourceRef,
       metadata,
       properties,
       visual: {

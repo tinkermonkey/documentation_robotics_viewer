@@ -464,7 +464,7 @@ export class NodeTransformer {
       changesetOperation: optionalProps.changesetOperation,
       relationshipBadge: optionalProps.relationshipBadge,
       // v0.8.3 spec fields
-      sourceReferences: element.sourceReferences,
+      sourceReference: element.sourceReference,
       specNodeId: element.specNodeId,
       attributes: element.attributes,
       metadata: element.metadata,
@@ -487,7 +487,7 @@ export class NodeTransformer {
       detailLevel: optionalProps.detailLevel,
       changesetOperation: optionalProps.changesetOperation,
       // v0.8.3 spec fields
-      sourceReferences: element.sourceReferences,
+      sourceReference: element.sourceReference,
       specNodeId: element.specNodeId,
       attributes: element.attributes,
       metadata: element.metadata,
@@ -764,7 +764,7 @@ export class NodeTransformer {
       changesetOperation: optionalProps.changesetOperation,
       relationshipBadge: optionalProps.relationshipBadge,
       // v0.8.3 spec fields
-      sourceReferences: element.sourceReferences,
+      sourceReference: element.sourceReference,
       specNodeId: element.specNodeId,
       attributes: element.attributes,
       metadata: element.metadata,
@@ -838,7 +838,7 @@ export class NodeTransformer {
       changesetOperation: optionalProps.changesetOperation,
       relationshipBadge: optionalProps.relationshipBadge,
       // v0.8.3 spec fields
-      sourceReferences: element.sourceReferences,
+      sourceReference: element.sourceReference,
       specNodeId: element.specNodeId,
       attributes: element.attributes,
       metadata: element.metadata,
@@ -863,7 +863,7 @@ export class NodeTransformer {
       changesetOperation: optionalProps.changesetOperation,
       relationshipBadge: optionalProps.relationshipBadge,
       // v0.8.3 spec fields
-      sourceReferences: element.sourceReferences,
+      sourceReference: element.sourceReference,
       specNodeId: element.specNodeId,
       attributes: element.attributes,
       metadata: element.metadata,

@@ -35,7 +35,7 @@ function createModelElement(
   stroke = '#000000',
   properties: Record<string, unknown> = {},
   overrides?: {
-    sourceReferences?: SourceReference[];
+    sourceReference?: SourceReference;
     specNodeId?: string;
     attributes?: Record<string, unknown>;
     metadata?: ElementMetadata;
@@ -57,7 +57,7 @@ function createModelElement(
       incoming: [],
       outgoing: []
     },
-    sourceReferences: overrides?.sourceReferences,
+    sourceReference: overrides?.sourceReference,
     specNodeId: overrides?.specNodeId,
     attributes: overrides?.attributes,
     metadata: overrides?.metadata

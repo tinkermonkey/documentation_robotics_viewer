@@ -379,11 +379,11 @@ const NodeDetailsPanel: React.FC<NodeDetailsPanelProps> = ({ selectedNode, model
         </div>
       ) : null}
 
-      {/* Source References */}
-      {element.sourceReferences && element.sourceReferences.length > 0 ? (
+      {/* Source Reference */}
+      {element.sourceReference ? (
         <div data-testid="node-details-source-references" className={DIVIDER}>
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Source References</p>
-          <SourceReferenceList references={element.sourceReferences} />
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Source Reference</p>
+          <SourceReferenceList references={[element.sourceReference]} />
         </div>
       ) : null}
 

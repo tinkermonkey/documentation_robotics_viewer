@@ -50,7 +50,7 @@ export interface UnifiedNodeData {
   relationshipBadge?: RelationshipBadgeData;
 
   // v0.8.3 spec fields for model attribute display and provenance tracking
-  sourceReferences?: SourceReference[];
+  sourceReference?: SourceReference;
   specNodeId?: string;
   attributes?: Record<string, unknown>;
   metadata?: ElementMetadata;
