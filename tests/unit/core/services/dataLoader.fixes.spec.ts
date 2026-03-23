@@ -39,6 +39,7 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
         {
           id: 'business',
           name: 'Business',
+          type: 'Business',
           elements: [
             {
               id: 'service-1',
@@ -57,6 +58,7 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
               visual: { position: { x: 0, y: 0 }, size: { width: 200, height: 100 } },
             } as ModelElement,
           ],
+          relationships: [],
         },
       ];
 
@@ -66,7 +68,7 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
           sourceId: 'service-1',
           targetId: 'service-2',
           type: ReferenceType.Custom,
-          metadata: {},
+          properties: {},
         },
         // This relationship has unresolvable source - should be filtered out
         {
@@ -74,7 +76,7 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
           sourceId: 'nonexistent-service',
           targetId: 'service-2',
           type: ReferenceType.Custom,
-          metadata: {},
+          properties: {},
         },
         // This relationship has unresolvable target - should be filtered out
         {
@@ -82,7 +84,7 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
           sourceId: 'service-1',
           targetId: 'nonexistent-target',
           type: ReferenceType.Custom,
-          metadata: {},
+          properties: {},
         },
       ];
 
@@ -102,6 +104,7 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
         {
           id: 'business',
           name: 'Business',
+          type: 'Business',
           elements: [
             {
               id: 'service-1',
@@ -112,6 +115,7 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
               visual: { position: { x: 0, y: 0 }, size: { width: 200, height: 100 } },
             } as ModelElement,
           ],
+          relationships: [],
         },
       ];
 
@@ -122,7 +126,7 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
           sourceId: 'service-1',
           targetId: 'missing-element',
           type: ReferenceType.Custom,
-          metadata: {},
+          properties: {},
         },
       ];
 
@@ -137,6 +141,7 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
         {
           id: 'business',
           name: 'Business',
+          type: 'Business',
           elements: [
             {
               id: 'service-1',
@@ -147,10 +152,12 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
               visual: { position: { x: 0, y: 0 }, size: { width: 200, height: 100 } },
             } as ModelElement,
           ],
+          relationships: [],
         },
         {
           id: 'technology',
           name: 'Technology',
+          type: 'Technology',
           elements: [
             {
               id: 'system-1',
@@ -161,6 +168,7 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
               visual: { position: { x: 0, y: 0 }, size: { width: 200, height: 100 } },
             } as ModelElement,
           ],
+          relationships: [],
         },
       ];
 
@@ -170,7 +178,7 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
           sourceId: 'service-1',
           targetId: 'system-1',
           type: ReferenceType.Custom,
-          metadata: {},
+          properties: {},
         },
       ];
 
@@ -209,12 +217,14 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
               name: 'Service 1',
               type: 'business-service',
               metadata: {},
+              properties: {},
             },
             {
               id: 'svc-2',
               name: 'Service 2',
               type: 'business-service',
               metadata: {},
+              properties: {},
             },
           ],
           relationships: [
@@ -223,21 +233,21 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
               sourceId: 'svc-1',
               targetId: 'svc-2',
               type: 'custom', // Valid enum value
-              metadata: {},
+              properties: {},
             },
             {
               id: 'rel-invalid',
               sourceId: 'svc-1',
               targetId: 'svc-2',
               type: 'reference', // Invalid enum string - should map to Custom, not assert
-              metadata: {},
+              properties: {},
             },
             {
               id: 'rel-unknown',
               sourceId: 'svc-1',
               targetId: 'svc-2',
               type: 'unknown-type', // Unknown type - should map to Custom
-              metadata: {},
+              properties: {},
             },
           ],
         },
@@ -292,10 +302,7 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
           filePath.includes('/' + layerDir + '/') ||
           filePath.endsWith('/' + layerDir);
 
-        expect(isMatch).toBe(
-          shouldMatch,
-          `File "${filePath}" should ${shouldMatch ? '' : 'not '}match layer "${layerDir}"`
-        );
+        expect(isMatch, `File "${filePath}" should ${shouldMatch ? '' : 'not '}match layer "${layerDir}"`).toBe(shouldMatch);
       }
     });
   });
@@ -315,6 +322,7 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
         {
           id: 'business',
           name: 'Business',
+          type: 'Business',
           elements: [
             {
               id: 'service-a',
@@ -333,6 +341,7 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
               visual: { position: { x: 0, y: 0 }, size: { width: 200, height: 100 } },
             } as ModelElement,
           ],
+          relationships: [],
         },
       ];
 
@@ -343,7 +352,7 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
           sourceId: 'service-a',
           targetId: 'service-b',
           type: ReferenceType.Custom,
-          metadata: {},
+          properties: {},
         },
         // Orphaned: target doesn't exist - should be filtered
         {
@@ -351,7 +360,7 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
           sourceId: 'service-a',
           targetId: 'missing-service',
           type: ReferenceType.Custom,
-          metadata: {},
+          properties: {},
         },
       ];
 
