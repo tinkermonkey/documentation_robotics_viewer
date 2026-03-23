@@ -205,7 +205,8 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
         'buildReferences'
       );
 
-      // Create mock spec layer with relationships using invalid type strings
+      // Create mock spec layer with element references using invalid type strings
+      // buildReferences looks for element.references or element.properties with 'ref' in the key
       const mockLayers: Record<string, any> = {
         'business': {
           version: '1.0',
@@ -218,35 +219,17 @@ test.describe('DataLoader Fixes for Silent Failures & Parse Errors', () => {
               type: 'business-service',
               metadata: {},
               properties: {},
+              references: {
+                'custom': 'svc-2', // Valid enum value
+                'reference': 'svc-2', // Invalid enum string - should map to Custom, not assert
+                'unknown-type': 'svc-2', // Unknown type - should map to Custom
+              },
             },
             {
               id: 'svc-2',
               name: 'Service 2',
               type: 'business-service',
               metadata: {},
-              properties: {},
-            },
-          ],
-          relationships: [
-            {
-              id: 'rel-valid',
-              sourceId: 'svc-1',
-              targetId: 'svc-2',
-              type: 'custom', // Valid enum value
-              properties: {},
-            },
-            {
-              id: 'rel-invalid',
-              sourceId: 'svc-1',
-              targetId: 'svc-2',
-              type: 'reference', // Invalid enum string - should map to Custom, not assert
-              properties: {},
-            },
-            {
-              id: 'rel-unknown',
-              sourceId: 'svc-1',
-              targetId: 'svc-2',
-              type: 'unknown-type', // Unknown type - should map to Custom
               properties: {},
             },
           ],
