@@ -3,13 +3,13 @@
  * Coordinates transformation from MetaModel to React Flow nodes and edges
  */
 
-import { MetaModel, Relationship, ModelElement } from '../types';
+import { MetaModel, Relationship, ModelElement, Layer } from '../types';
 import { VerticalLayerLayout } from '../layout/verticalLayerLayout';
-import { LayoutEngine } from '../layout/engines';
+import { LayoutEngine, type LayoutGraphInput } from '../layout/engines';
 import { MarkerType } from '@xyflow/react';
 import { elementStore } from '../stores/elementStore';
 import { VerticalLayerLayoutResult, LayerLayoutResult } from '../types/shapes';
-import { AppNode, AppEdge, ChangesetOperation } from '../types/reactflow';
+import { AppNode, AppEdge, ChangesetOperation, NodeTransformResult } from '../types/reactflow';
 import { FALLBACK_COLOR } from '../utils/layerColors';
 import { nodeConfigLoader } from '../nodes/nodeConfigLoader';
 import { NodeType } from '../nodes/NodeType';
@@ -18,15 +18,6 @@ import type { FieldItem } from '../nodes/components/FieldList';
 import type { RelationshipBadgeData } from '../nodes/components/RelationshipBadge';
 import { extractCrossLayerReferences, referencesToEdges } from './crossLayerLinksExtractor';
 import { LibavoidRouter, type LibavoidNodeInput, type LibavoidEdgeInput } from './libavoidRouter';
-
-/**
- * Result of transforming a model
- */
-export interface NodeTransformResult {
-  nodes: AppNode[];
-  edges: AppEdge[];
-  layout: VerticalLayerLayoutResult;
-}
 
 /**
  * Optional extended properties that may be present on elements
@@ -66,7 +57,7 @@ export class NodeTransformer {
     this.precalculateDimensions(model, measuredNodeSizes);
 
     // STEP 1: Calculate layout for all layers
-    let layout: any;
+    let layout: VerticalLayerLayoutResult;
 
     // Check if layoutEngine is defined and which interface it uses
     if (!this.layoutEngine) {
@@ -335,7 +326,7 @@ export class NodeTransformer {
       }
     }
 
-    return { nodes, edges: routedEdges, layout };
+    return { nodes, edges: routedEdges };
   }
 
   /**
@@ -473,7 +464,7 @@ export class NodeTransformer {
       changesetOperation: optionalProps.changesetOperation,
       relationshipBadge: optionalProps.relationshipBadge,
       // v0.8.3 spec fields
-      sourceReferences: element.sourceReferences,
+      sourceReference: element.sourceReference,
       specNodeId: element.specNodeId,
       attributes: element.attributes,
       metadata: element.metadata,
@@ -496,11 +487,24 @@ export class NodeTransformer {
       detailLevel: optionalProps.detailLevel,
       changesetOperation: optionalProps.changesetOperation,
       // v0.8.3 spec fields
-      sourceReferences: element.sourceReferences,
+      sourceReference: element.sourceReference,
       specNodeId: element.specNodeId,
       attributes: element.attributes,
       metadata: element.metadata,
     };
+  }
+
+  /**
+   * Convert a value to a display string, handling arrays and objects gracefully
+   */
+  private toDisplayValue(value: unknown): string {
+    if (Array.isArray(value)) {
+      return value.join(', ');
+    } else if (typeof value === 'object' && value !== null) {
+      return JSON.stringify(value);
+    } else {
+      return String(value);
+    }
   }
 
   /**
@@ -532,7 +536,7 @@ export class NodeTransformer {
         if (value === null || value === undefined) continue; // Skip empty values
 
         const label = propertyMap[key] || this.formatFieldLabel(key);
-        const displayValue = Array.isArray(value) ? value.join(', ') : String(value);
+        const displayValue = this.toDisplayValue(value);
         items.push({
           id: key,
           label,
@@ -551,7 +555,7 @@ export class NodeTransformer {
         if (attributeKeys.has(key)) continue; // Skip if already added from attributes
 
         const label = propertyMap[key] || this.formatFieldLabel(key);
-        const displayValue = Array.isArray(value) ? value.join(', ') : String(value);
+        const displayValue = this.toDisplayValue(value);
         items.push({
           id: key,
           label,
@@ -760,7 +764,7 @@ export class NodeTransformer {
       changesetOperation: optionalProps.changesetOperation,
       relationshipBadge: optionalProps.relationshipBadge,
       // v0.8.3 spec fields
-      sourceReferences: element.sourceReferences,
+      sourceReference: element.sourceReference,
       specNodeId: element.specNodeId,
       attributes: element.attributes,
       metadata: element.metadata,
@@ -834,7 +838,7 @@ export class NodeTransformer {
       changesetOperation: optionalProps.changesetOperation,
       relationshipBadge: optionalProps.relationshipBadge,
       // v0.8.3 spec fields
-      sourceReferences: element.sourceReferences,
+      sourceReference: element.sourceReference,
       specNodeId: element.specNodeId,
       attributes: element.attributes,
       metadata: element.metadata,
@@ -859,7 +863,7 @@ export class NodeTransformer {
       changesetOperation: optionalProps.changesetOperation,
       relationshipBadge: optionalProps.relationshipBadge,
       // v0.8.3 spec fields
-      sourceReferences: element.sourceReferences,
+      sourceReference: element.sourceReference,
       specNodeId: element.specNodeId,
       attributes: element.attributes,
       metadata: element.metadata,
@@ -965,7 +969,7 @@ export class NodeTransformer {
   /**
    * Layout each layer separately using the selected engine, then stack vertically
    */
-  private async layoutLayersSeparately(model: MetaModel, parameters: Record<string, any>): Promise<any> {
+  private async layoutLayersSeparately(model: MetaModel, parameters: Record<string, any>): Promise<VerticalLayerLayoutResult> {
     const layerOrder = [
       'Motivation',
       'Business',
@@ -983,7 +987,7 @@ export class NodeTransformer {
 
     const layerSpacing = 200; // Spacing between layers
     let currentY = 0;
-    const layers: any = {};
+    const layers: Record<string, LayerLayoutResult> = {};
 
     console.log('[NodeTransformer] Starting per-layer layout for', Object.keys(model.layers).length, 'layers');
 
@@ -1002,7 +1006,7 @@ export class NodeTransformer {
       const layerGraph = this.layerToGraphInput(layer, layerType);
 
       // Calculate layout for this layer
-      const layerResult = await (this.layoutEngine as any).calculateLayout(layerGraph, parameters);
+      const layerResult = await (this.layoutEngine as LayoutEngine).calculateLayout(layerGraph, parameters);
 
       console.log(`[NodeTransformer] Layer ${layerType} layout: ${layerResult.nodes.length} nodes, bounds:`, layerResult.bounds);
 
@@ -1059,24 +1063,33 @@ export class NodeTransformer {
           width,
           height,
         },
+        color: layer.visual?.color || FALLBACK_COLOR,
+        name: layer.name,
       };
 
       // Update Y offset for next layer
       currentY += height + layerSpacing;
     }
 
+    // Calculate total width as the maximum width of any layer
+    let totalWidth = 0;
+    for (const layerResult of Object.values(layers)) {
+      totalWidth = Math.max(totalWidth, layerResult.bounds.width);
+    }
+
     return {
       layers,
       totalHeight: currentY - layerSpacing,
+      totalWidth,
     };
   }
 
   /**
    * Convert a single layer to graph input format
    */
-  private layerToGraphInput(layer: any, layerType: string): any {
-    const nodes: any[] = [];
-    const edges: any[] = [];
+  private layerToGraphInput(layer: Layer, layerType: string): LayoutGraphInput {
+    const nodes: LayoutGraphInput['nodes'] = [];
+    const edges: LayoutGraphInput['edges'] = [];
 
     // Add all elements as nodes
     for (const element of layer.elements) {

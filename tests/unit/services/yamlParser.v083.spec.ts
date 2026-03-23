@@ -168,7 +168,7 @@ test.describe('YAMLParser v0.8.3 Field Extraction', () => {
       });
     });
 
-    test('should parse and map source_reference to ModelElement.sourceReferences', () => {
+    test('should parse and map source_reference to ModelElement.sourceReference', () => {
       const yamlElement: any = {
         name: 'Test Element',
         id: 'test.element',
@@ -191,12 +191,11 @@ test.describe('YAMLParser v0.8.3 Field Extraction', () => {
         'test.yaml'
       );
 
-      expect(modelElement.sourceReferences).toBeDefined();
-      expect(modelElement.sourceReferences).toHaveLength(1);
-      expect(modelElement.sourceReferences?.[0].provenance).toBe('extracted');
-      expect(modelElement.sourceReferences?.[0].locations).toHaveLength(1);
-      expect(modelElement.sourceReferences?.[0].locations[0].file).toBe('repository/src/main.ts');
-      expect(modelElement.sourceReferences?.[0].repository?.url).toBe('https://github.com/example/repo');
+      expect(modelElement.sourceReference).toBeDefined();
+      expect(modelElement.sourceReference?.provenance).toBe('extracted');
+      expect(modelElement.sourceReference?.locations).toHaveLength(1);
+      expect(modelElement.sourceReference?.locations[0].file).toBe('repository/src/main.ts');
+      expect(modelElement.sourceReference?.repository?.url).toBe('https://github.com/example/repo');
     });
 
     test('should parse and map metadata to ModelElement.metadata', () => {
@@ -300,7 +299,7 @@ test.describe('YAMLParser v0.8.3 Field Extraction', () => {
         'test.yaml'
       );
 
-      expect(modelElement.sourceReferences).toBeUndefined();
+      expect(modelElement.sourceReference).toBeUndefined();
     });
 
     test('should handle incomplete source_reference gracefully', () => {
@@ -320,10 +319,9 @@ test.describe('YAMLParser v0.8.3 Field Extraction', () => {
         'test.yaml'
       );
 
-      expect(modelElement.sourceReferences).toBeDefined();
-      expect(modelElement.sourceReferences).toHaveLength(1);
-      expect(modelElement.sourceReferences?.[0].provenance).toBe('manual');
-      expect(modelElement.sourceReferences?.[0].locations).toEqual([]);
+      expect(modelElement.sourceReference).toBeDefined();
+      expect(modelElement.sourceReference?.provenance).toBe('manual');
+      expect(modelElement.sourceReference?.locations).toEqual([]);
     });
   });
 
@@ -392,8 +390,8 @@ test.describe('YAMLParser v0.8.3 Field Extraction', () => {
         owner: 'order-team',
         costCenter: 'CC123',
       });
-      expect(modelElement.sourceReferences?.[0].provenance).toBe('extracted');
-      expect(modelElement.sourceReferences?.[0].locations).toHaveLength(2);
+      expect(modelElement.sourceReference?.provenance).toBe('extracted');
+      expect(modelElement.sourceReference?.locations).toHaveLength(2);
       expect(modelElement.metadata?.version).toBe(3);
     });
   });

@@ -54,6 +54,7 @@ export default defineConfig({
   server: {
     port: 3001,
     strictPort: true,
+    watch: null,
     proxy: {
       '/api': {
         target: process.env.DR_API_URL || 'http://localhost:8080',

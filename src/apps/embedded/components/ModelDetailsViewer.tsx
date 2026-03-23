@@ -155,16 +155,16 @@ const ElementCard: React.FC<ElementCardProps> = ({
             )}
 
             {/* Source References section */}
-            {element.sourceReferences && element.sourceReferences.length > 0 && (
+            {element.sourceReference && (
               <div
                 className="pt-2 border-t border-gray-200 dark:border-gray-700"
                 data-testid="element-source-references-section"
               >
                 <h6 className="text-xs font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">
-                  Source References
+                  Source Reference
                 </h6>
                 <SourceReferenceList
-                  references={element.sourceReferences}
+                  references={[element.sourceReference]}
                 />
               </div>
             )}
@@ -217,8 +217,10 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
 
   const layers = model.layers || {};
   const layerNames = Object.keys(layers).sort((a, b) => {
-    const orderA = layers[a].order ?? 999;
-    const orderB = layers[b].order ?? 999;
+    const layerA = layers[a];
+    const layerB = layers[b];
+    const orderA = layerA.order ?? 999;
+    const orderB = layerB.order ?? 999;
     return orderA - orderB;
   });
 
@@ -551,7 +553,7 @@ const ModelDetailsViewer: React.FC<ModelDetailsViewerProps> = ({
                           const elementAsRecord = element as unknown as Record<string, unknown>;
                           const elementEntries = Object.entries(elementAsRecord)
                             .filter(([key]) =>
-                              !['id', 'name', 'type', 'description', 'properties', 'visual', 'layerId', 'sourceReferences'].includes(key)
+                              !['id', 'name', 'type', 'description', 'properties', 'visual', 'layerId', 'sourceReference'].includes(key)
                             );
 
                           elementEntries.forEach(([key, value]) => {

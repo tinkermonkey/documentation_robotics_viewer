@@ -116,7 +116,7 @@ export function referenceToEdge(
   const isBidirectional = reference.predicateDefinition?.semantics?.directionality === 'bidirectional';
 
   return {
-    id: `edge-ref-${reference.source.elementId}-${reference.target.elementId}-${index}`,
+    id: `edge-ref-${reference.id}-${index}`,
     source: sourceNodeId,
     target: targetNodeId,
     type: 'elbow',

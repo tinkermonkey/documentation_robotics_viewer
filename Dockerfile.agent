@@ -28,6 +28,15 @@ RUN apt-get update && \
 # In CI/container environments, authentication should use GITHUB_TOKEN env var
 ENV DBUS_SESSION_BUS_ADDRESS=disabled:
 
+# Configure gh CLI for token-based authentication in CI/container environments
+# The gh CLI checks GH_TOKEN first, then GITHUB_TOKEN for authentication.
+# GH_NO_UPDATE_NOTIFIER suppresses update notifications in CI environments.
+# NO_COLOR avoids ANSI escape issues in non-TTY environments.
+# GH_PROMPT_DISABLED prevents interactive prompts that hang in containers.
+ENV GH_NO_UPDATE_NOTIFIER=1
+ENV NO_COLOR=1
+ENV GH_PROMPT_DISABLED=1
+
 # ============================================================================
 # Stage 3: Git Configuration for CI Environment
 # ============================================================================
@@ -92,6 +101,12 @@ RUN chown -R orchestrator:orchestrator /workspace/documentation_robotics_viewer/
 # ============================================================================
 USER orchestrator
 
+# Configure gh CLI to use HTTPS protocol (no SSH keys needed in CI)
+# and set git_protocol so `gh repo clone` and `gh pr checkout` work without SSH
+# Must run as orchestrator so config is stored in /home/orchestrator/.config/gh/
+RUN gh config set git_protocol https --host github.com && \
+    gh config set prompt disabled
+
 # ============================================================================
 # Stage 7: Verification (MANDATORY)
 # ============================================================================
@@ -115,6 +130,10 @@ RUN npx playwright --version
 # Verify git configuration is properly set up
 RUN git config --system --list | grep -E 'user\.(name|email)|safe\.directory|http\.postBuffer' && \
     echo "Git configuration verified successfully"
+
+# Verify gh CLI is configured for HTTPS protocol (CI-friendly)
+RUN gh config get git_protocol --host github.com | grep -q https && \
+    echo "GitHub CLI configured for HTTPS protocol"
 
 # ============================================================================
 # Default command

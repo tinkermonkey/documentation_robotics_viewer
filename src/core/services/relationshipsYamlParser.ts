@@ -8,7 +8,7 @@
 
 import * as yaml from 'js-yaml';
 import { v4 as uuidv4 } from 'uuid';
-import { Relationship, RelationshipType } from '../types/model';
+import { Relationship, RelationshipTypeValue } from '../types/model';
 import { mapPredicateToType } from './predicateTypeMapper';
 
 /**
@@ -21,6 +21,21 @@ export interface RelationshipsYamlEntry {
   layer?: string;       // intra-layer indicator
   category?: string;    // relationship category (e.g., 'structural')
   properties?: Record<string, unknown>;
+}
+
+/**
+ * Type guard: validates that an unknown value is a RelationshipsYamlEntry
+ */
+function isRelationshipsYamlEntry(value: unknown): value is RelationshipsYamlEntry {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+  const obj = value as Record<string, unknown>;
+  return (
+    typeof obj.source === 'string' &&
+    typeof obj.target === 'string' &&
+    typeof obj.predicate === 'string'
+  );
 }
 
 /**
@@ -44,24 +59,34 @@ export class RelationshipsYamlParser {
     this.warnings = [];
 
     try {
-      const entries = yaml.load(yamlContent) as RelationshipsYamlEntry[];
+      const parsed = yaml.load(yamlContent);
 
-      if (!Array.isArray(entries)) {
+      // Validate that parsed value is an array before processing
+      if (!Array.isArray(parsed)) {
         this.warnings.push('relationships.yaml must contain an array of relationship entries');
         return [];
       }
 
       const relationships: Relationship[] = [];
 
-      for (const entry of entries) {
+      for (let i = 0; i < parsed.length; i++) {
+        const entry = parsed[i];
         try {
+          // Validate each entry structure before processing
+          if (!isRelationshipsYamlEntry(entry)) {
+            this.warnings.push(
+              `Relationship entry at index ${i} missing required fields: source (string), target (string), or predicate (string)`
+            );
+            continue;
+          }
+
           const relationship = this.parseRelationshipEntry(entry, dotNotationLookup);
           if (relationship) {
             relationships.push(relationship);
           }
         } catch (error) {
           const message = error instanceof Error ? error.message : String(error);
-          this.warnings.push(`Failed to parse relationship entry: ${message}`);
+          this.warnings.push(`Failed to parse relationship entry at index ${i}: ${message}`);
         }
       }
 
@@ -139,7 +164,7 @@ export class RelationshipsYamlParser {
   /**
    * Map predicate string to RelationshipType enum
    */
-  private mapPredicateToTypeLocal(predicate: string): RelationshipType {
+  private mapPredicateToTypeLocal(predicate: string): RelationshipTypeValue {
     return mapPredicateToType(predicate);
   }
 

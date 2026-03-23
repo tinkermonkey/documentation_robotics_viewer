@@ -4,8 +4,8 @@
  * These fixtures embed real architecture data for use in Storybook stories
  */
 
-import type { MetaModel, Layer, ModelElement, Relationship } from '../../core/types';
-import { LayerType, RelationshipType } from '../../core/types';
+import type { MetaModel, Layer, ModelElement, Relationship, RelationshipTypeValue } from '../../core/types';
+import { LayerType } from '../../core/types';
 
 function createVisual(position = { x: 0, y: 0 }) {
   return {
@@ -42,7 +42,7 @@ function el(
 
 function rel(
   id: string,
-  type: RelationshipType,
+  type: RelationshipTypeValue,
   sourceId: string,
   targetId: string
 ): Relationship {

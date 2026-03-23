@@ -138,7 +138,7 @@ export interface ModelElement {
   };
   references?: ElementReferences;
   // v0.8.3 spec fields
-  sourceReferences?: SourceReference[];
+  sourceReference?: SourceReference;
   path?: string;
   specNodeId?: string;
   attributes?: Record<string, unknown>;
@@ -212,7 +212,7 @@ export interface ElementReferences {
  */
 export interface Relationship {
   id: string;
-  type: RelationshipType;
+  type: RelationshipTypeValue;
   sourceId: string;
   targetId: string;
   properties?: Record<string, unknown>;
@@ -230,10 +230,157 @@ export interface Relationship {
 }
 
 /**
- * Relationship types (predicate-based string type)
- * Catalog-driven values sourced from the predicate catalog
+ * Relationship type enum
+ * Core predicate types from the v0.8.3 predicate catalog
+ * Kept for backwards compatibility and dot-notation access
  */
-export type RelationshipType = string;
+export enum RelationshipType {
+  // Motivation layer predicates
+  Supports = 'supports',
+  SupportedBy = 'supported-by',
+  SupportsGoals = 'supports-goals',
+  Realizes = 'realizes',
+  RealizedBy = 'realized-by',
+  Fulfills = 'fulfills',
+  FulfilledBy = 'fulfilled-by',
+  FulfillsRequirements = 'fulfills-requirements',
+  Delivers = 'delivers',
+  DeliveredBy = 'delivered-by',
+  DeliversValue = 'delivers-value',
+  Constrains = 'constrains',
+  ConstrainedBy = 'constrained-by',
+  Governs = 'governs',
+  GovernedByPrinciples = 'governed-by-principles',
+
+  // Business layer predicates
+  Owns = 'owns',
+  OwnedBy = 'owned-by',
+  AssignedTo = 'assigned-to',
+  Performs = 'performs',
+  Uses = 'uses',
+  Serves = 'serves',
+
+  // Structural predicates
+  Composes = 'composes',
+  Aggregates = 'aggregates',
+  Specializes = 'specializes',
+  Implements = 'implements',
+
+  // Process/Flow predicates
+  FlowsTo = 'flows-to',
+  DependsOn = 'depends-on',
+  Triggers = 'triggers',
+  References = 'references',
+  ReferencesTable = 'references-table',
+
+  // Data/Schema predicates
+  BindsTo = 'binds-to',
+  DerivesFrom = 'derives-from',
+  Maps = 'maps-to',
+  Consumes = 'consumes',
+
+  // API/Integration predicates
+  Authenticates = 'authenticates',
+  Authorizes = 'authorizes',
+  Provides = 'provides',
+  Requires = 'requires',
+
+  // Testing/Monitoring predicates
+  Tests = 'tests',
+  Measures = 'measures',
+  MeasuresOutcome = 'measures-outcome',
+  Monitors = 'monitors',
+  Traces = 'traces',
+  Validates = 'validates',
+
+  // Security predicates
+  Protects = 'protects',
+  Enforces = 'enforces-requirement',
+  Mitigates = 'mitigates',
+
+  // UI/Navigation predicates
+  RendersTo = 'renders',
+  NavigatesTo = 'navigates-to',
+
+  // General predicates
+  AssociatedWith = 'associated-with',
+  Accesses = 'accesses',
+  Influences = 'influence',
+}
+
+/**
+ * Relationship type union including enum and string literal predicates
+ * Catalog-driven values sourced from the predicate catalog plus legacy ArchiMate types
+ * Supports both enum dot-notation (RelationshipType.Supports) and string predicates
+ */
+export type RelationshipTypeValue =
+  | RelationshipType
+  | 'supports'
+  | 'supported-by'
+  | 'supports-goals'
+  | 'realizes'
+  | 'realized-by'
+  | 'fulfills'
+  | 'fulfilled-by'
+  | 'fulfills-requirements'
+  | 'delivers'
+  | 'delivered-by'
+  | 'delivers-value'
+  | 'constrains'
+  | 'constrained-by'
+  | 'governs'
+  | 'governed-by-principles'
+  | 'owns'
+  | 'owned-by'
+  | 'assigned-to'
+  | 'performs'
+  | 'uses'
+  | 'serves'
+  | 'composes'
+  | 'aggregates'
+  | 'specializes'
+  | 'implements'
+  | 'flows-to'
+  | 'depends-on'
+  | 'triggers'
+  | 'references'
+  | 'references-table'
+  | 'binds-to'
+  | 'derives-from'
+  | 'maps-to'
+  | 'consumes'
+  | 'authenticates'
+  | 'authorizes'
+  | 'provides'
+  | 'requires'
+  | 'tests'
+  | 'measures'
+  | 'measures-outcome'
+  | 'monitors'
+  | 'traces'
+  | 'validates'
+  | 'protects'
+  | 'enforces-requirement'
+  | 'mitigates'
+  | 'renders'
+  | 'navigates-to'
+  | 'associated-with'
+  | 'accesses'
+  | 'influence'
+  | 'composition'
+  | 'aggregation'
+  | 'assignment'
+  | 'realization'
+  | 'serving'
+  | 'access'
+  | 'triggering'
+  | 'flow'
+  | 'reference'
+  | 'navigation'
+  | 'security-control'
+  | 'data-flow'
+  | 'state-transition'
+  | 'relationship';
 
 /**
  * Visual properties of a relationship

@@ -61,7 +61,16 @@ export class CrossLayerReferenceExtractor {
 
     // Build lookup maps for efficient resolution
     const elementById = this.buildElementLookup(layers);
-    const elementsByIdentifier = this.buildIdentifierLookup(layers);
+    const { elementsByIdentifier, collisions } = this.buildIdentifierLookup(layers);
+
+    // Log identifier collisions for debugging
+    if (collisions.length > 0) {
+      console.warn(
+        `[CrossLayerReferenceExtractor] Detected ${collisions.length} identifier collision(s) during reference resolution. ` +
+        `This may cause ambiguous references. Collisions:\n` +
+        collisions.map(c => `  - Identifier "${c.identifier}" maps to multiple elements: ${c.elementIds.join(', ')}`).join('\n')
+      );
+    }
 
     for (const extracted of extractedRefs) {
       // Track statistics
@@ -228,11 +237,18 @@ export class CrossLayerReferenceExtractor {
    * Build a lookup map of elements by their identifiers
    * Catalog-driven: uses fieldPaths from predicate definitions to discover which properties to index
    * Falls back to common identifiers if catalog is not available
+   *
+   * Returns both the lookup map and collision information to detect and warn about
+   * identifier collisions across layers
    */
   private buildIdentifierLookup(
     layers: Record<string, Layer>
-  ): Map<string, { element: ModelElement; layerId: string }> {
+  ): {
+    elementsByIdentifier: Map<string, { element: ModelElement; layerId: string }>;
+    collisions: Array<{ identifier: string; elementIds: string[] }>;
+  } {
     const lookup = new Map<string, { element: ModelElement; layerId: string }>();
+    const identifierToElements = new Map<string, Set<string>>(); // Track all elements per identifier for collision detection
 
     // Build set of field paths to index from catalog
     const catalogFieldPaths = new Set<string>();
@@ -270,21 +286,45 @@ export class CrossLayerReferenceExtractor {
           );
         }
 
-        // Index each identifier
+        // Index each identifier and track collisions
         for (const identifier of identifiers) {
           if (identifier && typeof identifier === 'string') {
             lookup.set(identifier, { element, layerId });
+
+            // Track all elements with this identifier for collision detection
+            if (!identifierToElements.has(identifier)) {
+              identifierToElements.set(identifier, new Set());
+            }
+            identifierToElements.get(identifier)!.add(element.id);
           }
         }
 
         // Always index by definition key for schema elements
         if (element.properties.definitionKey && typeof element.properties.definitionKey === 'string') {
-          lookup.set(element.properties.definitionKey, { element, layerId });
+          const defKey = element.properties.definitionKey;
+          lookup.set(defKey, { element, layerId });
+
+          // Track collision for definition keys too
+          if (!identifierToElements.has(defKey)) {
+            identifierToElements.set(defKey, new Set());
+          }
+          identifierToElements.get(defKey)!.add(element.id);
         }
       }
     }
 
-    return lookup;
+    // Extract collision information (identifiers mapped to multiple elements)
+    const collisions = Array.from(identifierToElements.entries())
+      .filter(([_, elementIds]) => elementIds.size > 1)
+      .map(([identifier, elementIds]) => ({
+        identifier,
+        elementIds: Array.from(elementIds)
+      }));
+
+    return {
+      elementsByIdentifier: lookup,
+      collisions
+    };
   }
 
   /**

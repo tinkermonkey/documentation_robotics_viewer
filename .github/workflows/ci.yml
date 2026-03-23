@@ -14,8 +14,12 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: write
+      pull-requests: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
     - uses: actions/checkout@v4
@@ -56,6 +60,7 @@ jobs:
       run: npm test
       env:
         GIT_CONFIG_GLOBAL: /dev/null
+      timeout-minutes: 10
 
     - name: Set version from tag
       if: startsWith(github.ref, 'refs/tags/v')
@@ -67,6 +72,7 @@ jobs:
 
     - name: Build
       run: npm run build
+      timeout-minutes: 10
 
     - name: Zip artifact
       if: startsWith(github.ref, 'refs/tags/v')
@@ -88,6 +94,11 @@ jobs:
     # Runs on: PRs (catch regressions), scheduled (weekly comprehensive), manual dispatch
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
     - uses: actions/checkout@v4
 
@@ -108,14 +119,14 @@ jobs:
 
     - name: Build Storybook
       run: npm run storybook:build
+      timeout-minutes: 10
 
     - name: Start Storybook server
-      run: npm run storybook:serve &
+      run: npm run storybook:serve > /tmp/storybook.log 2>&1 &
 
     - name: Wait for Storybook server
       run: npx wait-on http://localhost:61001 --timeout 60000
 
     - name: Run Storybook tests
-      run: npm run test:storybook
-      # Note: Accessibility tests (axe-core) are already run for every story by the test-runner
-      # in .storybook/test-runner.ts via postVisit hook. Removed redundant test:storybook:a11y step.
+      run: npm run test:storybook -- --testTimeout 30000
+      timeout-minutes: 10

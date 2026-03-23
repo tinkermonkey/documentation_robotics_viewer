@@ -7,6 +7,7 @@ import SchemaInfoPanel from '../components/SchemaInfoPanel';
 import ModelLayersSidebar from '../components/ModelLayersSidebar';
 import SharedLayout from '../components/SharedLayout';
 import { LoadingState, ErrorState } from '../components/shared';
+import { ModelParseErrorBanner } from '../components/shared/ModelParseErrorBanner';
 import { useAnnotationStore } from '../stores/annotationStore';
 import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { useModelStore } from '../../../core/stores/modelStore';
@@ -21,9 +22,12 @@ export default function SpecRoute() {
   const navigate = useNavigate();
   const annotationStore = useAnnotationStore();
   const { specView, setSpecView } = useViewPreferenceStore();
-  const { setModel, specSchemas } = useModelStore();
+  const { setModel, specSchemas, model } = useModelStore();
   const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null);
   const [selectedSpecNodeId, setSelectedSpecNodeId] = useState<string | null>(null);
+  const [parseErrorsVisible, setParseErrorsVisible] = useState(true);
+  const [annotationsError, setAnnotationsError] = useState<string | null>(null);
+  const [specSchemasError, setSpecSchemasError] = useState<string | null>(null);
 
   // Load both spec and model (model populates ModelLayersSidebar via modelStore)
   const { data: specData, loading, error, reload } = useDataLoader({
@@ -36,12 +40,15 @@ export default function SpecRoute() {
       return spec;
     },
     websocketEvents: ['model', 'model.updated'],
-    onSuccess: async () => {
+    onSuccess: async (loadedSpecData) => {
       // Load annotations with error handling
       try {
         const annotations = await embeddedDataLoader.loadAnnotations();
         annotationStore.setAnnotations(annotations);
+        setAnnotationsError(null);
       } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load annotations';
+        setAnnotationsError(errorMessage);
         // Continue loading other data even if annotations fail
         annotationStore.setAnnotations([]);
       }
@@ -61,7 +68,7 @@ export default function SpecRoute() {
         useModelStore.getState().setSpecSchemas(schemas);
 
         // Validate spec version: compare spec's declared version against loaded manifest version
-        const specDeclaredVersion = specData?.version as string | undefined;
+        const specDeclaredVersion = loadedSpecData?.version as string | undefined;
         const loadedSpecManifest = specFiles['manifest.json'] as SchemaManifest | undefined;
         const loadedSpecVersion = loadedSpecManifest?.specVersion;
 
@@ -73,8 +80,10 @@ export default function SpecRoute() {
             loadedSpecVersion || 'unknown'
           );
         }
+        setSpecSchemasError(null);
       } catch (err) {
-        console.warn('Failed to load spec schemas:', err);
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load spec schemas';
+        setSpecSchemasError(errorMessage);
         // Continue even if spec schema loading fails - it's supplementary data
       }
     },
@@ -138,6 +147,10 @@ export default function SpecRoute() {
   const selectedSchemaId = selectedLayerId ? layerIdToSchemaKey[selectedLayerId] ?? null : null;
   const selectedSchema = selectedSchemaId ? specData.schemas[selectedSchemaId] : undefined;
 
+  // Check for parse errors (from the loaded model)
+  const parseErrors = model?.metadata?.parseErrors;
+  const hasParseErrors = parseErrors && parseErrors.length > 0;
+
   // Get spec node details for SpecNodeDetailsPanel
   const specNodeDetails = useMemo((): Pick<SpecNodeDetailsPanelProps, 'nodeSchema' | 'relationshipSchemas'> => {
     if (!selectedSpecNodeId) return { nodeSchema: null, relationshipSchemas: [] };
@@ -174,30 +187,38 @@ export default function SpecRoute() {
             relationshipSchemas={specNodeDetails.relationshipSchemas}
             onNodeClick={setSelectedSpecNodeId}
           />
-          <AnnotationPanel />
-          <SchemaInfoPanel />
+          <AnnotationPanel loadError={annotationsError} />
+          <SchemaInfoPanel specDataError={specSchemasError} />
         </>
       }
     >
-      {activeView === 'graph' ? (
-        <SpecViewer
-          specData={specData}
-          selectedSchemaId={selectedSchemaId}
-          onSpecNodeSelect={setSelectedSpecNodeId}
-        />
-      ) : (
-        <div className="h-full overflow-auto p-6">
-          {selectedSchema ? (
-            <pre className="text-xs text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 overflow-auto">
-              {JSON.stringify(selectedSchema, null, 2)}
-            </pre>
-          ) : (
-            <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
-              <p>Select a layer to view its schema</p>
-            </div>
-          )}
-        </div>
-      )}
+      <div className="flex flex-col h-full overflow-hidden">
+        {parseErrorsVisible && hasParseErrors && (
+          <ModelParseErrorBanner
+            errors={parseErrors}
+            onDismiss={() => setParseErrorsVisible(false)}
+          />
+        )}
+        {activeView === 'graph' ? (
+          <SpecViewer
+            specData={specData}
+            selectedSchemaId={selectedSchemaId}
+            onSpecNodeSelect={setSelectedSpecNodeId}
+          />
+        ) : (
+          <div className="h-full overflow-auto p-6">
+            {selectedSchema ? (
+              <pre className="text-xs text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 overflow-auto">
+                {JSON.stringify(selectedSchema, null, 2)}
+              </pre>
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
+                <p>Select a layer to view its schema</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </SharedLayout>
   );
 }

@@ -5,7 +5,7 @@
  * Used by both yamlParser and relationshipsYamlParser to ensure consistency across the codebase.
  */
 
-import { RelationshipType } from '../types/model';
+import { RelationshipTypeValue } from '../types/model';
 
 /**
  * Normalizes a predicate string for consistent comparison and deduplication
@@ -26,11 +26,11 @@ export function normalizePredicate(predicate: string): string {
  * @param predicate - The predicate string from YAML (e.g., 'influence', 'flow', 'serves')
  * @returns The corresponding relationship type string value
  */
-export function mapPredicateToType(predicate: string): RelationshipType {
+export function mapPredicateToType(predicate: string): RelationshipTypeValue {
   // Normalize predicate: convert underscores to hyphens for catalog alignment
   const normalizedPredicate = normalizePredicate(predicate);
 
-  const typeMap: Record<string, string> = {
+  const typeMap: Record<string, RelationshipTypeValue> = {
     // ArchiMate-style relationships
     'realizes': 'realization',
     'serves': 'serving',
@@ -61,5 +61,5 @@ export function mapPredicateToType(predicate: string): RelationshipType {
     'relationship': 'relationship',
   };
 
-  return typeMap[normalizedPredicate] || 'reference';
+  return (typeMap[normalizedPredicate] || 'reference') as RelationshipTypeValue;
 }
