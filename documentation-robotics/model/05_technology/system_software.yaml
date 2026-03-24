@@ -9,10 +9,15 @@ technology.systemsoftware.nodejs:
     server, and test execution pipeline
   attributes:
     softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: dependencies.node
   metadata:
     created_at: 2026-03-20T12:37:00.566Z
-    updated_at: 2026-03-20T12:37:00.566Z
-    version: 1
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
 technology.systemsoftware.vite-6:
   id: 89846523-4138-4486-8ed2-c11540d0eba9
   path: technology.systemsoftware.vite-6
@@ -24,10 +29,15 @@ technology.systemsoftware.vite-6:
     application; handles TypeScript compilation, bundling, and WASM file copying
   attributes:
     softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: devDependencies.vite
   metadata:
     created_at: 2026-03-20T12:37:00.807Z
-    updated_at: 2026-03-20T12:37:00.807Z
-    version: 1
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
 technology.systemsoftware.type-script-59:
   id: 80cb8805-5803-4713-9330-8d6afd9d7261
   path: technology.systemsoftware.type-script-59
@@ -39,10 +49,15 @@ technology.systemsoftware.type-script-59:
     safety across all source files, strict mode enabled
   attributes:
     softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: devDependencies.typescript
   metadata:
     created_at: 2026-03-20T12:37:01.051Z
-    updated_at: 2026-03-20T12:37:01.051Z
-    version: 1
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
 technology.systemsoftware.react-19:
   id: 7c5dc636-5f00-45be-a8dd-40e684fb714c
   path: technology.systemsoftware.react-19
@@ -54,10 +69,15 @@ technology.systemsoftware.react-19:
     concurrent rendering, used via Vite plugin for JSX transformation
   attributes:
     softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: dependencies.react
   metadata:
     created_at: 2026-03-20T12:37:07.331Z
-    updated_at: 2026-03-20T12:37:07.332Z
-    version: 1
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
 technology.systemsoftware.react-flow:
   id: 00591402-8782-4add-aabf-93d9eabc2507
   path: technology.systemsoftware.react-flow
@@ -65,15 +85,20 @@ technology.systemsoftware.react-flow:
   type: systemsoftware
   layer_id: technology
   name: React Flow
-  description: "@xyflow/react 12.9 — interactive graph visualization library
+  description: "@xyflow/react 12.10 — interactive graph visualization library
     powering the multi-layer architecture diagrams with custom node and edge
     types"
   attributes:
     softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: dependencies.@xyflow/react
   metadata:
     created_at: 2026-03-20T12:37:07.582Z
-    updated_at: 2026-03-20T12:37:07.582Z
-    version: 1
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
 technology.systemsoftware.dagre:
   id: 1d35c9df-81b2-4cba-a0fb-d9f07e05be40
   path: technology.systemsoftware.dagre
@@ -85,10 +110,15 @@ technology.systemsoftware.dagre:
     for structured architecture diagrams with ranked node positioning
   attributes:
     softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: dependencies.dagre
   metadata:
     created_at: 2026-03-20T12:37:07.830Z
-    updated_at: 2026-03-20T12:37:07.830Z
-    version: 1
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
 technology.systemsoftware.elkjs:
   id: fbff4595-0741-48cc-ac12-7468bea13742
   path: technology.systemsoftware.elkjs
@@ -101,10 +131,15 @@ technology.systemsoftware.elkjs:
     diagrams
   attributes:
     softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: dependencies.elkjs
   metadata:
     created_at: 2026-03-20T12:37:15.338Z
-    updated_at: 2026-03-20T12:37:15.338Z
-    version: 1
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
 technology.systemsoftware.d3-force:
   id: 77b14339-ac05-4b50-b2a2-41786f7be73a
   path: technology.systemsoftware.d3-force
@@ -116,10 +151,15 @@ technology.systemsoftware.d3-force:
     layouts; used for non-hierarchical relationship visualizations
   attributes:
     softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: dependencies.d3-force
   metadata:
     created_at: 2026-03-20T12:37:15.582Z
-    updated_at: 2026-03-20T12:37:15.582Z
-    version: 1
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
 technology.systemsoftware.graphviz-wasm:
   id: 781067f7-ef13-414e-bde4-8921a7fe768c
   path: technology.systemsoftware.graphviz-wasm
@@ -132,10 +172,15 @@ technology.systemsoftware.graphviz-wasm:
     browser"
   attributes:
     softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: dependencies.@hpcc-js/wasm
   metadata:
     created_at: 2026-03-20T12:37:15.835Z
-    updated_at: 2026-03-20T12:37:15.835Z
-    version: 1
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
 technology.systemsoftware.zustand-5:
   id: d2fb0d48-0e8a-4245-a83a-736863f56b96
   path: technology.systemsoftware.zustand-5
@@ -148,10 +193,15 @@ technology.systemsoftware.zustand-5:
     etc.) with no Redux/Context coupling
   attributes:
     softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: dependencies.zustand
   metadata:
     created_at: 2026-03-20T12:37:23.261Z
-    updated_at: 2026-03-20T12:37:23.261Z
-    version: 1
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
 technology.systemsoftware.tan-stack-router:
   id: 9c2aa58f-ef89-45ed-a778-8d7aed22b8fa
   path: technology.systemsoftware.tan-stack-router
@@ -163,10 +213,15 @@ technology.systemsoftware.tan-stack-router:
     client-side router; powers the embedded app route hierarchy"
   attributes:
     softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: dependencies.@tanstack/react-router
   metadata:
     created_at: 2026-03-20T12:37:23.514Z
-    updated_at: 2026-03-20T12:37:23.514Z
-    version: 1
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
 technology.systemsoftware.tailwind-css-v4:
   id: b26ad8f3-48c2-4707-84bf-163868337b58
   path: technology.systemsoftware.tailwind-css-v4
@@ -178,10 +233,15 @@ technology.systemsoftware.tailwind-css-v4:
     via utility classes, dark mode variants required on all components
   attributes:
     softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: dependencies.tailwindcss
   metadata:
     created_at: 2026-03-20T12:37:23.765Z
-    updated_at: 2026-03-20T12:37:23.765Z
-    version: 1
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
 technology.systemsoftware.flowbite-react:
   id: 72a2b392-6820-4f11-a82d-8c24ff21a2e8
   path: technology.systemsoftware.flowbite-react
@@ -193,10 +253,15 @@ technology.systemsoftware.flowbite-react:
     flowbite 4.0); provides Card, Badge, Button, Modal and other UI primitives
   attributes:
     softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: dependencies.flowbite-react
   metadata:
     created_at: 2026-03-20T12:37:29.876Z
-    updated_at: 2026-03-20T12:37:29.876Z
-    version: 1
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
 technology.systemsoftware.playwright:
   id: 72551121-e5cb-4e72-a417-e83537c03445
   path: technology.systemsoftware.playwright
@@ -209,10 +274,15 @@ technology.systemsoftware.playwright:
     validation"
   attributes:
     softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: devDependencies.@playwright/test
   metadata:
     created_at: 2026-03-20T12:37:30.128Z
-    updated_at: 2026-03-20T12:37:30.129Z
-    version: 1
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
 technology.systemsoftware.storybook-10:
   id: 48f8398d-331d-4cce-9f1e-8d58cad0cc10
   path: technology.systemsoftware.storybook-10
@@ -225,10 +295,15 @@ technology.systemsoftware.storybook-10:
     runner
   attributes:
     softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: devDependencies.storybook
   metadata:
     created_at: 2026-03-20T12:37:30.378Z
-    updated_at: 2026-03-20T12:37:30.378Z
-    version: 1
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
 technology.systemsoftware.expressjs-5:
   id: 32c320b9-2485-4241-bbe2-29a8f0e9362d
   path: technology.systemsoftware.expressjs-5
@@ -240,7 +315,12 @@ technology.systemsoftware.expressjs-5:
     integration server and authentication test server
   attributes:
     softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: dependencies.express
   metadata:
     created_at: 2026-03-20T12:37:33.984Z
-    updated_at: 2026-03-20T12:37:33.984Z
-    version: 1
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2

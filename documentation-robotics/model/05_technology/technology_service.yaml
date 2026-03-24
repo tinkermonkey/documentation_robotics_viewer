@@ -10,10 +10,15 @@ technology.technologyservice.dr-cli-rest-server:
     elements
   attributes:
     serviceType: compute
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: docs/api-spec.yaml
+        symbol: info.title
   metadata:
     created_at: 2026-03-20T12:38:05.477Z
-    updated_at: 2026-03-20T12:38:05.478Z
-    version: 1
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
 technology.technologyservice.web-socket-model-service:
   id: 9d54c558-2395-41d9-91d4-02cb8503be1d
   path: technology.technologyservice.web-socket-model-service
@@ -26,7 +31,12 @@ technology.technologyservice.web-socket-model-service:
     JSON-RPC 2.0
   attributes:
     serviceType: messaging
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: docs/api-spec.yaml
+        symbol: paths./ws
   metadata:
     created_at: 2026-03-20T12:38:05.754Z
-    updated_at: 2026-03-20T12:38:05.754Z
-    version: 1
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2

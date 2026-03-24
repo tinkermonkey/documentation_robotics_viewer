@@ -479,3 +479,151 @@ application.applicationservice.chat-validation:
     created_at: 2026-03-20T12:56:21.148Z
     updated_at: 2026-03-20T12:56:21.149Z
     version: 1
+application.applicationservice.relationships-yaml-parser:
+  id: f58816ec-78d3-49f7-8d4a-a1c2c7bc84ec
+  path: application.applicationservice.relationships-yaml-parser
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Relationships YAML Parser
+  description: Parses the flat relationships.yaml file (v0.8.3 format) containing
+    cross-layer relationship entries; resolves dot-notation source/target IDs to
+    UUIDs using a lookup map and maps predicates to RelationshipType values
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/relationshipsYamlParser.ts
+        symbol: RelationshipsYamlParser
+  metadata:
+    created_at: 2026-03-23T23:50:48.361Z
+    updated_at: 2026-03-23T23:50:48.361Z
+    version: 1
+application.applicationservice.predicate-type-mapper:
+  id: fae87a27-eabe-4068-899f-b122c05496d2
+  path: application.applicationservice.predicate-type-mapper
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Predicate Type Mapper
+  description: Single source of truth for mapping predicate strings to
+    RelationshipType string values; normalizes predicates by converting
+    underscores to hyphens and handles all ArchiMate-style, motivation,
+    security, and general relationship predicates
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/predicateTypeMapper.ts
+        symbol: mapPredicateToType
+  metadata:
+    created_at: 2026-03-23T23:50:52.280Z
+    updated_at: 2026-03-23T23:50:52.280Z
+    version: 1
+application.applicationservice.spec-schema-loader:
+  id: 5a2f47ca-c855-4d4a-b96a-640d10fac6c3
+  path: application.applicationservice.spec-schema-loader
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Spec Schema Loader
+  description: Stateless service that loads and indexes spec schemas from layer
+    JSON files; parses node schemas and relationship schemas per layer and
+    returns a Record keyed by layer ID
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/specSchemaLoader.ts
+        symbol: loadSpecSchemas
+  metadata:
+    created_at: 2026-03-23T23:50:55.805Z
+    updated_at: 2026-03-23T23:50:55.805Z
+    version: 1
+application.applicationservice.spec-schema-file-loader:
+  id: a7b61b5a-e049-4409-b469-37a2bfe43d13
+  path: application.applicationservice.spec-schema-file-loader
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Spec Schema File Loader
+  description: Fetches .dr/spec/*.json files (manifest.json, base.json, and
+    per-layer schemas) in parallel via HTTP; used by SpecRoute and ModelRoute to
+    load spec schema data for the spec viewer and predicate catalog
+  attributes:
+    serviceType: asynchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/specSchemaFileLoader.ts
+        symbol: loadSpecSchemaFiles
+  metadata:
+    created_at: 2026-03-23T23:51:00.030Z
+    updated_at: 2026-03-23T23:51:00.030Z
+    version: 1
+application.applicationservice.predicate-catalog-loader:
+  id: d13559f4-d922-4ccb-9a2b-f39d1d2515ef
+  path: application.applicationservice.predicate-catalog-loader
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Predicate Catalog Loader
+  description: Stateless service that parses the predicate catalog from base.json;
+    builds indexed PredicateCatalog maps for forward predicate lookup by name
+    and inverse predicate lookup by inverse name, enabling catalog-driven field
+    discovery in the CrossLayerReferenceExtractor
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/predicateCatalogLoader.ts
+        symbol: loadPredicateCatalog
+  metadata:
+    created_at: 2026-03-23T23:51:03.982Z
+    updated_at: 2026-03-23T23:51:03.982Z
+    version: 1
+application.applicationservice.context-sub-graph-builder:
+  id: 4d028c3d-f8fa-435e-aa87-5aa7d32719a7
+  path: application.applicationservice.context-sub-graph-builder
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Context Sub-Graph Builder
+  description: Builds 1-hop neighborhood sub-graphs for a given focal node using
+    radial layout; powers the node focus/context view in the embedded
+    application
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/services/contextSubGraphBuilder.ts
+        symbol: contextSubGraphBuilder
+  metadata:
+    created_at: 2026-03-24T09:07:04.920Z
+    updated_at: 2026-03-24T09:07:04.920Z
+    version: 1
+application.applicationservice.spec-context-sub-graph-builder:
+  id: bed2969c-598b-4706-a680-badba2b6e9f0
+  path: application.applicationservice.spec-context-sub-graph-builder
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Spec Context Sub-Graph Builder
+  description: Builds 1-hop neighborhood sub-graphs for spec node types using
+    relationship schemas; powers the spec browser context view
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/services/specContextSubGraphBuilder.ts
+        symbol: specContextSubGraphBuilder
+  metadata:
+    created_at: 2026-03-24T09:07:05.505Z
+    updated_at: 2026-03-24T09:07:05.505Z
+    version: 1

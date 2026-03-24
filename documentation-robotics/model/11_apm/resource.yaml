@@ -9,7 +9,7 @@ apm.resource.embedded-app-resource:
     embedded architecture viewer; identifies the frontend service unit producing
     all observability signals.
   attributes:
-    droppedAttributesCount: "0"
+    droppedAttributesCount: 0
   source_reference:
     provenance: inferred
     locations:

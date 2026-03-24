@@ -1,0 +1,784 @@
+- type: update
+  elementId: apm.resource.embedded-app-resource
+  layerName: apm
+  before:
+    id: bd62bfe5-a0be-42e1-abb4-6e95236fec06
+    path: apm.resource.embedded-app-resource
+    spec_node_id: apm.resource
+    type: resource
+    layer_id: apm
+    name: Embedded App Resource
+    description: OpenTelemetry-style resource identity for the browser-based
+      embedded architecture viewer; identifies the frontend service unit
+      producing all observability signals.
+    attributes:
+      droppedAttributesCount: "0"
+    source_reference: &a1
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/main.tsx
+          symbol: EmbeddedApp
+    metadata: &a2
+      created_at: 2026-03-20T13:31:24.895Z
+      updated_at: 2026-03-20T13:31:24.895Z
+      version: 1
+  after:
+    id: bd62bfe5-a0be-42e1-abb4-6e95236fec06
+    path: apm.resource.embedded-app-resource
+    spec_node_id: apm.resource
+    type: resource
+    layer_id: apm
+    name: Embedded App Resource
+    description: OpenTelemetry-style resource identity for the browser-based
+      embedded architecture viewer; identifies the frontend service unit
+      producing all observability signals.
+    attributes:
+      droppedAttributesCount: 0
+    source_reference: *a1
+    metadata: *a2
+  timestamp: 2026-03-23T23:50:42.728Z
+  sequenceNumber: 0
+- type: add
+  elementId: application.applicationservice.relationships-yaml-parser
+  layerName: application
+  after:
+    id: f58816ec-78d3-49f7-8d4a-a1c2c7bc84ec
+    path: application.applicationservice.relationships-yaml-parser
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Relationships YAML Parser
+    description: Parses the flat relationships.yaml file (v0.8.3 format) containing
+      cross-layer relationship entries; resolves dot-notation source/target IDs
+      to UUIDs using a lookup map and maps predicates to RelationshipType values
+    attributes:
+      serviceType: synchronous
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/core/services/relationshipsYamlParser.ts
+          symbol: RelationshipsYamlParser
+    metadata:
+      created_at: 2026-03-23T23:50:48.361Z
+      updated_at: 2026-03-23T23:50:48.361Z
+      version: 1
+  timestamp: 2026-03-23T23:50:48.387Z
+  sequenceNumber: 1
+- type: add
+  elementId: application.applicationservice.predicate-type-mapper
+  layerName: application
+  after:
+    id: fae87a27-eabe-4068-899f-b122c05496d2
+    path: application.applicationservice.predicate-type-mapper
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Predicate Type Mapper
+    description: Single source of truth for mapping predicate strings to
+      RelationshipType string values; normalizes predicates by converting
+      underscores to hyphens and handles all ArchiMate-style, motivation,
+      security, and general relationship predicates
+    attributes:
+      serviceType: synchronous
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/core/services/predicateTypeMapper.ts
+          symbol: mapPredicateToType
+    metadata:
+      created_at: 2026-03-23T23:50:52.280Z
+      updated_at: 2026-03-23T23:50:52.280Z
+      version: 1
+  timestamp: 2026-03-23T23:50:52.307Z
+  sequenceNumber: 2
+- type: add
+  elementId: application.applicationservice.spec-schema-loader
+  layerName: application
+  after:
+    id: 5a2f47ca-c855-4d4a-b96a-640d10fac6c3
+    path: application.applicationservice.spec-schema-loader
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Spec Schema Loader
+    description: Stateless service that loads and indexes spec schemas from layer
+      JSON files; parses node schemas and relationship schemas per layer and
+      returns a Record keyed by layer ID
+    attributes:
+      serviceType: synchronous
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/core/services/specSchemaLoader.ts
+          symbol: loadSpecSchemas
+    metadata:
+      created_at: 2026-03-23T23:50:55.805Z
+      updated_at: 2026-03-23T23:50:55.805Z
+      version: 1
+  timestamp: 2026-03-23T23:50:55.831Z
+  sequenceNumber: 3
+- type: add
+  elementId: application.applicationservice.spec-schema-file-loader
+  layerName: application
+  after:
+    id: a7b61b5a-e049-4409-b469-37a2bfe43d13
+    path: application.applicationservice.spec-schema-file-loader
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Spec Schema File Loader
+    description: Fetches .dr/spec/*.json files (manifest.json, base.json, and
+      per-layer schemas) in parallel via HTTP; used by SpecRoute and ModelRoute
+      to load spec schema data for the spec viewer and predicate catalog
+    attributes:
+      serviceType: asynchronous
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/core/services/specSchemaFileLoader.ts
+          symbol: loadSpecSchemaFiles
+    metadata:
+      created_at: 2026-03-23T23:51:00.030Z
+      updated_at: 2026-03-23T23:51:00.030Z
+      version: 1
+  timestamp: 2026-03-23T23:51:00.060Z
+  sequenceNumber: 4
+- type: add
+  elementId: application.applicationservice.predicate-catalog-loader
+  layerName: application
+  after:
+    id: d13559f4-d922-4ccb-9a2b-f39d1d2515ef
+    path: application.applicationservice.predicate-catalog-loader
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Predicate Catalog Loader
+    description: Stateless service that parses the predicate catalog from base.json;
+      builds indexed PredicateCatalog maps for forward predicate lookup by name
+      and inverse predicate lookup by inverse name, enabling catalog-driven
+      field discovery in the CrossLayerReferenceExtractor
+    attributes:
+      serviceType: synchronous
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/core/services/predicateCatalogLoader.ts
+          symbol: loadPredicateCatalog
+    metadata:
+      created_at: 2026-03-23T23:51:03.982Z
+      updated_at: 2026-03-23T23:51:03.982Z
+      version: 1
+  timestamp: 2026-03-23T23:51:04.007Z
+  sequenceNumber: 5
+- type: add
+  elementId: data-model.objectschema.source-reference
+  layerName: data-model
+  after:
+    id: 5230a930-d9eb-4b9e-a3a6-ac6f9f7952f8
+    path: data-model.objectschema.source-reference
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: SourceReference
+    description: Tracks where a model element was extracted from; holds provenance
+      type (extracted/manual/inferred/generated), a list of SourceLocation
+      entries (file + optional symbol), and optional repository context (URL +
+      commit SHA)
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/core/types/model.ts
+          symbol: SourceReference
+    metadata:
+      created_at: 2026-03-23T23:51:24.359Z
+      updated_at: 2026-03-23T23:51:24.359Z
+      version: 1
+  timestamp: 2026-03-23T23:51:24.385Z
+  sequenceNumber: 6
+- type: add
+  elementId: data-model.objectschema.relationship-type
+  layerName: data-model
+  after:
+    id: 5ec7bcdc-7ac1-4d5c-9388-7acad44bfabd
+    path: data-model.objectschema.relationship-type
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: RelationshipType
+    description: TypeScript enum providing dot-notation access to the full v0.8.3
+      predicate catalog; covers motivation, business, structural, process, data,
+      API, testing, security, and UI/navigation predicates; kept for backwards
+      compatibility alongside the RelationshipTypeValue union type
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/core/types/model.ts
+          symbol: RelationshipType
+    metadata:
+      created_at: 2026-03-23T23:51:28.601Z
+      updated_at: 2026-03-23T23:51:28.601Z
+      version: 1
+  timestamp: 2026-03-23T23:51:28.628Z
+  sequenceNumber: 7
+- type: add
+  elementId: data-model.objectschema.relationships-yaml-entry
+  layerName: data-model
+  after:
+    id: 0879ce73-a1eb-4e9b-8acb-519b89f82330
+    path: data-model.objectschema.relationships-yaml-entry
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: RelationshipsYamlEntry
+    description: Structure of a single entry in the flat relationships.yaml file
+      (v0.8.3 format); requires source and target dot-notation paths and a
+      predicate string, with optional layer, category, and arbitrary properties
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/core/services/relationshipsYamlParser.ts
+          symbol: RelationshipsYamlEntry
+    metadata:
+      created_at: 2026-03-23T23:51:32.388Z
+      updated_at: 2026-03-23T23:51:32.388Z
+      version: 1
+  timestamp: 2026-03-23T23:51:32.414Z
+  sequenceNumber: 8
+- type: add
+  elementId: data-model.objectschema.predicate-definition
+  layerName: data-model
+  after:
+    id: 99ee6fe9-d567-42b6-bde6-eca9490258cc
+    path: data-model.objectschema.predicate-definition
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: PredicateDefinition
+    description: Full predicate metadata from the v0.8.3 predicate catalog; carries
+      predicate name, inverse name, category, description, optional ArchiMate
+      alignment, semantic properties
+      (directionality/transitivity/symmetry/reflexivity), default strength, and
+      fieldPaths for dynamic reference discovery
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/core/types/model.ts
+          symbol: PredicateDefinition
+    metadata:
+      created_at: 2026-03-23T23:51:36.401Z
+      updated_at: 2026-03-23T23:51:36.401Z
+      version: 1
+  timestamp: 2026-03-23T23:51:36.430Z
+  sequenceNumber: 9
+- type: add
+  elementId: data-model.objectschema.spec-layer-data
+  layerName: data-model
+  after:
+    id: db9b2ef0-4833-4364-8225-4a0eb3af389c
+    path: data-model.objectschema.spec-layer-data
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: SpecLayerData
+    description: Structured spec data for a single architecture layer loaded from
+      .dr/spec/*.json; contains layer metadata (id, number, name, description),
+      a map of node type name to JSON schema, and an array of
+      SpecNodeRelationship entries
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/core/types/model.ts
+          symbol: SpecLayerData
+    metadata:
+      created_at: 2026-03-23T23:51:40.548Z
+      updated_at: 2026-03-23T23:51:40.548Z
+      version: 1
+  timestamp: 2026-03-23T23:51:40.576Z
+  sequenceNumber: 10
+- type: add
+  elementId: data-model.objectschema.spec-node-relationship
+  layerName: data-model
+  after:
+    id: 24d55c8c-4f8c-43f0-95d8-5ca0246666cc
+    path: data-model.objectschema.spec-node-relationship
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: SpecNodeRelationship
+    description: Valid relationship definition between two spec node types;
+      specifies source and destination spec node IDs and their layers,
+      predicate, cardinality, strength, and whether the relationship is required
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/core/types/model.ts
+          symbol: SpecNodeRelationship
+    metadata:
+      created_at: 2026-03-23T23:51:44.246Z
+      updated_at: 2026-03-23T23:51:44.246Z
+      version: 1
+  timestamp: 2026-03-23T23:51:44.275Z
+  sequenceNumber: 11
+- type: add
+  elementId: data-model.objectschema.predicate-catalog
+  layerName: data-model
+  after:
+    id: 688ff2b5-59a4-4cd6-ab3d-85f90ff7992b
+    path: data-model.objectschema.predicate-catalog
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: PredicateCatalog
+    description: "Indexed predicate catalog produced by PredicateCatalogLoader from
+      base.json; provides two Maps: byPredicate (predicate name ->
+      PredicateDefinition) and byInverse (inverse predicate name -> forward
+      predicate name) for O(1) catalog lookups"
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/core/services/predicateCatalogLoader.ts
+          symbol: PredicateCatalog
+    metadata:
+      created_at: 2026-03-23T23:51:48.868Z
+      updated_at: 2026-03-23T23:51:48.868Z
+      version: 1
+  timestamp: 2026-03-23T23:51:48.895Z
+  sequenceNumber: 12
+- type: update
+  elementId: application.applicationservice.cross-layer-reference-extractor
+  layerName: application
+  before:
+    id: 80e6c89f-70ba-4183-909f-0457abdf9fa7
+    path: application.applicationservice.cross-layer-reference-extractor
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Cross-Layer Reference Extractor
+    description: Extracts cross-layer reference declarations from YAML element
+      attributes across all layers
+    attributes: &a3
+      serviceType: synchronous
+    source_reference: &a4
+      provenance: extracted
+      locations:
+        - file: src/core/services/crossLayerReferenceExtractor.ts
+          symbol: crossLayerReferenceExtractor
+    metadata: &a5
+      created_at: 2026-03-20T12:55:22.309Z
+      updated_at: 2026-03-20T12:55:22.309Z
+      version: 1
+  after:
+    id: 80e6c89f-70ba-4183-909f-0457abdf9fa7
+    path: application.applicationservice.cross-layer-reference-extractor
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Cross-Layer Reference Extractor
+    description: "Extracts and resolves cross-layer references using four
+      strategies: UUID references (x-archimate-ref), array references
+      (x-supports-goals), string identifier references via catalog fieldPaths,
+      and definition key references. Implements identifier collision detection:
+      when multiple elements share the same identifier, logs a console warning
+      with all conflicting element IDs and continues with the last-found
+      candidate"
+    attributes: *a3
+    source_reference: *a4
+    metadata: *a5
+  timestamp: 2026-03-23T23:51:54.702Z
+  sequenceNumber: 13
+- type: update
+  elementId: application.applicationservice.data-loader
+  layerName: application
+  before:
+    id: a5342d6f-daf4-4a6e-a98b-7fada2561798
+    path: application.applicationservice.data-loader
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Data Loader
+    description: Orchestrates model and spec data loading from the DR CLI REST API;
+      coordinates YAML parsing, schema parsing, and cross-layer reference
+      extraction
+    attributes: &a6
+      serviceType: synchronous
+    source_reference: &a7
+      provenance: extracted
+      locations:
+        - file: src/core/services/dataLoader.ts
+          symbol: dataLoader
+    metadata: &a8
+      created_at: 2026-03-20T12:55:04.873Z
+      updated_at: 2026-03-20T12:55:04.873Z
+      version: 1
+  after:
+    id: a5342d6f-daf4-4a6e-a98b-7fada2561798
+    path: application.applicationservice.data-loader
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Data Loader
+    description: Orchestrates model and spec data loading from the DR CLI REST API;
+      coordinates YAML parsing via YAMLParser, JSON schema parsing via
+      JSONSchemaParser, relationships.yaml parsing via RelationshipsYamlParser,
+      and cross-layer reference extraction; uses normalizePredicate from
+      PredicateTypeMapper for consistent predicate handling
+    attributes: *a6
+    source_reference: *a7
+    metadata: *a8
+  timestamp: 2026-03-23T23:51:59.547Z
+  sequenceNumber: 14
+- type: update
+  elementId: application.applicationprocess.spec-route
+  layerName: application
+  before:
+    id: 3c70cd39-22ee-44c8-b0f3-7ba743733232
+    path: application.applicationprocess.spec-route
+    spec_node_id: application.applicationprocess
+    type: applicationprocess
+    layer_id: application
+    name: Spec Route
+    description: TanStack Router route rendering the JSON Schema spec browser with
+      layer schema navigation
+    source_reference: &a9
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/routes/SpecRoute.tsx
+          symbol: SpecRoute
+    metadata: &a10
+      created_at: 2026-03-20T12:57:26.558Z
+      updated_at: 2026-03-20T12:57:26.558Z
+      version: 1
+  after:
+    id: 3c70cd39-22ee-44c8-b0f3-7ba743733232
+    path: application.applicationprocess.spec-route
+    spec_node_id: application.applicationprocess
+    type: applicationprocess
+    layer_id: application
+    name: Spec Route
+    description: TanStack Router route rendering the JSON Schema spec browser with
+      layer schema navigation; loads both spec (via embeddedDataLoader.loadSpec)
+      and architecture model (via embeddedDataLoader.loadModel) in parallel,
+      then separately loads predicate catalog, spec schemas, and spec schema
+      files for the SpecViewer
+    source_reference: *a9
+    metadata: *a10
+  timestamp: 2026-03-23T23:52:04.065Z
+  sequenceNumber: 15
+- type: update
+  elementId: application.applicationprocess.model-route
+  layerName: application
+  before:
+    id: 4d7f0994-8c0d-4148-9eba-a3479a1f8947
+    path: application.applicationprocess.model-route
+    spec_node_id: application.applicationprocess
+    type: applicationprocess
+    layer_id: application
+    name: Model Route
+    description: TanStack Router route that renders the main architecture model
+      graph visualization with layer selection and cross-layer navigation
+    source_reference: &a11
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/routes/ModelRoute.tsx
+          symbol: ModelRoute
+    metadata: &a12
+      created_at: 2026-03-20T12:57:21.893Z
+      updated_at: 2026-03-20T12:57:21.893Z
+      version: 1
+  after:
+    id: 4d7f0994-8c0d-4148-9eba-a3479a1f8947
+    path: application.applicationprocess.model-route
+    spec_node_id: application.applicationprocess
+    type: applicationprocess
+    layer_id: application
+    name: Model Route
+    description: TanStack Router route rendering the main architecture model graph
+      visualization; loads model via embeddedDataLoader.loadModel (with NaN-safe
+      sanitization), separately loads predicate catalog, spec schemas, and spec
+      schema files; supports layer selection, cross-layer navigation, node focus
+      mode, and highlighted path visualization
+    source_reference: *a11
+    metadata: *a12
+  timestamp: 2026-03-23T23:52:08.224Z
+  sequenceNumber: 16
+- type: update
+  elementId: data-model.objectschema.yamlrelationships
+  layerName: data-model
+  before:
+    id: 57b0c4b1-46b4-49bc-993d-bf7b6cecf206
+    path: data-model.objectschema.yamlrelationships
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: YAMLRelationships
+    description: Nested relationship declarations within a YAML element; groups
+      cross-layer references by semantic type (realizes, serves, accesses, uses,
+      secured_by, supports_goals, etc.).
+    source_reference: &a13
+      provenance: extracted
+      locations:
+        - file: src/core/types/yaml.ts
+          symbol: YAMLRelationships
+    metadata: &a14
+      created_at: 2026-03-20T13:05:37.378Z
+      updated_at: 2026-03-20T13:05:37.378Z
+      version: 1
+  after:
+    id: 57b0c4b1-46b4-49bc-993d-bf7b6cecf206
+    path: data-model.objectschema.yamlrelationships
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: YAMLRelationships
+    description: Inline relationship declarations within a YAML element (legacy
+      nested format); groups cross-layer references by semantic type (realizes,
+      serves, accesses, uses, secured_by, supports_goals, etc.). Distinct from
+      the flat relationships.yaml format (v0.8.3) parsed by
+      RelationshipsYamlParser
+    source_reference: *a13
+    metadata: *a14
+  timestamp: 2026-03-23T23:52:13.123Z
+  sequenceNumber: 17
+- type: update
+  elementId: data-model.objectschema.relationship
+  layerName: data-model
+  before:
+    id: 93dc7494-0f4c-431e-9387-52d03c2e9ea6
+    path: data-model.objectschema.relationship
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: Relationship
+    description: Typed relationship between two elements within the same layer;
+      supports 15 ArchiMate and custom relationship types (composition,
+      aggregation, realization, serving, access, data-flow, etc.).
+    source_reference: &a15
+      provenance: extracted
+      locations:
+        - file: src/core/types/model.ts
+          symbol: Relationship
+    metadata: &a16
+      created_at: 2026-03-20T13:05:00.615Z
+      updated_at: 2026-03-20T13:05:00.616Z
+      version: 1
+  after:
+    id: 93dc7494-0f4c-431e-9387-52d03c2e9ea6
+    path: data-model.objectschema.relationship
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: Relationship
+    description: Typed relationship between two elements; type field uses
+      RelationshipTypeValue (ArchiMate + catalog predicates); includes optional
+      predicate string (raw predicate from YAML), predicateDefinition (full
+      catalog metadata), sourceLayerId/targetLayerId, and specRelationshipId for
+      spec-validated relationships
+    source_reference: *a15
+    metadata: *a16
+  timestamp: 2026-03-23T23:52:17.858Z
+  sequenceNumber: 18
+- type: relationship-add
+  elementId: application.applicationservice.relationships-yaml-parser::depends-on::application.applicationservice.predicate-type-mapper
+  layerName: application
+  after:
+    source: application.applicationservice.relationships-yaml-parser
+    target: application.applicationservice.predicate-type-mapper
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-03-23T23:52:31.300Z
+  sequenceNumber: 19
+- type: relationship-add
+  elementId: application.applicationservice.data-loader::depends-on::application.applicationservice.relationships-yaml-parser
+  layerName: application
+  after:
+    source: application.applicationservice.data-loader
+    target: application.applicationservice.relationships-yaml-parser
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-03-23T23:52:34.833Z
+  sequenceNumber: 20
+- type: relationship-add
+  elementId: application.applicationservice.data-loader::depends-on::application.applicationservice.predicate-type-mapper
+  layerName: application
+  after:
+    source: application.applicationservice.data-loader
+    target: application.applicationservice.predicate-type-mapper
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-03-23T23:52:37.442Z
+  sequenceNumber: 21
+- type: relationship-add
+  elementId: application.applicationservice.spec-schema-loader::depends-on::application.applicationservice.spec-schema-file-loader
+  layerName: application
+  after:
+    source: application.applicationservice.spec-schema-loader
+    target: application.applicationservice.spec-schema-file-loader
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-03-23T23:53:01.074Z
+  sequenceNumber: 22
+- type: relationship-add
+  elementId: application.applicationservice.embedded-data-loader::depends-on::application.applicationservice.spec-schema-file-loader
+  layerName: application
+  after:
+    source: application.applicationservice.embedded-data-loader
+    target: application.applicationservice.spec-schema-file-loader
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-03-23T23:53:05.011Z
+  sequenceNumber: 23
+- type: relationship-add
+  elementId: application.applicationservice.embedded-data-loader::depends-on::application.applicationservice.predicate-catalog-loader
+  layerName: application
+  after:
+    source: application.applicationservice.embedded-data-loader
+    target: application.applicationservice.predicate-catalog-loader
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-03-23T23:53:05.621Z
+  sequenceNumber: 24
+- type: relationship-add
+  elementId: application.applicationservice.embedded-data-loader::depends-on::application.applicationservice.spec-schema-loader
+  layerName: application
+  after:
+    source: application.applicationservice.embedded-data-loader
+    target: application.applicationservice.spec-schema-loader
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-03-23T23:53:06.244Z
+  sequenceNumber: 25
+- type: relationship-add
+  elementId: application.applicationservice.cross-layer-reference-extractor::depends-on::application.applicationservice.predicate-catalog-loader
+  layerName: application
+  after:
+    source: application.applicationservice.cross-layer-reference-extractor
+    target: application.applicationservice.predicate-catalog-loader
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-03-23T23:53:09.367Z
+  sequenceNumber: 26
+- type: relationship-add
+  elementId: data-model.objectschema.source-reference::extends::data-model.objectschema.model-element
+  layerName: data-model
+  after:
+    source: data-model.objectschema.source-reference
+    target: data-model.objectschema.model-element
+    predicate: extends
+    layer: data-model
+    category: structural
+  timestamp: 2026-03-23T23:53:25.453Z
+  sequenceNumber: 27
+- type: relationship-add
+  elementId: data-model.objectschema.predicate-definition::extends::data-model.objectschema.relationship
+  layerName: data-model
+  after:
+    source: data-model.objectschema.predicate-definition
+    target: data-model.objectschema.relationship
+    predicate: extends
+    layer: data-model
+    category: structural
+  timestamp: 2026-03-23T23:53:26.077Z
+  sequenceNumber: 28
+- type: relationship-add
+  elementId: data-model.objectschema.relationships-yaml-entry::extends::data-model.objectschema.relationship
+  layerName: data-model
+  after:
+    source: data-model.objectschema.relationships-yaml-entry
+    target: data-model.objectschema.relationship
+    predicate: extends
+    layer: data-model
+    category: structural
+  timestamp: 2026-03-23T23:53:32.474Z
+  sequenceNumber: 29
+- type: relationship-add
+  elementId: data-model.objectschema.predicate-catalog::extends::data-model.objectschema.predicate-definition
+  layerName: data-model
+  after:
+    source: data-model.objectschema.predicate-catalog
+    target: data-model.objectschema.predicate-definition
+    predicate: extends
+    layer: data-model
+    category: structural
+  timestamp: 2026-03-23T23:53:39.806Z
+  sequenceNumber: 30
+- type: relationship-add
+  elementId: data-model.objectschema.spec-layer-data::extends::data-model.objectschema.spec-node-relationship
+  layerName: data-model
+  after:
+    source: data-model.objectschema.spec-layer-data
+    target: data-model.objectschema.spec-node-relationship
+    predicate: extends
+    layer: data-model
+    category: structural
+  timestamp: 2026-03-23T23:53:40.437Z
+  sequenceNumber: 31
+- type: relationship-add
+  elementId: data-model.objectschema.relationship-type::extends::data-model.objectschema.relationship
+  layerName: data-model
+  after:
+    source: data-model.objectschema.relationship-type
+    target: data-model.objectschema.relationship
+    predicate: extends
+    layer: data-model
+    category: structural
+  timestamp: 2026-03-23T23:53:41.072Z
+  sequenceNumber: 32
+- type: relationship-add
+  elementId: data-model.objectschema.predicate-catalog::extends::data-model.objectschema.relationship
+  layerName: data-model
+  after:
+    source: data-model.objectschema.predicate-catalog
+    target: data-model.objectschema.relationship
+    predicate: extends
+    layer: data-model
+    category: structural
+  timestamp: 2026-03-23T23:53:41.737Z
+  sequenceNumber: 33
+- type: relationship-delete
+  elementId: application.applicationservice.data-loader::depends-on::application.applicationservice.predicate-type-mapper
+  layerName: application
+  before:
+    source: application.applicationservice.data-loader
+    target: application.applicationservice.predicate-type-mapper
+    predicate: depends-on
+    layer: application
+  timestamp: 2026-03-23T23:54:28.165Z
+  sequenceNumber: 34
+- type: relationship-delete
+  elementId: application.applicationservice.embedded-data-loader::depends-on::application.applicationservice.predicate-catalog-loader
+  layerName: application
+  before:
+    source: application.applicationservice.embedded-data-loader
+    target: application.applicationservice.predicate-catalog-loader
+    predicate: depends-on
+    layer: application
+  timestamp: 2026-03-23T23:54:31.008Z
+  sequenceNumber: 35
+- type: relationship-delete
+  elementId: application.applicationservice.embedded-data-loader::depends-on::application.applicationservice.spec-schema-loader
+  layerName: application
+  before:
+    source: application.applicationservice.embedded-data-loader
+    target: application.applicationservice.spec-schema-loader
+    predicate: depends-on
+    layer: application
+  timestamp: 2026-03-23T23:54:31.634Z
+  sequenceNumber: 36
+- type: relationship-delete
+  elementId: data-model.objectschema.predicate-catalog::extends::data-model.objectschema.relationship
+  layerName: data-model
+  before:
+    source: data-model.objectschema.predicate-catalog
+    target: data-model.objectschema.relationship
+    predicate: extends
+    layer: data-model
+  timestamp: 2026-03-23T23:54:34.345Z
+  sequenceNumber: 37

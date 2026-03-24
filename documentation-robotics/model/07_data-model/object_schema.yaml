@@ -450,3 +450,141 @@ data-model.objectschema.data-model-node-data:
     created_at: 2026-03-20T13:06:22.204Z
     updated_at: 2026-03-20T13:06:22.204Z
     version: 1
+data-model.objectschema.source-reference:
+  id: 5230a930-d9eb-4b9e-a3a6-ac6f9f7952f8
+  path: data-model.objectschema.source-reference
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: SourceReference
+  description: Tracks where a model element was extracted from; holds provenance
+    type (extracted/manual/inferred/generated), a list of SourceLocation entries
+    (file + optional symbol), and optional repository context (URL + commit SHA)
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/model.ts
+        symbol: SourceReference
+  metadata:
+    created_at: 2026-03-23T23:51:24.359Z
+    updated_at: 2026-03-23T23:51:24.359Z
+    version: 1
+data-model.objectschema.relationship-type:
+  id: 5ec7bcdc-7ac1-4d5c-9388-7acad44bfabd
+  path: data-model.objectschema.relationship-type
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: RelationshipType
+  description: TypeScript enum providing dot-notation access to the full v0.8.3
+    predicate catalog; covers motivation, business, structural, process, data,
+    API, testing, security, and UI/navigation predicates; kept for backwards
+    compatibility alongside the RelationshipTypeValue union type
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/model.ts
+        symbol: RelationshipType
+  metadata:
+    created_at: 2026-03-23T23:51:28.601Z
+    updated_at: 2026-03-23T23:51:28.601Z
+    version: 1
+data-model.objectschema.relationships-yaml-entry:
+  id: 0879ce73-a1eb-4e9b-8acb-519b89f82330
+  path: data-model.objectschema.relationships-yaml-entry
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: RelationshipsYamlEntry
+  description: Structure of a single entry in the flat relationships.yaml file
+    (v0.8.3 format); requires source and target dot-notation paths and a
+    predicate string, with optional layer, category, and arbitrary properties
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/relationshipsYamlParser.ts
+        symbol: RelationshipsYamlEntry
+  metadata:
+    created_at: 2026-03-23T23:51:32.388Z
+    updated_at: 2026-03-23T23:51:32.388Z
+    version: 1
+data-model.objectschema.predicate-definition:
+  id: 99ee6fe9-d567-42b6-bde6-eca9490258cc
+  path: data-model.objectschema.predicate-definition
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: PredicateDefinition
+  description: Full predicate metadata from the v0.8.3 predicate catalog; carries
+    predicate name, inverse name, category, description, optional ArchiMate
+    alignment, semantic properties
+    (directionality/transitivity/symmetry/reflexivity), default strength, and
+    fieldPaths for dynamic reference discovery
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/model.ts
+        symbol: PredicateDefinition
+  metadata:
+    created_at: 2026-03-23T23:51:36.401Z
+    updated_at: 2026-03-23T23:51:36.401Z
+    version: 1
+data-model.objectschema.spec-layer-data:
+  id: db9b2ef0-4833-4364-8225-4a0eb3af389c
+  path: data-model.objectschema.spec-layer-data
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: SpecLayerData
+  description: Structured spec data for a single architecture layer loaded from
+    .dr/spec/*.json; contains layer metadata (id, number, name, description), a
+    map of node type name to JSON schema, and an array of SpecNodeRelationship
+    entries
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/model.ts
+        symbol: SpecLayerData
+  metadata:
+    created_at: 2026-03-23T23:51:40.548Z
+    updated_at: 2026-03-23T23:51:40.548Z
+    version: 1
+data-model.objectschema.spec-node-relationship:
+  id: 24d55c8c-4f8c-43f0-95d8-5ca0246666cc
+  path: data-model.objectschema.spec-node-relationship
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: SpecNodeRelationship
+  description: Valid relationship definition between two spec node types;
+    specifies source and destination spec node IDs and their layers, predicate,
+    cardinality, strength, and whether the relationship is required
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/types/model.ts
+        symbol: SpecNodeRelationship
+  metadata:
+    created_at: 2026-03-23T23:51:44.246Z
+    updated_at: 2026-03-23T23:51:44.246Z
+    version: 1
+data-model.objectschema.predicate-catalog:
+  id: 688ff2b5-59a4-4cd6-ab3d-85f90ff7992b
+  path: data-model.objectschema.predicate-catalog
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: PredicateCatalog
+  description: "Indexed predicate catalog produced by PredicateCatalogLoader from
+    base.json; provides two Maps: byPredicate (predicate name ->
+    PredicateDefinition) and byInverse (inverse predicate name -> forward
+    predicate name) for O(1) catalog lookups"
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/predicateCatalogLoader.ts
+        symbol: PredicateCatalog
+  metadata:
+    created_at: 2026-03-23T23:51:48.868Z
+    updated_at: 2026-03-23T23:51:48.868Z
+    version: 1

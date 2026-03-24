@@ -9,7 +9,7 @@ apm.instrumentationscope.error-tracker-instrumentation-scope:
     exceptionClassifier services; groups all error/exception signals produced by
     the frontend error handling subsystem.
   attributes:
-    droppedAttributesCount: "0"
+    droppedAttributesCount: 0
   source_reference:
     provenance: extracted
     locations:
