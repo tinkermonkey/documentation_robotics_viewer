@@ -9,7 +9,7 @@ triggers:
     "application function",
     "application process",
     "microservice",
-    "archimate application",
+    "archimate application"
   ]
 version: 0.8.3
 ---
@@ -111,16 +111,16 @@ IS this a collection of components that together form a subsystem
 
 Explicit DO NOT rules with rationale:
 
-| Misclassification | Correct Classification | Why |
-|---|---|---|
-| Zustand store as `ApplicationService` | `ApplicationFunction` (performs automated state management behavior) | Stores are behavior, not deployable modules — assign to parent ApplicationComponent |
-| Zustand store as `ApplicationComponent` | `ApplicationFunction` (performs automated state management behavior) | ArchiMate `ApplicationFunction` = "automated behavior performed by a component" — maps exactly to Zustand stores |
-| WebSocket client as `ApplicationService` | `ApplicationInterface` (protocol: WebSocket) | A WebSocket connection is an interface/access point, not a service |
-| Layout algorithm as `ApplicationService` | `ApplicationFunction` | Stateless algorithm = function, not a service with a contract |
-| Layout engine CLASS as `ApplicationFunction` | `ApplicationComponent` (type: internal) | A class implementing an interface IS a deployable, replaceable module — not a stateless function |
-| Export function as `ApplicationService` | `ApplicationFunction` if purely internal; `ApplicationService` only if it exposes an output contract | If purely internal algorithm: function. If it has an external contract (API, file): service |
-| React UI component as `ApplicationService` | `ApplicationComponent` (type: generic) with UX cross-reference | UI components are components; link to UX layer for rendering details |
-| Fetch interceptor / auth header injector | `ApplicationFunction` | Stateless function that wraps fetch — NOT a service; cross-reference `security.securitypolicy.*` |
+| Misclassification                            | Correct Classification                                                                               | Why                                                                                                              |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Zustand store as `ApplicationService`        | `ApplicationFunction` (performs automated state management behavior)                                 | Stores are behavior, not deployable modules — assign to parent ApplicationComponent                              |
+| Zustand store as `ApplicationComponent`      | `ApplicationFunction` (performs automated state management behavior)                                 | ArchiMate `ApplicationFunction` = "automated behavior performed by a component" — maps exactly to Zustand stores |
+| WebSocket client as `ApplicationService`     | `ApplicationInterface` (protocol: WebSocket)                                                         | A WebSocket connection is an interface/access point, not a service                                               |
+| Layout algorithm as `ApplicationService`     | `ApplicationFunction`                                                                                | Stateless algorithm = function, not a service with a contract                                                    |
+| Layout engine CLASS as `ApplicationFunction` | `ApplicationComponent` (type: internal)                                                              | A class implementing an interface IS a deployable, replaceable module — not a stateless function                 |
+| Export function as `ApplicationService`      | `ApplicationFunction` if purely internal; `ApplicationService` only if it exposes an output contract | If purely internal algorithm: function. If it has an external contract (API, file): service                      |
+| React UI component as `ApplicationService`   | `ApplicationComponent` (type: generic) with UX cross-reference                                       | UI components are components; link to UX layer for rendering details                                             |
+| Fetch interceptor / auth header injector     | `ApplicationFunction`                                                                                | Stateless function that wraps fetch — NOT a service; cross-reference `security.securitypolicy.*`                 |
 
 ---
 
@@ -341,7 +341,48 @@ service UserService {
 - ApplicationService: "User Service"
 - ApplicationComponent: "UserService"
 
-### Pattern 7: Message Queue Consumer
+### Pattern 7: AI / RAG Processing Pipeline
+
+```python
+# Retrieval-Augmented Generation pipeline
+class RAGPipeline:
+    """
+    Multi-stage AI document processing pipeline.
+    ApplicationProcess: RAGPipeline (pattern: pipeline)
+    """
+
+    def run(self, query: str) -> str:
+        chunks = self.chunker.chunk(documents)      # ApplicationFunction: DocumentChunker
+        embeddings = self.embedder.embed(chunks)    # ApplicationFunction: EmbeddingGenerator
+        results = self.retriever.retrieve(          # ApplicationFunction: VectorRetriever
+            query_embedding, embeddings
+        )
+        return self.reranker.rerank(results, query) # ApplicationFunction: ResultReranker
+```
+
+**Maps to:**
+
+- ApplicationProcess: "RAGPipeline" (pattern: pipeline) — the orchestrating process
+- ApplicationFunction: "DocumentChunker" — assigned-to the RAG component; `flows-to` EmbeddingGenerator
+- ApplicationFunction: "EmbeddingGenerator" — `flows-to` VectorRetriever
+- ApplicationFunction: "VectorRetriever" — `flows-to` ResultReranker
+- ApplicationFunction: "ResultReranker" — terminal stage; delivers output to the calling service
+- ApplicationComponent: "RAGService" — owns all four functions via `assigned-to`
+
+**Key relationships:**
+```
+ApplicationFunction: chunker → flows-to → ApplicationFunction: embedder
+ApplicationFunction: embedder → flows-to → ApplicationFunction: retriever
+ApplicationFunction: retriever → flows-to → ApplicationFunction: reranker
+ApplicationComponent: rag-service → assigned-to → ApplicationFunction: chunker (×4)
+ApplicationProcess: rag-pipeline → realizes → ApplicationService: rag-service
+```
+
+> **Rule:** Each discrete pipeline stage is an `ApplicationFunction`, not a separate service — stages share the same component boundary and have no independent business contract. Use `ApplicationProcess` to model the orchestration. If a stage is independently deployable (e.g., a separate embedding microservice), elevate it to `ApplicationComponent` + `ApplicationService`.
+
+---
+
+### Pattern 8: Message Queue Consumer
 
 ```python
 # RabbitMQ consumer
@@ -673,8 +714,8 @@ export function parseYAMLModel(yaml: string): ModelData { ... }
 
 ```typescript
 // src/apps/embedded/services/websocketClient.ts
-const ws = new WebSocket('ws://localhost:3000/ws');
-ws.on('model.updated', handler);
+const ws = new WebSocket("ws://localhost:3000/ws");
+ws.on("model.updated", handler);
 ```
 
 → `ApplicationInterface` (protocol: WebSocket) — the ws connection is the interface
@@ -723,7 +764,8 @@ async function loadModel(source: DataSource): Promise<void> {
 // src/apps/embedded/utils/fetchInterceptor.ts
 export function interceptFetch(token: string) {
   window.fetch = async (url, options = {}) => {
-    return originalFetch(url, { ...options,
+    return originalFetch(url, {
+      ...options,
       headers: { ...options.headers, Authorization: `Bearer ${token}` }
     });
   };
@@ -738,8 +780,15 @@ export function interceptFetch(token: string) {
 
 ```typescript
 // src/core/types/model.ts
-export interface ModelData { layers: Layer[]; elements: Element[]; }
-export interface Annotation { id: string; elementId: string; content: string; }
+export interface ModelData {
+  layers: Layer[];
+  elements: Element[];
+}
+export interface Annotation {
+  id: string;
+  elementId: string;
+  content: string;
+}
 ```
 
 → `DataObject` for each significant data structure (`ModelData`, `Annotation`, `Changeset`, etc.)

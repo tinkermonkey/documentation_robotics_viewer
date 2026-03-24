@@ -103,7 +103,20 @@ In recipe mode, extract all layers in the prescribed bottom-up order. The orderi
 
 **Between-layer checkpoint (repeat after each layer):**
 
-After extracting each layer, pause and display:
+After extracting each layer:
+
+1. **Wire intra-layer relationships** for elements just created in this layer:
+   - Run `dr relationship add` for element pairs within this layer that are semantically connected
+   - Use shared `source_file` as the primary signal for high-confidence pairs
+   - Only attempt relationship schema combinations that are valid per `dr schema relationship <type>`
+   - Aim to wire at least the highest-confidence pairs before moving on
+
+2. **Wire cross-layer references to already-populated lower layers** (if applicable):
+   - If a just-extracted element references a type that already exists in a lower layer, wire it now
+   - Example: when extracting API layer, wire `api.operation →[references]→ application.applicationservice` for elements already in the Application layer
+   - This eliminates a significant portion of the inter-layer pass in `/dr-relate`
+
+3. **Pause and display checkpoint:**
 
 ```
 Checkpoint: [Layer Name] Layer Complete
@@ -136,6 +149,12 @@ Total: N elements across M layers
 
 Final validation:
   dr validate --strict
+
+Connectivity:
+  Run: dr validate --orphans
+  This shows elements still needing relationships, grouped by layer with
+  suggested predicates. Orphans remaining after /dr-map are best handled
+  by running /dr-relate --orphans rather than a full /dr-relate pass.
 
 Next steps:
   - Review flagged low-confidence elements
@@ -240,7 +259,7 @@ Proceed with extraction?
 
 Use the Task tool to launch the specialized extraction agent:
 
-```python
+````python
 Task(
     subagent_type="dr-extractor",
     prompt=f"""Extract Documentation Robotics model from codebase.
@@ -288,7 +307,7 @@ Task(
    dr add business capability "Order Management" \
      --description "Inferred from OrderService and order routes" \
      --source-provenance inferred
-   ```
+````
 
 4. Validate the extracted model:
    - Run `dr validate` after extraction
@@ -304,26 +323,31 @@ Task(
 **Analysis Guidelines:**
 
 For Business Layer:
+
 - Infer business services from high-level modules/packages
 - Look for domain concepts in naming
 - Group related functionality
 
 For Application Layer:
+
 - Map classes/modules to components
 - Services exposed via APIs become application services
 - Set criticality based on usage patterns
 
 For API Layer:
+
 - Extract REST/GraphQL endpoints
 - Map HTTP methods to operations
 - Extract request/response schemas
 
 For Data Model Layer:
+
 - Parse ORM models (SQLAlchemy, TypeORM, JPA, etc.)
 - Extract JSON schemas if present
 - Document relationships
 
 For React Flow Applications (when `@xyflow/react` detected in package.json):
+
 - Scan `src/core/nodes/` or similar for custom node components → `ux.librarycomponent` (type: graph-node)
 - Look for a unified/shared node component that is configuration-driven → single `ux.librarycomponent` entry (do NOT create one per node type)
 - Scan `src/core/edges/` for custom edge types → `ux.librarycomponent` (type: graph-edge)
@@ -368,14 +392,16 @@ Recommendations:
 ```
 
 **Important:**
+
 - Create realistic, meaningful descriptions
 - Use proper kebab-case for IDs
 - **Every `dr add` call must include `--source-file` and `--source-provenance`** — elements without provenance are untraceable and will fail the `source_files_exist` assertion in the test suite
 - Establish cross-layer references where clear
 - Flag uncertain mappings for review
 - Run validation and fix obvious errors
-"""
-)
+  """
+  )
+
 ```
 
 ### Step 5: Process Agent Results
@@ -383,8 +409,8 @@ Recommendations:
 When the agent completes, parse and display the report:
 
 ```
-Extraction Complete!
-===================
+
+# Extraction Complete
 
 Created Elements:
 ├─ Business Layer: 5 services
@@ -397,6 +423,10 @@ Cross-Layer References:
 ✓ 35 exposes references (app → api)
 ✓ 12 stores references (data-store → data model)
 
+Connectivity Check:
+  Run: dr validate --orphans
+  [show orphan count and top 3 layers with most orphans]
+
 Validation: ⚠️ 2 warnings, 0 errors
 
 Confidence:
@@ -405,12 +435,14 @@ Confidence:
 ❌ Low: 3% (manual review needed)
 
 Files Modified:
+
 - documentation-robotics/model/02_business/services.yaml (3 elements)
 - documentation-robotics/model/04_application/services.yaml (8 elements)
 - documentation-robotics/model/04_application/components.yaml (3 elements)
 - documentation-robotics/model/06_api/operations.yaml (25 elements)
 - documentation-robotics/model/07_data-model/schemas.yaml (12 elements)
-```
+
+````
 
 ### Step 6: Validation & Review
 
@@ -418,7 +450,7 @@ After extraction, run validation:
 
 ```bash
 dr validate --strict
-```
+````
 
 Present results and ask user to review:
 
