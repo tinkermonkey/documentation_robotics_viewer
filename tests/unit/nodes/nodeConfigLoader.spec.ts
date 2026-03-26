@@ -17,7 +17,6 @@ test.describe('NodeConfigLoader', () => {
       const config = nodeConfigLoader.getStyleConfig(NodeType.MOTIVATION_GOAL);
       expect(config).toBeDefined();
       expect(config?.typeLabel).toBe('Goal');
-      expect(config?.icon).toBe('🎯');
     });
 
     test('should return undefined for invalid NodeType', () => {
@@ -109,35 +108,16 @@ test.describe('NodeConfigLoader', () => {
       expect(nodeType).toBe(NodeType.MOTIVATION_STAKEHOLDER);
     });
 
-    test('should map Container to c4.container', () => {
-      const nodeType = nodeConfigLoader.mapElementType('Container');
-      expect(nodeType).toBe(NodeType.C4_CONTAINER);
-    });
-
-    test('should return undefined for unmapped type', () => {
+    test('should return GENERIC for unmapped type', () => {
       const nodeType = nodeConfigLoader.mapElementType('UnknownType');
-      expect(nodeType).toBeUndefined();
+      expect(nodeType).toBe(NodeType.GENERIC);
     });
 
-    test('should warn when mapping unknown element type', () => {
-      const originalWarn = console.warn;
-      const calls: any[] = [];
-      console.warn = (...args) => calls.push(args);
-
-      try {
-        nodeConfigLoader.mapElementType('UnknownType');
-        expect(calls.length).toBe(1);
-        expect(calls[0][0]).toContain('[NodeConfigLoader] No type mapping found for element type: "UnknownType"');
-      } finally {
-        console.warn = originalWarn;
-      }
-    });
-
-    test('should handle multiple mappings for same type', () => {
-      const mapping1 = nodeConfigLoader.mapElementType('C4Container');
-      const mapping2 = nodeConfigLoader.mapElementType('c4-container');
-      expect(mapping1).toBe(mapping2);
-      expect(mapping1).toBe(NodeType.C4_CONTAINER);
+    test('should return GENERIC for unmapped types consistently', () => {
+      const mapping1 = nodeConfigLoader.mapElementType('SomeUnknownType');
+      const mapping2 = nodeConfigLoader.mapElementType('AnotherUnknownType');
+      expect(mapping1).toBe(NodeType.GENERIC);
+      expect(mapping2).toBe(NodeType.GENERIC);
     });
 
     test('should map Entity to data.model', () => {

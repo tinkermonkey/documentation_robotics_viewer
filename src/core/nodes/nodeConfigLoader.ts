@@ -120,10 +120,10 @@ class NodeConfigLoader {
 
     // Validate that each style config has required properties
     for (const [nodeType, styleConfig] of Object.entries(config.nodeStyles)) {
-      if (!styleConfig.layout || !styleConfig.icon || !styleConfig.typeLabel) {
+      if (!styleConfig.layout || !styleConfig.typeLabel) {
         throw new Error(
           `[NodeConfigLoader] Style config for NodeType "${nodeType}" is missing required properties ` +
-          '(layout, icon, or typeLabel). Verify all node style entries are complete in nodeConfig.json.'
+          '(layout or typeLabel). Verify all node style entries are complete in nodeConfig.json.'
         );
       }
 
@@ -177,14 +177,10 @@ class NodeConfigLoader {
    * @param elementType - The element type string from the model
    * @returns NodeType enum value or undefined if not found
    */
-  mapElementType(elementType: string): NodeType | undefined {
+  mapElementType(elementType: string): NodeType {
     const mappedType = this.config.typeMap[elementType];
     if (!mappedType) {
-      console.warn(
-        `[NodeConfigLoader] No type mapping found for element type: "${elementType}". ` +
-        `Add an entry to nodeConfig.json typeMap to support this element type.`
-      );
-      return undefined;
+      return NodeType.GENERIC;
     }
 
     return mappedType;

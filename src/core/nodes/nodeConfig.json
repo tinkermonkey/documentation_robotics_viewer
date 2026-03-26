@@ -171,7 +171,6 @@
   "nodeStyles": {
     "motivation.stakeholder": {
       "layout": "left",
-      "icon": "👤",
       "typeLabel": "Stakeholder",
       "colors": {
         "fill": "#f3e8ff",
@@ -180,13 +179,12 @@
         "handle": "#7c3aed"
       },
       "dimensions": {
-        "width": 180,
+        "width": 200,
         "height": 100
       }
     },
     "motivation.goal": {
       "layout": "left",
-      "icon": "🎯",
       "typeLabel": "Goal",
       "colors": {
         "fill": "#d1fae5",
@@ -195,13 +193,12 @@
         "handle": "#059669"
       },
       "dimensions": {
-        "width": 180,
+        "width": 200,
         "height": 100
       }
     },
     "motivation.requirement": {
       "layout": "left",
-      "icon": "✓",
       "typeLabel": "Requirement",
       "colors": {
         "fill": "#dbeafe",
@@ -210,13 +207,12 @@
         "handle": "#2563eb"
       },
       "dimensions": {
-        "width": 180,
+        "width": 200,
         "height": 100
       }
     },
     "motivation.assessment": {
       "layout": "left",
-      "icon": "✓",
       "typeLabel": "Assessment",
       "colors": {
         "fill": "#f3e8ff",
@@ -225,13 +221,12 @@
         "handle": "#a855f7"
       },
       "dimensions": {
-        "width": 180,
+        "width": 200,
         "height": 100
       }
     },
     "motivation.driver": {
       "layout": "left",
-      "icon": "⚡",
       "typeLabel": "Driver",
       "colors": {
         "fill": "#ffedd5",
@@ -240,13 +235,12 @@
         "handle": "#ea580c"
       },
       "dimensions": {
-        "width": 180,
+        "width": 200,
         "height": 100
       }
     },
     "motivation.outcome": {
       "layout": "left",
-      "icon": "🏆",
       "typeLabel": "Outcome",
       "colors": {
         "fill": "#cffafe",
@@ -255,13 +249,12 @@
         "handle": "#0891b2"
       },
       "dimensions": {
-        "width": 180,
+        "width": 200,
         "height": 100
       }
     },
     "motivation.principle": {
       "layout": "left",
-      "icon": "📋",
       "typeLabel": "Principle",
       "colors": {
         "fill": "#fef3c7",
@@ -270,13 +263,12 @@
         "handle": "#f59e0b"
       },
       "dimensions": {
-        "width": 180,
+        "width": 200,
         "height": 100
       }
     },
     "motivation.constraint": {
       "layout": "left",
-      "icon": "🚫",
       "typeLabel": "Constraint",
       "colors": {
         "fill": "#fee2e2",
@@ -285,13 +277,12 @@
         "handle": "#dc2626"
       },
       "dimensions": {
-        "width": 180,
+        "width": 200,
         "height": 100
       }
     },
     "motivation.valueStream": {
       "layout": "left",
-      "icon": "→",
       "typeLabel": "Value Stream",
       "colors": {
         "fill": "#dbeafe",
@@ -306,7 +297,6 @@
     },
     "motivation.assumption": {
       "layout": "left",
-      "icon": "💭",
       "typeLabel": "Assumption",
       "borderStyle": "dashed",
       "colors": {
@@ -316,13 +306,12 @@
         "handle": "#6366f1"
       },
       "dimensions": {
-        "width": 180,
+        "width": 200,
         "height": 100
       }
     },
     "business.function": {
       "layout": "left",
-      "icon": "📊",
       "typeLabel": "Function",
       "colors": {
         "fill": "#e3f2fd",
@@ -331,13 +320,12 @@
         "handle": "#1565c0"
       },
       "dimensions": {
-        "width": 180,
+        "width": 200,
         "height": 100
       }
     },
     "business.service": {
       "layout": "left",
-      "icon": "🔌",
       "typeLabel": "Service",
       "colors": {
         "fill": "#f3e5f5",
@@ -346,13 +334,12 @@
         "handle": "#6a1b9a"
       },
       "dimensions": {
-        "width": 180,
-        "height": 90
+        "width": 200,
+        "height": 100
       }
     },
     "business.capability": {
       "layout": "left",
-      "icon": "⭐",
       "typeLabel": "Capability",
       "colors": {
         "fill": "#e8f5e9",
@@ -361,13 +348,12 @@
         "handle": "#2e7d32"
       },
       "dimensions": {
-        "width": 160,
-        "height": 70
+        "width": 200,
+        "height": 100
       }
     },
     "business.process": {
       "layout": "left",
-      "icon": "⚙️",
       "typeLabel": "Process",
       "colors": {
         "fill": "#fff3e0",
@@ -377,12 +363,39 @@
       },
       "dimensions": {
         "width": 200,
-        "height": 120
+        "height": 100
+      }
+    },
+    "application.component": {
+      "layout": "left",
+      "typeLabel": "App Component",
+      "colors": {
+        "fill": "#d1fae5",
+        "stroke": "#047857",
+        "header": "#047857",
+        "handle": "#047857"
+      },
+      "dimensions": {
+        "width": 200,
+        "height": 100
+      }
+    },
+    "application.service": {
+      "layout": "left",
+      "typeLabel": "App Service",
+      "colors": {
+        "fill": "#a7f3d0",
+        "stroke": "#059669",
+        "header": "#059669",
+        "handle": "#059669"
+      },
+      "dimensions": {
+        "width": 200,
+        "height": 100
       }
     },
     "technology.systemsoftware": {
       "layout": "left",
-      "icon": "🖥️",
       "typeLabel": "System Software",
       "colors": {
         "fill": "#fff7ed",
@@ -397,7 +410,6 @@
     },
     "api.operation": {
       "layout": "left",
-      "icon": "↔",
       "typeLabel": "Operation",
       "colors": {
         "fill": "#fff1f2",
@@ -412,7 +424,6 @@
     },
     "api.securityscheme": {
       "layout": "left",
-      "icon": "🔐",
       "typeLabel": "Security Scheme",
       "colors": {
         "fill": "#fef2f2",
@@ -427,8 +438,7 @@
     },
     "data.jsonSchema": {
       "layout": "table",
-      "icon": "📋",
-      "typeLabel": "SCHEMA",
+      "typeLabel": "Schema",
       "colors": {
         "fill": "#ffffff",
         "stroke": "#1e40af",
@@ -444,8 +454,7 @@
     },
     "data.model": {
       "layout": "table",
-      "icon": "📊",
-      "typeLabel": "MODEL",
+      "typeLabel": "Model",
       "colors": {
         "fill": "#f8fafc",
         "stroke": "#0f766e",
@@ -461,7 +470,6 @@
     },
     "data.objectschema": {
       "layout": "left",
-      "icon": "{}",
       "typeLabel": "Object Schema",
       "colors": {
         "fill": "#f0fdfa",
@@ -476,7 +484,6 @@
     },
     "datastore.collection": {
       "layout": "left",
-      "icon": "🗃️",
       "typeLabel": "Collection",
       "colors": {
         "fill": "#faf5ff",
@@ -491,7 +498,6 @@
     },
     "datastore.database": {
       "layout": "left",
-      "icon": "🗄️",
       "typeLabel": "Database",
       "colors": {
         "fill": "#f5f3ff",
@@ -506,7 +512,6 @@
     },
     "ux.uxapplication": {
       "layout": "left",
-      "icon": "📱",
       "typeLabel": "UX Application",
       "colors": {
         "fill": "#fdf2f8",
@@ -521,7 +526,6 @@
     },
     "ux.view": {
       "layout": "left",
-      "icon": "🖼️",
       "typeLabel": "View",
       "colors": {
         "fill": "#fce7f3",
@@ -536,7 +540,6 @@
     },
     "ux.librarycomponent": {
       "layout": "left",
-      "icon": "🧱",
       "typeLabel": "Library Component",
       "colors": {
         "fill": "#fdf4ff",
@@ -551,7 +554,6 @@
     },
     "navigation.navigationgraph": {
       "layout": "left",
-      "icon": "🗺️",
       "typeLabel": "Navigation Graph",
       "colors": {
         "fill": "#eef2ff",
@@ -566,7 +568,6 @@
     },
     "navigation.route": {
       "layout": "left",
-      "icon": "🔗",
       "typeLabel": "Route",
       "colors": {
         "fill": "#eff6ff",
@@ -581,7 +582,6 @@
     },
     "navigation.navigationguard": {
       "layout": "left",
-      "icon": "🛡️",
       "typeLabel": "Navigation Guard",
       "colors": {
         "fill": "#f5f3ff",
@@ -596,7 +596,6 @@
     },
     "navigation.navigationflow": {
       "layout": "left",
-      "icon": "➡️",
       "typeLabel": "Navigation Flow",
       "colors": {
         "fill": "#ede9fe",
@@ -611,7 +610,6 @@
     },
     "apm.instrumentationconfig": {
       "layout": "left",
-      "icon": "📡",
       "typeLabel": "Instrumentation",
       "colors": {
         "fill": "#f8fafc",
@@ -626,7 +624,6 @@
     },
     "apm.logconfiguration": {
       "layout": "left",
-      "icon": "📝",
       "typeLabel": "Log Config",
       "colors": {
         "fill": "#f1f5f9",
@@ -641,7 +638,6 @@
     },
     "apm.exporterconfig": {
       "layout": "left",
-      "icon": "📤",
       "typeLabel": "Exporter Config",
       "colors": {
         "fill": "#f8fafc",
@@ -656,7 +652,6 @@
     },
     "testing.testcoveragemodel": {
       "layout": "left",
-      "icon": "🧪",
       "typeLabel": "Coverage Model",
       "colors": {
         "fill": "#ecfdf5",
@@ -671,7 +666,6 @@
     },
     "testing.testcoveragetarget": {
       "layout": "left",
-      "icon": "🎯",
       "typeLabel": "Coverage Target",
       "colors": {
         "fill": "#d1fae5",
@@ -686,7 +680,6 @@
     },
     "testing.coveragerequirement": {
       "layout": "left",
-      "icon": "✅",
       "typeLabel": "Coverage Req.",
       "colors": {
         "fill": "#f0fdf4",
@@ -701,7 +694,6 @@
     },
     "testing.coveragesummary": {
       "layout": "left",
-      "icon": "📈",
       "typeLabel": "Coverage Summary",
       "colors": {
         "fill": "#dcfce7",
@@ -716,7 +708,6 @@
     },
     "testing.environmentfactor": {
       "layout": "left",
-      "icon": "🌐",
       "typeLabel": "Env. Factor",
       "colors": {
         "fill": "#f0fdf4",
@@ -731,7 +722,6 @@
     },
     "layer.container": {
       "layout": "centered",
-      "icon": "📦",
       "typeLabel": "Layer",
       "colors": {
         "fill": "#f3f4f6",
@@ -741,6 +731,20 @@
       },
       "dimensions": {
         "width": 100,
+        "height": 100
+      }
+    },
+    "generic": {
+      "layout": "left",
+      "typeLabel": "Element",
+      "colors": {
+        "fill": "#f8fafc",
+        "stroke": "#64748b",
+        "header": "#475569",
+        "handle": "#64748b"
+      },
+      "dimensions": {
+        "width": 200,
         "height": 100
       }
     }

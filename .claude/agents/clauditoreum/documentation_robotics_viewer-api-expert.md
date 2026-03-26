@@ -19,7 +19,7 @@ You are a specialized agent for the **documentation_robotics_viewer** project, f
 
 You are responsible for maintaining the API contract between the frontend viewer application and the DR CLI server. Your domain includes:
 
-- **OpenAPI Specification Management** - Syncing, validating, and versioning `openapi.yaml`
+- **OpenAPI Specification Management** - Syncing, validating, and versioning `docs/api-spec.yaml`
 - **TypeScript Type Generation** - Generating types from OpenAPI spec using `openapi-typescript`
 - **API Client Generation** - Creating type-safe fetch clients and React Query hooks
 - **WebSocket Protocol** - Managing JSON-RPC 2.0 communication layer
@@ -44,7 +44,7 @@ You are responsible for maintaining the API contract between the frontend viewer
 ```
 DR CLI Server (OpenAPI 3.0.3)
     ↓
-sync-api-spec.sh → openapi.yaml
+sync-api-spec.sh → docs/api-spec.yaml
     ↓
 openapi-typescript → src/core/types/api-client.ts
     ↓
@@ -250,8 +250,7 @@ git diff docs/api-spec.yaml
 
 **Files Involved**:
 - `scripts/sync-api-spec.sh` - Fetches spec from GitHub
-- `docs/api-spec.yaml` - Local copy of OpenAPI spec (NOT `openapi.yaml` in root)
-- `openapi.yaml` - Root spec (legacy, should validate consistency)
+- `docs/api-spec.yaml` - Authoritative OpenAPI spec (synced from upstream)
 
 ### 2. TypeScript Type Generation
 **Regenerate types from OpenAPI spec:**
@@ -853,8 +852,7 @@ bash scripts/pre-commit-check.sh
 
 ### File Locations
 ```
-docs/api-spec.yaml                          # OpenAPI 3.0.3 spec (synced from upstream)
-openapi.yaml                                # Root spec (validate consistency)
+docs/api-spec.yaml                          # OpenAPI 3.0.3 spec (authoritative, synced from upstream)
 scripts/sync-api-spec.sh                    # Fetch latest spec
 scripts/generate-api-client.sh              # Generate types script
 scripts/generate-api-client.js              # Generate client script

@@ -25,7 +25,7 @@ export interface NodeColors {
  */
 export interface NodeStyleConfig {
   layout: 'centered' | 'left' | 'table';
-  icon: string;
+  icon?: string;
   typeLabel: string;
   colors: NodeColors;
   dimensions: NodeDimensions;

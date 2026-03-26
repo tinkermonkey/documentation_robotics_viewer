@@ -89,7 +89,10 @@ export const useModelStore = create<ModelStore>((set, get) => ({
     set({
       modelSpecVersion,
       loadedSpecVersion,
-      specVersionMismatch: modelSpecVersion !== loadedSpecVersion
+      // Only flag mismatch when both versions are known and they differ
+      specVersionMismatch: modelSpecVersion !== 'unknown'
+        && loadedSpecVersion !== 'unknown'
+        && modelSpecVersion !== loadedSpecVersion
     }),
 
   // Selectors

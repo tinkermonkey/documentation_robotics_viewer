@@ -10,7 +10,7 @@ api.openapidocument.dr-cli-visualization-server-open-api-document:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T16:54:07.127Z
     updated_at: 2026-03-20T16:54:07.127Z

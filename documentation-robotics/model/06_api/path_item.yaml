@@ -12,7 +12,7 @@ api.pathitem.health-path:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:58:36.885Z
     updated_at: 2026-03-20T12:58:36.886Z
@@ -31,7 +31,7 @@ api.pathitem.spec-path:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:58:37.977Z
     updated_at: 2026-03-20T12:58:37.977Z
@@ -50,7 +50,7 @@ api.pathitem.model-path:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:58:41.078Z
     updated_at: 2026-03-20T12:58:41.078Z
@@ -69,7 +69,7 @@ api.pathitem.changesets-path:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:58:41.884Z
     updated_at: 2026-03-20T12:58:41.884Z
@@ -88,7 +88,7 @@ api.pathitem.changeset-detail-path:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:58:45.194Z
     updated_at: 2026-03-20T12:58:45.194Z
@@ -107,7 +107,7 @@ api.pathitem.annotations-path:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:58:45.803Z
     updated_at: 2026-03-20T12:58:45.803Z
@@ -127,7 +127,7 @@ api.pathitem.annotation-detail-path:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:58:49.564Z
     updated_at: 2026-03-20T12:58:49.564Z
@@ -146,7 +146,7 @@ api.pathitem.web-socket-path:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:58:50.807Z
     updated_at: 2026-03-20T12:58:50.807Z

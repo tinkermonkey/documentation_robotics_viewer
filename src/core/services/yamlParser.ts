@@ -69,6 +69,8 @@ const LAYER_TYPE_MAP: Record<string, LayerType> = {
   'data-model': LayerType.DataModel,
   data_model: LayerType.DataModel,
   datastore: LayerType.Datastore,
+  'data-store': LayerType.Datastore,
+  data_store: LayerType.Datastore,
   ux: LayerType.Ux,
   navigation: LayerType.Navigation,
   apm: LayerType.ApmObservability,

@@ -11,7 +11,7 @@ import { ModelParseErrorBanner } from '../components/shared/ModelParseErrorBanne
 import { useAnnotationStore } from '../stores/annotationStore';
 import { useViewPreferenceStore } from '../stores/viewPreferenceStore';
 import { useModelStore } from '../../../core/stores/modelStore';
-import { embeddedDataLoader, type SchemaManifest } from '../services/embeddedDataLoader';
+import { embeddedDataLoader, enrichModelPredicates, type SchemaManifest } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
 import { loadPredicateCatalog } from '../../../core/services/predicateCatalogLoader';
 import { loadSpecSchemas } from '../../../core/services/specSchemaLoader';
@@ -61,22 +61,32 @@ export default function SpecRoute() {
         if (specFiles['base.json']) {
           const catalog = loadPredicateCatalog(specFiles['base.json']);
           useModelStore.getState().setPredicateCatalog(catalog.byPredicate);
+
+          // Enrich model relationships with predicate definitions
+          const currentModel = useModelStore.getState().model;
+          if (currentModel) {
+            enrichModelPredicates(currentModel, catalog.byPredicate);
+            setModel(currentModel);
+          }
         }
 
         // Load and populate spec schemas
         const schemas = loadSpecSchemas(specFiles);
         useModelStore.getState().setSpecSchemas(schemas);
 
-        // Validate spec version: compare spec's declared version against loaded manifest version
-        const specDeclaredVersion = loadedSpecData?.version as string | undefined;
-        const loadedSpecManifest = specFiles['manifest.json'] as SchemaManifest | undefined;
-        const loadedSpecVersion = loadedSpecManifest?.specVersion;
+        // Extract the loaded spec reference version from the spec API's manifest schema
+        // specData.version is the spec collection version (e.g., "0.1.0"), NOT the DR spec reference version
+        // The actual spec reference version (e.g., "0.8.3") is in schemas['manifest.json'].specVersion
+        const specManifestSchema = loadedSpecData?.schemas?.['manifest.json'] as SchemaManifest | undefined;
+        const loadedSpecVersion = specManifestSchema?.specVersion
+          || (specFiles['manifest.json'] as SchemaManifest | undefined)?.specVersion;
 
-        // Set spec version with both spec's declared version and loaded spec version for comparison
-        // setSpecVersion(specDeclaredVersion, loadedSpecVersion) sets specVersionMismatch = (specDeclaredVersion !== loadedSpecVersion)
-        if (specDeclaredVersion || loadedSpecVersion) {
+        // The model's declared spec_version comes from model metadata (set during model loading)
+        const modelSpecVersion = useModelStore.getState().modelSpecVersion;
+
+        if (modelSpecVersion || loadedSpecVersion) {
           useModelStore.getState().setSpecVersion(
-            specDeclaredVersion || 'unknown',
+            modelSpecVersion || 'unknown',
             loadedSpecVersion || 'unknown'
           );
         }
@@ -113,7 +123,7 @@ export default function SpecRoute() {
     }
   }, [specData, layerIdToSchemaKey, selectedLayerId]);
 
-  const activeView = view === 'json' ? 'json' : 'graph';
+  const activeView = view === 'details' ? 'details' : 'graph';
 
   // Handle view synchronization in effect to avoid navigation during render
   useEffect(() => {
@@ -123,6 +133,23 @@ export default function SpecRoute() {
       setSpecView(activeView);
     }
   }, [view, activeView, specView, navigate, setSpecView]);
+
+  // Get spec node details for SpecNodeDetailsPanel (must be before early returns to maintain hook order)
+  const specNodeDetails = useMemo((): Pick<SpecNodeDetailsPanelProps, 'nodeSchema' | 'relationshipSchemas'> => {
+    if (!selectedSpecNodeId) return { nodeSchema: null, relationshipSchemas: [] };
+
+    const parsed = selectedSpecNodeId.split('.');
+    if (parsed.length !== 2) return { nodeSchema: null, relationshipSchemas: [] };
+
+    const [layerId, nodeType] = parsed;
+    const specSchema = specSchemas[layerId];
+    if (!specSchema) return { nodeSchema: null, relationshipSchemas: [] };
+
+    const nodeSchema = (specSchema.nodeSchemas?.[nodeType] ?? null) as NodeSchema | null;
+    const relationshipSchemas = specSchema.relationshipSchemas ?? [];
+
+    return { nodeSchema, relationshipSchemas };
+  }, [selectedSpecNodeId, specSchemas]);
 
   if (loading) {
     return <LoadingState variant="page" message="Loading spec..." />;
@@ -145,28 +172,10 @@ export default function SpecRoute() {
   }
 
   const selectedSchemaId = selectedLayerId ? layerIdToSchemaKey[selectedLayerId] ?? null : null;
-  const selectedSchema = selectedSchemaId ? specData.schemas[selectedSchemaId] : undefined;
 
   // Check for parse errors (from the loaded model)
   const parseErrors = model?.metadata?.parseErrors;
   const hasParseErrors = parseErrors && parseErrors.length > 0;
-
-  // Get spec node details for SpecNodeDetailsPanel
-  const specNodeDetails = useMemo((): Pick<SpecNodeDetailsPanelProps, 'nodeSchema' | 'relationshipSchemas'> => {
-    if (!selectedSpecNodeId) return { nodeSchema: null, relationshipSchemas: [] };
-
-    const parsed = selectedSpecNodeId.split('.');
-    if (parsed.length !== 2) return { nodeSchema: null, relationshipSchemas: [] };
-
-    const [layerId, nodeType] = parsed;
-    const specSchema = specSchemas[layerId];
-    if (!specSchema) return { nodeSchema: null, relationshipSchemas: [] };
-
-    const nodeSchema = (specSchema.nodeSchemas?.[nodeType] ?? null) as NodeSchema | null;
-    const relationshipSchemas = specSchema.relationshipSchemas ?? [];
-
-    return { nodeSchema, relationshipSchemas };
-  }, [selectedSpecNodeId, specSchemas]);
 
   return (
     <SharedLayout
@@ -199,25 +208,12 @@ export default function SpecRoute() {
             onDismiss={() => setParseErrorsVisible(false)}
           />
         )}
-        {activeView === 'graph' ? (
-          <SpecViewer
-            specData={specData}
-            selectedSchemaId={selectedSchemaId}
-            onSpecNodeSelect={setSelectedSpecNodeId}
-          />
-        ) : (
-          <div className="h-full overflow-auto p-6">
-            {selectedSchema ? (
-              <pre className="text-xs text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700 overflow-auto">
-                {JSON.stringify(selectedSchema, null, 2)}
-              </pre>
-            ) : (
-              <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
-                <p>Select a layer to view its schema</p>
-              </div>
-            )}
-          </div>
-        )}
+        <SpecViewer
+          specData={specData}
+          selectedSchemaId={selectedSchemaId}
+          onSpecNodeSelect={setSelectedSpecNodeId}
+          activeView={activeView}
+        />
       </div>
     </SharedLayout>
   );

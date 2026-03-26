@@ -25,12 +25,13 @@ interface SpecViewerProps {
   specData: SpecDataResponse
   selectedSchemaId: string | null
   onSpecNodeSelect?: (specNodeId: string | null) => void
+  activeView?: 'graph' | 'details'
 }
 
-const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId, onSpecNodeSelect }) => {
+const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId, onSpecNodeSelect, activeView }) => {
   const { specSchemas } = useModelStore();
   const [selectedSpecNodeId, setSelectedSpecNodeId] = React.useState<string | null>(null);
-  const [activeTab, setActiveTab] = React.useState<'details' | 'graph'>('details');
+  const activeTab = activeView || 'details';
 
   // Notify parent component when spec node selection changes
   React.useEffect(() => {
@@ -246,40 +247,6 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId, onS
 
     return (
       <div className="h-full flex flex-col bg-white dark:bg-gray-900 overflow-hidden">
-        {/* Tab Navigation */}
-        <div className="flex border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900" role="tablist">
-          <button
-            id="spec-viewer-details-tab"
-            onClick={() => setActiveTab('details')}
-            className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'details'
-                ? 'text-gray-900 dark:text-white border-blue-500'
-                : 'text-gray-700 dark:text-gray-300 border-transparent hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-600'
-            }`}
-            role="tab"
-            aria-selected={activeTab === 'details'}
-            aria-controls="spec-viewer-details-view"
-            data-testid="spec-viewer-details-tab"
-          >
-            Details
-          </button>
-          <button
-            id="spec-viewer-graph-tab"
-            onClick={() => setActiveTab('graph')}
-            className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === 'graph'
-                ? 'text-gray-900 dark:text-white border-blue-500'
-                : 'text-gray-700 dark:text-gray-300 border-transparent hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-600'
-            }`}
-            role="tab"
-            aria-selected={activeTab === 'graph'}
-            aria-controls="spec-viewer-graph-view"
-            data-testid="spec-viewer-graph-tab"
-          >
-            Graph
-          </button>
-        </div>
-
         {/* Content Area */}
         <div className="flex-1 overflow-hidden">
           {/* Details View */}
@@ -402,8 +369,6 @@ const SpecViewer: React.FC<SpecViewerProps> = ({ specData, selectedSchemaId, onS
                     const specNodeId = (node.data as Record<string, unknown>).specNodeId as string | undefined;
                     if (specNodeId) {
                       setSelectedSpecNodeId(specNodeId);
-                      // Switch to details view
-                      setActiveTab('details');
                     }
                   }}
                   fitView

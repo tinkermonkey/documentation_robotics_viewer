@@ -66,6 +66,9 @@ export enum NodeType {
 
   // Structural (1)
   LAYER_CONTAINER = 'layer.container',
+
+  // Generic fallback for unmapped spec/model node types
+  GENERIC = 'generic',
 }
 
 /**

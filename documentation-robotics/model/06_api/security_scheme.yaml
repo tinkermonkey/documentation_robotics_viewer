@@ -14,7 +14,7 @@ api.securityscheme.bearer-auth-scheme:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:58:03.670Z
     updated_at: 2026-03-20T12:58:03.670Z
@@ -34,7 +34,7 @@ api.securityscheme.query-auth-scheme:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:58:33.108Z
     updated_at: 2026-03-20T12:58:33.108Z

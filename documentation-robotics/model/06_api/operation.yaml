@@ -13,7 +13,7 @@ api.operation.health-check:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:57:38.001Z
     updated_at: 2026-03-20T12:57:38.001Z
@@ -34,7 +34,7 @@ api.operation.get-schema-specifications:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:57:39.761Z
     updated_at: 2026-03-20T12:57:39.761Z
@@ -55,7 +55,7 @@ api.operation.get-architecture-model:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:57:42.953Z
     updated_at: 2026-03-20T12:57:42.954Z
@@ -75,7 +75,7 @@ api.operation.list-changesets:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:57:43.877Z
     updated_at: 2026-03-20T12:57:43.878Z
@@ -96,7 +96,7 @@ api.operation.get-changeset-details:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:57:46.588Z
     updated_at: 2026-03-20T12:57:46.588Z
@@ -116,7 +116,7 @@ api.operation.get-annotations:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:57:49.814Z
     updated_at: 2026-03-20T12:57:49.814Z
@@ -136,7 +136,7 @@ api.operation.create-annotation:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:57:50.656Z
     updated_at: 2026-03-20T12:57:50.656Z
@@ -156,7 +156,7 @@ api.operation.update-annotation:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:57:54.837Z
     updated_at: 2026-03-20T12:57:54.837Z
@@ -176,7 +176,7 @@ api.operation.delete-annotation:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:57:55.598Z
     updated_at: 2026-03-20T12:57:55.598Z
@@ -197,7 +197,7 @@ api.operation.web-socket-real-time-updates:
   source_reference:
     provenance: extracted
     locations:
-      - file: openapi.yaml
+      - file: docs/api-spec.yaml
   metadata:
     created_at: 2026-03-20T12:57:58.551Z
     updated_at: 2026-03-20T12:57:58.551Z

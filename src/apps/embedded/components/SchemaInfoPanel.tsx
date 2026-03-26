@@ -24,9 +24,13 @@ export const SchemaInfoPanel: React.FC<SchemaInfoPanelProps> = ({ className = ''
   }
 
   // Extract metadata from model
+  // model.version is the manifest/project version, model.metadata?.specVersion is the spec reference version
   const version = (model.metadata?.version as string | undefined) || (model.version as string | undefined) || 'Unknown';
   const lastModified = (model.metadata?.lastModified as string | undefined) || (model.metadata?.generatedDate as string | undefined) || (model.metadata?.modified as string | undefined) || 'Unknown';
-  const schemaVersion = (model.metadata?.schemaVersion as string | undefined) || 'Unknown';
+  const schemaVersion = (model.metadata?.specVersion as string | undefined)
+    || (model.metadata?.spec_version as string | undefined)
+    || (model.metadata?.schemaVersion as string | undefined)
+    || 'Unknown';
   const elementCount = (model.metadata?.elementCount as number | undefined) || 0;
   const layerCount = model.layers ? Object.keys(model.layers).length : 0;
 

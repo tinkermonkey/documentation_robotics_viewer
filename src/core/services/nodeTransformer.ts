@@ -195,9 +195,8 @@ export class NodeTransformer {
         const nodeId = `node-${element.id}`;
         nodeMap.set(element.id, nodeId);
 
-        // Determine node type — null means unmapped type, skip silently
+        // Determine node type (all elements map to 'unified' or 'layerContainer')
         const nodeType = this.getNodeTypeForElement(element);
-        if (nodeType === null) continue;
 
         // Create node with type-specific data
         const node: AppNode = {
@@ -389,24 +388,13 @@ export class NodeTransformer {
    * All element types must be mapped via configuration to NodeType enum.
    * LayerContainer is a special structural node type.
    */
-  private getNodeTypeForElement(element: ModelElement): string | null {
+  private getNodeTypeForElement(element: ModelElement): string {
     // Special case: LayerContainer remains separate for layout purposes
     if (element.type === 'LayerContainer' || element.type === 'layer-container') {
       return 'layerContainer';
     }
 
-    // All other element types MUST be mapped via nodeConfig.json
-    const mappedType = nodeConfigLoader.mapElementType(element.type);
-
-    if (!mappedType) {
-      console.warn(
-        `[NodeTransformer] Cannot map element type "${element.type}" to NodeType enum. ` +
-        `Add a mapping in nodeConfig.json typeMap section. Element ID: ${element.id}`
-      );
-      return null;
-    }
-
-    // All mapped types use unified node for consistent rendering
+    // All element types are mapped via nodeConfig.json (unmapped types → GENERIC fallback)
     return 'unified';
   }
 
@@ -421,10 +409,6 @@ export class NodeTransformer {
     }
 
     const mappedType = nodeConfigLoader.mapElementType(element.type);
-
-    if (!mappedType) {
-      throw new Error(`[NodeTransformer] Cannot map element type "${element.type}" to NodeType`);
-    }
 
     // Route to appropriate extraction method based on layer prefix
     if (mappedType.startsWith('motivation.')) {
@@ -906,54 +890,46 @@ export class NodeTransformer {
           };
         }
 
-        // Map element type to NodeType via config
+        // Map element type to NodeType via config (unmapped types → GENERIC)
         const mappedType = nodeConfigLoader.mapElementType(element.type);
+        const styleConfig = nodeConfigLoader.getStyleConfig(mappedType);
 
-        if (!mappedType) {
-          // Warning already logged by nodeConfigLoader.mapElementType()
-          element.visual.size = { width: 180, height: 100 };
+        if (!styleConfig) {
+          console.warn(`[NodeTransformer] No style config found for NodeType: ${mappedType}`);
+          element.visual.size = { width: 200, height: 100 };
         } else {
-          // Get style config from JSON
-          const styleConfig = nodeConfigLoader.getStyleConfig(mappedType);
+          const { dimensions } = styleConfig;
 
-          if (!styleConfig) {
-            console.warn(`[NodeTransformer] No style config found for NodeType: ${mappedType}`);
-            element.visual.size = { width: 180, height: 100 };
-          } else {
-            const { dimensions } = styleConfig;
+          // Base dimensions from config
+          let width = dimensions.width;
+          let height = dimensions.height;
 
-            // Base dimensions from config
-            let width = dimensions.width;
-            let height = dimensions.height;
+          // Dynamic height calculation for nodes with field lists
+          // Count fields from both attributes and properties (same logic as extractFieldItems)
+          let fieldCount = 0;
 
-            // Dynamic height calculation for nodes with field lists
-            // Count fields from both attributes and properties (same logic as extractFieldItems)
-            let fieldCount = 0;
-
-            // Count attributes (v0.8.3 spec fields)
-            if (element.attributes && typeof element.attributes === 'object') {
-              fieldCount += Object.entries(element.attributes)
-                .filter(([key, value]) => !key.startsWith('_') && value !== null && value !== undefined)
-                .length;
-            }
-
-            // Count properties, excluding those already in attributes
-            if (element.properties && typeof element.properties === 'object') {
-              const attributeKeys = new Set(Object.keys(element.attributes ?? {}));
-              fieldCount += Object.entries(element.properties)
-                .filter(([key, value]) => !key.startsWith('_') && value !== null && value !== undefined && !attributeKeys.has(key))
-                .length;
-            }
-
-            if (fieldCount > 0) {
-              const headerHeight = dimensions.headerHeight || 40;
-              const itemHeight = dimensions.itemHeight || 24;
-              height = headerHeight + fieldCount * itemHeight;
-            }
-
-
-            element.visual.size = { width, height };
+          // Count attributes (v0.8.3 spec fields)
+          if (element.attributes && typeof element.attributes === 'object') {
+            fieldCount += Object.entries(element.attributes)
+              .filter(([key, value]) => !key.startsWith('_') && value !== null && value !== undefined)
+              .length;
           }
+
+          // Count properties, excluding those already in attributes
+          if (element.properties && typeof element.properties === 'object') {
+            const attributeKeys = new Set(Object.keys(element.attributes ?? {}));
+            fieldCount += Object.entries(element.properties)
+              .filter(([key, value]) => !key.startsWith('_') && value !== null && value !== undefined && !attributeKeys.has(key))
+              .length;
+          }
+
+          if (fieldCount > 0) {
+            const headerHeight = dimensions.headerHeight || 40;
+            const itemHeight = dimensions.itemHeight || 24;
+            height = headerHeight + fieldCount * itemHeight;
+          }
+
+          element.visual.size = { width, height };
         }
 
         // Override with DOM-measured sizes from pass 1 (two-pass layout)

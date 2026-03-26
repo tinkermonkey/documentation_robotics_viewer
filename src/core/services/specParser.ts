@@ -160,25 +160,9 @@ export class SpecParser {
     borderColor?: string;
     icon?: string;
   } {
-    // Icon mapping remains separate as it's not color-related
-    const iconMap: Record<string, string> = {
-      'Motivation': '🎯',
-      'Business': '💼',
-      'Security': '🔐',
-      'Application': '📱',
-      'Technology': '⚙️',
-      'API': '🔌',
-      'DataModel': '📊',
-      'DataStore': '💾',
-      'UX': '🎨',
-      'Navigation': '🧭',
-      'APM': '📈'
-    };
-
     return {
       backgroundColor: getLayerColor(layerType, 'light'),
       borderColor: getLayerColor(layerType, 'dark'),
-      icon: iconMap[layerType]
     };
   }
 

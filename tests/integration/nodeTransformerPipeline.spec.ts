@@ -621,15 +621,16 @@ test.describe('NodeTransformer Pipeline Integration', () => {
   });
 
   test.describe('Error Handling', () => {
-    test('should silently skip unknown element types', async () => {
+    test('should render unknown element types using generic fallback', async () => {
       const element = createElement('unknown-1', 'core.unknown.UnknownType');
 
       const model = createTestModel({ motivation: [element] });
       const result = await transformer.transformModel(model);
 
-      // Unknown types are skipped silently — no node created for the unknown element
+      // Unknown types render with GENERIC NodeType fallback
       const unknownNode = result.nodes.find(n => n.id === 'node-unknown-1');
-      expect(unknownNode).toBeUndefined();
+      expect(unknownNode).toBeDefined();
+      expect(unknownNode!.data.nodeType).toBe('generic');
     });
   });
 

@@ -27,9 +27,11 @@ export class JSONSchemaParser {
       'datamodel': LayerType.DataModel,
       'data-model': LayerType.DataModel,
       'datastore': LayerType.Datastore,
+      'data-store': LayerType.Datastore,
       'ux': LayerType.Ux,
       'navigation': LayerType.Navigation,
       'apm': LayerType.ApmObservability,
+      'testing': LayerType.Testing,
       'json-schema': LayerType.DataModel, // Default JSON schemas to DataModel layer
     };
     return mapping[layerName.toLowerCase()] || LayerType.DataModel;

@@ -8,7 +8,7 @@
  * that can drift from the actual API contract.
  */
 
-import { MetaModel, Layer, Reference, Relationship, ModelElement, ModelMetadata, LayerData, ElementVisual, LayerType } from '../../../core/types';
+import { MetaModel, Layer, Reference, Relationship, ModelElement, ModelMetadata, LayerData, ElementVisual, LayerType, SourceReference, ElementMetadata, PredicateDefinition } from '../../../core/types';
 import { Annotation, AnnotationCreate, AnnotationUpdate } from '../types/annotations';
 import { logError } from './errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
@@ -456,6 +456,17 @@ export class EmbeddedDataLoader {
       normalized.metadata = modelData.metadata as ModelMetadata;
     }
 
+    // Extract spec_version from flat API format (manifest-level field)
+    const specVersion = typeof modelData.spec_version === 'string' ? modelData.spec_version
+      : typeof modelData.specVersion === 'string' ? modelData.specVersion
+      : undefined;
+    if (specVersion) {
+      if (!normalized.metadata) {
+        normalized.metadata = {} as ModelMetadata;
+      }
+      (normalized.metadata as Record<string, unknown>).specVersion = specVersion;
+    }
+
     // Handle flat graph format from DR CLI: { nodes: [...], links: [...] }
     if (Array.isArray(modelData.nodes) && !Array.isArray(modelData.layers)) {
       const LAYER_TYPE_MAP: Record<string, LayerType> = {
@@ -491,26 +502,101 @@ export class EmbeddedDataLoader {
             relationships: []
           };
         }
+        let finalAttributes = (typeof rawNode.attributes === 'object' && rawNode.attributes !== null)
+          ? { ...(rawNode.attributes as Record<string, unknown>) }
+          : undefined;
+        // Include description in attributes if present at top level
+        if (typeof rawNode.description === 'string' && rawNode.description) {
+          if (!finalAttributes) {
+            finalAttributes = { description: rawNode.description };
+          } else if (!finalAttributes.description) {
+            finalAttributes.description = rawNode.description;
+          }
+        }
         normalized.layers[layerId].elements.push({
           id: typeof rawNode.id === 'string' ? rawNode.id : String(rawNode.id),
           elementId: typeof rawNode.spec_node_id === 'string' ? rawNode.spec_node_id : undefined,
+          specNodeId: typeof rawNode.spec_node_id === 'string' ? rawNode.spec_node_id : undefined,
           type: typeof rawNode.type === 'string' ? rawNode.type : '',
           name: typeof rawNode.name === 'string' ? rawNode.name : '',
           layerId,
+          attributes: finalAttributes,
           properties: {},
+          sourceReference: (typeof rawNode.source_reference === 'object' && rawNode.source_reference !== null)
+            ? rawNode.source_reference as unknown as SourceReference
+            : undefined,
+          metadata: (typeof rawNode.metadata === 'object' && rawNode.metadata !== null)
+            ? rawNode.metadata as unknown as ElementMetadata
+            : undefined,
           visual: defaultVisual
         });
       }
 
-      for (const rawLink of (modelData.links as Record<string, unknown>[] ?? [])) {
-        const layerId = typeof rawLink.layer_id === 'string' ? rawLink.layer_id : 'unknown';
-        if (normalized.layers[layerId]) {
-          normalized.layers[layerId].relationships!.push({
-            id: typeof rawLink.id === 'string' ? rawLink.id : String(rawLink.id),
-            sourceId: typeof rawLink.source === 'string' ? rawLink.source : '',
-            targetId: typeof rawLink.target === 'string' ? rawLink.target : '',
-            type: (typeof rawLink.type === 'string' ? rawLink.type : 'reference') as Relationship['type']
+      // Build a node→layer lookup so we can resolve layer_id for links that lack it
+      const nodeLayerMap = new Map<string, string>();
+      for (const rawNode of (modelData.nodes as Record<string, unknown>[])) {
+        const nodeId = typeof rawNode.id === 'string' ? rawNode.id : String(rawNode.id);
+        const layerId = typeof rawNode.layer_id === 'string' ? rawNode.layer_id : 'unknown';
+        nodeLayerMap.set(nodeId, layerId);
+      }
+
+      const rawLinks = Array.isArray(modelData.links) ? modelData.links as Record<string, unknown>[] : [];
+      for (const rawLink of rawLinks) {
+        const sourceLayerId = typeof rawLink.source_layer_id === 'string' ? rawLink.source_layer_id : undefined;
+        const targetLayerId = typeof rawLink.target_layer_id === 'string' ? rawLink.target_layer_id : undefined;
+        const linkId = typeof rawLink.id === 'string' ? rawLink.id : String(rawLink.id);
+        const sourceId = typeof rawLink.source === 'string' ? rawLink.source : '';
+        const targetId = typeof rawLink.target === 'string' ? rawLink.target : '';
+        const linkType = typeof rawLink.type === 'string' ? rawLink.type : 'reference';
+
+        // Skip links with missing source or target
+        if (!sourceId || !targetId) {
+          logError(
+            ERROR_IDS.DATA_NORMALIZATION_FAILED,
+            `Link "${linkId}" has empty source or target — skipping`,
+            { linkId, rawSource: rawLink.source, rawTarget: rawLink.target }
+          );
+          continue;
+        }
+
+        // Warn on partial cross-layer info (one layer ID present, the other missing)
+        if ((sourceLayerId && !targetLayerId) || (!sourceLayerId && targetLayerId)) {
+          logError(
+            ERROR_IDS.DATA_NORMALIZATION_FAILED,
+            `Link "${linkId}" has partial cross-layer info (source_layer_id=${sourceLayerId ?? 'undefined'}, target_layer_id=${targetLayerId ?? 'undefined'}) — treating as intra-layer`,
+            { linkId, sourceLayerId, targetLayerId, sourceId, targetId }
+          );
+        }
+
+        // Cross-layer link: has explicit source/target layer IDs that differ
+        if (sourceLayerId && targetLayerId && sourceLayerId !== targetLayerId) {
+          normalized.references.push({
+            id: linkId,
+            type: linkType as Reference['type'],
+            predicate: linkType,
+            source: { elementId: sourceId, layerId: sourceLayerId },
+            target: { elementId: targetId, layerId: targetLayerId }
           });
+        } else {
+          // Intra-layer link: use layer_id, or fall back to source node's layer
+          const layerId = typeof rawLink.layer_id === 'string'
+            ? rawLink.layer_id
+            : (sourceLayerId || nodeLayerMap.get(sourceId) || 'unknown');
+          if (normalized.layers[layerId]) {
+            normalized.layers[layerId].relationships!.push({
+              id: linkId,
+              sourceId,
+              targetId,
+              type: linkType as Relationship['type'],
+              predicate: linkType
+            });
+          } else {
+            logError(
+              ERROR_IDS.DATA_NORMALIZATION_FAILED,
+              `Dropping intra-layer link "${linkId}" — resolved layer "${layerId}" does not exist`,
+              { linkId, sourceId, targetId, resolvedLayerId: layerId }
+            );
+          }
         }
       }
 
@@ -878,3 +964,38 @@ export class EmbeddedDataLoader {
 
 // Export singleton instance
 export const embeddedDataLoader = new EmbeddedDataLoader();
+
+/**
+ * Enrich a model's relationships and references with predicateDefinition from the catalog.
+ * Should be called after both model and predicate catalog are loaded.
+ * Mutates the model in place for efficiency (called before store update).
+ */
+export function enrichModelPredicates(
+  model: MetaModel,
+  predicateCatalog: Map<string, PredicateDefinition>
+): void {
+  if (predicateCatalog.size === 0) return;
+
+  // Enrich intra-layer relationships
+  for (const layer of Object.values(model.layers)) {
+    if (!layer.relationships) continue;
+    for (const rel of layer.relationships) {
+      if (rel.predicateDefinition) continue; // Already enriched
+      const predicate = rel.predicate || rel.type;
+      const definition = predicateCatalog.get(predicate);
+      if (definition) {
+        rel.predicateDefinition = definition;
+      }
+    }
+  }
+
+  // Enrich cross-layer references
+  for (const ref of model.references) {
+    if (ref.predicateDefinition) continue; // Already enriched
+    const predicate = ref.predicate || ref.type;
+    const definition = predicateCatalog.get(predicate);
+    if (definition) {
+      ref.predicateDefinition = definition;
+    }
+  }
+}

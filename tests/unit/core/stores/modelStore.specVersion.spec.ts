@@ -54,12 +54,12 @@ test.describe('modelStore.setSpecVersion', () => {
     expect(state.specVersionMismatch).toBe(true);
   });
 
-  test('should handle unknown version strings', () => {
+  test('should not flag mismatch when model version is unknown', () => {
     useModelStore.getState().setSpecVersion('unknown', '0.8.3');
     const state = useModelStore.getState();
     expect(state.modelSpecVersion).toBe('unknown');
     expect(state.loadedSpecVersion).toBe('0.8.3');
-    expect(state.specVersionMismatch).toBe(true);
+    expect(state.specVersionMismatch).toBe(false);
   });
 
   test('should correctly calculate mismatch for various version pairs', () => {
@@ -68,7 +68,8 @@ test.describe('modelStore.setSpecVersion', () => {
       { model: '0.8.3', loaded: '0.8.0', expectedMismatch: true },
       { model: '1.0.0', loaded: '0.9.0', expectedMismatch: true },
       { model: 'unknown', loaded: 'unknown', expectedMismatch: false },
-      { model: '0.8.3', loaded: 'unknown', expectedMismatch: true },
+      { model: '0.8.3', loaded: 'unknown', expectedMismatch: false },
+      { model: 'unknown', loaded: '0.8.3', expectedMismatch: false },
     ];
 
     for (const testCase of testCases) {

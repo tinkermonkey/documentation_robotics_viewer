@@ -15,7 +15,7 @@ import HighlightedPathPanel from '../components/HighlightedPathPanel';
 import SharedLayout from '../components/SharedLayout';
 import { useModelStore } from '../../../core/stores/modelStore';
 import { useAnnotationStore } from '../stores/annotationStore';
-import { embeddedDataLoader, SpecDataResponse, SchemaManifest } from '../services/embeddedDataLoader';
+import { embeddedDataLoader, enrichModelPredicates, SpecDataResponse, SchemaManifest } from '../services/embeddedDataLoader';
 import { useDataLoader } from '../hooks/useDataLoader';
 import { LoadingState, ErrorState } from '../components/shared';
 import { ModelParseErrorBanner } from '../components/shared/ModelParseErrorBanner';
@@ -79,7 +79,7 @@ export default function ModelRoute() {
   const [parseErrorsVisible, setParseErrorsVisible] = useState(true);
   const highlightTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const activeView = view === 'json' ? 'json' : 'graph';
+  const activeView = view === 'details' ? 'details' : 'graph';
 
   // Cleanup highlight timeout on unmount
   useEffect(() => {
@@ -200,19 +200,28 @@ export default function ModelRoute() {
         if (specFiles['base.json']) {
           const catalog = loadPredicateCatalog(specFiles['base.json']);
           useModelStore.getState().setPredicateCatalog(catalog.byPredicate);
+
+          // Enrich model relationships with predicate definitions for bidirectional arrows and semantics
+          enrichModelPredicates(modelData, catalog.byPredicate);
+          // Re-set model so downstream consumers see the enriched data
+          setModel(modelData);
         }
 
         // Load and populate spec schemas
         const schemas = loadSpecSchemas(specFiles);
         useModelStore.getState().setSpecSchemas(schemas);
 
-        // Validate spec version: compare model's spec_version against loaded spec's specVersion
-        const modelSpecVersion = modelData.metadata?.specVersion as string | undefined;
-        const loadedSpecManifest = specFiles['manifest.json'] as SchemaManifest | undefined;
-        const loadedSpecVersion = loadedSpecManifest?.specVersion;
+        // Get the model's declared spec version from metadata (set during normalizeModel)
+        const modelSpecVersion = (modelData.metadata?.specVersion as string | undefined)
+          || (modelData.metadata?.spec_version as string | undefined);
 
-        // Set spec version with both model spec version and loaded spec version for comparison
-        // setSpecVersion(modelSpecVersion, loadedSpecVersion) sets specVersionMismatch = (modelSpecVersion !== loadedSpecVersion)
+        // Get loaded spec version from the spec API's manifest schema, falling back to static files
+        let loadedSpecVersion = (specFiles['manifest.json'] as SchemaManifest | undefined)?.specVersion;
+        if (!loadedSpecVersion && specData) {
+          const specManifestSchema = (specData.schemas?.['manifest.json']) as SchemaManifest | undefined;
+          loadedSpecVersion = specManifestSchema?.specVersion;
+        }
+
         if (modelSpecVersion || loadedSpecVersion) {
           useModelStore.getState().setSpecVersion(
             modelSpecVersion || 'unknown',
