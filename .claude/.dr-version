@@ -1,31 +1,34 @@
 version: 0.1.3
-installed_at: 2026-03-24T10:30:41.805Z
+installed_at: 2026-04-12T21:17:53.259Z
 components:
   reference_sheets: {}
   commands:
     dr-changeset.md:
-      hash: 50062aa8
+      hash: 6dcb7cc6
       modified: false
     dr-design.md:
-      hash: f3d9fda8
+      hash: a2794b9f
+      modified: false
+    dr-info.md:
+      hash: 0dc4a3bf
       modified: false
     dr-init.md:
       hash: c1a83b3d
       modified: false
     dr-map.md:
-      hash: cc5b6e2e
+      hash: 9eec7a5f
       modified: false
     dr-model.md:
-      hash: 9486419a
+      hash: 4bee75e2
       modified: false
     dr-relate.md:
-      hash: 2d17963d
+      hash: e6ee102e
       modified: false
     dr-sync.md:
       hash: 084fed33
       modified: false
     dr-validate.md:
-      hash: 5ba57f08
+      hash: 8bf145f5
       modified: false
   agents:
     dr-advisor.md:
@@ -45,7 +48,7 @@ components:
       hash: 695f56c5
       modified: false
     dr_04_application_layer/SKILL.md:
-      hash: 20d1b427
+      hash: 38e09e16
       modified: false
     dr_05_technology_layer/SKILL.md:
       hash: 02a4aa7b
