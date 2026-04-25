@@ -1,0 +1,10 @@
+{
+  "detected": {
+    "installed": true,
+    "binary_path": "/home/austinsand/.local/bin/codebase-memory-mcp",
+    "mcp_registered": false,
+    "contract_ok": false
+  },
+  "indexed": false,
+  "fresh": false
+}

@@ -1,22 +1,22 @@
 version: 0.1.3
-installed_at: 2026-04-12T21:17:53.259Z
+installed_at: 2026-04-23T10:48:00.755Z
 components:
   reference_sheets: {}
   commands:
     dr-changeset.md:
-      hash: 6dcb7cc6
+      hash: 8258d3c5
       modified: false
     dr-design.md:
       hash: a2794b9f
       modified: false
     dr-info.md:
-      hash: 0dc4a3bf
+      hash: 0d2cdac0
       modified: false
     dr-init.md:
       hash: c1a83b3d
       modified: false
     dr-map.md:
-      hash: 9eec7a5f
+      hash: 5e26ce6d
       modified: false
     dr-model.md:
       hash: 4bee75e2
@@ -28,7 +28,10 @@ components:
       hash: 084fed33
       modified: false
     dr-validate.md:
-      hash: 8bf145f5
+      hash: 5d81fbba
+      modified: false
+    dr-verify.md:
+      hash: 2c520cab
       modified: false
   agents:
     dr-advisor.md:
@@ -36,6 +39,9 @@ components:
       modified: false
     dr-architect.md:
       hash: c6d4f0f1
+      modified: false
+    dr-extractor.md:
+      hash: 162bb79d
       modified: false
   skills:
     dr_01_motivation_layer/SKILL.md:
@@ -76,6 +82,9 @@ components:
       modified: false
     dr_changeset_reviewer/SKILL.md:
       hash: 88c2ff5e
+      modified: false
+    dr_codebase_memory/SKILL.md:
+      hash: 1177644b
       modified: false
     dr_engineering_guide/SKILL.md:
       hash: e16d5f8e
