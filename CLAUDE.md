@@ -236,14 +236,6 @@ npm run test:storybook:a11y
 For details: `documentation/ACCESSIBILITY.md`
 
 
-## DR Slash Commands
-
-- `/dr-model <request>` - Add/update/query architecture model elements
-- `/dr-validate` - Validate DR model schema and references
-- `/dr-changeset <request>` - Manage isolated architecture changes
-- `/dr-init [name]` - Initialize new DR architecture model
-- `/dr-ingest <path>` - Generate DR model from existing codebase
-
 ## Documentation: DR CLI Integration
 
 **Status:** Complete (February 2026)

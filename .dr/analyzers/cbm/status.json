@@ -3,8 +3,15 @@
     "installed": true,
     "binary_path": "/home/austinsand/.local/bin/codebase-memory-mcp",
     "mcp_registered": false,
-    "contract_ok": false
+    "contract_ok": true
   },
-  "indexed": false,
-  "fresh": false
+  "indexed": true,
+  "index_meta": {
+    "git_head": "f9de06f66793f57163e9b6dedd31f7e74d37769c",
+    "timestamp": "2026-04-28T10:32:10.148Z",
+    "node_count": 8027,
+    "edge_count": 10703
+  },
+  "fresh": true,
+  "last_indexed": "2026-04-28T10:32:10.148Z"
 }
