@@ -513,4 +513,4 @@ Coverage target for WebSocket connection failure, reconnection, and REST fallbac
 
 ---
 
-Generated: 2026-04-23T10:48:00.903Z | Model Version: 0.1.0
+Generated: 2026-04-29T11:08:02.666Z | Model Version: 0.1.0

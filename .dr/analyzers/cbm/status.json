@@ -7,11 +7,11 @@
   },
   "indexed": true,
   "index_meta": {
-    "git_head": "f9de06f66793f57163e9b6dedd31f7e74d37769c",
-    "timestamp": "2026-04-28T10:32:10.148Z",
-    "node_count": 8027,
-    "edge_count": 10703
+    "git_head": "92809c6cf11b700bbd10ee8e5e70c8be40bc915d",
+    "timestamp": "2026-04-28T20:54:25.004Z",
+    "node_count": 8020,
+    "edge_count": 10655
   },
-  "fresh": false,
-  "last_indexed": "2026-04-28T10:32:10.148Z"
+  "fresh": true,
+  "last_indexed": "2026-04-28T20:54:25.004Z"
 }

@@ -3,7 +3,7 @@ schema: documentation-robotics-v1
 cli_version: 0.1.3
 spec_version: 0.8.3
 created: 2026-03-19T22:01:43.778Z
-updated: 2026-03-24T10:23:18.106Z
+updated: 2026-04-29T11:08:02.663Z
 project:
   name: Documentation Robotics Viewer
   description: ""
@@ -149,7 +149,3 @@ layers:
       coveragesummary: 1
       testcoveragemodel: 1
       testcoveragetarget: 7
-changeset_history:
-  - name: wire-orphan-nodes
-    committed_at: 2026-03-24T10:23:18.106Z
-    action: committed
