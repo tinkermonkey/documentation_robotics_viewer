@@ -1,0 +1,21 @@
+{
+  "id": "20260429-140059",
+  "timestamp": "2026-04-29T14:00:59.854Z",
+  "modelName": "Documentation Robotics Viewer",
+  "modelVersion": "0.1.0",
+  "layers": [
+    "motivation",
+    "business",
+    "security",
+    "application",
+    "technology",
+    "api",
+    "data-model",
+    "data-store",
+    "ux",
+    "navigation",
+    "apm",
+    "testing"
+  ],
+  "snapshotPath": "/home/austinsand/workspace/beta-tester/documentation_robotics_viewer/.dr/audit-snapshots/20260429-140059.json"
+}
