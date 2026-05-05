@@ -1,6 +1,6 @@
 # Intra-layer relationships
 # Format: source_id -> predicate -> target_id
-# Last updated: 2026-04-29T11:08:02.634Z
+# Last updated: 2026-05-05T11:50:54.697Z
 
 - source: motivation.stakeholder.architecture-team
   target: motivation.goal.visualize-multi-layer-architecture-models
