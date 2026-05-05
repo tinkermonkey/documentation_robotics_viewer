@@ -3,7 +3,7 @@
 This directory is managed by the Documentation Robotics CLI.
 
 **Spec Version:** 0.8.4
-**Installed:** 2026-05-05T10:36:50.536Z
+**Installed:** 2026-05-05T12:57:06.190Z
 
 ## Structure
 

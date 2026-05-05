@@ -1,13 +1,13 @@
 version: 0.1.3
-installed_at: 2026-05-05T10:36:50.614Z
+installed_at: 2026-05-05T12:57:06.267Z
 components:
   reference_sheets: {}
   commands:
     dr-changeset.md:
-      hash: 8258d3c5
+      hash: 5a679f71
       modified: false
     dr-design.md:
-      hash: 264902cf
+      hash: fe573030
       modified: false
     dr-info.md:
       hash: 0d2cdac0
