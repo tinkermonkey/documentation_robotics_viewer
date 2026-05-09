@@ -1,5 +1,5 @@
 version: 0.1.3
-installed_at: 2026-05-05T12:57:06.267Z
+installed_at: 2026-05-09T09:48:32.562Z
 components:
   reference_sheets: {}
   commands:
@@ -16,19 +16,19 @@ components:
       hash: c1a83b3d
       modified: false
     dr-map.md:
-      hash: 5e26ce6d
+      hash: 7f5964dd
       modified: false
     dr-model.md:
       hash: 4bee75e2
       modified: false
     dr-relate.md:
-      hash: e6ee102e
+      hash: 66113ef3
       modified: false
     dr-sync.md:
       hash: 084fed33
       modified: false
     dr-validate.md:
-      hash: 5d81fbba
+      hash: 626e5d0f
       modified: false
     dr-verify.md:
       hash: 72f3cd70
@@ -38,7 +38,7 @@ components:
       hash: bdb9799f
       modified: false
     dr-architect.md:
-      hash: c6d4f0f1
+      hash: cdd5be45
       modified: false
     dr-extractor.md:
       hash: 162bb79d
@@ -66,7 +66,7 @@ components:
       hash: 8a181963
       modified: false
     dr_08_dataset_layer/SKILL.md:
-      hash: c2329c44
+      hash: bcb1a813
       modified: false
     dr_09_ux_layer/SKILL.md:
       hash: 6de526a8
