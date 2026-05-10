@@ -7,6 +7,10 @@ api.openapidocument.dr-cli-visualization-server-open-api-document:
   name: DR CLI Visualization Server OpenAPI Document
   description: Root OpenAPI 3.0 document describing the Documentation Robotics
     Visualization Server REST and WebSocket API
+  attributes:
+    openapi: 3.0.0
+    info: DR CLI API
+    paths: /
   source_reference:
     provenance: extracted
     locations:

@@ -274,6 +274,13 @@ Role granted to users who possess a valid bearer token; can read model data and 
 
 DR CLI REST API endpoints (/api/v1/model, /api/v1/elements, etc.) protected by bearer token
 
+#### Attributes
+
+| Name     | Value          |
+| -------- | -------------- |
+| resource | model-rest-api |
+| type     | api            |
+
 #### Relationships
 
 | Type        | Related Element                                                       | Predicate    | Direction |
@@ -294,6 +301,13 @@ DR CLI REST API endpoints (/api/v1/model, /api/v1/elements, etc.) protected by b
 **Type**: `secureresource`
 
 WebSocket connection to DR CLI server protected by ?token= query parameter (custom headers not supported in WebSocket)
+
+#### Attributes
+
+| Name     | Value                       |
+| -------- | --------------------------- |
+| resource | web-socket-json-rpc-channel |
+| type     | stream                      |
 
 #### Relationships
 
@@ -362,6 +376,14 @@ All REST requests inject Authorization: Bearer header via global fetch intercept
 
 Risk that an unauthenticated user accesses model data if bearer token is absent or invalid
 
+#### Attributes
+
+| Name       | Value |
+| ---------- | ----- |
+| impact     | high  |
+| likelihood | high  |
+| threatens  | model |
+
 #### Relationships
 
 | Type        | Related Element                               | Predicate   | Direction |
@@ -371,4 +393,4 @@ Risk that an unauthenticated user accesses model data if bearer token is absent 
 
 ---
 
-Generated: 2026-04-29T11:08:02.666Z | Model Version: 0.1.0
+Generated: 2026-05-10T10:21:01.236Z | Model Version: 0.1.0

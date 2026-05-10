@@ -8,6 +8,8 @@ data-model.objectschema.meta-model:
   description: Root container for the loaded architecture model; holds all layers,
     cross-layer references, and metadata. Loaded from DR CLI REST API response
     and stored in modelStore.
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -26,6 +28,8 @@ data-model.objectschema.layer:
   name: Layer
   description: Individual architecture layer within the MetaModel; contains a flat
     list of elements, intra-layer relationships, and visual configuration.
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -45,6 +49,8 @@ data-model.objectschema.model-element:
   description: Base element interface for all architecture layer elements; holds
     the element ID (dot-notation), type, name, properties, visual positioning,
     and intra-layer relationship references.
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -64,6 +70,8 @@ data-model.objectschema.relationship:
   description: Typed relationship between two elements within the same layer;
     supports 15 ArchiMate and custom relationship types (composition,
     aggregation, realization, serving, access, data-flow, etc.).
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -83,6 +91,8 @@ data-model.objectschema.reference:
   description: Cross-layer reference connecting an element in one architecture
     layer to an element in another; carries source/target layer IDs, element
     IDs, and validation status.
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -102,6 +112,8 @@ data-model.objectschema.model-metadata:
   description: Metadata bag attached to the MetaModel root; includes author,
     timestamps, parse errors, element/layer counts, and cross-layer reference
     statistics.
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -121,6 +133,8 @@ data-model.objectschema.extracted-reference:
   description: Raw reference metadata captured during YAML parsing before
     cross-layer resolution; stores property name, reference type, and target
     identifier or UUID.
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -140,6 +154,8 @@ data-model.objectschema.yamlmanifest:
   description: TypeScript representation of the on-disk manifest.yaml file; tracks
     model version, project info, per-layer file paths and schema references, and
     aggregate statistics.
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -159,6 +175,8 @@ data-model.objectschema.yamlelement:
   description: Structure of a single model element as stored in a YAML file;
     includes id, name, description, optional API properties (method, path),
     inline relationships, and arbitrary custom properties.
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -178,6 +196,8 @@ data-model.objectschema.yamllayer-data:
   description: Aggregated layer data assembled from multiple YAML files for a
     single layer; maps element names to YAMLElement objects with source file
     tracking.
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -197,6 +217,8 @@ data-model.objectschema.yamlmodel-data:
   description: Complete parsed model result from YAML loading; combines the
     manifest, all layer data, optional projection rules, and accumulated parser
     warnings.
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -216,6 +238,8 @@ data-model.objectschema.yamlrelationships:
   description: Nested relationship declarations within a YAML element; groups
     cross-layer references by semantic type (realizes, serves, accesses, uses,
     secured_by, supports_goals, etc.).
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -235,6 +259,8 @@ data-model.objectschema.projection-rule:
   description: Rule definition in projection-rules.yaml describing how to
     auto-generate elements in one layer from elements in another (e.g.,
     business.service -> application.service).
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -254,6 +280,8 @@ data-model.objectschema.chat-message:
   description: Multi-part chat conversation message; contains a role
     (user/assistant/system), ordered content parts (text, tool invocations,
     thinking, usage, errors), and streaming state.
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -273,6 +301,8 @@ data-model.objectschema.tool-invocation-content:
   description: Chat content part representing an AI tool invocation; tracks tool
     name, typed input parameters, and execution status
     (executing/completed/failed) with result or error.
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -292,6 +322,8 @@ data-model.objectschema.json-rpc-request:
   description: JSON-RPC 2.0 request envelope used for all chat WebSocket messages;
     carries jsonrpc version string, method name, typed params, and request ID
     for correlation.
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -310,6 +342,8 @@ data-model.objectschema.chat-conversation:
   name: ChatConversation
   description: Chat conversation grouping metadata; holds conversation ID, title,
     creation/update timestamps, and message count.
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -329,6 +363,8 @@ data-model.objectschema.annotation:
   description: User annotation attached to a specific architecture model element;
     includes author, markdown content, resolution state, and an optional thread
     of replies.
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -347,6 +383,8 @@ data-model.objectschema.annotation-create:
   name: AnnotationCreate
   description: Request payload for creating a new annotation; requires target
     elementId and content text.
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -365,6 +403,8 @@ data-model.objectschema.web-socket-message:
   name: WebSocketMessage
   description: Base WebSocket protocol message with discriminating type string;
     all real-time server messages extend this interface.
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -384,6 +424,8 @@ data-model.objectschema.web-socket-event-map:
   description: "Typed event map for all WebSocket client events: connect,
     disconnect, message, error, close, reconnecting, rest-mode,
     max-reconnect-attempts."
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -404,6 +446,8 @@ data-model.objectschema.base-node-data:
     label, elementId, layerId, fill/stroke colors, optional modelElement
     reference, semantic zoom detail level, changeset operation, and relationship
     badge.
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -422,6 +466,8 @@ data-model.objectschema.data-model-field:
   name: DataModelField
   description: Field definition for data model table nodes displayed in the graph;
     holds field id, name, type string, required flag, and optional description.
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -441,6 +487,8 @@ data-model.objectschema.data-model-node-data:
   description: Specialized React Flow node data for data model elements; extends
     BaseNodeData with an ordered list of DataModelField entries and a
     componentType discriminator (entity/interface/enum).
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -460,6 +508,8 @@ data-model.objectschema.source-reference:
   description: Tracks where a model element was extracted from; holds provenance
     type (extracted/manual/inferred/generated), a list of SourceLocation entries
     (file + optional symbol), and optional repository context (URL + commit SHA)
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -480,6 +530,8 @@ data-model.objectschema.relationship-type:
     predicate catalog; covers motivation, business, structural, process, data,
     API, testing, security, and UI/navigation predicates; kept for backwards
     compatibility alongside the RelationshipTypeValue union type
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -499,6 +551,8 @@ data-model.objectschema.relationships-yaml-entry:
   description: Structure of a single entry in the flat relationships.yaml file
     (v0.8.3 format); requires source and target dot-notation paths and a
     predicate string, with optional layer, category, and arbitrary properties
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -520,6 +574,8 @@ data-model.objectschema.predicate-definition:
     alignment, semantic properties
     (directionality/transitivity/symmetry/reflexivity), default strength, and
     fieldPaths for dynamic reference discovery
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -540,6 +596,8 @@ data-model.objectschema.spec-layer-data:
     .dr/spec/*.json; contains layer metadata (id, number, name, description), a
     map of node type name to JSON schema, and an array of SpecNodeRelationship
     entries
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -559,6 +617,8 @@ data-model.objectschema.spec-node-relationship:
   description: Valid relationship definition between two spec node types;
     specifies source and destination spec node IDs and their layers, predicate,
     cardinality, strength, and whether the relationship is required
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:
@@ -579,6 +639,8 @@ data-model.objectschema.predicate-catalog:
     base.json; provides two Maps: byPredicate (predicate name ->
     PredicateDefinition) and byInverse (inverse predicate name -> forward
     predicate name) for O(1) catalog lookups"
+  attributes:
+    type: object
   source_reference:
     provenance: extracted
     locations:

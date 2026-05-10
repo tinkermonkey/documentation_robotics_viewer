@@ -164,6 +164,14 @@ OpenAPI document info for the Documentation Robotics Visualization Server API
 
 Root OpenAPI 3.0 document describing the Documentation Robotics Visualization Server REST and WebSocket API
 
+#### Attributes
+
+| Name    | Value      |
+| ------- | ---------- |
+| info    | DR CLI API |
+| openapi | 3.0.0      |
+| paths   | /          |
+
 #### Relationships
 
 | Type        | Related Element                                   | Predicate         | Direction |
@@ -623,4 +631,4 @@ Token as ?token= query param; used for WebSocket connection authentication where
 
 ---
 
-Generated: 2026-05-05T11:50:54.723Z | Model Version: 0.1.0
+Generated: 2026-05-10T10:21:01.236Z | Model Version: 0.1.0

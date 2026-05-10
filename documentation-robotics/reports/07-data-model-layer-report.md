@@ -122,6 +122,12 @@ flowchart TB
 
 User annotation attached to a specific architecture model element; includes author, markdown content, resolution state, and an optional thread of replies.
 
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
 #### Relationships
 
 | Type        | Related Element                             | Predicate | Direction |
@@ -135,6 +141,12 @@ User annotation attached to a specific architecture model element; includes auth
 **Type**: `objectschema`
 
 Request payload for creating a new annotation; requires target elementId and content text.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
 
 #### Relationships
 
@@ -150,6 +162,12 @@ Request payload for creating a new annotation; requires target elementId and con
 
 React Flow node data shared by all 20 custom node types; carries label, elementId, layerId, fill/stroke colors, optional modelElement reference, semantic zoom detail level, changeset operation, and relationship badge.
 
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
 #### Relationships
 
 | Type        | Related Element                                | Predicate | Direction |
@@ -164,6 +182,12 @@ React Flow node data shared by all 20 custom node types; carries label, elementI
 
 Chat conversation grouping metadata; holds conversation ID, title, creation/update timestamps, and message count.
 
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
 #### Relationships
 
 | Type        | Related Element                        | Predicate | Direction |
@@ -177,6 +201,12 @@ Chat conversation grouping metadata; holds conversation ID, title, creation/upda
 **Type**: `objectschema`
 
 Multi-part chat conversation message; contains a role (user/assistant/system), ordered content parts (text, tool invocations, thinking, usage, errors), and streaming state.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
 
 #### Relationships
 
@@ -193,6 +223,12 @@ Multi-part chat conversation message; contains a role (user/assistant/system), o
 
 Field definition for data model table nodes displayed in the graph; holds field id, name, type string, required flag, and optional description.
 
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
 #### Relationships
 
 | Type        | Related Element                              | Predicate  | Direction |
@@ -206,6 +242,12 @@ Field definition for data model table nodes displayed in the graph; holds field 
 **Type**: `objectschema`
 
 Specialized React Flow node data for data model elements; extends BaseNodeData with an ordered list of DataModelField entries and a componentType discriminator (entity/interface/enum).
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
 
 #### Relationships
 
@@ -221,6 +263,12 @@ Specialized React Flow node data for data model elements; extends BaseNodeData w
 
 Raw reference metadata captured during YAML parsing before cross-layer resolution; stores property name, reference type, and target identifier or UUID.
 
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
 #### Relationships
 
 | Type        | Related Element                              | Predicate  | Direction |
@@ -235,6 +283,12 @@ Raw reference metadata captured during YAML parsing before cross-layer resolutio
 
 JSON-RPC 2.0 request envelope used for all chat WebSocket messages; carries jsonrpc version string, method name, typed params, and request ID for correlation.
 
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
 #### Relationships
 
 | Type        | Related Element                              | Predicate | Direction |
@@ -248,6 +302,12 @@ JSON-RPC 2.0 request envelope used for all chat WebSocket messages; carries json
 **Type**: `objectschema`
 
 Individual architecture layer within the MetaModel; contains a flat list of elements, intra-layer relationships, and visual configuration.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
 
 #### Relationships
 
@@ -264,6 +324,12 @@ Individual architecture layer within the MetaModel; contains a flat list of elem
 
 Root container for the loaded architecture model; holds all layers, cross-layer references, and metadata. Loaded from DR CLI REST API response and stored in modelStore.
 
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
 #### Relationships
 
 | Type        | Related Element                          | Predicate | Direction |
@@ -278,6 +344,12 @@ Root container for the loaded architecture model; holds all layers, cross-layer 
 **Type**: `objectschema`
 
 Base element interface for all architecture layer elements; holds the element ID (dot-notation), type, name, properties, visual positioning, and intra-layer relationship references.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
 
 #### Relationships
 
@@ -295,6 +367,12 @@ Base element interface for all architecture layer elements; holds the element ID
 
 Metadata bag attached to the MetaModel root; includes author, timestamps, parse errors, element/layer counts, and cross-layer reference statistics.
 
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
 #### Relationships
 
 | Type        | Related Element                              | Predicate  | Direction |
@@ -309,6 +387,12 @@ Metadata bag attached to the MetaModel root; includes author, timestamps, parse 
 
 Indexed predicate catalog produced by PredicateCatalogLoader from base.json; provides two Maps: byPredicate (predicate name -&gt; PredicateDefinition) and byInverse (inverse predicate name -&gt; forward predicate name) for O(1) catalog lookups
 
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
 #### Relationships
 
 | Type        | Related Element                                | Predicate | Direction |
@@ -322,6 +406,12 @@ Indexed predicate catalog produced by PredicateCatalogLoader from base.json; pro
 **Type**: `objectschema`
 
 Full predicate metadata from the v0.8.3 predicate catalog; carries predicate name, inverse name, category, description, optional ArchiMate alignment, semantic properties (directionality/transitivity/symmetry/reflexivity), default strength, and fieldPaths for dynamic reference discovery
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
 
 #### Relationships
 
@@ -338,6 +428,12 @@ Full predicate metadata from the v0.8.3 predicate catalog; carries predicate nam
 
 Rule definition in projection-rules.yaml describing how to auto-generate elements in one layer from elements in another (e.g., business.service -&gt; application.service).
 
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
 #### Relationships
 
 | Type        | Related Element                              | Predicate  | Direction |
@@ -352,6 +448,12 @@ Rule definition in projection-rules.yaml describing how to auto-generate element
 
 Cross-layer reference connecting an element in one architecture layer to an element in another; carries source/target layer IDs, element IDs, and validation status.
 
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
 #### Relationships
 
 | Type        | Related Element                              | Predicate  | Direction |
@@ -365,6 +467,12 @@ Cross-layer reference connecting an element in one architecture layer to an elem
 **Type**: `objectschema`
 
 Typed relationship between two elements within the same layer; supports 15 ArchiMate and custom relationship types (composition, aggregation, realization, serving, access, data-flow, etc.).
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
 
 #### Relationships
 
@@ -383,6 +491,12 @@ Typed relationship between two elements within the same layer; supports 15 Archi
 
 TypeScript enum providing dot-notation access to the full v0.8.3 predicate catalog; covers motivation, business, structural, process, data, API, testing, security, and UI/navigation predicates; kept for backwards compatibility alongside the RelationshipTypeValue union type
 
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
 #### Relationships
 
 | Type        | Related Element                        | Predicate | Direction |
@@ -396,6 +510,12 @@ TypeScript enum providing dot-notation access to the full v0.8.3 predicate catal
 **Type**: `objectschema`
 
 Structure of a single entry in the flat relationships.yaml file (v0.8.3 format); requires source and target dot-notation paths and a predicate string, with optional layer, category, and arbitrary properties
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
 
 #### Relationships
 
@@ -411,6 +531,12 @@ Structure of a single entry in the flat relationships.yaml file (v0.8.3 format);
 
 Tracks where a model element was extracted from; holds provenance type (extracted/manual/inferred/generated), a list of SourceLocation entries (file + optional symbol), and optional repository context (URL + commit SHA)
 
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
 #### Relationships
 
 | Type        | Related Element                         | Predicate | Direction |
@@ -424,6 +550,12 @@ Tracks where a model element was extracted from; holds provenance type (extracte
 **Type**: `objectschema`
 
 Structured spec data for a single architecture layer loaded from .dr/spec/\*.json; contains layer metadata (id, number, name, description), a map of node type name to JSON schema, and an array of SpecNodeRelationship entries
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
 
 #### Relationships
 
@@ -439,6 +571,12 @@ Structured spec data for a single architecture layer loaded from .dr/spec/\*.jso
 
 Valid relationship definition between two spec node types; specifies source and destination spec node IDs and their layers, predicate, cardinality, strength, and whether the relationship is required
 
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
 #### Relationships
 
 | Type        | Related Element                           | Predicate | Direction |
@@ -452,6 +590,12 @@ Valid relationship definition between two spec node types; specifies source and 
 **Type**: `objectschema`
 
 Chat content part representing an AI tool invocation; tracks tool name, typed input parameters, and execution status (executing/completed/failed) with result or error.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
 
 #### Relationships
 
@@ -467,6 +611,12 @@ Chat content part representing an AI tool invocation; tracks tool name, typed in
 
 Typed event map for all WebSocket client events: connect, disconnect, message, error, close, reconnecting, rest-mode, max-reconnect-attempts.
 
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
 #### Relationships
 
 | Type        | Related Element                              | Predicate | Direction |
@@ -480,6 +630,12 @@ Typed event map for all WebSocket client events: connect, disconnect, message, e
 **Type**: `objectschema`
 
 Base WebSocket protocol message with discriminating type string; all real-time server messages extend this interface.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
 
 #### Relationships
 
@@ -496,6 +652,12 @@ Base WebSocket protocol message with discriminating type string; all real-time s
 
 Structure of a single model element as stored in a YAML file; includes id, name, description, optional API properties (method, path), inline relationships, and arbitrary custom properties.
 
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
 #### Relationships
 
 | Type        | Related Element                             | Predicate | Direction |
@@ -510,6 +672,12 @@ Structure of a single model element as stored in a YAML file; includes id, name,
 **Type**: `objectschema`
 
 Aggregated layer data assembled from multiple YAML files for a single layer; maps element names to YAMLElement objects with source file tracking.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
 
 #### Relationships
 
@@ -526,6 +694,12 @@ Aggregated layer data assembled from multiple YAML files for a single layer; map
 
 TypeScript representation of the on-disk manifest.yaml file; tracks model version, project info, per-layer file paths and schema references, and aggregate statistics.
 
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
 #### Relationships
 
 | Type        | Related Element                          | Predicate | Direction |
@@ -540,6 +714,12 @@ TypeScript representation of the on-disk manifest.yaml file; tracks model versio
 
 Complete parsed model result from YAML loading; combines the manifest, all layer data, optional projection rules, and accumulated parser warnings.
 
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
 #### Relationships
 
 | Type        | Related Element                      | Predicate | Direction |
@@ -553,6 +733,12 @@ Complete parsed model result from YAML loading; combines the manifest, all layer
 **Type**: `objectschema`
 
 Nested relationship declarations within a YAML element; groups cross-layer references by semantic type (realizes, serves, accesses, uses, secured_by, supports_goals, etc.).
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
 
 #### Relationships
 
@@ -632,4 +818,4 @@ Branded string type for architecture element IDs (dot-notation format: layer.typ
 
 ---
 
-Generated: 2026-05-05T11:50:54.723Z | Model Version: 0.1.0
+Generated: 2026-05-10T10:21:01.236Z | Model Version: 0.1.0

@@ -7,6 +7,9 @@ security.secureresource.model-rest-api:
   name: Model REST API
   description: DR CLI REST API endpoints (/api/v1/model, /api/v1/elements, etc.)
     protected by bearer token
+  attributes:
+    resource: model-rest-api
+    type: api
   source_reference:
     provenance: extracted
     locations:
@@ -24,6 +27,9 @@ security.secureresource.web-socket-json-rpc-channel:
   name: WebSocket JSON-RPC Channel
   description: WebSocket connection to DR CLI server protected by ?token= query
     parameter (custom headers not supported in WebSocket)
+  attributes:
+    resource: web-socket-json-rpc-channel
+    type: stream
   source_reference:
     provenance: extracted
     locations:

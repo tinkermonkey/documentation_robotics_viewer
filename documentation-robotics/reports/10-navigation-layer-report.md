@@ -477,4 +477,4 @@ Parameterized spec browser route at /#/spec/:view (graph or details); renders Sp
 
 ---
 
-Generated: 2026-04-23T10:48:00.903Z | Model Version: 0.1.0
+Generated: 2026-05-10T10:21:01.236Z | Model Version: 0.1.0

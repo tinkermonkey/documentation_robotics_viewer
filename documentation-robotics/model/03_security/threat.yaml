@@ -7,6 +7,10 @@ security.threat.unauthenticated-model-access:
   name: Unauthenticated Model Access
   description: Risk that an unauthenticated user accesses model data if bearer
     token is absent or invalid
+  attributes:
+    threatens: model
+    likelihood: high
+    impact: high
   source_reference:
     provenance: inferred
     locations:
