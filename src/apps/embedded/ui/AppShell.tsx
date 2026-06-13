@@ -20,9 +20,10 @@ import { StatusBar } from './StatusBar';
 import { Canvas } from './Canvas';
 import { Inspector } from './Inspector';
 import { useUiStore } from './uiStore';
-import { layerColor, layerLabel, layerStandard } from './domain';
+import { layerColor, layerLabel, layerStandard, LAYER_ORDER } from './domain';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
+import { firstNodeTypeId } from '../data/specGraph';
 
 /** Canvas placeholder — PageHeader stub + empty graph region (Phase 2 fills it). */
 function CanvasPlaceholder() {
@@ -113,31 +114,59 @@ function InspectorPlaceholder() {
 const DEFAULT_LAYER = 'data-model';
 
 /**
- * Seed an initial layer + element selection once the model loads, so the Model
- * view renders a populated graph + inspector instead of an empty prompt. Prefers
- * the design's default layer, falling back to the first populated layer.
+ * Seed an initial layer + selection once data loads, so the active view renders
+ * a populated graph + inspector instead of an empty prompt. Prefers the design's
+ * default layer, falling back to the first populated layer. Runs for the Model
+ * view (element selection) and the Schema view (node-type selection); does not
+ * touch the Changesets view.
  */
 function useDefaultSelection() {
   const view = useUiStore((s) => s.view);
   const layerId = useUiStore((s) => s.layerId);
   const navigateToElement = useUiStore((s) => s.navigateToElement);
+  const navigateToSpecNode = useUiStore((s) => s.navigateToSpecNode);
   const { derived: model } = useModel();
+  const { derived: spec, raw: specRaw } = useSpec();
 
   useEffect(() => {
-    if (view !== 'model' || layerId || model.nodes.length === 0) return;
-    const layer =
-      model.nodesByLayer[DEFAULT_LAYER]?.length
+    if (layerId) return;
+
+    if (view === 'model') {
+      if (model.nodes.length === 0) return;
+      const layer = model.nodesByLayer[DEFAULT_LAYER]?.length
         ? DEFAULT_LAYER
         : Object.keys(model.nodesByLayer)[0];
-    if (!layer) return;
-    const first = model.nodesByLayer[layer]?.[0];
-    if (first) navigateToElement(first.id, layer);
-  }, [view, layerId, model, navigateToElement]);
+      if (!layer) return;
+      const first = model.nodesByLayer[layer]?.[0];
+      if (first) navigateToElement(first.id, layer);
+      return;
+    }
+
+    if (view === 'spec') {
+      if (Object.keys(spec.byLayer).length === 0) return;
+      const layer = spec.byLayer[DEFAULT_LAYER]?.typeCount
+        ? DEFAULT_LAYER
+        : LAYER_ORDER.find((s) => spec.byLayer[s]?.typeCount);
+      if (!layer) return;
+      const firstType = firstNodeTypeId(specRaw, layer);
+      if (firstType) navigateToSpecNode(firstType, layer);
+    }
+  }, [
+    view,
+    layerId,
+    model,
+    spec,
+    specRaw,
+    navigateToElement,
+    navigateToSpecNode,
+  ]);
 }
 
 export function AppShell() {
   const view = useUiStore((s) => s.view);
-  const isModel = view === 'model';
+  // Model + Schema both render the live Canvas/Inspector (view-branched inside).
+  // Changesets keeps the placeholders until Phase 4.
+  const isGraphView = view === 'model' || view === 'spec';
 
   useDefaultSelection();
 
@@ -165,9 +194,9 @@ export function AppShell() {
         }}
       >
         <LeftRail />
-        {/* Model view: live graph + inspector. Spec/Changesets: Phase 3/4 placeholders. */}
-        {isModel ? <Canvas /> : <CanvasPlaceholder />}
-        {isModel ? <Inspector /> : <InspectorPlaceholder />}
+        {/* Model + Schema: live graph + inspector. Changesets: Phase 4 placeholder. */}
+        {isGraphView ? <Canvas /> : <CanvasPlaceholder />}
+        {isGraphView ? <Inspector /> : <InspectorPlaceholder />}
         {/* ChatDrawer slot — Phase 5 */}
       </div>
       <StatusBar />

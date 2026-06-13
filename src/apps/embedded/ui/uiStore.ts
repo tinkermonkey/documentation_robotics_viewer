@@ -35,6 +35,13 @@ interface UiState {
    * view and keeps the nav tree's section/layer expanded.
    */
   navigateToElement: (elementId: string, layerId: string) => void;
+  /**
+   * Navigate to a spec node-type by its `spec_node_id`, switching the active
+   * layer when it lives in another layer (cross-layer relationship navigation
+   * in the Schema view). Stays in the Schema view and keeps the nav tree's
+   * section/layer expanded.
+   */
+  navigateToSpecNode: (specNodeId: string, layerId: string) => void;
   selectChangeset: (changesetId: string | null) => void;
   toggleCanvasDark: () => void;
   toggleChat: () => void;
@@ -104,6 +111,21 @@ export const useUiStore = create<UiState>((set) => ({
         layerId,
         selectedId: elementId,
         expandedSections: new Set(s.expandedSections).add('model'),
+        expandedLayers,
+      };
+    }),
+
+  navigateToSpecNode: (specNodeId, layerId) =>
+    set((s) => {
+      const sameLayer = s.layerId === layerId;
+      const expandedLayers = sameLayer
+        ? s.expandedLayers
+        : new Set(s.expandedLayers).add(layerKey('spec', layerId));
+      return {
+        view: 'spec',
+        layerId,
+        selectedId: specNodeId,
+        expandedSections: new Set(s.expandedSections).add('spec'),
         expandedLayers,
       };
     }),

@@ -91,25 +91,24 @@ function LayerRow({
   const open = expandedLayers.has(key);
   const active = view === sectionId && layerId === slug;
 
-  // Count: spec node-types for Schema, model elements for Model.
-  // data-model declares 0 schema node-types, so fall back to its instance types.
+  // Count: spec node-types for Schema (from `nodeSchemas` keys, so data-model is
+  // non-zero), model elements for Model.
   const specInfo = spec.byLayer[slug];
   const modelNodes = model.nodesByLayer[slug] ?? [];
-  const modelTypeIds = Array.from(new Set(modelNodes.map((n) => n.type)));
   const count =
     sectionId === 'spec'
-      ? specInfo && specInfo.typeCount > 0
-        ? specInfo.typeCount
-        : modelTypeIds.length
+      ? specInfo?.typeCount ?? 0
       : modelNodes.length;
 
-  // Leaves: element names (Model) or node-type names (Schema).
+  // Leaves: element names (Model) or node-type titles (Schema). Schema leaf id
+  // is the spec_node_id (`<slug>.<shortname>`) so selecting it matches the
+  // graph node id the canvas / inspector operate on.
   const leaves: { id: string; label: string }[] =
     sectionId === 'spec'
-      ? (specInfo && specInfo.typeCount > 0
-          ? specInfo.typeIds
-          : modelTypeIds
-        ).map((t) => ({ id: t, label: t }))
+      ? (specInfo?.typeIds ?? []).map((t, i) => ({
+          id: `${slug}.${t}`,
+          label: specInfo?.typeTitles[i] ?? t,
+        }))
       : modelNodes.map((n) => ({ id: n.id, label: n.name }));
 
   return (

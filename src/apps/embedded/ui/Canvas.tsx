@@ -1,14 +1,20 @@
 /**
- * Canvas — the center pane for the Model view.
+ * Canvas — the center pane for the Model and Schema views.
  *
- * Heimdall `PageHeader` (eyebrow = colored layer swatch + ALL-CAPS
- * `INSTANCE MODEL · {standard}`, title = layer label, id `Chip` with the layer
- * slug, right meta = `{n} elements`) over a `GraphCanvas` rendering the
- * selected layer's instance graph with domain-colored nodes + labeled edges.
+ * Heimdall `PageHeader` (eyebrow = colored layer swatch + ALL-CAPS label, title,
+ * id `Chip`, right meta) over a `GraphCanvas` rendering the selected layer's
+ * graph with domain-colored nodes + labeled edges.
+ *
+ *   Model view  — eyebrow `INSTANCE MODEL · {standard}`, title = layer label,
+ *                 meta = `{n} elements`; nodes/edges are layer instances.
+ *   Schema view — eyebrow `META-MODEL · {standard}`, title = `{layer} schema`,
+ *                 meta = `{n} node types · {m} relationships`; nodes are
+ *                 node-types, edges are intra-layer relationship schemas.
  *
  * The `GraphCanvas` is keyed by `${view}:${layerId}` so switching layer/view
  * remounts it — Heimdall auto-centers ONCE per mount and won't re-center on prop
- * change, so the remount is what recenters the new layer's graph.
+ * change, so the remount is what recenters the new layer's graph (and what makes
+ * toggling Model↔Schema for one layer swap instances for node-types).
  */
 
 import { useMemo } from 'react';
@@ -20,8 +26,13 @@ import { useSpec } from '../data/useSpec';
 import {
   buildModelIndex,
   nodesForLayer,
-  edgesForLayer,
+  edgesForLayer as modelEdgesForLayer,
 } from '../data/modelGraph';
+import {
+  nodeTypesForLayer,
+  edgesForLayer as specEdgesForLayer,
+  intraRelCount,
+} from '../data/specGraph';
 
 /** Empty state shown when no layer is selected. */
 function CanvasEmptyState({ message }: { message: string }) {
@@ -49,23 +60,56 @@ export function Canvas() {
   const selectGraphNode = useUiStore((s) => s.selectGraphNode);
 
   const { derived: model } = useModel();
-  const { derived: spec } = useSpec();
+  const { derived: spec, raw: specRaw } = useSpec();
+  const isSpec = view === 'spec';
 
   const index = useMemo(() => buildModelIndex(model), [model]);
 
-  const nodes = useMemo(
-    () => (layerId ? nodesForLayer(model, layerId) : []),
-    [model, layerId],
-  );
-  const edges = useMemo(
-    () => (layerId ? edgesForLayer(model, layerId, index) : []),
-    [model, layerId, index],
-  );
+  const nodes = useMemo(() => {
+    if (!layerId) return [];
+    return isSpec
+      ? nodeTypesForLayer(specRaw, layerId)
+      : nodesForLayer(model, layerId);
+  }, [isSpec, specRaw, model, layerId]);
+
+  const edges = useMemo(() => {
+    if (!layerId) return [];
+    return isSpec
+      ? specEdgesForLayer(specRaw, layerId)
+      : modelEdgesForLayer(model, layerId, index);
+  }, [isSpec, specRaw, model, layerId, index]);
 
   const slug = layerId ?? '';
   const standard = spec.byLayer[slug]?.standard || layerStandard(slug);
-  const elementCount = layerId ? model.countsByLayer[slug] ?? 0 : 0;
-  const eyebrowText = `INSTANCE MODEL${standard ? ` · ${standard}` : ''}`;
+
+  const eyebrowText = isSpec
+    ? `META-MODEL${standard ? ` · ${standard}` : ''}`
+    : `INSTANCE MODEL${standard ? ` · ${standard}` : ''}`;
+
+  const title = layerId
+    ? isSpec
+      ? `${layerLabel(slug)} schema`
+      : layerLabel(slug)
+    : isSpec
+      ? 'Schema'
+      : 'Model';
+
+  const metaText = useMemo(() => {
+    if (!layerId) return '';
+    if (isSpec) {
+      const typeCount = spec.byLayer[slug]?.typeCount ?? 0;
+      const relCount = intraRelCount(specRaw, slug);
+      return `${typeCount} node types · ${relCount} relationships`;
+    }
+    return `${model.countsByLayer[slug] ?? 0} elements`;
+  }, [isSpec, layerId, slug, spec, specRaw, model]);
+
+  const emptyMessage = isSpec
+    ? 'select a layer to view its schema'
+    : 'select a layer to view its instance model';
+  const noContentMessage = isSpec
+    ? 'no node types in this layer'
+    : 'no elements in this layer';
 
   return (
     <div
@@ -97,7 +141,7 @@ export function Canvas() {
             <span>{eyebrowText}</span>
           </>
         }
-        title={layerId ? layerLabel(slug) : 'Model'}
+        title={title}
         idChip={layerId ?? view}
         actions={
           <span
@@ -107,16 +151,16 @@ export function Canvas() {
               color: 'rgb(var(--canvas-fg-3))',
             }}
           >
-            {elementCount} elements
+            {metaText}
           </span>
         }
       />
 
       <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
         {!layerId ? (
-          <CanvasEmptyState message="select a layer to view its instance model" />
+          <CanvasEmptyState message={emptyMessage} />
         ) : nodes.length === 0 ? (
-          <CanvasEmptyState message="no elements in this layer" />
+          <CanvasEmptyState message={noContentMessage} />
         ) : (
           <GraphCanvas
             key={`${view}:${layerId}`}
