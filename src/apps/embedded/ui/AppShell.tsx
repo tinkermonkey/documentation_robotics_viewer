@@ -20,15 +20,46 @@ import { Canvas } from './Canvas';
 import { Inspector } from './Inspector';
 import { ChangesetCanvas } from './ChangesetCanvas';
 import { ChangesetInspector } from './ChangesetInspector';
+import { ChatDrawer } from './ChatDrawer';
 import { useUiStore } from './uiStore';
 import { LAYER_ORDER } from './domain';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import { useChangesets } from '../data/useChangesets';
 import { firstNodeTypeId } from '../data/specGraph';
+import { useChatStore } from '../stores/chatStore';
+import type { ChatMessage, TextContent } from '../types/chat';
 
 /** Default layer to open on first load (mirrors the design's initial state). */
 const DEFAULT_LAYER = 'data-model';
+
+/** The design's DrBot intro (`_botMsg`, componentDidMount). */
+const GREETING_TEXT =
+  "I'm **DrBot**, scoped to the loaded architecture model. Select any element to inspect it, then ask me to explain it, trace its cross-layer references, or validate reference integrity.";
+
+/**
+ * Seed the design's DrBot greeting into the chat store once, on first mount,
+ * when the thread is empty. Mirrors the design's `componentDidMount` seeding so
+ * the drawer opens with an intro instead of a blank thread. Lives on AppShell
+ * (always mounted) rather than ChatDrawer (mounts only when `chatOpen`), so the
+ * greeting is present the moment the drawer first opens. Guarded on empty
+ * messages so it never duplicates after a conversation has started.
+ */
+function useSeedGreeting() {
+  useEffect(() => {
+    const store = useChatStore.getState();
+    if (store.messages.length > 0) return;
+    const now = new Date().toISOString();
+    const greeting: ChatMessage = {
+      id: `msg-greeting-${Date.now()}`,
+      role: 'assistant',
+      conversationId: store.activeConversationId ?? 'greeting',
+      timestamp: now,
+      parts: [{ type: 'text', content: GREETING_TEXT, timestamp: now } as TextContent],
+    };
+    store.addMessage(greeting);
+  }, []);
+}
 
 /**
  * Seed an initial selection once data loads, so the active view renders
@@ -99,6 +130,7 @@ export function AppShell() {
   const isChangesets = view === 'changesets';
 
   useDefaultSelection();
+  useSeedGreeting();
 
   return (
     <div
@@ -127,7 +159,8 @@ export function AppShell() {
         {/* Model + Schema: live graph + inspector. Changesets: diff list + detail. */}
         {isChangesets ? <ChangesetCanvas /> : <Canvas />}
         {isChangesets ? <ChangesetInspector /> : <Inspector />}
-        {/* ChatDrawer slot — Phase 5 */}
+        {/* DrBot chat: persistent 4th column when wide, absolute overlay otherwise. */}
+        <ChatDrawer />
       </div>
       <StatusBar />
     </div>

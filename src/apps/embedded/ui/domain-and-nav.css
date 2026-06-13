@@ -101,3 +101,20 @@
   height: 0;
   display: none;
 }
+
+/* ---- DrBot chat header pulse dot ---------------------------------------- */
+.drv-chat-pulse {
+  animation: drv-chat-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes drv-chat-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.45;
+  }
+}
