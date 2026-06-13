@@ -18,9 +18,10 @@ import { useMemo } from 'react';
 import { GraphInspector } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
 import { layerLabel } from './domain';
+import { AnnotationsSection } from './AnnotationsSection';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
-import { buildModelIndex } from '../data/modelGraph';
+import { buildModelIndex, dottedId } from '../data/modelGraph';
 import {
   relationshipsForElement,
   metadataForElement,
@@ -94,6 +95,10 @@ export function Inspector() {
     navigateToElement(target.id, target.layer_id);
   };
 
+  // Annotations apply only to real Model elements (not SPEC node-types). The
+  // API keys them by the canonical dotted id, not the node UUID.
+  const annotationElementId = modelNode ? dottedId(modelNode) : null;
+
   return (
     <div
       style={{
@@ -107,17 +112,31 @@ export function Inspector() {
       }}
       data-testid="inspector"
     >
-      <GraphInspector
-        node={metadata}
-        relationships={relationships}
-        onNodeSelect={handleSelect}
-        emptyStateText={
-          isSpec
-            ? 'Select a node type to inspect.'
-            : 'Select an element to inspect.'
-        }
-        style={{ flex: 1, minHeight: 0, border: 'none', borderRadius: 0 }}
-      />
+      <div
+        className="drv-scroll"
+        style={{
+          flex: 1,
+          minHeight: 0,
+          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <GraphInspector
+          node={metadata}
+          relationships={relationships}
+          onNodeSelect={handleSelect}
+          emptyStateText={
+            isSpec
+              ? 'Select a node type to inspect.'
+              : 'Select an element to inspect.'
+          }
+          style={{ flex: 'none', border: 'none', borderRadius: 0 }}
+        />
+        {annotationElementId && (
+          <AnnotationsSection elementId={annotationElementId} />
+        )}
+      </div>
     </div>
   );
 }
