@@ -27,6 +27,14 @@ interface UiState {
   setView: (view: ViewKind) => void;
   selectLayer: (layerId: string) => void;
   selectNode: (selectedId: string | null) => void;
+  /** Select a node clicked in the graph canvas (current layer). */
+  selectGraphNode: (selectedId: string) => void;
+  /**
+   * Navigate to an element by id, switching the active layer when it lives in
+   * another layer (cross-layer relationship navigation). Stays in the Model
+   * view and keeps the nav tree's section/layer expanded.
+   */
+  navigateToElement: (elementId: string, layerId: string) => void;
   selectChangeset: (changesetId: string | null) => void;
   toggleCanvasDark: () => void;
   toggleChat: () => void;
@@ -75,6 +83,30 @@ export const useUiStore = create<UiState>((set) => ({
     }),
 
   selectNode: (selectedId) => set({ selectedId }),
+
+  selectGraphNode: (selectedId) =>
+    set((s) => ({
+      selectedId,
+      expandedSections: new Set(s.expandedSections).add(s.view),
+      expandedLayers: s.layerId
+        ? new Set(s.expandedLayers).add(layerKey(s.view, s.layerId))
+        : s.expandedLayers,
+    })),
+
+  navigateToElement: (elementId, layerId) =>
+    set((s) => {
+      const sameLayer = s.layerId === layerId;
+      const expandedLayers = sameLayer
+        ? s.expandedLayers
+        : new Set(s.expandedLayers).add(layerKey('model', layerId));
+      return {
+        view: 'model',
+        layerId,
+        selectedId: elementId,
+        expandedSections: new Set(s.expandedSections).add('model'),
+        expandedLayers,
+      };
+    }),
 
   selectChangeset: (changesetId) =>
     set((s) => ({

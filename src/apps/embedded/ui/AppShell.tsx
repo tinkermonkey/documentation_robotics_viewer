@@ -12,10 +12,13 @@
  * arrive in Phase 2, chat in Phase 5.
  */
 
+import { useEffect } from 'react';
 import { PageHeader } from '@tinkermonkey/heimdall-ui';
 import { Topbar } from './Topbar';
 import { LeftRail } from './LeftRail';
 import { StatusBar } from './StatusBar';
+import { Canvas } from './Canvas';
+import { Inspector } from './Inspector';
 import { useUiStore } from './uiStore';
 import { layerColor, layerLabel, layerStandard } from './domain';
 import { useModel } from '../data/useModel';
@@ -106,7 +109,38 @@ function InspectorPlaceholder() {
   );
 }
 
+/** Default layer to open on first load (mirrors the design's initial state). */
+const DEFAULT_LAYER = 'data-model';
+
+/**
+ * Seed an initial layer + element selection once the model loads, so the Model
+ * view renders a populated graph + inspector instead of an empty prompt. Prefers
+ * the design's default layer, falling back to the first populated layer.
+ */
+function useDefaultSelection() {
+  const view = useUiStore((s) => s.view);
+  const layerId = useUiStore((s) => s.layerId);
+  const navigateToElement = useUiStore((s) => s.navigateToElement);
+  const { derived: model } = useModel();
+
+  useEffect(() => {
+    if (view !== 'model' || layerId || model.nodes.length === 0) return;
+    const layer =
+      model.nodesByLayer[DEFAULT_LAYER]?.length
+        ? DEFAULT_LAYER
+        : Object.keys(model.nodesByLayer)[0];
+    if (!layer) return;
+    const first = model.nodesByLayer[layer]?.[0];
+    if (first) navigateToElement(first.id, layer);
+  }, [view, layerId, model, navigateToElement]);
+}
+
 export function AppShell() {
+  const view = useUiStore((s) => s.view);
+  const isModel = view === 'model';
+
+  useDefaultSelection();
+
   return (
     <div
       style={{
@@ -131,8 +165,9 @@ export function AppShell() {
         }}
       >
         <LeftRail />
-        <CanvasPlaceholder />
-        <InspectorPlaceholder />
+        {/* Model view: live graph + inspector. Spec/Changesets: Phase 3/4 placeholders. */}
+        {isModel ? <Canvas /> : <CanvasPlaceholder />}
+        {isModel ? <Inspector /> : <InspectorPlaceholder />}
         {/* ChatDrawer slot — Phase 5 */}
       </div>
       <StatusBar />
