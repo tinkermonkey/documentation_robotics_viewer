@@ -1,0 +1,103 @@
+/*
+ * DR domain swatches + nav-tree helper classes.
+ *
+ * Ported verbatim from the design HTML (lines ~25-73). Heimdall's compiled
+ * bundle only colors its demo domains, so the 12 DR domain swatch rules and the
+ * design's nav-item / drv-nav-l2 / drv-chev helpers must ship here. Imported by
+ * main.tsx AFTER index.css and Heimdall's CSS so these win the cascade.
+ */
+
+/* ---- 12-layer domain palette — graph node swatches ---------------------- */
+.graph-node[data-domain='motivation'] .graph-node__swatch { background: #8b5cf6; }
+.graph-node[data-domain='business'] .graph-node__swatch { background: #f59e0b; }
+.graph-node[data-domain='security'] .graph-node__swatch { background: #f43f5e; }
+.graph-node[data-domain='application'] .graph-node__swatch { background: #818cf8; }
+.graph-node[data-domain='technology'] .graph-node__swatch { background: #22d3ee; }
+.graph-node[data-domain='api'] .graph-node__swatch { background: #10b981; }
+.graph-node[data-domain='data-model'] .graph-node__swatch { background: #2dd4bf; }
+.graph-node[data-domain='data-store'] .graph-node__swatch { background: #38bdf8; }
+.graph-node[data-domain='ux'] .graph-node__swatch { background: #f472b6; }
+.graph-node[data-domain='navigation'] .graph-node__swatch { background: #a78bfa; }
+.graph-node[data-domain='apm'] .graph-node__swatch { background: #fb923c; }
+.graph-node[data-domain='testing'] .graph-node__swatch { background: #4ade80; }
+
+/* ---- inspector relationship swatches per layer -------------------------- */
+.graph-inspector__rel-target[data-domain='motivation'] .graph-inspector__rel-swatch { background: #8b5cf6; }
+.graph-inspector__rel-target[data-domain='business'] .graph-inspector__rel-swatch { background: #f59e0b; }
+.graph-inspector__rel-target[data-domain='security'] .graph-inspector__rel-swatch { background: #f43f5e; }
+.graph-inspector__rel-target[data-domain='application'] .graph-inspector__rel-swatch { background: #818cf8; }
+.graph-inspector__rel-target[data-domain='technology'] .graph-inspector__rel-swatch { background: #22d3ee; }
+.graph-inspector__rel-target[data-domain='api'] .graph-inspector__rel-swatch { background: #10b981; }
+.graph-inspector__rel-target[data-domain='data-model'] .graph-inspector__rel-swatch { background: #2dd4bf; }
+.graph-inspector__rel-target[data-domain='data-store'] .graph-inspector__rel-swatch { background: #38bdf8; }
+.graph-inspector__rel-target[data-domain='ux'] .graph-inspector__rel-swatch { background: #f472b6; }
+.graph-inspector__rel-target[data-domain='navigation'] .graph-inspector__rel-swatch { background: #a78bfa; }
+.graph-inspector__rel-target[data-domain='apm'] .graph-inspector__rel-swatch { background: #fb923c; }
+.graph-inspector__rel-target[data-domain='testing'] .graph-inspector__rel-swatch { background: #4ade80; }
+
+/* ---- hierarchical NavItem nav (Section -> Layer -> Element) -------------- */
+.nav-item {
+  width: 100%;
+  padding-right: 30px;
+}
+
+.nav-item__count {
+  color: #5b6b82;
+  margin-right: 2px;
+}
+
+/* chevron disclosure indicator for expandable rows */
+.drv-chev {
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid #5b6b82;
+  border-bottom: 1.5px solid #5b6b82;
+  transform: rotate(-45deg);
+  transition: transform 0.12s ease;
+}
+
+.drv-chev--open {
+  transform: rotate(45deg);
+}
+
+/* level-3 (element / node-type leaf) rows */
+.nav-item.drv-nav-l2 {
+  padding-left: 54px;
+}
+
+.nav-item.drv-nav-l2 .nav-item__label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+}
+
+.nav-item.drv-nav-l2.nav-item--active::before {
+  left: 38px;
+}
+
+/* nav-tree custom scrollbar (matches design .drv-scroll) */
+.drv-scroll::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.drv-scroll::-webkit-scrollbar-thumb {
+  background: var(--shell-border-2);
+  border-radius: 6px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+.drv-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.drv-noscroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.drv-noscroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}

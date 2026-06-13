@@ -1,12 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider } from '@tanstack/react-router';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { installFetchInterceptor } from './utils/fetchInterceptor';
+import { createApiQueryClient } from '../../core/services/generatedApiClient';
 import { router } from './router';
 import { useAuthStore } from './stores/authStore';
 import '../../index.css';
 import '@tinkermonkey/heimdall-ui/css';
 import '@tinkermonkey/heimdall-ui/fonts';
+// DR domain swatches + nav helpers — imported AFTER Heimdall CSS so they win.
+import './ui/domain-and-nav.css';
 
 // Handle token from magic link BEFORE router initializes
 // Magic link format: /?token=xyz#/model/graph
@@ -37,8 +41,12 @@ if (!rootElement) {
   throw new Error('Root element not found');
 }
 
+const queryClient = createApiQueryClient();
+
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   </React.StrictMode>
 );
