@@ -13,122 +13,49 @@
  */
 
 import { useEffect } from 'react';
-import { PageHeader } from '@tinkermonkey/heimdall-ui';
 import { Topbar } from './Topbar';
 import { LeftRail } from './LeftRail';
 import { StatusBar } from './StatusBar';
 import { Canvas } from './Canvas';
 import { Inspector } from './Inspector';
+import { ChangesetCanvas } from './ChangesetCanvas';
+import { ChangesetInspector } from './ChangesetInspector';
 import { useUiStore } from './uiStore';
-import { layerColor, layerLabel, layerStandard, LAYER_ORDER } from './domain';
+import { LAYER_ORDER } from './domain';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
+import { useChangesets } from '../data/useChangesets';
 import { firstNodeTypeId } from '../data/specGraph';
-
-/** Canvas placeholder — PageHeader stub + empty graph region (Phase 2 fills it). */
-function CanvasPlaceholder() {
-  const view = useUiStore((s) => s.view);
-  const layerId = useUiStore((s) => s.layerId);
-  const { derived: model } = useModel();
-  const { derived: spec } = useSpec();
-
-  const slug = layerId ?? '';
-  const label = layerId ? layerLabel(layerId) : 'Model';
-  const standard = spec.byLayer[slug]?.standard || layerStandard(slug);
-  const elementCount = layerId ? model.countsByLayer[slug] ?? 0 : model.nodes.length;
-
-  const eyebrowText =
-    view === 'spec'
-      ? `META-MODEL${standard ? ` · ${standard}` : ''}`
-      : `INSTANCE MODEL${standard ? ` · ${standard}` : ''}`;
-
-  return (
-    <div
-      style={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        minWidth: 0,
-        background: 'rgb(var(--canvas-bg))',
-        borderTopLeftRadius: 8,
-        overflow: 'hidden',
-      }}
-      data-testid="canvas"
-    >
-      <PageHeader
-        style={{ flex: 'none', padding: '16px 22px 14px' }}
-        eyebrow={
-          <>
-            <span
-              style={{
-                width: 10,
-                height: 10,
-                borderRadius: 3,
-                flex: 'none',
-                background: layerColor(slug),
-                display: 'inline-block',
-              }}
-            />
-            <span>{eyebrowText}</span>
-          </>
-        }
-        title={label}
-        idChip={layerId ?? view}
-        actions={
-          <span
-            style={{
-              fontFamily: "'JetBrains Mono',monospace",
-              fontSize: 11,
-              color: 'rgb(var(--canvas-fg-3))',
-            }}
-          >
-            {elementCount} elements
-          </span>
-        }
-      />
-      {/* graph region placeholder — Phase 2 renders <GraphCanvas> here */}
-      <div style={{ flex: 1, position: 'relative', minHeight: 0 }} />
-    </div>
-  );
-}
-
-/** Inspector placeholder — empty 320px pane (Phase 2 renders GraphInspector). */
-function InspectorPlaceholder() {
-  return (
-    <div
-      style={{
-        width: 320,
-        flex: 'none',
-        borderLeft: '1px solid rgb(var(--canvas-border))',
-        background: 'rgb(var(--canvas-surface))',
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: 0,
-      }}
-      data-testid="inspector"
-    />
-  );
-}
 
 /** Default layer to open on first load (mirrors the design's initial state). */
 const DEFAULT_LAYER = 'data-model';
 
 /**
- * Seed an initial layer + selection once data loads, so the active view renders
- * a populated graph + inspector instead of an empty prompt. Prefers the design's
- * default layer, falling back to the first populated layer. Runs for the Model
- * view (element selection) and the Schema view (node-type selection); does not
- * touch the Changesets view.
+ * Seed an initial selection once data loads, so the active view renders
+ * populated content instead of an empty prompt. Prefers the design's default
+ * layer, falling back to the first populated one. Runs for the Model view
+ * (element selection), the Schema view (node-type selection), and the Changesets
+ * view (first changeset by the registry's newest-first order).
  */
 function useDefaultSelection() {
   const view = useUiStore((s) => s.view);
   const layerId = useUiStore((s) => s.layerId);
+  const changesetId = useUiStore((s) => s.changesetId);
   const navigateToElement = useUiStore((s) => s.navigateToElement);
   const navigateToSpecNode = useUiStore((s) => s.navigateToSpecNode);
+  const selectChangeset = useUiStore((s) => s.selectChangeset);
   const { derived: model } = useModel();
   const { derived: spec, raw: specRaw } = useSpec();
+  const { derived: changesets } = useChangesets();
 
   useEffect(() => {
+    if (view === 'changesets') {
+      if (changesetId) return;
+      const first = changesets.list[0];
+      if (first) selectChangeset(first.id);
+      return;
+    }
+
     if (layerId) return;
 
     if (view === 'model') {
@@ -154,19 +81,22 @@ function useDefaultSelection() {
   }, [
     view,
     layerId,
+    changesetId,
     model,
     spec,
     specRaw,
+    changesets,
     navigateToElement,
     navigateToSpecNode,
+    selectChangeset,
   ]);
 }
 
 export function AppShell() {
   const view = useUiStore((s) => s.view);
-  // Model + Schema both render the live Canvas/Inspector (view-branched inside).
-  // Changesets keeps the placeholders until Phase 4.
-  const isGraphView = view === 'model' || view === 'spec';
+  // Model + Schema render the graph Canvas/Inspector (view-branched inside);
+  // Changesets renders the diff list + changeset detail.
+  const isChangesets = view === 'changesets';
 
   useDefaultSelection();
 
@@ -194,9 +124,9 @@ export function AppShell() {
         }}
       >
         <LeftRail />
-        {/* Model + Schema: live graph + inspector. Changesets: Phase 4 placeholder. */}
-        {isGraphView ? <Canvas /> : <CanvasPlaceholder />}
-        {isGraphView ? <Inspector /> : <InspectorPlaceholder />}
+        {/* Model + Schema: live graph + inspector. Changesets: diff list + detail. */}
+        {isChangesets ? <ChangesetCanvas /> : <Canvas />}
+        {isChangesets ? <ChangesetInspector /> : <Inspector />}
         {/* ChatDrawer slot — Phase 5 */}
       </div>
       <StatusBar />
