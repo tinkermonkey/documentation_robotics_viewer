@@ -74,6 +74,25 @@
   left: 38px;
 }
 
+/* ---- visually-hidden (screen-reader-only) -----------------------------------
+ * Heimdall's source index.css defines `.sr-only` as a Tailwind utility, but it
+ * is NOT compiled into the distributed dist/style.css. Without it, the
+ * `SideBySideDiff` gutter's `<span class="sr-only">added/removed</span>` labels
+ * render visibly inside the 60px gutter and wrap to "add ed" / "remo ved". Ship
+ * the standard visually-hidden rule so those labels are screen-reader-only
+ * again (and the wrapping disappears). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 /* nav-tree custom scrollbar (matches design .drv-scroll) */
 .drv-scroll::-webkit-scrollbar {
   width: 10px;

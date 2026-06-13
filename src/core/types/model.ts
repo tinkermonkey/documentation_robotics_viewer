@@ -220,7 +220,7 @@ export interface Relationship {
   // v0.8.3 spec fields
   // TODO #486: Make predicate required per spec (currently optional to support legacy relationships
   // created from JSON schema, spec parser, and other non-YAML sources without predicate strings).
-  // When making this required, update all ~30 creation sites in jsonSchemaParser, specParser,
+  // When making this required, update all ~30 creation sites in jsonSchemaParser,
   // changesetGraphBuilder, embeddedDataLoader, and test fixtures to provide predicates.
   predicate?: string;
   predicateDefinition?: PredicateDefinition;

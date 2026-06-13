@@ -2,7 +2,7 @@
   "name": "documentation_robotics_viewer",
   "version": "0.2.3",
   "private": true,
-  "description": "Basic graph presentation of the documentation robotics meta-model",
+  "description": "Heimdall-native viewer for the Documentation Robotics multi-layer architecture model, served by the DR CLI",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -24,14 +24,8 @@
     "@tanstack/react-query": "^5.51.0",
     "@tanstack/react-router": "^1.139.12",
     "@tinkermonkey/heimdall-ui": "github:tinkermonkey/heimdall#c759edfb199bc796ce387b9c1b598b60fbf89551",
-    "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "lucide-react": "^0.562.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-icons": "^5.5.0",
-    "react-markdown": "^9.0.1",
-    "remark-gfm": "^4.0.0",
     "zustand": "^5.0.8"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import {
   createRouter,
   createRoute,
@@ -110,18 +110,73 @@ const SECTION_TO_VIEW: Record<string, ViewKind> = {
   changesets: 'changesets',
 };
 
+/** Reverse map: uiStore view → route `:section` segment. */
+const VIEW_TO_SECTION: Record<ViewKind, string> = {
+  model: 'model',
+  spec: 'spec',
+  changesets: 'changesets',
+};
+
+/** Default `:view` segment per section (the only view each section has today). */
+const SECTION_DEFAULT_VIEW: Record<string, string> = {
+  model: 'graph',
+  spec: 'graph',
+  changesets: 'list',
+};
+
 /**
- * Thin route component — reads the `:section` param and syncs `uiStore.view`,
- * then renders the AppShell. The shell itself is view-driven from the store.
+ * Thin route component — keeps `uiStore.view` and the URL hash in two-way sync,
+ * then renders the AppShell (which is itself view-driven from the store).
+ *
+ * URL → store: the `:section` param drives `setView`, so browser back/forward
+ * (a hash change) updates the active view.
+ *
+ * store → URL: when the view changes from inside the app (e.g. clicking a nav
+ * section, or a cross-layer relationship that switches Model↔Schema), push the
+ * matching `/$section/$view` so the hash reflects the active view and history
+ * captures the change. Guarded on an actual section mismatch so the two effects
+ * never ping-pong.
  */
 function AppShellRoute() {
   const { section } = useParams({ strict: false }) as { section?: string };
+  const view = useUiStore((s) => s.view);
   const setView = useUiStore((s) => s.setView);
+  // On mount (incl. a deep-link / reload) the URL is authoritative: the URL →
+  // store effect seeds the view from `:section`. The store → URL effect must NOT
+  // fire on that first render, or the store's initial default view ('model')
+  // would clobber an incoming `#/spec/...` or `#/changesets/...` deep link before
+  // the seed lands. After mount, genuine view changes (nav clicks, cross-layer
+  // navigation) drive the URL.
+  const mountedRef = useRef(false);
+  // Tracks the last view we reacted to so the store → URL effect fires ONLY on a
+  // genuine `view` change. Without this, a URL-driven change (back/forward)
+  // updates `section` first while `view` is still stale; the effect would see a
+  // mismatch and navigate "backward" to correct it, oscillating forever.
+  const prevViewRef = useRef(view);
 
+  // URL → store.
   useEffect(() => {
-    const view = section ? SECTION_TO_VIEW[section] : undefined;
-    if (view) setView(view);
+    const next = section ? SECTION_TO_VIEW[section] : undefined;
+    if (next) setView(next);
   }, [section, setView]);
+
+  // store → URL (skip first render; act ONLY on a real `view` change, never a
+  // `section` change — see prevViewRef above).
+  useEffect(() => {
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      prevViewRef.current = view;
+      return;
+    }
+    if (prevViewRef.current === view) return;
+    prevViewRef.current = view;
+    const targetSection = VIEW_TO_SECTION[view];
+    if (section === targetSection) return;
+    router.navigate({
+      to: '/$section/$view',
+      params: { section: targetSection, view: SECTION_DEFAULT_VIEW[targetSection] },
+    });
+  }, [view, section]);
 
   return <AppShell />;
 }

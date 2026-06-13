@@ -26,11 +26,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
-      '@core': path.resolve(__dirname, './src/core'),
-      '@services': path.resolve(__dirname, './src/core/services'),
-      '@stores': path.resolve(__dirname, './src/core/stores'),
-      '@types': path.resolve(__dirname, './src/core/types')
+      '@': path.resolve(__dirname, './src')
     },
     dedupe: ['react', 'react-dom', 'react/jsx-runtime']
   },

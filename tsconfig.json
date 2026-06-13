@@ -24,14 +24,7 @@
     /* Path aliases */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@components/*": ["./src/components/*"],
-      "@shapes/*": ["./src/shapes/*"],
-      "@services/*": ["./src/services/*"],
-      "@stores/*": ["./src/stores/*"],
-      "@types/*": ["./src/types/*"],
-      "@layout/*": ["./src/layout/*"],
-      "@catalog/*": ["./src/catalog/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src"],
