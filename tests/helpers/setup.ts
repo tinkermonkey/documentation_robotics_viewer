@@ -13,16 +13,27 @@
  */
 
 import { afterAll, afterEach, beforeAll } from 'vitest';
+import { cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 
 import { mswServer, resetMswState } from './mswServer';
 import { useChatStore } from '@/apps/embedded/stores/chatStore';
+import { installDomStubs } from './domStubs';
+
+// happy-dom gap stubs (ResizeObserver/IntersectionObserver/matchMedia/scrollIntoView).
+// No-ops when run under the node env (pure-function tests): the installer guards
+// on `window`/`Element` existence.
+installDomStubs();
 
 beforeAll(() => {
   mswServer.listen({ onUnhandledRequest: 'error' });
 });
 
 afterEach(() => {
+  // Unmount any rendered component trees so `screen` queries never see stale
+  // DOM from a prior test (Testing Library auto-cleanup is not wired without
+  // `globals: true`). A no-op for pure-function tests that render nothing.
+  cleanup();
   mswServer.resetHandlers();
   resetMswState();
   useChatStore.getState().reset();
