@@ -1,0 +1,114 @@
+name: Test (Vitest gate + E2E)
+
+# Test Phase D CI: a fast, REQUIRED Vitest+typecheck+build gate, plus a separate
+# Playwright E2E + axe job that boots the real `dr visualize` server.
+#
+# Separation mirrors the local setup:
+#   - `npm test`        → Vitest only (tests/unit, tests/integration, tests/components).
+#                         Playwright specs under tests/e2e are EXCLUDED by vitest.config.
+#   - `npm run test:e2e`→ Playwright only (testDir = tests/e2e), against the BUILT bundle
+#                         served by `dr visualize` (Playwright's own webServer boots it).
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  # ── REQUIRED gate ───────────────────────────────────────────────────────────
+  # Fast, no external services. Vitest must stay green (262/262), the test files
+  # must type-check (tsconfig.test.json includes tests/), and the production
+  # bundle must build.
+  vitest:
+    name: Vitest + typecheck + build (required gate)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        # --legacy-peer-deps: React 19 vs deps that still declare React 18 peers.
+        run: npm ci --legacy-peer-deps
+
+      - name: Type check (src)
+        run: npx tsc --noEmit
+
+      - name: Type check (tests)
+        run: npm run test:types
+
+      - name: Unit / integration / component tests (Vitest)
+        run: npm test
+        timeout-minutes: 10
+
+      - name: Build production bundle
+        run: npm run build
+        timeout-minutes: 10
+
+  # ── E2E + a11y (non-blocking) ───────────────────────────────────────────────
+  # Boots the real `dr visualize` server (Playwright webServer builds + serves the
+  # bundle on :8099 against the repo's committed .dr model) and runs the E2E + axe
+  # suite. The chat spec is gated on `chat.status.sdk_available` and self-skips
+  # when no chat client is present in CI.
+  #
+  # ASSUMPTION / CAVEAT: the `dr` CLI is installed globally below via npm. If it is
+  # published from a PRIVATE registry, this `npm i -g @documentation-robotics/cli`
+  # step will fail without auth — which is why this whole job is `continue-on-error`
+  # (non-blocking). The Vitest job above is the hard required gate; flip this to
+  # blocking once the CLI install path in CI is confirmed (set a registry/token
+  # secret and remove `continue-on-error`).
+  e2e:
+    name: Playwright E2E + axe (non-blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: vitest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      # The viewer is served by the `dr` CLI; the E2E webServer runs
+      # `dr visualize`. Adjust the package name/registry to your distribution.
+      # Guarded so a private-registry failure does not crash the step graph.
+      - name: Install dr CLI (global)
+        id: install-dr
+        continue-on-error: true
+        run: |
+          npm i -g @documentation-robotics/cli || \
+          npm i -g documentation-robotics || \
+          echo "dr CLI install failed (likely a private package) — skipping E2E"
+          dr --version && echo "dr_available=true" >> "$GITHUB_OUTPUT" || \
+            echo "dr_available=false" >> "$GITHUB_OUTPUT"
+
+      - name: Install Playwright Chromium
+        if: steps.install-dr.outputs.dr_available == 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E + a11y (Playwright builds + boots dr visualize on :8099)
+        if: steps.install-dr.outputs.dr_available == 'true'
+        run: npm run test:e2e
+        env:
+          CI: 'true'
+
+      - name: Upload Playwright report
+        if: always() && steps.install-dr.outputs.dr_available == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

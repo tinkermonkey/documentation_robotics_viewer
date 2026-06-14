@@ -1,8 +1,10 @@
 # Testing Strategy (post-Heimdall rebuild)
 
-**Status:** Scoping. The previous Playwright + Storybook suite was removed during the Heimdall UX rebuild.
-This document scopes the new suite — framework, structure, priorities, and concrete first targets. Nothing
-here is implemented yet.
+**Status:** Implemented (June 2026). The previous Playwright + Storybook suite was removed during the Heimdall
+UX rebuild; this is the suite that replaced it. Delivered across Phases A–D: **262 Vitest tests**
+(`tests/unit` + `tests/integration` + `tests/components`) and **20 Playwright E2E tests** (`tests/e2e`,
+incl. axe a11y), with CI in `.github/workflows/test.yml`. This document is both the original scope and the
+as-built reference — the sections below describe what was built.
 
 ## Goals & philosophy
 
