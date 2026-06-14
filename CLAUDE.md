@@ -2,322 +2,214 @@
 
 ## Project Overview
 
-React-based visualization tool for multi-layer architecture documentation models using React Flow (@xyflow/react).
+React visualization tool for multi-layer architecture documentation models, built on the **Heimdall design
+system**. The app is both **served from** and **fed data by** the Documentation Robotics (`dr`) CLI — it is a
+thin, Heimdall-native front end over the CLI's REST + WebSocket API.
 
-**Tech Stack:** React 19 + TypeScript, @xyflow/react 12.9, Vite, Playwright 1.57, Flowbite React, Tailwind CSS v4, TanStack Router, Zustand 5
+**Tech Stack:** React 19 + TypeScript, `@tinkermonkey/heimdall-ui` (Heimdall design system, pinned from git),
+Vite 6, Tailwind CSS v4, TanStack Router + TanStack Query, Zustand 5.
 
-**Architecture Layers:** Motivation, Business, Security, Application, Technology, API, DataModel, UX, Navigation, APM
+**12 Architecture Layers:** Motivation, Business, Security, Application, Technology, API, Data Model,
+Data Store, UX, Navigation, APM, Testing.
+
+> **History:** The UX was fully rebuilt on Heimdall (June 2026), replacing the previous React Flow +
+> Flowbite + Storybook + Playwright stack. There is **no React Flow, Flowbite, Storybook, or Playwright**
+> in the codebase. The data/infrastructure layer (API client, WS/JSON-RPC, chat service, data stores,
+> types) was kept; the entire presentation layer is new and lives under `src/apps/embedded/ui` + `data`.
 
 ## Development Principles
 
 1. **Read first, always** - NEVER modify code you haven't read
-2. **Edit, don't create** - ALWAYS prefer editing existing files over creating new ones
-3. **Follow established patterns** - Look at similar implementations before starting
-4. **Use TypeScript strictly** - All files must be strongly typed
-5. **Test thoroughly** - Run `npm test` before completing tasks
-6. **Avoid over-engineering** - Only make requested changes, don't add unrequested features/comments/refactoring
+2. **Edit, don't create** - prefer editing existing files; follow the patterns already in `ui/` and `data/`
+3. **Compose Heimdall** - build screens from `@tinkermonkey/heimdall-ui` components + tokens, not from scratch
+4. **Use TypeScript strictly** - all files strongly typed; `npx tsc --noEmit` must stay clean
+5. **Verify live** - there is no automated test suite yet (being rebuilt); run the app and verify with
+   chrome-devtools / CDP (see Local Development)
+6. **Avoid over-engineering** - only make requested changes
 
 ## Component Organization
 
 ```
 src/
-├── core/                    # Reusable, framework-agnostic
-│   ├── nodes/              # Custom React Flow nodes (business/, motivation/, c4/)
-│   ├── edges/              # Custom React Flow edge types
-│   ├── components/         # GraphViewer, base UI (base/BaseInspectorPanel, BaseControlPanel, GraphViewSidebar)
-│   ├── layout/             # Layout engines (engines/, business/, verticalLayerLayout, edgeBundling)
-│   ├── services/           # Data transformation (nodeTransformer, dataLoader, yamlParser, etc.)
-│   ├── stores/             # Global state (modelStore, layerStore, elementStore, crossLayerStore, layoutPreferencesStore)
-│   ├── hooks/              # Shared hooks
-│   └── types/              # Core types (model.ts, reactflow.ts, shapes.ts, layers.ts)
-├── apps/embedded/          # Standalone embedded app
-│   ├── routes/             # TanStack Router route components
-│   ├── components/         # shared/, common/, businessLayer/, chat/
-│   ├── services/           # App-specific graph builders
-│   ├── stores/             # annotationStore, authStore, businessLayerStore, changesetStore, chatStore, connectionStore, floatingChatStore, viewPreferenceStore
-│   ├── hooks/, types/, utils/
-├── catalog/                # Storybook catalog (components/, fixtures/, providers/)
-└── theme/                  # Tailwind CSS theming
+├── apps/embedded/              # The application
+│   ├── main.tsx               # Boot: magic-link token + fetch interceptor + Heimdall css/fonts + RouterProvider
+│   ├── router.tsx             # TanStack hash router; RootShell runs the WS bootstrap; routes drive uiStore.view
+│   ├── AuthRoute.tsx          # Magic-link token capture
+│   ├── ui/                    # NEW Heimdall-based UX layer (presentation only)
+│   │   ├── AppShell.tsx       # 5-pane flex frame (topbar / nav rail / canvas / inspector / chat drawer / statusbar)
+│   │   ├── Topbar.tsx LeftRail.tsx NavTree.tsx StatusBar.tsx
+│   │   ├── Canvas.tsx Inspector.tsx               # Model + Schema views (branch on uiStore.view)
+│   │   ├── ChangesetCanvas.tsx ChangesetInspector.tsx
+│   │   ├── ChatDrawer.tsx ChatPanel.tsx chatAdapter.ts   # DrBot live chat
+│   │   ├── AnnotationsSection.tsx                 # Inspector annotations (Model elements)
+│   │   ├── uiStore.ts         # Zustand UI state: view/layer/selection/changeset/canvasDark/chatOpen/wide/expanded
+│   │   ├── domain.ts          # 12-layer slug→color/label map
+│   │   └── domain-and-nav.css # 12-domain swatch CSS + nav-item helpers (Heimdall's bundle lacks DR domains)
+│   ├── data/                  # Stateless hooks + transforms over the API (no UI)
+│   │   ├── useModel.ts useSpec.ts useChangesets.ts useAnnotations.ts   # React Query hooks
+│   │   ├── modelGraph.ts      # /api/model → GraphCanvas nodes/edges; dottedId() + dual-index link resolver
+│   │   ├── specGraph.ts       # /api/spec → node-type graph
+│   │   ├── relationships.ts   # in/out/cross-layer RelationshipLink derivation
+│   │   └── changesets.ts      # changeset op-row + diff helpers
+│   ├── services/              # KEPT infra: websocketClient, jsonRpcHandler, chatService, errorTracker, embeddedDataLoader, chatValidation
+│   ├── stores/                # KEPT data stores: annotationStore, authStore, changesetStore, chatStore, connectionStore
+│   ├── types/                 # chat, annotations, websocket, brands
+│   └── utils/                 # fetchInterceptor (auth header), etc.
+├── core/                      # Framework-agnostic, NO app/route deps
+│   ├── services/generatedApiClient.ts   # AUTO-GENERATED from docs/api-spec.yaml (npm run client:generate)
+│   ├── services/exceptionClassifier.ts
+│   ├── stores/                # modelStore, layerStore, elementStore, crossLayerStore
+│   └── types/                 # model.ts, layers.ts, api-client.ts (generated), exceptions.ts
+├── index.css                  # Tailwind v4 import + Heimdall css/fonts + domain swatch / nav helper CSS
+public/fonts/                  # Self-hosted Inter + JetBrains Mono woff2 (served at /fonts/...)
 ```
 
 **Architecture Rules:**
-- **Core**: NO route/store dependencies. Import only types and services
-- **App components**: Can use route context, embedded stores, app-specific hooks
-- **Services**: Stateless; accept data as parameters
-- **Stores**: Zustand only (NO React context). Separate stores by concern
-- **Types**: Colocate with features; export from `index.ts`
+- **`ui/`**: presentation only. Composes Heimdall components; reads/writes `uiStore` (Zustand). No data fetching
+  logic beyond calling `data/` hooks.
+- **`data/`**: stateless hooks + pure transforms over the REST API via TanStack Query. No JSX.
+- **`core/`**: NO route/store-from-app dependencies. Kept infrastructure and generated types only.
+- **Stores**: Zustand only (NO React context for state). Data stores in `stores/`; UI state in `ui/uiStore.ts`.
+- **Generated code**: never hand-edit `core/types/api-client.ts` or `core/services/generatedApiClient.ts` —
+  regenerate with `npm run client:generate` (runs in `npm run build`).
 
-## Styling Rules
+## Design System: Heimdall
 
-1. **ALWAYS use Tailwind utilities** - NO new CSS modules (except node inline styles)
-2. **ALWAYS use Flowbite components** - Card, Badge, Button, Modal, etc.
-3. **NEVER use dot notation** - `List.Item` -> `ListItem`
-4. **ALWAYS add dark mode variants** - `dark:bg-gray-800`, `dark:text-white`
-5. **ALWAYS add data-testid** - For E2E tests on app components
+Package `@tinkermonkey/heimdall-ui`, pinned to a git commit. Components imported from the package;
+`main.tsx` imports `@tinkermonkey/heimdall-ui/css` and `@tinkermonkey/heimdall-ui/fonts` once, after
+`./index.css`.
 
-## Embedded App Layout
+**Tokens** are CSS custom properties — **always consume tokens, never raw hex**:
+- Shell (always dark): `--shell-bg`, `--shell-surface`, `--shell-border`, `--shell-fg-1..4`
+- Canvas (light default, flips with `body.dark-canvas`): `--canvas-bg`, `--canvas-surface`, `--canvas-card`,
+  `--canvas-border`, `--canvas-fg-1..4`
+- Accent: `--accent-primary` = amber `#FBBF24` (Heimdall's default; matches the design)
+- Status: `--status-ok/-warn/-error/-emerald/-cyan/-amber/-rose/-violet`
 
-All routes use `SharedLayout` with 3-column pattern:
-- **Left Sidebar** (collapsible): Layers, filters, navigation
-- **Main Content**: Graph/Details views with ViewToggle
-- **Right Sidebar** (collapsible): `GraphViewSidebar` with filterPanel, controlPanel, inspectorContent, annotationPanel props
+Use them as `rgb(var(--canvas-bg))` etc. so the **dark-canvas toggle** (`uiStore.toggleCanvasDark` →
+`body.classList.toggle('dark-canvas')`) flips every canvas region automatically.
 
-Section order: Inspector (if visible), Filters, Controls, Annotations (if provided).
+**Key Heimdall components in use:** `GraphCanvas` / `GraphNode` / `GraphEdge` / `GraphInspector`,
+`PageHeader`, `NavItem`, `Statusbar`, `SegmentedControl`, `ChatContainer` / `ChatMessage` (+ `ToolBlock` /
+`ThinkingBlock`) / `ChatComposer` / `ChatSuggestions` / `ChatMarkdownContent`, `DiffViewer` /
+`SideBySideDiff`, `StatTile` / `StatGrid`, `StatusBadge` / `Badge` / `Chip`, `Button`, `TextArea` /
+`TextInput`, `Select`, `Modal` / `ConfirmDialog` / `Toast`, `RowMenu`, `KVGrid`, `Icon`. (We hand-roll the
+5-pane `AppShell` and 3-level `NavTree` rather than using `ShellLayout`/`Sidebar`, which are single-canvas /
+2-level only.)
 
-## Generic Arrow Components
+**Domain colors (load-bearing):** the 12 DR layer colors are NOT in Heimdall's bundle. They live in
+`src/apps/embedded/ui/domain.ts` and are applied to graph node swatches via
+`.graph-node[data-domain="<slug>"] .graph-node__swatch { background: <hex> }` in `domain-and-nav.css`.
+Pass `domainColor` = the **layer slug** (e.g. `data-model`), not a hex.
 
-Use `<T extends unknown>` for generic arrow function components in JSX to avoid type inference issues.
+**Styling Rules:**
+1. Compose Heimdall components + tokens; Tailwind v4 utilities only for the custom shell layout.
+2. NEVER hardcode hex in canvas regions — use `rgb(var(--canvas-*))` so dark mode flips it.
+3. NEVER use dot notation — `List.Item` → `ListItem`.
+4. Add `data-testid` to interactive elements (for the future E2E suite).
 
-## Testing
+## Data / API (the DR CLI)
 
-### Commands
+The `dr visualize` server (default `:8080`) serves the built viewer AND the data API.
+
+**REST:**
+- `GET /health` → `{ status, version }` (no auth)
+- `GET /api/model` → `{ nodes:[{id(UUID), spec_node_id, type, layer_id, name, description, attributes,
+  source_reference, metadata}], links:[{id, source, target, type, source_layer_id?, target_layer_id?}] }`
+- `GET /api/layers/:name`, `GET /api/spec` (per-layer `nodeSchemas` + `relationshipSchemas`),
+  `GET /api/changesets`, `GET /api/changesets/:id`
+- Annotations CRUD: `GET/POST /api/annotations`, `GET/PATCH/DELETE /api/annotations/:id`,
+  `GET/POST /api/annotations/:id/replies`
+
+**WebSocket (JSON-RPC 2.0, `ws://:8080/ws`):** notifications `model` / `changesets` / `annotations`; chat
+methods `chat.send` / `chat.status` / `chat.cancel` with streaming notifications `chat.response.chunk` /
+`chat.tool.invoke` / `chat.thinking` / `chat.usage` / `chat.error`.
+
+**Auth:** Bearer token. `main.tsx` captures a magic-link `?token`, stores it, and cleans the URL;
+`utils/fetchInterceptor` adds the `Authorization` header; the WS authenticates via `Sec-WebSocket-Protocol`.
+For local dev use `dr visualize --no-auth`.
+
+**Data-shape gotchas (see `data/modelGraph.ts`):**
+- `/api/model` `links[]` reference nodes by **UUID OR a canonical dotted id** `{layer}.{type}.{slug(name)}`.
+  `dottedId()` builds it and the index keys nodes under both so all links resolve. The dotted id is also the
+  **`elementId` the annotations API expects** (not the UUID).
+- `/api/spec` node types come from `Object.keys(nodeSchemas)` — `layer.node_types` can be empty.
+  `relationshipSchemas` carry `predicate`, `cardinality`, and cross-layer endpoints.
+
+## Views & Features
+
+- **Model view** — per-layer instance `GraphCanvas` (domain-colored nodes + intra-layer edges) +
+  `GraphInspector` (properties, in/out + cross-layer relationships with click-to-navigate). `GraphCanvas` is
+  keyed by `view:layerId` so it recenters on switch.
+- **Schema view** — per-layer node-type graph + inspector from `/api/spec` (attributes, predicate edges with
+  cardinality).
+- **Changesets view** — op-coded diff list (add=emerald / update=cyan / delete=rose) + `StatTile` inspector +
+  expandable `SideBySideDiff`.
+- **DrBot chat** — 372px drawer (persistent ≥1300px, overlay below) with live WS/JSON-RPC streaming;
+  `chatAdapter.ts` maps our `parts` union onto Heimdall's message/tool/thinking blocks.
+- **Annotations** — REST CRUD + replies in the inspector for Model elements.
+- **Light/dark canvas** toggle in the topbar.
+
+## Local Development & Verification
+
 ```bash
-npm test                          # Unit/integration tests (1170 tests, ~10s)
-npm test -- tests/unit/foo.spec.ts  # Single file
-npm run test:e2e                  # E2E with DR CLI server
-npm run test:e2e:headed           # E2E with visible browser
-npm run storybook:dev             # Start Storybook on port 61001
-npm run storybook:build           # Build Storybook for production
-npm run test:storybook            # Validate all stories (578 stories across 97 files)
-npm run test:storybook:a11y       # Generate accessibility report for all stories
+# Backend (API + WS): run from a project with a populated .dr model (this repo has one)
+dr visualize --no-auth --port 8080 --no-browser
+
+# Frontend (Vite :3001, proxies /api,/health,/ws → :8080)
+npm run dev
+
+# Production build → dist/embedded/dr-viewer-bundle (served by: dr visualize --viewer-path <bundle>)
+npm run build
+
+# Type check (must be clean)
+npx tsc --noEmit
+
+# Regenerate the API client from docs/api-spec.yaml
+npm run client:generate
 ```
 
-### Test Organization
-```
-tests/
-├── unit/           # Services, utilities, nodes, hooks, layout engines, stores
-├── integration/    # Cross-component data flow
-├── stories/        # Story validation & error filters
-├── helpers/        # Test utilities and factories
-├── fixtures/       # Test data
-└── *.spec.ts       # E2E tests (embedded-*, c4-*, etc.)
-
-.storybook/
-├── main.cjs        # Storybook configuration
-├── preview.tsx     # Global decorators and providers
-├── manager.ts      # UI customization
-└── test-runner.ts  # Test runner configuration
-```
-
-### Key Test Patterns
-
-- **Framework**: All tests use Playwright test runner (`import { test, expect } from '@playwright/test'`)
-- **Unit tests**: Arrange-Act-Assert, one assertion per test, mock external deps
-- **E2E tests**: Wait for specific selectors (not timeouts), check console errors, validate actual rendering (node counts)
-- **Stories**: Create `.stories.tsx` alongside components using CSF3 format (`Meta<typeof Component>`, `StoryObj`)
-  - Import decorators from `@catalog/decorators/`
-  - Use `@storybook/react`
-  - Run `npm run storybook:dev` to preview stories
-- **Storybook Tests**: Use `test-runner.ts` for custom error filtering via `storyErrorFilters.ts`
-
-## Node Component Architecture
-
-All graph nodes use the unified `UnifiedNode` component driven by configuration.
-
-**Node Configuration:**
-- `NodeType` enum defines 20 node types across 10 architectural layers
-- `nodeConfig.json` maps NodeType → styling (colors, dimensions, layout mode, icon)
-- `typeMap` section maps element type strings → NodeType enum values
-- Single component handles all rendering variations
-
-**Node Features:**
-- Three layout modes: 'centered' (motivation), 'left' (business/C4), 'table' (data)
-- Changeset styling: add/update/delete operations with color overrides
-- Badge system: top-left, top-right, inline positions
-- Semantic zoom: minimal/standard/detailed detail levels
-- Field lists: per-field handles, tooltips, required indicators, alternating rows
-- RelationshipBadge: focus mode with inbound/outbound counts
-- Field visibility: graph-level and node-level toggles (graph overrides node)
-
-**Component Structure:**
-```
-src/core/nodes/
-├── NodeType.ts              # Enum definition (20 types)
-├── nodeConfig.json          # Styling configuration
-├── nodeConfig.types.ts      # TypeScript interfaces
-├── nodeConfigLoader.ts      # Config loader utility
-├── components/
-│   ├── UnifiedNode.tsx      # Main component
-│   ├── FieldList.tsx        # Field list rendering
-│   ├── FieldTooltip.tsx     # Tooltip via portal
-│   ├── RelationshipBadge.tsx # Focus mode badge
-│   └── BadgeRenderer.tsx    # Badge positioning
-└── LayerContainerNode.tsx   # Special case: background swimlanes
-```
-
-**Adding New Node Types:**
-1. Add NodeType enum value in `NodeType.ts`
-2. Add styling entry in `nodeConfig.json` `nodeStyles` section
-3. Add type mapping in `nodeConfig.json` `typeMap` section
-4. No code changes required
-
-**Field Visibility Store:**
-- Zustand store: `fieldVisibilityStore.ts` in `src/core/stores/`
-- Graph-level toggle: `setGraphLevelVisibility(hide: boolean)`
-- Node-level toggle: `setNodeLevelVisibility(nodeId: string, hide: boolean)`
-- Selector: `shouldHideFields(nodeId?: string)` (graph overrides node)
-
-**JSON Config Schema:**
-See [NODE_CONFIG_SCHEMA.md](documentation/NODE_CONFIG_SCHEMA.md) for complete schema documentation.
-
-## Cross-Layer Reference Resolution
-
-**Service:** `src/core/services/crossLayerReferenceExtractor.ts`
-
-The cross-layer reference extractor resolves references between elements across architectural layers using multiple matching strategies:
-
-1. **UUID References**: Direct element-to-element references via `x-archimate-ref`, `x-business-object-ref`, etc.
-2. **Array References**: Multiple element references via `x-supports-goals`, `x-fulfills-requirements`, etc.
-3. **Identifier References**: References via string identifiers (`operationId`, `route`, `resourceRef`, element `name`, etc.)
-4. **Definition Key References**: Schema element references via `definitionKey`
-
-**Identifier Collision Detection:**
-
-When building the identifier lookup table, if multiple elements across different layers share the same identifier value (e.g., both have `operationId: "getUser"`), the extractor:
-
-1. **Detects the collision** and tracks all conflicting elements
-2. **Logs a console warning** with collision details (identifier, all conflicting element IDs)
-3. **Still resolves references** using the last-found candidate (but logs warning)
-
-This prevents silent data loss where references could resolve to the wrong target without any indication of the problem. Use console warnings during development/testing to identify and fix identifier collisions in your data.
-
-**Example Collision Warning:**
-```
-[CrossLayerReferenceExtractor] Detected 1 identifier collision(s) during reference resolution. This may cause ambiguous references. Collisions:
-  - Identifier "getUser" maps to multiple elements: api-get-user, app-get-user
-```
-
-**Tests:** `tests/unit/services/crossLayerReferenceExtractor.spec.ts`
-
-## Key Files
-
-**Core Pipeline:** `nodeTransformer.ts` -> layout engines -> `GraphViewer.tsx`
-**Data Loading:** `dataLoader.ts` -> `yamlParser.ts` / `jsonSchemaParser.ts` -> `crossLayerReferenceExtractor.ts`
-**Layout Engines:** `src/core/layout/engines/` (Dagre, ELK, D3Force, Graphviz) + `src/core/layout/business/` (Hierarchical, Swimlane, Matrix, ForceDirected)
-**Base UI:** `src/core/components/base/` (BaseInspectorPanel, BaseControlPanel, GraphViewSidebar, RenderPropErrorBoundary)
-**Embedded Layout:** `EmbeddedLayout.tsx` -> `SharedLayout.tsx` -> route components
+**Verify changes live** (no test suite yet): open the app with the chrome-devtools MCP (or a headless Chrome
+over CDP) and check rendering, console, and network. Machine note: this Vite setup's watcher can serve stale
+transforms after edits — if a change doesn't appear, restart the dev server and `rm -rf node_modules/.vite`.
 
 ## Common Issues
 
 | Issue | Cause | Fix |
 |-------|-------|-----|
-| Node not rendering | NodeType not in config | Add entry to `nodeConfig.json` `nodeStyles` |
-| Node not rendering | Type mapping missing | Add mapping to `nodeConfig.json` `typeMap` |
-| Node wrong color | Changeset color override | Check `changesetOperation` in node data |
-| Fields not hiding | Graph-level override active | Check `fieldVisibilityStore.graphLevelHideFields` |
-| Layout wrong | Layout mode mismatch | Check `nodeConfig.json` layout value (centered/left/table) |
-| Dimension wrong | Config mismatch | Check `nodeConfig.json` dimensions section |
-| Edges not connecting | Handle ID mismatch | Verify handle IDs: `top`, `bottom`, `left`, `right`, `field-{id}-left/right` |
-| Tests failing | Fixture not updated | Update test fixtures to use `NodeType` enum and `UnifiedNodeData` |
+| Node swatch is gray | `domainColor` is a hex, or domain CSS missing | Pass the layer **slug**; ensure `domain-and-nav.css` has `.graph-node[data-domain="<slug>"]` |
+| Graph stays panned after switching layer | `GraphCanvas` auto-centers once | Key it by `view:layerId` |
+| Edges/relationships empty | Link endpoint id not resolved | Use `modelGraph` dual-index (UUID + dotted id) |
+| Annotation POST 400 | Wrong `elementId` | Use `dottedId(node)` (`layer.type.slug`), not the UUID |
+| Color doesn't flip in dark mode | Hardcoded hex | Use `rgb(var(--canvas-*))` |
+| Fonts fall back to system | woff2 404 (served as HTML) | Self-hosted under `public/fonts`; keep `@font-face` `/fonts/...` paths |
+| Stale UI after an edit | Vite transform cache | Restart dev server + `rm -rf node_modules/.vite` |
+
+## Testing
+
+The previous Playwright + Storybook suite was **removed** during the Heimdall rebuild. A new suite is being
+scoped — see [documentation/TESTING_STRATEGY.md](documentation/TESTING_STRATEGY.md). Until it lands, verify
+changes by running the app and driving it with chrome-devtools / CDP.
 
 ## Accessibility Standards (WCAG 2.1 AA)
 
-All components must meet **WCAG 2.1 Level AA** compliance. Automated testing via Storybook a11y addon in all stories.
+All components must meet **WCAG 2.1 Level AA**:
+- All interactive elements keyboard accessible; logical tab order; Escape closes overlays; visible focus.
+- Heimdall components ship accessible roles/labels — preserve them and pass meaningful `aria-*`/labels.
+- Maintain sufficient contrast in both light and dark canvas.
 
-### Keyboard Navigation
+## DR Slash Commands
 
-- All interactive elements must be keyboard accessible
-- Tab order must be logical (top-to-bottom, left-to-right)
-- Escape key closes modals/overlays
-- Focus must be visible on all focusable elements
+- `/dr-model <request>` - Add/update/query architecture model elements
+- `/dr-validate` - Validate DR model schema and references
+- `/dr-changeset <request>` - Manage isolated architecture changes
+- `/dr-init [name]` - Initialize new DR architecture model
+- `/dr-map <path>` - Generate a DR model from an existing codebase
+- `/dr-relate`, `/dr-design`, `/dr-sync`, `/dr-verify`, `/dr-info` - relationship wiring, design, sync, verify, overview
 
-### Testing
+## Notes for Agents
 
-Run accessibility tests locally:
-
-```bash
-npm run storybook:dev
-# Open Storybook → any story → Accessibility tab (bottom)
-
-npm run test:storybook:a11y
-# Runs automated axe-core tests against all stories
-```
-
-For details: `documentation/ACCESSIBILITY.md`
-
-
-## Documentation: DR CLI Integration
-
-**Status:** Complete (February 2026)
-
-### Documentation Files
-
-1. **Main README.md**
-   - DR CLI Server section with API endpoint details
-   - System architecture diagram
-   - Technology stack documentation
-   - Troubleshooting section
-
-2. **New Documentation Files**
-   - `documentation/DR_CLI_INTEGRATION_GUIDE.md` - Comprehensive integration guide (400+ lines)
-     - Architecture overview with system diagram
-     - Complete REST API reference with examples
-     - WebSocket JSON-RPC 2.0 protocol documentation
-     - Authentication implementation guide
-     - Development workflow documentation
-     - Detailed troubleshooting section
-   - `documentation/DR_CLI_TROUBLESHOOTING.md` - Standalone troubleshooting guide
-
-3. **Documentation Structure**
-   - Cross-referenced guides from README.md
-   - Linked troubleshooting docs from multiple entry points
-   - Maintained consistency across all documentation
-
-### Content Areas
-
-- **API Documentation**: Complete REST endpoint reference with request/response examples
-- **WebSocket Protocol**: Detailed JSON-RPC 2.0 message format documentation
-- **Authentication**: Token-based auth implementation and troubleshooting
-- **Development Workflow**: Step-by-step guide for local model development
-- **Troubleshooting**: Common issues with solutions
-
-### Documentation Navigation
-
-- **Getting Started**: See [README.md](README.md#getting-started)
-- **Setup Issues**: See [README.md](README.md#troubleshooting) (Quick Reference)
-- **Detailed API**: See [DR CLI Integration Guide](../documentation/DR_CLI_INTEGRATION_GUIDE.md)
-- **Complex Troubleshooting**: See [DR CLI Integration Guide - Troubleshooting](../documentation/DR_CLI_INTEGRATION_GUIDE.md#troubleshooting)
-
-### Related Documentation
-
-- **YAML_MODELS.md**: Model format specification
-- **WEBSOCKET_JSONRPC_IMPLEMENTATION.md**: WebSocket protocol details
-- **architecture-overview.md**: System design and components
-- **ACCESSIBILITY.md**: WCAG 2.1 AA compliance guidelines
-
----
-
-<!-- generated-agents-section -->
-
-## Specialized Sub-Agents
-
-**MANDATORY**: Before implementing, identify which specialist agent applies to your task and consult it via the `Task` tool. Do not proceed with implementation until you have consulted the relevant agent. These agents have deep project-specific context that general knowledge cannot replicate.
-
-| Agent | When to use |
-|---|---|
-| `documentation_robotics_viewer-architect` | Complex architectural reasoning needed for Core/App separation, 15+ node types, 4 layout engines, and MetaModel transformation pipeline |
-| `documentation_robotics_viewer-guardian` | Critical for preventing boundary violations (Core importing App), React Flow node pattern violations, missing accessibility, and Tailwind antipatterns |
-| `documentation_robotics_viewer-tester` | Project has comprehensive test suite requiring dedicated testing expertise for Playwright, Storybook, and axe-core accessibility validation |
-| `documentation_robotics_viewer-deployer` | Dockerfile |
-| `documentation_robotics_viewer-api-expert` | OpenAPI integration with automated TypeScript generation and DR CLI server WebSocket communication requires API-specific knowledge |
-| `documentation_robotics_viewer-flow-expert` | Critical for 15+ custom node types with complex requirements: dimension constants, 4 handles, inline styles, nodeTransformer registration, and 4 layout engine integration |
-| `documentation_robotics_viewer-state-expert` | All state managed via Zustand (NO Redux/Context), with 8+ stores (modelStore, layerStore, elementStore, etc |
-
-```
-Task(subagent_type="documentation_robotics_viewer-architect", prompt="<your question about Expert in layered architecture, React Flow patterns, and data pipeline design>")
-Task(subagent_type="documentation_robotics_viewer-guardian", prompt="<your question about Enforces architectural boundaries and catches antipatterns in code reviews>")
-```
-
-## Skills
-
-| Skill | What it does |
-|---|---|
-| `/documentation_robotics_viewer-architecture` | Display architectural overview and critical file locations |
-| `/documentation_robotics_viewer-test` | Run Playwright tests and Storybook validation |
-| `/documentation_robotics_viewer-build` | Run Vite build and check bundle size |
-| `/documentation_robotics_viewer-storybook` | Start Storybook server and list available stories |
-| `/documentation_robotics_viewer-api-sync` | Sync OpenAPI specs and generate TypeScript types |
-| `/documentation_robotics_viewer-patterns` | Show coding patterns for React Flow nodes, Zustand, and Tailwind |
-| `/documentation_robotics_viewer-deploy` | Build Docker image and run deployment checks |
-
-<!-- /generated-agents-section -->
+- The project-configured sub-agents and skills named `*-flow-expert`, `*-storybook`, `*-test` (Playwright),
+  and `*-patterns` (React Flow) target the **removed** stack and are stale pending update — do not follow
+  their React Flow / Flowbite / Storybook guidance.
+- When touching the data layer, mind the dotted-id resolution and the `/api/spec` shape above.
