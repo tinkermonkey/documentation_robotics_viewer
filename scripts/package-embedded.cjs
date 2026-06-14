@@ -108,18 +108,38 @@ function packageEmbedded() {
   const bundleAssetsDir = path.join(BUNDLE_DIR, 'assets');
   copyDirectory(ASSETS_DIR, bundleAssetsDir);
 
-  // Copy WASM to bundle root so it's served at /libavoid.wasm
-  log('2b. Copying libavoid.wasm...', colors.blue);
-  const wasmSource = path.join(DIST_DIR, 'libavoid.wasm');
-  if (fs.existsSync(wasmSource)) {
-    fs.copyFileSync(wasmSource, path.join(BUNDLE_DIR, 'libavoid.wasm'));
-  }
-
   // Copy HTML
   log('3. Copying HTML...', colors.blue);
   const htmlSource = path.join(PUBLIC_DIR, 'index-embedded.html');
   const htmlDest = path.join(BUNDLE_DIR, 'index.html');
   fs.copyFileSync(htmlSource, htmlDest);
+
+  // Copy self-hosted fonts. The @font-face rules with absolute `/fonts/...` URLs
+  // are already compiled into the bundle's main CSS (from the
+  // @tinkermonkey/heimdall-ui/fonts import), so only the woff2 files need to ship
+  // — the woff2 directories (copied from node_modules/@tinkermonkey/heimdall-ui/
+  // dist/fonts into public/fonts, emitted by Vite to dist/embedded/fonts) MUST be
+  // present in the bundle root. Without this the DR CLI serves the SPA index.html
+  // for every `/fonts/*.woff2` request and the browser fails to decode it ("OTS
+  // parsing error"), falling back to system fonts. The standalone fonts.css is
+  // redundant (nothing links it) so we skip it to avoid shipping a dead
+  // stylesheet. See public/fonts/.
+  log('3b. Copying fonts...', colors.blue);
+  const fontsSource = path.join(DIST_DIR, 'fonts');
+  const fontsDest = path.join(BUNDLE_DIR, 'fonts');
+  if (fs.existsSync(fontsSource)) {
+    for (const entry of fs.readdirSync(fontsSource, { withFileTypes: true })) {
+      // Skip the unused standalone fonts.css; copy only the woff2 subdirectories.
+      if (entry.isDirectory()) {
+        copyDirectory(
+          path.join(fontsSource, entry.name),
+          path.join(fontsDest, entry.name)
+        );
+      }
+    }
+  } else {
+    log('   Warning: dist/embedded/fonts not found — fonts will 404 in production.', colors.yellow);
+  }
 
   // Generate manifest
   log('4. Generating manifest...', colors.blue);
@@ -186,6 +206,31 @@ function generateManifest() {
     type: 'html'
   });
   manifest.totalSize += getFileSize(htmlPath);
+
+  // Add self-hosted font files (recursive: fonts/{inter,jetbrains-mono}/*.woff2).
+  const fontsRoot = path.join(BUNDLE_DIR, 'fonts');
+  if (fs.existsSync(fontsRoot)) {
+    const walk = (dir) => {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const abs = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          walk(abs);
+        } else {
+          const rel = path.relative(BUNDLE_DIR, abs).split(path.sep).join('/');
+          const size = getFileSize(abs);
+          manifest.files.push({
+            path: rel,
+            hash: getFileHash(abs).substring(0, 16),
+            size,
+            type: abs.endsWith('.woff2') ? 'font' :
+                  abs.endsWith('.css') ? 'stylesheet' : 'other'
+          });
+          manifest.totalSize += size;
+        }
+      }
+    };
+    walk(fontsRoot);
+  }
 
   // Sort files by size (largest first)
   manifest.files.sort((a, b) => b.size - a.size);

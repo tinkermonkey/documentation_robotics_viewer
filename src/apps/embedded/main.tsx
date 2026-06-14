@@ -1,13 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider } from '@tanstack/react-router';
-import { ThemeProvider } from 'flowbite-react';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { installFetchInterceptor } from './utils/fetchInterceptor';
+import { createApiQueryClient } from '../../core/services/generatedApiClient';
 import { router } from './router';
-import { customTheme } from '../../theme/customTheme';
-import { initializeDefaultEngines } from '@/core/layout/engines';
 import { useAuthStore } from './stores/authStore';
 import '../../index.css';
+import '@tinkermonkey/heimdall-ui/css';
+import '@tinkermonkey/heimdall-ui/fonts';
+// DR domain swatches + nav helpers — imported AFTER Heimdall CSS so they win.
+import './ui/domain-and-nav.css';
 
 // Handle token from magic link BEFORE router initializes
 // Magic link format: /?token=xyz#/model/graph
@@ -38,26 +41,12 @@ if (!rootElement) {
   throw new Error('Root element not found');
 }
 
-// Initialize layout engines before rendering React app
-async function initializeAndRender() {
-  console.log('[main] Initializing layout engines...');
+const queryClient = createApiQueryClient();
 
-  try {
-    await initializeDefaultEngines();
-    console.log('[main] Layout engines initialized successfully');
-  } catch (error) {
-    console.error('[main] Failed to initialize layout engines:', error);
-  }
-
-  // Render React app after engines are initialized
-  ReactDOM.createRoot(rootElement!).render(
-    <React.StrictMode>
-      <ThemeProvider theme={customTheme as any}>
-        <RouterProvider router={router} />
-      </ThemeProvider>
-    </React.StrictMode>
-  );
-}
-
-// Start initialization and rendering
-initializeAndRender();
+ReactDOM.createRoot(rootElement).render(
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  </React.StrictMode>
+);

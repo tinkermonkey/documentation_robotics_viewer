@@ -105,6 +105,23 @@ export class WebSocketClient implements WebSocketClientInterface {
       return;
     }
 
+    // Tear down any prior socket that is not OPEN (e.g. still CONNECTING) before
+    // creating a new one. React StrictMode double-invokes the bootstrap effect
+    // (connect → cleanup → connect); a CONNECTING socket from the first connect
+    // would otherwise be orphaned here — `this.ws` gets overwritten below while
+    // the old socket keeps its `onmessage` binding, completes its handshake, and
+    // stays open. The server then broadcasts chat chunks to BOTH sockets,
+    // doubling streamed text. Detach + close the old socket so exactly one
+    // connection ever delivers messages.
+    if (this.ws) {
+      this.ws.onopen = null;
+      this.ws.onmessage = null;
+      this.ws.onerror = null;
+      this.ws.onclose = null;
+      this.ws.close();
+      this.ws = null;
+    }
+
     this.isIntentionallyClosed = false;
 
     // Only log connection attempts during detection phase
@@ -211,7 +228,21 @@ export class WebSocketClient implements WebSocketClientInterface {
     this.stopHeartbeat();
     this.cancelReconnect();
 
+    if (this.connectionTimeout) {
+      clearTimeout(this.connectionTimeout);
+      this.connectionTimeout = null;
+    }
+
     if (this.ws) {
+      // Detach handlers BEFORE closing so a socket that is still CONNECTING
+      // (e.g. when React StrictMode double-invokes the bootstrap effect:
+      // connect → disconnect → connect) can never fire `handleMessage` after we
+      // orphan it. Without this, the orphaned socket stays connected and the
+      // server broadcasts chat chunks to it too, doubling streamed text.
+      this.ws.onopen = null;
+      this.ws.onmessage = null;
+      this.ws.onerror = null;
+      this.ws.onclose = null;
       this.ws.close();
       this.ws = null;
     }
@@ -382,8 +413,14 @@ export class WebSocketClient implements WebSocketClientInterface {
       // Emit event for this message type
       this.emit(messageType, message);
 
-      // Also emit a generic 'message' event
-      this.emit('message', message);
+      // Also emit a generic 'message' event — but only when the message type is
+      // not already 'message' (e.g. typed app frames). JSON-RPC notifications and
+      // responses have no `type`, so `messageType` defaults to 'message' above;
+      // emitting it again here would dispatch every JSON-RPC frame to the generic
+      // 'message' listener twice (doubling streamed chat chunks).
+      if (messageType !== 'message') {
+        this.emit('message', message);
+      }
     } catch (error) {
       logError(
         ERROR_IDS.WS_MESSAGE_PARSE_FAILED,
