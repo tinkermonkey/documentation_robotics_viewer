@@ -1,5 +1,5 @@
 {
-  "specVersion": "0.8.3",
+  "specVersion": "0.8.4",
   "layer": {
     "id": "data-store",
     "number": 8,
@@ -1135,6 +1135,17 @@
       "source_spec_node_id": "data-store.collection",
       "source_layer": "data-store",
       "destination_spec_node_id": "application.applicationcomponent",
+      "destination_layer": "application",
+      "predicate": "serves",
+      "cardinality": "many-to-many",
+      "strength": "medium",
+      "required": false
+    },
+    "data-store.collection.serves.application.applicationservice": {
+      "id": "data-store.collection.serves.application.applicationservice",
+      "source_spec_node_id": "data-store.collection",
+      "source_layer": "data-store",
+      "destination_spec_node_id": "application.applicationservice",
       "destination_layer": "application",
       "predicate": "serves",
       "cardinality": "many-to-many",

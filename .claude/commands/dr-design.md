@@ -33,6 +33,12 @@ Given a natural language description of a proposed change, generate all implied 
 
 ## Instructions for Claude Code
 
+> **GLOBAL RULE — source_reference on every element:**
+> Every `dr add` call in this command MUST include `--source-provenance inferred`.
+> Omitting it leaves `source_reference` unset, which produces one `dr validate` warning
+> per element — permanently, until manually fixed. There are no exceptions.
+> Correct form: `dr add <layer> <type> "<name>" --description "..." --source-provenance inferred`
+
 ### Step 1: Validate Prerequisites
 
 Check that a DR model exists:
@@ -75,6 +81,14 @@ dr search "<key terms from the feature description>"
 
 This prevents proposing elements that already exist and enables proposing relationships to existing elements.
 
+**Duplicate guard:** Before staging any element in Step 6, verify it does not already exist:
+
+```bash
+dr show <proposed-element-id> 2>/dev/null && echo "EXISTS" || echo "NEW"
+```
+
+If the element already exists, skip the `dr add` call and note it in the design summary as "already modeled." Do not attempt to re-add it.
+
 ### Step 4: Build the Impact Map
 
 For each affected layer, determine:
@@ -116,12 +130,21 @@ dr changeset activate design-real-time-order-tracking
 
 ### Step 6: Stage Elements with Reasoning Annotations
 
-With the changeset active, add each element in the prescribed layer order (motivation first, then down). All `dr add` commands auto-stage to the active changeset. Include reasoning in the description:
+With the changeset active, add each element in the prescribed layer order (motivation first, then down). All `dr add` commands auto-stage to the active changeset. Include reasoning in the description.
+
+**REQUIRED — no exceptions:** Every `dr add` call MUST end with `--source-provenance inferred`.
+This is non-negotiable. Elements staged without it will produce permanent `dr validate` warnings.
+No `--source-file` is needed for design-generated elements — provenance alone is sufficient.
 
 ```bash
+# CORRECT — always end dr add calls with --source-provenance inferred
 dr add motivation goal "Real Time Order Visibility" \
   --description "Customers can see live order status updates without refreshing. Drives the new tracking feature." \
-  --source-provenance manual
+  --source-provenance inferred
+
+# WRONG — missing --source-provenance causes a validate warning for this element forever
+dr add motivation goal "Real Time Order Visibility" \
+  --description "Customers can see live order status updates without refreshing."
 ```
 
 Show each staged element to the user as it's created with its reasoning:
@@ -267,6 +290,25 @@ Design saved as changeset: design-real-time-order-tracking
 Resume with: /dr-changeset preview design-real-time-order-tracking
 Commit when ready: dr changeset commit design-real-time-order-tracking
 ```
+
+### Step 10: Wire Cross-Layer Relationships
+
+After committing, the new elements exist in the model but are not yet connected to existing elements — they will show up as orphans in `dr audit`. Offer to run a relate pass.
+
+Substitute `<N>` with the actual committed count from `dr changeset commit`'s output and `<layers>` with the layers touched by this design:
+
+```
+Design committed. <N> new elements are now in the model.
+
+These elements are not yet connected to existing architectural elements.
+Run /dr-relate to wire cross-layer relationships (recommended), or skip if
+you plan to add relationships manually.
+
+[r] Run /dr-relate now for the new elements
+[s] Skip — I'll wire relationships later
+```
+
+If the user chooses to relate, invoke `/dr-relate` with the scope narrowed to the `<layers>` touched by this design.
 
 ## Design Principles
 

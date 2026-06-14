@@ -1,5 +1,5 @@
 {
-  "specVersion": "0.8.3",
+  "specVersion": "0.8.4",
   "layer": {
     "id": "api",
     "number": 6,
@@ -668,6 +668,25 @@
             },
             "deprecated": {
               "type": "boolean"
+            },
+            "http_method": {
+              "type": "string",
+              "description": "HTTP method for this operation",
+              "enum": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH",
+                "HEAD",
+                "OPTIONS",
+                "TRACE"
+              ]
+            },
+            "http_path": {
+              "type": "string",
+              "description": "URL path template for this operation (e.g. '/api/taxonomies/{id}')",
+              "pattern": "^/"
             }
           },
           "required": ["operationId", "summary", "tags"],

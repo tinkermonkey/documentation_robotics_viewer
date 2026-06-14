@@ -146,22 +146,9 @@ Recipe Extraction Complete!
 [layer list with element counts and status]
 
 Total: N elements across M layers
-
-Final validation:
-  dr validate --strict
-
-Connectivity:
-  Run: dr validate --orphans
-  This shows elements still needing relationships, grouped by layer with
-  suggested predicates. Orphans remaining after /dr-map are best handled
-  by running /dr-relate --orphans rather than a full /dr-relate pass.
-
-Next steps:
-  - Review flagged low-confidence elements
-  - Use /dr-model to fill gaps manually
-  - Use /dr-sync when code changes arrive
-  - Use /dr-design to speculate on new features
 ```
+
+Proceed immediately to Steps 6–6c (validation → connectivity → code alignment → synthesis). Do not prompt the user for next steps here — the completion protocol handles that.
 
 ---
 
@@ -255,18 +242,112 @@ This will take approximately 2-3 minutes.
 Proceed with extraction?
 ```
 
+### Check Analyzer Availability
+
+The extraction workflow can consult the dr-analyzer if one is installed and active.
+
+**Check analyzer status:**
+
+Run the following command and save the result (it will guide the extraction agent):
+
+```bash
+dr analyzer status --json 2>/dev/null
+```
+
+**If analyzer is active and indexed:**
+
+Fetch all three pre-briefs to temporary files:
+
+```bash
+dr analyzer endpoints --json > /tmp/dr-analyzer-endpoints.json 2>/dev/null
+dr analyzer services --json --layer application > /tmp/dr-analyzer-services.json 2>/dev/null
+dr analyzer datastores --json > /tmp/dr-analyzer-datastores.json 2>/dev/null
+```
+
+Inform user:
+
+```
+✓ Analyzer is active and indexed
+  → Endpoints summary saved for extraction
+  → Services summary saved for extraction
+  → Datastores summary saved for extraction
+  → Extraction will cross-reference these for high-confidence mappings
+```
+
+**If analyzer is installed but not indexed:**
+
+Show:
+
+```
+⚠ Analyzer is installed but has not indexed the codebase yet.
+
+Option 1: Index the codebase now (recommended for better extraction)
+  Run: dr analyzer index
+
+Option 2: Continue without analyzer (uses code inspection only)
+  Proceed with /dr-map
+```
+
+Ask user: "Would you like to run `dr analyzer index` now? (Y/n)"
+
+If yes: Run `dr analyzer index` and proceed to fetch pre-briefs (as above).
+If no: Continue to Step 4 without pre-briefs (pre-brief files will be marked 'not available').
+
+**If no analyzer is installed:**
+
+Show once:
+
+```
+ℹ Extraction will use code inspection only.
+
+Tip: Installing an analyzer like codebase-memory-mcp would add graph-based evidence
+for more confident mappings. See `dr analyzer discover` for setup options.
+```
+
+Continue to Step 4 (no blocking).
+
+### Step 3b: Capture Baseline Element Counts
+
+**Before launching any extraction**, record the current element count per layer. This is the authoritative "before" snapshot — do this now, not inside the extraction agent, to avoid counting elements added mid-execution.
+
+```bash
+dr list --json 2>/dev/null | jq -r 'group_by(.layer) | map("\(.[0].layer): \(length)") | .[]'
+```
+
+Store the output as `BASELINE_COUNTS`. Pass it verbatim into the extraction agent's prompt so the final summary report can display accurate Before / After / Net-new columns.
+
+---
+
 ### Step 4: Launch Extraction Agent
 
 Use the Task tool to launch the specialized extraction agent:
 
 ````python
 Task(
-    subagent_type="dr-extractor",
+    subagent_type="dr-architect",
     prompt=f"""Extract Documentation Robotics model from codebase.
 
 **Source Path:** {path}
 **Target Layers:** {layers}
 **Technology:** {technology}
+**Baseline Element Counts (captured before extraction):** {baseline_counts}
+
+**Analyzer Pre-Brief (if available):**
+
+If the analyzer was active during Step 3, the following files contain pre-analysis summaries:
+- Endpoints: /tmp/dr-analyzer-endpoints.json (if file exists, use it; otherwise 'not available')
+- Services: /tmp/dr-analyzer-services.json (if file exists, use it; otherwise 'not available')
+- Datastores: /tmp/dr-analyzer-datastores.json (if file exists, use it; otherwise 'not available')
+
+**How to use the pre-briefs:**
+
+1. **Endpoints Checklist (High Confidence):** Treat the endpoints summary as an authoritative checklist for the API layer. Each candidate endpoint in the brief must either:
+   - Produce a corresponding `api.operation` element you create, OR
+   - Include a documented rejection reason if it should be skipped (e.g., "internal utility, not a user-facing operation")
+
+2. **Services and Datastores (Suggestions):** Use the services and datastores summaries as suggestions, but rely on code inspection as your primary signal. Verify each candidate against actual code before creating elements.
+
+3. **Source Preservation:** For all elements you create from analyzer pre-briefs, **preserve the exact `source_file` and `source_symbol` values** from the brief in your `dr add` commands. Use `source_start_line` as navigational context to locate the correct part of the file, but do not pass it as a CLI flag (no `--source-start-line` parameter exists). These source file and symbol fields are mandatory for traceability.
 
 **Your Task:**
 1. Analyze the codebase structure
@@ -402,30 +483,32 @@ Recommendations:
   """
   )
 
-```
+````
 
 ### Step 5: Process Agent Results
 
-When the agent completes, parse and display the report:
+When the agent completes, read the current element counts (the "after" state) and display the report. Use `BASELINE_COUNTS` (captured in Step 3b) for the Before column — do NOT re-derive it from within the agent's output, which may reflect an intermediate state.
+
+```bash
+dr list --json 2>/dev/null | jq -r 'group_by(.layer) | map("\(.[0].layer): \(length)") | .[]'
+````
 
 ```
 
 # Extraction Complete
 
-Created Elements:
-├─ Business Layer: 5 services
-├─ Application Layer: 8 services, 3 components
-├─ API Layer: 35 operations
-└─ Data Model Layer: 12 schemas
+Created Elements (Before → After, Net-new):
+├─ Business Layer:      N → M  (+X services)
+├─ Application Layer:   N → M  (+X services, +Y components)
+├─ API Layer:           N → M  (+X operations)
+└─ Data Model Layer:    N → M  (+X schemas)
 
 Cross-Layer References:
 ✓ 8 realizes references (app → business)
 ✓ 35 exposes references (app → api)
 ✓ 12 stores references (data-store → data model)
 
-Connectivity Check:
-  Run: dr validate --orphans
-  [show orphan count and top 3 layers with most orphans]
+Connectivity: [orphan count reported automatically in Step 6b]
 
 Validation: ⚠️ 2 warnings, 0 errors
 
@@ -442,83 +525,140 @@ Files Modified:
 - documentation-robotics/model/06_api/operations.yaml (25 elements)
 - documentation-robotics/model/07_data-model/schemas.yaml (12 elements)
 
-````
+```
 
-### Step 6: Validation & Review
+### Step 6: Schema Validation
 
-After extraction, run validation:
+Run strict schema validation:
 
 ```bash
 dr validate --strict
-````
+```
 
-Present results and ask user to review:
+**If there are schema errors:** Stop. Report them, fix them, and re-validate before proceeding. Do not move to Step 6b until errors are 0.
+
+**If only warnings:** Note them — they will appear in the Step 6c synthesis — and continue. Do not ask the user to address warnings now.
 
 ```
-Validation Results
-==================
-
-✓ Schema validation passed
-⚠ 2 semantic warnings:
-
-1. application.service.order-service
-   Warning: No security policy assigned
-   Recommendation: Add authentication
-
-2. application.service.payment-service
-   Warning: Critical service not monitored
-   Recommendation: Add APM metrics
-
-Next Steps:
-1. Review extracted elements:
-   - Check element descriptions
-   - Verify cross-layer references
-   - Adjust criticality levels
-
-2. Add missing metadata:
-   /dr-model Add security policies to services
-   /dr-model Add monitoring to critical services
-
-3. Enhance traceability:
-   /dr-model Link services to business goals
-
-Would you like me to address the warnings automatically?
+Schema Validation
+=================
+✓ 0 errors, 2 warnings
+  ⚠ application.service.order-service — no security policy assigned
+  ⚠ application.service.payment-service — critical service, no monitoring
 ```
+
+### Step 6b: Connectivity — Wire Orphans
+
+Check which extracted elements are not yet connected to the rest of the model:
+
+```bash
+dr validate --orphans
+```
+
+Parse the output. Report the count and layer breakdown:
+
+```
+Connectivity
+============
+8 orphaned elements (not yet wired):
+  api (5 orphans): 4 connectable, 1 dead-end
+  application (2 orphans): 2 connectable
+  business (1 orphan): 1 connectable
+```
+
+**If connectable orphans exist**, run the `/dr-relate --orphans` workflow inline immediately — do not ask the user first. Follow the `/dr-relate` instructions for orphan mode: work through connectable orphans layer by layer, skip dead-ends, re-validate at the end.
+
+After wiring, re-run `dr validate --orphans` and report the final state:
+
+```
+Connectivity (after wiring)
+===========================
+✓ 7 orphans wired
+  1 dead-end remaining: api.info.x (needs: api.contact, api.license)
+```
+
+**If no orphans:** Report "✓ All elements connected" and proceed.
+
+### Step 6c: Code Alignment (External Grounding)
+
+Check whether an analyzer is available — **regardless of whether it was used during extraction**:
+
+```bash
+dr analyzer status 2>/dev/null
+```
+
+**If an analyzer is available and indexed**, run a cross-model verification across all extracted layers:
+
+```bash
+dr analyzer verify --json 2>/dev/null
+```
+
+Parse the JSON output and present the three-bucket summary:
+
+```
+Code Alignment Assessment
+=========================
+Source: codebase-memory (indexed 6 minutes ago)
+
+✓ matched (in model + in code):         38 elements
+⚠ model-only (in model, not in code):    2 elements  ← review for drift
+? graph-only (in code, not in model):    7 elements  ← suspected gaps
+
+Gaps by layer:
+  api (5): POST /orders/bulk, DELETE /orders/{id}, GET /orders/export, ...
+  application (1): OrderBatchProcessor
+  data-store (1): order_audit_log table
+
+Run /dr-verify to review and resolve each gap interactively.
+```
+
+**If no analyzer is available:** Skip this step silently.
+
+### Step 6d: Completion Synthesis
+
+Produce a single unified summary that consolidates Steps 6–6c:
+
+```
+/dr-map Complete
+================
+Extracted:     74 elements across 9 layers
+Relationships: 142 wired  |  1 dead-end orphan remaining
+Code coverage: 38/45 confirmed by analyzer (84%)  |  7 gaps detected
+
+What needs attention:
+  ? 7 elements in code not yet in model → run /dr-verify to process
+  ! 1 dead-end orphan (api.info.x) → needs api.contact or api.license to wire
+  ⚠ 2 semantic warnings → held for enhancement step below
+```
+
+Omit the "Code coverage" line if no analyzer was available. Omit "What needs attention" if the model is fully clean.
 
 ### Step 7: Post-Extraction Enhancements
 
-Offer to enhance the extracted model:
+After the structural assessment above is complete, offer targeted enhancements based on what was found. Only offer an enhancement if the relevant signal was actually seen during extraction.
 
-**Option 1: Add Security**
-
-```
-I noticed several services without security policies.
-Would you like me to add authentication schemes?
-
-Options:
-- OAuth2 for external APIs
-- JWT for internal services
-- Basic auth for admin endpoints
-```
-
-**Option 2: Add Monitoring**
+**If critical or public services exist without security policies:**
 
 ```
-Critical services should have monitoring.
-Should I add standard APM metrics?
-
-- Availability (99.9% SLO)
-- Latency (P95 < 200ms)
-- Error rate (< 1%)
+⚠ 2 services lack security policies.
+Add authentication schemes now? (OAuth2 for public APIs, JWT for internal)
+[Y/N]
 ```
 
-**Option 3: Add Business Goals**
+**If critical services exist without APM coverage:**
 
 ```
-I extracted technical elements but couldn't infer business goals.
-Would you like to:
-- Manually add goals: /dr-model Add goals
-- Skip for now
+⚠ 1 critical service has no monitoring.
+Add standard APM metrics? (availability, latency P95, error rate)
+[Y/N]
+```
+
+**If motivation layer is empty or thin (< 3 elements):**
+
+```
+The motivation layer has few elements — business goals were hard to infer.
+Add goals manually with /dr-model, or skip for now?
+[M]anual  [S]kip
 ```
 
 ## Analysis Patterns by Technology

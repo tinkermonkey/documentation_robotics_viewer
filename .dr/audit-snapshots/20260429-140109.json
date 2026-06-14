@@ -1,0 +1,3048 @@
+{
+  "timestamp": "2026-04-29T14:01:09.954Z",
+  "model": {
+    "name": "Documentation Robotics Viewer",
+    "version": "0.1.0"
+  },
+  "coverage": [
+    {
+      "layer": "motivation",
+      "nodeTypeCount": 6,
+      "relationshipCount": 28,
+      "interLayerRelationshipCount": 58,
+      "isolatedNodeTypes": [],
+      "isolationPercentage": 0,
+      "availablePredicates": [
+        "supports",
+        "realizes",
+        "constrains",
+        "aggregates",
+        "specializes",
+        "associated-with",
+        "influence"
+      ],
+      "usedPredicates": [
+        "influence",
+        "associated-with",
+        "realizes",
+        "constrains",
+        "supports"
+      ],
+      "utilizationPercentage": 71.42857142857143,
+      "relationshipsPerNodeType": 4.666666666666667
+    },
+    {
+      "layer": "business",
+      "nodeTypeCount": 5,
+      "relationshipCount": 31,
+      "interLayerRelationshipCount": 92,
+      "isolatedNodeTypes": [],
+      "isolationPercentage": 0,
+      "availablePredicates": [
+        "realizes",
+        "delivers",
+        "governs",
+        "performs",
+        "provides",
+        "accesses",
+        "composes",
+        "aggregates",
+        "triggers",
+        "flows-to",
+        "assigned-to",
+        "serves",
+        "references",
+        "delivers-value",
+        "constrained-by"
+      ],
+      "usedPredicates": [
+        "realizes",
+        "flows-to",
+        "accesses",
+        "delivers",
+        "performs",
+        "composes"
+      ],
+      "utilizationPercentage": 40,
+      "relationshipsPerNodeType": 6.2
+    },
+    {
+      "layer": "security",
+      "nodeTypeCount": 9,
+      "relationshipCount": 19,
+      "interLayerRelationshipCount": 16,
+      "isolatedNodeTypes": [
+        "security.permission",
+        "security.secureresource"
+      ],
+      "isolationPercentage": 22.22222222222222,
+      "availablePredicates": [
+        "supports",
+        "realizes",
+        "fulfills",
+        "constrains",
+        "governs",
+        "provides",
+        "requires",
+        "protects",
+        "mitigates",
+        "accesses",
+        "uses",
+        "implements",
+        "composes",
+        "aggregates",
+        "triggers",
+        "monitors",
+        "specializes",
+        "assigned-to",
+        "associated-with",
+        "influence",
+        "references",
+        "depends-on",
+        "constrained-by",
+        "enforces-requirement",
+        "authenticates",
+        "authorizes",
+        "maps-to",
+        "validates"
+      ],
+      "usedPredicates": [
+        "aggregates",
+        "composes",
+        "governs",
+        "assigned-to",
+        "accesses",
+        "protects",
+        "constrained-by",
+        "authorizes",
+        "influence",
+        "supports"
+      ],
+      "utilizationPercentage": 35.714285714285715,
+      "relationshipsPerNodeType": 2.111111111111111
+    },
+    {
+      "layer": "application",
+      "nodeTypeCount": 5,
+      "relationshipCount": 35,
+      "interLayerRelationshipCount": 82,
+      "isolatedNodeTypes": [],
+      "isolationPercentage": 0,
+      "availablePredicates": [
+        "realizes",
+        "provides",
+        "requires",
+        "mitigates",
+        "accesses",
+        "uses",
+        "implements",
+        "composes",
+        "aggregates",
+        "triggers",
+        "flows-to",
+        "assigned-to",
+        "serves",
+        "references",
+        "depends-on",
+        "delivers-value",
+        "constrained-by"
+      ],
+      "usedPredicates": [
+        "realizes",
+        "uses",
+        "depends-on",
+        "delivers-value",
+        "flows-to",
+        "serves"
+      ],
+      "utilizationPercentage": 35.294117647058826,
+      "relationshipsPerNodeType": 7
+    },
+    {
+      "layer": "technology",
+      "nodeTypeCount": 7,
+      "relationshipCount": 33,
+      "interLayerRelationshipCount": 3,
+      "isolatedNodeTypes": [],
+      "isolationPercentage": 0,
+      "availablePredicates": [
+        "supports",
+        "realizes",
+        "performs",
+        "provides",
+        "consumes",
+        "mitigates",
+        "accesses",
+        "uses",
+        "implements",
+        "composes",
+        "aggregates",
+        "triggers",
+        "flows-to",
+        "assigned-to",
+        "associated-with",
+        "serves",
+        "depends-on"
+      ],
+      "usedPredicates": [
+        "depends-on",
+        "associated-with",
+        "flows-to",
+        "provides",
+        "aggregates",
+        "uses",
+        "composes",
+        "serves",
+        "assigned-to"
+      ],
+      "utilizationPercentage": 52.94117647058824,
+      "relationshipsPerNodeType": 4.714285714285714
+    },
+    {
+      "layer": "api",
+      "nodeTypeCount": 5,
+      "relationshipCount": 19,
+      "interLayerRelationshipCount": 29,
+      "isolatedNodeTypes": [],
+      "isolationPercentage": 0,
+      "availablePredicates": [
+        "realizes",
+        "delivers",
+        "governs",
+        "requires",
+        "uses",
+        "implements",
+        "composes",
+        "aggregates",
+        "triggers",
+        "specializes",
+        "associated-with",
+        "serves",
+        "references",
+        "depends-on",
+        "maps-to"
+      ],
+      "usedPredicates": [
+        "composes",
+        "uses",
+        "associated-with",
+        "requires",
+        "serves"
+      ],
+      "utilizationPercentage": 33.33333333333333,
+      "relationshipsPerNodeType": 3.8
+    },
+    {
+      "layer": "data-model",
+      "nodeTypeCount": 2,
+      "relationshipCount": 22,
+      "interLayerRelationshipCount": 18,
+      "isolatedNodeTypes": [],
+      "isolationPercentage": 0,
+      "availablePredicates": [
+        "realizes",
+        "requires",
+        "uses",
+        "composes",
+        "aggregates",
+        "specializes",
+        "serves",
+        "references",
+        "depends-on",
+        "maps-to"
+      ],
+      "usedPredicates": [
+        "specializes",
+        "composes"
+      ],
+      "utilizationPercentage": 20,
+      "relationshipsPerNodeType": 11
+    },
+    {
+      "layer": "data-store",
+      "nodeTypeCount": 2,
+      "relationshipCount": 9,
+      "interLayerRelationshipCount": 5,
+      "isolatedNodeTypes": [],
+      "isolationPercentage": 0,
+      "availablePredicates": [
+        "realizes",
+        "governs",
+        "requires",
+        "accesses",
+        "uses",
+        "implements",
+        "composes",
+        "aggregates",
+        "triggers",
+        "monitors",
+        "serves",
+        "references",
+        "depends-on",
+        "maps-to",
+        "derives-from",
+        "validates"
+      ],
+      "usedPredicates": [
+        "composes",
+        "references"
+      ],
+      "utilizationPercentage": 12.5,
+      "relationshipsPerNodeType": 4.5
+    },
+    {
+      "layer": "ux",
+      "nodeTypeCount": 7,
+      "relationshipCount": 19,
+      "interLayerRelationshipCount": 26,
+      "isolatedNodeTypes": [
+        "ux.librarysubview"
+      ],
+      "isolationPercentage": 14.285714285714285,
+      "availablePredicates": [
+        "realizes",
+        "governs",
+        "provides",
+        "requires",
+        "accesses",
+        "uses",
+        "implements",
+        "composes",
+        "aggregates",
+        "triggers",
+        "flows-to",
+        "specializes",
+        "associated-with",
+        "serves",
+        "references",
+        "depends-on",
+        "renders",
+        "binds-to",
+        "navigates-to",
+        "maps-to"
+      ],
+      "usedPredicates": [
+        "aggregates",
+        "composes",
+        "renders",
+        "uses",
+        "specializes"
+      ],
+      "utilizationPercentage": 25,
+      "relationshipsPerNodeType": 2.7142857142857144
+    },
+    {
+      "layer": "navigation",
+      "nodeTypeCount": 7,
+      "relationshipCount": 17,
+      "interLayerRelationshipCount": 7,
+      "isolatedNodeTypes": [],
+      "isolationPercentage": 0,
+      "availablePredicates": [
+        "realizes",
+        "constrains",
+        "governs",
+        "provides",
+        "consumes",
+        "requires",
+        "protects",
+        "accesses",
+        "uses",
+        "implements",
+        "composes",
+        "aggregates",
+        "triggers",
+        "flows-to",
+        "associated-with",
+        "serves",
+        "references",
+        "depends-on",
+        "navigates-to",
+        "maps-to"
+      ],
+      "usedPredicates": [
+        "navigates-to",
+        "protects",
+        "flows-to",
+        "requires",
+        "aggregates",
+        "references"
+      ],
+      "utilizationPercentage": 30,
+      "relationshipsPerNodeType": 2.4285714285714284
+    },
+    {
+      "layer": "apm",
+      "nodeTypeCount": 6,
+      "relationshipCount": 12,
+      "interLayerRelationshipCount": 5,
+      "isolatedNodeTypes": [],
+      "isolationPercentage": 0,
+      "availablePredicates": [
+        "realizes",
+        "accesses",
+        "composes",
+        "aggregates",
+        "triggers",
+        "flows-to",
+        "monitors",
+        "serves",
+        "references",
+        "depends-on",
+        "maps-to"
+      ],
+      "usedPredicates": [
+        "monitors",
+        "depends-on",
+        "serves",
+        "aggregates"
+      ],
+      "utilizationPercentage": 36.36363636363637,
+      "relationshipsPerNodeType": 2
+    },
+    {
+      "layer": "testing",
+      "nodeTypeCount": 6,
+      "relationshipCount": 14,
+      "interLayerRelationshipCount": 33,
+      "isolatedNodeTypes": [],
+      "isolationPercentage": 0,
+      "availablePredicates": [
+        "requires",
+        "accesses",
+        "composes",
+        "aggregates",
+        "triggers",
+        "flows-to",
+        "tests",
+        "serves",
+        "references",
+        "depends-on",
+        "supports-goals",
+        "fulfills-requirements",
+        "measures-outcome",
+        "governed-by-principles",
+        "constrained-by",
+        "maps-to",
+        "validates"
+      ],
+      "usedPredicates": [
+        "composes",
+        "aggregates",
+        "references",
+        "triggers",
+        "serves",
+        "flows-to"
+      ],
+      "utilizationPercentage": 35.294117647058826,
+      "relationshipsPerNodeType": 2.3333333333333335
+    }
+  ],
+  "duplicates": [
+    {
+      "relationships": [
+        "data-model.schemadefinition.element-id|specializes|data-model.schemadefinition.annotation-id",
+        "data-model.schemadefinition.element-id|composes|data-model.schemadefinition.annotation-id"
+      ],
+      "predicates": [
+        "specializes",
+        "composes"
+      ],
+      "sourceNodeType": "data-model.schemadefinition",
+      "destinationNodeType": "data-model.schemadefinition",
+      "reason": "Both predicates 'specializes' and 'composes' are in \"structural\" category between the same element pair",
+      "confidence": "medium",
+      "impactScore": 45,
+      "alignmentScore": 55
+    }
+  ],
+  "gaps": [
+    {
+      "sourceNodeType": "motivation.constraint",
+      "destinationNodeType": "motivation.goal",
+      "suggestedPredicate": "influence",
+      "reason": "No 'influence' relationship instances found between motivation.constraint and motivation.goal in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.constraint",
+      "destinationNodeType": "motivation.principle",
+      "suggestedPredicate": "influence",
+      "reason": "No 'influence' relationship instances found between motivation.constraint and motivation.principle in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.constraint",
+      "destinationNodeType": "motivation.constraint",
+      "suggestedPredicate": "specializes",
+      "reason": "No 'specializes' relationship instances found between motivation.constraint and motivation.constraint in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.driver",
+      "destinationNodeType": "motivation.constraint",
+      "suggestedPredicate": "associated-with",
+      "reason": "No 'associated-with' relationship instances found between motivation.driver and motivation.constraint in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.driver",
+      "destinationNodeType": "motivation.driver",
+      "suggestedPredicate": "influence",
+      "reason": "No 'influence' relationship instances found between motivation.driver and motivation.driver in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.driver",
+      "destinationNodeType": "motivation.principle",
+      "suggestedPredicate": "influence",
+      "reason": "No 'influence' relationship instances found between motivation.driver and motivation.principle in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.driver",
+      "destinationNodeType": "motivation.requirement",
+      "suggestedPredicate": "influence",
+      "reason": "No 'influence' relationship instances found between motivation.driver and motivation.requirement in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.goal",
+      "destinationNodeType": "motivation.goal",
+      "suggestedPredicate": "aggregates",
+      "reason": "No 'aggregates' relationship instances found between motivation.goal and motivation.goal in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.goal",
+      "destinationNodeType": "motivation.requirement",
+      "suggestedPredicate": "aggregates",
+      "reason": "No 'aggregates' relationship instances found between motivation.goal and motivation.requirement in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.goal",
+      "destinationNodeType": "motivation.constraint",
+      "suggestedPredicate": "associated-with",
+      "reason": "No 'associated-with' relationship instances found between motivation.goal and motivation.constraint in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.goal",
+      "destinationNodeType": "motivation.goal",
+      "suggestedPredicate": "influence",
+      "reason": "No 'influence' relationship instances found between motivation.goal and motivation.goal in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.goal",
+      "destinationNodeType": "motivation.principle",
+      "suggestedPredicate": "influence",
+      "reason": "No 'influence' relationship instances found between motivation.goal and motivation.principle in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.goal",
+      "destinationNodeType": "motivation.goal",
+      "suggestedPredicate": "realizes",
+      "reason": "No 'realizes' relationship instances found between motivation.goal and motivation.goal in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.goal",
+      "destinationNodeType": "motivation.goal",
+      "suggestedPredicate": "specializes",
+      "reason": "No 'specializes' relationship instances found between motivation.goal and motivation.goal in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.principle",
+      "destinationNodeType": "motivation.principle",
+      "suggestedPredicate": "influence",
+      "reason": "No 'influence' relationship instances found between motivation.principle and motivation.principle in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.requirement",
+      "destinationNodeType": "motivation.goal",
+      "suggestedPredicate": "aggregates",
+      "reason": "No 'aggregates' relationship instances found between motivation.requirement and motivation.goal in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.requirement",
+      "destinationNodeType": "motivation.requirement",
+      "suggestedPredicate": "aggregates",
+      "reason": "No 'aggregates' relationship instances found between motivation.requirement and motivation.requirement in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.requirement",
+      "destinationNodeType": "motivation.constraint",
+      "suggestedPredicate": "associated-with",
+      "reason": "No 'associated-with' relationship instances found between motivation.requirement and motivation.constraint in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.requirement",
+      "destinationNodeType": "motivation.driver",
+      "suggestedPredicate": "associated-with",
+      "reason": "No 'associated-with' relationship instances found between motivation.requirement and motivation.driver in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.requirement",
+      "destinationNodeType": "motivation.goal",
+      "suggestedPredicate": "associated-with",
+      "reason": "No 'associated-with' relationship instances found between motivation.requirement and motivation.goal in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.requirement",
+      "destinationNodeType": "motivation.stakeholder",
+      "suggestedPredicate": "associated-with",
+      "reason": "No 'associated-with' relationship instances found between motivation.requirement and motivation.stakeholder in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.requirement",
+      "destinationNodeType": "motivation.requirement",
+      "suggestedPredicate": "specializes",
+      "reason": "No 'specializes' relationship instances found between motivation.requirement and motivation.requirement in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.stakeholder",
+      "destinationNodeType": "motivation.goal",
+      "suggestedPredicate": "associated-with",
+      "reason": "No 'associated-with' relationship instances found between motivation.stakeholder and motivation.goal in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.stakeholder",
+      "destinationNodeType": "motivation.principle",
+      "suggestedPredicate": "associated-with",
+      "reason": "No 'associated-with' relationship instances found between motivation.stakeholder and motivation.principle in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.stakeholder",
+      "destinationNodeType": "motivation.stakeholder",
+      "suggestedPredicate": "associated-with",
+      "reason": "No 'associated-with' relationship instances found between motivation.stakeholder and motivation.stakeholder in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "motivation.stakeholder",
+      "destinationNodeType": "motivation.driver",
+      "suggestedPredicate": "influence",
+      "reason": "No 'influence' relationship instances found between motivation.stakeholder and motivation.driver in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "business.businessfunction",
+      "destinationNodeType": "business.businessfunction",
+      "suggestedPredicate": "composes",
+      "reason": "No 'composes' relationship instances found between business.businessfunction and business.businessfunction in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "business.businessfunction",
+      "destinationNodeType": "business.businessfunction",
+      "suggestedPredicate": "flows-to",
+      "reason": "No 'flows-to' relationship instances found between business.businessfunction and business.businessfunction in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "business.businessfunction",
+      "destinationNodeType": "business.businessrole",
+      "suggestedPredicate": "serves",
+      "reason": "No 'serves' relationship instances found between business.businessfunction and business.businessrole in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "business.businessprocess",
+      "destinationNodeType": "business.businessobject",
+      "suggestedPredicate": "delivers",
+      "reason": "No 'delivers' relationship instances found between business.businessprocess and business.businessobject in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "business.businessprocess",
+      "destinationNodeType": "business.businessfunction",
+      "suggestedPredicate": "triggers",
+      "reason": "No 'triggers' relationship instances found between business.businessprocess and business.businessfunction in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "business.businessprocess",
+      "destinationNodeType": "business.businessprocess",
+      "suggestedPredicate": "triggers",
+      "reason": "No 'triggers' relationship instances found between business.businessprocess and business.businessprocess in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "business.businessrole",
+      "destinationNodeType": "business.businessobject",
+      "suggestedPredicate": "accesses",
+      "reason": "No 'accesses' relationship instances found between business.businessrole and business.businessobject in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "business.businessrole",
+      "destinationNodeType": "business.businessfunction",
+      "suggestedPredicate": "assigned-to",
+      "reason": "No 'assigned-to' relationship instances found between business.businessrole and business.businessfunction in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "business.businessrole",
+      "destinationNodeType": "business.businessprocess",
+      "suggestedPredicate": "assigned-to",
+      "reason": "No 'assigned-to' relationship instances found between business.businessrole and business.businessprocess in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "business.businessrole",
+      "destinationNodeType": "business.businessrole",
+      "suggestedPredicate": "composes",
+      "reason": "No 'composes' relationship instances found between business.businessrole and business.businessrole in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "business.businessrole",
+      "destinationNodeType": "business.businessfunction",
+      "suggestedPredicate": "performs",
+      "reason": "No 'performs' relationship instances found between business.businessrole and business.businessfunction in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "business.businessservice",
+      "destinationNodeType": "business.businessprocess",
+      "suggestedPredicate": "realizes",
+      "reason": "No 'realizes' relationship instances found between business.businessservice and business.businessprocess in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "security.actor",
+      "destinationNodeType": "security.threat",
+      "suggestedPredicate": "associated-with",
+      "reason": "No 'associated-with' relationship instances found between security.actor and security.threat in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "security.actor",
+      "destinationNodeType": "security.authenticationconfig",
+      "suggestedPredicate": "requires",
+      "reason": "No 'requires' relationship instances found between security.actor and security.authenticationconfig in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "security.authenticationconfig",
+      "destinationNodeType": "security.actor",
+      "suggestedPredicate": "authenticates",
+      "reason": "No 'authenticates' relationship instances found between security.authenticationconfig and security.actor in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "security.role",
+      "destinationNodeType": "security.permission",
+      "suggestedPredicate": "aggregates",
+      "reason": "No 'aggregates' relationship instances found between security.role and security.permission in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "security.role",
+      "destinationNodeType": "security.permission",
+      "suggestedPredicate": "provides",
+      "reason": "No 'provides' relationship instances found between security.role and security.permission in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "security.role",
+      "destinationNodeType": "security.role",
+      "suggestedPredicate": "specializes",
+      "reason": "No 'specializes' relationship instances found between security.role and security.role in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "security.securitymodel",
+      "destinationNodeType": "security.authenticationconfig",
+      "suggestedPredicate": "aggregates",
+      "reason": "No 'aggregates' relationship instances found between security.securitymodel and security.authenticationconfig in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "security.securitymodel",
+      "destinationNodeType": "security.role",
+      "suggestedPredicate": "aggregates",
+      "reason": "No 'aggregates' relationship instances found between security.securitymodel and security.role in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "security.securitymodel",
+      "destinationNodeType": "security.threat",
+      "suggestedPredicate": "aggregates",
+      "reason": "No 'aggregates' relationship instances found between security.securitymodel and security.threat in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "security.securitymodel",
+      "destinationNodeType": "security.authenticationconfig",
+      "suggestedPredicate": "composes",
+      "reason": "No 'composes' relationship instances found between security.securitymodel and security.authenticationconfig in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "security.securitymodel",
+      "destinationNodeType": "security.securitypolicy",
+      "suggestedPredicate": "governs",
+      "reason": "No 'governs' relationship instances found between security.securitymodel and security.securitypolicy in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "security.securitymodel",
+      "destinationNodeType": "security.threat",
+      "suggestedPredicate": "manages",
+      "reason": "No 'manages' relationship instances found between security.securitymodel and security.threat in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "security.securitypolicy",
+      "destinationNodeType": "security.permission",
+      "suggestedPredicate": "constrains",
+      "reason": "No 'constrains' relationship instances found between security.securitypolicy and security.permission in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "security.threat",
+      "destinationNodeType": "security.secureresource",
+      "suggestedPredicate": "accesses",
+      "reason": "No 'accesses' relationship instances found between security.threat and security.secureresource in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "security.threat",
+      "destinationNodeType": "security.dataclassification",
+      "suggestedPredicate": "influence",
+      "reason": "No 'influence' relationship instances found between security.threat and security.dataclassification in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "application.applicationcomponent",
+      "destinationNodeType": "application.applicationfunction",
+      "suggestedPredicate": "assigned-to",
+      "reason": "No 'assigned-to' relationship instances found between application.applicationcomponent and application.applicationfunction in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "application.applicationcomponent",
+      "destinationNodeType": "application.applicationinterface",
+      "suggestedPredicate": "assigned-to",
+      "reason": "No 'assigned-to' relationship instances found between application.applicationcomponent and application.applicationinterface in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "application.applicationcomponent",
+      "destinationNodeType": "application.applicationfunction",
+      "suggestedPredicate": "composes",
+      "reason": "No 'composes' relationship instances found between application.applicationcomponent and application.applicationfunction in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "application.applicationcomponent",
+      "destinationNodeType": "application.applicationinterface",
+      "suggestedPredicate": "provides",
+      "reason": "No 'provides' relationship instances found between application.applicationcomponent and application.applicationinterface in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "application.applicationfunction",
+      "destinationNodeType": "application.applicationprocess",
+      "suggestedPredicate": "delivers-value",
+      "reason": "No 'delivers-value' relationship instances found between application.applicationfunction and application.applicationprocess in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "application.applicationfunction",
+      "destinationNodeType": "application.applicationfunction",
+      "suggestedPredicate": "flows-to",
+      "reason": "No 'flows-to' relationship instances found between application.applicationfunction and application.applicationfunction in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "application.applicationfunction",
+      "destinationNodeType": "application.applicationservice",
+      "suggestedPredicate": "realizes",
+      "reason": "No 'realizes' relationship instances found between application.applicationfunction and application.applicationservice in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "application.applicationinterface",
+      "destinationNodeType": "application.applicationcomponent",
+      "suggestedPredicate": "depends-on",
+      "reason": "No 'depends-on' relationship instances found between application.applicationinterface and application.applicationcomponent in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "application.applicationinterface",
+      "destinationNodeType": "application.applicationfunction",
+      "suggestedPredicate": "depends-on",
+      "reason": "No 'depends-on' relationship instances found between application.applicationinterface and application.applicationfunction in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "application.applicationprocess",
+      "destinationNodeType": "application.applicationservice",
+      "suggestedPredicate": "delivers-value",
+      "reason": "No 'delivers-value' relationship instances found between application.applicationprocess and application.applicationservice in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "application.applicationprocess",
+      "destinationNodeType": "application.applicationinterface",
+      "suggestedPredicate": "depends-on",
+      "reason": "No 'depends-on' relationship instances found between application.applicationprocess and application.applicationinterface in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "application.applicationservice",
+      "destinationNodeType": "application.applicationservice",
+      "suggestedPredicate": "flows-to",
+      "reason": "No 'flows-to' relationship instances found between application.applicationservice and application.applicationservice in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.artifact",
+      "destinationNodeType": "technology.artifact",
+      "suggestedPredicate": "aggregates",
+      "reason": "No 'aggregates' relationship instances found between technology.artifact and technology.artifact in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.artifact",
+      "destinationNodeType": "technology.artifact",
+      "suggestedPredicate": "composes",
+      "reason": "No 'composes' relationship instances found between technology.artifact and technology.artifact in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.artifact",
+      "destinationNodeType": "technology.artifact",
+      "suggestedPredicate": "depends-on",
+      "reason": "No 'depends-on' relationship instances found between technology.artifact and technology.artifact in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.artifact",
+      "destinationNodeType": "technology.technologyservice",
+      "suggestedPredicate": "realizes",
+      "reason": "No 'realizes' relationship instances found between technology.artifact and technology.technologyservice in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.node",
+      "destinationNodeType": "technology.artifact",
+      "suggestedPredicate": "composes",
+      "reason": "No 'composes' relationship instances found between technology.node and technology.artifact in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.node",
+      "destinationNodeType": "technology.technologyinterface",
+      "suggestedPredicate": "composes",
+      "reason": "No 'composes' relationship instances found between technology.node and technology.technologyinterface in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.node",
+      "destinationNodeType": "technology.technologyservice",
+      "suggestedPredicate": "realizes",
+      "reason": "No 'realizes' relationship instances found between technology.node and technology.technologyservice in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.path",
+      "destinationNodeType": "technology.technologyinterface",
+      "suggestedPredicate": "assigned-to",
+      "reason": "No 'assigned-to' relationship instances found between technology.path and technology.technologyinterface in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.path",
+      "destinationNodeType": "technology.path",
+      "suggestedPredicate": "composes",
+      "reason": "No 'composes' relationship instances found between technology.path and technology.path in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.path",
+      "destinationNodeType": "technology.technologyservice",
+      "suggestedPredicate": "flows-to",
+      "reason": "No 'flows-to' relationship instances found between technology.path and technology.technologyservice in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.path",
+      "destinationNodeType": "technology.technologyservice",
+      "suggestedPredicate": "realizes",
+      "reason": "No 'realizes' relationship instances found between technology.path and technology.technologyservice in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.systemsoftware",
+      "destinationNodeType": "technology.artifact",
+      "suggestedPredicate": "accesses",
+      "reason": "No 'accesses' relationship instances found between technology.systemsoftware and technology.artifact in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.systemsoftware",
+      "destinationNodeType": "technology.artifact",
+      "suggestedPredicate": "composes",
+      "reason": "No 'composes' relationship instances found between technology.systemsoftware and technology.artifact in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.systemsoftware",
+      "destinationNodeType": "technology.technologyinterface",
+      "suggestedPredicate": "provides",
+      "reason": "No 'provides' relationship instances found between technology.systemsoftware and technology.technologyinterface in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.systemsoftware",
+      "destinationNodeType": "technology.technologyservice",
+      "suggestedPredicate": "realizes",
+      "reason": "No 'realizes' relationship instances found between technology.systemsoftware and technology.technologyservice in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.technologyinterface",
+      "destinationNodeType": "technology.systemsoftware",
+      "suggestedPredicate": "assigned-to",
+      "reason": "No 'assigned-to' relationship instances found between technology.technologyinterface and technology.systemsoftware in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.technologyinterface",
+      "destinationNodeType": "technology.technologyservice",
+      "suggestedPredicate": "assigned-to",
+      "reason": "No 'assigned-to' relationship instances found between technology.technologyinterface and technology.technologyservice in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.technologyinterface",
+      "destinationNodeType": "technology.path",
+      "suggestedPredicate": "uses",
+      "reason": "No 'uses' relationship instances found between technology.technologyinterface and technology.path in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.technologyprocess",
+      "destinationNodeType": "technology.technologyprocess",
+      "suggestedPredicate": "composes",
+      "reason": "No 'composes' relationship instances found between technology.technologyprocess and technology.technologyprocess in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.technologyprocess",
+      "destinationNodeType": "technology.technologyservice",
+      "suggestedPredicate": "realizes",
+      "reason": "No 'realizes' relationship instances found between technology.technologyprocess and technology.technologyservice in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.technologyservice",
+      "destinationNodeType": "technology.artifact",
+      "suggestedPredicate": "consumes",
+      "reason": "No 'consumes' relationship instances found between technology.technologyservice and technology.artifact in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.technologyservice",
+      "destinationNodeType": "technology.technologyservice",
+      "suggestedPredicate": "flows-to",
+      "reason": "No 'flows-to' relationship instances found between technology.technologyservice and technology.technologyservice in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.technologyservice",
+      "destinationNodeType": "technology.technologyinterface",
+      "suggestedPredicate": "serves",
+      "reason": "No 'serves' relationship instances found between technology.technologyservice and technology.technologyinterface in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.technologyservice",
+      "destinationNodeType": "technology.technologyservice",
+      "suggestedPredicate": "serves",
+      "reason": "No 'serves' relationship instances found between technology.technologyservice and technology.technologyservice in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "technology.technologyservice",
+      "destinationNodeType": "technology.systemsoftware",
+      "suggestedPredicate": "uses",
+      "reason": "No 'uses' relationship instances found between technology.technologyservice and technology.systemsoftware in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "api.operation",
+      "destinationNodeType": "api.operation",
+      "suggestedPredicate": "references",
+      "reason": "No 'references' relationship instances found between api.operation and api.operation in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "api.pathitem",
+      "destinationNodeType": "api.pathitem",
+      "suggestedPredicate": "references",
+      "reason": "No 'references' relationship instances found between api.pathitem and api.pathitem in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "data-model.schemadefinition",
+      "destinationNodeType": "data-model.schemadefinition",
+      "suggestedPredicate": "references",
+      "reason": "No 'references' relationship instances found between data-model.schemadefinition and data-model.schemadefinition in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "data-store.collection",
+      "destinationNodeType": "data-store.collection",
+      "suggestedPredicate": "composes",
+      "reason": "No 'composes' relationship instances found between data-store.collection and data-store.collection in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "data-store.database",
+      "destinationNodeType": "data-store.database",
+      "suggestedPredicate": "federates",
+      "reason": "No 'federates' relationship instances found between data-store.database and data-store.database in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "data-store.database",
+      "destinationNodeType": "data-store.database",
+      "suggestedPredicate": "replicates",
+      "reason": "No 'replicates' relationship instances found between data-store.database and data-store.database in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "ux.librarycomponent",
+      "destinationNodeType": "ux.librarycomponent",
+      "suggestedPredicate": "composes",
+      "reason": "No 'composes' relationship instances found between ux.librarycomponent and ux.librarycomponent in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "ux.librarycomponent",
+      "destinationNodeType": "ux.librarycomponent",
+      "suggestedPredicate": "specializes",
+      "reason": "No 'specializes' relationship instances found between ux.librarycomponent and ux.librarycomponent in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "ux.subview",
+      "destinationNodeType": "ux.librarysubview",
+      "suggestedPredicate": "realizes",
+      "reason": "No 'realizes' relationship instances found between ux.subview and ux.librarysubview in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "navigation.breadcrumbconfig",
+      "destinationNodeType": "navigation.navigationgraph",
+      "suggestedPredicate": "associated-with",
+      "reason": "No 'associated-with' relationship instances found between navigation.breadcrumbconfig and navigation.navigationgraph in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "navigation.breadcrumbconfig",
+      "destinationNodeType": "navigation.navigationflow",
+      "suggestedPredicate": "tracks",
+      "reason": "No 'tracks' relationship instances found between navigation.breadcrumbconfig and navigation.navigationflow in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "navigation.flowstep",
+      "destinationNodeType": "navigation.route",
+      "suggestedPredicate": "realizes",
+      "reason": "No 'realizes' relationship instances found between navigation.flowstep and navigation.route in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "navigation.flowstep",
+      "destinationNodeType": "navigation.navigationguard",
+      "suggestedPredicate": "requires",
+      "reason": "No 'requires' relationship instances found between navigation.flowstep and navigation.navigationguard in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "navigation.flowstep",
+      "destinationNodeType": "navigation.navigationtransition",
+      "suggestedPredicate": "triggers",
+      "reason": "No 'triggers' relationship instances found between navigation.flowstep and navigation.navigationtransition in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "navigation.navigationflow",
+      "destinationNodeType": "navigation.flowstep",
+      "suggestedPredicate": "composes",
+      "reason": "No 'composes' relationship instances found between navigation.navigationflow and navigation.flowstep in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "navigation.navigationgraph",
+      "destinationNodeType": "navigation.breadcrumbconfig",
+      "suggestedPredicate": "aggregates",
+      "reason": "No 'aggregates' relationship instances found between navigation.navigationgraph and navigation.breadcrumbconfig in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "navigation.navigationgraph",
+      "destinationNodeType": "navigation.navigationflow",
+      "suggestedPredicate": "aggregates",
+      "reason": "No 'aggregates' relationship instances found between navigation.navigationgraph and navigation.navigationflow in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "navigation.navigationgraph",
+      "destinationNodeType": "navigation.navigationguard",
+      "suggestedPredicate": "aggregates",
+      "reason": "No 'aggregates' relationship instances found between navigation.navigationgraph and navigation.navigationguard in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "navigation.navigationgraph",
+      "destinationNodeType": "navigation.navigationtransition",
+      "suggestedPredicate": "aggregates",
+      "reason": "No 'aggregates' relationship instances found between navigation.navigationgraph and navigation.navigationtransition in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "navigation.navigationgraph",
+      "destinationNodeType": "navigation.navigationtransition",
+      "suggestedPredicate": "composes",
+      "reason": "No 'composes' relationship instances found between navigation.navigationgraph and navigation.navigationtransition in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "navigation.navigationgraph",
+      "destinationNodeType": "navigation.route",
+      "suggestedPredicate": "composes",
+      "reason": "No 'composes' relationship instances found between navigation.navigationgraph and navigation.route in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "navigation.navigationguard",
+      "destinationNodeType": "navigation.navigationtransition",
+      "suggestedPredicate": "constrains",
+      "reason": "No 'constrains' relationship instances found between navigation.navigationguard and navigation.navigationtransition in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "navigation.navigationguard",
+      "destinationNodeType": "navigation.navigationflow",
+      "suggestedPredicate": "intercepts",
+      "reason": "No 'intercepts' relationship instances found between navigation.navigationguard and navigation.navigationflow in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "navigation.route",
+      "destinationNodeType": "navigation.route",
+      "suggestedPredicate": "aggregates",
+      "reason": "No 'aggregates' relationship instances found between navigation.route and navigation.route in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "navigation.route",
+      "destinationNodeType": "navigation.navigationtransition",
+      "suggestedPredicate": "flows-to",
+      "reason": "No 'flows-to' relationship instances found between navigation.route and navigation.navigationtransition in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "navigation.route",
+      "destinationNodeType": "navigation.navigationtransition",
+      "suggestedPredicate": "triggers",
+      "reason": "No 'triggers' relationship instances found between navigation.route and navigation.navigationtransition in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "apm.instrumentationconfig",
+      "destinationNodeType": "apm.resource",
+      "suggestedPredicate": "serves",
+      "reason": "No 'serves' relationship instances found between apm.instrumentationconfig and apm.resource in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "apm.logconfiguration",
+      "destinationNodeType": "apm.resource",
+      "suggestedPredicate": "depends-on",
+      "reason": "No 'depends-on' relationship instances found between apm.logconfiguration and apm.resource in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "apm.metricinstrument",
+      "destinationNodeType": "apm.resource",
+      "suggestedPredicate": "depends-on",
+      "reason": "No 'depends-on' relationship instances found between apm.metricinstrument and apm.resource in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "testing.contextvariation",
+      "destinationNodeType": "testing.contextvariation",
+      "suggestedPredicate": "depends-on",
+      "reason": "No 'depends-on' relationship instances found between testing.contextvariation and testing.contextvariation in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "testing.coveragegap",
+      "destinationNodeType": "testing.coveragerequirement",
+      "suggestedPredicate": "references",
+      "reason": "No 'references' relationship instances found between testing.coveragegap and testing.coveragerequirement in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "testing.coveragerequirement",
+      "destinationNodeType": "testing.contextvariation",
+      "suggestedPredicate": "aggregates",
+      "reason": "No 'aggregates' relationship instances found between testing.coveragerequirement and testing.contextvariation in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "testing.coveragerequirement",
+      "destinationNodeType": "testing.contextvariation",
+      "suggestedPredicate": "depends-on",
+      "reason": "No 'depends-on' relationship instances found between testing.coveragerequirement and testing.contextvariation in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "testing.coveragerequirement",
+      "destinationNodeType": "testing.coveragerequirement",
+      "suggestedPredicate": "flows-to",
+      "reason": "No 'flows-to' relationship instances found between testing.coveragerequirement and testing.coveragerequirement in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "testing.coveragerequirement",
+      "destinationNodeType": "testing.coveragerequirement",
+      "suggestedPredicate": "references",
+      "reason": "No 'references' relationship instances found between testing.coveragerequirement and testing.coveragerequirement in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "testing.coveragerequirement",
+      "destinationNodeType": "testing.testcoveragetarget",
+      "suggestedPredicate": "references",
+      "reason": "No 'references' relationship instances found between testing.coveragerequirement and testing.testcoveragetarget in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "testing.coveragesummary",
+      "destinationNodeType": "testing.coveragerequirement",
+      "suggestedPredicate": "aggregates",
+      "reason": "No 'aggregates' relationship instances found between testing.coveragesummary and testing.coveragerequirement in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "testing.coveragesummary",
+      "destinationNodeType": "testing.testcoveragetarget",
+      "suggestedPredicate": "depends-on",
+      "reason": "No 'depends-on' relationship instances found between testing.coveragesummary and testing.testcoveragetarget in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "testing.coveragesummary",
+      "destinationNodeType": "testing.coveragegap",
+      "suggestedPredicate": "references",
+      "reason": "No 'references' relationship instances found between testing.coveragesummary and testing.coveragegap in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "testing.coveragesummary",
+      "destinationNodeType": "testing.testcoveragemodel",
+      "suggestedPredicate": "references",
+      "reason": "No 'references' relationship instances found between testing.coveragesummary and testing.testcoveragemodel in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "testing.coveragesummary",
+      "destinationNodeType": "testing.testcoveragemodel",
+      "suggestedPredicate": "serves",
+      "reason": "No 'serves' relationship instances found between testing.coveragesummary and testing.testcoveragemodel in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "testing.coveragesummary",
+      "destinationNodeType": "testing.coveragerequirement",
+      "suggestedPredicate": "validates",
+      "reason": "No 'validates' relationship instances found between testing.coveragesummary and testing.coveragerequirement in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "testing.testcoveragemodel",
+      "destinationNodeType": "testing.testcoveragetarget",
+      "suggestedPredicate": "aggregates",
+      "reason": "No 'aggregates' relationship instances found between testing.testcoveragemodel and testing.testcoveragetarget in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "testing.testcoveragemodel",
+      "destinationNodeType": "testing.coveragerequirement",
+      "suggestedPredicate": "composes",
+      "reason": "No 'composes' relationship instances found between testing.testcoveragemodel and testing.coveragerequirement in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "testing.testcoveragemodel",
+      "destinationNodeType": "testing.testcoveragetarget",
+      "suggestedPredicate": "composes",
+      "reason": "No 'composes' relationship instances found between testing.testcoveragemodel and testing.testcoveragetarget in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "testing.testcoveragetarget",
+      "destinationNodeType": "testing.contextvariation",
+      "suggestedPredicate": "aggregates",
+      "reason": "No 'aggregates' relationship instances found between testing.testcoveragetarget and testing.contextvariation in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "testing.testcoveragetarget",
+      "destinationNodeType": "testing.coveragerequirement",
+      "suggestedPredicate": "composes",
+      "reason": "No 'composes' relationship instances found between testing.testcoveragetarget and testing.coveragerequirement in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    },
+    {
+      "sourceNodeType": "testing.testcoveragetarget",
+      "destinationNodeType": "testing.testcoveragetarget",
+      "suggestedPredicate": "composes",
+      "reason": "No 'composes' relationship instances found between testing.testcoveragetarget and testing.testcoveragetarget in the model",
+      "priority": "medium",
+      "impactScore": 55,
+      "alignmentScore": 45
+    }
+  ],
+  "balance": [
+    {
+      "nodeType": "motivation.constraint",
+      "layer": "motivation",
+      "category": "reference",
+      "currentCount": 5,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 4 relationship instances from constraint or reviewing reference type classification"
+    },
+    {
+      "nodeType": "motivation.driver",
+      "layer": "motivation",
+      "category": "reference",
+      "currentCount": 3,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 2 relationship instances from driver or reviewing reference type classification"
+    },
+    {
+      "nodeType": "motivation.goal",
+      "layer": "motivation",
+      "category": "reference",
+      "currentCount": 5,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 4 relationship instances from goal or reviewing reference type classification"
+    },
+    {
+      "nodeType": "motivation.principle",
+      "layer": "motivation",
+      "category": "reference",
+      "currentCount": 5,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 4 relationship instances from principle or reviewing reference type classification"
+    },
+    {
+      "nodeType": "motivation.requirement",
+      "layer": "motivation",
+      "category": "reference",
+      "currentCount": 4,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 3 relationship instances from requirement or reviewing reference type classification"
+    },
+    {
+      "nodeType": "motivation.stakeholder",
+      "layer": "motivation",
+      "category": "reference",
+      "currentCount": 6,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 5 relationship instances from stakeholder or reviewing reference type classification"
+    },
+    {
+      "nodeType": "business.businessfunction",
+      "layer": "business",
+      "category": "behavioral",
+      "currentCount": 11,
+      "targetRange": [
+        3,
+        5
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 6 relationship instances from businessfunction or reviewing behavioral type classification"
+    },
+    {
+      "nodeType": "business.businessobject",
+      "layer": "business",
+      "category": "reference",
+      "currentCount": 2,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 1 relationship instance from businessobject or reviewing reference type classification"
+    },
+    {
+      "nodeType": "business.businessprocess",
+      "layer": "business",
+      "category": "behavioral",
+      "currentCount": 10,
+      "targetRange": [
+        3,
+        5
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 5 relationship instances from businessprocess or reviewing behavioral type classification"
+    },
+    {
+      "nodeType": "business.businessrole",
+      "layer": "business",
+      "category": "reference",
+      "currentCount": 2,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 1 relationship instance from businessrole or reviewing reference type classification"
+    },
+    {
+      "nodeType": "business.businessservice",
+      "layer": "business",
+      "category": "structural",
+      "currentCount": 6,
+      "targetRange": [
+        2,
+        4
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 2 relationship instances from businessservice or reviewing structural type classification"
+    },
+    {
+      "nodeType": "security.actor",
+      "layer": "security",
+      "category": "reference",
+      "currentCount": 4,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 3 relationship instances from actor or reviewing reference type classification"
+    },
+    {
+      "nodeType": "security.authenticationconfig",
+      "layer": "security",
+      "category": "reference",
+      "currentCount": 2,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 1 relationship instance from authenticationconfig or reviewing reference type classification"
+    },
+    {
+      "nodeType": "security.dataclassification",
+      "layer": "security",
+      "category": "reference",
+      "currentCount": 2,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 1 relationship instance from dataclassification or reviewing reference type classification"
+    },
+    {
+      "nodeType": "security.permission",
+      "layer": "security",
+      "category": "reference",
+      "currentCount": 0,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "security.role",
+      "layer": "security",
+      "category": "reference",
+      "currentCount": 3,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 2 relationship instances from role or reviewing reference type classification"
+    },
+    {
+      "nodeType": "security.secureresource",
+      "layer": "security",
+      "category": "reference",
+      "currentCount": 0,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "security.securitymodel",
+      "layer": "security",
+      "category": "reference",
+      "currentCount": 5,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 4 relationship instances from securitymodel or reviewing reference type classification"
+    },
+    {
+      "nodeType": "security.securitypolicy",
+      "layer": "security",
+      "category": "reference",
+      "currentCount": 1,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "security.threat",
+      "layer": "security",
+      "category": "reference",
+      "currentCount": 2,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 1 relationship instance from threat or reviewing reference type classification"
+    },
+    {
+      "nodeType": "application.applicationcomponent",
+      "layer": "application",
+      "category": "structural",
+      "currentCount": 6,
+      "targetRange": [
+        2,
+        4
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 2 relationship instances from applicationcomponent or reviewing structural type classification"
+    },
+    {
+      "nodeType": "application.applicationfunction",
+      "layer": "application",
+      "category": "behavioral",
+      "currentCount": 13,
+      "targetRange": [
+        3,
+        5
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 8 relationship instances from applicationfunction or reviewing behavioral type classification"
+    },
+    {
+      "nodeType": "application.applicationinterface",
+      "layer": "application",
+      "category": "structural",
+      "currentCount": 4,
+      "targetRange": [
+        2,
+        4
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "application.applicationprocess",
+      "layer": "application",
+      "category": "behavioral",
+      "currentCount": 5,
+      "targetRange": [
+        3,
+        5
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "application.applicationservice",
+      "layer": "application",
+      "category": "structural",
+      "currentCount": 7,
+      "targetRange": [
+        2,
+        4
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 3 relationship instances from applicationservice or reviewing structural type classification"
+    },
+    {
+      "nodeType": "technology.artifact",
+      "layer": "technology",
+      "category": "structural",
+      "currentCount": 6,
+      "targetRange": [
+        2,
+        4
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 2 relationship instances from artifact or reviewing structural type classification"
+    },
+    {
+      "nodeType": "technology.node",
+      "layer": "technology",
+      "category": "structural",
+      "currentCount": 1,
+      "targetRange": [
+        2,
+        4
+      ],
+      "status": "under",
+      "recommendation": "Add 1 relationship instance for node (structural type) to reach minimum target"
+    },
+    {
+      "nodeType": "technology.path",
+      "layer": "technology",
+      "category": "reference",
+      "currentCount": 1,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "technology.systemsoftware",
+      "layer": "technology",
+      "category": "reference",
+      "currentCount": 14,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 13 relationship instances from systemsoftware or reviewing reference type classification"
+    },
+    {
+      "nodeType": "technology.technologyinterface",
+      "layer": "technology",
+      "category": "structural",
+      "currentCount": 4,
+      "targetRange": [
+        2,
+        4
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "technology.technologyprocess",
+      "layer": "technology",
+      "category": "behavioral",
+      "currentCount": 2,
+      "targetRange": [
+        3,
+        5
+      ],
+      "status": "under",
+      "recommendation": "Add 1 relationship instance for technologyprocess (behavioral type) to reach minimum target"
+    },
+    {
+      "nodeType": "technology.technologyservice",
+      "layer": "technology",
+      "category": "structural",
+      "currentCount": 5,
+      "targetRange": [
+        2,
+        4
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 1 relationship instance from technologyservice or reviewing structural type classification"
+    },
+    {
+      "nodeType": "api.info",
+      "layer": "api",
+      "category": "reference",
+      "currentCount": 1,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "api.openapidocument",
+      "layer": "api",
+      "category": "reference",
+      "currentCount": 3,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 2 relationship instances from openapidocument or reviewing reference type classification"
+    },
+    {
+      "nodeType": "api.operation",
+      "layer": "api",
+      "category": "behavioral",
+      "currentCount": 5,
+      "targetRange": [
+        3,
+        5
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "api.pathitem",
+      "layer": "api",
+      "category": "reference",
+      "currentCount": 8,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 7 relationship instances from pathitem or reviewing reference type classification"
+    },
+    {
+      "nodeType": "api.securityscheme",
+      "layer": "api",
+      "category": "reference",
+      "currentCount": 2,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 1 relationship instance from securityscheme or reviewing reference type classification"
+    },
+    {
+      "nodeType": "data-model.objectschema",
+      "layer": "data-model",
+      "category": "reference",
+      "currentCount": 19,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 18 relationship instances from objectschema or reviewing reference type classification"
+    },
+    {
+      "nodeType": "data-model.schemadefinition",
+      "layer": "data-model",
+      "category": "reference",
+      "currentCount": 3,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 2 relationship instances from schemadefinition or reviewing reference type classification"
+    },
+    {
+      "nodeType": "data-store.collection",
+      "layer": "data-store",
+      "category": "reference",
+      "currentCount": 2,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 1 relationship instance from collection or reviewing reference type classification"
+    },
+    {
+      "nodeType": "data-store.database",
+      "layer": "data-store",
+      "category": "reference",
+      "currentCount": 7,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 6 relationship instances from database or reviewing reference type classification"
+    },
+    {
+      "nodeType": "ux.librarycomponent",
+      "layer": "ux",
+      "category": "structural",
+      "currentCount": 3,
+      "targetRange": [
+        2,
+        4
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "ux.librarysubview",
+      "layer": "ux",
+      "category": "reference",
+      "currentCount": 0,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "ux.statepattern",
+      "layer": "ux",
+      "category": "reference",
+      "currentCount": 1,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "ux.subview",
+      "layer": "ux",
+      "category": "reference",
+      "currentCount": 6,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 5 relationship instances from subview or reviewing reference type classification"
+    },
+    {
+      "nodeType": "ux.uxapplication",
+      "layer": "ux",
+      "category": "reference",
+      "currentCount": 1,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "ux.uxspec",
+      "layer": "ux",
+      "category": "reference",
+      "currentCount": 4,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 3 relationship instances from uxspec or reviewing reference type classification"
+    },
+    {
+      "nodeType": "ux.view",
+      "layer": "ux",
+      "category": "reference",
+      "currentCount": 4,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 3 relationship instances from view or reviewing reference type classification"
+    },
+    {
+      "nodeType": "navigation.breadcrumbconfig",
+      "layer": "navigation",
+      "category": "reference",
+      "currentCount": 1,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "navigation.flowstep",
+      "layer": "navigation",
+      "category": "behavioral",
+      "currentCount": 2,
+      "targetRange": [
+        3,
+        5
+      ],
+      "status": "under",
+      "recommendation": "Add 1 relationship instance for flowstep (behavioral type) to reach minimum target"
+    },
+    {
+      "nodeType": "navigation.navigationflow",
+      "layer": "navigation",
+      "category": "behavioral",
+      "currentCount": 3,
+      "targetRange": [
+        3,
+        5
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "navigation.navigationgraph",
+      "layer": "navigation",
+      "category": "reference",
+      "currentCount": 1,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "navigation.navigationguard",
+      "layer": "navigation",
+      "category": "reference",
+      "currentCount": 1,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "navigation.navigationtransition",
+      "layer": "navigation",
+      "category": "reference",
+      "currentCount": 5,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 4 relationship instances from navigationtransition or reviewing reference type classification"
+    },
+    {
+      "nodeType": "navigation.route",
+      "layer": "navigation",
+      "category": "reference",
+      "currentCount": 4,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 3 relationship instances from route or reviewing reference type classification"
+    },
+    {
+      "nodeType": "apm.alert",
+      "layer": "apm",
+      "category": "reference",
+      "currentCount": 3,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 2 relationship instances from alert or reviewing reference type classification"
+    },
+    {
+      "nodeType": "apm.instrumentationconfig",
+      "layer": "apm",
+      "category": "reference",
+      "currentCount": 1,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "apm.instrumentationscope",
+      "layer": "apm",
+      "category": "enumeration",
+      "currentCount": 2,
+      "targetRange": [
+        1,
+        2
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "apm.logconfiguration",
+      "layer": "apm",
+      "category": "reference",
+      "currentCount": 1,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "apm.metricinstrument",
+      "layer": "apm",
+      "category": "reference",
+      "currentCount": 4,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 3 relationship instances from metricinstrument or reviewing reference type classification"
+    },
+    {
+      "nodeType": "apm.resource",
+      "layer": "apm",
+      "category": "reference",
+      "currentCount": 1,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "testing.contextvariation",
+      "layer": "testing",
+      "category": "reference",
+      "currentCount": 2,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 1 relationship instance from contextvariation or reviewing reference type classification"
+    },
+    {
+      "nodeType": "testing.coveragegap",
+      "layer": "testing",
+      "category": "reference",
+      "currentCount": 3,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 2 relationship instances from coveragegap or reviewing reference type classification"
+    },
+    {
+      "nodeType": "testing.coveragerequirement",
+      "layer": "testing",
+      "category": "reference",
+      "currentCount": 3,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 2 relationship instances from coveragerequirement or reviewing reference type classification"
+    },
+    {
+      "nodeType": "testing.coveragesummary",
+      "layer": "testing",
+      "category": "reference",
+      "currentCount": 1,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "balanced"
+    },
+    {
+      "nodeType": "testing.testcoveragemodel",
+      "layer": "testing",
+      "category": "reference",
+      "currentCount": 2,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 1 relationship instance from testcoveragemodel or reviewing reference type classification"
+    },
+    {
+      "nodeType": "testing.testcoveragetarget",
+      "layer": "testing",
+      "category": "reference",
+      "currentCount": 3,
+      "targetRange": [
+        0,
+        1
+      ],
+      "status": "over",
+      "recommendation": "Consider removing 2 relationship instances from testcoveragetarget or reviewing reference type classification"
+    }
+  ],
+  "connectivity": {
+    "components": [
+      {
+        "nodes": [
+          "motivation.constraint",
+          "motivation.requirement",
+          "motivation.stakeholder",
+          "data-model.schemadefinition",
+          "application.applicationservice",
+          "testing.testcoveragemodel",
+          "api.operation",
+          "motivation.goal",
+          "motivation.principle",
+          "ux.librarycomponent",
+          "ux.uxspec",
+          "application.applicationcomponent",
+          "business.businessservice",
+          "business.businessprocess",
+          "testing.testcoveragetarget",
+          "testing.coveragesummary",
+          "motivation.driver",
+          "security.dataclassification",
+          "business.businessobject",
+          "technology.systemsoftware",
+          "security.authenticationconfig",
+          "application.applicationfunction",
+          "application.applicationinterface",
+          "apm.metricinstrument",
+          "testing.contextvariation",
+          "api.securityscheme",
+          "security.securitypolicy",
+          "business.businessrole",
+          "api.pathitem",
+          "business.businessfunction",
+          "ux.statepattern",
+          "ux.view",
+          "ux.uxapplication",
+          "security.threat",
+          "security.secureresource",
+          "data-store.collection",
+          "apm.instrumentationconfig",
+          "api.openapidocument",
+          "apm.logconfiguration",
+          "application.applicationprocess",
+          "ux.subview",
+          "data-model.objectschema",
+          "testing.coveragerequirement",
+          "testing.coveragegap",
+          "security.securitymodel",
+          "technology.path",
+          "technology.artifact",
+          "technology.node",
+          "security.actor",
+          "apm.instrumentationscope",
+          "apm.alert",
+          "apm.resource",
+          "navigation.navigationguard",
+          "navigation.route",
+          "security.role",
+          "data-store.database",
+          "api.info",
+          "technology.technologyservice",
+          "navigation.navigationflow",
+          "ux.librarysubview",
+          "security.permission",
+          "technology.technologyprocess",
+          "technology.technologyinterface",
+          "navigation.navigationtransition",
+          "navigation.navigationgraph",
+          "navigation.flowstep",
+          "navigation.breadcrumbconfig"
+        ]
+      }
+    ],
+    "degrees": [
+      {
+        "nodeType": "application.applicationservice",
+        "inDegree": 32,
+        "outDegree": 51,
+        "totalDegree": 83
+      },
+      {
+        "nodeType": "business.businessprocess",
+        "inDegree": 37,
+        "outDegree": 14,
+        "totalDegree": 51
+      },
+      {
+        "nodeType": "data-model.objectschema",
+        "inDegree": 19,
+        "outDegree": 31,
+        "totalDegree": 50
+      },
+      {
+        "nodeType": "business.businessservice",
+        "inDegree": 33,
+        "outDegree": 12,
+        "totalDegree": 45
+      },
+      {
+        "nodeType": "motivation.requirement",
+        "inDegree": 37,
+        "outDegree": 4,
+        "totalDegree": 41
+      },
+      {
+        "nodeType": "api.operation",
+        "inDegree": 10,
+        "outDegree": 30,
+        "totalDegree": 40
+      },
+      {
+        "nodeType": "motivation.goal",
+        "inDegree": 32,
+        "outDegree": 5,
+        "totalDegree": 37
+      },
+      {
+        "nodeType": "business.businessobject",
+        "inDegree": 32,
+        "outDegree": 2,
+        "totalDegree": 34
+      },
+      {
+        "nodeType": "technology.systemsoftware",
+        "inDegree": 19,
+        "outDegree": 15,
+        "totalDegree": 34
+      },
+      {
+        "nodeType": "testing.testcoveragetarget",
+        "inDegree": 7,
+        "outDegree": 26,
+        "totalDegree": 33
+      },
+      {
+        "nodeType": "application.applicationfunction",
+        "inDegree": 17,
+        "outDegree": 13,
+        "totalDegree": 30
+      },
+      {
+        "nodeType": "application.applicationcomponent",
+        "inDegree": 11,
+        "outDegree": 12,
+        "totalDegree": 23
+      },
+      {
+        "nodeType": "navigation.route",
+        "inDegree": 13,
+        "outDegree": 7,
+        "totalDegree": 20
+      },
+      {
+        "nodeType": "business.businessfunction",
+        "inDegree": 3,
+        "outDegree": 14,
+        "totalDegree": 17
+      },
+      {
+        "nodeType": "ux.view",
+        "inDegree": 9,
+        "outDegree": 8,
+        "totalDegree": 17
+      },
+      {
+        "nodeType": "data-store.collection",
+        "inDegree": 9,
+        "outDegree": 7,
+        "totalDegree": 16
+      },
+      {
+        "nodeType": "ux.subview",
+        "inDegree": 4,
+        "outDegree": 12,
+        "totalDegree": 16
+      },
+      {
+        "nodeType": "motivation.constraint",
+        "inDegree": 10,
+        "outDegree": 5,
+        "totalDegree": 15
+      },
+      {
+        "nodeType": "security.securitypolicy",
+        "inDegree": 12,
+        "outDegree": 1,
+        "totalDegree": 13
+      },
+      {
+        "nodeType": "apm.metricinstrument",
+        "inDegree": 6,
+        "outDegree": 7,
+        "totalDegree": 13
+      },
+      {
+        "nodeType": "application.applicationprocess",
+        "inDegree": 3,
+        "outDegree": 9,
+        "totalDegree": 12
+      },
+      {
+        "nodeType": "data-model.schemadefinition",
+        "inDegree": 3,
+        "outDegree": 9,
+        "totalDegree": 12
+      },
+      {
+        "nodeType": "motivation.principle",
+        "inDegree": 6,
+        "outDegree": 5,
+        "totalDegree": 11
+      },
+      {
+        "nodeType": "api.securityscheme",
+        "inDegree": 7,
+        "outDegree": 4,
+        "totalDegree": 11
+      },
+      {
+        "nodeType": "ux.librarycomponent",
+        "inDegree": 1,
+        "outDegree": 10,
+        "totalDegree": 11
+      },
+      {
+        "nodeType": "testing.testcoveragemodel",
+        "inDegree": 1,
+        "outDegree": 10,
+        "totalDegree": 11
+      },
+      {
+        "nodeType": "security.secureresource",
+        "inDegree": 8,
+        "outDegree": 2,
+        "totalDegree": 10
+      },
+      {
+        "nodeType": "ux.uxspec",
+        "inDegree": 1,
+        "outDegree": 8,
+        "totalDegree": 9
+      },
+      {
+        "nodeType": "api.pathitem",
+        "inDegree": 0,
+        "outDegree": 8,
+        "totalDegree": 8
+      },
+      {
+        "nodeType": "testing.coveragerequirement",
+        "inDegree": 4,
+        "outDegree": 4,
+        "totalDegree": 8
+      },
+      {
+        "nodeType": "business.businessrole",
+        "inDegree": 5,
+        "outDegree": 2,
+        "totalDegree": 7
+      },
+      {
+        "nodeType": "technology.technologyinterface",
+        "inDegree": 3,
+        "outDegree": 4,
+        "totalDegree": 7
+      },
+      {
+        "nodeType": "technology.technologyprocess",
+        "inDegree": 5,
+        "outDegree": 2,
+        "totalDegree": 7
+      },
+      {
+        "nodeType": "data-store.database",
+        "inDegree": 0,
+        "outDegree": 7,
+        "totalDegree": 7
+      },
+      {
+        "nodeType": "apm.instrumentationscope",
+        "inDegree": 5,
+        "outDegree": 2,
+        "totalDegree": 7
+      },
+      {
+        "nodeType": "motivation.stakeholder",
+        "inDegree": 0,
+        "outDegree": 6,
+        "totalDegree": 6
+      },
+      {
+        "nodeType": "security.authenticationconfig",
+        "inDegree": 4,
+        "outDegree": 2,
+        "totalDegree": 6
+      },
+      {
+        "nodeType": "technology.artifact",
+        "inDegree": 0,
+        "outDegree": 6,
+        "totalDegree": 6
+      },
+      {
+        "nodeType": "technology.node",
+        "inDegree": 5,
+        "outDegree": 1,
+        "totalDegree": 6
+      },
+      {
+        "nodeType": "technology.technologyservice",
+        "inDegree": 1,
+        "outDegree": 5,
+        "totalDegree": 6
+      },
+      {
+        "nodeType": "api.openapidocument",
+        "inDegree": 1,
+        "outDegree": 5,
+        "totalDegree": 6
+      },
+      {
+        "nodeType": "ux.librarysubview",
+        "inDegree": 6,
+        "outDegree": 0,
+        "totalDegree": 6
+      },
+      {
+        "nodeType": "navigation.navigationguard",
+        "inDegree": 3,
+        "outDegree": 3,
+        "totalDegree": 6
+      },
+      {
+        "nodeType": "navigation.navigationtransition",
+        "inDegree": 1,
+        "outDegree": 5,
+        "totalDegree": 6
+      },
+      {
+        "nodeType": "security.actor",
+        "inDegree": 1,
+        "outDegree": 4,
+        "totalDegree": 5
+      },
+      {
+        "nodeType": "security.role",
+        "inDegree": 2,
+        "outDegree": 3,
+        "totalDegree": 5
+      },
+      {
+        "nodeType": "security.securitymodel",
+        "inDegree": 0,
+        "outDegree": 5,
+        "totalDegree": 5
+      },
+      {
+        "nodeType": "motivation.driver",
+        "inDegree": 1,
+        "outDegree": 3,
+        "totalDegree": 4
+      },
+      {
+        "nodeType": "security.dataclassification",
+        "inDegree": 2,
+        "outDegree": 2,
+        "totalDegree": 4
+      },
+      {
+        "nodeType": "application.applicationinterface",
+        "inDegree": 0,
+        "outDegree": 4,
+        "totalDegree": 4
+      },
+      {
+        "nodeType": "ux.statepattern",
+        "inDegree": 3,
+        "outDegree": 1,
+        "totalDegree": 4
+      },
+      {
+        "nodeType": "navigation.navigationflow",
+        "inDegree": 0,
+        "outDegree": 4,
+        "totalDegree": 4
+      },
+      {
+        "nodeType": "security.permission",
+        "inDegree": 3,
+        "outDegree": 0,
+        "totalDegree": 3
+      },
+      {
+        "nodeType": "security.threat",
+        "inDegree": 1,
+        "outDegree": 2,
+        "totalDegree": 3
+      },
+      {
+        "nodeType": "technology.path",
+        "inDegree": 2,
+        "outDegree": 1,
+        "totalDegree": 3
+      },
+      {
+        "nodeType": "navigation.flowstep",
+        "inDegree": 1,
+        "outDegree": 2,
+        "totalDegree": 3
+      },
+      {
+        "nodeType": "apm.alert",
+        "inDegree": 0,
+        "outDegree": 3,
+        "totalDegree": 3
+      },
+      {
+        "nodeType": "testing.contextvariation",
+        "inDegree": 1,
+        "outDegree": 2,
+        "totalDegree": 3
+      },
+      {
+        "nodeType": "testing.coveragegap",
+        "inDegree": 0,
+        "outDegree": 3,
+        "totalDegree": 3
+      },
+      {
+        "nodeType": "testing.coveragesummary",
+        "inDegree": 1,
+        "outDegree": 2,
+        "totalDegree": 3
+      },
+      {
+        "nodeType": "api.info",
+        "inDegree": 1,
+        "outDegree": 1,
+        "totalDegree": 2
+      },
+      {
+        "nodeType": "apm.instrumentationconfig",
+        "inDegree": 0,
+        "outDegree": 2,
+        "totalDegree": 2
+      },
+      {
+        "nodeType": "apm.logconfiguration",
+        "inDegree": 0,
+        "outDegree": 2,
+        "totalDegree": 2
+      },
+      {
+        "nodeType": "apm.resource",
+        "inDegree": 1,
+        "outDegree": 1,
+        "totalDegree": 2
+      },
+      {
+        "nodeType": "ux.uxapplication",
+        "inDegree": 0,
+        "outDegree": 1,
+        "totalDegree": 1
+      },
+      {
+        "nodeType": "navigation.breadcrumbconfig",
+        "inDegree": 0,
+        "outDegree": 1,
+        "totalDegree": 1
+      },
+      {
+        "nodeType": "navigation.navigationgraph",
+        "inDegree": 0,
+        "outDegree": 1,
+        "totalDegree": 1
+      }
+    ],
+    "transitiveChains": [
+      {
+        "predicate": "flows-to",
+        "chain": [
+          "navigation.navigationflow",
+          "navigation.navigationtransition",
+          "navigation.route"
+        ]
+      },
+      {
+        "predicate": "supports",
+        "chain": [
+          "motivation.goal",
+          "motivation.principle"
+        ]
+      },
+      {
+        "predicate": "supports",
+        "chain": [
+          "security.dataclassification",
+          "security.securitypolicy"
+        ]
+      },
+      {
+        "predicate": "realizes",
+        "chain": [
+          "business.businessfunction",
+          "business.businessservice"
+        ]
+      },
+      {
+        "predicate": "realizes",
+        "chain": [
+          "business.businessprocess",
+          "business.businessservice"
+        ]
+      },
+      {
+        "predicate": "realizes",
+        "chain": [
+          "application.applicationcomponent",
+          "application.applicationservice"
+        ]
+      },
+      {
+        "predicate": "flows-to",
+        "chain": [
+          "business.businessfunction",
+          "business.businessprocess"
+        ]
+      },
+      {
+        "predicate": "flows-to",
+        "chain": [
+          "technology.artifact",
+          "technology.technologyprocess"
+        ]
+      },
+      {
+        "predicate": "flows-to",
+        "chain": [
+          "navigation.navigationtransition",
+          "navigation.route"
+        ]
+      },
+      {
+        "predicate": "depends-on",
+        "chain": [
+          "application.applicationinterface",
+          "application.applicationservice"
+        ]
+      }
+    ],
+    "stats": {
+      "totalNodes": 67,
+      "totalEdges": 445,
+      "connectedComponents": 1,
+      "largestComponentSize": 67,
+      "isolatedNodes": 0,
+      "averageDegree": 13.283582089552239,
+      "transitiveChainCount": 10
+    }
+  }
+}

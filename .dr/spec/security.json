@@ -1,5 +1,5 @@
 {
-  "specVersion": "0.8.3",
+  "specVersion": "0.8.4",
   "layer": {
     "id": "security",
     "number": 3,
@@ -2765,7 +2765,7 @@
       "destination_spec_node_id": "security.permission",
       "destination_layer": "security",
       "predicate": "authorizes",
-      "cardinality": "one-to-many",
+      "cardinality": "many-to-many",
       "strength": "medium",
       "required": false
     },

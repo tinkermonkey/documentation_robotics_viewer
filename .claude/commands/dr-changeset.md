@@ -289,7 +289,7 @@ You should:
 - "Make it permanent"
 - "Commit the changeset"
 
-**Your process - CRITICAL SAFETY:**
+**Your process:**
 
 ```bash
 # 1. Show preview FIRST
@@ -300,9 +300,14 @@ dr changeset preview
 echo "\nRunning validation..."
 dr validate
 
-# 3. Commit staged changes to model
+# 3. Commit staged changes to model — do NOT ask for confirmation before this step.
+#    The preview and validate already provide the review gate.
 dr changeset commit
 ```
+
+> **Headless / autonomous mode:** Never prompt the user for "yes/no" confirmation
+> before `dr changeset commit`. This command is non-interactive and must complete
+> without waiting for input.
 
 **Example:**
 
@@ -328,14 +333,10 @@ You should:
    dr validate
    "✓ All changes pass validation"
 
-4. Get confirmation:
-   "Ready to apply to main model?
-   Type 'yes' to confirm, anything else to cancel: "
-
-5. Commit:
+4. Commit:
    dr changeset commit
 
-6. Confirm success:
+5. Confirm success:
    "✓ Applied 3 changes to main model
    ✓ Changeset marked as 'applied'
    ✓ Now working in main model
@@ -545,38 +546,112 @@ dr changeset delete <id> --force     # Delete without confirmation
 # - Storage location: documentation-robotics/changesets/{id}/
 ```
 
-### Python API for Advanced Operations
+### Changeset Naming Rules
 
-```python
-from documentation_robotics.core import Model
-from documentation_robotics.core.changeset_manager import ChangesetManager
+Changeset names are automatically sanitized:
 
-# Get manager
-manager = ChangesetManager("./")
+- Converted to lowercase
+- Spaces and special characters replaced with hyphens
+- Only alphanumeric characters and hyphens are kept
 
-# Check active
-active_id = manager.get_active()
-if active_id:
-    print(f"Active changeset: {active_id}")
+```bash
+dr changeset create "Design Payment Webhooks"
+# → stored as: design-payment-webhooks
+```
 
-# Create changeset
-changeset_id = manager.create(
-    name="new-feature",
-    changeset_type="feature",
-    description="Description here"
-)
+**Best practice**: Use a descriptive, feature-scoped name:
 
-# Load model in changeset context
-model = Model.load("./", changeset=changeset_id)
+- ✅ `feature-webhook-subscriptions`
+- ✅ `design-payment-webhooks`
+- ✅ `add-oauth2-authentication`
+- ❌ `test1`, `wip`, `changes`
 
-# All changes tracked automatically
-model.add_element("business", element_dict)
+**Uniqueness**: Changeset names must be unique. Creating a changeset with a name that already exists will fail. Run `dr changeset list` first to check.
 
-# Get summary
-summary = manager.get_changeset_summary(changeset_id)
-print(f"Changes: {summary['total_changes']}")
+### Full Changeset Lifecycle
 
-# Diff
-diff = manager.diff_changesets(changeset_id, None)  # None = main
-print(f"Conflicts: {diff['has_conflicts']}")
+The complete workflow from creation to cleanup:
+
+```bash
+# 1. Create and activate
+dr changeset create "feature-name"
+
+# 2. Verify active changeset (ALWAYS check before modeling)
+dr changeset status
+
+# 3. Add elements — all dr add/update/delete commands auto-stage in the active changeset
+dr add api endpoint --name "New Endpoint" ...
+dr update api.endpoint.existing --name "Updated Endpoint"
+dr delete api.endpoint.old --force
+
+# 4. Review what was staged
+dr changeset staged          # List staged changes
+dr changeset diff            # See diff vs main model
+dr changeset preview         # Preview merged model
+
+# 5. Validate (validates staged changes merged with model)
+dr validate
+
+# 6. Commit — applies staged changes to the main model
+dr changeset commit
+
+# 7. Verify committed
+dr changeset list            # Shows status: COMMITTED
+
+# 8. Clean up (optional)
+dr changeset delete feature-name --force
+```
+
+### Critical: Check for Active Changeset Before Modeling
+
+**Always check at session start.** If no changeset is active, `dr add`/`dr update`/`dr delete` operate directly on the main model, bypassing the changeset workflow.
+
+```bash
+dr changeset status
+# → "Active changeset: feature-payment-webhooks" (changes are tracked)
+# → "No active changeset" (changes go directly to main model!)
+```
+
+### Empty Changeset Warning
+
+`dr changeset commit` silently succeeds with no changes if the changeset has zero staged elements:
+
+```
+No staged changes to commit
+```
+
+Always verify there are staged changes before committing:
+
+```bash
+dr changeset staged    # Check this shows > 0 changes
+dr changeset commit    # Then commit
+```
+
+### Drift Detection and --force
+
+If the base model has been modified after the changeset was created, commit will warn about drift:
+
+```
+Warning: Base model has drifted since changeset creation
+```
+
+To commit despite drift (use with caution — review `dr changeset diff` first):
+
+```bash
+dr changeset commit --force
+```
+
+### Post-Commit State
+
+After a successful `dr changeset commit`:
+
+- Changeset status changes to `COMMITTED`
+- Changeset is automatically deactivated (no longer active)
+- The changeset file is preserved for history (not deleted)
+- Committing the same changeset again is a safe no-op ("No staged changes to commit")
+
+Verify success:
+
+```bash
+dr changeset list    # Should show: feature-name  COMMITTED
 ```
