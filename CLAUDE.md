@@ -23,8 +23,8 @@ Data Store, UX, Navigation, APM, Testing.
 2. **Edit, don't create** - prefer editing existing files; follow the patterns already in `ui/` and `data/`
 3. **Compose Heimdall** - build screens from `@tinkermonkey/heimdall-ui` components + tokens, not from scratch
 4. **Use TypeScript strictly** - all files strongly typed; `npx tsc --noEmit` must stay clean
-5. **Verify live** - there is no automated test suite yet (being rebuilt); run the app and verify with
-   chrome-devtools / CDP (see Local Development)
+5. **Test thoroughly** - run `npm test` (Vitest) before completing; for UI behavior also verify live with
+   chrome-devtools / CDP (see Local Development and Testing)
 6. **Avoid over-engineering** - only make requested changes
 
 ## Component Organization
@@ -162,6 +162,13 @@ npm run dev
 # Production build → dist/embedded/dr-viewer-bundle (served by: dr visualize --viewer-path <bundle>)
 npm run build
 
+# Tests
+npm test            # Vitest: unit + integration + component (262 tests, ~1.6s)
+npm run test:watch  # Vitest watch
+npm run test:cov    # Vitest with coverage
+npm run test:types  # type-check the tests (tsconfig.test.json)
+npm run test:e2e    # Playwright E2E (builds + serves the bundle via dr visualize, then drives it)
+
 # Type check (must be clean)
 npx tsc --noEmit
 
@@ -187,9 +194,21 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 
 ## Testing
 
-The previous Playwright + Storybook suite was **removed** during the Heimdall rebuild. A new suite is being
-scoped — see [documentation/TESTING_STRATEGY.md](documentation/TESTING_STRATEGY.md). Until it lands, verify
-changes by running the app and driving it with chrome-devtools / CDP.
+The Heimdall-era suite (Vitest + Playwright) — see [documentation/TESTING_STRATEGY.md](documentation/TESTING_STRATEGY.md):
+
+- **Vitest** (`npm test`, **262 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
+  445-link resolution, `chatAdapter`, `changesets` op-folding, `specGraph`, `relationships`, `uiStore`),
+  `tests/integration/` infra over a mock WebSocket + MSW (the **WS double-emit** regression, `jsonRpcHandler`,
+  `chatService` streaming, data hooks), `tests/components/` Testing Library renders of the `ui/` layer.
+  Helpers + real API fixtures live in `tests/helpers/` + `tests/fixtures/`.
+- **Playwright** (`npm run test:e2e`, **20 tests** in `tests/e2e/`): drives the **production bundle** served
+  by `dr visualize` on a dedicated port — shell, model/schema/changesets views, live chat single-render
+  (double-emit), annotations CRUD (self-cleaning), and **axe** WCAG 2.1 AA on every view in light + dark.
+- **CI**: `.github/workflows/test.yml` — Vitest + `test:types` + build are the required gate; the E2E job is
+  separate (boots `dr visualize`).
+
+Tests assert **our** code (transforms, adapter, store, composition, flows) — not Heimdall or the CLI. Add tests
+alongside changes; for UI behavior also verify live with chrome-devtools / CDP.
 
 ## Accessibility Standards (WCAG 2.1 AA)
 
