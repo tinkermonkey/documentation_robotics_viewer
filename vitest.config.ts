@@ -22,10 +22,16 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['tests/**/*.spec.ts', 'tests/**/*.spec.tsx'],
+    setupFiles: ['tests/helpers/setup.ts'],
     coverage: {
       provider: 'v8',
       reportsDirectory: './coverage',
-      include: ['src/apps/embedded/{ui,data}/**/*.ts'],
+      include: [
+        'src/apps/embedded/{ui,data}/**/*.ts',
+        // Phase B: kept infra (transport boundary), chat services + stores.
+        'src/apps/embedded/services/**/*.ts',
+        'src/apps/embedded/stores/**/*.ts',
+      ],
       exclude: [
         'node_modules/**',
         'dist/**',

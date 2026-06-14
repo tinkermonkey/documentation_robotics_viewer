@@ -1,0 +1,41 @@
+{
+  "annotations": [
+    {
+      "id": "ann-fixture-0001",
+      "elementId": "motivation.goal.visualize-multi-layer-architecture-models",
+      "author": "You",
+      "content": "Seed annotation for the goal element.",
+      "createdAt": "2026-06-14T11:47:47.357Z",
+      "tags": ["test", "fixture"],
+      "resolved": false
+    },
+    {
+      "id": "ann-fixture-0002",
+      "elementId": "motivation.goal.visualize-multi-layer-architecture-models",
+      "author": "You",
+      "content": "A second annotation on the same element.",
+      "createdAt": "2026-06-14T12:00:00.000Z",
+      "tags": [],
+      "resolved": true
+    },
+    {
+      "id": "ann-fixture-0003",
+      "elementId": "business.process.review-architecture",
+      "author": "You",
+      "content": "Annotation on a different element entirely.",
+      "createdAt": "2026-06-14T12:05:00.000Z",
+      "tags": ["review"],
+      "resolved": false
+    }
+  ],
+  "replies": {
+    "ann-fixture-0001": [
+      {
+        "id": "reply-fixture-0001",
+        "author": "You",
+        "content": "A captured reply on the first annotation.",
+        "createdAt": "2026-06-14T11:47:47.442Z"
+      }
+    ]
+  }
+}
