@@ -4,16 +4,28 @@
  *
  * Gate: NO `serious`/`critical` violations OTHER than `color-contrast`.
  *
- * KNOWN ISSUE (documented, not masked): the dark IDE-shell chrome ships subtle
- * low-emphasis mono labels (nav counts, statusbar, footer, eyebrows — e.g.
- * `#6e7a87` on `#13203a`, ~3.7:1) that fall below the 4.5:1 AA threshold. This is
- * a pre-existing Heimdall-rebuild design-token choice across the whole shell, not
- * a Phase-D regression. The test SEPARATES these out: it attaches the full
- * `color-contrast` detail for review and asserts the contrast node count stays
- * AT OR BELOW a recorded per-view/tone baseline (so the documented pre-existing
- * debt passes, but a NEW contrast regression — which would push the count up —
- * is caught), while HARD-FAILING on any other serious/critical rule (a real
- * regression). See the returned "open issues" for the tracking note.
+ * FIXED (was a documented debt): the dark IDE-shell chrome previously shipped
+ * subtle low-emphasis mono labels (nav counts, statusbar, footer, page-header
+ * eyebrows/meta — e.g. `#6e7a87` on `#13203a`, ~3.7:1) plus the dark-canvas
+ * muted graph/inspector text (`--canvas-fg-3`/`--canvas-fg-4`) that fell below
+ * the 4.5:1 AA threshold. The viewer now raises those low-emphasis tokens to the
+ * MINIMUM value that clears 4.5:1 against the lightest background each renders on
+ * (a self-contained override in `src/apps/embedded/ui/domain-and-nav.css`, loaded
+ * after the Heimdall CSS). As a result every shell/dark-canvas combo is now at
+ * ZERO color-contrast violations.
+ *
+ * REMAINING (documented, not masked): the **light**-canvas Changesets view still
+ * has a small set of pre-existing content-level contrast nodes that are OUTSIDE
+ * the shell/dark-canvas token scope fixed here — the cyan changeset op-badge
+ * (`#22d3ee` on light-cyan `#e4fafd`) and the muted mono detail text
+ * (`#94a3b8`/light `--canvas-fg-4` on `#ffffff`). These are light-canvas
+ * changeset-row content, not shell chrome, so the contrast baseline below is 0
+ * for every combo EXCEPT `Changesets/light`, which keeps a small documented
+ * ceiling. The test attaches the full `color-contrast` detail for review, asserts
+ * the contrast node count stays AT OR BELOW its recorded per-view/tone baseline
+ * (so a NEW contrast regression — which would push the count up — is caught), and
+ * HARD-FAILS on any other serious/critical rule. See the returned "open issues"
+ * for the tracking note on the remaining light-canvas Changesets nodes.
  */
 
 import { test, expect, type Page } from '@playwright/test';
@@ -23,21 +35,25 @@ import { gotoView, ROUTES } from './helpers';
 const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
 
 /**
- * Recorded color-contrast debt baselines (node counts), measured twice against
- * the built bundle + the repo's committed `.dr` model (deterministic positions).
- * These are CEILINGS: the documented low-emphasis shell labels sit at/below them,
- * so they pass; a new contrast regression elsewhere on the view would exceed the
- * ceiling and fail. A small headroom (+5) absorbs benign label/layout jitter
- * without letting a real regression (which adds many nodes at once) slip through.
+ * Recorded color-contrast baselines (node counts), measured twice against the
+ * built bundle + the repo's committed `.dr` model (deterministic positions).
+ * After raising the low-emphasis shell/dark-canvas tokens to AA, every combo is
+ * at ZERO except `Changesets/light`, which retains the pre-existing,
+ * out-of-scope light-canvas changeset-row content nodes (cyan op-badge + muted
+ * detail text — see the file header). These are CEILINGS: the documented
+ * remainder sits at/below them, so it passes; a new contrast regression
+ * elsewhere would exceed the ceiling and fail. A small headroom (+5) absorbs
+ * benign label/layout jitter without letting a real regression (which adds many
+ * nodes at once) slip through.
  */
 const HEADROOM = 5;
 const CONTRAST_BASELINE: Record<string, number> = {
-  'Model/light': 36,
-  'Model/dark': 71,
-  'Schema/light': 40,
-  'Schema/dark': 54,
-  'Changesets/light': 55,
-  'Changesets/dark': 67,
+  'Model/light': 0,
+  'Model/dark': 0,
+  'Schema/light': 0,
+  'Schema/dark': 0,
+  'Changesets/light': 14,
+  'Changesets/dark': 0,
 };
 
 /** Run axe with the WCAG AA ruleset over the full page. */
@@ -83,7 +99,8 @@ test.describe('accessibility (axe / WCAG 2.1 AA)', () => {
           contentType: 'application/json',
         });
 
-        // Known, documented debt: low-emphasis mono shell labels below 4.5:1.
+        // Shell/dark-canvas low-emphasis labels are now AA (baseline 0); only the
+        // out-of-scope light-canvas Changesets content nodes remain (see header).
         const contrast = seriousOrCritical.filter((v) => v.id === 'color-contrast');
         const others = seriousOrCritical.filter((v) => v.id !== 'color-contrast');
 
@@ -94,17 +111,18 @@ test.describe('accessibility (axe / WCAG 2.1 AA)', () => {
           .join('; ');
         expect(others, `unexpected serious/critical violations: ${otherSummary}`).toEqual([]);
 
-        // BASELINE GATE (documented debt): the pre-existing low-emphasis shell
-        // contrast is NOT asserted to zero, but the node count is asserted to stay
-        // AT OR BELOW its recorded per-view/tone ceiling (+ small headroom). This
-        // lets the documented debt pass while catching a NEW contrast regression
-        // (which would push the count past the ceiling). The count is also recorded
-        // as a known-issue annotation so it stays visible in CI output.
+        // BASELINE GATE: the shell/dark-canvas contrast is now asserted to its
+        // recorded per-view/tone ceiling — 0 for every combo except
+        // `Changesets/light` (the documented out-of-scope light-canvas content
+        // remainder). The node count must stay AT OR BELOW that ceiling (+ small
+        // headroom), so a NEW contrast regression (which would push the count
+        // past the ceiling) is caught. Any remainder is recorded as a known-issue
+        // annotation so it stays visible in CI output.
         const nodeCount = contrast.reduce((n, v) => n + v.nodes.length, 0);
         if (nodeCount > 0) {
           testInfo.annotations.push({
             type: 'known-issue',
-            description: `color-contrast: ${nodeCount} low-emphasis shell labels below 4.5:1 (${view.name}/${tone})`,
+            description: `color-contrast: ${nodeCount} light-canvas content nodes below 4.5:1 (${view.name}/${tone})`,
           });
         }
 
@@ -114,7 +132,7 @@ test.describe('accessibility (axe / WCAG 2.1 AA)', () => {
           nodeCount,
           `color-contrast node count for ${key} (${nodeCount}) exceeded its recorded ` +
             `baseline ceiling (${ceiling}) — likely a NEW contrast regression, not the ` +
-            `documented pre-existing shell debt`,
+            `documented out-of-scope light-canvas Changesets remainder`,
         ).toBeLessThanOrEqual(ceiling);
       });
     }

@@ -7,6 +7,33 @@
  * main.tsx AFTER index.css and Heimdall's CSS so these win the cascade.
  */
 
+/* ---- WCAG AA color-contrast overrides for low-emphasis labels ----------------
+ * Heimdall's default low-emphasis foreground tokens fall below the 4.5:1 AA
+ * threshold on the dark shell / dark canvas (axe `color-contrast`):
+ *   --shell-fg-3 #6e7a87 on shell-bg-2 #13203a ≈ 3.7:1
+ *   --shell-fg-4 #4a5563 on shell-bg-2 #13203a ≈ 2.1:1
+ *   --canvas-fg-3 #64748b / --canvas-fg-4 #475569 (dark canvas) ≈ 3.0-3.4:1
+ * These tokens drive the always-dark shell chrome (nav counts, statusbar,
+ * footer, page-header eyebrows/meta) and the dark-canvas muted graph/inspector
+ * text. Raise each to the MINIMUM RGB that clears 4.5:1 against the lightest
+ * background it actually renders on, so the labels stay muted (not washed out)
+ * while passing AA. Measured against the built bundle with axe-core; see
+ * tests/e2e/a11y.spec.ts. This block is loaded AFTER Heimdall's CSS, so it wins
+ * the cascade without forking the upstream token file.
+ *
+ * The shell is ALWAYS dark, so its tokens are overridden globally. The canvas
+ * tokens are only raised under `body.dark-canvas` (the light canvas keeps its
+ * own already-compliant values). */
+:root {
+  --shell-fg-3: 131 146 161; /* #8392a1 — ≥4.5:1 on #13203a (5.09) and #1b2949 (4.51) */
+  --shell-fg-4: 127 146 170; /* #7f92aa — ≥4.5:1 on #13203a (5.09) and #1b2949 (4.52) */
+}
+
+body.dark-canvas {
+  --canvas-fg-3: 125 146 174; /* #7d92ae — ≥4.5:1 on #1b2949 (4.52), brighter on darker bg */
+  --canvas-fg-4: 122 146 180; /* #7a92b4 — ≥4.5:1 on #1b2949 (4.52), brighter on darker bg */
+}
+
 /* ---- 12-layer domain palette — graph node swatches ---------------------- */
 .graph-node[data-domain='motivation'] .graph-node__swatch { background: #8b5cf6; }
 .graph-node[data-domain='business'] .graph-node__swatch { background: #f59e0b; }
@@ -42,7 +69,9 @@
 }
 
 .nav-item__count {
-  color: #5b6b82;
+  /* Use the AA-corrected shell low-emphasis token (was #5b6b82 ≈ 2.98:1 on
+   * shell-bg-2, below 4.5:1) so the nav element counts stay muted but pass AA. */
+  color: rgb(var(--shell-fg-3));
   margin-right: 2px;
 }
 

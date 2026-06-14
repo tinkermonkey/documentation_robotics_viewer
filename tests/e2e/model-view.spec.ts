@@ -37,21 +37,49 @@ test.describe('model view', () => {
   test('clicking a node populates the inspector and highlights it', async ({ page }) => {
     await gotoView(page, ROUTES.model);
 
-    // Click a node OTHER than the default selection so the inspector visibly
-    // updates. The SVG <g> carries its own React onClick, but the PageHeader
-    // overlaps the top of the canvas and intercepts pointer hit-testing; dispatch
-    // a real click event on the <g> so React's delegated handler fires regardless
-    // of the overlap (this exercises the node's actual selection handler).
+    // Click a node OTHER than the default selection (the first node) so the
+    // inspector visibly updates, using a REAL pointer click (not a synthetic
+    // dispatchEvent) so this exercises actual pointer hit-testing end to end.
+    //
+    // Heimdall's GraphCanvas renders each node's HTML inside an SVG
+    // <foreignObject> (the React onClick lives on the inner `.graph-node` DIV,
+    // not the <g> wrapper that carries the testid). Playwright actionability
+    // hit-tests the element CENTER, and a top-row node's center can land within
+    // the PageHeader's bounding band at the top of the canvas — there the
+    // topmost element under the point is the header, so a click there (even a
+    // forced one, which still dispatches at the same coordinates) lands on the
+    // header rather than the node. This is NOT a layout overlap (Canvas.tsx
+    // renders the header `flex:none` and the graph container `flex:1` as
+    // non-overlapping siblings); it is just that the auto-centered graph places
+    // its first row of nodes high enough that their centers sit under the
+    // header's box. So pick the first node (after the default selection) whose
+    // center hit-tests clear of the header band and click it normally.
     const allNodes = page.locator('[data-testid^="graph-node-"]');
     await expect(allNodes.first()).toBeVisible({ timeout: 15_000 });
-    const targetNode = allNodes.nth(3);
+
+    const targetIndex = await allNodes.evaluateAll((nodes) => {
+      const header = document.querySelector('.page-header')?.getBoundingClientRect();
+      for (let i = 1; i < nodes.length; i++) {
+        const inner = nodes[i].querySelector('.graph-node') as HTMLElement | null;
+        if (!inner) continue;
+        const r = inner.getBoundingClientRect();
+        const cx = r.x + r.width / 2;
+        const cy = r.y + r.height / 2;
+        // Skip nodes whose center sits within the header band (occluded), then
+        // confirm the center actually hit-tests to this node's own subtree.
+        if (header && cy <= header.bottom) continue;
+        const at = document.elementFromPoint(cx, cy);
+        if (at?.closest('[data-testid^="graph-node-"]') === nodes[i]) return i;
+      }
+      return -1;
+    });
+    expect(targetIndex).toBeGreaterThan(0);
+
+    const targetNode = allNodes.nth(targetIndex);
     const nodeTestId = await targetNode.getAttribute('data-testid');
     const nodeUuid = nodeTestId!.replace('graph-node-', '');
 
-    // The React onClick lives on the inner `.graph-node` element (inside the
-    // <g>'s foreignObject), not the <g> wrapper that carries the testid. Dispatch
-    // the click on that inner element so the selection handler runs.
-    await targetNode.locator('.graph-node').dispatchEvent('click');
+    await targetNode.locator('.graph-node').click();
 
     // Inspector populated: title, id (the UUID), the curated PROPERTIES grid, and
     // a relationships section.
