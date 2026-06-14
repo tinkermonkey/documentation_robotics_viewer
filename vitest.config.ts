@@ -29,6 +29,10 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['tests/**/*.spec.ts', 'tests/**/*.spec.tsx'],
+    // Playwright E2E specs (Phase D) live under tests/e2e and use
+    // `@playwright/test`, NOT Vitest. Exclude them so `npm test` stays a pure
+    // Vitest run (262/262) and never tries to execute a Playwright spec.
+    exclude: ['node_modules/**', 'dist/**', 'tests/e2e/**'],
     setupFiles: ['tests/helpers/setup.ts'],
     css: false,
     coverage: {
