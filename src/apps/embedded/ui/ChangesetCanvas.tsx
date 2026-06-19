@@ -48,6 +48,7 @@ function ChangesetEmptyState({ message }: { message: string }) {
 /** A single op-coded change row (badge + path + detail + expandable diff). */
 function ChangeRowItem({ row }: { row: ChangeRow }) {
   const [expanded, setExpanded] = useState(false);
+  const canvasDark = useUiStore((s) => s.canvasDark);
   const diffLines = expanded && row.hasDiff ? buildDiffLines(row.raw) : [];
 
   return (
@@ -95,7 +96,9 @@ function ChangeRowItem({ row }: { row: ChangeRow }) {
             width: 42,
             textAlign: 'center',
             background: row.meta.background,
-            color: row.meta.color,
+            // Bright op color on the dark canvas; darker -700 shade on the light
+            // canvas so the badge text clears WCAG AA on its pale tint.
+            color: canvasDark ? row.meta.color : row.meta.colorLight,
           }}
           data-testid="changeset-op-badge"
         >
@@ -130,7 +133,8 @@ function ChangeRowItem({ row }: { row: ChangeRow }) {
               fontSize: 10,
               letterSpacing: '0.04em',
               textTransform: 'uppercase',
-              color: 'rgb(var(--canvas-fg-4))',
+              // fg-3 (not fg-4) so the slug clears WCAG AA on the light canvas.
+              color: 'rgb(var(--canvas-fg-3))',
               alignSelf: 'center',
             }}
           >

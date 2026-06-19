@@ -12,7 +12,10 @@
  *   - `relationship-delete` → `before` only ({ source, target, predicate, ... })
  *
  * Op colors (from the design): add = emerald (#10B981), update = cyan (#22D3EE),
- * delete = rose (#F43F5E). Relationship add/delete reuse the add/delete colors.
+ * delete = rose (#F43F5E) — these are the bright dark-canvas text colors. On the
+ * LIGHT canvas the same hues over a pale 12% tint fall below WCAG AA, so each op
+ * also carries a darker `colorLight` (the -700 shade) used for the light tone.
+ * Relationship add/delete reuse the add/delete colors.
  */
 
 import type { DiffLine } from '@tinkermonkey/heimdall-ui';
@@ -38,16 +41,27 @@ export interface OpMeta {
   op: ChangeOp;
   /** Short badge label (e.g. 'ADD'). */
   label: string;
-  /** Badge text/border color (hex). */
+  /** Badge text/border color on the dark canvas (bright hex). */
   color: string;
-  /** Badge background (translucent tint of `color`). */
+  /** Badge text color on the light canvas (darker -700 shade; AA on the pale tint). */
+  colorLight: string;
+  /** Badge background (translucent tint of `color`, works in both tones). */
   background: string;
 }
 
 const OP_META: Record<ChangeOp, OpMeta> = {
-  add: { op: 'add', label: 'ADD', color: '#10B981', background: 'rgba(16,185,129,0.12)' },
-  update: { op: 'update', label: 'MOD', color: '#22D3EE', background: 'rgba(34,211,238,0.12)' },
-  delete: { op: 'delete', label: 'DEL', color: '#F43F5E', background: 'rgba(244,63,94,0.12)' },
+  add: {
+    op: 'add', label: 'ADD',
+    color: '#10B981', colorLight: '#047857', background: 'rgba(16,185,129,0.12)',
+  },
+  update: {
+    op: 'update', label: 'MOD',
+    color: '#22D3EE', colorLight: '#0E7490', background: 'rgba(34,211,238,0.12)',
+  },
+  delete: {
+    op: 'delete', label: 'DEL',
+    color: '#F43F5E', colorLight: '#BE123C', background: 'rgba(244,63,94,0.12)',
+  },
 };
 
 /**

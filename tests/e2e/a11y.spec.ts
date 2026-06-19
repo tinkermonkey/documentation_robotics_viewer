@@ -14,18 +14,19 @@
  * after the Heimdall CSS). As a result every shell/dark-canvas combo is now at
  * ZERO color-contrast violations.
  *
- * REMAINING (documented, not masked): the **light**-canvas Changesets view still
- * has a small set of pre-existing content-level contrast nodes that are OUTSIDE
- * the shell/dark-canvas token scope fixed here — the cyan changeset op-badge
- * (`#22d3ee` on light-cyan `#e4fafd`) and the muted mono detail text
- * (`#94a3b8`/light `--canvas-fg-4` on `#ffffff`). These are light-canvas
- * changeset-row content, not shell chrome, so the contrast baseline below is 0
- * for every combo EXCEPT `Changesets/light`, which keeps a small documented
- * ceiling. The test attaches the full `color-contrast` detail for review, asserts
- * the contrast node count stays AT OR BELOW its recorded per-view/tone baseline
- * (so a NEW contrast regression — which would push the count up — is caught), and
- * HARD-FAILS on any other serious/critical rule. See the returned "open issues"
- * for the tracking note on the remaining light-canvas Changesets nodes.
+ * ALSO FIXED: the light-canvas Changesets view previously had content-level
+ * contrast debt — the cyan op-badge (`#22d3ee` on light-cyan `#e4fafd`) and the
+ * layer-name slug (`#94a3b8`/light `--canvas-fg-4` on `#ffffff`). The op badge now
+ * uses a tone-aware text color (the darker -700 `colorLight` on the light canvas,
+ * the bright hue on the dark canvas) and the slug uses `--canvas-fg-3`.
+ *
+ * Every combo now sits at a 0 color-contrast baseline; the +5 headroom only
+ * absorbs occasional single-node boundary flicker (a label landing right at the
+ * ~4.5:1 threshold), NOT a systemic block of low-contrast text. The test attaches
+ * the full `color-contrast` detail for review, asserts the node count stays AT OR
+ * BELOW the recorded per-view/tone ceiling (0 + headroom, so a real regression —
+ * which adds many nodes at once — is caught), and HARD-FAILS on any other
+ * serious/critical rule.
  */
 
 import { test, expect, type Page } from '@playwright/test';
@@ -37,14 +38,11 @@ const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
 /**
  * Recorded color-contrast baselines (node counts), measured twice against the
  * built bundle + the repo's committed `.dr` model (deterministic positions).
- * After raising the low-emphasis shell/dark-canvas tokens to AA, every combo is
- * at ZERO except `Changesets/light`, which retains the pre-existing,
- * out-of-scope light-canvas changeset-row content nodes (cyan op-badge + muted
- * detail text — see the file header). These are CEILINGS: the documented
- * remainder sits at/below them, so it passes; a new contrast regression
- * elsewhere would exceed the ceiling and fail. A small headroom (+5) absorbs
- * benign label/layout jitter without letting a real regression (which adds many
- * nodes at once) slip through.
+ * After raising the low-emphasis shell/dark-canvas tokens AND fixing the
+ * light-canvas Changesets op-badge/slug, every combo is at ZERO. These are
+ * CEILINGS (0 + headroom): a new contrast regression would exceed the ceiling and
+ * fail. A small headroom (+5) absorbs benign label/layout jitter without letting a
+ * real regression (which adds many nodes at once) slip through.
  */
 const HEADROOM = 5;
 const CONTRAST_BASELINE: Record<string, number> = {
@@ -52,7 +50,7 @@ const CONTRAST_BASELINE: Record<string, number> = {
   'Model/dark': 0,
   'Schema/light': 0,
   'Schema/dark': 0,
-  'Changesets/light': 14,
+  'Changesets/light': 0,
   'Changesets/dark': 0,
 };
 

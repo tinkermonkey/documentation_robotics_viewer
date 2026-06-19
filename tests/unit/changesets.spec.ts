@@ -90,19 +90,30 @@ describe('opMeta', () => {
     expect(m.op).toBe('add');
     expect(m.label).toBe('ADD');
     expect(m.color).toBe('#10B981');
+    expect(m.colorLight).toBe('#047857');
   });
   it('update → cyan MOD', () => {
     const m = opMeta('update');
     expect(m.label).toBe('MOD');
     expect(m.color).toBe('#22D3EE');
+    expect(m.colorLight).toBe('#0E7490');
   });
   it('delete → rose DEL', () => {
     const m = opMeta('relationship-delete');
     expect(m.label).toBe('DEL');
     expect(m.color).toBe('#F43F5E');
+    expect(m.colorLight).toBe('#BE123C');
   });
   it('background is a translucent tint of the color', () => {
     expect(opMeta('add').background).toBe('rgba(16,185,129,0.12)');
+  });
+  it('colorLight is the darker light-canvas shade for every op', () => {
+    // The light shade must differ from the bright dark-canvas color (it is the
+    // AA-compliant -700 variant used on the pale tint).
+    for (const t of ['add', 'update', 'delete'] as const) {
+      const m = opMeta(t);
+      expect(m.colorLight).not.toBe(m.color);
+    }
   });
 });
 
