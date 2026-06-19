@@ -5,6 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-06-19
+
+Complete UX rebuild on the **Heimdall design system**.
+
+> 0.4.0 follows 0.2.3 — the `v0.3.0` tag was an internal API-spec-sync bump, not a UX release.
+
+### Changed
+- **Rebuilt the entire presentation layer on `@tinkermonkey/heimdall-ui`**, replacing the
+  React Flow + Flowbite + Storybook + Playwright stack. The data/infrastructure layer (REST/WebSocket
+  API client, JSON-RPC chat service, Zustand data stores, generated types) was kept; the new UX lives
+  under `src/apps/embedded/ui` + `data`.
+- Two-surface design: an always-dark IDE shell wrapping a light/dark, token-driven canvas.
+
+### Added
+- **5-pane Heimdall shell**: topbar, 3-level navigation rail, canvas, inspector, DrBot chat drawer, statusbar.
+- **Model view** — per-layer instance graph (`GraphCanvas`) with domain-colored nodes, a relationship
+  inspector, and click-to-navigate across layers.
+- **Schema view** — per-layer node-type graph with attributes and relationship cardinality from `/api/spec`.
+- **Changesets view** — op-coded diff list (add/update/delete) with stat tiles and expandable side-by-side diffs.
+- **DrBot chat** — live WebSocket/JSON-RPC streaming assistant drawer.
+- **Annotations** — create/edit/resolve/delete + replies in the inspector (REST CRUD).
+- Light/dark canvas toggle; self-hosted Inter + JetBrains Mono fonts; brand favicon.
+- **Test suite** — 263 Vitest tests (unit/integration/component) + 20 Playwright E2E + axe accessibility,
+  wired into CI (`.github/workflows/test.yml`).
+
+### Fixed
+- WebSocket double-emit that doubled streamed chat text.
+- WCAG 2.1 AA color contrast across the shell and both canvas tones.
+- Deterministic API-client codegen (no build-time timestamp churn).
+- Robust `/api/model` link resolution (UUID + canonical dotted id resolves all links).
+
+### Removed
+- React Flow (`@xyflow/react`) and the Dagre / ELK / D3Force / Graphviz / libavoid layout engines + worker pool.
+- Flowbite React, Storybook, and the previous Playwright/Storybook test stack.
+
 ## [0.2.3] - 2025-12-20
 
 ### Added
