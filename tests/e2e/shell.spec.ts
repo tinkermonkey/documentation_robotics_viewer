@@ -145,4 +145,17 @@ test.describe('shell', () => {
     await expect(status).toHaveAttribute('data-state', 'connected', { timeout: 15_000 });
     await expect(status).toContainText('connected');
   });
+
+  test('favicon is linked and served (no /favicon.ico 404)', async ({ page, request }) => {
+    await gotoView(page, ROUTES.model);
+
+    // index.html links the SVG favicon, so the browser never falls back to a
+    // /favicon.ico request (the lone 404 the bundle used to produce).
+    const href = await page.locator('link[rel="icon"]').getAttribute('href');
+    expect(href).toBe('/favicon.svg');
+
+    const res = await request.get('/favicon.svg');
+    expect(res.status()).toBe(200);
+    expect(res.headers()['content-type']).toContain('image/svg+xml');
+  });
 });

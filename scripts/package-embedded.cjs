@@ -114,6 +114,16 @@ function packageEmbedded() {
   const htmlDest = path.join(BUNDLE_DIR, 'index.html');
   fs.copyFileSync(htmlSource, htmlDest);
 
+  // Copy the favicon (public/favicon.svg, emitted by Vite to dist/embedded/favicon.svg)
+  // to the bundle root so `/favicon.svg` resolves instead of 404-ing. index.html
+  // links it via <link rel="icon" type="image/svg+xml" href="/favicon.svg">.
+  const faviconSource = path.join(DIST_DIR, 'favicon.svg');
+  if (fs.existsSync(faviconSource)) {
+    fs.copyFileSync(faviconSource, path.join(BUNDLE_DIR, 'favicon.svg'));
+  } else {
+    log('   Warning: dist/embedded/favicon.svg not found — favicon will 404.', colors.yellow);
+  }
+
   // Copy self-hosted fonts. The @font-face rules with absolute `/fonts/...` URLs
   // are already compiled into the bundle's main CSS (from the
   // @tinkermonkey/heimdall-ui/fonts import), so only the woff2 files need to ship
@@ -206,6 +216,18 @@ function generateManifest() {
     type: 'html'
   });
   manifest.totalSize += getFileSize(htmlPath);
+
+  // Add the favicon if present.
+  const faviconPath = path.join(BUNDLE_DIR, 'favicon.svg');
+  if (fs.existsSync(faviconPath)) {
+    manifest.files.push({
+      path: 'favicon.svg',
+      hash: getFileHash(faviconPath).substring(0, 16),
+      size: getFileSize(faviconPath),
+      type: 'image'
+    });
+    manifest.totalSize += getFileSize(faviconPath);
+  }
 
   // Add self-hosted font files (recursive: fonts/{inter,jetbrains-mono}/*.woff2).
   const fontsRoot = path.join(BUNDLE_DIR, 'fonts');
