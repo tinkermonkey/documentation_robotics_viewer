@@ -1,0 +1,281 @@
+/* Heimdall tokens — RGB-triplet form so component CSS `rgb(var(--x))` resolves.
+   Fonts self-hosted under assets/fonts/. Generated from colors_and_type.css. */
+@font-face { font-family: 'Inter'; src: url('fonts/inter/Inter-Light.woff2') format('woff2');     font-weight: 300; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('fonts/inter/Inter-Regular.woff2') format('woff2');   font-weight: 400; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('fonts/inter/Inter-Medium.woff2') format('woff2');    font-weight: 500; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('fonts/inter/Inter-SemiBold.woff2') format('woff2');  font-weight: 600; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('fonts/inter/Inter-Bold.woff2') format('woff2');      font-weight: 700; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('fonts/inter/Inter-ExtraBold.woff2') format('woff2'); font-weight: 800; font-style: normal; font-display: block; }
+@font-face { font-family: 'Inter'; src: url('fonts/inter/Inter-Black.woff2') format('woff2');     font-weight: 900; font-style: normal; font-display: block; }
+@font-face { font-family: 'JetBrains Mono'; src: url('fonts/jetbrains-mono/JetBrainsMono-Regular.woff2')  format('woff2'); font-weight: 400; font-style: normal; font-display: block; }
+@font-face { font-family: 'JetBrains Mono'; src: url('fonts/jetbrains-mono/JetBrainsMono-Medium.woff2')   format('woff2'); font-weight: 500; font-style: normal; font-display: block; }
+@font-face { font-family: 'JetBrains Mono'; src: url('fonts/jetbrains-mono/JetBrainsMono-SemiBold.woff2') format('woff2'); font-weight: 600; font-style: normal; font-display: block; }
+
+:root {
+  /* ============================================================
+     COLOR — Shell surface (always dark slate navy)
+     ============================================================ */
+  --shell-bg:        15 23 41; /* @kind color */ /* outermost frame, body */
+  --shell-bg-2:      19 32 58; /* @kind color */ /* sidebar, topbar, statusbar */
+  --shell-surface:   27 41 73; /* @kind color */ /* nav hover, ws-chip, panels-in-shell */
+  --shell-surface-2: 36 55 99; /* @kind color */ /* elevated, hover-up-one-step */
+  --shell-border:    30 42 68; /* @kind color */ /* shell dividers */
+  --shell-border-2:  42 58 92; /* @kind color */ /* input border, scrollbar thumb */
+  --shell-fg-1:      230 237 243; /* @kind color */ /* primary chrome text */
+  --shell-fg-2:      166 177 189; /* @kind color */ /* secondary chrome text */
+  --shell-fg-3:      110 122 135; /* @kind color */ /* tertiary / counts / icons */
+  --shell-fg-4:      74 85 99; /* @kind color */ /* disabled / separators */
+
+  /* ============================================================
+     COLOR — Canvas surface (light canvas DEFAULT)
+     ============================================================ */
+  --canvas-bg:            255 255 255; /* @kind color */
+  --canvas-bg-2:          247 249 251; /* @kind color */ /* table headers, insets, id-tags */
+  --canvas-surface:       255 255 255; /* @kind color */
+  --canvas-surface-2:     243 244 246; /* @kind color */ /* elevated, hover */
+  --canvas-card:          255 255 255; /* @kind color */
+  --canvas-fg-1:          11 18 32; /* @kind color */ /* primary text, h1 */
+  --canvas-fg-2:          71 85 105; /* @kind color */ /* body text */
+  --canvas-fg-3:          100 116 139; /* @kind color */ /* muted, eyebrows */
+  --canvas-fg-4:          148 163 184; /* @kind color */ /* disabled */
+  --canvas-border:        229 233 238; /* @kind color */ /* card border, divider */
+  --canvas-border-2:      221 226 232; /* @kind color */ /* secondary */
+  --canvas-border-strong: 214 220 227; /* @kind color */ /* input border, scrollbar */
+
+  /* ============================================================
+     COLOR — Accent (AMBER brand)
+     ============================================================ */
+  --accent-primary:        251 191 36; /* @kind color */ /* amber-400, active states, indicator bars */
+  --accent-primary-hover:  245 158 11; /* @kind color */ /* amber-500, hover */
+  --accent-primary-deep:   180 83 9; /* @kind color */ /* amber-700, primary CTA on light canvas */
+
+  /* ============================================================
+     COLOR — Semantic status
+     ============================================================ */
+  --status-ok:        34 197 94; /* @kind color */
+  --status-ok-bg:     220 252 231; /* @kind color */
+  --status-ok-fg:     21 128 61; /* @kind color */
+  --status-warn:      234 179 8; /* @kind color */
+  --status-warn-bg:   254 249 195; /* @kind color */
+  --status-warn-fg:   133 77 14; /* @kind color */
+  --status-error:     239 68 68; /* @kind color */
+  --status-error-bg:  254 226 226; /* @kind color */
+  --status-error-fg:  185 28 28; /* @kind color */
+
+  --status-cyan:      34 211 238; /* @kind color */
+  --status-emerald:   16 185 129; /* @kind color */
+  --status-amber:     245 158 11; /* @kind color */
+  --status-rose:      244 63 94; /* @kind color */
+  --status-violet:    139 92 246; /* @kind color */
+  --status-neutral:   107 114 128; /* @kind color */
+
+  /* Semantic chips (light backgrounds, borders, fg) */
+  --semantic-cyan-fg:      14 116 144; /* @kind color */
+  --semantic-cyan-bg:      236 254 255; /* @kind color */
+  --semantic-cyan-border:  165 243 252; /* @kind color */
+  --semantic-amber-fg:     146 64 14; /* @kind color */
+  --semantic-amber-bg:     255 251 235; /* @kind color */
+  --semantic-amber-border: 253 230 138; /* @kind color */
+  --semantic-violet-fg:    91 33 182; /* @kind color */
+  --semantic-violet-bg:    245 243 255; /* @kind color */
+  --semantic-violet-border:221 214 254; /* @kind color */
+  --semantic-emerald-fg:   6 95 70; /* @kind color */
+  --semantic-emerald-bg:   236 253 245; /* @kind color */
+  --semantic-emerald-border:167 243 208; /* @kind color */
+  --semantic-rose-fg:      159 18 57; /* @kind color */
+  --semantic-rose-bg:      255 241 242; /* @kind color */
+  --semantic-rose-border:  254 205 211; /* @kind color */
+  --semantic-neutral-fg:   71 85 105; /* @kind color */
+  --semantic-neutral-bg:   247 249 251; /* @kind color */
+  --semantic-neutral-border:229 233 238; /* @kind color */
+
+  /* Domain colors (taxonomy / topology / role marks) */
+  --dom-default:  107 114 128; /* @kind color */ /* neutral */
+  --dom-life:     16 185 129; /* @kind color */ /* emerald */
+  --dom-climate:  245 158 11; /* @kind color */ /* amber */
+  --dom-software: 129 140 248; /* @kind color */ /* indigo */
+
+  /* ============================================================
+     COLOR — Neutral gray scale (Tailwind)
+     ============================================================ */
+  --gray-50:  249 250 251; /* @kind color */
+  --gray-100: 243 244 246; /* @kind color */
+  --gray-200: 229 231 235; /* @kind color */
+  --gray-300: 209 213 219; /* @kind color */
+  --gray-400: 156 163 175; /* @kind color */
+  --gray-500: 107 114 128; /* @kind color */
+  --gray-600: 75 85 99; /* @kind color */
+  --gray-700: 55 65 81; /* @kind color */
+  --gray-800: 31 41 55; /* @kind color */
+  --gray-900: 17 24 39; /* @kind color */
+
+  /* ============================================================
+     TYPE — Families
+     ============================================================ */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Menlo, Consolas, 'Courier New', monospace;
+
+  /* ============================================================
+     TYPE — Scale (Tailwind)
+     ============================================================ */
+  --text-xs:   0.75rem;    /* 12px — mono eyebrows, badges */
+  --text-sm:   0.875rem;   /* 14px — body, button, table */
+  --text-base: 1rem;       /* 16px */
+  --text-lg:   1.125rem;   /* 18px */
+  --text-xl:   1.25rem;    /* 20px */
+  --text-2xl:  1.5rem;     /* 24px — page H1 (IDE density) */
+  --text-3xl:  1.875rem;   /* 30px — stat tile values */
+  --text-4xl:  2.25rem;
+  --text-5xl:  3rem;
+
+  /* TYPE — Weights */
+  --font-weight-normal:    400;
+  --font-weight-medium:    500;
+  --font-weight-semibold:  600;
+  --font-weight-bold:      700;
+  --font-weight-extrabold: 800;
+
+  /* ============================================================
+     SHAPE — Radius (small)
+     ============================================================ */
+  --radius-sm:   4px;  /* chips, badges, table cells, kg-node */
+  --radius-md:   6px;  /* buttons, inputs, nav items, port pills */
+  --radius-lg:   8px;  /* cards, panels, stat tiles */
+  --radius-xl:  12px;  /* modals only */
+  --radius-full: 9999px;
+
+  /* ============================================================
+     SHADOWS — Rare, mostly hairline borders
+     ============================================================ */
+  --shadow-none:  0 0 0 rgba(0, 0, 0, 0);
+  --shadow-sm:    0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md:    0 4px 6px rgba(0, 0, 0, 0.10);
+  --shadow-lg:    0 10px 15px rgba(0, 0, 0, 0.10);
+  --shadow-xl:    0 20px 25px rgba(0, 0, 0, 0.10);
+  --shadow-modal: 0 24px 64px -16px rgba(0, 0, 0, 0.55);
+  --shadow-toast: 0 14px 40px -16px rgba(0, 0, 0, 0.50);
+
+  /* ============================================================
+     SPACING — 4px base
+     ============================================================ */
+  --space-0_5: 0.125rem;
+  --space-1:   0.25rem;
+  --space-1_5: 0.375rem;
+  --space-2:   0.5rem;
+  --space-2_5: 0.625rem;
+  --space-3:   0.75rem;
+  --space-4:   1rem;
+  --space-5:   1.25rem;
+  --space-6:   1.5rem;
+  --space-8:   2rem;
+  --space-10:  2.5rem;
+  --space-12:  3rem;
+  --space-16:  4rem;
+
+  /* ============================================================
+     FOCUS — Amber accent ring
+     ============================================================ */
+  --focus-ring: 0 0 0 3px rgba(251, 191, 36, 0.18); /* @kind shadow */
+
+  /* ============================================================
+     ALPHA & OVERLAY FAMILIES
+     Backported from code (src/tokens/tokens.css) — parity 2026-05-30.
+     The systematized tints the design space previously expressed
+     ad-hoc (focus ring, version pill, row selection, dark-canvas
+     hovers). Keep in sync with the repo.
+     ============================================================ */
+
+  /* Accent (amber-400 251 191 36) tints */
+  --accent-primary-bg-alpha-xs:     rgba(251, 191, 36, 0.05); /* @kind color */
+  --accent-primary-bg-alpha-sm:     rgba(251, 191, 36, 0.10); /* @kind color */
+  --accent-primary-bg-alpha-md:     rgba(251, 191, 36, 0.12); /* @kind color */
+  --accent-primary-border-alpha-sm: rgba(251, 191, 36, 0.20); /* @kind color */
+  --accent-primary-border-alpha-md: rgba(251, 191, 36, 0.22); /* @kind color */
+  --accent-primary-border-alpha-lg: rgba(251, 191, 36, 0.28); /* @kind color */
+
+  /* White overlays — dark-canvas translucent-surface ramp */
+  --white-overlay-xs: rgba(255, 255, 255, 0.04); /* @kind color */
+  --white-overlay-sm: rgba(255, 255, 255, 0.05); /* @kind color */
+  --white-overlay-md: rgba(255, 255, 255, 0.08); /* @kind color */
+  --white-overlay-lg: rgba(255, 255, 255, 0.10); /* @kind color */
+  --white-overlay-xl: rgba(255, 255, 255, 0.12); /* @kind color */
+
+  /* Status deep / pressed steps */
+  --status-cyan-deep:    14 180 160; /* @kind color */
+  --status-rose-deep:    159 18 57; /* @kind color */
+  --status-rose-pressed: 120 10 40; /* @kind color */
+
+  /* Status alpha ladder (tinted backgrounds + borders) */
+  --status-emerald-bg-alpha:          rgba(16, 185, 129, 0.10); /* @kind color */
+  --status-emerald-bg-alpha-md:       rgba(16, 185, 129, 0.16); /* @kind color */
+  --status-emerald-border-alpha:      rgba(16, 185, 129, 0.20); /* @kind color */
+  --status-emerald-border-alpha-md:   rgba(16, 185, 129, 0.30); /* @kind color */
+  --status-amber-bg-alpha:            rgba(245, 158, 11, 0.08); /* @kind color */
+  --status-amber-bg-alpha-md:         rgba(245, 158, 11, 0.16); /* @kind color */
+  --status-amber-border-alpha:        rgba(245, 158, 11, 0.20); /* @kind color */
+  --status-amber-border-alpha-md:     rgba(245, 158, 11, 0.30); /* @kind color */
+  --status-amber-border-alpha-strong: rgba(245, 158, 11, 0.50); /* @kind color */
+  --status-rose-bg-alpha:             rgba(244, 63, 94, 0.08); /* @kind color */
+  --status-rose-bg-alpha-md:          rgba(244, 63, 94, 0.16); /* @kind color */
+  --status-rose-border-alpha:         rgba(244, 63, 94, 0.13); /* @kind color */
+  --status-rose-border-alpha-md:      rgba(244, 63, 94, 0.30); /* @kind color */
+  --status-cyan-bg-alpha-md:          rgba(34, 211, 238, 0.16); /* @kind color */
+  --status-violet-bg-alpha:           rgba(129, 140, 248, 0.10); /* @kind color */
+  --status-violet-border-alpha:       rgba(129, 140, 248, 0.20); /* @kind color */
+  --status-neutral-border-alpha:      rgba(107, 114, 128, 0.20); /* @kind color */
+
+  /* Version badge + environment pill markers */
+  --semantic-version-fg:           180 83 9; /* @kind color */
+  --semantic-version-bg-alpha:     rgba(245, 158, 11, 0.08); /* @kind color */
+  --semantic-version-border-alpha: rgba(245, 158, 11, 0.18); /* @kind color */
+  --semantic-env-fg:               245 158 11; /* @kind color */
+  --semantic-env-bg-alpha:         rgba(245, 158, 11, 0.12); /* @kind color */
+  --semantic-env-border-alpha:     rgba(245, 158, 11, 0.28); /* @kind color */
+
+  /* ============================================================
+     SEMANTIC TYPE TOKENS (h1/h2/eyebrow/body/code)
+     ============================================================ */
+  --type-h1-size:    1.5rem;     /* 24px */
+  --type-h1-weight:  700;
+  --type-h1-track:   -0.02em;
+  --type-h2-size:    1.125rem;
+  --type-h2-weight:  600;
+  --type-h2-track:   -0.015em;
+  --type-h3-size:    0.875rem;
+  --type-h3-weight:  600;
+
+  --type-body-size:   0.875rem;  /* 14px — UI default */
+  --type-body-weight: 400;
+  --type-body-line:   1.55;
+
+  --type-stat-size:   1.75rem;   /* 28px — aligned to code StatTile.css (parity, code-canonical) */
+  --type-stat-weight: 700;
+  --type-stat-track:  -0.02em;
+
+  --type-eyebrow-size:   0.6875rem;  /* 11px mono caps */
+  --type-eyebrow-weight: 500;
+  --type-eyebrow-track:  0.08em;
+  --type-eyebrow-case:   uppercase;
+
+  --type-mono-id-size:   0.75rem;
+  --type-mono-id-weight: 500;
+}
+
+body.dark-canvas {
+  --canvas-bg:            11 20 38; /* @kind color */ /* darker than shell-bg */
+  --canvas-bg-2:          19 32 58; /* @kind color */ /* matches shell-bg-2 */
+  --canvas-surface:       27 41 73; /* @kind color */ /* matches shell-surface */
+  --canvas-surface-2:     36 55 99; /* @kind color */
+  --canvas-card:          27 41 73; /* @kind color */
+  --canvas-fg-1:          226 232 240; /* @kind color */
+  --canvas-fg-2:          148 163 184; /* @kind color */
+  --canvas-fg-3:          100 116 139; /* @kind color */
+  --canvas-fg-4:          71 85 105; /* @kind color */
+  --canvas-border:        36 55 99; /* @kind color */
+  --canvas-border-2:      42 58 92; /* @kind color */
+  --canvas-border-strong: 53 73 115; /* @kind color */
+}
+
+/* minimal base — components + app inline styles own the rest */
+html, body { margin: 0; padding: 0; }
+body { font-family: var(--font-sans, 'Inter', system-ui, sans-serif); -webkit-font-smoothing: antialiased; }

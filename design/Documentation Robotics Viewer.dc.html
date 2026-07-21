@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="assets/heimdall-tokens.css">
+  <link rel="stylesheet" href="assets/heimdall-components.css">
+  <script src="_ds/heimdall-design-system-7d0eb47c-c514-4906-97fc-e2c1eee0aee6/_ds_bundle.js"></script>
+  <style>
+    *{ box-sizing:border-box; }
+    .chat-container{ height:100%; }
+    .chat-container__thread{ min-height:0; }
+    .graph-inspector__kv{ align-items:start; }
+    .graph-inspector__kv dt{ overflow-wrap:anywhere; padding-right:8px; }
+    .drv-scroll::-webkit-scrollbar{ width:10px; height:10px; }
+    .drv-scroll::-webkit-scrollbar-thumb{ background:var(--shell-border-2); border-radius:6px; border:3px solid transparent; background-clip:padding-box; }
+    .drv-scroll::-webkit-scrollbar-track{ background:transparent; }
+    .drv-noscroll{ scrollbar-width:none; -ms-overflow-style:none; }
+    .drv-noscroll::-webkit-scrollbar{ width:0; height:0; display:none; }
+    /* 12-layer domain palette — graph node swatches */
+    .graph-node[data-domain='motivation'] .graph-node__swatch{ background:#8B5CF6; }
+    .graph-node[data-domain='business'] .graph-node__swatch{ background:#F59E0B; }
+    .graph-node[data-domain='security'] .graph-node__swatch{ background:#F43F5E; }
+    .graph-node[data-domain='application'] .graph-node__swatch{ background:#818CF8; }
+    .graph-node[data-domain='technology'] .graph-node__swatch{ background:#22D3EE; }
+    .graph-node[data-domain='api'] .graph-node__swatch{ background:#10B981; }
+    .graph-node[data-domain='data-model'] .graph-node__swatch{ background:#2DD4BF; }
+    .graph-node[data-domain='data-store'] .graph-node__swatch{ background:#38BDF8; }
+    .graph-node[data-domain='ux'] .graph-node__swatch{ background:#F472B6; }
+    .graph-node[data-domain='navigation'] .graph-node__swatch{ background:#A78BFA; }
+    .graph-node[data-domain='apm'] .graph-node__swatch{ background:#FB923C; }
+    .graph-node[data-domain='testing'] .graph-node__swatch{ background:#4ADE80; }
+    /* inspector relationship swatches per layer */
+    .graph-inspector__rel-target[data-domain='motivation'] .graph-inspector__rel-swatch{ background:#8B5CF6; }
+    .graph-inspector__rel-target[data-domain='business'] .graph-inspector__rel-swatch{ background:#F59E0B; }
+    .graph-inspector__rel-target[data-domain='security'] .graph-inspector__rel-swatch{ background:#F43F5E; }
+    .graph-inspector__rel-target[data-domain='application'] .graph-inspector__rel-swatch{ background:#818CF8; }
+    .graph-inspector__rel-target[data-domain='technology'] .graph-inspector__rel-swatch{ background:#22D3EE; }
+    .graph-inspector__rel-target[data-domain='api'] .graph-inspector__rel-swatch{ background:#10B981; }
+    .graph-inspector__rel-target[data-domain='data-model'] .graph-inspector__rel-swatch{ background:#2DD4BF; }
+    .graph-inspector__rel-target[data-domain='data-store'] .graph-inspector__rel-swatch{ background:#38BDF8; }
+    .graph-inspector__rel-target[data-domain='ux'] .graph-inspector__rel-swatch{ background:#F472B6; }
+    .graph-inspector__rel-target[data-domain='navigation'] .graph-inspector__rel-swatch{ background:#A78BFA; }
+    .graph-inspector__rel-target[data-domain='apm'] .graph-inspector__rel-swatch{ background:#FB923C; }
+    .graph-inspector__rel-target[data-domain='testing'] .graph-inspector__rel-swatch{ background:#4ADE80; }
+    .drv-tabbtn{ cursor:pointer; }
+    .drv-tabbtn:hover{ color:#E2E8F0 !important; }
+    .drv-rail-row{ cursor:pointer; }
+    .drv-rail-row:hover{ background:#1B2949 !important; }
+    /* hierarchical NavItem nav */
+    button{ font-family:inherit; }
+    .nav-item{ width:100%; padding-right:30px; }
+    .nav-item__count{ color:#5B6B82; margin-right:2px; }
+    .drv-chev{ width:6px; height:6px; border-right:1.5px solid #5B6B82; border-bottom:1.5px solid #5B6B82; transform:rotate(-45deg); transition:transform .12s ease; }
+    .drv-chev--open{ transform:rotate(45deg); }
+    .nav-item.drv-nav-l2{ padding-left:54px; }
+    .nav-item.drv-nav-l2 .nav-item__label{ font-family:'JetBrains Mono',monospace; font-size:11px; }
+    .nav-item.drv-nav-l2.nav-item--active::before{ left:38px; }
+    /* fewer borders — inspector (InspectorPanel) + chat + page header */
+    .inspector-panel{ border:none; border-radius:0; }
+    .inspector-panel__section, .inspector-panel__property-section{ border-bottom:none; }
+    .drv-rel{ display:flex; align-items:center; gap:8px; width:100%; padding:6px 8px; border:none; background:transparent; border-radius:5px; cursor:pointer; text-align:left; }
+    .drv-rel:hover{ background:rgb(var(--canvas-bg-2)); }
+    .page-header__title{ font-size:20px !important; }
+    .tool-block{ border:none !important; background:rgb(var(--canvas-bg-2)) !important; }
+    .thinking-block{ border:none !important; border-left:3px solid rgb(var(--status-violet)) !important; }
+    .chat-composer{ border-top:none !important; }
+    .chat-container{ border:none !important; border-radius:0 !important; background:transparent !important; }
+  </style>
+</helmet>
+<div style="height:100vh; min-width:880px; display:flex; flex-direction:column; background:#0F1729; color:#E2E8F0; font-family:Inter,system-ui,sans-serif; overflow:hidden;">
+
+  <sc-if value="{{ notReady }}" hint-placeholder-val="{{ true }}">
+    <div style="margin:auto; display:flex; align-items:center; gap:9px; color:#64748B; font-family:'JetBrains Mono',monospace; font-size:12px;">
+      <span style="width:7px; height:7px; border-radius:50%; background:#FBBF24; display:inline-block;"></span>
+      loading model…
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+  <!-- ===== TOPBAR ===== -->
+  <div style="height:54px; flex:none; display:flex; align-items:center; gap:18px; padding:0 16px; background:#13203A; border-bottom:1px solid #1E2A44;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div style="width:24px; height:24px; border-radius:6px; background:linear-gradient(135deg,#FBBF24,#B45309); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:12px; color:#1B1206;">dr</div>
+      <div style="display:flex; flex-direction:column; line-height:1.15;">
+        <span style="font-size:13px; font-weight:600; color:#F1F5F9;">Documentation Robotics</span>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.08em; color:#64748B;">architecture viewer</span>
+      </div>
+    </div>
+
+    <div style="flex:1;"></div>
+
+    <div style="display:flex; align-items:center; gap:6px; padding:3px; background:#0F1729; border:1px solid #1E2A44; border-radius:7px;">
+      <div class="drv-tabbtn" onClick="{{ onLight }}" style="{{ lightStyle }}">light</div>
+      <div class="drv-tabbtn" onClick="{{ onDark }}" style="{{ darkStyle }}">dark</div>
+    </div>
+
+    <div class="drv-tabbtn" onClick="{{ onToggleChat }}" style="{{ chatToggleStyle }}">
+      <span style="width:6px; height:6px; border-radius:50%; background:#FBBF24; display:inline-block;"></span>
+      DrBot
+    </div>
+
+    <div style="display:flex; align-items:center; gap:7px; padding-left:4px;">
+      <span style="position:relative; width:8px; height:8px;">
+        <span style="position:absolute; inset:0; border-radius:50%; background:#10B981;"></span>
+      </span>
+      <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#94A3B8;">connected</span>
+    </div>
+  </div>
+
+  <!-- ===== BODY ===== -->
+  <div style="flex:1; display:flex; min-height:0; position:relative;">
+
+    <!-- LEFT RAIL — hierarchical NavItem drill-down -->
+    <div style="width:244px; flex:none; background:#13203A; border-right:1px solid #1E2A44; display:flex; flex-direction:column; min-height:0;">
+      <div style="height:40px; flex:none; display:flex; align-items:center; justify-content:space-between; padding:0 14px; border-bottom:1px solid #1E2A44;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#64748B;">{{ railEyebrow }}</span>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#475569;">{{ railCount }}</span>
+      </div>
+
+      <div class="drv-scroll drv-noscroll" style="flex:1; overflow-y:auto; padding:8px 8px;">
+        <sc-for list="{{ navRows }}" as="r" hint-placeholder-count="6">
+          <div style="{{ r.wrapStyle }}">
+            <button class="nav-item {{ r.modCls }}" onClick="{{ r.onClick }}" type="button" style="width:100%;">
+              {{ r.iconEl }}
+              <span class="nav-item__label">{{ r.label }}</span>
+              <sc-if value="{{ r.hasCount }}" hint-placeholder-val="{{ true }}"><span class="nav-item__count">{{ r.count }}</span></sc-if>
+            </button>
+            <sc-if value="{{ r.expandable }}" hint-placeholder-val="{{ true }}">
+              <span style="position:absolute; right:12px; top:0; bottom:0; display:flex; align-items:center; pointer-events:none;"><span class="{{ r.chevClass }}"></span></span>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="flex:none; padding:10px 14px; border-top:1px solid #1E2A44; display:flex; flex-direction:column; gap:3px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.08em; color:#64748B;">SPEC {{ specVersion }}</span>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#475569;">12 layers · 1,566 relationships</span>
+      </div>
+    </div>
+
+    <!-- CANVAS -->
+    <div style="flex:1; display:flex; flex-direction:column; min-width:0; background:rgb(var(--canvas-bg)); border-top-left-radius:8px; overflow:hidden;">
+      <div class="page-header" style="flex:none; padding:16px 22px 14px;">
+        <div class="page-header__text">
+          <div class="page-header__eyebrow">
+            <span style="{{ headSwatchStyle }}"></span>
+            <span>{{ headEyebrowLabel }}</span>
+          </div>
+          <h1 class="page-header__title">
+            {{ headTitle }}
+            <span class="chip chip--id-tag">{{ headIdChip }}</span>
+          </h1>
+        </div>
+        <div class="page-header__actions">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:rgb(var(--canvas-fg-3));">{{ headMeta }}</span>
+        </div>
+      </div>
+
+      <div style="flex:1; position:relative; min-height:0;">
+        <!-- graph (model + spec) -->
+        <sc-if value="{{ showGraph }}" hint-placeholder-val="{{ true }}">
+          <x-import component-from-global-scope="HeimdallDesignSystem_7d0eb4.GraphCanvas"
+            nodes="{{ graphNodes }}" edges="{{ graphEdges }}" selected-node-id="{{ graphSel }}"
+            on-node-select="{{ onNodeSelect }}" layout="manual"
+            hint-size="100%,100%" style="position:absolute; inset:0; width:100%; height:100%;"></x-import>
+        </sc-if>
+        <!-- changeset diff -->
+        <sc-if value="{{ isChangesets }}" hint-placeholder-val="{{ true }}">
+          <div class="drv-scroll" style="position:absolute; inset:0; overflow-y:auto; padding:20px 22px;">
+            <p style="font-size:13px; color:rgb(var(--canvas-fg-2)); margin:0 0 18px 0; max-width:620px; line-height:1.5;">{{ csSummary }}</p>
+            <div style="display:flex; flex-direction:column; gap:8px; max-width:760px;">
+              <sc-for list="{{ csChanges }}" as="ch" hint-placeholder-count="5">
+                <div style="display:flex; align-items:flex-start; gap:12px; padding:12px 14px; background:rgb(var(--canvas-card)); border:1px solid rgb(var(--canvas-border)); border-radius:8px;">
+                  <span style="{{ ch.opStyle }}">{{ ch.op }}</span>
+                  <div style="display:flex; flex-direction:column; gap:3px; min-width:0;">
+                    <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:rgb(var(--canvas-fg-1)); word-break:break-all;">{{ ch.path }}</span>
+                    <span style="font-size:12px; color:rgb(var(--canvas-fg-3)); line-height:1.45;">{{ ch.detail }}</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+
+    <!-- INSPECTOR — Heimdall InspectorPanel -->
+    <div style="width:320px; flex:none; border-left:1px solid rgb(var(--canvas-border)); background:rgb(var(--canvas-surface)); display:flex; flex-direction:column; min-height:0;">
+      <sc-if value="{{ showInspector }}" hint-placeholder-val="{{ true }}">
+        <div class="inspector-panel" style="height:100%;">
+          <div class="inspector-panel__head">
+            <div class="inspector-panel__eyebrow">{{ inspEyebrow }}</div>
+            <div class="inspector-panel__title">{{ inspTitle }}</div>
+            <div class="inspector-panel__id-version"><span class="inspector-panel__id">{{ inspId }}</span></div>
+          </div>
+          <div class="inspector-panel__body drv-scroll">
+            <div class="inspector-panel__section-content" style="padding-top:14px; padding-bottom:6px;">
+              <p style="font-size:13px; color:rgb(var(--canvas-fg-2)); line-height:1.55; margin:0;">{{ inspDesc }}</p>
+            </div>
+            <div class="inspector-panel__property-section">
+              <div class="inspector-panel__property-section-header">
+                <span class="inspector-panel__property-section-title">{{ inspPropsTitle }}</span>
+                <span class="inspector-panel__property-section-count">{{ inspPropsCount }}</span>
+              </div>
+              <div class="inspector-panel__property-rows">
+                <sc-for list="{{ inspProps }}" as="p" hint-placeholder-count="3">
+                  <div class="inspector-panel__property-row">
+                    <span class="inspector-panel__property-key">{{ p.key }}</span>
+                    <span class="inspector-panel__property-value">{{ p.value }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <sc-if value="{{ hasOut }}" hint-placeholder-val="{{ true }}">
+              <div class="inspector-panel__section">
+                <div class="inspector-panel__section-header">
+                  <div class="inspector-panel__section-title"><span>Outgoing</span><span class="inspector-panel__section-count">· {{ outCount }}</span></div>
+                </div>
+                <div class="inspector-panel__section-content" style="display:flex; flex-direction:column; gap:1px;">
+                  <sc-for list="{{ inspOut }}" as="rel" hint-placeholder-count="2">
+                    <button class="drv-rel" onClick="{{ rel.onClick }}" type="button">
+                      <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:rgb(var(--canvas-fg-4)); flex:none;">{{ rel.arrow }}</span>
+                      <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:rgb(var(--canvas-fg-3));">{{ rel.predicate }}</span>
+                      <span style="flex:1;"></span>
+                      <span style="{{ rel.swatchStyle }}"></span>
+                      <span style="font-size:12px; color:rgb(var(--canvas-fg-1)); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:152px;">{{ rel.targetTitle }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ hasIn }}" hint-placeholder-val="{{ true }}">
+              <div class="inspector-panel__section">
+                <div class="inspector-panel__section-header">
+                  <div class="inspector-panel__section-title"><span>Incoming</span><span class="inspector-panel__section-count">· {{ inCount }}</span></div>
+                </div>
+                <div class="inspector-panel__section-content" style="display:flex; flex-direction:column; gap:1px;">
+                  <sc-for list="{{ inspIn }}" as="rel" hint-placeholder-count="2">
+                    <button class="drv-rel" onClick="{{ rel.onClick }}" type="button">
+                      <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:rgb(var(--canvas-fg-4)); flex:none;">{{ rel.arrow }}</span>
+                      <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:rgb(var(--canvas-fg-3));">{{ rel.predicate }}</span>
+                      <span style="flex:1;"></span>
+                      <span style="{{ rel.swatchStyle }}"></span>
+                      <span style="font-size:12px; color:rgb(var(--canvas-fg-1)); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:152px;">{{ rel.targetTitle }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isChangesets }}" hint-placeholder-val="{{ true }}">
+        <div class="inspector-panel" style="height:100%;">
+          <div class="inspector-panel__head">
+            <div class="inspector-panel__eyebrow">CHANGESET</div>
+            <div class="inspector-panel__title">{{ csName }}</div>
+            <div class="inspector-panel__id-version"><span class="inspector-panel__id">{{ csMeta }}</span></div>
+          </div>
+          <div class="inspector-panel__body drv-scroll" style="padding:16px;">
+            <span style="{{ csStatusStyle }}">{{ csStatus }}</span>
+            <div style="display:flex; gap:8px; margin-top:14px;">
+              <div style="flex:1; padding:11px; background:rgb(var(--canvas-surface)); border-left:2px solid #10B981; border-radius:5px;">
+                <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.08em; text-transform:uppercase; color:rgb(var(--canvas-fg-3));">ADDED</div>
+                <div style="font-size:22px; font-weight:700; color:rgb(var(--canvas-fg-1)); margin-top:3px;">{{ csAdd }}</div>
+              </div>
+              <div style="flex:1; padding:11px; background:rgb(var(--canvas-surface)); border-left:2px solid #22D3EE; border-radius:5px;">
+                <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.08em; text-transform:uppercase; color:rgb(var(--canvas-fg-3));">MODIFIED</div>
+                <div style="font-size:22px; font-weight:700; color:rgb(var(--canvas-fg-1)); margin-top:3px;">{{ csMod }}</div>
+              </div>
+              <div style="flex:1; padding:11px; background:rgb(var(--canvas-surface)); border-left:2px solid #F43F5E; border-radius:5px;">
+                <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.08em; text-transform:uppercase; color:rgb(var(--canvas-fg-3));">DELETED</div>
+                <div style="font-size:22px; font-weight:700; color:rgb(var(--canvas-fg-1)); margin-top:3px;">{{ csDel }}</div>
+              </div>
+            </div>
+            <div style="margin-top:18px; display:flex; flex-direction:column; gap:7px;">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:rgb(var(--canvas-fg-3));">AUTHOR</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:rgb(var(--canvas-fg-1));">{{ csAuthor }}</span>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+
+    <!-- DRBOT CHAT DRAWER -->
+    <sc-if value="{{ chatOpen }}" hint-placeholder-val="{{ true }}">
+      <div style="{{ chatDrawerStyle }}">
+        <div style="height:40px; flex:none; display:flex; align-items:center; gap:8px; padding:0 16px; border-bottom:1px solid rgb(var(--canvas-border));">
+          <span style="width:6px; height:6px; border-radius:50%; background:#FBBF24; display:inline-block;"></span>
+          <span style="font-size:13px; font-weight:600; color:rgb(var(--canvas-fg-1));">DrBot</span>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:rgb(var(--canvas-fg-3));">model assistant</span>
+        </div>
+
+        <div style="flex:1; min-height:0; position:relative;">
+          <x-import component-from-global-scope="HeimdallDesignSystem_7d0eb4.ChatContainer" hint-size="100%,100%" style="position:absolute; inset:0;">
+            <sc-for list="{{ messages }}" as="m" hint-placeholder-count="2">
+              <x-import component-from-global-scope="HeimdallDesignSystem_7d0eb4.ChatMessage"
+                role="{{ m.role }}" sender-name="{{ m.sender }}" timestamp="{{ m.time }}"
+                body="{{ m.body }}" thinking-block="{{ m.thinking }}" tool-block="{{ m.tool }}"
+                hint-size="100%,80px"></x-import>
+            </sc-for>
+          </x-import>
+        </div>
+
+        <sc-if value="{{ showSuggestions }}" hint-placeholder-val="{{ true }}">
+          <div style="flex:none; padding:10px 12px 6px 12px; border-top:1px solid rgb(var(--canvas-border));">
+            <x-import component-from-global-scope="HeimdallDesignSystem_7d0eb4.ChatSuggestions"
+              suggestions="{{ suggestions }}" on-select="{{ onSuggestion }}" hint-size="100%,40px"></x-import>
+          </div>
+        </sc-if>
+        <div style="flex:none; padding:0 8px 10px 8px;">
+          <x-import component-from-global-scope="HeimdallDesignSystem_7d0eb4.ChatComposer"
+            value="{{ chatInput }}" on-change="{{ onChatChange }}" on-submit="{{ onChatSubmit }}"
+            scope-label="{{ chatScope }}" placeholder="Ask about the model…" loading="{{ chatBusy }}"
+            hint-size="100%,120px"></x-import>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <!-- ===== STATUSBAR ===== -->
+  <div style="height:28px; flex:none; display:flex; align-items:center; gap:14px; padding:0 16px; background:#13203A; border-top:1px solid #1E2A44;">
+    <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#64748B;">{{ statusLeft }}</span>
+    <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#475569;">·</span>
+    <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#64748B;">{{ statusMid }}</span>
+    <span style="flex:1;"></span>
+    <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#475569;">cli {{ cliVersion }} · refs ok</span>
+  </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = {
+    data: null,
+    view: 'model',
+    layerId: 'data-model',
+    selectedId: 'meta-model',
+    canvasDark: false,
+    chatOpen: true,
+    chatInput: '',
+    messages: [],
+    changesetId: null,
+    chatBusy: false,
+    wide: false,
+    expandedSections: new Set(['model']),
+    expandedLayers: new Set(['model:data-model']),
+    _seq: 0,
+  };
+
+  componentDidMount() {
+    import('./dr-data.js').then((mod) => {
+      const data = mod.DATA || mod.default;
+      this.setState({
+        data,
+        changesetId: data.CHANGESETS[0].id,
+        messages: [this._botMsg(
+          'I\'m **DrBot**, scoped to the loaded architecture model. Select any element to inspect it, then ask me to explain it, trace its cross-layer references, or validate reference integrity.',
+          null, null
+        )],
+      });
+    });
+    document.body.classList.toggle('dark-canvas', this.state.canvasDark);
+    this._onResize = () => { const w = window.innerWidth >= 1300; if (w !== this.state.wide) this.setState({ wide: w }); };
+    window.addEventListener('resize', this._onResize);
+    this.setState({ wide: window.innerWidth >= 1300, chatOpen: window.innerWidth >= 1300 });
+  }
+  componentWillUnmount() { if (this._onResize) window.removeEventListener('resize', this._onResize); }
+  _chatDrawerStyle() {
+    const base = 'width:372px;flex:none;background:rgb(var(--canvas-bg));display:flex;flex-direction:column;min-height:0;border-left:1px solid rgb(var(--canvas-border));';
+    return this.state.wide ? base : base + 'position:absolute;right:0;top:0;bottom:0;z-index:30;box-shadow:-16px 0 44px -22px rgba(0,0,0,0.5);';
+  }
+
+  // ---- helpers ------------------------------------------------------------
+  get d() { return this.state.data; }
+  layer(id) { return this.d.LAYERS.find((l) => l.id === (id || this.state.layerId)); }
+  els(id) { return this.d.MODEL[id || this.state.layerId] || []; }
+  elById(layerId, id) { return (this.d.MODEL[layerId] || []).find((e) => e.id === id); }
+  layerColor(id) { const l = this.layer(id); return l ? l.color : '#6B7280'; }
+
+  _cardShort(c) {
+    return { 'many-to-many': 'N:N', 'one-to-many': '1:N', 'many-to-one': 'N:1', 'one-to-one': '1:1' }[c] || '';
+  }
+
+  _icon(name) {
+    const P = {
+      graph: '<circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M8 8 16 16 M16 8 8 16 M12 9v6"/>',
+      schema: '<path d="M3 12 9 6 21 6"/><path d="M3 12 9 18 21 18"/><circle cx="3" cy="12" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="21" cy="18" r="2"/>',
+      history: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/>',
+    };
+    return React.createElement('svg', {
+      className: 'nav-item__icon', viewBox: '0 0 24 24', width: 16, height: 16, fill: 'none',
+      stroke: 'currentColor', strokeWidth: 1.75, strokeLinecap: 'round', strokeLinejoin: 'round',
+      dangerouslySetInnerHTML: { __html: P[name] || '' },
+    });
+  }
+
+  // derive spec node types + relationships for a layer (data-model is authored)
+  specFor(layerId) {
+    if (this.d.SPEC[layerId]) {
+      const s = this.d.SPEC[layerId];
+      const counts = {};
+      this.els(layerId).forEach((e) => { counts[e.type] = (counts[e.type] || 0) + 1; });
+      const nodeTypes = s.nodeTypes.map((t) => ({ ...t, count: counts[t.id] || 0 }));
+      const rels = s.rels.map((r) => ({ src: r[0], predicate: r[1], dst: r[2], dstLayer: r[3], card: r[4], strength: r[5], req: r[6] }));
+      return { nodeTypes, rels };
+    }
+    // derive from instance data
+    const els = this.els(layerId);
+    const counts = {};
+    els.forEach((e) => { counts[e.type] = (counts[e.type] || 0) + 1; });
+    const nodeTypes = Object.keys(counts).map((t) => ({
+      id: t, title: this._titleCase(t), count: counts[t],
+      desc: counts[t] + ' ' + t + ' element' + (counts[t] > 1 ? 's' : '') + ' in the ' + this.layer(layerId).name + ' layer.',
+      attrs: [],
+    }));
+    const seen = {}; const rels = [];
+    els.forEach((e) => {
+      e.rels.forEach((r) => {
+        const tgt = els.find((x) => x.id === r.t); if (!tgt) return;
+        const key = e.type + '|' + r.p + '|' + tgt.type;
+        if (seen[key]) return; seen[key] = 1;
+        rels.push({ src: e.type, predicate: r.p, dst: tgt.type, dstLayer: layerId, card: 'many-to-many', strength: 'medium', req: false });
+      });
+      e.xrefs.forEach((x) => {
+        const key = e.type + '|' + x.p + '|' + x.l;
+        if (seen[key]) return; seen[key] = 1;
+        rels.push({ src: e.type, predicate: x.p, dst: x.l, dstLayer: x.l, card: 'many-to-many', strength: 'medium', req: false, xlayer: true });
+      });
+    });
+    return { nodeTypes, rels };
+  }
+
+  _titleCase(s) {
+    const known = { objectschema: 'ObjectSchema', businessobject: 'BusinessObject', businessservice: 'BusinessService', businessprocess: 'BusinessProcess', businessrole: 'BusinessRole', businessfunction: 'BusinessFunction', applicationcomponent: 'ApplicationComponent', applicationservice: 'ApplicationService', systemsoftware: 'SystemSoftware', openapidocument: 'OpenAPIDocument', securityscheme: 'SecurityScheme', secureresource: 'SecureResource', authenticationconfig: 'AuthenticationConfig', dataclassification: 'DataClassification', metricinstrument: 'MetricInstrument', instrumentationscope: 'InstrumentationScope', navigationgraph: 'NavigationGraph', navigationflow: 'NavigationFlow', navigationtransition: 'NavigationTransition', testcoveragemodel: 'TestCoverageModel', testcoveragetarget: 'TestCoverageTarget', coveragerequirement: 'CoverageRequirement', coveragesummary: 'CoverageSummary', coveragegap: 'CoverageGap', librarycomponent: 'LibraryComponent', uxapplication: 'UXApplication' };
+    return known[s] || (s.charAt(0).toUpperCase() + s.slice(1));
+  }
+
+  // centered staggered grid — deterministic, never overlaps, recenters per layer
+  layout(nodes) {
+    const n = nodes.length || 1;
+    const cols = Math.max(2, Math.min(4, Math.ceil(Math.sqrt(n))));
+    const colGap = 196, rowGap = 88;
+    const pos = {};
+    nodes.forEach((node, i) => {
+      const c = i % cols, r = Math.floor(i / cols);
+      pos[node.id] = { x: c * colGap + (r % 2) * (colGap * 0.18), y: r * rowGap };
+    });
+    const xs = Object.values(pos).map((p) => p.x), ys = Object.values(pos).map((p) => p.y);
+    const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+    Object.keys(pos).forEach((k) => { pos[k].x -= cx; pos[k].y -= cy; });
+    return pos;
+  }
+
+  graph() {
+    const { view, layerId } = this.state;
+    let raw = [], edges = [];
+    if (view === 'spec') {
+      const s = this.specFor(layerId);
+      raw = s.nodeTypes.map((t) => ({ id: t.id, label: t.title, kind: 'spec node', domainColor: layerId }));
+      const ids = {}; raw.forEach((n) => (ids[n.id] = 1));
+      s.rels.forEach((r, k) => { if (r.dstLayer === layerId && ids[r.dst] && r.src !== r.dst) edges.push({ id: 'e' + k, sourceId: r.src, targetId: r.dst, label: r.predicate }); });
+    } else {
+      const els = this.els(layerId);
+      raw = els.map((e) => ({ id: e.id, label: e.name, kind: e.type, domainColor: layerId }));
+      const ids = {}; raw.forEach((n) => (ids[n.id] = 1));
+      els.forEach((e) => e.rels.forEach((r, k) => { if (ids[r.t]) edges.push({ id: e.id + '-' + k, sourceId: e.id, targetId: r.t, label: r.p }); }));
+    }
+    const pos = this.layout(raw, edges);
+    const nodes = raw.map((n) => ({ ...n, x: pos[n.id] ? pos[n.id].x : 0, y: pos[n.id] ? pos[n.id].y : 0 }));
+    return { nodes, edges };
+  }
+
+  inspector() {
+    const { view, layerId, selectedId } = this.state;
+    const layer = this.layer(layerId);
+    let k = 0;
+    const mkRel = (predicate, targetId, targetTitle, targetDomain, dir) => ({
+      id: dir + (k++), predicate, targetTitle, dir, arrow: dir === 'out' ? '→' : '←',
+      swatchStyle: 'width:8px;height:8px;border-radius:2px;flex:none;background:' + this.layerColor(targetDomain) + ';',
+      onClick: () => this.selectNode(targetId),
+    });
+    if (view === 'spec') {
+      const s = this.specFor(layerId);
+      const t = s.nodeTypes.find((x) => x.id === selectedId) || s.nodeTypes[0];
+      if (!t) return null;
+      const props = [{ key: 'instances', value: String(t.count) }];
+      (t.attrs || []).forEach((a) => props.push({ key: a[0], value: a[1] + (a[2] ? ' · required' : '') }));
+      const out = [], inc = [];
+      s.rels.forEach((r) => {
+        if (r.src === t.id) {
+          const intra = r.dstLayer === layerId;
+          out.push(mkRel(r.predicate + (this._cardShort(r.card) ? ' ' + this._cardShort(r.card) : ''), intra ? r.dst : (r.dstLayer + '|' + r.dst), intra ? this._titleCase(r.dst) : (this._titleCase(r.dst) + ' · ' + (this.layer(r.dstLayer) || {}).name), r.dstLayer, 'out'));
+        } else if (r.dst === t.id && r.dstLayer === layerId) {
+          inc.push(mkRel(r.predicate, r.src, this._titleCase(r.src), layerId, 'in'));
+        }
+      });
+      return { eyebrow: 'SPEC NODE · ' + layer.std, title: t.title, id: layerId + '.' + t.id, desc: t.desc, propsTitle: 'ATTRIBUTES', props, out, inc };
+    }
+    const e = this.elById(layerId, selectedId);
+    if (!e) return null;
+    const props = [{ key: 'layer', value: layer.name }, { key: 'type', value: e.type }, { key: 'provenance', value: e.src ? 'extracted' : 'authored' }];
+    if (e.src) props.push({ key: 'source', value: e.src.symbol });
+    const out = [], inc = [];
+    e.rels.forEach((r) => { const t = this.elById(layerId, r.t); if (t) out.push(mkRel(r.p, r.t, t.name, layerId, 'out')); });
+    e.xrefs.forEach((x) => { const tl = this.layer(x.l); const tEl = this.elById(x.l, x.t); out.push(mkRel(x.p, x.l + '|' + x.t, (tEl ? tEl.name : x.t) + ' · ' + (tl ? tl.name : x.l), x.l, 'out')); });
+    this.els(layerId).forEach((other) => { other.rels.forEach((r) => { if (r.t === e.id) inc.push(mkRel(r.p, other.id, other.name, layerId, 'in')); }); });
+    return { eyebrow: 'ELEMENT', title: e.name, id: layerId + '.' + e.type + '.' + e.id, desc: e.desc, propsTitle: 'PROPERTIES', props, out, inc };
+  }
+
+  // ---- chat ---------------------------------------------------------------
+  _md(text) {
+    const h = React.createElement;
+    const lines = text.split('\n');
+    const out = []; let list = null;
+    const inline = (s) => {
+      const parts = s.split(/(\*\*[^*]+\*\*|`[^`]+`)/g).filter(Boolean);
+      return parts.map((p, i) => {
+        if (p.startsWith('**')) return h('strong', { key: i, className: 'chat-markdown__strong' }, p.slice(2, -2));
+        if (p.startsWith('`')) return h('code', { key: i, className: 'chat-markdown__code-inline' }, p.slice(1, -1));
+        return p;
+      });
+    };
+    lines.forEach((ln, i) => {
+      if (ln.trim().startsWith('- ')) { list = list || []; list.push(h('li', { key: 'li' + i, className: 'chat-markdown__li' }, inline(ln.trim().slice(2)))); return; }
+      if (list) { out.push(h('ul', { key: 'ul' + i, className: 'chat-markdown__ul' }, list)); list = null; }
+      if (ln.trim()) out.push(h('p', { key: 'p' + i, className: 'chat-markdown__p' }, inline(ln)));
+    });
+    if (list) out.push(h('ul', { key: 'ulx', className: 'chat-markdown__ul' }, list));
+    return h('div', { className: 'chat-markdown' }, out);
+  }
+
+  _now() { const d = new Date(); return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+  _id() { this.state._seq++; return 'm' + this.state._seq + '_' + Date.now(); }
+  _botMsg(text, thinking, tool) { return { id: this._id(), role: 'bot', sender: 'DrBot', time: this._now(), text, thinking, tool }; }
+  _userMsg(text) { return { id: this._id(), role: 'user', sender: 'You', time: this._now(), text, thinking: null, tool: null }; }
+
+  _intent(text) {
+    const t = text.toLowerCase();
+    if (/(unresolved|integrity|valid|dangling|consistent)/.test(t)) return 'unresolved';
+    if (/(cross.?layer|reference|refs|relationship|connected|depend)/.test(t)) return 'crossLayer';
+    if (/(layer|standard|how many|what is the)/.test(t) && !/this element|this node/.test(t)) return 'explainLayer';
+    return 'explainElement';
+  }
+
+  send(text) {
+    if (!text || !text.trim() || this.state.chatBusy) return;
+    const layer = this.layer();
+    const el = this.state.view === 'model' ? this.elById(this.state.layerId, this.state.selectedId) : null;
+    const intent = this._intent(text);
+    const I = this.d.CHAT.intents;
+    let r;
+    if (intent === 'unresolved') r = I.unresolved();
+    else if (intent === 'explainLayer') r = I.explainLayer(layer);
+    else if (intent === 'crossLayer') r = el ? I.crossLayer(el, layer) : I.explainLayer(layer);
+    else r = el ? I.explainElement(el, layer) : I.fallback(null, layer);
+    this.setState((s) => ({ messages: [...s.messages, this._userMsg(text)], chatInput: '', chatBusy: true }));
+    setTimeout(() => {
+      this.setState((s) => ({ messages: [...s.messages, this._botMsg(r.body, r.thinking ? { content: r.thinking } : null, r.tool ? { name: r.tool.name, status: r.tool.status, output: r.tool.output } : null)], chatBusy: false }));
+    }, 620);
+  }
+
+  // ---- hierarchical sidebar navigation ------------------------------------
+  _firstId(view, lid) {
+    return view === 'spec' ? (this.specFor(lid).nodeTypes[0] || {}).id : (this.els(lid)[0] || {}).id;
+  }
+  onSection(s) {
+    // accordion: activating a section expands it alone; clicking the active one collapses
+    if (this.state.view === s && this.state.expandedSections.has(s)) {
+      this.setState({ expandedSections: new Set() });
+      return;
+    }
+    const patch = { view: s, expandedSections: new Set([s]) };
+    if (s !== 'changesets') {
+      patch.expandedLayers = new Set([s + ':' + this.state.layerId]);
+      patch.selectedId = this._firstId(s, this.state.layerId);
+    } else { patch.expandedLayers = new Set(); }
+    this.setState(patch);
+  }
+  onLayer(s, lid) {
+    const key = s + ':' + lid;
+    const collapse = this.state.view === s && this.state.layerId === lid && this.state.expandedLayers.has(key);
+    this.setState({ view: s, layerId: lid, expandedSections: new Set([s]), expandedLayers: collapse ? new Set() : new Set([key]), selectedId: this._firstId(s, lid) });
+  }
+  onNode(s, lid, nid) { this.setState({ view: s, layerId: lid, selectedId: nid, expandedSections: new Set([s]), expandedLayers: new Set([s + ':' + lid]) }); }
+  selectChangeset(id) { this.setState({ view: 'changesets', changesetId: id, expandedSections: new Set(['changesets']), expandedLayers: new Set() }); }
+  selectNode(target) {
+    if (typeof target === 'string' && target.indexOf('|') >= 0) {
+      const [l, id] = target.split('|');
+      const view = this.state.view === 'spec' ? 'spec' : 'model';
+      this.setState({ layerId: l, selectedId: id, view, expandedSections: new Set([view]), expandedLayers: new Set([view + ':' + l]) });
+    } else {
+      this.setState({ selectedId: target, expandedSections: new Set([this.state.view]), expandedLayers: new Set([this.state.view + ':' + this.state.layerId]) });
+    }
+  }
+  toggleCanvas(dark) { document.body.classList.toggle('dark-canvas', dark); this.setState({ canvasDark: dark }); }
+
+  // ---- render -------------------------------------------------------------
+  renderVals() {
+    const h = React.createElement;
+    if (!this.d) {
+      return { ready: false, notReady: true, viewTabs: [], treeRows: [], changesetRows: [], messages: [], suggestions: [], graphNodes: [], graphEdges: [],
+        railEyebrow: 'LAYERS', railCount: '', showTree: false, isChangesets: false, showGraph: false, showInspector: false, chatOpen: false,
+        headTitle: 'Loading…', statusLeft: 'loading model…', statusMid: '', specVersion: '', cliVersion: '', headStd: '', headMeta: '',
+        headSwatchStyle: '', headChipStyle: '', inspectorEyebrow: 'INSPECTOR', graphLegend: '', chatScope: '', chatInput: '', chatBusy: false };
+    }
+    const { view, layerId, selectedId } = this.state;
+    const layer = this.layer();
+
+    // canvas toggle styles
+    const segOn = 'padding:3px 11px;border-radius:5px;font-size:11px;font-family:JetBrains Mono,monospace;background:#243763;color:#F1F5F9;';
+    const segOff = 'padding:3px 11px;border-radius:5px;font-size:11px;font-family:JetBrains Mono,monospace;color:#64748B;';
+    const chatBtnBase = 'display:flex;align-items:center;gap:7px;padding:6px 12px;border-radius:7px;font-size:12px;font-weight:500;transition:all .12s;';
+    const chatToggleStyle = chatBtnBase + (this.state.chatOpen ? 'background:#1B2949;color:#F1F5F9;border:1px solid #2A3A5C;' : 'color:#94A3B8;border:1px solid #1E2A44;');
+
+    // hierarchical NavItem nav (Model / Schema / Changesets -> Layer -> Node)
+    const isChangesets = view === 'changesets';
+    const railEyebrow = 'NAVIGATION', railCount = '';
+    const csColor = (s) => (s === 'staged' ? '#FBBF24' : '#10B981');
+    const ICON = { model: 'graph', spec: 'schema', changesets: 'history' };
+    const navRows = [];
+    [['model', 'Model'], ['spec', 'Schema'], ['changesets', 'Changesets']].forEach(([sid, slabel]) => {
+      const secExp = this.state.expandedSections.has(sid);
+      navRows.push({ key: sid, depth: 0, icon: ICON[sid], label: slabel, count: sid === 'changesets' ? this.d.CHANGESETS.length : 12, active: view === sid, expandable: true, cls: '', onClick: () => this.onSection(sid), chevClass: 'drv-chev' + (secExp ? ' drv-chev--open' : '') });
+      if (!secExp) return;
+      if (sid === 'changesets') {
+        this.d.CHANGESETS.forEach((c) => navRows.push({ key: 'cs:' + c.id, depth: 1, icon: undefined, label: c.name, count: undefined, active: view === 'changesets' && this.state.changesetId === c.id, expandable: false, cls: '', onClick: () => this.selectChangeset(c.id), chevClass: '' }));
+        return;
+      }
+      this.d.LAYERS.forEach((l) => {
+        const key = sid + ':' + l.id;
+        const lExp = this.state.expandedLayers.has(key);
+        navRows.push({ key, depth: 1, icon: undefined, label: l.name, count: sid === 'spec' ? l.types : l.elements, active: view === sid && layerId === l.id, expandable: true, cls: '', onClick: () => this.onLayer(sid, l.id), chevClass: 'drv-chev' + (lExp ? ' drv-chev--open' : '') });
+        if (!lExp) return;
+        const items = sid === 'spec' ? this.specFor(l.id).nodeTypes.map((t) => ({ id: t.id, name: t.title })) : this.els(l.id).map((e) => ({ id: e.id, name: e.name }));
+        items.forEach((it) => navRows.push({ key: key + ':' + it.id, depth: 1, l2: true, icon: undefined, label: it.name, count: undefined, active: view === sid && layerId === l.id && selectedId === it.id, expandable: false, onClick: () => this.onNode(sid, l.id, it.id), chevClass: '' }));
+      });
+    });
+    navRows.forEach((r) => {
+      r.wrapStyle = 'position:relative;';
+      r.modCls = [r.active && 'nav-item--active', r.depth === 1 && 'nav-item--depth-1', r.l2 && 'drv-nav-l2'].filter(Boolean).join(' ');
+      r.hasCount = r.count !== undefined && r.count !== null;
+      r.iconEl = r.depth === 0 ? this._icon(r.icon) : null;
+    });
+
+    // canvas header (PageHeader)
+    let headEyebrowLabel, headTitle, headIdChip, headMeta, headSwatchColor, graphLegend = '';
+    if (isChangesets) {
+      const c = this.d.CHANGESETS.find((x) => x.id === this.state.changesetId);
+      headEyebrowLabel = 'CHANGESET'; headTitle = c.name; headIdChip = c.status; headMeta = c.changes.length + ' changes'; headSwatchColor = csColor(c.status);
+    } else if (view === 'spec') {
+      headEyebrowLabel = 'META-MODEL · ' + layer.std; headTitle = layer.name + ' schema'; headIdChip = layerId; headMeta = layer.types + ' node types · ' + layer.rels + ' relationships'; headSwatchColor = layer.color; graphLegend = layer.name + ' · meta-model';
+    } else {
+      headEyebrowLabel = 'INSTANCE MODEL · ' + layer.std; headTitle = layer.name; headIdChip = layerId; headMeta = this.els(layerId).length + ' elements'; headSwatchColor = layer.color; graphLegend = layer.name + ' · instance model';
+    }
+    const headSwatchStyle = 'width:10px;height:10px;border-radius:3px;flex:none;background:' + headSwatchColor + ';';
+
+    // graph + inspector
+    const g = isChangesets ? { nodes: [], edges: [] } : this.graph();
+    const insp = isChangesets ? null : this.inspector();
+
+    // changeset detail
+    let csSummary = '', csChanges = [], csName = '', csStatus = '', csStatusStyle = '', csMeta = '', csAdd = 0, csMod = 0, csDel = 0, csAuthor = '';
+    if (isChangesets) {
+      const c = this.d.CHANGESETS.find((x) => x.id === this.state.changesetId);
+      csSummary = c.summary; csName = c.name; csStatus = c.status; csMeta = c.created; csAdd = c.stats.add; csMod = c.stats.mod; csDel = c.stats.del; csAuthor = c.author;
+      csStatusStyle = 'display:inline-block;width:fit-content;font-family:JetBrains Mono,monospace;font-size:10px;letter-spacing:0.06em;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:' + (c.status === 'staged' ? 'rgba(251,191,36,0.12)' : 'rgba(16,185,129,0.12)') + ';color:' + csColor(c.status) + ';';
+      const opMap = { add: ['#10B981', 'rgba(16,185,129,0.12)'], mod: ['#22D3EE', 'rgba(34,211,238,0.12)'], del: ['#F43F5E', 'rgba(244,63,94,0.12)'] };
+      csChanges = c.changes.map((ch) => ({ op: ch.op, path: ch.path, detail: ch.detail,
+        opStyle: 'flex:none;font-family:JetBrains Mono,monospace;font-size:10px;letter-spacing:0.05em;text-transform:uppercase;padding:3px 8px;border-radius:4px;width:42px;text-align:center;background:' + opMap[ch.op][1] + ';color:' + opMap[ch.op][0] + ';' }));
+    }
+
+    // chat
+    const messages = this.state.messages.map((m) => ({ id: m.id, role: m.role, sender: m.sender, time: m.time, body: this._md(m.text), thinking: m.thinking, tool: m.tool }));
+    const selEl = view === 'model' ? this.elById(layerId, selectedId) : null;
+    const chatScope = isChangesets ? this.d.CHANGESETS.find((x) => x.id === this.state.changesetId).name
+      : (selEl ? selEl.name : (view === 'spec' ? layer.name + ' schema' : layer.name + ' layer'));
+    let suggestions = this.d.CHAT.suggestions.slice();
+    if (selEl) suggestions = ['What does ' + selEl.name + ' do?', 'Show cross-layer references', 'Any unresolved references?', 'Explain the ' + layer.name + ' layer'];
+
+    return {
+      ready: true, notReady: false, view, isModel: view === 'model', isSpec: view === 'spec', isChangesets,
+      lightStyle: this.state.canvasDark ? segOff : segOn, darkStyle: this.state.canvasDark ? segOn : segOff,
+      onLight: () => this.toggleCanvas(false), onDark: () => this.toggleCanvas(true),
+      chatToggleStyle, onToggleChat: () => this.setState((s) => ({ chatOpen: !s.chatOpen })), chatOpen: this.state.chatOpen,
+      railEyebrow, railCount, navRows,
+      headSwatchStyle, headEyebrowLabel, headTitle, headIdChip, headMeta,
+      showGraph: !isChangesets, graphNodes: g.nodes, graphEdges: g.edges, graphSel: selectedId, onNodeSelect: (id) => this.selectNode(id), graphLegend,
+      showInspector: !isChangesets && !!insp,
+      inspEyebrow: insp ? insp.eyebrow : '', inspTitle: insp ? insp.title : '', inspId: insp ? insp.id : '',
+      inspDesc: insp ? insp.desc : '', inspPropsTitle: insp ? insp.propsTitle : '', inspProps: insp ? insp.props : [], inspPropsCount: insp ? insp.props.length : 0,
+      inspOut: insp ? insp.out : [], inspIn: insp ? insp.inc : [], hasOut: !!(insp && insp.out.length), hasIn: !!(insp && insp.inc.length),
+      outCount: insp ? insp.out.length : 0, inCount: insp ? insp.inc.length : 0,
+      csSummary, csChanges, csName, csStatus, csStatusStyle, csMeta, csAdd, csMod, csDel, csAuthor,
+      messages, suggestions, showSuggestions: this.state.messages.length <= 1, onSuggestion: (s) => this.send(s),
+      chatScope, chatInput: this.state.chatInput, onChatChange: (v) => this.setState({ chatInput: v }), onChatSubmit: (v) => this.send(v), chatBusy: this.state.chatBusy,
+      specVersion: '0.8.4', cliVersion: '0.1.3', chatDrawerStyle: this._chatDrawerStyle(),
+      statusLeft: this.d.MODEL[layerId] ? (this.els(layerId).length + ' ' + layer.name.toLowerCase() + ' elements') : '0 elements',
+      statusMid: '1,566 refs indexed · 0 unresolved',
+    };
+  }
+}
+</script>
+</body>
+</html>

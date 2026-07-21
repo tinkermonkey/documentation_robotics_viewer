@@ -1,0 +1,7 @@
+/* =========================================================================
+   Heimdall Design System — global entry point
+   Consumers link THIS one file. It pulls in the token + type + base layer
+   (colors_and_type.css). Per-component CSS lives next to each component and
+   is loaded by the component / loader, not globally.
+   ========================================================================= */
+@import url('colors_and_type.css');
