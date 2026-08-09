@@ -11,6 +11,9 @@ build/
 .turbo/
 .next/
 .wrangler/
+storybook-static/
+playwright-report/
+test-results/
 
 # Exclude logs
 *.log
@@ -41,3 +44,11 @@ coverage/
 # Exclude temporary files
 tmp/
 temp/
+
+# Exclude design artifacts
+design/
+
+# Exclude documentation
+documentation/
+documentation-robotics/
+docs/

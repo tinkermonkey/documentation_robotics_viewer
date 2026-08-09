@@ -17,22 +17,12 @@ USER root
 # ============================================================================
 # Stage 2: System Dependencies for CI Environment
 # ============================================================================
-# Install dbus (provides dbus-launch) required by GitHub CLI authentication
-# Without dbus-launch, `gh auth` and related commands fail in headless containers
 RUN apt-get update && \
     apt-get install -y --no-install-recommends dbus dbus-x11 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Set DBUS_SESSION_BUS_ADDRESS to allow gh CLI to work without a running dbus session
-# In CI/container environments, authentication should use GITHUB_TOKEN env var
 ENV DBUS_SESSION_BUS_ADDRESS=disabled:
-
-# Configure gh CLI for token-based authentication in CI/container environments
-# The gh CLI checks GH_TOKEN first, then GITHUB_TOKEN for authentication.
-# GH_NO_UPDATE_NOTIFIER suppresses update notifications in CI environments.
-# NO_COLOR avoids ANSI escape issues in non-TTY environments.
-# GH_PROMPT_DISABLED prevents interactive prompts that hang in containers.
 ENV GH_NO_UPDATE_NOTIFIER=1
 ENV NO_COLOR=1
 ENV GH_PROMPT_DISABLED=1
@@ -40,60 +30,42 @@ ENV GH_PROMPT_DISABLED=1
 # ============================================================================
 # Stage 3: Git Configuration for CI Environment
 # ============================================================================
-# The base image already has user identity and safe.directory configured in /etc/gitconfig
-# We add network timeout and CI-specific settings to the system config
-
 RUN git config --system credential.helper 'cache --timeout=3600' && \
     git config --system http.postBuffer 524288000 && \
     git config --system http.lowSpeedLimit 1000 && \
     git config --system http.lowSpeedTime 60 && \
     git config --system core.askpass '' && \
     git config --system pull.rebase false && \
-    git config --system init.defaultBranch main
+    git config --system init.defaultBranch main && \
+    git config --system url."https://github.com/".insteadOf "ssh://git@github.com/" && \
+    git config --system url."https://github.com/".insteadOf "git@github.com:"
 
-# Set environment variables for git in CI
 ENV GIT_TERMINAL_PROMPT=0
 ENV GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=30"
 
 # ============================================================================
-# Stage 4: Pre-install Dependencies (OPTIONAL but RECOMMENDED)
+# Stage 4: Pre-install Dependencies
 # ============================================================================
-# Pre-installing dependencies speeds up agent startup time because the agent
-# doesn't have to install them every time it runs.
-
-# WORKDIR should match where the orchestrator will mount the project
 WORKDIR /workspace/documentation_robotics_viewer
 
-# Copy ONLY the dependency manifests needed for installation
-# DO NOT copy source code - it comes from the runtime mount
+# Copy ONLY dependency manifests needed for installation
 COPY package.json package-lock.json ./
 
-# Copy the WASM copy script (needed to place libavoid.wasm in public/)
-COPY scripts/copy-wasm.cjs ./scripts/
-
 # Pre-install npm dependencies
-# Note: --legacy-peer-deps needed due to vite@6.x vs @storybook/react-vite peer dep conflict
+# --legacy-peer-deps needed due to vite@6.x vs @storybook/react-vite peer dep conflict
 RUN --mount=type=cache,target=/root/.npm \
     npm ci --ignore-scripts --legacy-peer-deps && \
     npm cache clean --force
 
-# Copy libavoid WASM binary from node_modules to public/ directory
-# Required for Vite dev server to serve the WASM file at /libavoid.wasm
-RUN mkdir -p public && node scripts/copy-wasm.cjs
-
-# Set Playwright to use a shared cache location accessible to orchestrator user
+# Playwright: shared browser cache accessible to orchestrator user
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/ms-playwright
 
-# Install Playwright browsers and system dependencies
-# Note: Playwright requires specific system libraries for browser automation
 RUN npx playwright install --with-deps chromium && \
     chown -R orchestrator:orchestrator /opt/ms-playwright
 
 # ============================================================================
 # Stage 5: Ownership and Permissions
 # ============================================================================
-# Change ownership ONLY of what was installed, NOT source code
-# Source code ownership is handled by the mount
 RUN chown -R orchestrator:orchestrator /workspace/documentation_robotics_viewer/node_modules
 
 # ============================================================================
@@ -101,41 +73,25 @@ RUN chown -R orchestrator:orchestrator /workspace/documentation_robotics_viewer/
 # ============================================================================
 USER orchestrator
 
-# Configure gh CLI to use HTTPS protocol (no SSH keys needed in CI)
-# and set git_protocol so `gh repo clone` and `gh pr checkout` work without SSH
-# Must run as orchestrator so config is stored in /home/orchestrator/.config/gh/
 RUN gh config set git_protocol https --host github.com && \
     gh config set prompt disabled
 
 # ============================================================================
 # Stage 7: Verification (MANDATORY)
 # ============================================================================
-# Verify all critical CLIs are present (from base image)
 RUN claude --version && \
     git --version && \
     gh --version && \
     which dbus-launch
 
-# Verify project-specific tools (Node.js)
 RUN node --version && npm --version
 
-# Verify libavoid WASM is available in both locations
-RUN test -f node_modules/libavoid-js/dist/libavoid.wasm && \
-    test -f public/libavoid.wasm && \
-    echo "libavoid WASM verified in node_modules and public/"
-
-# Verify Playwright installation
 RUN npx playwright --version
 
-# Verify git configuration is properly set up
 RUN git config --system --list | grep -E 'user\.(name|email)|safe\.directory|http\.postBuffer' && \
     echo "Git configuration verified successfully"
 
-# Verify gh CLI is configured for HTTPS protocol (CI-friendly)
 RUN gh config get git_protocol --host github.com | grep -q https && \
     echo "GitHub CLI configured for HTTPS protocol"
 
-# ============================================================================
-# Default command
-# ============================================================================
 CMD ["/bin/bash"]
