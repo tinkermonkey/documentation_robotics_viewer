@@ -168,7 +168,7 @@ export function Canvas() {
             edges={edges}
             selectedNodeId={selectedId ?? undefined}
             onNodeSelect={(id) => selectGraphNode(id)}
-            layout="manual"
+            layout="force"
             style={{
               position: 'absolute',
               inset: 0,

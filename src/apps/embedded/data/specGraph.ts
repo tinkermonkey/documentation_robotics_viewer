@@ -14,8 +14,8 @@
  * color + navigate across layers).
  *
  * All functions are pure: they accept the raw `/api/spec` payload and a layer
- * slug, returning deterministic results (stable positions via the SAME
- * centered-staggered grid as `modelGraph`).
+ * slug, returning deterministic results. Node positions are left unset so
+ * Heimdall's `layout="force"` can place them.
  */
 
 import type {
@@ -24,7 +24,6 @@ import type {
   RelationshipLink,
   GraphNodeMetadata,
 } from '@tinkermonkey/heimdall-ui';
-import { gridLayout } from './modelGraph';
 
 // ─── Raw /api/spec shapes (only the fields this module reads) ─────────────────
 
@@ -125,8 +124,8 @@ function titleForSpecNode(
  *   label -> nodeSchema.title (fall back to the short name)
  *   kind -> 'spec node'
  *   domainColor -> the layer slug (drives the domain swatch CSS)
- *   x/y -> deterministic centered-staggered-grid position
  *
+ * x/y are left unset so `GraphCanvas`'s `layout="force"` positions them.
  * Uses `Object.keys(nodeSchemas)` (NOT the possibly-empty `layer.node_types`).
  */
 export function nodeTypesForLayer(
@@ -136,19 +135,14 @@ export function nodeTypesForLayer(
   const schema = schemaForLayer(spec, slug);
   const nodeSchemas = schema?.nodeSchemas ?? {};
   const entries = Object.entries(nodeSchemas);
-  const ids = entries.map(([short]) => `${slug}.${short}`);
-  const pos = gridLayout(ids);
 
   return entries.map(([short, ns]) => {
     const id = `${slug}.${short}`;
-    const p = pos.get(id);
     return {
       id,
       label: ns.title ?? short,
       kind: 'spec node',
       domainColor: slug,
-      x: p ? p.x : 0,
-      y: p ? p.y : 0,
     };
   });
 }

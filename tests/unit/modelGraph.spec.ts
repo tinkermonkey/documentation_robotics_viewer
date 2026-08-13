@@ -226,8 +226,8 @@ describe('nodesForLayer', () => {
       expect(gn.label).toBe(src.name); // label ← name
       expect(gn.kind).toBe(src.type); // kind ← type
       expect(gn.domainColor).toBe('security'); // domainColor ← layer slug
-      expect(typeof gn.x).toBe('number');
-      expect(typeof gn.y).toBe('number');
+      expect(gn.x).toBeUndefined(); // left unset for layout="force"
+      expect(gn.y).toBeUndefined();
     }
   });
 
