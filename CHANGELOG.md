@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-08-13
+
+Adds a **page view** — a document-form alternative to the graph, per [#498](https://github.com/tinkermonkey/documentation_robotics_viewer/issues/498).
+
+### Added
+- **Page view** for Model/Schema layers, spec node types, and model elements: breadcrumb, stat grid,
+  facts list, and row tables reading the full record without a graph — toggled by a graph/page
+  `SegmentedControl` in the canvas header. Every row/breadcrumb segment with a target is a real,
+  keyboard-operable navigation link.
+- `data/pageData.ts` — pure `layerPageData`/`specNodePageData`/`modelNodePageData` transforms built
+  from the real `/api/model` + `/api/spec` shapes, including a full cross-layer relationship-schema
+  scan (not just the owning layer) for "valid incoming relationships".
+- Heimdall spring-based force layout (`layout="force"`) replaces the deterministic manual grid for
+  graph node placement.
+
+### Changed
+- `@tinkermonkey/heimdall-ui` moved from a pinned git commit to an exact npm-registry-resolved version.
+- `NavTree` now composes Heimdall's real `NavItem` component instead of hand-rolled nav-item markup
+  (gains `aria-current="page"` for free).
+- The right-hand Inspector hides entirely in page mode — the page view carries the same data at
+  greater depth.
+
+### Fixed
+- WCAG 2.1 AA color-contrast failure on the new page-view table headers.
+- Table-row and breadcrumb hover feedback, which an inline style was permanently shadowing.
+- Page-view tables/breadcrumb now expose ARIA table/nav semantics for header-to-cell association.
+
+### Removed
+- `design/foundation/` (a stale, fully superseded design-export duplicate).
+
 ## [0.4.0] - 2026-06-19
 
 Complete UX rebuild on the **Heimdall design system**.
