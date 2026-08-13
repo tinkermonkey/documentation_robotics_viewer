@@ -226,8 +226,9 @@ describe('nodesForLayer', () => {
       expect(gn.label).toBe(src.name); // label ← name
       expect(gn.kind).toBe(src.type); // kind ← type
       expect(gn.domainColor).toBe('security'); // domainColor ← layer slug
-      expect(typeof gn.x).toBe('number');
-      expect(typeof gn.y).toBe('number');
+      // x/y intentionally unset — GraphCanvas layout="force" places nodes.
+      expect(gn.x).toBeUndefined();
+      expect(gn.y).toBeUndefined();
     }
   });
 

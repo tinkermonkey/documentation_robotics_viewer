@@ -150,6 +150,23 @@ body.dark-canvas {
   display: none;
 }
 
+/* ---- page view (layer / spec node / model node detail) ------------------ */
+.drv-crumb {
+  cursor: pointer;
+}
+
+.drv-crumb:hover {
+  color: rgb(var(--canvas-fg-1));
+}
+
+.drv-row {
+  cursor: pointer;
+}
+
+.drv-row:hover {
+  background: rgb(var(--canvas-bg-2));
+}
+
 /* ---- DrBot chat header pulse dot ---------------------------------------- */
 .drv-chat-pulse {
   animation: drv-chat-pulse 1.6s ease-in-out infinite;

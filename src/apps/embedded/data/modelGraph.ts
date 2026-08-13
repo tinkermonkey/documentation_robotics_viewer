@@ -9,8 +9,10 @@
  * link endpoints to the node UUID (the id `GraphCanvas` selection operates on).
  *
  * All functions are pure: they accept the derived `/api/model` payload and a
- * layer slug, and return deterministic results (stable node positions via the
- * design's centered-staggered-grid layout) so `layout="manual"` is stable.
+ * layer slug, and return deterministic results. Node positions are left
+ * unset so `GraphCanvas`'s `layout="force"` engine places them; `gridLayout`
+ * is kept as a pure, independently-tested utility (was previously used to
+ * pin `layout="manual"` positions here and in `specGraph`).
  */
 
 import type {
@@ -121,25 +123,21 @@ export function gridLayout(ids: string[]): Map<string, Pos> {
  *   label -> node.name
  *   kind -> node.type
  *   domainColor -> the layer slug (drives the domain swatch CSS)
- *   x/y -> deterministic centered-staggered-grid position
+ *
+ * x/y are intentionally omitted so `GraphCanvas`'s `layout="force"` engine
+ * places the nodes (explicit x/y would pin them, bypassing the layout).
  */
 export function nodesForLayer(
   model: ModelDerived,
   layerId: string,
 ): GraphNodeData[] {
   const nodes = model.nodesByLayer[layerId] ?? [];
-  const pos = gridLayout(nodes.map((n) => n.id));
-  return nodes.map((n) => {
-    const p = pos.get(n.id);
-    return {
-      id: n.id,
-      label: n.name,
-      kind: n.type,
-      domainColor: layerId,
-      x: p ? p.x : 0,
-      y: p ? p.y : 0,
-    };
-  });
+  return nodes.map((n) => ({
+    id: n.id,
+    label: n.name,
+    kind: n.type,
+    domainColor: layerId,
+  }));
 }
 
 /**

@@ -125,9 +125,15 @@ function useDefaultSelection() {
 
 export function AppShell() {
   const view = useUiStore((s) => s.view);
+  const mode = useUiStore((s) => s.mode);
   // Model + Schema render the graph Canvas/Inspector (view-branched inside);
   // Changesets renders the diff list + changeset detail.
   const isChangesets = view === 'changesets';
+  // Inspector is graph-mode only — page mode carries the same data at
+  // greater depth, so the right pane is hidden entirely (design/node_pages
+  // README section 4). Changesets keeps its detail pane regardless (the
+  // page/graph toggle doesn't apply there).
+  const showRightPane = isChangesets || mode !== 'page';
 
   useDefaultSelection();
   useSeedGreeting();
@@ -158,7 +164,7 @@ export function AppShell() {
         <LeftRail />
         {/* Model + Schema: live graph + inspector. Changesets: diff list + detail. */}
         {isChangesets ? <ChangesetCanvas /> : <Canvas />}
-        {isChangesets ? <ChangesetInspector /> : <Inspector />}
+        {showRightPane && (isChangesets ? <ChangesetInspector /> : <Inspector />)}
         {/* DrBot chat: persistent 4th column when wide, absolute overlay otherwise. */}
         <ChatDrawer />
       </div>
