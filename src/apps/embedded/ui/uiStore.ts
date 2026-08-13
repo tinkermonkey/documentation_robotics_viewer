@@ -34,7 +34,14 @@ interface UiState {
 
   setView: (view: ViewKind) => void;
   selectLayer: (layerId: string) => void;
-  selectNode: (selectedId: string | null) => void;
+  /**
+   * Select a node/element by id (always sets `focus: 'node'`). Takes a
+   * non-nullable id on purpose — pairing `selectedId: null` with
+   * `focus: 'node'` would be an inconsistent state (page-mode's `focus`
+   * implies a real node is selected). Use `selectLayer` to clear back to a
+   * layer-level selection instead of calling this with `null`.
+   */
+  selectNode: (selectedId: string) => void;
   /** Select a node clicked in the graph canvas (current layer). */
   selectGraphNode: (selectedId: string) => void;
   /**

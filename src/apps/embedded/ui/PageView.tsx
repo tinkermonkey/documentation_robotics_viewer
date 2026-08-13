@@ -2,7 +2,10 @@
  * PageView — the page-view scaffold (design/node_pages README section 3):
  * breadcrumb, narrative description, 4-stat grid, two-column facts list, and
  * row tables that read the full record for the selected layer / spec node /
- * model element without a graph, with every row/crumb a navigation link.
+ * model element without a graph. Rows and ancestor breadcrumb segments with a
+ * resolvable target are navigation links; rows/crumbs without one (e.g.
+ * Attributes rows, the current breadcrumb segment) render as plain,
+ * non-interactive text rather than faking an affordance they can't act on.
  *
  * Rendered by `Canvas` in place of `GraphCanvas` when `uiStore.mode ===
  * 'page'`. Sources its record from `data/pageData.ts` based on `view` +
@@ -12,9 +15,10 @@
  *   - focus 'node', view 'model'   -> `modelNodePageData(...)`
  *
  * `PageNavTarget`s from the data layer are translated to `uiStore` actions
- * here (the data layer stays pure/store-free). This also exposes the header
- * fields (eyebrow/title/idChip/meta/color) via `usePageHeader` so `Canvas`
- * can swap its `PageHeader` props when a page is showing.
+ * here (the data layer stays pure/store-free). `Canvas` reads the header
+ * fields (`pg.eyebrow`/`pg.title`/`pg.idChip`/`pg.meta`/`pg.color`) straight
+ * off the `PageData` returned by `usePageData` to swap its `PageHeader`
+ * props when a page is showing.
  */
 
 import { useMemo } from 'react';
@@ -80,6 +84,12 @@ function useNavigate() {
       case 'specNode':
         navigateToSpecNode(target.specNodeId, target.layerId);
         return;
+      default: {
+        // Exhaustiveness guard: a new `PageNavTarget` variant will fail to
+        // compile here instead of silently no-opping at runtime.
+        const exhaustive: never = target;
+        return exhaustive;
+      }
     }
   };
 }
@@ -118,44 +128,56 @@ const CELL_STYLE: Record<PageCell['kind'], React.CSSProperties> = {
 
 function Cell({ cell }: { cell: PageCell }) {
   return (
-    <span style={{ ...CELL_STYLE[cell.kind], ...(cell.color ? { color: cell.color } : null) }}>
+    <span
+      role="cell"
+      style={{ ...CELL_STYLE[cell.kind], ...(cell.color ? { color: cell.color } : null) }}
+    >
       {cell.text}
     </span>
   );
 }
 
 function Breadcrumb({ pg, onNavigate }: { pg: PageData; onNavigate: (t?: PageNavTarget) => void }) {
+  // `color` is intentionally NOT part of the button's inline style — inline
+  // styles always win over a stylesheet rule for the same property
+  // (including :hover), so a `color` set here would permanently shadow
+  // `.drv-crumb:hover`. Interactive crumbs get their color from the
+  // `.drv-crumb` / `.drv-crumb--current` classes in domain-and-nav.css
+  // instead; only the non-interactive (no target) span sets color inline.
+  const monoStyle: React.CSSProperties = { fontFamily: MONO, fontSize: 11 };
+
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-      {pg.crumbs.map((c, i) => {
-        const textStyle: React.CSSProperties = {
-          fontFamily: MONO,
-          fontSize: 11,
-          color: c.current ? 'rgb(var(--canvas-fg-1))' : 'rgb(var(--canvas-fg-3))',
-        };
-        return (
-          <span key={`${c.label}-${i}`} style={{ display: 'contents' }}>
-            {i > 0 && (
-              <span style={{ fontFamily: MONO, fontSize: 11, color: 'rgb(var(--canvas-fg-4))' }}>
-                /
-              </span>
-            )}
-            {c.target ? (
-              <button
-                type="button"
-                className="drv-crumb"
-                onClick={() => onNavigate(c.target)}
-                style={{ background: 'none', border: 'none', padding: 0, ...textStyle }}
-              >
-                {c.label}
-              </button>
-            ) : (
-              <span style={textStyle}>{c.label}</span>
-            )}
-          </span>
-        );
-      })}
-    </div>
+    <nav aria-label="Breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+      {pg.crumbs.map((c, i) => (
+        <span key={`${c.label}-${i}`} style={{ display: 'contents' }}>
+          {i > 0 && (
+            <span style={{ ...monoStyle, color: 'rgb(var(--canvas-fg-4))' }} aria-hidden="true">
+              /
+            </span>
+          )}
+          {c.target ? (
+            <button
+              type="button"
+              className={`drv-crumb${c.current ? ' drv-crumb--current' : ''}`}
+              onClick={() => onNavigate(c.target)}
+              data-testid="page-crumb"
+              style={{ background: 'none', border: 'none', padding: 0, ...monoStyle }}
+            >
+              {c.label}
+            </button>
+          ) : (
+            <span
+              style={{
+                ...monoStyle,
+                color: c.current ? 'rgb(var(--canvas-fg-1))' : 'rgb(var(--canvas-fg-3))',
+              }}
+            >
+              {c.label}
+            </span>
+          )}
+        </span>
+      ))}
+    </nav>
   );
 }
 
@@ -285,19 +307,30 @@ function TableRow({
   // target (e.g. an Attributes row) stays a plain, non-clickable row rather
   // than faking an affordance it can't act on.
   if (!row.target) {
-    return <div style={{ ...ROW_STYLE, gridTemplateColumns: widths }}>{cells}</div>;
+    return (
+      <div role="row" style={{ ...ROW_STYLE, gridTemplateColumns: widths }}>
+        {cells}
+      </div>
+    );
   }
 
   return (
+    // `background` is intentionally left out of this inline style (unlike
+    // `border`/`textAlign`/etc, which don't conflict with anything) — an
+    // inline `background` always wins over `.drv-row:hover`'s stylesheet
+    // rule for the same property, which would permanently suppress the
+    // hover feedback. `.drv-row` in domain-and-nav.css owns the base
+    // (transparent) background so `:hover` can override it.
     <button
       type="button"
+      role="row"
       className="drv-row"
       onClick={() => onNavigate(row.target)}
+      data-testid="page-row"
       style={{
         ...ROW_STYLE,
         gridTemplateColumns: widths,
         width: '100%',
-        background: 'none',
         border: 'none',
         borderBottom: '1px solid rgb(var(--canvas-border))',
         textAlign: 'left',
@@ -326,15 +359,16 @@ function Tables({ pg, onNavigate }: { pg: PageData; onNavigate: (t?: PageNavTarg
             >
               {t.title}
             </span>
-            <span style={{ fontFamily: MONO, fontSize: 10, color: 'rgb(var(--canvas-fg-4))' }}>
+            <span style={{ fontFamily: MONO, fontSize: 10, color: 'rgb(var(--canvas-fg-3))' }}>
               {t.rows.length ? t.rows.length : ''}
             </span>
           </div>
           {t.rows.length === 0 ? (
             <span style={{ fontSize: 13, color: 'rgb(var(--canvas-fg-3))' }}>{t.emptyText}</span>
           ) : (
-            <div>
+            <div role="table" aria-label={t.title}>
               <div
+                role="row"
                 style={{
                   display: 'grid',
                   gridTemplateColumns: t.widths,
@@ -345,13 +379,22 @@ function Tables({ pg, onNavigate }: { pg: PageData; onNavigate: (t?: PageNavTarg
                   fontSize: 10,
                   letterSpacing: '0.08em',
                   textTransform: 'uppercase',
-                  color: 'rgb(var(--canvas-fg-4))',
+                  // The design specifies --canvas-fg-4 here, but that token
+                  // measures ~2.56:1 on the light canvas at this size (real
+                  // column-header content, not decorative chrome) — below
+                  // the 4.5:1 AA minimum (see tests/e2e/a11y.spec.ts's
+                  // "page view mode" scan, which is zero-tolerance since this
+                  // is new surface with no inherited contrast debt).
+                  // --canvas-fg-3 is the same token this app already trusts
+                  // for comparable dim mono labels elsewhere.
+                  color: 'rgb(var(--canvas-fg-3))',
                   borderBottom: '1px solid rgb(var(--canvas-border))',
                 }}
               >
                 {t.columns.map((c) => (
                   <span
                     key={c}
+                    role="columnheader"
                     style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                   >
                     {c}

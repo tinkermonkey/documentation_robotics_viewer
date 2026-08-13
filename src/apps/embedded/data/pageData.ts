@@ -9,8 +9,8 @@
  * Each returns a `PageData`: header fields, a breadcrumb trail, a narrative
  * description, a 4-stat grid, a two-column facts list, and a set of row
  * tables — mirroring the design's `page()` builder, but derived from the
- * real `/api/model` + `/api/spec` shapes (see `useModel.ts` / `specGraph.ts`)
- * rather than the prototype's stub dataset.
+ * real `/api/model` + `/api/spec` shapes (see `useModel.ts` / `modelGraph.ts`
+ * / `specGraph.ts`) rather than the prototype's stub dataset.
  *
  * Table/fact/crumb rows carry a `PageNavTarget` instead of an onClick closure
  * so this module stays pure (no store/JSX deps, per the `data/` layer rule);
@@ -18,7 +18,7 @@
  */
 
 import type { ModelDerived, ModelNode } from './useModel';
-import { type ModelIndex, resolveEndpoint } from './modelGraph';
+import { type ModelIndex, resolveEndpoint, dottedId } from './modelGraph';
 import {
   type SpecPayload,
   type SpecLayerSchema,
@@ -28,6 +28,7 @@ import {
   shortName,
   cardShort,
   intraRelCount,
+  attributeRows,
 } from './specGraph';
 import { layerColor, layerLabel, layerStandard, isLayerSlug } from '../ui/domain';
 
@@ -95,12 +96,22 @@ export interface PageData {
 }
 
 // ─── Metric colors (verbatim from the design) ──────────────────────────────
-
-const INDIGO = '#818CF8';
-const VIOLET = '#A78BFA';
-const EMERALD = '#10B981';
-const AMBER = '#FBBF24';
-const REQUIRED_AMBER = '#B45309';
+//
+// These are fixed accent colors (like the layer swatches in domain.ts), not
+// canvas surface/foreground colors, so they intentionally do NOT flip with
+// light/dark canvas — same as Heimdall's own `--accent-*`/`--status-*`
+// tokens, which are defined once at `:root` with no dark-canvas override.
+// Route through the real token/domain-color source instead of re-declaring
+// fresh hex literals here: EMERALD/AMBER/REQUIRED_AMBER have an exact
+// Heimdall token; INDIGO/VIOLET don't (Heimdall's `--status-violet` is a
+// different, more saturated shade), so those two reuse the already-defined,
+// already-audited domain palette (`application`/`navigation`) rather than a
+// second hardcoded hex source.
+const INDIGO = layerColor('application'); // #818CF8
+const VIOLET = layerColor('navigation'); // #A78BFA
+const EMERALD = 'rgb(var(--status-emerald))';
+const AMBER = 'rgb(var(--accent-primary))';
+const REQUIRED_AMBER = 'rgb(var(--accent-primary-deep))';
 
 const DASH = '—';
 
@@ -275,7 +286,12 @@ const IN_REL_TABLE_WIDTHS =
   'minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr) minmax(0,0.8fr)';
 const INSTANCE_TABLE_WIDTHS = 'minmax(0,1fr) minmax(0,1.5fr) 96px';
 
-/** Every relationship schema across every layer file (for cross-layer "valid incoming"). */
+/**
+ * Every relationship schema across every layer file — needed to find "valid
+ * incoming" schemas declared in OTHER layers' files (a layer's own
+ * `relationshipSchemas` only covers rels it declares as source), and reused
+ * as the source list for "valid outgoing" too (filtered to this node's id).
+ */
 function allRelationshipSchemas(
   spec: SpecPayload | undefined,
 ): SpecRelationshipSchema[] {
@@ -311,9 +327,7 @@ export function specNodePageData(
 
   const color = layerColor(layerId);
   const standard = schema?.layer?.inspired_by?.standard ?? layerStandard(layerId);
-  const attrBlock = ns.properties?.attributes;
-  const required = new Set(attrBlock?.required ?? []);
-  const attrEntries = Object.entries(attrBlock?.properties ?? {});
+  const attrs = attributeRows(ns);
   const instances = (model.nodesByLayer[layerId] ?? []).filter(
     (n) => n.type === short,
   );
@@ -322,20 +336,17 @@ export function specNodePageData(
   const out = allRels.filter((r) => r.source_spec_node_id === specNodeId);
   const inc = allRels.filter((r) => r.destination_spec_node_id === specNodeId);
 
-  const attrRows: PageRow[] = attrEntries.map(([attrName, attrSchema]) => {
-    const isRequired = required.has(attrName);
-    return {
-      cells: [
-        cell(attrName, 'mono'),
-        cell(attrSchema?.type ?? 'object', 'dim'),
-        cell(
-          isRequired ? 'required' : 'optional',
-          'dim',
-          isRequired ? REQUIRED_AMBER : undefined,
-        ),
-      ],
-    };
-  });
+  const attrRows: PageRow[] = attrs.map((attr) => ({
+    cells: [
+      cell(attr.name, 'mono'),
+      cell(attr.type, 'dim'),
+      cell(
+        attr.required ? 'required' : 'optional',
+        'dim',
+        attr.required ? REQUIRED_AMBER : undefined,
+      ),
+    ],
+  }));
 
   const outRows: PageRow[] = out.map((r) => ({
     target: {
@@ -371,7 +382,7 @@ export function specNodePageData(
     target: { kind: 'element', elementId: n.id, layerId },
     cells: [
       cell(n.name, 'name'),
-      cell(`${layerId}.${n.type}.${n.id}`, 'dim'),
+      cell(dottedId(n), 'dim'),
       cell(provenanceOf(n), 'dim'),
     ],
   }));
@@ -380,7 +391,7 @@ export function specNodePageData(
     eyebrow: `SPEC NODE · ${standard}`,
     title: ns.title ?? short,
     idChip: specNodeId,
-    meta: `${attrEntries.length} attributes · ${instances.length} instances`,
+    meta: `${attrs.length} attributes · ${instances.length} instances`,
     color,
     crumbs: [
       ...baseCrumbs('spec', layerId, false),
@@ -388,7 +399,7 @@ export function specNodePageData(
     ],
     description: ns.description ?? '',
     stats: [
-      { label: 'ATTRIBUTES', value: attrEntries.length, color },
+      { label: 'ATTRIBUTES', value: attrs.length, color },
       { label: 'OUTGOING TYPES', value: out.length, color: INDIGO },
       { label: 'INCOMING TYPES', value: inc.length, color: VIOLET },
       { label: 'INSTANCES', value: instances.length, color: EMERALD },
@@ -399,15 +410,20 @@ export function specNodePageData(
       fact('layer_id', layerId),
       fact('type', short),
       fact('title', ns.title, true),
-      fact('extends', 'base/spec-node.schema.json'),
-      fact('schema', `spec/schemas/nodes/${layerId}/${short}.node.schema.json`),
+      fact('extends', ns.allOf?.[0]?.$ref),
+      fact('schema', ns.$id),
       fact(
         'inspired_by',
         schema?.layer?.inspired_by?.version
           ? `${standard} ${schema.layer.inspired_by.version}`
           : standard,
       ),
-      fact('required', 'id, path, spec_node_id, type, name'),
+      // `ns.required` is the base spec-node schema's required field list
+      // (id/path/spec_node_id/type/name) when present — but that base list
+      // isn't inlined into the per-node-type payload today (it's referenced
+      // via `allOf[0].$ref`, not expanded), so this genuinely reads '—' for
+      // every node type rather than guessing at a hardcoded stand-in.
+      fact('required', ns.required?.join(', ')),
     ],
     tables: [
       {
@@ -493,9 +509,7 @@ export function modelNodePageData(
   const layerName = layerLabel(layerId);
   const schema = schemaForLayer(specRaw, layerId);
   const specNode = schema?.nodeSchemas?.[n.type];
-  const attrBlock = specNode?.properties?.attributes;
-  const required = new Set(attrBlock?.required ?? []);
-  const attrEntries = Object.entries(attrBlock?.properties ?? {});
+  const attrs = attributeRows(specNode);
 
   const out: PageRow[] = [];
   const inc: PageRow[] = [];
@@ -537,27 +551,27 @@ export function modelNodePageData(
       cells: [
         cell(specNode?.title ?? n.type, 'name'),
         cell(`${layerId}.${n.type}`, 'dim'),
-        cell(`${attrEntries.length} attrs`, 'num'),
+        cell(`${attrs.length} attrs`, 'num'),
       ],
     },
   ];
 
-  const attrRows: PageRow[] = attrEntries.map(([attrName, attrSchema]) => {
-    const isRequired = required.has(attrName);
-    return {
-      cells: [
-        cell(attrName, 'mono'),
-        cell(attrSchema?.type ?? 'object', 'dim'),
-        cell(
-          isRequired ? 'required' : 'optional',
-          'dim',
-          isRequired ? REQUIRED_AMBER : undefined,
-        ),
-      ],
-    };
-  });
+  const attrRows: PageRow[] = attrs.map((attr) => ({
+    cells: [
+      cell(attr.name, 'mono'),
+      cell(attr.type, 'dim'),
+      cell(
+        attr.required ? 'required' : 'optional',
+        'dim',
+        attr.required ? REQUIRED_AMBER : undefined,
+      ),
+    ],
+  }));
 
-  const path = `${layerId}.${n.type}.${n.id}`;
+  // The canonical dotted id (`{layer}.{type}.{slug(name)}`) — the same id
+  // `/api/model` links reference and the annotations API expects (see
+  // modelGraph.ts's `dottedId`), NOT `layer.type.UUID`.
+  const path = dottedId(n);
   const loc = sourceLocation(n);
   const meta = (n.metadata ?? {}) as NodeMetadata;
 

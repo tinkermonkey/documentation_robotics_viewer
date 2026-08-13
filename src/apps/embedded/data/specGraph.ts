@@ -40,6 +40,10 @@ export interface SpecNodeSchema {
   title?: string;
   description?: string;
   required?: string[];
+  /** `[{ $ref: 'urn:dr:spec:base:spec-node' }]` — the base schema this node type extends. */
+  allOf?: Array<{ $ref?: string }>;
+  /** `urn:dr:spec:node:<layer>.<type>` — this node type's own schema id. */
+  $id?: string;
   properties?: {
     spec_node_id?: { const?: string };
     attributes?: {
@@ -258,15 +262,43 @@ export function specRelationshipsForNode(
   return links;
 }
 
+// ─── Attribute rows ────────────────────────────────────────────────────────
+
+export interface AttributeRow {
+  name: string;
+  /** JSON type, e.g. `string`/`integer`/`object` (falls back to `object`). */
+  type: string;
+  /** Whether `name` is listed in the attribute block's own `required` array. */
+  required: boolean;
+}
+
+/**
+ * Attribute rows for a node type — name, JSON type, and whether it's
+ * required — derived once from the nested
+ * `nodeSchema.properties.attributes.{properties,required}` path. Shared by
+ * every consumer that renders a node type's attribute list (the Schema
+ * inspector, and the spec-node/model-node page views) so that nested path
+ * isn't independently re-walked (and potentially drift out of sync) in three
+ * places.
+ */
+export function attributeRows(ns: SpecNodeSchema | undefined): AttributeRow[] {
+  const attrBlock = ns?.properties?.attributes;
+  const required = new Set(attrBlock?.required ?? []);
+  const properties = attrBlock?.properties ?? {};
+  return Object.entries(properties).map(([name, attrSchema]) => ({
+    name,
+    type: attrSchema?.type ?? 'object',
+    required: required.has(name),
+  }));
+}
+
 // ─── Inspector metadata ───────────────────────────────────────────────────────
 
 /**
  * Inspector `GraphNodeMetadata` for a node-type. PROPERTIES surface the
- * node-type's ATTRIBUTES — the attribute names nested at
- * `nodeSchema.properties.attributes.properties`, each value flagged `required`
- * when listed in `nodeSchema.properties.attributes.required`. An attribute's
- * value column reads `—` (or `required`) so the grid stays the ATTRIBUTES list
- * the design's SPEC NODE inspector shows.
+ * node-type's ATTRIBUTES (via `attributeRows`) — an attribute's value column
+ * reads `—` (or `required`) so the grid stays the ATTRIBUTES list the
+ * design's SPEC NODE inspector shows.
  */
 export function specMetadataForNode(
   spec: SpecPayload | undefined,
@@ -278,16 +310,12 @@ export function specMetadataForNode(
   const ns = schema?.nodeSchemas?.[short];
   if (!ns) return null;
 
-  const attrBlock = ns.properties?.attributes;
-  const required = new Set(attrBlock?.required ?? []);
-  const attrNames = Object.keys(attrBlock?.properties ?? {});
-
   const metadata: Record<
     string,
     string | number | boolean | null | undefined
   > = {};
-  for (const name of attrNames) {
-    metadata[name] = required.has(name) ? 'required' : '—';
+  for (const attr of attributeRows(ns)) {
+    metadata[attr.name] = attr.required ? 'required' : '—';
   }
 
   return {

@@ -165,12 +165,26 @@ describe('specNodePageData', () => {
     ]);
   });
 
+  it('SPEC NODE facts read allOf/$id from the real payload, and required is honest ("—") when the base list is not inlined', () => {
+    const pg = specNodePageData('data-model', 'data-model.objectschema', spec, model)!;
+    const byKey = Object.fromEntries(pg.facts.map((f) => [f.key, f.value]));
+    expect(byKey.extends).toBe('urn:dr:spec:base:spec-node');
+    expect(byKey.schema).toBe('urn:dr:spec:node:data-model.objectschema');
+    // The real payload never inlines the base schema's required field list
+    // (id/path/spec_node_id/type/name) into a node type's own schema entry —
+    // showing a guessed constant here would be a fabricated fact.
+    expect(byKey.required).toBe('—');
+  });
+
   it('Attributes table flags only the schema-required attribute', () => {
     const pg = specNodePageData('data-model', 'data-model.objectschema', spec, model)!;
     const table = pg.tables.find((t) => t.title === 'Attributes')!;
     expect(table.rows).toHaveLength(8);
     const typeRow = table.rows.find((r) => r.cells[0].text === 'type')!;
-    expect(typeRow.cells[2]).toMatchObject({ text: 'required', color: '#B45309' });
+    expect(typeRow.cells[2]).toMatchObject({
+      text: 'required',
+      color: 'rgb(var(--accent-primary-deep))',
+    });
     const propertiesRow = table.rows.find((r) => r.cells[0].text === 'properties')!;
     expect(propertiesRow.cells[2]).toMatchObject({ text: 'optional', color: undefined });
     // Attribute rows carry no navigation target — they're not clickable.
@@ -212,7 +226,10 @@ describe('modelNodePageData', () => {
       ['VERSION', '1'],
     ]);
     const byKey = Object.fromEntries(pg.facts.map((f) => [f.key, f.value]));
-    expect(byKey.path).toBe(`data-model.objectschema.${META_MODEL_ID}`);
+    // The canonical dotted id (`{layer}.{type}.{slug(name)}`), NOT
+    // `layer.type.UUID` — matches the id `/api/model` links + the
+    // annotations API actually use (see modelGraph.ts's `dottedId`).
+    expect(byKey.path).toBe('data-model.objectschema.meta-model');
     expect(byKey.id).toBe(META_MODEL_ID);
     expect(byKey['source_reference.provenance']).toBe('extracted');
     expect(byKey['source_reference.file']).toBe('src/core/types/model.ts');

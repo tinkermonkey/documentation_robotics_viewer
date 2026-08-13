@@ -12,6 +12,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { Canvas } from '@/apps/embedded/ui/Canvas';
 import { useUiStore } from '@/apps/embedded/ui/uiStore';
@@ -121,5 +122,87 @@ describe('Canvas — keyed remount on view/layer switch', () => {
       expect(screen.getByTestId('page-header-title')).toHaveTextContent('Application schema'),
     );
     await waitFor(() => expect(graphNodeCount()).toBe(9));
+  });
+});
+
+describe('Canvas — graph/page mode toggle', () => {
+  it('clicking the "page" segment swaps GraphCanvas for the page-view scaffold, and back', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+    expect(screen.queryByTestId('page-view')).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('radio', { name: 'page' }));
+    expect(useUiStore.getState().mode).toBe('page');
+    expect(await screen.findByTestId('page-view')).toBeInTheDocument();
+    expect(graphNodeCount()).toBe(0); // GraphCanvas unmounted
+
+    await user.click(screen.getByRole('radio', { name: 'graph' }));
+    expect(useUiStore.getState().mode).toBe('graph');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+    expect(screen.queryByTestId('page-view')).not.toBeInTheDocument();
+  });
+
+  it('layer-focus page mode overrides the header with the LayerPageData eyebrow/title/meta', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('data-model'); // sets focus: 'layer'
+    useUiStore.getState().setMode('page');
+
+    // Overridden by pg.eyebrow/pg.title/pg.meta (layerPageData), NOT the
+    // graph mode's "INSTANCE MODEL · ..." / element-count meta.
+    await waitFor(() =>
+      expect(screen.getByTestId('page-header-eyebrow')).toHaveTextContent(
+        /^LAYER \d+ · JSON Schema Draft 7$/,
+      ),
+    );
+    expect(screen.getByTestId('page-header-title')).toHaveTextContent('Data Model');
+    await waitFor(() =>
+      expect(screen.getByTestId('page-header-actions')).toHaveTextContent(
+        /node types · \d+ relationship schemas/,
+      ),
+    );
+  });
+
+  it('node-focus page mode (a selected model element) renders the ELEMENT eyebrow', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('data-model');
+    useUiStore.getState().selectNode('cfe8d725-4f64-4eae-b2fa-825e4a774a3a'); // MetaModel
+    useUiStore.getState().setMode('page');
+
+    await waitFor(() =>
+      expect(screen.getByTestId('page-header-eyebrow')).toHaveTextContent('ELEMENT · Data Model'),
+    );
+    expect(screen.getByTestId('page-header-title')).toHaveTextContent('MetaModel');
+  });
+
+  it('mode persists across a layer switch (design: mode toggle persists across selections)', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    useUiStore.getState().setMode('page');
+    expect(await screen.findByTestId('page-view')).toBeInTheDocument();
+
+    useUiStore.getState().selectLayer('technology');
+    expect(useUiStore.getState().mode).toBe('page'); // still page mode
+    expect(await screen.findByTestId('page-view')).toBeInTheDocument();
+    expect(graphNodeCount()).toBe(0);
+  });
+
+  it('page mode with a layer selected but no node focused shows the "select a node" empty state', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('spec');
+    useUiStore.getState().selectLayer('data-model'); // focus: 'layer', not 'node'
+    useUiStore.getState().setMode('page');
+    // Force focus to 'node' with no selection to hit the `!pg` branch
+    // (mirrors a spec-node page whose selectedId hasn't resolved yet).
+    useUiStore.setState({ focus: 'node', selectedId: null });
+
+    expect(await screen.findByTestId('canvas-empty')).toHaveTextContent(
+      'select a node to view its page',
+    );
   });
 });

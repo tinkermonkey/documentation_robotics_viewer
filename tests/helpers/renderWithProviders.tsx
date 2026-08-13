@@ -41,6 +41,8 @@ export function resetUiStore(): void {
     canvasDark: false,
     chatOpen: false,
     wide: false,
+    mode: 'graph',
+    focus: 'layer',
     expandedSections: new Set<string>(['model']),
     expandedLayers: new Set<string>(),
   });

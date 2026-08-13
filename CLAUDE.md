@@ -6,7 +6,7 @@ React visualization tool for multi-layer architecture documentation models, buil
 system**. The app is both **served from** and **fed data by** the Documentation Robotics (`dr`) CLI — it is a
 thin, Heimdall-native front end over the CLI's REST + WebSocket API.
 
-**Tech Stack:** React 19 + TypeScript, `@tinkermonkey/heimdall-ui` (Heimdall design system, pinned from git),
+**Tech Stack:** React 19 + TypeScript, `@tinkermonkey/heimdall-ui` (Heimdall design system, pinned via npm),
 Vite 6, Tailwind CSS v4, TanStack Router + TanStack Query, Zustand 5.
 
 **12 Architecture Layers:** Motivation, Business, Security, Application, Technology, API, Data Model,
@@ -75,9 +75,13 @@ public/fonts/                  # Self-hosted Inter + JetBrains Mono woff2 (serve
 
 ## Design System: Heimdall
 
-Package `@tinkermonkey/heimdall-ui`, pinned to a git commit. Components imported from the package;
-`main.tsx` imports `@tinkermonkey/heimdall-ui/css` and `@tinkermonkey/heimdall-ui/fonts` once, after
-`./index.css`.
+Package `@tinkermonkey/heimdall-ui`, published to npm and pinned to an exact version (no `^`/`~` range —
+`npm view @tinkermonkey/heimdall-ui versions` before bumping, and confirm `package-lock.json` actually
+resolves it via `https://registry.npmjs.org/...` rather than reusing a stale git-resolved lockfile entry;
+`npm install` alone won't force that switch if the currently-locked version number already satisfies the
+new range, even when the resolution mechanism changed — use `npm install @tinkermonkey/heimdall-ui@<version>
+--save-exact` to force a real re-resolve). Components imported from the package; `main.tsx` imports
+`@tinkermonkey/heimdall-ui/css` and `@tinkermonkey/heimdall-ui/fonts` once, after `./index.css`.
 
 **Tokens** are CSS custom properties — **always consume tokens, never raw hex**:
 - Shell (always dark): `--shell-bg`, `--shell-surface`, `--shell-border`, `--shell-fg-1..4`
