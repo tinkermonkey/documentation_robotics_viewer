@@ -10,6 +10,8 @@
 import { create } from 'zustand';
 
 export type ViewKind = 'model' | 'spec' | 'changesets';
+export type CanvasMode = 'graph' | 'page';
+export type PageFocus = 'layer' | 'node';
 
 interface UiState {
   view: ViewKind;
@@ -19,6 +21,12 @@ interface UiState {
   canvasDark: boolean;
   chatOpen: boolean;
   wide: boolean;
+  /** Main-panel mode for Model/Schema: the live graph, or the page-view detail scaffold. */
+  mode: CanvasMode;
+  /** Which record the page view renders when `mode === 'page'` — the active
+   *  layer's overview, or the selected node's detail. Set by the same
+   *  selection actions that drive `selectedId` (see each action below). */
+  focus: PageFocus;
   /** Section ids currently expanded in the nav tree (e.g. 'model'). */
   expandedSections: Set<string>;
   /** Layer keys currently expanded in the nav tree (e.g. 'model:data-model'). */
@@ -26,7 +34,14 @@ interface UiState {
 
   setView: (view: ViewKind) => void;
   selectLayer: (layerId: string) => void;
-  selectNode: (selectedId: string | null) => void;
+  /**
+   * Select a node/element by id (always sets `focus: 'node'`). Takes a
+   * non-nullable id on purpose — pairing `selectedId: null` with
+   * `focus: 'node'` would be an inconsistent state (page-mode's `focus`
+   * implies a real node is selected). Use `selectLayer` to clear back to a
+   * layer-level selection instead of calling this with `null`.
+   */
+  selectNode: (selectedId: string) => void;
   /** Select a node clicked in the graph canvas (current layer). */
   selectGraphNode: (selectedId: string) => void;
   /**
@@ -43,6 +58,9 @@ interface UiState {
    */
   navigateToSpecNode: (specNodeId: string, layerId: string) => void;
   selectChangeset: (changesetId: string | null) => void;
+  /** Switch the main panel between the live graph and the page-view scaffold.
+   *  Persists across layer/node selections (design's "mode toggle persists"). */
+  setMode: (mode: CanvasMode) => void;
   toggleCanvasDark: () => void;
   toggleChat: () => void;
   /** Toggle a nav section's expanded state and activate its view. */
@@ -72,6 +90,8 @@ export const useUiStore = create<UiState>((set) => ({
   canvasDark: false,
   chatOpen: initialWide,
   wide: initialWide,
+  mode: 'graph',
+  focus: 'layer',
   expandedSections: new Set<string>(['model']),
   expandedLayers: new Set<string>(),
 
@@ -84,16 +104,18 @@ export const useUiStore = create<UiState>((set) => ({
       return {
         layerId,
         selectedId: null,
+        focus: 'layer',
         expandedSections: new Set(s.expandedSections).add(s.view),
         expandedLayers,
       };
     }),
 
-  selectNode: (selectedId) => set({ selectedId }),
+  selectNode: (selectedId) => set({ selectedId, focus: 'node' }),
 
   selectGraphNode: (selectedId) =>
     set((s) => ({
       selectedId,
+      focus: 'node',
       expandedSections: new Set(s.expandedSections).add(s.view),
       expandedLayers: s.layerId
         ? new Set(s.expandedLayers).add(layerKey(s.view, s.layerId))
@@ -110,6 +132,7 @@ export const useUiStore = create<UiState>((set) => ({
         view: 'model',
         layerId,
         selectedId: elementId,
+        focus: 'node',
         expandedSections: new Set(s.expandedSections).add('model'),
         expandedLayers,
       };
@@ -125,6 +148,7 @@ export const useUiStore = create<UiState>((set) => ({
         view: 'spec',
         layerId,
         selectedId: specNodeId,
+        focus: 'node',
         expandedSections: new Set(s.expandedSections).add('spec'),
         expandedLayers,
       };
@@ -136,6 +160,8 @@ export const useUiStore = create<UiState>((set) => ({
       changesetId,
       expandedSections: new Set(s.expandedSections).add('changesets'),
     })),
+
+  setMode: (mode) => set({ mode }),
 
   toggleCanvasDark: () =>
     set((s) => {
@@ -171,6 +197,7 @@ export const useUiStore = create<UiState>((set) => ({
         view: sectionId as ViewKind,
         layerId,
         selectedId: collapsing ? s.selectedId : null,
+        focus: collapsing ? s.focus : 'layer',
         expandedSections: new Set(s.expandedSections).add(sectionId),
         expandedLayers,
       };

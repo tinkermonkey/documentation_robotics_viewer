@@ -150,6 +150,33 @@ body.dark-canvas {
   display: none;
 }
 
+/* ---- page view (layer / spec node / model node detail) ------------------
+ * `.drv-crumb`/`.drv-row` own `color`/`background` here (base + :hover)
+ * rather than PageView.tsx setting them inline — an inline style always wins
+ * over a stylesheet rule for the same property, :hover included, so the
+ * hover states below would never apply if PageView also set these inline. */
+.drv-crumb {
+  cursor: pointer;
+  color: rgb(var(--canvas-fg-3));
+}
+
+.drv-crumb:hover {
+  color: rgb(var(--canvas-fg-1));
+}
+
+.drv-crumb--current {
+  color: rgb(var(--canvas-fg-1));
+}
+
+.drv-row {
+  cursor: pointer;
+  background: none;
+}
+
+.drv-row:hover {
+  background: rgb(var(--canvas-bg-2));
+}
+
 /* ---- DrBot chat header pulse dot ---------------------------------------- */
 .drv-chat-pulse {
   animation: drv-chat-pulse 1.6s ease-in-out infinite;

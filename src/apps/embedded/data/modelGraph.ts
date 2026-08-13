@@ -10,8 +10,9 @@
  *
  * All functions are pure: they accept the derived `/api/model` payload and a
  * layer slug, and return deterministic results. Node positions are left
- * unset so Heimdall's `layout="force"` can place them; `gridLayout` remains
- * available (and independently tested) for callers that need a manual grid.
+ * unset so `GraphCanvas`'s `layout="force"` engine places them; `gridLayout`
+ * is kept as a pure, independently-tested utility (was previously used to
+ * pin `layout="manual"` positions here and in `specGraph`).
  */
 
 import type {
@@ -123,7 +124,8 @@ export function gridLayout(ids: string[]): Map<string, Pos> {
  *   kind -> node.type
  *   domainColor -> the layer slug (drives the domain swatch CSS)
  *
- * x/y are left unset so `GraphCanvas`'s `layout="force"` positions them.
+ * x/y are intentionally omitted so `GraphCanvas`'s `layout="force"` engine
+ * places the nodes (explicit x/y would pin them, bypassing the layout).
  */
 export function nodesForLayer(
   model: ModelDerived,

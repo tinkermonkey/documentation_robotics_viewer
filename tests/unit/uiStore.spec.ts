@@ -17,6 +17,8 @@ function reset() {
       canvasDark: false,
       chatOpen: false,
       wide: false,
+      mode: 'graph',
+      focus: 'layer',
       expandedSections: new Set<string>(['model']),
       expandedLayers: new Set<string>(),
     },
@@ -166,5 +168,64 @@ describe('selectLayer / selectChangeset / toggleChat / setWide', () => {
     expect(get().chatOpen).toBe(true);
     get().setWide(true);
     expect(get().wide).toBe(true);
+  });
+});
+
+describe('mode — graph/page toggle', () => {
+  it('setMode switches the mode', () => {
+    expect(get().mode).toBe('graph');
+    get().setMode('page');
+    expect(get().mode).toBe('page');
+    get().setMode('graph');
+    expect(get().mode).toBe('graph');
+  });
+
+  it('persists across a layer/node selection (design: "mode toggle persists across selections")', () => {
+    get().setMode('page');
+    get().selectLayer('technology');
+    expect(get().mode).toBe('page');
+    get().selectNode('elem-1');
+    expect(get().mode).toBe('page');
+    get().navigateToElement('elem-7', 'application');
+    expect(get().mode).toBe('page');
+  });
+});
+
+describe('focus — page-view target (layer overview vs. node detail)', () => {
+  it('starts as "layer"', () => {
+    expect(get().focus).toBe('layer');
+  });
+
+  it('selectLayer sets focus to "layer"', () => {
+    useUiStore.setState({ focus: 'node' });
+    get().selectLayer('technology');
+    expect(get().focus).toBe('layer');
+  });
+
+  it('selectNode / selectGraphNode / navigateToElement / navigateToSpecNode all set focus to "node"', () => {
+    get().selectNode('elem-1');
+    expect(get().focus).toBe('node');
+
+    useUiStore.setState({ focus: 'layer' });
+    get().selectGraphNode('node-9');
+    expect(get().focus).toBe('node');
+
+    useUiStore.setState({ focus: 'layer' });
+    get().navigateToElement('elem-7', 'application');
+    expect(get().focus).toBe('node');
+
+    useUiStore.setState({ focus: 'layer' });
+    get().navigateToSpecNode('api.response', 'api');
+    expect(get().focus).toBe('node');
+  });
+
+  it('toggleLayer sets focus to "layer" when expanding, preserves it when collapsing', () => {
+    useUiStore.setState({ focus: 'node' });
+    get().toggleLayer('model', 'security'); // expands (not yet expanded)
+    expect(get().focus).toBe('layer');
+
+    useUiStore.setState({ focus: 'node' });
+    get().toggleLayer('model', 'security'); // now collapses
+    expect(get().focus).toBe('node'); // untouched by a collapse
   });
 });

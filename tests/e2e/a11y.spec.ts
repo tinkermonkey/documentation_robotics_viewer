@@ -136,3 +136,52 @@ test.describe('accessibility (axe / WCAG 2.1 AA)', () => {
     }
   }
 });
+
+/**
+ * Page-view mode (design/node_pages README section 3): the graph/page
+ * SegmentedControl in the Canvas header swaps the graph for a breadcrumb +
+ * stat grid + facts list + row tables. This is brand-new DOM (real `<button>`
+ * table rows/breadcrumb crumbs with `role="row"`/`"cell"`/`"columnheader"`,
+ * a labeled `<nav>`) with no historical debt, so — unlike the graph-mode
+ * scan above — this gate is zero-tolerance: any serious/critical violation,
+ * `color-contrast` included, fails the suite. Changesets has no page mode
+ * (the toggle doesn't render there), so only Model/Schema are covered.
+ */
+const PAGE_MODE_VIEWS: Array<{ name: string; route: string }> = [
+  { name: 'Model', route: ROUTES.model },
+  { name: 'Schema', route: ROUTES.spec },
+];
+
+test.describe('accessibility (axe / WCAG 2.1 AA) — page view mode', () => {
+  for (const view of PAGE_MODE_VIEWS) {
+    for (const tone of TONES) {
+      test(`${view.name} view, page mode — ${tone} canvas: zero serious/critical violations`, async ({
+        page,
+      }, testInfo) => {
+        await gotoView(page, view.route);
+        await expect(page.getByTestId('canvas')).toBeVisible();
+        await setTone(page, tone);
+
+        await page.getByRole('radio', { name: 'page', exact: true }).click();
+        await expect(page.getByTestId('page-view')).toBeVisible();
+
+        const results = await scan(page);
+        const seriousOrCritical = results.violations.filter(
+          (v) => v.impact === 'serious' || v.impact === 'critical',
+        );
+
+        await testInfo.attach(`axe-${view.name}-page-${tone}.json`, {
+          body: JSON.stringify(seriousOrCritical, null, 2),
+          contentType: 'application/json',
+        });
+
+        const summary = seriousOrCritical
+          .map((v) => `${v.id} (${v.impact}) × ${v.nodes.length}`)
+          .join('; ');
+        expect(seriousOrCritical, `unexpected serious/critical violations: ${summary}`).toEqual(
+          [],
+        );
+      });
+    }
+  }
+});

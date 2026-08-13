@@ -1,15 +1,16 @@
 /**
  * NavTree — 3-level hierarchical navigation (Section -> Layer -> Element).
  *
- * Heimdall's <Sidebar> is only 2-level, so this is built on Heimdall's <NavItem>
- * + the design's `nav-item` / `drv-nav-l2` / `drv-chev` helper classes
- * (see domain-and-nav.css). The 12 layers come from `domain.ts`; counts come
- * from the live model (`useModel`) and spec (`useSpec`); leaves are element
- * names (Model) or node-type names (Schema). Changesets lists changesets, or a
- * subtle empty hint when the model has none.
+ * Heimdall's <Sidebar> is only 2-level, so this is built on Heimdall's real
+ * <NavItem> button (icon/label/count/active/depth) + the design's
+ * `drv-nav-l2` / `drv-chev` helper classes (see domain-and-nav.css) layered on
+ * top for the 3rd level and the disclosure chevron. The 12 layers come from
+ * `domain.ts`; counts come from the live model (`useModel`) and spec
+ * (`useSpec`); leaves are element names (Model) or node-type names (Schema).
+ * Changesets lists changesets, or a subtle empty hint when the model has none.
  */
 
-import { Icon, type IconName } from '@tinkermonkey/heimdall-ui';
+import { NavItem, type IconName } from '@tinkermonkey/heimdall-ui';
 import { useUiStore, type ViewKind } from './uiStore';
 import { LAYER_ORDER, layerLabel, type LayerSlug } from './domain';
 import { useModel } from '../data/useModel';
@@ -55,15 +56,14 @@ function SectionRow({ section }: { section: (typeof SECTIONS)[number] }) {
 
   return (
     <div style={{ position: 'relative' }}>
-      <button
-        type="button"
-        className={`nav-item${view === section.id ? ' nav-item--active' : ''}`}
+      <NavItem
+        icon={section.icon}
+        label={section.label}
+        count={count}
+        active={view === section.id}
+        depth={0}
         onClick={() => toggleSection(section.id)}
-      >
-        <Icon name={section.icon} size={16} className="nav-item__icon" />
-        <span className="nav-item__label">{section.label}</span>
-        <span className="nav-item__count">{count}</span>
-      </button>
+      />
       <Chevron open={open} />
     </div>
   );
@@ -114,14 +114,13 @@ function LayerRow({
   return (
     <>
       <div style={{ position: 'relative' }}>
-        <button
-          type="button"
-          className={`nav-item nav-item--depth-1${active ? ' nav-item--active' : ''}`}
+        <NavItem
+          label={layerLabel(slug)}
+          count={count}
+          active={active}
+          depth={1}
           onClick={() => toggleLayer(sectionId, slug)}
-        >
-          <span className="nav-item__label">{layerLabel(slug)}</span>
-          <span className="nav-item__count">{count}</span>
-        </button>
+        />
         <Chevron open={open} />
       </div>
       {open &&
@@ -130,16 +129,14 @@ function LayerRow({
             view === sectionId && layerId === slug && selectedId === leaf.id;
           return (
             <div key={leaf.id} style={{ position: 'relative' }}>
-              <button
-                type="button"
-                className={`nav-item nav-item--depth-1 drv-nav-l2${
-                  leafActive ? ' nav-item--active' : ''
-                }`}
+              <NavItem
+                label={leaf.label}
+                active={leafActive}
+                depth={1}
+                className="drv-nav-l2"
                 onClick={() => selectNode(leaf.id)}
                 title={leaf.label}
-              >
-                <span className="nav-item__label">{leaf.label}</span>
-              </button>
+              />
             </div>
           );
         })}
@@ -175,15 +172,14 @@ function ChangesetRows() {
         const active = view === 'changesets' && changesetId === cs.id;
         return (
           <div key={cs.id} style={{ position: 'relative' }}>
-            <button
-              type="button"
-              className={`nav-item nav-item--depth-1${active ? ' nav-item--active' : ''}`}
+            <NavItem
+              label={cs.name}
+              count={cs.changesCount}
+              active={active}
+              depth={1}
               onClick={() => selectChangeset(cs.id)}
               title={cs.name}
-            >
-              <span className="nav-item__label">{cs.name}</span>
-              <span className="nav-item__count">{cs.changesCount}</span>
-            </button>
+            />
           </div>
         );
       })}
