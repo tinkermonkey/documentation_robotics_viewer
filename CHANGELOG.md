@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1] - 2026-08-14
+
+### Changed
+- `@tinkermonkey/heimdall-ui` bumped from `0.5.1` to `0.5.2` (exact npm-registry version).
+
 ## [0.5.0] - 2026-08-13
 
 Adds a **page view** — a document-form alternative to the graph, per [#498](https://github.com/tinkermonkey/documentation_robotics_viewer/issues/498).

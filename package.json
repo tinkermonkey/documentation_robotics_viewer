@@ -1,6 +1,6 @@
 {
   "name": "documentation_robotics_viewer",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
   "description": "Heimdall-native viewer for the Documentation Robotics multi-layer architecture model, served by the DR CLI",
   "main": "index.js",
@@ -29,7 +29,7 @@
   "dependencies": {
     "@tanstack/react-query": "^5.51.0",
     "@tanstack/react-router": "^1.139.12",
-    "@tinkermonkey/heimdall-ui": "0.5.1",
+    "@tinkermonkey/heimdall-ui": "0.5.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "zustand": "^5.0.8"
