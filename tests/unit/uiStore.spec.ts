@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { useUiStore, PERSIST_KEY } from '@/apps/embedded/ui/uiStore';
 
 // Capture the pristine initial state (set at module load) so each test starts
@@ -167,6 +167,27 @@ describe('toggleSection', () => {
     expect(get().expandedSections.has('spec')).toBe(true);
     expect(get().view).toBe('spec');
   });
+
+  it('clears selectedId on a genuine view switch — selection ids are not portable across views', () => {
+    useUiStore.setState({ view: 'model', layerId: 'application', selectedId: 'model-uuid-1', focus: 'node' });
+    get().toggleSection('spec');
+    const s = get();
+    expect(s.view).toBe('spec');
+    expect(s.selectedId).toBeNull(); // a Model UUID means nothing in Schema
+    expect(s.focus).toBe('layer');
+    // layerId IS portable (same 12 layer slugs in both views) — switching
+    // sections stays on the same layer, just the other view of it.
+    expect(s.layerId).toBe('application');
+  });
+
+  it('toggling the ALREADY-active section (pure expand/collapse) leaves selection untouched', () => {
+    useUiStore.setState({ view: 'model', selectedId: 'keep-me', focus: 'node' });
+    get().toggleSection('model'); // model is already the active view
+    const s = get();
+    expect(s.view).toBe('model');
+    expect(s.selectedId).toBe('keep-me');
+    expect(s.focus).toBe('node');
+  });
 });
 
 describe('toggleLayer', () => {
@@ -314,5 +335,61 @@ describe('graph layout/display preferences', () => {
     expect(get().nodeMarginPreset).toBe('wide');
     get().setNodeMarginPreset('default');
     expect(get().nodeMarginPreset).toBe('default');
+  });
+});
+
+describe('persist hydration validates graphLayout/nodeMarginPreset', () => {
+  // These two string-union types are compile-time only at the one point
+  // untyped external data enters them: a value read back from localStorage.
+  // Exercises the actual read/hydrate path (vi.resetModules + a fresh
+  // import re-runs the module's create(persist(...)) against whatever is
+  // in localStorage right now), not just the write path the persistence
+  // describe block above covers.
+  afterEach(() => {
+    localStorage.removeItem(PERSIST_KEY);
+  });
+
+  it('falls back to the documented defaults when the persisted value is not a valid literal', async () => {
+    localStorage.setItem(
+      PERSIST_KEY,
+      JSON.stringify({
+        state: {
+          canvasDark: true,
+          chatOpen: false,
+          graphLayout: 'not-a-real-layout',
+          showClusterBoundaries: true,
+          showAllRelations: true,
+          nodeMarginPreset: 'not-a-real-preset',
+        },
+        version: 1,
+      }),
+    );
+
+    vi.resetModules();
+    const fresh = await import('@/apps/embedded/ui/uiStore');
+    expect(fresh.useUiStore.getState().graphLayout).toBe('force');
+    expect(fresh.useUiStore.getState().nodeMarginPreset).toBe('default');
+  });
+
+  it('keeps a genuinely valid persisted value as-is', async () => {
+    localStorage.setItem(
+      PERSIST_KEY,
+      JSON.stringify({
+        state: {
+          canvasDark: true,
+          chatOpen: false,
+          graphLayout: 'galaxy',
+          showClusterBoundaries: true,
+          showAllRelations: true,
+          nodeMarginPreset: 'wide',
+        },
+        version: 1,
+      }),
+    );
+
+    vi.resetModules();
+    const fresh = await import('@/apps/embedded/ui/uiStore');
+    expect(fresh.useUiStore.getState().graphLayout).toBe('galaxy');
+    expect(fresh.useUiStore.getState().nodeMarginPreset).toBe('wide');
   });
 });

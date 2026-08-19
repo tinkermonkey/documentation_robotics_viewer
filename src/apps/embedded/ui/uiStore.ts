@@ -237,7 +237,22 @@ export const useUiStore = create<UiState>()(
           } else {
             expandedSections.add(sectionId);
           }
-          return { view: sectionId as ViewKind, expandedSections };
+          const viewChanged = s.view !== sectionId;
+          return {
+            view: sectionId as ViewKind,
+            expandedSections,
+            // selectedId isn't portable across views (a Model instance UUID
+            // means nothing in Schema, and vice versa) — clear it on a genuine
+            // view switch so a stale cross-view selection doesn't get baked
+            // into the URL by the router's store -> URL sync (it would
+            // otherwise push e.g. ?layer=apm&node=<stale-model-uuid> onto the
+            // Schema view, a dead link nothing resolves). layerId IS portable
+            // (both views share the same 12 layer slugs), so it's left as-is —
+            // switching sections keeps you on the same layer, just the other
+            // view of it. Toggling the ALREADY-active section's own
+            // expand/collapse isn't a view switch, so selection is untouched.
+            ...(viewChanged ? { selectedId: null, focus: 'layer' as const } : {}),
+          };
         }),
 
       toggleLayer: (sectionId, layerId) =>
@@ -302,6 +317,33 @@ export const useUiStore = create<UiState>()(
  *  onRehydrateStorage above, not the only place this runs. */
 if (typeof document !== 'undefined') {
   applyCanvasDark(useUiStore.getState().canvasDark);
+}
+
+const VALID_GRAPH_LAYOUTS: ReadonlySet<GraphLayout> = new Set([
+  'force',
+  'galaxy',
+  'force-clustered',
+]);
+const VALID_NODE_MARGIN_PRESETS: ReadonlySet<NodeMarginPreset> = new Set([
+  'tight',
+  'default',
+  'wide',
+]);
+
+/** Guards the one place untyped external data (a previous app version's
+ *  persisted shape, a hand-edited localStorage value) enters these two
+ *  string-union fields — `GraphLayout`/`NodeMarginPreset` are compile-time-only
+ *  types at the persist-hydration boundary, so a corrupted/stale value would
+ *  otherwise flow straight into "typed" state unchecked. Placed here (after
+ *  `create()` has fully resolved, same as the dark-canvas seed above) rather
+ *  than in `onRehydrateStorage` so it can safely call `useUiStore.setState`
+ *  instead of mutating the hydrated snapshot directly. */
+{
+  const hydrated = useUiStore.getState();
+  const fixes: Partial<UiState> = {};
+  if (!VALID_GRAPH_LAYOUTS.has(hydrated.graphLayout)) fixes.graphLayout = 'force';
+  if (!VALID_NODE_MARGIN_PRESETS.has(hydrated.nodeMarginPreset)) fixes.nodeMarginPreset = 'default';
+  if (Object.keys(fixes).length > 0) useUiStore.setState(fixes);
 }
 
 /** Keep `wide` in sync with the viewport for the chat-drawer overlay threshold. */

@@ -132,9 +132,28 @@ function nodeMarginFor(preset: NodeMarginPreset): number | undefined {
  *  onMouseLeave and onBlur use, so a click on one control inside the panel
  *  moving to another (each fires its own enter/leave as the pointer crosses
  *  between them) doesn't spuriously collapse the panel out from under the
- *  very control being interacted with. */
+ *  very control being interacted with. The toggle button ALSO has a plain
+ *  onClick too — hover/focus alone would leave the button's own
+ *  `aria-expanded`/`aria-controls` an unhonored disclosure contract on a
+ *  device with no hover: touch has none at all, so without it the whole
+ *  control set would be unreachable there. It OPENS rather than toggles —
+ *  on desktop, a mouse click is always preceded by the same pointer's
+ *  mouseEnter already opening the panel via hover, so a toggle would
+ *  immediately re-close what hover just opened, one click after another
+ *  looking like it does nothing (confirmed live: this was the first, wrong,
+ *  version). Closing stays owned by mouseLeave/blur/Escape, same as before.
+ *  Escape closes it and returns focus to the toggle, matching CLAUDE.md's
+ *  accessibility standards ("Escape closes overlays") the same way every
+ *  other floating panel in this app already does. */
 function GraphControls() {
   const [expanded, setExpanded] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  // Escape closes the panel, then refocuses the toggle for a11y — but
+  // that .focus() call itself bubbles a focus event back up to this same
+  // wrapper's onFocus, which would otherwise immediately re-expand the
+  // panel it was just told to close. Set right before the refocus call,
+  // consumed (and cleared) by the very next onFocus it causes.
+  const suppressNextFocusExpandRef = useRef(false);
   const graphLayout = useUiStore((s) => s.graphLayout);
   const setGraphLayout = useUiStore((s) => s.setGraphLayout);
   const showClusterBoundaries = useUiStore((s) => s.showClusterBoundaries);
@@ -154,18 +173,33 @@ function GraphControls() {
     <div
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={collapseIfLeavingFlyout}
-      onFocus={() => setExpanded(true)}
+      onFocus={() => {
+        if (suppressNextFocusExpandRef.current) {
+          suppressNextFocusExpandRef.current = false;
+          return;
+        }
+        setExpanded(true);
+      }}
       onBlur={collapseIfLeavingFlyout}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') {
+          setExpanded(false);
+          suppressNextFocusExpandRef.current = true;
+          toggleRef.current?.focus();
+        }
+      }}
       style={{ position: 'absolute', top: 14, left: 14, zIndex: 1 }}
       data-testid="graph-controls"
     >
       <button
+        ref={toggleRef}
         type="button"
         className="graph-toolbar__btn"
         aria-label="Graph display options"
         aria-expanded={expanded}
         aria-controls="graph-controls-panel"
         data-testid="graph-controls-toggle"
+        onClick={() => setExpanded(true)}
         style={{ background: 'transparent' }}
       >
         <Icon name="settings" size={16} />

@@ -5,9 +5,12 @@
  *
  * DR's own predicate catalog (`spec/schemas/base/predicates.json` in the
  * `documentation_robotics` CLI repo) tags every predicate with a `category`.
- * The `structural` category — predicates whose ArchiMate alignment is
- * Composition/Aggregation/Specialization/Realization/Assignment-ish rather than
- * a general cross-cutting Association — is exactly the 12 below. This isn't
+ * The `structural` category — DR's own tag, not derivable from a predicate's
+ * ArchiMate alignment alone (it spans Composition/Aggregation/Specialization/
+ * Realization/Assignment/Serving/Association depending on the predicate —
+ * `connects`/`associated-with` are Association-aligned same as several
+ * non-structural predicates, so alignment alone isn't the rule) — is exactly
+ * the 12 below, verified against that file directly. This isn't
  * exposed over `/api/model` or `/api/spec` (neither `links[].type` nor
  * `relationshipSchemas[].predicate` carries a category), so — same pattern as
  * the hardcoded 12-layer color/label map in `ui/domain.ts` — it's hardcoded
