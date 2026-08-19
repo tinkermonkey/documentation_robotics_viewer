@@ -177,6 +177,45 @@ body.dark-canvas {
   background: rgb(var(--canvas-bg-2));
 }
 
+/* ---- Inspector DetailDrawer — rounded free corners -----------------------
+ * Heimdall's DetailDrawer ships flush (border-radius: 0 implicitly, no rule
+ * at all) since it's right-anchored and spans the full height of its
+ * container — its right edge is flush against the canvas edge (no radius
+ * needed there), but its LEFT edge floats freely over the graph, so its two
+ * left corners read as sharp corners jutting into the canvas. Round just
+ * those two, using --radius-lg — the same "normal" radius other floating
+ * Heimdall panels (GraphToolbar's own card) use. */
+.detail-drawer {
+  border-top-left-radius: var(--radius-lg);
+  border-bottom-left-radius: var(--radius-lg);
+}
+
+/* ---- vertical GraphCanvas toolbar at bottom-left --------------------------
+ * Heimdall's GraphToolbar only stacks buttons vertically for the true
+ * edge-centers ('left-center'/'right-center') — the 4 corner positions
+ * (including 'bottom-left', what Canvas.tsx uses) are always a horizontal
+ * row. Force the bottom-left instance into a column so it reads as a
+ * compact vertical stack in the corner instead of a wide horizontal bar;
+ * the divider between button groups needs the matching 90° flip too (see
+ * GraphToolbar.css's own row/column divider rules).
+ *
+ * Pinned bottom-LEFT (not bottom-right, its original position) specifically
+ * so it doesn't sit under Inspector's DetailDrawer, which floats over the
+ * same relative wrapper's right edge — the two would otherwise overlap
+ * whenever the drawer is open, since a GraphCanvas descendant (the toolbar)
+ * and its sibling (the drawer) don't naturally avoid each other. Nothing
+ * else anchors to the bottom-left corner, so no z-index bump is needed here
+ * the way the previous bottom-right position needed one. */
+.graph-toolbar--bottom-left {
+  flex-direction: column;
+}
+
+.graph-toolbar--bottom-left .graph-toolbar__divider {
+  width: 18px;
+  height: 1px;
+  margin: 2px 0;
+}
+
 /* ---- DrBot chat header pulse dot ---------------------------------------- */
 .drv-chat-pulse {
   animation: drv-chat-pulse 1.6s ease-in-out infinite;

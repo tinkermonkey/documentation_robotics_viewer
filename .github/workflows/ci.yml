@@ -53,10 +53,15 @@ jobs:
       env:
         GIT_CONFIG_GLOBAL: /dev/null
 
-    - name: Install Playwright browsers
-      run: npx playwright install --with-deps
-
     - name: Run tests
+      # vitest run — happy-dom, never touches a real browser; the Playwright
+      # E2E suite (which does) already runs separately in test.yml's
+      # "Playwright E2E + axe" job. This job used to install Playwright
+      # browsers here too (a leftover from the pre-Heimdall Storybook/
+      # Playwright-interaction-tests era), which bought nothing for this
+      # step and, on a slow apt mirror day, could burn the entire 15-minute
+      # job timeout just downloading `--with-deps`'s system packages before
+      # a single test ran.
       run: npm test
       env:
         GIT_CONFIG_GLOBAL: /dev/null

@@ -117,23 +117,24 @@ test.describe('shell', () => {
         return c ? getComputedStyle(c).backgroundColor : '';
       });
 
-    // Default is light: no dark-canvas class, white canvas.
-    expect(await bodyHasDark()).toBe(false);
-    const lightBg = await canvasBg();
-    expect(lightBg).toBe('rgb(255, 255, 255)');
-
-    // Click the "dark" segment of the canvas-theme SegmentedControl (radiogroup).
-    await page.getByRole('radio', { name: 'dark', exact: true }).click();
-
-    await expect.poll(bodyHasDark).toBe(true);
+    // Default is dark (a fresh browser context has nothing in localStorage
+    // yet — see uiStore.ts's PERSIST_KEY): dark-canvas class present, dark canvas.
+    expect(await bodyHasDark()).toBe(true);
     const darkBg = await canvasBg();
-    expect(darkBg).not.toBe(lightBg);
     expect(darkBg).toBe('rgb(11, 20, 38)');
 
-    // Toggling back to light restores it.
+    // Click the "light" segment of the canvas-theme SegmentedControl (radiogroup).
     await page.getByRole('radio', { name: 'light', exact: true }).click();
+
     await expect.poll(bodyHasDark).toBe(false);
-    expect(await canvasBg()).toBe('rgb(255, 255, 255)');
+    const lightBg = await canvasBg();
+    expect(lightBg).not.toBe(darkBg);
+    expect(lightBg).toBe('rgb(255, 255, 255)');
+
+    // Toggling back to dark restores it.
+    await page.getByRole('radio', { name: 'dark', exact: true }).click();
+    await expect.poll(bodyHasDark).toBe(true);
+    expect(await canvasBg()).toBe('rgb(11, 20, 38)');
   });
 
   test('connection dot reports connected', async ({ page }) => {

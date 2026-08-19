@@ -65,6 +65,15 @@ async function setTone(page: Page, tone: 'light' | 'dark') {
   await expect
     .poll(() => page.evaluate(() => document.body.classList.contains('dark-canvas')))
     .toBe(tone === 'dark');
+  // `body.dark-canvas` flips synchronously, but style recalc for elements that
+  // mount around the same tick (e.g. the default-selection effect still
+  // populating GraphControls/Inspector) can briefly lag behind it — axe reading
+  // getComputedStyle in that window sees a stale (light-token) color against
+  // the already-dark background, a false contrast violation that resolves
+  // itself within well under a second. Confirmed via a manual repro: 9
+  // color-contrast nodes with no settle wait, 0 with one — not a real color
+  // bug, just recalc timing. A short settle avoids scanning mid-recalc.
+  await page.waitForTimeout(300);
 }
 
 const VIEWS: Array<{ name: string; route: string }> = [
