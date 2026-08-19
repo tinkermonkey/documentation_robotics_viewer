@@ -310,13 +310,14 @@ describe('Canvas — graph layout/display control strip', () => {
     expect(useUiStore.getState().nodeMarginPreset).toBe('wide');
   });
 
-  it('pins the built-in GraphToolbar bottom-right', async () => {
+  it('pins the built-in GraphToolbar bottom-left (not bottom-right, which collides with the Inspector drawer)', async () => {
     renderWithProviders(<Canvas />);
     useUiStore.getState().setView('model');
     useUiStore.getState().selectLayer('apm');
     await waitFor(() => expect(graphNodeCount()).toBe(11));
 
-    expect(document.querySelector('.graph-toolbar--bottom-right')).toBeInTheDocument();
+    expect(document.querySelector('.graph-toolbar--bottom-left')).toBeInTheDocument();
+    expect(document.querySelector('.graph-toolbar--bottom-right')).not.toBeInTheDocument();
   });
 
   it('floats GraphControls over the graph (absolutely positioned, not a layout row)', async () => {

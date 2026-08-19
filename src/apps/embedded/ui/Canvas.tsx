@@ -32,10 +32,11 @@
  * docs/src/showcases/GraphLayoutsShowcase.tsx demo controls, just repositioned
  * as an overlay instead of a full-width row so it doesn't cost the canvas any
  * vertical space. The built-in `GraphToolbar` (zoom/lock/fullscreen, + a
- * live-simulation toggle for galaxy) is pinned `toolbarPosition="bottom-right"`,
- * forced into a vertical stack via `.graph-toolbar--bottom-right` in
- * domain-and-nav.css (Heimdall only stacks vertically for left-center/
- * right-center natively).
+ * live-simulation toggle for galaxy) is pinned `toolbarPosition="bottom-left"`
+ * — not bottom-right, which collided with Inspector's `DetailDrawer` floating
+ * over the graph's right edge whenever a node was selected — forced into a
+ * vertical stack via `.graph-toolbar--bottom-left` in domain-and-nav.css
+ * (Heimdall only stacks vertically for left-center/right-center natively).
  *
  * `Inspector` (the selection detail drawer, see Inspector.tsx) renders as a
  * sibling of `GraphCanvas`/`CanvasEmptyState` inside the same graph-mode
@@ -483,7 +484,7 @@ export function Canvas() {
                   showClusterBoundaries={showClusterBoundaries}
                   isStructuralEdge={isStructuralEdge}
                   showAllRelations={showAllRelations}
-                  toolbarPosition="bottom-right"
+                  toolbarPosition="bottom-left"
                   fitView={graphLayout !== 'force'}
                   fitPadding={40}
                   style={{
@@ -494,7 +495,7 @@ export function Canvas() {
                   }}
                 />
                 {/* Floats over the graph itself (top-left) — same card
-                    language as the built-in bottom-right GraphToolbar. */}
+                    language as the built-in bottom-left GraphToolbar. */}
                 <GraphControls />
               </>
             )}

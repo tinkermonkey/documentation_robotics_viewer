@@ -190,27 +190,27 @@ body.dark-canvas {
   border-bottom-left-radius: var(--radius-lg);
 }
 
-/* ---- vertical GraphCanvas toolbar at bottom-right ------------------------
+/* ---- vertical GraphCanvas toolbar at bottom-left --------------------------
  * Heimdall's GraphToolbar only stacks buttons vertically for the true
  * edge-centers ('left-center'/'right-center') — the 4 corner positions
- * (including 'bottom-right', what Canvas.tsx uses) are always a horizontal
- * row. Force the bottom-right instance into a column so it reads as a
+ * (including 'bottom-left', what Canvas.tsx uses) are always a horizontal
+ * row. Force the bottom-left instance into a column so it reads as a
  * compact vertical stack in the corner instead of a wide horizontal bar;
  * the divider between button groups needs the matching 90° flip too (see
  * GraphToolbar.css's own row/column divider rules).
  *
- * z-index: GraphToolbar (a GraphCanvas descendant, z-index:1) and Inspector's
- * DetailDrawer (a GraphCanvas sibling, z-index:2) both anchor to the right
- * edge of the same relative wrapper — with the toolbar at bottom-right they
- * overlap whenever the drawer is open, and DetailDrawer's higher z-index
- * would otherwise bury the toolbar's buttons under its (clickable, even if
- * translucent) surface. Raise the toolbar above it so it stays usable. */
-.graph-toolbar--bottom-right {
+ * Pinned bottom-LEFT (not bottom-right, its original position) specifically
+ * so it doesn't sit under Inspector's DetailDrawer, which floats over the
+ * same relative wrapper's right edge — the two would otherwise overlap
+ * whenever the drawer is open, since a GraphCanvas descendant (the toolbar)
+ * and its sibling (the drawer) don't naturally avoid each other. Nothing
+ * else anchors to the bottom-left corner, so no z-index bump is needed here
+ * the way the previous bottom-right position needed one. */
+.graph-toolbar--bottom-left {
   flex-direction: column;
-  z-index: 3;
 }
 
-.graph-toolbar--bottom-right .graph-toolbar__divider {
+.graph-toolbar--bottom-left .graph-toolbar__divider {
   width: 18px;
   height: 1px;
   margin: 2px 0;

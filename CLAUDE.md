@@ -170,10 +170,10 @@ For local dev use `dr visualize --no-auth`.
   `data/predicates.ts`'s `isStructuralEdge` — a hardcoded DR predicate `category` classification
   (mirrors `ui/domain.ts`'s hardcoded layer colors; not exposed by `/api/model` or `/api/spec`). The
   built-in `GraphToolbar` (zoom/lock/fullscreen + galaxy's live-simulation toggle) is pinned
-  `toolbarPosition="bottom-right"`, forced into a vertical stack via a `.graph-toolbar--bottom-right`
-  override in `domain-and-nav.css` (Heimdall only stacks vertically for `left-center`/`right-center`
-  natively) — that same override also raises its `z-index` above the Inspector `DetailDrawer`'s, since both
-  anchor to the graph's right/bottom-right edge and would otherwise overlap when a node is selected.
+  `toolbarPosition="bottom-left"` — not bottom-right, which collides with the Inspector `DetailDrawer`
+  floating over the graph's right edge whenever a node is selected — forced into a vertical stack via a
+  `.graph-toolbar--bottom-left` override in `domain-and-nav.css` (Heimdall only stacks vertically for
+  `left-center`/`right-center` natively).
   `GraphCanvas`'s `onBackgroundClick` reuses `selectLayer(layerId)` (clearing `selectedId`/`focus` back to
   `'layer'`) so clicking empty canvas deselects — the only way the Inspector drawer's auto-hide is
   reachable.
@@ -245,7 +245,7 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 | Annotation POST 400 | Wrong `elementId` | Use `dottedId(node)` (`layer.type.slug`), not the UUID |
 | Color doesn't flip in dark mode | Hardcoded hex | Use `rgb(var(--canvas-*))` |
 | `DetailDrawer` overlays the wrong region (e.g. whole app row, not just the graph) | Rendered outside the intended `position: relative` ancestor | Render it as a sibling *inside* that ancestor — `Inspector` lives in `Canvas.tsx`'s graph wrapper, not `AppShell.tsx` |
-| Floating overlay's buttons are unclickable / read behind another panel | Two absolutely-positioned overlays anchor to the same edge with no explicit stacking order | Give the one that should win an explicit higher `z-index` (see `.graph-toolbar--bottom-right` vs. `DetailDrawer`'s `z-index: 2` in `domain-and-nav.css`) |
+| Floating overlay's buttons are unclickable / read behind another panel | Two absolutely-positioned overlays anchor to the same edge with no explicit stacking order | Prefer moving one to a non-colliding corner if there's a free one (see `GraphToolbar`'s `toolbarPosition="bottom-left"`, moved off `"bottom-right"` specifically to stop colliding with the Inspector `DetailDrawer`); if both must share an edge, give the one that should win an explicit higher `z-index` instead |
 | Fonts fall back to system | woff2 404 (served as HTML) | Self-hosted under `public/fonts`; keep `@font-face` `/fonts/...` paths |
 | Stale UI after an edit | Vite transform cache | Restart dev server + `rm -rf node_modules/.vite`. Before debugging a code change that "isn't taking effect," `fetch()` the source path from the live page and grep the response for a string unique to your edit — cheaper than assuming the logic is wrong |
 | `userEvent.click()` on a 2nd element inside a hover-tracked overlay doesn't fire its handler | happy-dom/user-event doesn't reliably exclude a shared ancestor when synthesizing the pointer path between two different click targets, so a spurious `mouseleave` collapses (unmounts) the panel mid-click | Use `fireEvent.click()` for that specific multi-step interaction instead of `userEvent.click()` — confirms it's a test-environment artifact, not a product bug (verify live too) |
