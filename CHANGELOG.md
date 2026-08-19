@@ -5,6 +5,51 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-08-19
+
+`@tinkermonkey/heimdall-ui` bumped `0.5.2` → `0.7.0` (exact npm-registry version), and the
+Model/Schema graph experience is substantially reworked on top of it: new layout engines, a
+floating Inspector, NavTree selections that actually bring themselves into view, and Fullscreen
+that no longer drops half the UI.
+
+### Added
+- **Graph layout engines**: `layout="galaxy"` and `layout="force-clustered"` (alongside the
+  existing `"force"`), plus a `GraphControls` flyout (Layout / Boundaries / Node margin /
+  Relations) mirroring Heimdall's own `GraphLayoutsShowcase` demo — collapsed to a single
+  transparent icon by default, opens on hover, focus, or click, closes on Escape.
+- **Relations filter**: `showAllRelations`/`isStructuralEdge` edge visibility, backed by a new
+  `data/predicates.ts` classifying DR's own predicate catalog into structural vs. relational.
+- **NavTree selections auto-center**: `GraphCanvas`'s new `centerOnSelect` pans the viewport to
+  keep the current selection in view for any selection origin — a NavTree click, a cross-layer
+  "Navigate to X" link, or a URL-restored deep link — not just a direct on-canvas click.
+- **Fullscreen includes the overlay chrome**: `fullscreenContainerRef` points the built-in
+  toolbar's Fullscreen button at the graph's wrapper instead of `GraphCanvas`'s own root, so
+  `GraphControls` and the Inspector stay visible while fullscreen instead of vanishing.
+- **Two-way URL routing** for layer/node/changeset selection (`?layer=`/`?node=`/`?changeset=`),
+  covering selections from anywhere (NavTree, graph clicks, cross-layer navigation) — a view
+  change pushes history, a pure selection change replaces it.
+- **localStorage persistence** of theme, DrBot open/closed, and the graph layout preferences,
+  deliberately excluding navigation state (the URL router's job instead).
+
+### Changed
+- **Inspector is now a floating `DetailDrawer`** over the graph's right edge instead of a
+  permanent sidebar column: translucent/blurred, auto-hides when nothing's selected, resizable.
+- **Dark canvas is now the default** on a genuine first visit (a returning user's own choice
+  always wins after that).
+- The built-in zoom/lock/fullscreen toolbar moved to the graph's **bottom-left** corner (was
+  bottom-right, which collided with the Inspector drawer whenever a node was selected).
+
+### Fixed
+- Switching sections in the nav tree (Model ↔ Schema ↔ Changesets) while a node was selected left
+  a stale, cross-view selection id that got baked into the new view's URL as a dead link.
+- `GraphControls`' toggle had no click or Escape handling, making it unreachable on touch and
+  violating this repo's own "Escape closes overlays" standard.
+
+### CI
+- Dropped a dead `Install Playwright browsers` step from `build-and-test` (the tests it ran
+  before, `npm test`, never touch a real browser) — on a slow day it could burn the job's entire
+  timeout downloading system packages before a single test ran, blocking the release build.
+
 ## [0.5.1] - 2026-08-14
 
 ### Changed
