@@ -5,13 +5,24 @@
  *
  * This is the single source of truth for presentation state. Data state lives
  * in React Query (see `data/`); connection state lives in `connectionStore`.
+ *
+ * A subset of fields persist to localStorage (see `partialize` below) — the
+ * canvas theme, the DrBot drawer's open/closed state, and the graph
+ * layout/display settings (graphLayout/showClusterBoundaries/
+ * showAllRelations/nodeMarginPreset). Navigation state (view/layerId/
+ * selectedId/changesetId/mode/focus/expanded*) is deliberately NOT persisted
+ * here — that's the URL router's job (see router.tsx), so the two mechanisms
+ * don't fight over which one is authoritative for "where you are."
  */
 
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 export type ViewKind = 'model' | 'spec' | 'changesets';
 export type CanvasMode = 'graph' | 'page';
 export type PageFocus = 'layer' | 'node';
+export type GraphLayout = 'force' | 'galaxy' | 'force-clustered';
+export type NodeMarginPreset = 'tight' | 'default' | 'wide';
 
 interface UiState {
   view: ViewKind;
@@ -31,6 +42,21 @@ interface UiState {
   expandedSections: Set<string>;
   /** Layer keys currently expanded in the nav tree (e.g. 'model:data-model'). */
   expandedLayers: Set<string>;
+
+  /** GraphCanvas layout engine for the Model/Schema graph. Global (not per-layer),
+   *  same as canvasDark/mode. Defaults to 'force' — the pre-Heimdall-0.6.0 behavior. */
+  graphLayout: GraphLayout;
+  /** Whether galaxy/force-clustered draw a boundary circle per top-level group.
+   *  No effect under layout 'force'. */
+  showClusterBoundaries: boolean;
+  /** Whether every edge is shown, or only edges GraphCanvas classifies as
+   *  structural (see data/predicates.ts). Defaults to true (every edge visible)
+   *  to match pre-Heimdall-0.6.0 behavior — 'Structural' is the new opt-in filter. */
+  showAllRelations: boolean;
+  /** nodeMargin preset for force/force-clustered (galaxy already defaults to the
+   *  'tight' behavior). 'default' leaves nodeMargin unset (GraphCanvas's own
+   *  per-engine default). */
+  nodeMarginPreset: NodeMarginPreset;
 
   setView: (view: ViewKind) => void;
   selectLayer: (layerId: string) => void;
@@ -68,6 +94,10 @@ interface UiState {
   /** Toggle a layer row's expanded state under a section. */
   toggleLayer: (sectionId: string, layerId: string) => void;
   setWide: (wide: boolean) => void;
+  setGraphLayout: (layout: GraphLayout) => void;
+  toggleClusterBoundaries: () => void;
+  toggleShowAllRelations: () => void;
+  setNodeMarginPreset: (preset: NodeMarginPreset) => void;
 }
 
 const initialWide =
@@ -82,131 +112,194 @@ function applyCanvasDark(dark: boolean): void {
 const layerKey = (sectionId: string, layerId: string) =>
   `${sectionId}:${layerId}`;
 
-export const useUiStore = create<UiState>((set) => ({
-  view: 'model',
-  layerId: null,
-  selectedId: null,
-  changesetId: null,
-  canvasDark: false,
-  chatOpen: initialWide,
-  wide: initialWide,
-  mode: 'graph',
-  focus: 'layer',
-  expandedSections: new Set<string>(['model']),
-  expandedLayers: new Set<string>(),
+/** localStorage key for the persisted preference subset (see the module doc
+ *  comment above for exactly which fields). Exported for tests. */
+export const PERSIST_KEY = 'dr-viewer-ui-preferences';
 
-  setView: (view) => set({ view }),
+/** window-guarded storage passthrough — safe to import in a non-browser
+ *  context (SSR, a Node-env test file with no happy-dom pragma) without
+ *  crashing at module-load time, matching this file's existing
+ *  `typeof window !== 'undefined'` guards elsewhere. */
+const safeStorage = {
+  getItem: (name: string) =>
+    typeof window !== 'undefined' ? window.localStorage.getItem(name) : null,
+  setItem: (name: string, value: string) => {
+    if (typeof window !== 'undefined') window.localStorage.setItem(name, value);
+  },
+  removeItem: (name: string) => {
+    if (typeof window !== 'undefined') window.localStorage.removeItem(name);
+  },
+};
 
-  selectLayer: (layerId) =>
-    set((s) => {
-      const expandedLayers = new Set(s.expandedLayers);
-      expandedLayers.add(layerKey(s.view, layerId));
-      return {
-        layerId,
-        selectedId: null,
-        focus: 'layer',
-        expandedSections: new Set(s.expandedSections).add(s.view),
-        expandedLayers,
-      };
+export const useUiStore = create<UiState>()(
+  persist(
+    (set) => ({
+      view: 'model',
+      layerId: null,
+      selectedId: null,
+      changesetId: null,
+      // Dark by default (first visit, nothing persisted yet) — a later
+      // explicit choice via toggleCanvasDark persists and overrides this.
+      canvasDark: true,
+      chatOpen: initialWide,
+      wide: initialWide,
+      mode: 'graph',
+      focus: 'layer',
+      expandedSections: new Set<string>(['model']),
+      expandedLayers: new Set<string>(),
+      graphLayout: 'force',
+      showClusterBoundaries: true,
+      showAllRelations: true,
+      nodeMarginPreset: 'default',
+
+      setView: (view) => set({ view }),
+
+      selectLayer: (layerId) =>
+        set((s) => {
+          const expandedLayers = new Set(s.expandedLayers);
+          expandedLayers.add(layerKey(s.view, layerId));
+          return {
+            layerId,
+            selectedId: null,
+            focus: 'layer',
+            expandedSections: new Set(s.expandedSections).add(s.view),
+            expandedLayers,
+          };
+        }),
+
+      selectNode: (selectedId) => set({ selectedId, focus: 'node' }),
+
+      selectGraphNode: (selectedId) =>
+        set((s) => ({
+          selectedId,
+          focus: 'node',
+          expandedSections: new Set(s.expandedSections).add(s.view),
+          expandedLayers: s.layerId
+            ? new Set(s.expandedLayers).add(layerKey(s.view, s.layerId))
+            : s.expandedLayers,
+        })),
+
+      navigateToElement: (elementId, layerId) =>
+        set((s) => {
+          const sameLayer = s.layerId === layerId;
+          const expandedLayers = sameLayer
+            ? s.expandedLayers
+            : new Set(s.expandedLayers).add(layerKey('model', layerId));
+          return {
+            view: 'model',
+            layerId,
+            selectedId: elementId,
+            focus: 'node',
+            expandedSections: new Set(s.expandedSections).add('model'),
+            expandedLayers,
+          };
+        }),
+
+      navigateToSpecNode: (specNodeId, layerId) =>
+        set((s) => {
+          const sameLayer = s.layerId === layerId;
+          const expandedLayers = sameLayer
+            ? s.expandedLayers
+            : new Set(s.expandedLayers).add(layerKey('spec', layerId));
+          return {
+            view: 'spec',
+            layerId,
+            selectedId: specNodeId,
+            focus: 'node',
+            expandedSections: new Set(s.expandedSections).add('spec'),
+            expandedLayers,
+          };
+        }),
+
+      selectChangeset: (changesetId) =>
+        set((s) => ({
+          view: 'changesets',
+          changesetId,
+          expandedSections: new Set(s.expandedSections).add('changesets'),
+        })),
+
+      setMode: (mode) => set({ mode }),
+
+      toggleCanvasDark: () =>
+        set((s) => {
+          const canvasDark = !s.canvasDark;
+          applyCanvasDark(canvasDark);
+          return { canvasDark };
+        }),
+
+      toggleChat: () => set((s) => ({ chatOpen: !s.chatOpen })),
+
+      toggleSection: (sectionId) =>
+        set((s) => {
+          const expandedSections = new Set(s.expandedSections);
+          if (expandedSections.has(sectionId)) {
+            expandedSections.delete(sectionId);
+          } else {
+            expandedSections.add(sectionId);
+          }
+          return { view: sectionId as ViewKind, expandedSections };
+        }),
+
+      toggleLayer: (sectionId, layerId) =>
+        set((s) => {
+          const key = layerKey(sectionId, layerId);
+          const expandedLayers = new Set(s.expandedLayers);
+          const collapsing = expandedLayers.has(key);
+          if (collapsing) {
+            expandedLayers.delete(key);
+          } else {
+            expandedLayers.add(key);
+          }
+          return {
+            view: sectionId as ViewKind,
+            layerId,
+            selectedId: collapsing ? s.selectedId : null,
+            focus: collapsing ? s.focus : 'layer',
+            expandedSections: new Set(s.expandedSections).add(sectionId),
+            expandedLayers,
+          };
+        }),
+
+      setWide: (wide) => set({ wide }),
+
+      setGraphLayout: (graphLayout) => set({ graphLayout }),
+
+      toggleClusterBoundaries: () =>
+        set((s) => ({ showClusterBoundaries: !s.showClusterBoundaries })),
+
+      toggleShowAllRelations: () =>
+        set((s) => ({ showAllRelations: !s.showAllRelations })),
+
+      setNodeMarginPreset: (nodeMarginPreset) => set({ nodeMarginPreset }),
     }),
+    {
+      name: PERSIST_KEY,
+      version: 1,
+      storage: createJSONStorage(() => safeStorage),
+      // Only these survive a reload — see the module doc comment for why
+      // navigation state is excluded (the URL router owns that instead).
+      partialize: (state) => ({
+        canvasDark: state.canvasDark,
+        chatOpen: state.chatOpen,
+        graphLayout: state.graphLayout,
+        showClusterBoundaries: state.showClusterBoundaries,
+        showAllRelations: state.showAllRelations,
+        nodeMarginPreset: state.nodeMarginPreset,
+      }),
+      // Re-sync body.dark-canvas once hydration lands — covers both "restored
+      // a persisted value" and "nothing was persisted, using the true
+      // default" (this callback fires either way).
+      onRehydrateStorage: () => (state) => {
+        if (state) applyCanvasDark(state.canvasDark);
+      },
+    },
+  ),
+);
 
-  selectNode: (selectedId) => set({ selectedId, focus: 'node' }),
-
-  selectGraphNode: (selectedId) =>
-    set((s) => ({
-      selectedId,
-      focus: 'node',
-      expandedSections: new Set(s.expandedSections).add(s.view),
-      expandedLayers: s.layerId
-        ? new Set(s.expandedLayers).add(layerKey(s.view, s.layerId))
-        : s.expandedLayers,
-    })),
-
-  navigateToElement: (elementId, layerId) =>
-    set((s) => {
-      const sameLayer = s.layerId === layerId;
-      const expandedLayers = sameLayer
-        ? s.expandedLayers
-        : new Set(s.expandedLayers).add(layerKey('model', layerId));
-      return {
-        view: 'model',
-        layerId,
-        selectedId: elementId,
-        focus: 'node',
-        expandedSections: new Set(s.expandedSections).add('model'),
-        expandedLayers,
-      };
-    }),
-
-  navigateToSpecNode: (specNodeId, layerId) =>
-    set((s) => {
-      const sameLayer = s.layerId === layerId;
-      const expandedLayers = sameLayer
-        ? s.expandedLayers
-        : new Set(s.expandedLayers).add(layerKey('spec', layerId));
-      return {
-        view: 'spec',
-        layerId,
-        selectedId: specNodeId,
-        focus: 'node',
-        expandedSections: new Set(s.expandedSections).add('spec'),
-        expandedLayers,
-      };
-    }),
-
-  selectChangeset: (changesetId) =>
-    set((s) => ({
-      view: 'changesets',
-      changesetId,
-      expandedSections: new Set(s.expandedSections).add('changesets'),
-    })),
-
-  setMode: (mode) => set({ mode }),
-
-  toggleCanvasDark: () =>
-    set((s) => {
-      const canvasDark = !s.canvasDark;
-      applyCanvasDark(canvasDark);
-      return { canvasDark };
-    }),
-
-  toggleChat: () => set((s) => ({ chatOpen: !s.chatOpen })),
-
-  toggleSection: (sectionId) =>
-    set((s) => {
-      const expandedSections = new Set(s.expandedSections);
-      if (expandedSections.has(sectionId)) {
-        expandedSections.delete(sectionId);
-      } else {
-        expandedSections.add(sectionId);
-      }
-      return { view: sectionId as ViewKind, expandedSections };
-    }),
-
-  toggleLayer: (sectionId, layerId) =>
-    set((s) => {
-      const key = layerKey(sectionId, layerId);
-      const expandedLayers = new Set(s.expandedLayers);
-      const collapsing = expandedLayers.has(key);
-      if (collapsing) {
-        expandedLayers.delete(key);
-      } else {
-        expandedLayers.add(key);
-      }
-      return {
-        view: sectionId as ViewKind,
-        layerId,
-        selectedId: collapsing ? s.selectedId : null,
-        focus: collapsing ? s.focus : 'layer',
-        expandedSections: new Set(s.expandedSections).add(sectionId),
-        expandedLayers,
-      };
-    }),
-
-  setWide: (wide) => set({ wide }),
-}));
-
-/** Seed `body.dark-canvas` from the initial store state (light by default). */
+/** Seed `body.dark-canvas` from the initial (hydration-resolved) store state —
+ *  localStorage hydration is synchronous, so `getState()` here already
+ *  reflects it; this is a belt-and-suspenders call alongside
+ *  onRehydrateStorage above, not the only place this runs. */
 if (typeof document !== 'undefined') {
   applyCanvasDark(useUiStore.getState().canvasDark);
 }

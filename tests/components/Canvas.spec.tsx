@@ -11,7 +11,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { Canvas } from '@/apps/embedded/ui/Canvas';
@@ -204,5 +204,176 @@ describe('Canvas — graph/page mode toggle', () => {
     expect(await screen.findByTestId('canvas-empty')).toHaveTextContent(
       'select a node to view its page',
     );
+  });
+});
+
+describe('Canvas — graph layout/display control strip', () => {
+  it('is hidden with no layer selected, and in page mode', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    expect(screen.queryByTestId('graph-controls')).not.toBeInTheDocument();
+
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+    expect(screen.getByTestId('graph-controls')).toBeInTheDocument();
+
+    useUiStore.getState().setMode('page');
+    await screen.findByTestId('page-view');
+    expect(screen.queryByTestId('graph-controls')).not.toBeInTheDocument();
+  });
+
+  it('shows Layout and Relations always; Boundaries only off "force", Node margin only off "galaxy"', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+    await user.hover(screen.getByTestId('graph-controls-toggle')); // expand the flyout
+
+    // Default layout is 'force': Boundaries hidden, Node margin shown.
+    expect(screen.getByTestId('graph-layout-control')).toBeInTheDocument();
+    expect(screen.getByTestId('graph-relations-control')).toBeInTheDocument();
+    expect(screen.queryByTestId('graph-boundaries-control')).not.toBeInTheDocument();
+    expect(screen.getByTestId('graph-margin-control')).toBeInTheDocument();
+
+    useUiStore.getState().setGraphLayout('galaxy');
+    await waitFor(() => expect(screen.getByTestId('graph-boundaries-control')).toBeInTheDocument());
+    expect(screen.queryByTestId('graph-margin-control')).not.toBeInTheDocument();
+
+    useUiStore.getState().setGraphLayout('force-clustered');
+    await waitFor(() => expect(screen.getByTestId('graph-margin-control')).toBeInTheDocument());
+    expect(screen.getByTestId('graph-boundaries-control')).toBeInTheDocument();
+
+    useUiStore.getState().setGraphLayout('force');
+  });
+
+  it('clicking each SegmentedControl option updates the corresponding uiStore field', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+    const toggle = screen.getByTestId('graph-controls-toggle');
+    // Open via focus, then interact via fireEvent.click (a plain "click"
+    // event, no surrounding pointer/mouse choreography) rather than
+    // userEvent.click for this multi-step sequence — happy-dom's user-event
+    // integration doesn't reliably exclude a shared ancestor (this flyout's
+    // wrapper) when synthesizing the pointer path between two DIFFERENT
+    // click targets inside it, so a *real* mouseleave never fires but a
+    // spurious one can here, collapsing (unmounting) the very control the
+    // next click targets. Verified live in a real browser (not just this
+    // suite) that clicking a control and then genuinely moving the mouse
+    // away collapses the panel correctly — this is a test-environment
+    // limitation, not a product bug; see Canvas.tsx's own collapseIfLeavingFlyout comment.
+    fireEvent.focus(toggle);
+
+    fireEvent.click(screen.getByRole('radio', { name: 'Galaxy' }));
+    expect(useUiStore.getState().graphLayout).toBe('galaxy');
+
+    fireEvent.click(screen.getByRole('radio', { name: 'Off' }));
+    expect(useUiStore.getState().showClusterBoundaries).toBe(false);
+
+    fireEvent.click(screen.getByRole('radio', { name: 'Structural' }));
+    expect(useUiStore.getState().showAllRelations).toBe(false);
+
+    fireEvent.click(screen.getByRole('radio', { name: 'Force' }));
+    expect(useUiStore.getState().graphLayout).toBe('force');
+
+    fireEvent.click(screen.getByRole('radio', { name: 'Wide' }));
+    expect(useUiStore.getState().nodeMarginPreset).toBe('wide');
+  });
+
+  it('pins the built-in GraphToolbar bottom-right', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+
+    expect(document.querySelector('.graph-toolbar--bottom-right')).toBeInTheDocument();
+  });
+
+  it('floats GraphControls over the graph (absolutely positioned, not a layout row)', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+
+    expect(screen.getByTestId('graph-controls')).toHaveStyle({ position: 'absolute' });
+  });
+
+  it('collapses to a transparent icon by default and expands the panel on hover/focus', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+
+    const toggle = screen.getByTestId('graph-controls-toggle');
+    expect(toggle).toHaveStyle({ background: 'transparent' });
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByTestId('graph-controls-panel')).not.toBeInTheDocument();
+
+    // Hovering expands it.
+    await user.hover(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByTestId('graph-controls-panel')).toBeInTheDocument();
+    expect(screen.getByTestId('graph-layout-control')).toBeInTheDocument();
+
+    // Unhovering collapses it again.
+    await user.unhover(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByTestId('graph-controls-panel')).not.toBeInTheDocument();
+
+    // Keyboard focus (not just mouse hover) also expands it.
+    fireEvent.focus(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByTestId('graph-controls-panel')).toBeInTheDocument();
+
+    // Blurring away from the whole flyout collapses it.
+    fireEvent.blur(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByTestId('graph-controls-panel')).not.toBeInTheDocument();
+  });
+
+  it('stays expanded while focus moves onto a control inside the panel (blur to a sibling, not a collapse)', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+
+    // Focus (not hover) the toggle so DOM focus actually starts there, then
+    // tab forward into the now-expanded panel — that move stays WITHIN the
+    // flyout and must not collapse it mid-interaction.
+    fireEvent.focus(screen.getByTestId('graph-controls-toggle'));
+    await user.tab();
+    expect(screen.getByTestId('graph-controls-toggle')).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByTestId('graph-controls-panel')).toBeInTheDocument();
+  });
+});
+
+describe('Canvas — background click deselects (Inspector auto-hide reachable)', () => {
+  it('clicking the graph background clears the selection, closing the Inspector drawer', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+
+    // Select a real node via a real click (same as a user would). The React
+    // onClick lives on the inner .graph-node DIV, not the outer <g data-testid=...>.
+    const firstNode = document
+      .querySelector('[data-testid^="graph-node-"] .graph-node') as HTMLElement;
+    await user.click(firstNode);
+    await waitFor(() => expect(useUiStore.getState().selectedId).not.toBeNull());
+    expect(screen.getByTestId('inspector')).toHaveStyle({ width: '320px' }); // drawer open
+
+    // Clicking empty canvas background (not a node) clears it back out.
+    const canvas = document.querySelector('.graph-canvas') as HTMLElement;
+    await user.click(canvas);
+
+    await waitFor(() => expect(useUiStore.getState().selectedId).toBeNull());
+    expect(useUiStore.getState().focus).toBe('layer');
+    expect(useUiStore.getState().layerId).toBe('apm'); // stays on the same layer
+    expect(screen.getByTestId('inspector')).toHaveStyle({ width: '0px' }); // drawer closed
   });
 });

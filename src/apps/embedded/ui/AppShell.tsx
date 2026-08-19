@@ -1,15 +1,20 @@
 /**
- * AppShell — the 5-pane flex frame.
+ * AppShell — the 4-pane flex frame.
  *
  *   column [ Topbar 54px ]
- *          [ row: LeftRail 244px | Canvas flex:1 | Inspector 320px (+ chat slot) ]
+ *          [ row: LeftRail 244px | Canvas flex:1 (+ chat slot) ]
  *          [ StatusBar 28px ]
  *
  * Full 100vh, min-width 880px. The dark shell consumes Heimdall shell tokens
- * (`rgb(var(--shell-*))`); the canvas + inspector consume canvas tokens so the
- * `.dark-canvas` toggle flips them. Canvas + Inspector are empty placeholders in
- * this phase (a PageHeader stub lives in the canvas); graph + inspector content
- * arrive in Phase 2, chat in Phase 5.
+ * (`rgb(var(--shell-*))`); the canvas consumes canvas tokens so the
+ * `.dark-canvas` toggle flips them.
+ *
+ * The Model/Schema selection detail pane (`Inspector`) is NOT a column here —
+ * it's a Heimdall `DetailDrawer` overlay rendered inside `Canvas.tsx` itself
+ * (see that file's doc comment), so Canvas gets the full remaining width and
+ * the drawer floats over just the graph area on selection. Changesets keeps
+ * its own permanent `ChangesetInspector` column (out of scope for the drawer
+ * treatment — see the "pop-out drawer" work in the project memory).
  */
 
 import { useEffect } from 'react';
@@ -17,7 +22,6 @@ import { Topbar } from './Topbar';
 import { LeftRail } from './LeftRail';
 import { StatusBar } from './StatusBar';
 import { Canvas } from './Canvas';
-import { Inspector } from './Inspector';
 import { ChangesetCanvas } from './ChangesetCanvas';
 import { ChangesetInspector } from './ChangesetInspector';
 import { ChatDrawer } from './ChatDrawer';
@@ -125,15 +129,9 @@ function useDefaultSelection() {
 
 export function AppShell() {
   const view = useUiStore((s) => s.view);
-  const mode = useUiStore((s) => s.mode);
-  // Model + Schema render the graph Canvas/Inspector (view-branched inside);
+  // Model + Schema render the graph Canvas (Inspector drawer lives inside it);
   // Changesets renders the diff list + changeset detail.
   const isChangesets = view === 'changesets';
-  // Inspector is graph-mode only — page mode carries the same data at
-  // greater depth, so the right pane is hidden entirely (design/node_pages
-  // README section 4). Changesets keeps its detail pane regardless (the
-  // page/graph toggle doesn't apply there).
-  const showRightPane = isChangesets || mode !== 'page';
 
   useDefaultSelection();
   useSeedGreeting();
@@ -162,9 +160,9 @@ export function AppShell() {
         }}
       >
         <LeftRail />
-        {/* Model + Schema: live graph + inspector. Changesets: diff list + detail. */}
+        {/* Model + Schema: live graph (Inspector drawer inside it). Changesets: diff list + detail column. */}
         {isChangesets ? <ChangesetCanvas /> : <Canvas />}
-        {showRightPane && (isChangesets ? <ChangesetInspector /> : <Inspector />)}
+        {isChangesets && <ChangesetInspector />}
         {/* DrBot chat: persistent 4th column when wide, absolute overlay otherwise. */}
         <ChatDrawer />
       </div>

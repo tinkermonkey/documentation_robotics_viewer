@@ -36,10 +36,11 @@ src/
 │   ├── router.tsx             # TanStack hash router; RootShell runs the WS bootstrap; routes drive uiStore.view
 │   ├── AuthRoute.tsx          # Magic-link token capture
 │   ├── ui/                    # NEW Heimdall-based UX layer (presentation only)
-│   │   ├── AppShell.tsx       # 5-pane flex frame (topbar / nav rail / canvas / inspector / chat drawer / statusbar)
+│   │   ├── AppShell.tsx       # 4-pane flex frame (topbar / nav rail / canvas / chat drawer / statusbar)
 │   │   ├── Topbar.tsx LeftRail.tsx NavTree.tsx StatusBar.tsx
-│   │   ├── Canvas.tsx Inspector.tsx               # Model + Schema views (branch on uiStore.view)
-│   │   ├── ChangesetCanvas.tsx ChangesetInspector.tsx
+│   │   ├── Canvas.tsx Inspector.tsx               # Model + Schema views (branch on uiStore.view);
+│   │   │                                          # Inspector is a Heimdall DetailDrawer overlay INSIDE Canvas, not an AppShell column
+│   │   ├── ChangesetCanvas.tsx ChangesetInspector.tsx   # Changesets keeps a permanent Inspector column (not a drawer)
 │   │   ├── ChatDrawer.tsx ChatPanel.tsx chatAdapter.ts   # DrBot live chat
 │   │   ├── AnnotationsSection.tsx                 # Inspector annotations (Model elements)
 │   │   ├── uiStore.ts         # Zustand UI state: view/layer/selection/changeset/canvasDark/chatOpen/wide/expanded
@@ -93,13 +94,13 @@ new range, even when the resolution mechanism changed — use `npm install @tink
 Use them as `rgb(var(--canvas-bg))` etc. so the **dark-canvas toggle** (`uiStore.toggleCanvasDark` →
 `body.classList.toggle('dark-canvas')`) flips every canvas region automatically.
 
-**Key Heimdall components in use:** `GraphCanvas` / `GraphNode` / `GraphEdge` / `GraphInspector`,
-`PageHeader`, `NavItem`, `Statusbar`, `SegmentedControl`, `ChatContainer` / `ChatMessage` (+ `ToolBlock` /
-`ThinkingBlock`) / `ChatComposer` / `ChatSuggestions` / `ChatMarkdownContent`, `DiffViewer` /
-`SideBySideDiff`, `StatTile` / `StatGrid`, `StatusBadge` / `Badge` / `Chip`, `Button`, `TextArea` /
-`TextInput`, `Select`, `Modal` / `ConfirmDialog` / `Toast`, `RowMenu`, `KVGrid`, `Icon`. (We hand-roll the
-5-pane `AppShell` and 3-level `NavTree` rather than using `ShellLayout`/`Sidebar`, which are single-canvas /
-2-level only.)
+**Key Heimdall components in use:** `GraphCanvas` / `GraphNode` / `GraphEdge` / `GraphInspector` /
+`GraphToolbar` / `DetailDrawer`, `PageHeader`, `NavItem`, `Statusbar`, `SegmentedControl`, `ChatContainer` /
+`ChatMessage` (+ `ToolBlock` / `ThinkingBlock`) / `ChatComposer` / `ChatSuggestions` / `ChatMarkdownContent`,
+`DiffViewer` / `SideBySideDiff`, `StatTile` / `StatGrid`, `StatusBadge` / `Badge` / `Chip`, `Button`,
+`TextArea` / `TextInput`, `Select`, `Modal` / `ConfirmDialog` / `Toast`, `RowMenu`, `KVGrid`, `Icon`. (We
+hand-roll the `AppShell` and 3-level `NavTree` rather than using `ShellLayout`/`Sidebar`, which are
+single-canvas / 2-level only.)
 
 **Domain colors (load-bearing):** the 12 DR layer colors are NOT in Heimdall's bundle. They live in
 `src/apps/embedded/ui/domain.ts` and are applied to graph node swatches via
@@ -144,15 +145,65 @@ For local dev use `dr visualize --no-auth`.
 
 - **Model view** — per-layer instance `GraphCanvas` (domain-colored nodes + intra-layer edges) +
   `GraphInspector` (properties, in/out + cross-layer relationships with click-to-navigate). `GraphCanvas` is
-  keyed by `view:layerId` so it recenters on switch.
+  keyed by `view:layerId:graphLayout:nodeMarginPreset` so it recenters on switch.
 - **Schema view** — per-layer node-type graph + inspector from `/api/spec` (attributes, predicate edges with
   cardinality).
+- **Inspector selection drawer** (`Inspector.tsx`, both Model + Schema) — a Heimdall `DetailDrawer` overlay
+  floating over the graph area's right edge, not a permanent sidebar column: translucent/blurred, auto-hides
+  (`open={!!metadata}`) when nothing's selected, resizable via its own left-edge handle (local `width` state,
+  default 320px). Rendered inside `Canvas.tsx`'s `position: relative` graph wrapper (must be — that's the
+  ancestor `DetailDrawer` overlays), graph-mode only. Changesets keeps its own permanent
+  `ChangesetInspector` column (not converted to a drawer). Its two "free" corners (top-left/bottom-left —
+  the right edge is flush against the canvas) are rounded via a `.detail-drawer` override in
+  `domain-and-nav.css` using `--radius-lg`, the same "normal" radius other floating Heimdall panels use;
+  Heimdall's own `DetailDrawer.css` ships it flush (no radius at all).
+- **Graph layout/display controls** — `GraphControls`, a hover/focus flyout top-left over the graph (Model +
+  Schema views): collapsed to a single transparent icon button (`.graph-toolbar__btn`, same look the
+  built-in `GraphToolbar`'s own buttons use) so it isn't a permanent opaque block over the graph; hovering
+  or focusing it expands a translucent/blurred panel (same `DetailDrawer` visual language) with the actual
+  controls, mirroring Heimdall's `docs/src/showcases/GraphLayoutsShowcase.tsx` demo. Collapse is
+  `relatedTarget`-based (`collapseIfLeavingFlyout`, shared by `onMouseLeave`/`onBlur`) — checks where the
+  pointer/focus is actually GOING, not just that SOME leave event fired, so clicking one control inside the
+  panel and moving to another doesn't spuriously collapse it out from under the interaction. Drives
+  `uiStore`'s `graphLayout` (`force`/`galaxy`/`force-clustered`), `showClusterBoundaries`,
+  `nodeMarginPreset` (`tight`/`default`/`wide`), and `showAllRelations`. "Structural" relations use
+  `data/predicates.ts`'s `isStructuralEdge` — a hardcoded DR predicate `category` classification
+  (mirrors `ui/domain.ts`'s hardcoded layer colors; not exposed by `/api/model` or `/api/spec`). The
+  built-in `GraphToolbar` (zoom/lock/fullscreen + galaxy's live-simulation toggle) is pinned
+  `toolbarPosition="bottom-right"`, forced into a vertical stack via a `.graph-toolbar--bottom-right`
+  override in `domain-and-nav.css` (Heimdall only stacks vertically for `left-center`/`right-center`
+  natively) — that same override also raises its `z-index` above the Inspector `DetailDrawer`'s, since both
+  anchor to the graph's right/bottom-right edge and would otherwise overlap when a node is selected.
+  `GraphCanvas`'s `onBackgroundClick` reuses `selectLayer(layerId)` (clearing `selectedId`/`focus` back to
+  `'layer'`) so clicking empty canvas deselects — the only way the Inspector drawer's auto-hide is
+  reachable.
+- **Selection auto-centers, Fullscreen includes the overlay chrome** (heimdall-ui 0.7.0) — `GraphCanvas`
+  gets `centerOnSelect` unconditionally (Model + Schema): pans to keep `selectedId` centered whenever it
+  changes, so a NavTree click, a cross-layer navigate-to link, or a URL-restored deep link all bring an
+  off-screen node into view, not just a direct on-canvas click (which it's a harmless no-op for — no
+  special-casing by selection origin). `fullscreenContainerRef={canvasAreaRef}` — a ref on `Canvas.tsx`'s
+  graph-mode `position: relative` wrapper — points the built-in toolbar's Fullscreen button at that
+  wrapper instead of `GraphCanvas`'s own root, so `GraphControls` and `Inspector` (both its siblings,
+  outside what the native Fullscreen API would otherwise render) stay visible while fullscreen.
 - **Changesets view** — op-coded diff list (add=emerald / update=cyan / delete=rose) + `StatTile` inspector +
   expandable `SideBySideDiff`.
 - **DrBot chat** — 372px drawer (persistent ≥1300px, overlay below) with live WS/JSON-RPC streaming;
   `chatAdapter.ts` maps our `parts` union onto Heimdall's message/tool/thinking blocks.
 - **Annotations** — REST CRUD + replies in the inspector for Model elements.
-- **Light/dark canvas** toggle in the topbar.
+- **Light/dark canvas** toggle in the topbar. **Dark is the default** (`uiStore`'s `canvasDark: true`) —
+  applies only on a first-ever visit; a persisted choice always wins after that.
+- **Preference persistence** (`uiStore.ts`, `zustand/middleware`'s `persist`) — `canvasDark`, `chatOpen`
+  (DrBot open/closed), and the graph settings (`graphLayout`/`showClusterBoundaries`/`showAllRelations`/
+  `nodeMarginPreset`) survive a reload via localStorage (key `PERSIST_KEY` = `dr-viewer-ui-preferences`,
+  see its `partialize`). Navigation state (view/layerId/selectedId/changesetId/mode/focus/expanded*) is
+  deliberately EXCLUDED from persistence — that's the URL router's job instead (below), so the two
+  mechanisms never fight over which one is authoritative for "where you are."
+- **URL routing for left-panel selections** (`router.tsx`'s `AppShellRoute`) — `?layer=`/`?node=`/
+  `?changeset=` search params two-way sync with `uiStore.layerId`/`selectedId`/`changesetId`, on top of
+  the existing `:section`/`:view` path sync. Covers selections from ANYWHERE (nav tree clicks, graph node
+  clicks, cross-layer navigation), not just the nav tree, since they all drive the same store fields. A
+  genuine view change (Model↔Schema↔Changesets) pushes a new history entry; a pure selection change within
+  the same view replaces the current entry instead, so nav-tree/graph clicks don't flood browser history.
 
 ## Local Development & Verification
 
@@ -167,7 +218,7 @@ npm run dev
 npm run build
 
 # Tests
-npm test            # Vitest: unit + integration + component (262 tests, ~1.6s)
+npm test            # Vitest: unit + integration + component (319 tests, ~2s)
 npm run test:watch  # Vitest watch
 npm run test:cov    # Vitest with coverage
 npm run test:types  # type-check the tests (tsconfig.test.json)
@@ -193,21 +244,25 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 | Edges/relationships empty | Link endpoint id not resolved | Use `modelGraph` dual-index (UUID + dotted id) |
 | Annotation POST 400 | Wrong `elementId` | Use `dottedId(node)` (`layer.type.slug`), not the UUID |
 | Color doesn't flip in dark mode | Hardcoded hex | Use `rgb(var(--canvas-*))` |
+| `DetailDrawer` overlays the wrong region (e.g. whole app row, not just the graph) | Rendered outside the intended `position: relative` ancestor | Render it as a sibling *inside* that ancestor — `Inspector` lives in `Canvas.tsx`'s graph wrapper, not `AppShell.tsx` |
+| Floating overlay's buttons are unclickable / read behind another panel | Two absolutely-positioned overlays anchor to the same edge with no explicit stacking order | Give the one that should win an explicit higher `z-index` (see `.graph-toolbar--bottom-right` vs. `DetailDrawer`'s `z-index: 2` in `domain-and-nav.css`) |
 | Fonts fall back to system | woff2 404 (served as HTML) | Self-hosted under `public/fonts`; keep `@font-face` `/fonts/...` paths |
-| Stale UI after an edit | Vite transform cache | Restart dev server + `rm -rf node_modules/.vite` |
+| Stale UI after an edit | Vite transform cache | Restart dev server + `rm -rf node_modules/.vite`. Before debugging a code change that "isn't taking effect," `fetch()` the source path from the live page and grep the response for a string unique to your edit — cheaper than assuming the logic is wrong |
+| `userEvent.click()` on a 2nd element inside a hover-tracked overlay doesn't fire its handler | happy-dom/user-event doesn't reliably exclude a shared ancestor when synthesizing the pointer path between two different click targets, so a spurious `mouseleave` collapses (unmounts) the panel mid-click | Use `fireEvent.click()` for that specific multi-step interaction instead of `userEvent.click()` — confirms it's a test-environment artifact, not a product bug (verify live too) |
 
 ## Testing
 
 The Heimdall-era suite (Vitest + Playwright) — see [documentation/TESTING_STRATEGY.md](documentation/TESTING_STRATEGY.md):
 
-- **Vitest** (`npm test`, **262 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
-  445-link resolution, `chatAdapter`, `changesets` op-folding, `specGraph`, `relationships`, `uiStore`),
-  `tests/integration/` infra over a mock WebSocket + MSW (the **WS double-emit** regression, `jsonRpcHandler`,
-  `chatService` streaming, data hooks), `tests/components/` Testing Library renders of the `ui/` layer.
-  Helpers + real API fixtures live in `tests/helpers/` + `tests/fixtures/`.
-- **Playwright** (`npm run test:e2e`, **20 tests** in `tests/e2e/`): drives the **production bundle** served
-  by `dr visualize` on a dedicated port — shell, model/schema/changesets views, live chat single-render
-  (double-emit), annotations CRUD (self-cleaning), and **axe** WCAG 2.1 AA on every view in light + dark.
+- **Vitest** (`npm test`, **319 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
+  445-link resolution, `chatAdapter`, `changesets` op-folding, `specGraph`, `relationships`, `uiStore`,
+  `predicates`), `tests/integration/` infra over a mock WebSocket + MSW (the **WS double-emit** regression,
+  `jsonRpcHandler`, `chatService` streaming, data hooks), `tests/components/` Testing Library renders of the
+  `ui/` layer. Helpers + real API fixtures live in `tests/helpers/` + `tests/fixtures/`.
+- **Playwright** (`npm run test:e2e`, **33 tests** in `tests/e2e/`): drives the **production bundle** served
+  by `dr visualize` on a dedicated port — shell, model/schema/changesets views, URL routing + localStorage
+  persistence, live chat single-render (double-emit), annotations CRUD (self-cleaning), and **axe** WCAG
+  2.1 AA on every view in light + dark.
 - **CI**: `.github/workflows/test.yml` — Vitest + `test:types` + build are the required gate; the E2E job is
   separate (boots `dr visualize`).
 

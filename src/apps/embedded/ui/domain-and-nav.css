@@ -177,6 +177,45 @@ body.dark-canvas {
   background: rgb(var(--canvas-bg-2));
 }
 
+/* ---- Inspector DetailDrawer — rounded free corners -----------------------
+ * Heimdall's DetailDrawer ships flush (border-radius: 0 implicitly, no rule
+ * at all) since it's right-anchored and spans the full height of its
+ * container — its right edge is flush against the canvas edge (no radius
+ * needed there), but its LEFT edge floats freely over the graph, so its two
+ * left corners read as sharp corners jutting into the canvas. Round just
+ * those two, using --radius-lg — the same "normal" radius other floating
+ * Heimdall panels (GraphToolbar's own card) use. */
+.detail-drawer {
+  border-top-left-radius: var(--radius-lg);
+  border-bottom-left-radius: var(--radius-lg);
+}
+
+/* ---- vertical GraphCanvas toolbar at bottom-right ------------------------
+ * Heimdall's GraphToolbar only stacks buttons vertically for the true
+ * edge-centers ('left-center'/'right-center') — the 4 corner positions
+ * (including 'bottom-right', what Canvas.tsx uses) are always a horizontal
+ * row. Force the bottom-right instance into a column so it reads as a
+ * compact vertical stack in the corner instead of a wide horizontal bar;
+ * the divider between button groups needs the matching 90° flip too (see
+ * GraphToolbar.css's own row/column divider rules).
+ *
+ * z-index: GraphToolbar (a GraphCanvas descendant, z-index:1) and Inspector's
+ * DetailDrawer (a GraphCanvas sibling, z-index:2) both anchor to the right
+ * edge of the same relative wrapper — with the toolbar at bottom-right they
+ * overlap whenever the drawer is open, and DetailDrawer's higher z-index
+ * would otherwise bury the toolbar's buttons under its (clickable, even if
+ * translucent) surface. Raise the toolbar above it so it stays usable. */
+.graph-toolbar--bottom-right {
+  flex-direction: column;
+  z-index: 3;
+}
+
+.graph-toolbar--bottom-right .graph-toolbar__divider {
+  width: 18px;
+  height: 1px;
+  margin: 2px 0;
+}
+
 /* ---- DrBot chat header pulse dot ---------------------------------------- */
 .drv-chat-pulse {
   animation: drv-chat-pulse 1.6s ease-in-out infinite;

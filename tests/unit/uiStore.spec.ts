@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { describe, it, expect, beforeEach } from 'vitest';
-import { useUiStore } from '@/apps/embedded/ui/uiStore';
+import { useUiStore, PERSIST_KEY } from '@/apps/embedded/ui/uiStore';
 
 // Capture the pristine initial state (set at module load) so each test starts
 // from a known baseline regardless of prior mutations.
@@ -21,6 +21,10 @@ function reset() {
       focus: 'layer',
       expandedSections: new Set<string>(['model']),
       expandedLayers: new Set<string>(),
+      graphLayout: 'force',
+      showClusterBoundaries: true,
+      showAllRelations: true,
+      nodeMarginPreset: 'default',
     },
     false,
   );
@@ -36,6 +40,48 @@ describe('uiStore — default state', () => {
     expect(INITIAL.expandedSections.has('model')).toBe(true);
     expect(typeof INITIAL.toggleCanvasDark).toBe('function');
     expect(typeof INITIAL.navigateToElement).toBe('function');
+  });
+
+  it('defaults canvasDark to true (dark mode on first visit)', () => {
+    expect(INITIAL.canvasDark).toBe(true);
+  });
+});
+
+describe('uiStore — localStorage persistence', () => {
+  it('persists canvasDark, chatOpen, and the graph settings under PERSIST_KEY', () => {
+    get().toggleCanvasDark();
+    get().toggleChat();
+    get().setGraphLayout('galaxy');
+    get().toggleClusterBoundaries();
+    get().toggleShowAllRelations();
+    get().setNodeMarginPreset('wide');
+
+    const stored = JSON.parse(localStorage.getItem(PERSIST_KEY) ?? '{}');
+    expect(stored.state).toMatchObject({
+      canvasDark: true, // reset() started at false; one toggle -> true
+      chatOpen: true, // reset() started at false; one toggle -> true
+      graphLayout: 'galaxy',
+      showClusterBoundaries: false,
+      showAllRelations: false,
+      nodeMarginPreset: 'wide',
+    });
+  });
+
+  it('does NOT persist navigation state (view/layerId/selectedId/changesetId/mode/focus/expanded*)', () => {
+    get().selectLayer('security');
+    get().selectNode('elem-1');
+    get().setMode('page');
+    get().selectChangeset('cs-9');
+
+    const stored = JSON.parse(localStorage.getItem(PERSIST_KEY) ?? '{}');
+    expect(stored.state).not.toHaveProperty('view');
+    expect(stored.state).not.toHaveProperty('layerId');
+    expect(stored.state).not.toHaveProperty('selectedId');
+    expect(stored.state).not.toHaveProperty('changesetId');
+    expect(stored.state).not.toHaveProperty('mode');
+    expect(stored.state).not.toHaveProperty('focus');
+    expect(stored.state).not.toHaveProperty('expandedSections');
+    expect(stored.state).not.toHaveProperty('expandedLayers');
   });
 });
 
@@ -227,5 +273,46 @@ describe('focus — page-view target (layer overview vs. node detail)', () => {
     useUiStore.setState({ focus: 'node' });
     get().toggleLayer('model', 'security'); // now collapses
     expect(get().focus).toBe('node'); // untouched by a collapse
+  });
+});
+
+describe('graph layout/display preferences', () => {
+  it('default to force layout, boundaries on, every relation visible, default node margin', () => {
+    expect(get().graphLayout).toBe('force');
+    expect(get().showClusterBoundaries).toBe(true);
+    expect(get().showAllRelations).toBe(true);
+    expect(get().nodeMarginPreset).toBe('default');
+  });
+
+  it('setGraphLayout switches the layout engine', () => {
+    get().setGraphLayout('galaxy');
+    expect(get().graphLayout).toBe('galaxy');
+    get().setGraphLayout('force-clustered');
+    expect(get().graphLayout).toBe('force-clustered');
+    get().setGraphLayout('force');
+    expect(get().graphLayout).toBe('force');
+  });
+
+  it('toggleClusterBoundaries flips showClusterBoundaries', () => {
+    get().toggleClusterBoundaries();
+    expect(get().showClusterBoundaries).toBe(false);
+    get().toggleClusterBoundaries();
+    expect(get().showClusterBoundaries).toBe(true);
+  });
+
+  it('toggleShowAllRelations flips showAllRelations', () => {
+    get().toggleShowAllRelations();
+    expect(get().showAllRelations).toBe(false);
+    get().toggleShowAllRelations();
+    expect(get().showAllRelations).toBe(true);
+  });
+
+  it('setNodeMarginPreset switches the preset', () => {
+    get().setNodeMarginPreset('tight');
+    expect(get().nodeMarginPreset).toBe('tight');
+    get().setNodeMarginPreset('wide');
+    expect(get().nodeMarginPreset).toBe('wide');
+    get().setNodeMarginPreset('default');
+    expect(get().nodeMarginPreset).toBe('default');
   });
 });

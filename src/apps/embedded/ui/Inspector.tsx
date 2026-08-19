@@ -1,5 +1,19 @@
 /**
- * Inspector — the right pane for a selected Model element or Schema node-type.
+ * Inspector — the selection detail drawer for a selected Model element or
+ * Schema node-type, floating over the Canvas's graph area (Heimdall
+ * `DetailDrawer`) instead of reserving a permanent sidebar column. Rendered by
+ * `Canvas.tsx` as a sibling of `GraphCanvas`, inside the same
+ * `position: relative` wrapper that `DetailDrawer` overlays the right edge of
+ * — same composition Heimdall's own docs/src/showcases/GraphLayoutsShowcase.tsx
+ * demo uses (`DetailDrawer` + `GraphInspector` as its content).
+ *
+ * `open` follows whether there's something to show (`!!metadata`) — auto-hides
+ * (animates to width 0) with nothing selected instead of showing an empty
+ * sidebar; `GraphInspector`'s own empty state stays mounted underneath (inert,
+ * clipped) so it's still there the instant something IS selected. Width is
+ * locally resizable (`onWidthChange`) via the drawer's own left-edge handle,
+ * translucent/blurred background — all Heimdall's `DetailDrawer` chrome, not
+ * reimplemented here.
  *
  * Renders Heimdall `GraphInspector`. In the MODEL view it is fed by an element's
  * `GraphNodeMetadata` (title/kind/domain/description + a curated PROPERTIES grid)
@@ -10,12 +24,11 @@
  *
  * `onNodeSelect` navigates: in Model it switches `uiStore.layerId` when the
  * target lives in another layer (keeping `view='model'`); in Schema it switches
- * the layer for cross-layer relationship targets (keeping `view='spec'`). When
- * nothing is selected, `GraphInspector`'s own empty state shows.
+ * the layer for cross-layer relationship targets (keeping `view='spec'`).
  */
 
-import { useMemo } from 'react';
-import { GraphInspector } from '@tinkermonkey/heimdall-ui';
+import { useMemo, useState } from 'react';
+import { GraphInspector, DetailDrawer } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
 import { layerLabel } from './domain';
 import { AnnotationsSection } from './AnnotationsSection';
@@ -37,7 +50,12 @@ function layerOfSpecNode(specNodeId: string): string {
   return lastDot > 0 ? specNodeId.slice(0, lastDot) : specNodeId;
 }
 
+/** Initial drawer width in px — matches the previous fixed sidebar's width;
+ *  resizable from there via the drawer's own left-edge handle. */
+const DEFAULT_INSPECTOR_WIDTH = 320;
+
 export function Inspector() {
+  const [width, setWidth] = useState(DEFAULT_INSPECTOR_WIDTH);
   const view = useUiStore((s) => s.view);
   const layerId = useUiStore((s) => s.layerId);
   const selectedId = useUiStore((s) => s.selectedId);
@@ -100,28 +118,13 @@ export function Inspector() {
   const annotationElementId = modelNode ? dottedId(modelNode) : null;
 
   return (
-    <div
-      style={{
-        width: 320,
-        flex: 'none',
-        borderLeft: '1px solid rgb(var(--canvas-border))',
-        background: 'rgb(var(--canvas-surface))',
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: 0,
-      }}
+    <DetailDrawer
+      open={!!metadata}
+      width={width}
+      onWidthChange={setWidth}
       data-testid="inspector"
     >
-      <div
-        className="drv-scroll"
-        style={{
-          flex: 1,
-          minHeight: 0,
-          overflowY: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <GraphInspector
           node={metadata}
           relationships={relationships}
@@ -131,13 +134,12 @@ export function Inspector() {
               ? 'Select a node type to inspect.'
               : 'Select an element to inspect.'
           }
-          style={{ flex: 'none', border: 'none', borderRadius: 0 }}
         />
         {annotationElementId && (
           <AnnotationsSection elementId={annotationElementId} />
         )}
       </div>
-    </div>
+    </DetailDrawer>
   );
 }
 

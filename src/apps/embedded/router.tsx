@@ -5,6 +5,7 @@ import {
   createRootRoute,
   Outlet,
   useParams,
+  useSearch,
 } from '@tanstack/react-router';
 import { createHashHistory } from '@tanstack/history';
 import AuthRoute from './routes/AuthRoute';
@@ -124,59 +125,126 @@ const SECTION_DEFAULT_VIEW: Record<string, string> = {
   changesets: 'list',
 };
 
+/** Search-param shape for `appShellRoute` — reflects the current left-panel
+ *  selection so it's shareable/bookmarkable and survives back/forward.
+ *  `layer`/`node` apply to Model + Schema (both keep the selection in the
+ *  SAME `uiStore.layerId`/`selectedId` fields regardless of view — a Schema
+ *  `node` is a `spec_node_id`, a Model `node` is a UUID, but the sync logic
+ *  below doesn't need to care which); `changeset` applies to Changesets. */
+interface AppShellSearch {
+  layer?: string;
+  node?: string;
+  changeset?: string;
+}
+
+/** Combine layer/node/changeset into one string so a single ref comparison
+ *  (see prevSelectionKeyRef below) detects a change in any of them. */
+function selectionKey(layerId: string | null, selectedId: string | null, changesetId: string | null): string {
+  return `${layerId ?? ''}|${selectedId ?? ''}|${changesetId ?? ''}`;
+}
+
 /**
- * Thin route component — keeps `uiStore.view` and the URL hash in two-way sync,
- * then renders the AppShell (which is itself view-driven from the store).
+ * Thin route component — keeps `uiStore.view` + the current left-panel
+ * selection (layer/node/changeset) and the URL hash in two-way sync, then
+ * renders the AppShell (which is itself view/selection-driven from the store).
  *
- * URL → store: the `:section` param drives `setView`, so browser back/forward
- * (a hash change) updates the active view.
+ * URL → store: `:section` drives `setView`; `?layer`/`?node`/`?changeset`
+ * drive `selectLayer`/`selectNode`/`selectChangeset` — so a deep link, a
+ * shared URL, or browser back/forward all restore the exact selection.
  *
- * store → URL: when the view changes from inside the app (e.g. clicking a nav
- * section, or a cross-layer relationship that switches Model↔Schema), push the
- * matching `/$section/$view` so the hash reflects the active view and history
- * captures the change. Guarded on an actual section mismatch so the two effects
- * never ping-pong.
+ * store → URL: when the view OR the selection changes from inside the app
+ * (nav tree clicks, graph node clicks, cross-layer navigation, the
+ * data-driven default-selection effect in AppShell.tsx), push/replace the
+ * matching `/$section/$view?layer=...&node=...` (or `?changeset=...`) so the
+ * hash always reflects the truth. A genuine VIEW change pushes a new history
+ * entry (same as before); a pure selection change within the same view
+ * replaces the current entry instead, so every nav-tree/graph click doesn't
+ * flood browser history — only switching Model/Schema/Changesets does.
+ * Guarded (mount ref + prev-value refs) so the two effects never ping-pong.
  */
 function AppShellRoute() {
   const { section } = useParams({ strict: false }) as { section?: string };
+  const search = useSearch({ strict: false }) as AppShellSearch;
   const view = useUiStore((s) => s.view);
   const setView = useUiStore((s) => s.setView);
-  // On mount (incl. a deep-link / reload) the URL is authoritative: the URL →
-  // store effect seeds the view from `:section`. The store → URL effect must NOT
-  // fire on that first render, or the store's initial default view ('model')
-  // would clobber an incoming `#/spec/...` or `#/changesets/...` deep link before
-  // the seed lands. After mount, genuine view changes (nav clicks, cross-layer
-  // navigation) drive the URL.
-  const mountedRef = useRef(false);
-  // Tracks the last view we reacted to so the store → URL effect fires ONLY on a
-  // genuine `view` change. Without this, a URL-driven change (back/forward)
-  // updates `section` first while `view` is still stale; the effect would see a
-  // mismatch and navigate "backward" to correct it, oscillating forever.
-  const prevViewRef = useRef(view);
+  const layerId = useUiStore((s) => s.layerId);
+  const selectedId = useUiStore((s) => s.selectedId);
+  const changesetId = useUiStore((s) => s.changesetId);
+  const selectLayer = useUiStore((s) => s.selectLayer);
+  const selectNode = useUiStore((s) => s.selectNode);
+  const selectChangeset = useUiStore((s) => s.selectChangeset);
 
-  // URL → store.
+  // On mount (incl. a deep-link / reload) the URL is authoritative: the URL →
+  // store effects seed the view/selection from the route. The store → URL
+  // effect must NOT fire on that first render, or the store's initial
+  // defaults would clobber an incoming deep link before the seed lands.
+  // After mount, genuine changes (nav clicks, cross-layer navigation, the
+  // default-selection effect) drive the URL.
+  const mountedRef = useRef(false);
+  // Tracks the last view/selection we reacted to so the store → URL effect
+  // fires ONLY on a genuine change — see the original comment this is based
+  // on: without it, a URL-driven change (back/forward) updates the route
+  // first while the store is still stale; the effect would see a mismatch
+  // and navigate "backward" to correct it, oscillating forever.
+  const prevViewRef = useRef(view);
+  const prevSelectionKeyRef = useRef(selectionKey(layerId, selectedId, changesetId));
+
+  // URL → store: section/view (unchanged from before).
   useEffect(() => {
     const next = section ? SECTION_TO_VIEW[section] : undefined;
     if (next) setView(next);
   }, [section, setView]);
 
-  // store → URL (skip first render; act ONLY on a real `view` change, never a
-  // `section` change — see prevViewRef above).
+  // URL → store: layer/node/changeset — deep link, shared URL, or
+  // back/forward. Only acts on the field(s) actually present in the URL and
+  // only when they differ from the store, so it never fights a change that
+  // originated in the app itself (see the store → URL effect below).
   useEffect(() => {
+    if (search.changeset && search.changeset !== changesetId) {
+      selectChangeset(search.changeset);
+      return;
+    }
+    if (search.layer && search.layer !== layerId) selectLayer(search.layer);
+    if (search.node && search.node !== selectedId) selectNode(search.node);
+    // Deliberately keyed on the URL values only — reacting to the store
+    // values here too would make this effect re-fire the moment IT calls
+    // selectLayer/selectNode/selectChangeset, fighting its own update.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search.layer, search.node, search.changeset]);
+
+  // store → URL: view (push on a genuine section change) + layer/node/changeset
+  // (replace on a pure selection change within the same section). Skip first
+  // render — see mountedRef above.
+  useEffect(() => {
+    const key = selectionKey(layerId, selectedId, changesetId);
     if (!mountedRef.current) {
       mountedRef.current = true;
       prevViewRef.current = view;
+      prevSelectionKeyRef.current = key;
       return;
     }
-    if (prevViewRef.current === view) return;
+    const viewChanged = prevViewRef.current !== view;
+    const selectionChanged = prevSelectionKeyRef.current !== key;
+    if (!viewChanged && !selectionChanged) return;
     prevViewRef.current = view;
+    prevSelectionKeyRef.current = key;
+
     const targetSection = VIEW_TO_SECTION[view];
-    if (section === targetSection) return;
+    const sectionNeedsUpdate = section !== targetSection;
+    // Nothing actually changed on the URL side (e.g. this fired only because
+    // a URL-driven update above just made the store match the URL already).
+    if (!sectionNeedsUpdate && !selectionChanged) return;
+
     router.navigate({
       to: '/$section/$view',
       params: { section: targetSection, view: SECTION_DEFAULT_VIEW[targetSection] },
+      search:
+        view === 'changesets'
+          ? { changeset: changesetId ?? undefined }
+          : { layer: layerId ?? undefined, node: selectedId ?? undefined },
+      replace: !sectionNeedsUpdate,
     });
-  }, [view, section]);
+  }, [view, layerId, selectedId, changesetId, section]);
 
   return <AppShell />;
 }
@@ -197,6 +265,11 @@ const indexRoute = createRoute({
 const appShellRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/$section/$view',
+  validateSearch: (search: Record<string, unknown>): AppShellSearch => ({
+    layer: typeof search.layer === 'string' ? search.layer : undefined,
+    node: typeof search.node === 'string' ? search.node : undefined,
+    changeset: typeof search.changeset === 'string' ? search.changeset : undefined,
+  }),
   component: AppShellRoute,
 });
 
