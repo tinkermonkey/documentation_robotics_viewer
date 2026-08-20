@@ -178,31 +178,24 @@ describe('NavTree — clicks drive the uiStore', () => {
     expect(useUiStore.getState().layerId).toBe('data-model');
     expect(useUiStore.getState().view).toBe('spec');
 
-    // Find the first spec node leaf under data-model by looking for the drv-nav-l2
-    // class that appears after the layer row and has a unique id pattern.
+    // Collapse the Model section to remove its leaves from the DOM, so we can
+    // unambiguously select a spec node leaf under data-model.
+    const modelRow = (await screen.findAllByText('Model'))[0].closest('button')!;
+    await user.click(modelRow);
+
+    // Now get the first spec node leaf under data-model.
     const navTree = screen.getByTestId('nav-tree');
-    const allLeaves = navTree.querySelectorAll('.drv-nav-l2');
+    const targetLeaf = navTree.querySelector('.drv-nav-l2');
 
-    // Get a specific spec node by looking for the entity type in data-model.
-    let targetLeaf: Element | null = null;
-    for (const leaf of allLeaves) {
-      const button = leaf as HTMLButtonElement;
-      // Spec node leaves under data-model should have ids like "data-model.entity"
-      if (!button.textContent?.includes('Motivation') && !button.textContent?.includes('Business')) {
-        targetLeaf = leaf;
-        break;
-      }
-    }
+    expect(targetLeaf).not.toBeNull();
 
-    if (targetLeaf) {
-      await user.click(targetLeaf);
-      const state = useUiStore.getState();
-      // The store holds the spec node id, layer, and correct view/focus.
-      expect(state.selectedId).toContain('data-model.');
-      expect(state.layerId).toBe('data-model');
-      expect(state.view).toBe('spec');
-      expect(state.focus).toBe('node');
-    }
+    await user.click(targetLeaf!);
+    const state = useUiStore.getState();
+    // The store holds the spec node id, layer, and correct view/focus.
+    expect(state.selectedId).toContain('data-model.');
+    expect(state.layerId).toBe('data-model');
+    expect(state.view).toBe('spec');
+    expect(state.focus).toBe('node');
   });
 
   it('clicking a leaf under a different layer switches to that layer', async () => {
