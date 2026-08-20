@@ -72,16 +72,7 @@ function matchEdgeLabel(target: EventTarget | null): EdgeLabelMatch | null {
     return null;
   }
 
-  const testId = edgeEl.getAttribute('data-testid');
-  if (!testId) {
-    console.warn(
-      `[useEdgeInteraction] Found [data-testid^="${EDGE_TESTID_PREFIX}"] element but data-testid attribute is missing. ` +
-      `Heimdall's edge rendering may have changed.`,
-      { edgeEl }
-    );
-    return null;
-  }
-
+  const testId = edgeEl.getAttribute('data-testid')!;
   const edgeId = testId.slice(EDGE_TESTID_PREFIX.length);
   if (!edgeId) {
     console.warn(

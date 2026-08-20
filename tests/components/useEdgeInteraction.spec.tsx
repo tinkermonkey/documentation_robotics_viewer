@@ -104,7 +104,7 @@ describe('useEdgeInteraction', () => {
     expect(useUiStore.getState().highlightedEdgeId).toBe('e2');
   });
 
-  it('logs a warning if the .graph-edge__label class is missing from the Heimdall DOM structure', () => {
+  it('does not log a warning for non-edge hover targets', () => {
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const { container } = render(<Harness />);
 
@@ -136,36 +136,6 @@ describe('useEdgeInteraction', () => {
     const { getByTestId } = render(<OrphanLabelHarness />);
     fireEvent.mouseOver(getByTestId('orphan-label'));
 
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('Found .graph-edge__label element but no parent [data-testid^="graph-edge-"] ancestor'),
-      expect.any(Object)
-    );
-    warnSpy.mockRestore();
-  });
-
-  it('logs a warning if the data-testid attribute is missing', () => {
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
-    function MissingTestIdHarness() {
-      const { edgeHoverHandlers } = useEdgeInteraction();
-      return (
-        <div {...edgeHoverHandlers} data-testid="container">
-          <svg>
-            {/* A [data-testid^="graph-edge-"] element with missing data-testid attribute */}
-            <g data-testid-missing="graph-edge-e3">
-              <g className="graph-edge__label" data-testid="label-e3">
-                <text>text</text>
-              </g>
-            </g>
-          </svg>
-        </div>
-      );
-    }
-
-    const { getByTestId } = render(<MissingTestIdHarness />);
-    fireEvent.mouseOver(getByTestId('label-e3'));
-
-    // Note: this test simulates the edge ancestor lacking the data-testid entirely
     expect(warnSpy).toHaveBeenCalledWith(
       expect.stringContaining('Found .graph-edge__label element but no parent [data-testid^="graph-edge-"] ancestor'),
       expect.any(Object)
