@@ -151,7 +151,7 @@ body.dark-canvas {
 }
 
 /* ---- page view (layer / spec node / model node detail) ------------------
- * `.drv-crumb`/`.drv-row` own `color`/`background` here (base + :hover)
+ * `.drv-crumb`/`.drv-cell-link` own `color`/`background` here (base + :hover)
  * rather than PageView.tsx setting them inline — an inline style always wins
  * over a stylesheet rule for the same property, :hover included, so the
  * hover states below would never apply if PageView also set these inline. */
@@ -168,11 +168,23 @@ body.dark-canvas {
   color: rgb(var(--canvas-fg-1));
 }
 
-.drv-row {
+/* Clickable table cell — a cell may navigate somewhere different from its
+ * row's own default target (see PageView.tsx's `TableRow`/`cellNavTarget`),
+ * so the click affordance lives on the cell, not a single whole-row button.
+ * `.drv-row` (below) restores a row-wide hover cue on top of this. */
+.drv-cell-link {
   cursor: pointer;
   background: none;
 }
 
+.drv-cell-link:hover {
+  background: rgb(var(--canvas-bg-2));
+}
+
+/* Row-wide hover cue, separate from the per-cell highlight above — applied to
+ * `role="row"` whenever at least one of its cells is clickable (see
+ * PageView.tsx's `TableRow`), so hovering anywhere in the row still reads as
+ * "this row is interactive" even though the click target is now per-cell. */
 .drv-row:hover {
   background: rgb(var(--canvas-bg-2));
 }
@@ -231,4 +243,209 @@ body.dark-canvas {
     transform: scale(1.5);
     opacity: 0.45;
   }
+}
+
+/* ---- Model graph card node (ui/ModelCardNode.tsx) ------------------------
+ * Reuses the default GraphNode's own .graph-node/.graph-node__swatch/
+ * .graph-node__label/.graph-node__kind/.graph-node__collapse-toggle rules
+ * (border, hover, selected, domain swatch color) verbatim — this modifier
+ * only switches the pill's single inline row into a stacked card and adds
+ * the card-only stats/cross-link elements below. */
+.graph-node--card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 208px;
+  white-space: normal;
+  padding: 8px 10px;
+  gap: 6px;
+}
+
+.graph-node__card-header {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.graph-node--card .graph-node__label {
+  font-weight: 600;
+}
+
+.graph-node__card-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgb(var(--canvas-fg-3));
+}
+
+.graph-node__cross-links {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0;
+  padding: 6px 0 0;
+  border-top: 1px solid rgb(var(--canvas-border));
+  list-style: none;
+}
+
+.graph-node__cross-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.graph-node__cross-link-swatch {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.graph-node__cross-link-label {
+  flex: 1;
+  min-width: 0;
+  font-size: 10.5px;
+  color: rgb(var(--canvas-fg-2));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.graph-node__cross-link--overflow {
+  padding-left: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgb(var(--canvas-fg-3));
+}
+
+/* ---- RichTooltip card (ui/RichTooltip.tsx + PredicateTooltip/NodeTypeTooltip)
+ * Portal-rendered into document.body, so this can't inherit layout from
+ * wherever it was triggered — same translucent/blurred floating-card
+ * language as GraphControls' flyout panel and the Inspector DetailDrawer
+ * (canvas tokens, not shell: it always renders over canvas-toggle-aware
+ * surfaces — the graph, a NavTree row, a page view row — and document.body
+ * is itself a descendant of `body.dark-canvas`, so the canvas tokens still
+ * flip correctly for a body-level portal). z-index is above Modal's 200
+ * (see heimdall-ui's Modal.css) since a tooltip should never be silently
+ * hidden behind other floating chrome. */
+.rich-tooltip {
+  z-index: 1000;
+  max-width: 320px;
+  padding: 12px 14px;
+  background: rgb(var(--canvas-card) / 0.96);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgb(var(--canvas-border));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  color: rgb(var(--canvas-fg-1));
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.rich-tooltip__title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: rgb(var(--canvas-fg-1));
+}
+
+.rich-tooltip__specifier {
+  margin-top: 2px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgb(var(--canvas-fg-3));
+}
+
+.rich-tooltip__description {
+  margin: 8px 0 0;
+  color: rgb(var(--canvas-fg-2));
+}
+
+.rich-tooltip__section-label {
+  margin: 12px 0 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgb(var(--canvas-fg-3));
+}
+
+.rich-tooltip__section-label:first-of-type {
+  margin-top: 10px;
+}
+
+.rich-tooltip__diagram {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+}
+
+.rich-tooltip__diagram-node {
+  padding: 2px 7px;
+  border: 1px solid rgb(var(--canvas-border));
+  border-radius: 4px;
+  background: rgb(var(--canvas-bg-2));
+  color: rgb(var(--canvas-fg-1));
+}
+
+.rich-tooltip__diagram-predicate {
+  font-family: 'JetBrains Mono', monospace;
+  color: rgb(var(--accent-primary-deep));
+}
+
+.rich-tooltip__diagram-arrow {
+  color: rgb(var(--canvas-fg-4));
+}
+
+.rich-tooltip__connections {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rich-tooltip__connection {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 11.5px;
+}
+
+.rich-tooltip__connection-swatch {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.rich-tooltip__connection-predicate {
+  flex: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  color: rgb(var(--canvas-fg-3));
+}
+
+.rich-tooltip__connection-type {
+  flex: 1;
+  min-width: 0;
+  color: rgb(var(--canvas-fg-1));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rich-tooltip__overflow,
+.rich-tooltip__empty {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgb(var(--canvas-fg-3));
 }

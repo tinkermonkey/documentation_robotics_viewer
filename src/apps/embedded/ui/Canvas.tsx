@@ -16,22 +16,39 @@
  * by the active `PageData` (layer / spec node / model node), matching the
  * design's `pg ? override : default` header logic.
  *
- * The `GraphCanvas` is keyed by `${view}:${layerId}:${graphLayout}:${nodeMarginPreset}`
- * so switching layer/view/layout/margin remounts it — Heimdall auto-centers ONCE
- * per mount and won't re-center on prop change, so the remount is what recenters
- * the new layer's graph (and what makes toggling Model↔Schema for one layer swap
- * instances for node-types). layout/nodeMargin are in the key because they change
- * the layout's footprint; showClusterBoundaries/showAllRelations don't, so they
- * stay out of it.
+ * The `GraphCanvas` is keyed by
+ * `${view}:${layerId}:${graphLayout}:${nodeMarginPreset}:${nodeDisplay}`
+ * so switching layer/view/layout/margin/display remounts it — Heimdall auto-centers
+ * ONCE per mount and won't re-center on prop change, so the remount is what
+ * recenters the new layer's graph (and what makes toggling Model↔Schema for one
+ * layer swap instances for node-types). layout/nodeMargin/nodeDisplay are in the
+ * key because they change the layout's footprint (a card is much larger than a
+ * pill); showClusterBoundaries/showAllRelations don't, so they stay out of it.
+ *
+ * Model view nodes render as cards by default (`nodeDisplay: 'card'`): a
+ * `renderNode` override (`renderCardNode` below) renders `ModelCardNode` fed by a
+ * `CardData` side-channel map — `data/modelGraph.ts`'s `nodesWithCardData` —
+ * keyed by node id, since `renderNode`'s own signature only carries
+ * `GraphNodeData`. Cards show the node's type plus intra-layer connection count
+ * and up to 5 enumerated inter-layer connections (a literal "…" overflow
+ * indicator beyond that); the full untruncated list is one click away via the
+ * existing Inspector, whose `relationshipsForElement` was never capped. Schema
+ * view node-types have no `CardData` and always render as a pill regardless of
+ * the `nodeDisplay` preference (that control is hidden outside Model view —
+ * see `GraphControls` below), same as Model view in pill mode: both go through
+ * `renderPillNode` (below) rather than leaving `renderNode` `undefined`, so
+ * hovering a node's `kind` label — the node TYPE itself, in Schema view —
+ * always shows the same `NodeTypeBadge` tooltip card mode wires, unqualified
+ * by presentation mode or view (the BA requirement this closes gaps in).
  *
  * `GraphControls` floats over the graph itself (top-left, graph mode only) — a
  * card-style panel, same visual language as the built-in `GraphToolbar`'s own
  * floating card — exposing Heimdall 0.6.0's layout engines and display options:
- * Layout (force/galaxy/clustered), Boundaries, Node margin, Relations
- * (structural/all, see data/predicates.ts). Mirrors Heimdall's own
- * docs/src/showcases/GraphLayoutsShowcase.tsx demo controls, just repositioned
- * as an overlay instead of a full-width row so it doesn't cost the canvas any
- * vertical space. The built-in `GraphToolbar` (zoom/lock/fullscreen, + a
+ * Layout (force/galaxy/clustered), Display (card/pill, Model view only), Boundaries,
+ * Node margin, Relations (structural/all, see data/predicates.ts). Mirrors
+ * Heimdall's own docs/src/showcases/GraphLayoutsShowcase.tsx demo controls, just
+ * repositioned as an overlay instead of a full-width row so it doesn't cost the
+ * canvas any vertical space. The built-in `GraphToolbar` (zoom/lock/fullscreen, + a
  * live-simulation toggle for galaxy) is pinned `toolbarPosition="bottom-left"`
  * — not bottom-right, which collided with Inspector's `DetailDrawer` floating
  * over the graph's right edge whenever a node was selected — forced into a
@@ -61,25 +78,51 @@
  * `GraphCanvas`'s own root) so `GraphControls` and `Inspector` — both its siblings,
  * outside what the native Fullscreen API would otherwise render — stay visible while
  * fullscreen.
+ *
+ * Model-view-only edge interaction (edges only carry model edge metadata there):
+ * `useEdgeInteraction` is the single hook owning ALL of it — both click-to-select
+ * (its `edgeSelectionProps` bag wraps `GraphCanvas`'s own built-in `selectedEdgeId`/
+ * `onEdgeSelect` support: accent-color `.selected` + keyboard/aria) and hover over an
+ * edge's predicate label (`GraphCanvas` has no per-edge hover callback or `renderEdge`
+ * slot to hook directly, so this delegates instead) to drive `uiStore.highlightedEdgeId`
+ * and the floating `EdgeHoverTooltip`. `Canvas.tsx` never touches `uiStore.selectedEdgeId`/
+ * `selectEdge` directly — only through the hook — so if Heimdall's edge-interaction
+ * surface changes again, only the hook changes. Both selected and highlighted edges
+ * render `variant: 'hot'` in the `edges` array built below.
  */
 
-import { useMemo, useRef, useState } from 'react';
-import { PageHeader, GraphCanvas, SegmentedControl, Icon } from '@tinkermonkey/heimdall-ui';
-import { useUiStore, type GraphLayout, type NodeMarginPreset } from './uiStore';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import {
+  PageHeader,
+  GraphCanvas,
+  SegmentedControl,
+  Icon,
+  type GraphNodeData,
+  type GraphNodeHierarchyMeta,
+  type GraphEdgeData,
+} from '@tinkermonkey/heimdall-ui';
+import { useUiStore, type GraphLayout, type NodeMarginPreset, type NodeDisplay } from './uiStore';
 import { layerColor, layerLabel, layerStandard } from './domain';
 import { PageView, usePageData } from './PageView';
 import { Inspector } from './Inspector';
+import { ModelCardNode } from './ModelCardNode';
+import { PillNode } from './PillNode';
+import { EdgeHoverTooltip } from './EdgeHoverTooltip';
+import { useEdgeInteraction } from './useEdgeInteraction';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import {
   buildModelIndex,
-  nodesForLayer,
+  nodesWithCardData,
   edgesForLayer as modelEdgesForLayer,
+  edgeMetadata,
+  type CardData,
 } from '../data/modelGraph';
 import {
   nodeTypesForLayer,
   edgesForLayer as specEdgesForLayer,
   intraRelCount,
+  shortName,
 } from '../data/specGraph';
 import { isStructuralEdge } from '../data/predicates';
 
@@ -108,6 +151,11 @@ const MARGIN_OPTIONS = [
 const RELATIONS_OPTIONS = [
   { value: 'structural', label: 'Structural' },
   { value: 'all', label: 'All' },
+];
+
+const DISPLAY_OPTIONS = [
+  { value: 'card', label: 'Card' },
+  { value: 'pill', label: 'Pill' },
 ];
 
 /** nodeMargin px for the 'wide' preset — undefined ('default') leaves each
@@ -163,6 +211,9 @@ function GraphControls() {
   const setNodeMarginPreset = useUiStore((s) => s.setNodeMarginPreset);
   const showAllRelations = useUiStore((s) => s.showAllRelations);
   const toggleShowAllRelations = useUiStore((s) => s.toggleShowAllRelations);
+  const nodeDisplay = useUiStore((s) => s.nodeDisplay);
+  const setNodeDisplay = useUiStore((s) => s.setNodeDisplay);
+  const view = useUiStore((s) => s.view);
 
   const collapseIfLeavingFlyout = (
     e: React.MouseEvent<HTMLDivElement> | React.FocusEvent<HTMLDivElement>,
@@ -232,6 +283,19 @@ function GraphControls() {
               options={LAYOUT_OPTIONS}
             />
           </GraphControl>
+          {/* Card presentation only applies to Model graph nodes (see
+              data/modelGraph.ts's nodesWithCardData) — the Schema view's
+              node-type graph always uses the pill, so the control has no
+              effect there and is hidden rather than shown inert. */}
+          {view === 'model' && (
+            <GraphControl label="Display" testId="graph-display-control">
+              <SegmentedControl
+                value={nodeDisplay}
+                onChange={(v) => setNodeDisplay(v as NodeDisplay)}
+                options={DISPLAY_OPTIONS}
+              />
+            </GraphControl>
+          )}
           {graphLayout !== 'force' && (
             <GraphControl label="Boundaries" testId="graph-boundaries-control">
               <SegmentedControl
@@ -320,6 +384,7 @@ export function Canvas() {
   const view = useUiStore((s) => s.view);
   const layerId = useUiStore((s) => s.layerId);
   const selectedId = useUiStore((s) => s.selectedId);
+  const highlightedEdgeId = useUiStore((s) => s.highlightedEdgeId);
   const selectGraphNode = useUiStore((s) => s.selectGraphNode);
   const selectLayer = useUiStore((s) => s.selectLayer);
   const mode = useUiStore((s) => s.mode);
@@ -328,6 +393,7 @@ export function Canvas() {
   const showClusterBoundaries = useUiStore((s) => s.showClusterBoundaries);
   const showAllRelations = useUiStore((s) => s.showAllRelations);
   const nodeMarginPreset = useUiStore((s) => s.nodeMarginPreset);
+  const nodeDisplay = useUiStore((s) => s.nodeDisplay);
   const pg = usePageData();
   const isPage = mode === 'page';
   const nodeMargin = nodeMarginFor(nodeMarginPreset);
@@ -346,19 +412,85 @@ export function Canvas() {
 
   const index = useMemo(() => buildModelIndex(model), [model]);
 
-  const nodes = useMemo(() => {
-    if (!layerId) return [];
-    return isSpec
-      ? nodeTypesForLayer(specRaw, layerId)
-      : nodesForLayer(model, layerId);
-  }, [isSpec, specRaw, model, layerId]);
-
-  const edges = useMemo(() => {
-    if (!layerId) return [];
-    return isSpec
-      ? specEdgesForLayer(specRaw, layerId)
-      : modelEdgesForLayer(model, layerId, index);
+  // Model view nodes carry a CardData side-channel (intra/inter-layer connection
+  // counts, see data/modelGraph.ts's nodesWithCardData) that ModelCardNode reads
+  // via renderNode below; Schema view node-types have no such data and always
+  // render as the default pill.
+  const { nodes, cardData } = useMemo((): {
+    nodes: GraphNodeData[];
+    cardData: Map<string, CardData>;
+  } => {
+    if (!layerId) return { nodes: [], cardData: new Map() };
+    if (isSpec) return { nodes: nodeTypesForLayer(specRaw, layerId), cardData: new Map() };
+    return nodesWithCardData(model, layerId, index);
   }, [isSpec, specRaw, model, layerId, index]);
+
+  const renderCardNode = useCallback(
+    (node: GraphNodeData, selected: boolean, hierarchy?: GraphNodeHierarchyMeta) => (
+      <ModelCardNode
+        id={node.id}
+        label={node.label}
+        kind={node.kind}
+        domainColor={node.domainColor}
+        selected={selected}
+        onSelect={selectGraphNode}
+        cardData={cardData.get(node.id)}
+        spec={specRaw}
+        hasChildren={hierarchy?.hasChildren}
+        collapsed={hierarchy?.collapsed}
+        hiddenDescendantCount={hierarchy?.hiddenDescendantCount}
+        onToggleCollapse={hierarchy?.onToggleCollapse}
+      />
+    ),
+    [selectGraphNode, cardData, specRaw],
+  );
+
+  // Pill-mode render (Model pill display + always in Schema view, see the
+  // module doc comment) — wires the same NodeTypeBadge hover tooltip
+  // renderCardNode wires for card mode. Schema-view nodes ARE node types, so
+  // their tooltip lookup uses the node's own id (already `<slug>.<short>`)
+  // rather than `kind` (the generic 'spec node' label nodeTypesForLayer sets).
+  const renderPillNode = useCallback(
+    (node: GraphNodeData, selected: boolean, hierarchy?: GraphNodeHierarchyMeta) => (
+      <PillNode
+        id={node.id}
+        label={node.label}
+        kind={node.kind}
+        domainColor={node.domainColor}
+        selected={selected}
+        onSelect={selectGraphNode}
+        spec={specRaw}
+        typeId={isSpec ? shortName(node.domainColor ?? '', node.id) : undefined}
+        hasChildren={hierarchy?.hasChildren}
+        collapsed={hierarchy?.collapsed}
+        hiddenDescendantCount={hierarchy?.hiddenDescendantCount}
+        onToggleCollapse={hierarchy?.onToggleCollapse}
+      />
+    ),
+    [selectGraphNode, specRaw, isSpec],
+  );
+
+  // Model-only: click-to-select + hover-to-preview both render the
+  // same "hot" variant. hoverHandlers are spread onto the graph wrapper below.
+  const { hoveredEdgeId, hoveredEdgeAnchor, edgeHoverHandlers, selectedEdgeId, edgeSelectionProps } =
+    useEdgeInteraction();
+
+  const edges = useMemo((): GraphEdgeData[] => {
+    if (!layerId) return [];
+    if (isSpec) return specEdgesForLayer(specRaw, layerId);
+    return modelEdgesForLayer(model, layerId, index).map((edge) =>
+      edge.id === selectedEdgeId || edge.id === highlightedEdgeId
+        ? { ...edge, variant: 'hot' }
+        : edge,
+    );
+  }, [isSpec, specRaw, model, layerId, index, selectedEdgeId, highlightedEdgeId]);
+
+  // Predicate tooltip content for whichever edge is currently hovered — only
+  // meaningful in the Model view (edges only carry model edge metadata there).
+  const hoveredEdgeMeta = useMemo(
+    () => (!isSpec && hoveredEdgeId ? edgeMetadata(model, hoveredEdgeId, index, specRaw) : undefined),
+    [isSpec, model, hoveredEdgeId, index, specRaw],
+  );
 
   const slug = layerId ?? '';
   const standard = spec.byLayer[slug]?.standard || layerStandard(slug);
@@ -453,7 +585,11 @@ export function Canvas() {
         }
       />
 
-      <div ref={canvasAreaRef} style={{ flex: 1, position: 'relative', minHeight: 0 }}>
+      <div
+        ref={canvasAreaRef}
+        style={{ flex: 1, position: 'relative', minHeight: 0 }}
+        {...(!isSpec ? edgeHoverHandlers : {})}
+      >
         {isPage ? (
           !layerId ? (
             <CanvasEmptyState message={emptyMessage} />
@@ -471,12 +607,14 @@ export function Canvas() {
             ) : (
               <>
                 <GraphCanvas
-                  key={`${view}:${layerId}:${graphLayout}:${nodeMarginPreset}`}
+                  key={`${view}:${layerId}:${graphLayout}:${nodeMarginPreset}:${nodeDisplay}`}
                   nodes={nodes}
                   edges={edges}
                   selectedNodeId={selectedId ?? undefined}
                   onNodeSelect={(id) => selectGraphNode(id)}
+                  {...(!isSpec ? edgeSelectionProps : {})}
                   onBackgroundClick={() => selectLayer(layerId)}
+                  renderNode={!isSpec && nodeDisplay === 'card' ? renderCardNode : renderPillNode}
                   centerOnSelect
                   fullscreenContainerRef={canvasAreaRef}
                   layout={graphLayout}
@@ -498,6 +636,17 @@ export function Canvas() {
                     language as the built-in bottom-left GraphToolbar. */}
                 <GraphControls />
               </>
+            )}
+            {/* Portal-rendered near the hovered edge's predicate label — see
+                useEdgeInteraction's doc comment for why this can't be a
+                RichTooltip-wrapped trigger. */}
+            {hoveredEdgeAnchor && hoveredEdgeMeta && (
+              <EdgeHoverTooltip
+                anchorRect={hoveredEdgeAnchor}
+                predicate={hoveredEdgeMeta.predicate}
+                sourceTypeLabel={hoveredEdgeMeta.sourceNode.type}
+                destinationTypeLabel={hoveredEdgeMeta.targetNode.type}
+              />
             )}
             {/* Floats over this relative wrapper's right edge (Heimdall
                 DetailDrawer) — auto-hides when nothing's selected, same

@@ -13,6 +13,8 @@ function reset() {
       view: 'model',
       layerId: null,
       selectedId: null,
+      selectedEdgeId: null,
+      highlightedEdgeId: null,
       changesetId: null,
       canvasDark: false,
       chatOpen: false,
@@ -25,6 +27,7 @@ function reset() {
       showClusterBoundaries: true,
       showAllRelations: true,
       nodeMarginPreset: 'default',
+      nodeDisplay: 'card',
     },
     false,
   );
@@ -55,6 +58,7 @@ describe('uiStore — localStorage persistence', () => {
     get().toggleClusterBoundaries();
     get().toggleShowAllRelations();
     get().setNodeMarginPreset('wide');
+    get().setNodeDisplay('pill');
 
     const stored = JSON.parse(localStorage.getItem(PERSIST_KEY) ?? '{}');
     expect(stored.state).toMatchObject({
@@ -64,6 +68,7 @@ describe('uiStore — localStorage persistence', () => {
       showClusterBoundaries: false,
       showAllRelations: false,
       nodeMarginPreset: 'wide',
+      nodeDisplay: 'pill',
     });
   });
 
@@ -138,6 +143,95 @@ describe('navigateToElement — cross-layer navigation', () => {
     expect(get().layerId).toBe('business');
     expect(get().selectedId).toBe('elem-3');
     expect(get().expandedLayers).toBe(before); // identity preserved (no churn)
+  });
+});
+
+describe('navigateToElementWithEdge — cross-view navigation from a predicate click', () => {
+  it('behaves like navigateToElement but also sets highlightedEdgeId and forces graph mode', () => {
+    useUiStore.setState({ view: 'model', layerId: 'motivation', mode: 'page' });
+    get().navigateToElementWithEdge('elem-7', 'application', 'edge-42');
+    const s = get();
+    expect(s.view).toBe('model');
+    expect(s.layerId).toBe('application');
+    expect(s.selectedId).toBe('elem-7');
+    expect(s.selectedEdgeId).toBeNull();
+    expect(s.highlightedEdgeId).toBe('edge-42');
+    // Unlike every other navigation action, this one forces graph mode — the
+    // page-view scaffold renders no edges at all, so staying in page mode
+    // would make the highlight (the whole point of this action) invisible.
+    expect(s.mode).toBe('graph');
+    expect(s.focus).toBe('node');
+    expect(s.expandedSections.has('model')).toBe(true);
+    expect(s.expandedLayers.has('model:application')).toBe(true);
+  });
+
+  it('does NOT persist highlightedEdgeId (transient, not localStorage)', () => {
+    get().navigateToElementWithEdge('elem-7', 'application', 'edge-42');
+    const stored = JSON.parse(localStorage.getItem(PERSIST_KEY) ?? '{}');
+    expect(stored.state).not.toHaveProperty('highlightedEdgeId');
+  });
+});
+
+describe('highlightedEdgeId — transient cross-view highlight clears on the next explicit selection', () => {
+  it('selectLayer / selectNode / selectGraphNode / selectEdge / navigateToElement / navigateToSpecNode / selectChangeset all clear a prior highlight', () => {
+    useUiStore.setState({ highlightedEdgeId: 'edge-1' });
+    get().selectLayer('technology');
+    expect(get().highlightedEdgeId).toBeNull();
+
+    useUiStore.setState({ highlightedEdgeId: 'edge-1' });
+    get().selectNode('elem-1');
+    expect(get().highlightedEdgeId).toBeNull();
+
+    useUiStore.setState({ highlightedEdgeId: 'edge-1', layerId: 'api' });
+    get().selectGraphNode('elem-2');
+    expect(get().highlightedEdgeId).toBeNull();
+
+    useUiStore.setState({ highlightedEdgeId: 'edge-1' });
+    get().selectEdge('edge-2');
+    expect(get().highlightedEdgeId).toBeNull();
+
+    useUiStore.setState({ highlightedEdgeId: 'edge-1', view: 'model', layerId: 'motivation' });
+    get().navigateToElement('elem-3', 'application');
+    expect(get().highlightedEdgeId).toBeNull();
+
+    useUiStore.setState({ highlightedEdgeId: 'edge-1', view: 'spec', layerId: 'data-model' });
+    get().navigateToSpecNode('api.response', 'api');
+    expect(get().highlightedEdgeId).toBeNull();
+
+    useUiStore.setState({ highlightedEdgeId: 'edge-1' });
+    get().selectChangeset('cs-1');
+    expect(get().highlightedEdgeId).toBeNull();
+  });
+
+  it('toggleSection clears a highlight on a genuine view switch, but not on a same-view toggle', () => {
+    useUiStore.setState({ view: 'model', highlightedEdgeId: 'edge-1' });
+    get().toggleSection('spec');
+    expect(get().highlightedEdgeId).toBeNull();
+
+    useUiStore.setState({ view: 'model', highlightedEdgeId: 'edge-2' });
+    get().toggleSection('model'); // already active — pure expand/collapse
+    expect(get().highlightedEdgeId).toBe('edge-2');
+  });
+
+  it('toggleLayer clears a highlight when expanding, preserves it when collapsing', () => {
+    useUiStore.setState({ highlightedEdgeId: 'edge-1' });
+    get().toggleLayer('model', 'security'); // expands
+    expect(get().highlightedEdgeId).toBeNull();
+
+    useUiStore.setState({
+      highlightedEdgeId: 'edge-1',
+      expandedLayers: new Set(['model:security']),
+      layerId: 'security',
+    });
+    get().toggleLayer('model', 'security'); // collapses
+    expect(get().highlightedEdgeId).toBe('edge-1');
+  });
+
+  it('a fresh navigateToElementWithEdge call replaces a prior highlight', () => {
+    get().navigateToElementWithEdge('elem-1', 'application', 'edge-a');
+    expect(get().highlightedEdgeId).toBe('edge-a');
+    get().navigateToElementWithEdge('elem-2', 'business', 'edge-b');
+    expect(get().highlightedEdgeId).toBe('edge-b');
   });
 });
 
@@ -238,6 +332,114 @@ describe('selectLayer / selectChangeset / toggleChat / setWide', () => {
   });
 });
 
+describe('selectEdge / setHighlightedEdgeId — edge selection (mutually exclusive with node)', () => {
+  it('selectEdge sets selectedEdgeId, clears selectedId, and resets focus to layer', () => {
+    useUiStore.setState({ selectedId: 'node-1', focus: 'node' });
+    get().selectEdge('edge-1');
+    const s = get();
+    expect(s.selectedEdgeId).toBe('edge-1');
+    expect(s.selectedId).toBeNull();
+    expect(s.focus).toBe('layer');
+  });
+
+  it('selectNode / selectGraphNode / navigateToElement / navigateToSpecNode all clear a prior edge selection', () => {
+    useUiStore.setState({ selectedEdgeId: 'edge-1' });
+    get().selectNode('elem-1');
+    expect(get().selectedEdgeId).toBeNull();
+
+    useUiStore.setState({ selectedEdgeId: 'edge-1', layerId: 'api' });
+    get().selectGraphNode('elem-2');
+    expect(get().selectedEdgeId).toBeNull();
+
+    useUiStore.setState({ selectedEdgeId: 'edge-1', view: 'model', layerId: 'motivation' });
+    get().navigateToElement('elem-3', 'application');
+    expect(get().selectedEdgeId).toBeNull();
+
+    useUiStore.setState({ selectedEdgeId: 'edge-1', view: 'spec', layerId: 'data-model' });
+    get().navigateToSpecNode('api.response', 'api');
+    expect(get().selectedEdgeId).toBeNull();
+  });
+
+  it('selectLayer and toggleLayer (expanding) clear a prior edge selection', () => {
+    useUiStore.setState({ selectedEdgeId: 'edge-1' });
+    get().selectLayer('technology');
+    expect(get().selectedEdgeId).toBeNull();
+
+    useUiStore.setState({ selectedEdgeId: 'edge-1' });
+    get().toggleLayer('model', 'security'); // expands
+    expect(get().selectedEdgeId).toBeNull();
+  });
+
+  it('toggleLayer (collapsing) preserves a prior edge selection', () => {
+    useUiStore.setState({
+      selectedEdgeId: 'edge-1',
+      expandedLayers: new Set(['model:security']),
+      layerId: 'security',
+    });
+    get().toggleLayer('model', 'security'); // collapses
+    expect(get().selectedEdgeId).toBe('edge-1');
+  });
+
+  it('toggleSection clears a prior edge selection on a genuine view switch, but not on a same-view toggle', () => {
+    useUiStore.setState({ view: 'model', selectedEdgeId: 'edge-1' });
+    get().toggleSection('spec');
+    expect(get().selectedEdgeId).toBeNull();
+
+    useUiStore.setState({ view: 'model', selectedEdgeId: 'edge-2' });
+    get().toggleSection('model'); // already active — pure expand/collapse
+    expect(get().selectedEdgeId).toBe('edge-2');
+  });
+
+  it('a node selection clears a prior edge selection, and vice versa (round trip)', () => {
+    get().selectNode('elem-1');
+    expect(get().selectedId).toBe('elem-1');
+    get().selectEdge('edge-1');
+    expect(get().selectedEdgeId).toBe('edge-1');
+    expect(get().selectedId).toBeNull();
+    get().selectNode('elem-2');
+    expect(get().selectedId).toBe('elem-2');
+    expect(get().selectedEdgeId).toBeNull();
+  });
+
+  it('setHighlightedEdgeId sets/clears the transient hover-preview id independently of selection', () => {
+    get().selectEdge('edge-1');
+    get().setHighlightedEdgeId('edge-2');
+    expect(get().highlightedEdgeId).toBe('edge-2');
+    expect(get().selectedEdgeId).toBe('edge-1'); // untouched by hover
+
+    get().setHighlightedEdgeId(null);
+    expect(get().highlightedEdgeId).toBeNull();
+  });
+
+  it('clearEdgeSelection nulls selectedEdgeId/highlightedEdgeId without touching other selection state', () => {
+    useUiStore.setState({
+      selectedEdgeId: 'edge-1',
+      highlightedEdgeId: 'edge-2',
+      selectedId: 'elem-1',
+      focus: 'node',
+      layerId: 'application',
+    });
+    get().clearEdgeSelection();
+    const s = get();
+    expect(s.selectedEdgeId).toBeNull();
+    expect(s.highlightedEdgeId).toBeNull();
+    // Unrelated fields untouched — this is a targeted clear, not selectLayer/
+    // selectEdge(null) which would also reset focus/selectedId.
+    expect(s.selectedId).toBe('elem-1');
+    expect(s.focus).toBe('node');
+    expect(s.layerId).toBe('application');
+  });
+
+  it('does NOT persist selectedEdgeId/highlightedEdgeId (URL/transient, not localStorage)', () => {
+    get().selectEdge('edge-1');
+    get().setHighlightedEdgeId('edge-1');
+
+    const stored = JSON.parse(localStorage.getItem(PERSIST_KEY) ?? '{}');
+    expect(stored.state).not.toHaveProperty('selectedEdgeId');
+    expect(stored.state).not.toHaveProperty('highlightedEdgeId');
+  });
+});
+
 describe('mode — graph/page toggle', () => {
   it('setMode switches the mode', () => {
     expect(get().mode).toBe('graph');
@@ -298,11 +500,12 @@ describe('focus — page-view target (layer overview vs. node detail)', () => {
 });
 
 describe('graph layout/display preferences', () => {
-  it('default to force layout, boundaries on, every relation visible, default node margin', () => {
+  it('default to force layout, boundaries on, every relation visible, default node margin, card node display', () => {
     expect(get().graphLayout).toBe('force');
     expect(get().showClusterBoundaries).toBe(true);
     expect(get().showAllRelations).toBe(true);
     expect(get().nodeMarginPreset).toBe('default');
+    expect(get().nodeDisplay).toBe('card');
   });
 
   it('setGraphLayout switches the layout engine', () => {
@@ -336,6 +539,13 @@ describe('graph layout/display preferences', () => {
     get().setNodeMarginPreset('default');
     expect(get().nodeMarginPreset).toBe('default');
   });
+
+  it('setNodeDisplay switches between card and pill', () => {
+    get().setNodeDisplay('pill');
+    expect(get().nodeDisplay).toBe('pill');
+    get().setNodeDisplay('card');
+    expect(get().nodeDisplay).toBe('card');
+  });
 });
 
 describe('persist hydration validates graphLayout/nodeMarginPreset', () => {
@@ -360,6 +570,7 @@ describe('persist hydration validates graphLayout/nodeMarginPreset', () => {
           showClusterBoundaries: true,
           showAllRelations: true,
           nodeMarginPreset: 'not-a-real-preset',
+          nodeDisplay: 'not-a-real-display',
         },
         version: 1,
       }),
@@ -369,6 +580,7 @@ describe('persist hydration validates graphLayout/nodeMarginPreset', () => {
     const fresh = await import('@/apps/embedded/ui/uiStore');
     expect(fresh.useUiStore.getState().graphLayout).toBe('force');
     expect(fresh.useUiStore.getState().nodeMarginPreset).toBe('default');
+    expect(fresh.useUiStore.getState().nodeDisplay).toBe('card');
   });
 
   it('keeps a genuinely valid persisted value as-is', async () => {
@@ -382,6 +594,7 @@ describe('persist hydration validates graphLayout/nodeMarginPreset', () => {
           showClusterBoundaries: true,
           showAllRelations: true,
           nodeMarginPreset: 'wide',
+          nodeDisplay: 'pill',
         },
         version: 1,
       }),
@@ -391,5 +604,6 @@ describe('persist hydration validates graphLayout/nodeMarginPreset', () => {
     const fresh = await import('@/apps/embedded/ui/uiStore');
     expect(fresh.useUiStore.getState().graphLayout).toBe('galaxy');
     expect(fresh.useUiStore.getState().nodeMarginPreset).toBe('wide');
+    expect(fresh.useUiStore.getState().nodeDisplay).toBe('pill');
   });
 });

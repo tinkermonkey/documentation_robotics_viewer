@@ -9,6 +9,8 @@ import {
   specRelationshipsForNode,
   specMetadataForNode,
   firstNodeTypeId,
+  nodeTypeConnections,
+  nodeTypeTooltipData,
   type SpecPayload,
 } from '@/apps/embedded/data/specGraph';
 import specFixture from '../fixtures/spec.json';
@@ -231,6 +233,69 @@ describe('specMetadataForNode', () => {
 
   it('returns null when the node-type has no schema', () => {
     expect(specMetadataForNode(spec, 'data-model', 'data-model.nope')).toBeNull();
+  });
+});
+
+// ─── nodeTypeConnections / nodeTypeTooltipData (Phase 5 hover-tooltip content) ─
+
+describe('nodeTypeConnections', () => {
+  it('outbound entries carry the raw predicate (no cardinality suffix) + the destination type', () => {
+    const slug = 'data-model';
+    const schema = schemaForLayer(spec, slug)!;
+    const outRel = Object.values(schema.relationshipSchemas ?? {}).find(
+      (r) => r.source_layer === slug,
+    )!;
+
+    const { outbound } = nodeTypeConnections(spec, slug, outRel.source_spec_node_id);
+    const match = outbound.find((c) => c.typeId === outRel.destination_spec_node_id)!;
+    expect(match).toBeDefined();
+    expect(match.predicate).toBe(outRel.predicate);
+    expect(match.domain).toBe(outRel.destination_layer);
+  });
+
+  it('inbound entries carry the source type', () => {
+    const slug = 'data-model';
+    const schema = schemaForLayer(spec, slug)!;
+    const inRel = Object.values(schema.relationshipSchemas ?? {}).find(
+      (r) => r.destination_layer === slug && r.source_spec_node_id !== r.destination_spec_node_id,
+    )!;
+
+    const { inbound } = nodeTypeConnections(spec, slug, inRel.destination_spec_node_id);
+    const match = inbound.find((c) => c.typeId === inRel.source_spec_node_id)!;
+    expect(match).toBeDefined();
+    expect(match.predicate).toBe(inRel.predicate);
+    expect(match.domain).toBe(inRel.source_layer);
+  });
+
+  it('returns empty lists for a node-type with no relationship schemas', () => {
+    expect(nodeTypeConnections(spec, 'data-model', 'data-model.nope')).toEqual({
+      inbound: [],
+      outbound: [],
+    });
+  });
+});
+
+describe('nodeTypeTooltipData', () => {
+  it('resolves specifier/title/description + connections for a known node type', () => {
+    const slug = 'data-model';
+    const nodeId = `${slug}.objectschema`;
+    const data = nodeTypeTooltipData(spec, slug, nodeId)!;
+
+    expect(data).not.toBeNull();
+    expect(data.specifier).toBe(nodeId);
+    const ns = schemaForLayer(spec, slug)!.nodeSchemas?.objectschema;
+    expect(data.title).toBe(ns?.title ?? 'objectschema');
+    expect(data.description).toBe(ns?.description);
+    expect(Array.isArray(data.inbound)).toBe(true);
+    expect(Array.isArray(data.outbound)).toBe(true);
+  });
+
+  it('returns null for an unpublished node type', () => {
+    expect(nodeTypeTooltipData(spec, 'data-model', 'data-model.nope')).toBeNull();
+  });
+
+  it('returns null for an undefined spec', () => {
+    expect(nodeTypeTooltipData(undefined, 'data-model', 'data-model.objectschema')).toBeNull();
   });
 });
 

@@ -19,6 +19,30 @@
  * fields (`pg.eyebrow`/`pg.title`/`pg.idChip`/`pg.meta`/`pg.color`) straight
  * off the `PageData` returned by `usePageData` to swap its `PageHeader`
  * props when a page is showing.
+ *
+ * A cell built with `pageData.ts`'s `nodeTypeCell`/`predicateCell` carries a
+ * `PageCell.tooltip` — `Cell` below wraps it in `NodeTypeBadge` /
+ * `PredicateTooltip` instead of plain text, so node-type and predicate
+ * references read the identical rich tooltip the graph and Inspector
+ * surfaces show. `NodeTypeBadge` needs the `/api/spec` payload, fetched here
+ * via `useSpec` (same TanStack Query cache `usePageData` itself reads — no
+ * extra request).
+ *
+ * A tooltip-carrying cell's OWN click target can differ from its row's
+ * default `target` (cross-view navigation) — a node-type cell
+ * always navigates to that type's Schema entry, and a predicate cell backed by
+ * a real (INTRA-layer only — see `cellNavTarget`) model link (`tooltip.edge`
+ * set) navigates to the edge's SOURCE node with the edge highlighted, which
+ * for an incoming-relationship row is a different node than the row's own
+ * default target. `cellNavTarget` resolves each cell's own target; `TableRow`
+ * falls back to the row's `target` for the first cell that doesn't have one
+ * of its own, so a row with no tooltip-driven overrides still reads as "the
+ * whole row navigates" (just via that one cell) exactly as before. A row is
+ * no longer a single `<button>` (HTML forbids interactive content inside a
+ * `<button>`, and a row can now contain more than one independently-targeted
+ * cell) — each clickable cell instead renders its own `role="cell"` span
+ * wrapping a real `<button>` (not click/keydown handlers bolted onto the
+ * `cell` role itself, which isn't exposed as interactive to assistive tech).
  */
 
 import { useMemo } from 'react';
@@ -26,6 +50,7 @@ import { useUiStore } from './uiStore';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import { buildModelIndex } from '../data/modelGraph';
+import type { SpecPayload } from '../data/specGraph';
 import {
   layerPageData,
   specNodePageData,
@@ -35,6 +60,8 @@ import {
   type PageRow,
   type PageCell,
 } from '../data/pageData';
+import { NodeTypeBadge } from './NodeTypeBadge';
+import { PredicateTooltip } from './PredicateTooltip';
 
 const MONO = "'JetBrains Mono',monospace";
 
@@ -66,6 +93,7 @@ function useNavigate() {
   const setView = useUiStore((s) => s.setView);
   const selectLayer = useUiStore((s) => s.selectLayer);
   const navigateToElement = useUiStore((s) => s.navigateToElement);
+  const navigateToElementWithEdge = useUiStore((s) => s.navigateToElementWithEdge);
   const navigateToSpecNode = useUiStore((s) => s.navigateToSpecNode);
 
   return (target: PageNavTarget | undefined) => {
@@ -81,6 +109,9 @@ function useNavigate() {
       case 'element':
         navigateToElement(target.elementId, target.layerId);
         return;
+      case 'elementWithEdge':
+        navigateToElementWithEdge(target.elementId, target.layerId, target.edgeId);
+        return;
       case 'specNode':
         navigateToSpecNode(target.specNodeId, target.layerId);
         return;
@@ -92,6 +123,29 @@ function useNavigate() {
       }
     }
   };
+}
+
+/** A cell's OWN navigation target, independent of its row's default `target`
+ *  (see the module doc comment) — `undefined` when the cell has no tooltip,
+ *  or a `predicate` tooltip with no `edge` (a Schema-view relationship schema
+ *  has no live edge to highlight). */
+function cellNavTarget(cell: PageCell): PageNavTarget | undefined {
+  if (cell.tooltip?.kind === 'nodeType') {
+    return {
+      kind: 'specNode',
+      specNodeId: `${cell.tooltip.layerId}.${cell.tooltip.typeId}`,
+      layerId: cell.tooltip.layerId,
+    };
+  }
+  if (cell.tooltip?.kind === 'predicate' && cell.tooltip.edge) {
+    return {
+      kind: 'elementWithEdge',
+      elementId: cell.tooltip.edge.sourceElementId,
+      layerId: cell.tooltip.edge.sourceLayerId,
+      edgeId: cell.tooltip.edge.edgeId,
+    };
+  }
+  return undefined;
 }
 
 const CELL_STYLE: Record<PageCell['kind'], React.CSSProperties> = {
@@ -126,15 +180,89 @@ const CELL_STYLE: Record<PageCell['kind'], React.CSSProperties> = {
   },
 };
 
-function Cell({ cell }: { cell: PageCell }) {
-  return (
-    <span
-      role="cell"
-      style={{ ...CELL_STYLE[cell.kind], ...(cell.color ? { color: cell.color } : null) }}
-    >
+function Cell({
+  cell,
+  spec,
+  target,
+  onNavigate,
+}: {
+  cell: PageCell;
+  spec: SpecPayload | undefined;
+  /** This cell's own effective nav target (its own tooltip-driven target, or
+   *  the row's default target when `TableRow` assigned it as the fallback) —
+   *  `undefined` means the cell is plain, non-interactive text. */
+  target?: PageNavTarget;
+  onNavigate: (t?: PageNavTarget) => void;
+}) {
+  const style = { ...CELL_STYLE[cell.kind], ...(cell.color ? { color: cell.color } : null) };
+  // A real `<button>` (not a `role="cell"` span faking click/keyboard
+  // semantics) — `role="cell"` doesn't imply "interactive" to assistive tech,
+  // so a screen reader would announce nothing actionable (WCAG 2.1 SC 4.1.2).
+  // `role="cell"` permits an interactive DESCENDANT (unlike `role="row"`,
+  // which is why `TableRow` no longer wraps the whole row in a button — see
+  // its doc comment) — the button lives inside a plain `role="cell"` span so
+  // the grid layout/ARIA structure is unchanged.
+  const text = target ? (
+    <span role="cell" style={style}>
+      <button
+        type="button"
+        className="drv-cell-link"
+        // `color`/`fontSize`/`fontFamily` aren't repeated here — Tailwind's
+        // Preflight resets `button` to inherit them from the span above.
+        // `overflow`/`textOverflow`/`whiteSpace` ARE non-inherited properties
+        // and this button (not the span) is the box whose own content
+        // actually needs to truncate, so they stay explicit.
+        style={{
+          overflow: style.overflow,
+          textOverflow: style.textOverflow,
+          whiteSpace: style.whiteSpace,
+          textAlign: style.textAlign ?? 'left',
+          display: 'block',
+          width: '100%',
+          border: 'none',
+          padding: 0,
+          margin: 0,
+          cursor: 'pointer',
+        }}
+        onClick={() => onNavigate(target)}
+        data-testid="page-cell-link"
+      >
+        {cell.text}
+      </button>
+    </span>
+  ) : (
+    <span role="cell" style={style} tabIndex={cell.tooltip ? 0 : undefined}>
       {cell.text}
     </span>
   );
+
+  if (cell.tooltip?.kind === 'nodeType') {
+    return (
+      <NodeTypeBadge
+        spec={spec}
+        layerId={cell.tooltip.layerId}
+        typeId={cell.tooltip.typeId}
+        data-testid="page-cell-node-type-tooltip"
+      >
+        {text}
+      </NodeTypeBadge>
+    );
+  }
+
+  if (cell.tooltip?.kind === 'predicate') {
+    return (
+      <PredicateTooltip
+        predicate={cell.tooltip.predicate}
+        sourceTypeLabel={cell.tooltip.sourceTypeLabel}
+        destinationTypeLabel={cell.tooltip.destinationTypeLabel}
+        data-testid="page-cell-predicate-tooltip"
+      >
+        {text}
+      </PredicateTooltip>
+    );
+  }
+
+  return text;
 }
 
 function Breadcrumb({ pg, onNavigate }: { pg: PageData; onNavigate: (t?: PageNavTarget) => void }) {
@@ -295,54 +423,53 @@ const ROW_STYLE: React.CSSProperties = {
 function TableRow({
   row,
   widths,
+  spec,
   onNavigate,
 }: {
   row: PageRow;
   widths: string;
+  spec: SpecPayload | undefined;
   onNavigate: (t?: PageNavTarget) => void;
 }) {
-  const cells = row.cells.map((c, i) => <Cell key={i} cell={c} />);
-
-  // Only rows with a navigation target are interactive — a row with no
-  // target (e.g. an Attributes row) stays a plain, non-clickable row rather
-  // than faking an affordance it can't act on.
-  if (!row.target) {
-    return (
-      <div role="row" style={{ ...ROW_STYLE, gridTemplateColumns: widths }}>
-        {cells}
-      </div>
-    );
-  }
+  // Each cell resolves its OWN nav target first (a node-type/predicate-with-edge
+  // tooltip); the row's default `target` is assigned as a fallback to the first
+  // cell that doesn't have one of its own, so a row with no tooltip overrides
+  // still reads as "click anywhere relevant to navigate" via that one cell —
+  // see the module doc comment for why cells, not the whole row, own the
+  // click affordance.
+  let fallbackAssigned = false;
+  let rowIsInteractive = false;
+  const cells = row.cells.map((c, i) => {
+    let target = cellNavTarget(c);
+    if (!target && row.target && !fallbackAssigned) {
+      target = row.target;
+      fallbackAssigned = true;
+    }
+    if (target) rowIsInteractive = true;
+    return <Cell key={i} cell={c} spec={spec} target={target} onNavigate={onNavigate} />;
+  });
 
   return (
-    // `background` is intentionally left out of this inline style (unlike
-    // `border`/`textAlign`/etc, which don't conflict with anything) — an
-    // inline `background` always wins over `.drv-row:hover`'s stylesheet
-    // rule for the same property, which would permanently suppress the
-    // hover feedback. `.drv-row` in domain-and-nav.css owns the base
-    // (transparent) background so `:hover` can override it.
-    <button
-      type="button"
+    <div
       role="row"
-      className="drv-row"
-      onClick={() => onNavigate(row.target)}
-      data-testid="page-row"
-      style={{
-        ...ROW_STYLE,
-        gridTemplateColumns: widths,
-        width: '100%',
-        border: 'none',
-        borderBottom: '1px solid rgb(var(--canvas-border))',
-        textAlign: 'left',
-        font: 'inherit',
-      }}
+      className={rowIsInteractive ? 'drv-row' : undefined}
+      style={{ ...ROW_STYLE, gridTemplateColumns: widths }}
+      data-testid={row.target ? 'page-row' : undefined}
     >
       {cells}
-    </button>
+    </div>
   );
 }
 
-function Tables({ pg, onNavigate }: { pg: PageData; onNavigate: (t?: PageNavTarget) => void }) {
+function Tables({
+  pg,
+  spec,
+  onNavigate,
+}: {
+  pg: PageData;
+  spec: SpecPayload | undefined;
+  onNavigate: (t?: PageNavTarget) => void;
+}) {
   return (
     <>
       {pg.tables.map((t) => (
@@ -402,7 +529,7 @@ function Tables({ pg, onNavigate }: { pg: PageData; onNavigate: (t?: PageNavTarg
                 ))}
               </div>
               {t.rows.map((r, i) => (
-                <TableRow key={i} row={r} widths={t.widths} onNavigate={onNavigate} />
+                <TableRow key={i} row={r} widths={t.widths} spec={spec} onNavigate={onNavigate} />
               ))}
             </div>
           )}
@@ -414,6 +541,7 @@ function Tables({ pg, onNavigate }: { pg: PageData; onNavigate: (t?: PageNavTarg
 
 export function PageView({ pg }: { pg: PageData }) {
   const onNavigate = useNavigate();
+  const { raw: specRaw } = useSpec();
 
   return (
     <div
@@ -437,7 +565,7 @@ export function PageView({ pg }: { pg: PageData }) {
         </p>
         <StatGrid pg={pg} />
         <FactsBlock pg={pg} />
-        <Tables pg={pg} onNavigate={onNavigate} />
+        <Tables pg={pg} spec={specRaw} onNavigate={onNavigate} />
       </div>
     </div>
   );

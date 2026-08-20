@@ -150,11 +150,12 @@ test.describe('accessibility (axe / WCAG 2.1 AA)', () => {
  * Page-view mode (design/node_pages README section 3): the graph/page
  * SegmentedControl in the Canvas header swaps the graph for a breadcrumb +
  * stat grid + facts list + row tables. This is brand-new DOM (real `<button>`
- * table rows/breadcrumb crumbs with `role="row"`/`"cell"`/`"columnheader"`,
- * a labeled `<nav>`) with no historical debt, so — unlike the graph-mode
- * scan above — this gate is zero-tolerance: any serious/critical violation,
- * `color-contrast` included, fails the suite. Changesets has no page mode
- * (the toggle doesn't render there), so only Model/Schema are covered.
+ * breadcrumb crumbs, and — per-cell, not per-row (Phase 6) — real `<button>`s
+ * nested in `role="cell"` elements with `role="row"`/`"columnheader"` on their
+ * ancestors) with no historical debt, so — unlike the graph-mode scan above —
+ * this gate is zero-tolerance: any serious/critical violation, `color-contrast`
+ * included, fails the suite. Changesets has no page mode (the toggle doesn't
+ * render there), so only Model/Schema are covered.
  */
 const PAGE_MODE_VIEWS: Array<{ name: string; route: string }> = [
   { name: 'Model', route: ROUTES.model },

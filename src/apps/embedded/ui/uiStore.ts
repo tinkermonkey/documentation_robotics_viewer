@@ -1,5 +1,5 @@
 /**
- * UI store — drives the static 5-pane shell (view / layer / selection /
+ * UI store — drives the static 4-pane shell (view / layer / selection /
  * changeset, canvas dark mode, chat drawer, responsive width, and the nav
  * tree's expanded sections + layers).
  *
@@ -9,7 +9,7 @@
  * A subset of fields persist to localStorage (see `partialize` below) — the
  * canvas theme, the DrBot drawer's open/closed state, and the graph
  * layout/display settings (graphLayout/showClusterBoundaries/
- * showAllRelations/nodeMarginPreset). Navigation state (view/layerId/
+ * showAllRelations/nodeMarginPreset/nodeDisplay). Navigation state (view/layerId/
  * selectedId/changesetId/mode/focus/expanded*) is deliberately NOT persisted
  * here — that's the URL router's job (see router.tsx), so the two mechanisms
  * don't fight over which one is authoritative for "where you are."
@@ -23,11 +23,34 @@ export type CanvasMode = 'graph' | 'page';
 export type PageFocus = 'layer' | 'node';
 export type GraphLayout = 'force' | 'galaxy' | 'force-clustered';
 export type NodeMarginPreset = 'tight' | 'default' | 'wide';
+export type NodeDisplay = 'card' | 'pill';
 
 interface UiState {
   view: ViewKind;
   layerId: string | null;
   selectedId: string | null;
+  /** Selected Model graph edge (a link id), mutually exclusive with `selectedId`
+   *  — selecting one always clears the other. Drives the Inspector's
+   *  edge branch (source/edge/destination) and round-trips through the URL's
+   *  `?edge=` param, same as `selectedId`'s `?node=`. Edges only exist in the
+   *  Model view's graph, so nothing else needs to clear this on a Schema
+   *  selection beyond the existing view-switch clearing.
+   *  Edge ids are volatile — any relationship change permanently removes one.
+   *  `Inspector.tsx` detects when this no longer resolves via `edgeMetadata()`
+   *  (a WS `model` update dropped the link, or a bookmarked `?edge=` never
+   *  matched anything) and calls `clearEdgeSelection()` below, which also
+   *  flows through to strip the dead `?edge=` param from the URL via the
+   *  normal store → URL sync in `router.tsx`. `router.tsx` additionally
+   *  validates a deep-linked `?edge=` against the loaded model before ever
+   *  restoring it into this field, so a stale bookmark never round-trips
+   *  through a visible (if momentary) selection. */
+  selectedEdgeId: string | null;
+  /** Edge currently rendered with the `variant: 'hot'` highlight —
+   *  driven by hover (see `useEdgeInteraction`), independent of click
+   *  selection: hovering a different edge than the selected one previews it
+   *  without disturbing `selectedEdgeId`. Not persisted or URL-synced —
+   *  purely a transient visual cue. */
+  highlightedEdgeId: string | null;
   changesetId: string | null;
   canvasDark: boolean;
   chatOpen: boolean;
@@ -57,6 +80,12 @@ interface UiState {
    *  'tight' behavior). 'default' leaves nodeMargin unset (GraphCanvas's own
    *  per-engine default). */
   nodeMarginPreset: NodeMarginPreset;
+  /** Model graph node presentation: 'card' shows type + intra/inter-layer
+   *  connection counts (see data/modelGraph.ts's nodesWithCardData), 'pill' is
+   *  the original compact GraphNode. Only meaningful in the Model view — the
+   *  Schema view's node-type graph always uses the default pill. Defaults to
+   *  'card'. */
+  nodeDisplay: NodeDisplay;
 
   setView: (view: ViewKind) => void;
   selectLayer: (layerId: string) => void;
@@ -70,12 +99,40 @@ interface UiState {
   selectNode: (selectedId: string) => void;
   /** Select a node clicked in the graph canvas (current layer). */
   selectGraphNode: (selectedId: string) => void;
+  /** Select an edge clicked in the Model graph (a link id) — clears any node
+   *  selection (mutually exclusive). */
+  selectEdge: (edgeId: string) => void;
+  /** Edge currently previewed as `variant: 'hot'` via hover; `null` clears it.
+   *  See `highlightedEdgeId` above. */
+  setHighlightedEdgeId: (edgeId: string | null) => void;
+  /** Clears `selectedEdgeId`/`highlightedEdgeId` only, leaving every other
+   *  selection field untouched — used when the currently-selected edge no
+   *  longer resolves against the loaded model (a WS `model` update removed
+   *  the link, or a deep-linked `?edge=` id never existed). Deliberately NOT
+   *  `selectLayer`/`selectEdge(null)`: those reset `focus`/`selectedId` too,
+   *  which would incorrectly disturb an unrelated node selection made after
+   *  the edge went stale. */
+  clearEdgeSelection: () => void;
   /**
    * Navigate to an element by id, switching the active layer when it lives in
    * another layer (cross-layer relationship navigation). Stays in the Model
    * view and keeps the nav tree's section/layer expanded.
    */
   navigateToElement: (elementId: string, layerId: string) => void;
+  /**
+   * Same as `navigateToElement`, but also sets `highlightedEdgeId` and forces
+   * `mode: 'graph'` so the arriving GRAPH (not the page-view scaffold, which
+   * renders no edges at all) renders the given edge in its `hot` variant
+   * (clicking an edge predicate reference navigates to the edge's source
+   * node with the edge highlighted) — unlike every other navigation action
+   * here, which deliberately leaves `mode` alone
+   * ("mode toggle persists across selections"), this one's entire point is
+   * showing the graph, so forcing it is the correct exception rather than a
+   * violation of that rule. The highlight is transient — every other explicit
+   * selection action clears `highlightedEdgeId` back to `null` (see each
+   * action below), so it never lingers past the next click.
+   */
+  navigateToElementWithEdge: (elementId: string, layerId: string, edgeId: string) => void;
   /**
    * Navigate to a spec node-type by its `spec_node_id`, switching the active
    * layer when it lives in another layer (cross-layer relationship navigation
@@ -98,6 +155,7 @@ interface UiState {
   toggleClusterBoundaries: () => void;
   toggleShowAllRelations: () => void;
   setNodeMarginPreset: (preset: NodeMarginPreset) => void;
+  setNodeDisplay: (nodeDisplay: NodeDisplay) => void;
 }
 
 const initialWide =
@@ -137,6 +195,8 @@ export const useUiStore = create<UiState>()(
       view: 'model',
       layerId: null,
       selectedId: null,
+      selectedEdgeId: null,
+      highlightedEdgeId: null,
       changesetId: null,
       // Dark by default (first visit, nothing persisted yet) — a later
       // explicit choice via toggleCanvasDark persists and overrides this.
@@ -151,6 +211,7 @@ export const useUiStore = create<UiState>()(
       showClusterBoundaries: true,
       showAllRelations: true,
       nodeMarginPreset: 'default',
+      nodeDisplay: 'card',
 
       setView: (view) => set({ view }),
 
@@ -161,23 +222,35 @@ export const useUiStore = create<UiState>()(
           return {
             layerId,
             selectedId: null,
+            selectedEdgeId: null,
+            highlightedEdgeId: null,
             focus: 'layer',
             expandedSections: new Set(s.expandedSections).add(s.view),
             expandedLayers,
           };
         }),
 
-      selectNode: (selectedId) => set({ selectedId, focus: 'node' }),
+      selectNode: (selectedId) =>
+        set({ selectedId, selectedEdgeId: null, highlightedEdgeId: null, focus: 'node' }),
 
       selectGraphNode: (selectedId) =>
         set((s) => ({
           selectedId,
+          selectedEdgeId: null,
+          highlightedEdgeId: null,
           focus: 'node',
           expandedSections: new Set(s.expandedSections).add(s.view),
           expandedLayers: s.layerId
             ? new Set(s.expandedLayers).add(layerKey(s.view, s.layerId))
             : s.expandedLayers,
         })),
+
+      selectEdge: (selectedEdgeId) =>
+        set({ selectedEdgeId, selectedId: null, highlightedEdgeId: null, focus: 'layer' }),
+
+      setHighlightedEdgeId: (highlightedEdgeId) => set({ highlightedEdgeId }),
+
+      clearEdgeSelection: () => set({ selectedEdgeId: null, highlightedEdgeId: null }),
 
       navigateToElement: (elementId, layerId) =>
         set((s) => {
@@ -189,6 +262,27 @@ export const useUiStore = create<UiState>()(
             view: 'model',
             layerId,
             selectedId: elementId,
+            selectedEdgeId: null,
+            highlightedEdgeId: null,
+            focus: 'node',
+            expandedSections: new Set(s.expandedSections).add('model'),
+            expandedLayers,
+          };
+        }),
+
+      navigateToElementWithEdge: (elementId, layerId, edgeId) =>
+        set((s) => {
+          const sameLayer = s.layerId === layerId;
+          const expandedLayers = sameLayer
+            ? s.expandedLayers
+            : new Set(s.expandedLayers).add(layerKey('model', layerId));
+          return {
+            view: 'model',
+            mode: 'graph',
+            layerId,
+            selectedId: elementId,
+            selectedEdgeId: null,
+            highlightedEdgeId: edgeId,
             focus: 'node',
             expandedSections: new Set(s.expandedSections).add('model'),
             expandedLayers,
@@ -205,6 +299,8 @@ export const useUiStore = create<UiState>()(
             view: 'spec',
             layerId,
             selectedId: specNodeId,
+            selectedEdgeId: null,
+            highlightedEdgeId: null,
             focus: 'node',
             expandedSections: new Set(s.expandedSections).add('spec'),
             expandedLayers,
@@ -215,6 +311,7 @@ export const useUiStore = create<UiState>()(
         set((s) => ({
           view: 'changesets',
           changesetId,
+          highlightedEdgeId: null,
           expandedSections: new Set(s.expandedSections).add('changesets'),
         })),
 
@@ -251,7 +348,9 @@ export const useUiStore = create<UiState>()(
             // switching sections keeps you on the same layer, just the other
             // view of it. Toggling the ALREADY-active section's own
             // expand/collapse isn't a view switch, so selection is untouched.
-            ...(viewChanged ? { selectedId: null, focus: 'layer' as const } : {}),
+            ...(viewChanged
+              ? { selectedId: null, selectedEdgeId: null, highlightedEdgeId: null, focus: 'layer' as const }
+              : {}),
           };
         }),
 
@@ -269,6 +368,8 @@ export const useUiStore = create<UiState>()(
             view: sectionId as ViewKind,
             layerId,
             selectedId: collapsing ? s.selectedId : null,
+            selectedEdgeId: collapsing ? s.selectedEdgeId : null,
+            highlightedEdgeId: collapsing ? s.highlightedEdgeId : null,
             focus: collapsing ? s.focus : 'layer',
             expandedSections: new Set(s.expandedSections).add(sectionId),
             expandedLayers,
@@ -286,6 +387,8 @@ export const useUiStore = create<UiState>()(
         set((s) => ({ showAllRelations: !s.showAllRelations })),
 
       setNodeMarginPreset: (nodeMarginPreset) => set({ nodeMarginPreset }),
+
+      setNodeDisplay: (nodeDisplay) => set({ nodeDisplay }),
     }),
     {
       name: PERSIST_KEY,
@@ -300,6 +403,7 @@ export const useUiStore = create<UiState>()(
         showClusterBoundaries: state.showClusterBoundaries,
         showAllRelations: state.showAllRelations,
         nodeMarginPreset: state.nodeMarginPreset,
+        nodeDisplay: state.nodeDisplay,
       }),
       // Re-sync body.dark-canvas once hydration lands — covers both "restored
       // a persisted value" and "nothing was persisted, using the true
@@ -329,6 +433,7 @@ const VALID_NODE_MARGIN_PRESETS: ReadonlySet<NodeMarginPreset> = new Set([
   'default',
   'wide',
 ]);
+const VALID_NODE_DISPLAYS: ReadonlySet<NodeDisplay> = new Set(['card', 'pill']);
 
 /** Guards the one place untyped external data (a previous app version's
  *  persisted shape, a hand-edited localStorage value) enters these two
@@ -343,6 +448,7 @@ const VALID_NODE_MARGIN_PRESETS: ReadonlySet<NodeMarginPreset> = new Set([
   const fixes: Partial<UiState> = {};
   if (!VALID_GRAPH_LAYOUTS.has(hydrated.graphLayout)) fixes.graphLayout = 'force';
   if (!VALID_NODE_MARGIN_PRESETS.has(hydrated.nodeMarginPreset)) fixes.nodeMarginPreset = 'default';
+  if (!VALID_NODE_DISPLAYS.has(hydrated.nodeDisplay)) fixes.nodeDisplay = 'card';
   if (Object.keys(fixes).length > 0) useUiStore.setState(fixes);
 }
 

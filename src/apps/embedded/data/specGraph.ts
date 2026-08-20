@@ -110,7 +110,7 @@ export function shortName(slug: string, specNodeId: string): string {
  * the destination layer schema) is unavailable — so cross-layer targets still
  * read sensibly.
  */
-function titleForSpecNode(
+export function titleForSpecNode(
   spec: SpecPayload | undefined,
   layer: string,
   specNodeId: string,
@@ -325,6 +325,93 @@ export function specMetadataForNode(
     domain: slug,
     description: ns.description,
     metadata,
+  };
+}
+
+// ─── Node-type tooltip content (hover surfaces — ModelCardNode/Inspector/EdgeInspector/PageView) ─
+
+/** One possible inbound or outbound connection for a node type's rich tooltip. */
+export interface NodeTypeConnectionData {
+  predicate: string;
+  typeId: string;
+  typeLabel: string;
+  domain?: string;
+}
+
+/** `NodeTypeTooltip`'s content props, resolved from the spec for a given node type. */
+export interface NodeTypeTooltipData {
+  specifier: string;
+  title: string;
+  description?: string;
+  inbound: NodeTypeConnectionData[];
+  outbound: NodeTypeConnectionData[];
+}
+
+/**
+ * Possible inbound/outbound connection types for a node type (`spec_node_id`):
+ * every relationship schema in its own layer's file naming it as source
+ * (outbound) or destination (inbound). Same source `specRelationshipsForNode`
+ * reads, but shaped for `NodeTypeTooltip` (raw predicate, no cardinality
+ * suffix; connected type's own id/label/domain instead of a Heimdall
+ * `RelationshipLink`'s `target`/`targetTitle`/`targetDomain`).
+ */
+export function nodeTypeConnections(
+  spec: SpecPayload | undefined,
+  slug: string,
+  nodeId: string,
+): { inbound: NodeTypeConnectionData[]; outbound: NodeTypeConnectionData[] } {
+  const schema = schemaForLayer(spec, slug);
+  const rels = schema?.relationshipSchemas ?? {};
+  const inbound: NodeTypeConnectionData[] = [];
+  const outbound: NodeTypeConnectionData[] = [];
+
+  for (const rel of Object.values(rels)) {
+    if (rel.source_spec_node_id === nodeId) {
+      outbound.push({
+        predicate: rel.predicate,
+        typeId: rel.destination_spec_node_id,
+        typeLabel: titleForSpecNode(spec, rel.destination_layer, rel.destination_spec_node_id),
+        domain: rel.destination_layer,
+      });
+    }
+    if (rel.destination_spec_node_id === nodeId) {
+      inbound.push({
+        predicate: rel.predicate,
+        typeId: rel.source_spec_node_id,
+        typeLabel: titleForSpecNode(spec, rel.source_layer, rel.source_spec_node_id),
+        domain: rel.source_layer,
+      });
+    }
+  }
+
+  return { inbound, outbound };
+}
+
+/**
+ * `NodeTypeTooltip` content for a node type (`spec_node_id`): its own
+ * specifier/title/description plus `nodeTypeConnections`. Returns `null` when
+ * the type isn't published in the spec (unknown type, or the spec hasn't
+ * loaded yet) — callers (see `ui/NodeTypeBadge.tsx`) render the plain trigger
+ * unwrapped in that case rather than a tooltip with no content.
+ */
+export function nodeTypeTooltipData(
+  spec: SpecPayload | undefined,
+  slug: string,
+  nodeId: string,
+): NodeTypeTooltipData | null {
+  const schema = schemaForLayer(spec, slug);
+  const short = shortName(slug, nodeId);
+  const ns = schema?.nodeSchemas?.[short];
+  if (!ns) return null;
+
+  const { inbound, outbound } = nodeTypeConnections(spec, slug, nodeId);
+
+  return {
+    specifier: nodeId,
+    title: ns.title ?? short,
+    description: ns.description,
+    inbound,
+    outbound,
   };
 }
 

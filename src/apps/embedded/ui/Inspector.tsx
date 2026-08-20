@@ -25,16 +25,51 @@
  * `onNodeSelect` navigates: in Model it switches `uiStore.layerId` when the
  * target lives in another layer (keeping `view='model'`); in Schema it switches
  * the layer for cross-layer relationship targets (keeping `view='spec'`).
+ *
+ * When `uiStore.selectedEdgeId` is set (a Model graph edge click — mutually
+ * exclusive with node selection, so `selectedId`/`metadata` are null
+ * whenever this is set), the drawer instead renders `EdgeInspector`'s
+ * source/edge/destination stack. `open` follows whichever of the two is set.
+ *
+ * Stale edge selection guard: `selectedEdgeId` is a bare link id, and edge
+ * ids are volatile — a WS `model` update that removes a relationship, or a
+ * bookmarked `?edge=` deep link that never matched anything, both leave
+ * `selectedEdgeId` pointing at a link `edgeMetadata()` can't resolve. Once
+ * the model has actually loaded, if that lookup comes back `undefined` for a
+ * non-null `selectedEdgeId`, this component clears it via
+ * `uiStore.clearEdgeSelection()` — the drawer already closes on its own
+ * (`open` follows `!!edge`), but without this the store/URL `?edge=` param
+ * would keep referencing the dead id indefinitely.
+ *
+ * Model view: the selected element's type is shown as its own
+ * `graph-inspector__head-eyebrow` row (same classes Heimdall's
+ * `GraphInspector` uses for its own head, so it reads as part of the same
+ * panel) ABOVE the `GraphInspector`, wrapped in `NodeTypeBadge` so it
+ * triggers the rich `NodeTypeTooltip` on hover/focus — `GraphInspector`
+ * itself has no slot for customizing its own `kind` badge, so
+ * `modelMetadata` omits `kind` to avoid rendering it twice.
+ *
+ * That same kind badge is a `<button>` (not a static span) — clicking it
+ * calls `navigateToSpecNode`, jumping to the element's node type in the
+ * Schema view. `EdgeInspector`'s
+ * source/destination kind badges and predicate badge get the equivalent
+ * treatment (see its own doc comment); both are handed `navigateToSpecNode`/
+ * `navigateToElementWithEdge` directly as props rather than a wrapped
+ * handler, since neither needs Inspector-level logic beyond what the store
+ * action itself already does (unlike `onNodeSelect`/`handleSelect`, which
+ * resolves a raw UUID to its layer first).
  */
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { GraphInspector, DetailDrawer } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
 import { layerLabel } from './domain';
 import { AnnotationsSection } from './AnnotationsSection';
+import { EdgeInspector } from './EdgeInspector';
+import { NodeTypeBadge } from './NodeTypeBadge';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
-import { buildModelIndex, dottedId } from '../data/modelGraph';
+import { buildModelIndex, dottedId, edgeMetadata } from '../data/modelGraph';
 import {
   relationshipsForElement,
   metadataForElement,
@@ -59,13 +94,33 @@ export function Inspector() {
   const view = useUiStore((s) => s.view);
   const layerId = useUiStore((s) => s.layerId);
   const selectedId = useUiStore((s) => s.selectedId);
+  const selectedEdgeId = useUiStore((s) => s.selectedEdgeId);
   const navigateToElement = useUiStore((s) => s.navigateToElement);
   const navigateToSpecNode = useUiStore((s) => s.navigateToSpecNode);
+  const navigateToElementWithEdge = useUiStore((s) => s.navigateToElementWithEdge);
+  const clearEdgeSelection = useUiStore((s) => s.clearEdgeSelection);
 
-  const { derived: model } = useModel();
+  const { derived: model, isSuccess: modelLoaded } = useModel();
   const { raw: specRaw } = useSpec();
   const index = useMemo(() => buildModelIndex(model), [model]);
   const isSpec = view === 'spec';
+
+  // ─── Selected edge (Model view only — edges only exist in the Model graph) ─
+  const edge = useMemo(
+    () =>
+      !isSpec && selectedEdgeId
+        ? edgeMetadata(model, selectedEdgeId, index, specRaw)
+        : undefined,
+    [isSpec, model, selectedEdgeId, index, specRaw],
+  );
+
+  // A selected edge id that no longer resolves once the model has loaded is
+  // stale (link removed by a WS update, or a bookmarked id that never
+  // existed) — clear it so the store/URL don't keep referencing a dead edge.
+  useEffect(() => {
+    if (isSpec || !selectedEdgeId || !modelLoaded || edge) return;
+    clearEdgeSelection();
+  }, [isSpec, selectedEdgeId, modelLoaded, edge, clearEdgeSelection]);
 
   // ─── Model element metadata + relationships ────────────────────────────────
   const modelNode =
@@ -73,7 +128,10 @@ export function Inspector() {
   const modelMetadata = useMemo(
     () =>
       modelNode
-        ? metadataForElement(modelNode, layerLabel(modelNode.layer_id))
+        ? // `kind` is rendered separately, above, as an interactive
+          // `NodeTypeBadge` — omitted here so GraphInspector's own (plain,
+          // non-interactive) badge doesn't duplicate it.
+          { ...metadataForElement(modelNode, layerLabel(modelNode.layer_id)), kind: undefined }
         : null,
     [modelNode],
   );
@@ -119,26 +177,60 @@ export function Inspector() {
 
   return (
     <DetailDrawer
-      open={!!metadata}
+      open={!!metadata || !!edge}
       width={width}
       onWidthChange={setWidth}
       data-testid="inspector"
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <GraphInspector
-          node={metadata}
-          relationships={relationships}
+      {edge && selectedEdgeId ? (
+        <EdgeInspector
+          edgeId={selectedEdgeId}
+          edge={edge}
+          model={model}
+          index={index}
+          spec={specRaw}
           onNodeSelect={handleSelect}
-          emptyStateText={
-            isSpec
-              ? 'Select a node type to inspect.'
-              : 'Select an element to inspect.'
-          }
+          navigateToSpecNode={navigateToSpecNode}
+          navigateToElementWithEdge={navigateToElementWithEdge}
         />
-        {annotationElementId && (
-          <AnnotationsSection elementId={annotationElementId} />
-        )}
-      </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {!isSpec && modelNode && (
+            <div className="graph-inspector__head-eyebrow" data-testid="inspector-kind-tooltip-row">
+              <NodeTypeBadge
+                spec={specRaw}
+                layerId={modelNode.layer_id}
+                typeId={modelNode.type}
+                data-testid="inspector-kind-tooltip"
+              >
+                <button
+                  type="button"
+                  className="graph-inspector__badge"
+                  style={{ border: 'none', cursor: 'pointer' }}
+                  onClick={() =>
+                    navigateToSpecNode(`${modelNode.layer_id}.${modelNode.type}`, modelNode.layer_id)
+                  }
+                >
+                  {modelNode.type}
+                </button>
+              </NodeTypeBadge>
+            </div>
+          )}
+          <GraphInspector
+            node={metadata}
+            relationships={relationships}
+            onNodeSelect={handleSelect}
+            emptyStateText={
+              isSpec
+                ? 'Select a node type to inspect.'
+                : 'Select an element to inspect.'
+            }
+          />
+          {annotationElementId && (
+            <AnnotationsSection elementId={annotationElementId} />
+          )}
+        </div>
+      )}
     </DetailDrawer>
   );
 }

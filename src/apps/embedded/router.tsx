@@ -14,6 +14,7 @@ import { useUiStore, type ViewKind } from './ui/uiStore';
 import { useAuthStore } from './stores/authStore';
 import { useConnectionStore } from './stores/connectionStore';
 import { websocketClient } from './services/websocketClient';
+import { useModel } from './data/useModel';
 
 /**
  * Root component — runs the WebSocket bootstrap effect (ported verbatim from the
@@ -130,27 +131,46 @@ const SECTION_DEFAULT_VIEW: Record<string, string> = {
  *  `layer`/`node` apply to Model + Schema (both keep the selection in the
  *  SAME `uiStore.layerId`/`selectedId` fields regardless of view — a Schema
  *  `node` is a `spec_node_id`, a Model `node` is a UUID, but the sync logic
- *  below doesn't need to care which); `changeset` applies to Changesets. */
+ *  below doesn't need to care which); `changeset` applies to Changesets.
+ *  `edge` applies to the Model graph only, and is mutually exclusive with
+ *  `node` — `uiStore.selectEdge` already clears `selectedId`, so
+ *  whenever `edge` is present in the store → URL direction below, `node` is
+ *  naturally omitted. */
 interface AppShellSearch {
   layer?: string;
   node?: string;
+  edge?: string;
   changeset?: string;
 }
 
-/** Combine layer/node/changeset into one string so a single ref comparison
+/** Combine layer/node/edge/changeset into one string so a single ref comparison
  *  (see prevSelectionKeyRef below) detects a change in any of them. */
-function selectionKey(layerId: string | null, selectedId: string | null, changesetId: string | null): string {
-  return `${layerId ?? ''}|${selectedId ?? ''}|${changesetId ?? ''}`;
+function selectionKey(
+  layerId: string | null,
+  selectedId: string | null,
+  selectedEdgeId: string | null,
+  changesetId: string | null,
+): string {
+  return `${layerId ?? ''}|${selectedId ?? ''}|${selectedEdgeId ?? ''}|${changesetId ?? ''}`;
 }
 
 /**
  * Thin route component — keeps `uiStore.view` + the current left-panel
- * selection (layer/node/changeset) and the URL hash in two-way sync, then
+ * selection (layer/node/edge/changeset) and the URL hash in two-way sync, then
  * renders the AppShell (which is itself view/selection-driven from the store).
  *
- * URL → store: `:section` drives `setView`; `?layer`/`?node`/`?changeset`
- * drive `selectLayer`/`selectNode`/`selectChangeset` — so a deep link, a
- * shared URL, or browser back/forward all restore the exact selection.
+ * URL → store: `:section` drives `setView`; `?layer`/`?node`/`?edge`/`?changeset`
+ * drive `selectLayer`/`selectNode`/`selectEdge`/`selectChangeset` — so a deep
+ * link, a shared URL, or browser back/forward all restore the exact selection.
+ * `?edge=` is additionally validated against the loaded model before being
+ * restored — edge ids are volatile (any relationship change removes one
+ * permanently), so a bookmarked/shared `?edge=` is a common way to end up
+ * with an id that no longer exists. Restoring it unconditionally would call
+ * `selectEdge` with a dead id that `edgeMetadata()` can never resolve,
+ * leaving the Inspector closed but the URL still carrying the stale param.
+ * Validation waits for the model query to actually succeed first (an
+ * empty/loading `links` array is not evidence the id is invalid), then either
+ * restores the selection or strips the dead param from the URL.
  *
  * store → URL: when the view OR the selection changes from inside the app
  * (nav tree clicks, graph node clicks, cross-layer navigation, the
@@ -169,10 +189,13 @@ function AppShellRoute() {
   const setView = useUiStore((s) => s.setView);
   const layerId = useUiStore((s) => s.layerId);
   const selectedId = useUiStore((s) => s.selectedId);
+  const selectedEdgeId = useUiStore((s) => s.selectedEdgeId);
   const changesetId = useUiStore((s) => s.changesetId);
   const selectLayer = useUiStore((s) => s.selectLayer);
   const selectNode = useUiStore((s) => s.selectNode);
+  const selectEdge = useUiStore((s) => s.selectEdge);
   const selectChangeset = useUiStore((s) => s.selectChangeset);
+  const { derived: model, isSuccess: modelLoaded } = useModel();
 
   // On mount (incl. a deep-link / reload) the URL is authoritative: the URL →
   // store effects seed the view/selection from the route. The store → URL
@@ -187,7 +210,7 @@ function AppShellRoute() {
   // first while the store is still stale; the effect would see a mismatch
   // and navigate "backward" to correct it, oscillating forever.
   const prevViewRef = useRef(view);
-  const prevSelectionKeyRef = useRef(selectionKey(layerId, selectedId, changesetId));
+  const prevSelectionKeyRef = useRef(selectionKey(layerId, selectedId, selectedEdgeId, changesetId));
 
   // URL → store: section/view (unchanged from before).
   useEffect(() => {
@@ -205,18 +228,37 @@ function AppShellRoute() {
       return;
     }
     if (search.layer && search.layer !== layerId) selectLayer(search.layer);
-    if (search.node && search.node !== selectedId) selectNode(search.node);
-    // Deliberately keyed on the URL values only — reacting to the store
-    // values here too would make this effect re-fire the moment IT calls
-    // selectLayer/selectNode/selectChangeset, fighting its own update.
+    // edge/node are mutually exclusive in the URL — prefer edge when
+    // both are somehow present rather than restoring one then the other.
+    if (search.edge && search.edge !== selectedEdgeId) {
+      // Wait for the model to actually load before judging validity — an
+      // empty/loading links array would otherwise look indistinguishable
+      // from a genuinely dead id and strip a valid deep link before the
+      // data it needs to validate against has even arrived.
+      if (!modelLoaded) return;
+      if (model.links.some((link) => link.id === search.edge)) {
+        selectEdge(search.edge);
+      } else {
+        // Bookmarked/shared edge id that no longer exists in the model —
+        // drop the dead param instead of restoring a selection
+        // edgeMetadata() can never resolve.
+        router.navigate({ to: '.', search: (prev) => ({ ...prev, edge: undefined }), replace: true });
+      }
+    } else if (search.node && search.node !== selectedId) {
+      selectNode(search.node);
+    }
+    // Deliberately keyed on the URL values (plus the model data `?edge=`
+    // validation needs) only — reacting to the rest of the store here too
+    // would make this effect re-fire the moment IT calls
+    // selectLayer/selectNode/selectEdge/selectChangeset, fighting its own update.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search.layer, search.node, search.changeset]);
+  }, [search.layer, search.node, search.edge, search.changeset, modelLoaded, model.links]);
 
   // store → URL: view (push on a genuine section change) + layer/node/changeset
   // (replace on a pure selection change within the same section). Skip first
   // render — see mountedRef above.
   useEffect(() => {
-    const key = selectionKey(layerId, selectedId, changesetId);
+    const key = selectionKey(layerId, selectedId, selectedEdgeId, changesetId);
     if (!mountedRef.current) {
       mountedRef.current = true;
       prevViewRef.current = view;
@@ -241,10 +283,16 @@ function AppShellRoute() {
       search:
         view === 'changesets'
           ? { changeset: changesetId ?? undefined }
-          : { layer: layerId ?? undefined, node: selectedId ?? undefined },
+          : {
+              layer: layerId ?? undefined,
+              // Mutually exclusive: selecting an edge already cleared
+              // selectedId, so at most one of these is ever defined here.
+              node: selectedId ?? undefined,
+              edge: selectedEdgeId ?? undefined,
+            },
       replace: !sectionNeedsUpdate,
     });
-  }, [view, layerId, selectedId, changesetId, section]);
+  }, [view, layerId, selectedId, selectedEdgeId, changesetId, section]);
 
   return <AppShell />;
 }
@@ -268,6 +316,7 @@ const appShellRoute = createRoute({
   validateSearch: (search: Record<string, unknown>): AppShellSearch => ({
     layer: typeof search.layer === 'string' ? search.layer : undefined,
     node: typeof search.node === 'string' ? search.node : undefined,
+    edge: typeof search.edge === 'string' ? search.edge : undefined,
     changeset: typeof search.changeset === 'string' ? search.changeset : undefined,
   }),
   component: AppShellRoute,

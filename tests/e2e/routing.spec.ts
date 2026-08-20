@@ -59,6 +59,59 @@ test.describe('URL routing — left-panel selections', () => {
     await expect(page).toHaveURL(/[?&]changeset=[^&]+/);
   });
 
+  test('selecting an edge on the model graph updates the URL with ?edge=, mutually exclusive with ?node=', async ({
+    page,
+  }) => {
+    await gotoView(page, ROUTES.model);
+    await page.getByRole('button', { name: /^APM \d+$/ }).click();
+    const firstEdgeLabel = page.locator('[data-testid^="graph-edge-"] .graph-edge__label').first();
+    await expect(firstEdgeLabel).toBeVisible();
+    await firstEdgeLabel.click();
+
+    await expect(page).toHaveURL(/[?&]layer=apm(&|$)/);
+    await expect(page).toHaveURL(/[?&]edge=[^&]+/);
+    expect(hashSearchParams(page.url()).get('node')).toBeNull();
+
+    const edgeParam = hashSearchParams(page.url()).get('edge');
+    expect(edgeParam).toBeTruthy();
+    await expect(
+      page.getByTestId('edge-inspector-edge').getByTestId('edge-inspector-id'),
+    ).toHaveText(edgeParam!);
+  });
+
+  test('reloading a deep-linked layer+edge URL restores that edge selection', async ({ page }) => {
+    await gotoView(page, ROUTES.model);
+    await page.getByRole('button', { name: /^APM \d+$/ }).click();
+    const firstEdgeLabel = page.locator('[data-testid^="graph-edge-"] .graph-edge__label').first();
+    await expect(firstEdgeLabel).toBeVisible();
+    await firstEdgeLabel.click();
+    await expect(page).toHaveURL(/[?&]edge=[^&]+/);
+    const edgeParam = hashSearchParams(page.url()).get('edge');
+
+    await page.goto(page.url());
+    await expect(page.getByTestId('app-shell')).toBeVisible();
+    await expect(
+      page.getByTestId('edge-inspector-edge').getByTestId('edge-inspector-id'),
+    ).toHaveText(edgeParam!);
+  });
+
+  test('selecting a node after an edge clears ?edge= from the URL (mutually exclusive)', async ({
+    page,
+  }) => {
+    await gotoView(page, ROUTES.model);
+    await page.getByRole('button', { name: /^APM \d+$/ }).click();
+    const firstEdgeLabel = page.locator('[data-testid^="graph-edge-"] .graph-edge__label').first();
+    await expect(firstEdgeLabel).toBeVisible();
+    await firstEdgeLabel.click();
+    await expect(page).toHaveURL(/[?&]edge=[^&]+/);
+
+    const firstLeaf = page.locator('.drv-nav-l2').first();
+    await firstLeaf.click();
+
+    await expect(page).toHaveURL(/[?&]node=[^&]+/);
+    expect(hashSearchParams(page.url()).get('edge')).toBeNull();
+  });
+
   test('switching views pushes history; selecting within a view replaces it', async ({ page }) => {
     await gotoView(page, ROUTES.model);
     await page.getByRole('button', { name: /^APM \d+$/ }).click();

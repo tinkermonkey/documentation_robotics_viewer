@@ -29,7 +29,13 @@ import {
   cardShort,
   intraRelCount,
   attributeRows,
+  titleForSpecNode,
 } from './specGraph';
+import {
+  type SourceReference,
+  provenance,
+  sourceLocation,
+} from './relationships';
 import { layerColor, layerLabel, layerStandard, isLayerSlug } from '../ui/domain';
 
 // ─── Shared row/target shapes ──────────────────────────────────────────────
@@ -38,7 +44,13 @@ export type PageNavTarget =
   | { kind: 'section'; view: 'model' | 'spec' }
   | { kind: 'layer'; view: 'model' | 'spec'; layerId: string }
   | { kind: 'element'; elementId: string; layerId: string }
-  | { kind: 'specNode'; specNodeId: string; layerId: string };
+  | { kind: 'specNode'; specNodeId: string; layerId: string }
+  /** Navigate to an element's page AND highlight one of its edges on arrival
+   *  (clicking an edge predicate reference). `elementId`/`layerId` are always
+   *  the EDGE'S SOURCE node, not necessarily the node whose page the predicate
+   *  cell was rendered on (an incoming-relationship predicate points back at
+   *  the other end). */
+  | { kind: 'elementWithEdge'; elementId: string; layerId: string; edgeId: string };
 
 export interface PageCrumb {
   label: string;
@@ -61,10 +73,32 @@ export interface PageFact {
 
 export type PageCellKind = 'name' | 'mono' | 'dim' | 'num';
 
+/**
+ * Marks a cell as a node-type or predicate reference — `PageView.tsx`'s
+ * `Cell` renders these
+ * wrapped in `NodeTypeBadge` / `PredicateTooltip` instead of plain text, so
+ * hovering/focusing them shows the identical rich tooltip the graph and
+ * Inspector surfaces do.
+ */
+export type PageCellTooltip =
+  | { kind: 'nodeType'; layerId: string; typeId: string }
+  | {
+      kind: 'predicate';
+      predicate: string;
+      sourceTypeLabel: string;
+      destinationTypeLabel: string;
+      /** Present only when this predicate reflects a real `/api/model` link (not
+       *  a Schema-view relationship SCHEMA, which has no live edge to highlight) —
+       *  carries what `PageView.tsx` needs to build an `elementWithEdge` nav
+       *  target. */
+      edge?: { edgeId: string; sourceElementId: string; sourceLayerId: string };
+    };
+
 export interface PageCell {
   text: string;
   kind: PageCellKind;
   color?: string;
+  tooltip?: PageCellTooltip;
 }
 
 export interface PageRow {
@@ -125,6 +159,36 @@ function cell(text: unknown, kind: PageCellKind, color?: string): PageCell {
   return { text: fmt(text), kind, color };
 }
 
+/** A cell referencing a node type — wrapped in `NodeTypeBadge` by `PageView`. */
+function nodeTypeCell(
+  text: unknown,
+  kind: PageCellKind,
+  layerId: string,
+  typeId: string,
+  color?: string,
+): PageCell {
+  return { ...cell(text, kind, color), tooltip: { kind: 'nodeType', layerId, typeId } };
+}
+
+/** A cell referencing a predicate — wrapped in `PredicateTooltip` by `PageView`.
+ *  `edge` (when the predicate reflects a real model link, not a Schema-view
+ *  relationship schema) makes the cell independently clickable to the edge's
+ *  source node with the edge highlighted. */
+function predicateCell(
+  text: unknown,
+  kind: PageCellKind,
+  predicate: string,
+  sourceTypeLabel: string,
+  destinationTypeLabel: string,
+  color?: string,
+  edge?: { edgeId: string; sourceElementId: string; sourceLayerId: string },
+): PageCell {
+  return {
+    ...cell(text, kind, color),
+    tooltip: { kind: 'predicate', predicate, sourceTypeLabel, destinationTypeLabel, edge },
+  };
+}
+
 function fact(key: string, value: unknown, prose?: boolean): PageFact {
   return { key, value: fmt(value), prose };
 }
@@ -176,7 +240,7 @@ export function layerPageData(
     return {
       target: { kind: 'specNode', specNodeId: `${layerId}.${short}`, layerId },
       cells: [
-        cell(ns.title ?? short, 'name'),
+        nodeTypeCell(ns.title ?? short, 'name', layerId, short),
         cell(`${layerId}.${short}`, 'dim'),
         cell(instances, 'num'),
       ],
@@ -198,7 +262,7 @@ export function layerPageData(
       target: { kind: 'element', elementId: n.id, layerId },
       cells: [
         cell(n.name, 'name'),
-        cell(n.type, 'mono'),
+        nodeTypeCell(n.type, 'mono', layerId, n.type),
         cell(provenanceOf(n), 'dim'),
         cell(`${outCount} · ${xrefCount}`, 'num'),
       ],
@@ -216,8 +280,20 @@ export function layerPageData(
         target: { kind: 'element', elementId: tgt.id, layerId: tgt.layer_id },
         cells: [
           cell(n.name, 'name'),
-          cell(link.type, 'dim'),
-          cell(`${tgt.layer_id}.${tgt.type}`, 'mono', layerColor(tgt.layer_id)),
+          // No `edge` info here — every row in this table is cross-layer by
+          // construction (the `tgt.layer_id === layerId` guard above), and the
+          // Model graph only ever renders INTRA-layer edges (`edgesForLayer`),
+          // so a cross-layer link id could never actually render as
+          // highlighted. Attaching one anyway would set inert store state for
+          // a click with no visible effect.
+          predicateCell(link.type, 'dim', link.type, n.type, tgt.type),
+          nodeTypeCell(
+            `${tgt.layer_id}.${tgt.type}`,
+            'mono',
+            tgt.layer_id,
+            tgt.type,
+            layerColor(tgt.layer_id),
+          ),
         ],
       });
     }
@@ -304,16 +380,6 @@ function allRelationshipSchemas(
   return out;
 }
 
-function titleFor(
-  spec: SpecPayload | undefined,
-  layer: string,
-  specNodeId: string,
-): string {
-  const short = shortName(layer, specNodeId);
-  const ns = schemaForLayer(spec, layer)?.nodeSchemas?.[short];
-  return ns?.title ?? short;
-}
-
 export function specNodePageData(
   layerId: string,
   specNodeId: string,
@@ -355,8 +421,19 @@ export function specNodePageData(
       layerId: r.destination_layer,
     },
     cells: [
-      cell(r.predicate, 'mono'),
-      cell(titleFor(specRaw, r.destination_layer, r.destination_spec_node_id), 'name'),
+      predicateCell(
+        r.predicate,
+        'mono',
+        r.predicate,
+        short,
+        shortName(r.destination_layer, r.destination_spec_node_id),
+      ),
+      nodeTypeCell(
+        titleForSpecNode(specRaw, r.destination_layer, r.destination_spec_node_id),
+        'name',
+        r.destination_layer,
+        shortName(r.destination_layer, r.destination_spec_node_id),
+      ),
       cell(r.destination_layer, 'dim', layerColor(r.destination_layer)),
       cell(r.cardinality ? cardShort(r.cardinality) || r.cardinality : DASH, 'dim'),
       cell(r.strength, 'dim'),
@@ -371,8 +448,19 @@ export function specNodePageData(
       layerId: r.source_layer,
     },
     cells: [
-      cell(titleFor(specRaw, r.source_layer, r.source_spec_node_id), 'name'),
-      cell(r.predicate, 'mono'),
+      nodeTypeCell(
+        titleForSpecNode(specRaw, r.source_layer, r.source_spec_node_id),
+        'name',
+        r.source_layer,
+        shortName(r.source_layer, r.source_spec_node_id),
+      ),
+      predicateCell(
+        r.predicate,
+        'mono',
+        r.predicate,
+        shortName(r.source_layer, r.source_spec_node_id),
+        short,
+      ),
       cell(r.cardinality ? cardShort(r.cardinality) || r.cardinality : DASH, 'dim'),
       cell(r.strength, 'dim'),
     ],
@@ -473,19 +561,8 @@ const OUT_TABLE_WIDTHS =
 const IN_TABLE_WIDTHS =
   'minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr) minmax(0,0.8fr)';
 
-interface SourceReference {
-  provenance?: string;
-  locations?: Array<{ file?: string; symbol?: string }>;
-}
-
 function provenanceOf(n: ModelNode): string {
-  const ref = n.source_reference as SourceReference | undefined;
-  return ref?.provenance ?? 'authored';
-}
-
-function sourceLocation(n: ModelNode): { file?: string; symbol?: string } {
-  const ref = n.source_reference as SourceReference | undefined;
-  return ref?.locations?.find((l) => l.symbol || l.file) ?? {};
+  return provenance(n.source_reference as SourceReference | undefined);
 }
 
 interface NodeMetadata {
@@ -519,22 +596,35 @@ export function modelNodePageData(
     if (!src || !tgt) continue;
     if (src.id === n.id) {
       const specRelId = `${fmt(src.spec_node_id)}.${link.type}.${fmt(tgt.spec_node_id)}`;
+      // `edge` only when intra-layer (tgt shares n's layer) — the Model graph
+      // only ever renders INTRA-layer edges (`edgesForLayer`), so a cross-layer
+      // link id could never actually render as highlighted; see the identical
+      // note on `layerPageData`'s `xrefRows` above.
+      const outEdge =
+        tgt.layer_id === layerId
+          ? { edgeId: link.id, sourceElementId: n.id, sourceLayerId: layerId }
+          : undefined;
       out.push({
         target: { kind: 'element', elementId: tgt.id, layerId: tgt.layer_id },
         cells: [
-          cell(link.type, 'mono'),
+          predicateCell(link.type, 'mono', link.type, n.type, tgt.type, undefined, outEdge),
           cell(tgt.name, 'name'),
           cell(tgt.layer_id, 'dim', layerColor(tgt.layer_id)),
           cell(specRelId, 'dim'),
         ],
       });
     } else if (tgt.id === n.id) {
+      // `edge` only when intra-layer (src shares n's layer) — see the note above.
+      const incEdge =
+        src.layer_id === layerId
+          ? { edgeId: link.id, sourceElementId: src.id, sourceLayerId: src.layer_id }
+          : undefined;
       inc.push({
         target: { kind: 'element', elementId: src.id, layerId: src.layer_id },
         cells: [
           cell(src.name, 'name'),
-          cell(link.type, 'mono'),
-          cell(src.type, 'dim'),
+          predicateCell(link.type, 'mono', link.type, src.type, n.type, undefined, incEdge),
+          nodeTypeCell(src.type, 'dim', src.layer_id, src.type),
           cell(src.layer_id, 'dim', layerColor(src.layer_id)),
         ],
       });
@@ -549,7 +639,7 @@ export function modelNodePageData(
     {
       target: { kind: 'specNode', specNodeId: `${layerId}.${n.type}`, layerId },
       cells: [
-        cell(specNode?.title ?? n.type, 'name'),
+        nodeTypeCell(specNode?.title ?? n.type, 'name', layerId, n.type),
         cell(`${layerId}.${n.type}`, 'dim'),
         cell(`${attrs.length} attrs`, 'num'),
       ],
@@ -572,7 +662,7 @@ export function modelNodePageData(
   // `/api/model` links reference and the annotations API expects (see
   // modelGraph.ts's `dottedId`), NOT `layer.type.UUID`.
   const path = dottedId(n);
-  const loc = sourceLocation(n);
+  const loc = sourceLocation(n.source_reference as SourceReference | undefined);
   const meta = (n.metadata ?? {}) as NodeMetadata;
 
   return {

@@ -11,7 +11,7 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { screen, waitFor, fireEvent } from '@testing-library/react';
+import { screen, waitFor, fireEvent, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { GraphCanvasProps } from '@tinkermonkey/heimdall-ui';
 
@@ -49,6 +49,16 @@ function graphNodeCount(): number {
  *  "how many edges are currently visible." */
 function graphEdgeCount(): number {
   return document.querySelectorAll('[data-testid^="graph-edge-"]').length;
+}
+
+/** Number of card-presentation nodes actually visible in the graph viewport.
+ *  GraphCanvas also renders every node once more, offscreen, in a hidden
+ *  `.graph-measure` container (to measure foreignObject dimensions before
+ *  layout) — that copy carries no `graph-node-*` testid, so scoping the
+ *  query under `[data-testid^="graph-node-"]` (same prefix `graphNodeCount`
+ *  uses) counts only the real, visible instance of each node. */
+function cardNodeCount(): number {
+  return document.querySelectorAll('[data-testid^="graph-node-"] .graph-node--card').length;
 }
 
 describe('Canvas — empty state', () => {
@@ -432,6 +442,111 @@ describe('Canvas — heimdall-ui 0.7.0 prop wiring', () => {
   });
 });
 
+describe('Canvas — card node presentation (default) vs. pill, Display control', () => {
+  it('renders Model view nodes as cards by default (nodeDisplay defaults to "card")', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+
+    expect(cardNodeCount()).toBe(11);
+  });
+
+  it('Schema view always renders the default pill, regardless of nodeDisplay', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('spec');
+    useUiStore.getState().selectLayer('data-model');
+    await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(0));
+
+    expect(cardNodeCount()).toBe(0);
+  });
+
+  it('the Display control is shown in Model view and hidden in Schema view', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+    fireEvent.focus(screen.getByTestId('graph-controls-toggle'));
+    expect(screen.getByTestId('graph-display-control')).toBeInTheDocument();
+
+    useUiStore.getState().setView('spec');
+    useUiStore.getState().selectLayer('data-model');
+    await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(0));
+    fireEvent.focus(screen.getByTestId('graph-controls-toggle'));
+    expect(screen.queryByTestId('graph-display-control')).not.toBeInTheDocument();
+  });
+
+  it('switching Display to Pill re-renders Model view nodes as pills, and back to Card', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+    expect(cardNodeCount()).toBe(11);
+
+    fireEvent.focus(screen.getByTestId('graph-controls-toggle'));
+    fireEvent.click(screen.getByRole('radio', { name: 'Pill' }));
+    expect(useUiStore.getState().nodeDisplay).toBe('pill');
+
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+    expect(cardNodeCount()).toBe(0);
+
+    fireEvent.focus(screen.getByTestId('graph-controls-toggle'));
+    fireEvent.click(screen.getByRole('radio', { name: 'Card' }));
+    expect(useUiStore.getState().nodeDisplay).toBe('card');
+    await waitFor(() => expect(cardNodeCount()).toBe(11));
+  });
+
+  it('Schema view pill nodes show the NodeTypeBadge tooltip on hover of the kind label', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('spec');
+    useUiStore.getState().selectLayer('data-model');
+    await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(0));
+
+    const kindLabel = document.querySelector(
+      '[data-testid^="graph-node-"] .graph-node__kind',
+    ) as HTMLElement;
+    expect(kindLabel).toBeTruthy();
+    fireEvent.focus(kindLabel);
+    expect(screen.getByRole('tooltip')).toBeInTheDocument();
+  });
+
+  it('Model view pill-mode nodes show the NodeTypeBadge tooltip on hover of the kind label', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    useUiStore.getState().setNodeDisplay('pill');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+    expect(cardNodeCount()).toBe(0);
+
+    const kindLabel = document.querySelector(
+      '[data-testid^="graph-node-"] .graph-node__kind',
+    ) as HTMLElement;
+    expect(kindLabel).toBeTruthy();
+    fireEvent.focus(kindLabel);
+    const tooltip = screen.getByRole('tooltip');
+    expect(within(tooltip).getByText('Alert')).toBeInTheDocument();
+
+    useUiStore.getState().setNodeDisplay('card');
+  });
+
+  it('clicking a card node selects it and populates the Inspector, same as a pill', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+
+    const firstCard = document.querySelector(
+      '[data-testid^="graph-node-"] .graph-node--card',
+    ) as HTMLElement;
+    expect(firstCard).toBeTruthy();
+    await user.click(firstCard);
+
+    await waitFor(() => expect(useUiStore.getState().selectedId).not.toBeNull());
+    expect(screen.getByTestId('inspector')).toHaveStyle({ width: '320px' });
+  });
+});
+
 describe('Canvas — Relations toggle actually filters rendered edges', () => {
   it('"Structural" hides non-structural edges; "All" restores them', async () => {
     renderWithProviders(<Canvas />);
@@ -448,6 +563,164 @@ describe('Canvas — Relations toggle actually filters rendered edges', () => {
     fireEvent.click(screen.getByRole('radio', { name: 'All' }));
     expect(useUiStore.getState().showAllRelations).toBe(true);
     await waitFor(() => expect(graphEdgeCount()).toBe(12));
+  });
+});
+
+describe('Canvas — edge selection, highlighting, and the edge inspector', () => {
+  // apm layer, "WebSocket Disconnect Alert" --monitors--> "WebSocket
+  // Connection State Gauge" (verified against the model fixture).
+  const EDGE_ID =
+    'rel:apm.alert.web-socket-disconnect-alert:apm.metricinstrument.web-socket-connection-state-gauge:monitors';
+
+  function edgeLabelEl(): HTMLElement {
+    const el = document.querySelector(
+      `[data-testid="graph-edge-${EDGE_ID}"] .graph-edge__label`,
+    );
+    expect(el).toBeTruthy();
+    return el as HTMLElement;
+  }
+
+  it('clicking an edge predicate selects it, renders it with a distinct highlighted state, and populates the Inspector', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphEdgeCount()).toBe(12));
+
+    fireEvent.click(edgeLabelEl());
+
+    await waitFor(() => expect(useUiStore.getState().selectedEdgeId).toBe(EDGE_ID));
+    const edgeEl = document.querySelector(`[data-testid="graph-edge-${EDGE_ID}"]`)!;
+    expect(edgeEl).toHaveClass('selected');
+    expect(edgeEl).toHaveClass('graph-edge--hot');
+
+    // Sidebar: source node info, edge info (preceded by its own interactive
+    // predicate badge — see EdgeInspector.tsx's Phase 5 hover-tooltip wiring),
+    // destination node info, in order.
+    const inspector = screen.getByTestId('edge-inspector');
+    const children = [...inspector.children].map((c) => c.getAttribute('data-testid'));
+    expect(children).toEqual([
+      'edge-inspector-source-node',
+      'edge-inspector-predicate-row',
+      'edge-inspector-edge',
+      'edge-inspector-destination-node',
+    ]);
+
+    expect(
+      within(screen.getByTestId('edge-inspector-source-node')).getByTestId('inspector-title'),
+    ).toHaveTextContent('WebSocket Disconnect Alert');
+    expect(screen.getByTestId('edge-inspector-edge')).toHaveTextContent('monitors');
+    expect(
+      within(screen.getByTestId('edge-inspector-destination-node')).getByTestId('inspector-title'),
+    ).toHaveTextContent('WebSocket Connection State Gauge');
+  });
+
+  it('selecting a node clears an edge selection, and selecting an edge clears a node selection', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphEdgeCount()).toBe(12));
+
+    fireEvent.click(edgeLabelEl());
+    await waitFor(() => expect(useUiStore.getState().selectedEdgeId).toBe(EDGE_ID));
+
+    const firstCard = document.querySelector(
+      '[data-testid^="graph-node-"] .graph-node--card',
+    ) as HTMLElement;
+    fireEvent.click(firstCard);
+
+    await waitFor(() => expect(useUiStore.getState().selectedId).not.toBeNull());
+    expect(useUiStore.getState().selectedEdgeId).toBeNull();
+    expect(screen.queryByTestId('edge-inspector')).not.toBeInTheDocument();
+
+    fireEvent.click(edgeLabelEl());
+    await waitFor(() => expect(useUiStore.getState().selectedEdgeId).toBe(EDGE_ID));
+    expect(useUiStore.getState().selectedId).toBeNull();
+  });
+
+  it('clicking the graph background clears an edge selection too', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphEdgeCount()).toBe(12));
+
+    fireEvent.click(edgeLabelEl());
+    await waitFor(() => expect(useUiStore.getState().selectedEdgeId).toBe(EDGE_ID));
+
+    // onBackgroundClick is driven by real pointerdown/pointerup (drag-distance
+    // check), not a bare synthetic 'click' — same as the existing node
+    // background-deselect test above, use userEvent.click for a real
+    // pointer sequence.
+    const canvas = document.querySelector('.graph-canvas') as HTMLElement;
+    await user.click(canvas);
+
+    await waitFor(() => expect(useUiStore.getState().selectedEdgeId).toBeNull());
+    expect(screen.getByTestId('inspector')).toHaveStyle({ width: '0px' });
+  });
+
+  it('clicking a cross-layer relationship target inside the edge inspector navigates + switches layerId (not just selectGraphNode)', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('application');
+
+    // application "Data Loader" --depends-on--> application "Relationships
+    // YAML Parser" is an intra-layer edge (renders in the graph); "Data
+    // Loader" also has an outgoing cross-layer "serves" relationship to
+    // business "Model Loading and Rendering" (verified against the model
+    // fixture) — surfaced only in the edge inspector's flanking
+    // GraphInspector relationship panel, not the edge's own endpoints.
+    const crossLayerEdgeId =
+      'rel:application.applicationservice.data-loader:application.applicationservice.relationships-yaml-parser:depends-on';
+    await waitFor(() =>
+      expect(
+        document.querySelector(`[data-testid="graph-edge-${crossLayerEdgeId}"] .graph-edge__label`),
+      ).toBeTruthy(),
+    );
+    fireEvent.click(
+      document.querySelector(
+        `[data-testid="graph-edge-${crossLayerEdgeId}"] .graph-edge__label`,
+      ) as HTMLElement,
+    );
+    await waitFor(() => expect(useUiStore.getState().selectedEdgeId).toBe(crossLayerEdgeId));
+
+    const sourcePanel = screen.getByTestId('edge-inspector-source-node');
+    const target = within(sourcePanel).getAllByRole('button', {
+      name: /Navigate to Model Loading and Rendering/i,
+    })[0];
+    await user.click(target);
+
+    // navigateToElement (the same cross-layer-aware handler the plain
+    // node-inspector branch uses) switched the active layer, selected the
+    // target, and cleared the edge selection — not selectGraphNode, which
+    // would leave layerId on "application" and the target invisible.
+    await waitFor(() => {
+      const s = useUiStore.getState();
+      expect(s.view).toBe('model');
+      expect(s.layerId).toBe('business');
+      expect(s.selectedId).toBe('a138ca69-d437-4841-b96f-5fb5dd703380');
+      expect(s.selectedEdgeId).toBeNull();
+    });
+  });
+
+  it('hovering an edge predicate shows the PredicateTooltip with the resolved source/predicate/destination', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphEdgeCount()).toBe(12));
+
+    fireEvent.mouseOver(edgeLabelEl());
+
+    const card = await screen.findByTestId('edge-predicate-tooltip-card');
+    expect(within(card).getAllByText('monitors').length).toBeGreaterThan(0);
+    const diagram = within(card).getByTestId('edge-predicate-tooltip-diagram');
+    expect(within(diagram).getByText('alert')).toBeInTheDocument();
+    expect(within(diagram).getByText('metricinstrument')).toBeInTheDocument();
+
+    fireEvent.mouseOut(edgeLabelEl(), { relatedTarget: document.body });
+    await waitFor(() =>
+      expect(screen.queryByTestId('edge-predicate-tooltip-card')).not.toBeInTheDocument(),
+    );
   });
 });
 
