@@ -151,7 +151,7 @@ body.dark-canvas {
 }
 
 /* ---- page view (layer / spec node / model node detail) ------------------
- * `.drv-crumb`/`.drv-row` own `color`/`background` here (base + :hover)
+ * `.drv-crumb`/`.drv-cell-link` own `color`/`background` here (base + :hover)
  * rather than PageView.tsx setting them inline — an inline style always wins
  * over a stylesheet rule for the same property, :hover included, so the
  * hover states below would never apply if PageView also set these inline. */
@@ -168,12 +168,15 @@ body.dark-canvas {
   color: rgb(var(--canvas-fg-1));
 }
 
-.drv-row {
+/* Clickable table cell (Phase 6: a cell may navigate somewhere different from
+ * its row's own default target — see PageView.tsx's `TableRow`/`cellNavTarget`
+ * — so the click affordance lives on the cell, not a single whole-row button). */
+.drv-cell-link {
   cursor: pointer;
   background: none;
 }
 
-.drv-row:hover {
+.drv-cell-link:hover {
   background: rgb(var(--canvas-bg-2));
 }
 

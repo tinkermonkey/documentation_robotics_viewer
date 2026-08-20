@@ -38,6 +38,16 @@
  * `NodeTypeBadge` so it triggers the rich `NodeTypeTooltip` on hover/focus —
  * `GraphInspector` itself has no slot for customizing its own `kind` badge,
  * so `modelMetadata` omits `kind` to avoid rendering it twice.
+ *
+ * Phase 6 (cross-view navigation, BA req 26-27): that same kind badge is a
+ * `<button>` (not a static span) — clicking it calls `navigateToSpecNode`,
+ * jumping to the element's node type in the Schema view. `EdgeInspector`'s
+ * source/destination kind badges and predicate badge get the equivalent
+ * treatment (see its own doc comment); both are handed `navigateToSpecNode`/
+ * `navigateToElementWithEdge` directly as props rather than a wrapped
+ * handler, since neither needs Inspector-level logic beyond what the store
+ * action itself already does (unlike `onNodeSelect`/`handleSelect`, which
+ * resolves a raw UUID to its layer first).
  */
 
 import { useMemo, useState } from 'react';
@@ -77,6 +87,7 @@ export function Inspector() {
   const selectedEdgeId = useUiStore((s) => s.selectedEdgeId);
   const navigateToElement = useUiStore((s) => s.navigateToElement);
   const navigateToSpecNode = useUiStore((s) => s.navigateToSpecNode);
+  const navigateToElementWithEdge = useUiStore((s) => s.navigateToElementWithEdge);
 
   const { derived: model } = useModel();
   const { raw: specRaw } = useSpec();
@@ -160,6 +171,8 @@ export function Inspector() {
           index={index}
           spec={specRaw}
           onNodeSelect={handleSelect}
+          navigateToSpecNode={navigateToSpecNode}
+          navigateToElementWithEdge={navigateToElementWithEdge}
         />
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -171,9 +184,16 @@ export function Inspector() {
                 typeId={modelNode.type}
                 data-testid="inspector-kind-tooltip"
               >
-                <span className="graph-inspector__badge" tabIndex={0}>
+                <button
+                  type="button"
+                  className="graph-inspector__badge"
+                  style={{ border: 'none', cursor: 'pointer' }}
+                  onClick={() =>
+                    navigateToSpecNode(`${modelNode.layer_id}.${modelNode.type}`, modelNode.layer_id)
+                  }
+                >
                   {modelNode.type}
-                </span>
+                </button>
               </NodeTypeBadge>
             </div>
           )}

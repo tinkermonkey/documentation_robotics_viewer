@@ -176,6 +176,18 @@ describe('layerPageData', () => {
     expect(row.cells[1].tooltip).toMatchObject({ kind: 'predicate' });
     expect(row.cells[2].tooltip).toMatchObject({ kind: 'nodeType', layerId: 'business' });
   });
+
+  // ─── Phase 6: predicate cells backed by a real model link carry `edge` info ──
+
+  it('Cross-layer references predicate cells carry no `edge` info — every row here is cross-layer by construction, and the Model graph only ever renders INTRA-layer edges, so a cross-layer link id could never actually render as highlighted', () => {
+    const pg = layerPageData('model', 'data-model', model, index, spec)!;
+    const table = pg.tables.find((t) => t.title === 'Cross-layer references')!;
+    const row = table.rows.find((r) => r.cells[0].text === 'MetaModel')!;
+    const tooltip = row.cells[1].tooltip;
+    expect(tooltip?.kind).toBe('predicate');
+    if (tooltip?.kind !== 'predicate') throw new Error('unreachable');
+    expect(tooltip.edge).toBeUndefined();
+  });
 });
 
 // ─── specNodePageData (focus: 'node', view: 'spec') ────────────────────────────
@@ -253,6 +265,19 @@ describe('specNodePageData', () => {
       kind: 'predicate',
       destinationTypeLabel: 'objectschema',
     });
+  });
+
+  it('Valid outgoing/incoming predicate cells carry no `edge` info — these are relationship SCHEMAS, not live model links (Phase 6)', () => {
+    const pg = specNodePageData('data-model', 'data-model.objectschema', spec, model)!;
+    const outTable = pg.tables.find((t) => t.title === 'Valid outgoing relationships')!;
+    const outTooltip = outTable.rows[0].cells[0].tooltip;
+    expect(outTooltip?.kind).toBe('predicate');
+    if (outTooltip?.kind === 'predicate') expect(outTooltip.edge).toBeUndefined();
+
+    const inTable = pg.tables.find((t) => t.title === 'Valid incoming relationships')!;
+    const inTooltip = inTable.rows[0].cells[1].tooltip;
+    expect(inTooltip?.kind).toBe('predicate');
+    if (inTooltip?.kind === 'predicate') expect(inTooltip.edge).toBeUndefined();
   });
 });
 
@@ -343,5 +368,50 @@ describe('modelNodePageData', () => {
     expect(inc.rows).toHaveLength(1);
     expect(inc.rows[0].cells[1].tooltip).toMatchObject({ kind: 'predicate' });
     expect(inc.rows[0].cells[2].tooltip).toMatchObject({ kind: 'nodeType' });
+  });
+
+  it('An intra-layer outgoing predicate cell carries `edge` info pointing at the real link (Phase 6)', () => {
+    const pg = modelNodePageData('data-model', META_MODEL_ID, model, index, spec)!;
+
+    // "extends" -> Layer is the one INTRA-layer outgoing link (per the
+    // "Outgoing relationships table" test above); "realizes"/"references" are
+    // cross-layer (-> business) and must carry no `edge` — the Model graph
+    // only ever renders INTRA-layer edges, so a cross-layer link id could
+    // never actually render as highlighted.
+    const out = pg.tables.find((t) => t.title === 'Outgoing relationships')!;
+    const extendsRow = out.rows.find((r) => r.cells[0].text === 'extends')!;
+    const extendsTooltip = extendsRow.cells[0].tooltip;
+    expect(extendsTooltip?.kind).toBe('predicate');
+    if (extendsTooltip?.kind !== 'predicate') throw new Error('unreachable');
+    expect(extendsTooltip.edge).toEqual({
+      edgeId: expect.any(String),
+      sourceElementId: META_MODEL_ID,
+      sourceLayerId: 'data-model',
+    });
+
+    const realizesRow = out.rows.find((r) => r.cells[0].text === 'realizes')!;
+    const realizesTooltip = realizesRow.cells[0].tooltip;
+    expect(realizesTooltip?.kind).toBe('predicate');
+    if (realizesTooltip?.kind !== 'predicate') throw new Error('unreachable');
+    expect(realizesTooltip.edge).toBeUndefined();
+  });
+
+  it('The (intra-layer) incoming predicate cell carries `edge` info pointing at the real link + its source (Phase 6)', () => {
+    const pg = modelNodePageData('data-model', META_MODEL_ID, model, index, spec)!;
+
+    // Incoming: the OTHER element (YAMLModelData) is the edge's source, not MetaModel.
+    const inc = pg.tables.find((t) => t.title === 'Incoming relationships')!;
+    expect(inc.rows).toHaveLength(1);
+    const inTooltip = inc.rows[0].cells[1].tooltip;
+    expect(inTooltip?.kind).toBe('predicate');
+    if (inTooltip?.kind !== 'predicate') throw new Error('unreachable');
+    expect(inTooltip.edge).toEqual({
+      edgeId: expect.any(String),
+      sourceElementId: inc.rows[0].target && inc.rows[0].target.kind === 'element'
+        ? inc.rows[0].target.elementId
+        : undefined,
+      sourceLayerId: 'data-model',
+    });
+    expect(inTooltip.edge?.sourceElementId).not.toBe(META_MODEL_ID);
   });
 });

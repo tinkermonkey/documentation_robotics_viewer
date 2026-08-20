@@ -96,14 +96,6 @@ function buildPageData(overrides: Partial<PageData> = {}): PageData {
   };
 }
 
-/** Find the `data-testid="page-row"` button/div whose cells include `text`. */
-function findRow(text: string): HTMLElement {
-  const rows = [...screen.getAllByTestId('page-row'), ...document.querySelectorAll('[role="row"]')];
-  const match = rows.find((r) => r.textContent?.includes(text));
-  if (!match) throw new Error(`no row containing "${text}"`);
-  return match as HTMLElement;
-}
-
 describe('PageView — breadcrumb navigation', () => {
   it('clicking a "section" crumb calls setView', async () => {
     const user = userEvent.setup();
@@ -139,23 +131,33 @@ describe('PageView — breadcrumb navigation', () => {
 });
 
 describe('PageView — table row navigation', () => {
-  it('clicking a row with an "element" target calls navigateToElement', async () => {
-    const user = userEvent.setup();
+  // fireEvent.click (not userEvent.click) throughout this file's cell-click
+  // tests below — these cells are wrapped in NodeTypeBadge/PredicateTooltip's
+  // hover-tracked RichTooltip overlay, and happy-dom/user-event doesn't
+  // reliably exclude that shared ancestor when synthesizing the pointer path
+  // to the target, so a spurious mouseleave can suppress the click (see
+  // CLAUDE.md's "userEvent.click() on a 2nd element inside a hover-tracked
+  // overlay" gotcha — confirmed as a test-environment artifact, not a product
+  // bug, by the fact fireEvent.click reaches the exact same onClick handler).
+  it('clicking a row\'s fallback cell calls navigateToElement using the row\'s own target', () => {
     renderWithProviders(<PageView pg={buildPageData()} />);
 
-    await user.click(findRow('Architecture Model'));
+    // The "realizes" predicate cell carries no `edge` info, so it falls back
+    // to the row's own "element" target (the "Architecture Model" cell has no
+    // tooltip and would ALSO fall back, but "realizes" is first in cell order
+    // so it claims the fallback — see TableRow's `cellNavTarget`/fallback doc).
+    fireEvent.click(screen.getByText('realizes'));
     const s = useUiStore.getState();
     expect(s.view).toBe('model');
     expect(s.layerId).toBe('business');
     expect(s.selectedId).toBe('target-uuid');
   });
 
-  it('clicking a row with a "specNode" target calls navigateToSpecNode', async () => {
-    const user = userEvent.setup();
+  it('clicking a nodeType cell calls navigateToSpecNode using its own resolved target', () => {
     renderWithProviders(<PageView pg={buildPageData()} />);
     useUiStore.getState().setView('model');
 
-    await user.click(findRow('ObjectSchema'));
+    fireEvent.click(screen.getByText('ObjectSchema'));
     const s = useUiStore.getState();
     expect(s.view).toBe('spec');
     expect(s.layerId).toBe('data-model');
@@ -164,12 +166,19 @@ describe('PageView — table row navigation', () => {
 
   it('a row without a target renders as plain text, not an interactive row', () => {
     renderWithProviders(<PageView pg={buildPageData()} />);
-    // 2 rows carry a target (interactive); the Attributes row does not.
+    // 2 rows carry at least one clickable (real `<button>`) cell; the
+    // Attributes row does not — assert actual interactivity, not just the
+    // `page-row` testid (which only reflects `row.target`'s presence, not
+    // whether any cell ended up clickable).
     const interactiveRows = screen.getAllByTestId('page-row');
     expect(interactiveRows).toHaveLength(2);
-    // The attribute's "type" value cell exists but isn't inside any
-    // interactive `page-row`.
+    interactiveRows.forEach((row) => {
+      expect(within(row).getAllByRole('button').length).toBeGreaterThan(0);
+    });
+    // The attribute's "type" value cell exists, isn't inside any interactive
+    // `page-row`, and contains no button of its own.
     const attrCell = screen.getAllByText('type').find((el) => el.getAttribute('role') === 'cell')!;
+    expect(attrCell.querySelector('button')).toBeNull();
     expect(interactiveRows.some((row) => row.contains(attrCell))).toBe(false);
   });
 });
@@ -208,6 +217,96 @@ describe('PageView — node type + predicate cell tooltips (Phase 5)', () => {
     renderWithProviders(<PageView pg={buildPageData()} />);
     const attrCell = screen.getAllByText('type').find((el) => el.getAttribute('role') === 'cell')!;
     expect(attrCell).not.toHaveAttribute('tabIndex');
+  });
+});
+
+// A row shaped like `pageData.ts`'s real cross-layer/relationship rows: one
+// plain cell (no tooltip — claims the row's own fallback target), one
+// predicate cell backed by a real model link (its own `elementWithEdge`
+// target, DIFFERENT from the row's target), and one nodeType cell (its own
+// `specNode` target, also different from the row's target) — exercising all
+// three cell-level target kinds `TableRow`/`cellNavTarget` resolve.
+function buildCrossViewPageData(): PageData {
+  return buildPageData({
+    tables: [
+      {
+        title: 'Cross-layer references',
+        columns: ['from', 'predicate', 'to'],
+        widths: '1fr 1fr 1fr',
+        rows: [
+          {
+            target: { kind: 'element', elementId: 'row-fallback-target-uuid', layerId: 'business2' },
+            cells: [
+              { text: 'AlertSource', kind: 'name' },
+              {
+                text: 'monitors',
+                kind: 'mono',
+                tooltip: {
+                  kind: 'predicate',
+                  predicate: 'monitors',
+                  sourceTypeLabel: 'Alert',
+                  destinationTypeLabel: 'MetricInstrument',
+                  edge: { edgeId: 'edge-99', sourceElementId: 'source-uuid', sourceLayerId: 'apm' },
+                },
+              },
+              {
+                text: 'MetricInstrument',
+                kind: 'mono',
+                tooltip: { kind: 'nodeType', layerId: 'apm', typeId: 'metricinstrument' },
+              },
+            ],
+          },
+        ],
+        emptyText: 'None.',
+      },
+    ],
+  });
+}
+
+describe('PageView — cross-view navigation from node types + edge predicates (Phase 6)', () => {
+  it('clicking a nodeType cell navigates to the Schema view entry, independent of the row\'s own target', () => {
+    renderWithProviders(<PageView pg={buildCrossViewPageData()} />);
+    useUiStore.getState().setView('model');
+
+    fireEvent.click(screen.getByText('MetricInstrument'));
+    const s = useUiStore.getState();
+    expect(s.view).toBe('spec');
+    expect(s.layerId).toBe('apm');
+    expect(s.selectedId).toBe('apm.metricinstrument');
+    // Untouched by a plain nodeType navigation — no edge was highlighted.
+    expect(s.highlightedEdgeId).toBeNull();
+  });
+
+  it('clicking a predicate cell backed by a real edge navigates to the edge\'s SOURCE node with the edge highlighted', () => {
+    renderWithProviders(<PageView pg={buildCrossViewPageData()} />);
+
+    fireEvent.click(screen.getByText('monitors'));
+    const s = useUiStore.getState();
+    expect(s.view).toBe('model');
+    expect(s.layerId).toBe('apm');
+    expect(s.selectedId).toBe('source-uuid');
+    expect(s.selectedEdgeId).toBeNull(); // node selection, not edge selection
+    expect(s.highlightedEdgeId).toBe('edge-99');
+  });
+
+  it("the highlight from a predicate click is transient — the next explicit selection clears it", () => {
+    renderWithProviders(<PageView pg={buildCrossViewPageData()} />);
+
+    fireEvent.click(screen.getByText('monitors'));
+    expect(useUiStore.getState().highlightedEdgeId).toBe('edge-99');
+
+    useUiStore.getState().selectLayer('technology');
+    expect(useUiStore.getState().highlightedEdgeId).toBeNull();
+  });
+
+  it('a row\'s remaining plain cell still navigates via the row\'s own target', () => {
+    renderWithProviders(<PageView pg={buildCrossViewPageData()} />);
+
+    fireEvent.click(screen.getByText('AlertSource'));
+    const s = useUiStore.getState();
+    expect(s.view).toBe('model');
+    expect(s.layerId).toBe('business2');
+    expect(s.selectedId).toBe('row-fallback-target-uuid');
   });
 });
 

@@ -69,3 +69,48 @@ describe('EdgeInspector — predicate tooltip on the edge badge', () => {
     expect(within(diagram).getByText('metricinstrument')).toBeInTheDocument();
   });
 });
+
+describe('EdgeInspector — cross-view navigation (Phase 6)', () => {
+  // fireEvent.click (not userEvent.click) throughout — each badge sits inside
+  // a NodeTypeBadge/PredicateTooltip hover-tracked RichTooltip overlay (see
+  // the identical gotcha noted in PageView.spec.tsx / CLAUDE.md).
+  it('clicking the source kind badge navigates to that type\'s Schema entry', async () => {
+    renderEdgeSelection();
+
+    const badge = await screen.findByTestId('edge-inspector-source-type-tooltip');
+    fireEvent.click(within(badge).getByText('alert'));
+
+    const s = useUiStore.getState();
+    expect(s.view).toBe('spec');
+    expect(s.layerId).toBe('apm');
+    expect(s.selectedId).toBe('apm.alert');
+  });
+
+  it('clicking the destination kind badge navigates to that type\'s Schema entry', async () => {
+    renderEdgeSelection();
+
+    const badge = await screen.findByTestId('edge-inspector-destination-type-tooltip');
+    fireEvent.click(within(badge).getByText('metricinstrument'));
+
+    const s = useUiStore.getState();
+    expect(s.view).toBe('spec');
+    expect(s.layerId).toBe('apm');
+    expect(s.selectedId).toBe('apm.metricinstrument');
+  });
+
+  it('clicking the predicate badge navigates to the edge\'s source node with the edge highlighted', async () => {
+    renderEdgeSelection();
+
+    const badge = await screen.findByTestId('edge-inspector-predicate-tooltip');
+    fireEvent.click(within(badge).getByText('monitors'));
+
+    const s = useUiStore.getState();
+    expect(s.view).toBe('model');
+    expect(s.layerId).toBe('apm');
+    // The edge's source is the "alert" element, not the currently-selected
+    // edge itself — selection moves from edge to node.
+    expect(s.selectedEdgeId).toBeNull();
+    expect(s.selectedId).not.toBeNull();
+    expect(s.highlightedEdgeId).toBe(EDGE_ID);
+  });
+});

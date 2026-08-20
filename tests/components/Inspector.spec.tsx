@@ -104,6 +104,23 @@ describe('Inspector — Model kind badge NodeTypeTooltip (Phase 5)', () => {
   });
 });
 
+describe('Inspector — kind badge cross-view navigation (Phase 6)', () => {
+  it('clicking the kind badge navigates to the node type\'s entry in the Schema view', async () => {
+    renderModelSelection('application', DATA_LOADER_UUID);
+
+    const badge = await screen.findByTestId('inspector-kind-tooltip');
+    // fireEvent.click, not userEvent.click — the badge sits inside
+    // NodeTypeBadge's hover-tracked RichTooltip overlay (see the identical
+    // gotcha noted in PageView.spec.tsx / CLAUDE.md).
+    fireEvent.click(within(badge).getByText('applicationservice'));
+
+    const s = useUiStore.getState();
+    expect(s.view).toBe('spec');
+    expect(s.layerId).toBe('application');
+    expect(s.selectedId).toBe('application.applicationservice');
+  });
+});
+
 describe('Inspector — relationship navigation', () => {
   it('clicking a cross-layer relationship target navigates + switches layerId', async () => {
     const user = userEvent.setup();

@@ -103,6 +103,20 @@ interface UiState {
    */
   navigateToElement: (elementId: string, layerId: string) => void;
   /**
+   * Same as `navigateToElement`, but also sets `highlightedEdgeId` and forces
+   * `mode: 'graph'` so the arriving GRAPH (not the page-view scaffold, which
+   * renders no edges at all) renders the given edge in its `hot` variant
+   * (Phase 6: clicking an edge predicate reference navigates to the edge's
+   * source node with the edge highlighted — BA req 28-30) — unlike every
+   * other navigation action here, which deliberately leaves `mode` alone
+   * ("mode toggle persists across selections"), this one's entire point is
+   * showing the graph, so forcing it is the correct exception rather than a
+   * violation of that rule. The highlight is transient — every other explicit
+   * selection action clears `highlightedEdgeId` back to `null` (see each
+   * action below), so it never lingers past the next click.
+   */
+  navigateToElementWithEdge: (elementId: string, layerId: string, edgeId: string) => void;
+  /**
    * Navigate to a spec node-type by its `spec_node_id`, switching the active
    * layer when it lives in another layer (cross-layer relationship navigation
    * in the Schema view). Stays in the Schema view and keeps the nav tree's
@@ -192,6 +206,7 @@ export const useUiStore = create<UiState>()(
             layerId,
             selectedId: null,
             selectedEdgeId: null,
+            highlightedEdgeId: null,
             focus: 'layer',
             expandedSections: new Set(s.expandedSections).add(s.view),
             expandedLayers,
@@ -199,12 +214,13 @@ export const useUiStore = create<UiState>()(
         }),
 
       selectNode: (selectedId) =>
-        set({ selectedId, selectedEdgeId: null, focus: 'node' }),
+        set({ selectedId, selectedEdgeId: null, highlightedEdgeId: null, focus: 'node' }),
 
       selectGraphNode: (selectedId) =>
         set((s) => ({
           selectedId,
           selectedEdgeId: null,
+          highlightedEdgeId: null,
           focus: 'node',
           expandedSections: new Set(s.expandedSections).add(s.view),
           expandedLayers: s.layerId
@@ -213,7 +229,7 @@ export const useUiStore = create<UiState>()(
         })),
 
       selectEdge: (selectedEdgeId) =>
-        set({ selectedEdgeId, selectedId: null, focus: 'layer' }),
+        set({ selectedEdgeId, selectedId: null, highlightedEdgeId: null, focus: 'layer' }),
 
       setHighlightedEdgeId: (highlightedEdgeId) => set({ highlightedEdgeId }),
 
@@ -228,6 +244,26 @@ export const useUiStore = create<UiState>()(
             layerId,
             selectedId: elementId,
             selectedEdgeId: null,
+            highlightedEdgeId: null,
+            focus: 'node',
+            expandedSections: new Set(s.expandedSections).add('model'),
+            expandedLayers,
+          };
+        }),
+
+      navigateToElementWithEdge: (elementId, layerId, edgeId) =>
+        set((s) => {
+          const sameLayer = s.layerId === layerId;
+          const expandedLayers = sameLayer
+            ? s.expandedLayers
+            : new Set(s.expandedLayers).add(layerKey('model', layerId));
+          return {
+            view: 'model',
+            mode: 'graph',
+            layerId,
+            selectedId: elementId,
+            selectedEdgeId: null,
+            highlightedEdgeId: edgeId,
             focus: 'node',
             expandedSections: new Set(s.expandedSections).add('model'),
             expandedLayers,
@@ -245,6 +281,7 @@ export const useUiStore = create<UiState>()(
             layerId,
             selectedId: specNodeId,
             selectedEdgeId: null,
+            highlightedEdgeId: null,
             focus: 'node',
             expandedSections: new Set(s.expandedSections).add('spec'),
             expandedLayers,
@@ -255,6 +292,7 @@ export const useUiStore = create<UiState>()(
         set((s) => ({
           view: 'changesets',
           changesetId,
+          highlightedEdgeId: null,
           expandedSections: new Set(s.expandedSections).add('changesets'),
         })),
 
@@ -292,7 +330,7 @@ export const useUiStore = create<UiState>()(
             // view of it. Toggling the ALREADY-active section's own
             // expand/collapse isn't a view switch, so selection is untouched.
             ...(viewChanged
-              ? { selectedId: null, selectedEdgeId: null, focus: 'layer' as const }
+              ? { selectedId: null, selectedEdgeId: null, highlightedEdgeId: null, focus: 'layer' as const }
               : {}),
           };
         }),
@@ -312,6 +350,7 @@ export const useUiStore = create<UiState>()(
             layerId,
             selectedId: collapsing ? s.selectedId : null,
             selectedEdgeId: collapsing ? s.selectedEdgeId : null,
+            highlightedEdgeId: collapsing ? s.highlightedEdgeId : null,
             focus: collapsing ? s.focus : 'layer',
             expandedSections: new Set(s.expandedSections).add(sectionId),
             expandedLayers,

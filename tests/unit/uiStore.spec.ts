@@ -146,6 +146,95 @@ describe('navigateToElement — cross-layer navigation', () => {
   });
 });
 
+describe('navigateToElementWithEdge — cross-view navigation from a predicate click (Phase 6)', () => {
+  it('behaves like navigateToElement but also sets highlightedEdgeId and forces graph mode', () => {
+    useUiStore.setState({ view: 'model', layerId: 'motivation', mode: 'page' });
+    get().navigateToElementWithEdge('elem-7', 'application', 'edge-42');
+    const s = get();
+    expect(s.view).toBe('model');
+    expect(s.layerId).toBe('application');
+    expect(s.selectedId).toBe('elem-7');
+    expect(s.selectedEdgeId).toBeNull();
+    expect(s.highlightedEdgeId).toBe('edge-42');
+    // Unlike every other navigation action, this one forces graph mode — the
+    // page-view scaffold renders no edges at all, so staying in page mode
+    // would make the highlight (the whole point of this action) invisible.
+    expect(s.mode).toBe('graph');
+    expect(s.focus).toBe('node');
+    expect(s.expandedSections.has('model')).toBe(true);
+    expect(s.expandedLayers.has('model:application')).toBe(true);
+  });
+
+  it('does NOT persist highlightedEdgeId (transient, not localStorage)', () => {
+    get().navigateToElementWithEdge('elem-7', 'application', 'edge-42');
+    const stored = JSON.parse(localStorage.getItem(PERSIST_KEY) ?? '{}');
+    expect(stored.state).not.toHaveProperty('highlightedEdgeId');
+  });
+});
+
+describe('highlightedEdgeId — transient cross-view highlight clears on the next explicit selection', () => {
+  it('selectLayer / selectNode / selectGraphNode / selectEdge / navigateToElement / navigateToSpecNode / selectChangeset all clear a prior highlight', () => {
+    useUiStore.setState({ highlightedEdgeId: 'edge-1' });
+    get().selectLayer('technology');
+    expect(get().highlightedEdgeId).toBeNull();
+
+    useUiStore.setState({ highlightedEdgeId: 'edge-1' });
+    get().selectNode('elem-1');
+    expect(get().highlightedEdgeId).toBeNull();
+
+    useUiStore.setState({ highlightedEdgeId: 'edge-1', layerId: 'api' });
+    get().selectGraphNode('elem-2');
+    expect(get().highlightedEdgeId).toBeNull();
+
+    useUiStore.setState({ highlightedEdgeId: 'edge-1' });
+    get().selectEdge('edge-2');
+    expect(get().highlightedEdgeId).toBeNull();
+
+    useUiStore.setState({ highlightedEdgeId: 'edge-1', view: 'model', layerId: 'motivation' });
+    get().navigateToElement('elem-3', 'application');
+    expect(get().highlightedEdgeId).toBeNull();
+
+    useUiStore.setState({ highlightedEdgeId: 'edge-1', view: 'spec', layerId: 'data-model' });
+    get().navigateToSpecNode('api.response', 'api');
+    expect(get().highlightedEdgeId).toBeNull();
+
+    useUiStore.setState({ highlightedEdgeId: 'edge-1' });
+    get().selectChangeset('cs-1');
+    expect(get().highlightedEdgeId).toBeNull();
+  });
+
+  it('toggleSection clears a highlight on a genuine view switch, but not on a same-view toggle', () => {
+    useUiStore.setState({ view: 'model', highlightedEdgeId: 'edge-1' });
+    get().toggleSection('spec');
+    expect(get().highlightedEdgeId).toBeNull();
+
+    useUiStore.setState({ view: 'model', highlightedEdgeId: 'edge-2' });
+    get().toggleSection('model'); // already active — pure expand/collapse
+    expect(get().highlightedEdgeId).toBe('edge-2');
+  });
+
+  it('toggleLayer clears a highlight when expanding, preserves it when collapsing', () => {
+    useUiStore.setState({ highlightedEdgeId: 'edge-1' });
+    get().toggleLayer('model', 'security'); // expands
+    expect(get().highlightedEdgeId).toBeNull();
+
+    useUiStore.setState({
+      highlightedEdgeId: 'edge-1',
+      expandedLayers: new Set(['model:security']),
+      layerId: 'security',
+    });
+    get().toggleLayer('model', 'security'); // collapses
+    expect(get().highlightedEdgeId).toBe('edge-1');
+  });
+
+  it('a fresh navigateToElementWithEdge call replaces a prior highlight', () => {
+    get().navigateToElementWithEdge('elem-1', 'application', 'edge-a');
+    expect(get().highlightedEdgeId).toBe('edge-a');
+    get().navigateToElementWithEdge('elem-2', 'business', 'edge-b');
+    expect(get().highlightedEdgeId).toBe('edge-b');
+  });
+});
+
 describe('navigateToSpecNode — cross-layer navigation in Schema view', () => {
   it('stays in the Schema view and switches the layer', () => {
     useUiStore.setState({ view: 'spec', layerId: 'data-model' });

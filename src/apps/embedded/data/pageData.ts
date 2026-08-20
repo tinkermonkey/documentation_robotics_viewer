@@ -38,7 +38,13 @@ export type PageNavTarget =
   | { kind: 'section'; view: 'model' | 'spec' }
   | { kind: 'layer'; view: 'model' | 'spec'; layerId: string }
   | { kind: 'element'; elementId: string; layerId: string }
-  | { kind: 'specNode'; specNodeId: string; layerId: string };
+  | { kind: 'specNode'; specNodeId: string; layerId: string }
+  /** Navigate to an element's page AND highlight one of its edges on arrival
+   *  (Phase 6: clicking an edge predicate reference — BA req 28-30). `elementId`/
+   *  `layerId` are always the EDGE'S SOURCE node, not necessarily the node whose
+   *  page the predicate cell was rendered on (an incoming-relationship predicate
+   *  points back at the other end). */
+  | { kind: 'elementWithEdge'; elementId: string; layerId: string; edgeId: string };
 
 export interface PageCrumb {
   label: string;
@@ -70,7 +76,17 @@ export type PageCellKind = 'name' | 'mono' | 'dim' | 'num';
  */
 export type PageCellTooltip =
   | { kind: 'nodeType'; layerId: string; typeId: string }
-  | { kind: 'predicate'; predicate: string; sourceTypeLabel: string; destinationTypeLabel: string };
+  | {
+      kind: 'predicate';
+      predicate: string;
+      sourceTypeLabel: string;
+      destinationTypeLabel: string;
+      /** Present only when this predicate reflects a real `/api/model` link (not
+       *  a Schema-view relationship SCHEMA, which has no live edge to highlight) —
+       *  carries what `PageView.tsx` needs to build an `elementWithEdge` nav
+       *  target (Phase 6, BA req 28-30). */
+      edge?: { edgeId: string; sourceElementId: string; sourceLayerId: string };
+    };
 
 export interface PageCell {
   text: string;
@@ -148,7 +164,10 @@ function nodeTypeCell(
   return { ...cell(text, kind, color), tooltip: { kind: 'nodeType', layerId, typeId } };
 }
 
-/** A cell referencing a predicate — wrapped in `PredicateTooltip` by `PageView`. */
+/** A cell referencing a predicate — wrapped in `PredicateTooltip` by `PageView`.
+ *  `edge` (when the predicate reflects a real model link, not a Schema-view
+ *  relationship schema) makes the cell independently clickable to the edge's
+ *  source node with the edge highlighted (Phase 6, BA req 28-30). */
 function predicateCell(
   text: unknown,
   kind: PageCellKind,
@@ -156,10 +175,11 @@ function predicateCell(
   sourceTypeLabel: string,
   destinationTypeLabel: string,
   color?: string,
+  edge?: { edgeId: string; sourceElementId: string; sourceLayerId: string },
 ): PageCell {
   return {
     ...cell(text, kind, color),
-    tooltip: { kind: 'predicate', predicate, sourceTypeLabel, destinationTypeLabel },
+    tooltip: { kind: 'predicate', predicate, sourceTypeLabel, destinationTypeLabel, edge },
   };
 }
 
@@ -254,6 +274,12 @@ export function layerPageData(
         target: { kind: 'element', elementId: tgt.id, layerId: tgt.layer_id },
         cells: [
           cell(n.name, 'name'),
+          // No `edge` info here — every row in this table is cross-layer by
+          // construction (the `tgt.layer_id === layerId` guard above), and the
+          // Model graph only ever renders INTRA-layer edges (`edgesForLayer`),
+          // so a cross-layer link id could never actually render as
+          // highlighted. Attaching one anyway would set inert store state for
+          // a click with no visible effect.
           predicateCell(link.type, 'dim', link.type, n.type, tgt.type),
           nodeTypeCell(
             `${tgt.layer_id}.${tgt.type}`,
@@ -585,21 +611,34 @@ export function modelNodePageData(
     if (!src || !tgt) continue;
     if (src.id === n.id) {
       const specRelId = `${fmt(src.spec_node_id)}.${link.type}.${fmt(tgt.spec_node_id)}`;
+      // `edge` only when intra-layer (tgt shares n's layer) — the Model graph
+      // only ever renders INTRA-layer edges (`edgesForLayer`), so a cross-layer
+      // link id could never actually render as highlighted; see the identical
+      // note on `layerPageData`'s `xrefRows` above.
+      const outEdge =
+        tgt.layer_id === layerId
+          ? { edgeId: link.id, sourceElementId: n.id, sourceLayerId: layerId }
+          : undefined;
       out.push({
         target: { kind: 'element', elementId: tgt.id, layerId: tgt.layer_id },
         cells: [
-          predicateCell(link.type, 'mono', link.type, n.type, tgt.type),
+          predicateCell(link.type, 'mono', link.type, n.type, tgt.type, undefined, outEdge),
           cell(tgt.name, 'name'),
           cell(tgt.layer_id, 'dim', layerColor(tgt.layer_id)),
           cell(specRelId, 'dim'),
         ],
       });
     } else if (tgt.id === n.id) {
+      // `edge` only when intra-layer (src shares n's layer) — see the note above.
+      const incEdge =
+        src.layer_id === layerId
+          ? { edgeId: link.id, sourceElementId: src.id, sourceLayerId: src.layer_id }
+          : undefined;
       inc.push({
         target: { kind: 'element', elementId: src.id, layerId: src.layer_id },
         cells: [
           cell(src.name, 'name'),
-          predicateCell(link.type, 'mono', link.type, src.type, n.type),
+          predicateCell(link.type, 'mono', link.type, src.type, n.type, undefined, incEdge),
           nodeTypeCell(src.type, 'dim', src.layer_id, src.type),
           cell(src.layer_id, 'dim', layerColor(src.layer_id)),
         ],

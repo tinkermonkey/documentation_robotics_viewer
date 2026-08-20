@@ -32,6 +32,18 @@
  * customizing their own (plain, non-interactive) badges. The flanking
  * `GraphInspector`s' own `kind` is omitted from their metadata to avoid
  * showing it twice.
+ *
+ * Phase 6 (cross-view navigation, BA req 26-30): those same three badges are
+ * now `<button>`s. The source/destination kind badges call `navigateToSpecNode`
+ * (jumping to that type's Schema entry). The predicate badge calls
+ * `navigateToElementWithEdge` with THIS edge's source node + `edgeId` — since
+ * this component only ever renders the currently-selected edge, clicking it
+ * re-selects that edge's source node (switching the drawer from the edge
+ * branch to the plain node branch) with the edge kept highlighted on the
+ * graph, rather than a no-op. Both actions are handed down as props from
+ * `Inspector.tsx` (which already owns them for its own kind badge) rather than
+ * imported from `uiStore` here, keeping this component prop-driven like its
+ * existing `onNodeSelect`.
  */
 
 import { useMemo } from 'react';
@@ -51,9 +63,22 @@ export interface EdgeInspectorProps {
   index: ModelIndex;
   spec: SpecPayload | undefined;
   onNodeSelect: (nodeId: string) => void;
+  navigateToSpecNode: (specNodeId: string, layerId: string) => void;
+  navigateToElementWithEdge: (elementId: string, layerId: string, edgeId: string) => void;
 }
 
-export function EdgeInspector({ edgeId, edge, model, index, spec, onNodeSelect }: EdgeInspectorProps) {
+const BADGE_BUTTON_STYLE = { border: 'none', cursor: 'pointer' } as const;
+
+export function EdgeInspector({
+  edgeId,
+  edge,
+  model,
+  index,
+  spec,
+  onNodeSelect,
+  navigateToSpecNode,
+  navigateToElementWithEdge,
+}: EdgeInspectorProps) {
   const sourceModelNode = index.byUuid.get(edge.sourceNode.id);
   const targetModelNode = index.byUuid.get(edge.targetNode.id);
 
@@ -114,9 +139,19 @@ export function EdgeInspector({ edgeId, edge, model, index, spec, onNodeSelect }
               typeId={sourceModelNode.type}
               data-testid="edge-inspector-source-type-tooltip"
             >
-              <span className="graph-inspector__badge" tabIndex={0}>
+              <button
+                type="button"
+                className="graph-inspector__badge"
+                style={BADGE_BUTTON_STYLE}
+                onClick={() =>
+                  navigateToSpecNode(
+                    `${sourceModelNode.layer_id}.${sourceModelNode.type}`,
+                    sourceModelNode.layer_id,
+                  )
+                }
+              >
                 {sourceModelNode.type}
-              </span>
+              </button>
             </NodeTypeBadge>
           </div>
         )}
@@ -134,9 +169,14 @@ export function EdgeInspector({ edgeId, edge, model, index, spec, onNodeSelect }
           destinationTypeLabel={edge.targetNode.type}
           data-testid="edge-inspector-predicate-tooltip"
         >
-          <span className="graph-edge-inspector__badge" tabIndex={0}>
+          <button
+            type="button"
+            className="graph-edge-inspector__badge"
+            style={BADGE_BUTTON_STYLE}
+            onClick={() => navigateToElementWithEdge(edge.sourceNode.id, edge.sourceNode.layer, edgeId)}
+          >
             {edge.predicate}
-          </span>
+          </button>
         </PredicateTooltip>
       </div>
       <GraphEdgeInspector edge={edgeData} onNodeSelect={onNodeSelect} data-testid="edge-inspector-edge" />
@@ -149,9 +189,19 @@ export function EdgeInspector({ edgeId, edge, model, index, spec, onNodeSelect }
               typeId={targetModelNode.type}
               data-testid="edge-inspector-destination-type-tooltip"
             >
-              <span className="graph-inspector__badge" tabIndex={0}>
+              <button
+                type="button"
+                className="graph-inspector__badge"
+                style={BADGE_BUTTON_STYLE}
+                onClick={() =>
+                  navigateToSpecNode(
+                    `${targetModelNode.layer_id}.${targetModelNode.type}`,
+                    targetModelNode.layer_id,
+                  )
+                }
+              >
                 {targetModelNode.type}
-              </span>
+              </button>
             </NodeTypeBadge>
           </div>
         )}
