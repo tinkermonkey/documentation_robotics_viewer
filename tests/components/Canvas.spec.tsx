@@ -496,6 +496,39 @@ describe('Canvas — card node presentation (default) vs. pill, Display control'
     await waitFor(() => expect(cardNodeCount()).toBe(11));
   });
 
+  it('Schema view pill nodes show the NodeTypeBadge tooltip on hover of the kind label', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('spec');
+    useUiStore.getState().selectLayer('data-model');
+    await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(0));
+
+    const kindLabel = document.querySelector(
+      '[data-testid^="graph-node-"] .graph-node__kind',
+    ) as HTMLElement;
+    expect(kindLabel).toBeTruthy();
+    fireEvent.focus(kindLabel);
+    expect(screen.getByRole('tooltip')).toBeInTheDocument();
+  });
+
+  it('Model view pill-mode nodes show the NodeTypeBadge tooltip on hover of the kind label', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    useUiStore.getState().setNodeDisplay('pill');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+    expect(cardNodeCount()).toBe(0);
+
+    const kindLabel = document.querySelector(
+      '[data-testid^="graph-node-"] .graph-node__kind',
+    ) as HTMLElement;
+    expect(kindLabel).toBeTruthy();
+    fireEvent.focus(kindLabel);
+    const tooltip = screen.getByRole('tooltip');
+    expect(within(tooltip).getByText('Alert')).toBeInTheDocument();
+
+    useUiStore.getState().setNodeDisplay('card');
+  });
+
   it('clicking a card node selects it and populates the Inspector, same as a pill', async () => {
     const user = userEvent.setup();
     renderWithProviders(<Canvas />);

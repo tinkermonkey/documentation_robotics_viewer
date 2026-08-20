@@ -33,9 +33,13 @@
  * and up to 5 enumerated inter-layer connections (a literal "…" overflow
  * indicator beyond that); the full untruncated list is one click away via the
  * existing Inspector, whose `relationshipsForElement` was never capped. Schema
- * view node-types have no `CardData` and always render as the default pill
- * (`renderNode` is left `undefined` there) regardless of the `nodeDisplay`
- * preference.
+ * view node-types have no `CardData` and always render as a pill regardless of
+ * the `nodeDisplay` preference (that control is hidden outside Model view —
+ * see `GraphControls` below), same as Model view in pill mode: both go through
+ * `renderPillNode` (below) rather than leaving `renderNode` `undefined`, so
+ * hovering a node's `kind` label — the node TYPE itself, in Schema view —
+ * always shows the same `NodeTypeBadge` tooltip card mode wires, unqualified
+ * by presentation mode or view (the BA requirement this closes gaps in).
  *
  * `GraphControls` floats over the graph itself (top-left, graph mode only) — a
  * card-style panel, same visual language as the built-in `GraphToolbar`'s own
@@ -102,6 +106,7 @@ import { layerColor, layerLabel, layerStandard } from './domain';
 import { PageView, usePageData } from './PageView';
 import { Inspector } from './Inspector';
 import { ModelCardNode } from './ModelCardNode';
+import { PillNode } from './PillNode';
 import { EdgeHoverTooltip } from './EdgeHoverTooltip';
 import { useEdgeInteraction } from './useEdgeInteraction';
 import { useModel } from '../data/useModel';
@@ -117,6 +122,7 @@ import {
   nodeTypesForLayer,
   edgesForLayer as specEdgesForLayer,
   intraRelCount,
+  shortName,
 } from '../data/specGraph';
 import { isStructuralEdge } from '../data/predicates';
 
@@ -439,6 +445,31 @@ export function Canvas() {
     [selectGraphNode, cardData, specRaw],
   );
 
+  // Pill-mode render (Model pill display + always in Schema view, see the
+  // module doc comment) — wires the same NodeTypeBadge hover tooltip
+  // renderCardNode wires for card mode. Schema-view nodes ARE node types, so
+  // their tooltip lookup uses the node's own id (already `<slug>.<short>`)
+  // rather than `kind` (the generic 'spec node' label nodeTypesForLayer sets).
+  const renderPillNode = useCallback(
+    (node: GraphNodeData, selected: boolean, hierarchy?: GraphNodeHierarchyMeta) => (
+      <PillNode
+        id={node.id}
+        label={node.label}
+        kind={node.kind}
+        domainColor={node.domainColor}
+        selected={selected}
+        onSelect={selectGraphNode}
+        spec={specRaw}
+        typeId={isSpec ? shortName(node.domainColor ?? '', node.id) : undefined}
+        hasChildren={hierarchy?.hasChildren}
+        collapsed={hierarchy?.collapsed}
+        hiddenDescendantCount={hierarchy?.hiddenDescendantCount}
+        onToggleCollapse={hierarchy?.onToggleCollapse}
+      />
+    ),
+    [selectGraphNode, specRaw, isSpec],
+  );
+
   // Model-only: click-to-select + hover-to-preview both render the
   // same "hot" variant. hoverHandlers are spread onto the graph wrapper below.
   const { hoveredEdgeId, hoveredEdgeAnchor, edgeHoverHandlers, selectedEdgeId, edgeSelectionProps } =
@@ -583,7 +614,7 @@ export function Canvas() {
                   onNodeSelect={(id) => selectGraphNode(id)}
                   {...(!isSpec ? edgeSelectionProps : {})}
                   onBackgroundClick={() => selectLayer(layerId)}
-                  renderNode={!isSpec && nodeDisplay === 'card' ? renderCardNode : undefined}
+                  renderNode={!isSpec && nodeDisplay === 'card' ? renderCardNode : renderPillNode}
                   centerOnSelect
                   fullscreenContainerRef={canvasAreaRef}
                   layout={graphLayout}
