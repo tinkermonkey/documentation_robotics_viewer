@@ -82,7 +82,8 @@ function LayerRow({
   const selectedId = useUiStore((s) => s.selectedId);
   const expandedLayers = useUiStore((s) => s.expandedLayers);
   const toggleLayer = useUiStore((s) => s.toggleLayer);
-  const selectNode = useUiStore((s) => s.selectNode);
+  const navigateToElement = useUiStore((s) => s.navigateToElement);
+  const navigateToSpecNode = useUiStore((s) => s.navigateToSpecNode);
 
   const { derived: model } = useModel();
   const { derived: spec } = useSpec();
@@ -134,7 +135,11 @@ function LayerRow({
                 active={leafActive}
                 depth={1}
                 className="drv-nav-l2"
-                onClick={() => selectNode(leaf.id)}
+                onClick={() =>
+                  sectionId === 'model'
+                    ? navigateToElement(leaf.id, slug)
+                    : navigateToSpecNode(leaf.id, slug)
+                }
                 title={leaf.label}
               />
             </div>
