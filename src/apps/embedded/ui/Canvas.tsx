@@ -76,12 +76,15 @@
  * fullscreen.
  *
  * Model-view-only edge interaction (edges only carry model edge metadata there):
- * `selectedEdgeId`/`onEdgeSelect` wire click-to-select straight to `GraphCanvas`'s
- * own built-in support (accent-color `.selected` + keyboard/aria); `useEdgeInteraction`
- * separately delegates hover over an edge's predicate label (`GraphCanvas` has no
- * per-edge hover callback or `renderEdge` slot to hook directly) to drive
- * `uiStore.highlightedEdgeId` and the floating `EdgeHoverTooltip`. Both selected and
- * highlighted edges render `variant: 'hot'` in the `edges` array built below.
+ * `useEdgeInteraction` is the single hook owning ALL of it — both click-to-select
+ * (its `edgeSelectionProps` bag wraps `GraphCanvas`'s own built-in `selectedEdgeId`/
+ * `onEdgeSelect` support: accent-color `.selected` + keyboard/aria) and hover over an
+ * edge's predicate label (`GraphCanvas` has no per-edge hover callback or `renderEdge`
+ * slot to hook directly, so this delegates instead) to drive `uiStore.highlightedEdgeId`
+ * and the floating `EdgeHoverTooltip`. `Canvas.tsx` never touches `uiStore.selectedEdgeId`/
+ * `selectEdge` directly — only through the hook — so if Heimdall's edge-interaction
+ * surface changes again, only the hook changes. Both selected and highlighted edges
+ * render `variant: 'hot'` in the `edges` array built below.
  */
 
 import { useCallback, useMemo, useRef, useState } from 'react';
@@ -375,10 +378,8 @@ export function Canvas() {
   const view = useUiStore((s) => s.view);
   const layerId = useUiStore((s) => s.layerId);
   const selectedId = useUiStore((s) => s.selectedId);
-  const selectedEdgeId = useUiStore((s) => s.selectedEdgeId);
   const highlightedEdgeId = useUiStore((s) => s.highlightedEdgeId);
   const selectGraphNode = useUiStore((s) => s.selectGraphNode);
-  const selectEdge = useUiStore((s) => s.selectEdge);
   const selectLayer = useUiStore((s) => s.selectLayer);
   const mode = useUiStore((s) => s.mode);
   const setMode = useUiStore((s) => s.setMode);
@@ -440,7 +441,8 @@ export function Canvas() {
 
   // Model-only: click-to-select + hover-to-preview both render the
   // same "hot" variant. hoverHandlers are spread onto the graph wrapper below.
-  const { hoveredEdgeId, hoveredEdgeAnchor, edgeHoverHandlers } = useEdgeInteraction();
+  const { hoveredEdgeId, hoveredEdgeAnchor, edgeHoverHandlers, selectedEdgeId, edgeSelectionProps } =
+    useEdgeInteraction();
 
   const edges = useMemo((): GraphEdgeData[] => {
     if (!layerId) return [];
@@ -579,8 +581,7 @@ export function Canvas() {
                   edges={edges}
                   selectedNodeId={selectedId ?? undefined}
                   onNodeSelect={(id) => selectGraphNode(id)}
-                  selectedEdgeId={!isSpec ? (selectedEdgeId ?? undefined) : undefined}
-                  onEdgeSelect={!isSpec ? selectEdge : undefined}
+                  {...(!isSpec ? edgeSelectionProps : {})}
                   onBackgroundClick={() => selectLayer(layerId)}
                   renderNode={!isSpec && nodeDisplay === 'card' ? renderCardNode : undefined}
                   centerOnSelect

@@ -1,9 +1,12 @@
 /**
- * useEdgeInteraction — hover detection for Model graph edge predicates via
- * SVG event delegation, driving both the `uiStore.highlightedEdgeId` "hot"
- * preview and the `EdgeHoverTooltip` anchor.
+ * useEdgeInteraction — the single hook encapsulating ALL SVG-level coupling to
+ * `GraphCanvas`'s edges (hover, leave, and click-to-select) for the Model view.
+ * If Heimdall ever changes how edge interaction is exposed (event delegation
+ * today for hover; native `selectedEdgeId`/`onEdgeSelect` props for click),
+ * only this hook changes — `Canvas.tsx` just spreads its returned prop bags
+ * onto `GraphCanvas` and never touches either mechanism directly.
  *
- * `GraphCanvas` renders every edge internally (no `renderEdge`/hover-callback
+ * Hover: `GraphCanvas` renders every edge internally (no `renderEdge`/hover-callback
  * slot), so there's no per-edge trigger element to attach `RichTooltip`-style
  * hover wiring to directly. Instead this attaches ONE pair of
  * mouseover/mouseout handlers to the graph's container (via the returned
@@ -17,6 +20,12 @@
  * `mouseout`'s `relatedTarget` check mirrors `Canvas.tsx`'s
  * `collapseIfLeavingFlyout` — only clears when the pointer actually left the
  * label (not just moved between the label's own background/text children).
+ *
+ * Click-to-select: `GraphCanvas` (heimdall-ui 0.7.0+) exposes native
+ * `selectedEdgeId`/`onEdgeSelect` props, so there's no delegation to do —
+ * this hook still owns wiring them to `uiStore.selectedEdgeId`/`selectEdge`
+ * and hands back a ready-to-spread `edgeSelectionProps` bag so the native
+ * props stay behind the same hook boundary as the delegated hover handlers.
  */
 
 import { useCallback, useState, type MouseEvent } from 'react';
@@ -54,10 +63,18 @@ export interface UseEdgeInteractionResult {
     onMouseOver: (e: MouseEvent) => void;
     onMouseOut: (e: MouseEvent) => void;
   };
+  selectedEdgeId: string | null;
+  /** Spread directly onto `GraphCanvas` to wire up native click-to-select. */
+  edgeSelectionProps: {
+    selectedEdgeId: string | undefined;
+    onEdgeSelect: (edgeId: string) => void;
+  };
 }
 
 export function useEdgeInteraction(): UseEdgeInteractionResult {
   const setHighlightedEdgeId = useUiStore((s) => s.setHighlightedEdgeId);
+  const selectedEdgeId = useUiStore((s) => s.selectedEdgeId);
+  const selectEdge = useUiStore((s) => s.selectEdge);
   const [hovered, setHovered] = useState<HoveredEdge | null>(null);
 
   const onMouseOver = useCallback(
@@ -88,5 +105,7 @@ export function useEdgeInteraction(): UseEdgeInteractionResult {
     hoveredEdgeId: hovered?.edgeId ?? null,
     hoveredEdgeAnchor: hovered?.anchorRect ?? null,
     edgeHoverHandlers: { onMouseOver, onMouseOut },
+    selectedEdgeId,
+    edgeSelectionProps: { selectedEdgeId: selectedEdgeId ?? undefined, onEdgeSelect: selectEdge },
   };
 }
