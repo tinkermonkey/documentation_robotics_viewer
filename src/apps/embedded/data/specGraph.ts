@@ -24,6 +24,7 @@ import type {
   RelationshipLink,
   GraphNodeMetadata,
 } from '@tinkermonkey/heimdall-ui';
+import type { NodeTypeConnection } from '../ui/NodeTypeTooltip';
 
 // ─── Raw /api/spec shapes (only the fields this module reads) ─────────────────
 
@@ -330,21 +331,13 @@ export function specMetadataForNode(
 
 // ─── Node-type tooltip content (hover surfaces — ModelCardNode/Inspector/EdgeInspector/PageView) ─
 
-/** One possible inbound or outbound connection for a node type's rich tooltip. */
-export interface NodeTypeConnectionData {
-  predicate: string;
-  typeId: string;
-  typeLabel: string;
-  domain?: string;
-}
-
 /** `NodeTypeTooltip`'s content props, resolved from the spec for a given node type. */
 export interface NodeTypeTooltipData {
   specifier: string;
   title: string;
   description?: string;
-  inbound: NodeTypeConnectionData[];
-  outbound: NodeTypeConnectionData[];
+  inbound: NodeTypeConnection[];
+  outbound: NodeTypeConnection[];
 }
 
 /**
@@ -359,11 +352,11 @@ export function nodeTypeConnections(
   spec: SpecPayload | undefined,
   slug: string,
   nodeId: string,
-): { inbound: NodeTypeConnectionData[]; outbound: NodeTypeConnectionData[] } {
+): { inbound: NodeTypeConnection[]; outbound: NodeTypeConnection[] } {
   const schema = schemaForLayer(spec, slug);
   const rels = schema?.relationshipSchemas ?? {};
-  const inbound: NodeTypeConnectionData[] = [];
-  const outbound: NodeTypeConnectionData[] = [];
+  const inbound: NodeTypeConnection[] = [];
+  const outbound: NodeTypeConnection[] = [];
 
   for (const rel of Object.values(rels)) {
     if (rel.source_spec_node_id === nodeId) {
