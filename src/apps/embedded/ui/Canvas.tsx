@@ -16,22 +16,35 @@
  * by the active `PageData` (layer / spec node / model node), matching the
  * design's `pg ? override : default` header logic.
  *
- * The `GraphCanvas` is keyed by `${view}:${layerId}:${graphLayout}:${nodeMarginPreset}`
- * so switching layer/view/layout/margin remounts it — Heimdall auto-centers ONCE
- * per mount and won't re-center on prop change, so the remount is what recenters
- * the new layer's graph (and what makes toggling Model↔Schema for one layer swap
- * instances for node-types). layout/nodeMargin are in the key because they change
- * the layout's footprint; showClusterBoundaries/showAllRelations don't, so they
- * stay out of it.
+ * The `GraphCanvas` is keyed by
+ * `${view}:${layerId}:${graphLayout}:${nodeMarginPreset}:${nodeDisplay}`
+ * so switching layer/view/layout/margin/display remounts it — Heimdall auto-centers
+ * ONCE per mount and won't re-center on prop change, so the remount is what
+ * recenters the new layer's graph (and what makes toggling Model↔Schema for one
+ * layer swap instances for node-types). layout/nodeMargin/nodeDisplay are in the
+ * key because they change the layout's footprint (a card is much larger than a
+ * pill); showClusterBoundaries/showAllRelations don't, so they stay out of it.
+ *
+ * Model view nodes render as cards by default (`nodeDisplay: 'card'`, ADR-1): a
+ * `renderNode` override (`renderCardNode` below) renders `ModelCardNode` fed by a
+ * `CardData` side-channel map — `data/modelGraph.ts`'s `nodesWithCardData` —
+ * keyed by node id, since `renderNode`'s own signature only carries
+ * `GraphNodeData`. Cards show the node's type plus intra-layer connection count
+ * and up to 5 enumerated inter-layer connections (a literal "…" overflow
+ * indicator beyond that); the full untruncated list is one click away via the
+ * existing Inspector, whose `relationshipsForElement` was never capped. Schema
+ * view node-types have no `CardData` and always render as the default pill
+ * (`renderNode` is left `undefined` there) regardless of the `nodeDisplay`
+ * preference.
  *
  * `GraphControls` floats over the graph itself (top-left, graph mode only) — a
  * card-style panel, same visual language as the built-in `GraphToolbar`'s own
  * floating card — exposing Heimdall 0.6.0's layout engines and display options:
- * Layout (force/galaxy/clustered), Boundaries, Node margin, Relations
- * (structural/all, see data/predicates.ts). Mirrors Heimdall's own
- * docs/src/showcases/GraphLayoutsShowcase.tsx demo controls, just repositioned
- * as an overlay instead of a full-width row so it doesn't cost the canvas any
- * vertical space. The built-in `GraphToolbar` (zoom/lock/fullscreen, + a
+ * Layout (force/galaxy/clustered), Display (card/pill, Model view only), Boundaries,
+ * Node margin, Relations (structural/all, see data/predicates.ts). Mirrors
+ * Heimdall's own docs/src/showcases/GraphLayoutsShowcase.tsx demo controls, just
+ * repositioned as an overlay instead of a full-width row so it doesn't cost the
+ * canvas any vertical space. The built-in `GraphToolbar` (zoom/lock/fullscreen, + a
  * live-simulation toggle for galaxy) is pinned `toolbarPosition="bottom-left"`
  * — not bottom-right, which collided with Inspector's `DetailDrawer` floating
  * over the graph's right edge whenever a node was selected — forced into a
@@ -63,18 +76,27 @@
  * fullscreen.
  */
 
-import { useMemo, useRef, useState } from 'react';
-import { PageHeader, GraphCanvas, SegmentedControl, Icon } from '@tinkermonkey/heimdall-ui';
-import { useUiStore, type GraphLayout, type NodeMarginPreset } from './uiStore';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import {
+  PageHeader,
+  GraphCanvas,
+  SegmentedControl,
+  Icon,
+  type GraphNodeData,
+  type GraphNodeHierarchyMeta,
+} from '@tinkermonkey/heimdall-ui';
+import { useUiStore, type GraphLayout, type NodeMarginPreset, type NodeDisplay } from './uiStore';
 import { layerColor, layerLabel, layerStandard } from './domain';
 import { PageView, usePageData } from './PageView';
 import { Inspector } from './Inspector';
+import { ModelCardNode } from './ModelCardNode';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import {
   buildModelIndex,
-  nodesForLayer,
+  nodesWithCardData,
   edgesForLayer as modelEdgesForLayer,
+  type CardData,
 } from '../data/modelGraph';
 import {
   nodeTypesForLayer,
@@ -108,6 +130,11 @@ const MARGIN_OPTIONS = [
 const RELATIONS_OPTIONS = [
   { value: 'structural', label: 'Structural' },
   { value: 'all', label: 'All' },
+];
+
+const DISPLAY_OPTIONS = [
+  { value: 'card', label: 'Card' },
+  { value: 'pill', label: 'Pill' },
 ];
 
 /** nodeMargin px for the 'wide' preset — undefined ('default') leaves each
@@ -163,6 +190,9 @@ function GraphControls() {
   const setNodeMarginPreset = useUiStore((s) => s.setNodeMarginPreset);
   const showAllRelations = useUiStore((s) => s.showAllRelations);
   const toggleShowAllRelations = useUiStore((s) => s.toggleShowAllRelations);
+  const nodeDisplay = useUiStore((s) => s.nodeDisplay);
+  const setNodeDisplay = useUiStore((s) => s.setNodeDisplay);
+  const view = useUiStore((s) => s.view);
 
   const collapseIfLeavingFlyout = (
     e: React.MouseEvent<HTMLDivElement> | React.FocusEvent<HTMLDivElement>,
@@ -232,6 +262,19 @@ function GraphControls() {
               options={LAYOUT_OPTIONS}
             />
           </GraphControl>
+          {/* Card presentation only applies to Model graph nodes (see
+              data/modelGraph.ts's nodesWithCardData) — the Schema view's
+              node-type graph always uses the pill, so the control has no
+              effect there and is hidden rather than shown inert. */}
+          {view === 'model' && (
+            <GraphControl label="Display" testId="graph-display-control">
+              <SegmentedControl
+                value={nodeDisplay}
+                onChange={(v) => setNodeDisplay(v as NodeDisplay)}
+                options={DISPLAY_OPTIONS}
+              />
+            </GraphControl>
+          )}
           {graphLayout !== 'force' && (
             <GraphControl label="Boundaries" testId="graph-boundaries-control">
               <SegmentedControl
@@ -328,6 +371,7 @@ export function Canvas() {
   const showClusterBoundaries = useUiStore((s) => s.showClusterBoundaries);
   const showAllRelations = useUiStore((s) => s.showAllRelations);
   const nodeMarginPreset = useUiStore((s) => s.nodeMarginPreset);
+  const nodeDisplay = useUiStore((s) => s.nodeDisplay);
   const pg = usePageData();
   const isPage = mode === 'page';
   const nodeMargin = nodeMarginFor(nodeMarginPreset);
@@ -346,12 +390,37 @@ export function Canvas() {
 
   const index = useMemo(() => buildModelIndex(model), [model]);
 
-  const nodes = useMemo(() => {
-    if (!layerId) return [];
-    return isSpec
-      ? nodeTypesForLayer(specRaw, layerId)
-      : nodesForLayer(model, layerId);
-  }, [isSpec, specRaw, model, layerId]);
+  // Model view nodes carry a CardData side-channel (intra/inter-layer connection
+  // counts, see data/modelGraph.ts's nodesWithCardData) that ModelCardNode reads
+  // via renderNode below; Schema view node-types have no such data and always
+  // render as the default pill.
+  const { nodes, cardData } = useMemo((): {
+    nodes: GraphNodeData[];
+    cardData: Map<string, CardData>;
+  } => {
+    if (!layerId) return { nodes: [], cardData: new Map() };
+    if (isSpec) return { nodes: nodeTypesForLayer(specRaw, layerId), cardData: new Map() };
+    return nodesWithCardData(model, layerId, index);
+  }, [isSpec, specRaw, model, layerId, index]);
+
+  const renderCardNode = useCallback(
+    (node: GraphNodeData, selected: boolean, hierarchy?: GraphNodeHierarchyMeta) => (
+      <ModelCardNode
+        id={node.id}
+        label={node.label}
+        kind={node.kind}
+        domainColor={node.domainColor}
+        selected={selected}
+        onSelect={selectGraphNode}
+        cardData={cardData.get(node.id)}
+        hasChildren={hierarchy?.hasChildren}
+        collapsed={hierarchy?.collapsed}
+        hiddenDescendantCount={hierarchy?.hiddenDescendantCount}
+        onToggleCollapse={hierarchy?.onToggleCollapse}
+      />
+    ),
+    [selectGraphNode, cardData],
+  );
 
   const edges = useMemo(() => {
     if (!layerId) return [];
@@ -471,12 +540,13 @@ export function Canvas() {
             ) : (
               <>
                 <GraphCanvas
-                  key={`${view}:${layerId}:${graphLayout}:${nodeMarginPreset}`}
+                  key={`${view}:${layerId}:${graphLayout}:${nodeMarginPreset}:${nodeDisplay}`}
                   nodes={nodes}
                   edges={edges}
                   selectedNodeId={selectedId ?? undefined}
                   onNodeSelect={(id) => selectGraphNode(id)}
                   onBackgroundClick={() => selectLayer(layerId)}
+                  renderNode={!isSpec && nodeDisplay === 'card' ? renderCardNode : undefined}
                   centerOnSelect
                   fullscreenContainerRef={canvasAreaRef}
                   layout={graphLayout}

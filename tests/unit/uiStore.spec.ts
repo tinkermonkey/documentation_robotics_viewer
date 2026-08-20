@@ -25,6 +25,7 @@ function reset() {
       showClusterBoundaries: true,
       showAllRelations: true,
       nodeMarginPreset: 'default',
+      nodeDisplay: 'card',
     },
     false,
   );
@@ -55,6 +56,7 @@ describe('uiStore — localStorage persistence', () => {
     get().toggleClusterBoundaries();
     get().toggleShowAllRelations();
     get().setNodeMarginPreset('wide');
+    get().setNodeDisplay('pill');
 
     const stored = JSON.parse(localStorage.getItem(PERSIST_KEY) ?? '{}');
     expect(stored.state).toMatchObject({
@@ -64,6 +66,7 @@ describe('uiStore — localStorage persistence', () => {
       showClusterBoundaries: false,
       showAllRelations: false,
       nodeMarginPreset: 'wide',
+      nodeDisplay: 'pill',
     });
   });
 
@@ -298,11 +301,12 @@ describe('focus — page-view target (layer overview vs. node detail)', () => {
 });
 
 describe('graph layout/display preferences', () => {
-  it('default to force layout, boundaries on, every relation visible, default node margin', () => {
+  it('default to force layout, boundaries on, every relation visible, default node margin, card node display', () => {
     expect(get().graphLayout).toBe('force');
     expect(get().showClusterBoundaries).toBe(true);
     expect(get().showAllRelations).toBe(true);
     expect(get().nodeMarginPreset).toBe('default');
+    expect(get().nodeDisplay).toBe('card');
   });
 
   it('setGraphLayout switches the layout engine', () => {
@@ -336,6 +340,13 @@ describe('graph layout/display preferences', () => {
     get().setNodeMarginPreset('default');
     expect(get().nodeMarginPreset).toBe('default');
   });
+
+  it('setNodeDisplay switches between card and pill', () => {
+    get().setNodeDisplay('pill');
+    expect(get().nodeDisplay).toBe('pill');
+    get().setNodeDisplay('card');
+    expect(get().nodeDisplay).toBe('card');
+  });
 });
 
 describe('persist hydration validates graphLayout/nodeMarginPreset', () => {
@@ -360,6 +371,7 @@ describe('persist hydration validates graphLayout/nodeMarginPreset', () => {
           showClusterBoundaries: true,
           showAllRelations: true,
           nodeMarginPreset: 'not-a-real-preset',
+          nodeDisplay: 'not-a-real-display',
         },
         version: 1,
       }),
@@ -369,6 +381,7 @@ describe('persist hydration validates graphLayout/nodeMarginPreset', () => {
     const fresh = await import('@/apps/embedded/ui/uiStore');
     expect(fresh.useUiStore.getState().graphLayout).toBe('force');
     expect(fresh.useUiStore.getState().nodeMarginPreset).toBe('default');
+    expect(fresh.useUiStore.getState().nodeDisplay).toBe('card');
   });
 
   it('keeps a genuinely valid persisted value as-is', async () => {
@@ -382,6 +395,7 @@ describe('persist hydration validates graphLayout/nodeMarginPreset', () => {
           showClusterBoundaries: true,
           showAllRelations: true,
           nodeMarginPreset: 'wide',
+          nodeDisplay: 'pill',
         },
         version: 1,
       }),
@@ -391,5 +405,6 @@ describe('persist hydration validates graphLayout/nodeMarginPreset', () => {
     const fresh = await import('@/apps/embedded/ui/uiStore');
     expect(fresh.useUiStore.getState().graphLayout).toBe('galaxy');
     expect(fresh.useUiStore.getState().nodeMarginPreset).toBe('wide');
+    expect(fresh.useUiStore.getState().nodeDisplay).toBe('pill');
   });
 });

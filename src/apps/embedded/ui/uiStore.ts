@@ -9,7 +9,7 @@
  * A subset of fields persist to localStorage (see `partialize` below) — the
  * canvas theme, the DrBot drawer's open/closed state, and the graph
  * layout/display settings (graphLayout/showClusterBoundaries/
- * showAllRelations/nodeMarginPreset). Navigation state (view/layerId/
+ * showAllRelations/nodeMarginPreset/nodeDisplay). Navigation state (view/layerId/
  * selectedId/changesetId/mode/focus/expanded*) is deliberately NOT persisted
  * here — that's the URL router's job (see router.tsx), so the two mechanisms
  * don't fight over which one is authoritative for "where you are."
@@ -23,6 +23,7 @@ export type CanvasMode = 'graph' | 'page';
 export type PageFocus = 'layer' | 'node';
 export type GraphLayout = 'force' | 'galaxy' | 'force-clustered';
 export type NodeMarginPreset = 'tight' | 'default' | 'wide';
+export type NodeDisplay = 'card' | 'pill';
 
 interface UiState {
   view: ViewKind;
@@ -57,6 +58,12 @@ interface UiState {
    *  'tight' behavior). 'default' leaves nodeMargin unset (GraphCanvas's own
    *  per-engine default). */
   nodeMarginPreset: NodeMarginPreset;
+  /** Model graph node presentation: 'card' shows type + intra/inter-layer
+   *  connection counts (see data/modelGraph.ts's nodesWithCardData), 'pill' is
+   *  the original compact GraphNode. Only meaningful in the Model view — the
+   *  Schema view's node-type graph always uses the default pill. Defaults to
+   *  'card'. */
+  nodeDisplay: NodeDisplay;
 
   setView: (view: ViewKind) => void;
   selectLayer: (layerId: string) => void;
@@ -98,6 +105,7 @@ interface UiState {
   toggleClusterBoundaries: () => void;
   toggleShowAllRelations: () => void;
   setNodeMarginPreset: (preset: NodeMarginPreset) => void;
+  setNodeDisplay: (nodeDisplay: NodeDisplay) => void;
 }
 
 const initialWide =
@@ -151,6 +159,7 @@ export const useUiStore = create<UiState>()(
       showClusterBoundaries: true,
       showAllRelations: true,
       nodeMarginPreset: 'default',
+      nodeDisplay: 'card',
 
       setView: (view) => set({ view }),
 
@@ -286,6 +295,8 @@ export const useUiStore = create<UiState>()(
         set((s) => ({ showAllRelations: !s.showAllRelations })),
 
       setNodeMarginPreset: (nodeMarginPreset) => set({ nodeMarginPreset }),
+
+      setNodeDisplay: (nodeDisplay) => set({ nodeDisplay }),
     }),
     {
       name: PERSIST_KEY,
@@ -300,6 +311,7 @@ export const useUiStore = create<UiState>()(
         showClusterBoundaries: state.showClusterBoundaries,
         showAllRelations: state.showAllRelations,
         nodeMarginPreset: state.nodeMarginPreset,
+        nodeDisplay: state.nodeDisplay,
       }),
       // Re-sync body.dark-canvas once hydration lands — covers both "restored
       // a persisted value" and "nothing was persisted, using the true
@@ -329,6 +341,7 @@ const VALID_NODE_MARGIN_PRESETS: ReadonlySet<NodeMarginPreset> = new Set([
   'default',
   'wide',
 ]);
+const VALID_NODE_DISPLAYS: ReadonlySet<NodeDisplay> = new Set(['card', 'pill']);
 
 /** Guards the one place untyped external data (a previous app version's
  *  persisted shape, a hand-edited localStorage value) enters these two
@@ -343,6 +356,7 @@ const VALID_NODE_MARGIN_PRESETS: ReadonlySet<NodeMarginPreset> = new Set([
   const fixes: Partial<UiState> = {};
   if (!VALID_GRAPH_LAYOUTS.has(hydrated.graphLayout)) fixes.graphLayout = 'force';
   if (!VALID_NODE_MARGIN_PRESETS.has(hydrated.nodeMarginPreset)) fixes.nodeMarginPreset = 'default';
+  if (!VALID_NODE_DISPLAYS.has(hydrated.nodeDisplay)) fixes.nodeDisplay = 'card';
   if (Object.keys(fixes).length > 0) useUiStore.setState(fixes);
 }
 

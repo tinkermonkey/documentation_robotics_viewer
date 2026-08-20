@@ -51,6 +51,16 @@ function graphEdgeCount(): number {
   return document.querySelectorAll('[data-testid^="graph-edge-"]').length;
 }
 
+/** Number of card-presentation nodes actually visible in the graph viewport.
+ *  GraphCanvas also renders every node once more, offscreen, in a hidden
+ *  `.graph-measure` container (to measure foreignObject dimensions before
+ *  layout) — that copy carries no `graph-node-*` testid, so scoping the
+ *  query under `[data-testid^="graph-node-"]` (same prefix `graphNodeCount`
+ *  uses) counts only the real, visible instance of each node. */
+function cardNodeCount(): number {
+  return document.querySelectorAll('[data-testid^="graph-node-"] .graph-node--card').length;
+}
+
 describe('Canvas — empty state', () => {
   it('shows the model empty hint when no layer is selected', async () => {
     renderWithProviders(<Canvas />);
@@ -429,6 +439,78 @@ describe('Canvas — heimdall-ui 0.7.0 prop wiring', () => {
     expect(wrapper?.contains(document.querySelector('.graph-canvas'))).toBe(true);
     // And NOT just GraphCanvas's own root — that would defeat the point.
     expect(wrapper).not.toBe(document.querySelector('.graph-canvas'));
+  });
+});
+
+describe('Canvas — card node presentation (default) vs. pill, Display control', () => {
+  it('renders Model view nodes as cards by default (nodeDisplay defaults to "card")', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+
+    expect(cardNodeCount()).toBe(11);
+  });
+
+  it('Schema view always renders the default pill, regardless of nodeDisplay', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('spec');
+    useUiStore.getState().selectLayer('data-model');
+    await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(0));
+
+    expect(cardNodeCount()).toBe(0);
+  });
+
+  it('the Display control is shown in Model view and hidden in Schema view', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+    fireEvent.focus(screen.getByTestId('graph-controls-toggle'));
+    expect(screen.getByTestId('graph-display-control')).toBeInTheDocument();
+
+    useUiStore.getState().setView('spec');
+    useUiStore.getState().selectLayer('data-model');
+    await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(0));
+    fireEvent.focus(screen.getByTestId('graph-controls-toggle'));
+    expect(screen.queryByTestId('graph-display-control')).not.toBeInTheDocument();
+  });
+
+  it('switching Display to Pill re-renders Model view nodes as pills, and back to Card', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+    expect(cardNodeCount()).toBe(11);
+
+    fireEvent.focus(screen.getByTestId('graph-controls-toggle'));
+    fireEvent.click(screen.getByRole('radio', { name: 'Pill' }));
+    expect(useUiStore.getState().nodeDisplay).toBe('pill');
+
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+    expect(cardNodeCount()).toBe(0);
+
+    fireEvent.focus(screen.getByTestId('graph-controls-toggle'));
+    fireEvent.click(screen.getByRole('radio', { name: 'Card' }));
+    expect(useUiStore.getState().nodeDisplay).toBe('card');
+    await waitFor(() => expect(cardNodeCount()).toBe(11));
+  });
+
+  it('clicking a card node selects it and populates the Inspector, same as a pill', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+
+    const firstCard = document.querySelector(
+      '[data-testid^="graph-node-"] .graph-node--card',
+    ) as HTMLElement;
+    expect(firstCard).toBeTruthy();
+    await user.click(firstCard);
+
+    await waitFor(() => expect(useUiStore.getState().selectedId).not.toBeNull());
+    expect(screen.getByTestId('inspector')).toHaveStyle({ width: '320px' });
   });
 });
 
