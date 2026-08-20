@@ -24,7 +24,6 @@ import type {
   RelationshipLink,
   GraphNodeMetadata,
 } from '@tinkermonkey/heimdall-ui';
-import type { NodeTypeConnection } from '../ui/NodeTypeTooltip';
 
 // ─── Raw /api/spec shapes (only the fields this module reads) ─────────────────
 
@@ -330,6 +329,18 @@ export function specMetadataForNode(
 }
 
 // ─── Node-type tooltip content (hover surfaces — ModelCardNode/Inspector/EdgeInspector/PageView) ─
+
+/** One possible inbound or outbound connection for a node type. */
+export interface NodeTypeConnection {
+  /** DR predicate string, e.g. `aggregates`. */
+  predicate: string;
+  /** Human label for the connected node type. */
+  typeLabel: string;
+  /** The connected node type's `spec_node_id` (used as the list-key salt). */
+  typeId: string;
+  /** Owning layer slug of the connected type, for its domain swatch. */
+  domain?: string;
+}
 
 /** `NodeTypeTooltip`'s content props, resolved from the spec for a given node type. */
 export interface NodeTypeTooltipData {
