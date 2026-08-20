@@ -23,19 +23,19 @@
  * clears the edge selection as part of the same mutual-exclusivity the click
  * originated from.
  *
- * Phase 5 (hover tooltips on existing surfaces): the source/destination
- * sections' element types and the edge's own predicate are each shown as an
- * interactive `graph-inspector__head-eyebrow`/`graph-edge-inspector__badge`
- * row (`NodeTypeBadge` / `PredicateTooltip`) ABOVE the corresponding Heimdall
+ * The source/destination sections' element types and the edge's own
+ * predicate are each shown as an interactive
+ * `graph-inspector__head-eyebrow`/`graph-edge-inspector__badge` row
+ * (`NodeTypeBadge` / `PredicateTooltip`) ABOVE the corresponding Heimdall
  * panel — same pattern `Inspector.tsx` uses for its own kind badge, since
  * neither `GraphInspector` nor `GraphEdgeInspector` exposes a slot for
  * customizing their own (plain, non-interactive) badges. The flanking
  * `GraphInspector`s' own `kind` is omitted from their metadata to avoid
  * showing it twice.
  *
- * Phase 6 (cross-view navigation, BA req 26-30): those same three badges are
- * now `<button>`s. The source/destination kind badges call `navigateToSpecNode`
- * (jumping to that type's Schema entry). The predicate badge calls
+ * Those same three badges are `<button>`s. The source/destination kind
+ * badges call `navigateToSpecNode` (jumping to that type's Schema entry).
+ * The predicate badge calls
  * `navigateToElementWithEdge` with THIS edge's source node + `edgeId` — since
  * this component only ever renders the currently-selected edge, clicking it
  * re-selects that edge's source node (switching the drawer from the edge

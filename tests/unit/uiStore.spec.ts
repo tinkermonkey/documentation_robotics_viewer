@@ -146,7 +146,7 @@ describe('navigateToElement — cross-layer navigation', () => {
   });
 });
 
-describe('navigateToElementWithEdge — cross-view navigation from a predicate click (Phase 6)', () => {
+describe('navigateToElementWithEdge — cross-view navigation from a predicate click', () => {
   it('behaves like navigateToElement but also sets highlightedEdgeId and forces graph mode', () => {
     useUiStore.setState({ view: 'model', layerId: 'motivation', mode: 'page' });
     get().navigateToElementWithEdge('elem-7', 'application', 'edge-42');

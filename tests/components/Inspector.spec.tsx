@@ -68,7 +68,7 @@ describe('Inspector — Model element detail', () => {
   });
 });
 
-describe('Inspector — Model kind badge NodeTypeTooltip (Phase 5)', () => {
+describe('Inspector — Model kind badge NodeTypeTooltip', () => {
   it('shows the rich node-type tooltip on hover/focus of the interactive kind badge', async () => {
     renderModelSelection('application', DATA_LOADER_UUID);
 
@@ -104,7 +104,7 @@ describe('Inspector — Model kind badge NodeTypeTooltip (Phase 5)', () => {
   });
 });
 
-describe('Inspector — kind badge cross-view navigation (Phase 6)', () => {
+describe('Inspector — kind badge cross-view navigation', () => {
   it('clicking the kind badge navigates to the node type\'s entry in the Schema view', async () => {
     renderModelSelection('application', DATA_LOADER_UUID);
 

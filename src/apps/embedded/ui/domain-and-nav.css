@@ -168,15 +168,24 @@ body.dark-canvas {
   color: rgb(var(--canvas-fg-1));
 }
 
-/* Clickable table cell (Phase 6: a cell may navigate somewhere different from
- * its row's own default target — see PageView.tsx's `TableRow`/`cellNavTarget`
- * — so the click affordance lives on the cell, not a single whole-row button). */
+/* Clickable table cell — a cell may navigate somewhere different from its
+ * row's own default target (see PageView.tsx's `TableRow`/`cellNavTarget`),
+ * so the click affordance lives on the cell, not a single whole-row button.
+ * `.drv-row` (below) restores a row-wide hover cue on top of this. */
 .drv-cell-link {
   cursor: pointer;
   background: none;
 }
 
 .drv-cell-link:hover {
+  background: rgb(var(--canvas-bg-2));
+}
+
+/* Row-wide hover cue, separate from the per-cell highlight above — applied to
+ * `role="row"` whenever at least one of its cells is clickable (see
+ * PageView.tsx's `TableRow`), so hovering anywhere in the row still reads as
+ * "this row is interactive" even though the click target is now per-cell. */
+.drv-row:hover {
   background: rgb(var(--canvas-bg-2));
 }
 

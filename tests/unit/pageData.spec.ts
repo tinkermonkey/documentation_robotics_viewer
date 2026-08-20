@@ -141,7 +141,7 @@ describe('layerPageData', () => {
     expect(fromMetaModel[0].target).toMatchObject({ kind: 'element', layerId: 'business' });
   });
 
-  // ─── Phase 5: node-type / predicate cell tooltip metadata ───────────────────
+  // ─── node-type / predicate cell tooltip metadata ─────────────────────────
 
   it('Spec node types row carries a nodeType tooltip on the type cell', () => {
     const pg = layerPageData('spec', 'data-model', model, index, spec)!;
@@ -177,7 +177,7 @@ describe('layerPageData', () => {
     expect(row.cells[2].tooltip).toMatchObject({ kind: 'nodeType', layerId: 'business' });
   });
 
-  // ─── Phase 6: predicate cells backed by a real model link carry `edge` info ──
+  // ─── predicate cells backed by a real model link carry `edge` info ──────
 
   it('Cross-layer references predicate cells carry no `edge` info — every row here is cross-layer by construction, and the Model graph only ever renders INTRA-layer edges, so a cross-layer link id could never actually render as highlighted', () => {
     const pg = layerPageData('model', 'data-model', model, index, spec)!;
@@ -250,7 +250,7 @@ describe('specNodePageData', () => {
     expect(crossLayer).toBe(true);
   });
 
-  it('Valid outgoing/incoming rows carry predicate + nodeType tooltips (Phase 5)', () => {
+  it('Valid outgoing/incoming rows carry predicate + nodeType tooltips', () => {
     const pg = specNodePageData('data-model', 'data-model.objectschema', spec, model)!;
     const outTable = pg.tables.find((t) => t.title === 'Valid outgoing relationships')!;
     expect(outTable.rows[0].cells[0].tooltip).toMatchObject({
@@ -267,7 +267,7 @@ describe('specNodePageData', () => {
     });
   });
 
-  it('Valid outgoing/incoming predicate cells carry no `edge` info — these are relationship SCHEMAS, not live model links (Phase 6)', () => {
+  it('Valid outgoing/incoming predicate cells carry no `edge` info — these are relationship SCHEMAS, not live model links', () => {
     const pg = specNodePageData('data-model', 'data-model.objectschema', spec, model)!;
     const outTable = pg.tables.find((t) => t.title === 'Valid outgoing relationships')!;
     const outTooltip = outTable.rows[0].cells[0].tooltip;
@@ -346,7 +346,7 @@ describe('modelNodePageData', () => {
     expect(table.rows[0].cells[2].text).toBe('8 attrs');
   });
 
-  it('Conforms to / Outgoing / Incoming rows carry nodeType + predicate tooltips (Phase 5)', () => {
+  it('Conforms to / Outgoing / Incoming rows carry nodeType + predicate tooltips', () => {
     const pg = modelNodePageData('data-model', META_MODEL_ID, model, index, spec)!;
 
     const conforms = pg.tables.find((t) => t.title === 'Conforms to')!;
@@ -370,7 +370,7 @@ describe('modelNodePageData', () => {
     expect(inc.rows[0].cells[2].tooltip).toMatchObject({ kind: 'nodeType' });
   });
 
-  it('An intra-layer outgoing predicate cell carries `edge` info pointing at the real link (Phase 6)', () => {
+  it('An intra-layer outgoing predicate cell carries `edge` info pointing at the real link', () => {
     const pg = modelNodePageData('data-model', META_MODEL_ID, model, index, spec)!;
 
     // "extends" -> Layer is the one INTRA-layer outgoing link (per the
@@ -396,7 +396,7 @@ describe('modelNodePageData', () => {
     expect(realizesTooltip.edge).toBeUndefined();
   });
 
-  it('The (intra-layer) incoming predicate cell carries `edge` info pointing at the real link + its source (Phase 6)', () => {
+  it('The (intra-layer) incoming predicate cell carries `edge` info pointing at the real link + its source', () => {
     const pg = modelNodePageData('data-model', META_MODEL_ID, model, index, spec)!;
 
     // Incoming: the OTHER element (YAMLModelData) is the edge's source, not MetaModel.

@@ -2,9 +2,9 @@
 /**
  * EdgeInspector.spec.tsx — the selected-edge sidebar detail (ui/EdgeInspector.tsx),
  * rendered through the real `Inspector` with real data hooks against MSW
- * fixtures (same pattern as Inspector.spec.tsx). Covers Phase 5's hover
- * tooltip wiring: the source/destination sections' interactive kind badges
- * and the edge's own interactive predicate badge.
+ * fixtures (same pattern as Inspector.spec.tsx). Covers the hover tooltip
+ * wiring: the source/destination sections' interactive kind badges and the
+ * edge's own interactive predicate badge.
  */
 
 import { describe, it, expect } from 'vitest';
@@ -70,7 +70,7 @@ describe('EdgeInspector — predicate tooltip on the edge badge', () => {
   });
 });
 
-describe('EdgeInspector — cross-view navigation (Phase 6)', () => {
+describe('EdgeInspector — cross-view navigation', () => {
   // fireEvent.click (not userEvent.click) throughout — each badge sits inside
   // a NodeTypeBadge/PredicateTooltip hover-tracked RichTooltip overlay (see
   // the identical gotcha noted in PageView.spec.tsx / CLAUDE.md).

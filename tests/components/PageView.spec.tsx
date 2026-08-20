@@ -183,7 +183,7 @@ describe('PageView — table row navigation', () => {
   });
 });
 
-describe('PageView — node type + predicate cell tooltips (Phase 5)', () => {
+describe('PageView — node type + predicate cell tooltips', () => {
   it('a nodeType cell triggers the rich NodeTypeTooltip on hover/focus', async () => {
     renderWithProviders(<PageView pg={buildPageData()} />);
 
@@ -263,7 +263,7 @@ function buildCrossViewPageData(): PageData {
   });
 }
 
-describe('PageView — cross-view navigation from node types + edge predicates (Phase 6)', () => {
+describe('PageView — cross-view navigation from node types + edge predicates', () => {
   it('clicking a nodeType cell navigates to the Schema view entry, independent of the row\'s own target', () => {
     renderWithProviders(<PageView pg={buildCrossViewPageData()} />);
     useUiStore.getState().setView('model');

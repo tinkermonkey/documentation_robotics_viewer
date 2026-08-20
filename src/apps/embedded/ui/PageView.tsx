@@ -20,16 +20,16 @@
  * off the `PageData` returned by `usePageData` to swap its `PageHeader`
  * props when a page is showing.
  *
- * Phase 5 (hover tooltips on existing surfaces): a cell built with
- * `pageData.ts`'s `nodeTypeCell`/`predicateCell` carries a `PageCell.tooltip`
- * — `Cell` below wraps it in `NodeTypeBadge` / `PredicateTooltip` instead of
- * plain text, so node-type and predicate references read the identical rich
- * tooltip the graph and Inspector surfaces show. `NodeTypeBadge` needs the
- * `/api/spec` payload, fetched here via `useSpec` (same TanStack Query cache
- * `usePageData` itself reads — no extra request).
+ * A cell built with `pageData.ts`'s `nodeTypeCell`/`predicateCell` carries a
+ * `PageCell.tooltip` — `Cell` below wraps it in `NodeTypeBadge` /
+ * `PredicateTooltip` instead of plain text, so node-type and predicate
+ * references read the identical rich tooltip the graph and Inspector
+ * surfaces show. `NodeTypeBadge` needs the `/api/spec` payload, fetched here
+ * via `useSpec` (same TanStack Query cache `usePageData` itself reads — no
+ * extra request).
  *
- * Phase 6 (cross-view navigation, BA req 26-30): a tooltip-carrying cell's OWN
- * click target can differ from its row's default `target` — a node-type cell
+ * A tooltip-carrying cell's OWN click target can differ from its row's
+ * default `target` (cross-view navigation) — a node-type cell
  * always navigates to that type's Schema entry, and a predicate cell backed by
  * a real (INTRA-layer only — see `cellNavTarget`) model link (`tooltip.edge`
  * set) navigates to the edge's SOURCE node with the edge highlighted, which
@@ -126,9 +126,9 @@ function useNavigate() {
 }
 
 /** A cell's OWN navigation target, independent of its row's default `target`
- *  (see the module doc comment's Phase 6 section) — `undefined` when the cell
- *  has no tooltip, or a `predicate` tooltip with no `edge` (a Schema-view
- *  relationship schema has no live edge to highlight). */
+ *  (see the module doc comment) — `undefined` when the cell has no tooltip,
+ *  or a `predicate` tooltip with no `edge` (a Schema-view relationship schema
+ *  has no live edge to highlight). */
 function cellNavTarget(cell: PageCell): PageNavTarget | undefined {
   if (cell.tooltip?.kind === 'nodeType') {
     return {
@@ -207,8 +207,15 @@ function Cell({
       <button
         type="button"
         className="drv-cell-link"
+        // `color`/`fontSize`/`fontFamily` aren't repeated here — Tailwind's
+        // Preflight resets `button` to inherit them from the span above.
+        // `overflow`/`textOverflow`/`whiteSpace` ARE non-inherited properties
+        // and this button (not the span) is the box whose own content
+        // actually needs to truncate, so they stay explicit.
         style={{
-          ...style,
+          overflow: style.overflow,
+          textOverflow: style.textOverflow,
+          whiteSpace: style.whiteSpace,
           textAlign: style.textAlign ?? 'left',
           display: 'block',
           width: '100%',
@@ -428,21 +435,24 @@ function TableRow({
   // tooltip); the row's default `target` is assigned as a fallback to the first
   // cell that doesn't have one of its own, so a row with no tooltip overrides
   // still reads as "click anywhere relevant to navigate" via that one cell —
-  // see the module doc comment's Phase 6 section for why cells, not the whole
-  // row, own the click affordance.
+  // see the module doc comment for why cells, not the whole row, own the
+  // click affordance.
   let fallbackAssigned = false;
+  let rowIsInteractive = false;
   const cells = row.cells.map((c, i) => {
     let target = cellNavTarget(c);
     if (!target && row.target && !fallbackAssigned) {
       target = row.target;
       fallbackAssigned = true;
     }
+    if (target) rowIsInteractive = true;
     return <Cell key={i} cell={c} spec={spec} target={target} onNavigate={onNavigate} />;
   });
 
   return (
     <div
       role="row"
+      className={rowIsInteractive ? 'drv-row' : undefined}
       style={{ ...ROW_STYLE, gridTemplateColumns: widths }}
       data-testid={row.target ? 'page-row' : undefined}
     >

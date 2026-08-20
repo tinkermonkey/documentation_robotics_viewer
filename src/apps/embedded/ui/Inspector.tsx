@@ -31,17 +31,17 @@
  * whenever this is set), the drawer instead renders `EdgeInspector`'s
  * source/edge/destination stack. `open` follows whichever of the two is set.
  *
- * Model view (Phase 5: hover tooltips on existing surfaces): the selected
- * element's type is shown as its own `graph-inspector__head-eyebrow` row
- * (same classes Heimdall's `GraphInspector` uses for its own head, so it
- * reads as part of the same panel) ABOVE the `GraphInspector`, wrapped in
- * `NodeTypeBadge` so it triggers the rich `NodeTypeTooltip` on hover/focus —
- * `GraphInspector` itself has no slot for customizing its own `kind` badge,
- * so `modelMetadata` omits `kind` to avoid rendering it twice.
+ * Model view: the selected element's type is shown as its own
+ * `graph-inspector__head-eyebrow` row (same classes Heimdall's
+ * `GraphInspector` uses for its own head, so it reads as part of the same
+ * panel) ABOVE the `GraphInspector`, wrapped in `NodeTypeBadge` so it
+ * triggers the rich `NodeTypeTooltip` on hover/focus — `GraphInspector`
+ * itself has no slot for customizing its own `kind` badge, so
+ * `modelMetadata` omits `kind` to avoid rendering it twice.
  *
- * Phase 6 (cross-view navigation, BA req 26-27): that same kind badge is a
- * `<button>` (not a static span) — clicking it calls `navigateToSpecNode`,
- * jumping to the element's node type in the Schema view. `EdgeInspector`'s
+ * That same kind badge is a `<button>` (not a static span) — clicking it
+ * calls `navigateToSpecNode`, jumping to the element's node type in the
+ * Schema view. `EdgeInspector`'s
  * source/destination kind badges and predicate badge get the equivalent
  * treatment (see its own doc comment); both are handed `navigateToSpecNode`/
  * `navigateToElementWithEdge` directly as props rather than a wrapped

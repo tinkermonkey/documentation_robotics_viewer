@@ -106,9 +106,9 @@ interface UiState {
    * Same as `navigateToElement`, but also sets `highlightedEdgeId` and forces
    * `mode: 'graph'` so the arriving GRAPH (not the page-view scaffold, which
    * renders no edges at all) renders the given edge in its `hot` variant
-   * (Phase 6: clicking an edge predicate reference navigates to the edge's
-   * source node with the edge highlighted — BA req 28-30) — unlike every
-   * other navigation action here, which deliberately leaves `mode` alone
+   * (clicking an edge predicate reference navigates to the edge's source
+   * node with the edge highlighted) — unlike every other navigation action
+   * here, which deliberately leaves `mode` alone
    * ("mode toggle persists across selections"), this one's entire point is
    * showing the graph, so forcing it is the correct exception rather than a
    * violation of that rule. The highlight is transient — every other explicit

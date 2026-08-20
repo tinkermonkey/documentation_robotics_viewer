@@ -40,10 +40,10 @@ export type PageNavTarget =
   | { kind: 'element'; elementId: string; layerId: string }
   | { kind: 'specNode'; specNodeId: string; layerId: string }
   /** Navigate to an element's page AND highlight one of its edges on arrival
-   *  (Phase 6: clicking an edge predicate reference — BA req 28-30). `elementId`/
-   *  `layerId` are always the EDGE'S SOURCE node, not necessarily the node whose
-   *  page the predicate cell was rendered on (an incoming-relationship predicate
-   *  points back at the other end). */
+   *  (clicking an edge predicate reference). `elementId`/`layerId` are always
+   *  the EDGE'S SOURCE node, not necessarily the node whose page the predicate
+   *  cell was rendered on (an incoming-relationship predicate points back at
+   *  the other end). */
   | { kind: 'elementWithEdge'; elementId: string; layerId: string; edgeId: string };
 
 export interface PageCrumb {
@@ -68,8 +68,8 @@ export interface PageFact {
 export type PageCellKind = 'name' | 'mono' | 'dim' | 'num';
 
 /**
- * Marks a cell as a node-type or predicate reference (Phase 5: hover
- * tooltips on existing surfaces) — `PageView.tsx`'s `Cell` renders these
+ * Marks a cell as a node-type or predicate reference — `PageView.tsx`'s
+ * `Cell` renders these
  * wrapped in `NodeTypeBadge` / `PredicateTooltip` instead of plain text, so
  * hovering/focusing them shows the identical rich tooltip the graph and
  * Inspector surfaces do.
@@ -84,7 +84,7 @@ export type PageCellTooltip =
       /** Present only when this predicate reflects a real `/api/model` link (not
        *  a Schema-view relationship SCHEMA, which has no live edge to highlight) —
        *  carries what `PageView.tsx` needs to build an `elementWithEdge` nav
-       *  target (Phase 6, BA req 28-30). */
+       *  target. */
       edge?: { edgeId: string; sourceElementId: string; sourceLayerId: string };
     };
 
@@ -167,7 +167,7 @@ function nodeTypeCell(
 /** A cell referencing a predicate — wrapped in `PredicateTooltip` by `PageView`.
  *  `edge` (when the predicate reflects a real model link, not a Schema-view
  *  relationship schema) makes the cell independently clickable to the edge's
- *  source node with the edge highlighted (Phase 6, BA req 28-30). */
+ *  source node with the edge highlighted. */
 function predicateCell(
   text: unknown,
   kind: PageCellKind,
