@@ -12,10 +12,11 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 
 import { ModelCardNode } from '@/apps/embedded/ui/ModelCardNode';
 import type { CardData } from '@/apps/embedded/data/modelGraph';
+import type { SpecPayload } from '@/apps/embedded/data/specGraph';
 
 const NODE_ID = 'node-1';
 
@@ -116,6 +117,53 @@ describe('ModelCardNode — connection counts', () => {
     expect(screen.getByTestId(`model-card-cross-count-${NODE_ID}`)).toHaveTextContent(
       '0 inter-layer',
     );
+  });
+});
+
+describe('ModelCardNode — kind badge NodeTypeTooltip (Phase 5)', () => {
+  function buildSpec(): SpecPayload {
+    return {
+      schemas: {
+        'application.json': {
+          layer: { id: 'application' },
+          nodeSchemas: {
+            component: { title: 'Application Component', description: 'A modular unit.' },
+          },
+          relationshipSchemas: {},
+        },
+      },
+    } as unknown as SpecPayload;
+  }
+
+  it('shows the NodeTypeTooltip on hover of the kind badge when the type resolves', () => {
+    render(
+      <ModelCardNode
+        id={NODE_ID}
+        label="Auth Service"
+        kind="component"
+        domainColor="application"
+        spec={buildSpec()}
+      />,
+    );
+
+    fireEvent.focus(screen.getByText('component'));
+    const tooltip = screen.getByRole('tooltip');
+    expect(within(tooltip).getByText('Application Component')).toBeInTheDocument();
+    expect(within(tooltip).getByText('A modular unit.')).toBeInTheDocument();
+  });
+
+  it('renders the plain kind badge (no tooltip) when spec is not provided', () => {
+    render(
+      <ModelCardNode
+        id={NODE_ID}
+        label="Auth Service"
+        kind="component"
+        domainColor="application"
+      />,
+    );
+
+    fireEvent.focus(screen.getByText('component'));
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
 });
 

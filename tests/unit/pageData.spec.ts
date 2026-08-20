@@ -140,6 +140,42 @@ describe('layerPageData', () => {
     ]);
     expect(fromMetaModel[0].target).toMatchObject({ kind: 'element', layerId: 'business' });
   });
+
+  // ─── Phase 5: node-type / predicate cell tooltip metadata ───────────────────
+
+  it('Spec node types row carries a nodeType tooltip on the type cell', () => {
+    const pg = layerPageData('spec', 'data-model', model, index, spec)!;
+    const table = pg.tables.find((t) => t.title === 'Spec node types')!;
+    const objectSchemaRow = table.rows.find((r) =>
+      r.cells.some((c) => c.text === 'ObjectSchema'),
+    )!;
+    expect(objectSchemaRow.cells[0].tooltip).toEqual({
+      kind: 'nodeType',
+      layerId: 'data-model',
+      typeId: 'objectschema',
+    });
+  });
+
+  it('Elements in model row carries a nodeType tooltip on the type cell', () => {
+    const pg = layerPageData('model', 'data-model', model, index, spec)!;
+    const table = pg.tables.find((t) => t.title === 'Elements in model')!;
+    const metaModelRow = table.rows.find((r) =>
+      r.cells.some((c) => c.text === 'MetaModel'),
+    )!;
+    expect(metaModelRow.cells[1].tooltip).toEqual({
+      kind: 'nodeType',
+      layerId: 'data-model',
+      typeId: 'objectschema',
+    });
+  });
+
+  it('Cross-layer references row carries predicate + nodeType tooltips', () => {
+    const pg = layerPageData('model', 'data-model', model, index, spec)!;
+    const table = pg.tables.find((t) => t.title === 'Cross-layer references')!;
+    const row = table.rows.find((r) => r.cells[0].text === 'MetaModel')!;
+    expect(row.cells[1].tooltip).toMatchObject({ kind: 'predicate' });
+    expect(row.cells[2].tooltip).toMatchObject({ kind: 'nodeType', layerId: 'business' });
+  });
 });
 
 // ─── specNodePageData (focus: 'node', view: 'spec') ────────────────────────────
@@ -200,6 +236,23 @@ describe('specNodePageData', () => {
       (r) => r.target && r.target.kind === 'specNode' && r.target.layerId !== 'data-model',
     );
     expect(crossLayer).toBe(true);
+  });
+
+  it('Valid outgoing/incoming rows carry predicate + nodeType tooltips (Phase 5)', () => {
+    const pg = specNodePageData('data-model', 'data-model.objectschema', spec, model)!;
+    const outTable = pg.tables.find((t) => t.title === 'Valid outgoing relationships')!;
+    expect(outTable.rows[0].cells[0].tooltip).toMatchObject({
+      kind: 'predicate',
+      sourceTypeLabel: 'objectschema',
+    });
+    expect(outTable.rows[0].cells[1].tooltip).toMatchObject({ kind: 'nodeType' });
+
+    const inTable = pg.tables.find((t) => t.title === 'Valid incoming relationships')!;
+    expect(inTable.rows[0].cells[0].tooltip).toMatchObject({ kind: 'nodeType' });
+    expect(inTable.rows[0].cells[1].tooltip).toMatchObject({
+      kind: 'predicate',
+      destinationTypeLabel: 'objectschema',
+    });
   });
 });
 
@@ -266,5 +319,29 @@ describe('modelNodePageData', () => {
       layerId: 'data-model',
     });
     expect(table.rows[0].cells[2].text).toBe('8 attrs');
+  });
+
+  it('Conforms to / Outgoing / Incoming rows carry nodeType + predicate tooltips (Phase 5)', () => {
+    const pg = modelNodePageData('data-model', META_MODEL_ID, model, index, spec)!;
+
+    const conforms = pg.tables.find((t) => t.title === 'Conforms to')!;
+    expect(conforms.rows[0].cells[0].tooltip).toEqual({
+      kind: 'nodeType',
+      layerId: 'data-model',
+      typeId: 'objectschema',
+    });
+
+    const out = pg.tables.find((t) => t.title === 'Outgoing relationships')!;
+    const realizesRow = out.rows.find((r) => r.cells[0].text === 'realizes')!;
+    expect(realizesRow.cells[0].tooltip).toMatchObject({
+      kind: 'predicate',
+      predicate: 'realizes',
+      sourceTypeLabel: 'objectschema',
+    });
+
+    const inc = pg.tables.find((t) => t.title === 'Incoming relationships')!;
+    expect(inc.rows).toHaveLength(1);
+    expect(inc.rows[0].cells[1].tooltip).toMatchObject({ kind: 'predicate' });
+    expect(inc.rows[0].cells[2].tooltip).toMatchObject({ kind: 'nodeType' });
   });
 });

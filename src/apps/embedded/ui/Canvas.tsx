@@ -428,13 +428,14 @@ export function Canvas() {
         selected={selected}
         onSelect={selectGraphNode}
         cardData={cardData.get(node.id)}
+        spec={specRaw}
         hasChildren={hierarchy?.hasChildren}
         collapsed={hierarchy?.collapsed}
         hiddenDescendantCount={hierarchy?.hiddenDescendantCount}
         onToggleCollapse={hierarchy?.onToggleCollapse}
       />
     ),
-    [selectGraphNode, cardData],
+    [selectGraphNode, cardData, specRaw],
   );
 
   // Model-only: click-to-select + hover-to-preview (ADR-2/3) both render the

@@ -560,11 +560,14 @@ describe('Canvas — edge selection, highlighting, and the edge inspector', () =
     expect(edgeEl).toHaveClass('selected');
     expect(edgeEl).toHaveClass('graph-edge--hot');
 
-    // Sidebar: source node info, edge info, destination node info, in order.
+    // Sidebar: source node info, edge info (preceded by its own interactive
+    // predicate badge — see EdgeInspector.tsx's Phase 5 hover-tooltip wiring),
+    // destination node info, in order.
     const inspector = screen.getByTestId('edge-inspector');
     const children = [...inspector.children].map((c) => c.getAttribute('data-testid'));
     expect(children).toEqual([
       'edge-inspector-source-node',
+      'edge-inspector-predicate-row',
       'edge-inspector-edge',
       'edge-inspector-destination-node',
     ]);

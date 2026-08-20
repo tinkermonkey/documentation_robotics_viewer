@@ -19,6 +19,14 @@
  * fields (`pg.eyebrow`/`pg.title`/`pg.idChip`/`pg.meta`/`pg.color`) straight
  * off the `PageData` returned by `usePageData` to swap its `PageHeader`
  * props when a page is showing.
+ *
+ * Phase 5 (hover tooltips on existing surfaces): a cell built with
+ * `pageData.ts`'s `nodeTypeCell`/`predicateCell` carries a `PageCell.tooltip`
+ * — `Cell` below wraps it in `NodeTypeBadge` / `PredicateTooltip` instead of
+ * plain text, so node-type and predicate references read the identical rich
+ * tooltip the graph and Inspector surfaces show. `NodeTypeBadge` needs the
+ * `/api/spec` payload, fetched here via `useSpec` (same TanStack Query cache
+ * `usePageData` itself reads — no extra request).
  */
 
 import { useMemo } from 'react';
@@ -26,6 +34,7 @@ import { useUiStore } from './uiStore';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import { buildModelIndex } from '../data/modelGraph';
+import type { SpecPayload } from '../data/specGraph';
 import {
   layerPageData,
   specNodePageData,
@@ -35,6 +44,8 @@ import {
   type PageRow,
   type PageCell,
 } from '../data/pageData';
+import { NodeTypeBadge } from './NodeTypeBadge';
+import { PredicateTooltip } from './PredicateTooltip';
 
 const MONO = "'JetBrains Mono',monospace";
 
@@ -126,15 +137,41 @@ const CELL_STYLE: Record<PageCell['kind'], React.CSSProperties> = {
   },
 };
 
-function Cell({ cell }: { cell: PageCell }) {
-  return (
-    <span
-      role="cell"
-      style={{ ...CELL_STYLE[cell.kind], ...(cell.color ? { color: cell.color } : null) }}
-    >
+function Cell({ cell, spec }: { cell: PageCell; spec: SpecPayload | undefined }) {
+  const style = { ...CELL_STYLE[cell.kind], ...(cell.color ? { color: cell.color } : null) };
+  const text = (
+    <span role="cell" style={style} tabIndex={cell.tooltip ? 0 : undefined}>
       {cell.text}
     </span>
   );
+
+  if (cell.tooltip?.kind === 'nodeType') {
+    return (
+      <NodeTypeBadge
+        spec={spec}
+        layerId={cell.tooltip.layerId}
+        typeId={cell.tooltip.typeId}
+        data-testid="page-cell-node-type-tooltip"
+      >
+        {text}
+      </NodeTypeBadge>
+    );
+  }
+
+  if (cell.tooltip?.kind === 'predicate') {
+    return (
+      <PredicateTooltip
+        predicate={cell.tooltip.predicate}
+        sourceTypeLabel={cell.tooltip.sourceTypeLabel}
+        destinationTypeLabel={cell.tooltip.destinationTypeLabel}
+        data-testid="page-cell-predicate-tooltip"
+      >
+        {text}
+      </PredicateTooltip>
+    );
+  }
+
+  return text;
 }
 
 function Breadcrumb({ pg, onNavigate }: { pg: PageData; onNavigate: (t?: PageNavTarget) => void }) {
@@ -295,13 +332,15 @@ const ROW_STYLE: React.CSSProperties = {
 function TableRow({
   row,
   widths,
+  spec,
   onNavigate,
 }: {
   row: PageRow;
   widths: string;
+  spec: SpecPayload | undefined;
   onNavigate: (t?: PageNavTarget) => void;
 }) {
-  const cells = row.cells.map((c, i) => <Cell key={i} cell={c} />);
+  const cells = row.cells.map((c, i) => <Cell key={i} cell={c} spec={spec} />);
 
   // Only rows with a navigation target are interactive — a row with no
   // target (e.g. an Attributes row) stays a plain, non-clickable row rather
@@ -342,7 +381,15 @@ function TableRow({
   );
 }
 
-function Tables({ pg, onNavigate }: { pg: PageData; onNavigate: (t?: PageNavTarget) => void }) {
+function Tables({
+  pg,
+  spec,
+  onNavigate,
+}: {
+  pg: PageData;
+  spec: SpecPayload | undefined;
+  onNavigate: (t?: PageNavTarget) => void;
+}) {
   return (
     <>
       {pg.tables.map((t) => (
@@ -402,7 +449,7 @@ function Tables({ pg, onNavigate }: { pg: PageData; onNavigate: (t?: PageNavTarg
                 ))}
               </div>
               {t.rows.map((r, i) => (
-                <TableRow key={i} row={r} widths={t.widths} onNavigate={onNavigate} />
+                <TableRow key={i} row={r} widths={t.widths} spec={spec} onNavigate={onNavigate} />
               ))}
             </div>
           )}
@@ -414,6 +461,7 @@ function Tables({ pg, onNavigate }: { pg: PageData; onNavigate: (t?: PageNavTarg
 
 export function PageView({ pg }: { pg: PageData }) {
   const onNavigate = useNavigate();
+  const { raw: specRaw } = useSpec();
 
   return (
     <div
@@ -437,7 +485,7 @@ export function PageView({ pg }: { pg: PageData }) {
         </p>
         <StatGrid pg={pg} />
         <FactsBlock pg={pg} />
-        <Tables pg={pg} onNavigate={onNavigate} />
+        <Tables pg={pg} spec={specRaw} onNavigate={onNavigate} />
       </div>
     </div>
   );

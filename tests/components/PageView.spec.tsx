@@ -12,7 +12,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { screen, within } from '@testing-library/react';
+import { screen, within, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { PageView } from '@/apps/embedded/ui/PageView';
@@ -48,7 +48,16 @@ function buildPageData(overrides: Partial<PageData> = {}): PageData {
           {
             target: { kind: 'element', elementId: 'target-uuid', layerId: 'business' },
             cells: [
-              { text: 'realizes', kind: 'mono' },
+              {
+                text: 'realizes',
+                kind: 'mono',
+                tooltip: {
+                  kind: 'predicate',
+                  predicate: 'realizes',
+                  sourceTypeLabel: 'MetaModel',
+                  destinationTypeLabel: 'ArchitectureModel',
+                },
+              },
               { text: 'Architecture Model', kind: 'name' },
             ],
           },
@@ -62,7 +71,13 @@ function buildPageData(overrides: Partial<PageData> = {}): PageData {
         rows: [
           {
             target: { kind: 'specNode', specNodeId: 'data-model.objectschema', layerId: 'data-model' },
-            cells: [{ text: 'ObjectSchema', kind: 'name' }],
+            cells: [
+              {
+                text: 'ObjectSchema',
+                kind: 'name',
+                tooltip: { kind: 'nodeType', layerId: 'data-model', typeId: 'objectschema' },
+              },
+            ],
           },
         ],
         emptyText: 'None.',
@@ -156,6 +171,43 @@ describe('PageView — table row navigation', () => {
     // interactive `page-row`.
     const attrCell = screen.getAllByText('type').find((el) => el.getAttribute('role') === 'cell')!;
     expect(interactiveRows.some((row) => row.contains(attrCell))).toBe(false);
+  });
+});
+
+describe('PageView — node type + predicate cell tooltips (Phase 5)', () => {
+  it('a nodeType cell triggers the rich NodeTypeTooltip on hover/focus', async () => {
+    renderWithProviders(<PageView pg={buildPageData()} />);
+
+    // NodeTypeBadge only wraps the cell once `/api/spec` has resolved (MSW,
+    // async) — wait for the RichTooltip trigger wrapper before focusing.
+    await waitFor(() =>
+      expect(screen.getByTestId('page-cell-node-type-tooltip')).toBeInTheDocument(),
+    );
+    fireEvent.focus(screen.getByText('ObjectSchema'));
+
+    const tooltip = await screen.findByRole('tooltip');
+    expect(tooltip.querySelector('.rich-tooltip__specifier')).toHaveTextContent(
+      'data-model.objectschema',
+    );
+  });
+
+  it('a predicate cell triggers the rich PredicateTooltip on hover/focus', async () => {
+    renderWithProviders(<PageView pg={buildPageData()} />);
+
+    const trigger = screen.getByText('realizes');
+    fireEvent.focus(trigger);
+
+    const tooltip = await screen.findByRole('tooltip');
+    expect(tooltip.querySelector('.rich-tooltip__title')).toHaveTextContent('realizes');
+    const diagram = within(tooltip).getByTestId('page-cell-predicate-tooltip-diagram');
+    expect(within(diagram).getByText('MetaModel')).toBeInTheDocument();
+    expect(within(diagram).getByText('ArchitectureModel')).toBeInTheDocument();
+  });
+
+  it('a cell without tooltip metadata renders as plain, non-interactive text', () => {
+    renderWithProviders(<PageView pg={buildPageData()} />);
+    const attrCell = screen.getAllByText('type').find((el) => el.getAttribute('role') === 'cell')!;
+    expect(attrCell).not.toHaveAttribute('tabIndex');
   });
 });
 

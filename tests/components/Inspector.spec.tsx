@@ -10,7 +10,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { screen, within, waitFor } from '@testing-library/react';
+import { screen, within, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { Inspector } from '@/apps/embedded/ui/Inspector';
@@ -65,6 +65,42 @@ describe('Inspector — Model element detail', () => {
     // Incoming list carries inbound relationships from other elements.
     const incoming = await screen.findByTestId('inspector-incoming');
     expect(within(incoming).getByText('Model Store')).toBeInTheDocument();
+  });
+});
+
+describe('Inspector — Model kind badge NodeTypeTooltip (Phase 5)', () => {
+  it('shows the rich node-type tooltip on hover/focus of the interactive kind badge', async () => {
+    renderModelSelection('application', DATA_LOADER_UUID);
+
+    const badge = await screen.findByTestId('inspector-kind-tooltip');
+    expect(within(badge).getByText('applicationservice')).toBeInTheDocument();
+
+    fireEvent.focus(within(badge).getByText('applicationservice'));
+    const tooltip = await screen.findByRole('tooltip');
+    // "ApplicationService" (the title) also appears among the connection
+    // rows below (e.g. a "depends-on · ApplicationService" relationship), so
+    // scope to the tooltip's own title element specifically.
+    expect(tooltip.querySelector('.rich-tooltip__title')).toHaveTextContent(
+      'ApplicationService',
+    );
+    expect(
+      within(tooltip).getByText('Service that exposes application functionality'),
+    ).toBeInTheDocument();
+  });
+
+  it("does not duplicate the plain kind badge — GraphInspector's own head no longer renders it", async () => {
+    renderModelSelection('application', DATA_LOADER_UUID);
+    await screen.findByTestId('inspector-title');
+
+    // Only our interactive badge should carry the `graph-inspector__badge`
+    // class with this text — GraphInspector's own head-eyebrow badge is
+    // suppressed (kind: undefined) to avoid a duplicate (the element's raw
+    // type also legitimately appears in the PROPERTIES metadata grid below,
+    // which is a separate, unrelated display).
+    const badges = screen
+      .getAllByText('applicationservice')
+      .filter((el) => el.classList.contains('graph-inspector__badge'));
+    expect(badges).toHaveLength(1);
   });
 });
 

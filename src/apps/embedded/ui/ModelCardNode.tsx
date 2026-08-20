@@ -17,10 +17,18 @@
  * relationship list is a click away — clicking anywhere on the card selects
  * the node (same as a pill), which opens the Inspector's `GraphInspector`,
  * fed by `relationships.ts`'s uncapped `relationshipsForElement`.
+ *
+ * The `kind` badge is a `NodeTypeBadge` trigger (Phase 5: hover tooltips on
+ * existing surfaces) — hovering/focusing it shows the same rich node-type
+ * tooltip as every other surface that references a type, resolved from
+ * `spec` (the `/api/spec` payload, optional — `NodeTypeBadge` falls back to a
+ * plain, non-interactive badge when it or the type is unresolved).
  */
 
 import type { CardData } from '../data/modelGraph';
+import type { SpecPayload } from '../data/specGraph';
 import { layerColor, layerLabel } from './domain';
+import { NodeTypeBadge } from './NodeTypeBadge';
 
 export interface ModelCardNodeProps {
   id: string;
@@ -30,6 +38,8 @@ export interface ModelCardNodeProps {
   selected?: boolean;
   onSelect?: (id: string) => void;
   cardData?: CardData;
+  /** `/api/spec` payload, feeding the `kind` badge's `NodeTypeTooltip`. */
+  spec?: SpecPayload;
   /** Structural-hierarchy passthrough (GraphCanvas's GraphNodeHierarchyMeta) — mirrors
    *  the default GraphNode's own collapse/expand affordance when a caller wires it up. */
   hasChildren?: boolean;
@@ -46,6 +56,7 @@ export function ModelCardNode({
   selected = false,
   onSelect,
   cardData,
+  spec,
   hasChildren = false,
   collapsed = false,
   hiddenDescendantCount = 0,
@@ -84,7 +95,18 @@ export function ModelCardNode({
       <div className="graph-node__card-header">
         <span className="graph-node__swatch" />
         <span className="graph-node__label">{label}</span>
-        {kind && <span className="graph-node__kind">{kind}</span>}
+        {kind && (
+          <NodeTypeBadge
+            spec={spec}
+            layerId={domainColor}
+            typeId={kind}
+            data-testid={`model-card-kind-tooltip-${id}`}
+          >
+            <span className="graph-node__kind" tabIndex={0}>
+              {kind}
+            </span>
+          </NodeTypeBadge>
+        )}
         {hasChildren && onToggleCollapse && (
           <button
             type="button"

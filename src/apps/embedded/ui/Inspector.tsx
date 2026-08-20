@@ -30,6 +30,14 @@
  * mutually exclusive with node selection, so `selectedId`/`metadata` are null
  * whenever this is set), the drawer instead renders `EdgeInspector`'s
  * source/edge/destination stack. `open` follows whichever of the two is set.
+ *
+ * Model view (Phase 5: hover tooltips on existing surfaces): the selected
+ * element's type is shown as its own `graph-inspector__head-eyebrow` row
+ * (same classes Heimdall's `GraphInspector` uses for its own head, so it
+ * reads as part of the same panel) ABOVE the `GraphInspector`, wrapped in
+ * `NodeTypeBadge` so it triggers the rich `NodeTypeTooltip` on hover/focus —
+ * `GraphInspector` itself has no slot for customizing its own `kind` badge,
+ * so `modelMetadata` omits `kind` to avoid rendering it twice.
  */
 
 import { useMemo, useState } from 'react';
@@ -38,6 +46,7 @@ import { useUiStore } from './uiStore';
 import { layerLabel } from './domain';
 import { AnnotationsSection } from './AnnotationsSection';
 import { EdgeInspector } from './EdgeInspector';
+import { NodeTypeBadge } from './NodeTypeBadge';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import { buildModelIndex, dottedId, edgeMetadata } from '../data/modelGraph';
@@ -89,7 +98,10 @@ export function Inspector() {
   const modelMetadata = useMemo(
     () =>
       modelNode
-        ? metadataForElement(modelNode, layerLabel(modelNode.layer_id))
+        ? // `kind` is rendered separately, above, as an interactive
+          // `NodeTypeBadge` — omitted here so GraphInspector's own (plain,
+          // non-interactive) badge doesn't duplicate it.
+          { ...metadataForElement(modelNode, layerLabel(modelNode.layer_id)), kind: undefined }
         : null,
     [modelNode],
   );
@@ -146,10 +158,25 @@ export function Inspector() {
           edge={edge}
           model={model}
           index={index}
+          spec={specRaw}
           onNodeSelect={handleSelect}
         />
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {!isSpec && modelNode && (
+            <div className="graph-inspector__head-eyebrow" data-testid="inspector-kind-tooltip-row">
+              <NodeTypeBadge
+                spec={specRaw}
+                layerId={modelNode.layer_id}
+                typeId={modelNode.type}
+                data-testid="inspector-kind-tooltip"
+              >
+                <span className="graph-inspector__badge" tabIndex={0}>
+                  {modelNode.type}
+                </span>
+              </NodeTypeBadge>
+            </div>
+          )}
           <GraphInspector
             node={metadata}
             relationships={relationships}
