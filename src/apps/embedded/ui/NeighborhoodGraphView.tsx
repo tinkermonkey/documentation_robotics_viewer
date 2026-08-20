@@ -31,6 +31,25 @@ function edgesToGraphData(nodes: NeighborhoodNode[], edges: NeighborhoodGraph['e
   }));
 }
 
+export function handleNeighborhoodNodeClick(
+  nodeId: string,
+  nodes: NeighborhoodNode[],
+  isSpecView: boolean,
+  navigateToElement: (nodeId: string, layer: string) => void,
+  navigateToSpecNode: (nodeId: string, layer: string) => void,
+) {
+  const node = nodes.find((n) => n.id === nodeId);
+  if (!node) return;
+
+  if (node.isCenter) return;
+
+  if (isSpecView) {
+    navigateToSpecNode(nodeId, node.layer);
+  } else {
+    navigateToElement(nodeId, node.layer);
+  }
+}
+
 export function NeighborhoodGraphView({
   neighborhood,
   isSpecView,
@@ -44,16 +63,7 @@ export function NeighborhoodGraphView({
 
   const handleNodeClick = useCallback(
     (nodeId: string) => {
-      const node = neighborhood.nodes.find((n) => n.id === nodeId);
-      if (!node) return;
-
-      if (node.isCenter) return;
-
-      if (isSpecView) {
-        navigateToSpecNode(nodeId, node.layer);
-      } else {
-        navigateToElement(nodeId, node.layer);
-      }
+      handleNeighborhoodNodeClick(nodeId, neighborhood.nodes, isSpecView, navigateToElement, navigateToSpecNode);
     },
     [neighborhood.nodes, isSpecView, navigateToElement, navigateToSpecNode],
   );

@@ -3,8 +3,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 
-import { NeighborhoodGraphView } from '@/apps/embedded/ui/NeighborhoodGraphView';
-import { useUiStore } from '@/apps/embedded/ui/uiStore';
+import { NeighborhoodGraphView, handleNeighborhoodNodeClick } from '@/apps/embedded/ui/NeighborhoodGraphView';
 import { renderWithProviders } from '../helpers/renderWithProviders';
 import type { NeighborhoodGraph } from '@/apps/embedded/data/neighborhoodGraph';
 
@@ -51,87 +50,63 @@ describe('NeighborhoodGraphView', () => {
 
   describe('navigation on neighbor click', () => {
     it('navigates to a neighbor element in model view', () => {
-      const neighborhood: NeighborhoodGraph = {
-        nodes: [
-          { id: 'center-uuid', name: 'Center', kind: 'service', layer: 'application', isCenter: true },
-          { id: 'neighbor-uuid', name: 'Neighbor', kind: 'resource', layer: 'api', isCenter: false },
-        ],
-        edges: [
-          {
-            id: 'edge-1',
-            predicate: 'uses',
-            direction: 'out',
-            targetId: 'neighbor-uuid',
-          },
-        ],
-        empty: false,
-      };
+      const nodes = [
+        { id: 'center-uuid', name: 'Center', kind: 'service', layer: 'application', isCenter: true },
+        { id: 'neighbor-uuid', name: 'Neighbor', kind: 'resource', layer: 'api', isCenter: false },
+      ];
 
-      const store = useUiStore.getState();
-      const navigateSpy = vi.spyOn(store, 'navigateToElement');
+      const navigateToElement = vi.fn();
+      const navigateToSpecNode = vi.fn();
 
-      renderWithProviders(
-        <NeighborhoodGraphView neighborhood={neighborhood} isSpecView={false} />,
-      );
+      handleNeighborhoodNodeClick('neighbor-uuid', nodes, false, navigateToElement, navigateToSpecNode);
 
-      store.navigateToElement('neighbor-uuid', 'api');
-      expect(navigateSpy).toHaveBeenCalledWith('neighbor-uuid', 'api');
-
-      navigateSpy.mockRestore();
+      expect(navigateToElement).toHaveBeenCalledWith('neighbor-uuid', 'api');
+      expect(navigateToSpecNode).not.toHaveBeenCalled();
     });
 
     it('navigates to a neighbor spec node in spec view', () => {
-      const neighborhood: NeighborhoodGraph = {
-        nodes: [
-          { id: 'application.component', name: 'Component', kind: 'spec node', layer: 'application', isCenter: true },
-          { id: 'api.endpoint', name: 'Endpoint', kind: 'spec node', layer: 'api', isCenter: false },
-        ],
-        edges: [
-          {
-            id: 'edge-1',
-            predicate: 'exposes',
-            direction: 'out',
-            targetId: 'api.endpoint',
-          },
-        ],
-        empty: false,
-      };
+      const nodes = [
+        { id: 'application.component', name: 'Component', kind: 'spec node', layer: 'application', isCenter: true },
+        { id: 'api.endpoint', name: 'Endpoint', kind: 'spec node', layer: 'api', isCenter: false },
+      ];
 
-      const store = useUiStore.getState();
-      const navigateSpy = vi.spyOn(store, 'navigateToSpecNode');
+      const navigateToElement = vi.fn();
+      const navigateToSpecNode = vi.fn();
 
-      renderWithProviders(
-        <NeighborhoodGraphView neighborhood={neighborhood} isSpecView={true} />,
-      );
+      handleNeighborhoodNodeClick('api.endpoint', nodes, true, navigateToElement, navigateToSpecNode);
 
-      store.navigateToSpecNode('api.endpoint', 'api');
-      expect(navigateSpy).toHaveBeenCalledWith('api.endpoint', 'api');
-
-      navigateSpy.mockRestore();
+      expect(navigateToSpecNode).toHaveBeenCalledWith('api.endpoint', 'api');
+      expect(navigateToElement).not.toHaveBeenCalled();
     });
 
     it('does not navigate when clicking the center node', () => {
-      const neighborhood: NeighborhoodGraph = {
-        nodes: [
-          { id: 'center-id', name: 'Center', kind: 'component', layer: 'application', isCenter: true },
-          { id: 'neighbor-id', name: 'Neighbor', kind: 'component', layer: 'api', isCenter: false },
-        ],
-        edges: [
-          {
-            id: 'edge-1',
-            predicate: 'calls',
-            direction: 'out',
-            targetId: 'neighbor-id',
-          },
-        ],
-        empty: false,
-      };
+      const nodes = [
+        { id: 'center-id', name: 'Center', kind: 'component', layer: 'application', isCenter: true },
+        { id: 'neighbor-id', name: 'Neighbor', kind: 'component', layer: 'api', isCenter: false },
+      ];
 
-      renderWithProviders(
-        <NeighborhoodGraphView neighborhood={neighborhood} isSpecView={false} />,
-      );
+      const navigateToElement = vi.fn();
+      const navigateToSpecNode = vi.fn();
 
-      expect(screen.getByTestId('neighborhood-graph-view')).toBeInTheDocument();
+      handleNeighborhoodNodeClick('center-id', nodes, false, navigateToElement, navigateToSpecNode);
+
+      expect(navigateToElement).not.toHaveBeenCalled();
+      expect(navigateToSpecNode).not.toHaveBeenCalled();
+    });
+
+    it('does not navigate when node id not found', () => {
+      const nodes = [
+        { id: 'center-id', name: 'Center', kind: 'component', layer: 'application', isCenter: true },
+        { id: 'neighbor-id', name: 'Neighbor', kind: 'component', layer: 'api', isCenter: false },
+      ];
+
+      const navigateToElement = vi.fn();
+      const navigateToSpecNode = vi.fn();
+
+      handleNeighborhoodNodeClick('nonexistent-id', nodes, false, navigateToElement, navigateToSpecNode);
+
+      expect(navigateToElement).not.toHaveBeenCalled();
+      expect(navigateToSpecNode).not.toHaveBeenCalled();
     });
   });
 
