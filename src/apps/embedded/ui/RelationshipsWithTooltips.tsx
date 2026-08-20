@@ -1,14 +1,3 @@
-/**
- * RelationshipsWithTooltips — wrapper for rendering relationship lists with
- * predicate tooltips. Heimdall's GraphInspector doesn't expose a slot for
- * customizing predicate rendering, so this component re-renders the
- * relationship list with PredicateTooltip-wrapped predicates.
- *
- * Mirrors GraphInspector's own layout and styling but wraps each predicate
- * badge with PredicateTooltip so hovering shows the rich card (definition +
- * source → predicate → destination diagram).
- */
-
 import type { ReactNode } from 'react';
 import { PredicateTooltip } from './PredicateTooltip';
 import type { RelationshipLinkWithTooltip } from '../data/relationships';
@@ -32,30 +21,32 @@ export function RelationshipsWithTooltips({
     <>
       {outgoing.length > 0 && (
         <div data-testid="inspector-outgoing">
-          <div className="graph-inspector__section-label">Outgoing</div>
-          <div className="graph-inspector__relationships">
+          <div className="graph-inspector__section-label">Outgoing · {outgoing.length}</div>
+          <ul className="graph-inspector__rels">
             {outgoing.map((rel) => (
               <RelationshipRow
                 key={rel.id}
                 rel={rel}
                 onNodeSelect={onNodeSelect}
+                direction="out"
               />
             ))}
-          </div>
+          </ul>
         </div>
       )}
       {incoming.length > 0 && (
         <div data-testid="inspector-incoming">
-          <div className="graph-inspector__section-label">Incoming</div>
-          <div className="graph-inspector__relationships">
+          <div className="graph-inspector__section-label">Incoming · {incoming.length}</div>
+          <ul className="graph-inspector__rels">
             {incoming.map((rel) => (
               <RelationshipRow
                 key={rel.id}
                 rel={rel}
                 onNodeSelect={onNodeSelect}
+                direction="in"
               />
             ))}
-          </div>
+          </ul>
         </div>
       )}
     </>
@@ -65,9 +56,10 @@ export function RelationshipsWithTooltips({
 interface RelationshipRowProps {
   rel: RelationshipLinkWithTooltip;
   onNodeSelect: (targetId: string) => void;
+  direction: 'in' | 'out';
 }
 
-function RelationshipRow({ rel, onNodeSelect }: RelationshipRowProps) {
+function RelationshipRow({ rel, onNodeSelect, direction }: RelationshipRowProps) {
   const handleClick = () => onNodeSelect(rel.target);
 
   // Wrap the predicate with PredicateTooltip when tooltip data is available.
@@ -79,28 +71,34 @@ function RelationshipRow({ rel, onNodeSelect }: RelationshipRowProps) {
         destinationTypeLabel={rel.destinationTypeLabel}
         data-testid={`relationship-predicate-tooltip-${rel.id}`}
       >
-        <span className="graph-inspector__relationship-predicate">
+        <span className="graph-inspector__rel-pred">
           {rel.predicate}
         </span>
       </PredicateTooltip>
     ) : (
-      <span className="graph-inspector__relationship-predicate">
+      <span className="graph-inspector__rel-pred">
         {rel.predicate}
       </span>
     );
 
+  const directionArrow = direction === 'out' ? '→' : '←';
+  const directionClass = direction === 'out' ? 'graph-inspector__rel-dir--out' : '';
+
   return (
-    <div className="graph-inspector__relationship" key={rel.id}>
+    <li className="graph-inspector__rel" key={rel.id}>
+      <div className={`graph-inspector__rel-dir ${directionClass}`}>{directionArrow}</div>
       {predicateBadge}
       <button
         type="button"
-        className="graph-inspector__relationship-target"
+        className="graph-inspector__rel-target"
+        data-domain={rel.targetDomain}
         onClick={handleClick}
         aria-label={`Navigate to ${rel.targetTitle}`}
       >
+        <span className="graph-inspector__rel-swatch" />
         {rel.targetTitle}
       </button>
-    </div>
+    </li>
   );
 }
 
