@@ -13,6 +13,8 @@ function reset() {
       view: 'model',
       layerId: null,
       selectedId: null,
+      selectedEdgeId: null,
+      highlightedEdgeId: null,
       changesetId: null,
       canvasDark: false,
       chatOpen: false,
@@ -238,6 +240,95 @@ describe('selectLayer / selectChangeset / toggleChat / setWide', () => {
     expect(get().chatOpen).toBe(true);
     get().setWide(true);
     expect(get().wide).toBe(true);
+  });
+});
+
+describe('selectEdge / setHighlightedEdgeId — edge selection (ADR-6: mutually exclusive with node)', () => {
+  it('selectEdge sets selectedEdgeId, clears selectedId, and resets focus to layer', () => {
+    useUiStore.setState({ selectedId: 'node-1', focus: 'node' });
+    get().selectEdge('edge-1');
+    const s = get();
+    expect(s.selectedEdgeId).toBe('edge-1');
+    expect(s.selectedId).toBeNull();
+    expect(s.focus).toBe('layer');
+  });
+
+  it('selectNode / selectGraphNode / navigateToElement / navigateToSpecNode all clear a prior edge selection', () => {
+    useUiStore.setState({ selectedEdgeId: 'edge-1' });
+    get().selectNode('elem-1');
+    expect(get().selectedEdgeId).toBeNull();
+
+    useUiStore.setState({ selectedEdgeId: 'edge-1', layerId: 'api' });
+    get().selectGraphNode('elem-2');
+    expect(get().selectedEdgeId).toBeNull();
+
+    useUiStore.setState({ selectedEdgeId: 'edge-1', view: 'model', layerId: 'motivation' });
+    get().navigateToElement('elem-3', 'application');
+    expect(get().selectedEdgeId).toBeNull();
+
+    useUiStore.setState({ selectedEdgeId: 'edge-1', view: 'spec', layerId: 'data-model' });
+    get().navigateToSpecNode('api.response', 'api');
+    expect(get().selectedEdgeId).toBeNull();
+  });
+
+  it('selectLayer and toggleLayer (expanding) clear a prior edge selection', () => {
+    useUiStore.setState({ selectedEdgeId: 'edge-1' });
+    get().selectLayer('technology');
+    expect(get().selectedEdgeId).toBeNull();
+
+    useUiStore.setState({ selectedEdgeId: 'edge-1' });
+    get().toggleLayer('model', 'security'); // expands
+    expect(get().selectedEdgeId).toBeNull();
+  });
+
+  it('toggleLayer (collapsing) preserves a prior edge selection', () => {
+    useUiStore.setState({
+      selectedEdgeId: 'edge-1',
+      expandedLayers: new Set(['model:security']),
+      layerId: 'security',
+    });
+    get().toggleLayer('model', 'security'); // collapses
+    expect(get().selectedEdgeId).toBe('edge-1');
+  });
+
+  it('toggleSection clears a prior edge selection on a genuine view switch, but not on a same-view toggle', () => {
+    useUiStore.setState({ view: 'model', selectedEdgeId: 'edge-1' });
+    get().toggleSection('spec');
+    expect(get().selectedEdgeId).toBeNull();
+
+    useUiStore.setState({ view: 'model', selectedEdgeId: 'edge-2' });
+    get().toggleSection('model'); // already active — pure expand/collapse
+    expect(get().selectedEdgeId).toBe('edge-2');
+  });
+
+  it('a node selection clears a prior edge selection, and vice versa (round trip)', () => {
+    get().selectNode('elem-1');
+    expect(get().selectedId).toBe('elem-1');
+    get().selectEdge('edge-1');
+    expect(get().selectedEdgeId).toBe('edge-1');
+    expect(get().selectedId).toBeNull();
+    get().selectNode('elem-2');
+    expect(get().selectedId).toBe('elem-2');
+    expect(get().selectedEdgeId).toBeNull();
+  });
+
+  it('setHighlightedEdgeId sets/clears the transient hover-preview id independently of selection', () => {
+    get().selectEdge('edge-1');
+    get().setHighlightedEdgeId('edge-2');
+    expect(get().highlightedEdgeId).toBe('edge-2');
+    expect(get().selectedEdgeId).toBe('edge-1'); // untouched by hover
+
+    get().setHighlightedEdgeId(null);
+    expect(get().highlightedEdgeId).toBeNull();
+  });
+
+  it('does NOT persist selectedEdgeId/highlightedEdgeId (URL/transient, not localStorage)', () => {
+    get().selectEdge('edge-1');
+    get().setHighlightedEdgeId('edge-1');
+
+    const stored = JSON.parse(localStorage.getItem(PERSIST_KEY) ?? '{}');
+    expect(stored.state).not.toHaveProperty('selectedEdgeId');
+    expect(stored.state).not.toHaveProperty('highlightedEdgeId');
   });
 });
 

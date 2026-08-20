@@ -25,6 +25,11 @@
  * `onNodeSelect` navigates: in Model it switches `uiStore.layerId` when the
  * target lives in another layer (keeping `view='model'`); in Schema it switches
  * the layer for cross-layer relationship targets (keeping `view='spec'`).
+ *
+ * When `uiStore.selectedEdgeId` is set (a Model graph edge click — ADR-6:
+ * mutually exclusive with node selection, so `selectedId`/`metadata` are null
+ * whenever this is set), the drawer instead renders `EdgeInspector`'s
+ * source/edge/destination stack. `open` follows whichever of the two is set.
  */
 
 import { useMemo, useState } from 'react';
@@ -32,9 +37,10 @@ import { GraphInspector, DetailDrawer } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
 import { layerLabel } from './domain';
 import { AnnotationsSection } from './AnnotationsSection';
+import { EdgeInspector } from './EdgeInspector';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
-import { buildModelIndex, dottedId } from '../data/modelGraph';
+import { buildModelIndex, dottedId, edgeMetadata } from '../data/modelGraph';
 import {
   relationshipsForElement,
   metadataForElement,
@@ -59,6 +65,8 @@ export function Inspector() {
   const view = useUiStore((s) => s.view);
   const layerId = useUiStore((s) => s.layerId);
   const selectedId = useUiStore((s) => s.selectedId);
+  const selectedEdgeId = useUiStore((s) => s.selectedEdgeId);
+  const selectGraphNode = useUiStore((s) => s.selectGraphNode);
   const navigateToElement = useUiStore((s) => s.navigateToElement);
   const navigateToSpecNode = useUiStore((s) => s.navigateToSpecNode);
 
@@ -66,6 +74,15 @@ export function Inspector() {
   const { raw: specRaw } = useSpec();
   const index = useMemo(() => buildModelIndex(model), [model]);
   const isSpec = view === 'spec';
+
+  // ─── Selected edge (Model view only — edges only exist in the Model graph) ─
+  const edge = useMemo(
+    () =>
+      !isSpec && selectedEdgeId
+        ? edgeMetadata(model, selectedEdgeId, index, specRaw)
+        : undefined,
+    [isSpec, model, selectedEdgeId, index, specRaw],
+  );
 
   // ─── Model element metadata + relationships ────────────────────────────────
   const modelNode =
@@ -119,26 +136,36 @@ export function Inspector() {
 
   return (
     <DetailDrawer
-      open={!!metadata}
+      open={!!metadata || !!edge}
       width={width}
       onWidthChange={setWidth}
       data-testid="inspector"
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <GraphInspector
-          node={metadata}
-          relationships={relationships}
-          onNodeSelect={handleSelect}
-          emptyStateText={
-            isSpec
-              ? 'Select a node type to inspect.'
-              : 'Select an element to inspect.'
-          }
+      {edge && selectedEdgeId ? (
+        <EdgeInspector
+          edgeId={selectedEdgeId}
+          edge={edge}
+          model={model}
+          index={index}
+          onNodeSelect={selectGraphNode}
         />
-        {annotationElementId && (
-          <AnnotationsSection elementId={annotationElementId} />
-        )}
-      </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <GraphInspector
+            node={metadata}
+            relationships={relationships}
+            onNodeSelect={handleSelect}
+            emptyStateText={
+              isSpec
+                ? 'Select a node type to inspect.'
+                : 'Select an element to inspect.'
+            }
+          />
+          {annotationElementId && (
+            <AnnotationsSection elementId={annotationElementId} />
+          )}
+        </div>
+      )}
     </DetailDrawer>
   );
 }

@@ -11,7 +11,7 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { screen, waitFor, fireEvent } from '@testing-library/react';
+import { screen, waitFor, fireEvent, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { GraphCanvasProps } from '@tinkermonkey/heimdall-ui';
 
@@ -530,6 +530,116 @@ describe('Canvas — Relations toggle actually filters rendered edges', () => {
     fireEvent.click(screen.getByRole('radio', { name: 'All' }));
     expect(useUiStore.getState().showAllRelations).toBe(true);
     await waitFor(() => expect(graphEdgeCount()).toBe(12));
+  });
+});
+
+describe('Canvas — edge selection, highlighting, and the edge inspector', () => {
+  // apm layer, "WebSocket Disconnect Alert" --monitors--> "WebSocket
+  // Connection State Gauge" (verified against the model fixture).
+  const EDGE_ID =
+    'rel:apm.alert.web-socket-disconnect-alert:apm.metricinstrument.web-socket-connection-state-gauge:monitors';
+
+  function edgeLabelEl(): HTMLElement {
+    const el = document.querySelector(
+      `[data-testid="graph-edge-${EDGE_ID}"] .graph-edge__label`,
+    );
+    expect(el).toBeTruthy();
+    return el as HTMLElement;
+  }
+
+  it('clicking an edge predicate selects it, renders it with a distinct highlighted state, and populates the Inspector', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphEdgeCount()).toBe(12));
+
+    fireEvent.click(edgeLabelEl());
+
+    await waitFor(() => expect(useUiStore.getState().selectedEdgeId).toBe(EDGE_ID));
+    const edgeEl = document.querySelector(`[data-testid="graph-edge-${EDGE_ID}"]`)!;
+    expect(edgeEl).toHaveClass('selected');
+    expect(edgeEl).toHaveClass('graph-edge--hot');
+
+    // Sidebar: source node info, edge info, destination node info, in order.
+    const inspector = screen.getByTestId('edge-inspector');
+    const children = [...inspector.children].map((c) => c.getAttribute('data-testid'));
+    expect(children).toEqual([
+      'edge-inspector-source-node',
+      'edge-inspector-edge',
+      'edge-inspector-destination-node',
+    ]);
+
+    expect(
+      within(screen.getByTestId('edge-inspector-source-node')).getByTestId('inspector-title'),
+    ).toHaveTextContent('WebSocket Disconnect Alert');
+    expect(screen.getByTestId('edge-inspector-edge')).toHaveTextContent('monitors');
+    expect(
+      within(screen.getByTestId('edge-inspector-destination-node')).getByTestId('inspector-title'),
+    ).toHaveTextContent('WebSocket Connection State Gauge');
+  });
+
+  it('selecting a node clears an edge selection, and selecting an edge clears a node selection (ADR-6)', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphEdgeCount()).toBe(12));
+
+    fireEvent.click(edgeLabelEl());
+    await waitFor(() => expect(useUiStore.getState().selectedEdgeId).toBe(EDGE_ID));
+
+    const firstCard = document.querySelector(
+      '[data-testid^="graph-node-"] .graph-node--card',
+    ) as HTMLElement;
+    fireEvent.click(firstCard);
+
+    await waitFor(() => expect(useUiStore.getState().selectedId).not.toBeNull());
+    expect(useUiStore.getState().selectedEdgeId).toBeNull();
+    expect(screen.queryByTestId('edge-inspector')).not.toBeInTheDocument();
+
+    fireEvent.click(edgeLabelEl());
+    await waitFor(() => expect(useUiStore.getState().selectedEdgeId).toBe(EDGE_ID));
+    expect(useUiStore.getState().selectedId).toBeNull();
+  });
+
+  it('clicking the graph background clears an edge selection too', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphEdgeCount()).toBe(12));
+
+    fireEvent.click(edgeLabelEl());
+    await waitFor(() => expect(useUiStore.getState().selectedEdgeId).toBe(EDGE_ID));
+
+    // onBackgroundClick is driven by real pointerdown/pointerup (drag-distance
+    // check), not a bare synthetic 'click' — same as the existing node
+    // background-deselect test above, use userEvent.click for a real
+    // pointer sequence.
+    const canvas = document.querySelector('.graph-canvas') as HTMLElement;
+    await user.click(canvas);
+
+    await waitFor(() => expect(useUiStore.getState().selectedEdgeId).toBeNull());
+    expect(screen.getByTestId('inspector')).toHaveStyle({ width: '0px' });
+  });
+
+  it('hovering an edge predicate shows the PredicateTooltip with the resolved source/predicate/destination', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphEdgeCount()).toBe(12));
+
+    fireEvent.mouseOver(edgeLabelEl());
+
+    const card = await screen.findByTestId('edge-predicate-tooltip-card');
+    expect(within(card).getAllByText('monitors').length).toBeGreaterThan(0);
+    const diagram = within(card).getByTestId('edge-predicate-tooltip-diagram');
+    expect(within(diagram).getByText('alert')).toBeInTheDocument();
+    expect(within(diagram).getByText('metricinstrument')).toBeInTheDocument();
+
+    fireEvent.mouseOut(edgeLabelEl(), { relatedTarget: document.body });
+    await waitFor(() =>
+      expect(screen.queryByTestId('edge-predicate-tooltip-card')).not.toBeInTheDocument(),
+    );
   });
 });
 

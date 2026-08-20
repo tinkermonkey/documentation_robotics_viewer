@@ -30,18 +30,28 @@ export interface PredicateTooltipProps {
   'data-testid'?: string;
 }
 
-export function PredicateTooltip({
-  children,
+export interface PredicateTooltipContentProps {
+  predicate: string;
+  sourceTypeLabel: string;
+  destinationTypeLabel: string;
+  'data-testid'?: string;
+}
+
+/**
+ * The tooltip card's body markup, extracted from `PredicateTooltip` so a
+ * caller that can't compose `RichTooltip`'s trigger-wrapping (e.g. a graph
+ * edge rendered internally by `GraphCanvas`, with no `children` slot to wrap —
+ * see `EdgeHoverTooltip`) can still reuse the exact same content.
+ */
+export function PredicateTooltipContent({
   predicate,
   sourceTypeLabel,
   destinationTypeLabel,
-  placement,
-  className,
   'data-testid': testId = 'predicate-tooltip',
-}: PredicateTooltipProps) {
+}: PredicateTooltipContentProps) {
   const definition = predicateDefinition(predicate);
 
-  const content = (
+  return (
     <div className="rich-tooltip__body" data-testid={`${testId}-content`}>
       <div className="rich-tooltip__title">{predicate}</div>
       <p className="rich-tooltip__description">
@@ -61,10 +71,27 @@ export function PredicateTooltip({
       </div>
     </div>
   );
+}
 
+export function PredicateTooltip({
+  children,
+  predicate,
+  sourceTypeLabel,
+  destinationTypeLabel,
+  placement,
+  className,
+  'data-testid': testId = 'predicate-tooltip',
+}: PredicateTooltipProps) {
   return (
     <RichTooltip
-      content={content}
+      content={
+        <PredicateTooltipContent
+          predicate={predicate}
+          sourceTypeLabel={sourceTypeLabel}
+          destinationTypeLabel={destinationTypeLabel}
+          data-testid={testId}
+        />
+      }
       placement={placement}
       className={className}
       data-testid={testId}

@@ -74,6 +74,14 @@
  * `GraphCanvas`'s own root) so `GraphControls` and `Inspector` — both its siblings,
  * outside what the native Fullscreen API would otherwise render — stay visible while
  * fullscreen.
+ *
+ * Model-view-only edge interaction (edges only carry model edge metadata there):
+ * `selectedEdgeId`/`onEdgeSelect` wire click-to-select straight to `GraphCanvas`'s
+ * own built-in support (accent-color `.selected` + keyboard/aria); `useEdgeInteraction`
+ * separately delegates hover over an edge's predicate label (`GraphCanvas` has no
+ * per-edge hover callback or `renderEdge` slot to hook directly) to drive
+ * `uiStore.highlightedEdgeId` and the floating `EdgeHoverTooltip`. Both selected and
+ * highlighted edges render `variant: 'hot'` (ADR-3) in the `edges` array built below.
  */
 
 import { useCallback, useMemo, useRef, useState } from 'react';
@@ -84,18 +92,22 @@ import {
   Icon,
   type GraphNodeData,
   type GraphNodeHierarchyMeta,
+  type GraphEdgeData,
 } from '@tinkermonkey/heimdall-ui';
 import { useUiStore, type GraphLayout, type NodeMarginPreset, type NodeDisplay } from './uiStore';
 import { layerColor, layerLabel, layerStandard } from './domain';
 import { PageView, usePageData } from './PageView';
 import { Inspector } from './Inspector';
 import { ModelCardNode } from './ModelCardNode';
+import { EdgeHoverTooltip } from './EdgeHoverTooltip';
+import { useEdgeInteraction } from './useEdgeInteraction';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import {
   buildModelIndex,
   nodesWithCardData,
   edgesForLayer as modelEdgesForLayer,
+  edgeMetadata,
   type CardData,
 } from '../data/modelGraph';
 import {
@@ -363,7 +375,10 @@ export function Canvas() {
   const view = useUiStore((s) => s.view);
   const layerId = useUiStore((s) => s.layerId);
   const selectedId = useUiStore((s) => s.selectedId);
+  const selectedEdgeId = useUiStore((s) => s.selectedEdgeId);
+  const highlightedEdgeId = useUiStore((s) => s.highlightedEdgeId);
   const selectGraphNode = useUiStore((s) => s.selectGraphNode);
+  const selectEdge = useUiStore((s) => s.selectEdge);
   const selectLayer = useUiStore((s) => s.selectLayer);
   const mode = useUiStore((s) => s.mode);
   const setMode = useUiStore((s) => s.setMode);
@@ -422,12 +437,26 @@ export function Canvas() {
     [selectGraphNode, cardData],
   );
 
-  const edges = useMemo(() => {
+  // Model-only: click-to-select + hover-to-preview (ADR-2/3) both render the
+  // same "hot" variant. hoverHandlers are spread onto the graph wrapper below.
+  const { hoveredEdgeId, hoveredEdgeAnchor, edgeHoverHandlers } = useEdgeInteraction();
+
+  const edges = useMemo((): GraphEdgeData[] => {
     if (!layerId) return [];
-    return isSpec
-      ? specEdgesForLayer(specRaw, layerId)
-      : modelEdgesForLayer(model, layerId, index);
-  }, [isSpec, specRaw, model, layerId, index]);
+    if (isSpec) return specEdgesForLayer(specRaw, layerId);
+    return modelEdgesForLayer(model, layerId, index).map((edge) =>
+      edge.id === selectedEdgeId || edge.id === highlightedEdgeId
+        ? { ...edge, variant: 'hot' }
+        : edge,
+    );
+  }, [isSpec, specRaw, model, layerId, index, selectedEdgeId, highlightedEdgeId]);
+
+  // Predicate tooltip content for whichever edge is currently hovered — only
+  // meaningful in the Model view (edges only carry model edge metadata there).
+  const hoveredEdgeMeta = useMemo(
+    () => (!isSpec && hoveredEdgeId ? edgeMetadata(model, hoveredEdgeId, index, specRaw) : undefined),
+    [isSpec, model, hoveredEdgeId, index, specRaw],
+  );
 
   const slug = layerId ?? '';
   const standard = spec.byLayer[slug]?.standard || layerStandard(slug);
@@ -522,7 +551,11 @@ export function Canvas() {
         }
       />
 
-      <div ref={canvasAreaRef} style={{ flex: 1, position: 'relative', minHeight: 0 }}>
+      <div
+        ref={canvasAreaRef}
+        style={{ flex: 1, position: 'relative', minHeight: 0 }}
+        {...(!isSpec ? edgeHoverHandlers : {})}
+      >
         {isPage ? (
           !layerId ? (
             <CanvasEmptyState message={emptyMessage} />
@@ -545,6 +578,8 @@ export function Canvas() {
                   edges={edges}
                   selectedNodeId={selectedId ?? undefined}
                   onNodeSelect={(id) => selectGraphNode(id)}
+                  selectedEdgeId={!isSpec ? (selectedEdgeId ?? undefined) : undefined}
+                  onEdgeSelect={!isSpec ? selectEdge : undefined}
                   onBackgroundClick={() => selectLayer(layerId)}
                   renderNode={!isSpec && nodeDisplay === 'card' ? renderCardNode : undefined}
                   centerOnSelect
@@ -568,6 +603,17 @@ export function Canvas() {
                     language as the built-in bottom-left GraphToolbar. */}
                 <GraphControls />
               </>
+            )}
+            {/* Portal-rendered near the hovered edge's predicate label — see
+                useEdgeInteraction's doc comment for why this can't be a
+                RichTooltip-wrapped trigger. */}
+            {hoveredEdgeAnchor && hoveredEdgeMeta && (
+              <EdgeHoverTooltip
+                anchorRect={hoveredEdgeAnchor}
+                predicate={hoveredEdgeMeta.predicate}
+                sourceTypeLabel={hoveredEdgeMeta.sourceNode.type}
+                destinationTypeLabel={hoveredEdgeMeta.targetNode.type}
+              />
             )}
             {/* Floats over this relative wrapper's right edge (Heimdall
                 DetailDrawer) — auto-hides when nothing's selected, same

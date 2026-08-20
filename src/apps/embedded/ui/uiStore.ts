@@ -29,6 +29,19 @@ interface UiState {
   view: ViewKind;
   layerId: string | null;
   selectedId: string | null;
+  /** Selected Model graph edge (a link id), mutually exclusive with `selectedId`
+   *  (ADR-6) — selecting one always clears the other. Drives the Inspector's
+   *  edge branch (source/edge/destination) and round-trips through the URL's
+   *  `?edge=` param, same as `selectedId`'s `?node=`. Edges only exist in the
+   *  Model view's graph, so nothing else needs to clear this on a Schema
+   *  selection beyond the existing view-switch clearing. */
+  selectedEdgeId: string | null;
+  /** Edge currently rendered with the `variant: 'hot'` highlight (ADR-3) —
+   *  driven by hover (see `useEdgeInteraction`), independent of click
+   *  selection: hovering a different edge than the selected one previews it
+   *  without disturbing `selectedEdgeId`. Not persisted or URL-synced —
+   *  purely a transient visual cue. */
+  highlightedEdgeId: string | null;
   changesetId: string | null;
   canvasDark: boolean;
   chatOpen: boolean;
@@ -77,6 +90,12 @@ interface UiState {
   selectNode: (selectedId: string) => void;
   /** Select a node clicked in the graph canvas (current layer). */
   selectGraphNode: (selectedId: string) => void;
+  /** Select an edge clicked in the Model graph (a link id) — clears any node
+   *  selection (ADR-6: mutually exclusive). */
+  selectEdge: (edgeId: string) => void;
+  /** Edge currently previewed as `variant: 'hot'` via hover; `null` clears it.
+   *  See `highlightedEdgeId` above. */
+  setHighlightedEdgeId: (edgeId: string | null) => void;
   /**
    * Navigate to an element by id, switching the active layer when it lives in
    * another layer (cross-layer relationship navigation). Stays in the Model
@@ -145,6 +164,8 @@ export const useUiStore = create<UiState>()(
       view: 'model',
       layerId: null,
       selectedId: null,
+      selectedEdgeId: null,
+      highlightedEdgeId: null,
       changesetId: null,
       // Dark by default (first visit, nothing persisted yet) — a later
       // explicit choice via toggleCanvasDark persists and overrides this.
@@ -170,23 +191,31 @@ export const useUiStore = create<UiState>()(
           return {
             layerId,
             selectedId: null,
+            selectedEdgeId: null,
             focus: 'layer',
             expandedSections: new Set(s.expandedSections).add(s.view),
             expandedLayers,
           };
         }),
 
-      selectNode: (selectedId) => set({ selectedId, focus: 'node' }),
+      selectNode: (selectedId) =>
+        set({ selectedId, selectedEdgeId: null, focus: 'node' }),
 
       selectGraphNode: (selectedId) =>
         set((s) => ({
           selectedId,
+          selectedEdgeId: null,
           focus: 'node',
           expandedSections: new Set(s.expandedSections).add(s.view),
           expandedLayers: s.layerId
             ? new Set(s.expandedLayers).add(layerKey(s.view, s.layerId))
             : s.expandedLayers,
         })),
+
+      selectEdge: (selectedEdgeId) =>
+        set({ selectedEdgeId, selectedId: null, focus: 'layer' }),
+
+      setHighlightedEdgeId: (highlightedEdgeId) => set({ highlightedEdgeId }),
 
       navigateToElement: (elementId, layerId) =>
         set((s) => {
@@ -198,6 +227,7 @@ export const useUiStore = create<UiState>()(
             view: 'model',
             layerId,
             selectedId: elementId,
+            selectedEdgeId: null,
             focus: 'node',
             expandedSections: new Set(s.expandedSections).add('model'),
             expandedLayers,
@@ -214,6 +244,7 @@ export const useUiStore = create<UiState>()(
             view: 'spec',
             layerId,
             selectedId: specNodeId,
+            selectedEdgeId: null,
             focus: 'node',
             expandedSections: new Set(s.expandedSections).add('spec'),
             expandedLayers,
@@ -260,7 +291,9 @@ export const useUiStore = create<UiState>()(
             // switching sections keeps you on the same layer, just the other
             // view of it. Toggling the ALREADY-active section's own
             // expand/collapse isn't a view switch, so selection is untouched.
-            ...(viewChanged ? { selectedId: null, focus: 'layer' as const } : {}),
+            ...(viewChanged
+              ? { selectedId: null, selectedEdgeId: null, focus: 'layer' as const }
+              : {}),
           };
         }),
 
@@ -278,6 +311,7 @@ export const useUiStore = create<UiState>()(
             view: sectionId as ViewKind,
             layerId,
             selectedId: collapsing ? s.selectedId : null,
+            selectedEdgeId: collapsing ? s.selectedEdgeId : null,
             focus: collapsing ? s.focus : 'layer',
             expandedSections: new Set(s.expandedSections).add(sectionId),
             expandedLayers,
