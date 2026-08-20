@@ -68,7 +68,7 @@ export function relationshipsForElement(
   return rels;
 }
 
-interface SourceReference {
+export interface SourceReference {
   provenance?: string;
   locations?: Array<{ file?: string; symbol?: string }>;
 }
@@ -78,8 +78,20 @@ interface SourceReference {
  * `extracted`/`authored`), defaulting to `authored` when absent — matching the
  * design's `e.src ? 'extracted' : 'authored'`.
  */
-function provenance(ref: SourceReference | undefined): string {
+export function provenance(ref: SourceReference | undefined): string {
   return ref?.provenance ?? 'authored';
+}
+
+/**
+ * The first `source_reference` location that has a file or symbol, matching
+ * the design's `e.src` lookup. Shared by `sourceSymbol` (metadata grid, a
+ * merged display string) and page-view facts (`source_reference.file` /
+ * `source_reference.symbol`, the location's fields shown separately).
+ */
+export function sourceLocation(
+  ref: SourceReference | undefined,
+): { file?: string; symbol?: string } {
+  return ref?.locations?.find((l) => l.symbol || l.file) ?? {};
 }
 
 /**
@@ -87,8 +99,8 @@ function provenance(ref: SourceReference | undefined): string {
  * matching the design's `e.src.symbol` (prefer the symbol, fall back to file).
  */
 function sourceSymbol(ref: SourceReference | undefined): string | undefined {
-  const loc = ref?.locations?.find((l) => l.symbol || l.file);
-  return loc?.symbol ?? loc?.file;
+  const loc = sourceLocation(ref);
+  return loc.symbol ?? loc.file;
 }
 
 /**

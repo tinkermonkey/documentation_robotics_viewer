@@ -110,7 +110,7 @@ export function shortName(slug: string, specNodeId: string): string {
  * the destination layer schema) is unavailable — so cross-layer targets still
  * read sensibly.
  */
-function titleForSpecNode(
+export function titleForSpecNode(
   spec: SpecPayload | undefined,
   layer: string,
   specNodeId: string,

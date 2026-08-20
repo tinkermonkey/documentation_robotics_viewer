@@ -29,7 +29,13 @@ import {
   cardShort,
   intraRelCount,
   attributeRows,
+  titleForSpecNode,
 } from './specGraph';
+import {
+  type SourceReference,
+  provenance,
+  sourceLocation,
+} from './relationships';
 import { layerColor, layerLabel, layerStandard, isLayerSlug } from '../ui/domain';
 
 // ─── Shared row/target shapes ──────────────────────────────────────────────
@@ -374,16 +380,6 @@ function allRelationshipSchemas(
   return out;
 }
 
-function titleFor(
-  spec: SpecPayload | undefined,
-  layer: string,
-  specNodeId: string,
-): string {
-  const short = shortName(layer, specNodeId);
-  const ns = schemaForLayer(spec, layer)?.nodeSchemas?.[short];
-  return ns?.title ?? short;
-}
-
 export function specNodePageData(
   layerId: string,
   specNodeId: string,
@@ -433,7 +429,7 @@ export function specNodePageData(
         shortName(r.destination_layer, r.destination_spec_node_id),
       ),
       nodeTypeCell(
-        titleFor(specRaw, r.destination_layer, r.destination_spec_node_id),
+        titleForSpecNode(specRaw, r.destination_layer, r.destination_spec_node_id),
         'name',
         r.destination_layer,
         shortName(r.destination_layer, r.destination_spec_node_id),
@@ -453,7 +449,7 @@ export function specNodePageData(
     },
     cells: [
       nodeTypeCell(
-        titleFor(specRaw, r.source_layer, r.source_spec_node_id),
+        titleForSpecNode(specRaw, r.source_layer, r.source_spec_node_id),
         'name',
         r.source_layer,
         shortName(r.source_layer, r.source_spec_node_id),
@@ -565,19 +561,8 @@ const OUT_TABLE_WIDTHS =
 const IN_TABLE_WIDTHS =
   'minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr) minmax(0,0.8fr)';
 
-interface SourceReference {
-  provenance?: string;
-  locations?: Array<{ file?: string; symbol?: string }>;
-}
-
 function provenanceOf(n: ModelNode): string {
-  const ref = n.source_reference as SourceReference | undefined;
-  return ref?.provenance ?? 'authored';
-}
-
-function sourceLocation(n: ModelNode): { file?: string; symbol?: string } {
-  const ref = n.source_reference as SourceReference | undefined;
-  return ref?.locations?.find((l) => l.symbol || l.file) ?? {};
+  return provenance(n.source_reference as SourceReference | undefined);
 }
 
 interface NodeMetadata {
@@ -677,7 +662,7 @@ export function modelNodePageData(
   // `/api/model` links reference and the annotations API expects (see
   // modelGraph.ts's `dottedId`), NOT `layer.type.UUID`.
   const path = dottedId(n);
-  const loc = sourceLocation(n);
+  const loc = sourceLocation(n.source_reference as SourceReference | undefined);
   const meta = (n.metadata ?? {}) as NodeMetadata;
 
   return {
