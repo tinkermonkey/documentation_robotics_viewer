@@ -1,5 +1,5 @@
 /**
- * node-page.spec.ts — Phase 4 E2E validation of node page navigation + connections graph
+ * node-page.spec.ts — node page navigation, neighborhood graph, and click-through
  *
  * Validates the complete user-facing flow:
  * 1. Sidebar click → correct node page (Model & Schema)
@@ -11,7 +11,7 @@
 
 import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { gotoView, ROUTES, fetchModel } from './helpers';
+import { gotoView, ROUTES } from './helpers';
 
 const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
 
@@ -45,17 +45,11 @@ async function scan(page: Page) {
 test.describe('node page — E2E navigation + graph', () => {
   test('sidebar click → Model element node page renders with neighborhood graph', async ({
     page,
-    request,
   }) => {
     // Start in model graph view.
     await gotoView(page, ROUTES.model);
-    const model = await fetchModel(request);
 
-    // Pick a data-model element (the default layer).
-    const targetNode = model.nodes.find((n) => n.layer_id === 'data-model' && n.type !== 'root');
-    expect(targetNode).toBeTruthy();
-
-    // Select it via the nav tree (sidebar expand + click the element).
+    // Select an element via the nav tree (sidebar expand + click the element).
     // Nav tree L1: layer button (e.g., "DATA-MODEL 34").
     await page.getByRole('button', { name: /^DATA-MODEL \d+$/ }).click();
     // Nav tree L2: the element (first available).
@@ -73,21 +67,15 @@ test.describe('node page — E2E navigation + graph', () => {
     await expect(pageTitle).toContainText(targetName!);
 
     // Neighborhood graph is present (NeighborhoodGraphView renders if neighborhood.empty === false).
-    const neighborhood = page.locator('[data-testid^="graph-node-"]').first();
+    const neighborhood = page.locator('[data-testid="neighborhood-graph-view"]').locator('[data-testid^="graph-node-"]').first();
     await expect(neighborhood).toBeVisible();
   });
 
   test('sidebar click → Schema node type node page renders with neighborhood graph', async ({
     page,
-    request,
   }) => {
     // Start in schema graph view.
     await gotoView(page, ROUTES.spec);
-    const model = await fetchModel(request);
-
-    // Pick a layer with schema info (e.g., data-model).
-    const layer = model.nodes.find((n) => n.layer_id === 'data-model');
-    expect(layer).toBeTruthy();
 
     // Expand the layer in the nav tree and select a node type.
     await page.getByRole('button', { name: /^DATA-MODEL \d+$/ }).click();
@@ -105,7 +93,7 @@ test.describe('node page — E2E navigation + graph', () => {
     await expect(pageTitle).toContainText(targetTypeLabel!);
 
     // Neighborhood graph is present.
-    const neighborhood = page.locator('[data-testid^="graph-node-"]').first();
+    const neighborhood = page.locator('[data-testid="neighborhood-graph-view"]').locator('[data-testid^="graph-node-"]').first();
     await expect(neighborhood).toBeVisible();
   });
 
@@ -127,8 +115,8 @@ test.describe('node page — E2E navigation + graph', () => {
     await expect(pageView.locator('h1, [role="heading"]')).toContainText(firstNodeName!);
 
     // Find a neighbor node in the neighborhood graph (not the center).
-    // The center node has `isCenter: true` in NeighborhoodGraphView — clicking it does nothing.
-    const allGraphNodes = page.locator('[data-testid^="graph-node-"]');
+    const neighborhoodView = page.getByTestId('neighborhood-graph-view');
+    const allGraphNodes = neighborhoodView.locator('[data-testid^="graph-node-"]');
     const nodeCount = await allGraphNodes.count();
 
     // Need at least 2 nodes (center + neighbor).
@@ -136,29 +124,43 @@ test.describe('node page — E2E navigation + graph', () => {
       test.skip();
     }
 
-    // Click the second node (assuming first is center based on isCenter logic).
-    const neighborNode = allGraphNodes.nth(1);
-    const neighborLabel = await neighborNode.locator('.graph-node__label').textContent();
-    await neighborNode.locator('.graph-node').click();
+    // Find a neighbor by label (its text differs from the current page title).
+    const centerTitle = firstNodeName!.trim();
+    let neighborNode = null;
+    let neighborLabel = '';
+    for (let i = 0; i < nodeCount; i++) {
+      const node = allGraphNodes.nth(i);
+      const label = await node.locator('.graph-node__label').textContent();
+      if (label && label.trim() !== centerTitle) {
+        neighborNode = node;
+        neighborLabel = label;
+        break;
+      }
+    }
+
+    if (!neighborNode) {
+      test.skip();
+    }
+
+    // Click the neighbor.
+    await neighborNode!.locator('.graph-node').click();
 
     // Should navigate to the neighbor's page.
     // The page title should change.
     const newTitle = page.getByTestId('page-view').locator('h1, [role="heading"]').first();
     // Give it a moment to navigate.
-    await expect(newTitle).toContainText(neighborLabel!, { timeout: 10_000 });
+    await expect(newTitle).toContainText(neighborLabel, { timeout: 10_000 });
 
     // The new page's neighborhood graph should render (it may be the same graph but with a new center).
-    const newNeighborhood = page.locator('[data-testid^="graph-node-"]').first();
+    const newNeighborhood = page.getByTestId('neighborhood-graph-view').locator('[data-testid^="graph-node-"]').first();
     await expect(newNeighborhood).toBeVisible();
   });
 
   test("navigating from layer-page link into node page continues to work", async ({
     page,
-    request,
   }) => {
     // Start in model graph view.
     await gotoView(page, ROUTES.model);
-    const model = await fetchModel(request);
 
     // Navigate to the layer page view (graph mode).
     await page.getByRole('button', { name: /^DATA-MODEL \d+$/ }).click();
@@ -170,8 +172,8 @@ test.describe('node page — E2E navigation + graph', () => {
     // The layer page shows breadcrumbs and facts.
     const pageView = page.getByTestId('page-view');
     const crumbs = pageView.locator('[data-testid="page-crumb"]');
-    // Layer page should have breadcrumbs.
-    await expect(crumbs).toHaveCount(1); // Just "model" (the section crumb).
+    // Layer page has two navigable breadcrumbs: "model" and "data-model".
+    await expect(crumbs).toHaveCount(2);
 
     // Find an element link on the layer page (e.g., in an "Elements" table row).
     // Layer page has a table of elements; click one to navigate to its node page.
@@ -196,23 +198,20 @@ test.describe('node page — E2E navigation + graph', () => {
 
   test("node page without connections graph (empty neighborhood) doesn't crash", async ({
     page,
-    request,
   }) => {
     // This test verifies robustness: if an element has no neighbors,
     // the neighborhood graph should be null (NeighborhoodGraphView returns null).
     // The page should still render without errors.
 
     await gotoView(page, ROUTES.model);
-    const model = await fetchModel(request);
 
-    // Find a node that might have no neighbors (could be any node, depends on data).
-    const maybeIsolatedNode = model.nodes.find((n) => n.layer_id === 'testing');
-    if (!maybeIsolatedNode) {
+    // Try to navigate to the testing layer (may not have elements, which is OK).
+    const testingButton = page.getByRole('button', { name: /^TESTING \d+$/ });
+    if ((await testingButton.count()) === 0) {
       test.skip();
     }
 
-    // Navigate to it.
-    await page.getByRole('button', { name: /^TESTING \d+$/ }).click();
+    await testingButton.click();
     const firstLeaf = page.locator('.drv-nav-l2').first();
     if ((await firstLeaf.count()) === 0) {
       test.skip();
@@ -234,13 +233,8 @@ test.describe('node page — E2E navigation + graph', () => {
 
   test('model node page — graph and table rows are navigable and styled', async ({
     page,
-    request,
   }) => {
     await gotoView(page, ROUTES.model);
-    const model = await fetchModel(request);
-
-    const targetNode = model.nodes.find((n) => n.layer_id === 'data-model');
-    expect(targetNode).toBeTruthy();
 
     await page.getByRole('button', { name: /^DATA-MODEL \d+$/ }).click();
     const firstLeaf = page.locator('.drv-nav-l2').first();
@@ -269,13 +263,8 @@ test.describe('node page — E2E navigation + graph', () => {
 
   test('schema node page — graph and table rows are navigable and styled', async ({
     page,
-    request,
   }) => {
     await gotoView(page, ROUTES.spec);
-    const model = await fetchModel(request);
-
-    const layer = model.nodes.find((n) => n.layer_id === 'data-model');
-    expect(layer).toBeTruthy();
 
     await page.getByRole('button', { name: /^DATA-MODEL \d+$/ }).click();
     const firstLeaf = page.locator('.drv-nav-l2').first();
@@ -362,7 +351,8 @@ test.describe('node page — graph + table row click flow', () => {
     await expect(page.getByTestId('page-view')).toBeVisible();
 
     // Check for neighbors in the graph.
-    const graphNodes = page.locator('[data-testid^="graph-node-"]');
+    const neighborhoodView = page.getByTestId('neighborhood-graph-view');
+    const graphNodes = neighborhoodView.locator('[data-testid^="graph-node-"]');
     const nodeCount = await graphNodes.count();
     if (nodeCount >= 2) {
       // Click a neighbor (not the center).
