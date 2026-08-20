@@ -51,6 +51,7 @@ import { GraphInspector, GraphEdgeInspector, type GraphEdgeMetadata } from '@tin
 import { layerLabel } from './domain';
 import { NodeTypeBadge } from './NodeTypeBadge';
 import { PredicateTooltip } from './PredicateTooltip';
+import { RelationshipsWithTooltips } from './RelationshipsWithTooltips';
 import type { ModelDerived } from '../data/useModel';
 import type { EdgeMetadata, ModelIndex } from '../data/modelGraph';
 import type { SpecPayload } from '../data/specGraph';
@@ -157,9 +158,13 @@ export function EdgeInspector({
         )}
         <GraphInspector
           node={sourceMetadata}
-          relationships={sourceRelationships}
+          relationships={[]}
           onNodeSelect={onNodeSelect}
           emptyStateText="Source element unavailable."
+        />
+        <RelationshipsWithTooltips
+          relationships={sourceRelationships}
+          onNodeSelect={onNodeSelect}
         />
       </div>
       <div className="graph-edge-inspector__head-eyebrow" data-testid="edge-inspector-predicate-row">
@@ -207,9 +212,13 @@ export function EdgeInspector({
         )}
         <GraphInspector
           node={targetMetadata}
-          relationships={targetRelationships}
+          relationships={[]}
           onNodeSelect={onNodeSelect}
           emptyStateText="Destination element unavailable."
+        />
+        <RelationshipsWithTooltips
+          relationships={targetRelationships}
+          onNodeSelect={onNodeSelect}
         />
       </div>
     </div>

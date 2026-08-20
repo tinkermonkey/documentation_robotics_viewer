@@ -67,6 +67,7 @@ import { layerLabel } from './domain';
 import { AnnotationsSection } from './AnnotationsSection';
 import { EdgeInspector } from './EdgeInspector';
 import { NodeTypeBadge } from './NodeTypeBadge';
+import { RelationshipsWithTooltips } from './RelationshipsWithTooltips';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import { buildModelIndex, dottedId, edgeMetadata } from '../data/modelGraph';
@@ -216,16 +217,29 @@ export function Inspector() {
               </NodeTypeBadge>
             </div>
           )}
-          <GraphInspector
-            node={metadata}
-            relationships={relationships}
-            onNodeSelect={handleSelect}
-            emptyStateText={
-              isSpec
-                ? 'Select a node type to inspect.'
-                : 'Select an element to inspect.'
-            }
-          />
+          {/* Model view: render metadata + custom relationships with tooltips */}
+          {!isSpec ? (
+            <>
+              <GraphInspector
+                node={metadata}
+                relationships={[]}
+                onNodeSelect={handleSelect}
+                emptyStateText="Select an element to inspect."
+              />
+              <RelationshipsWithTooltips
+                relationships={relationships}
+                onNodeSelect={handleSelect}
+              />
+            </>
+          ) : (
+            /* Spec view: use GraphInspector's built-in relationship rendering */
+            <GraphInspector
+              node={metadata}
+              relationships={relationships}
+              onNodeSelect={handleSelect}
+              emptyStateText="Select a node type to inspect."
+            />
+          )}
           {annotationElementId && (
             <AnnotationsSection elementId={annotationElementId} />
           )}

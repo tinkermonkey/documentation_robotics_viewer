@@ -141,6 +141,28 @@ describe('Inspector — relationship navigation', () => {
       expect(s.selectedId).toBe(MODEL_LOADING_UUID);
     });
   });
+
+  it('shows the rich predicate tooltip on hover/focus of relationship predicates', async () => {
+    renderModelSelection('application', DATA_LOADER_UUID);
+
+    // Find the outgoing relationships section and get a predicate span.
+    const outgoing = await screen.findByTestId('inspector-outgoing');
+    const predicateTooltips = within(outgoing).getAllByTestId(
+      /relationship-predicate-tooltip/,
+    );
+    expect(predicateTooltips.length).toBeGreaterThan(0);
+
+    // Focus the first predicate to trigger the tooltip.
+    const predicateSpan = predicateTooltips[0].querySelector('span');
+    fireEvent.focus(predicateSpan || predicateTooltips[0]);
+    const tooltip = await screen.findByRole('tooltip');
+
+    // The tooltip should show the predicate and relationship section label.
+    expect(tooltip.querySelector('.rich-tooltip__title')).toBeInTheDocument();
+    expect(
+      within(tooltip).getByText('Relationship'),
+    ).toBeInTheDocument();
+  });
 });
 
 describe('Inspector — stale edge selection guard', () => {
