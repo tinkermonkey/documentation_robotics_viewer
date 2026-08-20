@@ -7,13 +7,20 @@ import {
   gridLayout,
   nodesForLayer,
   edgesForLayer,
+  nodesWithCardData,
+  edgeMetadata,
+  CARD_CROSS_LINK_CAP,
 } from '@/apps/embedded/data/modelGraph';
 import type {
   ModelDerived,
   ModelNode,
   ModelLink,
 } from '@/apps/embedded/data/useModel';
+import type { SpecPayload } from '@/apps/embedded/data/specGraph';
 import modelFixture from '../fixtures/model.json';
+import specFixture from '../fixtures/spec.json';
+
+const spec = specFixture as unknown as SpecPayload;
 
 // ─── Fixture → ModelDerived (mirrors useModel's derive, no React) ─────────────
 
@@ -284,5 +291,187 @@ describe('edgesForLayer', () => {
 
   it('produces zero edges for a layer with no nodes', () => {
     expect(edgesForLayer(model, 'no-such-layer', index)).toEqual([]);
+  });
+});
+
+// ─── nodesWithCardData ────────────────────────────────────────────────────────
+
+describe('nodesWithCardData', () => {
+  const index = buildModelIndex(model);
+
+  it('returns the same nodes as nodesForLayer, plus one CardData entry per node', () => {
+    const plain = nodesForLayer(model, 'security');
+    const { nodes, cardData } = nodesWithCardData(model, 'security', index);
+    expect(nodes).toEqual(plain);
+    expect(cardData.size).toBe(nodes.length);
+    for (const n of nodes) expect(cardData.has(n.id)).toBe(true);
+  });
+
+  it('counts intra-layer connections per node (Developer: 4, security model: 5)', () => {
+    const { cardData } = nodesWithCardData(model, 'security', index);
+    const developer = model.nodesByLayer['security'].find((n) => n.name === 'Developer')!;
+    const secModel = model.nodesByLayer['security'].find(
+      (n) => n.name === 'Documentation Robotics Viewer Security Model',
+    )!;
+    expect(cardData.get(developer.id)?.intraCount).toBe(4);
+    expect(cardData.get(secModel.id)?.intraCount).toBe(5);
+  });
+
+  it('has intraCount matching edgesForLayer degree for every node (cross-check against the edge list)', () => {
+    const { nodes, cardData } = nodesWithCardData(model, 'security', index);
+    const edges = edgesForLayer(model, 'security', index);
+    const degree = new Map<string, number>();
+    for (const e of edges) {
+      degree.set(e.sourceId, (degree.get(e.sourceId) ?? 0) + 1);
+      degree.set(e.targetId, (degree.get(e.targetId) ?? 0) + 1);
+    }
+    for (const n of nodes) {
+      expect(cardData.get(n.id)?.intraCount).toBe(degree.get(n.id) ?? 0);
+    }
+  });
+
+  it('enumerates inter-layer connections with predicate, target name, and target layer', () => {
+    const { cardData } = nodesWithCardData(model, 'security', index);
+    const bearerPolicy = model.nodesByLayer['security'].find(
+      (n) => n.name === 'Bearer Token Policy',
+    )!;
+    const data = cardData.get(bearerPolicy.id)!;
+    // 8 real inbound cross-layer links, capped to CARD_CROSS_LINK_CAP entries.
+    expect(data.crossTotal).toBe(8);
+    expect(data.crossLinks).toHaveLength(CARD_CROSS_LINK_CAP);
+    for (const link of data.crossLinks) {
+      expect(link.targetLayer).not.toBe('security');
+      expect(typeof link.predicate).toBe('string');
+      expect(typeof link.targetName).toBe('string');
+    }
+  });
+
+  it('a node with no cross-layer links gets an empty crossLinks array and zero crossTotal', () => {
+    const { cardData } = nodesWithCardData(model, 'security', index);
+    const developer = model.nodesByLayer['security'].find((n) => n.name === 'Developer')!;
+    const data = cardData.get(developer.id)!;
+    expect(data.crossTotal).toBe(0);
+    expect(data.crossLinks).toEqual([]);
+  });
+
+  it('sums to the manually-counted intra/cross link totals for a layer (api: 19 intra, 29 cross)', () => {
+    const { nodes, cardData } = nodesWithCardData(model, 'api', index);
+    const layerIds = new Set(nodes.map((n) => n.id));
+    let manualIntra = 0;
+    let manualCross = 0;
+    for (const l of model.links) {
+      const s = resolveEndpoint(index, l.source);
+      const t = resolveEndpoint(index, l.target);
+      if (!s || !t) continue;
+      const sIn = layerIds.has(s.id);
+      const tIn = layerIds.has(t.id);
+      if (!sIn && !tIn) continue;
+      if (sIn && tIn) manualIntra += 1;
+      else manualCross += 1;
+    }
+    expect(manualIntra).toBe(19);
+    expect(manualCross).toBe(29);
+
+    const summedIntra = [...cardData.values()].reduce((sum, d) => sum + d.intraCount, 0) / 2;
+    const summedCross = [...cardData.values()].reduce((sum, d) => sum + d.crossTotal, 0);
+    expect(summedIntra).toBe(manualIntra);
+    expect(summedCross).toBe(manualCross);
+  });
+
+  it('returns empty nodes/cardData for a layer with no elements', () => {
+    const { nodes, cardData } = nodesWithCardData(model, 'no-such-layer', index);
+    expect(nodes).toEqual([]);
+    expect(cardData.size).toBe(0);
+  });
+});
+
+// ─── edgeMetadata ─────────────────────────────────────────────────────────────
+
+describe('edgeMetadata', () => {
+  const index = buildModelIndex(model);
+
+  it('resolves a real edge to source/target identity + type + predicate', () => {
+    const link = model.links.find(
+      (l) => l.type === 'aggregates' && l.id.includes('security.securitymodel'),
+    )!;
+    const meta = edgeMetadata(model, link.id, index, spec)!;
+    expect(meta).toBeDefined();
+    expect(meta.predicate).toBe('aggregates');
+    expect(meta.sourceNode).toEqual({
+      id: resolveEndpoint(index, link.source)!.id,
+      name: 'Documentation Robotics Viewer Security Model',
+      type: resolveEndpoint(index, link.source)!.type,
+      layer: 'security',
+    });
+    expect(meta.targetNode).toEqual({
+      id: resolveEndpoint(index, link.target)!.id,
+      name: 'Developer',
+      type: resolveEndpoint(index, link.target)!.type,
+      layer: 'security',
+    });
+  });
+
+  it('resolves the matching spec relationship schema when one is declared', () => {
+    const link = model.links.find((l) => l.type === 'influence')!;
+    const meta = edgeMetadata(model, link.id, index, spec)!;
+    expect(meta.specRelationship).toBeDefined();
+    expect(meta.specRelationship?.predicate).toBe('influence');
+    expect(meta.specRelationship?.source_spec_node_id).toBe(
+      `${meta.sourceNode.layer}.${meta.sourceNode.type}`,
+    );
+    expect(meta.specRelationship?.destination_spec_node_id).toBe(
+      `${meta.targetNode.layer}.${meta.targetNode.type}`,
+    );
+  });
+
+  it('resolves a cross-layer edge whose spec relationship is declared in the source layer file', () => {
+    const link = model.links.find((l) => {
+      const s = resolveEndpoint(index, l.source);
+      const t = resolveEndpoint(index, l.target);
+      return s && t && s.layer_id !== t.layer_id;
+    })!;
+    const meta = edgeMetadata(model, link.id, index, spec)!;
+    expect(meta.sourceNode.layer).not.toBe(meta.targetNode.layer);
+    expect(meta).toBeDefined();
+  });
+
+  it('leaves specRelationship undefined when no spec relationship schema matches', () => {
+    const syntheticModel: ModelDerived = {
+      nodes: [
+        { id: 'n1', layer_id: 'security', type: 'not-a-real-type', name: 'A' },
+        { id: 'n2', layer_id: 'security', type: 'not-a-real-type', name: 'B' },
+      ] as ModelNode[],
+      links: [{ id: 'e1', source: 'n1', target: 'n2', type: 'not-a-real-predicate' }] as ModelLink[],
+      countsByLayer: {},
+      nodesByLayer: {},
+      relCount: 1,
+    };
+    const idx = buildModelIndex(syntheticModel);
+    const meta = edgeMetadata(syntheticModel, 'e1', idx, spec)!;
+    expect(meta).toBeDefined();
+    expect(meta.specRelationship).toBeUndefined();
+  });
+
+  it('returns undefined for an unknown edge id', () => {
+    expect(edgeMetadata(model, 'no-such-edge', index, spec)).toBeUndefined();
+  });
+
+  it('returns undefined when an endpoint fails to resolve', () => {
+    const syntheticModel: ModelDerived = {
+      nodes: [{ id: 'n1', layer_id: 'security', type: 't', name: 'A' }] as ModelNode[],
+      links: [{ id: 'e1', source: 'n1', target: 'no-such-node', type: 'uses' }] as ModelLink[],
+      countsByLayer: {},
+      nodesByLayer: {},
+      relCount: 1,
+    };
+    const idx = buildModelIndex(syntheticModel);
+    expect(edgeMetadata(syntheticModel, 'e1', idx, spec)).toBeUndefined();
+  });
+
+  it('works with an undefined spec payload (specRelationship stays undefined)', () => {
+    const link = model.links[0];
+    const meta = edgeMetadata(model, link.id, index, undefined)!;
+    expect(meta).toBeDefined();
+    expect(meta.specRelationship).toBeUndefined();
   });
 });
