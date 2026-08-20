@@ -203,6 +203,19 @@ export function intraRelCount(
   return n;
 }
 
+/** All relationship schemas across every layer — for cross-layer lookups. */
+export function allRelationshipSchemas(
+  spec: SpecPayload | undefined,
+): SpecRelationshipSchema[] {
+  const out: SpecRelationshipSchema[] = [];
+  for (const value of Object.values(spec?.schemas ?? {})) {
+    const entry = value as SpecLayerSchema;
+    if (!entry?.layer?.id) continue;
+    out.push(...Object.values(entry.relationshipSchemas ?? {}));
+  }
+  return out;
+}
+
 // ─── Inspector relationships ──────────────────────────────────────────────────
 
 /**

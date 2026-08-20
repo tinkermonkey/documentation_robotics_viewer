@@ -109,7 +109,7 @@ describe('modelElementNeighborhoodGraph', () => {
     const metaModelId = 'cfe8d725-4f64-4eae-b2fa-825e4a774a3a';
     const result = modelElementNeighborhoodGraph(metaModelId, model, index);
     const inEdges = result.edges.filter((e) => e.direction === 'in');
-    expect(inEdges.length).toBeGreaterThanOrEqual(0);
+    expect(inEdges.length).toBeGreaterThan(0);
     inEdges.forEach((e) => {
       expect(e.id).toBeDefined();
       expect(e.predicate).toBeDefined();
@@ -118,22 +118,34 @@ describe('modelElementNeighborhoodGraph', () => {
   });
 
   it('marks element with no connections as empty', () => {
-    const layerNodes = model.nodesByLayer['motivation'] ?? [];
-    if (layerNodes.length === 0) {
-      expect(true).toBe(true);
-      return;
-    }
-    const isolatedNodeId = layerNodes[0].id;
-    const linksToNode = model.links.filter(
-      (l) => l.source === isolatedNodeId || l.target === isolatedNodeId,
-    );
-    if (linksToNode.length === 0) {
-      const result = modelElementNeighborhoodGraph(isolatedNodeId, model, index);
-      expect(result.empty).toBe(true);
-      expect(result.edges).toEqual([]);
-      expect(result.nodes).toHaveLength(1);
-      expect(result.nodes[0].isCenter).toBe(true);
-    }
+    const syntheticModel: ModelDerived = {
+      ...model,
+      links: model.links.filter(
+        (l) =>
+          !l.source.includes('isolated') &&
+          !l.target.includes('isolated'),
+      ),
+    };
+    const syntheticIndex = buildModelIndex(syntheticModel);
+    const isolatedNode: ModelNode = {
+      id: 'isolated-node-id',
+      name: 'IsolatedNode',
+      type: 'component',
+      layer_id: 'application',
+      spec_node_id: 'application.component',
+      description: 'An isolated node with no connections',
+      attributes: {},
+      source_reference: {},
+      metadata: {},
+    };
+    syntheticIndex.byUuid.set(isolatedNode.id, isolatedNode);
+    syntheticIndex.byEndpoint.set(isolatedNode.id, isolatedNode);
+
+    const result = modelElementNeighborhoodGraph(isolatedNode.id, syntheticModel, syntheticIndex);
+    expect(result.empty).toBe(true);
+    expect(result.edges).toEqual([]);
+    expect(result.nodes).toHaveLength(1);
+    expect(result.nodes[0].isCenter).toBe(true);
   });
 
   it('preserves node type and layer information per neighbor', () => {
@@ -205,16 +217,57 @@ describe('specNodeNeighborhoodGraph', () => {
   });
 
   it('includes cross-layer related node types', () => {
+    // Create a spec with guaranteed cross-layer relationships
+    const syntheticSpec: SpecPayload = {
+      ...spec,
+      schemas: {
+        ...spec?.schemas,
+        'layer-a.json': {
+          layer: {
+            id: 'layer-a',
+            number: 1,
+            name: 'Layer A',
+          },
+          nodeSchemas: {
+            'node-a': {
+              title: 'Node A',
+            },
+          },
+          relationshipSchemas: {
+            'rel-1': {
+              id: 'rel-1',
+              source_spec_node_id: 'layer-a.node-a',
+              source_layer: 'layer-a',
+              destination_spec_node_id: 'layer-b.node-b',
+              destination_layer: 'layer-b',
+              predicate: 'links-to',
+            },
+          },
+        },
+        'layer-b.json': {
+          layer: {
+            id: 'layer-b',
+            number: 2,
+            name: 'Layer B',
+          },
+          nodeSchemas: {
+            'node-b': {
+              title: 'Node B',
+            },
+          },
+          relationshipSchemas: {},
+        },
+      },
+    };
     const result = specNodeNeighborhoodGraph(
-      'data-model',
-      'data-model.objectschema',
-      spec,
+      'layer-a',
+      'layer-a.node-a',
+      syntheticSpec,
     );
     const layers = new Set(result.nodes.map((n) => n.layer));
-    const isCrossLayer = layers.size > 1;
-    if (isCrossLayer) {
-      expect([...layers]).toContain('data-model');
-    }
+    expect(layers.size).toBeGreaterThan(1);
+    expect([...layers]).toContain('layer-a');
+    expect([...layers]).toContain('layer-b');
   });
 
   it('deduplicates node types reachable via multiple predicates', () => {
@@ -237,7 +290,7 @@ describe('specNodeNeighborhoodGraph', () => {
       spec,
     );
     const outEdges = result.edges.filter((e) => e.direction === 'out');
-    expect(outEdges.length).toBeGreaterThanOrEqual(0);
+    expect(outEdges.length).toBeGreaterThan(0);
     outEdges.forEach((e) => {
       expect(e.id).toBeDefined();
       expect(e.predicate).toBeDefined();
@@ -252,7 +305,7 @@ describe('specNodeNeighborhoodGraph', () => {
       spec,
     );
     const inEdges = result.edges.filter((e) => e.direction === 'in');
-    expect(inEdges.length).toBeGreaterThanOrEqual(0);
+    expect(inEdges.length).toBeGreaterThan(0);
     inEdges.forEach((e) => {
       expect(e.id).toBeDefined();
       expect(e.predicate).toBeDefined();
@@ -261,22 +314,36 @@ describe('specNodeNeighborhoodGraph', () => {
   });
 
   it('marks node type with no relationships as empty', () => {
-    // Find a node type with no outgoing or incoming relationships
-    const schema = (spec?.schemas?.['data-model.json'] as any)?.nodeSchemas ?? {};
-    const nodeTypes = Object.keys(schema);
-    for (const nodeType of nodeTypes) {
-      const result = specNodeNeighborhoodGraph(
-        'data-model',
-        `data-model.${nodeType}`,
-        spec,
-      );
-      if (result.empty) {
-        expect(result.edges).toEqual([]);
-        expect(result.nodes).toHaveLength(1);
-        expect(result.nodes[0].isCenter).toBe(true);
-        return;
-      }
-    }
+    // Create a synthetic spec with a node type that has no relationships
+    const syntheticSpec: SpecPayload = {
+      ...spec,
+      schemas: {
+        ...spec?.schemas,
+        'isolated-layer.json': {
+          layer: {
+            id: 'isolated-layer',
+            number: 99,
+            name: 'Isolated',
+          },
+          nodeSchemas: {
+            'isolated-node': {
+              title: 'Isolated Node',
+              description: 'A node with no relationships',
+            },
+          },
+          relationshipSchemas: {},
+        },
+      },
+    };
+    const result = specNodeNeighborhoodGraph(
+      'isolated-layer',
+      'isolated-layer.isolated-node',
+      syntheticSpec,
+    );
+    expect(result.empty).toBe(true);
+    expect(result.edges).toEqual([]);
+    expect(result.nodes).toHaveLength(1);
+    expect(result.nodes[0].isCenter).toBe(true);
   });
 
   it('preserves node title and layer information per neighbor', () => {

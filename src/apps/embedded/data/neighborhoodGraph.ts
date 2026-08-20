@@ -1,83 +1,39 @@
-/**
- * neighborhoodGraph — pure builder for the neighborhood graph data (center node
- * + one-hop neighbors) for both Model elements and Schema node types.
- *
- * Given a selected node (Model element or Schema spec node), produces:
- *   - The center node with its layer information for coloring
- *   - Every node directly connected to it (any layer) via outgoing/incoming edges
- *   - Edges between the center and each neighbor
- *   - Deduplication: a neighbor reachable via multiple edges appears once
- *   - Empty result marker when there are zero direct connections
- *
- * All functions are pure, accepting the derived `/api/model` and `/api/spec`
- * payloads and returning deterministic results.
- */
-
 import type { ModelDerived, ModelNode } from './useModel';
 import type { ModelIndex } from './modelGraph';
 import { resolveEndpoint } from './modelGraph';
-import type { SpecPayload, SpecRelationshipSchema, SpecLayerSchema } from './specGraph';
+import type { SpecPayload } from './specGraph';
 import {
   schemaForLayer,
   titleForSpecNode,
   shortName,
+  allRelationshipSchemas,
 } from './specGraph';
 
 // ─── Neighborhood graph types ─────────────────────────────────────────────────
 
-/**
- * A node in the neighborhood graph — center or neighbor. Carries enough info
- * to render and color it (layer for domain coloring).
- */
 export interface NeighborhoodNode {
-  /** Unique identifier: UUID for Model elements, spec_node_id for Schema nodes. */
   id: string;
-  /** Display name. */
   name: string;
-  /** Node type/kind (e.g., the element type or 'spec node'). */
   kind: string;
-  /** Layer slug — drives domain coloring via the standard layer color scheme. */
   layer: string;
-  /** true if this is the center node; false for neighbors. */
   isCenter: boolean;
 }
 
-/**
- * One edge connecting the center node to a neighbor. Carries the predicate
- * and direction (out from center, or in to center).
- */
 export interface NeighborhoodEdge {
-  /** Unique identifier. */
   id: string;
-  /** The predicate/relationship type (e.g., 'aggregates', 'references'). */
   predicate: string;
-  /** 'out' if the edge starts from the center; 'in' if it ends at the center. */
   direction: 'out' | 'in';
-  /** The neighbor node's id (the OTHER endpoint from the center). */
   targetId: string;
 }
 
-/**
- * The complete neighborhood graph data for a single node. When a node has no
- * direct connections, `nodes` contains only the center node and `edges` is
- * empty, so consumers can render an empty-state message (not an error).
- */
 export interface NeighborhoodGraph {
-  /** Center node + all directly connected neighbors, deduplicated. */
   nodes: NeighborhoodNode[];
-  /** Edges from center to each neighbor, one per unique (neighbor, predicate) pair. */
   edges: NeighborhoodEdge[];
-  /** true if the center node has zero direct connections. */
   empty: boolean;
 }
 
 // ─── Model element neighborhood graph ──────────────────────────────────────────
 
-/**
- * Neighborhood graph for a Model element: the center element plus every model
- * node it's directly connected to (either direction) via a link, regardless of
- * layer. Deduplicates neighbors reachable via multiple predicates.
- */
 export function modelElementNeighborhoodGraph(
   elementId: string,
   model: ModelDerived,
@@ -163,27 +119,6 @@ export function modelElementNeighborhoodGraph(
 
 // ─── Schema node type neighborhood graph ──────────────────────────────────────
 
-/**
- * Helper: fetch all relationship schemas across all layers in the spec. Used to
- * find valid incoming relationships from OTHER layers.
- */
-function allRelationshipSchemas(
-  spec: SpecPayload | undefined,
-): SpecRelationshipSchema[] {
-  const out: SpecRelationshipSchema[] = [];
-  for (const value of Object.values(spec?.schemas ?? {})) {
-    const entry = value as SpecLayerSchema;
-    if (!entry?.layer?.id) continue;
-    out.push(...Object.values(entry.relationshipSchemas ?? {}));
-  }
-  return out;
-}
-
-/**
- * Neighborhood graph for a Schema node type: the center node type plus every
- * node type it has a valid outgoing or incoming relationship schema to/from,
- * regardless of layer. Deduplicates node types reachable via multiple predicates.
- */
 export function specNodeNeighborhoodGraph(
   layerId: string,
   specNodeId: string,

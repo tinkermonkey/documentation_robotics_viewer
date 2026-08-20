@@ -21,15 +21,14 @@ import type { ModelDerived, ModelNode } from './useModel';
 import { type ModelIndex, resolveEndpoint, dottedId } from './modelGraph';
 import {
   type SpecPayload,
-  type SpecLayerSchema,
   type SpecNodeSchema,
-  type SpecRelationshipSchema,
   schemaForLayer,
   shortName,
   cardShort,
   intraRelCount,
   attributeRows,
   titleForSpecNode,
+  allRelationshipSchemas,
 } from './specGraph';
 import {
   type SourceReference,
@@ -365,24 +364,6 @@ const OUT_REL_TABLE_WIDTHS =
 const IN_REL_TABLE_WIDTHS =
   'minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr) minmax(0,0.8fr)';
 const INSTANCE_TABLE_WIDTHS = 'minmax(0,1fr) minmax(0,1.5fr) 96px';
-
-/**
- * Every relationship schema across every layer file — needed to find "valid
- * incoming" schemas declared in OTHER layers' files (a layer's own
- * `relationshipSchemas` only covers rels it declares as source), and reused
- * as the source list for "valid outgoing" too (filtered to this node's id).
- */
-function allRelationshipSchemas(
-  spec: SpecPayload | undefined,
-): SpecRelationshipSchema[] {
-  const out: SpecRelationshipSchema[] = [];
-  for (const value of Object.values(spec?.schemas ?? {})) {
-    const entry = value as SpecLayerSchema;
-    if (!entry?.layer?.id) continue;
-    out.push(...Object.values(entry.relationshipSchemas ?? {}));
-  }
-  return out;
-}
 
 export function specNodePageData(
   layerId: string,
