@@ -66,7 +66,6 @@ export function Inspector() {
   const layerId = useUiStore((s) => s.layerId);
   const selectedId = useUiStore((s) => s.selectedId);
   const selectedEdgeId = useUiStore((s) => s.selectedEdgeId);
-  const selectGraphNode = useUiStore((s) => s.selectGraphNode);
   const navigateToElement = useUiStore((s) => s.navigateToElement);
   const navigateToSpecNode = useUiStore((s) => s.navigateToSpecNode);
 
@@ -147,7 +146,7 @@ export function Inspector() {
           edge={edge}
           model={model}
           index={index}
-          onNodeSelect={selectGraphNode}
+          onNodeSelect={handleSelect}
         />
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>

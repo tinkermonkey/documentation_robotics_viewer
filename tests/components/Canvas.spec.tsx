@@ -622,6 +622,51 @@ describe('Canvas — edge selection, highlighting, and the edge inspector', () =
     expect(screen.getByTestId('inspector')).toHaveStyle({ width: '0px' });
   });
 
+  it('clicking a cross-layer relationship target inside the edge inspector navigates + switches layerId (not just selectGraphNode)', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('application');
+
+    // application "Data Loader" --depends-on--> application "Relationships
+    // YAML Parser" is an intra-layer edge (renders in the graph); "Data
+    // Loader" also has an outgoing cross-layer "serves" relationship to
+    // business "Model Loading and Rendering" (verified against the model
+    // fixture) — surfaced only in the edge inspector's flanking
+    // GraphInspector relationship panel, not the edge's own endpoints.
+    const crossLayerEdgeId =
+      'rel:application.applicationservice.data-loader:application.applicationservice.relationships-yaml-parser:depends-on';
+    await waitFor(() =>
+      expect(
+        document.querySelector(`[data-testid="graph-edge-${crossLayerEdgeId}"] .graph-edge__label`),
+      ).toBeTruthy(),
+    );
+    fireEvent.click(
+      document.querySelector(
+        `[data-testid="graph-edge-${crossLayerEdgeId}"] .graph-edge__label`,
+      ) as HTMLElement,
+    );
+    await waitFor(() => expect(useUiStore.getState().selectedEdgeId).toBe(crossLayerEdgeId));
+
+    const sourcePanel = screen.getByTestId('edge-inspector-source-node');
+    const target = within(sourcePanel).getAllByRole('button', {
+      name: /Navigate to Model Loading and Rendering/i,
+    })[0];
+    await user.click(target);
+
+    // navigateToElement (the same cross-layer-aware handler the plain
+    // node-inspector branch uses) switched the active layer, selected the
+    // target, and cleared the edge selection — not selectGraphNode, which
+    // would leave layerId on "application" and the target invisible.
+    await waitFor(() => {
+      const s = useUiStore.getState();
+      expect(s.view).toBe('model');
+      expect(s.layerId).toBe('business');
+      expect(s.selectedId).toBe('a138ca69-d437-4841-b96f-5fb5dd703380');
+      expect(s.selectedEdgeId).toBeNull();
+    });
+  });
+
   it('hovering an edge predicate shows the PredicateTooltip with the resolved source/predicate/destination', async () => {
     renderWithProviders(<Canvas />);
     useUiStore.getState().setView('model');

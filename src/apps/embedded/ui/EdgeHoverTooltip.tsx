@@ -1,5 +1,5 @@
 /**
- * EdgeHoverTooltip — the Phase 3 `PredicateTooltip` card, positioned against a
+ * EdgeHoverTooltip — the `PredicateTooltip` card, positioned against a
  * hovered Model graph edge's predicate label (BA req 10, 13).
  *
  * `RichTooltip`/`PredicateTooltip` open/close from real hover/focus events on

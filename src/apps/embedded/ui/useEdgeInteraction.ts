@@ -65,9 +65,9 @@ export function useEdgeInteraction(): UseEdgeInteractionResult {
     (e: MouseEvent) => {
       const match = matchEdgeLabel(e.target);
       if (!match) return;
+      setHighlightedEdgeId(match.edgeId);
       setHovered((prev) => {
         if (prev?.edgeId === match.edgeId) return prev;
-        setHighlightedEdgeId(match.edgeId);
         return { edgeId: match.edgeId, anchorRect: match.labelEl.getBoundingClientRect() };
       });
     },

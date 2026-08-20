@@ -14,9 +14,14 @@
  * `relationshipsForElement` pure transforms.
  *
  * Clicking either endpoint (in either the flanking `GraphInspector`s or the
- * `GraphEdgeInspector`'s own endpoint buttons) selects that node —
- * `onNodeSelect` is `uiStore.selectGraphNode`, which clears the edge selection
- * as part of the same mutual-exclusivity the click originated from.
+ * `GraphEdgeInspector`'s own endpoint buttons) selects that node.
+ * `onNodeSelect` is `Inspector.tsx`'s `handleSelect` — the same cross-layer-aware
+ * handler the plain node-inspector branch uses — since the flanking
+ * `GraphInspector`s can surface cross-layer relationship targets (unlike the
+ * endpoint buttons themselves, always intra-layer per `edgesForLayer`). It
+ * resolves the target's layer and calls `uiStore.navigateToElement`, which
+ * clears the edge selection as part of the same mutual-exclusivity the click
+ * originated from.
  */
 
 import { useMemo } from 'react';
