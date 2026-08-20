@@ -95,7 +95,7 @@ test.describe('URL routing — left-panel selections', () => {
     ).toHaveText(edgeParam!);
   });
 
-  test('selecting a node after an edge clears ?edge= from the URL (ADR-6: mutually exclusive)', async ({
+  test('selecting a node after an edge clears ?edge= from the URL (mutually exclusive)', async ({
     page,
   }) => {
     await gotoView(page, ROUTES.model);

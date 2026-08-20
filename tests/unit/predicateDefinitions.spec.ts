@@ -56,7 +56,7 @@ describe('PREDICATE_DEFINITIONS / predicateDefinition', () => {
     expect(allUsedPredicates().size).toBe(66);
   });
 
-  it('defines every predicate used in the live fixture model (BA req 12 coverage)', () => {
+  it('defines every predicate used in the live fixture model', () => {
     const missing = [...allUsedPredicates()].filter((p) => !PREDICATE_DEFINITIONS[p]);
     expect(missing).toEqual([]);
   });

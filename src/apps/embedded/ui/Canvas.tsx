@@ -25,7 +25,7 @@
  * key because they change the layout's footprint (a card is much larger than a
  * pill); showClusterBoundaries/showAllRelations don't, so they stay out of it.
  *
- * Model view nodes render as cards by default (`nodeDisplay: 'card'`, ADR-1): a
+ * Model view nodes render as cards by default (`nodeDisplay: 'card'`): a
  * `renderNode` override (`renderCardNode` below) renders `ModelCardNode` fed by a
  * `CardData` side-channel map — `data/modelGraph.ts`'s `nodesWithCardData` —
  * keyed by node id, since `renderNode`'s own signature only carries
@@ -81,7 +81,7 @@
  * separately delegates hover over an edge's predicate label (`GraphCanvas` has no
  * per-edge hover callback or `renderEdge` slot to hook directly) to drive
  * `uiStore.highlightedEdgeId` and the floating `EdgeHoverTooltip`. Both selected and
- * highlighted edges render `variant: 'hot'` (ADR-3) in the `edges` array built below.
+ * highlighted edges render `variant: 'hot'` in the `edges` array built below.
  */
 
 import { useCallback, useMemo, useRef, useState } from 'react';
@@ -438,7 +438,7 @@ export function Canvas() {
     [selectGraphNode, cardData, specRaw],
   );
 
-  // Model-only: click-to-select + hover-to-preview (ADR-2/3) both render the
+  // Model-only: click-to-select + hover-to-preview both render the
   // same "hot" variant. hoverHandlers are spread onto the graph wrapper below.
   const { hoveredEdgeId, hoveredEdgeAnchor, edgeHoverHandlers } = useEdgeInteraction();
 

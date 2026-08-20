@@ -1,6 +1,6 @@
 /**
- * PredicateTooltip — the "edge" rich hover tooltip content variant (BA req
- * 10-13): the predicate's own definition plus a generic
+ * PredicateTooltip — the "edge" rich hover tooltip content variant: the
+ * predicate's own definition plus a generic
  * source-type → predicate → destination-type diagram for the specific edge
  * being hovered. Built on `RichTooltip` so it's the same card component
  * regardless of which surface triggers it (graph edge, sidebar row, page

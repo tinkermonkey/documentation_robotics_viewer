@@ -132,7 +132,7 @@ const SECTION_DEFAULT_VIEW: Record<string, string> = {
  *  `node` is a `spec_node_id`, a Model `node` is a UUID, but the sync logic
  *  below doesn't need to care which); `changeset` applies to Changesets.
  *  `edge` applies to the Model graph only, and is mutually exclusive with
- *  `node` (ADR-6) — `uiStore.selectEdge` already clears `selectedId`, so
+ *  `node` — `uiStore.selectEdge` already clears `selectedId`, so
  *  whenever `edge` is present in the store → URL direction below, `node` is
  *  naturally omitted. */
 interface AppShellSearch {
@@ -217,7 +217,7 @@ function AppShellRoute() {
       return;
     }
     if (search.layer && search.layer !== layerId) selectLayer(search.layer);
-    // edge/node are mutually exclusive in the URL (ADR-6) — prefer edge when
+    // edge/node are mutually exclusive in the URL — prefer edge when
     // both are somehow present rather than restoring one then the other.
     if (search.edge && search.edge !== selectedEdgeId) {
       selectEdge(search.edge);
@@ -261,7 +261,7 @@ function AppShellRoute() {
           ? { changeset: changesetId ?? undefined }
           : {
               layer: layerId ?? undefined,
-              // Mutually exclusive (ADR-6): selecting an edge already cleared
+              // Mutually exclusive: selecting an edge already cleared
               // selectedId, so at most one of these is ever defined here.
               node: selectedId ?? undefined,
               edge: selectedEdgeId ?? undefined,

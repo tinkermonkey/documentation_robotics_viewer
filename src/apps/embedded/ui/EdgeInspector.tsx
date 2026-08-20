@@ -1,10 +1,10 @@
 /**
- * EdgeInspector — the sidebar detail view for a selected Model graph edge (BA
- * req 16-17): source node info, edge info, destination node info, top to
+ * EdgeInspector — the sidebar detail view for a selected Model graph edge:
+ * source node info, edge info, destination node info, top to
  * bottom. Rendered by `Inspector.tsx` inside its existing `DetailDrawer`
  * whenever `uiStore.selectedEdgeId` is set (in place of the single-node
  * `GraphInspector` branch), so edge and node selection share one overlay slot
- * (ADR-6: mutually exclusive).
+ * (mutually exclusive).
  *
  * Composes three Heimdall components stacked exactly as `GraphEdgeInspector`'s
  * own doc comment describes ("typically source node → this → target node"):
@@ -117,7 +117,7 @@ export function EdgeInspector({
     targetTitle: edge.targetNode.name,
     targetDomain: edge.targetNode.layer,
     // Always the edge currently shown here (i.e. selected) — the graph's own
-    // "hot" highlight for the same edge, ADR-3.
+    // "hot" highlight for the same edge.
     variant: 'hot',
     metadata: edge.specRelationship?.cardinality
       ? { cardinality: edge.specRelationship.cardinality }

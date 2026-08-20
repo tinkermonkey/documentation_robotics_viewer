@@ -26,8 +26,8 @@
  * target lives in another layer (keeping `view='model'`); in Schema it switches
  * the layer for cross-layer relationship targets (keeping `view='spec'`).
  *
- * When `uiStore.selectedEdgeId` is set (a Model graph edge click — ADR-6:
- * mutually exclusive with node selection, so `selectedId`/`metadata` are null
+ * When `uiStore.selectedEdgeId` is set (a Model graph edge click — mutually
+ * exclusive with node selection, so `selectedId`/`metadata` are null
  * whenever this is set), the drawer instead renders `EdgeInspector`'s
  * source/edge/destination stack. `open` follows whichever of the two is set.
  *

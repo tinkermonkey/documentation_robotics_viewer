@@ -1,6 +1,6 @@
 /**
  * EdgeHoverTooltip — the `PredicateTooltip` card, positioned against a
- * hovered Model graph edge's predicate label (BA req 10, 13).
+ * hovered Model graph edge's predicate label.
  *
  * `RichTooltip`/`PredicateTooltip` open/close from real hover/focus events on
  * a literal `children` trigger they wrap — impossible here, since the edge

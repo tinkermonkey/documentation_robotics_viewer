@@ -1,5 +1,5 @@
 /**
- * UI store — drives the static 5-pane shell (view / layer / selection /
+ * UI store — drives the static 4-pane shell (view / layer / selection /
  * changeset, canvas dark mode, chat drawer, responsive width, and the nav
  * tree's expanded sections + layers).
  *
@@ -30,13 +30,13 @@ interface UiState {
   layerId: string | null;
   selectedId: string | null;
   /** Selected Model graph edge (a link id), mutually exclusive with `selectedId`
-   *  (ADR-6) — selecting one always clears the other. Drives the Inspector's
+   *  — selecting one always clears the other. Drives the Inspector's
    *  edge branch (source/edge/destination) and round-trips through the URL's
    *  `?edge=` param, same as `selectedId`'s `?node=`. Edges only exist in the
    *  Model view's graph, so nothing else needs to clear this on a Schema
    *  selection beyond the existing view-switch clearing. */
   selectedEdgeId: string | null;
-  /** Edge currently rendered with the `variant: 'hot'` highlight (ADR-3) —
+  /** Edge currently rendered with the `variant: 'hot'` highlight —
    *  driven by hover (see `useEdgeInteraction`), independent of click
    *  selection: hovering a different edge than the selected one previews it
    *  without disturbing `selectedEdgeId`. Not persisted or URL-synced —
@@ -91,7 +91,7 @@ interface UiState {
   /** Select a node clicked in the graph canvas (current layer). */
   selectGraphNode: (selectedId: string) => void;
   /** Select an edge clicked in the Model graph (a link id) — clears any node
-   *  selection (ADR-6: mutually exclusive). */
+   *  selection (mutually exclusive). */
   selectEdge: (edgeId: string) => void;
   /** Edge currently previewed as `variant: 'hot'` via hover; `null` clears it.
    *  See `highlightedEdgeId` above. */

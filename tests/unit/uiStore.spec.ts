@@ -332,7 +332,7 @@ describe('selectLayer / selectChangeset / toggleChat / setWide', () => {
   });
 });
 
-describe('selectEdge / setHighlightedEdgeId — edge selection (ADR-6: mutually exclusive with node)', () => {
+describe('selectEdge / setHighlightedEdgeId — edge selection (mutually exclusive with node)', () => {
   it('selectEdge sets selectedEdgeId, clears selectedId, and resets focus to layer', () => {
     useUiStore.setState({ selectedId: 'node-1', focus: 'node' });
     get().selectEdge('edge-1');

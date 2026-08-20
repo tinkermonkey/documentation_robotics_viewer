@@ -1,7 +1,7 @@
 /**
- * ModelCardNode — the card-style presentation for Model graph nodes (ADR-1:
- * card nodes via `GraphCanvas`'s `renderNode`, fed by a `CardData` side-channel
- * map keyed by node id — see `data/modelGraph.ts`'s `nodesWithCardData`).
+ * ModelCardNode — the card-style presentation for Model graph nodes: card
+ * nodes via `GraphCanvas`'s `renderNode`, fed by a `CardData` side-channel
+ * map keyed by node id — see `data/modelGraph.ts`'s `nodesWithCardData`.
  *
  * Reuses the default `GraphNode`'s own class names/attributes (`.graph-node`,
  * `.graph-node__swatch`, `data-domain`, `data-kind`) so the existing

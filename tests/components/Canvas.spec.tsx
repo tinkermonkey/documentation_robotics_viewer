@@ -581,7 +581,7 @@ describe('Canvas — edge selection, highlighting, and the edge inspector', () =
     ).toHaveTextContent('WebSocket Connection State Gauge');
   });
 
-  it('selecting a node clears an edge selection, and selecting an edge clears a node selection (ADR-6)', async () => {
+  it('selecting a node clears an edge selection, and selecting an edge clears a node selection', async () => {
     renderWithProviders(<Canvas />);
     useUiStore.getState().setView('model');
     useUiStore.getState().selectLayer('apm');

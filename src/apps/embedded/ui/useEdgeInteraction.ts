@@ -1,8 +1,7 @@
 /**
- * useEdgeInteraction — hover detection for Model graph edge predicates (ADR-2:
- * SVG event delegation for edge interaction), driving both the
- * `uiStore.highlightedEdgeId` "hot" preview (ADR-3) and the `EdgeHoverTooltip`
- * anchor.
+ * useEdgeInteraction — hover detection for Model graph edge predicates via
+ * SVG event delegation, driving both the `uiStore.highlightedEdgeId` "hot"
+ * preview and the `EdgeHoverTooltip` anchor.
  *
  * `GraphCanvas` renders every edge internally (no `renderEdge`/hover-callback
  * slot), so there's no per-edge trigger element to attach `RichTooltip`-style

@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 /**
  * useEdgeInteraction.spec.tsx — hover delegation for Model graph edge
- * predicates (ADR-2). Renders a minimal harness that mirrors the exact DOM
+ * predicates. Renders a minimal harness that mirrors the exact DOM
  * shape `GraphCanvas` produces for an edge (an outer
  * `[data-testid="graph-edge-<id>"]` wrapping a `.graph-edge__label`), spreads
  * `edgeHoverHandlers` on the container the same way `Canvas.tsx` does, and

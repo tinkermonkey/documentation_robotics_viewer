@@ -1,6 +1,6 @@
 /**
  * RichTooltip — portal-based, positioned hover/focus card usable by any
- * trigger element (ADR-4: project-level rich tooltip component). Wraps its
+ * trigger element (the project-level rich tooltip component). Wraps its
  * `children` (the trigger) in an inline `<span>` that owns the show/hide
  * wiring; the card itself is rendered via `createPortal` into `document.body`
  * so it always paints above the surface that triggered it (the graph canvas,

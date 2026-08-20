@@ -1,16 +1,16 @@
 /**
- * NodeTypeTooltip — the "node type" rich hover tooltip content variant (BA
- * req 18, 21-25): the type's full specifier + definition, plus capped lists
- * of its possible inbound and outbound connection types. Built on
- * `RichTooltip` so it's the same card component regardless of which surface
- * triggers it (a Schema graph node, a NavTree row, a page view spec-node
- * section — wiring is later phases).
+ * NodeTypeTooltip — the "node type" rich hover tooltip content variant: the
+ * type's full specifier + definition, plus capped lists of its possible
+ * inbound and outbound connection types. Built on `RichTooltip` so it's the
+ * same card component regardless of which surface triggers it (a Schema
+ * graph node, a NavTree row, a page view spec-node section — wiring is
+ * later phases).
  *
  * Inbound/outbound connections are each capped at `maxConnections` (default
- * 6 — a "sensible maximum" per the requirement; the full list stays a click
- * away via the Inspector, same cap-with-overflow pattern `ModelCardNode`
- * already uses for cross-layer links). The remainder folds into a single
- * "+N more" row rather than being silently dropped.
+ * 6 — a sensible maximum; the full list stays a click away via the
+ * Inspector, same cap-with-overflow pattern `ModelCardNode` already uses
+ * for cross-layer links). The remainder folds into a single "+N more" row
+ * rather than being silently dropped.
  */
 
 import type { ReactNode } from 'react';

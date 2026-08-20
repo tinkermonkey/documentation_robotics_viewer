@@ -1,5 +1,5 @@
 /**
- * shell.spec.ts — the 5-pane IDE shell: topbar / nav rail / statusbar.
+ * shell.spec.ts — the 4-pane IDE shell: topbar / nav rail / statusbar.
  *
  * Asserts the chrome dimensions (54 / 244 / 28), the nav rail's 3 sections and
  * 12 layers with counts equal to the live API, the statusbar's spec version +
