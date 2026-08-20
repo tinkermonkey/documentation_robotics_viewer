@@ -37,6 +37,8 @@ import {
   sourceLocation,
 } from './relationships';
 import { layerColor, layerLabel, layerStandard, isLayerSlug } from '../ui/domain';
+import type { NeighborhoodGraph } from './neighborhoodGraph';
+import { specNodeNeighborhoodGraph, modelElementNeighborhoodGraph } from './neighborhoodGraph';
 
 // ─── Shared row/target shapes ──────────────────────────────────────────────
 
@@ -127,6 +129,8 @@ export interface PageData {
   factsTitle: string;
   facts: PageFact[];
   tables: PageTable[];
+  /** Optional neighborhood graph (center + one-hop neighbors) for Model/Spec node pages. */
+  neighborhoodGraph?: NeighborhoodGraph;
 }
 
 // ─── Metric colors (verbatim from the design) ──────────────────────────────
@@ -550,6 +554,7 @@ export function specNodePageData(
         emptyText: 'No instances of this node type in the loaded model.',
       },
     ],
+    neighborhoodGraph: specNodeNeighborhoodGraph(layerId, specNodeId, specRaw),
   };
 }
 
@@ -728,5 +733,6 @@ export function modelNodePageData(
         emptyText: 'No other element references this one.',
       },
     ],
+    neighborhoodGraph: modelElementNeighborhoodGraph(elementId, model, index),
   };
 }
