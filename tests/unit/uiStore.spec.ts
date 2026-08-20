@@ -411,6 +411,25 @@ describe('selectEdge / setHighlightedEdgeId — edge selection (mutually exclusi
     expect(get().highlightedEdgeId).toBeNull();
   });
 
+  it('clearEdgeSelection nulls selectedEdgeId/highlightedEdgeId without touching other selection state', () => {
+    useUiStore.setState({
+      selectedEdgeId: 'edge-1',
+      highlightedEdgeId: 'edge-2',
+      selectedId: 'elem-1',
+      focus: 'node',
+      layerId: 'application',
+    });
+    get().clearEdgeSelection();
+    const s = get();
+    expect(s.selectedEdgeId).toBeNull();
+    expect(s.highlightedEdgeId).toBeNull();
+    // Unrelated fields untouched — this is a targeted clear, not selectLayer/
+    // selectEdge(null) which would also reset focus/selectedId.
+    expect(s.selectedId).toBe('elem-1');
+    expect(s.focus).toBe('node');
+    expect(s.layerId).toBe('application');
+  });
+
   it('does NOT persist selectedEdgeId/highlightedEdgeId (URL/transient, not localStorage)', () => {
     get().selectEdge('edge-1');
     get().setHighlightedEdgeId('edge-1');

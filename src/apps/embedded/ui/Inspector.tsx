@@ -31,6 +31,16 @@
  * whenever this is set), the drawer instead renders `EdgeInspector`'s
  * source/edge/destination stack. `open` follows whichever of the two is set.
  *
+ * Stale edge selection guard: `selectedEdgeId` is a bare link id, and edge
+ * ids are volatile — a WS `model` update that removes a relationship, or a
+ * bookmarked `?edge=` deep link that never matched anything, both leave
+ * `selectedEdgeId` pointing at a link `edgeMetadata()` can't resolve. Once
+ * the model has actually loaded, if that lookup comes back `undefined` for a
+ * non-null `selectedEdgeId`, this component clears it via
+ * `uiStore.clearEdgeSelection()` — the drawer already closes on its own
+ * (`open` follows `!!edge`), but without this the store/URL `?edge=` param
+ * would keep referencing the dead id indefinitely.
+ *
  * Model view: the selected element's type is shown as its own
  * `graph-inspector__head-eyebrow` row (same classes Heimdall's
  * `GraphInspector` uses for its own head, so it reads as part of the same
@@ -50,7 +60,7 @@
  * resolves a raw UUID to its layer first).
  */
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { GraphInspector, DetailDrawer } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
 import { layerLabel } from './domain';
@@ -88,8 +98,9 @@ export function Inspector() {
   const navigateToElement = useUiStore((s) => s.navigateToElement);
   const navigateToSpecNode = useUiStore((s) => s.navigateToSpecNode);
   const navigateToElementWithEdge = useUiStore((s) => s.navigateToElementWithEdge);
+  const clearEdgeSelection = useUiStore((s) => s.clearEdgeSelection);
 
-  const { derived: model } = useModel();
+  const { derived: model, isSuccess: modelLoaded } = useModel();
   const { raw: specRaw } = useSpec();
   const index = useMemo(() => buildModelIndex(model), [model]);
   const isSpec = view === 'spec';
@@ -102,6 +113,14 @@ export function Inspector() {
         : undefined,
     [isSpec, model, selectedEdgeId, index, specRaw],
   );
+
+  // A selected edge id that no longer resolves once the model has loaded is
+  // stale (link removed by a WS update, or a bookmarked id that never
+  // existed) — clear it so the store/URL don't keep referencing a dead edge.
+  useEffect(() => {
+    if (isSpec || !selectedEdgeId || !modelLoaded || edge) return;
+    clearEdgeSelection();
+  }, [isSpec, selectedEdgeId, modelLoaded, edge, clearEdgeSelection]);
 
   // ─── Model element metadata + relationships ────────────────────────────────
   const modelNode =

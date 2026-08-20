@@ -34,7 +34,16 @@ interface UiState {
    *  edge branch (source/edge/destination) and round-trips through the URL's
    *  `?edge=` param, same as `selectedId`'s `?node=`. Edges only exist in the
    *  Model view's graph, so nothing else needs to clear this on a Schema
-   *  selection beyond the existing view-switch clearing. */
+   *  selection beyond the existing view-switch clearing.
+   *  Edge ids are volatile — any relationship change permanently removes one.
+   *  `Inspector.tsx` detects when this no longer resolves via `edgeMetadata()`
+   *  (a WS `model` update dropped the link, or a bookmarked `?edge=` never
+   *  matched anything) and calls `clearEdgeSelection()` below, which also
+   *  flows through to strip the dead `?edge=` param from the URL via the
+   *  normal store → URL sync in `router.tsx`. `router.tsx` additionally
+   *  validates a deep-linked `?edge=` against the loaded model before ever
+   *  restoring it into this field, so a stale bookmark never round-trips
+   *  through a visible (if momentary) selection. */
   selectedEdgeId: string | null;
   /** Edge currently rendered with the `variant: 'hot'` highlight —
    *  driven by hover (see `useEdgeInteraction`), independent of click
@@ -96,6 +105,14 @@ interface UiState {
   /** Edge currently previewed as `variant: 'hot'` via hover; `null` clears it.
    *  See `highlightedEdgeId` above. */
   setHighlightedEdgeId: (edgeId: string | null) => void;
+  /** Clears `selectedEdgeId`/`highlightedEdgeId` only, leaving every other
+   *  selection field untouched — used when the currently-selected edge no
+   *  longer resolves against the loaded model (a WS `model` update removed
+   *  the link, or a deep-linked `?edge=` id never existed). Deliberately NOT
+   *  `selectLayer`/`selectEdge(null)`: those reset `focus`/`selectedId` too,
+   *  which would incorrectly disturb an unrelated node selection made after
+   *  the edge went stale. */
+  clearEdgeSelection: () => void;
   /**
    * Navigate to an element by id, switching the active layer when it lives in
    * another layer (cross-layer relationship navigation). Stays in the Model
@@ -232,6 +249,8 @@ export const useUiStore = create<UiState>()(
         set({ selectedEdgeId, selectedId: null, highlightedEdgeId: null, focus: 'layer' }),
 
       setHighlightedEdgeId: (highlightedEdgeId) => set({ highlightedEdgeId }),
+
+      clearEdgeSelection: () => set({ selectedEdgeId: null, highlightedEdgeId: null }),
 
       navigateToElement: (elementId, layerId) =>
         set((s) => {
