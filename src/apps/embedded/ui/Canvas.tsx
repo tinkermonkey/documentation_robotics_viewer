@@ -436,29 +436,17 @@ export function Canvas() {
 
   const index = useMemo(() => buildModelIndex(model), [model]);
 
-  // Model view nodes carry a CardData side-channel (intra/inter-layer connection
-  // counts, see data/modelGraph.ts's nodesWithCardData) that ModelCardNode reads
-  // via renderNode below; Schema view node-types have no such data and always
-  // render as the default pill.
-  // When showInterLayerNodes is on, merge foreign nodes alongside native nodes.
-  // Foreign nodes that have no visible structural edge are filtered out when
-  // showAllRelations is false (orphan filtering).
-  const { nodes, cardData } = useMemo((): {
-    nodes: GraphNodeData[];
-    cardData: Map<string, CardData>;
-  } => {
-    if (!layerId) return { nodes: [], cardData: new Map() };
-    if (isSpec) return { nodes: nodeTypesForLayer(specRaw, layerId), cardData: new Map() };
-
-    const { nodes: nativeNodes, cardData: cardDataMap } = nodesWithCardData(model, layerId, index);
-
-    if (!showInterLayerNodes) {
-      return { nodes: nativeNodes, cardData: cardDataMap };
+  // Compute inter-layer data once upstream when enabled in Model view.
+  // Returns foreignNodes, crossEdges, and foreignNodeIds (for render/click dispatch).
+  // This single computation is reused by both nodes and edges memos below,
+  // eliminating the duplicate O(links) scan that was running twice per render.
+  const interLayerData = useMemo(() => {
+    if (!layerId || isSpec || !showInterLayerNodes) {
+      return { foreignNodes: [], crossEdges: [], foreignNodeIds: new Set<string>() };
     }
 
-    // Merge inter-layer nodes when toggle is on
     const perimeterLayout = graphLayout === 'force-clustered';
-    const { foreignNodes } = interLayerNodesAndEdges(
+    const { foreignNodes, crossEdges, foreignNodeIds } = interLayerNodesAndEdges(
       model,
       layerId,
       index,
@@ -466,7 +454,6 @@ export function Canvas() {
     );
 
     // Filter orphan foreign nodes when structural-only view is active
-    let mergedForeignNodes = foreignNodes;
     if (!showAllRelations) {
       const structuralCrossEdges = new Set<string>();
 
@@ -485,29 +472,75 @@ export function Canvas() {
         }
       }
 
-      mergedForeignNodes = foreignNodes.filter((node) => structuralCrossEdges.has(node.id));
+      const filteredForeignNodes = foreignNodes.filter((node) =>
+        structuralCrossEdges.has(node.id),
+      );
+      const filteredCrossEdges = crossEdges.filter((edge) =>
+        filteredForeignNodes.some((n) => n.id === edge.sourceId || n.id === edge.targetId),
+      );
+
+      return { foreignNodes: filteredForeignNodes, crossEdges: filteredCrossEdges, foreignNodeIds };
     }
 
-    const allNodes = [...nativeNodes, ...mergedForeignNodes];
+    return { foreignNodes, crossEdges, foreignNodeIds };
+  }, [layerId, isSpec, showInterLayerNodes, graphLayout, model, index, showAllRelations]);
+
+  // Model view nodes carry a CardData side-channel (intra/inter-layer connection
+  // counts, see data/modelGraph.ts's nodesWithCardData) that ModelCardNode reads
+  // via renderNode below; Schema view node-types have no such data and always
+  // render as the default pill.
+  // When showInterLayerNodes is on, merge foreign nodes alongside native nodes.
+  const { nodes, cardData } = useMemo((): {
+    nodes: GraphNodeData[];
+    cardData: Map<string, CardData>;
+  } => {
+    if (!layerId) return { nodes: [], cardData: new Map() };
+    if (isSpec) return { nodes: nodeTypesForLayer(specRaw, layerId), cardData: new Map() };
+
+    const { nodes: nativeNodes, cardData: cardDataMap } = nodesWithCardData(model, layerId, index);
+    const allNodes = [...nativeNodes, ...interLayerData.foreignNodes];
     return { nodes: allNodes, cardData: cardDataMap };
-  }, [isSpec, specRaw, model, layerId, index, showInterLayerNodes, showAllRelations, graphLayout]);
+  }, [isSpec, specRaw, model, layerId, index, interLayerData.foreignNodes]);
 
   const renderCardNode = useCallback(
     (node: GraphNodeData, selected: boolean, hierarchy?: GraphNodeHierarchyMeta) => {
-      const isForeignNode = !isSpec && node.domainColor !== layerId;
-      const handleForeignNodeClick = isForeignNode
-        ? () => navigateToElement(node.id, node.domainColor ?? '')
-        : undefined;
-      const handleNodeClick = handleForeignNodeClick || selectGraphNode;
+      // Foreign nodes always render as pills at 60% opacity, regardless of
+      // nodeDisplay setting — provides clear visual subordination.
+      const isForeignNode = interLayerData.foreignNodeIds.has(node.id);
+      if (isForeignNode) {
+        const handleForeignNodeClick = () => navigateToElement(node.id, node.domainColor ?? '');
 
-      const content = (
+        return (
+          <div
+            style={{ opacity: 0.6 }}
+            data-testid={`foreign-node-wrapper-${node.id}`}
+          >
+            <PillNode
+              id={node.id}
+              label={node.label}
+              kind={node.kind}
+              domainColor={node.domainColor}
+              selected={selected}
+              onSelect={handleForeignNodeClick}
+              spec={specRaw}
+              typeId={undefined}
+              hasChildren={hierarchy?.hasChildren}
+              collapsed={hierarchy?.collapsed}
+              hiddenDescendantCount={hierarchy?.hiddenDescendantCount}
+              onToggleCollapse={hierarchy?.onToggleCollapse}
+            />
+          </div>
+        );
+      }
+
+      return (
         <ModelCardNode
           id={node.id}
           label={node.label}
           kind={node.kind}
           domainColor={node.domainColor}
           selected={selected}
-          onSelect={handleNodeClick}
+          onSelect={selectGraphNode}
           cardData={cardData.get(node.id)}
           spec={specRaw}
           hasChildren={hierarchy?.hasChildren}
@@ -516,19 +549,8 @@ export function Canvas() {
           onToggleCollapse={hierarchy?.onToggleCollapse}
         />
       );
-
-      if (!isForeignNode) return content;
-
-      return (
-        <div
-          style={{ opacity: 0.6 }}
-          data-testid={`foreign-node-wrapper-${node.id}`}
-        >
-          {content}
-        </div>
-      );
     },
-    [selectGraphNode, navigateToElement, cardData, specRaw, isSpec, layerId],
+    [selectGraphNode, navigateToElement, cardData, specRaw, interLayerData.foreignNodeIds],
   );
 
   // Pill-mode render (Model pill display + always in Schema view, see the
@@ -586,27 +608,14 @@ export function Canvas() {
     if (isSpec) return specEdgesForLayer(specRaw, layerId);
 
     const intraLayerEdges = modelEdgesForLayer(model, layerId, index);
-
-    let allEdges = intraLayerEdges;
-    if (showInterLayerNodes) {
-      const perimeterLayout = graphLayout === 'force-clustered';
-      const { crossEdges } = interLayerNodesAndEdges(model, layerId, index, perimeterLayout);
-
-      // Filter cross-layer edges when structural-only view is active
-      let visibleCrossEdges = crossEdges;
-      if (!showAllRelations) {
-        visibleCrossEdges = crossEdges.filter((edge) => isStructuralEdge(edge));
-      }
-
-      allEdges = [...intraLayerEdges, ...visibleCrossEdges];
-    }
+    const allEdges = [...intraLayerEdges, ...interLayerData.crossEdges];
 
     return allEdges.map((edge) =>
       edge.id === selectedEdgeId || edge.id === highlightedEdgeId
         ? { ...edge, variant: 'hot' }
         : edge,
     );
-  }, [isSpec, specRaw, model, layerId, index, selectedEdgeId, highlightedEdgeId, showInterLayerNodes, showAllRelations, graphLayout]);
+  }, [isSpec, specRaw, model, layerId, index, selectedEdgeId, highlightedEdgeId, interLayerData.crossEdges]);
 
   // GraphCanvas's native edgeTooltip render-prop — called with whichever edge
   // is currently hovered; only meaningful in the Model view (edges only carry
@@ -760,7 +769,14 @@ export function Canvas() {
                   nodes={nodes}
                   edges={edges}
                   selectedNodeId={selectedId ?? undefined}
-                  onNodeSelect={(id) => selectGraphNode(id)}
+                  onNodeSelect={(id) => {
+                    if (interLayerData.foreignNodeIds.has(id)) {
+                      const target = index.byUuid.get(id);
+                      if (target) navigateToElement(target.id, target.layer_id);
+                    } else {
+                      selectGraphNode(id);
+                    }
+                  }}
                   {...(!isSpec ? edgeSelectionProps : {})}
                   edgeTooltip={!isSpec ? renderEdgeTooltip : undefined}
                   onBackgroundClick={() => selectLayer(layerId)}
