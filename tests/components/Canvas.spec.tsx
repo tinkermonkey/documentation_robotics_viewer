@@ -10,7 +10,7 @@
  * 0 for measurements; Heimdall's internal layout is its own concern).
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen, waitFor, fireEvent, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { GraphCanvasProps } from '@tinkermonkey/heimdall-ui';
@@ -42,6 +42,13 @@ vi.mock('@tinkermonkey/heimdall-ui', async (importOriginal) => {
 function graphNodeCount(): number {
   return document.querySelectorAll('[data-testid^="graph-node-"]').length;
 }
+
+/** Setup hook: disable inter-layer nodes for consistent test counts. */
+beforeEach(() => {
+  useUiStore.getState().showInterLayerNodes = false;
+  // Ensure toggle is off so graph remounts with the new state
+  useUiStore.setState({ showInterLayerNodes: false });
+});
 
 /** Number of graph edge elements currently rendered — GraphCanvas only gives
  *  an edge this testid when it's actually rendered (hidden non-structural
@@ -784,5 +791,56 @@ describe('Canvas — GraphControls flyout keyboard/click activation', () => {
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
     expect(screen.queryByTestId('graph-controls-panel')).not.toBeInTheDocument();
     expect(document.activeElement).toBe(toggle);
+  });
+});
+
+describe('Canvas — Inter-layer nodes control', () => {
+  it('shows the inter-layer toggle only in Model view', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+
+    // Wait for graph to render
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+
+    // Toggle should be visible in Model view
+    const toggle = screen.getByTestId('graph-controls-toggle');
+    fireEvent.focus(toggle);
+    await waitFor(() => expect(screen.getByTestId('graph-inter-layer-control')).toBeInTheDocument());
+
+    // Close controls and switch to Schema
+    fireEvent.keyDown(screen.getByTestId('graph-controls'), { key: 'Escape' });
+    useUiStore.getState().setView('spec');
+    useUiStore.getState().selectLayer('apm');
+
+    // Wait for schema graph to render
+    await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(0));
+
+    // Toggle should not be visible in Schema view
+    fireEvent.focus(screen.getByTestId('graph-controls-toggle'));
+    expect(screen.queryByTestId('graph-inter-layer-control')).not.toBeInTheDocument();
+  });
+
+  it('toggles inter-layer nodes on and off', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    useUiStore.getState().showInterLayerNodes = true;
+    useUiStore.setState({ showInterLayerNodes: true });
+
+    // With inter-layer nodes enabled, should have more nodes than native count
+    await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(11));
+
+    // Disable inter-layer nodes
+    const toggle = screen.getByTestId('graph-controls-toggle');
+    fireEvent.focus(toggle);
+    await waitFor(() => expect(screen.getByTestId('graph-inter-layer-control')).toBeInTheDocument());
+
+    const interLayerControl = screen.getByTestId('graph-inter-layer-control');
+    const offButton = within(interLayerControl).getByText('Off');
+    fireEvent.click(offButton);
+
+    // Now should have only native nodes (11)
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
   });
 });

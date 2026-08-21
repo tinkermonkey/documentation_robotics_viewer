@@ -124,6 +124,7 @@ import {
   nodesWithCardData,
   edgesForLayer as modelEdgesForLayer,
   edgeMetadata,
+  interLayerNodesAndEdges,
   type CardData,
 } from '../data/modelGraph';
 import {
@@ -132,7 +133,7 @@ import {
   intraRelCount,
   shortName,
 } from '../data/specGraph';
-import { isStructuralEdge } from '../data/predicates';
+import { isStructuralEdge, isStructuralPredicate } from '../data/predicates';
 
 const MODE_OPTIONS = [
   { value: 'graph', label: 'graph' },
@@ -221,6 +222,8 @@ function GraphControls() {
   const toggleShowAllRelations = useUiStore((s) => s.toggleShowAllRelations);
   const nodeDisplay = useUiStore((s) => s.nodeDisplay);
   const setNodeDisplay = useUiStore((s) => s.setNodeDisplay);
+  const showInterLayerNodes = useUiStore((s) => s.showInterLayerNodes);
+  const toggleShowInterLayerNodes = useUiStore((s) => s.toggleShowInterLayerNodes);
   const view = useUiStore((s) => s.view);
 
   const collapseIfLeavingFlyout = (
@@ -333,6 +336,17 @@ function GraphControls() {
               options={RELATIONS_OPTIONS}
             />
           </GraphControl>
+          {view === 'model' && (
+            <GraphControl label="Inter-layer" testId="graph-inter-layer-control">
+              <SegmentedControl
+                value={showInterLayerNodes ? 'on' : 'off'}
+                onChange={(v) => {
+                  if ((v === 'on') !== showInterLayerNodes) toggleShowInterLayerNodes();
+                }}
+                options={BOUNDARIES_OPTIONS}
+              />
+            </GraphControl>
+          )}
         </div>
       )}
     </div>
@@ -395,6 +409,7 @@ export function Canvas() {
   const highlightedEdgeId = useUiStore((s) => s.highlightedEdgeId);
   const selectGraphNode = useUiStore((s) => s.selectGraphNode);
   const selectLayer = useUiStore((s) => s.selectLayer);
+  const navigateToElement = useUiStore((s) => s.navigateToElement);
   const mode = useUiStore((s) => s.mode);
   const setMode = useUiStore((s) => s.setMode);
   const graphLayout = useUiStore((s) => s.graphLayout);
@@ -402,6 +417,7 @@ export function Canvas() {
   const showAllRelations = useUiStore((s) => s.showAllRelations);
   const nodeMarginPreset = useUiStore((s) => s.nodeMarginPreset);
   const nodeDisplay = useUiStore((s) => s.nodeDisplay);
+  const showInterLayerNodes = useUiStore((s) => s.showInterLayerNodes);
   const pg = usePageData();
   const isPage = mode === 'page';
   const nodeMargin = nodeMarginFor(nodeMarginPreset);
@@ -424,14 +440,57 @@ export function Canvas() {
   // counts, see data/modelGraph.ts's nodesWithCardData) that ModelCardNode reads
   // via renderNode below; Schema view node-types have no such data and always
   // render as the default pill.
+  // When showInterLayerNodes is on, merge foreign nodes alongside native nodes.
+  // Foreign nodes that have no visible structural edge are filtered out when
+  // showAllRelations is false (orphan filtering).
   const { nodes, cardData } = useMemo((): {
     nodes: GraphNodeData[];
     cardData: Map<string, CardData>;
   } => {
     if (!layerId) return { nodes: [], cardData: new Map() };
     if (isSpec) return { nodes: nodeTypesForLayer(specRaw, layerId), cardData: new Map() };
-    return nodesWithCardData(model, layerId, index);
-  }, [isSpec, specRaw, model, layerId, index]);
+
+    const { nodes: nativeNodes, cardData: cardDataMap } = nodesWithCardData(model, layerId, index);
+
+    if (!showInterLayerNodes) {
+      return { nodes: nativeNodes, cardData: cardDataMap };
+    }
+
+    // Merge inter-layer nodes when toggle is on
+    const perimeterLayout = graphLayout === 'force-clustered';
+    const { foreignNodes } = interLayerNodesAndEdges(
+      model,
+      layerId,
+      index,
+      perimeterLayout,
+    );
+
+    // Filter orphan foreign nodes when structural-only view is active
+    let mergedForeignNodes = foreignNodes;
+    if (!showAllRelations) {
+      const structuralCrossEdges = new Set<string>();
+
+      for (const link of model.links) {
+        const src = index.byEndpoint.get(link.source);
+        const tgt = index.byEndpoint.get(link.target);
+        if (!src || !tgt) continue;
+
+        const srcInLayer = src.layer_id === layerId;
+        const tgtInLayer = tgt.layer_id === layerId;
+        if ((srcInLayer && !tgtInLayer) || (!srcInLayer && tgtInLayer)) {
+          if (isStructuralPredicate(link.type)) {
+            const foreignNodeId = srcInLayer ? tgt.id : src.id;
+            structuralCrossEdges.add(foreignNodeId);
+          }
+        }
+      }
+
+      mergedForeignNodes = foreignNodes.filter((node) => structuralCrossEdges.has(node.id));
+    }
+
+    const allNodes = [...nativeNodes, ...mergedForeignNodes];
+    return { nodes: allNodes, cardData: cardDataMap };
+  }, [isSpec, specRaw, model, layerId, index, showInterLayerNodes, showAllRelations, graphLayout]);
 
   const renderCardNode = useCallback(
     (node: GraphNodeData, selected: boolean, hierarchy?: GraphNodeHierarchyMeta) => (
@@ -458,24 +517,39 @@ export function Canvas() {
   // renderCardNode wires for card mode. Schema-view nodes ARE node types, so
   // their tooltip lookup uses the node's own id (already `<slug>.<short>`)
   // rather than `kind` (the generic 'spec node' label nodeTypesForLayer sets).
+  // Foreign nodes (inter-layer) render at reduced opacity and navigate to their
+  // home layer on click rather than selecting within the current layer.
   const renderPillNode = useCallback(
-    (node: GraphNodeData, selected: boolean, hierarchy?: GraphNodeHierarchyMeta) => (
-      <PillNode
-        id={node.id}
-        label={node.label}
-        kind={node.kind}
-        domainColor={node.domainColor}
-        selected={selected}
-        onSelect={selectGraphNode}
-        spec={specRaw}
-        typeId={isSpec ? shortName(node.domainColor ?? '', node.id) : undefined}
-        hasChildren={hierarchy?.hasChildren}
-        collapsed={hierarchy?.collapsed}
-        hiddenDescendantCount={hierarchy?.hiddenDescendantCount}
-        onToggleCollapse={hierarchy?.onToggleCollapse}
-      />
-    ),
-    [selectGraphNode, specRaw, isSpec],
+    (node: GraphNodeData, selected: boolean, hierarchy?: GraphNodeHierarchyMeta) => {
+      const isForeignNode = !isSpec && node.domainColor !== layerId;
+      const handleForeignNodeClick = isForeignNode
+        ? () => navigateToElement(node.id, node.domainColor ?? '')
+        : undefined;
+      const handleNodeClick = handleForeignNodeClick || selectGraphNode;
+
+      return (
+        <div
+          style={isForeignNode ? { opacity: 0.6 } : undefined}
+          data-testid={`foreign-node-wrapper-${node.id}`}
+        >
+          <PillNode
+            id={node.id}
+            label={node.label}
+            kind={node.kind}
+            domainColor={node.domainColor}
+            selected={selected}
+            onSelect={handleNodeClick}
+            spec={specRaw}
+            typeId={isSpec ? shortName(node.domainColor ?? '', node.id) : undefined}
+            hasChildren={hierarchy?.hasChildren}
+            collapsed={hierarchy?.collapsed}
+            hiddenDescendantCount={hierarchy?.hiddenDescendantCount}
+            onToggleCollapse={hierarchy?.onToggleCollapse}
+          />
+        </div>
+      );
+    },
+    [selectGraphNode, navigateToElement, specRaw, isSpec, layerId],
   );
 
   // Model-only click-to-select — see useEdgeInteraction's doc comment for
@@ -485,12 +559,29 @@ export function Canvas() {
   const edges = useMemo((): GraphEdgeData[] => {
     if (!layerId) return [];
     if (isSpec) return specEdgesForLayer(specRaw, layerId);
-    return modelEdgesForLayer(model, layerId, index).map((edge) =>
+
+    const intraLayerEdges = modelEdgesForLayer(model, layerId, index);
+
+    let allEdges = intraLayerEdges;
+    if (showInterLayerNodes) {
+      const perimeterLayout = graphLayout === 'force-clustered';
+      const { crossEdges } = interLayerNodesAndEdges(model, layerId, index, perimeterLayout);
+
+      // Filter cross-layer edges when structural-only view is active
+      let visibleCrossEdges = crossEdges;
+      if (!showAllRelations) {
+        visibleCrossEdges = crossEdges.filter((edge) => isStructuralEdge(edge));
+      }
+
+      allEdges = [...intraLayerEdges, ...visibleCrossEdges];
+    }
+
+    return allEdges.map((edge) =>
       edge.id === selectedEdgeId || edge.id === highlightedEdgeId
         ? { ...edge, variant: 'hot' }
         : edge,
     );
-  }, [isSpec, specRaw, model, layerId, index, selectedEdgeId, highlightedEdgeId]);
+  }, [isSpec, specRaw, model, layerId, index, selectedEdgeId, highlightedEdgeId, showInterLayerNodes, showAllRelations, graphLayout]);
 
   // GraphCanvas's native edgeTooltip render-prop — called with whichever edge
   // is currently hovered; only meaningful in the Model view (edges only carry
@@ -640,7 +731,7 @@ export function Canvas() {
             ) : (
               <>
                 <GraphCanvas
-                  key={`${view}:${layerId}:${graphLayout}:${nodeMarginPreset}:${nodeDisplay}`}
+                  key={`${view}:${layerId}:${graphLayout}:${nodeMarginPreset}:${nodeDisplay}:${showInterLayerNodes}`}
                   nodes={nodes}
                   edges={edges}
                   selectedNodeId={selectedId ?? undefined}
