@@ -28,7 +28,6 @@ export function RelationshipsWithTooltips({
                 key={rel.id}
                 rel={rel}
                 onNodeSelect={onNodeSelect}
-                direction="out"
               />
             ))}
           </ul>
@@ -43,7 +42,6 @@ export function RelationshipsWithTooltips({
                 key={rel.id}
                 rel={rel}
                 onNodeSelect={onNodeSelect}
-                direction="in"
               />
             ))}
           </ul>
@@ -56,10 +54,9 @@ export function RelationshipsWithTooltips({
 interface RelationshipRowProps {
   rel: RelationshipLinkWithTooltip;
   onNodeSelect: (targetId: string) => void;
-  direction: 'in' | 'out';
 }
 
-function RelationshipRow({ rel, onNodeSelect, direction }: RelationshipRowProps) {
+function RelationshipRow({ rel, onNodeSelect }: RelationshipRowProps) {
   const handleClick = () => onNodeSelect(rel.target);
 
   // Wrap the predicate with PredicateTooltip when tooltip data is available.
@@ -81,11 +78,11 @@ function RelationshipRow({ rel, onNodeSelect, direction }: RelationshipRowProps)
       </span>
     );
 
-  const directionArrow = direction === 'out' ? '→' : '←';
-  const directionClass = direction === 'out' ? 'graph-inspector__rel-dir--out' : '';
+  const directionArrow = rel.direction === 'out' ? '→' : '←';
+  const directionClass = `graph-inspector__rel-dir--${rel.direction}`;
 
   return (
-    <li className="graph-inspector__rel" key={rel.id}>
+    <li className="graph-inspector__rel">
       <div className={`graph-inspector__rel-dir ${directionClass}`}>{directionArrow}</div>
       {predicateBadge}
       <button

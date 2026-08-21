@@ -194,35 +194,6 @@ describe('Inspector — stale edge selection guard', () => {
   });
 });
 
-describe('Inspector — stale edge selection guard', () => {
-  it('clears selectedEdgeId once the model has loaded and the id no longer resolves', async () => {
-    renderWithProviders(<Inspector />);
-    useUiStore.getState().setView('model');
-    useUiStore.getState().selectLayer('apm');
-    // A link id that never existed in the fixture — same shape as a dead
-    // WS-removed link or a stale bookmarked ?edge= param.
-    useUiStore.setState({ selectedEdgeId: 'rel:does-not-exist', selectedId: null });
-
-    await waitFor(() => {
-      expect(useUiStore.getState().selectedEdgeId).toBeNull();
-    });
-  });
-
-  it('leaves a resolvable selectedEdgeId untouched', async () => {
-    const result = renderWithProviders(<Inspector />);
-    useUiStore.getState().setView('model');
-    useUiStore.getState().selectLayer('apm');
-    useUiStore.getState().selectEdge(
-      'rel:apm.alert.web-socket-disconnect-alert:apm.metricinstrument.web-socket-connection-state-gauge:monitors',
-    );
-
-    await result.findByTestId('edge-inspector-predicate-tooltip');
-    expect(useUiStore.getState().selectedEdgeId).toBe(
-      'rel:apm.alert.web-socket-disconnect-alert:apm.metricinstrument.web-socket-connection-state-gauge:monitors',
-    );
-  });
-});
-
 describe('Inspector — AnnotationsSection mounting', () => {
   it('mounts the annotations section for a selected Model element', async () => {
     renderModelSelection('motivation', GOAL_UUID);
