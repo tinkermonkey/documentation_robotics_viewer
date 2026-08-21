@@ -41,7 +41,8 @@ export interface PredicateTooltipContentProps {
  * The tooltip card's body markup, extracted from `PredicateTooltip` so a
  * caller that can't compose `RichTooltip`'s trigger-wrapping (e.g. a graph
  * edge rendered internally by `GraphCanvas`, with no `children` slot to wrap —
- * see `EdgeHoverTooltip`) can still reuse the exact same content.
+ * see `Canvas.tsx`'s `renderEdgeTooltip`, passed as `GraphCanvas`'s native
+ * `edgeTooltip` prop) can still reuse the exact same content.
  */
 export function PredicateTooltipContent({
   predicate,

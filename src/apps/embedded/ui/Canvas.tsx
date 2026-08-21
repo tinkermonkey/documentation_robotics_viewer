@@ -81,14 +81,17 @@
  *
  * Model-view-only edge interaction (edges only carry model edge metadata there):
  * `useEdgeInteraction` is the single hook owning ALL of it — both click-to-select
- * (its `edgeSelectionProps` bag wraps `GraphCanvas`'s own built-in `selectedEdgeId`/
- * `onEdgeSelect` support: accent-color `.selected` + keyboard/aria) and hover over an
- * edge's predicate label (`GraphCanvas` has no per-edge hover callback or `renderEdge`
- * slot to hook directly, so this delegates instead) to drive `uiStore.highlightedEdgeId`
- * and the floating `EdgeHoverTooltip`. `Canvas.tsx` never touches `uiStore.selectedEdgeId`/
- * `selectEdge` directly — only through the hook — so if Heimdall's edge-interaction
- * surface changes again, only the hook changes. Both selected and highlighted edges
- * render `variant: 'hot'` in the `edges` array built below.
+ * and hover, both native `GraphCanvas` (heimdall-ui 0.8.0+) props: its
+ * `edgeSelectionProps` bag wraps the built-in `selectedEdgeId`/`onEdgeSelect`
+ * support (accent-color `.selected` + keyboard/aria), and `edgeHoverProps` wraps
+ * `onEdgeHover` to drive `uiStore.highlightedEdgeId`. `Canvas.tsx` never touches
+ * `uiStore.selectedEdgeId`/`selectEdge`/`setHighlightedEdgeId` directly — only
+ * through the hook — so if Heimdall's edge-interaction surface changes again,
+ * only the hook changes. Both selected and highlighted edges render
+ * `variant: 'hot'` in the `edges` array built below. The hover tooltip card
+ * itself is `GraphCanvas`'s own native `edgeTooltip` render-prop (`renderEdgeTooltip`
+ * below) — positioned at the edge's midpoint and shown/hidden by `GraphCanvas`
+ * internally, no portal or manual placement math needed on our side.
  */
 
 import { useCallback, useMemo, useRef, useState } from 'react';
@@ -107,7 +110,7 @@ import { PageView, usePageData } from './PageView';
 import { Inspector } from './Inspector';
 import { ModelCardNode } from './ModelCardNode';
 import { PillNode } from './PillNode';
-import { EdgeHoverTooltip } from './EdgeHoverTooltip';
+import { PredicateTooltipContent } from './PredicateTooltip';
 import { useEdgeInteraction } from './useEdgeInteraction';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
@@ -470,10 +473,9 @@ export function Canvas() {
     [selectGraphNode, specRaw, isSpec],
   );
 
-  // Model-only: click-to-select + hover-to-preview both render the
-  // same "hot" variant. hoverHandlers are spread onto the graph wrapper below.
-  const { hoveredEdgeId, hoveredEdgeAnchor, edgeHoverHandlers, selectedEdgeId, edgeSelectionProps } =
-    useEdgeInteraction();
+  // Model-only: click-to-select + hover-to-preview both render the same "hot"
+  // variant. Both prop bags spread directly onto GraphCanvas below.
+  const { edgeHoverProps, selectedEdgeId, edgeSelectionProps } = useEdgeInteraction();
 
   const edges = useMemo((): GraphEdgeData[] => {
     if (!layerId) return [];
@@ -485,11 +487,24 @@ export function Canvas() {
     );
   }, [isSpec, specRaw, model, layerId, index, selectedEdgeId, highlightedEdgeId]);
 
-  // Predicate tooltip content for whichever edge is currently hovered — only
-  // meaningful in the Model view (edges only carry model edge metadata there).
-  const hoveredEdgeMeta = useMemo(
-    () => (!isSpec && hoveredEdgeId ? edgeMetadata(model, hoveredEdgeId, index, specRaw) : undefined),
-    [isSpec, model, hoveredEdgeId, index, specRaw],
+  // GraphCanvas's native edgeTooltip render-prop — called with whichever edge
+  // is currently hovered; only meaningful in the Model view (edges only carry
+  // model edge metadata there). Positioning/portaling/show-hide are all
+  // GraphCanvas's own concern now (heimdall-ui 0.8.0+).
+  const renderEdgeTooltip = useCallback(
+    (edge: GraphEdgeData) => {
+      const meta = edgeMetadata(model, edge.id, index, specRaw);
+      if (!meta) return null;
+      return (
+        <PredicateTooltipContent
+          predicate={meta.predicate}
+          sourceTypeLabel={meta.sourceNode.type}
+          destinationTypeLabel={meta.targetNode.type}
+          data-testid="edge-predicate-tooltip"
+        />
+      );
+    },
+    [model, index, specRaw],
   );
 
   const slug = layerId ?? '';
@@ -588,7 +603,6 @@ export function Canvas() {
       <div
         ref={canvasAreaRef}
         style={{ flex: 1, position: 'relative', minHeight: 0 }}
-        {...(!isSpec ? edgeHoverHandlers : {})}
       >
         {isPage ? (
           !layerId ? (
@@ -613,6 +627,8 @@ export function Canvas() {
                   selectedNodeId={selectedId ?? undefined}
                   onNodeSelect={(id) => selectGraphNode(id)}
                   {...(!isSpec ? edgeSelectionProps : {})}
+                  {...(!isSpec ? edgeHoverProps : {})}
+                  edgeTooltip={!isSpec ? renderEdgeTooltip : undefined}
                   onBackgroundClick={() => selectLayer(layerId)}
                   renderNode={!isSpec && nodeDisplay === 'card' ? renderCardNode : renderPillNode}
                   centerOnSelect
@@ -636,17 +652,6 @@ export function Canvas() {
                     language as the built-in bottom-left GraphToolbar. */}
                 <GraphControls />
               </>
-            )}
-            {/* Portal-rendered near the hovered edge's predicate label — see
-                useEdgeInteraction's doc comment for why this can't be a
-                RichTooltip-wrapped trigger. */}
-            {hoveredEdgeAnchor && hoveredEdgeMeta && (
-              <EdgeHoverTooltip
-                anchorRect={hoveredEdgeAnchor}
-                predicate={hoveredEdgeMeta.predicate}
-                sourceTypeLabel={hoveredEdgeMeta.sourceNode.type}
-                destinationTypeLabel={hoveredEdgeMeta.targetNode.type}
-              />
             )}
             {/* Floats over this relative wrapper's right edge (Heimdall
                 DetailDrawer) — auto-hides when nothing's selected, same
