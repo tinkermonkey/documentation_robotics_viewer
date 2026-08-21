@@ -330,11 +330,15 @@ export function specMetadataForNode(
 
 // ─── Node-type tooltip content (hover surfaces — ModelCardNode/Inspector/EdgeInspector/PageView) ─
 
-/** One possible inbound or outbound connection for a node type's rich tooltip. */
-export interface NodeTypeConnectionData {
+/** One possible inbound or outbound connection for a node type. */
+export interface NodeTypeConnection {
+  /** DR predicate string, e.g. `aggregates`. */
   predicate: string;
-  typeId: string;
+  /** Human label for the connected node type. */
   typeLabel: string;
+  /** The connected node type's `spec_node_id` (used as the list-key salt). */
+  typeId: string;
+  /** Owning layer slug of the connected type, for its domain swatch. */
   domain?: string;
 }
 
@@ -343,8 +347,8 @@ export interface NodeTypeTooltipData {
   specifier: string;
   title: string;
   description?: string;
-  inbound: NodeTypeConnectionData[];
-  outbound: NodeTypeConnectionData[];
+  inbound: NodeTypeConnection[];
+  outbound: NodeTypeConnection[];
 }
 
 /**
@@ -359,11 +363,11 @@ export function nodeTypeConnections(
   spec: SpecPayload | undefined,
   slug: string,
   nodeId: string,
-): { inbound: NodeTypeConnectionData[]; outbound: NodeTypeConnectionData[] } {
+): { inbound: NodeTypeConnection[]; outbound: NodeTypeConnection[] } {
   const schema = schemaForLayer(spec, slug);
   const rels = schema?.relationshipSchemas ?? {};
-  const inbound: NodeTypeConnectionData[] = [];
-  const outbound: NodeTypeConnectionData[] = [];
+  const inbound: NodeTypeConnection[] = [];
+  const outbound: NodeTypeConnection[] = [];
 
   for (const rel of Object.values(rels)) {
     if (rel.source_spec_node_id === nodeId) {

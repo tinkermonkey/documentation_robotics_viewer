@@ -51,6 +51,7 @@ import { GraphInspector, GraphEdgeInspector, type GraphEdgeMetadata } from '@tin
 import { layerLabel } from './domain';
 import { NodeTypeBadge } from './NodeTypeBadge';
 import { PredicateTooltip } from './PredicateTooltip';
+import { RelationshipsWithTooltips } from './RelationshipsWithTooltips';
 import type { ModelDerived } from '../data/useModel';
 import type { EdgeMetadata, ModelIndex } from '../data/modelGraph';
 import type { SpecPayload } from '../data/specGraph';
@@ -155,12 +156,18 @@ export function EdgeInspector({
             </NodeTypeBadge>
           </div>
         )}
-        <GraphInspector
-          node={sourceMetadata}
-          relationships={sourceRelationships}
-          onNodeSelect={onNodeSelect}
-          emptyStateText="Source element unavailable."
-        />
+        <div className="graph-inspector--custom-relationships">
+          <GraphInspector
+            node={sourceMetadata}
+            relationships={[]}
+            onNodeSelect={onNodeSelect}
+            emptyStateText="Source element unavailable."
+          />
+          <RelationshipsWithTooltips
+            relationships={sourceRelationships}
+            onNodeSelect={onNodeSelect}
+          />
+        </div>
       </div>
       <div className="graph-edge-inspector__head-eyebrow" data-testid="edge-inspector-predicate-row">
         <PredicateTooltip
@@ -205,12 +212,18 @@ export function EdgeInspector({
             </NodeTypeBadge>
           </div>
         )}
-        <GraphInspector
-          node={targetMetadata}
-          relationships={targetRelationships}
-          onNodeSelect={onNodeSelect}
-          emptyStateText="Destination element unavailable."
-        />
+        <div className="graph-inspector--custom-relationships">
+          <GraphInspector
+            node={targetMetadata}
+            relationships={[]}
+            onNodeSelect={onNodeSelect}
+            emptyStateText="Destination element unavailable."
+          />
+          <RelationshipsWithTooltips
+            relationships={targetRelationships}
+            onNodeSelect={onNodeSelect}
+          />
+        </div>
       </div>
     </div>
   );
