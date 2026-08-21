@@ -217,9 +217,8 @@ export function Inspector() {
               </NodeTypeBadge>
             </div>
           )}
-          {/* Model view: render metadata + custom relationships with tooltips */}
           {!isSpec ? (
-            <>
+            <div className="graph-inspector--custom-relationships">
               <GraphInspector
                 node={metadata}
                 relationships={[]}
@@ -230,9 +229,8 @@ export function Inspector() {
                 relationships={relationships}
                 onNodeSelect={handleSelect}
               />
-            </>
+            </div>
           ) : (
-            /* Spec view: use GraphInspector's built-in relationship rendering */
             <GraphInspector
               node={metadata}
               relationships={relationships}

@@ -457,6 +457,6 @@ body.dark-canvas {
  * empty, causing a phantom "No relationships yet." to appear above the custom
  * relationship list. This rule hides that message in the Model-view inspector
  * where the actual relationships come from RelationshipsWithTooltips instead. */
-.graph-inspector__empty-mini {
+.graph-inspector--custom-relationships .graph-inspector__empty-mini {
   display: none;
 }

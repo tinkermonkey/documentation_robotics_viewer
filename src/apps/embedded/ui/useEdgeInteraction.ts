@@ -67,7 +67,7 @@ function matchEdgeLabel(target: EventTarget | null): EdgeLabelMatch | null {
     console.warn(
       `[useEdgeInteraction] Found .${EDGE_LABEL_CLASS} element but no parent [data-testid^="${EDGE_TESTID_PREFIX}"] ancestor. ` +
       `Heimdall's edge DOM structure may have changed.`,
-      { labelEl, edgeEl }
+      { labelEl, edgeEl },
     );
     return null;
   }
@@ -78,11 +78,10 @@ function matchEdgeLabel(target: EventTarget | null): EdgeLabelMatch | null {
     console.warn(
       `[useEdgeInteraction] data-testid="${testId}" does not have a non-empty suffix after "${EDGE_TESTID_PREFIX}". ` +
       `Heimdall's edge ID format may have changed.`,
-      { testId }
+      { testId },
     );
     return null;
   }
-
   return { edgeId, labelEl };
 }
 

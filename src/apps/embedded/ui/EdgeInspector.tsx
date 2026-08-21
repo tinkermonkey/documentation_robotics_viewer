@@ -156,16 +156,18 @@ export function EdgeInspector({
             </NodeTypeBadge>
           </div>
         )}
-        <GraphInspector
-          node={sourceMetadata}
-          relationships={[]}
-          onNodeSelect={onNodeSelect}
-          emptyStateText="Source element unavailable."
-        />
-        <RelationshipsWithTooltips
-          relationships={sourceRelationships}
-          onNodeSelect={onNodeSelect}
-        />
+        <div className="graph-inspector--custom-relationships">
+          <GraphInspector
+            node={sourceMetadata}
+            relationships={[]}
+            onNodeSelect={onNodeSelect}
+            emptyStateText="Source element unavailable."
+          />
+          <RelationshipsWithTooltips
+            relationships={sourceRelationships}
+            onNodeSelect={onNodeSelect}
+          />
+        </div>
       </div>
       <div className="graph-edge-inspector__head-eyebrow" data-testid="edge-inspector-predicate-row">
         <PredicateTooltip
@@ -210,16 +212,18 @@ export function EdgeInspector({
             </NodeTypeBadge>
           </div>
         )}
-        <GraphInspector
-          node={targetMetadata}
-          relationships={[]}
-          onNodeSelect={onNodeSelect}
-          emptyStateText="Destination element unavailable."
-        />
-        <RelationshipsWithTooltips
-          relationships={targetRelationships}
-          onNodeSelect={onNodeSelect}
-        />
+        <div className="graph-inspector--custom-relationships">
+          <GraphInspector
+            node={targetMetadata}
+            relationships={[]}
+            onNodeSelect={onNodeSelect}
+            emptyStateText="Destination element unavailable."
+          />
+          <RelationshipsWithTooltips
+            relationships={targetRelationships}
+            onNodeSelect={onNodeSelect}
+          />
+        </div>
       </div>
     </div>
   );

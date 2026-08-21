@@ -138,7 +138,7 @@ describe('useEdgeInteraction', () => {
 
     expect(warnSpy).toHaveBeenCalledWith(
       expect.stringContaining('Found .graph-edge__label element but no parent [data-testid^="graph-edge-"] ancestor'),
-      expect.any(Object)
+      expect.any(Object),
     );
     warnSpy.mockRestore();
   });
@@ -167,7 +167,7 @@ describe('useEdgeInteraction', () => {
 
     expect(warnSpy).toHaveBeenCalledWith(
       expect.stringContaining('data-testid="graph-edge-" does not have a non-empty suffix'),
-      expect.any(Object)
+      expect.any(Object),
     );
     warnSpy.mockRestore();
   });

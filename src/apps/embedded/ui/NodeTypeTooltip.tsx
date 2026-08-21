@@ -17,7 +17,6 @@ import type { ReactNode } from 'react';
 import type { NodeTypeConnection } from '../data/specGraph';
 import { RichTooltip, type TooltipPlacement } from './RichTooltip';
 import { layerColor, layerLabel } from './domain';
-
 const DEFAULT_MAX_CONNECTIONS = 6;
 
 function ConnectionList({
