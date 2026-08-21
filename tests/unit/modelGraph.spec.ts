@@ -650,10 +650,19 @@ describe('interLayerNodesAndEdges', () => {
       }
     });
 
-    it('scales ring radius by foreign node count (Math.max(300, count * 80))', () => {
+    it('scales ring radius by native cluster extent and foreign node count', () => {
       const result = interLayerNodesAndEdges(model, 'business', index, true);
       const count = result.foreignNodes.length;
-      const expectedRadius = Math.max(300, count * 80);
+      const nativeNodeCount = model.nodesByLayer['business'].length;
+
+      // Estimate cluster extent using gridLayout's spacing constants.
+      const cols = Math.max(2, Math.min(4, Math.ceil(Math.sqrt(nativeNodeCount))));
+      const rows = Math.ceil(nativeNodeCount / cols);
+      const colExtent = (cols - 1) * 196; // COL_GAP
+      const rowExtent = (rows - 1) * 88; // ROW_GAP
+      const clusterExtent = Math.max(colExtent, rowExtent);
+
+      const expectedRadius = Math.max(300, Math.max(clusterExtent, count * 80));
 
       // All nodes at approximately this radius.
       const actual = Math.sqrt(result.foreignNodes[0].x! ** 2 + result.foreignNodes[0].y! ** 2);

@@ -351,14 +351,32 @@ const MIN_RING_RADIUS = 300;
 const ARC_SPACING = 80;
 
 /**
+ * Estimate the cluster extent of native nodes based on their count and expected
+ * grid layout. Uses gridLayout's COL_GAP and ROW_GAP to approximate the bounding
+ * box size that the force layout will produce, so the ring radius can scale
+ * proportionally to the cluster size.
+ */
+function estimateClusterExtent(nativeNodeCount: number): number {
+  if (nativeNodeCount === 0) return 0;
+  const cols = Math.max(2, Math.min(4, Math.ceil(Math.sqrt(nativeNodeCount))));
+  const rows = Math.ceil(nativeNodeCount / cols);
+  const colExtent = (cols - 1) * COL_GAP;
+  const rowExtent = (rows - 1) * ROW_GAP;
+  return Math.max(colExtent, rowExtent);
+}
+
+/**
  * Compute directly-linked foreign (other-layer) nodes and cross-layer edges for
  * a layer. Foreign nodes are deduplicated by UUID and rendered with their own
  * layer's color via `domainColor: foreignNode.layer_id`. Cross-layer edges carry
  * reduced opacity (0.4) and dashed stroke ([6, 4]) to distinguish them visually.
  *
  * When `perimeterLayout` is true, foreign nodes receive explicit x/y coordinates
- * placing them on a ring around the origin, with radius scaled by foreign node
- * count. When false, x/y are omitted so the layout engine positions them normally.
+ * placing them on a ring around the origin, with radius scaled relative to the
+ * current layer's native node cluster extent. The radius grows as the native
+ * cluster grows, ensuring foreign nodes stay visible around the perimeter
+ * regardless of the layer's size. When false, x/y are omitted so the layout
+ * engine positions them normally.
  */
 export function interLayerNodesAndEdges(
   model: ModelDerived,
@@ -407,7 +425,16 @@ export function interLayerNodesAndEdges(
   const foreignNodes: GraphNodeData[] = [];
   const foreignNodeIds = new Set<string>();
   const foreignNodeArray = Array.from(foreignNodeMap.values());
-  const ringRadius = Math.max(MIN_RING_RADIUS, foreignNodeArray.length * ARC_SPACING);
+
+  // Scale ring radius by both native cluster extent and foreign node count,
+  // ensuring the ring grows as either the layer's size or the number of
+  // cross-layer connections increases.
+  const nativeNodeCount = layerNodeIds.size;
+  const clusterExtent = estimateClusterExtent(nativeNodeCount);
+  const ringRadius = Math.max(
+    MIN_RING_RADIUS,
+    Math.max(clusterExtent, foreignNodeArray.length * ARC_SPACING)
+  );
 
   foreignNodeArray.forEach((node, i) => {
     foreignNodeIds.add(node.id);
