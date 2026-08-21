@@ -9,18 +9,19 @@ import type { NeighborhoodGraph } from '@/apps/embedded/data/neighborhoodGraph';
 
 describe('NeighborhoodGraphView', () => {
   describe('rendering behavior', () => {
-    it('renders nothing when neighborhood is empty', () => {
+    it('renders an empty state when neighborhood is empty', () => {
       const emptyNeighborhood: NeighborhoodGraph = {
         nodes: [],
         edges: [],
         empty: true,
       };
 
-      const { container } = renderWithProviders(
+      renderWithProviders(
         <NeighborhoodGraphView neighborhood={emptyNeighborhood} isSpecView={false} />,
       );
 
-      expect(container.firstChild).toBeNull();
+      expect(screen.getByTestId('neighborhood-empty-state')).toBeInTheDocument();
+      expect(screen.getByTestId('neighborhood-empty-state')).toHaveTextContent('no connections');
     });
 
     it('renders the graph container when neighborhood has nodes', () => {

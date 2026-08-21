@@ -4,6 +4,7 @@ import { useUiStore } from './uiStore';
 import type { NeighborhoodGraph, NeighborhoodNode } from '../data/neighborhoodGraph';
 import { PillNode } from './PillNode';
 import { useSpec } from '../data/useSpec';
+import { isStructuralEdge } from '../data/predicates';
 
 interface NeighborhoodGraphViewProps {
   neighborhood: NeighborhoodGraph;
@@ -58,6 +59,11 @@ export function NeighborhoodGraphView({
   const navigateToSpecNode = useUiStore((s) => s.navigateToSpecNode);
   const { raw: specRaw } = useSpec();
 
+  const currentNodeId = useMemo(() => {
+    const centerNode = neighborhood.nodes.find((n) => n.isCenter);
+    return centerNode?.id;
+  }, [neighborhood.nodes]);
+
   const graphNodes = useMemo(() => nodesToGraphData(neighborhood.nodes), [neighborhood.nodes]);
   const graphEdges = useMemo(() => edgesToGraphData(neighborhood.nodes, neighborhood.edges), [neighborhood.nodes, neighborhood.edges]);
 
@@ -89,10 +95,6 @@ export function NeighborhoodGraphView({
     [neighborhood.nodes, isSpecView, handleNodeClick, specRaw],
   );
 
-  if (neighborhood.empty) {
-    return null;
-  }
-
   return (
     <div
       style={{
@@ -106,24 +108,43 @@ export function NeighborhoodGraphView({
       }}
       data-testid="neighborhood-graph-view"
     >
-      <GraphCanvas
-        nodes={graphNodes}
-        edges={graphEdges}
-        renderNode={renderNode}
-        onNodeSelect={handleNodeClick}
-        layout="force"
-        nodeMargin={40}
-        centerOnSelect={false}
-        fitView={true}
-        fitPadding={20}
-        showToolbar={false}
-        style={{
-          position: 'absolute',
-          inset: 0,
-          width: '100%',
-          height: '100%',
-        }}
-      />
+      {neighborhood.empty ? (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+            color: 'rgb(var(--canvas-fg-3))',
+            fontFamily: "'JetBrains Mono',monospace",
+            fontSize: 12,
+          }}
+          data-testid="neighborhood-empty-state"
+        >
+          no connections
+        </div>
+      ) : (
+        <GraphCanvas
+          nodes={graphNodes}
+          edges={graphEdges}
+          selectedNodeId={currentNodeId}
+          renderNode={renderNode}
+          onNodeSelect={handleNodeClick}
+          layout="force"
+          nodeMargin={40}
+          centerOnSelect={true}
+          fitView={true}
+          fitPadding={20}
+          showToolbar={false}
+          isStructuralEdge={isStructuralEdge}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+          }}
+        />
+      )}
     </div>
   );
 }
