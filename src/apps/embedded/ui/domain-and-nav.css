@@ -449,3 +449,13 @@ body.dark-canvas {
   font-size: 11px;
   color: rgb(var(--canvas-fg-3));
 }
+
+/* ---- GraphInspector empty-state visibility per view ---------------------
+ * Model view renders relationships separately via RelationshipsWithTooltips
+ * in the card's cross-link list, not through GraphInspector's own relationship
+ * list. Hide GraphInspector's "No relationships" empty state in Model view to
+ * avoid redundant messaging. Schema view shows the legitimate GraphInspector
+ * relationship list and its empty state, which shouldn't be suppressed. */
+.inspector-model-branch .graph-inspector__empty-mini {
+  display: none;
+}

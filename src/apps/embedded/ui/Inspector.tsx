@@ -181,6 +181,7 @@ export function Inspector() {
       width={width}
       onWidthChange={setWidth}
       data-testid="inspector"
+      className={!isSpec ? 'inspector-model-branch' : ''}
     >
       {edge && selectedEdgeId ? (
         <EdgeInspector
