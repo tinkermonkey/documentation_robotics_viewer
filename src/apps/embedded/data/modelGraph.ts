@@ -334,4 +334,101 @@ export function edgeMetadata(
   };
 }
 
+// ─── Inter-layer nodes and edges: foreign nodes + cross-layer edges ──────────
+
+/** Computed foreign nodes and cross-layer edges for a layer. */
+export interface InterLayerResult {
+  /** Foreign nodes from other layers directly linked to this layer. */
+  foreignNodes: GraphNodeData[];
+  /** Cross-layer edges connecting native and foreign nodes. */
+  crossEdges: GraphEdge[];
+  /** Set of foreign node UUIDs for O(1) membership checks in the UI. */
+  foreignNodeIds: Set<string>;
+}
+
+// Perimeter ring layout constants.
+const MIN_RING_RADIUS = 300;
+const ARC_SPACING = 80;
+
+/**
+ * Compute directly-linked foreign (other-layer) nodes and cross-layer edges for
+ * a layer. Foreign nodes are deduplicated by UUID and rendered with their own
+ * layer's color via `domainColor: foreignNode.layer_id`. Cross-layer edges carry
+ * reduced opacity (0.4) and dashed stroke ([6, 4]) to distinguish them visually.
+ *
+ * When `perimeterLayout` is true, foreign nodes receive explicit x/y coordinates
+ * placing them on a ring around the origin, with radius scaled by foreign node
+ * count. When false, x/y are omitted so the layout engine positions them normally.
+ */
+export function interLayerNodesAndEdges(
+  model: ModelDerived,
+  layerId: string,
+  index: ModelIndex,
+  perimeterLayout?: boolean,
+): InterLayerResult {
+  const layerNodeIds = new Set(model.nodesByLayer[layerId]?.map((n) => n.id) ?? []);
+  const foreignNodeMap = new Map<string, ModelNode>();
+  const crossEdges: GraphEdge[] = [];
+
+  // Collect all foreign nodes and cross-layer edges.
+  for (const link of model.links) {
+    const src = resolveEndpoint(index, link.source);
+    const tgt = resolveEndpoint(index, link.target);
+    if (!src || !tgt) continue;
+
+    const srcInLayer = layerNodeIds.has(src.id);
+    const tgtInLayer = layerNodeIds.has(tgt.id);
+
+    // Cross-layer link: exactly one endpoint is in this layer.
+    if (srcInLayer && !tgtInLayer) {
+      foreignNodeMap.set(tgt.id, tgt);
+      crossEdges.push({
+        id: link.id,
+        sourceId: src.id,
+        targetId: tgt.id,
+        label: link.type,
+        opacity: 0.4,
+        strokeDash: [6, 4],
+      });
+    } else if (!srcInLayer && tgtInLayer) {
+      foreignNodeMap.set(src.id, src);
+      crossEdges.push({
+        id: link.id,
+        sourceId: src.id,
+        targetId: tgt.id,
+        label: link.type,
+        opacity: 0.4,
+        strokeDash: [6, 4],
+      });
+    }
+  }
+
+  // Convert foreign nodes to GraphNodeData, with optional perimeter positions.
+  const foreignNodes: GraphNodeData[] = [];
+  const foreignNodeIds = new Set<string>();
+  const foreignNodeArray = Array.from(foreignNodeMap.values());
+  const ringRadius = Math.max(MIN_RING_RADIUS, foreignNodeArray.length * ARC_SPACING);
+
+  foreignNodeArray.forEach((node, index) => {
+    foreignNodeIds.add(node.id);
+    const nodeData: GraphNodeData = {
+      id: node.id,
+      label: node.name,
+      kind: node.type,
+      domainColor: node.layer_id,
+    };
+
+    // Place on a ring around the origin if perimeter layout is enabled.
+    if (perimeterLayout) {
+      const angle = (index / foreignNodeArray.length) * 2 * Math.PI;
+      nodeData.x = ringRadius * Math.cos(angle);
+      nodeData.y = ringRadius * Math.sin(angle);
+    }
+
+    foreignNodes.push(nodeData);
+  });
+
+  return { foreignNodes, crossEdges, foreignNodeIds };
+}
+
 export type { ModelLink };

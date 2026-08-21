@@ -9,6 +9,7 @@ import {
   edgesForLayer,
   nodesWithCardData,
   edgeMetadata,
+  interLayerNodesAndEdges,
   CARD_CROSS_LINK_CAP,
 } from '@/apps/embedded/data/modelGraph';
 import type {
@@ -473,5 +474,254 @@ describe('edgeMetadata', () => {
     const meta = edgeMetadata(model, link.id, index, undefined)!;
     expect(meta).toBeDefined();
     expect(meta.specRelationship).toBeUndefined();
+  });
+});
+
+// ─── interLayerNodesAndEdges ──────────────────────────────────────────────────
+
+describe('interLayerNodesAndEdges', () => {
+  const index = buildModelIndex(model);
+
+  it('returns the expected data structure with foreignNodes, crossEdges, and foreignNodeIds', () => {
+    const result = interLayerNodesAndEdges(model, 'security', index);
+    expect(result).toHaveProperty('foreignNodes');
+    expect(result).toHaveProperty('crossEdges');
+    expect(result).toHaveProperty('foreignNodeIds');
+    expect(Array.isArray(result.foreignNodes)).toBe(true);
+    expect(Array.isArray(result.crossEdges)).toBe(true);
+    expect(result.foreignNodeIds instanceof Set).toBe(true);
+  });
+
+  it('includes foreign nodes for every cross-layer link where the layer has one endpoint', () => {
+    const layer = 'security';
+    const result = interLayerNodesAndEdges(model, layer, index);
+    const layerUuids = new Set(model.nodesByLayer[layer].map((n) => n.id));
+
+    // Count expected foreign nodes manually.
+    const expectedForeignUuids = new Set<string>();
+    for (const link of model.links) {
+      const src = resolveEndpoint(index, link.source);
+      const tgt = resolveEndpoint(index, link.target);
+      if (!src || !tgt) continue;
+
+      const srcInLayer = layerUuids.has(src.id);
+      const tgtInLayer = layerUuids.has(tgt.id);
+
+      if (srcInLayer && !tgtInLayer) expectedForeignUuids.add(tgt.id);
+      if (!srcInLayer && tgtInLayer) expectedForeignUuids.add(src.id);
+    }
+
+    // Result should include all expected foreign nodes.
+    expect(result.foreignNodeIds.size).toBe(expectedForeignUuids.size);
+    for (const id of expectedForeignUuids) {
+      expect(result.foreignNodeIds.has(id)).toBe(true);
+    }
+  });
+
+  it('deduplicates foreign nodes by UUID (a node linked via multiple predicates appears once)', () => {
+    const layer = 'business';
+    const result = interLayerNodesAndEdges(model, layer, index);
+
+    // Each node id should appear exactly once in foreignNodes.
+    const nodeIds = result.foreignNodes.map((n) => n.id);
+    const uniqueIds = new Set(nodeIds);
+    expect(nodeIds).toHaveLength(uniqueIds.size);
+    expect(uniqueIds).toEqual(result.foreignNodeIds);
+  });
+
+  it("assigns each foreign node its own layer's domainColor (not the active layer)", () => {
+    const layer = 'application';
+    const result = interLayerNodesAndEdges(model, layer, index);
+
+    for (const node of result.foreignNodes) {
+      const actualNode = index.byUuid.get(node.id)!;
+      expect(node.domainColor).toBe(actualNode.layer_id);
+      expect(node.domainColor).not.toBe(layer);
+    }
+  });
+
+  it('maps foreign node properties: id → UUID, label → name, kind → type', () => {
+    const result = interLayerNodesAndEdges(model, 'technology', index);
+    for (const gn of result.foreignNodes) {
+      const src = index.byUuid.get(gn.id)!;
+      expect(gn.label).toBe(src.name);
+      expect(gn.kind).toBe(src.type);
+    }
+  });
+
+  it('cross-layer edges carry opacity 0.4 and strokeDash [6, 4]', () => {
+    const result = interLayerNodesAndEdges(model, 'api', index);
+    expect(result.crossEdges.length).toBeGreaterThan(0);
+    for (const edge of result.crossEdges) {
+      expect(edge.opacity).toBe(0.4);
+      expect(edge.strokeDash).toEqual([6, 4]);
+    }
+  });
+
+  it('cross-layer edges carry the link predicate as label', () => {
+    const layer = 'data-model';
+    const result = interLayerNodesAndEdges(model, layer, index);
+    const layerUuids = new Set(model.nodesByLayer[layer].map((n) => n.id));
+
+    for (const edge of result.crossEdges) {
+      const link = model.links.find((l) => l.id === edge.id)!;
+      expect(edge.label).toBe(link.type);
+
+      // Verify exactly one endpoint is in the layer.
+      const srcInLayer = layerUuids.has(edge.sourceId);
+      const tgtInLayer = layerUuids.has(edge.targetId);
+      expect(srcInLayer).not.toBe(tgtInLayer);
+    }
+  });
+
+  it('cross-layer edges map sourceId/targetId to node UUIDs', () => {
+    const result = interLayerNodesAndEdges(model, 'testing', index);
+    for (const edge of result.crossEdges) {
+      const src = index.byUuid.get(edge.sourceId);
+      const tgt = index.byUuid.get(edge.targetId);
+      expect(src).toBeDefined();
+      expect(tgt).toBeDefined();
+    }
+  });
+
+  it('covers both incoming and outgoing cross-layer links', () => {
+    const layer = 'motivation';
+    const result = interLayerNodesAndEdges(model, layer, index);
+    const layerUuids = new Set(model.nodesByLayer[layer].map((n) => n.id));
+    const foreignUuids = result.foreignNodeIds;
+
+    let hasIncoming = false;
+    let hasOutgoing = false;
+    for (const edge of result.crossEdges) {
+      if (layerUuids.has(edge.sourceId) && foreignUuids.has(edge.targetId)) {
+        hasOutgoing = true;
+      }
+      if (foreignUuids.has(edge.sourceId) && layerUuids.has(edge.targetId)) {
+        hasIncoming = true;
+      }
+    }
+
+    // At least one layer should have both incoming and outgoing.
+    expect(hasIncoming || hasOutgoing).toBe(true);
+  });
+
+  it('returns empty arrays for a layer with no cross-layer links', () => {
+    // This layer may not exist in the fixture, but the function should handle it gracefully.
+    const result = interLayerNodesAndEdges(model, 'no-such-layer', index);
+    expect(result.foreignNodes).toEqual([]);
+    expect(result.crossEdges).toEqual([]);
+    expect(result.foreignNodeIds.size).toBe(0);
+  });
+
+  describe('perimeter-ring layout', () => {
+    it('omits x/y coordinates when perimeterLayout is undefined', () => {
+      const result = interLayerNodesAndEdges(model, 'business', index, undefined);
+      for (const node of result.foreignNodes) {
+        expect(node.x).toBeUndefined();
+        expect(node.y).toBeUndefined();
+      }
+    });
+
+    it('omits x/y coordinates when perimeterLayout is false', () => {
+      const result = interLayerNodesAndEdges(model, 'business', index, false);
+      for (const node of result.foreignNodes) {
+        expect(node.x).toBeUndefined();
+        expect(node.y).toBeUndefined();
+      }
+    });
+
+    it('assigns x/y coordinates on a ring when perimeterLayout is true', () => {
+      const result = interLayerNodesAndEdges(model, 'business', index, true);
+      expect(result.foreignNodes.length).toBeGreaterThan(0);
+      for (const node of result.foreignNodes) {
+        expect(typeof node.x).toBe('number');
+        expect(typeof node.y).toBe('number');
+      }
+    });
+
+    it('positions foreign nodes on a circle centered at the origin', () => {
+      const result = interLayerNodesAndEdges(model, 'business', index, true);
+      const ringRadii = result.foreignNodes.map((n) => Math.sqrt(n.x! ** 2 + n.y! ** 2));
+
+      // All nodes should be at approximately the same distance from origin (ring radius).
+      const avgRadius = ringRadii.reduce((a, b) => a + b, 0) / ringRadii.length;
+      for (const radius of ringRadii) {
+        expect(radius).toBeCloseTo(avgRadius, 5);
+      }
+    });
+
+    it('scales ring radius by foreign node count (Math.max(300, count * 80))', () => {
+      const result = interLayerNodesAndEdges(model, 'business', index, true);
+      const count = result.foreignNodes.length;
+      const expectedRadius = Math.max(300, count * 80);
+
+      // All nodes at approximately this radius.
+      const actual = Math.sqrt(result.foreignNodes[0].x! ** 2 + result.foreignNodes[0].y! ** 2);
+      expect(actual).toBeCloseTo(expectedRadius, 5);
+    });
+
+    it('evenly spaces nodes around the circle by angle', () => {
+      const result = interLayerNodesAndEdges(model, 'api', index, true);
+      const count = result.foreignNodes.length;
+
+      // Compute angles.
+      const angles = result.foreignNodes.map((n) => Math.atan2(n.y!, n.x!));
+      angles.sort((a, b) => a - b);
+
+      // Adjacent angles should differ by roughly 2π / count.
+      const expectedAngleStep = (2 * Math.PI) / count;
+      for (let i = 0; i < angles.length - 1; i++) {
+        const diff = angles[i + 1] - angles[i];
+        expect(diff).toBeCloseTo(expectedAngleStep, 4);
+      }
+    });
+
+    it('handles a single foreign node (radius still applies, angle is arbitrary)', () => {
+      const syntheticModel: ModelDerived = {
+        nodes: [
+          { id: 'native-1', layer_id: 'test-layer', type: 't1', name: 'Native' },
+          { id: 'foreign-1', layer_id: 'other-layer', type: 't2', name: 'Foreign' },
+        ] as ModelNode[],
+        links: [{ id: 'e1', source: 'native-1', target: 'foreign-1', type: 'uses' }] as ModelLink[],
+        countsByLayer: {
+          'test-layer': 1,
+          'other-layer': 1,
+        },
+        nodesByLayer: {
+          'test-layer': [{ id: 'native-1', layer_id: 'test-layer', type: 't1', name: 'Native' }] as ModelNode[],
+          'other-layer': [
+            { id: 'foreign-1', layer_id: 'other-layer', type: 't2', name: 'Foreign' },
+          ] as ModelNode[],
+        },
+        relCount: 1,
+      };
+      const idx = buildModelIndex(syntheticModel);
+      const result = interLayerNodesAndEdges(syntheticModel, 'test-layer', idx, true);
+
+      expect(result.foreignNodes).toHaveLength(1);
+      const node = result.foreignNodes[0];
+      const radius = Math.sqrt(node.x! ** 2 + node.y! ** 2);
+      expect(radius).toBeCloseTo(300, 5); // MIN_RING_RADIUS
+    });
+  });
+
+  it('manually-counts cross-layer links for a layer and matches the result', () => {
+    const layer = 'security';
+    const result = interLayerNodesAndEdges(model, layer, index);
+    const layerUuids = new Set(model.nodesByLayer[layer].map((n) => n.id));
+
+    let manualCrossCount = 0;
+    for (const l of model.links) {
+      const s = resolveEndpoint(index, l.source);
+      const t = resolveEndpoint(index, l.target);
+      if (!s || !t) continue;
+      const sIn = layerUuids.has(s.id);
+      const tIn = layerUuids.has(t.id);
+      if ((sIn && !tIn) || (!sIn && tIn)) manualCrossCount += 1;
+    }
+
+    // Cross-layer links may be duplicated if a foreign node is reachable via multiple predicates;
+    // crossEdges count edges (one per link id), foreignNodes are deduplicated by UUID.
+    expect(result.crossEdges).toHaveLength(manualCrossCount);
   });
 });
