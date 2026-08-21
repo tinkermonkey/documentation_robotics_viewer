@@ -1,12 +1,11 @@
 // @vitest-environment happy-dom
 /**
- * useEdgeInteraction.spec.tsx — the hook's own prop-bag wiring: `onEdgeHover`
- * drives `uiStore.highlightedEdgeId`, and `edgeSelectionProps` mirrors
- * `uiStore.selectedEdgeId`/`selectEdge`. Since both are now native
- * `GraphCanvas` (heimdall-ui 0.8.0+) props with no DOM-delegation of our own
- * left to test, this just calls the returned handlers/props directly rather
- * than simulating GraphCanvas's internal DOM — the "does GraphCanvas actually
- * call onEdgeHover on pointer-enter and render edgeTooltip" half is covered
+ * useEdgeInteraction.spec.tsx — the hook's own prop-bag wiring:
+ * `edgeSelectionProps` mirrors `uiStore.selectedEdgeId`/`selectEdge`. That's
+ * the hook's whole surface now — see its own doc comment for why there's no
+ * hover half to test here (hover deliberately doesn't touch this hook or
+ * `uiStore.highlightedEdgeId` at all). The "does GraphCanvas actually call
+ * `onEdgeSelect` on click and render `edgeTooltip` on hover" half is covered
  * live against the real component in Canvas.spec.tsx.
  */
 
@@ -20,26 +19,6 @@ beforeEach(() => {
 });
 
 describe('useEdgeInteraction', () => {
-  it('edgeHoverProps.onEdgeHover(id) sets uiStore.highlightedEdgeId', () => {
-    const { result } = renderHook(() => useEdgeInteraction());
-
-    act(() => result.current.edgeHoverProps.onEdgeHover('e1'));
-    expect(useUiStore.getState().highlightedEdgeId).toBe('e1');
-
-    act(() => result.current.edgeHoverProps.onEdgeHover('e2'));
-    expect(useUiStore.getState().highlightedEdgeId).toBe('e2');
-  });
-
-  it('edgeHoverProps.onEdgeHover(undefined) clears uiStore.highlightedEdgeId', () => {
-    const { result } = renderHook(() => useEdgeInteraction());
-
-    act(() => result.current.edgeHoverProps.onEdgeHover('e1'));
-    expect(useUiStore.getState().highlightedEdgeId).toBe('e1');
-
-    act(() => result.current.edgeHoverProps.onEdgeHover(undefined));
-    expect(useUiStore.getState().highlightedEdgeId).toBeNull();
-  });
-
   it('edgeSelectionProps mirrors uiStore.selectedEdgeId and wraps selectEdge', () => {
     const { result, rerender } = renderHook(() => useEdgeInteraction());
 

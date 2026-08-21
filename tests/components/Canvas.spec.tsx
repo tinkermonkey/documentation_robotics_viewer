@@ -714,19 +714,30 @@ describe('Canvas — edge selection, highlighting, and the edge inspector', () =
     // (React's onPointerEnter/onPointerLeave listen on native pointerover/pointerout —
     // same reason CLAUDE.md's userEvent-vs-fireEvent note exists for mouse events),
     // and renders our edgeTooltip content after its internal hover-intent delay,
-    // inside a `.graph-tooltip-layer` that's `aria-hidden="true"` (Heimdall's own
-    // choice — the tooltip's trigger carries `aria-describedby` instead) — so this
-    // queries by testid rather than role, which RTL excludes under aria-hidden.
+    // inside a `.graph-tooltip-layer` that's `aria-hidden="true"` — a heimdall-ui
+    // choice, NOT an accessible path of our own (see Canvas.tsx's renderEdgeTooltip
+    // comment / issue #538: the tooltip's `aria-describedby` lands on a hidden
+    // decorative span, not the edge itself, so this content is screen-reader
+    // unreachable) — so this queries by testid rather than role, which RTL
+    // excludes under aria-hidden regardless.
     const edgeEl = document.querySelector(`[data-testid="graph-edge-${EDGE_ID}"]`) as HTMLElement;
     fireEvent.pointerOver(edgeEl);
-
-    await waitFor(() => expect(useUiStore.getState().highlightedEdgeId).toBe(EDGE_ID));
 
     const content = await screen.findByTestId('edge-predicate-tooltip-content');
     expect(within(content).getAllByText('monitors').length).toBeGreaterThan(0);
     const diagram = within(content).getByTestId('edge-predicate-tooltip-diagram');
     expect(within(diagram).getByText('alert')).toBeInTheDocument();
     expect(within(diagram).getByText('metricinstrument')).toBeInTheDocument();
+
+    // Hover deliberately does NOT touch uiStore.highlightedEdgeId or add the
+    // accent 'hot' class (see useEdgeInteraction.ts's doc comment) — that was
+    // a real perf bug (every hover re-triggered GraphCanvas's force-layout
+    // effect via a new `edges` array reference), fixed by leaving hover to
+    // GraphCanvas's own free CSS-only :hover styling. highlightedEdgeId stays
+    // reserved for the deliberate navigateToElementWithEdge cross-navigation
+    // highlight (see the edge-inspector predicate-badge tests).
+    expect(useUiStore.getState().highlightedEdgeId).toBeNull();
+    expect(edgeEl).not.toHaveClass('graph-edge--hot');
 
     fireEvent.pointerOut(edgeEl, { relatedTarget: document.body });
     await waitFor(() =>

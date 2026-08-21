@@ -1,31 +1,36 @@
 /**
- * useEdgeInteraction — the single hook wrapping ALL of `GraphCanvas`'s edge
- * interaction surface (hover highlight + click-to-select) behind one
- * boundary, so if Heimdall's edge-interaction props ever change again, only
- * this hook changes — `Canvas.tsx` just spreads its returned prop bags onto
- * `GraphCanvas` and never touches `uiStore.selectedEdgeId`/`selectEdge`/
- * `setHighlightedEdgeId` directly.
+ * useEdgeInteraction — the single hook wrapping `GraphCanvas`'s click-to-select
+ * edge surface behind one boundary, so if Heimdall's edge-selection props
+ * ever change again, only this hook changes — `Canvas.tsx` just spreads
+ * `edgeSelectionProps` onto `GraphCanvas` and never touches
+ * `uiStore.selectedEdgeId`/`selectEdge` directly.
  *
- * Both hover and click-to-select are native `GraphCanvas` (heimdall-ui
- * 0.8.0+) props — `onEdgeHover`/`onEdgeSelect` fire with a plain edge id
- * (`selectedEdgeId` pairs with `onEdgeSelect` to draw the accent-color
- * `.selected` state). Previously (0.7.0) `GraphCanvas` had no per-edge hover
- * callback, so hover was faked with a DOM-delegation hack listening for
- * Heimdall's internal `.graph-edge__label` class / `graph-edge-{id}`
- * data-testid convention directly — see issue #536 / git history for that
- * version. `onEdgeHover` replaces it outright: no DOM coupling, and it also
- * fires for the whole edge (its invisible hit-stroke included), not just the
- * predicate label.
+ * Click-to-select is a native `GraphCanvas` prop pair — `selectedEdgeId`/
+ * `onEdgeSelect` fire with a plain edge id and draw the accent-color
+ * `.selected` state + keyboard/aria.
+ *
+ * There is deliberately no hover half here (there was one, briefly, wired to
+ * heimdall-ui 0.8.0's `onEdgeHover` — see issue #536/PR #537's initial
+ * version): it drove `uiStore.setHighlightedEdgeId`, which is also what
+ * `Canvas.tsx`'s `edges` memo keys its `variant: 'hot'` highlight off of —
+ * that memo runs on EVERY layer render (`nodes`/`edges` feed `GraphCanvas`'s
+ * force-layout effect directly), so wiring hover into it turned every
+ * pointer pass over an edge's now-much-larger native hit area (the whole
+ * edge, not just the old DOM-hacked predicate label) into a full force-layout
+ * recompute. `highlightedEdgeId` is a deliberate, rare, click-triggered
+ * highlight — see `uiStore.navigateToElementWithEdge` ("clicking an edge
+ * predicate reference navigates to the edge's source node with the edge
+ * highlighted") — not a per-pointer-move hover preview, so hover no longer
+ * touches it. `GraphCanvas`'s own CSS already renders a (non-accent) `:hover`
+ * state for free regardless: `.graph-edge:hover .graph-edge__line{stroke-width:
+ * 1.75}`. The predicate hover tooltip itself is unaffected — `Canvas.tsx`'s
+ * `edgeTooltip` render-prop gets the hovered edge directly from `GraphCanvas`
+ * (heimdall-ui 0.8.0+) and needs no `onEdgeHover` wiring of its own to work.
  */
 
-import { useCallback } from 'react';
 import { useUiStore } from './uiStore';
 
 export interface UseEdgeInteractionResult {
-  /** Spread directly onto `GraphCanvas` to wire up native hover highlighting. */
-  edgeHoverProps: {
-    onEdgeHover: (edgeId: string | undefined) => void;
-  };
   selectedEdgeId: string | null;
   /** Spread directly onto `GraphCanvas` to wire up native click-to-select. */
   edgeSelectionProps: {
@@ -35,17 +40,10 @@ export interface UseEdgeInteractionResult {
 }
 
 export function useEdgeInteraction(): UseEdgeInteractionResult {
-  const setHighlightedEdgeId = useUiStore((s) => s.setHighlightedEdgeId);
   const selectedEdgeId = useUiStore((s) => s.selectedEdgeId);
   const selectEdge = useUiStore((s) => s.selectEdge);
 
-  const onEdgeHover = useCallback(
-    (edgeId: string | undefined) => setHighlightedEdgeId(edgeId ?? null),
-    [setHighlightedEdgeId],
-  );
-
   return {
-    edgeHoverProps: { onEdgeHover },
     selectedEdgeId,
     edgeSelectionProps: { selectedEdgeId: selectedEdgeId ?? undefined, onEdgeSelect: selectEdge },
   };
