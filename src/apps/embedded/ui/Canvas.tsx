@@ -500,25 +500,31 @@ export function Canvas() {
         : undefined;
       const handleNodeClick = handleForeignNodeClick || selectGraphNode;
 
+      const content = (
+        <ModelCardNode
+          id={node.id}
+          label={node.label}
+          kind={node.kind}
+          domainColor={node.domainColor}
+          selected={selected}
+          onSelect={handleNodeClick}
+          cardData={cardData.get(node.id)}
+          spec={specRaw}
+          hasChildren={hierarchy?.hasChildren}
+          collapsed={hierarchy?.collapsed}
+          hiddenDescendantCount={hierarchy?.hiddenDescendantCount}
+          onToggleCollapse={hierarchy?.onToggleCollapse}
+        />
+      );
+
+      if (!isForeignNode) return content;
+
       return (
         <div
-          style={isForeignNode ? { opacity: 0.6 } : undefined}
+          style={{ opacity: 0.6 }}
           data-testid={`foreign-node-wrapper-${node.id}`}
         >
-          <ModelCardNode
-            id={node.id}
-            label={node.label}
-            kind={node.kind}
-            domainColor={node.domainColor}
-            selected={selected}
-            onSelect={handleNodeClick}
-            cardData={cardData.get(node.id)}
-            spec={specRaw}
-            hasChildren={hierarchy?.hasChildren}
-            collapsed={hierarchy?.collapsed}
-            hiddenDescendantCount={hierarchy?.hiddenDescendantCount}
-            onToggleCollapse={hierarchy?.onToggleCollapse}
-          />
+          {content}
         </div>
       );
     },
@@ -540,25 +546,31 @@ export function Canvas() {
         : undefined;
       const handleNodeClick = handleForeignNodeClick || selectGraphNode;
 
+      const content = (
+        <PillNode
+          id={node.id}
+          label={node.label}
+          kind={node.kind}
+          domainColor={node.domainColor}
+          selected={selected}
+          onSelect={handleNodeClick}
+          spec={specRaw}
+          typeId={isSpec ? shortName(node.domainColor ?? '', node.id) : undefined}
+          hasChildren={hierarchy?.hasChildren}
+          collapsed={hierarchy?.collapsed}
+          hiddenDescendantCount={hierarchy?.hiddenDescendantCount}
+          onToggleCollapse={hierarchy?.onToggleCollapse}
+        />
+      );
+
+      if (!isForeignNode) return content;
+
       return (
         <div
-          style={isForeignNode ? { opacity: 0.6 } : undefined}
+          style={{ opacity: 0.6 }}
           data-testid={`foreign-node-wrapper-${node.id}`}
         >
-          <PillNode
-            id={node.id}
-            label={node.label}
-            kind={node.kind}
-            domainColor={node.domainColor}
-            selected={selected}
-            onSelect={handleNodeClick}
-            spec={specRaw}
-            typeId={isSpec ? shortName(node.domainColor ?? '', node.id) : undefined}
-            hasChildren={hierarchy?.hasChildren}
-            collapsed={hierarchy?.collapsed}
-            hiddenDescendantCount={hierarchy?.hiddenDescendantCount}
-            onToggleCollapse={hierarchy?.onToggleCollapse}
-          />
+          {content}
         </div>
       );
     },

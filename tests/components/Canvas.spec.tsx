@@ -810,41 +810,30 @@ describe('Canvas — Inter-layer nodes control', () => {
     renderWithProviders(<Canvas />);
     useUiStore.getState().setView('model');
     useUiStore.getState().selectLayer('apm');
-    useUiStore.getState().showInterLayerNodes = true;
     useUiStore.setState({ showInterLayerNodes: true });
 
     // Wait for graph to render with foreign nodes
     await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(11));
 
-    // Get native node count (11 for apm) and total count
-    const nativeCount = 11;
-    const totalCount = graphNodeCount();
-    const foreignCount = totalCount - nativeCount;
-    expect(foreignCount).toBeGreaterThan(0);
+    // Query for foreign node wrappers and verify opacity
+    const foreignWrappers = screen.getAllByTestId(/^foreign-node-wrapper-/);
+    expect(foreignWrappers.length).toBeGreaterThan(0);
 
-    // Verify that renderNode was called with nodes from different layers
-    // (if foreign nodes are being rendered, they should have domainColor !== layerId)
-    // This is verified by the fact that we have more nodes than the native count
-    expect(totalCount).toBe(nativeCount + foreignCount);
+    // Assert that each foreign node wrapper has opacity: 0.6
+    foreignWrappers.forEach((wrapper) => {
+      expect(wrapper).toHaveStyle({ opacity: '0.6' });
+    });
   });
 
   it('foreign nodes respect showAllRelations filter (exclude orphans when structural-only)', async () => {
     renderWithProviders(<Canvas />);
     useUiStore.getState().setView('model');
     useUiStore.getState().selectLayer('business');
-    useUiStore.getState().showInterLayerNodes = true;
     useUiStore.setState({ showInterLayerNodes: true, showAllRelations: true });
 
     // With all relations shown, should have foreign nodes
-    const allCount = await new Promise<number>((resolve) => {
-      const checkCount = () => {
-        const count = graphNodeCount();
-        if (count > 0) resolve(count);
-        else setTimeout(checkCount, 10);
-      };
-      checkCount();
-    });
-
+    await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(0));
+    const allCount = graphNodeCount();
     expect(allCount).toBeGreaterThan(0);
 
     // Switch to structural-only
@@ -888,11 +877,10 @@ describe('Canvas — Inter-layer nodes control', () => {
     await waitFor(() => expect(graphNodeCount()).toBe(nativeOnlyCount));
   });
 
-  it('switching layouts preserves inter-layer nodes', async () => {
+  it('switching layouts preserves inter-layer nodes (force→galaxy→clustered)', async () => {
     renderWithProviders(<Canvas />);
     useUiStore.getState().setView('model');
     useUiStore.getState().selectLayer('business');
-    useUiStore.getState().showInterLayerNodes = true;
     useUiStore.setState({ showInterLayerNodes: true, graphLayout: 'force' });
 
     // Get initial count with force layout
@@ -938,7 +926,6 @@ describe('Canvas — Inter-layer nodes control', () => {
     renderWithProviders(<Canvas />);
     useUiStore.getState().setView('model');
     useUiStore.getState().selectLayer('technology');
-    useUiStore.getState().showInterLayerNodes = true;
     useUiStore.setState({ showInterLayerNodes: true, canvasDark: true });
 
     // Verify dark mode renders foreign nodes
@@ -966,32 +953,4 @@ describe('Canvas — Inter-layer nodes control', () => {
     });
   });
 
-  it('inter-layer nodes persist across layout changes (force/galaxy/clustered)', async () => {
-    renderWithProviders(<Canvas />);
-    useUiStore.getState().setView('model');
-    useUiStore.getState().selectLayer('business');
-    useUiStore.setState({ showInterLayerNodes: true, graphLayout: 'force' });
-
-    // Wait for force layout to render with foreign nodes
-    await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(0));
-    const forceCount = graphNodeCount();
-
-    // Switch to clustered layout
-    const toggle = screen.getByTestId('graph-controls-toggle');
-    fireEvent.focus(toggle);
-    await waitFor(() => expect(screen.getByTestId('graph-layout-control')).toBeInTheDocument());
-
-    const clusteredButton = within(screen.getByTestId('graph-layout-control')).getByRole('radio', {
-      name: 'Clustered',
-    });
-    fireEvent.click(clusteredButton);
-
-    expect(useUiStore.getState().graphLayout).toBe('force-clustered');
-
-    // Clustered layout should render the same foreign nodes
-    await waitFor(() => {
-      const count = graphNodeCount();
-      expect(count).toBe(forceCount);
-    });
-  });
 });
