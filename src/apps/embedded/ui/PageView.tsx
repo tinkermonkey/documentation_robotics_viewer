@@ -62,6 +62,7 @@ import {
 } from '../data/pageData';
 import { NodeTypeBadge } from './NodeTypeBadge';
 import { PredicateTooltip } from './PredicateTooltip';
+import { NeighborhoodGraphView } from './NeighborhoodGraphView';
 
 const MONO = "'JetBrains Mono',monospace";
 
@@ -542,6 +543,7 @@ function Tables({
 export function PageView({ pg }: { pg: PageData }) {
   const onNavigate = useNavigate();
   const { raw: specRaw } = useSpec();
+  const view = useUiStore((s) => s.view);
 
   return (
     <div
@@ -551,6 +553,13 @@ export function PageView({ pg }: { pg: PageData }) {
     >
       <div style={{ maxWidth: 1040, display: 'flex', flexDirection: 'column', gap: 28 }}>
         <Breadcrumb pg={pg} onNavigate={onNavigate} />
+        {pg.neighborhoodGraph && (
+          <NeighborhoodGraphView
+            key={`${pg.title}-neighborhood`}
+            neighborhood={pg.neighborhoodGraph}
+            isSpecView={view === 'spec'}
+          />
+        )}
         <p
           style={{
             fontSize: 14,

@@ -60,6 +60,7 @@ export function EdgeHoverTooltip({
         top: position?.top ?? 0,
         left: position?.left ?? 0,
         visibility: position ? 'visible' : 'hidden',
+        pointerEvents: 'none',
       }}
       data-testid="edge-predicate-tooltip-card"
     >

@@ -21,15 +21,14 @@ import type { ModelDerived, ModelNode } from './useModel';
 import { type ModelIndex, resolveEndpoint, dottedId } from './modelGraph';
 import {
   type SpecPayload,
-  type SpecLayerSchema,
   type SpecNodeSchema,
-  type SpecRelationshipSchema,
   schemaForLayer,
   shortName,
   cardShort,
   intraRelCount,
   attributeRows,
   titleForSpecNode,
+  allRelationshipSchemas,
 } from './specGraph';
 import {
   type SourceReference,
@@ -37,6 +36,8 @@ import {
   sourceLocation,
 } from './relationships';
 import { layerColor, layerLabel, layerStandard, isLayerSlug } from '../ui/domain';
+import type { NeighborhoodGraph } from './neighborhoodGraph';
+import { specNodeNeighborhoodGraph, modelElementNeighborhoodGraph } from './neighborhoodGraph';
 
 // ─── Shared row/target shapes ──────────────────────────────────────────────
 
@@ -127,6 +128,8 @@ export interface PageData {
   factsTitle: string;
   facts: PageFact[];
   tables: PageTable[];
+  /** Optional neighborhood graph (center + one-hop neighbors) for Model/Spec node pages. */
+  neighborhoodGraph?: NeighborhoodGraph;
 }
 
 // ─── Metric colors (verbatim from the design) ──────────────────────────────
@@ -362,24 +365,6 @@ const IN_REL_TABLE_WIDTHS =
   'minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr) minmax(0,0.8fr)';
 const INSTANCE_TABLE_WIDTHS = 'minmax(0,1fr) minmax(0,1.5fr) 96px';
 
-/**
- * Every relationship schema across every layer file — needed to find "valid
- * incoming" schemas declared in OTHER layers' files (a layer's own
- * `relationshipSchemas` only covers rels it declares as source), and reused
- * as the source list for "valid outgoing" too (filtered to this node's id).
- */
-function allRelationshipSchemas(
-  spec: SpecPayload | undefined,
-): SpecRelationshipSchema[] {
-  const out: SpecRelationshipSchema[] = [];
-  for (const value of Object.values(spec?.schemas ?? {})) {
-    const entry = value as SpecLayerSchema;
-    if (!entry?.layer?.id) continue;
-    out.push(...Object.values(entry.relationshipSchemas ?? {}));
-  }
-  return out;
-}
-
 export function specNodePageData(
   layerId: string,
   specNodeId: string,
@@ -550,6 +535,7 @@ export function specNodePageData(
         emptyText: 'No instances of this node type in the loaded model.',
       },
     ],
+    neighborhoodGraph: specNodeNeighborhoodGraph(layerId, specNodeId, specRaw),
   };
 }
 
@@ -728,5 +714,6 @@ export function modelNodePageData(
         emptyText: 'No other element references this one.',
       },
     ],
+    neighborhoodGraph: modelElementNeighborhoodGraph(elementId, model, index),
   };
 }

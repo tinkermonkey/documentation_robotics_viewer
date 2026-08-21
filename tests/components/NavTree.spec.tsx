@@ -137,7 +137,7 @@ describe('NavTree — clicks drive the uiStore', () => {
     expect(useUiStore.getState().selectedId).toBeNull();
   });
 
-  it('clicking a leaf selects that element and marks the row active', async () => {
+  it('clicking a Model leaf navigates to that element with full context (layer + view)', async () => {
     const user = userEvent.setup();
     renderWithProviders(<NavTree />);
 
@@ -147,14 +147,75 @@ describe('NavTree — clicks drive the uiStore', () => {
     const leaf = await screen.findByText('Visualize Multi-Layer Architecture Models');
     await user.click(leaf);
 
-    // The store now holds the element's UUID (leaf id for model = node UUID).
-    expect(useUiStore.getState().selectedId).toBe(
-      '462e2931-4c7c-4051-a9ac-8817c270d650',
-    );
+    const state = useUiStore.getState();
+    // The store holds the element's UUID, layer, and correct view/focus.
+    expect(state.selectedId).toBe('462e2931-4c7c-4051-a9ac-8817c270d650');
+    expect(state.layerId).toBe('motivation');
+    expect(state.view).toBe('model');
+    expect(state.focus).toBe('node');
     // The active row carries the active class.
     await waitFor(() =>
       expect(leaf.closest('button')).toHaveClass('nav-item--active'),
     );
+  });
+
+  it('clicking a Schema leaf navigates to that node type with full context (layer + view)', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<NavTree />);
+
+    // Switch to Schema view (this clears selectedId when switching from model view).
+    const schemaButton = await screen.findByText('Schema');
+    await user.click(schemaButton);
+    expect(useUiStore.getState().view).toBe('spec');
+
+    // Expand data-model layer in Schema view.
+    // Wait for data model to appear and then expand its layer row.
+    const dataModelButtons = await screen.findAllByText('Data Model');
+    const dataModelRow = dataModelButtons[dataModelButtons.length - 1].closest('button')!;
+    await user.click(dataModelRow);
+
+    // Expand should set layerId to data-model in spec view.
+    expect(useUiStore.getState().layerId).toBe('data-model');
+    expect(useUiStore.getState().view).toBe('spec');
+
+    // Collapse the Model section to remove its leaves from the DOM, so we can
+    // unambiguously select a spec node leaf under data-model.
+    const modelRow = (await screen.findAllByText('Model'))[0].closest('button')!;
+    await user.click(modelRow);
+
+    // Now get the first spec node leaf under data-model.
+    const navTree = screen.getByTestId('nav-tree');
+    const targetLeaf = navTree.querySelector('.drv-nav-l2');
+
+    expect(targetLeaf).not.toBeNull();
+
+    await user.click(targetLeaf!);
+    const state = useUiStore.getState();
+    // The store holds the spec node id, layer, and correct view/focus.
+    expect(state.selectedId).toContain('data-model.');
+    expect(state.layerId).toBe('data-model');
+    expect(state.view).toBe('spec');
+    expect(state.focus).toBe('node');
+  });
+
+  it('clicking a leaf under a different layer switches to that layer', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<NavTree />);
+
+    // Start with application layer active.
+    const applicationRow = (await screen.findAllByText('Application'))[0].closest('button')!;
+    await user.click(applicationRow);
+    expect(useUiStore.getState().layerId).toBe('application');
+
+    // Expand motivation layer and click one of its leaves.
+    const motivationRow = screen.getAllByText('Motivation')[0].closest('button')!;
+    await user.click(motivationRow);
+    const motivationLeaf = await screen.findByText('Visualize Multi-Layer Architecture Models');
+    await user.click(motivationLeaf);
+
+    // The store should now reflect motivation layer, not application.
+    expect(useUiStore.getState().layerId).toBe('motivation');
+    expect(useUiStore.getState().selectedId).toBe('462e2931-4c7c-4051-a9ac-8817c270d650');
   });
 
   it('clicking a changeset leaf selects it and switches to the changesets view', async () => {

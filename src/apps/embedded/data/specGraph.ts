@@ -203,6 +203,25 @@ export function intraRelCount(
   return n;
 }
 
+/**
+ * All relationship schemas across every layer, aggregating both intra-layer and
+ * cross-layer relationships. A layer's own `relationshipSchemas` only includes
+ * relationships where that layer is the source; to find both outgoing and
+ * incoming relationships for a node (including cross-layer), this aggregation
+ * is necessary.
+ */
+export function allRelationshipSchemas(
+  spec: SpecPayload | undefined,
+): SpecRelationshipSchema[] {
+  const out: SpecRelationshipSchema[] = [];
+  for (const value of Object.values(spec?.schemas ?? {})) {
+    const entry = value as SpecLayerSchema;
+    if (!entry?.layer?.id) continue;
+    out.push(...Object.values(entry.relationshipSchemas ?? {}));
+  }
+  return out;
+}
+
 // ─── Inspector relationships ──────────────────────────────────────────────────
 
 /**
