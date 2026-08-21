@@ -66,6 +66,9 @@ export function modelElementNeighborhoodGraph(
 
     if (!neighbor) continue;
 
+    // Skip self-loops where the neighbor is the center node.
+    if (neighbor.id === elementId) continue;
+
     // Track the neighbor (dedup by UUID).
     neighbors.set(neighbor.id, neighbor);
 
@@ -142,6 +145,8 @@ export function specNodeNeighborhoodGraph(
   for (const rel of allRels) {
     if (rel.source_spec_node_id === specNodeId) {
       const targetId = rel.destination_spec_node_id;
+      // Skip self-referential relationships.
+      if (targetId === specNodeId) continue;
       const targetLayer = rel.destination_layer;
       const title = titleForSpecNode(spec, targetLayer, targetId);
 
@@ -165,6 +170,8 @@ export function specNodeNeighborhoodGraph(
   for (const rel of allRels) {
     if (rel.destination_spec_node_id === specNodeId) {
       const targetId = rel.source_spec_node_id;
+      // Skip self-referential relationships.
+      if (targetId === specNodeId) continue;
       const targetLayer = rel.source_layer;
       const title = titleForSpecNode(spec, targetLayer, targetId);
 
