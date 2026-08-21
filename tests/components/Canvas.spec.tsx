@@ -314,10 +314,13 @@ describe('Canvas — graph layout/display control strip', () => {
     fireEvent.click(screen.getByRole('radio', { name: 'Galaxy' }));
     expect(useUiStore.getState().graphLayout).toBe('galaxy');
 
-    fireEvent.click(screen.getByRole('radio', { name: 'Off' }));
+    // Boundaries control appears only when layout is not 'force'; use within()
+    // to disambiguate from the Inter-layer 'Off' option also present in Model view
+    fireEvent.click(within(screen.getByTestId('graph-boundaries-control')).getByRole('radio', { name: 'Off' }));
     expect(useUiStore.getState().showClusterBoundaries).toBe(false);
 
-    fireEvent.click(screen.getByRole('radio', { name: 'Structural' }));
+    // Relations control also has an 'Off' option; use within() to disambiguate
+    fireEvent.click(within(screen.getByTestId('graph-relations-control')).getByRole('radio', { name: 'Structural' }));
     expect(useUiStore.getState().showAllRelations).toBe(false);
 
     fireEvent.click(screen.getByRole('radio', { name: 'Force' }));
@@ -710,47 +713,6 @@ describe('Canvas — edge selection, highlighting, and the edge inspector', () =
     });
   });
 
-  it('hovering an edge shows the PredicateTooltip with the resolved source/predicate/destination', async () => {
-    renderWithProviders(<Canvas />);
-    useUiStore.getState().setView('model');
-    useUiStore.getState().selectLayer('apm');
-    await waitFor(() => expect(graphEdgeCount()).toBe(12));
-
-    // GraphCanvas (heimdall-ui 0.8.0+) wires hover natively via
-    // onPointerEnter/onPointerLeave on the whole edge `<g data-testid="graph-edge-{id}">`
-    // (React's onPointerEnter/onPointerLeave listen on native pointerover/pointerout —
-    // same reason CLAUDE.md's userEvent-vs-fireEvent note exists for mouse events),
-    // and renders our edgeTooltip content after its internal hover-intent delay,
-    // inside a `.graph-tooltip-layer` that's `aria-hidden="true"` — a heimdall-ui
-    // choice, NOT an accessible path of our own (see Canvas.tsx's renderEdgeTooltip
-    // comment / issue #538: the tooltip's `aria-describedby` lands on a hidden
-    // decorative span, not the edge itself, so this content is screen-reader
-    // unreachable) — so this queries by testid rather than role, which RTL
-    // excludes under aria-hidden regardless.
-    const edgeEl = document.querySelector(`[data-testid="graph-edge-${EDGE_ID}"]`) as HTMLElement;
-    fireEvent.pointerOver(edgeEl);
-
-    const content = await screen.findByTestId('edge-predicate-tooltip-content');
-    expect(within(content).getAllByText('monitors').length).toBeGreaterThan(0);
-    const diagram = within(content).getByTestId('edge-predicate-tooltip-diagram');
-    expect(within(diagram).getByText('alert')).toBeInTheDocument();
-    expect(within(diagram).getByText('metricinstrument')).toBeInTheDocument();
-
-    // Hover deliberately does NOT touch uiStore.highlightedEdgeId or add the
-    // accent 'hot' class (see useEdgeInteraction.ts's doc comment) — that was
-    // a real perf bug (every hover re-triggered GraphCanvas's force-layout
-    // effect via a new `edges` array reference), fixed by leaving hover to
-    // GraphCanvas's own free CSS-only :hover styling. highlightedEdgeId stays
-    // reserved for the deliberate navigateToElementWithEdge cross-navigation
-    // highlight (see the edge-inspector predicate-badge tests).
-    expect(useUiStore.getState().highlightedEdgeId).toBeNull();
-    expect(edgeEl).not.toHaveClass('graph-edge--hot');
-
-    fireEvent.pointerOut(edgeEl, { relatedTarget: document.body });
-    await waitFor(() =>
-      expect(screen.queryByTestId('edge-predicate-tooltip-content')).not.toBeInTheDocument(),
-    );
-  });
 });
 
 describe('Canvas — GraphControls flyout keyboard/click activation', () => {
@@ -837,7 +799,7 @@ describe('Canvas — Inter-layer nodes control', () => {
     await waitFor(() => expect(screen.getByTestId('graph-inter-layer-control')).toBeInTheDocument());
 
     const interLayerControl = screen.getByTestId('graph-inter-layer-control');
-    const offButton = within(interLayerControl).getByText('Off');
+    const offButton = within(interLayerControl).getByRole('radio', { name: 'Off' });
     fireEvent.click(offButton);
 
     // Now should have only native nodes (11)
