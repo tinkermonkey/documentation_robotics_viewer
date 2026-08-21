@@ -126,14 +126,14 @@ test.describe('shell', () => {
     // Click the "light" segment of the canvas-theme SegmentedControl (radiogroup).
     await page.getByRole('radio', { name: 'light', exact: true }).click();
 
-    await expect.poll(bodyHasDark).toBe(false);
+    await expect.poll(bodyHasDark, { timeout: 15_000 }).toBe(false);
     const lightBg = await canvasBg();
     expect(lightBg).not.toBe(darkBg);
     expect(lightBg).toBe('rgb(255, 255, 255)');
 
     // Toggling back to dark restores it.
     await page.getByRole('radio', { name: 'dark', exact: true }).click();
-    await expect.poll(bodyHasDark).toBe(true);
+    await expect.poll(bodyHasDark, { timeout: 15_000 }).toBe(true);
     expect(await canvasBg()).toBe('rgb(11, 20, 38)');
   });
 

@@ -45,8 +45,6 @@ function graphNodeCount(): number {
 
 /** Setup hook: disable inter-layer nodes for consistent test counts. */
 beforeEach(() => {
-  useUiStore.getState().showInterLayerNodes = false;
-  // Ensure toggle is off so graph remounts with the new state
   useUiStore.setState({ showInterLayerNodes: false });
 });
 
@@ -787,7 +785,6 @@ describe('Canvas — Inter-layer nodes control', () => {
     renderWithProviders(<Canvas />);
     useUiStore.getState().setView('model');
     useUiStore.getState().selectLayer('apm');
-    useUiStore.getState().showInterLayerNodes = true;
     useUiStore.setState({ showInterLayerNodes: true });
 
     // With inter-layer nodes enabled, should have more nodes than native count
