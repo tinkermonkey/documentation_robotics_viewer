@@ -493,23 +493,36 @@ export function Canvas() {
   }, [isSpec, specRaw, model, layerId, index, showInterLayerNodes, showAllRelations, graphLayout]);
 
   const renderCardNode = useCallback(
-    (node: GraphNodeData, selected: boolean, hierarchy?: GraphNodeHierarchyMeta) => (
-      <ModelCardNode
-        id={node.id}
-        label={node.label}
-        kind={node.kind}
-        domainColor={node.domainColor}
-        selected={selected}
-        onSelect={selectGraphNode}
-        cardData={cardData.get(node.id)}
-        spec={specRaw}
-        hasChildren={hierarchy?.hasChildren}
-        collapsed={hierarchy?.collapsed}
-        hiddenDescendantCount={hierarchy?.hiddenDescendantCount}
-        onToggleCollapse={hierarchy?.onToggleCollapse}
-      />
-    ),
-    [selectGraphNode, cardData, specRaw],
+    (node: GraphNodeData, selected: boolean, hierarchy?: GraphNodeHierarchyMeta) => {
+      const isForeignNode = !isSpec && node.domainColor !== layerId;
+      const handleForeignNodeClick = isForeignNode
+        ? () => navigateToElement(node.id, node.domainColor ?? '')
+        : undefined;
+      const handleNodeClick = handleForeignNodeClick || selectGraphNode;
+
+      return (
+        <div
+          style={isForeignNode ? { opacity: 0.6 } : undefined}
+          data-testid={`foreign-node-wrapper-${node.id}`}
+        >
+          <ModelCardNode
+            id={node.id}
+            label={node.label}
+            kind={node.kind}
+            domainColor={node.domainColor}
+            selected={selected}
+            onSelect={handleNodeClick}
+            cardData={cardData.get(node.id)}
+            spec={specRaw}
+            hasChildren={hierarchy?.hasChildren}
+            collapsed={hierarchy?.collapsed}
+            hiddenDescendantCount={hierarchy?.hiddenDescendantCount}
+            onToggleCollapse={hierarchy?.onToggleCollapse}
+          />
+        </div>
+      );
+    },
+    [selectGraphNode, navigateToElement, cardData, specRaw, isSpec, layerId],
   );
 
   // Pill-mode render (Model pill display + always in Schema view, see the
