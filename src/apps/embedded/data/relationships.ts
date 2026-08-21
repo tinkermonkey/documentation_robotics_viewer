@@ -17,26 +17,42 @@ import type { ModelDerived, ModelNode } from './useModel';
 import { resolveEndpoint, type ModelIndex } from './modelGraph';
 
 /**
+ * Extended relationship link with tooltip metadata for predicates.
+ * These fields are optionally used by consumers to render rich tooltips
+ * when hovering over predicate badges in relationship lists.
+ */
+export interface RelationshipLinkWithTooltip extends RelationshipLink {
+  /** Human-readable label for the source node's type (for PredicateTooltip diagram). */
+  sourceTypeLabel?: string;
+  /** Human-readable label for the destination node's type (for PredicateTooltip diagram). */
+  destinationTypeLabel?: string;
+}
+
+/**
  * All relationships touching `elementId` (a node UUID), as Heimdall
- * `RelationshipLink[]`:
+ * `RelationshipLink[]` with optional tooltip metadata:
  *   - outgoing: links where the source resolves to this element →
  *     `{ target: otherUuid, targetTitle: otherNode.name,
- *        targetDomain: otherNode.layer_id, predicate: link.type, direction: 'out' }`
+ *        targetDomain: otherNode.layer_id, predicate: link.type, direction: 'out',
+ *        sourceTypeLabel: self.type, destinationTypeLabel: otherNode.type }`
  *   - incoming: links where the target resolves to this element → `direction: 'in'`
  *
  * Cross-layer links are naturally included: `targetDomain` is always the OTHER
  * endpoint's `layer_id`, so the swatch colors correctly and navigation crosses
  * layers (the Inspector switches `layerId` to that target's layer).
+ *
+ * `sourceTypeLabel` and `destinationTypeLabel` are included so consumers can
+ * render rich `PredicateTooltip` cards on hover without additional lookups.
  */
 export function relationshipsForElement(
   model: ModelDerived,
   elementId: string,
   index: ModelIndex,
-): RelationshipLink[] {
+): RelationshipLinkWithTooltip[] {
   const self = index.byUuid.get(elementId);
   if (!self) return [];
 
-  const rels: RelationshipLink[] = [];
+  const rels: RelationshipLinkWithTooltip[] = [];
   let seq = 0;
 
   for (const link of model.links) {
@@ -52,6 +68,8 @@ export function relationshipsForElement(
         targetDomain: tgt.layer_id,
         predicate: link.type,
         direction: 'out',
+        sourceTypeLabel: self.type,
+        destinationTypeLabel: tgt.type,
       });
     } else if (tgt.id === elementId) {
       rels.push({
@@ -61,6 +79,8 @@ export function relationshipsForElement(
         targetDomain: src.layer_id,
         predicate: link.type,
         direction: 'in',
+        sourceTypeLabel: src.type,
+        destinationTypeLabel: self.type,
       });
     }
   }

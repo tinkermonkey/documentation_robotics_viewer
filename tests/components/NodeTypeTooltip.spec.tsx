@@ -9,7 +9,8 @@
 import { describe, it, expect } from 'vitest';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 
-import { NodeTypeTooltip, type NodeTypeConnection } from '@/apps/embedded/ui/NodeTypeTooltip';
+import { NodeTypeTooltip } from '@/apps/embedded/ui/NodeTypeTooltip';
+import type { NodeTypeConnection } from '@/apps/embedded/data/specGraph';
 
 function connection(i: number, overrides: Partial<NodeTypeConnection> = {}): NodeTypeConnection {
   return {

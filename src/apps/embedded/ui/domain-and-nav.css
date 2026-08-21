@@ -450,14 +450,13 @@ body.dark-canvas {
   color: rgb(var(--canvas-fg-3));
 }
 
-/* ---- GraphInspector empty-state visibility per view ---------------------
- * Model view displays relationships through GraphInspector's standard
- * relationship list (same as Schema view). Hide the "No relationships" empty
- * state in Model view because it adds little value: nodes with no relationships
- * still display their properties and annotations, whereas in Schema view the
- * empty state is meaningful information about an unconnected node-type.
- * The Inspector drawer auto-closes when nothing is selected, so the empty
- * state is rarely visible in Model view anyway. */
-.inspector-model-branch .graph-inspector__empty-mini {
+/* ---- Inspector empty-state suppression --------------------------------
+ * Model view uses GraphInspector with relationships=[] and a separate
+ * RelationshipsWithTooltips component for predicate tooltips. Heimdall's
+ * GraphInspector renders an empty-state message when relationships array is
+ * empty, causing a phantom "No relationships yet." to appear above the custom
+ * relationship list. This rule hides that message in the Model-view inspector
+ * where the actual relationships come from RelationshipsWithTooltips instead. */
+.graph-inspector--custom-relationships .graph-inspector__empty-mini {
   display: none;
 }

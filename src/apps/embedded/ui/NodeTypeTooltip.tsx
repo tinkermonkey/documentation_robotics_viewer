@@ -14,21 +14,9 @@
  */
 
 import type { ReactNode } from 'react';
+import type { NodeTypeConnection } from '../data/specGraph';
 import { RichTooltip, type TooltipPlacement } from './RichTooltip';
 import { layerColor, layerLabel } from './domain';
-
-/** One possible inbound or outbound connection for a node type. */
-export interface NodeTypeConnection {
-  /** DR predicate string, e.g. `aggregates`. */
-  predicate: string;
-  /** Human label for the connected node type. */
-  typeLabel: string;
-  /** The connected node type's `spec_node_id` (used as the list-key salt). */
-  typeId: string;
-  /** Owning layer slug of the connected type, for its domain swatch. */
-  domain?: string;
-}
-
 const DEFAULT_MAX_CONNECTIONS = 6;
 
 function ConnectionList({

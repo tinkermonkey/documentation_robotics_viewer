@@ -141,6 +141,57 @@ describe('Inspector — relationship navigation', () => {
       expect(s.selectedId).toBe(MODEL_LOADING_UUID);
     });
   });
+
+  it('shows the rich predicate tooltip on hover/focus of relationship predicates', async () => {
+    renderModelSelection('application', DATA_LOADER_UUID);
+
+    // Find the outgoing relationships section and get a predicate span.
+    const outgoing = await screen.findByTestId('inspector-outgoing');
+    const predicateTooltips = within(outgoing).getAllByTestId(
+      /relationship-predicate-tooltip/,
+    );
+    expect(predicateTooltips.length).toBeGreaterThan(0);
+
+    // Focus the first predicate to trigger the tooltip.
+    const predicateSpan = predicateTooltips[0].querySelector('span');
+    fireEvent.focus(predicateSpan || predicateTooltips[0]);
+    const tooltip = await screen.findByRole('tooltip');
+
+    // The tooltip should show the predicate and relationship section label.
+    expect(tooltip.querySelector('.rich-tooltip__title')).toBeInTheDocument();
+    expect(
+      within(tooltip).getByText('Relationship'),
+    ).toBeInTheDocument();
+  });
+});
+
+describe('Inspector — stale edge selection guard', () => {
+  it('clears selectedEdgeId once the model has loaded and the id no longer resolves', async () => {
+    renderWithProviders(<Inspector />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    // A link id that never existed in the fixture — same shape as a dead
+    // WS-removed link or a stale bookmarked ?edge= param.
+    useUiStore.setState({ selectedEdgeId: 'rel:does-not-exist', selectedId: null });
+
+    await waitFor(() => {
+      expect(useUiStore.getState().selectedEdgeId).toBeNull();
+    });
+  });
+
+  it('leaves a resolvable selectedEdgeId untouched', async () => {
+    const result = renderWithProviders(<Inspector />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    useUiStore.getState().selectEdge(
+      'rel:apm.alert.web-socket-disconnect-alert:apm.metricinstrument.web-socket-connection-state-gauge:monitors',
+    );
+
+    await result.findByTestId('edge-inspector-predicate-tooltip');
+    expect(useUiStore.getState().selectedEdgeId).toBe(
+      'rel:apm.alert.web-socket-disconnect-alert:apm.metricinstrument.web-socket-connection-state-gauge:monitors',
+    );
+  });
 });
 
 describe('Inspector — stale edge selection guard', () => {

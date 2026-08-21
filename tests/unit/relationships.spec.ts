@@ -97,6 +97,31 @@ describe('relationshipsForElement', () => {
     const rels = relationshipsForElement(model, GOAL_ID, index);
     expect(new Set(rels.map((r) => r.id)).size).toBe(rels.length);
   });
+
+  it('includes tooltip metadata (sourceTypeLabel + destinationTypeLabel)', () => {
+    const rels = relationshipsForElement(model, GOAL_ID, index);
+    const self = model.nodes.find((n) => n.id === GOAL_ID)!;
+
+    for (const r of rels) {
+      // Every relationship must have tooltip data for PredicateTooltip.
+      expect(r.sourceTypeLabel).toBeDefined();
+      expect(r.destinationTypeLabel).toBeDefined();
+      expect(r.sourceTypeLabel).not.toHaveLength(0);
+      expect(r.destinationTypeLabel).not.toHaveLength(0);
+
+      if (r.direction === 'out') {
+        // Outgoing: self is the source, target is the destination.
+        expect(r.sourceTypeLabel).toBe(self.type);
+        const other = model.nodes.find((n) => n.id === r.target)!;
+        expect(r.destinationTypeLabel).toBe(other.type);
+      } else {
+        // Incoming: target (other node) is the source, self is the destination.
+        const other = model.nodes.find((n) => n.id === r.target)!;
+        expect(r.sourceTypeLabel).toBe(other.type);
+        expect(r.destinationTypeLabel).toBe(self.type);
+      }
+    }
+  });
 });
 
 describe('metadataForElement', () => {

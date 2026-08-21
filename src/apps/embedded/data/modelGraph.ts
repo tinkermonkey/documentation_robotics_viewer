@@ -217,7 +217,8 @@ export function nodesWithCardData(
     predicate: string,
     other: ModelNode,
   ) => {
-    const data = cardData.get(ownerId)!;
+    const data = cardData.get(ownerId);
+    if (!data) return;
     data.crossTotal += 1;
     if (data.crossLinks.length < CARD_CROSS_LINK_CAP) {
       data.crossLinks.push({
@@ -239,8 +240,11 @@ export function nodesWithCardData(
     if (!srcInLayer && !tgtInLayer) continue;
 
     if (srcInLayer && tgtInLayer) {
-      cardData.get(src.id)!.intraCount += 1;
-      cardData.get(tgt.id)!.intraCount += 1;
+      const srcData = cardData.get(src.id);
+      const tgtData = cardData.get(tgt.id);
+      if (!srcData || !tgtData) continue;
+      srcData.intraCount += 1;
+      tgtData.intraCount += 1;
       continue;
     }
 
