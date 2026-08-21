@@ -475,11 +475,12 @@ export function Canvas() {
       const filteredForeignNodes = foreignNodes.filter((node) =>
         structuralCrossEdges.has(node.id),
       );
+      const filteredForeignNodeIds = new Set(filteredForeignNodes.map((n) => n.id));
       const filteredCrossEdges = crossEdges.filter((edge) =>
-        filteredForeignNodes.some((n) => n.id === edge.sourceId || n.id === edge.targetId),
+        filteredForeignNodeIds.has(edge.sourceId) || filteredForeignNodeIds.has(edge.targetId),
       );
 
-      return { foreignNodes: filteredForeignNodes, crossEdges: filteredCrossEdges, foreignNodeIds };
+      return { foreignNodes: filteredForeignNodes, crossEdges: filteredCrossEdges, foreignNodeIds: filteredForeignNodeIds };
     }
 
     return { foreignNodes, crossEdges, foreignNodeIds };
@@ -562,7 +563,7 @@ export function Canvas() {
   // home layer on click rather than selecting within the current layer.
   const renderPillNode = useCallback(
     (node: GraphNodeData, selected: boolean, hierarchy?: GraphNodeHierarchyMeta) => {
-      const isForeignNode = !isSpec && node.domainColor !== layerId;
+      const isForeignNode = interLayerData.foreignNodeIds.has(node.id);
       const handleForeignNodeClick = isForeignNode
         ? () => navigateToElement(node.id, node.domainColor ?? '')
         : undefined;
@@ -596,7 +597,7 @@ export function Canvas() {
         </div>
       );
     },
-    [selectGraphNode, navigateToElement, specRaw, isSpec, layerId],
+    [selectGraphNode, navigateToElement, specRaw, isSpec, interLayerData.foreignNodeIds],
   );
 
   // Model-only click-to-select — see useEdgeInteraction's doc comment for
