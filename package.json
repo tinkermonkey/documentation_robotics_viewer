@@ -1,6 +1,6 @@
 {
   "name": "documentation_robotics_viewer",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "private": true,
   "description": "Heimdall-native viewer for the Documentation Robotics multi-layer architecture model, served by the DR CLI",
   "main": "index.js",

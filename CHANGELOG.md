@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.1] - 2026-08-21
+
+`@tinkermonkey/heimdall-ui` bumped `0.7.0` → `0.8.0` (exact npm-registry version), and the Model
+graph's edge-hover predicate tooltip is migrated onto its new native `GraphCanvas` props.
+
+### Changed
+- **Edge hover uses `GraphCanvas`'s native `onEdgeHover`/`edgeTooltip`** (heimdall-ui 0.8.0)
+  instead of a DOM-delegation hack that walked the DOM for Heimdall's internal
+  `.graph-edge__label` class/`graph-edge-{id}` data-testid convention (a workaround for 0.7.0
+  having no per-edge hover callback — see [#536](https://github.com/tinkermonkey/documentation_robotics_viewer/issues/536)).
+  `EdgeHoverTooltip.tsx`'s manual portal + placement math is gone; `GraphCanvas` now owns
+  positioning and show/hide itself. The hover target is also now the whole edge (its invisible
+  hit-stroke included), not just the predicate label — a larger, easier hit area.
+- **Hovering an edge no longer shows the accent "hot" highlight** — only Heimdall's default
+  gray `:hover` styling plus the predicate tooltip. The accent highlight is now reserved for an
+  actual selection or the deliberate cross-navigation highlight (clicking a predicate reference
+  in the Edge Inspector). This is a deliberate fix, not a regression: the initial version of this
+  migration wired hover into the same `uiStore` field that highlight uses, which re-triggered
+  `GraphCanvas`'s full force-layout simulation on every hover in/out — a cost that was previously
+  almost unreachable (hover only fired over the tiny predicate label) but became constant once
+  hover covered the whole edge.
+
+### Known limitation
+- The predicate tooltip's definition text is not reachable to screen readers — heimdall-ui
+  renders `edgeTooltip`/`nodeTooltip` content inside an `aria-hidden="true"` layer. The edge's own
+  `aria-label` still carries the predicate and both endpoint types. Tracked as
+  [#538](https://github.com/tinkermonkey/documentation_robotics_viewer/issues/538) (proposed fix:
+  surface the definition in the already-accessible Edge Inspector) and filed upstream against
+  heimdall-ui as [tinkermonkey/heimdall#208](https://github.com/tinkermonkey/heimdall/issues/208)
+  (asking for a proper `Popover` primitive).
+
 ## [0.6.0] - 2026-08-19
 
 `@tinkermonkey/heimdall-ui` bumped `0.5.2` → `0.7.0` (exact npm-registry version), and the
