@@ -9,7 +9,7 @@
  * A subset of fields persist to localStorage (see `partialize` below) — the
  * canvas theme, the DrBot drawer's open/closed state, and the graph
  * layout/display settings (graphLayout/showClusterBoundaries/
- * showAllRelations/nodeMarginPreset/nodeDisplay). Navigation state (view/layerId/
+ * showAllRelations/nodeMarginPreset/nodeDisplay/showInterLayerNodes). Navigation state (view/layerId/
  * selectedId/changesetId/mode/focus/expanded*) is deliberately NOT persisted
  * here — that's the URL router's job (see router.tsx), so the two mechanisms
  * don't fight over which one is authoritative for "where you are."

@@ -409,7 +409,7 @@ export function interLayerNodesAndEdges(
   const foreignNodeArray = Array.from(foreignNodeMap.values());
   const ringRadius = Math.max(MIN_RING_RADIUS, foreignNodeArray.length * ARC_SPACING);
 
-  foreignNodeArray.forEach((node, index) => {
+  foreignNodeArray.forEach((node, i) => {
     foreignNodeIds.add(node.id);
     const nodeData: GraphNodeData = {
       id: node.id,
@@ -420,7 +420,7 @@ export function interLayerNodesAndEdges(
 
     // Place on a ring around the origin if perimeter layout is enabled.
     if (perimeterLayout) {
-      const angle = (index / foreignNodeArray.length) * 2 * Math.PI;
+      const angle = (i / foreignNodeArray.length) * 2 * Math.PI;
       nodeData.x = ringRadius * Math.cos(angle);
       nodeData.y = ringRadius * Math.sin(angle);
     }

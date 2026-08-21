@@ -585,7 +585,7 @@ describe('interLayerNodesAndEdges', () => {
   });
 
   it('covers both incoming and outgoing cross-layer links', () => {
-    const layer = 'motivation';
+    const layer = 'security';
     const result = interLayerNodesAndEdges(model, layer, index);
     const layerUuids = new Set(model.nodesByLayer[layer].map((n) => n.id));
     const foreignUuids = result.foreignNodeIds;
@@ -601,8 +601,8 @@ describe('interLayerNodesAndEdges', () => {
       }
     }
 
-    // At least one layer should have both incoming and outgoing.
-    expect(hasIncoming || hasOutgoing).toBe(true);
+    // Verify both directions exist for this layer.
+    expect(hasIncoming && hasOutgoing).toBe(true);
   });
 
   it('returns empty arrays for a layer with no cross-layer links', () => {
