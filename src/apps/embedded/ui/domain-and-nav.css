@@ -451,11 +451,13 @@ body.dark-canvas {
 }
 
 /* ---- GraphInspector empty-state visibility per view ---------------------
- * Model view renders relationships separately via RelationshipsWithTooltips
- * in the card's cross-link list, not through GraphInspector's own relationship
- * list. Hide GraphInspector's "No relationships" empty state in Model view to
- * avoid redundant messaging. Schema view shows the legitimate GraphInspector
- * relationship list and its empty state, which shouldn't be suppressed. */
+ * Model view displays relationships through GraphInspector's standard
+ * relationship list (same as Schema view). Hide the "No relationships" empty
+ * state in Model view to avoid showing a duplicate message when a selected
+ * element has no relationships — the Inspector drawer itself auto-closes when
+ * nothing is selected (Inspector.tsx line 180: open={!!metadata || !!edge}),
+ * so the empty state is rarely visible. Schema view shows the empty state
+ * normally since it displays for unconnected node-types as a legitimate UI. */
 .inspector-model-branch .graph-inspector__empty-mini {
   display: none;
 }
