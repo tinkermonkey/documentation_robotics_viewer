@@ -177,31 +177,77 @@ describe('modelElementNeighborhoodGraph', () => {
   });
 
   it('center element appears exactly once even with self-referential relationships', () => {
-    const metaModelId = 'cfe8d725-4f64-4eae-b2fa-825e4a774a3a';
-    const result = modelElementNeighborhoodGraph(metaModelId, model, index);
+    // Create a synthetic model with an explicit self-referential link
+    const testNodeId = 'test-self-ref-node';
+    const selfRefLink: ModelLink = {
+      id: 'self-ref-link-id',
+      source: testNodeId,
+      target: testNodeId,
+      type: 'self-references',
+      source_layer_id: 'application',
+      target_layer_id: 'application',
+    };
+    const testNode: ModelNode = {
+      id: testNodeId,
+      name: 'SelfRefNode',
+      type: 'component',
+      layer_id: 'application',
+      spec_node_id: 'application.component',
+      description: 'A node with self-referential relationships',
+      attributes: {},
+      source_reference: {},
+      metadata: {},
+    };
+    const syntheticModel: ModelDerived = {
+      ...model,
+      links: [...model.links, selfRefLink],
+    };
+    const syntheticIndex = buildModelIndex(syntheticModel);
+    syntheticIndex.byUuid.set(testNode.id, testNode);
+    syntheticIndex.byEndpoint.set(testNode.id, testNode);
+
+    const result = modelElementNeighborhoodGraph(testNodeId, syntheticModel, syntheticIndex);
     const centerNodes = result.nodes.filter((n) => n.isCenter);
     expect(centerNodes).toHaveLength(1);
-    expect(centerNodes[0].id).toBe(metaModelId);
+    expect(centerNodes[0].id).toBe(testNodeId);
   });
 
   it('excludes self-referential relationships from neighbors', () => {
-    const metaModelId = 'cfe8d725-4f64-4eae-b2fa-825e4a774a3a';
-    const result = modelElementNeighborhoodGraph(metaModelId, model, index);
-    // Count self-referential links for this element
-    const selfRefLinks = model.links.filter((l) => {
-      const src = index.byEndpoint.get(l.source);
-      const tgt = index.byEndpoint.get(l.target);
-      if (!src || !tgt) return false;
-      return src.id === metaModelId && tgt.id === metaModelId;
-    });
-    // Self-referential links should not create any edges or neighbors
-    if (selfRefLinks.length > 0) {
-      // If there are self-referential links, verify they don't add the center as a neighbor
-      const neighborIds = result.nodes
-        .filter((n) => !n.isCenter)
-        .map((n) => n.id);
-      expect(neighborIds).not.toContain(metaModelId);
-    }
+    // Create a synthetic model with an explicit self-referential link
+    const testNodeId = 'test-self-ref-node';
+    const selfRefLink: ModelLink = {
+      id: 'self-ref-link-id',
+      source: testNodeId,
+      target: testNodeId,
+      type: 'self-references',
+      source_layer_id: 'application',
+      target_layer_id: 'application',
+    };
+    const testNode: ModelNode = {
+      id: testNodeId,
+      name: 'SelfRefNode',
+      type: 'component',
+      layer_id: 'application',
+      spec_node_id: 'application.component',
+      description: 'A node with self-referential relationships',
+      attributes: {},
+      source_reference: {},
+      metadata: {},
+    };
+    const syntheticModel: ModelDerived = {
+      ...model,
+      links: [...model.links, selfRefLink],
+    };
+    const syntheticIndex = buildModelIndex(syntheticModel);
+    syntheticIndex.byUuid.set(testNode.id, testNode);
+    syntheticIndex.byEndpoint.set(testNode.id, testNode);
+
+    const result = modelElementNeighborhoodGraph(testNodeId, syntheticModel, syntheticIndex);
+    // Verify self-referential links don't create neighbors (center node is never a neighbor)
+    const neighborIds = result.nodes
+      .filter((n) => !n.isCenter)
+      .map((n) => n.id);
+    expect(neighborIds).not.toContain(testNodeId);
   });
 });
 
@@ -423,11 +469,6 @@ describe('specNodeNeighborhoodGraph', () => {
       .filter((n) => !n.isCenter)
       .map((n) => n.id);
     expect(neighborIds).not.toContain('navigation.route');
-    // Verify all other nodes are not the center
-    const nonCenterNodes = result.nodes.filter((n) => !n.isCenter);
-    nonCenterNodes.forEach((n) => {
-      expect(n.id).not.toBe('navigation.route');
-    });
   });
 
   it('self-referential relationships do not create edges in the result', () => {
