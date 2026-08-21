@@ -175,6 +175,34 @@ describe('modelElementNeighborhoodGraph', () => {
     // Each link should produce exactly one edge in the result
     expect(result.edges.length).toBe(resolvedLinks.length);
   });
+
+  it('center element appears exactly once even with self-referential relationships', () => {
+    const metaModelId = 'cfe8d725-4f64-4eae-b2fa-825e4a774a3a';
+    const result = modelElementNeighborhoodGraph(metaModelId, model, index);
+    const centerNodes = result.nodes.filter((n) => n.isCenter);
+    expect(centerNodes).toHaveLength(1);
+    expect(centerNodes[0].id).toBe(metaModelId);
+  });
+
+  it('excludes self-referential relationships from neighbors', () => {
+    const metaModelId = 'cfe8d725-4f64-4eae-b2fa-825e4a774a3a';
+    const result = modelElementNeighborhoodGraph(metaModelId, model, index);
+    // Count self-referential links for this element
+    const selfRefLinks = model.links.filter((l) => {
+      const src = index.byEndpoint.get(l.source);
+      const tgt = index.byEndpoint.get(l.target);
+      if (!src || !tgt) return false;
+      return src.id === metaModelId && tgt.id === metaModelId;
+    });
+    // Self-referential links should not create any edges or neighbors
+    if (selfRefLinks.length > 0) {
+      // If there are self-referential links, verify they don't add the center as a neighbor
+      const neighborIds = result.nodes
+        .filter((n) => !n.isCenter)
+        .map((n) => n.id);
+      expect(neighborIds).not.toContain(metaModelId);
+    }
+  });
 });
 
 // ─── Schema Node Type Neighborhood Graph ──────────────────────────────────────
@@ -368,6 +396,50 @@ describe('specNodeNeighborhoodGraph', () => {
     result.edges.forEach((e) => {
       expect(e.predicate.length).toBeGreaterThan(0);
       expect(typeof e.predicate).toBe('string');
+    });
+  });
+
+  it('center spec node appears exactly once even with self-referential relationships', () => {
+    // Use a spec node that has self-referential relationships (navigation.route has aggregates and navigates-to itself)
+    const result = specNodeNeighborhoodGraph(
+      'navigation',
+      'navigation.route',
+      spec,
+    );
+    const centerNodes = result.nodes.filter((n) => n.isCenter);
+    expect(centerNodes).toHaveLength(1);
+    expect(centerNodes[0].id).toBe('navigation.route');
+  });
+
+  it('excludes self-referential relationships from neighbors', () => {
+    // navigation.route has self-referential relationships (aggregates, navigates-to)
+    const result = specNodeNeighborhoodGraph(
+      'navigation',
+      'navigation.route',
+      spec,
+    );
+    // Verify that navigation.route does not appear as a neighbor (only as center)
+    const neighborIds = result.nodes
+      .filter((n) => !n.isCenter)
+      .map((n) => n.id);
+    expect(neighborIds).not.toContain('navigation.route');
+    // Verify all other nodes are not the center
+    const nonCenterNodes = result.nodes.filter((n) => !n.isCenter);
+    nonCenterNodes.forEach((n) => {
+      expect(n.id).not.toBe('navigation.route');
+    });
+  });
+
+  it('self-referential relationships do not create edges in the result', () => {
+    // navigation.route has self-referential relationships
+    const result = specNodeNeighborhoodGraph(
+      'navigation',
+      'navigation.route',
+      spec,
+    );
+    // Verify no edges target the center node itself
+    result.edges.forEach((e) => {
+      expect(e.targetId).not.toBe('navigation.route');
     });
   });
 });
