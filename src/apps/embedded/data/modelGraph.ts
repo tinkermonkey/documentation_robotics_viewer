@@ -475,7 +475,7 @@ export function filterStructuralInterLayer(
 ): InterLayerResult {
   if (result.foreignNodes.length === 0) return result;
 
-  const structuralCrossEdges = new Set<string>();
+  const structuralForeignNodeIds = new Set<string>();
 
   for (const link of model.links) {
     const src = resolveEndpoint(index, link.source);
@@ -487,13 +487,13 @@ export function filterStructuralInterLayer(
     if ((srcInLayer && !tgtInLayer) || (!srcInLayer && tgtInLayer)) {
       if (isStructuralPredicate(link.type)) {
         const foreignNodeId = srcInLayer ? tgt.id : src.id;
-        structuralCrossEdges.add(foreignNodeId);
+        structuralForeignNodeIds.add(foreignNodeId);
       }
     }
   }
 
   const filteredForeignNodes = result.foreignNodes.filter((node) =>
-    structuralCrossEdges.has(node.id),
+    structuralForeignNodeIds.has(node.id),
   );
   const filteredForeignNodeIds = new Set(filteredForeignNodes.map((n) => n.id));
   const filteredCrossEdges = result.crossEdges.filter((edge) =>

@@ -10,6 +10,7 @@ import {
   nodesWithCardData,
   edgeMetadata,
   interLayerNodesAndEdges,
+  filterStructuralInterLayer,
   CARD_CROSS_LINK_CAP,
 } from '@/apps/embedded/data/modelGraph';
 import type {
@@ -18,6 +19,7 @@ import type {
   ModelLink,
 } from '@/apps/embedded/data/useModel';
 import type { SpecPayload } from '@/apps/embedded/data/specGraph';
+import type { InterLayerResult } from '@/apps/embedded/data/modelGraph';
 import modelFixture from '../fixtures/model.json';
 import specFixture from '../fixtures/spec.json';
 
@@ -732,5 +734,220 @@ describe('interLayerNodesAndEdges', () => {
     // Cross-layer links may be duplicated if a foreign node is reachable via multiple predicates;
     // crossEdges count edges (one per link id), foreignNodes are deduplicated by UUID.
     expect(result.crossEdges).toHaveLength(manualCrossCount);
+  });
+});
+
+describe('filterStructuralInterLayer', () => {
+  it('returns early when foreignNodes is empty', () => {
+    const result: any = {
+      foreignNodes: [],
+      crossEdges: [],
+      foreignNodeIds: new Set(),
+    };
+    const model: ModelDerived = {
+      nodes: [] as ModelNode[],
+      links: [] as ModelLink[],
+      countsByLayer: {},
+      nodesByLayer: {},
+      relCount: 0,
+    };
+    const filtered = filterStructuralInterLayer(result, model, 'test-layer', buildModelIndex(model));
+
+    expect(filtered).toEqual(result);
+  });
+
+  it('filters out foreign nodes without structural predicates', () => {
+    // Scenario: foreignNodes includes two nodes, only one has a structural predicate connection.
+    const foreignNode1: any = { id: 'foreign-1', layer_id: 'other-layer', type: 't2', name: 'Foreign1' };
+    const foreignNode2: any = { id: 'foreign-2', layer_id: 'another-layer', type: 't2', name: 'Foreign2' };
+    const nativeNode: any = { id: 'native-1', layer_id: 'test-layer', type: 't1', name: 'Native' };
+
+    const model: ModelDerived = {
+      nodes: [nativeNode, foreignNode1, foreignNode2],
+      links: [
+        // Structural predicate from native to foreign-1
+        { id: 'e1', source: 'native-1', target: 'foreign-1', type: 'composes' } as ModelLink,
+        // Non-structural predicate from native to foreign-2
+        { id: 'e2', source: 'native-1', target: 'foreign-2', type: 'uses' } as ModelLink,
+      ],
+      countsByLayer: { 'test-layer': 1, 'other-layer': 1, 'another-layer': 1 },
+      nodesByLayer: {
+        'test-layer': [nativeNode],
+        'other-layer': [foreignNode1],
+        'another-layer': [foreignNode2],
+      },
+      relCount: 2,
+    };
+
+    const idx = buildModelIndex(model);
+
+    // Input result includes both foreign nodes.
+    const inputResult: InterLayerResult = {
+      foreignNodes: [foreignNode1, foreignNode2],
+      crossEdges: [
+        { id: 'e1', sourceId: 'native-1', targetId: 'foreign-1', label: 'composes', curvature: 0.5 },
+        { id: 'e2', sourceId: 'native-1', targetId: 'foreign-2', label: 'uses', curvature: 0.5 },
+      ],
+      foreignNodeIds: new Set(['foreign-1', 'foreign-2']),
+    };
+
+    const filtered = filterStructuralInterLayer(inputResult, model, 'test-layer', idx);
+
+    // Only foreign-1 should remain (it has structural predicate).
+    expect(filtered.foreignNodes).toHaveLength(1);
+    expect(filtered.foreignNodes[0].id).toBe('foreign-1');
+    expect(filtered.foreignNodeIds.has('foreign-1')).toBe(true);
+    expect(filtered.foreignNodeIds.has('foreign-2')).toBe(false);
+  });
+
+  it('filters out edges whose nodes were removed', () => {
+    const foreignNode1: any = { id: 'foreign-1', layer_id: 'other-layer', type: 't2', name: 'Foreign1' };
+    const foreignNode2: any = { id: 'foreign-2', layer_id: 'another-layer', type: 't2', name: 'Foreign2' };
+    const nativeNode: any = { id: 'native-1', layer_id: 'test-layer', type: 't1', name: 'Native' };
+
+    const model: ModelDerived = {
+      nodes: [nativeNode, foreignNode1, foreignNode2],
+      links: [
+        { id: 'e1', source: 'native-1', target: 'foreign-1', type: 'composes' } as ModelLink,
+        { id: 'e2', source: 'native-1', target: 'foreign-2', type: 'uses' } as ModelLink,
+      ],
+      countsByLayer: { 'test-layer': 1, 'other-layer': 1, 'another-layer': 1 },
+      nodesByLayer: {
+        'test-layer': [nativeNode],
+        'other-layer': [foreignNode1],
+        'another-layer': [foreignNode2],
+      },
+      relCount: 2,
+    };
+
+    const idx = buildModelIndex(model);
+
+    const inputResult: InterLayerResult = {
+      foreignNodes: [foreignNode1, foreignNode2],
+      crossEdges: [
+        { id: 'e1', sourceId: 'native-1', targetId: 'foreign-1', label: 'composes', curvature: 0.5 },
+        { id: 'e2', sourceId: 'native-1', targetId: 'foreign-2', label: 'uses', curvature: 0.5 },
+      ],
+      foreignNodeIds: new Set(['foreign-1', 'foreign-2']),
+    };
+
+    const filtered = filterStructuralInterLayer(inputResult, model, 'test-layer', idx);
+
+    // Only the edge to foreign-1 (structural) should remain.
+    expect(filtered.crossEdges).toHaveLength(1);
+    expect(filtered.crossEdges[0].id).toBe('e1');
+  });
+
+  it('keeps all nodes when all have structural predicates', () => {
+    const foreignNode1: any = { id: 'foreign-1', layer_id: 'other-layer', type: 't2', name: 'Foreign1' };
+    const foreignNode2: any = { id: 'foreign-2', layer_id: 'another-layer', type: 't2', name: 'Foreign2' };
+    const nativeNode: any = { id: 'native-1', layer_id: 'test-layer', type: 't1', name: 'Native' };
+
+    const model: ModelDerived = {
+      nodes: [nativeNode, foreignNode1, foreignNode2],
+      links: [
+        { id: 'e1', source: 'native-1', target: 'foreign-1', type: 'composes' } as ModelLink,
+        { id: 'e2', source: 'native-1', target: 'foreign-2', type: 'realizes' } as ModelLink,
+      ],
+      countsByLayer: { 'test-layer': 1, 'other-layer': 1, 'another-layer': 1 },
+      nodesByLayer: {
+        'test-layer': [nativeNode],
+        'other-layer': [foreignNode1],
+        'another-layer': [foreignNode2],
+      },
+      relCount: 2,
+    };
+
+    const idx = buildModelIndex(model);
+
+    const inputResult: InterLayerResult = {
+      foreignNodes: [foreignNode1, foreignNode2],
+      crossEdges: [
+        { id: 'e1', sourceId: 'native-1', targetId: 'foreign-1', label: 'composes', curvature: 0.5 },
+        { id: 'e2', sourceId: 'native-1', targetId: 'foreign-2', label: 'realizes', curvature: 0.5 },
+      ],
+      foreignNodeIds: new Set(['foreign-1', 'foreign-2']),
+    };
+
+    const filtered = filterStructuralInterLayer(inputResult, model, 'test-layer', idx);
+
+    // Both nodes should remain (both have structural predicates).
+    expect(filtered.foreignNodes).toHaveLength(2);
+    expect(filtered.crossEdges).toHaveLength(2);
+    expect(filtered.foreignNodeIds.size).toBe(2);
+  });
+
+  it('maintains invariant: foreignNodeIds matches filtered foreignNodes', () => {
+    const foreignNode1: any = { id: 'foreign-1', layer_id: 'other-layer', type: 't2', name: 'Foreign1' };
+    const foreignNode2: any = { id: 'foreign-2', layer_id: 'another-layer', type: 't2', name: 'Foreign2' };
+    const nativeNode: any = { id: 'native-1', layer_id: 'test-layer', type: 't1', name: 'Native' };
+
+    const model: ModelDerived = {
+      nodes: [nativeNode, foreignNode1, foreignNode2],
+      links: [
+        { id: 'e1', source: 'native-1', target: 'foreign-1', type: 'composes' } as ModelLink,
+        { id: 'e2', source: 'native-1', target: 'foreign-2', type: 'uses' } as ModelLink,
+      ],
+      countsByLayer: { 'test-layer': 1, 'other-layer': 1, 'another-layer': 1 },
+      nodesByLayer: {
+        'test-layer': [nativeNode],
+        'other-layer': [foreignNode1],
+        'another-layer': [foreignNode2],
+      },
+      relCount: 2,
+    };
+
+    const idx = buildModelIndex(model);
+
+    const inputResult: InterLayerResult = {
+      foreignNodes: [foreignNode1, foreignNode2],
+      crossEdges: [
+        { id: 'e1', sourceId: 'native-1', targetId: 'foreign-1', label: 'composes', curvature: 0.5 },
+        { id: 'e2', sourceId: 'native-1', targetId: 'foreign-2', label: 'uses', curvature: 0.5 },
+      ],
+      foreignNodeIds: new Set(['foreign-1', 'foreign-2']),
+    };
+
+    const filtered = filterStructuralInterLayer(inputResult, model, 'test-layer', idx);
+
+    // foreignNodeIds should exactly match the filtered foreignNodes.
+    const expectedIds = new Set(filtered.foreignNodes.map((n) => n.id));
+    expect(filtered.foreignNodeIds).toEqual(expectedIds);
+  });
+
+  it('handles reverse direction: foreign → native with structural predicate', () => {
+    // Test cross-layer links in the reverse direction (from foreign layer to native).
+    const foreignNode: any = { id: 'foreign-1', layer_id: 'other-layer', type: 't2', name: 'Foreign' };
+    const nativeNode: any = { id: 'native-1', layer_id: 'test-layer', type: 't1', name: 'Native' };
+
+    const model: ModelDerived = {
+      nodes: [nativeNode, foreignNode],
+      links: [
+        // Reverse direction: foreign → native with structural predicate
+        { id: 'e1', source: 'foreign-1', target: 'native-1', type: 'realizes' } as ModelLink,
+      ],
+      countsByLayer: { 'test-layer': 1, 'other-layer': 1 },
+      nodesByLayer: {
+        'test-layer': [nativeNode],
+        'other-layer': [foreignNode],
+      },
+      relCount: 1,
+    };
+
+    const idx = buildModelIndex(model);
+
+    const inputResult: InterLayerResult = {
+      foreignNodes: [foreignNode],
+      crossEdges: [
+        { id: 'e1', sourceId: 'foreign-1', targetId: 'native-1', label: 'realizes', curvature: 0.5 },
+      ],
+      foreignNodeIds: new Set(['foreign-1']),
+    };
+
+    const filtered = filterStructuralInterLayer(inputResult, model, 'test-layer', idx);
+
+    // Foreign node should be kept (has structural predicate in reverse direction).
+    expect(filtered.foreignNodes).toHaveLength(1);
+    expect(filtered.foreignNodes[0].id).toBe('foreign-1');
   });
 });
