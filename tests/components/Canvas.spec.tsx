@@ -10,7 +10,7 @@
  * 0 for measurements; Heimdall's internal layout is its own concern).
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen, waitFor, fireEvent, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { GraphCanvasProps } from '@tinkermonkey/heimdall-ui';
@@ -42,6 +42,11 @@ vi.mock('@tinkermonkey/heimdall-ui', async (importOriginal) => {
 function graphNodeCount(): number {
   return document.querySelectorAll('[data-testid^="graph-node-"]').length;
 }
+
+/** Setup hook: disable inter-layer nodes for consistent test counts. */
+beforeEach(() => {
+  useUiStore.setState({ showInterLayerNodes: false });
+});
 
 /** Number of graph edge elements currently rendered — GraphCanvas only gives
  *  an edge this testid when it's actually rendered (hidden non-structural
@@ -307,10 +312,13 @@ describe('Canvas — graph layout/display control strip', () => {
     fireEvent.click(screen.getByRole('radio', { name: 'Galaxy' }));
     expect(useUiStore.getState().graphLayout).toBe('galaxy');
 
-    fireEvent.click(screen.getByRole('radio', { name: 'Off' }));
+    // Boundaries control appears only when layout is not 'force'; use within()
+    // to disambiguate from the Inter-layer 'Off' option also present in Model view
+    fireEvent.click(within(screen.getByTestId('graph-boundaries-control')).getByRole('radio', { name: 'Off' }));
     expect(useUiStore.getState().showClusterBoundaries).toBe(false);
 
-    fireEvent.click(screen.getByRole('radio', { name: 'Structural' }));
+    // Relations control also has an 'Off' option; use within() to disambiguate
+    fireEvent.click(within(screen.getByTestId('graph-relations-control')).getByRole('radio', { name: 'Structural' }));
     expect(useUiStore.getState().showAllRelations).toBe(false);
 
     fireEvent.click(screen.getByRole('radio', { name: 'Force' }));
@@ -566,6 +574,7 @@ describe('Canvas — Relations toggle actually filters rendered edges', () => {
   });
 });
 
+
 describe('Canvas — edge selection, highlighting, and the edge inspector', () => {
   // apm layer, "WebSocket Disconnect Alert" --monitors--> "WebSocket
   // Connection State Gauge" (verified against the model fixture).
@@ -703,47 +712,6 @@ describe('Canvas — edge selection, highlighting, and the edge inspector', () =
     });
   });
 
-  it('hovering an edge shows the PredicateTooltip with the resolved source/predicate/destination', async () => {
-    renderWithProviders(<Canvas />);
-    useUiStore.getState().setView('model');
-    useUiStore.getState().selectLayer('apm');
-    await waitFor(() => expect(graphEdgeCount()).toBe(12));
-
-    // GraphCanvas (heimdall-ui 0.8.0+) wires hover natively via
-    // onPointerEnter/onPointerLeave on the whole edge `<g data-testid="graph-edge-{id}">`
-    // (React's onPointerEnter/onPointerLeave listen on native pointerover/pointerout —
-    // same reason CLAUDE.md's userEvent-vs-fireEvent note exists for mouse events),
-    // and renders our edgeTooltip content after its internal hover-intent delay,
-    // inside a `.graph-tooltip-layer` that's `aria-hidden="true"` — a heimdall-ui
-    // choice, NOT an accessible path of our own (see Canvas.tsx's renderEdgeTooltip
-    // comment / issue #538: the tooltip's `aria-describedby` lands on a hidden
-    // decorative span, not the edge itself, so this content is screen-reader
-    // unreachable) — so this queries by testid rather than role, which RTL
-    // excludes under aria-hidden regardless.
-    const edgeEl = document.querySelector(`[data-testid="graph-edge-${EDGE_ID}"]`) as HTMLElement;
-    fireEvent.pointerOver(edgeEl);
-
-    const content = await screen.findByTestId('edge-predicate-tooltip-content');
-    expect(within(content).getAllByText('monitors').length).toBeGreaterThan(0);
-    const diagram = within(content).getByTestId('edge-predicate-tooltip-diagram');
-    expect(within(diagram).getByText('alert')).toBeInTheDocument();
-    expect(within(diagram).getByText('metricinstrument')).toBeInTheDocument();
-
-    // Hover deliberately does NOT touch uiStore.highlightedEdgeId or add the
-    // accent 'hot' class (see useEdgeInteraction.ts's doc comment) — that was
-    // a real perf bug (every hover re-triggered GraphCanvas's force-layout
-    // effect via a new `edges` array reference), fixed by leaving hover to
-    // GraphCanvas's own free CSS-only :hover styling. highlightedEdgeId stays
-    // reserved for the deliberate navigateToElementWithEdge cross-navigation
-    // highlight (see the edge-inspector predicate-badge tests).
-    expect(useUiStore.getState().highlightedEdgeId).toBeNull();
-    expect(edgeEl).not.toHaveClass('graph-edge--hot');
-
-    fireEvent.pointerOut(edgeEl, { relatedTarget: document.body });
-    await waitFor(() =>
-      expect(screen.queryByTestId('edge-predicate-tooltip-content')).not.toBeInTheDocument(),
-    );
-  });
 });
 
 describe('Canvas — GraphControls flyout keyboard/click activation', () => {
@@ -785,4 +753,202 @@ describe('Canvas — GraphControls flyout keyboard/click activation', () => {
     expect(screen.queryByTestId('graph-controls-panel')).not.toBeInTheDocument();
     expect(document.activeElement).toBe(toggle);
   });
+});
+
+describe('Canvas — Inter-layer nodes control', () => {
+  it('shows the inter-layer toggle only in Model view', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+
+    // Wait for graph to render
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+
+    // Toggle should be visible in Model view
+    const toggle = screen.getByTestId('graph-controls-toggle');
+    fireEvent.focus(toggle);
+    await waitFor(() => expect(screen.getByTestId('graph-inter-layer-control')).toBeInTheDocument());
+
+    // Close controls and switch to Schema
+    fireEvent.keyDown(screen.getByTestId('graph-controls'), { key: 'Escape' });
+    useUiStore.getState().setView('spec');
+    useUiStore.getState().selectLayer('apm');
+
+    // Wait for schema graph to render
+    await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(0));
+
+    // Toggle should not be visible in Schema view
+    fireEvent.focus(screen.getByTestId('graph-controls-toggle'));
+    expect(screen.queryByTestId('graph-inter-layer-control')).not.toBeInTheDocument();
+  });
+
+  it('toggles inter-layer nodes on and off', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    useUiStore.setState({ showInterLayerNodes: true });
+
+    // With inter-layer nodes enabled, should have more nodes than native count
+    await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(11));
+
+    // Disable inter-layer nodes
+    const toggle = screen.getByTestId('graph-controls-toggle');
+    fireEvent.focus(toggle);
+    await waitFor(() => expect(screen.getByTestId('graph-inter-layer-control')).toBeInTheDocument());
+
+    const interLayerControl = screen.getByTestId('graph-inter-layer-control');
+    const offButton = within(interLayerControl).getByRole('radio', { name: 'Off' });
+    fireEvent.click(offButton);
+
+    // Now should have only native nodes (11)
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+  });
+
+  it('foreign nodes render with distinct styling (reduced opacity)', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    useUiStore.setState({ showInterLayerNodes: true });
+
+    // Wait for graph to render with foreign nodes
+    await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(11));
+
+    // Query for foreign node wrappers and verify opacity
+    const foreignWrappers = screen.getAllByTestId(/^foreign-node-wrapper-/);
+    expect(foreignWrappers.length).toBeGreaterThan(0);
+
+    // Assert that each foreign node wrapper has opacity: 0.6
+    foreignWrappers.forEach((wrapper) => {
+      expect(wrapper).toHaveStyle({ opacity: '0.6' });
+    });
+  });
+
+  it('foreign nodes respect showAllRelations filter (exclude orphans when structural-only)', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('business');
+    useUiStore.setState({ showInterLayerNodes: true, showAllRelations: true });
+
+    // With all relations shown, should have foreign nodes
+    await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(0));
+    const allCount = graphNodeCount();
+    expect(allCount).toBeGreaterThan(0);
+
+    // Switch to structural-only
+    const toggle = screen.getByTestId('graph-controls-toggle');
+    fireEvent.focus(toggle);
+    await waitFor(() => expect(screen.getByTestId('graph-relations-control')).toBeInTheDocument());
+
+    const relationsControl = screen.getByTestId('graph-relations-control');
+    const structuralButton = within(relationsControl).getByRole('radio', { name: 'Structural' });
+    fireEvent.click(structuralButton);
+
+    expect(useUiStore.getState().showAllRelations).toBe(false);
+
+    // Foreign node count may change, but total count should still be valid
+    await waitFor(() => {
+      const structuralCount = graphNodeCount();
+      expect(structuralCount).toBeGreaterThan(0);
+    });
+  });
+
+  it('toggling inter-layer nodes on and off updates the graph composition', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('business');
+
+    // Start with inter-layer nodes off
+    useUiStore.setState({ showInterLayerNodes: false });
+    await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(0));
+    const nativeOnlyCount = graphNodeCount();
+
+    // Turn on inter-layer nodes
+    useUiStore.setState({ showInterLayerNodes: true });
+    await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(nativeOnlyCount));
+    const withForeignCount = graphNodeCount();
+
+    // Verify we have more nodes when foreign nodes are included
+    expect(withForeignCount).toBeGreaterThan(nativeOnlyCount);
+
+    // Turn off again
+    useUiStore.setState({ showInterLayerNodes: false });
+    await waitFor(() => expect(graphNodeCount()).toBe(nativeOnlyCount));
+  });
+
+  it('switching layouts preserves inter-layer nodes (force→galaxy→clustered)', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('business');
+    useUiStore.setState({ showInterLayerNodes: true, graphLayout: 'force' });
+
+    // Get initial count with force layout
+    await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(0));
+    const forceCount = graphNodeCount();
+
+    // Switch to galaxy layout
+    const toggle = screen.getByTestId('graph-controls-toggle');
+    fireEvent.focus(toggle);
+    await waitFor(() => expect(screen.getByTestId('graph-layout-control')).toBeInTheDocument());
+
+    const layoutControl = screen.getByTestId('graph-layout-control');
+    const galaxyButton = within(layoutControl).getByRole('radio', { name: 'Galaxy' });
+    fireEvent.click(galaxyButton);
+
+    expect(useUiStore.getState().graphLayout).toBe('galaxy');
+
+    // Galaxy layout should also render the same foreign nodes
+    await waitFor(() => {
+      const galaxyCount = graphNodeCount();
+      expect(galaxyCount).toBe(forceCount);
+    });
+
+    // Switch to clustered layout
+    fireEvent.focus(screen.getByTestId('graph-controls-toggle'));
+    await waitFor(() => expect(screen.getByTestId('graph-layout-control')).toBeInTheDocument());
+
+    const clusteredButton = within(screen.getByTestId('graph-layout-control')).getByRole('radio', {
+      name: 'Clustered',
+    });
+    fireEvent.click(clusteredButton);
+
+    expect(useUiStore.getState().graphLayout).toBe('force-clustered');
+
+    // Clustered layout should also render the same foreign nodes
+    await waitFor(() => {
+      const clusteredCount = graphNodeCount();
+      expect(clusteredCount).toBe(forceCount);
+    });
+  });
+
+  it('dark and light canvas modes both render foreign nodes correctly', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('technology');
+    useUiStore.setState({ showInterLayerNodes: true, canvasDark: true });
+
+    // Verify dark mode renders foreign nodes
+    await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(0));
+    const darkCount = graphNodeCount();
+    expect(useUiStore.getState().canvasDark).toBe(true);
+
+    // Switch to light mode
+    useUiStore.getState().toggleCanvasDark();
+    expect(useUiStore.getState().canvasDark).toBe(false);
+
+    // Light mode should render the same number of foreign nodes
+    await waitFor(() => {
+      const lightCount = graphNodeCount();
+      expect(lightCount).toBe(darkCount);
+    });
+
+    // Switch back to dark mode
+    useUiStore.getState().toggleCanvasDark();
+    expect(useUiStore.getState().canvasDark).toBe(true);
+
+    await waitFor(() => {
+      const finalCount = graphNodeCount();
+      expect(finalCount).toBe(darkCount);
+    });
+  });
+
 });

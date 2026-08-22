@@ -9,6 +9,8 @@ import {
   edgesForLayer,
   nodesWithCardData,
   edgeMetadata,
+  interLayerNodesAndEdges,
+  filterStructuralInterLayer,
   CARD_CROSS_LINK_CAP,
 } from '@/apps/embedded/data/modelGraph';
 import type {
@@ -17,6 +19,7 @@ import type {
   ModelLink,
 } from '@/apps/embedded/data/useModel';
 import type { SpecPayload } from '@/apps/embedded/data/specGraph';
+import type { InterLayerResult } from '@/apps/embedded/data/modelGraph';
 import modelFixture from '../fixtures/model.json';
 import specFixture from '../fixtures/spec.json';
 
@@ -473,5 +476,614 @@ describe('edgeMetadata', () => {
     const meta = edgeMetadata(model, link.id, index, undefined)!;
     expect(meta).toBeDefined();
     expect(meta.specRelationship).toBeUndefined();
+  });
+});
+
+// ─── interLayerNodesAndEdges ──────────────────────────────────────────────────
+
+describe('interLayerNodesAndEdges', () => {
+  const index = buildModelIndex(model);
+
+  it('returns the expected data structure with foreignNodes, crossEdges, and foreignNodeIds', () => {
+    const result = interLayerNodesAndEdges(model, 'security', index);
+    expect(result).toHaveProperty('foreignNodes');
+    expect(result).toHaveProperty('crossEdges');
+    expect(result).toHaveProperty('foreignNodeIds');
+    expect(Array.isArray(result.foreignNodes)).toBe(true);
+    expect(Array.isArray(result.crossEdges)).toBe(true);
+    expect(result.foreignNodeIds instanceof Set).toBe(true);
+  });
+
+  it('includes foreign nodes for every cross-layer link where the layer has one endpoint', () => {
+    const layer = 'security';
+    const result = interLayerNodesAndEdges(model, layer, index);
+    const layerUuids = new Set(model.nodesByLayer[layer].map((n) => n.id));
+
+    // Count expected foreign nodes manually.
+    const expectedForeignUuids = new Set<string>();
+    for (const link of model.links) {
+      const src = resolveEndpoint(index, link.source);
+      const tgt = resolveEndpoint(index, link.target);
+      if (!src || !tgt) continue;
+
+      const srcInLayer = layerUuids.has(src.id);
+      const tgtInLayer = layerUuids.has(tgt.id);
+
+      if (srcInLayer && !tgtInLayer) expectedForeignUuids.add(tgt.id);
+      if (!srcInLayer && tgtInLayer) expectedForeignUuids.add(src.id);
+    }
+
+    // Result should include all expected foreign nodes.
+    expect(result.foreignNodeIds.size).toBe(expectedForeignUuids.size);
+    for (const id of expectedForeignUuids) {
+      expect(result.foreignNodeIds.has(id)).toBe(true);
+    }
+  });
+
+  it('deduplicates foreign nodes by UUID (a node linked via multiple predicates appears once)', () => {
+    const layer = 'business';
+    const result = interLayerNodesAndEdges(model, layer, index);
+
+    // Each node id should appear exactly once in foreignNodes.
+    const nodeIds = result.foreignNodes.map((n) => n.id);
+    const uniqueIds = new Set(nodeIds);
+    expect(nodeIds).toHaveLength(uniqueIds.size);
+    expect(uniqueIds).toEqual(result.foreignNodeIds);
+  });
+
+  it("assigns each foreign node its own layer's domainColor (not the active layer)", () => {
+    const layer = 'application';
+    const result = interLayerNodesAndEdges(model, layer, index);
+
+    for (const node of result.foreignNodes) {
+      const actualNode = index.byUuid.get(node.id)!;
+      expect(node.domainColor).toBe(actualNode.layer_id);
+      expect(node.domainColor).not.toBe(layer);
+    }
+  });
+
+  it('maps foreign node properties: id → UUID, label → name, kind → type', () => {
+    const result = interLayerNodesAndEdges(model, 'technology', index);
+    for (const gn of result.foreignNodes) {
+      const src = index.byUuid.get(gn.id)!;
+      expect(gn.label).toBe(src.name);
+      expect(gn.kind).toBe(src.type);
+    }
+  });
+
+  it('cross-layer edges carry opacity 0.4 and strokeDash [6, 4]', () => {
+    const result = interLayerNodesAndEdges(model, 'api', index);
+    expect(result.crossEdges.length).toBeGreaterThan(0);
+    for (const edge of result.crossEdges) {
+      expect(edge.opacity).toBe(0.4);
+      expect(edge.strokeDash).toEqual([6, 4]);
+    }
+  });
+
+  it('cross-layer edges carry the link predicate as label', () => {
+    const layer = 'data-model';
+    const result = interLayerNodesAndEdges(model, layer, index);
+    const layerUuids = new Set(model.nodesByLayer[layer].map((n) => n.id));
+
+    for (const edge of result.crossEdges) {
+      const link = model.links.find((l) => l.id === edge.id)!;
+      expect(edge.label).toBe(link.type);
+
+      // Verify exactly one endpoint is in the layer.
+      const srcInLayer = layerUuids.has(edge.sourceId);
+      const tgtInLayer = layerUuids.has(edge.targetId);
+      expect(srcInLayer).not.toBe(tgtInLayer);
+    }
+  });
+
+  it('cross-layer edges map sourceId/targetId to node UUIDs', () => {
+    const result = interLayerNodesAndEdges(model, 'testing', index);
+    for (const edge of result.crossEdges) {
+      const src = index.byUuid.get(edge.sourceId);
+      const tgt = index.byUuid.get(edge.targetId);
+      expect(src).toBeDefined();
+      expect(tgt).toBeDefined();
+    }
+  });
+
+  it('covers both incoming and outgoing cross-layer links', () => {
+    const layer = 'security';
+    const result = interLayerNodesAndEdges(model, layer, index);
+    const layerUuids = new Set(model.nodesByLayer[layer].map((n) => n.id));
+    const foreignUuids = result.foreignNodeIds;
+
+    let hasIncoming = false;
+    let hasOutgoing = false;
+    for (const edge of result.crossEdges) {
+      if (layerUuids.has(edge.sourceId) && foreignUuids.has(edge.targetId)) {
+        hasOutgoing = true;
+      }
+      if (foreignUuids.has(edge.sourceId) && layerUuids.has(edge.targetId)) {
+        hasIncoming = true;
+      }
+    }
+
+    // Verify both directions exist for this layer.
+    expect(hasIncoming && hasOutgoing).toBe(true);
+  });
+
+  it('returns empty arrays for a layer with no cross-layer links', () => {
+    // This layer may not exist in the fixture, but the function should handle it gracefully.
+    const result = interLayerNodesAndEdges(model, 'no-such-layer', index);
+    expect(result.foreignNodes).toEqual([]);
+    expect(result.crossEdges).toEqual([]);
+    expect(result.foreignNodeIds.size).toBe(0);
+  });
+
+  describe('perimeter-ring layout', () => {
+    it('omits x/y coordinates when perimeterLayout is undefined', () => {
+      const result = interLayerNodesAndEdges(model, 'business', index, undefined);
+      for (const node of result.foreignNodes) {
+        expect(node.x).toBeUndefined();
+        expect(node.y).toBeUndefined();
+      }
+    });
+
+    it('omits x/y coordinates when perimeterLayout is false', () => {
+      const result = interLayerNodesAndEdges(model, 'business', index, false);
+      for (const node of result.foreignNodes) {
+        expect(node.x).toBeUndefined();
+        expect(node.y).toBeUndefined();
+      }
+    });
+
+    it('assigns x/y coordinates on a ring when perimeterLayout is true', () => {
+      const result = interLayerNodesAndEdges(model, 'business', index, true);
+      expect(result.foreignNodes.length).toBeGreaterThan(0);
+      for (const node of result.foreignNodes) {
+        expect(typeof node.x).toBe('number');
+        expect(typeof node.y).toBe('number');
+      }
+    });
+
+    it('positions foreign nodes on a circle centered at the origin', () => {
+      const result = interLayerNodesAndEdges(model, 'business', index, true);
+      const ringRadii = result.foreignNodes.map((n) => Math.sqrt(n.x! ** 2 + n.y! ** 2));
+
+      // All nodes should be at approximately the same distance from origin (ring radius).
+      const avgRadius = ringRadii.reduce((a, b) => a + b, 0) / ringRadii.length;
+      for (const radius of ringRadii) {
+        expect(radius).toBeCloseTo(avgRadius, 5);
+      }
+    });
+
+    it('scales ring radius by native cluster extent and foreign node count', () => {
+      const result = interLayerNodesAndEdges(model, 'business', index, true);
+      const count = result.foreignNodes.length;
+      const nativeNodeCount = model.nodesByLayer['business'].length;
+
+      // Estimate cluster extent using gridLayout's spacing constants.
+      const cols = Math.max(2, Math.min(4, Math.ceil(Math.sqrt(nativeNodeCount))));
+      const rows = Math.ceil(nativeNodeCount / cols);
+      const colExtent = (cols - 1) * 196; // COL_GAP
+      const rowExtent = (rows - 1) * 88; // ROW_GAP
+      const clusterExtent = Math.max(colExtent, rowExtent);
+
+      const expectedRadius = Math.max(300, Math.max(clusterExtent, count * 80));
+
+      // All nodes at approximately this radius.
+      const actual = Math.sqrt(result.foreignNodes[0].x! ** 2 + result.foreignNodes[0].y! ** 2);
+      expect(actual).toBeCloseTo(expectedRadius, 5);
+    });
+
+    it('evenly spaces nodes around the circle by angle', () => {
+      const result = interLayerNodesAndEdges(model, 'api', index, true);
+      const count = result.foreignNodes.length;
+
+      // Compute angles.
+      const angles = result.foreignNodes.map((n) => Math.atan2(n.y!, n.x!));
+      angles.sort((a, b) => a - b);
+
+      // Adjacent angles should differ by roughly 2π / count.
+      const expectedAngleStep = (2 * Math.PI) / count;
+      for (let i = 0; i < angles.length - 1; i++) {
+        const diff = angles[i + 1] - angles[i];
+        expect(diff).toBeCloseTo(expectedAngleStep, 4);
+      }
+    });
+
+    it('groups foreign nodes by layer_id on the perimeter ring (visual clustering)', () => {
+      // Create a synthetic model with known foreign nodes from 3 different layers.
+      const nativeNode: any = {
+        id: 'native-1',
+        layer_id: 'test-layer',
+        type: 't1',
+        name: 'Native',
+      };
+      const foreign1: any = {
+        id: 'foreign-layer-a-1',
+        layer_id: 'layer-a',
+        type: 't2',
+        name: 'Foreign A1',
+      };
+      const foreign2: any = {
+        id: 'foreign-layer-a-2',
+        layer_id: 'layer-a',
+        type: 't2',
+        name: 'Foreign A2',
+      };
+      const foreign3: any = {
+        id: 'foreign-layer-b-1',
+        layer_id: 'layer-b',
+        type: 't2',
+        name: 'Foreign B1',
+      };
+      const foreign4: any = {
+        id: 'foreign-layer-c-1',
+        layer_id: 'layer-c',
+        type: 't2',
+        name: 'Foreign C1',
+      };
+
+      const syntheticModel: ModelDerived = {
+        nodes: [nativeNode, foreign1, foreign2, foreign3, foreign4],
+        links: [
+          {
+            id: 'e1',
+            source: 'native-1',
+            target: 'foreign-layer-a-1',
+            type: 'uses',
+          } as ModelLink,
+          {
+            id: 'e2',
+            source: 'native-1',
+            target: 'foreign-layer-a-2',
+            type: 'uses',
+          } as ModelLink,
+          {
+            id: 'e3',
+            source: 'native-1',
+            target: 'foreign-layer-b-1',
+            type: 'uses',
+          } as ModelLink,
+          {
+            id: 'e4',
+            source: 'native-1',
+            target: 'foreign-layer-c-1',
+            type: 'uses',
+          } as ModelLink,
+        ],
+        countsByLayer: {
+          'test-layer': 1,
+          'layer-a': 2,
+          'layer-b': 1,
+          'layer-c': 1,
+        },
+        nodesByLayer: {
+          'test-layer': [nativeNode],
+          'layer-a': [foreign1, foreign2],
+          'layer-b': [foreign3],
+          'layer-c': [foreign4],
+        },
+        relCount: 4,
+      };
+
+      const idx = buildModelIndex(syntheticModel);
+      const result = interLayerNodesAndEdges(
+        syntheticModel,
+        'test-layer',
+        idx,
+        true
+      );
+
+      // Verify all foreign nodes are present.
+      expect(result.foreignNodes).toHaveLength(4);
+
+      // Map result nodes to angles (0..2π) and reconstruct the order.
+      const nodeToAngle = new Map<
+        string,
+        { layer: string; angle: number }
+      >();
+      for (const node of result.foreignNodes) {
+        const modelNode = idx.byUuid.get(node.id)!;
+        let angle = Math.atan2(node.y!, node.x!);
+        // Normalize to [0, 2π)
+        if (angle < 0) angle += 2 * Math.PI;
+        nodeToAngle.set(node.id, { layer: modelNode.layer_id, angle });
+      }
+
+      // Sort nodes by their angle to see the order around the ring.
+      const sortedByAngle = Array.from(nodeToAngle.entries())
+        .sort(([, a], [, b]) => a.angle - b.angle)
+        .map(([id]) => nodeToAngle.get(id)!.layer);
+
+      // Verify grouping: nodes from the same layer must be consecutive (contiguous block).
+      // This is the key property: no interleaving of nodes from different layers.
+      const layerRuns = [];
+      let currentLayer = sortedByAngle[0];
+      let run = [currentLayer];
+
+      for (let i = 1; i < sortedByAngle.length; i++) {
+        if (sortedByAngle[i] === currentLayer) {
+          run.push(sortedByAngle[i]);
+        } else {
+          layerRuns.push({ layer: currentLayer, count: run.length });
+          currentLayer = sortedByAngle[i];
+          run = [currentLayer];
+        }
+      }
+      layerRuns.push({ layer: currentLayer, count: run.length });
+
+      // Verify the grouping structure.
+      // Each layer should appear exactly once as a contiguous block (no interleaving).
+      const layerAppearances = new Map<string, number>();
+      for (const run of layerRuns) {
+        const count = layerAppearances.get(run.layer) ?? 0;
+        layerAppearances.set(run.layer, count + 1);
+      }
+
+      // Each of the 3 external layers should appear exactly once (no mixing/interleaving).
+      expect(layerAppearances.get('layer-a')).toBe(1);
+      expect(layerAppearances.get('layer-b')).toBe(1);
+      expect(layerAppearances.get('layer-c')).toBe(1);
+    });
+
+    it('handles a single foreign node (radius still applies, angle is arbitrary)', () => {
+      const syntheticModel: ModelDerived = {
+        nodes: [
+          { id: 'native-1', layer_id: 'test-layer', type: 't1', name: 'Native' },
+          { id: 'foreign-1', layer_id: 'other-layer', type: 't2', name: 'Foreign' },
+        ] as ModelNode[],
+        links: [{ id: 'e1', source: 'native-1', target: 'foreign-1', type: 'uses' }] as ModelLink[],
+        countsByLayer: {
+          'test-layer': 1,
+          'other-layer': 1,
+        },
+        nodesByLayer: {
+          'test-layer': [{ id: 'native-1', layer_id: 'test-layer', type: 't1', name: 'Native' }] as ModelNode[],
+          'other-layer': [
+            { id: 'foreign-1', layer_id: 'other-layer', type: 't2', name: 'Foreign' },
+          ] as ModelNode[],
+        },
+        relCount: 1,
+      };
+      const idx = buildModelIndex(syntheticModel);
+      const result = interLayerNodesAndEdges(syntheticModel, 'test-layer', idx, true);
+
+      expect(result.foreignNodes).toHaveLength(1);
+      const node = result.foreignNodes[0];
+      const radius = Math.sqrt(node.x! ** 2 + node.y! ** 2);
+      expect(radius).toBeCloseTo(300, 5); // MIN_RING_RADIUS
+    });
+  });
+
+  it('manually-counts cross-layer links for a layer and matches the result', () => {
+    const layer = 'security';
+    const result = interLayerNodesAndEdges(model, layer, index);
+    const layerUuids = new Set(model.nodesByLayer[layer].map((n) => n.id));
+
+    let manualCrossCount = 0;
+    for (const l of model.links) {
+      const s = resolveEndpoint(index, l.source);
+      const t = resolveEndpoint(index, l.target);
+      if (!s || !t) continue;
+      const sIn = layerUuids.has(s.id);
+      const tIn = layerUuids.has(t.id);
+      if ((sIn && !tIn) || (!sIn && tIn)) manualCrossCount += 1;
+    }
+
+    // Cross-layer links may be duplicated if a foreign node is reachable via multiple predicates;
+    // crossEdges count edges (one per link id), foreignNodes are deduplicated by UUID.
+    expect(result.crossEdges).toHaveLength(manualCrossCount);
+  });
+});
+
+describe('filterStructuralInterLayer', () => {
+  it('returns early when foreignNodes is empty', () => {
+    const result: any = {
+      foreignNodes: [],
+      crossEdges: [],
+      foreignNodeIds: new Set(),
+    };
+    const model: ModelDerived = {
+      nodes: [] as ModelNode[],
+      links: [] as ModelLink[],
+      countsByLayer: {},
+      nodesByLayer: {},
+      relCount: 0,
+    };
+    const filtered = filterStructuralInterLayer(result, model, 'test-layer', buildModelIndex(model));
+
+    expect(filtered).toEqual(result);
+  });
+
+  it('filters out foreign nodes without structural predicates', () => {
+    // Scenario: foreignNodes includes two nodes, only one has a structural predicate connection.
+    const foreignNode1: any = { id: 'foreign-1', layer_id: 'other-layer', type: 't2', name: 'Foreign1' };
+    const foreignNode2: any = { id: 'foreign-2', layer_id: 'another-layer', type: 't2', name: 'Foreign2' };
+    const nativeNode: any = { id: 'native-1', layer_id: 'test-layer', type: 't1', name: 'Native' };
+
+    const model: ModelDerived = {
+      nodes: [nativeNode, foreignNode1, foreignNode2],
+      links: [
+        // Structural predicate from native to foreign-1
+        { id: 'e1', source: 'native-1', target: 'foreign-1', type: 'composes' } as ModelLink,
+        // Non-structural predicate from native to foreign-2
+        { id: 'e2', source: 'native-1', target: 'foreign-2', type: 'uses' } as ModelLink,
+      ],
+      countsByLayer: { 'test-layer': 1, 'other-layer': 1, 'another-layer': 1 },
+      nodesByLayer: {
+        'test-layer': [nativeNode],
+        'other-layer': [foreignNode1],
+        'another-layer': [foreignNode2],
+      },
+      relCount: 2,
+    };
+
+    const idx = buildModelIndex(model);
+
+    // Input result includes both foreign nodes.
+    const inputResult: InterLayerResult = {
+      foreignNodes: [foreignNode1, foreignNode2],
+      crossEdges: [
+        { id: 'e1', sourceId: 'native-1', targetId: 'foreign-1', label: 'composes', curvature: 0.5 },
+        { id: 'e2', sourceId: 'native-1', targetId: 'foreign-2', label: 'uses', curvature: 0.5 },
+      ],
+      foreignNodeIds: new Set(['foreign-1', 'foreign-2']),
+    };
+
+    const filtered = filterStructuralInterLayer(inputResult, model, 'test-layer', idx);
+
+    // Only foreign-1 should remain (it has structural predicate).
+    expect(filtered.foreignNodes).toHaveLength(1);
+    expect(filtered.foreignNodes[0].id).toBe('foreign-1');
+    expect(filtered.foreignNodeIds.has('foreign-1')).toBe(true);
+    expect(filtered.foreignNodeIds.has('foreign-2')).toBe(false);
+  });
+
+  it('filters out edges whose nodes were removed', () => {
+    const foreignNode1: any = { id: 'foreign-1', layer_id: 'other-layer', type: 't2', name: 'Foreign1' };
+    const foreignNode2: any = { id: 'foreign-2', layer_id: 'another-layer', type: 't2', name: 'Foreign2' };
+    const nativeNode: any = { id: 'native-1', layer_id: 'test-layer', type: 't1', name: 'Native' };
+
+    const model: ModelDerived = {
+      nodes: [nativeNode, foreignNode1, foreignNode2],
+      links: [
+        { id: 'e1', source: 'native-1', target: 'foreign-1', type: 'composes' } as ModelLink,
+        { id: 'e2', source: 'native-1', target: 'foreign-2', type: 'uses' } as ModelLink,
+      ],
+      countsByLayer: { 'test-layer': 1, 'other-layer': 1, 'another-layer': 1 },
+      nodesByLayer: {
+        'test-layer': [nativeNode],
+        'other-layer': [foreignNode1],
+        'another-layer': [foreignNode2],
+      },
+      relCount: 2,
+    };
+
+    const idx = buildModelIndex(model);
+
+    const inputResult: InterLayerResult = {
+      foreignNodes: [foreignNode1, foreignNode2],
+      crossEdges: [
+        { id: 'e1', sourceId: 'native-1', targetId: 'foreign-1', label: 'composes', curvature: 0.5 },
+        { id: 'e2', sourceId: 'native-1', targetId: 'foreign-2', label: 'uses', curvature: 0.5 },
+      ],
+      foreignNodeIds: new Set(['foreign-1', 'foreign-2']),
+    };
+
+    const filtered = filterStructuralInterLayer(inputResult, model, 'test-layer', idx);
+
+    // Only the edge to foreign-1 (structural) should remain.
+    expect(filtered.crossEdges).toHaveLength(1);
+    expect(filtered.crossEdges[0].id).toBe('e1');
+  });
+
+  it('keeps all nodes when all have structural predicates', () => {
+    const foreignNode1: any = { id: 'foreign-1', layer_id: 'other-layer', type: 't2', name: 'Foreign1' };
+    const foreignNode2: any = { id: 'foreign-2', layer_id: 'another-layer', type: 't2', name: 'Foreign2' };
+    const nativeNode: any = { id: 'native-1', layer_id: 'test-layer', type: 't1', name: 'Native' };
+
+    const model: ModelDerived = {
+      nodes: [nativeNode, foreignNode1, foreignNode2],
+      links: [
+        { id: 'e1', source: 'native-1', target: 'foreign-1', type: 'composes' } as ModelLink,
+        { id: 'e2', source: 'native-1', target: 'foreign-2', type: 'realizes' } as ModelLink,
+      ],
+      countsByLayer: { 'test-layer': 1, 'other-layer': 1, 'another-layer': 1 },
+      nodesByLayer: {
+        'test-layer': [nativeNode],
+        'other-layer': [foreignNode1],
+        'another-layer': [foreignNode2],
+      },
+      relCount: 2,
+    };
+
+    const idx = buildModelIndex(model);
+
+    const inputResult: InterLayerResult = {
+      foreignNodes: [foreignNode1, foreignNode2],
+      crossEdges: [
+        { id: 'e1', sourceId: 'native-1', targetId: 'foreign-1', label: 'composes', curvature: 0.5 },
+        { id: 'e2', sourceId: 'native-1', targetId: 'foreign-2', label: 'realizes', curvature: 0.5 },
+      ],
+      foreignNodeIds: new Set(['foreign-1', 'foreign-2']),
+    };
+
+    const filtered = filterStructuralInterLayer(inputResult, model, 'test-layer', idx);
+
+    // Both nodes should remain (both have structural predicates).
+    expect(filtered.foreignNodes).toHaveLength(2);
+    expect(filtered.crossEdges).toHaveLength(2);
+    expect(filtered.foreignNodeIds.size).toBe(2);
+  });
+
+  it('maintains invariant: foreignNodeIds matches filtered foreignNodes', () => {
+    const foreignNode1: any = { id: 'foreign-1', layer_id: 'other-layer', type: 't2', name: 'Foreign1' };
+    const foreignNode2: any = { id: 'foreign-2', layer_id: 'another-layer', type: 't2', name: 'Foreign2' };
+    const nativeNode: any = { id: 'native-1', layer_id: 'test-layer', type: 't1', name: 'Native' };
+
+    const model: ModelDerived = {
+      nodes: [nativeNode, foreignNode1, foreignNode2],
+      links: [
+        { id: 'e1', source: 'native-1', target: 'foreign-1', type: 'composes' } as ModelLink,
+        { id: 'e2', source: 'native-1', target: 'foreign-2', type: 'uses' } as ModelLink,
+      ],
+      countsByLayer: { 'test-layer': 1, 'other-layer': 1, 'another-layer': 1 },
+      nodesByLayer: {
+        'test-layer': [nativeNode],
+        'other-layer': [foreignNode1],
+        'another-layer': [foreignNode2],
+      },
+      relCount: 2,
+    };
+
+    const idx = buildModelIndex(model);
+
+    const inputResult: InterLayerResult = {
+      foreignNodes: [foreignNode1, foreignNode2],
+      crossEdges: [
+        { id: 'e1', sourceId: 'native-1', targetId: 'foreign-1', label: 'composes', curvature: 0.5 },
+        { id: 'e2', sourceId: 'native-1', targetId: 'foreign-2', label: 'uses', curvature: 0.5 },
+      ],
+      foreignNodeIds: new Set(['foreign-1', 'foreign-2']),
+    };
+
+    const filtered = filterStructuralInterLayer(inputResult, model, 'test-layer', idx);
+
+    // foreignNodeIds should exactly match the filtered foreignNodes.
+    const expectedIds = new Set(filtered.foreignNodes.map((n) => n.id));
+    expect(filtered.foreignNodeIds).toEqual(expectedIds);
+  });
+
+  it('handles reverse direction: foreign → native with structural predicate', () => {
+    // Test cross-layer links in the reverse direction (from foreign layer to native).
+    const foreignNode: any = { id: 'foreign-1', layer_id: 'other-layer', type: 't2', name: 'Foreign' };
+    const nativeNode: any = { id: 'native-1', layer_id: 'test-layer', type: 't1', name: 'Native' };
+
+    const model: ModelDerived = {
+      nodes: [nativeNode, foreignNode],
+      links: [
+        // Reverse direction: foreign → native with structural predicate
+        { id: 'e1', source: 'foreign-1', target: 'native-1', type: 'realizes' } as ModelLink,
+      ],
+      countsByLayer: { 'test-layer': 1, 'other-layer': 1 },
+      nodesByLayer: {
+        'test-layer': [nativeNode],
+        'other-layer': [foreignNode],
+      },
+      relCount: 1,
+    };
+
+    const idx = buildModelIndex(model);
+
+    const inputResult: InterLayerResult = {
+      foreignNodes: [foreignNode],
+      crossEdges: [
+        { id: 'e1', sourceId: 'foreign-1', targetId: 'native-1', label: 'realizes', curvature: 0.5 },
+      ],
+      foreignNodeIds: new Set(['foreign-1']),
+    };
+
+    const filtered = filterStructuralInterLayer(inputResult, model, 'test-layer', idx);
+
+    // Foreign node should be kept (has structural predicate in reverse direction).
+    expect(filtered.foreignNodes).toHaveLength(1);
+    expect(filtered.foreignNodes[0].id).toBe('foreign-1');
   });
 });

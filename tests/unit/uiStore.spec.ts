@@ -28,6 +28,7 @@ function reset() {
       showAllRelations: true,
       nodeMarginPreset: 'default',
       nodeDisplay: 'card',
+      showInterLayerNodes: true,
     },
     false,
   );
@@ -59,6 +60,7 @@ describe('uiStore — localStorage persistence', () => {
     get().toggleShowAllRelations();
     get().setNodeMarginPreset('wide');
     get().setNodeDisplay('pill');
+    get().toggleShowInterLayerNodes();
 
     const stored = JSON.parse(localStorage.getItem(PERSIST_KEY) ?? '{}');
     expect(stored.state).toMatchObject({
@@ -69,6 +71,7 @@ describe('uiStore — localStorage persistence', () => {
       showAllRelations: false,
       nodeMarginPreset: 'wide',
       nodeDisplay: 'pill',
+      showInterLayerNodes: false, // reset() started at true; one toggle -> false
     });
   });
 
@@ -500,12 +503,13 @@ describe('focus — page-view target (layer overview vs. node detail)', () => {
 });
 
 describe('graph layout/display preferences', () => {
-  it('default to force layout, boundaries on, every relation visible, default node margin, card node display', () => {
+  it('default to force layout, boundaries on, every relation visible, default node margin, card node display, and inter-layer nodes on', () => {
     expect(get().graphLayout).toBe('force');
     expect(get().showClusterBoundaries).toBe(true);
     expect(get().showAllRelations).toBe(true);
     expect(get().nodeMarginPreset).toBe('default');
     expect(get().nodeDisplay).toBe('card');
+    expect(get().showInterLayerNodes).toBe(true);
   });
 
   it('setGraphLayout switches the layout engine', () => {
@@ -546,10 +550,18 @@ describe('graph layout/display preferences', () => {
     get().setNodeDisplay('card');
     expect(get().nodeDisplay).toBe('card');
   });
+
+  it('toggleShowInterLayerNodes flips showInterLayerNodes', () => {
+    expect(get().showInterLayerNodes).toBe(true);
+    get().toggleShowInterLayerNodes();
+    expect(get().showInterLayerNodes).toBe(false);
+    get().toggleShowInterLayerNodes();
+    expect(get().showInterLayerNodes).toBe(true);
+  });
 });
 
-describe('persist hydration validates graphLayout/nodeMarginPreset', () => {
-  // These two string-union types are compile-time only at the one point
+describe('persist hydration validates graphLayout/nodeMarginPreset/showInterLayerNodes', () => {
+  // These string-union types are compile-time only at the one point
   // untyped external data enters them: a value read back from localStorage.
   // Exercises the actual read/hydrate path (vi.resetModules + a fresh
   // import re-runs the module's create(persist(...)) against whatever is
@@ -571,6 +583,7 @@ describe('persist hydration validates graphLayout/nodeMarginPreset', () => {
           showAllRelations: true,
           nodeMarginPreset: 'not-a-real-preset',
           nodeDisplay: 'not-a-real-display',
+          showInterLayerNodes: 'not-a-boolean',
         },
         version: 1,
       }),
@@ -581,6 +594,7 @@ describe('persist hydration validates graphLayout/nodeMarginPreset', () => {
     expect(fresh.useUiStore.getState().graphLayout).toBe('force');
     expect(fresh.useUiStore.getState().nodeMarginPreset).toBe('default');
     expect(fresh.useUiStore.getState().nodeDisplay).toBe('card');
+    expect(fresh.useUiStore.getState().showInterLayerNodes).toBe(true);
   });
 
   it('keeps a genuinely valid persisted value as-is', async () => {
@@ -595,6 +609,7 @@ describe('persist hydration validates graphLayout/nodeMarginPreset', () => {
           showAllRelations: true,
           nodeMarginPreset: 'wide',
           nodeDisplay: 'pill',
+          showInterLayerNodes: false,
         },
         version: 1,
       }),
@@ -605,5 +620,6 @@ describe('persist hydration validates graphLayout/nodeMarginPreset', () => {
     expect(fresh.useUiStore.getState().graphLayout).toBe('galaxy');
     expect(fresh.useUiStore.getState().nodeMarginPreset).toBe('wide');
     expect(fresh.useUiStore.getState().nodeDisplay).toBe('pill');
+    expect(fresh.useUiStore.getState().showInterLayerNodes).toBe(false);
   });
 });

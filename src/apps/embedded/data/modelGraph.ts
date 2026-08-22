@@ -21,6 +21,7 @@ import type {
 } from '@tinkermonkey/heimdall-ui';
 import type { ModelDerived, ModelNode, ModelLink } from './useModel';
 import { schemaForLayer, type SpecPayload, type SpecRelationshipSchema } from './specGraph';
+import { isStructuralPredicate } from './predicates';
 
 /**
  * Slugify an element name to match the model's canonical dotted-id segment.
@@ -332,6 +333,196 @@ export function edgeMetadata(
     targetNode: toEdgeNodeInfo(tgt),
     specRelationship: findSpecRelationship(specRaw, src, tgt, link.type),
   };
+}
+
+// ─── Inter-layer nodes and edges: foreign nodes + cross-layer edges ──────────
+
+/** Computed foreign nodes and cross-layer edges for a layer. */
+export interface InterLayerResult {
+  /** Foreign nodes from other layers directly linked to this layer. */
+  foreignNodes: GraphNodeData[];
+  /** Cross-layer edges connecting native and foreign nodes. */
+  crossEdges: GraphEdge[];
+  /** Set of foreign node UUIDs for O(1) membership checks in the UI. */
+  foreignNodeIds: Set<string>;
+}
+
+// Perimeter ring layout constants.
+const MIN_RING_RADIUS = 300;
+const ARC_SPACING = 80;
+
+/**
+ * Estimate the cluster extent of native nodes based on their count and expected
+ * grid layout. Uses gridLayout's COL_GAP and ROW_GAP to approximate the bounding
+ * box size that the force layout will produce, so the ring radius can scale
+ * proportionally to the cluster size.
+ */
+function estimateClusterExtent(nativeNodeCount: number): number {
+  if (nativeNodeCount === 0) return 0;
+  const cols = Math.max(2, Math.min(4, Math.ceil(Math.sqrt(nativeNodeCount))));
+  const rows = Math.ceil(nativeNodeCount / cols);
+  const colExtent = (cols - 1) * COL_GAP;
+  const rowExtent = (rows - 1) * ROW_GAP;
+  return Math.max(colExtent, rowExtent);
+}
+
+/**
+ * Compute directly-linked foreign (other-layer) nodes and cross-layer edges for
+ * a layer. Foreign nodes are deduplicated by UUID and rendered with their own
+ * layer's color via `domainColor: foreignNode.layer_id`. Cross-layer edges carry
+ * reduced opacity (0.4) and dashed stroke ([6, 4]) to distinguish them visually.
+ *
+ * When `perimeterLayout` is true, foreign nodes receive explicit x/y coordinates
+ * placing them on a ring around the origin, with radius scaled relative to the
+ * current layer's native node cluster extent. The radius grows as the native
+ * cluster grows, ensuring foreign nodes stay visible around the perimeter
+ * regardless of the layer's size. When false, x/y are omitted so the layout
+ * engine positions them normally.
+ */
+export function interLayerNodesAndEdges(
+  model: ModelDerived,
+  layerId: string,
+  index: ModelIndex,
+  perimeterLayout?: boolean,
+): InterLayerResult {
+  const layerNodeIds = new Set(model.nodesByLayer[layerId]?.map((n) => n.id) ?? []);
+  const foreignNodeMap = new Map<string, ModelNode>();
+  const crossEdges: GraphEdge[] = [];
+
+  // Collect all foreign nodes and cross-layer edges.
+  for (const link of model.links) {
+    const src = resolveEndpoint(index, link.source);
+    const tgt = resolveEndpoint(index, link.target);
+    if (!src || !tgt) continue;
+
+    const srcInLayer = layerNodeIds.has(src.id);
+    const tgtInLayer = layerNodeIds.has(tgt.id);
+
+    // Cross-layer link: exactly one endpoint is in this layer.
+    if (srcInLayer && !tgtInLayer) {
+      foreignNodeMap.set(tgt.id, tgt);
+      crossEdges.push({
+        id: link.id,
+        sourceId: src.id,
+        targetId: tgt.id,
+        label: link.type,
+        opacity: 0.4,
+        strokeDash: [6, 4],
+      });
+    } else if (!srcInLayer && tgtInLayer) {
+      foreignNodeMap.set(src.id, src);
+      crossEdges.push({
+        id: link.id,
+        sourceId: src.id,
+        targetId: tgt.id,
+        label: link.type,
+        opacity: 0.4,
+        strokeDash: [6, 4],
+      });
+    }
+  }
+
+  // Convert foreign nodes to GraphNodeData, with optional perimeter positions.
+  const foreignNodes: GraphNodeData[] = [];
+  const foreignNodeIds = new Set<string>();
+  const foreignNodeArray = Array.from(foreignNodeMap.values());
+
+  // Scale ring radius by both native cluster extent and foreign node count,
+  // ensuring the ring grows as either the layer's size or the number of
+  // cross-layer connections increases.
+  const nativeNodeCount = layerNodeIds.size;
+  const clusterExtent = estimateClusterExtent(nativeNodeCount);
+  const ringRadius = Math.max(
+    MIN_RING_RADIUS,
+    Math.max(clusterExtent, foreignNodeArray.length * ARC_SPACING)
+  );
+
+  // Group foreign nodes by layer_id for per-layer-slug angle offset (visual grouping).
+  const nodesByLayer = new Map<string, ModelNode[]>();
+  for (const node of foreignNodeArray) {
+    if (!nodesByLayer.has(node.layer_id)) {
+      nodesByLayer.set(node.layer_id, []);
+    }
+    nodesByLayer.get(node.layer_id)!.push(node);
+  }
+
+  // Build ordered list of (node, angleIndex) pairs so nodes from the same layer
+  // cluster together on the ring, offset by their sorted layer position.
+  const sortedLayers = Array.from(nodesByLayer.keys()).sort();
+  const nodeWithAngleIndex: Array<[ModelNode, number]> = [];
+  let globalAngleIndex = 0;
+  for (const layerId of sortedLayers) {
+    const layerNodes = nodesByLayer.get(layerId)!;
+    for (const node of layerNodes) {
+      nodeWithAngleIndex.push([node, globalAngleIndex]);
+      globalAngleIndex += 1;
+    }
+  }
+
+  nodeWithAngleIndex.forEach(([node, angleIndex]) => {
+    foreignNodeIds.add(node.id);
+    const nodeData: GraphNodeData = {
+      id: node.id,
+      label: node.name,
+      kind: node.type,
+      domainColor: node.layer_id,
+    };
+
+    // Place on a ring around the origin if perimeter layout is enabled.
+    if (perimeterLayout) {
+      const angle = (angleIndex / foreignNodeArray.length) * 2 * Math.PI;
+      nodeData.x = ringRadius * Math.cos(angle);
+      nodeData.y = ringRadius * Math.sin(angle);
+    }
+
+    foreignNodes.push(nodeData);
+  });
+
+  return { foreignNodes, crossEdges, foreignNodeIds };
+}
+
+/**
+ * Filter inter-layer nodes and edges to keep only those with structural-predicate
+ * connections. Used when `showAllRelations` is false to avoid rendering orphaned
+ * foreign nodes that have no visible edges.
+ *
+ * Returns a new `InterLayerResult` with foreign nodes and edges filtered to exclude
+ * those connected only by non-structural predicates.
+ */
+export function filterStructuralInterLayer(
+  result: InterLayerResult,
+  model: ModelDerived,
+  layerId: string,
+  index: ModelIndex,
+): InterLayerResult {
+  if (result.foreignNodes.length === 0) return result;
+
+  const structuralForeignNodeIds = new Set<string>();
+
+  for (const link of model.links) {
+    const src = resolveEndpoint(index, link.source);
+    const tgt = resolveEndpoint(index, link.target);
+    if (!src || !tgt) continue;
+
+    const srcInLayer = src.layer_id === layerId;
+    const tgtInLayer = tgt.layer_id === layerId;
+    if ((srcInLayer && !tgtInLayer) || (!srcInLayer && tgtInLayer)) {
+      if (isStructuralPredicate(link.type)) {
+        const foreignNodeId = srcInLayer ? tgt.id : src.id;
+        structuralForeignNodeIds.add(foreignNodeId);
+      }
+    }
+  }
+
+  const filteredForeignNodes = result.foreignNodes.filter((node) =>
+    structuralForeignNodeIds.has(node.id),
+  );
+  const filteredForeignNodeIds = new Set(filteredForeignNodes.map((n) => n.id));
+  const filteredCrossEdges = result.crossEdges.filter((edge) =>
+    filteredForeignNodeIds.has(edge.sourceId) || filteredForeignNodeIds.has(edge.targetId),
+  );
+
+  return { foreignNodes: filteredForeignNodes, crossEdges: filteredCrossEdges, foreignNodeIds: filteredForeignNodeIds };
 }
 
 export type { ModelLink };

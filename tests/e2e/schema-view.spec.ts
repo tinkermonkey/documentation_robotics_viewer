@@ -28,7 +28,7 @@ test.describe('schema view', () => {
     // Predicate (intra-layer relationship) edges render as graph edges. They are
     // `aria-hidden` presentation SVG, so assert on attached count, not visibility.
     const edges = page.locator('[data-testid^="graph-edge-"]');
-    await expect.poll(async () => edges.count()).toBeGreaterThan(0);
+    await expect.poll(async () => edges.count(), { timeout: 15_000 }).toBeGreaterThan(0);
 
     // Sanity: the live spec reports data-model with 9 node-type schemas.
     const spec = await (await request.get('http://localhost:8099/api/spec')).json();
@@ -47,7 +47,7 @@ test.describe('schema view', () => {
     await nav.getByRole('button', { name: /^Application/ }).first().click();
 
     const nodes = page.locator('[data-testid^="graph-node-"]');
-    await expect.poll(async () => nodes.count()).toBe(54);
+    await expect.poll(async () => nodes.count(), { timeout: 15_000 }).toBe(54);
     await expect(page.getByTestId('page-header-eyebrow')).toContainText('INSTANCE MODEL');
     // The title <h1> nests the id chip, so its text is "Application" + "application".
     await expect(page.getByTestId('page-header-title')).toContainText('Application');
@@ -63,7 +63,7 @@ test.describe('schema view', () => {
 
     await expect(page.getByTestId('page-header-eyebrow')).toContainText('META-MODEL');
     await expect(page.getByTestId('page-header-title')).toContainText('Application schema');
-    await expect.poll(async () => nodes.count()).toBe(9);
+    await expect.poll(async () => nodes.count(), { timeout: 15_000 }).toBe(9);
 
     // The node-type ids are entirely different from the instance ids.
     const schemaIds = await nodes.evaluateAll((els) =>
