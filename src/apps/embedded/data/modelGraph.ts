@@ -437,7 +437,29 @@ export function interLayerNodesAndEdges(
     Math.max(clusterExtent, foreignNodeArray.length * ARC_SPACING)
   );
 
-  foreignNodeArray.forEach((node, i) => {
+  // Group foreign nodes by layer_id for per-layer-slug angle offset (visual grouping).
+  const nodesByLayer = new Map<string, ModelNode[]>();
+  for (const node of foreignNodeArray) {
+    if (!nodesByLayer.has(node.layer_id)) {
+      nodesByLayer.set(node.layer_id, []);
+    }
+    nodesByLayer.get(node.layer_id)!.push(node);
+  }
+
+  // Build ordered list of (node, angleIndex) pairs so nodes from the same layer
+  // cluster together on the ring, offset by their sorted layer position.
+  const sortedLayers = Array.from(nodesByLayer.keys()).sort();
+  const nodeWithAngleIndex: Array<[ModelNode, number]> = [];
+  let globalAngleIndex = 0;
+  for (const layerId of sortedLayers) {
+    const layerNodes = nodesByLayer.get(layerId)!;
+    for (const node of layerNodes) {
+      nodeWithAngleIndex.push([node, globalAngleIndex]);
+      globalAngleIndex += 1;
+    }
+  }
+
+  nodeWithAngleIndex.forEach(([node, angleIndex]) => {
     foreignNodeIds.add(node.id);
     const nodeData: GraphNodeData = {
       id: node.id,
@@ -448,7 +470,7 @@ export function interLayerNodesAndEdges(
 
     // Place on a ring around the origin if perimeter layout is enabled.
     if (perimeterLayout) {
-      const angle = (i / foreignNodeArray.length) * 2 * Math.PI;
+      const angle = (angleIndex / foreignNodeArray.length) * 2 * Math.PI;
       nodeData.x = ringRadius * Math.cos(angle);
       nodeData.y = ringRadius * Math.sin(angle);
     }

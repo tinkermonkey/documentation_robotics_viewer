@@ -687,6 +687,142 @@ describe('interLayerNodesAndEdges', () => {
       }
     });
 
+    it('groups foreign nodes by layer_id on the perimeter ring (visual clustering)', () => {
+      // Create a synthetic model with known foreign nodes from 3 different layers.
+      const nativeNode: any = {
+        id: 'native-1',
+        layer_id: 'test-layer',
+        type: 't1',
+        name: 'Native',
+      };
+      const foreign1: any = {
+        id: 'foreign-layer-a-1',
+        layer_id: 'layer-a',
+        type: 't2',
+        name: 'Foreign A1',
+      };
+      const foreign2: any = {
+        id: 'foreign-layer-a-2',
+        layer_id: 'layer-a',
+        type: 't2',
+        name: 'Foreign A2',
+      };
+      const foreign3: any = {
+        id: 'foreign-layer-b-1',
+        layer_id: 'layer-b',
+        type: 't2',
+        name: 'Foreign B1',
+      };
+      const foreign4: any = {
+        id: 'foreign-layer-c-1',
+        layer_id: 'layer-c',
+        type: 't2',
+        name: 'Foreign C1',
+      };
+
+      const syntheticModel: ModelDerived = {
+        nodes: [nativeNode, foreign1, foreign2, foreign3, foreign4],
+        links: [
+          {
+            id: 'e1',
+            source: 'native-1',
+            target: 'foreign-layer-a-1',
+            type: 'uses',
+          } as ModelLink,
+          {
+            id: 'e2',
+            source: 'native-1',
+            target: 'foreign-layer-a-2',
+            type: 'uses',
+          } as ModelLink,
+          {
+            id: 'e3',
+            source: 'native-1',
+            target: 'foreign-layer-b-1',
+            type: 'uses',
+          } as ModelLink,
+          {
+            id: 'e4',
+            source: 'native-1',
+            target: 'foreign-layer-c-1',
+            type: 'uses',
+          } as ModelLink,
+        ],
+        countsByLayer: {
+          'test-layer': 1,
+          'layer-a': 2,
+          'layer-b': 1,
+          'layer-c': 1,
+        },
+        nodesByLayer: {
+          'test-layer': [nativeNode],
+          'layer-a': [foreign1, foreign2],
+          'layer-b': [foreign3],
+          'layer-c': [foreign4],
+        },
+        relCount: 4,
+      };
+
+      const idx = buildModelIndex(syntheticModel);
+      const result = interLayerNodesAndEdges(
+        syntheticModel,
+        'test-layer',
+        idx,
+        true
+      );
+
+      // Verify all foreign nodes are present.
+      expect(result.foreignNodes).toHaveLength(4);
+
+      // Map result nodes to angles (0..2π) and reconstruct the order.
+      const nodeToAngle = new Map<
+        string,
+        { layer: string; angle: number }
+      >();
+      for (const node of result.foreignNodes) {
+        const modelNode = idx.byUuid.get(node.id)!;
+        let angle = Math.atan2(node.y!, node.x!);
+        // Normalize to [0, 2π)
+        if (angle < 0) angle += 2 * Math.PI;
+        nodeToAngle.set(node.id, { layer: modelNode.layer_id, angle });
+      }
+
+      // Sort nodes by their angle to see the order around the ring.
+      const sortedByAngle = Array.from(nodeToAngle.entries())
+        .sort(([, a], [, b]) => a.angle - b.angle)
+        .map(([id]) => nodeToAngle.get(id)!.layer);
+
+      // Verify grouping: nodes from the same layer must be consecutive (contiguous block).
+      // This is the key property: no interleaving of nodes from different layers.
+      const layerRuns = [];
+      let currentLayer = sortedByAngle[0];
+      let run = [currentLayer];
+
+      for (let i = 1; i < sortedByAngle.length; i++) {
+        if (sortedByAngle[i] === currentLayer) {
+          run.push(sortedByAngle[i]);
+        } else {
+          layerRuns.push({ layer: currentLayer, count: run.length });
+          currentLayer = sortedByAngle[i];
+          run = [currentLayer];
+        }
+      }
+      layerRuns.push({ layer: currentLayer, count: run.length });
+
+      // Verify the grouping structure.
+      // Each layer should appear exactly once as a contiguous block (no interleaving).
+      const layerAppearances = new Map<string, number>();
+      for (const run of layerRuns) {
+        const count = layerAppearances.get(run.layer) ?? 0;
+        layerAppearances.set(run.layer, count + 1);
+      }
+
+      // Each of the 3 external layers should appear exactly once (no mixing/interleaving).
+      expect(layerAppearances.get('layer-a')).toBe(1);
+      expect(layerAppearances.get('layer-b')).toBe(1);
+      expect(layerAppearances.get('layer-c')).toBe(1);
+    });
+
     it('handles a single foreign node (radius still applies, angle is arbitrary)', () => {
       const syntheticModel: ModelDerived = {
         nodes: [
