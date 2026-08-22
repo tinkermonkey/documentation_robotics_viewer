@@ -5,6 +5,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-08-22
+
+Adds **inter-layer nodes** to the Model graph: directly-linked foreign nodes from
+other layers now appear on-canvas alongside the layer's own nodes, with dashed
+cross-layer edges connecting them.
+
+### Added
+- **Inter-layer node overlay** (`GraphControls` → "Inter-layer" toggle, Model
+  view only): enables/disables rendering of directly-linked foreign nodes on the
+  current layer's graph. Foreign nodes render as pills at 60% opacity with their
+  own layer's domain color, providing clear visual subordination. Clicking a
+  foreign node navigates to its home layer (same as the cross-layer inspector
+  link), rather than selecting within the current layer.
+- **Cross-layer edges** appear between native and foreign nodes: dashed stroke
+  `[6, 4]` and 40% opacity to visually distinguish them from intra-layer edges.
+- **Perimeter ring layout** for `force-clustered` graph layout: foreign nodes
+  are placed on a ring around the native cluster, with radius scaled relative to
+  both the native node count and the number of foreign nodes, so the ring stays
+  visible and non-overlapping regardless of layer size.
+- **Structural filter integration**: when "Relations" is set to "Structural",
+  foreign nodes whose only cross-layer connections are non-structural predicates
+  are hidden (no orphaned foreign nodes with invisible edges).
+- **`showInterLayerNodes` preference** persisted to `localStorage` (key:
+  `dr-viewer-ui-preferences`), defaulting to `true`. Survives reload alongside
+  the other graph preferences.
+- **`interLayerNodesAndEdges` / `filterStructuralInterLayer`** pure transforms
+  in `data/modelGraph.ts`, with comprehensive Vitest coverage (31 new tests across
+  deduplication, perimeter ring geometry, foreign node grouping by layer,
+  structural filtering, and edge-case layers).
+
+### Changed
+- `GraphCanvas` key in the Model view now includes `showInterLayerNodes` so
+  toggling the overlay recenters the graph rather than deferring to the existing
+  viewport position.
+- `interLayerData` (foreignNodes, crossEdges, foreignNodeIds) is computed once
+  per render pass in `Canvas.tsx` and shared between the nodes and edges memos,
+  eliminating a duplicate O(links) pass.
+
 ## [0.6.1] - 2026-08-21
 
 `@tinkermonkey/heimdall-ui` bumped `0.7.0` → `0.8.0` (exact npm-registry version), and the Model
