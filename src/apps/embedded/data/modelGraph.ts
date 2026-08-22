@@ -21,6 +21,7 @@ import type {
 } from '@tinkermonkey/heimdall-ui';
 import type { ModelDerived, ModelNode, ModelLink } from './useModel';
 import { schemaForLayer, type SpecPayload, type SpecRelationshipSchema } from './specGraph';
+import { isStructuralPredicate } from './predicates';
 
 /**
  * Slugify an element name to match the model's canonical dotted-id segment.
@@ -456,6 +457,50 @@ export function interLayerNodesAndEdges(
   });
 
   return { foreignNodes, crossEdges, foreignNodeIds };
+}
+
+/**
+ * Filter inter-layer nodes and edges to keep only those with structural-predicate
+ * connections. Used when `showAllRelations` is false to avoid rendering orphaned
+ * foreign nodes that have no visible edges.
+ *
+ * Returns a new `InterLayerResult` with foreign nodes and edges filtered to exclude
+ * those connected only by non-structural predicates.
+ */
+export function filterStructuralInterLayer(
+  result: InterLayerResult,
+  model: ModelDerived,
+  layerId: string,
+  index: ModelIndex,
+): InterLayerResult {
+  if (result.foreignNodes.length === 0) return result;
+
+  const structuralCrossEdges = new Set<string>();
+
+  for (const link of model.links) {
+    const src = resolveEndpoint(index, link.source);
+    const tgt = resolveEndpoint(index, link.target);
+    if (!src || !tgt) continue;
+
+    const srcInLayer = src.layer_id === layerId;
+    const tgtInLayer = tgt.layer_id === layerId;
+    if ((srcInLayer && !tgtInLayer) || (!srcInLayer && tgtInLayer)) {
+      if (isStructuralPredicate(link.type)) {
+        const foreignNodeId = srcInLayer ? tgt.id : src.id;
+        structuralCrossEdges.add(foreignNodeId);
+      }
+    }
+  }
+
+  const filteredForeignNodes = result.foreignNodes.filter((node) =>
+    structuralCrossEdges.has(node.id),
+  );
+  const filteredForeignNodeIds = new Set(filteredForeignNodes.map((n) => n.id));
+  const filteredCrossEdges = result.crossEdges.filter((edge) =>
+    filteredForeignNodeIds.has(edge.sourceId) || filteredForeignNodeIds.has(edge.targetId),
+  );
+
+  return { foreignNodes: filteredForeignNodes, crossEdges: filteredCrossEdges, foreignNodeIds: filteredForeignNodeIds };
 }
 
 export type { ModelLink };

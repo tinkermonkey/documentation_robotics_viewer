@@ -125,6 +125,7 @@ import {
   edgesForLayer as modelEdgesForLayer,
   edgeMetadata,
   interLayerNodesAndEdges,
+  filterStructuralInterLayer,
   type CardData,
 } from '../data/modelGraph';
 import {
@@ -133,7 +134,7 @@ import {
   intraRelCount,
   shortName,
 } from '../data/specGraph';
-import { isStructuralEdge, isStructuralPredicate } from '../data/predicates';
+import { isStructuralEdge } from '../data/predicates';
 
 const MODE_OPTIONS = [
   { value: 'graph', label: 'graph' },
@@ -446,7 +447,7 @@ export function Canvas() {
     }
 
     const perimeterLayout = graphLayout === 'force-clustered';
-    const { foreignNodes, crossEdges, foreignNodeIds } = interLayerNodesAndEdges(
+    let result = interLayerNodesAndEdges(
       model,
       layerId,
       index,
@@ -455,35 +456,10 @@ export function Canvas() {
 
     // Filter orphan foreign nodes when structural-only view is active
     if (!showAllRelations) {
-      const structuralCrossEdges = new Set<string>();
-
-      for (const link of model.links) {
-        const src = index.byEndpoint.get(link.source);
-        const tgt = index.byEndpoint.get(link.target);
-        if (!src || !tgt) continue;
-
-        const srcInLayer = src.layer_id === layerId;
-        const tgtInLayer = tgt.layer_id === layerId;
-        if ((srcInLayer && !tgtInLayer) || (!srcInLayer && tgtInLayer)) {
-          if (isStructuralPredicate(link.type)) {
-            const foreignNodeId = srcInLayer ? tgt.id : src.id;
-            structuralCrossEdges.add(foreignNodeId);
-          }
-        }
-      }
-
-      const filteredForeignNodes = foreignNodes.filter((node) =>
-        structuralCrossEdges.has(node.id),
-      );
-      const filteredForeignNodeIds = new Set(filteredForeignNodes.map((n) => n.id));
-      const filteredCrossEdges = crossEdges.filter((edge) =>
-        filteredForeignNodeIds.has(edge.sourceId) || filteredForeignNodeIds.has(edge.targetId),
-      );
-
-      return { foreignNodes: filteredForeignNodes, crossEdges: filteredCrossEdges, foreignNodeIds: filteredForeignNodeIds };
+      result = filterStructuralInterLayer(result, model, layerId, index);
     }
 
-    return { foreignNodes, crossEdges, foreignNodeIds };
+    return result;
   }, [layerId, isSpec, showInterLayerNodes, graphLayout, model, index, showAllRelations]);
 
   // Model view nodes carry a CardData side-channel (intra/inter-layer connection
