@@ -5,10 +5,13 @@ testing.coveragesummary.overall-test-coverage-summary:
   type: coveragesummary
   layer_id: testing
   name: Overall Test Coverage Summary
-  description: "Aggregate coverage status across the full test suite: 8 coverage
-    targets, 3 coverage requirements. Total Playwright tests: 1170. Storybook
-    stories: 578. Automated coverage: 100% of unit and integration targets.
-    Missing: code line coverage metrics (no Istanbul/c8 configured)."
+  description: "Aggregate coverage status across the full test suite: Vitest
+    unit/integration/component suite (~262 tests, tests/unit + tests/integration
+    + tests/components) plus a Playwright E2E suite (~20 tests, tests/e2e)
+    driving the built production bundle with axe-core WCAG 2.1 AA checks.
+    Storybook stories no longer exist (removed in the Heimdall rebuild).
+    Line/branch coverage is now available via @vitest/coverage-v8 (npm run
+    test:cov), though CI's required gate runs plain vitest run."
   attributes:
     totalTargets: 8
     totalRequirements: 3

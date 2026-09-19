@@ -1,6 +1,6 @@
 # Intra-layer relationships
 # Format: source_id -> predicate -> target_id
-# Last updated: 2026-05-05T11:50:54.697Z
+# Last updated: 2026-09-19T15:37:38.337Z
 
 - source: motivation.stakeholder.architecture-team
   target: motivation.goal.visualize-multi-layer-architecture-models
@@ -66,14 +66,6 @@
   properties:
     source_provenance: inferred
     confidence: high
-- source: motivation.requirement.multi-layout-engine-support
-  target: motivation.goal.visualize-multi-layer-architecture-models
-  predicate: realizes
-  layer: motivation
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
 - source: motivation.requirement.embedded-deployment-mode
   target: motivation.goal.accelerate-architecture-documentation
   predicate: realizes
@@ -106,14 +98,6 @@
   properties:
     source_provenance: inferred
     confidence: medium
-- source: motivation.constraint.browser-only-deployment
-  target: motivation.requirement.multi-layout-engine-support
-  predicate: constrains
-  layer: motivation
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: medium
 - source: motivation.constraint.type-script-strict-mode
   target: motivation.requirement.dr-cli-server-integration
   predicate: constrains
@@ -138,14 +122,6 @@
   properties:
     source_provenance: inferred
     confidence: medium
-- source: motivation.principle.configuration-driven-node-rendering
-  target: motivation.goal.visualize-multi-layer-architecture-models
-  predicate: influence
-  layer: motivation
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
 - source: motivation.principle.core-app-architectural-separation
   target: motivation.goal.accelerate-architecture-documentation
   predicate: realizes
@@ -186,14 +162,6 @@
   properties:
     source_provenance: inferred
     confidence: high
-- source: business.businessprocess.model-loading-and-rendering
-  target: business.businessservice.architecture-model-visualization
-  predicate: realizes
-  layer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
 - source: business.businessprocess.real-time-model-synchronization
   target: business.businessservice.architecture-model-visualization
   predicate: realizes
@@ -218,38 +186,6 @@
   properties:
     source_provenance: inferred
     confidence: low
-- source: business.businessprocess.authentication-flow
-  target: business.businessprocess.model-loading-and-rendering
-  predicate: flows-to
-  layer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: business.businessprocess.model-loading-and-rendering
-  target: business.businessprocess.real-time-model-synchronization
-  predicate: flows-to
-  layer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: business.businessprocess.model-loading-and-rendering
-  target: business.businessprocess.changeset-review-flow
-  predicate: flows-to
-  layer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: medium
-- source: business.businessfunction.graph-layout-computation
-  target: business.businessservice.architecture-model-visualization
-  predicate: realizes
-  layer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
 - source: business.businessfunction.cross-layer-reference-resolution
   target: business.businessservice.architecture-model-visualization
   predicate: realizes
@@ -258,55 +194,7 @@
   properties:
     source_provenance: inferred
     confidence: high
-- source: business.businessfunction.yaml-model-parsing
-  target: business.businessservice.architecture-model-visualization
-  predicate: realizes
-  layer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: business.businessfunction.yaml-model-parsing
-  target: business.businessprocess.model-loading-and-rendering
-  predicate: flows-to
-  layer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: business.businessfunction.graph-layout-computation
-  target: business.businessprocess.model-loading-and-rendering
-  predicate: flows-to
-  layer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
 - source: business.businessfunction.cross-layer-reference-resolution
-  target: business.businessprocess.model-loading-and-rendering
-  predicate: flows-to
-  layer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: business.businessfunction.yaml-model-parsing
-  target: business.businessobject.architecture-model
-  predicate: accesses
-  layer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: business.businessfunction.cross-layer-reference-resolution
-  target: business.businessobject.architecture-model
-  predicate: accesses
-  layer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: business.businessfunction.graph-layout-computation
   target: business.businessobject.architecture-model
   predicate: accesses
   layer: business
@@ -323,14 +211,6 @@
     source_provenance: inferred
     confidence: high
 - source: business.businessprocess.changeset-review-flow
-  target: business.businessobject.architecture-model
-  predicate: accesses
-  layer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: business.businessprocess.model-loading-and-rendering
   target: business.businessobject.architecture-model
   predicate: accesses
   layer: business
@@ -364,14 +244,6 @@
     confidence: high
 - source: business.businessrole.architecture-reviewer
   target: business.businessprocess.changeset-review-flow
-  predicate: performs
-  layer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: business.businessrole.model-author
-  target: business.businessprocess.model-loading-and-rendering
   predicate: performs
   layer: business
   category: structural
@@ -522,54 +394,6 @@
   properties:
     source_provenance: inferred
     confidence: high
-- source: application.applicationcomponent.graph-viewer
-  target: application.applicationservice.node-transformer
-  predicate: realizes
-  layer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: application.applicationcomponent.layout-engine-registry
-  target: application.applicationservice.data-loader
-  predicate: realizes
-  layer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: application.applicationcomponent.dagre-layout-engine
-  target: application.applicationservice.worker-pool
-  predicate: realizes
-  layer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: medium
-- source: application.applicationcomponent.elk-layout-engine
-  target: application.applicationservice.worker-pool
-  predicate: realizes
-  layer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: medium
-- source: application.applicationcomponent.graph-viewer
-  target: application.applicationcomponent.layout-engine-registry
-  predicate: uses
-  layer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: application.applicationcomponent.layout-engine-registry
-  target: application.applicationcomponent.dagre-layout-engine
-  predicate: uses
-  layer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
 - source: application.applicationfunction.cross-layer-store
   target: application.applicationfunction.model-store
   predicate: depends-on
@@ -618,22 +442,6 @@
   properties:
     source_provenance: inferred
     confidence: medium
-- source: application.applicationfunction.floating-chat-store
-  target: application.applicationfunction.chat-store
-  predicate: depends-on
-  layer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: application.applicationfunction.model-store
-  target: application.applicationservice.data-loader
-  predicate: delivers-value
-  layer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
 - source: application.applicationfunction.auth-store
   target: application.applicationservice.generated-api-client
   predicate: delivers-value
@@ -646,24 +454,6 @@
   target: application.applicationservice.web-socket-client
   predicate: delivers-value
   layer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: application.applicationservice.data-loader
-  target: business.businessprocess.model-loading-and-rendering
-  predicate: serves
-  layer: application
-  targetLayer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: application.applicationservice.node-transformer
-  target: business.businessprocess.model-loading-and-rendering
-  predicate: serves
-  layer: application
-  targetLayer: business
   category: structural
   properties:
     source_provenance: inferred
@@ -682,56 +472,6 @@
   predicate: serves
   layer: application
   targetLayer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: application.applicationservice.changeset-graph-builder
-  target: business.businessprocess.changeset-review-flow
-  predicate: serves
-  layer: application
-  targetLayer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: application.applicationservice.embedded-data-loader
-  target: business.businessprocess.model-loading-and-rendering
-  predicate: serves
-  layer: application
-  targetLayer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: application.applicationprocess.auth-route
-  target: application.applicationprocess.model-route
-  predicate: flows-to
-  layer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: application.applicationprocess.model-route
-  target: application.applicationprocess.changeset-route
-  predicate: flows-to
-  layer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: medium
-- source: application.applicationprocess.model-route
-  target: application.applicationfunction.model-store
-  predicate: depends-on
-  layer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: application.applicationprocess.changeset-route
-  target: application.applicationfunction.changeset-store
-  predicate: depends-on
-  layer: application
   category: structural
   properties:
     source_provenance: inferred
@@ -755,14 +495,6 @@
 - source: application.applicationinterface.dr-cli-web-socket-interface
   target: application.applicationservice.web-socket-client
   predicate: depends-on
-  layer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: application.applicationinterface.dr-cli-rest-interface
-  target: application.applicationservice.data-loader
-  predicate: serves
   layer: application
   category: structural
   properties:
@@ -800,54 +532,6 @@
   properties:
     source_provenance: inferred
     confidence: high
-- source: technology.systemsoftware.react-flow
-  target: technology.systemsoftware.react-19
-  predicate: depends-on
-  layer: technology
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: technology.systemsoftware.flowbite-react
-  target: technology.systemsoftware.react-19
-  predicate: depends-on
-  layer: technology
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: technology.systemsoftware.dagre
-  target: technology.systemsoftware.react-flow
-  predicate: depends-on
-  layer: technology
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: technology.systemsoftware.elkjs
-  target: technology.systemsoftware.react-flow
-  predicate: depends-on
-  layer: technology
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: technology.systemsoftware.d3-force
-  target: technology.systemsoftware.react-flow
-  predicate: depends-on
-  layer: technology
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: technology.systemsoftware.graphviz-wasm
-  target: technology.systemsoftware.react-flow
-  predicate: depends-on
-  layer: technology
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
 - source: technology.systemsoftware.tan-stack-router
   target: technology.systemsoftware.react-19
   predicate: depends-on
@@ -872,32 +556,8 @@
   properties:
     source_provenance: inferred
     confidence: high
-- source: technology.systemsoftware.storybook-10
-  target: technology.systemsoftware.react-19
-  predicate: depends-on
-  layer: technology
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
 - source: technology.artifact.embedded-app-bundle
   target: technology.systemsoftware.vite-6
-  predicate: associated-with
-  layer: technology
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: technology.artifact.open-api-specification
-  target: technology.systemsoftware.expressjs-5
-  predicate: associated-with
-  layer: technology
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: medium
-- source: technology.artifact.storybook-catalog-build
-  target: technology.systemsoftware.storybook-10
   predicate: associated-with
   layer: technology
   category: structural
@@ -1106,38 +766,6 @@
   properties:
     source_provenance: inferred
     confidence: high
-- source: data-model.objectschema.yamlelement
-  target: data-model.objectschema.model-element
-  predicate: extends
-  layer: data-model
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: data-model.objectschema.yamllayer-data
-  target: data-model.objectschema.layer
-  predicate: extends
-  layer: data-model
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: data-model.objectschema.yamlmodel-data
-  target: data-model.objectschema.meta-model
-  predicate: extends
-  layer: data-model
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: data-model.objectschema.data-model-node-data
-  target: data-model.objectschema.base-node-data
-  predicate: extends
-  layer: data-model
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
 - source: data-model.objectschema.tool-invocation-content
   target: data-model.objectschema.chat-message
   predicate: extends
@@ -1164,22 +792,6 @@
     confidence: medium
 - source: data-model.objectschema.model-element
   target: data-model.objectschema.relationship
-  predicate: extends
-  layer: data-model
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: medium
-- source: data-model.objectschema.yamlmanifest
-  target: data-model.objectschema.yamllayer-data
-  predicate: extends
-  layer: data-model
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: medium
-- source: data-model.objectschema.yamlrelationships
-  target: data-model.objectschema.yamlelement
   predicate: extends
   layer: data-model
   category: structural
@@ -1242,57 +854,6 @@
   properties:
     source_provenance: inferred
     confidence: high
-- source: data-store.database.browser-local-storage
-  target: data-store.collection.layout-preferences-entry
-  predicate: composes
-  layer: data-store
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: data-store.database.browser-local-storage
-  target: data-store.collection.view-preferences-entry
-  predicate: composes
-  layer: data-store
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: data-store.database.browser-local-storage
-  target: data-store.collection.floating-chat-state-entry
-  predicate: composes
-  layer: data-store
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: data-store.collection.model-manifest
-  target: application.applicationcomponent.graph-viewer
-  predicate: serves
-  layer: data-store
-  targetLayer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: data-store.collection.layer-yaml-files
-  target: application.applicationcomponent.graph-viewer
-  predicate: serves
-  layer: data-store
-  targetLayer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: data-store.collection.auth-token-entry
-  target: application.applicationcomponent.graph-viewer
-  predicate: serves
-  layer: data-store
-  targetLayer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
 - source: data-store.collection.model-manifest
   target: business.businessobject.architecture-model
   predicate: realizes
@@ -1311,152 +872,11 @@
   properties:
     source_provenance: inferred
     confidence: high
-- source: ux.view.model-graph-view
-  target: ux.subview.graph-view-sidebar
-  predicate: aggregates
-  layer: ux
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: ux.view.changeset-graph-view
-  target: ux.subview.changeset-viewer
-  predicate: aggregates
-  layer: ux
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: ux.view.model-details-view
-  target: ux.subview.annotation-panel
-  predicate: aggregates
-  layer: ux
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: ux.view.model-graph-view
-  target: ux.subview.cross-layer-panel
-  predicate: composes
-  layer: ux
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: ux.librarycomponent.graph-toolbar
-  target: ux.librarycomponent.export-button-group
-  predicate: renders
-  layer: ux
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: ux.librarycomponent.connection-status-indicator
-  target: ux.statepattern.data-loading-pattern
-  predicate: uses
-  layer: ux
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: ux.librarycomponent.model-details-viewer
-  target: ux.statepattern.data-loading-pattern
-  predicate: uses
-  layer: ux
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: ux.view.model-graph-view
-  target: business.businessprocess.model-loading-and-rendering
-  predicate: realizes
-  layer: ux
-  targetLayer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: ux.view.changeset-list-view
-  target: business.businessprocess.changeset-review-flow
-  predicate: realizes
-  layer: ux
-  targetLayer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
 - source: ux.view.auth-view
   target: business.businessprocess.authentication-flow
   predicate: realizes
   layer: ux
   targetLayer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: navigation.route.model-view-route
-  target: ux.view.model-graph-view
-  predicate: maps-to
-  layer: navigation
-  targetLayer: ux
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: navigation.route.spec-view-route
-  target: ux.view.spec-graph-view
-  predicate: maps-to
-  layer: navigation
-  targetLayer: ux
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: navigation.route.changesets-view-route
-  target: ux.view.changeset-list-view
-  predicate: maps-to
-  layer: navigation
-  targetLayer: ux
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: navigation.route.index-route
-  target: navigation.route.model-redirect-route
-  predicate: navigates-to
-  layer: navigation
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: navigation.route.model-redirect-route
-  target: navigation.route.model-view-route
-  predicate: navigates-to
-  layer: navigation
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: navigation.route.spec-redirect-route
-  target: navigation.route.spec-view-route
-  predicate: navigates-to
-  layer: navigation
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: navigation.route.changesets-redirect-route
-  target: navigation.route.changesets-view-route
-  predicate: navigates-to
-  layer: navigation
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: navigation.navigationguard.authentication-guard
-  target: navigation.route.model-view-route
-  predicate: protects
-  layer: navigation
   category: structural
   properties:
     source_provenance: inferred
@@ -1480,32 +900,8 @@
     source_provenance: inferred
     confidence: high
 - source: navigation.navigationtransition.auth-redirect-transition
-  target: navigation.route.model-view-route
-  predicate: flows-to
-  layer: navigation
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: navigation.navigationtransition.tab-navigation-transition
-  target: navigation.route.spec-view-route
-  predicate: flows-to
-  layer: navigation
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: medium
-- source: navigation.navigationtransition.auth-redirect-transition
   target: navigation.navigationguard.authentication-guard
   predicate: requires
-  layer: navigation
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: navigation.navigationgraph.embedded-app-navigation-graph
-  target: navigation.route.model-view-route
-  predicate: aggregates
   layer: navigation
   category: structural
   properties:
@@ -1544,22 +940,6 @@
   properties:
     source_provenance: inferred
     confidence: high
-- source: navigation.flowstep.token-extraction-step
-  target: navigation.route.model-view-route
-  predicate: navigates-to
-  layer: navigation
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: navigation.flowstep.post-auth-model-entry-step
-  target: navigation.route.model-view-route
-  predicate: navigates-to
-  layer: navigation
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
 - source: apm.alert.web-socket-disconnect-alert
   target: apm.metricinstrument.web-socket-connection-state-gauge
   predicate: monitors
@@ -1568,22 +948,6 @@
   properties:
     source_provenance: inferred
     confidence: high
-- source: apm.alert.storybook-story-render-error-alert
-  target: apm.metricinstrument.graph-node-render-histogram
-  predicate: monitors
-  layer: apm
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: apm.alert.playwright-test-failure-alert
-  target: apm.metricinstrument.graph-node-render-histogram
-  predicate: monitors
-  layer: apm
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: medium
 - source: apm.metricinstrument.web-socket-connection-state-gauge
   target: apm.instrumentationscope.error-tracker-instrumentation-scope
   predicate: depends-on
@@ -1600,31 +964,6 @@
   properties:
     source_provenance: inferred
     confidence: high
-- source: apm.metricinstrument.graph-node-render-histogram
-  target: apm.instrumentationscope.error-tracker-instrumentation-scope
-  predicate: depends-on
-  layer: apm
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: apm.metricinstrument.chat-api-token-usage-counter
-  target: apm.instrumentationscope.error-tracker-instrumentation-scope
-  predicate: depends-on
-  layer: apm
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: apm.instrumentationconfig.browser-error-instrumentation
-  target: application.applicationcomponent.graph-viewer
-  predicate: monitors
-  layer: apm
-  targetLayer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
 - source: apm.instrumentationconfig.browser-error-instrumentation
   target: apm.instrumentationscope.error-tracker-instrumentation-scope
   predicate: serves
@@ -1635,24 +974,6 @@
     confidence: high
 - source: apm.metricinstrument.web-socket-reconnection-attempt-counter
   target: application.applicationservice.web-socket-client
-  predicate: monitors
-  layer: apm
-  targetLayer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: apm.metricinstrument.chat-api-token-usage-counter
-  target: application.applicationservice.chat-service
-  predicate: monitors
-  layer: apm
-  targetLayer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: apm.metricinstrument.graph-node-render-histogram
-  target: application.applicationcomponent.graph-viewer
   predicate: monitors
   layer: apm
   targetLayer: application
@@ -1676,112 +997,9 @@
   properties:
     source_provenance: inferred
     confidence: high
-- source: testing.testcoveragetarget.service-and-store-unit-test-coverage
-  target: application.applicationservice.data-loader
-  predicate: covers
-  layer: testing
-  targetLayer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: testing.testcoveragetarget.embedded-app-e2e-test-coverage
-  target: application.applicationcomponent.graph-viewer
-  predicate: tests
-  layer: testing
-  targetLayer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: testing.testcoveragetarget.auth-flow-e2e-test-coverage
-  target: application.applicationcomponent.graph-viewer
-  predicate: tests
-  layer: testing
-  targetLayer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: medium
-- source: testing.testcoveragetarget.web-socket-recovery-test-coverage
-  target: application.applicationservice.web-socket-client
-  predicate: covers
-  layer: testing
-  targetLayer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: testing.testcoveragetarget.storybook-story-render-test-coverage
-  target: ux.view.model-graph-view
-  predicate: covers
-  layer: testing
-  targetLayer: ux
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: testing.testcoveragetarget.wcag-21-accessibility-test-coverage
-  target: ux.view.model-graph-view
-  predicate: covers
-  layer: testing
-  targetLayer: ux
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: testing.coveragerequirement.each-choice-story-coverage-requirement
-  target: testing.testcoveragetarget.storybook-story-render-test-coverage
-  predicate: composes
-  layer: testing
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
 - source: testing.coveragerequirement.all-partitions-unit-test-requirement
   target: testing.testcoveragetarget.service-and-store-unit-test-coverage
   predicate: composes
-  layer: testing
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: testing.coveragerequirement.boundary-values-auth-test-requirement
-  target: testing.testcoveragetarget.auth-flow-e2e-test-coverage
-  predicate: composes
-  layer: testing
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: testing.coveragerequirement.boundary-values-auth-test-requirement
-  target: navigation.navigationguard.authentication-guard
-  predicate: covers
-  layer: testing
-  targetLayer: navigation
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: testing.coveragegap.code-line-coverage-gap
-  target: testing.testcoveragetarget.service-and-store-unit-test-coverage
-  predicate: references
-  layer: testing
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: testing.coveragegap.load-test-coverage-gap
-  target: testing.testcoveragetarget.embedded-app-e2e-test-coverage
-  predicate: references
-  layer: testing
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: testing.coveragegap.code-line-coverage-gap
-  target: testing.coveragerequirement.all-partitions-unit-test-requirement
-  predicate: triggers
   layer: testing
   category: structural
   properties:
@@ -1804,113 +1022,8 @@
   layer: security
   targetLayer: business
   category: structural
-- source: application.applicationfunction.field-visibility-store
-  target: application.applicationfunction.element-store
-  predicate: depends-on
-  layer: application
-  category: structural
-- source: application.applicationfunction.layout-preferences-store
-  target: application.applicationfunction.model-store
-  predicate: depends-on
-  layer: application
-  category: structural
-- source: application.applicationfunction.view-preference-store
-  target: application.applicationfunction.element-store
-  predicate: depends-on
-  layer: application
-  category: structural
-- source: application.applicationservice.yaml-parser
-  target: business.businessservice.architecture-model-visualization
-  predicate: realizes
-  layer: application
-  targetLayer: business
-  category: structural
-- source: application.applicationservice.json-schema-parser
-  target: business.businessservice.architecture-model-visualization
-  predicate: realizes
-  layer: application
-  targetLayer: business
-  category: structural
-- source: application.applicationservice.cross-layer-reference-extractor
-  target: business.businessservice.architecture-model-visualization
-  predicate: realizes
-  layer: application
-  targetLayer: business
-  category: structural
-- source: application.applicationservice.cross-layer-processor
-  target: business.businessservice.architecture-model-visualization
-  predicate: realizes
-  layer: application
-  targetLayer: business
-  category: structural
-- source: application.applicationservice.cross-layer-links-extractor
-  target: business.businessservice.architecture-model-visualization
-  predicate: realizes
-  layer: application
-  targetLayer: business
-  category: structural
-- source: application.applicationservice.spec-parser
-  target: business.businessservice.schema-exploration
-  predicate: realizes
-  layer: application
-  targetLayer: business
-  category: structural
-- source: application.applicationservice.impact-analysis-service
-  target: business.businessservice.changeset-review
-  predicate: realizes
-  layer: application
-  targetLayer: business
-  category: structural
-- source: application.applicationservice.export-utils
-  target: business.businessservice.architecture-model-visualization
-  predicate: realizes
-  layer: application
-  targetLayer: business
-  category: structural
-- source: application.applicationservice.local-file-loader
-  target: business.businessservice.architecture-model-visualization
-  predicate: realizes
-  layer: application
-  targetLayer: business
-  category: structural
-- source: application.applicationservice.libavoid-router
-  target: business.businessservice.architecture-model-visualization
-  predicate: realizes
-  layer: application
-  targetLayer: business
-  category: structural
-- source: application.applicationservice.git-hub-service
-  target: business.businessservice.model-annotation
-  predicate: realizes
-  layer: application
-  targetLayer: business
-  category: structural
-- source: application.applicationservice.exception-classifier
-  target: business.businessprocess.model-loading-and-rendering
-  predicate: serves
-  layer: application
-  targetLayer: business
-  category: structural
-- source: application.applicationservice.coverage-analyzer
-  target: business.businessprocess.model-loading-and-rendering
-  predicate: serves
-  layer: application
-  targetLayer: business
-  category: structural
-- source: application.applicationservice.error-tracker
-  target: business.businessprocess.model-loading-and-rendering
-  predicate: serves
-  layer: application
-  targetLayer: business
-  category: structural
 - source: application.applicationservice.chat-validation
   target: business.businessservice.ai-assisted-architecture-chat
-  predicate: realizes
-  layer: application
-  targetLayer: business
-  category: structural
-- source: application.applicationprocess.spec-route
-  target: business.businessprocess.model-loading-and-rendering
   predicate: realizes
   layer: application
   targetLayer: business
@@ -1920,27 +1033,6 @@
   predicate: realizes
   layer: api
   targetLayer: business
-  category: structural
-- source: navigation.navigationtransition.sub-view-switch-transition
-  target: navigation.route.model-view-route
-  predicate: navigates-to
-  layer: navigation
-  category: structural
-- source: navigation.navigationtransition.layer-deep-link-transition
-  target: navigation.route.model-view-route
-  predicate: navigates-to
-  layer: navigation
-  category: structural
-- source: navigation.breadcrumbconfig.cross-layer-breadcrumb
-  target: navigation.route.model-view-route
-  predicate: references
-  layer: navigation
-  category: structural
-- source: technology.systemsoftware.tailwind-css-v4
-  target: application.applicationcomponent.graph-viewer
-  predicate: serves
-  layer: technology
-  targetLayer: application
   category: structural
 - source: technology.node.docker-agent-container
   target: technology.systemsoftware.playwright
@@ -1968,28 +1060,6 @@
   layer: apm
   targetLayer: business
   category: structural
-- source: testing.contextvariation.regression-e2e-test-context
-  target: testing.testcoveragetarget.embedded-app-e2e-test-coverage
-  predicate: serves
-  layer: testing
-  category: structural
-- source: testing.contextvariation.smoke-story-test-context
-  target: testing.testcoveragetarget.storybook-story-render-test-coverage
-  predicate: serves
-  layer: testing
-  category: structural
-- source: testing.testcoveragetarget.cross-component-integration-test-coverage
-  target: application.applicationservice.cross-layer-reference-extractor
-  predicate: covers
-  layer: testing
-  targetLayer: application
-  category: structural
-- source: data-model.objectschema.data-model-field
-  target: business.businessobject.architecture-model
-  predicate: realizes
-  layer: data-model
-  targetLayer: business
-  category: structural
 - source: data-model.objectschema.extracted-reference
   target: business.businessobject.architecture-model
   predicate: realizes
@@ -1997,12 +1067,6 @@
   targetLayer: business
   category: structural
 - source: data-model.objectschema.model-metadata
-  target: business.businessobject.architecture-model
-  predicate: realizes
-  layer: data-model
-  targetLayer: business
-  category: structural
-- source: data-model.objectschema.projection-rule
   target: business.businessobject.architecture-model
   predicate: realizes
   layer: data-model
@@ -2032,152 +1096,15 @@
   layer: data-model
   targetLayer: motivation
   category: structural
-- source: ux.librarycomponent.changeset-list
-  target: motivation.requirement.dr-cli-server-integration
-  predicate: satisfies
-  layer: ux
-  targetLayer: motivation
-  category: structural
-- source: ux.librarycomponent.cross-layer-filter-panel
-  target: motivation.requirement.multi-layout-engine-support
-  predicate: satisfies
-  layer: ux
-  targetLayer: motivation
-  category: structural
-- source: ux.librarycomponent.graph-statistics-panel
-  target: motivation.requirement.embedded-deployment-mode
-  predicate: satisfies
-  layer: ux
-  targetLayer: motivation
-  category: structural
-- source: ux.librarycomponent.layout-preferences-panel
-  target: motivation.requirement.multi-layout-engine-support
-  predicate: satisfies
-  layer: ux
-  targetLayer: motivation
-  category: structural
-- source: ux.librarycomponent.mini-map
-  target: motivation.requirement.embedded-deployment-mode
-  predicate: satisfies
-  layer: ux
-  targetLayer: motivation
-  category: structural
-- source: ux.librarycomponent.spec-viewer
-  target: motivation.requirement.dr-cli-server-integration
-  predicate: satisfies
-  layer: ux
-  targetLayer: motivation
-  category: structural
-- source: ux.librarycomponent.sub-tab-navigation
-  target: motivation.requirement.embedded-deployment-mode
-  predicate: satisfies
-  layer: ux
-  targetLayer: motivation
-  category: structural
-- source: ux.uxspec.model-visualization-spec
-  target: motivation.requirement.multi-layout-engine-support
-  predicate: satisfies
-  layer: ux
-  targetLayer: motivation
-  category: structural
-- source: ux.uxspec.schema-spec-browser-spec
-  target: motivation.requirement.dr-cli-server-integration
-  predicate: satisfies
-  layer: ux
-  targetLayer: motivation
-  category: structural
-- source: ux.uxspec.changeset-review-spec
-  target: motivation.requirement.embedded-deployment-mode
-  predicate: satisfies
-  layer: ux
-  targetLayer: motivation
-  category: structural
 - source: ux.uxspec.authentication-spec
   target: motivation.requirement.dr-cli-server-integration
   predicate: satisfies
   layer: ux
   targetLayer: motivation
   category: structural
-- source: ux.uxapplication.embedded-architecture-viewer
-  target: ux.uxspec.model-visualization-spec
-  predicate: aggregates
-  layer: ux
-  category: structural
 - source: ux.statepattern.authentication-flow-pattern
   target: ux.statepattern.data-loading-pattern
   predicate: specializes
-  layer: ux
-  category: structural
-- source: ux.subview.embedded-layout
-  target: business.businessprocess.model-loading-and-rendering
-  predicate: realizes
-  layer: ux
-  targetLayer: business
-  category: structural
-- source: ux.subview.shared-layout
-  target: business.businessprocess.model-loading-and-rendering
-  predicate: realizes
-  layer: ux
-  targetLayer: business
-  category: structural
-- source: ux.subview.model-layers-sidebar
-  target: business.businessprocess.model-loading-and-rendering
-  predicate: realizes
-  layer: ux
-  targetLayer: business
-  category: structural
-- source: ux.subview.node-details-panel
-  target: business.businessprocess.model-loading-and-rendering
-  predicate: realizes
-  layer: ux
-  targetLayer: business
-  category: structural
-- source: ux.subview.chat-panel
-  target: business.businessprocess.real-time-model-synchronization
-  predicate: realizes
-  layer: ux
-  targetLayer: business
-  category: structural
-- source: ux.subview.floating-chat-panel
-  target: business.businessprocess.real-time-model-synchronization
-  predicate: realizes
-  layer: ux
-  targetLayer: business
-  category: structural
-- source: ux.view.spec-details-view
-  target: business.businessprocess.model-loading-and-rendering
-  predicate: realizes
-  layer: ux
-  targetLayer: business
-  category: structural
-- source: ux.subview.embedded-layout
-  target: ux.librarysubview.empty-state
-  predicate: uses
-  layer: ux
-  category: structural
-- source: ux.subview.shared-layout
-  target: ux.librarysubview.loading-state
-  predicate: uses
-  layer: ux
-  category: structural
-- source: ux.subview.node-details-panel
-  target: ux.librarysubview.error-state
-  predicate: uses
-  layer: ux
-  category: structural
-- source: ux.subview.model-layers-sidebar
-  target: ux.librarysubview.breadcrumb-navigation
-  predicate: uses
-  layer: ux
-  category: structural
-- source: ux.subview.chat-panel
-  target: ux.librarysubview.node-context-menu
-  predicate: uses
-  layer: ux
-  category: structural
-- source: ux.subview.floating-chat-panel
-  target: ux.librarysubview.highlighted-path-panel
-  predicate: uses
   layer: ux
   category: structural
 - source: a5342d6f-daf4-4a6e-a98b-7fada2561798
@@ -3134,31 +2061,6 @@
     source_provenance: extracted
     confidence: high
     basis: shared source file
-- source: application.applicationservice.relationships-yaml-parser
-  target: application.applicationservice.predicate-type-mapper
-  predicate: depends-on
-  layer: application
-  category: structural
-- source: application.applicationservice.data-loader
-  target: application.applicationservice.relationships-yaml-parser
-  predicate: depends-on
-  layer: application
-  category: structural
-- source: application.applicationservice.spec-schema-loader
-  target: application.applicationservice.spec-schema-file-loader
-  predicate: depends-on
-  layer: application
-  category: structural
-- source: application.applicationservice.embedded-data-loader
-  target: application.applicationservice.spec-schema-file-loader
-  predicate: depends-on
-  layer: application
-  category: structural
-- source: application.applicationservice.cross-layer-reference-extractor
-  target: application.applicationservice.predicate-catalog-loader
-  predicate: depends-on
-  layer: application
-  category: structural
 - source: data-model.objectschema.source-reference
   target: data-model.objectschema.model-element
   predicate: extends
@@ -3166,16 +2068,6 @@
   category: structural
 - source: data-model.objectschema.predicate-definition
   target: data-model.objectschema.relationship
-  predicate: extends
-  layer: data-model
-  category: structural
-- source: data-model.objectschema.relationships-yaml-entry
-  target: data-model.objectschema.relationship
-  predicate: extends
-  layer: data-model
-  category: structural
-- source: data-model.objectschema.predicate-catalog
-  target: data-model.objectschema.predicate-definition
   predicate: extends
   layer: data-model
   category: structural
@@ -3188,28 +2080,6 @@
   target: data-model.objectschema.relationship
   predicate: extends
   layer: data-model
-  category: structural
-- source: application.applicationservice.context-sub-graph-builder
-  target: application.applicationservice.node-transformer
-  predicate: depends-on
-  layer: application
-  category: structural
-- source: application.applicationservice.spec-context-sub-graph-builder
-  target: application.applicationservice.spec-parser
-  predicate: depends-on
-  layer: application
-  category: structural
-- source: application.applicationservice.context-sub-graph-builder
-  target: business.businessservice.architecture-model-visualization
-  predicate: realizes
-  layer: application
-  targetLayer: business
-  category: structural
-- source: application.applicationservice.spec-context-sub-graph-builder
-  target: business.businessservice.schema-exploration
-  predicate: realizes
-  layer: application
-  targetLayer: business
   category: structural
 - source: technology.technologyinterface.rest-https-interface
   target: technology.technologyprocess.open-api-type-generation
@@ -3237,12 +2107,6 @@
   layer: api
   category: structural
 - source: api.openapidocument.dr-cli-visualization-server-open-api-document
-  target: application.applicationcomponent.graph-viewer
-  predicate: serves
-  layer: api
-  targetLayer: application
-  category: structural
-- source: api.openapidocument.dr-cli-visualization-server-open-api-document
   target: technology.technologyservice.dr-cli-rest-server
   predicate: depends-on
   layer: api
@@ -3257,11 +2121,6 @@
   target: api.securityscheme.query-auth-scheme
   predicate: requires
   layer: api
-  category: structural
-- source: motivation.goal.visualize-multi-layer-architecture-models
-  target: motivation.principle.configuration-driven-node-rendering
-  predicate: supports
-  layer: motivation
   category: structural
 - source: motivation.goal.visualize-multi-layer-architecture-models
   target: motivation.principle.core-app-architectural-separation
@@ -3330,33 +2189,13 @@
   predicate: references
   layer: data-store
   category: structural
-- source: ux.uxspec.model-visualization-spec
-  target: ux.view.model-graph-view
-  predicate: aggregates
-  layer: ux
-  category: structural
-- source: ux.uxspec.changeset-review-spec
-  target: ux.view.changeset-list-view
-  predicate: aggregates
-  layer: ux
-  category: structural
 - source: ux.uxspec.authentication-spec
   target: ux.view.auth-view
   predicate: aggregates
   layer: ux
   category: structural
-- source: ux.uxspec.schema-spec-browser-spec
-  target: ux.view.spec-graph-view
-  predicate: aggregates
-  layer: ux
-  category: structural
 - source: apm.instrumentationscope.error-tracker-instrumentation-scope
   target: apm.metricinstrument.web-socket-connection-state-gauge
-  predicate: aggregates
-  layer: apm
-  category: structural
-- source: apm.instrumentationscope.error-tracker-instrumentation-scope
-  target: apm.metricinstrument.graph-node-render-histogram
   predicate: aggregates
   layer: apm
   category: structural
@@ -3382,42 +2221,6 @@
   layer: testing
   targetLayer: motivation
   category: structural
-- source: testing.testcoveragetarget.storybook-story-render-test-coverage
-  target: motivation.requirement.wcag-21-aa-compliance
-  predicate: fulfills-requirements
-  layer: testing
-  targetLayer: motivation
-  category: structural
-- source: testing.testcoveragetarget.wcag-21-accessibility-test-coverage
-  target: motivation.requirement.wcag-21-aa-compliance
-  predicate: fulfills-requirements
-  layer: testing
-  targetLayer: motivation
-  category: structural
-- source: testing.testcoveragetarget.embedded-app-e2e-test-coverage
-  target: motivation.requirement.dr-cli-server-integration
-  predicate: fulfills-requirements
-  layer: testing
-  targetLayer: motivation
-  category: structural
-- source: testing.testcoveragetarget.auth-flow-e2e-test-coverage
-  target: motivation.requirement.dr-cli-server-integration
-  predicate: fulfills-requirements
-  layer: testing
-  targetLayer: motivation
-  category: structural
-- source: testing.testcoveragetarget.web-socket-recovery-test-coverage
-  target: motivation.requirement.dr-cli-server-integration
-  predicate: fulfills-requirements
-  layer: testing
-  targetLayer: motivation
-  category: structural
-- source: testing.testcoveragetarget.cross-component-integration-test-coverage
-  target: motivation.requirement.multi-layout-engine-support
-  predicate: fulfills-requirements
-  layer: testing
-  targetLayer: motivation
-  category: structural
 - source: api.securityscheme.bearer-auth-scheme
   target: api.operation.get-architecture-model
   predicate: serves
@@ -3433,25 +2236,40 @@
   predicate: flows-to
   layer: testing
   category: structural
-- source: testing.testcoveragetarget.storybook-story-render-test-coverage
-  target: testing.coveragerequirement.each-choice-story-coverage-requirement
-  predicate: flows-to
-  layer: testing
+- source: application.applicationservice.model-graph-transform
+  target: application.applicationservice.generated-api-client
+  predicate: depends-on
+  layer: application
   category: structural
-- source: testing.testcoveragetarget.auth-flow-e2e-test-coverage
-  target: testing.coveragerequirement.boundary-values-auth-test-requirement
-  predicate: flows-to
-  layer: testing
+- source: technology.systemsoftware.heimdall-ui
+  target: application.applicationcomponent.graph-canvas
+  predicate: serves
+  layer: technology
+  targetLayer: application
   category: structural
-- source: testing.testcoveragetarget.embedded-app-e2e-test-coverage
-  target: motivation.goal.accelerate-architecture-documentation
-  predicate: supports-goals
-  layer: testing
-  targetLayer: motivation
+- source: technology.systemsoftware.tan-stack-react-query
+  target: application.applicationcomponent.graph-canvas
+  predicate: serves
+  layer: technology
+  targetLayer: application
   category: structural
-- source: testing.testcoveragetarget.wcag-21-accessibility-test-coverage
-  target: motivation.goal.ensure-accessible-architecture-views
-  predicate: supports-goals
-  layer: testing
-  targetLayer: motivation
+- source: application.applicationcomponent.graph-canvas
+  target: application.applicationservice.model-graph-transform
+  predicate: realizes
+  layer: application
+  category: structural
+- source: application.applicationcomponent.graph-canvas
+  target: application.applicationservice.relationship-derivation
+  predicate: realizes
+  layer: application
+  category: structural
+- source: navigation.navigationtransition.tab-navigation-transition
+  target: navigation.route.app-shell-sectionview-route
+  predicate: navigates-to
+  layer: navigation
+  category: structural
+- source: navigation.navigationtransition.layer-deep-link-transition
+  target: navigation.route.app-shell-sectionview-route
+  predicate: navigates-to
+  layer: navigation
   category: structural

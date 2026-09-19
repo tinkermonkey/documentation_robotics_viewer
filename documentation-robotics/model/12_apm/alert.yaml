@@ -19,28 +19,6 @@ apm.alert.web-socket-disconnect-alert:
     created_at: 2026-03-20T13:31:58.975Z
     updated_at: 2026-03-20T13:31:58.975Z
     version: 1
-apm.alert.storybook-story-render-error-alert:
-  id: a36978b5-1607-4ee9-8f4b-64ee42ea74dc
-  path: apm.alert.storybook-story-render-error-alert
-  spec_node_id: apm.alert
-  type: alert
-  layer_id: apm
-  name: Storybook Story Render Error Alert
-  description: Warning alert triggered when a Storybook story renders with console
-    errors not in the approved filter list; detected by the test-runner
-    storyErrorFilters.ts during CI story validation.
-  attributes:
-    severity: warning
-    condition: story console error not in storyErrorFilters allowlist
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/stories/storyErrorFilters.ts
-        symbol: storyErrorFilters
-  metadata:
-    created_at: 2026-03-20T13:32:04.297Z
-    updated_at: 2026-03-20T13:32:04.297Z
-    version: 1
 apm.alert.playwright-test-failure-alert:
   id: bc1b7107-c90f-466c-b28e-63f8eb7c232b
   path: apm.alert.playwright-test-failure-alert
@@ -48,9 +26,11 @@ apm.alert.playwright-test-failure-alert:
   type: alert
   layer_id: apm
   name: Playwright Test Failure Alert
-  description: Critical alert triggered when any Playwright test suite exits with
-    failures; covers unit, integration, E2E, and auth test configs; indicates
-    regression in core functionality.
+  description: Critical alert triggered when the Playwright E2E test suite exits
+    with failures (tests/e2e only — unit/integration/component tests now run
+    under Vitest, not Playwright); indicates a regression in the built
+    production bundle's shell, views, chat, annotations, or accessibility
+    behavior.
   attributes:
     severity: critical
     condition: playwright test exit code not equals 0

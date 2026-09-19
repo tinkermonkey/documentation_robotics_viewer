@@ -6,8 +6,11 @@ testing.testcoveragemodel.viewer-test-coverage-model:
   layer_id: testing
   name: Viewer Test Coverage Model
   description: Root IEEE 829-style test coverage model for the
-    documentation_robotics_viewer application; spans unit, integration, E2E,
-    Storybook story, and accessibility test types run via Playwright.
+    documentation_robotics_viewer application; spans unit, integration,
+    component, E2E, and accessibility (axe-core) test types.
+    Unit/integration/component tests run under Vitest; E2E and accessibility
+    tests run under Playwright against the built bundle. Storybook-based story
+    testing was removed in the June 2026 Heimdall UX rebuild.
   attributes:
     version: "1.0"
     application: documentation-robotics-viewer

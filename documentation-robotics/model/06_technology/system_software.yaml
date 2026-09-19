@@ -78,109 +78,6 @@ technology.systemsoftware.react-19:
     created_at: 2026-03-20T12:37:07.331Z
     updated_at: 2026-03-24T09:10:00.000Z
     version: 2
-technology.systemsoftware.react-flow:
-  id: 00591402-8782-4add-aabf-93d9eabc2507
-  path: technology.systemsoftware.react-flow
-  spec_node_id: technology.systemsoftware
-  type: systemsoftware
-  layer_id: technology
-  name: React Flow
-  description: "@xyflow/react 12.10 — interactive graph visualization library
-    powering the multi-layer architecture diagrams with custom node and edge
-    types"
-  attributes:
-    softwareType: middleware
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: package.json
-        symbol: dependencies.@xyflow/react
-  metadata:
-    created_at: 2026-03-20T12:37:07.582Z
-    updated_at: 2026-03-24T09:10:00.000Z
-    version: 2
-technology.systemsoftware.dagre:
-  id: 1d35c9df-81b2-4cba-a0fb-d9f07e05be40
-  path: technology.systemsoftware.dagre
-  spec_node_id: technology.systemsoftware
-  type: systemsoftware
-  layer_id: technology
-  name: Dagre
-  description: Hierarchical directed-graph layout engine; primary layout algorithm
-    for structured architecture diagrams with ranked node positioning
-  attributes:
-    softwareType: middleware
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: package.json
-        symbol: dependencies.dagre
-  metadata:
-    created_at: 2026-03-20T12:37:07.830Z
-    updated_at: 2026-03-24T09:10:00.000Z
-    version: 2
-technology.systemsoftware.elkjs:
-  id: fbff4595-0741-48cc-ac12-7468bea13742
-  path: technology.systemsoftware.elkjs
-  spec_node_id: technology.systemsoftware
-  type: systemsoftware
-  layer_id: technology
-  name: ELK.js
-  description: Eclipse Layout Kernel JavaScript port (elkjs 0.11); advanced graph
-    layout supporting layered, force, stress, and tree algorithms for complex
-    diagrams
-  attributes:
-    softwareType: middleware
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: package.json
-        symbol: dependencies.elkjs
-  metadata:
-    created_at: 2026-03-20T12:37:15.338Z
-    updated_at: 2026-03-24T09:10:00.000Z
-    version: 2
-technology.systemsoftware.d3-force:
-  id: 77b14339-ac05-4b50-b2a2-41786f7be73a
-  path: technology.systemsoftware.d3-force
-  spec_node_id: technology.systemsoftware
-  type: systemsoftware
-  layer_id: technology
-  name: D3 Force
-  description: d3-force 3.0 — physics-based force simulation for organic graph
-    layouts; used for non-hierarchical relationship visualizations
-  attributes:
-    softwareType: middleware
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: package.json
-        symbol: dependencies.d3-force
-  metadata:
-    created_at: 2026-03-20T12:37:15.582Z
-    updated_at: 2026-03-24T09:10:00.000Z
-    version: 2
-technology.systemsoftware.graphviz-wasm:
-  id: 781067f7-ef13-414e-bde4-8921a7fe768c
-  path: technology.systemsoftware.graphviz-wasm
-  spec_node_id: technology.systemsoftware
-  type: systemsoftware
-  layer_id: technology
-  name: Graphviz WASM
-  description: "@hpcc-js/wasm 2.30 — Graphviz compiled to WebAssembly; enables
-    server-side-grade Graphviz layout algorithms (dot, neato, fdp) in the
-    browser"
-  attributes:
-    softwareType: middleware
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: package.json
-        symbol: dependencies.@hpcc-js/wasm
-  metadata:
-    created_at: 2026-03-20T12:37:15.835Z
-    updated_at: 2026-03-24T09:10:00.000Z
-    version: 2
 technology.systemsoftware.zustand-5:
   id: d2fb0d48-0e8a-4245-a83a-736863f56b96
   path: technology.systemsoftware.zustand-5
@@ -242,26 +139,6 @@ technology.systemsoftware.tailwind-css-v4:
     created_at: 2026-03-20T12:37:23.765Z
     updated_at: 2026-03-24T09:10:00.000Z
     version: 2
-technology.systemsoftware.flowbite-react:
-  id: 72a2b392-6820-4f11-a82d-8c24ff21a2e8
-  path: technology.systemsoftware.flowbite-react
-  spec_node_id: technology.systemsoftware
-  type: systemsoftware
-  layer_id: technology
-  name: Flowbite React
-  description: Tailwind-based React component library (flowbite-react 0.12,
-    flowbite 4.0); provides Card, Badge, Button, Modal and other UI primitives
-  attributes:
-    softwareType: middleware
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: package.json
-        symbol: dependencies.flowbite-react
-  metadata:
-    created_at: 2026-03-20T12:37:29.876Z
-    updated_at: 2026-03-24T09:10:00.000Z
-    version: 2
 technology.systemsoftware.playwright:
   id: 72551121-e5cb-4e72-a417-e83537c03445
   path: technology.systemsoftware.playwright
@@ -269,9 +146,11 @@ technology.systemsoftware.playwright:
   type: systemsoftware
   layer_id: technology
   name: Playwright
-  description: "@playwright/test 1.57 — end-to-end browser automation framework;
-    runs 1170 unit/integration tests and E2E suite with axe-core accessibility
-    validation"
+  description: "@playwright/test 1.60 — end-to-end browser automation framework;
+    runs the tests/e2e suite (~20 tests) against the built production bundle
+    served by dr visualize, including @axe-core/playwright WCAG 2.1 AA checks on
+    every view in light + dark. No longer used for unit/integration tests or
+    Storybook (both removed in the Heimdall rebuild) — those run under Vitest."
   attributes:
     softwareType: middleware
   source_reference:
@@ -283,44 +162,48 @@ technology.systemsoftware.playwright:
     created_at: 2026-03-20T12:37:30.128Z
     updated_at: 2026-03-24T09:10:00.000Z
     version: 2
-technology.systemsoftware.storybook-10:
-  id: 48f8398d-331d-4cce-9f1e-8d58cad0cc10
-  path: technology.systemsoftware.storybook-10
+technology.systemsoftware.heimdall-ui:
+  id: ecfed28a-069b-41d8-9092-427bc1655a1c
+  path: technology.systemsoftware.heimdall-ui
   spec_node_id: technology.systemsoftware
   type: systemsoftware
   layer_id: technology
-  name: Storybook 10
-  description: Component development and testing catalog (storybook 10.2); hosts
-    578 stories across 97 files with CSF3 format; includes a11y addon and test
-    runner
+  name: Heimdall UI
+  description: "@tinkermonkey/heimdall-ui — the Heimdall design system, pinned
+    from a git commit; provides the app shell components (PageHeader,
+    GraphCanvas, GraphInspector, ChatContainer, SideBySideDiff, StatTile, etc.)
+    and the real force-directed GraphCanvas layout engine that replaced the old
+    React Flow + custom layout-engine stack in the June 2026 UX rebuild"
   attributes:
     softwareType: middleware
   source_reference:
     provenance: extracted
     locations:
       - file: package.json
-        symbol: devDependencies.storybook
+        symbol: "@tinkermonkey/heimdall-ui"
   metadata:
-    created_at: 2026-03-20T12:37:30.378Z
-    updated_at: 2026-03-24T09:10:00.000Z
-    version: 2
-technology.systemsoftware.expressjs-5:
-  id: 32c320b9-2485-4241-bbe2-29a8f0e9362d
-  path: technology.systemsoftware.expressjs-5
+    created_at: 2026-09-19T15:17:03.583Z
+    updated_at: 2026-09-19T15:17:03.583Z
+    version: 1
+technology.systemsoftware.tan-stack-react-query:
+  id: e17ec85b-c176-4d0f-965d-579d2a362bcd
+  path: technology.systemsoftware.tan-stack-react-query
   spec_node_id: technology.systemsoftware
   type: systemsoftware
   layer_id: technology
-  name: Express.js 5
-  description: Node.js HTTP server framework (express 5.1); used for the DR CLI
-    integration server and authentication test server
+  name: TanStack React Query
+  description: "@tanstack/react-query 5.51 — data-fetching/caching layer over the
+    DR CLI REST API; powers the data/ hooks (useModel, useSpec, useChangesets,
+    useAnnotations) that replaced the old client-side YAML/JSON-Schema parsing
+    services"
   attributes:
     softwareType: middleware
   source_reference:
     provenance: extracted
     locations:
       - file: package.json
-        symbol: dependencies.express
+        symbol: "@tanstack/react-query"
   metadata:
-    created_at: 2026-03-20T12:37:33.984Z
-    updated_at: 2026-03-24T09:10:00.000Z
-    version: 2
+    created_at: 2026-09-19T15:17:04.250Z
+    updated_at: 2026-09-19T15:17:04.250Z
+    version: 1

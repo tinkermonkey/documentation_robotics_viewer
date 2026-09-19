@@ -58,7 +58,10 @@ business.businessservice.ai-assisted-architecture-chat:
   layer_id: business
   name: AI-Assisted Architecture Chat
   description: Conversational interface to query and explore the architecture
-    model via DR CLI AI assistant
+    model via DR CLI AI assistant (DrBot); streamed over WebSocket JSON-RPC,
+    rendered through Heimdall's ChatContainer/ChatMessage components in a 372px
+    drawer (ui/ChatDrawer.tsx, ui/ChatPanel.tsx, ui/chatAdapter.ts) fed by
+    services/chatService.ts
   source_reference:
     provenance: extracted
     locations:

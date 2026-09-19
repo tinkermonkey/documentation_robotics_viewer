@@ -55,22 +55,3 @@ technology.artifact.open-api-specification:
     created_at: 2026-03-20T12:37:46.012Z
     updated_at: 2026-03-20T12:37:46.012Z
     version: 1
-technology.artifact.storybook-catalog-build:
-  id: 30cd40e1-8828-4d06-8192-f2bf9072be77
-  path: technology.artifact.storybook-catalog-build
-  spec_node_id: technology.artifact
-  type: artifact
-  layer_id: technology
-  name: Storybook Catalog Build
-  description: Static Storybook build output (dist/storybook/); pre-built
-    component catalog for CI validation and a11y testing
-  attributes:
-    artifactType: archive
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: .storybook/main.cjs
-  metadata:
-    created_at: 2026-03-20T12:37:46.273Z
-    updated_at: 2026-03-20T12:37:46.273Z
-    version: 1

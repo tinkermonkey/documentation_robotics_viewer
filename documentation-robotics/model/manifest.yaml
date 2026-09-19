@@ -3,7 +3,7 @@ schema: documentation-robotics-v1
 cli_version: 0.2.0
 spec_version: 0.10.0
 created: 2026-03-19T22:01:43.778Z
-updated: 2026-09-19T09:35:45.280Z
+updated: 2026-09-19T15:37:38.403Z
 project:
   name: Documentation Robotics Viewer
   description: ""
@@ -19,8 +19,8 @@ layers:
       constraint: 3
       driver: 2
       goal: 4
-      principle: 4
-      requirement: 4
+      principle: 3
+      requirement: 3
       stakeholder: 3
   business:
     order: 2
@@ -28,16 +28,17 @@ layers:
     path: documentation-robotics/model/02_business/
     enabled: true
     elements:
-      businessfunction: 3
       businessobject: 3
-      businessprocess: 4
+      businessprocess: 3
       businessrole: 2
       businessservice: 5
+      businessfunction: 1
   product:
     order: 3
     name: Product
     path: documentation-robotics/model/03_product/
     enabled: true
+    elements: {}
   security:
     order: 4
     name: Security
@@ -59,21 +60,21 @@ layers:
     path: documentation-robotics/model/05_application/
     enabled: true
     elements:
-      applicationcomponent: 4
-      applicationfunction: 13
+      applicationfunction: 9
       applicationinterface: 2
-      applicationprocess: 4
-      applicationservice: 31
+      applicationprocess: 1
+      applicationservice: 10
+      applicationcomponent: 1
   technology:
     order: 6
     name: Technology
     path: documentation-robotics/model/06_technology/
     enabled: true
     elements:
-      artifact: 4
+      artifact: 3
       node: 2
       path: 2
-      systemsoftware: 16
+      systemsoftware: 10
       technologyinterface: 2
       technologyprocess: 3
       technologyservice: 2
@@ -94,7 +95,7 @@ layers:
     path: documentation-robotics/model/08_data-model/
     enabled: true
     elements:
-      objectschema: 31
+      objectschema: 20
       schemadefinition: 3
   data-store:
     order: 9
@@ -102,7 +103,7 @@ layers:
     path: documentation-robotics/model/09_data-store/
     enabled: true
     elements:
-      collection: 7
+      collection: 4
       database: 2
   ux:
     order: 10
@@ -110,37 +111,33 @@ layers:
     path: documentation-robotics/model/10_ux/
     enabled: true
     elements:
-      librarycomponent: 11
-      librarysubview: 6
       statepattern: 2
-      subview: 10
       uxapplication: 1
-      uxspec: 4
-      view: 7
+      uxspec: 1
+      view: 1
   navigation:
     order: 11
     name: Navigation
     path: documentation-robotics/model/11_navigation/
     enabled: true
     elements:
-      breadcrumbconfig: 1
       flowstep: 2
       navigationflow: 1
       navigationgraph: 1
       navigationguard: 1
-      navigationtransition: 4
-      route: 7
+      navigationtransition: 3
+      route: 2
   apm:
     order: 12
     name: Apm
     path: documentation-robotics/model/12_apm/
     enabled: true
     elements:
-      alert: 3
+      alert: 2
       instrumentationconfig: 1
       instrumentationscope: 1
       logconfiguration: 1
-      metricinstrument: 4
+      metricinstrument: 2
       resource: 1
   testing:
     order: 13
@@ -148,9 +145,12 @@ layers:
     path: documentation-robotics/model/13_testing/
     enabled: true
     elements:
-      contextvariation: 3
-      coveragegap: 2
-      coveragerequirement: 3
+      contextvariation: 1
+      coveragerequirement: 1
       coveragesummary: 1
       testcoveragemodel: 1
-      testcoveragetarget: 7
+      testcoveragetarget: 2
+changeset_history:
+  - name: sync-heimdall-ux-rebuild
+    committed_at: 2026-09-19T15:37:38.403Z
+    action: committed

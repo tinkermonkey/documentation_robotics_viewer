@@ -144,132 +144,6 @@ data-model.objectschema.extracted-reference:
     created_at: 2026-03-20T13:05:13.617Z
     updated_at: 2026-03-20T13:05:13.618Z
     version: 1
-data-model.objectschema.yamlmanifest:
-  id: aa0e872d-55e1-444d-8a51-4ccb5337e5f7
-  path: data-model.objectschema.yamlmanifest
-  spec_node_id: data-model.objectschema
-  type: objectschema
-  layer_id: data-model
-  name: YAMLManifest
-  description: TypeScript representation of the on-disk manifest.yaml file; tracks
-    model version, project info, per-layer file paths and schema references, and
-    aggregate statistics.
-  attributes:
-    type: object
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: src/core/types/yaml.ts
-        symbol: YAMLManifest
-  metadata:
-    created_at: 2026-03-20T13:05:21.995Z
-    updated_at: 2026-03-20T13:05:21.996Z
-    version: 1
-data-model.objectschema.yamlelement:
-  id: 0e1d8c49-81ae-41e3-9453-1e989bbffb26
-  path: data-model.objectschema.yamlelement
-  spec_node_id: data-model.objectschema
-  type: objectschema
-  layer_id: data-model
-  name: YAMLElement
-  description: Structure of a single model element as stored in a YAML file;
-    includes id, name, description, optional API properties (method, path),
-    inline relationships, and arbitrary custom properties.
-  attributes:
-    type: object
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: src/core/types/yaml.ts
-        symbol: YAMLElement
-  metadata:
-    created_at: 2026-03-20T13:05:26.154Z
-    updated_at: 2026-03-20T13:05:26.154Z
-    version: 1
-data-model.objectschema.yamllayer-data:
-  id: 3ce0eb35-ba57-4f87-8b0b-ba127cac026a
-  path: data-model.objectschema.yamllayer-data
-  spec_node_id: data-model.objectschema
-  type: objectschema
-  layer_id: data-model
-  name: YAMLLayerData
-  description: Aggregated layer data assembled from multiple YAML files for a
-    single layer; maps element names to YAMLElement objects with source file
-    tracking.
-  attributes:
-    type: object
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: src/core/types/yaml.ts
-        symbol: YAMLLayerData
-  metadata:
-    created_at: 2026-03-20T13:05:29.213Z
-    updated_at: 2026-03-20T13:05:29.213Z
-    version: 1
-data-model.objectschema.yamlmodel-data:
-  id: 2ff9b5ff-34f5-4014-94a9-66f6305e8378
-  path: data-model.objectschema.yamlmodel-data
-  spec_node_id: data-model.objectschema
-  type: objectschema
-  layer_id: data-model
-  name: YAMLModelData
-  description: Complete parsed model result from YAML loading; combines the
-    manifest, all layer data, optional projection rules, and accumulated parser
-    warnings.
-  attributes:
-    type: object
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: src/core/types/yaml.ts
-        symbol: YAMLModelData
-  metadata:
-    created_at: 2026-03-20T13:05:33.297Z
-    updated_at: 2026-03-20T13:05:33.297Z
-    version: 1
-data-model.objectschema.yamlrelationships:
-  id: 57b0c4b1-46b4-49bc-993d-bf7b6cecf206
-  path: data-model.objectschema.yamlrelationships
-  spec_node_id: data-model.objectschema
-  type: objectschema
-  layer_id: data-model
-  name: YAMLRelationships
-  description: Nested relationship declarations within a YAML element; groups
-    cross-layer references by semantic type (realizes, serves, accesses, uses,
-    secured_by, supports_goals, etc.).
-  attributes:
-    type: object
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: src/core/types/yaml.ts
-        symbol: YAMLRelationships
-  metadata:
-    created_at: 2026-03-20T13:05:37.378Z
-    updated_at: 2026-03-20T13:05:37.378Z
-    version: 1
-data-model.objectschema.projection-rule:
-  id: 4fd0d9b4-b248-4d2b-8622-4d12442742c5
-  path: data-model.objectschema.projection-rule
-  spec_node_id: data-model.objectschema
-  type: objectschema
-  layer_id: data-model
-  name: ProjectionRule
-  description: Rule definition in projection-rules.yaml describing how to
-    auto-generate elements in one layer from elements in another (e.g.,
-    business.service -> application.service).
-  attributes:
-    type: object
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: src/core/types/yaml.ts
-        symbol: ProjectionRule
-  metadata:
-    created_at: 2026-03-20T13:05:40.140Z
-    updated_at: 2026-03-20T13:05:40.140Z
-    version: 1
 data-model.objectschema.chat-message:
   id: 389d0672-e5c3-4d4e-acc9-227e8f5521f7
   path: data-model.objectschema.chat-message
@@ -435,69 +309,6 @@ data-model.objectschema.web-socket-event-map:
     created_at: 2026-03-20T13:06:09.333Z
     updated_at: 2026-03-20T13:06:09.333Z
     version: 1
-data-model.objectschema.base-node-data:
-  id: f1c6a084-4381-41d7-9e05-364798c90519
-  path: data-model.objectschema.base-node-data
-  spec_node_id: data-model.objectschema
-  type: objectschema
-  layer_id: data-model
-  name: BaseNodeData
-  description: React Flow node data shared by all 20 custom node types; carries
-    label, elementId, layerId, fill/stroke colors, optional modelElement
-    reference, semantic zoom detail level, changeset operation, and relationship
-    badge.
-  attributes:
-    type: object
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: src/core/types/reactflow.ts
-        symbol: BaseNodeData
-  metadata:
-    created_at: 2026-03-20T13:06:14.364Z
-    updated_at: 2026-03-20T13:06:14.364Z
-    version: 1
-data-model.objectschema.data-model-field:
-  id: ab5cc8c5-7e6f-4329-816a-ae701c7cc3fa
-  path: data-model.objectschema.data-model-field
-  spec_node_id: data-model.objectschema
-  type: objectschema
-  layer_id: data-model
-  name: DataModelField
-  description: Field definition for data model table nodes displayed in the graph;
-    holds field id, name, type string, required flag, and optional description.
-  attributes:
-    type: object
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: src/core/types/shapes.ts
-        symbol: DataModelField
-  metadata:
-    created_at: 2026-03-20T13:06:17.622Z
-    updated_at: 2026-03-20T13:06:17.622Z
-    version: 1
-data-model.objectschema.data-model-node-data:
-  id: c6c12444-8901-47a3-988f-882eb5785688
-  path: data-model.objectschema.data-model-node-data
-  spec_node_id: data-model.objectschema
-  type: objectschema
-  layer_id: data-model
-  name: DataModelNodeData
-  description: Specialized React Flow node data for data model elements; extends
-    BaseNodeData with an ordered list of DataModelField entries and a
-    componentType discriminator (entity/interface/enum).
-  attributes:
-    type: object
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: src/core/types/reactflow.ts
-        symbol: DataModelNodeData
-  metadata:
-    created_at: 2026-03-20T13:06:22.204Z
-    updated_at: 2026-03-20T13:06:22.204Z
-    version: 1
 data-model.objectschema.source-reference:
   id: 5230a930-d9eb-4b9e-a3a6-ac6f9f7952f8
   path: data-model.objectschema.source-reference
@@ -540,27 +351,6 @@ data-model.objectschema.relationship-type:
   metadata:
     created_at: 2026-03-23T23:51:28.601Z
     updated_at: 2026-03-23T23:51:28.601Z
-    version: 1
-data-model.objectschema.relationships-yaml-entry:
-  id: 0879ce73-a1eb-4e9b-8acb-519b89f82330
-  path: data-model.objectschema.relationships-yaml-entry
-  spec_node_id: data-model.objectschema
-  type: objectschema
-  layer_id: data-model
-  name: RelationshipsYamlEntry
-  description: Structure of a single entry in the flat relationships.yaml file
-    (v0.8.3 format); requires source and target dot-notation paths and a
-    predicate string, with optional layer, category, and arbitrary properties
-  attributes:
-    type: object
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: src/core/services/relationshipsYamlParser.ts
-        symbol: RelationshipsYamlEntry
-  metadata:
-    created_at: 2026-03-23T23:51:32.388Z
-    updated_at: 2026-03-23T23:51:32.388Z
     version: 1
 data-model.objectschema.predicate-definition:
   id: 99ee6fe9-d567-42b6-bde6-eca9490258cc
@@ -627,26 +417,4 @@ data-model.objectschema.spec-node-relationship:
   metadata:
     created_at: 2026-03-23T23:51:44.246Z
     updated_at: 2026-03-23T23:51:44.246Z
-    version: 1
-data-model.objectschema.predicate-catalog:
-  id: 688ff2b5-59a4-4cd6-ab3d-85f90ff7992b
-  path: data-model.objectschema.predicate-catalog
-  spec_node_id: data-model.objectschema
-  type: objectschema
-  layer_id: data-model
-  name: PredicateCatalog
-  description: "Indexed predicate catalog produced by PredicateCatalogLoader from
-    base.json; provides two Maps: byPredicate (predicate name ->
-    PredicateDefinition) and byInverse (inverse predicate name -> forward
-    predicate name) for O(1) catalog lookups"
-  attributes:
-    type: object
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: src/core/services/predicateCatalogLoader.ts
-        symbol: PredicateCatalog
-  metadata:
-    created_at: 2026-03-23T23:51:48.868Z
-    updated_at: 2026-03-23T23:51:48.868Z
     version: 1
