@@ -43,9 +43,8 @@ technology.artifact.open-api-specification:
   type: artifact
   layer_id: technology
   name: OpenAPI Specification
-  description: OpenAPI 3.0 REST API contract (docs/api-spec.yaml)
-    describing the DR CLI server endpoints; source for TypeScript client
-    generation
+  description: OpenAPI 3.0 REST API contract (docs/api-spec.yaml) describing the
+    DR CLI server endpoints; source for TypeScript client generation
   attributes:
     artifactType: configuration
   source_reference:
