@@ -25,9 +25,17 @@ export default defineConfig({
     chunkSizeWarningLimit: 600, // Warn if chunks exceed 600KB
   },
   resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src')
-    },
+    alias: [
+      { find: '@', replacement: path.resolve(__dirname, './src') },
+      // TEMP workaround: heimdall-ui 0.9.0/0.9.1 ship dist/heimdall-ui.css but their
+      // package.json `exports["./css"]` still points at dist/style.css, so the
+      // documented `import '@tinkermonkey/heimdall-ui/css'` fails to resolve.
+      // Remove once heimdall-ui fixes the exports map.
+      {
+        find: /^@tinkermonkey\/heimdall-ui\/css$/,
+        replacement: path.resolve(__dirname, 'node_modules/@tinkermonkey/heimdall-ui/dist/heimdall-ui.css'),
+      },
+    ],
     dedupe: ['react', 'react-dom', 'react/jsx-runtime']
   },
   optimizeDeps: {

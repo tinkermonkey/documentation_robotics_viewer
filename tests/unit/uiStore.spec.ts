@@ -622,4 +622,16 @@ describe('persist hydration validates graphLayout/nodeMarginPreset/showInterLaye
     expect(fresh.useUiStore.getState().nodeDisplay).toBe('pill');
     expect(fresh.useUiStore.getState().showInterLayerNodes).toBe(false);
   });
+  it.each(['organic', 'orthogonal', 'radial-tree'] as const)(
+    'keeps the heimdall-ui 0.9.0 layout %s on rehydrate',
+    async (layout) => {
+      localStorage.setItem(
+        PERSIST_KEY,
+        JSON.stringify({ state: { graphLayout: layout }, version: 1 }),
+      );
+      vi.resetModules();
+      const fresh = await import('@/apps/embedded/ui/uiStore');
+      expect(fresh.useUiStore.getState().graphLayout).toBe(layout);
+    },
+  );
 });

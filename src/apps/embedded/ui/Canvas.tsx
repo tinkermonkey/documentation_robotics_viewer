@@ -145,7 +145,18 @@ const LAYOUT_OPTIONS = [
   { value: 'force', label: 'Force' },
   { value: 'galaxy', label: 'Galaxy' },
   { value: 'force-clustered', label: 'Clustered' },
+  { value: 'organic', label: 'Organic' },
+  { value: 'orthogonal', label: 'Orthogonal' },
+  { value: 'radial-tree', label: 'Radial' },
 ];
+
+/** Layouts that draw a boundary per group (heimdall-ui 0.9.0) — the Boundaries
+ *  control is hidden for the rest, where it would have no effect. */
+const LAYOUTS_WITH_BOUNDARIES: ReadonlySet<GraphLayout> = new Set([
+  'galaxy',
+  'force-clustered',
+  'radial-tree',
+]);
 
 const BOUNDARIES_OPTIONS = [
   { value: 'on', label: 'On' },
@@ -308,7 +319,7 @@ function GraphControls() {
               />
             </GraphControl>
           )}
-          {graphLayout !== 'force' && (
+          {LAYOUTS_WITH_BOUNDARIES.has(graphLayout) && (
             <GraphControl label="Boundaries" testId="graph-boundaries-control">
               <SegmentedControl
                 value={showClusterBoundaries ? 'on' : 'off'}
@@ -446,13 +457,11 @@ export function Canvas() {
       return { foreignNodes: [], crossEdges: [], foreignNodeIds: new Set<string>() };
     }
 
-    const perimeterLayout = graphLayout === 'force-clustered';
-    let result = interLayerNodesAndEdges(
-      model,
-      layerId,
-      index,
-      perimeterLayout,
-    );
+    // Foreign nodes are left for the layout engine to place under every layout.
+    // We used to pin them on a perimeter ring under 'force-clustered', but since
+    // heimdall-ui 0.9.0 spaces clusters by their real size, the estimated ring cut
+    // through the clusters (most layers had nearly every bubble pair overlapping).
+    let result = interLayerNodesAndEdges(model, layerId, index);
 
     // Filter orphan foreign nodes when structural-only view is active
     if (!showAllRelations) {
@@ -460,7 +469,7 @@ export function Canvas() {
     }
 
     return result;
-  }, [layerId, isSpec, showInterLayerNodes, graphLayout, model, index, showAllRelations]);
+  }, [layerId, isSpec, showInterLayerNodes, model, index, showAllRelations]);
 
   // Model view nodes carry a CardData side-channel (intra/inter-layer connection
   // counts, see data/modelGraph.ts's nodesWithCardData) that ModelCardNode reads

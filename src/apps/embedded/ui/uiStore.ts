@@ -21,7 +21,13 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 export type ViewKind = 'model' | 'spec' | 'changesets';
 export type CanvasMode = 'graph' | 'page';
 export type PageFocus = 'layer' | 'node';
-export type GraphLayout = 'force' | 'galaxy' | 'force-clustered';
+export type GraphLayout =
+  | 'force'
+  | 'galaxy'
+  | 'force-clustered'
+  | 'organic'
+  | 'orthogonal'
+  | 'radial-tree';
 export type NodeMarginPreset = 'tight' | 'default' | 'wide';
 export type NodeDisplay = 'card' | 'pill';
 
@@ -69,8 +75,8 @@ interface UiState {
   /** GraphCanvas layout engine for the Model/Schema graph. Global (not per-layer),
    *  same as canvasDark/mode. Defaults to 'force' — the pre-Heimdall-0.6.0 behavior. */
   graphLayout: GraphLayout;
-  /** Whether galaxy/force-clustered draw a boundary circle per top-level group.
-   *  No effect under layout 'force'. */
+  /** Whether galaxy/force-clustered/radial-tree draw a boundary circle per
+   *  top-level group. No effect under the other layouts. */
   showClusterBoundaries: boolean;
   /** Whether every edge is shown, or only edges GraphCanvas classifies as
    *  structural (see data/predicates.ts). Defaults to true (every edge visible)
@@ -436,6 +442,9 @@ const VALID_GRAPH_LAYOUTS: ReadonlySet<GraphLayout> = new Set([
   'force',
   'galaxy',
   'force-clustered',
+  'organic',
+  'orthogonal',
+  'radial-tree',
 ]);
 const VALID_NODE_MARGIN_PRESETS: ReadonlySet<NodeMarginPreset> = new Set([
   'tight',

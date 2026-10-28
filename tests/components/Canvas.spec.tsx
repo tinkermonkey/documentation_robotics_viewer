@@ -265,7 +265,7 @@ describe('Canvas — graph layout/display control strip', () => {
     expect(screen.queryByTestId('graph-controls')).not.toBeInTheDocument();
   });
 
-  it('shows Layout and Relations always; Boundaries only off "force", Node margin only off "galaxy"', async () => {
+  it('shows Layout and Relations always; Boundaries only for grouping layouts, Node margin only off "galaxy"', async () => {
     const user = userEvent.setup();
     renderWithProviders(<Canvas />);
     useUiStore.getState().setView('model');
@@ -286,6 +286,17 @@ describe('Canvas — graph layout/display control strip', () => {
     useUiStore.getState().setGraphLayout('force-clustered');
     await waitFor(() => expect(screen.getByTestId('graph-margin-control')).toBeInTheDocument());
     expect(screen.getByTestId('graph-boundaries-control')).toBeInTheDocument();
+
+    // heimdall-ui 0.9.0 layouts: only radial-tree draws boundaries.
+    useUiStore.getState().setGraphLayout('radial-tree');
+    await waitFor(() => expect(screen.getByTestId('graph-boundaries-control')).toBeInTheDocument());
+    for (const layout of ['organic', 'orthogonal'] as const) {
+      useUiStore.getState().setGraphLayout(layout);
+      await waitFor(() =>
+        expect(screen.queryByTestId('graph-boundaries-control')).not.toBeInTheDocument(),
+      );
+      expect(screen.getByTestId('graph-margin-control')).toBeInTheDocument();
+    }
 
     useUiStore.getState().setGraphLayout('force');
   });
