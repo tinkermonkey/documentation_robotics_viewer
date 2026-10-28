@@ -209,7 +209,8 @@ For local dev use `dr visualize --no-auth`.
   links, neighborhood/page-table clicks, inter-layer nodes), or any selection change in page mode. Plain
   on-canvas selection within a layer REPLACES the entry so graph clicks don't flood history. The effect
   skips navigating when the store already matches the URL, so back/forward never push duplicates. Viewport
-  (pan/zoom) history is pending heimdall#309 (dwell + programmatic-recenter events).
+  (pan/zoom) history is not wired yet; heimdall-ui 0.9.4 provides `onViewportDwell` / `onViewportNavigate` /
+  `initialViewport` / `viewportRef` for it.
 
 ## Local Development & Verification
 
