@@ -98,13 +98,18 @@ export function NeighborhoodGraphView({
   return (
     <div
       style={{
-        height: 280,
-        width: '100%',
-        position: 'relative',
+        // Grows with the viewport rather than a fixed px box. The floor matches
+        // GraphCanvas's own `min-height: 360px` — a smaller box can't contain the
+        // canvas, which then overflows onto the page content below it.
+        height: '40vh',
+        minHeight: 360,
+        maxHeight: 560,
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
         border: '1px solid rgb(var(--canvas-border))',
         borderRadius: 8,
         background: 'rgb(var(--canvas-card))',
-        marginBottom: 20,
       }}
       data-testid="neighborhood-graph-view"
     >
@@ -132,17 +137,16 @@ export function NeighborhoodGraphView({
           onNodeSelect={handleNodeClick}
           layout="force"
           nodeMargin={40}
-          centerOnSelect={true}
+          // fitView only: no centerOnSelect. The center node is pre-selected
+          // (for its highlight), and centerOnSelect would pan it to the middle
+          // after the fit, pushing the fitted extents off-screen. The graph is
+          // remounted per element (PageView keys it), so there's nothing to
+          // recenter on later.
           fitView={true}
           fitPadding={20}
           showToolbar={false}
           isStructuralEdge={isStructuralEdge}
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-          }}
+          style={{ flex: 1 }}
         />
       )}
     </div>

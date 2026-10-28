@@ -3,12 +3,14 @@
  * two-way with the URL hash, per router.tsx's AppShellRoute:
  *   - selecting a layer/node/changeset updates `?layer=`/`?node=`/`?changeset=`
  *   - a deep-linked URL (reload, or a shared link) restores that selection
- *   - switching Model/Schema/Changesets pushes a new history entry; a pure
- *     selection change within the same view replaces the current one instead
+ *   - destination changes push a history entry (view, graph/page mode, layer,
+ *     deliberate navigation, page-to-page); plain on-canvas selection within a
+ *     layer replaces the current entry instead
+ *   - back/forward restore the store without pushing duplicate entries
  */
 
 import { test, expect } from '@playwright/test';
-import { gotoView, ROUTES, fetchModel } from './helpers';
+import { gotoView, ROUTES, fetchModel, openLayer } from './helpers';
 
 /** The hash route's own search params (after the `?` inside the `#...` fragment —
  *  NOT `new URL(url).searchParams`, which only sees a REAL query string, not one
@@ -20,7 +22,7 @@ function hashSearchParams(url: string): URLSearchParams {
 test.describe('URL routing — left-panel selections', () => {
   test('selecting a layer in the nav tree updates the URL with ?layer=', async ({ page }) => {
     await gotoView(page, ROUTES.model);
-    await page.getByRole('button', { name: /^APM \d+$/ }).click();
+    await openLayer(page, 'APM');
     await expect(page).toHaveURL(/[?&]layer=apm(&|$)/);
   });
 
@@ -28,8 +30,7 @@ test.describe('URL routing — left-panel selections', () => {
     page,
   }) => {
     await gotoView(page, ROUTES.model);
-    await page.getByRole('button', { name: /^APM \d+$/ }).click(); // expand + select the layer
-    const firstLeaf = page.locator('.drv-nav-l2').first();
+    const firstLeaf = await openLayer(page, 'APM');
     await expect(firstLeaf).toBeVisible();
     await firstLeaf.click();
 
@@ -63,7 +64,7 @@ test.describe('URL routing — left-panel selections', () => {
     page,
   }) => {
     await gotoView(page, ROUTES.model);
-    await page.getByRole('button', { name: /^APM \d+$/ }).click();
+    await openLayer(page, 'APM');
     const firstEdgeLabel = page.locator('[data-testid^="graph-edge-"] .graph-edge__label').first();
     await expect(firstEdgeLabel).toBeVisible();
     await firstEdgeLabel.click();
@@ -81,7 +82,7 @@ test.describe('URL routing — left-panel selections', () => {
 
   test('reloading a deep-linked layer+edge URL restores that edge selection', async ({ page }) => {
     await gotoView(page, ROUTES.model);
-    await page.getByRole('button', { name: /^APM \d+$/ }).click();
+    await openLayer(page, 'APM');
     const firstEdgeLabel = page.locator('[data-testid^="graph-edge-"] .graph-edge__label').first();
     await expect(firstEdgeLabel).toBeVisible();
     await firstEdgeLabel.click();
@@ -99,13 +100,18 @@ test.describe('URL routing — left-panel selections', () => {
     page,
   }) => {
     await gotoView(page, ROUTES.model);
-    await page.getByRole('button', { name: /^APM \d+$/ }).click();
+    await openLayer(page, 'APM');
     const firstEdgeLabel = page.locator('[data-testid^="graph-edge-"] .graph-edge__label').first();
     await expect(firstEdgeLabel).toBeVisible();
     await firstEdgeLabel.click();
     await expect(page).toHaveURL(/[?&]edge=[^&]+/);
 
-    const firstLeaf = page.locator('.drv-nav-l2').first();
+    // APM is already expanded and selected (an edge is selected in it).
+    const firstLeaf = page
+      .getByRole('button', { name: /^APM \d+$/ })
+      .first()
+      .locator('xpath=../following-sibling::div[1]')
+      .locator('.drv-nav-l2');
     await firstLeaf.click();
 
     await expect(page).toHaveURL(/[?&]node=[^&]+/);
@@ -114,7 +120,7 @@ test.describe('URL routing — left-panel selections', () => {
 
   test('switching views pushes history; selecting within a view replaces it', async ({ page }) => {
     await gotoView(page, ROUTES.model);
-    await page.getByRole('button', { name: /^APM \d+$/ }).click();
+    await openLayer(page, 'APM');
     await expect(page).toHaveURL(/[?&]layer=apm(&|$)/);
 
     // A pure selection change (still Model view) replaces the entry in place —
@@ -127,5 +133,81 @@ test.describe('URL routing — left-panel selections', () => {
     // replaced into the SAME entry gotoView started on, never pushed).
     await expect(page).toHaveURL(/#\/model\//);
     await expect(page).toHaveURL(/[?&]layer=apm(&|$)/);
+  });
+});
+
+test.describe('URL routing — browser history for navigation', () => {
+  test('switching layers pushes history; Back returns to the previous layer', async ({ page }) => {
+    await gotoView(page, ROUTES.model);
+    await openLayer(page, 'APM');
+    await expect(page).toHaveURL(/[?&]layer=apm(&|$)/);
+    await openLayer(page, 'Security');
+    await expect(page).toHaveURL(/[?&]layer=security(&|$)/);
+
+    await page.goBack();
+    await expect(page).toHaveURL(/[?&]layer=apm(&|$)/);
+    await expect(page.getByTestId('page-header-id-chip')).toHaveText('apm');
+
+    // Forward lands on the same entry — no duplicate pushed by the Back.
+    await page.goForward();
+    await expect(page).toHaveURL(/[?&]layer=security(&|$)/);
+    await expect(page.getByTestId('page-header-id-chip')).toHaveText('security');
+  });
+
+  test('graph/page mode is in the URL and in history', async ({ page }) => {
+    await gotoView(page, ROUTES.model);
+    await (await openLayer(page, 'APM')).click();
+    await expect(page).toHaveURL(/#\/model\/graph\?/);
+
+    await page.getByRole('radio', { name: 'page', exact: true }).click();
+    await expect(page.getByTestId('page-view')).toBeVisible();
+    await expect(page).toHaveURL(/#\/model\/page\?/);
+
+    await page.goBack();
+    await expect(page).toHaveURL(/#\/model\/graph\?/);
+    await expect(page.getByTestId('page-view')).toHaveCount(0);
+
+    // A deep link straight into page mode restores it.
+    await page.goForward();
+    const pageUrl = page.url();
+    await page.goto(pageUrl);
+    await expect(page.getByTestId('page-view')).toBeVisible();
+  });
+
+  test('clicking a neighbor on a node page pushes history; Back returns to the first page', async ({ page }) => {
+    await gotoView(page, ROUTES.model);
+    await (await openLayer(page, 'Data Model')).click();
+    await page.getByRole('radio', { name: 'page', exact: true }).click();
+    await expect(page.getByTestId('page-view')).toBeVisible();
+    const firstNode = hashSearchParams(page.url()).get('node');
+    expect(firstNode).toBeTruthy();
+
+    const neighbors = page
+      .getByTestId('neighborhood-graph-view')
+      .locator(`[data-testid^="graph-node-"]:not([data-testid="graph-node-${firstNode}"])`);
+    test.skip((await neighbors.count()) === 0, 'first data-model element has no neighbors');
+    await neighbors.first().locator('.graph-node').click();
+    await expect.poll(() => hashSearchParams(page.url()).get('node')).not.toBe(firstNode);
+
+    await page.goBack();
+    await expect.poll(() => hashSearchParams(page.url()).get('node')).toBe(firstNode);
+    await expect(page.getByTestId('page-view')).toBeVisible();
+  });
+
+  test('a plain graph-node click replaces the entry instead of pushing', async ({ page }) => {
+    await gotoView(page, ROUTES.model);
+    await openLayer(page, 'APM');
+    await expect(page).toHaveURL(/[?&]layer=apm(&|$)/);
+
+    // A native APM node — an inter-layer node click is a navigation, which pushes.
+    await page.locator('g[data-testid^="graph-node-"][data-domain="apm"]').first().click();
+    await expect(page).toHaveURL(/[?&]node=[^&]+/);
+    const clickedNode = hashSearchParams(page.url()).get('node');
+
+    // Back skips the in-layer click (it replaced the APM entry) and leaves APM.
+    await page.goBack();
+    await expect(page).not.toHaveURL(/[?&]layer=apm(&|$)/);
+    await page.goForward();
+    await expect.poll(() => hashSearchParams(page.url()).get('node')).toBe(clickedNode);
   });
 });

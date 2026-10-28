@@ -273,7 +273,7 @@ describe('Canvas — graph layout/display control strip', () => {
     await waitFor(() => expect(graphNodeCount()).toBe(11));
     await user.hover(screen.getByTestId('graph-controls-toggle')); // expand the flyout
 
-    // Default layout is 'force': Boundaries hidden, Node margin shown.
+    // Default layout is 'organic': Boundaries hidden, Node margin shown.
     expect(screen.getByTestId('graph-layout-control')).toBeInTheDocument();
     expect(screen.getByTestId('graph-relations-control')).toBeInTheDocument();
     expect(screen.queryByTestId('graph-boundaries-control')).not.toBeInTheDocument();
@@ -323,7 +323,7 @@ describe('Canvas — graph layout/display control strip', () => {
     fireEvent.click(screen.getByRole('radio', { name: 'Galaxy' }));
     expect(useUiStore.getState().graphLayout).toBe('galaxy');
 
-    // Boundaries control appears only when layout is not 'force'; use within()
+    // Boundaries control appears only for grouping layouts; use within()
     // to disambiguate from the Inter-layer 'Off' option also present in Model view
     fireEvent.click(within(screen.getByTestId('graph-boundaries-control')).getByRole('radio', { name: 'Off' }));
     expect(useUiStore.getState().showClusterBoundaries).toBe(false);

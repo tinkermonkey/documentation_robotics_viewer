@@ -60,7 +60,9 @@ const OP_META: Record<ChangeOp, OpMeta> = {
   },
   delete: {
     op: 'delete', label: 'DEL',
-    color: '#F43F5E', colorLight: '#BE123C', background: 'rgba(244,63,94,0.12)',
+    // rose-400, not rose-500: #F43F5E on the dark tinted row was 3.5:1, below AA
+    // for 10px text; #FB7185 is 4.8:1.
+    color: '#FB7185', colorLight: '#BE123C', background: 'rgba(244,63,94,0.12)',
   },
 };
 

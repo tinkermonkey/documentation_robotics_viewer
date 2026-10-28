@@ -11,7 +11,7 @@
 
 import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { gotoView, ROUTES } from './helpers';
+import { gotoView, ROUTES, openLayer } from './helpers';
 
 const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
 
@@ -24,7 +24,7 @@ async function enterPageMode(page: Page): Promise<void> {
 /** Switch back to graph mode and wait for the graph to render. */
 async function enterGraphMode(page: Page): Promise<void> {
   await page.getByRole('radio', { name: 'graph', exact: true }).click();
-  await expect(page.locator('[data-testid^="graph-node-"]')).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('[data-testid^="graph-node-"]').first()).toBeVisible({ timeout: 15_000 });
 }
 
 /** Set the canvas tone via the topbar SegmentedControl. */
@@ -50,10 +50,8 @@ test.describe('node page — E2E navigation + graph', () => {
     await gotoView(page, ROUTES.model);
 
     // Select an element via the nav tree (sidebar expand + click the element).
-    // Nav tree L1: layer button (e.g., "DATA-MODEL 34").
-    await page.getByRole('button', { name: /^DATA-MODEL \d+$/ }).click();
-    // Nav tree L2: the element (first available).
-    const firstLeaf = page.locator('.drv-nav-l2').first();
+    // Nav tree L1 (layer) then L2 (its first element).
+    const firstLeaf = await openLayer(page, 'Data Model');
     await expect(firstLeaf).toBeVisible();
     const targetName = await firstLeaf.textContent();
 
@@ -63,7 +61,7 @@ test.describe('node page — E2E navigation + graph', () => {
     await enterPageMode(page);
 
     // Page renders with the target element's name in the title area.
-    const pageTitle = page.getByTestId('page-view').locator('h1, [role="heading"]').first();
+    const pageTitle = page.getByTestId('page-header-title');
     await expect(pageTitle).toContainText(targetName!);
 
     // Neighborhood graph is present (NeighborhoodGraphView renders if neighborhood.empty === false).
@@ -78,8 +76,7 @@ test.describe('node page — E2E navigation + graph', () => {
     await gotoView(page, ROUTES.spec);
 
     // Expand the layer in the nav tree and select a node type.
-    await page.getByRole('button', { name: /^DATA-MODEL \d+$/ }).click();
-    const firstLeaf = page.locator('.drv-nav-l2').first();
+    const firstLeaf = await openLayer(page, 'Data Model', 'spec');
     await expect(firstLeaf).toBeVisible();
     const targetTypeLabel = await firstLeaf.textContent();
 
@@ -89,7 +86,7 @@ test.describe('node page — E2E navigation + graph', () => {
     await enterPageMode(page);
 
     // Page renders with the target type's name in the title.
-    const pageTitle = page.getByTestId('page-view').locator('h1, [role="heading"]').first();
+    const pageTitle = page.getByTestId('page-header-title');
     await expect(pageTitle).toContainText(targetTypeLabel!);
 
     // Neighborhood graph is present.
@@ -102,8 +99,7 @@ test.describe('node page — E2E navigation + graph', () => {
   }) => {
     // Start in model graph, select a node, enter page mode.
     await gotoView(page, ROUTES.model);
-    await page.getByRole('button', { name: /^DATA-MODEL \d+$/ }).click();
-    const firstLeaf = page.locator('.drv-nav-l2').first();
+    const firstLeaf = await openLayer(page, 'Data Model');
     await expect(firstLeaf).toBeVisible();
     const firstNodeName = await firstLeaf.textContent();
     await firstLeaf.click();
@@ -111,8 +107,7 @@ test.describe('node page — E2E navigation + graph', () => {
     await enterPageMode(page);
 
     // Page renders with the first node.
-    const pageView = page.getByTestId('page-view');
-    await expect(pageView.locator('h1, [role="heading"]')).toContainText(firstNodeName!);
+    await expect(page.getByTestId('page-header-title')).toContainText(firstNodeName!);
 
     // Find a neighbor node in the neighborhood graph (not the center).
     const neighborhoodView = page.getByTestId('neighborhood-graph-view');
@@ -147,7 +142,7 @@ test.describe('node page — E2E navigation + graph', () => {
 
     // Should navigate to the neighbor's page.
     // The page title should change.
-    const newTitle = page.getByTestId('page-view').locator('h1, [role="heading"]').first();
+    const newTitle = page.getByTestId('page-header-title');
     // Give it a moment to navigate.
     await expect(newTitle).toContainText(neighborLabel, { timeout: 10_000 });
 
@@ -163,7 +158,7 @@ test.describe('node page — E2E navigation + graph', () => {
     await gotoView(page, ROUTES.model);
 
     // Navigate to the layer page view (graph mode).
-    await page.getByRole('button', { name: /^DATA-MODEL \d+$/ }).click();
+    await openLayer(page, 'Data Model');
     await expect(page.getByTestId('canvas')).toBeVisible();
 
     // Switch to page mode (now on the layer page).
@@ -192,7 +187,7 @@ test.describe('node page — E2E navigation + graph', () => {
     await expect(updatedCrumbs).toHaveCount(2); // "model" and "data-model".
 
     // The page title should match the clicked element.
-    const pageTitle = pageView.locator('h1, [role="heading"]').first();
+    const pageTitle = page.getByTestId('page-header-title');
     await expect(pageTitle).toContainText(cellText!);
   });
 
@@ -206,13 +201,12 @@ test.describe('node page — E2E navigation + graph', () => {
     await gotoView(page, ROUTES.model);
 
     // Try to navigate to the testing layer (may not have elements, which is OK).
-    const testingButton = page.getByRole('button', { name: /^TESTING \d+$/ });
+    const testingButton = page.getByRole('button', { name: /^Testing \d+$/ });
     if ((await testingButton.count()) === 0) {
       test.skip();
     }
 
-    await testingButton.click();
-    const firstLeaf = page.locator('.drv-nav-l2').first();
+    const firstLeaf = await openLayer(page, 'Testing');
     if ((await firstLeaf.count()) === 0) {
       test.skip();
     }
@@ -236,8 +230,7 @@ test.describe('node page — E2E navigation + graph', () => {
   }) => {
     await gotoView(page, ROUTES.model);
 
-    await page.getByRole('button', { name: /^DATA-MODEL \d+$/ }).click();
-    const firstLeaf = page.locator('.drv-nav-l2').first();
+    const firstLeaf = await openLayer(page, 'Data Model');
     await firstLeaf.click();
     await enterPageMode(page);
 
@@ -266,8 +259,7 @@ test.describe('node page — E2E navigation + graph', () => {
   }) => {
     await gotoView(page, ROUTES.spec);
 
-    await page.getByRole('button', { name: /^DATA-MODEL \d+$/ }).click();
-    const firstLeaf = page.locator('.drv-nav-l2').first();
+    const firstLeaf = await openLayer(page, 'Data Model', 'spec');
     await firstLeaf.click();
     await enterPageMode(page);
 
@@ -285,8 +277,8 @@ test.describe('node page — E2E navigation + graph', () => {
 
 test.describe('node page accessibility (axe / WCAG 2.1 AA)', () => {
   const views = [
-    { name: 'Model', route: ROUTES.model, layerName: 'DATA-MODEL' },
-    { name: 'Schema', route: ROUTES.spec, layerName: 'DATA-MODEL' },
+    { name: 'Model', route: ROUTES.model, section: 'model' as const },
+    { name: 'Schema', route: ROUTES.spec, section: 'spec' as const },
   ];
 
   for (const view of views) {
@@ -301,8 +293,7 @@ test.describe('node page accessibility (axe / WCAG 2.1 AA)', () => {
         await setTone(page, tone);
 
         // Select a node via sidebar.
-        await page.getByRole('button', { name: new RegExp(`^${view.layerName} \\d+$`) }).click();
-        const firstLeaf = page.locator('.drv-nav-l2').first();
+        const firstLeaf = await openLayer(page, 'Data Model', view.section);
         if ((await firstLeaf.count()) === 0) {
           test.skip();
         }
@@ -341,8 +332,7 @@ test.describe('node page — graph + table row click flow', () => {
     // click neighbor navigates, click graph mode button returns to graph.
 
     await gotoView(page, ROUTES.model);
-    await page.getByRole('button', { name: /^DATA-MODEL \d+$/ }).click();
-    const firstLeaf = page.locator('.drv-nav-l2').first();
+    const firstLeaf = await openLayer(page, 'Data Model');
     await expect(firstLeaf).toBeVisible();
     await firstLeaf.click();
 
@@ -370,8 +360,7 @@ test.describe('node page — graph + table row click flow', () => {
 
   test('table row navigation from node page opens target node page', async ({ page }) => {
     await gotoView(page, ROUTES.model);
-    await page.getByRole('button', { name: /^DATA-MODEL \d+$/ }).click();
-    const firstLeaf = page.locator('.drv-nav-l2').first();
+    const firstLeaf = await openLayer(page, 'Data Model');
     await firstLeaf.click();
     await enterPageMode(page);
 
@@ -393,7 +382,7 @@ test.describe('node page — graph + table row click flow', () => {
 
     // Should navigate to the target node page.
     await expect(pageView).toBeVisible({ timeout: 10_000 });
-    const pageTitle = pageView.locator('h1, [role="heading"]').first();
+    const pageTitle = page.getByTestId('page-header-title');
     await expect(pageTitle).toContainText(cellText!);
   });
 });

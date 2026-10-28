@@ -58,6 +58,30 @@ describe('computeTooltipPosition', () => {
     expect(pos.left).toBe(8);
   });
 
+  it('falls back to a perpendicular side when neither top nor bottom fits', () => {
+    // A 300px-tall card around a mid-height anchor in a 400px viewport.
+    const short = { width: 1000, height: 400 };
+    const anchor = rect({ top: 190, bottom: 210, left: 100, right: 160, width: 60, height: 20 });
+    const pos = computeTooltipPosition(anchor, { width: 200, height: 300 }, 'top', short);
+    expect(pos.placement).toBe('right');
+    expect(pos.left).toBe(160 + 8);
+    expect(pos.overlapsAnchor).toBe(false);
+  });
+
+  it('flags overlapsAnchor when no side fits and clamping covers the trigger', () => {
+    // Regression: a tall node-type card covered its page-table link, caught the
+    // mouseup, and the link's click never fired.
+    const tiny = { width: 300, height: 400 };
+    const anchor = rect({ top: 190, bottom: 210, left: 100, right: 160, width: 60, height: 20 });
+    const pos = computeTooltipPosition(anchor, { width: 280, height: 300 }, 'top', tiny);
+    expect(pos.overlapsAnchor).toBe(true);
+  });
+
+  it('does not flag overlapsAnchor for a normal placement', () => {
+    const anchor = rect({ top: 300, bottom: 320, left: 400, right: 460, width: 60, height: 20 });
+    expect(computeTooltipPosition(anchor, { width: 200, height: 100 }, 'top', viewport).overlapsAnchor).toBe(false);
+  });
+
   it('clamps left within the viewport margin near the right edge', () => {
     const anchor = rect({ top: 300, bottom: 320, left: 990, right: 998, width: 8, height: 20 });
     const pos = computeTooltipPosition(anchor, { width: 200, height: 100 }, 'top', viewport);

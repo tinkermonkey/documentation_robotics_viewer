@@ -145,7 +145,7 @@ describe('NeighborhoodGraphView', () => {
   });
 
   describe('styling and accessibility', () => {
-    it('has proper container styling', () => {
+    it('keeps the graph in normal flow inside a box no shorter than GraphCanvas\'s 360px minimum', () => {
       const neighborhood: NeighborhoodGraph = {
         nodes: [
           { id: 'center-id', name: 'Center', kind: 'component', layer: 'application', isCenter: true },
@@ -166,14 +166,16 @@ describe('NeighborhoodGraphView', () => {
         <NeighborhoodGraphView neighborhood={neighborhood} isSpecView={false} />,
       );
 
+      // Regression: a fixed 280px box with an absolutely positioned canvas let
+      // GraphCanvas's own `min-height: 360px` overflow onto the page content
+      // below, and fitView fitted to the hidden overflow.
       const container = screen.getByTestId('neighborhood-graph-view');
-      expect(container).toHaveStyle({
-        height: '280px',
-        width: '100%',
-        position: 'relative',
-        borderRadius: '8px',
-        marginBottom: '20px',
-      });
+      expect(container.style.height).toBe('40vh');
+      expect(container.style.minHeight).toBe('360px');
+      expect(container.style.overflow).toBe('hidden');
+      const canvas = container.querySelector('.graph-canvas') as HTMLElement;
+      expect(canvas).not.toBeNull();
+      expect(canvas.style.position).not.toBe('absolute');
     });
   });
 });

@@ -23,7 +23,7 @@ function reset() {
       focus: 'layer',
       expandedSections: new Set<string>(['model']),
       expandedLayers: new Set<string>(),
-      graphLayout: 'force',
+      graphLayout: 'organic',
       showClusterBoundaries: true,
       showAllRelations: true,
       nodeMarginPreset: 'default',
@@ -503,8 +503,8 @@ describe('focus — page-view target (layer overview vs. node detail)', () => {
 });
 
 describe('graph layout/display preferences', () => {
-  it('default to force layout, boundaries on, every relation visible, default node margin, card node display, and inter-layer nodes on', () => {
-    expect(get().graphLayout).toBe('force');
+  it('default to organic layout, boundaries on, every relation visible, default node margin, card node display, and inter-layer nodes on', () => {
+    expect(get().graphLayout).toBe('organic');
     expect(get().showClusterBoundaries).toBe(true);
     expect(get().showAllRelations).toBe(true);
     expect(get().nodeMarginPreset).toBe('default');
@@ -591,7 +591,7 @@ describe('persist hydration validates graphLayout/nodeMarginPreset/showInterLaye
 
     vi.resetModules();
     const fresh = await import('@/apps/embedded/ui/uiStore');
-    expect(fresh.useUiStore.getState().graphLayout).toBe('force');
+    expect(fresh.useUiStore.getState().graphLayout).toBe('organic');
     expect(fresh.useUiStore.getState().nodeMarginPreset).toBe('default');
     expect(fresh.useUiStore.getState().nodeDisplay).toBe('card');
     expect(fresh.useUiStore.getState().showInterLayerNodes).toBe(true);

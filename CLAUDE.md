@@ -165,7 +165,8 @@ For local dev use `dr visualize --no-auth`.
   `relatedTarget`-based (`collapseIfLeavingFlyout`, shared by `onMouseLeave`/`onBlur`) — checks where the
   pointer/focus is actually GOING, not just that SOME leave event fired, so clicking one control inside the
   panel and moving to another doesn't spuriously collapse it out from under the interaction. Drives
-  `uiStore`'s `graphLayout` (`force`/`galaxy`/`force-clustered`), `showClusterBoundaries`,
+  `uiStore`'s `graphLayout` (`organic` default, plus `force`/`galaxy`/`force-clustered`/`orthogonal`/
+  `radial-tree` — heimdall-ui 0.9.0; Boundaries control only for galaxy/clustered/radial-tree), `showClusterBoundaries`,
   `nodeMarginPreset` (`tight`/`default`/`wide`), and `showAllRelations`. "Structural" relations use
   `data/predicates.ts`'s `isStructuralEdge` — a hardcoded DR predicate `category` classification
   (mirrors `ui/domain.ts`'s hardcoded layer colors; not exposed by `/api/model` or `/api/spec`). The
@@ -201,9 +202,14 @@ For local dev use `dr visualize --no-auth`.
 - **URL routing for left-panel selections** (`router.tsx`'s `AppShellRoute`) — `?layer=`/`?node=`/
   `?changeset=` search params two-way sync with `uiStore.layerId`/`selectedId`/`changesetId`, on top of
   the existing `:section`/`:view` path sync. Covers selections from ANYWHERE (nav tree clicks, graph node
-  clicks, cross-layer navigation), not just the nav tree, since they all drive the same store fields. A
-  genuine view change (Model↔Schema↔Changesets) pushes a new history entry; a pure selection change within
-  the same view replaces the current entry instead, so nav-tree/graph clicks don't flood browser history.
+  clicks, cross-layer navigation), not just the nav tree, since they all drive the same store fields.
+  `:view` carries the graph/page mode for Model + Schema (`#/model/page?...`). Destination changes PUSH a
+  history entry: view, mode, layer, a deliberate navigation (`uiStore.navSeq`, bumped by
+  `navigateToElement`/`navigateToElementWithEdge`/`navigateToSpecNode` — nav-tree leaves, relationship
+  links, neighborhood/page-table clicks, inter-layer nodes), or any selection change in page mode. Plain
+  on-canvas selection within a layer REPLACES the entry so graph clicks don't flood history. The effect
+  skips navigating when the store already matches the URL, so back/forward never push duplicates. Viewport
+  (pan/zoom) history is pending heimdall#309 (dwell + programmatic-recenter events).
 
 ## Local Development & Verification
 
@@ -246,6 +252,8 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 | Color doesn't flip in dark mode | Hardcoded hex | Use `rgb(var(--canvas-*))` |
 | `DetailDrawer` overlays the wrong region (e.g. whole app row, not just the graph) | Rendered outside the intended `position: relative` ancestor | Render it as a sibling *inside* that ancestor — `Inspector` lives in `Canvas.tsx`'s graph wrapper, not `AppShell.tsx` |
 | Floating overlay's buttons are unclickable / read behind another panel | Two absolutely-positioned overlays anchor to the same edge with no explicit stacking order | Prefer moving one to a non-colliding corner if there's a free one (see `GraphToolbar`'s `toolbarPosition="bottom-left"`, moved off `"bottom-right"` specifically to stop colliding with the Inspector `DetailDrawer`); if both must share an edge, give the one that should win an explicit higher `z-index` instead |
+| GraphCanvas overflows its box onto content below | Heimdall's `.graph-canvas` has `min-height: 360px`; a smaller fixed-height box with an absolutely positioned canvas can't contain it | Keep the canvas in normal flow (`flex: 1`) inside a box whose min-height is ≥ 360px (see `NeighborhoodGraphView`) |
+| A RichTooltip swallows the click on its own trigger | No side had room, so clamping put the card over the trigger and the mouseup landed on it | `computeTooltipPosition` tries all four sides, then sets `overlapsAnchor` → the card gets `pointer-events: none` |
 | Fonts fall back to system | woff2 404 (served as HTML) | Self-hosted under `public/fonts`; keep `@font-face` `/fonts/...` paths |
 | Stale UI after an edit | Vite transform cache | Restart dev server + `rm -rf node_modules/.vite`. Before debugging a code change that "isn't taking effect," `fetch()` the source path from the live page and grep the response for a string unique to your edit — cheaper than assuming the logic is wrong |
 | `userEvent.click()` on a 2nd element inside a hover-tracked overlay doesn't fire its handler | happy-dom/user-event doesn't reliably exclude a shared ancestor when synthesizing the pointer path between two different click targets, so a spurious `mouseleave` collapses (unmounts) the panel mid-click | Use `fireEvent.click()` for that specific multi-step interaction instead of `userEvent.click()` — confirms it's a test-environment artifact, not a product bug (verify live too) |

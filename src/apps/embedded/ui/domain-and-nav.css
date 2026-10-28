@@ -346,6 +346,28 @@ body.dark-canvas {
   line-height: 1.5;
 }
 
+/* GraphCanvas's native edgeTooltip/nodeTooltip wraps our RichTooltip content in
+ * heimdall-ui's own `.tooltip` box, which uses SHELL tokens (always dark). Our
+ * content uses canvas tokens, so on the light canvas it rendered as a dark box
+ * with near-black text. Give that box the same canvas-aware card styling as
+ * `.rich-tooltip` whenever it holds our content. */
+.graph-tooltip-layer .tooltip:has(> .rich-tooltip__body) {
+  /* The box is absolutely positioned, so it shrink-wraps to a narrow column
+     unless told to size to its content (up to the max). */
+  width: max-content;
+  max-width: 320px;
+  padding: 12px 14px;
+  background: rgb(var(--canvas-card) / 0.96);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgb(var(--canvas-border));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  color: rgb(var(--canvas-fg-1));
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
 .rich-tooltip__title {
   font-size: 13.5px;
   font-weight: 600;

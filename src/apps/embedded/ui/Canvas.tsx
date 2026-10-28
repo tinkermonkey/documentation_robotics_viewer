@@ -263,7 +263,11 @@ function GraphControls() {
           toggleRef.current?.focus();
         }
       }}
-      style={{ position: 'absolute', top: 14, left: 14, zIndex: 1 }}
+      // Spans the graph area (minus the 14px inset) so the panel's max-width
+      // tracks the canvas, not a hardcoded px cap. pointer-events: none lets
+      // the empty part pass clicks through to the graph; the toggle and panel
+      // opt back in. mouseenter/leave still fire, from the hit-tested children.
+      style={{ position: 'absolute', top: 14, left: 14, right: 14, zIndex: 1, pointerEvents: 'none' }}
       data-testid="graph-controls"
     >
       <button
@@ -275,7 +279,7 @@ function GraphControls() {
         aria-controls="graph-controls-panel"
         data-testid="graph-controls-toggle"
         onClick={() => setExpanded(true)}
-        style={{ background: 'transparent' }}
+        style={{ background: 'transparent', pointerEvents: 'auto' }}
       >
         <Icon name="settings" size={16} />
       </button>
@@ -284,11 +288,16 @@ function GraphControls() {
           id="graph-controls-panel"
           style={{
             marginTop: 6,
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 14,
+            // Two content-sized columns; Layout (the widest control) spans both.
+            display: 'grid',
+            gridTemplateColumns: 'auto auto',
+            justifyContent: 'start',
+            columnGap: 14,
             rowGap: 8,
-            maxWidth: 'min(420px, calc(100vw - 28px))',
+            width: 'fit-content',
+            maxWidth: '100%',
+            boxSizing: 'border-box',
+            pointerEvents: 'auto',
             padding: '10px 14px',
             background: 'rgb(var(--canvas-card) / 0.5)',
             backdropFilter: 'blur(8px)',
@@ -299,7 +308,7 @@ function GraphControls() {
           }}
           data-testid="graph-controls-panel"
         >
-          <GraphControl label="Layout" testId="graph-layout-control">
+          <GraphControl label="Layout" testId="graph-layout-control" fullRow>
             <SegmentedControl
               value={graphLayout}
               onChange={(v) => setGraphLayout(v as GraphLayout)}
@@ -368,15 +377,24 @@ function GraphControls() {
 function GraphControl({
   label,
   testId,
+  fullRow = false,
   children,
 }: {
   label: string;
   testId: string;
+  /** Span both columns of the GraphControls panel grid. */
+  fullRow?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <div
-      style={{ display: 'flex', flexDirection: 'column', gap: 6 }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        gap: 6,
+        gridColumn: fullRow ? '1 / -1' : undefined,
+      }}
       data-testid={testId}
     >
       <span

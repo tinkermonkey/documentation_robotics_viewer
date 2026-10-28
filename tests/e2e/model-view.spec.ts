@@ -9,24 +9,27 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { gotoView, ROUTES, DOMAIN_HEX, hexToRgb } from './helpers';
+import { gotoView, ROUTES, DOMAIN_HEX, hexToRgb, fetchModel } from './helpers';
 
 test.describe('model view', () => {
   test('graph nodes render with the layer domain color (data-model swatch == #2DD4BF)', async ({
     page,
+    request,
   }) => {
     // data-model is the default layer; its domain hex is #2DD4BF == rgb(45,212,191).
     await gotoView(page, ROUTES.model);
 
-    const nodes = page.locator('[data-testid^="graph-node-"]');
+    // Only this layer's own nodes — inter-layer nodes from other layers are
+    // drawn alongside them by default.
+    const nodes = page.locator('g[data-testid^="graph-node-"][data-domain="data-model"]');
     await expect(nodes.first()).toBeVisible({ timeout: 15_000 });
-    // data-model has 34 elements.
-    await expect(nodes).toHaveCount(34);
+    const model = await fetchModel(request);
+    await expect(nodes).toHaveCount(model.nodes.filter((n) => n.layer_id === 'data-model').length);
 
     // The HTML node inside the SVG <g> carries the domain class; its swatch is
     // colored by `.graph-node[data-domain='data-model'] .graph-node__swatch`.
     const swatchBg = await page.evaluate(() => {
-      const g = document.querySelector('[data-testid^="graph-node-"]');
+      const g = document.querySelector('g[data-testid^="graph-node-"][data-domain="data-model"]');
       const swatch = g?.querySelector('.graph-node__swatch') as HTMLElement | null;
       return swatch ? getComputedStyle(swatch).backgroundColor : '';
     });

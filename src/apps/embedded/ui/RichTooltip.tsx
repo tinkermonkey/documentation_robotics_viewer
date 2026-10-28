@@ -47,6 +47,10 @@ export interface TooltipPosition {
   top: number;
   left: number;
   placement: TooltipPlacement;
+  /** True when no side had room and clamping left the card over its own
+   *  trigger. The card then lets pointer events through, so it can't swallow
+   *  a click on the trigger underneath it. */
+  overlapsAnchor: boolean;
 }
 
 /** Minimum gap kept between the card and the viewport edge / the anchor. */
@@ -88,7 +92,13 @@ export function computeTooltipPosition(
     }
   };
 
-  const placement = fits(preferred) ? preferred : OPPOSITE_PLACEMENT[preferred];
+  // Preferred side, then its opposite, then the two perpendicular sides. When
+  // none fits (a tall card in a short viewport), keep the preferred side and
+  // clamp. That can leave the card over its trigger; see `overlapsAnchor`.
+  const perpendicular: TooltipPlacement[] =
+    preferred === 'top' || preferred === 'bottom' ? ['right', 'left'] : ['bottom', 'top'];
+  const placement =
+    [preferred, OPPOSITE_PLACEMENT[preferred], ...perpendicular].find(fits) ?? preferred;
 
   let top: number;
   let left: number;
@@ -109,7 +119,13 @@ export function computeTooltipPosition(
   left = Math.min(Math.max(VIEWPORT_MARGIN, left), maxLeft);
   top = Math.min(Math.max(VIEWPORT_MARGIN, top), maxTop);
 
-  return { top, left, placement };
+  const overlapsAnchor =
+    left < anchor.right &&
+    left + card.width > anchor.left &&
+    top < anchor.bottom &&
+    top + card.height > anchor.top;
+
+  return { top, left, placement, overlapsAnchor };
 }
 
 export interface RichTooltipProps {
@@ -252,6 +268,9 @@ export function RichTooltip({
               top: position?.top ?? 0,
               left: position?.left ?? 0,
               visibility: position ? 'visible' : 'hidden',
+              // Covering its own trigger, the card would catch the mouseup of
+              // a click on the trigger, so the click never reaches it.
+              pointerEvents: position?.overlapsAnchor ? 'none' : undefined,
             }}
             onMouseEnter={clearCloseTimer}
             onMouseLeave={closeAfterDelay}
