@@ -1,0 +1,22 @@
+testing.coveragerequirement.all-partitions-unit-test-requirement:
+  id: cf055605-ca88-4937-9d47-dcdb2b118ca7
+  path: testing.coveragerequirement.all-partitions-unit-test-requirement
+  spec_node_id: testing.coveragerequirement
+  type: coveragerequirement
+  layer_id: testing
+  name: All-Partitions Unit Test Requirement
+  description: Requirement that all public service methods and store actions have
+    at least one test covering each logical partition; all-partitions criteria
+    applied to dataLoader, nodeTransformer, crossLayerProcessor, and all store
+    methods.
+  attributes:
+    coverageCriteria: all-partitions
+    priority: high
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: tests/unit/
+  metadata:
+    created_at: 2026-03-20T13:33:14.652Z
+    updated_at: 2026-03-20T13:33:14.652Z
+    version: 1

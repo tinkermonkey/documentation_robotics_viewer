@@ -1,0 +1,21 @@
+ux.view.auth-view:
+  id: d840fbc5-353c-4bae-8188-5f33bbaf2dd9
+  path: ux.view.auth-view
+  spec_node_id: ux.view
+  type: view
+  layer_id: ux
+  name: Auth View
+  description: Landing view at route /#/; extracts the DR CLI bearer token from
+    the ?token= URL query parameter, persists it to localStorage, and redirects
+    to the model view.
+  attributes:
+    type: embedded
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/AuthRoute.tsx
+        symbol: AuthRoute
+  metadata:
+    created_at: 2026-03-20T13:22:53.827Z
+    updated_at: 2026-03-20T13:22:53.827Z
+    version: 1

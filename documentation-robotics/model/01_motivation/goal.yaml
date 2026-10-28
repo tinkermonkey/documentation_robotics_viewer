@@ -63,7 +63,10 @@ motivation.goal.ensure-accessible-architecture-views:
   layer_id: motivation
   name: Ensure Accessible Architecture Views
   description: Meet WCAG 2.1 AA accessibility standards so all team members can
-    use the viewer regardless of assistive technology needs
+    use the viewer regardless of assistive technology needs; standard now
+    documented directly in CLAUDE.md (documentation/ACCESSIBILITY.md was removed
+    in the Heimdall rebuild) and enforced by axe-core Playwright checks on every
+    view in light + dark
   attributes:
     priority: medium
   source_reference:

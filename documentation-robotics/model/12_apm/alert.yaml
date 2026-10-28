@@ -1,0 +1,44 @@
+apm.alert.web-socket-disconnect-alert:
+  id: 758a1c95-870f-4667-b49d-6d6a1724fcd0
+  path: apm.alert.web-socket-disconnect-alert
+  spec_node_id: apm.alert
+  type: alert
+  layer_id: apm
+  name: WebSocket Disconnect Alert
+  description: Warning alert triggered when the DR CLI WebSocket connection drops
+    and falls back to REST-only polling mode; indicates the real-time model
+    update channel is unavailable.
+  attributes:
+    severity: warning
+    condition: connectionStore.status === 'rest-mode'
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/stores/connectionStore.ts
+  metadata:
+    created_at: 2026-03-20T13:31:58.975Z
+    updated_at: 2026-03-20T13:31:58.975Z
+    version: 1
+apm.alert.playwright-test-failure-alert:
+  id: bc1b7107-c90f-466c-b28e-63f8eb7c232b
+  path: apm.alert.playwright-test-failure-alert
+  spec_node_id: apm.alert
+  type: alert
+  layer_id: apm
+  name: Playwright Test Failure Alert
+  description: Critical alert triggered when the Playwright E2E test suite exits
+    with failures (tests/e2e only — unit/integration/component tests now run
+    under Vitest, not Playwright); indicates a regression in the built
+    production bundle's shell, views, chat, annotations, or accessibility
+    behavior.
+  attributes:
+    severity: critical
+    condition: playwright test exit code not equals 0
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: playwright.config.ts
+  metadata:
+    created_at: 2026-03-20T13:32:13.589Z
+    updated_at: 2026-03-20T13:32:13.589Z
+    version: 1

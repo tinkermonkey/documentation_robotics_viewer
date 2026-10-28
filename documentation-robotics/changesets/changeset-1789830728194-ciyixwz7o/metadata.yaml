@@ -1,0 +1,10 @@
+id: changeset-1789830728194-ciyixwz7o
+name: sync-heimdall-ux-rebuild
+created: 2026-09-19T15:12:08.205Z
+modified: 2026-09-19T15:37:38.350Z
+status: committed
+baseSnapshot: sha256:bae0bbba06fca39b9448c0709bbcc6a548f051b8379e409de22cef88a9ce987c
+stats:
+  additions: 118
+  modifications: 10
+  deletions: 398

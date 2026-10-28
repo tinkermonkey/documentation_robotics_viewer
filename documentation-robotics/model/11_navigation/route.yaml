@@ -1,0 +1,47 @@
+navigation.route.index-route:
+  id: bd3c9cfa-aae2-4f1d-bffd-3d044955518e
+  path: navigation.route.index-route
+  spec_node_id: navigation.route
+  type: route
+  layer_id: navigation
+  name: Index Route
+  description: Landing route at path /#/; accepts optional ?token= search
+    parameter; renders AuthRoute component that extracts the magic link token
+    and redirects to the model view.
+  attributes:
+    type: public
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/router.tsx
+        symbol: indexRoute
+  metadata:
+    created_at: 2026-03-20T13:25:26.094Z
+    updated_at: 2026-03-20T13:25:26.094Z
+    version: 1
+navigation.route.app-shell-sectionview-route:
+  id: 68cfdda4-3413-4827-98c4-b44fec8346d2
+  path: navigation.route.app-shell-sectionview-route
+  spec_node_id: navigation.route
+  type: route
+  layer_id: navigation
+  name: App Shell Section/View Route
+  description: Parameterized route at /#/:section/:view (section = model | spec |
+    changesets; view is a per-section default, e.g. graph or list) that renders
+    AppShell; a two-way effect keeps uiStore.view and the URL hash in sync.
+    Replaced the previous six separate per-section redirect + view routes
+    (model/spec/changesets redirect-route and view-route pairs) with a single
+    generic TanStack route plus in-app SECTION_TO_VIEW/VIEW_TO_SECTION maps in
+    the June 2026 Heimdall UX rebuild; protected — requires a valid auth token
+    via authStore.
+  attributes:
+    type: protected
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/router.tsx
+        symbol: appShellRoute
+  metadata:
+    created_at: 2026-09-19T15:17:21.969Z
+    updated_at: 2026-09-19T15:17:21.969Z
+    version: 1

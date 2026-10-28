@@ -1,0 +1,209 @@
+technology.systemsoftware.nodejs:
+  id: 05ec48e0-8d2b-42df-9dd5-bbefa13dc5ef
+  path: technology.systemsoftware.nodejs
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: Node.js
+  description: JavaScript runtime environment powering the build toolchain, dev
+    server, and test execution pipeline
+  attributes:
+    softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: dependencies.node
+  metadata:
+    created_at: 2026-03-20T12:37:00.566Z
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
+technology.systemsoftware.vite-6:
+  id: 89846523-4138-4486-8ed2-c11540d0eba9
+  path: technology.systemsoftware.vite-6
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: Vite 6
+  description: Next-generation build toolchain and HMR dev server for the React
+    application; handles TypeScript compilation, bundling, and WASM file copying
+  attributes:
+    softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: devDependencies.vite
+  metadata:
+    created_at: 2026-03-20T12:37:00.807Z
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
+technology.systemsoftware.type-script-59:
+  id: 80cb8805-5803-4713-9330-8d6afd9d7261
+  path: technology.systemsoftware.type-script-59
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: TypeScript 5.9
+  description: Statically-typed JavaScript superset providing compile-time type
+    safety across all source files, strict mode enabled
+  attributes:
+    softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: devDependencies.typescript
+  metadata:
+    created_at: 2026-03-20T12:37:01.051Z
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
+technology.systemsoftware.react-19:
+  id: 7c5dc636-5f00-45be-a8dd-40e684fb714c
+  path: technology.systemsoftware.react-19
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: React 19
+  description: Core UI rendering framework; component-based architecture with
+    concurrent rendering, used via Vite plugin for JSX transformation
+  attributes:
+    softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: dependencies.react
+  metadata:
+    created_at: 2026-03-20T12:37:07.331Z
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
+technology.systemsoftware.zustand-5:
+  id: d2fb0d48-0e8a-4245-a83a-736863f56b96
+  path: technology.systemsoftware.zustand-5
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: Zustand 5
+  description: Lightweight Zustand state management library; provides multiple
+    isolated stores (modelStore, layerStore, elementStore, crossLayerStore,
+    etc.) with no Redux/Context coupling
+  attributes:
+    softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: dependencies.zustand
+  metadata:
+    created_at: 2026-03-20T12:37:23.261Z
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
+technology.systemsoftware.tan-stack-router:
+  id: 9c2aa58f-ef89-45ed-a778-8d7aed22b8fa
+  path: technology.systemsoftware.tan-stack-router
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: TanStack Router
+  description: "@tanstack/react-router 1.139 — fully type-safe file-based
+    client-side router; powers the embedded app route hierarchy"
+  attributes:
+    softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: dependencies.@tanstack/react-router
+  metadata:
+    created_at: 2026-03-20T12:37:23.514Z
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
+technology.systemsoftware.tailwind-css-v4:
+  id: b26ad8f3-48c2-4707-84bf-163868337b58
+  path: technology.systemsoftware.tailwind-css-v4
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: Tailwind CSS v4
+  description: Utility-first CSS framework v4 with PostCSS pipeline; all styling
+    via utility classes, dark mode variants required on all components
+  attributes:
+    softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: dependencies.tailwindcss
+  metadata:
+    created_at: 2026-03-20T12:37:23.765Z
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
+technology.systemsoftware.playwright:
+  id: 72551121-e5cb-4e72-a417-e83537c03445
+  path: technology.systemsoftware.playwright
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: Playwright
+  description: "@playwright/test 1.60 — end-to-end browser automation framework;
+    runs the tests/e2e suite (~20 tests) against the built production bundle
+    served by dr visualize, including @axe-core/playwright WCAG 2.1 AA checks on
+    every view in light + dark. No longer used for unit/integration tests or
+    Storybook (both removed in the Heimdall rebuild) — those run under Vitest."
+  attributes:
+    softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: devDependencies.@playwright/test
+  metadata:
+    created_at: 2026-03-20T12:37:30.128Z
+    updated_at: 2026-03-24T09:10:00.000Z
+    version: 2
+technology.systemsoftware.heimdall-ui:
+  id: ecfed28a-069b-41d8-9092-427bc1655a1c
+  path: technology.systemsoftware.heimdall-ui
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: Heimdall UI
+  description: "@tinkermonkey/heimdall-ui — the Heimdall design system, pinned
+    from a git commit; provides the app shell components (PageHeader,
+    GraphCanvas, GraphInspector, ChatContainer, SideBySideDiff, StatTile, etc.)
+    and the real force-directed GraphCanvas layout engine that replaced the old
+    React Flow + custom layout-engine stack in the June 2026 UX rebuild"
+  attributes:
+    softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: "@tinkermonkey/heimdall-ui"
+  metadata:
+    created_at: 2026-09-19T15:17:03.583Z
+    updated_at: 2026-09-19T15:17:03.583Z
+    version: 1
+technology.systemsoftware.tan-stack-react-query:
+  id: e17ec85b-c176-4d0f-965d-579d2a362bcd
+  path: technology.systemsoftware.tan-stack-react-query
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: TanStack React Query
+  description: "@tanstack/react-query 5.51 — data-fetching/caching layer over the
+    DR CLI REST API; powers the data/ hooks (useModel, useSpec, useChangesets,
+    useAnnotations) that replaced the old client-side YAML/JSON-Schema parsing
+    services"
+  attributes:
+    softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: "@tanstack/react-query"
+  metadata:
+    created_at: 2026-09-19T15:17:04.250Z
+    updated_at: 2026-09-19T15:17:04.250Z
+    version: 1

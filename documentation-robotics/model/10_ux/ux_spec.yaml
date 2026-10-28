@@ -1,0 +1,21 @@
+ux.uxspec.authentication-spec:
+  id: 9f80cdb4-4e5f-480f-b8e5-255ed97bf829
+  path: ux.uxspec.authentication-spec
+  spec_node_id: ux.uxspec
+  type: uxspec
+  layer_id: ux
+  name: Authentication Spec
+  description: UX specification for token-based authentication flow; extracts
+    bearer token from magic link URL query parameter and redirects to the model
+    view on success.
+  attributes:
+    experience: visual
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/AuthRoute.tsx
+        symbol: AuthRoute
+  metadata:
+    created_at: 2026-03-20T13:22:49.389Z
+    updated_at: 2026-03-20T13:22:49.389Z
+    version: 1

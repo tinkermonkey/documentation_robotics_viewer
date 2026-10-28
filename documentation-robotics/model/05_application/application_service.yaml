@@ -1,0 +1,208 @@
+application.applicationservice.generated-api-client:
+  id: a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8
+  path: application.applicationservice.generated-api-client
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Generated API Client
+  description: Auto-generated TypeScript HTTP client from the OpenAPI spec;
+    provides typed methods for all DR CLI REST endpoints
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/generatedApiClient.ts
+        symbol: generatedApiClient
+  metadata:
+    created_at: 2026-03-20T12:55:36.541Z
+    updated_at: 2026-03-20T12:55:36.542Z
+    version: 1
+application.applicationservice.exception-classifier:
+  id: 41f01291-171d-47a9-9d25-ab0a60b1938f
+  path: application.applicationservice.exception-classifier
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Exception Classifier
+  description: Classifies runtime exceptions into categories for structured error
+    reporting and Storybook story error filtering
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/core/services/exceptionClassifier.ts
+        symbol: exceptionClassifier
+  metadata:
+    created_at: 2026-03-20T12:56:00.213Z
+    updated_at: 2026-03-20T12:56:00.213Z
+    version: 1
+application.applicationservice.chat-service:
+  id: a920ab1c-c481-46b6-bdb4-4050501adeac
+  path: application.applicationservice.chat-service
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Chat Service
+  description: Interfaces with the Claude AI API to provide architectural
+    assistant chat functionality; manages message streaming and tool invocations
+  attributes:
+    serviceType: asynchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/services/chatService.ts
+        symbol: chatService
+  metadata:
+    created_at: 2026-03-20T12:56:04.291Z
+    updated_at: 2026-03-20T12:56:04.291Z
+    version: 1
+application.applicationservice.web-socket-client:
+  id: b7775f1a-2418-4c7a-84aa-997efd658a97
+  path: application.applicationservice.web-socket-client
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: WebSocket Client
+  description: Manages the persistent WebSocket connection to the DR CLI server;
+    handles reconnection, topic subscriptions, and JSON-RPC message dispatch
+  attributes:
+    serviceType: event-driven
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/services/websocketClient.ts
+        symbol: websocketClient
+  metadata:
+    created_at: 2026-03-20T12:56:05.522Z
+    updated_at: 2026-03-20T12:56:05.522Z
+    version: 1
+application.applicationservice.json-rpc-handler:
+  id: fbd68c51-36fa-48ef-b381-5599d2678a90
+  path: application.applicationservice.json-rpc-handler
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: JSON-RPC Handler
+  description: Processes incoming JSON-RPC 2.0 messages from the WebSocket
+    connection; routes model/changeset/annotation update events to the
+    appropriate stores
+  attributes:
+    serviceType: event-driven
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/services/jsonRpcHandler.ts
+        symbol: jsonRpcHandler
+  metadata:
+    created_at: 2026-03-20T12:56:09.063Z
+    updated_at: 2026-03-20T12:56:09.063Z
+    version: 1
+application.applicationservice.embedded-data-loader:
+  id: 13b1a5ff-1cea-4ca0-b557-81f4629f2736
+  path: application.applicationservice.embedded-data-loader
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Embedded Data Loader
+  description: Coordinates data loading for the embedded app; selects between DR
+    CLI server, GitHub, or local file sources based on connection state
+  attributes:
+    serviceType: asynchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/services/embeddedDataLoader.ts
+        symbol: embeddedDataLoader
+  metadata:
+    created_at: 2026-03-20T12:56:15.772Z
+    updated_at: 2026-03-20T12:56:15.772Z
+    version: 1
+application.applicationservice.error-tracker:
+  id: 9e5ef4a3-c7cb-48bd-a7c4-f1b9de5506ad
+  path: application.applicationservice.error-tracker
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Error Tracker
+  description: Captures and categorizes runtime errors with context for display in
+    the UI and structured logging
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/services/errorTracker.ts
+        symbol: errorTracker
+  metadata:
+    created_at: 2026-03-20T12:56:20.092Z
+    updated_at: 2026-03-20T12:56:20.092Z
+    version: 1
+application.applicationservice.chat-validation:
+  id: f13381af-57e0-4205-8e4a-4c7da5319f82
+  path: application.applicationservice.chat-validation
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Chat Validation
+  description: Validates chat message content and enforces conversation
+    constraints before submission
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/services/chatValidation.ts
+        symbol: chatValidation
+  metadata:
+    created_at: 2026-03-20T12:56:21.148Z
+    updated_at: 2026-03-20T12:56:21.149Z
+    version: 1
+application.applicationservice.model-graph-transform:
+  id: 6bc69ab9-b486-4104-8008-f7ff4ebcd484
+  path: application.applicationservice.model-graph-transform
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Model Graph Transform
+  description: Pure transforms of the /api/model payload into per-layer Heimdall
+    GraphCanvas view models (nodes + edges); builds the dual-index (UUID +
+    derived dotted id) used to resolve every link endpoint, since links
+    reference nodes by either form. Replaced the old
+    dataLoader.ts/crossLayerReferenceExtractor.ts/nodeTransformer.ts/yamlParser.ts
+    client-side YAML-parsing pipeline — the app now consumes pre-parsed JSON
+    from the DR CLI REST API via React Query.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/modelGraph.ts
+        symbol: buildModelIndex
+  metadata:
+    created_at: 2026-09-19T15:18:09.691Z
+    updated_at: 2026-09-19T15:18:09.691Z
+    version: 1
+application.applicationservice.relationship-derivation:
+  id: af2b0467-fff1-4b39-9b82-c0980563543f
+  path: application.applicationservice.relationship-derivation
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Relationship Derivation
+  description: Derives a selected element's inbound/outbound relationship links
+    (including cross-layer links, with targetDomain set to the other endpoint's
+    layer for swatch coloring and cross-layer navigation) from the /api/model
+    payload for the GraphInspector/Inspector click-to-navigate feature.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/relationships.ts
+        symbol: relationshipsForElement
+  metadata:
+    created_at: 2026-09-19T15:18:10.343Z
+    updated_at: 2026-09-19T15:18:10.343Z
+    version: 1

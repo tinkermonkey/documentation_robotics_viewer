@@ -1,0 +1,18 @@
+application.applicationprocess.auth-route:
+  id: 6b2f9b1a-bd90-4b1e-9ee2-bed4cbb73a04
+  path: application.applicationprocess.auth-route
+  spec_node_id: application.applicationprocess
+  type: applicationprocess
+  layer_id: application
+  name: Auth Route
+  description: TanStack Router route handling token-based authentication via magic
+    link; extracts token from URL query params
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/AuthRoute.tsx
+        symbol: AuthRoute
+  metadata:
+    created_at: 2026-03-20T12:57:27.016Z
+    updated_at: 2026-03-20T12:57:27.016Z
+    version: 1

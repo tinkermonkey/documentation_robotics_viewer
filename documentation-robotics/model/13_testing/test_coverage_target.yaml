@@ -1,0 +1,43 @@
+testing.testcoveragetarget.service-and-store-unit-test-coverage:
+  id: cee7be5d-f0f9-4291-a2ae-cf5011a61c2f
+  path: testing.testcoveragetarget.service-and-store-unit-test-coverage
+  spec_node_id: testing.testcoveragetarget
+  type: testcoveragetarget
+  layer_id: testing
+  name: Service and Store Unit Test Coverage
+  description: Coverage target for unit testing of all core services (dataLoader,
+    nodeTransformer, yamlParser, crossLayerProcessor, etc.) and Zustand stores;
+    ~40 spec files under tests/unit/; 1170 total tests via playwright.config.ts.
+  attributes:
+    targetType: ui-component
+    priority: high
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/
+  metadata:
+    created_at: 2026-03-20T13:32:27.397Z
+    updated_at: 2026-03-20T13:32:27.397Z
+    version: 1
+testing.testcoveragetarget.cross-component-integration-test-coverage:
+  id: 74572f0c-61cd-489a-82ff-a84265d69aae
+  path: testing.testcoveragetarget.cross-component-integration-test-coverage
+  spec_node_id: testing.testcoveragetarget
+  type: testcoveragetarget
+  layer_id: testing
+  name: Cross-Component Integration Test Coverage
+  description: "Coverage target for integration tests verifying cross-component
+    data flows: node transformer pipeline, cross-layer worker integration,
+    libavoid routing, chat service, and preference persistence; 7 files under
+    tests/integration/."
+  attributes:
+    targetType: integration-flow
+    priority: high
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/integration/
+  metadata:
+    created_at: 2026-03-20T13:32:32.478Z
+    updated_at: 2026-03-20T13:32:32.478Z
+    version: 1

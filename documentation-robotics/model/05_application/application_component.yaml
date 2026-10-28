@@ -1,0 +1,26 @@
+application.applicationcomponent.graph-canvas:
+  id: 7c84e0d3-4126-4ac7-af5d-a30f4708e031
+  path: application.applicationcomponent.graph-canvas
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Graph Canvas
+  description: The primary graph-view component for the Model and Schema views;
+    mounts Heimdall's GraphCanvas (@tinkermonkey/heimdall-ui) with
+    layout="force", keyed by view:layerId so it recenters on layer/view switch.
+    Replaced the old React Flow-based GraphViewer + pluggable
+    Dagre/ELK/D3-Force/Graphviz layout-engine registry in the June 2026 Heimdall
+    UX rebuild — GraphCanvas's force layout is now the only layout mode the app
+    renders, and is the exact integration point the sibling heimdall-layout-loop
+    harness targets for layout improvements.
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/Canvas.tsx
+        symbol: Canvas
+  metadata:
+    created_at: 2026-09-19T15:17:12.908Z
+    updated_at: 2026-09-19T15:17:12.908Z
+    version: 1

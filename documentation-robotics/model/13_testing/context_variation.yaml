@@ -1,0 +1,22 @@
+testing.contextvariation.functional-unit-test-context:
+  id: ed8bf838-d99b-463c-b74b-5f814f2c5ef9
+  path: testing.contextvariation.functional-unit-test-context
+  spec_node_id: testing.contextvariation
+  type: contextvariation
+  layer_id: testing
+  name: Functional Unit Test Context
+  description: Standard functional test context for unit, integration, and
+    component tests; runs under Vitest (node/happy-dom environments) against
+    mock data via MSW/mock WebSocket; fastest feedback loop (~262 tests, ~1.6s).
+    Playwright is no longer used for unit/integration tests — it now covers only
+    tests/e2e.
+  attributes:
+    contextType: functional
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: playwright.config.ts
+  metadata:
+    created_at: 2026-03-20T13:32:59.133Z
+    updated_at: 2026-03-20T13:32:59.133Z
+    version: 1

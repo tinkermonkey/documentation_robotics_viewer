@@ -1,0 +1,44 @@
+apm.metricinstrument.web-socket-connection-state-gauge:
+  id: 430cdd17-5a41-45c0-b393-fac66e6e250b
+  path: apm.metricinstrument.web-socket-connection-state-gauge
+  spec_node_id: apm.metricinstrument
+  type: metricinstrument
+  layer_id: apm
+  name: WebSocket Connection State Gauge
+  description: Gauge instrument tracking the current DR CLI WebSocket connection
+    state (1=connected, 0=disconnected); sourced from connectionStore connection
+    status transitions; enables alerting on connection loss.
+  attributes:
+    type: Gauge
+    unit: state
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/stores/connectionStore.ts
+        symbol: connectionStore
+  metadata:
+    created_at: 2026-03-20T13:31:41.379Z
+    updated_at: 2026-03-20T13:31:41.379Z
+    version: 1
+apm.metricinstrument.web-socket-reconnection-attempt-counter:
+  id: dc82a912-c252-4aaa-b268-504da18d8f55
+  path: apm.metricinstrument.web-socket-reconnection-attempt-counter
+  spec_node_id: apm.metricinstrument
+  type: metricinstrument
+  layer_id: apm
+  name: WebSocket Reconnection Attempt Counter
+  description: Counter tracking cumulative WebSocket reconnection attempts;
+    incremented by the websocketClient reconnect loop; measures connection
+    stability over a session.
+  attributes:
+    type: Counter
+    unit: attempts
+  source_reference:
+    provenance: inferred
+    locations:
+      - file: src/apps/embedded/services/websocketClient.ts
+        symbol: websocketClient
+  metadata:
+    created_at: 2026-03-20T13:31:45.904Z
+    updated_at: 2026-03-20T13:31:45.904Z
+    version: 1
