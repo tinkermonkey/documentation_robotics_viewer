@@ -189,6 +189,14 @@ For local dev use `dr visualize --no-auth`.
   graph-mode `position: relative` wrapper — points the built-in toolbar's Fullscreen button at that
   wrapper instead of `GraphCanvas`'s own root, so `GraphControls` and `Inspector` (both its siblings,
   outside what the native Fullscreen API would otherwise render) stay visible while fullscreen.
+- **Predicate hover explanations wait 3s** (`PREDICATE_TOOLTIP_DELAY_MS` in `ui/PredicateTooltip.tsx`) —
+  predicates are also click targets (navigate / select the edge), and a quick tooltip covered them while
+  aiming. `PredicateTooltip` (inspector, page tables, edge inspector) passes it as `RichTooltip`'s
+  `openDelay`; keyboard focus still opens immediately. The graph's own edge tooltip has a fixed 200ms delay
+  inside heimdall-ui, so `Canvas.tsx` feeds `onEdgeHover` into `ui/useHoverDwell.ts` and `renderEdgeTooltip`
+  returns `null` (heimdall shows nothing) until the edge has been hovered 3s. That hover state is local to
+  Canvas — never route edge hover through the store or the `edges` memo (re-runs the layout; see
+  `useEdgeInteraction.ts`).
 - **Changesets view** — op-coded diff list (add=emerald / update=cyan / delete=rose) + `StatTile` inspector +
   expandable `SideBySideDiff`.
 - **DrBot chat** — 372px drawer (persistent ≥1300px, overlay below) with live WS/JSON-RPC streaming;

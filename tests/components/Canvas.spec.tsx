@@ -487,6 +487,31 @@ describe('Canvas — heimdall-ui 0.7.0 prop wiring', () => {
     act(() => useUiStore.getState().navigateToElement(first.id, 'apm'));
     await waitFor(() => expect(lastGraphCanvasProps?.centerOnSelect).toBe(true));
   });
+
+  it('holds the graph edge tooltip back until the edge has been hovered for 3s', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+    const edge = lastGraphCanvasProps!.edges![0];
+    const tooltipFor = () => lastGraphCanvasProps!.edgeTooltip!(edge as never);
+
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+    try {
+      act(() => lastGraphCanvasProps!.onEdgeHover!(edge.id));
+      act(() => vi.advanceTimersByTime(2900));
+      expect(tooltipFor()).toBeNull();
+
+      act(() => vi.advanceTimersByTime(100));
+      expect(tooltipFor()).not.toBeNull();
+
+      // Leaving hides it again right away.
+      act(() => lastGraphCanvasProps!.onEdgeHover!(undefined));
+      expect(tooltipFor()).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });
 
 describe('Canvas — card node presentation (default) vs. pill, Display control', () => {

@@ -115,7 +115,8 @@ import { PageView, usePageData } from './PageView';
 import { Inspector } from './Inspector';
 import { ModelCardNode } from './ModelCardNode';
 import { PillNode } from './PillNode';
-import { PredicateTooltipContent } from './PredicateTooltip';
+import { PredicateTooltipContent, PREDICATE_TOOLTIP_DELAY_MS } from './PredicateTooltip';
+import { useHoverDwell } from './useHoverDwell';
 import { useEdgeInteraction } from './useEdgeInteraction';
 import { useViewportHistory } from './useViewportHistory';
 import { graphCanvasKey } from './graphViewport';
@@ -675,8 +676,16 @@ export function Canvas() {
   // https://github.com/tinkermonkey/documentation_robotics_viewer/issues/538
   // for surfacing the definition via the already-accessible EdgeInspector
   // instead.
+  //
+  // Held back until the pointer has rested on the edge for
+  // PREDICATE_TOOLTIP_DELAY_MS: an edge is also a click target (select it), and
+  // heimdall's own fixed 200ms show delay popped the explanation up over the
+  // edge while users were aiming. Returning null keeps heimdall's tooltip
+  // hidden (its Tooltip renders nothing for null content).
+  const { dwelledId: dwelledEdgeId, onHover: onEdgeHover } = useHoverDwell(PREDICATE_TOOLTIP_DELAY_MS);
   const renderEdgeTooltip = useCallback(
     (edge: GraphEdgeData) => {
+      if (edge.id !== dwelledEdgeId) return null;
       const meta = edgeMetadata(model, edge.id, index, specRaw);
       if (!meta) return null;
       return (
@@ -688,7 +697,7 @@ export function Canvas() {
         />
       );
     },
-    [model, index, specRaw],
+    [model, index, specRaw, dwelledEdgeId],
   );
 
   const slug = layerId ?? '';
@@ -819,6 +828,7 @@ export function Canvas() {
                   }}
                   {...(!isSpec ? edgeSelectionProps : {})}
                   edgeTooltip={!isSpec ? renderEdgeTooltip : undefined}
+                  onEdgeHover={!isSpec ? onEdgeHover : undefined}
                   onBackgroundClick={() => selectLayer(layerId)}
                   renderNode={!isSpec && nodeDisplay === 'card' ? renderCardNode : renderPillNode}
                   centerOnSelect={centerOnSelect}

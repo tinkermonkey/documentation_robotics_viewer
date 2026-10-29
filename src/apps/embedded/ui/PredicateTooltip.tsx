@@ -16,6 +16,13 @@ import type { ReactNode } from 'react';
 import { RichTooltip, type TooltipPlacement } from './RichTooltip';
 import { predicateDefinition } from '../data/predicateDefinitions';
 
+/** How long the pointer must rest on a predicate before its explanation
+ *  opens. Long on purpose: predicates are also click targets (navigate /
+ *  select the edge), and a quick tooltip covered them while users were
+ *  aiming. Keyboard focus still opens it immediately (see RichTooltip). Used
+ *  for both PredicateTooltip and the graph's edge tooltip (Canvas.tsx). */
+export const PREDICATE_TOOLTIP_DELAY_MS = 3000;
+
 export interface PredicateTooltipProps {
   /** The trigger element the tooltip attaches to. */
   children: ReactNode;
@@ -95,6 +102,7 @@ export function PredicateTooltip({
       }
       placement={placement}
       className={className}
+      openDelay={PREDICATE_TOOLTIP_DELAY_MS}
       data-testid={testId}
     >
       {children}

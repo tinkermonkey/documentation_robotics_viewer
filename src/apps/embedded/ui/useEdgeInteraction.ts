@@ -25,7 +25,9 @@
  * state for free regardless: `.graph-edge:hover .graph-edge__line{stroke-width:
  * 1.75}`. The predicate hover tooltip itself is unaffected — `Canvas.tsx`'s
  * `edgeTooltip` render-prop gets the hovered edge directly from `GraphCanvas`
- * (heimdall-ui 0.8.0+) and needs no `onEdgeHover` wiring of its own to work.
+ * (heimdall-ui 0.8.0+). Canvas does wire `onEdgeHover` now, but only into a
+ * local `useHoverDwell` timer that holds the tooltip back for 3s; it never
+ * touches the store or the `edges` memo, so the layout isn't re-run.
  */
 
 import { useUiStore } from './uiStore';
