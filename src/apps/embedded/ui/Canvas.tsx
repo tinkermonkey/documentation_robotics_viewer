@@ -97,7 +97,7 @@
  * dwell timer — see `edgeTooltipContent` below.
  */
 
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   PageHeader,
   GraphCanvas,
@@ -145,23 +145,16 @@ const MODE_OPTIONS = [
 ];
 
 const LAYOUT_OPTIONS = [
-  { value: 'force', label: 'Force' },
-  { value: 'galaxy', label: 'Galaxy' },
   { value: 'force-clustered', label: 'Clustered' },
   { value: 'organic', label: 'Organic' },
   { value: 'orthogonal', label: 'Orthogonal' },
-  { value: 'radial-tree', label: 'Radial' },
 ];
 
-/** Layouts that draw a boundary per group (heimdall-ui 0.9.0) — the Boundaries
- *  control is hidden for the rest, where it would have no effect. */
-const LAYOUTS_WITH_BOUNDARIES: ReadonlySet<GraphLayout> = new Set([
-  'galaxy',
-  'force-clustered',
-  'radial-tree',
-]);
+/** Layouts that draw a boundary per group — the Boundaries control is hidden
+ *  for the rest, where it would have no effect. */
+const LAYOUTS_WITH_BOUNDARIES: ReadonlySet<GraphLayout> = new Set(['force-clustered']);
 
-const BOUNDARIES_OPTIONS = [
+const ON_OFF_OPTIONS = [
   { value: 'on', label: 'On' },
   { value: 'off', label: 'Off' },
 ];
@@ -192,35 +185,84 @@ function nodeMarginFor(preset: NodeMarginPreset): number | undefined {
   return undefined;
 }
 
-/** Layout/display control flyout floating over the graph (top-left) — mirrors
- *  Heimdall's own GraphLayoutsShowcase demo controls (Layout, Boundaries, Node
- *  margin, Relations), collapsed by default to a single transparent icon
- *  button (same `.graph-toolbar__btn` look the built-in GraphToolbar's own
- *  buttons use) so it doesn't sit as a permanent opaque block over the graph.
- *  Hovering or focusing it (mouse OR keyboard) expands a translucent/blurred
- *  panel — same visual language as the Inspector's `DetailDrawer` — with the
- *  actual controls; moving off/blurring the whole flyout collapses it again,
- *  immediately — same `relatedTarget`-based "did it actually leave the whole
- *  flyout, not just move between two elements inside it" check both
- *  onMouseLeave and onBlur use, so a click on one control inside the panel
- *  moving to another (each fires its own enter/leave as the pointer crosses
- *  between them) doesn't spuriously collapse the panel out from under the
- *  very control being interacted with. The toggle button ALSO has a plain
- *  onClick too — hover/focus alone would leave the button's own
- *  `aria-expanded`/`aria-controls` an unhonored disclosure contract on a
- *  device with no hover: touch has none at all, so without it the whole
- *  control set would be unreachable there. It OPENS rather than toggles —
- *  on desktop, a mouse click is always preceded by the same pointer's
- *  mouseEnter already opening the panel via hover, so a toggle would
- *  immediately re-close what hover just opened, one click after another
- *  looking like it does nothing (confirmed live: this was the first, wrong,
- *  version). Closing stays owned by mouseLeave/blur/Escape, same as before.
- *  Escape closes it and returns focus to the toggle, matching CLAUDE.md's
- *  accessibility standards ("Escape closes overlays") the same way every
- *  other floating panel in this app already does. */
+/** Graph controls in the page header, left of the graph/page toggle: the
+ *  settings people change most (Layout, Relations, Inter-layer), so they're
+ *  always visible instead of behind the settings flyout. Graph mode only —
+ *  they'd have no effect on the page view. */
+function GraphHeaderControls() {
+  const graphLayout = useUiStore((s) => s.graphLayout);
+  const setGraphLayout = useUiStore((s) => s.setGraphLayout);
+  const showAllRelations = useUiStore((s) => s.showAllRelations);
+  const toggleShowAllRelations = useUiStore((s) => s.toggleShowAllRelations);
+  const showInterLayerNodes = useUiStore((s) => s.showInterLayerNodes);
+  const toggleShowInterLayerNodes = useUiStore((s) => s.toggleShowInterLayerNodes);
+  const view = useUiStore((s) => s.view);
+
+  return (
+    <div
+      style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px 16px' }}
+      data-testid="graph-header-controls"
+    >
+      <GraphControl label="Layout" testId="graph-layout-control" inline>
+        <SegmentedControl
+          value={graphLayout}
+          onChange={(v) => setGraphLayout(v as GraphLayout)}
+          options={LAYOUT_OPTIONS}
+        />
+      </GraphControl>
+      <GraphControl label="Relations" testId="graph-relations-control" inline>
+        <SegmentedControl
+          value={showAllRelations ? 'all' : 'structural'}
+          onChange={(v) => {
+            if ((v === 'all') !== showAllRelations) toggleShowAllRelations();
+          }}
+          options={RELATIONS_OPTIONS}
+        />
+      </GraphControl>
+      {/* Foreign (other-layer) nodes only exist on the Model graph. */}
+      {view === 'model' && (
+        <GraphControl label="Inter-layer" testId="graph-inter-layer-control" inline>
+          <SegmentedControl
+            value={showInterLayerNodes ? 'on' : 'off'}
+            onChange={(v) => {
+              if ((v === 'on') !== showInterLayerNodes) toggleShowInterLayerNodes();
+            }}
+            options={ON_OFF_OPTIONS}
+          />
+        </GraphControl>
+      )}
+    </div>
+  );
+}
+
+/** How long the flyout stays open after the pointer leaves it, so a slightly
+ *  diagonal move from the gear to the panel doesn't close it. */
+const FLYOUT_CLOSE_DELAY_MS = 200;
+
+/** The less-used display settings (Display, Boundaries, Node margin) in a
+ *  flyout floating over the graph (top-left), collapsed to a single
+ *  transparent icon button (same `.graph-toolbar__btn` look as the built-in
+ *  GraphToolbar) so it doesn't sit as a permanent block over the graph.
+ *  Hovering or focusing it expands a translucent/blurred panel, same visual
+ *  language as the Inspector's `DetailDrawer`.
+ *
+ *  Hover area: the gear and the panel sit in ONE pointer-events box, with the
+ *  space between them as padding inside it. They used to be separate boxes
+ *  with a 6px margin of pointer-events: none between them, so moving the
+ *  pointer slowly from the gear down to the panel crossed the gap, counted as
+ *  leaving, and closed the panel before it could be reached. Leaving also
+ *  waits FLYOUT_CLOSE_DELAY_MS, cancelled by coming back.
+ *
+ *  Collapse checks `relatedTarget` (shared by onMouseLeave and onBlur): only
+ *  moving to somewhere outside the whole flyout counts, not moving between
+ *  two controls inside it. The toggle also has onClick for touch, where
+ *  there's no hover; it OPENS rather than toggles, since on desktop a click is
+ *  always preceded by the hover that already opened it. Escape closes it and
+ *  returns focus to the toggle. */
 function GraphControls() {
   const [expanded, setExpanded] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Escape closes the panel, then refocuses the toggle for a11y — but
   // that .focus() call itself bubbles a focus event back up to this same
   // wrapper's onFocus, which would otherwise immediately re-expand the
@@ -228,151 +270,151 @@ function GraphControls() {
   // consumed (and cleared) by the very next onFocus it causes.
   const suppressNextFocusExpandRef = useRef(false);
   const graphLayout = useUiStore((s) => s.graphLayout);
-  const setGraphLayout = useUiStore((s) => s.setGraphLayout);
   const showClusterBoundaries = useUiStore((s) => s.showClusterBoundaries);
   const toggleClusterBoundaries = useUiStore((s) => s.toggleClusterBoundaries);
   const nodeMarginPreset = useUiStore((s) => s.nodeMarginPreset);
   const setNodeMarginPreset = useUiStore((s) => s.setNodeMarginPreset);
-  const showAllRelations = useUiStore((s) => s.showAllRelations);
-  const toggleShowAllRelations = useUiStore((s) => s.toggleShowAllRelations);
   const nodeDisplay = useUiStore((s) => s.nodeDisplay);
   const setNodeDisplay = useUiStore((s) => s.setNodeDisplay);
-  const showInterLayerNodes = useUiStore((s) => s.showInterLayerNodes);
-  const toggleShowInterLayerNodes = useUiStore((s) => s.toggleShowInterLayerNodes);
   const view = useUiStore((s) => s.view);
+
+  const cancelClose = () => {
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = null;
+  };
+  const open = () => {
+    cancelClose();
+    setExpanded(true);
+  };
+  const closeNow = () => {
+    cancelClose();
+    setExpanded(false);
+  };
+  useEffect(() => cancelClose, []);
 
   const collapseIfLeavingFlyout = (
     e: React.MouseEvent<HTMLDivElement> | React.FocusEvent<HTMLDivElement>,
   ) => {
-    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setExpanded(false);
+    if (e.currentTarget.contains(e.relatedTarget as Node | null)) return;
+    if (e.type === 'blur') {
+      closeNow();
+      return;
+    }
+    cancelClose();
+    closeTimerRef.current = setTimeout(() => {
+      closeTimerRef.current = null;
+      setExpanded(false);
+    }, FLYOUT_CLOSE_DELAY_MS);
   };
 
   return (
+    // Spans the graph area (minus the 14px inset) so the panel's max-width
+    // tracks the canvas, not a hardcoded px cap. pointer-events: none lets
+    // the empty part pass clicks through to the graph; the flyout box opts back in.
     <div
-      onMouseEnter={() => setExpanded(true)}
-      onMouseLeave={collapseIfLeavingFlyout}
-      onFocus={() => {
-        if (suppressNextFocusExpandRef.current) {
-          suppressNextFocusExpandRef.current = false;
-          return;
-        }
-        setExpanded(true);
-      }}
-      onBlur={collapseIfLeavingFlyout}
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') {
-          setExpanded(false);
-          suppressNextFocusExpandRef.current = true;
-          toggleRef.current?.focus();
-        }
-      }}
-      // Spans the graph area (minus the 14px inset) so the panel's max-width
-      // tracks the canvas, not a hardcoded px cap. pointer-events: none lets
-      // the empty part pass clicks through to the graph; the toggle and panel
-      // opt back in. mouseenter/leave still fire, from the hit-tested children.
       style={{ position: 'absolute', top: 14, left: 14, right: 14, zIndex: 1, pointerEvents: 'none' }}
       data-testid="graph-controls"
     >
-      <button
-        ref={toggleRef}
-        type="button"
-        className="graph-toolbar__btn"
-        aria-label="Graph display options"
-        aria-expanded={expanded}
-        aria-controls="graph-controls-panel"
-        data-testid="graph-controls-toggle"
-        onClick={() => setExpanded(true)}
-        style={{ background: 'transparent', pointerEvents: 'auto' }}
+      <div
+        onMouseEnter={open}
+        onMouseLeave={collapseIfLeavingFlyout}
+        onFocus={() => {
+          if (suppressNextFocusExpandRef.current) {
+            suppressNextFocusExpandRef.current = false;
+            return;
+          }
+          open();
+        }}
+        onBlur={collapseIfLeavingFlyout}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') {
+            closeNow();
+            suppressNextFocusExpandRef.current = true;
+            toggleRef.current?.focus();
+          }
+        }}
+        style={{
+          display: 'inline-flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          maxWidth: '100%',
+          pointerEvents: 'auto',
+        }}
+        data-testid="graph-controls-flyout"
       >
-        <Icon name="settings" size={16} />
-      </button>
-      {expanded && (
-        <div
-          id="graph-controls-panel"
-          style={{
-            marginTop: 6,
-            // Two content-sized columns; Layout (the widest control) spans both.
-            display: 'grid',
-            gridTemplateColumns: 'auto auto',
-            justifyContent: 'start',
-            columnGap: 14,
-            rowGap: 8,
-            width: 'fit-content',
-            maxWidth: '100%',
-            boxSizing: 'border-box',
-            pointerEvents: 'auto',
-            padding: '10px 14px',
-            background: 'rgb(var(--canvas-card) / 0.5)',
-            backdropFilter: 'blur(8px)',
-            WebkitBackdropFilter: 'blur(8px)',
-            border: '1px solid rgb(var(--canvas-border))',
-            borderRadius: 'var(--radius-lg)',
-            boxShadow: 'var(--shadow-md)',
-          }}
-          data-testid="graph-controls-panel"
+        <button
+          ref={toggleRef}
+          type="button"
+          className="graph-toolbar__btn"
+          aria-label="Graph display options"
+          aria-expanded={expanded}
+          aria-controls="graph-controls-panel"
+          data-testid="graph-controls-toggle"
+          onClick={open}
+          style={{ background: 'transparent' }}
         >
-          <GraphControl label="Layout" testId="graph-layout-control" fullRow>
-            <SegmentedControl
-              value={graphLayout}
-              onChange={(v) => setGraphLayout(v as GraphLayout)}
-              options={LAYOUT_OPTIONS}
-            />
-          </GraphControl>
-          {/* Card presentation only applies to Model graph nodes (see
-              data/modelGraph.ts's nodesWithCardData) — the Schema view's
-              node-type graph always uses the pill, so the control has no
-              effect there and is hidden rather than shown inert. */}
-          {view === 'model' && (
-            <GraphControl label="Display" testId="graph-display-control">
-              <SegmentedControl
-                value={nodeDisplay}
-                onChange={(v) => setNodeDisplay(v as NodeDisplay)}
-                options={DISPLAY_OPTIONS}
-              />
-            </GraphControl>
-          )}
-          {LAYOUTS_WITH_BOUNDARIES.has(graphLayout) && (
-            <GraphControl label="Boundaries" testId="graph-boundaries-control">
-              <SegmentedControl
-                value={showClusterBoundaries ? 'on' : 'off'}
-                onChange={(v) => {
-                  if ((v === 'on') !== showClusterBoundaries) toggleClusterBoundaries();
-                }}
-                options={BOUNDARIES_OPTIONS}
-              />
-            </GraphControl>
-          )}
-          {graphLayout !== 'galaxy' && (
-            <GraphControl label="Node margin" testId="graph-margin-control">
-              <SegmentedControl
-                value={nodeMarginPreset}
-                onChange={(v) => setNodeMarginPreset(v as NodeMarginPreset)}
-                options={MARGIN_OPTIONS}
-              />
-            </GraphControl>
-          )}
-          <GraphControl label="Relations" testId="graph-relations-control">
-            <SegmentedControl
-              value={showAllRelations ? 'all' : 'structural'}
-              onChange={(v) => {
-                if ((v === 'all') !== showAllRelations) toggleShowAllRelations();
+          <Icon name="settings" size={16} />
+        </button>
+        {expanded && (
+          // paddingTop (not marginTop) so the space below the gear is part
+          // of the hover box. See the component doc.
+          <div style={{ paddingTop: 6, maxWidth: '100%', boxSizing: 'border-box' }}>
+            <div
+              id="graph-controls-panel"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'auto auto',
+                justifyContent: 'start',
+                columnGap: 14,
+                rowGap: 8,
+                width: 'fit-content',
+                maxWidth: '100%',
+                boxSizing: 'border-box',
+                padding: '10px 14px',
+                background: 'rgb(var(--canvas-card) / 0.5)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                border: '1px solid rgb(var(--canvas-border))',
+                borderRadius: 'var(--radius-lg)',
+                boxShadow: 'var(--shadow-md)',
               }}
-              options={RELATIONS_OPTIONS}
-            />
-          </GraphControl>
-          {view === 'model' && (
-            <GraphControl label="Inter-layer" testId="graph-inter-layer-control">
-              <SegmentedControl
-                value={showInterLayerNodes ? 'on' : 'off'}
-                onChange={(v) => {
-                  if ((v === 'on') !== showInterLayerNodes) toggleShowInterLayerNodes();
-                }}
-                options={BOUNDARIES_OPTIONS}
-              />
-            </GraphControl>
-          )}
-        </div>
-      )}
+              data-testid="graph-controls-panel"
+            >
+              {/* Card presentation only applies to Model graph nodes (see
+                  data/modelGraph.ts's nodesWithCardData) — the Schema view's
+                  node-type graph always uses the pill, so the control has no
+                  effect there and is hidden rather than shown inert. */}
+              {view === 'model' && (
+                <GraphControl label="Display" testId="graph-display-control">
+                  <SegmentedControl
+                    value={nodeDisplay}
+                    onChange={(v) => setNodeDisplay(v as NodeDisplay)}
+                    options={DISPLAY_OPTIONS}
+                  />
+                </GraphControl>
+              )}
+              <GraphControl label="Node margin" testId="graph-margin-control">
+                <SegmentedControl
+                  value={nodeMarginPreset}
+                  onChange={(v) => setNodeMarginPreset(v as NodeMarginPreset)}
+                  options={MARGIN_OPTIONS}
+                />
+              </GraphControl>
+              {LAYOUTS_WITH_BOUNDARIES.has(graphLayout) && (
+                <GraphControl label="Boundaries" testId="graph-boundaries-control">
+                  <SegmentedControl
+                    value={showClusterBoundaries ? 'on' : 'off'}
+                    onChange={(v) => {
+                      if ((v === 'on') !== showClusterBoundaries) toggleClusterBoundaries();
+                    }}
+                    options={ON_OFF_OPTIONS}
+                  />
+                </GraphControl>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -380,23 +422,22 @@ function GraphControls() {
 function GraphControl({
   label,
   testId,
-  fullRow = false,
+  inline = false,
   children,
 }: {
   label: string;
   testId: string;
-  /** Span both columns of the GraphControls panel grid. */
-  fullRow?: boolean;
+  /** Label beside the control (header bar) instead of above it (flyout). */
+  inline?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <div
       style={{
         display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        gap: 6,
-        gridColumn: fullRow ? '1 / -1' : undefined,
+        flexDirection: inline ? 'row' : 'column',
+        alignItems: inline ? 'center' : 'flex-start',
+        gap: inline ? 8 : 6,
       }}
       data-testid={testId}
     >
@@ -747,6 +788,7 @@ export function Canvas() {
       data-testid="canvas"
     >
       <PageHeader
+        className="canvas-header"
         style={{ flex: 'none', padding: '16px 22px 14px' }}
         eyebrow={
           <>
@@ -772,10 +814,12 @@ export function Canvas() {
                 fontFamily: "'JetBrains Mono',monospace",
                 fontSize: 11,
                 color: 'rgb(var(--canvas-fg-3))',
+                marginRight: 8,
               }}
             >
               {headerMeta}
             </span>
+            {!isPage && layerId && <GraphHeaderControls />}
             <SegmentedControl
               value={mode}
               onChange={(v) => setMode(v as 'graph' | 'page')}
@@ -832,7 +876,7 @@ export function Canvas() {
                   isStructuralEdge={isStructuralEdge}
                   showAllRelations={showAllRelations}
                   toolbarPosition="bottom-left"
-                  fitView={graphLayout !== 'force'}
+                  fitView
                   fitPadding={40}
                   style={{
                     position: 'absolute',

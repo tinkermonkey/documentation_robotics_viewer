@@ -22,7 +22,7 @@ describe('graphCanvasKey', () => {
     const k = graphCanvasKey(base);
     expect(graphCanvasKey({ ...base, view: 'spec' })).not.toBe(k);
     expect(graphCanvasKey({ ...base, layerId: 'business' })).not.toBe(k);
-    expect(graphCanvasKey({ ...base, graphLayout: 'galaxy' })).not.toBe(k);
+    expect(graphCanvasKey({ ...base, graphLayout: 'orthogonal' })).not.toBe(k);
     expect(graphCanvasKey({ ...base, nodeMarginPreset: 'wide' })).not.toBe(k);
     expect(graphCanvasKey({ ...base, nodeDisplay: 'pill' })).not.toBe(k);
     expect(graphCanvasKey({ ...base, showInterLayerNodes: false })).not.toBe(k);

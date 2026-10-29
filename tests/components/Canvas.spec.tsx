@@ -265,40 +265,61 @@ describe('Canvas — graph layout/display control strip', () => {
     expect(screen.queryByTestId('graph-controls')).not.toBeInTheDocument();
   });
 
-  it('shows Layout and Relations always; Boundaries only for grouping layouts, Node margin only off "galaxy"', async () => {
-    const user = userEvent.setup();
+  it('puts Layout, Relations and Inter-layer in the page header, offering only Clustered/Organic/Orthogonal', async () => {
     renderWithProviders(<Canvas />);
     useUiStore.getState().setView('model');
     useUiStore.getState().selectLayer('apm');
     await waitFor(() => expect(graphNodeCount()).toBe(11));
-    await user.hover(screen.getByTestId('graph-controls-toggle')); // expand the flyout
 
-    // Default layout is 'organic': Boundaries hidden, Node margin shown.
+    // Always visible in graph mode: no flyout to open.
+    const header = screen.getByTestId('graph-header-controls');
+    expect(within(header).getByTestId('graph-layout-control')).toBeInTheDocument();
+    expect(within(header).getByTestId('graph-relations-control')).toBeInTheDocument();
+    expect(within(header).getByTestId('graph-inter-layer-control')).toBeInTheDocument();
+    // Left of the graph/page toggle, in the header actions.
+    expect(
+      header.compareDocumentPosition(screen.getByTestId('canvas-mode-toggle')) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+
+    const layoutControl = screen.getByTestId('graph-layout-control');
+    expect(within(layoutControl).getAllByRole('radio').map((r) => r.textContent?.trim())).toEqual([
+      'Clustered',
+      'Organic',
+      'Orthogonal',
+    ]);
+    expect(within(layoutControl).getByRole('radio', { name: 'Organic' })).toBeChecked();
+
+    // Schema graph: no foreign nodes, so no Inter-layer control.
+    act(() => {
+      useUiStore.getState().setView('spec');
+      useUiStore.getState().selectLayer('apm');
+    });
+    await waitFor(() => expect(screen.queryByTestId('graph-inter-layer-control')).not.toBeInTheDocument());
     expect(screen.getByTestId('graph-layout-control')).toBeInTheDocument();
-    expect(screen.getByTestId('graph-relations-control')).toBeInTheDocument();
-    expect(screen.queryByTestId('graph-boundaries-control')).not.toBeInTheDocument();
-    expect(screen.getByTestId('graph-margin-control')).toBeInTheDocument();
 
-    useUiStore.getState().setGraphLayout('galaxy');
+    // Page mode: the graph controls would do nothing, so they're hidden.
+    act(() => useUiStore.getState().setMode('page'));
+    await screen.findByTestId('page-view');
+    expect(screen.queryByTestId('graph-header-controls')).not.toBeInTheDocument();
+  });
+
+  it('keeps Display and Node margin in the settings flyout, with Boundaries only for Clustered', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+    fireEvent.focus(screen.getByTestId('graph-controls-toggle'));
+
+    const panel = screen.getByTestId('graph-controls-panel');
+    expect(within(panel).getByTestId('graph-display-control')).toBeInTheDocument();
+    expect(within(panel).getByTestId('graph-margin-control')).toBeInTheDocument();
+    expect(within(panel).queryByTestId('graph-layout-control')).not.toBeInTheDocument();
+    expect(within(panel).queryByTestId('graph-boundaries-control')).not.toBeInTheDocument();
+
+    act(() => useUiStore.getState().setGraphLayout('force-clustered'));
     await waitFor(() => expect(screen.getByTestId('graph-boundaries-control')).toBeInTheDocument());
-    expect(screen.queryByTestId('graph-margin-control')).not.toBeInTheDocument();
-
-    useUiStore.getState().setGraphLayout('force-clustered');
-    await waitFor(() => expect(screen.getByTestId('graph-margin-control')).toBeInTheDocument());
-    expect(screen.getByTestId('graph-boundaries-control')).toBeInTheDocument();
-
-    // heimdall-ui 0.9.0 layouts: only radial-tree draws boundaries.
-    useUiStore.getState().setGraphLayout('radial-tree');
-    await waitFor(() => expect(screen.getByTestId('graph-boundaries-control')).toBeInTheDocument());
-    for (const layout of ['organic', 'orthogonal'] as const) {
-      useUiStore.getState().setGraphLayout(layout);
-      await waitFor(() =>
-        expect(screen.queryByTestId('graph-boundaries-control')).not.toBeInTheDocument(),
-      );
-      expect(screen.getByTestId('graph-margin-control')).toBeInTheDocument();
-    }
-
-    useUiStore.getState().setGraphLayout('force');
+    act(() => useUiStore.getState().setGraphLayout('orthogonal'));
+    await waitFor(() => expect(screen.queryByTestId('graph-boundaries-control')).not.toBeInTheDocument());
   });
 
   it('clicking each SegmentedControl option updates the corresponding uiStore field', async () => {
@@ -306,37 +327,24 @@ describe('Canvas — graph layout/display control strip', () => {
     useUiStore.getState().setView('model');
     useUiStore.getState().selectLayer('apm');
     await waitFor(() => expect(graphNodeCount()).toBe(11));
-    const toggle = screen.getByTestId('graph-controls-toggle');
-    // Open via focus, then interact via fireEvent.click (a plain "click"
-    // event, no surrounding pointer/mouse choreography) rather than
-    // userEvent.click for this multi-step sequence — happy-dom's user-event
-    // integration doesn't reliably exclude a shared ancestor (this flyout's
-    // wrapper) when synthesizing the pointer path between two DIFFERENT
-    // click targets inside it, so a *real* mouseleave never fires but a
-    // spurious one can here, collapsing (unmounting) the very control the
-    // next click targets. Verified live in a real browser (not just this
-    // suite) that clicking a control and then genuinely moving the mouse
-    // away collapses the panel correctly — this is a test-environment
-    // limitation, not a product bug; see Canvas.tsx's own collapseIfLeavingFlyout comment.
-    fireEvent.focus(toggle);
 
-    fireEvent.click(screen.getByRole('radio', { name: 'Galaxy' }));
-    expect(useUiStore.getState().graphLayout).toBe('galaxy');
-
-    // Boundaries control appears only for grouping layouts; use within()
-    // to disambiguate from the Inter-layer 'Off' option also present in Model view
-    fireEvent.click(within(screen.getByTestId('graph-boundaries-control')).getByRole('radio', { name: 'Off' }));
-    expect(useUiStore.getState().showClusterBoundaries).toBe(false);
-
-    // Relations control also has an 'Off' option; use within() to disambiguate
+    // Header controls: no flyout needed.
+    fireEvent.click(within(screen.getByTestId('graph-layout-control')).getByRole('radio', { name: 'Clustered' }));
+    expect(useUiStore.getState().graphLayout).toBe('force-clustered');
     fireEvent.click(within(screen.getByTestId('graph-relations-control')).getByRole('radio', { name: 'Structural' }));
     expect(useUiStore.getState().showAllRelations).toBe(false);
+    fireEvent.click(within(screen.getByTestId('graph-inter-layer-control')).getByRole('radio', { name: 'Off' }));
+    expect(useUiStore.getState().showInterLayerNodes).toBe(false);
 
-    fireEvent.click(screen.getByRole('radio', { name: 'Force' }));
-    expect(useUiStore.getState().graphLayout).toBe('force');
-
+    // Flyout controls. Opened via focus and driven with fireEvent.click: see
+    // CLAUDE.md's Common Issues on user-event inside hover-tracked overlays.
+    fireEvent.focus(screen.getByTestId('graph-controls-toggle'));
+    fireEvent.click(within(screen.getByTestId('graph-boundaries-control')).getByRole('radio', { name: 'Off' }));
+    expect(useUiStore.getState().showClusterBoundaries).toBe(false);
     fireEvent.click(screen.getByRole('radio', { name: 'Wide' }));
     expect(useUiStore.getState().nodeMarginPreset).toBe('wide');
+    fireEvent.click(screen.getByRole('radio', { name: 'Pill' }));
+    expect(useUiStore.getState().nodeDisplay).toBe('pill');
   });
 
   it('pins the built-in GraphToolbar bottom-left (not bottom-right, which collides with the Inspector drawer)', async () => {
@@ -374,11 +382,11 @@ describe('Canvas — graph layout/display control strip', () => {
     await user.hover(toggle);
     expect(toggle).toHaveAttribute('aria-expanded', 'true');
     expect(screen.getByTestId('graph-controls-panel')).toBeInTheDocument();
-    expect(screen.getByTestId('graph-layout-control')).toBeInTheDocument();
+    expect(screen.getByTestId('graph-margin-control')).toBeInTheDocument();
 
-    // Unhovering collapses it again.
+    // Unhovering collapses it again, after the short close delay.
     await user.unhover(toggle);
-    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await waitFor(() => expect(toggle).toHaveAttribute('aria-expanded', 'false'));
     expect(screen.queryByTestId('graph-controls-panel')).not.toBeInTheDocument();
 
     // Keyboard focus (not just mouse hover) also expands it.
@@ -406,6 +414,56 @@ describe('Canvas — graph layout/display control strip', () => {
     await user.tab();
     expect(screen.getByTestId('graph-controls-toggle')).toHaveAttribute('aria-expanded', 'true');
     expect(screen.getByTestId('graph-controls-panel')).toBeInTheDocument();
+  });
+});
+
+describe('Canvas — settings flyout hover path (regression: it closed before the pointer reached it)', () => {
+  it('stays open while the pointer moves from the gear down into the panel', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+
+    const flyout = screen.getByTestId('graph-controls-flyout');
+    const toggle = screen.getByTestId('graph-controls-toggle');
+    fireEvent.mouseEnter(toggle);
+    const panel = screen.getByTestId('graph-controls-panel');
+
+    // The space between gear and panel belongs to the flyout's own box now,
+    // so the gear -> gap -> panel path never leaves it.
+    expect(flyout.contains(panel)).toBe(true);
+    expect(flyout).toHaveStyle({ pointerEvents: 'auto' });
+    expect(panel.parentElement).toHaveStyle({ paddingTop: '6px' });
+
+    // A brief exit (a diagonal move clipping the edge) doesn't close it if
+    // the pointer comes straight back.
+    fireEvent.mouseLeave(flyout, { relatedTarget: document.body });
+    fireEvent.mouseEnter(flyout);
+    await new Promise((r) => setTimeout(r, 300));
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+
+    // Actually leaving closes it.
+    fireEvent.mouseLeave(flyout, { relatedTarget: document.body });
+    await waitFor(() => expect(toggle).toHaveAttribute('aria-expanded', 'false'));
+  });
+
+  it('keeps working after a setting has been changed', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+    const flyout = screen.getByTestId('graph-controls-flyout');
+    const toggle = screen.getByTestId('graph-controls-toggle');
+
+    fireEvent.mouseEnter(toggle);
+    fireEvent.click(screen.getByRole('radio', { name: 'Wide' }));
+    fireEvent.mouseLeave(flyout, { relatedTarget: document.body });
+    await waitFor(() => expect(toggle).toHaveAttribute('aria-expanded', 'false'));
+
+    fireEvent.mouseEnter(toggle);
+    expect(screen.getByTestId('graph-controls-panel')).toBeInTheDocument();
+    await new Promise((r) => setTimeout(r, 300));
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
   });
 });
 
@@ -815,7 +873,7 @@ describe('Canvas — GraphControls flyout keyboard/click activation', () => {
     fireEvent.focus(toggle);
     expect(screen.getByTestId('graph-controls-panel')).toBeInTheDocument();
 
-    fireEvent.keyDown(screen.getByTestId('graph-controls'), { key: 'Escape' });
+    fireEvent.keyDown(screen.getByTestId('graph-controls-toggle'), { key: 'Escape' });
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
     expect(screen.queryByTestId('graph-controls-panel')).not.toBeInTheDocument();
     expect(document.activeElement).toBe(toggle);
@@ -837,7 +895,7 @@ describe('Canvas — Inter-layer nodes control', () => {
     await waitFor(() => expect(screen.getByTestId('graph-inter-layer-control')).toBeInTheDocument());
 
     // Close controls and switch to Schema
-    fireEvent.keyDown(screen.getByTestId('graph-controls'), { key: 'Escape' });
+    fireEvent.keyDown(screen.getByTestId('graph-controls-toggle'), { key: 'Escape' });
     useUiStore.getState().setView('spec');
     useUiStore.getState().selectLayer('apm');
 
@@ -942,49 +1000,20 @@ describe('Canvas — Inter-layer nodes control', () => {
     await waitFor(() => expect(graphNodeCount()).toBe(nativeOnlyCount));
   });
 
-  it('switching layouts preserves inter-layer nodes (force→galaxy→clustered)', async () => {
+  it('switching layouts preserves inter-layer nodes (organic→orthogonal→clustered)', async () => {
     renderWithProviders(<Canvas />);
     useUiStore.getState().setView('model');
     useUiStore.getState().selectLayer('business');
-    useUiStore.setState({ showInterLayerNodes: true, graphLayout: 'force' });
+    useUiStore.setState({ showInterLayerNodes: true, graphLayout: 'organic' });
 
-    // Get initial count with force layout
     await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(0));
-    const forceCount = graphNodeCount();
+    const organicCount = graphNodeCount();
 
-    // Switch to galaxy layout
-    const toggle = screen.getByTestId('graph-controls-toggle');
-    fireEvent.focus(toggle);
-    await waitFor(() => expect(screen.getByTestId('graph-layout-control')).toBeInTheDocument());
-
-    const layoutControl = screen.getByTestId('graph-layout-control');
-    const galaxyButton = within(layoutControl).getByRole('radio', { name: 'Galaxy' });
-    fireEvent.click(galaxyButton);
-
-    expect(useUiStore.getState().graphLayout).toBe('galaxy');
-
-    // Galaxy layout should also render the same foreign nodes
-    await waitFor(() => {
-      const galaxyCount = graphNodeCount();
-      expect(galaxyCount).toBe(forceCount);
-    });
-
-    // Switch to clustered layout
-    fireEvent.focus(screen.getByTestId('graph-controls-toggle'));
-    await waitFor(() => expect(screen.getByTestId('graph-layout-control')).toBeInTheDocument());
-
-    const clusteredButton = within(screen.getByTestId('graph-layout-control')).getByRole('radio', {
-      name: 'Clustered',
-    });
-    fireEvent.click(clusteredButton);
-
-    expect(useUiStore.getState().graphLayout).toBe('force-clustered');
-
-    // Clustered layout should also render the same foreign nodes
-    await waitFor(() => {
-      const clusteredCount = graphNodeCount();
-      expect(clusteredCount).toBe(forceCount);
-    });
+    for (const [label, value] of [['Orthogonal', 'orthogonal'], ['Clustered', 'force-clustered']] as const) {
+      fireEvent.click(within(screen.getByTestId('graph-layout-control')).getByRole('radio', { name: label }));
+      expect(useUiStore.getState().graphLayout).toBe(value);
+      await waitFor(() => expect(graphNodeCount()).toBe(organicCount));
+    }
   });
 
   it('dark and light canvas modes both render foreign nodes correctly', async () => {

@@ -157,17 +157,22 @@ For local dev use `dr visualize --no-auth`.
   the right edge is flush against the canvas) are rounded via a `.detail-drawer` override in
   `domain-and-nav.css` using `--radius-lg`, the same "normal" radius other floating Heimdall panels use;
   Heimdall's own `DetailDrawer.css` ships it flush (no radius at all).
-- **Graph layout/display controls** — `GraphControls`, a hover/focus flyout top-left over the graph (Model +
-  Schema views): collapsed to a single transparent icon button (`.graph-toolbar__btn`, same look the
-  built-in `GraphToolbar`'s own buttons use) so it isn't a permanent opaque block over the graph; hovering
-  or focusing it expands a translucent/blurred panel (same `DetailDrawer` visual language) with the actual
-  controls, mirroring Heimdall's `docs/src/showcases/GraphLayoutsShowcase.tsx` demo. Collapse is
-  `relatedTarget`-based (`collapseIfLeavingFlyout`, shared by `onMouseLeave`/`onBlur`) — checks where the
-  pointer/focus is actually GOING, not just that SOME leave event fired, so clicking one control inside the
-  panel and moving to another doesn't spuriously collapse it out from under the interaction. Drives
-  `uiStore`'s `graphLayout` (`organic` default, plus `force`/`galaxy`/`force-clustered`/`orthogonal`/
-  `radial-tree` — heimdall-ui 0.9.0; Boundaries control only for galaxy/clustered/radial-tree), `showClusterBoundaries`,
-  `nodeMarginPreset` (`tight`/`default`/`wide`), and `showAllRelations`. "Structural" relations use
+- **Graph layout/display controls** — split by how often they're used (Model + Schema views):
+  - **Page header** (`GraphHeaderControls` in `Canvas.tsx`, left of the graph/page toggle, graph mode only):
+    Layout (`graphLayout`: Clustered `force-clustered` / Organic `organic` default / Orthogonal — the only
+    three offered; a persisted force/galaxy/radial-tree falls back to organic), Relations
+    (`showAllRelations`), Inter-layer (`showInterLayerNodes`, Model only). The header gets a `canvas-header`
+    class whose CSS (`domain-and-nav.css`) lets the actions wrap below the title in a narrow canvas —
+    Heimdall's `PageHeader` never wraps and otherwise crushes the title.
+  - **Settings flyout** (`GraphControls`, gear top-left over the graph): Display (`nodeDisplay`, Model only),
+    Node margin (`nodeMarginPreset`), Boundaries (`showClusterBoundaries`, Clustered only). Collapsed to a
+    transparent `.graph-toolbar__btn` icon; hover/focus expands a translucent panel. The gear and panel sit
+    in ONE `pointer-events: auto` box with the space between them as `paddingTop` — they used to be
+    separate boxes with a pointer-events-none margin between, so a slow move from the gear to the panel
+    "left" and closed it. Mouse-leave closes after `FLYOUT_CLOSE_DELAY_MS` (cancelled by re-entering); blur
+    closes at once. Collapse is `relatedTarget`-based (`collapseIfLeavingFlyout`), so moving between
+    controls inside it doesn't close it.
+  "Structural" relations use
   `data/predicates.ts`'s `isStructuralEdge` — a hardcoded DR predicate `category` classification
   (mirrors `ui/domain.ts`'s hardcoded layer colors; not exposed by `/api/model` or `/api/spec`). The
   built-in `GraphToolbar` (zoom/lock/fullscreen + galaxy's live-simulation toggle) is pinned
@@ -201,7 +206,13 @@ For local dev use `dr visualize --no-auth`.
   hover through the store or the `edges` memo (re-runs the layout; see `useEdgeInteraction.ts`).
 - **Changesets view** — op-coded diff list (add=emerald / update=cyan / delete=rose) + `StatTile` inspector +
   expandable `SideBySideDiff`.
-- **DrBot chat** — 372px drawer (persistent ≥1300px, overlay below) with live WS/JSON-RPC streaming;
+- **DrBot chat** — 372px drawer (persistent ≥1300px, overlay below) with live WS/JSON-RPC streaming.
+  `chat.send` may run for minutes (Claude Code + tools): the client timeout is `CHAT_SEND_TIMEOUT_MS`
+  (15 min) — it was 60s, which cut answers off mid-way with a timeout error. The `dr visualize` server's
+  `chat.tool.invoke` is snake_case (`tool_name`/`tool_input`), once per call, with no `tool_use_id` and no
+  status; `chatService.handleToolInvoke` gives each a local id and marks it completed when the reply moves
+  on (next tool, text) or ends. `chat.tool.result` is the final session result, not a per-tool one, and is
+  ignored. `chat.send` only takes `message` — the panel's "talking to <layer>" context is NOT sent.
   `chatAdapter.ts` maps our `parts` union onto Heimdall's message/tool/thinking blocks.
 - **Annotations** — REST CRUD + replies in the inspector for Model elements.
 - **Light/dark canvas** toggle in the topbar. **Dark is the default** (`uiStore`'s `canvasDark: true`) —

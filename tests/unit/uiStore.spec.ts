@@ -55,7 +55,7 @@ describe('uiStore — localStorage persistence', () => {
   it('persists canvasDark, chatOpen, and the graph settings under PERSIST_KEY', () => {
     get().toggleCanvasDark();
     get().toggleChat();
-    get().setGraphLayout('galaxy');
+    get().setGraphLayout('orthogonal');
     get().toggleClusterBoundaries();
     get().toggleShowAllRelations();
     get().setNodeMarginPreset('wide');
@@ -66,7 +66,7 @@ describe('uiStore — localStorage persistence', () => {
     expect(stored.state).toMatchObject({
       canvasDark: true, // reset() started at false; one toggle -> true
       chatOpen: true, // reset() started at false; one toggle -> true
-      graphLayout: 'galaxy',
+      graphLayout: 'orthogonal',
       showClusterBoundaries: false,
       showAllRelations: false,
       nodeMarginPreset: 'wide',
@@ -515,12 +515,12 @@ describe('graph layout/display preferences', () => {
   });
 
   it('setGraphLayout switches the layout engine', () => {
-    get().setGraphLayout('galaxy');
-    expect(get().graphLayout).toBe('galaxy');
+    get().setGraphLayout('orthogonal');
+    expect(get().graphLayout).toBe('orthogonal');
     get().setGraphLayout('force-clustered');
     expect(get().graphLayout).toBe('force-clustered');
-    get().setGraphLayout('force');
-    expect(get().graphLayout).toBe('force');
+    get().setGraphLayout('organic');
+    expect(get().graphLayout).toBe('organic');
   });
 
   it('toggleClusterBoundaries flips showClusterBoundaries', () => {
@@ -606,7 +606,7 @@ describe('persist hydration validates graphLayout/nodeMarginPreset/showInterLaye
         state: {
           canvasDark: true,
           chatOpen: false,
-          graphLayout: 'galaxy',
+          graphLayout: 'orthogonal',
           showClusterBoundaries: true,
           showAllRelations: true,
           nodeMarginPreset: 'wide',
@@ -619,13 +619,13 @@ describe('persist hydration validates graphLayout/nodeMarginPreset/showInterLaye
 
     vi.resetModules();
     const fresh = await import('@/apps/embedded/ui/uiStore');
-    expect(fresh.useUiStore.getState().graphLayout).toBe('galaxy');
+    expect(fresh.useUiStore.getState().graphLayout).toBe('orthogonal');
     expect(fresh.useUiStore.getState().nodeMarginPreset).toBe('wide');
     expect(fresh.useUiStore.getState().nodeDisplay).toBe('pill');
     expect(fresh.useUiStore.getState().showInterLayerNodes).toBe(false);
   });
-  it.each(['organic', 'orthogonal', 'radial-tree'] as const)(
-    'keeps the heimdall-ui 0.9.0 layout %s on rehydrate',
+  it.each(['organic', 'orthogonal', 'force-clustered'] as const)(
+    'keeps the offered layout %s on rehydrate',
     async (layout) => {
       localStorage.setItem(
         PERSIST_KEY,
@@ -634,6 +634,18 @@ describe('persist hydration validates graphLayout/nodeMarginPreset/showInterLaye
       vi.resetModules();
       const fresh = await import('@/apps/embedded/ui/uiStore');
       expect(fresh.useUiStore.getState().graphLayout).toBe(layout);
+    },
+  );
+  it.each(['force', 'galaxy', 'radial-tree'] as const)(
+    'falls back to organic for a dropped layout (%s) saved by an earlier version',
+    async (layout) => {
+      localStorage.setItem(
+        PERSIST_KEY,
+        JSON.stringify({ state: { graphLayout: layout }, version: 1 }),
+      );
+      vi.resetModules();
+      const fresh = await import('@/apps/embedded/ui/uiStore');
+      expect(fresh.useUiStore.getState().graphLayout).toBe('organic');
     },
   );
 });

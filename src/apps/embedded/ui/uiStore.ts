@@ -22,13 +22,10 @@ import type { ScopedViewport } from './graphViewport';
 export type ViewKind = 'model' | 'spec' | 'changesets';
 export type CanvasMode = 'graph' | 'page';
 export type PageFocus = 'layer' | 'node';
-export type GraphLayout =
-  | 'force'
-  | 'galaxy'
-  | 'force-clustered'
-  | 'organic'
-  | 'orthogonal'
-  | 'radial-tree';
+/** The layouts offered in the header's Layout control. heimdall-ui also has
+ *  force, galaxy and radial-tree; they were dropped from the picker as less
+ *  useful for DR layers, and a persisted one falls back to 'organic'. */
+export type GraphLayout = 'force-clustered' | 'organic' | 'orthogonal';
 export type NodeMarginPreset = 'tight' | 'default' | 'wide';
 export type NodeDisplay = 'card' | 'pill';
 
@@ -88,8 +85,8 @@ interface UiState {
    *  same as canvasDark/mode. Defaults to 'organic' (heimdall-ui 0.9.0): no overlaps,
    *  the fewest edge crossings and the most legible nodes at fit across every DR layer. */
   graphLayout: GraphLayout;
-  /** Whether galaxy/force-clustered/radial-tree draw a boundary circle per
-   *  top-level group. No effect under the other layouts. */
+  /** Whether force-clustered draws a boundary circle per top-level group. No
+   *  effect under the other layouts. */
   showClusterBoundaries: boolean;
   /** Whether every edge is shown, or only edges GraphCanvas classifies as
    *  structural (see data/predicates.ts). Defaults to true (every edge visible)
@@ -460,12 +457,9 @@ if (typeof document !== 'undefined') {
 }
 
 const VALID_GRAPH_LAYOUTS: ReadonlySet<GraphLayout> = new Set([
-  'force',
-  'galaxy',
   'force-clustered',
   'organic',
   'orthogonal',
-  'radial-tree',
 ]);
 const VALID_NODE_MARGIN_PRESETS: ReadonlySet<NodeMarginPreset> = new Set([
   'tight',

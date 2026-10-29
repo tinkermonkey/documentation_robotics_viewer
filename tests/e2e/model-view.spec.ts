@@ -165,4 +165,29 @@ test.describe('model view', () => {
     await page.mouse.move(5, 5);
     await expect(card).toHaveCount(0);
   });
+
+  test('settings flyout stays open on a slow move from the gear to the panel, before and after changing a setting', async ({ page }) => {
+    await gotoView(page, ROUTES.model);
+    await openLayer(page, 'APM');
+    const toggle = page.getByTestId('graph-controls-toggle');
+    const panel = page.getByTestId('graph-controls-panel');
+
+    const descend = async () => {
+      const tb = (await toggle.boundingBox())!;
+      await page.mouse.move(tb.x + tb.width / 2, tb.y + tb.height / 2, { steps: 5 });
+      await expect(panel).toBeVisible();
+      const pb = (await panel.boundingBox())!;
+      // Slow, so the pointer actually crosses the space between gear and panel.
+      await page.mouse.move(tb.x + tb.width / 2, pb.y + 24, { steps: 25 });
+      await page.waitForTimeout(400);
+      await expect(panel).toBeVisible();
+    };
+
+    await descend();
+    await panel.getByRole('radio', { name: 'Wide' }).click();
+    await page.mouse.move(900, 600, { steps: 10 });
+    await expect(panel).toHaveCount(0);
+
+    await descend();
+  });
 });

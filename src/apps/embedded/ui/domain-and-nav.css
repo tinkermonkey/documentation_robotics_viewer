@@ -460,3 +460,25 @@ body.dark-canvas {
 .graph-inspector--custom-relationships .graph-inspector__empty-mini {
   display: none;
 }
+
+/* Model/Schema page header (Canvas.tsx). It now carries the graph controls
+ * (Layout / Relations / Inter-layer) beside the graph/page toggle, which don't
+ * fit next to the title in a narrow canvas (e.g. with the DrBot drawer open).
+ * Heimdall's PageHeader never wraps and never shrinks its actions, so the
+ * title block got crushed under them. Let the actions wrap onto their own
+ * row, right-aligned, once the title would drop below ~240px. */
+.canvas-header.page-header {
+  flex-wrap: wrap;
+  row-gap: 12px;
+}
+.canvas-header .page-header__text {
+  flex: 1 1 240px;
+}
+.canvas-header .page-header__actions {
+  flex-shrink: 1;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  row-gap: 8px;
+  min-width: 0;
+  margin-left: auto;
+}

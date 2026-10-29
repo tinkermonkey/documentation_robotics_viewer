@@ -345,8 +345,7 @@ test.describe('URL routing — graph viewport history', () => {
     await graphIdle(page);
     await zoomAndSettle(page, -300);
 
-    await page.getByTestId('graph-controls-toggle').hover();
-    await page.getByRole('radio', { name: 'Force', exact: true }).click();
+    await page.getByTestId('graph-layout-control').getByRole('radio', { name: 'Orthogonal' }).click();
     await expect.poll(() => vpOf(page.url())).toBeNull();
   });
 });
