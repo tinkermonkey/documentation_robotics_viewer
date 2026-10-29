@@ -208,9 +208,17 @@ For local dev use `dr visualize --no-auth`.
   `navigateToElement`/`navigateToElementWithEdge`/`navigateToSpecNode` — nav-tree leaves, relationship
   links, neighborhood/page-table clicks, inter-layer nodes), or any selection change in page mode. Plain
   on-canvas selection within a layer REPLACES the entry so graph clicks don't flood history. The effect
-  skips navigating when the store already matches the URL, so back/forward never push duplicates. Viewport
-  (pan/zoom) history is not wired yet; heimdall-ui 0.9.4 provides `onViewportDwell` / `onViewportNavigate` /
-  `initialViewport` / `viewportRef` for it.
+  skips navigating when the store already matches the URL, so back/forward never push duplicates.
+- **Viewport history** (`?vp=centerX,centerY,zoom`, heimdall-ui 0.9.4) — `ui/useViewportHistory.ts` spreads
+  onto the Model/Schema `GraphCanvas`: it records `uiStore.graphViewport` on `onViewportDwell` (pan/zoom
+  settled) and on `onViewportNavigate` (centerOnSelect, toolbar/fullscreen fit — not the mount fit), and
+  restores via `initialViewport` (reload/deep link) or a silent `viewportRef.setViewport` (back/forward; the
+  silent call also cancels a pending centerOnSelect report). The router mirrors it into `?vp=` and only ever
+  REPLACES for it, so each history entry holds the last view seen there. A viewport is tagged with its
+  canvas's `graphCanvasKey` (`ui/graphViewport.ts`, also the GraphCanvas React key): a layer, view or layout
+  setting change drops it rather than applying world coordinates to a different layout. Kept on page-mode
+  URLs so toggling back to graph returns to the same view. After a drag-pan flick the dwell lands ~4–5s
+  later (heimdall's inertia tail + 1.5s `dwellMs`).
 
 ## Local Development & Verification
 
@@ -255,6 +263,7 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 | Floating overlay's buttons are unclickable / read behind another panel | Two absolutely-positioned overlays anchor to the same edge with no explicit stacking order | Prefer moving one to a non-colliding corner if there's a free one (see `GraphToolbar`'s `toolbarPosition="bottom-left"`, moved off `"bottom-right"` specifically to stop colliding with the Inspector `DetailDrawer`); if both must share an edge, give the one that should win an explicit higher `z-index` instead |
 | GraphCanvas overflows its box onto content below | Heimdall's `.graph-canvas` has `min-height: 360px`; a smaller fixed-height box with an absolutely positioned canvas can't contain it | Keep the canvas in normal flow (`flex: 1`) inside a box whose min-height is ≥ 360px (see `NeighborhoodGraphView`) |
 | A RichTooltip swallows the click on its own trigger | No side had room, so clamping put the card over the trigger and the mouseup landed on it | `computeTooltipPosition` tries all four sides, then sets `overlapsAnchor` → the card gets `pointer-events: none` |
+| `?vp=` stripped on load in dev only | StrictMode re-runs the router's store → URL effect with a stale closure where `graphViewport` isn't seeded yet | Read `useUiStore.getState()` inside that effect for the viewport (router.tsx does) |
 | Fonts fall back to system | woff2 404 (served as HTML) | Self-hosted under `public/fonts`; keep `@font-face` `/fonts/...` paths |
 | Stale UI after an edit | Vite transform cache | Restart dev server + `rm -rf node_modules/.vite`. Before debugging a code change that "isn't taking effect," `fetch()` the source path from the live page and grep the response for a string unique to your edit — cheaper than assuming the logic is wrong |
 | `userEvent.click()` on a 2nd element inside a hover-tracked overlay doesn't fire its handler | happy-dom/user-event doesn't reliably exclude a shared ancestor when synthesizing the pointer path between two different click targets, so a spurious `mouseleave` collapses (unmounts) the panel mid-click | Use `fireEvent.click()` for that specific multi-step interaction instead of `userEvent.click()` — confirms it's a test-environment artifact, not a product bug (verify live too) |

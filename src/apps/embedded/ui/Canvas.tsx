@@ -117,6 +117,8 @@ import { ModelCardNode } from './ModelCardNode';
 import { PillNode } from './PillNode';
 import { PredicateTooltipContent } from './PredicateTooltip';
 import { useEdgeInteraction } from './useEdgeInteraction';
+import { useViewportHistory } from './useViewportHistory';
+import { graphCanvasKey } from './graphViewport';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import {
@@ -460,6 +462,19 @@ export function Canvas() {
   // is exactly that ancestor (it wraps all three), so this ref is attached there.
   const canvasAreaRef = useRef<HTMLDivElement>(null);
 
+  // Viewport history (?vp=) — see useViewportHistory. The key is also
+  // GraphCanvas's React key, so a viewport only ever applies to the canvas
+  // it was recorded on.
+  const canvasKey = graphCanvasKey({
+    view,
+    layerId,
+    graphLayout,
+    nodeMarginPreset,
+    nodeDisplay,
+    showInterLayerNodes,
+  });
+  const viewportHistoryProps = useViewportHistory(canvasKey);
+
   const { derived: model } = useModel();
   const { derived: spec, raw: specRaw } = useSpec();
   const isSpec = view === 'spec';
@@ -769,7 +784,7 @@ export function Canvas() {
             ) : (
               <>
                 <GraphCanvas
-                  key={`${view}:${layerId}:${graphLayout}:${nodeMarginPreset}:${nodeDisplay}:${showInterLayerNodes}`}
+                  key={canvasKey}
                   nodes={nodes}
                   edges={edges}
                   selectedNodeId={selectedId ?? undefined}
@@ -786,6 +801,7 @@ export function Canvas() {
                   onBackgroundClick={() => selectLayer(layerId)}
                   renderNode={!isSpec && nodeDisplay === 'card' ? renderCardNode : renderPillNode}
                   centerOnSelect
+                  {...viewportHistoryProps}
                   fullscreenContainerRef={canvasAreaRef}
                   layout={graphLayout}
                   nodeMargin={nodeMargin}

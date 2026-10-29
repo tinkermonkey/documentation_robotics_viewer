@@ -80,6 +80,7 @@ describe('uiStore — localStorage persistence', () => {
     get().selectNode('elem-1');
     get().setMode('page');
     get().selectChangeset('cs-9');
+    get().setGraphViewport({ scope: 'model:security', center: { x: 1, y: 2 }, zoom: 0.5 });
 
     const stored = JSON.parse(localStorage.getItem(PERSIST_KEY) ?? '{}');
     expect(stored.state).not.toHaveProperty('view');
@@ -90,6 +91,7 @@ describe('uiStore — localStorage persistence', () => {
     expect(stored.state).not.toHaveProperty('focus');
     expect(stored.state).not.toHaveProperty('expandedSections');
     expect(stored.state).not.toHaveProperty('expandedLayers');
+    expect(stored.state).not.toHaveProperty('graphViewport');
   });
 });
 

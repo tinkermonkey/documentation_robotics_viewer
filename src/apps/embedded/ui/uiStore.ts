@@ -17,6 +17,7 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import type { ScopedViewport } from './graphViewport';
 
 export type ViewKind = 'model' | 'spec' | 'changesets';
 export type CanvasMode = 'graph' | 'page';
@@ -69,6 +70,11 @@ interface UiState {
    *  layer, while plain on-canvas selection only replaces the entry. Not
    *  persisted. */
   navSeq: number;
+  /** Last settled viewport of the Model/Schema graph, tagged with the canvas
+   *  it belongs to (see ui/graphViewport.ts). Written by Canvas when the user
+   *  stops panning/zooming or the canvas recentres itself, and by the router
+   *  from `?vp=` on a deep link or back/forward. Not persisted: the URL owns it. */
+  graphViewport: ScopedViewport | null;
   /** Which record the page view renders when `mode === 'page'` — the active
    *  layer's overview, or the selected node's detail. Set by the same
    *  selection actions that drive `selectedId` (see each action below). */
@@ -173,6 +179,7 @@ interface UiState {
   setNodeMarginPreset: (preset: NodeMarginPreset) => void;
   setNodeDisplay: (nodeDisplay: NodeDisplay) => void;
   toggleShowInterLayerNodes: () => void;
+  setGraphViewport: (graphViewport: ScopedViewport | null) => void;
 }
 
 const initialWide =
@@ -222,6 +229,7 @@ export const useUiStore = create<UiState>()(
       wide: initialWide,
       mode: 'graph',
       navSeq: 0,
+      graphViewport: null,
       focus: 'layer',
       expandedSections: new Set<string>(['model']),
       expandedLayers: new Set<string>(),
@@ -414,6 +422,8 @@ export const useUiStore = create<UiState>()(
 
       toggleShowInterLayerNodes: () =>
         set((s) => ({ showInterLayerNodes: !s.showInterLayerNodes })),
+
+      setGraphViewport: (graphViewport) => set({ graphViewport }),
     }),
     {
       name: PERSIST_KEY,

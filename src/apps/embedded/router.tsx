@@ -11,6 +11,12 @@ import { createHashHistory } from '@tanstack/history';
 import AuthRoute from './routes/AuthRoute';
 import { AppShell } from './ui/AppShell';
 import { useUiStore, type ViewKind } from './ui/uiStore';
+import {
+  formatViewportParam,
+  graphCanvasKey,
+  parseViewportParam,
+  sameViewport,
+} from './ui/graphViewport';
 import { useAuthStore } from './stores/authStore';
 import { useConnectionStore } from './stores/connectionStore';
 import { websocketClient } from './services/websocketClient';
@@ -141,6 +147,10 @@ interface AppShellSearch {
   node?: string;
   edge?: string;
   changeset?: string;
+  /** Graph viewport `centerX,centerY,zoom` (see ui/graphViewport.ts). Model +
+   *  Schema only. Kept on page-mode URLs too, so switching back to the graph
+   *  returns to the same view. */
+  vp?: string;
 }
 
 /** Combine layer/node/edge/changeset into one string so a single ref comparison
@@ -184,6 +194,13 @@ function selectionKey(
  * history. Guarded (mount ref + prev-value refs + an "already matches the
  * URL" check) so the two effects never ping-pong and back/forward never
  * pushes a duplicate entry.
+ *
+ * `?vp=` carries the graph viewport. It never pushes: Canvas records a
+ * viewport when the user stops panning/zooming or the canvas recentres
+ * itself, and the router replaces the current entry with it, so each history
+ * entry ends up holding the last view seen there. Back/forward and reloads
+ * restore it (Canvas applies it silently). It's only written while it belongs
+ * to the live canvas (`graphCanvasKey`), so a layer or layout change drops it.
  */
 function AppShellRoute() {
   const { section, view: viewParam } = useParams({ strict: false }) as {
@@ -200,6 +217,9 @@ function AppShellRoute() {
   const mode = useUiStore((s) => s.mode);
   const setMode = useUiStore((s) => s.setMode);
   const navSeq = useUiStore((s) => s.navSeq);
+  const graphViewport = useUiStore((s) => s.graphViewport);
+  const canvasKey = useUiStore(graphCanvasKey);
+  const setGraphViewport = useUiStore((s) => s.setGraphViewport);
   const selectLayer = useUiStore((s) => s.selectLayer);
   const selectNode = useUiStore((s) => s.selectNode);
   const selectEdge = useUiStore((s) => s.selectEdge);
@@ -223,6 +243,7 @@ function AppShellRoute() {
   const prevModeRef = useRef(mode);
   const prevLayerRef = useRef(layerId);
   const prevNavSeqRef = useRef(navSeq);
+  const prevVpRef = useRef<string | undefined>(undefined);
 
   // URL → store: section/view (unchanged from before).
   useEffect(() => {
@@ -271,6 +292,23 @@ function AppShellRoute() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search.layer, search.node, search.edge, search.changeset, modelLoaded, model.links]);
 
+  // URL → store: viewport. Runs after the selection effect above, so on
+  // back/forward the layer it scopes to is already in the store. A URL with
+  // no `?vp=` clears it, so a viewport from the entry we just left can't be
+  // written onto this one.
+  useEffect(() => {
+    const next = parseViewportParam(search.vp);
+    const s = useUiStore.getState();
+    const current = s.graphViewport;
+    if (!next) {
+      if (current) setGraphViewport(null);
+      return;
+    }
+    const scope = graphCanvasKey(s);
+    if (current && current.scope === scope && sameViewport(current, next)) return;
+    setGraphViewport({ scope, ...next });
+  }, [section, search.layer, search.vp, setGraphViewport]);
+
   // store → URL. Push a history entry for a destination change — view,
   // graph/page mode, layer, a deliberate navigation (navSeq: cross-layer
   // links, relationship links, neighborhood-graph clicks), or any selection
@@ -286,6 +324,7 @@ function AppShellRoute() {
       prevModeRef.current = mode;
       prevLayerRef.current = layerId;
       prevNavSeqRef.current = navSeq;
+      prevVpRef.current = search.vp;
       return;
     }
     const viewChanged = prevViewRef.current !== view;
@@ -296,12 +335,22 @@ function AppShellRoute() {
     // that Back can't leave (it re-defaults straight back).
     const layerChanged = prevLayerRef.current !== null && prevLayerRef.current !== layerId;
     const navigated = prevNavSeqRef.current !== navSeq;
-    if (!viewChanged && !selectionChanged && !modeChanged && !navigated) return;
+    // Read live, not from this render's closure: the URL → store effect above
+    // may have just seeded it in this same flush (a deep link, or StrictMode's
+    // effect re-run in dev), and a stale null here would strip `?vp=`.
+    const live = useUiStore.getState();
+    const vp =
+      view !== 'changesets' && live.graphViewport?.scope === graphCanvasKey(live)
+        ? formatViewportParam(live.graphViewport)
+        : undefined;
+    const vpChanged = prevVpRef.current !== vp;
+    if (!viewChanged && !selectionChanged && !modeChanged && !navigated && !vpChanged) return;
     prevViewRef.current = view;
     prevSelectionKeyRef.current = key;
     prevModeRef.current = mode;
     prevLayerRef.current = layerId;
     prevNavSeqRef.current = navSeq;
+    prevVpRef.current = vp;
 
     const targetSection = VIEW_TO_SECTION[view];
     const targetView = view === 'changesets' ? SECTION_DEFAULT_VIEW[targetSection] : mode;
@@ -314,6 +363,7 @@ function AppShellRoute() {
             // selectedId, so at most one of these is ever defined here.
             node: selectedId ?? undefined,
             edge: selectedEdgeId ?? undefined,
+            vp,
           };
 
     // The store already matches the URL — this change came FROM the URL
@@ -325,7 +375,8 @@ function AppShellRoute() {
       (search.layer ?? undefined) === targetSearch.layer &&
       (search.node ?? undefined) === targetSearch.node &&
       (search.edge ?? undefined) === targetSearch.edge &&
-      (search.changeset ?? undefined) === targetSearch.changeset
+      (search.changeset ?? undefined) === targetSearch.changeset &&
+      (search.vp ?? undefined) === targetSearch.vp
     ) {
       return;
     }
@@ -343,7 +394,7 @@ function AppShellRoute() {
     // guard; re-running on their own changes would re-check a URL the store
     // effects above are about to make it match.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view, mode, layerId, selectedId, selectedEdgeId, changesetId, navSeq]);
+  }, [view, mode, layerId, selectedId, selectedEdgeId, changesetId, navSeq, graphViewport, canvasKey]);
 
   return <AppShell />;
 }
@@ -369,6 +420,7 @@ const appShellRoute = createRoute({
     node: typeof search.node === 'string' ? search.node : undefined,
     edge: typeof search.edge === 'string' ? search.edge : undefined,
     changeset: typeof search.changeset === 'string' ? search.changeset : undefined,
+    vp: typeof search.vp === 'string' ? search.vp : undefined,
   }),
   component: AppShellRoute,
 });

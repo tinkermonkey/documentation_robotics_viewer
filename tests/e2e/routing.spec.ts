@@ -211,3 +211,103 @@ test.describe('URL routing — browser history for navigation', () => {
     await expect.poll(() => hashSearchParams(page.url()).get('node')).toBe(clickedNode);
   });
 });
+
+/**
+ * Viewport history (`?vp=`, heimdall-ui 0.9.4): Canvas records the viewport when
+ * a pan/zoom settles or the canvas recentres itself, the router REPLACES the
+ * current entry with it, and reloads / back / forward restore it.
+ */
+test.describe('URL routing — graph viewport history', () => {
+  const vpOf = (url: string) => hashSearchParams(url).get('vp');
+
+  async function graphIdle(page: import('@playwright/test').Page) {
+    await expect(page.locator('.graph-canvas[data-layout-state="idle"]')).toHaveCount(1);
+  }
+
+  /** Wheel-zoom over the graph and wait for the dwell to land in the URL. */
+  async function zoomAndSettle(page: import('@playwright/test').Page, deltaY: number) {
+    const before = vpOf(page.url());
+    const box = (await page.locator('.graph-canvas').boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.wheel(0, deltaY);
+    await expect.poll(() => vpOf(page.url()), { timeout: 6_000 }).not.toBe(before);
+    return vpOf(page.url())!;
+  }
+
+  /** Screen position of the first native node in the given layer: the
+   *  observable effect of the viewport. */
+  async function nodeBox(page: import('@playwright/test').Page, layer: string) {
+    const node = page.locator(`g[data-testid^="graph-node-"][data-domain="${layer}"]`).first();
+    const testId = await node.getAttribute('data-testid');
+    const box = (await node.boundingBox())!;
+    return { testId, x: Math.round(box.x), y: Math.round(box.y) };
+  }
+
+  test('a settled zoom writes ?vp= without pushing, and a reload restores the view', async ({ page }) => {
+    await gotoView(page, ROUTES.model);
+    await openLayer(page, 'APM');
+    await graphIdle(page);
+    expect(vpOf(page.url())).toBeNull();
+    const length = await page.evaluate(() => history.length);
+
+    const vp = await zoomAndSettle(page, -300);
+    expect(vp).toMatch(/^-?[\d.]+,-?[\d.]+,[\d.]+$/);
+    expect(await page.evaluate(() => history.length)).toBe(length);
+    const seen = await nodeBox(page, 'apm');
+
+    await page.reload();
+    await graphIdle(page);
+    expect(vpOf(page.url())).toBe(vp);
+    await expect.poll(() => nodeBox(page, 'apm')).toEqual(seen);
+  });
+
+  test('Back to a previous layer restores the viewport it was left at', async ({ page }) => {
+    await gotoView(page, ROUTES.model);
+    await openLayer(page, 'APM');
+    await graphIdle(page);
+    const vp = await zoomAndSettle(page, -300);
+    const seen = await nodeBox(page, 'apm');
+
+    await openLayer(page, 'Security');
+    await expect(page).toHaveURL(/[?&]layer=security(&|$)/);
+    expect(vpOf(page.url())).toBeNull();
+
+    await page.goBack();
+    await expect(page).toHaveURL(/[?&]layer=apm(&|$)/);
+    expect(vpOf(page.url())).toBe(vp);
+    await graphIdle(page);
+    await expect.poll(() => nodeBox(page, 'apm')).toEqual(seen);
+  });
+
+  test('Back after a same-layer navigation restores the earlier viewport, not the auto-centre', async ({ page }) => {
+    await gotoView(page, ROUTES.model);
+    const leaves = await openLayer(page, 'APM');
+    await graphIdle(page);
+    const vp = await zoomAndSettle(page, -300);
+    const seen = await nodeBox(page, 'apm');
+
+    // A nav-tree leaf is a deliberate navigation: it pushes, and the canvas
+    // centres on the new selection.
+    await leaves.first().click();
+    await expect.poll(() => hashSearchParams(page.url()).get('node')).toBeTruthy();
+    await expect.poll(() => vpOf(page.url()), { timeout: 6_000 }).not.toBe(vp);
+
+    await page.goBack();
+    await expect.poll(() => vpOf(page.url())).toBe(vp);
+    await expect.poll(() => nodeBox(page, 'apm')).toEqual(seen);
+    // The restore must not have been overwritten by a late centerOnSelect report.
+    await page.waitForTimeout(500);
+    expect(vpOf(page.url())).toBe(vp);
+  });
+
+  test('changing the layout drops ?vp= (the coordinates belong to the old layout)', async ({ page }) => {
+    await gotoView(page, ROUTES.model);
+    await openLayer(page, 'APM');
+    await graphIdle(page);
+    await zoomAndSettle(page, -300);
+
+    await page.getByTestId('graph-controls-toggle').hover();
+    await page.getByRole('radio', { name: 'Force', exact: true }).click();
+    await expect.poll(() => vpOf(page.url())).toBeNull();
+  });
+});
