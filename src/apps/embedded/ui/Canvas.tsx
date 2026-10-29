@@ -68,12 +68,12 @@
  * which is exactly what clears the Inspector's `open` (`!!metadata`) so the
  * drawer auto-hides again.
  *
- * Two heimdall-ui 0.7.0 props, both unconditionally on: `centerOnSelect` pans the
- * viewport to keep `selectedId` centered whenever it changes — the whole point being
- * a NavTree click (or a cross-layer link, or a URL-restored deep link) can select a
- * node that's currently off-screen, unlike a click on the canvas itself; it's a
- * harmless no-op nudge for on-canvas clicks, so there's no need to special-case it by
- * selection origin. `fullscreenContainerRef={canvasAreaRef}` points the built-in
+ * `centerOnSelect` (heimdall-ui 0.7.0) pans the viewport to the selected node when
+ * the selection comes from somewhere else — a NavTree click, a relationship or
+ * cross-layer link, a deep link — since that node may be off-screen. It is OFF
+ * for a click on a node in the graph itself: the node is already in view, and
+ * re-centering on every click jerks the graph around under the pointer. See
+ * `canvasClick` below. `fullscreenContainerRef={canvasAreaRef}` points the built-in
  * toolbar's Fullscreen button at the graph-mode relative wrapper below (not
  * `GraphCanvas`'s own root) so `GraphControls` and `Inspector` — both its siblings,
  * outside what the native Fullscreen API would otherwise render — stay visible while
@@ -442,6 +442,7 @@ export function Canvas() {
   const selectGraphNode = useUiStore((s) => s.selectGraphNode);
   const selectLayer = useUiStore((s) => s.selectLayer);
   const navigateToElement = useUiStore((s) => s.navigateToElement);
+  const navSeq = useUiStore((s) => s.navSeq);
   const mode = useUiStore((s) => s.mode);
   const setMode = useUiStore((s) => s.setMode);
   const graphLayout = useUiStore((s) => s.graphLayout);
@@ -474,6 +475,26 @@ export function Canvas() {
     showInterLayerNodes,
   });
   const viewportHistoryProps = useViewportHistory(canvasKey);
+
+  // The node last selected by clicking it in the graph, with the navSeq at the
+  // time. While that click is still the current selection, centerOnSelect is
+  // off so the graph doesn't jump. Any navigation bumps navSeq and any other
+  // selection changes selectedId, either of which turns centering back on for
+  // that new selection. Set in the same event as the store update, so both
+  // land in one render: GraphCanvas never sees the click with centering on.
+  // Every on-canvas select path goes through selectFromCanvas — GraphCanvas's
+  // own onNodeSelect and the card/pill nodes' onSelect, which handle the click
+  // themselves.
+  const [canvasClick, setCanvasClick] = useState<{ id: string; navSeq: number } | null>(null);
+  const centerOnSelect = !(canvasClick && canvasClick.id === selectedId && canvasClick.navSeq === navSeq);
+  const selectFromCanvas = useCallback(
+    (id: string) => {
+      // Read navSeq live so this callback (a renderNode dependency) stays stable.
+      setCanvasClick({ id, navSeq: useUiStore.getState().navSeq });
+      selectGraphNode(id);
+    },
+    [selectGraphNode],
+  );
 
   const { derived: model } = useModel();
   const { derived: spec, raw: specRaw } = useSpec();
@@ -559,7 +580,7 @@ export function Canvas() {
           kind={node.kind}
           domainColor={node.domainColor}
           selected={selected}
-          onSelect={selectGraphNode}
+          onSelect={selectFromCanvas}
           cardData={cardData.get(node.id)}
           spec={specRaw}
           hasChildren={hierarchy?.hasChildren}
@@ -569,7 +590,7 @@ export function Canvas() {
         />
       );
     },
-    [selectGraphNode, navigateToElement, cardData, specRaw, interLayerData.foreignNodeIds],
+    [selectFromCanvas, navigateToElement, cardData, specRaw, interLayerData.foreignNodeIds],
   );
 
   // Pill-mode render (Model pill display + always in Schema view, see the
@@ -585,7 +606,7 @@ export function Canvas() {
       const handleForeignNodeClick = isForeignNode
         ? () => navigateToElement(node.id, node.domainColor ?? '')
         : undefined;
-      const handleNodeClick = handleForeignNodeClick || selectGraphNode;
+      const handleNodeClick = handleForeignNodeClick || selectFromCanvas;
 
       const content = (
         <PillNode
@@ -615,7 +636,7 @@ export function Canvas() {
         </div>
       );
     },
-    [selectGraphNode, navigateToElement, specRaw, isSpec, interLayerData.foreignNodeIds],
+    [selectFromCanvas, navigateToElement, specRaw, isSpec, interLayerData.foreignNodeIds],
   );
 
   // Model-only click-to-select — see useEdgeInteraction's doc comment for
@@ -793,14 +814,14 @@ export function Canvas() {
                       const target = index.byUuid.get(id);
                       if (target) navigateToElement(target.id, target.layer_id);
                     } else {
-                      selectGraphNode(id);
+                      selectFromCanvas(id);
                     }
                   }}
                   {...(!isSpec ? edgeSelectionProps : {})}
                   edgeTooltip={!isSpec ? renderEdgeTooltip : undefined}
                   onBackgroundClick={() => selectLayer(layerId)}
                   renderNode={!isSpec && nodeDisplay === 'card' ? renderCardNode : renderPillNode}
-                  centerOnSelect
+                  centerOnSelect={centerOnSelect}
                   {...viewportHistoryProps}
                   fullscreenContainerRef={canvasAreaRef}
                   layout={graphLayout}

@@ -300,6 +300,45 @@ test.describe('URL routing — graph viewport history', () => {
     expect(vpOf(page.url())).toBe(vp);
   });
 
+  test('clicking a node in the graph selects it without re-centering the view', async ({ page }) => {
+    await gotoView(page, ROUTES.model);
+    await openLayer(page, 'APM');
+    await graphIdle(page);
+    const vp = await zoomAndSettle(page, -300);
+
+    const nodes = page.locator('g[data-testid^="graph-node-"][data-domain="apm"]');
+    const count = await nodes.count();
+    const box = (await page.locator('.graph-canvas').boundingBox())!;
+    // Pick a node that's fully on screen but away from the centre, so a
+    // re-centre would visibly move it.
+    let target = -1;
+    for (let i = 0; i < count; i++) {
+      const b = await nodes.nth(i).boundingBox();
+      if (!b) continue;
+      const inside =
+        b.x > box.x + 40 &&
+        b.y > box.y + 40 &&
+        b.x + b.width < box.x + box.width - 340 &&
+        b.y + b.height < box.y + box.height - 40;
+      const offCentre = Math.abs(b.x + b.width / 2 - (box.x + box.width / 2)) > 80;
+      if (inside && offCentre) {
+        target = i;
+        break;
+      }
+    }
+    test.skip(target < 0, 'no off-centre APM node fully in view at this zoom');
+    const node = nodes.nth(target);
+    const before = (await node.boundingBox())!;
+
+    await node.click();
+    await expect(page).toHaveURL(/[?&]node=[^&]+/);
+    await page.waitForTimeout(600);
+    const after = (await node.boundingBox())!;
+    expect(Math.abs(after.x - before.x)).toBeLessThan(2);
+    expect(Math.abs(after.y - before.y)).toBeLessThan(2);
+    expect(vpOf(page.url())).toBe(vp);
+  });
+
   test('changing the layout drops ?vp= (the coordinates belong to the old layout)', async ({ page }) => {
     await gotoView(page, ROUTES.model);
     await openLayer(page, 'APM');

@@ -178,11 +178,14 @@ For local dev use `dr visualize --no-auth`.
   `GraphCanvas`'s `onBackgroundClick` reuses `selectLayer(layerId)` (clearing `selectedId`/`focus` back to
   `'layer'`) so clicking empty canvas deselects — the only way the Inspector drawer's auto-hide is
   reachable.
-- **Selection auto-centers, Fullscreen includes the overlay chrome** (heimdall-ui 0.7.0) — `GraphCanvas`
-  gets `centerOnSelect` unconditionally (Model + Schema): pans to keep `selectedId` centered whenever it
-  changes, so a NavTree click, a cross-layer navigate-to link, or a URL-restored deep link all bring an
-  off-screen node into view, not just a direct on-canvas click (which it's a harmless no-op for — no
-  special-casing by selection origin). `fullscreenContainerRef={canvasAreaRef}` — a ref on `Canvas.tsx`'s
+- **Selection auto-centers (except on-canvas clicks), Fullscreen includes the overlay chrome** (heimdall-ui
+  0.7.0) — `GraphCanvas`'s `centerOnSelect` (Model + Schema) pans to the selected node when the selection
+  comes from elsewhere: a NavTree click, a cross-layer navigate-to link, a URL-restored deep link. It is
+  turned OFF while the current selection came from clicking that node in the graph (re-centering under the
+  pointer was distracting): `Canvas.tsx` records `{ id, navSeq }` in `canvasClick` via `selectFromCanvas`,
+  which EVERY on-canvas select path must use — `GraphCanvas`'s `onNodeSelect` and the `ModelCardNode`/
+  `PillNode` `onSelect` (they handle their own click). A new selection or a `navSeq` bump re-enables it.
+  `fullscreenContainerRef={canvasAreaRef}` — a ref on `Canvas.tsx`'s
   graph-mode `position: relative` wrapper — points the built-in toolbar's Fullscreen button at that
   wrapper instead of `GraphCanvas`'s own root, so `GraphControls` and `Inspector` (both its siblings,
   outside what the native Fullscreen API would otherwise render) stay visible while fullscreen.

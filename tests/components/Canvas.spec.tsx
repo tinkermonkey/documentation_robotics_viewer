@@ -11,7 +11,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { screen, waitFor, fireEvent, within } from '@testing-library/react';
+import { screen, waitFor, fireEvent, within, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { GraphCanvasProps } from '@tinkermonkey/heimdall-ui';
 
@@ -458,6 +458,34 @@ describe('Canvas — heimdall-ui 0.7.0 prop wiring', () => {
     expect(wrapper?.contains(document.querySelector('.graph-canvas'))).toBe(true);
     // And NOT just GraphCanvas's own root — that would defeat the point.
     expect(wrapper).not.toBe(document.querySelector('.graph-canvas'));
+  });
+
+  it('turns centerOnSelect off for a click on a graph node, and back on for a navigation', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('apm');
+    await waitFor(() => expect(graphNodeCount()).toBe(11));
+    const [first, second] = lastGraphCanvasProps!.nodes;
+
+    // On-canvas click on the card itself (ModelCardNode handles its own
+    // click): the node is already in view, so no re-centering.
+    const card = (id: string) =>
+      document.querySelector(`[data-testid="graph-node-${id}"] .graph-node--card`) as HTMLElement;
+    fireEvent.click(card(first.id));
+    await waitFor(() => expect(useUiStore.getState().selectedId).toBe(first.id));
+    expect(lastGraphCanvasProps?.centerOnSelect).toBe(false);
+
+    // A selection from elsewhere (e.g. the nav tree) re-enables it.
+    act(() => useUiStore.getState().navigateToElement(second.id, 'apm'));
+    await waitFor(() => expect(lastGraphCanvasProps?.selectedNodeId).toBe(second.id));
+    expect(lastGraphCanvasProps?.centerOnSelect).toBe(true);
+
+    // ...including a deliberate navigation to the node that was just clicked.
+    // (GraphCanvas's own onNodeSelect path counts as a canvas click too.)
+    act(() => lastGraphCanvasProps!.onNodeSelect!(first.id));
+    await waitFor(() => expect(lastGraphCanvasProps?.centerOnSelect).toBe(false));
+    act(() => useUiStore.getState().navigateToElement(first.id, 'apm'));
+    await waitFor(() => expect(lastGraphCanvasProps?.centerOnSelect).toBe(true));
   });
 });
 
