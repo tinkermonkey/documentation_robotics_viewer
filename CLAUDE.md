@@ -192,11 +192,13 @@ For local dev use `dr visualize --no-auth`.
 - **Predicate hover explanations wait 3s** (`PREDICATE_TOOLTIP_DELAY_MS` in `ui/PredicateTooltip.tsx`) —
   predicates are also click targets (navigate / select the edge), and a quick tooltip covered them while
   aiming. `PredicateTooltip` (inspector, page tables, edge inspector) passes it as `RichTooltip`'s
-  `openDelay`; keyboard focus still opens immediately. The graph's own edge tooltip has a fixed 200ms delay
-  inside heimdall-ui, so `Canvas.tsx` feeds `onEdgeHover` into `ui/useHoverDwell.ts` and `renderEdgeTooltip`
-  returns `null` (heimdall shows nothing) until the edge has been hovered 3s. That hover state is local to
-  Canvas — never route edge hover through the store or the `edges` memo (re-runs the layout; see
-  `useEdgeInteraction.ts`).
+  `openDelay`; keyboard focus still opens immediately. Graph edges do NOT use heimdall's `edgeTooltip` prop
+  (it pins the tooltip above the edge midpoint — right over the predicate label it explains, with a fixed
+  200ms delay): `Canvas.tsx` feeds `onEdgeHover` into `ui/useHoverDwell.ts` and, after 3s, renders the same
+  `TooltipCard` the layer/element pills use (exported from `RichTooltip.tsx`), anchored to the edge's label
+  via `ui/edgeTooltipAnchor.ts` and auto-placed on a side with room (`track` follows it through pan/zoom,
+  `passThrough` keeps it out of the pointer's way). That hover state is local to Canvas — never route edge
+  hover through the store or the `edges` memo (re-runs the layout; see `useEdgeInteraction.ts`).
 - **Changesets view** — op-coded diff list (add=emerald / update=cyan / delete=rose) + `StatTile` inspector +
   expandable `SideBySideDiff`.
 - **DrBot chat** — 372px drawer (persistent ≥1300px, overlay below) with live WS/JSON-RPC streaming;

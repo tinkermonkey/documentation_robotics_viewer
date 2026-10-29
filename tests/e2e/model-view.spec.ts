@@ -9,7 +9,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { gotoView, ROUTES, DOMAIN_HEX, hexToRgb, fetchModel } from './helpers';
+import { gotoView, ROUTES, DOMAIN_HEX, hexToRgb, fetchModel, openLayer } from './helpers';
 
 test.describe('model view', () => {
   test('graph nodes render with the layer domain color (data-model swatch == #2DD4BF)', async ({
@@ -140,5 +140,29 @@ test.describe('model view', () => {
     await expect(page.getByTestId('page-header-id-chip')).toHaveText(targetDomain!);
     const targetTitle = targetLabel.replace(/^Navigate to /, '');
     await expect(inspector.getByTestId('inspector-title')).toHaveText(targetTitle);
+  });
+
+  test('hovering an edge predicate for 3s explains it beside the label, not on top of it', async ({ page }) => {
+    await gotoView(page, ROUTES.model);
+    await openLayer(page, 'APM');
+    await expect(page.locator('.graph-canvas[data-layout-state="idle"]')).toHaveCount(1);
+
+    const label = page.locator('[data-testid^="graph-edge-"] .graph-edge__label-bg').first();
+    const lb = (await label.boundingBox())!;
+    await page.mouse.move(lb.x + lb.width / 2, lb.y + lb.height / 2);
+
+    const card = page.getByTestId('edge-predicate-tooltip-card');
+    await page.waitForTimeout(2000);
+    await expect(card).toHaveCount(0);
+    await expect(card).toBeVisible({ timeout: 3_000 });
+    await expect(card.getByTestId('edge-predicate-tooltip-content')).toBeVisible();
+
+    const cb = (await card.boundingBox())!;
+    const overlaps =
+      cb.x < lb.x + lb.width && lb.x < cb.x + cb.width && cb.y < lb.y + lb.height && lb.y < cb.y + cb.height;
+    expect(overlaps).toBe(false);
+
+    await page.mouse.move(5, 5);
+    await expect(card).toHaveCount(0);
   });
 });

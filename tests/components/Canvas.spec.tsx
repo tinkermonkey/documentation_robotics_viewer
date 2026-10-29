@@ -488,26 +488,29 @@ describe('Canvas — heimdall-ui 0.7.0 prop wiring', () => {
     await waitFor(() => expect(lastGraphCanvasProps?.centerOnSelect).toBe(true));
   });
 
-  it('holds the graph edge tooltip back until the edge has been hovered for 3s', async () => {
+  it('shows the edge predicate card only after 3s of hover, in our own placed card (not heimdall\'s)', async () => {
     renderWithProviders(<Canvas />);
     useUiStore.getState().setView('model');
     useUiStore.getState().selectLayer('apm');
     await waitFor(() => expect(graphNodeCount()).toBe(11));
+    // heimdall pins its edgeTooltip over the edge's own label; we don't use it.
+    expect(lastGraphCanvasProps?.edgeTooltip).toBeUndefined();
     const edge = lastGraphCanvasProps!.edges![0];
-    const tooltipFor = () => lastGraphCanvasProps!.edgeTooltip!(edge as never);
+    const card = () => screen.queryByTestId('edge-predicate-tooltip-card');
 
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
     try {
       act(() => lastGraphCanvasProps!.onEdgeHover!(edge.id));
       act(() => vi.advanceTimersByTime(2900));
-      expect(tooltipFor()).toBeNull();
+      expect(card()).toBeNull();
 
       act(() => vi.advanceTimersByTime(100));
-      expect(tooltipFor()).not.toBeNull();
+      expect(card()).toHaveAttribute('role', 'tooltip');
+      expect(within(card()!).getByTestId('edge-predicate-tooltip-content')).toBeInTheDocument();
 
       // Leaving hides it again right away.
       act(() => lastGraphCanvasProps!.onEdgeHover!(undefined));
-      expect(tooltipFor()).toBeNull();
+      expect(card()).toBeNull();
     } finally {
       vi.useRealTimers();
     }

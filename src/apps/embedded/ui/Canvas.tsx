@@ -91,12 +91,10 @@
  * `navigateToElementWithEdge` sets on cross-navigation, not a per-pointer-move
  * preview (wiring hover into it was a real perf bug — see PR #537's follow-up
  * fix — since it re-triggers `GraphCanvas`'s force-layout effect on every
- * pointer pass over an edge). The predicate hover tooltip is unaffected:
- * `GraphCanvas`'s native `edgeTooltip` render-prop (`renderEdgeTooltip` below)
- * gets the hovered edge directly from `GraphCanvas` (heimdall-ui 0.8.0+) — no
- * external hover-state plumbing needed — and is positioned at the edge's
- * midpoint, shown/hidden by `GraphCanvas` internally (no portal or manual
- * placement math on our side).
+ * pointer pass over an edge). The predicate hover tooltip is separate: a
+ * `TooltipCard` (same card + placement as the layer/element pills) anchored
+ * to the hovered edge's label, driven by `onEdgeHover` through a local 3s
+ * dwell timer — see `edgeTooltipContent` below.
  */
 
 import { useCallback, useMemo, useRef, useState } from 'react';
@@ -117,6 +115,8 @@ import { ModelCardNode } from './ModelCardNode';
 import { PillNode } from './PillNode';
 import { PredicateTooltipContent, PREDICATE_TOOLTIP_DELAY_MS } from './PredicateTooltip';
 import { useHoverDwell } from './useHoverDwell';
+import { TooltipCard } from './RichTooltip';
+import { edgeTooltipAnchorRect } from './edgeTooltipAnchor';
 import { useEdgeInteraction } from './useEdgeInteraction';
 import { useViewportHistory } from './useViewportHistory';
 import { graphCanvasKey } from './graphViewport';
@@ -658,47 +658,40 @@ export function Canvas() {
     );
   }, [isSpec, specRaw, model, layerId, index, selectedEdgeId, highlightedEdgeId, interLayerData.crossEdges]);
 
-  // GraphCanvas's native edgeTooltip render-prop — called with whichever edge
-  // is currently hovered; only meaningful in the Model view (edges only carry
-  // model edge metadata there). Positioning/portaling/show-hide are all
-  // GraphCanvas's own concern now (heimdall-ui 0.8.0+).
-  //
-  // KNOWN A11Y GAP: heimdall-ui renders this content inside its own
-  // `.graph-tooltip-layer`, which is `aria-hidden="true"` (its `Tooltip`'s
-  // `aria-describedby` lands on an empty decorative span inside that same
-  // hidden layer, not on the edge's own `role="button"` element) — so this
-  // predicate-definition prose is unreachable to a screen reader. The edge's
-  // own `aria-label` ("{predicate}: {source} to {target}") still carries the
-  // predicate + endpoints, so that much stays accessible; only the longer
-  // definition text (from predicateDefinitions.ts) is lost. This is a
-  // heimdall-ui-owned tooltip-layer choice, not fixable purely here without
-  // re-forking the tooltip mechanism this migration exists to avoid — see
-  // https://github.com/tinkermonkey/documentation_robotics_viewer/issues/538
-  // for surfacing the definition via the already-accessible EdgeInspector
-  // instead.
+  // Predicate explanation for a hovered graph edge (Model view only — edges
+  // only carry model edge metadata there). Rendered by us, not through
+  // GraphCanvas's edgeTooltip prop: heimdall pins that tooltip above the edge
+  // midpoint, which is exactly where the predicate label sits, so it covered
+  // the thing it explains. Instead it's the same TooltipCard the layer/element
+  // pills use (RichTooltip), anchored to the edge's label and placed on a side
+  // with room (see ui/edgeTooltipAnchor.ts). `track` follows the label if the
+  // canvas pans or zooms while it's open; `passThrough` keeps it from getting
+  // between the pointer and the graph.
   //
   // Held back until the pointer has rested on the edge for
-  // PREDICATE_TOOLTIP_DELAY_MS: an edge is also a click target (select it), and
-  // heimdall's own fixed 200ms show delay popped the explanation up over the
-  // edge while users were aiming. Returning null keeps heimdall's tooltip
-  // hidden (its Tooltip renders nothing for null content).
+  // PREDICATE_TOOLTIP_DELAY_MS: an edge is also a click target (select it).
+  // GraphCanvas's onEdgeHover feeds a local timer (useHoverDwell) — never the
+  // store or the `edges` memo, which would re-run the layout.
+  //
+  // KNOWN A11Y GAP (#538): this only opens on pointer hover, so the
+  // predicate-definition prose isn't reachable from the keyboard here. The
+  // edge's own aria-label ("{predicate}: {source} to {target}") still carries
+  // the predicate and endpoints, and the EdgeInspector (open on click/Enter)
+  // shows the same PredicateTooltip, which does open on focus.
   const { dwelledId: dwelledEdgeId, onHover: onEdgeHover } = useHoverDwell(PREDICATE_TOOLTIP_DELAY_MS);
-  const renderEdgeTooltip = useCallback(
-    (edge: GraphEdgeData) => {
-      if (edge.id !== dwelledEdgeId) return null;
-      const meta = edgeMetadata(model, edge.id, index, specRaw);
-      if (!meta) return null;
-      return (
-        <PredicateTooltipContent
-          predicate={meta.predicate}
-          sourceTypeLabel={meta.sourceNode.type}
-          destinationTypeLabel={meta.targetNode.type}
-          data-testid="edge-predicate-tooltip"
-        />
-      );
-    },
-    [model, index, specRaw, dwelledEdgeId],
-  );
+  const edgeTooltipContent = useMemo(() => {
+    if (isSpec || !dwelledEdgeId) return null;
+    const meta = edgeMetadata(model, dwelledEdgeId, index, specRaw);
+    if (!meta) return null;
+    return (
+      <PredicateTooltipContent
+        predicate={meta.predicate}
+        sourceTypeLabel={meta.sourceNode.type}
+        destinationTypeLabel={meta.targetNode.type}
+        data-testid="edge-predicate-tooltip"
+      />
+    );
+  }, [isSpec, dwelledEdgeId, model, index, specRaw]);
 
   const slug = layerId ?? '';
   const standard = spec.byLayer[slug]?.standard || layerStandard(slug);
@@ -827,7 +820,6 @@ export function Canvas() {
                     }
                   }}
                   {...(!isSpec ? edgeSelectionProps : {})}
-                  edgeTooltip={!isSpec ? renderEdgeTooltip : undefined}
                   onEdgeHover={!isSpec ? onEdgeHover : undefined}
                   onBackgroundClick={() => selectLayer(layerId)}
                   renderNode={!isSpec && nodeDisplay === 'card' ? renderCardNode : renderPillNode}
@@ -852,6 +844,16 @@ export function Canvas() {
                 {/* Floats over the graph itself (top-left) — same card
                     language as the built-in bottom-left GraphToolbar. */}
                 <GraphControls />
+                {dwelledEdgeId && edgeTooltipContent && (
+                  <TooltipCard
+                    key={dwelledEdgeId}
+                    getAnchorRect={() => edgeTooltipAnchorRect(canvasAreaRef.current, dwelledEdgeId)}
+                    content={edgeTooltipContent}
+                    track
+                    passThrough
+                    data-testid="edge-predicate-tooltip-card"
+                  />
+                )}
               </>
             )}
             {/* Floats over this relative wrapper's right edge (Heimdall
