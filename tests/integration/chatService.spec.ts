@@ -378,3 +378,19 @@ describe('chatService — chat.send timeout', () => {
     spy.mockRestore();
   });
 });
+
+describe('chatService — viewer context', () => {
+  it('sends the context with the question but shows only the question in the thread', async () => {
+    const spy = vi
+      .spyOn(jsonRpcHandler, 'sendRequest')
+      .mockResolvedValue({ conversation_id: 'conv-x', status: 'complete' } as never);
+    await chatService.sendMessage('What does this do?', '<viewer-context>\nLayer: APM (apm)\n</viewer-context>');
+
+    expect(spy.mock.calls[0][1]).toEqual({
+      message: '<viewer-context>\nLayer: APM (apm)\n</viewer-context>\n\nWhat does this do?',
+    });
+    const user = useChatStore.getState().messages.find((m) => m.role === 'user')!;
+    expect(user.parts).toEqual([expect.objectContaining({ type: 'text', content: 'What does this do?' })]);
+    spy.mockRestore();
+  });
+});

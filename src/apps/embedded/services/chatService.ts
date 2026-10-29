@@ -8,6 +8,7 @@ import { jsonRpcHandler } from './jsonRpcHandler';
 import { useChatStore } from '../stores/chatStore';
 import { logError, logWarning } from './errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
+import { withChatContext } from '../data/chatContext';
 import {
   ChatSendParams,
   ChatSendResult,
@@ -195,7 +196,7 @@ export class ChatService {
    *
    * Timeout: 60 seconds (for streaming)
    */
-  async sendMessage(message: string): Promise<ChatSendResult> {
+  async sendMessage(message: string, context?: string | null): Promise<ChatSendResult> {
     if (!message.trim()) {
       throw new Error('Message cannot be empty');
     }
@@ -250,7 +251,9 @@ export class ChatService {
 
       const result = await jsonRpcHandler.sendRequest<ChatSendResult>(
         'chat.send',
-        { message } as ChatSendParams,
+        // The thread shows `message`; DrBot also gets what the user has open
+        // (see data/chatContext.ts — the server only accepts `message`).
+        { message: withChatContext(message, context ?? null) } as ChatSendParams,
         CHAT_SEND_TIMEOUT_MS
       );
 

@@ -212,7 +212,11 @@ For local dev use `dr visualize --no-auth`.
   `chat.tool.invoke` is snake_case (`tool_name`/`tool_input`), once per call, with no `tool_use_id` and no
   status; `chatService.handleToolInvoke` gives each a local id and marks it completed when the reply moves
   on (next tool, text) or ends. `chat.tool.result` is the final session result, not a per-tool one, and is
-  ignored. `chat.send` only takes `message` — the panel's "talking to <layer>" context is NOT sent.
+  ignored. `chat.send` only takes `message`, and the server starts a fresh Claude Code conversation per
+  send, so `ChatPanel` builds a `<viewer-context>` block (`data/chatContext.ts`: view, layer, selected
+  element by name + dotted id + type + uuid, or Schema node type / relationship / changeset) from the live
+  store at send time, and `chatService.sendMessage(text, context)` prepends it to the text sent. The thread
+  shows only what the user typed.
   `chatAdapter.ts` maps our `parts` union onto Heimdall's message/tool/thinking blocks.
 - **Annotations** — REST CRUD + replies in the inspector for Model elements.
 - **Light/dark canvas** toggle in the topbar. **Dark is the default** (`uiStore`'s `canvasDark: true`) —

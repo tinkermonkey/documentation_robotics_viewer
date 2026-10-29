@@ -150,7 +150,30 @@ describe('ChatPanel — composer submit', () => {
     await user.keyboard('{Enter}');
 
     await waitFor(() => expect(sendSpy).toHaveBeenCalledTimes(1));
-    expect(sendSpy).toHaveBeenCalledWith('Explain the API layer');
+    // No layer open yet, so there's no viewer context to add.
+    expect(sendSpy).toHaveBeenCalledWith('Explain the API layer', null);
+  });
+
+  it('sends what the user has open (layer + selected element) with the question', async () => {
+    const user = userEvent.setup();
+    const sendSpy = vi.spyOn(chatService, 'sendMessage').mockResolvedValue({} as never);
+
+    renderWithProviders(<ChatPanel />);
+    seedMessages([]);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('application');
+    useUiStore.getState().selectNode('a5342d6f-daf4-4a6e-a98b-7fada2561798');
+    // The model has loaded once the composer's scope names the element.
+    await waitFor(() => expect(screen.getByText('Data Loader')).toBeInTheDocument());
+
+    await user.type(await screen.findByPlaceholderText('Ask about the model…'), 'What does this do?');
+    await user.keyboard('{Enter}');
+
+    await waitFor(() => expect(sendSpy).toHaveBeenCalledTimes(1));
+    const [text, context] = sendSpy.mock.calls[0];
+    expect(text).toBe('What does this do?');
+    expect(context).toContain('Layer: Application (application)');
+    expect(context).toMatch(/Selected element: "Data Loader" \(application\.[a-z]+\.data-loader, type [a-z]+, uuid a5342d6f-daf4-4a6e-a98b-7fada2561798\)/);
   });
 
   it('clicking a suggestion sends it', async () => {
@@ -168,7 +191,7 @@ describe('ChatPanel — composer submit', () => {
     await user.click(first);
 
     await waitFor(() => expect(sendSpy).toHaveBeenCalledTimes(1));
-    expect(sendSpy).toHaveBeenCalledWith(label);
+    expect(sendSpy).toHaveBeenCalledWith(label, null);
   });
 
   it('surfaces the SDK-unavailable error from the store', async () => {
