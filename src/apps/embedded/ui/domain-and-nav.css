@@ -261,14 +261,44 @@ body.dark-canvas {
   gap: 6px;
 }
 
+/* The title gets the row first: when title + type tag don't fit side by
+ * side, the tag wraps to its own line, under the title, instead of squeezing
+ * the title (Heimdall's pill rules never shrink the tag and cut the label off
+ * with an ellipsis — type ids like `applicationcomponent` left ~30px of
+ * title). Titles longer than the card wrap, up to 3 lines. */
 .graph-node__card-header {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 4px 0;
   min-width: 0;
+}
+
+.graph-node__card-title {
+  display: flex;
+  align-items: flex-start;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .graph-node--card .graph-node__label {
   font-weight: 600;
+  line-height: 16px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+/* Sharing the title's line, the growing title pushes the tag to the right.
+ * Wrapped onto its own line, it starts under the title text: 10px = the
+ * swatch's 3px + its 7px margin. */
+.graph-node--card .graph-node__kind {
+  margin-top: 1px;
+  margin-left: 10px;
 }
 
 .graph-node__card-stats {
