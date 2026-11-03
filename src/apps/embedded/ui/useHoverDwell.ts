@@ -6,8 +6,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  * leave); `dwelledId` becomes that id once it has stayed hovered for the
  * full delay, and clears as soon as the hover moves or ends.
  *
- * Used to hold back GraphCanvas's edge tooltip, whose own show delay is a
- * fixed 200ms inside heimdall-ui.
+ * Used by Canvas to hold the graph's edge predicate tooltip back for
+ * `PREDICATE_TOOLTIP_DELAY_MS`, fed from GraphCanvas's `onEdgeHover`.
  */
 export function useHoverDwell(delayMs: number) {
   const [dwelledId, setDwelledId] = useState<string | undefined>();

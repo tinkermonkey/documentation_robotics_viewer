@@ -32,10 +32,14 @@ import { useUiStore } from './uiStore';
 import {
   changesetActionErrorMessage,
   useChangeset,
-  useChangesetAction,
   type ChangesetAction,
+  type ChangesetActionResult,
   type ChangesetDetail,
 } from '../data/useChangesets';
+import {
+  usePostapichangesetschangesetIdcommit,
+  usePostapichangesetschangesetIddiscard,
+} from '../../../core/services/generatedApiClient';
 
 /** Status → Heimdall badge color + label. */
 function statusBadge(status: string): { color: BadgeColor; label: string } {
@@ -110,8 +114,9 @@ function ChangesetActions({
   detail: ChangesetDetail;
   notify: (variant: ToastVariant, title: string) => void;
 }) {
-  const commit = useChangesetAction('commit');
-  const discard = useChangesetAction('discard');
+  // Generated hooks: they also refetch the changesets and, after a commit, the model.
+  const commit = usePostapichangesetschangesetIdcommit(detail.id);
+  const discard = usePostapichangesetschangesetIddiscard(detail.id);
   const [confirming, setConfirming] = useState<ChangesetAction | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -122,8 +127,9 @@ function ChangesetActions({
     setConfirming(null);
     setError(null);
     const mutation = action === 'commit' ? commit : discard;
-    mutation.mutate(detail.id, {
-      onSuccess: (result) => {
+    mutation.mutate(undefined, {
+      onSuccess: (data) => {
+        const result = data as ChangesetActionResult;
         const title =
           action === 'commit'
             ? `Applied ${plural(result.committed ?? detail.changesCount, 'change')} to the model`

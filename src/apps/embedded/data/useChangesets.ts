@@ -8,9 +8,9 @@
  */
 
 import { useEffect, useMemo, useRef } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import {
-  getApiClient,
+  ApiError,
   useGetapichangesets,
   useGetapichangesetschangesetId,
 } from '../../../core/services/generatedApiClient';
@@ -140,6 +140,8 @@ export function useChangeset(id: string | null) {
 }
 
 // ─── Commit / discard ─────────────────────────────────────────────────────────
+// The mutations themselves are the generated `usePostapichangesetschangesetIdcommit`
+// / `...discard` hooks, which refetch the changesets (and, for a commit, the model).
 
 /** `commit` applies a staged changeset to the model; `discard` throws its changes away. */
 export type ChangesetAction = 'commit' | 'discard';
@@ -156,60 +158,23 @@ export interface ChangesetActionResult {
 }
 
 /**
- * The server's message from a failed commit/discard. The generated client throws
- * `Error("POST <path> failed: <status> <body>")`, and the body is `{ error }`
- * (e.g. the validation errors that blocked a commit).
+ * Why a commit/discard was refused: the server's `{ error }` message (e.g. the
+ * validation errors that blocked a commit), else the raw response, else the
+ * error's own message (a network failure).
  */
 export function changesetActionErrorMessage(error: unknown): string {
-  const text = error instanceof Error ? error.message : String(error);
-  const match = /failed: \d+ ([\s\S]*)$/.exec(text);
-  if (match) {
-    try {
-      const body = JSON.parse(match[1]) as { error?: unknown };
-      if (typeof body.error === 'string' && body.error) return body.error;
-    } catch {
-      // Not JSON: fall through to the raw text.
-    }
-    if (match[1].trim()) return match[1].trim();
-  }
-  return text;
+  if (error instanceof ApiError) return error.serverMessage ?? (error.body.trim() || error.message);
+  return error instanceof Error ? error.message : String(error);
 }
 
 /**
- * Commit or discard a staged changeset (the user's review step for changes DrBot
- * staged under `dr visualize --with-changesets`, which never lets DrBot commit).
- * On success, refetches the changeset list + detail and, since a commit changes the
- * model, the model and layer queries. Uses `getApiClient()` directly because the
- * generated mutation hooks don't know which queries to invalidate.
- */
-export function useChangesetAction(action: ChangesetAction) {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (changesetId: string): Promise<ChangesetActionResult> => {
-      const client = getApiClient();
-      return (
-        action === 'commit'
-          ? client.postapichangesetschangesetIdcommit(changesetId)
-          : client.postapichangesetschangesetIddiscard(changesetId)
-      ) as Promise<ChangesetActionResult>;
-    },
-    onSuccess: (_result, changesetId) => {
-      queryClient.invalidateQueries({ queryKey: ['getapichangesets'] });
-      queryClient.invalidateQueries({ queryKey: ['getapichangesetschangesetId', changesetId] });
-      if (action === 'commit') {
-        queryClient.invalidateQueries({ queryKey: ['getapimodel'] });
-        queryClient.invalidateQueries({ queryKey: ['getapilayerslayerName'] });
-      }
-    },
-  });
-}
-
-/**
- * Refetch the changesets and the model when a DrBot reply finishes
- * (`isStreaming` goes true → false). DrBot stages its changes in a changeset
- * (`dr visualize --with-changesets`), and nothing else tells the viewer: the
- * cached list would otherwise stay stale for its 5-minute `staleTime`, so a
- * changeset DrBot just made wouldn't show up for review.
+ * Refetch the changesets when a DrBot reply finishes (`isStreaming` goes
+ * true → false). DrBot stages its changes in a changeset (`dr visualize
+ * --with-changesets`), and the server announces only model-file changes
+ * (see useLiveModelUpdates), not changeset ones: the cached list would
+ * otherwise stay stale for its 5-minute `staleTime`, so a changeset DrBot just
+ * made wouldn't show up for review. The model itself isn't refetched here;
+ * a change to it arrives through useLiveModelUpdates.
  */
 export function useRefreshAfterChatReply(isStreaming: boolean) {
   const queryClient = useQueryClient();
@@ -218,7 +183,6 @@ export function useRefreshAfterChatReply(isStreaming: boolean) {
     if (wasStreaming.current && !isStreaming) {
       queryClient.invalidateQueries({ queryKey: ['getapichangesets'] });
       queryClient.invalidateQueries({ queryKey: ['getapichangesetschangesetId'] });
-      queryClient.invalidateQueries({ queryKey: ['getapimodel'] });
     }
     wasStreaming.current = isStreaming;
   }, [isStreaming, queryClient]);

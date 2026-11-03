@@ -194,7 +194,7 @@ export class ChatService {
    * Throws:
    * - Error from JSON-RPC request (after updating store state and logging)
    *
-   * Timeout: 60 seconds (for streaming)
+   * Timeout: CHAT_SEND_TIMEOUT_MS (15 minutes); a closed socket fails it at once.
    */
   async sendMessage(message: string, context?: string | null): Promise<ChatSendResult> {
     if (!message.trim()) {
@@ -450,6 +450,15 @@ export class ChatService {
     const existingTool = currentMessage.parts.find(
       (p) => p.type === 'tool_invocation' && (p as any).toolUseId === params.tool_use_id
     ) as ToolInvocationContent | undefined;
+
+    // No status at all: nothing will ever report this tool finishing, so treat
+    // it like an id-less one and mark it completed when the reply moves on or
+    // ends. A tool reported as 'executing' is left for its own completion.
+    if (params.status === undefined) {
+      this.statuslessToolIds.add(params.tool_use_id);
+    } else {
+      this.statuslessToolIds.delete(params.tool_use_id);
+    }
 
     if (existingTool) {
       // Update existing tool invocation

@@ -251,7 +251,7 @@ test.describe('URL routing — graph viewport history', () => {
     const length = await page.evaluate(() => history.length);
 
     const vp = await zoomAndSettle(page, -300);
-    expect(vp).toMatch(/^-?[\d.]+,-?[\d.]+,[\d.]+$/);
+    expect(vp).toMatch(/^-?[\d.]+,-?[\d.]+,[\d.]+,[0-9a-z]+$/);
     expect(await page.evaluate(() => history.length)).toBe(length);
     const seen = await nodeBox(page, 'apm');
 
@@ -347,5 +347,26 @@ test.describe('URL routing — graph viewport history', () => {
 
     await page.getByTestId('graph-layout-control').getByRole('radio', { name: 'Orthogonal' }).click();
     await expect.poll(() => vpOf(page.url())).toBeNull();
+  });
+
+  test('Back to an entry recorded under another layout drops its ?vp= without pushing', async ({ page }) => {
+    await gotoView(page, ROUTES.model);
+    const leaves = await openLayer(page, 'APM');
+    await graphIdle(page);
+    await zoomAndSettle(page, -300);
+
+    // A navigation pushes a new entry; the Organic-era ?vp= stays on the old one.
+    await leaves.first().click();
+    await expect.poll(() => hashSearchParams(page.url()).get('node')).toBeTruthy();
+    await page.getByTestId('graph-layout-control').getByRole('radio', { name: 'Orthogonal' }).click();
+    await graphIdle(page);
+    const length = await page.evaluate(() => history.length);
+
+    await page.goBack();
+    // That viewport belongs to the Organic layout, so it isn't applied, and
+    // the URL drops it in place rather than pushing a new entry.
+    await expect.poll(() => hashSearchParams(page.url()).get('node')).toBeNull();
+    await expect.poll(() => vpOf(page.url())).toBeNull();
+    expect(await page.evaluate(() => history.length)).toBe(length);
   });
 });

@@ -20,6 +20,7 @@ import {
   useRefreshAfterChatReply,
 } from '@/apps/embedded/data/useChangesets';
 import { renderWithProviders } from '../helpers/renderWithProviders';
+import { ApiError } from '@/core/services/generatedApiClient';
 import { createTestQueryClient, renderHookWithClient } from '../helpers/renderHookWithClient';
 import { mswServer } from '../helpers/mswServer';
 import changesetDetail from '../fixtures/changeset-detail.json';
@@ -132,17 +133,19 @@ describe('ChangesetInspector — Apply / Discard', () => {
 });
 
 describe('changesetActionErrorMessage', () => {
-  it("returns the body's error from the generated client's message", () => {
-    const err = new Error(
-      'POST /api/changesets/:changesetId/commit failed: 409 {"error":"Base model has drifted since changeset creation. Use --force to commit anyway."}',
+  it("returns the server's { error } message", () => {
+    const err = new ApiError(
+      'POST /api/changesets/:changesetId/commit',
+      409,
+      '{"error":"Base model has drifted since changeset creation. Use --force to commit anyway."}',
     );
     expect(changesetActionErrorMessage(err)).toBe(
       'Base model has drifted since changeset creation. Use --force to commit anyway.',
     );
   });
 
-  it('falls back to the raw body, then the whole message', () => {
-    expect(changesetActionErrorMessage(new Error('POST /x failed: 500 Internal Server Error'))).toBe(
+  it('falls back to the raw body, then the error message', () => {
+    expect(changesetActionErrorMessage(new ApiError('POST /x', 500, 'Internal Server Error'))).toBe(
       'Internal Server Error',
     );
     expect(changesetActionErrorMessage(new Error('Network down'))).toBe('Network down');
@@ -150,7 +153,7 @@ describe('changesetActionErrorMessage', () => {
 });
 
 describe('useRefreshAfterChatReply', () => {
-  it('refetches changesets and the model only when a DrBot reply finishes', () => {
+  it('refetches changesets only when a DrBot reply finishes', () => {
     const client = createTestQueryClient();
     const invalidate = vi.spyOn(client, 'invalidateQueries');
     const { rerender } = renderHookWithClient(
@@ -163,7 +166,7 @@ describe('useRefreshAfterChatReply', () => {
 
     rerender({ streaming: false });
     const keys = invalidate.mock.calls.map(([filters]) => filters?.queryKey);
-    expect(keys).toEqual([['getapichangesets'], ['getapichangesetschangesetId'], ['getapimodel']]);
+    expect(keys).toEqual([['getapichangesets'], ['getapichangesetschangesetId']]);
 
     invalidate.mockClear();
     rerender({ streaming: false });

@@ -209,12 +209,15 @@ For local dev use `dr visualize --no-auth`.
 - **Changesets view** — op-coded diff list (add=emerald / update=cyan / delete=rose) + `StatTile` inspector +
   expandable `SideBySideDiff`. A STAGED changeset gets Apply (commit to the model) and Discard buttons in
   `ChangesetInspector`, each behind a `ConfirmDialog` — the user's review step for changes DrBot staged under
-  `dr visualize --with-changesets` (DrBot can stage but never commit). `data/useChangesets.ts`'s
-  `useChangesetAction` calls the API client directly (the generated mutation hooks don't know what to
-  invalidate) and refetches changesets + model; a refusal shows the server's `{ error }` inline
-  (`changesetActionErrorMessage`), success toasts from the inspector (the actions block unmounts once the
-  changeset leaves `staged`). `useRefreshAfterChatReply` (in `AppShell`) refetches changesets + model when a
-  DrBot reply finishes — the queries' 5-minute `staleTime` would otherwise hide a changeset DrBot just made.
+  `dr visualize --with-changesets` (DrBot can stage but never commit). The buttons use the generated
+  `usePostapichangesetschangesetIdcommit` / `...discard` hooks, whose invalidation (changesets, plus model
+  and layers after a commit) is mapped in `scripts/generate-api-client.js`'s `getInvalidationQueries`. A
+  refusal shows the server's `{ error }` inline (`changesetActionErrorMessage`, via the generated client's
+  `ApiError.serverMessage`); success toasts from the inspector (the actions block unmounts once the changeset
+  leaves `staged`). Two hooks in `AppShell` keep the cache fresh past its 5-minute `staleTime`:
+  `useLiveModelUpdates` (`data/useModel.ts`) refetches model + changesets on the server's `model.updated`
+  WebSocket broadcast (any model-file write: CLI, DrBot, an Apply); `useRefreshAfterChatReply` refetches
+  changesets when a DrBot reply finishes, since the server doesn't announce changeset-only changes.
 - **DrBot chat** — 372px drawer (persistent ≥1300px, overlay below) with live WS/JSON-RPC streaming.
   `chat.send` may run for minutes (Claude Code + tools): the client timeout is `CHAT_SEND_TIMEOUT_MS`
   (15 min) — it was 60s, which cut answers off mid-way with a timeout error. The `dr visualize` server's
@@ -246,14 +249,18 @@ For local dev use `dr visualize --no-auth`.
   links, neighborhood/page-table clicks, inter-layer nodes), or any selection change in page mode. Plain
   on-canvas selection within a layer REPLACES the entry so graph clicks don't flood history. The effect
   skips navigating when the store already matches the URL, so back/forward never push duplicates.
-- **Viewport history** (`?vp=centerX,centerY,zoom`, heimdall-ui 0.9.4) — `ui/useViewportHistory.ts` spreads
+- **Viewport history** (`?vp=centerX,centerY,zoom,tag`, heimdall-ui 0.9.4) — `ui/useViewportHistory.ts` spreads
   onto the Model/Schema `GraphCanvas`: it records `uiStore.graphViewport` on `onViewportDwell` (pan/zoom
   settled) and on `onViewportNavigate` (centerOnSelect, toolbar/fullscreen fit — not the mount fit), and
   restores via `initialViewport` (reload/deep link) or a silent `viewportRef.setViewport` (back/forward; the
   silent call also cancels a pending centerOnSelect report). The router mirrors it into `?vp=` and only ever
   REPLACES for it, so each history entry holds the last view seen there. A viewport is tagged with its
   canvas's `graphCanvasKey` (`ui/graphViewport.ts`, also the GraphCanvas React key): a layer, view or layout
-  setting change drops it rather than applying world coordinates to a different layout. Kept on page-mode
+  setting change drops it rather than applying world coordinates to a different layout. The URL's `tag` is
+  `scopeTag(graphCanvasKey)`: layout/display settings live in each viewer's preferences, not the URL, so a
+  `?vp=` from an older history entry or someone else's link only applies when its tag matches the live
+  canvas (a tagless three-number link always applies); otherwise the router drops it, replacing the entry in
+  place rather than pushing. Kept on page-mode
   URLs so toggling back to graph returns to the same view. After a drag-pan flick the dwell lands ~4–5s
   later (heimdall's inertia tail + 1.5s `dwellMs`).
 
@@ -270,7 +277,7 @@ npm run dev
 npm run build
 
 # Tests
-npm test            # Vitest: unit + integration + component (319 tests, ~2s)
+npm test            # Vitest: unit + integration + component (~580 tests)
 npm run test:watch  # Vitest watch
 npm run test:cov    # Vitest with coverage
 npm run test:types  # type-check the tests (tsconfig.test.json)
@@ -309,12 +316,12 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 
 The Heimdall-era suite (Vitest + Playwright) — see [documentation/TESTING_STRATEGY.md](documentation/TESTING_STRATEGY.md):
 
-- **Vitest** (`npm test`, **319 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
+- **Vitest** (`npm test`, **~580 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
   445-link resolution, `chatAdapter`, `changesets` op-folding, `specGraph`, `relationships`, `uiStore`,
   `predicates`), `tests/integration/` infra over a mock WebSocket + MSW (the **WS double-emit** regression,
   `jsonRpcHandler`, `chatService` streaming, data hooks), `tests/components/` Testing Library renders of the
   `ui/` layer. Helpers + real API fixtures live in `tests/helpers/` + `tests/fixtures/`.
-- **Playwright** (`npm run test:e2e`, **33 tests** in `tests/e2e/`): drives the **production bundle** served
+- **Playwright** (`npm run test:e2e`, **61 tests** in `tests/e2e/`): drives the **production bundle** served
   by `dr visualize` on a dedicated port — shell, model/schema/changesets views, URL routing + localStorage
   persistence, live chat single-render (double-emit), annotations CRUD (self-cleaning), and **axe** WCAG
   2.1 AA on every view in light + dark.

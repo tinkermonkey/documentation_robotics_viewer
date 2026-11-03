@@ -27,7 +27,7 @@ import { ChangesetInspector } from './ChangesetInspector';
 import { ChatDrawer } from './ChatDrawer';
 import { useUiStore } from './uiStore';
 import { LAYER_ORDER } from './domain';
-import { useModel } from '../data/useModel';
+import { useModel, useLiveModelUpdates } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import { useChangesets, useRefreshAfterChatReply } from '../data/useChangesets';
 import { firstNodeTypeId } from '../data/specGraph';
@@ -136,6 +136,7 @@ export function AppShell() {
   useDefaultSelection();
   useSeedGreeting();
   useRefreshAfterChatReply(useChatStore((s) => s.isStreaming));
+  useLiveModelUpdates();
 
   return (
     <div

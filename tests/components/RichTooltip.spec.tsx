@@ -11,7 +11,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { act, render, screen, fireEvent } from '@testing-library/react';
 
-import { RichTooltip, computeTooltipPosition } from '@/apps/embedded/ui/RichTooltip';
+import { RichTooltip, TooltipCard, computeTooltipPosition } from '@/apps/embedded/ui/RichTooltip';
 
 function rect(overrides: Partial<DOMRect>): DOMRect {
   return {
@@ -212,5 +212,35 @@ describe('RichTooltip — show/hide + accessibility', () => {
       vi.advanceTimersByTime(150);
     });
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+  });
+});
+
+describe('TooltipCard — anchor tracking', () => {
+  it('hides when its anchor disappears and shows again when it comes back', () => {
+    vi.useFakeTimers({ toFake: ['requestAnimationFrame', 'cancelAnimationFrame'] });
+    let anchor: DOMRect | null = rect({ top: 300, bottom: 320, left: 300, right: 360, width: 60, height: 20 });
+    render(
+      <TooltipCard
+        getAnchorRect={() => anchor}
+        content={<span>Edge hint</span>}
+        track
+        data-testid="card"
+      />,
+    );
+    const card = screen.getByTestId('card');
+    expect(card.style.visibility).toBe('visible');
+
+    anchor = null; // e.g. the hovered edge was filtered out under the pointer
+    act(() => {
+      vi.advanceTimersToNextFrame();
+    });
+    expect(card.style.visibility).toBe('hidden');
+
+    anchor = rect({ top: 300, bottom: 320, left: 300, right: 360, width: 60, height: 20 });
+    act(() => {
+      vi.advanceTimersToNextFrame();
+    });
+    expect(card.style.visibility).toBe('visible');
+    vi.useRealTimers();
   });
 });

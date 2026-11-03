@@ -151,8 +151,7 @@ function generateFetchMethod(endpoint) {
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(\`${method.toUpperCase()} ${path} failed: \${response.status} \${errorText}\`);
+      throw new ApiError('${method.toUpperCase()} ${path}', response.status, await response.text());
     }
 
     ${responseHandling}
@@ -190,6 +189,18 @@ function getInvalidationQueries(operationId, pathParams) {
     } else if (operationId.includes('postapiannotationsannotationIdreplies')) {
       // POST /api/annotations/:annotationId/replies → invalidate replies for this annotation
       invalidations.push(`{ queryKey: ['getapiannotationsannotationIdreplies', annotationId] }`);
+    }
+  }
+
+  // Committing or discarding a changeset changes it and the changeset list; a
+  // commit also writes the model (and so every layer).
+  if (operationId === 'postapichangesetschangesetIdcommit' ||
+      operationId === 'postapichangesetschangesetIddiscard') {
+    invalidations.push(`{ queryKey: ['getapichangesets'] }`);
+    invalidations.push(`{ queryKey: ['getapichangesetschangesetId', changesetId] }`);
+    if (operationId.endsWith('commit')) {
+      invalidations.push(`{ queryKey: ['getapimodel'] }`);
+      invalidations.push(`{ queryKey: ['getapilayerslayerName'] }`);
     }
   }
 
@@ -303,6 +314,31 @@ import { useQuery, useMutation, useQueryClient, UseQueryOptions, UseMutationOpti
  */
 export type QueryOptions = Omit<UseQueryOptions, 'queryKey' | 'queryFn'>;
 export type MutationOptions = Omit<UseMutationOptions, 'mutationFn'>;
+
+/**
+ * A non-2xx response. \`status\` is the HTTP status and \`body\` the raw
+ * response text; \`serverMessage\` is the server's \`{ error }\` message when
+ * the body carries one.
+ */
+export class ApiError extends Error {
+  constructor(
+    public readonly request: string,
+    public readonly status: number,
+    public readonly body: string,
+  ) {
+    super(\`\${request} failed: \${status} \${body}\`);
+    this.name = 'ApiError';
+  }
+
+  get serverMessage(): string | undefined {
+    try {
+      const parsed = JSON.parse(this.body) as { error?: unknown };
+      return typeof parsed.error === 'string' && parsed.error ? parsed.error : undefined;
+    } catch {
+      return undefined;
+    }
+  }
+}
 
 /**
  * API Client class with fetch-based implementation

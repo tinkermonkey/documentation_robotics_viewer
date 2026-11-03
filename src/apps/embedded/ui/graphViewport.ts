@@ -8,7 +8,13 @@
  * canvas. Switching layer or layout settings drops it without any clearing
  * logic in the store actions.
  *
- * In the URL it is `?vp=<centerX>,<centerY>,<zoom>`.
+ * In the URL it is `?vp=<centerX>,<centerY>,<zoom>,<tag>`, where `tag` is a
+ * short fingerprint of the scope (`scopeTag`). The layer is already in the
+ * URL, but the layout and display settings live in each viewer's preferences,
+ * so without the tag an older history entry (recorded before a layout change)
+ * or a link from someone with other settings would put coordinates from one
+ * layout onto another. A tag that doesn't match the live canvas means the
+ * viewport is dropped. A tagless three-number param is still accepted.
  */
 import type { GraphViewport } from '@tinkermonkey/heimdall-ui';
 import type { GraphLayout, NodeDisplay, NodeMarginPreset, ViewKind } from './uiStore';
@@ -42,20 +48,42 @@ export function roundViewport(vp: GraphViewport): GraphViewport {
   };
 }
 
-export function formatViewportParam(vp: GraphViewport): string {
+/** Short, stable fingerprint of a canvas scope for the URL (djb2, base36). */
+export function scopeTag(scope: string): string {
+  let hash = 5381;
+  for (let i = 0; i < scope.length; i++) {
+    hash = ((hash << 5) + hash + scope.charCodeAt(i)) >>> 0;
+  }
+  return hash.toString(36);
+}
+
+export function formatViewportParam(vp: ScopedViewport): string {
   const r = roundViewport(vp);
-  return `${r.center.x},${r.center.y},${r.zoom}`;
+  return `${r.center.x},${r.center.y},${r.zoom},${scopeTag(vp.scope)}`;
+}
+
+export interface ParsedViewportParam extends GraphViewport {
+  /** `scopeTag` of the canvas it was recorded on; absent in older links. */
+  tag?: string;
 }
 
 /** Parses `?vp=`; null for anything that isn't three finite numbers with a
- *  positive zoom (a hand-edited or truncated link). */
-export function parseViewportParam(param: string | undefined | null): GraphViewport | null {
+ *  positive zoom, optionally followed by a tag (a hand-edited or truncated
+ *  link). */
+export function parseViewportParam(param: string | undefined | null): ParsedViewportParam | null {
   if (!param) return null;
   const parts = param.split(',');
-  if (parts.length !== 3) return null;
-  const [x, y, zoom] = parts.map((p) => (p.trim() === '' ? NaN : Number(p)));
+  if (parts.length !== 3 && parts.length !== 4) return null;
+  const [x, y, zoom] = parts.slice(0, 3).map((p) => (p.trim() === '' ? NaN : Number(p)));
   if (![x, y, zoom].every(Number.isFinite) || zoom <= 0) return null;
-  return roundViewport({ center: { x, y }, zoom });
+  const tag = parts[3];
+  if (tag !== undefined && !/^[0-9a-z]+$/.test(tag)) return null;
+  return { ...roundViewport({ center: { x, y }, zoom }), ...(tag ? { tag } : {}) };
+}
+
+/** Whether a parsed `?vp=` may be applied to the canvas with this scope. */
+export function viewportParamFits(param: ParsedViewportParam, scope: string): boolean {
+  return param.tag === undefined || param.tag === scopeTag(scope);
 }
 
 export function sameViewport(a: GraphViewport | null | undefined, b: GraphViewport | null | undefined): boolean {

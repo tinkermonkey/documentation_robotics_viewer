@@ -16,6 +16,7 @@ import {
   graphCanvasKey,
   parseViewportParam,
   sameViewport,
+  viewportParamFits,
 } from './ui/graphViewport';
 import { useAuthStore } from './stores/authStore';
 import { useConnectionStore } from './stores/connectionStore';
@@ -295,18 +296,21 @@ function AppShellRoute() {
   // URL → store: viewport. Runs after the selection effect above, so on
   // back/forward the layer it scopes to is already in the store. A URL with
   // no `?vp=` clears it, so a viewport from the entry we just left can't be
-  // written onto this one.
+  // written onto this one. So does one recorded on a different layout or
+  // display (its tag doesn't match): the store → URL effect then drops it
+  // from the URL too.
   useEffect(() => {
-    const next = parseViewportParam(search.vp);
     const s = useUiStore.getState();
+    const scope = graphCanvasKey(s);
+    const parsed = parseViewportParam(search.vp);
+    const next = parsed && viewportParamFits(parsed, scope) ? parsed : null;
     const current = s.graphViewport;
     if (!next) {
       if (current) setGraphViewport(null);
       return;
     }
-    const scope = graphCanvasKey(s);
     if (current && current.scope === scope && sameViewport(current, next)) return;
-    setGraphViewport({ scope, ...next });
+    setGraphViewport({ scope, center: next.center, zoom: next.zoom });
   }, [section, search.layer, search.vp, setGraphViewport]);
 
   // store → URL. Push a history entry for a destination change — view,
@@ -369,20 +373,22 @@ function AppShellRoute() {
     // The store already matches the URL — this change came FROM the URL
     // (back/forward, a deep link). Navigating here would push a duplicate
     // entry and wipe the forward history.
-    if (
+    const destinationMatchesUrl =
       section === targetSection &&
       viewParam === targetView &&
       (search.layer ?? undefined) === targetSearch.layer &&
       (search.node ?? undefined) === targetSearch.node &&
       (search.edge ?? undefined) === targetSearch.edge &&
-      (search.changeset ?? undefined) === targetSearch.changeset &&
-      (search.vp ?? undefined) === targetSearch.vp
-    ) {
+      (search.changeset ?? undefined) === targetSearch.changeset;
+    if (destinationMatchesUrl && (search.vp ?? undefined) === targetSearch.vp) {
       return;
     }
 
+    // Only `?vp=` differs: a recorded viewport, or a stale one being dropped
+    // after back/forward. Never a new destination, so always replace.
     const push =
-      viewChanged || modeChanged || layerChanged || navigated || (mode === 'page' && selectionChanged);
+      !destinationMatchesUrl &&
+      (viewChanged || modeChanged || layerChanged || navigated || (mode === 'page' && selectionChanged));
 
     router.navigate({
       to: '/$section/$view',

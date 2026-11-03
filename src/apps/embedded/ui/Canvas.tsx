@@ -41,15 +41,13 @@
  * always shows the same `NodeTypeBadge` tooltip card mode wires, unqualified
  * by presentation mode or view (the BA requirement this closes gaps in).
  *
- * `GraphControls` floats over the graph itself (top-left, graph mode only) — a
- * card-style panel, same visual language as the built-in `GraphToolbar`'s own
- * floating card — exposing Heimdall 0.6.0's layout engines and display options:
- * Layout (force/galaxy/clustered), Display (card/pill, Model view only), Boundaries,
- * Node margin, Relations (structural/all, see data/predicates.ts). Mirrors
- * Heimdall's own docs/src/showcases/GraphLayoutsShowcase.tsx demo controls, just
- * repositioned as an overlay instead of a full-width row so it doesn't cost the
- * canvas any vertical space. The built-in `GraphToolbar` (zoom/lock/fullscreen, + a
- * live-simulation toggle for galaxy) is pinned `toolbarPosition="bottom-left"`
+ * Graph settings are split by how often they're used. `GraphHeaderControls`
+ * sits in the page header (graph mode only): Layout (Clustered / Organic /
+ * Orthogonal), Relations (structural/all, see data/predicates.ts) and
+ * Inter-layer (Model only). `GraphControls`, a gear flyout floating over the
+ * graph (top-left), holds the rest: Display (card/pill, Model only), Node
+ * margin, and Boundaries (Clustered only). The built-in `GraphToolbar`
+ * (zoom/lock/fullscreen) is pinned `toolbarPosition="bottom-left"`
  * — not bottom-right, which collided with Inspector's `DetailDrawer` floating
  * over the graph's right edge whenever a node was selected — forced into a
  * vertical stack via `.graph-toolbar--bottom-left` in domain-and-nav.css

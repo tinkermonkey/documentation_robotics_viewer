@@ -191,8 +191,15 @@ export function TooltipCard({
     if (!tooltipRef.current) return;
     let frame: number | null = null;
     const recompute = () => {
+      if (!tooltipRef.current) return;
       const anchorRect = getAnchorRectRef.current();
-      if (!anchorRect || !tooltipRef.current) return;
+      // Anchor gone (e.g. the hovered edge was filtered out or re-laid out
+      // under the pointer): hide rather than linger at its last spot. With
+      // `track` it reappears if the anchor comes back.
+      if (!anchorRect) {
+        setPosition(null);
+        return;
+      }
       const cardSize = {
         width: tooltipRef.current.offsetWidth,
         height: tooltipRef.current.offsetHeight,

@@ -174,6 +174,25 @@ describe('chatService — chat.tool.invoke in the dr visualize wire shape', () =
 });
 
 describe('chatService — chat.tool.invoke', () => {
+  it('completes a tool sent with a tool_use_id but no status once the reply moves on', () => {
+    const { id } = seedStreamingAssistant();
+    notify('chat.tool.invoke', { tool_use_id: 'tu-quiet', tool_name: 'Bash', tool_input: {} });
+    notify('chat.tool.invoke', { tool_use_id: 'tu-live', toolName: 'Read', toolInput: {}, status: 'executing' });
+
+    notify('chat.response.chunk', { conversation_id: 'conv-1', content: 'Done.' });
+
+    const states = useChatStore
+      .getState()
+      .messages.find((m) => m.id === id)!
+      .parts.filter((p) => p.type === 'tool_invocation')
+      .map((t) => [(t as { toolUseId: string }).toolUseId, (t as { status: { state: string } }).status.state]);
+    // The status-less one is closed; the one reporting its own status is left alone.
+    expect(states).toEqual([
+      ['tu-quiet', 'completed'],
+      ['tu-live', 'executing'],
+    ]);
+  });
+
   it('adds a tool invocation keyed by tool_use_id, mapping executing→executing', () => {
     const { id } = seedStreamingAssistant();
 

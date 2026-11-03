@@ -6,8 +6,10 @@
  * payload (`{ nodes, links }`).
  */
 
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useGetapimodel } from '../../../core/services/generatedApiClient';
+import { websocketClient } from '../services/websocketClient';
 
 export interface ModelNode {
   id: string;
@@ -81,3 +83,27 @@ export function useModel() {
 
   return { ...query, derived };
 }
+
+/**
+ * Refetch the model (and changesets) when the `dr visualize` server announces a
+ * model change: it broadcasts `{ type: 'model.updated' }` after any write to
+ * the model files — a CLI edit, a DrBot change, or a changeset applied from
+ * the viewer — and otherwise the 5-minute `staleTime` would keep showing the
+ * old model. Mount once (AppShell).
+ */
+export function useLiveModelUpdates() {
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    const refetch = () => {
+      queryClient.invalidateQueries({ queryKey: ['getapimodel'] });
+      queryClient.invalidateQueries({ queryKey: ['getapilayerslayerName'] });
+      queryClient.invalidateQueries({ queryKey: ['getapichangesets'] });
+      queryClient.invalidateQueries({ queryKey: ['getapichangesetschangesetId'] });
+    };
+    websocketClient.on(MODEL_UPDATED_EVENT, refetch);
+    return () => websocketClient.off(MODEL_UPDATED_EVENT, refetch);
+  }, [queryClient]);
+}
+
+/** The server's model-change broadcast (see the CLI's `reloadAndBroadcast`). */
+export const MODEL_UPDATED_EVENT = 'model.updated';
