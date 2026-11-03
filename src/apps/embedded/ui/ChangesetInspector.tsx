@@ -9,11 +9,33 @@
  *
  * The live `/api/changesets/:id` payload has NO author field, so none is shown.
  * Empty state shows when no changeset is selected.
+ *
+ * A STAGED changeset also gets Apply (commit its changes to the model) and
+ * Discard (throw them away) buttons, each behind a `ConfirmDialog`. This is the
+ * user's review step for changes DrBot staged under `dr visualize
+ * --with-changesets`, which never lets DrBot commit. A refused action (failed
+ * validation, model changed since the changeset was made) shows the server's
+ * message inline, since validation errors are too long for a toast.
  */
 
-import { StatTile, StatusBadge, type BadgeColor } from '@tinkermonkey/heimdall-ui';
+import { useState } from 'react';
+import {
+  Button,
+  ConfirmDialog,
+  StatTile,
+  StatusBadge,
+  Toast,
+  type BadgeColor,
+  type ToastVariant,
+} from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
-import { useChangeset } from '../data/useChangesets';
+import {
+  changesetActionErrorMessage,
+  useChangeset,
+  useChangesetAction,
+  type ChangesetAction,
+  type ChangesetDetail,
+} from '../data/useChangesets';
 
 /** Status → Heimdall badge color + label. */
 function statusBadge(status: string): { color: BadgeColor; label: string } {
@@ -66,9 +88,123 @@ function MetaRow({ label, value }: { label: string; value: string }) {
   );
 }
 
+function plural(n: number, word: string): string {
+  return `${n} ${word}${n === 1 ? '' : 's'}`;
+}
+
+interface ToastState {
+  open: boolean;
+  variant: ToastVariant;
+  title: string;
+}
+
+/**
+ * Apply / Discard for a staged changeset, with confirmation and inline errors.
+ * Success is reported through `notify`: this unmounts as soon as the changeset
+ * stops being staged, so a toast of its own would vanish with it.
+ */
+function ChangesetActions({
+  detail,
+  notify,
+}: {
+  detail: ChangesetDetail;
+  notify: (variant: ToastVariant, title: string) => void;
+}) {
+  const commit = useChangesetAction('commit');
+  const discard = useChangesetAction('discard');
+  const [confirming, setConfirming] = useState<ChangesetAction | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const busy = commit.isPending || discard.isPending;
+  const changes = plural(detail.changesCount, 'change');
+
+  const run = (action: ChangesetAction) => {
+    setConfirming(null);
+    setError(null);
+    const mutation = action === 'commit' ? commit : discard;
+    mutation.mutate(detail.id, {
+      onSuccess: (result) => {
+        const title =
+          action === 'commit'
+            ? `Applied ${plural(result.committed ?? detail.changesCount, 'change')} to the model`
+            : `Discarded ${detail.name}`;
+        notify('success', title);
+      },
+      onError: (err) => setError(changesetActionErrorMessage(err)),
+    });
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }} data-testid="changeset-actions">
+      <div style={{ display: 'flex', gap: 8 }}>
+        <Button
+          variant="accent"
+          size="sm"
+          disabled={busy || detail.changesCount === 0}
+          onClick={() => setConfirming('commit')}
+          data-testid="changeset-apply-button"
+        >
+          {commit.isPending ? 'Applying…' : 'Apply'}
+        </Button>
+        <Button
+          variant="secondary"
+          size="sm"
+          disabled={busy}
+          onClick={() => setConfirming('discard')}
+          data-testid="changeset-discard-button"
+        >
+          {discard.isPending ? 'Discarding…' : 'Discard'}
+        </Button>
+      </div>
+
+      {error && (
+        <div
+          role="alert"
+          data-testid="changeset-action-error"
+          style={{
+            padding: '8px 10px',
+            borderRadius: 'var(--radius-md, 6px)',
+            border: '1px solid rgb(var(--status-error) / 0.5)',
+            background: 'rgb(var(--status-error) / 0.08)',
+            color: 'rgb(var(--canvas-fg-1))',
+            fontFamily: "'JetBrains Mono',monospace",
+            fontSize: 11,
+            lineHeight: 1.5,
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+          }}
+        >
+          {error}
+        </div>
+      )}
+
+      <ConfirmDialog
+        isOpen={confirming === 'commit'}
+        onClose={() => setConfirming(null)}
+        onConfirm={() => run('commit')}
+        title="Apply changeset"
+        message={`Apply the ${changes} in "${detail.name}" to the model? They are validated first, and nothing is written if any change fails.`}
+        confirmLabel="Apply"
+        variant="primary"
+      />
+      <ConfirmDialog
+        isOpen={confirming === 'discard'}
+        onClose={() => setConfirming(null)}
+        onConfirm={() => run('discard')}
+        title="Discard changeset"
+        message={`Throw away the ${changes} in "${detail.name}"? The model is not changed, and this can't be undone.`}
+        confirmLabel="Discard"
+        variant="danger"
+      />
+    </div>
+  );
+}
+
 export function ChangesetInspector() {
   const changesetId = useUiStore((s) => s.changesetId);
   const { detail } = useChangeset(changesetId);
+  const [toast, setToast] = useState<ToastState>({ open: false, variant: 'success', title: '' });
+  const notify = (variant: ToastVariant, title: string) => setToast({ open: true, variant, title });
 
   return (
     <div
@@ -168,6 +304,10 @@ export function ChangesetInspector() {
               </span>
             </div>
 
+            {detail.status === 'staged' && (
+              <ChangesetActions key={detail.id} detail={detail} notify={notify} />
+            )}
+
             <div style={{ display: 'flex', gap: 8 }}>
               <StatTile
                 label="Added"
@@ -199,6 +339,12 @@ export function ChangesetInspector() {
           </div>
         </>
       )}
+      <Toast
+        isOpen={toast.open}
+        onClose={() => setToast((t) => ({ ...t, open: false }))}
+        variant={toast.variant}
+        title={toast.title}
+      />
     </div>
   );
 }

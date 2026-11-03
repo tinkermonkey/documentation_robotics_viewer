@@ -1,6 +1,6 @@
 /**
  * Auto-generated API Client with React Query Hooks
- * Generated from: /workspace/docs/api-spec.yaml
+ * Generated from: /Users/austinsand/workspace/documentation_robotics_viewer/docs/api-spec.yaml
  * API Version: 0.1.0
  *
  * IMPORTANT: This file is auto-generated. Do not edit directly.
@@ -402,6 +402,52 @@ export class ApiClient {
 
     return response.json();
   }
+
+  async postapichangesetschangesetIdcommit(changesetId: string): Promise<unknown> {
+    const baseUrl = this.getBaseUrl();
+    const pathStr = `/api/changesets/${encodeURIComponent(changesetId)}/commit`;
+    const url = `${baseUrl}${pathStr}`;
+
+    const options: RequestInit = {
+      method: 'POST',
+      headers: this.getHeaders(),
+      credentials: 'include'
+    };
+
+    
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`POST /api/changesets/:changesetId/commit failed: ${response.status} ${errorText}`);
+    }
+
+    return response.json();
+  }
+
+  async postapichangesetschangesetIddiscard(changesetId: string): Promise<unknown> {
+    const baseUrl = this.getBaseUrl();
+    const pathStr = `/api/changesets/${encodeURIComponent(changesetId)}/discard`;
+    const url = `${baseUrl}${pathStr}`;
+
+    const options: RequestInit = {
+      method: 'POST',
+      headers: this.getHeaders(),
+      credentials: 'include'
+    };
+
+    
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`POST /api/changesets/:changesetId/discard failed: ${response.status} ${errorText}`);
+    }
+
+    return response.json();
+  }
 }
 
 /**
@@ -618,6 +664,38 @@ const apiClient = getApiClient();
       queryFn: () => apiClient.getapichangesetschangesetId(changesetId),
       ...options
     });
+  }
+
+  /**
+   * React Query mutation hook for postapichangesetschangesetIdcommit
+   */
+  export function usePostapichangesetschangesetIdcommit(changesetId: string, options?: MutationOptions) {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+      mutationFn: () => apiClient.postapichangesetschangesetIdcommit(changesetId),
+      onSuccess: () => {
+        console.warn('[WARNING] Unmapped cache invalidation for postapichangesetschangesetIdcommit. Add to getInvalidationQueries().');
+        queryClient.invalidateQueries({ queryKey: ['postapichangesetschangesetIdcommit'] });
+      },
+      ...options
+    } as any);
+  }
+
+  /**
+   * React Query mutation hook for postapichangesetschangesetIddiscard
+   */
+  export function usePostapichangesetschangesetIddiscard(changesetId: string, options?: MutationOptions) {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+      mutationFn: () => apiClient.postapichangesetschangesetIddiscard(changesetId),
+      onSuccess: () => {
+        console.warn('[WARNING] Unmapped cache invalidation for postapichangesetschangesetIddiscard. Add to getInvalidationQueries().');
+        queryClient.invalidateQueries({ queryKey: ['postapichangesetschangesetIddiscard'] });
+      },
+      ...options
+    } as any);
   }
 
 /**

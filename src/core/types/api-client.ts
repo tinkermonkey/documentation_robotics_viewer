@@ -176,7 +176,7 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    layerName: "motivation" | "business" | "security" | "application" | "technology" | "api" | "data-model" | "data-store" | "ux" | "navigation" | "apm" | "testing";
+                    layerName: "motivation" | "business" | "product" | "security" | "application" | "technology" | "api" | "data-model" | "data-store" | "ux" | "navigation" | "apm" | "testing";
                 };
                 cookie?: never;
             };
@@ -1015,6 +1015,182 @@ export interface paths {
         };
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/changesets/:changesetId/commit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Commit changeset
+         * @description Apply a staged changeset to the model (same as `dr changeset commit`): validates it, applies every change atomically, marks it committed, and deactivates it if it was active. Refused when the model changed since the changeset was created (use the CLI with --force).
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    changesetId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Action completed */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            name: string;
+                            /** @enum {string} */
+                            status: "staged" | "committed" | "discarded";
+                            /** @description Changes applied to the model (commit only) */
+                            committed?: number;
+                            /** @description Changes skipped as already present (commit only) */
+                            skipped?: number;
+                            /** @description Changes that failed to apply (commit only) */
+                            failed?: number;
+                        };
+                    };
+                };
+                /** @description Changeset not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Changeset is not staged, or the model drifted since it was created */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
+                /** @description The changeset failed validation; nothing was applied */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/changesets/:changesetId/discard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Discard changeset
+         * @description Throw away a staged changeset's changes (same as `dr changeset discard`): clears them, marks it discarded, and deactivates it if it was active. The model is not touched.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    changesetId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Action completed */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: string;
+                            name: string;
+                            /** @enum {string} */
+                            status: "staged" | "committed" | "discarded";
+                            /** @description Changes applied to the model (commit only) */
+                            committed?: number;
+                            /** @description Changes skipped as already present (commit only) */
+                            skipped?: number;
+                            /** @description Changes that failed to apply (commit only) */
+                            failed?: number;
+                        };
+                    };
+                };
+                /** @description Changeset not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Changeset is not staged, or the model drifted since it was created */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
+                /** @description The changeset failed validation; nothing was applied */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;

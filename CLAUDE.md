@@ -122,7 +122,9 @@ The `dr visualize` server (default `:8080`) serves the built viewer AND the data
 - `GET /api/model` → `{ nodes:[{id(UUID), spec_node_id, type, layer_id, name, description, attributes,
   source_reference, metadata}], links:[{id, source, target, type, source_layer_id?, target_layer_id?}] }`
 - `GET /api/layers/:name`, `GET /api/spec` (per-layer `nodeSchemas` + `relationshipSchemas`),
-  `GET /api/changesets`, `GET /api/changesets/:id`
+  `GET /api/changesets`, `GET /api/changesets/:id`, `POST /api/changesets/:id/commit` /
+  `POST /api/changesets/:id/discard` (staged only; 404 unknown, 409 not staged or model drifted, 422 failed
+  validation — body `{ error }`)
 - Annotations CRUD: `GET/POST /api/annotations`, `GET/PATCH/DELETE /api/annotations/:id`,
   `GET/POST /api/annotations/:id/replies`
 
@@ -205,7 +207,14 @@ For local dev use `dr visualize --no-auth`.
   `passThrough` keeps it out of the pointer's way). That hover state is local to Canvas — never route edge
   hover through the store or the `edges` memo (re-runs the layout; see `useEdgeInteraction.ts`).
 - **Changesets view** — op-coded diff list (add=emerald / update=cyan / delete=rose) + `StatTile` inspector +
-  expandable `SideBySideDiff`.
+  expandable `SideBySideDiff`. A STAGED changeset gets Apply (commit to the model) and Discard buttons in
+  `ChangesetInspector`, each behind a `ConfirmDialog` — the user's review step for changes DrBot staged under
+  `dr visualize --with-changesets` (DrBot can stage but never commit). `data/useChangesets.ts`'s
+  `useChangesetAction` calls the API client directly (the generated mutation hooks don't know what to
+  invalidate) and refetches changesets + model; a refusal shows the server's `{ error }` inline
+  (`changesetActionErrorMessage`), success toasts from the inspector (the actions block unmounts once the
+  changeset leaves `staged`). `useRefreshAfterChatReply` (in `AppShell`) refetches changesets + model when a
+  DrBot reply finishes — the queries' 5-minute `staleTime` would otherwise hide a changeset DrBot just made.
 - **DrBot chat** — 372px drawer (persistent ≥1300px, overlay below) with live WS/JSON-RPC streaming.
   `chat.send` may run for minutes (Claude Code + tools): the client timeout is `CHAT_SEND_TIMEOUT_MS`
   (15 min) — it was 60s, which cut answers off mid-way with a timeout error. The `dr visualize` server's
