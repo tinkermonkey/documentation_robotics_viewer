@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-11-04
+
 `@tinkermonkey/heimdall-ui` bumped `0.8.0` → `0.9.4` (exact npm-registry version), with graph, DrBot and
 changeset improvements built on it. Apply / Discard and new changesets appearing without a restart need the
 matching `dr` CLI (`POST /api/changesets/:id/{commit,discard}`, per-request changeset reload).
