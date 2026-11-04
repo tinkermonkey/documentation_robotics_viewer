@@ -122,7 +122,9 @@ The `dr visualize` server (default `:8080`) serves the built viewer AND the data
 - `GET /api/model` → `{ nodes:[{id(UUID), spec_node_id, type, layer_id, name, description, attributes,
   source_reference, metadata}], links:[{id, source, target, type, source_layer_id?, target_layer_id?}] }`
 - `GET /api/layers/:name`, `GET /api/spec` (per-layer `nodeSchemas` + `relationshipSchemas`),
-  `GET /api/changesets`, `GET /api/changesets/:id`
+  `GET /api/changesets`, `GET /api/changesets/:id`, `POST /api/changesets/:id/commit` /
+  `POST /api/changesets/:id/discard` (staged only; 404 unknown, 409 not staged or model drifted, 422 failed
+  validation — body `{ error }`)
 - Annotations CRUD: `GET/POST /api/annotations`, `GET/PATCH/DELETE /api/annotations/:id`,
   `GET/POST /api/annotations/:id/replies`
 
@@ -157,16 +159,22 @@ For local dev use `dr visualize --no-auth`.
   the right edge is flush against the canvas) are rounded via a `.detail-drawer` override in
   `domain-and-nav.css` using `--radius-lg`, the same "normal" radius other floating Heimdall panels use;
   Heimdall's own `DetailDrawer.css` ships it flush (no radius at all).
-- **Graph layout/display controls** — `GraphControls`, a hover/focus flyout top-left over the graph (Model +
-  Schema views): collapsed to a single transparent icon button (`.graph-toolbar__btn`, same look the
-  built-in `GraphToolbar`'s own buttons use) so it isn't a permanent opaque block over the graph; hovering
-  or focusing it expands a translucent/blurred panel (same `DetailDrawer` visual language) with the actual
-  controls, mirroring Heimdall's `docs/src/showcases/GraphLayoutsShowcase.tsx` demo. Collapse is
-  `relatedTarget`-based (`collapseIfLeavingFlyout`, shared by `onMouseLeave`/`onBlur`) — checks where the
-  pointer/focus is actually GOING, not just that SOME leave event fired, so clicking one control inside the
-  panel and moving to another doesn't spuriously collapse it out from under the interaction. Drives
-  `uiStore`'s `graphLayout` (`force`/`galaxy`/`force-clustered`), `showClusterBoundaries`,
-  `nodeMarginPreset` (`tight`/`default`/`wide`), and `showAllRelations`. "Structural" relations use
+- **Graph layout/display controls** — split by how often they're used (Model + Schema views):
+  - **Page header** (`GraphHeaderControls` in `Canvas.tsx`, left of the graph/page toggle, graph mode only):
+    Layout (`graphLayout`: Clustered `force-clustered` / Organic `organic` default / Orthogonal — the only
+    three offered; a persisted force/galaxy/radial-tree falls back to organic), Relations
+    (`showAllRelations`), Inter-layer (`showInterLayerNodes`, Model only). The header gets a `canvas-header`
+    class whose CSS (`domain-and-nav.css`) lets the actions wrap below the title in a narrow canvas —
+    Heimdall's `PageHeader` never wraps and otherwise crushes the title.
+  - **Settings flyout** (`GraphControls`, gear top-left over the graph): Display (`nodeDisplay`, Model only),
+    Node margin (`nodeMarginPreset`), Boundaries (`showClusterBoundaries`, Clustered only). Collapsed to a
+    transparent `.graph-toolbar__btn` icon; hover/focus expands a translucent panel. The gear and panel sit
+    in ONE `pointer-events: auto` box with the space between them as `paddingTop` — they used to be
+    separate boxes with a pointer-events-none margin between, so a slow move from the gear to the panel
+    "left" and closed it. Mouse-leave closes after `FLYOUT_CLOSE_DELAY_MS` (cancelled by re-entering); blur
+    closes at once. Collapse is `relatedTarget`-based (`collapseIfLeavingFlyout`), so moving between
+    controls inside it doesn't close it.
+  "Structural" relations use
   `data/predicates.ts`'s `isStructuralEdge` — a hardcoded DR predicate `category` classification
   (mirrors `ui/domain.ts`'s hardcoded layer colors; not exposed by `/api/model` or `/api/spec`). The
   built-in `GraphToolbar` (zoom/lock/fullscreen + galaxy's live-simulation toggle) is pinned
@@ -177,17 +185,50 @@ For local dev use `dr visualize --no-auth`.
   `GraphCanvas`'s `onBackgroundClick` reuses `selectLayer(layerId)` (clearing `selectedId`/`focus` back to
   `'layer'`) so clicking empty canvas deselects — the only way the Inspector drawer's auto-hide is
   reachable.
-- **Selection auto-centers, Fullscreen includes the overlay chrome** (heimdall-ui 0.7.0) — `GraphCanvas`
-  gets `centerOnSelect` unconditionally (Model + Schema): pans to keep `selectedId` centered whenever it
-  changes, so a NavTree click, a cross-layer navigate-to link, or a URL-restored deep link all bring an
-  off-screen node into view, not just a direct on-canvas click (which it's a harmless no-op for — no
-  special-casing by selection origin). `fullscreenContainerRef={canvasAreaRef}` — a ref on `Canvas.tsx`'s
+- **Selection auto-centers (except on-canvas clicks), Fullscreen includes the overlay chrome** (heimdall-ui
+  0.7.0) — `GraphCanvas`'s `centerOnSelect` (Model + Schema) pans to the selected node when the selection
+  comes from elsewhere: a NavTree click, a cross-layer navigate-to link, a URL-restored deep link. It is
+  turned OFF while the current selection came from clicking that node in the graph (re-centering under the
+  pointer was distracting): `Canvas.tsx` records `{ id, navSeq }` in `canvasClick` via `selectFromCanvas`,
+  which EVERY on-canvas select path must use — `GraphCanvas`'s `onNodeSelect` and the `ModelCardNode`/
+  `PillNode` `onSelect` (they handle their own click). A new selection or a `navSeq` bump re-enables it.
+  `fullscreenContainerRef={canvasAreaRef}` — a ref on `Canvas.tsx`'s
   graph-mode `position: relative` wrapper — points the built-in toolbar's Fullscreen button at that
   wrapper instead of `GraphCanvas`'s own root, so `GraphControls` and `Inspector` (both its siblings,
   outside what the native Fullscreen API would otherwise render) stay visible while fullscreen.
+- **Predicate hover explanations wait 3s** (`PREDICATE_TOOLTIP_DELAY_MS` in `ui/PredicateTooltip.tsx`) —
+  predicates are also click targets (navigate / select the edge), and a quick tooltip covered them while
+  aiming. `PredicateTooltip` (inspector, page tables, edge inspector) passes it as `RichTooltip`'s
+  `openDelay`; keyboard focus still opens immediately. Graph edges do NOT use heimdall's `edgeTooltip` prop
+  (it pins the tooltip above the edge midpoint — right over the predicate label it explains, with a fixed
+  200ms delay): `Canvas.tsx` feeds `onEdgeHover` into `ui/useHoverDwell.ts` and, after 3s, renders the same
+  `TooltipCard` the layer/element pills use (exported from `RichTooltip.tsx`), anchored to the edge's label
+  via `ui/edgeTooltipAnchor.ts` and auto-placed on a side with room (`track` follows it through pan/zoom,
+  `passThrough` keeps it out of the pointer's way). That hover state is local to Canvas — never route edge
+  hover through the store or the `edges` memo (re-runs the layout; see `useEdgeInteraction.ts`).
 - **Changesets view** — op-coded diff list (add=emerald / update=cyan / delete=rose) + `StatTile` inspector +
-  expandable `SideBySideDiff`.
-- **DrBot chat** — 372px drawer (persistent ≥1300px, overlay below) with live WS/JSON-RPC streaming;
+  expandable `SideBySideDiff`. A STAGED changeset gets Apply (commit to the model) and Discard buttons in
+  `ChangesetInspector`, each behind a `ConfirmDialog` — the user's review step for changes DrBot staged under
+  `dr visualize --with-changesets` (DrBot can stage but never commit). The buttons use the generated
+  `usePostapichangesetschangesetIdcommit` / `...discard` hooks, whose invalidation (changesets, plus model
+  and layers after a commit) is mapped in `scripts/generate-api-client.js`'s `getInvalidationQueries`. A
+  refusal shows the server's `{ error }` inline (`changesetActionErrorMessage`, via the generated client's
+  `ApiError.serverMessage`); success toasts from the inspector (the actions block unmounts once the changeset
+  leaves `staged`). Two hooks in `AppShell` keep the cache fresh past its 5-minute `staleTime`:
+  `useLiveModelUpdates` (`data/useModel.ts`) refetches model + changesets on the server's `model.updated`
+  WebSocket broadcast (any model-file write: CLI, DrBot, an Apply); `useRefreshAfterChatReply` refetches
+  changesets when a DrBot reply finishes, since the server doesn't announce changeset-only changes.
+- **DrBot chat** — 372px drawer (persistent ≥1300px, overlay below) with live WS/JSON-RPC streaming.
+  `chat.send` may run for minutes (Claude Code + tools): the client timeout is `CHAT_SEND_TIMEOUT_MS`
+  (15 min) — it was 60s, which cut answers off mid-way with a timeout error. The `dr visualize` server's
+  `chat.tool.invoke` is snake_case (`tool_name`/`tool_input`), once per call, with no `tool_use_id` and no
+  status; `chatService.handleToolInvoke` gives each a local id and marks it completed when the reply moves
+  on (next tool, text) or ends. `chat.tool.result` is the final session result, not a per-tool one, and is
+  ignored. `chat.send` only takes `message`, and the server starts a fresh Claude Code conversation per
+  send, so `ChatPanel` builds a `<viewer-context>` block (`data/chatContext.ts`: view, layer, selected
+  element by name + dotted id + type + uuid, or Schema node type / relationship / changeset) from the live
+  store at send time, and `chatService.sendMessage(text, context)` prepends it to the text sent. The thread
+  shows only what the user typed.
   `chatAdapter.ts` maps our `parts` union onto Heimdall's message/tool/thinking blocks.
 - **Annotations** — REST CRUD + replies in the inspector for Model elements.
 - **Light/dark canvas** toggle in the topbar. **Dark is the default** (`uiStore`'s `canvasDark: true`) —
@@ -201,9 +242,27 @@ For local dev use `dr visualize --no-auth`.
 - **URL routing for left-panel selections** (`router.tsx`'s `AppShellRoute`) — `?layer=`/`?node=`/
   `?changeset=` search params two-way sync with `uiStore.layerId`/`selectedId`/`changesetId`, on top of
   the existing `:section`/`:view` path sync. Covers selections from ANYWHERE (nav tree clicks, graph node
-  clicks, cross-layer navigation), not just the nav tree, since they all drive the same store fields. A
-  genuine view change (Model↔Schema↔Changesets) pushes a new history entry; a pure selection change within
-  the same view replaces the current entry instead, so nav-tree/graph clicks don't flood browser history.
+  clicks, cross-layer navigation), not just the nav tree, since they all drive the same store fields.
+  `:view` carries the graph/page mode for Model + Schema (`#/model/page?...`). Destination changes PUSH a
+  history entry: view, mode, layer, a deliberate navigation (`uiStore.navSeq`, bumped by
+  `navigateToElement`/`navigateToElementWithEdge`/`navigateToSpecNode` — nav-tree leaves, relationship
+  links, neighborhood/page-table clicks, inter-layer nodes), or any selection change in page mode. Plain
+  on-canvas selection within a layer REPLACES the entry so graph clicks don't flood history. The effect
+  skips navigating when the store already matches the URL, so back/forward never push duplicates.
+- **Viewport history** (`?vp=centerX,centerY,zoom,tag`, heimdall-ui 0.9.4) — `ui/useViewportHistory.ts` spreads
+  onto the Model/Schema `GraphCanvas`: it records `uiStore.graphViewport` on `onViewportDwell` (pan/zoom
+  settled) and on `onViewportNavigate` (centerOnSelect, toolbar/fullscreen fit — not the mount fit), and
+  restores via `initialViewport` (reload/deep link) or a silent `viewportRef.setViewport` (back/forward; the
+  silent call also cancels a pending centerOnSelect report). The router mirrors it into `?vp=` and only ever
+  REPLACES for it, so each history entry holds the last view seen there. A viewport is tagged with its
+  canvas's `graphCanvasKey` (`ui/graphViewport.ts`, also the GraphCanvas React key): a layer, view or layout
+  setting change drops it rather than applying world coordinates to a different layout. The URL's `tag` is
+  `scopeTag(graphCanvasKey)`: layout/display settings live in each viewer's preferences, not the URL, so a
+  `?vp=` from an older history entry or someone else's link only applies when its tag matches the live
+  canvas (a tagless three-number link always applies); otherwise the router drops it, replacing the entry in
+  place rather than pushing. Kept on page-mode
+  URLs so toggling back to graph returns to the same view. After a drag-pan flick the dwell lands ~4–5s
+  later (heimdall's inertia tail + 1.5s `dwellMs`).
 
 ## Local Development & Verification
 
@@ -218,7 +277,7 @@ npm run dev
 npm run build
 
 # Tests
-npm test            # Vitest: unit + integration + component (319 tests, ~2s)
+npm test            # Vitest: unit + integration + component (~580 tests)
 npm run test:watch  # Vitest watch
 npm run test:cov    # Vitest with coverage
 npm run test:types  # type-check the tests (tsconfig.test.json)
@@ -246,6 +305,9 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 | Color doesn't flip in dark mode | Hardcoded hex | Use `rgb(var(--canvas-*))` |
 | `DetailDrawer` overlays the wrong region (e.g. whole app row, not just the graph) | Rendered outside the intended `position: relative` ancestor | Render it as a sibling *inside* that ancestor — `Inspector` lives in `Canvas.tsx`'s graph wrapper, not `AppShell.tsx` |
 | Floating overlay's buttons are unclickable / read behind another panel | Two absolutely-positioned overlays anchor to the same edge with no explicit stacking order | Prefer moving one to a non-colliding corner if there's a free one (see `GraphToolbar`'s `toolbarPosition="bottom-left"`, moved off `"bottom-right"` specifically to stop colliding with the Inspector `DetailDrawer`); if both must share an edge, give the one that should win an explicit higher `z-index` instead |
+| GraphCanvas overflows its box onto content below | Heimdall's `.graph-canvas` has `min-height: 360px`; a smaller fixed-height box with an absolutely positioned canvas can't contain it | Keep the canvas in normal flow (`flex: 1`) inside a box whose min-height is ≥ 360px (see `NeighborhoodGraphView`) |
+| A RichTooltip swallows the click on its own trigger | No side had room, so clamping put the card over the trigger and the mouseup landed on it | `computeTooltipPosition` tries all four sides, then sets `overlapsAnchor` → the card gets `pointer-events: none` |
+| `?vp=` stripped on load in dev only | StrictMode re-runs the router's store → URL effect with a stale closure where `graphViewport` isn't seeded yet | Read `useUiStore.getState()` inside that effect for the viewport (router.tsx does) |
 | Fonts fall back to system | woff2 404 (served as HTML) | Self-hosted under `public/fonts`; keep `@font-face` `/fonts/...` paths |
 | Stale UI after an edit | Vite transform cache | Restart dev server + `rm -rf node_modules/.vite`. Before debugging a code change that "isn't taking effect," `fetch()` the source path from the live page and grep the response for a string unique to your edit — cheaper than assuming the logic is wrong |
 | `userEvent.click()` on a 2nd element inside a hover-tracked overlay doesn't fire its handler | happy-dom/user-event doesn't reliably exclude a shared ancestor when synthesizing the pointer path between two different click targets, so a spurious `mouseleave` collapses (unmounts) the panel mid-click | Use `fireEvent.click()` for that specific multi-step interaction instead of `userEvent.click()` — confirms it's a test-environment artifact, not a product bug (verify live too) |
@@ -254,12 +316,12 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 
 The Heimdall-era suite (Vitest + Playwright) — see [documentation/TESTING_STRATEGY.md](documentation/TESTING_STRATEGY.md):
 
-- **Vitest** (`npm test`, **319 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
+- **Vitest** (`npm test`, **~580 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
   445-link resolution, `chatAdapter`, `changesets` op-folding, `specGraph`, `relationships`, `uiStore`,
   `predicates`), `tests/integration/` infra over a mock WebSocket + MSW (the **WS double-emit** regression,
   `jsonRpcHandler`, `chatService` streaming, data hooks), `tests/components/` Testing Library renders of the
   `ui/` layer. Helpers + real API fixtures live in `tests/helpers/` + `tests/fixtures/`.
-- **Playwright** (`npm run test:e2e`, **33 tests** in `tests/e2e/`): drives the **production bundle** served
+- **Playwright** (`npm run test:e2e`, **61 tests** in `tests/e2e/`): drives the **production bundle** served
   by `dr visualize` on a dedicated port — shell, model/schema/changesets views, URL routing + localStorage
   persistence, live chat single-render (double-emit), annotations CRUD (self-cleaning), and **axe** WCAG
   2.1 AA on every view in light + dark.

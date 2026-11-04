@@ -45,10 +45,12 @@ export function resetUiStore(): void {
     focus: 'layer',
     expandedSections: new Set<string>(['model']),
     expandedLayers: new Set<string>(),
-    graphLayout: 'force',
+    graphLayout: 'organic',
     showClusterBoundaries: true,
     showAllRelations: true,
     nodeMarginPreset: 'default',
+    nodeDisplay: 'card',
+    graphViewport: null,
   });
   // The store also mirrors canvasDark onto <body>; clear it so dark-mode tests
   // start from a known baseline.

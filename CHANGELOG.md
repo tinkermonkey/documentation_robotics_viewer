@@ -5,6 +5,83 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+`@tinkermonkey/heimdall-ui` bumped `0.8.0` → `0.9.4` (exact npm-registry version), with graph, DrBot and
+changeset improvements built on it. Apply / Discard and new changesets appearing without a restart need the
+matching `dr` CLI (`POST /api/changesets/:id/{commit,discard}`, per-request changeset reload).
+
+### Added
+- **Viewport history** (`?vp=x,y,zoom,tag`): pan/zoom is recorded once it settles and restored on reload and
+  back/forward. It only replaces the current history entry. `tag` fingerprints the layout/display settings,
+  so a viewport recorded under another layout (an older entry, a shared link) is dropped, not misapplied.
+- **Graph controls in the page header**: Layout (Clustered / Organic / Orthogonal), Relations and Inter-layer
+  sit beside the graph/page toggle; the header wraps in narrow canvases.
+- **Changeset Apply / Discard** in the Changesets inspector, each behind a confirmation. Refusals (failed
+  validation, model changed since the changeset was made) show the server's reason inline.
+- **DrBot viewer context**: every message carries what's open (view, layer, selected element / node type /
+  relationship / changeset) so "this element" resolves; the thread still shows only what you typed.
+- **Live model refresh**: the server's `model.updated` broadcast refetches the model and changesets, and
+  changesets also refetch when a DrBot reply finishes.
+
+### Changed
+- **Organic is the default layout**; Force, Galaxy and Radial-tree left the picker (a saved one falls back to
+  Organic).
+- **No re-centering on canvas clicks**: clicking a node in the graph no longer pans to it; selecting from
+  the nav tree or a link still does.
+- **Predicate explanations wait 3s** of hover (they also are click targets), and on graph edges they're placed
+  beside the label instead of covering it.
+- **Card titles wrap** instead of being cut off by the type tag, which drops to its own line when needed.
+- **DrBot replies may take up to 15 minutes** (was 60s, which cut long answers off with an error).
+
+### Fixed
+- **Settings flyout** no longer closes when moving slowly from the gear to the panel.
+- **DrBot tool steps** now show (the CLI's snake_case, id-less `chat.tool.invoke`) and are marked finished.
+- **A dropped connection fails a pending DrBot request at once** instead of leaving it loading until its
+  timeout.
+
+### Removed
+- **Perimeter ring for inter-layer nodes** under Clustered (added in 0.7.0): since heimdall-ui 0.9.0 sizes
+  clusters for real, the estimated ring cut through them. The layout engine places foreign nodes now.
+
+## [0.7.0] - 2026-08-22
+
+Adds **inter-layer nodes** to the Model graph: directly-linked foreign nodes from
+other layers now appear on-canvas alongside the layer's own nodes, with dashed
+cross-layer edges connecting them.
+
+### Added
+- **Inter-layer node overlay** (`GraphControls` → "Inter-layer" toggle, Model
+  view only): enables/disables rendering of directly-linked foreign nodes on the
+  current layer's graph. Foreign nodes render as pills at 60% opacity with their
+  own layer's domain color, providing clear visual subordination. Clicking a
+  foreign node navigates to its home layer (same as the cross-layer inspector
+  link), rather than selecting within the current layer.
+- **Cross-layer edges** appear between native and foreign nodes: dashed stroke
+  `[6, 4]` and 40% opacity to visually distinguish them from intra-layer edges.
+- **Perimeter ring layout** for `force-clustered` graph layout: foreign nodes
+  are placed on a ring around the native cluster, with radius scaled relative to
+  both the native node count and the number of foreign nodes, so the ring stays
+  visible and non-overlapping regardless of layer size.
+- **Structural filter integration**: when "Relations" is set to "Structural",
+  foreign nodes whose only cross-layer connections are non-structural predicates
+  are hidden (no orphaned foreign nodes with invisible edges).
+- **`showInterLayerNodes` preference** persisted to `localStorage` (key:
+  `dr-viewer-ui-preferences`), defaulting to `true`. Survives reload alongside
+  the other graph preferences.
+- **`interLayerNodesAndEdges` / `filterStructuralInterLayer`** pure transforms
+  in `data/modelGraph.ts`, with comprehensive Vitest coverage (31 new tests across
+  deduplication, perimeter ring geometry, foreign node grouping by layer,
+  structural filtering, and edge-case layers).
+
+### Changed
+- `GraphCanvas` key in the Model view now includes `showInterLayerNodes` so
+  toggling the overlay recenters the graph rather than deferring to the existing
+  viewport position.
+- `interLayerData` (foreignNodes, crossEdges, foreignNodeIds) is computed once
+  per render pass in `Canvas.tsx` and shared between the nodes and edges memos,
+  eliminating a duplicate O(links) pass.
+
 ## [0.6.1] - 2026-08-21
 
 `@tinkermonkey/heimdall-ui` bumped `0.7.0` → `0.8.0` (exact npm-registry version), and the Model

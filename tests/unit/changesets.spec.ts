@@ -101,7 +101,8 @@ describe('opMeta', () => {
   it('delete → rose DEL', () => {
     const m = opMeta('relationship-delete');
     expect(m.label).toBe('DEL');
-    expect(m.color).toBe('#F43F5E');
+    // rose-400: AA (4.8:1) on the dark tinted row; rose-500 was 3.5:1.
+    expect(m.color).toBe('#FB7185');
     expect(m.colorLight).toBe('#BE123C');
   });
   it('background is a translucent tint of the color', () => {

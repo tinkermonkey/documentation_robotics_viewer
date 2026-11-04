@@ -8,6 +8,7 @@ import { jsonRpcHandler } from './jsonRpcHandler';
 import { useChatStore } from '../stores/chatStore';
 import { logError, logWarning } from './errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
+import { withChatContext } from '../data/chatContext';
 import {
   ChatSendParams,
   ChatSendResult,
@@ -44,9 +45,20 @@ function convertToolStatus(wireStatus: string, result?: unknown, error?: string)
  * Chat Service
  * Provides a high-level API for chat operations
  */
+/** How long chat.send may take before the client gives up. DrBot answers by
+ *  running Claude Code with tools against the model, which routinely takes
+ *  minutes; the old 60s cap fired mid-answer, showed a timeout error, and
+ *  split the rest of the reply into a second message. */
+export const CHAT_SEND_TIMEOUT_MS = 15 * 60 * 1000;
+
 export class ChatService {
   private currentConversationId: string | null = null;
   private currentRequestId: string | null = null;
+  /** Tools reported without a status. The server sends one notification per
+   *  call and never reports completion, so these are marked completed when
+   *  the reply moves on (next tool or text) or ends. */
+  private statuslessToolIds = new Set<string>();
+  private toolIdCounter = 0;
 
   constructor() {
     this.setupNotificationHandlers();
@@ -182,9 +194,9 @@ export class ChatService {
    * Throws:
    * - Error from JSON-RPC request (after updating store state and logging)
    *
-   * Timeout: 60 seconds (for streaming)
+   * Timeout: CHAT_SEND_TIMEOUT_MS (15 minutes); a closed socket fails it at once.
    */
-  async sendMessage(message: string): Promise<ChatSendResult> {
+  async sendMessage(message: string, context?: string | null): Promise<ChatSendResult> {
     if (!message.trim()) {
       throw new Error('Message cannot be empty');
     }
@@ -239,10 +251,13 @@ export class ChatService {
 
       const result = await jsonRpcHandler.sendRequest<ChatSendResult>(
         'chat.send',
-        { message } as ChatSendParams,
-        60000 // 60 second timeout for streaming
+        // The thread shows `message`; DrBot also gets what the user has open
+        // (see data/chatContext.ts — the server only accepts `message`).
+        { message: withChatContext(message, context ?? null) } as ChatSendParams,
+        CHAT_SEND_TIMEOUT_MS
       );
 
+      this.completeStatuslessTools();
       // Update assistant message - remove streaming flag
       store.updateMessage(assistantMessageId, { isStreaming: false });
 
@@ -251,6 +266,7 @@ export class ChatService {
 
       return result;
     } catch (error) {
+      this.completeStatuslessTools();
       // Update store with error
       store.setStreaming(false);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -345,8 +361,24 @@ export class ChatService {
       return;
     }
 
+    // Text after a tool call means that tool has finished.
+    this.completeStatuslessTools();
     // Use store action to properly track state changes
     store.appendTextContent(currentMessage.id, params.content);
+  }
+
+  /** Marks every tool that arrived without a status as completed. */
+  private completeStatuslessTools(): void {
+    if (this.statuslessToolIds.size === 0) return;
+    const store = useChatStore.getState();
+    for (const id of this.statuslessToolIds) {
+      try {
+        store.updateToolInvocation(id, { status: { state: 'completed', result: undefined } });
+      } catch {
+        // The message was cleared (new conversation) — nothing to update.
+      }
+    }
+    this.statuslessToolIds.clear();
   }
 
   /**
@@ -388,13 +420,45 @@ export class ChatService {
       return;
     }
 
+    const toolName = params.toolName ?? params.tool_name ?? 'tool';
+    const toolInput = params.toolInput ?? params.tool_input ?? {};
+
+    // No tool_use_id: the server sends each call once, so every notification
+    // is a new call. Give it a local id so the store can track it.
+    if (!params.tool_use_id) {
+      // A new call means the previous one has finished.
+      this.completeStatuslessTools();
+      const toolUseId = `local-tool-${++this.toolIdCounter}`;
+      store.appendPart(currentMessage.id, {
+        type: 'tool_invocation',
+        toolUseId,
+        toolName,
+        toolInput,
+        status: params.status
+          ? convertToolStatus(params.status, params.result, params.error)
+          : { state: 'executing' },
+        timestamp: params.timestamp || new Date().toISOString(),
+      } as ToolInvocationContent);
+      if (!params.status || params.status === 'executing') this.statuslessToolIds.add(toolUseId);
+      return;
+    }
+
     // Convert wire format to discriminated union
-    const toolStatus = convertToolStatus(params.status, params.result, params.error);
+    const toolStatus = convertToolStatus(params.status ?? 'executing', params.result, params.error);
 
     // Match by unique tool_use_id instead of tool_name
     const existingTool = currentMessage.parts.find(
       (p) => p.type === 'tool_invocation' && (p as any).toolUseId === params.tool_use_id
     ) as ToolInvocationContent | undefined;
+
+    // No status at all: nothing will ever report this tool finishing, so treat
+    // it like an id-less one and mark it completed when the reply moves on or
+    // ends. A tool reported as 'executing' is left for its own completion.
+    if (params.status === undefined) {
+      this.statuslessToolIds.add(params.tool_use_id);
+    } else {
+      this.statuslessToolIds.delete(params.tool_use_id);
+    }
 
     if (existingTool) {
       // Update existing tool invocation
@@ -406,8 +470,8 @@ export class ChatService {
       store.appendPart(currentMessage.id, {
         type: 'tool_invocation',
         toolUseId: params.tool_use_id,
-        toolName: params.toolName,
-        toolInput: params.toolInput,
+        toolName,
+        toolInput,
         status: toolStatus,
         timestamp: params.timestamp || new Date().toISOString(),
       } as ToolInvocationContent);

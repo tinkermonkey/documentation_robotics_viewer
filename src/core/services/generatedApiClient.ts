@@ -1,6 +1,6 @@
 /**
  * Auto-generated API Client with React Query Hooks
- * Generated from: /workspace/docs/api-spec.yaml
+ * Generated from: /Users/austinsand/workspace/documentation_robotics_viewer/docs/api-spec.yaml
  * API Version: 0.1.0
  *
  * IMPORTANT: This file is auto-generated. Do not edit directly.
@@ -14,6 +14,31 @@ import { useQuery, useMutation, useQueryClient, UseQueryOptions, UseMutationOpti
  */
 export type QueryOptions = Omit<UseQueryOptions, 'queryKey' | 'queryFn'>;
 export type MutationOptions = Omit<UseMutationOptions, 'mutationFn'>;
+
+/**
+ * A non-2xx response. `status` is the HTTP status and `body` the raw
+ * response text; `serverMessage` is the server's `{ error }` message when
+ * the body carries one.
+ */
+export class ApiError extends Error {
+  constructor(
+    public readonly request: string,
+    public readonly status: number,
+    public readonly body: string,
+  ) {
+    super(`${request} failed: ${status} ${body}`);
+    this.name = 'ApiError';
+  }
+
+  get serverMessage(): string | undefined {
+    try {
+      const parsed = JSON.parse(this.body) as { error?: unknown };
+      return typeof parsed.error === 'string' && parsed.error ? parsed.error : undefined;
+    } catch {
+      return undefined;
+    }
+  }
+}
 
 /**
  * API Client class with fetch-based implementation
@@ -83,8 +108,7 @@ export class ApiClient {
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`GET /health failed: ${response.status} ${errorText}`);
+      throw new ApiError('GET /health', response.status, await response.text());
     }
 
     return response.json();
@@ -106,8 +130,7 @@ export class ApiClient {
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`GET /api/model failed: ${response.status} ${errorText}`);
+      throw new ApiError('GET /api/model', response.status, await response.text());
     }
 
     return response.json();
@@ -129,8 +152,7 @@ export class ApiClient {
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`GET /api/layers/:layerName failed: ${response.status} ${errorText}`);
+      throw new ApiError('GET /api/layers/:layerName', response.status, await response.text());
     }
 
     return response.json();
@@ -152,8 +174,7 @@ export class ApiClient {
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`GET /api/spec failed: ${response.status} ${errorText}`);
+      throw new ApiError('GET /api/spec', response.status, await response.text());
     }
 
     return response.json();
@@ -186,8 +207,7 @@ export class ApiClient {
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`GET /api/annotations failed: ${response.status} ${errorText}`);
+      throw new ApiError('GET /api/annotations', response.status, await response.text());
     }
 
     return response.json();
@@ -209,8 +229,7 @@ export class ApiClient {
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`POST /api/annotations failed: ${response.status} ${errorText}`);
+      throw new ApiError('POST /api/annotations', response.status, await response.text());
     }
 
     return response.json();
@@ -232,8 +251,7 @@ export class ApiClient {
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`GET /api/annotations/:annotationId failed: ${response.status} ${errorText}`);
+      throw new ApiError('GET /api/annotations/:annotationId', response.status, await response.text());
     }
 
     return response.json();
@@ -255,8 +273,7 @@ export class ApiClient {
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`PUT /api/annotations/:annotationId failed: ${response.status} ${errorText}`);
+      throw new ApiError('PUT /api/annotations/:annotationId', response.status, await response.text());
     }
 
     return response.json();
@@ -278,8 +295,7 @@ export class ApiClient {
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`PATCH /api/annotations/:annotationId failed: ${response.status} ${errorText}`);
+      throw new ApiError('PATCH /api/annotations/:annotationId', response.status, await response.text());
     }
 
     return response.json();
@@ -301,8 +317,7 @@ export class ApiClient {
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`DELETE /api/annotations/:annotationId failed: ${response.status} ${errorText}`);
+      throw new ApiError('DELETE /api/annotations/:annotationId', response.status, await response.text());
     }
 
     if (response.status === 204) {
@@ -327,8 +342,7 @@ export class ApiClient {
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`GET /api/annotations/:annotationId/replies failed: ${response.status} ${errorText}`);
+      throw new ApiError('GET /api/annotations/:annotationId/replies', response.status, await response.text());
     }
 
     return response.json();
@@ -350,8 +364,7 @@ export class ApiClient {
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`POST /api/annotations/:annotationId/replies failed: ${response.status} ${errorText}`);
+      throw new ApiError('POST /api/annotations/:annotationId/replies', response.status, await response.text());
     }
 
     return response.json();
@@ -373,8 +386,7 @@ export class ApiClient {
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`GET /api/changesets failed: ${response.status} ${errorText}`);
+      throw new ApiError('GET /api/changesets', response.status, await response.text());
     }
 
     return response.json();
@@ -396,8 +408,51 @@ export class ApiClient {
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`GET /api/changesets/:changesetId failed: ${response.status} ${errorText}`);
+      throw new ApiError('GET /api/changesets/:changesetId', response.status, await response.text());
+    }
+
+    return response.json();
+  }
+
+  async postapichangesetschangesetIdcommit(changesetId: string): Promise<unknown> {
+    const baseUrl = this.getBaseUrl();
+    const pathStr = `/api/changesets/${encodeURIComponent(changesetId)}/commit`;
+    const url = `${baseUrl}${pathStr}`;
+
+    const options: RequestInit = {
+      method: 'POST',
+      headers: this.getHeaders(),
+      credentials: 'include'
+    };
+
+    
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new ApiError('POST /api/changesets/:changesetId/commit', response.status, await response.text());
+    }
+
+    return response.json();
+  }
+
+  async postapichangesetschangesetIddiscard(changesetId: string): Promise<unknown> {
+    const baseUrl = this.getBaseUrl();
+    const pathStr = `/api/changesets/${encodeURIComponent(changesetId)}/discard`;
+    const url = `${baseUrl}${pathStr}`;
+
+    const options: RequestInit = {
+      method: 'POST',
+      headers: this.getHeaders(),
+      credentials: 'include'
+    };
+
+    
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new ApiError('POST /api/changesets/:changesetId/discard', response.status, await response.text());
     }
 
     return response.json();
@@ -618,6 +673,40 @@ const apiClient = getApiClient();
       queryFn: () => apiClient.getapichangesetschangesetId(changesetId),
       ...options
     });
+  }
+
+  /**
+   * React Query mutation hook for postapichangesetschangesetIdcommit
+   */
+  export function usePostapichangesetschangesetIdcommit(changesetId: string, options?: MutationOptions) {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+      mutationFn: () => apiClient.postapichangesetschangesetIdcommit(changesetId),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['getapichangesets'] });
+        queryClient.invalidateQueries({ queryKey: ['getapichangesetschangesetId', changesetId] });
+        queryClient.invalidateQueries({ queryKey: ['getapimodel'] });
+        queryClient.invalidateQueries({ queryKey: ['getapilayerslayerName'] });
+      },
+      ...options
+    } as any);
+  }
+
+  /**
+   * React Query mutation hook for postapichangesetschangesetIddiscard
+   */
+  export function usePostapichangesetschangesetIddiscard(changesetId: string, options?: MutationOptions) {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+      mutationFn: () => apiClient.postapichangesetschangesetIddiscard(changesetId),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['getapichangesets'] });
+        queryClient.invalidateQueries({ queryKey: ['getapichangesetschangesetId', changesetId] });
+      },
+      ...options
+    } as any);
   }
 
 /**

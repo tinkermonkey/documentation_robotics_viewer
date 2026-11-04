@@ -347,43 +347,21 @@ export interface InterLayerResult {
   foreignNodeIds: Set<string>;
 }
 
-// Perimeter ring layout constants.
-const MIN_RING_RADIUS = 300;
-const ARC_SPACING = 80;
-
-/**
- * Estimate the cluster extent of native nodes based on their count and expected
- * grid layout. Uses gridLayout's COL_GAP and ROW_GAP to approximate the bounding
- * box size that the force layout will produce, so the ring radius can scale
- * proportionally to the cluster size.
- */
-function estimateClusterExtent(nativeNodeCount: number): number {
-  if (nativeNodeCount === 0) return 0;
-  const cols = Math.max(2, Math.min(4, Math.ceil(Math.sqrt(nativeNodeCount))));
-  const rows = Math.ceil(nativeNodeCount / cols);
-  const colExtent = (cols - 1) * COL_GAP;
-  const rowExtent = (rows - 1) * ROW_GAP;
-  return Math.max(colExtent, rowExtent);
-}
-
 /**
  * Compute directly-linked foreign (other-layer) nodes and cross-layer edges for
  * a layer. Foreign nodes are deduplicated by UUID and rendered with their own
  * layer's color via `domainColor: foreignNode.layer_id`. Cross-layer edges carry
  * reduced opacity (0.4) and dashed stroke ([6, 4]) to distinguish them visually.
  *
- * When `perimeterLayout` is true, foreign nodes receive explicit x/y coordinates
- * placing them on a ring around the origin, with radius scaled relative to the
- * current layer's native node cluster extent. The radius grows as the native
- * cluster grows, ensuring foreign nodes stay visible around the perimeter
- * regardless of the layer's size. When false, x/y are omitted so the layout
- * engine positions them normally.
+ * Foreign nodes carry no x/y: the layout engine places them under every layout.
+ * (They used to be pinned on a ring under 'force-clustered'; heimdall-ui 0.9.0
+ * sizes clusters for real, and the estimated ring cut through them.) They're
+ * listed grouped by their layer.
  */
 export function interLayerNodesAndEdges(
   model: ModelDerived,
   layerId: string,
   index: ModelIndex,
-  perimeterLayout?: boolean,
 ): InterLayerResult {
   const layerNodeIds = new Set(model.nodesByLayer[layerId]?.map((n) => n.id) ?? []);
   const foreignNodeMap = new Map<string, ModelNode>();
@@ -422,61 +400,27 @@ export function interLayerNodesAndEdges(
     }
   }
 
-  // Convert foreign nodes to GraphNodeData, with optional perimeter positions.
+  // Convert foreign nodes to GraphNodeData, grouped by layer (sorted by layer
+  // id, then in link order within a layer).
   const foreignNodes: GraphNodeData[] = [];
   const foreignNodeIds = new Set<string>();
-  const foreignNodeArray = Array.from(foreignNodeMap.values());
-
-  // Scale ring radius by both native cluster extent and foreign node count,
-  // ensuring the ring grows as either the layer's size or the number of
-  // cross-layer connections increases.
-  const nativeNodeCount = layerNodeIds.size;
-  const clusterExtent = estimateClusterExtent(nativeNodeCount);
-  const ringRadius = Math.max(
-    MIN_RING_RADIUS,
-    Math.max(clusterExtent, foreignNodeArray.length * ARC_SPACING)
-  );
-
-  // Group foreign nodes by layer_id for per-layer-slug angle offset (visual grouping).
-  const nodesByLayer = new Map<string, ModelNode[]>();
-  for (const node of foreignNodeArray) {
-    if (!nodesByLayer.has(node.layer_id)) {
-      nodesByLayer.set(node.layer_id, []);
-    }
-    nodesByLayer.get(node.layer_id)!.push(node);
+  const byLayer = new Map<string, ModelNode[]>();
+  for (const node of foreignNodeMap.values()) {
+    const group = byLayer.get(node.layer_id);
+    if (group) group.push(node);
+    else byLayer.set(node.layer_id, [node]);
   }
-
-  // Build ordered list of (node, angleIndex) pairs so nodes from the same layer
-  // cluster together on the ring, offset by their sorted layer position.
-  const sortedLayers = Array.from(nodesByLayer.keys()).sort();
-  const nodeWithAngleIndex: Array<[ModelNode, number]> = [];
-  let globalAngleIndex = 0;
-  for (const layerId of sortedLayers) {
-    const layerNodes = nodesByLayer.get(layerId)!;
-    for (const node of layerNodes) {
-      nodeWithAngleIndex.push([node, globalAngleIndex]);
-      globalAngleIndex += 1;
+  for (const layer of Array.from(byLayer.keys()).sort()) {
+    for (const node of byLayer.get(layer)!) {
+      foreignNodeIds.add(node.id);
+      foreignNodes.push({
+        id: node.id,
+        label: node.name,
+        kind: node.type,
+        domainColor: node.layer_id,
+      });
     }
   }
-
-  nodeWithAngleIndex.forEach(([node, angleIndex]) => {
-    foreignNodeIds.add(node.id);
-    const nodeData: GraphNodeData = {
-      id: node.id,
-      label: node.name,
-      kind: node.type,
-      domainColor: node.layer_id,
-    };
-
-    // Place on a ring around the origin if perimeter layout is enabled.
-    if (perimeterLayout) {
-      const angle = (angleIndex / foreignNodeArray.length) * 2 * Math.PI;
-      nodeData.x = ringRadius * Math.cos(angle);
-      nodeData.y = ringRadius * Math.sin(angle);
-    }
-
-    foreignNodes.push(nodeData);
-  });
 
   return { foreignNodes, crossEdges, foreignNodeIds };
 }

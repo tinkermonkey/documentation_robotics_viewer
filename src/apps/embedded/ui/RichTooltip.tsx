@@ -24,6 +24,10 @@
  * has no focusable content of its own to strand it on). The card carries
  * `role="tooltip"`; the trigger carries `aria-describedby` pointing at it
  * only while open.
+ *
+ * The card itself is `TooltipCard`, exported for surfaces that own their own
+ * hover state and only have an element to anchor to — the graph's edge
+ * predicate tooltip (Canvas.tsx), anchored to the hovered edge's label.
  */
 
 import { createPortal } from 'react-dom';
@@ -43,10 +47,17 @@ export interface TooltipRect {
   height: number;
 }
 
+/** The anchor's viewport rect. A DOMRect satisfies it. */
+export type TooltipAnchorRect = Pick<DOMRect, 'top' | 'bottom' | 'left' | 'right' | 'width' | 'height'>;
+
 export interface TooltipPosition {
   top: number;
   left: number;
   placement: TooltipPlacement;
+  /** True when no side had room and clamping left the card over its own
+   *  trigger. The card then lets pointer events through, so it can't swallow
+   *  a click on the trigger underneath it. */
+  overlapsAnchor: boolean;
 }
 
 /** Minimum gap kept between the card and the viewport edge / the anchor. */
@@ -67,7 +78,7 @@ const OPPOSITE_PLACEMENT: Record<TooltipPlacement, TooltipPlacement> = {
  * viewport). Exported so positioning logic is testable without real layout.
  */
 export function computeTooltipPosition(
-  anchor: DOMRect,
+  anchor: TooltipAnchorRect,
   card: TooltipRect,
   preferred: TooltipPlacement,
   viewport: { width: number; height: number } = {
@@ -88,7 +99,13 @@ export function computeTooltipPosition(
     }
   };
 
-  const placement = fits(preferred) ? preferred : OPPOSITE_PLACEMENT[preferred];
+  // Preferred side, then its opposite, then the two perpendicular sides. When
+  // none fits (a tall card in a short viewport), keep the preferred side and
+  // clamp. That can leave the card over its trigger; see `overlapsAnchor`.
+  const perpendicular: TooltipPlacement[] =
+    preferred === 'top' || preferred === 'bottom' ? ['right', 'left'] : ['bottom', 'top'];
+  const placement =
+    [preferred, OPPOSITE_PLACEMENT[preferred], ...perpendicular].find(fits) ?? preferred;
 
   let top: number;
   let left: number;
@@ -109,7 +126,126 @@ export function computeTooltipPosition(
   left = Math.min(Math.max(VIEWPORT_MARGIN, left), maxLeft);
   top = Math.min(Math.max(VIEWPORT_MARGIN, top), maxTop);
 
-  return { top, left, placement };
+  const overlapsAnchor =
+    left < anchor.right &&
+    left + card.width > anchor.left &&
+    top < anchor.bottom &&
+    top + card.height > anchor.top;
+
+  return { top, left, placement, overlapsAnchor };
+}
+
+export interface TooltipCardProps {
+  id?: string;
+  /** Returns the anchor's current viewport rect, or null when it's gone. */
+  getAnchorRect: () => TooltipAnchorRect | null;
+  content: ReactNode;
+  placement?: TooltipPlacement;
+  /** Re-measure every frame while shown, for an anchor that moves on its own
+   *  (a graph label while the canvas pans or zooms). Resize and scroll are
+   *  always tracked. */
+  track?: boolean;
+  /** Never take pointer events — for a card that's a pure hint and must not
+   *  get between the pointer and what's under it. */
+  passThrough?: boolean;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
+  'data-testid'?: string;
+}
+
+function samePosition(a: TooltipPosition | null, b: TooltipPosition): boolean {
+  return (
+    !!a &&
+    a.top === b.top &&
+    a.left === b.left &&
+    a.placement === b.placement &&
+    a.overlapsAnchor === b.overlapsAnchor
+  );
+}
+
+/**
+ * The positioned card, portaled into `document.body`: measures its anchor and
+ * itself and places itself with `computeTooltipPosition` (a side with room,
+ * never over the anchor unless nothing fits). Shown for as long as it's
+ * mounted. RichTooltip renders this for its own trigger.
+ */
+export function TooltipCard({
+  id,
+  getAnchorRect,
+  content,
+  placement = 'top',
+  track = false,
+  passThrough = false,
+  onMouseEnter,
+  onMouseLeave,
+  'data-testid': testId,
+}: TooltipCardProps) {
+  const [position, setPosition] = useState<TooltipPosition | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
+  // Read through a ref: callers pass a fresh closure every render, and the
+  // measuring effect below must not re-subscribe on each one.
+  const getAnchorRectRef = useRef(getAnchorRect);
+  getAnchorRectRef.current = getAnchorRect;
+
+  useLayoutEffect(() => {
+    if (!tooltipRef.current) return;
+    let frame: number | null = null;
+    const recompute = () => {
+      if (!tooltipRef.current) return;
+      const anchorRect = getAnchorRectRef.current();
+      // Anchor gone (e.g. the hovered edge was filtered out or re-laid out
+      // under the pointer): hide rather than linger at its last spot. With
+      // `track` it reappears if the anchor comes back.
+      if (!anchorRect) {
+        setPosition(null);
+        return;
+      }
+      const cardSize = {
+        width: tooltipRef.current.offsetWidth,
+        height: tooltipRef.current.offsetHeight,
+      };
+      const next = computeTooltipPosition(anchorRect, cardSize, placement);
+      setPosition((prev) => (samePosition(prev, next) ? prev : next));
+    };
+    const loop = () => {
+      recompute();
+      frame = requestAnimationFrame(loop);
+    };
+    recompute();
+    if (track) frame = requestAnimationFrame(loop);
+    window.addEventListener('resize', recompute);
+    window.addEventListener('scroll', recompute, true);
+    return () => {
+      if (frame !== null) cancelAnimationFrame(frame);
+      window.removeEventListener('resize', recompute);
+      window.removeEventListener('scroll', recompute, true);
+    };
+  }, [placement, track]);
+
+  return createPortal(
+    <div
+      ref={tooltipRef}
+      id={id}
+      role="tooltip"
+      className="rich-tooltip"
+      data-placement={position?.placement ?? placement}
+      style={{
+        position: 'fixed',
+        top: position?.top ?? 0,
+        left: position?.left ?? 0,
+        visibility: position ? 'visible' : 'hidden',
+        // Covering its own trigger, the card would catch the mouseup of
+        // a click on the trigger, so the click never reaches it.
+        pointerEvents: passThrough || position?.overlapsAnchor ? 'none' : undefined,
+      }}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      data-testid={testId}
+    >
+      {content}
+    </div>,
+    document.body,
+  );
 }
 
 export interface RichTooltipProps {
@@ -139,9 +275,7 @@ export function RichTooltip({
   const reactId = useId();
   const tooltipId = `rich-tooltip-${reactId}`;
   const [open, setOpen] = useState(false);
-  const [position, setPosition] = useState<TooltipPosition | null>(null);
   const anchorRef = useRef<HTMLSpanElement | null>(null);
-  const tooltipRef = useRef<HTMLDivElement | null>(null);
   const openTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -191,26 +325,6 @@ export function RichTooltip({
     clearCloseTimer();
   }, []);
 
-  useLayoutEffect(() => {
-    if (!open || !anchorRef.current || !tooltipRef.current) return;
-    const recompute = () => {
-      if (!anchorRef.current || !tooltipRef.current) return;
-      const anchorRect = anchorRef.current.getBoundingClientRect();
-      const cardSize = {
-        width: tooltipRef.current.offsetWidth,
-        height: tooltipRef.current.offsetHeight,
-      };
-      setPosition(computeTooltipPosition(anchorRect, cardSize, placement));
-    };
-    recompute();
-    window.addEventListener('resize', recompute);
-    window.addEventListener('scroll', recompute, true);
-    return () => {
-      window.removeEventListener('resize', recompute);
-      window.removeEventListener('scroll', recompute, true);
-    };
-  }, [open, placement]);
-
   // Escape just dismisses — it deliberately does NOT move focus. The card
   // itself carries no focusable content (both content variants are static
   // text), so whatever was focused before Escape (typically the trigger
@@ -239,28 +353,17 @@ export function RichTooltip({
       data-testid={testId}
     >
       {children}
-      {open &&
-        createPortal(
-          <div
-            ref={tooltipRef}
-            id={tooltipId}
-            role="tooltip"
-            className="rich-tooltip"
-            data-placement={position?.placement ?? placement}
-            style={{
-              position: 'fixed',
-              top: position?.top ?? 0,
-              left: position?.left ?? 0,
-              visibility: position ? 'visible' : 'hidden',
-            }}
-            onMouseEnter={clearCloseTimer}
-            onMouseLeave={closeAfterDelay}
-            data-testid={testId ? `${testId}-card` : 'rich-tooltip-card'}
-          >
-            {content}
-          </div>,
-          document.body,
-        )}
+      {open && (
+        <TooltipCard
+          id={tooltipId}
+          getAnchorRect={() => anchorRef.current?.getBoundingClientRect() ?? null}
+          content={content}
+          placement={placement}
+          onMouseEnter={clearCloseTimer}
+          onMouseLeave={closeAfterDelay}
+          data-testid={testId ? `${testId}-card` : 'rich-tooltip-card'}
+        />
+      )}
     </span>
   );
 }

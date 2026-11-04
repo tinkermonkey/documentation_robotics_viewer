@@ -9,24 +9,27 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { gotoView, ROUTES, DOMAIN_HEX, hexToRgb } from './helpers';
+import { gotoView, ROUTES, DOMAIN_HEX, hexToRgb, fetchModel, openLayer } from './helpers';
 
 test.describe('model view', () => {
   test('graph nodes render with the layer domain color (data-model swatch == #2DD4BF)', async ({
     page,
+    request,
   }) => {
     // data-model is the default layer; its domain hex is #2DD4BF == rgb(45,212,191).
     await gotoView(page, ROUTES.model);
 
-    const nodes = page.locator('[data-testid^="graph-node-"]');
+    // Only this layer's own nodes — inter-layer nodes from other layers are
+    // drawn alongside them by default.
+    const nodes = page.locator('g[data-testid^="graph-node-"][data-domain="data-model"]');
     await expect(nodes.first()).toBeVisible({ timeout: 15_000 });
-    // data-model has 34 elements.
-    await expect(nodes).toHaveCount(34);
+    const model = await fetchModel(request);
+    await expect(nodes).toHaveCount(model.nodes.filter((n) => n.layer_id === 'data-model').length);
 
     // The HTML node inside the SVG <g> carries the domain class; its swatch is
     // colored by `.graph-node[data-domain='data-model'] .graph-node__swatch`.
     const swatchBg = await page.evaluate(() => {
-      const g = document.querySelector('[data-testid^="graph-node-"]');
+      const g = document.querySelector('g[data-testid^="graph-node-"][data-domain="data-model"]');
       const swatch = g?.querySelector('.graph-node__swatch') as HTMLElement | null;
       return swatch ? getComputedStyle(swatch).backgroundColor : '';
     });
@@ -137,5 +140,54 @@ test.describe('model view', () => {
     await expect(page.getByTestId('page-header-id-chip')).toHaveText(targetDomain!);
     const targetTitle = targetLabel.replace(/^Navigate to /, '');
     await expect(inspector.getByTestId('inspector-title')).toHaveText(targetTitle);
+  });
+
+  test('hovering an edge predicate for 3s explains it beside the label, not on top of it', async ({ page }) => {
+    await gotoView(page, ROUTES.model);
+    await openLayer(page, 'APM');
+    await expect(page.locator('.graph-canvas[data-layout-state="idle"]')).toHaveCount(1);
+
+    const label = page.locator('[data-testid^="graph-edge-"] .graph-edge__label-bg').first();
+    const lb = (await label.boundingBox())!;
+    await page.mouse.move(lb.x + lb.width / 2, lb.y + lb.height / 2);
+
+    const card = page.getByTestId('edge-predicate-tooltip-card');
+    await page.waitForTimeout(2000);
+    await expect(card).toHaveCount(0);
+    await expect(card).toBeVisible({ timeout: 3_000 });
+    await expect(card.getByTestId('edge-predicate-tooltip-content')).toBeVisible();
+
+    const cb = (await card.boundingBox())!;
+    const overlaps =
+      cb.x < lb.x + lb.width && lb.x < cb.x + cb.width && cb.y < lb.y + lb.height && lb.y < cb.y + cb.height;
+    expect(overlaps).toBe(false);
+
+    await page.mouse.move(5, 5);
+    await expect(card).toHaveCount(0);
+  });
+
+  test('settings flyout stays open on a slow move from the gear to the panel, before and after changing a setting', async ({ page }) => {
+    await gotoView(page, ROUTES.model);
+    await openLayer(page, 'APM');
+    const toggle = page.getByTestId('graph-controls-toggle');
+    const panel = page.getByTestId('graph-controls-panel');
+
+    const descend = async () => {
+      const tb = (await toggle.boundingBox())!;
+      await page.mouse.move(tb.x + tb.width / 2, tb.y + tb.height / 2, { steps: 5 });
+      await expect(panel).toBeVisible();
+      const pb = (await panel.boundingBox())!;
+      // Slow, so the pointer actually crosses the space between gear and panel.
+      await page.mouse.move(tb.x + tb.width / 2, pb.y + 24, { steps: 25 });
+      await page.waitForTimeout(400);
+      await expect(panel).toBeVisible();
+    };
+
+    await descend();
+    await panel.getByRole('radio', { name: 'Wide' }).click();
+    await page.mouse.move(900, 600, { steps: 10 });
+    await expect(panel).toHaveCount(0);
+
+    await descend();
   });
 });

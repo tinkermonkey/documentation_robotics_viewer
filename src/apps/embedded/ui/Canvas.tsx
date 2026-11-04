@@ -41,15 +41,13 @@
  * always shows the same `NodeTypeBadge` tooltip card mode wires, unqualified
  * by presentation mode or view (the BA requirement this closes gaps in).
  *
- * `GraphControls` floats over the graph itself (top-left, graph mode only) — a
- * card-style panel, same visual language as the built-in `GraphToolbar`'s own
- * floating card — exposing Heimdall 0.6.0's layout engines and display options:
- * Layout (force/galaxy/clustered), Display (card/pill, Model view only), Boundaries,
- * Node margin, Relations (structural/all, see data/predicates.ts). Mirrors
- * Heimdall's own docs/src/showcases/GraphLayoutsShowcase.tsx demo controls, just
- * repositioned as an overlay instead of a full-width row so it doesn't cost the
- * canvas any vertical space. The built-in `GraphToolbar` (zoom/lock/fullscreen, + a
- * live-simulation toggle for galaxy) is pinned `toolbarPosition="bottom-left"`
+ * Graph settings are split by how often they're used. `GraphHeaderControls`
+ * sits in the page header (graph mode only): Layout (Clustered / Organic /
+ * Orthogonal), Relations (structural/all, see data/predicates.ts) and
+ * Inter-layer (Model only). `GraphControls`, a gear flyout floating over the
+ * graph (top-left), holds the rest: Display (card/pill, Model only), Node
+ * margin, and Boundaries (Clustered only). The built-in `GraphToolbar`
+ * (zoom/lock/fullscreen) is pinned `toolbarPosition="bottom-left"`
  * — not bottom-right, which collided with Inspector's `DetailDrawer` floating
  * over the graph's right edge whenever a node was selected — forced into a
  * vertical stack via `.graph-toolbar--bottom-left` in domain-and-nav.css
@@ -68,12 +66,12 @@
  * which is exactly what clears the Inspector's `open` (`!!metadata`) so the
  * drawer auto-hides again.
  *
- * Two heimdall-ui 0.7.0 props, both unconditionally on: `centerOnSelect` pans the
- * viewport to keep `selectedId` centered whenever it changes — the whole point being
- * a NavTree click (or a cross-layer link, or a URL-restored deep link) can select a
- * node that's currently off-screen, unlike a click on the canvas itself; it's a
- * harmless no-op nudge for on-canvas clicks, so there's no need to special-case it by
- * selection origin. `fullscreenContainerRef={canvasAreaRef}` points the built-in
+ * `centerOnSelect` (heimdall-ui 0.7.0) pans the viewport to the selected node when
+ * the selection comes from somewhere else — a NavTree click, a relationship or
+ * cross-layer link, a deep link — since that node may be off-screen. It is OFF
+ * for a click on a node in the graph itself: the node is already in view, and
+ * re-centering on every click jerks the graph around under the pointer. See
+ * `canvasClick` below. `fullscreenContainerRef={canvasAreaRef}` points the built-in
  * toolbar's Fullscreen button at the graph-mode relative wrapper below (not
  * `GraphCanvas`'s own root) so `GraphControls` and `Inspector` — both its siblings,
  * outside what the native Fullscreen API would otherwise render — stay visible while
@@ -91,15 +89,13 @@
  * `navigateToElementWithEdge` sets on cross-navigation, not a per-pointer-move
  * preview (wiring hover into it was a real perf bug — see PR #537's follow-up
  * fix — since it re-triggers `GraphCanvas`'s force-layout effect on every
- * pointer pass over an edge). The predicate hover tooltip is unaffected:
- * `GraphCanvas`'s native `edgeTooltip` render-prop (`renderEdgeTooltip` below)
- * gets the hovered edge directly from `GraphCanvas` (heimdall-ui 0.8.0+) — no
- * external hover-state plumbing needed — and is positioned at the edge's
- * midpoint, shown/hidden by `GraphCanvas` internally (no portal or manual
- * placement math on our side).
+ * pointer pass over an edge). The predicate hover tooltip is separate: a
+ * `TooltipCard` (same card + placement as the layer/element pills) anchored
+ * to the hovered edge's label, driven by `onEdgeHover` through a local 3s
+ * dwell timer — see `edgeTooltipContent` below.
  */
 
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   PageHeader,
   GraphCanvas,
@@ -115,8 +111,13 @@ import { PageView, usePageData } from './PageView';
 import { Inspector } from './Inspector';
 import { ModelCardNode } from './ModelCardNode';
 import { PillNode } from './PillNode';
-import { PredicateTooltipContent } from './PredicateTooltip';
+import { PredicateTooltipContent, PREDICATE_TOOLTIP_DELAY_MS } from './PredicateTooltip';
+import { useHoverDwell } from './useHoverDwell';
+import { TooltipCard } from './RichTooltip';
+import { edgeTooltipAnchorRect } from './edgeTooltipAnchor';
 import { useEdgeInteraction } from './useEdgeInteraction';
+import { useViewportHistory } from './useViewportHistory';
+import { graphCanvasKey } from './graphViewport';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import {
@@ -142,12 +143,16 @@ const MODE_OPTIONS = [
 ];
 
 const LAYOUT_OPTIONS = [
-  { value: 'force', label: 'Force' },
-  { value: 'galaxy', label: 'Galaxy' },
   { value: 'force-clustered', label: 'Clustered' },
+  { value: 'organic', label: 'Organic' },
+  { value: 'orthogonal', label: 'Orthogonal' },
 ];
 
-const BOUNDARIES_OPTIONS = [
+/** Layouts that draw a boundary per group — the Boundaries control is hidden
+ *  for the rest, where it would have no effect. */
+const LAYOUTS_WITH_BOUNDARIES: ReadonlySet<GraphLayout> = new Set(['force-clustered']);
+
+const ON_OFF_OPTIONS = [
   { value: 'on', label: 'On' },
   { value: 'off', label: 'Off' },
 ];
@@ -178,35 +183,84 @@ function nodeMarginFor(preset: NodeMarginPreset): number | undefined {
   return undefined;
 }
 
-/** Layout/display control flyout floating over the graph (top-left) — mirrors
- *  Heimdall's own GraphLayoutsShowcase demo controls (Layout, Boundaries, Node
- *  margin, Relations), collapsed by default to a single transparent icon
- *  button (same `.graph-toolbar__btn` look the built-in GraphToolbar's own
- *  buttons use) so it doesn't sit as a permanent opaque block over the graph.
- *  Hovering or focusing it (mouse OR keyboard) expands a translucent/blurred
- *  panel — same visual language as the Inspector's `DetailDrawer` — with the
- *  actual controls; moving off/blurring the whole flyout collapses it again,
- *  immediately — same `relatedTarget`-based "did it actually leave the whole
- *  flyout, not just move between two elements inside it" check both
- *  onMouseLeave and onBlur use, so a click on one control inside the panel
- *  moving to another (each fires its own enter/leave as the pointer crosses
- *  between them) doesn't spuriously collapse the panel out from under the
- *  very control being interacted with. The toggle button ALSO has a plain
- *  onClick too — hover/focus alone would leave the button's own
- *  `aria-expanded`/`aria-controls` an unhonored disclosure contract on a
- *  device with no hover: touch has none at all, so without it the whole
- *  control set would be unreachable there. It OPENS rather than toggles —
- *  on desktop, a mouse click is always preceded by the same pointer's
- *  mouseEnter already opening the panel via hover, so a toggle would
- *  immediately re-close what hover just opened, one click after another
- *  looking like it does nothing (confirmed live: this was the first, wrong,
- *  version). Closing stays owned by mouseLeave/blur/Escape, same as before.
- *  Escape closes it and returns focus to the toggle, matching CLAUDE.md's
- *  accessibility standards ("Escape closes overlays") the same way every
- *  other floating panel in this app already does. */
+/** Graph controls in the page header, left of the graph/page toggle: the
+ *  settings people change most (Layout, Relations, Inter-layer), so they're
+ *  always visible instead of behind the settings flyout. Graph mode only —
+ *  they'd have no effect on the page view. */
+function GraphHeaderControls() {
+  const graphLayout = useUiStore((s) => s.graphLayout);
+  const setGraphLayout = useUiStore((s) => s.setGraphLayout);
+  const showAllRelations = useUiStore((s) => s.showAllRelations);
+  const toggleShowAllRelations = useUiStore((s) => s.toggleShowAllRelations);
+  const showInterLayerNodes = useUiStore((s) => s.showInterLayerNodes);
+  const toggleShowInterLayerNodes = useUiStore((s) => s.toggleShowInterLayerNodes);
+  const view = useUiStore((s) => s.view);
+
+  return (
+    <div
+      style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px 16px' }}
+      data-testid="graph-header-controls"
+    >
+      <GraphControl label="Layout" testId="graph-layout-control" inline>
+        <SegmentedControl
+          value={graphLayout}
+          onChange={(v) => setGraphLayout(v as GraphLayout)}
+          options={LAYOUT_OPTIONS}
+        />
+      </GraphControl>
+      <GraphControl label="Relations" testId="graph-relations-control" inline>
+        <SegmentedControl
+          value={showAllRelations ? 'all' : 'structural'}
+          onChange={(v) => {
+            if ((v === 'all') !== showAllRelations) toggleShowAllRelations();
+          }}
+          options={RELATIONS_OPTIONS}
+        />
+      </GraphControl>
+      {/* Foreign (other-layer) nodes only exist on the Model graph. */}
+      {view === 'model' && (
+        <GraphControl label="Inter-layer" testId="graph-inter-layer-control" inline>
+          <SegmentedControl
+            value={showInterLayerNodes ? 'on' : 'off'}
+            onChange={(v) => {
+              if ((v === 'on') !== showInterLayerNodes) toggleShowInterLayerNodes();
+            }}
+            options={ON_OFF_OPTIONS}
+          />
+        </GraphControl>
+      )}
+    </div>
+  );
+}
+
+/** How long the flyout stays open after the pointer leaves it, so a slightly
+ *  diagonal move from the gear to the panel doesn't close it. */
+const FLYOUT_CLOSE_DELAY_MS = 200;
+
+/** The less-used display settings (Display, Boundaries, Node margin) in a
+ *  flyout floating over the graph (top-left), collapsed to a single
+ *  transparent icon button (same `.graph-toolbar__btn` look as the built-in
+ *  GraphToolbar) so it doesn't sit as a permanent block over the graph.
+ *  Hovering or focusing it expands a translucent/blurred panel, same visual
+ *  language as the Inspector's `DetailDrawer`.
+ *
+ *  Hover area: the gear and the panel sit in ONE pointer-events box, with the
+ *  space between them as padding inside it. They used to be separate boxes
+ *  with a 6px margin of pointer-events: none between them, so moving the
+ *  pointer slowly from the gear down to the panel crossed the gap, counted as
+ *  leaving, and closed the panel before it could be reached. Leaving also
+ *  waits FLYOUT_CLOSE_DELAY_MS, cancelled by coming back.
+ *
+ *  Collapse checks `relatedTarget` (shared by onMouseLeave and onBlur): only
+ *  moving to somewhere outside the whole flyout counts, not moving between
+ *  two controls inside it. The toggle also has onClick for touch, where
+ *  there's no hover; it OPENS rather than toggles, since on desktop a click is
+ *  always preceded by the hover that already opened it. Escape closes it and
+ *  returns focus to the toggle. */
 function GraphControls() {
   const [expanded, setExpanded] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Escape closes the panel, then refocuses the toggle for a11y — but
   // that .focus() call itself bubbles a focus event back up to this same
   // wrapper's onFocus, which would otherwise immediately re-expand the
@@ -214,142 +268,151 @@ function GraphControls() {
   // consumed (and cleared) by the very next onFocus it causes.
   const suppressNextFocusExpandRef = useRef(false);
   const graphLayout = useUiStore((s) => s.graphLayout);
-  const setGraphLayout = useUiStore((s) => s.setGraphLayout);
   const showClusterBoundaries = useUiStore((s) => s.showClusterBoundaries);
   const toggleClusterBoundaries = useUiStore((s) => s.toggleClusterBoundaries);
   const nodeMarginPreset = useUiStore((s) => s.nodeMarginPreset);
   const setNodeMarginPreset = useUiStore((s) => s.setNodeMarginPreset);
-  const showAllRelations = useUiStore((s) => s.showAllRelations);
-  const toggleShowAllRelations = useUiStore((s) => s.toggleShowAllRelations);
   const nodeDisplay = useUiStore((s) => s.nodeDisplay);
   const setNodeDisplay = useUiStore((s) => s.setNodeDisplay);
-  const showInterLayerNodes = useUiStore((s) => s.showInterLayerNodes);
-  const toggleShowInterLayerNodes = useUiStore((s) => s.toggleShowInterLayerNodes);
   const view = useUiStore((s) => s.view);
+
+  const cancelClose = () => {
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = null;
+  };
+  const open = () => {
+    cancelClose();
+    setExpanded(true);
+  };
+  const closeNow = () => {
+    cancelClose();
+    setExpanded(false);
+  };
+  useEffect(() => cancelClose, []);
 
   const collapseIfLeavingFlyout = (
     e: React.MouseEvent<HTMLDivElement> | React.FocusEvent<HTMLDivElement>,
   ) => {
-    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setExpanded(false);
+    if (e.currentTarget.contains(e.relatedTarget as Node | null)) return;
+    if (e.type === 'blur') {
+      closeNow();
+      return;
+    }
+    cancelClose();
+    closeTimerRef.current = setTimeout(() => {
+      closeTimerRef.current = null;
+      setExpanded(false);
+    }, FLYOUT_CLOSE_DELAY_MS);
   };
 
   return (
+    // Spans the graph area (minus the 14px inset) so the panel's max-width
+    // tracks the canvas, not a hardcoded px cap. pointer-events: none lets
+    // the empty part pass clicks through to the graph; the flyout box opts back in.
     <div
-      onMouseEnter={() => setExpanded(true)}
-      onMouseLeave={collapseIfLeavingFlyout}
-      onFocus={() => {
-        if (suppressNextFocusExpandRef.current) {
-          suppressNextFocusExpandRef.current = false;
-          return;
-        }
-        setExpanded(true);
-      }}
-      onBlur={collapseIfLeavingFlyout}
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') {
-          setExpanded(false);
-          suppressNextFocusExpandRef.current = true;
-          toggleRef.current?.focus();
-        }
-      }}
-      style={{ position: 'absolute', top: 14, left: 14, zIndex: 1 }}
+      style={{ position: 'absolute', top: 14, left: 14, right: 14, zIndex: 1, pointerEvents: 'none' }}
       data-testid="graph-controls"
     >
-      <button
-        ref={toggleRef}
-        type="button"
-        className="graph-toolbar__btn"
-        aria-label="Graph display options"
-        aria-expanded={expanded}
-        aria-controls="graph-controls-panel"
-        data-testid="graph-controls-toggle"
-        onClick={() => setExpanded(true)}
-        style={{ background: 'transparent' }}
+      <div
+        onMouseEnter={open}
+        onMouseLeave={collapseIfLeavingFlyout}
+        onFocus={() => {
+          if (suppressNextFocusExpandRef.current) {
+            suppressNextFocusExpandRef.current = false;
+            return;
+          }
+          open();
+        }}
+        onBlur={collapseIfLeavingFlyout}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') {
+            closeNow();
+            suppressNextFocusExpandRef.current = true;
+            toggleRef.current?.focus();
+          }
+        }}
+        style={{
+          display: 'inline-flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          maxWidth: '100%',
+          pointerEvents: 'auto',
+        }}
+        data-testid="graph-controls-flyout"
       >
-        <Icon name="settings" size={16} />
-      </button>
-      {expanded && (
-        <div
-          id="graph-controls-panel"
-          style={{
-            marginTop: 6,
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 14,
-            rowGap: 8,
-            maxWidth: 'min(420px, calc(100vw - 28px))',
-            padding: '10px 14px',
-            background: 'rgb(var(--canvas-card) / 0.5)',
-            backdropFilter: 'blur(8px)',
-            WebkitBackdropFilter: 'blur(8px)',
-            border: '1px solid rgb(var(--canvas-border))',
-            borderRadius: 'var(--radius-lg)',
-            boxShadow: 'var(--shadow-md)',
-          }}
-          data-testid="graph-controls-panel"
+        <button
+          ref={toggleRef}
+          type="button"
+          className="graph-toolbar__btn"
+          aria-label="Graph display options"
+          aria-expanded={expanded}
+          aria-controls="graph-controls-panel"
+          data-testid="graph-controls-toggle"
+          onClick={open}
+          style={{ background: 'transparent' }}
         >
-          <GraphControl label="Layout" testId="graph-layout-control">
-            <SegmentedControl
-              value={graphLayout}
-              onChange={(v) => setGraphLayout(v as GraphLayout)}
-              options={LAYOUT_OPTIONS}
-            />
-          </GraphControl>
-          {/* Card presentation only applies to Model graph nodes (see
-              data/modelGraph.ts's nodesWithCardData) — the Schema view's
-              node-type graph always uses the pill, so the control has no
-              effect there and is hidden rather than shown inert. */}
-          {view === 'model' && (
-            <GraphControl label="Display" testId="graph-display-control">
-              <SegmentedControl
-                value={nodeDisplay}
-                onChange={(v) => setNodeDisplay(v as NodeDisplay)}
-                options={DISPLAY_OPTIONS}
-              />
-            </GraphControl>
-          )}
-          {graphLayout !== 'force' && (
-            <GraphControl label="Boundaries" testId="graph-boundaries-control">
-              <SegmentedControl
-                value={showClusterBoundaries ? 'on' : 'off'}
-                onChange={(v) => {
-                  if ((v === 'on') !== showClusterBoundaries) toggleClusterBoundaries();
-                }}
-                options={BOUNDARIES_OPTIONS}
-              />
-            </GraphControl>
-          )}
-          {graphLayout !== 'galaxy' && (
-            <GraphControl label="Node margin" testId="graph-margin-control">
-              <SegmentedControl
-                value={nodeMarginPreset}
-                onChange={(v) => setNodeMarginPreset(v as NodeMarginPreset)}
-                options={MARGIN_OPTIONS}
-              />
-            </GraphControl>
-          )}
-          <GraphControl label="Relations" testId="graph-relations-control">
-            <SegmentedControl
-              value={showAllRelations ? 'all' : 'structural'}
-              onChange={(v) => {
-                if ((v === 'all') !== showAllRelations) toggleShowAllRelations();
+          <Icon name="settings" size={16} />
+        </button>
+        {expanded && (
+          // paddingTop (not marginTop) so the space below the gear is part
+          // of the hover box. See the component doc.
+          <div style={{ paddingTop: 6, maxWidth: '100%', boxSizing: 'border-box' }}>
+            <div
+              id="graph-controls-panel"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'auto auto',
+                justifyContent: 'start',
+                columnGap: 14,
+                rowGap: 8,
+                width: 'fit-content',
+                maxWidth: '100%',
+                boxSizing: 'border-box',
+                padding: '10px 14px',
+                background: 'rgb(var(--canvas-card) / 0.5)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                border: '1px solid rgb(var(--canvas-border))',
+                borderRadius: 'var(--radius-lg)',
+                boxShadow: 'var(--shadow-md)',
               }}
-              options={RELATIONS_OPTIONS}
-            />
-          </GraphControl>
-          {view === 'model' && (
-            <GraphControl label="Inter-layer" testId="graph-inter-layer-control">
-              <SegmentedControl
-                value={showInterLayerNodes ? 'on' : 'off'}
-                onChange={(v) => {
-                  if ((v === 'on') !== showInterLayerNodes) toggleShowInterLayerNodes();
-                }}
-                options={BOUNDARIES_OPTIONS}
-              />
-            </GraphControl>
-          )}
-        </div>
-      )}
+              data-testid="graph-controls-panel"
+            >
+              {/* Card presentation only applies to Model graph nodes (see
+                  data/modelGraph.ts's nodesWithCardData) — the Schema view's
+                  node-type graph always uses the pill, so the control has no
+                  effect there and is hidden rather than shown inert. */}
+              {view === 'model' && (
+                <GraphControl label="Display" testId="graph-display-control">
+                  <SegmentedControl
+                    value={nodeDisplay}
+                    onChange={(v) => setNodeDisplay(v as NodeDisplay)}
+                    options={DISPLAY_OPTIONS}
+                  />
+                </GraphControl>
+              )}
+              <GraphControl label="Node margin" testId="graph-margin-control">
+                <SegmentedControl
+                  value={nodeMarginPreset}
+                  onChange={(v) => setNodeMarginPreset(v as NodeMarginPreset)}
+                  options={MARGIN_OPTIONS}
+                />
+              </GraphControl>
+              {LAYOUTS_WITH_BOUNDARIES.has(graphLayout) && (
+                <GraphControl label="Boundaries" testId="graph-boundaries-control">
+                  <SegmentedControl
+                    value={showClusterBoundaries ? 'on' : 'off'}
+                    onChange={(v) => {
+                      if ((v === 'on') !== showClusterBoundaries) toggleClusterBoundaries();
+                    }}
+                    options={ON_OFF_OPTIONS}
+                  />
+                </GraphControl>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -357,15 +420,23 @@ function GraphControls() {
 function GraphControl({
   label,
   testId,
+  inline = false,
   children,
 }: {
   label: string;
   testId: string;
+  /** Label beside the control (header bar) instead of above it (flyout). */
+  inline?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <div
-      style={{ display: 'flex', flexDirection: 'column', gap: 6 }}
+      style={{
+        display: 'flex',
+        flexDirection: inline ? 'row' : 'column',
+        alignItems: inline ? 'center' : 'flex-start',
+        gap: inline ? 8 : 6,
+      }}
       data-testid={testId}
     >
       <span
@@ -411,6 +482,7 @@ export function Canvas() {
   const selectGraphNode = useUiStore((s) => s.selectGraphNode);
   const selectLayer = useUiStore((s) => s.selectLayer);
   const navigateToElement = useUiStore((s) => s.navigateToElement);
+  const navSeq = useUiStore((s) => s.navSeq);
   const mode = useUiStore((s) => s.mode);
   const setMode = useUiStore((s) => s.setMode);
   const graphLayout = useUiStore((s) => s.graphLayout);
@@ -431,6 +503,39 @@ export function Canvas() {
   // is exactly that ancestor (it wraps all three), so this ref is attached there.
   const canvasAreaRef = useRef<HTMLDivElement>(null);
 
+  // Viewport history (?vp=) — see useViewportHistory. The key is also
+  // GraphCanvas's React key, so a viewport only ever applies to the canvas
+  // it was recorded on.
+  const canvasKey = graphCanvasKey({
+    view,
+    layerId,
+    graphLayout,
+    nodeMarginPreset,
+    nodeDisplay,
+    showInterLayerNodes,
+  });
+  const viewportHistoryProps = useViewportHistory(canvasKey);
+
+  // The node last selected by clicking it in the graph, with the navSeq at the
+  // time. While that click is still the current selection, centerOnSelect is
+  // off so the graph doesn't jump. Any navigation bumps navSeq and any other
+  // selection changes selectedId, either of which turns centering back on for
+  // that new selection. Set in the same event as the store update, so both
+  // land in one render: GraphCanvas never sees the click with centering on.
+  // Every on-canvas select path goes through selectFromCanvas — GraphCanvas's
+  // own onNodeSelect and the card/pill nodes' onSelect, which handle the click
+  // themselves.
+  const [canvasClick, setCanvasClick] = useState<{ id: string; navSeq: number } | null>(null);
+  const centerOnSelect = !(canvasClick && canvasClick.id === selectedId && canvasClick.navSeq === navSeq);
+  const selectFromCanvas = useCallback(
+    (id: string) => {
+      // Read navSeq live so this callback (a renderNode dependency) stays stable.
+      setCanvasClick({ id, navSeq: useUiStore.getState().navSeq });
+      selectGraphNode(id);
+    },
+    [selectGraphNode],
+  );
+
   const { derived: model } = useModel();
   const { derived: spec, raw: specRaw } = useSpec();
   const isSpec = view === 'spec';
@@ -446,13 +551,11 @@ export function Canvas() {
       return { foreignNodes: [], crossEdges: [], foreignNodeIds: new Set<string>() };
     }
 
-    const perimeterLayout = graphLayout === 'force-clustered';
-    let result = interLayerNodesAndEdges(
-      model,
-      layerId,
-      index,
-      perimeterLayout,
-    );
+    // Foreign nodes are left for the layout engine to place under every layout.
+    // We used to pin them on a perimeter ring under 'force-clustered', but since
+    // heimdall-ui 0.9.0 spaces clusters by their real size, the estimated ring cut
+    // through the clusters (most layers had nearly every bubble pair overlapping).
+    let result = interLayerNodesAndEdges(model, layerId, index);
 
     // Filter orphan foreign nodes when structural-only view is active
     if (!showAllRelations) {
@@ -460,7 +563,7 @@ export function Canvas() {
     }
 
     return result;
-  }, [layerId, isSpec, showInterLayerNodes, graphLayout, model, index, showAllRelations]);
+  }, [layerId, isSpec, showInterLayerNodes, model, index, showAllRelations]);
 
   // Model view nodes carry a CardData side-channel (intra/inter-layer connection
   // counts, see data/modelGraph.ts's nodesWithCardData) that ModelCardNode reads
@@ -517,7 +620,7 @@ export function Canvas() {
           kind={node.kind}
           domainColor={node.domainColor}
           selected={selected}
-          onSelect={selectGraphNode}
+          onSelect={selectFromCanvas}
           cardData={cardData.get(node.id)}
           spec={specRaw}
           hasChildren={hierarchy?.hasChildren}
@@ -527,7 +630,7 @@ export function Canvas() {
         />
       );
     },
-    [selectGraphNode, navigateToElement, cardData, specRaw, interLayerData.foreignNodeIds],
+    [selectFromCanvas, navigateToElement, cardData, specRaw, interLayerData.foreignNodeIds],
   );
 
   // Pill-mode render (Model pill display + always in Schema view, see the
@@ -543,7 +646,7 @@ export function Canvas() {
       const handleForeignNodeClick = isForeignNode
         ? () => navigateToElement(node.id, node.domainColor ?? '')
         : undefined;
-      const handleNodeClick = handleForeignNodeClick || selectGraphNode;
+      const handleNodeClick = handleForeignNodeClick || selectFromCanvas;
 
       const content = (
         <PillNode
@@ -573,7 +676,7 @@ export function Canvas() {
         </div>
       );
     },
-    [selectGraphNode, navigateToElement, specRaw, isSpec, interLayerData.foreignNodeIds],
+    [selectFromCanvas, navigateToElement, specRaw, isSpec, interLayerData.foreignNodeIds],
   );
 
   // Model-only click-to-select — see useEdgeInteraction's doc comment for
@@ -594,39 +697,40 @@ export function Canvas() {
     );
   }, [isSpec, specRaw, model, layerId, index, selectedEdgeId, highlightedEdgeId, interLayerData.crossEdges]);
 
-  // GraphCanvas's native edgeTooltip render-prop — called with whichever edge
-  // is currently hovered; only meaningful in the Model view (edges only carry
-  // model edge metadata there). Positioning/portaling/show-hide are all
-  // GraphCanvas's own concern now (heimdall-ui 0.8.0+).
+  // Predicate explanation for a hovered graph edge (Model view only — edges
+  // only carry model edge metadata there). Rendered by us, not through
+  // GraphCanvas's edgeTooltip prop: heimdall pins that tooltip above the edge
+  // midpoint, which is exactly where the predicate label sits, so it covered
+  // the thing it explains. Instead it's the same TooltipCard the layer/element
+  // pills use (RichTooltip), anchored to the edge's label and placed on a side
+  // with room (see ui/edgeTooltipAnchor.ts). `track` follows the label if the
+  // canvas pans or zooms while it's open; `passThrough` keeps it from getting
+  // between the pointer and the graph.
   //
-  // KNOWN A11Y GAP: heimdall-ui renders this content inside its own
-  // `.graph-tooltip-layer`, which is `aria-hidden="true"` (its `Tooltip`'s
-  // `aria-describedby` lands on an empty decorative span inside that same
-  // hidden layer, not on the edge's own `role="button"` element) — so this
-  // predicate-definition prose is unreachable to a screen reader. The edge's
-  // own `aria-label` ("{predicate}: {source} to {target}") still carries the
-  // predicate + endpoints, so that much stays accessible; only the longer
-  // definition text (from predicateDefinitions.ts) is lost. This is a
-  // heimdall-ui-owned tooltip-layer choice, not fixable purely here without
-  // re-forking the tooltip mechanism this migration exists to avoid — see
-  // https://github.com/tinkermonkey/documentation_robotics_viewer/issues/538
-  // for surfacing the definition via the already-accessible EdgeInspector
-  // instead.
-  const renderEdgeTooltip = useCallback(
-    (edge: GraphEdgeData) => {
-      const meta = edgeMetadata(model, edge.id, index, specRaw);
-      if (!meta) return null;
-      return (
-        <PredicateTooltipContent
-          predicate={meta.predicate}
-          sourceTypeLabel={meta.sourceNode.type}
-          destinationTypeLabel={meta.targetNode.type}
-          data-testid="edge-predicate-tooltip"
-        />
-      );
-    },
-    [model, index, specRaw],
-  );
+  // Held back until the pointer has rested on the edge for
+  // PREDICATE_TOOLTIP_DELAY_MS: an edge is also a click target (select it).
+  // GraphCanvas's onEdgeHover feeds a local timer (useHoverDwell) — never the
+  // store or the `edges` memo, which would re-run the layout.
+  //
+  // KNOWN A11Y GAP (#538): this only opens on pointer hover, so the
+  // predicate-definition prose isn't reachable from the keyboard here. The
+  // edge's own aria-label ("{predicate}: {source} to {target}") still carries
+  // the predicate and endpoints, and the EdgeInspector (open on click/Enter)
+  // shows the same PredicateTooltip, which does open on focus.
+  const { dwelledId: dwelledEdgeId, onHover: onEdgeHover } = useHoverDwell(PREDICATE_TOOLTIP_DELAY_MS);
+  const edgeTooltipContent = useMemo(() => {
+    if (isSpec || !dwelledEdgeId) return null;
+    const meta = edgeMetadata(model, dwelledEdgeId, index, specRaw);
+    if (!meta) return null;
+    return (
+      <PredicateTooltipContent
+        predicate={meta.predicate}
+        sourceTypeLabel={meta.sourceNode.type}
+        destinationTypeLabel={meta.targetNode.type}
+        data-testid="edge-predicate-tooltip"
+      />
+    );
+  }, [isSpec, dwelledEdgeId, model, index, specRaw]);
 
   const slug = layerId ?? '';
   const standard = spec.byLayer[slug]?.standard || layerStandard(slug);
@@ -682,6 +786,7 @@ export function Canvas() {
       data-testid="canvas"
     >
       <PageHeader
+        className="canvas-header"
         style={{ flex: 'none', padding: '16px 22px 14px' }}
         eyebrow={
           <>
@@ -707,10 +812,12 @@ export function Canvas() {
                 fontFamily: "'JetBrains Mono',monospace",
                 fontSize: 11,
                 color: 'rgb(var(--canvas-fg-3))',
+                marginRight: 8,
               }}
             >
               {headerMeta}
             </span>
+            {!isPage && layerId && <GraphHeaderControls />}
             <SegmentedControl
               value={mode}
               onChange={(v) => setMode(v as 'graph' | 'page')}
@@ -742,7 +849,7 @@ export function Canvas() {
             ) : (
               <>
                 <GraphCanvas
-                  key={`${view}:${layerId}:${graphLayout}:${nodeMarginPreset}:${nodeDisplay}:${showInterLayerNodes}`}
+                  key={canvasKey}
                   nodes={nodes}
                   edges={edges}
                   selectedNodeId={selectedId ?? undefined}
@@ -751,14 +858,15 @@ export function Canvas() {
                       const target = index.byUuid.get(id);
                       if (target) navigateToElement(target.id, target.layer_id);
                     } else {
-                      selectGraphNode(id);
+                      selectFromCanvas(id);
                     }
                   }}
                   {...(!isSpec ? edgeSelectionProps : {})}
-                  edgeTooltip={!isSpec ? renderEdgeTooltip : undefined}
+                  onEdgeHover={!isSpec ? onEdgeHover : undefined}
                   onBackgroundClick={() => selectLayer(layerId)}
                   renderNode={!isSpec && nodeDisplay === 'card' ? renderCardNode : renderPillNode}
-                  centerOnSelect
+                  centerOnSelect={centerOnSelect}
+                  {...viewportHistoryProps}
                   fullscreenContainerRef={canvasAreaRef}
                   layout={graphLayout}
                   nodeMargin={nodeMargin}
@@ -766,7 +874,7 @@ export function Canvas() {
                   isStructuralEdge={isStructuralEdge}
                   showAllRelations={showAllRelations}
                   toolbarPosition="bottom-left"
-                  fitView={graphLayout !== 'force'}
+                  fitView
                   fitPadding={40}
                   style={{
                     position: 'absolute',
@@ -778,6 +886,16 @@ export function Canvas() {
                 {/* Floats over the graph itself (top-left) — same card
                     language as the built-in bottom-left GraphToolbar. */}
                 <GraphControls />
+                {dwelledEdgeId && edgeTooltipContent && (
+                  <TooltipCard
+                    key={dwelledEdgeId}
+                    getAnchorRect={() => edgeTooltipAnchorRect(canvasAreaRef.current, dwelledEdgeId)}
+                    content={edgeTooltipContent}
+                    track
+                    passThrough
+                    data-testid="edge-predicate-tooltip-card"
+                  />
+                )}
               </>
             )}
             {/* Floats over this relative wrapper's right edge (Heimdall

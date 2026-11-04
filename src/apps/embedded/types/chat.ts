@@ -220,17 +220,26 @@ export interface ChatResponseChunkParams {
 
 /**
  * Chat tool invocation notification params (wire format from server)
- * Converted to ToolInvocationStatus internally by chatService
+ * Converted to ToolInvocationStatus internally by chatService.
+ *
+ * Two shapes reach us. The documented one carries `tool_use_id`, camelCase
+ * `toolName`/`toolInput` and a `status` per update. The `dr visualize`
+ * server actually sends snake_case `tool_name`/`tool_input`, once per call,
+ * with no id and no status (it never reports a tool finishing). chatService
+ * accepts both; see `handleToolInvoke`.
  */
 export interface ChatToolInvokeParams {
-  conversationId: string;
-  tool_use_id: string;      // Unique identifier from Anthropic API
-  toolName: string;
-  toolInput: Record<string, unknown>;
-  status: 'executing' | 'completed' | 'failed';
+  conversationId?: string;
+  conversation_id?: string;
+  tool_use_id?: string;      // Unique identifier from Anthropic API, when sent
+  toolName?: string;
+  tool_name?: string;
+  toolInput?: Record<string, unknown>;
+  tool_input?: Record<string, unknown>;
+  status?: 'executing' | 'completed' | 'failed';
   result?: unknown;
   error?: string;
-  timestamp: string;
+  timestamp?: string;
 }
 
 /**

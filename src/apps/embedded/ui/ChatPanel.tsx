@@ -11,7 +11,10 @@
  *     `uiStore` (selected element, layer, meta-model, or changeset), and reflects
  *     `chatStore.isStreaming` via `loading`.
  *
- * Submitting (composer or a suggestion click) calls `chatService.sendMessage`.
+ * Submitting (composer or a suggestion click) calls `chatService.sendMessage`
+ * with a viewer-context block (data/chatContext.ts) describing what's open —
+ * the same layer/selection the composer's "talking to …" label names — so
+ * DrBot can resolve "this element". The thread shows only the typed text.
  * Errors — including the "-32001 no chat client" / SDK-unavailable case — are
  * surfaced inline and non-fatally (the send promise rejects but the store error
  * + the assistant message's error part already capture it).
@@ -31,7 +34,8 @@ import { useUiStore } from './uiStore';
 import { layerLabel } from './domain';
 import { useModel } from '../data/useModel';
 import { useChangesets } from '../data/useChangesets';
-import { buildModelIndex } from '../data/modelGraph';
+import { buildModelIndex, dottedId, edgeMetadata } from '../data/modelGraph';
+import { buildChatContext, type ChatContextElement } from '../data/chatContext';
 import { toHeimdallMessages, type HeimdallChatRow } from './chatAdapter';
 
 const BASE_SUGGESTIONS = [
@@ -122,6 +126,33 @@ export function ChatPanel() {
 
   const [input, setInput] = useState('');
 
+  /** What the user has open right now, read live from the store at send time. */
+  const viewerContext = (): string | null => {
+    const s = useUiStore.getState();
+    const element = (uuid: string): ChatContextElement | undefined => {
+      const node = index.byUuid.get(uuid);
+      return node ? { name: node.name, ref: dottedId(node) } : undefined;
+    };
+    let selectedEdge;
+    if (s.view === 'model' && s.selectedEdgeId) {
+      const meta = edgeMetadata(model, s.selectedEdgeId, index, undefined);
+      const source = meta && element(meta.sourceNode.id);
+      const target = meta && element(meta.targetNode.id);
+      if (meta && source && target) selectedEdge = { predicate: meta.predicate, source, target };
+    }
+    const cs = s.view === 'changesets' ? changesets.list.find((c) => c.id === s.changesetId) : undefined;
+    return buildChatContext({
+      view: s.view,
+      mode: s.mode,
+      layerId: s.layerId,
+      layerLabel: s.layerId ? layerLabel(s.layerId) : undefined,
+      selectedNode: s.view === 'model' && s.selectedId ? index.byUuid.get(s.selectedId) : undefined,
+      selectedSpecNodeId: s.view === 'spec' ? (s.selectedId ?? undefined) : undefined,
+      selectedEdge,
+      changeset: cs ? { id: cs.id, name: cs.name } : undefined,
+    });
+  };
+
   const send = (text: string) => {
     const trimmed = text.trim();
     if (!trimmed || isStreaming) return;
@@ -129,7 +160,7 @@ export function ChatPanel() {
     // chatService handles optimistic user/assistant messages + streaming; on
     // failure it records the error in the store (and the assistant message),
     // so swallow the rejection here to keep the UI non-fatal.
-    void chatService.sendMessage(trimmed).catch(() => {
+    void chatService.sendMessage(trimmed, viewerContext()).catch(() => {
       /* surfaced via chatStore.error + the assistant error part */
     });
   };

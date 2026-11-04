@@ -143,7 +143,56 @@ describe('chatService — chat.response.chunk', () => {
   });
 });
 
+describe('chatService — chat.tool.invoke in the dr visualize wire shape', () => {
+  // What the CLI actually sends: snake_case, one notification per call, no
+  // tool_use_id and no status (see ChatToolInvokeParams).
+  const cliTool = (name: string, input: Record<string, unknown> = {}) =>
+    notify('chat.tool.invoke', { conversation_id: 'conv-1', tool_name: name, tool_input: input });
+  const tools = (id: string) =>
+    useChatStore.getState().messages.find((m) => m.id === id)!.parts.filter((p) => p.type === 'tool_invocation');
+
+  it('adds each call as its own tool part, with its name and input', () => {
+    const { id } = seedStreamingAssistant();
+    cliTool('Bash', { command: 'dr list apm' });
+    cliTool('Read', { file_path: 'x.yaml' });
+
+    expect(tools(id)).toHaveLength(2);
+    expect(tools(id)[0]).toMatchObject({ toolName: 'Bash', toolInput: { command: 'dr list apm' } });
+    expect(tools(id)[1]).toMatchObject({ toolName: 'Read', status: { state: 'executing' } });
+    expect(new Set(tools(id).map((t) => (t as { toolUseId: string }).toolUseId)).size).toBe(2);
+  });
+
+  it('marks a call completed once the reply moves on to the next call or to text', () => {
+    const { id } = seedStreamingAssistant();
+    cliTool('Bash');
+    cliTool('Read');
+    expect(tools(id).map((t) => (t as { status: { state: string } }).status.state)).toEqual(['completed', 'executing']);
+
+    notify('chat.response.chunk', { conversation_id: 'conv-1', content: 'Done.' });
+    expect(tools(id).map((t) => (t as { status: { state: string } }).status.state)).toEqual(['completed', 'completed']);
+  });
+});
+
 describe('chatService — chat.tool.invoke', () => {
+  it('completes a tool sent with a tool_use_id but no status once the reply moves on', () => {
+    const { id } = seedStreamingAssistant();
+    notify('chat.tool.invoke', { tool_use_id: 'tu-quiet', tool_name: 'Bash', tool_input: {} });
+    notify('chat.tool.invoke', { tool_use_id: 'tu-live', toolName: 'Read', toolInput: {}, status: 'executing' });
+
+    notify('chat.response.chunk', { conversation_id: 'conv-1', content: 'Done.' });
+
+    const states = useChatStore
+      .getState()
+      .messages.find((m) => m.id === id)!
+      .parts.filter((p) => p.type === 'tool_invocation')
+      .map((t) => [(t as { toolUseId: string }).toolUseId, (t as { status: { state: string } }).status.state]);
+    // The status-less one is closed; the one reporting its own status is left alone.
+    expect(states).toEqual([
+      ['tu-quiet', 'completed'],
+      ['tu-live', 'executing'],
+    ]);
+  });
+
   it('adds a tool invocation keyed by tool_use_id, mapping executing→executing', () => {
     const { id } = seedStreamingAssistant();
 
@@ -333,5 +382,34 @@ describe('chatService — sendMessage success path', () => {
     expect(state.error).toBeNull();
     const assistant = state.messages.find((m) => m.role === 'assistant')!;
     expect(assistant.isStreaming).toBe(false);
+  });
+});
+
+describe('chatService — chat.send timeout', () => {
+  it('allows long, tool-heavy answers (well over the old 60s cap)', async () => {
+    const spy = vi
+      .spyOn(jsonRpcHandler, 'sendRequest')
+      .mockResolvedValue({ conversation_id: 'conv-x', status: 'complete' } as never);
+    await chatService.sendMessage('hello');
+    expect(spy).toHaveBeenCalledWith('chat.send', { message: 'hello' }, expect.any(Number));
+    const timeout = spy.mock.calls[0][2] as number;
+    expect(timeout).toBeGreaterThanOrEqual(10 * 60 * 1000);
+    spy.mockRestore();
+  });
+});
+
+describe('chatService — viewer context', () => {
+  it('sends the context with the question but shows only the question in the thread', async () => {
+    const spy = vi
+      .spyOn(jsonRpcHandler, 'sendRequest')
+      .mockResolvedValue({ conversation_id: 'conv-x', status: 'complete' } as never);
+    await chatService.sendMessage('What does this do?', '<viewer-context>\nLayer: APM (apm)\n</viewer-context>');
+
+    expect(spy.mock.calls[0][1]).toEqual({
+      message: '<viewer-context>\nLayer: APM (apm)\n</viewer-context>\n\nWhat does this do?',
+    });
+    const user = useChatStore.getState().messages.find((m) => m.role === 'user')!;
+    expect(user.parts).toEqual([expect.objectContaining({ type: 'text', content: 'What does this do?' })]);
+    spy.mockRestore();
   });
 });

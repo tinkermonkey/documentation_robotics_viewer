@@ -23,7 +23,7 @@ function reset() {
       focus: 'layer',
       expandedSections: new Set<string>(['model']),
       expandedLayers: new Set<string>(),
-      graphLayout: 'force',
+      graphLayout: 'organic',
       showClusterBoundaries: true,
       showAllRelations: true,
       nodeMarginPreset: 'default',
@@ -55,7 +55,7 @@ describe('uiStore — localStorage persistence', () => {
   it('persists canvasDark, chatOpen, and the graph settings under PERSIST_KEY', () => {
     get().toggleCanvasDark();
     get().toggleChat();
-    get().setGraphLayout('galaxy');
+    get().setGraphLayout('orthogonal');
     get().toggleClusterBoundaries();
     get().toggleShowAllRelations();
     get().setNodeMarginPreset('wide');
@@ -66,7 +66,7 @@ describe('uiStore — localStorage persistence', () => {
     expect(stored.state).toMatchObject({
       canvasDark: true, // reset() started at false; one toggle -> true
       chatOpen: true, // reset() started at false; one toggle -> true
-      graphLayout: 'galaxy',
+      graphLayout: 'orthogonal',
       showClusterBoundaries: false,
       showAllRelations: false,
       nodeMarginPreset: 'wide',
@@ -80,6 +80,7 @@ describe('uiStore — localStorage persistence', () => {
     get().selectNode('elem-1');
     get().setMode('page');
     get().selectChangeset('cs-9');
+    get().setGraphViewport({ scope: 'model:security', center: { x: 1, y: 2 }, zoom: 0.5 });
 
     const stored = JSON.parse(localStorage.getItem(PERSIST_KEY) ?? '{}');
     expect(stored.state).not.toHaveProperty('view');
@@ -90,6 +91,7 @@ describe('uiStore — localStorage persistence', () => {
     expect(stored.state).not.toHaveProperty('focus');
     expect(stored.state).not.toHaveProperty('expandedSections');
     expect(stored.state).not.toHaveProperty('expandedLayers');
+    expect(stored.state).not.toHaveProperty('graphViewport');
   });
 });
 
@@ -503,8 +505,8 @@ describe('focus — page-view target (layer overview vs. node detail)', () => {
 });
 
 describe('graph layout/display preferences', () => {
-  it('default to force layout, boundaries on, every relation visible, default node margin, card node display, and inter-layer nodes on', () => {
-    expect(get().graphLayout).toBe('force');
+  it('default to organic layout, boundaries on, every relation visible, default node margin, card node display, and inter-layer nodes on', () => {
+    expect(get().graphLayout).toBe('organic');
     expect(get().showClusterBoundaries).toBe(true);
     expect(get().showAllRelations).toBe(true);
     expect(get().nodeMarginPreset).toBe('default');
@@ -513,12 +515,12 @@ describe('graph layout/display preferences', () => {
   });
 
   it('setGraphLayout switches the layout engine', () => {
-    get().setGraphLayout('galaxy');
-    expect(get().graphLayout).toBe('galaxy');
+    get().setGraphLayout('orthogonal');
+    expect(get().graphLayout).toBe('orthogonal');
     get().setGraphLayout('force-clustered');
     expect(get().graphLayout).toBe('force-clustered');
-    get().setGraphLayout('force');
-    expect(get().graphLayout).toBe('force');
+    get().setGraphLayout('organic');
+    expect(get().graphLayout).toBe('organic');
   });
 
   it('toggleClusterBoundaries flips showClusterBoundaries', () => {
@@ -591,7 +593,7 @@ describe('persist hydration validates graphLayout/nodeMarginPreset/showInterLaye
 
     vi.resetModules();
     const fresh = await import('@/apps/embedded/ui/uiStore');
-    expect(fresh.useUiStore.getState().graphLayout).toBe('force');
+    expect(fresh.useUiStore.getState().graphLayout).toBe('organic');
     expect(fresh.useUiStore.getState().nodeMarginPreset).toBe('default');
     expect(fresh.useUiStore.getState().nodeDisplay).toBe('card');
     expect(fresh.useUiStore.getState().showInterLayerNodes).toBe(true);
@@ -604,7 +606,7 @@ describe('persist hydration validates graphLayout/nodeMarginPreset/showInterLaye
         state: {
           canvasDark: true,
           chatOpen: false,
-          graphLayout: 'galaxy',
+          graphLayout: 'orthogonal',
           showClusterBoundaries: true,
           showAllRelations: true,
           nodeMarginPreset: 'wide',
@@ -617,9 +619,33 @@ describe('persist hydration validates graphLayout/nodeMarginPreset/showInterLaye
 
     vi.resetModules();
     const fresh = await import('@/apps/embedded/ui/uiStore');
-    expect(fresh.useUiStore.getState().graphLayout).toBe('galaxy');
+    expect(fresh.useUiStore.getState().graphLayout).toBe('orthogonal');
     expect(fresh.useUiStore.getState().nodeMarginPreset).toBe('wide');
     expect(fresh.useUiStore.getState().nodeDisplay).toBe('pill');
     expect(fresh.useUiStore.getState().showInterLayerNodes).toBe(false);
   });
+  it.each(['organic', 'orthogonal', 'force-clustered'] as const)(
+    'keeps the offered layout %s on rehydrate',
+    async (layout) => {
+      localStorage.setItem(
+        PERSIST_KEY,
+        JSON.stringify({ state: { graphLayout: layout }, version: 1 }),
+      );
+      vi.resetModules();
+      const fresh = await import('@/apps/embedded/ui/uiStore');
+      expect(fresh.useUiStore.getState().graphLayout).toBe(layout);
+    },
+  );
+  it.each(['force', 'galaxy', 'radial-tree'] as const)(
+    'falls back to organic for a dropped layout (%s) saved by an earlier version',
+    async (layout) => {
+      localStorage.setItem(
+        PERSIST_KEY,
+        JSON.stringify({ state: { graphLayout: layout }, version: 1 }),
+      );
+      vi.resetModules();
+      const fresh = await import('@/apps/embedded/ui/uiStore');
+      expect(fresh.useUiStore.getState().graphLayout).toBe('organic');
+    },
+  );
 });

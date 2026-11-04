@@ -93,8 +93,10 @@ export function ModelCardNode({
       aria-pressed={onSelect ? selected : undefined}
     >
       <div className="graph-node__card-header">
-        <span className="graph-node__swatch" />
-        <span className="graph-node__label">{label}</span>
+        <span className="graph-node__card-title">
+          <span className="graph-node__swatch" />
+          <span className="graph-node__label">{label}</span>
+        </span>
         {kind && (
           <NodeTypeBadge
             spec={spec}

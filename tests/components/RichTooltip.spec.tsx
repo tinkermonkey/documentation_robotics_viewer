@@ -11,7 +11,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { act, render, screen, fireEvent } from '@testing-library/react';
 
-import { RichTooltip, computeTooltipPosition } from '@/apps/embedded/ui/RichTooltip';
+import { RichTooltip, TooltipCard, computeTooltipPosition } from '@/apps/embedded/ui/RichTooltip';
 
 function rect(overrides: Partial<DOMRect>): DOMRect {
   return {
@@ -56,6 +56,30 @@ describe('computeTooltipPosition', () => {
     const anchor = rect({ top: 300, bottom: 320, left: 2, right: 30, width: 28, height: 20 });
     const pos = computeTooltipPosition(anchor, { width: 200, height: 100 }, 'top', viewport);
     expect(pos.left).toBe(8);
+  });
+
+  it('falls back to a perpendicular side when neither top nor bottom fits', () => {
+    // A 300px-tall card around a mid-height anchor in a 400px viewport.
+    const short = { width: 1000, height: 400 };
+    const anchor = rect({ top: 190, bottom: 210, left: 100, right: 160, width: 60, height: 20 });
+    const pos = computeTooltipPosition(anchor, { width: 200, height: 300 }, 'top', short);
+    expect(pos.placement).toBe('right');
+    expect(pos.left).toBe(160 + 8);
+    expect(pos.overlapsAnchor).toBe(false);
+  });
+
+  it('flags overlapsAnchor when no side fits and clamping covers the trigger', () => {
+    // Regression: a tall node-type card covered its page-table link, caught the
+    // mouseup, and the link's click never fired.
+    const tiny = { width: 300, height: 400 };
+    const anchor = rect({ top: 190, bottom: 210, left: 100, right: 160, width: 60, height: 20 });
+    const pos = computeTooltipPosition(anchor, { width: 280, height: 300 }, 'top', tiny);
+    expect(pos.overlapsAnchor).toBe(true);
+  });
+
+  it('does not flag overlapsAnchor for a normal placement', () => {
+    const anchor = rect({ top: 300, bottom: 320, left: 400, right: 460, width: 60, height: 20 });
+    expect(computeTooltipPosition(anchor, { width: 200, height: 100 }, 'top', viewport).overlapsAnchor).toBe(false);
   });
 
   it('clamps left within the viewport margin near the right edge', () => {
@@ -188,5 +212,35 @@ describe('RichTooltip — show/hide + accessibility', () => {
       vi.advanceTimersByTime(150);
     });
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+  });
+});
+
+describe('TooltipCard — anchor tracking', () => {
+  it('hides when its anchor disappears and shows again when it comes back', () => {
+    vi.useFakeTimers({ toFake: ['requestAnimationFrame', 'cancelAnimationFrame'] });
+    let anchor: DOMRect | null = rect({ top: 300, bottom: 320, left: 300, right: 360, width: 60, height: 20 });
+    render(
+      <TooltipCard
+        getAnchorRect={() => anchor}
+        content={<span>Edge hint</span>}
+        track
+        data-testid="card"
+      />,
+    );
+    const card = screen.getByTestId('card');
+    expect(card.style.visibility).toBe('visible');
+
+    anchor = null; // e.g. the hovered edge was filtered out under the pointer
+    act(() => {
+      vi.advanceTimersToNextFrame();
+    });
+    expect(card.style.visibility).toBe('hidden');
+
+    anchor = rect({ top: 300, bottom: 320, left: 300, right: 360, width: 60, height: 20 });
+    act(() => {
+      vi.advanceTimersToNextFrame();
+    });
+    expect(card.style.visibility).toBe('visible');
+    vi.useRealTimers();
   });
 });

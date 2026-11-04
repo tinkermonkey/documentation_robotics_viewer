@@ -7,8 +7,10 @@
  * list of changeset summaries for the nav tree.
  */
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import {
+  ApiError,
   useGetapichangesets,
   useGetapichangesetschangesetId,
 } from '../../../core/services/generatedApiClient';
@@ -135,4 +137,53 @@ export function useChangeset(id: string | null) {
   }, [raw, id]);
 
   return { ...query, detail, emptyStats: EMPTY_STATS };
+}
+
+// ─── Commit / discard ─────────────────────────────────────────────────────────
+// The mutations themselves are the generated `usePostapichangesetschangesetIdcommit`
+// / `...discard` hooks, which refetch the changesets (and, for a commit, the model).
+
+/** `commit` applies a staged changeset to the model; `discard` throws its changes away. */
+export type ChangesetAction = 'commit' | 'discard';
+
+/** `POST /api/changesets/:id/{commit,discard}` response. */
+export interface ChangesetActionResult {
+  id: string;
+  name: string;
+  status: string;
+  /** Commit only: changes applied / skipped as already present / failed. */
+  committed?: number;
+  skipped?: number;
+  failed?: number;
+}
+
+/**
+ * Why a commit/discard was refused: the server's `{ error }` message (e.g. the
+ * validation errors that blocked a commit), else the raw response, else the
+ * error's own message (a network failure).
+ */
+export function changesetActionErrorMessage(error: unknown): string {
+  if (error instanceof ApiError) return error.serverMessage ?? (error.body.trim() || error.message);
+  return error instanceof Error ? error.message : String(error);
+}
+
+/**
+ * Refetch the changesets when a DrBot reply finishes (`isStreaming` goes
+ * true → false). DrBot stages its changes in a changeset (`dr visualize
+ * --with-changesets`), and the server announces only model-file changes
+ * (see useLiveModelUpdates), not changeset ones: the cached list would
+ * otherwise stay stale for its 5-minute `staleTime`, so a changeset DrBot just
+ * made wouldn't show up for review. The model itself isn't refetched here;
+ * a change to it arrives through useLiveModelUpdates.
+ */
+export function useRefreshAfterChatReply(isStreaming: boolean) {
+  const queryClient = useQueryClient();
+  const wasStreaming = useRef(isStreaming);
+  useEffect(() => {
+    if (wasStreaming.current && !isStreaming) {
+      queryClient.invalidateQueries({ queryKey: ['getapichangesets'] });
+      queryClient.invalidateQueries({ queryKey: ['getapichangesetschangesetId'] });
+    }
+    wasStreaming.current = isStreaming;
+  }, [isStreaming, queryClient]);
 }

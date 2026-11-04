@@ -29,15 +29,14 @@ test.describe('localStorage persistence', () => {
 
   test('graph layout setting persists across a reload', async ({ page }) => {
     await gotoView(page, ROUTES.model);
-    const toggle = page.getByTestId('graph-controls-toggle');
-    await toggle.hover();
-    await page.getByRole('radio', { name: 'Galaxy' }).click();
-    await expect(page.getByRole('radio', { name: 'Galaxy' })).toBeChecked();
+    // Layout lives in the page header (no flyout to open).
+    const orthogonal = () => page.getByTestId('graph-layout-control').getByRole('radio', { name: 'Orthogonal' });
+    await orthogonal().click();
+    await expect(orthogonal()).toBeChecked();
 
     await page.reload();
     await expect(page.getByTestId('app-shell')).toBeVisible();
-    await page.getByTestId('graph-controls-toggle').hover();
-    await expect(page.getByRole('radio', { name: 'Galaxy' })).toBeChecked();
+    await expect(orthogonal()).toBeChecked();
   });
 
   test('DrBot open/closed state persists across a reload', async ({ page }) => {

@@ -23,9 +23,10 @@
  * highlighted") — not a per-pointer-move hover preview, so hover no longer
  * touches it. `GraphCanvas`'s own CSS already renders a (non-accent) `:hover`
  * state for free regardless: `.graph-edge:hover .graph-edge__line{stroke-width:
- * 1.75}`. The predicate hover tooltip itself is unaffected — `Canvas.tsx`'s
- * `edgeTooltip` render-prop gets the hovered edge directly from `GraphCanvas`
- * (heimdall-ui 0.8.0+) and needs no `onEdgeHover` wiring of its own to work.
+ * 1.75}`. The predicate hover tooltip is separate: Canvas feeds
+ * `GraphCanvas`'s `onEdgeHover` into a local `useHoverDwell` timer and, after
+ * 3s, shows a `TooltipCard` anchored to the edge's label. That hover state
+ * never touches the store or the `edges` memo, so the layout isn't re-run.
  */
 
 import { useUiStore } from './uiStore';

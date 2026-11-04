@@ -11,6 +11,13 @@ import { createHashHistory } from '@tanstack/history';
 import AuthRoute from './routes/AuthRoute';
 import { AppShell } from './ui/AppShell';
 import { useUiStore, type ViewKind } from './ui/uiStore';
+import {
+  formatViewportParam,
+  graphCanvasKey,
+  parseViewportParam,
+  sameViewport,
+  viewportParamFits,
+} from './ui/graphViewport';
 import { useAuthStore } from './stores/authStore';
 import { useConnectionStore } from './stores/connectionStore';
 import { websocketClient } from './services/websocketClient';
@@ -141,6 +148,10 @@ interface AppShellSearch {
   node?: string;
   edge?: string;
   changeset?: string;
+  /** Graph viewport `centerX,centerY,zoom` (see ui/graphViewport.ts). Model +
+   *  Schema only. Kept on page-mode URLs too, so switching back to the graph
+   *  returns to the same view. */
+  vp?: string;
 }
 
 /** Combine layer/node/edge/changeset into one string so a single ref comparison
@@ -172,18 +183,31 @@ function selectionKey(
  * empty/loading `links` array is not evidence the id is invalid), then either
  * restores the selection or strips the dead param from the URL.
  *
- * store → URL: when the view OR the selection changes from inside the app
- * (nav tree clicks, graph node clicks, cross-layer navigation, the
- * data-driven default-selection effect in AppShell.tsx), push/replace the
- * matching `/$section/$view?layer=...&node=...` (or `?changeset=...`) so the
- * hash always reflects the truth. A genuine VIEW change pushes a new history
- * entry (same as before); a pure selection change within the same view
- * replaces the current entry instead, so every nav-tree/graph click doesn't
- * flood browser history — only switching Model/Schema/Changesets does.
- * Guarded (mount ref + prev-value refs) so the two effects never ping-pong.
+ * `:view` is the graph/page mode for Model + Schema (`/model/page?...`), so
+ * the mode is part of every history entry too.
+ *
+ * store → URL: when the view, mode, or selection changes from inside the app,
+ * push/replace the matching `/$section/$view?layer=...&node=...` (or
+ * `?changeset=...`) so the hash always reflects the truth. Destination changes
+ * PUSH a history entry: view, mode, layer, a deliberate navigation (see
+ * `uiStore.navSeq`), or any selection change in page mode. Plain on-canvas
+ * selection within a layer REPLACES the entry, so graph clicks don't flood
+ * history. Guarded (mount ref + prev-value refs + an "already matches the
+ * URL" check) so the two effects never ping-pong and back/forward never
+ * pushes a duplicate entry.
+ *
+ * `?vp=` carries the graph viewport. It never pushes: Canvas records a
+ * viewport when the user stops panning/zooming or the canvas recentres
+ * itself, and the router replaces the current entry with it, so each history
+ * entry ends up holding the last view seen there. Back/forward and reloads
+ * restore it (Canvas applies it silently). It's only written while it belongs
+ * to the live canvas (`graphCanvasKey`), so a layer or layout change drops it.
  */
 function AppShellRoute() {
-  const { section } = useParams({ strict: false }) as { section?: string };
+  const { section, view: viewParam } = useParams({ strict: false }) as {
+    section?: string;
+    view?: string;
+  };
   const search = useSearch({ strict: false }) as AppShellSearch;
   const view = useUiStore((s) => s.view);
   const setView = useUiStore((s) => s.setView);
@@ -191,6 +215,12 @@ function AppShellRoute() {
   const selectedId = useUiStore((s) => s.selectedId);
   const selectedEdgeId = useUiStore((s) => s.selectedEdgeId);
   const changesetId = useUiStore((s) => s.changesetId);
+  const mode = useUiStore((s) => s.mode);
+  const setMode = useUiStore((s) => s.setMode);
+  const navSeq = useUiStore((s) => s.navSeq);
+  const graphViewport = useUiStore((s) => s.graphViewport);
+  const canvasKey = useUiStore(graphCanvasKey);
+  const setGraphViewport = useUiStore((s) => s.setGraphViewport);
   const selectLayer = useUiStore((s) => s.selectLayer);
   const selectNode = useUiStore((s) => s.selectNode);
   const selectEdge = useUiStore((s) => s.selectEdge);
@@ -211,12 +241,21 @@ function AppShellRoute() {
   // and navigate "backward" to correct it, oscillating forever.
   const prevViewRef = useRef(view);
   const prevSelectionKeyRef = useRef(selectionKey(layerId, selectedId, selectedEdgeId, changesetId));
+  const prevModeRef = useRef(mode);
+  const prevLayerRef = useRef(layerId);
+  const prevNavSeqRef = useRef(navSeq);
+  const prevVpRef = useRef<string | undefined>(undefined);
 
   // URL → store: section/view (unchanged from before).
   useEffect(() => {
     const next = section ? SECTION_TO_VIEW[section] : undefined;
     if (next) setView(next);
   }, [section, setView]);
+
+  // URL → store: graph/page mode, from the `:view` segment (Model + Schema).
+  useEffect(() => {
+    if (viewParam === 'graph' || viewParam === 'page') setMode(viewParam);
+  }, [viewParam, setMode]);
 
   // URL → store: layer/node/changeset — deep link, shared URL, or
   // back/forward. Only acts on the field(s) actually present in the URL and
@@ -254,45 +293,114 @@ function AppShellRoute() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search.layer, search.node, search.edge, search.changeset, modelLoaded, model.links]);
 
-  // store → URL: view (push on a genuine section change) + layer/node/changeset
-  // (replace on a pure selection change within the same section). Skip first
-  // render — see mountedRef above.
+  // URL → store: viewport. Runs after the selection effect above, so on
+  // back/forward the layer it scopes to is already in the store. A URL with
+  // no `?vp=` clears it, so a viewport from the entry we just left can't be
+  // written onto this one. So does one recorded on a different layout or
+  // display (its tag doesn't match): the store → URL effect then drops it
+  // from the URL too.
+  useEffect(() => {
+    const s = useUiStore.getState();
+    const scope = graphCanvasKey(s);
+    const parsed = parseViewportParam(search.vp);
+    const next = parsed && viewportParamFits(parsed, scope) ? parsed : null;
+    const current = s.graphViewport;
+    if (!next) {
+      if (current) setGraphViewport(null);
+      return;
+    }
+    if (current && current.scope === scope && sameViewport(current, next)) return;
+    setGraphViewport({ scope, center: next.center, zoom: next.zoom });
+  }, [section, search.layer, search.vp, setGraphViewport]);
+
+  // store → URL. Push a history entry for a destination change — view,
+  // graph/page mode, layer, a deliberate navigation (navSeq: cross-layer
+  // links, relationship links, neighborhood-graph clicks), or any selection
+  // change in page mode (each page is its own destination). Replace for plain
+  // on-canvas selection within a layer so graph clicks don't flood history.
+  // Skip first render — see mountedRef above.
   useEffect(() => {
     const key = selectionKey(layerId, selectedId, selectedEdgeId, changesetId);
     if (!mountedRef.current) {
       mountedRef.current = true;
       prevViewRef.current = view;
       prevSelectionKeyRef.current = key;
+      prevModeRef.current = mode;
+      prevLayerRef.current = layerId;
+      prevNavSeqRef.current = navSeq;
+      prevVpRef.current = search.vp;
       return;
     }
     const viewChanged = prevViewRef.current !== view;
     const selectionChanged = prevSelectionKeyRef.current !== key;
-    if (!viewChanged && !selectionChanged) return;
+    const modeChanged = prevModeRef.current !== mode;
+    // A layer change from "no layer yet" is the data-driven default selection
+    // landing, not a user navigation — pushing it would leave a dead entry
+    // that Back can't leave (it re-defaults straight back).
+    const layerChanged = prevLayerRef.current !== null && prevLayerRef.current !== layerId;
+    const navigated = prevNavSeqRef.current !== navSeq;
+    // Read live, not from this render's closure: the URL → store effect above
+    // may have just seeded it in this same flush (a deep link, or StrictMode's
+    // effect re-run in dev), and a stale null here would strip `?vp=`.
+    const live = useUiStore.getState();
+    const vp =
+      view !== 'changesets' && live.graphViewport?.scope === graphCanvasKey(live)
+        ? formatViewportParam(live.graphViewport)
+        : undefined;
+    const vpChanged = prevVpRef.current !== vp;
+    if (!viewChanged && !selectionChanged && !modeChanged && !navigated && !vpChanged) return;
     prevViewRef.current = view;
     prevSelectionKeyRef.current = key;
+    prevModeRef.current = mode;
+    prevLayerRef.current = layerId;
+    prevNavSeqRef.current = navSeq;
+    prevVpRef.current = vp;
 
     const targetSection = VIEW_TO_SECTION[view];
-    const sectionNeedsUpdate = section !== targetSection;
-    // Nothing actually changed on the URL side (e.g. this fired only because
-    // a URL-driven update above just made the store match the URL already).
-    if (!sectionNeedsUpdate && !selectionChanged) return;
+    const targetView = view === 'changesets' ? SECTION_DEFAULT_VIEW[targetSection] : mode;
+    const targetSearch: AppShellSearch =
+      view === 'changesets'
+        ? { changeset: changesetId ?? undefined }
+        : {
+            layer: layerId ?? undefined,
+            // Mutually exclusive: selecting an edge already cleared
+            // selectedId, so at most one of these is ever defined here.
+            node: selectedId ?? undefined,
+            edge: selectedEdgeId ?? undefined,
+            vp,
+          };
+
+    // The store already matches the URL — this change came FROM the URL
+    // (back/forward, a deep link). Navigating here would push a duplicate
+    // entry and wipe the forward history.
+    const destinationMatchesUrl =
+      section === targetSection &&
+      viewParam === targetView &&
+      (search.layer ?? undefined) === targetSearch.layer &&
+      (search.node ?? undefined) === targetSearch.node &&
+      (search.edge ?? undefined) === targetSearch.edge &&
+      (search.changeset ?? undefined) === targetSearch.changeset;
+    if (destinationMatchesUrl && (search.vp ?? undefined) === targetSearch.vp) {
+      return;
+    }
+
+    // Only `?vp=` differs: a recorded viewport, or a stale one being dropped
+    // after back/forward. Never a new destination, so always replace.
+    const push =
+      !destinationMatchesUrl &&
+      (viewChanged || modeChanged || layerChanged || navigated || (mode === 'page' && selectionChanged));
 
     router.navigate({
       to: '/$section/$view',
-      params: { section: targetSection, view: SECTION_DEFAULT_VIEW[targetSection] },
-      search:
-        view === 'changesets'
-          ? { changeset: changesetId ?? undefined }
-          : {
-              layer: layerId ?? undefined,
-              // Mutually exclusive: selecting an edge already cleared
-              // selectedId, so at most one of these is ever defined here.
-              node: selectedId ?? undefined,
-              edge: selectedEdgeId ?? undefined,
-            },
-      replace: !sectionNeedsUpdate,
+      params: { section: targetSection, view: targetView },
+      search: targetSearch,
+      replace: !push,
     });
-  }, [view, layerId, selectedId, selectedEdgeId, changesetId, section]);
+    // `search`/`section`/`viewParam` are read only for the "already matches"
+    // guard; re-running on their own changes would re-check a URL the store
+    // effects above are about to make it match.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view, mode, layerId, selectedId, selectedEdgeId, changesetId, navSeq, graphViewport, canvasKey]);
 
   return <AppShell />;
 }
@@ -318,6 +426,7 @@ const appShellRoute = createRoute({
     node: typeof search.node === 'string' ? search.node : undefined,
     edge: typeof search.edge === 'string' ? search.edge : undefined,
     changeset: typeof search.changeset === 'string' ? search.changeset : undefined,
+    vp: typeof search.vp === 'string' ? search.vp : undefined,
   }),
   component: AppShellRoute,
 });

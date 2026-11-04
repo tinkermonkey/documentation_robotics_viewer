@@ -149,6 +149,11 @@ export class JsonRpcHandler {
         }
       });
 
+      // A closed socket never delivers the responses still owed, so fail those
+      // calls now instead of leaving them to their timeouts (chat.send's is 15
+      // minutes, during which DrBot would sit in "loading").
+      websocketClient.on('close', () => this.clearPendingRequests());
+
       this.messageListenerAttached = true;
     } catch (error) {
       // Use structured error logging instead of console.warn

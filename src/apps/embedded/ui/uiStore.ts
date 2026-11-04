@@ -17,11 +17,15 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import type { ScopedViewport } from './graphViewport';
 
 export type ViewKind = 'model' | 'spec' | 'changesets';
 export type CanvasMode = 'graph' | 'page';
 export type PageFocus = 'layer' | 'node';
-export type GraphLayout = 'force' | 'galaxy' | 'force-clustered';
+/** The layouts offered in the header's Layout control. heimdall-ui also has
+ *  force, galaxy and radial-tree; they were dropped from the picker as less
+ *  useful for DR layers, and a persisted one falls back to 'organic'. */
+export type GraphLayout = 'force-clustered' | 'organic' | 'orthogonal';
 export type NodeMarginPreset = 'tight' | 'default' | 'wide';
 export type NodeDisplay = 'card' | 'pill';
 
@@ -57,6 +61,17 @@ interface UiState {
   wide: boolean;
   /** Main-panel mode for Model/Schema: the live graph, or the page-view detail scaffold. */
   mode: CanvasMode;
+  /** Bumped by every deliberate navigation action (navigateToElement,
+   *  navigateToElementWithEdge, navigateToSpecNode). The router uses it to
+   *  push a browser history entry for those even when they land in the same
+   *  layer, while plain on-canvas selection only replaces the entry. Not
+   *  persisted. */
+  navSeq: number;
+  /** Last settled viewport of the Model/Schema graph, tagged with the canvas
+   *  it belongs to (see ui/graphViewport.ts). Written by Canvas when the user
+   *  stops panning/zooming or the canvas recentres itself, and by the router
+   *  from `?vp=` on a deep link or back/forward. Not persisted: the URL owns it. */
+  graphViewport: ScopedViewport | null;
   /** Which record the page view renders when `mode === 'page'` — the active
    *  layer's overview, or the selected node's detail. Set by the same
    *  selection actions that drive `selectedId` (see each action below). */
@@ -67,10 +82,11 @@ interface UiState {
   expandedLayers: Set<string>;
 
   /** GraphCanvas layout engine for the Model/Schema graph. Global (not per-layer),
-   *  same as canvasDark/mode. Defaults to 'force' — the pre-Heimdall-0.6.0 behavior. */
+   *  same as canvasDark/mode. Defaults to 'organic' (heimdall-ui 0.9.0): no overlaps,
+   *  the fewest edge crossings and the most legible nodes at fit across every DR layer. */
   graphLayout: GraphLayout;
-  /** Whether galaxy/force-clustered draw a boundary circle per top-level group.
-   *  No effect under layout 'force'. */
+  /** Whether force-clustered draws a boundary circle per top-level group. No
+   *  effect under the other layouts. */
   showClusterBoundaries: boolean;
   /** Whether every edge is shown, or only edges GraphCanvas classifies as
    *  structural (see data/predicates.ts). Defaults to true (every edge visible)
@@ -160,6 +176,7 @@ interface UiState {
   setNodeMarginPreset: (preset: NodeMarginPreset) => void;
   setNodeDisplay: (nodeDisplay: NodeDisplay) => void;
   toggleShowInterLayerNodes: () => void;
+  setGraphViewport: (graphViewport: ScopedViewport | null) => void;
 }
 
 const initialWide =
@@ -208,10 +225,12 @@ export const useUiStore = create<UiState>()(
       chatOpen: initialWide,
       wide: initialWide,
       mode: 'graph',
+      navSeq: 0,
+      graphViewport: null,
       focus: 'layer',
       expandedSections: new Set<string>(['model']),
       expandedLayers: new Set<string>(),
-      graphLayout: 'force',
+      graphLayout: 'organic',
       showClusterBoundaries: true,
       showAllRelations: true,
       nodeMarginPreset: 'default',
@@ -264,6 +283,7 @@ export const useUiStore = create<UiState>()(
             ? s.expandedLayers
             : new Set(s.expandedLayers).add(layerKey('model', layerId));
           return {
+            navSeq: s.navSeq + 1,
             view: 'model',
             layerId,
             selectedId: elementId,
@@ -282,6 +302,7 @@ export const useUiStore = create<UiState>()(
             ? s.expandedLayers
             : new Set(s.expandedLayers).add(layerKey('model', layerId));
           return {
+            navSeq: s.navSeq + 1,
             view: 'model',
             mode: 'graph',
             layerId,
@@ -301,6 +322,7 @@ export const useUiStore = create<UiState>()(
             ? s.expandedLayers
             : new Set(s.expandedLayers).add(layerKey('spec', layerId));
           return {
+            navSeq: s.navSeq + 1,
             view: 'spec',
             layerId,
             selectedId: specNodeId,
@@ -397,6 +419,8 @@ export const useUiStore = create<UiState>()(
 
       toggleShowInterLayerNodes: () =>
         set((s) => ({ showInterLayerNodes: !s.showInterLayerNodes })),
+
+      setGraphViewport: (graphViewport) => set({ graphViewport }),
     }),
     {
       name: PERSIST_KEY,
@@ -433,9 +457,9 @@ if (typeof document !== 'undefined') {
 }
 
 const VALID_GRAPH_LAYOUTS: ReadonlySet<GraphLayout> = new Set([
-  'force',
-  'galaxy',
   'force-clustered',
+  'organic',
+  'orthogonal',
 ]);
 const VALID_NODE_MARGIN_PRESETS: ReadonlySet<NodeMarginPreset> = new Set([
   'tight',
@@ -455,7 +479,7 @@ const VALID_NODE_DISPLAYS: ReadonlySet<NodeDisplay> = new Set(['card', 'pill']);
 {
   const hydrated = useUiStore.getState();
   const fixes: Partial<UiState> = {};
-  if (!VALID_GRAPH_LAYOUTS.has(hydrated.graphLayout)) fixes.graphLayout = 'force';
+  if (!VALID_GRAPH_LAYOUTS.has(hydrated.graphLayout)) fixes.graphLayout = 'organic';
   if (!VALID_NODE_MARGIN_PRESETS.has(hydrated.nodeMarginPreset)) fixes.nodeMarginPreset = 'default';
   if (!VALID_NODE_DISPLAYS.has(hydrated.nodeDisplay)) fixes.nodeDisplay = 'card';
   if (typeof hydrated.showInterLayerNodes !== 'boolean') fixes.showInterLayerNodes = true;

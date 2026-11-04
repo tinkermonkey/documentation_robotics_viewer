@@ -175,3 +175,17 @@ describe('jsonRpcHandler — timeout', () => {
     expect(handler.getPendingRequestCount()).toBe(0);
   });
 });
+
+describe('jsonRpcHandler — connection close', () => {
+  it('rejects pending requests as soon as the socket closes, not at their timeout', async () => {
+    const handler = await makeHandler();
+    // chat.send-sized timeout: without the close handling this would hang 15 min.
+    const { promise } = await send(handler, 'chat.send', { message: 'hi' }, 15 * 60 * 1000);
+
+    socket.simulateClose(1006, 'server went away');
+
+    const err = await promise.catch((e: unknown) => e);
+    expect((err as Error).message).toBe('WebSocket connection closed');
+    expect(handler.getPendingRequestCount()).toBe(0);
+  });
+});

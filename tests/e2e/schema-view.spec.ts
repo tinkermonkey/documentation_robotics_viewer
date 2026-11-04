@@ -7,7 +7,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { gotoView, ROUTES } from './helpers';
+import { gotoView, ROUTES, layerCounts } from './helpers';
 
 test.describe('schema view', () => {
   test('renders node-type nodes and predicate edges for a layer', async ({ page, request }) => {
@@ -40,14 +40,18 @@ test.describe('schema view', () => {
 
   test('toggling the same layer between Model and Schema shows different content', async ({
     page,
+    request,
   }) => {
-    // Model view, application layer: 54 instance nodes.
+    // Model view, application layer: one graph node per instance (from the API),
+    // plus inter-layer nodes from other layers, drawn by default.
     await gotoView(page, ROUTES.model);
     const nav = page.getByTestId('nav-tree');
     await nav.getByRole('button', { name: /^Application/ }).first().click();
 
     const nodes = page.locator('[data-testid^="graph-node-"]');
-    await expect.poll(async () => nodes.count(), { timeout: 15_000 }).toBe(54);
+    const ownNodes = page.locator('g[data-testid^="graph-node-"][data-domain="application"]');
+    const { application } = await layerCounts(request);
+    await expect.poll(async () => ownNodes.count(), { timeout: 15_000 }).toBe(application);
     await expect(page.getByTestId('page-header-eyebrow')).toContainText('INSTANCE MODEL');
     // The title <h1> nests the id chip, so its text is "Application" + "application".
     await expect(page.getByTestId('page-header-title')).toContainText('Application');

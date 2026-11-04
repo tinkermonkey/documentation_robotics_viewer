@@ -40,16 +40,29 @@ test.describe('chat', () => {
     // The user message renders once.
     await expect(drawer.getByText(query, { exact: false })).toBeVisible();
 
-    // Wait for a bot answer to stream in. After the greeting + this exchange,
-    // there is exactly one NEW bot row carrying the answer text.
-    const botRows = drawer.locator('[data-testid="chat-message-bot"]');
-    // Greeting is row 0; the answer is a later bot row.
-    await expect.poll(async () => botRows.count(), { timeout: 80_000 }).toBeGreaterThan(1);
+    // Wait for the answer itself, not just a new bot row: the empty streaming
+    // placeholder is added the moment the message is sent, while the real
+    // answer (Claude Code + DrBot's agent) can take well over 10s to arrive.
+    const answerRow = drawer.locator('[data-testid="chat-message-bot"]', { hasText: /pong/i });
+    await expect(answerRow.first()).toBeVisible({ timeout: 80_000 });
+    // ...and has finished streaming (its text stops changing), so the
+    // duplicate check below reads the final text.
+    let lastText = '';
+    await expect
+      .poll(
+        async () => {
+          const text = await answerRow.first().innerText();
+          const settled = text === lastText;
+          lastText = text;
+          return settled;
+        },
+        { timeout: 80_000, intervals: [1_000] },
+      )
+      .toBe(true);
 
     // The answer body contains "pong". Assert it appears in exactly ONE bot row,
     // and within that row the word is NOT duplicated (double-emit would render
     // "pongpong" / "pong pong" inside a single coalesced text body).
-    const answerRow = drawer.locator('[data-testid="chat-message-bot"]', { hasText: /pong/i });
     await expect(answerRow).toHaveCount(1);
 
     const answerText = (await answerRow.locator('.chat-message__body').innerText()).toLowerCase();

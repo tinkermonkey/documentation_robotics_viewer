@@ -6,7 +6,7 @@
  * port 8099), so all counts are deterministic and match the Phase A fixtures.
  */
 
-import { type Page, type APIRequestContext, expect } from '@playwright/test';
+import { type Page, type Locator, type APIRequestContext, expect } from '@playwright/test';
 
 /** The dedicated E2E base URL (mirrors playwright.config.ts). */
 export const BASE_URL = 'http://localhost:8099';
@@ -122,4 +122,35 @@ export async function chatSdkAvailable(page: Page): Promise<boolean> {
       }
     });
   }, BASE_URL);
+}
+
+/**
+ * Leave a nav-tree layer expanded and selected, and return its first element
+ * row. Clicking a layer row TOGGLES it (and selects the layer when expanding),
+ * and the app's default selection may have already expanded it, so a blind
+ * click could collapse it instead. `label` is the layer's display label
+ * (e.g. 'Data Model', 'APM'). The same label appears under Model and Schema
+ * when both sections are open; `section` picks which (Model rows come first).
+ */
+export async function openLayer(
+  page: Page,
+  label: string,
+  section: 'model' | 'spec' = 'model',
+): Promise<Locator> {
+  const buttons = page.getByRole('button', { name: new RegExp(`^${label} \\d+$`, 'i') });
+  const button = section === 'model' ? buttons.first() : buttons.last();
+  const row = button.locator('xpath=..');
+  const open = row.locator('.drv-chev--open');
+  // The app's default selection expands a layer shortly after load; wait for it
+  // to land (it writes ?layer=) so it can't toggle the row under us.
+  await expect(page).toHaveURL(/[?&]layer=/);
+  if ((await open.count()) > 0) {
+    await button.click(); // collapse
+    await expect(open).toHaveCount(0);
+  }
+  await expect(async () => {
+    if ((await open.count()) === 0) await button.click(); // expand + select the layer
+    await expect(open).toHaveCount(1, { timeout: 1_000 });
+  }).toPass({ timeout: 10_000 });
+  return row.locator('xpath=following-sibling::div[1]').locator('.drv-nav-l2');
 }
