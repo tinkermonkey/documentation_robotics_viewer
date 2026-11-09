@@ -51,6 +51,7 @@ src/
 │   │   ├── modelGraph.ts      # /api/model → GraphCanvas nodes/edges; dottedId() + dual-index link resolver
 │   │   ├── specGraph.ts       # /api/spec → node-type graph
 │   │   ├── relationships.ts   # in/out/cross-layer RelationshipLink derivation
+│   │   ├── reach.ts           # whole-model Heimdall layered index + inspector "followed across layers" reach
 │   │   └── changesets.ts      # changeset op-row + diff helpers
 │   ├── services/              # KEPT infra: websocketClient, jsonRpcHandler, chatService, errorTracker, embeddedDataLoader, chatValidation
 │   ├── stores/                # KEPT data stores: annotationStore, authStore, changesetStore, chatStore, connectionStore
@@ -98,7 +99,10 @@ Use them as `rgb(var(--canvas-bg))` etc. so the **dark-canvas toggle** (`uiStore
 `GraphToolbar` / `DetailDrawer`, `PageHeader`, `NavItem`, `Statusbar`, `SegmentedControl`, `ChatContainer` /
 `ChatMessage` (+ `ToolBlock` / `ThinkingBlock`) / `ChatComposer` / `ChatSuggestions` / `ChatMarkdownContent`,
 `DiffViewer` / `SideBySideDiff`, `StatTile` / `StatGrid`, `StatusBadge` / `Badge` / `Chip`, `Button`,
-`TextArea` / `TextInput`, `Select`, `Modal` / `ConfirmDialog` / `Toast`, `RowMenu`, `KVGrid`, `Icon`. (We
+`TextArea` / `TextInput`, `Select`, `Modal` / `ConfirmDialog` / `Toast`, `RowMenu`, `KVGrid`, `Icon`, and
+from 0.10's layered-graph framework the headless `buildLayeredIndex` / `computeReach` (+ `followOptionLabel`).
+The framework's views (`LayerStack`, `layout="layer-lanes"`, `AdjacencyMatrix`, `HivePlot`,
+`LayeredGraphExplorer`) are not used yet. (We
 hand-roll the `AppShell` and 3-level `NavTree` rather than using `ShellLayout`/`Sidebar`, which are
 single-canvas / 2-level only.)
 
@@ -230,12 +234,22 @@ For local dev use `dr visualize --no-auth`.
   store at send time, and `chatService.sendMessage(text, context)` prepends it to the text sent. The thread
   shows only what the user typed.
   `chatAdapter.ts` maps our `parts` union onto Heimdall's message/tool/thinking blocks.
+- **Followed across layers** (Model inspector, heimdall-ui 0.10) — below Outgoing/Incoming, a Follow
+  control (Direct / +1 layer / +2 layers, `uiStore.inspectorFollow`, persisted, default +1) lists the
+  selection's reach past its direct links: `data/reach.ts` builds a whole-model `buildLayeredIndex`
+  (`layerBy: 'domainColor'` = layer slug, `LAYER_ORDER` layers) and runs `computeReach`, which continues
+  from elements reached over cross-layer links, along cross-layer links, into any layer but the
+  selection's own. Rows reuse `RelationshipsWithTooltips`'s row with Heimdall's `+n` hop badge and
+  "via X · predicate" line, and navigate like any relationship row. The `.graph-inspector__empty-mini`
+  suppression in `domain-and-nav.css` is scoped to `GraphInspector`'s own root so this section's empty
+  state still shows.
 - **Annotations** — REST CRUD + replies in the inspector for Model elements.
 - **Light/dark canvas** toggle in the topbar. **Dark is the default** (`uiStore`'s `canvasDark: true`) —
   applies only on a first-ever visit; a persisted choice always wins after that.
 - **Preference persistence** (`uiStore.ts`, `zustand/middleware`'s `persist`) — `canvasDark`, `chatOpen`
   (DrBot open/closed), and the graph settings (`graphLayout`/`showClusterBoundaries`/`showAllRelations`/
-  `nodeMarginPreset`) survive a reload via localStorage (key `PERSIST_KEY` = `dr-viewer-ui-preferences`,
+  `nodeMarginPreset`/`nodeDisplay`/`showInterLayerNodes`) and the inspector's `inspectorFollow` survive a
+  reload via localStorage (key `PERSIST_KEY` = `dr-viewer-ui-preferences`,
   see its `partialize`). Navigation state (view/layerId/selectedId/changesetId/mode/focus/expanded*) is
   deliberately EXCLUDED from persistence — that's the URL router's job instead (below), so the two
   mechanisms never fight over which one is authoritative for "where you are."
@@ -277,7 +291,7 @@ npm run dev
 npm run build
 
 # Tests
-npm test            # Vitest: unit + integration + component (~580 tests)
+npm test            # Vitest: unit + integration + component (~590 tests)
 npm run test:watch  # Vitest watch
 npm run test:cov    # Vitest with coverage
 npm run test:types  # type-check the tests (tsconfig.test.json)
@@ -316,8 +330,8 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 
 The Heimdall-era suite (Vitest + Playwright) — see [documentation/TESTING_STRATEGY.md](documentation/TESTING_STRATEGY.md):
 
-- **Vitest** (`npm test`, **~580 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
-  445-link resolution, `chatAdapter`, `changesets` op-folding, `specGraph`, `relationships`, `uiStore`,
+- **Vitest** (`npm test`, **~590 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
+  445-link resolution, `chatAdapter`, `changesets` op-folding, `specGraph`, `relationships`, `reach`, `uiStore`,
   `predicates`), `tests/integration/` infra over a mock WebSocket + MSW (the **WS double-emit** regression,
   `jsonRpcHandler`, `chatService` streaming, data hooks), `tests/components/` Testing Library renders of the
   `ui/` layer. Helpers + real API fixtures live in `tests/helpers/` + `tests/fixtures/`.

@@ -165,6 +165,64 @@ describe('Inspector — relationship navigation', () => {
   });
 });
 
+describe('Inspector — followed across layers (heimdall-ui 0.10 reach)', () => {
+  // security "Bearer Token Policy": constrains application "Graph Viewer",
+  // which realizes business "Architecture Model Visualization" — a hop-2 row.
+  const BEARER_UUID = 'f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d';
+
+  it('lists hop-2 elements with a via line and the reach summary at the default +1 layer', async () => {
+    renderModelSelection('security', BEARER_UUID);
+
+    const section = await screen.findByTestId('inspector-followed');
+    const target = within(section).getByRole('button', {
+      name: /Navigate to Architecture Model Visualization/i,
+    });
+    const row = target.closest('li')!;
+    expect(within(row).getByText(/^via .+ · .+/)).toBeInTheDocument();
+    expect(within(section).getByTestId('inspector-reach-summary')).toHaveTextContent(
+      /reach \d+ elements across \d+ layers/,
+    );
+  });
+
+  it('switching Follow to Direct empties the followed list and persists the choice', async () => {
+    const user = userEvent.setup();
+    renderModelSelection('security', BEARER_UUID);
+
+    const section = await screen.findByTestId('inspector-followed');
+    await user.click(within(section).getByRole('radio', { name: 'Direct' }));
+
+    expect(useUiStore.getState().inspectorFollow).toBe(0);
+    expect(await within(section).findByText('Direct links only.')).toBeInTheDocument();
+    expect(within(section).queryByText(/^via /)).not.toBeInTheDocument();
+  });
+
+  it('+2 layers adds rows carrying a +2 hop badge', async () => {
+    const user = userEvent.setup();
+    renderModelSelection('security', BEARER_UUID);
+
+    const section = await screen.findByTestId('inspector-followed');
+    expect(within(section).queryByText('+2')).not.toBeInTheDocument();
+    await user.click(within(section).getByRole('radio', { name: '+2 layers' }));
+    expect((await within(section).findAllByText('+2')).length).toBeGreaterThan(0);
+  });
+
+  it('clicking a followed row navigates to that element in its own layer', async () => {
+    const user = userEvent.setup();
+    renderModelSelection('security', BEARER_UUID);
+
+    const section = await screen.findByTestId('inspector-followed');
+    await user.click(
+      within(section).getByRole('button', { name: /Navigate to Architecture Model Visualization/i }),
+    );
+    await waitFor(() => {
+      const s = useUiStore.getState();
+      expect(s.view).toBe('model');
+      expect(s.layerId).toBe('business');
+      expect(s.selectedId).not.toBe(BEARER_UUID);
+    });
+  });
+});
+
 describe('Inspector — stale edge selection guard', () => {
   it('clears selectedEdgeId once the model has loaded and the id no longer resolves', async () => {
     renderWithProviders(<Inspector />);

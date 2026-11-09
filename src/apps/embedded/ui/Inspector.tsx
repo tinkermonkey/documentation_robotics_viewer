@@ -67,7 +67,7 @@ import { layerLabel } from './domain';
 import { AnnotationsSection } from './AnnotationsSection';
 import { EdgeInspector } from './EdgeInspector';
 import { NodeTypeBadge } from './NodeTypeBadge';
-import { RelationshipsWithTooltips } from './RelationshipsWithTooltips';
+import { FollowedRelationships, RelationshipsWithTooltips } from './RelationshipsWithTooltips';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import { buildModelIndex, dottedId, edgeMetadata } from '../data/modelGraph';
@@ -79,6 +79,7 @@ import {
   specMetadataForNode,
   specRelationshipsForNode,
 } from '../data/specGraph';
+import { buildModelLayeredIndex, elementReach } from '../data/reach';
 
 /** Layer slug owning a `spec_node_id` (`data-model.objectschema` -> `data-model`). */
 function layerOfSpecNode(specNodeId: string): string {
@@ -100,11 +101,18 @@ export function Inspector() {
   const navigateToSpecNode = useUiStore((s) => s.navigateToSpecNode);
   const navigateToElementWithEdge = useUiStore((s) => s.navigateToElementWithEdge);
   const clearEdgeSelection = useUiStore((s) => s.clearEdgeSelection);
+  const inspectorFollow = useUiStore((s) => s.inspectorFollow);
+  const setInspectorFollow = useUiStore((s) => s.setInspectorFollow);
 
   const { derived: model, isSuccess: modelLoaded } = useModel();
   const { raw: specRaw } = useSpec();
   const index = useMemo(() => buildModelIndex(model), [model]);
   const isSpec = view === 'spec';
+  // Whole-model layered index for the reach (Model view only; rebuilt per model payload).
+  const layered = useMemo(
+    () => (isSpec ? null : buildModelLayeredIndex(model, index)),
+    [isSpec, model, index],
+  );
 
   // ─── Selected edge (Model view only — edges only exist in the Model graph) ─
   const edge = useMemo(
@@ -139,6 +147,10 @@ export function Inspector() {
   const modelRelationships = useMemo(
     () => (modelNode ? relationshipsForElement(model, modelNode.id, index) : []),
     [model, modelNode, index],
+  );
+  const modelReach = useMemo(
+    () => (layered && modelNode ? elementReach(layered, modelNode.id, inspectorFollow) : null),
+    [layered, modelNode, inspectorFollow],
   );
 
   // ─── Spec node-type metadata + relationships ───────────────────────────────
@@ -230,6 +242,14 @@ export function Inspector() {
                 relationships={relationships}
                 onNodeSelect={handleSelect}
               />
+              {modelReach && (
+                <FollowedRelationships
+                  reach={modelReach}
+                  follow={inspectorFollow}
+                  onFollowChange={setInspectorFollow}
+                  onNodeSelect={handleSelect}
+                />
+              )}
             </div>
           ) : (
             <GraphInspector
