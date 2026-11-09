@@ -129,16 +129,18 @@ test.describe('model view', () => {
     await crossTarget.scrollIntoViewIfNeeded();
 
     const targetDomain = await crossTarget.getAttribute('data-domain');
-    const targetLabel = (await crossTarget.getAttribute('aria-label')) ?? '';
+    // The visible text is the target's title; the accessible name adds its layer
+    // ("Navigate to {title}, {Layer} layer"), as Heimdall's GraphInspector does.
+    const targetTitle = (await crossTarget.innerText()).trim();
+    await expect(crossTarget).toHaveAccessibleName(new RegExp(`^Navigate to .+, .+ layer$`));
     expect(targetDomain).not.toBe('data-model');
 
     await crossTarget.click();
 
     // The Model view now shows the target layer (page header id chip == slug),
     // staying in the Model view, and the target element is selected (its title
-    // matches the rel-target label "Navigate to {title}").
+    // matches the rel-target's visible title).
     await expect(page.getByTestId('page-header-id-chip')).toHaveText(targetDomain!);
-    const targetTitle = targetLabel.replace(/^Navigate to /, '');
     await expect(inspector.getByTestId('inspector-title')).toHaveText(targetTitle);
   });
 

@@ -50,6 +50,7 @@ export function resetUiStore(): void {
     showAllRelations: true,
     nodeMarginPreset: 'default',
     nodeDisplay: 'card',
+    inspectorFollow: 1,
     graphViewport: null,
   });
   // The store also mirrors canvasDark onto <body>; clear it so dark-mode tests
